@@ -18,6 +18,7 @@ import (
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
+	"github.com/wowsims/classic/sim/druid"
 	"github.com/wowsims/classic/sim/mage"
 	"github.com/wowsims/classic/sim/warrior"
 )
@@ -366,8 +367,10 @@ func smokeRequest(t *testing.T, spec string) api.SimRequest {
 // the fork itself measures. They are read from the engine rather than
 // copied, so a retuned build cannot go stale here.
 var referenceTalents = map[string]string{
-	"warrior-fury": warrior.ForeverFuryTalents,
-	"mage-frost":   mage.ForeverFrostTalents,
+	"warrior-fury":       warrior.ForeverFuryTalents,
+	"warrior-protection": warrior.ForeverProtectionTalents,
+	"mage-frost":         mage.ForeverFrostTalents,
+	"druid-feral-bear":   druid.ForeverBearTalents,
 }
 
 // warnedActions is the set of actions the engine could not resolve

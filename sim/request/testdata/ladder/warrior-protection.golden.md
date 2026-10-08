@@ -1,4 +1,4 @@
-# warrior-fury rotation ladder
+# warrior-protection rotation ladder
 
 Rules this ladder runs under (Phase 1a,
 docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
@@ -93,13 +93,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-01000000000000000-000000000000000000 | main_hand:1927 off_hand:6969 | 11.3 | 5 | other:attack/2=107.1, other:attack/1=56.0, other:rage_gain=38.1, spell:1680=18.1, spell:284/1=14.3 | {SpellID: 12328}, {SpellID: 23894} |
-| 20 | 00000000000000000-05150000000000000-000000000000000000 | main_hand:1482 off_hand:2236 | 23.6 | 5 | other:attack/2=121.3, other:rage_gain=119.1, other:attack/1=48.2, spell:285/1=19.6, spell:285=19.4 | {SpellID: 12328}, {SpellID: 23894} |
-| 30 | 00000000000000000-05153105010000000-000000000000000000 | main_hand:6692 off_hand:9457 | 45.6 | 6 | other:rage_gain=108.6, other:attack/2=79.3, other:attack/1=54.9, spell:1608/1=21.4, spell:1608=21.1 | {SpellID: 12328}, {SpellID: 23894} |
-| 38 | 00000000000000000-05153105022011300-000000000000000000 | main_hand:868 off_hand:6829 | 68.9 | 7 | other:rage_gain=117.0, other:attack/2=85.6, other:attack/1=66.6, spell:11564/1=23.4, spell:11564=23.2 | {SpellID: 23894} |
-| 40 | 00000000000000000-05153105022011500-000000000000000000 | main_hand:2164 off_hand:9359 | 83.0 | 8 | other:rage_gain=122.5, other:attack/2=83.7, other:attack/1=81.8, spell:11565/1=25.3, spell:11565=25.1 | {SpellID: 23881} |
-| 50 | 34200000000000000-05153105022011501-000000000000000000 | main_hand:810 off_hand:2163 | 115.5 | 9 | other:rage_gain=140.6, other:attack/2=139.6, other:attack/1=85.7, spell:20661=21.3, spell:23892=19.4 | - |
-| 60 | 34320003002000000-05153105022011501-200000000000000000 | main_hand:22736 off_hand:23054 | 239.7 | 9 | other:rage_gain=102.0, other:attack/2=73.0, other:attack/1=62.1, spell:23894=19.3, spell:20662=18.3 | - |
+| 10 | 00000000000000000-00000000000000000-100000000000000000 | main_hand:263407 | 14.7 | 5 | spell:7386=94.6, spell:284/1=49.2, spell:284=47.8, other:rage_gain=37.8, spell:6343=25.2 | {SpellID: 12975} |
+| 20 | 00000000000000000-00000000000000000-254000000000000000 | main_hand:7230 | 27.8 | 6 | spell:7386=99.6, spell:285/1=51.0, spell:285=49.8, other:rage_gain=36.7, spell:8198=16.9 | {SpellID: 12975} |
+| 30 | 00000000000000000-00000000000000000-255513000000000000 | main_hand:13045 | 42.1 | 6 | spell:7405=102.1, spell:1608/1=61.6, spell:1608=60.6, other:rage_gain=36.6, spell:8204=12.9 | {SpellID: 12975} |
+| 38 | 00000000000000000-00000000000000000-255513121310000000 | main_hand:10570 | 50.7 | 7 | spell:8380=103.8, spell:11564/1=57.3, spell:11564=56.4, other:rage_gain=35.9, spell:8205=11.1 | - |
+| 40 | 00000000000000000-00000000000000000-255513121310001001 | main_hand:10570 | 54.2 | 7 | spell:8380=103.7, spell:11565/1=57.4, spell:11565=56.4, other:rage_gain=35.8, spell:8205=11.1 | - |
+| 50 | 00000000000000000-55000000000000000-255513121310001001 | main_hand:10570 | 58.7 | 7 | spell:11596=104.7, spell:11566/1=54.1, spell:11566=53.1, other:rage_gain=36.9, spell:11580=9.3 | - |
+| 60 | 00000000000000000-55250030000000000-255513121310001001 | main_hand:22736 | 109.3 | 7 | spell:11597=105.6, other:rage_gain=66.2, spell:11567/1=60.5, spell:11567=59.5, spell:11581=7.9 | - |
 
 ## Learned but unused (informational)
 
@@ -108,7 +108,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Hamstring (spell 1715)
 - Rend (spell 6546)
-- Thunder Clap (spell 6343)
 
 ### Level 20
 
@@ -116,9 +115,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Mocking Blow (spell 694)
 - Overpower (spell 7384)
 - Rend (spell 6547)
-- Revenge (spell 6572)
 - Shield Bash (spell 72)
-- Thunder Clap (spell 8198)
 
 ### Level 30
 
@@ -126,9 +123,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Mocking Blow (spell 7400)
 - Overpower (spell 7887)
 - Rend (spell 6548)
-- Revenge (spell 6574)
 - Shield Bash (spell 72)
-- Thunder Clap (spell 8204)
 
 ### Level 38
 
@@ -137,9 +132,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Overpower (spell 7887)
 - Pummel (spell 6552)
 - Rend (spell 6548)
-- Revenge (spell 7379)
 - Shield Bash (spell 1671)
-- Thunder Clap (spell 8205)
 
 ### Level 40
 
@@ -150,13 +143,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Overpower (spell 7887)
 - Pummel (spell 6552)
 - Rend (spell 11572)
-- Revenge (spell 7379)
 - Shield Bash (spell 1671)
 - Shield Slam (spell 23922)
-- Thunder Clap (spell 8205)
 
 ### Level 50
 
+- Bloodthirst (spell 23892)
 - Devastate (spell 20243)
 - Hamstring (spell 7372)
 - Mocking Blow (spell 20559)
@@ -164,13 +156,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Overpower (spell 11584)
 - Pummel (spell 6552)
 - Rend (spell 11573)
-- Revenge (spell 11600)
 - Shield Bash (spell 1671)
 - Shield Slam (spell 23923)
-- Thunder Clap (spell 11580)
 
 ### Level 60
 
+- Bloodthirst (spell 23894)
 - Devastate (spell 20243)
 - Hamstring (spell 7373)
 - Mocking Blow (spell 20560)
@@ -179,12 +170,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Pummel (spell 6554)
 - Recycle (spell 458882)
 - Rend (spell 11574)
-- Revenge (spell 11601)
 - Shield Bash (spell 1672)
 - Shield Slam (spell 23925)
 - Test Strike W35 (spell 23850)
 - Test Strike W50 (spell 23848)
-- Thunder Clap (spell 11581)
 
 ## Violations found in this run
 
