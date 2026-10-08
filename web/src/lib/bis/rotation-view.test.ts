@@ -43,7 +43,7 @@ describe('rotationEntryFor', () => {
 
 describe('rotationLinesFor', () => {
   it("threads a line's own icon stem through to the view when the build ships the file", () => {
-    const entries = loadRotations(BUILD, 'hunter-marksmanship');
+    const entries = loadRotations(BUILD, 'hunter-beast-mastery');
     const entry = entries?.[0];
     expect(entry).toBeDefined();
     const views = rotationLinesFor(entry!, BUILD, 'hunter');
