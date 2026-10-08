@@ -1,10 +1,191 @@
 {
   "spec": "druid-feral-bear",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Bear Form tank at 60. Primal Bite on its 6 s cooldown, Lacerate kept ticking (Rend and Tear reads it), Maul queued on the next swing, Swipe as the rage dump, Barkskin on cooldown and Frenzied Regeneration as the heal under half health. Measured in the sim's tank fight (level 63 boss, 2.0 s swing, 2400 to 3192, 180 s, healer 600 HPS) in the engine's own level 60 bear set: this order gave about 1005 threat per second against 806 for Primal Bite and Maul alone; Berserk on cooldown added 4 percent, Barkskin cost 1.6 percent threat for 5 percent less damage taken. Left out on purpose: Demoralizing Roar, because the fight's boss has no attack power for it to reduce (measured 1.8 percent less threat for no change in damage taken, and the raid debuff already supplies it when it is on), and Enrage, which bought 2.7 percent threat for 1.8 percent more damage taken (it takes 27 percent of base armor for 10 s), a trade a tank rotation should not make by default. The Lacerate bleed stacking, its direct hit, Frenzied Regeneration's conversion and Enrage's armor penalty are not in the client tables and are the engine's stated assumptions (sim/druid/lacerate.go, enrage.go, frenzied_regeneration.go).",
+  "sources": [
+    {
+      "label": "Forever Sixty bear harness measurements (sim/druid/tank, tank fight)",
+      "url": "https://foreversixty.gg/sim/specs",
+      "kind": "site"
+    },
+    {
+      "label": "Forever client tables: Maul, Swipe, Lacerate, Primal Bite, Berserk and Barkskin rows (spellconst/druid.json)",
+      "url": "https://foreversixty.gg/sim/specs",
+      "kind": "site"
+    }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "priorityList": [
+      {
+        "notes": "Barkskin on cooldown: 20% less physical damage for 15 s of every 60 (about 5% less damage taken measured against the tank fight).",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 22812
+            }
+          }
+        }
+      },
+      {
+        "notes": "Frenzied Regeneration as the emergency heal: under half health with 20 rage to convert.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 22842
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentRage": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "20"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "notes": "Berserk on cooldown (talent): Primal Bite loses its cooldown for 15 s. Worth about 4% more threat for no survival cost.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 417141
+            }
+          }
+        }
+      },
+      {
+        "notes": "Primal Bite (talent) on cooldown: the biggest threat hit per rage.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1238073,
+              "rank": 4
+            }
+          }
+        }
+      },
+      {
+        "notes": "Lacerate to start the bleed and again when under 3 s remain; the bleed is what turns on Rend and Tear.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1235827,
+              "rank": 3
+            }
+          },
+          "condition": {
+            "or": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 1235827,
+                          "rank": 3
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLe",
+                    "lhs": {
+                      "dotRemainingTime": {
+                        "spellId": {
+                          "spellId": 1235827,
+                          "rank": 3
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "3s"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "notes": "Queue Maul on the next swing whenever 15 rage is on hand, which keeps the rest for Primal Bite and Lacerate.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 9881,
+              "rank": 7,
+              "tag": 1
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpGe",
+              "lhs": {
+                "currentRage": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "15"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "notes": "Swipe is the rage dump above 40, a flat hit on up to three targets.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 9908,
+              "rank": 5
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpGe",
+              "lhs": {
+                "currentRage": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "40"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
   }
 }
