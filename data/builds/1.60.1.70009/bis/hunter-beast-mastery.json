@@ -1,8 +1,8 @@
 {
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T04:50:01Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T05:59:58Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -244,7 +244,8 @@
               "item_name": "Gloves of the Fang",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Druid of the Fang",
-              "dps_delta": 0
+              "dps_delta": 0,
+              "verified": true
             },
             {
               "item_id": 3058,
@@ -355,8 +356,7 @@
               "item_name": "Footpads of the Fang",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Lord Serpentis",
-              "dps_delta": -0.29706912209007896,
-              "verified": true
+              "dps_delta": -0.28773349709110213
             },
             {
               "item_id": 4788,
@@ -535,8 +535,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.685107219,
-      "verify_run_seconds": 1.700593389,
+      "weights_run_seconds": 2.611644204,
+      "verify_run_seconds": 1.627221571,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -846,26 +846,15 @@
         },
         {
           "slot": "hands",
-          "item_id": 5970,
-          "item_name": "Serpent Gloves",
-          "source": "Wailing Caverns: Lord Serpentis",
+          "item_id": 10413,
+          "item_name": "Gloves of the Fang",
+          "source": "Wailing Caverns: Druid of the Fang",
           "source_kind": "dungeon",
-          "score": 12.8799431216031,
+          "sim_dps": 82.38878916715308,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 10413,
-              "item_name": "Gloves of the Fang"
-            }
-          ],
+          "swap_note": "beat the scored pick Serpent Gloves (id 5970) in the sim: +0.8 DPS (82.4 vs 81.6 set DPS)",
+          "dps_delta": 0.8368442656048529,
           "alternatives": [
-            {
-              "item_id": 10413,
-              "item_name": "Gloves of the Fang",
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang",
-              "dps_delta": 0
-            },
             {
               "item_id": 3058,
               "item_name": "Forest Leather Gloves",
@@ -879,6 +868,14 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.28773349709110213
+            },
+            {
+              "item_id": 5970,
+              "item_name": "Serpent Gloves",
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis",
+              "dps_delta": -0.8368442656048529,
+              "verified": true
             }
           ]
         },
@@ -971,7 +968,7 @@
               "item_name": "Footpads of the Fang",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Lord Serpentis",
-              "dps_delta": -0.2857485825087167,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -998,7 +995,7 @@
           "source_kind": "world",
           "score": 12.8799431216031,
           "verified": true,
-          "swap_note": "confirmed by the sim against Legionnaire's Band (id 20429): kept the pick, +1.0 DPS (81.6 vs 80.6 set DPS)",
+          "swap_note": "confirmed by the sim against Legionnaire's Band (id 20429): kept the pick, +1.0 DPS over it",
           "dps_delta": 0.9707002676195913,
           "alternatives": [
             {
@@ -1138,7 +1135,7 @@
           ]
         }
       ],
-      "set_dps": 81.55194490154823,
+      "set_dps": 82.38878916715308,
       "no_source_count": 209,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -1164,7 +1161,7 @@
         "back: Glowing Lizardscale Cloak",
         "chest: Brawler's Leather Armor",
         "wrist: Forest Leather Bracers",
-        "hands: Serpent Gloves",
+        "hands: Gloves of the Fang",
         "waist: Blackened Defias Belt",
         "legs: Leggings of the Fang",
         "feet: Feet of the Lynx",
@@ -1173,8 +1170,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.685107219,
-      "verify_run_seconds": 1.638448753,
+      "weights_run_seconds": 2.611644204,
+      "verify_run_seconds": 1.7074474830000002,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1904,8 +1901,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.937616448,
-      "verify_run_seconds": 1.8980090729999999,
+      "weights_run_seconds": 2.869624434,
+      "verify_run_seconds": 1.872834718,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2621,8 +2618,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.937616448,
-      "verify_run_seconds": 1.827480452,
+      "weights_run_seconds": 2.869624434,
+      "verify_run_seconds": 1.773886134,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3303,8 +3300,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.198703591,
-      "verify_run_seconds": 2.0668544779999998,
+      "weights_run_seconds": 3.097373208,
+      "verify_run_seconds": 2.019583884,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3986,8 +3983,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.198703591,
-      "verify_run_seconds": 2.002892564,
+      "weights_run_seconds": 3.097373208,
+      "verify_run_seconds": 1.9627292189999999,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4659,8 +4656,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.246012913,
-      "verify_run_seconds": 2.172807675,
+      "weights_run_seconds": 3.173141523,
+      "verify_run_seconds": 2.162328221,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5350,8 +5347,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.246012913,
-      "verify_run_seconds": 2.069354946,
+      "weights_run_seconds": 3.173141523,
+      "verify_run_seconds": 2.090366465,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6076,8 +6073,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.157925606,
-      "verify_run_seconds": 2.125666802,
+      "weights_run_seconds": 3.087622257,
+      "verify_run_seconds": 2.10664948,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6800,8 +6797,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.157925606,
-      "verify_run_seconds": 2.059497495,
+      "weights_run_seconds": 3.087622257,
+      "verify_run_seconds": 2.077816174,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7514,8 +7511,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.216658302,
-      "verify_run_seconds": 2.296025892,
+      "weights_run_seconds": 3.192397349,
+      "verify_run_seconds": 2.289646753,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7933,7 +7930,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 163.76019178335042,
+          "score": 163.76019178335045,
           "verified": true,
           "alternatives": [
             {
@@ -7949,14 +7946,14 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -7.408796251378275
+              "dps_delta": -7.40879625137828
             },
             {
               "item_id": 18736,
               "item_name": "Plaguehound Leggings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -7.876886347687768
+              "dps_delta": -7.876886347687772
             }
           ]
         },
@@ -8227,8 +8224,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.216658302,
-      "verify_run_seconds": 2.289952372,
+      "weights_run_seconds": 3.192397349,
+      "verify_run_seconds": 2.256793234,
       "coverage": {
         "back": {
           "eligible": 450,

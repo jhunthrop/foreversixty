@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T05:10:13Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T06:19:41Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -515,8 +515,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.783976454,
-      "verify_run_seconds": 1.137197209,
+      "weights_run_seconds": 1.721253876,
+      "verify_run_seconds": 1.127313175,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1107,8 +1107,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.783976454,
-      "verify_run_seconds": 1.024937096,
+      "weights_run_seconds": 1.721253876,
+      "verify_run_seconds": 0.992404007,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1746,8 +1746,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.841968067,
-      "verify_run_seconds": 1.29954433,
+      "weights_run_seconds": 1.7776799319999999,
+      "verify_run_seconds": 1.295614766,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2385,8 +2385,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.841968067,
-      "verify_run_seconds": 1.236613862,
+      "weights_run_seconds": 1.7776799319999999,
+      "verify_run_seconds": 1.229771219,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3025,8 +3025,8 @@
         "finger2: Mark of Kern",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.299378374,
-      "verify_run_seconds": 1.252987687,
+      "weights_run_seconds": 2.241176613,
+      "verify_run_seconds": 1.259166368,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3663,8 +3663,8 @@
         "finger2: Mark of Kern",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.299378374,
-      "verify_run_seconds": 1.103365239,
+      "weights_run_seconds": 2.241176613,
+      "verify_run_seconds": 1.089684355,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4324,8 +4324,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.196501398,
-      "verify_run_seconds": 1.521966105,
+      "weights_run_seconds": 2.131111012,
+      "verify_run_seconds": 1.485279737,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4985,8 +4985,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.196501398,
-      "verify_run_seconds": 1.336077151,
+      "weights_run_seconds": 2.131111012,
+      "verify_run_seconds": 1.325975366,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5688,8 +5688,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.170982678,
-      "verify_run_seconds": 1.515827818,
+      "weights_run_seconds": 2.192751672,
+      "verify_run_seconds": 1.509363059,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6389,8 +6389,8 @@
         "trinket2: Blackhand's Breadth",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.170982678,
-      "verify_run_seconds": 1.334676973,
+      "weights_run_seconds": 2.192751672,
+      "verify_run_seconds": 1.414012957,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7091,8 +7091,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.536373857,
-      "verify_run_seconds": 1.636680309,
+      "weights_run_seconds": 2.434355175,
+      "verify_run_seconds": 1.674189434,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7792,8 +7792,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.536373857,
-      "verify_run_seconds": 1.597265983,
+      "weights_run_seconds": 2.434355175,
+      "verify_run_seconds": 1.606015521,
       "coverage": {
         "back": {
           "eligible": 451,

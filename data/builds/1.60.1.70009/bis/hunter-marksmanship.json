@@ -1,8 +1,8 @@
 {
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T04:51:05Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T06:01:01Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -226,26 +226,14 @@
         },
         {
           "slot": "hands",
-          "item_id": 5970,
-          "item_name": "Serpent Gloves",
-          "source": "Wailing Caverns: Lord Serpentis",
+          "item_id": 10413,
+          "item_name": "Gloves of the Fang",
+          "source": "Wailing Caverns: Druid of the Fang",
           "source_kind": "dungeon",
-          "score": 12.861633980037638,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 10413,
-              "item_name": "Gloves of the Fang"
-            }
-          ],
+          "swap_note": "beat the scored pick Serpent Gloves (id 5970) in the sim: +1.1 DPS over it",
+          "dps_delta": 1.0768736347957883,
           "alternatives": [
-            {
-              "item_id": 10413,
-              "item_name": "Gloves of the Fang",
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang",
-              "dps_delta": 0
-            },
             {
               "item_id": 3058,
               "item_name": "Forest Leather Gloves",
@@ -259,6 +247,14 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.267663636853814
+            },
+            {
+              "item_id": 5970,
+              "item_name": "Serpent Gloves",
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis",
+              "dps_delta": -1.0768736347957883,
+              "verified": true
             }
           ]
         },
@@ -339,34 +335,35 @@
         },
         {
           "slot": "feet",
-          "item_id": 1121,
-          "item_name": "Feet of the Lynx",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "score": 17.14884530671685,
+          "item_id": 10411,
+          "item_name": "Footpads of the Fang",
+          "source": "Wailing Caverns: Lord Serpentis",
+          "source_kind": "dungeon",
           "verified": true,
+          "swap_note": "beat the scored pick Feet of the Lynx (id 1121) in the sim: +0.9 DPS over it",
+          "dps_delta": 0.9291669151191542,
           "alternatives": [
-            {
-              "item_id": 10411,
-              "item_name": "Footpads of the Fang",
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Lord Serpentis",
-              "dps_delta": -0.2602049555633812,
-              "verified": true
-            },
             {
               "item_id": 10402,
               "item_name": "Blackened Defias Boots",
               "source_kind": "dungeon",
               "source": "The Deadmines: Defias Strip Miner",
-              "dps_delta": -0.267663636853814
+              "dps_delta": 0
             },
             {
               "item_id": 4788,
               "item_name": "Agile Boots",
               "source_kind": "vendor",
               "source": "Defias Profiteer",
-              "dps_delta": -0.401495455280721
+              "dps_delta": -0.133831818426907
+            },
+            {
+              "item_id": 1121,
+              "item_name": "Feet of the Lynx",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.9291669151191542,
+              "verified": true
             }
           ]
         },
@@ -378,7 +375,7 @@
           "source_kind": "world",
           "score": 12.861633980037638,
           "verified": true,
-          "swap_note": "confirmed by the sim against Protector's Band (id 20439): kept the pick, +0.4 DPS (77.3 vs 76.9 set DPS)",
+          "swap_note": "confirmed by the sim against Protector's Band (id 20439): kept the pick, +0.4 DPS over it",
           "dps_delta": 0.4216765257921935,
           "alternatives": [
             {
@@ -505,7 +502,7 @@
           ]
         }
       ],
-      "set_dps": 77.28099894329685,
+      "set_dps": 78.71919800421773,
       "no_source_count": 220,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -531,17 +528,17 @@
         "back: Glowing Lizardscale Cloak",
         "chest: Tunic of Westfall",
         "wrist: Forest Leather Bracers",
-        "hands: Serpent Gloves",
+        "hands: Gloves of the Fang",
         "waist: Blackened Defias Belt",
         "legs: Leggings of the Fang",
-        "feet: Feet of the Lynx",
+        "feet: Footpads of the Fang",
         "finger1: Signet of the Zhevra",
         "finger2: Protector's Band",
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.668578387,
-      "verify_run_seconds": 1.655387573,
+      "weights_run_seconds": 2.598604545,
+      "verify_run_seconds": 1.748445384,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -852,26 +849,14 @@
         },
         {
           "slot": "hands",
-          "item_id": 5970,
-          "item_name": "Serpent Gloves",
-          "source": "Wailing Caverns: Lord Serpentis",
+          "item_id": 10413,
+          "item_name": "Gloves of the Fang",
+          "source": "Wailing Caverns: Druid of the Fang",
           "source_kind": "dungeon",
-          "score": 12.861633980037638,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 10413,
-              "item_name": "Gloves of the Fang"
-            }
-          ],
+          "swap_note": "beat the scored pick Serpent Gloves (id 5970) in the sim: +0.9 DPS over it",
+          "dps_delta": 0.9354192190824335,
           "alternatives": [
-            {
-              "item_id": 10413,
-              "item_name": "Gloves of the Fang",
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Druid of the Fang",
-              "dps_delta": 0
-            },
             {
               "item_id": 3058,
               "item_name": "Forest Leather Gloves",
@@ -885,6 +870,14 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.267663636853814
+            },
+            {
+              "item_id": 5970,
+              "item_name": "Serpent Gloves",
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis",
+              "dps_delta": -0.9354192190824335,
+              "verified": true
             }
           ]
         },
@@ -969,7 +962,7 @@
               "item_name": "Footpads of the Fang",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Lord Serpentis",
-              "dps_delta": -0.26550491153209066,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -1136,7 +1129,7 @@
           ]
         }
       ],
-      "set_dps": 78.84237109550048,
+      "set_dps": 78.75398832025894,
       "no_source_count": 209,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -1162,7 +1155,7 @@
         "back: Glowing Lizardscale Cloak",
         "chest: Brawler's Leather Armor",
         "wrist: Forest Leather Bracers",
-        "hands: Serpent Gloves",
+        "hands: Gloves of the Fang",
         "waist: Blackened Defias Belt",
         "legs: Brawler's Leather Pants",
         "feet: Feet of the Lynx",
@@ -1171,8 +1164,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.668578387,
-      "verify_run_seconds": 1.6909048420000001,
+      "weights_run_seconds": 2.598604545,
+      "verify_run_seconds": 1.699534656,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1901,8 +1894,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.817909193,
-      "verify_run_seconds": 1.827505052,
+      "weights_run_seconds": 2.777476216,
+      "verify_run_seconds": 1.8033656869999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2620,8 +2613,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.817909193,
-      "verify_run_seconds": 1.774430054,
+      "weights_run_seconds": 2.777476216,
+      "verify_run_seconds": 1.76735837,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3301,8 +3294,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.872646133,
-      "verify_run_seconds": 1.846757929,
+      "weights_run_seconds": 2.844636956,
+      "verify_run_seconds": 1.863388043,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3983,8 +3976,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.872646133,
-      "verify_run_seconds": 1.8164553319999999,
+      "weights_run_seconds": 2.844636956,
+      "verify_run_seconds": 1.796209497,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4663,8 +4656,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.961575999,
-      "verify_run_seconds": 2.017712409,
+      "weights_run_seconds": 2.9185005029999997,
+      "verify_run_seconds": 1.99340484,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5349,8 +5342,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.961575999,
-      "verify_run_seconds": 1.929378804,
+      "weights_run_seconds": 2.9185005029999997,
+      "verify_run_seconds": 1.9006949180000001,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6066,8 +6059,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.920983368,
-      "verify_run_seconds": 2.175540055,
+      "weights_run_seconds": 2.835421899,
+      "verify_run_seconds": 2.121797883,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6782,8 +6775,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.920983368,
-      "verify_run_seconds": 2.065451027,
+      "weights_run_seconds": 2.835421899,
+      "verify_run_seconds": 2.023057889,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7501,8 +7494,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.953996975,
-      "verify_run_seconds": 2.116867178,
+      "weights_run_seconds": 2.863811595,
+      "verify_run_seconds": 2.110758617,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8218,8 +8211,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.953996975,
-      "verify_run_seconds": 2.143474272,
+      "weights_run_seconds": 2.863811595,
+      "verify_run_seconds": 2.062285425,
       "coverage": {
         "back": {
           "eligible": 450,

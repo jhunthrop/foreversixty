@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T04:54:00Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T06:03:53Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.950359337,
-      "verify_run_seconds": 0.636414196,
+      "weights_run_seconds": 0.938742706,
+      "verify_run_seconds": 0.644332959,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1194,8 +1194,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.950359337,
-      "verify_run_seconds": 0.687009942,
+      "weights_run_seconds": 0.938742706,
+      "verify_run_seconds": 0.627126726,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1918,8 +1918,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.106622213,
-      "verify_run_seconds": 0.774262653,
+      "weights_run_seconds": 1.101459867,
+      "verify_run_seconds": 0.771452397,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2641,8 +2641,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.106622213,
-      "verify_run_seconds": 0.815717251,
+      "weights_run_seconds": 1.101459867,
+      "verify_run_seconds": 0.794388819,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3322,8 +3322,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.002418654,
-      "verify_run_seconds": 0.694965817,
+      "weights_run_seconds": 0.940344481,
+      "verify_run_seconds": 0.671301578,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4006,8 +4006,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.002418654,
-      "verify_run_seconds": 0.663375419,
+      "weights_run_seconds": 0.940344481,
+      "verify_run_seconds": 0.674762721,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4709,8 +4709,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.945956716,
-      "verify_run_seconds": 0.73610327,
+      "weights_run_seconds": 0.930250577,
+      "verify_run_seconds": 0.731891626,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5407,8 +5407,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.945956716,
-      "verify_run_seconds": 0.748065633,
+      "weights_run_seconds": 0.930250577,
+      "verify_run_seconds": 0.753184568,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6157,8 +6157,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.012597298,
-      "verify_run_seconds": 0.732640809,
+      "weights_run_seconds": 0.995717797,
+      "verify_run_seconds": 0.749825654,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6908,8 +6908,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.012597298,
-      "verify_run_seconds": 0.752156761,
+      "weights_run_seconds": 0.995717797,
+      "verify_run_seconds": 0.726161842,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7230,7 +7230,7 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.32963709561115
+              "dps_delta": -2.3296370956111527
             },
             {
               "item_id": 18385,
@@ -7361,7 +7361,7 @@
               "item_name": "Marshal's Silk Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.1894728182258185
+              "dps_delta": -2.1894728182258216
             },
             {
               "item_id": 13170,
@@ -7571,7 +7571,7 @@
               "item_name": "Staff of Balzaphon",
               "source_kind": "dungeon",
               "source": "Stratholme: Balzaphon",
-              "dps_delta": -2.285250940819097
+              "dps_delta": -2.2852509408191
             },
             {
               "item_id": 1728,
@@ -7658,8 +7658,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.108798215,
-      "verify_run_seconds": 0.822875248,
+      "weights_run_seconds": 1.019695349,
+      "verify_run_seconds": 0.742633855,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7994,7 +7994,7 @@
               "item_name": "Legionnaire's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -7.2851822512730955
+              "dps_delta": -7.285182251273096
             }
           ]
         },
@@ -8408,8 +8408,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.108798215,
-      "verify_run_seconds": 0.906200554,
+      "weights_run_seconds": 1.019695349,
+      "verify_run_seconds": 0.741232224,
       "coverage": {
         "back": {
           "eligible": 450,

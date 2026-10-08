@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T05:16:54Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T06:26:17Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -609,8 +609,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.813083315,
-      "verify_run_seconds": 1.483802832,
+      "weights_run_seconds": 2.776028761,
+      "verify_run_seconds": 1.48646952,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1294,8 +1294,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.813083315,
-      "verify_run_seconds": 1.502388726,
+      "weights_run_seconds": 2.776028761,
+      "verify_run_seconds": 1.456723837,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1986,8 +1986,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.107593876,
-      "verify_run_seconds": 1.6117865,
+      "weights_run_seconds": 3.011203392,
+      "verify_run_seconds": 1.586033802,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2678,8 +2678,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 3.107593876,
-      "verify_run_seconds": 1.666667592,
+      "weights_run_seconds": 3.011203392,
+      "verify_run_seconds": 1.663273673,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3374,8 +3374,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.312027821,
-      "verify_run_seconds": 1.735806741,
+      "weights_run_seconds": 3.247172936,
+      "verify_run_seconds": 1.687199969,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4071,8 +4071,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.312027821,
-      "verify_run_seconds": 1.784251427,
+      "weights_run_seconds": 3.247172936,
+      "verify_run_seconds": 1.7696905200000002,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4779,8 +4779,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.284798653,
-      "verify_run_seconds": 2.125758833,
+      "weights_run_seconds": 3.262351909,
+      "verify_run_seconds": 2.113435648,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5518,8 +5518,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 3.284798653,
-      "verify_run_seconds": 2.167115844,
+      "weights_run_seconds": 3.262351909,
+      "verify_run_seconds": 2.195242847,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5682,7 +5682,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 192.59212862182784,
+          "score": 192.5921286218278,
           "verified": true,
           "alternatives": [
             {
@@ -5690,7 +5690,7 @@
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -7.428721377688945
+              "dps_delta": -7.428721377688943
             },
             {
               "item_id": 12587,
@@ -5762,7 +5762,7 @@
               "item_name": "Field Marshal's Plate Shoulderguards",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.4227673305635502
+              "dps_delta": -0.42276733056355165
             },
             {
               "item_id": 12927,
@@ -5952,7 +5952,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.80128947111977
+              "dps_delta": -2.801289471119767
             },
             {
               "item_id": 22385,
@@ -6017,14 +6017,14 @@
               "item_name": "Tarnished Elven Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -2.8369257246734216
+              "dps_delta": -2.836925724673423
             },
             {
               "item_id": 272408,
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -3.0754975568062917
+              "dps_delta": -3.075497556806293
             },
             {
               "item_id": 11669,
@@ -6274,8 +6274,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.281110886,
-      "verify_run_seconds": 2.197492629,
+      "weights_run_seconds": 3.285102109,
+      "verify_run_seconds": 2.165277908,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6715,7 +6715,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.80128947111977
+              "dps_delta": -2.801289471119767
             },
             {
               "item_id": 22385,
@@ -7036,8 +7036,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.281110886,
-      "verify_run_seconds": 2.221155585,
+      "weights_run_seconds": 3.285102109,
+      "verify_run_seconds": 2.228480546,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7204,11 +7204,11 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 227044,
+              "item_id": 23314,
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -17.251029403238448
+              "dps_delta": -17.25102940323845
             },
             {
               "item_id": 13404,
@@ -7785,8 +7785,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.7398333040000002,
-      "verify_run_seconds": 2.4152814510000002,
+      "weights_run_seconds": 3.685845047,
+      "verify_run_seconds": 2.394163372,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7972,7 +7972,7 @@
               "item_name": "Fury Visor",
               "source_kind": "quest",
               "source": "Voodoo Feathers",
-              "dps_delta": -18.64699353010625
+              "dps_delta": -18.646993530106247
             }
           ]
         },
@@ -8544,8 +8544,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.7398333040000002,
-      "verify_run_seconds": 2.471087563,
+      "weights_run_seconds": 3.685845047,
+      "verify_run_seconds": 2.442967,
       "coverage": {
         "back": {
           "eligible": 450,

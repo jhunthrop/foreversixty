@@ -1,8 +1,8 @@
 {
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T05:07:14Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T06:16:44Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -566,8 +566,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.717923363,
-      "verify_run_seconds": 1.697690433,
+      "weights_run_seconds": 2.708559016,
+      "verify_run_seconds": 1.68522537,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1218,8 +1218,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.717923363,
-      "verify_run_seconds": 1.7411373970000001,
+      "weights_run_seconds": 2.708559016,
+      "verify_run_seconds": 1.71681796,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1902,8 +1902,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.817346221,
-      "verify_run_seconds": 1.842809839,
+      "weights_run_seconds": 2.868283718,
+      "verify_run_seconds": 1.801699999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.817346221,
-      "verify_run_seconds": 1.812549991,
+      "weights_run_seconds": 2.868283718,
+      "verify_run_seconds": 1.788492696,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3287,8 +3287,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.075219198,
-      "verify_run_seconds": 1.8981281829999999,
+      "weights_run_seconds": 3.02275468,
+      "verify_run_seconds": 1.862829844,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3981,8 +3981,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.075219198,
-      "verify_run_seconds": 1.917616303,
+      "weights_run_seconds": 3.02275468,
+      "verify_run_seconds": 1.891031267,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4152,7 +4152,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.38171748412222967
+              "dps_delta": -0.3817174841222291
             },
             {
               "item_id": 9479,
@@ -4396,7 +4396,7 @@
           "item_name": "Knight's Leather Pants",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 46.16142063102095,
+          "score": 46.16142063102096,
           "verified": true,
           "alternatives": [
             {
@@ -4404,14 +4404,14 @@
               "item_name": "Serpentskin Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.8455954715330662
+              "dps_delta": -0.8455954715330668
             },
             {
               "item_id": 1718,
               "item_name": "Basilisk Hide Pants",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.3282481237441957
+              "dps_delta": -1.3282481237441963
             },
             {
               "item_id": 9652,
@@ -4690,8 +4690,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.497120183,
-      "verify_run_seconds": 2.273755053,
+      "weights_run_seconds": 3.45148476,
+      "verify_run_seconds": 2.226033105,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5106,7 +5106,7 @@
           "item_name": "Stone Guard's Leather Pants",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 46.16142063102095,
+          "score": 46.16142063102096,
           "verified": true,
           "alternatives": [
             {
@@ -5114,7 +5114,7 @@
               "item_name": "Basilisk Hide Pants",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.3282481237441957
+              "dps_delta": -1.3282481237441963
             },
             {
               "item_id": 8262,
@@ -5129,7 +5129,7 @@
               "item_name": "Triprunner Dungarees",
               "source_kind": "quest",
               "source": "Rig Wars",
-              "dps_delta": -1.4361981478861534
+              "dps_delta": -1.436198147886154
             }
           ]
         },
@@ -5399,8 +5399,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.497120183,
-      "verify_run_seconds": 2.274773579,
+      "weights_run_seconds": 3.45148476,
+      "verify_run_seconds": 2.264471007,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5699,7 +5699,7 @@
               "item_name": "Field Marshal's Leather Chestpiece",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.8640063433654457
+              "dps_delta": -1.8640063433654468
             },
             {
               "item_id": 226825,
@@ -6141,8 +6141,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.011627789,
-      "verify_run_seconds": 2.284433189,
+      "weights_run_seconds": 2.945224787,
+      "verify_run_seconds": 2.268962765,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6441,7 +6441,7 @@
               "item_name": "Warlord's Leather Breastplate",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.8640063433654468
+              "dps_delta": -1.8640063433654457
             },
             {
               "item_id": 226825,
@@ -6897,8 +6897,8 @@
         "off_hand: The Lobotomizer",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.011627789,
-      "verify_run_seconds": 2.2008412,
+      "weights_run_seconds": 2.945224787,
+      "verify_run_seconds": 2.162066949,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7647,8 +7647,8 @@
         "off_hand: The Lobotomizer",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.132475285,
-      "verify_run_seconds": 2.284052552,
+      "weights_run_seconds": 3.091463011,
+      "verify_run_seconds": 2.228440179,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -8399,8 +8399,8 @@
         "off_hand: The Lobotomizer",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.132475285,
-      "verify_run_seconds": 2.277766423,
+      "weights_run_seconds": 3.091463011,
+      "verify_run_seconds": 2.262948319,
       "coverage": {
         "back": {
           "eligible": 451,

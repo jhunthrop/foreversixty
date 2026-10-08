@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 0000000000000000-0051500000000000-000000000000000000)
 
-Set DPS (verified): 77.3. Weights run: 2.7s. Verify run: 1.7s. 220 eligible items had no known source.
+Set DPS (verified): 78.7. Weights run: 2.6s. Verify run: 1.7s. 220 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.144 ± 0.007, crit=0.538 ± 0.014 per rating point (14 rating = 1%, 7.532 per %), hit=0.819 ± 0.031 per rating point (10 rating = 1%, 8.193 per %), melee_haste=not significant (-0.147 ± 0.610)
 
@@ -20,10 +20,10 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | back | Glowing Lizardscale Cloak (6449) | Wailing Caverns: Skum [dungeon] | 12.9 ranged_attack_power points (0.80 DPS) | yes | Cape of the Brotherhood (5193, +0.00 DPS, sim-verified) [dungeon]; Hide of Lupos (3018, -0.27 DPS) [world]; Bristlebark Cape (14571, -0.27 DPS) [world_drop] |
 | chest | Tunic of Westfall (2041) | The Defias Brotherhood [quest] | 23.6 ranged_attack_power points (1.47 DPS) | yes | Trapper's Leather Armor (252491, -0.54 DPS) [crafted]; Brawler's Leather Armor (252490, -0.67 DPS, sim-verified) [crafted]; Dark Leather Tunic (2317, -0.67 DPS) [crafted] |
 | wrist | Forest Leather Bracers (3202) | World drop [world_drop] | 10.7 ranged_attack_power points (0.67 DPS) | yes | Wolf Bracers (4794, -0.13 DPS) [vendor]; Bravo's Armbands (270015, -0.13 DPS) [quest]; Ratchet Wristwraps (274742, -0.27 DPS) [vendor] |
-| hands | Serpent Gloves (5970) (or Gloves of the Fang (10413)) | Wailing Caverns: Lord Serpentis [dungeon] | 12.9 ranged_attack_power points (0.80 DPS) | yes | Gloves of the Fang (10413, +0.00 DPS) [dungeon]; Forest Leather Gloves (3058, -0.27 DPS) [world_drop]; Nimble Leather Gloves (7285, -0.27 DPS) [crafted] |
+| hands | Gloves of the Fang (10413) | Wailing Caverns: Druid of the Fang [dungeon] | sim-verified (+1.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Forest Leather Gloves (3058, -0.27 DPS) [world_drop]; Nimble Leather Gloves (7285, -0.27 DPS) [crafted]; Serpent Gloves (5970, -1.08 DPS, sim-verified) [dungeon] |
 | waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 ranged_attack_power points (1.12 DPS) | yes | Dusty Belt (279897, -0.39 DPS, sim-verified) [quest]; Deviate Scale Belt (6468, -0.45 DPS) [crafted]; Dark Leather Belt (4249, -0.59 DPS) [crafted] |
 | legs | Leggings of the Fang (10410) (or Brawler's Leather Pants (252500), Trapper's Leather Pants (252501)) | Wailing Caverns: Lord Cobrahn [dungeon] | 19.3 ranged_attack_power points (1.20 DPS) | yes | Brawler's Leather Pants (252500, +0.00 DPS) [crafted]; Trapper's Leather Pants (252501, +0.00 DPS) [crafted]; Bluegill Breeches (3022, -0.13 DPS) [world] |
-| feet | Feet of the Lynx (1121) | World drop [world_drop] | 17.1 ranged_attack_power points (1.07 DPS) | yes | Footpads of the Fang (10411, -0.26 DPS, sim-verified) [dungeon]; Blackened Defias Boots (10402, -0.27 DPS) [dungeon]; Agile Boots (4788, -0.40 DPS) [vendor] |
+| feet | Footpads of the Fang (10411) | Wailing Caverns: Lord Serpentis [dungeon] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Blackened Defias Boots (10402, +0.00 DPS) [dungeon]; Agile Boots (4788, -0.13 DPS) [vendor]; Feet of the Lynx (1121, -0.93 DPS, sim-verified) [world_drop] |
 | finger1 | Signet of the Zhevra (285330) | Swiftmane [world] | 12.9 ranged_attack_power points (0.80 DPS) | yes | Lavishly Jeweled Ring (1156, -0.54 DPS) [dungeon]; The 1 Ring (8350, -0.67 DPS) [world] |
 | finger2 | Protector's Band (20439) | Silverwing Sentinels [rep] | 8.6 ranged_attack_power points (0.54 DPS) | yes | Lavishly Jeweled Ring (1156, +0.00 DPS, sim-verified) [dungeon]; The 1 Ring (8350, -0.40 DPS) [world] |
 | trinket1 | - | - |  |  |  |
@@ -32,7 +32,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | off_hand | - | - |  |  |  |
 | ranged | Ranger Bow (3021) | World drop [world_drop] | 178.4 ranged_attack_power points (11.14 DPS) | yes | Lil Timmy's Peashooter (13136, -2.26 DPS, sim-verified) [world_drop]; Cracked Blacksmith Hammer (285279, -2.40 DPS) [crafted]; Lovingly Crafted Boomstick (4372, -2.64 DPS) [crafted] |
 
-**New at 20:** head: Brawler's Leather Hood; neck: Sentinel's Medallion; shoulder: Serpent's Shoulders; back: Glowing Lizardscale Cloak; chest: Tunic of Westfall; wrist: Forest Leather Bracers; hands: Serpent Gloves; waist: Blackened Defias Belt; legs: Leggings of the Fang; feet: Feet of the Lynx; finger1: Signet of the Zhevra; finger2: Protector's Band; main_hand: Bronze Dory; ranged: Ranger Bow
+**New at 20:** head: Brawler's Leather Hood; neck: Sentinel's Medallion; shoulder: Serpent's Shoulders; back: Glowing Lizardscale Cloak; chest: Tunic of Westfall; wrist: Forest Leather Bracers; hands: Gloves of the Fang; waist: Blackened Defias Belt; legs: Leggings of the Fang; feet: Footpads of the Fang; finger1: Signet of the Zhevra; finger2: Protector's Band; main_hand: Bronze Dory; ranged: Ranger Bow
 
 No-known-source sample (15 of 220, see the JSON for more): 1189 Overseer's Ring; 2664 Spinner Fang; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5255 Quilboar Tomahawk; 5748 Centaur Longbow; 5821 Darkstalker Boots
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 366, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (dwarf, 1000000000000000-0051550001503050-000000000000000000)
 
-Set DPS (verified): 127.2. Weights run: 2.9s. Verify run: 1.8s. 597 eligible items had no known source.
+Set DPS (verified): 127.2. Weights run: 2.8s. Verify run: 1.9s. 597 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.236 ± 0.010, crit=0.843 ± 0.023 per rating point (14 rating = 1%, 11.808 per %), hit=1.047 ± 0.052 per rating point (10 rating = 1%, 10.470 per %), melee_haste=5.185 ± 0.858
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 597, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (dwarf, 5320000100000000-0051550001503050-000000000000000000)
 
-Set DPS (verified): 175.8. Weights run: 3.0s. Verify run: 2.0s. 754 eligible items had no known source.
+Set DPS (verified): 175.8. Weights run: 2.9s. Verify run: 2.0s. 754 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.265 ± 0.012, crit=1.019 ± 0.026 per rating point (14 rating = 1%, 14.259 per %), hit=1.211 ± 0.062 per rating point (10 rating = 1%, 12.108 per %), melee_haste=11.487 ± 0.990
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 754, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (dwarf, 5320000501000000-0051550001503050-500000000000000000)
 
-Set DPS (verified): 230.0. Weights run: 2.9s. Verify run: 2.2s. 1670 eligible items had no known source.
+Set DPS (verified): 230.0. Weights run: 2.8s. Verify run: 2.1s. 1670 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.520 ± 0.020, crit=1.943 ± 0.049 per rating point (14 rating = 1%, 27.198 per %), hit=2.986 ± 0.139 per rating point (10 rating = 1%, 29.861 per %), melee_haste=13.844 ± 1.979
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1670, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (dwarf, 5320000501000000-0051550001503050-500000000000000000)
 
-Set DPS (verified): 623.9. Weights run: 3.0s. Verify run: 2.1s. 1670 eligible items had no known source.
+Set DPS (verified): 623.9. Weights run: 2.9s. Verify run: 2.1s. 1670 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.562 ± 0.021, crit=2.016 ± 0.046 per rating point (14 rating = 1%, 28.221 per %), hit=3.607 ± 0.183 per rating point (10 rating = 1%, 36.067 per %), melee_haste=19.880 ± 2.388
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1670, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (troll, 0000000000000000-0051500000000000-000000000000000000)
 
-Set DPS (verified): 78.8. Weights run: 2.7s. Verify run: 1.7s. 209 eligible items had no known source.
+Set DPS (verified): 78.8. Weights run: 2.6s. Verify run: 1.7s. 209 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.144 ± 0.007, crit=0.538 ± 0.014 per rating point (14 rating = 1%, 7.532 per %), hit=0.819 ± 0.031 per rating point (10 rating = 1%, 8.193 per %), melee_haste=not significant (-0.147 ± 0.610)
 
@@ -202,10 +202,10 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | back | Glowing Lizardscale Cloak (6449) | Wailing Caverns: Skum [dungeon] | 12.9 ranged_attack_power points (0.80 DPS) | yes | Hide of Lupos (3018, -0.27 DPS) [world]; Bristlebark Cape (14571, -0.27 DPS) [world_drop]; Cape of the Brotherhood (5193, -0.52 DPS, sim-verified) [dungeon] |
 | chest | Brawler's Leather Armor (252490) (or Trapper's Leather Armor (252491)) | Leatherworking [crafted] | 15.0 ranged_attack_power points (0.94 DPS) | yes | Trapper's Leather Armor (252491, +0.00 DPS, sim-verified) [crafted]; Dark Leather Tunic (2317, -0.13 DPS) [crafted]; Prospector's Chestpiece (14562, -0.13 DPS) [world_drop] |
 | wrist | Forest Leather Bracers (3202) | World drop [world_drop] | 10.7 ranged_attack_power points (0.67 DPS) | yes | Wolf Bracers (4794, -0.13 DPS) [vendor]; Bristlebark Bindings (14569, -0.27 DPS) [world_drop]; Ratchet Wristwraps (274742, -0.27 DPS) [vendor] |
-| hands | Serpent Gloves (5970) (or Gloves of the Fang (10413)) | Wailing Caverns: Lord Serpentis [dungeon] | 12.9 ranged_attack_power points (0.80 DPS) | yes | Gloves of the Fang (10413, +0.00 DPS) [dungeon]; Forest Leather Gloves (3058, -0.27 DPS) [world_drop]; Nimble Leather Gloves (7285, -0.27 DPS) [crafted] |
+| hands | Gloves of the Fang (10413) | Wailing Caverns: Druid of the Fang [dungeon] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Forest Leather Gloves (3058, -0.27 DPS) [world_drop]; Nimble Leather Gloves (7285, -0.27 DPS) [crafted]; Serpent Gloves (5970, -0.94 DPS, sim-verified) [dungeon] |
 | waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 ranged_attack_power points (1.12 DPS) | yes | Deviate Scale Belt (6468, -0.46 DPS, sim-verified) [crafted]; Guardsman Belt (3429, -0.59 DPS) [world]; Dark Leather Belt (4249, -0.59 DPS) [crafted] |
 | legs | Brawler's Leather Pants (252500) | Leatherworking [crafted] | sim-verified (+0.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Trapper's Leather Pants (252501, +0.00 DPS) [crafted]; Bluegill Breeches (3022, -0.13 DPS) [world]; Leggings of the Fang (10410, -0.80 DPS, sim-verified) [dungeon] |
-| feet | Feet of the Lynx (1121) | World drop [world_drop] | 17.1 ranged_attack_power points (1.07 DPS) | yes | Footpads of the Fang (10411, -0.27 DPS, sim-verified) [dungeon]; Blackened Defias Boots (10402, -0.27 DPS) [dungeon]; Agile Boots (4788, -0.40 DPS) [vendor] |
+| feet | Feet of the Lynx (1121) | World drop [world_drop] | 17.1 ranged_attack_power points (1.07 DPS) | yes | Footpads of the Fang (10411, +0.00 DPS, sim-verified) [dungeon]; Blackened Defias Boots (10402, -0.27 DPS) [dungeon]; Agile Boots (4788, -0.40 DPS) [vendor] |
 | finger1 | Signet of the Zhevra (285330) | Swiftmane [world] | 12.9 ranged_attack_power points (0.80 DPS) | yes | Bounty Hunter's Ring (5351, -0.40 DPS) [quest]; Lavishly Jeweled Ring (1156, -0.54 DPS) [dungeon]; The 1 Ring (8350, -0.67 DPS) [world] |
 | finger2 | Legionnaire's Band (20429) | Warsong Outriders [rep] | 8.6 ranged_attack_power points (0.54 DPS) | yes | Bounty Hunter's Ring (5351, -0.13 DPS) [quest]; Lavishly Jeweled Ring (1156, -0.27 DPS) [dungeon]; The 1 Ring (8350, -0.40 DPS) [world] |
 | trinket1 | - | - |  |  |  |
@@ -214,7 +214,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | off_hand | - | - |  |  |  |
 | ranged | Ranger Bow (3021) | World drop [world_drop] | 178.4 ranged_attack_power points (11.14 DPS) | yes | Outrider's Bow (20437, -0.67 DPS) [pvp]; Lil Timmy's Peashooter (13136, -2.08 DPS, sim-verified) [world_drop]; Cracked Blacksmith Hammer (285279, -2.40 DPS) [crafted] |
 
-**New at 20:** head: Brawler's Leather Hood; neck: Scout's Medallion; shoulder: Slime-encrusted Pads; back: Glowing Lizardscale Cloak; chest: Brawler's Leather Armor; wrist: Forest Leather Bracers; hands: Serpent Gloves; waist: Blackened Defias Belt; legs: Brawler's Leather Pants; feet: Feet of the Lynx; finger1: Signet of the Zhevra; finger2: Legionnaire's Band; main_hand: Bronze Dory; ranged: Ranger Bow
+**New at 20:** head: Brawler's Leather Hood; neck: Scout's Medallion; shoulder: Slime-encrusted Pads; back: Glowing Lizardscale Cloak; chest: Brawler's Leather Armor; wrist: Forest Leather Bracers; hands: Gloves of the Fang; waist: Blackened Defias Belt; legs: Brawler's Leather Pants; feet: Feet of the Lynx; finger1: Signet of the Zhevra; finger2: Legionnaire's Band; main_hand: Bronze Dory; ranged: Ranger Bow
 
 No-known-source sample (15 of 209, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2664 Spinner Fang; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 5255 Quilboar Tomahawk; 5748 Centaur Longbow; 5821 Darkstalker Boots; 5968 Rugged Boots; 6478 Rat Stompers; 7187 VanCleef's Boots
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 352, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (troll, 1000000000000000-0051550001503050-000000000000000000)
 
-Set DPS (verified): 129.4. Weights run: 2.9s. Verify run: 1.8s. 563 eligible items had no known source.
+Set DPS (verified): 129.4. Weights run: 2.8s. Verify run: 1.8s. 563 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.236 ± 0.010, crit=0.843 ± 0.023 per rating point (14 rating = 1%, 11.808 per %), hit=1.047 ± 0.052 per rating point (10 rating = 1%, 10.470 per %), melee_haste=5.185 ± 0.858
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 563, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (troll, 5320000100000000-0051550001503050-000000000000000000)
 
-Set DPS (verified): 180.4. Weights run: 3.0s. Verify run: 1.9s. 713 eligible items had no known source.
+Set DPS (verified): 180.4. Weights run: 2.9s. Verify run: 1.9s. 713 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.265 ± 0.012, crit=1.019 ± 0.026 per rating point (14 rating = 1%, 14.259 per %), hit=1.211 ± 0.062 per rating point (10 rating = 1%, 12.108 per %), melee_haste=11.487 ± 0.990
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 713, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (troll, 5320000501000000-0051550001503050-500000000000000000)
 
-Set DPS (verified): 235.9. Weights run: 2.9s. Verify run: 2.1s. 1650 eligible items had no known source.
+Set DPS (verified): 235.9. Weights run: 2.8s. Verify run: 2.0s. 1650 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.520 ± 0.020, crit=1.943 ± 0.049 per rating point (14 rating = 1%, 27.198 per %), hit=2.986 ± 0.139 per rating point (10 rating = 1%, 29.861 per %), melee_haste=13.844 ± 1.979
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1650, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (troll, 5320000501000000-0051550001503050-500000000000000000)
 
-Set DPS (verified): 637.6. Weights run: 3.0s. Verify run: 2.1s. 1650 eligible items had no known source.
+Set DPS (verified): 637.6. Weights run: 2.9s. Verify run: 2.1s. 1650 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.562 ± 0.021, crit=2.016 ± 0.046 per rating point (14 rating = 1%, 28.221 per %), hit=3.607 ± 0.183 per rating point (10 rating = 1%, 36.067 per %), melee_haste=19.880 ± 2.388
 

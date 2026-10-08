@@ -1,8 +1,8 @@
 {
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T05:14:05Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T06:23:29Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -560,8 +560,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.318072088,
-      "verify_run_seconds": 1.104225606,
+      "weights_run_seconds": 2.303085222,
+      "verify_run_seconds": 1.072082768,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1207,8 +1207,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.318072088,
-      "verify_run_seconds": 1.073388337,
+      "weights_run_seconds": 2.303085222,
+      "verify_run_seconds": 1.107516051,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1932,8 +1932,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.365983686,
-      "verify_run_seconds": 1.198319169,
+      "weights_run_seconds": 2.28024591,
+      "verify_run_seconds": 1.184765438,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2651,8 +2651,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.365983686,
-      "verify_run_seconds": 1.157795891,
+      "weights_run_seconds": 2.28024591,
+      "verify_run_seconds": 1.20422267,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3344,8 +3344,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.86270314,
-      "verify_run_seconds": 0.991973964,
+      "weights_run_seconds": 1.903730732,
+      "verify_run_seconds": 1.003631851,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4030,8 +4030,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.86270314,
-      "verify_run_seconds": 0.994481386,
+      "weights_run_seconds": 1.903730732,
+      "verify_run_seconds": 1.023538922,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4749,8 +4749,8 @@
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 4.9142927830000005,
-      "verify_run_seconds": 1.160873655,
+      "weights_run_seconds": 4.992270637,
+      "verify_run_seconds": 1.167131672,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5468,8 +5468,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 4.9142927830000005,
-      "verify_run_seconds": 1.189693411,
+      "weights_run_seconds": 4.992270637,
+      "verify_run_seconds": 1.185838315,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5714,7 +5714,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -2.1957868709680213
+              "dps_delta": -2.1957868709680217
             }
           ]
         },
@@ -5724,7 +5724,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 30.502633244664732,
+          "score": 30.502633244664736,
           "verified": true,
           "alternatives": [
             {
@@ -5732,7 +5732,7 @@
               "item_name": "Field Marshal's Dreadweave Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.2901135308125757
+              "dps_delta": -1.290113530812577
             },
             {
               "item_id": 19059,
@@ -5747,7 +5747,7 @@
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -3.1461023217167456
+              "dps_delta": -3.1461023217167465
             }
           ]
         },
@@ -6217,8 +6217,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.982247082,
-      "verify_run_seconds": 1.241403628,
+      "weights_run_seconds": 2.032348285,
+      "verify_run_seconds": 1.292061654,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6462,7 +6462,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -2.1957868709680213
+              "dps_delta": -2.1957868709680217
             }
           ]
         },
@@ -6650,7 +6650,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -5.174764750520673
+              "dps_delta": -5.174764750520674
             },
             {
               "item_id": 19090,
@@ -6964,8 +6964,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.982247082,
-      "verify_run_seconds": 1.269291212,
+      "weights_run_seconds": 2.032348285,
+      "verify_run_seconds": 1.256577584,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7252,7 +7252,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 23.690801129176116,
+          "score": 23.69080112917612,
           "verified": true,
           "alternatives": [
             {
@@ -7260,7 +7260,7 @@
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -2.979613640341712
+              "dps_delta": -2.979613640341714
             },
             {
               "item_id": 20697,
@@ -7275,7 +7275,7 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -4.8023176550489
+              "dps_delta": -4.802317655048902
             }
           ]
         },
@@ -7713,8 +7713,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.69127225,
-      "verify_run_seconds": 1.418337072,
+      "weights_run_seconds": 6.654954125,
+      "verify_run_seconds": 1.440303821,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8463,8 +8463,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.69127225,
-      "verify_run_seconds": 1.428712084,
+      "weights_run_seconds": 6.654954125,
+      "verify_run_seconds": 1.420470486,
       "coverage": {
         "back": {
           "eligible": 450,

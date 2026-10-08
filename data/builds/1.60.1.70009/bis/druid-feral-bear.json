@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral-bear",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T04:46:46Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T05:56:46Z",
   "bands": [
     {
       "spec": "druid-feral-bear",
@@ -247,7 +247,7 @@
               "item_name": "Grave Shroud",
               "source_kind": "quest",
               "source": "Abominable Creatures",
-              "dps_delta": -11.323406241290275
+              "dps_delta": -11.323406241290254
             },
             {
               "item_id": 5444,
@@ -367,7 +367,7 @@
           "item_name": "Deviate Scale Belt",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 11.209397900226872,
+          "score": 11.20939790022687,
           "verified": true,
           "alternatives": [
             {
@@ -383,14 +383,14 @@
               "item_name": "Dark Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -60.73747871153685
+              "dps_delta": -60.73747871153681
             },
             {
               "item_id": 3429,
               "item_name": "Guardsman Belt",
               "source_kind": "world",
               "source": "Jailor Eston",
-              "dps_delta": -62.67154998111097
+              "dps_delta": -62.671549981110935
             }
           ]
         },
@@ -625,8 +625,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 3.4951591410000002,
-      "verify_run_seconds": 1.296071622,
+      "weights_run_seconds": 3.431343838,
+      "verify_run_seconds": 1.262544029,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1330,8 +1330,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 3.4951591410000002,
-      "verify_run_seconds": 1.277136016,
+      "weights_run_seconds": 3.431343838,
+      "verify_run_seconds": 1.238799419,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2084,8 +2084,8 @@
         "trinket2: Relentless Raider's Seal",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 3.433667108,
-      "verify_run_seconds": 1.3481771839999999,
+      "weights_run_seconds": 3.313434886,
+      "verify_run_seconds": 1.298289392,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2413,7 +2413,7 @@
               "item_name": "Enduring Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -41.1993429573992
+              "dps_delta": -41.19934295739916
             },
             {
               "item_id": 4643,
@@ -2829,8 +2829,8 @@
         "trinket2: Relentless Raider's Seal",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 3.433667108,
-      "verify_run_seconds": 1.329224609,
+      "weights_run_seconds": 3.313434886,
+      "verify_run_seconds": 1.315824821,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3562,8 +3562,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Ironshod Bludgeon"
       ],
-      "weights_run_seconds": 4.009117729,
-      "verify_run_seconds": 1.4084730890000001,
+      "weights_run_seconds": 3.960001625,
+      "verify_run_seconds": 1.406205503,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4016,7 +4016,7 @@
               "item_name": "Warden's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -51.76412036693953
+              "dps_delta": -51.76412036693943
             },
             {
               "item_id": 6788,
@@ -4297,8 +4297,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Cragwood Maul"
       ],
-      "weights_run_seconds": 4.009117729,
-      "verify_run_seconds": 1.4128940669999999,
+      "weights_run_seconds": 3.960001625,
+      "verify_run_seconds": 1.4031899110000001,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4520,7 +4520,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -183.15573386931203
+              "dps_delta": -183.15573386931231
             },
             {
               "item_id": 9479,
@@ -4576,7 +4576,7 @@
           "item_name": "Fleshhide Shoulders",
           "source": "Razorfen Downs: Glutton",
           "source_kind": "dungeon",
-          "score": 28.323631096629807,
+          "score": 28.32363109662981,
           "verified": true,
           "alternatives": [
             {
@@ -4584,21 +4584,21 @@
               "item_name": "Penance Spaulders",
               "source_kind": "quest",
               "source": "Ribbly Screwspigot",
-              "dps_delta": -24.676349907130916
+              "dps_delta": -24.676349907131055
             },
             {
               "item_id": 17749,
               "item_name": "Phytoskin Spaulders",
               "source_kind": "dungeon",
               "source": "Maraudon: Razorlash",
-              "dps_delta": -34.30273774567778
+              "dps_delta": -34.30273774567792
             },
             {
               "item_id": 220852,
               "item_name": "Knight-Lieutenant's Leather Shoulders",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -57.36665344654476
+              "dps_delta": -57.3666534465449
             }
           ]
         },
@@ -4812,7 +4812,7 @@
               "item_name": "Slitherscale Boots",
               "source_kind": "dungeon",
               "source": "Sunken Temple: Spawn of Hakkar",
-              "dps_delta": -43.991441851660255
+              "dps_delta": -43.99144185166011
             },
             {
               "item_id": 252470,
@@ -5051,8 +5051,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Radiant Staff"
       ],
-      "weights_run_seconds": 4.488816868,
-      "verify_run_seconds": 1.543042173,
+      "weights_run_seconds": 4.405497883,
+      "verify_run_seconds": 1.505788177,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5331,7 +5331,7 @@
           "item_name": "Fleshhide Shoulders",
           "source": "Razorfen Downs: Glutton",
           "source_kind": "dungeon",
-          "score": 28.323631096629807,
+          "score": 28.32363109662981,
           "verified": true,
           "alternatives": [
             {
@@ -5339,21 +5339,21 @@
               "item_name": "Penance Spaulders",
               "source_kind": "quest",
               "source": "Ribbly Screwspigot",
-              "dps_delta": -24.676349907130916
+              "dps_delta": -24.676349907131055
             },
             {
               "item_id": 17749,
               "item_name": "Phytoskin Spaulders",
               "source_kind": "dungeon",
               "source": "Maraudon: Razorlash",
-              "dps_delta": -34.30273774567778
+              "dps_delta": -34.30273774567792
             },
             {
               "item_id": 220853,
               "item_name": "Blood Guard's Leather Shoulders",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -57.36665344654476
+              "dps_delta": -57.3666534465449
             }
           ]
         },
@@ -5788,8 +5788,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Relentless Raider's Seal"
       ],
-      "weights_run_seconds": 4.488816868,
-      "verify_run_seconds": 1.53926253,
+      "weights_run_seconds": 4.405497883,
+      "verify_run_seconds": 1.5174061189999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6003,10 +6003,10 @@
           "item_name": "Feralheart Faceguard",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 24571.17777126005,
+          "sim_dps": 24764.842366276866,
           "verified": true,
-          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +274.0 DPS (24571.2 vs 24297.2 set DPS)",
-          "dps_delta": 274.01536321417734,
+          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +467.7 DPS (24764.8 vs 24297.2 set DPS)",
+          "dps_delta": 467.6799582309941,
           "alternatives": [
             {
               "item_id": 231689,
@@ -6027,7 +6027,7 @@
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -274.01536321417734,
+              "dps_delta": -467.6799582309941,
               "verified": true
             }
           ]
@@ -6085,7 +6085,7 @@
               "item_name": "Feralheart Pauldrons",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -675.0947132684269,
+              "dps_delta": -474.3779982074302,
               "verified": true
             },
             {
@@ -6111,7 +6111,7 @@
               "item_name": "Stoneskin Gargoyle Cape",
               "source_kind": "dungeon",
               "source": "Stratholme: Stonespine",
-              "dps_delta": -32.90187089556008
+              "dps_delta": -32.901870895560634
             },
             {
               "item_id": 18495,
@@ -6200,7 +6200,7 @@
           "item_name": "Feralheart Grips",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 52.921006636759415,
+          "score": 52.9210066367594,
           "verified": true,
           "alternatives": [
             {
@@ -6215,7 +6215,7 @@
               "item_name": "Marshal's Dragonhide Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -335.00674886662193
+              "dps_delta": -335.00674886662085
             },
             {
               "item_id": 272099,
@@ -6256,7 +6256,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -774.1875290843113
+              "dps_delta": -774.1875290843108
             }
           ]
         },
@@ -6310,19 +6310,19 @@
               "dps_delta": -375.8437469285858
             },
             {
-              "item_id": 226803,
-              "item_name": "Feralheart Treads",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -567.5633358898158,
-              "verified": true
-            },
-            {
               "item_id": 21532,
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
               "dps_delta": -856.3768218042406
+            },
+            {
+              "item_id": 226803,
+              "item_name": "Feralheart Treads",
+              "source_kind": "vendor",
+              "source": "Mokvar",
+              "dps_delta": -915.4521594124999,
+              "verified": true
             }
           ]
         },
@@ -6346,7 +6346,7 @@
               "item_name": "Myrmidon's Signet",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -291.3757362161539
+              "dps_delta": -291.3757362161536
             },
             {
               "item_id": 11669,
@@ -6378,7 +6378,7 @@
               "item_name": "Myrmidon's Signet",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -197.5045698412683
+              "dps_delta": -197.50456984126802
             },
             {
               "item_id": 11669,
@@ -6509,7 +6509,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 137.61317451963404,
+      "set_dps": 138.14045668272817,
       "no_source_count": 1449,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -6544,8 +6544,8 @@
         "trinket2: Defender's Grip Stabilizer",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.558811529,
-      "verify_run_seconds": 1.736017556,
+      "weights_run_seconds": 4.438162346,
+      "verify_run_seconds": 1.677643703,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6626,12 +6626,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 403.33641781996937,
-        "tmi": 48.09110640996631,
-        "chance_of_death": 0.13866666666666666,
-        "tps": 258.2317119014858,
-        "effective_health": 24692.275009110053,
-        "dps": 137.61317451963404
+        "dtps": 403.55932089012936,
+        "tmi": 48.05001856509922,
+        "chance_of_death": 0.1393333333333333,
+        "tps": 259.3697288256941,
+        "effective_health": 24678.636409717463,
+        "dps": 138.14045668272817
       }
     },
     {
@@ -6759,10 +6759,10 @@
           "item_name": "Feralheart Faceguard",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 26086.586557991533,
+          "sim_dps": 26272.54373252259,
           "verified": true,
-          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +268.9 DPS (26086.6 vs 25817.6 set DPS)",
-          "dps_delta": 268.9424499203742,
+          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +454.9 DPS (26272.5 vs 25817.6 set DPS)",
+          "dps_delta": 454.899624451431,
           "alternatives": [
             {
               "item_id": 231675,
@@ -6783,7 +6783,7 @@
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -268.9424499203742,
+              "dps_delta": -454.899624451431,
               "verified": true
             }
           ]
@@ -6841,7 +6841,7 @@
               "item_name": "Feralheart Pauldrons",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -657.1948356153116,
+              "dps_delta": -649.2953400967672,
               "verified": true
             },
             {
@@ -6988,7 +6988,7 @@
           "item_name": "Feralheart Waistguard",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 47.67644930225809,
+          "score": 47.676449302258085,
           "verified": true,
           "alternatives": [
             {
@@ -7004,14 +7004,14 @@
               "item_name": "Hivethrasher's Girdle",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -772.9165864999534
+              "dps_delta": -772.9165864999528
             },
             {
               "item_id": 20216,
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -774.1875290843108
+              "dps_delta": -774.1875290843102
             }
           ]
         },
@@ -7069,7 +7069,7 @@
               "item_name": "Feralheart Treads",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -639.8972442105187,
+              "dps_delta": -491.7587337246914,
               "verified": true
             },
             {
@@ -7126,21 +7126,21 @@
               "item_name": "Band of Resolution",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -93.87116637488559
+              "dps_delta": -93.87116637488586
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -171.1029194358578
+              "dps_delta": -171.1029194358581
             },
             {
               "item_id": 272409,
               "item_name": "Ring of Awareness",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -238.7773525523684
+              "dps_delta": -238.77735255236868
             }
           ]
         },
@@ -7261,7 +7261,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 139.94395986486086,
+      "set_dps": 140.42429711239473,
       "no_source_count": 1446,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -7296,8 +7296,8 @@
         "trinket2: Vigilance Charm",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.558811529,
-      "verify_run_seconds": 1.762903059,
+      "weights_run_seconds": 4.438162346,
+      "verify_run_seconds": 1.621175299,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7378,12 +7378,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 399.1838311146803,
-        "tmi": 45.23421497177679,
-        "chance_of_death": 0.07933333333333334,
-        "tps": 262.4126238067962,
-        "effective_health": 25828.872899759153,
-        "dps": 139.94395986486086
+        "dtps": 398.60453521250855,
+        "tmi": 45.195806192286334,
+        "chance_of_death": 0.07566666666666666,
+        "tps": 263.46013331629445,
+        "effective_health": 25866.41025547581,
+        "dps": 140.42429711239473
       }
     },
     {
@@ -7511,10 +7511,10 @@
           "item_name": "Feralheart Faceguard",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 42548.20008063215,
+          "sim_dps": 42801.104896913734,
           "verified": true,
-          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +468.7 DPS (42548.2 vs 42079.5 set DPS)",
-          "dps_delta": 468.71934346407215,
+          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +721.6 DPS (42801.1 vs 42079.5 set DPS)",
+          "dps_delta": 721.6241597456537,
           "alternatives": [
             {
               "item_id": 231689,
@@ -7535,7 +7535,7 @@
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -468.71934346407215,
+              "dps_delta": -721.6241597456537,
               "verified": true
             }
           ]
@@ -8011,7 +8011,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 286.82641139761824,
+      "set_dps": 287.08624295960794,
       "no_source_count": 1449,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -8046,8 +8046,8 @@
         "trinket2: Vigilance Charm",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.671570578,
-      "verify_run_seconds": 1.702812308,
+      "weights_run_seconds": 4.553513351,
+      "verify_run_seconds": 1.722825002,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -8128,12 +8128,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 390.0938007988499,
-        "tmi": 34.71853317701441,
-        "chance_of_death": 0.025333333333333333,
-        "tps": 518.1509041237429,
-        "effective_health": 33817.94000054485,
-        "dps": 286.82641139761824
+        "dtps": 390.70613269068036,
+        "tmi": 34.80014096692819,
+        "chance_of_death": 0.026,
+        "tps": 518.6394384717528,
+        "effective_health": 33764.93903269278,
+        "dps": 287.08624295960794
       }
     },
     {
@@ -8262,8 +8262,8 @@
           "source": "Mokvar",
           "source_kind": "vendor",
           "verified": true,
-          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +986.7 DPS over it",
-          "dps_delta": 986.6788887856383,
+          "swap_note": "beat the scored pick Outlaw's Collar (id 279253) in the sim: +1296.0 DPS over it",
+          "dps_delta": 1295.953664915316,
           "alternatives": [
             {
               "item_id": 231675,
@@ -8284,7 +8284,7 @@
               "item_name": "Outlaw's Collar",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -986.6788887856383,
+              "dps_delta": -1295.953664915316,
               "verified": true
             }
           ]
@@ -8765,7 +8765,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 285.8613288033824,
+      "set_dps": 286.97158208755116,
       "no_source_count": 1446,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -8800,8 +8800,8 @@
         "trinket2: Defender's Grip Stabilizer",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.671570578,
-      "verify_run_seconds": 1.748056176,
+      "weights_run_seconds": 4.553513351,
+      "verify_run_seconds": 1.6919989119999999,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8882,12 +8882,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 383.8653798328146,
-        "tmi": 30.756780079006028,
-        "chance_of_death": 0.0026666666666666666,
-        "tps": 515.2312993997398,
-        "effective_health": 35989.386939548705,
-        "dps": 285.8613288033824
+        "dtps": 384.74076829364765,
+        "tmi": 30.805991075450887,
+        "chance_of_death": 0.004,
+        "tps": 517.7156673196579,
+        "effective_health": 35907.50142952318,
+        "dps": 286.97158208755116
       }
     }
   ],

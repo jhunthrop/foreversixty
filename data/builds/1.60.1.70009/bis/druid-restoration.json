@@ -1,8 +1,8 @@
 {
   "spec": "druid-restoration",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T04:48:55Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T05:58:52Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -561,8 +561,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 5.490804457,
-      "verify_run_seconds": 2.548768407,
+      "weights_run_seconds": 5.326965454,
+      "verify_run_seconds": 2.489734823,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1201,8 +1201,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 5.490804457,
-      "verify_run_seconds": 2.527520597,
+      "weights_run_seconds": 5.326965454,
+      "verify_run_seconds": 2.469839737,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1886,8 +1886,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Defective Samophlange"
       ],
-      "weights_run_seconds": 7.801032751,
-      "verify_run_seconds": 3.478759903,
+      "weights_run_seconds": 7.655533694,
+      "verify_run_seconds": 3.394765586,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2568,8 +2568,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 7.801032751,
-      "verify_run_seconds": 3.442666985,
+      "weights_run_seconds": 7.655533694,
+      "verify_run_seconds": 3.42036547,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3251,8 +3251,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 8.694527299,
-      "verify_run_seconds": 3.880395832,
+      "weights_run_seconds": 8.627048415,
+      "verify_run_seconds": 3.792166179,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3933,8 +3933,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 8.694527299,
-      "verify_run_seconds": 3.893524927,
+      "weights_run_seconds": 8.627048415,
+      "verify_run_seconds": 3.7414871610000002,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4248,7 +4248,7 @@
               "item_name": "Forest's Embrace",
               "source_kind": "quest",
               "source": "A Better Ingredient",
-              "dps_delta": -2.174724238981109
+              "dps_delta": -2.1747242389811077
             },
             {
               "item_id": 10806,
@@ -4315,7 +4315,7 @@
               "item_name": "Gilded Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.380793560703819
+              "dps_delta": -2.3807935607038173
             },
             {
               "item_id": 254075,
@@ -4456,7 +4456,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -1.1373969032590097
+              "dps_delta": -1.1373969032590099
             }
           ]
         },
@@ -4481,7 +4481,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.5875139430446666
+              "dps_delta": -0.587513943044667
             },
             {
               "item_id": 11868,
@@ -4637,8 +4637,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 8.828276582,
-      "verify_run_seconds": 3.703869907,
+      "weights_run_seconds": 8.677215058,
+      "verify_run_seconds": 3.579844508,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5339,8 +5339,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 8.828276582,
-      "verify_run_seconds": 3.69658607,
+      "weights_run_seconds": 8.677215058,
+      "verify_run_seconds": 3.590864725,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5520,7 +5520,7 @@
               "item_name": "Feralheart Headdress",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -3.2598459488668947
+              "dps_delta": -3.2598459488668916
             },
             {
               "item_id": 16720,
@@ -5567,34 +5567,35 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 227888,
-          "item_name": "Argent Elite Shoulders",
-          "source": "Argent Quartermaster Hasana",
+          "item_id": 226785,
+          "item_name": "Feralheart Mantle",
+          "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 142.95269061456074,
           "verified": true,
+          "swap_note": "beat the scored pick Argent Elite Shoulders (id 227888) in the sim: +2.1 DPS over it",
+          "dps_delta": 2.140749300264247,
           "alternatives": [
-            {
-              "item_id": 226785,
-              "item_name": "Feralheart Mantle",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -1.4924828129919945,
-              "verified": true
-            },
             {
               "item_id": 227201,
               "item_name": "Lieutenant Commander's Dragonhide Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -2.3247137018989337
+              "dps_delta": 0
             },
             {
               "item_id": 231705,
               "item_name": "Field Marshal's Dragonhide Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.380685461078458
+              "dps_delta": 0
+            },
+            {
+              "item_id": 227888,
+              "item_name": "Argent Elite Shoulders",
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana",
+              "dps_delta": -2.140749300264247,
+              "verified": true
             }
           ]
         },
@@ -5637,7 +5638,6 @@
           "item_name": "Embrace of the Wind Serpent",
           "source": "Avatar of Hakkar",
           "source_kind": "world",
-          "sim_dps": 168.0401555349221,
           "verified": true,
           "alternatives": [
             {
@@ -5670,7 +5670,6 @@
           "item_name": "Bracers of Hope",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 168.0401555349221,
           "verified": true,
           "alternatives": [
             {
@@ -5732,33 +5731,34 @@
         },
         {
           "slot": "waist",
-          "item_id": 272398,
-          "item_name": "Caretaker's Cord",
-          "source": "Pix Xizzix",
+          "item_id": 226780,
+          "item_name": "Feralheart Cord",
+          "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 125.62985699900929,
           "verified": true,
+          "swap_note": "beat the scored pick Caretaker's Cord (id 272398) in the sim: +3.8 DPS over it",
+          "dps_delta": 3.8471762682251835,
           "alternatives": [
             {
               "item_id": 279252,
               "item_name": "Elderwild Waistcord",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.8821175793876628
+              "dps_delta": -0.717537922135588
             },
             {
               "item_id": 19047,
               "item_name": "Wisdom of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.5087660140785983
+              "dps_delta": -1.344186356826522
             },
             {
-              "item_id": 226780,
-              "item_name": "Feralheart Cord",
+              "item_id": 272398,
+              "item_name": "Caretaker's Cord",
               "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -4.174480003282156,
+              "source": "Pix Xizzix",
+              "dps_delta": -3.8471762682251835,
               "verified": true
             }
           ]
@@ -5835,7 +5835,6 @@
           "item_name": "The Postmaster's Seal",
           "source": "Stratholme: Postmaster Malown",
           "source_kind": "dungeon",
-          "sim_dps": 168.0401555349221,
           "verified": true,
           "alternatives": [
             {
@@ -5868,7 +5867,6 @@
           "item_name": "Emerald Flame Ring",
           "source": "Dire Maul: Prince Tortheldrin",
           "source_kind": "dungeon",
-          "sim_dps": 168.0401555349221,
           "verified": true,
           "alternatives": [
             {
@@ -5901,9 +5899,8 @@
           "item_name": "Darkspear Voodoo Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 168.0401555349221,
           "verified": true,
-          "swap_note": "confirmed by the sim against Royal Seal of Eldre'Thalas (id 18470): kept the pick, +11.7 DPS (168.0 vs 156.3 set DPS)",
+          "swap_note": "confirmed by the sim against Royal Seal of Eldre'Thalas (id 18470): kept the pick, +11.7 DPS over it",
           "dps_delta": 11.725622741797991,
           "alternatives": [
             {
@@ -5935,7 +5932,6 @@
           "item_name": "Royal Seal of Eldre'Thalas",
           "source": "The Emerald Dream...",
           "source_kind": "quest",
-          "sim_dps": 168.0401555349221,
           "verified": true,
           "alternatives": [
             {
@@ -5968,7 +5964,6 @@
           "item_name": "Dancing Sliver",
           "source": "Dawn's Gambit",
           "source_kind": "quest",
-          "sim_dps": 168.0401555349221,
           "verified": true,
           "alternatives": [
             {
@@ -6015,7 +6010,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 318.1457171999931,
+      "set_dps": 324.6850266780094,
       "no_source_count": 1449,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -6037,10 +6032,10 @@
       "new_at_band": [
         "head: Living Crown",
         "neck: Wavefront Necklace",
-        "shoulder: Argent Elite Shoulders",
+        "shoulder: Feralheart Mantle",
         "back: Frostweaver Cape",
         "wrist: Bracers of Hope",
-        "waist: Caretaker's Cord",
+        "waist: Feralheart Cord",
         "legs: Leggings of Arcana",
         "feet: Feralheart Sandals",
         "finger1: The Postmaster's Seal",
@@ -6048,8 +6043,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Dancing Sliver"
       ],
-      "weights_run_seconds": 9.048075569,
-      "verify_run_seconds": 3.775558058,
+      "weights_run_seconds": 8.828561674,
+      "verify_run_seconds": 3.895227996,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6128,11 +6123,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 318.1457171999931,
-        "raw_hps": 332.53604844767403,
-        "overheal_pct": 0.04327450005753375,
-        "mana_lasts_sec": 218.17600000000002,
-        "hpm": 4.521378666474882
+        "hps": 324.6850266780094,
+        "raw_hps": 338.96138232302815,
+        "overheal_pct": 0.04211794142205094,
+        "mana_lasts_sec": 227.75530000000003,
+        "hpm": 4.452158279181221
       }
     },
     {
@@ -6247,9 +6242,8 @@
           "item_name": "Lady Maye's Pendant",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 166.90709304790113,
           "verified": true,
-          "swap_note": "beat the scored pick Wavefront Necklace (id 20685) in the sim: +5.1 DPS (166.9 vs 161.8 set DPS)",
+          "swap_note": "beat the scored pick Wavefront Necklace (id 20685) in the sim: +5.1 DPS over it",
           "dps_delta": 5.0762006990698865,
           "alternatives": [
             {
@@ -6278,34 +6272,35 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 227888,
-          "item_name": "Argent Elite Shoulders",
-          "source": "Argent Quartermaster Hasana",
+          "item_id": 226785,
+          "item_name": "Feralheart Mantle",
+          "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 142.95269061456074,
           "verified": true,
+          "swap_note": "beat the scored pick Argent Elite Shoulders (id 227888) in the sim: +3.8 DPS over it",
+          "dps_delta": 3.8291984002628965,
           "alternatives": [
-            {
-              "item_id": 226785,
-              "item_name": "Feralheart Mantle",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": 0,
-              "verified": true
-            },
             {
               "item_id": 227207,
               "item_name": "Champion's Dragonhide Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -2.3247137018989337
+              "dps_delta": 0
             },
             {
               "item_id": 231672,
               "item_name": "Warlord's Dragonhide Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.380685461078458
+              "dps_delta": 0
+            },
+            {
+              "item_id": 227888,
+              "item_name": "Argent Elite Shoulders",
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana",
+              "dps_delta": -3.8291984002628965,
+              "verified": true
             }
           ]
         },
@@ -6355,7 +6350,7 @@
               "item_name": "Mooncloth Vest",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.4462867814386486
+              "dps_delta": -1.4462867814386458
             },
             {
               "item_id": 13314,
@@ -6441,34 +6436,35 @@
         },
         {
           "slot": "waist",
-          "item_id": 272398,
-          "item_name": "Caretaker's Cord",
-          "source": "Pix Xizzix",
+          "item_id": 226780,
+          "item_name": "Feralheart Cord",
+          "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 125.62985699900929,
           "verified": true,
+          "swap_note": "beat the scored pick Caretaker's Cord (id 272398) in the sim: +6.9 DPS over it",
+          "dps_delta": 6.940459636558529,
           "alternatives": [
-            {
-              "item_id": 226780,
-              "item_name": "Feralheart Cord",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": 0,
-              "verified": true
-            },
             {
               "item_id": 279252,
               "item_name": "Elderwild Waistcord",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.8821175793876628
+              "dps_delta": -0.7175379221355894
             },
             {
               "item_id": 19047,
               "item_name": "Wisdom of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.5087660140785983
+              "dps_delta": -1.3441863568265247
+            },
+            {
+              "item_id": 272398,
+              "item_name": "Caretaker's Cord",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -6.940459636558529,
+              "verified": true
             }
           ]
         },
@@ -6715,7 +6711,7 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 314.57749346519404,
+      "set_dps": 320.33370979718165,
       "no_source_count": 1446,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -6737,10 +6733,10 @@
       "new_at_band": [
         "head: Living Crown",
         "neck: Lady Maye's Pendant",
-        "shoulder: Argent Elite Shoulders",
+        "shoulder: Feralheart Mantle",
         "back: Frostweaver Cape",
         "wrist: Bracers of Hope",
-        "waist: Caretaker's Cord",
+        "waist: Feralheart Cord",
         "legs: Leggings of Arcana",
         "feet: Feralheart Sandals",
         "finger1: The Postmaster's Seal",
@@ -6748,8 +6744,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Dancing Sliver"
       ],
-      "weights_run_seconds": 9.048075569,
-      "verify_run_seconds": 3.982095986,
+      "weights_run_seconds": 8.828561674,
+      "verify_run_seconds": 3.907947793,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6828,11 +6824,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 314.57749346519404,
-        "raw_hps": 328.75870134979425,
-        "overheal_pct": 0.04313561230889407,
-        "mana_lasts_sec": 219.66144999999995,
-        "hpm": 4.4506540512373
+        "hps": 320.33370979718165,
+        "raw_hps": 334.3910100070027,
+        "overheal_pct": 0.04203851117147761,
+        "mana_lasts_sec": 229.50680000000003,
+        "hpm": 4.371316914038326
       }
     },
     {
@@ -7086,7 +7082,7 @@
               "item_name": "Bracers of Mending",
               "source_kind": "dungeon",
               "source": "Dire Maul: Revanchion",
-              "dps_delta": -0.25433458702933465
+              "dps_delta": -0.25433458702933626
             },
             {
               "item_id": 13208,
@@ -7282,14 +7278,14 @@
               "item_name": "Emerald Flame Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Prince Tortheldrin",
-              "dps_delta": -0.2813693847109068
+              "dps_delta": -0.28136938471090517
             },
             {
               "item_id": 272407,
               "item_name": "Blessed Band of Light",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.416185178097305
+              "dps_delta": -0.4161851780973034
             },
             {
               "item_id": 11669,
@@ -7454,8 +7450,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Redemption"
       ],
-      "weights_run_seconds": 6.737628365,
-      "verify_run_seconds": 3.063356004,
+      "weights_run_seconds": 6.543274057,
+      "verify_run_seconds": 3.05587698,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -7986,14 +7982,14 @@
               "item_name": "Emerald Flame Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Prince Tortheldrin",
-              "dps_delta": -0.2813693847109068
+              "dps_delta": -0.28136938471090517
             },
             {
               "item_id": 272407,
               "item_name": "Blessed Band of Light",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.416185178097305
+              "dps_delta": -0.4161851780973034
             },
             {
               "item_id": 11669,
@@ -8158,8 +8154,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Redemption"
       ],
-      "weights_run_seconds": 6.737628365,
-      "verify_run_seconds": 3.154507301,
+      "weights_run_seconds": 6.543274057,
+      "verify_run_seconds": 3.1258137599999998,
       "coverage": {
         "back": {
           "eligible": 451,

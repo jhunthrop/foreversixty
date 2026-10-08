@@ -1,8 +1,8 @@
 {
   "spec": "priest-holy",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T05:04:30Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T06:14:03Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -575,8 +575,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 10.087973937,
-      "verify_run_seconds": 4.739645715,
+      "weights_run_seconds": 9.845688621,
+      "verify_run_seconds": 4.716113047,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1227,8 +1227,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 10.087973937,
-      "verify_run_seconds": 4.760452083,
+      "weights_run_seconds": 9.845688621,
+      "verify_run_seconds": 4.645349255,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1914,8 +1914,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 9.965522627,
-      "verify_run_seconds": 4.823855389,
+      "weights_run_seconds": 9.779517912,
+      "verify_run_seconds": 4.740467635,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2329,7 +2329,7 @@
               "item_name": "Novice Ardent's Sash",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.21289085660436582
+              "dps_delta": -0.21289085660436566
             },
             {
               "item_id": 14406,
@@ -2599,8 +2599,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 9.965522627,
-      "verify_run_seconds": 4.893069499,
+      "weights_run_seconds": 9.779517912,
+      "verify_run_seconds": 4.852232559,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3321,8 +3321,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 10.290868513,
-      "verify_run_seconds": 5.072973675,
+      "weights_run_seconds": 10.130656416,
+      "verify_run_seconds": 4.979637358,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4049,8 +4049,8 @@
         "off_hand: Aurora Sphere",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 10.290868513,
-      "verify_run_seconds": 5.135139276,
+      "weights_run_seconds": 10.130656416,
+      "verify_run_seconds": 5.075818814,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4364,7 +4364,7 @@
               "item_name": "Knight's Satin Armor",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.9444211559473625
+              "dps_delta": -0.9444211559473619
             },
             {
               "item_id": 8113,
@@ -4781,8 +4781,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.585481627,
-      "verify_run_seconds": 5.092782521,
+      "weights_run_seconds": 10.314641475,
+      "verify_run_seconds": 4.977847172,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5510,8 +5510,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.585481627,
-      "verify_run_seconds": 5.1982140470000004,
+      "weights_run_seconds": 10.314641475,
+      "verify_run_seconds": 5.018798572,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5860,7 +5860,7 @@
               "item_name": "Virtuous Bracers",
               "source_kind": "quest",
               "source": "An Earnest Proposition",
-              "dps_delta": -0.4045969163403315
+              "dps_delta": -0.40459691634033257
             },
             {
               "item_id": 254061,
@@ -5927,7 +5927,7 @@
               "item_name": "Virtuous Belt",
               "source_kind": "quest",
               "source": "Just Compensation",
-              "dps_delta": -1.446006240998903
+              "dps_delta": -1.446006240998904
             },
             {
               "item_id": 254081,
@@ -5993,7 +5993,7 @@
               "item_name": "Virtuous Sandals",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -0.03397701102193669
+              "dps_delta": -0.0339770110219356
             },
             {
               "item_id": 227862,
@@ -6241,8 +6241,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.250497146,
-      "verify_run_seconds": 4.070546102,
+      "weights_run_seconds": 9.150466796,
+      "verify_run_seconds": 4.012453571,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6596,7 +6596,7 @@
               "item_name": "Nethergeld Cuffs",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.9242430720024869
+              "dps_delta": -0.9242430720024875
             }
           ]
         },
@@ -6655,7 +6655,7 @@
               "item_name": "Virtuous Belt",
               "source_kind": "quest",
               "source": "Just Compensation",
-              "dps_delta": -1.446006240998903
+              "dps_delta": -1.446006240998904
             },
             {
               "item_id": 254081,
@@ -6721,7 +6721,7 @@
               "item_name": "Virtuous Sandals",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -0.03397701102193669
+              "dps_delta": -0.0339770110219356
             },
             {
               "item_id": 227862,
@@ -6969,8 +6969,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.250497146,
-      "verify_run_seconds": 4.135397291,
+      "weights_run_seconds": 9.150466796,
+      "verify_run_seconds": 4.111721525,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7335,7 +7335,7 @@
           "item_name": "Desert Bloom Gloves",
           "source": "Armaments of War",
           "source_kind": "quest",
-          "score": 61.7467567787444,
+          "score": 61.74675677874439,
           "verified": true,
           "alternatives": [
             {
@@ -7343,21 +7343,21 @@
               "item_name": "Hands of the Exalted Herald",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Princess Moira Bronzebeard ",
-              "dps_delta": -0.5953483621969942
+              "dps_delta": -0.5953483621969919
             },
             {
               "item_id": 226950,
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -2.1311978801443576
+              "dps_delta": -2.1311978801443554
             },
             {
               "item_id": 272097,
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -2.6649543335246517
+              "dps_delta": -2.6649543335246495
             }
           ]
         },
@@ -7473,7 +7473,7 @@
               "item_name": "Band of Piety",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.2634767347115246
+              "dps_delta": -1.2634767347115268
             },
             {
               "item_id": 272407,
@@ -7505,7 +7505,7 @@
               "item_name": "Band of Piety",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -0.4525943710564101
+              "dps_delta": -0.45259437105641237
             },
             {
               "item_id": 272407,
@@ -7698,8 +7698,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.343797915,
-      "verify_run_seconds": 2.179593217,
+      "weights_run_seconds": 6.102210358,
+      "verify_run_seconds": 2.148787697,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8055,7 +8055,7 @@
               "item_name": "Nethergeld Cuffs",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.120370756587274
+              "dps_delta": -3.1203707565872763
             }
           ]
         },
@@ -8065,7 +8065,7 @@
           "item_name": "Desert Bloom Gloves",
           "source": "Armaments of War",
           "source_kind": "quest",
-          "score": 61.7467567787444,
+          "score": 61.74675677874439,
           "verified": true,
           "alternatives": [
             {
@@ -8073,21 +8073,21 @@
               "item_name": "Hands of the Exalted Herald",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Princess Moira Bronzebeard ",
-              "dps_delta": -0.5953483621969965
+              "dps_delta": -0.5953483621969919
             },
             {
               "item_id": 226950,
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -2.1311978801443576
+              "dps_delta": -2.1311978801443554
             },
             {
               "item_id": 272097,
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -2.6649543335246517
+              "dps_delta": -2.6649543335246495
             }
           ]
         },
@@ -8204,7 +8204,7 @@
               "item_name": "Band of Piety",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.2634767347115246
+              "dps_delta": -1.2634767347115268
             },
             {
               "item_id": 272407,
@@ -8236,7 +8236,7 @@
               "item_name": "Band of Piety",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -0.4525943710564101
+              "dps_delta": -0.45259437105641237
             },
             {
               "item_id": 272407,
@@ -8429,8 +8429,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.343797915,
-      "verify_run_seconds": 2.294838232,
+      "weights_run_seconds": 6.102210358,
+      "verify_run_seconds": 2.284345278,
       "coverage": {
         "back": {
           "eligible": 450,

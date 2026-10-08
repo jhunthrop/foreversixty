@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T04:45:18Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T05:55:20Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -531,8 +531,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.265345214,
-      "verify_run_seconds": 1.554013869,
+      "weights_run_seconds": 3.254660866,
+      "verify_run_seconds": 1.572242669,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1142,8 +1142,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 3.265345214,
-      "verify_run_seconds": 1.527583114,
+      "weights_run_seconds": 3.254660866,
+      "verify_run_seconds": 1.485482119,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1782,8 +1782,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 3.60317224,
-      "verify_run_seconds": 1.800185183,
+      "weights_run_seconds": 3.488861596,
+      "verify_run_seconds": 1.758479387,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2423,8 +2423,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 3.60317224,
-      "verify_run_seconds": 1.7819257670000002,
+      "weights_run_seconds": 3.488861596,
+      "verify_run_seconds": 1.770746923,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3067,8 +3067,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.872828095,
-      "verify_run_seconds": 1.755712927,
+      "weights_run_seconds": 3.794716753,
+      "verify_run_seconds": 1.718269877,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3710,8 +3710,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.872828095,
-      "verify_run_seconds": 1.773535622,
+      "weights_run_seconds": 3.794716753,
+      "verify_run_seconds": 1.7339863599999998,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4372,8 +4372,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.871120663,
-      "verify_run_seconds": 1.9066220710000001,
+      "weights_run_seconds": 3.773194149,
+      "verify_run_seconds": 1.847392187,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5032,8 +5032,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 3.871120663,
-      "verify_run_seconds": 1.895090652,
+      "weights_run_seconds": 3.773194149,
+      "verify_run_seconds": 1.872257268,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5754,8 +5754,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.749928026,
-      "verify_run_seconds": 1.9579371920000002,
+      "weights_run_seconds": 3.65044051,
+      "verify_run_seconds": 1.957158658,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6477,8 +6477,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.749928026,
-      "verify_run_seconds": 1.986545086,
+      "weights_run_seconds": 3.65044051,
+      "verify_run_seconds": 1.895544633,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6789,7 +6789,7 @@
               "item_name": "Field Marshal's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.4004522729021645
+              "dps_delta": -3.4004522729021667
             },
             {
               "item_id": 252483,
@@ -6895,7 +6895,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -2.46774564975465
+              "dps_delta": -2.4677456497546477
             },
             {
               "item_id": 19044,
@@ -7196,8 +7196,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.462864584,
-      "verify_run_seconds": 1.925630467,
+      "weights_run_seconds": 3.348151022,
+      "verify_run_seconds": 1.883028519,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -7507,7 +7507,7 @@
               "item_name": "Warlord's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.4004522729021667
+              "dps_delta": -3.4004522729021645
             },
             {
               "item_id": 252483,
@@ -7735,14 +7735,14 @@
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -0.1277281280270511
+              "dps_delta": -0.12772812802705225
             },
             {
               "item_id": 18500,
               "item_name": "Tarnished Elven Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -0.8366089048181344
+              "dps_delta": -0.8366089048181355
             },
             {
               "item_id": 11669,
@@ -7916,8 +7916,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.462864584,
-      "verify_run_seconds": 1.892304912,
+      "weights_run_seconds": 3.348151022,
+      "verify_run_seconds": 1.8249114880000001,
       "coverage": {
         "back": {
           "eligible": 451,

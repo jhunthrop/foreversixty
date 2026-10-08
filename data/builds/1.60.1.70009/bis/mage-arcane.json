@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T04:52:52Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T06:02:47Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -551,8 +551,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.984502987,
-      "verify_run_seconds": 0.669091281,
+      "weights_run_seconds": 1.009729981,
+      "verify_run_seconds": 0.666923943,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1195,8 +1195,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.984502987,
-      "verify_run_seconds": 0.742453304,
+      "weights_run_seconds": 1.009729981,
+      "verify_run_seconds": 0.729623849,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1909,8 +1909,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.279158991,
-      "verify_run_seconds": 0.830096339,
+      "weights_run_seconds": 1.281360219,
+      "verify_run_seconds": 0.803335665,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2629,8 +2629,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.279158991,
-      "verify_run_seconds": 0.814862279,
+      "weights_run_seconds": 1.281360219,
+      "verify_run_seconds": 0.808507012,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3317,8 +3317,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.326780252,
-      "verify_run_seconds": 0.819047097,
+      "weights_run_seconds": 1.368839161,
+      "verify_run_seconds": 0.809049681,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3999,8 +3999,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.326780252,
-      "verify_run_seconds": 0.793914544,
+      "weights_run_seconds": 1.368839161,
+      "verify_run_seconds": 0.801560143,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4712,8 +4712,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.29104172,
-      "verify_run_seconds": 0.926351465,
+      "weights_run_seconds": 1.318895154,
+      "verify_run_seconds": 0.919261478,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5415,8 +5415,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.29104172,
-      "verify_run_seconds": 0.940568499,
+      "weights_run_seconds": 1.318895154,
+      "verify_run_seconds": 0.910464963,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5596,7 +5596,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 48.50836939145819,
+          "score": 48.50836939145818,
           "verified": true,
           "alternatives": [
             {
@@ -5611,14 +5611,14 @@
               "item_name": "Lieutenant Commander's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -1.941596693333518
+              "dps_delta": -1.9415966933335158
             },
             {
               "item_id": 18727,
               "item_name": "Crimson Felt Hat",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -3.8043729838647637
+              "dps_delta": -3.8043729838647615
             }
           ]
         },
@@ -5676,7 +5676,7 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.809129430802063
+              "dps_delta": -3.8091294308020607
             },
             {
               "item_id": 272103,
@@ -5694,7 +5694,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 32.47406102339587,
+          "score": 32.47406102339586,
           "verified": true,
           "alternatives": [
             {
@@ -5702,14 +5702,14 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.238465799003819
+              "dps_delta": -3.2384657990038166
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -4.347949623765829
+              "dps_delta": -4.347949623765827
             },
             {
               "item_id": 20697,
@@ -5727,7 +5727,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 56.428489045106616,
+          "score": 56.42848904510661,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5736,14 +5736,14 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.8912164819422279
+              "dps_delta": -0.8912164819422256
             },
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -4.796481504047495
+              "dps_delta": -4.7964815040474935
             },
             {
               "item_id": 18385,
@@ -5795,6 +5795,12 @@
           "source_kind": "quest",
           "score": 33.58785195248121,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 226930,
+              "item_name": "Sorcerer's Gauntlets"
+            }
+          ],
           "alternatives": [
             {
               "item_id": 16440,
@@ -5858,7 +5864,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 52.92479925568077,
+          "score": 52.92479925568076,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (ilvl 65) (id 22752): kept the pick, +8.4 DPS (484.6 vs 476.2 set DPS)",
           "dps_delta": 8.403463063197535,
@@ -5875,14 +5881,14 @@
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.4601788195140912
+              "dps_delta": -3.460178819514089
             },
             {
               "item_id": 227109,
               "item_name": "Knight-Captain's Silk Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -3.6562450721348174
+              "dps_delta": -3.656245072134815
             }
           ]
         },
@@ -6165,8 +6171,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.372882356,
-      "verify_run_seconds": 0.923595213,
+      "weights_run_seconds": 1.349235658,
+      "verify_run_seconds": 0.913106475,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6395,7 +6401,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -0.1971570843045359
+              "dps_delta": -0.19715708430453477
             },
             {
               "item_id": 22149,
@@ -6445,7 +6451,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 32.47406102339587,
+          "score": 32.47406102339586,
           "verified": true,
           "alternatives": [
             {
@@ -6453,7 +6459,7 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.238465799003819
+              "dps_delta": -3.2384657990038166
             },
             {
               "item_id": 20697,
@@ -6468,7 +6474,7 @@
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -4.166714258878533
+              "dps_delta": -4.16671425887853
             }
           ]
         },
@@ -6605,7 +6611,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -7.281784292042899
+              "dps_delta": -7.281784292042901
             }
           ]
         },
@@ -6615,7 +6621,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 52.92479925568077,
+          "score": 52.92479925568076,
           "verified": true,
           "alternatives": [
             {
@@ -6630,7 +6636,7 @@
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.4601788195140912
+              "dps_delta": -3.460178819514089
             },
             {
               "item_id": 22747,
@@ -6921,8 +6927,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.372882356,
-      "verify_run_seconds": 0.929127755,
+      "weights_run_seconds": 1.349235658,
+      "verify_run_seconds": 0.919636029,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7391,7 +7397,7 @@
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -7.923206611868761
+              "dps_delta": -7.92320661186876
             }
           ]
         },
@@ -7667,8 +7673,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.5307724660000002,
-      "verify_run_seconds": 0.977459365,
+      "weights_run_seconds": 1.513602533,
+      "verify_run_seconds": 0.946014101,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8411,8 +8417,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.5307724660000002,
-      "verify_run_seconds": 0.980257011,
+      "weights_run_seconds": 1.513602533,
+      "verify_run_seconds": 0.962188683,
       "coverage": {
         "back": {
           "eligible": 450,

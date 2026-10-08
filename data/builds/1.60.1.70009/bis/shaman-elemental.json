@@ -1,8 +1,8 @@
 {
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
-  "engine_version": "b4fa0ac3f",
-  "generated_at": "2026-10-08T05:09:19Z",
+  "engine_version": "f5002980c",
+  "generated_at": "2026-10-08T06:18:48Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -541,8 +541,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.39178626,
-      "verify_run_seconds": 0.9714822,
+      "weights_run_seconds": 2.343825964,
+      "verify_run_seconds": 0.968345334,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1161,8 +1161,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.39178626,
-      "verify_run_seconds": 0.945524854,
+      "weights_run_seconds": 2.343825964,
+      "verify_run_seconds": 0.952025388,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1812,8 +1812,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.7512859990000003,
-      "verify_run_seconds": 1.0707123649999999,
+      "weights_run_seconds": 2.643061338,
+      "verify_run_seconds": 1.081559706,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2497,8 +2497,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Seedcloud Buckler"
       ],
-      "weights_run_seconds": 2.7512859990000003,
-      "verify_run_seconds": 1.145280082,
+      "weights_run_seconds": 2.643061338,
+      "verify_run_seconds": 1.086784043,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3146,8 +3146,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 2.984741577,
-      "verify_run_seconds": 1.116782194,
+      "weights_run_seconds": 2.902651921,
+      "verify_run_seconds": 1.080926316,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3793,8 +3793,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 2.984741577,
-      "verify_run_seconds": 1.113881348,
+      "weights_run_seconds": 2.902651921,
+      "verify_run_seconds": 1.127183171,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4194,7 +4194,7 @@
           "item_name": "Ban'thok Sash",
           "source": "Blackrock Depths: Ok'thor the Breaker",
           "source_kind": "dungeon",
-          "score": 26.558964913835226,
+          "score": 26.558964913835222,
           "verified": true,
           "alternatives": [
             {
@@ -4202,14 +4202,14 @@
               "item_name": "Skycaller's Mail Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.021327539293223015
+              "dps_delta": -0.021327539293222675
             },
             {
               "item_id": 17755,
               "item_name": "Satyrmane Sash",
               "source_kind": "dungeon",
               "source": "Maraudon: Lord Vyletongue",
-              "dps_delta": -0.3778318273207615
+              "dps_delta": -0.37783182732076115
             },
             {
               "item_id": 252476,
@@ -4459,8 +4459,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.068481728,
-      "verify_run_seconds": 1.288470525,
+      "weights_run_seconds": 3.020226738,
+      "verify_run_seconds": 1.288408883,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4655,7 +4655,7 @@
               "item_name": "Blood Guard's Pulsing Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.8301012106335857
+              "dps_delta": -0.8301012106335853
             }
           ]
         },
@@ -5123,8 +5123,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.068481728,
-      "verify_run_seconds": 1.221134238,
+      "weights_run_seconds": 3.020226738,
+      "verify_run_seconds": 1.206395296,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5562,11 +5562,11 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.011339486183244
+              "dps_delta": -1.011339486183245
             },
             {
               "item_id": 252603,
@@ -5576,8 +5576,8 @@
               "dps_delta": -1.1050453484363045
             },
             {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -1.6272311350943482,
@@ -5764,7 +5764,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.4227722674543621
+              "dps_delta": -0.42277226745436125
             },
             {
               "item_id": 2243,
@@ -5836,8 +5836,8 @@
         "main_hand: Crackling Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 2.974539571,
-      "verify_run_seconds": 1.263436665,
+      "weights_run_seconds": 2.967136484,
+      "verify_run_seconds": 1.22946932,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6281,15 +6281,15 @@
               "dps_delta": -0.5160953849163874
             },
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -1.011339486183244
-            },
-            {
               "item_id": 237815,
               "item_name": "Sentinel's Silk Leggings",
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -1.011339486183245
+            },
+            {
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -2.1418501194841895,
@@ -6555,8 +6555,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 2.974539571,
-      "verify_run_seconds": 1.118675179,
+      "weights_run_seconds": 2.967136484,
+      "verify_run_seconds": 1.111893791,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7000,15 +7000,15 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -1.8056875050408896
             },
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -1.8056875050408923
@@ -7284,8 +7284,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.7640460660000001,
-      "verify_run_seconds": 0.890215192,
+      "weights_run_seconds": 1.730495654,
+      "verify_run_seconds": 0.876189612,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7728,18 +7728,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -1.8056875050408896
-            },
-            {
               "item_id": 237817,
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -1.8056875050408896
+            },
+            {
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -1.8056875050408923
             },
             {
               "item_id": 231664,
@@ -8012,8 +8012,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.7640460660000001,
-      "verify_run_seconds": 0.872128037,
+      "weights_run_seconds": 1.730495654,
+      "verify_run_seconds": 0.874734591,
       "coverage": {
         "back": {
           "eligible": 451,
