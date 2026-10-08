@@ -25,6 +25,7 @@ REQUIRED_BUFFS = {
     "blessing_of_wisdom",
     "battle_shout",
     "trueshot_aura",
+    "heart_of_the_lion",
     "leader_of_the_pack",
     "sanctity_aura",
     "strength_of_earth_totem",

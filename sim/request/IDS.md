@@ -66,6 +66,7 @@ not graded has no `:improved` form and naming one is an error.
 | `gift_of_the_wild:improved` | RaidBuffs |
 | `grace_of_air_totem` | RaidBuffs |
 | `grace_of_air_totem:improved` | RaidBuffs |
+| `heart_of_the_lion` | RaidBuffs |
 | `hunters_mark` | Debuffs |
 | `hunters_mark:improved` | Debuffs |
 | `improved_scorch` | Debuffs |

@@ -168,19 +168,32 @@ func TestKitBuffsProtectionPaladinCarriesDevotionAura(t *testing.T) {
 // spell, so the survival kit carries it from the level the spell is
 // learned (6, client spell 1130).
 func TestKitBuffsSurvivalCarriesHuntersMarkFromSix(t *testing.T) {
-	if got := KitBuffs("hunter-survival", 5); got != nil {
-		t.Fatalf("hunter-survival at 5 = %v, want nothing (rank 1 is learned at 6)", got)
+	if got := KitBuffs("hunter-survival", 5); len(got) != 1 || got[0] != "heart_of_the_lion" {
+		t.Fatalf("hunter-survival at 5 = %v, want heart_of_the_lion alone (rank 1 is learned at 6)", got)
 	}
 	for _, level := range []int{6, 60} {
 		got := KitBuffs("hunter-survival", level)
-		if len(got) != 1 || got[0] != "hunters_mark" {
-			t.Fatalf("hunter-survival at %d = %v, want hunters_mark", level, got)
+		if len(got) != 2 || got[0] != "heart_of_the_lion" || got[1] != "hunters_mark" {
+			t.Fatalf("hunter-survival at %d = %v, want heart_of_the_lion and hunters_mark", level, got)
+		}
+	}
+}
+
+// Heart of the Lion is learned by every hunter at level 1 (client spell
+// 409580, SkillLineAbility row 49612, SpellLevels level 1).
+func TestKitBuffsEveryHunterCarriesHeartOfTheLionFromLevelOne(t *testing.T) {
+	for _, spec := range []string{"hunter", "hunter-beast-mastery", "hunter-marksmanship", "hunter-survival"} {
+		for _, level := range []int{1, 30, 60} {
+			got := KitBuffs(spec, level)
+			if len(got) == 0 || got[0] != "heart_of_the_lion" {
+				t.Fatalf("%s at %d = %v, want heart_of_the_lion first", spec, level, got)
+			}
 		}
 	}
 }
 
 func TestKitBuffsOtherClassesCarryNothing(t *testing.T) {
-	for _, spec := range []string{"warrior-arms", "rogue-combat", "priest-shadow", "warlock-affliction", "shaman-enhancement", "hunter-beast-mastery", "hunter-marksmanship", "magefoo"} {
+	for _, spec := range []string{"warrior-arms", "rogue-combat", "priest-shadow", "warlock-affliction", "shaman-enhancement", "magefoo"} {
 		if got := KitBuffs(spec, 60); got != nil {
 			t.Fatalf("%s = %v, want nothing", spec, got)
 		}
