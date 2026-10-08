@@ -58,6 +58,7 @@ not graded has no `:improved` form and naming one is an error.
 | `faerie_fire` | Debuffs |
 | `fire_resistance_aura` | RaidBuffs |
 | `fire_resistance_totem` | RaidBuffs |
+| `flametongue_totem` | RaidBuffs |
 | `frost_resistance_aura` | RaidBuffs |
 | `frost_resistance_totem` | RaidBuffs |
 | `furious_howl` | RaidBuffs |
