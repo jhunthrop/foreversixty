@@ -16,6 +16,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"fmt"
+	"math"
 	"sync"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -41,7 +42,9 @@ type sourced[T any] struct {
 
 type tankEncounterFile struct {
 	LevelScaling struct {
-		ReferenceLevel int `json:"reference_level"`
+		ReferenceLevel  int              `json:"reference_level"`
+		Exponent        sourced[float64] `json:"exponent"`
+		HealingExponent sourced[float64] `json:"healing_exponent"`
 	} `json:"level_scaling"`
 	Boss struct {
 		SwingSpeedSec sourced[float64] `json:"swing_speed_sec"`
@@ -107,11 +110,13 @@ func loadTankEncounter() (tankEncounterFile, error) {
 
 func (f tankEncounterFile) validate() error {
 	positive := map[string]float64{
-		"level_scaling.reference_level": float64(f.LevelScaling.ReferenceLevel),
-		"boss.swing_speed_sec":          f.Boss.SwingSpeedSec.Value,
-		"boss.min_base_damage":          f.Boss.MinBaseDamage.Value,
-		"healers.hps":                   f.Healers.HPS.Value,
-		"healers.burst_window_sec":      float64(f.Healers.BurstWindowSec.Value),
+		"level_scaling.reference_level":  float64(f.LevelScaling.ReferenceLevel),
+		"level_scaling.exponent":         f.LevelScaling.Exponent.Value,
+		"level_scaling.healing_exponent": f.LevelScaling.HealingExponent.Value,
+		"boss.swing_speed_sec":           f.Boss.SwingSpeedSec.Value,
+		"boss.min_base_damage":           f.Boss.MinBaseDamage.Value,
+		"healers.hps":                    f.Healers.HPS.Value,
+		"healers.burst_window_sec":       float64(f.Healers.BurstWindowSec.Value),
 	}
 	for name, v := range positive {
 		if v <= 0 {
@@ -133,17 +138,19 @@ func TankProfileForLevel(characterLevel int) (TankProfile, error) {
 	if err != nil {
 		return TankProfile{}, err
 	}
-	scale := float64(characterLevel) / float64(f.LevelScaling.ReferenceLevel)
+	levelRatio := float64(characterLevel) / float64(f.LevelScaling.ReferenceLevel)
+	damageScale := math.Pow(levelRatio, f.LevelScaling.Exponent.Value)
+	healingScale := math.Pow(levelRatio, f.LevelScaling.HealingExponent.Value)
 	return TankProfile{
 		Boss: TankBoss{
 			SwingSpeedSec: f.Boss.SwingSpeedSec.Value,
-			MinBaseDamage: f.Boss.MinBaseDamage.Value * scale,
+			MinBaseDamage: f.Boss.MinBaseDamage.Value * damageScale,
 			DamageSpread:  f.Boss.DamageSpread.Value,
 			ParryHaste:    f.Boss.ParryHaste.Value,
 			DualWield:     f.Boss.DualWield.Value,
 		},
 		Healers: TankHealers{
-			HPS:                 f.Healers.HPS.Value * scale,
+			HPS:                 f.Healers.HPS.Value * healingScale,
 			CadenceSec:          f.Healers.CadenceSec.Value,
 			CadenceVariationSec: f.Healers.CadenceVariationSec.Value,
 			BurstWindowSec:      f.Healers.BurstWindowSec.Value,

@@ -11,10 +11,17 @@
       "kind": "blizzard"
     }
   ],
-  "notes": "The one statement of the fight every tank spec is simmed against: what a tank's BiS rows, stat weights and headline figures (effective health, damage taken per second, chance of death, threat per second) are measured on. Nothing public states a Forever raid boss's melee numbers (the beta stops at level 30 and no Phase 1 boss has been datamined), so this is a stand-in, built so every figure is a RELATIVE comparison between sets and none is a prediction of a named boss; the reasons below say what each number stands for and what would change it. The boss is the target the character already fights (level 63 at 60: api.DefaultTargetLevel), tanked by the character, hitting with one melee swing; crushing blows and critical hits come from the engine's own attack table for the three-level gap, not from a number here. The tank carries the Phase 1 raid buffs and tank consumables of data/curated/presets.json's raid preset when ranked raid-ready, and the class kit alone when ranked bare. Bands below 60 fight the same boss with its damage and the healers' output scaled by character level over 60, a stand-in for dungeon bosses at that level.",
+  "notes": "The one statement of the fight every tank spec is simmed against: what a tank's BiS rows, stat weights and headline figures (effective health, damage taken per second, chance of death, threat per second) are measured on. Nothing public states a Forever raid boss's melee numbers (the beta stops at level 30 and no Phase 1 boss has been datamined), so this is a stand-in, built so every figure is a RELATIVE comparison between sets and none is a prediction of a named boss; the reasons below say what each number stands for and what would change it. The boss is the target the character already fights (level 63 at 60: api.DefaultTargetLevel), tanked by the character, hitting with one melee swing; crushing blows and critical hits come from the engine's own attack table for the three-level gap, not from a number here. The tank carries the Phase 1 raid buffs and tank consumables of data/curated/presets.json's raid preset when ranked raid-ready, and the class kit alone when ranked bare. Bands below 60 fight the same boss with its damage and the healers' output scaled by (character level over 60) to the power level_scaling.exponent (damage) and level_scaling.healing_exponent (healing), a stand-in for dungeon bosses at that level.",
   "level_scaling": {
     "reference_level": 60,
-    "reason": "Damage and healing scale linearly with character level over the reference level, so a level 40 tank faces a boss in the same proportion to its own health as a level 60 tank faces the raid boss. A dungeon boss table would replace this; none is published."
+    "exponent": {
+      "value": 2.0,
+      "reason": "Damage and healing scale as (character level over the reference level) to this power, because a tank's health grows faster than its level (a level 20 tank has roughly a seventh of a level 60 tank's health, not a third). Chosen so a decently geared tank of any band takes a boss of its own size in the same proportion to its health. A dungeon boss table would replace this; none is published."
+    },
+    "healing_exponent": {
+      "value": 1.5,
+      "reason": "Healing scales more gently than damage, because a healer's output at a low level is spell ranks and mana the damage does not shrink with: with the same exponent a low-level tank would take more than its healers could ever give back. A healing table by level would replace this; none is published."
+    }
   },
   "boss": {
     "swing_speed_sec": {

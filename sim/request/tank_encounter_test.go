@@ -1,6 +1,7 @@
 package request
 
 import (
+	"math"
 	"os"
 	"path/filepath"
 	"testing"
@@ -27,6 +28,7 @@ func TestEveryTankEncounterValueStatesItsReason(t *testing.T) {
 		t.Fatal(err)
 	}
 	reasons := map[string]string{
+		"level_scaling.exponent":        f.LevelScaling.Exponent.Reason,
 		"boss.swing_speed_sec":          f.Boss.SwingSpeedSec.Reason,
 		"boss.min_base_damage":          f.Boss.MinBaseDamage.Reason,
 		"boss.damage_spread":            f.Boss.DamageSpread.Reason,
@@ -53,11 +55,14 @@ func TestTankProfileScalesDamageAndHealingWithLevel(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if got, want := half.Boss.MinBaseDamage, full.Boss.MinBaseDamage/2; got != want {
-		t.Errorf("level 30 boss damage = %v, want half of level 60's (%v)", got, want)
+	f, _ := loadTankEncounter()
+	ratio := math.Pow(0.5, f.LevelScaling.Exponent.Value)
+	healingRatio := math.Pow(0.5, f.LevelScaling.HealingExponent.Value)
+	if got, want := half.Boss.MinBaseDamage, full.Boss.MinBaseDamage*ratio; math.Abs(got-want) > 1e-9 {
+		t.Errorf("level 30 boss damage = %v, want level 60's scaled by %v (%v)", got, ratio, want)
 	}
-	if got, want := half.Healers.HPS, full.Healers.HPS/2; got != want {
-		t.Errorf("level 30 healing = %v, want half of level 60's (%v)", got, want)
+	if got, want := half.Healers.HPS, full.Healers.HPS*healingRatio; math.Abs(got-want) > 1e-9 {
+		t.Errorf("level 30 healing = %v, want level 60's scaled by %v (%v)", got, healingRatio, want)
 	}
 	if half.Boss.SwingSpeedSec != full.Boss.SwingSpeedSec || half.Boss.DamageSpread != full.Boss.DamageSpread {
 		t.Error("level scaling must change damage and healing only, not the swing timer or the roll")
