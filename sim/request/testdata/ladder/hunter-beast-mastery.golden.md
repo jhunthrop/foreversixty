@@ -95,11 +95,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 1000000000000000-0000000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 70.9 | 3 | other:shoot=86.2, spell:3044=18.6, spell:13549=17.3, other:move=1.0, spell:13165=1.0 | {SpellID: 19574}, {SpellID: 20904} |
 | 20 | 5420000000000000-0000000000000000-000000000000000000 | main_hand:1482 off_hand:2236 ranged:3021 | 90.9 | 5 | other:shoot=86.6, spell:2643=11.4, spell:19434=10.9, spell:13550=2.4, spell:14282=1.2 | {SpellID: 19574} |
-| 30 | 5420001504000000-0000000000000000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 119.2 | 6 | other:shoot=86.7, spell:20900=9.8, spell:2643=8.3, spell:13551=2.7, spell:14283=1.0 | {SpellID: 19574} |
+| 30 | 5420001504000000-0000000000000000-000000000000000000 | main_hand:6692 off_hand:13033 ranged:274748 | 120.4 | 6 | other:shoot=87.1, spell:20900=10.2, spell:2643=9.4, spell:13551=2.2, spell:14283=1.0 | {SpellID: 19574} |
 | 38 | 5420001505001240-0000000000000000-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 148.6 | 6 | other:shoot=89.7, spell:2643=9.6, spell:20901=7.2, spell:13552=2.2, spell:14284=1.0 | {SpellID: 19574} |
-| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 161.9 | 7 | other:shoot=89.8, spell:20901=8.6, spell:2643=6.6, spell:13552=2.2, spell:19574=2.0 | - |
-| 50 | 5420001505001251-0053200000000000-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 180.9 | 6 | other:shoot=158.9, spell:2643=14.7, spell:19574=2.0, spell:13554=1.1, other:move=1.0 | - |
-| 60 | 5420001505001251-0053502001000000-400000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 285.3 | 7 | other:shoot=84.5, spell:2643=11.4, spell:20904=3.0, spell:13555=2.2, spell:19574=2.0 | - |
+| 40 | 5420001505001251-0000000000000000-000000000000000000 | main_hand:2164 off_hand:274753 ranged:2825 | 163.0 | 7 | other:shoot=90.0, spell:20901=8.2, spell:2643=6.8, spell:13552=2.2, spell:19574=2.0 | - |
+| 50 | 5420001505001251-0053200000000000-000000000000000000 | main_hand:6660 off_hand:250614 ranged:13022 | 184.4 | 7 | other:shoot=90.1, spell:2643=8.1, spell:20902=6.4, spell:13554=2.1, spell:19574=2.0 | - |
+| 60 | 5420001505001251-0053502001000000-400000000000000000 | main_hand:23577 off_hand:21126 ranged:23557 | 231.6 | 7 | other:shoot=81.5, spell:2643=11.3, spell:20904=3.0, spell:13555=2.2, spell:19574=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -120,7 +120,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Bite (spell 17256)
 - Claw (spell 16829)
 - Dismember (spell 1264758)
-- Immolation Trap Effect (spell 13797)
 - Lightning Breath (spell 25008)
 - Mine! (spell 1265055)
 - Mongoose Bite (spell 1495)
@@ -142,7 +141,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Claw (spell 16830)
 - Counterattack (spell 1242634)
 - Dismember (spell 1264927)
-- Immolation Trap Effect (spell 14298)
 - Lacerate (spell 24118)
 - Lightning Breath (spell 25009)
 - Mine! (spell 1265056)
@@ -169,7 +167,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Counterattack (spell 1242634)
 - Dismember (spell 1264929)
 - Explosive Trap Effect (spell 13812)
-- Immolation Trap Effect (spell 14299)
 - Lacerate (spell 24118)
 - Lightning Breath (spell 25010)
 - Mine! (spell 1265056)
@@ -196,7 +193,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Counterattack (spell 1242634)
 - Dismember (spell 1264929)
 - Explosive Trap Effect (spell 13812)
-- Immolation Trap Effect (spell 14299)
 - Lacerate (spell 24119)
 - Lightning Breath (spell 25010)
 - Mine! (spell 1265057)
@@ -220,13 +216,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
-- Arcane Shot (spell 14285)
 - Bite (spell 17260)
 - Claw (spell 3010)
 - Counterattack (spell 20909)
 - Dismember (spell 1264930)
 - Explosive Trap Effect (spell 14314)
-- Immolation Trap Effect (spell 14300)
 - Lacerate (spell 24120)
 - Lava Breath (spell 444681)
 - Lightning Breath (spell 25011)
@@ -257,7 +251,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dismember (spell 1264933)
 - Explosive Trap Effect (spell 14315)
 - Hydra Shot (spell 1293020)
-- Immolation Trap Effect (spell 14301)
 - Lacerate (spell 1299332)
 - Lava Breath (spell 444681)
 - Lightning Breath (spell 25012)
@@ -282,4 +275,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- hunter-beast-mastery level=50 kind=zero_casts spell="Arcane Shot" id=14285 authored=14287
+None.

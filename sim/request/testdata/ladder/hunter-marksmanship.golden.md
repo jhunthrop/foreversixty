@@ -95,11 +95,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-0010000000000000-000000000000000000 | main_hand:1927 off_hand:1287 ranged:3036 | 69.7 | 2 | other:shoot=83.8, spell:3044=29.6, other:move=1.0, spell:13165=1.0 | {SpellID: 20904} |
 | 20 | 0000000000000000-0051500000000000-000000000000000000 | main_hand:1482 off_hand:2236 ranged:3021 | 87.8 | 4 | other:shoot=76.7, spell:2643=17.1, spell:19434=8.5, spell:14282=3.0, other:move=1.0 | - |
-| 30 | 0000000000000000-0051550001400000-000000000000000000 | main_hand:6692 off_hand:23168 ranged:274748 | 105.2 | 5 | other:shoot=77.0, spell:20900=12.7, spell:2643=7.9, spell:14283=3.0, other:move=1.0 | - |
+| 30 | 0000000000000000-0051550001400000-000000000000000000 | main_hand:6692 off_hand:13033 ranged:274748 | 106.1 | 5 | other:shoot=77.4, spell:2643=12.4, spell:20900=10.0, spell:14283=3.0, other:move=1.0 | - |
 | 38 | 0000000000000000-0051550001503040-000000000000000000 | main_hand:869 off_hand:6829 ranged:2825 | 123.7 | 5 | other:shoot=79.8, spell:2643=10.9, spell:20901=8.0, spell:14284=3.0, other:move=1.0 | - |
-| 40 | 1000000000000000-0051550001503050-000000000000000000 | main_hand:2164 off_hand:9465 ranged:2825 | 131.7 | 5 | other:shoot=82.2, spell:2643=10.9, spell:20901=8.0, spell:14284=3.0, other:move=1.0 | - |
-| 50 | 5320000100000000-0051550001503050-000000000000000000 | main_hand:2163 off_hand:6660 ranged:2824 | 159.5 | 5 | other:shoot=158.6, spell:2643=17.3, other:move=1.0, spell:14285=1.0, spell:14321=1.0 | - |
-| 60 | 5320000501000000-0051550001503050-500000000000000000 | main_hand:22736 off_hand:23054 ranged:22811 | 270.6 | 5 | other:shoot=83.7, spell:2643=12.6, spell:20904=4.0, spell:14287=3.0, other:move=1.0 | - |
+| 40 | 1000000000000000-0051550001503050-000000000000000000 | main_hand:2164 off_hand:274753 ranged:2825 | 133.1 | 5 | other:shoot=82.2, spell:2643=9.9, spell:20901=8.8, spell:14284=3.0, other:move=1.0 | - |
+| 50 | 5320000100000000-0051550001503050-000000000000000000 | main_hand:6660 off_hand:250614 ranged:13022 | 162.3 | 5 | other:shoot=89.8, spell:2643=10.2, spell:20902=7.5, spell:14285=3.0, other:move=1.0 | - |
+| 60 | 5320000501000000-0051550001503050-500000000000000000 | main_hand:23577 off_hand:21126 ranged:23557 | 210.8 | 5 | other:shoot=80.3, spell:2643=12.6, spell:20904=4.0, spell:14287=3.0, other:move=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -121,7 +121,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Bite (spell 17256)
 - Claw (spell 16829)
 - Dismember (spell 1264758)
-- Immolation Trap Effect (spell 13797)
 - Lightning Breath (spell 25008)
 - Mine! (spell 1265055)
 - Mongoose Bite (spell 1495)
@@ -144,7 +143,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Claw (spell 16830)
 - Counterattack (spell 1242634)
 - Dismember (spell 1264927)
-- Immolation Trap Effect (spell 14298)
 - Lacerate (spell 24118)
 - Lightning Breath (spell 25009)
 - Mine! (spell 1265056)
@@ -172,7 +170,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Counterattack (spell 1242634)
 - Dismember (spell 1264929)
 - Explosive Trap Effect (spell 13812)
-- Immolation Trap Effect (spell 14299)
 - Lacerate (spell 24118)
 - Lightning Breath (spell 25010)
 - Mine! (spell 1265056)
@@ -200,7 +197,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Counterattack (spell 1242634)
 - Dismember (spell 1264929)
 - Explosive Trap Effect (spell 13812)
-- Immolation Trap Effect (spell 14299)
 - Lacerate (spell 24119)
 - Lightning Breath (spell 25010)
 - Mine! (spell 1265057)
@@ -230,7 +226,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Counterattack (spell 20909)
 - Dismember (spell 1264930)
 - Explosive Trap Effect (spell 14314)
-- Immolation Trap Effect (spell 14300)
 - Lacerate (spell 24120)
 - Lava Breath (spell 444681)
 - Lightning Breath (spell 25011)
@@ -262,7 +257,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Dismember (spell 1264933)
 - Explosive Trap Effect (spell 14315)
 - Hydra Shot (spell 1293020)
-- Immolation Trap Effect (spell 14301)
 - Lacerate (spell 1299332)
 - Lava Breath (spell 444681)
 - Lightning Breath (spell 25012)
