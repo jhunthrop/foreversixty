@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral-bear",
   "build": "1.60.1.70009",
-  "engine_version": "ad30bef89",
-  "generated_at": "2026-10-08T04:01:36Z",
+  "engine_version": "b4fa0ac3f",
+  "generated_at": "2026-10-08T04:46:46Z",
   "bands": [
     {
       "spec": "druid-feral-bear",
@@ -625,8 +625,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 3.176250351,
-      "verify_run_seconds": 1.244340041,
+      "weights_run_seconds": 3.4951591410000002,
+      "verify_run_seconds": 1.296071622,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1330,8 +1330,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 3.176250351,
-      "verify_run_seconds": 1.236687396,
+      "weights_run_seconds": 3.4951591410000002,
+      "verify_run_seconds": 1.277136016,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1717,7 +1717,7 @@
               "item_name": "Barbaric Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.748283675944835
+              "dps_delta": -3.7482836759447964
             },
             {
               "item_id": 3230,
@@ -2084,8 +2084,8 @@
         "trinket2: Relentless Raider's Seal",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 3.1584776469999998,
-      "verify_run_seconds": 1.258372214,
+      "weights_run_seconds": 3.433667108,
+      "verify_run_seconds": 1.3481771839999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2543,7 +2543,7 @@
               "item_name": "Prowler's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -61.33907875632825
+              "dps_delta": -61.33907875632829
             },
             {
               "item_id": 252521,
@@ -2829,8 +2829,8 @@
         "trinket2: Relentless Raider's Seal",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 3.1584776469999998,
-      "verify_run_seconds": 1.2970280029999999,
+      "weights_run_seconds": 3.433667108,
+      "verify_run_seconds": 1.329224609,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3562,8 +3562,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Ironshod Bludgeon"
       ],
-      "weights_run_seconds": 3.676929515,
-      "verify_run_seconds": 1.39807547,
+      "weights_run_seconds": 4.009117729,
+      "verify_run_seconds": 1.4084730890000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4297,8 +4297,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Cragwood Maul"
       ],
-      "weights_run_seconds": 3.676929515,
-      "verify_run_seconds": 1.395127618,
+      "weights_run_seconds": 4.009117729,
+      "verify_run_seconds": 1.4128940669999999,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5051,8 +5051,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "main_hand: Radiant Staff"
       ],
-      "weights_run_seconds": 4.062115525,
-      "verify_run_seconds": 1.488442029,
+      "weights_run_seconds": 4.488816868,
+      "verify_run_seconds": 1.543042173,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5274,7 +5274,7 @@
               "item_name": "Blood Guard's Leather Headband",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -183.15573386931203
+              "dps_delta": -183.15573386931231
             },
             {
               "item_id": 9479,
@@ -5788,8 +5788,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Relentless Raider's Seal"
       ],
-      "weights_run_seconds": 4.062115525,
-      "verify_run_seconds": 1.498943797,
+      "weights_run_seconds": 4.488816868,
+      "verify_run_seconds": 1.53926253,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6111,7 +6111,7 @@
               "item_name": "Stoneskin Gargoyle Cape",
               "source_kind": "dungeon",
               "source": "Stratholme: Stonespine",
-              "dps_delta": -32.901870895560634
+              "dps_delta": -32.90187089556008
             },
             {
               "item_id": 18495,
@@ -6200,7 +6200,7 @@
           "item_name": "Feralheart Grips",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 52.9210066367594,
+          "score": 52.921006636759415,
           "verified": true,
           "alternatives": [
             {
@@ -6215,7 +6215,7 @@
               "item_name": "Marshal's Dragonhide Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -335.00674886662085
+              "dps_delta": -335.00674886662193
             },
             {
               "item_id": 272099,
@@ -6256,7 +6256,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -774.1875290843108
+              "dps_delta": -774.1875290843113
             }
           ]
         },
@@ -6346,7 +6346,7 @@
               "item_name": "Myrmidon's Signet",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -291.3757362161536
+              "dps_delta": -291.3757362161539
             },
             {
               "item_id": 11669,
@@ -6378,7 +6378,7 @@
               "item_name": "Myrmidon's Signet",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -197.50456984126802
+              "dps_delta": -197.5045698412683
             },
             {
               "item_id": 11669,
@@ -6544,8 +6544,8 @@
         "trinket2: Defender's Grip Stabilizer",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.088830819,
-      "verify_run_seconds": 1.600631399,
+      "weights_run_seconds": 4.558811529,
+      "verify_run_seconds": 1.736017556,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -7296,8 +7296,8 @@
         "trinket2: Vigilance Charm",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.088830819,
-      "verify_run_seconds": 1.688735663,
+      "weights_run_seconds": 4.558811529,
+      "verify_run_seconds": 1.762903059,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7739,7 +7739,7 @@
           "item_name": "Feralheart Waistguard",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 55.88688455131365,
+          "score": 55.886884551313656,
           "verified": true,
           "alternatives": [
             {
@@ -7755,14 +7755,14 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -1073.1808983596347
+              "dps_delta": -1073.1808983596354
             },
             {
               "item_id": 227805,
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1159.2696471347533
+              "dps_delta": -1159.269647134754
             }
           ]
         },
@@ -7859,7 +7859,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -267.5494739608308
+              "dps_delta": -267.54947396083116
             }
           ]
         },
@@ -7890,7 +7890,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -170.89655892177456
+              "dps_delta": -170.8965589217749
             }
           ]
         },
@@ -8046,8 +8046,8 @@
         "trinket2: Vigilance Charm",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.188560776,
-      "verify_run_seconds": 1.5760068170000001,
+      "weights_run_seconds": 4.671570578,
+      "verify_run_seconds": 1.702812308,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -8408,7 +8408,7 @@
               "item_name": "Warlord's Dragonhide Tunic",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -959.4493767352806
+              "dps_delta": -959.4493767352792
             },
             {
               "item_id": 23089,
@@ -8800,8 +8800,8 @@
         "trinket2: Defender's Grip Stabilizer",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 4.188560776,
-      "verify_run_seconds": 1.6627836409999999,
+      "weights_run_seconds": 4.671570578,
+      "verify_run_seconds": 1.748056176,
       "coverage": {
         "back": {
           "eligible": 451,
