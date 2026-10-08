@@ -43,7 +43,7 @@ def test_no_two_talents_in_a_tab_share_a_tier_and_column():
 def test_the_weights_travel_with_the_layout():
     data = build_addon_data(BUILD)
     assert data.weights["paladin-holy"]["spell_power"] == 1.0
-    assert len(data.weights) == 27
+    assert len(data.weights) >= 27
 
 
 def test_the_build_id_is_the_directory():

@@ -276,7 +276,15 @@ func legalFor(trees []leveling.TalentTree, ranks map[int]int, total int) error {
 		return n
 	}
 	spent := 0
-	for id, rank := range ranks {
+	// In talent id order, so a build with several faults always reports the
+	// same one first.
+	ids := make([]int, 0, len(ranks))
+	for id := range ranks {
+		ids = append(ids, id)
+	}
+	sort.Ints(ids)
+	for _, id := range ids {
+		rank := ranks[id]
 		node := nodes[id]
 		spent += rank
 		switch {
