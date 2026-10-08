@@ -221,6 +221,13 @@ export const bisCopy = {
    *  `undefined` for a spec that does not dual wield. Percent strings arrive formatted. */
   hitToCapLine: (specials: string, white: string | undefined): string =>
     `Hit to cap: ${specials}% for specials${white === undefined ? '' : `, ${white}% for white swings`}`,
+  /** The caster's line: `school` is the distance for the spells a talent adds hit to, and
+   *  `undefined` when no talent does. Percent strings arrive formatted. */
+  spellHitToCapLine: (spell: string, school: string | undefined): string =>
+    `Spell hit to cap: ${spell}%${school === undefined ? '' : ` (school ${school}%)`}`,
+  /** The hover on the caster's line. */
+  spellHitToCapTitle:
+    'Spell hit is worth its full weight until the cap and nothing past it: spells miss 17% of the time against a boss three levels up, and 1% always remains. School talents such as Elemental Precision add hit to their own spells only. The weights above are per rating point: 10 hit rating is 1%.',
   /** The hover on that line: hit is worth its full weight until the cap and nothing past it,
    *  and the rail's weights are per rating point. */
   hitToCapTitle:

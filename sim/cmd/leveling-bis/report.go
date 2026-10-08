@@ -1283,9 +1283,10 @@ type bandReport struct {
 	// doc).
 	HasteScaleFactor *float64 `json:"haste_scale_factor,omitempty"`
 	// HitToCap is how far the weights character is from the miss-table
-	// caps (hitToCap's own doc): the site's "hit to cap first" figure.
-	// Omitted for a spec that does not swing a weapon.
-	HitToCap *hitToCap `json:"hit_to_cap,omitempty"`
+	// caps (hitToCap's own doc), or for a caster from the spell hit cap
+	// (spellHitToCap's own doc): the site's "hit to cap first" figure.
+	// Omitted for a spec with no hit table to cap against.
+	HitToCap *publishedHitToCap `json:"hit_to_cap,omitempty"`
 	// HasteOnItems is bandHasHasteCandidate's own return (weights.go) -
 	// owner correction, 2026-09-30, after the caption's own doubled-
 	// suffix bug was found on screenshot review ("Haste: 1.58 per 1%,
