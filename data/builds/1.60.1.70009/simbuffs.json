@@ -264,6 +264,10 @@
       "name": "Fire-toasted Bun",
       "icon": "inv_misc_food_11"
     },
+    "flametongue_totem": {
+      "name": "Flametongue Totem",
+      "icon": "spell_nature_guardianward"
+    },
     "flask_of_chromatic_resistance": {
       "name": "Flask of Chromatic Resistance",
       "icon": "inv_potion_48"

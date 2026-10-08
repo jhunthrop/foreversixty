@@ -29,7 +29,6 @@ REQUIRED_BUFFS = {
     "leader_of_the_pack",
     "sanctity_aura",
     "strength_of_earth_totem",
-    "grace_of_air_totem",
     "mana_spring_totem",
 }
 REQUIRED_DEBUFFS = {

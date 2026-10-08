@@ -15,7 +15,7 @@
   "presets": {
     "raid": {
       "label": "Raid-ready, Phase 1",
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want.",
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want. Grace of Air Totem is left out: it is an air totem, so a party's shaman drops either it or Windfury Totem (the beta notes say the two do not stack), and Windfury measured 4 to 24% ahead of Grace of Air for every melee spec that can receive it (design/reviews/2026-10-08-remaining-trainables.md).",
       "buffs": [
         {
           "id": "arcane_brilliance",
@@ -81,11 +81,6 @@
           "id": "strength_of_earth_totem",
           "label": "Strength of Earth Totem",
           "reason": "Strength from a raid shaman. Plain version: the live shaman trees have no Enhancing Totems."
-        },
-        {
-          "id": "grace_of_air_totem",
-          "label": "Grace of Air Totem",
-          "reason": "Agility from a raid shaman. Plain version, same reason."
         },
         {
           "id": "windfury_totem",
@@ -185,53 +180,53 @@
             ]
           },
           "healer": {
-        "roles": [
-          "healer"
-        ],
-        "ids": [
-          {
-            "id": "flask_of_distilled_wisdom",
-            "label": "Flask of Distilled Wisdom",
-            "reason": "The healer's flask: a large pool of mana for the whole fight. Client level 50."
+            "roles": [
+              "healer"
+            ],
+            "ids": [
+              {
+                "id": "flask_of_distilled_wisdom",
+                "label": "Flask of Distilled Wisdom",
+                "reason": "The healer's flask: a large pool of mana for the whole fight. Client level 50."
+              },
+              {
+                "id": "greater_mageblood_elixir",
+                "label": "Greater Mageblood Elixir",
+                "reason": "Mana per five seconds, in the engine's mana-regeneration elixir slot; client level 55 (item 250341, spell 1250948). It replaces the plain Mageblood Elixir, which restores less."
+              },
+              {
+                "id": "greater_clerics_elixir",
+                "label": "Greater Cleric's Elixir",
+                "reason": "Healing power for half an hour; client level 55 (item 250333, spell 1250926). The lesser Cleric's Elixir is the same slot and gives less."
+              },
+              {
+                "id": "elixir_of_sages",
+                "label": "Elixir of Sages",
+                "reason": "Spirit and spell critical strike for half an hour; client level 55 (item 250338, spell 1250941). Spirit is the healer's regeneration stat."
+              },
+              {
+                "id": "food_sages_tea",
+                "label": "Sage's Tea",
+                "reason": "A drink that makes the healer well fed with healing power; client level 45 (item 249870, spell 1249925). Nightfin Soup, the caster's meal, gives spell damage and is no use to a healer."
+              },
+              {
+                "id": "main_hand_imbue:brilliant_mana_oil",
+                "label": "Brilliant Mana Oil",
+                "reason": "Mana per five seconds and healing power on the main hand; client level 45. The engine states the client's amounts for the three mana oils."
+              },
+              {
+                "id": "major_mana_potion",
+                "label": "Major Mana Potion",
+                "reason": "Drunk by the engine's major-cooldown pass (the rotation's autocast line) whenever the bar has room for it and the two-minute cooldown is up; client level 49."
+              },
+              {
+                "id": "conjured_demonic_rune",
+                "label": "Demonic Rune",
+                "reason": "Used by the engine's major-cooldown pass (the rotation's autocast line) whenever the bar has room for it and the two-minute cooldown is up, in the engine's conjured slot; it is the mana rune the engine models."
+              }
+            ]
           },
-          {
-            "id": "greater_mageblood_elixir",
-            "label": "Greater Mageblood Elixir",
-            "reason": "Mana per five seconds, in the engine's mana-regeneration elixir slot; client level 55 (item 250341, spell 1250948). It replaces the plain Mageblood Elixir, which restores less."
-          },
-          {
-            "id": "greater_clerics_elixir",
-            "label": "Greater Cleric's Elixir",
-            "reason": "Healing power for half an hour; client level 55 (item 250333, spell 1250926). The lesser Cleric's Elixir is the same slot and gives less."
-          },
-          {
-            "id": "elixir_of_sages",
-            "label": "Elixir of Sages",
-            "reason": "Spirit and spell critical strike for half an hour; client level 55 (item 250338, spell 1250941). Spirit is the healer's regeneration stat."
-          },
-          {
-            "id": "food_sages_tea",
-            "label": "Sage's Tea",
-            "reason": "A drink that makes the healer well fed with healing power; client level 45 (item 249870, spell 1249925). Nightfin Soup, the caster's meal, gives spell damage and is no use to a healer."
-          },
-          {
-            "id": "main_hand_imbue:brilliant_mana_oil",
-            "label": "Brilliant Mana Oil",
-            "reason": "Mana per five seconds and healing power on the main hand; client level 45. The engine states the client's amounts for the three mana oils."
-          },
-          {
-            "id": "major_mana_potion",
-            "label": "Major Mana Potion",
-            "reason": "Drunk by the engine's major-cooldown pass (the rotation's autocast line) whenever the bar has room for it and the two-minute cooldown is up; client level 49."
-          },
-          {
-            "id": "conjured_demonic_rune",
-            "label": "Demonic Rune",
-            "reason": "Used by the engine's major-cooldown pass (the rotation's autocast line) whenever the bar has room for it and the two-minute cooldown is up, in the engine's conjured slot; it is the mana rune the engine models."
-          }
-        ]
-      },
-      "melee": {
+          "melee": {
             "reference_stats": [
               "attack_power"
             ],
