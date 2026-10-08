@@ -14736,10 +14736,10 @@
           "attack_power": 1.0,
           "feral_attack_power": 1.0,
           "strength": 2.2,
-          "agility": 1.483,
-          "crit": 0.69,
-          "hit": 0.844,
-          "melee_haste": 5.216
+          "agility": 1.482,
+          "crit": 0.689,
+          "hit": 0.868,
+          "melee_haste": 5.607
         }
       },
       {
@@ -14914,10 +14914,10 @@
           "attack_power": 1.0,
           "feral_attack_power": 1.0,
           "strength": 2.2,
-          "agility": 1.548,
-          "crit": 0.784,
-          "hit": 0.962,
-          "melee_haste": 5.775
+          "agility": 1.551,
+          "crit": 0.788,
+          "hit": 0.888,
+          "melee_haste": 5.288
         }
       },
       {
@@ -15092,10 +15092,10 @@
           "attack_power": 1.0,
           "feral_attack_power": 1.0,
           "strength": 2.2,
-          "agility": 1.625,
-          "crit": 0.893,
-          "hit": 1.078,
-          "melee_haste": 5.565
+          "agility": 1.616,
+          "crit": 0.88,
+          "hit": 0.965,
+          "melee_haste": 5.36
         }
       },
       {
@@ -15173,9 +15173,9 @@
               "source": "Enchanting"
             },
             "main_hand": {
-              "item_id": 812,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10626,
+              "source_kind": "dungeon",
+              "source": "Sunken Temple: Atal'ai Warrior"
             }
           },
           "horde": {
@@ -15272,7 +15272,7 @@
             17713,
             249469,
             249470,
-            812
+            10626
           ],
           "horde": [
             9479,
@@ -15296,10 +15296,10 @@
           "attack_power": 1.0,
           "feral_attack_power": 1.0,
           "strength": 2.2,
-          "agility": 1.706,
-          "crit": 1.009,
-          "hit": 1.141,
-          "melee_haste": 5.521
+          "agility": 1.694,
+          "crit": 0.991,
+          "hit": 1.107,
+          "melee_haste": 5.552
         }
       },
       {
@@ -15513,9 +15513,9 @@
           "feral_attack_power": 1.0,
           "strength": 2.2,
           "agility": 1.768,
-          "crit": 1.096,
-          "hit": 1.367,
-          "melee_haste": 6.872
+          "crit": 1.097,
+          "hit": 1.239,
+          "melee_haste": 6.36
         }
       }
     ],
@@ -28854,9 +28854,9 @@
               "source": "The Horn of Xelthos"
             },
             "main_hand": {
-              "item_id": 1482,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Son of Arugal"
+              "item_id": 2194,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "off_hand": {
               "item_id": 5191,
@@ -28901,7 +28901,7 @@
             10402,
             20429,
             277210,
-            1482,
+            2194,
             5191,
             13136
           ]
@@ -28909,10 +28909,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.309,
-          "crit": 0.632,
-          "hit": 0.87,
-          "melee_haste": 5.026
+          "agility": 1.304,
+          "crit": 0.628,
+          "hit": 0.941,
+          "melee_haste": 4.767
         }
       },
       {
@@ -29017,9 +29017,9 @@
               "source": "World drop"
             },
             "chest": {
-              "item_id": 10399,
-              "source_kind": "dungeon",
-              "source": "The Deadmines: Edwin VanCleef"
+              "item_id": 7374,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
               "item_id": 14590,
@@ -29027,14 +29027,14 @@
               "source": "World drop"
             },
             "hands": {
-              "item_id": 10401,
-              "source_kind": "dungeon",
-              "source": "The Deadmines: Defias Overseer"
+              "item_id": 7359,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 10403,
-              "source_kind": "dungeon",
-              "source": "The Deadmines: Captain Greenskin"
+              "item_id": 20152,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "legs": {
               "item_id": 6690,
@@ -29042,9 +29042,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 10402,
-              "source_kind": "dungeon",
-              "source": "The Deadmines: Defias Strip Miner"
+              "item_id": 1121,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "finger1": {
               "item_id": 7686,
@@ -29096,9 +29096,12 @@
             7731,
             2278,
             14593,
-            10399,
+            7374,
             14590,
+            7359,
+            20152,
             6690,
+            1121,
             7686,
             19513,
             7687,
@@ -29109,10 +29112,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.341,
-          "crit": 0.696,
-          "hit": 1.132,
-          "melee_haste": 5.345
+          "agility": 1.345,
+          "crit": 0.704,
+          "hit": 1.083,
+          "melee_haste": 5.26
         }
       },
       {
@@ -29485,9 +29488,9 @@
               "source": "World drop"
             },
             "off_hand": {
-              "item_id": 250614,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 2163,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "ranged": {
               "item_id": 2100,
@@ -29531,17 +29534,17 @@
             19120,
             249469,
             810,
-            250614,
+            2163,
             2100
           ]
         },
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.487,
-          "crit": 1.018,
-          "hit": 2.017,
-          "melee_haste": 7.463
+          "agility": 1.477,
+          "crit": 0.995,
+          "hit": 2.105,
+          "melee_haste": 7.426
         }
       },
       {
@@ -29614,9 +29617,9 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "item_id": 13965,
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise"
             },
             "main_hand": {
               "item_id": 21522,
@@ -29737,7 +29740,7 @@
             19325,
             21201,
             19289,
-            11815,
+            13965,
             21522,
             21520,
             18323
@@ -29765,10 +29768,9 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 2.055,
-          "crit": 2.226,
-          "hit": 4.385,
-          "melee_haste": 13.393
+          "agility": 2.056,
+          "crit": 2.203,
+          "hit": 4.47
         }
       }
     ],
@@ -29971,9 +29973,9 @@
           "attack_power": 1.0,
           "strength": 1.0,
           "agility": 1.133,
-          "crit": 0.284,
-          "hit": 0.817,
-          "melee_haste": 5.325
+          "crit": 0.287,
+          "hit": 0.841,
+          "melee_haste": 5.193
         }
       },
       {
@@ -30169,8 +30171,8 @@
           "strength": 1.0,
           "agility": 1.136,
           "crit": 0.292,
-          "hit": 1.071,
-          "melee_haste": 7.844
+          "hit": 1.09,
+          "melee_haste": 7.611
         }
       },
       {
@@ -30370,10 +30372,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.376,
-          "crit": 0.792,
-          "hit": 1.157,
-          "melee_haste": 8.764
+          "agility": 1.379,
+          "crit": 0.795,
+          "hit": 1.13,
+          "melee_haste": 8.039
         }
       },
       {
@@ -30596,10 +30598,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.434,
-          "crit": 0.912,
-          "hit": 1.539,
-          "melee_haste": 9.419
+          "agility": 1.451,
+          "crit": 0.934,
+          "hit": 1.57,
+          "melee_haste": 10.859
         }
       },
       {
@@ -30823,10 +30825,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 2.079,
-          "crit": 2.249,
-          "hit": 3.228,
-          "melee_haste": 15.611
+          "agility": 2.083,
+          "crit": 2.24,
+          "hit": 3.354,
+          "melee_haste": 12.198
         }
       }
     ],
@@ -30933,9 +30935,9 @@
               "source": "Wailing Caverns: Skum"
             },
             "chest": {
-              "item_id": 10399,
-              "source_kind": "dungeon",
-              "source": "The Deadmines: Edwin VanCleef"
+              "item_id": 252490,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "wrist": {
               "item_id": 3202,
@@ -31012,7 +31014,7 @@
             20442,
             5404,
             6449,
-            10399,
+            252490,
             3202,
             10401,
             10403,
@@ -31028,10 +31030,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.035,
-          "crit": 0.078,
-          "hit": 0.778,
-          "melee_haste": 4.795
+          "agility": 1.037,
+          "crit": 0.08,
+          "hit": 0.768,
+          "melee_haste": 4.663
         }
       },
       {
@@ -31212,6 +31214,7 @@
             7731,
             2278,
             14593,
+            10399,
             14590,
             6690,
             7686,
@@ -31224,10 +31227,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.035,
-          "crit": 0.073,
-          "hit": 0.995,
-          "melee_haste": 7.294
+          "agility": 1.033,
+          "crit": 0.071,
+          "hit": 1.005,
+          "melee_haste": 7.951
         }
       },
       {
@@ -31425,10 +31428,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.038,
-          "crit": 0.079,
-          "hit": 0.969,
-          "melee_haste": 6.921
+          "agility": 1.037,
+          "crit": 0.075,
+          "hit": 0.993,
+          "melee_haste": 5.181
         }
       },
       {
@@ -31651,10 +31654,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.367,
-          "crit": 0.763,
-          "hit": 1.666,
-          "melee_haste": 7.125
+          "agility": 1.358,
+          "crit": 0.753,
+          "hit": 1.552,
+          "melee_haste": 5.349
         }
       },
       {
@@ -31878,10 +31881,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.876,
-          "crit": 1.804,
-          "hit": 3.012,
-          "melee_haste": 11.265
+          "agility": 1.873,
+          "crit": 1.81,
+          "hit": 2.93,
+          "melee_haste": 10.595
         }
       }
     ],

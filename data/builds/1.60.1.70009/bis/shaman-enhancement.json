@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
-  "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T13:41:51Z",
+  "engine_version": "b8ecd4558",
+  "generated_at": "2026-10-08T15:21:13Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -535,8 +535,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.755581633,
-      "verify_run_seconds": 2.863710914,
+      "weights_run_seconds": 1.384221694,
+      "verify_run_seconds": 2.346066788,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1146,8 +1146,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.755581633,
-      "verify_run_seconds": 2.773870237,
+      "weights_run_seconds": 1.384221694,
+      "verify_run_seconds": 2.198982049,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1786,8 +1786,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.873924178,
-      "verify_run_seconds": 1.829831649,
+      "weights_run_seconds": 1.461160044,
+      "verify_run_seconds": 1.454286779,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2427,8 +2427,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.873924178,
-      "verify_run_seconds": 1.777863923,
+      "weights_run_seconds": 1.461160044,
+      "verify_run_seconds": 1.403985658,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3067,8 +3067,8 @@
         "finger2: Mark of Kern",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.301137269,
-      "verify_run_seconds": 2.049048232,
+      "weights_run_seconds": 1.778555408,
+      "verify_run_seconds": 1.597232371,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3701,8 +3701,8 @@
         "finger2: Mark of Kern",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.301137269,
-      "verify_run_seconds": 2.14290854,
+      "weights_run_seconds": 1.778555408,
+      "verify_run_seconds": 1.646259627,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4381,8 +4381,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.384875351,
-      "verify_run_seconds": 4.445833364,
+      "weights_run_seconds": 1.8665353310000001,
+      "verify_run_seconds": 3.515541527,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5037,8 +5037,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.384875351,
-      "verify_run_seconds": 2.774224696,
+      "weights_run_seconds": 1.8665353310000001,
+      "verify_run_seconds": 2.186125416,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5481,7 +5481,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 164.33983676787818,
+          "score": 164.33983676787815,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +2.5 DPS (236.2 vs 233.7 set DPS)",
           "dps_delta": 2.4823261906761616,
@@ -5491,21 +5491,21 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.7920602989893664
+              "dps_delta": -3.792060298989364
             },
             {
               "item_id": 18736,
               "item_name": "Plaguehound Leggings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -5.438751614504948
+              "dps_delta": -5.4387516145049455
             },
             {
               "item_id": 15065,
               "item_name": "Warbear Woolies",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -5.658132719156436
+              "dps_delta": -5.658132719156434
             }
           ]
         },
@@ -5764,8 +5764,8 @@
         "trinket2: Second Wind",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.238287433,
-      "verify_run_seconds": 8.873802392,
+      "weights_run_seconds": 1.752507172,
+      "verify_run_seconds": 6.925320154,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6066,14 +6066,14 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.3493743320108244
+              "dps_delta": -0.34937433201082235
             },
             {
-              "item_id": 227157,
-              "item_name": "Legionnaire's Mail Hauberk",
-              "source_kind": "pvp",
-              "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -1.3294695145518463
+              "item_id": 231653,
+              "item_name": "Warlord's Mail Hauberk",
+              "source_kind": "vendor",
+              "source": "PvP rank 17 · Warlord · Horde",
+              "dps_delta": -1.329469514551844
             },
             {
               "item_id": 23089,
@@ -6212,7 +6212,7 @@
               "item_name": "General's Mail Legguards",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.6287499119253788
+              "dps_delta": -2.6287499119253765
             },
             {
               "item_id": 22673,
@@ -6485,8 +6485,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.238287433,
-      "verify_run_seconds": 8.808674331,
+      "weights_run_seconds": 1.752507172,
+      "verify_run_seconds": 6.739717426,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6798,7 +6798,7 @@
               "item_name": "Savage Gladiator Chain",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -5.559060780822869
+              "dps_delta": -5.559060780822872
             },
             {
               "item_id": 23089,
@@ -6952,7 +6952,7 @@
               "item_name": "Blademaster Leggings",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: The Beast",
-              "dps_delta": -13.786456780015529
+              "dps_delta": -13.786456780015525
             }
           ]
         },
@@ -7213,8 +7213,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.232061898,
-      "verify_run_seconds": 9.292121452,
+      "weights_run_seconds": 1.814189565,
+      "verify_run_seconds": 7.3637445,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7929,8 +7929,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.232061898,
-      "verify_run_seconds": 8.910332111,
+      "weights_run_seconds": 1.814189565,
+      "verify_run_seconds": 7.027416448,
       "coverage": {
         "back": {
           "eligible": 451,

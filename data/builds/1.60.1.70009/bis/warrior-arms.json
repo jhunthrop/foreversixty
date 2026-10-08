@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
-  "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T13:49:27Z",
+  "engine_version": "b8ecd4558",
+  "generated_at": "2026-10-08T15:27:16Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -551,8 +551,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.720072515,
-      "verify_run_seconds": 2.88477006,
+      "weights_run_seconds": 1.337504237,
+      "verify_run_seconds": 2.35109772,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1188,8 +1188,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.720072515,
-      "verify_run_seconds": 2.822143386,
+      "weights_run_seconds": 1.337504237,
+      "verify_run_seconds": 2.32672659,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1861,8 +1861,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.010535232,
-      "verify_run_seconds": 1.9383906880000001,
+      "weights_run_seconds": 1.614333175,
+      "verify_run_seconds": 1.56722579,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2540,8 +2540,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.010535232,
-      "verify_run_seconds": 1.927229222,
+      "weights_run_seconds": 1.614333175,
+      "verify_run_seconds": 1.562131197,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3218,8 +3218,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.246157406,
-      "verify_run_seconds": 2.156299875,
+      "weights_run_seconds": 1.826819857,
+      "verify_run_seconds": 1.731309983,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3896,8 +3896,8 @@
         "main_hand: Nightblade",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.246157406,
-      "verify_run_seconds": 2.139531342,
+      "weights_run_seconds": 1.826819857,
+      "verify_run_seconds": 1.740935961,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4059,7 +4059,7 @@
           "item_name": "Fury Visor",
           "source": "Voodoo Feathers",
           "source_kind": "quest",
-          "score": 82.58495452974117,
+          "score": 82.58495452974118,
           "verified": true,
           "alternatives": [
             {
@@ -4067,21 +4067,21 @@
               "item_name": "Knight-Lieutenant's Plate Helm",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.8101898802934024
+              "dps_delta": -0.8101898802934036
             },
             {
               "item_id": 7719,
               "item_name": "Raging Berserker's Helm",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "dps_delta": -2.6938493465769255
+              "dps_delta": -2.693849346576927
             },
             {
               "item_id": 9479,
               "item_name": "Embrace of the Lycan",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -2.802038017040375
+              "dps_delta": -2.8020380170403762
             }
           ]
         },
@@ -4580,8 +4580,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.327842252,
-      "verify_run_seconds": 2.790109662,
+      "weights_run_seconds": 1.882526299,
+      "verify_run_seconds": 2.171733169,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4743,7 +4743,7 @@
           "item_name": "Fury Visor",
           "source": "Voodoo Feathers",
           "source_kind": "quest",
-          "score": 82.58495452974117,
+          "score": 82.58495452974118,
           "verified": true,
           "alternatives": [
             {
@@ -4751,14 +4751,14 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.8101898802934024
+              "dps_delta": -0.8101898802934036
             },
             {
               "item_id": 9479,
               "item_name": "Embrace of the Lycan",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -2.802038017040375
+              "dps_delta": -2.8020380170403762
             },
             {
               "item_id": 7719,
@@ -5274,8 +5274,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.327842252,
-      "verify_run_seconds": 2.709985749,
+      "weights_run_seconds": 1.882526299,
+      "verify_run_seconds": 2.129503788,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5437,7 +5437,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 168.23112192751972,
+          "score": 168.23112192751975,
           "verified": true,
           "alternatives": [
             {
@@ -5453,7 +5453,7 @@
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -5.098423578012958
+              "dps_delta": -5.0984235780129605
             }
           ]
         },
@@ -6002,8 +6002,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.452361648,
-      "verify_run_seconds": 10.781818594,
+      "weights_run_seconds": 1.9150261739999999,
+      "verify_run_seconds": 8.556912547,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6447,14 +6447,14 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.6409154324513624
+              "dps_delta": -0.6409154324513601
             },
             {
               "item_id": 237825,
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.7534850809981406
+              "dps_delta": -0.7534850809981382
             }
           ]
         },
@@ -6734,8 +6734,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.452361648,
-      "verify_run_seconds": 10.535545801,
+      "weights_run_seconds": 1.9150261739999999,
+      "verify_run_seconds": 8.389490686,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7198,7 +7198,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.7381556986889777
+              "dps_delta": -2.738155698688983
             }
           ]
         },
@@ -7480,8 +7480,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.142284231,
-      "verify_run_seconds": 10.443504579,
+      "weights_run_seconds": 1.687025694,
+      "verify_run_seconds": 8.358784795,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7933,7 +7933,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.7381556986889777
+              "dps_delta": -2.738155698688983
             }
           ]
         },
@@ -8215,8 +8215,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.142284231,
-      "verify_run_seconds": 10.218135059,
+      "weights_run_seconds": 1.687025694,
+      "verify_run_seconds": 8.220080601,
       "coverage": {
         "back": {
           "eligible": 450,

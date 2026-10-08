@@ -1,8 +1,8 @@
 {
   "spec": "paladin-protection",
   "build": "1.60.1.70009",
-  "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T13:24:52Z",
+  "engine_version": "b8ecd4558",
+  "generated_at": "2026-10-08T15:07:42Z",
   "bands": [
     {
       "spec": "paladin-protection",
@@ -680,8 +680,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Gold-plated Buckler"
       ],
-      "weights_run_seconds": 5.832750915,
-      "verify_run_seconds": 2.33607095,
+      "weights_run_seconds": 4.66686094,
+      "verify_run_seconds": 1.882046859,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1439,8 +1439,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Gold-plated Buckler"
       ],
-      "weights_run_seconds": 5.832750915,
-      "verify_run_seconds": 2.3480229440000002,
+      "weights_run_seconds": 4.66686094,
+      "verify_run_seconds": 1.8760985159999999,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2250,8 +2250,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Resplendent Guardian"
       ],
-      "weights_run_seconds": 5.866563197,
-      "verify_run_seconds": 2.198597726,
+      "weights_run_seconds": 4.646102536,
+      "verify_run_seconds": 1.831185662,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3059,8 +3059,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Resplendent Guardian"
       ],
-      "weights_run_seconds": 5.866563197,
-      "verify_run_seconds": 2.175885219,
+      "weights_run_seconds": 4.646102536,
+      "verify_run_seconds": 1.705488886,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3581,7 +3581,7 @@
               "item_name": "Guard's Silvered Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -49.138822667888874
+              "dps_delta": -49.13882266788899
             },
             {
               "item_id": 7921,
@@ -3613,7 +3613,7 @@
               "item_name": "Sentinel's Boots",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -10.141426561621659
+              "dps_delta": -10.141426561621543
             },
             {
               "item_id": 250548,
@@ -3869,8 +3869,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 6.67012486,
-      "verify_run_seconds": 3.322485313,
+      "weights_run_seconds": 5.248606031,
+      "verify_run_seconds": 2.708649288,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4683,8 +4683,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 6.67012486,
-      "verify_run_seconds": 2.981765822,
+      "weights_run_seconds": 5.248606031,
+      "verify_run_seconds": 2.411128878,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5136,14 +5136,14 @@
               "item_name": "Warder's Gloves",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -8.792258042907234
+              "dps_delta": -8.792258042907099
             },
             {
               "item_id": 272096,
               "item_name": "Raider Gauntlets",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -139.93354839543323
+              "dps_delta": -139.9335483954331
             },
             {
               "item_id": 250552,
@@ -5478,8 +5478,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 7.413720961,
-      "verify_run_seconds": 4.176015245,
+      "weights_run_seconds": 5.892777737,
+      "verify_run_seconds": 3.39237492,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6295,8 +6295,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 7.413720961,
-      "verify_run_seconds": 5.78528758,
+      "weights_run_seconds": 5.892777737,
+      "verify_run_seconds": 4.723755628,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6577,7 +6577,7 @@
           "item_name": "Amulet of the Darkmoon",
           "source": "1200 Tickets - Amulet of the Darkmoon",
           "source_kind": "quest",
-          "score": 23.472293008347528,
+          "score": 23.47229300834753,
           "verified": true,
           "alternatives": [
             {
@@ -6585,21 +6585,21 @@
               "item_name": "Medallion of Grand Marshal Morris",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -113.61340112100048
+              "dps_delta": -113.61340112100075
             },
             {
               "item_id": 18381,
               "item_name": "Evil Eye Pendant",
               "source_kind": "dungeon",
               "source": "Dire Maul: Immol'thar",
-              "dps_delta": -229.0819409567998
+              "dps_delta": -229.08194095680008
             },
             {
               "item_id": 19538,
               "item_name": "Sentinel's Medallion",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -266.1636684937643
+              "dps_delta": -266.1636684937646
             }
           ]
         },
@@ -6663,7 +6663,7 @@
               "item_name": "Stoneskin Gargoyle Cape",
               "source_kind": "dungeon",
               "source": "Stratholme: Stonespine",
-              "dps_delta": -648.2306242613497
+              "dps_delta": -648.2306242613499
             }
           ]
         },
@@ -7109,8 +7109,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.364320755,
-      "verify_run_seconds": 15.437805612,
+      "weights_run_seconds": 5.797549515,
+      "verify_run_seconds": 12.208620079,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7439,7 +7439,7 @@
               "item_name": "Glowing Mantle of the Dawn",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -101.31719899842848
+              "dps_delta": -101.31719899842794
             },
             {
               "item_id": 226987,
@@ -7478,7 +7478,7 @@
               "item_name": "Stoneskin Gargoyle Cape",
               "source_kind": "dungeon",
               "source": "Stratholme: Stonespine",
-              "dps_delta": -648.2306242613497
+              "dps_delta": -648.2306242613499
             }
           ]
         },
@@ -7704,14 +7704,14 @@
               "item_name": "Ring of Awareness",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -165.6370978089213
+              "dps_delta": -165.63709780892185
             },
             {
               "item_id": 22331,
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -247.8776968915932
+              "dps_delta": -247.87769689159347
             },
             {
               "item_id": 11669,
@@ -7737,7 +7737,7 @@
               "item_name": "Ring of Awareness",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -102.20415237517308
+              "dps_delta": -102.20415237517335
             },
             {
               "item_id": 22331,
@@ -7940,8 +7940,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.364320755,
-      "verify_run_seconds": 14.470149598999999,
+      "weights_run_seconds": 5.797549515,
+      "verify_run_seconds": 11.517127889,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -8211,7 +8211,7 @@
               "item_name": "Enchanted Thorium Helm",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -528.3937292940759
+              "dps_delta": -528.3937292940774
             }
           ]
         },
@@ -8472,7 +8472,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -671.2011867812876
+              "dps_delta": -671.201186781289
             }
           ]
         },
@@ -8497,7 +8497,7 @@
               "item_name": "Fine Dawn Treaders",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -1198.3310336685938
+              "dps_delta": -1198.3310336685952
             },
             {
               "item_id": 11787,
@@ -8529,7 +8529,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -286.03480659543624
+              "dps_delta": -286.0348065954366
             },
             {
               "item_id": 11669,
@@ -8562,7 +8562,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -184.42789234932627
+              "dps_delta": -184.42789234932664
             },
             {
               "item_id": 11669,
@@ -8755,8 +8755,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.037600197,
-      "verify_run_seconds": 12.175904512,
+      "weights_run_seconds": 5.542669525,
+      "verify_run_seconds": 9.8845562,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -9141,7 +9141,7 @@
               "item_name": "Ornate Adamantium Breastplate",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -63.330134845118174
+              "dps_delta": -63.33013484511668
             },
             {
               "item_id": 227803,
@@ -9287,7 +9287,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -671.201186781289
+              "dps_delta": -671.2011867812876
             }
           ]
         },
@@ -9567,8 +9567,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.037600197,
-      "verify_run_seconds": 11.838093954,
+      "weights_run_seconds": 5.542669525,
+      "verify_run_seconds": 9.523673092,
       "coverage": {
         "back": {
           "eligible": 449,
