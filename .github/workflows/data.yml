@@ -183,8 +183,10 @@ jobs:
       # manifest.json, so it runs after the normalize that covers icons and
       # tree art rather than before it; simconst and levels ran before icons
       # (above) because icons and addon-data read what they write.
-      - run: uv run python -m pipeline simdb --build "$BUILD"
+      # gametables before simdb: simdb's rating factors read
+      # gametables/combatratings.txt (the fifth 1.60.1.70291 fetch failed there).
       - run: uv run python -m pipeline gametables --build "$BUILD"
+      - run: uv run python -m pipeline simdb --build "$BUILD"
       - run: |
           PREV=$(ls builds | grep -E '^[0-9]+(\.[0-9]+)+$' | grep -vx "$BUILD" | sort -V | tail -1)
           if [ -n "$PREV" ]; then uv run python -m pipeline diff --from "$PREV" --to "$BUILD"; fi
