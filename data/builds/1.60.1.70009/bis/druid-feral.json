@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T02:28:47Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:15:04Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -531,8 +531,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.275453081,
-      "verify_run_seconds": 1.541774533,
+      "weights_run_seconds": 3.104218015,
+      "verify_run_seconds": 1.466625048,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1142,8 +1142,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 3.275453081,
-      "verify_run_seconds": 1.493915219,
+      "weights_run_seconds": 3.104218015,
+      "verify_run_seconds": 1.458717734,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1782,8 +1782,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 3.550599564,
-      "verify_run_seconds": 1.770198852,
+      "weights_run_seconds": 3.370975039,
+      "verify_run_seconds": 1.691216472,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2423,8 +2423,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 3.550599564,
-      "verify_run_seconds": 1.762597456,
+      "weights_run_seconds": 3.370975039,
+      "verify_run_seconds": 1.6862184930000002,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3067,8 +3067,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.82796918,
-      "verify_run_seconds": 1.767686239,
+      "weights_run_seconds": 3.5840718049999998,
+      "verify_run_seconds": 1.694634553,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3710,8 +3710,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.82796918,
-      "verify_run_seconds": 1.771628099,
+      "weights_run_seconds": 3.5840718049999998,
+      "verify_run_seconds": 1.665781645,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4372,8 +4372,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 3.887357058,
-      "verify_run_seconds": 1.852068417,
+      "weights_run_seconds": 3.670976546,
+      "verify_run_seconds": 1.804828311,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5032,8 +5032,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 3.887357058,
-      "verify_run_seconds": 1.9050600580000001,
+      "weights_run_seconds": 3.670976546,
+      "verify_run_seconds": 1.8189293229999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5754,8 +5754,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.716721438,
-      "verify_run_seconds": 1.960587541,
+      "weights_run_seconds": 3.501056735,
+      "verify_run_seconds": 1.9068700779999999,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6203,7 +6203,7 @@
               "item_name": "Legionnaire's Dragonhide Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -1.5006801618490586
+              "dps_delta": -1.5006801618490573
             },
             {
               "item_id": 237818,
@@ -6477,8 +6477,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.716721438,
-      "verify_run_seconds": 1.963783706,
+      "weights_run_seconds": 3.501056735,
+      "verify_run_seconds": 1.903998158,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6861,7 +6861,7 @@
               "item_name": "Marshal's Dragonhide Grips",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.880527882925669
+              "dps_delta": -0.8805278829256712
             },
             {
               "item_id": 227183,
@@ -7198,8 +7198,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.449707655,
-      "verify_run_seconds": 1.889467459,
+      "weights_run_seconds": 3.285021236,
+      "verify_run_seconds": 1.8059300600000001,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -7917,8 +7917,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.449707655,
-      "verify_run_seconds": 1.865404565,
+      "weights_run_seconds": 3.285021236,
+      "verify_run_seconds": 1.7668817780000001,
       "coverage": {
         "back": {
           "eligible": 451,

@@ -1,8 +1,8 @@
 {
   "spec": "paladin-protection",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T02:41:37Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:27:24Z",
   "bands": [
     {
       "spec": "paladin-protection",
@@ -680,8 +680,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Gold-plated Buckler"
       ],
-      "weights_run_seconds": 6.133914976,
-      "verify_run_seconds": 1.779408431,
+      "weights_run_seconds": 5.796611916,
+      "verify_run_seconds": 1.7382726160000002,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1439,8 +1439,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Gold-plated Buckler"
       ],
-      "weights_run_seconds": 6.133914976,
-      "verify_run_seconds": 1.83577814,
+      "weights_run_seconds": 5.796611916,
+      "verify_run_seconds": 1.760820775,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2250,8 +2250,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Resplendent Guardian"
       ],
-      "weights_run_seconds": 6.125542226,
-      "verify_run_seconds": 1.76884497,
+      "weights_run_seconds": 5.802584862,
+      "verify_run_seconds": 1.6943043119999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3059,8 +3059,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Resplendent Guardian"
       ],
-      "weights_run_seconds": 6.125542226,
-      "verify_run_seconds": 1.677361838,
+      "weights_run_seconds": 5.802584862,
+      "verify_run_seconds": 1.587459368,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3524,7 +3524,7 @@
               "item_name": "Sentinel's Gauntlet",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -81.44383528101562
+              "dps_delta": -81.44383528101568
             },
             {
               "item_id": 250568,
@@ -3581,7 +3581,7 @@
               "item_name": "Guard's Silvered Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -49.13882266788899
+              "dps_delta": -49.138822667888874
             },
             {
               "item_id": 7921,
@@ -3869,8 +3869,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 7.033052849,
-      "verify_run_seconds": 2.202512161,
+      "weights_run_seconds": 6.607744016,
+      "verify_run_seconds": 2.088239824,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4683,8 +4683,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 7.033052849,
-      "verify_run_seconds": 2.055420066,
+      "weights_run_seconds": 6.607744016,
+      "verify_run_seconds": 1.9848970110000002,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5478,8 +5478,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 7.913888399,
-      "verify_run_seconds": 2.277194306,
+      "weights_run_seconds": 7.33273754,
+      "verify_run_seconds": 2.150718216,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -6281,8 +6281,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 7.913888399,
-      "verify_run_seconds": 2.216442925,
+      "weights_run_seconds": 7.33273754,
+      "verify_run_seconds": 2.050428308,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6771,7 +6771,7 @@
               "item_name": "Belt of Valor",
               "source_kind": "dungeon",
               "source": "Stratholme: Patchwork Horror",
-              "dps_delta": -174.6648613023006
+              "dps_delta": -174.66486130230118
             },
             {
               "item_id": 250572,
@@ -7094,8 +7094,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.870950172,
-      "verify_run_seconds": 2.461251655,
+      "weights_run_seconds": 7.363460742,
+      "verify_run_seconds": 2.314588051,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7423,7 +7423,7 @@
               "item_name": "Glowing Mantle of the Dawn",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -101.31719899842848
+              "dps_delta": -101.31719899842794
             },
             {
               "item_id": 226987,
@@ -7462,7 +7462,7 @@
               "item_name": "Stoneskin Gargoyle Cape",
               "source_kind": "dungeon",
               "source": "Stratholme: Stonespine",
-              "dps_delta": -648.2306242613499
+              "dps_delta": -648.2306242613497
             }
           ]
         },
@@ -7616,7 +7616,7 @@
               "item_name": "Soulforge Legguards",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -185.10637659578515
+              "dps_delta": -185.10637659578626
             },
             {
               "item_id": 14554,
@@ -7906,8 +7906,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.870950172,
-      "verify_run_seconds": 2.423188386,
+      "weights_run_seconds": 7.363460742,
+      "verify_run_seconds": 2.264004179,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -8300,7 +8300,7 @@
               "item_name": "Dire Warbear Harness",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -175.16232777034134
+              "dps_delta": -175.16232777033986
             },
             {
               "item_id": 23087,
@@ -8357,7 +8357,7 @@
               "item_name": "Soulforge Handguards",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -491.47296739740995
+              "dps_delta": -491.4729673974107
             },
             {
               "item_id": 250552,
@@ -8714,8 +8714,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.422494348,
-      "verify_run_seconds": 2.259584328,
+      "weights_run_seconds": 6.948997189,
+      "verify_run_seconds": 2.197132411,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -9531,8 +9531,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.422494348,
-      "verify_run_seconds": 2.19619362,
+      "weights_run_seconds": 6.948997189,
+      "verify_run_seconds": 2.041829031,
       "coverage": {
         "back": {
           "eligible": 449,

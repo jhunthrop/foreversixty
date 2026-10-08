@@ -1,8 +1,8 @@
 {
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T02:52:00Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:37:25Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -566,8 +566,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.37008415,
-      "verify_run_seconds": 1.544078381,
+      "weights_run_seconds": 2.23216864,
+      "verify_run_seconds": 1.4430083599999999,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1217,8 +1217,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.37008415,
-      "verify_run_seconds": 1.5607025939999999,
+      "weights_run_seconds": 2.23216864,
+      "verify_run_seconds": 1.4642515,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1902,8 +1902,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.630623447,
-      "verify_run_seconds": 1.699364732,
+      "weights_run_seconds": 2.481145054,
+      "verify_run_seconds": 1.6132280300000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2593,8 +2593,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.630623447,
-      "verify_run_seconds": 1.7284572150000002,
+      "weights_run_seconds": 2.481145054,
+      "verify_run_seconds": 1.633014054,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3287,8 +3287,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.901831021,
-      "verify_run_seconds": 1.8105928,
+      "weights_run_seconds": 2.7472565749999998,
+      "verify_run_seconds": 1.689114473,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3988,8 +3988,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.901831021,
-      "verify_run_seconds": 1.8275537960000001,
+      "weights_run_seconds": 2.7472565749999998,
+      "verify_run_seconds": 1.785765734,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4698,8 +4698,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.372009511,
-      "verify_run_seconds": 2.180290354,
+      "weights_run_seconds": 3.204917979,
+      "verify_run_seconds": 2.052468075,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5409,8 +5409,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.372009511,
-      "verify_run_seconds": 2.212347537,
+      "weights_run_seconds": 3.204917979,
+      "verify_run_seconds": 2.100295426,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6154,8 +6154,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.219312608,
-      "verify_run_seconds": 2.289809252,
+      "weights_run_seconds": 3.068860673,
+      "verify_run_seconds": 2.153458815,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6906,8 +6906,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.219312608,
-      "verify_run_seconds": 2.315165915,
+      "weights_run_seconds": 3.068860673,
+      "verify_run_seconds": 2.192406818,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7652,8 +7652,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.414585191,
-      "verify_run_seconds": 2.4332159190000002,
+      "weights_run_seconds": 3.241730907,
+      "verify_run_seconds": 2.282091579,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -8402,8 +8402,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.414585191,
-      "verify_run_seconds": 2.441434074,
+      "weights_run_seconds": 3.241730907,
+      "verify_run_seconds": 2.341563838,
       "coverage": {
         "back": {
           "eligible": 451,

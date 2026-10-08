@@ -1,8 +1,8 @@
 {
   "spec": "shaman-restoration",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T02:55:58Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:41:17Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -557,8 +557,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 4.15151985,
-      "verify_run_seconds": 2.115137095,
+      "weights_run_seconds": 4.099146636,
+      "verify_run_seconds": 2.142210289,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1190,8 +1190,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 4.15151985,
-      "verify_run_seconds": 2.1832781,
+      "weights_run_seconds": 4.099146636,
+      "verify_run_seconds": 2.197771778,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1637,7 +1637,7 @@
               "item_name": "Wisdom's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.42773104102566983
+              "dps_delta": -0.4277310410256701
             },
             {
               "item_id": 252518,
@@ -1870,8 +1870,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.197647294,
-      "verify_run_seconds": 2.257180093,
+      "weights_run_seconds": 4.16903947,
+      "verify_run_seconds": 2.231116201,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2548,8 +2548,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.197647294,
-      "verify_run_seconds": 2.191712189,
+      "weights_run_seconds": 4.16903947,
+      "verify_run_seconds": 2.262156457,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3233,8 +3233,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Ravager's Shield"
       ],
-      "weights_run_seconds": 5.072220725,
-      "verify_run_seconds": 2.716362909,
+      "weights_run_seconds": 4.877606546,
+      "verify_run_seconds": 2.6420292180000002,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3914,8 +3914,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Ravager's Shield"
       ],
-      "weights_run_seconds": 5.072220725,
-      "verify_run_seconds": 2.6645821400000003,
+      "weights_run_seconds": 4.877606546,
+      "verify_run_seconds": 2.624114435,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4628,8 +4628,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 8.924338272,
-      "verify_run_seconds": 4.326271409,
+      "weights_run_seconds": 8.721182603,
+      "verify_run_seconds": 4.211510608,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5342,8 +5342,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 8.924338272,
-      "verify_run_seconds": 4.310579871,
+      "weights_run_seconds": 8.721182603,
+      "verify_run_seconds": 4.488408763,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5715,7 +5715,7 @@
               "item_name": "Hands of the Exalted Herald",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Princess Moira Bronzebeard ",
-              "dps_delta": -0.3276539516927302
+              "dps_delta": -0.3276539516927287
             },
             {
               "item_id": 16692,
@@ -6048,8 +6048,8 @@
         "trinket2: Serenity Field",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 10.197906111,
-      "verify_run_seconds": 4.6320363350000004,
+      "weights_run_seconds": 9.92743263,
+      "verify_run_seconds": 4.488908036,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6421,7 +6421,7 @@
               "item_name": "Hands of the Exalted Herald",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Princess Moira Bronzebeard ",
-              "dps_delta": -0.3276539516927302
+              "dps_delta": -0.3276539516927287
             },
             {
               "item_id": 16692,
@@ -6754,8 +6754,8 @@
         "trinket2: Serenity Field",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 10.197906111,
-      "verify_run_seconds": 4.614967633,
+      "weights_run_seconds": 9.92743263,
+      "verify_run_seconds": 4.512198862,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7002,7 +7002,7 @@
               "item_name": "Mantle of The Five Thunders",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -3.633981293161849
+              "dps_delta": -3.6339812931618503
             },
             {
               "item_id": 14548,
@@ -7060,14 +7060,14 @@
               "item_name": "Mooncloth Vest",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.23904819275858497
+              "dps_delta": -0.2390481927585864
             },
             {
               "item_id": 13314,
               "item_name": "Alanna's Embrace",
               "source_kind": "dungeon",
               "source": "Scholomance: Ras Frostwhisper",
-              "dps_delta": -0.6257875980172243
+              "dps_delta": -0.6257875980172257
             },
             {
               "item_id": 23089,
@@ -7126,7 +7126,7 @@
               "item_name": "Hands of the Exalted Herald",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Princess Moira Bronzebeard ",
-              "dps_delta": -0.16287755211389457
+              "dps_delta": -0.162877552113896
             },
             {
               "item_id": 227014,
@@ -7238,7 +7238,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -2.8607757705130803
+              "dps_delta": -2.8607757705130785
             }
           ]
         },
@@ -7388,14 +7388,14 @@
               "item_name": "Staff of Hale Magefire",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.0066839296856079445
+              "dps_delta": -0.006683929685606483
             },
             {
               "item_id": 18717,
               "item_name": "Hammer of the Grand Crusader",
               "source_kind": "dungeon",
               "source": "Stratholme: Balnazzar",
-              "dps_delta": -0.4614708101633128
+              "dps_delta": -0.4614708101633114
             },
             {
               "item_id": 2243,
@@ -7462,8 +7462,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Quel'dorai Channeling Rod"
       ],
-      "weights_run_seconds": 8.888922063999999,
-      "verify_run_seconds": 3.415105859,
+      "weights_run_seconds": 8.666445942,
+      "verify_run_seconds": 3.380283563,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7636,7 +7636,7 @@
               "item_name": "Crown of The Five Thunders",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -2.798620259660557
+              "dps_delta": -2.798620259660556
             },
             {
               "item_id": 21517,
@@ -7767,14 +7767,14 @@
               "item_name": "Mooncloth Vest",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.23904819275858497
+              "dps_delta": -0.2390481927585835
             },
             {
               "item_id": 13314,
               "item_name": "Alanna's Embrace",
               "source_kind": "dungeon",
               "source": "Scholomance: Ras Frostwhisper",
-              "dps_delta": -0.6257875980172243
+              "dps_delta": -0.6257875980172227
             },
             {
               "item_id": 23089,
@@ -7833,7 +7833,7 @@
               "item_name": "Hands of the Exalted Herald",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Princess Moira Bronzebeard ",
-              "dps_delta": -0.16287755211389457
+              "dps_delta": -0.162877552113896
             },
             {
               "item_id": 227014,
@@ -7912,7 +7912,7 @@
               "item_name": "Ghostloom Leggings",
               "source_kind": "dungeon",
               "source": "Scholomance: Jandice Barov",
-              "dps_delta": -2.4476992097579413
+              "dps_delta": -2.44769920975794
             }
           ]
         },
@@ -7944,7 +7944,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -2.8607757705130803
+              "dps_delta": -2.8607757705130785
             }
           ]
         },
@@ -8094,14 +8094,14 @@
               "item_name": "Staff of Hale Magefire",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.0066839296856079445
+              "dps_delta": -0.006683929685606483
             },
             {
               "item_id": 18717,
               "item_name": "Hammer of the Grand Crusader",
               "source_kind": "dungeon",
               "source": "Stratholme: Balnazzar",
-              "dps_delta": -0.4614708101633128
+              "dps_delta": -0.4614708101633114
             },
             {
               "item_id": 2243,
@@ -8168,8 +8168,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Quel'dorai Channeling Rod"
       ],
-      "weights_run_seconds": 8.888922063999999,
-      "verify_run_seconds": 3.463361395,
+      "weights_run_seconds": 8.666445942,
+      "verify_run_seconds": 3.387426018,
       "coverage": {
         "back": {
           "eligible": 451,

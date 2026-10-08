@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T02:42:39Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:28:22Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -541,8 +541,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.8243354090000001,
-      "verify_run_seconds": 1.106673963,
+      "weights_run_seconds": 1.7380481269999999,
+      "verify_run_seconds": 1.0872732410000001,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1158,8 +1158,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.8243354090000001,
-      "verify_run_seconds": 1.137858635,
+      "weights_run_seconds": 1.7380481269999999,
+      "verify_run_seconds": 1.078383455,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1799,8 +1799,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.832862234,
-      "verify_run_seconds": 1.40151359,
+      "weights_run_seconds": 1.7688243830000001,
+      "verify_run_seconds": 1.400231331,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2443,8 +2443,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.832862234,
-      "verify_run_seconds": 1.3973859229999999,
+      "weights_run_seconds": 1.7688243830000001,
+      "verify_run_seconds": 1.358919063,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3086,8 +3086,8 @@
         "finger1: Protector's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.867084739,
-      "verify_run_seconds": 1.30451489,
+      "weights_run_seconds": 1.784430667,
+      "verify_run_seconds": 1.280686381,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3729,8 +3729,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.867084739,
-      "verify_run_seconds": 1.333408385,
+      "weights_run_seconds": 1.784430667,
+      "verify_run_seconds": 1.278716106,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4380,8 +4380,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.934137601,
-      "verify_run_seconds": 1.255913817,
+      "weights_run_seconds": 1.857274765,
+      "verify_run_seconds": 1.203330419,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5036,8 +5036,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.934137601,
-      "verify_run_seconds": 1.248679535,
+      "weights_run_seconds": 1.857274765,
+      "verify_run_seconds": 1.189760974,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5754,8 +5754,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.937721461,
-      "verify_run_seconds": 1.301765901,
+      "weights_run_seconds": 1.803384827,
+      "verify_run_seconds": 1.195598163,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6471,8 +6471,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.937721461,
-      "verify_run_seconds": 1.297402718,
+      "weights_run_seconds": 1.803384827,
+      "verify_run_seconds": 1.208208156,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -6926,7 +6926,7 @@
           "item_name": "Bloodmail Boots",
           "source": "Scholomance: Lady Illucia Barov",
           "source_kind": "dungeon",
-          "score": 71.1058302557186,
+          "score": 71.10583025571862,
           "verified": true,
           "alternatives": [
             {
@@ -6934,14 +6934,14 @@
               "item_name": "Knight-Lieutenant's Lamellar Sabatons",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.5852850871530697
+              "dps_delta": -1.5852850871530715
             },
             {
               "item_id": 21532,
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -1.8857330933515954
+              "dps_delta": -1.8857330933515972
             },
             {
               "item_id": 13967,
@@ -7175,8 +7175,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.268971931,
-      "verify_run_seconds": 1.5541981059999999,
+      "weights_run_seconds": 2.165583303,
+      "verify_run_seconds": 1.490792862,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7629,7 +7629,7 @@
           "item_name": "Bloodmail Boots",
           "source": "Scholomance: Lady Illucia Barov",
           "source_kind": "dungeon",
-          "score": 71.10583025571862,
+          "score": 71.1058302557186,
           "verified": true,
           "alternatives": [
             {
@@ -7637,14 +7637,14 @@
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -1.8857330933515972
+              "dps_delta": -1.8857330933515954
             },
             {
               "item_id": 227815,
               "item_name": "Fine Dawn Treaders",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -2.159931913805978
+              "dps_delta": -2.1599319138059756
             },
             {
               "item_id": 13967,
@@ -7879,8 +7879,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.268971931,
-      "verify_run_seconds": 1.604162606,
+      "weights_run_seconds": 2.165583303,
+      "verify_run_seconds": 1.501471479,
       "coverage": {
         "back": {
           "eligible": 449,

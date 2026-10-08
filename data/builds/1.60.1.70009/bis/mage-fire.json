@@ -1,8 +1,8 @@
 {
   "spec": "mage-fire",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T02:37:07Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:23:06Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.097408129,
-      "verify_run_seconds": 0.744889702,
+      "weights_run_seconds": 1.021736251,
+      "verify_run_seconds": 0.709985497,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -628,6 +628,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -3.563419091994639,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16
+      },
       "haste_on_items": false
     },
     {
@@ -1185,8 +1190,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.097408129,
-      "verify_run_seconds": 0.766967726,
+      "weights_run_seconds": 1.021736251,
+      "verify_run_seconds": 0.75229318,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1261,6 +1266,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -3.563419091994639,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16
+      },
       "haste_on_items": false
     },
     {
@@ -1888,8 +1898,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.178498902,
-      "verify_run_seconds": 0.793650996,
+      "weights_run_seconds": 1.080588264,
+      "verify_run_seconds": 0.791881283,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -1964,6 +1974,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 1.3921032208688326,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16
+      },
       "haste_on_items": false
     },
     {
@@ -2592,8 +2607,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.178498902,
-      "verify_run_seconds": 0.792805351,
+      "weights_run_seconds": 1.080588264,
+      "verify_run_seconds": 0.75553008,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2668,6 +2683,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 1.3921032208688326,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16
+      },
       "haste_on_items": false
     },
     {
@@ -3262,8 +3282,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.237060023,
-      "verify_run_seconds": 0.758334119,
+      "weights_run_seconds": 1.160875464,
+      "verify_run_seconds": 0.71807091,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3338,6 +3358,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 3.5004057613999238,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16
+      },
       "haste_on_items": false
     },
     {
@@ -3928,8 +3953,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.237060023,
-      "verify_run_seconds": 0.766860255,
+      "weights_run_seconds": 1.160875464,
+      "verify_run_seconds": 0.755897422,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4004,6 +4029,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 3.5004057613999238,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16
+      },
       "haste_on_items": false
     },
     {
@@ -4624,8 +4654,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.164192217,
-      "verify_run_seconds": 0.867071571,
+      "weights_run_seconds": 1.146673257,
+      "verify_run_seconds": 0.851694334,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4700,6 +4730,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -4.181638579163264,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16
+      },
       "haste_on_items": false
     },
     {
@@ -5306,8 +5341,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.164192217,
-      "verify_run_seconds": 0.885075409,
+      "weights_run_seconds": 1.146673257,
+      "verify_run_seconds": 0.765447786,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5382,6 +5417,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -4.181638579163264,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16
+      },
       "haste_on_items": false
     },
     {
@@ -5497,7 +5537,7 @@
               "item_name": "Magister's Crown",
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -9.49343602257943,
+              "dps_delta": -8.152607060691423,
               "verified": true
             }
           ]
@@ -5508,9 +5548,15 @@
           "item_name": "Diana's Pearl Necklace",
           "source": "Stratholme: Cannon Master Willey",
           "source_kind": "dungeon",
-          "sim_dps": 403.5117562171449,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 19601,
+              "item_name": "Jewel of Kajaro",
+              "source_kind": "quest",
+              "source": "The Jewel of Kajaro",
+              "dps_delta": 0
+            },
             {
               "item_id": 22657,
               "item_name": "Amulet of the Dawn",
@@ -5524,14 +5570,6 @@
               "source_kind": "quest",
               "source": "Falrin's Vendetta",
               "dps_delta": -1.1819502804937316
-            },
-            {
-              "item_id": 19601,
-              "item_name": "Jewel of Kajaro",
-              "source_kind": "quest",
-              "source": "The Jewel of Kajaro",
-              "dps_delta": -6.205698160677173,
-              "verified": true
             }
           ]
         },
@@ -5614,7 +5652,7 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.6827577383850482
+              "dps_delta": -0.68275773838505
             },
             {
               "item_id": 227108,
@@ -5628,7 +5666,7 @@
               "item_name": "Robe of Everlasting Night",
               "source_kind": "dungeon",
               "source": "Dire Maul: Immol'thar",
-              "dps_delta": -12.818238827673838,
+              "dps_delta": -10.793027160410418,
               "verified": true
             }
           ]
@@ -5667,18 +5705,12 @@
         },
         {
           "slot": "hands",
-          "item_id": 22066,
-          "item_name": "Sorcerer's Gloves",
-          "source": "Just Compensation",
-          "source_kind": "quest",
-          "score": 36.326059353842695,
+          "item_id": 226930,
+          "item_name": "Sorcerer's Gauntlets",
+          "source": "Mokvar",
+          "source_kind": "vendor",
+          "score": 36.3260593538427,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 226930,
-              "item_name": "Sorcerer's Gauntlets"
-            }
-          ],
           "alternatives": [
             {
               "item_id": 16440,
@@ -5688,10 +5720,10 @@
               "dps_delta": 0
             },
             {
-              "item_id": 226930,
-              "item_name": "Sorcerer's Gauntlets",
-              "source_kind": "vendor",
-              "source": "Mokvar",
+              "item_id": 22066,
+              "item_name": "Sorcerer's Gloves",
+              "source_kind": "quest",
+              "source": "Just Compensation",
               "dps_delta": 0
             },
             {
@@ -5713,6 +5745,13 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 18405,
+              "item_name": "Belt of the Archmage",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -3.671063748317373
+            },
+            {
               "item_id": 272393,
               "item_name": "Magician's Cord",
               "source_kind": "vendor",
@@ -5725,14 +5764,6 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
               "dps_delta": -5.932935951027368
-            },
-            {
-              "item_id": 18405,
-              "item_name": "Belt of the Archmage",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -7.274042487824886,
-              "verified": true
             }
           ]
         },
@@ -5764,7 +5795,7 @@
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -11.860685761447257,
+              "dps_delta": -11.173129673815595,
               "verified": true
             }
           ]
@@ -5813,7 +5844,6 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 403.5117562171449,
           "verified": true,
           "alternatives": [
             {
@@ -5835,7 +5865,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -16.75567293148208,
+              "dps_delta": -14.543370002263998,
               "verified": true
             }
           ]
@@ -5846,7 +5876,6 @@
           "item_name": "Rune Band of Wizardry",
           "source": "Blackrock Spire: Lord Valthalak",
           "source_kind": "dungeon",
-          "sim_dps": 403.5117562171449,
           "verified": true,
           "alternatives": [
             {
@@ -5868,7 +5897,7 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -17.1208443767174,
+              "dps_delta": -16.07217847123792,
               "verified": true
             }
           ]
@@ -5879,10 +5908,9 @@
           "item_name": "Briarwood Reed",
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
-          "sim_dps": 403.5117562171449,
           "verified": true,
-          "swap_note": "confirmed by the sim against Burst of Knowledge (id 11832): kept the pick, +16.1 DPS (403.5 vs 387.4 set DPS)",
-          "dps_delta": 16.111932941788496,
+          "swap_note": "confirmed by the sim against Burst of Knowledge (id 11832): kept the pick, +16.1 DPS over it",
+          "dps_delta": 16.05419246523155,
           "alternatives": [
             {
               "item_id": 272438,
@@ -5913,7 +5941,6 @@
           "item_name": "Burst of Knowledge",
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
-          "sim_dps": 403.5117562171449,
           "verified": true,
           "alternatives": [
             {
@@ -5938,7 +5965,7 @@
               "dps_delta": 0
             }
           ],
-          "faction_note": "Draconic Infused Emblem (from horde) and alliance's own pick Burst of Knowledge measure statistically indistinguishable on gnome (13.18 ± 2.65 vs 16.28 ± 3.65 DPS gain) -- each faction's own tournament winner kept"
+          "faction_note": "Draconic Infused Emblem (from horde) and alliance's own pick Burst of Knowledge measure statistically indistinguishable on gnome (13.15 ± 2.65 vs 15.87 ± 3.64 DPS gain) -- each faction's own tournament winner kept"
         },
         {
           "slot": "main_hand",
@@ -5946,7 +5973,6 @@
           "item_name": "Lord Valthalak's Staff of Command",
           "source": "Blackrock Spire: Lord Valthalak",
           "source_kind": "dungeon",
-          "sim_dps": 403.5117562171449,
           "verified": true,
           "alternatives": [
             {
@@ -5968,7 +5994,7 @@
               "item_name": "Teebu's Blazing Longsword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -26.566532541828224,
+              "dps_delta": -26.930459230698318,
               "verified": true
             }
           ]
@@ -5980,38 +6006,41 @@
         },
         {
           "slot": "ranged",
-          "item_id": 279246,
-          "item_name": "Torch of Light",
-          "source": "Enchanting",
-          "source_kind": "crafted",
-          "score": 299.2055316172729,
+          "item_id": 22408,
+          "item_name": "Ritssyn's Wand of Bad Mojo",
+          "source": "Stratholme: Baron Rivendare",
+          "source_kind": "dungeon",
+          "sim_dps": 408.6726124109722,
           "verified": true,
+          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +6.4 DPS (408.7 vs 402.2 set DPS)",
+          "dps_delta": 6.425044705697417,
           "alternatives": [
-            {
-              "item_id": 22408,
-              "item_name": "Ritssyn's Wand of Bad Mojo",
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -11.601020602909424
-            },
             {
               "item_id": 13938,
               "item_name": "Bonecreeper Stylus",
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -11.901169868876014
+              "dps_delta": -0.3001492659665905
             },
             {
               "item_id": 20672,
               "item_name": "Sparkling Crystal Wand",
               "source_kind": "world",
               "source": "The Duke of Shards",
-              "dps_delta": -12.622131727842948
+              "dps_delta": -1.0211111249335252
+            },
+            {
+              "item_id": 279246,
+              "item_name": "Torch of Light",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": -6.425044705697417,
+              "verified": true
             }
           ]
         }
       ],
-      "set_dps": 403.5117562171449,
+      "set_dps": 408.6726124109722,
       "no_source_count": 1074,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -6037,7 +6066,6 @@
         "back: Arcanoweave Cloak",
         "chest: Robe of the Archmage",
         "wrist: Dryad's Wrist Bindings",
-        "hands: Sorcerer's Gloves",
         "waist: Knowledge of the Timbermaw",
         "legs: Sentinel's Silk Leggings",
         "feet: Sorcerer's Boots",
@@ -6046,10 +6074,10 @@
         "trinket1: Briarwood Reed",
         "trinket2: Burst of Knowledge",
         "main_hand: Lord Valthalak's Staff of Command",
-        "ranged: Torch of Light"
+        "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.264132799,
-      "verify_run_seconds": 0.88039421,
+      "weights_run_seconds": 1.2508941679999999,
+      "verify_run_seconds": 0.91271014,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6124,6 +6152,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -10.033877397385071,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 5,
+          "to_cap": 11
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -6357,7 +6398,7 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.6827577383850482
+              "dps_delta": -0.68275773838505
             },
             {
               "item_id": 227106,
@@ -6416,6 +6457,12 @@
           "source_kind": "quest",
           "score": 36.3260593538427,
           "verified": true,
+          "ties": [
+            {
+              "item_id": 226930,
+              "item_name": "Sorcerer's Gauntlets"
+            }
+          ],
           "alternatives": [
             {
               "item_id": 16540,
@@ -6698,7 +6745,7 @@
               "item_name": "Staff of Balzaphon",
               "source_kind": "dungeon",
               "source": "Stratholme: Balzaphon",
-              "dps_delta": -1.2441041295948037
+              "dps_delta": -1.2441041295948019
             },
             {
               "item_id": 1728,
@@ -6785,8 +6832,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.264132799,
-      "verify_run_seconds": 0.859667776,
+      "weights_run_seconds": 1.2508941679999999,
+      "verify_run_seconds": 0.83878203,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6861,6 +6908,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -10.033877397385071,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 5,
+          "to_cap": 11
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -7200,7 +7260,7 @@
               "item_name": "Highlander's Cloth Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -7.605064012052662
+              "dps_delta": -7.605064012052663
             },
             {
               "item_id": 272393,
@@ -7520,8 +7580,8 @@
         "main_hand: Staff of Balzaphon",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.433724441,
-      "verify_run_seconds": 0.972675592,
+      "weights_run_seconds": 1.38935306,
+      "verify_run_seconds": 0.921581569,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7596,6 +7656,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -0.5149835370611389,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 5,
+          "to_cap": 11
+        }
+      },
       "haste_on_items": false
     },
     {
@@ -7934,7 +8007,7 @@
               "item_name": "Defiler's Cloth Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -7.605064012052662
+              "dps_delta": -7.605064012052663
             },
             {
               "item_id": 272393,
@@ -8255,8 +8328,8 @@
         "main_hand: Staff of Balzaphon",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.433724441,
-      "verify_run_seconds": 0.972908509,
+      "weights_run_seconds": 1.38935306,
+      "verify_run_seconds": 0.920165425,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8331,6 +8404,19 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -0.5149835370611389,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 0,
+        "spell": 16,
+        "school": {
+          "names": [
+            "Fire",
+            "Frost"
+          ],
+          "hit": 5,
+          "to_cap": 11
+        }
+      },
       "haste_on_items": false
     }
   ],

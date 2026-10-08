@@ -1,8 +1,8 @@
 {
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T02:35:57Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:21:58Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -564,8 +564,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.751494869,
-      "verify_run_seconds": 1.9061577889999999,
+      "weights_run_seconds": 3.550163516,
+      "verify_run_seconds": 1.808207673,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1215,8 +1215,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.751494869,
-      "verify_run_seconds": 1.857097616,
+      "weights_run_seconds": 3.550163516,
+      "verify_run_seconds": 1.741660321,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1907,8 +1907,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 4.136874673,
-      "verify_run_seconds": 2.12899188,
+      "weights_run_seconds": 3.932542271,
+      "verify_run_seconds": 2.057920198,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2599,8 +2599,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 4.136874673,
-      "verify_run_seconds": 2.069463477,
+      "weights_run_seconds": 3.932542271,
+      "verify_run_seconds": 1.96840838,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3292,8 +3292,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 4.275067138,
-      "verify_run_seconds": 2.152620998,
+      "weights_run_seconds": 4.048449755,
+      "verify_run_seconds": 2.056191998,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3986,8 +3986,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 4.275067138,
-      "verify_run_seconds": 2.109694232,
+      "weights_run_seconds": 4.048449755,
+      "verify_run_seconds": 1.985764848,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4705,8 +4705,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 4.244745331,
-      "verify_run_seconds": 2.342372041,
+      "weights_run_seconds": 4.067774283,
+      "verify_run_seconds": 2.255235864,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5442,8 +5442,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 4.244745331,
-      "verify_run_seconds": 2.399393039,
+      "weights_run_seconds": 4.067774283,
+      "verify_run_seconds": 2.28093644,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6192,8 +6192,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 4.042654824,
-      "verify_run_seconds": 2.487478364,
+      "weights_run_seconds": 3.797233037,
+      "verify_run_seconds": 2.372316268,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6940,8 +6940,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 4.042654824,
-      "verify_run_seconds": 2.415946475,
+      "weights_run_seconds": 3.797233037,
+      "verify_run_seconds": 2.279093399,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7694,8 +7694,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.352518532,
-      "verify_run_seconds": 2.054136727,
+      "weights_run_seconds": 3.27310194,
+      "verify_run_seconds": 1.934155551,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8118,7 +8118,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 178.7381248623203,
+          "score": 178.73812486232032,
           "verified": true,
           "alternatives": [
             {
@@ -8134,14 +8134,14 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -9.749425311538236
+              "dps_delta": -9.74942531153824
             },
             {
               "item_id": 231567,
               "item_name": "General's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -9.839045189648848
+              "dps_delta": -9.839045189648852
             }
           ]
         },
@@ -8447,8 +8447,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.352518532,
-      "verify_run_seconds": 2.050143472,
+      "weights_run_seconds": 3.27310194,
+      "verify_run_seconds": 1.940538808,
       "coverage": {
         "back": {
           "eligible": 450,

@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T02:48:34Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:34:09Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -549,8 +549,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.969327638,
-      "verify_run_seconds": 0.705220116,
+      "weights_run_seconds": 0.910297154,
+      "verify_run_seconds": 0.679005973,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -625,6 +625,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -1.7035897042713561,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     },
     {
@@ -1182,8 +1187,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.969327638,
-      "verify_run_seconds": 0.749033133,
+      "weights_run_seconds": 0.910297154,
+      "verify_run_seconds": 0.754230874,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1258,6 +1263,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -1.7035897042713561,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     },
     {
@@ -1886,8 +1896,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.961420943,
-      "verify_run_seconds": 0.752933664,
+      "weights_run_seconds": 0.929786502,
+      "verify_run_seconds": 0.737964592,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -1962,6 +1972,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     },
     {
@@ -2592,8 +2607,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.961420943,
-      "verify_run_seconds": 0.76140632,
+      "weights_run_seconds": 0.929786502,
+      "verify_run_seconds": 0.718173592,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2668,6 +2683,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     },
     {
@@ -3264,8 +3284,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.993099896,
-      "verify_run_seconds": 0.653552805,
+      "weights_run_seconds": 0.908906127,
+      "verify_run_seconds": 0.656967436,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3340,6 +3360,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     },
     {
@@ -3930,8 +3955,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.993099896,
-      "verify_run_seconds": 0.689935527,
+      "weights_run_seconds": 0.908906127,
+      "verify_run_seconds": 0.666942272,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4006,6 +4031,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     },
     {
@@ -4623,8 +4653,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.981192208,
-      "verify_run_seconds": 0.810248128,
+      "weights_run_seconds": 0.927249137,
+      "verify_run_seconds": 0.737546286,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4699,6 +4729,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     },
     {
@@ -5315,8 +5350,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.981192208,
-      "verify_run_seconds": 0.83129159,
+      "weights_run_seconds": 0.927249137,
+      "verify_run_seconds": 0.787951245,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5391,6 +5426,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     },
     {
@@ -5958,7 +5998,7 @@
               "item_name": "Lord Valthalak's Staff of Command",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -0.28395058948177615
+              "dps_delta": -0.28395058948177504
             },
             {
               "item_id": 2243,
@@ -6045,8 +6085,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.109239157,
-      "verify_run_seconds": 0.771275213,
+      "weights_run_seconds": 1.045286764,
+      "verify_run_seconds": 0.741064938,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6121,6 +6161,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     },
     {
@@ -6279,7 +6324,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 45.652822638042196,
+          "score": 45.65282263804219,
           "verified": true,
           "alternatives": [
             {
@@ -6294,14 +6339,14 @@
               "item_name": "Virtuous Epaulets",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -0.4102769599229024
+              "dps_delta": -0.4102769599229013
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.4370777950579191
+              "dps_delta": -0.437077795057918
             }
           ]
         },
@@ -6689,7 +6734,7 @@
               "item_name": "Amethyst War Staff",
               "source_kind": "world",
               "source": "Azure Templar",
-              "dps_delta": -1.1572256255299196
+              "dps_delta": -1.1572256255299185
             },
             {
               "item_id": 2243,
@@ -6776,8 +6821,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.109239157,
-      "verify_run_seconds": 0.766757599,
+      "weights_run_seconds": 1.045286764,
+      "verify_run_seconds": 0.760951124,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6852,6 +6897,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": 0,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     },
     {
@@ -7026,7 +7076,7 @@
               "item_name": "Virtuous Epaulets",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.3700553470291916
+              "dps_delta": -1.3700553470291943
             },
             {
               "item_id": 18681,
@@ -7043,7 +7093,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 28.2767621950596,
+          "score": 28.276762195059604,
           "verified": true,
           "alternatives": [
             {
@@ -7059,14 +7109,14 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.7651573013849307
+              "dps_delta": -2.765157301384932
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -3.7534949888944475
+              "dps_delta": -3.753494988894449
             }
           ]
         },
@@ -7176,7 +7226,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 46.70875286109032,
+          "score": 46.708752861090325,
           "verified": true,
           "alternatives": [
             {
@@ -7192,14 +7242,14 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -7.48567771653183
+              "dps_delta": -7.485677716531833
             },
             {
               "item_id": 19094,
               "item_name": "Stormpike Cloth Girdle",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -8.058088852237722
+              "dps_delta": -8.058088852237725
             }
           ]
         },
@@ -7508,8 +7558,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.19320672,
-      "verify_run_seconds": 0.869241385,
+      "weights_run_seconds": 1.096566069,
+      "verify_run_seconds": 0.845923853,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7584,6 +7634,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -4.164088601958027,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     },
     {
@@ -7758,7 +7813,7 @@
               "item_name": "Virtuous Epaulets",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.3700553470291916
+              "dps_delta": -1.3700553470291943
             },
             {
               "item_id": 18681,
@@ -7775,7 +7830,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 28.276762195059604,
+          "score": 28.2767621950596,
           "verified": true,
           "alternatives": [
             {
@@ -7791,14 +7846,14 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.765157301384932
+              "dps_delta": -2.7651573013849307
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -3.7457415810901047
+              "dps_delta": -3.7457415810901034
             }
           ]
         },
@@ -7922,7 +7977,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -7.485677716531834
+              "dps_delta": -7.485677716531833
             },
             {
               "item_id": 19090,
@@ -8237,8 +8292,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.19320672,
-      "verify_run_seconds": 0.877138612,
+      "weights_run_seconds": 1.096566069,
+      "verify_run_seconds": 0.857877703,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8313,6 +8368,11 @@
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "intellect",
       "haste_scale_factor": -4.164088601958027,
+      "hit_to_cap": {
+        "kind": "spell",
+        "baseline": 10,
+        "spell": 6
+      },
       "haste_on_items": false
     }
   ],

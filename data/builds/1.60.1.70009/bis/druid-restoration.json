@@ -1,8 +1,8 @@
 {
   "spec": "druid-restoration",
   "build": "1.60.1.70009",
-  "engine_version": "583668528",
-  "generated_at": "2026-10-08T02:32:29Z",
+  "engine_version": "23ddbe226",
+  "generated_at": "2026-10-08T03:18:41Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -343,7 +343,7 @@
           "item_name": "Wisdom's Leather Pants",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 33.21489494013525,
+          "score": 33.214894940135245,
           "verified": true,
           "alternatives": [
             {
@@ -359,14 +359,14 @@
               "item_name": "Darkweave Breeches",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.6234737393798107
+              "dps_delta": -1.62347373937981
             },
             {
               "item_id": 4434,
               "item_name": "Scarecrow Trousers",
               "source_kind": "world",
               "source": "Foe Reaper 4000",
-              "dps_delta": -2.024780321126431
+              "dps_delta": -2.02478032112643
             }
           ]
         },
@@ -561,8 +561,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 5.730325722,
-      "verify_run_seconds": 2.669346944,
+      "weights_run_seconds": 5.472484065,
+      "verify_run_seconds": 2.581364251,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -846,7 +846,7 @@
           "item_name": "Wisdom's Leather Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 25.514585564282456,
+          "score": 25.514585564282452,
           "verified": true,
           "alternatives": [
             {
@@ -854,14 +854,14 @@
               "item_name": "Filigreed Pristine Gown",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.20542226666665378
+              "dps_delta": -0.20542226666665342
             },
             {
               "item_id": 5202,
               "item_name": "Corsair's Overshirt",
               "source_kind": "dungeon",
               "source": "The Deadmines: Edwin VanCleef",
-              "dps_delta": -0.26363280563277214
+              "dps_delta": -0.26363280563277175
             },
             {
               "item_id": 6465,
@@ -1199,8 +1199,8 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 5.730325722,
-      "verify_run_seconds": 2.542561081,
+      "weights_run_seconds": 5.472484065,
+      "verify_run_seconds": 2.473744863,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1847,8 +1847,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 8.071393076,
-      "verify_run_seconds": 3.467900099,
+      "weights_run_seconds": 7.972897643,
+      "verify_run_seconds": 3.410171376,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2281,7 +2281,7 @@
           "item_name": "Wisdom's Leather Leggings",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 51.64746188059845,
+          "score": 51.64746188059844,
           "verified": true,
           "alternatives": [
             {
@@ -2289,14 +2289,14 @@
               "item_name": "Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.4860837355214689
+              "dps_delta": -0.4860837355214682
             },
             {
               "item_id": 252518,
               "item_name": "Stormrider's Leather Kilt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.9317564713311765
+              "dps_delta": -0.9317564713311757
             },
             {
               "item_id": 253999,
@@ -2529,8 +2529,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 8.071393076,
-      "verify_run_seconds": 3.523760033,
+      "weights_run_seconds": 7.972897643,
+      "verify_run_seconds": 3.406478538,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3212,8 +3212,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 8.97599838,
-      "verify_run_seconds": 3.7682350060000003,
+      "weights_run_seconds": 8.998055018,
+      "verify_run_seconds": 3.6940436009999997,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3895,8 +3895,8 @@
         "trinket2: Ankh of Life",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 8.97599838,
-      "verify_run_seconds": 3.628627271,
+      "weights_run_seconds": 8.998055018,
+      "verify_run_seconds": 3.642127834,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4234,7 +4234,7 @@
               "item_name": "Nethergeld Cuffs",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.2166287299144321
+              "dps_delta": -0.21662872991443138
             },
             {
               "item_id": 12546,
@@ -4365,7 +4365,7 @@
               "item_name": "Sergeant Major's Restored Leather Boots",
               "source_kind": "vendor",
               "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -0.884252795244734
+              "dps_delta": -0.8842527952447325
             },
             {
               "item_id": 10629,
@@ -4598,8 +4598,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 9.135415101,
-      "verify_run_seconds": 3.5968852350000002,
+      "weights_run_seconds": 9.064080044,
+      "verify_run_seconds": 3.545975037,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5118,7 +5118,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -1.4891231021356521
+              "dps_delta": -1.4891231021356517
             }
           ]
         },
@@ -5143,7 +5143,7 @@
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.5794405682728699
+              "dps_delta": -0.5794405682728696
             },
             {
               "item_id": 4550,
@@ -5303,8 +5303,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 9.135415101,
-      "verify_run_seconds": 3.453315135,
+      "weights_run_seconds": 9.064080044,
+      "verify_run_seconds": 3.383729913,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6011,8 +6011,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Dancing Sliver"
       ],
-      "weights_run_seconds": 9.330698037,
-      "verify_run_seconds": 3.800530716,
+      "weights_run_seconds": 9.408970942,
+      "verify_run_seconds": 3.809830868,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6177,7 +6177,7 @@
           "item_name": "Living Crown",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 176.87182539378708,
+          "score": 176.87182539378705,
           "verified": true,
           "alternatives": [
             {
@@ -6185,14 +6185,14 @@
               "item_name": "Champion's Dragonhide Headdress",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -2.7004597167475817
+              "dps_delta": -2.700459716747579
             },
             {
               "item_id": 226786,
               "item_name": "Feralheart Headdress",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -3.283948936377028
+              "dps_delta": -3.2839489363770253
             },
             {
               "item_id": 16720,
@@ -6713,8 +6713,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Dancing Sliver"
       ],
-      "weights_run_seconds": 9.330698037,
-      "verify_run_seconds": 3.95529721,
+      "weights_run_seconds": 9.408970942,
+      "verify_run_seconds": 3.88013288,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6945,7 +6945,7 @@
           "item_name": "Argent Elite Shoulders",
           "source": "Argent Quartermaster Hasana",
           "source_kind": "vendor",
-          "score": 108.20358603286884,
+          "score": 108.20358603286883,
           "verified": true,
           "alternatives": [
             {
@@ -6961,14 +6961,14 @@
               "item_name": "Lieutenant Commander's Dragonhide Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -4.664175651331774
+              "dps_delta": -4.664175651331771
             },
             {
               "item_id": 15061,
               "item_name": "Living Shoulders",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -6.665621331833573
+              "dps_delta": -6.66562133183357
             }
           ]
         },
@@ -7419,8 +7419,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Redemption"
       ],
-      "weights_run_seconds": 8.305055251,
-      "verify_run_seconds": 3.683648936,
+      "weights_run_seconds": 8.298232763,
+      "verify_run_seconds": 3.6039030199999997,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -8125,8 +8125,8 @@
         "trinket2: Royal Seal of Eldre'Thalas",
         "main_hand: Redemption"
       ],
-      "weights_run_seconds": 8.305055251,
-      "verify_run_seconds": 3.567500805,
+      "weights_run_seconds": 8.298232763,
+      "verify_run_seconds": 3.539769708,
       "coverage": {
         "back": {
           "eligible": 451,
