@@ -1,0 +1,25 @@
+{
+  "notes": "Talents the raid-build search (sim/cmd/talent-search -preset raid -keep) never takes a point from, per DPS spec: what the curated rotation casts or gates on, the raid-wide auras and debuffs data/curated/presets.json assumes from the spec's own tree, threat reduction, survivability cooldowns and passive mitigation, and the unmodeled talents that are not movement, stealth, crowd control, PvP, out-of-combat or solo-leveling utility. A name the guide build does not take protects nothing. Everything else may move: modeled talents because the sim measures every candidate whole, and the classified utility talents because the engine cannot see them and a raid DPS does not use them (listed per spec in design/reviews/2026-10-07-raid-builds.md).",
+  "keep": {
+    "druid-balance": ["Moonkin Form", "Insect Swarm", "Nature's Focus", "Subtlety"],
+    "druid-feral": ["Shifting Power", "Leader of the Pack", "Nature's Focus", "Subtlety"],
+    "hunter-beast-mastery": ["Bestial Wrath", "Trueshot Aura"],
+    "hunter-marksmanship": ["Trueshot Aura"],
+    "hunter-survival": ["Counterattack", "Strider Kick", "Deterrence", "Hawk Eye"],
+    "mage-arcane": ["Arcane Blast", "Missile Barrage", "Presence of Mind", "Arcane Power", "Arcane Subtlety", "Improved Channeling", "Arcane Resilience", "Arcane Geometry"],
+    "mage-fire": ["Pyroblast", "Combustion", "Improved Scorch", "Burning Soul", "Flame Throwing", "Improved Channeling", "Arcane Resilience"],
+    "mage-frost": ["Ice Lance", "Fingers of Frost", "Winter's Chill", "Frost Channeling", "Frost Warding", "Flame Throwing", "Improved Channeling"],
+    "paladin-retribution": ["Seal of Command", "Instrument of Law", "Vindication"],
+    "priest-shadow": ["Inner Focus", "Mind Flay", "Shadowform", "Shadow Affinity", "Silent Resolve", "Vampiric Embrace", "Improved Power Word: Shield"],
+    "rogue-assassination": ["Cold Blood", "Mutilate"],
+    "rogue-combat": ["Adrenaline Rush", "Blade Flurry"],
+    "rogue-subtlety": ["Ghostly Strike", "Premeditation", "Hemorrhage", "Elusiveness", "Preparation"],
+    "shaman-elemental": ["Lava Burst", "Elemental Warding", "Natural Grace", "Mindfulness", "Improved Reincarnation"],
+    "shaman-enhancement": ["Stormstrike", "Elemental Warding", "Mindfulness", "Spirit Weapons"],
+    "warlock-affliction": ["Amplify Curse", "Wrack", "Suppression", "Demonic Aegis"],
+    "warlock-demonology": ["Soul Link", "Demonic Aegis", "Suppression"],
+    "warlock-destruction": ["Suppression", "Shadowburn", "Conflagrate", "Incinerate", "Destructive Reach", "Molten Skin"],
+    "warrior-arms": ["Mortal Strike"],
+    "warrior-fury": ["Death Wish", "Bloodthirst"]
+  }
+}
