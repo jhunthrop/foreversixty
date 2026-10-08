@@ -22,6 +22,8 @@ const (
 	auraModResistance  = 22 // misc 1 = armor, a school mask otherwise
 	auraModStat        = 29 // misc -1 = all stats, 3 = Intellect
 	auraModAttackPower = 99
+	// Heart of the Lion's stat effect, on both of its spells.
+	auraModTotalStatPercentage = 137
 	// Blessing of Wisdom's single effect is a periodic energize (aura 24)
 	// of mana every five seconds.
 	auraPeriodicEnergize = 24
@@ -117,4 +119,26 @@ func TestTrueshotAuraRanksMatchTheClient(t *testing.T) {
 
 func TestDevotionAuraRanksMatchTheClient(t *testing.T) {
 	assertRanks(t, "Devotion Aura", loadClass(t, "paladin"), core.DevotionAuraRanks, auraModResistance, miscArmor, false)
+}
+
+// Heart of the Lion's area buff (409583) states melee (aura 99) and ranged
+// (aura 124) attack power with misc -1, 40 base points and 4 per level,
+// capped at the spell's level 60; the hunter's own spell (409580) and the
+// area buff both state aura 137 (mod total stat percentage) at +10 on all
+// stats.
+func TestHeartOfTheLionMatchesTheClient(t *testing.T) {
+	client := loadClass(t, "hunter")
+	assertRanks(t, "Heart of the Lion melee attack power", client, core.HeartOfTheLionRanks, auraModAttackPower, miscAllStats, true)
+	assertRanks(t, "Heart of the Lion ranged attack power", client, core.HeartOfTheLionRanks, auraModRangedAttackPower, miscAllStats, true)
+
+	for _, id := range []int32{core.HeartOfTheLionSpellID, core.HeartOfTheLionRanks[0].SpellID} {
+		spell, ok := client.ByID(id)
+		if !ok {
+			t.Fatalf("Heart of the Lion %d is not in the client table", id)
+		}
+		stats := findEffect(spell, auraModTotalStatPercentage, miscAllStats)
+		if want := core.HeartOfTheLionStatMultiplier; 1+stats.Amount/100 != want {
+			t.Errorf("Heart of the Lion %d: client stat percentage %v, engine multiplier %v", id, stats.Amount, want)
+		}
+	}
 }

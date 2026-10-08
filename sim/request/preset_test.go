@@ -86,7 +86,7 @@ func TestRaidPresetNamesTheRequiredBuffsAndExcludesTheForbiddenOnes(t *testing.T
 	have := buffAndDebuffIDs(resolved)
 	for _, want := range []string{
 		"arcane_brilliance", "gift_of_the_wild", "power_word_fortitude", "divine_spirit",
-		"blessing_of_might", "blessing_of_wisdom", "battle_shout", "trueshot_aura",
+		"blessing_of_might", "blessing_of_wisdom", "battle_shout", "trueshot_aura", "heart_of_the_lion",
 		"leader_of_the_pack", "sanctity_aura", "strength_of_earth_totem", "grace_of_air_totem",
 		"mana_spring_totem", "windfury_totem", "curse_of_elements", "sunder_armor", "faerie_fire",
 		"judgement_of_wisdom", "judgement_of_light", "hunters_mark", "curse_of_recklessness",

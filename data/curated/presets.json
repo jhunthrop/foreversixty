@@ -58,6 +58,11 @@
           "reason": "Attack power from a raid hunter, a Marksmanship talent that exists in the live tree."
         },
         {
+          "id": "heart_of_the_lion",
+          "label": "Heart of the Lion",
+          "reason": "Any Phase 1 raid has a hunter. The client's area aura (spell 409583, sent every 14 seconds by the hunter's own Heart of the Lion, 409580) gives every ally within 100 yards, the whole raid and not only the party, 10% to every stat and 40 plus 4 per level above 1 melee and ranged attack power (276 at 60). A hunter in the raid sets it anyway; the entry is what every other class receives."
+        },
+        {
           "id": "leader_of_the_pack",
           "label": "Leader of the Pack",
           "reason": "Melee and ranged crit from a raid feral druid, a talent that exists in the live tree."

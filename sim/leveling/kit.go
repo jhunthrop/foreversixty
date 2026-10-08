@@ -74,6 +74,7 @@ const (
 	blessingOfMightBuff  = "blessing_of_might"
 	devotionAuraBuff     = "devotion_aura"
 	huntersMarkBuff      = "hunters_mark"
+	heartOfTheLionBuff   = "heart_of_the_lion"
 )
 
 // blessingOfMightLevel is the level Blessing of Might's first rank is
@@ -118,6 +119,14 @@ const huntersMarkLevel = 6
 //     applies the rank the character's level can learn
 //     (core.DevotionAuraRanks).
 //
+//   - Any hunter spec, from level 1: Heart of the Lion (heart_of_the_lion,
+//     client spell 409580, learned at level 1 by every hunter). The
+//     engine's hunter casts it on itself whatever the request says, and
+//     sets the same raid flag for its raid, so the entry changes no
+//     number: it states the self buff in the request, where the
+//     settings bar and the ranker's applied-buff list read it
+//     (design/reviews/2026-10-08-heart-of-the-lion.md).
+//
 //   - hunter-survival, from level 6 (Hunter's Mark's first rank): Hunter's
 //     Mark, a target debuff the engine takes as a request buff. Expose
 //     Prey (2026-10-07, design/reviews/2026-10-07-mongoose-bite.md) opens
@@ -137,11 +146,10 @@ func KitBuffs(spec string, level int) []string {
 		return paladinKitBuffs(level, devotionAuraBuff)
 	case isClassSpec(spec, "paladin"):
 		return paladinKitBuffs(level)
-	case spec == "hunter-survival":
-		if level < huntersMarkLevel {
-			return nil
-		}
-		return []string{huntersMarkBuff}
+	case spec == "hunter-survival" && level >= huntersMarkLevel:
+		return []string{heartOfTheLionBuff, huntersMarkBuff}
+	case isClassSpec(spec, "hunter"):
+		return []string{heartOfTheLionBuff}
 	default:
 		return nil
 	}
