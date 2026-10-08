@@ -96,7 +96,7 @@ Follow the table above: health, then the avoidance stats and armor, with the thr
 
 ## Enchants and consumables
 
-Target stamina and the defensive stats on enchants where they are available. This build's enchant data confirms a dedicated Enchant Shield line for stamina. For consumables the BiS tab's Raid-ready set shows the tank's: a health flask, stamina food and drink, and strength and attack power for threat.
+Target stamina and the defensive stats on enchants where they are available. This build's enchant data confirms a dedicated Enchant Shield line for stamina. For consumables the BiS tab's Raid-ready set shows the tank's: armor and health elixirs, stamina food and drink, and strength and attack power for threat.
 
 ## Races
 

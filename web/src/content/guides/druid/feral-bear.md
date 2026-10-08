@@ -73,7 +73,7 @@ Follow the table above: health, then Armor and Dodge, with the threat stats behi
 
 ## Enchants and consumables
 
-Target stamina and the defensive stats on enchants where they are available. For consumables the BiS tab's Raid-ready set shows the bear's: a health flask, stamina food and drink, strength and attack power for threat, and a Stoneshield potion.
+Target stamina and the defensive stats on enchants where they are available. For consumables the BiS tab's Raid-ready set shows the bear's: armor and health elixirs, stamina food and drink, strength and attack power for threat, and a Stoneshield potion.
 
 ## Races
 
