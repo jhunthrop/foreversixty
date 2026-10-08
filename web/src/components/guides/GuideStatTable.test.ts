@@ -98,12 +98,12 @@ describe('GuideStatTable', () => {
     }
   });
 
-  it('renders nothing for a spec with no ranked BiS file (Protection)', async () => {
+  it('renders nothing for a spec with no ranked BiS file', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(GuideStatTable, {
       props: {
         build: BUILD,
-        spec: 'warrior-protection',
+        spec: 'warrior-nonexistent',
         classSlug: 'warrior',
         recommendedRaces: ['dwarf'],
         statPriority: ['Defense'],

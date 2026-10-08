@@ -37,6 +37,28 @@
     ]
   },
   {
+    "spec": "druid-feral-bear",
+    "weights": {
+      "stamina": 1.0,
+      "armor": 0.15,
+      "defense": 1.217,
+      "dodge": 10.933,
+      "strength": 0.119,
+      "agility": 0.693,
+      "attack_power": 0.06,
+      "hit": 2.144,
+      "crit": 1.791,
+      "expertise": 7.207
+    },
+    "sources": [
+      {
+        "label": "Forever Sixty tank simulation, level 60 raid-ready, per point of the engine's stat unit, against the stamina weight",
+        "url": "https://foreversixty.gg/sources",
+        "kind": "site"
+      }
+    ]
+  },
+  {
     "spec": "druid-restoration",
     "weights": {
       "spell_power": 1.0,
@@ -189,24 +211,24 @@
   {
     "spec": "paladin-protection",
     "weights": {
-      "attack_power": 1.0,
-      "stamina": 3.0,
-      "defense": 6.0,
-      "armor": 0.12,
-      "dodge": 4.0,
-      "parry": 4.0,
-      "block": 3.0,
-      "block_value": 0.5,
-      "strength": 1.2,
-      "agility": 1.0,
-      "hit": 10.0,
-      "expertise": 8.0
+      "stamina": 1.0,
+      "armor": 0.045,
+      "defense": 1.85,
+      "dodge": 13.559,
+      "parry": 14.217,
+      "block": 4.275,
+      "strength": 0.093,
+      "agility": 0.826,
+      "attack_power": 0.027,
+      "hit": 1.864,
+      "crit": 1.236,
+      "expertise": 5.441
     },
     "sources": [
       {
-        "label": "Wowhead Classic Protection Paladin tank stat priority",
-        "url": "https://www.wowhead.com/classic/guide/classes/paladin/protection/stat-priority-pve",
-        "kind": "community"
+        "label": "Forever Sixty tank simulation, level 60 raid-ready, per point of the engine's stat unit, against the stamina weight",
+        "url": "https://foreversixty.gg/sources",
+        "kind": "site"
       }
     ]
   },
@@ -489,24 +511,24 @@
   {
     "spec": "warrior-protection",
     "weights": {
-      "attack_power": 1.0,
-      "stamina": 3.2,
-      "defense": 6.5,
-      "armor": 0.12,
-      "dodge": 4.5,
-      "parry": 4.5,
-      "block": 3.0,
-      "block_value": 0.6,
-      "strength": 1.0,
-      "agility": 1.1,
-      "hit": 10.0,
-      "expertise": 10.0
+      "stamina": 1.0,
+      "armor": 0.046,
+      "defense": 1.849,
+      "dodge": 14.761,
+      "parry": 15.095,
+      "block": 0.306,
+      "strength": 0.083,
+      "agility": 0.903,
+      "attack_power": 0.019,
+      "hit": 2.248,
+      "crit": 1.117,
+      "expertise": 9.026
     },
     "sources": [
       {
-        "label": "Wowhead Classic Protection Warrior tank stat priority",
-        "url": "https://www.wowhead.com/classic/guide/classes/warrior/protection/stat-priority-pve",
-        "kind": "community"
+        "label": "Forever Sixty tank simulation, level 60 raid-ready, per point of the engine's stat unit, against the stamina weight",
+        "url": "https://foreversixty.gg/sources",
+        "kind": "site"
       }
     ]
   }
