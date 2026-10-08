@@ -4,7 +4,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
-	"strings"
+	"regexp"
 	"testing"
 
 	"github.com/wowsims/classic/sim/core/proto"
@@ -64,28 +64,24 @@ func TestHealProfileAttachWeightsCarriesTheModel(t *testing.T) {
 }
 
 func TestHealProfileRefusesWhatTheEngineCannotRun(t *testing.T) {
-	cases := map[string]string{
-		"no tank swings":      `"swing_seconds": 2.0`,
-		"no pulse interval":   `"interval_seconds": 4.0`,
-		"spread of a hundred": `"damage_spread": 0.25`,
-	}
-	replacements := map[string]string{
-		"no tank swings":      `"swing_seconds": 0`,
-		"no pulse interval":   `"interval_seconds": 0`,
-		"spread of a hundred": `"damage_spread": 1`,
+	cases := map[string]struct{ key, broken string }{
+		"no tank swings":      {"swing_seconds", "0"},
+		"no pulse interval":   {"interval_seconds", "0"},
+		"spread of a hundred": {"damage_spread", "1"},
 	}
 	good, err := os.ReadFile(curatedHealProfile)
 	if err != nil {
 		t.Fatal(err)
 	}
-	for name, needle := range cases {
+	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
-			if !strings.Contains(string(good), needle) {
-				t.Fatalf("the curated profile no longer contains %q; update this test", needle)
+			field := regexp.MustCompile(`"` + c.key + `":\s*[0-9.]+`)
+			if !field.Match(good) {
+				t.Fatalf("the curated profile no longer states %q as a number; update this test", c.key)
 			}
 			path := filepath.Join(t.TempDir(), "profile.json")
-			broken := strings.Replace(string(good), needle, replacements[name], 1)
-			if err := os.WriteFile(path, []byte(broken), 0o644); err != nil {
+			broken := field.ReplaceAll(good, []byte(`"`+c.key+`": `+c.broken))
+			if err := os.WriteFile(path, broken, 0o644); err != nil {
 				t.Fatal(err)
 			}
 			if _, err := LoadHealProfile(path); !errors.Is(err, ErrBadHealProfile) {

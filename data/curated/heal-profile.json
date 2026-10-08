@@ -8,18 +8,18 @@
   "tank": {
     "health": 9500,
     "hit_damage": 1150,
-    "swing_seconds": 2.0,
-    "reason": "A raid tank has about 9,500 health in Phase 1 gear with raid buffs. An Onyxia-sized boss hits a mitigated tank for about 1,150 every other second once misses, dodges and parries are averaged in; each hit rolls 25 percent either side."
+    "swing_seconds": 3.3,
+    "reason": "A raid tank has about 9,500 health in Phase 1 gear with raid buffs. An Onyxia-sized boss hits a mitigated tank for about 1,150, and with misses, dodges and parries averaged in one hit lands about every 3.3 seconds, which is about 350 damage a second; each hit rolls 25 percent either side."
   },
   "members": {
     "health": 5000,
     "reason": "A raid member that is not the tank has about 5,000 health: a plate or mail wearer sits above it and a cloth wearer below."
   },
   "pulse": {
-    "damage": 450,
-    "interval_seconds": 4.0,
+    "damage": 300,
+    "interval_seconds": 5.0,
     "members": 3,
-    "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every four seconds three of the four raid members take 450, which is about 340 damage a second spread over the group the healer stands in."
+    "reason": "Raid-wide damage in regular pulses (a breath, a wing buffet, a periodic shadow bolt volley): every five seconds three of the four raid members take 300, which is about 180 damage a second spread over the group the healer stands in."
   },
   "sources": [
     {
