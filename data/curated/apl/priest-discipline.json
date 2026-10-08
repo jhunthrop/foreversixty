@@ -1,10 +1,808 @@
 {
   "spec": "priest-discipline",
-  "state": "unwritten",
-  "notes": "",
-  "sources": [],
+  "state": "written",
+  "notes": "Discipline priest healer rotation (stage 2 of the healer build), written against the fork's fake raid: the healer is raid player 0, the four fake party members are players 1 to 4 and the tank is player 5. Reference build: 33 points in Discipline and 18 in Holy (engine talent string 005203031305101531-0350500302: Twin Disciplines 5, Silent Resolve 2, Improved Power Word: Shield 3, Mental Agility 3, Inner Focus, Meditation 3, Mental Strength 5, Soul Warding, Penance, Renewed Hope 5, Divine Aegis 3, Power Infusion; Improved Renew 3, Holy Specialization 5, Divine Fury 5, Inspiration 3, Improved Healing 2). Penance is cast on its cooldown at whoever is hurt, the tank is shielded when he is hurt and Weakened Soul is off, and the filler is the efficient Heal rank 4 (the top rank of Heal, which the site's rank rewrite leaves alone). Power Infusion is only used when the player names a target for it; the major-cooldown pass casts it. Renew is left out on purpose: against the fork's test profile it returned less health per mana than Penance and Heal. Tuned on that profile with about 700 healing power and no mana consumables: about 90 s of mana, the profile asking more of one healer than a mana bar holds.",
+  "sources": [
+    {
+      "label": "This build's own client spell data: data/builds/1.60.1.70009/spellconst/priest.json, trainables/priest.json and talents/priest.json (Holy tree index 1, Discipline tree index 0)",
+      "url": "https://foreversixty.gg/data/1.60.1.70009/spellconst/priest.json",
+      "kind": "datamined"
+    },
+    {
+      "label": "Forever Sixty default rotation, unvalidated until the nightly job runs",
+      "url": "https://foreversixty.gg/sim/specs",
+      "kind": "site"
+    }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
+    "priorityList": [
+      {
+        "action": {
+          "autocastOtherCooldowns": {}
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1316995
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 5
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.95"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Penance on its 12 second cooldown: three pulses for the price of one cast and the best healing per mana the Discipline kit has."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1316995
+            },
+            "target": {
+              "type": "Player",
+              "index": 1
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 1
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.7"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1316995
+            },
+            "target": {
+              "type": "Player",
+              "index": 2
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 2
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.7"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1316995
+            },
+            "target": {
+              "type": "Player",
+              "index": 3
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 3
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.7"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1316995
+            },
+            "target": {
+              "type": "Player",
+              "index": 4
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 4
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.7"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10901
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "auraIsActive": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 5
+                        },
+                        "auraId": {
+                          "spellId": 6788
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.9"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Power Word: Shield on a hurt tank whenever Weakened Soul is off him; Soul Warding makes it free of cooldown and 15% cheaper. Renewed Hope also turns the Weakened Soul into extra crit chance and Divine Aegis for the heals that follow."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10917
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 5
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.35"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Flash Heal is the fast heal and the dear one: it is only for a tank that is genuinely low."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10917
+            },
+            "target": {
+              "type": "Player",
+              "index": 1
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 1
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.3"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10917
+            },
+            "target": {
+              "type": "Player",
+              "index": 2
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 2
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.3"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10917
+            },
+            "target": {
+              "type": "Player",
+              "index": 3
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 3
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.3"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10917
+            },
+            "target": {
+              "type": "Player",
+              "index": 4
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 4
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.3"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 25316
+            },
+            "target": {
+              "type": "Player",
+              "index": 1
+            }
+          },
+          "condition": {
+            "or": {
+              "vals": [
+                {
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 1
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 2
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 3
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 1
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 2
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 4
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 1
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 3
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 4
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "and": {
+                    "vals": [
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 2
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 3
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "cmp": {
+                          "op": "OpLt",
+                          "lhs": {
+                            "currentHealthPercent": {
+                              "sourceUnit": {
+                                "type": "Player",
+                                "index": 4
+                              }
+                            }
+                          },
+                          "rhs": {
+                            "const": {
+                              "val": "0.7"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Prayer of Healing heals the healer's whole party, so it is cast on a party member and only once three of the four are down."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064
+            },
+            "target": {
+              "type": "Player",
+              "index": 5
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 5
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.8"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Heal rank 4 is the mana-efficient filler: the same 0.857 coefficient as Greater Heal for 305 mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank). It is also the top rank of Heal, so the site's rank rewrite leaves it alone."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064
+            },
+            "target": {
+              "type": "Player",
+              "index": 1
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 1
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.65"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064
+            },
+            "target": {
+              "type": "Player",
+              "index": 2
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 2
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.65"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064
+            },
+            "target": {
+              "type": "Player",
+              "index": 3
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 3
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.65"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 6064
+            },
+            "target": {
+              "type": "Player",
+              "index": 4
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {
+                  "sourceUnit": {
+                    "type": "Player",
+                    "index": 4
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.65"
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
   }
 }
