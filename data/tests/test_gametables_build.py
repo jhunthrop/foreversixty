@@ -5,11 +5,16 @@ One of the handful of tests the Global Constraints allow a build string in:
 the column names and spot values below are only right for this build.
 """
 
+import csv
 from functools import cache
 from pathlib import Path
 
+import pytest
+
 from pipeline.gametables import (
     ABSENT_FROM_THE_CLASSIC_LINEAGE,
+    EXPECTED_STAT_COLUMNS,
+    EXPECTED_STAT_FILE,
     GAME_TABLE_IDS,
     GameTable,
     parse_game_table,
@@ -95,3 +100,55 @@ def test_every_committed_table_parses():
     csv.reader(delimiter='\\t') would misread."""
     for name in GAME_TABLE_IDS:
         assert table(name).rows, name
+
+
+@cache
+def expected_stat() -> dict[tuple[int, int], dict[str, str]]:
+    with (GAMETABLES_DIR / EXPECTED_STAT_FILE).open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    return {(int(row["ClassID"]), int(row["Level"])): row for row in rows}
+
+
+def test_expected_stat_names_the_columns_the_engine_reads():
+    with (GAMETABLES_DIR / EXPECTED_STAT_FILE).open(encoding="utf-8", newline="") as handle:
+        header = next(csv.reader(handle))
+    assert set(EXPECTED_STAT_COLUMNS) <= set(header)
+
+
+def test_expected_stat_covers_every_class_at_every_level():
+    """Nine playable classes, levels 1 to 123, like the three game tables."""
+    keys = set(expected_stat())
+    assert {class_id for class_id, _ in keys} == {1, 2, 3, 4, 5, 7, 8, 9, 11}
+    for class_id in {1, 2, 3, 4, 5, 7, 8, 9, 11}:
+        assert {level for c, level in keys if c == class_id} == set(range(1, 124)), class_id
+
+
+def test_expected_stat_states_this_build_s_crit_curves():
+    """Level 60 is vanilla's rate (a warrior's 20 Agility per 1%); below it
+    the client asks less Agility per point, which is the curve the engine
+    pins at 60 unless it reads this file. Intellect is the wowhead planner's
+    curve, from this table. Warriors and rogues have no spell crit row."""
+    rows = expected_stat()
+
+    def rate(class_id: int, level: int, column: str) -> float:
+        return float(rows[(class_id, level)][column])
+
+    close = 5e-7
+    assert rate(1, 60, "CritPerAgility") == pytest.approx(0.0005, abs=close)
+    assert rate(1, 30, "CritPerAgility") == pytest.approx(0.000962, abs=close)
+    assert rate(1, 1, "CritPerAgility") == pytest.approx(0.0025, abs=close)
+    assert rate(4, 60, "CritPerAgility") == pytest.approx(0.000345, abs=close)
+    assert rate(3, 60, "CritPerAgility") == pytest.approx(0.000189, abs=close)
+    assert rate(11, 60, "SpellCritPerIntellect") == pytest.approx(0.000167, abs=close)
+    assert rate(11, 30, "SpellCritPerIntellect") == pytest.approx(0.000352, abs=close)
+    assert rows[(1, 60)]["SpellCritPerIntellect"] == "0"
+    assert rows[(4, 60)]["SpellCritPerIntellect"] == "0"
+
+
+def test_expected_stat_base_mana_is_the_base_mana_table():
+    """The same numbers as basemp.txt, so a reader of either agrees with the
+    other."""
+    rows = expected_stat()
+    assert rows[(8, 60)]["BaseMana"] == value("basemp.txt", "60", "Mage")
+    assert rows[(2, 60)]["BaseMana"] == value("basemp.txt", "60", "Paladin")
+    assert rows[(11, 30)]["BaseMana"] == value("basemp.txt", "30", "Druid")

@@ -357,6 +357,21 @@ agility-to-crit per class, stamina-to-health, or the intellect-to-spell-crit tab
 gear planner would normally carry these in its `baseStats`, `critPhysical` and `critSpell` sections —
 **I checked today and all three are empty or all-zero** (site, verified 2026-09-14). §11.5.
 
+> **Correction, 2026-10-08.** The beta client ships the crit and base-mana curves as a DB2 table,
+> `PlayerExpectedStat` (one row per class per level 1 to 123; columns `BaseMana`, health per Stamina,
+> `CritPerAgility`, `SpellCritPerIntellect`), served by wago.tools for 1.60.1.70009 and 1.60.1.70245
+> with identical rows. The data pipeline's `gametables` step now commits it as
+> `data/builds/<build>/gametables/playerexpectedstat.csv` and the engine's base-stats generator reads
+> both crit columns (datamined, primary). At level 60 every class's `CritPerAgility` is vanilla's
+> (warrior 20 Agility per 1%, rogue 29, hunter 52.9) and `SpellCritPerIntellect` is the curve Wowhead's
+> planner had already published (`critSpell`: druid 59.9 Intellect per 1% at 60, 28.4 at 30). Below 60
+> the Agility curve is steeper than the level-60 rate the engine had pinned: a level-30 warrior needs
+> 10.4 Agility per 1%, a level-1 rogue 2.3. Warriors and rogues carry a zero Intellect column; every
+> class, mages and priests included, carries an Agility column. The table does **not** say whether a
+> hybrid's two terms sum into the one unified Crit stat (§1.2) or stay two pools with only item, talent
+> and racial crit shared; see design/reviews/2026-10-08-beta-evidence.md §9 for the beta test that
+> decides it. Stamina-to-health is 10 at every level (the same `hppersta.txt` figure).
+
 **One primary-stat mechanic did change**, and it is a defensive one:
 > Stoneform's "defensive bonus now **reduces Physical damage taken instead of increasing Armor**, making
 > it useful to more classes." — Blizzard Deep Dive recap (blizzard)
@@ -513,9 +528,10 @@ coefficients and mana costs. §11.6.
 
 Every conversion below comes from Forever talent text (datamined via
 `nether.wowhead.com/forever/data/talents-classic?dv=100`, verified 2026-09-14, corroborated by
-talentsforever). These are **talent-granted** conversions. The **baseline** conversions (agility→crit,
-agility→dodge, agility→armor, strength→AP per class, stamina→health, intellect→mana, intellect→spell
-crit, spirit→regen) are **entirely unpublished** — see §3 and §11.5.
+talentsforever). These are **talent-granted** conversions. The **baseline** conversions (agility→dodge,
+agility→armor, strength→AP per class, intellect→mana, spirit→regen) are **entirely unpublished** — see
+§3 and §11.5. Agility→crit, intellect→spell crit and stamina→health are the exception since 2026-10-08:
+the client's `PlayerExpectedStat` table states them per class and per level (§3, correction).
 
 | Conversion | Talent (spell id) | Text | Max |
 |---|---|---|---|

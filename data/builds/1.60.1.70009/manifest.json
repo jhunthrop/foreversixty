@@ -67,6 +67,7 @@
     "gametables/basemp.txt": "4c4af8b78ca19bfcb36a87c2aeef1c1861ef51da73c17d3db4cf461bbc0c3119",
     "gametables/combatratings.txt": "4ad5dad5fb5941ec42a0affffb5dbeb9b42bad4e5207060f5d87ec2b5b35ddfa",
     "gametables/hppersta.txt": "c853c8afdec3a8f79563b4278de9bc4d6e6a82dcb9d7ab395d3bcd970c339e3a",
+    "gametables/playerexpectedstat.csv": "df348b2129187399065cbf2b3a1da9bc2f30eaf757906110aed16a9d198d02fe",
     "icons/ability_ambush.webp": "1504117d5903ef95da23a33f7d291ead48d74dbbed749c758a74395ec8f677cc",
     "icons/ability_backstab.webp": "538192d228b673a37a7fa2f9c45452e73719050edc46393e2faa81c87224cadb",
     "icons/ability_bullrush.webp": "7777b900a5b5a7effa4db3d4e71f26b74a0168f7bd07cd0a21b14a54fc7abd75",

@@ -33,6 +33,15 @@ served too and deliberately left out: nothing needs them, and vanilla spell
 coefficients are a convention the engine owns rather than a table
 (research/07-simulator.md 5.3).
 
+One DB2 table belongs beside them. `PlayerExpectedStat` is the client's
+per-level, per-class player stat curve: `BaseMana` (the same numbers as
+`basemp.txt`), health per Stamina, `CritPerAgility` and
+`SpellCritPerIntellect`, one row per class per level 1 to 123. It is the
+Classic lineage's home for what retail's `chancetomeleecrit.txt` and
+`chancetospellcrit.txt` carry, so it is written here as
+`playerexpectedstat.csv`, the CSV exactly as wago.tools serves it, and the
+engine's base-stats generator reads its two crit columns.
+
 Per-race base Strength, Agility, Stamina, Intellect and Spirit are in neither
 DB2 nor GameTables -- the listfile's whole gametables/ has no
 base-primary-stat file -- and stay with the engine lane.
@@ -50,7 +59,7 @@ import httpx
 from pipeline.casc import fetch_casc_file
 from pipeline.icons import CACHE_DIR, _atomic_write
 from pipeline.manifest import refresh_manifest
-from pipeline.wago import BASE_URL, USER_AGENT
+from pipeline.wago import BASE_URL, USER_AGENT, download_table
 
 logger = logging.getLogger(__name__)
 
@@ -79,6 +88,14 @@ ABSENT_FROM_THE_CLASSIC_LINEAGE: dict[str, int] = {
     "octbasempbyclass.txt": 4049853,
     "octclasscombatratingscalar.txt": 4526467,
 }
+
+#: The DB2 table written beside the game tables (module docstring), the file
+#: it is written as, and the columns the engine's generator reads from it. A
+#: build whose copy lacks one of them is a schema change to look at, not a
+#: file to ship.
+EXPECTED_STAT_TABLE = "PlayerExpectedStat"
+EXPECTED_STAT_FILE = "playerexpectedstat.csv"
+EXPECTED_STAT_COLUMNS = ("Level", "ClassID", "BaseMana", "CritPerAgility", "SpellCritPerIntellect")
 
 _SEPARATOR = "\t"
 
@@ -123,6 +140,27 @@ def parse_game_table(name: str, text: str) -> GameTable:
     return GameTable(name=name, columns=header, rows=rows)
 
 
+def write_expected_stat(build: str, out: Path, client: httpx.Client) -> Path:
+    """Fetch `PlayerExpectedStat` for the build into `out` as
+    EXPECTED_STAT_FILE, checking it still carries the columns the engine
+    reads."""
+    # Downloaded into its own directory: `download_table` names the file after
+    # the table, and on a case-insensitive filesystem that name and
+    # EXPECTED_STAT_FILE are the same entry.
+    scratch = out / "_download"
+    try:
+        downloaded = download_table(EXPECTED_STAT_TABLE, build, scratch, client)
+        header = downloaded.read_text(encoding="utf-8").split("\n", 1)[0].split(",")
+        missing = [column for column in EXPECTED_STAT_COLUMNS if column not in header]
+        if missing:
+            raise GameTableError(
+                f"{EXPECTED_STAT_TABLE} for build {build} lacks {missing}; got columns {header}"
+            )
+        return downloaded.replace(out / EXPECTED_STAT_FILE)
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
+
+
 def write_game_tables(
     build: str,
     root: Path = Path("builds"),
@@ -157,9 +195,10 @@ def write_game_tables(
             table = parse_game_table(name, data.decode("utf-8"))
             logger.info("%s: %d columns, %d rows", name, len(table.columns), len(table.rows))
             _atomic_write(out / name, data)
+        write_expected_stat(build, out, client)
     finally:
         if own:
             client.close()
     refresh_manifest(build_dir)
-    logger.info("wrote %s: %d game tables", out, len(GAME_TABLE_IDS))
+    logger.info("wrote %s: %d game tables and %s", out, len(GAME_TABLE_IDS), EXPECTED_STAT_FILE)
     return out
