@@ -136,6 +136,10 @@ AURA_MOD_SPELL_HIT_CHANCE = 55
 AURA_MOD_SPELL_CRIT_CHANCE = 71
 AURA_MOD_POWER_REGEN = 85
 AURA_MOD_HEALING_DONE = 135
+#: SPELL_AURA_MOD_SHIELD_BLOCKVALUE: a shield's flat "Block Value NN" equip line
+#: (Earthen Guard's 12). A flat amount, not a block chance: it is the engine's
+#: StatBlockValue, never the rating-denominated `block`.
+AURA_MOD_SHIELD_BLOCK_VALUE = 158
 #: Verified: Hand of Justice / Devilsaur Eye's own use effect (both +20/+150
 #: Attack Power). `AURA_MOD_RANGED_ATTACK_POWER` mirrors it on the same
 #: spells (Blizzard grants both together so melee and ranged classes see the
@@ -162,6 +166,7 @@ SIMPLE_STAT_AURAS: dict[int, str] = {
     AURA_MOD_SPELL_HIT_CHANCE: "hit",
     AURA_MOD_POWER_REGEN: "mp5",
     AURA_MOD_HEALING_DONE: "healing",
+    AURA_MOD_SHIELD_BLOCK_VALUE: "block_value",
 }
 
 #: Auras seen on an on-equip classic-db spell in this build's 1,498-row
@@ -174,7 +179,7 @@ SIMPLE_STAT_AURAS: dict[int, str] = {
 #: power, mirrors 99) is handled in its own branch, not this set, since it
 #: is deliberately dropped rather than ignored-as-a-category.
 IGNORED_STAT_AURAS: frozenset[int] = frozenset(
-    {8, 15, 19, 23, 31, 43, 77, 89, 102, 107, 109, 117, 123, 131, 139, 144, 154, 158, 161, 180}
+    {8, 15, 19, 23, 31, 43, 77, 89, 102, 107, 109, 117, 123, 131, 139, 144, 154, 161, 180}
 )
 
 #: classic-db's own resistance columns -> the planner's stat key. Holy
@@ -745,6 +750,7 @@ _STAT_PHRASE: dict[str, str] = {
     "parry": "Parry Rating",
     "dodge": "Dodge Rating",
     "block": "Block Rating",
+    "block_value": "Block Value",
     "fire_res": "Fire Resistance",
     "nature_res": "Nature Resistance",
     "frost_res": "Frost Resistance",

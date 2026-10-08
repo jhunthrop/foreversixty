@@ -98,7 +98,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 30 | 0000000000000000-000000000000000000-5032503300000000 | main_hand:249392 | 22.7 | 2 | spell:8008=29.0, spell:6375=1.6 | {SpellID: 16188}, {SpellID: 25357}, {SpellID: 408510} |
 | 38 | 0000000000000000-000000000000000000-5032503315200000 | main_hand:7757 | 29.4 | 3 | spell:8010=27.1, other:mana_gain=2.4, spell:6375=1.9, spell:408510=1.4 | {SpellID: 16188}, {SpellID: 25357} |
 | 40 | 0000000000000000-000000000000000000-5032503315400000 | main_hand:7723 | 31.0 | 4 | spell:8010=28.0, other:mana_gain=2.4, spell:6377=1.9, spell:408510=1.4, spell:1064=0.0 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 25357}, {SpellID: 408521} |
-| 50 | 0000000000000000-000000000000000000-5032503315513140 | main_hand:812 | 51.4 | 6 | spell:10466=30.4, other:mana_gain=6.7, spell:10462=2.0, spell:16188=2.0, spell:408510=1.5 | {SpellID: 1239242}, {SpellID: 25357} |
+| 50 | 0000000000000000-000000000000000000-5032503315513131 | main_hand:812 | 57.9 | 7 | spell:10466=27.4, other:mana_gain=6.9, spell:1239242=2.5, spell:10462=2.0, spell:16188=2.0 | {SpellID: 25357} |
 | 60 | 5300000000000000-000000000000000000-5032503315513151 | main_hand:19355 | 109.0 | 8 | spell:10468=10.4, other:mana_gain=6.4, spell:1239243=5.1, spell:25357=5.0, spell:10463=2.0 | - |
 
 ## Learned but unused (informational)

@@ -13,6 +13,7 @@ from pipeline.normalize.gear import (
     build_class_items,
     build_item_sets,
     is_junk_name,
+    resolve_item_values,
     resolve_required_level,
 )
 from pipeline.normalize.item_curves import load_item_curves
@@ -1303,3 +1304,28 @@ def test_percent_stats_names_an_on_equip_aura_hit_as_a_literal_percent():
     item = _first_fixture_item(rows, _single_aura_effects(item_id, 54, "5"))
     assert item.stats["hit"] == 5
     assert item.percent_stats == {"hit": 5}
+
+
+def _shield_row(modifier_id: int, amount: int) -> dict[str, str]:
+    return {
+        "ID": "1",
+        "InventoryType": "14",
+        "OverallQualityID": "3",
+        "ItemLevel": "60",
+        "Resistances_0": "0",
+        "StatModifier_bonusStat_0": str(modifier_id),
+        "StatModifier_bonusAmount_0": str(amount),
+    }
+
+
+def test_a_shields_block_value_is_block_value_and_not_block_chance():
+    """ITEM_MOD_BLOCK_VALUE (48) is a flat amount taken off a blocked hit; it
+    was filed under `block`, which the simdb conversion reads as a rating and
+    the engine applies as block chance (The Immovable Object: +5.4% chance)."""
+    _, stats = resolve_item_values(_shield_row(48, 27), {"ClassID": "4", "SubclassID": "6"}, None)
+    assert stats == {"block_value": 27}
+
+
+def test_a_block_rating_stays_block():
+    _, stats = resolve_item_values(_shield_row(15, 10), {"ClassID": "4", "SubclassID": "6"}, None)
+    assert stats == {"block": 10}

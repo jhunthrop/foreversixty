@@ -15,12 +15,12 @@
 //   - a stat row's keys are not limited to the planner's `StatKey` set. Enumerated by
 //     reading every distinct key across BOTH real files
 //     (data/builds/1.60.1.69893/enchants.json and suffixes.json): the real files also carry
-//     `arcane_power`, `block_value`, `bonus_armor`, `fire_power`, `frost_power`, `health`,
+//     `arcane_power`, `bonus_armor`, `fire_power`, `frost_power`, `health`,
 //     `holy_power`, `mana`, `melee_haste`, `nature_power`, `shadow_power` and
-//     `spell_damage` -- 12 keys outside `StatKey`. (`ranged_attack_power` was a
-//     thirteenth until the data lane added it to `STAT_KEYS`; it is inside `StatKey`
-//     now, so naming it again here would be redundant.) `EnchantStatKey`
-//     below is `StatKey` unioned with exactly those 12, so both `EnchantRow.stats` and
+//     `spell_damage` -- 11 keys outside `StatKey`. (`ranged_attack_power` and
+//     `block_value` were more until the data lane added them to `STAT_KEYS`; they are
+//     inside `StatKey` now, so naming them again here would be redundant.) `EnchantStatKey`
+//     below is `StatKey` unioned with exactly those 11, so both `EnchantRow.stats` and
 //     `SuffixRow.stats` keep the same typo protection as every other stat map in the
 //     codebase while still typing the real data exactly, rather than widening to
 //     `Record<string, number>` and losing that protection altogether.
@@ -46,7 +46,6 @@ import type { Item, StatKey } from '../planner/types';
 export type EnchantStatKey =
   | StatKey
   | 'arcane_power'
-  | 'block_value'
   | 'bonus_armor'
   | 'fire_power'
   | 'frost_power'

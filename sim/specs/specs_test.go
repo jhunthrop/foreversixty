@@ -84,3 +84,16 @@ func TestFeralAttackPowerBelongsToDruidFeralAndNowhereElse(t *testing.T) {
 		}
 	}
 }
+
+// A tank that blocks is ranked on block value as well as block chance: a
+// shield's flat block value is a separate stat from a block rating.
+func TestShieldTanksWeighBlockValueBesideBlock(t *testing.T) {
+	for _, spec := range All {
+		if spec.Role != roleTank || !slices.Contains(spec.WeightStats, "block") {
+			continue
+		}
+		if !slices.Contains(spec.WeightStats, "block_value") {
+			t.Errorf("%s weighs block but not block_value", spec.Spec)
+		}
+	}
+}

@@ -124,6 +124,20 @@ def test_a_column_stat_that_is_a_combat_rating_is_converted_to_a_percentage():
     assert loop.stats[pb.Stat.Value("StatCrit")] == pytest.approx(5.0 / 14.0)
 
 
+def test_a_shields_block_value_reaches_the_engine_as_block_value_not_block_chance():
+    """Modifier 48 is flat block value. It used to share the `block` key with
+    block rating, so the engine took a shield's 27 block value as 27/5 = 5.4%
+    block chance and no block value at all."""
+    sparse, item = next(pair for pair in pairs() if pair[0]["ID"] == "30005")
+    block_value_row = {**sparse, "StatModifier_bonusStat_0": "48", "StatPercentEditor_0": "3000"}
+    shield = build_sim_items(
+        [(block_value_row, item)], {}, {}, curves(), weapon_curves(), RATING_FACTORS, {}
+    )[0]
+    stats = list(shield.stats)
+    assert stats[pb.Stat.Value("StatBlockValue")] > 0
+    assert len(stats) <= pb.Stat.Value("StatBlock") or stats[pb.Stat.Value("StatBlock")] == 0
+
+
 def test_a_weapon_carries_its_damage_and_speed():
     """Annihilator (12798): item level 63, rare, 2.4 second one-hand axe,
     variance 0.6 -> 69 to 129."""

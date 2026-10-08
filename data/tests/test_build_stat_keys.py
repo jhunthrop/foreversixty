@@ -50,6 +50,7 @@ SITE_RENDERABLE_STAT_KEYS = frozenset(
         "dodge",
         "parry",
         "block",
+        "block_value",
         "mp5",
         "spell_penetration",
         "fire_res",

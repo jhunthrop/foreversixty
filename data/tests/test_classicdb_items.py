@@ -346,6 +346,14 @@ def test_equip_stats_maps_attack_power_and_drops_ranged_attack_power():
     assert equip_stats(item, spells) == {"attack_power": 20}
 
 
+def test_equip_stats_maps_a_shields_block_value_to_block_value():
+    """Earthen Guard's "Block Value 12" (aura 158) is flat block value, not
+    block chance, and was on the ignored list so the shield lost it."""
+    item = _item(spells=[_slot(8001, trigger=TRIGGER_ON_EQUIP)])
+    spells = {8001: _spell(8001, _effect(158, 11, 1))}
+    assert equip_stats(item, spells) == {"block_value": 12}
+
+
 def test_equip_stats_ignores_use_and_chance_on_hit_spells():
     """A TRIGGER_ON_USE/TRIGGER_CHANCE_ON_HIT spell's aura is a temporary
     effect, never a flat equipped stat -- Devilsaur Eye's real +150 use

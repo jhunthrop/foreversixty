@@ -58385,7 +58385,7 @@
       "stats": {
         "strength": 8,
         "shadow_res": 5,
-        "block": 6
+        "block_value": 6
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -93425,7 +93425,7 @@
       "armor": 0,
       "stats": {
         "strength": 7,
-        "block": 10
+        "block_value": 10
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -156309,7 +156309,8 @@
       "item_level": 59,
       "armor": 2026,
       "stats": {
-        "stamina": 16
+        "stamina": 16,
+        "block_value": 10
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -166937,7 +166938,7 @@
       "armor": 0,
       "stats": {
         "stamina": 10,
-        "block": 15
+        "block_value": 15
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -172543,7 +172544,7 @@
         "stamina": 15,
         "agility": 11,
         "spirit": 4,
-        "block": 17
+        "block_value": 17
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -173667,7 +173668,9 @@
       "required_level_source": "classic-db",
       "item_level": 61,
       "armor": 1861,
-      "stats": {},
+      "stats": {
+        "block_value": 23
+      },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
@@ -175875,7 +175878,8 @@
       "item_level": 62,
       "armor": 2121,
       "stats": {
-        "block": 2
+        "block": 2,
+        "block_value": 18
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -178462,7 +178466,8 @@
       "item_level": 62,
       "armor": 2121,
       "stats": {
-        "stamina": 8
+        "stamina": 8,
+        "block_value": 24
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -178638,7 +178643,8 @@
       "item_level": 62,
       "armor": 2121,
       "stats": {
-        "stamina": 10
+        "stamina": 10,
+        "block_value": 27
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -193310,7 +193316,8 @@
       "armor": 2575,
       "stats": {
         "defense": 7,
-        "block": 2
+        "block": 2,
+        "block_value": 30
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -195373,7 +195380,8 @@
       "armor": 2964,
       "stats": {
         "stamina": 20,
-        "block": 30,
+        "block": 15,
+        "block_value": 15,
         "defense": 8
       },
       "damage_min": 0,
@@ -199727,7 +199735,8 @@
       "armor": 2539,
       "stats": {
         "stamina": 10,
-        "block": 2
+        "block": 2,
+        "block_value": 23
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -199877,7 +199886,8 @@
       "armor": 2468,
       "stats": {
         "stamina": 19,
-        "defense": 7
+        "defense": 7,
+        "block_value": 12
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -200171,7 +200181,8 @@
       "armor": 2893,
       "stats": {
         "stamina": 23,
-        "defense": 7
+        "defense": 7,
+        "block_value": 19
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -202754,7 +202765,8 @@
       "armor": 0,
       "stats": {
         "stamina": 24,
-        "block": 30
+        "block": 15,
+        "block_value": 15
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -202782,7 +202794,8 @@
       "item_level": 90,
       "armor": 0,
       "stats": {
-        "block": 38
+        "block": 15,
+        "block_value": 23
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -206012,7 +206025,7 @@
         "stamina": 23,
         "strength": 14,
         "hit": 10,
-        "block": 7,
+        "block_value": 7,
         "defense": 11
       },
       "damage_min": 0,
@@ -206073,7 +206086,7 @@
       "stats": {
         "stamina": 46,
         "strength": 26,
-        "block": 19,
+        "block_value": 19,
         "defense": 21
       },
       "damage_min": 0,
@@ -206134,7 +206147,7 @@
       "stats": {
         "stamina": 46,
         "strength": 34,
-        "block": 23,
+        "block_value": 23,
         "defense": 15
       },
       "damage_min": 0,
@@ -206258,7 +206271,7 @@
         "stamina": 28,
         "strength": 23,
         "hit": 10,
-        "block": 17,
+        "block_value": 17,
         "defense": 14
       },
       "damage_min": 0,
@@ -206568,7 +206581,8 @@
       "stats": {
         "stamina": 45,
         "strength": 32,
-        "block": 33,
+        "block": 10,
+        "block_value": 23,
         "defense": 18
       },
       "damage_min": 0,
@@ -206599,7 +206613,8 @@
       "stats": {
         "stamina": 33,
         "strength": 23,
-        "block": 25,
+        "block": 10,
+        "block_value": 15,
         "defense": 13
       },
       "damage_min": 0,
@@ -206661,7 +206676,8 @@
       "stats": {
         "stamina": 32,
         "strength": 17,
-        "block": 27,
+        "block": 10,
+        "block_value": 17,
         "defense": 15
       },
       "damage_min": 0,
@@ -206849,7 +206865,8 @@
       "stats": {
         "stamina": 32,
         "strength": 20,
-        "block": 25,
+        "block": 10,
+        "block_value": 15,
         "defense": 14
       },
       "damage_min": 0,
@@ -219335,7 +219352,7 @@
         "strength": 16,
         "defense": 9,
         "intellect": 14,
-        "block": 14
+        "block_value": 14
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -220217,7 +220234,8 @@
       "item_level": 75,
       "armor": 0,
       "stats": {
-        "block": 49,
+        "block": 25,
+        "block_value": 24,
         "defense": 13
       },
       "damage_min": 0,
@@ -220834,7 +220852,8 @@
       "armor": 3494,
       "stats": {
         "stamina": 21,
-        "block": 3
+        "block": 3,
+        "block_value": 21
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -220924,7 +220943,7 @@
       "armor": 2468,
       "stats": {
         "stamina": 15,
-        "block": 27
+        "block_value": 27
       },
       "damage_min": 0,
       "damage_max": 0,

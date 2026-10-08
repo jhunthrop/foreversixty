@@ -174,6 +174,11 @@ func GuideTalentTargets(guideTrees []TalentTree, treeDigits [3]string) map[int]i
 	return targets
 }
 
+// pointsPerTier is the planner's tier gate: a talent of tier t is
+// available once pointsPerTier*t points sit in its tree
+// (web/src/lib/planner/types.ts' POINTS_PER_TIER).
+const pointsPerTier = 5
+
 // LadderTalentString is the truncated talent string for level: level-9
 // points (0 below level 10), spent against the guide's level-60
 // targets (GuideTalentTargets), walking the ACTIVE build's trees from
@@ -190,10 +195,19 @@ func GuideTalentTargets(guideTrees []TalentTree, treeDigits [3]string) map[int]i
 // always minmaxed to the last point), the remainder is left unspent
 // rather than invented: this ladder approximates a leveling build, it
 // does not design one.
+//
+// One exception heads the spec's own tree: when the budget can legally
+// carry the guide build's deepest talent and its prerequisite chain, the
+// walk takes those first (ownTreeSpine). Without it a build whose middle
+// rows are wide (Protection paladin's Iron Creed sits above Holy Shield)
+// reaches its defining ability only at the last few points. The reserved
+// ranks are paid for by the rows the walk would have filled last, and
+// never by dropping a talent the plain walk gave a rank (spendOwnTree).
 func LadderTalentString(activeTrees []TalentTree, targets map[int]int, ownTreeIndex, level int) string {
-	budget := level - 9
-	if budget < 0 {
-		budget = 0
+	remaining := max(level-9, 0)
+	digits := make([][]int, len(activeTrees))
+	for i, tree := range activeTrees {
+		digits[i] = make([]int, len(tree.Talents))
 	}
 	order := make([]int, 0, len(activeTrees))
 	order = append(order, ownTreeIndex)
@@ -202,29 +216,14 @@ func LadderTalentString(activeTrees []TalentTree, targets map[int]int, ownTreeIn
 			order = append(order, i)
 		}
 	}
-
-	digits := make([][]int, len(activeTrees))
-	for i, tree := range activeTrees {
-		digits[i] = make([]int, len(tree.Talents))
-	}
 	for _, ti := range order {
 		if ti < 0 || ti >= len(activeTrees) {
 			continue
 		}
-		for j, node := range activeTrees[ti].Talents {
-			if budget <= 0 {
-				break
-			}
-			target := targets[node.ID]
-			if target > node.MaxRank {
-				target = node.MaxRank
-			}
-			give := target
-			if give > budget {
-				give = budget
-			}
-			digits[ti][j] = give
-			budget -= give
+		if ti == ownTreeIndex {
+			remaining = spendOwnTree(digits[ti], activeTrees[ti], targets, remaining)
+		} else {
+			remaining = spendTree(digits[ti], activeTrees[ti], targets, nil, remaining)
 		}
 	}
 
@@ -237,6 +236,155 @@ func LadderTalentString(activeTrees []TalentTree, targets map[int]int, ownTreeIn
 		parts[i] = sb.String()
 	}
 	return strings.Join(parts, "-")
+}
+
+// spendTree writes tree's ranks into digits (one per talent, tree order):
+// the reserved ranks first, then the top-down walk up to each talent's
+// guide target. It returns the budget left.
+func spendTree(digits []int, tree TalentTree, targets, reserved map[int]int, budget int) int {
+	for j, node := range tree.Talents {
+		digits[j] = reserved[node.ID]
+		budget -= digits[j]
+	}
+	for j, node := range tree.Talents {
+		if budget <= 0 {
+			break
+		}
+		extra := min(targets[node.ID], node.MaxRank) - digits[j]
+		give := max(min(extra, budget), 0)
+		digits[j] += give
+		budget -= give
+	}
+	return budget
+}
+
+// spendOwnTree is spendTree for the spec's own tree: with the spine
+// reserved when that costs no talent its plain walk had.
+func spendOwnTree(digits []int, tree TalentTree, targets map[int]int, budget int) int {
+	plain := make([]int, len(digits))
+	plainLeft := spendTree(plain, tree, targets, nil, budget)
+	spine := ownTreeSpine(tree, targets, budget)
+	if spine != nil {
+		trial := make([]int, len(digits))
+		left := spendTree(trial, tree, targets, spine, budget)
+		if keepsEveryTalent(plain, trial) {
+			copy(digits, trial)
+			return left
+		}
+	}
+	copy(digits, plain)
+	return plainLeft
+}
+
+// keepsEveryTalent is true when no talent holding a rank in before is at
+// zero in after.
+func keepsEveryTalent(before, after []int) bool {
+	for j, rank := range before {
+		if rank > 0 && after[j] == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+// ownTreeSpine is the ranks to reserve before the top-down walk: the
+// guide build's deepest talent and its prerequisite chain, when the
+// budget can legally carry them. The capstone of tier t costs
+// pointsPerTier*t points in the rows above it plus its own rank, and
+// those rows must be able to hold that many points under the guide's
+// targets. It returns nil when the plain walk already reaches the
+// capstone (so a band that has it is unchanged) or when it is out of
+// reach.
+func ownTreeSpine(tree TalentTree, targets map[int]int, budget int) map[int]int {
+	chain := pathToDeepestTarget(tree, targets)
+	if len(chain) == 0 {
+		return nil
+	}
+	capstone := chain[len(chain)-1]
+	gate := pointsPerTier * capstone.Tier
+	if capstone.Tier == 0 || gate+1 > budget || pointsInRowsAbove(tree, targets, capstone.Tier) < gate {
+		return nil
+	}
+	if plainWalkReaches(tree, targets, budget, capstone.ID) {
+		return nil
+	}
+	spine := spineRanks(chain)
+	if spent(spine) > budget {
+		return nil
+	}
+	return spine
+}
+
+func spent(ranks map[int]int) int {
+	total := 0
+	for _, rank := range ranks {
+		total += rank
+	}
+	return total
+}
+
+// pathToDeepestTarget is the prerequisite chain, root first, ending at
+// the tree's deepest talent with a guide target (the first in tree order
+// among equals).
+func pathToDeepestTarget(tree TalentTree, targets map[int]int) []TalentNode {
+	byID := make(map[int]TalentNode, len(tree.Talents))
+	deepest, found := TalentNode{}, false
+	for _, node := range tree.Talents {
+		byID[node.ID] = node
+		if targets[node.ID] > 0 && (!found || node.Tier > deepest.Tier) {
+			deepest, found = node, true
+		}
+	}
+	if !found {
+		return nil
+	}
+	chain := []TalentNode{deepest}
+	for len(chain) <= len(tree.Talents) {
+		parent, ok := byID[chain[0].PrereqTalentID]
+		if chain[0].PrereqTalentID == 0 || !ok {
+			break
+		}
+		chain = append([]TalentNode{parent}, chain...)
+	}
+	return chain
+}
+
+// spineRanks is one rank on the last step of chain and, on each step
+// before it, the rank its successor lists as its prerequisite.
+func spineRanks(chain []TalentNode) map[int]int {
+	ranks := make(map[int]int, len(chain))
+	for j, step := range chain {
+		rank := 1
+		if j+1 < len(chain) {
+			rank = max(chain[j+1].PrereqRank, 1)
+		}
+		ranks[step.ID] = min(rank, step.MaxRank)
+	}
+	return ranks
+}
+
+// pointsInRowsAbove is the guide points tree can hold in rows above tier.
+func pointsInRowsAbove(tree TalentTree, targets map[int]int, tier int) int {
+	total := 0
+	for _, node := range tree.Talents {
+		if node.Tier < tier {
+			total += min(targets[node.ID], node.MaxRank)
+		}
+	}
+	return total
+}
+
+// plainWalkReaches says whether the top-down walk alone gives talent id a
+// rank.
+func plainWalkReaches(tree TalentTree, targets map[int]int, budget, id int) bool {
+	digits := make([]int, len(tree.Talents))
+	spendTree(digits, tree, targets, nil, budget)
+	for j, node := range tree.Talents {
+		if node.ID == id {
+			return digits[j] > 0
+		}
+	}
+	return false
 }
 
 // TalentRanksFromString is the inverse of the positional encoding
