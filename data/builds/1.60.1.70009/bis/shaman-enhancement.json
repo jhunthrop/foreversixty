@@ -2,7 +2,7 @@
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
   "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T13:41:51Z",
+  "generated_at": "2026-10-08T14:32:58Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -535,8 +535,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.755581633,
-      "verify_run_seconds": 2.863710914,
+      "weights_run_seconds": 1.364801778,
+      "verify_run_seconds": 2.292505868,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1146,8 +1146,8 @@
         "finger2: Demon Band",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.755581633,
-      "verify_run_seconds": 2.773870237,
+      "weights_run_seconds": 1.364801778,
+      "verify_run_seconds": 2.205195117,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1786,8 +1786,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.873924178,
-      "verify_run_seconds": 1.829831649,
+      "weights_run_seconds": 1.453966723,
+      "verify_run_seconds": 1.447368978,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2427,8 +2427,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.873924178,
-      "verify_run_seconds": 1.777863923,
+      "weights_run_seconds": 1.453966723,
+      "verify_run_seconds": 1.391590677,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3067,8 +3067,8 @@
         "finger2: Mark of Kern",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.301137269,
-      "verify_run_seconds": 2.049048232,
+      "weights_run_seconds": 1.77551194,
+      "verify_run_seconds": 1.609055658,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3701,8 +3701,8 @@
         "finger2: Mark of Kern",
         "main_hand: Pendulum of Doom"
       ],
-      "weights_run_seconds": 2.301137269,
-      "verify_run_seconds": 2.14290854,
+      "weights_run_seconds": 1.77551194,
+      "verify_run_seconds": 1.6114936709999998,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4381,8 +4381,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.384875351,
-      "verify_run_seconds": 4.445833364,
+      "weights_run_seconds": 1.8637816379999999,
+      "verify_run_seconds": 3.5212492749999997,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5037,8 +5037,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.384875351,
-      "verify_run_seconds": 2.774224696,
+      "weights_run_seconds": 1.8637816379999999,
+      "verify_run_seconds": 2.236808549,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5523,14 +5523,14 @@
               "item_name": "Fine Dawn Treaders",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -1.061091663367732
+              "dps_delta": -1.061091663367731
             },
             {
               "item_id": 21532,
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -1.2570250121528728
+              "dps_delta": -1.2570250121528719
             },
             {
               "item_id": 13967,
@@ -5764,8 +5764,8 @@
         "trinket2: Second Wind",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.238287433,
-      "verify_run_seconds": 8.873802392,
+      "weights_run_seconds": 1.720810722,
+      "verify_run_seconds": 6.981734168,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6066,14 +6066,14 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.3493743320108244
+              "dps_delta": -0.34937433201082235
             },
             {
               "item_id": 227157,
               "item_name": "Legionnaire's Mail Hauberk",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -1.3294695145518463
+              "dps_delta": -1.329469514551844
             },
             {
               "item_id": 23089,
@@ -6204,7 +6204,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 164.33983676787815,
+          "score": 164.33983676787818,
           "verified": true,
           "alternatives": [
             {
@@ -6227,7 +6227,7 @@
               "item_name": "Legionnaire's Mail Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -3.4990474324868264
+              "dps_delta": -3.4990474324868286
             }
           ]
         },
@@ -6252,7 +6252,7 @@
               "item_name": "Blood Guard's Mail Greaves",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.374347844833777
+              "dps_delta": -0.3743478448337759
             },
             {
               "item_id": 13967,
@@ -6485,8 +6485,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.238287433,
-      "verify_run_seconds": 8.808674331,
+      "weights_run_seconds": 1.720810722,
+      "verify_run_seconds": 6.833919979,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6791,14 +6791,14 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.2007182881141176
+              "dps_delta": -2.200718288114113
             },
             {
               "item_id": 11726,
               "item_name": "Savage Gladiator Chain",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -5.559060780822869
+              "dps_delta": -5.559060780822872
             },
             {
               "item_id": 23089,
@@ -7213,8 +7213,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.232061898,
-      "verify_run_seconds": 9.292121452,
+      "weights_run_seconds": 1.7718488,
+      "verify_run_seconds": 7.3241514389999995,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7609,7 +7609,7 @@
           "item_name": "Belt of Preserved Heads",
           "source": "A Collection of Heads",
           "source_kind": "quest",
-          "score": 101.44865625604658,
+          "score": 101.44865625604656,
           "verified": true,
           "alternatives": [
             {
@@ -7617,7 +7617,7 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -2.499962249072233
+              "dps_delta": -2.499962249072231
             },
             {
               "item_id": 22232,
@@ -7632,7 +7632,7 @@
               "item_name": "Defiler's Chain Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -4.41181519206323
+              "dps_delta": -4.411815192063227
             }
           ]
         },
@@ -7929,8 +7929,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.232061898,
-      "verify_run_seconds": 8.910332111,
+      "weights_run_seconds": 1.7718488,
+      "verify_run_seconds": 7.075911783,
       "coverage": {
         "back": {
           "eligible": 451,

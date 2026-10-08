@@ -3949,7 +3949,7 @@ ns.Data = {
 					legs = { 226933, "Q", "Anthion's Parting Words" },
 					main_hand = { 22335, "D", "Blackrock Spire: Lord Valthalak" },
 					neck = { 22403, "D", "Stratholme: Cannon Master Willey" },
-					ranged = { 279246, "C", "Enchanting" },
+					ranged = { 22408, "D", "Stratholme: Baron Rivendare" },
 					shoulder = { 227808, "V", "Meilosh" },
 					trinket1 = { 12930, "D", "Blackrock Spire: Jed Runewatcher" },
 					trinket2 = { 11832, "D", "Blackrock Depths: Ambassador Flamelash" },
@@ -7659,7 +7659,7 @@ ns.Data = {
 				horde = { 10033, 20037, 17732, 19121, 17775, 12546, 226930, 11662, 9484, 11824, 249469, 17780, 11748 },
 			},
 			[60] = {
-				alliance = { 226935, 22403, 227808, 272411, 14152, 19595, 228190, 226933, 226931, 20682, 22339, 12930, 11832, 22335, 279246 },
+				alliance = { 226935, 22403, 227808, 272411, 14152, 19595, 228190, 226933, 226931, 20682, 22339, 12930, 11832, 22335, 22408 },
 				horde = { 226935, 22403, 227808, 272411, 14152, 19595, 22066, 228190, 237815, 22064, 20682, 22339, 12930, 22268, 22335, 279246 },
 			},
 		},

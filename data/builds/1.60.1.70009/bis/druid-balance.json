@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T13:04:23Z",
+  "generated_at": "2026-10-08T14:03:01Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -556,8 +556,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.737958938,
-      "verify_run_seconds": 1.024363309,
+      "weights_run_seconds": 1.4180313390000001,
+      "verify_run_seconds": 0.867616748,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1185,8 +1185,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.737958938,
-      "verify_run_seconds": 1.056350047,
+      "weights_run_seconds": 1.4180313390000001,
+      "verify_run_seconds": 0.882965801,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1848,8 +1848,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 2.125462893,
-      "verify_run_seconds": 1.112383808,
+      "weights_run_seconds": 1.731105146,
+      "verify_run_seconds": 0.942899453,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2554,8 +2554,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 2.125462893,
-      "verify_run_seconds": 1.145011674,
+      "weights_run_seconds": 1.731105146,
+      "verify_run_seconds": 0.99596483,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3219,8 +3219,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 2.119561904,
-      "verify_run_seconds": 1.211472269,
+      "weights_run_seconds": 1.696877881,
+      "verify_run_seconds": 1.018188299,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3885,8 +3885,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 2.119561904,
-      "verify_run_seconds": 1.245871587,
+      "weights_run_seconds": 1.696877881,
+      "verify_run_seconds": 1.078987866,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4388,7 +4388,7 @@
               "item_name": "Sergeant Major's Crackling Leather Boots",
               "source_kind": "vendor",
               "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -1.0449345532969667
+              "dps_delta": -1.0449345532969674
             },
             {
               "item_id": 252532,
@@ -4556,8 +4556,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.321822487,
-      "verify_run_seconds": 1.661915017,
+      "weights_run_seconds": 1.850858864,
+      "verify_run_seconds": 1.32518893,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5050,7 +5050,7 @@
               "item_name": "First Sergeant's Crackling Leather Boots",
               "source_kind": "vendor",
               "source": "PvP rank 9 · First Sergeant · Horde",
-              "dps_delta": -1.0449345532969667
+              "dps_delta": -1.0449345532969674
             },
             {
               "item_id": 252532,
@@ -5229,8 +5229,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.321822487,
-      "verify_run_seconds": 1.461016172,
+      "weights_run_seconds": 1.850858864,
+      "verify_run_seconds": 1.203903252,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5421,7 +5421,7 @@
           "item_name": "Feralheart Cowl",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 40.0247666732753,
+          "score": 40.024766673275295,
           "verified": true,
           "alternatives": [
             {
@@ -5429,21 +5429,21 @@
               "item_name": "Field Marshal's Dragonhide Helm",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.3359161956716028
+              "dps_delta": -0.3359161956716014
             },
             {
               "item_id": 252561,
               "item_name": "Living Crown",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.6115865684929837
+              "dps_delta": -0.6115865684929822
             },
             {
               "item_id": 18727,
               "item_name": "Crimson Felt Hat",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -0.9458779939147169
+              "dps_delta": -0.9458779939147155
             }
           ]
         },
@@ -5692,7 +5692,7 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.871106216002124
+              "dps_delta": -1.8711062160021226
             },
             {
               "item_id": 22752,
@@ -5951,8 +5951,8 @@
         "trinket2: Second Wind",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 2.323825616,
-      "verify_run_seconds": 4.469303863,
+      "weights_run_seconds": 1.810050919,
+      "verify_run_seconds": 3.645004692,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6421,7 +6421,7 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.871106216002124
+              "dps_delta": -1.8711062160021226
             },
             {
               "item_id": 22747,
@@ -6691,8 +6691,8 @@
         "trinket2: Second Wind",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 2.323825616,
-      "verify_run_seconds": 5.140398298,
+      "weights_run_seconds": 1.810050919,
+      "verify_run_seconds": 4.292931844,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6953,7 +6953,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 35.79146175114421,
+          "score": 35.79146175114422,
           "verified": true,
           "alternatives": [
             {
@@ -6961,21 +6961,21 @@
               "item_name": "Field Marshal's Dragonhide Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.0325668549597014
+              "dps_delta": -2.0325668549597045
             },
             {
               "item_id": 226778,
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.115839455971611
+              "dps_delta": -3.115839455971614
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -4.902580427184518
+              "dps_delta": -4.902580427184522
             }
           ]
         },
@@ -7439,8 +7439,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 1.331241424,
-      "verify_run_seconds": 4.893505007,
+      "weights_run_seconds": 1.104948301,
+      "verify_run_seconds": 4.082204315,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -7710,7 +7710,7 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.0325668549597014
+              "dps_delta": -2.0325668549596996
             },
             {
               "item_id": 226778,
@@ -7903,7 +7903,7 @@
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.2901141175146513
+              "dps_delta": -2.290114117514648
             },
             {
               "item_id": 237817,
@@ -8173,8 +8173,8 @@
         "trinket2: Briarwood Reed",
         "main_hand: Lord Valthalak's Staff of Command"
       ],
-      "weights_run_seconds": 1.331241424,
-      "verify_run_seconds": 3.922774382,
+      "weights_run_seconds": 1.104948301,
+      "verify_run_seconds": 3.27305322,
       "coverage": {
         "back": {
           "eligible": 451,

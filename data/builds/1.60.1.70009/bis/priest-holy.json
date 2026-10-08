@@ -2,7 +2,7 @@
   "spec": "priest-holy",
   "build": "1.60.1.70009",
   "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T13:33:05Z",
+  "generated_at": "2026-10-08T14:26:00Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -575,8 +575,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 9.575838502,
-      "verify_run_seconds": 4.762330385,
+      "weights_run_seconds": 7.529659055,
+      "verify_run_seconds": 3.771984536,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1227,8 +1227,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 9.575838502,
-      "verify_run_seconds": 4.8068599370000005,
+      "weights_run_seconds": 7.529659055,
+      "verify_run_seconds": 3.773213539,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1914,8 +1914,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 9.592611082,
-      "verify_run_seconds": 4.989698555,
+      "weights_run_seconds": 7.464120593,
+      "verify_run_seconds": 3.860506704,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2599,8 +2599,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 9.592611082,
-      "verify_run_seconds": 5.028929655,
+      "weights_run_seconds": 7.464120593,
+      "verify_run_seconds": 3.953003975,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3321,8 +3321,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 10.111761143,
-      "verify_run_seconds": 5.303457512,
+      "weights_run_seconds": 7.742375347,
+      "verify_run_seconds": 4.221449751,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3743,14 +3743,14 @@
               "item_name": "Razzeric's Customized Seatbelt",
               "source_kind": "quest",
               "source": "Safety First",
-              "dps_delta": -0.4222975284472235
+              "dps_delta": -0.4222975284472238
             },
             {
               "item_id": 4736,
               "item_name": "Mistscape Sash",
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
-              "dps_delta": -0.5740602088632348
+              "dps_delta": -0.5740602088632352
             }
           ]
         },
@@ -4049,8 +4049,8 @@
         "off_hand: Aurora Sphere",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 10.111761143,
-      "verify_run_seconds": 5.3433955619999995,
+      "weights_run_seconds": 7.742375347,
+      "verify_run_seconds": 4.239542001,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4781,8 +4781,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.261766013,
-      "verify_run_seconds": 5.886375468,
+      "weights_run_seconds": 8.017707542,
+      "verify_run_seconds": 4.67077557,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5510,8 +5510,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 10.261766013,
-      "verify_run_seconds": 5.76436891,
+      "weights_run_seconds": 8.017707542,
+      "verify_run_seconds": 4.498687394,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5936,7 +5936,7 @@
               "item_name": "Virtuous Belt",
               "source_kind": "quest",
               "source": "Just Compensation",
-              "dps_delta": -1.446006240998903
+              "dps_delta": -1.446006240998904
             },
             {
               "item_id": 254081,
@@ -6062,14 +6062,14 @@
               "item_name": "Blessed Band of Light",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.951863224781003
+              "dps_delta": -0.9518632247810042
             },
             {
               "item_id": 22681,
               "item_name": "Band of Piety",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.1090552133964873
+              "dps_delta": -1.1090552133964884
             },
             {
               "item_id": 11669,
@@ -6253,8 +6253,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 8.923123636,
-      "verify_run_seconds": 13.590277117,
+      "weights_run_seconds": 6.914385524,
+      "verify_run_seconds": 10.810188485,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6607,7 +6607,7 @@
               "item_name": "Nethergeld Cuffs",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.5196461556621559
+              "dps_delta": -0.5196461556621553
             },
             {
               "item_id": 22667,
@@ -6678,7 +6678,7 @@
               "item_name": "Virtuous Belt",
               "source_kind": "quest",
               "source": "Just Compensation",
-              "dps_delta": -1.446006240998904
+              "dps_delta": -1.446006240998903
             },
             {
               "item_id": 254081,
@@ -6998,8 +6998,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 8.923123636,
-      "verify_run_seconds": 13.608280322,
+      "weights_run_seconds": 6.914385524,
+      "verify_run_seconds": 10.750486731,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7354,7 +7354,7 @@
               "item_name": "Nethergeld Cuffs",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.1203707565872763
+              "dps_delta": -3.120370756587274
             }
           ]
         },
@@ -7364,7 +7364,7 @@
           "item_name": "Desert Bloom Gloves",
           "source": "Armaments of War",
           "source_kind": "quest",
-          "score": 61.74675677874439,
+          "score": 61.7467567787444,
           "verified": true,
           "alternatives": [
             {
@@ -7372,21 +7372,21 @@
               "item_name": "Hands of the Exalted Herald",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Princess Moira Bronzebeard ",
-              "dps_delta": -0.5953483621969919
+              "dps_delta": -0.5953483621969942
             },
             {
               "item_id": 226950,
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -2.1311978801443554
+              "dps_delta": -2.1311978801443576
             },
             {
               "item_id": 272097,
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -2.6649543335246495
+              "dps_delta": -2.6649543335246517
             }
           ]
         },
@@ -7727,8 +7727,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.089002305,
-      "verify_run_seconds": 5.590292525,
+      "weights_run_seconds": 4.770294403,
+      "verify_run_seconds": 4.496695182,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8079,7 +8079,7 @@
               "item_name": "Nethergeld Cuffs",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.087187837420743
+              "dps_delta": -2.0871878374207453
             },
             {
               "item_id": 22667,
@@ -8135,7 +8135,7 @@
           "item_name": "Wisdom of the Timbermaw",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 55.78761913599031,
+          "score": 55.787619135990305,
           "verified": true,
           "alternatives": [
             {
@@ -8151,14 +8151,14 @@
               "item_name": "Virtuous Belt",
               "source_kind": "quest",
               "source": "Just Compensation",
-              "dps_delta": -1.543584811234387
+              "dps_delta": -1.5435848112343848
             },
             {
               "item_id": 272394,
               "item_name": "Penitent's Cinch",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -2.3393976990940595
+              "dps_delta": -2.3393976990940573
             }
           ]
         },
@@ -8242,7 +8242,7 @@
               "item_name": "Band of Piety",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.2634767347115246
+              "dps_delta": -1.2634767347115268
             },
             {
               "item_id": 272407,
@@ -8275,7 +8275,7 @@
               "item_name": "Band of Piety",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -0.4525943710564101
+              "dps_delta": -0.45259437105641237
             },
             {
               "item_id": 272407,
@@ -8471,8 +8471,8 @@
         "main_hand: Redemption",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.089002305,
-      "verify_run_seconds": 8.040542511,
+      "weights_run_seconds": 4.770294403,
+      "verify_run_seconds": 6.435548036,
       "coverage": {
         "back": {
           "eligible": 450,

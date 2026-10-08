@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70009",
   "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T13:19:07Z",
+  "generated_at": "2026-10-08T14:14:59Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.920447162,
-      "verify_run_seconds": 0.697457716,
+      "weights_run_seconds": 0.721263687,
+      "verify_run_seconds": 0.561344519,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1194,8 +1194,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.920447162,
-      "verify_run_seconds": 0.706010975,
+      "weights_run_seconds": 0.721263687,
+      "verify_run_seconds": 0.578781384,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1918,8 +1918,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.06631948,
-      "verify_run_seconds": 0.81993394,
+      "weights_run_seconds": 0.8675125,
+      "verify_run_seconds": 0.659111057,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2641,8 +2641,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.06631948,
-      "verify_run_seconds": 0.848437838,
+      "weights_run_seconds": 0.8675125,
+      "verify_run_seconds": 0.703688221,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3322,8 +3322,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.959815708,
-      "verify_run_seconds": 0.784542638,
+      "weights_run_seconds": 0.782117431,
+      "verify_run_seconds": 0.632090941,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4006,8 +4006,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.959815708,
-      "verify_run_seconds": 0.748105558,
+      "weights_run_seconds": 0.782117431,
+      "verify_run_seconds": 0.624758611,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4709,8 +4709,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.913920564,
-      "verify_run_seconds": 0.934332367,
+      "weights_run_seconds": 0.748195556,
+      "verify_run_seconds": 0.800660222,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5407,8 +5407,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.913920564,
-      "verify_run_seconds": 0.928438319,
+      "weights_run_seconds": 0.748195556,
+      "verify_run_seconds": 0.752476832,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6152,8 +6152,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.990716834,
-      "verify_run_seconds": 3.144259252,
+      "weights_run_seconds": 0.783162488,
+      "verify_run_seconds": 2.5907063519999998,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6906,8 +6906,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.990716834,
-      "verify_run_seconds": 3.250558224,
+      "weights_run_seconds": 0.783162488,
+      "verify_run_seconds": 2.736230188,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7243,7 +7243,7 @@
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -7.2851822512730955
+              "dps_delta": -7.285182251273096
             }
           ]
         },
@@ -7351,7 +7351,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 46.75603397237191,
+          "score": 46.7560339723719,
           "verified": true,
           "alternatives": [
             {
@@ -7359,21 +7359,21 @@
               "item_name": "Marshal's Silk Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.1894728182258185
+              "dps_delta": -2.1894728182258154
             },
             {
               "item_id": 13170,
               "item_name": "Skyshroud Leggings",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Highlord Omokk",
-              "dps_delta": -4.370002404130595
+              "dps_delta": -4.3700024041305925
             },
             {
               "item_id": 226933,
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -5.308645095888655
+              "dps_delta": -5.308645095888652
             }
           ]
         },
@@ -7656,8 +7656,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.020237679,
-      "verify_run_seconds": 2.474323123,
+      "weights_run_seconds": 0.830539277,
+      "verify_run_seconds": 2.068738228,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7860,7 +7860,7 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.7855366099349775
+              "dps_delta": -0.785536609934976
             }
           ]
         },
@@ -7977,7 +7977,7 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.3296370956111527
+              "dps_delta": -2.32963709561115
             },
             {
               "item_id": 18385,
@@ -7992,7 +7992,7 @@
               "item_name": "Legionnaire's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -7.285182251273096
+              "dps_delta": -7.2851822512730955
             }
           ]
         },
@@ -8100,7 +8100,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 46.75603397237191,
+          "score": 46.7560339723719,
           "verified": true,
           "alternatives": [
             {
@@ -8108,7 +8108,7 @@
               "item_name": "General's Silk Trousers",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.1894728182258185
+              "dps_delta": -2.1894728182258154
             },
             {
               "item_id": 13170,
@@ -8123,7 +8123,7 @@
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -5.308645095888655
+              "dps_delta": -5.308645095888652
             }
           ]
         },
@@ -8406,8 +8406,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.020237679,
-      "verify_run_seconds": 2.418606582,
+      "weights_run_seconds": 0.830539277,
+      "verify_run_seconds": 2.031924892,
       "coverage": {
         "back": {
           "eligible": 450,

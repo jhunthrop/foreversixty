@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
   "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T13:45:58Z",
+  "generated_at": "2026-10-08T14:36:13Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -892,8 +892,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.993814924,
-      "verify_run_seconds": 1.346282305,
+      "weights_run_seconds": 1.55604447,
+      "verify_run_seconds": 1.053912051,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1937,8 +1937,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.993814924,
-      "verify_run_seconds": 1.3261327170000001,
+      "weights_run_seconds": 1.55604447,
+      "verify_run_seconds": 1.129072716,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2653,8 +2653,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.006244827,
-      "verify_run_seconds": 1.243054324,
+      "weights_run_seconds": 1.616479504,
+      "verify_run_seconds": 1.012794665,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3369,8 +3369,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.006244827,
-      "verify_run_seconds": 1.235339094,
+      "weights_run_seconds": 1.616479504,
+      "verify_run_seconds": 0.994344318,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -4055,8 +4055,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.9555924409999998,
-      "verify_run_seconds": 1.342099127,
+      "weights_run_seconds": 1.5743584739999998,
+      "verify_run_seconds": 1.090735518,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4737,8 +4737,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.9555924409999998,
-      "verify_run_seconds": 1.334590957,
+      "weights_run_seconds": 1.5743584739999998,
+      "verify_run_seconds": 1.078993617,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5194,7 +5194,7 @@
               "item_name": "Knight's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -3.687297783140027
+              "dps_delta": -3.6872977831400267
             },
             {
               "item_id": 14132,
@@ -5448,8 +5448,8 @@
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.126642466,
-      "verify_run_seconds": 1.59377046,
+      "weights_run_seconds": 4.12185452,
+      "verify_run_seconds": 1.2833653059999999,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5894,7 +5894,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -3.687297783140027
+              "dps_delta": -3.6872977831400267
             },
             {
               "item_id": 14132,
@@ -6162,8 +6162,8 @@
         "trinket2: Abyss Shard",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.126642466,
-      "verify_run_seconds": 1.569656304,
+      "weights_run_seconds": 4.12185452,
+      "verify_run_seconds": 1.257951958,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6806,7 +6806,7 @@
               "item_name": "Amethyst War Staff",
               "source_kind": "world",
               "source": "Azure Templar",
-              "dps_delta": -0.014213202533103245
+              "dps_delta": -0.014213202533100088
             },
             {
               "item_id": 1728,
@@ -6894,8 +6894,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.537050546,
-      "verify_run_seconds": 3.497198842,
+      "weights_run_seconds": 4.4787509629999995,
+      "verify_run_seconds": 2.881532956,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7547,7 +7547,7 @@
               "item_name": "Amethyst War Staff",
               "source_kind": "world",
               "source": "Azure Templar",
-              "dps_delta": -0.014213202533100088
+              "dps_delta": -0.014213202533103245
             },
             {
               "item_id": 1728,
@@ -7636,8 +7636,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.537050546,
-      "verify_run_seconds": 3.462546795,
+      "weights_run_seconds": 4.4787509629999995,
+      "verify_run_seconds": 2.840850031,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8372,8 +8372,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.49879862,
-      "verify_run_seconds": 3.803824476,
+      "weights_run_seconds": 5.17519651,
+      "verify_run_seconds": 3.131377736,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8600,7 +8600,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -3.2342153434940086
+              "dps_delta": -3.2342153434940064
             },
             {
               "item_id": 22657,
@@ -9113,8 +9113,8 @@
         "main_hand: Lord Valthalak's Staff of Command",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.49879862,
-      "verify_run_seconds": 3.785754998,
+      "weights_run_seconds": 5.17519651,
+      "verify_run_seconds": 3.072020733,
       "coverage": {
         "back": {
           "eligible": 450,

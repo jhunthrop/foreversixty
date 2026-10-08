@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
   "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T13:37:08Z",
+  "generated_at": "2026-10-08T14:29:14Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -577,8 +577,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.60418731,
-      "verify_run_seconds": 4.2769104,
+      "weights_run_seconds": 2.033428188,
+      "verify_run_seconds": 3.458543945,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1238,8 +1238,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.60418731,
-      "verify_run_seconds": 4.341276608,
+      "weights_run_seconds": 2.033428188,
+      "verify_run_seconds": 3.480241155,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1938,8 +1938,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.672891323,
-      "verify_run_seconds": 4.425499092,
+      "weights_run_seconds": 2.150536994,
+      "verify_run_seconds": 3.554131801,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2645,8 +2645,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.672891323,
-      "verify_run_seconds": 4.509626322,
+      "weights_run_seconds": 2.150536994,
+      "verify_run_seconds": 3.588006652,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3339,8 +3339,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.869415028,
-      "verify_run_seconds": 2.424036733,
+      "weights_run_seconds": 2.26237468,
+      "verify_run_seconds": 1.950986673,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4033,8 +4033,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.869415028,
-      "verify_run_seconds": 2.452903731,
+      "weights_run_seconds": 2.26237468,
+      "verify_run_seconds": 2.005315738,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4318,7 +4318,7 @@
           "item_name": "Knight's Leather Armor",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 46.16142063102095,
+          "score": 46.16142063102096,
           "verified": true,
           "alternatives": [
             {
@@ -4326,14 +4326,14 @@
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Tremors of the Earth",
-              "dps_delta": -0.842175591536395
+              "dps_delta": -0.8421755915363957
             },
             {
               "item_id": 17742,
               "item_name": "Fungus Shroud Armor",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.8530300786643887
+              "dps_delta": -0.8530300786643893
             },
             {
               "item_id": 15064,
@@ -4448,7 +4448,7 @@
           "item_name": "Knight's Leather Pants",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 46.16142063102095,
+          "score": 46.16142063102096,
           "verified": true,
           "alternatives": [
             {
@@ -4456,14 +4456,14 @@
               "item_name": "Serpentskin Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.8455954715330662
+              "dps_delta": -0.8455954715330668
             },
             {
               "item_id": 1718,
               "item_name": "Basilisk Hide Pants",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.3282481237441957
+              "dps_delta": -1.3282481237441963
             },
             {
               "item_id": 9652,
@@ -4742,8 +4742,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.233362101,
-      "verify_run_seconds": 2.987532893,
+      "weights_run_seconds": 2.610948687,
+      "verify_run_seconds": 2.381349283,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5451,8 +5451,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.233362101,
-      "verify_run_seconds": 3.317722965,
+      "weights_run_seconds": 2.610948687,
+      "verify_run_seconds": 2.417321111,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6222,8 +6222,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.247874258,
-      "verify_run_seconds": 9.977775803,
+      "weights_run_seconds": 2.242408248,
+      "verify_run_seconds": 6.947740144,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6528,7 +6528,7 @@
               "item_name": "Warlord's Leather Breastplate",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.8640063433654468
+              "dps_delta": -1.8640063433654457
             },
             {
               "item_id": 226825,
@@ -6986,8 +6986,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.247874258,
-      "verify_run_seconds": 8.77265299,
+      "weights_run_seconds": 2.242408248,
+      "verify_run_seconds": 6.986530783,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7744,8 +7744,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.968011175,
-      "verify_run_seconds": 9.179528753,
+      "weights_run_seconds": 2.360871544,
+      "verify_run_seconds": 7.209191701,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -8502,8 +8502,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.968011175,
-      "verify_run_seconds": 9.070067045,
+      "weights_run_seconds": 2.360871544,
+      "verify_run_seconds": 7.483438476,
       "coverage": {
         "back": {
           "eligible": 451,

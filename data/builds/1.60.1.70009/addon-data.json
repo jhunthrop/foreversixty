@@ -21455,9 +21455,9 @@
               "source": "Blackrock Spire: Lord Valthalak"
             },
             "ranged": {
-              "item_id": 279246,
-              "source_kind": "crafted",
-              "source": "Enchanting"
+              "item_id": 22408,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare"
             }
           },
           "horde": {
@@ -21559,7 +21559,7 @@
             12930,
             11832,
             22335,
-            279246
+            22408
           ],
           "horde": [
             226935,

@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "c789dacc2",
-  "generated_at": "2026-10-08T13:26:51Z",
+  "generated_at": "2026-10-08T14:21:06Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -559,8 +559,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.861361492,
-      "verify_run_seconds": 3.035192469,
+      "weights_run_seconds": 1.491483288,
+      "verify_run_seconds": 2.384050951,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1194,8 +1194,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.861361492,
-      "verify_run_seconds": 3.088933158,
+      "weights_run_seconds": 1.491483288,
+      "verify_run_seconds": 2.4906064580000002,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1843,8 +1843,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.913586324,
-      "verify_run_seconds": 1.963772855,
+      "weights_run_seconds": 1.496560737,
+      "verify_run_seconds": 1.5532120630000001,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2496,8 +2496,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.913586324,
-      "verify_run_seconds": 1.968759953,
+      "weights_run_seconds": 1.496560737,
+      "verify_run_seconds": 1.564058088,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3150,8 +3150,8 @@
         "finger1: Protector's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.946687688,
-      "verify_run_seconds": 3.636231833,
+      "weights_run_seconds": 1.4991123960000001,
+      "verify_run_seconds": 2.9059863999999997,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3803,8 +3803,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.946687688,
-      "verify_run_seconds": 3.642268788,
+      "weights_run_seconds": 1.4991123960000001,
+      "verify_run_seconds": 2.872422955,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4489,8 +4489,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.991178094,
-      "verify_run_seconds": 4.264922097,
+      "weights_run_seconds": 1.564085311,
+      "verify_run_seconds": 3.431021815,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5174,8 +5174,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.991178094,
-      "verify_run_seconds": 4.111212036,
+      "weights_run_seconds": 1.564085311,
+      "verify_run_seconds": 3.337430828,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5352,7 +5352,7 @@
               "item_name": "Knight-Lieutenant's Plate Helm",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -5.046473729794459
+              "dps_delta": -5.046473729794458
             },
             {
               "item_id": 12587,
@@ -5917,8 +5917,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.982133701,
-      "verify_run_seconds": 11.160313796,
+      "weights_run_seconds": 1.568114848,
+      "verify_run_seconds": 8.930934459,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6095,7 +6095,7 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -5.046473729794458
+              "dps_delta": -5.046473729794459
             },
             {
               "item_id": 12587,
@@ -6650,8 +6650,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.982133701,
-      "verify_run_seconds": 10.423163516,
+      "weights_run_seconds": 1.568114848,
+      "verify_run_seconds": 8.33196235,
       "coverage": {
         "back": {
           "eligible": 449,
@@ -7396,8 +7396,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.309460762,
-      "verify_run_seconds": 12.367678385,
+      "weights_run_seconds": 1.785443934,
+      "verify_run_seconds": 9.849335334,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8119,8 +8119,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.309460762,
-      "verify_run_seconds": 11.204993127,
+      "weights_run_seconds": 1.785443934,
+      "verify_run_seconds": 8.823761359,
       "coverage": {
         "back": {
           "eligible": 449,
