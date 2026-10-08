@@ -1,8 +1,8 @@
 {
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
-  "engine_version": "37347ac0f",
-  "generated_at": "2026-10-08T00:16:22Z",
+  "engine_version": "aa3e0be44",
+  "generated_at": "2026-10-08T01:47:11Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -540,8 +540,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.628307787,
-      "verify_run_seconds": 1.645322959,
+      "weights_run_seconds": 2.8263846729999997,
+      "verify_run_seconds": 1.784942362,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1171,8 +1171,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.628307787,
-      "verify_run_seconds": 1.741143337,
+      "weights_run_seconds": 2.8263846729999997,
+      "verify_run_seconds": 1.815764258,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1901,8 +1901,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.790580382,
-      "verify_run_seconds": 1.811946962,
+      "weights_run_seconds": 2.94857375,
+      "verify_run_seconds": 1.973723866,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2620,8 +2620,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.790580382,
-      "verify_run_seconds": 1.7640573750000001,
+      "weights_run_seconds": 2.94857375,
+      "verify_run_seconds": 1.905067195,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3301,8 +3301,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.854945083,
-      "verify_run_seconds": 1.8423730379999999,
+      "weights_run_seconds": 3.031026574,
+      "verify_run_seconds": 2.023793536,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3983,8 +3983,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.854945083,
-      "verify_run_seconds": 1.8238476110000001,
+      "weights_run_seconds": 3.031026574,
+      "verify_run_seconds": 1.945483303,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4663,8 +4663,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.937218799,
-      "verify_run_seconds": 1.998430903,
+      "weights_run_seconds": 3.151358481,
+      "verify_run_seconds": 2.173202238,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5349,8 +5349,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.937218799,
-      "verify_run_seconds": 1.922375124,
+      "weights_run_seconds": 3.151358481,
+      "verify_run_seconds": 2.054805512,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6066,8 +6066,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.884115114,
-      "verify_run_seconds": 2.091027313,
+      "weights_run_seconds": 3.055486293,
+      "verify_run_seconds": 2.279129666,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6782,8 +6782,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.884115114,
-      "verify_run_seconds": 2.082036263,
+      "weights_run_seconds": 3.055486293,
+      "verify_run_seconds": 2.214250132,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7501,8 +7501,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.92370449,
-      "verify_run_seconds": 2.106940645,
+      "weights_run_seconds": 3.010718571,
+      "verify_run_seconds": 2.256402766,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -7924,7 +7924,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 180.02244090524414,
+          "score": 180.02244090524417,
           "verified": true,
           "alternatives": [
             {
@@ -7940,14 +7940,14 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -8.582859641523665
+              "dps_delta": -8.582859641523669
             },
             {
               "item_id": 231574,
               "item_name": "General's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -10.199118049165858
+              "dps_delta": -10.199118049165861
             }
           ]
         },
@@ -8217,8 +8217,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.92370449,
-      "verify_run_seconds": 2.087078536,
+      "weights_run_seconds": 3.010718571,
+      "verify_run_seconds": 2.204778914,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8430,7 +8430,7 @@
           "label": "Major Mana Potion"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want."
     }
   }
 }

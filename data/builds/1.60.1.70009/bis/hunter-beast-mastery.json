@@ -1,8 +1,8 @@
 {
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
-  "engine_version": "37347ac0f",
-  "generated_at": "2026-10-08T00:15:17Z",
+  "engine_version": "aa3e0be44",
+  "generated_at": "2026-10-08T01:46:01Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -535,8 +535,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.648384729,
-      "verify_run_seconds": 1.6723210320000002,
+      "weights_run_seconds": 2.885914776,
+      "verify_run_seconds": 1.792920354,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1173,8 +1173,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.648384729,
-      "verify_run_seconds": 1.609419943,
+      "weights_run_seconds": 2.885914776,
+      "verify_run_seconds": 1.739041482,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1904,8 +1904,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.8618744879999998,
-      "verify_run_seconds": 1.876057954,
+      "weights_run_seconds": 3.049321013,
+      "verify_run_seconds": 2.014666719,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2621,8 +2621,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.8618744879999998,
-      "verify_run_seconds": 1.8356302119999999,
+      "weights_run_seconds": 3.049321013,
+      "verify_run_seconds": 1.958411511,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3303,8 +3303,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.156790661,
-      "verify_run_seconds": 2.039155882,
+      "weights_run_seconds": 3.340760943,
+      "verify_run_seconds": 2.202156147,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3986,8 +3986,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.156790661,
-      "verify_run_seconds": 1.9709567319999999,
+      "weights_run_seconds": 3.340760943,
+      "verify_run_seconds": 2.128171286,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4659,8 +4659,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.1707510389999998,
-      "verify_run_seconds": 2.171605554,
+      "weights_run_seconds": 3.39559144,
+      "verify_run_seconds": 2.343213142,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -5350,8 +5350,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.1707510389999998,
-      "verify_run_seconds": 2.104036689,
+      "weights_run_seconds": 3.39559144,
+      "verify_run_seconds": 2.239363659,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5650,14 +5650,14 @@
               "item_name": "Field Marshal's Chain Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.415360752402587
+              "dps_delta": -2.4153607524025893
             },
             {
               "item_id": 231581,
               "item_name": "Field Marshal's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.415360752402587
+              "dps_delta": -2.4153607524025893
             },
             {
               "item_id": 23089,
@@ -6076,8 +6076,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.12506121,
-      "verify_run_seconds": 2.123327469,
+      "weights_run_seconds": 3.322713492,
+      "verify_run_seconds": 2.304637943,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -6800,8 +6800,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.12506121,
-      "verify_run_seconds": 2.075582947,
+      "weights_run_seconds": 3.322713492,
+      "verify_run_seconds": 2.224338801,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7515,8 +7515,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.189538493,
-      "verify_run_seconds": 2.28636273,
+      "weights_run_seconds": 3.340398644,
+      "verify_run_seconds": 2.448896992,
       "coverage": {
         "back": {
           "eligible": 444,
@@ -8038,14 +8038,14 @@
               "item_name": "Tarnished Elven Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -0.25099076300038736
+              "dps_delta": -0.25099076300038936
             },
             {
               "item_id": 272408,
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.5895054930005937
+              "dps_delta": -0.5895054930005957
             },
             {
               "item_id": 11669,
@@ -8227,8 +8227,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.189538493,
-      "verify_run_seconds": 2.252887016,
+      "weights_run_seconds": 3.340398644,
+      "verify_run_seconds": 2.3700027280000002,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8440,7 +8440,7 @@
           "label": "Major Mana Potion"
         }
       ],
-      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used."
+      "notes": "The same Phase 1 raid context for every spec: one group of each class brings its buffs and debuffs, each spec adds the consumables its role uses, no world buffs (Forever has none), the default 180 second encounter. Where a buff has a talented form, the plain version is used unless the live talent tree carries the talent and a raid would take it; none of the improved forms qualified. Blessing of Kings is left out: the live paladin trees do not grant it, and the engine applies it to Alliance characters only, so the two factions would differ. Windfury Totem is a raid-buff aura, as in the client (spells 8512 to 10614: an aura on every party member, not a weapon enchant), so it no longer competes with a weapon imbue: a rogue keeps both poisons and still receives it (the sim/leveling kit gives the rogue specs Deadly Poison in the main hand and Instant Poison in the off hand, the arrangement that measured stronger than two Instants or either Deadly alone in design/reviews/2026-10-07-rogue-parity.md), and a dual wielder carries a stone in each hand. Only a shaman whose main hand carries Windfury Weapon does not receive the totem. The engine applies Blessing of Might, Blessing of Wisdom and Sanctity Aura to Alliance characters only, and Strength of Earth, Grace of Air and Mana Spring Totem to Horde characters only, so each faction's raid entry carries the half its side can use until the fork drops that gate. Nothing from Ahn'Qiraj or Naxxramas is used. The tanks (warrior-protection, paladin-protection, druid-feral-bear) share the tank consumable group, which adds armor, health, stamina and strength consumables in place of a damage dealer's; each carries its class's one potion (a rage potion, a mana potion, the bear's Stoneshield). They are ranked against the curated boss and healers of data/curated/tank-encounter.json, and carry no Blessing of Salvation, which a tank does not want."
     }
   }
 }
