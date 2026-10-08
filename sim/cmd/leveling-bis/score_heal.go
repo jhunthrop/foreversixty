@@ -62,9 +62,18 @@ const (
 	// healMetricsIterations is how many iterations the published metrics
 	// of a band's final set run: more than a verification run, because
 	// these are the numbers a player reads.
-	healMetricsIterations = 1000
+	healMetricsIterations = 2000
 	// healMetricsSeed is the seed of that run, so a report is reproducible.
 	healMetricsSeed = 11
+	// healIterationScale multiplies every ranking run's iteration count for
+	// a healer. The guard multiplies healing by a function of the mean time
+	// to empty, and that time varies far more from iteration to iteration
+	// (about 17 s) than healing does (about 1 percent), so at the damage
+	// specs' 300 iterations the guarded score carried about 0.8 percent of
+	// noise, of the order of the 1 percent adoption margin. At seven times
+	// the iterations it is about 0.3 percent, below the margin by a wide
+	// one. The ratio between a screen (100) and a verification (300) is kept.
+	healIterationScale = 7
 	// maxManaLastsSec caps the published "mana lasts" figure; the engine
 	// projects a time past the fight for a set that never ran out, and an
 	// hour is where its own convention stops.
@@ -150,14 +159,16 @@ func (h healEngine) RunPlainDPS(req api.SimRequest) (float64, error) {
 }
 
 // RunPlainDPSWithError is RunPlainDPS with the score's standard error,
-// scaled by the same guard so a comparison keeps its signal-to-noise.
+// which carries the noise of the mana-lasts term as well as of the healing
+// (guardedError). A healer's ranking runs use healIterationScale times the
+// iterations the caller asked for.
 func (h healEngine) RunPlainDPSWithError(req api.SimRequest) (float64, float64, error) {
+	req.Iterations *= healIterationScale
 	result, err := h.measure(req)
 	if err != nil {
 		return 0, 0, err
 	}
-	factor := lastingFactor(result.ManaLastsSec, h.profile.Duration())
-	return result.Effective.Mean * factor, result.Effective.Error * factor, nil
+	return healingScore(result, h.profile.Duration()), guardedError(result, h.profile.Duration()), nil
 }
 
 // RunWeights sweeps the spec's weight stats over the profile's fake raid.
@@ -179,6 +190,22 @@ func lastingFactor(manaLastsSec float64, fight time.Duration) float64 {
 	}
 	share := math.Max(manaLastsSec, 0) / fight.Seconds()
 	return share * share
+}
+
+// guardedError is the standard error of healingScore: the healing's own
+// error through the guard, and the mana-lasts error through the guard's
+// slope (the delta method; the two are treated as independent, which
+// leaves out their covariance).
+// Above the fight length the guard is flat and the second term is zero.
+func guardedError(result inproc.HealingResult, fight time.Duration) float64 {
+	factor := lastingFactor(result.ManaLastsSec, fight)
+	healing := result.Effective.Error * factor
+	if fight <= 0 || result.ManaLastsSec >= fight.Seconds() || result.ManaLastsSec <= 0 {
+		return healing
+	}
+	slope := 2 * result.ManaLastsSec / (fight.Seconds() * fight.Seconds())
+	lasting := result.Effective.Mean * slope * result.ManaLastsError
+	return math.Hypot(healing, lasting)
 }
 
 // healingScore is the number a healing set ranks on: effective healing per
