@@ -20,6 +20,7 @@ import (
 	"github.com/wowsims/classic/sim/core/proto"
 	"github.com/wowsims/classic/sim/druid"
 	"github.com/wowsims/classic/sim/mage"
+	"github.com/wowsims/classic/sim/paladin"
 	"github.com/wowsims/classic/sim/warrior"
 )
 
@@ -369,6 +370,7 @@ func smokeRequest(t *testing.T, spec string) api.SimRequest {
 var referenceTalents = map[string]string{
 	"warrior-fury":       warrior.ForeverFuryTalents,
 	"warrior-protection": warrior.ForeverProtectionTalents,
+	"paladin-protection": paladin.ForeverProtectionTalents,
 	"mage-frost":         mage.ForeverFrostTalents,
 	"druid-feral-bear":   druid.ForeverBearTalents,
 }

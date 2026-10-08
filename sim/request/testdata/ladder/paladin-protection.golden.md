@@ -1,4 +1,4 @@
-# paladin-retribution rotation ladder
+# paladin-protection rotation ladder
 
 Rules this ladder runs under (Phase 1a,
 docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
@@ -93,65 +93,64 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000-01000000000000000 | main_hand:263407 | 14.3 | 5 | other:attack/1=61.0, spell:25740=52.3, spell:20271=18.6, spell:20280=18.6, spell:679=18.6 | - |
-| 20 | 00000000000000000-0000000000000000-05024000000000000 | main_hand:6953 | 30.8 | 5 | other:attack/1=57.3, spell:25739=48.9, spell:1866=18.6, spell:20271=18.6, spell:20281=18.6 | - |
-| 30 | 00000000000000000-0000000000000000-05025331001100000 | main_hand:13045 | 48.4 | 5 | other:attack/1=63.1, spell:25738=54.0, other:mana_gain=18.6, spell:20271=18.6, spell:20282=18.6 | - |
-| 38 | 00000000000000000-0000000000000000-05025331001330300 | main_hand:10758 | 71.6 | 5 | other:attack/1=55.5, spell:25737=47.5, other:mana_gain=18.6, spell:20271=18.6, spell:20283=18.6 | - |
-| 40 | 00000000000000000-0000000000000000-05025331001330311 | main_hand:1982 | 81.0 | 5 | other:attack/1=65.3, spell:25737=55.8, other:mana_gain=18.6, spell:20271=18.6, spell:20283=18.6 | - |
-| 50 | 52003000000000000-0000000000000000-05025331001330311 | main_hand:2915 | 117.2 | 6 | other:attack/1=79.3, spell:25735=67.7, other:mana_gain=18.6, spell:20271=18.6, spell:20285=18.6 | - |
-| 60 | 52003003000000000-0520000000000000-05025331001330311 | main_hand:22798 | 197.6 | 6 | other:attack/1=48.2, spell:25713=41.5, other:mana_gain=18.6, spell:20271=18.6, spell:20286=18.6 | - |
+| 10 | 00000000000000000-1000000000000000-00000000000000000 | main_hand:263407 | 10.4 | 7 | other:attack/1=60.7, spell:1311647=39.4, spell:679=18.2, spell:1311650=16.1, spell:20271=16.1 | {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20928}, {SpellID: 407632} |
+| 20 | 00000000000000000-5510000000000000-00000000000000000 | main_hand:7230 | 17.5 | 8 | other:attack/1=51.8, spell:1311654=30.0, spell:1866=15.8, spell:1311655=9.5, spell:20271=9.5 | {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20928}, {SpellID: 407632} |
+| 30 | 00000000000000000-5532311100000000-00000000000000000 | main_hand:13045 | 28.2 | 8 | other:attack/1=62.5, spell:20231=34.7, spell:680=15.8, spell:20183=10.5, spell:20271=10.5 | {SpellID: 1310994}, {SpellID: 1311015}, {SpellID: 20928}, {SpellID: 407632} |
+| 38 | 00000000000000000-5532311301001040-00000000000000000 | main_hand:13045 | 31.3 | 11 | other:attack/1=62.3, spell:20415=27.2, spell:2495=16.2, spell:20271=10.3, spell:20411=10.3 | {SpellID: 20928}, {SpellID: 407632} |
+| 40 | 00000000000000000-5532311301001051-00000000000000000 | main_hand:13045 | 32.5 | 12 | other:attack/1=62.3, spell:2495=18.5, spell:20415=7.4, spell:407632=7.0, spell:20271=2.0 | - |
+| 50 | 55000000000000000-5532311301001051-00000000000000000 | main_hand:13045 | 39.5 | 12 | other:attack/1=62.3, spell:5569=18.5, spell:407632=8.1, spell:20417=7.3, spell:20271=2.1 | - |
+| 60 | 55222103000000000-5532311301001051-00000000000000000 | main_hand:22736 | 103.1 | 12 | other:attack/1=64.4, spell:10333=18.5, spell:407632=11.2, spell:20418=7.4, spell:20271=2.1 | - |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
-- Judgement of Fury (spell 1311650)
+- Judgement of Righteousness (spell 20280)
 
 ### Level 20
 
-- Consecration (spell 26573)
 - Exorcism (spell 879)
 - Judgement of Command (spell 20425)
-- Judgement of Fury (spell 1311655)
+- Judgement of Righteousness (spell 20281)
 
 ### Level 30
 
-- Consecration (spell 20116)
 - Exorcism (spell 5614)
 - Judgement of Command (spell 20962)
-- Judgement of Fury (spell 20183)
+- Judgement of Righteousness (spell 20282)
 
 ### Level 38
 
-- Consecration (spell 20116)
 - Exorcism (spell 5615)
 - Judgement of Command (spell 20962)
-- Judgement of Fury (spell 20411)
+- Judgement of Righteousness (spell 20283)
 
 ### Level 40
 
-- Consecration (spell 20922)
 - Exorcism (spell 5615)
 - Judgement of Command (spell 20961)
-- Judgement of Fury (spell 20411)
+- Judgement of Righteousness (spell 20283)
 
 ### Level 50
 
-- Consecration (spell 20923)
 - Exorcism (spell 10312)
+- Hammer of Wrath (spell 24275)
 - Holy Wrath (spell 2812)
 - Judgement of Command (spell 20965)
-- Judgement of Fury (spell 20413)
+- Judgement of Righteousness (spell 20285)
 
 ### Level 60
 
-- Consecration (spell 20924)
 - Exorcism (spell 10314)
+- Hammer of Wrath (spell 24239)
 - Holy Wrath (spell 10318)
 - Judgement of Command (spell 20966)
-- Judgement of Fury (spell 20414)
+- Judgement of Righteousness (spell 20286)
 
 ## Violations found in this run
 
-None.
+- paladin-protection level=10 kind=unresolved_id action={SpellID: 407632}
+- paladin-protection level=20 kind=unresolved_id action={SpellID: 407632}
+- paladin-protection level=30 kind=unresolved_id action={SpellID: 407632}
+- paladin-protection level=38 kind=unresolved_id action={SpellID: 407632}

@@ -1,10 +1,443 @@
 {
   "spec": "paladin-protection",
-  "state": "unwritten",
-  "notes": "Not written by the 2026-09-28 rotation-accuracy class audit; this records what a real one needs. Unlike Holy, Protection's damage kit is fully implemented and single-target-testable today (Judgement, Holy Strike, Consecration, Exorcism, Hammer of Wrath, Seal of Righteousness/Command, Holy Shield -- see sim/paladin/*.go), so a priority list is a smaller lift than Holy's -- what is missing is threat and mitigation awareness, not new spells: (1) Righteous Fury (sim/paladin/righteous_fury.go) is an Options-gated boolean threat-multiplier aura, not a rotation-cast spell, so it needs no APL line at all, only PaladinOptions.RighteousFury set true on the request -- a real list should say this explicitly rather than silently omit it. (2) Holy Shield (sim/paladin/holy_shield.go) is a talent-gated, charge-based block buff (4 charges, ranks at 30/50/60) that should be re-cast once its charges or duration run low, the same shape as this spec's Seal-remaining-time line but keyed off an aura-charge value the APL system would need surfaced (checked: APLValueAuraRemainingTime exists in proto/apl.proto; an aura-CHARGES value was not found in a quick pass of apl.proto's message list, and needs confirming before this can be written correctly). (3) A tanking Protection rotation cares about threat, not damage, as its ranking signal -- UnitMetrics already carries a Threat DistributionMetrics field (sim/core/proto/api.pb.go), unused for paladin today, so scoring this spec's own rotation choices means comparing candidates on Threat, not Dps, once written -- a threat encounter/gear ranking mode this program has not needed for any DPS spec yet. (4) Consecration and Holy Strike, the two abilities added to the client this week and covered by this pass's Retribution rotation (data/curated/apl/paladin-retribution.json's notes), read straightforwardly here too; the guide's hand-written prose (web/src/content/guides/paladin/protection.md's Rotation section) had two factual errors this pass fixed directly against sim/paladin/holy_strike.go and judgement.go -- Holy Strike's cooldown is 10s and shares the GCD (the prose said 12s, independent of the GCD), and Judgement still consumes whichever Seal is active when it fires in this engine (the prose said it no longer costs the Seal at all, true of some later expansions but not of this build's own judgement.go). The prose is accurate now; the JSON priority list itself still needs writing once threat-scoring exists.",
-  "sources": [],
+  "state": "written",
+  "notes": "Seal of Fury, Holy Shield on cooldown, Holy Strike, Hammer of the Righteous and Judgement, with Consecration only on spare mana and the three defensives on low health. Righteous Fury is not a line: it is a request option (PaladinOptions.righteousFury), worth +60 percent threat on Holy damage and, with Improved Righteous Fury, up to 6 percent less damage taken. Judgement no longer consumes the seal in Forever (Blizzard's Deep Dive recap), so Seal of Fury is recast every 30 seconds rather than after each Judgement. Mana is the limiter, so every other spell leaves Holy Shield's cost (240 mana at rank 3) in the pool: Holy Shield is both the best mitigation and the best use of mana, and without the reserve a tank without Shield Specialization cast it a third as often. Measured on the engine's tank harness (sim/paladin/protection/harness_test.go: a level 60 tank in decent gear against the published tank boss for 180 seconds, 2000 iterations), threat per second against the same rotation without each line: Hammer of the Righteous +23 percent, Holy Shield +21 percent (and 5 percent less damage taken), Seal of Fury +12 percent (+1 percent over Seal of Righteousness, which also takes 2 percent more damage), Holy Strike +6 percent, Consecration +6 percent, Judgement +5 percent, Swift Judgement +1 percent. Consecration is the exception that needs the mana floor: it returns about 1 threat per mana, and in a build without Shield Specialization and Improved Seal of Fury refilling the pool it cost 9 percent of threat at a 30 percent floor and 4 percent at the 50 percent floor used here (it is a gain of 6 percent in the Forever build). The defensives on health (Templar's Bulwark below 35, Divine Shield below 25, Divine Protection below 20 percent) cut the chance of death from 47 to 11 percent against a boss hitting 1.7 times as hard as the published one; at the published boss nothing in a 180 second fight kills the tank, so there they never fire. A Seal of Righteousness, Judgement, Holy Strike and Hammer rotation with Righteous Fury off, the same gear, makes 41 percent less threat. Unconfirmed, and moving this list: Improved Seal of Fury's mana (the client prints 0, the engine assumes 1 percent of maximum mana a spent shield), Hammer of the Righteous as 120 percent of weapon damage on three targets, and Divine Protection and Divine Shield under their Classic Era ids.",
+  "sources": [
+    {
+      "label": "Blizzard Deep Dive recap: Seal of Fury, Judgement no longer consuming Seals, Protection talents (as summarised in research/01-official-facts.md and research/06-since-announcement.md)",
+      "url": "https://news.blizzard.com/en-gb/article/24303862/",
+      "kind": "community"
+    },
+    {
+      "label": "Client spell and talent tables, build 1.60.1.70009 (Seal of Fury 1311649..20423, Hammer of the Righteous 407632, Holy Shield 20925..20928, Templar's Bulwark 1311015, Swift Judgement 1310994)",
+      "url": "https://foreversixty.gg/sim/specs",
+      "kind": "site"
+    },
+    {
+      "label": "Forever Sixty tank harness measurements (sim/paladin/protection/harness_test.go), 2026-10-07",
+      "url": "https://foreversixty.gg/sim/specs",
+      "kind": "site"
+    }
+  ],
   "rotation": {
     "type": "TypeAPL",
-    "priorityList": []
-  }
+    "prepullActions": [
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 20423,
+              "rank": 7
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-3.5s"
+          }
+        }
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 20928,
+              "rank": 3
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-2s"
+          }
+        }
+      }
+    ],
+    "priorityList": [
+      {
+        "action": {
+          "autocastOtherCooldowns": {}
+        },
+        "notes": "Lay on Hands is the engine's survival cooldown and fires itself below 10 percent health."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1311015
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.35"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Templar's Bulwark, an absorb of the paladin's whole health bar for 8 seconds, as the first panic button: low health is when a late shield buys the most, and it puts Forbearance on the next two defensives for a minute."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1020,
+              "rank": 2
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.25"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Divine Shield: 12 seconds of immunity at half damage dealt, the second panic button once Forbearance from the first has gone."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 5573,
+              "rank": 2
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentHealthPercent": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "0.2"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Divine Protection: 8 seconds of immunity with no attacks, the last resort."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 20423,
+              "rank": 7
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLe",
+                    "lhs": {
+                      "currentSealRemainingTime": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "2s"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "math": {
+                        "op": "OpSub",
+                        "lhs": {
+                          "currentMana": {}
+                        },
+                        "rhs": {
+                          "spellCurrentCost": {
+                            "spellId": {
+                              "spellId": 20423,
+                              "rank": 7
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "spellCurrentCost": {
+                        "spellId": {
+                          "spellId": 20928,
+                          "rank": 3
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Seal of Fury kept up. Judgement no longer consumes the seal in Forever, so this recasts every 30 seconds, and only with Holy Shield's mana left over."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 20928,
+              "rank": 3
+            }
+          }
+        },
+        "notes": "Holy Shield on cooldown: its 10 second cooldown equals its duration, so it is up whenever its four charges last, and it is the first claim on mana."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10333,
+              "rank": 8
+            }
+          }
+        },
+        "notes": "Holy Strike on cooldown: the cheapest threat per mana the paladin has (20 mana)."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 407632
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpGe",
+              "lhs": {
+                "math": {
+                  "op": "OpSub",
+                  "lhs": {
+                    "currentMana": {}
+                  },
+                  "rhs": {
+                    "spellCurrentCost": {
+                      "spellId": {
+                        "spellId": 407632
+                      }
+                    }
+                  }
+                }
+              },
+              "rhs": {
+                "spellCurrentCost": {
+                  "spellId": {
+                    "spellId": 20928,
+                    "rank": 3
+                  }
+                }
+              }
+            }
+          }
+        },
+        "notes": "Hammer of the Righteous on cooldown, once the Holy Shield mana is safe."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1310994
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpGt",
+              "lhs": {
+                "spellTimeToReady": {
+                  "spellId": {
+                    "spellId": 20271
+                  }
+                }
+              },
+              "rhs": {
+                "const": {
+                  "val": "5s"
+                }
+              }
+            }
+          }
+        },
+        "notes": "Swift Judgement while Judgement is on cooldown: it finishes the cooldown and makes the next Judgement free, one more Judgement a minute."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 20271
+            }
+          },
+          "condition": {
+            "cmp": {
+              "op": "OpGe",
+              "lhs": {
+                "math": {
+                  "op": "OpSub",
+                  "lhs": {
+                    "currentMana": {}
+                  },
+                  "rhs": {
+                    "spellCurrentCost": {
+                      "spellId": {
+                        "spellId": 20271
+                      }
+                    }
+                  }
+                }
+              },
+              "rhs": {
+                "spellCurrentCost": {
+                  "spellId": {
+                    "spellId": 20928,
+                    "rank": 3
+                  }
+                }
+              }
+            }
+          }
+        },
+        "notes": "Judgement on cooldown (an off-the-global cast of 6 percent of base mana)."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 10314,
+              "rank": 6
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "spellCanCast": {
+                    "spellId": {
+                      "spellId": 10314,
+                      "rank": 6
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "math": {
+                        "op": "OpSub",
+                        "lhs": {
+                          "currentMana": {}
+                        },
+                        "rhs": {
+                          "spellCurrentCost": {
+                            "spellId": {
+                              "spellId": 10314,
+                              "rank": 6
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "spellCurrentCost": {
+                        "spellId": {
+                          "spellId": 20928,
+                          "rank": 3
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Exorcism on Undead and Demons only; the engine refuses it on any other target."
+      },
+      {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 20924,
+              "rank": 5
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpGt",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.5"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "math": {
+                        "op": "OpSub",
+                        "lhs": {
+                          "currentMana": {}
+                        },
+                        "rhs": {
+                          "spellCurrentCost": {
+                            "spellId": {
+                              "spellId": 20924,
+                              "rank": 5
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "spellCurrentCost": {
+                        "spellId": {
+                          "spellId": 20928,
+                          "rank": 3
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "Consecration last and only above half mana: about one threat per mana against ten for Hammer of the Righteous, so it is the use of mana the tank has to spare."
+      }
+    ]
+  },
+  "expected_idle": [
+    {
+      "id": 20928,
+      "reason": "Holy Shield needs a shield and the ladder's character carries none (a paladin's off hand is a weapon slot only for dual-wielding classes), so the engine refuses the cast at every level. A tank in the tank fight, shield on, casts it every 10 seconds."
+    },
+    {
+      "id": 10314,
+      "reason": "Exorcism only lands on Undead or Demon (sim/paladin/exorcism.go's ExtraCastCondition); the published tank boss, like the ladder's target, has no creature type, so this line's gate structurally can never pass against it."
+    }
+  ]
 }
