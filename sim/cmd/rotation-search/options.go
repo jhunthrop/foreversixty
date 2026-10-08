@@ -14,12 +14,12 @@ import (
 // a concern.
 type options struct {
 	repoRoot, spec, faction, preset, build, buildCode, out, engineSrc string
-	level                                                  int
-	iterations                                             int // screening and probe iterations
-	confirmIterations                                      int
-	rounds                                                 int
-	seed                                                   int64
-	probeOnly                                              bool
+	level                                                             int
+	iterations                                                        int // screening and probe iterations
+	confirmIterations                                                 int
+	rounds                                                            int
+	seed                                                              int64
+	probeOnly                                                         bool
 }
 
 func parseOptions(args []string) (options, error) {
