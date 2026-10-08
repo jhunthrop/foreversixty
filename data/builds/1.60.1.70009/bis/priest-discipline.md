@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 025003010000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 35.3. Weights run: 10.5s. Verify run: 5.2s. 150 eligible items had no known source.
+Set DPS (verified): 35.3. Weights run: 10.0s. Verify run: 4.9s. 150 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.000, intellect=2.347 ± 0.010, spirit=1.375 ± 0.005, mp5=3.102 ± 0.033, crit=0.157 ± 0.007 per rating point (14 rating = 1%, 2.200 per %), spell_haste=not significant (0.006 ± 0.028)
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 150, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 025003031304000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 72.7. Weights run: 10.7s. Verify run: 5.1s. 244 eligible items had no known source.
+Set DPS (verified): 72.7. Weights run: 10.1s. Verify run: 4.9s. 244 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.011, intellect=2.199 ± 0.011, spirit=1.744 ± 0.010, mp5=3.814 ± 0.010, crit=0.217 ± 0.008 per rating point (14 rating = 1%, 3.038 per %), spell_haste=not significant (0.299 ± 0.097)
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 244, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (human, 025003031305101520-00000000000000000-000000000000000000)
 
-Set DPS (verified): 155.3. Weights run: 12.4s. Verify run: 6.4s. 328 eligible items had no known source.
+Set DPS (verified): 155.3. Weights run: 11.8s. Verify run: 6.1s. 328 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.035, intellect=1.741 ± 0.027, spirit=0.595 ± 0.019, mp5=0.429 ± 0.044, crit=0.454 ± 0.014 per rating point (14 rating = 1%, 6.349 per %), spell_haste=not significant (0.671 ± 0.177)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 328, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (human, 025003031305101520-03502000000000000-000000000000000000)
 
-Set DPS (verified): 228.3. Weights run: 12.2s. Verify run: 7.5s. 423 eligible items had no known source.
+Set DPS (verified): 228.3. Weights run: 11.6s. Verify run: 7.2s. 423 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.022, intellect=1.665 ± 0.034, spirit=not significant (0.273 ± 0.092), mp5=1.735 ± 0.139, crit=0.662 ± 0.018 per rating point (14 rating = 1%, 9.267 per %), spell_haste=0.833 ± 0.190
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 423, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 025003031305101520-03505003030100000-000000000000000000)
 
-Set DPS (verified): 373.4. Weights run: 11.8s. Verify run: 11.1s. 1129 eligible items had no known source.
+Set DPS (verified): 373.4. Weights run: 11.2s. Verify run: 10.8s. 1129 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.113, intellect=2.151 ± 0.058, spirit=0.337 ± 0.074, mp5=1.595 ± 0.105, crit=0.791 ± 0.032 per rating point (14 rating = 1%, 11.071 per %), spell_haste=not significant (0.866 ± 0.772)
 
@@ -158,31 +158,31 @@ No-known-source sample (15 of 1129, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (human, 025003031305101520-03505003030100000-000000000000000000)
 
-Set DPS (verified): 583.9. Weights run: 8.1s. Verify run: 10.6s. 1129 eligible items had no known source.
+Set DPS (verified): 628.3. Weights run: 7.5s. Verify run: 6.5s. 1129 eligible items had no known source.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.331, intellect=2.552 ± 0.068, spirit=2.112 ± 0.065, mp5=5.114 ± 0.075, crit=1.103 ± 0.047 per rating point (14 rating = 1%, 15.437 per %), spell_haste=not significant (1.751 ± 0.974)
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.170, intellect=1.813 ± 0.045, spirit=1.431 ± 0.045, mp5=2.997 ± 0.049, crit=0.689 ± 0.030 per rating point (14 rating = 1%, 9.642 per %), spell_haste=not significant (2.562 ± 0.675)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Virtuous Crown (226947) | Saving the Best for Last [quest] | 125.6 healing_power points (16.66 DPS) | yes | Field Marshal's Satin Hood (231622, +0.00 DPS) [vendor]; Lieutenant Commander's Satin Hood (227121, -1.34 DPS) [pvp]; Gnomish Turban of Psychic Might (21517, -19.64 DPS, sim-verified) [quest] |
-| neck | Wavefront Necklace (20685) | Lord Skwol [world] | 80.2 healing_power points (10.64 DPS) | yes | Jeweled Amulet of Cainwyn (1443, -1.75 DPS) [world_drop]; The Eye of Zuldazar (19593, -1.90 DPS) [quest]; Lady Maye's Pendant (14558, -2.16 DPS, sim-verified) [world_drop] |
-| shoulder | Devout Mantle (16695) | Blackrock Spire: Solakar Flamewreath [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Lieutenant Commander's Satin Mantle (227119, +0.00 DPS) [pvp]; Field Marshal's Satin Mantle (231628, -0.34 DPS) [pvp]; Argent Elite Shoulders (227888, -14.46 DPS, sim-verified) [vendor] |
-| back | Hide of the Wild (18510) | Leatherworking [crafted] | 67.5 healing_power points (8.95 DPS) | yes | Cloak of the Cosmos (18389, -1.78 DPS) [dungeon]; Darkspear Raider's Cloak (272063, -1.86 DPS) [vendor]; Frostweaver Cape (12968, -14.13 DPS, sim-verified) [dungeon] |
-| chest | Virtuous Robe (226945) | Saving the Best for Last [quest] | 124.9 healing_power points (16.57 DPS) | yes | Field Marshal's Satin Tunic (231624, +0.00 DPS) [vendor]; Alanna's Embrace (13314, -1.55 DPS) [dungeon]; Mooncloth Vest (14138, -19.02 DPS, sim-verified) [crafted] |
-| wrist | Bracers of Hope (22667) | Epic Armaments of Battle - Friend of the Dawn [quest] | 71.4 healing_power points (9.47 DPS) | yes | Marshal's Satin Bracers (17606, -0.24 DPS) [pvp]; Virtuous Bracers (226949, -0.96 DPS) [quest]; Bracers of Mending (23129, -1.91 DPS, sim-verified) [dungeon] |
-| hands | Raider Handwraps (272097) | Creeg Bothunk [vendor] | 92.9 healing_power points (12.32 DPS) | yes | Virtuous Mitts (226950, -0.37 DPS) [vendor]; Devout Gloves (16692, -2.19 DPS) [dungeon]; Hands of the Exalted Herald (12554, -5.73 DPS, sim-verified) [dungeon] |
-| waist | Virtuous Belt (226948) | Just Compensation [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Satin Sash (17609, +0.00 DPS) [pvp]; Whipvine Cord (18327, -0.54 DPS) [dungeon]; Wisdom of the Timbermaw (19047, -16.46 DPS, sim-verified) [crafted] |
-| legs | Padre's Trousers (18386) | Dire Maul: Illyanna Ravenoak [dungeon] | 123.7 healing_power points (16.41 DPS) | yes | Marshal's Satin Legguards (231626, -1.61 DPS) [vendor]; Virtuous Skirt (226946, -1.84 DPS) [quest]; Devout Skirt (16694, -23.16 DPS, sim-verified) [dungeon] |
-| feet | Virtuous Sandals (226952) | Anthion's Parting Words [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mooncloth Boots (15802, -2.45 DPS) [crafted]; Faith Healer's Boots (22247, -3.14 DPS) [dungeon]; Incandescent Mooncloth Boots (227862, -32.27 DPS, sim-verified) [vendor] |
-| finger1 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Mending (22334, -0.85 DPS) [dungeon]; Seal of Rivendare (13345, -1.30 DPS) [dungeon]; Naglering (11669, -25.36 DPS, sim-verified) [dungeon] |
-| finger2 | Emerald Flame Ring (18395) | Dire Maul: Prince Tortheldrin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Mending (22334, -0.13 DPS) [dungeon]; Seal of Rivendare (13345, -0.58 DPS) [dungeon]; Naglering (11669, -19.83 DPS, sim-verified) [dungeon] |
-| trinket1 | Royal Seal of Eldre'Thalas (18469) | Holy Bologna: What the Light Won't Tell You [quest] | sim-verified (-1.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Mindtap Talisman (18371, +0.00 DPS) [dungeon]; Darkspear Voodoo Seal (272061, +0.00 DPS) [vendor] |
-| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (229.5 DPS) | yes | Mindtap Talisman (18371, +0.00 DPS) [dungeon]; Darkspear Voodoo Seal (272059, +0.00 DPS) [vendor] |
-| main_hand | Staff of Hale Magefire (13000) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Quel'dorai Channeling Rod (18311, -0.86 DPS) [dungeon]; Staff of Metanoia (22394, -1.26 DPS) [dungeon]; Hand of Edward the Odd (2243, -18.42 DPS, sim-verified) [world_drop] |
+| head | Virtuous Crown (226947) | Saving the Best for Last [quest] | 96.4 healing_power points (18.84 DPS) | yes | Field Marshal's Satin Hood (231622, +0.00 DPS) [vendor]; Lieutenant Commander's Satin Hood (227121, -0.72 DPS) [pvp]; Devout Crown (16693, -1.89 DPS, sim-verified) [dungeon] |
+| neck | Wavefront Necklace (20685) | Lord Skwol [world] | 58.9 healing_power points (11.51 DPS) | yes | The All-Seeing Eye of Zuldazar (19594, -1.52 DPS) [quest]; Lady Maye's Pendant (14558, -1.97 DPS) [world_drop]; The Eye of Zuldazar (19593, -8.93 DPS, sim-verified) [quest] |
+| shoulder | Virtuous Mantle (226951) | Anthion's Parting Words [quest] | sim-verified (+12.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Lieutenant Commander's Satin Mantle (227119, +0.00 DPS) [pvp]; Field Marshal's Satin Mantle (231628, +0.00 DPS) [pvp]; Argent Elite Shoulders (227888, -12.79 DPS, sim-verified) [vendor] |
+| back | Hide of the Wild (18510) | Leatherworking [crafted] | 60.1 healing_power points (11.76 DPS) | yes | Drape of Recovery (272413, -3.35 DPS) [vendor]; Frostweaver Cape (12968, -4.15 DPS) [dungeon]; Cloak of the Cosmos (18389, -14.16 DPS, sim-verified) [dungeon] |
+| chest | Truefaith Vestments (14154) | Tailoring [crafted] | sim-verified (+28.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Field Marshal's Satin Tunic (231624, +0.00 DPS) [vendor]; Robes of the Exalted (13346, -0.60 DPS) [dungeon]; Virtuous Robe (226945, -28.55 DPS, sim-verified) [quest] |
+| wrist | Bracers of Hope (22667) | Epic Armaments of Battle - Friend of the Dawn [quest] | 55.1 healing_power points (10.78 DPS) | yes | Virtuous Bracers (226949, -0.99 DPS) [quest]; Marshal's Satin Bracers (17606, -1.24 DPS) [pvp]; Bracers of Mending (23129, -2.54 DPS, sim-verified) [dungeon] |
+| hands | Hands of the Exalted Herald (12554) | Blackrock Depths: Princess Moira Bronzebeard  [dungeon] | 73.7 healing_power points (14.42 DPS) | yes | Virtuous Mitts (226950, -0.79 DPS) [vendor]; Desert Bloom Gloves (20717, -1.28 DPS) [quest]; Raider Handwraps (272097, -2.36 DPS, sim-verified) [vendor] |
+| waist | Wisdom of the Timbermaw (19047) | Tailoring [crafted] | 69.3 healing_power points (13.54 DPS) | yes | Whipvine Cord (18327, -0.77 DPS) [dungeon]; Marshal's Satin Sash (17609, -1.19 DPS) [pvp]; Virtuous Belt (226948, -19.75 DPS, sim-verified) [quest] |
+| legs | Padre's Trousers (18386) | Dire Maul: Illyanna Ravenoak [dungeon] | 96.2 healing_power points (18.82 DPS) | yes | Marshal's Satin Legguards (231626, -1.23 DPS) [vendor]; Knight-Captain's Satin Legguards (227125, -1.76 DPS) [pvp]; Virtuous Skirt (226946, -27.17 DPS, sim-verified) [quest] |
+| feet | Virtuous Sandals (226952) | Anthion's Parting Words [quest] | sim-verified (+10.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Mooncloth Boots (15802, -1.99 DPS) [crafted]; Faith Healer's Boots (22247, -2.59 DPS) [dungeon]; Incandescent Mooncloth Boots (227862, -10.05 DPS, sim-verified) [vendor] |
+| finger1 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Emerald Flame Ring (18395, -0.80 DPS) [dungeon]; Fordring's Seal (16058, -1.21 DPS) [quest]; Naglering (11669, -39.30 DPS, sim-verified) [dungeon] |
+| finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Emerald Flame Ring (18395, -0.77 DPS) [dungeon]; Fordring's Seal (16058, -1.18 DPS) [quest]; Naglering (11669, -38.57 DPS, sim-verified) [dungeon] |
+| trinket1 | Royal Seal of Eldre'Thalas (18469) | Holy Bologna: What the Light Won't Tell You [quest] | sim-verified (+35.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Darkspear Voodoo Seal (272061, -0.01 DPS) [vendor]; Mindtap Talisman (18371, -2.35 DPS) [dungeon]; Briarwood Reed (12930, -3.13 DPS) [dungeon] |
+| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Darkspear Voodoo Seal (272061, +0.00 DPS) [vendor]; Mindtap Talisman (18371, -1.77 DPS) [dungeon]; Briarwood Reed (12930, -14.12 DPS, sim-verified) [dungeon] |
+| main_hand | Redemption (22406) | Stratholme: Cannon Master Willey [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Staff of Metanoia (22394, -0.46 DPS) [dungeon]; Staff of Hale Magefire (13000, -1.24 DPS) [world_drop]; Hand of Edward the Odd (2243, -36.17 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Torch of Light (279246) | Enchanting [crafted] | 40.2 healing_power points (5.33 DPS) | yes | Oblivion's Touch (18761, -1.18 DPS, sim-verified) [dungeon]; Sparkling Crystal Wand (20672, -1.63 DPS) [world]; Cairnstone Sliver (9654, -2.24 DPS) [quest] |
+| ranged | Torch of Light (279246) | Enchanting [crafted] | 32.7 healing_power points (6.40 DPS) | yes | Oblivion's Touch (18761, -2.50 DPS) [dungeon]; Bonecreeper Stylus (13938, -2.83 DPS) [dungeon]; Sparkling Crystal Wand (20672, -11.24 DPS, sim-verified) [world] |
 
-**New at 60:** head: Virtuous Crown; neck: Wavefront Necklace; shoulder: Devout Mantle; back: Hide of the Wild; chest: Virtuous Robe; wrist: Bracers of Hope; hands: Raider Handwraps; waist: Virtuous Belt; legs: Padre's Trousers; feet: Virtuous Sandals; finger1: Band of Piety; finger2: Emerald Flame Ring; trinket1: Royal Seal of Eldre'Thalas; trinket2: Serenity Field; main_hand: Staff of Hale Magefire; ranged: Torch of Light
+**New at 60:** head: Virtuous Crown; neck: Wavefront Necklace; shoulder: Virtuous Mantle; back: Hide of the Wild; chest: Truefaith Vestments; wrist: Bracers of Hope; hands: Hands of the Exalted Herald; waist: Wisdom of the Timbermaw; legs: Padre's Trousers; feet: Virtuous Sandals; finger1: Band of Mending; finger2: Band of Piety; trinket1: Royal Seal of Eldre'Thalas; trinket2: Serenity Field; main_hand: Redemption; ranged: Torch of Light
 
 No-known-source sample (15 of 1129, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1129, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 025003010000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 35.1. Weights run: 10.5s. Verify run: 5.2s. 140 eligible items had no known source.
+Set DPS (verified): 35.1. Weights run: 10.0s. Verify run: 4.9s. 140 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.000, intellect=2.347 ± 0.010, spirit=1.375 ± 0.005, mp5=3.102 ± 0.033, crit=0.157 ± 0.007 per rating point (14 rating = 1%, 2.200 per %), spell_haste=not significant (0.006 ± 0.028)
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 140, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 025003031304000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 72.5. Weights run: 10.7s. Verify run: 5.2s. 231 eligible items had no known source.
+Set DPS (verified): 72.5. Weights run: 10.1s. Verify run: 5.0s. 231 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.011, intellect=2.199 ± 0.011, spirit=1.744 ± 0.010, mp5=3.814 ± 0.010, crit=0.217 ± 0.008 per rating point (14 rating = 1%, 3.038 per %), spell_haste=not significant (0.299 ± 0.097)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 231, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 025003031305101520-00000000000000000-000000000000000000)
 
-Set DPS (verified): 153.8. Weights run: 12.4s. Verify run: 6.4s. 311 eligible items had no known source.
+Set DPS (verified): 153.8. Weights run: 11.8s. Verify run: 6.2s. 311 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.035, intellect=1.741 ± 0.027, spirit=0.595 ± 0.019, mp5=0.429 ± 0.044, crit=0.454 ± 0.014 per rating point (14 rating = 1%, 6.349 per %), spell_haste=not significant (0.671 ± 0.177)
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 311, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 025003031305101520-03502000000000000-000000000000000000)
 
-Set DPS (verified): 228.4. Weights run: 12.2s. Verify run: 7.3s. 403 eligible items had no known source.
+Set DPS (verified): 228.4. Weights run: 11.6s. Verify run: 6.9s. 403 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.022, intellect=1.665 ± 0.034, spirit=not significant (0.273 ± 0.092), mp5=1.735 ± 0.139, crit=0.662 ± 0.018 per rating point (14 rating = 1%, 9.267 per %), spell_haste=0.833 ± 0.190
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 403, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 025003031305101520-03505003030100000-000000000000000000)
 
-Set DPS (verified): 367.7. Weights run: 11.8s. Verify run: 11.0s. 1120 eligible items had no known source.
+Set DPS (verified): 367.7. Weights run: 11.2s. Verify run: 10.5s. 1120 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.113, intellect=2.151 ± 0.058, spirit=0.337 ± 0.074, mp5=1.595 ± 0.105, crit=0.791 ± 0.032 per rating point (14 rating = 1%, 11.071 per %), spell_haste=not significant (0.866 ± 0.772)
 
@@ -340,31 +340,31 @@ No-known-source sample (15 of 1120, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 025003031305101520-03505003030100000-000000000000000000)
 
-Set DPS (verified): 580.3. Weights run: 8.1s. Verify run: 7.0s. 1120 eligible items had no known source.
+Set DPS (verified): 622.6. Weights run: 7.5s. Verify run: 6.3s. 1120 eligible items had no known source.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.331, intellect=2.552 ± 0.068, spirit=2.112 ± 0.065, mp5=5.114 ± 0.075, crit=1.103 ± 0.047 per rating point (14 rating = 1%, 15.437 per %), spell_haste=not significant (1.751 ± 0.974)
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.170, intellect=1.813 ± 0.045, spirit=1.431 ± 0.045, mp5=2.997 ± 0.049, crit=0.689 ± 0.030 per rating point (14 rating = 1%, 9.642 per %), spell_haste=not significant (2.562 ± 0.675)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Virtuous Crown (226947) | Saving the Best for Last [quest] | 125.6 healing_power points (16.66 DPS) | yes | Gnomish Turban of Psychic Might (21517, +0.00 DPS, sim-verified) [quest]; Warlord's Satin Hood (231635, +0.00 DPS) [vendor]; Champion's Satin Hood (227118, -1.34 DPS) [pvp] |
-| neck | Wavefront Necklace (20685) | Lord Skwol [world] | 80.2 healing_power points (10.64 DPS) | yes | Jeweled Amulet of Cainwyn (1443, -1.75 DPS) [world_drop]; The Eye of Zuldazar (19593, -1.90 DPS) [quest]; Lady Maye's Pendant (14558, -5.09 DPS, sim-verified) [world_drop] |
-| shoulder | Devout Mantle (16695) | Blackrock Spire: Solakar Flamewreath [dungeon] | sim-verified (+9.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Champion's Satin Mantle (227120, +0.00 DPS) [pvp]; Warlord's Satin Mantle (231631, -0.34 DPS) [pvp]; Argent Elite Shoulders (227888, -9.73 DPS, sim-verified) [vendor] |
-| back | Hide of the Wild (18510) | Leatherworking [crafted] | 67.5 healing_power points (8.95 DPS) | yes | Cloak of the Cosmos (18389, -1.78 DPS) [dungeon]; Darkspear Raider's Cloak (272063, -1.86 DPS) [vendor]; Frostweaver Cape (12968, -11.08 DPS, sim-verified) [dungeon] |
-| chest | Mooncloth Vest (14138) | Tailoring [crafted] | sim-verified (+6.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Warlord's Satin Tunic (231632, +0.00 DPS) [vendor]; Alanna's Embrace (13314, -0.52 DPS) [dungeon]; Virtuous Robe (226945, -6.03 DPS, sim-verified) [quest] |
-| wrist | Bracers of Hope (22667) | Epic Armaments of Battle - Friend of the Dawn [quest] | 71.4 healing_power points (9.47 DPS) | yes | General's Satin Bracers (17619, -0.24 DPS) [pvp]; Virtuous Bracers (226949, -0.96 DPS) [quest]; Bracers of Mending (23129, -2.09 DPS, sim-verified) [dungeon] |
-| hands | Raider Handwraps (272097) | Creeg Bothunk [vendor] | 92.9 healing_power points (12.32 DPS) | yes | Virtuous Mitts (226950, -0.37 DPS) [vendor]; Devout Gloves (16692, -2.19 DPS) [dungeon]; Hands of the Exalted Herald (12554, -4.99 DPS, sim-verified) [dungeon] |
-| waist | Wisdom of the Timbermaw (19047) | Tailoring [crafted] | sim-verified (+7.8 DPS vs the runner-up, not corroborated against the finished set) | yes | General's Satin Cinch (17621, +0.00 DPS) [pvp]; Whipvine Cord (18327, -0.14 DPS) [dungeon]; Virtuous Belt (226948, -7.80 DPS, sim-verified) [quest] |
-| legs | Padre's Trousers (18386) | Dire Maul: Illyanna Ravenoak [dungeon] | 123.7 healing_power points (16.41 DPS) | yes | General's Satin Legguards (231634, -1.61 DPS) [vendor]; Virtuous Skirt (226946, -1.84 DPS) [quest]; Devout Skirt (16694, -19.64 DPS, sim-verified) [dungeon] |
-| feet | Virtuous Sandals (226952) | Anthion's Parting Words [quest] | sim-verified (+25.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Mooncloth Boots (15802, -2.45 DPS) [crafted]; Faith Healer's Boots (22247, -3.14 DPS) [dungeon]; Incandescent Mooncloth Boots (227862, -25.37 DPS, sim-verified) [vendor] |
-| finger1 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Mending (22334, -0.85 DPS) [dungeon]; Seal of Rivendare (13345, -1.30 DPS) [dungeon]; Naglering (11669, -20.47 DPS, sim-verified) [dungeon] |
-| finger2 | Emerald Flame Ring (18395) | Dire Maul: Prince Tortheldrin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Mending (22334, -0.13 DPS) [dungeon]; Seal of Rivendare (13345, -0.58 DPS) [dungeon]; Naglering (11669, -17.63 DPS, sim-verified) [dungeon] |
-| trinket1 | Royal Seal of Eldre'Thalas (18469) | Holy Bologna: What the Light Won't Tell You [quest] | sim-verified (+5.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Mindtap Talisman (18371, +0.00 DPS) [dungeon]; Darkspear Voodoo Seal (272059, -0.99 DPS) [vendor] |
-| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (+4.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Mindtap Talisman (18371, +0.00 DPS) [dungeon]; Darkspear Voodoo Seal (272059, +0.00 DPS) [vendor] |
-| main_hand | Staff of Hale Magefire (13000) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Quel'dorai Channeling Rod (18311, -0.86 DPS) [dungeon]; Staff of Metanoia (22394, -1.26 DPS) [dungeon]; Hand of Edward the Odd (2243, -15.95 DPS, sim-verified) [world_drop] |
+| head | Virtuous Crown (226947) | Saving the Best for Last [quest] | 96.4 healing_power points (18.84 DPS) | yes | Devout Crown (16693, +0.00 DPS, sim-verified) [dungeon]; Warlord's Satin Hood (231635, +0.00 DPS) [vendor]; Champion's Satin Hood (227118, -0.72 DPS) [pvp] |
+| neck | Wavefront Necklace (20685) | Lord Skwol [world] | 58.9 healing_power points (11.51 DPS) | yes | The All-Seeing Eye of Zuldazar (19594, -1.52 DPS) [quest]; Lady Maye's Pendant (14558, -1.97 DPS) [world_drop]; The Eye of Zuldazar (19593, -6.96 DPS, sim-verified) [quest] |
+| shoulder | Virtuous Mantle (226951) | Anthion's Parting Words [quest] | sim-verified (+19.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Champion's Satin Mantle (227120, +0.00 DPS) [pvp]; Warlord's Satin Mantle (231631, +0.00 DPS) [pvp]; Argent Elite Shoulders (227888, -19.27 DPS, sim-verified) [vendor] |
+| back | Hide of the Wild (18510) | Leatherworking [crafted] | 60.1 healing_power points (11.76 DPS) | yes | Drape of Recovery (272413, -3.35 DPS) [vendor]; Frostweaver Cape (12968, -4.15 DPS) [dungeon]; Cloak of the Cosmos (18389, -12.86 DPS, sim-verified) [dungeon] |
+| chest | Truefaith Vestments (14154) | Tailoring [crafted] | sim-verified (+29.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Warlord's Satin Tunic (231632, +0.00 DPS) [vendor]; Robes of the Exalted (13346, -0.60 DPS) [dungeon]; Virtuous Robe (226945, -29.76 DPS, sim-verified) [quest] |
+| wrist | Bracers of Hope (22667) | Epic Armaments of Battle - Friend of the Dawn [quest] | 55.1 healing_power points (10.78 DPS) | yes | Bracers of Mending (23129, -0.43 DPS) [dungeon]; Virtuous Bracers (226949, -0.99 DPS) [quest]; General's Satin Bracers (17619, -1.24 DPS) [pvp] |
+| hands | Raider Handwraps (272097) | Creeg Bothunk [vendor] | sim-verified (+4.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Virtuous Mitts (226950, -0.64 DPS) [vendor]; Desert Bloom Gloves (20717, -1.12 DPS) [quest]; Hands of the Exalted Herald (12554, -4.04 DPS, sim-verified) [dungeon] |
+| waist | Wisdom of the Timbermaw (19047) | Tailoring [crafted] | 69.3 healing_power points (13.54 DPS) | yes | Whipvine Cord (18327, -0.77 DPS) [dungeon]; General's Satin Cinch (17621, -1.19 DPS) [pvp]; Virtuous Belt (226948, -15.99 DPS, sim-verified) [quest] |
+| legs | Padre's Trousers (18386) | Dire Maul: Illyanna Ravenoak [dungeon] | 96.2 healing_power points (18.82 DPS) | yes | General's Satin Legguards (231634, -1.23 DPS) [vendor]; Legionnaire's Satin Legguards (227123, -1.76 DPS) [pvp]; Virtuous Skirt (226946, -25.31 DPS, sim-verified) [quest] |
+| feet | Virtuous Sandals (226952) | Anthion's Parting Words [quest] | sim-verified (+16.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Mooncloth Boots (15802, -1.99 DPS) [crafted]; Faith Healer's Boots (22247, -2.59 DPS) [dungeon]; Incandescent Mooncloth Boots (227862, -16.86 DPS, sim-verified) [vendor] |
+| finger1 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Emerald Flame Ring (18395, -0.80 DPS) [dungeon]; Fordring's Seal (16058, -1.21 DPS) [quest]; Naglering (11669, -35.01 DPS, sim-verified) [dungeon] |
+| finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Emerald Flame Ring (18395, -0.77 DPS) [dungeon]; Fordring's Seal (16058, -1.18 DPS) [quest]; Naglering (11669, -32.98 DPS, sim-verified) [dungeon] |
+| trinket1 | Royal Seal of Eldre'Thalas (18469) | Holy Bologna: What the Light Won't Tell You [quest] | sim-verified (+30.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Darkspear Voodoo Seal (272061, -0.01 DPS) [vendor]; Mindtap Talisman (18371, -2.35 DPS) [dungeon]; Briarwood Reed (12930, -3.13 DPS) [dungeon] |
+| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mindtap Talisman (18371, -1.77 DPS) [dungeon]; Briarwood Reed (12930, -2.54 DPS) [dungeon]; Darkspear Voodoo Seal (272061, -11.97 DPS, sim-verified) [vendor] |
+| main_hand | Redemption (22406) | Stratholme: Cannon Master Willey [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Staff of Metanoia (22394, -0.46 DPS) [dungeon]; Staff of Hale Magefire (13000, -1.24 DPS) [world_drop]; Hand of Edward the Odd (2243, -31.05 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Torch of Light (279246) | Enchanting [crafted] | 40.2 healing_power points (5.33 DPS) | yes | Sparkling Crystal Wand (20672, -1.63 DPS) [world]; Jaina's Firestarter (13064, -2.46 DPS) [world_drop]; Oblivion's Touch (18761, -2.72 DPS, sim-verified) [dungeon] |
+| ranged | Torch of Light (279246) | Enchanting [crafted] | 32.7 healing_power points (6.40 DPS) | yes | Oblivion's Touch (18761, -2.50 DPS) [dungeon]; Bonecreeper Stylus (13938, -2.83 DPS) [dungeon]; Sparkling Crystal Wand (20672, -8.31 DPS, sim-verified) [world] |
 
-**New at 60:** head: Virtuous Crown; neck: Wavefront Necklace; shoulder: Devout Mantle; back: Hide of the Wild; chest: Mooncloth Vest; wrist: Bracers of Hope; hands: Raider Handwraps; waist: Wisdom of the Timbermaw; legs: Padre's Trousers; feet: Virtuous Sandals; finger1: Band of Piety; finger2: Emerald Flame Ring; trinket1: Royal Seal of Eldre'Thalas; trinket2: Serenity Field; main_hand: Staff of Hale Magefire; ranged: Torch of Light
+**New at 60:** head: Virtuous Crown; neck: Wavefront Necklace; shoulder: Virtuous Mantle; back: Hide of the Wild; chest: Truefaith Vestments; wrist: Bracers of Hope; hands: Raider Handwraps; waist: Wisdom of the Timbermaw; legs: Padre's Trousers; feet: Virtuous Sandals; finger1: Band of Mending; finger2: Band of Piety; trinket1: Royal Seal of Eldre'Thalas; trinket2: Serenity Field; main_hand: Redemption; ranged: Torch of Light
 
 No-known-source sample (15 of 1120, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5008 Quicksilver Ring
 
