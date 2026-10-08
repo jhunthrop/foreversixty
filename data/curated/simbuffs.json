@@ -11,20 +11,79 @@
       "kind": "site"
     }
   ],
-  "notes": "The thirteen sim request ids the engine spells differently from the client, so no name join reaches them. Each names the client row it means; the icon is that row's, read off the build. Four Atiesh ids share one item (22589) and differ only in which class's proc they name, which is why their display names are written out. `curse_of_elements` is the client's 'Curse of the Elements'; `elixir_of_firepower` is 'Elixir of Fire Power' (6373) and `elixir_of_ogres_strength` is 'Elixir of Ogre Strength' (3391), both without the engine's spelling; Delete an entry the day the join reaches it.",
+  "notes": "The thirteen sim request ids the engine spells differently from the client, so no name join reaches them. Each names the client row it means; the icon is that row's, read off the build. Four Atiesh ids share one item (22589) and differ only in which class's proc they name, which is why their display names are written out. `curse_of_elements` is the client's 'Curse of the Elements'; `elixir_of_firepower` is 'Elixir of Fire Power' (6373) and `elixir_of_ogres_strength` is 'Elixir of Ogre Strength' (3391), both without the engine's spelling; Delete an entry the day the join reaches it. The five Forever healer consumables (Greater Mageblood Elixir, Cleric's and Greater Cleric's Elixir, Elixir of Sages, Sage's Tea) are named here because the fork carries them with a placeholder icon; each points at its client item row so the icon is the client's.",
   "entries": {
-    "atiesh_druid": { "item_id": 22589, "name": "Atiesh (Druid)" },
-    "atiesh_mage": { "item_id": 22589, "name": "Atiesh (Mage)" },
-    "atiesh_priest": { "item_id": 22589, "name": "Atiesh (Priest)" },
-    "atiesh_warlock": { "item_id": 22589, "name": "Atiesh (Warlock)" },
-    "curse_of_elements": { "spell_id": 11723, "name": "Curse of the Elements" },
-    "conjured_rogue_thistle_tea": { "item_id": 7676, "name": "Thistle Tea" },
-    "dragon_breath_chili": { "item_id": 12217, "name": "Dragonbreath Chili" },
-    "elixir_of_firepower": { "item_id": 6373, "name": "Elixir of Fire Power" },
-    "elixir_of_ogres_strength": { "item_id": 3391, "name": "Elixir of Ogre Strength" },
-    "food_bless_sunfruit": { "item_id": 13810, "name": "Blessed Sunfruit" },
-    "food_dirges_kick_chimaerok_chops": { "item_id": 21023, "name": "Dirge's Kickin' Chimaerok Chops" },
-    "food_smoked_desert_dumpling": { "item_id": 20452, "name": "Smoked Desert Dumplings" },
-    "sapper_goblin_sapper": { "item_id": 10646, "name": "Goblin Sapper Charge" }
+    "atiesh_druid": {
+      "item_id": 22589,
+      "name": "Atiesh (Druid)"
+    },
+    "atiesh_mage": {
+      "item_id": 22589,
+      "name": "Atiesh (Mage)"
+    },
+    "atiesh_priest": {
+      "item_id": 22589,
+      "name": "Atiesh (Priest)"
+    },
+    "atiesh_warlock": {
+      "item_id": 22589,
+      "name": "Atiesh (Warlock)"
+    },
+    "clerics_elixir": {
+      "item_id": 250332,
+      "name": "Cleric's Elixir"
+    },
+    "conjured_rogue_thistle_tea": {
+      "item_id": 7676,
+      "name": "Thistle Tea"
+    },
+    "curse_of_elements": {
+      "spell_id": 11723,
+      "name": "Curse of the Elements"
+    },
+    "dragon_breath_chili": {
+      "item_id": 12217,
+      "name": "Dragonbreath Chili"
+    },
+    "elixir_of_firepower": {
+      "item_id": 6373,
+      "name": "Elixir of Fire Power"
+    },
+    "elixir_of_ogres_strength": {
+      "item_id": 3391,
+      "name": "Elixir of Ogre Strength"
+    },
+    "elixir_of_sages": {
+      "item_id": 250338,
+      "name": "Elixir of Sages"
+    },
+    "food_bless_sunfruit": {
+      "item_id": 13810,
+      "name": "Blessed Sunfruit"
+    },
+    "food_dirges_kick_chimaerok_chops": {
+      "item_id": 21023,
+      "name": "Dirge's Kickin' Chimaerok Chops"
+    },
+    "food_sages_tea": {
+      "item_id": 249870,
+      "name": "Sage's Tea"
+    },
+    "food_smoked_desert_dumpling": {
+      "item_id": 20452,
+      "name": "Smoked Desert Dumplings"
+    },
+    "greater_clerics_elixir": {
+      "item_id": 250333,
+      "name": "Greater Cleric's Elixir"
+    },
+    "greater_mageblood_elixir": {
+      "item_id": 250341,
+      "name": "Greater Mageblood Elixir"
+    },
+    "sapper_goblin_sapper": {
+      "item_id": 10646,
+      "name": "Goblin Sapper Charge"
+    }
   }
 }

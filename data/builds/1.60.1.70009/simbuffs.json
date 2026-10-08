@@ -86,7 +86,7 @@
     },
     "clerics_elixir": {
       "name": "Cleric's Elixir",
-      "icon": "temp"
+      "icon": "inv_potion_139"
     },
     "conjured_demonic_rune": {
       "name": "Demonic Rune",
@@ -214,7 +214,7 @@
     },
     "elixir_of_sages": {
       "name": "Elixir of Sages",
-      "icon": "temp"
+      "icon": "inv_potion_165"
     },
     "elixir_of_shadow_power": {
       "name": "Elixir of Shadow Power",
@@ -314,7 +314,7 @@
     },
     "food_sages_tea": {
       "name": "Sage's Tea",
-      "icon": "spell_shadow_sealofkings"
+      "icon": "inv_drink_15"
     },
     "food_smoked_desert_dumpling": {
       "name": "Smoked Desert Dumplings",
@@ -370,7 +370,7 @@
     },
     "greater_clerics_elixir": {
       "name": "Greater Cleric's Elixir",
-      "icon": "temp"
+      "icon": "inv_potion_150"
     },
     "greater_fire_protection_potion": {
       "name": "Greater Fire Protection Potion",
@@ -390,7 +390,7 @@
     },
     "greater_mageblood_elixir": {
       "name": "Greater Mageblood Elixir",
-      "icon": "temp"
+      "icon": "inv_potion_168"
     },
     "greater_mana_potion": {
       "name": "Greater Mana Potion",
