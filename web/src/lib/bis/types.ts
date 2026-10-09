@@ -385,6 +385,10 @@ export interface BisBand {
    *  band should not silently start showing a claim ("no item has it") an older file never
    *  made. */
   haste_on_items?: boolean;
+  /** `true` when the band's primary-stat weight did not settle after a retry
+   *  (`sim/cmd/leveling-bis/main.go`): the gear pick and the number are less firm. Absent
+   *  means settled. */
+  weights_low_confidence?: boolean;
 }
 
 export interface BisFile {
