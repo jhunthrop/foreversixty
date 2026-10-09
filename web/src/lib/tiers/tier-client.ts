@@ -2,12 +2,9 @@
 // The tier list page's browser behaviour: the faction pills, the arrow keys on the role tabs
 // and the signed-in answer (the callout on the visitor's own role, a pointer on the others,
 // and a mark on their row). The list itself is static HTML; nothing here is needed to read it.
-import { fetchMeOnce } from '../account/api';
-import { selectedCharacter } from '../account/hero-character';
-import { readCurrent } from '../current-character';
 import type { Faction } from '../bis/types';
 import { hrefWithFaction, nextTabIndex, parseFaction } from './tier-controls';
-import { specViewKeyForCharacter, type TierSpecView } from './tier-callout';
+import type { TierSpecView } from './tier-callout';
 import { tiersCopy } from './tier-copy';
 
 interface ClientConfig {
@@ -147,11 +144,20 @@ function wireTabKeys(): void {
   }
 }
 
-async function findCharacterKey(): Promise<string | undefined> {
-  const me = await fetchMeOnce().catch(() => null);
-  if (me === null) return undefined;
-  const character = selectedCharacter(readCurrent(), me);
-  return character === null ? undefined : specViewKeyForCharacter(character);
+/** `<html data-session="1">`: Base.astro's pre-paint hint that a session cookie exists. */
+function hasSessionHint(): boolean {
+  return document.documentElement.dataset.session === '1';
+}
+
+/** Runs `work` once the page has loaded and the browser is idle, so the signed-in answer never
+ *  competes with the first paint. */
+function afterLoad(work: () => void): void {
+  const schedule = (): void => {
+    if ('requestIdleCallback' in window) window.requestIdleCallback(work);
+    else setTimeout(work, 0);
+  };
+  if (document.readyState === 'complete') schedule();
+  else window.addEventListener('load', schedule, { once: true });
 }
 
 export function mountTierPage(): void {
@@ -169,9 +175,12 @@ export function mountTierPage(): void {
     });
   }
   wireTabKeys();
-  void findCharacterKey().then((key) => {
-    characterKey = key;
-    markYourRows(key);
-    refresh();
+  if (!hasSessionHint()) return;
+  afterLoad(() => {
+    void import('./tier-me').then(async ({ findCharacterKey }) => {
+      characterKey = await findCharacterKey();
+      markYourRows(characterKey);
+      refresh();
+    });
   });
 }

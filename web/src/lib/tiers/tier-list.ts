@@ -5,15 +5,10 @@
 // published band at build time and nothing here is typed in.
 import type { BisBand, BisRole, SpecCatalogEntry, TankMetrics } from '../bis/types';
 import { isTankMetrics } from '../bis/tank-view';
+import { RULER_PERCENTS, TIE_MARGIN_PERCENT } from './tier-rules';
 
 /** The roles, in the order of the page's tabs. */
 export const TIER_ROLES: readonly BisRole[] = ['dps', 'tank', 'healer'];
-
-/** Measurement lines in the DPS list, in percent behind the top spec. They claim nothing about a spec. */
-export const RULER_PERCENTS: readonly number[] = [10, 20, 30];
-
-/** Two specs within this many percent of each other tie: the site's own gear adoption margin. */
-export const TIE_MARGIN_PERCENT = 1;
 
 const PERCENT = 100;
 

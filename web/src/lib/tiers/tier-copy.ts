@@ -3,7 +3,8 @@
 // strings describe the rules; a figure that moves nightly is passed in from the published
 // files, never written here (the owner's "prose never quotes nightly numbers" rule).
 import type { BisRole, Faction } from '../bis/types';
-import { TIE_MARGIN_PERCENT, type TierRow, type TierTie } from './tier-list';
+import { TIE_MARGIN_PERCENT } from './tier-rules';
+import type { TierRow, TierTie } from './tier-list';
 
 /** One piece of a note: plain text, bold text or a link. */
 export interface NoteSegment {

@@ -2,7 +2,6 @@
 import { describe, expect, it } from 'vitest';
 import { band, catalogEntry, dpsInput, tankInput } from './tier-test-support';
 import {
-  RULER_PERCENTS,
   hrefsFor,
   listItemsFor,
   rankRole,
@@ -11,6 +10,7 @@ import {
   withRulers,
   type TierRow,
 } from './tier-list';
+import { RULER_PERCENTS } from './tier-rules';
 
 describe('raceLabel', () => {
   it('capitalises each word of a hyphenated race', () => {
