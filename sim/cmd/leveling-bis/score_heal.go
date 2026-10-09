@@ -51,6 +51,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/internal/statid"
 	"github.com/jhunthrop/foreversixty/sim/request"
+	simscore "github.com/jhunthrop/foreversixty/sim/score"
 	"github.com/wowsims/classic/sim/core"
 )
 
@@ -116,7 +117,7 @@ type healerFields struct {
 // healingBackend is where a healing run and a healing weights sweep come
 // from: the engine in production, a fake in a test.
 type healingBackend interface {
-	Run(req api.SimRequest, profile request.HealProfile) (inproc.HealingResult, error)
+	Run(req api.SimRequest, profile request.HealProfile) (simscore.HealingResult, error)
 	Weights(req api.SimRequest, profile request.HealProfile) (map[string]api.StatWeight, float64, error)
 }
 
@@ -147,7 +148,7 @@ func (h healEngine) forProfile(req api.SimRequest) api.SimRequest {
 	return req
 }
 
-func (h healEngine) measure(req api.SimRequest) (inproc.HealingResult, error) {
+func (h healEngine) measure(req api.SimRequest) (simscore.HealingResult, error) {
 	return h.backend.Run(h.forProfile(req), h.profile)
 }
 
@@ -180,7 +181,7 @@ func (healEngine) HitProfileFor(api.SimRequest) (core.HitProfile, error) {
 }
 
 // metricsFor is the contract's metrics block for one run.
-func metricsFor(result inproc.HealingResult) healingMetrics {
+func metricsFor(result simscore.HealingResult) healingMetrics {
 	return healingMetrics{
 		HPS:          result.Effective.Mean,
 		RawHPS:       result.Raw.Mean,
@@ -230,7 +231,7 @@ func attachHealerFields(report *bandReport, runner engineRunner, spec specInfo, 
 // realHealingBackend runs the engine in this process.
 type realHealingBackend struct{}
 
-func (realHealingBackend) Run(req api.SimRequest, profile request.HealProfile) (inproc.HealingResult, error) {
+func (realHealingBackend) Run(req api.SimRequest, profile request.HealProfile) (simscore.HealingResult, error) {
 	return inproc.HealingRun(req, profile)
 }
 

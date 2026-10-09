@@ -9,37 +9,8 @@ package main
 // is the better tank against the curated boss (data/curated/tank-
 // encounter.json)? The tank runner below answers it with one number.
 //
-// The score, in effective-health-equivalent hit points:
-//
-//	score = effective health * (threat per second / 100) ^ 0.25 * exp(-0.5 * TMI / 100)
-//
-// where effective health is the hit points the boss's raw damage per
-// second would take to kill the tank at the damage per second the tank
-// actually takes: health * rawDPS / DTPS. The three terms are the order
-// of the brief:
-//
-//   - Mitigation comes first and is a straight multiplier. Effective
-//     health moves one for one with the health the set has and with the
-//     inverse of the damage it lets through, so a point of stamina and a
-//     point of armor are priced in the same coin, and a 1% change in
-//     either is a 1% change in the score.
-//   - TMI is the risk guard. The Theck-Meloree Index is the log-sum of
-//     the damage the tank takes in sliding burst windows as a share of
-//     its health, so it penalises what effective health cannot see: the
-//     same damage per second taken in spikes is worth less than taken
-//     steadily. Each TMI point costs half a percent of score, so a set
-//     whose mitigation is bought with spikier damage gives most of it
-//     back, and a swap must clear its own measured error to win.
-//   - Threat is last and a quarter-power. A tank that cannot hold the
-//     boss is not tanking, but past holding it more threat is worth far
-//     less than staying alive: a 16% gain in threat per second is worth
-//     a 4% gain in effective health. Threat per second enters as a ratio
-//     to a reference so the score keeps the magnitude of the hit points
-//     it is made of.
-//
-// Chance of death is published, not scored: it is a rare event whose
-// estimate at a few thousand iterations is noisier than the score's
-// margins, and TMI is the same risk measured every window of every run.
+// The score, its three terms and their reasons are sim/score's: the
+// ranker, inproc and the browser's wasm all call that one copy.
 //
 // Stat weights are the derivative of this score with respect to each
 // stat, taken from the engine's own sweep (which reports the derivative
@@ -56,6 +27,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/internal/statid"
 	"github.com/jhunthrop/foreversixty/sim/request"
+	simscore "github.com/jhunthrop/foreversixty/sim/score"
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
 	"github.com/wowsims/classic/sim/core/stats"
@@ -67,15 +39,6 @@ const (
 	// sim_dps, dps_delta and per-point figure on such a band is in tank
 	// score, never in damage.
 	scoreUnitTankScore = "tank_score"
-
-	// tankThreatExponent is the power threat per second enters the score
-	// at: a 16% gain in threat is worth a 4% gain in effective health.
-	tankThreatExponent = 0.25
-	// tankThreatReference is the threat per second that multiplies the
-	// score by one. It only sets the score's magnitude.
-	tankThreatReference = 100.0
-	// tankRiskPerTMI is the share of score one TMI point costs.
-	tankRiskPerTMI = 0.005
 
 	// tankMetricsIterations and tankMetricsSeed are the final run that
 	// publishes a band's figures. More iterations than a verify run
@@ -89,52 +52,6 @@ const (
 	healthSweepStep = 10.0
 )
 
-// tankFigures is what one tank run measured and the score made of it.
-type tankFigures struct {
-	EffectiveHealth float64
-	DTPS            float64
-	TPS             float64
-	TMI             float64
-	DPS             float64
-	ChanceOfDeath   float64
-	// Score is the tank score and ScoreError its standard error, summed
-	// linearly over the three measured terms (the upper bound: the three
-	// are positively correlated within a run).
-	Score      float64
-	ScoreError float64
-}
-
-// tankScoreOf is the score of the three measured terms. threat is floored
-// at one so a tank that made none scores low rather than scoring zero.
-func tankScoreOf(effectiveHealth, tps, tmi float64) float64 {
-	threat := math.Pow(math.Max(tps, 1)/tankThreatReference, tankThreatExponent)
-	return effectiveHealth * threat * math.Exp(-tankRiskPerTMI*tmi)
-}
-
-// newTankFigures reads one run against the boss's raw damage per second.
-// A run in which the boss dealt nothing is not a tank fight and fails
-// rather than scoring infinite effective health.
-func newTankFigures(run inproc.TankRunResult, bossRawDPS float64) (tankFigures, error) {
-	if run.DTPS.Mean <= 0 {
-		return tankFigures{}, fmt.Errorf("the boss dealt the tank no damage; the request is not a tank fight")
-	}
-	effectiveHealth := run.Health * bossRawDPS / run.DTPS.Mean
-	score := tankScoreOf(effectiveHealth, run.TPS.Mean, run.TMI.Mean)
-	relativeError := run.DTPS.Error/run.DTPS.Mean +
-		tankThreatExponent*run.TPS.Error/math.Max(run.TPS.Mean, 1) +
-		tankRiskPerTMI*run.TMI.Error
-	return tankFigures{
-		EffectiveHealth: effectiveHealth,
-		DTPS:            run.DTPS.Mean,
-		TPS:             run.TPS.Mean,
-		TMI:             run.TMI.Mean,
-		DPS:             run.DPS.Mean,
-		ChanceOfDeath:   run.ChanceOfDeath,
-		Score:           score,
-		ScoreError:      score * relativeError,
-	}, nil
-}
-
 // tankMetricsReport is bandReport.Metrics: the figures the site shows in
 // place of a DPS number on a tank band.
 type tankMetricsReport struct {
@@ -146,7 +63,7 @@ type tankMetricsReport struct {
 	DPS             float64 `json:"dps"`
 }
 
-func (f tankFigures) report() *tankMetricsReport {
+func tankReportOf(f simscore.TankFigures) *tankMetricsReport {
 	return &tankMetricsReport{
 		DTPS:            f.DTPS,
 		TMI:             f.TMI,
@@ -157,21 +74,11 @@ func (f tankFigures) report() *tankMetricsReport {
 	}
 }
 
-// bossRawDPS is the curated boss's unmitigated damage per second for a
-// character of level: the denominator of effective health.
-func bossRawDPS(level int) (float64, error) {
-	profile, err := request.TankProfileForLevel(level)
-	if err != nil {
-		return 0, err
-	}
-	return profile.Boss.RawDPS(), nil
-}
-
 // tankRunner is the engine as a tank sees it. It is a separate interface
 // from engineRunner so that the tank-only steps (the published figures)
 // can ask for what only a tank run measures.
 type tankRunner interface {
-	RunTankFigures(req api.SimRequest) (tankFigures, error)
+	RunTankFigures(req api.SimRequest) (simscore.TankFigures, error)
 }
 
 // tankEngine ranks on tank score: it answers engineRunner's plain-DPS and
@@ -193,16 +100,16 @@ func roleRunner(runner engineRunner, spec specInfo) engineRunner {
 // roleTank is data/curated/specs.json's role string for a tank.
 const roleTank = request.RoleTank
 
-func (tankEngine) RunTankFigures(req api.SimRequest) (tankFigures, error) {
-	rawDPS, err := bossRawDPS(req.Character.Level)
+func (tankEngine) RunTankFigures(req api.SimRequest) (simscore.TankFigures, error) {
+	rawDPS, err := simscore.BossRawDPS(req.Character.Level)
 	if err != nil {
-		return tankFigures{}, err
+		return simscore.TankFigures{}, err
 	}
 	run, err := inproc.TankRun(req)
 	if err != nil {
-		return tankFigures{}, err
+		return simscore.TankFigures{}, err
 	}
-	return newTankFigures(run, rawDPS)
+	return simscore.NewTankFigures(run, rawDPS)
 }
 
 func (t tankEngine) RunPlainDPS(req api.SimRequest) (float64, error) {
@@ -230,17 +137,17 @@ type statSweep struct {
 // the published weights: the derivative of the score with respect to each
 // stat, normalised so reference weighs exactly 1. The second return is
 // the reference stat's own derivative, tank score per point.
-func tankWeightsFromSweeps(ids []string, reference string, base tankFigures, baseHealth float64, sweeps map[string]statSweep) ([]api.StatWeight, float64, error) {
+func tankWeightsFromSweeps(ids []string, reference string, base simscore.TankFigures, baseHealth float64, sweeps map[string]statSweep) ([]api.StatWeight, float64, error) {
 	raw := make(map[string]float64, len(ids))
 	rawError := make(map[string]float64, len(ids))
 	for _, id := range ids {
 		s := sweeps[id]
 		relative := s.health/baseHealth - s.dtps/base.DTPS +
-			tankThreatExponent*s.tps/math.Max(base.TPS, 1) -
-			tankRiskPerTMI*s.tmi
+			simscore.TankThreatExponent*s.tps/math.Max(base.TPS, 1) -
+			simscore.TankRiskPerTMI*s.tmi
 		relativeError := s.dtpsErr/base.DTPS +
-			tankThreatExponent*s.tpsErr/math.Max(base.TPS, 1) +
-			tankRiskPerTMI*s.tmiErr
+			simscore.TankThreatExponent*s.tpsErr/math.Max(base.TPS, 1) +
+			simscore.TankRiskPerTMI*s.tmiErr
 		raw[id] = base.Score * relative
 		rawError[id] = base.Score * relativeError
 	}
@@ -277,11 +184,11 @@ func (t tankEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, f
 	if err != nil {
 		return nil, 0, fmt.Errorf("the baseline run: %w", err)
 	}
-	rawDPS, err := bossRawDPS(req.Character.Level)
+	rawDPS, err := simscore.BossRawDPS(req.Character.Level)
 	if err != nil {
 		return nil, 0, err
 	}
-	base, err := newTankFigures(baseRun, rawDPS)
+	base, err := simscore.NewTankFigures(baseRun, rawDPS)
 	if err != nil {
 		return nil, 0, fmt.Errorf("the baseline run: %w", err)
 	}
@@ -354,7 +261,7 @@ func healthSlopesOf(req *proto.StatWeightsRequest, ids []string) (map[string]flo
 		player := cloneWithBonus(req.Player, bonus)
 		raid := core.SinglePlayerRaidProto(player, req.PartyBuffs, req.RaidBuffs, req.Debuffs)
 		raid.Tanks = req.Tanks
-		return inproc.MaxHealth(raid, req.Encounter)
+		return simscore.MaxHealth(raid, req.Encounter)
 	}
 	base, err := healthOf(nil)
 	if err != nil {

@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
-	"github.com/jhunthrop/foreversixty/sim/internal/inproc"
 	"github.com/jhunthrop/foreversixty/sim/request"
+	simscore "github.com/jhunthrop/foreversixty/sim/score"
 )
 
 func gearItem(id int, slot string) scored {
@@ -150,9 +150,9 @@ func TestLoadIncumbentSetsReadsTheCommittedReport(t *testing.T) {
 // the square root of the iterations asked for.
 type noisyBackend struct{ fakeHealing }
 
-func (b *noisyBackend) Run(req api.SimRequest, _ request.HealProfile) (inproc.HealingResult, error) {
+func (b *noisyBackend) Run(req api.SimRequest, _ request.HealProfile) (simscore.HealingResult, error) {
 	b.requests = append(b.requests, req)
-	return inproc.HealingResult{
+	return simscore.HealingResult{
 		Effective:    api.Estimate{Mean: 600, Error: 14 / math.Sqrt(float64(req.Iterations))},
 		Raw:          api.Estimate{Mean: 620},
 		ManaLastsSec: 280,

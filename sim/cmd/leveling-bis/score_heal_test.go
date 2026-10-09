@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
-	"github.com/jhunthrop/foreversixty/sim/internal/inproc"
 	"github.com/jhunthrop/foreversixty/sim/request"
+	simscore "github.com/jhunthrop/foreversixty/sim/score"
 )
 
 // testHealProfile is the curated profile, read from the repository the
@@ -25,13 +25,13 @@ func testHealProfile(t *testing.T) request.HealProfile {
 // fakeHealing answers every healing run with a canned result per gear
 // signature and records the requests it was asked.
 type fakeHealing struct {
-	result   inproc.HealingResult
-	byGear   func(api.SimRequest) inproc.HealingResult
+	result   simscore.HealingResult
+	byGear   func(api.SimRequest) simscore.HealingResult
 	requests []api.SimRequest
 	profile  request.HealProfile
 }
 
-func (f *fakeHealing) Run(req api.SimRequest, profile request.HealProfile) (inproc.HealingResult, error) {
+func (f *fakeHealing) Run(req api.SimRequest, profile request.HealProfile) (simscore.HealingResult, error) {
 	f.requests = append(f.requests, req)
 	f.profile = profile
 	if f.byGear != nil {
@@ -46,8 +46,8 @@ func (f *fakeHealing) Weights(req api.SimRequest, profile request.HealProfile) (
 	return map[string]api.StatWeight{"healing_power": {Stat: "healing_power", Weight: 1}}, 0.5, nil
 }
 
-func healingResult(effective, raw, manaLasts float64) inproc.HealingResult {
-	return inproc.HealingResult{
+func healingResult(effective, raw, manaLasts float64) simscore.HealingResult {
+	return simscore.HealingResult{
 		Effective:       api.Estimate{Mean: effective, Error: effective / 50},
 		Raw:             api.Estimate{Mean: raw},
 		ManaLastsSec:    manaLasts,
@@ -62,7 +62,7 @@ func healingResult(effective, raw, manaLasts float64) inproc.HealingResult {
 func TestASetIsRankedOnItsEffectiveHealingWhetherOrNotItRanDry(t *testing.T) {
 	dry := healingResult(520, 600, 150)    // higher average, runs dry at half the fight
 	steady := healingResult(380, 450, 300) // lower, lasts
-	for name, result := range map[string]inproc.HealingResult{"dry": dry, "steady": steady} {
+	for name, result := range map[string]simscore.HealingResult{"dry": dry, "steady": steady} {
 		engine := healEngine{backend: &fakeHealing{result: result}, profile: testHealProfile(t)}
 		score, _, err := engine.RunPlainDPSWithError(api.SimRequest{})
 		if err != nil {

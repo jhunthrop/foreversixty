@@ -162,6 +162,13 @@ type SimRequest struct {
 	// job, the execution scorer - sets it through -no-sample, for the
 	// same reason on thousands of runs.
 	NoSample bool `json:"no_sample,omitempty"`
+	// RoleMetrics asks a healer or tank spec's plain run for the figures
+	// its role is ranked on: the healer runs against the curated heal
+	// profile's fake raid for its fixed fight, and the result carries a
+	// Healing (healer) or Tank (tank) block. Without it a run is today's
+	// DPS run. It is the live planner's opt-in; a damage spec, a bulk
+	// request and a weights request refuse it.
+	RoleMetrics bool `json:"role_metrics,omitempty"`
 }
 
 // CharacterSpec is everything the engine needs about the player, in JSON.
@@ -432,6 +439,9 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	if r.Spec == "" {
 		errs = append(errs, errors.New("spec is required"))
 	}
+	if r.RoleMetrics && (r.Bulk != nil || r.Weights != nil) {
+		errs = append(errs, errors.New("role_metrics is for a plain run; a bulk or weights request cannot set it"))
+	}
 	switch {
 	case r.Bulk != nil:
 		// A bulk request's count is the precision's, checked by
@@ -590,6 +600,42 @@ type SimResult struct {
 	// It is a table view of the cast log, not a guide, and the page
 	// says so.
 	Sample []SampleCast `json:"sample,omitempty"`
+	// Healing is a healer's figures against the heal profile, present
+	// only when the request set RoleMetrics for a healer spec.
+	Healing *HealingResult `json:"healing,omitempty"`
+	// Tank is a tank's figures and score against the curated boss,
+	// present only when the request set RoleMetrics for a tank spec.
+	Tank *TankResult `json:"tank,omitempty"`
+}
+
+// HealingResult is what a healer did against the heal profile's fake raid.
+type HealingResult struct {
+	// EffectiveHPS is healing that landed per second: the figure a
+	// healer is ranked on. HPS includes the overheal.
+	EffectiveHPS Estimate `json:"effective_hps"`
+	HPS          Estimate `json:"hps"`
+	// ManaLastsSec is when the healer first ran out of mana, past the
+	// fight's length for a set that never did.
+	ManaLastsSec float64 `json:"mana_lasts_sec"`
+	// HPM is effective healing per point of mana spent.
+	HPM float64 `json:"hpm"`
+}
+
+// TankResult is what a tank took and made against the curated boss, and
+// the score made of it (sim/score).
+type TankResult struct {
+	DTPS Estimate `json:"dtps"`
+	TPS  Estimate `json:"tps"`
+	TMI  Estimate `json:"tmi"`
+	// Health is the character's maximum health and EffectiveHealth the
+	// hit points the boss's raw damage would take to kill it at the
+	// damage it actually takes.
+	Health          float64 `json:"health"`
+	EffectiveHealth float64 `json:"effective_health"`
+	ChanceOfDeath   float64 `json:"chance_of_death"`
+	// Score is the tank score; its Error is the upper bound the score
+	// package states.
+	Score Estimate `json:"score"`
 }
 
 // Combo is one substitution set's result.

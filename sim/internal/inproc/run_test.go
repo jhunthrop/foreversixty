@@ -2,7 +2,6 @@ package inproc
 
 import (
 	"encoding/json"
-	"math"
 	"os"
 	"path/filepath"
 	"testing"
@@ -12,6 +11,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"github.com/jhunthrop/foreversixty/sim/request"
+	"github.com/jhunthrop/foreversixty/sim/score"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core/proto"
 )
@@ -149,7 +149,7 @@ func TestTankRunReportsTheTanksFightAndItsHealth(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	max, err := MaxHealth(engineReq.GetRaid(), engineReq.GetEncounter())
+	max, err := score.MaxHealth(engineReq.GetRaid(), engineReq.GetEncounter())
 	if err != nil || max != got.Health {
 		t.Fatalf("MaxHealth = %v %v, want the run's %v", max, err, got.Health)
 	}
@@ -160,25 +160,6 @@ func TestTankRunRejectsABadRequest(t *testing.T) {
 	req.Spec = "no-such-spec"
 	if _, err := TankRun(req); err == nil {
 		t.Fatal("an unknown spec ran")
-	}
-}
-
-func TestMaxHealthFailsWithoutAPlayer(t *testing.T) {
-	if _, err := MaxHealth(&proto.Raid{}, &proto.Encounter{}); err == nil {
-		t.Fatal("an empty raid has no maximum health")
-	}
-}
-
-func TestTankEstimateOfScalesStdevByRootN(t *testing.T) {
-	if got := tankEstimateOf(nil, 10); got != (Estimate{}) {
-		t.Errorf("nil metrics = %+v", got)
-	}
-	got := tankEstimateOf(&proto.DistributionMetrics{Avg: 50, Stdev: 20}, 100)
-	if got.Mean != 50 || math.Abs(got.Error-2) > 1e-9 {
-		t.Errorf("got %+v, want mean 50 error 2", got)
-	}
-	if got := tankEstimateOf(&proto.DistributionMetrics{Avg: 50, Stdev: 20}, 0); got.Error != 0 {
-		t.Errorf("zero iterations must not divide: %+v", got)
 	}
 }
 
@@ -201,28 +182,5 @@ func TestHealingRunReportsAHealersThroughput(t *testing.T) {
 	req.Spec = "no-such-spec"
 	if _, err := HealingRun(req, profile); err == nil {
 		t.Fatal("an unknown spec ran")
-	}
-}
-
-func TestOverhealShareHandlesNoRawHealingAndEffectiveAboveRaw(t *testing.T) {
-	if got := (HealingResult{}).OverhealShare(); got != 0 {
-		t.Errorf("no healing: %v", got)
-	}
-	over := HealingResult{Effective: api.Estimate{Mean: 120}, Raw: api.Estimate{Mean: 100}}
-	if got := over.OverhealShare(); got != 0 {
-		t.Errorf("effective above raw must clamp at 0, got %v", got)
-	}
-}
-
-func TestEstimateOfCarriesTheDistributionAndTheStandardError(t *testing.T) {
-	if got := estimateOf(nil, 5); got != (api.Estimate{}) {
-		t.Errorf("nil = %+v", got)
-	}
-	got := estimateOf(&proto.DistributionMetrics{Avg: 10, Stdev: 3, Min: 1, Max: 20}, 9)
-	if got.Mean != 10 || got.StdDev != 3 || got.Min != 1 || got.Max != 20 || math.Abs(got.Error-1) > 1e-9 {
-		t.Errorf("got %+v", got)
-	}
-	if estimateOf(&proto.DistributionMetrics{Stdev: 3}, 0).Error != 0 {
-		t.Error("zero iterations must leave the error at 0")
 	}
 }

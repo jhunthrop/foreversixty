@@ -32,6 +32,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/internal/inproc"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"github.com/jhunthrop/foreversixty/sim/request"
+	simscore "github.com/jhunthrop/foreversixty/sim/score"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
@@ -319,7 +320,7 @@ func siteString(trees []leveling.TalentTree, ranks map[int]int) string {
 
 type row struct {
 	label, site, engine string
-	result              inproc.HealingResult
+	result              simscore.HealingResult
 	fight               float64
 }
 

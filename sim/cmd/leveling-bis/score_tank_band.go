@@ -201,7 +201,7 @@ func annotateTankBand(runner engineRunner, spec specInfo, race string, level int
 		return err
 	}
 	rep.Role = roleTank
-	rep.Metrics = figures.report()
+	rep.Metrics = tankReportOf(figures)
 	rep.SetDPS = figures.DPS
 	rep.ScoreUnit = scoreUnitTankScore
 	return nil

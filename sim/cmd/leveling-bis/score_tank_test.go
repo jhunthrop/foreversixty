@@ -5,21 +5,21 @@ import (
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
-	"github.com/jhunthrop/foreversixty/sim/internal/inproc"
+	simscore "github.com/jhunthrop/foreversixty/sim/score"
 )
 
-func tankRun(health, dtps, tps, tmi float64) inproc.TankRunResult {
-	return inproc.TankRunResult{
+func tankRun(health, dtps, tps, tmi float64) simscore.TankRunResult {
+	return simscore.TankRunResult{
 		Health: health,
-		DTPS:   inproc.Estimate{Mean: dtps, Error: dtps * 0.01},
-		TPS:    inproc.Estimate{Mean: tps, Error: tps * 0.02},
-		TMI:    inproc.Estimate{Mean: tmi, Error: 0.5},
-		DPS:    inproc.Estimate{Mean: 123},
+		DTPS:   api.Estimate{Mean: dtps, Error: dtps * 0.01},
+		TPS:    api.Estimate{Mean: tps, Error: tps * 0.02},
+		TMI:    api.Estimate{Mean: tmi, Error: 0.5},
+		DPS:    api.Estimate{Mean: 123},
 	}
 }
 
 func TestEffectiveHealthIsHealthOverTheShareOfRawDamageTaken(t *testing.T) {
-	f, err := newTankFigures(tankRun(10000, 500, 400, 30), 1000)
+	f, err := simscore.NewTankFigures(tankRun(10000, 500, 400, 30), 1000)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -32,45 +32,45 @@ func TestEffectiveHealthIsHealthOverTheShareOfRawDamageTaken(t *testing.T) {
 }
 
 func TestATankTheBossNeverHitsIsRefused(t *testing.T) {
-	if _, err := newTankFigures(tankRun(10000, 0, 400, 30), 1000); err == nil {
+	if _, err := simscore.NewTankFigures(tankRun(10000, 0, 400, 30), 1000); err == nil {
 		t.Fatal("a run with no damage taken must fail, not score infinite effective health")
 	}
 }
 
 func TestMitigationIsAOneForOneMultiplier(t *testing.T) {
-	a, _ := newTankFigures(tankRun(10000, 500, 400, 30), 1000)
-	b, _ := newTankFigures(tankRun(10000, 450, 400, 30), 1000)
+	a, _ := simscore.NewTankFigures(tankRun(10000, 500, 400, 30), 1000)
+	b, _ := simscore.NewTankFigures(tankRun(10000, 450, 400, 30), 1000)
 	if got := b.Score / a.Score; math.Abs(got-500.0/450.0) > 1e-9 {
 		t.Errorf("10%% less damage taken scaled the score by %v, want %v", got, 500.0/450.0)
 	}
 }
 
 func TestThreatEntersAtAQuarterPower(t *testing.T) {
-	a, _ := newTankFigures(tankRun(10000, 500, 400, 30), 1000)
-	b, _ := newTankFigures(tankRun(10000, 500, 800, 30), 1000)
-	if got, want := b.Score/a.Score, math.Pow(2, tankThreatExponent); math.Abs(got-want) > 1e-9 {
+	a, _ := simscore.NewTankFigures(tankRun(10000, 500, 400, 30), 1000)
+	b, _ := simscore.NewTankFigures(tankRun(10000, 500, 800, 30), 1000)
+	if got, want := b.Score/a.Score, math.Pow(2, simscore.TankThreatExponent); math.Abs(got-want) > 1e-9 {
 		t.Errorf("doubling threat scaled the score by %v, want %v", got, want)
 	}
 }
 
 func TestEachTMIPointCostsItsShareOfScore(t *testing.T) {
-	a, _ := newTankFigures(tankRun(10000, 500, 400, 30), 1000)
-	b, _ := newTankFigures(tankRun(10000, 500, 400, 40), 1000)
-	if got, want := b.Score/a.Score, math.Exp(-tankRiskPerTMI*10); math.Abs(got-want) > 1e-9 {
+	a, _ := simscore.NewTankFigures(tankRun(10000, 500, 400, 30), 1000)
+	b, _ := simscore.NewTankFigures(tankRun(10000, 500, 400, 40), 1000)
+	if got, want := b.Score/a.Score, math.Exp(-simscore.TankRiskPerTMI*10); math.Abs(got-want) > 1e-9 {
 		t.Errorf("ten more TMI scaled the score by %v, want %v", got, want)
 	}
 }
 
 func TestTheScoreErrorSumsTheThreeTermsErrors(t *testing.T) {
-	f, _ := newTankFigures(tankRun(10000, 500, 400, 30), 1000)
-	want := f.Score * (0.01 + tankThreatExponent*0.02 + tankRiskPerTMI*0.5)
+	f, _ := simscore.NewTankFigures(tankRun(10000, 500, 400, 30), 1000)
+	want := f.Score * (0.01 + simscore.TankThreatExponent*0.02 + simscore.TankRiskPerTMI*0.5)
 	if math.Abs(f.ScoreError-want) > 1e-9 {
 		t.Errorf("score error = %v, want %v", f.ScoreError, want)
 	}
 }
 
 func TestStaminaWeighsOneAndTheOthersAreRatiosOfTheScoreSlope(t *testing.T) {
-	base, _ := newTankFigures(tankRun(10000, 500, 400, 30), 1000)
+	base, _ := simscore.NewTankFigures(tankRun(10000, 500, 400, 30), 1000)
 	sweeps := map[string]statSweep{
 		// 10 health a point, nothing else moves.
 		"stamina": {health: 10},
@@ -103,7 +103,7 @@ func TestStaminaWeighsOneAndTheOthersAreRatiosOfTheScoreSlope(t *testing.T) {
 }
 
 func TestAReferenceThatDoesNotHelpCannotNormalise(t *testing.T) {
-	base, _ := newTankFigures(tankRun(10000, 500, 400, 30), 1000)
+	base, _ := simscore.NewTankFigures(tankRun(10000, 500, 400, 30), 1000)
 	if _, _, err := tankWeightsFromSweeps([]string{"stamina"}, "stamina", base, 10000, map[string]statSweep{"stamina": {}}); err == nil {
 		t.Fatal("a reference with no effect must be refused")
 	}
