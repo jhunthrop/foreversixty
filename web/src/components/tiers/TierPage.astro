@@ -1,0 +1,632 @@
+---
+// web/src/components/tiers/TierPage.astro
+// The tier list page for one role (design/specs/2026-10-09-tier-list.md). /tiers, /tiers/tank
+// and /tiers/healer render this with a different role. Both factions' lists are in the HTML
+// and an inline pre-paint script picks the one the URL asks for, so there is no island above
+// the fold; the only client work after paint is the signed-in callout and the faction pills.
+import Base from '../../layouts/Base.astro';
+import FactionMark from '../FactionMark.astro';
+import UpdatedStamp from '../UpdatedStamp.astro';
+import TierRow from './TierRow.astro';
+import { FACTION_ATTRIBUTE, FACTION_PARAM, TIER_FACTION_ORDER } from '../../lib/tiers/tier-controls';
+import { tierSpecViews } from '../../lib/tiers/tier-callout';
+import {
+  FACTION_LABELS,
+  ROLE_LABELS,
+  ROLE_PATHS,
+  howToReadBullets,
+  tierNotes,
+  tiersCopy,
+} from '../../lib/tiers/tier-copy';
+import { TIER_ROLES, listItemsFor } from '../../lib/tiers/tier-list';
+import { loadTierData } from '../../lib/tiers/tier-load';
+import type { BisRole } from '../../lib/bis/types';
+
+interface Props {
+  role: BisRole;
+}
+
+const { role } = Astro.props;
+const data = loadTierData();
+const presetLabel = data.presetLabel ?? '';
+const hasData = data.updated !== null;
+const roleCounts = Object.fromEntries(TIER_ROLES.map((r) => [r, data.lists.alliance[r].length])) as Record<
+  BisRole,
+  number
+>;
+const viewsByFaction = Object.fromEntries(
+  TIER_FACTION_ORDER.map((faction) => [faction, tierSpecViews(data.lists[faction])]),
+);
+const clientConfig = {
+  role,
+  views: viewsByFaction,
+  paths: ROLE_PATHS,
+  factionParam: FACTION_PARAM,
+  factionAttribute: FACTION_ATTRIBUTE,
+};
+const stampTitle =
+  data.build === null
+    ? undefined
+    : `Ranked on build ${data.build}, engine ${data.engineVersion ?? ''}`.trim();
+---
+
+<Base title={tiersCopy.title} description={tiersCopy.description} path={ROLE_PATHS[role]}>
+  <script is:inline define:vars={{ param: FACTION_PARAM, attribute: FACTION_ATTRIBUTE }}>
+    if (new URLSearchParams(location.search).get(param) === 'horde') {
+      document.documentElement.setAttribute(attribute, 'horde');
+    }
+  </script>
+  <main id="main" tabindex="-1" class="tier-page" data-testid="tier-page" data-role={role}>
+    <div class="tier-band">
+      <header class="tier-header">
+        <p class="label tier-eyebrow">
+          <i class="tier-eyebrow-rule" aria-hidden="true"></i>
+          {data.presetLabel !== null ? tiersCopy.eyebrow(presetLabel) : 'Level 60'}
+        </p>
+        <h1 class="tier-h1">{tiersCopy.title}</h1>
+        <p class="tier-job">{tiersCopy.jobLine}</p>
+        <div class="tier-you" data-signed-in-only data-testid="tier-you-slot" id="tier-you-slot">
+          <div class="tier-you-skeleton" role="status" aria-busy="true" data-testid="tier-you-skeleton">
+            <span class="sr-only">Loading</span>
+            <span class="skeleton-block tier-you-skeleton-crest" aria-hidden="true"></span>
+            <span class="skeleton-block tier-you-skeleton-text" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="tier-controls">
+          <div class="tier-tabs" role="tablist" aria-label={tiersCopy.roleTabsLabel}>
+            {TIER_ROLES.map((r) => (
+              <a
+                href={ROLE_PATHS[r]}
+                role="tab"
+                aria-selected={r === role}
+                tabindex={r === role ? 0 : -1}
+                class:list={['tier-tab', r === role && 'is-current']}
+                data-role-tab={r}
+                data-testid={`tier-tab-${r}`}
+              >
+                {ROLE_LABELS[r]}
+                <span class="tier-tab-count">{roleCounts[r]}</span>
+              </a>
+            ))}
+          </div>
+          <span class="tier-divider" aria-hidden="true"></span>
+          <div class="tier-factions" role="group" aria-label={tiersCopy.factionGroupLabel}>
+            {TIER_FACTION_ORDER.map((faction) => (
+              <button
+                type="button"
+                class="tier-tab tier-faction-pill"
+                data-faction-pill={faction}
+                aria-pressed={faction === 'alliance'}
+                data-testid={`tier-faction-${faction}`}
+              >
+                <FactionMark faction={faction} size={20} />
+                {FACTION_LABELS[faction]}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <div class="tier-body">
+      {!hasData && (
+        <p class="tier-empty" data-testid="tier-no-data">
+          {tiersCopy.noData}
+        </p>
+      )}
+      {TIER_FACTION_ORDER.map((faction) => {
+        const rows = data.lists[faction][role];
+        const notes = hasData
+          ? tierNotes({
+              role,
+              faction,
+              presetLabel,
+              healSeconds: data.healSeconds,
+              bossSwingSeconds: data.bossSwingSeconds,
+            })
+          : [];
+        return (
+          <section class="tier-faction" data-faction={faction} data-testid={`tier-faction-panel-${faction}`}>
+            <div class="tier-notes" data-testid="tier-notes">
+              {notes.map((note) => (
+                <p>
+                  {note.map((segment) =>
+                    segment.href !== undefined ? (
+                      <a href={segment.href}>{segment.text}</a>
+                    ) : segment.strong === true ? (
+                      <b>{segment.text}</b>
+                    ) : (
+                      segment.text
+                    ),
+                  )}
+                </p>
+              ))}
+            </div>
+            {rows.length === 0 ? (
+              hasData && (
+                <p class="tier-empty" data-testid="tier-empty">
+                  {tiersCopy.emptyRole(role)}
+                </p>
+              )
+            ) : (
+              <div class="tier-list" data-role={role}>
+                <div class="tier-heads" aria-hidden="true">
+                  <span class="label">{tiersCopy.headers.rank}</span>
+                  <span class="label"></span>
+                  <span class="label">{tiersCopy.headers.spec}</span>
+                  <span class="label">{tiersCopy.headers.bar[role]}</span>
+                  <span class="label tier-head-num">{tiersCopy.headers.number[role]}</span>
+                  {role === 'tank' && (
+                    <>
+                      <span class="label tier-head-num">{tiersCopy.headers.effectiveHealth}</span>
+                      <span class="label tier-head-num">{tiersCopy.headers.threat}</span>
+                    </>
+                  )}
+                  <span class="label tier-head-num">{tiersCopy.headers.gap[role]}</span>
+                  <span class="label"></span>
+                </div>
+                <ol class="tier-panel" data-testid="tier-list">
+                  {listItemsFor(rows, role).map((item) =>
+                    item.kind === 'ruler' ? (
+                      <li class="tier-ruler" data-testid="tier-ruler">
+                        <span class="label">{tiersCopy.rulerLabel(item.percent)}</span>
+                        <i aria-hidden="true"></i>
+                      </li>
+                    ) : (
+                      <TierRow row={item.row} />
+                    ),
+                  )}
+                </ol>
+              </div>
+            )}
+          </section>
+        );
+      })}
+
+      {hasData && (
+        <aside class="tier-howto" data-testid="tier-howto">
+          <h2 class="label">{tiersCopy.howToReadHeading}</h2>
+          <ul>
+            {howToReadBullets(role, presetLabel).map((bullet) => (
+              <li>{bullet}</li>
+            ))}
+          </ul>
+          <p class="tier-howto-foot">
+            {data.updated !== null && (
+              <span title={stampTitle}>
+                <UpdatedStamp date={data.updated} />
+              </span>
+            )}
+            <a href={tiersCopy.simChecksHref}>{tiersCopy.simChecksLink}</a>
+          </p>
+        </aside>
+      )}
+    </div>
+  </main>
+  <script
+    is:inline
+    type="application/json"
+    id="tier-client-config"
+    set:html={JSON.stringify(clientConfig)}
+  ></script>
+  <script>
+    import { mountTierPage } from '../../lib/tiers/tier-client';
+    mountTierPage();
+  </script>
+</Base>
+
+<style>
+  .tier-page {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .tier-band {
+    position: relative;
+    background: var(--color-raised);
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .tier-band::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #26405c66 0%, #07090dcc 70%, #07090d 100%);
+    pointer-events: none;
+  }
+  .tier-header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 1344px;
+    margin-inline: auto;
+    width: 100%;
+    padding: 28px 48px 24px;
+  }
+  .tier-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-gold);
+  }
+  .tier-eyebrow-rule {
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--color-gold);
+  }
+  .tier-h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-strong);
+  }
+  .tier-job {
+    margin: 0;
+    max-width: 62ch;
+    font-size: 14px;
+    color: #c9c2b2;
+  }
+  .tier-you {
+    min-height: 72px;
+    max-width: 820px;
+  }
+  .tier-you-skeleton {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 72px;
+    padding: 14px 18px;
+    box-sizing: border-box;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .tier-you-skeleton-crest {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .tier-you-skeleton-text {
+    width: 260px;
+    max-width: 60%;
+    height: 16px;
+  }
+  :global(.tier-callout) {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 72px;
+    padding: 14px 18px;
+    box-sizing: border-box;
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius-panel);
+    background: color-mix(in srgb, var(--color-gold) 6%, transparent);
+  }
+  :global(.tier-callout-who) {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  :global(.tier-callout-text) {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  :global(.tier-callout-title) {
+    font-size: 15px;
+    color: var(--color-strong);
+  }
+  :global(.tier-callout-title b) {
+    font-family: var(--font-display);
+    color: var(--c);
+  }
+  :global(.tier-callout-detail) {
+    font-size: 13px;
+    color: #c9c2b2;
+  }
+  :global(.tier-callout-button) {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius-control);
+    color: var(--color-gold);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition:
+      background-color 120ms ease-out,
+      color 120ms ease-out;
+  }
+  :global(.tier-callout-button:hover) {
+    background: color-mix(in srgb, var(--color-gold) 10%, transparent);
+    color: var(--color-gold-hover);
+  }
+  :global(.tier-callout-button:active) {
+    background: color-mix(in srgb, var(--color-gold) 18%, transparent);
+  }
+  :global(.tier-callout-button:focus-visible),
+  :global(.tier-pointer:focus-visible) {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  :global(.tier-pointer) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 72px;
+    font-size: 14px;
+    color: #c9c2b2;
+  }
+  :global(.tier-pointer b) {
+    font-family: var(--font-display);
+    color: var(--c);
+  }
+  :global(.tier-pointer-cta) {
+    color: var(--color-gold);
+    font-weight: 700;
+  }
+  :global(.tier-pointer:hover .tier-pointer-cta) {
+    color: var(--color-gold-hover);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .tier-controls {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .tier-tabs,
+  .tier-factions {
+    display: flex;
+    gap: 6px;
+  }
+  .tier-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--color-line);
+  }
+  .tier-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: var(--color-nav);
+    font-family: var(--font-body);
+    font-size: 13px;
+    cursor: pointer;
+    transition:
+      color 120ms ease-out,
+      border-color 120ms ease-out,
+      background-color 120ms ease-out;
+  }
+  .tier-tab:hover {
+    color: var(--color-strong);
+  }
+  .tier-tab:active {
+    background: color-mix(in srgb, var(--color-gold) 12%, transparent);
+  }
+  .tier-tab:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  .tier-tab.is-current {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+    background: color-mix(in srgb, var(--color-gold) 8%, transparent);
+  }
+  .tier-tab-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-muted);
+  }
+  .tier-tab.is-current .tier-tab-count {
+    color: var(--color-gold);
+  }
+  .tier-faction-pill {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  :global(html:not([data-tier-faction='horde'])) .tier-faction-pill[data-faction-pill='alliance'] {
+    border-color: var(--color-alliance);
+    color: var(--color-alliance);
+    background: color-mix(in srgb, var(--color-alliance-bar) 15%, transparent);
+  }
+  :global(html[data-tier-faction='horde']) .tier-faction-pill[data-faction-pill='horde'] {
+    border-color: var(--color-horde);
+    color: var(--color-horde);
+    background: color-mix(in srgb, var(--color-horde-bar) 15%, transparent);
+  }
+  .tier-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 1344px;
+    margin-inline: auto;
+    width: 100%;
+    padding: 28px 48px 36px;
+  }
+  .tier-faction {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  :global(html:not([data-tier-faction='horde'])) .tier-faction[data-faction='horde'],
+  :global(html[data-tier-faction='horde']) .tier-faction[data-faction='alliance'] {
+    display: none;
+  }
+  .tier-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tier-notes p {
+    margin: 0;
+    max-width: 112ch;
+    font-size: 13px;
+    color: #c9c2b2;
+  }
+  .tier-notes b {
+    color: var(--color-strong);
+  }
+  .tier-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .tier-heads {
+    display: grid;
+    grid-template-columns: 32px 36px minmax(150px, 248px) minmax(60px, 1fr) 108px 84px minmax(168px, 210px);
+    column-gap: 14px;
+    align-items: end;
+    padding: 0 17px 8px 17px;
+  }
+  .tier-list[data-role='tank'] .tier-heads {
+    grid-template-columns:
+      32px 36px minmax(140px, 220px) minmax(50px, 1fr) 170px 92px 84px 84px
+      minmax(160px, 200px);
+    column-gap: 12px;
+  }
+  .tier-heads .label {
+    font-size: 10px;
+  }
+  .tier-head-num {
+    text-align: right;
+  }
+  .tier-panel {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: hidden;
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .tier-ruler {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 28px;
+    padding: 0 16px;
+    background: #0a0d15;
+    border-top: 1px solid var(--color-line-soft);
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .tier-ruler .label {
+    font-size: 10px;
+  }
+  .tier-ruler i {
+    flex: 1;
+    height: 1px;
+    background: var(--color-line);
+  }
+  .tier-empty {
+    margin: 0;
+    padding: 24px;
+    font-size: 14px;
+    color: var(--color-muted);
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .tier-howto {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 820px;
+    padding: 18px 22px;
+    background: var(--color-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .tier-howto h2 {
+    margin: 0;
+  }
+  .tier-howto ul {
+    margin: 0;
+    padding-left: 18px;
+    list-style: disc;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #c9c2b2;
+  }
+  .tier-howto-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
+    font-size: 12px;
+  }
+  .tier-howto-foot a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 1099px) {
+    .tier-heads {
+      display: none;
+    }
+    .tier-header {
+      padding: 22px 18px 20px;
+      gap: 14px;
+    }
+    .tier-h1 {
+      font-size: 26px;
+    }
+    .tier-body {
+      padding: 20px 18px 36px;
+      gap: 16px;
+    }
+    .tier-faction {
+      gap: 16px;
+    }
+    :global(.tier-callout) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+    .tier-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .tier-divider {
+      display: none;
+    }
+    .tier-tabs,
+    .tier-factions {
+      width: 100%;
+    }
+    .tier-tab {
+      flex: 1;
+    }
+    .tier-howto {
+      max-width: none;
+    }
+  }
+</style>

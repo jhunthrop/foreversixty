@@ -61,8 +61,8 @@ def ranked(rows: list[dict], role: str) -> list[dict]:
         out = [{**r, 'metric': r['value'], 'gap': (1 - r['value'] / top) * 100, 'frac': r['value'] / top} for r in pool]
     for i, r in enumerate(out):
         r['rank'] = i + 1
-        prev = out[i - 1]['metric'] if i else None
-        r['tie'] = role != 'tank' and prev is not None and abs(1 - r['metric'] / prev) * 100 <= TIE_PCT
+        near = lambda j: 0 <= j < len(out) and abs(1 - out[j]['metric'] / r['metric']) * 100 <= TIE_PCT
+        r['tie'] = role != 'tank' and (near(i - 1) or near(i + 1))   # both rows of a tied pair carry the mark
     return out
 
 
@@ -147,7 +147,7 @@ def number_cell(r: dict, role: str) -> str:
 
 def gap_cell(r: dict) -> str:
     top = r['rank'] == 1
-    tie = f'<span style="font-size:10px;color:{MUTED}" title="Within 1% of the spec above: a tie">&asymp; tie</span>' if r['tie'] else ''
+    tie = f'<span style="font-size:10px;color:{MUTED}" title="Within 1% of a neighbouring spec: a tie">&asymp; tie</span>' if r['tie'] else ''
     return (f'<span style="display:flex;flex-direction:column;align-items:flex-end;line-height:1.2"><span class="mono" style="font-size:13px;color:{GOLD if top else MUTED};font-weight:{700 if top else 500}">{gap_text(r)}</span>{tie}</span>')
 
 
@@ -329,14 +329,14 @@ def states_sheet() -> str:
         return f'<div style="display:flex;flex-direction:column;gap:6px">{cap(t)}<div class="panel" style="overflow:hidden">{html}</div></div>'
     def skel() -> str:
         cells = ''.join(f'<div class="trow" style="grid-template-columns:32px 36px 248px 1fr 108px 84px 210px"><span class="sk" style="width:16px;height:12px"></span><span class="sk" style="width:36px;height:36px;border-radius:999px"></span><span class="sk" style="width:120px;height:14px"></span><span class="sk" style="height:10px"></span><span class="sk" style="height:14px"></span><span class="sk" style="height:12px"></span><span class="sk" style="height:14px"></span></div>' for _ in range(6))
-        return f'<div style="display:flex;flex-direction:column;gap:6px">{cap("Loading: one 60px skeleton row per spec on this tab (20, 3 or 5), so nothing moves when data lands")}<div class="panel">{cells}</div></div>'
+        return f'<div style="display:flex;flex-direction:column;gap:6px">{cap("Loading: one 60px skeleton row per spec on this tab (20, 3 or 5; six are drawn here as a sample), so nothing moves when data lands")}<div class="panel">{cells}</div></div>'
     empty = (f'<div style="display:flex;flex-direction:column;gap:6px">{cap("Error and empty: the list panel keeps its place")}'
              f'<div class="panel" style="min-height:120px;padding:24px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;justify-content:center"><span class="display" style="font-size:16px;color:{TEXT}">The tier list did not load.</span>'
              f'<span style="font-size:13px;color:{BODY}">Check your connection and try again. The BiS pages still work.</span><a class="btn btn-gold" href="#retry">Try again</a></div></div>')
     body = (f'<div style="max-width:1344px;margin:0 auto;padding:36px 48px;display:flex;flex-direction:column;gap:18px">'
             f'<h1 class="display" style="font-size:22px;color:{TEXT}">Tier list: row states</h1>'
             f'{one("Rest", pick("warlock-destruction"))}{one("Hover: row lifts, class-colour edge, bar brightens; spec name and links underline", pick("warlock-destruction"), hover=True)}'
-            f'{one("Your spec (signed in): gold edge and tint", pick("warrior-fury"), you=True)}{one("Tie: within 1% of the spec above", pick("warlock-demonology"))}'
+            f'{one("Your spec (signed in): gold edge and tint", pick("warrior-fury"), you=True)}{one("Tie: both rows of a pair within 1% of each other carry the mark", pick("warlock-demonology"))}'
             f'{one("Focus-visible on the BiS link: 2px gold outline, 2px offset", pick("mage-fire"), focus=True)}'
             f'{one("Stat weights less certain (weights_low_confidence): plain text under the name, never on the headline", pick("warlock-affliction"))}{skel()}{empty}</div>')
     return write('tier-list-states.html', page(STYLE + body, 1440)).as_posix()

@@ -86,7 +86,7 @@ describe('the tank/DPS decision', () => {
   });
 
   it('summarises a tank on the index by effective health, a DPS band not at all', () => {
-    expect(tankIndexSummaryOf(tank)).toBe('Level 60: 11,235 effective health');
+    expect(tankIndexSummaryOf(tank)).toBe('Level 60: 11,235 effective health · 301 damage taken per second');
     expect(tankIndexSummaryOf(dps)).toBeUndefined();
   });
 

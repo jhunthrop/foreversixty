@@ -1,0 +1,386 @@
+---
+// web/src/components/tiers/TierRow.astro
+// One spec's row (design/specs/2026-10-09-tier-list.md, 4.C): rank, circular ringed crest,
+// the spec name as the BiS link with class and race under it, a bar scaled to the leader, the
+// sorted figure with its unit, the gap, and the three next steps. One markup serves both
+// layouts: the grid areas below are the desktop columns and the phone's three lines.
+import ClassCrest from '../ClassCrest.astro';
+import classes from '../../data/classes.json';
+import { classColorVar } from '../../lib/report/format';
+import { formatMetric, gapText, tiersCopy } from '../../lib/tiers/tier-copy';
+import { hrefsFor, type TierRow } from '../../lib/tiers/tier-list';
+import { specViewKey } from '../../lib/tiers/tier-callout';
+
+interface Props {
+  row: TierRow;
+}
+
+const { row } = Astro.props;
+const className = classes.find((c) => c.slug === row.classSlug)?.name ?? row.classSlug;
+const href = hrefsFor(row);
+const isTank = row.role === 'tank';
+const key = specViewKey(row.classSlug, row.specSlug);
+const fullName = `${row.name} ${className}`;
+const isLeader = row.rank === 1;
+const unit = tiersCopy.rowUnit[row.role];
+const numberLabel = tiersCopy.headers.number[row.role];
+const gapLabel = tiersCopy.headers.gap[row.role];
+---
+
+<li
+  class="tier-row"
+  style={`--c: ${classColorVar(className)}`}
+  data-testid={`tier-row-${row.classSlug}-${row.specSlug}`}
+  data-spec-key={key}
+  data-rank={row.rank}
+>
+  <span class="tier-rank">{row.rank}</span>
+  <span class="tier-crest">
+    <ClassCrest slug={row.classSlug} size={36} />
+  </span>
+  <div class="tier-name">
+    <span class="tier-name-line">
+      <a class="tier-spec-link" href={href.bis} data-testid="tier-spec-link">
+        {row.name}
+      </a>
+      <span class="tier-you-slot" data-you-slot></span>
+    </span>
+    <span class="tier-sub">
+      {className} · {row.race}
+    </span>
+    {row.lowConfidence && (
+      <span class="tier-low" title={tiersCopy.lowConfidenceTitle} data-testid="tier-low-confidence">
+        {tiersCopy.lowConfidence}
+      </span>
+    )}
+  </div>
+  <span class="tier-track" aria-hidden="true">
+    <span class="tier-fill" style={`width: ${(row.fraction * 100).toFixed(1)}%`}></span>
+  </span>
+  <span class="tier-num">
+    <span class="sr-only">{numberLabel}: </span>
+    <span class:list={['tier-num-value', isTank && isLeader && 'is-best']} data-testid="tier-number">
+      {formatMetric(row.role, row.metric)}
+    </span>
+    <span class="tier-unit">{unit}</span>
+  </span>
+  {isTank && row.effectiveHealth !== undefined && row.threat !== undefined && (
+    <span class="tier-extra">
+      <span class:list={['tier-fig tier-fig-eh', row.isBestEffectiveHealth && 'is-best']}>
+        <span class="tier-fig-label">{tiersCopy.effectiveHealthShort}</span>
+        <span class="sr-only">{tiersCopy.headers.effectiveHealth}: </span>
+        <span class="tier-fig-value" data-testid="tier-effective-health">
+          {formatMetric(row.role, row.effectiveHealth)}
+        </span>
+      </span>
+      <span class:list={['tier-fig tier-fig-tps', row.isBestThreat && 'is-best']}>
+        <span class="tier-fig-label">{tiersCopy.threatShort}</span>
+        <span class="sr-only">{tiersCopy.headers.threat}: </span>
+        <span class="tier-fig-value" data-testid="tier-threat">
+          {formatMetric(row.role, row.threat)}
+        </span>
+      </span>
+    </span>
+  )}
+  <span class="tier-gap">
+    <span class="sr-only">{gapLabel}: </span>
+    <span class:list={['tier-gap-value', isLeader && 'is-leader']} data-testid="tier-gap">
+      {gapText(row)}
+    </span>
+    {row.tie !== null && (
+      <span class="tier-tie" title={tiersCopy.tieTitle(row.tie)} data-testid="tier-tie">
+        {tiersCopy.tie}
+      </span>
+    )}
+  </span>
+  <span class="tier-links">
+    <a class="tier-link is-primary" href={href.bis} aria-label={`${tiersCopy.rowLinks.bis}: ${fullName}`}>
+      {tiersCopy.rowLinks.bis}
+    </a>
+    <a class="tier-link" href={href.guide} aria-label={`${tiersCopy.rowLinks.guide}: ${fullName}`}>
+      {tiersCopy.rowLinks.guide}
+    </a>
+    <a
+      class="tier-link"
+      href={href.planner}
+      title={tiersCopy.plannerTitle(`${row.name} ${className}`)}
+      aria-label={`${tiersCopy.rowLinks.planner}: ${fullName}`}
+    >
+      {tiersCopy.rowLinks.planner}
+    </a>
+  </span>
+</li>
+
+<style>
+  .tier-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 32px 36px minmax(150px, 248px) minmax(60px, 1fr) 108px 84px minmax(168px, 210px);
+    grid-template-areas: 'rank crest name bar num gap links';
+    align-items: center;
+    column-gap: 14px;
+    min-height: 64px;
+    padding: 14px 16px 14px 14px;
+    border-left: 2px solid transparent;
+    border-bottom: 1px solid var(--color-line-soft);
+    list-style: none;
+    transition:
+      background-color 120ms ease-out,
+      border-color 120ms ease-out;
+  }
+  :global([data-role='tank']) .tier-row {
+    grid-template-columns:
+      32px 36px minmax(140px, 220px) minmax(50px, 1fr) 170px 92px 84px 84px
+      minmax(160px, 200px);
+    grid-template-areas: 'rank crest name bar num eh tps gap links';
+    column-gap: 12px;
+  }
+  .tier-row:last-child {
+    border-bottom: 0;
+  }
+  .tier-row:hover {
+    background: #101624;
+    border-left-color: var(--c);
+  }
+  .tier-row:hover .tier-fill {
+    filter: brightness(1.18);
+  }
+  .tier-row.is-you {
+    background: color-mix(in srgb, var(--color-gold) 6%, transparent);
+    border-left-color: var(--color-gold);
+  }
+  .tier-rank {
+    grid-area: rank;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+  .tier-crest {
+    grid-area: crest;
+    display: flex;
+  }
+  .tier-name {
+    grid-area: name;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .tier-name-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+  }
+  .tier-you-slot :global(.pill) {
+    white-space: nowrap;
+  }
+  .tier-spec-link {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--c);
+    white-space: nowrap;
+  }
+  .tier-spec-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .tier-spec-link:focus-visible,
+  .tier-link:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+  .tier-sub {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+  .tier-low {
+    align-self: flex-start;
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--color-muted);
+    border-bottom: 1px dotted var(--color-muted);
+  }
+  .tier-track {
+    grid-area: bar;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--color-line-soft);
+    overflow: hidden;
+  }
+  .tier-fill {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: var(--c);
+    opacity: 0.9;
+    transition: filter 120ms ease-out;
+  }
+  .tier-num {
+    grid-area: num;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.25;
+  }
+  .tier-num-value {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 16px;
+    color: var(--color-strong);
+  }
+  .tier-unit {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .is-best {
+    color: var(--color-kill);
+  }
+  .tier-num-value.is-best {
+    color: var(--color-kill);
+  }
+  .tier-extra {
+    display: contents;
+  }
+  .tier-fig {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 14px;
+    text-align: right;
+    color: var(--color-muted);
+  }
+  .tier-fig.is-best {
+    color: var(--color-kill);
+    font-weight: 700;
+  }
+  .tier-fig-eh {
+    grid-area: eh;
+  }
+  .tier-fig-tps {
+    grid-area: tps;
+  }
+  .tier-fig-label {
+    display: none;
+  }
+  .tier-gap {
+    grid-area: gap;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.25;
+  }
+  .tier-gap-value {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+  .tier-gap-value.is-leader {
+    color: var(--color-gold);
+    font-weight: 700;
+  }
+  .tier-tie {
+    font-size: 10px;
+    color: var(--color-muted);
+  }
+  .tier-links {
+    grid-area: links;
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+  .tier-link {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #c9c2b2;
+    border-radius: 4px;
+  }
+  .tier-link.is-primary {
+    color: var(--color-gold);
+  }
+  .tier-link:hover {
+    color: var(--color-strong);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .tier-link.is-primary:hover {
+    color: #f5d27f;
+  }
+
+  /* Phone and tablet: three lines per row and a three-cell link strip, nothing hidden. */
+  @media (max-width: 1099px) {
+    .tier-row,
+    :global([data-role='tank']) .tier-row {
+      grid-template-columns: 22px 36px minmax(0, 1fr) auto;
+      grid-template-areas:
+        'rank crest name num'
+        '. bar bar gap'
+        'links links links links';
+      column-gap: 10px;
+      row-gap: 8px;
+      padding: 12px 14px 0 12px;
+    }
+    :global([data-role='tank']) .tier-row {
+      grid-template-areas:
+        'rank crest name num'
+        '. bar bar gap'
+        '. extra extra extra'
+        'links links links links';
+    }
+    .tier-extra {
+      grid-area: extra;
+      display: flex;
+      gap: 18px;
+    }
+    .tier-fig {
+      font-size: 12px;
+      text-align: left;
+    }
+    .tier-fig-label {
+      display: inline;
+      font-family: var(--font-body);
+      color: var(--color-muted);
+      margin-right: 4px;
+    }
+    .tier-fig-eh,
+    .tier-fig-tps {
+      grid-area: auto;
+    }
+    .tier-gap {
+      flex-direction: row-reverse;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .tier-gap-value {
+      font-size: 12px;
+    }
+    .tier-links {
+      justify-content: stretch;
+      gap: 0;
+      margin: 0 -14px 0 -12px;
+      border-top: 1px solid var(--color-line-soft);
+    }
+    .tier-link {
+      flex: 1;
+      justify-content: center;
+      border-radius: 0;
+    }
+    .tier-link + .tier-link {
+      border-left: 1px solid var(--color-line-soft);
+    }
+  }
+</style>

@@ -98,6 +98,8 @@ test('a keyboard user can skip the header straight to the content', async ({ pag
 
 test('the header and footer navigations are distinguishable landmarks', async ({ page }) => {
   await page.goto('/');
+  const menu = page.getByTestId('menu-button');
+  if (await menu.isVisible()) await menu.click();
   await expect(page.getByRole('navigation', { name: 'Primary' })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'Footer' })).toBeVisible();
 });

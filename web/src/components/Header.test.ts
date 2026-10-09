@@ -10,7 +10,16 @@ async function renderHeader(path: string): Promise<string> {
 describe('Header', () => {
   it('renders the doors and Get set up, in that order', async () => {
     const html = await renderHeader('/');
-    const order = ['Planner', 'Simulator', 'Logs', 'Rankings', 'Guides', 'Leveling BiS', 'Get set up'];
+    const order = [
+      'Planner',
+      'Simulator',
+      'Logs',
+      'Rankings',
+      'Tier List',
+      'Guides',
+      'Leveling BiS',
+      'Get set up',
+    ];
     let cursor = -1;
     for (const label of order) {
       const at = html.indexOf(`>${label}<`, cursor === -1 ? 0 : cursor);
@@ -49,6 +58,12 @@ describe('Header', () => {
     const headerCloseAt = html.lastIndexOf('</header>');
     expect(discordAt).toBeGreaterThan(-1);
     expect(discordAt).toBeLessThan(headerCloseAt);
+  });
+
+  it('renders a collapsed Menu button that controls the primary nav', async () => {
+    const html = await renderHeader('/');
+    expect(html).toMatch(/<button[^>]*aria-expanded="false"[^>]*aria-controls="primary-nav"/);
+    expect(html).toContain('id="primary-nav"');
   });
 
   it('renders the phone nav as a fixed-height wrapping grid, not a horizontally scrolling row', async () => {

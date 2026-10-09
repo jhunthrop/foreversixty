@@ -18,6 +18,8 @@ test.describe('phone layout', () => {
 
   test('the Discord link clears 44px', async ({ page }) => {
     await page.goto('/');
+    // On a phone the Discord link waits behind the header's Menu button.
+    await page.getByTestId('menu-button').click();
     const discord = await page.getByRole('link', { name: 'Discord' }).boundingBox();
     expect(discord?.height ?? 0).toBeGreaterThanOrEqual(44);
   });

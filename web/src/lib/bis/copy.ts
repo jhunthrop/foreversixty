@@ -27,6 +27,9 @@ export const bisCopy = {
     'The best gear you can wear at every level band, from the simulator: one list per class and spec, built once and never per character.',
   indexIntro:
     'A band is "the best you can wear at that level" from a named source -- a quest, a vendor, a dungeon, a drop you can farm. Pick a class to see its specs.',
+  tierListPointer: 'Where each spec stands at level 60:',
+  tierListLink: 'Tier list →',
+  tierListHref: '/tiers',
   noDataYet: 'No leveling BiS list yet for this spec.',
   noDataYetBody:
     'The simulator has not ranked this spec’s gear across the leveling bands yet. Check back once the nightly ranking run covers it.',
@@ -527,5 +530,7 @@ export const tankCopy = {
     `Confirmed by a full sim: ${score.toFixed(1)} score with this item`,
   weightsScaleNote: (topLabel: string): string =>
     `Per point of stat, normalized to ${topLabel} = 1.00, with score per point and the sim error.`,
-  indexSpecSummary: (effectiveHealth: string): string => `Level 60: ${effectiveHealth} effective health`,
+  /** The index row: both figures the tier list's tank page reads, so the two pages agree. */
+  indexSpecSummary: (effectiveHealth: string, damageTakenPerSecond: string): string =>
+    `Level 60: ${effectiveHealth} effective health · ${damageTakenPerSecond} damage taken per second`,
 } as const;
