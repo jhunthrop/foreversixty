@@ -98,9 +98,9 @@ No-known-source sample (15 of 343, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 523000000000000000-00000000000000000-543120301201300051)
 
-Set DPS (verified): 159.8. Weights run: 1.0s. Verify run: 1.4s. 441 eligible items had no known source.
+Set DPS (verified): 158.3. Weights run: 1.0s. Verify run: 1.3s. 441 eligible items had no known source.
 
-1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=1.484 ± 0.024, crit=0.052 ± 0.002 per rating point (14 rating = 1%, 0.727 per %), hit=0.631 ± 0.034 per rating point (10 rating = 1%, 6.305 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -111,26 +111,26 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | shoulder | Rotgrip Mantle (17732) | Maraudon: Rotgrip [dungeon] | 39.7 spell_power points (5.03 DPS) | yes | Kentic Amice (11624, -0.81 DPS) [dungeon]; Red Mageweave Shoulders (10029, -1.32 DPS) [crafted]; Inquisitor's Shawl (19507, -1.70 DPS) [dungeon] |
 | back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 22.9 spell_power points (2.90 DPS) | yes | Mantle of Lady Falther'ess (23178, -0.07 DPS) [dungeon]; Runecloth Cloak (13860, -0.26 DPS) [crafted]; Darkspear Raider's Cloak (272076, -0.27 DPS) [vendor] |
 | chest | Acumen Robes (17775) | Twisted Evils [quest] | 48.7 spell_power points (6.17 DPS) | yes | Robes of Insight (940, -1.18 DPS, sim-verified) [world_drop]; Runecloth Robe (13858, -1.58 DPS) [crafted]; Runecloth Tunic (13857, -1.95 DPS) [crafted] |
-| wrist | Bloodband Bracers (11469) | The Captain's Chest [quest] | sim-verified (159.8 DPS) | yes | Aristocratic Cuffs (12546, +0.00 DPS) [dungeon]; Forgotten Wraps (9433, -0.07 DPS) [world_drop]; Shizzle's Nozzle Wiper (11917, -0.07 DPS) [quest] |
+| wrist | Bloodband Bracers (11469) | The Captain's Chest [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Aristocratic Cuffs (12546, +0.00 DPS) [dungeon]; Forgotten Wraps (9433, -0.07 DPS) [world_drop]; Shizzle's Nozzle Wiper (11917, -0.07 DPS) [quest] |
 | hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | 39.6 spell_power points (5.03 DPS) | yes | Virtuous Hands (226958, -0.17 DPS) [vendor]; Sergeant Major's Dreadweave Gloves (220890, -1.69 DPS) [vendor]; Red Mageweave Gloves (10018, -1.75 DPS) [crafted] |
-| waist | Ban'thok Sash (11662) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 34.6 spell_power points (4.39 DPS) | yes | Dawnspire Cord (12466, -0.05 DPS) [dungeon]; Deathmage Sash (10771, -0.68 DPS) [dungeon]; Satyrmane Sash (17755, -0.73 DPS) [dungeon] |
+| waist | Dawnspire Cord (12466) | Sunken Temple: Morphaz [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ban'thok Sash (11662, +0.00 DPS) [dungeon]; Deathmage Sash (10771, -0.63 DPS) [dungeon]; Satyrmane Sash (17755, -0.68 DPS) [dungeon] |
 | legs | Spellshock Leggings (9484) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 37.8 spell_power points (4.80 DPS) | yes | Knight's Dreadweave Leggings (220888, -0.93 DPS) [vendor]; Kilt of the Atal'ai Prophet (10807, -1.03 DPS) [dungeon]; Red Mageweave Pants (10009, -2.84 DPS, sim-verified) [crafted] |
 | feet | Sergeant Major's Dreadweave Boots (220891) | PvP rank 9 · Sergeant Major · Alliance [vendor] | 27.7 spell_power points (3.51 DPS) | yes | Gilded Sandals (254107, +0.00 DPS, sim-verified) [crafted]; Southsea Mojo Boots (20641, -0.42 DPS) [quest]; Earthen Silk Slippers (254013, -0.46 DPS) [crafted] |
-| finger1 | Brainlash (6440) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 22.3 spell_power points (2.82 DPS) | yes | Mindseye Circle (10634, -0.56 DPS) [dungeon]; Philanthropist's Ring (281635, -0.61 DPS) [quest]; Woodseed Hoop (17768, -1.13 DPS) [quest] |
-| finger2 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 19.4 spell_power points (2.46 DPS) | yes | Philanthropist's Ring (281635, -0.25 DPS) [quest]; Woodseed Hoop (17768, -0.76 DPS) [quest]; Mindseye Circle (10634, -1.03 DPS, sim-verified) [dungeon] |
+| finger1 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | sim-verified (158.3 DPS) | yes | Brainlash (6440, +0.00 DPS) [dungeon]; Mindseye Circle (10634, +0.00 DPS) [dungeon]; Woodseed Hoop (17768, -0.52 DPS) [quest] |
+| finger2 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 19.4 spell_power points (2.46 DPS) | yes | Brainlash (6440, +0.00 DPS) [dungeon]; Woodseed Hoop (17768, -0.76 DPS) [quest]; Mindseye Circle (10634, -1.03 DPS, sim-verified) [dungeon] |
 | trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (+2.2 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
 | trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blessed Prayer Beads (19990, -2.51 DPS, sim-verified) [quest] |
 | main_hand | Spellshifter Rod (9527) | Tiara of the Deep [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Kindling Stave (11750, -1.31 DPS) [dungeon]; Zum'rah's Vexing Cane (18082, -2.45 DPS) [dungeon]; Barman Shanker (12791, -21.42 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | Pyric Caduceus (11748) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 414.2 spell_power points (52.50 DPS) | yes | Woestave (20082, -1.18 DPS) [quest]; Noxious Shooter (17745, -1.87 DPS) [dungeon]; Wand of Allistarj (13065, -4.08 DPS) [world_drop] |
 
-**New at 50:** head: Red Mageweave Headband; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Spritecaster Cape; chest: Acumen Robes; wrist: Bloodband Bracers; hands: Raider Handwraps; waist: Ban'thok Sash; legs: Spellshock Leggings; feet: Sergeant Major's Dreadweave Boots; finger1: Brainlash; finger2: Cyclopean Band; trinket1: Frozen Heart of the Mountain; trinket2: Uther's Strength; main_hand: Spellshifter Rod; ranged: Pyric Caduceus
+**New at 50:** head: Red Mageweave Headband; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Spritecaster Cape; chest: Acumen Robes; wrist: Bloodband Bracers; hands: Raider Handwraps; waist: Dawnspire Cord; legs: Spellshock Leggings; feet: Sergeant Major's Dreadweave Boots; finger2: Cyclopean Band; trinket1: Frozen Heart of the Mountain; trinket2: Uther's Strength; main_hand: Spellshifter Rod; ranged: Pyric Caduceus
 
 No-known-source sample (15 of 441, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
 ### Band 60 (gnome, 524011031300000000-00000000000000000-543120301201300051)
 
-Set DPS (verified): 342.1. Weights run: 1.1s. Verify run: 3.6s. 1121 eligible items had no known source.
+Set DPS (verified): 342.1. Weights run: 1.1s. Verify run: 3.7s. 1121 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=1.132 ± 0.028, crit=0.111 ± 0.004 per rating point (14 rating = 1%, 1.551 per %), hit=1.031 ± 0.040 per rating point (10 rating = 1%, 10.314 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -160,7 +160,9 @@ No-known-source sample (15 of 1121, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (gnome, 325001031300000000-00000000000000000-523120501201300251)
 
-Set DPS (verified): 608.8. Weights run: 1.2s. Verify run: 3.0s. 1121 eligible items had no known source.
+Set DPS (verified): 604.5. Weights run: 1.2s. Verify run: 3.0s. 1121 eligible items had no known source.
+
+1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.594 ± 0.014, crit=0.039 ± 0.003 per rating point (14 rating = 1%, 0.547 per %), hit=0.716 ± 0.034 per rating point (10 rating = 1%, 7.161 per %), spell_haste=-3.603 ± 0.264, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.001
 
@@ -178,13 +180,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | feet | Virtuous Slippers (226959) | Mokvar [vendor] | 31.5 spell_power points (11.87 DPS) | yes | Marshal's Satin Sandals (17607, +0.00 DPS) [vendor]; Dragonrider Boots (18102, +0.00 DPS, sim-verified) [dungeon]; Marshal's Satin Treads (231620, +0.00 DPS) [vendor] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rune Band of Wizardry (22339, -6.53 DPS) [dungeon]; Maiden's Circle (13001, -6.91 DPS) [world_drop]; Naglering (11669, -14.08 DPS, sim-verified) [dungeon] |
 | finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rune Band of Wizardry (22339, -2.02 DPS) [dungeon]; Maiden's Circle (13001, -2.40 DPS) [world_drop]; Naglering (11669, -8.71 DPS, sim-verified) [dungeon] |
-| trinket1 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (+19.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Burst of Knowledge (11832, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor] |
-| trinket2 | Briarwood Reed (12930) | Blackrock Spire: Jed Runewatcher [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Weakness Analyzer (272438, -2.64 DPS) [vendor]; Serenity Field (272439, -4.20 DPS, sim-verified) [vendor]; Burst of Knowledge (11832, -6.41 DPS) [dungeon] |
+| trinket1 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Burst of Knowledge (11832, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Briarwood Reed (12930, -19.33 DPS, sim-verified) [dungeon] |
+| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (604.5 DPS) | yes | Briarwood Reed (12930, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Burst of Knowledge (11832, -0.75 DPS) [dungeon] |
 | main_hand | Spellshifter Rod (9527) | Tiara of the Deep [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Stave (234571, +0.00 DPS) [pvp]; Kindling Stave (11750, -0.20 DPS) [dungeon]; Hand of Edward the Odd (2243, -28.36 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (608.8 DPS) | yes | Bonecreeper Stylus (13938, -0.33 DPS) [dungeon]; Sparkling Crystal Wand (20672, -1.77 DPS) [world]; Torch of Light (279246, -8.81 DPS, sim-verified) [crafted] |
+| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (+8.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Bonecreeper Stylus (13938, -0.33 DPS) [dungeon]; Sparkling Crystal Wand (20672, -1.77 DPS) [world]; Torch of Light (279246, -8.81 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Virtuous Cowl; neck: Amulet of the Dawn; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Virtuous Gown; wrist: Dryad's Wrist Bindings; hands: Hands of Power; waist: Knowledge of the Timbermaw; legs: Sentinel's Silk Leggings; feet: Virtuous Slippers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Talisman of Ascendance; trinket2: Briarwood Reed; ranged: Ritssyn's Wand of Bad Mojo
+**New at 60:** head: Virtuous Cowl; neck: Amulet of the Dawn; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Virtuous Gown; wrist: Dryad's Wrist Bindings; hands: Hands of Power; waist: Knowledge of the Timbermaw; legs: Sentinel's Silk Leggings; feet: Virtuous Slippers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Talisman of Ascendance; trinket2: Serenity Field; ranged: Ritssyn's Wand of Bad Mojo
 
 No-known-source sample (15 of 1121, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
@@ -282,9 +284,9 @@ No-known-source sample (15 of 326, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 523000000000000000-00000000000000000-543120301201300051)
 
-Set DPS (verified): 149.3. Weights run: 1.0s. Verify run: 1.3s. 421 eligible items had no known source.
+Set DPS (verified): 146.5. Weights run: 1.0s. Verify run: 1.3s. 421 eligible items had no known source.
 
-2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=1.484 ± 0.024, crit=0.052 ± 0.002 per rating point (14 rating = 1%, 0.727 per %), hit=0.631 ± 0.034 per rating point (10 rating = 1%, 6.305 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -297,24 +299,26 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | chest | Acumen Robes (17775) | Twisted Evils [quest] | 48.7 spell_power points (6.17 DPS) | yes | Robes of Insight (940, -1.38 DPS, sim-verified) [world_drop]; Runecloth Robe (13858, -1.58 DPS) [crafted]; Runecloth Tunic (13857, -1.95 DPS) [crafted] |
 | wrist | Bloodband Bracers (11469) | The Captain's Chest [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Aristocratic Cuffs (12546, +0.00 DPS) [dungeon]; Dryad's Wrist Bindings (19596, +0.00 DPS) [pvp] |
 | hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | 39.6 spell_power points (5.03 DPS) | yes | Virtuous Hands (226958, -0.17 DPS) [vendor]; First Sergeant's Dreadweave Gloves (220908, -1.69 DPS) [vendor]; Red Mageweave Gloves (10018, -1.75 DPS) [crafted] |
-| waist | Ban'thok Sash (11662) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 34.6 spell_power points (4.39 DPS) | yes | Deathmage Sash (10771, -0.68 DPS) [dungeon]; Satyrmane Sash (17755, -0.73 DPS) [dungeon]; Dawnspire Cord (12466, -1.02 DPS, sim-verified) [dungeon] |
+| waist | Dawnspire Cord (12466) | Sunken Temple: Morphaz [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ban'thok Sash (11662, +0.00 DPS) [dungeon]; Deathmage Sash (10771, -0.63 DPS) [dungeon]; Satyrmane Sash (17755, -0.68 DPS) [dungeon] |
 | legs | Spellshock Leggings (9484) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 37.8 spell_power points (4.80 DPS) | yes | Stone Guard's Dreadweave Leggings (220906, -0.93 DPS) [vendor]; Kilt of the Atal'ai Prophet (10807, -1.03 DPS) [dungeon]; Red Mageweave Pants (10009, -2.39 DPS, sim-verified) [crafted] |
 | feet | First Sergeant's Dreadweave Boots (220909) | PvP rank 9 · First Sergeant · Horde [vendor] | 27.7 spell_power points (3.51 DPS) | yes | Gilded Sandals (254107, +0.00 DPS, sim-verified) [crafted]; Southsea Mojo Boots (20641, -0.42 DPS) [quest]; Earthen Silk Slippers (254013, -0.46 DPS) [crafted] |
-| finger1 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | sim-verified (149.3 DPS) | yes | Brainlash (6440, +0.00 DPS) [dungeon]; Mindseye Circle (10634, +0.00 DPS) [dungeon]; Woodseed Hoop (17768, -0.52 DPS) [quest] |
-| finger2 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 19.4 spell_power points (2.46 DPS) | yes | Brainlash (6440, +0.00 DPS) [dungeon]; Woodseed Hoop (17768, -0.76 DPS) [quest]; Mindseye Circle (10634, -1.26 DPS, sim-verified) [dungeon] |
+| finger1 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Brainlash (6440, +0.00 DPS) [dungeon]; Mindseye Circle (10634, +0.00 DPS) [dungeon]; Cyclopean Band (11824, +0.00 DPS) [dungeon] |
+| finger2 | Band of the Unicorn (7553) | World drop [world_drop] | sim-verified (146.5 DPS) | yes | Brainlash (6440, +0.00 DPS) [dungeon]; Mindseye Circle (10634, +0.00 DPS) [dungeon]; Cyclopean Band (11824, +0.00 DPS) [dungeon] |
 | trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop] |
 | trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, +0.00 DPS, sim-verified) [world_drop] |
 | main_hand | Spellshifter Rod (9527) | Tiara of the Deep [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Kindling Stave (11750, -1.31 DPS) [dungeon]; Zum'rah's Vexing Cane (18082, -2.45 DPS) [dungeon]; Blade of Eternal Darkness (17780, -17.44 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | Pyric Caduceus (11748) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 414.2 spell_power points (52.50 DPS) | yes | Woestave (20082, -1.18 DPS) [quest]; Noxious Shooter (17745, -1.87 DPS) [dungeon]; Wand of Allistarj (13065, -4.08 DPS) [world_drop] |
 
-**New at 50:** head: Red Mageweave Headband; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Deep Woodlands Cloak; chest: Acumen Robes; wrist: Bloodband Bracers; hands: Raider Handwraps; waist: Ban'thok Sash; legs: Spellshock Leggings; feet: First Sergeant's Dreadweave Boots; finger2: Cyclopean Band; trinket1: Frozen Heart of the Mountain; trinket2: Rune of the Guard Captain; main_hand: Spellshifter Rod; ranged: Pyric Caduceus
+**New at 50:** head: Red Mageweave Headband; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Deep Woodlands Cloak; chest: Acumen Robes; wrist: Bloodband Bracers; hands: Raider Handwraps; waist: Dawnspire Cord; legs: Spellshock Leggings; feet: First Sergeant's Dreadweave Boots; finger2: Band of the Unicorn; trinket1: Frozen Heart of the Mountain; trinket2: Rune of the Guard Captain; main_hand: Spellshifter Rod; ranged: Pyric Caduceus
 
 No-known-source sample (15 of 421, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5008 Quicksilver Ring
 
 ### Band 60 (undead, 524011031300000000-00000000000000000-543120301201300051)
 
-Set DPS (verified): 342.6. Weights run: 1.1s. Verify run: 3.6s. 1112 eligible items had no known source.
+Set DPS (verified): 339.7. Weights run: 1.1s. Verify run: 3.6s. 1112 eligible items had no known source.
+
+1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=1.132 ± 0.028, crit=0.111 ± 0.004 per rating point (14 rating = 1%, 1.551 per %), hit=1.031 ± 0.040 per rating point (10 rating = 1%, 10.314 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -322,29 +326,31 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 |---|---|---|---|---|---|
 | head | Virtuous Cowl (226957) | Mokvar [vendor] | 47.9 spell_power points (7.45 DPS) | yes | Warlord's Satin Cowl (17623, +0.00 DPS) [vendor]; Warlord's Satin Crown (231615, +0.00 DPS) [vendor]; Magister's Crown (16686, -9.90 DPS, sim-verified) [dungeon] |
 | neck | Amulet of the Dawn (22657) | Epic Armaments of Battle - Friend of the Dawn [quest] | 29.7 spell_power points (4.62 DPS) | yes | Diana's Pearl Necklace (22403, -0.21 DPS) [dungeon]; Beads of Ogre Mojo (22149, -0.49 DPS) [quest]; Archlight Talisman (15856, -0.99 DPS) [quest] |
-| shoulder | Virtuous Epaulets (226955) | Mokvar [vendor] | sim-verified (342.6 DPS) | yes | Warlord's Satin Epaulets (231611, +0.00 DPS) [vendor]; Darkspear Shoulderpads (272103, -0.05 DPS) [vendor]; Rugged Mantle of the Timbermaw (227808, -6.05 DPS, sim-verified) [vendor] |
+| shoulder | Virtuous Epaulets (226955) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warlord's Satin Epaulets (231611, +0.00 DPS) [vendor]; Darkspear Shoulderpads (272103, -0.05 DPS) [vendor]; Rugged Mantle of the Timbermaw (227808, -6.05 DPS, sim-verified) [vendor] |
 | back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 35.4 spell_power points (5.50 DPS) | yes | Hide of the Wild (18510, +0.00 DPS, sim-verified) [crafted]; Crystalline Threaded Cape (20697, -1.68 DPS) [world]; Shroud of Arcane Mastery (22330, -1.96 DPS) [dungeon] |
 | chest | Virtuous Gown (226960) | Mokvar [vendor] | 46.4 spell_power points (7.21 DPS) | yes | Warlord's Satin Robes (231612, +0.00 DPS) [pvp]; Warlord's Satin Tunic (231632, +0.00 DPS) [vendor]; Magister's Robes (16688, -9.86 DPS, sim-verified) [dungeon] |
 | wrist | Dryad's Wrist Bindings (19595) | Warsong Outriders [rep] | 31.1 spell_power points (4.83 DPS) | yes | Sublime Wristguards (18497, -1.20 DPS) [dungeon]; Runecloth Cuffs (254123, -1.36 DPS) [crafted]; General's Satin Bracers (17619, -1.48 DPS) [pvp] |
-| hands | Virtuous Hands (226958) | Mokvar [vendor] | sim-verified (342.6 DPS) | yes | General's Satin Gloves (17620, +0.00 DPS) [vendor]; General's Satin Grips (231613, +0.00 DPS) [vendor]; Raider Handwraps (272097, -5.79 DPS, sim-verified) [vendor] |
+| hands | Virtuous Hands (226958) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | General's Satin Gloves (17620, +0.00 DPS) [vendor]; General's Satin Grips (231613, +0.00 DPS) [vendor]; Raider Handwraps (272097, -5.79 DPS, sim-verified) [vendor] |
 | waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 60.2 spell_power points (9.36 DPS) | yes | Ban'thok Sash (11662, -3.95 DPS) [dungeon]; Clutch of Andros (13956, -4.41 DPS) [dungeon]; Belt of the Archmage (18405, -5.78 DPS, sim-verified) [crafted] |
-| legs | Virtuous Leggings (226956) | Mokvar [vendor] | sim-verified (342.6 DPS) | yes | General's Satin Leggings (231614, +0.00 DPS) [pvp]; Sentinel's Silk Leggings (237815, +0.00 DPS) [vendor]; Outrider's Silk Leggings (22747, -4.77 DPS, sim-verified) [rep] |
+| legs | Virtuous Leggings (226956) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | General's Satin Leggings (231614, +0.00 DPS) [pvp]; Sentinel's Silk Leggings (237815, +0.00 DPS) [vendor]; Outrider's Silk Leggings (22747, -4.77 DPS, sim-verified) [rep] |
 | feet | Virtuous Slippers (226959) | Mokvar [vendor] | 40.1 spell_power points (6.23 DPS) | yes | General's Satin Boots (17618, +0.00 DPS) [vendor]; General's Satin Treads (231610, +0.00 DPS) [vendor]; Dragonrider Boots (18102, -8.49 DPS, sim-verified) [dungeon] |
-| finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (342.6 DPS) | yes | Rune Band of Wizardry (22339, -3.45 DPS) [dungeon]; Channeler's Ring (272406, -3.47 DPS) [vendor]; Naglering (11669, -13.25 DPS, sim-verified) [dungeon] |
-| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (342.6 DPS) | yes | Rune Band of Wizardry (22339, -1.26 DPS) [dungeon]; Channeler's Ring (272406, -1.29 DPS) [vendor]; Naglering (11669, -9.68 DPS, sim-verified) [dungeon] |
-| trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-verified (342.6 DPS) | yes | Briarwood Reed (12930, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor] |
-| trinket2 | Second Wind (11819) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-verified (342.6 DPS) | yes | Briarwood Reed (12930, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Talisman of Ascendance (22678, -2.93 DPS, sim-verified) [quest] |
-| main_hand | Spellshifter Rod (9527) | Tiara of the Deep [quest] | sim-verified (342.6 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [pvp]; Kindling Stave (11750, -1.00 DPS) [dungeon]; Hand of Edward the Odd (2243, -21.41 DPS, sim-verified) [world_drop] |
+| finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rune Band of Wizardry (22339, -3.45 DPS) [dungeon]; Channeler's Ring (272406, -3.47 DPS) [vendor]; Naglering (11669, -13.25 DPS, sim-verified) [dungeon] |
+| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rune Band of Wizardry (22339, -1.26 DPS) [dungeon]; Channeler's Ring (272406, -1.29 DPS) [vendor]; Naglering (11669, -9.68 DPS, sim-verified) [dungeon] |
+| trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Briarwood Reed (12930, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Second Wind (11819, -15.84 DPS, sim-verified) [dungeon] |
+| trinket2 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (339.7 DPS) | yes | Briarwood Reed (12930, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor] |
+| main_hand | Spellshifter Rod (9527) | Tiara of the Deep [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's War Staff (234549, +0.00 DPS) [pvp]; Kindling Stave (11750, -1.00 DPS) [dungeon]; Hand of Edward the Odd (2243, -21.41 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | Torch of Light (279246) | Enchanting [crafted] | 500.0 spell_power points (77.69 DPS) | yes | Ritssyn's Wand of Bad Mojo (22408, -12.13 DPS) [dungeon]; Bonecreeper Stylus (13938, -12.65 DPS) [dungeon]; Sparkling Crystal Wand (20672, -13.00 DPS) [world] |
 
-**New at 60:** head: Virtuous Cowl; neck: Amulet of the Dawn; shoulder: Virtuous Epaulets; back: Arcanoweave Cloak; chest: Virtuous Gown; wrist: Dryad's Wrist Bindings; hands: Virtuous Hands; waist: Knowledge of the Timbermaw; legs: Virtuous Leggings; feet: Virtuous Slippers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Burst of Knowledge; trinket2: Second Wind; ranged: Torch of Light
+**New at 60:** head: Virtuous Cowl; neck: Amulet of the Dawn; shoulder: Virtuous Epaulets; back: Arcanoweave Cloak; chest: Virtuous Gown; wrist: Dryad's Wrist Bindings; hands: Virtuous Hands; waist: Knowledge of the Timbermaw; legs: Virtuous Leggings; feet: Virtuous Slippers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Burst of Knowledge; trinket2: Talisman of Ascendance; ranged: Torch of Light
 
 No-known-source sample (15 of 1112, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5008 Quicksilver Ring
 
 ### Band 60, raid preset (undead, 325001031300000000-00000000000000000-523120501201300251)
 
-Set DPS (verified): 622.0. Weights run: 1.2s. Verify run: 2.9s. 1112 eligible items had no known source.
+Set DPS (verified): 617.8. Weights run: 1.2s. Verify run: 3.0s. 1112 eligible items had no known source.
+
+1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.594 ± 0.014, crit=0.039 ± 0.003 per rating point (14 rating = 1%, 0.547 per %), hit=0.716 ± 0.034 per rating point (10 rating = 1%, 7.161 per %), spell_haste=-3.603 ± 0.264, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.001
 
@@ -362,13 +368,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | feet | Virtuous Slippers (226959) | Mokvar [vendor] | 31.5 spell_power points (11.87 DPS) | yes | General's Satin Boots (17618, +0.00 DPS) [vendor]; Dragonrider Boots (18102, +0.00 DPS, sim-verified) [dungeon]; General's Satin Treads (231610, +0.00 DPS) [vendor] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rune Band of Wizardry (22339, -6.53 DPS) [dungeon]; Maiden's Circle (13001, -6.91 DPS) [world_drop]; Naglering (11669, -14.09 DPS, sim-verified) [dungeon] |
 | finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rune Band of Wizardry (22339, -2.02 DPS) [dungeon]; Maiden's Circle (13001, -2.40 DPS) [world_drop]; Naglering (11669, -8.69 DPS, sim-verified) [dungeon] |
-| trinket1 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (+19.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Burst of Knowledge (11832, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor] |
-| trinket2 | Briarwood Reed (12930) | Blackrock Spire: Jed Runewatcher [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Weakness Analyzer (272438, -2.64 DPS) [vendor]; Serenity Field (272439, -4.19 DPS, sim-verified) [vendor]; Burst of Knowledge (11832, -6.41 DPS) [dungeon] |
+| trinket1 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Burst of Knowledge (11832, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Briarwood Reed (12930, -19.15 DPS, sim-verified) [dungeon] |
+| trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-verified (617.8 DPS) | yes | Briarwood Reed (12930, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Burst of Knowledge (11832, -0.75 DPS) [dungeon] |
 | main_hand | Spellshifter Rod (9527) | Tiara of the Deep [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's War Staff (234549, +0.00 DPS) [pvp]; Kindling Stave (11750, -0.20 DPS) [dungeon]; The Lobotomizer (19324, -28.69 DPS, sim-verified) [rep] |
 | off_hand | - | - |  |  |  |
-| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (622.0 DPS) | yes | Bonecreeper Stylus (13938, -0.33 DPS) [dungeon]; Sparkling Crystal Wand (20672, -1.77 DPS) [world]; Torch of Light (279246, -11.33 DPS, sim-verified) [crafted] |
+| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (+11.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Bonecreeper Stylus (13938, -0.33 DPS) [dungeon]; Sparkling Crystal Wand (20672, -1.77 DPS) [world]; Torch of Light (279246, -11.33 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Virtuous Cowl; neck: Amulet of the Dawn; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Virtuous Gown; wrist: Dryad's Wrist Bindings; hands: Hands of Power; waist: Knowledge of the Timbermaw; legs: Outrider's Silk Leggings; feet: Virtuous Slippers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Talisman of Ascendance; trinket2: Briarwood Reed; ranged: Ritssyn's Wand of Bad Mojo
+**New at 60:** head: Virtuous Cowl; neck: Amulet of the Dawn; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Virtuous Gown; wrist: Dryad's Wrist Bindings; hands: Hands of Power; waist: Knowledge of the Timbermaw; legs: Outrider's Silk Leggings; feet: Virtuous Slippers; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Talisman of Ascendance; trinket2: Serenity Field; ranged: Ritssyn's Wand of Bad Mojo
 
 No-known-source sample (15 of 1112, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5008 Quicksilver Ring
 

@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T02:49:10Z",
+  "generated_at": "2026-10-09T09:51:35Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -532,8 +532,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.44360932,
-      "verify_run_seconds": 2.413055553,
+      "weights_run_seconds": 2.412233264,
+      "verify_run_seconds": 2.173609458,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1169,8 +1169,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.44360932,
-      "verify_run_seconds": 2.445658544,
+      "weights_run_seconds": 2.412233264,
+      "verify_run_seconds": 2.119376981,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1906,8 +1906,8 @@
         "off_hand: Vendetta",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.879198274,
-      "verify_run_seconds": 2.955341668,
+      "weights_run_seconds": 2.584383228,
+      "verify_run_seconds": 2.567582486,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2613,8 +2613,8 @@
         "off_hand: Alliance Outrunner's Sword",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.879198274,
-      "verify_run_seconds": 2.639162771,
+      "weights_run_seconds": 2.584383228,
+      "verify_run_seconds": 2.245558969,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2805,7 +2805,7 @@
           "source_kind": "rep",
           "score": 32.40649460064543,
           "verified": true,
-          "swap_note": "confirmed by the sim against Sentinel's Medallion (ilvl 33) (id 19541): kept the pick, +0.7 DPS (167.0 vs 166.2 set DPS)",
+          "swap_note": "confirmed by the sim against Sentinel's Medallion (ilvl 33) (id 19541): kept the pick, +0.7 DPS over it",
           "dps_delta": 0.7415762415728864,
           "alternatives": [
             {
@@ -2898,34 +2898,33 @@
         },
         {
           "slot": "chest",
-          "item_id": 10583,
-          "item_name": "Quillward Harness",
-          "source": "Razorfen Downs: Withered Warrior",
-          "source_kind": "dungeon",
-          "score": 55.97485431020575,
+          "item_id": 13110,
+          "item_name": "Wolffear Harness",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 166.16763331089558,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13110,
-              "item_name": "Wolffear Harness",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.7888091231987744,
-              "verified": true
+              "item_id": 10583,
+              "item_name": "Quillward Harness",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Withered Warrior",
+              "dps_delta": 0
             },
             {
               "item_id": 8175,
               "item_name": "Nightscape Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.8375756504464095
+              "dps_delta": -0.4187878252232045
             },
             {
               "item_id": 8203,
               "item_name": "Tough Scorpid Breastplate",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.8375756504464095
+              "dps_delta": -0.4187878252232045
             }
           ]
         },
@@ -3104,7 +3103,7 @@
           "source_kind": "world_drop",
           "score": 29.460449636950393,
           "verified": true,
-          "swap_note": "confirmed by the sim against Falcon's Hook (id 7552): kept the pick, +2.4 DPS (167.0 vs 164.6 set DPS)",
+          "swap_note": "confirmed by the sim against Falcon's Hook (id 7552): kept the pick, +2.4 DPS over it",
           "dps_delta": 2.361539744631159,
           "alternatives": [
             {
@@ -3184,7 +3183,6 @@
           "item_name": "Jhordy's Misplaced Screwdriver",
           "source": "Rettrick",
           "source_kind": "vendor",
-          "sim_dps": 166.95644243409436,
           "verified": true,
           "alternatives": [
             {
@@ -3291,8 +3289,9 @@
           ]
         }
       ],
-      "set_dps": 166.95644243409436,
+      "set_dps": 166.16763331089558,
       "no_source_count": 628,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -3315,7 +3314,7 @@
         "neck: Sentinel's Medallion",
         "shoulder: Sunburn Spaulders",
         "back: Dark Hooded Cape",
-        "chest: Quillward Harness",
+        "chest: Wolffear Harness",
         "wrist: Dusky Bracers",
         "hands: Gloves of Holy Might",
         "waist: Highlander's Leather Girdle",
@@ -3327,8 +3326,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.916051652,
-      "verify_run_seconds": 3.207388709,
+      "weights_run_seconds": 2.640602296,
+      "verify_run_seconds": 2.996648971,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4019,8 +4018,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.916051652,
-      "verify_run_seconds": 3.149834684,
+      "weights_run_seconds": 2.640602296,
+      "verify_run_seconds": 2.926077583,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4296,7 +4295,6 @@
           "item_name": "Blazewind Breastplate",
           "source": "Tremors of the Earth",
           "source_kind": "quest",
-          "sim_dps": 226.8147428452882,
           "verified": true,
           "alternatives": [
             {
@@ -4557,25 +4555,6 @@
           "source": "The Green Drake",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Devilsaur Tooth (id 19992): kept the pick, +4.0 DPS over it",
-          "dps_delta": 3.9889793239613596,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0
-            }
-          ]
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 19992,
-          "item_name": "Devilsaur Tooth",
-          "source": "The Green Drake",
-          "source_kind": "quest",
-          "verified": true,
           "alternatives": [
             {
               "item_id": 249469,
@@ -4585,15 +4564,32 @@
               "dps_delta": 0
             },
             {
-              "item_id": 249470,
-              "item_name": "Molten Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -1.7278849460481922,
+              "item_id": 19992,
+              "item_name": "Devilsaur Tooth",
+              "source_kind": "quest",
+              "source": "The Green Drake",
+              "dps_delta": -3.9889793239613596,
               "verified": true
             }
-          ],
-          "faction_note": "Devilsaur Eye (from horde) and alliance's own pick Devilsaur Tooth measure statistically indistinguishable on dwarf (0.00 ± 1.38 vs 0.64 ± 0.32 DPS gain) -- each faction's own tournament winner kept"
+          ]
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 249470,
+          "item_name": "Molten Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 225.0922076796703,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 249469,
+              "item_name": "Frozen Heart of the Mountain",
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "dps_delta": 0
+            }
+          ]
         },
         {
           "slot": "main_hand",
@@ -4666,9 +4662,9 @@
           ]
         }
       ],
-      "set_dps": 226.8147428452882,
+      "set_dps": 225.0922076796703,
       "no_source_count": 787,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -4699,12 +4695,12 @@
         "finger1: Masons Fraternity Ring",
         "finger2: Ring of the Underwood",
         "trinket1: Devilsaur Eye",
-        "trinket2: Devilsaur Tooth",
+        "trinket2: Molten Heart of the Mountain",
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.866603443,
-      "verify_run_seconds": 4.044409783,
+      "weights_run_seconds": 2.722395538,
+      "verify_run_seconds": 3.798937285,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5379,8 +5375,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.866603443,
-      "verify_run_seconds": 4.1163372,
+      "weights_run_seconds": 2.722395538,
+      "verify_run_seconds": 3.8366665749999997,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5571,34 +5567,32 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 81.78400884772506,
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Falrin's Vendetta",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
+            },
             {
               "item_id": 19491,
               "item_name": "Amulet of the Darkmoon",
               "source_kind": "quest",
               "source": "1200 Tickets - Amulet of the Darkmoon",
-              "dps_delta": -1.7189501693266789
+              "dps_delta": -0.0024872631308893974
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -1.937727248879611
-            },
-            {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -1.9834962407865646,
-              "verified": true
+              "dps_delta": -0.22126434268382134
             }
           ]
         },
@@ -5686,14 +5680,14 @@
               "item_name": "Field Marshal's Chain Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.3685400962428003
+              "dps_delta": -3.368540096242798
             },
             {
               "item_id": 231581,
               "item_name": "Field Marshal's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.3685400962428003
+              "dps_delta": -3.368540096242798
             },
             {
               "item_id": 23089,
@@ -5921,7 +5915,7 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 308.20352164131174,
+          "sim_dps": 306.0483256527007,
           "verified": true,
           "alternatives": [
             {
@@ -6080,9 +6074,9 @@
           ]
         }
       ],
-      "set_dps": 308.20352164131174,
+      "set_dps": 306.0483256527007,
       "no_source_count": 1685,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6102,7 +6096,7 @@
       ],
       "new_at_band": [
         "head: Beastmaster's Cap",
-        "neck: Pendant of Celerity",
+        "neck: Beads of Ogre Might",
         "shoulder: Darkspear Pauldrons",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
@@ -6118,8 +6112,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.847663138,
-      "verify_run_seconds": 12.638514083,
+      "weights_run_seconds": 2.685457351,
+      "verify_run_seconds": 11.672409318,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6310,34 +6304,32 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 81.78400884772506,
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Falrin's Vendetta",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
+            },
             {
               "item_id": 19491,
               "item_name": "Amulet of the Darkmoon",
               "source_kind": "quest",
               "source": "1200 Tickets - Amulet of the Darkmoon",
-              "dps_delta": -1.7189501693266789
+              "dps_delta": -0.0024872631308893974
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -1.937727248879611
-            },
-            {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -2.1242638021904554,
-              "verified": true
+              "dps_delta": -0.22126434268382134
             }
           ]
         },
@@ -6425,14 +6417,14 @@
               "item_name": "Warlord's Chain Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.3685400962428003
+              "dps_delta": -3.368540096242798
             },
             {
               "item_id": 231573,
               "item_name": "Warlord's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.3685400962428003
+              "dps_delta": -3.368540096242798
             },
             {
               "item_id": 23089,
@@ -6521,34 +6513,32 @@
         },
         {
           "slot": "waist",
-          "item_id": 22232,
-          "item_name": "Marksman's Girdle",
-          "source": "Blackrock Spire: Urok Doomhowl",
-          "source_kind": "dungeon",
-          "score": 100.44598186302161,
+          "item_id": 20216,
+          "item_name": "Belt of Preserved Heads",
+          "source": "A Collection of Heads",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 20216,
-              "item_name": "Belt of Preserved Heads",
-              "source_kind": "quest",
-              "source": "A Collection of Heads",
-              "dps_delta": -1.8089473408177241,
-              "verified": true
+              "item_id": 22232,
+              "item_name": "Marksman's Girdle",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Urok Doomhowl",
+              "dps_delta": 0
             },
             {
               "item_id": 272397,
               "item_name": "Ranger's Belt",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -1.9546058731718392
+              "dps_delta": -0.540671650100879
             },
             {
               "item_id": 18393,
               "item_name": "Warpwood Binding",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tendris Warpwood",
-              "dps_delta": -2.022385323890075
+              "dps_delta": -0.6084511008191151
             }
           ]
         },
@@ -6662,7 +6652,7 @@
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 316.1583398518882,
+          "sim_dps": 312.16043669854565,
           "verified": true,
           "alternatives": [
             {
@@ -6823,9 +6813,9 @@
           ]
         }
       ],
-      "set_dps": 316.1583398518882,
+      "set_dps": 312.16043669854565,
       "no_source_count": 1664,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6845,13 +6835,13 @@
       ],
       "new_at_band": [
         "head: Beastmaster's Cap",
-        "neck: Pendant of Celerity",
+        "neck: Beads of Ogre Might",
         "shoulder: Darkspear Pauldrons",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
         "wrist: Beastmaster's Bindings",
         "hands: Beastmaster's Gauntlets",
-        "waist: Marksman's Girdle",
+        "waist: Belt of Preserved Heads",
         "legs: Sentinel's Chain Leggings",
         "feet: Beastmaster's Treads",
         "finger1: Signet Ring of the Bronze Dragonflight",
@@ -6860,8 +6850,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.847663138,
-      "verify_run_seconds": 12.883840259,
+      "weights_run_seconds": 2.685457351,
+      "verify_run_seconds": 11.169808087,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7052,34 +7042,32 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 86.92197553613161,
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Falrin's Vendetta",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
+            },
             {
               "item_id": 19491,
               "item_name": "Amulet of the Darkmoon",
               "source_kind": "quest",
               "source": "1200 Tickets - Amulet of the Darkmoon",
-              "dps_delta": -4.539178592912393
-            },
-            {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -4.663958331439517,
-              "verified": true
+              "dps_delta": -0.7483563014979818
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -4.800214310397912
+              "dps_delta": -1.0093920189835013
             }
           ]
         },
@@ -7166,14 +7154,14 @@
               "item_name": "Field Marshal's Chain Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -8.159153905559144
+              "dps_delta": -8.159153905559148
             },
             {
               "item_id": 231581,
               "item_name": "Field Marshal's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -8.159153905559144
+              "dps_delta": -8.159153905559148
             },
             {
               "item_id": 23089,
@@ -7228,7 +7216,6 @@
           "item_name": "Raider Gloves",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 771.5036114195199,
           "verified": true,
           "alternatives": [
             {
@@ -7256,34 +7243,32 @@
         },
         {
           "slot": "waist",
-          "item_id": 22232,
-          "item_name": "Marksman's Girdle",
-          "source": "Blackrock Spire: Urok Doomhowl",
-          "source_kind": "dungeon",
-          "score": 105.69732553218232,
+          "item_id": 20216,
+          "item_name": "Belt of Preserved Heads",
+          "source": "A Collection of Heads",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 20216,
-              "item_name": "Belt of Preserved Heads",
-              "source_kind": "quest",
-              "source": "A Collection of Heads",
-              "dps_delta": -3.8732223788057354,
-              "verified": true
+              "item_id": 22232,
+              "item_name": "Marksman's Girdle",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Urok Doomhowl",
+              "dps_delta": 0
             },
             {
               "item_id": 18393,
               "item_name": "Warpwood Binding",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tendris Warpwood",
-              "dps_delta": -4.959889636985023
+              "dps_delta": -1.8570536547163765
             },
             {
               "item_id": 272397,
               "item_name": "Ranger's Belt",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -5.056317923290501
+              "dps_delta": -1.9534819410218538
             }
           ]
         },
@@ -7293,7 +7278,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 213.25795619150884,
+          "score": 213.25795619150887,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +5.8 DPS over it",
           "dps_delta": 5.836223870002414,
@@ -7303,21 +7288,21 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -10.744850557449682
+              "dps_delta": -10.744850557449688
             },
             {
               "item_id": 231577,
               "item_name": "Marshal's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -12.392696834889485
+              "dps_delta": -12.39269683488949
             },
             {
               "item_id": 18736,
               "item_name": "Plaguehound Leggings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -13.121339832063649
+              "dps_delta": -13.121339832063654
             }
           ]
         },
@@ -7426,34 +7411,33 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 13965,
-          "item_name": "Blackhand's Breadth",
-          "source": "General Drakkisath's Demise",
-          "source_kind": "quest",
+          "item_id": 249469,
+          "item_name": "Frozen Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 757.6534894547326,
           "verified": true,
-          "swap_note": "confirmed by the sim against Devilsaur Eye (id 19991): kept the pick, +11.0 DPS over it",
-          "dps_delta": 11.047412948853207,
           "alternatives": [
             {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -4.588680857190767
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise",
+              "dps_delta": 0
             },
             {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -6.899897821270673
+              "dps_delta": -2.311216964079905
             },
             {
               "item_id": 11815,
               "item_name": "Hand of Justice",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -7.2304201266254395
+              "dps_delta": -2.641739269434672
             }
           ]
         },
@@ -7466,17 +7450,17 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise",
+              "dps_delta": 0
+            },
+            {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
               "dps_delta": 0
             },
             {
@@ -7559,9 +7543,9 @@
           ]
         }
       ],
-      "set_dps": 771.5036114195199,
+      "set_dps": 757.6534894547326,
       "no_source_count": 1685,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 4,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -7581,24 +7565,24 @@
       ],
       "new_at_band": [
         "head: Beastmaster's Cap",
-        "neck: Pendant of Celerity",
+        "neck: Beads of Ogre Might",
         "shoulder: Darkspear Pauldrons",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
         "wrist: Beastmaster's Bindings",
         "hands: Raider Gloves",
-        "waist: Marksman's Girdle",
+        "waist: Belt of Preserved Heads",
         "legs: Sentinel's Chain Leggings",
         "feet: Beastmaster's Treads",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Don Julio's Band",
-        "trinket1: Blackhand's Breadth",
+        "trinket1: Frozen Heart of the Mountain",
         "trinket2: Devilsaur Eye",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.220890628,
-      "verify_run_seconds": 15.124650667,
+      "weights_run_seconds": 2.760981018,
+      "verify_run_seconds": 12.267576488,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7789,34 +7773,32 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 86.92197553613161,
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Falrin's Vendetta",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -4.494958490585418,
-              "verified": true
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
             },
             {
               "item_id": 19491,
               "item_name": "Amulet of the Darkmoon",
               "source_kind": "quest",
               "source": "1200 Tickets - Amulet of the Darkmoon",
-              "dps_delta": -4.539178592912393
+              "dps_delta": -0.7483563014979818
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -4.800214310397912
+              "dps_delta": -1.0093920189835013
             }
           ]
         },
@@ -7903,14 +7885,14 @@
               "item_name": "Warlord's Chain Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -8.159153905559144
+              "dps_delta": -8.159153905559148
             },
             {
               "item_id": 231573,
               "item_name": "Warlord's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -8.159153905559144
+              "dps_delta": -8.159153905559148
             },
             {
               "item_id": 23089,
@@ -7965,7 +7947,6 @@
           "item_name": "Raider Gloves",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 791.9127464477851,
           "verified": true,
           "alternatives": [
             {
@@ -8034,7 +8015,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 213.25795619150884,
+          "score": 213.25795619150887,
           "verified": true,
           "alternatives": [
             {
@@ -8050,14 +8031,14 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -10.744850557449682
+              "dps_delta": -10.744850557449688
             },
             {
               "item_id": 231574,
               "item_name": "General's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -12.392696834889485
+              "dps_delta": -12.39269683488949
             }
           ]
         },
@@ -8171,16 +8152,7 @@
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Blackhand's Breadth (id 13965): kept the pick, +17.8 DPS over it",
-          "dps_delta": 17.779803260043195,
           "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -12.560389642015247
-            },
             {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
@@ -8194,38 +8166,46 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
               "dps_delta": -15.202128911449918
+            },
+            {
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "For The Horde!",
+              "dps_delta": -17.779803260043195,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 13965,
-          "item_name": "Blackhand's Breadth",
-          "source": "For The Horde!",
-          "source_kind": "quest",
+          "item_id": 249469,
+          "item_name": "Frozen Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 781.991043915457,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -4.588680857190767
-            },
-            {
-              "item_id": 11832,
-              "item_name": "Burst of Knowledge",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -6.167060557602667,
-              "verified": true
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "For The Horde!",
+              "dps_delta": 0
             },
             {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -6.899897821270673
+              "dps_delta": -2.311216964079905
+            },
+            {
+              "item_id": 11815,
+              "item_name": "Hand of Justice",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
+              "dps_delta": -2.641739269434672
             }
           ]
         },
@@ -8299,9 +8279,9 @@
           ]
         }
       ],
-      "set_dps": 791.9127464477851,
+      "set_dps": 781.991043915457,
       "no_source_count": 1664,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -8321,7 +8301,7 @@
       ],
       "new_at_band": [
         "head: Beastmaster's Cap",
-        "neck: Pendant of Celerity",
+        "neck: Beads of Ogre Might",
         "shoulder: Darkspear Pauldrons",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
@@ -8332,12 +8312,12 @@
         "feet: Beastmaster's Treads",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Don Julio's Band",
-        "trinket2: Blackhand's Breadth",
+        "trinket2: Frozen Heart of the Mountain",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.220890628,
-      "verify_run_seconds": 14.416304369,
+      "weights_run_seconds": 2.760981018,
+      "verify_run_seconds": 11.648482979,
       "coverage": {
         "back": {
           "eligible": 456,

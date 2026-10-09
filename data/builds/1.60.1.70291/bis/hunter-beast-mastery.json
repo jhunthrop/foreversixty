@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T02:47:01Z",
+  "generated_at": "2026-10-09T09:49:42Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -533,8 +533,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.858022553,
-      "verify_run_seconds": 2.529031653,
+      "weights_run_seconds": 2.734692662,
+      "verify_run_seconds": 2.379133348,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1171,8 +1171,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.858022553,
-      "verify_run_seconds": 2.386716046,
+      "weights_run_seconds": 2.734692662,
+      "verify_run_seconds": 2.26203509,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1905,8 +1905,8 @@
         "off_hand: Vendetta",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 3.065533217,
-      "verify_run_seconds": 2.683092708,
+      "weights_run_seconds": 2.953389022,
+      "verify_run_seconds": 2.553382085,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2609,8 +2609,8 @@
         "off_hand: Alliance Outrunner's Sword",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 3.065533217,
-      "verify_run_seconds": 2.89965168,
+      "weights_run_seconds": 2.953389022,
+      "verify_run_seconds": 2.7514182959999998,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3321,8 +3321,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.325556182,
-      "verify_run_seconds": 3.661746189,
+      "weights_run_seconds": 3.248301355,
+      "verify_run_seconds": 3.430202931,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4012,8 +4012,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.325556182,
-      "verify_run_seconds": 3.5367669790000003,
+      "weights_run_seconds": 3.248301355,
+      "verify_run_seconds": 3.352534478,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4697,8 +4697,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.422442779,
-      "verify_run_seconds": 4.294754736,
+      "weights_run_seconds": 3.297408561,
+      "verify_run_seconds": 4.129234284,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5374,8 +5374,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.422442779,
-      "verify_run_seconds": 4.331571322,
+      "weights_run_seconds": 3.297408561,
+      "verify_run_seconds": 4.10482812,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5566,34 +5566,32 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 73.58897038777737,
+          "item_id": 19491,
+          "item_name": "Amulet of the Darkmoon",
+          "source": "1200 Tickets - Amulet of the Darkmoon",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19491,
-              "item_name": "Amulet of the Darkmoon",
-              "source_kind": "quest",
-              "source": "1200 Tickets - Amulet of the Darkmoon",
-              "dps_delta": -1.3613688252540328,
-              "verified": true
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
             },
             {
               "item_id": 22150,
               "item_name": "Beads of Ogre Might",
               "source_kind": "quest",
               "source": "Falrin's Vendetta",
-              "dps_delta": -1.377676711746057
+              "dps_delta": -0.18391141491181875
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -1.6277119577275894
+              "dps_delta": -0.43394666089335104
             }
           ]
         },
@@ -5899,7 +5897,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -2.1179943074792233
+              "dps_delta": -2.1179943074792225
             },
             {
               "item_id": 11669,
@@ -5917,7 +5915,6 @@
           "item_name": "Cutthroat's Signet",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "sim_dps": 315.4607853829662,
           "verified": true,
           "alternatives": [
             {
@@ -5932,7 +5929,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.11081243208953817
+              "dps_delta": -0.11081243208953721
             },
             {
               "item_id": 18701,
@@ -5959,10 +5956,10 @@
               "dps_delta": 0
             },
             {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
+              "item_id": 18537,
+              "item_name": "Counterattack Lodestone",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Tribute",
               "dps_delta": 0
             },
             {
@@ -5977,33 +5974,33 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 11819,
-          "item_name": "Second Wind",
-          "source": "Blackrock Depths: Golem Lord Argelmach",
-          "source_kind": "dungeon",
+          "item_id": 249469,
+          "item_name": "Frozen Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 311.782232869502,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 18537,
-              "item_name": "Counterattack Lodestone",
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Tribute",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0
-            },
             {
               "item_id": 13965,
               "item_name": "Blackhand's Breadth",
               "source_kind": "quest",
               "source": "General Drakkisath's Demise",
-              "dps_delta": -0.9816721943819857,
-              "verified": true
+              "dps_delta": 0
+            },
+            {
+              "item_id": 18537,
+              "item_name": "Counterattack Lodestone",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Tribute",
+              "dps_delta": -0.29996948273083684
+            },
+            {
+              "item_id": 11815,
+              "item_name": "Hand of Justice",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
+              "dps_delta": -0.4360608245090427
             }
           ]
         },
@@ -6077,9 +6074,9 @@
           ]
         }
       ],
-      "set_dps": 315.4607853829662,
+      "set_dps": 311.782232869502,
       "no_source_count": 1685,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6099,7 +6096,7 @@
       ],
       "new_at_band": [
         "head: Beastmaster's Cap",
-        "neck: Pendant of Celerity",
+        "neck: Amulet of the Darkmoon",
         "shoulder: Darkspear Pauldrons",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
@@ -6111,12 +6108,12 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Cutthroat's Signet",
         "trinket1: Burst of Knowledge",
-        "trinket2: Second Wind",
+        "trinket2: Frozen Heart of the Mountain",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.301816078,
-      "verify_run_seconds": 13.696326609,
+      "weights_run_seconds": 3.237854701,
+      "verify_run_seconds": 13.111539453,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6307,34 +6304,32 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 73.58897038777737,
+          "item_id": 19491,
+          "item_name": "Amulet of the Darkmoon",
+          "source": "1200 Tickets - Amulet of the Darkmoon",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
+            },
             {
               "item_id": 22150,
               "item_name": "Beads of Ogre Might",
               "source_kind": "quest",
               "source": "Falrin's Vendetta",
-              "dps_delta": -1.377676711746057
+              "dps_delta": -0.18391141491181875
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -1.6277119577275894
-            },
-            {
-              "item_id": 19491,
-              "item_name": "Amulet of the Darkmoon",
-              "source_kind": "quest",
-              "source": "1200 Tickets - Amulet of the Darkmoon",
-              "dps_delta": -1.940165804333276,
-              "verified": true
+              "dps_delta": -0.43394666089335104
             }
           ]
         },
@@ -6552,7 +6547,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 179.92030013588072,
+          "score": 179.9203001358807,
           "verified": true,
           "alternatives": [
             {
@@ -6568,14 +6563,14 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.6023835473018626
+              "dps_delta": -3.6023835473018604
             },
             {
               "item_id": 231574,
               "item_name": "General's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -3.807867693759457
+              "dps_delta": -3.807867693759455
             }
           ]
         },
@@ -6656,7 +6651,6 @@
           "item_name": "Cutthroat's Signet",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "sim_dps": 321.18640901593756,
           "verified": true,
           "alternatives": [
             {
@@ -6689,8 +6683,6 @@
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +9.1 DPS over it",
-          "dps_delta": 9.055010666909766,
           "alternatives": [
             {
               "item_id": 13965,
@@ -6700,37 +6692,31 @@
               "dps_delta": -3.8924600691169773
             },
             {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -5.316508745286624
-            },
-            {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
               "dps_delta": -5.616478228017462
+            },
+            {
+              "item_id": 11819,
+              "item_name": "Second Wind",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -9.055010666909766,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 11819,
-          "item_name": "Second Wind",
-          "source": "Blackrock Depths: Golem Lord Argelmach",
-          "source_kind": "dungeon",
+          "item_id": 249469,
+          "item_name": "Frozen Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 316.20479656075645,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 11832,
-              "item_name": "Burst of Knowledge",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": 0,
-              "verified": true
-            },
             {
               "item_id": 13965,
               "item_name": "Blackhand's Breadth",
@@ -6739,11 +6725,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0
+              "item_id": 18537,
+              "item_name": "Counterattack Lodestone",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Tribute",
+              "dps_delta": -0.29996948273083684
+            },
+            {
+              "item_id": 11815,
+              "item_name": "Hand of Justice",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
+              "dps_delta": -0.4360608245090427
             }
           ]
         },
@@ -6817,9 +6810,9 @@
           ]
         }
       ],
-      "set_dps": 321.18640901593756,
+      "set_dps": 316.20479656075645,
       "no_source_count": 1664,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6839,7 +6832,7 @@
       ],
       "new_at_band": [
         "head: Beastmaster's Cap",
-        "neck: Pendant of Celerity",
+        "neck: Amulet of the Darkmoon",
         "shoulder: Darkspear Pauldrons",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
@@ -6850,12 +6843,12 @@
         "feet: Beastmaster's Treads",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Cutthroat's Signet",
-        "trinket2: Second Wind",
+        "trinket2: Frozen Heart of the Mountain",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.301816078,
-      "verify_run_seconds": 12.951946746,
+      "weights_run_seconds": 3.237854701,
+      "verify_run_seconds": 12.471504818,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7046,34 +7039,32 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 82.58444658019634,
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Falrin's Vendetta",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -3.557830197775047,
-              "verified": true
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
             },
             {
               "item_id": 19491,
               "item_name": "Amulet of the Darkmoon",
               "source_kind": "quest",
               "source": "1200 Tickets - Amulet of the Darkmoon",
-              "dps_delta": -3.610441732904738
+              "dps_delta": -0.6674106745373164
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -4.383301149574422
+              "dps_delta": -1.440270091207
             }
           ]
         },
@@ -7427,7 +7418,6 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 790.4372347401722,
           "verified": true,
           "alternatives": [
             {
@@ -7455,12 +7445,20 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 11832,
-          "item_name": "Burst of Knowledge",
-          "source": "Blackrock Depths: Ambassador Flamelash",
-          "source_kind": "dungeon",
+          "item_id": 19287,
+          "item_name": "Darkmoon Card: Heroism",
+          "source": "Darkmoon Warlords Deck",
+          "source_kind": "quest",
+          "sim_dps": 781.0637562332754,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 11815,
+              "item_name": "Hand of Justice",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
+              "dps_delta": 0
+            },
             {
               "item_id": 13965,
               "item_name": "Blackhand's Breadth",
@@ -7473,13 +7471,6 @@
               "item_name": "Counterattack Lodestone",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 19991,
-              "item_name": "Devilsaur Eye",
-              "source_kind": "quest",
-              "source": "The Green Drake",
               "dps_delta": 0
             }
           ]
@@ -7554,9 +7545,9 @@
           ]
         }
       ],
-      "set_dps": 790.4372347401722,
+      "set_dps": 781.0637562332754,
       "no_source_count": 1685,
-      "unconfirmed_within_error_held": 3,
+      "unconfirmed_within_error_held": 5,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -7576,7 +7567,7 @@
       ],
       "new_at_band": [
         "head: Beastmaster's Cap",
-        "neck: Pendant of Celerity",
+        "neck: Beads of Ogre Might",
         "shoulder: Darkspear Pauldrons",
         "back: Howler's Furs",
         "chest: Dawn Armor",
@@ -7588,12 +7579,12 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Cutthroat's Signet",
         "trinket1: Frozen Heart of the Mountain",
-        "trinket2: Burst of Knowledge",
+        "trinket2: Darkmoon Card: Heroism",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.374124851,
-      "verify_run_seconds": 13.952412481,
+      "weights_run_seconds": 3.307669553,
+      "verify_run_seconds": 13.450003462,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7784,34 +7775,32 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 82.58444658019634,
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Falrin's Vendetta",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -3.358980323087735,
-              "verified": true
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
             },
             {
               "item_id": 19491,
               "item_name": "Amulet of the Darkmoon",
               "source_kind": "quest",
               "source": "1200 Tickets - Amulet of the Darkmoon",
-              "dps_delta": -3.610441732904738
+              "dps_delta": -0.6674106745373164
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -4.383301149574422
+              "dps_delta": -1.440270091207
             }
           ]
         },
@@ -8133,7 +8122,6 @@
           "item_name": "Cutthroat's Signet",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "sim_dps": 809.5438661172041,
           "verified": true,
           "alternatives": [
             {
@@ -8166,16 +8154,7 @@
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Blackhand's Breadth (id 13965): kept the pick, +14.7 DPS over it",
-          "dps_delta": 14.737639670388944,
           "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -10.753201561954766
-            },
             {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
@@ -8189,40 +8168,48 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
               "dps_delta": -12.70646934292074
+            },
+            {
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "For The Horde!",
+              "dps_delta": -14.737639670388944,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 13965,
-          "item_name": "Blackhand's Breadth",
-          "source": "For The Horde!",
-          "source_kind": "quest",
+          "item_id": 249469,
+          "item_name": "Frozen Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 799.9380484275822,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 11832,
-              "item_name": "Burst of Knowledge",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash",
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "For The Horde!",
               "dps_delta": 0
-            },
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -2.381725704128611
             },
             {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -4.053749491743957
+              "dps_delta": -1.672023787615346
+            },
+            {
+              "item_id": 11815,
+              "item_name": "Hand of Justice",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
+              "dps_delta": -1.9532677809659742
             }
-          ],
-          "faction_note": "Burst of Knowledge (from alliance) and horde's own pick Blackhand's Breadth measure statistically indistinguishable on troll (9.13 ± 1.74 vs 7.16 ± 1.26 DPS gain) -- each faction's own tournament winner kept"
+          ]
         },
         {
           "slot": "main_hand",
@@ -8294,9 +8281,9 @@
           ]
         }
       ],
-      "set_dps": 809.5438661172041,
+      "set_dps": 799.9380484275822,
       "no_source_count": 1664,
-      "unconfirmed_within_error_held": 2,
+      "unconfirmed_within_error_held": 4,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -8316,7 +8303,7 @@
       ],
       "new_at_band": [
         "head: Beastmaster's Cap",
-        "neck: Pendant of Celerity",
+        "neck: Beads of Ogre Might",
         "shoulder: Darkspear Pauldrons",
         "back: Howler's Furs",
         "chest: Dawn Armor",
@@ -8327,12 +8314,12 @@
         "feet: Beastmaster's Treads",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Cutthroat's Signet",
-        "trinket2: Blackhand's Breadth",
+        "trinket2: Frozen Heart of the Mountain",
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.374124851,
-      "verify_run_seconds": 13.911291293,
+      "weights_run_seconds": 3.307669553,
+      "verify_run_seconds": 13.401580822,
       "coverage": {
         "back": {
           "eligible": 456,

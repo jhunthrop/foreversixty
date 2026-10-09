@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T02:25:50Z",
+  "generated_at": "2026-10-09T09:31:07Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -544,8 +544,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 4.26955329,
-      "verify_run_seconds": 5.028552521,
+      "weights_run_seconds": 4.154766681,
+      "verify_run_seconds": 4.800219787,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1170,8 +1170,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 4.26955329,
-      "verify_run_seconds": 4.98836598,
+      "weights_run_seconds": 4.154766681,
+      "verify_run_seconds": 4.786721236,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1818,8 +1818,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.632518545,
-      "verify_run_seconds": 3.04702336,
+      "weights_run_seconds": 4.488259546,
+      "verify_run_seconds": 2.919021025,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2460,8 +2460,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.632518545,
-      "verify_run_seconds": 3.029092929,
+      "weights_run_seconds": 4.488259546,
+      "verify_run_seconds": 2.912855136,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3105,8 +3105,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 5.075836692,
-      "verify_run_seconds": 3.566694596,
+      "weights_run_seconds": 4.940296403,
+      "verify_run_seconds": 3.415758725,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3750,8 +3750,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 5.075836692,
-      "verify_run_seconds": 3.515189897,
+      "weights_run_seconds": 4.940296403,
+      "verify_run_seconds": 3.3769450069999998,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4018,7 +4018,6 @@
           "item_name": "Dark Phantom Cape",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 185.2948125522752,
           "verified": true,
           "alternatives": [
             {
@@ -4046,11 +4045,11 @@
         },
         {
           "slot": "chest",
-          "item_id": 22274,
-          "item_name": "Grizzled Pelt",
-          "source": "A Better Ingredient",
-          "source_kind": "quest",
-          "score": 67.15768658795191,
+          "item_id": 15064,
+          "item_name": "Warbear Harness",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "sim_dps": 184.46142392012612,
           "verified": true,
           "alternatives": [
             {
@@ -4058,22 +4057,21 @@
               "item_name": "Mixologist's Tunic",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Plugger Spazzring",
-              "dps_delta": -0.6739713203107272,
-              "verified": true
+              "dps_delta": 0
             },
             {
-              "item_id": 15064,
-              "item_name": "Warbear Harness",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.7511536383289643
+              "item_id": 22274,
+              "item_name": "Grizzled Pelt",
+              "source_kind": "quest",
+              "source": "A Better Ingredient",
+              "dps_delta": 0
             },
             {
               "item_id": 10583,
               "item_name": "Quillward Harness",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Withered Warrior",
-              "dps_delta": -1.1267304574934476
+              "dps_delta": -0.3755768191644833
             }
           ]
         },
@@ -4369,9 +4367,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 185.2948125522752,
+      "set_dps": 184.46142392012612,
       "no_source_count": 604,
-      "unconfirmed_within_error_held": 2,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4393,7 +4391,7 @@
         "neck: Skibi's Pendant",
         "shoulder: Prowler's Leather Shoulder",
         "back: Dark Phantom Cape",
-        "chest: Grizzled Pelt",
+        "chest: Warbear Harness",
         "wrist: Deepfury Bracers",
         "hands: Raider Gloves",
         "waist: Prowler's Leather Waistguard",
@@ -4405,8 +4403,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 5.196888846,
-      "verify_run_seconds": 4.681696443,
+      "weights_run_seconds": 5.061240631,
+      "verify_run_seconds": 4.486551018,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4578,34 +4576,32 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 9479,
-          "item_name": "Embrace of the Lycan",
-          "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-          "source_kind": "dungeon",
-          "score": 49.60000000000005,
+          "item_id": 10008,
+          "item_name": "White Bandit Mask",
+          "source": "Tailoring",
+          "source_kind": "crafted",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 9479,
+              "item_name": "Embrace of the Lycan",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp",
+              "dps_delta": 0
+            },
             {
               "item_id": 20643,
               "item_name": "Undercity Reservist's Cap",
               "source_kind": "quest",
               "source": "Oran's Gratitude",
-              "dps_delta": -0.5658510585181595
+              "dps_delta": -0.1743130376675667
             },
             {
               "item_id": 220851,
               "item_name": "Blood Guard's Leather Headband",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.7049071065965319
-            },
-            {
-              "item_id": 10008,
-              "item_name": "White Bandit Mask",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -1.041033103239613,
-              "verified": true
+              "dps_delta": -0.313369085745939
             }
           ]
         },
@@ -4670,44 +4666,42 @@
         },
         {
           "slot": "back",
-          "item_id": 11626,
-          "item_name": "Blackveil Cape",
-          "source": "Blackrock Depths: High Interrogator Gerstahn ",
-          "source_kind": "dungeon",
-          "score": 39.23797576445787,
+          "item_id": 13122,
+          "item_name": "Dark Phantom Cape",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13122,
-              "item_name": "Dark Phantom Cape",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.6974144179414736,
-              "verified": true
+              "item_id": 11626,
+              "item_name": "Blackveil Cape",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "dps_delta": 0
             },
             {
               "item_id": 12552,
               "item_name": "Blisterbane Wrap",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Anvilrage Overseer",
-              "dps_delta": -0.8985159321671834
+              "dps_delta": 0
             },
             {
               "item_id": 5257,
               "item_name": "Dark Hooded Cape",
               "source_kind": "world",
               "source": "Nimar the Slayer",
-              "dps_delta": -0.9380752506880067
+              "dps_delta": -0.03955931852082319
             }
           ]
         },
         {
           "slot": "chest",
-          "item_id": 22274,
-          "item_name": "Grizzled Pelt",
-          "source": "A Better Ingredient",
-          "source_kind": "quest",
-          "score": 67.15768658795191,
+          "item_id": 15064,
+          "item_name": "Warbear Harness",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "sim_dps": 187.99007497083934,
           "verified": true,
           "alternatives": [
             {
@@ -4715,22 +4709,21 @@
               "item_name": "Mixologist's Tunic",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Plugger Spazzring",
-              "dps_delta": -0.6621300721769501,
-              "verified": true
+              "dps_delta": 0
             },
             {
-              "item_id": 15064,
-              "item_name": "Warbear Harness",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.7511536383289643
+              "item_id": 22274,
+              "item_name": "Grizzled Pelt",
+              "source_kind": "quest",
+              "source": "A Better Ingredient",
+              "dps_delta": 0
             },
             {
               "item_id": 10583,
               "item_name": "Quillward Harness",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Withered Warrior",
-              "dps_delta": -1.1267304574934476
+              "dps_delta": -0.3755768191644833
             }
           ]
         },
@@ -4958,9 +4951,8 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 190.00092650049532,
           "verified": true,
-          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +4.6 DPS (190.0 vs 185.4 set DPS)",
+          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +4.6 DPS over it",
           "dps_delta": 4.636896641798671
         },
         {
@@ -4969,7 +4961,6 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 190.00092650049532,
           "verified": true,
           "alternatives": [
             {
@@ -4988,7 +4979,6 @@
           "item_name": "Ragehammer",
           "source": "Sunken Temple: Atal'ai Warrior",
           "source_kind": "dungeon",
-          "sim_dps": 190.00092650049532,
           "verified": true,
           "alternatives": [
             {
@@ -5026,8 +5016,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 190.00092650049532,
+      "set_dps": 187.99007497083934,
       "no_source_count": 585,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5046,11 +5037,10 @@
         "5004 Mark of the Kirin Tor"
       ],
       "new_at_band": [
-        "head: Embrace of the Lycan",
         "neck: Skibi's Pendant",
         "shoulder: Prowler's Leather Shoulder",
-        "back: Blackveil Cape",
-        "chest: Grizzled Pelt",
+        "back: Dark Phantom Cape",
+        "chest: Warbear Harness",
         "wrist: Deepfury Bracers",
         "hands: Raider Gloves",
         "waist: Prowler's Leather Waistguard",
@@ -5062,8 +5052,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 5.196888846,
-      "verify_run_seconds": 4.527570828,
+      "weights_run_seconds": 5.061240631,
+      "verify_run_seconds": 4.239494507,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5383,7 +5373,7 @@
               "item_name": "Field Marshal's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.0894535936281198
+              "dps_delta": -2.089453593628121
             },
             {
               "item_id": 16452,
@@ -5807,8 +5797,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 5.009065602,
-      "verify_run_seconds": 13.112694664,
+      "weights_run_seconds": 4.879895308,
+      "verify_run_seconds": 12.549633498,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6128,14 +6118,14 @@
               "item_name": "Warlord's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.089453593628119
+              "dps_delta": -2.0894535936281198
             },
             {
               "item_id": 16549,
               "item_name": "Warlord's Dragonhide Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.114350382722757
+              "dps_delta": -2.1143503827227583
             },
             {
               "item_id": 23089,
@@ -6556,8 +6546,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 5.009065602,
-      "verify_run_seconds": 12.14712556,
+      "weights_run_seconds": 4.879895308,
+      "verify_run_seconds": 11.68319731,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6799,7 +6789,6 @@
           "item_name": "Feralheart Epaulets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 663.7075611751098,
           "verified": true,
           "alternatives": [
             {
@@ -6869,7 +6858,6 @@
           "item_name": "Timbermaw Tunic",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 663.7075611751098,
           "verified": true,
           "alternatives": [
             {
@@ -6884,7 +6872,7 @@
               "item_name": "Field Marshal's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.434972448534458
+              "dps_delta": -3.4349724485344604
             },
             {
               "item_id": 23089,
@@ -6902,9 +6890,8 @@
           "item_name": "Feralheart Bands",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 663.7075611751098,
           "verified": true,
-          "swap_note": "confirmed by the sim against Forest Stalker's Bracers (id 19587): kept the pick, +14.4 DPS (663.7 vs 649.3 set DPS)",
+          "swap_note": "confirmed by the sim against Forest Stalker's Bracers (id 19587): kept the pick, +14.4 DPS over it",
           "dps_delta": 14.407385174246997,
           "alternatives": [
             {
@@ -6956,7 +6943,7 @@
               "item_name": "Knight-Lieutenant's Dragonhide Grips",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
-              "dps_delta": -2.4310984763235997
+              "dps_delta": -2.4310984763235974
             }
           ]
         },
@@ -6974,7 +6961,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -2.36197049943988
+              "dps_delta": -2.3619704994398822
             },
             {
               "item_id": 19044,
@@ -7031,7 +7018,6 @@
           "item_name": "Feralheart Walkers",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 663.7075611751098,
           "verified": true,
           "alternatives": [
             {
@@ -7069,7 +7055,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 663.7075611751098,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7103,7 +7088,6 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 663.7075611751098,
           "verified": true,
           "alternatives": [
             {
@@ -7136,7 +7120,6 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 663.7075611751098,
           "verified": true,
           "alternatives": [
             {
@@ -7147,30 +7130,37 @@
               "dps_delta": 0
             },
             {
-              "item_id": 13968,
-              "item_name": "Eye of the Beast",
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
               "source_kind": "quest",
               "source": "General Drakkisath's Demise",
               "dps_delta": 0
             },
             {
-              "item_id": 18537,
-              "item_name": "Counterattack Lodestone",
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Tribute",
+              "item_id": 13968,
+              "item_name": "Eye of the Beast",
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise",
               "dps_delta": 0
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 13965,
-          "item_name": "Blackhand's Breadth",
-          "source": "General Drakkisath's Demise",
-          "source_kind": "quest",
-          "sim_dps": 663.7075611751098,
+          "item_id": 249469,
+          "item_name": "Frozen Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 658.7156726351542,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise",
+              "dps_delta": 0
+            },
             {
               "item_id": 13968,
               "item_name": "Eye of the Beast",
@@ -7183,14 +7173,7 @@
               "item_name": "Counterattack Lodestone",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -3.2985487211471844
-            },
-            {
-              "item_id": 11815,
-              "item_name": "Hand of Justice",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -3.605232812683826
+              "dps_delta": 0
             }
           ]
         },
@@ -7200,7 +7183,6 @@
           "item_name": "The Unstoppable Force",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 663.7075611751098,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7239,7 +7221,6 @@
           "item_name": "Idol of the Dream",
           "source": "The Temple of Atal'Hakkar: Hazzas",
           "source_kind": "dungeon",
-          "sim_dps": 663.7075611751098,
           "verified": true,
           "alternatives": [
             {
@@ -7253,8 +7234,9 @@
           ]
         }
       ],
-      "set_dps": 663.7075611751098,
+      "set_dps": 658.7156726351542,
       "no_source_count": 1450,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7286,12 +7268,11 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Don Julio's Band",
         "trinket1: Darkmoon Card: Maelstrom",
-        "trinket2: Blackhand's Breadth",
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.908079482,
-      "verify_run_seconds": 12.724511938,
+      "weights_run_seconds": 4.826134833,
+      "verify_run_seconds": 12.219311513,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7618,7 +7599,7 @@
               "item_name": "Warlord's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.4349724485344604
+              "dps_delta": -3.434972448534458
             },
             {
               "item_id": 23089,
@@ -8025,8 +8006,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.908079482,
-      "verify_run_seconds": 11.920732543,
+      "weights_run_seconds": 4.826134833,
+      "verify_run_seconds": 11.369292322,
       "coverage": {
         "back": {
           "eligible": 457,

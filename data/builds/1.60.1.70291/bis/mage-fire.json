@@ -2,7 +2,7 @@
   "spec": "mage-fire",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T02:53:49Z",
+  "generated_at": "2026-10-09T09:55:29Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -556,8 +556,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.208317628,
-      "verify_run_seconds": 1.01533113,
+      "weights_run_seconds": 1.00744234,
+      "verify_run_seconds": 0.797717596,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1195,8 +1195,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.208317628,
-      "verify_run_seconds": 0.997223892,
+      "weights_run_seconds": 1.00744234,
+      "verify_run_seconds": 0.795110213,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1874,8 +1874,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.277618525,
-      "verify_run_seconds": 1.063734122,
+      "weights_run_seconds": 1.137660666,
+      "verify_run_seconds": 0.857736697,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2556,8 +2556,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Unstable Power Core"
       ],
-      "weights_run_seconds": 1.277618525,
-      "verify_run_seconds": 1.06175847,
+      "weights_run_seconds": 1.137660666,
+      "verify_run_seconds": 0.844300198,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3256,8 +3256,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.483187871,
-      "verify_run_seconds": 1.253337405,
+      "weights_run_seconds": 1.282897181,
+      "verify_run_seconds": 1.051351052,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3958,8 +3958,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.483187871,
-      "verify_run_seconds": 1.304875577,
+      "weights_run_seconds": 1.282897181,
+      "verify_run_seconds": 1.109718277,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4652,8 +4652,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.392850984,
-      "verify_run_seconds": 1.6972004250000001,
+      "weights_run_seconds": 1.180495163,
+      "verify_run_seconds": 1.40877951,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5356,8 +5356,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.392850984,
-      "verify_run_seconds": 1.6200655369999999,
+      "weights_run_seconds": 1.180495163,
+      "verify_run_seconds": 1.354834603,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6103,8 +6103,8 @@
         "trinket2: Draconic Infused Emblem",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.485372704,
-      "verify_run_seconds": 5.185934506,
+      "weights_run_seconds": 1.26825262,
+      "verify_run_seconds": 4.163158061,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6413,7 +6413,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 61.137623793295404,
+          "score": 61.13762379329541,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6422,14 +6422,14 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.6429452937222396
+              "dps_delta": -0.6429452937222415
             },
             {
               "item_id": 227106,
               "item_name": "Legionnaire's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -3.875748493837247
+              "dps_delta": -3.8757484938372486
             },
             {
               "item_id": 279266,
@@ -6843,8 +6843,8 @@
         "trinket2: Serenity Field",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.485372704,
-      "verify_run_seconds": 5.103057345,
+      "weights_run_seconds": 1.26825262,
+      "verify_run_seconds": 4.129765247,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7596,8 +7596,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.63812546,
-      "verify_run_seconds": 4.111141652,
+      "weights_run_seconds": 1.538031085,
+      "verify_run_seconds": 3.331172179,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8344,8 +8344,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.63812546,
-      "verify_run_seconds": 3.943647153,
+      "weights_run_seconds": 1.538031085,
+      "verify_run_seconds": 3.225908796,
       "coverage": {
         "back": {
           "eligible": 456,

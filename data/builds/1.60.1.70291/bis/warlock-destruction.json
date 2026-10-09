@@ -2,7 +2,7 @@
   "spec": "warlock-destruction",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T04:11:31Z",
+  "generated_at": "2026-10-09T11:10:16Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -569,8 +569,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.3221253969999998,
-      "verify_run_seconds": 1.189959532,
+      "weights_run_seconds": 2.346042041,
+      "verify_run_seconds": 1.223867526,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1225,8 +1225,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.3221253969999998,
-      "verify_run_seconds": 1.219110198,
+      "weights_run_seconds": 2.346042041,
+      "verify_run_seconds": 1.229803813,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1917,8 +1917,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.332069187,
-      "verify_run_seconds": 1.306048046,
+      "weights_run_seconds": 2.439611294,
+      "verify_run_seconds": 1.342279571,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2614,8 +2614,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.332069187,
-      "verify_run_seconds": 1.32468087,
+      "weights_run_seconds": 2.439611294,
+      "verify_run_seconds": 1.318484497,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3338,8 +3338,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Umbral Wand"
       ],
-      "weights_run_seconds": 2.049688075,
-      "verify_run_seconds": 1.497078672,
+      "weights_run_seconds": 2.08465866,
+      "verify_run_seconds": 1.50161111,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4060,8 +4060,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.049688075,
-      "verify_run_seconds": 1.440566607,
+      "weights_run_seconds": 2.08465866,
+      "verify_run_seconds": 1.439595831,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4306,35 +4306,33 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 11624,
-          "item_name": "Kentic Amice",
-          "source": "Blackrock Depths: High Interrogator Gerstahn ",
+          "item_id": 17732,
+          "item_name": "Rotgrip Mantle",
+          "source": "Maraudon: Rotgrip",
           "source_kind": "dungeon",
+          "sim_dps": 231.90532593113232,
           "verified": true,
-          "swap_note": "beat the scored pick Rotgrip Mantle (id 17732) in the sim: +2.3 DPS over it",
-          "dps_delta": 2.340816628519889,
           "alternatives": [
+            {
+              "item_id": 11624,
+              "item_name": "Kentic Amice",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "dps_delta": -0.22481064343082638
+            },
             {
               "item_id": 254053,
               "item_name": "Netherflame Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.0353905908660872
+              "dps_delta": -1.2602012342969136
             },
             {
               "item_id": 220887,
               "item_name": "Knight-Lieutenant's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.4567815135181161
-            },
-            {
-              "item_id": 17732,
-              "item_name": "Rotgrip Mantle",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Rotgrip",
-              "dps_delta": -2.340816628519889,
-              "verified": true
+              "dps_delta": -1.681592156948943
             }
           ]
         },
@@ -4714,8 +4712,9 @@
           "item_name": "Noxious Shooter",
           "source": "Maraudon: Noxxion",
           "source_kind": "dungeon",
+          "sim_dps": 231.90532593113232,
           "verified": true,
-          "swap_note": "beat the scored pick Pyric Caduceus (id 11748) in the sim: +7.5 DPS over it",
+          "swap_note": "beat the scored pick Pyric Caduceus (id 11748) in the sim: +7.5 DPS (231.9 vs 224.4 set DPS)",
           "dps_delta": 7.473121346182069,
           "alternatives": [
             {
@@ -4743,8 +4742,9 @@
           ]
         }
       ],
-      "set_dps": 233.6676873593902,
+      "set_dps": 231.90532593113232,
       "no_source_count": 436,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4764,7 +4764,7 @@
       ],
       "new_at_band": [
         "head: Spellpower Goggles Xtreme Plus",
-        "shoulder: Kentic Amice",
+        "shoulder: Rotgrip Mantle",
         "back: Spritecaster Cape",
         "chest: Acumen Robes",
         "wrist: Netherflame Cuffs",
@@ -4777,8 +4777,8 @@
         "main_hand: Kindling Stave",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.951121443,
-      "verify_run_seconds": 1.8427212160000002,
+      "weights_run_seconds": 2.026805784,
+      "verify_run_seconds": 1.85233134,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5022,35 +5022,33 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 11624,
-          "item_name": "Kentic Amice",
-          "source": "Blackrock Depths: High Interrogator Gerstahn ",
+          "item_id": 17732,
+          "item_name": "Rotgrip Mantle",
+          "source": "Maraudon: Rotgrip",
           "source_kind": "dungeon",
+          "sim_dps": 229.62265250263943,
           "verified": true,
-          "swap_note": "beat the scored pick Rotgrip Mantle (id 17732) in the sim: +2.5 DPS over it",
-          "dps_delta": 2.525327633079371,
           "alternatives": [
+            {
+              "item_id": 11624,
+              "item_name": "Kentic Amice",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "dps_delta": -0.22481064343082638
+            },
             {
               "item_id": 254053,
               "item_name": "Netherflame Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.0353905908660872
+              "dps_delta": -1.2602012342969136
             },
             {
               "item_id": 220905,
               "item_name": "Blood Guard's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.4567815135181161
-            },
-            {
-              "item_id": 17732,
-              "item_name": "Rotgrip Mantle",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Rotgrip",
-              "dps_delta": -2.525327633079371,
-              "verified": true
+              "dps_delta": -1.6815921569489425
             }
           ]
         },
@@ -5436,8 +5434,9 @@
           "item_name": "Noxious Shooter",
           "source": "Maraudon: Noxxion",
           "source_kind": "dungeon",
+          "sim_dps": 229.62265250263943,
           "verified": true,
-          "swap_note": "beat the scored pick Pyric Caduceus (id 11748) in the sim: +7.6 DPS over it",
+          "swap_note": "beat the scored pick Pyric Caduceus (id 11748) in the sim: +7.6 DPS (229.6 vs 222.0 set DPS)",
           "dps_delta": 7.601273138489773,
           "alternatives": [
             {
@@ -5465,8 +5464,9 @@
           ]
         }
       ],
-      "set_dps": 231.76651497123473,
+      "set_dps": 229.62265250263943,
       "no_source_count": 410,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5486,7 +5486,7 @@
       ],
       "new_at_band": [
         "head: Spellpower Goggles Xtreme Plus",
-        "shoulder: Kentic Amice",
+        "shoulder: Rotgrip Mantle",
         "back: Spritecaster Cape",
         "chest: Acumen Robes",
         "wrist: Netherflame Cuffs",
@@ -5499,8 +5499,8 @@
         "main_hand: Kindling Stave",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.951121443,
-      "verify_run_seconds": 1.784405534,
+      "weights_run_seconds": 2.026805784,
+      "verify_run_seconds": 1.821813593,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5936,7 +5936,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -6.801298590320115
+              "dps_delta": -6.801298590320114
             },
             {
               "item_id": 19094,
@@ -6027,14 +6027,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -6.068025873929319
+              "dps_delta": -6.068025873929321
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -6.367771513084774
+              "dps_delta": -6.367771513084777
             },
             {
               "item_id": 11669,
@@ -6252,8 +6252,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.192041928,
-      "verify_run_seconds": 3.8748200329999998,
+      "weights_run_seconds": 2.184394847,
+      "verify_run_seconds": 3.96052299,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6432,13 +6432,11 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 18727,
-          "item_name": "Crimson Felt Hat",
-          "source": "Stratholme: Magistrate Barthilas",
-          "source_kind": "dungeon",
+          "item_id": 226909,
+          "item_name": "Deathmist Mask",
+          "source": "Saving the Best for Last",
+          "source_kind": "quest",
           "verified": true,
-          "swap_note": "beat the scored pick Deathmist Mask (id 226909) in the sim: +6.2 DPS over it",
-          "dps_delta": 6.226191501414746,
           "alternatives": [
             {
               "item_id": 231590,
@@ -6448,19 +6446,18 @@
               "dps_delta": 0
             },
             {
+              "item_id": 18727,
+              "item_name": "Crimson Felt Hat",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Magistrate Barthilas",
+              "dps_delta": -0.7965924138268003
+            },
+            {
               "item_id": 227090,
               "item_name": "Champion's Dreadweave Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.36873287898969664
-            },
-            {
-              "item_id": 226909,
-              "item_name": "Deathmist Mask",
-              "source_kind": "quest",
-              "source": "Saving the Best for Last",
-              "dps_delta": -6.226191501414746,
-              "verified": true
+              "dps_delta": -1.165325292816497
             }
           ]
         },
@@ -6690,7 +6687,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -6.801298590320115
+              "dps_delta": -6.801298590320114
             },
             {
               "item_id": 19090,
@@ -6779,14 +6776,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -6.068025873929319
+              "dps_delta": -6.068025873929321
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -6.367771513084774
+              "dps_delta": -6.367771513084777
             },
             {
               "item_id": 11669,
@@ -6837,8 +6834,6 @@
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
           "verified": true,
-          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +14.8 DPS over it",
-          "dps_delta": 14.848350660954566,
           "alternatives": [
             {
               "item_id": 18467,
@@ -6855,20 +6850,22 @@
               "dps_delta": -2.583745406826026
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -5.536597300341485
+              "item_id": 22268,
+              "item_name": "Draconic Infused Emblem",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -14.848350660954566,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
+          "item_id": 22678,
+          "item_name": "Talisman of Ascendance",
+          "source": "Epic Armaments of Battle - Friend of the Dawn",
+          "source_kind": "quest",
+          "sim_dps": 432.8319234399032,
           "verified": true,
           "alternatives": [
             {
@@ -6879,15 +6876,15 @@
               "dps_delta": 0
             },
             {
-              "item_id": 22678,
-              "item_name": "Talisman of Ascendance",
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn",
+              "item_id": 272438,
+              "item_name": "Weakness Analyzer",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
               "dps_delta": 0
             },
             {
-              "item_id": 272438,
-              "item_name": "Weakness Analyzer",
+              "item_id": 272439,
+              "item_name": "Serenity Field",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "dps_delta": 0
@@ -6967,8 +6964,9 @@
           ]
         }
       ],
-      "set_dps": 437.75866562206113,
+      "set_dps": 432.8319234399032,
       "no_source_count": 1052,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6987,7 +6985,7 @@
         "5004 Mark of the Kirin Tor"
       ],
       "new_at_band": [
-        "head: Crimson Felt Hat",
+        "head: Deathmist Mask",
         "neck: Chains of the Lich",
         "shoulder: Rugged Mantle of the Timbermaw",
         "back: Arcanoweave Cloak",
@@ -7000,11 +6998,11 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Briarwood Reed",
-        "trinket2: Draconic Infused Emblem",
+        "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.192041928,
-      "verify_run_seconds": 3.782624636,
+      "weights_run_seconds": 2.184394847,
+      "verify_run_seconds": 3.839330556,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7187,7 +7185,6 @@
           "item_name": "Deathmist Mask",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "sim_dps": 843.7106294028622,
           "verified": true,
           "alternatives": [
             {
@@ -7522,18 +7519,18 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 20682,
-              "item_name": "Elemental Focus Band",
-              "source_kind": "world",
-              "source": "Prince Skaldrenox",
-              "dps_delta": -7.3730123097942695
+              "item_id": 22339,
+              "item_name": "Rune Band of Wizardry",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -6.697442715227865
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -9.654117130081323
+              "dps_delta": -9.65411713008132
             },
             {
               "item_id": 11669,
@@ -7547,33 +7544,33 @@
         },
         {
           "slot": "finger2",
-          "item_id": 22339,
-          "item_name": "Rune Band of Wizardry",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
+          "item_id": 20682,
+          "item_name": "Elemental Focus Band",
+          "source": "Prince Skaldrenox",
+          "source_kind": "world",
+          "sim_dps": 835.8506554384512,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 20682,
-              "item_name": "Elemental Focus Band",
-              "source_kind": "world",
-              "source": "Prince Skaldrenox",
-              "dps_delta": -0.6755695945664004
+              "item_id": 22339,
+              "item_name": "Rune Band of Wizardry",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 12543,
+              "item_name": "Songstone of Ironforge",
+              "source_kind": "quest",
+              "source": "The Princess's Surprise",
+              "dps_delta": -2.281104820287053
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.9566744148534534
-            },
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -16.497292056974402,
-              "verified": true
+              "dps_delta": -2.281104820287053
             }
           ]
         },
@@ -7714,9 +7711,9 @@
           ]
         }
       ],
-      "set_dps": 843.7106294028622,
+      "set_dps": 835.8506554384512,
       "no_source_count": 1064,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7745,14 +7742,14 @@
         "waist: Knowledge of the Timbermaw",
         "legs: Sentinel's Silk Leggings",
         "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Rune Band of Wizardry",
+        "finger2: Elemental Focus Band",
         "trinket1: Briarwood Reed",
         "trinket2: Talisman of Ascendance",
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 7.094668995,
-      "verify_run_seconds": 4.268663679,
+      "weights_run_seconds": 7.196410451,
+      "verify_run_seconds": 4.407269988,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7932,13 +7929,19 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 18727,
-          "item_name": "Crimson Felt Hat",
-          "source": "Stratholme: Magistrate Barthilas",
-          "source_kind": "dungeon",
-          "score": 30.745690815989104,
+          "item_id": 226909,
+          "item_name": "Deathmist Mask",
+          "source": "Saving the Best for Last",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 18727,
+              "item_name": "Crimson Felt Hat",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Magistrate Barthilas",
+              "dps_delta": 0
+            },
             {
               "item_id": 231590,
               "item_name": "Warlord's Dreadweave Hood",
@@ -7951,15 +7954,7 @@
               "item_name": "Spellpower Goggles Xtreme Plus",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.9539481912707803
-            },
-            {
-              "item_id": 226909,
-              "item_name": "Deathmist Mask",
-              "source_kind": "quest",
-              "source": "Saving the Best for Last",
-              "dps_delta": -5.414433570892697,
-              "verified": true
+              "dps_delta": -0.8124497573728339
             }
           ]
         },
@@ -8171,7 +8166,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 35.371031893949265,
+          "score": 35.37103189394926,
           "verified": true,
           "alternatives": [
             {
@@ -8179,7 +8174,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -7.3163428355107305
+              "dps_delta": -7.316342835510727
             },
             {
               "item_id": 18405,
@@ -8194,7 +8189,7 @@
               "item_name": "Frostwolf Cloth Belt",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -8.575399412610306
+              "dps_delta": -8.575399412610302
             }
           ]
         },
@@ -8272,11 +8267,11 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 20682,
-              "item_name": "Elemental Focus Band",
-              "source_kind": "world",
-              "source": "Prince Skaldrenox",
-              "dps_delta": -7.373012309794266
+              "item_id": 22339,
+              "item_name": "Rune Band of Wizardry",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -6.697442715227865
             },
             {
               "item_id": 13001,
@@ -8297,33 +8292,33 @@
         },
         {
           "slot": "finger2",
-          "item_id": 22339,
-          "item_name": "Rune Band of Wizardry",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
+          "item_id": 20682,
+          "item_name": "Elemental Focus Band",
+          "source": "Prince Skaldrenox",
+          "source_kind": "world",
+          "sim_dps": 829.4071806113577,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 20682,
-              "item_name": "Elemental Focus Band",
-              "source_kind": "world",
-              "source": "Prince Skaldrenox",
-              "dps_delta": -0.6755695945664004
+              "item_id": 22339,
+              "item_name": "Rune Band of Wizardry",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 12545,
+              "item_name": "Eye of Orgrimmar",
+              "source_kind": "quest",
+              "source": "The Princess Saved?",
+              "dps_delta": -2.281104820287053
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.9566744148534534
-            },
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -16.840416053740455,
-              "verified": true
+              "dps_delta": -2.281104820287053
             }
           ]
         },
@@ -8435,9 +8430,8 @@
           "item_name": "Ritssyn's Wand of Bad Mojo",
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
-          "sim_dps": 842.0046767664662,
           "verified": true,
-          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +39.3 DPS (842.0 vs 802.7 set DPS)",
+          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +39.3 DPS over it",
           "dps_delta": 39.262987871936275,
           "alternatives": [
             {
@@ -8465,8 +8459,9 @@
           ]
         }
       ],
-      "set_dps": 842.0046767664662,
+      "set_dps": 829.4071806113577,
       "no_source_count": 1052,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -8485,7 +8480,7 @@
         "5004 Mark of the Kirin Tor"
       ],
       "new_at_band": [
-        "head: Crimson Felt Hat",
+        "head: Deathmist Mask",
         "neck: Chains of the Lich",
         "shoulder: Rugged Mantle of the Timbermaw",
         "back: Arcanoweave Cloak",
@@ -8495,14 +8490,14 @@
         "waist: Knowledge of the Timbermaw",
         "legs: Sentinel's Silk Leggings",
         "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Rune Band of Wizardry",
+        "finger2: Elemental Focus Band",
         "trinket1: Briarwood Reed",
         "trinket2: Talisman of Ascendance",
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 7.094668995,
-      "verify_run_seconds": 4.06703297,
+      "weights_run_seconds": 7.196410451,
+      "verify_run_seconds": 4.128386363,
       "coverage": {
         "back": {
           "eligible": 456,

@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T02:54:42Z",
+  "generated_at": "2026-10-09T09:56:11Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -554,8 +554,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.085192262,
-      "verify_run_seconds": 0.941419649,
+      "weights_run_seconds": 0.981409706,
+      "verify_run_seconds": 0.729401618,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1200,8 +1200,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.085192262,
-      "verify_run_seconds": 0.929160996,
+      "weights_run_seconds": 0.981409706,
+      "verify_run_seconds": 0.75523811,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1894,8 +1894,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.300551679,
-      "verify_run_seconds": 1.056105481,
+      "weights_run_seconds": 1.077113309,
+      "verify_run_seconds": 0.841331544,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2588,8 +2588,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.300551679,
-      "verify_run_seconds": 1.006134892,
+      "weights_run_seconds": 1.077113309,
+      "verify_run_seconds": 0.831949291,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3309,8 +3309,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.208798075,
-      "verify_run_seconds": 1.138571825,
+      "weights_run_seconds": 1.064784151,
+      "verify_run_seconds": 0.898223121,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4024,8 +4024,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.208798075,
-      "verify_run_seconds": 1.147394835,
+      "weights_run_seconds": 1.064784151,
+      "verify_run_seconds": 0.919600715,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4399,7 +4399,7 @@
           "item_name": "Sorcerer's Gauntlets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 33.7460939838782,
+          "score": 33.746093983878204,
           "verified": true,
           "alternatives": [
             {
@@ -4407,14 +4407,14 @@
               "item_name": "Dreamweave Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.4763017614927976
+              "dps_delta": -2.476301761492799
             },
             {
               "item_id": 220890,
               "item_name": "Sergeant Major's Dreadweave Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -2.5483274528576705
+              "dps_delta": -2.5483274528576723
             },
             {
               "item_id": 272098,
@@ -4727,8 +4727,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.150163863,
-      "verify_run_seconds": 1.604928293,
+      "weights_run_seconds": 0.965729848,
+      "verify_run_seconds": 1.262510414,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5437,8 +5437,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.150163863,
-      "verify_run_seconds": 1.528222923,
+      "weights_run_seconds": 0.965729848,
+      "verify_run_seconds": 1.218824388,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6182,8 +6182,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.223627608,
-      "verify_run_seconds": 4.545794337,
+      "weights_run_seconds": 1.033674193,
+      "verify_run_seconds": 3.480294259,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6934,8 +6934,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.223627608,
-      "verify_run_seconds": 4.451786576,
+      "weights_run_seconds": 1.033674193,
+      "verify_run_seconds": 3.416721534,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7149,7 +7149,6 @@
           "item_name": "Chains of the Lich",
           "source": "Stratholme: Balzaphon",
           "source_kind": "dungeon",
-          "sim_dps": 597.2400542986952,
           "verified": true,
           "alternatives": [
             {
@@ -7387,7 +7386,7 @@
               "item_name": "Marshal's Silk Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.1761573418477673
+              "dps_delta": -2.1761573418477704
             },
             {
               "item_id": 13170,
@@ -7449,16 +7448,15 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 597.2400542986952,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 20682,
-              "item_name": "Elemental Focus Band",
-              "source_kind": "world",
-              "source": "Prince Skaldrenox",
-              "dps_delta": -6.84280486567192
+              "item_id": 22339,
+              "item_name": "Rune Band of Wizardry",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -6.08248152971178
             },
             {
               "item_id": 272407,
@@ -7479,34 +7477,32 @@
         },
         {
           "slot": "finger2",
-          "item_id": 22339,
-          "item_name": "Rune Band of Wizardry",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "sim_dps": 597.2400542986952,
+          "item_id": 20682,
+          "item_name": "Elemental Focus Band",
+          "source": "Prince Skaldrenox",
+          "source_kind": "world",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 20682,
-              "item_name": "Elemental Focus Band",
-              "source_kind": "world",
-              "source": "Prince Skaldrenox",
-              "dps_delta": -0.7603233359601399
+              "item_id": 22339,
+              "item_name": "Rune Band of Wizardry",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
             },
             {
               "item_id": 272407,
               "item_name": "Blessed Band of Light",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -2.564549052718497
+              "dps_delta": -1.8042257167583573
             },
             {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -17.560478469433406,
-              "verified": true
+              "item_id": 13001,
+              "item_name": "Maiden's Circle",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -2.1334253348233476
             }
           ]
         },
@@ -7516,10 +7512,7 @@
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 597.2400542986952,
           "verified": true,
-          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +20.5 DPS (597.2 vs 576.8 set DPS)",
-          "dps_delta": 20.451340751661178,
           "alternatives": [
             {
               "item_id": 11832,
@@ -7536,44 +7529,45 @@
               "dps_delta": 0
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": -20.451340751661178,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 12930,
-          "item_name": "Briarwood Reed",
-          "source": "Blackrock Spire: Jed Runewatcher",
-          "source_kind": "dungeon",
-          "sim_dps": 597.2400542986952,
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 586.4488334885605,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": 0
+            },
             {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -2.991973894838247
-            },
-            {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -5.093634990835994,
-              "verified": true
+              "dps_delta": 0
             },
             {
               "item_id": 11832,
               "item_name": "Burst of Knowledge",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -7.2662223160357415
+              "dps_delta": -0.854849684239499
             }
           ]
         },
@@ -7583,7 +7577,6 @@
           "item_name": "Kindling Stave",
           "source": "Blackrock Depths: Pyromancer Loregrain",
           "source_kind": "dungeon",
-          "sim_dps": 597.2400542986952,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7649,8 +7642,9 @@
           ]
         }
       ],
-      "set_dps": 597.2400542986952,
+      "set_dps": 586.4488334885605,
       "no_source_count": 1073,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7680,14 +7674,14 @@
         "legs: Sentinel's Silk Leggings",
         "feet: Sorcerer's Boots",
         "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Rune Band of Wizardry",
+        "finger2: Elemental Focus Band",
         "trinket1: Talisman of Ascendance",
-        "trinket2: Briarwood Reed",
+        "trinket2: Serenity Field",
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.327465861,
-      "verify_run_seconds": 3.269762899,
+      "weights_run_seconds": 1.081182817,
+      "verify_run_seconds": 2.77940669,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7901,7 +7895,6 @@
           "item_name": "Chains of the Lich",
           "source": "Stratholme: Balzaphon",
           "source_kind": "dungeon",
-          "sim_dps": 597.5119761221451,
           "verified": true,
           "alternatives": [
             {
@@ -8201,16 +8194,15 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 597.5119761221451,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 20682,
-              "item_name": "Elemental Focus Band",
-              "source_kind": "world",
-              "source": "Prince Skaldrenox",
-              "dps_delta": -6.84280486567192
+              "item_id": 22339,
+              "item_name": "Rune Band of Wizardry",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -6.08248152971178
             },
             {
               "item_id": 272407,
@@ -8231,34 +8223,32 @@
         },
         {
           "slot": "finger2",
-          "item_id": 22339,
-          "item_name": "Rune Band of Wizardry",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "sim_dps": 597.5119761221451,
+          "item_id": 20682,
+          "item_name": "Elemental Focus Band",
+          "source": "Prince Skaldrenox",
+          "source_kind": "world",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 20682,
-              "item_name": "Elemental Focus Band",
-              "source_kind": "world",
-              "source": "Prince Skaldrenox",
-              "dps_delta": -0.7603233359601399
+              "item_id": 22339,
+              "item_name": "Rune Band of Wizardry",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
             },
             {
               "item_id": 272407,
               "item_name": "Blessed Band of Light",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -2.564549052718497
+              "dps_delta": -1.8042257167583573
             },
             {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -16.363972180037194,
-              "verified": true
+              "item_id": 13001,
+              "item_name": "Maiden's Circle",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -2.1334253348233476
             }
           ]
         },
@@ -8268,10 +8258,7 @@
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 597.5119761221451,
           "verified": true,
-          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +20.3 DPS (597.5 vs 577.2 set DPS)",
-          "dps_delta": 20.29736016375648,
           "alternatives": [
             {
               "item_id": 11832,
@@ -8288,44 +8275,45 @@
               "dps_delta": 0
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": -20.29736016375648,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 12930,
-          "item_name": "Briarwood Reed",
-          "source": "Blackrock Spire: Jed Runewatcher",
-          "source_kind": "dungeon",
-          "sim_dps": 597.5119761221451,
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 587.4644429748298,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": 0
+            },
             {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -2.991973894838247
-            },
-            {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -5.095320441625972,
-              "verified": true
+              "dps_delta": 0
             },
             {
               "item_id": 11832,
               "item_name": "Burst of Knowledge",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -7.2662223160357415
+              "dps_delta": -0.854849684239499
             }
           ]
         },
@@ -8335,7 +8323,6 @@
           "item_name": "Kindling Stave",
           "source": "Blackrock Depths: Pyromancer Loregrain",
           "source_kind": "dungeon",
-          "sim_dps": 597.5119761221451,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8401,8 +8388,9 @@
           ]
         }
       ],
-      "set_dps": 597.5119761221451,
+      "set_dps": 587.4644429748298,
       "no_source_count": 1061,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -8432,14 +8420,14 @@
         "legs: Sentinel's Silk Leggings",
         "feet: Sorcerer's Boots",
         "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Rune Band of Wizardry",
+        "finger2: Elemental Focus Band",
         "trinket1: Talisman of Ascendance",
-        "trinket2: Briarwood Reed",
+        "trinket2: Serenity Field",
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.327465861,
-      "verify_run_seconds": 2.962685639,
+      "weights_run_seconds": 1.081182817,
+      "verify_run_seconds": 2.717966153,
       "coverage": {
         "back": {
           "eligible": 456,

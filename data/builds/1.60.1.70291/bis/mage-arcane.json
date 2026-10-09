@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T02:52:47Z",
+  "generated_at": "2026-10-09T09:54:37Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.26794516,
-      "verify_run_seconds": 1.025457618,
+      "weights_run_seconds": 0.969485613,
+      "verify_run_seconds": 0.775276578,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1198,8 +1198,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.26794516,
-      "verify_run_seconds": 1.044666158,
+      "weights_run_seconds": 0.969485613,
+      "verify_run_seconds": 0.825167963,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1883,8 +1883,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.547360106,
-      "verify_run_seconds": 1.126826632,
+      "weights_run_seconds": 1.3001269309999999,
+      "verify_run_seconds": 0.932624356,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2575,8 +2575,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.547360106,
-      "verify_run_seconds": 1.170382089,
+      "weights_run_seconds": 1.3001269309999999,
+      "verify_run_seconds": 0.91714409,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3291,8 +3291,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.585567161,
-      "verify_run_seconds": 1.38996311,
+      "weights_run_seconds": 1.36732593,
+      "verify_run_seconds": 1.103288031,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4003,8 +4003,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.585567161,
-      "verify_run_seconds": 1.335210768,
+      "weights_run_seconds": 1.36732593,
+      "verify_run_seconds": 1.1182008350000001,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4708,8 +4708,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.5826029259999999,
-      "verify_run_seconds": 1.858173716,
+      "weights_run_seconds": 1.29783424,
+      "verify_run_seconds": 1.494571364,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5413,8 +5413,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.5826029259999999,
-      "verify_run_seconds": 1.739699999,
+      "weights_run_seconds": 1.29783424,
+      "verify_run_seconds": 1.412760606,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5626,7 +5626,6 @@
           "item_name": "Amulet of the Dawn",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 512.2364572314623,
           "verified": true,
           "alternatives": [
             {
@@ -5863,7 +5862,7 @@
           "source_kind": "vendor",
           "score": 51.977644511092734,
           "verified": true,
-          "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (ilvl 65) (id 22752): kept the pick, +8.6 DPS (512.2 vs 503.6 set DPS)",
+          "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (ilvl 65) (id 22752): kept the pick, +8.6 DPS over it",
           "dps_delta": 8.590822730177365,
           "alternatives": [
             {
@@ -5933,7 +5932,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 512.2364572314623,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5967,7 +5965,6 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 512.2364572314623,
           "verified": true,
           "alternatives": [
             {
@@ -6000,10 +5997,7 @@
           "item_name": "Briarwood Reed",
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
-          "sim_dps": 512.2364572314623,
           "verified": true,
-          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +18.3 DPS (512.2 vs 494.0 set DPS)",
-          "dps_delta": 18.250390143300592,
           "alternatives": [
             {
               "item_id": 272438,
@@ -6013,37 +6007,32 @@
               "dps_delta": -2.3156094845542
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -4.9620203240447145
-            },
-            {
               "item_id": 11832,
               "item_name": "Burst of Knowledge",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
               "dps_delta": -5.623623033917343
+            },
+            {
+              "item_id": 22268,
+              "item_name": "Draconic Infused Emblem",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -18.250390143300592,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
-          "sim_dps": 512.2364572314623,
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 509.0707578008811,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 11832,
-              "item_name": "Burst of Knowledge",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": 0
-            },
             {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
@@ -6052,12 +6041,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -3.165699430581185,
-              "verified": true
+              "item_id": 11832,
+              "item_name": "Burst of Knowledge",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash",
+              "dps_delta": -0.6616027098726286
+            },
+            {
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise",
+              "dps_delta": -0.814146200304439
             }
           ]
         },
@@ -6067,7 +6062,6 @@
           "item_name": "Spellshifter Rod",
           "source": "Tiara of the Deep",
           "source_kind": "quest",
-          "sim_dps": 512.2364572314623,
           "verified": true,
           "alternatives": [
             {
@@ -6132,8 +6126,9 @@
           ]
         }
       ],
-      "set_dps": 512.2364572314623,
+      "set_dps": 509.0707578008811,
       "no_source_count": 1073,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6165,11 +6160,11 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Briarwood Reed",
-        "trinket2: Draconic Infused Emblem",
+        "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.5972179290000001,
-      "verify_run_seconds": 3.634510582,
+      "weights_run_seconds": 1.379449958,
+      "verify_run_seconds": 3.010271087,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6383,7 +6378,6 @@
           "item_name": "Amulet of the Dawn",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 496.01478464047875,
           "verified": true,
           "alternatives": [
             {
@@ -6689,7 +6683,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 496.01478464047875,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6723,7 +6716,6 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 496.01478464047875,
           "verified": true,
           "alternatives": [
             {
@@ -6756,10 +6748,7 @@
           "item_name": "Briarwood Reed",
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
-          "sim_dps": 496.01478464047875,
           "verified": true,
-          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +17.8 DPS (496.0 vs 478.2 set DPS)",
-          "dps_delta": 17.826877518655976,
           "alternatives": [
             {
               "item_id": 272438,
@@ -6769,37 +6758,32 @@
               "dps_delta": -2.3156094845542
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -4.9620203240447145
-            },
-            {
               "item_id": 11832,
               "item_name": "Burst of Knowledge",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
               "dps_delta": -5.623623033917343
+            },
+            {
+              "item_id": 22268,
+              "item_name": "Draconic Infused Emblem",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -17.826877518655976,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
-          "sim_dps": 496.01478464047875,
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 493.0112475539499,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 11832,
-              "item_name": "Burst of Knowledge",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": 0
-            },
             {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
@@ -6808,12 +6792,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -3.0035370865288655,
-              "verified": true
+              "item_id": 11832,
+              "item_name": "Burst of Knowledge",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash",
+              "dps_delta": -0.6616027098726286
+            },
+            {
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "For The Horde!",
+              "dps_delta": -0.814146200304439
             }
           ]
         },
@@ -6823,7 +6813,6 @@
           "item_name": "Spellshifter Rod",
           "source": "Tiara of the Deep",
           "source_kind": "quest",
-          "sim_dps": 496.01478464047875,
           "verified": true,
           "alternatives": [
             {
@@ -6888,8 +6877,9 @@
           ]
         }
       ],
-      "set_dps": 496.01478464047875,
+      "set_dps": 493.0112475539499,
       "no_source_count": 1061,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6921,11 +6911,11 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Briarwood Reed",
-        "trinket2: Draconic Infused Emblem",
+        "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.5972179290000001,
-      "verify_run_seconds": 3.615492414,
+      "weights_run_seconds": 1.379449958,
+      "verify_run_seconds": 2.960844971,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7103,13 +7093,19 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 18727,
-          "item_name": "Crimson Felt Hat",
-          "source": "Stratholme: Magistrate Barthilas",
-          "source_kind": "dungeon",
-          "score": 31.136462503291398,
+          "item_id": 226935,
+          "item_name": "Sorcerer's Crown",
+          "source": "Saving the Best for Last",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 18727,
+              "item_name": "Crimson Felt Hat",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Magistrate Barthilas",
+              "dps_delta": 0
+            },
             {
               "item_id": 231604,
               "item_name": "Field Marshal's Coronet",
@@ -7122,15 +7118,7 @@
               "item_name": "Lieutenant Commander's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.5139804760988704
-            },
-            {
-              "item_id": 226935,
-              "item_name": "Sorcerer's Crown",
-              "source_kind": "quest",
-              "source": "Saving the Best for Last",
-              "dps_delta": -3.4192480077733762,
-              "verified": true
+              "dps_delta": -0.5104520492143922
             }
           ]
         },
@@ -7140,7 +7128,6 @@
           "item_name": "Chains of the Lich",
           "source": "Stratholme: Balzaphon",
           "source_kind": "dungeon",
-          "sim_dps": 758.1595029903594,
           "verified": true,
           "alternatives": [
             {
@@ -7436,7 +7423,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 758.1595029903594,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7470,7 +7456,6 @@
           "item_name": "Rune Band of Wizardry",
           "source": "Blackrock Spire: Lord Valthalak",
           "source_kind": "dungeon",
-          "sim_dps": 758.1595029903594,
           "verified": true,
           "alternatives": [
             {
@@ -7503,10 +7488,7 @@
           "item_name": "Briarwood Reed",
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
-          "sim_dps": 758.1595029903594,
           "verified": true,
-          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +21.6 DPS (758.2 vs 736.5 set DPS)",
-          "dps_delta": 21.61932663009236,
           "alternatives": [
             {
               "item_id": 272438,
@@ -7516,37 +7498,32 @@
               "dps_delta": -3.5932698015889413
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -7.699863860547731
-            },
-            {
               "item_id": 13965,
               "item_name": "Blackhand's Breadth",
               "source_kind": "quest",
               "source": "General Drakkisath's Demise",
               "dps_delta": -8.13296220959292
+            },
+            {
+              "item_id": 22268,
+              "item_name": "Draconic Infused Emblem",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -21.61932663009236,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
-          "sim_dps": 758.1595029903594,
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 750.5621674588531,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 13965,
-              "item_name": "Blackhand's Breadth",
-              "source_kind": "quest",
-              "source": "General Drakkisath's Demise",
-              "dps_delta": 0
-            },
             {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
@@ -7555,12 +7532,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -4.157338843880325,
-              "verified": true
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise",
+              "dps_delta": -0.43309834904518774
+            },
+            {
+              "item_id": 13968,
+              "item_name": "Eye of the Beast",
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise",
+              "dps_delta": -0.43309834904518774
             }
           ]
         },
@@ -7570,7 +7553,6 @@
           "item_name": "Spire of Hakkar",
           "source": "Avatar of Hakkar",
           "source_kind": "world",
-          "sim_dps": 758.1595029903594,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7636,8 +7618,9 @@
           ]
         }
       ],
-      "set_dps": 758.1595029903594,
+      "set_dps": 750.5621674588531,
       "no_source_count": 1073,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7656,7 +7639,7 @@
         "4990 Scorched Bands"
       ],
       "new_at_band": [
-        "head: Crimson Felt Hat",
+        "head: Sorcerer's Crown",
         "neck: Chains of the Lich",
         "shoulder: Rugged Mantle of the Timbermaw",
         "back: Arcanoweave Cloak",
@@ -7668,12 +7651,12 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Rune Band of Wizardry",
         "trinket1: Briarwood Reed",
-        "trinket2: Draconic Infused Emblem",
+        "trinket2: Serenity Field",
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.977737453,
-      "verify_run_seconds": 4.303040751,
+      "weights_run_seconds": 1.597206319,
+      "verify_run_seconds": 3.453840314,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7853,7 +7836,6 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "sim_dps": 737.0348082256029,
           "verified": true,
           "alternatives": [
             {
@@ -8246,8 +8228,6 @@
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
           "verified": true,
-          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +21.3 DPS over it",
-          "dps_delta": 21.279876422054144,
           "alternatives": [
             {
               "item_id": 272438,
@@ -8257,36 +8237,32 @@
               "dps_delta": -3.5932698015889413
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -7.699863860547731
-            },
-            {
               "item_id": 13965,
               "item_name": "Blackhand's Breadth",
               "source_kind": "quest",
               "source": "For The Horde!",
               "dps_delta": -8.13296220959292
+            },
+            {
+              "item_id": 22268,
+              "item_name": "Draconic Infused Emblem",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -21.279876422054144,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 733.2076164948977,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 13965,
-              "item_name": "Blackhand's Breadth",
-              "source_kind": "quest",
-              "source": "For The Horde!",
-              "dps_delta": 0
-            },
             {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
@@ -8295,12 +8271,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -3.7853397164161606,
-              "verified": true
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "For The Horde!",
+              "dps_delta": -0.43309834904518774
+            },
+            {
+              "item_id": 13968,
+              "item_name": "Eye of the Beast",
+              "source_kind": "quest",
+              "source": "For The Horde!",
+              "dps_delta": -0.43309834904518774
             }
           ]
         },
@@ -8375,9 +8357,9 @@
           ]
         }
       ],
-      "set_dps": 737.0348082256029,
+      "set_dps": 733.2076164948977,
       "no_source_count": 1061,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -8408,12 +8390,12 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Rune Band of Wizardry",
         "trinket1: Briarwood Reed",
-        "trinket2: Draconic Infused Emblem",
+        "trinket2: Serenity Field",
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.977737453,
-      "verify_run_seconds": 4.211206376,
+      "weights_run_seconds": 1.597206319,
+      "verify_run_seconds": 3.35882317,
       "coverage": {
         "back": {
           "eligible": 456,
