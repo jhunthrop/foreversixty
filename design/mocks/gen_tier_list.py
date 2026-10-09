@@ -23,8 +23,11 @@ CLASS_NAME = {c['slug']: c['name'] for c in json.load(open(ROOT / 'data/builds' 
 ALLIANCE = '#6fb1ff'; HORDE = '#ff6b5c'
 YOU = {'class': 'warrior', 'faction': 'alliance', 'battletag': 'Obnoxious Yell', 'spec': 'warrior-fury'}
 
-# Round 2 (player review): no letters. DPS and healer sort on the sim number; tanks on damage taken.
-RULERS = (10, 20, 30)        # DPS only: measurement lines, not grades
+# Round 2 (player review) dropped the letters; round 3 (owner, 2026-10-09) restores them on the DPS list only.
+# Tiers: (letter, percent behind the top where it starts, inclusive, quality colour). DPS and healer sort
+# on the sim number; tanks on damage taken; tanks and healers carry no letters.
+TIERS = (('S', 0, '#ff8000'), ('A', 5, '#b866f5'), ('B', 10, '#3d94f0'), ('C', 20, '#1eff00'), ('D', 30, '#9d9d9d'))
+CHIP_W = 132
 TIE_PCT = 1.0                # the site's own 1% adoption margin: within it, specs tie
 BEST = '#7fd48a'             # the lit "best of this column" colour (mocklib GREEN)
 ROLE_LABEL = {'dps': 'DPS', 'tank': 'Tank', 'healer': 'Healer'}
@@ -99,8 +102,17 @@ STYLE = f'''<style>
 .track{{height:10px;border-radius:3px;background:{SOFT};overflow:hidden}}
 .lnk{{display:inline-flex;align-items:center;height:44px;padding:0 6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:{BODY};border-radius:4px}}
 .nm:hover{{text-decoration:underline;text-underline-offset:4px}}.nm:focus-visible{{outline:2px solid {GOLD};outline-offset:2px;border-radius:3px}}
-.ruler{{display:flex;align-items:center;gap:10px;height:28px;padding:0 16px;background:#0a0d15;border-bottom:1px solid {SOFT};border-top:1px solid {SOFT}}}
-.ruler i{{flex:1;height:1px;background:{BORDER}}}
+.tgroup{{display:grid;grid-template-columns:{CHIP_W}px minmax(0,1fr);border-top:1px solid {BORDER}}}
+.tgroup:first-child{{border-top:0}}
+.tchip{{display:grid;grid-template-columns:auto 1fr;align-content:start;align-items:baseline;column-gap:8px;row-gap:2px;padding:14px 12px 14px 16px;background:#0a0d15;border-left:3px solid var(--t);border-right:1px solid {SOFT}}}
+.tchip .tl{{font-family:Cinzel,serif;font-size:30px;font-weight:700;line-height:1;color:var(--t)}}
+.tchip .tn{{justify-self:end;font-size:11px;color:{MUTED}}}
+.tchip .tb{{grid-column:1/3;font-size:12px;line-height:1.3;color:{BODY}}}
+.tgroup.ph{{grid-template-columns:minmax(0,1fr)}}
+.tgroup.ph .tchip{{grid-template-columns:auto auto 1fr;align-items:center;column-gap:12px;padding:8px 14px 8px 12px;border-right:0;border-bottom:1px solid {SOFT}}}
+.tgroup.ph .tchip .tl{{font-size:22px}}
+.tgroup.ph .tchip .tb{{grid-column:auto;order:1}}
+.tgroup.ph .tchip .tn{{order:2}}
 .lnk.p{{color:{GOLD}}}
 .lnk:hover,.lnk.is-hover{{color:{TEXT};text-decoration:underline;text-underline-offset:4px}}
 .lnk.p:hover{{color:#f5d27f}}
@@ -225,7 +237,9 @@ def notes(role: str, faction: str, preset: str) -> list[str]:
     fresh = f'This is full {preset} gear. At a fresh 60 the order differs: <a href="#bis">see the leveling bands</a>.'
     race = f'Each spec is simmed as its best {faction.capitalize()} race, named under it.'
     if role == 'dps':
-        return ['Damage per second on one target for 180 seconds, with raid buffs and consumables. Cleave, adds, movement and what a spec brings the raid are not counted.',
+        return ['Damage per second on one target for 180 seconds, with raid buffs and consumables. Cleave, adds, movement and what a spec brings the raid are not counted. '
+                + ', '.join(f'{L} is within {TIERS[i + 1][1]}% of the top' if i == 0 else f'{L} within {TIERS[i + 1][1]}%' for i, (L, _, _) in enumerate(TIERS[:-1]))
+                + f', {TIERS[-1][0]} beyond; a &asymp; tie across a line is a tie.',
                 fresh, f'{race} <b>&asymp; tie</b> marks a spec within {TIE_PCT:.0f}% of the one above.']
     if role == 'healer':
         return ['Effective healing per second over 300 seconds against a stand-in Phase 1 fight: tank hits and raid-wide pulses, not a named boss. Overhealing is not counted. Mana and raid utility are not ranked here.',
@@ -245,17 +259,28 @@ def honesty(role: str, stamp: str, preset: str, phone: bool) -> str:
             f'<span style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:12px;color:{MUTED}">Updated {stamp}<a href="#sim/specs" style="font-size:12px;font-weight:700">How we check the sim &rarr;</a></span></div>')
 
 
-def ruler(pct: int) -> str:
-    return f'<div class="ruler"><span class="label" style="font-size:10px">{pct}% or more behind the top</span><i></i></div>'
+def tier_of(gap: float) -> int:
+    gap = round(gap, 6)   # past float noise: exactly 10% behind is B
+    return max(i for i, (_, start, _) in enumerate(TIERS) if gap >= start)
 
 
-def with_rulers(pool: list[dict], render) -> str:
-    out, shown = [], set()
-    for r in pool:
-        for pct in RULERS:
-            if pct not in shown and r['gap'] >= pct:
-                shown.add(pct); out.append(ruler(pct))
-        out.append(render(r))
+def tier_band(i: int) -> str:
+    start = TIERS[i][1]
+    if i == 0:
+        return f'Within {TIERS[1][1]}% of the top'
+    return f'{start}% or more behind' if i == len(TIERS) - 1 else f'{start} to {TIERS[i + 1][1]}% behind'
+
+
+def tier_groups(pool: list[dict], render, phone: bool) -> str:
+    out = []
+    for i, (letter, _, color) in enumerate(TIERS):
+        members = [r for r in pool if tier_of(r['gap']) == i]
+        if not members:
+            continue
+        n = len(members)
+        chip = (f'<div class="tchip"><span class="tl">{letter}</span><span class="tn mono">{n} spec{"s" if n != 1 else ""}</span>'
+                f'<span class="tb">{tier_band(i)}</span></div>')
+        out.append(f'<div class="tgroup{" ph" if phone else ""}" style="--t:{color}">{chip}<div>{"".join(render(r) for r in members)}</div></div>')
     return ''.join(out)
 
 
@@ -268,8 +293,9 @@ def best_of(pool: list[dict], role: str) -> dict | None:
 def desktop_list(role: str, pool: list[dict]) -> str:
     best = best_of(pool, role)
     render = lambda r: desk_row(r, role, r['spec'] == YOU['spec'], best)
-    rows = with_rulers(pool, render) if role == 'dps' else ''.join(render(r) for r in pool)
-    return f'<div>{col_header(role)}<div class="panel" style="overflow:hidden">{rows}</div></div>'
+    rows = tier_groups(pool, render, False) if role == 'dps' else ''.join(render(r) for r in pool)
+    indent = f'<div style="padding-left:{CHIP_W}px">{col_header(role)}</div>' if role == 'dps' else col_header(role)
+    return f'<div>{indent}<div class="panel" style="overflow:hidden">{rows}</div></div>'
 
 
 def phone_row(r: dict, role: str, you: bool, best: dict | None) -> str:
@@ -294,7 +320,7 @@ def phone_row(r: dict, role: str, you: bool, best: dict | None) -> str:
 def phone_list(role: str, pool: list[dict]) -> str:
     best = best_of(pool, role)
     render = lambda r: phone_row(r, role, r['spec'] == YOU['spec'], best)
-    rows = with_rulers(pool, render) if role == 'dps' else ''.join(render(r) for r in pool)
+    rows = tier_groups(pool, render, True) if role == 'dps' else ''.join(render(r) for r in pool)
     return f'<div class="panel" style="overflow:hidden">{rows}</div>'
 
 
