@@ -1,8 +1,8 @@
 {
   "spec": "paladin-protection",
   "build": "1.60.1.70291",
-  "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T14:14:43Z",
+  "engine_version": "0ea8d8e99",
+  "generated_at": "2026-10-09T18:48:15Z",
   "bands": [
     {
       "spec": "paladin-protection",
@@ -424,7 +424,7 @@
           "item_name": "Guard's Chain Leggings",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 15.901155902828375,
+          "score": 15.901155902828371,
           "verified": true,
           "alternatives": [
             {
@@ -432,21 +432,21 @@
               "item_name": "Protector's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -11.642806281833664
+              "dps_delta": -11.642806281833565
             },
             {
               "item_id": 250493,
               "item_name": "Veteran's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -71.30288889279413
+              "dps_delta": -71.30288889279403
             },
             {
               "item_id": 279868,
               "item_name": "Duty Bound Leggings",
               "source_kind": "quest",
               "source": "Bloodied Insignia",
-              "dps_delta": -100.72258313848023
+              "dps_delta": -100.72258313848013
             }
           ]
         },
@@ -679,8 +679,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Gold-plated Buckler"
       ],
-      "weights_run_seconds": 6.063144897,
-      "verify_run_seconds": 2.459396499,
+      "weights_run_seconds": 4.102523993,
+      "verify_run_seconds": 1.680241769,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1186,7 +1186,7 @@
           "item_name": "Guard's Chain Leggings",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 15.901155902828371,
+          "score": 15.901155902828375,
           "verified": true,
           "alternatives": [
             {
@@ -1194,21 +1194,21 @@
               "item_name": "Protector's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -11.642806281833565
+              "dps_delta": -11.642806281833664
             },
             {
               "item_id": 250493,
               "item_name": "Veteran's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -71.30288889279403
+              "dps_delta": -71.30288889279413
             },
             {
               "item_id": 250497,
               "item_name": "Crusader's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -108.57934392179745
+              "dps_delta": -108.57934392179754
             }
           ]
         },
@@ -1268,7 +1268,7 @@
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -67.70138295455976
+              "dps_delta": -67.70138295455978
             },
             {
               "item_id": 12052,
@@ -1300,7 +1300,7 @@
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -52.764060625185564
+              "dps_delta": -52.76406062518558
             },
             {
               "item_id": 12052,
@@ -1441,8 +1441,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Gold-plated Buckler"
       ],
-      "weights_run_seconds": 6.063144897,
-      "verify_run_seconds": 2.475829494,
+      "weights_run_seconds": 4.102523993,
+      "verify_run_seconds": 1.721213952,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2239,8 +2239,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 6.200700251,
-      "verify_run_seconds": 2.6752965,
+      "weights_run_seconds": 4.060714381,
+      "verify_run_seconds": 1.818695866,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3028,8 +3028,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 6.200700251,
-      "verify_run_seconds": 2.571824678,
+      "weights_run_seconds": 4.060714381,
+      "verify_run_seconds": 1.77979709,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3537,7 +3537,7 @@
           "item_name": "Legguards of the Vault",
           "source": "Uldaman: Shadowforge Relic Hunter",
           "source_kind": "dungeon",
-          "score": 18.90192527907023,
+          "score": 18.901925279070234,
           "verified": true,
           "alternatives": [
             {
@@ -3545,21 +3545,21 @@
               "item_name": "Guard's Silvered Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -51.41631959700976
+              "dps_delta": -51.41631959700988
             },
             {
               "item_id": 7921,
               "item_name": "Heavy Mithril Pants",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -52.99087996968383
+              "dps_delta": -52.99087996968395
             },
             {
               "item_id": 250525,
               "item_name": "Protector's Silvered Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -63.0817395785627
+              "dps_delta": -63.08173957856281
             }
           ]
         },
@@ -3832,8 +3832,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 6.900963594,
-      "verify_run_seconds": 3.822167311,
+      "weights_run_seconds": 4.753820413,
+      "verify_run_seconds": 2.549133402,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4340,7 +4340,7 @@
           "item_name": "Legguards of the Vault",
           "source": "Uldaman: Shadowforge Relic Hunter",
           "source_kind": "dungeon",
-          "score": 18.90192527907023,
+          "score": 18.901925279070234,
           "verified": true,
           "alternatives": [
             {
@@ -4348,21 +4348,21 @@
               "item_name": "Guard's Silvered Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -51.41631959700976
+              "dps_delta": -51.41631959700988
             },
             {
               "item_id": 7921,
               "item_name": "Heavy Mithril Pants",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -52.99087996968383
+              "dps_delta": -52.99087996968395
             },
             {
               "item_id": 250525,
               "item_name": "Protector's Silvered Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -63.0817395785627
+              "dps_delta": -63.08173957856281
             }
           ]
         },
@@ -4380,7 +4380,7 @@
               "item_name": "Sentinel's Boots",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -14.300990808039707
+              "dps_delta": -14.300990808039822
             },
             {
               "item_id": 250548,
@@ -4635,8 +4635,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 6.900963594,
-      "verify_run_seconds": 3.653499831,
+      "weights_run_seconds": 4.753820413,
+      "verify_run_seconds": 2.544312765,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -5117,7 +5117,7 @@
           "item_name": "Sentinel's Waistguard",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 25.491149676634812,
+          "score": 25.49114967663481,
           "verified": true,
           "alternatives": [
             {
@@ -5125,21 +5125,21 @@
               "item_name": "Warder's Waistguard",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -25.961377885421275
+              "dps_delta": -25.961377885421143
             },
             {
               "item_id": 11703,
               "item_name": "Stonewall Girdle",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Grizzle",
-              "dps_delta": -64.58509628839727
+              "dps_delta": -64.58509628839714
             },
             {
               "item_id": 250571,
               "item_name": "Officer's Waistguard",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -77.91779057993477
+              "dps_delta": -77.91779057993463
             }
           ]
         },
@@ -5452,8 +5452,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Aegis of Stormwind"
       ],
-      "weights_run_seconds": 7.627696434,
-      "verify_run_seconds": 7.228764949,
+      "weights_run_seconds": 5.154309262,
+      "verify_run_seconds": 4.789912536,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5938,7 +5938,7 @@
           "item_name": "Sentinel's Waistguard",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 25.491149676634812,
+          "score": 25.49114967663481,
           "verified": true,
           "alternatives": [
             {
@@ -5946,21 +5946,21 @@
               "item_name": "Warder's Waistguard",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -25.961377885421275
+              "dps_delta": -25.961377885421143
             },
             {
               "item_id": 11703,
               "item_name": "Stonewall Girdle",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Grizzle",
-              "dps_delta": -64.58509628839727
+              "dps_delta": -64.58509628839714
             },
             {
               "item_id": 250571,
               "item_name": "Officer's Waistguard",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -77.91779057993477
+              "dps_delta": -77.91779057993463
             }
           ]
         },
@@ -6283,8 +6283,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 7.627696434,
-      "verify_run_seconds": 6.850698971,
+      "weights_run_seconds": 5.154309262,
+      "verify_run_seconds": 4.449790025,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6655,14 +6655,14 @@
               "item_name": "Windshear Cape",
               "source_kind": "world",
               "source": "High Marshal Whirlaxis",
-              "dps_delta": -667.848000353282
+              "dps_delta": -667.8480003532824
             },
             {
               "item_id": 13397,
               "item_name": "Stoneskin Gargoyle Cape",
               "source_kind": "dungeon",
               "source": "Stratholme: Stonespine",
-              "dps_delta": -998.3828095994651
+              "dps_delta": -998.3828095994647
             }
           ]
         },
@@ -6758,7 +6758,7 @@
               "item_name": "Soulforge Handguards",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -517.4630620726017
+              "dps_delta": -517.4630620726024
             },
             {
               "item_id": 18326,
@@ -6897,7 +6897,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -1149.4260112518239
+              "dps_delta": -1149.4260112518236
             }
           ]
         },
@@ -6922,7 +6922,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -166.49807926502993
+              "dps_delta": -166.4980792650296
             },
             {
               "item_id": 11669,
@@ -7117,8 +7117,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.596147281,
-      "verify_run_seconds": 15.821664973,
+      "weights_run_seconds": 4.937375497,
+      "verify_run_seconds": 10.574933502,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7495,7 +7495,7 @@
               "item_name": "Stoneskin Gargoyle Cape",
               "source_kind": "dungeon",
               "source": "Stratholme: Stonespine",
-              "dps_delta": -998.3828095994651
+              "dps_delta": -998.3828095994647
             }
           ]
         },
@@ -7520,7 +7520,7 @@
               "item_name": "Breastplate of the Chromatic Flight",
               "source_kind": "quest",
               "source": "Breastplate of the Chromatic Flight",
-              "dps_delta": -342.679582756191
+              "dps_delta": -342.6795827561897
             },
             {
               "item_id": 23087,
@@ -7591,7 +7591,7 @@
               "item_name": "Soulforge Handguards",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -517.4630620726017
+              "dps_delta": -517.4630620726024
             },
             {
               "item_id": 18326,
@@ -7730,7 +7730,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -1149.4260112518239
+              "dps_delta": -1149.4260112518236
             }
           ]
         },
@@ -7755,7 +7755,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -166.49807926502993
+              "dps_delta": -166.4980792650296
             },
             {
               "item_id": 11669,
@@ -7950,8 +7950,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.596147281,
-      "verify_run_seconds": 15.046564146,
+      "weights_run_seconds": 4.937375497,
+      "verify_run_seconds": 10.099230051,
       "coverage": {
         "back": {
           "eligible": 455,
@@ -8470,14 +8470,14 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -107.02841582552827
+              "dps_delta": -107.0284158255245
             },
             {
               "item_id": 22328,
               "item_name": "Legplates of Vigilance",
               "source_kind": "dungeon",
               "source": "Stratholme: Sothos and Jarien's Heirlooms",
-              "dps_delta": -1009.6036815156777
+              "dps_delta": -1009.6036815156758
             },
             {
               "item_id": 14554,
@@ -8678,7 +8678,7 @@
               "item_name": "Greenhammer",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1020.5754702325597
+              "dps_delta": -1020.5754702325587
             }
           ]
         },
@@ -8766,8 +8766,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.339605837,
-      "verify_run_seconds": 13.452401213,
+      "weights_run_seconds": 4.721896407,
+      "verify_run_seconds": 8.951753461,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -9104,7 +9104,7 @@
               "item_name": "Soulforge Pauldrons",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -708.4526616605856
+              "dps_delta": -708.4526616605874
             }
           ]
         },
@@ -9122,7 +9122,7 @@
               "item_name": "Windshear Cape",
               "source_kind": "world",
               "source": "High Marshal Whirlaxis",
-              "dps_delta": -1950.674992172497
+              "dps_delta": -1950.674992172498
             },
             {
               "item_id": 18495,
@@ -9281,7 +9281,7 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -107.02841582552827
+              "dps_delta": -107.0284158255264
             },
             {
               "item_id": 14554,
@@ -9296,7 +9296,7 @@
               "item_name": "Legplates of Vigilance",
               "source_kind": "dungeon",
               "source": "Stratholme: Sothos and Jarien's Heirlooms",
-              "dps_delta": -1009.6036815156777
+              "dps_delta": -1009.6036815156758
             }
           ]
         },
@@ -9575,8 +9575,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 7.339605837,
-      "verify_run_seconds": 12.631264179,
+      "weights_run_seconds": 4.721896407,
+      "verify_run_seconds": 8.505479011,
       "coverage": {
         "back": {
           "eligible": 455,

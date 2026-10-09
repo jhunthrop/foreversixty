@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70291",
-  "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T15:13:31Z",
+  "engine_version": "0ea8d8e99",
+  "generated_at": "2026-10-09T19:25:51Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -599,8 +599,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.7898191749999999,
-      "verify_run_seconds": 3.131702012,
+      "weights_run_seconds": 1.308219348,
+      "verify_run_seconds": 2.435312614,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1274,8 +1274,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.7898191749999999,
-      "verify_run_seconds": 3.101638675,
+      "weights_run_seconds": 1.308219348,
+      "verify_run_seconds": 2.241049091,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1941,8 +1941,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.096005308,
-      "verify_run_seconds": 2.035669851,
+      "weights_run_seconds": 1.421691351,
+      "verify_run_seconds": 1.4804625599999999,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2608,8 +2608,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.096005308,
-      "verify_run_seconds": 2.000937635,
+      "weights_run_seconds": 1.421691351,
+      "verify_run_seconds": 1.446439858,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3283,8 +3283,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.323455619,
-      "verify_run_seconds": 2.622588565,
+      "weights_run_seconds": 1.5926747940000001,
+      "verify_run_seconds": 1.9209333069999999,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3956,8 +3956,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.323455619,
-      "verify_run_seconds": 2.516008195,
+      "weights_run_seconds": 1.5926747940000001,
+      "verify_run_seconds": 2.018481985,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4368,7 +4368,7 @@
           "item_name": "Knight's Plate Leggings",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 61.86943287819979,
+          "score": 61.8694328781998,
           "verified": true,
           "alternatives": [
             {
@@ -4376,21 +4376,21 @@
               "item_name": "Gryphon Rider's Leggings",
               "source_kind": "quest",
               "source": "Saving Sharpbeak",
-              "dps_delta": -0.817042161396504
+              "dps_delta": -0.8170421613965052
             },
             {
               "item_id": 10740,
               "item_name": "Centurion Legplates",
               "source_kind": "quest",
               "source": "Rise, Obsidion!",
-              "dps_delta": -0.817042161396504
+              "dps_delta": -0.8170421613965052
             },
             {
               "item_id": 8262,
               "item_name": "Serpentskin Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.0251850077503974
+              "dps_delta": -1.0251850077503986
             }
           ]
         },
@@ -4625,8 +4625,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.397408377,
-      "verify_run_seconds": 3.433548809,
+      "weights_run_seconds": 1.856212709,
+      "verify_run_seconds": 2.584915743,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4792,7 +4792,7 @@
           "item_name": "Fury Visor",
           "source": "Voodoo Feathers",
           "source_kind": "quest",
-          "score": 83.10473066560463,
+          "score": 83.10473066560465,
           "verified": true,
           "alternatives": [
             {
@@ -4800,14 +4800,14 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.8194291014223859
+              "dps_delta": -0.8194291014223871
             },
             {
               "item_id": 7937,
               "item_name": "Ornate Mithril Helm",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -3.2641416811565565
+              "dps_delta": -3.264141681156558
             },
             {
               "item_id": 9479,
@@ -5048,7 +5048,7 @@
           "item_name": "Stone Guard's Plate Leggings",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 61.8694328781998,
+          "score": 61.869432878199795,
           "verified": true,
           "alternatives": [
             {
@@ -5064,14 +5064,14 @@
               "item_name": "Stormshroud Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.2560741922390966
+              "dps_delta": -1.2560741922390959
             },
             {
               "item_id": 13074,
               "item_name": "Golem Shard Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.4642733326310824
+              "dps_delta": -1.464273332631082
             }
           ]
         },
@@ -5315,8 +5315,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.397408377,
-      "verify_run_seconds": 3.451274439,
+      "weights_run_seconds": 1.856212709,
+      "verify_run_seconds": 2.4772408280000002,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5615,14 +5615,14 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.06581711494199251
+              "dps_delta": -0.06581711494199372
             },
             {
               "item_id": 22191,
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.5988738493638845
+              "dps_delta": -1.5988738493638857
             },
             {
               "item_id": 23087,
@@ -5759,7 +5759,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.0151251095259546
+              "dps_delta": -1.015125109525957
             }
           ]
         },
@@ -6040,8 +6040,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.520437872,
-      "verify_run_seconds": 11.613230961,
+      "weights_run_seconds": 1.710780204,
+      "verify_run_seconds": 8.812707855,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6223,7 +6223,7 @@
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -5.2893033815227
+              "dps_delta": -5.289303381522698
             },
             {
               "item_id": 22411,
@@ -6347,14 +6347,14 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.06581711494199251
+              "dps_delta": -0.06581711494199372
             },
             {
               "item_id": 22191,
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.5988738493638845
+              "dps_delta": -1.5988738493638857
             },
             {
               "item_id": 23087,
@@ -6491,7 +6491,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.0151251095259546
+              "dps_delta": -1.015125109525957
             }
           ]
         },
@@ -6770,8 +6770,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.520437872,
-      "verify_run_seconds": 11.473066346,
+      "weights_run_seconds": 1.710780204,
+      "verify_run_seconds": 8.803950408,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7509,8 +7509,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.203106607,
-      "verify_run_seconds": 11.034221628,
+      "weights_run_seconds": 1.44681086,
+      "verify_run_seconds": 8.250790211,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8258,8 +8258,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.203106607,
-      "verify_run_seconds": 11.118009724,
+      "weights_run_seconds": 1.44681086,
+      "verify_run_seconds": 8.135806876,
       "coverage": {
         "back": {
           "eligible": 456,

@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70291",
-  "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T14:00:28Z",
+  "engine_version": "0ea8d8e99",
+  "generated_at": "2026-10-09T18:39:11Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -554,8 +554,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.918018672,
-      "verify_run_seconds": 0.724624556,
+      "weights_run_seconds": 0.6999532,
+      "verify_run_seconds": 0.556228631,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1200,8 +1200,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.918018672,
-      "verify_run_seconds": 0.751071629,
+      "weights_run_seconds": 0.6999532,
+      "verify_run_seconds": 0.571327007,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1894,8 +1894,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.07554492,
-      "verify_run_seconds": 0.880862118,
+      "weights_run_seconds": 0.806523239,
+      "verify_run_seconds": 0.631075155,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2588,8 +2588,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.07554492,
-      "verify_run_seconds": 0.848020791,
+      "weights_run_seconds": 0.806523239,
+      "verify_run_seconds": 0.637976449,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3309,8 +3309,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.012511943,
-      "verify_run_seconds": 0.913578286,
+      "weights_run_seconds": 0.769369521,
+      "verify_run_seconds": 0.751682495,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4024,8 +4024,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.012511943,
-      "verify_run_seconds": 0.936310757,
+      "weights_run_seconds": 0.769369521,
+      "verify_run_seconds": 0.725664701,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4293,7 +4293,7 @@
               "item_name": "Knight-Lieutenant's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -2.0053598079000294
+              "dps_delta": -2.0053598079000285
             }
           ]
         },
@@ -4399,7 +4399,7 @@
           "item_name": "Sorcerer's Gauntlets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 33.7460939838782,
+          "score": 33.746093983878204,
           "verified": true,
           "alternatives": [
             {
@@ -4407,14 +4407,14 @@
               "item_name": "Dreamweave Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.4763017614927976
+              "dps_delta": -2.476301761492799
             },
             {
               "item_id": 220890,
               "item_name": "Sergeant Major's Dreadweave Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -2.5483274528576705
+              "dps_delta": -2.5483274528576723
             },
             {
               "item_id": 272098,
@@ -4727,8 +4727,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.012157805,
-      "verify_run_seconds": 1.278246437,
+      "weights_run_seconds": 0.717335557,
+      "verify_run_seconds": 0.95968979,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5437,8 +5437,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.012157805,
-      "verify_run_seconds": 1.213814346,
+      "weights_run_seconds": 0.717335557,
+      "verify_run_seconds": 0.934864001,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6182,8 +6182,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.025806502,
-      "verify_run_seconds": 3.564640465,
+      "weights_run_seconds": 0.759098803,
+      "verify_run_seconds": 2.586425238,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6934,8 +6934,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.025806502,
-      "verify_run_seconds": 3.437469766,
+      "weights_run_seconds": 0.759098803,
+      "verify_run_seconds": 2.5801735150000003,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7386,7 +7386,7 @@
               "item_name": "Marshal's Silk Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.1761573418477704
+              "dps_delta": -2.1761573418477673
             },
             {
               "item_id": 13170,
@@ -7680,8 +7680,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.076601708,
-      "verify_run_seconds": 2.77367545,
+      "weights_run_seconds": 0.804244196,
+      "verify_run_seconds": 2.096243388,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8426,8 +8426,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.076601708,
-      "verify_run_seconds": 2.7916324340000003,
+      "weights_run_seconds": 0.804244196,
+      "verify_run_seconds": 2.01407281,
       "coverage": {
         "back": {
           "eligible": 456,

@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 000000000000000000-23510000000000000-0000000000000000000)
 
-Set DPS (verified): 28.2. Weights run: 1.0s. Verify run: 0.8s. 150 eligible items had no known source.
+Set DPS (verified): 28.2. Weights run: 0.7s. Verify run: 0.6s. 150 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.342 ± 0.011, crit=0.138 ± 0.004 per rating point (14 rating = 1%, 1.931 per %), hit=0.427 ± 0.013 per rating point (10 rating = 1%, 4.273 per %), spell_haste=0.549 ± 0.129, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
 
@@ -38,29 +38,29 @@ No-known-source sample (15 of 150, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 000000000000000000-23552100120000000-0000000000000000000)
 
-Set DPS (verified): 53.0. Weights run: 1.1s. Verify run: 0.9s. 266 eligible items had no known source.
+Set DPS (verified): 53.0. Weights run: 0.8s. Verify run: 0.6s. 266 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.705 ± 0.013, crit=0.174 ± 0.008 per rating point (14 rating = 1%, 2.429 per %), hit=0.356 ± 0.017 per rating point (10 rating = 1%, 3.560 per %), spell_haste=0.908 ± 0.190, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.700 ± 0.013, crit=0.172 ± 0.007 per rating point (14 rating = 1%, 2.406 per %), hit=0.360 ± 0.017 per rating point (10 rating = 1%, 3.602 per %), spell_haste=0.949 ± 0.187, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Filigreed Flame Circlet (253979) | Tailoring [crafted] | 14.0 spell_power points (1.32 DPS) | yes | Enchanter's Cowl (4322, -0.09 DPS) [crafted]; Holy Shroud (2721, -0.28 DPS) [world_drop]; Flame Circlet (253953, -0.28 DPS) [crafted] |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 11.2 spell_power points (1.06 DPS) | yes | Crystal Starfire Medallion (5003, -0.79 DPS) [world_drop]; Kaleidoscope Chain (13084, -0.79 DPS) [world_drop]; Darkspear Warding Pendant (272075, -0.93 DPS, sim-verified) [vendor] |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 15.3 spell_power points (1.45 DPS) | yes | Death Speaker Mantle (6685, -0.15 DPS) [dungeon]; Fairywing Mantle (9536, -0.28 DPS) [quest]; Magician's Mantle (12998, -0.38 DPS) [world_drop] |
-| back | Repairman's Cape (9605) | Data Rescue [quest] | sim-verified (+0.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Cloak of Rot (4462, -0.02 DPS) [world]; Darkspear Raider's Cloak (272078, -0.02 DPS) [vendor]; Vine Pruner's Cloak (279835, -0.51 DPS, sim-verified) [quest] |
-| chest | Green Silk Armor (7065) | Tailoring [crafted] | 18.2 spell_power points (1.71 DPS) | yes | Flame Gown (253965, -0.02 DPS) [crafted]; Mechbuilder's Overalls (9508, -0.16 DPS) [dungeon]; Death Speaker Robes (6682, -0.32 DPS) [dungeon] |
-| wrist | Phoenix Bindings (210781) | Tailoring [crafted] | 13.0 spell_power points (1.23 DPS) | yes | Spidertank Oilrag (9448, +0.00 DPS, sim-verified) [dungeon]; Glowing Magical Bracelets (13106, -0.69 DPS) [world_drop]; Nightsky Wristbands (6407, -0.83 DPS) [world_drop] |
-| hands | Town Clerk's Mittens (270029) | Crime and Punishment [quest] | 11.8 spell_power points (1.11 DPS) | yes | Phoenix Gloves (4331, -0.26 DPS) [crafted]; Truefaith Gloves (7049, -0.44 DPS) [crafted]; Flame Gloves (253917, -0.63 DPS, sim-verified) [crafted] |
-| waist | Highlander's Cloth Girdle (20099) | The League of Arathor [rep] | 13.1 spell_power points (1.24 DPS) | yes | Belt of Arugal (6392, -0.19 DPS) [dungeon]; Crimson Silk Belt (7055, -0.21 DPS) [crafted]; Invoker's Cord (215366, -0.24 DPS) [crafted] |
-| legs | Flame Leggings (253991) | Tailoring [crafted] | 18.9 spell_power points (1.78 DPS) | yes | Abomination Skin Leggings (23173, -0.40 DPS) [dungeon]; Filigreed Flame Leggings (253941, -0.52 DPS, sim-verified) [crafted]; Smoldering Pants (3073, -0.56 DPS) [world] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 11.2 spell_power points (1.06 DPS) | yes | Crystal Starfire Medallion (5003, -0.79 DPS) [world_drop]; Kaleidoscope Chain (13084, -0.79 DPS) [world_drop]; Darkspear Warding Pendant (272075, -0.91 DPS, sim-verified) [vendor] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 15.3 spell_power points (1.44 DPS) | yes | Death Speaker Mantle (6685, -0.15 DPS) [dungeon]; Fairywing Mantle (9536, -0.28 DPS) [quest]; Magician's Mantle (12998, -0.38 DPS) [world_drop] |
+| back | Repairman's Cape (9605) | Data Rescue [quest] | sim-verified (+0.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Cloak of Rot (4462, -0.02 DPS) [world]; Darkspear Raider's Cloak (272078, -0.02 DPS) [vendor]; Vine Pruner's Cloak (279835, -0.53 DPS, sim-verified) [quest] |
+| chest | Green Silk Armor (7065) | Tailoring [crafted] | 18.1 spell_power points (1.71 DPS) | yes | Flame Gown (253965, -0.02 DPS) [crafted]; Mechbuilder's Overalls (9508, -0.16 DPS) [dungeon]; Death Speaker Robes (6682, -0.32 DPS) [dungeon] |
+| wrist | Phoenix Bindings (210781) | Tailoring [crafted] | 13.0 spell_power points (1.23 DPS) | yes | Spidertank Oilrag (9448, +0.00 DPS, sim-verified) [dungeon]; Glowing Magical Bracelets (13106, -0.70 DPS) [world_drop]; Nightsky Wristbands (6407, -0.83 DPS) [world_drop] |
+| hands | Town Clerk's Mittens (270029) | Crime and Punishment [quest] | 11.7 spell_power points (1.10 DPS) | yes | Phoenix Gloves (4331, -0.25 DPS) [crafted]; Truefaith Gloves (7049, -0.43 DPS) [crafted]; Flame Gloves (253917, -0.62 DPS, sim-verified) [crafted] |
+| waist | Highlander's Cloth Girdle (20099) | The League of Arathor [rep] | 13.1 spell_power points (1.24 DPS) | yes | Belt of Arugal (6392, -0.19 DPS) [dungeon]; Crimson Silk Belt (7055, -0.21 DPS) [crafted]; Invoker's Cord (215366, -0.25 DPS) [crafted] |
+| legs | Flame Leggings (253991) | Tailoring [crafted] | 18.9 spell_power points (1.78 DPS) | yes | Abomination Skin Leggings (23173, -0.41 DPS) [dungeon]; Filigreed Flame Leggings (253941, -0.55 DPS, sim-verified) [crafted]; Smoldering Pants (3073, -0.56 DPS) [world] |
 | feet | Fiery Slippers (254005) | Tailoring [crafted] | 17.9 spell_power points (1.69 DPS) | yes | Gilded Slippers (254001, -0.57 DPS) [crafted]; Acidic Walkers (9454, -0.69 DPS) [dungeon]; Spidersilk Boots (4320, -0.76 DPS) [crafted] |
-| finger1 | Lorekeeper's Ring (19525) | Silverwing Sentinels [rep] | 7.0 spell_power points (0.66 DPS) | yes | Black Widow Band (6199, -0.19 DPS) [world]; Snake Hoop (6750, -0.19 DPS) [quest]; Minor Channeling Ring (1449, -1.32 DPS, sim-verified) [quest] |
-| finger2 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | sim-verified (+0.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Black Widow Band (6199, -0.10 DPS) [world]; Snake Hoop (6750, -0.10 DPS) [quest]; Minor Channeling Ring (1449, -0.59 DPS, sim-verified) [quest] |
+| finger1 | Lorekeeper's Ring (19525) | Silverwing Sentinels [rep] | 7.0 spell_power points (0.66 DPS) | yes | Black Widow Band (6199, -0.20 DPS) [world]; Snake Hoop (6750, -0.20 DPS) [quest]; Minor Channeling Ring (1449, -1.28 DPS, sim-verified) [quest] |
+| finger2 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Black Widow Band (6199, -0.10 DPS) [world]; Snake Hoop (6750, -0.10 DPS) [quest]; Minor Channeling Ring (1449, -0.65 DPS, sim-verified) [quest] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Wind Spirit Staff (6689) | Razorfen Kraul: Earthcaller Halmgar [dungeon] | sim-verified (+1.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Hardened Root Staff (1317, -1.39 DPS, sim-verified) [quest]; Scorn's Focal Dagger (23168, -1.65 DPS) [dungeon]; Glimmering Staff (249392, -1.77 DPS) [crafted] |
+| main_hand | Wind Spirit Staff (6689) | Razorfen Kraul: Earthcaller Halmgar [dungeon] | sim-verified (+1.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Hardened Root Staff (1317, -1.37 DPS, sim-verified) [quest]; Scorn's Focal Dagger (23168, -1.65 DPS) [dungeon]; Glimmering Staff (249392, -1.77 DPS) [crafted] |
 | off_hand | - | - |  |  |  |
-| ranged | Necrotic Wand (7708) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 355.4 spell_power points (33.49 DPS) | yes | Starfaller (13063, -0.38 DPS, sim-verified) [world_drop]; Greater Mystic Wand (217287, -4.02 DPS) [crafted]; Scorching Wand (5213, -4.08 DPS) [world_drop] |
+| ranged | Necrotic Wand (7708) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 355.2 spell_power points (33.49 DPS) | yes | Starfaller (13063, -0.37 DPS) [world_drop]; Greater Mystic Wand (217287, -4.02 DPS) [crafted]; Scorching Wand (5213, -4.08 DPS) [world_drop] |
 
 **New at 30:** head: Filigreed Flame Circlet; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Repairman's Cape; chest: Green Silk Armor; wrist: Phoenix Bindings; hands: Town Clerk's Mittens; waist: Highlander's Cloth Girdle; legs: Flame Leggings; feet: Fiery Slippers; finger1: Lorekeeper's Ring; finger2: Sea Giant's Toe Ring; main_hand: Wind Spirit Staff; ranged: Necrotic Wand
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 266, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 000000000000000000-23552100130103041-0000000000000000000)
 
-Set DPS (verified): 82.3. Weights run: 1.2s. Verify run: 1.1s. 346 eligible items had no known source.
+Set DPS (verified): 82.3. Weights run: 0.9s. Verify run: 0.7s. 346 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.774 ± 0.026, crit=0.219 ± 0.015 per rating point (14 rating = 1%, 3.059 per %), hit=0.376 ± 0.034 per rating point (10 rating = 1%, 3.765 per %), spell_haste=2.538 ± 0.457, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 346, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 205011000000000000-23552100130103051-0000000000000000000)
 
-Set DPS (verified): 156.2. Weights run: 1.2s. Verify run: 1.4s. 443 eligible items had no known source.
+Set DPS (verified): 156.2. Weights run: 0.8s. Verify run: 1.0s. 443 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -130,7 +130,7 @@ No-known-source sample (15 of 443, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 205015100000000000-23552100130103051-0050000000000000000)
 
-Set DPS (verified): 442.4. Weights run: 1.4s. Verify run: 4.2s. 1073 eligible items had no known source.
+Set DPS (verified): 442.4. Weights run: 0.9s. Verify run: 3.1s. 1073 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.008, intellect=0.923 ± 0.054, crit=0.719 ± 0.043 per rating point (14 rating = 1%, 10.065 per %), hit=1.212 ± 0.083 per rating point (10 rating = 1%, 12.117 per %), spell_haste=-10.458 ± 1.052, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.008
 
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1073, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (gnome, 205015100000000000-23252100130133051-0050000000000000000)
 
-Set DPS (verified): 824.2. Weights run: 1.5s. Verify run: 3.3s. 1073 eligible items had no known source.
+Set DPS (verified): 824.2. Weights run: 1.1s. Verify run: 2.4s. 1073 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.409 ± 0.029, crit=0.870 ± 0.043 per rating point (14 rating = 1%, 12.183 per %), hit=1.128 ± 0.065 per rating point (10 rating = 1%, 11.277 per %), spell_haste=not significant (-0.196 ± 0.515), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
 
@@ -192,7 +192,7 @@ No-known-source sample (15 of 1073, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (orc, 000000000000000000-23510000000000000-0000000000000000000)
 
-Set DPS (verified): 26.3. Weights run: 1.0s. Verify run: 0.8s. 139 eligible items had no known source.
+Set DPS (verified): 26.3. Weights run: 0.7s. Verify run: 0.6s. 139 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.342 ± 0.011, crit=0.138 ± 0.004 per rating point (14 rating = 1%, 1.931 per %), hit=0.427 ± 0.013 per rating point (10 rating = 1%, 4.273 per %), spell_haste=0.549 ± 0.129, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
 
@@ -222,29 +222,29 @@ No-known-source sample (15 of 139, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 000000000000000000-23552100120000000-0000000000000000000)
 
-Set DPS (verified): 50.1. Weights run: 1.1s. Verify run: 0.9s. 248 eligible items had no known source.
+Set DPS (verified): 50.1. Weights run: 0.8s. Verify run: 0.6s. 248 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.705 ± 0.013, crit=0.174 ± 0.008 per rating point (14 rating = 1%, 2.429 per %), hit=0.356 ± 0.017 per rating point (10 rating = 1%, 3.560 per %), spell_haste=0.908 ± 0.190, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.700 ± 0.013, crit=0.172 ± 0.007 per rating point (14 rating = 1%, 2.406 per %), hit=0.360 ± 0.017 per rating point (10 rating = 1%, 3.602 per %), spell_haste=0.949 ± 0.187, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Enchanter's Cowl (4322) | Tailoring [crafted] | sim-verified (+0.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Holy Shroud (2721, -0.19 DPS) [world_drop]; Flame Circlet (253953, -0.19 DPS) [crafted]; Filigreed Flame Circlet (253979, -0.65 DPS, sim-verified) [crafted] |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 11.2 spell_power points (1.06 DPS) | yes | Darkspear Warding Pendant (272075, -0.69 DPS, sim-verified) [vendor]; Crystal Starfire Medallion (5003, -0.79 DPS) [world_drop]; Kaleidoscope Chain (13084, -0.79 DPS) [world_drop] |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 15.3 spell_power points (1.45 DPS) | yes | Death Speaker Mantle (6685, -0.15 DPS) [dungeon]; Mantle of Woe (7750, -0.18 DPS) [quest]; Fairywing Mantle (9536, -0.28 DPS) [quest] |
-| back | Darkspear Raider's Cloak (272078) | Creeg Bothunk [vendor] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Hillman's Cloak (3719, -0.06 DPS) [crafted]; Windsong Drape (15468, -0.06 DPS) [quest]; Cloak of Rot (4462, -0.68 DPS, sim-verified) [world] |
-| chest | Flame Gown (253965) | Tailoring [crafted] | sim-verified (+0.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Mechbuilder's Overalls (9508, -0.14 DPS) [dungeon]; Death Speaker Robes (6682, -0.30 DPS) [dungeon]; Green Silk Armor (7065, -0.50 DPS, sim-verified) [crafted] |
-| wrist | Phoenix Bindings (210781) | Tailoring [crafted] | 13.0 spell_power points (1.23 DPS) | yes | Spidertank Oilrag (9448, +0.00 DPS, sim-verified) [dungeon]; Glowing Magical Bracelets (13106, -0.69 DPS) [world_drop]; Nightsky Wristbands (6407, -0.83 DPS) [world_drop] |
+| head | Enchanter's Cowl (4322) | Tailoring [crafted] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Holy Shroud (2721, -0.19 DPS) [world_drop]; Flame Circlet (253953, -0.19 DPS) [crafted]; Filigreed Flame Circlet (253979, -0.65 DPS, sim-verified) [crafted] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 11.2 spell_power points (1.06 DPS) | yes | Darkspear Warding Pendant (272075, -0.67 DPS, sim-verified) [vendor]; Crystal Starfire Medallion (5003, -0.79 DPS) [world_drop]; Kaleidoscope Chain (13084, -0.79 DPS) [world_drop] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 15.3 spell_power points (1.44 DPS) | yes | Death Speaker Mantle (6685, -0.15 DPS) [dungeon]; Mantle of Woe (7750, -0.18 DPS) [quest]; Fairywing Mantle (9536, -0.28 DPS) [quest] |
+| back | Darkspear Raider's Cloak (272078) | Creeg Bothunk [vendor] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Hillman's Cloak (3719, -0.06 DPS) [crafted]; Windsong Drape (15468, -0.06 DPS) [quest]; Cloak of Rot (4462, -0.66 DPS, sim-verified) [world] |
+| chest | Flame Gown (253965) | Tailoring [crafted] | sim-verified (+0.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Mechbuilder's Overalls (9508, -0.14 DPS) [dungeon]; Death Speaker Robes (6682, -0.30 DPS) [dungeon]; Green Silk Armor (7065, -0.52 DPS, sim-verified) [crafted] |
+| wrist | Phoenix Bindings (210781) | Tailoring [crafted] | 13.0 spell_power points (1.23 DPS) | yes | Spidertank Oilrag (9448, +0.00 DPS, sim-verified) [dungeon]; Glowing Magical Bracelets (13106, -0.70 DPS) [world_drop]; Nightsky Wristbands (6407, -0.83 DPS) [world_drop] |
 | hands | Jutebraid Gloves (10654) | Horde Presence [quest] | 9.5 spell_power points (0.90 DPS) | yes | Flame Gloves (253917, -0.04 DPS) [crafted]; Phoenix Gloves (4331, -0.05 DPS) [crafted]; Truefaith Gloves (7049, -0.23 DPS) [crafted] |
 | waist | Belt of Arugal (6392) | Shadowfang Keep: Archmage Arugal [dungeon] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Warsong Sash (16975, -0.01 DPS) [quest]; Crimson Silk Belt (7055, -0.02 DPS) [crafted]; Defiler's Cloth Girdle (20164, -0.70 DPS, sim-verified) [rep] |
-| legs | Flame Leggings (253991) | Tailoring [crafted] | 18.9 spell_power points (1.78 DPS) | yes | Abomination Skin Leggings (23173, -0.40 DPS) [dungeon]; Filigreed Flame Leggings (253941, -0.41 DPS, sim-verified) [crafted]; Smoldering Pants (3073, -0.56 DPS) [world] |
+| legs | Flame Leggings (253991) | Tailoring [crafted] | 18.9 spell_power points (1.78 DPS) | yes | Filigreed Flame Leggings (253941, -0.38 DPS, sim-verified) [crafted]; Abomination Skin Leggings (23173, -0.41 DPS) [dungeon]; Smoldering Pants (3073, -0.56 DPS) [world] |
 | feet | Fiery Slippers (254005) | Tailoring [crafted] | 17.9 spell_power points (1.69 DPS) | yes | Gilded Slippers (254001, -0.57 DPS) [crafted]; Acidic Walkers (9454, -0.69 DPS) [dungeon]; Spidersilk Boots (4320, -0.76 DPS) [crafted] |
-| finger1 | Advisor's Ring (19521) | Warsong Outriders [rep] | 7.0 spell_power points (0.66 DPS) | yes | Black Widow Band (6199, -0.19 DPS) [world]; Snake Hoop (6750, -0.19 DPS) [quest]; Lavishly Jeweled Ring (1156, -0.26 DPS) [dungeon] |
-| finger2 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | 6.0 spell_power points (0.57 DPS) | yes | Snake Hoop (6750, -0.10 DPS) [quest]; Lavishly Jeweled Ring (1156, -0.17 DPS) [dungeon]; Black Widow Band (6199, -0.49 DPS, sim-verified) [world] |
+| finger1 | Advisor's Ring (19521) | Warsong Outriders [rep] | 7.0 spell_power points (0.66 DPS) | yes | Black Widow Band (6199, -0.20 DPS) [world]; Snake Hoop (6750, -0.20 DPS) [quest]; Lavishly Jeweled Ring (1156, -0.26 DPS) [dungeon] |
+| finger2 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | 6.0 spell_power points (0.57 DPS) | yes | Snake Hoop (6750, -0.10 DPS) [quest]; Lavishly Jeweled Ring (1156, -0.17 DPS) [dungeon]; Black Widow Band (6199, -0.47 DPS, sim-verified) [world] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Wind Spirit Staff (6689) | Razorfen Kraul: Earthcaller Halmgar [dungeon] | 26.5 spell_power points (2.50 DPS) | yes | Glimmering Staff (249392, -1.77 DPS) [crafted]; Gnarled Necromancer's Staff (251534, -1.83 DPS) [quest]; Scorn's Focal Dagger (23168, -5.78 DPS, sim-verified) [dungeon] |
+| main_hand | Wind Spirit Staff (6689) | Razorfen Kraul: Earthcaller Halmgar [dungeon] | 26.5 spell_power points (2.50 DPS) | yes | Glimmering Staff (249392, -1.77 DPS) [crafted]; Gnarled Necromancer's Staff (251534, -1.84 DPS) [quest]; Scorn's Focal Dagger (23168, -5.75 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
-| ranged | Unstable Power Core (279847) | Source of Power [quest] | 362.1 spell_power points (34.12 DPS) | yes | Necrotic Wand (7708, -0.63 DPS) [dungeon]; Starfaller (13063, -0.99 DPS) [world_drop]; Greater Mystic Wand (217287, -4.65 DPS) [crafted] |
+| ranged | Unstable Power Core (279847) | Source of Power [quest] | 361.9 spell_power points (34.12 DPS) | yes | Necrotic Wand (7708, -0.63 DPS) [dungeon]; Starfaller (13063, -1.00 DPS) [world_drop]; Greater Mystic Wand (217287, -4.65 DPS) [crafted] |
 
 **New at 30:** head: Enchanter's Cowl; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Darkspear Raider's Cloak; chest: Flame Gown; wrist: Phoenix Bindings; hands: Jutebraid Gloves; waist: Belt of Arugal; legs: Flame Leggings; feet: Fiery Slippers; finger1: Advisor's Ring; finger2: Sea Giant's Toe Ring; main_hand: Wind Spirit Staff; ranged: Unstable Power Core
 
@@ -252,7 +252,7 @@ No-known-source sample (15 of 248, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 000000000000000000-23552100130103041-0000000000000000000)
 
-Set DPS (verified): 79.4. Weights run: 1.2s. Verify run: 1.0s. 323 eligible items had no known source.
+Set DPS (verified): 79.4. Weights run: 0.9s. Verify run: 0.8s. 323 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.774 ± 0.026, crit=0.219 ± 0.015 per rating point (14 rating = 1%, 3.059 per %), hit=0.376 ± 0.034 per rating point (10 rating = 1%, 3.765 per %), spell_haste=2.538 ± 0.457, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
 
@@ -282,7 +282,7 @@ No-known-source sample (15 of 323, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 205011000000000000-23552100130103051-0000000000000000000)
 
-Set DPS (verified): 151.1. Weights run: 1.2s. Verify run: 1.4s. 416 eligible items had no known source.
+Set DPS (verified): 151.1. Weights run: 0.8s. Verify run: 0.9s. 416 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -314,7 +314,7 @@ No-known-source sample (15 of 416, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (orc, 205015100000000000-23552100130103051-0050000000000000000)
 
-Set DPS (verified): 419.7. Weights run: 1.4s. Verify run: 4.2s. 1061 eligible items had no known source.
+Set DPS (verified): 419.7. Weights run: 0.9s. Verify run: 3.0s. 1061 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -346,7 +346,7 @@ No-known-source sample (15 of 1061, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (orc, 205015100000000000-23252100130133051-0050000000000000000)
 
-Set DPS (verified): 805.1. Weights run: 1.5s. Verify run: 3.3s. 1061 eligible items had no known source.
+Set DPS (verified): 805.1. Weights run: 1.1s. Verify run: 2.3s. 1061 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.409 ± 0.029, crit=0.870 ± 0.043 per rating point (14 rating = 1%, 12.183 per %), hit=1.128 ± 0.065 per rating point (10 rating = 1%, 11.277 per %), spell_haste=not significant (-0.196 ± 0.515), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.003
 

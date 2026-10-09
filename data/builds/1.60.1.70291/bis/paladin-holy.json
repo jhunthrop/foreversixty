@@ -1,8 +1,8 @@
 {
   "spec": "paladin-holy",
   "build": "1.60.1.70291",
-  "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T14:11:36Z",
+  "engine_version": "0ea8d8e99",
+  "generated_at": "2026-10-09T18:46:10Z",
   "bands": [
     {
       "spec": "paladin-holy",
@@ -554,8 +554,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 4.039324932,
-      "verify_run_seconds": 13.29454466,
+      "weights_run_seconds": 2.587112243,
+      "verify_run_seconds": 8.22874397,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -985,7 +985,7 @@
               "item_name": "Filigreed Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.25251064033593756
+              "dps_delta": -0.25251064033593784
             },
             {
               "item_id": 15449,
@@ -1190,8 +1190,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 4.039324932,
-      "verify_run_seconds": 13.254717505,
+      "weights_run_seconds": 2.587112243,
+      "verify_run_seconds": 8.198864223,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1864,8 +1864,8 @@
         "main_hand: Royal Diplomatic Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 3.962713726,
-      "verify_run_seconds": 13.534566221,
+      "weights_run_seconds": 2.60875864,
+      "verify_run_seconds": 8.256400149,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2539,8 +2539,8 @@
         "main_hand: Royal Diplomatic Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 3.962713726,
-      "verify_run_seconds": 14.512910767,
+      "weights_run_seconds": 2.60875864,
+      "verify_run_seconds": 8.781628927,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2990,7 +2990,7 @@
               "item_name": "Stoneweaver Leggings",
               "source_kind": "dungeon",
               "source": "Uldaman: Ironaya",
-              "dps_delta": -0.28797072552559216
+              "dps_delta": -0.28797072552559183
             }
           ]
         },
@@ -3221,8 +3221,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 7.07193262,
-      "verify_run_seconds": 27.987613344,
+      "weights_run_seconds": 4.44290972,
+      "verify_run_seconds": 17.429981448,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3904,8 +3904,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Forcestone Buckler"
       ],
-      "weights_run_seconds": 7.07193262,
-      "verify_run_seconds": 28.108630407,
+      "weights_run_seconds": 4.44290972,
+      "verify_run_seconds": 17.484376851,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4345,7 +4345,7 @@
           "item_name": "Knight's Imbued Leggings",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 71.7646094131387,
+          "score": 71.76460941313871,
           "verified": true,
           "alternatives": [
             {
@@ -4353,14 +4353,14 @@
               "item_name": "Senior Designer's Pantaloons",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: General Angerforge",
-              "dps_delta": -0.5993474694014673
+              "dps_delta": -0.5993474694014689
             },
             {
               "item_id": 9474,
               "item_name": "Jinxed Hoodoo Kilt",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Shadowpriest Sezz'ziz",
-              "dps_delta": -0.7451665587920703
+              "dps_delta": -0.7451665587920713
             },
             {
               "item_id": 10807,
@@ -4651,8 +4651,8 @@
         "trinket2: Uther's Strength",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 7.562124891,
-      "verify_run_seconds": 37.522313329,
+      "weights_run_seconds": 4.747284835,
+      "verify_run_seconds": 23.43835779,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5144,7 +5144,7 @@
               "item_name": "Mender's Leather Shoes",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.10782238340562096
+              "dps_delta": -0.10782238340562045
             }
           ]
         },
@@ -5389,8 +5389,8 @@
         "trinket2: Uther's Strength",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 7.562124891,
-      "verify_run_seconds": 36.554079446,
+      "weights_run_seconds": 4.747284835,
+      "verify_run_seconds": 22.522361793,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5703,7 +5703,7 @@
               "item_name": "Devout Robe",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.07547094290639232
+              "dps_delta": -0.0754709429063906
             },
             {
               "item_id": 226984,
@@ -6112,8 +6112,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 8.479834164,
-      "verify_run_seconds": 116.466419224,
+      "weights_run_seconds": 5.26410444,
+      "verify_run_seconds": 72.810707664,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6817,8 +6817,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 8.479834164,
-      "verify_run_seconds": 112.439784043,
+      "weights_run_seconds": 5.26410444,
+      "verify_run_seconds": 70.117997394,
       "coverage": {
         "back": {
           "eligible": 455,
@@ -7546,8 +7546,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 5.073380935,
-      "verify_run_seconds": 47.499318643,
+      "weights_run_seconds": 3.112499047,
+      "verify_run_seconds": 30.164036849,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8266,8 +8266,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 5.073380935,
-      "verify_run_seconds": 38.193286912,
+      "weights_run_seconds": 3.112499047,
+      "verify_run_seconds": 24.598648899,
       "coverage": {
         "back": {
           "eligible": 455,

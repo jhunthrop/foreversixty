@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 025003010000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 35.9. Weights run: 10.0s. Verify run: 29.0s. 151 eligible items had no known source.
+Set DPS (verified): 35.9. Weights run: 6.0s. Verify run: 17.5s. 151 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.006, intellect=2.355 ± 0.009, spirit=1.374 ± 0.005, mp5=3.085 ± 0.033, crit=0.151 ± 0.007 per rating point (14 rating = 1%, 2.114 per %), spell_haste=not significant (0.008 ± 0.028)
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 151, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 025003031304000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 80.6. Weights run: 10.2s. Verify run: 26.6s. 262 eligible items had no known source.
+Set DPS (verified): 80.6. Weights run: 6.2s. Verify run: 16.3s. 262 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.011, intellect=2.195 ± 0.012, spirit=1.739 ± 0.010, mp5=3.807 ± 0.011, crit=0.208 ± 0.009 per rating point (14 rating = 1%, 2.919 per %), spell_haste=not significant (0.302 ± 0.095)
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 262, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (human, 025003031305101520-00000000000000000-000000000000000000)
 
-Set DPS (verified): 139.0. Weights run: 11.9s. Verify run: 81.6s. 343 eligible items had no known source.
+Set DPS (verified): 139.0. Weights run: 7.0s. Verify run: 48.0s. 343 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -100,7 +100,7 @@ No-known-source sample (15 of 343, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (human, 025003031305101520-03502000000000000-000000000000000000)
 
-Set DPS (verified): 197.6. Weights run: 11.8s. Verify run: 51.8s. 441 eligible items had no known source.
+Set DPS (verified): 197.6. Weights run: 7.4s. Verify run: 30.8s. 441 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -132,7 +132,7 @@ No-known-source sample (15 of 441, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 025003031305101520-03505003030100000-000000000000000000)
 
-Set DPS (verified): 313.8. Weights run: 11.6s. Verify run: 68.2s. 1121 eligible items had no known source.
+Set DPS (verified): 313.8. Weights run: 7.2s. Verify run: 40.7s. 1121 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -164,7 +164,7 @@ No-known-source sample (15 of 1121, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (human, 025003031305101520-03505003030100000-000000000000000000)
 
-Set DPS (verified): 581.0. Weights run: 7.6s. Verify run: 37.6s. 1121 eligible items had no known source.
+Set DPS (verified): 581.0. Weights run: 4.5s. Verify run: 23.4s. 1121 eligible items had no known source.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -198,7 +198,7 @@ No-known-source sample (15 of 1121, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 025003010000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 35.5. Weights run: 10.0s. Verify run: 28.7s. 141 eligible items had no known source.
+Set DPS (verified): 35.5. Weights run: 6.0s. Verify run: 17.7s. 141 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.006, intellect=2.355 ± 0.009, spirit=1.374 ± 0.005, mp5=3.085 ± 0.033, crit=0.151 ± 0.007 per rating point (14 rating = 1%, 2.114 per %), spell_haste=not significant (0.008 ± 0.028)
 
@@ -228,7 +228,7 @@ No-known-source sample (15 of 141, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 025003031304000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 79.7. Weights run: 10.2s. Verify run: 26.7s. 249 eligible items had no known source.
+Set DPS (verified): 79.7. Weights run: 6.2s. Verify run: 15.9s. 249 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.011, intellect=2.195 ± 0.012, spirit=1.739 ± 0.010, mp5=3.807 ± 0.011, crit=0.208 ± 0.009 per rating point (14 rating = 1%, 2.919 per %), spell_haste=not significant (0.302 ± 0.095)
 
@@ -258,7 +258,7 @@ No-known-source sample (15 of 249, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 025003031305101520-00000000000000000-000000000000000000)
 
-Set DPS (verified): 136.6. Weights run: 11.9s. Verify run: 88.2s. 326 eligible items had no known source.
+Set DPS (verified): 136.6. Weights run: 7.0s. Verify run: 52.6s. 326 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -290,7 +290,7 @@ No-known-source sample (15 of 326, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 025003031305101520-03502000000000000-000000000000000000)
 
-Set DPS (verified): 197.3. Weights run: 11.8s. Verify run: 51.4s. 421 eligible items had no known source.
+Set DPS (verified): 197.3. Weights run: 7.4s. Verify run: 30.5s. 421 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -322,7 +322,7 @@ No-known-source sample (15 of 421, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 025003031305101520-03505003030100000-000000000000000000)
 
-Set DPS (verified): 316.5. Weights run: 11.6s. Verify run: 68.8s. 1112 eligible items had no known source.
+Set DPS (verified): 316.5. Weights run: 7.2s. Verify run: 41.5s. 1112 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -354,7 +354,7 @@ No-known-source sample (15 of 1112, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 025003031305101520-03505003030100000-000000000000000000)
 
-Set DPS (verified): 576.5. Weights run: 7.6s. Verify run: 36.4s. 1112 eligible items had no known source.
+Set DPS (verified): 576.5. Weights run: 4.5s. Verify run: 22.3s. 1112 eligible items had no known source.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

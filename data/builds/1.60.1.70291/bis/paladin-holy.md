@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 05320001000000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 27.3. Weights run: 4.0s. Verify run: 13.3s. 239 eligible items had no known source.
+Set DPS (verified): 27.3. Weights run: 2.6s. Verify run: 8.2s. 239 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.899 ± 0.002, spirit=0.222 ± 0.001, mp5=1.695 ± 0.023, crit=0.035 ± 0.001 per rating point (14 rating = 1%, 0.497 per %), spell_haste=0.105 ± 0.012
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 239, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 05320003224000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 50.1. Weights run: 4.0s. Verify run: 13.5s. 431 eligible items had no known source.
+Set DPS (verified): 50.1. Weights run: 2.6s. Verify run: 8.3s. 431 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.977 ± 0.003, spirit=0.493 ± 0.003, mp5=2.099 ± 0.007, crit=0.093 ± 0.004 per rating point (14 rating = 1%, 1.295 per %), spell_haste=0.041 ± 0.009
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 431, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (human, 05320003225111051-0000000000000000-00000000000000000)
 
-Set DPS (verified): 79.3. Weights run: 7.1s. Verify run: 28.0s. 589 eligible items had no known source.
+Set DPS (verified): 79.3. Weights run: 4.4s. Verify run: 17.4s. 589 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.006, intellect=1.162 ± 0.006, spirit=0.735 ± 0.005, mp5=2.690 ± 0.008, crit=0.150 ± 0.006 per rating point (14 rating = 1%, 2.097 per %), spell_haste=not significant (0.060 ± 0.017)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 589, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (human, 05320003225111051-5500000000000000-00000000000000000)
 
-Set DPS (verified): 125.9. Weights run: 7.6s. Verify run: 37.5s. 753 eligible items had no known source.
+Set DPS (verified): 125.9. Weights run: 4.7s. Verify run: 23.4s. 753 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.004, intellect=1.850 ± 0.013, spirit=1.414 ± 0.011, mp5=4.678 ± 0.015, crit=0.311 ± 0.015 per rating point (14 rating = 1%, 4.352 per %), spell_haste=not significant (0.102 ± 0.042)
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 753, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (human, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 203.5. Weights run: 8.5s. Verify run: 116.5s. 1685 eligible items had no known source.
+Set DPS (verified): 203.5. Weights run: 5.3s. Verify run: 72.8s. 1685 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.126, intellect=4.925 ± 0.058, spirit=1.708 ± 0.014, mp5=7.069 ± 0.046, crit=0.442 ± 0.030 per rating point (14 rating = 1%, 6.193 per %), spell_haste=not significant (0.104 ± 0.054)
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1685, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (human, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 575.0. Weights run: 5.1s. Verify run: 47.5s. 1685 eligible items had no known source.
+Set DPS (verified): 575.0. Weights run: 3.1s. Verify run: 30.2s. 1685 eligible items had no known source.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -192,7 +192,7 @@ No-known-source sample (15 of 1685, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (undead, 05320001000000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 26.9. Weights run: 4.0s. Verify run: 13.3s. 219 eligible items had no known source.
+Set DPS (verified): 26.9. Weights run: 2.6s. Verify run: 8.2s. 219 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.899 ± 0.002, spirit=0.222 ± 0.001, mp5=1.695 ± 0.023, crit=0.035 ± 0.001 per rating point (14 rating = 1%, 0.497 per %), spell_haste=0.105 ± 0.012
 
@@ -222,7 +222,7 @@ No-known-source sample (15 of 219, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 05320003224000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 49.3. Weights run: 4.0s. Verify run: 14.5s. 409 eligible items had no known source.
+Set DPS (verified): 49.3. Weights run: 2.6s. Verify run: 8.8s. 409 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.977 ± 0.003, spirit=0.493 ± 0.003, mp5=2.099 ± 0.007, crit=0.093 ± 0.004 per rating point (14 rating = 1%, 1.295 per %), spell_haste=0.041 ± 0.009
 
@@ -252,7 +252,7 @@ No-known-source sample (15 of 409, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (undead, 05320003225111051-0000000000000000-00000000000000000)
 
-Set DPS (verified): 93.6. Weights run: 7.1s. Verify run: 28.1s. 558 eligible items had no known source.
+Set DPS (verified): 93.6. Weights run: 4.4s. Verify run: 17.5s. 558 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.006, intellect=1.162 ± 0.006, spirit=0.735 ± 0.005, mp5=2.690 ± 0.008, crit=0.150 ± 0.006 per rating point (14 rating = 1%, 2.097 per %), spell_haste=not significant (0.060 ± 0.017)
 
@@ -282,7 +282,7 @@ No-known-source sample (15 of 558, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 05320003225111051-5500000000000000-00000000000000000)
 
-Set DPS (verified): 118.4. Weights run: 7.6s. Verify run: 36.6s. 733 eligible items had no known source.
+Set DPS (verified): 118.4. Weights run: 4.7s. Verify run: 22.5s. 733 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -314,7 +314,7 @@ No-known-source sample (15 of 733, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (undead, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 192.8. Weights run: 8.5s. Verify run: 112.4s. 1710 eligible items had no known source.
+Set DPS (verified): 192.8. Weights run: 5.3s. Verify run: 70.1s. 1710 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.126, intellect=4.925 ± 0.058, spirit=1.708 ± 0.014, mp5=7.069 ± 0.046, crit=0.442 ± 0.030 per rating point (14 rating = 1%, 6.193 per %), spell_haste=not significant (0.104 ± 0.054)
 
@@ -344,7 +344,7 @@ No-known-source sample (15 of 1710, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 560.3. Weights run: 5.1s. Verify run: 38.2s. 1710 eligible items had no known source.
+Set DPS (verified): 560.3. Weights run: 3.1s. Verify run: 24.6s. 1710 eligible items had no known source.
 
 5 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

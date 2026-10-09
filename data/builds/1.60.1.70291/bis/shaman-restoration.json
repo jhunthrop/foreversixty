@@ -1,8 +1,8 @@
 {
   "spec": "shaman-restoration",
   "build": "1.60.1.70291",
-  "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T15:08:38Z",
+  "engine_version": "0ea8d8e99",
+  "generated_at": "2026-10-09T19:22:17Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -550,8 +550,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 4.512695128,
-      "verify_run_seconds": 16.480344806,
+      "weights_run_seconds": 2.994526352,
+      "verify_run_seconds": 10.584480399,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 4.512695128,
-      "verify_run_seconds": 15.530710152,
+      "weights_run_seconds": 2.994526352,
+      "verify_run_seconds": 10.232519651,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1827,8 +1827,8 @@
         "finger2: Darkspear Signet",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 4.602953616,
-      "verify_run_seconds": 16.23167158,
+      "weights_run_seconds": 2.990574851,
+      "verify_run_seconds": 10.514464904,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2472,8 +2472,8 @@
         "finger2: Darkspear Signet",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 4.602953616,
-      "verify_run_seconds": 15.474454471,
+      "weights_run_seconds": 2.990574851,
+      "verify_run_seconds": 9.978650315,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2925,14 +2925,14 @@
               "item_name": "Wisdom's Leather Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.44983726349502406
+              "dps_delta": -0.44983726349502434
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 252565,
-          "item_name": "Mender's Mail Boots",
+          "item_id": 252533,
+          "item_name": "Mender's Leather Shoes",
           "source": "Leatherworking",
           "source_kind": "crafted",
           "verified": true,
@@ -2940,11 +2940,11 @@
           "dps_delta": 0.9874689848500111,
           "alternatives": [
             {
-              "item_id": 252533,
-              "item_name": "Mender's Leather Shoes",
+              "item_id": 252565,
+              "item_name": "Mender's Mail Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.9211402186033906e-16
+              "dps_delta": 0
             },
             {
               "item_id": 254001,
@@ -3062,14 +3062,14 @@
               "item_name": "Hand of Righteousness",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Whitemane",
-              "dps_delta": -0.48925692100926327
+              "dps_delta": -0.48925692100926266
             },
             {
               "item_id": 9457,
               "item_name": "Royal Diplomatic Scepter",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Dark Iron Ambassador",
-              "dps_delta": -1.3838751357220145
+              "dps_delta": -1.3838751357220138
             },
             {
               "item_id": 2164,
@@ -3123,14 +3123,14 @@
         "hands: Bonefingers",
         "waist: Gilded Cord",
         "legs: Misplaced Pantaloons",
-        "feet: Mender's Mail Boots",
+        "feet: Mender's Leather Shoes",
         "finger1: Darkspear Signet",
         "finger2: Snake Hoop",
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 5.481152069,
-      "verify_run_seconds": 26.942422636,
+      "weights_run_seconds": 3.522234244,
+      "verify_run_seconds": 17.110991836,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3573,7 +3573,7 @@
               "item_name": "Wisdom's Leather Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.44983726349502434
+              "dps_delta": -0.44983726349502406
             },
             {
               "item_id": 7760,
@@ -3587,8 +3587,8 @@
         },
         {
           "slot": "feet",
-          "item_id": 252533,
-          "item_name": "Mender's Leather Shoes",
+          "item_id": 252565,
+          "item_name": "Mender's Mail Boots",
           "source": "Leatherworking",
           "source_kind": "crafted",
           "verified": true,
@@ -3596,8 +3596,8 @@
           "dps_delta": 0.8911759784589321,
           "alternatives": [
             {
-              "item_id": 252565,
-              "item_name": "Mender's Mail Boots",
+              "item_id": 252533,
+              "item_name": "Mender's Leather Shoes",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -2.9211402186033906e-16
@@ -3779,14 +3779,14 @@
         "hands: Bonefingers",
         "waist: Gilded Cord",
         "legs: Misplaced Pantaloons",
-        "feet: Mender's Leather Shoes",
+        "feet: Mender's Mail Boots",
         "finger1: Darkspear Signet",
         "finger2: Snake Hoop",
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 5.481152069,
-      "verify_run_seconds": 25.4487637,
+      "weights_run_seconds": 3.522234244,
+      "verify_run_seconds": 16.299713728,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4517,8 +4517,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 9.74188293,
-      "verify_run_seconds": 51.807390831,
+      "weights_run_seconds": 5.639025596,
+      "verify_run_seconds": 30.788904653,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5249,8 +5249,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 9.74188293,
-      "verify_run_seconds": 50.425961989,
+      "weights_run_seconds": 5.639025596,
+      "verify_run_seconds": 30.502723070000002,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5945,8 +5945,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 10.877192816,
-      "verify_run_seconds": 147.451017304,
+      "weights_run_seconds": 6.385144803,
+      "verify_run_seconds": 87.375863178,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6655,8 +6655,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 10.877192816,
-      "verify_run_seconds": 141.932162236,
+      "weights_run_seconds": 6.385144803,
+      "verify_run_seconds": 86.160883017,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6843,7 +6843,7 @@
               "item_name": "Insightful Hood",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -11.02508137058816
+              "dps_delta": -11.025081370588163
             }
           ]
         },
@@ -6893,7 +6893,7 @@
               "item_name": "Royal Cap Spaulders",
               "source_kind": "dungeon",
               "source": "Scholomance: Jandice Barov",
-              "dps_delta": -9.153251027100438
+              "dps_delta": -9.153251027100437
             },
             {
               "item_id": 227011,
@@ -7142,7 +7142,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -6.079497506963794
+              "dps_delta": -6.079497506963797
             }
           ]
         },
@@ -7205,7 +7205,7 @@
               "item_name": "Rosewine Circle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -0.7402468576431034
+              "dps_delta": -0.7402468576431014
             }
           ]
         },
@@ -7293,7 +7293,7 @@
               "item_name": "Wind Spirit Staff",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Earthcaller Halmgar",
-              "dps_delta": -12.083781052644216
+              "dps_delta": -12.083781052644213
             },
             {
               "item_id": 9527,
@@ -7386,8 +7386,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 8.004129826,
-      "verify_run_seconds": 86.454313332,
+      "weights_run_seconds": 4.82060086,
+      "verify_run_seconds": 54.310208357,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7616,7 +7616,7 @@
           "item_name": "Argent Elite Shoulders",
           "source": "Argent Quartermaster Hasana",
           "source_kind": "vendor",
-          "score": 80.2038074359573,
+          "score": 80.20380743595732,
           "verified": true,
           "alternatives": [
             {
@@ -7624,21 +7624,21 @@
               "item_name": "Champion's Mail Epaulets",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -7.529792245927366
+              "dps_delta": -7.529792245927369
             },
             {
               "item_id": 231665,
               "item_name": "Warlord's Mail Epaulets",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -8.157803585831147
+              "dps_delta": -8.15780358583115
             },
             {
               "item_id": 14548,
               "item_name": "Royal Cap Spaulders",
               "source_kind": "dungeon",
               "source": "Scholomance: Jandice Barov",
-              "dps_delta": -9.153251027100438
+              "dps_delta": -9.153251027100442
             }
           ]
         },
@@ -7842,7 +7842,7 @@
               "item_name": "Leggings of The Five Thunders",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -4.009628326377085
+              "dps_delta": -4.00962832637708
             }
           ]
         },
@@ -7937,7 +7937,7 @@
               "item_name": "Rosewine Circle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -0.7402468576431034
+              "dps_delta": -0.7402468576431014
             }
           ]
         },
@@ -8118,8 +8118,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 8.004129826,
-      "verify_run_seconds": 83.443178639,
+      "weights_run_seconds": 4.82060086,
+      "verify_run_seconds": 53.129568173,
       "coverage": {
         "back": {
           "eligible": 457,

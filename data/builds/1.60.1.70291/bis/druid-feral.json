@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70291",
-  "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T13:35:49Z",
+  "engine_version": "0ea8d8e99",
+  "generated_at": "2026-10-09T18:22:32Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -544,8 +544,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.91739053,
-      "verify_run_seconds": 4.664347259,
+      "weights_run_seconds": 2.7853405369999997,
+      "verify_run_seconds": 3.252383483,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1170,8 +1170,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.91739053,
-      "verify_run_seconds": 4.644602359,
+      "weights_run_seconds": 2.7853405369999997,
+      "verify_run_seconds": 3.21263365,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1818,8 +1818,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.28011731,
-      "verify_run_seconds": 2.874189749,
+      "weights_run_seconds": 2.8841588419999997,
+      "verify_run_seconds": 2.091268287,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2460,8 +2460,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.28011731,
-      "verify_run_seconds": 2.838069238,
+      "weights_run_seconds": 2.8841588419999997,
+      "verify_run_seconds": 2.003874028,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3105,8 +3105,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 4.773821115,
-      "verify_run_seconds": 3.336177125,
+      "weights_run_seconds": 3.259670746,
+      "verify_run_seconds": 2.392232204,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3750,8 +3750,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 4.773821115,
-      "verify_run_seconds": 3.276576861,
+      "weights_run_seconds": 3.259670746,
+      "verify_run_seconds": 2.3579802020000002,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4403,8 +4403,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 4.789244541,
-      "verify_run_seconds": 4.384313448,
+      "weights_run_seconds": 3.223356164,
+      "verify_run_seconds": 3.340793386,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5052,8 +5052,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 4.789244541,
-      "verify_run_seconds": 4.133637406,
+      "weights_run_seconds": 3.223356164,
+      "verify_run_seconds": 2.913943559,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5797,8 +5797,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.655914555,
-      "verify_run_seconds": 12.2569388,
+      "weights_run_seconds": 3.199495669,
+      "verify_run_seconds": 8.90072305,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6118,14 +6118,14 @@
               "item_name": "Warlord's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.0894535936281198
+              "dps_delta": -2.089453593628121
             },
             {
               "item_id": 16549,
               "item_name": "Warlord's Dragonhide Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.114350382722757
+              "dps_delta": -2.1143503827227583
             },
             {
               "item_id": 23089,
@@ -6546,8 +6546,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.655914555,
-      "verify_run_seconds": 11.602589849,
+      "weights_run_seconds": 3.199495669,
+      "verify_run_seconds": 8.582108483,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6872,7 +6872,7 @@
               "item_name": "Field Marshal's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.434972448534458
+              "dps_delta": -3.4349724485344626
             },
             {
               "item_id": 23089,
@@ -7271,8 +7271,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.616849301,
-      "verify_run_seconds": 11.987260737,
+      "weights_run_seconds": 3.074248528,
+      "verify_run_seconds": 8.734414593,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8006,8 +8006,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.616849301,
-      "verify_run_seconds": 11.21733934,
+      "weights_run_seconds": 3.074248528,
+      "verify_run_seconds": 8.268690702,
       "coverage": {
         "back": {
           "eligible": 457,
