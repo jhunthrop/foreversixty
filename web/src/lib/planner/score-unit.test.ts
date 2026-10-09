@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { isLiveSimmed, plannerScoreCopy, scoreUnitForBuild, scoreUnitForSpec } from './score-unit';
+import type { SimResult } from '../sim/types';
+import {
+  liveFigureOf,
+  needsRoleMetrics,
+  plannerScoreCopy,
+  scoreUnitForBuild,
+  scoreUnitForSpec,
+} from './score-unit';
 
 describe('scoreUnitForSpec', () => {
   it.each([
@@ -36,17 +43,50 @@ describe('plannerScoreCopy', () => {
     expect(plannerScoreCopy.bandFigure(40.9088, 'dps')).toBe('40.9 DPS');
   });
 
-  it('promises a live figure only for damage', () => {
-    expect(plannerScoreCopy.waiting('dps')).toBe('live when the build reaches 51 points');
-    expect(plannerScoreCopy.waiting('hps')).not.toMatch(/reaches 51/);
-    expect(plannerScoreCopy.waiting('hps')).toMatch(/hps/);
-    expect(isLiveSimmed('dps')).toBe(true);
-    expect(isLiveSimmed('hps')).toBe(false);
-    expect(isLiveSimmed('tank_score')).toBe(false);
+  it('promises the same live figure for every role', () => {
+    expect(plannerScoreCopy.waiting()).toBe('live when the build reaches 51 points');
+  });
+
+  it("prints the figure in the role's own digits", () => {
+    expect(plannerScoreCopy.figure(12345.6, 'dps')).toBe('12,346');
+    expect(plannerScoreCopy.figure(381.04, 'hps')).toBe('381.0');
+    expect(plannerScoreCopy.figure(27517.4, 'tank_score')).toBe('27,517');
+  });
+
+  it('names the failure by unit', () => {
+    expect(plannerScoreCopy.failed('dps')).toBe('DPS estimate unavailable for this build.');
+    expect(plannerScoreCopy.failed('tank_score')).toBe('Tank score estimate unavailable for this build.');
   });
 
   it('keeps the ask button text for damage and names the unit otherwise', () => {
     expect(plannerScoreCopy.show('dps')).toBe('Show DPS');
     expect(plannerScoreCopy.show('hps')).toBe('Show HPS');
+  });
+});
+
+describe('the live figure', () => {
+  const estimate = (mean: number) => ({ mean, stddev: 0, error: 1, min: 0, max: 0 });
+  const result = {
+    dps: estimate(900),
+    healing: { effective_hps: estimate(380), hps: estimate(450), mana_lasts_sec: 1, hpm: 1 },
+    tank: { score: estimate(27_000) },
+  } as unknown as SimResult;
+
+  it("is the role's own estimate", () => {
+    expect(liveFigureOf(result, 'dps')?.mean).toBe(900);
+    expect(liveFigureOf(result, 'hps')?.mean).toBe(380);
+    expect(liveFigureOf(result, 'tank_score')?.mean).toBe(27_000);
+  });
+
+  it("is missing, never the damage number, when the role's block is absent", () => {
+    const plain = { dps: estimate(900) } as unknown as SimResult;
+    expect(liveFigureOf(plain, 'hps')).toBeNull();
+    expect(liveFigureOf(plain, 'tank_score')).toBeNull();
+  });
+
+  it('asks only a healer and a tank for role metrics', () => {
+    expect(needsRoleMetrics('dps')).toBe(false);
+    expect(needsRoleMetrics('hps')).toBe(true);
+    expect(needsRoleMetrics('tank_score')).toBe(true);
   });
 });

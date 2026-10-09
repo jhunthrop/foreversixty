@@ -7,6 +7,7 @@ import { specKeyFor } from '../addon/score';
 import { scoreUnitWord, type SlotScoreUnit } from '../bis/tank-view';
 import { simCopy } from '../sim/copy';
 import { specRow } from '../sim/spec-label';
+import type { Estimate, SimResult } from '../sim/types';
 
 const UNIT_BY_ROLE = { dps: 'dps', healer: 'hps', tank: 'tank_score' } as const;
 
@@ -41,20 +42,43 @@ export const plannerScoreCopy = {
   /** The ask-first button on a constrained device. */
   show: (unit: SlotScoreUnit): string =>
     unit === 'dps' ? simCopy.plannerDpsShow : `Show ${SCORE_LABEL[unit]}`,
-  /** Under the figure while the build is unfinished. Only damage is simmed live (see
-   *  `isLiveSimmed`), so a healer or tank says what is true instead of promising a figure. */
-  waiting: (unit: SlotScoreUnit): string =>
-    isLiveSimmed(unit) ? simCopy.plannerDpsLiveCaption : plannerScoreCopy.notSimmed(unit),
-  /** The browser sim runs the damage model only: no raid damage to heal and no boss to
-   *  tank, so it cannot produce HPS or a tank score. The band card carries those. */
-  notSimmed: (unit: SlotScoreUnit): string =>
-    `no live ${SCORE_LABEL[unit].toLowerCase()} yet; see the level band`,
+  /** Under the figure while the build is unfinished: every role is simmed live once the
+   *  build reaches 51 points, so every role says the same thing. */
+  waiting: (): string => simCopy.plannerDpsLiveCaption,
+  /** The live run failed or came back without the role's figure: "HPS estimate unavailable
+   *  for this build." */
+  failed: (unit: SlotScoreUnit): string => `${SCORE_LABEL[unit]} estimate unavailable for this build.`,
+  /** The live figure as the strip prints it. A healer's reads to a tenth, like the level
+   *  band's "40.9 HPS", so the strip and the band card agree on the digits they share;
+   *  damage and a tank score are whole numbers. */
+  figure: (value: number, unit: SlotScoreUnit): string =>
+    unit === 'hps'
+      ? value.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+      : Math.round(value).toLocaleString('en-US'),
   /** The level band's headline: "40.9 HPS". */
   bandFigure: (setScore: number, unit: SlotScoreUnit): string =>
     `${setScore.toFixed(1)} ${scoreUnitWord(unit)}`,
 } as const;
 
-/** Only a damage spec has a live number that is what its label says. */
-export function isLiveSimmed(unit: SlotScoreUnit): boolean {
-  return unit === 'dps';
+/** Every role's live run asks the engine for its own figure; damage is the default and
+ *  needs no opt-in. */
+export function needsRoleMetrics(unit: SlotScoreUnit): boolean {
+  return unit !== 'dps';
+}
+
+/**
+ * The estimate a finished live run headlines, by role: damage per second, a healer's
+ * effective HPS, a tank's score. Null when the engine returned a run without the role's
+ * block, which the caller treats as a failed run rather than showing a damage number under
+ * an HPS label.
+ */
+export function liveFigureOf(result: SimResult, unit: SlotScoreUnit): Estimate | null {
+  switch (unit) {
+    case 'dps':
+      return result.dps;
+    case 'hps':
+      return result.healing?.effective_hps ?? null;
+    case 'tank_score':
+      return result.tank?.score ?? null;
+  }
 }

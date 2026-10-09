@@ -46,6 +46,12 @@ describe('buildSimRequest', () => {
     expect('raw' in request).toBe(false);
   });
 
+  it('carries the role_metrics opt-in only when asked', () => {
+    expect('role_metrics' in buildSimRequest(input)).toBe(false);
+    expect('role_metrics' in buildSimRequest({ ...input, roleMetrics: false })).toBe(false);
+    expect(buildSimRequest({ ...input, roleMetrics: true }).role_metrics).toBe(true);
+  });
+
   it('round-trips through JSON unchanged, which is all the wasm is handed', () => {
     expect(JSON.parse(JSON.stringify(buildSimRequest(input)))).toEqual(buildSimRequest(input));
   });

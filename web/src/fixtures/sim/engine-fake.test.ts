@@ -127,6 +127,43 @@ describe('simRun', () => {
   });
 });
 
+describe('role_metrics', () => {
+  const run = async (spec: string, roleMetrics: boolean): Promise<SimResult> => {
+    const engine = createFakeEngine({ tickMs: 0 });
+    const asked = { ...request, spec, iterations: 500, ...(roleMetrics ? { role_metrics: true } : {}) };
+    const shards = splitOf(engine.simSplit(json(asked), 3)).map((shard) => json(shard));
+    const results = await Promise.all(shards.map((shard, i) => engine.simRun(shard, `r${i}`)));
+    return resultOf(engine.simCombine(JSON.stringify(results.map((r) => resultOf(r)))));
+  };
+
+  it('gives a healer its pooled healing block', async () => {
+    const result = await run('priest-holy', true);
+    expect(result.tank).toBeUndefined();
+    expect(result.healing?.effective_hps.mean).toBeGreaterThan(300);
+    expect(result.healing?.effective_hps.error).toBeGreaterThan(0);
+    expect(result.healing?.hps.mean).toBeGreaterThan(result.healing!.effective_hps.mean);
+  });
+
+  it('gives a tank its pooled tank block and score', async () => {
+    const result = await run('warrior-protection', true);
+    expect(result.healing).toBeUndefined();
+    expect(result.tank?.score.mean).toBeGreaterThan(20_000);
+    expect(result.tank?.health).toBeGreaterThan(0);
+  });
+
+  it('gives a damage spec, or a request that did not ask, no role block', async () => {
+    for (const [spec, asked] of [
+      ['warrior-fury', true],
+      ['priest-holy', false],
+      ['warrior-protection', false],
+    ] as const) {
+      const result = await run(spec, asked);
+      expect(result.healing).toBeUndefined();
+      expect(result.tank).toBeUndefined();
+    }
+  });
+});
+
 describe('simCombine', () => {
   it('takes one JSON string, not a JS array', async () => {
     const engine = createFakeEngine({ tickMs: 0 });

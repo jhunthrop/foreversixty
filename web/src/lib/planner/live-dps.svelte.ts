@@ -1,5 +1,7 @@
 // web/src/lib/planner/live-dps.svelte.ts
 // A 500-iteration sim behind every planner edit, and the three rules that make it usable.
+// A healer's run is asked for its effective HPS and a tank's for its score (`role_metrics`);
+// the figure is the same sim/score code the nightly ranker uses, run in the browser.
 //
 //   1. The pool is created on the first request, never in this factory. /planner.html has a
 //      0.90 performance budget and a 100 ms total-blocking-time budget in lighthouserc.json;
@@ -15,9 +17,9 @@ import { runSim, SimRunError, type RunHandle } from '../sim/run';
 import { defaultSettings } from '../sim/settings';
 import { referenceStatOf } from '../sim/spec-label';
 import { toCharacterSpec, type SimCharacter } from '../sim/character';
-import { simCopy } from '../sim/copy';
 import { ITERATIONS, type Estimate } from '../sim/types';
 import { createPool, type SimPool } from '../sim/worker';
+import { liveFigureOf, needsRoleMetrics, plannerScoreCopy, scoreUnitForSpec } from './score-unit';
 
 export const LIVE_DEBOUNCE_MS = 350;
 
@@ -42,6 +44,7 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
 
   async function start(character: SimCharacter, index: TalentIndex): Promise<void> {
     state = 'running';
+    const unit = scoreUnitForSpec(character.spec);
     const settings = defaultSettings(referenceStatOf(character.spec));
     handle = runSim(
       poolOnce(),
@@ -51,6 +54,7 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
         character: toCharacterSpec(character, index, settings.buffs, settings.consumables),
         encounter: settings.encounter,
         iterations: ITERATIONS.live,
+        roleMetrics: needsRoleMetrics(unit),
       },
       () => {
         // The planner shows one figure at the end, not a ticking one: a number that moves
@@ -61,7 +65,13 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
 
     try {
       const result = await handle.result;
-      estimate = result.dps;
+      const figure = liveFigureOf(result, unit);
+      if (figure === null) {
+        message = plannerScoreCopy.failed(unit);
+        state = 'error';
+        return;
+      }
+      estimate = figure;
       iterationsRun = result.iterations_run;
       message = null;
       state = 'ready';
@@ -69,7 +79,7 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
       // A cancel is this module's own doing -- a newer edit arrived -- and is not a failure
       // the player should be told about; the newer run will set the state.
       if (error instanceof SimRunError && error.cancelled) return;
-      message = simCopy.liveDpsFailed;
+      message = plannerScoreCopy.failed(unit);
       state = 'error';
     } finally {
       handle = null;

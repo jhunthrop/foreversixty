@@ -208,8 +208,6 @@ export const simCopy = {
     'The engine hit a bug running this character. Try the Solo preset or a different setting, and tell us on Discord what you loaded so we can fix it.',
 
   // --- Task 20: live DPS in the planner. ---
-  /** The engine has no model for this spec, or the run otherwise failed. */
-  liveDpsFailed: 'DPS estimate unavailable for this build.',
   /** The summary bar's fourth figure, beside Level, Split and Points. */
   plannerDpsLabel: 'DPS',
   /** Under the figure while points are unspent: the live estimate waits for a whole build. */

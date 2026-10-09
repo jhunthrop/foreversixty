@@ -128,6 +128,81 @@ describe('createLiveDps', () => {
     dps.dispose();
   });
 
+  it('asks a healer for its effective HPS, not its damage, and says the figure is HPS-sized', async () => {
+    const index = await warriorIndex();
+    vi.useFakeTimers();
+    const dps = live();
+    dps.request({ ...character, spec: 'priest-holy', class_slug: 'priest' }, index);
+    await vi.runAllTimersAsync();
+    expect(dps.state).toBe('ready');
+    // The fake's healer draws around 380 effective HPS; its damage fixture is in the thousands.
+    expect(dps.estimate.mean).toBeGreaterThan(300);
+    expect(dps.estimate.mean).toBeLessThan(460);
+    expect(dps.estimate.error).toBeGreaterThan(0);
+    expect(dps.iterationsRun).toBe(500);
+    dps.dispose();
+  });
+
+  it("asks a tank for its score, from the result's tank block", async () => {
+    const index = await warriorIndex();
+    vi.useFakeTimers();
+    const dps = live();
+    dps.request({ ...character, spec: 'warrior-protection' }, index);
+    await vi.runAllTimersAsync();
+    expect(dps.state).toBe('ready');
+    expect(dps.estimate.mean).toBeGreaterThan(20_000);
+    expect(dps.estimate.mean).toBeLessThan(34_000);
+    dps.dispose();
+  });
+
+  it('sends role_metrics for a healer and a tank and leaves a damage spec a plain run', async () => {
+    const index = await warriorIndex();
+    vi.useFakeTimers();
+    const seen: { spec: string; role_metrics?: boolean }[] = [];
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const spy = {
+      ...engine,
+      simSplit: (json: string, n: number) => {
+        seen.push(JSON.parse(json) as { spec: string; role_metrics?: boolean });
+        return engine.simSplit(json, n);
+      },
+    };
+    const dps = createLiveDps({
+      pool: createPool({ hardwareConcurrency: 1, spawn: () => createFakeWorker(spy) }),
+    });
+    for (const spec of ['warrior-fury', 'priest-holy', 'warrior-protection']) {
+      dps.request({ ...character, spec }, index);
+      await vi.runAllTimersAsync();
+    }
+    expect(seen.map((request) => [request.spec, request.role_metrics])).toEqual([
+      ['warrior-fury', undefined],
+      ['priest-holy', true],
+      ['warrior-protection', true],
+    ]);
+    dps.dispose();
+  });
+
+  it('is an error, not a damage number under an HPS label, when a healer comes back without its figure', async () => {
+    const index = await warriorIndex();
+    vi.useFakeTimers();
+    const engine = createFakeEngine({ tickMs: 0, ticks: 1 });
+    const stripped = {
+      ...engine,
+      simCombine: (json: string) => {
+        const { healing: _healing, ...rest } = JSON.parse(engine.simCombine(json)) as Record<string, unknown>;
+        return JSON.stringify(rest);
+      },
+    };
+    const dps = createLiveDps({
+      pool: createPool({ hardwareConcurrency: 1, spawn: () => createFakeWorker(stripped) }),
+    });
+    dps.request({ ...character, spec: 'priest-holy', class_slug: 'priest' }, index);
+    await vi.runAllTimersAsync();
+    expect(dps.state).toBe('error');
+    expect(dps.message).toBe('HPS estimate unavailable for this build.');
+    dps.dispose();
+  });
+
   it('says so rather than throwing when the engine fails', async () => {
     const index = await warriorIndex();
     vi.useFakeTimers();

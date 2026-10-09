@@ -58,6 +58,8 @@ export interface RunInput {
   targetError?: number;
   /** The size of one step of a target-error run. Ignored without `targetError`. */
   stepIterations?: number;
+  /** Asks a healer or tank for its role's figure (`SimRequest.role_metrics`). */
+  roleMetrics?: boolean;
 }
 
 export interface RunUpdate {
@@ -88,7 +90,8 @@ export function buildSimRequest(input: RunInput): SimRequest {
   // Omitted rather than sent as 0: `target_error` is `omitempty` on the Go side, and a
   // request that carries the key with a zero in it reads, in the drawer and in a share
   // URL, as a deliberate choice rather than as today's fixed-count run.
-  return (input.targetError ?? 0) > 0 ? { ...request, target_error: input.targetError } : request;
+  const withTarget = (input.targetError ?? 0) > 0 ? { ...request, target_error: input.targetError } : request;
+  return input.roleMetrics === true ? { ...withTarget, role_metrics: true } : withTarget;
 }
 
 let runCounter = 0;

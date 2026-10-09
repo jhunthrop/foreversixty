@@ -163,6 +163,13 @@ export interface SimRequest {
   target_error?: number;
   bulk?: BulkSpec;
   weights?: WeightsSpec;
+  /**
+   * Asks a healer or tank spec's plain run for the figure its role is ranked on (sim/api
+   * `RoleMetrics`): a healer runs against the heal profile's fake raid for its fixed
+   * fight and the result carries `healing`; a tank's carries `tank`. The live planner's
+   * opt-in. Omitted, not false, when off, like `target_error`.
+   */
+  role_metrics?: boolean;
 }
 
 /** Contract 1.2. The size of one step of a target-error run. */
@@ -343,6 +350,35 @@ export interface SimResult {
   weights?: StatWeight[];
   /** One iteration's casts, the median-DPS one. */
   sample?: SampleCast[];
+  /** A healer's figures; present only when the request set `role_metrics` for a healer. */
+  healing?: HealingResult;
+  /** A tank's figures and score; present only when the request set `role_metrics` for a tank. */
+  tank?: TankResult;
+}
+
+/** sim/api `HealingResult`: what a healer did against the heal profile's fake raid. */
+export interface HealingResult {
+  /** Healing that landed per second: the figure a healer is ranked on. */
+  effective_hps: Estimate;
+  /** Healing per second including the overheal. */
+  hps: Estimate;
+  /** When the healer first ran out of mana; past the fight's length for a set that never did. */
+  mana_lasts_sec: number;
+  /** Effective healing per point of mana spent. */
+  hpm: number;
+}
+
+/** sim/api `TankResult`: what a tank took and made against the curated boss, and its score. */
+export interface TankResult {
+  dtps: Estimate;
+  tps: Estimate;
+  tmi: Estimate;
+  /** The character's maximum health. */
+  health: number;
+  effective_health: number;
+  chance_of_death: number;
+  /** The tank score (sim/score), scored after the shards are pooled. */
+  score: Estimate;
 }
 
 /** One row of GET /v1/sims?mine=1. */

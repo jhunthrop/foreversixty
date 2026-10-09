@@ -13,7 +13,8 @@
 // The numbers are drawn from the fixture's own mean and standard deviation with a seeded
 // generator rather than randomly, so a Playwright assertion on the DPS figure is stable.
 import type { EngineModule, ProgressHandler } from '../../lib/sim/engine';
-import type { SimRequest, SimResult } from '../../lib/sim/types';
+import { SPEC_BY_KEY } from '../../lib/sim/specs';
+import type { Estimate, HealingResult, SimRequest, SimResult, TankResult } from '../../lib/sim/types';
 import {
   type BulkRequest,
   type Combination,
@@ -89,6 +90,103 @@ function statsOf(samples: number[]): SimResult['dps'] & { n: number } {
     min: Math.min(...samples),
     max: Math.max(...samples),
   };
+}
+
+/** A healer's and a tank's figure, drawn around these the way the DPS is drawn around the
+ *  fixture's. Round stand-ins, not the engine's: a test asserts a figure arrives and has its
+ *  unit, never what it is. */
+const FAKE_HPS = { mean: 380, stddev: 14 };
+const FAKE_TANK_SCORE = { mean: 27_000, stddev: 700 };
+const FAKE_MAX_HEALTH = 5200;
+
+const roleOf = (spec: string): string | undefined => SPEC_BY_KEY[spec]?.role;
+
+/** The role's own figure for one iteration, or null for a damage spec or a request that did not
+ *  ask (`role_metrics`). */
+function roleSampleOf(request: SimRequest): { mean: number; stddev: number } | null {
+  if (request.role_metrics !== true) return null;
+  const role = roleOf(request.spec);
+  if (role === 'healer') return FAKE_HPS;
+  return role === 'tank' ? FAKE_TANK_SCORE : null;
+}
+
+/** The result's healing or tank block for the role samples drawn so far. */
+function roleBlocksOf(request: SimRequest, samples: number[]): Pick<SimResult, 'healing' | 'tank'> {
+  if (samples.length === 0) return {};
+  const { n: _n, ...figure } = statsOf(samples);
+  if (roleOf(request.spec) === 'healer') {
+    const healing: HealingResult = {
+      effective_hps: figure,
+      hps: { ...figure, mean: figure.mean * 1.3 },
+      mana_lasts_sec: 240,
+      hpm: 5.5,
+    };
+    return { healing };
+  }
+  const part = (mean: number): Estimate => ({
+    mean,
+    stddev: mean / 10,
+    error: mean / 10 / Math.sqrt(samples.length),
+    min: 0,
+    max: 0,
+  });
+  const tank: TankResult = {
+    dtps: part(420),
+    tps: part(380),
+    tmi: part(30),
+    health: FAKE_MAX_HEALTH,
+    effective_health: 29_000,
+    chance_of_death: 0.01,
+    score: figure,
+  };
+  return { tank };
+}
+
+/** The iteration-weighted pool of one estimate read from every part, the way the real
+ *  combiner pools it (sim/combine): the spread between the part means stays in the variance. */
+function pool(parts: readonly SimResult[], read: (part: SimResult) => Estimate): Estimate {
+  const n = parts.reduce((total, part) => total + part.iterations_run, 0);
+  const mean = n === 0 ? 0 : parts.reduce((sum, part) => sum + read(part).mean * part.iterations_run, 0) / n;
+  const sumSquares = parts.reduce(
+    (sum, part) => sum + part.iterations_run * (read(part).stddev ** 2 + read(part).mean ** 2),
+    0,
+  );
+  const stddev = Math.sqrt(n === 0 ? 0 : Math.max(0, sumSquares / n - mean * mean));
+  return {
+    mean,
+    stddev,
+    error: n > 0 ? stddev / Math.sqrt(n) : 0,
+    min: n === 0 ? 0 : Math.min(...parts.map((part) => read(part).min)),
+    max: n === 0 ? 0 : Math.max(...parts.map((part) => read(part).max)),
+  };
+}
+
+/** The pooled healing or tank block, when every part carries one. The tank's score is pooled
+ *  as the fake draws it; the real combiner scores the pooled terms instead. */
+function poolRoles(parts: readonly SimResult[]): Pick<SimResult, 'healing' | 'tank'> {
+  const healing = parts.map((part) => part.healing);
+  if (healing.every((block) => block !== undefined)) {
+    return {
+      healing: {
+        ...healing[0],
+        effective_hps: pool(parts, (part) => part.healing!.effective_hps),
+        hps: pool(parts, (part) => part.healing!.hps),
+      },
+    };
+  }
+  const tank = parts.map((part) => part.tank);
+  if (tank.every((block) => block !== undefined)) {
+    return {
+      tank: {
+        ...tank[0],
+        dtps: pool(parts, (part) => part.tank!.dtps),
+        tps: pool(parts, (part) => part.tank!.tps),
+        tmi: pool(parts, (part) => part.tank!.tmi),
+        score: pool(parts, (part) => part.tank!.score),
+      },
+    };
+  }
+  return {};
 }
 
 const delay = (ms: number): Promise<void> =>
@@ -269,6 +367,8 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
       const request = JSON.parse(requestJSON) as SimRequest;
       const random = seeded(request.random_seed * 7919 + request.iterations);
       const samples: number[] = [];
+      const roleSample = roleSampleOf(request);
+      const roleSamples: number[] = [];
       const perTick = Math.max(1, Math.ceil(request.iterations / ticks));
       const startedAt = Date.now();
 
@@ -281,6 +381,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
         const upTo = Math.min(request.iterations, samples.length + perTick);
         while (samples.length < upTo) {
           samples.push(normal(random, fixture.dps.mean, fixture.dps.stddev));
+          if (roleSample !== null) roleSamples.push(normal(random, roleSample.mean, roleSample.stddev));
         }
         const { n, ...dps } = statsOf(samples);
         progress(callbackId, JSON.stringify({ iterations_run: n, dps }));
@@ -296,6 +397,7 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
         duration_ms: Date.now() - startedAt,
         summary: fixture.summary,
         sample: fixtureSample,
+        ...roleBlocksOf(request, roleSamples),
       } satisfies SimResult);
     } finally {
       active.delete(callbackId);
@@ -324,39 +426,18 @@ export function createFakeEngine(options: FakeEngineOptions = {}): EngineModule 
 
     simCombine(resultsJSON) {
       const parts = JSON.parse(resultsJSON) as SimResult[];
-      let n = 0;
-      let sum = 0;
-      let sumSquares = 0;
-      let min = Number.POSITIVE_INFINITY;
-      let max = Number.NEGATIVE_INFINITY;
-      let durationMs = 0;
-      for (const part of parts) {
-        n += part.iterations_run;
-        sum += part.dps.mean * part.iterations_run;
-        sumSquares += part.iterations_run * (part.dps.stddev ** 2 + part.dps.mean ** 2);
-        min = Math.min(min, part.dps.min);
-        max = Math.max(max, part.dps.max);
-        durationMs = Math.max(durationMs, part.duration_ms);
-      }
-      const mean = n === 0 ? 0 : sum / n;
-      const variance = n === 0 ? 0 : Math.max(0, sumSquares / n - mean * mean);
-      const stddev = Math.sqrt(variance);
+      const n = parts.reduce((total, part) => total + part.iterations_run, 0);
       const first = parts[0];
       return JSON.stringify({
         engine_version: first.engine_version,
         request: { ...first.request, iterations: n },
         lane: 'browser',
-        dps: {
-          mean,
-          stddev,
-          error: n > 0 ? stddev / Math.sqrt(n) : 0,
-          min: n === 0 ? 0 : min,
-          max: n === 0 ? 0 : max,
-        },
+        dps: pool(parts, (part) => part.dps),
         iterations_run: n,
-        duration_ms: durationMs,
+        duration_ms: Math.max(...parts.map((part) => part.duration_ms)),
         summary: fixture.summary,
         sample: fixtureSample,
+        ...poolRoles(parts),
       } satisfies SimResult);
     },
 

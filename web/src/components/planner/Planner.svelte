@@ -26,7 +26,6 @@
   import { plannerCopy } from '../../lib/planner/copy';
   import { levelReached, ranksByTalent } from '../../lib/planner/derive';
   import { encodeFS1, orderFromRanks, remapTreeRanksByTalentId } from '../../lib/planner/fs1';
-  import { isLiveSimmed, scoreUnitForBuild } from '../../lib/planner/score-unit';
   import { createLiveDps } from '../../lib/planner/live-dps.svelte';
   import { isConstrainedDevice, liveGate } from '../../lib/planner/live-gate';
   import { DATA_LOAD_FAILED, DataLoadError, loadReference, loadTalents } from '../../lib/planner/load';
@@ -289,9 +288,8 @@
   // a phone is asked first. Stopping keeps the last figure on screen, dimmed.
   const constrained = untrack(() => isConstrainedDevice());
   let dpsOptedIn = $state(false);
-  // A healer or tank has no live figure the browser sim can produce (it simulates damage
-  // only), so the engine is never asked for one: see score-unit.ts.
-  const scoreUnit = $derived(scoreUnitForBuild(store.classSlug, store.split));
+  // Every role has a live figure: damage, a healer's effective HPS or a tank's score, each
+  // computed in the browser by the same sim/score code the nightly ranker uses.
   const gate = $derived(liveGate({ spent: store.spent, constrained, optedIn: dpsOptedIn }));
 
   // A figure from another class is not a stale answer to this build. Declared BEFORE the
@@ -306,8 +304,7 @@
   $effect(() => {
     void store.order;
     void store.gear;
-    if (gate === 'run' && isLiveSimmed(scoreUnit))
-      live.request(characterFromPlanner(store), store.talentIndex);
+    if (gate === 'run') live.request(characterFromPlanner(store), store.talentIndex);
     else live.request(null, null);
   });
 
