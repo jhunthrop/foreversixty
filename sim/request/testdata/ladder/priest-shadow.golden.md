@@ -93,13 +93,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-100000000000000000 | main_hand:284287 ranged:263430 | 12.0 | 3 | spell:5019=96.6, spell:8092=17.4, spell:594=10.7 | {SpellID: 15473} |
-| 20 | 000000000000000000-00000000000000000-542000000000000000 | main_hand:2567 ranged:5243 | 26.7 | 4 | spell:5019=94.9, spell:8102=13.0, spell:970=8.7, spell:2944=1.8 | {SpellID: 14751}, {SpellID: 15407}, {SpellID: 15473} |
-| 30 | 000000000000000000-00000000000000000-543120301200000000 | main_hand:272086 ranged:5213 | 37.8 | 4 | spell:5019=78.3, spell:17311=28.7, spell:992=2.0, spell:19276=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 38 | 000000000000000000-00000000000000000-543120301201300040 | main_hand:873 ranged:13064 | 60.0 | 4 | spell:5019=67.5, spell:17312=26.4, spell:2767=2.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 40 | 000000000000000000-00000000000000000-543120301201300051 | main_hand:873 ranged:5216 | 63.2 | 5 | spell:5019=71.5, spell:17312=26.5, spell:2767=1.1, spell:15473=1.0, spell:19277=1.0 | {SpellID: 14751} |
+| 10 | 000000000000000000-00000000000000000-100000000000000000 | main_hand:263937 ranged:263430 | 12.3 | 3 | spell:5019=96.4, spell:8092=17.7, spell:594=10.8 | {SpellID: 15473} |
+| 20 | 000000000000000000-00000000000000000-542000000000000000 | main_hand:890 ranged:5243 | 24.0 | 4 | spell:5019=94.7, spell:8102=13.2, spell:970=8.8, spell:2944=1.9 | {SpellID: 14751}, {SpellID: 15407}, {SpellID: 15473} |
+| 30 | 000000000000000000-00000000000000000-543120301200000000 | main_hand:1317 ranged:5213 | 36.8 | 4 | spell:5019=78.2, spell:17311=28.7, spell:992=1.9, spell:19276=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 38 | 000000000000000000-00000000000000000-543120301201300040 | main_hand:7714 ranged:13064 | 56.9 | 4 | spell:5019=68.5, spell:17312=25.7, spell:2767=2.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 40 | 000000000000000000-00000000000000000-543120301201300051 | main_hand:7714 ranged:5216 | 59.7 | 5 | spell:5019=72.7, spell:17312=25.8, spell:2767=1.1, spell:15473=1.0, spell:19277=1.0 | {SpellID: 14751} |
 | 50 | 523000000000000000-00000000000000000-543120301201300051 | main_hand:9527 ranged:249232 | 84.8 | 5 | spell:5019=58.8, spell:17313=22.5, spell:10893=1.1, spell:15473=1.0, spell:19278=1.0 | {SpellID: 14751} |
-| 60 | 524011031300000000-00000000000000000-543120301201300051 | main_hand:22631 ranged:19108 | 186.6 | 7 | spell:5019=64.6, spell:18807=30.1, spell:10894=2.1, spell:14751=1.5, spell:19280=1.5 | - |
+| 60 | 524011031300000000-00000000000000000-543120301201300051 | main_hand:22799 ranged:22821 | 206.1 | 6 | spell:5019=67.2, spell:18807=28.8, spell:10894=2.1, spell:14751=1.5, spell:19280=1.5 | - |
 
 ## Learned but unused (informational)
 
@@ -169,6 +169,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Holy Fire (spell 15261)
 - Holy Nova (spell 27801)
 - Mind Blast (spell 10947)
+- Shadow Word: Death (spell 1309636)
 - Smite (spell 10934)
 - Starshards (spell 19305)
 

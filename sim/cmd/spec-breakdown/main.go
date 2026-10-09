@@ -34,7 +34,15 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-const buildDir = "data/builds/1.60.1.70009"
+// buildDirectory is data/builds/<active build> under the repo root: the build
+// web/src/data/active-build.json names, never a build typed here.
+func buildDirectory(repoRoot string) (string, error) {
+	build, err := leveling.ReadActiveBuild(repoRoot)
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(repoRoot, "data", "builds", build), nil
+}
 
 type options struct {
 	repoRoot   string
@@ -164,16 +172,26 @@ type bisEntry struct {
 	} `json:"slots"`
 }
 
-// bisDirectory is where the published entries are read from.
-func (o options) bisDirectory() string {
+// bisDirectory is where the published entries are read from: the active
+// build's bis/, or (leveling.BisDir) the newest other build's until the
+// nightly has ranked the active one.
+func (o options) bisDirectory() (string, error) {
 	if o.bisDir != "" {
-		return o.bisDir
+		return o.bisDir, nil
 	}
-	return filepath.Join(o.repoRoot, buildDir, "bis")
+	dir, err := buildDirectory(o.repoRoot)
+	if err != nil {
+		return "", err
+	}
+	return leveling.BisDir(dir), nil
 }
 
 func loadEntry(o options) (bisEntry, error) {
-	raw, err := os.ReadFile(filepath.Join(o.bisDirectory(), o.spec+".json"))
+	bisDir, err := o.bisDirectory()
+	if err != nil {
+		return bisEntry{}, err
+	}
+	raw, err := os.ReadFile(filepath.Join(bisDir, o.spec+".json"))
 	if err != nil {
 		return bisEntry{}, err
 	}
@@ -248,7 +266,11 @@ func buildRequest(o options) (api.SimRequest, error) {
 }
 
 func loadSpellNames(repoRoot string) (map[int32]string, error) {
-	raw, err := os.ReadFile(filepath.Join(repoRoot, buildDir, "spells.json"))
+	dir, err := buildDirectory(repoRoot)
+	if err != nil {
+		return nil, err
+	}
+	raw, err := os.ReadFile(filepath.Join(dir, "spells.json"))
 	if err != nil {
 		return nil, err
 	}

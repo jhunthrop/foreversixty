@@ -197,12 +197,26 @@ func TestLoadRotation(t *testing.T) {
 	}
 }
 
-func TestLoadSpellNames(t *testing.T) {
+// testBuildDir is the build directory a test root's active-build.json names.
+const testBuildDir = "data/builds/9.9.9.9"
+
+// activeRoot is a temp repo root whose active build is testBuildDir's.
+func activeRoot(t *testing.T) string {
+	t.Helper()
 	root := t.TempDir()
+	writeFile(t, filepath.Join(root, "web", "src", "data", "active-build.json"), `{"build":"9.9.9.9"}`)
+	return root
+}
+
+func TestLoadSpellNames(t *testing.T) {
+	if _, err := loadSpellNames(t.TempDir()); err == nil {
+		t.Error("a root with no active-build.json should fail")
+	}
+	root := activeRoot(t)
 	if _, err := loadSpellNames(root); err == nil {
 		t.Error("missing spells.json should fail")
 	}
-	path := filepath.Join(root, buildDir, "spells.json")
+	path := filepath.Join(root, testBuildDir, "spells.json")
 	writeFile(t, path, `[{"id":1752,"name":"Sinister Strike"},{"id":2,"name":"Other"}]`)
 	names, err := loadSpellNames(root)
 	if err != nil || len(names) != 2 || names[1752] != "Sinister Strike" {
@@ -216,8 +230,8 @@ func TestLoadSpellNames(t *testing.T) {
 
 func bisFixture(t *testing.T) string {
 	t.Helper()
-	root := t.TempDir()
-	writeFile(t, filepath.Join(root, buildDir, "bis", testSpec+".json"), `{"bands":[
+	root := activeRoot(t)
+	writeFile(t, filepath.Join(root, testBuildDir, "bis", testSpec+".json"), `{"bands":[
 	  {"band":60,"preset":"bare","faction":"horde","race":"orc","talents":"other","slots":[]},
 	  {"band":60,"preset":"bare","faction":"alliance","race":"human","talents":"0023",
 	   "slots":[{"slot":"head","item_id":12},{"slot":"neck","item_id":34}]}]}`)
@@ -274,8 +288,8 @@ func TestBuildRequestLayersEntryAndOverrides(t *testing.T) {
 }
 
 func TestBuildRequestRejectsUnknownSpecAndMissingEntry(t *testing.T) {
-	root := t.TempDir()
-	writeFile(t, filepath.Join(root, buildDir, "bis", "nope.json"),
+	root := activeRoot(t)
+	writeFile(t, filepath.Join(root, testBuildDir, "bis", "nope.json"),
 		`{"bands":[{"band":60,"preset":"bare","faction":"alliance"}]}`)
 	o := baseOptions(root)
 	o.spec = "nope"

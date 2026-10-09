@@ -99,7 +99,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 0000000000000000-255130030005102020-0000000000000000 | main_hand:868 off_hand:4652 | 61.7 | 7 | other:attack/1=92.2, spell:6351=60.7, spell:17364=15.8, spell:6364=3.9, spell:10412=2.0 | - |
 | 40 | 0000000000000000-255130030005102031-0000000000000000 | main_hand:2164 off_hand:4652 | 67.4 | 9 | other:attack/1=113.4, spell:6352=53.1, spell:17364=16.7, spell:18107=4.6, spell:6365=3.0 | - |
 | 50 | 3230000000000000-255130030005102051-0000000000000000 | main_hand:810 off_hand:10195 | 83.4 | 8 | other:attack/1=97.4, spell:10435=40.0, spell:17364=19.2, spell:10413=2.0, spell:10437=2.0 | - |
-| 60 | 3230300000000000-255130030005102051-0520000000000000 | main_hand:21126 off_hand:21610 | 125.8 | 8 | other:attack/1=113.6, spell:10436=69.8, spell:17364=22.5, spell:10438=3.4, spell:10414=3.0 | - |
+| 60 | 3230300000000000-255130030005102051-0520000000000000 | main_hand:22802 off_hand:22819 | 131.5 | 8 | other:attack/1=115.2, spell:10436=69.8, spell:17364=22.4, spell:10438=3.4, spell:10414=3.0 | - |
 
 ## Learned but unused (informational)
 
