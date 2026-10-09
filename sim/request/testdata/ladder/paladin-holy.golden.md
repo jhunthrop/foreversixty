@@ -94,7 +94,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 01000000000000000-0000000000000000-00000000000000000 | main_hand:277247 | 0.0 | 0 | - | {SpellID: 20216}, {SpellID: 25292}, {SpellID: 25890} |
-| 20 | 05320001000000000-0000000000000000-00000000000000000 | main_hand:6953 | 9.7 | 1 | spell:19750=54.0 | {SpellID: 20216}, {SpellID: 25292}, {SpellID: 25890} |
+| 20 | 05320001000000000-0000000000000000-00000000000000000 | main_hand:286977 | 9.7 | 1 | spell:19750=54.0 | {SpellID: 20216}, {SpellID: 25292}, {SpellID: 25890} |
 | 30 | 05320003224000000-0000000000000000-00000000000000000 | main_hand:267369 | 16.5 | 1 | spell:19939=59.4, other:mana_gain=4.3 | {SpellID: 1311606}, {SpellID: 20216}, {SpellID: 25292}, {SpellID: 25890} |
 | 38 | 05320003225111040-0000000000000000-00000000000000000 | main_hand:267369 | 23.0 | 4 | spell:19940=52.8, other:mana_gain=9.3, spell:20216=3.0, spell:1311605=0.0, spell:1311606=0.0 | {SpellID: 25292}, {SpellID: 25890} |
 | 40 | 05320003225111051-0000000000000000-00000000000000000 | main_hand:7723 | 24.8 | 4 | spell:19940=55.8, other:mana_gain=10.3, spell:20216=3.0, spell:20473=0.0, spell:25914=0.0 | {SpellID: 25292}, {SpellID: 25890} |
