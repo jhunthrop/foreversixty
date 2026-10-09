@@ -366,6 +366,15 @@ components:
         weights:
           $ref: '#/components/schemas/WeightsSpec'
           description: Asks for stat weights instead of a DPS number.
+        role_metrics:
+          type: boolean
+          description: >-
+            Asks a healer or tank spec's plain run for the figure its role is
+            ranked on. A healer runs against the curated heal profile's fake
+            raid for the profile's fixed fight (duration_sec and variation are
+            replaced) and the result carries healing; a tank runs in the
+            curated boss fight it always does and the result carries tank. A
+            damage spec, a bulk request and a weights request refuse it.
     SimResult:
       type: object
       required: [engine_version, lane, dps, iterations_run]
@@ -408,6 +417,54 @@ components:
           description: >-
             One iteration's casts in order - the median-DPS one. It is a table
             view of the cast log, not a guide.
+        healing:
+          $ref: '#/components/schemas/HealingResult'
+        tank:
+          $ref: '#/components/schemas/TankResult'
+    HealingResult:
+      type: object
+      description: >-
+        What a healer did against the heal profile's fake raid; present only
+        when the request set role_metrics for a healer spec.
+      required: [effective_hps, hps, mana_lasts_sec, hpm]
+      properties:
+        effective_hps:
+          $ref: '#/components/schemas/Estimate'
+          description: Healing that landed per second, the figure a healer is ranked on.
+        hps:
+          $ref: '#/components/schemas/Estimate'
+          description: Healing per second including the overheal.
+        mana_lasts_sec:
+          type: number
+          description: >-
+            When the healer first ran out of mana; past the fight's length
+            for a set that never did.
+        hpm:
+          type: number
+          description: Effective healing per point of mana spent.
+    TankResult:
+      type: object
+      description: >-
+        What a tank took and made against the curated boss and the score made
+        of it (sim/score); present only when the request set role_metrics for
+        a tank spec.
+      required: [dtps, tps, tmi, health, effective_health, chance_of_death, score]
+      properties:
+        dtps: { $ref: '#/components/schemas/Estimate' }
+        tps: { $ref: '#/components/schemas/Estimate' }
+        tmi: { $ref: '#/components/schemas/Estimate' }
+        health: { type: number, description: The character's maximum health. }
+        effective_health:
+          type: number
+          description: >-
+            The hit points the boss's raw damage would take to kill the tank at
+            the damage it actually takes.
+        chance_of_death: { type: number }
+        score:
+          $ref: '#/components/schemas/Estimate'
+          description: >-
+            The tank score. A bulk-pooled run computes it after pooling the
+            three measured terms, because it is nonlinear in them.
     Estimate:
       type: object
       description: A measured number and its spread.

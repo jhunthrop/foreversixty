@@ -72,9 +72,57 @@ func Split(req api.SimRequest, n int) ([]api.SimRequest, error) {
 	return out, nil
 }
 
+// poolEstimates pools one estimate read from every part, weighting each by
+// the iterations behind it.
+//
+// The pooled variance is the within-part variance plus the spread between
+// the part means. Dropping the second term would report a tighter error
+// than a serial run, and the sim page would lie about its own precision.
+// Min and Max are extremes over the parts; a part whose Max is zero
+// reported no distribution at all, and folding its Min in would pull the
+// run's minimum to zero - a figure no iteration produced.
+func poolEstimates(parts []api.SimResult, read func(api.SimResult) api.Estimate) api.Estimate {
+	var total int
+	var mean float64
+	for _, p := range parts {
+		total += p.IterationsRun
+		mean += read(p).Mean * float64(p.IterationsRun)
+	}
+	mean /= float64(total)
+
+	var pooled float64
+	for _, p := range parts {
+		e := read(p)
+		d := e.Mean - mean
+		pooled += float64(p.IterationsRun) * (e.StdDev*e.StdDev + d*d)
+	}
+	pooled /= float64(total)
+
+	out := api.Estimate{
+		Mean:   mean,
+		StdDev: math.Sqrt(pooled),
+		Error:  math.Sqrt(pooled) / math.Sqrt(float64(total)),
+	}
+	first := true
+	for _, p := range parts {
+		e := read(p)
+		if e.Max == 0 {
+			continue
+		}
+		if first {
+			out.Min, out.Max = e.Min, e.Max
+			first = false
+			continue
+		}
+		out.Min = math.Min(out.Min, e.Min)
+		out.Max = math.Max(out.Max, e.Max)
+	}
+	return out
+}
+
 // Results combines partial results into one.
 //
-// DPS is pooled, IterationsRun summed, DurationMS the slowest part's, and
+// DPS (and a role's healing and tank blocks) is pooled, IterationsRun summed, DurationMS the slowest part's, and
 // the damage table merged row by row by weightSummaries. Everything else
 // is the FIRST part's, presented as the whole run's: the request (whose
 // RandomSeed is the run's, because combine.Split gives part zero the
@@ -108,45 +156,10 @@ func Results(parts []api.SimResult) (api.SimResult, error) {
 	out := parts[0]
 	out.IterationsRun = total
 
-	// Pooled mean: weight each part by the iterations behind it.
-	var mean float64
-	for _, p := range parts {
-		mean += p.DPS.Mean * float64(p.IterationsRun)
-	}
-	mean /= float64(total)
-
-	// Pooled variance is the within-part variance plus the spread
-	// between the part means. Dropping the second term would report a
-	// tighter error than a serial run, and the sim page would lie about
-	// its own precision.
-	var pooled float64
-	for _, p := range parts {
-		w := float64(p.IterationsRun)
-		d := p.DPS.Mean - mean
-		pooled += w * (p.DPS.StdDev*p.DPS.StdDev + d*d)
-	}
-	pooled /= float64(total)
-
-	out.DPS = api.Estimate{
-		Mean:   mean,
-		StdDev: math.Sqrt(pooled),
-		Error:  math.Sqrt(pooled) / math.Sqrt(float64(total)),
-	}
-	// Min and Max are extremes over the parts. A part whose Max is zero
-	// reported no distribution at all, and folding its Min in would
-	// pull the run's minimum to zero - a figure no iteration produced.
-	first := true
-	for _, p := range parts {
-		if p.DPS.Max == 0 {
-			continue
-		}
-		if first {
-			out.DPS.Min, out.DPS.Max = p.DPS.Min, p.DPS.Max
-			first = false
-			continue
-		}
-		out.DPS.Min = math.Min(out.DPS.Min, p.DPS.Min)
-		out.DPS.Max = math.Max(out.DPS.Max, p.DPS.Max)
+	out.DPS = poolEstimates(parts, func(p api.SimResult) api.Estimate { return p.DPS })
+	var err error
+	if out.Healing, out.Tank, err = poolRoles(parts); err != nil {
+		return api.SimResult{}, err
 	}
 
 	out.DurationMS = 0

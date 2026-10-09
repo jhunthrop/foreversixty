@@ -138,6 +138,14 @@ func TestValidateRejectsBadRequests(t *testing.T) {
 		// still cannot be run and is refused here rather than queued and
 		// failed at the worker.
 		{"a level above the cap", func(r *SimRequest) { r.Character.Level = MaxLevel + 1 }, "character.level"},
+		{"role metrics on a weights request", func(r *SimRequest) {
+			r.RoleMetrics = true
+			r.Weights = &WeightsSpec{Stats: []string{"intellect"}, Reference: "intellect"}
+		}, "role_metrics"},
+		{"role metrics on a bulk request", func(r *SimRequest) {
+			r.RoleMetrics = true
+			r.Bulk = &BulkSpec{}
+		}, "role_metrics"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -151,6 +159,18 @@ func TestValidateRejectsBadRequests(t *testing.T) {
 				t.Errorf("error %q does not mention %q", err, tc.want)
 			}
 		})
+	}
+}
+
+func TestValidateAcceptsRoleMetricsOnAPlainRun(t *testing.T) {
+	req := SimRequest{
+		EngineVersion: enginever.Version, Spec: "priest-holy", Iterations: 3000, RoleMetrics: true,
+		Source:    CharacterSource{Kind: SourceManual},
+		Encounter: DefaultEncounter(),
+		Character: CharacterSpec{Name: "Anduin", Race: "human", Class: "priest", Level: 60},
+	}
+	if err := req.Validate(); err != nil {
+		t.Fatalf("a plain role_metrics request was rejected: %v", err)
 	}
 }
 

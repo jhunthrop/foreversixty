@@ -41,6 +41,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdrain"
 	"github.com/jhunthrop/foreversixty/sim/request"
+	"github.com/jhunthrop/foreversixty/sim/score"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
@@ -157,6 +158,13 @@ func simRun(_ js.Value, args []js.Value) any {
 	if err != nil {
 		return failJSON(req, err.Error())
 	}
+	// A role_metrics request (the live planner's) also asks for the
+	// healer's or tank's own figure; sim/score reads it from the same
+	// metrics the nightly ranker does.
+	healing, tank, err := score.RoleBlocks(engineRes, engineReq, req)
+	if err != nil {
+		return failJSON(req, err.Error())
+	}
 	return encodeOrError(stamp(api.SimResult{
 		Request:       req,
 		DPS:           adapter.DPS(engineRes),
@@ -164,6 +172,8 @@ func simRun(_ js.Value, args []js.Value) any {
 		DurationMS:    time.Since(start).Milliseconds(),
 		Summary:       sum,
 		Sample:        adapter.Sample(engineRes),
+		Healing:       healing,
+		Tank:          tank,
 	}))
 }
 

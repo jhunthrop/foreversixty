@@ -90,3 +90,43 @@ func TestEstimateOfCarriesTheDistributionAndTheStandardError(t *testing.T) {
 		t.Error("zero iterations must leave the error at 0")
 	}
 }
+
+func TestTankBlockOfCarriesTheMeasuredTermsAndTheirScore(t *testing.T) {
+	run := TankRunResult{
+		DTPS: api.Estimate{Mean: 500, Error: 5}, TPS: api.Estimate{Mean: 400, Error: 8},
+		TMI: api.Estimate{Mean: 30, Error: 0.5}, ChanceOfDeath: 0.02, Health: 10000,
+	}
+	block, err := TankBlockOf(run, 60)
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, err := BossRawDPS(60)
+	if err != nil {
+		t.Fatal(err)
+	}
+	figures, err := NewTankFigures(run, raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if block.Score.Mean != figures.Score || block.Score.Error != figures.ScoreError || block.EffectiveHealth != figures.EffectiveHealth {
+		t.Errorf("block %+v does not carry the figures %+v", block, figures)
+	}
+	if block.Health != 10000 || block.DTPS != run.DTPS || block.ChanceOfDeath != 0.02 {
+		t.Errorf("block lost a measured term: %+v", block)
+	}
+	run.DTPS.Mean = 0
+	if _, err := TankBlockOf(run, 60); err == nil {
+		t.Error("a fight the boss never hit scored")
+	}
+}
+
+func TestHealingBlockCarriesTheHealersFigures(t *testing.T) {
+	r := HealingResult{
+		Effective: api.Estimate{Mean: 300}, Raw: api.Estimate{Mean: 400},
+		ManaLastsSec: 275, ManaSpent: 100, EffectiveHealed: 250,
+	}
+	b := r.Block()
+	if b.EffectiveHPS.Mean != 300 || b.HPS.Mean != 400 || b.ManaLastsSec != 275 || b.HPM != 2.5 {
+		t.Errorf("block = %+v", b)
+	}
+}
