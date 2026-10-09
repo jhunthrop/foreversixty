@@ -140,6 +140,44 @@ describe('ties', () => {
   });
 });
 
+describe('ties on the published Alliance numbers (rows 6 to 14)', () => {
+  const ROWS_6_TO_14 = [799.4, 781.1, 778.2, 757.7, 750.6, 746.6, 700.6, 669.3, 667.9];
+
+  it('marks exactly the rows that have a partner within 1%, never one that has none', () => {
+    const rows = rankRole(
+      ROWS_6_TO_14.map((v, i) => dpsInput('c', `s${i}`, `S${i}`, v)),
+      'dps',
+    );
+    // 781.1 and 778.2 pair; 757.7, 750.6 and 746.6 pair in turn; 669.3 and 667.9 pair.
+    // 799.4 (2.3% above 781.1) and 700.6 (4.5% below 746.6 and above 669.3) have no partner.
+    expect(rows.map((r) => r.tie)).toEqual([
+      null,
+      'below',
+      'above',
+      'below',
+      'both',
+      'above',
+      null,
+      'below',
+      'above',
+    ]);
+  });
+
+  it('gives every mark a partner within 1% on the side it names', () => {
+    const rows = rankRole(
+      ROWS_6_TO_14.map((v, i) => dpsInput('c', `s${i}`, `S${i}`, v)),
+      'dps',
+    );
+    const within = (a: number, b: number): boolean => Math.abs(1 - a / b) * 100 <= 1;
+    rows.forEach((row, i) => {
+      if (row.tie === 'above' || row.tie === 'both')
+        expect(within(row.metric, rows[i - 1]!.metric)).toBe(true);
+      if (row.tie === 'below' || row.tie === 'both')
+        expect(within(rows[i + 1]!.metric, row.metric)).toBe(true);
+    });
+  });
+});
+
 describe('race, confidence and rulers', () => {
   it('names the band race and carries the low-confidence flag', () => {
     const entry = catalogEntry('warlock', 'affliction', 'Affliction');
