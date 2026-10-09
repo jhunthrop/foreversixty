@@ -10,6 +10,8 @@
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
   import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { isLiveSimmed, plannerScoreCopy } from '../../lib/planner/score-unit';
+  import type { SlotScoreUnit } from '../../lib/bis/tank-view';
   import { poolQualityCopy } from '../../lib/sim/pool-quality-copy';
 
   let {
@@ -21,6 +23,7 @@
     ownGearCaveat = false,
     showSimLink = true,
     unfinishedNote = 'dynamic',
+    unit = 'dps',
   }: {
     live: LiveDps;
     /** Unused when `showSimLink` is false (the planner rebuild's header facts rail -- the
@@ -48,7 +51,13 @@
      *  and this slot reads a plain explainer of what the figure is waiting for. 'dynamic'
      *  (default) keeps the non-standalone embed's original behaviour. */
     unfinishedNote?: 'dynamic' | 'static';
+    /** What the figure is called (the build's role): a healer's is HPS, a tank's a tank
+     *  score. The browser sim only produces damage, so for those two the figure stays an
+     *  em dash and the note says so -- a DPS number is never relabelled as HPS. */
+    unit?: SlotScoreUnit;
   } = $props();
+
+  const simmed = $derived(isLiveSimmed(unit));
 
   // `off` with a figure still held is a build that stopped being simmed -- a point came out,
   // or the device has not been asked yet -- so it dims exactly as a run in flight does.
@@ -58,7 +67,7 @@
   // from a build the engine could not run this time -- most often a spec switch -- is not a
   // stale version of the current answer, it is an answer to a different question.
   const figure = $derived(
-    live.state !== 'error' && live.estimate.mean > 0
+    simmed && live.state !== 'error' && live.estimate.mean > 0
       ? Math.round(live.estimate.mean).toLocaleString('en-US')
       : '—',
   );
@@ -69,13 +78,15 @@
   );
   // The line under the figure says why there is no fresh number, when there is not one.
   const note = $derived(
-    gate === 'unfinished'
-      ? unfinishedNote === 'static'
-        ? simCopy.plannerDpsLiveCaption
-        : simCopy.plannerDpsPointsToGo(pointsLeft)
-      : gate === 'ask'
-        ? simCopy.plannerDpsShowNote
-        : band,
+    !simmed
+      ? plannerScoreCopy.notSimmed(unit)
+      : gate === 'unfinished'
+        ? unfinishedNote === 'static'
+          ? plannerScoreCopy.waiting(unit)
+          : simCopy.plannerDpsPointsToGo(pointsLeft)
+        : gate === 'ask'
+          ? simCopy.plannerDpsShowNote
+          : band,
   );
 </script>
 
@@ -84,13 +95,13 @@
      and the bar aligns its columns to the top (SummaryBar.svelte), so this column being one
      line taller than its neighbours leaves every caption and every value on one baseline. -->
 <div class="flex flex-col gap-1">
-  <span class="label text-muted">{simCopy.plannerDpsLabel}</span>
+  <span class="label text-muted">{plannerScoreCopy.label(unit)}</span>
   <!-- A column below md, one row from md: with the figure and the button side by side on a
        phone, the runner's wider fallback font wrapped the pair in ways a Mac never showed
        (planner-dps.spec.ts read the button a row above the figure on CI). Stacked, the
        phone layout has nothing left to wrap. -->
   <div class="flex flex-col items-start gap-2 md:flex-row md:items-center md:gap-4">
-    {#if gate === 'ask'}
+    {#if simmed && gate === 'ask'}
       <!-- The same 44px the figure occupies, so asking moves nothing. -->
       <button
         type="button"
@@ -98,7 +109,7 @@
         onclick={onshow}
         data-testid="planner-dps-show"
       >
-        {simCopy.plannerDpsShow}
+        {plannerScoreCopy.show(unit)}
       </button>
     {:else}
       <!-- min-w-[7ch]: the summary bar's row wrap (SummaryBar.svelte) reads this column's own

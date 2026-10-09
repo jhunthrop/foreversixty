@@ -8,6 +8,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadAplSteps, type AplStep } from './apl-steps';
+import { collapseRuns, type CollapsedLine, type StepLine } from './rotation-collapse';
 
 function repoRoot(): string {
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -103,35 +105,62 @@ function rankFor(
   return entry === undefined || entry.rank === 0 ? undefined : entry.rank;
 }
 
-export interface RotationLineView {
-  spellId: number;
-  name: string;
-  rank?: number;
-  condition: string;
-  /** Set only when the line names an icon AND this build's own icon tree ships the file --
-   *  `undefined` either way reads as "no icon resolved" (the panel's own placeholder),
-   *  never a broken `<img src>`. */
-  icon?: string;
-  /** True when `condition` ends in a literal `…` -- the source data's own sentence is cut
-   *  off (spec §4.C.3's named, still-open blocking defect for hunter-marksmanship's level-20
-   *  Arcane Shot line), never a mock or CSS truncation. The panel still renders the sentence
-   *  in full (never a second, CSS-driven clip on top of the data's own one); this flag is
-   *  for the build lane's own report, so the defect is named on every spec it appears on,
-   *  not just the one example the spec calls out by name. */
-  truncatedAtSource: boolean;
+/** One rendered row: icon first, rank only when `spellranks.json` names one. */
+export type RotationLineView = CollapsedLine;
+
+/** The rank a note names for `name` ("Heal rank 4", "Heal (rank 4)"), corrected to the rank
+ *  the band casts. The curated notes are written against the top of the leveling range, so at
+ *  band 20 a note can speak of a rank the character has not learned. Only this one phrasing
+ *  is rewritten; a looser match could change a different spell's rank. */
+export function alignNoteRank(note: string, name: string, bandRank: number | undefined): string {
+  if (bandRank === undefined) return note;
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const named = new RegExp(`((?<![A-Z][a-z]+ )\\b${escaped} \\(?rank )\\d+`, 'g');
+  return note.replace(named, `$1${bandRank}`);
 }
 
-/** Every line of `entry`, ready to render -- reads `spellranks.json` once per line rather
+/** The curated steps lined up with `entry`'s published lines, or `undefined` when they do
+ *  not match one to one -- the words are then left off rather than put on the wrong line. */
+function stepsAlignedWith(
+  entry: RotationEntry,
+  spec: string,
+  spellRanks: SpellRanksFile | undefined,
+  classSlug: string,
+): AplStep[] | undefined {
+  const families = spellRanks?.classes[classSlug];
+  if (families === undefined) return undefined;
+  const steps = loadAplSteps(spec, families, entry.level);
+  const aligned =
+    steps !== undefined &&
+    steps.length === entry.lines.length &&
+    steps.every((step, index) => step.resolvedSpellId === entry.lines[index].spell_id);
+  return aligned ? steps : undefined;
+}
+
+/** Every row of `entry`, ready to render -- reads `spellranks.json` once per line rather
  *  than trusting a caller to have already joined it (this is the one place that join
- *  happens, the same discipline `source-cell.ts` applies to a pick's own source). */
-export function rotationLinesFor(entry: RotationEntry, build: string, classSlug: string): RotationLineView[] {
+ *  happens, the same discipline `source-cell.ts` applies to a pick's own source). Steps
+ *  that cast the same spell at the same rank in a row are one row (rotation-collapse.ts). */
+export function rotationLinesFor(
+  entry: RotationEntry,
+  build: string,
+  classSlug: string,
+  spec: string,
+): RotationLineView[] {
   const spellRanks = loadSpellRanks(build);
-  return entry.lines.map((line) => ({
-    spellId: line.spell_id,
-    name: line.name,
-    rank: rankFor(spellRanks, classSlug, line.name, line.spell_id),
-    condition: line.condition,
-    icon: line.icon !== undefined && iconFileExists(build, line.icon) ? line.icon : undefined,
-    truncatedAtSource: line.condition.endsWith('…'),
-  }));
+  const steps = stepsAlignedWith(entry, spec, spellRanks, classSlug);
+  const stepLines: StepLine[] = entry.lines.map((line, index) => {
+    const rank = rankFor(spellRanks, classSlug, line.name, line.spell_id);
+    const condition = alignNoteRank(line.condition, line.name, rank);
+    return {
+      spellId: line.spell_id,
+      name: line.name,
+      rank,
+      condition,
+      icon: line.icon !== undefined && iconFileExists(build, line.icon) ? line.icon : undefined,
+      truncatedAtSource: line.condition.endsWith('…'),
+      words: steps?.[index].words ?? null,
+    };
+  });
+  return collapseRuns(stepLines);
 }

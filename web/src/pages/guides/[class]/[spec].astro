@@ -109,7 +109,8 @@ const buildTrees = buildCode === undefined ? [] : (decodeBuildTrees(build, build
 // with zero lines standing in for "no data".
 const rotationEntries = loadRotations(build, fullSpecId) ?? [];
 const rotationEntry = rotationEntryFor(rotationEntries, bandTopLevel(60));
-const rotationLines = rotationEntry === undefined ? [] : rotationLinesFor(rotationEntry, build, classSlug);
+const rotationLines =
+  rotationEntry === undefined ? [] : rotationLinesFor(rotationEntry, build, classSlug, fullSpecId);
 const rotationBandLabel = String(bandTopLevel(60));
 
 // Rail: Stat priority card's real per-point numbers, and the Leveling band strip -- both
