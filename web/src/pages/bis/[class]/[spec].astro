@@ -152,7 +152,9 @@ function bandViewsFor(faction: Faction, infos: readonly BandInfo[], preset?: Bis
       plannerHref: `/planner?spec=${specEntry.spec}&talents=${encodeURIComponent(rawBand?.talents ?? '')}`,
       generatedAtDate: file.generated_at.slice(0, 10),
       rotationLines:
-        rotationEntry === undefined ? [] : rotationLinesFor(rotationEntry, build, specEntry.class_slug),
+        rotationEntry === undefined
+          ? []
+          : rotationLinesFor(rotationEntry, build, specEntry.class_slug, specEntry.spec),
       sourceGroups: sourceGroupsFor(info.rows),
       newAtBand: newAtBandLinesFor(
         info,
