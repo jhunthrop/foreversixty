@@ -530,5 +530,7 @@ export const tankCopy = {
     `Confirmed by a full sim: ${score.toFixed(1)} score with this item`,
   weightsScaleNote: (topLabel: string): string =>
     `Per point of stat, normalized to ${topLabel} = 1.00, with score per point and the sim error.`,
-  indexSpecSummary: (effectiveHealth: string): string => `Level 60: ${effectiveHealth} effective health`,
+  /** The index row: both figures the tier list's tank page reads, so the two pages agree. */
+  indexSpecSummary: (effectiveHealth: string, damageTakenPerSecond: string): string =>
+    `Level 60: ${effectiveHealth} effective health · ${damageTakenPerSecond} damage taken per second`,
 } as const;
