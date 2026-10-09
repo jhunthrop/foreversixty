@@ -8308,7 +8308,7 @@
           {
             "spell_id": 425268,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
           }
         ]
@@ -8331,7 +8331,7 @@
           {
             "spell_id": 425270,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
           },
           {
@@ -8367,7 +8367,7 @@
           {
             "spell_id": 2054,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal"
           },
           {
@@ -8444,7 +8444,7 @@
           {
             "spell_id": 425271,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
           },
           {
@@ -8486,7 +8486,7 @@
           {
             "spell_id": 6063,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -8563,7 +8563,7 @@
           {
             "spell_id": 425273,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
           },
           {
@@ -8605,7 +8605,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -8682,13 +8682,13 @@
           {
             "spell_id": 401859,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending (rank 3) goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
+            "condition": "Prayer of Mending goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
             "icon": "spell_holy_prayerofmendingtga"
           },
           {
             "spell_id": 425273,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
           },
           {
@@ -8730,7 +8730,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -8807,13 +8807,13 @@
           {
             "spell_id": 1240826,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending (rank 3) goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
+            "condition": "Prayer of Mending goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
             "icon": "spell_holy_prayerofmendingtga"
           },
           {
             "spell_id": 425275,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
           },
           {
@@ -8855,7 +8855,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
@@ -8932,13 +8932,13 @@
           {
             "spell_id": 1240827,
             "name": "Prayer of Mending",
-            "condition": "Prayer of Mending (rank 3) goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
+            "condition": "Prayer of Mending goes on the tank every time it is ready: a 10 second cooldown, five charges, and it is the cheapest healing per mana the Holy kit has.",
             "icon": "spell_holy_prayerofmendingtga"
           },
           {
             "spell_id": 425277,
             "name": "Renew",
-            "condition": "Renew stays on the tank for the whole fight, at rank 3: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
+            "condition": "Renew stays on the tank for the whole fight at a cheap rank: a cheaper rank returns more health per mana for the spell power it is cast with, and the dearer ranks cost the mana the fight runs out of.",
             "icon": "spell_holy_renew"
           },
           {
@@ -8980,7 +8980,7 @@
           {
             "spell_id": 6064,
             "name": "Heal",
-            "condition": "Heal rank 4 is the mana-efficient filler: the same 0.857 spell power coefficient as Greater Heal for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
+            "condition": "Heal at the band's rank is the mana-efficient filler: once Greater Heal is known, a mid rank of Heal shares its spell power coefficient for far less mana, so with healing power it returns more health per mana than any Greater Heal rank (the classic downrank).",
             "icon": "spell_holy_heal02"
           },
           {
