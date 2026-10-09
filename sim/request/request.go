@@ -109,6 +109,10 @@ func ParseClass(slug string) (proto.Class, bool) {
 	return c, ok
 }
 
+// ErrRoleMetricsSpec is returned when role_metrics is asked of a spec that
+// is neither a healer nor a tank.
+var ErrRoleMetricsSpec = errors.New("request: role_metrics needs a healer or tank spec")
+
 // Options are the inputs a request needs that the module cannot embed.
 //
 // Today that is the build's consumable table. It belongs to a build
@@ -231,7 +235,7 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 		}
 	}
 
-	return &proto.RaidSimRequest{
+	engineReq := &proto.RaidSimRequest{
 		Raid:      raid,
 		Encounter: enc,
 		SimOptions: &proto.SimOptions{
@@ -244,7 +248,32 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 			// sample card. See Options.NoSampleIteration.
 			SampleIteration: !opt.NoSampleIteration,
 		},
-	}, nil
+	}
+	if req.RoleMetrics {
+		if err := applyRoleFight(engineReq, req.Spec); err != nil {
+			return nil, err
+		}
+	}
+	return engineReq, nil
+}
+
+// applyRoleFight puts a role-metrics request into the fight its role is
+// ranked on. A tank is already in front of the curated boss (BuildWith
+// applied it); a healer gets the curated heal profile's fake raid and its
+// fixed-length fight. Any other spec has no role figure to ask for.
+func applyRoleFight(engineReq *proto.RaidSimRequest, spec string) error {
+	switch {
+	case IsTankSpec(spec):
+		return nil
+	case IsHealerSpec(spec):
+		profile, err := EmbeddedHealProfile()
+		if err != nil {
+			return err
+		}
+		profile.Attach(engineReq)
+		return nil
+	}
+	return fmt.Errorf("%w: %q is neither a healer nor a tank", ErrRoleMetricsSpec, spec)
 }
 
 // engineCharacterLevel is the level BuildWith hands the engine's

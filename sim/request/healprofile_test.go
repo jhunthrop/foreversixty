@@ -100,3 +100,24 @@ func TestHealProfileRefusesAnUnknownField(t *testing.T) {
 		t.Error("an unknown field loaded without error")
 	}
 }
+
+func TestEmbeddedHealProfileMatchesCurated(t *testing.T) {
+	curated, err := os.ReadFile(filepath.FromSlash(curatedHealProfile))
+	if err != nil {
+		t.Fatalf("reading the curated heal profile: %v", err)
+	}
+	if string(curated) != string(healProfileJSON) {
+		t.Fatal("sim/request/heal-profile.json differs from data/curated/heal-profile.json; run `make heal-profile-sync`")
+	}
+	embedded, err := EmbeddedHealProfile()
+	if err != nil {
+		t.Fatalf("the embedded profile does not load: %v", err)
+	}
+	loaded, err := LoadHealProfile(curatedHealProfile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if embedded.ID != loaded.ID || embedded.DurationSec != loaded.DurationSec {
+		t.Errorf("embedded %q/%ds, curated %q/%ds", embedded.ID, embedded.DurationSec, loaded.ID, loaded.DurationSec)
+	}
+}

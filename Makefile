@@ -301,6 +301,15 @@ CURATED_SPECS_JSON = data/curated/specs.json
 tank-encounter-sync:
 	cp data/curated/tank-encounter.json sim/request/tank-encounter.json
 
+.PHONY: heal-profile-sync
+# heal-profile-sync copies the curated heal profile (the fake raid a healer
+# is simmed against) to the file sim/request embeds, so the browser's wasm
+# attaches the profile the nightly ranker does. data/curated/heal-profile.json
+# is the single source; sim/request's TestEmbeddedHealProfileMatchesCurated
+# fails when the copy is stale.
+heal-profile-sync:
+	cp data/curated/heal-profile.json sim/request/heal-profile.json
+
 .PHONY: apl-sync
 # apl-sync copies every WRITTEN curated rotation into the two places that
 # run one. data/curated/apl/<spec>.json's `rotation` block is the single

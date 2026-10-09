@@ -158,6 +158,15 @@ func TankProfileForLevel(characterLevel int) (TankProfile, error) {
 	}, nil
 }
 
+// RoleHealer is the role data/curated/specs.json gives a healer spec.
+const RoleHealer = "healer"
+
+// IsHealerSpec reports whether spec is a healer on sim/specs' canonical list.
+func IsHealerSpec(spec string) bool {
+	known, ok := specs.ByKey[spec]
+	return ok && known.Role == RoleHealer
+}
+
 // IsTankSpec reports whether spec is a tank on sim/specs' canonical list.
 func IsTankSpec(spec string) bool {
 	known, ok := specs.ByKey[spec]

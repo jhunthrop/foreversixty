@@ -10,6 +10,7 @@ package request
 
 import (
 	"bytes"
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -66,20 +67,37 @@ type HealProfile struct {
 	Sources      []HealProfileSource `json:"sources"`
 }
 
+// healProfileJSON is data/curated/heal-profile.json, embedded the way
+// tank-encounter.json is (`make heal-profile-sync`), so a request built in
+// the browser's wasm can attach the same fake raid the ranker does.
+// TestEmbeddedHealProfileMatchesCurated proves the copy is current.
+//
+//go:embed heal-profile.json
+var healProfileJSON []byte
+
 // LoadHealProfile reads and validates the curated profile at path.
 func LoadHealProfile(path string) (HealProfile, error) {
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		return HealProfile{}, fmt.Errorf("request: reading the heal profile: %w", err)
 	}
+	return parseHealProfile(raw, path)
+}
+
+// EmbeddedHealProfile is the curated profile compiled into this build.
+func EmbeddedHealProfile() (HealProfile, error) {
+	return parseHealProfile(healProfileJSON, "embedded heal-profile.json")
+}
+
+func parseHealProfile(raw []byte, name string) (HealProfile, error) {
 	var profile HealProfile
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&profile); err != nil {
-		return HealProfile{}, fmt.Errorf("request: decoding %s: %w", path, err)
+		return HealProfile{}, fmt.Errorf("request: decoding %s: %w", name, err)
 	}
 	if err := profile.validate(); err != nil {
-		return HealProfile{}, fmt.Errorf("%s: %w", path, err)
+		return HealProfile{}, fmt.Errorf("%s: %w", name, err)
 	}
 	return profile, nil
 }
