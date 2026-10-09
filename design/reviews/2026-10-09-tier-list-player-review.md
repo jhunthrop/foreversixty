@@ -82,3 +82,20 @@ Conditions to ship: make the tank sort key agree with the BiS index (sort the
 index on damage taken too, or show both there); mark both rows of a tie and
 fix the states caption. Polish: Horde tank and healer renders, drop the
 duplicated box lines, the cramped rows.
+
+# Built page (2026-10-09, pre-merge screenshots)
+
+Player: **SHIP**; both conditions met (tanks on damage taken per second with
+the figure on the BiS index; tie marks on both rows). Designer: NOT YET on
+six points, resolved before merge: the tie marks the designer read as wrong
+were right (each marked row has a partner within 1% below it; a vitest pins
+the Alliance rows 6–14); the tie note uses the spec's wording; the bottom
+box has its two bullets back and the notes above are shortened instead; the
+phone header, which never had a menu on this site (eight doors stacked ~230
+px), is now a 56 px bar with a Menu button, desktop unchanged, API chrome
+refreshed, full Playwright green; tank figures are whole numbers on the tier
+list and the BiS index; phone units match the desktop heads. Signed-in,
+cross-role pointer, hover, focus and skeleton states captured
+(tier-list-built-*.png, git-ignored). No runtime error panel exists: the page
+is prerendered and a signed-in fetch failure omits the callout. Merged to
+main as 8d6d1716 with Tier List in the nav between Rankings and Guides.
