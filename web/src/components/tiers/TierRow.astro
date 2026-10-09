@@ -168,8 +168,12 @@ const gapLabel = tiersCopy.headers.gap[row.role];
   }
   .tier-name-line {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
+    gap: 4px 8px;
+  }
+  .tier-you-slot :global(.pill) {
+    white-space: nowrap;
   }
   .tier-spec-link {
     font-family: var(--font-display);

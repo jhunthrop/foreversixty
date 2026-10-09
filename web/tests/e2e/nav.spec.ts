@@ -22,6 +22,21 @@ test.describe('aria-current', () => {
   });
 });
 
+test.describe('desktop header', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+  test.skip(() => test.info().project.name !== 'desktop', 'desktop layout only');
+
+  test('the wordmark, the doors and the session sit left to right, with no Menu button', async ({ page }) => {
+    await page.goto('/');
+    const mark = await page.getByRole('banner').getByRole('link', { name: 'Forever Sixty' }).boundingBox();
+    const nav = await page.getByTestId('primary-nav').boundingBox();
+    const discord = await page.getByRole('banner').getByRole('link', { name: 'Discord' }).boundingBox();
+    expect(mark!.x + mark!.width).toBeLessThanOrEqual(nav!.x);
+    expect(nav!.x + nav!.width).toBeLessThanOrEqual(discord!.x);
+    await expect(page.getByTestId('menu-button')).toBeHidden();
+  });
+});
+
 test.describe('phone nav', () => {
   test.use({ viewport: { width: 360, height: 800 } });
   test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');

@@ -52,7 +52,7 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
       Forever Sixty
     </span>
   </a>
-  <div class="col-start-2 row-start-1 flex items-center md:gap-3">
+  <div class="col-start-2 row-start-1 flex items-center md:order-3 md:gap-3">
     <slot name="session" />
     <a
       href={communityLinks.discordInvite}
@@ -101,7 +101,7 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
     aria-label="Primary"
     data-testid="primary-nav"
     data-menu-panel
-    class="max-md:hidden col-span-3 row-start-2 md:row-auto grid grid-cols-3 gap-x-3 gap-y-2 md:flex md:flex-wrap xl:flex-nowrap md:gap-x-[22px] text-[13px] font-semibold tracking-[0.12em] uppercase"
+    class="max-md:hidden col-span-3 row-start-2 md:order-2 md:row-auto grid grid-cols-3 gap-x-3 gap-y-2 md:flex md:flex-wrap xl:flex-nowrap md:gap-x-[22px] text-[13px] font-semibold tracking-[0.12em] uppercase"
   >
     {NAV_ITEMS.map((item) => {
       const current = isNavItemCurrent(item, path);
