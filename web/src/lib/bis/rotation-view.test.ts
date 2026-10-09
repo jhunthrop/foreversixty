@@ -101,9 +101,10 @@ describe('rotationLinesFor on the holy priest band 20 list', () => {
   it("shows the rank the band casts and corrects the note's rank to it", () => {
     const heal = rows().find((row) => row.name === 'Heal');
     expect(heal?.rank).toBe(1);
-    expect(heal?.condition).toContain('Heal rank 1 is the mana-efficient filler');
+    // The curated note is band-neutral since 2026-10-09 (it names no rank of its own).
+    expect(heal?.condition).toContain("Heal at the band's rank is the mana-efficient filler");
     expect(heal?.condition).not.toContain('Heal rank 4');
-    expect(rows().find((row) => row.name === 'Renew')?.condition).toContain('at rank 3');
+    expect(rows().find((row) => row.name === 'Renew')?.condition).toContain('at a cheap rank');
   });
 });
 
