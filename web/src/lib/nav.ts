@@ -12,13 +12,16 @@ export interface NavItem {
  * five (Planner, Simulator, Logs, Rankings, Guides); "Leveling BiS" is lane bis-web's own
  * addition (2026-09-28 leveling-bis-design.md, "Navigation: a 'Leveling BiS' entry beside
  * Guides"), placed right after Guides since it is the guides' own sibling -- gear for a
- * leveling character, the same audience Guides already serves.
+ * leveling character, the same audience Guides already serves. "Tier List" (spec
+ * 2026-10-09-tier-list.md) sits between Rankings and Guides: where a spec stands, before the
+ * guide that teaches it.
  */
 export const PRIMARY_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Planner', href: '/planner' },
   { label: 'Simulator', href: '/sim' },
   { label: 'Logs', href: '/logs' },
   { label: 'Rankings', href: '/rankings' },
+  { label: 'Tier List', href: '/tiers' },
   { label: 'Guides', href: '/guides' },
   { label: 'Leveling BiS', href: '/bis' },
 ];

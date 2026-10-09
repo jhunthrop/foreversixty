@@ -247,12 +247,21 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
           <h2 class="display text-[18px] font-bold tracking-[0.10em] text-strong">
             {homeClassPickerCopy.bestInSlotByClassHeading}
           </h2>
-          <a
-            href={homeClassPickerCopy.allSpecsHref}
-            class="text-[12px] font-bold uppercase tracking-[0.12em] text-gold"
-          >
-            {homeClassPickerCopy.allSpecsLink}
-          </a>
+          <span class="flex items-baseline gap-4">
+            <a
+              href={homeClassPickerCopy.tierListHref}
+              class="text-[12px] font-bold uppercase tracking-[0.12em] text-gold"
+              data-testid="home-tier-list-link"
+            >
+              {homeClassPickerCopy.tierListLink}
+            </a>
+            <a
+              href={homeClassPickerCopy.allSpecsHref}
+              class="text-[12px] font-bold uppercase tracking-[0.12em] text-gold"
+            >
+              {homeClassPickerCopy.allSpecsLink}
+            </a>
+          </span>
         </div>
         <div class="grid grid-cols-3 gap-[10px] sm:grid-cols-9">
           {classes.map((c) => (
@@ -321,12 +330,21 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
           <h2 class="display text-[18px] font-bold tracking-[0.10em] text-strong">
             {homeClassPickerCopy.anotherClassHeading}
           </h2>
-          <a
-            href={homeClassPickerCopy.allSpecsHref}
-            class="text-[12px] font-bold uppercase tracking-[0.12em] text-gold"
-          >
-            {homeClassPickerCopy.allSpecsLink}
-          </a>
+          <span class="flex items-baseline gap-4">
+            <a
+              href={homeClassPickerCopy.tierListHref}
+              class="text-[12px] font-bold uppercase tracking-[0.12em] text-gold"
+              data-testid="home-tier-list-link"
+            >
+              {homeClassPickerCopy.tierListLink}
+            </a>
+            <a
+              href={homeClassPickerCopy.allSpecsHref}
+              class="text-[12px] font-bold uppercase tracking-[0.12em] text-gold"
+            >
+              {homeClassPickerCopy.allSpecsLink}
+            </a>
+          </span>
         </div>
         <div class="bg-raised border-line rounded-panel border px-6 py-[14px]">
           <!-- Owner-reported defect, 2026-10-01: `overflow-x-auto` forces the vertical axis

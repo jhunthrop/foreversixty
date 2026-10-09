@@ -26,7 +26,7 @@ test.describe('phone nav', () => {
   test.use({ viewport: { width: 360, height: 800 } });
   test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');
 
-  test('all seven items are visible without horizontal scroll', async ({ page }) => {
+  test('all eight items are visible without horizontal scroll', async ({ page }) => {
     await page.goto('/');
     const nav = page.getByTestId('primary-nav');
     const { scrollWidth, clientWidth } = await nav.evaluate((element) => ({
@@ -39,6 +39,7 @@ test.describe('phone nav', () => {
       'Simulator',
       'Logs',
       'Rankings',
+      'Tier List',
       'Guides',
       'Leveling BiS',
       'Get set up',
@@ -47,7 +48,7 @@ test.describe('phone nav', () => {
     }
   });
 
-  test('the page does not scroll sideways with the seven-item nav', async ({ page }) => {
+  test('the page does not scroll sideways with the eight-item nav', async ({ page }) => {
     await page.goto('/');
     const { scrollWidth, clientWidth } = await page.evaluate(() => ({
       scrollWidth: document.documentElement.scrollWidth,

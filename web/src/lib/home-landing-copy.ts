@@ -30,6 +30,8 @@ export const homeClassPickerCopy = {
   anotherClassHeading: 'Another class',
   allSpecsLink: 'All 28 specs',
   allSpecsHref: '/bis',
+  tierListLink: 'Tier list',
+  tierListHref: '/tiers',
 } as const;
 
 /** Home rebuild spec §3.A.2: the signed-out hero's right-column example panel -- a

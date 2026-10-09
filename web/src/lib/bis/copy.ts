@@ -27,6 +27,9 @@ export const bisCopy = {
     'The best gear you can wear at every level band, from the simulator: one list per class and spec, built once and never per character.',
   indexIntro:
     'A band is "the best you can wear at that level" from a named source -- a quest, a vendor, a dungeon, a drop you can farm. Pick a class to see its specs.',
+  tierListPointer: 'Where each spec stands at level 60:',
+  tierListLink: 'Tier list →',
+  tierListHref: '/tiers',
   noDataYet: 'No leveling BiS list yet for this spec.',
   noDataYetBody:
     'The simulator has not ranked this spec’s gear across the leveling bands yet. Check back once the nightly ranking run covers it.',

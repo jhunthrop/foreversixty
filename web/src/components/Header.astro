@@ -33,7 +33,7 @@ function itemClass(label: string, current: boolean): (string | false)[] {
 const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
 
 // Not an HTML comment: that would ship in every page and in the API's chrome snapshot.
-// Phone: an explicit grid -- wordmark and session/Discord on the first row, the seven nav
+// Phone: an explicit grid -- wordmark and session/Discord on the first row, the eight nav
 // items below it. Three columns, not four: at 390px a 4-column cell (~80px) was narrower
 // than "Leveling BiS" itself (84.875px measured with whitespace-nowrap, ux-designer review
 // round 2), so it wrapped onto two lines while its neighbours stayed on one -- the fix is
@@ -48,7 +48,7 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
 //
 // The header's own outer grid-cols is `minmax(0,1fr)` for the logo column, not a bare
 // `1fr`: a bare `1fr` track's automatic minimum is its content's min-content size, and once
-// every nav label below went whitespace-nowrap, the seven-item row (which spans both outer
+// every nav label below went whitespace-nowrap, the eight-item row (which spans both outer
 // columns) had a min-content wide enough to push that track past the viewport -- the header
 // stayed at the viewport's width, but its content silently overflowed past the right edge
 // (measured: nav items ran ~15px past the header's own box at 360px). `minmax(0, 1fr)`
