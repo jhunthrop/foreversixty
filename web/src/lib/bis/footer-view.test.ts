@@ -28,6 +28,7 @@ function bandInfo(overrides: Partial<BandInfo>): BandInfo {
     scaleNoteLine: '',
     hasteCaptionLine: undefined,
     hitCap: undefined,
+    expertiseCap: undefined,
     totalSlots: 17,
     ...overrides,
   };

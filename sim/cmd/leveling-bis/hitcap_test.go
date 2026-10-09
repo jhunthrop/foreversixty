@@ -171,3 +171,74 @@ func TestPublishedHitToCapRoundTripsBothShapes(t *testing.T) {
 }
 
 func ptr(v float64) *float64 { return &v }
+
+var meleeProfile = core.HitProfile{Physical: true, Melee: true, Expertise: 1, DodgeChance: 6.5, ParryChance: 14}
+
+func TestExpertiseToCapOfADamageDealerIsTheDodgeDistanceAlone(t *testing.T) {
+	got := expertiseToCapFor("rogue-combat", meleeProfile)
+	if got == nil || got.Baseline != 1 || got.Dodge != 5.5 || got.Parry != nil {
+		t.Fatalf("expertise_to_cap = %+v, want baseline 1, dodge 5.5, no parry", got)
+	}
+}
+
+func TestExpertiseToCapOfATankCarriesTheParryDistance(t *testing.T) {
+	got := expertiseToCapFor("warrior-protection", meleeProfile)
+	if got == nil || got.Parry == nil || *got.Parry != 13 {
+		t.Fatalf("expertise_to_cap = %+v, want parry 13", got)
+	}
+}
+
+func TestExpertiseToCapNeverGoesNegative(t *testing.T) {
+	profile := meleeProfile
+	profile.Expertise = 20
+	got := expertiseToCapFor("warrior-protection", profile)
+	if got.Dodge != 0 || *got.Parry != 0 {
+		t.Fatalf("expertise_to_cap past both caps = %+v, want zeros", got)
+	}
+}
+
+func TestExpertiseToCapIsAbsentWithoutAMeleeSwing(t *testing.T) {
+	ranged := core.HitProfile{Physical: true, Expertise: 1, DodgeChance: 6.5}
+	if got := expertiseToCapFor("hunter-marksmanship", ranged); got != nil {
+		t.Fatalf("a ranged-only character has nothing to dodge, got %+v", got)
+	}
+	if got := expertiseToCapFor("mage-fire", meleeProfile); got != nil {
+		t.Fatalf("a caster never swings, got %+v", got)
+	}
+}
+
+func TestRunSpecPublishesExpertiseToCapFromTheEngine(t *testing.T) {
+	outDir := t.TempDir()
+	fake := &fakeEngine{
+		DefaultDPS: 500,
+		WeightsResult: map[string]api.StatWeight{
+			"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0},
+			"agility":             {Stat: "agility", Weight: 1.8},
+		},
+		HitProfile: meleeProfile,
+	}
+	err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", outDir, "hunter-marksmanship", []int{20}, 5, identityTalentLayout)
+	if err != nil {
+		t.Fatalf("runSpec: %v", err)
+	}
+	b, err := os.ReadFile(filepath.Join(outDir, "hunter-marksmanship.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var out struct {
+		Bands []struct {
+			ExpertiseToCap *expertiseToCap `json:"expertise_to_cap"`
+		} `json:"bands"`
+	}
+	if err := json.Unmarshal(b, &out); err != nil {
+		t.Fatal(err)
+	}
+	if len(out.Bands) == 0 {
+		t.Fatal("no bands written")
+	}
+	for i, band := range out.Bands {
+		if band.ExpertiseToCap == nil || band.ExpertiseToCap.Baseline != 1 || band.ExpertiseToCap.Dodge != 5.5 || band.ExpertiseToCap.Parry != nil {
+			t.Errorf("band %d expertise_to_cap = %+v, want baseline 1, dodge 5.5", i, band.ExpertiseToCap)
+		}
+	}
+}

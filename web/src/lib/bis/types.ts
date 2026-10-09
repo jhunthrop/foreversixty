@@ -221,6 +221,20 @@ export interface BisSpellHitToCap {
 
 export type BisHitToCap = BisMeleeHitToCap | BisSpellHitToCap;
 
+/** `BisBand.expertise_to_cap` (`expertiseToCap` in `sim/cmd/leveling-bis/expertisecap.go`): the
+ *  weights character's distance to the boss's dodge and parry chances, in engine percent
+ *  (one point of expertise takes one percent off a chance). Published only for a spec that
+ *  swings a weapon in melee. */
+export interface BisExpertiseToCap {
+  /** The expertise the band's character has, from gear and talents. */
+  baseline: number;
+  /** Percent still taken off the boss's dodge chance. */
+  dodge: number;
+  /** Percent still taken off the boss's parry chance; present only for a tank, who faces the
+   *  boss. */
+  parry?: number;
+}
+
 /** The role a band was ranked for. Absent on a file published before roles: `'dps'`
  *  (`normaliseBisFile` defaults it). */
 export type BisRole = 'dps' | 'tank' | 'healer';
@@ -293,6 +307,9 @@ export interface BisBand {
   /** See `BisHitToCap`. Absent on a file published before the key, and on a spec with no hit table;
    *  `normaliseBisFile` (`load.ts`) defaults it to `null`. */
   hit_to_cap?: BisHitToCap | null;
+  /** See `BisExpertiseToCap`. Absent on a file published before the key, and on a spec that does
+   *  not swing in melee; `normaliseBisFile` (`load.ts`) defaults it to `null`. */
+  expertise_to_cap?: BisExpertiseToCap | null;
   slots: BisSlot[];
   set_dps: number;
   no_source_count: number;

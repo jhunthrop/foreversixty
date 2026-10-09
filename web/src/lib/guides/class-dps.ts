@@ -9,7 +9,7 @@ import { bandEntry, loadBisFile, realBisPath } from '../bis/load';
 import { presetLabelFor } from '../bis/presets';
 import { headlineDpsOf } from '../bis/tank-view';
 import { classRows, racesForClass } from '../planner/reference';
-import type { BisFile, BisHitToCap, BisStatWeight, Faction } from '../bis/types';
+import type { BisFile, BisExpertiseToCap, BisHitToCap, BisStatWeight, Faction } from '../bis/types';
 
 /**
  * Whether the real pipeline has published a BiS file for this spec -- `loadBisFile` (used
@@ -84,6 +84,7 @@ export interface Band60Weights {
   weights: readonly BisStatWeight[];
   hasteScaleFactor: number | null;
   hitToCap: BisHitToCap | null;
+  expertiseToCap: BisExpertiseToCap | null;
   generatedAt: string;
   /** Which preset these weights were measured under, as the file labels it. */
   presetLabel: string;
@@ -112,6 +113,7 @@ export function band60Weights(
     weights: band.weights,
     hasteScaleFactor: band.haste_scale_factor ?? null,
     hitToCap: band.hit_to_cap ?? null,
+    expertiseToCap: band.expertise_to_cap ?? null,
     generatedAt: file.generated_at,
     presetLabel: presetLabelFor(file, band),
   };

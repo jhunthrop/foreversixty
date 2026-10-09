@@ -377,6 +377,21 @@ describe('bandInfosFor: scale rail', () => {
     expect(dual.hitCap?.title).toBe(bisCopy.hitToCapTitle);
   });
 
+  it('carries the expertise-to-cap line, with the parry clause only when published', () => {
+    const file = fileWith([
+      band({ slots: [slot()], expertise_to_cap: { baseline: 1, dodge: 5.5, parry: 13 } }),
+      band({ band: 30, slots: [slot()], expertise_to_cap: { baseline: 1, dodge: 5.5 } }),
+    ]);
+    const [tank, dealer] = bandInfosFor(file, [20, 30], 'alliance', depsWith());
+    expect(tank.expertiseCap?.text).toBe('Expertise to cap: 5.5% for dodge, 13% for parry');
+    expect(dealer.expertiseCap?.text).toBe('Expertise to cap: 5.5% for dodge');
+  });
+
+  it('carries no expertise-to-cap line when the band publishes none', () => {
+    const file = fileWith([band({ slots: [slot()] })]);
+    expect(bandInfosFor(file, [20], 'alliance', depsWith())[0].expertiseCap).toBeUndefined();
+  });
+
   it('carries no hit-to-cap line when the band publishes none', () => {
     const file = fileWith([band({ slots: [slot()] })]);
     expect(bandInfosFor(file, [20], 'alliance', depsWith())[0].hitCap).toBeUndefined();

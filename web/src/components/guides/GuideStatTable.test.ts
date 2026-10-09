@@ -7,6 +7,7 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, it } from 'vitest';
 import { bandEntry, loadBisFile } from '../../lib/bis/load';
+import { expertiseCapLine } from '../../lib/bis/expertise-cap';
 import { hitCapLine } from '../../lib/bis/hit-cap';
 import { railStatRows } from '../../lib/guides/rail-stats';
 import GuideStatTable from './GuideStatTable.astro';
@@ -94,6 +95,30 @@ describe('GuideStatTable', () => {
       expect(html).not.toContain('guide-stat-table-hit-cap');
     } else {
       expect(html).toContain('data-testid="guide-stat-table-hit-cap"');
+      expect(html).toContain(expected.text);
+    }
+  });
+
+  it('prints the expertise-to-cap line exactly when the band publishes the key', async () => {
+    const file = loadBisFile('warrior-fury', BUILD);
+    if (file === null) throw new Error('warrior-fury BiS file missing');
+    const expected = expertiseCapLine(bandEntry(file, 60, 'alliance')?.expertise_to_cap);
+
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(GuideStatTable, {
+      props: {
+        build: BUILD,
+        spec: 'warrior-fury',
+        classSlug: 'warrior',
+        recommendedRaces: ['human', 'troll'],
+        statPriority: STAT_PRIORITY,
+      },
+    });
+
+    if (expected === undefined) {
+      expect(html).not.toContain('guide-stat-table-expertise-cap');
+    } else {
+      expect(html).toContain('data-testid="guide-stat-table-expertise-cap"');
       expect(html).toContain(expected.text);
     }
   });

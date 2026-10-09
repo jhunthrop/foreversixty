@@ -17,6 +17,7 @@
 // redirect lives; a second Astro page at this path would shadow that rule, which is
 // exactly what tripped the postbuild guard when this lane first tried it.
 import { bisCopy, tankCopy } from '../../lib/bis/copy';
+import type { ExpertiseCapLine } from '../../lib/bis/expertise-cap';
 import type { HitCapLine } from '../../lib/bis/hit-cap';
 import type { ScaleRow } from '../../lib/bis/panel-view';
 import { SECONDARY_BUTTON } from '../../lib/planner/styles';
@@ -28,6 +29,8 @@ interface Props {
   hasteCaptionLine: string | undefined;
   /** Absent when the band publishes no `hit_to_cap`: the line is then not rendered at all. */
   hitCap?: HitCapLine | undefined;
+  /** Absent when the band publishes no `expertise_to_cap`: the line is then not rendered at all. */
+  expertiseCap?: ExpertiseCapLine | undefined;
   /** `bis-weights-<faction>-<band>` -- assembled by the caller, which alone knows the
    *  faction and band this panel belongs to (one instance per band/faction pair renders on
    *  the page, so the generic `bis-stat-weights` class name alone is not unique -- same
@@ -35,7 +38,7 @@ interface Props {
   testId: string;
 }
 
-const { bandLabel, scaleRows, scaleNoteLine, hasteCaptionLine, hitCap, testId } = Astro.props;
+const { bandLabel, scaleRows, scaleNoteLine, hasteCaptionLine, hitCap, expertiseCap, testId } = Astro.props;
 // A tank band's per-point unit ("score") is wider than "DPS": the column grows with it.
 const perPointStyle =
   scaleRows[0]?.perPointUnit === tankCopy.scoreWord
@@ -93,6 +96,15 @@ const caption = hasteCaptionLine === undefined ? scaleNoteLine : `${scaleNoteLin
   {hitCap !== undefined && (
     <p class="stat-weights-hit-cap text-muted" title={hitCap.title} data-testid={`${testId}-hit-cap`}>
       {hitCap.text}
+    </p>
+  )}
+  {expertiseCap !== undefined && (
+    <p
+      class="stat-weights-hit-cap text-muted"
+      title={expertiseCap.title}
+      data-testid={`${testId}-expertise-cap`}
+    >
+      {expertiseCap.text}
     </p>
   )}
   <p class="stat-weights-addon-blurb text-muted">{bisCopy.weightsAddonBlurb}</p>

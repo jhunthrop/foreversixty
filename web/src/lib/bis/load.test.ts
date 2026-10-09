@@ -146,6 +146,14 @@ describe('normaliseBisFile', () => {
     expect(bare.hit_to_cap).toBeNull();
   });
 
+  it('reads expertise_to_cap through, and defaults an absent key to null', () => {
+    const withKey = { ...baseBand, expertise_to_cap: { baseline: 1, dodge: 5.5, parry: 13 } };
+    const file = { bands: [withKey, baseBand] } as unknown as BisFile;
+    const [keyed, bare] = normaliseBisFile(file).bands;
+    expect(keyed.expertise_to_cap).toEqual({ baseline: 1, dodge: 5.5, parry: 13 });
+    expect(bare.expertise_to_cap).toBeNull();
+  });
+
   it('defaults a missing coverage field to {} (a file published before guardrail A landed)', () => {
     const { coverage: _coverage, ...bandWithoutCoverage } = baseBand;
     const file = {

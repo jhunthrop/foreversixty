@@ -17,6 +17,7 @@
 // than inventing a second convention for the same fact.
 import { band60Weights } from '../../lib/guides/class-dps';
 import { formatDate } from '../../lib/dates';
+import { expertiseCapLine } from '../../lib/bis/expertise-cap';
 import { hitCapLine } from '../../lib/bis/hit-cap';
 import { railStatRows } from '../../lib/guides/rail-stats';
 
@@ -38,6 +39,7 @@ const band60 = band60Weights(build, spec, classSlug, recommendedRaces);
 const rows =
   band60 === undefined ? [] : railStatRows(statPriority, band60.weights, spec, band60.hasteScaleFactor);
 const hitCap = hitCapLine(band60?.hitToCap);
+const expertiseCap = expertiseCapLine(band60?.expertiseToCap);
 const updated = band60 === undefined ? undefined : formatDate(new Date(band60.generatedAt));
 ---
 
@@ -65,6 +67,15 @@ const updated = band60 === undefined ? undefined : formatDate(new Date(band60.ge
     {hitCap !== undefined && (
       <p class="text-muted text-[12px]" title={hitCap.title} data-testid="guide-stat-table-hit-cap">
         {hitCap.text}
+      </p>
+    )}
+    {expertiseCap !== undefined && (
+      <p
+        class="text-muted text-[12px]"
+        title={expertiseCap.title}
+        data-testid="guide-stat-table-expertise-cap"
+      >
+        {expertiseCap.text}
       </p>
     )}
     {updated !== undefined && (

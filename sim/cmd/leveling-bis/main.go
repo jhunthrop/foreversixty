@@ -829,6 +829,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 					return fmt.Errorf("band %d hit profile: %w", band, err)
 				}
 				report.HitToCap = reportHitToCap(hitToCapFor(specInfo.Spec, profile))
+				report.ExpertiseToCap = expertiseToCapFor(specInfo.Spec, profile)
 				if err := annotateTankBand(runner, specInfo, f.race, band, engineTalents, picks, &report); err != nil {
 					return fmt.Errorf("band %d %s tank figures: %w", band, f.name, err)
 				}

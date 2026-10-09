@@ -1295,6 +1295,11 @@ type bandReport struct {
 	// (spellHitToCap's own doc): the site's "hit to cap first" figure.
 	// Omitted for a spec with no hit table to cap against.
 	HitToCap *publishedHitToCap `json:"hit_to_cap,omitempty"`
+	// ExpertiseToCap is how far the weights character is from the boss's
+	// dodge (and for a tank, parry) chance (expertiseToCap's own doc): the
+	// site's "expertise to cap" figure. Omitted for a spec that never
+	// swings a weapon in melee.
+	ExpertiseToCap *expertiseToCap `json:"expertise_to_cap,omitempty"`
 	// HasteOnItems is bandHasHasteCandidate's own return (weights.go) -
 	// owner correction, 2026-09-30, after the caption's own doubled-
 	// suffix bug was found on screenshot review ("Haste: 1.58 per 1%,

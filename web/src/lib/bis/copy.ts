@@ -221,6 +221,15 @@ export const bisCopy = {
    *  `undefined` for a spec that does not dual wield. Percent strings arrive formatted. */
   hitToCapLine: (specials: string, white: string | undefined): string =>
     `Hit to cap: ${specials}% for specials${white === undefined ? '' : `, ${white}% for white swings`}`,
+  /** The expertise-to-cap line under the weights (`expertise-cap.ts`'s `expertiseCapLine`);
+   *  `parry` is `undefined` for a damage dealer, who stands behind the boss and is never
+   *  parried. Percent strings arrive formatted. */
+  expertiseToCapLine: (dodge: string, parry: string | undefined): string =>
+    `Expertise to cap: ${dodge}% for dodge${parry === undefined ? '' : `, ${parry}% for parry`}`,
+  /** The hover on that line: expertise is worth its full weight until the boss can no longer
+   *  dodge or parry. */
+  expertiseToCapTitle:
+    'Expertise is worth its full weight until the boss can no longer dodge your attacks, or for a tank parry them, and nothing past that. It takes one percent off each chance per point.',
   /** The caster's line: `school` is the distance for the spells a talent adds hit to, and
    *  `undefined` when no talent does. Percent strings arrive formatted. */
   spellHitToCapLine: (spell: string, school: string | undefined): string =>
