@@ -7,7 +7,7 @@ import { expect, test } from '@playwright/test';
 test.describe('aria-current', () => {
   test('the Simulator tool link carries aria-current=page on /sim', async ({ page }) => {
     await page.goto('/sim');
-    await expect(page.getByTestId('primary-nav').getByRole('link', { name: 'Simulator' })).toHaveAttribute(
+    await expect(page.getByTestId('primary-nav').locator('a', { hasText: 'Simulator' })).toHaveAttribute(
       'aria-current',
       'page',
     );
@@ -15,7 +15,7 @@ test.describe('aria-current', () => {
 
   test('the Guides link carries aria-current=page on a guide sub-path', async ({ page }) => {
     await page.goto('/guides/warrior');
-    await expect(page.getByTestId('primary-nav').getByRole('link', { name: 'Guides' })).toHaveAttribute(
+    await expect(page.getByTestId('primary-nav').locator('a', { hasText: 'Guides' })).toHaveAttribute(
       'aria-current',
       'page',
     );
@@ -26,8 +26,25 @@ test.describe('phone nav', () => {
   test.use({ viewport: { width: 360, height: 800 } });
   test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');
 
+  test('the closed header is one 56px bar and the menu opens the doors beneath it', async ({ page }) => {
+    await page.goto('/');
+    const header = page.getByRole('banner');
+    const nav = page.getByTestId('primary-nav');
+    const button = page.getByTestId('menu-button');
+    await expect(nav).toBeHidden();
+    await expect(button).toHaveAttribute('aria-expanded', 'false');
+    expect((await header.boundingBox())!.height).toBeLessThanOrEqual(60);
+    await button.click();
+    await expect(nav).toBeVisible();
+    await expect(button).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('Escape');
+    await expect(nav).toBeHidden();
+    await expect(button).toBeFocused();
+  });
+
   test('all eight items are visible without horizontal scroll', async ({ page }) => {
     await page.goto('/');
+    await page.getByTestId('menu-button').click();
     const nav = page.getByTestId('primary-nav');
     const { scrollWidth, clientWidth } = await nav.evaluate((element) => ({
       scrollWidth: element.scrollWidth,
@@ -66,6 +83,7 @@ test.describe('phone nav', () => {
   // actual rendered boxes directly.
   test('no two nav links visually overlap or touch', async ({ page }) => {
     await page.goto('/');
+    await page.getByTestId('menu-button').click();
     const nav = page.getByTestId('primary-nav');
     const boxes = await nav.locator('a').evaluateAll((links) =>
       links.map((link) => {

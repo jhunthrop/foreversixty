@@ -60,6 +60,12 @@ describe('Header', () => {
     expect(discordAt).toBeLessThan(headerCloseAt);
   });
 
+  it('renders a collapsed Menu button that controls the primary nav', async () => {
+    const html = await renderHeader('/');
+    expect(html).toMatch(/<button[^>]*aria-expanded="false"[^>]*aria-controls="primary-nav"/);
+    expect(html).toContain('id="primary-nav"');
+  });
+
   it('renders the phone nav as a fixed-height wrapping grid, not a horizontally scrolling row', async () => {
     const html = await renderHeader('/');
     expect(html).not.toContain('overflow-x-auto');

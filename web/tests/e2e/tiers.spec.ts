@@ -195,11 +195,11 @@ test('every row offers BiS, Guide and Planner at 44px', async ({ page }) => {
 
 test('Tier List sits between Rankings and Guides in the nav', async ({ page }) => {
   await page.goto('/tiers');
-  const labels = await page.getByTestId('primary-nav').locator('a').allInnerTexts();
+  const labels = await page.getByTestId('primary-nav').locator('a').allTextContents();
   const clean = labels.map((label) => label.trim().toLowerCase());
   expect(clean.indexOf('tier list')).toBe(clean.indexOf('rankings') + 1);
   expect(clean.indexOf('guides')).toBe(clean.indexOf('tier list') + 1);
-  await expect(page.getByTestId('primary-nav').getByRole('link', { name: 'Tier List' })).toHaveAttribute(
+  await expect(page.getByTestId('primary-nav').locator('a', { hasText: 'Tier List' })).toHaveAttribute(
     'aria-current',
     'page',
   );
