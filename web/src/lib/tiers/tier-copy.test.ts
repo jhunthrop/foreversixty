@@ -57,6 +57,9 @@ describe('tierNotes', () => {
       .map(flat)
       .join(' ');
     expect(dps).toContain('≈ tie marks a spec within 1% of the one above.');
+    expect(dps).toContain(
+      'S is within 5% of the top, A within 10%, B within 20%, C within 30%, D beyond; a ≈ tie across a line is a tie.',
+    );
   });
 });
 
@@ -105,5 +108,18 @@ describe('formatMetric', () => {
     expect(formatMetric('tank', 35711.4)).toBe('35,711');
     expect(formatMetric('dps', 921.44)).toBe('921.4');
     expect(formatMetric('healer', 1204)).toBe('1,204.0');
+  });
+});
+
+describe('tier bands', () => {
+  it('words each band from its bounds', () => {
+    expect(tiersCopy.tierBand({ from: 0, to: 5 })).toBe('Within 5% of the top');
+    expect(tiersCopy.tierBand({ from: 5, to: 10 })).toBe('5 to 10% behind');
+    expect(tiersCopy.tierBand({ from: 30, to: null })).toBe('30% or more behind');
+  });
+
+  it('counts specs in the singular and the plural', () => {
+    expect(tiersCopy.tierCount(1)).toBe('1 spec');
+    expect(tiersCopy.tierCount(4)).toBe('4 specs');
   });
 });

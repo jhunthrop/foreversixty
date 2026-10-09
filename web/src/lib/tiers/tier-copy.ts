@@ -3,8 +3,8 @@
 // strings describe the rules; a figure that moves nightly is passed in from the published
 // files, never written here (the owner's "prose never quotes nightly numbers" rule).
 import type { BisRole, Faction } from '../bis/types';
-import { TIE_MARGIN_PERCENT } from './tier-rules';
-import type { TierRow, TierTie } from './tier-list';
+import { TIE_MARGIN_PERCENT, TIER_BANDS, type TierLetter } from './tier-rules';
+import type { TierGroup, TierRow, TierTie } from './tier-list';
 
 /** One piece of a note: plain text, bold text or a link. */
 export interface NoteSegment {
@@ -68,9 +68,21 @@ function raceSentence(faction: Faction): string {
   return `Each spec is simmed as its best ${FACTION_LABELS[faction]} race, named under it.`;
 }
 
+/** "S is within 5% of the top, A within 10%, ..., D beyond; a ≈ tie across a line is a tie." */
+function tierLetterSentence(): string {
+  const last = TIER_BANDS[TIER_BANDS.length - 1]!;
+  const clauses = TIER_BANDS.slice(0, -1).map((band, index) => {
+    const reach = `within ${TIER_BANDS[index + 1]!.from}%`;
+    return index === 0 ? `${band.letter} is ${reach} of the top` : `${band.letter} ${reach}`;
+  });
+  return `${[...clauses, `${last.letter} beyond`].join(', ')}; a ≈ tie across a line is a tie.`;
+}
+
 function dpsNotes(ctx: NoteContext): NoteSegment[][] {
   return [
-    plain('Damage per second from our own sim. What it counts and what it leaves out is in the box below.'),
+    plain(
+      `Damage per second from our own sim. What it counts and what it leaves out is in the box below. ${tierLetterSentence()}`,
+    ),
     freshSixtyNote(ctx.presetLabel),
     [
       { text: `${raceSentence(ctx.faction)} ` },
@@ -141,6 +153,12 @@ function tieTitle(tie: TierTie): string {
   return `Within ${TIE_MARGIN_PERCENT}% of the spec ${tie}: a tie`;
 }
 
+/** "Within 5% of the top", "5 to 10% behind", "30% or more behind". */
+function tierBand(group: Pick<TierGroup, 'from' | 'to'>): string {
+  if (group.from === 0) return `Within ${group.to}% of the top`;
+  return group.to === null ? `${group.from}% or more behind` : `${group.from} to ${group.to}% behind`;
+}
+
 export const tiersCopy = {
   title: 'Tier list',
   description:
@@ -162,7 +180,9 @@ export const tiersCopy = {
   leastGap: 'Least',
   rowLinks: { bis: 'BiS', guide: 'Guide', planner: 'Planner' },
   plannerTitle: (specName: string): string => `Open the ${specName} level 60 build in the planner`,
-  rulerLabel: (percent: number): string => `${percent}% or more behind the top`,
+  tierBand,
+  tierCount: (count: number): string => `${count} ${count === 1 ? 'spec' : 'specs'}`,
+  tierLabel: (letter: TierLetter): string => `Tier ${letter}`,
   howToReadHeading: 'How to read this',
   simChecksLink: 'How we check the sim →',
   simChecksHref: '/sim/specs',

@@ -18,7 +18,7 @@ import {
   tierNotes,
   tiersCopy,
 } from '../../lib/tiers/tier-copy';
-import { TIER_ROLES, listItemsFor } from '../../lib/tiers/tier-list';
+import { TIER_ROLES, groupByTier, roleHasTiers } from '../../lib/tiers/tier-list';
 import { loadTierData } from '../../lib/tiers/tier-load';
 import type { BisRole } from '../../lib/bis/types';
 
@@ -166,16 +166,25 @@ const stampTitle =
                   <span class="label"></span>
                 </div>
                 <ol class="tier-panel" data-testid="tier-list">
-                  {listItemsFor(rows, role).map((item) =>
-                    item.kind === 'ruler' ? (
-                      <li class="tier-ruler" data-testid="tier-ruler">
-                        <span class="label">{tiersCopy.rulerLabel(item.percent)}</span>
-                        <i aria-hidden="true"></i>
-                      </li>
-                    ) : (
-                      <TierRow row={item.row} />
-                    ),
-                  )}
+                  {roleHasTiers(role)
+                    ? groupByTier(rows).map((group) => (
+                        <li class="tier-group" data-tier={group.letter} data-testid="tier-group">
+                          <div class="tier-chip" data-testid="tier-chip">
+                            <span class="tier-letter" data-testid="tier-letter">
+                              <span class="sr-only">{tiersCopy.tierLabel(group.letter)}: </span>
+                              <span aria-hidden="true">{group.letter}</span>
+                            </span>
+                            <span class="tier-count">{tiersCopy.tierCount(group.rows.length)}</span>
+                            <span class="tier-chip-band">{tiersCopy.tierBand(group)}</span>
+                          </div>
+                          <ol class="tier-rows" aria-label={tiersCopy.tierLabel(group.letter)}>
+                            {group.rows.map((row) => (
+                              <TierRow row={row} />
+                            ))}
+                          </ol>
+                        </li>
+                      ))
+                    : rows.map((row) => <TierRow row={row} />)}
                 </ol>
               </div>
             )}
@@ -489,6 +498,7 @@ const stampTitle =
     color: var(--color-strong);
   }
   .tier-list {
+    --tier-chip-width: 132px;
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -499,6 +509,9 @@ const stampTitle =
     column-gap: 14px;
     align-items: end;
     padding: 0 17px 8px 17px;
+  }
+  .tier-list[data-role='dps'] .tier-heads {
+    padding-left: calc(17px + var(--tier-chip-width));
   }
   .tier-list[data-role='tank'] .tier-heads {
     grid-template-columns:
@@ -521,23 +534,71 @@ const stampTitle =
     border: 1px solid var(--color-line);
     border-radius: var(--radius-panel);
   }
-  .tier-ruler {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    height: 28px;
-    padding: 0 16px;
+  .tier-group {
+    --tier: var(--color-muted);
+    display: grid;
+    grid-template-columns: var(--tier-chip-width) minmax(0, 1fr);
+    border-top: 1px solid var(--color-line);
+  }
+  .tier-group:first-child {
+    border-top: 0;
+  }
+  .tier-group[data-tier='S'] {
+    --tier: var(--color-rarity-legendary);
+  }
+  .tier-group[data-tier='A'] {
+    --tier: var(--color-rarity-epic-text);
+  }
+  .tier-group[data-tier='B'] {
+    --tier: var(--color-rarity-rare-text);
+  }
+  .tier-group[data-tier='C'] {
+    --tier: var(--color-rarity-uncommon);
+  }
+  .tier-group[data-tier='D'] {
+    --tier: var(--color-rarity-poor);
+  }
+  .tier-chip {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'letter count'
+      'band band';
+    align-content: start;
+    align-items: baseline;
+    column-gap: 8px;
+    row-gap: 2px;
+    padding: 14px 12px 14px 16px;
     background: #0a0d15;
-    border-top: 1px solid var(--color-line-soft);
-    border-bottom: 1px solid var(--color-line-soft);
+    border-left: 3px solid var(--tier);
+    border-right: 1px solid var(--color-line-soft);
   }
-  .tier-ruler .label {
-    font-size: 10px;
+  .tier-letter {
+    grid-area: letter;
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--tier);
   }
-  .tier-ruler i {
-    flex: 1;
-    height: 1px;
-    background: var(--color-line);
+  .tier-count {
+    grid-area: count;
+    justify-self: end;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-muted);
+  }
+  .tier-chip-band {
+    grid-area: band;
+    font-size: 12px;
+    line-height: 1.3;
+    color: #c9c2b2;
+  }
+  .tier-rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    min-width: 0;
   }
   .tier-empty {
     margin: 0;
@@ -590,6 +651,21 @@ const stampTitle =
   @media (max-width: 1099px) {
     .tier-heads {
       display: none;
+    }
+    .tier-group {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .tier-chip {
+      grid-template-columns: auto auto 1fr;
+      grid-template-areas: 'letter band count';
+      align-items: center;
+      column-gap: 12px;
+      padding: 8px 14px 8px 12px;
+      border-right: 0;
+      border-bottom: 1px solid var(--color-line-soft);
+    }
+    .tier-letter {
+      font-size: 22px;
     }
     .tier-header {
       padding: 22px 18px 20px;

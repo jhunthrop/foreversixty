@@ -3,14 +3,15 @@ import { describe, expect, it } from 'vitest';
 import { band, catalogEntry, dpsInput, tankInput } from './tier-test-support';
 import {
   hrefsFor,
-  listItemsFor,
+  groupByTier,
   rankRole,
   raceLabel,
   sortMetricOf,
-  withRulers,
+  roleHasTiers,
+  tierOf,
   type TierRow,
 } from './tier-list';
-import { RULER_PERCENTS } from './tier-rules';
+import { TIER_BANDS } from './tier-rules';
 
 describe('raceLabel', () => {
   it('capitalises each word of a hyphenated race', () => {
@@ -188,27 +189,75 @@ describe('race, confidence and rulers', () => {
     expect(rows[0]).toMatchObject({ race: 'Undead', lowConfidence: true });
   });
 
-  it('puts a ruler before the first row at or past each percent and none after the last row', () => {
+  it('cuts the DPS list into tiers and draws none that is empty', () => {
     const rows = rankRole(
       [100, 95, 88, 79].map((v, i) => dpsInput('c', `s${i}`, `S${i}`, v)),
       'dps',
     );
-    const items = withRulers(rows);
-    expect(items.map((i) => (i.kind === 'ruler' ? `r${i.percent}` : `s${i.row.rank}`))).toEqual([
-      's1',
-      's2',
-      'r10',
-      's3',
-      'r20',
-      's4',
+    expect(rows.map((r) => r.tier)).toEqual(['S', 'A', 'B', 'C']);
+    const groups = groupByTier(rows);
+    expect(groups.map((g) => [g.letter, g.from, g.to, g.rows.length])).toEqual([
+      ['S', 0, 5, 1],
+      ['A', 5, 10, 1],
+      ['B', 10, 20, 1],
+      ['C', 20, 30, 1],
     ]);
-    expect(RULER_PERCENTS).toEqual([10, 20, 30]);
+    expect(groupByTier(rows.slice(0, 1)).map((g) => g.letter)).toEqual(['S']);
+    expect(TIER_BANDS.map((b) => [b.letter, b.from])).toEqual([
+      ['S', 0],
+      ['A', 5],
+      ['B', 10],
+      ['C', 20],
+      ['D', 30],
+    ]);
   });
 
-  it('draws rulers for the DPS list only', () => {
-    const rows = rankRole([dpsInput('a', 'a', 'A', 100), dpsInput('b', 'b', 'B', 50)], 'dps');
-    expect(listItemsFor(rows, 'dps').some((i) => i.kind === 'ruler')).toBe(true);
-    expect(listItemsFor(rows, 'healer').some((i) => i.kind === 'ruler')).toBe(false);
+  it('gives letters to the DPS list only', () => {
+    const inputs = [dpsInput('a', 'a', 'A', 100), dpsInput('b', 'b', 'B', 50)];
+    expect(rankRole(inputs, 'dps').map((r) => r.tier)).toEqual(['S', 'D']);
+    expect(
+      rankRole(
+        inputs.map((i) => ({ ...i, band: { ...i.band, role: 'healer' as const } })),
+        'healer',
+      ),
+    ).toSatisfy((rows: TierRow[]) => rows.every((r) => r.tier === null));
+    expect(roleHasTiers('dps')).toBe(true);
+    expect(roleHasTiers('tank')).toBe(false);
+    expect(roleHasTiers('healer')).toBe(false);
+  });
+});
+
+describe('tierOf at the exact cut-offs', () => {
+  it.each([
+    [0, 'S'],
+    [4.99, 'S'],
+    [5.0, 'A'],
+    [9.99, 'A'],
+    [10.0, 'B'],
+    [19.99, 'B'],
+    [20.0, 'C'],
+    [29.99, 'C'],
+    [30.0, 'D'],
+    [55, 'D'],
+  ])('puts a %s%% gap in tier %s', (gap, letter) => {
+    expect(tierOf(gap)).toBe(letter);
+  });
+
+  it('is not thrown off by float noise on a spec exactly on a line', () => {
+    const rows = rankRole(
+      [100, 95, 90, 80, 70].map((v, i) => dpsInput('c', `s${i}`, `S${i}`, v)),
+      'dps',
+    );
+    expect(rows.map((r) => r.tier)).toEqual(['S', 'A', 'B', 'C', 'D']);
+  });
+
+  it('lets a tie pair straddle a line, keeping the mark on both rows', () => {
+    const rows = rankRole(
+      [100, 95.3, 94.8].map((v, i) => dpsInput('c', `s${i}`, `S${i}`, v)),
+      'dps',
+    );
+    expect(rows.map((r) => r.tier)).toEqual(['S', 'S', 'A']);
+    expect(rows.map((r) => r.tie)).toEqual([null, 'below', 'above']);
   });
 });
 

@@ -1,11 +1,11 @@
 // web/src/lib/tiers/tier-list.ts
 // The tier list's ranking, as pure functions of the BiS bands (design/specs/2026-10-09-
 // tier-list.md, section 9). Which number sorts a role, what a gap and a bar are, where the
-// rulers sit and which rows tie are rules, not nightly figures: every value comes from the
+// tier a gap falls in and which rows tie are rules, not nightly figures: every value comes from the
 // published band at build time and nothing here is typed in.
 import type { BisBand, BisRole, SpecCatalogEntry, TankMetrics } from '../bis/types';
 import { isTankMetrics } from '../bis/tank-view';
-import { RULER_PERCENTS, TIE_MARGIN_PERCENT } from './tier-rules';
+import { TIE_MARGIN_PERCENT, TIER_BANDS, type TierBand, type TierLetter } from './tier-rules';
 
 /** The roles, in the order of the page's tabs. */
 export const TIER_ROLES: readonly BisRole[] = ['dps', 'tank', 'healer'];
@@ -36,6 +36,8 @@ export interface TierRow {
   fraction: number;
   /** The neighbour(s) within the tie margin, or `null`. Always `null` on a tank list. */
   tie: TierTie | null;
+  /** S to D from the gap to the top. `null` on tank and healer lists, which carry no letters. */
+  tier: TierLetter | null;
   lowConfidence: boolean;
   /** The planner link's talent string. */
   talents: string;
@@ -46,12 +48,13 @@ export interface TierRow {
   isBestThreat?: boolean;
 }
 
-export interface TierRuler {
-  kind: 'ruler';
-  percent: number;
+export interface TierGroup {
+  letter: TierLetter;
+  /** Percent behind the top where the tier starts (inclusive) and where it ends (`null`: no end). */
+  from: number;
+  to: number | null;
+  rows: TierRow[];
 }
-
-export type TierListItem = { kind: 'row'; row: TierRow } | TierRuler;
 
 /** `night-elf` -> `Night Elf`. */
 export function raceLabel(race: string): string {
@@ -94,6 +97,14 @@ function gapAndFraction(metric: number, top: number, tank: boolean): { gap: numb
   return tank
     ? { gap: (metric / top - 1) * PERCENT, fraction: top / metric }
     : { gap: (1 - metric / top) * PERCENT, fraction: metric / top };
+}
+
+const GAP_PRECISION = 1e6;
+
+/** The tier a gap falls in. The gap is rounded past float noise first, so 10% behind is B, not A. */
+export function tierOf(gapPercent: number): TierLetter {
+  const gap = Math.round(gapPercent * GAP_PRECISION) / GAP_PRECISION;
+  return TIER_BANDS.findLast((band) => gap >= band.from)!.letter;
 }
 
 function withinTieMargin(metric: number, neighbour: number): boolean {
@@ -149,6 +160,7 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
       gapPercent: index === 0 ? 0 : gap,
       fraction,
       tie: ties[index] ?? null,
+      tier: roleHasTiers(role) ? tierOf(gap) : null,
       lowConfidence: band.weights_low_confidence === true,
       talents: band.talents,
     };
@@ -164,31 +176,23 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
   });
 }
 
-/** A DPS list with a ruler before the first row at or past each ruler percent. A ruler with
- *  no row after it is not drawn. */
-export function withRulers(rows: readonly TierRow[]): TierListItem[] {
-  const items: TierListItem[] = [];
-  const shown = new Set<number>();
-  for (const row of rows) {
-    for (const percent of RULER_PERCENTS) {
-      if (!shown.has(percent) && row.gapPercent >= percent) {
-        shown.add(percent);
-        items.push({ kind: 'ruler', percent });
-      }
-    }
-    items.push({ kind: 'row', row });
-  }
-  return items;
+function bandEnd(bands: readonly TierBand[], index: number): number | null {
+  return bands[index + 1]?.from ?? null;
 }
 
-/** Whether a role's list carries rulers: the DPS list only (20 rows; the others are short). */
-export function roleHasRulers(role: BisRole): boolean {
+/** A DPS list cut into its tiers, best first. A tier with no spec is not drawn. */
+export function groupByTier(rows: readonly TierRow[]): TierGroup[] {
+  return TIER_BANDS.flatMap((band, index): TierGroup[] => {
+    const inTier = rows.filter((row) => row.tier === band.letter);
+    return inTier.length === 0
+      ? []
+      : [{ letter: band.letter, from: band.from, to: bandEnd(TIER_BANDS, index), rows: inTier }];
+  });
+}
+
+/** Whether a role's list carries tier letters: the DPS list only (20 rows; the others are short). */
+export function roleHasTiers(role: BisRole): boolean {
   return role === 'dps';
-}
-
-/** The items a role's panel draws. */
-export function listItemsFor(rows: readonly TierRow[], role: BisRole): TierListItem[] {
-  return roleHasRulers(role) ? withRulers(rows) : rows.map((row): TierListItem => ({ kind: 'row', row }));
 }
 
 export interface TierRowHrefs {

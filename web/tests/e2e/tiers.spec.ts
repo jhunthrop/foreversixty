@@ -117,14 +117,71 @@ test('both rows of a tied pair carry the mark', async ({ page }) => {
   }
 });
 
-test('the DPS list carries the rulers and the less-certain note', async ({ page }) => {
+const TIER_LINES = [
+  { letter: 'S', from: 0 },
+  { letter: 'A', from: 5 },
+  { letter: 'B', from: 10 },
+  { letter: 'C', from: 20 },
+  { letter: 'D', from: 30 },
+] as const;
+
+function expectedLetters(metrics: number[]): string[] {
+  const top = metrics[0]!;
+  return metrics.map((metric) => {
+    const gap = Math.round((1 - metric / top) * 100 * 1e6) / 1e6;
+    return [...TIER_LINES].reverse().find((line) => gap >= line.from)!.letter;
+  });
+}
+
+test('the DPS list carries a tier chip per tier with its letter, band and count', async ({ page }) => {
   await page.goto('/tiers');
   const expected = expectedRows('dps', 'alliance');
-  const top = expected[0]!.metric;
-  const rulers = [10, 20, 30].filter((pct) => expected.some((row) => (1 - row.metric / top) * 100 >= pct));
-  await expect(activePanel(page).getByTestId('tier-ruler')).toHaveCount(rulers.length);
+  const letters = expectedLetters(expected.map((row) => row.metric));
+  const present = TIER_LINES.map((line) => line.letter).filter((letter) => letters.includes(letter));
+  const chips = activePanel(page).getByTestId('tier-chip');
+  await expect(chips).toHaveCount(present.length);
+  for (const [index, letter] of present.entries()) {
+    const chip = chips.nth(index);
+    await expect(chip.getByTestId('tier-letter')).toContainText(letter);
+    await expect(chip).toContainText(`${letters.filter((l) => l === letter).length} spec`);
+  }
+  await expect(chips.first()).toContainText('Within 5% of the top');
+  const groups = activePanel(page).getByTestId('tier-group');
+  for (const [index, letter] of present.entries()) {
+    await expect(groups.nth(index).locator('[data-testid^="tier-row-"]')).toHaveCount(
+      letters.filter((l) => l === letter).length,
+    );
+  }
+  await expect(activePanel(page).getByTestId('tier-ruler')).toHaveCount(0);
+  await expect(activePanel(page).getByTestId('tier-notes')).toContainText(
+    'S is within 5% of the top, A within 10%, B within 20%, C within 30%, D beyond; a ≈ tie across a line is a tie.',
+  );
+});
+
+for (const role of ['tank', 'healer'] as const) {
+  test(`the ${role} list carries no tier letters`, async ({ page }) => {
+    await page.goto(ROLE_PATH[role]);
+    await expect(activePanel(page).getByTestId('tier-list')).toBeVisible();
+    await expect(activePanel(page).getByTestId('tier-chip')).toHaveCount(0);
+    await expect(activePanel(page).getByTestId('tier-letter')).toHaveCount(0);
+  });
+}
+
+test('the DPS list keeps the less-certain note', async ({ page }) => {
+  await page.goto('/tiers');
+  const expected = expectedRows('dps', 'alliance');
   const uncertain = expected.filter((row) => row.band.weights_low_confidence === true).length;
   await expect(activePanel(page).getByTestId('tier-low-confidence')).toHaveCount(uncertain);
+});
+
+test('on a phone the tier chip is a header row above its rows', async ({ page }) => {
+  await page.setViewportSize(PHONE);
+  await page.goto('/tiers');
+  const group = activePanel(page).getByTestId('tier-group').first();
+  const chip = await group.getByTestId('tier-chip').boundingBox();
+  const row = await group.locator('[data-testid^="tier-row-"]').first().boundingBox();
+  expect(chip!.y + chip!.height).toBeLessThanOrEqual(row!.y + 1);
+  expect(chip!.height).toBeLessThan(60);
 });
 
 test('the faction pill shows the Horde numbers and races, and the roles keep the faction', async ({
