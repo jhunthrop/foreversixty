@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T03:51:00Z",
+  "generated_at": "2026-10-09T14:51:50Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -541,8 +541,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.434674592,
-      "verify_run_seconds": 1.456441206,
+      "weights_run_seconds": 2.339640868,
+      "verify_run_seconds": 1.388523377,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1169,8 +1169,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.434674592,
-      "verify_run_seconds": 1.402612486,
+      "weights_run_seconds": 2.339640868,
+      "verify_run_seconds": 1.402261057,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1823,8 +1823,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 2.820830677,
-      "verify_run_seconds": 1.5862099299999999,
+      "weights_run_seconds": 2.641237063,
+      "verify_run_seconds": 1.532830806,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2478,8 +2478,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.820830677,
-      "verify_run_seconds": 1.430943,
+      "weights_run_seconds": 2.641237063,
+      "verify_run_seconds": 1.418921814,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3159,8 +3159,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 3.030077855,
-      "verify_run_seconds": 2.133450734,
+      "weights_run_seconds": 2.912484177,
+      "verify_run_seconds": 2.201880622,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3845,8 +3845,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 3.030077855,
-      "verify_run_seconds": 2.093490382,
+      "weights_run_seconds": 2.912484177,
+      "verify_run_seconds": 2.109149133,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4518,8 +4518,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 3.093341008,
-      "verify_run_seconds": 2.490948835,
+      "weights_run_seconds": 2.9362631439999998,
+      "verify_run_seconds": 2.478027476,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5192,8 +5192,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 3.093341008,
-      "verify_run_seconds": 2.357728429,
+      "weights_run_seconds": 2.9362631439999998,
+      "verify_run_seconds": 2.367866304,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5599,7 +5599,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 50.125468509355066,
+          "score": 50.12546850935506,
           "verified": true,
           "alternatives": [
             {
@@ -5607,14 +5607,14 @@
               "item_name": "Stormseeker's Girdle",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -1.3928850563492605
+              "dps_delta": -1.3928850563492596
             },
             {
               "item_id": 18504,
               "item_name": "Girdle of Insight",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.611686196901893
+              "dps_delta": -1.6116861969018923
             },
             {
               "item_id": 18405,
@@ -5916,8 +5916,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.016858662,
-      "verify_run_seconds": 7.644364383,
+      "weights_run_seconds": 2.856490764,
+      "verify_run_seconds": 7.631756142,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6372,7 +6372,7 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.011339486183244
+              "dps_delta": -1.011339486183245
             },
             {
               "item_id": 237815,
@@ -6641,8 +6641,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.016858662,
-      "verify_run_seconds": 7.752605158,
+      "weights_run_seconds": 2.856490764,
+      "verify_run_seconds": 7.794268421,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6946,34 +6946,32 @@
         },
         {
           "slot": "chest",
-          "item_id": 18385,
-          "item_name": "Robe of Everlasting Night",
-          "source": "Dire Maul: Immol'thar",
+          "item_id": 16666,
+          "item_name": "Vest of Elements",
+          "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
-          "sim_dps": 504.68380144714513,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 16666,
-              "item_name": "Vest of Elements",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.5895743038847545
-            },
             {
               "item_id": 18373,
               "item_name": "Chestplate of Tranquility",
               "source_kind": "dungeon",
               "source": "Dire Maul: Prince Tortheldrin",
-              "dps_delta": -0.5895743038847545
+              "dps_delta": 0
             },
             {
-              "item_id": 23089,
-              "item_name": "Tunic of Undead Slaying",
-              "source_kind": "world",
-              "source": "Shadow of Doom",
-              "dps_delta": -19.738611751801272,
-              "verified": true
+              "item_id": 18385,
+              "item_name": "Robe of Everlasting Night",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Immol'thar",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 15786,
+              "item_name": "Fernpulse Jerkin",
+              "source_kind": "quest",
+              "source": "High Chief Winterfall",
+              "dps_delta": -0.5042486553457192
             }
           ]
         },
@@ -6983,7 +6981,6 @@
           "item_name": "Dryad's Wrist Bindings",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 504.68380144714513,
           "verified": true,
           "alternatives": [
             {
@@ -7012,34 +7009,33 @@
         },
         {
           "slot": "hands",
-          "item_id": 13253,
-          "item_name": "Hands of Power",
-          "source": "Blackrock Spire: Quartermaster Zigris",
-          "source_kind": "dungeon",
-          "score": 28.141922953755817,
+          "item_id": 12632,
+          "item_name": "Storm Gauntlets",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 13253,
+              "item_name": "Hands of Power",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Quartermaster Zigris",
+              "dps_delta": 0
+            },
             {
               "item_id": 17721,
               "item_name": "Gloves of the Greatfather",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.626798876529519
+              "dps_delta": -0.19138298995198755
             },
             {
               "item_id": 272101,
               "item_name": "Raider Handguards",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -1.8244651609190283
-            },
-            {
-              "item_id": 12632,
-              "item_name": "Storm Gauntlets",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -2.4311445783756085,
-              "verified": true
+              "dps_delta": -0.38904927434149683
             }
           ]
         },
@@ -7110,34 +7106,33 @@
         },
         {
           "slot": "feet",
-          "item_id": 18322,
-          "item_name": "Waterspout Boots",
-          "source": "Dire Maul: Hydrospawn",
-          "source_kind": "dungeon",
-          "score": 27.141922953755817,
+          "item_id": 227007,
+          "item_name": "Slippers of The Five Thunders",
+          "source": "Mokvar",
+          "source_kind": "vendor",
+          "sim_dps": 493.05351238031915,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 18322,
+              "item_name": "Waterspout Boots",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Hydrospawn",
+              "dps_delta": 0
+            },
             {
               "item_id": 11822,
               "item_name": "Omnicast Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -1.1225502211837999
+              "dps_delta": -0.9536111987476166
             },
             {
               "item_id": 254013,
               "item_name": "Earthen Silk Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.2340347197133308
-            },
-            {
-              "item_id": 227007,
-              "item_name": "Slippers of The Five Thunders",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -4.384887634458778,
-              "verified": true
+              "dps_delta": -1.0650956972771477
             }
           ]
         },
@@ -7147,7 +7142,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 504.68380144714513,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7181,7 +7175,6 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 504.68380144714513,
           "verified": true,
           "alternatives": [
             {
@@ -7214,9 +7207,8 @@
           "item_name": "Briarwood Reed",
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
-          "sim_dps": 504.68380144714513,
           "verified": true,
-          "swap_note": "confirmed by the sim against Talisman of Ascendance (id 22678): kept the pick, +18.7 DPS (504.7 vs 486.0 set DPS)",
+          "swap_note": "confirmed by the sim against Talisman of Ascendance (id 22678): kept the pick, +18.7 DPS over it",
           "dps_delta": 18.65792827073483,
           "alternatives": [
             {
@@ -7249,7 +7241,6 @@
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 504.68380144714513,
           "verified": true,
           "alternatives": [
             {
@@ -7282,7 +7273,6 @@
           "item_name": "Kindling Stave",
           "source": "Blackrock Depths: Pyromancer Loregrain",
           "source_kind": "dungeon",
-          "sim_dps": 504.68380144714513,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7321,7 +7311,6 @@
           "item_name": "Totem of Thunder",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "sim_dps": 504.68380144714513,
           "verified": true,
           "alternatives": [
             {
@@ -7335,8 +7324,9 @@
           ]
         }
       ],
-      "set_dps": 504.68380144714513,
+      "set_dps": 493.05351238031915,
       "no_source_count": 1759,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7359,12 +7349,12 @@
         "neck: Chains of the Lich",
         "shoulder: Rugged Mantle of the Timbermaw",
         "back: Arcanoweave Cloak",
-        "chest: Robe of Everlasting Night",
+        "chest: Vest of Elements",
         "wrist: Dryad's Wrist Bindings",
-        "hands: Hands of Power",
+        "hands: Storm Gauntlets",
         "waist: Knowledge of the Timbermaw",
         "legs: Ironfeather Leggings",
-        "feet: Waterspout Boots",
+        "feet: Slippers of The Five Thunders",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Briarwood Reed",
@@ -7372,8 +7362,8 @@
         "main_hand: Kindling Stave",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.8113881250000001,
-      "verify_run_seconds": 5.4583767,
+      "weights_run_seconds": 1.726547743,
+      "verify_run_seconds": 5.550112311,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7650,7 +7640,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 25.343169306636494,
+          "score": 25.343169306636497,
           "verified": true,
           "alternatives": [
             {
@@ -7658,21 +7648,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.537758345515791
+              "dps_delta": -1.5377583455157924
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -2.8841337010795955
+              "dps_delta": -2.8841337010795973
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.053072723515779
+              "dps_delta": -3.0530727235157804
             }
           ]
         },
@@ -7682,7 +7672,6 @@
           "item_name": "Robe of Everlasting Night",
           "source": "Dire Maul: Immol'thar",
           "source_kind": "dungeon",
-          "sim_dps": 501.22220498938236,
           "verified": true,
           "alternatives": [
             {
@@ -7715,7 +7704,6 @@
           "item_name": "Dryad's Wrist Bindings",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 501.22220498938236,
           "verified": true,
           "alternatives": [
             {
@@ -7744,13 +7732,20 @@
         },
         {
           "slot": "hands",
-          "item_id": 13253,
-          "item_name": "Hands of Power",
-          "source": "Blackrock Spire: Quartermaster Zigris",
-          "source_kind": "dungeon",
-          "score": 28.141922953755817,
+          "item_id": 12632,
+          "item_name": "Storm Gauntlets",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 13253,
+              "item_name": "Hands of Power",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Quartermaster Zigris",
+              "dps_delta": 0
+            },
             {
               "item_id": 231660,
               "item_name": "General's Mail Gauntlets",
@@ -7763,15 +7758,7 @@
               "item_name": "Gloves of the Greatfather",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.626798876529519
-            },
-            {
-              "item_id": 12632,
-              "item_name": "Storm Gauntlets",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -3.612850311800571,
-              "verified": true
+              "dps_delta": -0.19138298995198755
             }
           ]
         },
@@ -7842,34 +7829,33 @@
         },
         {
           "slot": "feet",
-          "item_id": 18322,
-          "item_name": "Waterspout Boots",
-          "source": "Dire Maul: Hydrospawn",
-          "source_kind": "dungeon",
-          "score": 27.141922953755817,
+          "item_id": 227007,
+          "item_name": "Slippers of The Five Thunders",
+          "source": "Mokvar",
+          "source_kind": "vendor",
+          "sim_dps": 492.87297600896306,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 18322,
+              "item_name": "Waterspout Boots",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Hydrospawn",
+              "dps_delta": 0
+            },
             {
               "item_id": 231661,
               "item_name": "General's Mail Sabatons",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.4214914187695143
+              "dps_delta": -0.2525523963333311
             },
             {
               "item_id": 11822,
               "item_name": "Omnicast Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -1.1225502211837999
-            },
-            {
-              "item_id": 227007,
-              "item_name": "Slippers of The Five Thunders",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -5.263930988862853,
-              "verified": true
+              "dps_delta": -0.9536111987476166
             }
           ]
         },
@@ -7879,7 +7865,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 501.22220498938236,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7913,7 +7898,6 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 501.22220498938236,
           "verified": true,
           "alternatives": [
             {
@@ -7946,9 +7930,8 @@
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 501.22220498938236,
           "verified": true,
-          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +19.1 DPS (501.2 vs 482.1 set DPS)",
+          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +19.1 DPS over it",
           "dps_delta": 19.079354062770392,
           "alternatives": [
             {
@@ -7981,7 +7964,6 @@
           "item_name": "Briarwood Reed",
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
-          "sim_dps": 501.22220498938236,
           "verified": true,
           "alternatives": [
             {
@@ -8014,7 +7996,6 @@
           "item_name": "Kindling Stave",
           "source": "Blackrock Depths: Pyromancer Loregrain",
           "source_kind": "dungeon",
-          "sim_dps": 501.22220498938236,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8053,7 +8034,6 @@
           "item_name": "Totem of Thunder",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "sim_dps": 501.22220498938236,
           "verified": true,
           "alternatives": [
             {
@@ -8067,8 +8047,9 @@
           ]
         }
       ],
-      "set_dps": 501.22220498938236,
+      "set_dps": 492.87297600896306,
       "no_source_count": 1679,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -8093,10 +8074,10 @@
         "back: Arcanoweave Cloak",
         "chest: Robe of Everlasting Night",
         "wrist: Dryad's Wrist Bindings",
-        "hands: Hands of Power",
+        "hands: Storm Gauntlets",
         "waist: Knowledge of the Timbermaw",
         "legs: Ironfeather Leggings",
-        "feet: Waterspout Boots",
+        "feet: Slippers of The Five Thunders",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Talisman of Ascendance",
@@ -8104,8 +8085,8 @@
         "main_hand: Kindling Stave",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.8113881250000001,
-      "verify_run_seconds": 5.5744594549999995,
+      "weights_run_seconds": 1.726547743,
+      "verify_run_seconds": 5.709404561,
       "coverage": {
         "back": {
           "eligible": 457,

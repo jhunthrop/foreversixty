@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T02:23:26Z",
+  "generated_at": "2026-10-09T13:33:34Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -556,8 +556,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.9063767550000001,
-      "verify_run_seconds": 1.16905597,
+      "weights_run_seconds": 1.757925777,
+      "verify_run_seconds": 1.201048257,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.9063767550000001,
-      "verify_run_seconds": 1.139836626,
+      "weights_run_seconds": 1.757925777,
+      "verify_run_seconds": 1.121765012,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1855,8 +1855,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 2.1725948649999998,
-      "verify_run_seconds": 1.3569463050000001,
+      "weights_run_seconds": 2.011117934,
+      "verify_run_seconds": 1.165780002,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2525,8 +2525,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.1725948649999998,
-      "verify_run_seconds": 1.287870147,
+      "weights_run_seconds": 2.011117934,
+      "verify_run_seconds": 1.185000558,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3226,8 +3226,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 2.305668507,
-      "verify_run_seconds": 1.493383465,
+      "weights_run_seconds": 2.146199262,
+      "verify_run_seconds": 1.397141402,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3926,8 +3926,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 2.305668507,
-      "verify_run_seconds": 1.574764204,
+      "weights_run_seconds": 2.146199262,
+      "verify_run_seconds": 1.40564654,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4600,8 +4600,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 2.54319923,
-      "verify_run_seconds": 2.035971331,
+      "weights_run_seconds": 2.318512574,
+      "verify_run_seconds": 1.878755221,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5268,8 +5268,8 @@
         "trinket1: Uther's Strength",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 2.54319923,
-      "verify_run_seconds": 1.8441437779999998,
+      "weights_run_seconds": 2.318512574,
+      "verify_run_seconds": 1.7005602770000001,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5729,7 +5729,7 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.8711062160021226
+              "dps_delta": -1.871106216002124
             },
             {
               "item_id": 22752,
@@ -5995,8 +5995,8 @@
         "trinket2: Second Wind",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.513627065,
-      "verify_run_seconds": 5.74182704,
+      "weights_run_seconds": 2.327531163,
+      "verify_run_seconds": 5.517971579,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6252,7 +6252,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 39.026783645957906,
+          "score": 39.0267836459579,
           "verified": true,
           "alternatives": [
             {
@@ -6260,21 +6260,21 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.9396717242430588
+              "dps_delta": -0.9396717242430573
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.68578724802967
+              "dps_delta": -1.6857872480296687
             },
             {
               "item_id": 226778,
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.7189102907209473
+              "dps_delta": -1.7189102907209457
             }
           ]
         },
@@ -6323,7 +6323,7 @@
               "item_name": "Warlord's Dragonhide Armor",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.1939623930189142
+              "dps_delta": -0.1939623930189156
             },
             {
               "item_id": 18373,
@@ -6725,8 +6725,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.513627065,
-      "verify_run_seconds": 4.698679701,
+      "weights_run_seconds": 2.327531163,
+      "verify_run_seconds": 4.479295835,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7468,8 +7468,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.424520614,
-      "verify_run_seconds": 5.53437846,
+      "weights_run_seconds": 1.370493951,
+      "verify_run_seconds": 5.243862393,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7858,7 +7858,6 @@
           "item_name": "Gloves of the Greatfather",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 523.4618207513955,
           "verified": true,
           "alternatives": [
             {
@@ -7951,34 +7950,33 @@
         },
         {
           "slot": "feet",
-          "item_id": 18322,
-          "item_name": "Waterspout Boots",
-          "source": "Dire Maul: Hydrospawn",
-          "source_kind": "dungeon",
-          "score": 26.396281139263397,
+          "item_id": 226774,
+          "item_name": "Feralheart Galoshes",
+          "source": "Mokvar",
+          "source_kind": "vendor",
+          "sim_dps": 518.3447934962929,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 18322,
+              "item_name": "Waterspout Boots",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Hydrospawn",
+              "dps_delta": 0
+            },
             {
               "item_id": 231682,
               "item_name": "General's Dragonhide Boots",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.9970869805733996
+              "dps_delta": -0.6833296649149831
             },
             {
               "item_id": 254013,
               "item_name": "Earthen Silk Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.1173875846866155
-            },
-            {
-              "item_id": 226774,
-              "item_name": "Feralheart Galoshes",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -5.242027606370925,
-              "verified": true
+              "dps_delta": -0.8036302690281991
             }
           ]
         },
@@ -8165,9 +8163,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 523.4618207513955,
+      "set_dps": 518.3447934962929,
       "no_source_count": 1444,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -8195,14 +8193,14 @@
         "hands: Gloves of the Greatfather",
         "waist: Knowledge of the Timbermaw",
         "legs: Ironfeather Leggings",
-        "feet: Waterspout Boots",
+        "feet: Feralheart Galoshes",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.424520614,
-      "verify_run_seconds": 4.584999809,
+      "weights_run_seconds": 1.370493951,
+      "verify_run_seconds": 4.186920608,
       "coverage": {
         "back": {
           "eligible": 457,

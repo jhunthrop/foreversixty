@@ -2,7 +2,7 @@
   "spec": "rogue-assassination",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T03:45:34Z",
+  "generated_at": "2026-10-09T14:46:29Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -579,8 +579,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.220720727,
-      "verify_run_seconds": 3.528816378,
+      "weights_run_seconds": 2.149077906,
+      "verify_run_seconds": 3.598375971,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1249,8 +1249,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.220720727,
-      "verify_run_seconds": 3.461893456,
+      "weights_run_seconds": 2.149077906,
+      "verify_run_seconds": 3.491115197,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1948,8 +1948,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.299844276,
-      "verify_run_seconds": 3.552411095,
+      "weights_run_seconds": 2.265798561,
+      "verify_run_seconds": 3.559382484,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2655,8 +2655,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.299844276,
-      "verify_run_seconds": 3.538462461,
+      "weights_run_seconds": 2.265798561,
+      "verify_run_seconds": 3.543570772,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2854,7 +2854,6 @@
           "item_name": "Sentinel's Medallion",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 109.90993322831537,
           "verified": true,
           "alternatives": [
             {
@@ -2946,34 +2945,33 @@
         },
         {
           "slot": "chest",
-          "item_id": 10583,
-          "item_name": "Quillward Harness",
-          "source": "Razorfen Downs: Withered Warrior",
-          "source_kind": "dungeon",
-          "score": 37.75088902899051,
+          "item_id": 13110,
+          "item_name": "Wolffear Harness",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 109.03593615988567,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13110,
-              "item_name": "Wolffear Harness",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.394581557028026,
-              "verified": true
+              "item_id": 10583,
+              "item_name": "Quillward Harness",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Withered Warrior",
+              "dps_delta": 0
             },
             {
               "item_id": 8175,
               "item_name": "Nightscape Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.4903294440088143
+              "dps_delta": -0.10765716203451423
             },
             {
               "item_id": 7374,
               "item_name": "Dusky Leather Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5441580250260714
+              "dps_delta": -0.16148574305177132
             }
           ]
         },
@@ -3317,9 +3315,9 @@
           ]
         }
       ],
-      "set_dps": 109.90993322831537,
+      "set_dps": 109.03593615988567,
       "no_source_count": 483,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3342,7 +3340,7 @@
         "neck: Sentinel's Medallion",
         "shoulder: Sunburn Spaulders",
         "back: Dark Hooded Cape",
-        "chest: Quillward Harness",
+        "chest: Wolffear Harness",
         "wrist: Branded Leather Bracers",
         "hands: Gloves of Holy Might",
         "waist: Highlander's Leather Girdle",
@@ -3354,8 +3352,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.290040181,
-      "verify_run_seconds": 2.431574875,
+      "weights_run_seconds": 2.202188922,
+      "verify_run_seconds": 2.421033736,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3553,7 +3551,6 @@
           "item_name": "Scout's Medallion",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 109.13762727706539,
           "verified": true,
           "alternatives": [
             {
@@ -3645,34 +3642,33 @@
         },
         {
           "slot": "chest",
-          "item_id": 10583,
-          "item_name": "Quillward Harness",
-          "source": "Razorfen Downs: Withered Warrior",
-          "source_kind": "dungeon",
-          "score": 37.75088902899051,
+          "item_id": 13110,
+          "item_name": "Wolffear Harness",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 108.27111399885285,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13110,
-              "item_name": "Wolffear Harness",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.40881804036404645,
-              "verified": true
+              "item_id": 10583,
+              "item_name": "Quillward Harness",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Withered Warrior",
+              "dps_delta": 0
             },
             {
               "item_id": 8175,
               "item_name": "Nightscape Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.4903294440088143
+              "dps_delta": -0.10765716203451423
             },
             {
               "item_id": 7374,
               "item_name": "Dusky Leather Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5441580250260714
+              "dps_delta": -0.16148574305177132
             }
           ]
         },
@@ -4016,9 +4012,9 @@
           ]
         }
       ],
-      "set_dps": 109.13762727706539,
+      "set_dps": 108.27111399885285,
       "no_source_count": 465,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4041,7 +4037,7 @@
         "neck: Scout's Medallion",
         "shoulder: Sunburn Spaulders",
         "back: Dark Hooded Cape",
-        "chest: Quillward Harness",
+        "chest: Wolffear Harness",
         "wrist: Branded Leather Bracers",
         "hands: Gloves of Holy Might",
         "waist: Defiler's Leather Girdle",
@@ -4053,8 +4049,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.290040181,
-      "verify_run_seconds": 2.435204341,
+      "weights_run_seconds": 2.202188922,
+      "verify_run_seconds": 2.4547973499999998,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4760,8 +4756,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.134331338,
-      "verify_run_seconds": 3.225063819,
+      "weights_run_seconds": 2.987722925,
+      "verify_run_seconds": 3.195767036,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5464,8 +5460,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.134331338,
-      "verify_run_seconds": 3.329600054,
+      "weights_run_seconds": 2.987722925,
+      "verify_run_seconds": 3.305747209,
       "coverage": {
         "back": {
           "eligible": 324,
@@ -6225,8 +6221,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.985972818,
-      "verify_run_seconds": 8.638613871,
+      "weights_run_seconds": 2.870850765,
+      "verify_run_seconds": 8.651159856,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6990,8 +6986,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.985972818,
-      "verify_run_seconds": 8.586488654,
+      "weights_run_seconds": 2.870850765,
+      "verify_run_seconds": 8.583663672,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7752,8 +7748,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.1582055159999998,
-      "verify_run_seconds": 9.138180003,
+      "weights_run_seconds": 3.08346069,
+      "verify_run_seconds": 9.055007055,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8515,8 +8511,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.1582055159999998,
-      "verify_run_seconds": 8.881366057,
+      "weights_run_seconds": 3.08346069,
+      "verify_run_seconds": 8.912446405,
       "coverage": {
         "back": {
           "eligible": 457,

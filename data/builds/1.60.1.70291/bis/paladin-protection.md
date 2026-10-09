@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 00000000000000000-5510000000000000-00000000000000000)
 
-Set DPS (verified): 19.4. Weights run: 6.3s. Verify run: 2.5s. 239 eligible items had no known source.
+Set DPS (verified): 19.4. Weights run: 6.1s. Verify run: 2.5s. 239 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.026 ± 0.000, defense=0.265 ± 0.044 per rating point (1 rating = 1%, 0.265 per %), dodge=0.146 ± 0.010 per rating point (12 rating = 1%, 1.755 per %), parry=0.120 ± 0.007 per rating point (15 rating = 1%, 1.801 per %), block=not significant (-0.007 ± 0.013) per rating point (5 rating = 1%, -0.035 per %), block_value=0.227 ± 0.002, strength=0.083 ± 0.000, agility=0.199 ± 0.006, attack_power=0.036 ± 0.000, hit=0.076 ± 0.007 per rating point (10 rating = 1%, 0.764 per %), crit=0.035 ± 0.001 per rating point (14 rating = 1%, 0.484 per %), expertise=1.848 ± 0.082
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 239, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 00000000000000000-5530512000000000-00000000000000000)
 
-Set DPS (verified): 32.4. Weights run: 6.4s. Verify run: 2.7s. 431 eligible items had no known source.
+Set DPS (verified): 32.4. Weights run: 6.2s. Verify run: 2.7s. 431 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.027 ± 0.000, defense=0.339 ± 0.051 per rating point (1 rating = 1%, 0.339 per %), dodge=0.172 ± 0.011 per rating point (12 rating = 1%, 2.066 per %), parry=0.139 ± 0.009 per rating point (15 rating = 1%, 2.080 per %), block=not significant (0.024 ± 0.017) per rating point (5 rating = 1%, 0.120 per %), block_value=0.104 ± 0.001, strength=0.059 ± 0.000, agility=0.193 ± 0.007, attack_power=0.027 ± 0.000, hit=0.057 ± 0.008 per rating point (10 rating = 1%, 0.573 per %), crit=0.030 ± 0.001 per rating point (14 rating = 1%, 0.422 per %), expertise=1.902 ± 0.094
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 431, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (dwarf, 00000000000000000-5530513321101001-00000000000000000)
 
-Set DPS (verified): 67.2. Weights run: 7.3s. Verify run: 3.9s. 589 eligible items had no known source.
+Set DPS (verified): 67.2. Weights run: 6.9s. Verify run: 3.8s. 589 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -100,9 +100,9 @@ No-known-source sample (15 of 589, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (dwarf, 30000000000000000-5530513321301051-00000000000000000)
 
-Set DPS (verified): 116.9. Weights run: 8.2s. Verify run: 9.1s. 753 eligible items had no known source.
+Set DPS (verified): 116.0. Weights run: 7.6s. Verify run: 7.2s. 753 eligible items had no known source.
 
-1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.075, armor=not significant (0.024 ± 0.006), defense=not significant (0.293 ± 0.226) per rating point (1 rating = 1%, 0.293 per %), dodge=0.163 ± 0.040 per rating point (12 rating = 1%, 1.960 per %), parry=0.132 ± 0.032 per rating point (15 rating = 1%, 1.973 per %), block=not significant (0.209 ± 0.080) per rating point (5 rating = 1%, 1.043 per %), block_value=not significant (0.189 ± 0.080), strength=0.054 ± 0.004, agility=0.177 ± 0.025, attack_power=0.022 ± 0.000, hit=not significant (0.044 ± 0.038) per rating point (10 rating = 1%, 0.436 per %), crit=0.033 ± 0.003 per rating point (14 rating = 1%, 0.468 per %), expertise=1.766 ± 0.428
 
@@ -111,8 +111,8 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | head | Avenguard Helm (10749) | The God Hakkar [quest] | 37.8 stamina points (1400.81 DPS) | yes | Mugthol's Helm (13073, -330.49 DPS, sim-verified) [world_drop]; Knight-Lieutenant's Plate Helm (220804, -363.14 DPS) [vendor]; Knight-Lieutenant's Lamellar Helm (220819, -394.65 DPS) [vendor] |
 | neck | Master Sergeant's Insignia (18444) | PvP rank 8 · Master Sergeant · Alliance [vendor] | 14.0 stamina points (519.04 DPS) | yes | Shriveled Heart (9243, -37.07 DPS) [dungeon]; Darkspear Warding Pendant (272073, -37.07 DPS) [vendor]; Souvenir Sea Shell (274749, -37.07 DPS) [vendor] |
 | shoulder | Stockade Pauldrons (14552) | World drop [world_drop] | 34.4 stamina points (1274.74 DPS) | yes | Hulkstone Pauldrons (17779, -276.95 DPS, sim-verified) [quest]; Sentinel's Pauldrons (250577, -330.84 DPS) [crafted]; Warder's Pauldrons (250578, -346.82 DPS) [crafted] |
-| back | Nightfall Drape (12465) | Sunken Temple: Morphaz [dungeon] | sim-verified (10827.4 DPS) | yes | Graverot Cape (11677, +0.00 DPS) [dungeon]; Sergeant's Cape (18441, -1.80 DPS) [vendor]; Grovekeeper's Drape (17739, -75.05 DPS) [dungeon] |
-| chest | Carapace of Anub'shiah (11678) | Blackrock Depths: Anub'shiah [dungeon] | 38.5 stamina points (1429.07 DPS) | yes | Hydralick Armor (13067, -99.74 DPS, sim-verified) [world_drop]; Warbear Harness (15064, -145.78 DPS) [crafted]; Sunscale Chestguard (14844, -187.03 DPS) [world_drop] |
+| back | Nightfall Drape (12465) | Sunken Temple: Morphaz [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Graverot Cape (11677, +0.00 DPS) [dungeon]; Sergeant's Cape (18441, -1.80 DPS) [vendor]; Grovekeeper's Drape (17739, -75.05 DPS) [dungeon] |
+| chest | Hydralick Armor (13067) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Carapace of Anub'shiah (11678, +0.00 DPS) [dungeon]; Warbear Harness (15064, -46.93 DPS) [crafted]; Sunscale Chestguard (14844, -88.19 DPS) [world_drop] |
 | wrist | Sergeant Major's Plate Wristguards (18447) | PvP rank 9 · Sergeant Major · Alliance [vendor] | 19.9 stamina points (738.91 DPS) | yes | Sentinel's Wristguards (250582, -24.45 DPS) [crafted]; Warder's Wristguards (250583, -36.43 DPS) [crafted]; Rubicund Armguards (11679, -38.68 DPS) [dungeon] |
 | hands | Sergeant Major's Imbued Gauntlets (220812) | PvP rank 9 · Sergeant Major · Alliance [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Soulforge Handguards (226990, +0.00 DPS) [vendor]; Sentinel's Gloves (250552, +0.00 DPS) [crafted]; Warder's Gloves (250553, +0.00 DPS) [crafted] |
 | waist | Sentinel's Waistguard (250572) | Blacksmithing [crafted] | 25.5 stamina points (945.06 DPS) | yes | Warder's Waistguard (250573, -25.96 DPS) [crafted]; Stonewall Girdle (11703, -64.59 DPS) [dungeon]; Officer's Waistguard (250571, -77.92 DPS) [crafted] |
@@ -123,16 +123,16 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (+152.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Talisman of Arathor (21117, +0.00 DPS) [rep]; Guardian Talisman (1490, -37.07 DPS) [quest]; Rune of Perfection (21565, -74.15 DPS) [rep] |
 | trinket2 | Relentless Raider's Seal (272060) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Talisman of Arathor (21117, +0.00 DPS) [rep]; Guardian Talisman (1490, -37.07 DPS) [quest]; Rune of Perfection (21565, -74.15 DPS) [rep] |
 | main_hand | Viking Warhammer (1721) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Might of Hakkar (10838, -9.99 DPS) [world]; Darkspear Skirmisher's Bludgeon (272092, -10.07 DPS) [vendor]; Hammer of the Northern Wind (810, -213.49 DPS, sim-verified) [world_drop] |
-| off_hand | Wall of the Dead (1979) | World drop [world_drop] | 62.6 stamina points (2319.33 DPS) | yes | Aegis of Stormwind (1203, -70.99 DPS) [world_drop]; Stoneshell Guard (11631, -259.03 DPS) [dungeon]; Troll Protector (2040, -362.90 DPS) [dungeon] |
+| off_hand | Aegis of Stormwind (1203) | World drop [world_drop] | sim-verified (10660.7 DPS) | yes | Wall of the Dead (1979, +0.00 DPS) [world_drop]; Stoneshell Guard (11631, -188.05 DPS) [dungeon]; Troll Protector (2040, -291.91 DPS) [dungeon] |
 | ranged | - | - |  |  |  |
 
-**New at 50:** head: Avenguard Helm; neck: Master Sergeant's Insignia; shoulder: Stockade Pauldrons; back: Nightfall Drape; chest: Carapace of Anub'shiah; wrist: Sergeant Major's Plate Wristguards; hands: Sergeant Major's Imbued Gauntlets; waist: Sentinel's Waistguard; legs: Knight's Imbued Leggings; feet: Sergeant Major's Imbued Greaves; finger1: Insurgent's Band; finger2: Darkspear Signet; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal; main_hand: Viking Warhammer; off_hand: Wall of the Dead
+**New at 50:** head: Avenguard Helm; neck: Master Sergeant's Insignia; shoulder: Stockade Pauldrons; back: Nightfall Drape; chest: Hydralick Armor; wrist: Sergeant Major's Plate Wristguards; hands: Sergeant Major's Imbued Gauntlets; waist: Sentinel's Waistguard; legs: Knight's Imbued Leggings; feet: Sergeant Major's Imbued Greaves; finger1: Insurgent's Band; finger2: Darkspear Signet; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal; main_hand: Viking Warhammer; off_hand: Aegis of Stormwind
 
 No-known-source sample (15 of 753, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4765 Enamelled Broadsword; 4777 Ironwood Maul
 
 ### Band 60 (dwarf, 50003000000000000-5530513321301051-50000000000000000)
 
-Set DPS (verified): 179.7. Weights run: 9.1s. Verify run: 18.2s. 1685 eligible items had no known source.
+Set DPS (verified): 179.7. Weights run: 7.6s. Verify run: 15.8s. 1685 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=0.043 ± 0.000, defense=1.863 ± 0.234 per rating point (1 rating = 1%, 1.863 per %), dodge=1.046 ± 0.049 per rating point (12 rating = 1%, 12.553 per %), parry=0.854 ± 0.037 per rating point (15 rating = 1%, 12.811 per %), block=1.493 ± 0.073 per rating point (5 rating = 1%, 7.463 per %), block_value=0.821 ± 0.003, strength=0.090 ± 0.000, agility=0.769 ± 0.030, attack_power=0.025 ± 0.000, hit=not significant (0.155 ± 0.044) per rating point (10 rating = 1%, 1.553 per %), crit=0.080 ± 0.002 per rating point (14 rating = 1%, 1.126 per %), expertise=4.453 ± 0.502
 
@@ -162,7 +162,7 @@ No-known-source sample (15 of 1685, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (dwarf, 50003000000000000-5530513321301051-50000000000000000)
 
-Set DPS (verified): 430.1. Weights run: 8.3s. Verify run: 15.2s. 1685 eligible items had no known source.
+Set DPS (verified): 430.1. Weights run: 7.3s. Verify run: 13.5s. 1685 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -196,7 +196,7 @@ No-known-source sample (15 of 1685, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (undead, 00000000000000000-5510000000000000-00000000000000000)
 
-Set DPS (verified): 24.6. Weights run: 6.3s. Verify run: 2.6s. 219 eligible items had no known source.
+Set DPS (verified): 24.6. Weights run: 6.1s. Verify run: 2.5s. 219 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.026 ± 0.000, defense=0.265 ± 0.044 per rating point (1 rating = 1%, 0.265 per %), dodge=0.146 ± 0.010 per rating point (12 rating = 1%, 1.755 per %), parry=0.120 ± 0.007 per rating point (15 rating = 1%, 1.801 per %), block=not significant (-0.007 ± 0.013) per rating point (5 rating = 1%, -0.035 per %), block_value=0.227 ± 0.002, strength=0.083 ± 0.000, agility=0.199 ± 0.006, attack_power=0.036 ± 0.000, hit=0.076 ± 0.007 per rating point (10 rating = 1%, 0.764 per %), crit=0.035 ± 0.001 per rating point (14 rating = 1%, 0.484 per %), expertise=1.848 ± 0.082
 
@@ -226,7 +226,7 @@ No-known-source sample (15 of 219, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-5530512000000000-00000000000000000)
 
-Set DPS (verified): 39.7. Weights run: 6.4s. Verify run: 2.6s. 409 eligible items had no known source.
+Set DPS (verified): 39.7. Weights run: 6.2s. Verify run: 2.6s. 409 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.027 ± 0.000, defense=0.339 ± 0.051 per rating point (1 rating = 1%, 0.339 per %), dodge=0.172 ± 0.011 per rating point (12 rating = 1%, 2.066 per %), parry=0.139 ± 0.009 per rating point (15 rating = 1%, 2.080 per %), block=not significant (0.024 ± 0.017) per rating point (5 rating = 1%, 0.120 per %), block_value=0.104 ± 0.001, strength=0.059 ± 0.000, agility=0.193 ± 0.007, attack_power=0.027 ± 0.000, hit=0.057 ± 0.008 per rating point (10 rating = 1%, 0.573 per %), crit=0.030 ± 0.001 per rating point (14 rating = 1%, 0.422 per %), expertise=1.902 ± 0.094
 
@@ -256,7 +256,7 @@ No-known-source sample (15 of 409, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (undead, 00000000000000000-5530513321101001-00000000000000000)
 
-Set DPS (verified): 76.5. Weights run: 7.3s. Verify run: 3.9s. 558 eligible items had no known source.
+Set DPS (verified): 76.5. Weights run: 6.9s. Verify run: 3.7s. 558 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -288,7 +288,7 @@ No-known-source sample (15 of 558, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 30000000000000000-5530513321301051-00000000000000000)
 
-Set DPS (verified): 114.8. Weights run: 8.2s. Verify run: 8.7s. 733 eligible items had no known source.
+Set DPS (verified): 114.8. Weights run: 7.6s. Verify run: 6.9s. 733 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -320,7 +320,7 @@ No-known-source sample (15 of 733, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (undead, 50003000000000000-5530513321301051-50000000000000000)
 
-Set DPS (verified): 207.2. Weights run: 9.1s. Verify run: 17.1s. 1710 eligible items had no known source.
+Set DPS (verified): 207.2. Weights run: 7.6s. Verify run: 15.0s. 1710 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -352,7 +352,7 @@ No-known-source sample (15 of 1710, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 50003000000000000-5530513321301051-50000000000000000)
 
-Set DPS (verified): 478.1. Weights run: 8.3s. Verify run: 14.9s. 1710 eligible items had no known source.
+Set DPS (verified): 478.1. Weights run: 7.3s. Verify run: 12.6s. 1710 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

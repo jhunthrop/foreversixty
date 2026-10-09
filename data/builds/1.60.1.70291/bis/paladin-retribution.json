@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T03:13:10Z",
+  "generated_at": "2026-10-09T14:16:51Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -561,8 +561,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 3.287709435,
-      "verify_run_seconds": 6.790137799,
+      "weights_run_seconds": 1.921306023,
+      "verify_run_seconds": 3.131806403,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1205,8 +1205,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.287709435,
-      "verify_run_seconds": 4.701879434,
+      "weights_run_seconds": 1.921306023,
+      "verify_run_seconds": 3.281513627,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1845,8 +1845,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.837556488,
-      "verify_run_seconds": 3.578975613,
+      "weights_run_seconds": 1.976256145,
+      "verify_run_seconds": 2.15332992,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2484,8 +2484,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.837556488,
-      "verify_run_seconds": 2.427047168,
+      "weights_run_seconds": 1.976256145,
+      "verify_run_seconds": 1.971797786,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2679,34 +2679,33 @@
         },
         {
           "slot": "neck",
-          "item_id": 17772,
-          "item_name": "Zealous Shadowshard Pendant",
-          "source": "Shadowshard Fragments",
-          "source_kind": "quest",
-          "score": 20,
+          "item_id": 19540,
+          "item_name": "Sentinel's Medallion",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "sim_dps": 136.4006789718709,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 17772,
+              "item_name": "Zealous Shadowshard Pendant",
+              "source_kind": "quest",
+              "source": "Shadowshard Fragments",
+              "dps_delta": 0
+            },
             {
               "item_id": 7731,
               "item_name": "Ghostshard Talisman",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.3493863168714821
+              "dps_delta": -0.10297863634608413
             },
             {
               "item_id": 13084,
               "item_name": "Kaleidoscope Chain",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.36487686075646486
-            },
-            {
-              "item_id": 19540,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.5199821306567003,
-              "verified": true
+              "dps_delta": -0.11846918023106691
             }
           ]
         },
@@ -2748,7 +2747,6 @@
           "item_name": "Sergeant Major's Cape",
           "source": "PvP rank 9 · Sergeant Major · Alliance",
           "source_kind": "pvp",
-          "sim_dps": 136.9206611025276,
           "verified": true,
           "alternatives": [
             {
@@ -2780,7 +2778,6 @@
           "item_name": "Stormcloth Vest",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "sim_dps": 136.9206611025276,
           "verified": true,
           "alternatives": [
             {
@@ -2850,7 +2847,6 @@
           "item_name": "Stormcloth Gloves",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "sim_dps": 136.9206611025276,
           "verified": true,
           "alternatives": [
             {
@@ -2920,7 +2916,6 @@
           "item_name": "Stormcloth Pants",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "sim_dps": 136.9206611025276,
           "verified": true,
           "alternatives": [
             {
@@ -2992,7 +2987,7 @@
           "source_kind": "rep",
           "score": 27.467962774603535,
           "verified": true,
-          "swap_note": "confirmed by the sim against Ironspine's Eye (id 7686): kept the pick, +2.3 DPS (136.9 vs 134.6 set DPS)",
+          "swap_note": "confirmed by the sim against Ironspine's Eye (id 7686): kept the pick, +2.3 DPS over it",
           "dps_delta": 2.312274999224229,
           "alternatives": [
             {
@@ -3066,7 +3061,6 @@
           "item_name": "Manual Crowd Pummeler",
           "source": "Gnomeregan: Crowd Pummeler 9-60",
           "source_kind": "dungeon",
-          "sim_dps": 136.9206611025276,
           "verified": true,
           "alternatives": [
             {
@@ -3104,8 +3098,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 136.9206611025276,
+      "set_dps": 136.4006789718709,
       "no_source_count": 589,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -3125,7 +3120,7 @@
       ],
       "new_at_band": [
         "head: Chromite Barbute",
-        "neck: Zealous Shadowshard Pendant",
+        "neck: Sentinel's Medallion",
         "shoulder: Sunburn Spaulders",
         "back: Sergeant Major's Cape",
         "chest: Stormcloth Vest",
@@ -3137,8 +3132,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.746979015,
-      "verify_run_seconds": 4.860738426,
+      "weights_run_seconds": 2.012519399,
+      "verify_run_seconds": 4.021714728,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3787,8 +3782,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.746979015,
-      "verify_run_seconds": 4.771642065,
+      "weights_run_seconds": 2.012519399,
+      "verify_run_seconds": 4.182610838,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4464,8 +4459,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.574773979,
-      "verify_run_seconds": 6.981761453,
+      "weights_run_seconds": 2.058787291,
+      "verify_run_seconds": 5.176070613,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5153,8 +5148,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.574773979,
-      "verify_run_seconds": 5.371286637,
+      "weights_run_seconds": 2.058787291,
+      "verify_run_seconds": 4.517203437,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5888,8 +5883,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.535828697,
-      "verify_run_seconds": 14.96605141,
+      "weights_run_seconds": 2.059379864,
+      "verify_run_seconds": 12.173473894,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6607,8 +6602,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.535828697,
-      "verify_run_seconds": 13.135417791,
+      "weights_run_seconds": 2.059379864,
+      "verify_run_seconds": 11.780020189,
       "coverage": {
         "back": {
           "eligible": 455,
@@ -6797,7 +6792,7 @@
               "item_name": "Knight-Lieutenant's Plate Helm",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -12.71397086694004
+              "dps_delta": -12.713970866940038
             }
           ]
         },
@@ -7340,8 +7335,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.609742785,
-      "verify_run_seconds": 15.608034303,
+      "weights_run_seconds": 2.404190765,
+      "verify_run_seconds": 13.254699822,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7507,7 +7502,7 @@
           "item_name": "Lionheart Helm",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 224.49138802912734,
+          "score": 224.4913880291273,
           "verified": true,
           "alternatives": [
             {
@@ -7523,14 +7518,14 @@
               "item_name": "Stalwart Helm",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -11.517590941517279
+              "dps_delta": -11.517590941517275
             },
             {
               "item_id": 220803,
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -12.713970866940041
+              "dps_delta": -12.71397086694004
             }
           ]
         },
@@ -7674,33 +7669,32 @@
         },
         {
           "slot": "wrist",
-          "item_id": 12936,
-          "item_name": "Battleborn Armbraces",
-          "source": "Blackrock Spire: Warchief Rend Blackhand",
-          "source_kind": "dungeon",
+          "item_id": 19587,
+          "item_name": "Forest Stalker's Bracers",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19587,
-              "item_name": "Forest Stalker's Bracers",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -2.79558990431617
+              "item_id": 12936,
+              "item_name": "Battleborn Armbraces",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "dps_delta": 0
             },
             {
               "item_id": 13211,
               "item_name": "Slashclaw Bracers",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Halycon",
-              "dps_delta": -2.9730225810817075
+              "dps_delta": -0.17743267676553778
             },
             {
-              "item_id": 23090,
-              "item_name": "Bracers of Undead Slaying",
-              "source_kind": "world",
-              "source": "Bone Witch",
-              "dps_delta": -12.459113095606199,
-              "verified": true
+              "item_id": 12966,
+              "item_name": "Blackmist Armguards",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: The Beast",
+              "dps_delta": -0.5633536632416825
             }
           ]
         },
@@ -7802,9 +7796,9 @@
         },
         {
           "slot": "feet",
-          "item_id": 13391,
-          "item_name": "The Postmaster's Treads",
-          "source": "Stratholme: Postmaster Malown",
+          "item_id": 11731,
+          "item_name": "Savage Gladiator Greaves",
+          "source": "Blackrock Depths: Anub'shiah",
           "source_kind": "dungeon",
           "verified": true,
           "alternatives": [
@@ -7823,12 +7817,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 11731,
-              "item_name": "Savage Gladiator Greaves",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Anub'shiah",
-              "dps_delta": -4.7471747038999865,
-              "verified": true
+              "item_id": 227815,
+              "item_name": "Fine Dawn Treaders",
+              "source_kind": "vendor",
+              "source": "Argent Quartermaster Hasana",
+              "dps_delta": 0
             }
           ]
         },
@@ -7838,7 +7831,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 662.7842591437063,
+          "sim_dps": 665.12320398617,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8013,9 +8006,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 662.7842591437063,
+      "set_dps": 665.12320398617,
       "no_source_count": 1710,
-      "unconfirmed_within_error_held": 2,
+      "unconfirmed_within_error_held": 4,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -8039,19 +8032,19 @@
         "shoulder: Ironfeather Shoulders",
         "back: Howler's Furs",
         "chest: Ironfeather Breastplate",
-        "wrist: Battleborn Armbraces",
+        "wrist: Forest Stalker's Bracers",
         "hands: Savage Gladiator Grips",
         "waist: Belt of Preserved Heads",
         "legs: Titanic Leggings",
-        "feet: The Postmaster's Treads",
+        "feet: Savage Gladiator Greaves",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Don Julio's Band",
         "trinket1: Talisman of Ascendance",
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.609742785,
-      "verify_run_seconds": 15.502132838,
+      "weights_run_seconds": 2.404190765,
+      "verify_run_seconds": 12.291980674,
       "coverage": {
         "back": {
           "eligible": 455,

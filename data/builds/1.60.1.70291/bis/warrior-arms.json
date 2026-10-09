@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T04:13:15Z",
+  "generated_at": "2026-10-09T15:13:31Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -599,8 +599,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.787963958,
-      "verify_run_seconds": 3.134073087,
+      "weights_run_seconds": 1.7898191749999999,
+      "verify_run_seconds": 3.131702012,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1274,8 +1274,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.787963958,
-      "verify_run_seconds": 3.0910410759999998,
+      "weights_run_seconds": 1.7898191749999999,
+      "verify_run_seconds": 3.101638675,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1941,8 +1941,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.135226088,
-      "verify_run_seconds": 2.040156609,
+      "weights_run_seconds": 2.096005308,
+      "verify_run_seconds": 2.035669851,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2608,8 +2608,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.135226088,
-      "verify_run_seconds": 2.002953651,
+      "weights_run_seconds": 2.096005308,
+      "verify_run_seconds": 2.000937635,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3283,8 +3283,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.4585436290000002,
-      "verify_run_seconds": 2.6884652989999998,
+      "weights_run_seconds": 2.323455619,
+      "verify_run_seconds": 2.622588565,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3956,8 +3956,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.4585436290000002,
-      "verify_run_seconds": 2.61563581,
+      "weights_run_seconds": 2.323455619,
+      "verify_run_seconds": 2.516008195,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4175,34 +4175,32 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 20517,
-          "item_name": "Razorsteel Shoulders",
-          "source": "Voodoo Feathers",
-          "source_kind": "quest",
-          "score": 58.43338069839902,
+          "item_id": 220795,
+          "item_name": "Knight-Lieutenant's Plate Pauldrons",
+          "source": "Captain Dirgehammer",
+          "source_kind": "vendor",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 220795,
-              "item_name": "Knight-Lieutenant's Plate Pauldrons",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -1.1317483847106757,
-              "verified": true
+              "item_id": 20517,
+              "item_name": "Razorsteel Shoulders",
+              "source_kind": "quest",
+              "source": "Voodoo Feathers",
+              "dps_delta": 0
             },
             {
               "item_id": 250576,
               "item_name": "Officer's Pauldrons",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.7006552464574298
+              "dps_delta": -0.6220415990357988
             },
             {
               "item_id": 13066,
               "item_name": "Wyrmslayer Spaulders",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.8645410667419073
+              "dps_delta": -0.7859274193202763
             }
           ]
         },
@@ -4370,7 +4368,7 @@
           "item_name": "Knight's Plate Leggings",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 61.8694328781998,
+          "score": 61.86943287819979,
           "verified": true,
           "alternatives": [
             {
@@ -4378,21 +4376,21 @@
               "item_name": "Gryphon Rider's Leggings",
               "source_kind": "quest",
               "source": "Saving Sharpbeak",
-              "dps_delta": -0.8170421613965052
+              "dps_delta": -0.817042161396504
             },
             {
               "item_id": 10740,
               "item_name": "Centurion Legplates",
               "source_kind": "quest",
               "source": "Rise, Obsidion!",
-              "dps_delta": -0.8170421613965052
+              "dps_delta": -0.817042161396504
             },
             {
               "item_id": 8262,
               "item_name": "Serpentskin Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.0251850077503986
+              "dps_delta": -1.0251850077503974
             }
           ]
         },
@@ -4402,7 +4400,7 @@
           "item_name": "Prowler's Leather Boots",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 179.83389599757385,
+          "sim_dps": 178.76143005749185,
           "verified": true,
           "alternatives": [
             {
@@ -4589,9 +4587,9 @@
           ]
         }
       ],
-      "set_dps": 179.83389599757385,
+      "set_dps": 178.76143005749185,
       "no_source_count": 906,
-      "unconfirmed_within_error_held": 4,
+      "unconfirmed_within_error_held": 5,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -4612,7 +4610,7 @@
       "new_at_band": [
         "head: Knight-Lieutenant's Plate Helm",
         "neck: Skibi's Pendant",
-        "shoulder: Razorsteel Shoulders",
+        "shoulder: Knight-Lieutenant's Plate Pauldrons",
         "back: Dark Hooded Cape",
         "chest: Knight's Plate Hauberk",
         "wrist: Officer's Wristguards",
@@ -4627,8 +4625,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.54746316,
-      "verify_run_seconds": 3.533436719,
+      "weights_run_seconds": 2.397408377,
+      "verify_run_seconds": 3.433548809,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4888,34 +4886,32 @@
         },
         {
           "slot": "back",
-          "item_id": 11626,
-          "item_name": "Blackveil Cape",
-          "source": "Blackrock Depths: High Interrogator Gerstahn ",
-          "source_kind": "dungeon",
-          "score": 32.43865803769593,
+          "item_id": 5257,
+          "item_name": "Dark Hooded Cape",
+          "source": "Nimar the Slayer",
+          "source_kind": "world",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 11626,
+              "item_name": "Blackveil Cape",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "dps_delta": 0
+            },
             {
               "item_id": 12552,
               "item_name": "Blisterbane Wrap",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Anvilrage Overseer",
-              "dps_delta": -0.8636861274918015
+              "dps_delta": -0.057399310062602585
             },
             {
               "item_id": 13122,
               "item_name": "Dark Phantom Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.8636861274918015
-            },
-            {
-              "item_id": 5257,
-              "item_name": "Dark Hooded Cape",
-              "source_kind": "world",
-              "source": "Nimar the Slayer",
-              "dps_delta": -0.9819118628234094,
-              "verified": true
+              "dps_delta": -0.057399310062602585
             }
           ]
         },
@@ -5085,7 +5081,7 @@
           "item_name": "Prowler's Leather Boots",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 185.88234158506458,
+          "sim_dps": 185.0038888955136,
           "verified": true,
           "alternatives": [
             {
@@ -5282,9 +5278,9 @@
           ]
         }
       ],
-      "set_dps": 185.88234158506458,
+      "set_dps": 185.0038888955136,
       "no_source_count": 849,
-      "unconfirmed_within_error_held": 2,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -5306,7 +5302,6 @@
         "head: Fury Visor",
         "neck: Skibi's Pendant",
         "shoulder: Razorsteel Shoulders",
-        "back: Blackveil Cape",
         "chest: Stone Guard's Plate Armor",
         "wrist: Officer's Wristguards",
         "hands: Raider Gauntlets",
@@ -5320,8 +5315,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.54746316,
-      "verify_run_seconds": 3.513344166,
+      "weights_run_seconds": 2.397408377,
+      "verify_run_seconds": 3.451274439,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5757,7 +5752,7 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.9663216708731527
+              "dps_delta": -0.9663216708731551
             },
             {
               "item_id": 237825,
@@ -6045,8 +6040,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.572992241,
-      "verify_run_seconds": 11.739035007,
+      "weights_run_seconds": 2.520437872,
+      "verify_run_seconds": 11.613230961,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6228,7 +6223,7 @@
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -5.289303381522698
+              "dps_delta": -5.2893033815227
             },
             {
               "item_id": 22411,
@@ -6352,7 +6347,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.0658171149419913
+              "dps_delta": -0.06581711494199251
             },
             {
               "item_id": 22191,
@@ -6496,7 +6491,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.015125109525957
+              "dps_delta": -1.0151251095259546
             }
           ]
         },
@@ -6775,8 +6770,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.572992241,
-      "verify_run_seconds": 11.571477673,
+      "weights_run_seconds": 2.520437872,
+      "verify_run_seconds": 11.473066346,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -6968,7 +6963,6 @@
           "item_name": "Pendant of Celerity",
           "source": "Blackrock Spire: Lord Valthalak",
           "source_kind": "dungeon",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "alternatives": [
             {
@@ -7001,7 +6995,6 @@
           "item_name": "Highlander's Plate Spaulders",
           "source": "The League of Arathor",
           "source_kind": "rep",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "alternatives": [
             {
@@ -7072,7 +7065,6 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "alternatives": [
             {
@@ -7101,34 +7093,33 @@
         },
         {
           "slot": "wrist",
-          "item_id": 12936,
-          "item_name": "Battleborn Armbraces",
-          "source": "Blackrock Spire: Warchief Rend Blackhand",
-          "source_kind": "dungeon",
-          "sim_dps": 783.0738443653955,
+          "item_id": 19587,
+          "item_name": "Forest Stalker's Bracers",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "sim_dps": 778.2267203508372,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19587,
-              "item_name": "Forest Stalker's Bracers",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -3.0251619631822515
+              "item_id": 12936,
+              "item_name": "Battleborn Armbraces",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "dps_delta": 0
             },
             {
               "item_id": 19578,
               "item_name": "Berserker Bracers",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -3.5240247479419473
+              "dps_delta": -0.4988627847596957
             },
             {
-              "item_id": 23090,
-              "item_name": "Bracers of Undead Slaying",
-              "source_kind": "world",
-              "source": "Bone Witch",
-              "dps_delta": -17.181358252955874,
-              "verified": true
+              "item_id": 13211,
+              "item_name": "Slashclaw Bracers",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Halycon",
+              "dps_delta": -0.69785502401649
             }
           ]
         },
@@ -7138,7 +7129,6 @@
           "item_name": "Knight-Lieutenant's Plate Gauntlets",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7177,7 +7167,6 @@
           "item_name": "Highlander's Plate Girdle",
           "source": "The League of Arathor",
           "source_kind": "rep",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "alternatives": [
             {
@@ -7214,7 +7203,6 @@
           "item_name": "Knight-Captain's Plate Leggings",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "alternatives": [
             {
@@ -7252,7 +7240,6 @@
           "item_name": "Highlander's Plate Greaves",
           "source": "The League of Arathor",
           "source_kind": "rep",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7291,7 +7278,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7325,7 +7311,6 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "alternatives": [
             {
@@ -7358,7 +7343,6 @@
           "item_name": "Hand of Justice",
           "source": "Blackrock Depths: Emperor Dagran Thaurissan",
           "source_kind": "dungeon",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "alternatives": [
             {
@@ -7391,7 +7375,6 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "alternatives": [
             {
@@ -7424,7 +7407,6 @@
           "item_name": "Blackblade of Shahram",
           "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "alternatives": [
             {
@@ -7462,7 +7444,6 @@
           "item_name": "Satyr's Bow",
           "source": "Dire Maul: Zevrim Thornhoof",
           "source_kind": "dungeon",
-          "sim_dps": 783.0738443653955,
           "verified": true,
           "alternatives": [
             {
@@ -7490,8 +7471,9 @@
           ]
         }
       ],
-      "set_dps": 783.0738443653955,
+      "set_dps": 778.2267203508372,
       "no_source_count": 1963,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -7515,7 +7497,7 @@
         "shoulder: Highlander's Plate Spaulders",
         "back: Howler's Furs",
         "chest: Dawn Armor",
-        "wrist: Battleborn Armbraces",
+        "wrist: Forest Stalker's Bracers",
         "hands: Knight-Lieutenant's Plate Gauntlets",
         "waist: Highlander's Plate Girdle",
         "legs: Knight-Captain's Plate Leggings",
@@ -7527,8 +7509,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.233514146,
-      "verify_run_seconds": 11.008235112,
+      "weights_run_seconds": 2.203106607,
+      "verify_run_seconds": 11.034221628,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8276,8 +8258,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.233514146,
-      "verify_run_seconds": 11.106222262,
+      "weights_run_seconds": 2.203106607,
+      "verify_run_seconds": 11.118009724,
       "coverage": {
         "back": {
           "eligible": 456,

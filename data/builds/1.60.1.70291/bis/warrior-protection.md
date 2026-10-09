@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 00000000000000000-00000000000000000-050510000000000000)
 
-Set DPS (verified): 19.4. Weights run: 6.1s. Verify run: 2.2s. 302 eligible items had no known source.
+Set DPS (verified): 19.4. Weights run: 6.0s. Verify run: 2.2s. 302 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=not significant (0.021 ± 0.007), defense=0.627 ± 0.093 per rating point (1 rating = 1%, 0.627 per %), dodge=0.298 ± 0.016 per rating point (12 rating = 1%, 3.579 per %), parry=0.240 ± 0.012 per rating point (15 rating = 1%, 3.603 per %), block=0.265 ± 0.029 per rating point (5 rating = 1%, 1.324 per %), block_value=1.937 ± 0.178, strength=0.154 ± 0.009, agility=0.328 ± 0.011, attack_power=0.029 ± 0.000, hit=not significant (0.062 ± 0.021) per rating point (10 rating = 1%, 0.618 per %), crit=0.051 ± 0.010 per rating point (14 rating = 1%, 0.718 per %), expertise=2.261 ± 0.204
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 302, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 00000000000000000-00000000000000000-050533120200000000)
 
-Set DPS (verified): 31.9. Weights run: 5.8s. Verify run: 2.3s. 525 eligible items had no known source.
+Set DPS (verified): 31.9. Weights run: 5.5s. Verify run: 2.2s. 525 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.028 ± 0.006, defense=0.387 ± 0.077 per rating point (1 rating = 1%, 0.387 per %), dodge=0.309 ± 0.015 per rating point (12 rating = 1%, 3.714 per %), parry=0.253 ± 0.012 per rating point (15 rating = 1%, 3.802 per %), block=0.210 ± 0.025 per rating point (5 rating = 1%, 1.049 per %), block_value=0.744 ± 0.139, strength=0.078 ± 0.007, agility=0.284 ± 0.010, attack_power=0.020 ± 0.000, hit=not significant (0.077 ± 0.020) per rating point (10 rating = 1%, 0.772 per %), crit=not significant (0.033 ± 0.008) per rating point (14 rating = 1%, 0.456 per %), expertise=3.169 ± 0.207
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 525, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (dwarf, 00000000000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 98.2. Weights run: 5.3s. Verify run: 2.6s. 717 eligible items had no known source.
+Set DPS (verified): 98.2. Weights run: 5.1s. Verify run: 2.5s. 717 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -100,7 +100,7 @@ No-known-source sample (15 of 717, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (dwarf, 35200000000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 118.8. Weights run: 5.4s. Verify run: 3.3s. 906 eligible items had no known source.
+Set DPS (verified): 118.8. Weights run: 5.2s. Verify run: 3.3s. 906 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -132,7 +132,7 @@ No-known-source sample (15 of 906, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (dwarf, 35305013000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 166.7. Weights run: 4.7s. Verify run: 9.3s. 1963 eligible items had no known source.
+Set DPS (verified): 166.7. Weights run: 4.6s. Verify run: 9.4s. 1963 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.048 ± 0.010, defense=1.227 ± 0.197 per rating point (1 rating = 1%, 1.227 per %), dodge=0.916 ± 0.045 per rating point (12 rating = 1%, 10.998 per %), parry=0.742 ± 0.033 per rating point (15 rating = 1%, 11.136 per %), block=not significant (0.010 ± 0.036) per rating point (5 rating = 1%, 0.050 per %), block_value=0.796 ± 0.183, strength=0.068 ± 0.009, agility=0.708 ± 0.029, attack_power=0.014 ± 0.000, hit=not significant (0.207 ± 0.054) per rating point (10 rating = 1%, 2.067 per %), crit=0.093 ± 0.014 per rating point (14 rating = 1%, 1.301 per %), expertise=7.742 ± 0.588
 
@@ -162,7 +162,7 @@ No-known-source sample (15 of 1963, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (dwarf, 35305013000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 316.5. Weights run: 5.5s. Verify run: 10.6s. 1963 eligible items had no known source.
+Set DPS (verified): 316.5. Weights run: 5.3s. Verify run: 10.6s. 1963 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -196,7 +196,7 @@ No-known-source sample (15 of 1963, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (tauren, 00000000000000000-00000000000000000-050510000000000000)
 
-Set DPS (verified): 20.1. Weights run: 6.1s. Verify run: 2.1s. 272 eligible items had no known source.
+Set DPS (verified): 20.1. Weights run: 6.0s. Verify run: 2.1s. 272 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=not significant (0.021 ± 0.007), defense=0.627 ± 0.093 per rating point (1 rating = 1%, 0.627 per %), dodge=0.298 ± 0.016 per rating point (12 rating = 1%, 3.579 per %), parry=0.240 ± 0.012 per rating point (15 rating = 1%, 3.603 per %), block=0.265 ± 0.029 per rating point (5 rating = 1%, 1.324 per %), block_value=1.937 ± 0.178, strength=0.154 ± 0.009, agility=0.328 ± 0.011, attack_power=0.029 ± 0.000, hit=not significant (0.062 ± 0.021) per rating point (10 rating = 1%, 0.618 per %), crit=0.051 ± 0.010 per rating point (14 rating = 1%, 0.718 per %), expertise=2.261 ± 0.204
 
@@ -226,7 +226,7 @@ No-known-source sample (15 of 272, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 00000000000000000-00000000000000000-050533120200000000)
 
-Set DPS (verified): 32.7. Weights run: 5.8s. Verify run: 2.2s. 489 eligible items had no known source.
+Set DPS (verified): 32.7. Weights run: 5.5s. Verify run: 2.2s. 489 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.028 ± 0.006, defense=0.387 ± 0.077 per rating point (1 rating = 1%, 0.387 per %), dodge=0.309 ± 0.015 per rating point (12 rating = 1%, 3.714 per %), parry=0.253 ± 0.012 per rating point (15 rating = 1%, 3.802 per %), block=0.210 ± 0.025 per rating point (5 rating = 1%, 1.049 per %), block_value=0.744 ± 0.139, strength=0.078 ± 0.007, agility=0.284 ± 0.010, attack_power=0.020 ± 0.000, hit=not significant (0.077 ± 0.020) per rating point (10 rating = 1%, 0.772 per %), crit=not significant (0.033 ± 0.008) per rating point (14 rating = 1%, 0.456 per %), expertise=3.169 ± 0.207
 
@@ -256,7 +256,7 @@ No-known-source sample (15 of 489, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (tauren, 00000000000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 98.2. Weights run: 5.3s. Verify run: 2.6s. 669 eligible items had no known source.
+Set DPS (verified): 98.2. Weights run: 5.1s. Verify run: 2.6s. 669 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -288,9 +288,9 @@ No-known-source sample (15 of 669, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (tauren, 35200000000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 119.2. Weights run: 5.4s. Verify run: 3.2s. 849 eligible items had no known source.
+Set DPS (verified): 119.1. Weights run: 5.2s. Verify run: 3.2s. 849 eligible items had no known source.
 
-2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.073, armor=not significant (0.024 ± 0.008), defense=not significant (0.507 ± 0.131) per rating point (1 rating = 1%, 0.507 per %), dodge=0.285 ± 0.027 per rating point (12 rating = 1%, 3.418 per %), parry=0.228 ± 0.019 per rating point (15 rating = 1%, 3.415 per %), block=not significant (0.008 ± 0.034) per rating point (5 rating = 1%, 0.040 per %), block_value=not significant (0.325 ± 0.128), strength=0.033 ± 0.006, agility=0.249 ± 0.018, attack_power=0.009 ± 0.000, hit=0.147 ± 0.036 per rating point (10 rating = 1%, 1.470 per %), crit=not significant (0.022 ± 0.008) per rating point (14 rating = 1%, 0.306 per %), expertise=4.268 ± 0.395
 
@@ -304,23 +304,23 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | wrist | Sentinel's Wristguards (250582) | Blacksmithing [crafted] | 20.7 stamina points (947.63 DPS) | yes | Warder's Wristguards (250583, -9.16 DPS) [crafted]; First Sergeant's Plate Bracers (272580, -48.42 DPS) [pvp] |
 | hands | Handguards of Heroism (226870) | Mokvar [vendor] | 35.6 stamina points (1628.77 DPS) | yes | Sentinel's Gloves (250552, -248.83 DPS, sim-verified) [crafted]; Warder's Gloves (250553, -251.48 DPS) [crafted]; Raider Gauntlets (272096, -507.79 DPS) [vendor] |
 | waist | Sentinel's Waistguard (250572) | Blacksmithing [crafted] | 27.2 stamina points (1242.45 DPS) | yes | Warder's Waistguard (250573, -19.84 DPS) [crafted]; Officer's Waistguard (250571, -162.47 DPS) [crafted]; Stonewall Girdle (11703, -170.54 DPS) [dungeon] |
-| legs | Stone Guard's Plate Leggings (220798) | Lady Palanseer [vendor] | sim-verified (17088.3 DPS) | yes | Elemental Rockridge Leggings (17711, +0.00 DPS) [dungeon]; Silvershell Leggings (10633, -271.25 DPS) [dungeon]; Slagplate Leggings (19124, -284.07 DPS) [quest] |
+| legs | Stone Guard's Plate Leggings (220798) | Lady Palanseer [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Elemental Rockridge Leggings (17711, +0.00 DPS) [dungeon]; Silvershell Leggings (10633, -271.25 DPS) [dungeon]; Slagplate Leggings (19124, -284.07 DPS) [quest] |
 | feet | Boots of Avoidance (14549) | World drop [world_drop] | 29.8 stamina points (1364.31 DPS) | yes | First Sergeant's Plate Greaves (220800, -96.03 DPS) [vendor]; Bloodshot Greaves (10846, -134.65 DPS) [world]; Sentinel's Sabatons (250562, -136.16 DPS) [crafted] |
 | finger1 | Insurgent's Band (272065) | Creeg Bothunk [vendor] | 14.1 stamina points (646.33 DPS) | yes | Ring of Saviors (1447, -5.86 DPS) [world_drop]; Darkspear Signet (272069, -5.86 DPS) [vendor]; Suspicious Spare Part (274754, -132.42 DPS) [vendor] |
 | finger2 | Darkmoon Ring (19302) (or Darkspear Signet (272069), Ring of Saviors (1447)) | Lhara [vendor] | 14.0 stamina points (640.47 DPS) | yes | Ring of Saviors (1447, +0.00 DPS) [world_drop]; Darkspear Signet (272069, +0.00 DPS) [vendor]; Suspicious Spare Part (274754, -126.56 DPS) [vendor] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defiler's Talisman (21115, +0.00 DPS) [rep]; Guardian Talisman (1490, -45.75 DPS) [quest]; Rune of Perfection (21565, -91.50 DPS) [rep] |
 | trinket2 | Relentless Raider's Seal (272060) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defiler's Talisman (21115, +0.00 DPS) [rep]; Guardian Talisman (1490, -45.75 DPS) [quest]; Rune of Perfection (21565, -91.50 DPS) [rep] |
 | main_hand | Axe of Rin'ji (13014) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Viking Warhammer (1721, -44.75 DPS) [world_drop]; Lifeforce Dirk (10750, -51.78 DPS) [quest]; Hammer of the Northern Wind (810, -363.93 DPS, sim-verified) [world_drop] |
-| off_hand | Wall of the Dead (1979) | World drop [world_drop] | 61.1 stamina points (2794.31 DPS) | yes | Aegis of Stormwind (1203, -81.73 DPS) [world_drop]; Stoneshell Guard (11631, -315.80 DPS) [dungeon]; Blackskull Shield (1169, -518.11 DPS) [world_drop] |
+| off_hand | Aegis of Stormwind (1203) | World drop [world_drop] | sim-verified (16954.9 DPS) | yes | Wall of the Dead (1979, +0.00 DPS) [world_drop]; Stoneshell Guard (11631, -234.06 DPS) [dungeon]; Blackskull Shield (1169, -436.38 DPS) [world_drop] |
 | ranged | Satchel of Iron Bombs (285277) | Engineering [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Outrider's Bow (19559, +0.00 DPS) [pvp]; Dark Iron Rifle (16004, -257.90 DPS, sim-verified) [crafted] |
 
-**New at 50:** head: Avenguard Helm; neck: Senior Sergeant's Insignia; shoulder: Stockade Pauldrons; back: Nightfall Drape; chest: Carapace of Anub'shiah; wrist: Sentinel's Wristguards; hands: Handguards of Heroism; waist: Sentinel's Waistguard; legs: Stone Guard's Plate Leggings; finger1: Insurgent's Band; finger2: Darkmoon Ring; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal; main_hand: Axe of Rin'ji; off_hand: Wall of the Dead; ranged: Satchel of Iron Bombs
+**New at 50:** head: Avenguard Helm; neck: Senior Sergeant's Insignia; shoulder: Stockade Pauldrons; back: Nightfall Drape; chest: Carapace of Anub'shiah; wrist: Sentinel's Wristguards; hands: Handguards of Heroism; waist: Sentinel's Waistguard; legs: Stone Guard's Plate Leggings; finger1: Insurgent's Band; finger2: Darkmoon Ring; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal; main_hand: Axe of Rin'ji; off_hand: Aegis of Stormwind; ranged: Satchel of Iron Bombs
 
 No-known-source sample (15 of 849, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow
 
 ### Band 60 (tauren, 35305013000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 166.4. Weights run: 4.7s. Verify run: 9.3s. 1932 eligible items had no known source.
+Set DPS (verified): 166.4. Weights run: 4.6s. Verify run: 9.3s. 1932 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.048 ± 0.010, defense=1.227 ± 0.197 per rating point (1 rating = 1%, 1.227 per %), dodge=0.916 ± 0.045 per rating point (12 rating = 1%, 10.998 per %), parry=0.742 ± 0.033 per rating point (15 rating = 1%, 11.136 per %), block=not significant (0.010 ± 0.036) per rating point (5 rating = 1%, 0.050 per %), block_value=0.796 ± 0.183, strength=0.068 ± 0.009, agility=0.708 ± 0.029, attack_power=0.014 ± 0.000, hit=not significant (0.207 ± 0.054) per rating point (10 rating = 1%, 2.067 per %), crit=0.093 ± 0.014 per rating point (14 rating = 1%, 1.301 per %), expertise=7.742 ± 0.588
 
@@ -350,7 +350,7 @@ No-known-source sample (15 of 1932, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (tauren, 35305013000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 314.8. Weights run: 5.5s. Verify run: 10.3s. 1932 eligible items had no known source.
+Set DPS (verified): 314.8. Weights run: 5.3s. Verify run: 10.4s. 1932 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

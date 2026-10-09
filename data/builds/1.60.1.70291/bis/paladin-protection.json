@@ -2,7 +2,7 @@
   "spec": "paladin-protection",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T03:10:31Z",
+  "generated_at": "2026-10-09T14:14:43Z",
   "bands": [
     {
       "spec": "paladin-protection",
@@ -506,7 +506,7 @@
               "item_name": "Protector's Band",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -80.91341850967947
+              "dps_delta": -80.91341850967949
             },
             {
               "item_id": 12052,
@@ -538,7 +538,7 @@
               "item_name": "Protector's Band",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -67.70138295455976
+              "dps_delta": -67.70138295455978
             },
             {
               "item_id": 12052,
@@ -679,8 +679,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Gold-plated Buckler"
       ],
-      "weights_run_seconds": 6.318268548,
-      "verify_run_seconds": 2.486375978,
+      "weights_run_seconds": 6.063144897,
+      "verify_run_seconds": 2.459396499,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1268,7 +1268,7 @@
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -67.70138295455978
+              "dps_delta": -67.70138295455976
             },
             {
               "item_id": 12052,
@@ -1300,7 +1300,7 @@
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -52.76406062518558
+              "dps_delta": -52.764060625185564
             },
             {
               "item_id": 12052,
@@ -1441,8 +1441,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Gold-plated Buckler"
       ],
-      "weights_run_seconds": 6.318268548,
-      "verify_run_seconds": 2.552350966,
+      "weights_run_seconds": 6.063144897,
+      "verify_run_seconds": 2.475829494,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2239,8 +2239,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 6.361520681,
-      "verify_run_seconds": 2.652929396,
+      "weights_run_seconds": 6.200700251,
+      "verify_run_seconds": 2.6752965,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3028,8 +3028,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 6.361520681,
-      "verify_run_seconds": 2.592160577,
+      "weights_run_seconds": 6.200700251,
+      "verify_run_seconds": 2.571824678,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3832,8 +3832,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 7.301226157,
-      "verify_run_seconds": 3.927704823,
+      "weights_run_seconds": 6.900963594,
+      "verify_run_seconds": 3.822167311,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4635,8 +4635,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 7.301226157,
-      "verify_run_seconds": 3.851530408,
+      "weights_run_seconds": 6.900963594,
+      "verify_run_seconds": 3.653499831,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4987,7 +4987,6 @@
           "item_name": "Nightfall Drape",
           "source": "Sunken Temple: Morphaz",
           "source_kind": "dungeon",
-          "sim_dps": 10827.38657950734,
           "verified": true,
           "alternatives": [
             {
@@ -5015,34 +5014,32 @@
         },
         {
           "slot": "chest",
-          "item_id": 11678,
-          "item_name": "Carapace of Anub'shiah",
-          "source": "Blackrock Depths: Anub'shiah",
-          "source_kind": "dungeon",
-          "score": 38.546470893417755,
+          "item_id": 13067,
+          "item_name": "Hydralick Armor",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13067,
-              "item_name": "Hydralick Armor",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -99.7385902959686,
-              "verified": true
+              "item_id": 11678,
+              "item_name": "Carapace of Anub'shiah",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Anub'shiah",
+              "dps_delta": 0
             },
             {
               "item_id": 15064,
               "item_name": "Warbear Harness",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -145.77689448043856
+              "dps_delta": -46.93392213233493
             },
             {
               "item_id": 14844,
               "item_name": "Sunscale Chestguard",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -187.0332395253157
+              "dps_delta": -88.19026717721208
             }
           ]
         },
@@ -5381,34 +5378,33 @@
         },
         {
           "slot": "off_hand",
-          "item_id": 1979,
-          "item_name": "Wall of the Dead",
+          "item_id": 1203,
+          "item_name": "Aegis of Stormwind",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 62.55931166969121,
+          "sim_dps": 10660.727145843102,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 1203,
-              "item_name": "Aegis of Stormwind",
+              "item_id": 1979,
+              "item_name": "Wall of the Dead",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -70.98621601011178
+              "dps_delta": 0
             },
             {
               "item_id": 11631,
               "item_name": "Stoneshell Guard",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Lord Roccor",
-              "dps_delta": -259.03464196416485
+              "dps_delta": -188.04842595405307
             },
             {
               "item_id": 2040,
               "item_name": "Troll Protector",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -362.89596459515485
+              "dps_delta": -291.90974858504313
             }
           ]
         },
@@ -5418,9 +5414,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 116.86018538813028,
+      "set_dps": 115.9701519886749,
       "no_source_count": 753,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -5443,7 +5439,7 @@
         "neck: Master Sergeant's Insignia",
         "shoulder: Stockade Pauldrons",
         "back: Nightfall Drape",
-        "chest: Carapace of Anub'shiah",
+        "chest: Hydralick Armor",
         "wrist: Sergeant Major's Plate Wristguards",
         "hands: Sergeant Major's Imbued Gauntlets",
         "waist: Sentinel's Waistguard",
@@ -5454,10 +5450,10 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Relentless Raider's Seal",
         "main_hand: Viking Warhammer",
-        "off_hand: Wall of the Dead"
+        "off_hand: Aegis of Stormwind"
       ],
-      "weights_run_seconds": 8.247792286,
-      "verify_run_seconds": 9.122162224,
+      "weights_run_seconds": 7.627696434,
+      "verify_run_seconds": 7.228764949,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5543,12 +5539,12 @@
       "haste_on_items": false,
       "role": "tank",
       "metrics": {
-        "dtps": 339.0247569788181,
-        "tmi": 65.47352733347282,
-        "chance_of_death": 0.64,
-        "tps": 196.69242117083465,
-        "effective_health": 12706.058522584288,
-        "dps": 116.86018538813028
+        "dtps": 341.042243755851,
+        "tmi": 66.52509064324066,
+        "chance_of_death": 0.6843333333333335,
+        "tps": 195.32650748352927,
+        "effective_health": 12569.21615735181,
+        "dps": 115.9701519886749
       }
     },
     {
@@ -6287,8 +6283,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 8.247792286,
-      "verify_run_seconds": 8.727890535,
+      "weights_run_seconds": 7.627696434,
+      "verify_run_seconds": 6.850698971,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6666,7 +6662,7 @@
               "item_name": "Stoneskin Gargoyle Cape",
               "source_kind": "dungeon",
               "source": "Stratholme: Stonespine",
-              "dps_delta": -998.3828095994647
+              "dps_delta": -998.3828095994651
             }
           ]
         },
@@ -6901,7 +6897,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -1149.4260112518236
+              "dps_delta": -1149.4260112518239
             }
           ]
         },
@@ -6926,7 +6922,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -166.4980792650296
+              "dps_delta": -166.49807926502993
             },
             {
               "item_id": 11669,
@@ -7121,8 +7117,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 9.13028184,
-      "verify_run_seconds": 18.22670722,
+      "weights_run_seconds": 7.596147281,
+      "verify_run_seconds": 15.821664973,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7492,14 +7488,14 @@
               "item_name": "Windshear Cape",
               "source_kind": "world",
               "source": "High Marshal Whirlaxis",
-              "dps_delta": -667.848000353282
+              "dps_delta": -667.8480003532824
             },
             {
               "item_id": 13397,
               "item_name": "Stoneskin Gargoyle Cape",
               "source_kind": "dungeon",
               "source": "Stratholme: Stonespine",
-              "dps_delta": -998.3828095994647
+              "dps_delta": -998.3828095994651
             }
           ]
         },
@@ -7517,14 +7513,14 @@
               "item_name": "Enchanted Thorium Breastplate",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -138.053362736046
+              "dps_delta": -138.05336273604732
             },
             {
               "item_id": 12895,
               "item_name": "Breastplate of the Chromatic Flight",
               "source_kind": "quest",
               "source": "Breastplate of the Chromatic Flight",
-              "dps_delta": -342.6795827561897
+              "dps_delta": -342.679582756191
             },
             {
               "item_id": 23087,
@@ -7588,14 +7584,14 @@
               "item_name": "Sentinel's Gloves",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -484.3586220156703
+              "dps_delta": -484.35862201567096
             },
             {
               "item_id": 226990,
               "item_name": "Soulforge Handguards",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -517.4630620726011
+              "dps_delta": -517.4630620726017
             },
             {
               "item_id": 18326,
@@ -7734,7 +7730,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -1149.4260112518236
+              "dps_delta": -1149.4260112518239
             }
           ]
         },
@@ -7759,7 +7755,7 @@
               "item_name": "Band of the Steadfast Hero",
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok",
-              "dps_delta": -166.4980792650296
+              "dps_delta": -166.49807926502993
             },
             {
               "item_id": 11669,
@@ -7954,8 +7950,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 9.13028184,
-      "verify_run_seconds": 17.051183183,
+      "weights_run_seconds": 7.596147281,
+      "verify_run_seconds": 15.046564146,
       "coverage": {
         "back": {
           "eligible": 455,
@@ -8273,7 +8269,7 @@
           "item_name": "Highlander's Plate Spaulders",
           "source": "The League of Arathor",
           "source_kind": "rep",
-          "score": 76.6306459171821,
+          "score": 76.63064591718211,
           "verified": true,
           "alternatives": [
             {
@@ -8281,14 +8277,14 @@
               "item_name": "Field Marshal's Lamellar Pauldrons",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -113.27509994621481
+              "dps_delta": -113.2750999462167
             },
             {
               "item_id": 227818,
               "item_name": "Glowing Mantle of the Dawn",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -439.55555233136295
+              "dps_delta": -439.5555523313648
             },
             {
               "item_id": 14552,
@@ -8474,14 +8470,14 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -107.0284158255245
+              "dps_delta": -107.02841582552827
             },
             {
               "item_id": 22328,
               "item_name": "Legplates of Vigilance",
               "source_kind": "dungeon",
               "source": "Stratholme: Sothos and Jarien's Heirlooms",
-              "dps_delta": -1009.6036815156758
+              "dps_delta": -1009.6036815156777
             },
             {
               "item_id": 14554,
@@ -8682,7 +8678,7 @@
               "item_name": "Greenhammer",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1020.5754702325587
+              "dps_delta": -1020.5754702325597
             }
           ]
         },
@@ -8770,8 +8766,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 8.264394577000001,
-      "verify_run_seconds": 15.233552364,
+      "weights_run_seconds": 7.339605837,
+      "verify_run_seconds": 13.452401213,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -9086,7 +9082,7 @@
           "item_name": "Defiler's Plate Spaulders",
           "source": "The Defilers",
           "source_kind": "rep",
-          "score": 76.6306459171821,
+          "score": 76.63064591718211,
           "verified": true,
           "alternatives": [
             {
@@ -9094,21 +9090,21 @@
               "item_name": "Stockade Pauldrons",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -428.1207512185575
+              "dps_delta": -428.12075121855935
             },
             {
               "item_id": 227818,
               "item_name": "Glowing Mantle of the Dawn",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -439.55555233136295
+              "dps_delta": -439.5555523313648
             },
             {
               "item_id": 226987,
               "item_name": "Soulforge Pauldrons",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -708.4526616605837
+              "dps_delta": -708.4526616605856
             }
           ]
         },
@@ -9126,7 +9122,7 @@
               "item_name": "Windshear Cape",
               "source_kind": "world",
               "source": "High Marshal Whirlaxis",
-              "dps_delta": -1950.674992172498
+              "dps_delta": -1950.674992172497
             },
             {
               "item_id": 18495,
@@ -9285,7 +9281,7 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -107.0284158255264
+              "dps_delta": -107.02841582552827
             },
             {
               "item_id": 14554,
@@ -9318,7 +9314,7 @@
               "item_name": "Fine Dawn Treaders",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -1757.4403734290752
+              "dps_delta": -1757.4403734290734
             },
             {
               "item_id": 11787,
@@ -9492,7 +9488,7 @@
               "item_name": "Greenhammer",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1020.5754702325597
+              "dps_delta": -1020.5754702325587
             }
           ]
         },
@@ -9579,8 +9575,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: Earthen Guard"
       ],
-      "weights_run_seconds": 8.264394577000001,
-      "verify_run_seconds": 14.887900057,
+      "weights_run_seconds": 7.339605837,
+      "verify_run_seconds": 12.631264179,
       "coverage": {
         "back": {
           "eligible": 455,

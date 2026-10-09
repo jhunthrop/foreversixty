@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 32501000000000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 40.9. Weights run: 2.2s. Verify run: 3.5s. 198 eligible items had no known source.
+Set DPS (verified): 40.9. Weights run: 2.1s. Verify run: 3.6s. 198 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=2.032 ± 0.013, crit=0.603 ± 0.012 per rating point (14 rating = 1%, 8.438 per %), hit=0.880 ± 0.030 per rating point (10 rating = 1%, 8.802 per %), melee_haste=4.857 ± 0.346
 
@@ -68,19 +68,19 @@ No-known-source sample (15 of 358, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 32502110551401001-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 109.9. Weights run: 2.3s. Verify run: 2.4s. 483 eligible items had no known source.
+Set DPS (verified): 109.0. Weights run: 2.2s. Verify run: 2.4s. 483 eligible items had no known source.
 
-1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.566 ± 0.013, crit=0.729 ± 0.017 per rating point (14 rating = 1%, 10.208 per %), hit=2.147 ± 0.072 per rating point (10 rating = 1%, 21.474 per %), melee_haste=26.807 ± 0.730
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | White Bandit Mask (10008) | Tailoring [crafted] | 28.2 attack_power points (0.97 DPS) | yes | Hawkeye's Helm (14591, -0.24 DPS) [world_drop]; Warden's Wizard Hat (14604, -0.27 DPS) [world_drop]; Nightscape Headband (8176, -0.32 DPS) [crafted] |
-| neck | Sentinel's Medallion (19540) | Silverwing Sentinels [rep] | sim-verified (109.9 DPS) | yes | Zealous Shadowshard Pendant (17772, +0.00 DPS) [quest]; Ghostshard Talisman (7731, -0.11 DPS) [dungeon]; Kaleidoscope Chain (13084, -0.24 DPS) [world_drop] |
+| neck | Sentinel's Medallion (19540) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Zealous Shadowshard Pendant (17772, +0.00 DPS) [quest]; Ghostshard Talisman (7731, -0.11 DPS) [dungeon]; Kaleidoscope Chain (13084, -0.24 DPS) [world_drop] |
 | shoulder | Sunburn Spaulders (274751) | Rettrick [vendor] | 29.2 attack_power points (1.00 DPS) | yes | Forest Tracker Epaulets (2278, -0.24 DPS) [world_drop]; Flintrock Shoulders (7755, -0.29 DPS) [dungeon]; Nightscape Shoulders (8192, -0.41 DPS) [crafted] |
 | back | Dark Hooded Cape (5257) | Nimar the Slayer [world] | 19.7 attack_power points (0.68 DPS) | yes | Sergeant Major's Cape (16336, -0.15 DPS) [pvp]; Hawkeye's Cloak (14593, -0.20 DPS) [world_drop]; Parachute Cloak (10518, -0.25 DPS) [crafted] |
-| chest | Quillward Harness (10583) | Razorfen Downs: Withered Warrior [dungeon] | 37.8 attack_power points (1.30 DPS) | yes | Wolffear Harness (13110, -0.39 DPS, sim-verified) [world_drop]; Nightscape Tunic (8175, -0.49 DPS) [crafted]; Dusky Leather Armor (7374, -0.54 DPS) [crafted] |
+| chest | Wolffear Harness (13110) | World drop [world_drop] | sim-verified (109.0 DPS) | yes | Quillward Harness (10583, +0.00 DPS) [dungeon]; Nightscape Tunic (8175, -0.11 DPS) [crafted]; Dusky Leather Armor (7374, -0.16 DPS) [crafted] |
 | wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 attack_power points (0.69 DPS) | yes | Hawkeye's Bracers (14590, -0.23 DPS) [world_drop]; Imperial Leather Bracers (4061, -0.26 DPS) [dungeon]; Dusky Bracers (7378, -0.26 DPS) [crafted] |
 | hands | Gloves of Holy Might (867) | World drop [world_drop] | 30.2 attack_power points (1.04 DPS) | yes | Skulker's Leather Gloves (252525, -0.19 DPS) [crafted]; Prowler's Leather Gloves (252524, -0.21 DPS) [crafted]; Imperial Leather Gloves (4063, -0.24 DPS) [dungeon] |
 | waist | Highlander's Leather Girdle (20116) | The League of Arathor [rep] | 30.0 attack_power points (1.03 DPS) | yes | Highlander's Chain Girdle (20090, -0.21 DPS) [rep]; Ogron's Sash (13117, -0.24 DPS) [world_drop]; Skulker's Leather Belt (252520, -0.34 DPS) [crafted] |
@@ -94,13 +94,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (+63.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Stonecloth Branch (15963, -15.15 DPS) [world_drop]; Satyr's Rod (15962, -15.20 DPS) [world_drop]; Ardent Custodian (868, -63.29 DPS, sim-verified) [world_drop] |
 | ranged | The Silencer (13138) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glass Shooter (9456, -0.07 DPS) [dungeon]; Swiftwind (13038, -0.10 DPS) [world_drop]; Bow of Searing Arrows (2825, -0.52 DPS, sim-verified) [world_drop] |
 
-**New at 40:** head: White Bandit Mask; neck: Sentinel's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Quillward Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Highlander's Leather Girdle; legs: Basilisk Hide Pants; feet: Skulker's Leather Shoes; finger1: Protector's Band; finger2: Mark of Kern; main_hand: Gut Ripper; off_hand: Jhordy's Misplaced Screwdriver; ranged: The Silencer
+**New at 40:** head: White Bandit Mask; neck: Sentinel's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Wolffear Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Highlander's Leather Girdle; legs: Basilisk Hide Pants; feet: Skulker's Leather Shoes; finger1: Protector's Band; finger2: Mark of Kern; main_hand: Gut Ripper; off_hand: Jhordy's Misplaced Screwdriver; ranged: The Silencer
 
 No-known-source sample (15 of 483, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
 
 ### Band 50 (night-elf, 32502110551501001-30230100000000000-0000000000000000000)
 
-Set DPS (verified): 172.5. Weights run: 3.1s. Verify run: 3.2s. 610 eligible items had no known source.
+Set DPS (verified): 172.5. Weights run: 3.0s. Verify run: 3.2s. 610 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -132,7 +132,7 @@ No-known-source sample (15 of 610, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 32502110551501001-30230300000000000-5120000000000000000)
 
-Set DPS (verified): 291.5. Weights run: 3.0s. Verify run: 8.6s. 1378 eligible items had no known source.
+Set DPS (verified): 291.5. Weights run: 2.9s. Verify run: 8.7s. 1378 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -164,7 +164,7 @@ No-known-source sample (15 of 1378, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 01532310421501000-31530300001500000-0020000000000000000)
 
-Set DPS (verified): 746.6. Weights run: 3.2s. Verify run: 9.1s. 1378 eligible items had no known source.
+Set DPS (verified): 746.6. Weights run: 3.1s. Verify run: 9.1s. 1378 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -198,7 +198,7 @@ No-known-source sample (15 of 1378, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 32501000000000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 39.9. Weights run: 2.2s. Verify run: 3.5s. 191 eligible items had no known source.
+Set DPS (verified): 39.9. Weights run: 2.1s. Verify run: 3.5s. 191 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=2.032 ± 0.013, crit=0.603 ± 0.012 per rating point (14 rating = 1%, 8.438 per %), hit=0.880 ± 0.030 per rating point (10 rating = 1%, 8.802 per %), melee_haste=4.857 ± 0.346
 
@@ -258,19 +258,19 @@ No-known-source sample (15 of 348, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 32502110551401001-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 109.1. Weights run: 2.3s. Verify run: 2.4s. 465 eligible items had no known source.
+Set DPS (verified): 108.3. Weights run: 2.2s. Verify run: 2.5s. 465 eligible items had no known source.
 
-1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.566 ± 0.013, crit=0.729 ± 0.017 per rating point (14 rating = 1%, 10.208 per %), hit=2.147 ± 0.072 per rating point (10 rating = 1%, 21.474 per %), melee_haste=26.807 ± 0.730
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | White Bandit Mask (10008) | Tailoring [crafted] | 28.2 attack_power points (0.97 DPS) | yes | Hawkeye's Helm (14591, -0.24 DPS) [world_drop]; Warden's Wizard Hat (14604, -0.27 DPS) [world_drop]; Nightscape Headband (8176, -0.32 DPS) [crafted] |
-| neck | Scout's Medallion (19536) | Warsong Outriders [rep] | sim-verified (109.1 DPS) | yes | Zealous Shadowshard Pendant (17772, +0.00 DPS) [quest]; Ghostshard Talisman (7731, -0.11 DPS) [dungeon]; Ethereal Talisman (4430, -0.20 DPS) [quest] |
+| neck | Scout's Medallion (19536) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Zealous Shadowshard Pendant (17772, +0.00 DPS) [quest]; Ghostshard Talisman (7731, -0.11 DPS) [dungeon]; Ethereal Talisman (4430, -0.20 DPS) [quest] |
 | shoulder | Sunburn Spaulders (274751) | Rettrick [vendor] | 29.2 attack_power points (1.00 DPS) | yes | Forest Tracker Epaulets (2278, -0.24 DPS) [world_drop]; Flintrock Shoulders (7755, -0.29 DPS) [dungeon]; Nightscape Shoulders (8192, -0.41 DPS) [crafted] |
 | back | Dark Hooded Cape (5257) | Nimar the Slayer [world] | 19.7 attack_power points (0.68 DPS) | yes | First Sergeant's Cloak (16340, -0.15 DPS) [pvp]; Hawkeye's Cloak (14593, -0.20 DPS) [world_drop]; Parachute Cloak (10518, -0.25 DPS) [crafted] |
-| chest | Quillward Harness (10583) | Razorfen Downs: Withered Warrior [dungeon] | 37.8 attack_power points (1.30 DPS) | yes | Wolffear Harness (13110, -0.41 DPS, sim-verified) [world_drop]; Nightscape Tunic (8175, -0.49 DPS) [crafted]; Dusky Leather Armor (7374, -0.54 DPS) [crafted] |
+| chest | Wolffear Harness (13110) | World drop [world_drop] | sim-verified (108.3 DPS) | yes | Quillward Harness (10583, +0.00 DPS) [dungeon]; Nightscape Tunic (8175, -0.11 DPS) [crafted]; Dusky Leather Armor (7374, -0.16 DPS) [crafted] |
 | wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 attack_power points (0.69 DPS) | yes | Forest Stalker's Bracers (19590, +0.00 DPS) [pvp]; Hawkeye's Bracers (14590, -0.23 DPS) [world_drop]; Dusky Bracers (7378, -0.26 DPS) [crafted] |
 | hands | Gloves of Holy Might (867) | World drop [world_drop] | 30.2 attack_power points (1.04 DPS) | yes | Skulker's Leather Gloves (252525, -0.19 DPS) [crafted]; Prowler's Leather Gloves (252524, -0.21 DPS) [crafted]; Imperial Leather Gloves (4063, -0.24 DPS) [dungeon] |
 | waist | Defiler's Leather Girdle (20192) | The Defilers [rep] | 30.0 attack_power points (1.03 DPS) | yes | Defiler's Chain Girdle (20152, -0.21 DPS) [rep]; Ogron's Sash (13117, -0.24 DPS) [world_drop]; Skulker's Leather Belt (252520, -0.34 DPS) [crafted] |
@@ -284,13 +284,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (+62.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Stonecloth Branch (15963, -15.15 DPS) [world_drop]; Tork Wrench (11855, -15.19 DPS) [quest]; Ardent Custodian (868, -62.12 DPS, sim-verified) [world_drop] |
 | ranged | The Silencer (13138) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glass Shooter (9456, -0.07 DPS) [dungeon]; Swiftwind (13038, -0.10 DPS) [world_drop]; Bow of Searing Arrows (2825, -0.52 DPS, sim-verified) [world_drop] |
 
-**New at 40:** head: White Bandit Mask; neck: Scout's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Quillward Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Defiler's Leather Girdle; legs: Basilisk Hide Pants; feet: Skulker's Leather Shoes; finger1: Legionnaire's Band; finger2: Mark of Kern; main_hand: Gut Ripper; off_hand: Jhordy's Misplaced Screwdriver; ranged: The Silencer
+**New at 40:** head: White Bandit Mask; neck: Scout's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Wolffear Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Defiler's Leather Girdle; legs: Basilisk Hide Pants; feet: Skulker's Leather Shoes; finger1: Legionnaire's Band; finger2: Mark of Kern; main_hand: Gut Ripper; off_hand: Jhordy's Misplaced Screwdriver; ranged: The Silencer
 
 No-known-source sample (15 of 465, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
 ### Band 50 (troll, 32502110551501001-30230100000000000-0000000000000000000)
 
-Set DPS (verified): 174.9. Weights run: 3.1s. Verify run: 3.3s. 587 eligible items had no known source.
+Set DPS (verified): 174.9. Weights run: 3.0s. Verify run: 3.3s. 587 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -322,7 +322,7 @@ No-known-source sample (15 of 587, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 32502110551501001-30230300000000000-5120000000000000000)
 
-Set DPS (verified): 291.1. Weights run: 3.0s. Verify run: 8.6s. 1372 eligible items had no known source.
+Set DPS (verified): 291.1. Weights run: 2.9s. Verify run: 8.6s. 1372 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -354,7 +354,7 @@ No-known-source sample (15 of 1372, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 01532310421501000-31530300001500000-0020000000000000000)
 
-Set DPS (verified): 742.0. Weights run: 3.2s. Verify run: 8.9s. 1372 eligible items had no known source.
+Set DPS (verified): 742.0. Weights run: 3.1s. Verify run: 8.9s. 1372 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

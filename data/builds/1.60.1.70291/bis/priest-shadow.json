@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T03:43:51Z",
+  "generated_at": "2026-10-09T14:44:46Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.953810971,
-      "verify_run_seconds": 0.760651249,
+      "weights_run_seconds": 0.930099245,
+      "verify_run_seconds": 0.773552237,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1189,8 +1189,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.953810971,
-      "verify_run_seconds": 0.820815316,
+      "weights_run_seconds": 0.930099245,
+      "verify_run_seconds": 0.811348888,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1868,8 +1868,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.958641769,
-      "verify_run_seconds": 0.79580668,
+      "weights_run_seconds": 0.943547298,
+      "verify_run_seconds": 0.783911127,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2554,8 +2554,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.958641769,
-      "verify_run_seconds": 0.827815446,
+      "weights_run_seconds": 0.943547298,
+      "verify_run_seconds": 0.81799402,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3261,8 +3261,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.968157968,
-      "verify_run_seconds": 0.91260253,
+      "weights_run_seconds": 0.932574083,
+      "verify_run_seconds": 0.935123772,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3966,8 +3966,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.968157968,
-      "verify_run_seconds": 0.967875831,
+      "weights_run_seconds": 0.932574083,
+      "verify_run_seconds": 0.969261412,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4163,7 +4163,8 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Fineous Darkvire",
               "dps_delta": -1.7259837020755526,
-              "verified": true
+              "verified": true,
+              "sim_dps": 158.28203041859166
             }
           ]
         },
@@ -4303,7 +4304,6 @@
           "item_name": "Bloodband Bracers",
           "source": "The Captain's Chest",
           "source_kind": "quest",
-          "sim_dps": 159.84552084015843,
           "verified": true,
           "alternatives": [
             {
@@ -4363,33 +4363,32 @@
         },
         {
           "slot": "waist",
-          "item_id": 11662,
-          "item_name": "Ban'thok Sash",
-          "source": "Blackrock Depths: Ok'thor the Breaker",
+          "item_id": 12466,
+          "item_name": "Dawnspire Cord",
+          "source": "Sunken Temple: Morphaz",
           "source_kind": "dungeon",
-          "score": 34.62984379909092,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 12466,
-              "item_name": "Dawnspire Cord",
+              "item_id": 11662,
+              "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
-              "source": "Sunken Temple: Morphaz",
-              "dps_delta": -0.05485495925936634
+              "source": "Blackrock Depths: Ok'thor the Breaker",
+              "dps_delta": 0
             },
             {
               "item_id": 10771,
               "item_name": "Deathmage Sash",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Mordresh Fire Eye",
-              "dps_delta": -0.6805787783385076
+              "dps_delta": -0.6257238190791412
             },
             {
               "item_id": 17755,
               "item_name": "Satyrmane Sash",
               "source_kind": "dungeon",
               "source": "Maraudon: Lord Vyletongue",
-              "dps_delta": -0.7338553413088935
+              "dps_delta": -0.6790003820495272
             }
           ]
         },
@@ -4461,35 +4460,33 @@
         },
         {
           "slot": "finger1",
-          "item_id": 6440,
-          "item_name": "Brainlash",
-          "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-          "source_kind": "dungeon",
-          "score": 22.260870056921352,
+          "item_id": 281635,
+          "item_name": "Philanthropist's Ring",
+          "source": "Greater Friend of the Library",
+          "source_kind": "quest",
+          "sim_dps": 158.29001511101697,
           "verified": true,
-          "swap_note": "confirmed by the sim against Cyclopean Band (id 11824): kept the pick, +3.7 DPS over it",
-          "dps_delta": 3.6782745825440486,
           "alternatives": [
+            {
+              "item_id": 6440,
+              "item_name": "Brainlash",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp",
+              "dps_delta": 0
+            },
             {
               "item_id": 10634,
               "item_name": "Mindseye Circle",
               "source_kind": "dungeon",
               "source": "Sunken Temple: Atal'ai Warrior",
-              "dps_delta": -0.5643639352935133
-            },
-            {
-              "item_id": 281635,
-              "item_name": "Philanthropist's Ring",
-              "source_kind": "quest",
-              "source": "Greater Friend of the Library",
-              "dps_delta": -0.6135988378562786
+              "dps_delta": 0
             },
             {
               "item_id": 17768,
               "item_name": "Woodseed Hoop",
               "source_kind": "quest",
               "source": "Vyletongue Corruption",
-              "dps_delta": -1.1287278705870267
+              "dps_delta": -0.5151290327307483
             }
           ]
         },
@@ -4503,11 +4500,11 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 281635,
-              "item_name": "Philanthropist's Ring",
-              "source_kind": "quest",
-              "source": "Greater Friend of the Library",
-              "dps_delta": -0.24948119555013207
+              "item_id": 6440,
+              "item_name": "Brainlash",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp",
+              "dps_delta": 0
             },
             {
               "item_id": 17768,
@@ -4625,9 +4622,9 @@
           ]
         }
       ],
-      "set_dps": 159.84552084015843,
+      "set_dps": 158.29001511101697,
       "no_source_count": 441,
-      "unconfirmed_within_error_held": 1,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4653,18 +4650,17 @@
         "chest: Acumen Robes",
         "wrist: Bloodband Bracers",
         "hands: Raider Handwraps",
-        "waist: Ban'thok Sash",
+        "waist: Dawnspire Cord",
         "legs: Spellshock Leggings",
         "feet: Sergeant Major's Dreadweave Boots",
-        "finger1: Brainlash",
         "finger2: Cyclopean Band",
         "trinket1: Frozen Heart of the Mountain",
         "trinket2: Uther's Strength",
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.956588621,
-      "verify_run_seconds": 1.377940237,
+      "weights_run_seconds": 0.991587549,
+      "verify_run_seconds": 1.346449408,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5053,34 +5049,32 @@
         },
         {
           "slot": "waist",
-          "item_id": 11662,
-          "item_name": "Ban'thok Sash",
-          "source": "Blackrock Depths: Ok'thor the Breaker",
+          "item_id": 12466,
+          "item_name": "Dawnspire Cord",
+          "source": "Sunken Temple: Morphaz",
           "source_kind": "dungeon",
-          "score": 34.62984379909092,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 11662,
+              "item_name": "Ban'thok Sash",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ok'thor the Breaker",
+              "dps_delta": 0
+            },
             {
               "item_id": 10771,
               "item_name": "Deathmage Sash",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Mordresh Fire Eye",
-              "dps_delta": -0.6805787783385076
+              "dps_delta": -0.6257238190791412
             },
             {
               "item_id": 17755,
               "item_name": "Satyrmane Sash",
               "source_kind": "dungeon",
               "source": "Maraudon: Lord Vyletongue",
-              "dps_delta": -0.7338553413088935
-            },
-            {
-              "item_id": 12466,
-              "item_name": "Dawnspire Cord",
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Morphaz",
-              "dps_delta": -1.0162031380023393,
-              "verified": true
+              "dps_delta": -0.6790003820495272
             }
           ]
         },
@@ -5156,7 +5150,6 @@
           "item_name": "Philanthropist's Ring",
           "source": "Greater Friend of the Library",
           "source_kind": "quest",
-          "sim_dps": 149.25766211030083,
           "verified": true,
           "alternatives": [
             {
@@ -5174,21 +5167,21 @@
               "dps_delta": 0
             },
             {
-              "item_id": 17768,
-              "item_name": "Woodseed Hoop",
-              "source_kind": "quest",
-              "source": "Vyletongue Corruption",
-              "dps_delta": -0.5151290327307483
+              "item_id": 11824,
+              "item_name": "Cyclopean Band",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ok'thor the Breaker",
+              "dps_delta": 0
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 11824,
-          "item_name": "Cyclopean Band",
-          "source": "Blackrock Depths: Ok'thor the Breaker",
-          "source_kind": "dungeon",
-          "score": 19.388406026563295,
+          "item_id": 7553,
+          "item_name": "Band of the Unicorn",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 146.54496600886986,
           "verified": true,
           "alternatives": [
             {
@@ -5199,19 +5192,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 17768,
-              "item_name": "Woodseed Hoop",
-              "source_kind": "quest",
-              "source": "Vyletongue Corruption",
-              "dps_delta": -0.7646102282808803
-            },
-            {
               "item_id": 10634,
               "item_name": "Mindseye Circle",
               "source_kind": "dungeon",
               "source": "Sunken Temple: Atal'ai Warrior",
-              "dps_delta": -1.2606814822403294,
-              "verified": true
+              "dps_delta": 0
+            },
+            {
+              "item_id": 11824,
+              "item_name": "Cyclopean Band",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ok'thor the Breaker",
+              "dps_delta": 0
             }
           ]
         },
@@ -5320,9 +5312,9 @@
           ]
         }
       ],
-      "set_dps": 149.25766211030083,
+      "set_dps": 146.54496600886986,
       "no_source_count": 421,
-      "unconfirmed_within_error_held": 2,
+      "unconfirmed_within_error_held": 4,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5348,17 +5340,17 @@
         "chest: Acumen Robes",
         "wrist: Bloodband Bracers",
         "hands: Raider Handwraps",
-        "waist: Ban'thok Sash",
+        "waist: Dawnspire Cord",
         "legs: Spellshock Leggings",
         "feet: First Sergeant's Dreadweave Boots",
-        "finger2: Cyclopean Band",
+        "finger2: Band of the Unicorn",
         "trinket1: Frozen Heart of the Mountain",
         "trinket2: Rune of the Guard Captain",
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.956588621,
-      "verify_run_seconds": 1.276989686,
+      "weights_run_seconds": 0.991587549,
+      "verify_run_seconds": 1.245345583,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6099,8 +6091,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.08835435,
-      "verify_run_seconds": 3.624320504,
+      "weights_run_seconds": 1.089836922,
+      "verify_run_seconds": 3.656199911,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6273,7 +6265,7 @@
           "item_name": "Virtuous Cowl",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 47.92581865075987,
+          "score": 47.925818650759865,
           "verified": true,
           "alternatives": [
             {
@@ -6338,7 +6330,6 @@
           "item_name": "Virtuous Epaulets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 342.62049445930785,
           "verified": true,
           "alternatives": [
             {
@@ -6439,7 +6430,7 @@
           "source_kind": "rep",
           "score": 31.055694423851236,
           "verified": true,
-          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (ilvl 55) (id 19596): kept the pick, +1.8 DPS (342.6 vs 340.8 set DPS)",
+          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (ilvl 55) (id 19596): kept the pick, +1.8 DPS over it",
           "dps_delta": 1.7913170821063886,
           "alternatives": [
             {
@@ -6471,7 +6462,6 @@
           "item_name": "Virtuous Hands",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 342.62049445930785,
           "verified": true,
           "alternatives": [
             {
@@ -6537,7 +6527,6 @@
           "item_name": "Virtuous Leggings",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 342.62049445930785,
           "verified": true,
           "alternatives": [
             {
@@ -6608,7 +6597,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 342.62049445930785,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6642,7 +6630,6 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 342.62049445930785,
           "verified": true,
           "alternatives": [
             {
@@ -6675,10 +6662,41 @@
           "item_name": "Burst of Knowledge",
           "source": "Blackrock Depths: Ambassador Flamelash",
           "source_kind": "dungeon",
-          "sim_dps": 342.62049445930785,
           "verified": true,
-          "swap_note": "confirmed by the sim against Second Wind (id 11819): kept the pick, +15.8 DPS (342.6 vs 326.8 set DPS)",
-          "dps_delta": 15.843392617834354,
+          "alternatives": [
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 272438,
+              "item_name": "Weakness Analyzer",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 11819,
+              "item_name": "Second Wind",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -15.843392617834354,
+              "verified": true
+            }
+          ],
+          "faction_note": "Second Wind (from alliance) and horde's own pick Burst of Knowledge measure statistically indistinguishable on undead (16.12 ± 2.25 vs 16.17 ± 2.24 DPS gain) -- each faction's own tournament winner kept"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 22678,
+          "item_name": "Talisman of Ascendance",
+          "source": "Epic Armaments of Battle - Friend of the Dawn",
+          "source_kind": "quest",
+          "sim_dps": 339.68572075172233,
+          "verified": true,
           "alternatives": [
             {
               "item_id": 12930,
@@ -6701,40 +6719,6 @@
               "source": "Pix Xizzix",
               "dps_delta": 0
             }
-          ],
-          "faction_note": "Second Wind (from alliance) and horde's own pick Burst of Knowledge measure statistically indistinguishable on undead (16.12 ± 2.25 vs 16.17 ± 2.24 DPS gain) -- each faction's own tournament winner kept"
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 11819,
-          "item_name": "Second Wind",
-          "source": "Blackrock Depths: Golem Lord Argelmach",
-          "source_kind": "dungeon",
-          "sim_dps": 342.62049445930785,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 12930,
-              "item_name": "Briarwood Reed",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 272438,
-              "item_name": "Weakness Analyzer",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 22678,
-              "item_name": "Talisman of Ascendance",
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -2.9347737075855207,
-              "verified": true
-            }
           ]
         },
         {
@@ -6743,7 +6727,6 @@
           "item_name": "Spellshifter Rod",
           "source": "Tiara of the Deep",
           "source_kind": "quest",
-          "sim_dps": 342.62049445930785,
           "verified": true,
           "alternatives": [
             {
@@ -6808,8 +6791,9 @@
           ]
         }
       ],
-      "set_dps": 342.62049445930785,
+      "set_dps": 339.68572075172233,
       "no_source_count": 1112,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6841,11 +6825,11 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Burst of Knowledge",
-        "trinket2: Second Wind",
+        "trinket2: Talisman of Ascendance",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.08835435,
-      "verify_run_seconds": 3.557194496,
+      "weights_run_seconds": 1.089836922,
+      "verify_run_seconds": 3.604379406,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7415,8 +7399,6 @@
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +19.3 DPS over it",
-          "dps_delta": 19.33300880892557,
           "alternatives": [
             {
               "item_id": 11832,
@@ -7433,43 +7415,45 @@
               "dps_delta": 0
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": -19.33300880892557,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 12930,
-          "item_name": "Briarwood Reed",
-          "source": "Blackrock Spire: Jed Runewatcher",
-          "source_kind": "dungeon",
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 604.5356536889185,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": 0
+            },
             {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -2.6375988935034114
-            },
-            {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -4.200883292054641,
-              "verified": true
+              "dps_delta": 0
             },
             {
               "item_id": 11832,
               "item_name": "Burst of Knowledge",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -6.405597312794
+              "dps_delta": -0.7535996838581176
             }
           ]
         },
@@ -7516,9 +7500,8 @@
           "item_name": "Ritssyn's Wand of Bad Mojo",
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
-          "sim_dps": 608.819892596452,
           "verified": true,
-          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +8.8 DPS (608.8 vs 600.0 set DPS)",
+          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +8.8 DPS over it",
           "dps_delta": 8.811932957686963,
           "alternatives": [
             {
@@ -7546,8 +7529,9 @@
           ]
         }
       ],
-      "set_dps": 608.819892596452,
+      "set_dps": 604.5356536889185,
       "no_source_count": 1121,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7579,11 +7563,11 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Talisman of Ascendance",
-        "trinket2: Briarwood Reed",
+        "trinket2: Serenity Field",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.182141322,
-      "verify_run_seconds": 2.982268713,
+      "weights_run_seconds": 1.200519299,
+      "verify_run_seconds": 3.096759407,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8150,8 +8134,6 @@
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +19.1 DPS over it",
-          "dps_delta": 19.148229687414528,
           "alternatives": [
             {
               "item_id": 11832,
@@ -8168,43 +8150,45 @@
               "dps_delta": 0
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": -19.148229687414528,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 12930,
-          "item_name": "Briarwood Reed",
-          "source": "Blackrock Spire: Jed Runewatcher",
-          "source_kind": "dungeon",
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 617.7541059865181,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": 0
+            },
             {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -2.6375988935034114
-            },
-            {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -4.192672917043296,
-              "verified": true
+              "dps_delta": 0
             },
             {
               "item_id": 11832,
               "item_name": "Burst of Knowledge",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -6.405597312794
+              "dps_delta": -0.7535996838581176
             }
           ]
         },
@@ -8251,9 +8235,8 @@
           "item_name": "Ritssyn's Wand of Bad Mojo",
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
-          "sim_dps": 622.0480223994065,
           "verified": true,
-          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +11.3 DPS (622.0 vs 610.7 set DPS)",
+          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +11.3 DPS over it",
           "dps_delta": 11.331469132862594,
           "alternatives": [
             {
@@ -8281,8 +8264,9 @@
           ]
         }
       ],
-      "set_dps": 622.0480223994065,
+      "set_dps": 617.7541059865181,
       "no_source_count": 1112,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -8314,11 +8298,11 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Talisman of Ascendance",
-        "trinket2: Briarwood Reed",
+        "trinket2: Serenity Field",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.182141322,
-      "verify_run_seconds": 2.915108409,
+      "weights_run_seconds": 1.200519299,
+      "verify_run_seconds": 2.928863295,
       "coverage": {
         "back": {
           "eligible": 456,

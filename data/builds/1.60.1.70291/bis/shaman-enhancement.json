@@ -2,7 +2,7 @@
   "spec": "shaman-enhancement",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T03:52:46Z",
+  "generated_at": "2026-10-09T14:53:34Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -533,8 +533,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.8710038249999998,
-      "verify_run_seconds": 3.152217935,
+      "weights_run_seconds": 1.769307374,
+      "verify_run_seconds": 3.077167316,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -788,7 +788,6 @@
           "item_name": "Blackened Defias Armor",
           "source": "The Deadmines: Edwin VanCleef",
           "source_kind": "dungeon",
-          "sim_dps": 38.13404541228445,
           "verified": true,
           "alternatives": [
             {
@@ -858,7 +857,6 @@
           "item_name": "Blackened Defias Gloves",
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
-          "sim_dps": 38.13404541228445,
           "verified": true,
           "alternatives": [
             {
@@ -929,7 +927,6 @@
           "item_name": "Blackened Defias Leggings",
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
-          "sim_dps": 38.13404541228445,
           "verified": true,
           "alternatives": [
             {
@@ -1001,7 +998,7 @@
           "source_kind": "rep",
           "score": 14.310229948113077,
           "verified": true,
-          "swap_note": "confirmed by the sim against Signet of the Zhevra (id 285330): kept the pick, +0.5 DPS (38.1 vs 37.7 set DPS)",
+          "swap_note": "confirmed by the sim against Signet of the Zhevra (id 285330): kept the pick, +0.5 DPS over it",
           "dps_delta": 0.45718120778092697,
           "alternatives": [
             {
@@ -1071,34 +1068,33 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 23171,
-          "item_name": "The Axe of Severing",
-          "source": "Shadowfang Keep: Sever",
-          "source_kind": "dungeon",
-          "score": 322,
+          "item_id": 270018,
+          "item_name": "Hammerbone",
+          "source": "Leaders of the Fang",
+          "source_kind": "quest",
+          "sim_dps": 37.76271795613284,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 270018,
-              "item_name": "Hammerbone",
-              "source_kind": "quest",
-              "source": "Leaders of the Fang",
-              "dps_delta": -0.37132745615161156,
-              "verified": true
+              "item_id": 23171,
+              "item_name": "The Axe of Severing",
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Sever",
+              "dps_delta": 0
             },
             {
               "item_id": 7230,
               "item_name": "Smite's Mighty Hammer",
               "source_kind": "dungeon",
               "source": "The Deadmines: Mr. Smite",
-              "dps_delta": -0.6291943613271598
+              "dps_delta": -0.0676975839442494
             },
             {
               "item_id": 251533,
               "item_name": "Forsaken Greataxe",
               "source_kind": "quest",
               "source": "The Wrath of Rath'mael",
-              "dps_delta": -0.6735125486284921
+              "dps_delta": -0.11201577124558167
             }
           ]
         },
@@ -1114,8 +1110,9 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 38.13404541228445,
+      "set_dps": 37.76271795613284,
       "no_source_count": 206,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1146,10 +1143,10 @@
         "feet: Feet of the Lynx",
         "finger1: Legionnaire's Band",
         "finger2: Signet of the Zhevra",
-        "main_hand: The Axe of Severing"
+        "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.8710038249999998,
-      "verify_run_seconds": 2.950137488,
+      "weights_run_seconds": 1.769307374,
+      "verify_run_seconds": 2.920776976,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1788,8 +1785,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.947133692,
-      "verify_run_seconds": 1.8790674200000002,
+      "weights_run_seconds": 1.887446339,
+      "verify_run_seconds": 1.8177594240000001,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2435,8 +2432,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.947133692,
-      "verify_run_seconds": 3.513304174,
+      "weights_run_seconds": 1.887446339,
+      "verify_run_seconds": 3.496056496,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3070,8 +3067,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.419901666,
-      "verify_run_seconds": 2.284289686,
+      "weights_run_seconds": 2.260011926,
+      "verify_run_seconds": 2.231828502,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3708,8 +3705,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.419901666,
-      "verify_run_seconds": 2.464155616,
+      "weights_run_seconds": 2.260011926,
+      "verify_run_seconds": 2.369259506,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4378,8 +4375,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.424762004,
-      "verify_run_seconds": 4.78374341,
+      "weights_run_seconds": 2.301488638,
+      "verify_run_seconds": 4.607495662,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5039,8 +5036,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.424762004,
-      "verify_run_seconds": 4.655880578,
+      "weights_run_seconds": 2.301488638,
+      "verify_run_seconds": 4.585582378,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5342,14 +5339,14 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.34937433201082235
+              "dps_delta": -0.3493743320108244
             },
             {
               "item_id": 22191,
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.8233179554795678
+              "dps_delta": -1.82331795547957
             },
             {
               "item_id": 23089,
@@ -5514,14 +5511,14 @@
               "item_name": "Fine Dawn Treaders",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -1.061091663367732
+              "dps_delta": -1.061091663367731
             },
             {
               "item_id": 21532,
               "item_name": "Drudge Boots",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -1.2570250121528728
+              "dps_delta": -1.2570250121528719
             },
             {
               "item_id": 13967,
@@ -5753,8 +5750,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.332462171,
-      "verify_run_seconds": 9.605981934,
+      "weights_run_seconds": 2.23997139,
+      "verify_run_seconds": 9.481272644,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -5999,7 +5996,7 @@
               "item_name": "Champion's Mail Pauldrons",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.25565970692194234
+              "dps_delta": -0.2556597069219434
             },
             {
               "item_id": 272105,
@@ -6058,10 +6055,10 @@
               "dps_delta": -0.3493743320108244
             },
             {
-              "item_id": 227157,
-              "item_name": "Legionnaire's Mail Hauberk",
-              "source_kind": "pvp",
-              "source": "PvP rank 12 · Legionnaire · Horde",
+              "item_id": 231653,
+              "item_name": "Warlord's Mail Hauberk",
+              "source_kind": "vendor",
+              "source": "PvP rank 17 · Warlord · Horde",
               "dps_delta": -1.3294695145518463
             },
             {
@@ -6182,7 +6179,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 164.33983676787818,
+          "score": 164.33983676787815,
           "verified": true,
           "alternatives": [
             {
@@ -6190,21 +6187,21 @@
               "item_name": "Outrider's Chain Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.413932535409423
+              "dps_delta": -2.413932535409421
             },
             {
               "item_id": 231658,
               "item_name": "General's Mail Legguards",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.6287499119253788
+              "dps_delta": -2.6287499119253765
             },
             {
               "item_id": 227156,
               "item_name": "Legionnaire's Mail Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -3.4990474324868277
+              "dps_delta": -3.4990474324868264
             }
           ]
         },
@@ -6464,8 +6461,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.332462171,
-      "verify_run_seconds": 9.177957623,
+      "weights_run_seconds": 2.23997139,
+      "verify_run_seconds": 9.064242754,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6690,34 +6687,32 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 12927,
-          "item_name": "Truestrike Shoulders",
-          "source": "Blackrock Spire: Pyroguard Emberseer",
-          "source_kind": "dungeon",
-          "score": 132.80553152830223,
+          "item_id": 272105,
+          "item_name": "Darkspear Pauldrons",
+          "source": "Creeg Bothunk",
+          "source_kind": "vendor",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272105,
-              "item_name": "Darkspear Pauldrons",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -3.6250614440317253
+              "item_id": 12082,
+              "item_name": "Wyrmhide Spaulders",
+              "source_kind": "quest",
+              "source": "A Taste of Flame",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 12927,
+              "item_name": "Truestrike Shoulders",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Pyroguard Emberseer",
+              "dps_delta": 0
             },
             {
               "item_id": 272106,
               "item_name": "Darkspear Epaulets",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.6250614440317253
-            },
-            {
-              "item_id": 12082,
-              "item_name": "Wyrmhide Spaulders",
-              "source_kind": "quest",
-              "source": "A Taste of Flame",
-              "dps_delta": -5.0056198726859975,
-              "verified": true
+              "dps_delta": 0
             }
           ]
         },
@@ -6791,7 +6786,6 @@
           "item_name": "Forest Stalker's Bracers",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 675.657358468037,
           "verified": true,
           "alternatives": [
             {
@@ -6819,76 +6813,66 @@
         },
         {
           "slot": "hands",
-          "item_id": 14615,
-          "item_name": "Bloodmail Gauntlets",
-          "source": "Scholomance: Lady Illucia Barov",
-          "source_kind": "dungeon",
+          "item_id": 21278,
+          "item_name": "Stormshroud Gloves",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 18349,
-              "item_name": "Gauntlets of Accuracy",
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Illyanna Ravenoak",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 21278,
-              "item_name": "Stormshroud Gloves",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": 0
-            },
             {
               "item_id": 13963,
               "item_name": "Voone's Vice Grips",
               "source_kind": "quest",
               "source": "Maxwell's Mission",
-              "dps_delta": -13.724920700114922,
-              "verified": true
+              "dps_delta": 0
+            },
+            {
+              "item_id": 18349,
+              "item_name": "Gauntlets of Accuracy",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Illyanna Ravenoak",
+              "dps_delta": -0.9396091609811104
+            },
+            {
+              "item_id": 272099,
+              "item_name": "Raider Gloves",
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "dps_delta": -1.152516785786968
             }
-          ],
-          "set_bonus": {
-            "set": "Bloodmail Regalia",
-            "pieces": 3,
-            "bonus": "Grants your melee attacks a chance to wound the target, causing them to Bleed for 70 damage over 10 sec."
-          }
+          ]
         },
         {
           "slot": "waist",
-          "item_id": 14614,
-          "item_name": "Bloodmail Belt",
-          "source": "Scholomance: Lady Illucia Barov",
-          "source_kind": "dungeon",
+          "item_id": 20216,
+          "item_name": "Belt of Preserved Heads",
+          "source": "A Collection of Heads",
+          "source_kind": "quest",
+          "sim_dps": 667.8831397075385,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 20216,
-              "item_name": "Belt of Preserved Heads",
-              "source_kind": "quest",
-              "source": "A Collection of Heads",
-              "dps_delta": 0
-            },
             {
               "item_id": 22232,
               "item_name": "Marksman's Girdle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": 0
+              "dps_delta": -2.3193672146456783
             },
             {
               "item_id": 227805,
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": 0
+              "dps_delta": -3.2732439825663198
+            },
+            {
+              "item_id": 19044,
+              "item_name": "Might of the Timbermaw",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -5.834965476110907
             }
-          ],
-          "set_bonus": {
-            "set": "Bloodmail Regalia",
-            "pieces": 2,
-            "bonus": "+10 Attack Power."
-          }
+          ]
         },
         {
           "slot": "legs",
@@ -6947,12 +6931,7 @@
               "dps_delta": -10.316285343034906,
               "verified": true
             }
-          ],
-          "set_bonus": {
-            "set": "Bloodmail Regalia",
-            "pieces": 2,
-            "bonus": "+10 Attack Power."
-          }
+          ]
         },
         {
           "slot": "finger1",
@@ -7137,9 +7116,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 675.657358468037,
+      "set_dps": 667.8831397075385,
       "no_source_count": 1759,
-      "unconfirmed_within_error_held": 2,
+      "unconfirmed_within_error_held": 5,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7160,12 +7139,12 @@
       "new_at_band": [
         "head: Outlaw's Collar",
         "neck: Beads of Ogre Might",
-        "shoulder: Truestrike Shoulders",
+        "shoulder: Darkspear Pauldrons",
         "back: Howler's Furs",
         "chest: Dawn Armor",
         "wrist: Forest Stalker's Bracers",
-        "hands: Bloodmail Gauntlets",
-        "waist: Bloodmail Belt",
+        "hands: Stormshroud Gloves",
+        "waist: Belt of Preserved Heads",
         "legs: Sentinel's Chain Leggings",
         "feet: Bloodmail Boots",
         "finger1: Don Julio's Band",
@@ -7174,8 +7153,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.481394292,
-      "verify_run_seconds": 9.997711774999999,
+      "weights_run_seconds": 2.391492802,
+      "verify_run_seconds": 9.900500587,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7337,34 +7316,32 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 20134,
-          "item_name": "Skyfury Helm",
-          "source": "The Darkreaver Menace",
-          "source_kind": "quest",
-          "score": 156.19344991480668,
+          "item_id": 279253,
+          "item_name": "Outlaw's Collar",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 20134,
+              "item_name": "Skyfury Helm",
+              "source_kind": "quest",
+              "source": "The Darkreaver Menace",
+              "dps_delta": 0
+            },
             {
               "item_id": 12587,
               "item_name": "Eye of Rend",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -5.995289335230232
-            },
-            {
-              "item_id": 279253,
-              "item_name": "Outlaw's Collar",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -6.822305984286686,
-              "verified": true
+              "dps_delta": -0.048785383727277094
             },
             {
               "item_id": 227155,
               "item_name": "Champion's Mail Headguard",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -8.889407753070943
+              "dps_delta": -2.9429038015679874
             }
           ]
         },
@@ -7527,9 +7504,9 @@
         },
         {
           "slot": "hands",
-          "item_id": 14615,
-          "item_name": "Bloodmail Gauntlets",
-          "source": "Scholomance: Lady Illucia Barov",
+          "item_id": 11730,
+          "item_name": "Savage Gladiator Grips",
+          "source": "Blackrock Depths: Eviscerator",
           "source_kind": "dungeon",
           "verified": true,
           "alternatives": [
@@ -7541,26 +7518,20 @@
               "dps_delta": 0
             },
             {
+              "item_id": 227159,
+              "item_name": "Blood Guard's Mail Vices",
+              "source_kind": "pvp",
+              "source": "PvP rank 11 · Blood Guard · Horde",
+              "dps_delta": 0
+            },
+            {
               "item_id": 231655,
               "item_name": "General's Mail Vices",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
               "dps_delta": 0
-            },
-            {
-              "item_id": 11730,
-              "item_name": "Savage Gladiator Grips",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Eviscerator",
-              "dps_delta": -5.237166951729705,
-              "verified": true
             }
-          ],
-          "set_bonus": {
-            "set": "Bloodmail Regalia",
-            "pieces": 2,
-            "bonus": "+10 Attack Power."
-          }
+          ]
         },
         {
           "slot": "waist",
@@ -7568,7 +7539,7 @@
           "item_name": "Belt of Preserved Heads",
           "source": "A Collection of Heads",
           "source_kind": "quest",
-          "score": 121.06823941792399,
+          "score": 121.06823941792398,
           "verified": true,
           "alternatives": [
             {
@@ -7576,14 +7547,14 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -3.273243982566322
+              "dps_delta": -3.2732439825663198
             },
             {
               "item_id": 19044,
               "item_name": "Might of the Timbermaw",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -5.834965476110908
+              "dps_delta": -5.834965476110907
             },
             {
               "item_id": 22232,
@@ -7657,12 +7628,7 @@
               "dps_delta": -9.932240316695129,
               "verified": true
             }
-          ],
-          "set_bonus": {
-            "set": "Bloodmail Regalia",
-            "pieces": 2,
-            "bonus": "+10 Attack Power."
-          }
+          ]
         },
         {
           "slot": "finger1",
@@ -7842,9 +7808,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 684.3034288833094,
+      "set_dps": 671.4231551476176,
       "no_source_count": 1679,
-      "unconfirmed_within_error_held": 4,
+      "unconfirmed_within_error_held": 6,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7863,13 +7829,13 @@
         "4642 Star of Xil'yeh"
       ],
       "new_at_band": [
-        "head: Skyfury Helm",
+        "head: Outlaw's Collar",
         "neck: Beads of Ogre Might",
         "shoulder: Darkspear Pauldrons",
         "back: Howler's Furs",
         "chest: Dawn Armor",
         "wrist: Forest Stalker's Bracers",
-        "hands: Bloodmail Gauntlets",
+        "hands: Savage Gladiator Grips",
         "waist: Belt of Preserved Heads",
         "legs: Sentinel's Chain Leggings",
         "feet: Bloodmail Boots",
@@ -7878,8 +7844,8 @@
         "trinket1: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.481394292,
-      "verify_run_seconds": 9.796692308,
+      "weights_run_seconds": 2.391492802,
+      "verify_run_seconds": 9.59695129,
       "coverage": {
         "back": {
           "eligible": 457,
