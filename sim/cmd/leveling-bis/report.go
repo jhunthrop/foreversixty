@@ -1216,13 +1216,18 @@ type bandReport struct {
 	// KeptIncumbent is present only on a healer band that kept the set the
 	// site published before, because that set beat the new pick beyond error
 	// under the final harness (incumbent.go).
-	KeptIncumbent     *keptIncumbent `json:"kept_incumbent,omitempty"`
-	NoSourceCount     int            `json:"no_source_count"`
-	NoSourceSample    []string       `json:"no_source_sample,omitempty"`
-	NewAtBand         []string       `json:"new_at_band"`
-	WeightsRunSeconds float64        `json:"weights_run_seconds"`
-	VerifyRunSeconds  float64        `json:"verify_run_seconds"`
-	VerifyErrors      []string       `json:"verify_errors,omitempty"`
+	KeptIncumbent *keptIncumbent `json:"kept_incumbent,omitempty"`
+	NoSourceCount int            `json:"no_source_count"`
+	// UnconfirmedWithinErrorHeld counts the slots where an item whose
+	// stats the client has not confirmed lost the pick to a
+	// confirmed-stats item because it did not beat it beyond the sim error
+	// (confirmed.go). Additive: absent means none.
+	UnconfirmedWithinErrorHeld int      `json:"unconfirmed_within_error_held,omitempty"`
+	NoSourceSample             []string `json:"no_source_sample,omitempty"`
+	NewAtBand                  []string `json:"new_at_band"`
+	WeightsRunSeconds          float64  `json:"weights_run_seconds"`
+	VerifyRunSeconds           float64  `json:"verify_run_seconds"`
+	VerifyErrors               []string `json:"verify_errors,omitempty"`
 	// Coverage is band.go's buildBandPool own per-slot count (lane
 	// rank-guardrails' guardrail A): planner slot -> how many items
 	// eligible() passed for this band+faction, and how many of those
@@ -2148,6 +2153,9 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 			fmt.Fprintf(&b, "### Band %d%s (%s, %s)\n\n", r.Band, presetHeadingSuffix(r.Preset), r.Race, r.Talents)
 			fmt.Fprintf(&b, "Set DPS (verified): %.1f. Weights run: %.1fs. Verify run: %.1fs. %d eligible items had no known source.\n\n",
 				r.SetDPS, r.WeightsRunSeconds, r.VerifyRunSeconds, r.NoSourceCount)
+			if r.UnconfirmedWithinErrorHeld > 0 {
+				fmt.Fprintf(&b, "%d slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).\n\n", r.UnconfirmedWithinErrorHeld)
+			}
 
 			fmt.Fprintf(&b, "Stat weights (normalized to %s = 1.0, error under %.0f%% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1%% hit/crit/dodge/parry/block/defense): ", spec.ReferenceStat, significanceErrorFraction*100)
 			parts := make([]string, len(r.Weights))

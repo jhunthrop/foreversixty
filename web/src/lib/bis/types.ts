@@ -313,6 +313,8 @@ export interface BisBand {
   slots: BisSlot[];
   set_dps: number;
   no_source_count: number;
+  /** Slots where a confirmed-stats item kept the pick over one whose stats the client has not confirmed (within sim error). Absent means none. */
+  unconfirmed_within_error_held?: number;
   /** Lane `rank-guardrails`' guardrail A: planner slot -> `{ eligible, sourced }`
    *  (`sim/cmd/leveling-bis/report.go`'s own `Coverage` field). Required here the same way
    *  `new_at_band` is: a file the nightly published before this field existed carries no
