@@ -25520,6 +25520,52 @@
       ]
     },
     {
+      "id": "dungeon:excavation-site:-wetlands",
+      "kind": "dungeon",
+      "name": "Excavation Site: Wetlands",
+      "zone_id": 16732,
+      "bosses": [
+        {
+          "id": "dungeon:excavation-site:-wetlands:260322",
+          "name": "Saltspine",
+          "npc_id": 260322,
+          "items": [
+            273023,
+            273024
+          ],
+          "item_source_origin": {
+            "273023": "wowhead",
+            "273024": "wowhead"
+          }
+        },
+        {
+          "id": "dungeon:excavation-site:-wetlands:260325",
+          "name": "Shadetooth",
+          "npc_id": 260325,
+          "items": [
+            273026
+          ],
+          "item_source_origin": {
+            "273026": "wowhead"
+          }
+        },
+        {
+          "id": "dungeon:excavation-site:-wetlands:260326",
+          "name": "Relic Guardian",
+          "npc_id": 260326,
+          "items": [
+            273029,
+            273030
+          ],
+          "item_source_origin": {
+            "273029": "wowhead",
+            "273030": "wowhead"
+          }
+        }
+      ],
+      "source_origin": "wowhead"
+    },
+    {
       "id": "dungeon:gnomeregan",
       "kind": "dungeon",
       "name": "Gnomeregan",
@@ -30489,7 +30535,8 @@
             4234,
             4235,
             6690,
-            6691
+            6691,
+            274160
           ],
           "item_chances": {
             "2295": 25.0,
@@ -30503,7 +30550,8 @@
           },
           "item_source_origin": {
             "4234": "wowhead",
-            "4235": "wowhead"
+            "4235": "wowhead",
+            "274160": "wowhead"
           }
         },
         {
@@ -32581,6 +32629,92 @@
         2549,
         4438
       ]
+    },
+    {
+      "id": "dungeon:ruins-of-lordaeron",
+      "kind": "dungeon",
+      "name": "Ruins of Lordaeron",
+      "zone_id": 16611,
+      "bosses": [
+        {
+          "id": "dungeon:ruins-of-lordaeron:250618",
+          "name": "Skeleton",
+          "npc_id": 250618,
+          "items": [
+            286981
+          ],
+          "item_source_origin": {
+            "286981": "wowhead"
+          }
+        },
+        {
+          "id": "dungeon:ruins-of-lordaeron:250622",
+          "name": "Ragged Ghoul",
+          "npc_id": 250622,
+          "items": [
+            286977
+          ],
+          "item_source_origin": {
+            "286977": "wowhead"
+          }
+        },
+        {
+          "id": "dungeon:ruins-of-lordaeron:250624",
+          "name": "Skeletal Mage",
+          "npc_id": 250624,
+          "items": [
+            286981
+          ],
+          "item_source_origin": {
+            "286981": "wowhead"
+          }
+        },
+        {
+          "id": "dungeon:ruins-of-lordaeron:250626",
+          "name": "Skeletal Soldier",
+          "npc_id": 250626,
+          "items": [
+            286981
+          ],
+          "item_source_origin": {
+            "286981": "wowhead"
+          }
+        },
+        {
+          "id": "dungeon:ruins-of-lordaeron:250627",
+          "name": "Ghoul",
+          "npc_id": 250627,
+          "items": [
+            286977
+          ],
+          "item_source_origin": {
+            "286977": "wowhead"
+          }
+        },
+        {
+          "id": "dungeon:ruins-of-lordaeron:250630",
+          "name": "Plague Ghoul",
+          "npc_id": 250630,
+          "items": [
+            286977
+          ],
+          "item_source_origin": {
+            "286977": "wowhead"
+          }
+        },
+        {
+          "id": "dungeon:ruins-of-lordaeron:255964",
+          "name": "Fallen Necromancer",
+          "npc_id": 255964,
+          "items": [
+            286981
+          ],
+          "item_source_origin": {
+            "286981": "wowhead"
+          }
+        }
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "dungeon:scarlet-monastery",
@@ -52348,6 +52482,15 @@
         "3690": 100.0
       },
       "source_origin": "classic-db"
+    },
+    {
+      "id": "world:ambassador-bloodrage",
+      "kind": "world",
+      "name": "Ambassador Bloodrage",
+      "items": [
+        286639
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "world:ambassador-infernus",
@@ -74140,7 +74283,8 @@
       "items": [
         3510,
         3716,
-        11152
+        11152,
+        282716
       ],
       "item_chances": {
         "3510": 80.0,
@@ -80301,7 +80445,8 @@
       "name": "Tamra Stormpike",
       "items": [
         3053,
-        3693
+        3693,
+        282710
       ],
       "item_chances": {
         "3053": 1.4,
@@ -97717,7 +97862,8 @@
         285350,
         286533,
         286535,
-        286536
+        286536,
+        286639
       ]
     },
     {
@@ -97756,7 +97902,9 @@
         3429,
         4723,
         4724,
-        206387
+        206387,
+        282710,
+        282716
       ]
     },
     {
@@ -114184,6 +114332,8 @@
         251486,
         251533,
         251534,
+        251963,
+        251965,
         257255,
         257342,
         257343,
@@ -114218,6 +114368,8 @@
         263405,
         263406,
         263407,
+        263411,
+        263412,
         263430,
         267369,
         268484,
@@ -114258,11 +114410,17 @@
         270035,
         270038,
         270042,
+        270043,
         270044,
         270045,
+        270047,
+        270054,
+        270059,
+        270060,
         272448,
         273875,
         273876,
+        274078,
         275290,
         276685,
         276695,
@@ -114287,6 +114445,12 @@
         277289,
         277988,
         278002,
+        279835,
+        279836,
+        279837,
+        279838,
+        279847,
+        279848,
         279864,
         279865,
         279867,
@@ -114297,6 +114461,8 @@
         279875,
         279876,
         279877,
+        279888,
+        279889,
         279894,
         279895,
         279896,
@@ -114306,6 +114472,7 @@
         279900,
         280095,
         280096,
+        280805,
         281167,
         281168,
         281250,
@@ -158529,6 +158696,28 @@
         "level_source": "wowhead"
       }
     ],
+    "251963": [
+      {
+        "quest_id": 96986,
+        "name": "The Grave Knight",
+        "faction": "horde",
+        "faction_source": "wowhead",
+        "min_level": 24,
+        "level": 33,
+        "level_source": "wowhead"
+      }
+    ],
+    "251965": [
+      {
+        "quest_id": 96986,
+        "name": "The Grave Knight",
+        "faction": "horde",
+        "faction_source": "wowhead",
+        "min_level": 24,
+        "level": 33,
+        "level_source": "wowhead"
+      }
+    ],
     "257255": [
       {
         "quest_id": 93318,
@@ -158927,6 +159116,82 @@
         "faction_source": "wowhead",
         "min_level": 7,
         "level": 12,
+        "level_source": "wowhead"
+      }
+    ],
+    "263411": [
+      {
+        "quest_id": 31,
+        "name": "Aquatic Form",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 16,
+        "level": 16,
+        "level_source": "wowhead",
+        "classes": [
+          "druid"
+        ]
+      },
+      {
+        "quest_id": 5061,
+        "name": "Aquatic Form",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 16,
+        "level": 16,
+        "level_source": "wowhead",
+        "classes": [
+          "druid"
+        ]
+      },
+      {
+        "quest_id": 94411,
+        "name": "Meddlesome Mages",
+        "faction": "horde",
+        "faction_source": "wowhead",
+        "min_level": 4,
+        "level": 6,
+        "level_source": "wowhead"
+      }
+    ],
+    "263412": [
+      {
+        "quest_id": 1527,
+        "name": "Call of Fire",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 10,
+        "level": 13,
+        "level_source": "wowhead",
+        "classes": [
+          "shaman"
+        ]
+      },
+      {
+        "quest_id": 94411,
+        "name": "Meddlesome Mages",
+        "faction": "horde",
+        "faction_source": "wowhead",
+        "min_level": 4,
+        "level": 6,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 94468,
+        "name": "Call of Fire",
+        "faction": "alliance",
+        "faction_source": "wowhead",
+        "min_level": 10,
+        "level": 14,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 97257,
+        "name": "Call of Fire",
+        "faction": "horde",
+        "faction_source": "wowhead",
+        "min_level": 10,
+        "level": 10,
         "level_source": "wowhead"
       }
     ],
@@ -159388,6 +159653,17 @@
         "level_source": "wowhead"
       }
     ],
+    "270043": [
+      {
+        "quest_id": 6922,
+        "name": "Baron Aquanis",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 21,
+        "level": 30,
+        "level_source": "wowhead"
+      }
+    ],
     "270044": [
       {
         "quest_id": 253,
@@ -159407,6 +159683,50 @@
         "faction_source": "classic-db",
         "min_level": 20,
         "level": 30,
+        "level_source": "wowhead"
+      }
+    ],
+    "270047": [
+      {
+        "quest_id": 1142,
+        "name": "Mortality Wanes",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 25,
+        "level": 30,
+        "level_source": "wowhead"
+      }
+    ],
+    "270054": [
+      {
+        "quest_id": 6521,
+        "name": "An Unholy Alliance",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 28,
+        "level": 36,
+        "level_source": "wowhead"
+      }
+    ],
+    "270059": [
+      {
+        "quest_id": 704,
+        "name": "Agmond's Fate",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 30,
+        "level": 38,
+        "level_source": "wowhead"
+      }
+    ],
+    "270060": [
+      {
+        "quest_id": 704,
+        "name": "Agmond's Fate",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 30,
+        "level": 38,
         "level_source": "wowhead"
       }
     ],
@@ -159438,6 +159758,17 @@
         "faction_source": "item",
         "min_level": 6,
         "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "274078": [
+      {
+        "quest_id": 1144,
+        "name": "Willix the Importer",
+        "faction": "both",
+        "faction_source": "classic-db",
+        "min_level": 22,
+        "level": 30,
         "level_source": "wowhead"
       }
     ],
@@ -159741,6 +160072,72 @@
         "level_source": "wowhead"
       }
     ],
+    "279835": [
+      {
+        "quest_id": 92456,
+        "name": "A Green Sample",
+        "faction": "alliance",
+        "faction_source": "wowhead",
+        "min_level": 24,
+        "level": 33,
+        "level_source": "wowhead"
+      }
+    ],
+    "279836": [
+      {
+        "quest_id": 92456,
+        "name": "A Green Sample",
+        "faction": "alliance",
+        "faction_source": "wowhead",
+        "min_level": 24,
+        "level": 33,
+        "level_source": "wowhead"
+      }
+    ],
+    "279837": [
+      {
+        "quest_id": 92457,
+        "name": "Starving Arcane",
+        "faction": "alliance",
+        "faction_source": "wowhead",
+        "min_level": 24,
+        "level": 33,
+        "level_source": "wowhead"
+      }
+    ],
+    "279838": [
+      {
+        "quest_id": 92457,
+        "name": "Starving Arcane",
+        "faction": "alliance",
+        "faction_source": "wowhead",
+        "min_level": 24,
+        "level": 33,
+        "level_source": "wowhead"
+      }
+    ],
+    "279847": [
+      {
+        "quest_id": 96988,
+        "name": "Source of Power",
+        "faction": "horde",
+        "faction_source": "wowhead",
+        "min_level": 24,
+        "level": 33,
+        "level_source": "wowhead"
+      }
+    ],
+    "279848": [
+      {
+        "quest_id": 96988,
+        "name": "Source of Power",
+        "faction": "horde",
+        "faction_source": "wowhead",
+        "min_level": 24,
+        "level": 33,
+        "level_source": "wowhead"
+      }
+    ],
     "279864": [
       {
         "quest_id": 95250,
@@ -159878,6 +160275,28 @@
         "level_source": "wowhead"
       }
     ],
+    "279888": [
+      {
+        "quest_id": 95776,
+        "name": "The Only Good Brinescale...",
+        "faction": "horde",
+        "faction_source": "wowhead",
+        "min_level": 30,
+        "level": 38,
+        "level_source": "wowhead"
+      }
+    ],
+    "279889": [
+      {
+        "quest_id": 95776,
+        "name": "The Only Good Brinescale...",
+        "faction": "horde",
+        "faction_source": "wowhead",
+        "min_level": 30,
+        "level": 38,
+        "level_source": "wowhead"
+      }
+    ],
     "279894": [
       {
         "quest_id": 96393,
@@ -159974,6 +160393,17 @@
         "faction_source": "wowhead",
         "min_level": 10,
         "level": 15,
+        "level_source": "wowhead"
+      }
+    ],
+    "280805": [
+      {
+        "quest_id": 95697,
+        "name": "Changing Tastes",
+        "faction": "horde",
+        "faction_source": "wowhead",
+        "min_level": 24,
+        "level": 31,
         "level_source": "wowhead"
       }
     ],
