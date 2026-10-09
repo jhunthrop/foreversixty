@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70291",
-  "engine_version": "0ea8d8e99",
-  "generated_at": "2026-10-09T18:49:45Z",
+  "engine_version": "b1b13fddc",
+  "generated_at": "2026-10-09T20:42:21Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -561,8 +561,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.3785771470000001,
-      "verify_run_seconds": 2.193131738,
+      "weights_run_seconds": 1.988096536,
+      "verify_run_seconds": 3.140313209,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1205,8 +1205,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.3785771470000001,
-      "verify_run_seconds": 2.376436404,
+      "weights_run_seconds": 1.988096536,
+      "verify_run_seconds": 3.287021602,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1864,8 +1864,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.405547114,
-      "verify_run_seconds": 2.610114147,
+      "weights_run_seconds": 2.00021748,
+      "verify_run_seconds": 3.610057309,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2503,8 +2503,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.405547114,
-      "verify_run_seconds": 1.461474537,
+      "weights_run_seconds": 2.00021748,
+      "verify_run_seconds": 2.190353025,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3152,8 +3152,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 1.442648906,
-      "verify_run_seconds": 2.74864781,
+      "weights_run_seconds": 2.035227303,
+      "verify_run_seconds": 4.023551202,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3804,8 +3804,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 1.442648906,
-      "verify_run_seconds": 2.787449046,
+      "weights_run_seconds": 2.035227303,
+      "verify_run_seconds": 4.142671669,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4483,8 +4483,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.475053868,
-      "verify_run_seconds": 3.538137891,
+      "weights_run_seconds": 2.125774055,
+      "verify_run_seconds": 5.285703431,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5161,8 +5161,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 1.475053868,
-      "verify_run_seconds": 3.368472755,
+      "weights_run_seconds": 2.125774055,
+      "verify_run_seconds": 4.812659845,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5882,8 +5882,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.367690644,
-      "verify_run_seconds": 8.678524888,
+      "weights_run_seconds": 2.166003752,
+      "verify_run_seconds": 12.359206723,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6618,8 +6618,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.367690644,
-      "verify_run_seconds": 8.188192313,
+      "weights_run_seconds": 2.166003752,
+      "verify_run_seconds": 11.481470382,
       "coverage": {
         "back": {
           "eligible": 455,
@@ -7082,7 +7082,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.552385521845669
+              "dps_delta": -2.552385521845672
             },
             {
               "item_id": 14554,
@@ -7356,8 +7356,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.5315650669999998,
-      "verify_run_seconds": 8.922445123,
+      "weights_run_seconds": 2.480488903,
+      "verify_run_seconds": 13.062355736,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8068,8 +8068,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 1.5315650669999998,
-      "verify_run_seconds": 8.767766379,
+      "weights_run_seconds": 2.480488903,
+      "verify_run_seconds": 12.336094421,
       "coverage": {
         "back": {
           "eligible": 455,

@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70291",
-  "engine_version": "0ea8d8e99",
-  "generated_at": "2026-10-09T19:06:45Z",
+  "engine_version": "b1b13fddc",
+  "generated_at": "2026-10-09T21:11:35Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.779735698,
-      "verify_run_seconds": 0.586669339,
+      "weights_run_seconds": 0.996060144,
+      "verify_run_seconds": 0.808584136,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1194,8 +1194,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.779735698,
-      "verify_run_seconds": 0.602915955,
+      "weights_run_seconds": 0.996060144,
+      "verify_run_seconds": 0.84820065,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1881,8 +1881,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.66654049,
-      "verify_run_seconds": 0.587165274,
+      "weights_run_seconds": 1.006582065,
+      "verify_run_seconds": 0.799412515,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2574,8 +2574,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.66654049,
-      "verify_run_seconds": 0.591462199,
+      "weights_run_seconds": 1.006582065,
+      "verify_run_seconds": 0.833887233,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3281,8 +3281,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.700015153,
-      "verify_run_seconds": 0.684341962,
+      "weights_run_seconds": 1.028129835,
+      "verify_run_seconds": 0.949719981,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3994,8 +3994,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.700015153,
-      "verify_run_seconds": 0.675628155,
+      "weights_run_seconds": 1.028129835,
+      "verify_run_seconds": 0.99943743,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4697,8 +4697,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.728545681,
-      "verify_run_seconds": 1.020685259,
+      "weights_run_seconds": 1.012708705,
+      "verify_run_seconds": 1.3679212889999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5138,7 +5138,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.3554856966212847
+              "dps_delta": -1.3554856966212843
             },
             {
               "item_id": 10807,
@@ -5397,8 +5397,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.728545681,
-      "verify_run_seconds": 0.916224621,
+      "weights_run_seconds": 1.012708705,
+      "verify_run_seconds": 1.303896888,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6139,8 +6139,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.761614068,
-      "verify_run_seconds": 2.214853475,
+      "weights_run_seconds": 1.075296014,
+      "verify_run_seconds": 2.8281444049999998,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6884,8 +6884,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.761614068,
-      "verify_run_seconds": 2.020010998,
+      "weights_run_seconds": 1.075296014,
+      "verify_run_seconds": 2.665385808,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7340,14 +7340,14 @@
               "item_name": "Marshal's Satin Pants",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.6316225415524853
+              "dps_delta": -0.6316225415524827
             },
             {
               "item_id": 231619,
               "item_name": "Marshal's Satin Leggings",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.6316225415524853
+              "dps_delta": -0.6316225415524827
             }
           ]
         },
@@ -7397,14 +7397,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -4.460173643482234
+              "dps_delta": -4.460173643482231
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.509388525218254
+              "dps_delta": -5.5093885252182515
             },
             {
               "item_id": 11669,
@@ -7624,8 +7624,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 0.888613133,
-      "verify_run_seconds": 2.461388247,
+      "weights_run_seconds": 1.258778753,
+      "verify_run_seconds": 3.26652599,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7864,7 +7864,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -2.9076671324219876
+              "dps_delta": -2.9076671324219867
             }
           ]
         },
@@ -7874,7 +7874,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 28.175321299807386,
+          "score": 28.17532129980739,
           "verified": true,
           "alternatives": [
             {
@@ -7882,14 +7882,14 @@
               "item_name": "Warlord's Satin Epaulets",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.0535128783515644
+              "dps_delta": -1.0535128783515657
             },
             {
               "item_id": 226955,
               "item_name": "Virtuous Epaulets",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.4797012117661923
+              "dps_delta": -1.4797012117661936
             },
             {
               "item_id": 19059,
@@ -8080,14 +8080,14 @@
               "item_name": "General's Satin Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.6316225415524853
+              "dps_delta": -0.6316225415524827
             },
             {
               "item_id": 22747,
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.1126864230415126
+              "dps_delta": -2.11268642304151
             }
           ]
         },
@@ -8137,14 +8137,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -4.460173643482234
+              "dps_delta": -4.460173643482231
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.509388525218254
+              "dps_delta": -5.5093885252182515
             },
             {
               "item_id": 11669,
@@ -8364,8 +8364,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 0.888613133,
-      "verify_run_seconds": 2.283253977,
+      "weights_run_seconds": 1.258778753,
+      "verify_run_seconds": 3.218465626,
       "coverage": {
         "back": {
           "eligible": 456,

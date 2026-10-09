@@ -1,8 +1,8 @@
 {
   "spec": "shaman-elemental",
   "build": "1.60.1.70291",
-  "engine_version": "0ea8d8e99",
-  "generated_at": "2026-10-09T19:11:48Z",
+  "engine_version": "b1b13fddc",
+  "generated_at": "2026-10-09T21:18:45Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -541,8 +541,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.671870705,
-      "verify_run_seconds": 1.095294457,
+      "weights_run_seconds": 2.461607285,
+      "verify_run_seconds": 1.491526235,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1169,8 +1169,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.671870705,
-      "verify_run_seconds": 1.083805031,
+      "weights_run_seconds": 2.461607285,
+      "verify_run_seconds": 1.434423681,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1823,8 +1823,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 1.845518403,
-      "verify_run_seconds": 1.126437213,
+      "weights_run_seconds": 2.838717296,
+      "verify_run_seconds": 1.578348509,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2478,8 +2478,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 1.845518403,
-      "verify_run_seconds": 1.093931632,
+      "weights_run_seconds": 2.838717296,
+      "verify_run_seconds": 1.479011525,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3159,8 +3159,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 2.071784137,
-      "verify_run_seconds": 1.608864662,
+      "weights_run_seconds": 3.051961813,
+      "verify_run_seconds": 2.182102581,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3845,8 +3845,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 2.071784137,
-      "verify_run_seconds": 1.597298088,
+      "weights_run_seconds": 3.051961813,
+      "verify_run_seconds": 2.162716596,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4518,8 +4518,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.034445636,
-      "verify_run_seconds": 1.8471920929999999,
+      "weights_run_seconds": 3.089040014,
+      "verify_run_seconds": 2.485439252,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5192,8 +5192,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.034445636,
-      "verify_run_seconds": 1.703174621,
+      "weights_run_seconds": 3.089040014,
+      "verify_run_seconds": 2.369173302,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5640,7 +5640,7 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.011339486183244
+              "dps_delta": -1.011339486183245
             },
             {
               "item_id": 252603,
@@ -5916,8 +5916,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.9538576170000002,
-      "verify_run_seconds": 5.718328216,
+      "weights_run_seconds": 3.009816447,
+      "verify_run_seconds": 7.666313057,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6641,8 +6641,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.9538576170000002,
-      "verify_run_seconds": 5.736395449,
+      "weights_run_seconds": 3.009816447,
+      "verify_run_seconds": 7.761804171,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7082,18 +7082,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -1.6806945440605439
             },
             {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.6806945440605465
+              "dps_delta": -1.6806945440605439
             },
             {
               "item_id": 252606,
@@ -7362,8 +7362,8 @@
         "main_hand: Kindling Stave",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.199682536,
-      "verify_run_seconds": 4.329152037,
+      "weights_run_seconds": 1.811949304,
+      "verify_run_seconds": 5.424360096,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7640,7 +7640,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 25.343169306636497,
+          "score": 25.343169306636494,
           "verified": true,
           "alternatives": [
             {
@@ -7648,21 +7648,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.5377583455157924
+              "dps_delta": -1.537758345515791
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -2.8841337010795973
+              "dps_delta": -2.8841337010795955
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.0530727235157804
+              "dps_delta": -3.053072723515779
             }
           ]
         },
@@ -7805,18 +7805,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -1.6806945440605439
             },
             {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.6806945440605465
+              "dps_delta": -1.6806945440605439
             },
             {
               "item_id": 231664,
@@ -8085,8 +8085,8 @@
         "main_hand: Kindling Stave",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.199682536,
-      "verify_run_seconds": 4.390637972,
+      "weights_run_seconds": 1.811949304,
+      "verify_run_seconds": 5.606752102,
       "coverage": {
         "back": {
           "eligible": 457,

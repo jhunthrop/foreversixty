@@ -1,8 +1,8 @@
 {
   "spec": "hunter-survival",
   "build": "1.60.1.70291",
-  "engine_version": "0ea8d8e99",
-  "generated_at": "2026-10-09T18:37:28Z",
+  "engine_version": "b1b13fddc",
+  "generated_at": "2026-10-09T20:23:02Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -579,8 +579,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.477925699,
-      "verify_run_seconds": 3.398688353,
+      "weights_run_seconds": 3.796077566,
+      "verify_run_seconds": 4.941873171,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1248,8 +1248,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.477925699,
-      "verify_run_seconds": 3.273806622,
+      "weights_run_seconds": 3.796077566,
+      "verify_run_seconds": 4.76286413,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1949,8 +1949,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.706915557,
-      "verify_run_seconds": 2.540905559,
+      "weights_run_seconds": 4.7589018339999996,
+      "verify_run_seconds": 4.095935539,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2651,8 +2651,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.706915557,
-      "verify_run_seconds": 1.898683268,
+      "weights_run_seconds": 4.7589018339999996,
+      "verify_run_seconds": 2.882162079,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3346,8 +3346,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.727831269,
-      "verify_run_seconds": 2.596878828,
+      "weights_run_seconds": 4.359080831,
+      "verify_run_seconds": 3.703539018,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4041,8 +4041,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.727831269,
-      "verify_run_seconds": 2.478149404,
+      "weights_run_seconds": 4.359080831,
+      "verify_run_seconds": 3.607204812,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4749,8 +4749,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.773655701,
-      "verify_run_seconds": 3.153840622,
+      "weights_run_seconds": 4.345335702,
+      "verify_run_seconds": 4.377767367,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5471,8 +5471,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.773655701,
-      "verify_run_seconds": 3.057928832,
+      "weights_run_seconds": 4.345335702,
+      "verify_run_seconds": 4.284079912,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5923,7 +5923,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 179.67020933310917,
+          "score": 179.6702093331092,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +4.5 DPS over it",
           "dps_delta": 4.505989509350343,
@@ -5933,21 +5933,21 @@
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -3.8896783726488424
+              "dps_delta": -3.8896783726488446
             },
             {
               "item_id": 237818,
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -4.026067024273618
+              "dps_delta": -4.026067024273621
             },
             {
               "item_id": 227085,
               "item_name": "Knight-Captain's Chain Legplates",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -4.522427242617408
+              "dps_delta": -4.52242724261741
             }
           ]
         },
@@ -6253,8 +6253,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.603911239,
-      "verify_run_seconds": 10.23155743,
+      "weights_run_seconds": 4.031729141,
+      "verify_run_seconds": 14.096076674,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7035,8 +7035,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.603911239,
-      "verify_run_seconds": 9.795270022,
+      "weights_run_seconds": 4.031729141,
+      "verify_run_seconds": 13.619120247,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7782,8 +7782,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.259083574,
-      "verify_run_seconds": 8.303433354,
+      "weights_run_seconds": 3.530829405,
+      "verify_run_seconds": 11.159905226,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8525,8 +8525,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.259083574,
-      "verify_run_seconds": 7.528132118,
+      "weights_run_seconds": 3.530829405,
+      "verify_run_seconds": 10.486812498,
       "coverage": {
         "back": {
           "eligible": 456,

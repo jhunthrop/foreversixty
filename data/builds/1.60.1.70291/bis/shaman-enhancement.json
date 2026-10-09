@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70291",
-  "engine_version": "0ea8d8e99",
-  "generated_at": "2026-10-09T19:13:00Z",
+  "engine_version": "b1b13fddc",
+  "generated_at": "2026-10-09T21:20:22Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -532,8 +532,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.330176844,
-      "verify_run_seconds": 2.337853944,
+      "weights_run_seconds": 1.86481379,
+      "verify_run_seconds": 3.114201099,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1144,8 +1144,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.330176844,
-      "verify_run_seconds": 2.245462521,
+      "weights_run_seconds": 1.86481379,
+      "verify_run_seconds": 2.9496293959999997,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1785,8 +1785,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.3129351630000001,
-      "verify_run_seconds": 1.445288688,
+      "weights_run_seconds": 1.928689661,
+      "verify_run_seconds": 1.995129879,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2417,8 +2417,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.3129351630000001,
-      "verify_run_seconds": 1.394306689,
+      "weights_run_seconds": 1.928689661,
+      "verify_run_seconds": 1.845363174,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3053,8 +3053,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 1.596795025,
-      "verify_run_seconds": 1.71814108,
+      "weights_run_seconds": 2.356409501,
+      "verify_run_seconds": 2.276677078,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3687,8 +3687,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 1.596795025,
-      "verify_run_seconds": 1.744686482,
+      "weights_run_seconds": 2.356409501,
+      "verify_run_seconds": 2.359723891,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4370,8 +4370,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.582011553,
-      "verify_run_seconds": 3.368462343,
+      "weights_run_seconds": 2.342456553,
+      "verify_run_seconds": 4.725593455,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5033,8 +5033,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.582011553,
-      "verify_run_seconds": 3.710238073,
+      "weights_run_seconds": 2.342456553,
+      "verify_run_seconds": 4.58913768,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5747,8 +5747,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.745807649,
-      "verify_run_seconds": 7.067795372,
+      "weights_run_seconds": 2.346106062,
+      "verify_run_seconds": 9.440762594,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6447,8 +6447,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.745807649,
-      "verify_run_seconds": 6.881663785,
+      "weights_run_seconds": 2.346106062,
+      "verify_run_seconds": 9.077248426,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6955,14 +6955,14 @@
               "item_name": "Tarnished Elven Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -3.1840273625397173
+              "dps_delta": -3.1840273625397195
             },
             {
               "item_id": 272408,
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -3.5005348716930103
+              "dps_delta": -3.500534871693012
             },
             {
               "item_id": 11669,
@@ -7162,8 +7162,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.6801621610000002,
-      "verify_run_seconds": 6.887651976,
+      "weights_run_seconds": 2.408198012,
+      "verify_run_seconds": 9.413452003,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7464,7 +7464,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.5304182732823595
+              "dps_delta": -3.5304182732823635
             },
             {
               "item_id": 227157,
@@ -7855,8 +7855,8 @@
         "trinket1: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.6801621610000002,
-      "verify_run_seconds": 7.338123404,
+      "weights_run_seconds": 2.408198012,
+      "verify_run_seconds": 9.615210466,
       "coverage": {
         "back": {
           "eligible": 457,

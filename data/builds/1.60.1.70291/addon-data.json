@@ -22042,9 +22042,9 @@
               "source": "World drop"
             },
             "wrist": {
-              "item_id": 4744,
-              "source_kind": "quest",
-              "source": "Wanted! Marez Cowl"
+              "item_id": 9448,
+              "source_kind": "dungeon",
+              "source": "Gnomeregan: Electrocutioner 6000"
             },
             "hands": {
               "item_id": 10019,
@@ -22052,9 +22052,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 20098,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 10771,
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Mordresh Fire Eye"
             },
             "legs": {
               "item_id": 10009,
@@ -22129,9 +22129,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 20166,
-              "source_kind": "rep",
-              "source": "The Defilers"
+              "item_id": 10771,
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Mordresh Fire Eye"
             },
             "legs": {
               "item_id": 10009,
@@ -22177,9 +22177,8 @@
             19507,
             23178,
             1716,
-            4744,
             10019,
-            20098,
+            10771,
             10009,
             254013,
             281635,
@@ -22196,7 +22195,7 @@
             1716,
             4545,
             10019,
-            20166,
+            10771,
             10009,
             254013,
             281635,
@@ -22208,9 +22207,9 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.632,
-          "crit": 0.161,
-          "hit": 0.405,
+          "intellect": 0.662,
+          "crit": 0.167,
+          "hit": 0.421,
           "frost_power": 1.0
         }
       },
@@ -22224,9 +22223,9 @@
               "source": "Tailoring"
             },
             "neck": {
-              "item_id": 20037,
-              "source_kind": "quest",
-              "source": "Destroy Morphaz"
+              "item_id": 10769,
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Mordresh Fire Eye"
             },
             "shoulder": {
               "item_id": 17732,
@@ -22341,9 +22340,9 @@
               "source": "Blackrock Depths: Ok'thor the Breaker"
             },
             "legs": {
-              "item_id": 9484,
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Chief Ukorz Sandscalp"
+              "item_id": 220906,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "feet": {
               "item_id": 220909,
@@ -22385,7 +22384,6 @@
         "new_at_band": {
           "alliance": [
             10033,
-            20037,
             17732,
             11623,
             17775,
@@ -22410,7 +22408,7 @@
             254061,
             226930,
             11662,
-            9484,
+            220906,
             220909,
             11824,
             281635,
@@ -22422,10 +22420,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.93,
-          "crit": 0.259,
-          "hit": 0.873,
-          "spell_haste": 7.453,
+          "intellect": 0.986,
+          "crit": 0.27,
+          "hit": 0.928,
+          "spell_haste": 7.675,
           "frost_power": 1.0
         }
       },
@@ -22633,10 +22631,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.752,
-          "crit": 0.368,
-          "hit": 1.188,
-          "spell_haste": 7.029,
+          "intellect": 0.814,
+          "crit": 0.379,
+          "hit": 1.281,
+          "spell_haste": 7.471,
           "frost_power": 1.0
         }
       }
@@ -34217,7 +34215,7 @@
               "source": "Friz Frazzlespark"
             },
             "feet": {
-              "item_id": 252533,
+              "item_id": 252565,
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
@@ -34294,7 +34292,7 @@
               "source": "Friz Frazzlespark"
             },
             "feet": {
-              "item_id": 252565,
+              "item_id": 252533,
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
@@ -34336,7 +34334,7 @@
             10765,
             254037,
             276201,
-            252533,
+            252565,
             272070,
             6750,
             272059,
@@ -34352,7 +34350,7 @@
             10765,
             254037,
             276201,
-            252565,
+            252533,
             272070,
             6750,
             272059,
@@ -35560,10 +35558,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.027,
-          "crit": 0.031,
-          "hit": 0.299,
-          "shadow_power": 0.878
+          "intellect": 0.031,
+          "crit": 0.032,
+          "hit": 0.3,
+          "shadow_power": 0.876
         }
       },
       {
@@ -35770,10 +35768,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.079,
-          "crit": 0.069,
-          "hit": 0.392,
-          "shadow_power": 0.898
+          "intellect": 0.081,
+          "crit": 0.07,
+          "hit": 0.395,
+          "shadow_power": 0.896
         }
       }
     ],

@@ -1,8 +1,8 @@
 {
   "spec": "mage-fire",
   "build": "1.60.1.70291",
-  "engine_version": "0ea8d8e99",
-  "generated_at": "2026-10-09T18:38:39Z",
+  "engine_version": "b1b13fddc",
+  "generated_at": "2026-10-09T20:24:40Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -556,8 +556,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.708374954,
-      "verify_run_seconds": 0.631081501,
+      "weights_run_seconds": 1.007224799,
+      "verify_run_seconds": 0.80020441,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1195,8 +1195,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.708374954,
-      "verify_run_seconds": 0.604317328,
+      "weights_run_seconds": 1.007224799,
+      "verify_run_seconds": 0.821310208,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1873,8 +1873,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.844630253,
-      "verify_run_seconds": 0.649327906,
+      "weights_run_seconds": 1.168755481,
+      "verify_run_seconds": 0.871513533,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2555,8 +2555,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Unstable Power Core"
       ],
-      "weights_run_seconds": 0.844630253,
-      "verify_run_seconds": 0.602900719,
+      "weights_run_seconds": 1.168755481,
+      "verify_run_seconds": 0.860316288,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3255,8 +3255,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.872421635,
-      "verify_run_seconds": 0.749151066,
+      "weights_run_seconds": 1.2684267679999999,
+      "verify_run_seconds": 1.017290508,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3957,8 +3957,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.872421635,
-      "verify_run_seconds": 0.76919336,
+      "weights_run_seconds": 1.2684267679999999,
+      "verify_run_seconds": 1.047262434,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4146,7 +4146,7 @@
               "item_name": "Knight-Lieutenant's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.125280067194164
+              "dps_delta": -1.1252800671941634
             },
             {
               "item_id": 15999,
@@ -4651,8 +4651,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.81130837,
-      "verify_run_seconds": 1.021748755,
+      "weights_run_seconds": 1.293036034,
+      "verify_run_seconds": 1.455121753,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5355,8 +5355,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.81130837,
-      "verify_run_seconds": 0.931723328,
+      "weights_run_seconds": 1.293036034,
+      "verify_run_seconds": 1.339635321,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5595,7 +5595,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 50.90567578154033,
+          "score": 50.905675781540324,
           "verified": true,
           "alternatives": [
             {
@@ -5603,21 +5603,21 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.1911452959671114
+              "dps_delta": -3.1911452959671096
             },
             {
               "item_id": 231602,
               "item_name": "Field Marshal's Silk Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.250426244940912
+              "dps_delta": -3.2504262449409103
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.769773936504539
+              "dps_delta": -3.7697739365045373
             }
           ]
         },
@@ -6102,8 +6102,8 @@
         "trinket2: Draconic Infused Emblem",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.932297351,
-      "verify_run_seconds": 3.08034213,
+      "weights_run_seconds": 1.2985723980000001,
+      "verify_run_seconds": 4.19645453,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6348,7 +6348,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 50.90567578154033,
+          "score": 50.905675781540324,
           "verified": true,
           "alternatives": [
             {
@@ -6356,21 +6356,21 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.1911452959671114
+              "dps_delta": -3.1911452959671096
             },
             {
               "item_id": 231594,
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.250426244940912
+              "dps_delta": -3.2504262449409103
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.769773936504539
+              "dps_delta": -3.7697739365045373
             }
           ]
         },
@@ -6842,8 +6842,8 @@
         "trinket2: Serenity Field",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 0.932297351,
-      "verify_run_seconds": 3.00233664,
+      "weights_run_seconds": 1.2985723980000001,
+      "verify_run_seconds": 4.189274365,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7595,8 +7595,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.073441868,
-      "verify_run_seconds": 2.416416745,
+      "weights_run_seconds": 1.51517236,
+      "verify_run_seconds": 3.3155091,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8343,8 +8343,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.073441868,
-      "verify_run_seconds": 2.304227672,
+      "weights_run_seconds": 1.51517236,
+      "verify_run_seconds": 3.19933872,
       "coverage": {
         "back": {
           "eligible": 456,

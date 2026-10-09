@@ -1,8 +1,8 @@
 {
   "spec": "warlock-demonology",
   "build": "1.60.1.70291",
-  "engine_version": "0ea8d8e99",
-  "generated_at": "2026-10-09T19:23:51Z",
+  "engine_version": "b1b13fddc",
+  "generated_at": "2026-10-09T21:37:55Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -570,8 +570,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.492753126,
-      "verify_run_seconds": 0.966548099,
+      "weights_run_seconds": 2.347411376,
+      "verify_run_seconds": 1.251198094,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1226,8 +1226,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.492753126,
-      "verify_run_seconds": 0.941336954,
+      "weights_run_seconds": 2.347411376,
+      "verify_run_seconds": 1.27476259,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1916,8 +1916,8 @@
         "main_hand: Hardened Root Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.5155911180000001,
-      "verify_run_seconds": 0.950454629,
+      "weights_run_seconds": 2.346303482,
+      "verify_run_seconds": 1.283227335,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2613,8 +2613,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.5155911180000001,
-      "verify_run_seconds": 1.022415971,
+      "weights_run_seconds": 2.346303482,
+      "verify_run_seconds": 1.27951588,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3331,8 +3331,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.330841507,
-      "verify_run_seconds": 0.974919,
+      "weights_run_seconds": 1.947988023,
+      "verify_run_seconds": 1.305018281,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4052,8 +4052,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.330841507,
-      "verify_run_seconds": 0.968081119,
+      "weights_run_seconds": 1.947988023,
+      "verify_run_seconds": 1.313623715,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4767,8 +4767,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 3.4051480720000002,
-      "verify_run_seconds": 1.4332344,
+      "weights_run_seconds": 4.975769587,
+      "verify_run_seconds": 1.691926947,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5250,7 +5250,7 @@
               "item_name": "First Sergeant's Dreadweave Boots",
               "source_kind": "vendor",
               "source": "PvP rank 9 · First Sergeant · Horde",
-              "dps_delta": -2.4251235599652223
+              "dps_delta": -2.425123559965222
             },
             {
               "item_id": 10044,
@@ -5485,8 +5485,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 3.4051480720000002,
-      "verify_run_seconds": 1.288043042,
+      "weights_run_seconds": 4.975769587,
+      "verify_run_seconds": 1.68311531,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5937,7 +5937,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 36.44112280751077,
+          "score": 36.441122807510766,
           "verified": true,
           "alternatives": [
             {
@@ -5960,7 +5960,7 @@
               "item_name": "Knight-Captain's Dreadweave Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -2.4112507900840785
+              "dps_delta": -2.4112507900840763
             }
           ]
         },
@@ -6010,14 +6010,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -4.511041684920926
+              "dps_delta": -4.511041684920923
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.6299399735149365
+              "dps_delta": -5.629939973514935
             },
             {
               "item_id": 11669,
@@ -6235,8 +6235,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.385672381,
-      "verify_run_seconds": 2.786386501,
+      "weights_run_seconds": 1.967192262,
+      "verify_run_seconds": 3.519760606,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6686,7 +6686,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 36.44112280751077,
+          "score": 36.441122807510766,
           "verified": true,
           "alternatives": [
             {
@@ -6709,7 +6709,7 @@
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.174757022217014
+              "dps_delta": -2.1747570222170114
             }
           ]
         },
@@ -6759,14 +6759,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -4.511041684920926
+              "dps_delta": -4.511041684920923
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.6299399735149365
+              "dps_delta": -5.629939973514935
             },
             {
               "item_id": 11669,
@@ -6984,8 +6984,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.385672381,
-      "verify_run_seconds": 2.741492495,
+      "weights_run_seconds": 1.967192262,
+      "verify_run_seconds": 3.531103079,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7730,8 +7730,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 4.451322281,
-      "verify_run_seconds": 2.844878564,
+      "weights_run_seconds": 6.743350497,
+      "verify_run_seconds": 3.786566632,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8016,7 +8016,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 23.853554627915106,
+          "score": 23.85355462791511,
           "verified": true,
           "alternatives": [
             {
@@ -8024,21 +8024,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.758863496919803
+              "dps_delta": -1.7588634969198047
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -2.904594394585907
+              "dps_delta": -2.9045943945859087
             },
             {
               "item_id": 13007,
               "item_name": "Mageflame Cloak",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -4.177697883737653
+              "dps_delta": -4.177697883737655
             }
           ]
         },
@@ -8478,8 +8478,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.451322281,
-      "verify_run_seconds": 2.969327358,
+      "weights_run_seconds": 6.743350497,
+      "verify_run_seconds": 4.008492295,
       "coverage": {
         "back": {
           "eligible": 456,

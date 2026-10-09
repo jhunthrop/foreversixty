@@ -1,8 +1,8 @@
 {
   "spec": "priest-holy",
   "build": "1.60.1.70291",
-  "engine_version": "0ea8d8e99",
-  "generated_at": "2026-10-09T19:06:16Z",
+  "engine_version": "b1b13fddc",
+  "generated_at": "2026-10-09T21:10:55Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -567,8 +567,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 6.261587875,
-      "verify_run_seconds": 16.554723789,
+      "weights_run_seconds": 10.079230232,
+      "verify_run_seconds": 29.257221037,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1134,7 +1134,7 @@
               "item_name": "Staff of Orgrimmar",
               "source_kind": "quest",
               "source": "Hidden Enemies",
-              "dps_delta": -0.16955599368625937
+              "dps_delta": -0.1695559936862592
             },
             {
               "item_id": 4437,
@@ -1217,8 +1217,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 6.261587875,
-      "verify_run_seconds": 16.672769091,
+      "weights_run_seconds": 10.079230232,
+      "verify_run_seconds": 29.399264592,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1888,8 +1888,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 6.138212384,
-      "verify_run_seconds": 15.827361158,
+      "weights_run_seconds": 10.083470681,
+      "verify_run_seconds": 28.48623679,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2301,7 +2301,7 @@
               "item_name": "Novice Ardent's Sash",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.3539140698983088
+              "dps_delta": -0.353914069898309
             },
             {
               "item_id": 14406,
@@ -2559,8 +2559,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 6.138212384,
-      "verify_run_seconds": 16.485050434,
+      "weights_run_seconds": 10.083470681,
+      "verify_run_seconds": 29.080804129,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3171,7 +3171,7 @@
               "item_name": "Hypnotic Blade",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Arcanist Doan",
-              "dps_delta": -1.0813847380665402
+              "dps_delta": -1.0813847380665396
             },
             {
               "item_id": 2164,
@@ -3257,8 +3257,8 @@
         "trinket2: Ankh of Life",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 5.980768847,
-      "verify_run_seconds": 38.620646821,
+      "weights_run_seconds": 10.519023621,
+      "verify_run_seconds": 69.004596979,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3942,8 +3942,8 @@
         "trinket2: Ankh of Life",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 5.980768847,
-      "verify_run_seconds": 41.166792263,
+      "weights_run_seconds": 10.519023621,
+      "verify_run_seconds": 73.584032898,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4264,7 +4264,7 @@
               "item_name": "Knight's Satin Armor",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.5219883386186566
+              "dps_delta": -1.521988338618656
             }
           ]
         },
@@ -4314,7 +4314,7 @@
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -2.199745966419129
+              "dps_delta": -2.1997459664191283
             },
             {
               "item_id": 254095,
@@ -4703,8 +4703,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 6.130486935,
-      "verify_run_seconds": 54.001722974,
+      "weights_run_seconds": 10.676757299,
+      "verify_run_seconds": 92.989844846,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5020,7 +5020,7 @@
               "item_name": "Stone Guard's Satin Armor",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.5219883386186566
+              "dps_delta": -1.521988338618656
             }
           ]
         },
@@ -5134,7 +5134,7 @@
               "item_name": "Stone Guard's Satin Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.260516302711996
+              "dps_delta": -0.26051630271199666
             },
             {
               "item_id": 14444,
@@ -5454,8 +5454,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 6.130486935,
-      "verify_run_seconds": 32.727530301,
+      "weights_run_seconds": 10.676757299,
+      "verify_run_seconds": 57.574803401,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5763,7 +5763,7 @@
               "item_name": "Robes of the Exalted",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -0.5510469040483656
+              "dps_delta": -0.5510469040483632
             },
             {
               "item_id": 226945,
@@ -5923,7 +5923,7 @@
           "item_name": "Incandescent Mooncloth Boots",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 75.3360917655783,
+          "score": 75.33609176557832,
           "verified": true,
           "alternatives": [
             {
@@ -5931,21 +5931,21 @@
               "item_name": "Virtuous Sandals",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.1476975667384157
+              "dps_delta": -3.147697566738418
             },
             {
               "item_id": 15802,
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.589350967034997
+              "dps_delta": -3.5893509670349992
             },
             {
               "item_id": 22247,
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.8526224459760323
+              "dps_delta": -3.8526224459760345
             }
           ]
         },
@@ -6219,8 +6219,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.384576359,
-      "verify_run_seconds": 47.521753003,
+      "weights_run_seconds": 9.366337483,
+      "verify_run_seconds": 81.499465109,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6535,7 +6535,7 @@
               "item_name": "Virtuous Robe",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -2.326644952870026
+              "dps_delta": -2.3266449528700233
             }
           ]
         },
@@ -6702,7 +6702,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.8526224459760345
+              "dps_delta": -3.852622445976033
             }
           ]
         },
@@ -6976,8 +6976,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 5.384576359,
-      "verify_run_seconds": 48.877550348,
+      "weights_run_seconds": 9.366337483,
+      "verify_run_seconds": 84.27627853,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7157,7 +7157,7 @@
               "item_name": "Lieutenant Commander's Satin Hood",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.11915713058022852
+              "dps_delta": -0.1191571305802248
             },
             {
               "item_id": 16693,
@@ -7364,7 +7364,7 @@
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.3264393869940043
+              "dps_delta": -1.3264393869940063
             }
           ]
         },
@@ -7388,7 +7388,7 @@
               "item_name": "Whipvine Cord",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -0.09119302550749539
+              "dps_delta": -0.09119302550749354
             },
             {
               "item_id": 17609,
@@ -7450,7 +7450,7 @@
               "item_name": "Virtuous Sandals",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.6152996531771593
+              "dps_delta": -3.6152996531771633
             },
             {
               "item_id": 15802,
@@ -7616,7 +7616,7 @@
               "item_name": "Wind Spirit Staff",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Earthcaller Halmgar",
-              "dps_delta": -10.521910907738556
+              "dps_delta": -10.521910907738553
             },
             {
               "item_id": 9527,
@@ -7741,8 +7741,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 3.685658131,
-      "verify_run_seconds": 19.052773956,
+      "weights_run_seconds": 6.219132219,
+      "verify_run_seconds": 29.8326025,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8129,7 +8129,7 @@
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.3264393869940043
+              "dps_delta": -1.3264393869940063
             }
           ]
         },
@@ -8183,21 +8183,21 @@
               "item_name": "General's Satin Legguards",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.217689891322708
+              "dps_delta": -1.2176898913227046
             },
             {
               "item_id": 227123,
               "item_name": "Legionnaire's Satin Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -1.9119650198641909
+              "dps_delta": -1.911965019864187
             },
             {
               "item_id": 226946,
               "item_name": "Virtuous Skirt",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -2.605295760743123
+              "dps_delta": -2.6052957607431195
             }
           ]
         },
@@ -8215,7 +8215,7 @@
               "item_name": "Virtuous Sandals",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.6152996531771593
+              "dps_delta": -3.6152996531771633
             },
             {
               "item_id": 15802,
@@ -8247,21 +8247,21 @@
               "item_name": "Band of Piety",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -3.5886894764659925
+              "dps_delta": -3.5886894764659907
             },
             {
               "item_id": 16058,
               "item_name": "Fordring's Seal",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -4.187078626985076
+              "dps_delta": -4.187078626985074
             },
             {
               "item_id": 18395,
               "item_name": "Emerald Flame Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Prince Tortheldrin",
-              "dps_delta": -4.529535604374699
+              "dps_delta": -4.529535604374697
             }
           ]
         },
@@ -8381,7 +8381,7 @@
               "item_name": "Wind Spirit Staff",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Earthcaller Halmgar",
-              "dps_delta": -10.521910907738553
+              "dps_delta": -10.521910907738556
             },
             {
               "item_id": 9527,
@@ -8506,8 +8506,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 3.685658131,
-      "verify_run_seconds": 19.692553896,
+      "weights_run_seconds": 6.219132219,
+      "verify_run_seconds": 31.340372933,
       "coverage": {
         "back": {
           "eligible": 456,
