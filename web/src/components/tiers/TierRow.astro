@@ -130,8 +130,8 @@ const gapLabel = tiersCopy.headers.gap[row.role];
   }
   :global([data-role='tank']) .tier-row {
     grid-template-columns:
-      32px 36px minmax(150px, 230px) minmax(50px, 1fr) 132px 92px 84px 84px
-      minmax(168px, 200px);
+      32px 36px minmax(140px, 220px) minmax(50px, 1fr) 170px 92px 84px 84px
+      minmax(160px, 200px);
     grid-template-areas: 'rank crest name bar num eh tps gap links';
     column-gap: 12px;
   }
@@ -325,7 +325,7 @@ const gapLabel = tiersCopy.headers.gap[row.role];
         '. bar bar gap'
         'links links links links';
       column-gap: 10px;
-      row-gap: 10px;
+      row-gap: 8px;
       padding: 12px 14px 0 12px;
     }
     :global([data-role='tank']) .tier-row {
@@ -355,7 +355,11 @@ const gapLabel = tiersCopy.headers.gap[row.role];
       grid-area: auto;
     }
     .tier-gap {
-      min-width: 56px;
+      flex-direction: row-reverse;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: 6px;
+      white-space: nowrap;
     }
     .tier-gap-value {
       font-size: 12px;

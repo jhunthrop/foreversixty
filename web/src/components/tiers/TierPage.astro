@@ -65,7 +65,13 @@ const stampTitle =
         </p>
         <h1 class="tier-h1">{tiersCopy.title}</h1>
         <p class="tier-job">{tiersCopy.jobLine}</p>
-        <div class="tier-you" data-signed-in-only data-testid="tier-you-slot" id="tier-you-slot"></div>
+        <div class="tier-you" data-signed-in-only data-testid="tier-you-slot" id="tier-you-slot">
+          <div class="tier-you-skeleton" role="status" aria-busy="true" data-testid="tier-you-skeleton">
+            <span class="sr-only">Loading</span>
+            <span class="skeleton-block tier-you-skeleton-crest" aria-hidden="true"></span>
+            <span class="skeleton-block tier-you-skeleton-text" aria-hidden="true"></span>
+          </div>
+        </div>
         <div class="tier-controls">
           <div class="tier-tabs" role="tablist" aria-label={tiersCopy.roleTabsLabel}>
             {TIER_ROLES.map((r) => (
@@ -267,6 +273,27 @@ const stampTitle =
   .tier-you {
     min-height: 72px;
     max-width: 820px;
+  }
+  .tier-you-skeleton {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 72px;
+    padding: 14px 18px;
+    box-sizing: border-box;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .tier-you-skeleton-crest {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .tier-you-skeleton-text {
+    width: 260px;
+    max-width: 60%;
+    height: 16px;
   }
   :global(.tier-callout) {
     display: flex;
@@ -475,8 +502,8 @@ const stampTitle =
   }
   .tier-list[data-role='tank'] .tier-heads {
     grid-template-columns:
-      32px 36px minmax(150px, 230px) minmax(50px, 1fr) 132px 92px 84px 84px
-      minmax(168px, 200px);
+      32px 36px minmax(140px, 220px) minmax(50px, 1fr) 170px 92px 84px 84px
+      minmax(160px, 200px);
     column-gap: 12px;
   }
   .tier-heads .label {

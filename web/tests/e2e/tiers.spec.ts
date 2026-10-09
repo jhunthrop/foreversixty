@@ -85,6 +85,25 @@ test('tank list sorts on damage taken, not effective health, and the best of eac
   ).toHaveCSS('color', 'rgb(127, 212, 138)');
 });
 
+test('tank figures are whole numbers and the damage-taken head wraps to at most two lines', async ({
+  page,
+}) => {
+  await page.goto('/tiers/tank');
+  const leader = expectedRows('tank', 'alliance')[0]!;
+  const row = activePanel(page).locator('[data-testid^="tier-row-"]').first();
+  await expect(row.getByTestId('tier-effective-health')).toHaveText(
+    wholeNumber(leader.band.metrics!.effective_health),
+  );
+  await expect(row.getByTestId('tier-threat')).toHaveText(wholeNumber(leader.band.metrics!.tps));
+  const head = activePanel(page).locator('.tier-head-num').first();
+  const { height, fontSize } = await head.evaluate((node) => ({
+    height: node.getBoundingClientRect().height,
+    fontSize: parseFloat(getComputedStyle(node).fontSize),
+  }));
+  // Two lines of a label at its normal line height (at most about 1.6 em each).
+  expect(height).toBeLessThanOrEqual(fontSize * 1.6 * 2);
+});
+
 test('both rows of a tied pair carry the mark', async ({ page }) => {
   await page.goto('/tiers');
   const expected = expectedRows('dps', 'alliance');
@@ -249,6 +268,6 @@ test.describe('phone', () => {
     await page.goto('/tiers/tank');
     const first = activePanel(page).locator('[data-testid^="tier-row-"]').first();
     await expect(first).toContainText('Effective health');
-    await expect(first).toContainText('Threat/s');
+    await expect(first).toContainText('Threat per second');
   });
 });
