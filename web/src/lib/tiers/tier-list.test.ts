@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { band, catalogEntry, dpsInput, tankInput } from './tier-test-support';
 import {
   RULER_PERCENTS,
+  hrefsFor,
   listItemsFor,
   rankRole,
   raceLabel,
@@ -170,5 +171,16 @@ describe('race, confidence and rulers', () => {
     const rows = rankRole([dpsInput('a', 'a', 'A', 100), dpsInput('b', 'b', 'B', 50)], 'dps');
     expect(listItemsFor(rows, 'dps').some((i) => i.kind === 'ruler')).toBe(true);
     expect(listItemsFor(rows, 'healer').some((i) => i.kind === 'ruler')).toBe(false);
+  });
+});
+
+describe('hrefsFor', () => {
+  it('links the BiS page, the guide and the level 60 build in the planner', () => {
+    const [row] = rankRole([dpsInput('warrior', 'fury', 'Fury', 100)], 'dps');
+    expect(hrefsFor({ ...row!, talents: '1-2-3' })).toEqual({
+      bis: '/bis/warrior/fury',
+      guide: '/guides/warrior/fury',
+      planner: '/planner?spec=warrior-fury&talents=1-2-3',
+    });
   });
 });

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { dpsInput, tankInput } from './tier-test-support';
 import { rankRole } from './tier-list';
-import { specViewKey, tierSpecViews } from './tier-callout';
+import { specViewKey, specViewKeyForCharacter, tierSpecViews } from './tier-callout';
 
 const dps = rankRole(
   [
@@ -66,5 +66,17 @@ describe('tierSpecViews', () => {
 
   it('skips an empty role', () => {
     expect(Object.values(views).some((v) => v.role === 'healer')).toBe(false);
+  });
+});
+
+describe('specViewKeyForCharacter', () => {
+  it('slugs the character class and spec names', () => {
+    expect(specViewKeyForCharacter({ class: 'Warrior', spec: 'Fury' })).toBe('warrior/fury');
+    expect(specViewKeyForCharacter({ class: 'Druid', spec: 'Feral Bear' })).toBe('druid/feral-bear');
+  });
+
+  it('is undefined until both are known', () => {
+    expect(specViewKeyForCharacter({ class: 'Warrior' })).toBeUndefined();
+    expect(specViewKeyForCharacter({ spec: 'Fury' })).toBeUndefined();
   });
 });

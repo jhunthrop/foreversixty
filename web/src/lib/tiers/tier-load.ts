@@ -13,7 +13,6 @@ import type { BisFile, BisRole, Faction, SpecCatalogEntry } from '../bis/types';
 import { TIER_ROLES, rankRole, type TierInput, type TierRow } from './tier-list';
 
 const TIER_BAND = 60;
-export const TIER_FACTIONS: readonly Faction[] = ['alliance', 'horde'];
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 const TANK_ENCOUNTER_FILE = 'data/curated/tank-encounter.json';

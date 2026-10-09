@@ -195,3 +195,19 @@ export function roleHasRulers(role: BisRole): boolean {
 export function listItemsFor(rows: readonly TierRow[], role: BisRole): TierListItem[] {
   return roleHasRulers(role) ? withRulers(rows) : rows.map((row): TierListItem => ({ kind: 'row', row }));
 }
+
+export interface TierRowHrefs {
+  bis: string;
+  guide: string;
+  planner: string;
+}
+
+/** Where a row's three next steps go: its BiS page, its guide and its level 60 build in the planner. */
+export function hrefsFor(row: Pick<TierRow, 'classSlug' | 'specSlug' | 'spec' | 'talents'>): TierRowHrefs {
+  const path = `${row.classSlug}/${row.specSlug}`;
+  return {
+    bis: `/bis/${path}`,
+    guide: `/guides/${path}`,
+    planner: `/planner?spec=${row.spec}&talents=${encodeURIComponent(row.talents)}`,
+  };
+}

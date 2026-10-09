@@ -149,6 +149,7 @@ export const tiersCopy = {
   factionGroupLabel: 'Faction',
   calloutButton: 'Your best in slot →',
   yourSpec: 'Your spec',
+  pointerCta: 'See where it stands →',
   lowConfidence: 'Stat weights less certain',
   lowConfidenceTitle:
     "This spec's stat weights did not settle cleanly, so its gear pick and number are less firm.",

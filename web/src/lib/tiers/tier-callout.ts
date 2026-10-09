@@ -4,9 +4,10 @@
 // visitor's selected character, so the text is written once, here, and tested.
 import classes from '../../data/classes.json';
 import { classCrestSrc } from '../class-crest';
+import { classSlugFromName } from '../report/tree-sizes';
 import { classColorVar } from '../report/format';
 import type { BisRole } from '../bis/types';
-import { ROLE_LABELS, ROLE_PATHS, ordinal } from './tier-copy';
+import { ROLE_LABELS, ROLE_PATHS, ordinal, tiersCopy } from './tier-copy';
 import type { TierRow } from './tier-list';
 
 /** What the page needs to answer for one spec. Every field is final text or a path. */
@@ -34,6 +35,13 @@ export type TierSpecViews = Record<string, TierSpecView>;
 /** The key the script looks a character up by: `<class slug>/<spec slug>`. */
 export function specViewKey(classSlug: string, specSlug: string): string {
   return `${classSlug}/${specSlug}`;
+}
+
+/** The lookup key for a signed-in character, or `undefined` while its class or spec is not
+ *  known yet (never a guess at either). */
+export function specViewKeyForCharacter(character: { class?: string; spec?: string }): string | undefined {
+  if (character.class === undefined || character.spec === undefined) return undefined;
+  return specViewKey(classSlugFromName(character.class), classSlugFromName(character.spec));
 }
 
 function classNameOf(classSlug: string): string {
@@ -71,7 +79,7 @@ export function tierSpecViews(lists: Record<BisRole, readonly TierRow[]>): TierS
         title: `${fullName} is ${ordinal(row.rank)} of ${rows.length} ${ROLE_LABELS[role]} specs.`,
         detail: detailFor(row, top),
         bisHref: `/bis/${row.classSlug}/${row.specSlug}`,
-        pointer: `${fullName} is on the ${ROLE_LABELS[role]} list. See where it stands →`,
+        pointer: `${fullName} is on the ${ROLE_LABELS[role]} list. ${tiersCopy.pointerCta}`,
         rolePath: ROLE_PATHS[role],
       };
     }
