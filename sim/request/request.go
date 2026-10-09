@@ -15,7 +15,9 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/specs"
+	"github.com/wowsims/classic/sim/core"
 	"github.com/wowsims/classic/sim/core/proto"
+	"github.com/wowsims/classic/sim/hunter"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -636,16 +638,34 @@ func restorationDruidOptions(p *proto.Player) {
 	}}
 }
 
+// hunterOptions gives a hunter its ammo, quiver and pet. A build that takes
+// Lone Wolf (20% more damage with no active pet) intends to play without
+// one, so it is simmed with none; every other build brings the cat at full
+// uptime. The request shape carries no pet field: the talent string is the
+// statement of intent, and it is what the talent search mutates.
 func hunterOptions(p *proto.Player) {
-	p.Spec = &proto.Player_Hunter{Hunter: &proto.Hunter{
-		Options: &proto.Hunter_Options{
-			Ammo:           proto.Hunter_Options_ThoriumHeadedArrow,
-			QuiverBonus:    proto.Hunter_Options_Speed15,
-			PetType:        proto.Hunter_Options_Cat,
-			PetAttackSpeed: proto.Hunter_Options_OneTwo,
-			PetUptime:      fullPetUptime,
-		},
-	}}
+	options := &proto.Hunter_Options{
+		Ammo:           proto.Hunter_Options_ThoriumHeadedArrow,
+		QuiverBonus:    proto.Hunter_Options_Speed15,
+		PetType:        proto.Hunter_Options_Cat,
+		PetAttackSpeed: proto.Hunter_Options_OneTwo,
+		PetUptime:      fullPetUptime,
+	}
+	if hunterTakesLoneWolf(p.TalentsString) {
+		options.PetType = proto.Hunter_Options_PetNone
+		options.PetUptime = 0
+	}
+	p.Spec = &proto.Player_Hunter{Hunter: &proto.Hunter{Options: options}}
+}
+
+// hunterTakesLoneWolf reads the Lone Wolf point off a hunter talent string.
+func hunterTakesLoneWolf(talents string) bool {
+	if talents == "" {
+		return false
+	}
+	var decoded proto.HunterTalents
+	core.FillTalentsProto(decoded.ProtoReflect(), talents, hunter.TalentTreeSizes)
+	return decoded.LoneWolf
 }
 
 func mageOptions(p *proto.Player) {
