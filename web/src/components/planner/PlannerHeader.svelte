@@ -28,6 +28,7 @@
   import { simCopy } from '../../lib/sim/copy';
   import { specLabel } from '../../lib/sim/spec-label';
   import PlannerDps from './PlannerDps.svelte';
+  import { scoreUnitForBuild } from '../../lib/planner/score-unit';
 
   let {
     store,
@@ -64,6 +65,7 @@
   // same line rather than a second one (SummaryBar.svelte's own reasoning, moved here with
   // the rest of the facts rail).
   const statusLine = $derived(store.refusal ?? (live.state === 'error' ? live.message : null) ?? '');
+  const scoreUnit = $derived(scoreUnitForBuild(store.classSlug, store.split));
 </script>
 
 <div class="planner-header" data-testid="planner-header">
@@ -170,6 +172,7 @@
         </span>
       </div>
       <PlannerDps
+        unit={scoreUnit}
         {live}
         {gate}
         pointsLeft={MAX_POINTS - store.spent}

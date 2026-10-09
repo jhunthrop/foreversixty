@@ -7,6 +7,7 @@
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { MAX_POINTS } from '../../lib/planner/types';
   import PlannerDps from './PlannerDps.svelte';
+  import { scoreUnitForBuild } from '../../lib/planner/score-unit';
   import type { LiveGate } from '../../lib/planner/live-gate';
 
   let {
@@ -42,6 +43,7 @@
 
   const controlClass =
     'border-line-warm rounded-control bg-raised text-text h-11 min-w-[8rem] border px-3 text-[14px] font-semibold';
+  const scoreUnit = $derived(scoreUnitForBuild(store.classSlug, store.split));
 </script>
 
 <div
@@ -92,6 +94,7 @@
   </div>
 
   <PlannerDps
+    unit={scoreUnit}
     {live}
     href={simHref}
     {gate}
