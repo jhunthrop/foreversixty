@@ -194,6 +194,15 @@ export const tiersCopy = {
   threatShort: 'Threat/s',
 } as const;
 
+const WHOLE_NUMBER = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+const ONE_DECIMAL = new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+/** A tank figure is a per-second average over thousands of runs, so it is written whole; a
+ *  damage or healing rate keeps its one decimal. */
+export function formatMetric(role: BisRole, value: number): string {
+  return (role === 'tank' ? WHOLE_NUMBER : ONE_DECIMAL).format(value);
+}
+
 /** The gap column's text for a row: "Top"/"Least" on the leader, "−4.8%"/"+15.2%" below. */
 export function gapText(row: Pick<TierRow, 'rank' | 'role' | 'gapPercent'>): string {
   if (row.rank === 1) return row.role === 'tank' ? tiersCopy.leastGap : tiersCopy.topGap;

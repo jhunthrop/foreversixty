@@ -7,8 +7,7 @@
 import ClassCrest from '../ClassCrest.astro';
 import classes from '../../data/classes.json';
 import { classColorVar } from '../../lib/report/format';
-import { formatOneDecimal, formatWholeNumber } from '../../lib/bis/tank-view';
-import { gapText, tiersCopy } from '../../lib/tiers/tier-copy';
+import { formatMetric, gapText, tiersCopy } from '../../lib/tiers/tier-copy';
 import { hrefsFor, type TierRow } from '../../lib/tiers/tier-list';
 import { specViewKey } from '../../lib/tiers/tier-callout';
 
@@ -61,7 +60,7 @@ const gapLabel = tiersCopy.headers.gap[row.role];
   <span class="tier-num">
     <span class="sr-only">{numberLabel}: </span>
     <span class:list={['tier-num-value', isTank && isLeader && 'is-best']} data-testid="tier-number">
-      {formatOneDecimal(row.metric)}
+      {formatMetric(row.role, row.metric)}
     </span>
     <span class="tier-unit">{unit}</span>
   </span>
@@ -71,14 +70,14 @@ const gapLabel = tiersCopy.headers.gap[row.role];
         <span class="tier-fig-label">{tiersCopy.effectiveHealthShort}</span>
         <span class="sr-only">{tiersCopy.headers.effectiveHealth}: </span>
         <span class="tier-fig-value" data-testid="tier-effective-health">
-          {formatWholeNumber(row.effectiveHealth)}
+          {formatMetric(row.role, row.effectiveHealth)}
         </span>
       </span>
       <span class:list={['tier-fig tier-fig-tps', row.isBestThreat && 'is-best']}>
         <span class="tier-fig-label">{tiersCopy.threatShort}</span>
         <span class="sr-only">{tiersCopy.headers.threat}: </span>
         <span class="tier-fig-value" data-testid="tier-threat">
-          {formatOneDecimal(row.threat)}
+          {formatMetric(row.role, row.threat)}
         </span>
       </span>
     </span>
@@ -131,7 +130,7 @@ const gapLabel = tiersCopy.headers.gap[row.role];
   }
   :global([data-role='tank']) .tier-row {
     grid-template-columns:
-      32px 36px minmax(150px, 230px) minmax(50px, 1fr) 100px 92px 84px 84px
+      32px 36px minmax(150px, 230px) minmax(50px, 1fr) 132px 92px 84px 84px
       minmax(168px, 200px);
     grid-template-areas: 'rank crest name bar num eh tps gap links';
     column-gap: 12px;

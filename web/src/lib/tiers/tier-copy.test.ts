@@ -1,6 +1,14 @@
 // web/src/lib/tiers/tier-copy.test.ts
 import { describe, expect, it } from 'vitest';
-import { gapText, howToReadBullets, ordinal, tierNotes, tiersCopy, type NoteSegment } from './tier-copy';
+import {
+  formatMetric,
+  gapText,
+  howToReadBullets,
+  ordinal,
+  tierNotes,
+  tiersCopy,
+  type NoteSegment,
+} from './tier-copy';
 
 const flat = (note: NoteSegment[]): string => note.map((segment) => segment.text).join('');
 const CTX = { faction: 'horde', presetLabel: 'Raid-ready, Phase 1' } as const;
@@ -88,5 +96,14 @@ describe('tie titles', () => {
     expect(tiersCopy.tieTitle('above')).toBe('Within 1% of the spec above: a tie');
     expect(tiersCopy.tieTitle('below')).toContain('below');
     expect(tiersCopy.tieTitle('both')).toContain('above and below');
+  });
+});
+
+describe('formatMetric', () => {
+  it('writes tank figures whole and damage and healing rates to one decimal', () => {
+    expect(formatMetric('tank', 322.14)).toBe('322');
+    expect(formatMetric('tank', 35711.4)).toBe('35,711');
+    expect(formatMetric('dps', 921.44)).toBe('921.4');
+    expect(formatMetric('healer', 1204)).toBe('1,204.0');
   });
 });

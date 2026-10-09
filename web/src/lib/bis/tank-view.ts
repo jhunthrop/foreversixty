@@ -145,7 +145,7 @@ export function tankIndexSummaryOf(band: Pick<BisBand, 'role' | 'metrics'>): str
   return isTankBand(band) && isTankMetrics(band.metrics)
     ? tankCopy.indexSpecSummary(
         formatWholeNumber(band.metrics.effective_health),
-        formatOneDecimal(band.metrics.dtps),
+        formatWholeNumber(band.metrics.dtps),
       )
     : undefined;
 }

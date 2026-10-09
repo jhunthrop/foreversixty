@@ -6,7 +6,9 @@ import { expect, test, type Page } from '@playwright/test';
 import {
   expectedRows,
   expectedTieCount,
+  metricText,
   oneDecimal,
+  wholeNumber,
   raceName,
   type TierFaction,
   type TierRole,
@@ -60,7 +62,7 @@ for (const role of ['dps', 'tank', 'healer'] as const) {
         'data-testid',
         `tier-row-${row.entry.class_slug}-${row.entry.spec_slug}`,
       );
-      await expect(rendered.getByTestId('tier-number')).toHaveText(oneDecimal(row.metric));
+      await expect(rendered.getByTestId('tier-number')).toHaveText(metricText(role, row.metric));
       await expect(rendered).toContainText(raceName(row.band.race!));
     }
   });
@@ -217,7 +219,7 @@ test('the BiS index shows damage taken per second beside effective health for a 
   const tank = expectedRows('tank', 'alliance')[0]!;
   const summary = page.getByTestId(`bis-index-dps-${tank.entry.class_slug}-${tank.entry.spec_slug}`);
   await expect(summary).toContainText('effective health');
-  await expect(summary).toContainText(`${oneDecimal(tank.band.metrics!.dtps)} damage taken per second`);
+  await expect(summary).toContainText(`${wholeNumber(tank.band.metrics!.dtps)} damage taken per second`);
 });
 
 test.describe('phone', () => {
