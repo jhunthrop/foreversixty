@@ -25,6 +25,10 @@ const SETTLED_PX = 4;
 
 // design/DESIGN-SYSTEM.md: 44px minimum hit targets, 18px phone gutter. 360x800 is the
 // narrowest phone the site designs for; design/Mobile.dc.html is the reference artboard.
+// The phone header is a 56px bar, so the summary starts about 360px down the page; scrolling
+// further than that would take it off the top of the screen on any page that has one.
+const SCROLL_PX = 300;
+
 test.describe('planner on a phone', () => {
   test.use({ viewport: { width: 360, height: 800 } });
 
@@ -90,11 +94,12 @@ test.describe('planner on a phone', () => {
     await page.getByRole('grid', { name: 'Arms talents' }).waitFor();
     // `mouse.wheel` starts a scroll and returns before it lands, so the position has to be
     // waited for -- reading it straight after measures the unscrolled page. A phone shows one
-    // tree, so 600px may be further than the page goes; wait for as far as it does go.
-    const target = await page.evaluate(() =>
-      Math.min(600, document.documentElement.scrollHeight - window.innerHeight),
+    // tree, so the scroll may be further than the page goes; wait for as far as it does go.
+    const target = await page.evaluate(
+      (scrollPx) => Math.min(scrollPx, document.documentElement.scrollHeight - window.innerHeight),
+      SCROLL_PX,
     );
-    await page.mouse.wheel(0, 600);
+    await page.mouse.wheel(0, SCROLL_PX);
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(target - 1);
 
     // Points left is always present in the summary bar row.
