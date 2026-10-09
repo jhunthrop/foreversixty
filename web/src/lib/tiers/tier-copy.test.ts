@@ -48,7 +48,7 @@ describe('tierNotes', () => {
     const dps = tierNotes({ ...CTX, role: 'dps' })
       .map(flat)
       .join(' ');
-    expect(dps).toContain('≈ tie marks two specs within 1% of each other.');
+    expect(dps).toContain('≈ tie marks a spec within 1% of the one above.');
   });
 });
 

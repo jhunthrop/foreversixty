@@ -77,7 +77,7 @@ function dpsNotes(ctx: NoteContext): NoteSegment[][] {
     [
       { text: `${raceSentence(ctx.faction)} ` },
       { text: '≈ tie', strong: true },
-      { text: ` marks two specs within ${TIE_MARGIN_PERCENT}% of each other.` },
+      { text: ` marks a spec within ${TIE_MARGIN_PERCENT}% of the one above.` },
     ],
   ];
 }
