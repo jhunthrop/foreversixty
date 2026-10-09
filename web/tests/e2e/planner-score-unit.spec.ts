@@ -20,7 +20,7 @@ const CASES = [
 
 for (const { classSlug, spec, label, band } of CASES) {
   test(`${spec} reads ${label} in the score strip and the band card`, async ({ page }) => {
-    const { talents } = bisBand(spec, 'alliance', LEVEL_BAND) as { talents?: string };
+    const { talents } = bisBand(spec, 'alliance', LEVEL_BAND, 'bare') as { talents?: string };
     expect(talents).toBeTruthy();
     await page.goto(`/planner?class=${classSlug}&spec=${spec}&talents=${talents}`);
 
