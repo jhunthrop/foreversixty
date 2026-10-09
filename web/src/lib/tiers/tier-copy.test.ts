@@ -53,13 +53,24 @@ describe('tierNotes', () => {
 });
 
 describe('how to read this', () => {
-  it('keeps only lines the notes above do not say', () => {
-    const above = tierNotes({ ...CTX, role: 'dps' })
-      .map(flat)
-      .join(' ');
-    for (const bullet of howToReadBullets('dps')) expect(above).not.toContain(bullet);
-    expect(howToReadBullets('dps')).toHaveLength(1);
-    expect(howToReadBullets('tank')[0]).toContain('Same boss profile');
+  it('carries the spec bullets, with the preset and the fight length from the data and constants', () => {
+    const dps = howToReadBullets('dps', 'Raid-ready, Phase 1');
+    expect(dps).toEqual([
+      'Every spec is simmed in its best Raid-ready, Phase 1 gear with raid buffs and consumables.',
+      'One target for 180 seconds. Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid.',
+    ]);
+    for (const role of ['tank', 'healer'] as const) {
+      expect(howToReadBullets(role, 'x')[1]).toContain('Same boss profile as the BiS pages');
+    }
+  });
+
+  it('is not repeated word for word in the notes above the list', () => {
+    for (const role of ['dps', 'tank', 'healer'] as const) {
+      const above = tierNotes({ ...CTX, role, healSeconds: 300, bossSwingSeconds: 2 })
+        .map(flat)
+        .join(' ');
+      for (const bullet of howToReadBullets(role, CTX.presetLabel)) expect(above).not.toContain(bullet);
+    }
   });
 });
 

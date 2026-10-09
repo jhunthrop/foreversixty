@@ -70,9 +70,7 @@ function raceSentence(faction: Faction): string {
 
 function dpsNotes(ctx: NoteContext): NoteSegment[][] {
   return [
-    plain(
-      `Damage per second on one target for ${DPS_FIGHT_SECONDS} seconds, with raid buffs and consumables. Cleave, adds, movement and what a spec brings the raid are not counted.`,
-    ),
+    plain('Damage per second from our own sim. What it counts and what it leaves out is in the box below.'),
     freshSixtyNote(ctx.presetLabel),
     [
       { text: `${raceSentence(ctx.faction)} ` },
@@ -104,7 +102,7 @@ function tankNotes(ctx: NoteContext): NoteSegment[][] {
       "Sorted by damage taken per second, lower is better: it is the sim's outcome against the boss, where effective health is only the hit-point pool going in. The best of each column is green.",
     ),
     plain(
-      `The boss is a stand-in level ${TANK_BOSS_LEVEL} target with one melee swing every ${swing} seconds, not a named boss; the tank wears raid-ready gear with tank consumables.`,
+      `The boss is a stand-in level ${TANK_BOSS_LEVEL} target with one melee swing every ${swing} seconds, not a named boss.`,
     ),
     [...freshSixtyNote(ctx.presetLabel), { text: ` ${raceSentence(ctx.faction)}` }],
   ];
@@ -116,11 +114,15 @@ export function tierNotes(ctx: NoteContext): NoteSegment[][] {
   return ctx.role === 'healer' ? healerNotes(ctx) : dpsNotes(ctx);
 }
 
-/** The long-form box below the list: only what the notes above do not already say. */
-export function howToReadBullets(role: BisRole): string[] {
-  return role === 'dps'
-    ? ['A spec can sit lower here than it plays in your raid.']
-    : ["Same boss profile as the BiS pages, so the number here is the number on the spec's page."];
+/** The long-form box below the list (spec section 6): the gear the specs are simmed in, then
+ *  what the number does and does not count. */
+export function howToReadBullets(role: BisRole, presetLabel: string): string[] {
+  return [
+    `Every spec is simmed in its best ${presetLabel} gear with raid buffs and consumables.`,
+    role === 'dps'
+      ? `One target for ${DPS_FIGHT_SECONDS} seconds. Cleave, add fights, movement and what a spec brings the raid are not counted, so a spec can sit lower here than it plays in your raid.`
+      : "Same boss profile as the BiS pages, so the number here is the number on the spec's page.",
+  ];
 }
 
 const ORDINAL_SUFFIXES: Readonly<Record<number, string>> = { 1: 'st', 2: 'nd', 3: 'rd' };

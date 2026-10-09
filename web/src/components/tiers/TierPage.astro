@@ -181,7 +181,7 @@ const stampTitle =
         <aside class="tier-howto" data-testid="tier-howto">
           <h2 class="label">{tiersCopy.howToReadHeading}</h2>
           <ul>
-            {howToReadBullets(role).map((bullet) => (
+            {howToReadBullets(role, presetLabel).map((bullet) => (
               <li>{bullet}</li>
             ))}
           </ul>
@@ -537,6 +537,7 @@ const stampTitle =
   .tier-howto ul {
     margin: 0;
     padding-left: 18px;
+    list-style: disc;
     display: flex;
     flex-direction: column;
     gap: 6px;
