@@ -44,6 +44,11 @@ export interface BisBandFile {
   hit_to_cap?: (BisHitToCapFile & { kind?: string }) | null;
   metrics?: TankMetricsFile | null;
   weights?: BisWeightFile[];
+  role?: 'dps' | 'tank' | 'healer';
+  race?: string;
+  set_dps?: number;
+  weights_low_confidence?: boolean;
+  generated_at?: string;
 }
 
 interface PresetFile {
@@ -136,19 +141,25 @@ export function tankMetrics(spec: string, preset: BisPresetId): TankMetricsFile 
   return metrics;
 }
 
-interface SpecCatalogRow {
+export interface SpecCatalogRow {
   class_slug: string;
   spec_slug: string;
   spec: string;
+  name: string;
+  role: 'dps' | 'tank' | 'healer';
+}
+
+/** data/curated/specs.json: every written spec, in catalogue order. */
+export function readSpecCatalog(): SpecCatalogRow[] {
+  return JSON.parse(
+    readFileSync(path.join(REPO_ROOT, 'data/curated/specs.json'), 'utf8'),
+  ) as SpecCatalogRow[];
 }
 
 /** `/bis/<class>/<spec>` for the first written spec no file (published or fixture) covers, or
  *  `undefined` when every spec has one, as it does once the nightly ranks every role. */
 export function unrankedBisRoute(): string | undefined {
-  const catalog = JSON.parse(
-    readFileSync(path.join(REPO_ROOT, 'data/curated/specs.json'), 'utf8'),
-  ) as SpecCatalogRow[];
-  const bare = catalog.find(
+  const bare = readSpecCatalog().find(
     ({ spec }) =>
       !existsSync(publishedBisPath(spec)) &&
       !existsSync(path.join(WEB_ROOT, 'src/data/fixtures/bis', `${spec}.json`)),
