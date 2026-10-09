@@ -77,7 +77,12 @@ func preferConfirmedStats(runner engineRunner, spec specInfo, race, classSlug st
 			errs = append(errs, fmt.Sprintf("%s: confirmed-stats alternative %s (id %d): %v", slot, alt.Name, alt.ID, runErr))
 			continue
 		}
-		if baseDPS-altDPS > math.Hypot(baseErr, altErr) {
+		// The doubt here is the item's stats, which the client has not
+		// confirmed, not the sims' noise: a lead inside the adoption margin
+		// (swapMargin, 1% of the set) is not enough to send a player after
+		// it, however many iterations the verify run had. The sims' own
+		// error still applies when it is the larger of the two.
+		if baseDPS-altDPS > math.Max(math.Hypot(baseErr, altErr), baseDPS*swapMargin) {
 			continue
 		}
 		adopted := *alt

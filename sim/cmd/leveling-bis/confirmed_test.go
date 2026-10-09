@@ -38,6 +38,15 @@ func TestUnconfirmedInsideTheErrorLosesToTheConfirmedItem(t *testing.T) {
 	}
 }
 
+func TestUnconfirmedInsideTheAdoptionMarginLosesHoweverSmallTheError(t *testing.T) {
+	// 877 vs 873 with an error of 1: outside the sims' noise, inside the
+	// 1% adoption margin, which is the doubt a 1.12-stats item carries.
+	vb, held := runConfirmed(t, 877, 873, 1)
+	if held != 1 || vb.picks["wrist"].Item.ClientUnconfirmed {
+		t.Fatalf("held %d, pick %+v, want the confirmed item", held, vb.picks["wrist"].Item)
+	}
+}
+
 func TestUnconfirmedBeyondTheErrorWins(t *testing.T) {
 	vb, held := runConfirmed(t, 110, 100, 3)
 	if held != 0 || vb.picks["wrist"].Item.ID != 12936 {
