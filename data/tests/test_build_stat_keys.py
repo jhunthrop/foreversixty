@@ -53,6 +53,7 @@ SITE_RENDERABLE_STAT_KEYS = frozenset(
         "block_value",
         "mp5",
         "spell_penetration",
+        "fire_power",
         "fire_res",
         "frost_res",
         "nature_res",
