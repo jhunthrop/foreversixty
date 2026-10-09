@@ -80,6 +80,11 @@ type classItem struct {
 	EffectText   string             `json:"effect_text"`
 	SetID        *int               `json:"set_id"`
 	Unique       bool               `json:"unique"`
+	// ClientUnconfirmed marks stats the client has not confirmed: the
+	// row carries 1.12 classic-db itemization because the client's
+	// ItemSparse has no stats row for the id (data/pipeline/models.py
+	// GearItem.client_unconfirmed; simitems.json sim_source "classic-db").
+	ClientUnconfirmed bool `json:"client_unconfirmed"`
 	// WeaponType is a weapon row's own bow/gun/crossbow/wand/thrown (or
 	// melee axe/mace/polearm/sword/staff/fist/dagger) kind - this
 	// lane's brief (bis-ranker-integrity-6), item 9, corrected per the
@@ -199,6 +204,10 @@ type candidate struct {
 	// unaffected; only a test that sets this field explicitly (this
 	// lane's brief, item 2's contract test) exercises the new path.
 	NotInSimDB bool
+	// ClientUnconfirmed is classItem.ClientUnconfirmed carried through:
+	// the item's stats are 1.12's, not yet confirmed by the client.
+	// preferConfirmedStats (confirmed.go) reads it.
+	ClientUnconfirmed bool
 }
 
 // markNotInSimDB sets NotInSimDB (above) on every item this build's
@@ -285,6 +294,7 @@ func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
 			Slots:                  plannerSlots(ci.Slot),
 			SetID:                  ci.SetID,
 			EffectText:             ci.EffectText,
+			ClientUnconfirmed:      ci.ClientUnconfirmed,
 		})
 	}
 	return out, missing, nil

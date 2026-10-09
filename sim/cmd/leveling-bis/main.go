@@ -758,6 +758,11 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				for _, n := range setNotes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
+				var heldUnconfirmed int
+				verified, heldUnconfirmed, err = preferConfirmedStats(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, verified, pickBySlot)
+				if err != nil {
+					return fmt.Errorf("band %d %s: %w", band, f.name, err)
+				}
 				var kept *keptIncumbent
 				if isHealer(specInfo) {
 					verified, kept, err = keepIncumbent(runner, specInfo, f.race, specInfo.ClassSlug, band, engineTalents, verified, incumbents[incumbentKey{Band: band, Preset: pass.name, Faction: f.name}], pickBySlot)
@@ -782,6 +787,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				// report the same way every other band-level field here is.
 				report.WeightsLowConfidence = weightsLowConfidence
 				report.Preset = pass.name
+				report.UnconfirmedWithinErrorHeld = heldUnconfirmed
 				report.KeptIncumbent = kept
 				// "No primary stat ever published as 'not significant'"
 				// (this lane's brief, item 3) - clears Insignificant on
