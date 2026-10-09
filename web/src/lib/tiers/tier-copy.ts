@@ -168,7 +168,7 @@ export const tiersCopy = {
   simChecksHref: '/sim/specs',
   emptyRole: (role: BisRole): string => `No ${ROLE_LABELS[role]} specs are simmed yet.`,
   noData: 'No tier list is published for this build yet.',
-  rowUnit: { dps: 'DPS', healer: 'HPS', tank: 'taken per sec' } as const satisfies Record<BisRole, string>,
+  rowUnit: { dps: 'DPS', healer: 'HPS', tank: 'taken per second' } as const satisfies Record<BisRole, string>,
   headers: {
     rank: '#',
     spec: 'Spec',
@@ -191,7 +191,7 @@ export const tiersCopy = {
     threat: 'Threat per second',
   },
   effectiveHealthShort: 'Effective health',
-  threatShort: 'Threat/s',
+  threatShort: 'Threat per second',
 } as const;
 
 const WHOLE_NUMBER = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
