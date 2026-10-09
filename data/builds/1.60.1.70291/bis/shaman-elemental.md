@@ -68,7 +68,7 @@ No-known-source sample (15 of 395, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 5530311300103050-010000000000000000-0000000000000000)
 
-Set DPS (verified): 69.9. Weights run: 3.0s. Verify run: 2.0s. 622 eligible items had no known source.
+Set DPS (verified): 69.9. Weights run: 3.0s. Verify run: 2.1s. 622 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.915 ± 0.024, crit=0.233 ± 0.007 per rating point (14 rating = 1%, 3.264 per %), hit=0.393 ± 0.022 per rating point (10 rating = 1%, 3.929 per %), spell_haste=-2.566 ± 0.289, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.944 ± 0.003
 
@@ -98,7 +98,9 @@ No-known-source sample (15 of 622, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 5530311300103050-030000000000000000-5300000000000000)
 
-Set DPS (verified): 98.7. Weights run: 3.1s. Verify run: 2.3s. 796 eligible items had no known source.
+Set DPS (verified): 98.2. Weights run: 3.1s. Verify run: 2.5s. 796 eligible items had no known source.
+
+1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=0.859 ± 0.029, crit=0.295 ± 0.009 per rating point (14 rating = 1%, 4.128 per %), hit=0.512 ± 0.027 per rating point (10 rating = 1%, 5.121 per %), spell_haste=-2.547 ± 0.340, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.937 ± 0.004
 
@@ -110,8 +112,8 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 19.2 spell_power points (1.84 DPS) | yes | Mantle of Lady Falther'ess (23178, -0.23 DPS) [dungeon]; Runecloth Cloak (13860, -0.32 DPS) [crafted]; Big Voodoo Cloak (8216, -0.62 DPS) [crafted] |
 | chest | Acumen Robes (17775) | Twisted Evils [quest] | 36.2 spell_power points (3.48 DPS) | yes | Feathered Breastplate (8349, -0.83 DPS) [crafted]; Robe of the Magi (1716, -0.87 DPS) [world_drop]; Runecloth Tunic (13857, -0.94 DPS) [crafted] |
 | wrist | Runic Leather Bracers (15092) | Leatherworking [crafted] | 18.6 spell_power points (1.79 DPS) | yes | Skycaller's Leather Bracers (252542, -0.25 DPS) [crafted]; Skycaller's Mail Bracers (252571, -0.25 DPS) [crafted]; Nethergeld Cuffs (254061, -0.54 DPS) [crafted] |
-| hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | sim-verified (98.7 DPS) | yes | Gloves of the Greatfather (17721, -0.18 DPS) [crafted]; Skycaller's Leather Gauntlets (252550, -0.21 DPS) [crafted]; Raider Handguards (272102, -1.00 DPS, sim-verified) [vendor] |
-| waist | Ban'thok Sash (11662) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 26.6 spell_power points (2.55 DPS) | yes | Skycaller's Leather Waistguard (252476, -0.03 DPS) [crafted]; Skycaller's Mail Belt (252589, -0.03 DPS) [crafted]; Satyrmane Sash (17755, -0.38 DPS) [dungeon] |
+| hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | sim-verified (+1.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Gloves of the Greatfather (17721, -0.18 DPS) [crafted]; Skycaller's Leather Gauntlets (252550, -0.21 DPS) [crafted]; Raider Handguards (272102, -1.00 DPS, sim-verified) [vendor] |
+| waist | Skycaller's Leather Waistguard (252476) | Leatherworking [crafted] | sim-verified (98.2 DPS) | yes | Ban'thok Sash (11662, +0.00 DPS) [dungeon]; Skycaller's Mail Belt (252589, +0.00 DPS) [crafted]; Satyrmane Sash (17755, -0.36 DPS) [dungeon] |
 | legs | Spellshock Leggings (9484) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 31.6 spell_power points (3.04 DPS) | yes | Big Voodoo Pants (8202, -0.77 DPS) [crafted]; Turtle Scale Leggings (8185, -1.15 DPS) [crafted]; Red Mageweave Pants (10009, -2.28 DPS, sim-verified) [crafted] |
 | feet | Skycaller's Leather Boots (252471) (or Skycaller's Mail Sabatons (252577)) | Leatherworking [crafted] | 24.4 spell_power points (2.35 DPS) | yes | Skycaller's Mail Sabatons (252577, +0.00 DPS) [crafted]; Earthen Silk Slippers (254013, -0.04 DPS) [crafted]; Greaves of Withering Despair (22240, -0.47 DPS) [dungeon] |
 | finger1 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 15.0 spell_power points (1.44 DPS) | yes | Band of the Unicorn (7553, -0.19 DPS) [world_drop]; Brainlash (6440, -0.20 DPS) [dungeon]; Lorekeeper's Ring (19523, -0.29 DPS) [rep] |
@@ -122,13 +124,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** head: Red Mageweave Headband; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; chest: Acumen Robes; wrist: Runic Leather Bracers; hands: Raider Handwraps; waist: Ban'thok Sash; legs: Spellshock Leggings; feet: Skycaller's Leather Boots; finger1: Cyclopean Band; finger2: Philanthropist's Ring; trinket1: Uther's Strength; trinket2: Frozen Heart of the Mountain; main_hand: Spellshifter Rod
+**New at 50:** head: Red Mageweave Headband; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; chest: Acumen Robes; wrist: Runic Leather Bracers; hands: Raider Handwraps; waist: Skycaller's Leather Waistguard; legs: Spellshock Leggings; feet: Skycaller's Leather Boots; finger1: Cyclopean Band; finger2: Philanthropist's Ring; trinket1: Uther's Strength; trinket2: Frozen Heart of the Mountain; main_hand: Spellshifter Rod
 
 No-known-source sample (15 of 796, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4777 Ironwood Maul
 
 ### Band 60 (dwarf, 5530311300103050-030000000000000000-5533020000000000)
 
-Set DPS (verified): 176.3. Weights run: 3.0s. Verify run: 7.7s. 1759 eligible items had no known source.
+Set DPS (verified): 176.3. Weights run: 3.0s. Verify run: 7.6s. 1759 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.914 ± 0.026, crit=0.319 ± 0.009 per rating point (14 rating = 1%, 4.466 per %), hit=0.501 ± 0.029 per rating point (10 rating = 1%, 5.014 per %), spell_haste=not significant (-0.457 ± 0.321), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.945 ± 0.003
 
@@ -158,7 +160,7 @@ No-known-source sample (15 of 1759, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 5530311300103051-020000000000000000-0533520000000000)
 
-Set DPS (verified): 504.7. Weights run: 1.8s. Verify run: 5.4s. 1759 eligible items had no known source.
+Set DPS (verified): 504.7. Weights run: 1.8s. Verify run: 5.5s. 1759 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.357 ± 0.017, crit=0.327 ± 0.008 per rating point (14 rating = 1%, 4.577 per %), hit=0.649 ± 0.039 per rating point (10 rating = 1%, 6.487 per %), spell_haste=2.374 ± 0.470, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.780 ± 0.002
 
@@ -172,7 +174,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | wrist | Dryad's Wrist Bindings (19595) | Silverwing Sentinels [rep] | sim-verified (504.7 DPS) | yes | Modest Armguards (18458, -3.65 DPS) [dungeon]; Sublime Wristguards (18497, -3.65 DPS) [dungeon]; Wristwraps of Undead Slaying (23093, -11.54 DPS, sim-verified) [world] |
 | hands | Hands of Power (13253) | Blackrock Spire: Quartermaster Zigris [dungeon] | 28.1 spell_power points (11.05 DPS) | yes | Gloves of the Greatfather (17721, -1.63 DPS) [crafted]; Raider Handguards (272101, -1.82 DPS) [vendor]; Storm Gauntlets (12632, -2.43 DPS, sim-verified) [crafted] |
 | waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 39.3 spell_power points (15.45 DPS) | yes | Belt of the Archmage (18405, -4.63 DPS, sim-verified) [crafted]; Barrage Girdle (18721, -5.58 DPS) [dungeon]; Stormseeker's Girdle (272399, -5.80 DPS) [vendor] |
-| legs | Ironfeather Leggings (252486) | Leatherworking [crafted] | 49.0 spell_power points (19.25 DPS) | yes | Sentinel's Silk Leggings (237815, -1.68 DPS) [vendor]; Sentinel's Lizardhide Pants (237817, -1.68 DPS) [vendor]; Pristine Scorpid Leggings (252606, -4.49 DPS) [crafted] |
+| legs | Ironfeather Leggings (252486) | Leatherworking [crafted] | 49.0 spell_power points (19.25 DPS) | yes | Sentinel's Lizardhide Pants (237817, -1.68 DPS) [vendor]; Sentinel's Silk Leggings (237815, -1.68 DPS) [vendor]; Pristine Scorpid Leggings (252606, -4.49 DPS) [crafted] |
 | feet | Waterspout Boots (18322) | Dire Maul: Hydrospawn [dungeon] | 27.1 spell_power points (10.66 DPS) | yes | Omnicast Boots (11822, -1.12 DPS) [dungeon]; Earthen Silk Slippers (254013, -1.23 DPS) [crafted]; Slippers of The Five Thunders (227007, -4.38 DPS, sim-verified) [vendor] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (504.7 DPS) | yes | Rune Band of Wizardry (22339, -5.98 DPS) [dungeon]; Maiden's Circle (13001, -6.76 DPS) [world_drop]; Naglering (11669, -20.02 DPS, sim-verified) [dungeon] |
 | finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (504.7 DPS) | yes | Rune Band of Wizardry (22339, -1.35 DPS) [dungeon]; Maiden's Circle (13001, -2.13 DPS) [world_drop]; Naglering (11669, -12.43 DPS, sim-verified) [dungeon] |
@@ -250,7 +252,7 @@ No-known-source sample (15 of 377, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 5530311300103050-010000000000000000-0000000000000000)
 
-Set DPS (verified): 68.9. Weights run: 3.0s. Verify run: 2.0s. 584 eligible items had no known source.
+Set DPS (verified): 68.9. Weights run: 3.0s. Verify run: 2.1s. 584 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.915 ± 0.024, crit=0.233 ± 0.007 per rating point (14 rating = 1%, 3.264 per %), hit=0.393 ± 0.022 per rating point (10 rating = 1%, 3.929 per %), spell_haste=-2.566 ± 0.289, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.944 ± 0.003
 
@@ -280,7 +282,9 @@ No-known-source sample (15 of 584, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 5530311300103050-030000000000000000-5300000000000000)
 
-Set DPS (verified): 98.8. Weights run: 3.1s. Verify run: 2.3s. 737 eligible items had no known source.
+Set DPS (verified): 98.3. Weights run: 3.1s. Verify run: 2.4s. 737 eligible items had no known source.
+
+1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=0.859 ± 0.029, crit=0.295 ± 0.009 per rating point (14 rating = 1%, 4.128 per %), hit=0.512 ± 0.027 per rating point (10 rating = 1%, 5.121 per %), spell_haste=-2.547 ± 0.340, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.937 ± 0.004
 
@@ -292,8 +296,8 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | back | Deep Woodlands Cloak (19121) | Wanted: Vile Priestess Hexx and Her Minions [quest] | 19.7 spell_power points (1.90 DPS) | yes | Spritecaster Cape (11623, -0.06 DPS) [dungeon]; Mantle of Lady Falther'ess (23178, -0.29 DPS) [dungeon]; Runecloth Cloak (13860, -0.37 DPS) [crafted] |
 | chest | Acumen Robes (17775) | Twisted Evils [quest] | 36.2 spell_power points (3.48 DPS) | yes | Stone Guard's Pulsing Breastplate (220844, -0.26 DPS) [vendor]; Feathered Breastplate (8349, -0.83 DPS) [crafted]; Robe of the Magi (1716, -0.87 DPS) [world_drop] |
 | wrist | Runic Leather Bracers (15092) | Leatherworking [crafted] | 18.6 spell_power points (1.79 DPS) | yes | Dryad's Wrist Bindings (19596, +0.00 DPS) [pvp]; Skycaller's Leather Bracers (252542, -0.25 DPS) [crafted] |
-| hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | sim-verified (98.8 DPS) | yes | Gloves of the Greatfather (17721, -0.18 DPS) [crafted]; Skycaller's Leather Gauntlets (252550, -0.21 DPS) [crafted]; Raider Handguards (272102, -1.38 DPS, sim-verified) [vendor] |
-| waist | Ban'thok Sash (11662) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 26.6 spell_power points (2.55 DPS) | yes | Skycaller's Mail Belt (252589, -0.03 DPS) [crafted]; Satyrmane Sash (17755, -0.38 DPS) [dungeon]; Skycaller's Leather Waistguard (252476, -0.92 DPS, sim-verified) [crafted] |
+| hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | sim-verified (+1.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Gloves of the Greatfather (17721, -0.18 DPS) [crafted]; Skycaller's Leather Gauntlets (252550, -0.21 DPS) [crafted]; Raider Handguards (272102, -1.38 DPS, sim-verified) [vendor] |
+| waist | Skycaller's Leather Waistguard (252476) | Leatherworking [crafted] | sim-verified (98.3 DPS) | yes | Ban'thok Sash (11662, +0.00 DPS) [dungeon]; Skycaller's Mail Belt (252589, +0.00 DPS) [crafted]; Satyrmane Sash (17755, -0.36 DPS) [dungeon] |
 | legs | Stone Guard's Pulsing Legplates (220847) | Lady Palanseer [vendor] | 33.4 spell_power points (3.21 DPS) | yes | Spellshock Leggings (9484, +0.00 DPS, sim-verified) [dungeon]; Red Mageweave Pants (10009, -0.88 DPS) [crafted]; Big Voodoo Pants (8202, -0.95 DPS) [crafted] |
 | feet | Skycaller's Leather Boots (252471) (or Skycaller's Mail Sabatons (252577)) | Leatherworking [crafted] | 24.4 spell_power points (2.35 DPS) | yes | Skycaller's Mail Sabatons (252577, +0.00 DPS) [crafted]; Earthen Silk Slippers (254013, -0.04 DPS) [crafted]; Greaves of Withering Despair (22240, -0.47 DPS) [dungeon] |
 | finger1 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 15.0 spell_power points (1.44 DPS) | yes | Band of the Unicorn (7553, -0.19 DPS) [world_drop]; Brainlash (6440, -0.20 DPS) [dungeon]; Advisor's Ring (19519, -0.29 DPS) [rep] |
@@ -304,7 +308,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 50:** head: Red Mageweave Headband; shoulder: Ironfeather Shoulders; back: Deep Woodlands Cloak; chest: Acumen Robes; wrist: Runic Leather Bracers; hands: Raider Handwraps; waist: Ban'thok Sash; legs: Stone Guard's Pulsing Legplates; feet: Skycaller's Leather Boots; finger1: Cyclopean Band; finger2: Philanthropist's Ring; trinket1: Uther's Strength; trinket2: Rune of the Guard Captain; main_hand: Spellshifter Rod
+**New at 50:** head: Red Mageweave Headband; shoulder: Ironfeather Shoulders; back: Deep Woodlands Cloak; chest: Acumen Robes; wrist: Runic Leather Bracers; hands: Raider Handwraps; waist: Skycaller's Leather Waistguard; legs: Stone Guard's Pulsing Legplates; feet: Skycaller's Leather Boots; finger1: Cyclopean Band; finger2: Philanthropist's Ring; trinket1: Uther's Strength; trinket2: Rune of the Guard Captain; main_hand: Spellshifter Rod
 
 No-known-source sample (15 of 737, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
@@ -340,7 +344,7 @@ No-known-source sample (15 of 1679, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (orc, 5530311300103051-020000000000000000-0533520000000000)
 
-Set DPS (verified): 501.2. Weights run: 1.8s. Verify run: 5.5s. 1679 eligible items had no known source.
+Set DPS (verified): 501.2. Weights run: 1.8s. Verify run: 5.6s. 1679 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.357 ± 0.017, crit=0.327 ± 0.008 per rating point (14 rating = 1%, 4.577 per %), hit=0.649 ± 0.039 per rating point (10 rating = 1%, 6.487 per %), spell_haste=2.374 ± 0.470, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.780 ± 0.002
 
@@ -354,7 +358,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | wrist | Dryad's Wrist Bindings (19595) | Warsong Outriders [rep] | sim-verified (501.2 DPS) | yes | Modest Armguards (18458, -3.65 DPS) [dungeon]; Sublime Wristguards (18497, -3.65 DPS) [dungeon]; Wristwraps of Undead Slaying (23093, -12.04 DPS, sim-verified) [world] |
 | hands | Hands of Power (13253) | Blackrock Spire: Quartermaster Zigris [dungeon] | 28.1 spell_power points (11.05 DPS) | yes | General's Mail Gauntlets (231660, +0.00 DPS) [pvp]; Gloves of the Greatfather (17721, -1.63 DPS) [crafted]; Storm Gauntlets (12632, -3.61 DPS, sim-verified) [crafted] |
 | waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 39.3 spell_power points (15.45 DPS) | yes | Belt of the Archmage (18405, -4.39 DPS, sim-verified) [crafted]; Barrage Girdle (18721, -5.58 DPS) [dungeon]; Stormseeker's Girdle (272399, -5.80 DPS) [vendor] |
-| legs | Ironfeather Leggings (252486) | Leatherworking [crafted] | 49.0 spell_power points (19.25 DPS) | yes | Sentinel's Silk Leggings (237815, -1.68 DPS) [vendor]; Sentinel's Lizardhide Pants (237817, -1.68 DPS) [vendor]; General's Mail Leggings (231664, -3.09 DPS) [pvp] |
+| legs | Ironfeather Leggings (252486) | Leatherworking [crafted] | 49.0 spell_power points (19.25 DPS) | yes | Sentinel's Lizardhide Pants (237817, -1.68 DPS) [vendor]; Sentinel's Silk Leggings (237815, -1.68 DPS) [vendor]; General's Mail Leggings (231664, -3.09 DPS) [pvp] |
 | feet | Waterspout Boots (18322) | Dire Maul: Hydrospawn [dungeon] | 27.1 spell_power points (10.66 DPS) | yes | General's Mail Sabatons (231661, -0.42 DPS) [vendor]; Omnicast Boots (11822, -1.12 DPS) [dungeon]; Slippers of The Five Thunders (227007, -5.26 DPS, sim-verified) [vendor] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (501.2 DPS) | yes | Rune Band of Wizardry (22339, -5.98 DPS) [dungeon]; Maiden's Circle (13001, -6.76 DPS) [world_drop]; Naglering (11669, -19.90 DPS, sim-verified) [dungeon] |
 | finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (501.2 DPS) | yes | Rune Band of Wizardry (22339, -1.35 DPS) [dungeon]; Maiden's Circle (13001, -2.13 DPS) [world_drop]; Naglering (11669, -12.49 DPS, sim-verified) [dungeon] |

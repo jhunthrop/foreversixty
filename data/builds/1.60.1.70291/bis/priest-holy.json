@@ -1,8 +1,8 @@
 {
   "spec": "priest-holy",
   "build": "1.60.1.70291",
-  "engine_version": "f80f8e819",
-  "generated_at": "2026-10-09T01:40:34Z",
+  "engine_version": "be3a7581b",
+  "generated_at": "2026-10-09T03:43:11Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -318,7 +318,7 @@
           "item_name": "Filigreed Pristine Leggings",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 28.42569043700151,
+          "score": 28.425690437001506,
           "verified": true,
           "alternatives": [
             {
@@ -333,7 +333,7 @@
               "item_name": "Filigreed Silky Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.6315811807619909
+              "dps_delta": -1.6315811807619904
             },
             {
               "item_id": 12987,
@@ -567,8 +567,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 10.079452464,
-      "verify_run_seconds": 29.360197904,
+      "weights_run_seconds": 10.046098556,
+      "verify_run_seconds": 29.055412775,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1134,7 +1134,7 @@
               "item_name": "Staff of Orgrimmar",
               "source_kind": "quest",
               "source": "Hidden Enemies",
-              "dps_delta": -0.1695559936862592
+              "dps_delta": -0.16955599368625937
             },
             {
               "item_id": 4437,
@@ -1217,8 +1217,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 10.079452464,
-      "verify_run_seconds": 29.442430524,
+      "weights_run_seconds": 10.046098556,
+      "verify_run_seconds": 29.108948869,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1888,8 +1888,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 10.126267263999999,
-      "verify_run_seconds": 28.427075621,
+      "weights_run_seconds": 10.080430166,
+      "verify_run_seconds": 28.155944352,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2301,7 +2301,7 @@
               "item_name": "Novice Ardent's Sash",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.3539140698983088
+              "dps_delta": -0.353914069898309
             },
             {
               "item_id": 14406,
@@ -2559,8 +2559,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 10.126267263999999,
-      "verify_run_seconds": 28.974186731,
+      "weights_run_seconds": 10.080430166,
+      "verify_run_seconds": 28.717953501,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3257,8 +3257,8 @@
         "trinket2: Ankh of Life",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 10.402473667,
-      "verify_run_seconds": 64.681787305,
+      "weights_run_seconds": 10.261993263,
+      "verify_run_seconds": 67.647082499,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3856,7 +3856,7 @@
               "item_name": "Hypnotic Blade",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Arcanist Doan",
-              "dps_delta": -1.0813847380665396
+              "dps_delta": -1.0813847380665402
             },
             {
               "item_id": 2164,
@@ -3942,8 +3942,8 @@
         "trinket2: Ankh of Life",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 10.402473667,
-      "verify_run_seconds": 67.829601935,
+      "weights_run_seconds": 10.261993263,
+      "verify_run_seconds": 72.466604639,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4328,7 +4328,7 @@
               "item_name": "Gilded Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.2879049673932133
+              "dps_delta": -2.2879049673932124
             },
             {
               "item_id": 10011,
@@ -4451,8 +4451,6 @@
           "source_kind": "dungeon",
           "score": 73.27353389812929,
           "verified": true,
-          "swap_note": "confirmed by the sim against Mindseye Circle (id 10634): kept the pick, +3.9 DPS (107.4 vs 103.5 set DPS)",
-          "dps_delta": 3.9452658134221963,
           "alternatives": [
             {
               "item_id": 11824,
@@ -4469,44 +4467,44 @@
               "dps_delta": -1.3940246220071502
             },
             {
-              "item_id": 6750,
-              "item_name": "Snake Hoop",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -1.7748545649742735
+              "item_id": 10634,
+              "item_name": "Mindseye Circle",
+              "source_kind": "dungeon",
+              "source": "Sunken Temple: Atal'ai Warrior",
+              "dps_delta": -3.9452658134221963,
+              "verified": true
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 10634,
-          "item_name": "Mindseye Circle",
-          "source": "Sunken Temple: Atal'ai Warrior",
-          "source_kind": "dungeon",
-          "score": 57.78790800433792,
+          "item_id": 6750,
+          "item_name": "Snake Hoop",
+          "source": "Willix the Importer",
+          "source_kind": "quest",
+          "sim_dps": 107.43182725233694,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 10634,
+              "item_name": "Mindseye Circle",
+              "source_kind": "dungeon",
+              "source": "Sunken Temple: Atal'ai Warrior",
+              "dps_delta": 0
+            },
             {
               "item_id": 11824,
               "item_name": "Cyclopean Band",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": 0
             },
             {
               "item_id": 17768,
               "item_name": "Woodseed Hoop",
               "source_kind": "quest",
               "source": "Vyletongue Corruption",
-              "dps_delta": -0.6728262732049425
-            },
-            {
-              "item_id": 6750,
-              "item_name": "Snake Hoop",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -1.0536562161720657
+              "dps_delta": 0
             }
           ]
         },
@@ -4676,8 +4674,9 @@
           ]
         }
       ],
-      "set_dps": 107.42681164702638,
+      "set_dps": 107.44834906023121,
       "no_source_count": 441,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4707,14 +4706,14 @@
         "legs: Knight's Satin Leggings",
         "feet: Sergeant Major's Satin Boots",
         "finger1: Brainlash",
-        "finger2: Mindseye Circle",
+        "finger2: Snake Hoop",
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Uther's Strength",
         "main_hand: Charstone Dirk",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 10.648301008,
-      "verify_run_seconds": 76.729500048,
+      "weights_run_seconds": 10.588491403,
+      "verify_run_seconds": 92.076248205,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4793,11 +4792,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 107.42681164702638,
-        "raw_hps": 109.56259998967116,
-        "overheal_pct": 0.019493771988307373,
-        "mana_lasts_sec": 69.32447500000004,
-        "hpm": 1.9284494631186089
+        "hps": 107.44834906023121,
+        "raw_hps": 109.58530551889037,
+        "overheal_pct": 0.019500392397872934,
+        "mana_lasts_sec": 68.64422500000003,
+        "hpm": 1.933611450622183
       }
     },
     {
@@ -5094,7 +5093,7 @@
               "item_name": "Gilded Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.2879049673932133
+              "dps_delta": -2.2879049673932124
             },
             {
               "item_id": 19116,
@@ -5474,8 +5473,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 10.648301008,
-      "verify_run_seconds": 40.863163724,
+      "weights_run_seconds": 10.588491403,
+      "verify_run_seconds": 53.162971928,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5796,7 +5795,7 @@
               "item_name": "Virtuous Robe",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -2.326644952870026
+              "dps_delta": -2.3266449528700233
             }
           ]
         },
@@ -5921,7 +5920,7 @@
             {
               "item_id": 227125,
               "item_name": "Knight-Captain's Satin Legguards",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": 0
             },
@@ -5968,7 +5967,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.8526224459760345
+              "dps_delta": -3.852622445976033
             },
             {
               "item_id": 226952,
@@ -6248,8 +6247,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.451297972,
-      "verify_run_seconds": 75.202526587,
+      "weights_run_seconds": 9.255289152,
+      "verify_run_seconds": 78.787671707,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6447,7 +6446,6 @@
           "item_name": "The Eye of Zuldazar",
           "source": "The Eye of Zuldazar",
           "source_kind": "quest",
-          "sim_dps": 371.5367348182248,
           "verified": true,
           "alternatives": [
             {
@@ -6487,7 +6485,7 @@
               "item_name": "Champion's Satin Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -2.148609276440523
+              "dps_delta": -2.1486092764405242
             },
             {
               "item_id": 231631,
@@ -6579,7 +6577,6 @@
           "item_name": "Virtuous Bracers",
           "source": "An Earnest Proposition",
           "source_kind": "quest",
-          "sim_dps": 371.5367348182248,
           "verified": true,
           "alternatives": [
             {
@@ -6613,34 +6610,33 @@
         },
         {
           "slot": "hands",
-          "item_id": 12554,
-          "item_name": "Hands of the Exalted Herald",
-          "source": "Blackrock Depths: Princess Moira Bronzebeard ",
-          "source_kind": "dungeon",
-          "sim_dps": 371.5367348182248,
+          "item_id": 20717,
+          "item_name": "Desert Bloom Gloves",
+          "source": "Armaments of War",
+          "source_kind": "quest",
+          "sim_dps": 373.2066163667393,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 20717,
-              "item_name": "Desert Bloom Gloves",
-              "source_kind": "quest",
-              "source": "Armaments of War",
-              "dps_delta": 0,
-              "verified": true
+              "item_id": 12554,
+              "item_name": "Hands of the Exalted Herald",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Princess Moira Bronzebeard ",
+              "dps_delta": -0.1772842870995769
             },
             {
               "item_id": 272097,
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.3634409492497812
+              "dps_delta": -0.5407252363493581
             },
             {
               "item_id": 226950,
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.020127405399992
+              "dps_delta": -1.1974116924995688
             }
           ]
         },
@@ -6650,7 +6646,6 @@
           "item_name": "Virtuous Belt",
           "source": "Just Compensation",
           "source_kind": "quest",
-          "sim_dps": 371.5367348182248,
           "verified": true,
           "alternatives": [
             {
@@ -6683,7 +6678,6 @@
           "item_name": "Virtuous Skirt",
           "source": "Anthion's Parting Words",
           "source_kind": "quest",
-          "sim_dps": 371.5367348182248,
           "verified": true,
           "alternatives": [
             {
@@ -6754,7 +6748,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 371.5367348182248,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6788,7 +6781,6 @@
           "item_name": "Band of Mending",
           "source": "Stratholme: Balnazzar",
           "source_kind": "dungeon",
-          "sim_dps": 371.5367348182248,
           "verified": true,
           "alternatives": [
             {
@@ -6821,7 +6813,6 @@
           "item_name": "Darkspear Voodoo Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 371.5367348182248,
           "verified": true,
           "alternatives": [
             {
@@ -6854,7 +6845,6 @@
           "item_name": "Royal Seal of Eldre'Thalas",
           "source": "Holy Bologna: What the Light Won't Tell You",
           "source_kind": "quest",
-          "sim_dps": 371.5367348182248,
           "verified": true,
           "alternatives": [
             {
@@ -6887,7 +6877,6 @@
           "item_name": "Charstone Dirk",
           "source": "Maraudon: Princess Theradras",
           "source_kind": "dungeon",
-          "sim_dps": 371.5367348182248,
           "verified": true,
           "alternatives": [
             {
@@ -6980,8 +6969,9 @@
           ]
         }
       ],
-      "set_dps": 371.502176888044,
+      "set_dps": 373.1797159582453,
       "no_source_count": 1112,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7006,7 +6996,7 @@
         "back: Hide of the Wild",
         "chest: Truefaith Vestments",
         "wrist: Virtuous Bracers",
-        "hands: Hands of the Exalted Herald",
+        "hands: Desert Bloom Gloves",
         "waist: Virtuous Belt",
         "legs: Virtuous Skirt",
         "feet: Incandescent Mooncloth Boots",
@@ -7016,8 +7006,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.451297972,
-      "verify_run_seconds": 76.379802891,
+      "weights_run_seconds": 9.255289152,
+      "verify_run_seconds": 83.129781437,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7096,11 +7086,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 371.502176888044,
-        "raw_hps": 377.06942298871803,
-        "overheal_pct": 0.01476451221249142,
-        "mana_lasts_sec": 101.7627977258562,
-        "hpm": 4.8773347622919925
+        "hps": 373.1797159582453,
+        "raw_hps": 378.7420079916181,
+        "overheal_pct": 0.014686229454367483,
+        "mana_lasts_sec": 100.93417727132426,
+        "hpm": 4.967014698065972
       }
     },
     {
@@ -7314,7 +7304,6 @@
           "item_name": "Virtuous Robe",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "sim_dps": 757.7857722458109,
           "verified": true,
           "alternatives": [
             {
@@ -7352,7 +7341,6 @@
           "item_name": "Virtuous Bracers",
           "source": "An Earnest Proposition",
           "source_kind": "quest",
-          "sim_dps": 757.7857722458109,
           "verified": true,
           "alternatives": [
             {
@@ -7405,7 +7393,7 @@
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.3264393869940063
+              "dps_delta": -1.3264393869940043
             },
             {
               "item_id": 272097,
@@ -7423,7 +7411,6 @@
           "item_name": "Virtuous Belt",
           "source": "Just Compensation",
           "source_kind": "quest",
-          "sim_dps": 757.7857722458109,
           "verified": true,
           "alternatives": [
             {
@@ -7461,7 +7448,7 @@
           "item_name": "Padre's Trousers",
           "source": "Dire Maul: Illyanna Ravenoak",
           "source_kind": "dungeon",
-          "score": 87.91678992694375,
+          "score": 87.91678992694376,
           "verified": true,
           "alternatives": [
             {
@@ -7469,14 +7456,14 @@
               "item_name": "Marshal's Satin Legguards",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.2176898913227046
+              "dps_delta": -1.217689891322708
             },
             {
               "item_id": 227125,
               "item_name": "Knight-Captain's Satin Legguards",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -1.911965019864187
+              "dps_delta": -1.9119650198641909
             },
             {
               "item_id": 226946,
@@ -7527,7 +7514,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 757.7857722458109,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7561,7 +7547,6 @@
           "item_name": "Band of Mending",
           "source": "Stratholme: Balnazzar",
           "source_kind": "dungeon",
-          "sim_dps": 757.7857722458109,
           "verified": true,
           "alternatives": [
             {
@@ -7590,34 +7575,34 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 18469,
-          "item_name": "Royal Seal of Eldre'Thalas",
-          "source": "Holy Bologna: What the Light Won't Tell You",
-          "source_kind": "quest",
-          "sim_dps": 757.7857722458109,
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 758.7434831300296,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0,
-              "verified": true
+              "item_id": 18469,
+              "item_name": "Royal Seal of Eldre'Thalas",
+              "source_kind": "quest",
+              "source": "Holy Bologna: What the Light Won't Tell You",
+              "dps_delta": 0
             },
             {
               "item_id": 272061,
               "item_name": "Darkspear Voodoo Seal",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -1.9450361423798503
+              "dps_delta": -1.8679104640147022
             },
             {
               "item_id": 12930,
               "item_name": "Briarwood Reed",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Jed Runewatcher",
-              "dps_delta": -3.4762423877581283
+              "dps_delta": -3.39911670939298
             }
           ]
         },
@@ -7627,8 +7612,9 @@
           "item_name": "Draconic Infused Emblem",
           "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
-          "sim_dps": 757.7857722458109,
           "verified": true,
+          "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, -2.8 DPS over it",
+          "dps_delta": -2.8453365444779593,
           "alternatives": [
             {
               "item_id": 12930,
@@ -7638,19 +7624,18 @@
               "dps_delta": 0
             },
             {
+              "item_id": 18469,
+              "item_name": "Royal Seal of Eldre'Thalas",
+              "source_kind": "quest",
+              "source": "Holy Bologna: What the Light Won't Tell You",
+              "dps_delta": 0
+            },
+            {
               "item_id": 272061,
               "item_name": "Darkspear Voodoo Seal",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "dps_delta": 0
-            },
-            {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0,
-              "verified": true
             }
           ],
           "faction_note": "Darkspear Voodoo Seal (from horde) and alliance's own pick Draconic Infused Emblem measure statistically indistinguishable on gnome (14.72 ± 1.22 vs 16.23 ± 1.22 DPS gain) -- each faction's own tournament winner kept"
@@ -7661,7 +7646,6 @@
           "item_name": "Charstone Dirk",
           "source": "Maraudon: Princess Theradras",
           "source_kind": "dungeon",
-          "sim_dps": 757.7857722458109,
           "verified": true,
           "alternatives": [
             {
@@ -7754,8 +7738,9 @@
           ]
         }
       ],
-      "set_dps": 757.7991562347786,
+      "set_dps": 758.755478318049,
       "no_source_count": 1121,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7786,13 +7771,13 @@
         "feet: Incandescent Mooncloth Boots",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Band of Mending",
-        "trinket1: Royal Seal of Eldre'Thalas",
+        "trinket1: Serenity Field",
         "trinket2: Draconic Infused Emblem",
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.172872458,
-      "verify_run_seconds": 26.93416212,
+      "weights_run_seconds": 6.107161716,
+      "verify_run_seconds": 29.766418496,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7871,11 +7856,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 757.7991562347786,
-        "raw_hps": 814.441323881905,
-        "overheal_pct": 0.06954726631152564,
-        "mana_lasts_sec": 326.0081379047804,
-        "hpm": 5.528872222176222
+        "hps": 758.755478318049,
+        "raw_hps": 815.8107295015171,
+        "overheal_pct": 0.06993687275764382,
+        "mana_lasts_sec": 329.38044693546914,
+        "hpm": 5.5791710902123715
       }
     },
     {
@@ -8089,7 +8074,6 @@
           "item_name": "Virtuous Robe",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "sim_dps": 743.5339239658449,
           "verified": true,
           "alternatives": [
             {
@@ -8127,7 +8111,6 @@
           "item_name": "Virtuous Bracers",
           "source": "An Earnest Proposition",
           "source_kind": "quest",
-          "sim_dps": 743.5339239658449,
           "verified": true,
           "alternatives": [
             {
@@ -8198,7 +8181,6 @@
           "item_name": "Virtuous Belt",
           "source": "Just Compensation",
           "source_kind": "quest",
-          "sim_dps": 743.5339239658449,
           "verified": true,
           "alternatives": [
             {
@@ -8236,7 +8218,7 @@
           "item_name": "Padre's Trousers",
           "source": "Dire Maul: Illyanna Ravenoak",
           "source_kind": "dungeon",
-          "score": 87.91678992694375,
+          "score": 87.91678992694376,
           "verified": true,
           "alternatives": [
             {
@@ -8244,14 +8226,14 @@
               "item_name": "General's Satin Legguards",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.2176898913227046
+              "dps_delta": -1.217689891322708
             },
             {
               "item_id": 227123,
               "item_name": "Legionnaire's Satin Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -1.911965019864187
+              "dps_delta": -1.9119650198641909
             },
             {
               "item_id": 226946,
@@ -8302,7 +8284,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 743.5339239658449,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8336,7 +8317,6 @@
           "item_name": "Band of Mending",
           "source": "Stratholme: Balnazzar",
           "source_kind": "dungeon",
-          "sim_dps": 743.5339239658449,
           "verified": true,
           "alternatives": [
             {
@@ -8365,33 +8345,34 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 18469,
-          "item_name": "Royal Seal of Eldre'Thalas",
-          "source": "Holy Bologna: What the Light Won't Tell You",
-          "source_kind": "quest",
-          "sim_dps": 743.5339239658449,
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 744.0654480617904,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -0.07712567836514812
+              "item_id": 18469,
+              "item_name": "Royal Seal of Eldre'Thalas",
+              "source_kind": "quest",
+              "source": "Holy Bologna: What the Light Won't Tell You",
+              "dps_delta": 0
             },
             {
               "item_id": 12930,
               "item_name": "Briarwood Reed",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Jed Runewatcher",
-              "dps_delta": -3.4762423877581283
+              "dps_delta": -3.39911670939298
             },
             {
               "item_id": 18371,
               "item_name": "Mindtap Talisman",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -4.375396465709368
+              "dps_delta": -4.2982707873442205
             }
           ]
         },
@@ -8401,16 +8382,16 @@
           "item_name": "Darkspear Voodoo Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 743.5339239658449,
           "verified": true,
+          "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, -6.4 DPS over it",
+          "dps_delta": -6.387334075912804,
           "alternatives": [
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0,
-              "verified": true
+              "item_id": 18469,
+              "item_name": "Royal Seal of Eldre'Thalas",
+              "source_kind": "quest",
+              "source": "Holy Bologna: What the Light Won't Tell You",
+              "dps_delta": 0
             },
             {
               "item_id": 12930,
@@ -8435,7 +8416,6 @@
           "item_name": "Charstone Dirk",
           "source": "Maraudon: Princess Theradras",
           "source_kind": "dungeon",
-          "sim_dps": 743.5339239658449,
           "verified": true,
           "alternatives": [
             {
@@ -8528,8 +8508,9 @@
           ]
         }
       ],
-      "set_dps": 743.374885752672,
+      "set_dps": 744.0693516189086,
       "no_source_count": 1112,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -8560,13 +8541,13 @@
         "feet: Incandescent Mooncloth Boots",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Band of Mending",
-        "trinket1: Royal Seal of Eldre'Thalas",
+        "trinket1: Serenity Field",
         "trinket2: Darkspear Voodoo Seal",
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.172872458,
-      "verify_run_seconds": 28.432869753,
+      "weights_run_seconds": 6.107161716,
+      "verify_run_seconds": 31.132013263,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -8645,11 +8626,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 743.374885752672,
-        "raw_hps": 796.402022855654,
-        "overheal_pct": 0.0665833782200137,
-        "mana_lasts_sec": 294.65021525958497,
-        "hpm": 5.353272343445281
+        "hps": 744.0693516189086,
+        "raw_hps": 797.4791713450774,
+        "overheal_pct": 0.06697330995627693,
+        "mana_lasts_sec": 297.079727051404,
+        "hpm": 5.401447795137307
       }
     }
   ],

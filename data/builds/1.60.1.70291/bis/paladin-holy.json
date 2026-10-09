@@ -1,8 +1,8 @@
 {
   "spec": "paladin-holy",
   "build": "1.60.1.70291",
-  "engine_version": "f80f8e819",
-  "generated_at": "2026-10-09T01:09:10Z",
+  "engine_version": "be3a7581b",
+  "generated_at": "2026-10-09T03:07:01Z",
   "bands": [
     {
       "spec": "paladin-holy",
@@ -341,7 +341,7 @@
               "item_name": "Filigreed Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.25251064033593784
+              "dps_delta": -0.25251064033593756
             },
             {
               "item_id": 252503,
@@ -554,8 +554,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 4.281590444,
-      "verify_run_seconds": 12.559241467,
+      "weights_run_seconds": 4.280270519,
+      "verify_run_seconds": 13.934707237,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -985,7 +985,7 @@
               "item_name": "Filigreed Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.25251064033593784
+              "dps_delta": -0.25251064033593756
             },
             {
               "item_id": 15449,
@@ -1190,8 +1190,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 4.281590444,
-      "verify_run_seconds": 12.582865957,
+      "weights_run_seconds": 4.280270519,
+      "verify_run_seconds": 13.987205067,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1864,8 +1864,8 @@
         "main_hand: Royal Diplomatic Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.184053224,
-      "verify_run_seconds": 12.861441524,
+      "weights_run_seconds": 4.265558964,
+      "verify_run_seconds": 14.19077491,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2539,8 +2539,8 @@
         "main_hand: Royal Diplomatic Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.184053224,
-      "verify_run_seconds": 13.699858401,
+      "weights_run_seconds": 4.265558964,
+      "verify_run_seconds": 15.051814835,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3221,8 +3221,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 7.493829046,
-      "verify_run_seconds": 24.80902917,
+      "weights_run_seconds": 7.533902745,
+      "verify_run_seconds": 29.891441192,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3674,7 +3674,7 @@
               "item_name": "Stoneweaver Leggings",
               "source_kind": "dungeon",
               "source": "Uldaman: Ironaya",
-              "dps_delta": -0.28797072552559216
+              "dps_delta": -0.28797072552559183
             }
           ]
         },
@@ -3904,8 +3904,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Forcestone Buckler"
       ],
-      "weights_run_seconds": 7.493829046,
-      "verify_run_seconds": 24.914944283,
+      "weights_run_seconds": 7.533902745,
+      "verify_run_seconds": 30.043328964,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4070,7 +4070,7 @@
           "item_name": "Knight-Lieutenant's Imbued Helmet",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 78.29275234206303,
+          "score": 78.29275234206304,
           "verified": true,
           "alternatives": [
             {
@@ -4078,14 +4078,14 @@
               "item_name": "Gemburst Circlet",
               "source_kind": "quest",
               "source": "The God Hakkar",
-              "dps_delta": -0.887731969005743
+              "dps_delta": -0.887731969005744
             },
             {
               "item_id": 10630,
               "item_name": "Soulcatcher Halo",
               "source_kind": "dungeon",
               "source": "Sunken Temple: Atal'ai Warrior",
-              "dps_delta": -1.2822527445164473
+              "dps_delta": -1.2822527445164484
             },
             {
               "item_id": 9431,
@@ -4212,14 +4212,14 @@
               "item_name": "Stormcloth Vest",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.17587581501391641
+              "dps_delta": -0.1758758150139154
             },
             {
               "item_id": 940,
               "item_name": "Robes of Insight",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.3082993032854838
+              "dps_delta": -0.3082993032854827
             },
             {
               "item_id": 12462,
@@ -4406,7 +4406,7 @@
               "item_name": "Mender's Leather Shoes",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.10782238340562045
+              "dps_delta": -0.10782238340562096
             }
           ]
         },
@@ -4651,8 +4651,8 @@
         "trinket2: Uther's Strength",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 7.888400511,
-      "verify_run_seconds": 34.7316019,
+      "weights_run_seconds": 8.125174296,
+      "verify_run_seconds": 39.576970673,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4879,34 +4879,33 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 11842,
-          "item_name": "Lead Surveyor's Mantle",
-          "source": "Blackrock Depths: Fineous Darkvire",
-          "source_kind": "dungeon",
-          "score": 52.212533755540846,
+          "item_id": 252538,
+          "item_name": "Mender's Leather Shoulder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "sim_dps": 118.36261708161834,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 252538,
-              "item_name": "Mender's Leather Shoulder",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": 0,
-              "verified": true
+              "item_id": 11842,
+              "item_name": "Lead Surveyor's Mantle",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Fineous Darkvire",
+              "dps_delta": 0
             },
             {
               "item_id": 252569,
               "item_name": "Mender's Mail Shoulder",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.11925427292880687
+              "dps_delta": 0
             },
             {
               "item_id": 15061,
               "item_name": "Living Shoulders",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.20306556413370172
+              "dps_delta": -0.08381129120489483
             }
           ]
         },
@@ -5045,7 +5044,7 @@
               "item_name": "Mender's Mail Gauntlets",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.6750296762846717
+              "dps_delta": -0.6750296762846713
             }
           ]
         },
@@ -5363,8 +5362,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 118.3582683306418,
+      "set_dps": 118.36843636580153,
       "no_source_count": 733,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -5384,7 +5384,7 @@
       ],
       "new_at_band": [
         "neck: Darkmoon Necklace",
-        "shoulder: Lead Surveyor's Mantle",
+        "shoulder: Mender's Leather Shoulder",
         "back: Darkspear Raider's Cloak",
         "wrist: Mender's Leather Bracers",
         "hands: Soulforge Fists",
@@ -5397,8 +5397,8 @@
         "trinket2: Uther's Strength",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 7.888400511,
-      "verify_run_seconds": 31.085043061,
+      "weights_run_seconds": 8.125174296,
+      "verify_run_seconds": 38.684594781,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5477,11 +5477,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 118.3582683306418,
-        "raw_hps": 118.3582683306418,
-        "overheal_pct": 0,
-        "mana_lasts_sec": 72.51727500000001,
-        "hpm": 3.749216578730957
+        "hps": 118.36843636580153,
+        "raw_hps": 118.36843636580154,
+        "overheal_pct": 1.1102230246251565e-16,
+        "mana_lasts_sec": 70.99222500000002,
+        "hpm": 3.790331001609129
       }
     },
     {
@@ -6120,8 +6120,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 8.959472203,
-      "verify_run_seconds": 115.352547117,
+      "weights_run_seconds": 8.959223212,
+      "verify_run_seconds": 128.182992073,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6523,7 +6523,7 @@
               "item_name": "Whipvine Cord",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -0.9354594706902459
+              "dps_delta": -0.9354594706902468
             },
             {
               "item_id": 14465,
@@ -6589,14 +6589,14 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.312860819703129
+              "dps_delta": -1.3128608197031275
             },
             {
               "item_id": 22247,
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -1.8909012002501815
+              "dps_delta": -1.8909012002501797
             },
             {
               "item_id": 226983,
@@ -6825,8 +6825,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 8.959472203,
-      "verify_run_seconds": 110.272103055,
+      "weights_run_seconds": 8.959223212,
+      "verify_run_seconds": 138.073930421,
       "coverage": {
         "back": {
           "eligible": 455,
@@ -7123,7 +7123,6 @@
           "item_name": "Knight-Captain's Lamellar Chestplate",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 571.7355634629206,
           "verified": true,
           "alternatives": [
             {
@@ -7161,7 +7160,6 @@
           "item_name": "Gallant's Wristguards",
           "source": "Dire Maul: Guard Fengus",
           "source_kind": "dungeon",
-          "sim_dps": 571.7355634629206,
           "verified": true,
           "alternatives": [
             {
@@ -7194,7 +7192,6 @@
           "item_name": "Harmonious Gauntlets",
           "source": "Dire Maul: King Gordok",
           "source_kind": "dungeon",
-          "sim_dps": 571.7355634629206,
           "verified": true,
           "alternatives": [
             {
@@ -7260,7 +7257,6 @@
           "item_name": "Martyr's Legplates",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 571.7355634629206,
           "verified": true,
           "alternatives": [
             {
@@ -7293,7 +7289,6 @@
           "item_name": "Knight-Lieutenant's Lamellar Greaves",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 571.7355634629206,
           "verified": true,
           "alternatives": [
             {
@@ -7331,7 +7326,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 571.7355634629206,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7365,7 +7359,6 @@
           "item_name": "Band of Piety",
           "source": "Superior Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 571.7355634629206,
           "verified": true,
           "alternatives": [
             {
@@ -7398,16 +7391,8 @@
           "item_name": "Darkspear Voodoo Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 571.7355634629206,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
-            },
             {
               "item_id": 18371,
               "item_name": "Mindtap Talisman",
@@ -7421,39 +7406,46 @@
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Jed Runewatcher",
               "dps_delta": -3.0876841089215015
+            },
+            {
+              "item_id": 11819,
+              "item_name": "Second Wind",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -4.924218463469278
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
-          "sim_dps": 571.7355634629206,
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 575.0526953951772,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 12930,
-              "item_name": "Briarwood Reed",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher",
-              "dps_delta": 0
-            },
             {
               "item_id": 18371,
               "item_name": "Mindtap Talisman",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": 0
+              "dps_delta": -3.175338170260979
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0,
-              "verified": true
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": -3.41070665844587
+            },
+            {
+              "item_id": 11819,
+              "item_name": "Second Wind",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -5.247241012993646
             }
           ]
         },
@@ -7463,7 +7455,6 @@
           "item_name": "Hand of Righteousness",
           "source": "Scarlet Monastery: High Inquisitor Whitemane",
           "source_kind": "dungeon",
-          "sim_dps": 571.7355634629206,
           "verified": true,
           "alternatives": [
             {
@@ -7496,7 +7487,6 @@
           "item_name": "Skullflame Shield",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 571.7355634629206,
           "verified": true,
           "alternatives": [
             {
@@ -7538,8 +7528,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 571.6703197644106,
+      "set_dps": 575.0432695986865,
       "no_source_count": 1685,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -7570,11 +7561,11 @@
         "feet: Knight-Lieutenant's Lamellar Greaves",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Band of Piety",
-        "trinket2: Draconic Infused Emblem",
+        "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 5.19268684,
-      "verify_run_seconds": 45.529162749,
+      "weights_run_seconds": 5.921238276,
+      "verify_run_seconds": 55.871130336,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7653,11 +7644,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 571.6703197644106,
-        "raw_hps": 576.3784079708848,
-        "overheal_pct": 0.008168397950660378,
-        "mana_lasts_sec": 245.52505000000008,
-        "hpm": 5.9979450831980365
+        "hps": 575.0432695986865,
+        "raw_hps": 579.785551676497,
+        "overheal_pct": 0.008179372638896898,
+        "mana_lasts_sec": 246.15707500000002,
+        "hpm": 6.03278016846833
       }
     },
     {
@@ -7871,7 +7862,6 @@
           "item_name": "Robes of the Exalted",
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
-          "sim_dps": 557.6434369067224,
           "verified": true,
           "alternatives": [
             {
@@ -7904,7 +7894,6 @@
           "item_name": "Gallant's Wristguards",
           "source": "Dire Maul: Guard Fengus",
           "source_kind": "dungeon",
-          "sim_dps": 557.6434369067224,
           "verified": true,
           "alternatives": [
             {
@@ -7933,34 +7922,32 @@
         },
         {
           "slot": "hands",
-          "item_id": 18527,
-          "item_name": "Harmonious Gauntlets",
-          "source": "Dire Maul: King Gordok",
-          "source_kind": "dungeon",
-          "sim_dps": 557.6434369067224,
+          "item_id": 272097,
+          "item_name": "Raider Handwraps",
+          "source": "Creeg Bothunk",
+          "source_kind": "vendor",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272097,
-              "item_name": "Raider Handwraps",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -1.3406988192411398
+              "item_id": 18527,
+              "item_name": "Harmonious Gauntlets",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: King Gordok",
+              "dps_delta": 0
             },
             {
               "item_id": 12554,
               "item_name": "Hands of the Exalted Herald",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Princess Moira Bronzebeard ",
-              "dps_delta": -1.6031351661612245
+              "dps_delta": -0.2624363469200848
             },
             {
-              "item_id": 18326,
-              "item_name": "Razor Gauntlets",
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -19.4400586791254,
-              "verified": true
+              "item_id": 18409,
+              "item_name": "Mooncloth Gloves",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -0.8025708752015189
             }
           ]
         },
@@ -8002,7 +7989,6 @@
           "item_name": "Martyr's Legplates",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "sim_dps": 557.6434369067224,
           "verified": true,
           "alternatives": [
             {
@@ -8068,7 +8054,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 557.6434369067224,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8102,7 +8087,6 @@
           "item_name": "Band of Piety",
           "source": "Superior Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 557.6434369067224,
           "verified": true,
           "alternatives": [
             {
@@ -8135,16 +8119,8 @@
           "item_name": "Darkspear Voodoo Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 557.6434369067224,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0
-            },
             {
               "item_id": 18371,
               "item_name": "Mindtap Talisman",
@@ -8158,39 +8134,46 @@
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Jed Runewatcher",
               "dps_delta": -3.0876841089215015
+            },
+            {
+              "item_id": 11819,
+              "item_name": "Second Wind",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -4.924218463469278
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
-          "sim_dps": 557.6434369067224,
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
+          "sim_dps": 560.2318138967133,
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 12930,
-              "item_name": "Briarwood Reed",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher",
-              "dps_delta": 0
-            },
             {
               "item_id": 18371,
               "item_name": "Mindtap Talisman",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": 0
+              "dps_delta": -3.175338170260979
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0,
-              "verified": true
+              "item_id": 12930,
+              "item_name": "Briarwood Reed",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Jed Runewatcher",
+              "dps_delta": -3.41070665844587
+            },
+            {
+              "item_id": 11819,
+              "item_name": "Second Wind",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -5.247241012993646
             }
           ]
         },
@@ -8200,7 +8183,6 @@
           "item_name": "Hand of Righteousness",
           "source": "Scarlet Monastery: High Inquisitor Whitemane",
           "source_kind": "dungeon",
-          "sim_dps": 557.6434369067224,
           "verified": true,
           "alternatives": [
             {
@@ -8233,7 +8215,6 @@
           "item_name": "Skullflame Shield",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 557.6434369067224,
           "verified": true,
           "alternatives": [
             {
@@ -8275,8 +8256,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 557.6497541816323,
+      "set_dps": 560.3235773222025,
       "no_source_count": 1710,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -8301,17 +8283,17 @@
         "back: Hide of the Wild",
         "chest: Robes of the Exalted",
         "wrist: Gallant's Wristguards",
-        "hands: Harmonious Gauntlets",
+        "hands: Raider Handwraps",
         "waist: Sash of Mercy",
         "legs: Martyr's Legplates",
         "feet: Incandescent Mooncloth Boots",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Band of Piety",
-        "trinket2: Draconic Infused Emblem",
+        "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 5.19268684,
-      "verify_run_seconds": 35.140538498,
+      "weights_run_seconds": 5.921238276,
+      "verify_run_seconds": 39.362027339,
       "coverage": {
         "back": {
           "eligible": 455,
@@ -8390,11 +8372,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 557.6497541816323,
-        "raw_hps": 561.528569941531,
-        "overheal_pct": 0.006907601798965768,
-        "mana_lasts_sec": 240.08202500000002,
-        "hpm": 6.0117524252385435
+        "hps": 560.3235773222025,
+        "raw_hps": 564.7149210598666,
+        "overheal_pct": 0.0077762134023701135,
+        "mana_lasts_sec": 242.6343,
+        "hpm": 5.922495856402512
       }
     }
   ],

@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70291",
-  "engine_version": "f80f8e819",
-  "generated_at": "2026-10-09T01:41:13Z",
+  "engine_version": "be3a7581b",
+  "generated_at": "2026-10-09T03:43:51Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.006960745,
-      "verify_run_seconds": 0.800845109,
+      "weights_run_seconds": 0.953810971,
+      "verify_run_seconds": 0.760651249,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1189,8 +1189,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.006960745,
-      "verify_run_seconds": 0.828253109,
+      "weights_run_seconds": 0.953810971,
+      "verify_run_seconds": 0.820815316,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1868,8 +1868,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.98913223,
-      "verify_run_seconds": 0.817754496,
+      "weights_run_seconds": 0.958641769,
+      "verify_run_seconds": 0.79580668,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2554,8 +2554,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.98913223,
-      "verify_run_seconds": 0.824459231,
+      "weights_run_seconds": 0.958641769,
+      "verify_run_seconds": 0.827815446,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3261,8 +3261,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.986140272,
-      "verify_run_seconds": 0.846002399,
+      "weights_run_seconds": 0.968157968,
+      "verify_run_seconds": 0.91260253,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3966,8 +3966,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.986140272,
-      "verify_run_seconds": 0.877228987,
+      "weights_run_seconds": 0.968157968,
+      "verify_run_seconds": 0.967875831,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4299,33 +4299,33 @@
         },
         {
           "slot": "wrist",
-          "item_id": 12546,
-          "item_name": "Aristocratic Cuffs",
-          "source": "Blackrock Depths: Anvilrage Overseer",
-          "source_kind": "dungeon",
-          "score": 22.260870056921352,
+          "item_id": 11469,
+          "item_name": "Bloodband Bracers",
+          "source": "The Captain's Chest",
+          "source_kind": "quest",
+          "sim_dps": 159.84552084015843,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 11469,
-              "item_name": "Bloodband Bracers",
-              "source_kind": "quest",
-              "source": "The Captain's Chest",
-              "dps_delta": -0.4949207306926438
+              "item_id": 12546,
+              "item_name": "Aristocratic Cuffs",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Anvilrage Overseer",
+              "dps_delta": 0
             },
             {
               "item_id": 9433,
               "item_name": "Forgotten Wraps",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.5643639352935133
+              "dps_delta": -0.06944320460086943
             },
             {
               "item_id": 11917,
               "item_name": "Shizzle's Nozzle Wiper",
               "source_kind": "quest",
               "source": "Shizzle's Flyer",
-              "dps_delta": -0.5643639352935133
+              "dps_delta": -0.06944320460086943
             }
           ]
         },
@@ -4432,7 +4432,7 @@
           "item_name": "Sergeant Major's Dreadweave Boots",
           "source": "PvP rank 9 · Sergeant Major · Alliance",
           "source_kind": "vendor",
-          "score": 27.661727791501406,
+          "score": 27.66172779150141,
           "verified": true,
           "alternatives": [
             {
@@ -4448,14 +4448,14 @@
               "item_name": "Southsea Mojo Boots",
               "source_kind": "quest",
               "source": "Southsea Shakedown",
-              "dps_delta": -0.4230142619731331
+              "dps_delta": -0.4230142619731335
             },
             {
               "item_id": 254013,
               "item_name": "Earthen Silk Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.4641658437206564
+              "dps_delta": -0.4641658437206569
             }
           ]
         },
@@ -4467,7 +4467,7 @@
           "source_kind": "dungeon",
           "score": 22.260870056921352,
           "verified": true,
-          "swap_note": "confirmed by the sim against Cyclopean Band (id 11824): kept the pick, +3.7 DPS (160.0 vs 156.3 set DPS)",
+          "swap_note": "confirmed by the sim against Cyclopean Band (id 11824): kept the pick, +3.7 DPS over it",
           "dps_delta": 3.6782745825440486,
           "alternatives": [
             {
@@ -4532,9 +4532,8 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 160.0080141206672,
           "verified": true,
-          "swap_note": "confirmed by the sim against Uther's Strength (id 11302): kept the pick, +2.2 DPS (160.0 vs 157.8 set DPS)",
+          "swap_note": "confirmed by the sim against Uther's Strength (id 11302): kept the pick, +2.2 DPS over it",
           "dps_delta": 2.2170687964649574
         },
         {
@@ -4543,7 +4542,6 @@
           "item_name": "Uther's Strength",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 160.0080141206672,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -4563,7 +4561,6 @@
           "item_name": "Spellshifter Rod",
           "source": "Tiara of the Deep",
           "source_kind": "quest",
-          "sim_dps": 160.0080141206672,
           "verified": true,
           "alternatives": [
             {
@@ -4628,8 +4625,9 @@
           ]
         }
       ],
-      "set_dps": 160.0080141206672,
+      "set_dps": 159.84552084015843,
       "no_source_count": 441,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4653,7 +4651,7 @@
         "shoulder: Rotgrip Mantle",
         "back: Spritecaster Cape",
         "chest: Acumen Robes",
-        "wrist: Aristocratic Cuffs",
+        "wrist: Bloodband Bracers",
         "hands: Raider Handwraps",
         "waist: Ban'thok Sash",
         "legs: Spellshock Leggings",
@@ -4665,8 +4663,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.010372079,
-      "verify_run_seconds": 1.076399691,
+      "weights_run_seconds": 0.956588621,
+      "verify_run_seconds": 1.377940237,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4999,26 +4997,25 @@
         },
         {
           "slot": "wrist",
-          "item_id": 12546,
-          "item_name": "Aristocratic Cuffs",
-          "source": "Blackrock Depths: Anvilrage Overseer",
-          "source_kind": "dungeon",
-          "score": 22.260870056921352,
+          "item_id": 11469,
+          "item_name": "Bloodband Bracers",
+          "source": "The Captain's Chest",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 12546,
+              "item_name": "Aristocratic Cuffs",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Anvilrage Overseer",
+              "dps_delta": 0
+            },
             {
               "item_id": 19596,
               "item_name": "Dryad's Wrist Bindings",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
               "dps_delta": 0
-            },
-            {
-              "item_id": 11469,
-              "item_name": "Bloodband Bracers",
-              "source_kind": "quest",
-              "source": "The Captain's Chest",
-              "dps_delta": -0.4949207306926438
             }
           ]
         },
@@ -5155,35 +5152,33 @@
         },
         {
           "slot": "finger1",
-          "item_id": 6440,
-          "item_name": "Brainlash",
-          "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-          "source_kind": "dungeon",
-          "score": 22.260870056921352,
+          "item_id": 281635,
+          "item_name": "Philanthropist's Ring",
+          "source": "Greater Friend of the Library",
+          "source_kind": "quest",
+          "sim_dps": 149.25766211030083,
           "verified": true,
-          "swap_note": "confirmed by the sim against Cyclopean Band (id 11824): kept the pick, +2.9 DPS (149.7 vs 146.8 set DPS)",
-          "dps_delta": 2.8872915764526113,
           "alternatives": [
+            {
+              "item_id": 6440,
+              "item_name": "Brainlash",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp",
+              "dps_delta": 0
+            },
             {
               "item_id": 10634,
               "item_name": "Mindseye Circle",
               "source_kind": "dungeon",
               "source": "Sunken Temple: Atal'ai Warrior",
-              "dps_delta": -0.5643639352935133
-            },
-            {
-              "item_id": 281635,
-              "item_name": "Philanthropist's Ring",
-              "source_kind": "quest",
-              "source": "Greater Friend of the Library",
-              "dps_delta": -0.6135988378562786
+              "dps_delta": 0
             },
             {
               "item_id": 17768,
               "item_name": "Woodseed Hoop",
               "source_kind": "quest",
               "source": "Vyletongue Corruption",
-              "dps_delta": -1.1287278705870267
+              "dps_delta": -0.5151290327307483
             }
           ]
         },
@@ -5197,11 +5192,11 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 281635,
-              "item_name": "Philanthropist's Ring",
-              "source_kind": "quest",
-              "source": "Greater Friend of the Library",
-              "dps_delta": -0.24948119555013207
+              "item_id": 6440,
+              "item_name": "Brainlash",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp",
+              "dps_delta": 0
             },
             {
               "item_id": 17768,
@@ -5226,7 +5221,6 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 149.68978735937017,
           "verified": true,
           "alternatives": [
             {
@@ -5244,7 +5238,6 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 149.68978735937017,
           "verified": true,
           "alternatives": [
             {
@@ -5263,7 +5256,6 @@
           "item_name": "Spellshifter Rod",
           "source": "Tiara of the Deep",
           "source_kind": "quest",
-          "sim_dps": 149.68978735937017,
           "verified": true,
           "alternatives": [
             {
@@ -5328,8 +5320,9 @@
           ]
         }
       ],
-      "set_dps": 149.68978735937017,
+      "set_dps": 149.25766211030083,
       "no_source_count": 421,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5353,20 +5346,19 @@
         "shoulder: Rotgrip Mantle",
         "back: Deep Woodlands Cloak",
         "chest: Acumen Robes",
-        "wrist: Aristocratic Cuffs",
+        "wrist: Bloodband Bracers",
         "hands: Raider Handwraps",
         "waist: Ban'thok Sash",
         "legs: Spellshock Leggings",
         "feet: First Sergeant's Dreadweave Boots",
-        "finger1: Brainlash",
         "finger2: Cyclopean Band",
         "trinket1: Frozen Heart of the Mountain",
         "trinket2: Rune of the Guard Captain",
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.010372079,
-      "verify_run_seconds": 1.036166892,
+      "weights_run_seconds": 0.956588621,
+      "verify_run_seconds": 1.276989686,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6107,8 +6099,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.078022608,
-      "verify_run_seconds": 3.51509156,
+      "weights_run_seconds": 1.08835435,
+      "verify_run_seconds": 3.624320504,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6281,7 +6273,7 @@
           "item_name": "Virtuous Cowl",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 47.925818650759865,
+          "score": 47.92581865075987,
           "verified": true,
           "alternatives": [
             {
@@ -6852,8 +6844,8 @@
         "trinket2: Second Wind",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.078022608,
-      "verify_run_seconds": 3.5131306540000002,
+      "weights_run_seconds": 1.08835435,
+      "verify_run_seconds": 3.557194496,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7365,14 +7357,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -6.534383841265989
+              "dps_delta": -6.534383841265992
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -6.913359545626221
+              "dps_delta": -6.913359545626224
             },
             {
               "item_id": 11669,
@@ -7590,8 +7582,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.195551308,
-      "verify_run_seconds": 2.9159469209999997,
+      "weights_run_seconds": 1.182141322,
+      "verify_run_seconds": 2.982268713,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8325,8 +8317,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.195551308,
-      "verify_run_seconds": 2.81519557,
+      "weights_run_seconds": 1.182141322,
+      "verify_run_seconds": 2.915108409,
       "coverage": {
         "back": {
           "eligible": 456,

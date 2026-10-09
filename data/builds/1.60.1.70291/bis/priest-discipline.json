@@ -1,8 +1,8 @@
 {
   "spec": "priest-discipline",
   "build": "1.60.1.70291",
-  "engine_version": "f80f8e819",
-  "generated_at": "2026-10-09T01:27:39Z",
+  "engine_version": "be3a7581b",
+  "generated_at": "2026-10-09T03:29:28Z",
   "bands": [
     {
       "spec": "priest-discipline",
@@ -568,8 +568,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 10.62297074,
-      "verify_run_seconds": 30.441510542,
+      "weights_run_seconds": 14.52221911,
+      "verify_run_seconds": 38.403717632,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -969,7 +969,7 @@
           "item_name": "Filigreed Pristine Leggings",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 37.62328610716346,
+          "score": 37.62328610716345,
           "verified": true,
           "alternatives": [
             {
@@ -977,14 +977,14 @@
               "item_name": "Filigreed Silky Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.8409618171790522
+              "dps_delta": -0.8409618171790518
             },
             {
               "item_id": 253943,
               "item_name": "Filigreed Shadow Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.8409618171790522
+              "dps_delta": -0.8409618171790518
             },
             {
               "item_id": 12987,
@@ -1217,8 +1217,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 10.62297074,
-      "verify_run_seconds": 30.413540658,
+      "weights_run_seconds": 14.52221911,
+      "verify_run_seconds": 39.14709855,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1680,7 +1680,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 42.319550393153435,
+          "score": 42.31955039315344,
           "verified": true,
           "alternatives": [
             {
@@ -1688,14 +1688,14 @@
               "item_name": "Glinteye Slippers",
               "source_kind": "dungeon",
               "source": "Excavation Site: Wetlands: Saltspine",
-              "dps_delta": -1.2795099902590457
+              "dps_delta": -1.2795099902590463
             },
             {
               "item_id": 274747,
               "item_name": "Soggy Boots",
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear",
-              "dps_delta": -1.3418783552664448
+              "dps_delta": -1.3418783552664453
             },
             {
               "item_id": 9454,
@@ -1790,7 +1790,7 @@
           "item_name": "Wind Spirit Staff",
           "source": "Razorfen Kraul: Earthcaller Halmgar",
           "source_kind": "dungeon",
-          "score": 109.79472186343158,
+          "score": 109.79472186343156,
           "verified": true,
           "alternatives": [
             {
@@ -1806,14 +1806,14 @@
               "item_name": "Death Speaker Scepter",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Death Speaker Jargba",
-              "dps_delta": -2.8570573909264096
+              "dps_delta": -2.8570573909264088
             },
             {
               "item_id": 1317,
               "item_name": "Hardened Root Staff",
               "source_kind": "quest",
               "source": "What Comes Around...",
-              "dps_delta": -3.9095311566112056
+              "dps_delta": -3.9095311566112048
             }
           ]
         },
@@ -1899,8 +1899,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Summoner's Wand"
       ],
-      "weights_run_seconds": 10.645854353,
-      "verify_run_seconds": 28.246099415,
+      "weights_run_seconds": 15.623970974,
+      "verify_run_seconds": 32.214966167,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2470,7 +2470,7 @@
           "item_name": "Wind Spirit Staff",
           "source": "Razorfen Kraul: Earthcaller Halmgar",
           "source_kind": "dungeon",
-          "score": 109.79472186343158,
+          "score": 109.79472186343156,
           "verified": true,
           "alternatives": [
             {
@@ -2486,7 +2486,7 @@
               "item_name": "Death Speaker Scepter",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Death Speaker Jargba",
-              "dps_delta": -2.8570573909264096
+              "dps_delta": -2.8570573909264088
             },
             {
               "item_id": 19569,
@@ -2579,8 +2579,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Summoner's Wand"
       ],
-      "weights_run_seconds": 10.645854353,
-      "verify_run_seconds": 28.240222145,
+      "weights_run_seconds": 15.623970974,
+      "verify_run_seconds": 31.733623206,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2840,26 +2840,33 @@
         },
         {
           "slot": "back",
-          "item_id": 23178,
-          "item_name": "Mantle of Lady Falther'ess",
-          "source": "Razorfen Downs: Lady Falther'ess",
-          "source_kind": "dungeon",
-          "score": 31.389438475908026,
+          "item_id": 272077,
+          "item_name": "Darkspear Raider's Cloak",
+          "source": "Creeg Bothunk",
+          "source_kind": "vendor",
+          "sim_dps": 138.97194065972928,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272077,
-              "item_name": "Darkspear Raider's Cloak",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -0.2669334286790713
+              "item_id": 23178,
+              "item_name": "Mantle of Lady Falther'ess",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Lady Falther'ess",
+              "dps_delta": 0
             },
             {
               "item_id": 6424,
               "item_name": "Blackforge Cape",
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
-              "dps_delta": -0.8281605946637768
+              "dps_delta": -0.5612271659847056
+            },
+            {
+              "item_id": 4462,
+              "item_name": "Cloak of Rot",
+              "source_kind": "world",
+              "source": "Lord Malathrom",
+              "dps_delta": -0.5969405746971371
             }
           ]
         },
@@ -3252,8 +3259,9 @@
           ]
         }
       ],
-      "set_dps": 138.97572879198597,
+      "set_dps": 138.99997569692013,
       "no_source_count": 343,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3275,7 +3283,7 @@
         "head: Papal Fez",
         "neck: Glowing Eye of Mordresh",
         "shoulder: Inquisitor's Shawl",
-        "back: Mantle of Lady Falther'ess",
+        "back: Darkspear Raider's Cloak",
         "chest: Stormcloth Vest",
         "wrist: Windchaser Cuffs",
         "hands: Stormcloth Gloves",
@@ -3288,8 +3296,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 12.333804944,
-      "verify_run_seconds": 80.043882437,
+      "weights_run_seconds": 13.579585098999999,
+      "verify_run_seconds": 107.616136313,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3368,11 +3376,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 138.97572879198597,
-        "raw_hps": 139.44720758586018,
-        "overheal_pct": 0.0033810558277684866,
-        "mana_lasts_sec": 71.37372499999998,
-        "hpm": 3.0530043321859104
+        "hps": 138.99997569692013,
+        "raw_hps": 139.68510784011573,
+        "overheal_pct": 0.004904833119217078,
+        "mana_lasts_sec": 71.81934999999997,
+        "hpm": 3.025679110644355
       }
     },
     {
@@ -3549,27 +3557,33 @@
         },
         {
           "slot": "back",
-          "item_id": 23178,
-          "item_name": "Mantle of Lady Falther'ess",
-          "source": "Razorfen Downs: Lady Falther'ess",
-          "source_kind": "dungeon",
-          "score": 31.389438475908026,
+          "item_id": 272077,
+          "item_name": "Darkspear Raider's Cloak",
+          "source": "Creeg Bothunk",
+          "source_kind": "vendor",
+          "sim_dps": 136.6041232274549,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272077,
-              "item_name": "Darkspear Raider's Cloak",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": 0,
-              "verified": true
+              "item_id": 23178,
+              "item_name": "Mantle of Lady Falther'ess",
+              "source_kind": "dungeon",
+              "source": "Razorfen Downs: Lady Falther'ess",
+              "dps_delta": 0
             },
             {
               "item_id": 6424,
               "item_name": "Blackforge Cape",
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
-              "dps_delta": -0.8281605946637768
+              "dps_delta": -0.5612271659847056
+            },
+            {
+              "item_id": 4462,
+              "item_name": "Cloak of Rot",
+              "source_kind": "world",
+              "source": "Lord Malathrom",
+              "dps_delta": -0.5969405746971371
             }
           ]
         },
@@ -3711,7 +3725,6 @@
           "item_name": "Stormcloth Pants",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "sim_dps": 136.32698219305422,
           "verified": true,
           "alternatives": [
             {
@@ -3749,7 +3762,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 37.88892125934572,
+          "score": 37.888921259345715,
           "verified": true,
           "alternatives": [
             {
@@ -3765,14 +3778,14 @@
               "item_name": "Kodo Rustler Boots",
               "source_kind": "quest",
               "source": "Kodo Roundup",
-              "dps_delta": -1.3079921066743383
+              "dps_delta": -1.3079921066743379
             },
             {
               "item_id": 9454,
               "item_name": "Acidic Walkers",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -1.3169204588524461
+              "dps_delta": -1.3169204588524455
             }
           ]
         },
@@ -3784,7 +3797,7 @@
           "source_kind": "quest",
           "score": 18.245106426241993,
           "verified": true,
-          "swap_note": "confirmed by the sim against Sea Giant's Toe Ring (id 274746): kept the pick, +2.6 DPS (136.3 vs 133.7 set DPS)",
+          "swap_note": "confirmed by the sim against Sea Giant's Toe Ring (id 274746): kept the pick, +2.6 DPS over it",
           "dps_delta": 2.633771648087361,
           "alternatives": [
             {
@@ -3849,9 +3862,8 @@
           "item_name": "Darkspear Voodoo Seal",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "sim_dps": 136.32698219305422,
           "verified": true,
-          "swap_note": "confirmed by the sim against Ankh of Life (id 1713): kept the pick, +3.8 DPS (136.3 vs 132.5 set DPS)",
+          "swap_note": "confirmed by the sim against Ankh of Life (id 1713): kept the pick, +3.8 DPS over it",
           "dps_delta": 3.83170671160633
         },
         {
@@ -3869,7 +3881,6 @@
           "item_name": "Hand of Righteousness",
           "source": "Scarlet Monastery: High Inquisitor Whitemane",
           "source_kind": "dungeon",
-          "sim_dps": 136.32698219305422,
           "verified": true,
           "alternatives": [
             {
@@ -3962,8 +3973,9 @@
           ]
         }
       ],
-      "set_dps": 136.34209441640002,
+      "set_dps": 136.6087230607188,
       "no_source_count": 326,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3985,7 +3997,7 @@
         "head: Papal Fez",
         "neck: Glowing Eye of Mordresh",
         "shoulder: Inquisitor's Shawl",
-        "back: Mantle of Lady Falther'ess",
+        "back: Darkspear Raider's Cloak",
         "chest: Stormcloth Vest",
         "wrist: Windchaser Cuffs",
         "hands: Stormcloth Gloves",
@@ -3998,8 +4010,8 @@
         "off_hand: Prophetic Cane",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 12.333804944,
-      "verify_run_seconds": 80.320747689,
+      "weights_run_seconds": 13.579585098999999,
+      "verify_run_seconds": 107.798089966,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4078,11 +4090,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 136.34209441640002,
-        "raw_hps": 136.90186337214283,
-        "overheal_pct": 0.004088833723330576,
-        "mana_lasts_sec": 70.98849999999997,
-        "hpm": 3.013705793972217
+        "hps": 136.6087230607188,
+        "raw_hps": 137.14255878906354,
+        "overheal_pct": 0.00389256065409882,
+        "mana_lasts_sec": 71.52642499999999,
+        "hpm": 2.9958885494052936
       }
     },
     {
@@ -4759,8 +4771,8 @@
         "off_hand: Enthralled Sphere",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 12.297040351,
-      "verify_run_seconds": 42.297748329,
+      "weights_run_seconds": 15.835388066,
+      "verify_run_seconds": 57.848464815,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4933,7 +4945,7 @@
               "item_name": "Blood Guard's Satin Cover",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.0055256950466329785
+              "dps_delta": -0.005525695046631827
             },
             {
               "item_id": 10630,
@@ -4987,13 +4999,20 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 11624,
-          "item_name": "Kentic Amice",
-          "source": "Blackrock Depths: High Interrogator Gerstahn ",
-          "source_kind": "dungeon",
-          "score": 56.604687479012114,
+          "item_id": 254049,
+          "item_name": "Nethergeld Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "sim_dps": 197.26920407684608,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 11624,
+              "item_name": "Kentic Amice",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "dps_delta": 0
+            },
             {
               "item_id": 220901,
               "item_name": "Blood Guard's Satin Pads",
@@ -5002,19 +5021,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 254049,
-              "item_name": "Nethergeld Shoulders",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -0.19403796548024843,
-              "verified": true
-            },
-            {
               "item_id": 19507,
               "item_name": "Inquisitor's Shawl",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Fairbanks",
-              "dps_delta": -0.7362068026578384
+              "dps_delta": -0.6949738696520915
             }
           ]
         },
@@ -5156,9 +5167,8 @@
           "item_name": "Gilded Cord",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "sim_dps": 195.65228562484643,
           "verified": true,
-          "swap_note": "beat the scored pick Dawnspire Cord (id 12466) in the sim: +2.4 DPS (195.7 vs 193.2 set DPS)",
+          "swap_note": "beat the scored pick Dawnspire Cord (id 12466) in the sim: +2.4 DPS over it",
           "dps_delta": 2.4481506373771538,
           "alternatives": [
             {
@@ -5166,14 +5176,14 @@
               "item_name": "Gilded Waistcord",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.04704938490849377
+              "dps_delta": -0.04704938490849435
             },
             {
               "item_id": 254077,
               "item_name": "Earthenweave Cord",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.6170407073596955
+              "dps_delta": -0.6170407073596961
             },
             {
               "item_id": 12466,
@@ -5481,8 +5491,9 @@
           ]
         }
       ],
-      "set_dps": 195.64294094761374,
+      "set_dps": 197.29276989614075,
       "no_source_count": 421,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5503,7 +5514,7 @@
       "new_at_band": [
         "head: Gemburst Circlet",
         "neck: Horizon Choker",
-        "shoulder: Kentic Amice",
+        "shoulder: Nethergeld Shoulders",
         "back: Darkspear Raider's Cloak",
         "chest: Embrace of the Wind Serpent",
         "wrist: Aristocratic Cuffs",
@@ -5517,8 +5528,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 12.297040351,
-      "verify_run_seconds": 43.814934239,
+      "weights_run_seconds": 15.835388066,
+      "verify_run_seconds": 66.691296637,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5597,11 +5608,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 195.64294094761374,
-        "raw_hps": 197.78992224702105,
-        "overheal_pct": 0.010854856885609832,
-        "mana_lasts_sec": 76.02765,
-        "hpm": 3.069266055924174
+        "hps": 197.29276989614075,
+        "raw_hps": 199.73859688965098,
+        "overheal_pct": 0.012245139555383311,
+        "mana_lasts_sec": 75.44497499999997,
+        "hpm": 3.1011576360287045
       }
     },
     {
@@ -6247,8 +6258,8 @@
         "main_hand: Dancing Sliver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 12.002629117,
-      "verify_run_seconds": 56.877168444,
+      "weights_run_seconds": 11.928088764,
+      "verify_run_seconds": 67.920609107,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6579,34 +6590,33 @@
         },
         {
           "slot": "wrist",
-          "item_id": 23129,
-          "item_name": "Bracers of Mending",
-          "source": "Dire Maul: Revanchion",
-          "source_kind": "dungeon",
-          "score": 119.92071994272445,
+          "item_id": 22667,
+          "item_name": "Bracers of Hope",
+          "source": "Epic Armaments of Battle - Friend of the Dawn",
+          "source_kind": "quest",
+          "sim_dps": 316.58989576926496,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 23129,
+              "item_name": "Bracers of Mending",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Revanchion",
+              "dps_delta": 0
+            },
             {
               "item_id": 13958,
               "item_name": "Wyrmthalak's Shackles",
               "source_kind": "quest",
               "source": "Warlord's Command",
-              "dps_delta": -0.5353726384824463
+              "dps_delta": -0.5218916250367526
             },
             {
               "item_id": 17619,
               "item_name": "General's Satin Bracers",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.6027777057109164
-            },
-            {
-              "item_id": 22667,
-              "item_name": "Bracers of Hope",
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -0.902324208509242,
-              "verified": true
+              "dps_delta": -0.5892966922652226
             }
           ]
         },
@@ -6649,9 +6659,8 @@
           "item_name": "Virtuous Belt",
           "source": "Just Compensation",
           "source_kind": "quest",
-          "sim_dps": 316.7638367594384,
           "verified": true,
-          "swap_note": "beat the scored pick Penitent's Cinch (id 272394) in the sim: +3.2 DPS (316.8 vs 313.5 set DPS)",
+          "swap_note": "beat the scored pick Penitent's Cinch (id 272394) in the sim: +3.2 DPS over it",
           "dps_delta": 3.2437255278357497,
           "alternatives": [
             {
@@ -6692,7 +6701,7 @@
               "item_name": "Virtuous Skirt",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.662271295652511
+              "dps_delta": -1.6622712956525085
             },
             {
               "item_id": 13389,
@@ -6943,8 +6952,9 @@
           ]
         }
       ],
-      "set_dps": 316.7350071194726,
+      "set_dps": 316.51714063658324,
       "no_source_count": 1112,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6967,7 +6977,7 @@
         "neck: The Eye of Zuldazar",
         "shoulder: Argent Elite Shoulders",
         "back: Frostweaver Cape",
-        "wrist: Bracers of Mending",
+        "wrist: Bracers of Hope",
         "waist: Virtuous Belt",
         "legs: Devout Skirt",
         "feet: Virtuous Sandals",
@@ -6977,8 +6987,8 @@
         "main_hand: Dancing Sliver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 12.002629117,
-      "verify_run_seconds": 56.104196878,
+      "weights_run_seconds": 11.928088764,
+      "verify_run_seconds": 72.002734989,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7057,11 +7067,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 316.7350071194726,
-        "raw_hps": 321.5320492708677,
-        "overheal_pct": 0.014919328142476762,
-        "mana_lasts_sec": 90.062375,
-        "hpm": 4.004640234800896
+        "hps": 316.51714063658324,
+        "raw_hps": 321.30147389598255,
+        "overheal_pct": 0.014890480275070894,
+        "mana_lasts_sec": 90.32172499999999,
+        "hpm": 3.9968795801493795
       }
     },
     {
@@ -7158,7 +7168,7 @@
               "item_name": "Lieutenant Commander's Satin Hood",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.9864334350071287
+              "dps_delta": -0.986433435007132
             },
             {
               "item_id": 16693,
@@ -7172,11 +7182,10 @@
         },
         {
           "slot": "neck",
-          "item_id": 14558,
-          "item_name": "Lady Maye's Pendant",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "score": 83.15163177334674,
+          "item_id": 19593,
+          "item_name": "The Eye of Zuldazar",
+          "source": "The Eye of Zuldazar",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
@@ -7184,22 +7193,21 @@
               "item_name": "Jeweled Amulet of Cainwyn",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.6255866088946505,
-              "verified": true
+              "dps_delta": 0
             },
             {
-              "item_id": 19593,
-              "item_name": "The Eye of Zuldazar",
-              "source_kind": "quest",
-              "source": "The Eye of Zuldazar",
-              "dps_delta": -0.8987077596829943
+              "item_id": 14558,
+              "item_name": "Lady Maye's Pendant",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0
             },
             {
               "item_id": 19594,
               "item_name": "The All-Seeing Eye of Zuldazar",
               "source_kind": "quest",
               "source": "The All-Seeing Eye of Zuldazar",
-              "dps_delta": -0.8987077596829943
+              "dps_delta": 0
             }
           ]
         },
@@ -7407,9 +7415,8 @@
           "item_name": "Virtuous Skirt",
           "source": "Anthion's Parting Words",
           "source_kind": "quest",
-          "sim_dps": 566.4115136643884,
           "verified": true,
-          "swap_note": "beat the scored pick Devout Skirt (id 16694) in the sim: +9.9 DPS (566.4 vs 556.5 set DPS)",
+          "swap_note": "beat the scored pick Devout Skirt (id 16694) in the sim: +9.9 DPS over it",
           "dps_delta": 9.918188524848006,
           "alternatives": [
             {
@@ -7442,7 +7449,7 @@
           "item_name": "Incandescent Mooncloth Boots",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 122.22737742298301,
+          "score": 122.227377422983,
           "verified": true,
           "alternatives": [
             {
@@ -7458,14 +7465,14 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.644898385550908
+              "dps_delta": -2.6448983855509063
             },
             {
               "item_id": 22247,
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.4209067066888106
+              "dps_delta": -3.420906706688809
             }
           ]
         },
@@ -7479,18 +7486,18 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
+              "item_id": 18395,
+              "item_name": "Emerald Flame Ring",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin",
+              "dps_delta": -1.0733512762146311
+            },
+            {
               "item_id": 13345,
               "item_name": "Seal of Rivendare",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
               "dps_delta": -1.3552730053966109
-            },
-            {
-              "item_id": 22334,
-              "item_name": "Band of Mending",
-              "source_kind": "dungeon",
-              "source": "Stratholme: Balnazzar",
-              "dps_delta": -1.5736695226605744
             },
             {
               "item_id": 11669,
@@ -7504,10 +7511,10 @@
         },
         {
           "slot": "finger2",
-          "item_id": 18395,
-          "item_name": "Emerald Flame Ring",
-          "source": "Dire Maul: Prince Tortheldrin",
-          "source_kind": "dungeon",
+          "item_id": 22681,
+          "item_name": "Band of Piety",
+          "source": "Superior Armaments of Battle - Friend of the Dawn",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
@@ -7515,22 +7522,21 @@
               "item_name": "Seal of Rivendare",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -0.2819217291819798
+              "dps_delta": 0
+            },
+            {
+              "item_id": 18395,
+              "item_name": "Emerald Flame Ring",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin",
+              "dps_delta": 0
             },
             {
               "item_id": 22334,
               "item_name": "Band of Mending",
               "source_kind": "dungeon",
               "source": "Stratholme: Balnazzar",
-              "dps_delta": -0.5003182464459432
-            },
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -13.476352792709463,
-              "verified": true
+              "dps_delta": 0
             }
           ]
         },
@@ -7542,13 +7548,6 @@
           "source_kind": "vendor",
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -1.6542351619255506
-            },
             {
               "item_id": 18371,
               "item_name": "Mindtap Talisman",
@@ -7563,24 +7562,25 @@
               "source": "Holy Bologna: What the Light Won't Tell You",
               "dps_delta": -2.2923873183723344,
               "verified": true
+            },
+            {
+              "item_id": 1713,
+              "item_name": "Ankh of Life",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -2.980903077101432
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 18371,
-              "item_name": "Mindtap Talisman",
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": 0
-            },
             {
               "item_id": 18469,
               "item_name": "Royal Seal of Eldre'Thalas",
@@ -7589,12 +7589,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0,
-              "verified": true
+              "item_id": 18371,
+              "item_name": "Mindtap Talisman",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Magister Kalendris",
+              "dps_delta": -0.10013188716953177
+            },
+            {
+              "item_id": 1713,
+              "item_name": "Ankh of Life",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.3266679151758813
             }
           ]
         },
@@ -7631,21 +7637,26 @@
         },
         {
           "slot": "off_hand",
-          "item_id": 13353,
-          "item_name": "Book of the Dead",
-          "source": "Stratholme: Balnazzar",
-          "source_kind": "dungeon",
-          "score": 71.02943905598089,
+          "item_id": 19312,
+          "item_name": "Lei of the Lifegiver",
+          "source": "Stormpike Guard",
+          "source_kind": "rep",
+          "sim_dps": 580.9577649459575,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 11928,
               "item_name": "Thaurissan's Royal Scepter",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": 0
+            },
+            {
+              "item_id": 13353,
+              "item_name": "Book of the Dead",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Balnazzar",
+              "dps_delta": 0
             },
             {
               "item_id": 234590,
@@ -7653,13 +7664,6 @@
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
               "dps_delta": 0
-            },
-            {
-              "item_id": 15805,
-              "item_name": "Penelope's Rose",
-              "source_kind": "quest",
-              "source": "Kirtonos the Herald",
-              "dps_delta": -1.1215367575179525
             }
           ]
         },
@@ -7697,8 +7701,9 @@
           ]
         }
       ],
-      "set_dps": 566.3225639760094,
+      "set_dps": 581.0098104669062,
       "no_source_count": 1121,
+      "unconfirmed_within_error_held": 4,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7718,7 +7723,7 @@
       ],
       "new_at_band": [
         "head: Virtuous Crown",
-        "neck: Lady Maye's Pendant",
+        "neck: The Eye of Zuldazar",
         "shoulder: Argent Elite Shoulders",
         "back: Hide of the Wild",
         "chest: Virtuous Robe",
@@ -7728,13 +7733,13 @@
         "legs: Virtuous Skirt",
         "feet: Incandescent Mooncloth Boots",
         "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Emerald Flame Ring",
-        "trinket2: Draconic Infused Emblem",
-        "off_hand: Book of the Dead",
+        "finger2: Band of Piety",
+        "trinket2: Serenity Field",
+        "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 7.912284644,
-      "verify_run_seconds": 34.572457972,
+      "weights_run_seconds": 7.943536208,
+      "verify_run_seconds": 40.787792371,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7813,11 +7818,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 566.3225639760094,
-        "raw_hps": 580.6972952548422,
-        "overheal_pct": 0.02475425905423645,
-        "mana_lasts_sec": 192.05302500000002,
-        "hpm": 4.2127782258801885
+        "hps": 581.0098104669062,
+        "raw_hps": 596.4021998620799,
+        "overheal_pct": 0.025808740140014996,
+        "mana_lasts_sec": 192.93837499999998,
+        "hpm": 4.392144020558562
       }
     },
     {
@@ -7899,7 +7904,7 @@
           "item_name": "Virtuous Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 138.76240713303218,
+          "score": 138.7624071330322,
           "verified": true,
           "alternatives": [
             {
@@ -7914,7 +7919,7 @@
               "item_name": "Champion's Satin Hood",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.986433435007132
+              "dps_delta": -0.9864334350071353
             },
             {
               "item_id": 16693,
@@ -7928,11 +7933,10 @@
         },
         {
           "slot": "neck",
-          "item_id": 14558,
-          "item_name": "Lady Maye's Pendant",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "score": 83.15163177334674,
+          "item_id": 19593,
+          "item_name": "The Eye of Zuldazar",
+          "source": "The Eye of Zuldazar",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
@@ -7940,21 +7944,21 @@
               "item_name": "Jeweled Amulet of Cainwyn",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.3553419676504286
+              "dps_delta": 0
             },
             {
-              "item_id": 19593,
-              "item_name": "The Eye of Zuldazar",
-              "source_kind": "quest",
-              "source": "The Eye of Zuldazar",
-              "dps_delta": -0.8987077596829943
+              "item_id": 14558,
+              "item_name": "Lady Maye's Pendant",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": 0
             },
             {
               "item_id": 19594,
               "item_name": "The All-Seeing Eye of Zuldazar",
               "source_kind": "quest",
               "source": "The All-Seeing Eye of Zuldazar",
-              "dps_delta": -0.8987077596829943
+              "dps_delta": 0
             }
           ]
         },
@@ -8162,9 +8166,8 @@
           "item_name": "Virtuous Skirt",
           "source": "Anthion's Parting Words",
           "source_kind": "quest",
-          "sim_dps": 564.4656685972632,
           "verified": true,
-          "swap_note": "beat the scored pick Devout Skirt (id 16694) in the sim: +12.4 DPS (564.5 vs 552.1 set DPS)",
+          "swap_note": "beat the scored pick Devout Skirt (id 16694) in the sim: +12.4 DPS over it",
           "dps_delta": 12.355240254003093,
           "alternatives": [
             {
@@ -8234,18 +8237,18 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
+              "item_id": 18395,
+              "item_name": "Emerald Flame Ring",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin",
+              "dps_delta": -1.0733512762146311
+            },
+            {
               "item_id": 13345,
               "item_name": "Seal of Rivendare",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
               "dps_delta": -1.3552730053966109
-            },
-            {
-              "item_id": 22334,
-              "item_name": "Band of Mending",
-              "source_kind": "dungeon",
-              "source": "Stratholme: Balnazzar",
-              "dps_delta": -1.5736695226605744
             },
             {
               "item_id": 11669,
@@ -8259,10 +8262,10 @@
         },
         {
           "slot": "finger2",
-          "item_id": 18395,
-          "item_name": "Emerald Flame Ring",
-          "source": "Dire Maul: Prince Tortheldrin",
-          "source_kind": "dungeon",
+          "item_id": 22681,
+          "item_name": "Band of Piety",
+          "source": "Superior Armaments of Battle - Friend of the Dawn",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
@@ -8270,22 +8273,21 @@
               "item_name": "Seal of Rivendare",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -0.2819217291819798
+              "dps_delta": 0
+            },
+            {
+              "item_id": 18395,
+              "item_name": "Emerald Flame Ring",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Prince Tortheldrin",
+              "dps_delta": 0
             },
             {
               "item_id": 22334,
               "item_name": "Band of Mending",
               "source_kind": "dungeon",
               "source": "Stratholme: Balnazzar",
-              "dps_delta": -0.5003182464459432
-            },
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -9.775258268342895,
-              "verified": true
+              "dps_delta": 0
             }
           ]
         },
@@ -8296,16 +8298,7 @@
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
           "verified": true,
-          "swap_note": "confirmed by the sim against Royal Seal of Eldre'Thalas (id 18469): kept the pick, +14.0 DPS over it",
-          "dps_delta": 13.987599205195806,
           "alternatives": [
-            {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -1.6542351619255506
-            },
             {
               "item_id": 18371,
               "item_name": "Mindtap Talisman",
@@ -8319,38 +8312,46 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -2.980903077101432
+            },
+            {
+              "item_id": 18469,
+              "item_name": "Royal Seal of Eldre'Thalas",
+              "source_kind": "quest",
+              "source": "Holy Bologna: What the Light Won't Tell You",
+              "dps_delta": -13.987599205195806,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 18469,
-          "item_name": "Royal Seal of Eldre'Thalas",
-          "source": "Holy Bologna: What the Light Won't Tell You",
-          "source_kind": "quest",
+          "item_id": 272439,
+          "item_name": "Serenity Field",
+          "source": "Pix Xizzix",
+          "source_kind": "vendor",
           "verified": true,
+          "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0,
-              "verified": true
+              "item_id": 18469,
+              "item_name": "Royal Seal of Eldre'Thalas",
+              "source_kind": "quest",
+              "source": "Holy Bologna: What the Light Won't Tell You",
+              "dps_delta": 0
             },
             {
               "item_id": 18371,
               "item_name": "Mindtap Talisman",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -0.7992186636543985
+              "dps_delta": -0.10013188716953177
             },
             {
               "item_id": 1713,
               "item_name": "Ankh of Life",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.025754691660748
+              "dps_delta": -1.3266679151758813
             }
           ]
         },
@@ -8387,21 +8388,26 @@
         },
         {
           "slot": "off_hand",
-          "item_id": 13353,
-          "item_name": "Book of the Dead",
-          "source": "Stratholme: Balnazzar",
-          "source_kind": "dungeon",
-          "score": 71.02943905598089,
+          "item_id": 19312,
+          "item_name": "Lei of the Lifegiver",
+          "source": "Frostwolf Clan",
+          "source_kind": "rep",
+          "sim_dps": 576.4073894047516,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 11928,
               "item_name": "Thaurissan's Royal Scepter",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": 0,
-              "verified": true
+              "dps_delta": 0
+            },
+            {
+              "item_id": 13353,
+              "item_name": "Book of the Dead",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Balnazzar",
+              "dps_delta": 0
             },
             {
               "item_id": 234564,
@@ -8409,13 +8415,6 @@
               "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
               "dps_delta": 0
-            },
-            {
-              "item_id": 15805,
-              "item_name": "Penelope's Rose",
-              "source_kind": "quest",
-              "source": "Kirtonos the Herald",
-              "dps_delta": -1.1215367575179525
             }
           ]
         },
@@ -8453,8 +8452,9 @@
           ]
         }
       ],
-      "set_dps": 564.413370894126,
+      "set_dps": 576.4764987009365,
       "no_source_count": 1112,
+      "unconfirmed_within_error_held": 4,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -8474,7 +8474,7 @@
       ],
       "new_at_band": [
         "head: Virtuous Crown",
-        "neck: Lady Maye's Pendant",
+        "neck: The Eye of Zuldazar",
         "shoulder: Argent Elite Shoulders",
         "back: Hide of the Wild",
         "chest: Virtuous Robe",
@@ -8484,13 +8484,13 @@
         "legs: Virtuous Skirt",
         "feet: Incandescent Mooncloth Boots",
         "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Emerald Flame Ring",
-        "trinket2: Royal Seal of Eldre'Thalas",
-        "off_hand: Book of the Dead",
+        "finger2: Band of Piety",
+        "trinket2: Serenity Field",
+        "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 7.912284644,
-      "verify_run_seconds": 33.294869148,
+      "weights_run_seconds": 7.943536208,
+      "verify_run_seconds": 39.498720723,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -8569,11 +8569,11 @@
       "role": "healer",
       "profile": "phase1-scaled",
       "metrics": {
-        "hps": 564.413370894126,
-        "raw_hps": 578.6465335140141,
-        "overheal_pct": 0.024597334980048458,
-        "mana_lasts_sec": 191.7551,
-        "hpm": 4.209309802022731
+        "hps": 576.4764987009365,
+        "raw_hps": 591.638645508546,
+        "overheal_pct": 0.025627377323495737,
+        "mana_lasts_sec": 189.76557499999996,
+        "hpm": 4.397415736202069
       }
     }
   ],

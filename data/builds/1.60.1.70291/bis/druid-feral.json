@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70291",
-  "engine_version": "f80f8e819",
-  "generated_at": "2026-10-09T00:34:52Z",
+  "engine_version": "be3a7581b",
+  "generated_at": "2026-10-09T02:25:50Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -544,8 +544,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 4.09831047,
-      "verify_run_seconds": 4.790173759,
+      "weights_run_seconds": 4.26955329,
+      "verify_run_seconds": 5.028552521,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -623,6 +623,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -1166,8 +1170,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 4.09831047,
-      "verify_run_seconds": 4.75950176,
+      "weights_run_seconds": 4.26955329,
+      "verify_run_seconds": 4.98836598,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1245,6 +1249,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -1810,8 +1818,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.424602736,
-      "verify_run_seconds": 2.89297598,
+      "weights_run_seconds": 4.632518545,
+      "verify_run_seconds": 3.04702336,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -1889,6 +1897,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -2448,8 +2460,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.424602736,
-      "verify_run_seconds": 2.922669237,
+      "weights_run_seconds": 4.632518545,
+      "verify_run_seconds": 3.029092929,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2527,6 +2539,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -3089,8 +3105,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 4.957756822,
-      "verify_run_seconds": 3.1505997900000002,
+      "weights_run_seconds": 5.075836692,
+      "verify_run_seconds": 3.566694596,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3168,6 +3184,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -3730,8 +3750,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 4.957756822,
-      "verify_run_seconds": 3.091861053,
+      "weights_run_seconds": 5.075836692,
+      "verify_run_seconds": 3.515189897,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -3809,6 +3829,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -3899,33 +3923,32 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 9479,
-          "item_name": "Embrace of the Lycan",
-          "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-          "source_kind": "dungeon",
-          "score": 49.60000000000005,
+          "item_id": 10008,
+          "item_name": "White Bandit Mask",
+          "source": "Tailoring",
+          "source_kind": "crafted",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 10008,
-              "item_name": "White Bandit Mask",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -0.3915380208505928
+              "item_id": 9479,
+              "item_name": "Embrace of the Lycan",
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak: Chief Ukorz Sandscalp",
+              "dps_delta": 0
             },
             {
               "item_id": 220850,
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.7049071065965319
+              "dps_delta": -0.313369085745939
             },
             {
               "item_id": 14658,
               "item_name": "Scorpashi Skullcap",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.3439554406764738
+              "dps_delta": -0.952417419825881
             }
           ]
         },
@@ -3937,7 +3960,7 @@
           "source_kind": "world_drop",
           "score": 35.17812035271088,
           "verified": true,
-          "swap_note": "confirmed by the sim against Sentinel's Medallion (id 19539): kept the pick, +1.2 DPS (186.4 vs 185.2 set DPS)",
+          "swap_note": "confirmed by the sim against Sentinel's Medallion (id 19539): kept the pick, +1.2 DPS over it",
           "dps_delta": 1.2123971504570648,
           "alternatives": [
             {
@@ -3991,33 +4014,33 @@
         },
         {
           "slot": "back",
-          "item_id": 11626,
-          "item_name": "Blackveil Cape",
-          "source": "Blackrock Depths: High Interrogator Gerstahn ",
-          "source_kind": "dungeon",
-          "score": 39.23797576445787,
+          "item_id": 13122,
+          "item_name": "Dark Phantom Cape",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 185.2948125522752,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 11626,
+              "item_name": "Blackveil Cape",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "dps_delta": 0
+            },
             {
               "item_id": 12552,
               "item_name": "Blisterbane Wrap",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Anvilrage Overseer",
-              "dps_delta": -0.8985159321671834
-            },
-            {
-              "item_id": 13122,
-              "item_name": "Dark Phantom Cape",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.8985159321671834
+              "dps_delta": 0
             },
             {
               "item_id": 5257,
               "item_name": "Dark Hooded Cape",
               "source_kind": "world",
               "source": "Nimar the Slayer",
-              "dps_delta": -0.9380752506880067
+              "dps_delta": -0.03955931852082319
             }
           ]
         },
@@ -4284,7 +4307,6 @@
           "item_name": "Molten Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 186.4280260499533,
           "verified": true
         },
         {
@@ -4293,7 +4315,6 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 186.4280260499533,
           "verified": true,
           "alternatives": [
             {
@@ -4311,7 +4332,6 @@
           "item_name": "Ragehammer",
           "source": "Sunken Temple: Atal'ai Warrior",
           "source_kind": "dungeon",
-          "sim_dps": 186.4280260499533,
           "verified": true,
           "alternatives": [
             {
@@ -4349,8 +4369,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 186.4280260499533,
+      "set_dps": 185.2948125522752,
       "no_source_count": 604,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4369,10 +4390,9 @@
         "4964 Goblin Smasher"
       ],
       "new_at_band": [
-        "head: Embrace of the Lycan",
         "neck: Skibi's Pendant",
         "shoulder: Prowler's Leather Shoulder",
-        "back: Blackveil Cape",
+        "back: Dark Phantom Cape",
         "chest: Grizzled Pelt",
         "wrist: Deepfury Bracers",
         "hands: Raider Gloves",
@@ -4385,8 +4405,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 4.9561125839999995,
-      "verify_run_seconds": 3.777107657,
+      "weights_run_seconds": 5.196888846,
+      "verify_run_seconds": 4.681696443,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4464,6 +4484,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -5038,8 +5062,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 4.9561125839999995,
-      "verify_run_seconds": 3.552348846,
+      "weights_run_seconds": 5.196888846,
+      "verify_run_seconds": 4.527570828,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5117,6 +5141,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -5355,7 +5383,7 @@
               "item_name": "Field Marshal's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.089453593628121
+              "dps_delta": -2.0894535936281198
             },
             {
               "item_id": 16452,
@@ -5535,7 +5563,7 @@
             {
               "item_id": 227182,
               "item_name": "Knight-Lieutenant's Dragonhide Treads",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
               "dps_delta": -0.2510093087407769
             },
@@ -5779,8 +5807,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.907576225,
-      "verify_run_seconds": 12.319622245,
+      "weights_run_seconds": 5.009065602,
+      "verify_run_seconds": 13.112694664,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -5858,6 +5886,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -6096,14 +6128,14 @@
               "item_name": "Warlord's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.0894535936281198
+              "dps_delta": -2.089453593628119
             },
             {
               "item_id": 16549,
               "item_name": "Warlord's Dragonhide Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.1143503827227583
+              "dps_delta": -2.114350382722757
             },
             {
               "item_id": 23089,
@@ -6524,8 +6556,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.907576225,
-      "verify_run_seconds": 11.72846743,
+      "weights_run_seconds": 5.009065602,
+      "verify_run_seconds": 12.14712556,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6603,6 +6635,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -6918,9 +6954,9 @@
             {
               "item_id": 227183,
               "item_name": "Knight-Lieutenant's Dragonhide Grips",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
-              "dps_delta": -2.4310984763235974
+              "dps_delta": -2.4310984763235997
             }
           ]
         },
@@ -7001,7 +7037,7 @@
             {
               "item_id": 227182,
               "item_name": "Knight-Lieutenant's Dragonhide Treads",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
               "dps_delta": 0
             },
@@ -7254,8 +7290,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.741593366,
-      "verify_run_seconds": 11.877667035,
+      "weights_run_seconds": 4.908079482,
+      "verify_run_seconds": 12.724511938,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7333,6 +7369,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -7668,7 +7708,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -2.3619704994398822
+              "dps_delta": -2.36197049943988
             },
             {
               "item_id": 272396,
@@ -7985,8 +8025,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 4.741593366,
-      "verify_run_seconds": 11.382169051,
+      "weights_run_seconds": 4.908079482,
+      "verify_run_seconds": 11.920732543,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -8064,6 +8104,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     }

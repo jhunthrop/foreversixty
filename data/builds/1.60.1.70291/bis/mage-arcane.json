@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70291",
-  "engine_version": "f80f8e819",
-  "generated_at": "2026-10-09T00:56:48Z",
+  "engine_version": "be3a7581b",
+  "generated_at": "2026-10-09T02:52:47Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.064179833,
-      "verify_run_seconds": 0.802471759,
+      "weights_run_seconds": 1.26794516,
+      "verify_run_seconds": 1.025457618,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1198,8 +1198,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.064179833,
-      "verify_run_seconds": 0.84279965,
+      "weights_run_seconds": 1.26794516,
+      "verify_run_seconds": 1.044666158,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1883,8 +1883,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.325324684,
-      "verify_run_seconds": 0.913894536,
+      "weights_run_seconds": 1.547360106,
+      "verify_run_seconds": 1.126826632,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2575,8 +2575,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.325324684,
-      "verify_run_seconds": 0.941463605,
+      "weights_run_seconds": 1.547360106,
+      "verify_run_seconds": 1.170382089,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3291,8 +3291,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.343788913,
-      "verify_run_seconds": 0.980043774,
+      "weights_run_seconds": 1.585567161,
+      "verify_run_seconds": 1.38996311,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4003,8 +4003,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.343788913,
-      "verify_run_seconds": 1.010197062,
+      "weights_run_seconds": 1.585567161,
+      "verify_run_seconds": 1.335210768,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4708,8 +4708,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.363145496,
-      "verify_run_seconds": 1.2969722639999999,
+      "weights_run_seconds": 1.5826029259999999,
+      "verify_run_seconds": 1.858173716,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4970,7 +4970,7 @@
               "item_name": "Blood Guard's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -2.4363130181312282
+              "dps_delta": -2.436313018131229
             },
             {
               "item_id": 10029,
@@ -5413,8 +5413,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.363145496,
-      "verify_run_seconds": 1.197740186,
+      "weights_run_seconds": 1.5826029259999999,
+      "verify_run_seconds": 1.739699999,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5658,7 +5658,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 45.42759997590657,
+          "score": 45.427599975906574,
           "verified": true,
           "alternatives": [
             {
@@ -5666,14 +5666,14 @@
               "item_name": "Field Marshal's Silk Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.5701390942746087
+              "dps_delta": -2.5701390942746114
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.86632537014345
+              "dps_delta": -3.8663253701434526
             },
             {
               "item_id": 272103,
@@ -5738,7 +5738,7 @@
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -4.889446191839203
             },
@@ -5883,7 +5883,7 @@
             {
               "item_id": 227109,
               "item_name": "Knight-Captain's Silk Legguards",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -3.5932599159703638
             }
@@ -6168,8 +6168,8 @@
         "trinket2: Draconic Infused Emblem",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.388444869,
-      "verify_run_seconds": 2.897058383,
+      "weights_run_seconds": 1.5972179290000001,
+      "verify_run_seconds": 3.634510582,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6415,7 +6415,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 45.427599975906574,
+          "score": 45.42759997590657,
           "verified": true,
           "alternatives": [
             {
@@ -6423,14 +6423,14 @@
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.5701390942746114
+              "dps_delta": -2.5701390942746087
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.8663253701434526
+              "dps_delta": -3.86632537014345
             },
             {
               "item_id": 272103,
@@ -6924,8 +6924,8 @@
         "trinket2: Draconic Infused Emblem",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.388444869,
-      "verify_run_seconds": 2.811990711,
+      "weights_run_seconds": 1.5972179290000001,
+      "verify_run_seconds": 3.615492414,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7261,7 +7261,7 @@
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -9.388552283445417
             }
@@ -7672,8 +7672,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.572801109,
-      "verify_run_seconds": 3.147998986,
+      "weights_run_seconds": 1.977737453,
+      "verify_run_seconds": 4.303040751,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7849,13 +7849,20 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 18727,
-          "item_name": "Crimson Felt Hat",
-          "source": "Stratholme: Magistrate Barthilas",
-          "source_kind": "dungeon",
-          "score": 31.136462503291398,
+          "item_id": 226935,
+          "item_name": "Sorcerer's Crown",
+          "source": "Saving the Best for Last",
+          "source_kind": "quest",
+          "sim_dps": 737.0348082256029,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 18727,
+              "item_name": "Crimson Felt Hat",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Magistrate Barthilas",
+              "dps_delta": 0
+            },
             {
               "item_id": 231601,
               "item_name": "Warlord's Silk Cowl",
@@ -7864,18 +7871,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 226935,
-              "item_name": "Sorcerer's Crown",
-              "source_kind": "quest",
-              "source": "Saving the Best for Last",
-              "dps_delta": -0.003528426884476348
-            },
-            {
               "item_id": 227105,
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.5139804760988704
+              "dps_delta": -0.510452049214394
             }
           ]
         },
@@ -7885,7 +7885,6 @@
           "item_name": "Chains of the Lich",
           "source": "Stratholme: Balzaphon",
           "source_kind": "dungeon",
-          "sim_dps": 740.1338342141395,
           "verified": true,
           "alternatives": [
             {
@@ -8181,7 +8180,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 740.1338342141395,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8215,7 +8213,6 @@
           "item_name": "Rune Band of Wizardry",
           "source": "Blackrock Spire: Lord Valthalak",
           "source_kind": "dungeon",
-          "sim_dps": 740.1338342141395,
           "verified": true,
           "alternatives": [
             {
@@ -8248,9 +8245,8 @@
           "item_name": "Briarwood Reed",
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
-          "sim_dps": 740.1338342141395,
           "verified": true,
-          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +21.3 DPS (740.1 vs 718.9 set DPS)",
+          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +21.3 DPS over it",
           "dps_delta": 21.279876422054144,
           "alternatives": [
             {
@@ -8282,7 +8278,6 @@
           "item_name": "Draconic Infused Emblem",
           "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
-          "sim_dps": 740.1338342141395,
           "verified": true,
           "alternatives": [
             {
@@ -8315,7 +8310,6 @@
           "item_name": "Spire of Hakkar",
           "source": "Avatar of Hakkar",
           "source_kind": "world",
-          "sim_dps": 740.1338342141395,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8381,8 +8375,9 @@
           ]
         }
       ],
-      "set_dps": 740.1338342141395,
+      "set_dps": 737.0348082256029,
       "no_source_count": 1061,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -8401,7 +8396,7 @@
         "5005 Emberspark Pendant"
       ],
       "new_at_band": [
-        "head: Crimson Felt Hat",
+        "head: Sorcerer's Crown",
         "neck: Chains of the Lich",
         "shoulder: Rugged Mantle of the Timbermaw",
         "back: Arcanoweave Cloak",
@@ -8417,8 +8412,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.572801109,
-      "verify_run_seconds": 3.096424377,
+      "weights_run_seconds": 1.977737453,
+      "verify_run_seconds": 4.211206376,
       "coverage": {
         "back": {
           "eligible": 456,

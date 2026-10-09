@@ -1,8 +1,8 @@
 {
   "spec": "rogue-assassination",
   "build": "1.60.1.70291",
-  "engine_version": "f80f8e819",
-  "generated_at": "2026-10-09T01:42:55Z",
+  "engine_version": "be3a7581b",
+  "generated_at": "2026-10-09T03:45:34Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -579,8 +579,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.224416124,
-      "verify_run_seconds": 3.587090459,
+      "weights_run_seconds": 2.220720727,
+      "verify_run_seconds": 3.528816378,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -658,6 +658,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -1245,8 +1249,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.224416124,
-      "verify_run_seconds": 3.5236689070000002,
+      "weights_run_seconds": 2.220720727,
+      "verify_run_seconds": 3.461893456,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1324,6 +1328,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -1940,8 +1948,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.339708074,
-      "verify_run_seconds": 3.6820273610000003,
+      "weights_run_seconds": 2.299844276,
+      "verify_run_seconds": 3.552411095,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2019,6 +2027,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -2643,8 +2655,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.339708074,
-      "verify_run_seconds": 3.653360638,
+      "weights_run_seconds": 2.299844276,
+      "verify_run_seconds": 3.538462461,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2722,6 +2734,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -2834,26 +2850,33 @@
         },
         {
           "slot": "neck",
-          "item_id": 17772,
-          "item_name": "Zealous Shadowshard Pendant",
-          "source": "Shadowshard Fragments",
-          "source_kind": "quest",
-          "score": 20,
+          "item_id": 19540,
+          "item_name": "Sentinel's Medallion",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "sim_dps": 109.90993322831537,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19540,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.09542340865963625
+              "item_id": 17772,
+              "item_name": "Zealous Shadowshard Pendant",
+              "source_kind": "quest",
+              "source": "Shadowshard Fragments",
+              "dps_delta": 0
             },
             {
               "item_id": 7731,
               "item_name": "Ghostshard Talisman",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.20626133995483936
+              "dps_delta": -0.11083793129520313
+            },
+            {
+              "item_id": 13084,
+              "item_name": "Kaleidoscope Chain",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.2392925071509069
             }
           ]
         },
@@ -3233,9 +3256,8 @@
           "item_name": "Jhordy's Misplaced Screwdriver",
           "source": "Rettrick",
           "source_kind": "vendor",
-          "sim_dps": 109.93690313027676,
           "verified": true,
-          "swap_note": "beat the scored pick Ardent Custodian (id 868) in the sim: +63.3 DPS (109.9 vs 46.6 set DPS)",
+          "swap_note": "beat the scored pick Ardent Custodian (id 868) in the sim: +63.3 DPS over it",
           "dps_delta": 63.29231196657603,
           "alternatives": [
             {
@@ -3295,8 +3317,9 @@
           ]
         }
       ],
-      "set_dps": 109.93690313027676,
+      "set_dps": 109.90993322831537,
       "no_source_count": 483,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3316,7 +3339,7 @@
       ],
       "new_at_band": [
         "head: White Bandit Mask",
-        "neck: Zealous Shadowshard Pendant",
+        "neck: Sentinel's Medallion",
         "shoulder: Sunburn Spaulders",
         "back: Dark Hooded Cape",
         "chest: Quillward Harness",
@@ -3331,8 +3354,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.353224379,
-      "verify_run_seconds": 2.145419962,
+      "weights_run_seconds": 2.290040181,
+      "verify_run_seconds": 2.431574875,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3410,6 +3433,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -3522,26 +3549,33 @@
         },
         {
           "slot": "neck",
-          "item_id": 17772,
-          "item_name": "Zealous Shadowshard Pendant",
-          "source": "Shadowshard Fragments",
-          "source_kind": "quest",
-          "score": 20,
+          "item_id": 19536,
+          "item_name": "Scout's Medallion",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "sim_dps": 109.13762727706539,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 19536,
-              "item_name": "Scout's Medallion",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.09542340865963625
+              "item_id": 17772,
+              "item_name": "Zealous Shadowshard Pendant",
+              "source_kind": "quest",
+              "source": "Shadowshard Fragments",
+              "dps_delta": 0
             },
             {
               "item_id": 7731,
               "item_name": "Ghostshard Talisman",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.20626133995483936
+              "dps_delta": -0.11083793129520313
+            },
+            {
+              "item_id": 4430,
+              "item_name": "Ethereal Talisman",
+              "source_kind": "quest",
+              "source": "The Crown of Will",
+              "dps_delta": -0.20491561715843368
             }
           ]
         },
@@ -3921,9 +3955,8 @@
           "item_name": "Jhordy's Misplaced Screwdriver",
           "source": "Rettrick",
           "source_kind": "vendor",
-          "sim_dps": 109.11566840036815,
           "verified": true,
-          "swap_note": "beat the scored pick Ardent Custodian (id 868) in the sim: +62.1 DPS (109.1 vs 47.0 set DPS)",
+          "swap_note": "beat the scored pick Ardent Custodian (id 868) in the sim: +62.1 DPS over it",
           "dps_delta": 62.12279220924132,
           "alternatives": [
             {
@@ -3983,8 +4016,9 @@
           ]
         }
       ],
-      "set_dps": 109.11566840036815,
+      "set_dps": 109.13762727706539,
       "no_source_count": 465,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4004,7 +4038,7 @@
       ],
       "new_at_band": [
         "head: White Bandit Mask",
-        "neck: Zealous Shadowshard Pendant",
+        "neck: Scout's Medallion",
         "shoulder: Sunburn Spaulders",
         "back: Dark Hooded Cape",
         "chest: Quillward Harness",
@@ -4019,8 +4053,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.353224379,
-      "verify_run_seconds": 2.158740945,
+      "weights_run_seconds": 2.290040181,
+      "verify_run_seconds": 2.435204341,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4098,6 +4132,10 @@
       "hit_to_cap": {
         "baseline": 0,
         "specials": 9
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -4269,33 +4307,32 @@
         },
         {
           "slot": "back",
-          "item_id": 11626,
-          "item_name": "Blackveil Cape",
-          "source": "Blackrock Depths: High Interrogator Gerstahn ",
-          "source_kind": "dungeon",
-          "score": 28.446086093081178,
+          "item_id": 13122,
+          "item_name": "Dark Phantom Cape",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 11626,
+              "item_name": "Blackveil Cape",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "dps_delta": 0
+            },
             {
               "item_id": 12552,
               "item_name": "Blisterbane Wrap",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Anvilrage Overseer",
-              "dps_delta": -0.360115062372766
-            },
-            {
-              "item_id": 13122,
-              "item_name": "Dark Phantom Cape",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.360115062372766
+              "dps_delta": 0
             },
             {
               "item_id": 19982,
               "item_name": "Duskbat Drape",
               "source_kind": "quest",
               "source": "The Azure Key",
-              "dps_delta": -0.49143366066137706
+              "dps_delta": -0.13131859828861103
             }
           ]
         },
@@ -4399,33 +4436,32 @@
         },
         {
           "slot": "waist",
-          "item_id": 11686,
-          "item_name": "Girdle of Beastial Fury",
-          "source": "Blackrock Depths: Eviscerator",
-          "source_kind": "dungeon",
-          "score": 38,
+          "item_id": 252474,
+          "item_name": "Skulker's Leather Waistguard",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 252474,
-              "item_name": "Skulker's Leather Waistguard",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.2910854868254156
+              "item_id": 11686,
+              "item_name": "Girdle of Beastial Fury",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Eviscerator",
+              "dps_delta": 0
             },
             {
               "item_id": 20115,
               "item_name": "Highlander's Leather Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -0.33387517043093834
+              "dps_delta": -0.04278968360552277
             },
             {
               "item_id": 252473,
               "item_name": "Prowler's Leather Waistguard",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.38991146318217806
+              "dps_delta": -0.09882597635676249
             }
           ]
         },
@@ -4502,7 +4538,7 @@
           "source_kind": "rep",
           "score": 24.429626774123616,
           "verified": true,
-          "swap_note": "confirmed by the sim against Masons Fraternity Ring (id 9533): kept the pick, +2.4 DPS (172.3 vs 169.8 set DPS)",
+          "swap_note": "confirmed by the sim against Masons Fraternity Ring (id 9533): kept the pick, +2.4 DPS over it",
           "dps_delta": 2.4204663879799,
           "alternatives": [
             {
@@ -4566,9 +4602,8 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 172.2522159657097,
           "verified": true,
-          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +1.8 DPS (172.3 vs 170.5 set DPS)",
+          "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +1.8 DPS over it",
           "dps_delta": 1.7569711283414335
         },
         {
@@ -4577,7 +4612,6 @@
           "item_name": "Molten Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 172.2522159657097,
           "verified": true,
           "alternatives": [
             {
@@ -4596,9 +4630,15 @@
           "item_name": "Hammer of the Northern Wind",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 172.2522159657097,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 2163,
+              "item_name": "Shadowblade",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.6765403395105043
+            },
             {
               "item_id": 8190,
               "item_name": "Hanzo Sword",
@@ -4606,13 +4646,6 @@
               "source": "World drop",
               "dps_delta": -1.1006335850517814,
               "verified": true
-            },
-            {
-              "item_id": 250614,
-              "item_name": "Thorium Cestus",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -2.1983465753585625
             },
             {
               "item_id": 12535,
@@ -4625,34 +4658,33 @@
         },
         {
           "slot": "off_hand",
-          "item_id": 2163,
-          "item_name": "Shadowblade",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "score": 545.02,
+          "item_id": 250614,
+          "item_name": "Thorium Cestus",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "sim_dps": 172.5282723730165,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 250614,
-              "item_name": "Thorium Cestus",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": 0,
-              "verified": true
-            },
             {
               "item_id": 17738,
               "item_name": "Claw of Celebras",
               "source_kind": "dungeon",
               "source": "Maraudon: Celebras the Cursed",
-              "dps_delta": -5.148586651529028
+              "dps_delta": -3.6267804156809698
             },
             {
               "item_id": 9644,
               "item_name": "Thermotastic Egg Timer",
               "source_kind": "quest",
               "source": "Rescue OOX-17/TN!",
-              "dps_delta": -44.24623982741146
+              "dps_delta": -42.7244335915634
+            },
+            {
+              "item_id": 15963,
+              "item_name": "Stonecloth Branch",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -42.872672556098536
             }
           ]
         },
@@ -4662,7 +4694,6 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 172.2522159657097,
           "verified": true,
           "alternatives": [
             {
@@ -4690,8 +4721,9 @@
           ]
         }
       ],
-      "set_dps": 172.2522159657097,
+      "set_dps": 172.5282723730165,
       "no_source_count": 610,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4713,11 +4745,11 @@
         "head: Knight-Lieutenant's Leather Headband",
         "neck: Skibi's Pendant",
         "shoulder: Knight-Lieutenant's Leather Shoulders",
-        "back: Blackveil Cape",
+        "back: Dark Phantom Cape",
         "chest: Knight's Leather Armor",
         "wrist: Deepfury Bracers",
         "hands: Raider Gloves",
-        "waist: Girdle of Beastial Fury",
+        "waist: Skulker's Leather Waistguard",
         "legs: Knight's Leather Pants",
         "feet: Sandstalker Ankleguards",
         "finger1: Protector's Band",
@@ -4725,11 +4757,11 @@
         "trinket1: Frozen Heart of the Mountain",
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Hammer of the Northern Wind",
-        "off_hand: Shadowblade",
+        "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.185536523,
-      "verify_run_seconds": 2.806675264,
+      "weights_run_seconds": 3.134331338,
+      "verify_run_seconds": 3.225063819,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -4808,6 +4840,10 @@
         "baseline": 1,
         "specials": 8,
         "white": 27
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -4985,33 +5021,32 @@
         },
         {
           "slot": "back",
-          "item_id": 11626,
-          "item_name": "Blackveil Cape",
-          "source": "Blackrock Depths: High Interrogator Gerstahn ",
-          "source_kind": "dungeon",
-          "score": 28.446086093081178,
+          "item_id": 13122,
+          "item_name": "Dark Phantom Cape",
+          "source": "World drop",
+          "source_kind": "world_drop",
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 11626,
+              "item_name": "Blackveil Cape",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "dps_delta": 0
+            },
             {
               "item_id": 12552,
               "item_name": "Blisterbane Wrap",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Anvilrage Overseer",
-              "dps_delta": -0.360115062372766
-            },
-            {
-              "item_id": 13122,
-              "item_name": "Dark Phantom Cape",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.360115062372766
+              "dps_delta": 0
             },
             {
               "item_id": 19982,
               "item_name": "Duskbat Drape",
               "source_kind": "quest",
               "source": "The Azure Key",
-              "dps_delta": -0.49143366066137706
+              "dps_delta": -0.13131859828861103
             }
           ]
         },
@@ -5107,33 +5142,32 @@
         },
         {
           "slot": "waist",
-          "item_id": 11686,
-          "item_name": "Girdle of Beastial Fury",
-          "source": "Blackrock Depths: Eviscerator",
-          "source_kind": "dungeon",
-          "score": 38,
+          "item_id": 252474,
+          "item_name": "Skulker's Leather Waistguard",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 252474,
-              "item_name": "Skulker's Leather Waistguard",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.2910854868254156
+              "item_id": 11686,
+              "item_name": "Girdle of Beastial Fury",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Eviscerator",
+              "dps_delta": 0
             },
             {
               "item_id": 20193,
               "item_name": "Defiler's Leather Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -0.33387517043093834
+              "dps_delta": -0.04278968360552277
             },
             {
               "item_id": 252473,
               "item_name": "Prowler's Leather Waistguard",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.38991146318217806
+              "dps_delta": -0.09882597635676249
             }
           ]
         },
@@ -5210,7 +5244,7 @@
           "source_kind": "rep",
           "score": 24.429626774123616,
           "verified": true,
-          "swap_note": "confirmed by the sim against White Bone Band (id 11862): kept the pick, +2.4 DPS (174.2 vs 171.8 set DPS)",
+          "swap_note": "confirmed by the sim against White Bone Band (id 11862): kept the pick, +2.4 DPS over it",
           "dps_delta": 2.360574806916304,
           "alternatives": [
             {
@@ -5274,9 +5308,8 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 174.15118926185514,
           "verified": true,
-          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +5.5 DPS (174.2 vs 168.7 set DPS)",
+          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +5.5 DPS over it",
           "dps_delta": 5.456171086932585
         },
         {
@@ -5285,7 +5318,6 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 174.15118926185514,
           "verified": true,
           "alternatives": [
             {
@@ -5304,7 +5336,6 @@
           "item_name": "Hammer of the Northern Wind",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 174.15118926185514,
           "verified": true,
           "alternatives": [
             {
@@ -5315,11 +5346,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 250614,
-              "item_name": "Thorium Cestus",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -2.1983465753585625
+              "item_id": 2163,
+              "item_name": "Shadowblade",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.6765403395105043
             },
             {
               "item_id": 12535,
@@ -5332,34 +5363,33 @@
         },
         {
           "slot": "off_hand",
-          "item_id": 2163,
-          "item_name": "Shadowblade",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "score": 545.02,
+          "item_id": 250614,
+          "item_name": "Thorium Cestus",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "sim_dps": 174.9006720423085,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 250614,
-              "item_name": "Thorium Cestus",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": 0,
-              "verified": true
-            },
             {
               "item_id": 17738,
               "item_name": "Claw of Celebras",
               "source_kind": "dungeon",
               "source": "Maraudon: Celebras the Cursed",
-              "dps_delta": -5.148586651529028
+              "dps_delta": -3.6267804156809698
             },
             {
               "item_id": 11863,
               "item_name": "White Bone Shredder",
               "source_kind": "quest",
               "source": "Bone-Bladed Weapons",
-              "dps_delta": -7.76604070806846
+              "dps_delta": -6.244234472220402
+            },
+            {
+              "item_id": 9644,
+              "item_name": "Thermotastic Egg Timer",
+              "source_kind": "quest",
+              "source": "Rescue OOX-17/TN!",
+              "dps_delta": -42.7244335915634
             }
           ]
         },
@@ -5369,7 +5399,6 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 174.15118926185514,
           "verified": true,
           "alternatives": [
             {
@@ -5397,8 +5426,9 @@
           ]
         }
       ],
-      "set_dps": 174.15118926185514,
+      "set_dps": 174.9006720423085,
       "no_source_count": 587,
+      "unconfirmed_within_error_held": 3,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5419,11 +5449,11 @@
       "new_at_band": [
         "head: Ebon Mask",
         "neck: Skibi's Pendant",
-        "back: Blackveil Cape",
+        "back: Dark Phantom Cape",
         "chest: Stone Guard's Leather Armor",
         "wrist: Deepfury Bracers",
         "hands: Raider Gloves",
-        "waist: Girdle of Beastial Fury",
+        "waist: Skulker's Leather Waistguard",
         "legs: Stone Guard's Leather Pants",
         "feet: Sandstalker Ankleguards",
         "finger1: Legionnaire's Band",
@@ -5431,11 +5461,11 @@
         "trinket1: Rune of the Guard Captain",
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Hammer of the Northern Wind",
-        "off_hand: Shadowblade",
+        "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.185536523,
-      "verify_run_seconds": 2.769507591,
+      "weights_run_seconds": 3.134331338,
+      "verify_run_seconds": 3.329600054,
       "coverage": {
         "back": {
           "eligible": 324,
@@ -5514,6 +5544,10 @@
         "baseline": 1,
         "specials": 8,
         "white": 27
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -5626,33 +5660,33 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 75.56708956511035,
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Falrin's Vendetta",
+          "source_kind": "quest",
+          "sim_dps": 291.4971445165141,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -0.6110834270576275
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -1.6716282620073282
+              "dps_delta": -1.0605448349497006
             },
             {
               "item_id": 22659,
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.850165472618117
+              "dps_delta": -1.2390820455604894
             }
           ]
         },
@@ -5662,7 +5696,6 @@
           "item_name": "Stormshroud Shoulders",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 291.54780864895423,
           "verified": true,
           "alternatives": [
             {
@@ -5732,7 +5765,6 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 291.54780864895423,
           "verified": true,
           "alternatives": [
             {
@@ -5765,7 +5797,6 @@
           "item_name": "Forest Stalker's Bracers",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 291.54780864895423,
           "verified": true,
           "alternatives": [
             {
@@ -5864,7 +5895,6 @@
           "item_name": "Stormshroud Pants",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 291.54780864895423,
           "verified": true,
           "alternatives": [
             {
@@ -5936,7 +5966,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 291.54780864895423,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5970,7 +5999,6 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 291.54780864895423,
           "verified": true,
           "alternatives": [
             {
@@ -6003,7 +6031,6 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 291.54780864895423,
           "verified": true,
           "alternatives": [
             {
@@ -6036,7 +6063,6 @@
           "item_name": "Hand of Justice",
           "source": "Blackrock Depths: Emperor Dagran Thaurissan",
           "source_kind": "dungeon",
-          "sim_dps": 291.54780864895423,
           "verified": true,
           "alternatives": [
             {
@@ -6069,7 +6095,6 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 291.54780864895423,
           "verified": true,
           "alternatives": [
             {
@@ -6135,7 +6160,6 @@
           "item_name": "Satyr's Bow",
           "source": "Dire Maul: Zevrim Thornhoof",
           "source_kind": "dungeon",
-          "sim_dps": 291.54780864895423,
           "verified": true,
           "alternatives": [
             {
@@ -6163,8 +6187,9 @@
           ]
         }
       ],
-      "set_dps": 291.54780864895423,
+      "set_dps": 291.4971445165141,
       "no_source_count": 1378,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6183,7 +6208,7 @@
         "4798 Heavy Runed Cloak"
       ],
       "new_at_band": [
-        "neck: Pendant of Celerity",
+        "neck: Beads of Ogre Might",
         "shoulder: Stormshroud Shoulders",
         "back: Howler's Furs",
         "chest: Dawn Armor",
@@ -6200,8 +6225,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.971029322,
-      "verify_run_seconds": 8.329235568,
+      "weights_run_seconds": 2.985972818,
+      "verify_run_seconds": 8.638613871,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6280,6 +6305,10 @@
         "baseline": 4,
         "specials": 5,
         "white": 24
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -6392,33 +6421,33 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 75.56708956511035,
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Falrin's Vendetta",
+          "source_kind": "quest",
+          "sim_dps": 291.1176048169436,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -0.6110834270576275
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -1.6716282620073282
+              "dps_delta": -1.0605448349497006
             },
             {
               "item_id": 22659,
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.850165472618117
+              "dps_delta": -1.2390820455604894
             }
           ]
         },
@@ -6428,7 +6457,6 @@
           "item_name": "Stormshroud Shoulders",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 291.2287938672302,
           "verified": true,
           "alternatives": [
             {
@@ -6498,7 +6526,6 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 291.2287938672302,
           "verified": true,
           "alternatives": [
             {
@@ -6531,7 +6558,6 @@
           "item_name": "Forest Stalker's Bracers",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 291.2287938672302,
           "verified": true,
           "alternatives": [
             {
@@ -6564,7 +6590,6 @@
           "item_name": "Stormshroud Gloves",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 291.2287938672302,
           "verified": true,
           "alternatives": [
             {
@@ -6635,7 +6660,6 @@
           "item_name": "Stormshroud Pants",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 291.2287938672302,
           "verified": true,
           "alternatives": [
             {
@@ -6706,7 +6730,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 291.2287938672302,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6740,7 +6763,6 @@
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 291.2287938672302,
           "verified": true,
           "alternatives": [
             {
@@ -6773,9 +6795,8 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 291.2287938672302,
           "verified": true,
-          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +10.1 DPS (291.2 vs 281.2 set DPS)",
+          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +10.1 DPS over it",
           "dps_delta": 10.060816389392016,
           "alternatives": [
             {
@@ -6807,7 +6828,6 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 291.2287938672302,
           "verified": true,
           "alternatives": [
             {
@@ -6839,7 +6859,6 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 291.2287938672302,
           "verified": true,
           "alternatives": [
             {
@@ -6905,7 +6924,6 @@
           "item_name": "Satyr's Bow",
           "source": "Dire Maul: Zevrim Thornhoof",
           "source_kind": "dungeon",
-          "sim_dps": 291.2287938672302,
           "verified": true,
           "alternatives": [
             {
@@ -6933,8 +6951,9 @@
           ]
         }
       ],
-      "set_dps": 291.2287938672302,
+      "set_dps": 291.1176048169436,
       "no_source_count": 1372,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6954,7 +6973,7 @@
       ],
       "new_at_band": [
         "head: Outlaw's Collar",
-        "neck: Pendant of Celerity",
+        "neck: Beads of Ogre Might",
         "shoulder: Stormshroud Shoulders",
         "back: Howler's Furs",
         "chest: Dawn Armor",
@@ -6971,8 +6990,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.971029322,
-      "verify_run_seconds": 8.445554281,
+      "weights_run_seconds": 2.985972818,
+      "verify_run_seconds": 8.586488654,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7051,6 +7070,10 @@
         "baseline": 4,
         "specials": 5,
         "white": 24
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -7163,33 +7186,32 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 81.76110234796249,
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Falrin's Vendetta",
+          "source_kind": "quest",
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -2.3945589982582742
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -3.7415080061954837
+              "dps_delta": -1.3469490079372095
             },
             {
               "item_id": 22659,
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -4.114359751143614
+              "dps_delta": -1.7198007528853398
             }
           ]
         },
@@ -7530,10 +7552,11 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 11815,
-          "item_name": "Hand of Justice",
-          "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-          "source_kind": "dungeon",
+          "item_id": 19289,
+          "item_name": "Darkmoon Card: Maelstrom",
+          "source": "Darkmoon Elementals Deck",
+          "source_kind": "quest",
+          "sim_dps": 746.6167469519822,
           "verified": true,
           "alternatives": [
             {
@@ -7544,12 +7567,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 19289,
-              "item_name": "Darkmoon Card: Maelstrom",
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck",
-              "dps_delta": 0,
-              "verified": true
+              "item_id": 18537,
+              "item_name": "Counterattack Lodestone",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Tribute",
+              "dps_delta": 0
             },
             {
               "item_id": 249469,
@@ -7576,18 +7598,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 19289,
-              "item_name": "Darkmoon Card: Maelstrom",
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck",
-              "dps_delta": 0
-            },
-            {
               "item_id": 249469,
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
               "dps_delta": -5.771363886456167
+            },
+            {
+              "item_id": 18537,
+              "item_name": "Counterattack Lodestone",
+              "source_kind": "dungeon",
+              "source": "Dire Maul: Tribute",
+              "dps_delta": -9.206239103848702
             }
           ]
         },
@@ -7597,9 +7619,8 @@
           "item_name": "Teebu's Blazing Longsword",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 747.3513040373327,
           "verified": true,
-          "swap_note": "beat the scored pick Shadowsong's Sorrow (id 21522) in the sim: +8.0 DPS (747.4 vs 739.4 set DPS)",
+          "swap_note": "beat the scored pick Shadowsong's Sorrow (id 21522) in the sim: +8.0 DPS over it",
           "dps_delta": 7.995208452687507,
           "alternatives": [
             {
@@ -7692,8 +7713,9 @@
           ]
         }
       ],
-      "set_dps": 747.3513040373327,
+      "set_dps": 746.6167469519822,
       "no_source_count": 1378,
+      "unconfirmed_within_error_held": 2,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7713,7 +7735,7 @@
       ],
       "new_at_band": [
         "head: Outlaw's Collar",
-        "neck: Pendant of Celerity",
+        "neck: Beads of Ogre Might",
         "shoulder: Stormshroud Shoulders",
         "back: Howler's Furs",
         "chest: Dawn Armor",
@@ -7724,14 +7746,14 @@
         "feet: Darkmantle Footpads",
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Don Julio's Band",
-        "trinket1: Hand of Justice",
+        "trinket1: Darkmoon Card: Maelstrom",
         "trinket2: Blackhand's Breadth",
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.19159572,
-      "verify_run_seconds": 8.927915362,
+      "weights_run_seconds": 3.1582055159999998,
+      "verify_run_seconds": 9.138180003,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7810,6 +7832,10 @@
         "baseline": 4,
         "specials": 5,
         "white": 24
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     },
@@ -7922,33 +7948,33 @@
         },
         {
           "slot": "neck",
-          "item_id": 22340,
-          "item_name": "Pendant of Celerity",
-          "source": "Blackrock Spire: Lord Valthalak",
-          "source_kind": "dungeon",
-          "score": 81.76110234796249,
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Falrin's Vendetta",
+          "source_kind": "quest",
+          "sim_dps": 741.998557267865,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 22150,
-              "item_name": "Beads of Ogre Might",
-              "source_kind": "quest",
-              "source": "Falrin's Vendetta",
-              "dps_delta": -2.3945589982582742
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": 0
             },
             {
               "item_id": 15411,
               "item_name": "Mark of Fordring",
               "source_kind": "quest",
               "source": "In Dreams",
-              "dps_delta": -3.7415080061954837
+              "dps_delta": -1.3469490079372095
             },
             {
               "item_id": 22659,
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -4.114359751143614
+              "dps_delta": -1.7198007528853398
             }
           ]
         },
@@ -7958,7 +7984,6 @@
           "item_name": "Stormshroud Shoulders",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 743.6419825144782,
           "verified": true,
           "alternatives": [
             {
@@ -8029,7 +8054,6 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 743.6419825144782,
           "verified": true,
           "alternatives": [
             {
@@ -8062,7 +8086,6 @@
           "item_name": "Forest Stalker's Bracers",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 743.6419825144782,
           "verified": true,
           "alternatives": [
             {
@@ -8161,7 +8184,6 @@
           "item_name": "Stormshroud Pants",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 743.6419825144782,
           "verified": true,
           "alternatives": [
             {
@@ -8233,7 +8255,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 743.6419825144782,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8267,7 +8288,6 @@
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 743.6419825144782,
           "verified": true,
           "alternatives": [
             {
@@ -8300,9 +8320,8 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 743.6419825144782,
           "verified": true,
-          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +16.6 DPS (743.6 vs 727.1 set DPS)",
+          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +16.6 DPS over it",
           "dps_delta": 16.58039453296965,
           "alternatives": [
             {
@@ -8334,7 +8353,6 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 743.6419825144782,
           "verified": true,
           "alternatives": [
             {
@@ -8367,7 +8385,6 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 743.6419825144782,
           "verified": true,
           "alternatives": [
             {
@@ -8432,7 +8449,6 @@
           "item_name": "Satyr's Bow",
           "source": "Dire Maul: Zevrim Thornhoof",
           "source_kind": "dungeon",
-          "sim_dps": 743.6419825144782,
           "verified": true,
           "alternatives": [
             {
@@ -8460,8 +8476,9 @@
           ]
         }
       ],
-      "set_dps": 743.6419825144782,
+      "set_dps": 741.998557267865,
       "no_source_count": 1372,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -8481,7 +8498,7 @@
       ],
       "new_at_band": [
         "head: Outlaw's Collar",
-        "neck: Pendant of Celerity",
+        "neck: Beads of Ogre Might",
         "shoulder: Stormshroud Shoulders",
         "back: Howler's Furs",
         "chest: Dawn Armor",
@@ -8498,8 +8515,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.19159572,
-      "verify_run_seconds": 8.779061935,
+      "weights_run_seconds": 3.1582055159999998,
+      "verify_run_seconds": 8.881366057,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -8578,6 +8595,10 @@
         "baseline": 4,
         "specials": 5,
         "white": 24
+      },
+      "expertise_to_cap": {
+        "baseline": 0,
+        "dodge": 6.5
       },
       "haste_on_items": false
     }

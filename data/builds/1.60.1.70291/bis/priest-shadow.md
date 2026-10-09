@@ -68,7 +68,7 @@ No-known-source sample (15 of 262, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 000000000000000000-00000000000000000-543120301201300051)
 
-Set DPS (verified): 98.7. Weights run: 1.0s. Verify run: 0.8s. 343 eligible items had no known source.
+Set DPS (verified): 98.7. Weights run: 1.0s. Verify run: 0.9s. 343 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.832 ± 0.014, crit=0.040 ± 0.002 per rating point (14 rating = 1%, 0.560 per %), hit=0.413 ± 0.018 per rating point (10 rating = 1%, 4.130 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -98,7 +98,9 @@ No-known-source sample (15 of 343, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 523000000000000000-00000000000000000-543120301201300051)
 
-Set DPS (verified): 160.0. Weights run: 1.0s. Verify run: 1.1s. 441 eligible items had no known source.
+Set DPS (verified): 159.8. Weights run: 1.0s. Verify run: 1.4s. 441 eligible items had no known source.
+
+1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=1.484 ± 0.024, crit=0.052 ± 0.002 per rating point (14 rating = 1%, 0.727 per %), hit=0.631 ± 0.034 per rating point (10 rating = 1%, 6.305 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -109,26 +111,26 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | shoulder | Rotgrip Mantle (17732) | Maraudon: Rotgrip [dungeon] | 39.7 spell_power points (5.03 DPS) | yes | Kentic Amice (11624, -0.81 DPS) [dungeon]; Red Mageweave Shoulders (10029, -1.32 DPS) [crafted]; Inquisitor's Shawl (19507, -1.70 DPS) [dungeon] |
 | back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 22.9 spell_power points (2.90 DPS) | yes | Mantle of Lady Falther'ess (23178, -0.07 DPS) [dungeon]; Runecloth Cloak (13860, -0.26 DPS) [crafted]; Darkspear Raider's Cloak (272076, -0.27 DPS) [vendor] |
 | chest | Acumen Robes (17775) | Twisted Evils [quest] | 48.7 spell_power points (6.17 DPS) | yes | Robes of Insight (940, -1.18 DPS, sim-verified) [world_drop]; Runecloth Robe (13858, -1.58 DPS) [crafted]; Runecloth Tunic (13857, -1.95 DPS) [crafted] |
-| wrist | Aristocratic Cuffs (12546) | Blackrock Depths: Anvilrage Overseer [dungeon] | 22.3 spell_power points (2.82 DPS) | yes | Bloodband Bracers (11469, -0.49 DPS) [quest]; Forgotten Wraps (9433, -0.56 DPS) [world_drop]; Shizzle's Nozzle Wiper (11917, -0.56 DPS) [quest] |
+| wrist | Bloodband Bracers (11469) | The Captain's Chest [quest] | sim-verified (159.8 DPS) | yes | Aristocratic Cuffs (12546, +0.00 DPS) [dungeon]; Forgotten Wraps (9433, -0.07 DPS) [world_drop]; Shizzle's Nozzle Wiper (11917, -0.07 DPS) [quest] |
 | hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | 39.6 spell_power points (5.03 DPS) | yes | Virtuous Hands (226958, -0.17 DPS) [vendor]; Sergeant Major's Dreadweave Gloves (220890, -1.69 DPS) [vendor]; Red Mageweave Gloves (10018, -1.75 DPS) [crafted] |
 | waist | Ban'thok Sash (11662) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 34.6 spell_power points (4.39 DPS) | yes | Dawnspire Cord (12466, -0.05 DPS) [dungeon]; Deathmage Sash (10771, -0.68 DPS) [dungeon]; Satyrmane Sash (17755, -0.73 DPS) [dungeon] |
 | legs | Spellshock Leggings (9484) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 37.8 spell_power points (4.80 DPS) | yes | Knight's Dreadweave Leggings (220888, -0.93 DPS) [vendor]; Kilt of the Atal'ai Prophet (10807, -1.03 DPS) [dungeon]; Red Mageweave Pants (10009, -2.84 DPS, sim-verified) [crafted] |
 | feet | Sergeant Major's Dreadweave Boots (220891) | PvP rank 9 · Sergeant Major · Alliance [vendor] | 27.7 spell_power points (3.51 DPS) | yes | Gilded Sandals (254107, +0.00 DPS, sim-verified) [crafted]; Southsea Mojo Boots (20641, -0.42 DPS) [quest]; Earthen Silk Slippers (254013, -0.46 DPS) [crafted] |
 | finger1 | Brainlash (6440) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 22.3 spell_power points (2.82 DPS) | yes | Mindseye Circle (10634, -0.56 DPS) [dungeon]; Philanthropist's Ring (281635, -0.61 DPS) [quest]; Woodseed Hoop (17768, -1.13 DPS) [quest] |
 | finger2 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 19.4 spell_power points (2.46 DPS) | yes | Philanthropist's Ring (281635, -0.25 DPS) [quest]; Woodseed Hoop (17768, -0.76 DPS) [quest]; Mindseye Circle (10634, -1.03 DPS, sim-verified) [dungeon] |
-| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (160.0 DPS) | yes | - |
-| trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (160.0 DPS) | yes | Blessed Prayer Beads (19990, -2.51 DPS, sim-verified) [quest] |
-| main_hand | Spellshifter Rod (9527) | Tiara of the Deep [quest] | sim-verified (160.0 DPS) | yes | Kindling Stave (11750, -1.31 DPS) [dungeon]; Zum'rah's Vexing Cane (18082, -2.45 DPS) [dungeon]; Barman Shanker (12791, -21.42 DPS, sim-verified) [dungeon] |
+| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (+2.2 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
+| trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blessed Prayer Beads (19990, -2.51 DPS, sim-verified) [quest] |
+| main_hand | Spellshifter Rod (9527) | Tiara of the Deep [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Kindling Stave (11750, -1.31 DPS) [dungeon]; Zum'rah's Vexing Cane (18082, -2.45 DPS) [dungeon]; Barman Shanker (12791, -21.42 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | Pyric Caduceus (11748) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 414.2 spell_power points (52.50 DPS) | yes | Woestave (20082, -1.18 DPS) [quest]; Noxious Shooter (17745, -1.87 DPS) [dungeon]; Wand of Allistarj (13065, -4.08 DPS) [world_drop] |
 
-**New at 50:** head: Red Mageweave Headband; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Spritecaster Cape; chest: Acumen Robes; wrist: Aristocratic Cuffs; hands: Raider Handwraps; waist: Ban'thok Sash; legs: Spellshock Leggings; feet: Sergeant Major's Dreadweave Boots; finger1: Brainlash; finger2: Cyclopean Band; trinket1: Frozen Heart of the Mountain; trinket2: Uther's Strength; main_hand: Spellshifter Rod; ranged: Pyric Caduceus
+**New at 50:** head: Red Mageweave Headband; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Spritecaster Cape; chest: Acumen Robes; wrist: Bloodband Bracers; hands: Raider Handwraps; waist: Ban'thok Sash; legs: Spellshock Leggings; feet: Sergeant Major's Dreadweave Boots; finger1: Brainlash; finger2: Cyclopean Band; trinket1: Frozen Heart of the Mountain; trinket2: Uther's Strength; main_hand: Spellshifter Rod; ranged: Pyric Caduceus
 
 No-known-source sample (15 of 441, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
 ### Band 60 (gnome, 524011031300000000-00000000000000000-543120301201300051)
 
-Set DPS (verified): 342.1. Weights run: 1.1s. Verify run: 3.5s. 1121 eligible items had no known source.
+Set DPS (verified): 342.1. Weights run: 1.1s. Verify run: 3.6s. 1121 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=1.132 ± 0.028, crit=0.111 ± 0.004 per rating point (14 rating = 1%, 1.551 per %), hit=1.031 ± 0.040 per rating point (10 rating = 1%, 10.314 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -158,7 +160,7 @@ No-known-source sample (15 of 1121, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (gnome, 325001031300000000-00000000000000000-523120501201300251)
 
-Set DPS (verified): 608.8. Weights run: 1.2s. Verify run: 2.9s. 1121 eligible items had no known source.
+Set DPS (verified): 608.8. Weights run: 1.2s. Verify run: 3.0s. 1121 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.594 ± 0.014, crit=0.039 ± 0.003 per rating point (14 rating = 1%, 0.547 per %), hit=0.716 ± 0.034 per rating point (10 rating = 1%, 7.161 per %), spell_haste=-3.603 ± 0.264, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.001
 
@@ -250,7 +252,7 @@ No-known-source sample (15 of 249, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 000000000000000000-00000000000000000-543120301201300051)
 
-Set DPS (verified): 92.7. Weights run: 1.0s. Verify run: 0.9s. 326 eligible items had no known source.
+Set DPS (verified): 92.7. Weights run: 1.0s. Verify run: 1.0s. 326 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.832 ± 0.014, crit=0.040 ± 0.002 per rating point (14 rating = 1%, 0.560 per %), hit=0.413 ± 0.018 per rating point (10 rating = 1%, 4.130 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -280,7 +282,9 @@ No-known-source sample (15 of 326, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 523000000000000000-00000000000000000-543120301201300051)
 
-Set DPS (verified): 149.7. Weights run: 1.0s. Verify run: 1.0s. 421 eligible items had no known source.
+Set DPS (verified): 149.3. Weights run: 1.0s. Verify run: 1.3s. 421 eligible items had no known source.
+
+2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=1.484 ± 0.024, crit=0.052 ± 0.002 per rating point (14 rating = 1%, 0.727 per %), hit=0.631 ± 0.034 per rating point (10 rating = 1%, 6.305 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -291,26 +295,26 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | shoulder | Rotgrip Mantle (17732) | Maraudon: Rotgrip [dungeon] | 39.7 spell_power points (5.03 DPS) | yes | Kentic Amice (11624, +0.00 DPS, sim-verified) [dungeon]; Red Mageweave Shoulders (10029, -1.32 DPS) [crafted]; Inquisitor's Shawl (19507, -1.70 DPS) [dungeon] |
 | back | Deep Woodlands Cloak (19121) | Wanted: Vile Priestess Hexx and Her Minions [quest] | 25.4 spell_power points (3.21 DPS) | yes | Spritecaster Cape (11623, -0.31 DPS) [dungeon]; Mantle of Lady Falther'ess (23178, -0.38 DPS) [dungeon]; Runecloth Cloak (13860, -0.57 DPS) [crafted] |
 | chest | Acumen Robes (17775) | Twisted Evils [quest] | 48.7 spell_power points (6.17 DPS) | yes | Robes of Insight (940, -1.38 DPS, sim-verified) [world_drop]; Runecloth Robe (13858, -1.58 DPS) [crafted]; Runecloth Tunic (13857, -1.95 DPS) [crafted] |
-| wrist | Aristocratic Cuffs (12546) | Blackrock Depths: Anvilrage Overseer [dungeon] | 22.3 spell_power points (2.82 DPS) | yes | Dryad's Wrist Bindings (19596, +0.00 DPS) [pvp]; Bloodband Bracers (11469, -0.49 DPS) [quest] |
+| wrist | Bloodband Bracers (11469) | The Captain's Chest [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Aristocratic Cuffs (12546, +0.00 DPS) [dungeon]; Dryad's Wrist Bindings (19596, +0.00 DPS) [pvp] |
 | hands | Raider Handwraps (272098) | Creeg Bothunk [vendor] | 39.6 spell_power points (5.03 DPS) | yes | Virtuous Hands (226958, -0.17 DPS) [vendor]; First Sergeant's Dreadweave Gloves (220908, -1.69 DPS) [vendor]; Red Mageweave Gloves (10018, -1.75 DPS) [crafted] |
 | waist | Ban'thok Sash (11662) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 34.6 spell_power points (4.39 DPS) | yes | Deathmage Sash (10771, -0.68 DPS) [dungeon]; Satyrmane Sash (17755, -0.73 DPS) [dungeon]; Dawnspire Cord (12466, -1.02 DPS, sim-verified) [dungeon] |
 | legs | Spellshock Leggings (9484) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 37.8 spell_power points (4.80 DPS) | yes | Stone Guard's Dreadweave Leggings (220906, -0.93 DPS) [vendor]; Kilt of the Atal'ai Prophet (10807, -1.03 DPS) [dungeon]; Red Mageweave Pants (10009, -2.39 DPS, sim-verified) [crafted] |
 | feet | First Sergeant's Dreadweave Boots (220909) | PvP rank 9 · First Sergeant · Horde [vendor] | 27.7 spell_power points (3.51 DPS) | yes | Gilded Sandals (254107, +0.00 DPS, sim-verified) [crafted]; Southsea Mojo Boots (20641, -0.42 DPS) [quest]; Earthen Silk Slippers (254013, -0.46 DPS) [crafted] |
-| finger1 | Brainlash (6440) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 22.3 spell_power points (2.82 DPS) | yes | Mindseye Circle (10634, -0.56 DPS) [dungeon]; Philanthropist's Ring (281635, -0.61 DPS) [quest]; Woodseed Hoop (17768, -1.13 DPS) [quest] |
-| finger2 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 19.4 spell_power points (2.46 DPS) | yes | Philanthropist's Ring (281635, -0.25 DPS) [quest]; Woodseed Hoop (17768, -0.76 DPS) [quest]; Mindseye Circle (10634, -1.26 DPS, sim-verified) [dungeon] |
-| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (149.7 DPS) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop] |
-| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (149.7 DPS) | yes | Uther's Strength (11302, +0.00 DPS, sim-verified) [world_drop] |
-| main_hand | Spellshifter Rod (9527) | Tiara of the Deep [quest] | sim-verified (149.7 DPS) | yes | Kindling Stave (11750, -1.31 DPS) [dungeon]; Zum'rah's Vexing Cane (18082, -2.45 DPS) [dungeon]; Blade of Eternal Darkness (17780, -17.44 DPS, sim-verified) [dungeon] |
+| finger1 | Philanthropist's Ring (281635) | Greater Friend of the Library [quest] | sim-verified (149.3 DPS) | yes | Brainlash (6440, +0.00 DPS) [dungeon]; Mindseye Circle (10634, +0.00 DPS) [dungeon]; Woodseed Hoop (17768, -0.52 DPS) [quest] |
+| finger2 | Cyclopean Band (11824) | Blackrock Depths: Ok'thor the Breaker [dungeon] | 19.4 spell_power points (2.46 DPS) | yes | Brainlash (6440, +0.00 DPS) [dungeon]; Woodseed Hoop (17768, -0.76 DPS) [quest]; Mindseye Circle (10634, -1.26 DPS, sim-verified) [dungeon] |
+| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop] |
+| trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, +0.00 DPS, sim-verified) [world_drop] |
+| main_hand | Spellshifter Rod (9527) | Tiara of the Deep [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Kindling Stave (11750, -1.31 DPS) [dungeon]; Zum'rah's Vexing Cane (18082, -2.45 DPS) [dungeon]; Blade of Eternal Darkness (17780, -17.44 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | Pyric Caduceus (11748) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 414.2 spell_power points (52.50 DPS) | yes | Woestave (20082, -1.18 DPS) [quest]; Noxious Shooter (17745, -1.87 DPS) [dungeon]; Wand of Allistarj (13065, -4.08 DPS) [world_drop] |
 
-**New at 50:** head: Red Mageweave Headband; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Deep Woodlands Cloak; chest: Acumen Robes; wrist: Aristocratic Cuffs; hands: Raider Handwraps; waist: Ban'thok Sash; legs: Spellshock Leggings; feet: First Sergeant's Dreadweave Boots; finger1: Brainlash; finger2: Cyclopean Band; trinket1: Frozen Heart of the Mountain; trinket2: Rune of the Guard Captain; main_hand: Spellshifter Rod; ranged: Pyric Caduceus
+**New at 50:** head: Red Mageweave Headband; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Deep Woodlands Cloak; chest: Acumen Robes; wrist: Bloodband Bracers; hands: Raider Handwraps; waist: Ban'thok Sash; legs: Spellshock Leggings; feet: First Sergeant's Dreadweave Boots; finger2: Cyclopean Band; trinket1: Frozen Heart of the Mountain; trinket2: Rune of the Guard Captain; main_hand: Spellshifter Rod; ranged: Pyric Caduceus
 
 No-known-source sample (15 of 421, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5008 Quicksilver Ring
 
 ### Band 60 (undead, 524011031300000000-00000000000000000-543120301201300051)
 
-Set DPS (verified): 342.6. Weights run: 1.1s. Verify run: 3.5s. 1112 eligible items had no known source.
+Set DPS (verified): 342.6. Weights run: 1.1s. Verify run: 3.6s. 1112 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=1.132 ± 0.028, crit=0.111 ± 0.004 per rating point (14 rating = 1%, 1.551 per %), hit=1.031 ± 0.040 per rating point (10 rating = 1%, 10.314 per %), spell_haste=not significant (0.000 ± 0.000), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -340,7 +344,7 @@ No-known-source sample (15 of 1112, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 325001031300000000-00000000000000000-523120501201300251)
 
-Set DPS (verified): 622.0. Weights run: 1.2s. Verify run: 2.8s. 1112 eligible items had no known source.
+Set DPS (verified): 622.0. Weights run: 1.2s. Verify run: 2.9s. 1112 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=0.594 ± 0.014, crit=0.039 ± 0.003 per rating point (14 rating = 1%, 0.547 per %), hit=0.716 ± 0.034 per rating point (10 rating = 1%, 7.161 per %), spell_haste=-3.603 ± 0.264, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.001
 

@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70291",
-  "engine_version": "f80f8e819",
-  "generated_at": "2026-10-09T02:05:20Z",
+  "engine_version": "be3a7581b",
+  "generated_at": "2026-10-09T04:09:28Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -893,8 +893,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.09209515,
-      "verify_run_seconds": 1.443046586,
+      "weights_run_seconds": 2.038063098,
+      "verify_run_seconds": 1.3392067189999999,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1945,8 +1945,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.09209515,
-      "verify_run_seconds": 1.373864958,
+      "weights_run_seconds": 2.038063098,
+      "verify_run_seconds": 1.35366612,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2633,8 +2633,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.089940126,
-      "verify_run_seconds": 1.327250623,
+      "weights_run_seconds": 2.043457977,
+      "verify_run_seconds": 1.2782618399999999,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3321,8 +3321,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.089940126,
-      "verify_run_seconds": 1.276650689,
+      "weights_run_seconds": 2.043457977,
+      "verify_run_seconds": 1.239479205,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4043,8 +4043,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 2.017343084,
-      "verify_run_seconds": 1.49097891,
+      "weights_run_seconds": 2.005611324,
+      "verify_run_seconds": 1.566611719,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4760,8 +4760,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 2.017343084,
-      "verify_run_seconds": 1.456990652,
+      "weights_run_seconds": 2.005611324,
+      "verify_run_seconds": 1.58907428,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -5472,8 +5472,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.374761196,
-      "verify_run_seconds": 1.6939264920000001,
+      "weights_run_seconds": 5.303305021,
+      "verify_run_seconds": 1.963330587,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6187,8 +6187,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.374761196,
-      "verify_run_seconds": 1.6554606079999998,
+      "weights_run_seconds": 5.303305021,
+      "verify_run_seconds": 1.895680305,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6520,7 +6520,7 @@
             {
               "item_id": 227096,
               "item_name": "Knight-Captain's Dreadweave Tunic",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -8.897439319734335
             }
@@ -6651,7 +6651,7 @@
             {
               "item_id": 227095,
               "item_name": "Knight-Captain's Dreadweave Legguards",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -2.506679509271125
             }
@@ -6929,8 +6929,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.812656791,
-      "verify_run_seconds": 3.651197003,
+      "weights_run_seconds": 5.780390647,
+      "verify_run_seconds": 3.960405852,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7439,14 +7439,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -5.687092333613635
+              "dps_delta": -5.6870923336136325
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -6.274491211355846
+              "dps_delta": -6.274491211355842
             },
             {
               "item_id": 11669,
@@ -7664,8 +7664,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.812656791,
-      "verify_run_seconds": 3.595338182,
+      "weights_run_seconds": 5.780390647,
+      "verify_run_seconds": 3.859883932,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7995,7 +7995,7 @@
             {
               "item_id": 227096,
               "item_name": "Knight-Captain's Dreadweave Tunic",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -12.368257256092722
             }
@@ -8125,7 +8125,7 @@
             {
               "item_id": 227095,
               "item_name": "Knight-Captain's Dreadweave Legguards",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -5.9131150784690965
             }
@@ -8402,8 +8402,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.894854254,
-      "verify_run_seconds": 4.028321152,
+      "weights_run_seconds": 6.913402702,
+      "verify_run_seconds": 4.259833651,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8822,7 +8822,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -8.698787573525887
+              "dps_delta": -8.698787573525884
             },
             {
               "item_id": 19090,
@@ -8977,8 +8977,6 @@
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
           "verified": true,
-          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +24.3 DPS over it",
-          "dps_delta": 24.34399408490492,
           "alternatives": [
             {
               "item_id": 18467,
@@ -8995,20 +8993,22 @@
               "dps_delta": -4.337332759039125
             },
             {
-              "item_id": 272439,
-              "item_name": "Serenity Field",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -9.294284483655268
+              "item_id": 22268,
+              "item_name": "Draconic Infused Emblem",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -24.34399408490492,
+              "verified": true
             }
           ]
         },
         {
           "slot": "trinket2",
-          "item_id": 22268,
-          "item_name": "Draconic Infused Emblem",
-          "source": "Blackrock Spire: General Drakkisath",
-          "source_kind": "dungeon",
+          "item_id": 22678,
+          "item_name": "Talisman of Ascendance",
+          "source": "Epic Armaments of Battle - Friend of the Dawn",
+          "source_kind": "quest",
+          "sim_dps": 913.365995776027,
           "verified": true,
           "alternatives": [
             {
@@ -9019,21 +9019,20 @@
               "dps_delta": 0
             },
             {
-              "item_id": 22678,
-              "item_name": "Talisman of Ascendance",
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": 0
-            },
-            {
               "item_id": 272438,
               "item_name": "Weakness Analyzer",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "dps_delta": 0
+            },
+            {
+              "item_id": 272439,
+              "item_name": "Serenity Field",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": 0
             }
-          ],
-          "faction_note": "Talisman of Ascendance (from alliance) and horde's own pick Draconic Infused Emblem measure statistically indistinguishable on troll (22.97 ± 5.58 vs 22.98 ± 5.52 DPS gain) -- each faction's own tournament winner kept"
+          ]
         },
         {
           "slot": "main_hand",
@@ -9079,9 +9078,8 @@
           "item_name": "Ritssyn's Wand of Bad Mojo",
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
-          "sim_dps": 914.9721117901444,
           "verified": true,
-          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +55.3 DPS (915.0 vs 859.7 set DPS)",
+          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +55.3 DPS over it",
           "dps_delta": 55.308282309459514,
           "alternatives": [
             {
@@ -9109,8 +9107,9 @@
           ]
         }
       ],
-      "set_dps": 914.9721117901444,
+      "set_dps": 913.365995776027,
       "no_source_count": 1052,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -9141,11 +9140,11 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Elemental Focus Band",
         "trinket1: Briarwood Reed",
-        "trinket2: Draconic Infused Emblem",
+        "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.894854254,
-      "verify_run_seconds": 3.964487581,
+      "weights_run_seconds": 6.913402702,
+      "verify_run_seconds": 4.336070199,
       "coverage": {
         "back": {
           "eligible": 456,

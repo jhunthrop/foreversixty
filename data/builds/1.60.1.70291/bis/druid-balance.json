@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70291",
-  "engine_version": "f80f8e819",
-  "generated_at": "2026-10-09T00:32:36Z",
+  "engine_version": "be3a7581b",
+  "generated_at": "2026-10-09T02:23:26Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -556,8 +556,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.860405013,
-      "verify_run_seconds": 1.067130039,
+      "weights_run_seconds": 1.9063767550000001,
+      "verify_run_seconds": 1.16905597,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.860405013,
-      "verify_run_seconds": 1.106046222,
+      "weights_run_seconds": 1.9063767550000001,
+      "verify_run_seconds": 1.139836626,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1855,8 +1855,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 2.119961305,
-      "verify_run_seconds": 1.190402349,
+      "weights_run_seconds": 2.1725948649999998,
+      "verify_run_seconds": 1.3569463050000001,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2525,8 +2525,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.119961305,
-      "verify_run_seconds": 1.213804556,
+      "weights_run_seconds": 2.1725948649999998,
+      "verify_run_seconds": 1.287870147,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3226,8 +3226,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 2.465571889,
-      "verify_run_seconds": 1.3473615859999999,
+      "weights_run_seconds": 2.305668507,
+      "verify_run_seconds": 1.493383465,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3926,8 +3926,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 2.465571889,
-      "verify_run_seconds": 1.322013117,
+      "weights_run_seconds": 2.305668507,
+      "verify_run_seconds": 1.574764204,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4600,8 +4600,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 2.449077886,
-      "verify_run_seconds": 1.652120128,
+      "weights_run_seconds": 2.54319923,
+      "verify_run_seconds": 2.035971331,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5268,8 +5268,8 @@
         "trinket1: Uther's Strength",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 2.449077886,
-      "verify_run_seconds": 1.5445398099999998,
+      "weights_run_seconds": 2.54319923,
+      "verify_run_seconds": 1.8441437779999998,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5995,8 +5995,8 @@
         "trinket2: Second Wind",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.350469644,
-      "verify_run_seconds": 5.406294974,
+      "weights_run_seconds": 2.513627065,
+      "verify_run_seconds": 5.74182704,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6187,7 +6187,7 @@
           "item_name": "Feralheart Cowl",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 40.0247666732753,
+          "score": 40.024766673275295,
           "verified": true,
           "alternatives": [
             {
@@ -6195,21 +6195,21 @@
               "item_name": "Warlord's Dragonhide Helm",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.3359161956716028
+              "dps_delta": -0.3359161956716014
             },
             {
               "item_id": 252561,
               "item_name": "Living Crown",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.6115865684929837
+              "dps_delta": -0.6115865684929822
             },
             {
               "item_id": 18727,
               "item_name": "Crimson Felt Hat",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -0.9458779939147169
+              "dps_delta": -0.9458779939147155
             }
           ]
         },
@@ -6252,7 +6252,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 39.0267836459579,
+          "score": 39.026783645957906,
           "verified": true,
           "alternatives": [
             {
@@ -6260,21 +6260,21 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.9396717242430573
+              "dps_delta": -0.9396717242430588
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.6857872480296687
+              "dps_delta": -1.68578724802967
             },
             {
               "item_id": 226778,
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.7189102907209457
+              "dps_delta": -1.7189102907209473
             }
           ]
         },
@@ -6323,7 +6323,7 @@
               "item_name": "Warlord's Dragonhide Armor",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.1939623930189156
+              "dps_delta": -0.1939623930189142
             },
             {
               "item_id": 18373,
@@ -6725,8 +6725,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.350469644,
-      "verify_run_seconds": 4.46832886,
+      "weights_run_seconds": 2.513627065,
+      "verify_run_seconds": 4.698679701,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6996,7 +6996,7 @@
               "item_name": "Field Marshal's Dragonhide Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.9737173000595711
+              "dps_delta": -1.973717300059573
             },
             {
               "item_id": 226778,
@@ -7052,7 +7052,6 @@
           "item_name": "Knight-Captain's Dragonhide Armor",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 532.1032214682093,
           "verified": true,
           "alternatives": [
             {
@@ -7090,7 +7089,6 @@
           "item_name": "Dryad's Wrist Bindings",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 532.1032214682093,
           "verified": true,
           "alternatives": [
             {
@@ -7119,33 +7117,33 @@
         },
         {
           "slot": "hands",
-          "item_id": 13253,
-          "item_name": "Hands of Power",
-          "source": "Blackrock Spire: Quartermaster Zigris",
-          "source_kind": "dungeon",
-          "score": 27.396281139263397,
+          "item_id": 17721,
+          "item_name": "Gloves of the Greatfather",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "sim_dps": 530.951689607077,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 13253,
+              "item_name": "Hands of Power",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Quartermaster Zigris",
+              "dps_delta": 0
+            },
             {
               "item_id": 231700,
               "item_name": "Marshal's Dragonhide Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.214115940459215
-            },
-            {
-              "item_id": 17721,
-              "item_name": "Gloves of the Greatfather",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -1.5836882897157816
+              "dps_delta": 0
             },
             {
               "item_id": 226777,
               "item_name": "Feralheart Hands",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -2.5045035756038065
+              "dps_delta": -0.9208152858880247
             }
           ]
         },
@@ -7220,7 +7218,6 @@
           "item_name": "Knight-Lieutenant's Dragonhide Boots",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "sim_dps": 532.1032214682093,
           "verified": true,
           "alternatives": [
             {
@@ -7258,7 +7255,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 532.1032214682093,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7292,7 +7288,6 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 532.1032214682093,
           "verified": true,
           "alternatives": [
             {
@@ -7325,9 +7320,8 @@
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 532.1032214682093,
           "verified": true,
-          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +24.9 DPS (532.1 vs 507.2 set DPS)",
+          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +24.9 DPS over it",
           "dps_delta": 24.870869692754127,
           "alternatives": [
             {
@@ -7359,7 +7353,6 @@
           "item_name": "Briarwood Reed",
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
-          "sim_dps": 532.1032214682093,
           "verified": true,
           "alternatives": [
             {
@@ -7392,7 +7385,6 @@
           "item_name": "Kindling Stave",
           "source": "Blackrock Depths: Pyromancer Loregrain",
           "source_kind": "dungeon",
-          "sim_dps": 532.1032214682093,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7440,8 +7432,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 532.1032214682093,
+      "set_dps": 530.951689607077,
       "no_source_count": 1450,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7466,7 +7459,7 @@
         "back: Arcanoweave Cloak",
         "chest: Knight-Captain's Dragonhide Armor",
         "wrist: Dryad's Wrist Bindings",
-        "hands: Hands of Power",
+        "hands: Gloves of the Greatfather",
         "waist: Knowledge of the Timbermaw",
         "legs: Ironfeather Leggings",
         "feet: Knight-Lieutenant's Dragonhide Boots",
@@ -7475,8 +7468,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.424946674,
-      "verify_run_seconds": 5.119632446,
+      "weights_run_seconds": 1.424520614,
+      "verify_run_seconds": 5.53437846,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7801,7 +7794,6 @@
           "item_name": "Feralheart Vest",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "sim_dps": 524.856115881736,
           "verified": true,
           "alternatives": [
             {
@@ -7834,7 +7826,6 @@
           "item_name": "Dryad's Wrist Bindings",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 524.856115881736,
           "verified": true,
           "alternatives": [
             {
@@ -7863,33 +7854,33 @@
         },
         {
           "slot": "hands",
-          "item_id": 13253,
-          "item_name": "Hands of Power",
-          "source": "Blackrock Spire: Quartermaster Zigris",
-          "source_kind": "dungeon",
-          "score": 27.396281139263397,
+          "item_id": 17721,
+          "item_name": "Gloves of the Greatfather",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "sim_dps": 523.4618207513955,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 13253,
+              "item_name": "Hands of Power",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Quartermaster Zigris",
+              "dps_delta": 0
+            },
             {
               "item_id": 231677,
               "item_name": "General's Dragonhide Gloves",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.214115940459215
-            },
-            {
-              "item_id": 17721,
-              "item_name": "Gloves of the Greatfather",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -1.5836882897157816
+              "dps_delta": 0
             },
             {
               "item_id": 226777,
               "item_name": "Feralheart Hands",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -2.5045035756038065
+              "dps_delta": -0.9208152858880247
             }
           ]
         },
@@ -7922,7 +7913,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -7.25556844475115
+              "dps_delta": -7.255568444751152
             }
           ]
         },
@@ -7997,7 +7988,6 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "sim_dps": 524.856115881736,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8031,7 +8021,6 @@
           "item_name": "Elemental Focus Band",
           "source": "Prince Skaldrenox",
           "source_kind": "world",
-          "sim_dps": 524.856115881736,
           "verified": true,
           "alternatives": [
             {
@@ -8064,9 +8053,8 @@
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 524.856115881736,
           "verified": true,
-          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +24.3 DPS (524.9 vs 500.5 set DPS)",
+          "swap_note": "confirmed by the sim against Briarwood Reed (id 12930): kept the pick, +24.3 DPS over it",
           "dps_delta": 24.348402569581253,
           "alternatives": [
             {
@@ -8098,7 +8086,6 @@
           "item_name": "Briarwood Reed",
           "source": "Blackrock Spire: Jed Runewatcher",
           "source_kind": "dungeon",
-          "sim_dps": 524.856115881736,
           "verified": true,
           "alternatives": [
             {
@@ -8131,7 +8118,6 @@
           "item_name": "Kindling Stave",
           "source": "Blackrock Depths: Pyromancer Loregrain",
           "source_kind": "dungeon",
-          "sim_dps": 524.856115881736,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8179,8 +8165,9 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 524.856115881736,
+      "set_dps": 523.4618207513955,
       "no_source_count": 1444,
+      "unconfirmed_within_error_held": 1,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -8205,7 +8192,7 @@
         "back: Arcanoweave Cloak",
         "chest: Feralheart Vest",
         "wrist: Dryad's Wrist Bindings",
-        "hands: Hands of Power",
+        "hands: Gloves of the Greatfather",
         "waist: Knowledge of the Timbermaw",
         "legs: Ironfeather Leggings",
         "feet: Waterspout Boots",
@@ -8214,8 +8201,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.424946674,
-      "verify_run_seconds": 4.011859087,
+      "weights_run_seconds": 1.424520614,
+      "verify_run_seconds": 4.584999809,
       "coverage": {
         "back": {
           "eligible": 457,
