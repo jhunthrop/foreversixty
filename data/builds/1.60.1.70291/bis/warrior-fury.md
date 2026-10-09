@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 00000000000000000-05150000000000000-000000000000000000)
 
-Set DPS (verified): 37.5. Weights run: 2.1s. Verify run: 2.9s. 302 eligible items had no known source.
+Set DPS (verified): 37.5. Weights run: 2.8s. Verify run: 4.0s. 302 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.392 ± 0.024, crit=0.766 ± 0.026 per rating point (14 rating = 1%, 10.720 per %), hit=1.097 ± 0.048 per rating point (10 rating = 1%, 10.973 per %), melee_haste=6.723 ± 0.500
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 302, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 00000000000000000-05153105010000000-000000000000000000)
 
-Set DPS (verified): 66.8. Weights run: 2.1s. Verify run: 1.6s. 525 eligible items had no known source.
+Set DPS (verified): 66.8. Weights run: 3.1s. Verify run: 2.2s. 525 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.517 ± 0.032, crit=1.125 ± 0.037 per rating point (14 rating = 1%, 15.752 per %), hit=1.410 ± 0.073 per rating point (10 rating = 1%, 14.102 per %), melee_haste=10.298 ± 0.816
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 525, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (human, 00000000000000000-05153105022011401-000000000000000000)
 
-Set DPS (verified): 126.0. Weights run: 2.3s. Verify run: 2.3s. 717 eligible items had no known source.
+Set DPS (verified): 126.0. Weights run: 3.3s. Verify run: 3.1s. 717 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -100,7 +100,7 @@ No-known-source sample (15 of 717, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (human, 34200000000000000-05153105022011501-000000000000000000)
 
-Set DPS (verified): 184.0. Weights run: 2.2s. Verify run: 3.1s. 906 eligible items had no known source.
+Set DPS (verified): 184.0. Weights run: 3.3s. Verify run: 4.4s. 906 eligible items had no known source.
 
 5 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -132,7 +132,7 @@ No-known-source sample (15 of 906, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (human, 34320003002000000-05153105022011501-200000000000000000)
 
-Set DPS (verified): 301.3. Weights run: 2.2s. Verify run: 8.8s. 1963 eligible items had no known source.
+Set DPS (verified): 301.3. Weights run: 3.3s. Verify run: 11.8s. 1963 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -164,7 +164,7 @@ No-known-source sample (15 of 1963, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (human, 34320003002000000-05153105022011501-200000000000000000)
 
-Set DPS (verified): 871.2. Weights run: 2.4s. Verify run: 9.5s. 1963 eligible items had no known source.
+Set DPS (verified): 871.2. Weights run: 3.7s. Verify run: 13.2s. 1963 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -198,7 +198,7 @@ No-known-source sample (15 of 1963, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (troll, 00000000000000000-05150000000000000-000000000000000000)
 
-Set DPS (verified): 37.6. Weights run: 2.1s. Verify run: 2.9s. 272 eligible items had no known source.
+Set DPS (verified): 37.6. Weights run: 2.8s. Verify run: 3.9s. 272 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.392 ± 0.024, crit=0.766 ± 0.026 per rating point (14 rating = 1%, 10.720 per %), hit=1.097 ± 0.048 per rating point (10 rating = 1%, 10.973 per %), melee_haste=6.723 ± 0.500
 
@@ -228,7 +228,7 @@ No-known-source sample (15 of 272, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-05153105010000000-000000000000000000)
 
-Set DPS (verified): 67.7. Weights run: 2.1s. Verify run: 1.7s. 489 eligible items had no known source.
+Set DPS (verified): 67.7. Weights run: 3.1s. Verify run: 2.2s. 489 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=1.517 ± 0.032, crit=1.125 ± 0.037 per rating point (14 rating = 1%, 15.752 per %), hit=1.410 ± 0.073 per rating point (10 rating = 1%, 14.102 per %), melee_haste=10.298 ± 0.816
 
@@ -258,7 +258,7 @@ No-known-source sample (15 of 489, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (troll, 00000000000000000-05153105022011401-000000000000000000)
 
-Set DPS (verified): 128.4. Weights run: 2.3s. Verify run: 2.2s. 669 eligible items had no known source.
+Set DPS (verified): 128.4. Weights run: 3.3s. Verify run: 3.1s. 669 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -290,7 +290,7 @@ No-known-source sample (15 of 669, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (troll, 34200000000000000-05153105022011501-000000000000000000)
 
-Set DPS (verified): 192.4. Weights run: 2.2s. Verify run: 3.2s. 849 eligible items had no known source.
+Set DPS (verified): 192.4. Weights run: 3.3s. Verify run: 4.4s. 849 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -322,7 +322,7 @@ No-known-source sample (15 of 849, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (troll, 34320003002000000-05153105022011501-200000000000000000)
 
-Set DPS (verified): 304.9. Weights run: 2.2s. Verify run: 9.1s. 1932 eligible items had no known source.
+Set DPS (verified): 304.9. Weights run: 3.3s. Verify run: 12.3s. 1932 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -354,7 +354,7 @@ No-known-source sample (15 of 1932, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (troll, 34320003002000000-05153105022011501-200000000000000000)
 
-Set DPS (verified): 884.7. Weights run: 2.4s. Verify run: 9.8s. 1932 eligible items had no known source.
+Set DPS (verified): 884.7. Weights run: 3.7s. Verify run: 13.3s. 1932 eligible items had no known source.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

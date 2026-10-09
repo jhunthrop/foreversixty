@@ -1,8 +1,8 @@
 {
   "spec": "rogue-combat",
   "build": "1.60.1.70291",
-  "engine_version": "0ea8d8e99",
-  "generated_at": "2026-10-09T19:09:22Z",
+  "engine_version": "b1b13fddc",
+  "generated_at": "2026-10-09T21:15:18Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -579,8 +579,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.90957219,
-      "verify_run_seconds": 3.174579384,
+      "weights_run_seconds": 2.882434947,
+      "verify_run_seconds": 4.571299017,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1248,8 +1248,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.90957219,
-      "verify_run_seconds": 3.177313004,
+      "weights_run_seconds": 2.882434947,
+      "verify_run_seconds": 4.612392231,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1949,8 +1949,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.87904911,
-      "verify_run_seconds": 3.372843757,
+      "weights_run_seconds": 2.998939938,
+      "verify_run_seconds": 5.049213892,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2646,8 +2646,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.87904911,
-      "verify_run_seconds": 3.598426697,
+      "weights_run_seconds": 2.998939938,
+      "verify_run_seconds": 5.091781608,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3348,8 +3348,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.011066135,
-      "verify_run_seconds": 2.168755405,
+      "weights_run_seconds": 3.251053422,
+      "verify_run_seconds": 3.045198964,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4049,8 +4049,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.011066135,
-      "verify_run_seconds": 2.14971252,
+      "weights_run_seconds": 3.251053422,
+      "verify_run_seconds": 3.050320872,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4773,8 +4773,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.338277595,
-      "verify_run_seconds": 2.726537857,
+      "weights_run_seconds": 3.630061737,
+      "verify_run_seconds": 3.888589119,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5483,8 +5483,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.338277595,
-      "verify_run_seconds": 2.702026601,
+      "weights_run_seconds": 3.630061737,
+      "verify_run_seconds": 3.930332989,
       "coverage": {
         "back": {
           "eligible": 324,
@@ -6251,8 +6251,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.104317477,
-      "verify_run_seconds": 7.086773979,
+      "weights_run_seconds": 3.063804243,
+      "verify_run_seconds": 10.203594582,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7018,8 +7018,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.104317477,
-      "verify_run_seconds": 7.068161461,
+      "weights_run_seconds": 3.063804243,
+      "verify_run_seconds": 9.972196473,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7782,8 +7782,8 @@
         "off_hand: The Lobotomizer",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.129263502,
-      "verify_run_seconds": 7.043464898,
+      "weights_run_seconds": 3.254493724,
+      "verify_run_seconds": 10.464473617,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8550,8 +8550,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.129263502,
-      "verify_run_seconds": 7.0677723199999996,
+      "weights_run_seconds": 3.254493724,
+      "verify_run_seconds": 10.260772073,
       "coverage": {
         "back": {
           "eligible": 457,

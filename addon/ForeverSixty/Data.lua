@@ -4066,8 +4066,8 @@ ns.Data = {
 					off_hand = { 7515, "Q", "Celestial Power" },
 					ranged = { 13064, "B", "World drop" },
 					shoulder = { 19507, "D", "Scarlet Monastery: High Inquisitor Fairbanks" },
-					waist = { 20098, "R", "The League of Arathor" },
-					wrist = { 4744, "Q", "Wanted! Marez Cowl" },
+					waist = { 10771, "D", "Razorfen Downs: Mordresh Fire Eye" },
+					wrist = { 9448, "D", "Gnomeregan: Electrocutioner 6000" },
 				},
 				horde = {
 					back = { 23178, "D", "Razorfen Downs: Lady Falther'ess" },
@@ -4083,7 +4083,7 @@ ns.Data = {
 					off_hand = { 7515, "Q", "Celestial Power" },
 					ranged = { 13064, "B", "World drop" },
 					shoulder = { 19507, "D", "Scarlet Monastery: High Inquisitor Fairbanks" },
-					waist = { 20166, "R", "The Defilers" },
+					waist = { 10771, "D", "Razorfen Downs: Mordresh Fire Eye" },
 					wrist = { 4545, "Q", "Foul Magics" },
 				},
 			},
@@ -4098,7 +4098,7 @@ ns.Data = {
 					head = { 10033, "C", "Tailoring" },
 					legs = { 9484, "D", "Zul'Farrak: Chief Ukorz Sandscalp" },
 					main_hand = { 9527, "Q", "Tiara of the Deep" },
-					neck = { 20037, "Q", "Destroy Morphaz" },
+					neck = { 10769, "D", "Razorfen Downs: Mordresh Fire Eye" },
 					ranged = { 11748, "D", "Blackrock Depths: Pyromancer Loregrain" },
 					shoulder = { 17732, "D", "Maraudon: Rotgrip" },
 					trinket1 = { 249469, "C", "Enchanting" },
@@ -4114,7 +4114,7 @@ ns.Data = {
 					finger2 = { 281635, "Q", "Greater Friend of the Library" },
 					hands = { 226930, "V", "Mokvar" },
 					head = { 10033, "C", "Tailoring" },
-					legs = { 9484, "D", "Zul'Farrak: Chief Ukorz Sandscalp" },
+					legs = { 220906, "V", "Lady Palanseer" },
 					main_hand = { 9527, "Q", "Tiara of the Deep" },
 					neck = { 20037, "Q", "Destroy Morphaz" },
 					ranged = { 11748, "D", "Blackrock Depths: Pyromancer Loregrain" },
@@ -6247,7 +6247,7 @@ ns.Data = {
 				alliance = {
 					back = { 272077, "V", "Creeg Bothunk" },
 					chest = { 10020, "C", "Tailoring" },
-					feet = { 252533, "C", "Leatherworking" },
+					feet = { 252565, "C", "Leatherworking" },
 					finger1 = { 272070, "V", "Creeg Bothunk" },
 					finger2 = { 6750, "Q", "Willix the Importer" },
 					hands = { 10765, "D", "Razorfen Downs: Amnennar the Coldbringer" },
@@ -6264,7 +6264,7 @@ ns.Data = {
 				horde = {
 					back = { 272077, "V", "Creeg Bothunk" },
 					chest = { 10020, "C", "Tailoring" },
-					feet = { 252565, "C", "Leatherworking" },
+					feet = { 252533, "C", "Leatherworking" },
 					finger1 = { 272070, "V", "Creeg Bothunk" },
 					finger2 = { 6750, "Q", "Willix the Importer" },
 					hands = { 10765, "D", "Razorfen Downs: Amnennar the Coldbringer" },
@@ -7678,12 +7678,12 @@ ns.Data = {
 				horde = { 2721, 23169, 7684, 3719, 7065, 9448, 20164, 6903, 254001, 19521, 274746, 6689, 7708 },
 			},
 			[40] = {
-				alliance = { 10502, 10769, 19507, 23178, 1716, 4744, 10019, 20098, 10009, 254013, 281635, 19524, 7714, 7515, 13064 },
-				horde = { 10502, 10769, 19507, 23178, 1716, 4545, 10019, 20166, 10009, 254013, 281635, 19520, 7714, 7515, 13064 },
+				alliance = { 10502, 10769, 19507, 23178, 1716, 10019, 10771, 10009, 254013, 281635, 19524, 7714, 7515, 13064 },
+				horde = { 10502, 10769, 19507, 23178, 1716, 4545, 10019, 10771, 10009, 254013, 281635, 19520, 7714, 7515, 13064 },
 			},
 			[50] = {
-				alliance = { 10033, 20037, 17732, 11623, 17775, 254061, 226930, 11662, 9484, 220891, 11824, 281635, 249469, 11302, 9527, 11748 },
-				horde = { 10033, 20037, 17732, 19121, 17775, 254061, 226930, 11662, 9484, 220909, 11824, 281635, 249469, 11302, 9527, 11748 },
+				alliance = { 10033, 17732, 11623, 17775, 254061, 226930, 11662, 9484, 220891, 11824, 281635, 249469, 11302, 9527, 11748 },
+				horde = { 10033, 20037, 17732, 19121, 17775, 254061, 226930, 11662, 220906, 220909, 11824, 281635, 249469, 11302, 9527, 11748 },
 			},
 			[60] = {
 				alliance = { 226935, 19601, 227808, 272411, 14152, 19595, 228190, 226933, 226931, 234032, 20682, 22678, 11832, 279246 },
@@ -7942,8 +7942,8 @@ ns.Data = {
 				horde = { 3020, 13084, 6697, 6901, 252511, 9395, 252523, 252519, 254001, 6750, 272071, 6689 },
 			},
 			[40] = {
-				alliance = { 9431, 1714, 13115, 272077, 10020, 13119, 10765, 254037, 276201, 252533, 272070, 6750, 272059, 1713 },
-				horde = { 9431, 1714, 13115, 272077, 10020, 13119, 10765, 254037, 276201, 252565, 272070, 6750, 272059, 1713 },
+				alliance = { 9431, 1714, 13115, 272077, 10020, 13119, 10765, 254037, 276201, 252565, 272070, 6750, 272059, 1713 },
+				horde = { 9431, 1714, 13115, 272077, 10020, 13119, 10765, 254037, 276201, 252533, 272070, 6750, 272059, 1713 },
 			},
 			[50] = {
 				alliance = { 10751, 19303, 11842, 272076, 12462, 252543, 227014, 14803, 10807, 13111, 272069, 6440, 272061, 11302, 17710, 17718 },
@@ -8154,9 +8154,9 @@ ns.Data = {
 		["mage-frost"] = {
 			[20] = { ["crit"] = 0.077, ["frost_power"] = 1, ["hit"] = 0.256, ["intellect"] = 0.315, ["spell_haste"] = 0.429, ["spell_power"] = 1 },
 			[30] = { ["crit"] = 0.099, ["frost_power"] = 1, ["hit"] = 0.248, ["intellect"] = 0.154, ["spell_power"] = 1 },
-			[40] = { ["crit"] = 0.161, ["frost_power"] = 1, ["hit"] = 0.405, ["intellect"] = 0.632, ["spell_power"] = 1 },
-			[50] = { ["crit"] = 0.259, ["frost_power"] = 1, ["hit"] = 0.873, ["intellect"] = 0.93, ["spell_haste"] = 7.453, ["spell_power"] = 1 },
-			[60] = { ["crit"] = 0.368, ["frost_power"] = 1, ["hit"] = 1.188, ["intellect"] = 0.752, ["spell_haste"] = 7.029, ["spell_power"] = 1 },
+			[40] = { ["crit"] = 0.167, ["frost_power"] = 1, ["hit"] = 0.421, ["intellect"] = 0.662, ["spell_power"] = 1 },
+			[50] = { ["crit"] = 0.27, ["frost_power"] = 1, ["hit"] = 0.928, ["intellect"] = 0.986, ["spell_haste"] = 7.675, ["spell_power"] = 1 },
+			[60] = { ["crit"] = 0.379, ["frost_power"] = 1, ["hit"] = 1.281, ["intellect"] = 0.814, ["spell_haste"] = 7.471, ["spell_power"] = 1 },
 		},
 		["paladin-holy"] = {
 			[20] = { ["crit"] = 0.035, ["healing_power"] = 1, ["intellect"] = 0.899, ["mp5"] = 1.695, ["spell_haste"] = 0.105, ["spirit"] = 0.222 },
@@ -8246,8 +8246,8 @@ ns.Data = {
 			[20] = { ["crit"] = 0.033, ["hit"] = 0.111, ["intellect"] = -0.104, ["shadow_power"] = 0.746, ["spell_power"] = 1 },
 			[30] = { ["crit"] = 0.035, ["hit"] = 0.122, ["intellect"] = 0.144, ["shadow_power"] = 0.775, ["spell_power"] = 1 },
 			[40] = { ["crit"] = 0.026, ["hit"] = 0.19, ["intellect"] = 0.702, ["shadow_power"] = 0.874, ["spell_haste"] = 0.541, ["spell_power"] = 1 },
-			[50] = { ["crit"] = 0.031, ["hit"] = 0.299, ["intellect"] = 0.027, ["shadow_power"] = 0.878, ["spell_power"] = 1 },
-			[60] = { ["crit"] = 0.069, ["hit"] = 0.392, ["intellect"] = 0.079, ["shadow_power"] = 0.898, ["spell_power"] = 1 },
+			[50] = { ["crit"] = 0.032, ["hit"] = 0.3, ["intellect"] = 0.031, ["shadow_power"] = 0.876, ["spell_power"] = 1 },
+			[60] = { ["crit"] = 0.07, ["hit"] = 0.395, ["intellect"] = 0.081, ["shadow_power"] = 0.896, ["spell_power"] = 1 },
 		},
 		["warlock-demonology"] = {
 			[20] = { ["crit"] = 0.023, ["fire_power"] = 0.754, ["hit"] = 0.092, ["intellect"] = 0.019, ["shadow_power"] = 0.246, ["spell_haste"] = 1.98, ["spell_power"] = 1 },
