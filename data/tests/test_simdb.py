@@ -82,8 +82,11 @@ def test_simdb_is_written_and_parses_back(build_dir: Path):
 
 
 def test_the_set_name_comes_from_the_normalized_sets_file(build_dir: Path):
-    helm = next(item for item in parsed(write_sim_database("9.9.9.9", root=build_dir.parent)).items
-                if item.id == 16866)
+    helm = next(
+        item
+        for item in parsed(write_sim_database("9.9.9.9", root=build_dir.parent)).items
+        if item.id == 16866
+    )
     assert (helm.set_id, helm.set_name) == (209, "Battlegear of Might")
 
 
@@ -214,3 +217,59 @@ def test_loot_json_alone_also_trips_the_guard(build_dir: Path):
     (build_dir / "loot.json").write_text("[]")
     with pytest.raises(SystemExit, match="loot"):
         write_sim_database("9.9.9.9", root=build_dir.parent)
+
+
+def _hotfix_copy(path: Path, new_id: str, name_column: str | None = None) -> list[dict[str, str]]:
+    """The first row of `path` as a hotfix row for id `new_id`."""
+    row = dict(read_csv(path)[0])
+    row["ID"] = new_id
+    if name_column:
+        row[name_column] = "Hotfix Only Piece"
+    row["_HotfixStatus"] = "valid"
+    return [row]
+
+
+def _write_hotfix(raw: Path, table: str, rows: list[dict[str, str]]) -> None:
+    import csv
+
+    (raw / "hotfixes").mkdir(exist_ok=True)
+    with (raw / "hotfixes" / f"{table}.csv").open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def test_a_hotfix_only_item_is_in_the_sim_database_with_its_set(build_dir: Path):
+    """An item the client carries only as a runtime hotfix (raw/hotfixes/, the
+    re-itemised PvP sets on 1.60.1.70291) is part of the client universe here
+    as it is in normalize: kept, with the set its hotfix ItemSparse row names."""
+    raw = build_dir / "raw"
+    sparse = _hotfix_copy(raw / "ItemSparse.csv", "999001", "Display_lang")
+    source_id = read_csv(raw / "ItemSparse.csv")[0]["ID"]
+    _write_hotfix(raw, "ItemSparse", sparse)
+    item = [dict(row) for row in read_csv(raw / "Item.csv") if row["ID"] == source_id][0]
+    item["ID"] = "999001"
+    item["_HotfixStatus"] = "valid"
+    _write_hotfix(raw, "Item", [item])
+    database = parsed(write_sim_database("9.9.9.9", root=build_dir.parent))
+    by_id = {row.id: row for row in database.items}
+    assert 999001 in by_id
+    assert by_id[999001].name == "Hotfix Only Piece"
+    assert (by_id[999001].set_id, by_id[999001].set_name) == (
+        by_id[int(source_id)].set_id,
+        by_id[int(source_id)].set_name,
+    )
+
+
+def test_a_seeded_hotfix_dump_never_overrides_a_shipped_item(build_dir: Path):
+    """With SEEDED_FROM beside it (a dump copied from another build) the merge
+    is add-only: a shipped id keeps the shipped row."""
+    raw = build_dir / "raw"
+    first = read_csv(raw / "ItemSparse.csv")[0]
+    stale = dict(first)
+    stale["Display_lang"] = "Stale Name"
+    stale["_HotfixStatus"] = "valid"
+    _write_hotfix(raw, "ItemSparse", [stale])
+    (raw / "hotfixes" / "SEEDED_FROM").write_text("9.9.9.1\n", encoding="utf-8")
+    database = parsed(write_sim_database("9.9.9.9", root=build_dir.parent))
+    assert {row.id: row.name for row in database.items}[int(first["ID"])] == first["Display_lang"]

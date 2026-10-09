@@ -6877,7 +6877,9 @@
       "required_level_source": "client",
       "item_level": 12,
       "armor": 0,
-      "stats": {},
+      "stats": {
+        "fire_power": 1
+      },
       "damage_min": 9,
       "damage_max": 17,
       "speed": 1.5,
@@ -10753,7 +10755,9 @@
       "required_level_source": "client",
       "item_level": 17,
       "armor": 0,
-      "stats": {},
+      "stats": {
+        "fire_power": 1
+      },
       "damage_min": 13,
       "damage_max": 25,
       "speed": 1.5,
@@ -10949,7 +10953,8 @@
       "armor": 23,
       "stats": {
         "intellect": 3,
-        "stamina": 4
+        "stamina": 4,
+        "fire_power": 6
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -14370,7 +14375,8 @@
       "stats": {
         "intellect": 5,
         "stamina": 4,
-        "spirit": 3
+        "spirit": 3,
+        "fire_power": 9
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -14551,7 +14557,8 @@
       "armor": 23,
       "stats": {
         "intellect": 3,
-        "stamina": 4
+        "stamina": 4,
+        "fire_power": 7
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -15854,7 +15861,9 @@
       "required_level_source": "client",
       "item_level": 20,
       "armor": 0,
-      "stats": {},
+      "stats": {
+        "fire_power": 3
+      },
       "damage_min": 20,
       "damage_max": 38,
       "speed": 1.9,
@@ -16049,7 +16058,8 @@
       "item_level": 21,
       "armor": 17,
       "stats": {
-        "intellect": 3
+        "intellect": 3,
+        "fire_power": 4
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -16920,6 +16930,34 @@
       "superseded_by": null
     },
     {
+      "id": 2879,
+      "name": "Antipodean Rod",
+      "icon": "inv_wand_04",
+      "slot": "off_hand",
+      "quality": 3,
+      "required_level": 17,
+      "required_level_source": "client",
+      "item_level": 22,
+      "armor": 0,
+      "stats": {
+        "fire_power": 6
+      },
+      "damage_min": 0,
+      "damage_max": 0,
+      "speed": 0.0,
+      "dps": 0.0,
+      "two_hand": false,
+      "effect_text": "",
+      "stats_source": null,
+      "set_id": null,
+      "unique": true,
+      "client_unconfirmed": false,
+      "percent_stats": {},
+      "icon_source": "client",
+      "weapon_type": null,
+      "superseded_by": null
+    },
+    {
       "id": 6678,
       "name": "Band of Elven Grace",
       "icon": "inv_belt_32",
@@ -17335,7 +17373,8 @@
       "armor": 22,
       "stats": {
         "intellect": 4,
-        "stamina": 5
+        "stamina": 5,
+        "fire_power": 7
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -17993,7 +18032,8 @@
       "item_level": 22,
       "armor": 0,
       "stats": {
-        "stamina": 2
+        "stamina": 2,
+        "fire_power": 8
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -22020,7 +22060,8 @@
       "stats": {
         "intellect": 6,
         "stamina": 5,
-        "spirit": 4
+        "spirit": 4,
+        "fire_power": 11
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -22200,7 +22241,8 @@
       "item_level": 25,
       "armor": 35,
       "stats": {
-        "stamina": 10
+        "stamina": 10,
+        "fire_power": 11
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -22846,7 +22888,9 @@
       "required_level_source": "client",
       "item_level": 25,
       "armor": 24,
-      "stats": {},
+      "stats": {
+        "fire_power": 9
+      },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
@@ -22873,7 +22917,8 @@
       "item_level": 25,
       "armor": 34,
       "stats": {
-        "intellect": 4
+        "intellect": 4,
+        "fire_power": 10
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -24939,7 +24984,9 @@
       "required_level_source": "client",
       "item_level": 26,
       "armor": 35,
-      "stats": {},
+      "stats": {
+        "fire_power": 13
+      },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
@@ -25795,7 +25842,8 @@
       "stats": {
         "intellect": 7,
         "stamina": 6,
-        "spirit": 4
+        "spirit": 4,
+        "fire_power": 13
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -28788,7 +28836,9 @@
       "required_level_source": "client",
       "item_level": 29,
       "armor": 0,
-      "stats": {},
+      "stats": {
+        "fire_power": 4
+      },
       "damage_min": 24,
       "damage_max": 46,
       "speed": 1.5,
@@ -30192,7 +30242,8 @@
       "item_level": 30,
       "armor": 38,
       "stats": {
-        "stamina": 12
+        "stamina": 12,
+        "fire_power": 14
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -30364,7 +30415,8 @@
       "stats": {
         "intellect": 7,
         "stamina": 7,
-        "spirit": 5
+        "spirit": 5,
+        "fire_power": 14
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -30731,7 +30783,8 @@
       "item_level": 30,
       "armor": 0,
       "stats": {
-        "stamina": 4
+        "stamina": 4,
+        "fire_power": 6
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -31076,7 +31129,9 @@
       "required_level_source": "client",
       "item_level": 30,
       "armor": 21,
-      "stats": {},
+      "stats": {
+        "fire_power": 13
+      },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
@@ -38561,7 +38616,8 @@
       "stats": {
         "intellect": 7,
         "stamina": 6,
-        "spirit": 4
+        "spirit": 4,
+        "fire_power": 13
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -39725,7 +39781,8 @@
       "item_level": 40,
       "armor": 0,
       "stats": {
-        "intellect": 3
+        "intellect": 3,
+        "fire_power": 9
       },
       "damage_min": 36,
       "damage_max": 68,
@@ -39841,7 +39898,8 @@
       "item_level": 35,
       "armor": 0,
       "stats": {
-        "fire_res": 6
+        "fire_res": 6,
+        "fire_power": 13
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -39897,7 +39955,9 @@
       "required_level_source": "client",
       "item_level": 35,
       "armor": 0,
-      "stats": {},
+      "stats": {
+        "fire_power": 6
+      },
       "damage_min": 26,
       "damage_max": 49,
       "speed": 1.3,
@@ -44943,7 +45003,8 @@
       "item_level": 39,
       "armor": 0,
       "stats": {
-        "intellect": 7
+        "intellect": 7,
+        "fire_power": 39
       },
       "damage_min": 21,
       "damage_max": 39,
@@ -45882,7 +45943,8 @@
       "armor": 36,
       "stats": {
         "intellect": 7,
-        "stamina": 9
+        "stamina": 9,
+        "fire_power": 14
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -46170,7 +46232,9 @@
       "required_level_source": "wowhead",
       "item_level": 40,
       "armor": 53,
-      "stats": {},
+      "stats": {
+        "fire_power": 23
+      },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
@@ -47334,7 +47398,8 @@
       "item_level": 41,
       "armor": 54,
       "stats": {
-        "intellect": 15
+        "intellect": 15,
+        "fire_power": 9
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -48562,7 +48627,8 @@
       "item_level": 42,
       "armor": 35,
       "stats": {
-        "intellect": 6
+        "intellect": 6,
+        "fire_power": 14
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -51154,7 +51220,8 @@
       "item_level": 44,
       "armor": 33,
       "stats": {
-        "spirit": 9
+        "spirit": 9,
+        "fire_power": 13
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -53213,7 +53280,9 @@
       "required_level_source": "client",
       "item_level": 45,
       "armor": 59,
-      "stats": {},
+      "stats": {
+        "fire_power": 27
+      },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
@@ -53509,7 +53578,8 @@
       "stats": {
         "intellect": 8,
         "stamina": 8,
-        "spirit": 6
+        "spirit": 6,
+        "fire_power": 14
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -54466,7 +54536,8 @@
       "item_level": 45,
       "armor": 0,
       "stats": {
-        "stamina": 12
+        "stamina": 12,
+        "fire_power": 7
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -57271,7 +57342,8 @@
       "stats": {
         "intellect": 8,
         "stamina": 8,
-        "spirit": 6
+        "spirit": 6,
+        "fire_power": 17
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -59081,7 +59153,9 @@
       "required_level_source": "client",
       "item_level": 49,
       "armor": 44,
-      "stats": {},
+      "stats": {
+        "fire_power": 21
+      },
       "damage_min": 0,
       "damage_max": 0,
       "speed": 0.0,
@@ -59108,7 +59182,8 @@
       "item_level": 49,
       "armor": 56,
       "stats": {
-        "spirit": 15
+        "spirit": 15,
+        "fire_power": 19
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -60916,7 +60991,8 @@
       "stats": {
         "intellect": 7,
         "stamina": 7,
-        "spirit": 5
+        "spirit": 5,
+        "fire_power": 13
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -63667,7 +63743,8 @@
       "item_level": 52,
       "armor": 68,
       "stats": {
-        "spirit": 11
+        "spirit": 11,
+        "fire_power": 24
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -63896,7 +63973,8 @@
       "armor": 42,
       "stats": {
         "intellect": 9,
-        "stamina": 12
+        "stamina": 12,
+        "fire_power": 19
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -67593,7 +67671,8 @@
       "item_level": 54,
       "armor": 44,
       "stats": {
-        "spirit": 11
+        "spirit": 11,
+        "fire_power": 17
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -69254,7 +69333,8 @@
       "item_level": 55,
       "armor": 36,
       "stats": {
-        "intellect": 8
+        "intellect": 8,
+        "fire_power": 13
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -69282,7 +69362,8 @@
       "item_level": 55,
       "armor": 39,
       "stats": {
-        "fire_res": 6
+        "fire_res": 6,
+        "fire_power": 14
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -69766,7 +69847,8 @@
       "stats": {
         "intellect": 10,
         "stamina": 9,
-        "spirit": 8
+        "spirit": 8,
+        "fire_power": 19
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -69795,7 +69877,8 @@
       "armor": 54,
       "stats": {
         "intellect": 9,
-        "stamina": 13
+        "stamina": 13,
+        "fire_power": 20
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -72225,7 +72308,8 @@
       "item_level": 56,
       "armor": 63,
       "stats": {
-        "intellect": 12
+        "intellect": 12,
+        "fire_power": 26
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -73984,7 +74068,8 @@
       "item_level": 57,
       "armor": 51,
       "stats": {
-        "spirit": 12
+        "spirit": 12,
+        "fire_power": 17
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -75962,7 +76047,8 @@
       "item_level": 58,
       "armor": 41,
       "stats": {
-        "fire_res": 10
+        "fire_res": 10,
+        "fire_power": 21
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -76474,7 +76560,8 @@
       "item_level": 58,
       "armor": 47,
       "stats": {
-        "spirit": 12
+        "spirit": 12,
+        "fire_power": 19
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -87544,7 +87631,8 @@
       "item_level": 62,
       "armor": 55,
       "stats": {
-        "intellect": 9
+        "intellect": 9,
+        "fire_power": 33
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -109696,6 +109784,7 @@
       "armor": 0,
       "stats": {
         "intellect": 10,
+        "fire_power": 34,
         "crit": 14
       },
       "damage_min": 0,
@@ -110002,7 +110091,8 @@
       "armor": 100,
       "stats": {
         "stamina": 27,
-        "intellect": 24
+        "intellect": 24,
+        "fire_power": 26
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -113512,6 +113602,34 @@
       "armor": 0,
       "stats": {
         "mp5": 3
+      },
+      "damage_min": 0,
+      "damage_max": 0,
+      "speed": 0.0,
+      "dps": 0.0,
+      "two_hand": false,
+      "effect_text": "",
+      "stats_source": null,
+      "set_id": null,
+      "unique": true,
+      "client_unconfirmed": false,
+      "percent_stats": {},
+      "icon_source": "client",
+      "weapon_type": null,
+      "superseded_by": null
+    },
+    {
+      "id": 19311,
+      "name": "Tome of Fiery Arcana",
+      "icon": "inv_misc_book_09",
+      "slot": "off_hand",
+      "quality": 4,
+      "required_level": 60,
+      "required_level_source": "client",
+      "item_level": 65,
+      "armor": 0,
+      "stats": {
+        "fire_power": 40
       },
       "damage_min": 0,
       "damage_max": 0,

@@ -43,6 +43,7 @@ from pathlib import Path
 from pipeline import classicdb_items as cdb
 from pipeline import wowhead_items as wh
 from pipeline.csvio import read_csv
+from pipeline.hotfix_merge import merge_hotfix_table
 from pipeline.manifest import refresh_manifest
 from pipeline.models import ConsumableRecord
 from pipeline.normalize import write_json
@@ -193,8 +194,14 @@ def build_sim_database(
     if not raw.exists():
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
     set_names = _set_names(build_dir)
-    sparse_rows = read_csv(raw / "ItemSparse.csv")
-    item_rows = read_csv(raw / "Item.csv")
+    # Merged with raw/hotfixes/ exactly as normalize_build merges them: an
+    # item the client carries only as a runtime hotfix (the re-itemised PvP
+    # sets, 784 pieces on 1.60.1.70291) is part of the client universe here
+    # too, with the set and stats its hotfix row states. Until 2026-10-08
+    # simdb read the shipped tables alone and those items reached it only
+    # through Wowhead's payload, which stopped listing them.
+    sparse_rows = merge_hotfix_table(raw, "ItemSparse")
+    item_rows = merge_hotfix_table(raw, "Item")
     item_effect_rows = read_csv(raw / "ItemEffect.csv")
     link_rows = _optional(raw, "ItemXItemEffect")
     effects_by_spell = index_spell_effects(read_csv(raw / "SpellEffect.csv"))
@@ -206,8 +213,10 @@ def build_sim_database(
         read_csv(raw / "RandPropPoints.csv"),
     )
     weapon_curves = load_weapon_curves(
-        *(_optional(raw, f"ItemDamage{name}") for name in
-          ("OneHand", "TwoHand", "Ranged", "Wand", "Thrown"))
+        *(
+            _optional(raw, f"ItemDamage{name}")
+            for name in ("OneHand", "TwoHand", "Ranged", "Wand", "Thrown")
+        )
     )
 
     pairs = simdb_item_rows(sparse_rows, item_rows)
@@ -331,9 +340,7 @@ def write_sim_items(
     payload = {
         "build": build,
         "items": [item.id for item in database.items],
-        "sim_source": {
-            str(item.id): sources.get(item.id, "client") for item in database.items
-        },
+        "sim_source": {str(item.id): sources.get(item.id, "client") for item in database.items},
     }
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return path

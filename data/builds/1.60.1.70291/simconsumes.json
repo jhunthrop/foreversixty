@@ -8556,6 +8556,15 @@
     ]
   },
   {
+    "id": 216483,
+    "name": "Witherbark Mallet",
+    "quality": 1,
+    "required_level": 1,
+    "spell_ids": [
+      436278
+    ]
+  },
+  {
     "id": 216606,
     "name": "Rune of Two-Handed Mastery",
     "quality": 2,
@@ -9618,6 +9627,15 @@
     ]
   },
   {
+    "id": 227813,
+    "name": "Drinkable Stratholme Holy Water",
+    "quality": 1,
+    "required_level": 55,
+    "spell_ids": [
+      461632
+    ]
+  },
+  {
     "id": 227921,
     "name": "Rune of Knives",
     "quality": 2,
@@ -9870,6 +9888,15 @@
     "required_level": 45,
     "spell_ids": [
       471401
+    ]
+  },
+  {
+    "id": 233217,
+    "name": "Tunneler's Incense",
+    "quality": 3,
+    "required_level": 50,
+    "spell_ids": [
+      473544
     ]
   },
   {
@@ -13464,6 +13491,15 @@
     ]
   },
   {
+    "id": 274048,
+    "name": "9-60 Battery Pack",
+    "quality": 2,
+    "required_level": 29,
+    "spell_ids": [
+      1293085
+    ]
+  },
+  {
     "id": 274273,
     "name": "Flask of Natural Accuracy",
     "quality": 2,
@@ -14418,6 +14454,24 @@
     ]
   },
   {
+    "id": 282720,
+    "name": "Spider Swarm",
+    "quality": 2,
+    "required_level": 21,
+    "spell_ids": [
+      1314364
+    ]
+  },
+  {
+    "id": 284666,
+    "name": "Wolf Whistle",
+    "quality": 2,
+    "required_level": 19,
+    "spell_ids": [
+      1316847
+    ]
+  },
+  {
     "id": 284868,
     "name": "Holy Hand Grenade of Alterac",
     "quality": 1,
@@ -14436,6 +14490,24 @@
     ]
   },
   {
+    "id": 285104,
+    "name": "Windle's Lighter",
+    "quality": 2,
+    "required_level": 0,
+    "spell_ids": [
+      1317605
+    ]
+  },
+  {
+    "id": 285359,
+    "name": "Warm Apple Juice",
+    "quality": 1,
+    "required_level": 45,
+    "spell_ids": [
+      1137
+    ]
+  },
+  {
     "id": 286152,
     "name": "Plated Armorfish",
     "quality": 1,
@@ -14451,6 +14523,15 @@
     "required_level": 1,
     "spell_ids": [
       1320093
+    ]
+  },
+  {
+    "id": 286732,
+    "name": "Shiny Silver Coin",
+    "quality": 1,
+    "required_level": 0,
+    "spell_ids": [
+      1321320
     ]
   },
   {

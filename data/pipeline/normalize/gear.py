@@ -182,7 +182,7 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     50: None,  # mastery rating
     83: None,
     84: None,
-    85: None,
+    85: "fire_power",  # fire spell damage (Inferno Robe, Phoenix set; build 1.60.1.70291)
     86: None,
     87: None,
     88: None,
@@ -215,8 +215,11 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     114: None,
     115: None,
     117: None,
-    119: None,
-    121: None,
+    # Fire and frost spell penetration (the Baleflame and Balefrost enchants,
+    # the "Spell Penetration" test weapons); modelled as spell penetration,
+    # as pipeline.simdb.equip reads aura 123.
+    119: "spell_penetration",
+    121: "spell_penetration",
     124: None,
     125: None,
     126: None,
@@ -591,9 +594,7 @@ def _curve_stats(
             break
         editor_column = f"StatPercentEditor_{index}"
         amount = (
-            round(budget * int_column(row, editor_column) / 10000)
-            if editor_column in row
-            else 0
+            round(budget * int_column(row, editor_column) / 10000) if editor_column in row else 0
         )
         _apply_stat(stats, row, index, amount)
     return stats

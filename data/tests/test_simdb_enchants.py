@@ -99,8 +99,7 @@ def test_a_direct_stat_enchant_that_is_a_combat_rating_is_converted():
         }
     )
     built = {
-        row.effect_id: row
-        for row in build_sim_enchants([rating_row], effects(), RATING_FACTORS)
+        row.effect_id: row for row in build_sim_enchants([rating_row], effects(), RATING_FACTORS)
     }
     assert built[9001].stats[pb.Stat.Value("StatCrit")] == pytest.approx(20.0 / 14.0)
 
@@ -136,3 +135,30 @@ def test_the_live_build_warns_about_every_weapon_skill_only_enchant(caplog):
         if (match := re.search(r"enchant (\d+) grants", record.getMessage()))
     }
     assert len(dropped_ids) == 40
+
+
+def test_the_1_60_1_70291_school_enchants_read_as_fire_power_and_spell_penetration():
+    """Lesser Flame (8700) became a direct stat 85 (fire spell damage) and
+    Baleflame/Balefrost (8706/8714) direct stats 119/121 (fire and frost
+    spell penetration, modelled as spell penetration like equip aura 123)."""
+    template = dict(rows()[0])
+    for slot in ("0", "1", "2"):
+        template[f"Effect_{slot}"] = "0"
+        template[f"EffectPointsMin_{slot}"] = "0"
+        template[f"EffectArg_{slot}"] = "0"
+    synthetic = []
+    for enchant_id, arg, amount in (
+        ("8700", "85", "4"),
+        ("8706", "119", "2"),
+        ("8714", "121", "3"),
+    ):
+        row = dict(template)
+        row["ID"] = enchant_id
+        row["Effect_0"] = "5"
+        row["EffectPointsMin_0"] = amount
+        row["EffectArg_0"] = arg
+        synthetic.append(row)
+    built = {row.effect_id: row for row in build_sim_enchants(synthetic, effects(), RATING_FACTORS)}
+    assert built[8700].stats[pb.Stat.Value("StatFirePower")] == 4.0
+    assert built[8706].stats[pb.Stat.Value("StatSpellPenetration")] == 2.0
+    assert built[8714].stats[pb.Stat.Value("StatSpellPenetration")] == 3.0
