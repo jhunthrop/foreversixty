@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T11:09:14Z",
+  "generated_at": "2026-10-09T15:10:47Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -570,8 +570,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.39036459,
-      "verify_run_seconds": 1.305660577,
+      "weights_run_seconds": 2.266845265,
+      "verify_run_seconds": 1.314257058,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1228,8 +1228,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.39036459,
-      "verify_run_seconds": 1.285010736,
+      "weights_run_seconds": 2.266845265,
+      "verify_run_seconds": 1.279084824,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1924,8 +1924,8 @@
         "main_hand: Hardened Root Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.404573702,
-      "verify_run_seconds": 1.292068052,
+      "weights_run_seconds": 2.311426666,
+      "verify_run_seconds": 1.2905969,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2622,8 +2622,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.404573702,
-      "verify_run_seconds": 1.286139409,
+      "weights_run_seconds": 2.311426666,
+      "verify_run_seconds": 1.28532674,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3341,8 +3341,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.934291231,
-      "verify_run_seconds": 1.342629318,
+      "weights_run_seconds": 1.798780974,
+      "verify_run_seconds": 1.348305673,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4063,8 +4063,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.934291231,
-      "verify_run_seconds": 1.347537248,
+      "weights_run_seconds": 1.798780974,
+      "verify_run_seconds": 1.352705105,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4778,8 +4778,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.047488347,
-      "verify_run_seconds": 1.730862501,
+      "weights_run_seconds": 4.808700547,
+      "verify_run_seconds": 1.723637087,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5498,8 +5498,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.047488347,
-      "verify_run_seconds": 1.701067325,
+      "weights_run_seconds": 4.808700547,
+      "verify_run_seconds": 1.703075613,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5918,7 +5918,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 33.5528522975435,
+          "score": 33.552852297543495,
           "verified": true,
           "alternatives": [
             {
@@ -5926,14 +5926,14 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -5.1747647505206755
+              "dps_delta": -5.174764750520674
             },
             {
               "item_id": 19094,
               "item_name": "Stormpike Cloth Girdle",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -5.228168292648659
+              "dps_delta": -5.228168292648657
             },
             {
               "item_id": 18405,
@@ -6249,8 +6249,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.000786358,
-      "verify_run_seconds": 3.668069163,
+      "weights_run_seconds": 1.944191164,
+      "verify_run_seconds": 3.657293577,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6494,7 +6494,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -2.1957868709680213
+              "dps_delta": -2.1957868709680217
             }
           ]
         },
@@ -6504,7 +6504,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 30.502633244664732,
+          "score": 30.502633244664736,
           "verified": true,
           "alternatives": [
             {
@@ -6512,7 +6512,7 @@
               "item_name": "Warlord's Dreadweave Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.2901135308125757
+              "dps_delta": -1.290113530812577
             },
             {
               "item_id": 19059,
@@ -6527,7 +6527,7 @@
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -3.1461023217167456
+              "dps_delta": -3.1461023217167465
             }
           ]
         },
@@ -6668,7 +6668,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 33.5528522975435,
+          "score": 33.552852297543495,
           "verified": true,
           "alternatives": [
             {
@@ -6684,14 +6684,14 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -5.174764750520676
+              "dps_delta": -5.174764750520674
             },
             {
               "item_id": 19090,
               "item_name": "Frostwolf Cloth Belt",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -5.228168292648659
+              "dps_delta": -5.228168292648657
             }
           ]
         },
@@ -6701,7 +6701,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 36.71413513796502,
+          "score": 36.71413513796503,
           "verified": true,
           "alternatives": [
             {
@@ -6724,7 +6724,7 @@
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.372373553190726
+              "dps_delta": -2.3723735531907284
             }
           ]
         },
@@ -6999,8 +6999,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.000786358,
-      "verify_run_seconds": 3.659700284,
+      "weights_run_seconds": 1.944191164,
+      "verify_run_seconds": 3.630135115,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7267,7 +7267,7 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -5.589566770509984
+              "dps_delta": -5.589566770509986
             },
             {
               "item_id": 19059,
@@ -7746,8 +7746,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.954341193,
-      "verify_run_seconds": 4.16925123,
+      "weights_run_seconds": 6.611051458,
+      "verify_run_seconds": 4.095096373,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8022,7 +8022,7 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -5.589566770509984
+              "dps_delta": -5.589566770509986
             }
           ]
         },
@@ -8196,7 +8196,7 @@
           "item_name": "Sentinel's Silk Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 41.28833924104695,
+          "score": 41.28833924104694,
           "verified": true,
           "alternatives": [
             {
@@ -8204,21 +8204,21 @@
               "item_name": "General's Dreadweave Pants",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.038114504861533
+              "dps_delta": -1.038114504861529
             },
             {
               "item_id": 13170,
               "item_name": "Skyshroud Leggings",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Highlord Omokk",
-              "dps_delta": -3.4266676057885883
+              "dps_delta": -3.4266676057885848
             },
             {
               "item_id": 22747,
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -5.945548682398087
+              "dps_delta": -5.9455486823980825
             }
           ]
         },
@@ -8493,8 +8493,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.954341193,
-      "verify_run_seconds": 4.131077312,
+      "weights_run_seconds": 6.611051458,
+      "verify_run_seconds": 4.067093534,
       "coverage": {
         "back": {
           "eligible": 456,

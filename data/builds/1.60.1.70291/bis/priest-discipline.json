@@ -2,7 +2,7 @@
   "spec": "priest-discipline",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T10:27:53Z",
+  "generated_at": "2026-10-09T14:30:46Z",
   "bands": [
     {
       "spec": "priest-discipline",
@@ -294,7 +294,7 @@
               "item_name": "Novice Ardent's Sash",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.15106791830001126
+              "dps_delta": -0.1510679183000111
             },
             {
               "item_id": 3229,
@@ -568,8 +568,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 10.494319133,
-      "verify_run_seconds": 30.161810618,
+      "weights_run_seconds": 10.038396539,
+      "verify_run_seconds": 28.961749229,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -944,7 +944,7 @@
               "item_name": "Novice Ardent's Sash",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.15106791830001126
+              "dps_delta": -0.1510679183000111
             },
             {
               "item_id": 2911,
@@ -1217,8 +1217,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 10.494319133,
-      "verify_run_seconds": 30.052015551,
+      "weights_run_seconds": 10.038396539,
+      "verify_run_seconds": 28.687743702,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1680,7 +1680,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 42.31955039315344,
+          "score": 42.319550393153435,
           "verified": true,
           "alternatives": [
             {
@@ -1688,14 +1688,14 @@
               "item_name": "Glinteye Slippers",
               "source_kind": "dungeon",
               "source": "Excavation Site: Wetlands: Saltspine",
-              "dps_delta": -1.2795099902590463
+              "dps_delta": -1.2795099902590457
             },
             {
               "item_id": 274747,
               "item_name": "Soggy Boots",
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear",
-              "dps_delta": -1.3418783552664453
+              "dps_delta": -1.3418783552664448
             },
             {
               "item_id": 9454,
@@ -1790,7 +1790,7 @@
           "item_name": "Wind Spirit Staff",
           "source": "Razorfen Kraul: Earthcaller Halmgar",
           "source_kind": "dungeon",
-          "score": 109.79472186343156,
+          "score": 109.79472186343158,
           "verified": true,
           "alternatives": [
             {
@@ -1806,14 +1806,14 @@
               "item_name": "Death Speaker Scepter",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Death Speaker Jargba",
-              "dps_delta": -2.8570573909264088
+              "dps_delta": -2.8570573909264096
             },
             {
               "item_id": 1317,
               "item_name": "Hardened Root Staff",
               "source_kind": "quest",
               "source": "What Comes Around...",
-              "dps_delta": -3.9095311566112048
+              "dps_delta": -3.9095311566112056
             }
           ]
         },
@@ -1899,8 +1899,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Summoner's Wand"
       ],
-      "weights_run_seconds": 10.691142441,
-      "verify_run_seconds": 28.055422055,
+      "weights_run_seconds": 10.210846136,
+      "verify_run_seconds": 26.639429866,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2360,7 +2360,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 42.319550393153435,
+          "score": 42.31955039315344,
           "verified": true,
           "alternatives": [
             {
@@ -2368,14 +2368,14 @@
               "item_name": "Glinteye Slippers",
               "source_kind": "dungeon",
               "source": "Excavation Site: Wetlands: Saltspine",
-              "dps_delta": -1.2795099902590457
+              "dps_delta": -1.2795099902590463
             },
             {
               "item_id": 274747,
               "item_name": "Soggy Boots",
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear",
-              "dps_delta": -1.3418783552664448
+              "dps_delta": -1.3418783552664453
             },
             {
               "item_id": 9454,
@@ -2470,7 +2470,7 @@
           "item_name": "Wind Spirit Staff",
           "source": "Razorfen Kraul: Earthcaller Halmgar",
           "source_kind": "dungeon",
-          "score": 109.79472186343158,
+          "score": 109.79472186343156,
           "verified": true,
           "alternatives": [
             {
@@ -2486,7 +2486,7 @@
               "item_name": "Death Speaker Scepter",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Death Speaker Jargba",
-              "dps_delta": -2.8570573909264096
+              "dps_delta": -2.8570573909264088
             },
             {
               "item_id": 19569,
@@ -2579,8 +2579,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Summoner's Wand"
       ],
-      "weights_run_seconds": 10.691142441,
-      "verify_run_seconds": 28.298981988,
+      "weights_run_seconds": 10.210846136,
+      "verify_run_seconds": 26.701131794,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3296,8 +3296,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 12.343744086,
-      "verify_run_seconds": 85.790612859,
+      "weights_run_seconds": 11.880066381,
+      "verify_run_seconds": 81.578806102,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4003,8 +4003,8 @@
         "off_hand: Prophetic Cane",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 12.343744086,
-      "verify_run_seconds": 92.546951001,
+      "weights_run_seconds": 11.880066381,
+      "verify_run_seconds": 88.173812571,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4177,7 +4177,7 @@
               "item_name": "Knight-Lieutenant's Satin Cover",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.005525695046631827
+              "dps_delta": -0.0055256950466329785
             },
             {
               "item_id": 9431,
@@ -4248,7 +4248,7 @@
               "item_name": "Nethergeld Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.5730590410302454
+              "dps_delta": -0.573059041030246
             },
             {
               "item_id": 19507,
@@ -4401,7 +4401,7 @@
               "item_name": "Gilded Cord",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.6028421737264965
+              "dps_delta": -0.602842173726496
             },
             {
               "item_id": 254081,
@@ -4755,8 +4755,8 @@
         "off_hand: Enthralled Sphere",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 12.191435479999999,
-      "verify_run_seconds": 54.447990839,
+      "weights_run_seconds": 11.830573855,
+      "verify_run_seconds": 51.779427873,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5009,7 +5009,7 @@
               "item_name": "Inquisitor's Shawl",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Fairbanks",
-              "dps_delta": -0.6949738696520915
+              "dps_delta": -0.694973869652091
             }
           ]
         },
@@ -5160,14 +5160,14 @@
               "item_name": "Gilded Waistcord",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.04704938490849377
+              "dps_delta": -0.04704938490849435
             },
             {
               "item_id": 254077,
               "item_name": "Earthenweave Cord",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.6170407073596955
+              "dps_delta": -0.6170407073596961
             },
             {
               "item_id": 12466,
@@ -5512,8 +5512,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 12.191435479999999,
-      "verify_run_seconds": 53.670626115,
+      "weights_run_seconds": 11.830573855,
+      "verify_run_seconds": 51.376026681,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5952,7 +5952,7 @@
               "item_name": "Virtuous Skirt",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.662271295652511
+              "dps_delta": -1.6622712956525085
             },
             {
               "item_id": 13389,
@@ -6235,8 +6235,8 @@
         "main_hand: Dancing Sliver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 11.901010383,
-      "verify_run_seconds": 70.525994732,
+      "weights_run_seconds": 11.550484695,
+      "verify_run_seconds": 68.202473722,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6676,7 +6676,7 @@
               "item_name": "Virtuous Skirt",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.662271295652511
+              "dps_delta": -1.6622712956525085
             },
             {
               "item_id": 13389,
@@ -6958,8 +6958,8 @@
         "main_hand: Dancing Sliver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 11.901010383,
-      "verify_run_seconds": 71.630993812,
+      "weights_run_seconds": 11.550484695,
+      "verify_run_seconds": 68.803323167,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7420,7 +7420,7 @@
           "item_name": "Incandescent Mooncloth Boots",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 122.227377422983,
+          "score": 122.22737742298301,
           "verified": true,
           "alternatives": [
             {
@@ -7436,14 +7436,14 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.6448983855509063
+              "dps_delta": -2.644898385550908
             },
             {
               "item_id": 22247,
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.420906706688809
+              "dps_delta": -3.4209067066888106
             }
           ]
         },
@@ -7709,8 +7709,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 7.873868177,
-      "verify_run_seconds": 38.72308903,
+      "weights_run_seconds": 7.634826222,
+      "verify_run_seconds": 37.579616595,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7875,7 +7875,7 @@
           "item_name": "Virtuous Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 138.7624071330322,
+          "score": 138.76240713303218,
           "verified": true,
           "alternatives": [
             {
@@ -7890,7 +7890,7 @@
               "item_name": "Champion's Satin Hood",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.9864334350071353
+              "dps_delta": -0.986433435007132
             },
             {
               "item_id": 16693,
@@ -8171,7 +8171,7 @@
           "item_name": "Incandescent Mooncloth Boots",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 122.227377422983,
+          "score": 122.22737742298301,
           "verified": true,
           "alternatives": [
             {
@@ -8187,14 +8187,14 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.6448983855509063
+              "dps_delta": -2.644898385550908
             },
             {
               "item_id": 22247,
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.420906706688809
+              "dps_delta": -3.4209067066888106
             }
           ]
         },
@@ -8460,8 +8460,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 7.873868177,
-      "verify_run_seconds": 37.606701431,
+      "weights_run_seconds": 7.634826222,
+      "verify_run_seconds": 36.447942825,
       "coverage": {
         "back": {
           "eligible": 456,

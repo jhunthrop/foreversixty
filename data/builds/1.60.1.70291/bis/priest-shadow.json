@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T10:42:23Z",
+  "generated_at": "2026-10-09T14:44:46Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.960373516,
-      "verify_run_seconds": 0.782261568,
+      "weights_run_seconds": 0.930099245,
+      "verify_run_seconds": 0.773552237,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1189,8 +1189,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.960373516,
-      "verify_run_seconds": 0.828100553,
+      "weights_run_seconds": 0.930099245,
+      "verify_run_seconds": 0.811348888,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1868,8 +1868,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.97462397,
-      "verify_run_seconds": 0.79256678,
+      "weights_run_seconds": 0.943547298,
+      "verify_run_seconds": 0.783911127,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2554,8 +2554,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.97462397,
-      "verify_run_seconds": 0.813110296,
+      "weights_run_seconds": 0.943547298,
+      "verify_run_seconds": 0.81799402,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3261,8 +3261,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.991712152,
-      "verify_run_seconds": 0.925316323,
+      "weights_run_seconds": 0.932574083,
+      "verify_run_seconds": 0.935123772,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3966,8 +3966,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.991712152,
-      "verify_run_seconds": 0.956872858,
+      "weights_run_seconds": 0.932574083,
+      "verify_run_seconds": 0.969261412,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4659,8 +4659,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.973503294,
-      "verify_run_seconds": 1.3473945,
+      "weights_run_seconds": 0.991587549,
+      "verify_run_seconds": 1.346449408,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5349,8 +5349,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.973503294,
-      "verify_run_seconds": 1.326075774,
+      "weights_run_seconds": 0.991587549,
+      "verify_run_seconds": 1.245345583,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6091,8 +6091,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.107105386,
-      "verify_run_seconds": 3.678487691,
+      "weights_run_seconds": 1.089836922,
+      "verify_run_seconds": 3.656199911,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6828,8 +6828,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.107105386,
-      "verify_run_seconds": 3.610743072,
+      "weights_run_seconds": 1.089836922,
+      "verify_run_seconds": 3.604379406,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7566,8 +7566,8 @@
         "trinket2: Serenity Field",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.199699378,
-      "verify_run_seconds": 2.991750249,
+      "weights_run_seconds": 1.200519299,
+      "verify_run_seconds": 3.096759407,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8301,8 +8301,8 @@
         "trinket2: Serenity Field",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.199699378,
-      "verify_run_seconds": 2.951836505,
+      "weights_run_seconds": 1.200519299,
+      "verify_run_seconds": 2.928863295,
       "coverage": {
         "back": {
           "eligible": 456,

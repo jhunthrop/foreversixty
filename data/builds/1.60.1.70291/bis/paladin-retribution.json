@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T10:13:22Z",
+  "generated_at": "2026-10-09T14:16:51Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -561,8 +561,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 2.014735467,
-      "verify_run_seconds": 3.306551841,
+      "weights_run_seconds": 1.921306023,
+      "verify_run_seconds": 3.131806403,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1205,8 +1205,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 2.014735467,
-      "verify_run_seconds": 3.485912382,
+      "weights_run_seconds": 1.921306023,
+      "verify_run_seconds": 3.281513627,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1845,8 +1845,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.063368529,
-      "verify_run_seconds": 2.243355314,
+      "weights_run_seconds": 1.976256145,
+      "verify_run_seconds": 2.15332992,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2484,8 +2484,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.063368529,
-      "verify_run_seconds": 2.070993103,
+      "weights_run_seconds": 1.976256145,
+      "verify_run_seconds": 1.971797786,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3132,8 +3132,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.08815828,
-      "verify_run_seconds": 4.26355277,
+      "weights_run_seconds": 2.012519399,
+      "verify_run_seconds": 4.021714728,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3782,8 +3782,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.08815828,
-      "verify_run_seconds": 4.350301313,
+      "weights_run_seconds": 2.012519399,
+      "verify_run_seconds": 4.182610838,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4459,8 +4459,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.179696346,
-      "verify_run_seconds": 5.354318558,
+      "weights_run_seconds": 2.058787291,
+      "verify_run_seconds": 5.176070613,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5148,8 +5148,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 2.179696346,
-      "verify_run_seconds": 4.59426002,
+      "weights_run_seconds": 2.058787291,
+      "verify_run_seconds": 4.517203437,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5883,8 +5883,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.156064825,
-      "verify_run_seconds": 12.708840216,
+      "weights_run_seconds": 2.059379864,
+      "verify_run_seconds": 12.173473894,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6602,8 +6602,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.156064825,
-      "verify_run_seconds": 12.10675531,
+      "weights_run_seconds": 2.059379864,
+      "verify_run_seconds": 11.780020189,
       "coverage": {
         "back": {
           "eligible": 455,
@@ -7335,8 +7335,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.545959225,
-      "verify_run_seconds": 13.613301044,
+      "weights_run_seconds": 2.404190765,
+      "verify_run_seconds": 13.254699822,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7525,7 +7525,7 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -12.713970866940038
+              "dps_delta": -12.71397086694004
             }
           ]
         },
@@ -8043,8 +8043,8 @@
         "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.545959225,
-      "verify_run_seconds": 12.654421758,
+      "weights_run_seconds": 2.404190765,
+      "verify_run_seconds": 12.291980674,
       "coverage": {
         "back": {
           "eligible": 455,

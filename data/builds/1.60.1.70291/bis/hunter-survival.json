@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T09:53:51Z",
+  "generated_at": "2026-10-09T13:58:07Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -578,8 +578,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.758771034,
-      "verify_run_seconds": 4.942893174,
+      "weights_run_seconds": 3.607900991,
+      "verify_run_seconds": 4.751879481,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1246,8 +1246,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 3.758771034,
-      "verify_run_seconds": 4.739665964,
+      "weights_run_seconds": 3.607900991,
+      "verify_run_seconds": 4.537345927,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1948,8 +1948,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 4.199870183,
-      "verify_run_seconds": 3.161345426,
+      "weights_run_seconds": 4.012428034,
+      "verify_run_seconds": 3.024431377,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2650,8 +2650,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 4.199870183,
-      "verify_run_seconds": 2.808254526,
+      "weights_run_seconds": 4.012428034,
+      "verify_run_seconds": 2.700439814,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3346,8 +3346,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 4.276998337,
-      "verify_run_seconds": 3.676762633,
+      "weights_run_seconds": 4.165436596,
+      "verify_run_seconds": 3.562946642,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4042,8 +4042,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 4.276998337,
-      "verify_run_seconds": 3.568083827,
+      "weights_run_seconds": 4.165436596,
+      "verify_run_seconds": 3.497463932,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4735,8 +4735,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 4.322082563,
-      "verify_run_seconds": 4.934087673,
+      "weights_run_seconds": 4.146133576,
+      "verify_run_seconds": 4.796497754,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5425,8 +5425,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 4.322082563,
-      "verify_run_seconds": 4.542510995,
+      "weights_run_seconds": 4.146133576,
+      "verify_run_seconds": 4.445882534,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5733,7 +5733,7 @@
               "item_name": "Field Marshal's Chain Armor",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.7534856382289772
+              "dps_delta": -1.7534856382289783
             },
             {
               "item_id": 227089,
@@ -6195,8 +6195,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 4.060070958,
-      "verify_run_seconds": 13.606793744,
+      "weights_run_seconds": 3.883890905,
+      "verify_run_seconds": 13.424324108,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6508,14 +6508,14 @@
               "item_name": "Warlord's Chain Armor",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.7534856382289772
+              "dps_delta": -1.7534856382289783
             },
             {
               "item_id": 227083,
               "item_name": "Legionnaire's Chain Armor",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -2.4778094099084798
+              "dps_delta": -2.4778094099084806
             },
             {
               "item_id": 23089,
@@ -6976,8 +6976,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 4.060070958,
-      "verify_run_seconds": 14.088896113,
+      "weights_run_seconds": 3.883890905,
+      "verify_run_seconds": 13.90955705,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7281,7 +7281,7 @@
               "item_name": "Field Marshal's Chain Armor",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -6.439930555234866
+              "dps_delta": -6.439930555234871
             },
             {
               "item_id": 227089,
@@ -7417,7 +7417,7 @@
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -12.490433107559644
+              "dps_delta": -12.490433107559639
             },
             {
               "item_id": 227085,
@@ -7725,8 +7725,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 3.480018415,
-      "verify_run_seconds": 11.359843442,
+      "weights_run_seconds": 3.38443904,
+      "verify_run_seconds": 11.257344847,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8473,8 +8473,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 3.480018415,
-      "verify_run_seconds": 10.035245572000001,
+      "weights_run_seconds": 3.38443904,
+      "verify_run_seconds": 9.910109094,
       "coverage": {
         "back": {
           "eligible": 456,

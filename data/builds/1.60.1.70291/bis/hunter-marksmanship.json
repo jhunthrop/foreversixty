@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T09:51:35Z",
+  "generated_at": "2026-10-09T13:55:53Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -532,8 +532,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.412233264,
-      "verify_run_seconds": 2.173609458,
+      "weights_run_seconds": 2.270317459,
+      "verify_run_seconds": 2.118583788,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1169,8 +1169,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.412233264,
-      "verify_run_seconds": 2.119376981,
+      "weights_run_seconds": 2.270317459,
+      "verify_run_seconds": 2.051570674,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1906,8 +1906,8 @@
         "off_hand: Vendetta",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.584383228,
-      "verify_run_seconds": 2.567582486,
+      "weights_run_seconds": 2.474605911,
+      "verify_run_seconds": 2.4968837280000002,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2613,8 +2613,8 @@
         "off_hand: Alliance Outrunner's Sword",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.584383228,
-      "verify_run_seconds": 2.245558969,
+      "weights_run_seconds": 2.474605911,
+      "verify_run_seconds": 2.225311091,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3326,8 +3326,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.640602296,
-      "verify_run_seconds": 2.996648971,
+      "weights_run_seconds": 2.557737722,
+      "verify_run_seconds": 2.925495613,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4018,8 +4018,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.640602296,
-      "verify_run_seconds": 2.926077583,
+      "weights_run_seconds": 2.557737722,
+      "verify_run_seconds": 2.8377971520000003,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4699,8 +4699,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.722395538,
-      "verify_run_seconds": 3.798937285,
+      "weights_run_seconds": 2.618060522,
+      "verify_run_seconds": 3.7707153719999997,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5375,8 +5375,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.722395538,
-      "verify_run_seconds": 3.8366665749999997,
+      "weights_run_seconds": 2.618060522,
+      "verify_run_seconds": 3.775308808,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6112,8 +6112,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.685457351,
-      "verify_run_seconds": 11.672409318,
+      "weights_run_seconds": 2.62876853,
+      "verify_run_seconds": 11.54449965,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6850,8 +6850,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.685457351,
-      "verify_run_seconds": 11.169808087,
+      "weights_run_seconds": 2.62876853,
+      "verify_run_seconds": 11.233599794,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7581,8 +7581,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.760981018,
-      "verify_run_seconds": 12.267576488,
+      "weights_run_seconds": 2.70448149,
+      "verify_run_seconds": 12.25831642,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7885,14 +7885,14 @@
               "item_name": "Warlord's Chain Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -8.159153905559148
+              "dps_delta": -8.159153905559144
             },
             {
               "item_id": 231573,
               "item_name": "Warlord's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -8.159153905559148
+              "dps_delta": -8.159153905559144
             },
             {
               "item_id": 23089,
@@ -8316,8 +8316,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.760981018,
-      "verify_run_seconds": 11.648482979,
+      "weights_run_seconds": 2.70448149,
+      "verify_run_seconds": 11.718221648,
       "coverage": {
         "back": {
           "eligible": 456,

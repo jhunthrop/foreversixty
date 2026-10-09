@@ -2,7 +2,7 @@
   "spec": "warlock-destruction",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T11:10:16Z",
+  "generated_at": "2026-10-09T15:11:48Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -569,8 +569,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.346042041,
-      "verify_run_seconds": 1.223867526,
+      "weights_run_seconds": 2.244031744,
+      "verify_run_seconds": 1.211836119,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1225,8 +1225,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.346042041,
-      "verify_run_seconds": 1.229803813,
+      "weights_run_seconds": 2.244031744,
+      "verify_run_seconds": 1.178051894,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1917,8 +1917,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.439611294,
-      "verify_run_seconds": 1.342279571,
+      "weights_run_seconds": 2.360976735,
+      "verify_run_seconds": 1.282963139,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2614,8 +2614,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.439611294,
-      "verify_run_seconds": 1.318484497,
+      "weights_run_seconds": 2.360976735,
+      "verify_run_seconds": 1.2877547360000001,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3338,8 +3338,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Umbral Wand"
       ],
-      "weights_run_seconds": 2.08465866,
-      "verify_run_seconds": 1.50161111,
+      "weights_run_seconds": 1.99359623,
+      "verify_run_seconds": 1.494735015,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4060,8 +4060,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.08465866,
-      "verify_run_seconds": 1.439595831,
+      "weights_run_seconds": 1.99359623,
+      "verify_run_seconds": 1.4222182079999999,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4777,8 +4777,8 @@
         "main_hand: Kindling Stave",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.026805784,
-      "verify_run_seconds": 1.85233134,
+      "weights_run_seconds": 1.874619254,
+      "verify_run_seconds": 1.805879994,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5499,8 +5499,8 @@
         "main_hand: Kindling Stave",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 2.026805784,
-      "verify_run_seconds": 1.821813593,
+      "weights_run_seconds": 1.874619254,
+      "verify_run_seconds": 1.789435672,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6252,8 +6252,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.184394847,
-      "verify_run_seconds": 3.96052299,
+      "weights_run_seconds": 2.061376732,
+      "verify_run_seconds": 3.889236427,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6687,7 +6687,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -6.801298590320114
+              "dps_delta": -6.801298590320115
             },
             {
               "item_id": 19090,
@@ -6776,14 +6776,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -6.068025873929321
+              "dps_delta": -6.068025873929319
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -6.367771513084777
+              "dps_delta": -6.367771513084774
             },
             {
               "item_id": 11669,
@@ -7001,8 +7001,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 2.184394847,
-      "verify_run_seconds": 3.839330556,
+      "weights_run_seconds": 2.061376732,
+      "verify_run_seconds": 3.851598172,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7523,14 +7523,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -6.697442715227865
+              "dps_delta": -6.697442715227869
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -9.65411713008132
+              "dps_delta": -9.654117130081323
             },
             {
               "item_id": 11669,
@@ -7748,8 +7748,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 7.196410451,
-      "verify_run_seconds": 4.407269988,
+      "weights_run_seconds": 6.933785288,
+      "verify_run_seconds": 4.271521013,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8002,7 +8002,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 32.245213582365075,
+          "score": 32.24521358236508,
           "verified": true,
           "alternatives": [
             {
@@ -8010,14 +8010,14 @@
               "item_name": "Warlord's Dreadweave Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.952875697181671
+              "dps_delta": -2.9528756971816748
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -5.31377072902885
+              "dps_delta": -5.313770729028853
             },
             {
               "item_id": 19059,
@@ -8166,7 +8166,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 35.37103189394926,
+          "score": 35.371031893949265,
           "verified": true,
           "alternatives": [
             {
@@ -8174,7 +8174,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -7.316342835510727
+              "dps_delta": -7.3163428355107305
             },
             {
               "item_id": 18405,
@@ -8189,7 +8189,7 @@
               "item_name": "Frostwolf Cloth Belt",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -8.575399412610302
+              "dps_delta": -8.575399412610306
             }
           ]
         },
@@ -8496,8 +8496,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 7.196410451,
-      "verify_run_seconds": 4.128386363,
+      "weights_run_seconds": 6.933785288,
+      "verify_run_seconds": 4.106674705,
       "coverage": {
         "back": {
           "eligible": 456,

@@ -2,7 +2,7 @@
   "spec": "shaman-restoration",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T11:07:02Z",
+  "generated_at": "2026-10-09T15:08:38Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -550,8 +550,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 4.74463988,
-      "verify_run_seconds": 17.071595333,
+      "weights_run_seconds": 4.512695128,
+      "verify_run_seconds": 16.480344806,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 4.74463988,
-      "verify_run_seconds": 15.998275319,
+      "weights_run_seconds": 4.512695128,
+      "verify_run_seconds": 15.530710152,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1645,7 +1645,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 43.8229506848037,
+          "score": 43.82295068480371,
           "verified": true,
           "alternatives": [
             {
@@ -1653,14 +1653,14 @@
               "item_name": "Glinteye Slippers",
               "source_kind": "dungeon",
               "source": "Excavation Site: Wetlands: Saltspine",
-              "dps_delta": -0.7058412833436818
+              "dps_delta": -0.7058412833436821
             },
             {
               "item_id": 9454,
               "item_name": "Acidic Walkers",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -0.7452164086202967
+              "dps_delta": -0.7452164086202969
             },
             {
               "item_id": 274747,
@@ -1827,8 +1827,8 @@
         "finger2: Darkspear Signet",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 4.774229594,
-      "verify_run_seconds": 16.840992925,
+      "weights_run_seconds": 4.602953616,
+      "verify_run_seconds": 16.23167158,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2290,7 +2290,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 43.82295068480371,
+          "score": 43.8229506848037,
           "verified": true,
           "alternatives": [
             {
@@ -2298,14 +2298,14 @@
               "item_name": "Glinteye Slippers",
               "source_kind": "dungeon",
               "source": "Excavation Site: Wetlands: Saltspine",
-              "dps_delta": -0.7058412833436821
+              "dps_delta": -0.7058412833436818
             },
             {
               "item_id": 9454,
               "item_name": "Acidic Walkers",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -0.7452164086202969
+              "dps_delta": -0.7452164086202967
             },
             {
               "item_id": 274747,
@@ -2472,8 +2472,8 @@
         "finger2: Darkspear Signet",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 4.774229594,
-      "verify_run_seconds": 15.975568919,
+      "weights_run_seconds": 4.602953616,
+      "verify_run_seconds": 15.474454471,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2925,14 +2925,14 @@
               "item_name": "Wisdom's Leather Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.44983726349502434
+              "dps_delta": -0.44983726349502406
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 252533,
-          "item_name": "Mender's Leather Shoes",
+          "item_id": 252565,
+          "item_name": "Mender's Mail Boots",
           "source": "Leatherworking",
           "source_kind": "crafted",
           "verified": true,
@@ -2940,8 +2940,8 @@
           "dps_delta": 0.9874689848500111,
           "alternatives": [
             {
-              "item_id": 252565,
-              "item_name": "Mender's Mail Boots",
+              "item_id": 252533,
+              "item_name": "Mender's Leather Shoes",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -2.9211402186033906e-16
@@ -3123,14 +3123,14 @@
         "hands: Bonefingers",
         "waist: Gilded Cord",
         "legs: Misplaced Pantaloons",
-        "feet: Mender's Leather Shoes",
+        "feet: Mender's Mail Boots",
         "finger1: Darkspear Signet",
         "finger2: Snake Hoop",
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 5.704828332,
-      "verify_run_seconds": 28.766834243,
+      "weights_run_seconds": 5.481152069,
+      "verify_run_seconds": 26.942422636,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3600,7 +3600,7 @@
               "item_name": "Mender's Mail Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": 0
+              "dps_delta": -2.9211402186033906e-16
             },
             {
               "item_id": 254001,
@@ -3718,14 +3718,14 @@
               "item_name": "Hand of Righteousness",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Whitemane",
-              "dps_delta": -0.48925692100926266
+              "dps_delta": -0.48925692100926327
             },
             {
               "item_id": 9457,
               "item_name": "Royal Diplomatic Scepter",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Dark Iron Ambassador",
-              "dps_delta": -1.3838751357220138
+              "dps_delta": -1.3838751357220145
             },
             {
               "item_id": 2164,
@@ -3785,8 +3785,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 5.704828332,
-      "verify_run_seconds": 27.368035501,
+      "weights_run_seconds": 5.481152069,
+      "verify_run_seconds": 25.4487637,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4517,8 +4517,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 9.85993498,
-      "verify_run_seconds": 53.606967245999996,
+      "weights_run_seconds": 9.74188293,
+      "verify_run_seconds": 51.807390831,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5249,8 +5249,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 9.85993498,
-      "verify_run_seconds": 52.456994131,
+      "weights_run_seconds": 9.74188293,
+      "verify_run_seconds": 50.425961989,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5871,7 +5871,7 @@
               "item_name": "Quel'dorai Channeling Rod",
               "source_kind": "dungeon",
               "source": "Dire Maul: Lethtendris",
-              "dps_delta": -0.17966767222968136
+              "dps_delta": -0.17966767222967997
             },
             {
               "item_id": 17710,
@@ -5945,8 +5945,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 11.306461487,
-      "verify_run_seconds": 152.533258378,
+      "weights_run_seconds": 10.877192816,
+      "verify_run_seconds": 147.451017304,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6580,7 +6580,7 @@
               "item_name": "Quel'dorai Channeling Rod",
               "source_kind": "dungeon",
               "source": "Dire Maul: Lethtendris",
-              "dps_delta": -0.17966767222968136
+              "dps_delta": -0.17966767222967997
             },
             {
               "item_id": 17710,
@@ -6655,8 +6655,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 11.306461487,
-      "verify_run_seconds": 147.949746886,
+      "weights_run_seconds": 10.877192816,
+      "verify_run_seconds": 141.932162236,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6843,7 +6843,7 @@
               "item_name": "Insightful Hood",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -11.025081370588163
+              "dps_delta": -11.02508137058816
             }
           ]
         },
@@ -6853,7 +6853,7 @@
           "item_name": "Wavefront Necklace",
           "source": "Lord Skwol",
           "source_kind": "world",
-          "score": 48.701754614888415,
+          "score": 48.70175461488841,
           "verified": true,
           "alternatives": [
             {
@@ -6861,21 +6861,21 @@
               "item_name": "Drake Tooth Necklace",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -2.338358086132958
+              "dps_delta": -2.3383580861329563
             },
             {
               "item_id": 18723,
               "item_name": "Animated Chain Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Ramstein the Gorger",
-              "dps_delta": -3.01210421456578
+              "dps_delta": -3.0121042145657784
             },
             {
               "item_id": 22327,
               "item_name": "Amulet of the Redeemed",
               "source_kind": "dungeon",
               "source": "Stratholme: Sothos and Jarien's Heirlooms",
-              "dps_delta": -4.591494275201206
+              "dps_delta": -4.591494275201204
             }
           ]
         },
@@ -6885,7 +6885,7 @@
           "item_name": "Argent Elite Shoulders",
           "source": "Argent Quartermaster Hasana",
           "source_kind": "vendor",
-          "score": 80.20380743595732,
+          "score": 80.2038074359573,
           "verified": true,
           "alternatives": [
             {
@@ -6893,21 +6893,21 @@
               "item_name": "Royal Cap Spaulders",
               "source_kind": "dungeon",
               "source": "Scholomance: Jandice Barov",
-              "dps_delta": -9.153251027100442
+              "dps_delta": -9.153251027100438
             },
             {
               "item_id": 227011,
               "item_name": "Mantle of The Five Thunders",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -9.1678282224423
+              "dps_delta": -9.167828222442296
             },
             {
               "item_id": 14139,
               "item_name": "Mooncloth Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -9.510114320952619
+              "dps_delta": -9.510114320952615
             }
           ]
         },
@@ -7103,7 +7103,7 @@
               "item_name": "Leggings of The Five Thunders",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -4.00962832637708
+              "dps_delta": -4.009628326377085
             },
             {
               "item_id": 16694,
@@ -7142,7 +7142,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -6.079497506963797
+              "dps_delta": -6.079497506963794
             }
           ]
         },
@@ -7205,7 +7205,7 @@
               "item_name": "Rosewine Circle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -0.7402468576431014
+              "dps_delta": -0.7402468576431034
             }
           ]
         },
@@ -7386,8 +7386,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 8.147368513,
-      "verify_run_seconds": 88.466200373,
+      "weights_run_seconds": 8.004129826,
+      "verify_run_seconds": 86.454313332,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7616,7 +7616,7 @@
           "item_name": "Argent Elite Shoulders",
           "source": "Argent Quartermaster Hasana",
           "source_kind": "vendor",
-          "score": 80.20380743595732,
+          "score": 80.2038074359573,
           "verified": true,
           "alternatives": [
             {
@@ -7624,21 +7624,21 @@
               "item_name": "Champion's Mail Epaulets",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -7.529792245927369
+              "dps_delta": -7.529792245927366
             },
             {
               "item_id": 231665,
               "item_name": "Warlord's Mail Epaulets",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -8.15780358583115
+              "dps_delta": -8.157803585831147
             },
             {
               "item_id": 14548,
               "item_name": "Royal Cap Spaulders",
               "source_kind": "dungeon",
               "source": "Scholomance: Jandice Barov",
-              "dps_delta": -9.153251027100442
+              "dps_delta": -9.153251027100438
             }
           ]
         },
@@ -7694,14 +7694,14 @@
               "item_name": "Legionnaire's Mail Chestguard",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -2.6709486003327374
+              "dps_delta": -2.6709486003327414
             },
             {
               "item_id": 14138,
               "item_name": "Mooncloth Vest",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.9753341307026484
+              "dps_delta": -2.975334130702652
             }
           ],
           "set_bonus": {
@@ -7937,7 +7937,7 @@
               "item_name": "Rosewine Circle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -0.7402468576431014
+              "dps_delta": -0.7402468576431034
             }
           ]
         },
@@ -8024,7 +8024,7 @@
               "item_name": "Wind Spirit Staff",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Earthcaller Halmgar",
-              "dps_delta": -12.083781052644216
+              "dps_delta": -12.083781052644213
             },
             {
               "item_id": 9527,
@@ -8118,8 +8118,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 8.147368513,
-      "verify_run_seconds": 86.382837072,
+      "weights_run_seconds": 8.004129826,
+      "verify_run_seconds": 83.443178639,
       "coverage": {
         "back": {
           "eligible": 457,

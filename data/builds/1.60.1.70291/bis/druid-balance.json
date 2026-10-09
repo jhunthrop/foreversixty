@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T09:28:48Z",
+  "generated_at": "2026-10-09T13:33:34Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -556,8 +556,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.8551755989999998,
-      "verify_run_seconds": 1.084411766,
+      "weights_run_seconds": 1.757925777,
+      "verify_run_seconds": 1.201048257,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.8551755989999998,
-      "verify_run_seconds": 1.102648496,
+      "weights_run_seconds": 1.757925777,
+      "verify_run_seconds": 1.121765012,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1855,8 +1855,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 2.319965618,
-      "verify_run_seconds": 1.166151957,
+      "weights_run_seconds": 2.011117934,
+      "verify_run_seconds": 1.165780002,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2525,8 +2525,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.319965618,
-      "verify_run_seconds": 1.219822147,
+      "weights_run_seconds": 2.011117934,
+      "verify_run_seconds": 1.185000558,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3226,8 +3226,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 2.295523833,
-      "verify_run_seconds": 1.471135845,
+      "weights_run_seconds": 2.146199262,
+      "verify_run_seconds": 1.397141402,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3926,8 +3926,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 2.295523833,
-      "verify_run_seconds": 1.465946217,
+      "weights_run_seconds": 2.146199262,
+      "verify_run_seconds": 1.40564654,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4600,8 +4600,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 2.516636883,
-      "verify_run_seconds": 1.8980803979999998,
+      "weights_run_seconds": 2.318512574,
+      "verify_run_seconds": 1.878755221,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5268,8 +5268,8 @@
         "trinket1: Uther's Strength",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 2.516636883,
-      "verify_run_seconds": 1.7306324370000001,
+      "weights_run_seconds": 2.318512574,
+      "verify_run_seconds": 1.7005602770000001,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5460,7 +5460,7 @@
           "item_name": "Feralheart Cowl",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 40.0247666732753,
+          "score": 40.024766673275295,
           "verified": true,
           "alternatives": [
             {
@@ -5468,21 +5468,21 @@
               "item_name": "Field Marshal's Dragonhide Helm",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.3359161956716028
+              "dps_delta": -0.3359161956716014
             },
             {
               "item_id": 252561,
               "item_name": "Living Crown",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.6115865684929837
+              "dps_delta": -0.6115865684929822
             },
             {
               "item_id": 18727,
               "item_name": "Crimson Felt Hat",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -0.9458779939147169
+              "dps_delta": -0.9458779939147155
             }
           ]
         },
@@ -5729,7 +5729,7 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.8711062160021226
+              "dps_delta": -1.871106216002124
             },
             {
               "item_id": 22752,
@@ -5995,8 +5995,8 @@
         "trinket2: Second Wind",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.458425733,
-      "verify_run_seconds": 5.475962217,
+      "weights_run_seconds": 2.327531163,
+      "verify_run_seconds": 5.517971579,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6252,7 +6252,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 39.026783645957906,
+          "score": 39.0267836459579,
           "verified": true,
           "alternatives": [
             {
@@ -6260,21 +6260,21 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.9396717242430588
+              "dps_delta": -0.9396717242430573
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.68578724802967
+              "dps_delta": -1.6857872480296687
             },
             {
               "item_id": 226778,
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.7189102907209473
+              "dps_delta": -1.7189102907209457
             }
           ]
         },
@@ -6725,8 +6725,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.458425733,
-      "verify_run_seconds": 4.566365125,
+      "weights_run_seconds": 2.327531163,
+      "verify_run_seconds": 4.479295835,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7176,7 +7176,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -7.25556844475115
+              "dps_delta": -7.255568444751152
             }
           ]
         },
@@ -7468,8 +7468,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.410408633,
-      "verify_run_seconds": 5.244075897,
+      "weights_run_seconds": 1.370493951,
+      "verify_run_seconds": 5.243862393,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7738,7 +7738,7 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.9737173000595711
+              "dps_delta": -1.973717300059573
             },
             {
               "item_id": 226778,
@@ -7912,7 +7912,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -7.25556844475115
+              "dps_delta": -7.255568444751152
             }
           ]
         },
@@ -8199,8 +8199,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.410408633,
-      "verify_run_seconds": 4.16703356,
+      "weights_run_seconds": 1.370493951,
+      "verify_run_seconds": 4.186920608,
       "coverage": {
         "back": {
           "eligible": 457,

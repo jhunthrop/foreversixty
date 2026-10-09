@@ -2,7 +2,7 @@
   "spec": "mage-fire",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T09:55:29Z",
+  "generated_at": "2026-10-09T13:59:45Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -556,8 +556,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.00744234,
-      "verify_run_seconds": 0.797717596,
+      "weights_run_seconds": 0.988679243,
+      "verify_run_seconds": 0.826739063,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1195,8 +1195,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.00744234,
-      "verify_run_seconds": 0.795110213,
+      "weights_run_seconds": 0.988679243,
+      "verify_run_seconds": 0.822433866,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1874,8 +1874,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.137660666,
-      "verify_run_seconds": 0.857736697,
+      "weights_run_seconds": 1.127448361,
+      "verify_run_seconds": 0.868959504,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2556,8 +2556,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Unstable Power Core"
       ],
-      "weights_run_seconds": 1.137660666,
-      "verify_run_seconds": 0.844300198,
+      "weights_run_seconds": 1.127448361,
+      "verify_run_seconds": 0.856463967,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3256,8 +3256,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.282897181,
-      "verify_run_seconds": 1.051351052,
+      "weights_run_seconds": 1.234994482,
+      "verify_run_seconds": 1.06837374,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3958,8 +3958,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.282897181,
-      "verify_run_seconds": 1.109718277,
+      "weights_run_seconds": 1.234994482,
+      "verify_run_seconds": 1.043233184,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4147,7 +4147,7 @@
               "item_name": "Knight-Lieutenant's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.1252800671941634
+              "dps_delta": -1.125280067194164
             },
             {
               "item_id": 15999,
@@ -4652,8 +4652,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.180495163,
-      "verify_run_seconds": 1.40877951,
+      "weights_run_seconds": 1.168022349,
+      "verify_run_seconds": 1.4372478819999999,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5093,14 +5093,14 @@
               "item_name": "Red Mageweave Pants",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.4077563535924283
+              "dps_delta": -0.40775635359242773
             },
             {
               "item_id": 253991,
               "item_name": "Flame Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.092470181501036
+              "dps_delta": -1.0924701815010354
             }
           ]
         },
@@ -5356,8 +5356,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.180495163,
-      "verify_run_seconds": 1.354834603,
+      "weights_run_seconds": 1.168022349,
+      "verify_run_seconds": 1.378965476,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5661,7 +5661,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 61.137623793295404,
+          "score": 61.13762379329541,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5670,14 +5670,14 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.6429452937222396
+              "dps_delta": -0.6429452937222415
             },
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -3.875748493837247
+              "dps_delta": -3.8757484938372486
             },
             {
               "item_id": 279266,
@@ -6103,8 +6103,8 @@
         "trinket2: Draconic Infused Emblem",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.26825262,
-      "verify_run_seconds": 4.163158061,
+      "weights_run_seconds": 1.371708675,
+      "verify_run_seconds": 4.172900735,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6843,8 +6843,8 @@
         "trinket2: Serenity Field",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.26825262,
-      "verify_run_seconds": 4.129765247,
+      "weights_run_seconds": 1.371708675,
+      "verify_run_seconds": 4.163501026,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7596,8 +7596,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.538031085,
-      "verify_run_seconds": 3.331172179,
+      "weights_run_seconds": 1.4826945440000001,
+      "verify_run_seconds": 3.340006365,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8344,8 +8344,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.538031085,
-      "verify_run_seconds": 3.225908796,
+      "weights_run_seconds": 1.4826945440000001,
+      "verify_run_seconds": 3.253970823,
       "coverage": {
         "back": {
           "eligible": 456,

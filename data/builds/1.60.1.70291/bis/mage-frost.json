@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70291",
   "engine_version": "be3a7581b",
-  "generated_at": "2026-10-09T09:56:11Z",
+  "generated_at": "2026-10-09T14:00:28Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -554,8 +554,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.981409706,
-      "verify_run_seconds": 0.729401618,
+      "weights_run_seconds": 0.918018672,
+      "verify_run_seconds": 0.724624556,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1200,8 +1200,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.981409706,
-      "verify_run_seconds": 0.75523811,
+      "weights_run_seconds": 0.918018672,
+      "verify_run_seconds": 0.751071629,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1894,8 +1894,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.077113309,
-      "verify_run_seconds": 0.841331544,
+      "weights_run_seconds": 1.07554492,
+      "verify_run_seconds": 0.880862118,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2588,8 +2588,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.077113309,
-      "verify_run_seconds": 0.831949291,
+      "weights_run_seconds": 1.07554492,
+      "verify_run_seconds": 0.848020791,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3309,8 +3309,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.064784151,
-      "verify_run_seconds": 0.898223121,
+      "weights_run_seconds": 1.012511943,
+      "verify_run_seconds": 0.913578286,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4024,8 +4024,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.064784151,
-      "verify_run_seconds": 0.919600715,
+      "weights_run_seconds": 1.012511943,
+      "verify_run_seconds": 0.936310757,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4399,7 +4399,7 @@
           "item_name": "Sorcerer's Gauntlets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 33.746093983878204,
+          "score": 33.7460939838782,
           "verified": true,
           "alternatives": [
             {
@@ -4407,14 +4407,14 @@
               "item_name": "Dreamweave Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.476301761492799
+              "dps_delta": -2.4763017614927976
             },
             {
               "item_id": 220890,
               "item_name": "Sergeant Major's Dreadweave Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -2.5483274528576723
+              "dps_delta": -2.5483274528576705
             },
             {
               "item_id": 272098,
@@ -4727,8 +4727,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.965729848,
-      "verify_run_seconds": 1.262510414,
+      "weights_run_seconds": 1.012157805,
+      "verify_run_seconds": 1.278246437,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5096,7 +5096,7 @@
           "item_name": "Sorcerer's Gauntlets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 33.7460939838782,
+          "score": 33.746093983878204,
           "verified": true,
           "alternatives": [
             {
@@ -5104,21 +5104,21 @@
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -1.2941986271426231
+              "dps_delta": -1.2941986271426245
             },
             {
               "item_id": 10019,
               "item_name": "Dreamweave Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.4763017614927976
+              "dps_delta": -2.476301761492799
             },
             {
               "item_id": 220908,
               "item_name": "First Sergeant's Dreadweave Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 9 · First Sergeant · Horde",
-              "dps_delta": -2.5483274528576705
+              "dps_delta": -2.5483274528576723
             }
           ]
         },
@@ -5437,8 +5437,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.965729848,
-      "verify_run_seconds": 1.218824388,
+      "weights_run_seconds": 1.012157805,
+      "verify_run_seconds": 1.213814346,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6182,8 +6182,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.033674193,
-      "verify_run_seconds": 3.480294259,
+      "weights_run_seconds": 1.025806502,
+      "verify_run_seconds": 3.564640465,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6934,8 +6934,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.033674193,
-      "verify_run_seconds": 3.416721534,
+      "weights_run_seconds": 1.025806502,
+      "verify_run_seconds": 3.437469766,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7680,8 +7680,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.081182817,
-      "verify_run_seconds": 2.77940669,
+      "weights_run_seconds": 1.076601708,
+      "verify_run_seconds": 2.77367545,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8426,8 +8426,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.081182817,
-      "verify_run_seconds": 2.717966153,
+      "weights_run_seconds": 1.076601708,
+      "verify_run_seconds": 2.7916324340000003,
       "coverage": {
         "back": {
           "eligible": 456,
