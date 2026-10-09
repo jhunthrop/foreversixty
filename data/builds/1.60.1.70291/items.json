@@ -454379,6 +454379,22 @@
     "superseded_by": null
   },
   {
+    "id": 285353,
+    "name": "Eternal Explorer's Backpack",
+    "quality": 3,
+    "item_level": 1,
+    "required_level": 1,
+    "class_id": 4,
+    "subclass_id": 5,
+    "inventory_type": 16,
+    "suffixes": [],
+    "faction_restriction": "",
+    "required_level_source": "wowhead",
+    "stats_source": "wowhead",
+    "client_unconfirmed": false,
+    "superseded_by": null
+  },
+  {
     "id": 285356,
     "name": "Advisor Emerson's Instructions",
     "quality": 1,
