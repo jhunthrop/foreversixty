@@ -14,8 +14,13 @@
   import { classColorVar } from '../../lib/report/format';
   import CharacterPortrait from './CharacterPortrait.svelte';
 
-  /** 14 / 15 / 18 / 22px, spec 2026-09-23 §2.2 (xl for the home hero; 22px is the display ceiling). */
-  const NAME_SIZE = { sm: 'text-[14px]', md: 'text-[15px]', lg: 'text-[18px]', xl: 'text-[22px]' } as const;
+  /** 14 / 15 / 18px, spec 2026-09-23 §2.2; xl is the home hero's 34px display name (design
+   *  system: the home hero h1 exception; spec 2026-10-10-home-signed-in-panel §3.B). */
+  const NAME_SIZE = { sm: 'text-[14px]', md: 'text-[15px]', lg: 'text-[18px]', xl: 'text-[34px]' } as const;
+  /** The xl name is capped at two lines (then an ellipsis) and its box always reserves both,
+   *  so a header switch from a one-line to a two-line name never moves what sits below. */
+  const XL_NAME_CAP = 'line-clamp-2 leading-[1.1] break-words';
+  const XL_NAME_BOX = 'flex min-h-[calc(34px*1.1*2)] flex-col justify-end';
 
   let {
     character,
@@ -58,15 +63,16 @@
   // Display font only at lg (spec 2026-09-23 §2.2): the account hero band is the one place
   // CharacterIdentity's own name needs it; a row or chip name is never that prominent.
   const nameClass = $derived(
-    `w-fit ${NAME_SIZE[size]} font-semibold${size === 'lg' || size === 'xl' ? ' [font-family:var(--font-display)]' : ''}`,
+    `w-fit ${NAME_SIZE[size]} ${size === 'xl' ? `font-bold ${XL_NAME_CAP}` : 'font-semibold'}${size === 'lg' || size === 'xl' ? ' [font-family:var(--font-display)]' : ''}`,
   );
+  const headingClass = $derived(`m-0 p-0 font-normal${size === 'xl' ? ` ${XL_NAME_BOX}` : ''}`);
 </script>
 
 <div class="flex min-w-0 items-center gap-3">
   <CharacterPortrait {character} {size} {testid} />
   <div class="flex min-w-0 flex-col gap-0.5">
     {#if heading}
-      <h1 class="m-0 p-0 font-normal">
+      <h1 class={headingClass}>
         {#if href !== undefined}
           <a
             class={nameClass}

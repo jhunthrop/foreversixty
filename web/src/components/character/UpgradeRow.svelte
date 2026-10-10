@@ -76,7 +76,6 @@
         />
         <span class="upgrade-row-text">
           <span class={rarityClassFor(wornItem.quality)}>{wornItem.name}</span>
-          <span class="text-muted text-[12px]">{homeUpgradesCopy.youWearThis}</span>
         </span>
       </ItemHover>
     {/if}

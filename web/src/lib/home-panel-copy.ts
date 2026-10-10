@@ -2,7 +2,8 @@
 // The home page's account-aware hero (spec 2026-09-22 §3.2, restyled into the hero by
 // spec 2026-09-23 §2, rebuilt by the home rebuild spec 2026-09-30 §3.B): reference, not
 // pitch -- one sentence, one button, signed out; the hero character, its descriptor, the
-// three next-action cards and the Switch character panel, signed in.
+// three next-action cards, signed in (no switcher: the header selector is the one way to
+// change character, home signed-in panel spec 2026-10-10).
 
 /** The signed-out block's `id` in `index.astro`: `HomeAccountPanel.svelte` reaches outside
  *  its own root to find it (same cross-island DOM-reach pattern as `SIM_TAB_ATTR` /
@@ -13,6 +14,12 @@
 import { scoreUnitWord, type SlotScoreUnit } from './bis/tank-view';
 export const HOME_SIGNED_OUT_ID = 'home-signed-out';
 
+/** The attribute `HomeAccountPanel.svelte` puts on <html> when the pre-paint session hint
+ *  turned out wrong, so global.css's hint-only collapse of the signed-out hero's cells
+ *  (`html[data-session='1']:not([data-home-signed-out])`) stops applying. One name, exported
+ *  once, shared with that stylesheet by its comment. */
+export const HOME_SIGNED_OUT_ATTR = 'data-home-signed-out';
+
 export const homePanelCopy = {
   signInButton: 'Sign in with Battle.net',
   /** The signed-in Simulator card's own empty/loading fallback (§3.B.2) -- reused verbatim
@@ -20,20 +27,20 @@ export const homePanelCopy = {
    *  card names these exact two strings. */
   noSimYet: 'No sim yet.',
   runAction: 'Run',
-  /** Home rebuild spec §3.B.1's signed-in eyebrow label (the mock's own "Sample" pill next
-   *  to it is NOT reproduced here: that pill documents the mock's own stand-in fixture
-   *  data, and this hero renders the visitor's real `/v1/me` character -- labelling real
-   *  data "Sample" would be the exact fabrication tenet 8 rules out). */
+  /** The signed-in eyebrow label for an account with one character; with several it reads
+   *  `currentCharacterEyebrow` ("current" is the header selector's own word for the pointer). */
   yourCharacterEyebrow: 'Your character',
+  currentCharacterEyebrow: 'Current character',
+  /** Plain 12px text under the sync line, only with two or more characters: not a link, not
+   *  a control. Returning players look for the column that used to be here; the header is
+   *  only a crest on a phone, so it names the corner. */
+  changeCharacterHint: 'Change character: top right',
   /** §3.B.1's sync line tail, after the mono relative-time figure: "{time} from the addon
    *  · gear and talents in sync" -- the "bags in sync" clause the mock shows is omitted,
    *  since no field on `MeCharacter` backs it yet. */
   syncedFromAddon: 'from the addon · gear and talents in sync',
   /** §4's stale-sync row (> 24h): one added line, no alarm colour. */
   reopenAddonToRefresh: 'Reopen the addon to refresh your gear.',
-  /** §3.B.4's "Switch character" panel header. */
-  switchCharacterLabel: 'Switch character',
-  addOneCharacter: 'Add one',
 } as const;
 
 /**
@@ -96,10 +103,15 @@ export const homeHeroCardsCopy = {
   talentsLine: (pointsDiffer: number, bandTalentPoints: number, bandLabel: string): string =>
     `${pointsDiffer} of the ${bandTalentPoints} points in the ${bandLabel} build differ · compare in the planner`,
   simulatorLabel: 'Simulator',
-  /** §3.B.2's "Y.Y in band best in slot" clause, appended to the visitor's own saved-sim
-   *  line only once the band's own `set_dps` is known -- never a pairing the band file does
-   *  not actually publish. */
-  simulatorBandSuffix: (bandSetDps: number): string => `${bandSetDps.toFixed(1)} in band best in slot`,
+  /** The visitor's own latest saved sim, the unit on the figure: "26 DPS now". Shown only
+   *  when that sim ran the band entry's own setup (`lib/home/sim-card.ts`). */
+  simulatorNowFigure: (dps: string): string => `${dps} DPS now`,
+  /** The band's own `set_dps`. Read after the figure it is comparable with:
+   *  "26 DPS now · 37.5 DPS at band best in slot". */
+  simulatorBandLine: (bandSetDps: number): string => `${bandSetDps.toFixed(1)} DPS at band best in slot`,
+  /** With no comparable saved sim the band figure stands alone, as the card's figure. */
+  simulatorBandOnlyFigure: (bandSetDps: number): string => `${bandSetDps.toFixed(1)} DPS`,
+  simulatorBandOnlyLine: 'at band best in slot',
 } as const;
 
 /**
@@ -114,7 +126,6 @@ export const homeUpgradesCopy = {
   youWearHeader: 'You wear',
   bestInSlotHeader: 'Best in slot',
   gainHeader: 'Gain',
-  youWearThis: 'you wear this',
   noItemEquipped: 'No item equipped',
   unknownItem: 'Unknown item',
   /** `Full list for Marksmanship 20 to 29` -- the panel's own header aside link. */

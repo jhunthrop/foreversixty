@@ -1,28 +1,24 @@
 <!-- web/src/components/HomeAccountPanel.svelte -->
-<!-- The home page's signed-in hub summary, rebuilt to the home rebuild spec (2026-09-30)
-     §3.B.1/§3.B.2/§3.B.4: the character hero (name, descriptor, sync line), the three
-     next-action cards (Best in slot / Talents / Simulator), and the Switch character panel
-     that fills the hero's right column. While this is loading or the visitor is signed
-     out, it renders nothing and the sky band's own server-rendered signed-out hero
-     (index.astro) stays exactly where it is -- the same "server shell first, island swaps
-     in place" trick SessionNav.svelte's header link uses, so the hero never shows two
-     competing versions. Both this island's root and index.astro's signed-out block share
+<!-- The home page's signed-in hero (home signed-in panel spec 2026-10-10, superseding the
+     home rebuild spec 2026-09-30 §3.B.1/§3.B.2/§3.B.4): the character identity (eyebrow, crest,
+     name, descriptor, sync line, a one-line pointer to the header selector when the account has
+     several characters) and the three next-action cards (Best in slot / Talents / Simulator),
+     in one band. The header character selector is the one way to change character; this
+     island follows it in place through `onCurrentCharacterChange`. While this is loading or
+     the visitor is signed out, it renders nothing and the sky band's own server-rendered
+     signed-out hero (index.astro) stays exactly where it is -- the same "server shell first,
+     island swaps in place" trick SessionNav.svelte's header link uses, so the hero never shows
+     two competing versions. Both this island's root and index.astro's signed-out block share
      `[grid-area:1/1]` in a shared grid wrapper, so once this mounts signed-in it visually
      occludes the signed-out block (a solid background over the same cell) instead of the
-     two stacking and reflowing the page underneath.
-
-     The old class-tree art backdrop and the big Battle.net character render image are
-     gone: the new right column is the opaque Switch character panel, which would have sat
-     behind or fought with either for the same space, and neither appears anywhere in the
-     home rebuild spec's own regions. -->
+     two stacking and reflowing the page underneath. -->
 <script lang="ts">
   import { mount, unmount } from 'svelte';
-  import type { MeCharacter } from '../lib/account/api';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
-  import { factionMarkSrc } from '../lib/faction-mark';
+  import { FACTION_MARK_SIZE, factionLogoSrc, factionName } from '../lib/faction-mark';
   import { guildHref } from '../lib/characters';
   import { ratingCopy } from '../lib/rating/copy';
-  import { homePanelCopy, HOME_SIGNED_OUT_ID } from '../lib/home-panel-copy';
+  import { homePanelCopy, HOME_SIGNED_OUT_ATTR, HOME_SIGNED_OUT_ID } from '../lib/home-panel-copy';
   import { createHomeHero } from '../lib/account/home-hero.svelte';
   import { homeHeroLevelRaceClassLine } from '../lib/account/character-descriptor';
   import { relativeTime } from '../lib/sim/sources';
@@ -44,12 +40,15 @@
    * share the same `[grid-area:1/1]` cell) only ever covers the signed-out row visually --
    * it stays mounted underneath, so without this a signed-in keyboard/screen-reader user
    * could still tab to, or hear, a duplicate "Sign in with Battle.net" link sitting behind
-   * the visible strip.
+   * the visible strip. When the session hint was wrong (nothing signed in), the hint-only
+   * CSS that collapses the signed-out hero's cells is switched off through
+   * `HOME_SIGNED_OUT_ATTR` on <html>, restoring the two-cell signed-out hero.
    */
   $effect(() => {
     const signedOut = document.getElementById(HOME_SIGNED_OUT_ID);
     if (signedOut === null) return;
-    if (ready && me !== null && hero !== null) {
+    const signedIn = ready && me !== null && hero !== null;
+    if (signedIn) {
       signedOut.setAttribute('inert', '');
       signedOut.setAttribute('aria-hidden', 'true');
     } else {
@@ -57,43 +56,14 @@
       signedOut.removeAttribute('aria-hidden');
       if (ready) signedOut.removeAttribute('data-session-hide');
     }
+    document.documentElement.toggleAttribute(HOME_SIGNED_OUT_ATTR, ready && !signedIn);
   });
 
   /**
-   * The hero's right column (index.astro's `home-switch-character-slot`) is filled from
-   * here, not by its own island: this island already holds the session, and a second
-   * island in the hero put its module requests on the largest paint's path for every
-   * visitor (Lighthouse, 05f3e478). The panel's module is imported only once /v1/me has
-   * answered signed-in, so a signed-out page never fetches it.
-   */
-  $effect(() => {
-    if (!ready || me === null) return;
-    const slot = document.querySelector<HTMLElement>('[data-testid="home-switch-character-slot"]');
-    if (slot === null) return;
-    const account = me;
-    const currentKey = hero?.key ?? null;
-    let panel: Record<string, unknown> | null = null;
-    let cancelled = false;
-    void import('./character/HomeSwitchCharacterPanel.svelte').then(
-      ({ default: HomeSwitchCharacterPanel }) => {
-        if (cancelled) return;
-        panel = mount(HomeSwitchCharacterPanel, {
-          target: slot,
-          props: { me: account, currentKey, onswitch: switchTo },
-        });
-      },
-    );
-    return () => {
-      cancelled = true;
-      if (panel !== null) void unmount(panel);
-    };
-  });
-
-  /**
-   * The three next-action cards (§3.B.2), mounted the same dynamic-import-once-signed-in
-   * way HomeSwitchCharacterPanel already is: HomeHeroCards.svelte's own imports (the
-   * Simulator card's fetch and its dependencies) never reach a signed-out visitor's
-   * browser this way (review round 3, "islands" item -- see that component's own doc).
+   * The three next-action cards, mounted dynamically once signed in: HomeHeroCards.svelte's
+   * own imports (the Simulator card's fetch and its dependencies) never reach a signed-out
+   * visitor's browser this way (review round 3, "islands" item -- see that component's own
+   * doc).
    */
   $effect(() => {
     if (!ready || me === null || hero === null) return;
@@ -114,8 +84,7 @@
 
   /**
    * §3.B.3's "Your upgrades" table, mounted into `index.astro`'s own `home-upgrades-slot`
-   * the identical dynamic-import-once-signed-in way as the switch panel and the hero cards
-   * above -- its own BiS-file and item-table fetches never reach a signed-out visitor's
+   * the identical dynamic-import-once-signed-in way as the hero cards above -- its own BiS-file and item-table fetches never reach a signed-out visitor's
    * browser either.
    */
   $effect(() => {
@@ -135,21 +104,16 @@
     };
   });
 
-  function switchTo(character: MeCharacter): void {
-    homeHero.switchTo(character);
-  }
-
-  /** Home rebuild spec §3.B.1's descriptor line: "Level 24 Troll Hunter" (spec name
-   *  omitted -- see homeHeroLevelRaceClassLine's own doc) plus, inline, a FactionMark and
-   *  the faction's own coloured word, plus the realm-region clause the mock shows as
-   *  "Skyborne-US". Composed here rather than through `characterDescriptor` because that
-   *  function's plain-text output is shared by three unrelated surfaces this lane does not
-   *  touch, and cannot carry this line's icon/colour markup anyway. */
+  /** The descriptor is two lines (spec 2026-10-10 §3.B): "Level 24 Troll Hunter" (spec name
+   *  omitted -- see homeHeroLevelRaceClassLine's own doc), then the real faction emblem and
+   *  the faction's own coloured word, the guild link and the realm-region clause
+   *  ("Skyborne-US"). Composed here rather than through `characterDescriptor` because that
+   *  function's plain-text output is shared by three unrelated surfaces and cannot carry this
+   *  block's icon/colour markup anyway. */
   const levelRaceClass = $derived(hero === null ? '' : homeHeroLevelRaceClassLine(hero));
   const realmRegion = $derived(hero?.realm === undefined ? '' : `${hero.realm}-${hero.region.toUpperCase()}`);
-  const factionLabel = $derived(
-    hero?.faction === 'alliance' ? 'Alliance' : hero?.faction === 'horde' ? 'Horde' : '',
-  );
+  const faction = $derived(hero?.faction === 'alliance' || hero?.faction === 'horde' ? hero.faction : null);
+  const hasAlts = $derived(me !== null && me.characters.length > 1);
 
   /** §3.B.1's sync line: "{relative time} from the addon · gear and talents in sync" --
    *  only when a build exists at all (never invented), and never the mock's "bags in sync"
@@ -176,86 +140,94 @@
      and an observer needs a box to see. Empty and pointer-events-none, it occludes nothing
      until signed in. -->
 {#if ready && me !== null && hero !== null}
-  <div class="relative flex flex-col gap-4 [grid-area:1/1]" data-testid="home-account-panel">
-    <p class="label text-gold flex items-center gap-[10px]" data-testid="home-hero-eyebrow">
-      <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>
-      {homePanelCopy.yourCharacterEyebrow}
-    </p>
-    <div class="relative flex flex-wrap items-center gap-[18px]">
-      <CharacterIdentity character={hero} size="xl" descriptor="none" heading testid="home-hero">
-        {#snippet below()}
-          <!-- Review round 1 item 1: one line, the spec's own shape -- "Level 24 Troll
-               Marksmanship Hunter · <faction emblem> Horde · <Sample Guild> · Skyborne-US".
-               The guild is inline (angle brackets, same convention the mock's own
-               "&lt;Sample Guild&gt;" uses), not CharacterGuildLine's separate block-level
-               line: that component's own "Verified" text is dropped here rather than given
-               a second pill, since the mock's hero line carries no verified indicator at
-               all. -->
-          <span
-            class="flex flex-wrap items-center gap-x-1 text-[15px] text-[#c9c2b2]"
-            data-testid="home-hero-descriptor"
-          >
-            <span>{levelRaceClass}</span>
-            {#if factionLabel !== ''}
-              <span>·</span>
-              <img
-                src={factionMarkSrc(hero.faction === 'alliance' ? 'alliance' : 'horde')}
-                alt=""
-                width="16"
-                height="16"
-                loading="lazy"
-                class="inline-block align-[-2px]"
-              />
-              <span
-                class="font-semibold"
-                style={`color: ${hero.faction === 'alliance' ? 'var(--color-alliance)' : 'var(--color-horde)'}`}
-                >{factionLabel}</span
+  <div
+    class="relative flex flex-col gap-4 [grid-area:1/1] md:gap-[22px] xl:grid xl:grid-cols-12 xl:items-end xl:gap-8"
+    data-testid="home-account-panel"
+  >
+    <div class="flex min-w-0 flex-col gap-4 xl:col-span-5">
+      <p class="label text-gold flex items-center gap-[10px]" data-testid="home-hero-eyebrow">
+        <i class="bg-gold inline-block h-px w-7" aria-hidden="true"></i>
+        {hasAlts ? homePanelCopy.currentCharacterEyebrow : homePanelCopy.yourCharacterEyebrow}
+      </p>
+      <div class="relative flex min-w-0 items-center gap-[14px] md:gap-[18px]">
+        <CharacterIdentity character={hero} size="xl" descriptor="none" heading testid="home-hero">
+          {#snippet below()}
+            <span class="mt-1 flex flex-col gap-0.5 text-[#c9c2b2]" data-testid="home-hero-descriptor">
+              <span class="text-[15px]">{levelRaceClass}</span>
+              <span class="flex flex-wrap items-center gap-x-1 text-[14px]">
+                {#if faction !== null}
+                  <img
+                    src={factionLogoSrc(faction)}
+                    alt={factionName(faction)}
+                    title={factionName(faction)}
+                    width={FACTION_MARK_SIZE}
+                    height={FACTION_MARK_SIZE}
+                    loading="lazy"
+                    decoding="async"
+                    class="inline-block object-contain"
+                    data-testid={`faction-mark-${faction}`}
+                  />
+                  <span
+                    class="font-semibold"
+                    style={`color: ${faction === 'alliance' ? 'var(--color-alliance)' : 'var(--color-horde)'}`}
+                    >{factionName(faction)}</span
+                  >
+                {/if}
+                {#if hero.guild !== undefined}
+                  {#if faction !== null}<span>·</span>{/if}
+                  <span data-testid="home-hero-guild"
+                    >&lt;<a href={guildHref(hero.region, hero.ruleset, hero.guild.name)} class="text-nav"
+                      >{hero.guild.name}</a
+                    >&gt;</span
+                  >
+                {/if}
+                {#if realmRegion !== ''}
+                  {#if faction !== null || hero.guild !== undefined}<span>·</span>{/if}
+                  <span>{realmRegion}</span>
+                {/if}
+              </span>
+            </span>
+            {#if syncedAgo !== ''}
+              <p class="text-muted text-[12px]" data-testid="home-hero-sync">
+                <span class="mono">{syncedAgo}</span>
+                {homePanelCopy.syncedFromAddon}
+                {#if syncedHoursAgo > 24}
+                  <br />{homePanelCopy.reopenAddonToRefresh}
+                {/if}
+              </p>
+            {/if}
+            {#if noBattlenetData}
+              <p class="text-muted text-[13px]" data-testid="home-hero-no-bnet-data">
+                {accountPageCopy.noBattlenetDataForRealm}
+              </p>
+            {/if}
+            {#if hasAlts}
+              <p class="text-muted text-[12px]" data-testid="home-hero-change-hint">
+                {homePanelCopy.changeCharacterHint}
+              </p>
+            {/if}
+            {#if ratingFigure !== ''}
+              <span class="text-muted tabular font-mono text-[12px]" data-testid="home-hero-rating"
+                >{ratingFigure}</span
               >
             {/if}
-            {#if hero.guild !== undefined}
-              <span>·</span>
-              <span data-testid="home-hero-guild"
-                >&lt;<a href={guildHref(hero.region, hero.ruleset, hero.guild.name)} class="text-nav"
-                  >{hero.guild.name}</a
-                >&gt;</span
-              >
-            {/if}
-            {#if realmRegion !== ''}
-              <span>·</span>
-              <span>{realmRegion}</span>
-            {/if}
-          </span>
-          {#if syncedAgo !== ''}
-            <p class="text-muted text-[12px]" data-testid="home-hero-sync">
-              <span class="mono">{syncedAgo}</span>
-              {homePanelCopy.syncedFromAddon}
-              {#if syncedHoursAgo > 24}
-                <br />{homePanelCopy.reopenAddonToRefresh}
-              {/if}
-            </p>
-          {/if}
-          {#if noBattlenetData}
-            <p class="text-muted text-[13px]" data-testid="home-hero-no-bnet-data">
-              {accountPageCopy.noBattlenetDataForRealm}
-            </p>
-          {/if}
-          {#if ratingFigure !== ''}
-            <span class="text-muted tabular font-mono text-[12px]" data-testid="home-hero-rating"
-              >{ratingFigure}</span
-            >
-          {/if}
-        {/snippet}
-      </CharacterIdentity>
+          {/snippet}
+        </CharacterIdentity>
+      </div>
     </div>
 
-    <!-- The three next-action cards (§3.B.2) render from HomeHeroCards.svelte, mounted
-         above once signed in -- not this island's own static markup, so a signed-out
-         visitor's browser never downloads the Simulator card's fetch or its dependencies
-         (review round 3, "islands" item). min-h approximates the ready grid's own height
-         (one row of cards, ~112px) so the mount does not visibly shift the timeline strip
-         beneath it. -->
-    <div class="min-h-[112px]" data-testid="home-hero-cards-slot"></div>
+    <!-- The three next-action cards render from HomeHeroCards.svelte, mounted above once
+         signed in -- not this island's own static markup, so a signed-out visitor's browser
+         never downloads the Simulator card's fetch or its dependencies (review round 3,
+         "islands" item). min-h approximates the ready grid's own height (one row of cards,
+         ~112px) so the mount does not visibly shift the table beneath it. -->
+    <div class="min-h-[112px] min-w-0 xl:col-span-7" data-testid="home-hero-cards-slot"></div>
   </div>
 {:else}
-  <div class="pointer-events-none min-h-[220px] [grid-area:1/1]" aria-hidden="true"></div>
+  <!-- The ready hero's measured height with several characters (567 / 333 / 199px at
+       390 / 1024 / 1440), so a session-hinted page does not shift when /v1/me lands. -->
+  <div
+    class="pointer-events-none min-h-[567px] [grid-area:1/1] md:min-h-[333px] xl:min-h-[199px]"
+    aria-hidden="true"
+  ></div>
 {/if}
