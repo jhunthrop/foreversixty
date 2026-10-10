@@ -12,7 +12,7 @@
     rulesetLabel,
     splitUnitName,
   } from '../lib/characters';
-  import { readCurrent } from '../lib/current-character';
+  import { onCurrentCharacterChange, readCurrent } from '../lib/current-character';
   import { SECONDARY_BUTTON, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import {
     classColorVar,
@@ -118,6 +118,16 @@
     state = { ...state, ...next, page: next.page ?? 1 };
     window.history.replaceState(null, '', `${window.location.pathname}${rankingsSearch(state)}`);
   }
+
+  // Switching character re-aims the board at the new one (its class and ruleset replace the
+  // filters, back on page one) and the effect below re-pins its row.
+  $effect(() =>
+    onCurrentCharacterChange(() => {
+      const aimed = applyCurrentCharacterPrefilter(state, '', readCurrent());
+      state = { ...aimed, page: 1 };
+      window.history.replaceState(null, '', `${window.location.pathname}${rankingsSearch(state)}`);
+    }),
+  );
 
   /**
    * Every filter lives in the URL, so changing one always produces a brand new `state`

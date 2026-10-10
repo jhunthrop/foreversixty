@@ -7,7 +7,7 @@
 // rather than widening `home-hero.svelte.ts` itself, which the home rebuild lane owns.
 import { fetchMeOnce, type Me, type MeCharacter } from '../account/api';
 import { createQueryState } from '../data/query.svelte';
-import { readCurrent } from '../current-character';
+import { onCurrentCharacterChange, readCurrent } from '../current-character';
 import { selectedCharacter } from '../account/hero-character';
 import { API_BASE_URL } from '../planner/config';
 
@@ -25,7 +25,18 @@ export function createCharacterCardState(): CharacterCardState {
     ttlMs: 10 * 60 * 1000,
   });
   const me = $derived(session.data);
-  const character = $derived<MeCharacter | null>(me === null ? null : selectedCharacter(readCurrent(), me));
+  // Bumped by every header-selector change, so the card follows the selected character.
+  let pointerVersion = $state(0);
+  $effect(() =>
+    onCurrentCharacterChange(() => {
+      pointerVersion += 1;
+    }),
+  );
+  function selectedFor(account: Me): MeCharacter | null {
+    void pointerVersion;
+    return selectedCharacter(readCurrent(), account);
+  }
+  const character = $derived<MeCharacter | null>(me === null ? null : selectedFor(me));
 
   return {
     get status() {
