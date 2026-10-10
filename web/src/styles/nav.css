@@ -811,11 +811,9 @@
   .csel-faction {
     display: inline-block;
     flex-shrink: 0;
-    width: 14px;
-    height: 14px;
-    background: var(--faction-color);
-    mask: var(--faction-emblem) center / contain no-repeat;
-    -webkit-mask: var(--faction-emblem) center / contain no-repeat;
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
   }
   .csel-r2 {
     line-height: 1.45;

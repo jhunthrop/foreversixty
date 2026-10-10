@@ -4,7 +4,7 @@
      current row only; stale and failed use text colour. The row button is one roving tab
      stop; Retry on a failed row is its own sibling button, never nested. -->
 <script lang="ts">
-  import { factionMarkSrc } from '../../lib/faction-mark';
+  import { FACTION_MARK_SIZE, factionMarkSrc, factionName } from '../../lib/faction-mark';
   import { selectorCopy } from '../../lib/character-selector/copy';
   import { rowLineThree, rowLineTwo, type SelectorRow } from '../../lib/character-selector/rows';
   import { classColorVar } from '../../lib/report/format';
@@ -25,11 +25,6 @@
   } = $props();
 
   const lineThree = $derived(rowLineThree(row));
-  const factionStyle = $derived(
-    row.faction === undefined
-      ? ''
-      : `--faction-color: var(--color-${row.faction}); --faction-emblem: url(${factionMarkSrc(row.faction)});`,
-  );
 </script>
 
 <li
@@ -51,8 +46,17 @@
     <span class="csel-row-text">
       <span class="csel-r1">
         <span>{row.name}</span>
-        {#if row.faction !== undefined}<i class="csel-faction" style={factionStyle} aria-hidden="true"
-          ></i>{/if}
+        {#if row.faction !== undefined}<img
+            class="csel-faction"
+            src={factionMarkSrc(row.faction)}
+            alt={factionName(row.faction)}
+            title={factionName(row.faction)}
+            width={FACTION_MARK_SIZE}
+            height={FACTION_MARK_SIZE}
+            loading="lazy"
+            decoding="async"
+            data-testid={`faction-mark-${row.faction}`}
+          />{/if}
       </span>
       {#if rowLineTwo(row) !== ''}<span class="csel-r2">{rowLineTwo(row)}</span>{/if}
       {#if retrying}

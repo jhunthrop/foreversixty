@@ -164,6 +164,14 @@ describe('fromStoredCharacter', () => {
       expect(readCurrent(storage)?.label).toMatch(/^Bow Jackzon · /);
     });
 
+    it('writes an armory pointer on the account key, never a pasted-export pointer, for an addon-synced character', async () => {
+      routeMe('Bow Jackzon');
+      routeAddonInput();
+      const storage = fakeStorage();
+      await fromStoredCharacter(hyphenated, ctx, storage);
+      expect(readCurrent(storage)).toMatchObject({ source: 'armory', ref: 'us/normal/bow-jackzon' });
+    });
+
     it('falls back to a readable name, not the slug, when the account does not know the character', async () => {
       routeAddonInput();
       const storage = fakeStorage();

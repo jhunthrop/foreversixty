@@ -193,7 +193,7 @@ export async function fromStoredCharacter(
       { kind: input.source, ref: characterKey, captured_at: input.captured_at },
       accountName ?? decoded.build.character?.name ?? nameFromSlug(path.slug),
     );
-    if (result.ok) recordCurrentCharacter(result.character, 'addon', code, storage);
+    if (result.ok) recordCurrentCharacter(result.character, 'armory', characterKey, storage);
     return result;
   }
 

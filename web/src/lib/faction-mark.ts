@@ -11,6 +11,13 @@
 // The PNGs are gone from public/ entirely -- this is the only path any caller reads.
 export type Faction = 'alliance' | 'horde';
 
+/** The row-descriptor size of the emblem (design/DESIGN-SYSTEM.md: 16px in a row descriptor). */
+export const FACTION_MARK_SIZE = 16;
+
+export function factionName(faction: Faction): string {
+  return faction === 'alliance' ? 'Alliance' : 'Horde';
+}
+
 export function factionMarkSrc(faction: Faction): string {
   return `/icons/hd/faction/${faction}.webp`;
 }
