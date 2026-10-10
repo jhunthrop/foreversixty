@@ -8,9 +8,9 @@
      the character selector) were the first callers here (owner-reported defect 2026-10-01: the chip drew CharacterPortrait's
      square avatar-or-letter shape instead of the approved mock's circular ringed crest).
 
-     HomeSwitchCharacterPanel.svelte and CharacterPortrait.svelte's own `xl` branch each
-     already inline an equivalent copy, added before this component existed -- left as they
-     are here (different interactive-state scope in each, and out of this lane's reported
+     CharacterPortrait.svelte's own `xl` branch
+     already inlines an equivalent copy, added before this component existed -- left as it
+     is here (different interactive-state scope in each, and out of this lane's reported
      defects), so this is a second Svelte copy of the recipe, not a third: new callers reach
      for this one first.
 

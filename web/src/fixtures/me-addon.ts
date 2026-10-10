@@ -4,7 +4,7 @@
 // landed alongside this lane) -- for e2e specs to route **/v1/me to via page.route, and for
 // screenshots of the signed-in home against the mock's own worked example (`SignedIn.png`).
 //
-// Three characters, matching the mock's own Switch character panel exactly:
+// Three characters, matching the home mock's worked example exactly:
 //
 //   - Zulmara: Horde Troll Marksmanship Hunter, level 24, with a worn-gear export that
 //     produces exactly 4 upgrades against the real, committed

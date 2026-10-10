@@ -5,9 +5,8 @@
 // popover, `lib/planner/load.ts`'s `loadItems` for the planner island itself), and resolves
 // the one band entry that applies to this character's level and faction. `lib/home/
 // upgrades.ts` and `lib/home/talent-delta.ts` stay pure and synchronous; every network/async
-// concern lives here instead, once, so `HomeHeroCards.svelte`, `HomeUpgradesPanel.svelte` and
-// `HomeSwitchCharacterPanel.svelte` share the identical fetch-and-cache path rather than each
-// growing its own.
+// concern lives here instead, once, so `HomeHeroCards.svelte` and `HomeUpgradesPanel.svelte`
+// share the identical fetch-and-cache path rather than each growing its own.
 import activeBuild from '../../data/active-build.json';
 import type { MeCharacter } from '../account/api';
 import { bandEntryFor, bandForLevel, fetchBisFile } from '../bis/hover';
@@ -30,7 +29,7 @@ export function specKeyForCharacter(character: Pick<MeCharacter, 'class' | 'spec
 }
 
 /** One item-file fetch per class slug for the life of the page -- every character of the
- *  same class (the hero, every row in Switch character) shares the one promise. Resolves to
+ *  same class shares the one promise. Resolves to
  *  an empty map, never a rejected promise, when this build ships no item file for the class
  *  (`loadItems` throws `DataLoadError` on a 404 the same way `loadTalents` does) -- an empty
  *  map degrades every item lookup to "unknown" (`upgradesFor`'s own `wornUnknown`/no-icon
@@ -78,7 +77,7 @@ export async function loadBisContextFor(
 
 /** The home page's own answer for one character, small enough to persist: the comparison
  *  result plus only the item rows it names (worn items, picks, already-BiS items), so the
- *  panel and the Switch-character counts paint from localStorage on a repeat visit instead of
+ *  panel paints from localStorage on a repeat visit instead of
  *  waiting on a 4-6MB class item table to download and parse first (owner 2026-10-04, "are we
  *  caching the upgrades?" -- we were not). `band` is the band number; `specKey` and it are
  *  all the panel's "Full list for …" link needs. */

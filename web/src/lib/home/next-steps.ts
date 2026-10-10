@@ -3,22 +3,11 @@
 // only when to show it (loading/ready/empty), so the two Svelte components that need one of
 // these facts (the hero's rating figure, this grid's rating card) can never format the same
 // number two different ways.
-import { headlineOf, kindOf } from '../sim/history';
-import { simCopy } from '../sim/copy';
 import { MAX_POINTS } from '../planner/types';
 import { talentPointsFromSplit } from '../sim/sources';
 import { formatDate } from '../dates';
-import type { SimListRow } from '../sim/types';
 import type { MyReport } from '../account/api';
 import type { CharacterRating } from '../rating/types';
-
-/** "Top Gear · +41 DPS from Vis'kag" — the visitor's own most recent saved sim. Not claimed
- *  to be for one character: GET /v1/sims?mine=1 carries no character key per row (Ruling 3,
- *  2026-09-24-home-v2.md), only spec/dps/title, so this names the sim rather than a
- *  character match the API cannot confirm. */
-export function simCardLine(row: SimListRow): string {
-  return `${simCopy.kindLabel[kindOf(row)]} · ${headlineOf(row)}`;
-}
 
 /** "24 of 51 points" from a talent split string ("31/0/20", GET .../sim-input's `talents`
  *  field -- SimInput.talents / fight_metrics.talent_split, points per tree, never a
