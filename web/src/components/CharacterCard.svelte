@@ -29,12 +29,10 @@
 
   let {
     nextPath,
-    switchHref = '/account',
     sendListHref = '/addon',
     installHref = '/setup',
   }: {
     nextPath: string;
-    switchHref?: string;
     sendListHref?: string;
     installHref?: string;
   } = $props();
@@ -120,7 +118,6 @@
              free of it; its own copy string left this module with it. -->
         {bisCopy.yourCharacterLabel}
       </span>
-      <a class="character-card-switch" href={switchHref}>{bisCopy.switchLabel}</a>
     </div>
     <div class="character-card-identity">
       <img
@@ -201,12 +198,6 @@
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-  .character-card-switch {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
   }
   .character-card-identity {
     display: flex;

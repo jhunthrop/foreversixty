@@ -422,7 +422,6 @@ export const bisCopy = {
 
   // --- Character card (bis rebuild spec §4.B) ----------------------------------------------
   yourCharacterLabel: 'Your character',
-  switchLabel: 'Switch',
   syncedRelative: (relative: string): string => `synced ${relative}`,
   notSyncedYetLabel: 'Not synced yet',
   characterCardIdentityLine: (level: number, race: string): string => `${level} ${capitalise(race)}`,

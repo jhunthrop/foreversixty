@@ -27,4 +27,11 @@ describe('CharacterCard', () => {
     expect(source).not.toContain('pill-sample');
     expect(source).not.toContain('samplePillLabel');
   });
+
+  it('has no Switch control: the header selector is the one way to switch character', () => {
+    const source = readFileSync(fileURLToPath(new URL('./CharacterCard.svelte', import.meta.url)), 'utf8');
+    expect(source).not.toContain('switchHref');
+    expect(source).not.toContain('switchLabel');
+    expect(source).not.toContain('character-card-switch');
+  });
 });
