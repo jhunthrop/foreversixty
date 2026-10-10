@@ -1,6 +1,6 @@
 // web/src/lib/sim/follow-current-character.test.ts
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi, type Mock } from 'vitest';
 import {
   CURRENT_CHARACTER_CHANGED,
   announcePageLoadedCharacter,
@@ -22,14 +22,16 @@ function pointer(overrides: Partial<CurrentCharacter>): CurrentCharacter {
   };
 }
 
-function fakeLoaders(): CharacterLoaders & { [K in keyof CharacterLoaders]: ReturnType<typeof vi.fn> } {
+type FakeLoaders = { [K in keyof CharacterLoaders]: Mock<CharacterLoaders[K]> };
+
+function fakeLoaders(): FakeLoaders {
   return {
-    loadCode: vi.fn().mockResolvedValue(undefined),
-    loadAddon: vi.fn().mockResolvedValue(undefined),
-    loadBuild: vi.fn().mockResolvedValue(undefined),
-    loadFight: vi.fn().mockResolvedValue(undefined),
-    loadStored: vi.fn().mockResolvedValue(undefined),
-    setMessage: vi.fn(),
+    loadCode: vi.fn<CharacterLoaders['loadCode']>().mockResolvedValue(undefined),
+    loadAddon: vi.fn<CharacterLoaders['loadAddon']>().mockResolvedValue(undefined),
+    loadBuild: vi.fn<CharacterLoaders['loadBuild']>().mockResolvedValue(undefined),
+    loadFight: vi.fn<CharacterLoaders['loadFight']>().mockResolvedValue(undefined),
+    loadStored: vi.fn<CharacterLoaders['loadStored']>().mockResolvedValue(undefined),
+    setMessage: vi.fn<CharacterLoaders['setMessage']>(),
   };
 }
 
@@ -87,7 +89,7 @@ describe('followCurrentCharacter', () => {
   it('runs back-to-back choices in order and reports busy until the last settles', async () => {
     const loaders = fakeLoaders();
     const order: string[] = [];
-    loaders.loadStored.mockImplementation(async (path: { slug: string }) => {
+    loaders.loadStored.mockImplementation(async (path) => {
       await flush();
       order.push(path.slug);
     });

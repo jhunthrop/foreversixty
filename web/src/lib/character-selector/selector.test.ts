@@ -1,7 +1,7 @@
 // web/src/lib/character-selector/selector.test.ts
 // The nav selector's logic: the stale rule, the list order, the pointer cases and the
 // choose-a-character write (design/specs/2026-10-09-nav-character-selector.md decisions 8 to 11).
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import type { Me, MeCharacter } from '../account/api';
 import { readCurrent, writeCurrent, type CurrentCharacter } from '../current-character';
 import { chooseCharacter, urlForChosenPointer, type ChooseDeps } from './choose';

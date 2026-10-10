@@ -331,7 +331,7 @@ test.describe('choosing a character', () => {
     await expect(page.getByTestId('selector-name')).toHaveText('Frostbyte');
   });
 
-  test('on /planner, points the URL at the chosen character and loads it', async ({ page }) => {
+  test('on /planner, points the URL at the chosen character and opens its class', async ({ page }) => {
     await signInWith(page, [OBNOXIOUS, FROSTBYTE]);
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.goto('/planner');
@@ -342,8 +342,85 @@ test.describe('choosing a character', () => {
       .getByRole('button')
       .first()
       .click();
-    await expect(page).toHaveURL(/\/planner\?class=mage$/);
+    await expect(page).toHaveURL(/\/planner\?class=mage/);
     await expect(page.getByTestId('selector-name')).toHaveText('Frostbyte');
+  });
+
+  async function chooseFrostbyte(page: Page): Promise<void> {
+    await page.evaluate(() => {
+      (window as unknown as { __kept: boolean }).__kept = true;
+    });
+    await selector(page).click();
+    await rowButton(page, FROSTBYTE).click();
+    await expect(page.getByTestId('selector-name')).toHaveText('Frostbyte');
+  }
+
+  async function pageWasNotReloaded(page: Page): Promise<boolean> {
+    return page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept === true);
+  }
+
+  test('on /tiers, the callout and the YOUR SPEC badge move to the new character without a reload', async ({
+    page,
+  }) => {
+    await signInWith(page, [OBNOXIOUS, FROSTBYTE]);
+    await storePointer(page, armoryPointer(OBNOXIOUS));
+    await page.goto('/tiers');
+    await ready(page);
+    await expect(page.getByTestId('tier-callout')).toContainText('Fury Warrior is');
+    await expect(page.getByTestId('tier-row-warrior-fury').first()).toHaveClass(/is-you/);
+    await chooseFrostbyte(page);
+    await expect(page.getByTestId('tier-callout')).toContainText('Frost Mage is');
+    await expect(page.getByTestId('tier-callout')).not.toContainText('Fury Warrior is');
+    await expect(page.getByTestId('tier-row-mage-frost').first()).toHaveClass(/is-you/);
+    await expect(page.getByTestId('tier-row-warrior-fury').first()).not.toHaveClass(/is-you/);
+    await expect(page.locator('[data-testid="tier-you-pill"]:visible')).toHaveCount(1);
+    expect(await pageWasNotReloaded(page)).toBe(true);
+  });
+
+  test('on /bis, the character card moves to the new character and the page keeps its place', async ({
+    page,
+  }) => {
+    await signInWith(page, [OBNOXIOUS, FROSTBYTE]);
+    await storePointer(page, armoryPointer(OBNOXIOUS));
+    await page.goto('/bis/warrior/fury#band-alliance-20');
+    await ready(page);
+    await expect(page.getByTestId('bis-character-card')).toContainText('Obnoxious Yell');
+    await chooseFrostbyte(page);
+    await expect(page.getByTestId('bis-character-card')).toContainText('Frostbyte');
+    await expect(page.getByTestId('bis-character-card')).not.toContainText('Obnoxious Yell');
+    await expect(page).toHaveURL(/\/bis\/warrior\/fury#band-alliance-20$/);
+    expect(await pageWasNotReloaded(page)).toBe(true);
+  });
+
+  test('on /planner, the open planner switches to the new character in place', async ({ page }) => {
+    await signInWith(page, [OBNOXIOUS, FROSTBYTE]);
+    await storePointer(page, armoryPointer(OBNOXIOUS));
+    await page.goto('/planner');
+    await ready(page);
+    await expect(page.getByTestId('planner-header-h1')).toContainText('Warrior');
+    await chooseFrostbyte(page);
+    await expect(page.getByTestId('planner-header-h1')).toContainText('Mage');
+    await expect(page).toHaveURL(/\/planner\?class=mage/);
+    await expect(page.getByTestId('planner-character-card')).toContainText('Frostbyte');
+    expect(await pageWasNotReloaded(page)).toBe(true);
+  });
+
+  test('a faction shows as its real emblem with its name, never an abstract mark', async ({ page }) => {
+    await signInWith(page, [OBNOXIOUS, FROSTBYTE]);
+    await storePointer(page, armoryPointer(OBNOXIOUS));
+    await page.goto('/guides');
+    await ready(page);
+    await selector(page).click();
+    const alliance = panel(page)
+      .getByTestId(`selector-row-${keyOf(OBNOXIOUS)}`)
+      .getByRole('img', { name: 'Alliance' });
+    const horde = panel(page)
+      .getByTestId(`selector-row-${keyOf(FROSTBYTE)}`)
+      .getByRole('img', { name: 'Horde' });
+    await expect(alliance).toHaveAttribute('src', /\/icons\/hd\/faction\/alliance\.webp$/);
+    await expect(horde).toHaveAttribute('src', /\/icons\/hd\/faction\/horde\.webp$/);
+    await expect(horde).toHaveAttribute('title', 'Horde');
+    expect(await horde.evaluate((img) => (img as HTMLImageElement).width)).toBe(16);
   });
 
   test('walks the list with the keyboard: open, arrow, choose, focus returns', async ({ page }) => {
