@@ -369,17 +369,27 @@ describe('row copy', () => {
 });
 
 describe('choosing a character', () => {
-  function deps(pathname: string, storage: Storage): ChooseDeps & { events: Event[]; urls: string[] } {
+  function deps(
+    pathname: string,
+    storage: Storage,
+  ): ChooseDeps & { events: Event[]; urls: string[]; log: string[] } {
     const events: Event[] = [];
     const urls: string[] = [];
+    const log: string[] = [];
     return {
       storage,
       pathname,
       events,
       urls,
-      dispatch: (event) => void events.push(event),
-      replaceUrl: (href) => void urls.push(href),
-      reload: vi.fn(),
+      log,
+      dispatch: (event) => {
+        events.push(event);
+        log.push('event');
+      },
+      replaceUrl: (href) => {
+        urls.push(href);
+        log.push('url');
+      },
       now: () => NOW,
     };
   }
@@ -399,19 +409,18 @@ describe('choosing a character', () => {
     expect(readChosenKeys(storage)).toEqual([tester.key]);
     expect(wired.events.map((event) => event.type)).toEqual(['fs:current-character']);
     expect(wired.urls).toEqual([]);
-    expect(wired.reload).not.toHaveBeenCalled();
   });
 
-  it('points the planner and simulator URLs at the choice and loads them once more', () => {
+  it('points the planner and simulator URLs at the choice, before the page is told, with no reload', () => {
     const planner = deps('/planner', memoryStorage());
     chooseCharacter(tester, planner);
     expect(planner.urls).toEqual(['/planner?class=warrior']);
-    expect(planner.reload).toHaveBeenCalledTimes(1);
+    expect(planner.log).toEqual(['url', 'event']);
 
     const sim = deps('/sim/gear', memoryStorage());
     chooseCharacter(tester, sim);
     expect(sim.urls).toEqual([`/sim/gear?source=armory&ref=${encodeURIComponent(tester.key)}`]);
-    expect(sim.reload).toHaveBeenCalledTimes(1);
+    expect(sim.log).toEqual(['url', 'event']);
   });
 
   it('leaves other pages alone', () => {

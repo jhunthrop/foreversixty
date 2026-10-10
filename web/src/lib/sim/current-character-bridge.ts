@@ -4,7 +4,7 @@
 // that file's own header claim -- "the four/five ways a character reaches the simulator" --
 // free of a second concern).
 import {
-  CURRENT_CHARACTER_CHANGED,
+  announcePageLoadedCharacter,
   writeCurrent,
   type CurrentCharacter,
   type CurrentCharacterSource,
@@ -33,5 +33,5 @@ export function recordCurrentCharacter(
   // the new pointer without a full reload. This bridge was the one caller that did not,
   // so a character loaded via addon paste on /sim or a bulk tool page left the spine bar
   // showing its signed-out line rather than the freshly loaded character's doors.
-  if (typeof window !== 'undefined') window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+  announcePageLoadedCharacter();
 }

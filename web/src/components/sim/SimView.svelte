@@ -27,6 +27,7 @@
   import type { Summary } from '../../lib/report/types';
   import { fetchSpecs, listMySims } from '../../lib/sim/api';
   import { codeForCharacterSpec } from '../../lib/sim/character';
+  import { followCurrentCharacter } from '../../lib/sim/follow-current-character';
   import { decideBootstrap, RESTORE_BUSY_KEY, runBootstrapRestore } from '../../lib/sim/character-bootstrap';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
@@ -336,7 +337,18 @@
   onMount(() => {
     // Never on /sim/<id>: a saved sim never restores the visitor's own current character.
     if (!hasSavedSimId) void restoreFromPointer();
-    return () => store.dispose();
+    // The header selector moves this page along: a character chosen there loads in place.
+    const stopFollowing = followCurrentCharacter({
+      loaders: store,
+      characterLoaded: () => store.character !== null,
+      pinned: () => hasSavedSimId || bootstrap.request !== null,
+      onSettled: (loaded) => (restored = loaded),
+      onBusy: (busy) => (landingBusyKey = busy ? RESTORE_BUSY_KEY : null),
+    });
+    return () => {
+      stopFollowing();
+      store.dispose();
+    };
   });
 
   // The spec support list: /sim/specs renders it as a grid, and /sim needs it too, to know

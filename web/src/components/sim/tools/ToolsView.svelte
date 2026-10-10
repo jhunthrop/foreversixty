@@ -10,6 +10,7 @@
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../../data/active-build.json';
   import { battlenetStartUrl, effectiveServerSims, fetchMe, type Me } from '../../../lib/account/api';
+  import { followCurrentCharacter } from '../../../lib/sim/follow-current-character';
   import { readCurrent } from '../../../lib/current-character';
   import { VIEW_GAP } from '../../../lib/current-character-layout';
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
@@ -171,7 +172,16 @@
       .catch(() => {});
     void store.loadSpecs();
     void bootstrapCharacter();
-    return () => store.dispose();
+    // The header selector moves this page along: a character chosen there loads in place.
+    const stopFollowing = followCurrentCharacter({
+      loaders: store,
+      characterLoaded: () => store.character !== null,
+      onSettled: (loaded) => (restored = loaded),
+    });
+    return () => {
+      stopFollowing();
+      store.dispose();
+    };
   });
 
   function onSignIn(): void {

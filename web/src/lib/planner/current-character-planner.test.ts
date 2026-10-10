@@ -7,6 +7,7 @@ import fixtureTalents from '../../fixtures/planner/talents/warrior.json';
 import { readCurrent, type CurrentCharacter } from '../current-character';
 import {
   decidePlannerLoad,
+  followPointerInPlanner,
   isBarePlannerUrl,
   labelForPlannerLoad,
   plannerAddonCode,
@@ -405,5 +406,27 @@ describe('unsavedPlannerHref', () => {
     if (!decoded.ok) return;
     const index = indexTalents(fixtureTalents as TalentFile);
     expect(orderFromRanks(index, decoded.build.treeRanks).order).toEqual(store.order);
+  });
+});
+
+describe('followPointerInPlanner', () => {
+  it('imports a pasted export, naming its class so the planner can switch first', () => {
+    expect(followPointerInPlanner(stored('addon', GOOD_CODE), 'mage')).toEqual({
+      kind: 'import',
+      classSlug: 'warrior',
+      code: GOOD_CODE,
+    });
+    expect(followPointerInPlanner(stored('code', GOOD_CODE), 'warrior').kind).toBe('import');
+  });
+
+  it('does nothing for an export that no longer decodes, or for no pointer', () => {
+    expect(followPointerInPlanner(stored('addon', 'FS1:broken'), 'mage')).toEqual({ kind: 'none' });
+    expect(followPointerInPlanner(null, 'mage')).toEqual({ kind: 'none' });
+  });
+
+  it('moves to the class of an account character, and keeps the build when the class is the same', () => {
+    const hunter = { ...stored('armory', 'us/normal/bow'), classSlug: 'hunter' };
+    expect(followPointerInPlanner(hunter, 'warrior')).toEqual({ kind: 'class', classSlug: 'hunter' });
+    expect(followPointerInPlanner(hunter, 'hunter')).toEqual({ kind: 'none' });
   });
 });

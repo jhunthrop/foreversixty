@@ -19,7 +19,6 @@ export interface ChooseDeps {
   dispatch: (event: Event) => void;
   pathname: string;
   replaceUrl: (href: string) => void;
-  reload: () => void;
   now: () => Date;
 }
 
@@ -33,18 +32,15 @@ export function urlForChosenPointer(pathname: string, pointer: CurrentCharacter)
 /**
  * Writes `pointer` as the current character. `accountKey` is the account character's key when
  * the pointer names one, so the list remembers the choice. Planner and simulator state lives
- * in the URL and neither re-renders on the pointer event, so on those pages the URL is
- * replaced and the page loads once more from it (the spec's named fallback for a page that
- * cannot re-render in place); every other page reacts to `CURRENT_CHARACTER_CHANGED`.
+ * in the URL, so on those pages the URL is replaced first (no reload, no history entry) and
+ * the page then re-renders in place from `CURRENT_CHARACTER_CHANGED`, as every other page does.
  */
 export function choosePointer(pointer: CurrentCharacter, accountKey: string | null, deps: ChooseDeps): void {
   writeCurrent(pointer, deps.storage);
   if (accountKey !== null) recordChosenKey(accountKey, deps.storage);
-  deps.dispatch(new Event(CURRENT_CHARACTER_CHANGED));
   const href = urlForChosenPointer(deps.pathname, pointer);
-  if (href === null) return;
-  deps.replaceUrl(href);
-  deps.reload();
+  if (href !== null) deps.replaceUrl(href);
+  deps.dispatch(new Event(CURRENT_CHARACTER_CHANGED));
 }
 
 export function chooseCharacter(character: MeCharacter, deps: ChooseDeps): void {
@@ -58,7 +54,6 @@ export function browserChooseDeps(): ChooseDeps {
     dispatch: (event) => window.dispatchEvent(event),
     pathname: window.location.pathname,
     replaceUrl: (href) => window.history.replaceState(null, '', href),
-    reload: () => window.location.reload(),
     now: () => new Date(),
   };
 }

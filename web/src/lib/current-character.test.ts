@@ -3,6 +3,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   CURRENT_CHARACTER_CHANGED,
+  announcePageLoadedCharacter,
   clearCurrent,
   onCurrentCharacterChange,
   plannerHrefFor,
@@ -169,6 +170,15 @@ describe('onCurrentCharacterChange', () => {
     stop();
     window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
     expect(listener).toHaveBeenCalledTimes(2);
+  });
+
+  it('tells a page-load write apart from a selector write', () => {
+    const listener = vi.fn();
+    const stop = onCurrentCharacterChange(listener);
+    window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+    announcePageLoadedCharacter();
+    expect(listener.mock.calls).toEqual([[{ fromPageLoad: false }], [{ fromPageLoad: true }]]);
+    stop();
   });
 
   it('also follows a pointer change made in another tab', () => {

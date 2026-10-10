@@ -12,12 +12,13 @@
   import { selectedCharacter } from '../../lib/account/hero-character';
   import { mainCharacter } from '../../lib/account/main-character';
   import { createQueryState } from '../../lib/data/query.svelte';
-  import { clearCurrent, readCurrent } from '../../lib/current-character';
+  import { clearCurrent, onCurrentCharacterChange, readCurrent } from '../../lib/current-character';
   import { API_BASE_URL, DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
   import type { BandDiffView } from '../../lib/planner/band-compare';
   import { loadFromBand } from '../../lib/planner/band-compare';
   import {
     decidePlannerLoad,
+    followPointerInPlanner,
     isBarePlannerUrl,
     writePlannerPointer,
   } from '../../lib/planner/current-character-planner';
@@ -230,7 +231,10 @@
   // panels can never pick two different characters. `null` (an anonymous visit, or before
   // the session resolves) leaves `store.level` on its existing `levelReached(order)`
   // fallback, unchanged for every bare build.
+  // Bumped by every selector change so the level follows the newly selected character.
+  let pointerVersion = $state(0);
   $effect(() => {
+    void pointerVersion;
     if (session === null || linkNamesBuild) return;
     const hero = session.data === null ? null : selectedCharacter(readCurrent(), session.data);
     store.setCharacterLevel(hero?.level ?? null);
@@ -257,6 +261,20 @@
     pendingImport = { classSlug, code };
     store.selectClass(classSlug);
   }
+  // The header selector moves the open planner along, the way a fresh load of that character
+  // would (followPointerInPlanner): a pasted export imports, any other character opens its
+  // class. The address follows through the class/race effect below; the selector already
+  // replaced it for a character chosen there.
+  $effect(() => {
+    if (!standalone || record !== null) return;
+    return onCurrentCharacterChange(({ fromPageLoad }) => {
+      pointerVersion += 1;
+      if (fromPageLoad) return;
+      const follow = followPointerInPlanner(readCurrent(), store.classSlug);
+      if (follow.kind === 'import') switchClassForImport(follow.classSlug, follow.code);
+      else if (follow.kind === 'class') store.selectClass(follow.classSlug);
+    });
+  });
   $effect(() => {
     const pending = pendingImport;
     const index = store.talentIndex;

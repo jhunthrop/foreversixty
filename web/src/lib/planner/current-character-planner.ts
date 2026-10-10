@@ -17,7 +17,12 @@ import { addonCodeFor } from '../addon/build-code';
 import { decodeFS1, type FS1Result } from './fs1';
 import type { TalentIndex } from './rules';
 import type { PlannerStore } from './store.svelte';
-import { readCurrent, writeCurrent, type CurrentCharacter } from '../current-character';
+import {
+  announcePageLoadedCharacter,
+  readCurrent,
+  writeCurrent,
+  type CurrentCharacter,
+} from '../current-character';
 import { characterFromPlanner, plannerHrefFor, specOf } from '../sim/character';
 import { specLabel } from '../sim/spec-label';
 
@@ -144,6 +149,35 @@ export function decidePlannerLoad(
       };
 }
 
+/** What the open planner does when the header selector names a different character. */
+export type PlannerFollow =
+  | { kind: 'import'; classSlug: string; code: string }
+  | { kind: 'class'; classSlug: string }
+  | { kind: 'none' };
+
+/**
+ * The in-page version of a fresh load (`decidePlannerLoad`), for a pointer that changed while
+ * the planner is open. A pasted export ('code'/'addon') that decodes imports its build,
+ * switching class first when it is another class. Every other pointer carries no talents or
+ * gear (see the file header), so it can only move the planner to the character's class; on the
+ * class the planner is already on there is nothing to load, and the build in progress is kept
+ * rather than emptied for no new information.
+ */
+export function followPointerInPlanner(
+  pointer: CurrentCharacter | null,
+  openClassSlug: string,
+): PlannerFollow {
+  if (pointer === null) return { kind: 'none' };
+  if (pointer.source === 'code' || pointer.source === 'addon') {
+    const decoded = decodeFS1(pointer.ref);
+    return decoded.ok
+      ? { kind: 'import', classSlug: decoded.build.classSlug, code: pointer.ref }
+      : { kind: 'none' };
+  }
+  const classSlug = pointer.classSlug;
+  return classSlug === '' || classSlug === openClassSlug ? { kind: 'none' } : { kind: 'class', classSlug };
+}
+
 /**
  * The label a planner load writes to the pointer. `specLabel` already names the class
  * ("Fury Warrior"), so it is never joined with `className` a second time -- that redundant
@@ -185,6 +219,8 @@ export function recordPlannerCharacter(
 ): void {
   const pointer: CurrentCharacter = { source, ref, label, classSlug, savedAt: new Date().toISOString() };
   writeCurrent(pointer, storage);
+  // The selector and every sibling island learn of it; the planner ignores its own load.
+  announcePageLoadedCharacter();
 }
 
 /**
