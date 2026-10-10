@@ -4,6 +4,7 @@
 // bar instead of a horizontally scrolling row, and "Sign in" on every page. The selector's
 // own behaviours are in nav-selector.spec.ts.
 import { expect, test } from '@playwright/test';
+import { signedOut } from './support/selector';
 
 test.describe('aria-current', () => {
   test('the Simulator tool link carries aria-current=page on /sim', async ({ page }) => {
@@ -136,6 +137,7 @@ test.describe('sign in on every page', () => {
   }
 
   test('a content page gets the same character selector island as the tool pages', async ({ page }) => {
+    await signedOut(page);
     await page.goto('/guides');
     await expect(page.locator('astro-island[component-url*="CharacterSelector"]')).toHaveCount(1);
     await page.getByRole('banner').getByRole('button', { name: 'Sign in or choose a character' }).click();

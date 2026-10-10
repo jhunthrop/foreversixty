@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { signedOut } from './support/selector';
 
 // design/DESIGN-SYSTEM.md: "Second screen first ... 44px minimum hit targets",
 // "Page gutter 48px desktop, 18px phone". 360x800 is the narrowest phone we design for.
@@ -29,6 +30,7 @@ test('a content page carries the same character selector as every other page', a
   // Owner 2026-10-04: /guides used to render a static "Sign in" while every tool page showed
   // the signed-in chip. The layout now mounts the character selector everywhere; signed out,
   // it resolves to the Sign in slot, whose panel carries the sign-in route.
+  await signedOut(page);
   await page.goto('/guides');
   await expect(page.locator('astro-island[component-url*="CharacterSelector"]')).toHaveCount(1);
   await page.getByRole('banner').getByRole('button', { name: 'Sign in or choose a character' }).click();
