@@ -3,8 +3,8 @@
      chip for a page that has no character state of its own (account, character, setup) --
      unchanged from before this lane. `spine: true` is the new band spec 2026-09-25 section
      4.1 describes: one row under the header, the resolved character's identity, four door
-     links, and a Switch control, mounted on every tool and guide page (Tasks 5-8). The two
-     modes share nothing but the pointer read and CHIP_HEIGHT -- a page never sets both. -->
+     links and Forget, mounted on every tool and guide page (Tasks 5-8); switching character
+     is the header selector's job alone (nav spec 2026-10-09). The two modes share nothing but the pointer read and CHIP_HEIGHT -- a page never sets both. -->
 <script lang="ts">
   import { untrack } from 'svelte';
   import { fetchMeOnce, type Me, type MeCharacter } from '../lib/account/api';
@@ -14,7 +14,6 @@
     CURRENT_CHARACTER_CHANGED,
     clearCurrent,
     readCurrent,
-    writeCurrent,
     type CurrentCharacter,
   } from '../lib/current-character';
   import { resolveSpineClassSlug, spineDoorsFor } from '../lib/current-character-bar';
@@ -22,10 +21,9 @@
   import { currentCharacterCopy } from '../lib/current-character-copy';
   import { guildRankLabel } from '../lib/characters';
   import { heroCharacter } from '../lib/account/hero-character';
-  import { mainCharacter, pointerForCharacter } from '../lib/account/main-character';
+  import { mainCharacter } from '../lib/account/main-character';
   import { classColorVar, rowLink } from '../lib/report/format';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
-  import CharacterSwitchList from './character/CharacterSwitchList.svelte';
   import CurrentCharacterChip from './CurrentCharacterChip.svelte';
 
   let {
@@ -77,7 +75,7 @@
     guildLine = '';
   }
 
-  // Spine-only: the session, read the same way home-hero.svelte.ts and AccountMenu.svelte
+  // Spine-only: the session, read the same way home-hero.svelte.ts and the header selector
   // already do -- one cached /v1/me shared across every island on the page.
   const session = createQueryState<Me | null>(`${API_BASE_URL}/v1/me`, () => fetchMeOnce(), {
     scope: 'private',
@@ -92,34 +90,6 @@
   const doors = $derived(
     spineDoorsFor(classSlug, current, displayCharacter?.region ?? null, displayCharacter?.ruleset ?? null),
   );
-
-  let switchOpen = $state(false);
-  let switchRoot: HTMLElement | undefined = $state();
-
-  function onSwitch(character: MeCharacter): void {
-    writeCurrent(pointerForCharacter(character));
-    window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
-    switchOpen = false;
-  }
-
-  function onDocumentPointerDown(event: PointerEvent): void {
-    if (!switchOpen || !(event.target instanceof Node) || switchRoot?.contains(event.target)) return;
-    switchOpen = false;
-  }
-
-  function onDocumentKeydown(event: KeyboardEvent): void {
-    if (switchOpen && event.key === 'Escape') switchOpen = false;
-  }
-
-  $effect(() => {
-    if (!spine) return;
-    document.addEventListener('pointerdown', onDocumentPointerDown);
-    document.addEventListener('keydown', onDocumentKeydown);
-    return () => {
-      document.removeEventListener('pointerdown', onDocumentPointerDown);
-      document.removeEventListener('keydown', onDocumentKeydown);
-    };
-  });
 </script>
 
 {#if spine}
@@ -156,7 +126,7 @@
          data-pointer/data-session when either is real, so hiding it until hydration
          resolves is what stops it from ever painting a wrong guess. -->
     <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="current-character-bar">
-      <div class="flex h-full flex-col md:flex-row md:items-center md:gap-4" bind:this={switchRoot}>
+      <div class="flex h-full flex-col md:flex-row md:items-center md:gap-4">
         <div class="flex h-11 shrink-0 items-center md:h-auto" data-testid="current-character-bar-identity">
           {#if displayCharacter !== null}
             <CharacterIdentity character={displayCharacter} size="md" descriptor="realm" />
@@ -168,8 +138,8 @@
         </div>
         <!-- Every child is shrink-0: a flex item with an explicit min-width (min-w-11) no longer
              keeps its min-content width, so without it the phone row shrank the links onto
-             one another. The row wraps rather than scrolls: a scrolled row hid Forget and
-             Switch past the edge with nothing to say so. Six short labels fit one 390px line;
+             one another. The row wraps rather than scrolls: a scrolled row hid Forget past
+             the edge with nothing to say so. Six short labels fit one 390px line;
              the restored note is desktop-only so it cannot push the row to a second line. -->
         <div class="flex h-11 flex-wrap items-center gap-x-3 whitespace-nowrap md:h-auto md:flex-1">
           {#each doors as door (door.id)}
@@ -202,29 +172,6 @@
             >
               {currentCharacterCopy.forget}
             </button>
-          {/if}
-          {#if me !== null && me.characters.length > 0}
-            <div class="relative shrink-0">
-              <button
-                type="button"
-                class="{rowLink} label text-nav min-w-11 justify-center"
-                data-testid="current-character-bar-switch"
-                onclick={() => (switchOpen = !switchOpen)}
-              >
-                {currentCharacterCopy.barSwitch}
-              </button>
-              {#if switchOpen}
-                <div
-                  class="bg-raised border-line rounded-panel absolute top-full left-0 z-30 mt-2 w-[240px] border py-2"
-                >
-                  <CharacterSwitchList
-                    characters={me.characters}
-                    currentKey={current?.source === 'armory' ? current.ref : (main?.key ?? null)}
-                    onswitch={onSwitch}
-                  />
-                </div>
-              {/if}
-            </div>
           {/if}
         </div>
       </div>
