@@ -59,10 +59,24 @@ export const CURRENT_CHARACTER_CHANGED = 'fs:current-character';
  */
 export const POINTER_ATTRIBUTE = 'pointer';
 
-function markPointerPresent(present: boolean): void {
+/**
+ * `<html data-pointer-class="warrior">` while a pointer with a class is stored. The same
+ * pre-paint script sets it, and nav.css paints the matching crest as the character
+ * selector's first frame before the island hydrates. Kept in step with the pointer here.
+ */
+export const POINTER_CLASS_ATTRIBUTE = 'pointerClass';
+
+function markPointer(value: CurrentCharacter | null): void {
   if (typeof document === 'undefined') return;
-  if (present) document.documentElement.dataset[POINTER_ATTRIBUTE] = '1';
-  else delete document.documentElement.dataset[POINTER_ATTRIBUTE];
+  const attributes = document.documentElement.dataset;
+  if (value === null) {
+    delete attributes[POINTER_ATTRIBUTE];
+    delete attributes[POINTER_CLASS_ATTRIBUTE];
+    return;
+  }
+  attributes[POINTER_ATTRIBUTE] = '1';
+  if (value.classSlug === '') delete attributes[POINTER_CLASS_ATTRIBUTE];
+  else attributes[POINTER_CLASS_ATTRIBUTE] = value.classSlug;
 }
 
 export function readCurrent(storage?: Storage): CurrentCharacter | null {
@@ -102,7 +116,7 @@ export function writeCurrent(value: CurrentCharacter, storage?: Storage): void {
     const serialised = JSON.stringify(value);
     if (serialised.length > MAX_STORED_LENGTH) return;
     target.setItem(STORAGE_KEY, serialised);
-    markPointerPresent(true);
+    markPointer(value);
   } catch {
     // Private browsing, quota exceeded, or a disabled storage API: the pointer is a
     // convenience, so a failed write is silently skipped rather than surfaced.
@@ -114,7 +128,7 @@ export function clearCurrent(storage?: Storage): void {
   if (target === null) return;
   try {
     target.removeItem(STORAGE_KEY);
-    markPointerPresent(false);
+    markPointer(null);
   } catch {
     // Same as writeCurrent: nothing to surface.
   }

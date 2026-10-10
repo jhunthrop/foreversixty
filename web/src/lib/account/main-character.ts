@@ -44,7 +44,8 @@ export function mainCharacter(characters: readonly MeCharacter[], mainKey?: stri
  *  limit this pointer does not change. */
 export function pointerForCharacter(character: MeCharacter): CurrentCharacter {
   const classSlug = character.class?.toLowerCase() ?? '';
-  const label = character.class === undefined ? character.name : `${character.name} · ${character.class}`;
+  const specClass = [character.spec, character.class].filter((part) => part !== undefined).join(' ');
+  const label = specClass === '' ? character.name : `${character.name} · ${specClass}`;
   return {
     source: 'armory',
     ref: character.key,

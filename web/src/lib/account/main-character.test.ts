@@ -81,6 +81,11 @@ describe('pointerForCharacter', () => {
     expect(pointer.label).toBe('Aria · Mage');
   });
 
+  it('names the spec before the class when the API sent one', () => {
+    const c = character({ key: 'us/normal/a', name: 'Aria', class: 'Mage', spec: 'Frost' });
+    expect(pointerForCharacter(c).label).toBe('Aria · Frost Mage');
+  });
+
   it('falls back to the character name alone with no class on file', () => {
     const c = character({ key: 'us/normal/a', name: 'Aria' });
     const pointer = pointerForCharacter(c);

@@ -94,6 +94,13 @@ export interface MeCharacter {
      *  (`data/active-build.json`) instead, the same build every other BiS comparison on the
      *  site reads against. */
     data_build?: string;
+    /** The player's own median gap between syncs, in seconds, from the sync history; null
+     *  with fewer than three syncs on record. The selector's stale rule reads it
+     *  (`lib/character-selector/stale.ts`). */
+    median_sync_gap_sec?: number | null;
+    /** Why the last Battle.net refresh failed; null or omitted when it did not. Non-null
+     *  is what makes the selector's row "failed" with a Retry. */
+    sync_error?: string | null;
   };
   /** Omitted when the character has no `guild_characters` row at all. */
   guild?: MeCharacterGuild;
