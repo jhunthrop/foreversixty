@@ -19,7 +19,7 @@
   import { SIM_LANDING_SKELETON_MIN_H } from '../../lib/sim/layout';
   import type { CharacterPath } from '../../lib/characters';
   import { parseCharacterPath } from '../../lib/characters';
-  import { CURRENT_CHARACTER_CHANGED, readCurrent, type CurrentCharacter } from '../../lib/current-character';
+  import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '../../lib/current-character';
   import { VIEW_GAP } from '../../lib/current-character-layout';
   import { readLastUpgrade, type LastUpgrade } from '../../lib/sim/last-upgrade';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
@@ -231,8 +231,7 @@
       currentPointer = readCurrent();
     };
     read();
-    window.addEventListener(CURRENT_CHARACTER_CHANGED, read);
-    return () => window.removeEventListener(CURRENT_CHARACTER_CHANGED, read);
+    return onCurrentCharacterChange(read);
   });
   const runBlockCharacter = $derived.by(() => {
     if (me === null) return null;

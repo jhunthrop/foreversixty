@@ -1,8 +1,10 @@
 // web/src/lib/current-character.test.ts
 // @vitest-environment jsdom
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
+  CURRENT_CHARACTER_CHANGED,
   clearCurrent,
+  onCurrentCharacterChange,
   plannerHrefFor,
   readCurrent,
   simHrefFor,
@@ -154,5 +156,36 @@ describe('the pre-paint pointer attribute', () => {
     expect(document.documentElement.dataset.pointer).toBe('1');
     clearCurrent();
     expect(document.documentElement.dataset.pointer).toBeUndefined();
+  });
+});
+
+describe('onCurrentCharacterChange', () => {
+  it('calls the listener on every pointer event until unsubscribed', () => {
+    const listener = vi.fn();
+    const stop = onCurrentCharacterChange(listener);
+    window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+    window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+    expect(listener).toHaveBeenCalledTimes(2);
+    stop();
+    window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+    expect(listener).toHaveBeenCalledTimes(2);
+  });
+
+  it('also follows a pointer change made in another tab', () => {
+    const listener = vi.fn();
+    const stop = onCurrentCharacterChange(listener);
+    window.dispatchEvent(new StorageEvent('storage', { key: 'fs.currentCharacter' }));
+    window.dispatchEvent(new StorageEvent('storage', { key: 'something-else' }));
+    expect(listener).toHaveBeenCalledTimes(1);
+    stop();
+  });
+
+  it('is a no-op without a window', () => {
+    vi.stubGlobal('window', undefined);
+    try {
+      expect(onCurrentCharacterChange(() => undefined)()).toBeUndefined();
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

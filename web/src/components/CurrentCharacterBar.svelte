@@ -11,8 +11,8 @@
   import { createQueryState } from '../lib/data/query.svelte';
   import { API_BASE_URL } from '../lib/planner/config';
   import {
-    CURRENT_CHARACTER_CHANGED,
     clearCurrent,
+    onCurrentCharacterChange,
     readCurrent,
     type CurrentCharacter,
   } from '../lib/current-character';
@@ -65,8 +65,7 @@
         });
     };
     read();
-    window.addEventListener(CURRENT_CHARACTER_CHANGED, read);
-    return () => window.removeEventListener(CURRENT_CHARACTER_CHANGED, read);
+    return onCurrentCharacterChange(read);
   });
 
   function forget(): void {

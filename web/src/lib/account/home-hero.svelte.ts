@@ -8,7 +8,7 @@
 // by URL, so two `createHomeHero()` instances share one network read each, not two.
 import { fetchMeOnce, type Me, type MeCharacter } from './api';
 import { createQueryState } from '../data/query.svelte';
-import { readCurrent, writeCurrent, CURRENT_CHARACTER_CHANGED } from '../current-character';
+import { readCurrent, writeCurrent, CURRENT_CHARACTER_CHANGED, onCurrentCharacterChange } from '../current-character';
 import { selectedCharacter } from './hero-character';
 import { pointerForCharacter } from './main-character';
 import { API_BASE_URL } from '../planner/config';
@@ -42,8 +42,7 @@ export function createHomeHero(): HomeHeroHandle {
     const onChanged = (): void => {
       pointerVersion += 1;
     };
-    window.addEventListener(CURRENT_CHARACTER_CHANGED, onChanged);
-    return () => window.removeEventListener(CURRENT_CHARACTER_CHANGED, onChanged);
+    return onCurrentCharacterChange(onChanged);
   });
 
   function readCurrentIfReady(): ReturnType<typeof readCurrent> {

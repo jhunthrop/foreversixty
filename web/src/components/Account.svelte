@@ -34,6 +34,7 @@
   import { characterHref, guildHref, parseCharacterPath } from '../lib/characters';
   import {
     CURRENT_CHARACTER_CHANGED,
+    onCurrentCharacterChange,
     readCurrent,
     writeCurrent,
     type CurrentCharacter,
@@ -130,8 +131,7 @@
       currentCharacter = readCurrent();
     };
     read();
-    window.addEventListener(CURRENT_CHARACTER_CHANGED, read);
-    return () => window.removeEventListener(CURRENT_CHARACTER_CHANGED, read);
+    return onCurrentCharacterChange(read);
   });
   // The hero is the current character when one is pointed at, else the account's main
   // (chosen, or the site's guess): the main is the default context everywhere.

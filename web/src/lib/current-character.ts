@@ -50,6 +50,25 @@ function storageOf(storage: Storage | undefined): Storage | null {
 export const CURRENT_CHARACTER_CHANGED = 'fs:current-character';
 
 /**
+ * Calls `listener` whenever the pointer changes: in this tab (`CURRENT_CHARACTER_CHANGED`) or
+ * in another one (`storage`, filtered to the pointer's own key). Returns the unsubscribe. The
+ * one place the listener wiring lives -- every surface that renders the current character
+ * subscribes through this and re-reads with `readCurrent`.
+ */
+export function onCurrentCharacterChange(listener: () => void): () => void {
+  if (typeof window === 'undefined') return () => undefined;
+  const onStorage = (event: StorageEvent): void => {
+    if (event.key === null || event.key === STORAGE_KEY) listener();
+  };
+  window.addEventListener(CURRENT_CHARACTER_CHANGED, listener);
+  window.addEventListener('storage', onStorage);
+  return () => {
+    window.removeEventListener(CURRENT_CHARACTER_CHANGED, listener);
+    window.removeEventListener('storage', onStorage);
+  };
+}
+
+/**
  * `<html data-pointer="1">` while a pointer is stored. Base.astro's inline pre-paint script
  * sets it from localStorage before first paint (it repeats STORAGE_KEY, since an inline
  * script cannot import), and global.css hides every `.chip-slot` unless it is set, so a page

@@ -6,7 +6,7 @@
 import { ME_QUERY_VERSION, ME_TTL_MS, fetchMeOnce, meKey, type Me } from '../account/api';
 import { createQueryState } from '../data/query.svelte';
 import { sessionHinted } from '../data/query';
-import { CURRENT_CHARACTER_CHANGED, readCurrent, type CurrentCharacter } from '../current-character';
+import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '../current-character';
 import { API_BASE_URL } from '../planner/config';
 import { readChosenKeys } from './order';
 import { buildSelectorModel, type SelectorModel } from './rows';
@@ -58,12 +58,7 @@ export function createSelectorState(): SelectorState {
     refresh();
     sessionHint = sessionHinted();
     mounted = true;
-    window.addEventListener(CURRENT_CHARACTER_CHANGED, refresh);
-    window.addEventListener('storage', refresh);
-    return () => {
-      window.removeEventListener(CURRENT_CHARACTER_CHANGED, refresh);
-      window.removeEventListener('storage', refresh);
-    };
+    return onCurrentCharacterChange(refresh);
   });
 
   // A character's age is measured against the moment its data arrived, not the moment this
