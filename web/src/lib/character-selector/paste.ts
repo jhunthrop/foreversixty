@@ -19,7 +19,8 @@ function capitalise(slug: string): string {
 /** The account character an export or a pasted pointer names: same name (a key slug counts) and class, case-insensitive. */
 export function sameCharacter(character: MeCharacter, name: string, classSlug: string): boolean {
   return (
-    characterSlug(character.name) === characterSlug(name) && (character.class ?? '').toLowerCase() === classSlug
+    characterSlug(character.name) === characterSlug(name) &&
+    (character.class ?? '').toLowerCase() === classSlug
   );
 }
 

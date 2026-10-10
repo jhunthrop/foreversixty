@@ -218,7 +218,11 @@ describe('the model', () => {
   });
 
   it('matches a pointer whose label carries the key slug to the account row and shows its display name', () => {
-    const bow = character('Bow Jackzon', { key: 'us/normal/bow-jackzon', class: 'Hunter', spec: 'Beast Mastery' });
+    const bow = character('Bow Jackzon', {
+      key: 'us/normal/bow-jackzon',
+      class: 'Hunter',
+      spec: 'Beast Mastery',
+    });
     const model = buildSelectorModel({
       me: me([tester, bow]),
       pointer: pointerFor({

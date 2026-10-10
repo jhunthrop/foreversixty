@@ -3,6 +3,7 @@
 // and the signed-in answer (the callout on the visitor's own role, a pointer on the others,
 // and a mark on their row). The list itself is static HTML; nothing here is needed to read it.
 import type { Faction } from '../bis/types';
+import { onCurrentCharacterChange } from '../current-character';
 import { hrefWithFaction, nextTabIndex, parseFaction } from './tier-controls';
 import type { TierSpecView } from './tier-callout';
 import { tiersCopy } from './tier-copy';
@@ -176,11 +177,20 @@ export function mountTierPage(): void {
   }
   wireTabKeys();
   if (!hasSessionHint()) return;
+  // The answer follows the header selector: asked once after load, and again on every pointer
+  // change. Only the newest question may paint, so a slow older answer never wins.
+  let latest = 0;
+  const answerForSelectedCharacter = async (): Promise<void> => {
+    const asked = ++latest;
+    const { findCharacterKey } = await import('./tier-me');
+    const key = await findCharacterKey();
+    if (asked !== latest) return;
+    characterKey = key;
+    markYourRows(characterKey);
+    refresh();
+  };
   afterLoad(() => {
-    void import('./tier-me').then(async ({ findCharacterKey }) => {
-      characterKey = await findCharacterKey();
-      markYourRows(characterKey);
-      refresh();
-    });
+    void answerForSelectedCharacter();
+    onCurrentCharacterChange(() => void answerForSelectedCharacter());
   });
 }
