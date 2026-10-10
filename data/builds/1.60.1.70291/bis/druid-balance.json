@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70291",
-  "engine_version": "b1b13fddc",
-  "generated_at": "2026-10-09T19:58:07Z",
+  "engine_version": "a73988d91",
+  "generated_at": "2026-10-10T12:49:36Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -556,8 +556,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.913018603,
-      "verify_run_seconds": 1.107583724,
+      "weights_run_seconds": 1.463545215,
+      "verify_run_seconds": 0.886410227,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.913018603,
-      "verify_run_seconds": 1.127925577,
+      "weights_run_seconds": 1.463545215,
+      "verify_run_seconds": 0.878213757,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1855,8 +1855,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 2.14421657,
-      "verify_run_seconds": 1.240320595,
+      "weights_run_seconds": 1.630943147,
+      "verify_run_seconds": 0.946941038,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2525,8 +2525,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.14421657,
-      "verify_run_seconds": 1.253774836,
+      "weights_run_seconds": 1.630943147,
+      "verify_run_seconds": 0.955004543,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3226,8 +3226,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 2.365985033,
-      "verify_run_seconds": 1.483082901,
+      "weights_run_seconds": 1.86807141,
+      "verify_run_seconds": 1.146329376,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3926,8 +3926,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 2.365985033,
-      "verify_run_seconds": 1.457420035,
+      "weights_run_seconds": 1.86807141,
+      "verify_run_seconds": 1.1569098,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4600,8 +4600,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 2.533698524,
-      "verify_run_seconds": 1.9578930479999999,
+      "weights_run_seconds": 1.882598011,
+      "verify_run_seconds": 1.500193705,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5268,8 +5268,8 @@
         "trinket1: Uther's Strength",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 2.533698524,
-      "verify_run_seconds": 1.7959785209999999,
+      "weights_run_seconds": 1.882598011,
+      "verify_run_seconds": 1.427605559,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5719,23 +5719,24 @@
           "item_name": "Ironfeather Leggings",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 52.024766673275295,
+          "score": 52.0247666732753,
           "verified": true,
+          "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (id 237815): kept the pick, +3.3 DPS (243.8 vs 240.5 set DPS)",
+          "dps_delta": 3.3268329362842337,
           "alternatives": [
-            {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -1.8711062160021226
-            },
             {
               "item_id": 237817,
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.3268329362842337,
-              "verified": true
+              "dps_delta": -1.8711062160021226
+            },
+            {
+              "item_id": 22752,
+              "item_name": "Sentinel's Silk Leggings",
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels",
+              "dps_delta": -2.289948969163593
             }
           ]
         },
@@ -5994,8 +5995,8 @@
         "trinket2: Second Wind",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.474945264,
-      "verify_run_seconds": 5.644188729,
+      "weights_run_seconds": 1.887361359,
+      "verify_run_seconds": 4.631671981,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6251,7 +6252,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 39.0267836459579,
+          "score": 39.026783645957906,
           "verified": true,
           "alternatives": [
             {
@@ -6259,21 +6260,21 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.9396717242430573
+              "dps_delta": -0.9396717242430588
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.6857872480296687
+              "dps_delta": -1.68578724802967
             },
             {
               "item_id": 226778,
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.7189102907209457
+              "dps_delta": -1.7189102907209473
             }
           ]
         },
@@ -6447,26 +6448,26 @@
           "item_name": "Ironfeather Leggings",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 52.024766673275295,
+          "score": 52.0247666732753,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.8711062160021226
+              "dps_delta": -1.871106216002124
             },
             {
               "item_id": 22747,
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.2899489691635915
+              "dps_delta": -2.289948969163593
             },
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -3.2556072512867047,
@@ -6724,8 +6725,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.474945264,
-      "verify_run_seconds": 4.664328173,
+      "weights_run_seconds": 1.887361359,
+      "verify_run_seconds": 3.813453047,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7262,14 +7263,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -6.572238779836165
+              "dps_delta": -6.5722387798361686
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -7.669235865398786
+              "dps_delta": -7.6692358653987895
             },
             {
               "item_id": 11669,
@@ -7467,8 +7468,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.447330885,
-      "verify_run_seconds": 5.379937333,
+      "weights_run_seconds": 1.125303217,
+      "verify_run_seconds": 4.459315045,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8198,8 +8199,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.447330885,
-      "verify_run_seconds": 4.251419828,
+      "weights_run_seconds": 1.125303217,
+      "verify_run_seconds": 3.5386532490000002,
       "coverage": {
         "back": {
           "eligible": 457,

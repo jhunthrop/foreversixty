@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70291",
-  "engine_version": "b1b13fddc",
-  "generated_at": "2026-10-09T21:20:22Z",
+  "engine_version": "a73988d91",
+  "generated_at": "2026-10-10T13:52:36Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -532,8 +532,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.86481379,
-      "verify_run_seconds": 3.114201099,
+      "weights_run_seconds": 1.446998667,
+      "verify_run_seconds": 2.513835688,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1144,8 +1144,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.86481379,
-      "verify_run_seconds": 2.9496293959999997,
+      "weights_run_seconds": 1.446998667,
+      "verify_run_seconds": 2.435680631,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1785,8 +1785,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.928689661,
-      "verify_run_seconds": 1.995129879,
+      "weights_run_seconds": 1.520476778,
+      "verify_run_seconds": 1.593518896,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2417,8 +2417,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.928689661,
-      "verify_run_seconds": 1.845363174,
+      "weights_run_seconds": 1.520476778,
+      "verify_run_seconds": 1.5378691789999999,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3053,8 +3053,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.356409501,
-      "verify_run_seconds": 2.276677078,
+      "weights_run_seconds": 1.8387531670000001,
+      "verify_run_seconds": 1.931143628,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3687,8 +3687,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 2.356409501,
-      "verify_run_seconds": 2.359723891,
+      "weights_run_seconds": 1.8387531670000001,
+      "verify_run_seconds": 1.889320074,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4370,8 +4370,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.342456553,
-      "verify_run_seconds": 4.725593455,
+      "weights_run_seconds": 1.837652726,
+      "verify_run_seconds": 3.8073485270000003,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5033,8 +5033,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 2.342456553,
-      "verify_run_seconds": 4.58913768,
+      "weights_run_seconds": 1.837652726,
+      "verify_run_seconds": 3.714220613,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5467,7 +5467,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 168.25346578114724,
+          "score": 168.2534657811472,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +3.8 DPS over it",
           "dps_delta": 3.803611229274651,
@@ -5477,21 +5477,21 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.717787980470098
+              "dps_delta": -3.717787980470096
             },
             {
               "item_id": 18736,
               "item_name": "Plaguehound Leggings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -5.619564009963999
+              "dps_delta": -5.619564009963997
             },
             {
               "item_id": 15065,
               "item_name": "Warbear Woolies",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -5.805722977025656
+              "dps_delta": -5.805722977025654
             }
           ]
         },
@@ -5747,8 +5747,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.346106062,
-      "verify_run_seconds": 9.440762594,
+      "weights_run_seconds": 1.781994286,
+      "verify_run_seconds": 7.772519855,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6447,8 +6447,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.346106062,
-      "verify_run_seconds": 9.077248426,
+      "weights_run_seconds": 1.781994286,
+      "verify_run_seconds": 7.276648115,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7162,8 +7162,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.408198012,
-      "verify_run_seconds": 9.413452003,
+      "weights_run_seconds": 1.890167868,
+      "verify_run_seconds": 7.742834276,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7464,7 +7464,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.5304182732823635
+              "dps_delta": -3.5304182732823595
             },
             {
               "item_id": 227157,
@@ -7582,7 +7582,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 216.69501652460698,
+          "score": 216.69501652460696,
           "verified": true,
           "alternatives": [
             {
@@ -7598,14 +7598,14 @@
               "item_name": "General's Mail Legguards",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -8.231546939874807
+              "dps_delta": -8.231546939874802
             },
             {
               "item_id": 227156,
               "item_name": "Legionnaire's Mail Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -10.064893558693745
+              "dps_delta": -10.064893558693742
             }
           ]
         },
@@ -7855,8 +7855,8 @@
         "trinket1: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.408198012,
-      "verify_run_seconds": 9.615210466,
+      "weights_run_seconds": 1.890167868,
+      "verify_run_seconds": 7.910294557,
       "coverage": {
         "back": {
           "eligible": 457,

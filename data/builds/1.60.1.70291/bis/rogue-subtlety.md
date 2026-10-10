@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 00000000000000000-00000000000000000-5321000000000000000)
 
-Set DPS (verified): 37.7. Weights run: 2.4s. Verify run: 4.0s. 198 eligible items had no known source.
+Set DPS (verified): 37.7. Weights run: 1.9s. Verify run: 3.2s. 198 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.832 ± 0.011, crit=0.539 ± 0.011 per rating point (14 rating = 1%, 7.542 per %), hit=0.754 ± 0.027 per rating point (10 rating = 1%, 7.544 per %), melee_haste=4.688 ± 0.293
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 198, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 00000000000000000-00000000000000000-5323220310000000000)
 
-Set DPS (verified): 60.4. Weights run: 2.7s. Verify run: 4.7s. 358 eligible items had no known source.
+Set DPS (verified): 60.4. Weights run: 2.1s. Verify run: 3.7s. 358 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.455 ± 0.010, crit=0.486 ± 0.011 per rating point (14 rating = 1%, 6.809 per %), hit=1.016 ± 0.034 per rating point (10 rating = 1%, 10.164 per %), melee_haste=7.908 ± 0.371
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 358, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 00000000000000000-00000000000000000-5323220310013011031)
 
-Set DPS (verified): 99.9. Weights run: 3.1s. Verify run: 2.9s. 483 eligible items had no known source.
+Set DPS (verified): 99.9. Weights run: 2.3s. Verify run: 2.3s. 483 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -100,7 +100,7 @@ No-known-source sample (15 of 483, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 00532000000000000-00000000000000000-5323220310013011031)
 
-Set DPS (verified): 141.2. Weights run: 3.6s. Verify run: 3.8s. 610 eligible items had no known source.
+Set DPS (verified): 141.2. Weights run: 2.8s. Verify run: 3.0s. 610 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -132,7 +132,7 @@ No-known-source sample (15 of 610, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 00532310101400000-00000000000000000-5323220310013011031)
 
-Set DPS (verified): 259.3. Weights run: 3.5s. Verify run: 10.2s. 1378 eligible items had no known source.
+Set DPS (verified): 259.3. Weights run: 2.7s. Verify run: 8.1s. 1378 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -148,7 +148,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | wrist | Forest Stalker's Bracers (19587) | Silverwing Sentinels [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Leather Armsplints (16460, -0.10 DPS) [pvp]; Bracers of the Eclipse (18375, -0.39 DPS) [dungeon]; Wristwraps of Undead Slaying (23093, -4.97 DPS, sim-verified) [world] |
 | hands | Stormshroud Gloves (21278) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Leather Handgrips (231544, +0.00 DPS) [pvp]; Devilsaur Gauntlets (15063, -0.11 DPS) [crafted]; Raider Gloves (272099, -15.76 DPS, sim-verified) [vendor] |
 | waist | Assassin's Waistguard (272395) | Pix Xizzix [vendor] | 97.5 attack_power points (9.75 DPS) | yes | Belt of Preserved Heads (20216, -1.68 DPS, sim-verified) [quest]; Highlander's Leather Girdle (20045, -3.81 DPS) [rep]; Ferocity of the Timbermaw (227805, -3.96 DPS) [vendor] |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Knight-Captain's Leather Legguards (23299, +0.00 DPS) [vendor]; Marshal's Leather Leggings (231548, +0.00 DPS) [pvp]; Sentinel's Leather Pants (237818, -13.37 DPS, sim-verified) [vendor] |
+| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Knight-Captain's Leather Legguards (227061, +0.00 DPS) [vendor]; Marshal's Leather Leggings (231548, +0.00 DPS) [pvp]; Sentinel's Leather Pants (237818, -13.37 DPS, sim-verified) [vendor] |
 | feet | Darkmantle Footpads (226831) | Mokvar [vendor] | 65.3 attack_power points (6.54 DPS) | yes | Fine Dawn Treaders (227815, -1.67 DPS, sim-verified) [vendor]; Shadowcraft Boots (16711, -1.73 DPS) [dungeon]; Darkmantle Boots (22003, -2.03 DPS) [quest] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234202) | Anachronos [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Tarnished Elven Ring (18500, -1.69 DPS) [dungeon]; Cutthroat's Signet (272408, -1.88 DPS) [vendor]; Naglering (11669, -6.83 DPS, sim-verified) [dungeon] |
 | finger2 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Tarnished Elven Ring (18500, -1.32 DPS) [dungeon]; Cutthroat's Signet (272408, -1.51 DPS) [vendor]; Naglering (11669, -6.09 DPS, sim-verified) [dungeon] |
@@ -164,7 +164,7 @@ No-known-source sample (15 of 1378, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 00532310101400000-00000000000000000-5323220310013011031)
 
-Set DPS (verified): 621.3. Weights run: 3.7s. Verify run: 10.9s. 1378 eligible items had no known source.
+Set DPS (verified): 621.3. Weights run: 2.8s. Verify run: 8.7s. 1378 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -198,7 +198,7 @@ No-known-source sample (15 of 1378, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 00000000000000000-00000000000000000-5321000000000000000)
 
-Set DPS (verified): 37.3. Weights run: 2.4s. Verify run: 4.1s. 191 eligible items had no known source.
+Set DPS (verified): 37.3. Weights run: 1.9s. Verify run: 3.2s. 191 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.832 ± 0.011, crit=0.539 ± 0.011 per rating point (14 rating = 1%, 7.542 per %), hit=0.754 ± 0.027 per rating point (10 rating = 1%, 7.544 per %), melee_haste=4.688 ± 0.293
 
@@ -228,7 +228,7 @@ No-known-source sample (15 of 191, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-00000000000000000-5323220310000000000)
 
-Set DPS (verified): 60.4. Weights run: 2.7s. Verify run: 4.6s. 348 eligible items had no known source.
+Set DPS (verified): 60.4. Weights run: 2.1s. Verify run: 3.7s. 348 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.455 ± 0.010, crit=0.486 ± 0.011 per rating point (14 rating = 1%, 6.809 per %), hit=1.016 ± 0.034 per rating point (10 rating = 1%, 10.164 per %), melee_haste=7.908 ± 0.371
 
@@ -258,7 +258,7 @@ No-known-source sample (15 of 348, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-00000000000000000-5323220310013011031)
 
-Set DPS (verified): 98.7. Weights run: 3.1s. Verify run: 3.0s. 465 eligible items had no known source.
+Set DPS (verified): 98.7. Weights run: 2.3s. Verify run: 2.4s. 465 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -290,7 +290,7 @@ No-known-source sample (15 of 465, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 00532000000000000-00000000000000000-5323220310013011031)
 
-Set DPS (verified): 145.4. Weights run: 3.6s. Verify run: 3.9s. 587 eligible items had no known source.
+Set DPS (verified): 145.4. Weights run: 2.8s. Verify run: 3.0s. 587 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -322,7 +322,7 @@ No-known-source sample (15 of 587, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 00532310101400000-00000000000000000-5323220310013011031)
 
-Set DPS (verified): 263.3. Weights run: 3.5s. Verify run: 10.2s. 1372 eligible items had no known source.
+Set DPS (verified): 263.3. Weights run: 2.7s. Verify run: 8.1s. 1372 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -354,7 +354,7 @@ No-known-source sample (15 of 1372, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 00532310101400000-00000000000000000-5323220310013011031)
 
-Set DPS (verified): 623.8. Weights run: 3.7s. Verify run: 10.9s. 1372 eligible items had no known source.
+Set DPS (verified): 623.8. Weights run: 2.8s. Verify run: 8.7s. 1372 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 0000000000000000-000000000000000000-5032100000000000)
 
-Set DPS (verified): 27.5. Weights run: 4.7s. Verify run: 16.8s. 226 eligible items had no known source.
+Set DPS (verified): 27.5. Weights run: 3.6s. Verify run: 13.0s. 226 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.854 ± 0.007, spirit=1.848 ± 0.004, mp5=4.988 ± 0.007, crit=0.120 ± 0.006 per rating point (14 rating = 1%, 1.676 per %), spell_haste=not significant (0.000 ± 0.000)
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 226, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-000000000000000000-5032503300000000)
 
-Set DPS (verified): 49.2. Weights run: 4.7s. Verify run: 16.6s. 395 eligible items had no known source.
+Set DPS (verified): 49.2. Weights run: 3.7s. Verify run: 12.8s. 395 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.993 ± 0.007, spirit=2.468 ± 0.013, mp5=6.283 ± 0.014, crit=0.174 ± 0.008 per rating point (14 rating = 1%, 2.431 per %), spell_haste=not significant (0.000 ± 0.000)
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 395, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-000000000000000000-5032503315400000)
 
-Set DPS (verified): 72.6. Weights run: 5.7s. Verify run: 27.6s. 622 eligible items had no known source.
+Set DPS (verified): 72.6. Weights run: 4.3s. Verify run: 21.1s. 622 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -85,7 +85,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | hands | Bonefingers (10765) | Razorfen Downs: Amnennar the Coldbringer [dungeon] | 51.6 healing_power points (2.12 DPS) | yes | Mender's Leather Gloves (252530, -0.31 DPS) [crafted]; Stormcloth Gloves (10011, -0.40 DPS) [crafted]; Gloves of Old (9395, -0.61 DPS, sim-verified) [world_drop] |
 | waist | Gilded Cord (254037) | Tailoring [crafted] | 59.1 healing_power points (2.43 DPS) | yes | Mender's Leather Belt (252523, -0.54 DPS, sim-verified) [crafted]; Windchaser Cinch (14435, -0.56 DPS) [world_drop]; Sutarn's Ring (13105, -0.69 DPS) [world_drop] |
 | legs | Misplaced Pantaloons (276201) | Friz Frazzlespark [vendor] | 69.2 healing_power points (2.85 DPS) | yes | Stoneweaver Leggings (9407, -0.11 DPS) [dungeon]; Warchief Kilt (7760, -0.36 DPS, sim-verified) [dungeon]; Wisdom's Leather Leggings (252519, -0.45 DPS) [crafted] |
-| feet | Mender's Mail Boots (252565) | Leatherworking [crafted] | sim-verified (+1.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Mender's Leather Shoes (252533, -0.00 DPS) [crafted]; Gilded Slippers (254001, -0.50 DPS) [crafted]; Furen's Boots (13100, -0.99 DPS, sim-verified) [world_drop] |
+| feet | Mender's Leather Shoes (252533) | Leatherworking [crafted] | sim-verified (+1.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Mender's Mail Boots (252565, -0.00 DPS) [crafted]; Gilded Slippers (254001, -0.50 DPS) [crafted]; Furen's Boots (13100, -0.99 DPS, sim-verified) [world_drop] |
 | finger1 | Darkspear Signet (272070) | Creeg Bothunk [vendor] | 42.8 healing_power points (1.76 DPS) | yes | Welken Ring (5011, -0.44 DPS) [world_drop]; The Queen's Jewel (13094, -0.64 DPS) [world_drop]; Voodoo Band (1996, -0.68 DPS) [world] |
 | finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 37.3 healing_power points (1.53 DPS) | yes | Welken Ring (5011, -0.30 DPS, sim-verified) [world_drop]; The Queen's Jewel (13094, -0.41 DPS) [world_drop]; Voodoo Band (1996, -0.45 DPS) [world] |
 | trinket1 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | sim-verified (+3.0 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
@@ -94,13 +94,13 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 40:** head: Papal Fez; neck: Necklace of Calisea; shoulder: Sheepshear Mantle; back: Darkspear Raider's Cloak; chest: Stormcloth Vest; wrist: Enchanted Kodo Bracers; hands: Bonefingers; waist: Gilded Cord; legs: Misplaced Pantaloons; feet: Mender's Mail Boots; finger1: Darkspear Signet; finger2: Snake Hoop; trinket1: Darkspear Voodoo Seal; trinket2: Ankh of Life
+**New at 40:** head: Papal Fez; neck: Necklace of Calisea; shoulder: Sheepshear Mantle; back: Darkspear Raider's Cloak; chest: Stormcloth Vest; wrist: Enchanted Kodo Bracers; hands: Bonefingers; waist: Gilded Cord; legs: Misplaced Pantaloons; feet: Mender's Leather Shoes; finger1: Darkspear Signet; finger2: Snake Hoop; trinket1: Darkspear Voodoo Seal; trinket2: Ankh of Life
 
 No-known-source sample (15 of 622, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4777 Ironwood Maul
 
 ### Band 50 (dwarf, 0000000000000000-000000000000000000-5032503315513131)
 
-Set DPS (verified): 123.2. Weights run: 9.5s. Verify run: 52.5s. 796 eligible items had no known source.
+Set DPS (verified): 123.2. Weights run: 7.6s. Verify run: 40.1s. 796 eligible items had no known source.
 
 5 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -132,7 +132,7 @@ No-known-source sample (15 of 796, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (dwarf, 5300000000000000-000000000000000000-5032503315513151)
 
-Set DPS (verified): 231.2. Weights run: 11.1s. Verify run: 150.9s. 1759 eligible items had no known source.
+Set DPS (verified): 231.2. Weights run: 8.4s. Verify run: 115.3s. 1759 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -164,7 +164,7 @@ No-known-source sample (15 of 1759, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 5300000000000000-000000000000000000-5032503315513151)
 
-Set DPS (verified): 628.5. Weights run: 8.2s. Verify run: 86.9s. 1759 eligible items had no known source.
+Set DPS (verified): 628.5. Weights run: 6.4s. Verify run: 66.8s. 1759 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -198,7 +198,7 @@ No-known-source sample (15 of 1759, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-000000000000000000-5032100000000000)
 
-Set DPS (verified): 27.7. Weights run: 4.7s. Verify run: 15.8s. 206 eligible items had no known source.
+Set DPS (verified): 27.7. Weights run: 3.6s. Verify run: 12.3s. 206 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.854 ± 0.007, spirit=1.848 ± 0.004, mp5=4.988 ± 0.007, crit=0.120 ± 0.006 per rating point (14 rating = 1%, 1.676 per %), spell_haste=not significant (0.000 ± 0.000)
 
@@ -228,7 +228,7 @@ No-known-source sample (15 of 206, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-000000000000000000-5032503300000000)
 
-Set DPS (verified): 48.5. Weights run: 4.7s. Verify run: 15.7s. 377 eligible items had no known source.
+Set DPS (verified): 48.5. Weights run: 3.7s. Verify run: 12.1s. 377 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.993 ± 0.007, spirit=2.468 ± 0.013, mp5=6.283 ± 0.014, crit=0.174 ± 0.008 per rating point (14 rating = 1%, 2.431 per %), spell_haste=not significant (0.000 ± 0.000)
 
@@ -258,7 +258,7 @@ No-known-source sample (15 of 377, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-000000000000000000-5032503315400000)
 
-Set DPS (verified): 72.3. Weights run: 5.7s. Verify run: 26.7s. 584 eligible items had no known source.
+Set DPS (verified): 72.3. Weights run: 4.3s. Verify run: 20.1s. 584 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -275,7 +275,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | hands | Bonefingers (10765) | Razorfen Downs: Amnennar the Coldbringer [dungeon] | 51.6 healing_power points (2.12 DPS) | yes | Mender's Leather Gloves (252530, -0.31 DPS) [crafted]; Stormcloth Gloves (10011, -0.40 DPS) [crafted]; Gloves of Old (9395, -0.73 DPS, sim-verified) [world_drop] |
 | waist | Gilded Cord (254037) | Tailoring [crafted] | 59.1 healing_power points (2.43 DPS) | yes | Mender's Leather Belt (252523, -0.54 DPS, sim-verified) [crafted]; Windchaser Cinch (14435, -0.56 DPS) [world_drop]; Sutarn's Ring (13105, -0.69 DPS) [world_drop] |
 | legs | Misplaced Pantaloons (276201) | Friz Frazzlespark [vendor] | 69.2 healing_power points (2.85 DPS) | yes | Stoneweaver Leggings (9407, -0.11 DPS) [dungeon]; Wisdom's Leather Leggings (252519, -0.45 DPS) [crafted]; Warchief Kilt (7760, -0.47 DPS, sim-verified) [dungeon] |
-| feet | Mender's Leather Shoes (252533) | Leatherworking [crafted] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Mender's Mail Boots (252565, +0.00 DPS) [crafted]; Gilded Slippers (254001, -0.50 DPS) [crafted]; Furen's Boots (13100, -0.89 DPS, sim-verified) [world_drop] |
+| feet | Mender's Mail Boots (252565) | Leatherworking [crafted] | sim-verified (+0.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Mender's Leather Shoes (252533, -0.00 DPS) [crafted]; Gilded Slippers (254001, -0.50 DPS) [crafted]; Furen's Boots (13100, -0.89 DPS, sim-verified) [world_drop] |
 | finger1 | Darkspear Signet (272070) | Creeg Bothunk [vendor] | 42.8 healing_power points (1.76 DPS) | yes | Welken Ring (5011, -0.44 DPS) [world_drop]; The Queen's Jewel (13094, -0.64 DPS) [world_drop]; Voodoo Band (1996, -0.68 DPS) [world] |
 | finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 37.3 healing_power points (1.53 DPS) | yes | Welken Ring (5011, -0.30 DPS, sim-verified) [world_drop]; The Queen's Jewel (13094, -0.41 DPS) [world_drop]; Voodoo Band (1996, -0.45 DPS) [world] |
 | trinket1 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | sim-verified (+3.1 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
@@ -284,13 +284,13 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 40:** head: Papal Fez; neck: Necklace of Calisea; shoulder: Sheepshear Mantle; back: Darkspear Raider's Cloak; chest: Stormcloth Vest; wrist: Enchanted Kodo Bracers; hands: Bonefingers; waist: Gilded Cord; legs: Misplaced Pantaloons; feet: Mender's Leather Shoes; finger1: Darkspear Signet; finger2: Snake Hoop; trinket1: Darkspear Voodoo Seal; trinket2: Ankh of Life
+**New at 40:** head: Papal Fez; neck: Necklace of Calisea; shoulder: Sheepshear Mantle; back: Darkspear Raider's Cloak; chest: Stormcloth Vest; wrist: Enchanted Kodo Bracers; hands: Bonefingers; waist: Gilded Cord; legs: Misplaced Pantaloons; feet: Mender's Mail Boots; finger1: Darkspear Signet; finger2: Snake Hoop; trinket1: Darkspear Voodoo Seal; trinket2: Ankh of Life
 
 No-known-source sample (15 of 584, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
 ### Band 50 (tauren, 0000000000000000-000000000000000000-5032503315513131)
 
-Set DPS (verified): 122.9. Weights run: 9.5s. Verify run: 52.0s. 737 eligible items had no known source.
+Set DPS (verified): 122.9. Weights run: 7.6s. Verify run: 39.0s. 737 eligible items had no known source.
 
 5 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -322,7 +322,7 @@ No-known-source sample (15 of 737, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 5300000000000000-000000000000000000-5032503315513151)
 
-Set DPS (verified): 228.6. Weights run: 11.1s. Verify run: 146.7s. 1679 eligible items had no known source.
+Set DPS (verified): 228.6. Weights run: 8.4s. Verify run: 110.5s. 1679 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -354,7 +354,7 @@ No-known-source sample (15 of 1679, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 5300000000000000-000000000000000000-5032503315513151)
 
-Set DPS (verified): 627.6. Weights run: 8.2s. Verify run: 85.5s. 1679 eligible items had no known source.
+Set DPS (verified): 627.6. Weights run: 6.4s. Verify run: 64.4s. 1679 eligible items had no known source.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

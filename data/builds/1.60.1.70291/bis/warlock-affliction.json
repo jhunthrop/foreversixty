@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70291",
-  "engine_version": "b1b13fddc",
-  "generated_at": "2026-10-09T21:36:54Z",
+  "engine_version": "a73988d91",
+  "generated_at": "2026-10-10T14:05:13Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -893,8 +893,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.0415680959999998,
-      "verify_run_seconds": 1.32721518,
+      "weights_run_seconds": 1.592790175,
+      "verify_run_seconds": 1.050628218,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1945,8 +1945,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.0415680959999998,
-      "verify_run_seconds": 1.376947937,
+      "weights_run_seconds": 1.592790175,
+      "verify_run_seconds": 1.099192714,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2634,8 +2634,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.07307724,
-      "verify_run_seconds": 1.292311754,
+      "weights_run_seconds": 1.588262862,
+      "verify_run_seconds": 1.021782783,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3322,8 +3322,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.07307724,
-      "verify_run_seconds": 1.295874424,
+      "weights_run_seconds": 1.588262862,
+      "verify_run_seconds": 1.017411118,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4044,8 +4044,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 2.005176755,
-      "verify_run_seconds": 1.5767155339999999,
+      "weights_run_seconds": 1.5613917000000002,
+      "verify_run_seconds": 1.266206556,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4761,8 +4761,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 2.005176755,
-      "verify_run_seconds": 1.586621901,
+      "weights_run_seconds": 1.5613917000000002,
+      "verify_run_seconds": 1.275852107,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -5218,7 +5218,7 @@
               "item_name": "Knight's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -3.5489191252861554
+              "dps_delta": -3.5489191252861563
             },
             {
               "item_id": 14132,
@@ -5472,8 +5472,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.290321675,
-      "verify_run_seconds": 1.9722384929999999,
+      "weights_run_seconds": 4.154377041,
+      "verify_run_seconds": 1.5735420100000002,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6186,8 +6186,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.290321675,
-      "verify_run_seconds": 1.955271813,
+      "weights_run_seconds": 4.154377041,
+      "verify_run_seconds": 1.521540742,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6928,8 +6928,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.738143137,
-      "verify_run_seconds": 3.946215853,
+      "weights_run_seconds": 4.448675947,
+      "verify_run_seconds": 3.154144356,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7663,8 +7663,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.738143137,
-      "verify_run_seconds": 3.840007397,
+      "weights_run_seconds": 4.448675947,
+      "verify_run_seconds": 3.037066705,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -8176,14 +8176,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -7.396096698830836
+              "dps_delta": -7.396096698830832
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -9.768804148004591
+              "dps_delta": -9.768804148004588
             },
             {
               "item_id": 11669,
@@ -8401,8 +8401,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.89074224,
-      "verify_run_seconds": 4.231847514,
+      "weights_run_seconds": 5.285522046,
+      "verify_run_seconds": 3.407659069,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8918,14 +8918,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -7.396096698830836
+              "dps_delta": -7.396096698830832
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -9.768804148004591
+              "dps_delta": -9.768804148004588
             },
             {
               "item_id": 11669,
@@ -9142,8 +9142,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 6.89074224,
-      "verify_run_seconds": 4.333415091,
+      "weights_run_seconds": 5.285522046,
+      "verify_run_seconds": 3.488489895,
       "coverage": {
         "back": {
           "eligible": 456,
