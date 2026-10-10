@@ -217,6 +217,23 @@ describe('the model', () => {
     expect(model.rows[1]).toMatchObject({ name: 'Tester', current: false });
   });
 
+  it('matches a pointer whose label carries the key slug to the account row and shows its display name', () => {
+    const bow = character('Bow Jackzon', { key: 'us/normal/bow-jackzon', class: 'Hunter', spec: 'Beast Mastery' });
+    const model = buildSelectorModel({
+      me: me([tester, bow]),
+      pointer: pointerFor({
+        source: 'addon',
+        ref: 'FS1.def',
+        label: 'bow-jackzon · Beast Mastery Hunter',
+        classSlug: 'hunter',
+      }),
+      chosenKeys: [],
+      nowMs: NOW.getTime(),
+    });
+    expect(model.rows).toHaveLength(2);
+    expect(model.current).toMatchObject({ name: 'Bow Jackzon', kind: 'account' });
+  });
+
   it('treats a code or addon pointer naming an account character as that character, never twice', () => {
     const model = buildSelectorModel({
       me: me([tester]),

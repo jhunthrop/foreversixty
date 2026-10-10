@@ -4,6 +4,7 @@
 // account becomes that account character ('armory', by key); anything else stays a pasted
 // export ('code'). Loaded on demand: the decoder is not on the page-load path of every page.
 import type { MeCharacter } from '../account/api';
+import { characterSlug } from '../characters';
 import { pointerForCharacter } from '../account/main-character';
 import type { CurrentCharacter } from '../current-character';
 import { decodeFS1 } from '../planner/fs1';
@@ -15,10 +16,10 @@ function capitalise(slug: string): string {
   return slug.charAt(0).toUpperCase() + slug.slice(1);
 }
 
-/** The account character an export or a pasted pointer names: same name and class, case-insensitive. */
+/** The account character an export or a pasted pointer names: same name (a key slug counts) and class, case-insensitive. */
 export function sameCharacter(character: MeCharacter, name: string, classSlug: string): boolean {
   return (
-    character.name.toLowerCase() === name.toLowerCase() && (character.class ?? '').toLowerCase() === classSlug
+    characterSlug(character.name) === characterSlug(name) && (character.class ?? '').toLowerCase() === classSlug
   );
 }
 

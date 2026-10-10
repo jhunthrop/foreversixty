@@ -441,7 +441,7 @@ describe('createSimStore', () => {
         ref: 'us/normal/thrallgar',
       });
       await sim.ready;
-      expect(sim.character?.name).toBe('thrallgar');
+      expect(sim.character?.name).toBe('Thrallgar');
       expect(sim.character?.race_slug).toBe('orc');
     });
 

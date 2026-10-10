@@ -106,7 +106,7 @@ describe('fromStoredCharacter', () => {
     const result = await fromStoredCharacter(path, ctx);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.character.name).toBe('thrallgar');
+    expect(result.character.name).toBe('Thrallgar');
     expect(result.character.spec).toBe('warrior-fury');
     expect(result.character.class_slug).toBe('warrior');
     expect(result.character.race_slug).toBe('orc');
@@ -118,6 +118,60 @@ describe('fromStoredCharacter', () => {
     expect(result.character.gear).toEqual({});
     // Buff ids straight through: the API maps spell ids, the web never does.
     expect(result.character.buffs).toEqual(['battle_shout', 'blessing_of_kings']);
+  });
+
+  describe('the character name', () => {
+    const hyphenated: CharacterPath = { region: 'us', ruleset: 'normal', slug: 'bow-jackzon' };
+
+    function routeMe(name: string): void {
+      api.route({
+        method: 'GET',
+        pattern: /\/v1\/me$/,
+        respond: () =>
+          envelope({
+            user: { id: 1, battletag: null, email: null, role: 'user', anonymize: false },
+            characters: [
+              { key: 'us/normal/bow-jackzon', region: 'us', ruleset: 'normal', name, class: 'Warrior' },
+            ],
+            guilds: [],
+          }),
+      });
+    }
+
+    function routeAddonInput(): void {
+      api.route({
+        method: 'GET',
+        pattern: /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/sim-input$/,
+        respond: () =>
+          envelope({
+            spec: 'warrior-fury',
+            gear: FURY,
+            talents: '',
+            buffs: [],
+            captured_at: '2026-09-21T00:00:00Z',
+            source: 'addon',
+          }),
+      });
+    }
+
+    it('is the account row display name on the addon path, never the key slug', async () => {
+      routeMe('Bow Jackzon');
+      routeAddonInput();
+      const storage = fakeStorage();
+      const result = await fromStoredCharacter(hyphenated, ctx, storage);
+      if (!result.ok) throw new Error(result.message);
+      expect(result.character.name).toBe('Bow Jackzon');
+      expect(readCurrent(storage)?.label).toMatch(/^Bow Jackzon · /);
+    });
+
+    it('falls back to a readable name, not the slug, when the account does not know the character', async () => {
+      routeAddonInput();
+      const storage = fakeStorage();
+      const result = await fromStoredCharacter(hyphenated, ctx, storage);
+      if (!result.ok) throw new Error(result.message);
+      expect(result.character.name).toBe('Bow Jackzon');
+      expect(readCurrent(storage)?.label).not.toContain('bow-jackzon');
+    });
   });
 
   it('records the source the API actually had, never "armory" by assumption', async () => {
@@ -453,7 +507,7 @@ describe('fromStoredCharacter, addon-sourced', () => {
     const result = await fromStoredCharacter(path, ctx);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
-    expect(result.character.name).toBe('simfury');
+    expect(result.character.name).toBe('Simfury');
     expect(result.character.race_slug).toBe('orc');
     expect(result.character.spec).toBe('warrior-fury');
     expect(result.character.gear.head).toBe(12640);

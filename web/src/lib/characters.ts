@@ -86,6 +86,16 @@ export function characterSlug(name: string): string {
   return name.trim().toLowerCase().replace(/\s+/g, '-');
 }
 
+/** The readable form of a slug for a character nothing else names: `elyra-duskvale` becomes
+ *  `Elyra Duskvale`. A fallback only -- the account row's or the export's own name wins. */
+export function nameFromSlug(slug: string): string {
+  return slug
+    .split('-')
+    .filter((word) => word !== '')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 export function characterKey(region: string, ruleset: string, name: string): string {
   return `${region}/${ruleset}/${characterSlug(name)}`;
 }

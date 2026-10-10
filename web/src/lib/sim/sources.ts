@@ -26,8 +26,8 @@ import { fetchReportMeta, fetchSummary } from '../report/load';
 import { gearFromCombatant, treeRanksFromTalents } from '../report/planner-link';
 import { classSlugFromName } from '../report/tree-sizes';
 import type { RosterRow } from '../report/types';
-import { requestEnvelope } from '../account/api';
-import type { CharacterPath } from '../characters';
+import { fetchMeOnce, requestEnvelope } from '../account/api';
+import { nameFromSlug, type CharacterPath } from '../characters';
 import {
   MAX_LEVEL,
   PENDING_RACE,
@@ -139,6 +139,12 @@ export function talentPointsFromSplit(talents: string): number {
   return talents.split('/').reduce((sum, part) => sum + (Number.parseInt(part, 10) || 0), 0);
 }
 
+/** The account row's display name for `path`, when the visitor is signed in and owns it. */
+async function accountNameOf(characterKey: string): Promise<string | undefined> {
+  const me = await fetchMeOnce().catch(() => null);
+  return me?.characters.find((character) => character.key === characterKey)?.name;
+}
+
 export async function fromStoredCharacter(
   path: CharacterPath,
   ctx: LoadContext,
@@ -151,6 +157,9 @@ export async function fromStoredCharacter(
     return { ok: false, message: error instanceof Error ? error.message : simCopy.characterFailed };
   }
   const characterKey = `${path.region}/${path.ruleset}/${path.slug}`;
+  // The display name ("Bow Jackzon"), never the key's slug segment: it becomes the pointer's
+  // label, which the header selector shows.
+  const accountName = await accountNameOf(characterKey);
 
   // An addon-sourced read carries the addon's own export string as `gear` (input.go:
   // "the source's own shape"), and that string carries everything the paste path decodes
@@ -182,7 +191,7 @@ export async function fromStoredCharacter(
       classes,
       races,
       { kind: input.source, ref: characterKey, captured_at: input.captured_at },
-      path.slug,
+      accountName ?? decoded.build.character?.name ?? nameFromSlug(path.slug),
     );
     if (result.ok) recordCurrentCharacter(result.character, 'addon', code, storage);
     return result;
@@ -206,7 +215,7 @@ export async function fromStoredCharacter(
     if (raceRow === undefined) {
       return { ok: false, message: simCopy.unknownRace(input.race ?? 'none recorded') };
     }
-    const name = path.slug;
+    const name = accountName ?? nameFromSlug(path.slug);
     // `input.talents` is fight_metrics.talent_split -- points per tree as "31/0/20"
     // (input.go's own comment: "the addon export is an opaque string this repository
     // never parses, so a character who has never parsed has none"), never a per-talent
