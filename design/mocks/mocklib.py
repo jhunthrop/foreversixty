@@ -58,7 +58,7 @@ a{{color:var(--gold);text-decoration:none}}h1,h2,h3{{margin:0}}
 .nav a{{color:#b9b3a4;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}}.nav a.current{{color:var(--strong)}}
 </style></head><body>'''
 
-NAV_ITEMS = ['Planner', 'Simulator', 'Logs', 'Rankings', 'Guides', 'Leveling BiS', 'Get set up']
+NAV_ITEMS = ['Planner', 'BiS', 'Simulator', 'Logs', 'Rankings', 'Tier List', 'Guides', 'Get set up']
 
 
 def nav(current: str, signed_in: bool, character: dict | None = None) -> str:

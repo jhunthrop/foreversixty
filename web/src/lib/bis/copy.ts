@@ -21,8 +21,7 @@ function outcomeNoun(unit: RateUnit): string {
 }
 
 export const bisCopy = {
-  navLabel: 'Leveling BiS',
-  indexTitle: 'Leveling BiS',
+  indexTitle: 'BiS',
   indexDescription:
     'The best gear you can wear at every level band, from the simulator: one list per class and spec, built once and never per character.',
   indexIntro:
@@ -33,7 +32,7 @@ export const bisCopy = {
   noDataYet: 'No leveling BiS list yet for this spec.',
   noDataYetBody:
     'The simulator has not ranked this spec’s gear across the leveling bands yet. Check back once the nightly ranking run covers it.',
-  backToIndex: 'Back to Leveling BiS',
+  backToIndex: 'Back to BiS',
   classGuideLink: 'See leveling BiS gear for this class',
   factionAlliance: 'Alliance',
   factionHorde: 'Horde',

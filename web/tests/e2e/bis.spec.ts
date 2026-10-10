@@ -62,11 +62,9 @@ async function expectNoReloadSoFar(page: import('@playwright/test').Page): Promi
   expect(marker).toBe(true);
 }
 
-test('Leveling BiS: index links to a spec, faction and band pills switch panels with no reload', async ({
-  page,
-}) => {
+test('BiS: index links to a spec, faction and band pills switch panels with no reload', async ({ page }) => {
   await page.goto('/bis');
-  await expect(page.getByRole('heading', { name: 'Leveling BiS', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'BiS', level: 1 })).toBeVisible();
 
   const marksmanshipLink = page.locator('a[href="/bis/hunter/marksmanship"]');
   await expect(marksmanshipLink).toBeVisible();
@@ -132,7 +130,7 @@ test('Leveling BiS: index links to a spec, faction and band pills switch panels 
   await expect(newAtBand30).toContainText(/picks come from there\.|This is the first band/);
 });
 
-test('Leveling BiS: a spec with no ranked list yet shows the empty state, not a 404', async ({ page }) => {
+test('BiS: a spec with no ranked list yet shows the empty state, not a 404', async ({ page }) => {
   // The empty state shows for a written spec the nightly has not ranked. Every spec has a
   // published file at present, so there is none to visit and the test skips until a new
   // spec is written ahead of its first ranking.
@@ -143,7 +141,7 @@ test('Leveling BiS: a spec with no ranked list yet shows the empty state, not a 
   await expect(page.getByTestId('bis-empty-state')).toContainText('No leveling BiS list yet');
 });
 
-test('Leveling BiS: a pick’s alternatives render as rows beside it, every one its own hover target in the shared tooltip', async ({
+test('BiS: a pick’s alternatives render as rows beside it, every one its own hover target in the shared tooltip', async ({
   page,
 }) => {
   await page.goto('/bis/hunter/marksmanship#band-alliance-20');
@@ -220,7 +218,7 @@ test('Leveling BiS: a pick’s alternatives render as rows beside it, every one 
   }
 });
 
-test('Leveling BiS: the Play It panel renders a real icon for a rotation line, not the neutral placeholder', async ({
+test('BiS: the Play It panel renders a real icon for a rotation line, not the neutral placeholder', async ({
   page,
 }) => {
   // hunter-marksmanship's level-10 rotation entry applies through band 20's top (29), and
@@ -242,7 +240,7 @@ test('Leveling BiS: the Play It panel renders a real icon for a rotation line, n
   await expect(playIt.locator('.play-it-icon-placeholder')).toHaveCount(0);
 });
 
-test('Leveling BiS: the weight rail shows scale factors normalized to the top stat, DPS per point, the haste caption and the addon button', async ({
+test('BiS: the weight rail shows scale factors normalized to the top stat, DPS per point, the haste caption and the addon button', async ({
   page,
 }) => {
   await page.goto('/bis/hunter/marksmanship#band-alliance-60');
@@ -279,7 +277,7 @@ test('Leveling BiS: the weight rail shows scale factors normalized to the top st
   expect(notSignificantRail).toContain('Not significant');
 });
 
-test('Leveling BiS: an ordinary empty slot (not a two-hander gap) reads the plain no-source copy', async ({
+test('BiS: an ordinary empty slot (not a two-hander gap) reads the plain no-source copy', async ({
   page,
 }) => {
   // The picks are the nightly's (druids now get idols in their ranged slot from the
