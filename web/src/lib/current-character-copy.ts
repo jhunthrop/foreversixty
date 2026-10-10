@@ -12,7 +12,7 @@ export const currentCharacterCopy = {
   copiedAddonCode: 'Copied',
   noCharacterLine: 'No character loaded. Paste an addon export in the planner or the simulator.',
   getTheAddon: "Don't have an export? Get the addon.",
-  /** The spine bar's Switch popover (`CharacterSwitchList.svelte`, spec 2026-09-25 §4.1). */
+  /** The Switch character panel's and the sim landing list's current-row marker. */
   switchCurrentMarker: 'Current',
   switchAction: 'Switch',
   /** Home rebuild spec §3.B.4: the Switch character panel's own trailing stat for a
@@ -27,5 +27,4 @@ export const currentCharacterCopy = {
   barSignedOutLine: 'Sign in with Battle.net or paste an export to point the site at your character.',
   barSignIn: 'Sign in with Battle.net',
   barPasteExport: 'Paste an export',
-  barSwitch: 'Switch',
 } as const;

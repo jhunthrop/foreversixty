@@ -1,8 +1,10 @@
 // web/tests/e2e/nav.spec.ts
-// The primary nav's behaviours after the cut (spec 2026-09-25): five doors plus Get set up,
-// no Reference disclosure, a fixed two-row phone grid instead of a horizontally scrolling
-// row, and "Sign in" on every page.
+// The primary nav's behaviours: the doors in the order of spec 2026-10-09-nav-character-
+// selector.md plus Get set up, no Reference disclosure, a grid that opens beneath the phone
+// bar instead of a horizontally scrolling row, and "Sign in" on every page. The selector's
+// own behaviours are in nav-selector.spec.ts.
 import { expect, test } from '@playwright/test';
+import { signedOut } from './support/selector';
 
 test.describe('aria-current', () => {
   test('the Simulator tool link carries aria-current=page on /sim', async ({ page }) => {
@@ -68,12 +70,12 @@ test.describe('phone nav', () => {
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1);
     for (const label of [
       'Planner',
+      'BiS',
       'Simulator',
       'Logs',
       'Rankings',
       'Tier List',
       'Guides',
-      'Leveling BiS',
       'Get set up',
     ]) {
       await expect(nav.getByRole('link', { name: label })).toBeVisible();
@@ -89,11 +91,10 @@ test.describe('phone nav', () => {
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
   });
 
-  // Fix round (night-site-ux, 2026-09-28): "Leveling BiS" (98.75px of tracked, uppercase
-  // text) did not fit its 80px column in this four-up grid and, forced onto one line,
-  // spilled ~10px into "Get set up" next door -- the two links visually ran together as
-  // "LEVELING BISGET SET UP" with no gap between them, even though each link's own tap
-  // target box was still correctly positioned and separately clickable. A visibility check
+  // Fix round (night-site-ux, 2026-09-28): a label too wide for its grid column once spilled
+  // into its neighbour -- the two links visually ran together as "LEVELING BISGET SET UP"
+  // with no gap between them, even though each link's own tap target box was still correctly
+  // positioned and separately clickable. A visibility check
   // alone can't catch this (both links are still individually "visible"), so this compares
   // actual rendered boxes directly.
   test('no two nav links visually overlap or touch', async ({ page }) => {
@@ -129,16 +130,17 @@ test.describe('sign in on every page', () => {
         }),
       );
       await page.goto(path);
-      await expect(page.getByRole('banner').getByRole('link', { name: 'Sign in' })).toBeVisible();
+      await expect(
+        page.getByRole('banner').getByRole('button', { name: 'Sign in or choose a character' }),
+      ).toBeVisible();
     });
   }
 
-  test('a content page gets the same account menu island as the tool pages', async ({ page }) => {
+  test('a content page gets the same character selector island as the tool pages', async ({ page }) => {
+    await signedOut(page);
     await page.goto('/guides');
-    await expect(page.locator('astro-island[component-url*="AccountMenu"]')).toHaveCount(1);
-    await expect(page.getByRole('banner').getByRole('link', { name: 'Sign in' })).toHaveAttribute(
-      'href',
-      /\/login/,
-    );
+    await expect(page.locator('astro-island[component-url*="CharacterSelector"]')).toHaveCount(1);
+    await page.getByRole('banner').getByRole('button', { name: 'Sign in or choose a character' }).click();
+    await expect(page.getByTestId('selector-sign-in')).toHaveAttribute('href', /\/login/);
   });
 });

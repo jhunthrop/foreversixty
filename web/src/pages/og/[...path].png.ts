@@ -12,7 +12,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     { params: { path: 'guides' }, props: { title: 'Guides by class', kicker: 'Leveling · talents · gear' } },
     { params: { path: 'changelog' }, props: { title: 'What changed', kicker: 'Dated and sourced' } },
     { params: { path: 'planner' }, props: { title: 'Build planner', kicker: 'Talents · order · share' } },
-    { params: { path: 'bis' }, props: { title: 'Leveling BiS', kicker: 'Best gear, every level band' } },
+    { params: { path: 'bis' }, props: { title: 'BiS', kicker: 'Best gear, every level band' } },
     {
       params: { path: 'b-unavailable' },
       props: { title: 'Build unavailable', kicker: 'Forever Sixty' },
@@ -29,7 +29,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       params: { path: `bis/${spec.class_slug}/${spec.spec_slug}` },
       props: {
         title: `${classes.find((c) => c.slug === spec.class_slug)?.name ?? spec.class_slug} ${spec.name}`,
-        kicker: 'Leveling BiS',
+        kicker: 'BiS',
       },
     })),
   ];

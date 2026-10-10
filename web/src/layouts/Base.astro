@@ -24,21 +24,17 @@ import barlow600Url from '../assets/fonts/barlow-600-subset.woff2?url';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import AccountMenu from '../components/account/AccountMenu.svelte';
+import CharacterSelector from '../components/nav/CharacterSelector.svelte';
 
 import { SITE_NAME, SITE_URL, toJsonLd, websiteLd } from '../lib/seo';
-// Owner-reported defect, 2026-10-01: the account chip "refreshes on every page load" --
-// AccountMenu.svelte's own `/v1/me` read already answers instantly from this exact cache
-// entry on a returning visit (lib/data/query.ts's stale-while-revalidate persistence), but
-// the island does not hydrate (and so does not paint it) until `load` plus an 800ms floor
-// (src/directives/idle-after-load.ts). The inline pre-paint script below reads that same
-// localStorage entry and fills AccountMenu's `account-menu-preflight` shell before first
-// paint, so a signed-in visitor never sees the signed-out "Sign in" link flash on a second
-// page. These three are build-time constants (API_BASE_URL is inlined by Vite), so the
-// exact storage key/TTL/version this page's visitor's browser was written under can be
-// computed here, server-side, once, and handed to the inline script as literal data
-// attributes -- the script itself never re-derives or hashes anything, so it can never
-// drift from what query.ts/api.ts actually wrote.
+// The character selector's first frame (spec 2026-10-09-nav-character-selector.md section 8):
+// the inline scripts below set `data-pointer-class` before paint and fill the selector's
+// server-rendered link with the stored pointer's name and spec, and the cached `/v1/me`
+// entry gives the level. These are build-time constants (API_BASE_URL is inlined by Vite),
+// so the exact storage key/TTL/version this page's visitor's browser was written under is
+// computed here, server-side, once, and handed to the script as literal data attributes --
+// the script itself never re-derives or hashes anything, so it can never drift from what
+// query.ts/api.ts actually wrote.
 import { meKey, ME_QUERY_VERSION, ME_TTL_MS } from '../lib/account/api';
 import { storageKey } from '../lib/data/query';
 import { API_BASE_URL } from '../lib/planner/config';
@@ -54,8 +50,7 @@ const { title, description, path, jsonLd = [] } = Astro.props;
 const site = SITE_URL;
 const fullTitle = title === SITE_NAME ? title : `${title} · ${SITE_NAME}`;
 const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
-// The literal storage key AccountMenu.svelte's `/v1/me` query writes under, for the
-// pre-paint script below -- only meaningful on a page that actually mounts AccountMenu.
+// The literal storage key the selector's `/v1/me` query writes under, for the fill script.
 const meStorageKey = storageKey(meKey(API_BASE_URL));
 ---
 
@@ -85,6 +80,39 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
     <meta name="twitter:card" content="summary_large_image" />
     {ldNodes.length > 0 && <script type="application/ld+json" set:html={toJsonLd(ldNodes)}></script>}
     <slot name="head" />
+    <script is:inline>
+      // The hints the stylesheet keys off, before first paint. The readable half of the session
+      // cookie (fs_csrf) means someone is signed in: anything marked data-session-hide (the
+      // home page's "Sign in" block) stays hidden until its island renders the signed-in
+      // state, and the character selector shows a skeleton instead of "Sign in"
+      // (lib/data/query.ts's sessionHinted). A stored pointer (lib/current-character.ts's
+      // STORAGE_KEY, repeated here because an inline script cannot import) sets data-pointer,
+      // which keeps the current-character band's reserved slot (.chip-slot, global.css), and
+      // data-pointer-class, which nav.css maps to the selector's crest. The class list is the
+      // crest files under public/icons/hd/crests (lib/class-crest.test.ts checks it).
+      if (/(?:^|;\s*)fs_csrf=[^;]+/.test(document.cookie)) document.documentElement.dataset.session = '1';
+      try {
+        const raw = localStorage.getItem('fs.currentCharacter');
+        if (raw) {
+          document.documentElement.dataset.pointer = '1';
+          const slug = JSON.parse(raw).classSlug;
+          const CLASSES = [
+            'warrior',
+            'paladin',
+            'hunter',
+            'rogue',
+            'priest',
+            'shaman',
+            'mage',
+            'warlock',
+            'druid',
+          ];
+          if (CLASSES.indexOf(slug) !== -1) document.documentElement.dataset.pointerClass = slug;
+        }
+      } catch {
+        /* storage unavailable or malformed: no pointer, no band, no crest */
+      }
+    </script>
   </head>
   <body class="min-h-screen flex flex-col bg-bg">
     <a
@@ -94,12 +122,11 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       Skip to content
     </a>
     <Header path={path}>
-      {/* Every page carries the same account menu (owner 2026-10-04: "it should always be
-          on and always be the same" -- content pages used to opt out to ship zero client
-          JavaScript, so /guides and /bis showed "Sign in" to a signed-in visitor). The
-          island hydrates after load (src/directives/idle-after-load.ts) and paints the
-          signed-in chip pre-paint from the cached /v1/me entry, see the inline script below. */}
-      <AccountMenu client:idle-after-load slot="session" />
+      {/* Every page carries the same character selector (owner 2026-10-04: "it should always
+          be on and always be the same"). The island hydrates after load
+          (src/directives/idle-after-load.ts); until then it is a link the scripts below have
+          already filled from the stored pointer. It also renders the phone Menu's first row. */}
+      <CharacterSelector client:idle-after-load slot="session" />
     </Header>
     <slot />
     <Footer />
@@ -109,115 +136,52 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
       data-me-ttl-ms={ME_TTL_MS}
       data-me-version={ME_QUERY_VERSION}
     >
-      // The session hint, before first paint: the readable half of the session cookie pair
-      // (fs_csrf) means someone is signed in, so anything marked data-session-hide (the home
-      // page's "Sign in" block) stays hidden until its island renders the signed-in state,
-      // instead of flashing for a signed-in visitor on every load (lib/account/session-cache.ts).
-      if (/(?:^|;\s*)fs_csrf=[^;]+/.test(document.cookie)) document.documentElement.dataset.session = '1';
-      // The current-character hint, same idea: a stored pointer (lib/current-character.ts's
-      // STORAGE_KEY, repeated here because an inline script cannot import) means the
-      // planner and simulator pages will show the current-character band, so its reserved
-      // slot (.chip-slot, global.css) stays; without one the slot collapses before paint.
+      // The character selector's server-rendered link and the phone Menu's first row, filled
+      // from the stored pointer before first paint: the name and `{Spec} {Class} · {level}`
+      // (the pointer's label is "Name · Fury Warrior"; the level comes from the cached
+      // `/v1/me` entry query.ts/api.ts wrote, when it names this character). Mirrors
+      // lib/character-selector/rows.ts (rowFromPointer, closedSecondLine); an inline script
+      // cannot import it. The selector's island replaces these elements when it hydrates.
       try {
-        if (localStorage.getItem('fs.currentCharacter')) document.documentElement.dataset.pointer = '1';
-      } catch {
-        /* storage unavailable: no pointer, no band */
-      }
-
-      // Owner-reported defect, 2026-10-01: the account chip "refreshes on every page load"
-      // -- fill AccountMenu.svelte's `account-menu-preflight` shell from the exact same
-      // persisted `/v1/me` cache entry query.ts/api.ts write (this script's own
-      // data-me-storage-key/-ttl-ms/-version attributes are those two modules' real values,
-      // computed server-side in this layout's frontmatter -- see its own import comment),
-      // before first paint, so a returning signed-in visitor's second page never paints
-      // "Sign in" while the island is still waiting out its post-load hydration delay. A
-      // page with no AccountMenu island (no `session` prop) simply has no shell to find
-      // below, and this becomes a no-op.
-      try {
-        const shell = document.querySelector('[data-testid="account-menu-preflight"]');
-        if (shell && /(?:^|;\s*)fs_csrf=[^;]+/.test(document.cookie)) {
-          const scriptEl = document.currentScript;
-          const storageKey = scriptEl.dataset.meStorageKey;
-          const ttlMs = Number(scriptEl.dataset.meTtlMs);
-          const version = Number(scriptEl.dataset.meVersion);
-          const raw = storageKey ? localStorage.getItem(storageKey) : null;
-          const persisted = raw ? JSON.parse(raw) : null;
-          if (
-            persisted &&
-            typeof persisted.savedAt === 'number' &&
-            persisted.v === version &&
-            Date.now() - persisted.savedAt < ttlMs
-          ) {
-            const me = persisted.data;
-            const characters = me && Array.isArray(me.characters) ? me.characters : [];
-            // Port of lib/account/main-character.ts's `mainCharacter()` -- an inline
-            // script cannot import it. Keep this in sync with that function by hand; it
-            // has no automated drift guard today (unlike the crest asset path below,
-            // which lib/class-crest.test.ts does check).
-            let main = null;
-            if (characters.length > 0) {
-              main =
-                me.main_character_key !== undefined
-                  ? characters.find((c) => c.key === me.main_character_key)
-                  : undefined;
-              if (main === undefined) {
-                const simmable = characters.filter((c) => c.build !== undefined);
-                const pool = simmable.length > 0 ? simmable : characters;
-                main = pool.reduce((a, b) => {
-                  if (simmable.length > 0) {
-                    const atA = (a.build && a.build.captured_at) || '';
-                    const atB = (b.build && b.build.captured_at) || '';
-                    if (atA !== atB) return atA > atB ? a : b;
-                  }
-                  return (b.level || 0) > (a.level || 0) ? b : a;
-                });
-              }
-            }
-            if (main && main.class) {
-              // classCrestSrc's own path pattern (lib/class-crest.ts) and classColorVar's
-              // own class-token list (lib/report/format.ts), hardcoded here since an
-              // inline script cannot import either -- lib/class-crest.test.ts fails if
-              // the crest path ever drifts from this literal.
-              const slug = main.class.toLowerCase().replace(/\s+/g, '-');
-              const CLASS_TOKENS = [
-                'warrior',
-                'paladin',
-                'hunter',
-                'rogue',
-                'priest',
-                'shaman',
-                'mage',
-                'warlock',
-                'druid',
-                'monk',
-              ];
-              const crestImg = shell.querySelector('[data-testid="account-menu-preflight-crest"]');
-              if (crestImg) {
-                crestImg.src = `/icons/hd/crests/${slug}.webp`;
-                crestImg.style.setProperty(
-                  '--c',
-                  CLASS_TOKENS.indexOf(slug) !== -1 ? `var(--color-class-${slug})` : 'var(--color-text)',
-                );
-              }
-              const factionImg = shell.querySelector('[data-testid="account-menu-preflight-faction"]');
-              if (factionImg) {
-                if (main.faction === 'alliance' || main.faction === 'horde') {
-                  // faction-mark.ts's own path pattern, hardcoded for the same reason.
-                  factionImg.src = `/icons/hd/faction/${main.faction}.webp`;
-                  factionImg.classList.remove('hidden');
-                } else {
-                  factionImg.classList.add('hidden');
-                }
-              }
-              const nameEl = shell.querySelector('[data-testid="account-menu-preflight-name"]');
-              if (nameEl) nameEl.textContent = (me.user && (me.user.battletag || me.user.email)) || '';
-              shell.setAttribute('data-ready', '1');
-            }
+        const scriptEl = document.currentScript;
+        const raw = localStorage.getItem('fs.currentCharacter');
+        const pointer = raw ? JSON.parse(raw) : null;
+        if (!pointer || typeof pointer.label !== 'string' || typeof pointer.classSlug !== 'string') {
+          if (!document.documentElement.dataset.session) {
+            document
+              .querySelectorAll('.csel-btn.csel-pre')
+              .forEach((el) => el.classList.add('is-signed-out'));
           }
+        } else {
+          const className = pointer.classSlug.charAt(0).toUpperCase() + pointer.classSlug.slice(1);
+          const parts = pointer.label.split(' · ');
+          const rest = parts.slice(1).join(' · ');
+          const spec = rest.endsWith(' ' + className) ? rest.slice(0, -className.length - 1) : '';
+          let level = '';
+          if (pointer.source === 'armory') {
+            const cached = scriptEl.dataset.meStorageKey
+              ? localStorage.getItem(scriptEl.dataset.meStorageKey)
+              : null;
+            const persisted = cached ? JSON.parse(cached) : null;
+            const fresh =
+              persisted &&
+              persisted.v === Number(scriptEl.dataset.meVersion) &&
+              Date.now() - persisted.savedAt < Number(scriptEl.dataset.meTtlMs);
+            const characters =
+              fresh && persisted.data && Array.isArray(persisted.data.characters)
+                ? persisted.data.characters
+                : [];
+            const match = characters.find((c) => c.key === pointer.ref);
+            if (match && typeof match.level === 'number') level = String(match.level);
+          }
+          const full = [spec ? spec + ' ' + className : className, level].filter(Boolean).join(' · ');
+          const short = [spec || className, level].filter(Boolean).join(' · ');
+          document.querySelectorAll('[data-csel-name]').forEach((el) => (el.textContent = parts[0]));
+          document.querySelectorAll('[data-csel-sub]').forEach((el) => (el.textContent = full));
+          document.querySelectorAll('[data-csel-sub-short]').forEach((el) => (el.textContent = short));
         }
       } catch {
-        /* malformed/unavailable cache: leave the signed-out shell exactly as it always
-           renders, and hydration answers for real -- same as a cache miss. */
+        /* malformed pointer or cache: leave the link as rendered, hydration answers for real */
       }
     </script>
   </body>

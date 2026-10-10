@@ -20,13 +20,11 @@ async function load(page: Page, route: string): Promise<void> {
   await page.getByTestId('sim-addon-input').fill(FURY);
   await page.getByTestId('sim-addon-load').click();
   await expect(page.getByTestId('sim-character')).toBeVisible();
-  // Account.svelte's nav widget (client:load) starts on an invisible, same-size placeholder
-  // (no href, so it never matches the hit-target query below) and swaps in a real `<a
-  // href="/login">` or `<a href="/account">` once its own session check resolves. Waiting for
-  // that swap here, rather than racing it, is what makes the hit-target check below
-  // deterministic -- without it, "/login" appeared in the failing set on some runs and not
-  // others, purely from timing, which is not a real regression to chase.
-  await expect(page.getByTestId('session-nav').locator('a')).toBeVisible();
+  // The header's character selector starts as a server-rendered link and swaps in its button
+  // once the island hydrates. Waiting for that swap here, rather than racing it, is what makes
+  // the hit-target check below deterministic: the link and the button are different elements,
+  // so which one the query meets would otherwise depend on timing.
+  await expect(page.getByTestId('character-selector')).toBeVisible();
 }
 
 const ROUTES = ['/sim/gear', '/sim/talents', '/sim/drops', '/sim/weights'] as const;

@@ -71,12 +71,12 @@ test('every class crest in the hero picker links to its class guide', async ({ p
   await expect(page.getByRole('link', { name: 'All 28 specs' }).first()).toHaveAttribute('href', '/bis');
 });
 
-test("content pages ship only the layout's account menu island", async ({ page }) => {
+test("content pages ship only the layout's character selector island", async ({ page }) => {
   for (const path of ['/about', '/premium']) {
     await page.goto(path);
     const islands = page.locator('astro-island');
     await expect(islands).toHaveCount(1);
-    await expect(islands.first()).toHaveAttribute('component-url', /AccountMenu/);
+    await expect(islands.first()).toHaveAttribute('component-url', /CharacterSelector/);
   }
 });
 

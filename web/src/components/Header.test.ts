@@ -10,16 +10,7 @@ async function renderHeader(path: string): Promise<string> {
 describe('Header', () => {
   it('renders the doors and Get set up, in that order', async () => {
     const html = await renderHeader('/');
-    const order = [
-      'Planner',
-      'Simulator',
-      'Logs',
-      'Rankings',
-      'Tier List',
-      'Guides',
-      'Leveling BiS',
-      'Get set up',
-    ];
+    const order = ['Planner', 'BiS', 'Simulator', 'Logs', 'Rankings', 'Tier List', 'Guides', 'Get set up'];
     let cursor = -1;
     for (const label of order) {
       const at = html.indexOf(`>${label}<`, cursor === -1 ? 0 : cursor);
@@ -60,10 +51,23 @@ describe('Header', () => {
     expect(discordAt).toBeLessThan(headerCloseAt);
   });
 
-  it('renders a collapsed Menu button that controls the primary nav', async () => {
+  it('renders a collapsed Menu button that controls the menu panel holding the doors', async () => {
     const html = await renderHeader('/');
-    expect(html).toMatch(/<button[^>]*aria-expanded="false"[^>]*aria-controls="primary-nav"/);
-    expect(html).toContain('id="primary-nav"');
+    expect(html).toMatch(/<button[^>]*aria-expanded="false"[^>]*aria-controls="site-menu"/);
+    expect(html).toContain('id="site-menu"');
+    expect(html.indexOf('id="site-menu"')).toBeLessThan(html.indexOf('id="primary-nav"'));
+  });
+
+  it('never says Leveling BiS and labels the Discord link for screen readers', async () => {
+    const html = await renderHeader('/');
+    expect(html).not.toContain('Leveling BiS');
+    expect(html).toMatch(/<a[^>]*aria-label="Discord"/);
+  });
+
+  it('has a slot for the selector in the bar, before Discord', async () => {
+    const html = await renderHeader('/');
+    expect(html.indexOf('site-right')).toBeLessThan(html.indexOf('site-discord'));
+    expect(html.indexOf('site-menu"')).toBeLessThan(html.indexOf('primary-nav'));
   });
 
   it('renders the phone nav as a fixed-height wrapping grid, not a horizontally scrolling row', async () => {

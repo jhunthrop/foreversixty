@@ -94,9 +94,12 @@ export interface MeCharacter {
      *  (`data/active-build.json`) instead, the same build every other BiS comparison on the
      *  site reads against. */
     data_build?: string;
-    /** Median gap in seconds between this character's successive syncs (addon export or Battle.net refresh); `null` with fewer than three syncs on record. */
+    /** The player's own median gap between syncs, in seconds, from the sync history; null
+     *  with fewer than three syncs on record. The selector's stale rule reads it
+     *  (`lib/character-selector/stale.ts`). */
     median_sync_gap_sec?: number | null;
-    /** Machine code of the last failed Battle.net refresh (e.g. `"bnet_refresh_failed"`); `null` when the last refresh succeeded or none has run. */
+    /** Why the last Battle.net refresh failed; null or omitted when it did not. Non-null
+     *  is what makes the selector's row "failed" with a Retry. */
     sync_error?: string | null;
   };
   /** Omitted when the character has no `guild_characters` row at all. */
@@ -390,9 +393,9 @@ export async function fetchMe(apiBase: string = API_BASE_URL): Promise<Me | null
   }
 }
 
-/** Exported (with `meKey`/`ME_QUERY_VERSION` below) for Base.astro's pre-paint account-chip
- *  script, owner-reported defect 2026-10-01: that script reads this exact query's persisted
- *  entry out of `query.ts`'s localStorage cache before AccountMenu.svelte hydrates, and
+/** Exported (with `meKey`/`ME_QUERY_VERSION` below) for Base.astro's pre-paint selector
+ *  script: that script reads this exact query's persisted entry out of `query.ts`'s
+ *  localStorage cache (for the level) before the character selector hydrates, and
  *  needs this module's own TTL/version rather than a second, drifting copy of either. */
 export const ME_TTL_MS = 10 * 60 * 1000;
 

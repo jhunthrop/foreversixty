@@ -1,6 +1,7 @@
 /* web/src/styles/global.css */
 @import 'tailwindcss';
 @import './tokens.css';
+@import './nav.css';
 
 @layer base {
   button:not(:disabled),

@@ -125,9 +125,11 @@ describe('planner-island.css', () => {
     expect(urls.filter((url) => !url.startsWith('/'))).toEqual([]);
   });
 
-  for (const [name, component] of [
-    ['Header', Header],
-    ['Footer', Footer],
+  // `sentinel` is a class the component is known to render, so a broken extraction cannot
+  // pass vacuously. The header styles through nav.css classes; the footer through utilities.
+  for (const [name, component, sentinel] of [
+    ['Header', Header, 'site-header'],
+    ['Footer', Footer, 'px-[18px]'],
   ] as const) {
     it(`covers every class ${name} renders`, async () => {
       const container = await AstroContainer.create();
@@ -135,7 +137,7 @@ describe('planner-island.css', () => {
 
       // Guards the extraction itself: were the attribute regex to stop matching, the filter
       // below would be vacuously empty and this would pass against an empty stylesheet.
-      expect(names).toContain('px-[18px]');
+      expect(names).toContain(sentinel);
       expect(
         names.filter(
           (className) => !NON_TAILWIND_MARKER_CLASSES.has(className) && !hasSelector(css, className),

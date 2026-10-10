@@ -4,8 +4,8 @@
      for callers outside an Astro entry point -- a Svelte component tree cannot render an
      Astro component (Vite's Astro integration only compiles `.astro` files reached from
      another `.astro` file), so every Svelte caller needs its own `<img>`/`<style>` copy of
-     the recipe. AccountMenu.svelte's account chip and character-switch rows are the first
-     callers here (owner-reported defect 2026-10-01: the chip drew CharacterPortrait's
+     the recipe. The header's old account chip and character-switch rows (since replaced by
+     the character selector) were the first callers here (owner-reported defect 2026-10-01: the chip drew CharacterPortrait's
      square avatar-or-letter shape instead of the approved mock's circular ringed crest).
 
      HomeSwitchCharacterPanel.svelte and CharacterPortrait.svelte's own `xl` branch each

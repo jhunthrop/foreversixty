@@ -2,24 +2,24 @@ import { describe, expect, it } from 'vitest';
 import { PRIMARY_NAV_ITEMS, SETUP_NAV_ITEM, TRAILING_NAV_ITEMS, isNavItemCurrent } from './nav';
 
 describe('nav structure', () => {
-  it('orders the doors Planner, Simulator, Logs, Rankings, Tier List, Guides, Leveling BiS', () => {
+  it('orders the doors Planner, BiS, Simulator, Logs, Rankings, Tier List, Guides', () => {
     expect(PRIMARY_NAV_ITEMS.map((item) => item.label)).toEqual([
       'Planner',
+      'BiS',
       'Simulator',
       'Logs',
       'Rankings',
       'Tier List',
       'Guides',
-      'Leveling BiS',
     ]);
     expect(PRIMARY_NAV_ITEMS.map((item) => item.href)).toEqual([
       '/planner',
+      '/bis',
       '/sim',
       '/logs',
       '/rankings',
       '/tiers',
       '/guides',
-      '/bis',
     ]);
   });
 
@@ -37,7 +37,7 @@ describe('isNavItemCurrent', () => {
   });
 
   it('matches a sub-path', () => {
-    const simulator = PRIMARY_NAV_ITEMS[1];
+    const simulator = PRIMARY_NAV_ITEMS[2];
     expect(isNavItemCurrent(simulator, '/sim/gear')).toBe(true);
   });
 

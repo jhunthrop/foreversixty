@@ -2,7 +2,7 @@
 // One container for every page test that renders through Base.astro. The Astro test container
 // ships only the five built-in client directives; the site also registers
 // `client:idle-after-load` (astro.config.mjs -> src/directives/idle-after-load.ts) and
-// Base.astro mounts the header's AccountMenu with it, so a container without it throws
+// Base.astro mounts the header's character selector with it, so a container without it throws
 // "invalid hydration directive" on every page. Container tests assert server HTML and never
 // run directive code: the built-ins come from astro's own prebuilt sources (so the inline
 // directive scripts in the rendered head match a real build) and the custom one is a stand-in.
