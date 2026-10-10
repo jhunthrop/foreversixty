@@ -102,11 +102,11 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
                picker, sign-in action. The signed-in hero (HomeAccountPanel) occludes this
                same grid cell once /v1/me answers signed-in -- the established "server shell
                first, island swaps in place" trick, unchanged from before this rebuild. -->
-          <div class="grid min-w-0 lg:col-span-7" data-testid="home-account-block">
+          <div class="home-account-cell grid min-w-0 lg:col-span-7" data-testid="home-account-block">
             <div
               id={HOME_SIGNED_OUT_ID}
               data-session-hide
-              class="[grid-area:1/1] flex min-w-0 flex-col gap-[16px]"
+              class="home-signed-out-block [grid-area:1/1] flex min-w-0 flex-col gap-[16px]"
               data-testid="home-signed-out"
             >
               <p class="label text-gold flex items-center gap-[10px]">
@@ -159,14 +159,12 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
             <HomeAccountPanel client:idle-after-load />
           </div>
 
-          <!-- §3.A.2 Hero right column (5/12): the leveling-BiS example panel signed out,
-               occluded the same grid-overlay way the old guild card was (§3.B.4: the
-               signed-in version of this column is the Switch character panel, mounted by
-               HomeAccountPanel.svelte into `home-switch-character-slot` once /v1/me
-               answers -- so a signed-out page never fetches that module). Demoted visual
+          <!-- §3.A.2 Hero right column (5/12): the leveling-BiS example panel, signed out
+               only. With a session hinted (global.css) this cell collapses and the signed-in
+               hero takes the whole row (home signed-in panel spec 2026-10-10). Demoted visual
                weight vs. the crest picker (v3 review item 1): a bordered, muted-background
                box, not the primary gold action's equal. -->
-          <div class="grid lg:col-span-5 min-w-0" data-testid="home-example-block">
+          <div class="home-example-cell grid lg:col-span-5 min-w-0" data-testid="home-example-block">
             <div class="[grid-area:1/1] min-w-0" data-session-hide data-testid="home-example-panel-wrap">
               <div
                 class="bg-raised/85 border-line flex flex-col gap-3 rounded-panel border px-5 py-[18px]"
@@ -216,27 +214,25 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
                 </div>
               </div>
             </div>
-            <div
-              class="home-switch-character-slot [grid-area:1/1] min-w-0"
-              data-testid="home-switch-character-slot"
-            ></div>
           </div>
         </div>
       </div>
     </SkyBand>
 
-    <!-- §3.A.3 Timeline strip, below the two-column hero, OUTSIDE SkyBand's own wrapper
-         (v3 review item 6, must-fix): the sky gradient's own background belongs to the
-         element it's painted on, so moving this strip to a sibling section -- rather than
-         a third child sharing SkyBand's slot -- is what actually guarantees the atmosphere
-         (stars, the ember/night radial glows) never bleeds under it, not a CSS tweak to a
-         gradient that would otherwise have to fade perfectly by some fraction of a
-         two-column hero's own variable height. -->
-    <div class="w-full max-w-[1344px] mx-auto px-[18px] md:px-12 -mt-2">
-      <HomeTimeline dates={dates} updated={updated} />
-    </div>
+    <!-- §3.A.3 Timeline strip, below the hero, OUTSIDE SkyBand's own wrapper (v3 review item
+         6, must-fix): the sky gradient's own background belongs to the element it's painted
+         on, so keeping this strip a sibling of the sky band -- rather than a child sharing
+         its slot -- is what actually guarantees the atmosphere (stars, the ember/night radial
+         glows) never bleeds under it. It shares one flex column with the sections below so a
+         signed-in phone can reorder it after "Your upgrades" with CSS `order` alone
+         (global.css `.home-upgrades-section`), one HomeTimeline in the DOM at every width.
+         The negative bottom margin keeps the strip-to-content gap at the 32px it always had
+         while the section gap is 48px from md up. -->
+    <div class="flex flex-col gap-8 md:gap-12 w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pb-8 -mt-2">
+      <div class="md:-mb-4" data-testid="home-timeline-wrap">
+        <HomeTimeline dates={dates} updated={updated} />
+      </div>
 
-    <div class="flex flex-col gap-8 md:gap-12 w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-8 pb-8">
       <!-- §3.A.4 "Best in slot by class" (signed out only) / §3.B.3 "Your upgrades"
            (signed in only) share this position. Toggled by the pre-paint session hint
            (Base.astro's inline script), the same synchronous, before-first-paint timing
@@ -279,14 +275,19 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
         </div>
       </section>
 
-      <section id="upgrades" class="flex flex-col gap-[14px]" data-signed-in-only data-testid="home-upgrades">
+      <section
+        id="upgrades"
+        class="home-upgrades-section flex flex-col gap-[14px]"
+        data-signed-in-only
+        data-testid="home-upgrades"
+      >
         <!-- Home rebuild spec §3.B.3: the real worn-vs-BiS table now that `MeCharacter.
              build.gear` exists (the API lane's own extension to the contract). The header
              row's own aside link names the real spec/band ("Full list for Marksmanship 20
              to 29"), which cannot be known before `/v1/me` and the BiS file both answer, so
              the whole region -- header and body -- is one mounted island
              (`HomeUpgradesPanel.svelte`, mounted by `HomeAccountPanel.svelte` the same
-             dynamic-import-once-signed-in way as the hero cards and Switch character), not
+             dynamic-import-once-signed-in way as the hero cards), not
              split between static Astro markup and a slot. `min-h` approximates the ready
              panel's own height so the mount does not visibly shift "Five doors" beneath it. -->
         <div class="min-h-[220px]" data-testid="home-upgrades-slot"></div>

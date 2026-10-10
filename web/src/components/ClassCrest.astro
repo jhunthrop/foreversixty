@@ -41,7 +41,7 @@ interface Props {
    *  page (the hero's nine-class picker and the example panel's single crest) load
    *  eagerly instead of this component's default lazy path, so the browser does not wait
    *  for an intersection check on content already in the viewport -- every other caller
-   *  (Best in slot by class, Another class, Switch character) is below the fold or
+   *  (Best in slot by class, Another class) is below the fold or
    *  signed-in-only and stays lazy. `fetchpriority` stays `auto` even here: measured
    *  against the real budget (web/lighthouserc.json, index row), `fetchpriority="high"`
    *  on nine 50-95KB crest PNGs pulled LCP from ~1.1s to ~6.9s on the throttled mobile

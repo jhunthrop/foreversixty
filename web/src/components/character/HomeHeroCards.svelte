@@ -2,15 +2,14 @@
 <!-- Home rebuild spec §3.B.2: the signed-in hero's three next-action cards (Best in slot /
      Talents / Simulator). Extracted out of HomeAccountPanel.svelte (review round 3,
      "islands" item): the Simulator card's own fetch (lib/sim/api.ts's `listMySims`) and its
-     dependencies (lib/home/next-steps.ts's `simCardLine`, ui/Skeleton.svelte) were
+     dependencies (lib/report/format.ts, ui/Skeleton.svelte) were
      previously imported at HomeAccountPanel's own top level, so every signed-out visitor's
      browser downloaded that code too, even though the component never reaches the branch
      that uses it -- Vite/Rollup bundles a file's static imports into its own chunk
      regardless of which conditional branch actually runs. Mounted by HomeAccountPanel.svelte
      into its own `home-hero-cards-slot` only once `ready && me !== null && hero !== null`,
-     the same dynamic-import-once-signed-in trick it already uses for
-     HomeSwitchCharacterPanel, so a signed-out page never fetches this module or its
-     dependencies either.
+     the same dynamic-import-once-signed-in trick it uses for the upgrades table, so a
+     signed-out page never fetches this module or its dependencies either.
 
      Best in slot and Talents now read a real comparison (`lib/home/upgrades.ts`/
      `talent-delta.ts`, over a band fetched once by `lib/home/upgrades-loader.ts` and shared
@@ -24,7 +23,8 @@
   import { homePanelCopy, homeHeroCardsCopy } from '../../lib/home-panel-copy';
   import { armorySimHref } from '../../lib/sim/url';
   import { listMySims } from '../../lib/sim/api';
-  import { simCardLine } from '../../lib/home/next-steps';
+  import { formatAmount } from '../../lib/report/format';
+  import { simCardFigures } from '../../lib/home/sim-card';
   import type { SimListRow } from '../../lib/sim/types';
   import Skeleton from '../ui/Skeleton.svelte';
   import { loadBisContextFor, specKeyForCharacter, type BisContext } from '../../lib/home/upgrades-loader';
@@ -32,7 +32,6 @@
   import { talentDeltaFor } from '../../lib/home/talent-delta';
   import { bisCopy } from '../../lib/bis/copy';
   import { presetLabelFor } from '../../lib/bis/presets';
-  import { headlineDpsOf } from '../../lib/bis/tank-view';
 
   let { hero }: { hero: MeCharacter } = $props();
 
@@ -88,6 +87,11 @@
     });
   });
 
+  const simFigures = $derived(
+    latestSim === null
+      ? null
+      : simCardFigures(latestSim, { specKey: specKeyForCharacter(hero), band: ctx?.band }),
+  );
   const bandLabel = $derived(ctx === null ? '' : bisCopy.bandRangeLabel(ctx.band.band));
   const upgrades = $derived(
     ctx === null || hero.build?.gear === undefined ? null : upgradesFor(hero, ctx.band, ctx.items),
@@ -187,15 +191,23 @@
       <Skeleton lines={2} rowHeight="h-3" testid="home-hero-card-sim-skeleton" />
     {:else if simStatus === 'failed'}
       <span class="text-muted text-[12px]">{homePanelCopy.noSimYet}</span>
-    {:else if latestSim !== null}
+    {:else if simFigures !== null && simFigures.nowDps !== null}
       <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
-        {simCardLine(latestSim)}
+        {homeHeroCardsCopy.simulatorNowFigure(formatAmount(Math.round(simFigures.nowDps)))}
       </span>
-      {#if ctx !== null && headlineDpsOf(ctx.band) !== undefined}
+      {#if simFigures.bandDps !== null && ctx !== null}
         <span class="text-muted font-mono text-[12px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
-          >{homeHeroCardsCopy.simulatorBandSuffix(ctx.band.set_dps)}</span
+          >{homeHeroCardsCopy.simulatorBandLine(simFigures.bandDps)}</span
         >
       {/if}
+    {:else if simFigures !== null && simFigures.bandDps !== null && ctx !== null}
+      <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-sim-value">
+        {homeHeroCardsCopy.simulatorBandOnlyFigure(simFigures.bandDps)}
+      </span>
+      <span class="text-muted font-mono text-[12px]" title={presetLabelFor(ctx.bisFile, ctx.band)}
+        >{homeHeroCardsCopy.simulatorBandOnlyLine}</span
+      >
+      <span class="text-nav text-[12px] font-semibold">{homePanelCopy.runAction}</span>
     {:else}
       <span class="text-muted text-[13px]">{homePanelCopy.noSimYet}</span>
       <span class="text-nav text-[12px] font-semibold">{homePanelCopy.runAction}</span>

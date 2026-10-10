@@ -236,13 +236,30 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
   display: none;
 }
 
-/* The homepage hero's Switch character slot (index.astro, filled by HomeAccountPanel's
-   HomeSwitchCharacterPanel after /v1/me answers -- home rebuild spec §3.B.4, replacing
-   the old guild card here): with a session hinted it keeps the panel's height from first
-   paint, so the panel's arrival moves nothing; without one it stays empty and flat under
-   the example panel. */
-html[data-session='1'] .home-switch-character-slot {
-  min-height: 168px;
+/* The homepage hero with a session hinted (home signed-in panel spec 2026-10-10): the
+   signed-out hero's text block and its example-panel cell collapse from first paint and the
+   island's cell takes the whole row, so the signed-in hero re-flows into one band without
+   waiting on /v1/me. If the hint was wrong, HomeAccountPanel sets `data-home-signed-out` on
+   <html> (HOME_SIGNED_OUT_ATTR) and the two-cell signed-out hero comes back. */
+html[data-session='1']:not([data-home-signed-out]) .home-example-cell,
+html[data-session='1']:not([data-home-signed-out]) .home-signed-out-block {
+  display: none;
+}
+@media (min-width: 1024px) {
+  html[data-session='1']:not([data-home-signed-out]) .home-account-cell {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Signed-in phone: the dates timeline is reference, so "Your upgrades" (the answer's detail)
+   comes first and the timeline follows it (index.astro keeps one HomeTimeline in the DOM
+   and reorders). The top margin keeps the heading 32px under the sky band, where the
+   timeline's strip used to sit. */
+@media (max-width: 767px) {
+  html[data-session='1'] .home-upgrades-section {
+    order: -1;
+    margin-top: 2.5rem;
+  }
 }
 
 /* Home rebuild spec §3.B.3/§3.B.5: "Your upgrades" and "Another class" exist only signed

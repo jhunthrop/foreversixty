@@ -5,45 +5,45 @@ Derived from the approved "Cinematic" direction and the live-game homepage mocku
 ## Principles
 
 1. **Helper, not pitch.** The site exists to make one character play better. Every page leads with the player's class or character and the next thing that improves it; no marketing hero, no feature-list pitch. The front door is "pick your class" (the nine crests) or "your character", under the one line the site is allowed to say about itself: "Play your class better." Reference facts (dates, sources, the changelog) stay, one level down.
-7. **The game's own icons, high definition.** Class crests, spec icons and item icons are the client's own art, upscaled 4x, bezel cropped, framed by us (rounded square with a 1px line, or the circle crest: the whole icon at an 80% fit over a disc made from the icon itself, blurred and darkened, with a class ring). Never redrawn, never restyled; the Forever Sixty design system artifact carries the sets and the rules. **One crest language:** wherever a character or class is pictured (headers, character cards, the current-character bar, account menu and rows, switch lists, report rosters, rankings), it is the circular ringed crest (`ClassCrest.astro` / `ClassCrestRing.svelte`), never a square class icon, a letter square or a Blizzard avatar thumbnail.
-2. **Second screen first.** Dark by default, high contrast, 44px minimum hit targets, pages that paint before the player alt-tabs back.
-3. **Every fact is dated and sourced, quietly.** A page header carries one "Updated" stamp and nothing else about provenance. Source pills (Blizzard, Datamined, Community, This site) live where the source changes what a player does: on a feed row (a datamined change is not a confirmed one), in the Sources footer of a content page, and beside a single-source claim in prose. Never in a page header, hero or title line; the player came for the answer, and the sites players actually use (Wowhead, Icy Veins) put provenance under the content, not over it.
-4. **The game's own colors do the wayfinding.** WoW class colors and item-rarity colors are used consistently and never repurposed.
-5. **Atmosphere in the header only.** The night-sky band lives at the top of a page. Content areas are flat, calm, and dense enough to be useful.
-6. **Ornament stays out.** Warmth comes from Cinzel at small sizes, gold accents, and the sky. No stone frames, no parchment textures, no beveled buttons.
+2. **The game's own icons, high definition.** Class crests, spec icons and item icons are the client's own art, upscaled 4x, bezel cropped, framed by us (rounded square with a 1px line, or the circle crest: the whole icon at an 80% fit over a disc made from the icon itself, blurred and darkened, with a class ring). Never redrawn, never restyled; the Forever Sixty design system artifact carries the sets and the rules. **One crest language:** wherever a character or class is pictured (headers, character cards, the current-character bar, account menu and rows, switch lists, report rosters, rankings), it is the circular ringed crest (`ClassCrest.astro` / `ClassCrestRing.svelte`), never a square class icon, a letter square or a Blizzard avatar thumbnail.
+3. **Second screen first.** Dark by default, high contrast, 44px minimum hit targets, pages that paint before the player alt-tabs back.
+4. **Every fact is dated and sourced, quietly.** A page header carries one "Updated" stamp and nothing else about provenance. Source pills (Blizzard, Datamined, Community, This site) live where the source changes what a player does: on a feed row (a datamined change is not a confirmed one), in the Sources footer of a content page, and beside a single-source claim in prose. Never in a page header, hero or title line; the player came for the answer, and the sites players actually use (Wowhead, Icy Veins) put provenance under the content, not over it.
+5. **The game's own colors do the wayfinding.** WoW class colors and item-rarity colors are used consistently and never repurposed.
+6. **Atmosphere in the header only.** The night-sky band lives at the top of a page. Content areas are flat, calm, and dense enough to be useful.
+7. **Ornament stays out.** Warmth comes from Cinzel at small sizes, gold accents, and the sky. No stone frames, no parchment textures, no beveled buttons.
 
 ## Color
 
 ### Surfaces
 
-| Token | Value | Use |
-|---|---|---|
-| `--bg` | `#07090d` | Page background |
-| `--bg-raised` | `#0d111a` | Panels, table bodies |
-| `--bg-card-top` | `#131824` | Card gradient start (cards go `#131824` to `#0d111a`) |
-| `--border` | `#262e40` | Panel and card borders |
-| `--border-soft` | `#1c2230` | Row dividers |
-| `--border-warm` | `#3a3326` / `#4a4030` | Inputs and buttons on the sky band |
+| Token           | Value                 | Use                                                   |
+| --------------- | --------------------- | ----------------------------------------------------- |
+| `--bg`          | `#07090d`             | Page background                                       |
+| `--bg-raised`   | `#0d111a`             | Panels, table bodies                                  |
+| `--bg-card-top` | `#131824`             | Card gradient start (cards go `#131824` to `#0d111a`) |
+| `--border`      | `#262e40`             | Panel and card borders                                |
+| `--border-soft` | `#1c2230`             | Row dividers                                          |
+| `--border-warm` | `#3a3326` / `#4a4030` | Inputs and buttons on the sky band                    |
 
 ### Text
 
-| Token | Value | Use |
-|---|---|---|
-| `--text` | `#e9e4d8` | Body |
-| `--text-strong` | `#f2eee4` | Headings, primary labels |
-| `--text-muted` | `#9a9484` | Secondary text (6.3:1 on raised) |
-| `--text-nav` | `#b9b3a4` | Nav links, footer links |
+| Token           | Value     | Use                              |
+| --------------- | --------- | -------------------------------- |
+| `--text`        | `#e9e4d8` | Body                             |
+| `--text-strong` | `#f2eee4` | Headings, primary labels         |
+| `--text-muted`  | `#9a9484` | Secondary text (6.3:1 on raised) |
+| `--text-nav`    | `#b9b3a4` | Nav links, footer links          |
 
 ### Accent
 
-| Token | Value | Use |
-|---|---|---|
-| `--gold` | `#e5b955` | Links, focus, live indicator, primary accent |
-| `--gold-hover` | `#f5d27a` | Link hover |
-| `--gold-deep` | `#a8762a` | Gradient end for gold text and bars |
-| `--gold-light` | `#fbe7a1` | Gradient start for gold text |
-| `--ember` | `#d66e28` | Sky horizon glow only |
-| `--night` | `#26405c` | Sky zenith only |
+| Token          | Value     | Use                                          |
+| -------------- | --------- | -------------------------------------------- |
+| `--gold`       | `#e5b955` | Links, focus, live indicator, primary accent |
+| `--gold-hover` | `#f5d27a` | Link hover                                   |
+| `--gold-deep`  | `#a8762a` | Gradient end for gold text and bars          |
+| `--gold-light` | `#fbe7a1` | Gradient start for gold text                 |
+| `--ember`      | `#d66e28` | Sky horizon glow only                        |
+| `--night`      | `#26405c` | Sky zenith only                              |
 
 Gold text is a gradient (`#fbe7a1` → `#e5b955` → `#a8762a`, top to bottom) clipped to text. Use it for section titles only; the wordmark is flat `--text-strong`.
 
@@ -51,17 +51,17 @@ Gold text is a gradient (`#fbe7a1` → `#e5b955` → `#a8762a`, top to bottom) c
 
 Placement: feed rows, the Sources footer, and single-source claims in prose. Never in a page header (principle 3). The band header of a class page shows "Updated <date>" only.
 
-| Pill | Text | Background | Border |
-|---|---|---|---|
-| Blizzard / Hotfix | `#6fb1ff` | `rgba(0,112,221,.18)` | `rgba(0,112,221,.35)` |
-| Datamined | `#c98bff` | `rgba(163,53,238,.16)` | `rgba(163,53,238,.35)` |
-| Community | `#7bff5c` | `rgba(30,255,0,.10)` | `rgba(30,255,0,.25)` |
-| This site | `#e5b955` | `rgba(229,185,85,.14)` | `rgba(229,185,85,.35)` |
-| Sample | `#9a9484` | `rgba(154,148,132,.12)` | `rgba(154,148,132,.30)` |
+| Pill              | Text      | Background              | Border                  |
+| ----------------- | --------- | ----------------------- | ----------------------- |
+| Blizzard / Hotfix | `#6fb1ff` | `rgba(0,112,221,.18)`   | `rgba(0,112,221,.35)`   |
+| Datamined         | `#c98bff` | `rgba(163,53,238,.16)`  | `rgba(163,53,238,.35)`  |
+| Community         | `#7bff5c` | `rgba(30,255,0,.10)`    | `rgba(30,255,0,.25)`    |
+| This site         | `#e5b955` | `rgba(229,185,85,.14)`  | `rgba(229,185,85,.35)`  |
+| Sample            | `#9a9484` | `rgba(154,148,132,.12)` | `rgba(154,148,132,.30)` |
 
 ### Faction
 
-Alliance `#6fb1ff` (text) / `#2f6fd6` (bars). Horde `#ff6b5c` (text) / `#c0392b` (bars). Wherever a faction is named it carries the game's own emblem: the client's UI-PVP-Alliance lion shield and UI-PVP-Horde red disc from the unit frame, upscaled 4x with their transparency kept, never boxed or framed. 20px before the word, 16px in a row descriptor, 36px in a header. Never a coloured dot alone.
+Alliance `#6fb1ff` (text) / `#2f6fd6` (bars). Horde `#ff6b5c` (text) / `#c0392b` (bars). Wherever a faction is named it carries the game's own emblem: the client's UI-PVP-Alliance lion shield and UI-PVP-Horde red disc from the unit frame, upscaled 4x with their transparency kept, never boxed or framed. 20px before the word, 36px in a header. In a row descriptor (the home hero's descriptor and the header selector's rows) it is the flat faction logo, the Alliance lion and the Horde crest (`factionLogoSrc`, `{faction}-logo-512.webp`) at 16px, with the faction name as alt text; the 72px unit-frame shield and disc read as a blob and a generic shield at that size. Never a coloured dot alone.
 
 ### Class colors (WoW standard)
 
@@ -75,12 +75,12 @@ Rare and epic are too dark to read as small text on `--color-raised` `#0d111a`: 
 
 ## Typography
 
-| Role | Face | Fallback | Notes |
-|---|---|---|---|
-| Display | Cinzel 600–800 | Trajan Pro, Georgia, serif | Wordmark 20px, section titles 18px uppercase with 0.10em tracking, card titles 15–17px, stat figures 22px. Never above 22px on content pages. The home hero is the one exception: its h1 ("Play your class better." signed out, the character's name in class colour signed in) is 34px 700. |
-| Body | Barlow 400–700 | Helvetica Neue, Arial, sans-serif | 14–15px body, 13px secondary, 17px search placeholder |
-| Numbers | JetBrains Mono 500 | SF Mono, Menlo, monospace | Dates, timers, counts, keyboard hints; `font-variant-numeric: tabular-nums` |
-| Labels | Barlow 700 | | 11px, uppercase, 0.14em tracking, muted or gold |
+| Role    | Face               | Fallback                          | Notes                                                                                                                                                                                                                                                                                        |
+| ------- | ------------------ | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Display | Cinzel 600–800     | Trajan Pro, Georgia, serif        | Wordmark 20px, section titles 18px uppercase with 0.10em tracking, card titles 15–17px, stat figures 22px. Never above 22px on content pages. The home hero is the one exception: its h1 ("Play your class better." signed out, the character's name in class colour signed in) is 34px 700. |
+| Body    | Barlow 400–700     | Helvetica Neue, Arial, sans-serif | 14–15px body, 13px secondary, 17px search placeholder                                                                                                                                                                                                                                        |
+| Numbers | JetBrains Mono 500 | SF Mono, Menlo, monospace         | Dates, timers, counts, keyboard hints; `font-variant-numeric: tabular-nums`                                                                                                                                                                                                                  |
+| Labels  | Barlow 700         |                                   | 11px, uppercase, 0.14em tracking, muted or gold                                                                                                                                                                                                                                              |
 
 Self-host all three faces (Google Fonts license permits it) so no third-party request happens on page load.
 
@@ -104,7 +104,7 @@ Self-host all three faces (Google Fonts license permits it) so no third-party re
 - **Progress bar**: 6px, `--border-soft` track, filled with the relevant accent.
 - **Secondary button**: 36px, warm border, uppercase 12px 700 with 0.06em tracking. There is no primary marketing button.
 - **Account button**: the one filled gold button (44px, `#f0cc6c` → `#c99a3a`, dark text, 1px `--gold-deep` inset ring, soft gold glow). Used only for "Sign in with Battle.net" on the signed-out home; never for a tool or a link.
-- **Character row**: class crest (36px circle with class ring), name in class colour (Cinzel 14px), muted descriptor, and on the right either a mono stat ("2 upgrades") or a progress bar. The signed-in home's "Switch character" panel uses the stat form.
+- **Character row**: class crest (36px circle with class ring), name in class colour (Cinzel 14px), muted descriptor, and on the right either a mono stat ("2 upgrades") or a progress bar. The home page has no character switcher of its own: the header character selector is the one way to change character, and the signed-in home hero follows it in place (with two or more characters it adds one plain 12px line, "Change character: top right").
 - **Stat weights rail**: the convention players know from SimulationCraft's scale factors, in our own words. Rows sorted by scale factor; columns Stat, bar, Scale (per point, normalized so the top per-point stat = 1.00), Per point (absolute DPS per stat point), Error (sim error in the same units). The table holds per-point stats only, sorted, normalized to the top one (Agility = 1.00 for a hunter). Haste has no rating in this client, so it is never a table row: the caption says "Haste: 1.58 per 1%" and, when no item in the band carries haste, adds "not in the table because no item at this band has it". An insignificant stat keeps its row greyed with "not significant". Under the rows: one secondary button "Use these weights in the addon" and the line that the addon rates bag and tooltip items with them. Never a Pawn string or any other addon's name.
 - **Class page header** (`ArtPanel` + `ClassHeader`): the tree art behind the night-to-bg gradient, the crest at 64px, the h1 at 22px in the class colour with the band and faction as a muted suffix, then a `SpecTabs` row (three 44px tabs, spec icon 28px plus name, the active one ringed in the class colour) and a controls row of `BandTabs` (five 44px mono pills labelled 20 to 29, 30 to 39, 40 to 49, 50 to 59 and plain 60, never "60 to 60"), `FactionToggle` (two 44px pills with the emblem at 20px) and the race select (44px).
 - **Character card**: the signed-in card on class and tool pages: crest 40px, name in class colour, faction emblem and level, three stat tiles (label + figure) and one secondary button ("Send this list to the addon"). Signed out, the card is replaced by the sign-in button and one line of copy.

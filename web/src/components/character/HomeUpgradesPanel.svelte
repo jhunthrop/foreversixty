@@ -3,7 +3,7 @@
      signed-in hero's own band, built on `lib/home/upgrades.ts`'s pure comparison and
      `lib/home/upgrades-loader.ts`'s fetch. Mounted by `HomeAccountPanel.svelte` into
      `index.astro`'s `home-upgrades-slot`, the same dynamic-import-once-signed-in-and-ready
-     trick that island already uses for `HomeSwitchCharacterPanel`/`HomeHeroCards`, so a
+     trick that island already uses for `HomeHeroCards`, so a
      signed-out page never fetches this module, its BiS file, or its item table either. Owns
      its own header row (heading + "Full list for …" aside link) rather than splitting that
      across index.astro's static markup and this island, since the aside link's own text
@@ -73,7 +73,10 @@
   const extraAlreadyBisCount = $derived(result === null ? 0 : Math.max(0, result.alreadyBis.length - 3));
 </script>
 
-<div class="flex items-baseline justify-between" data-testid="home-upgrades-header">
+<div
+  class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between"
+  data-testid="home-upgrades-header"
+>
   <h2 class="display text-strong text-[18px] font-bold tracking-[0.10em]">{homeUpgradesCopy.heading}</h2>
   {#if fullListHref !== undefined}
     <a href={fullListHref} class="text-gold text-[12px] font-bold tracking-[0.12em] uppercase">

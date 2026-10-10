@@ -12,15 +12,8 @@ export const currentCharacterCopy = {
   copiedAddonCode: 'Copied',
   noCharacterLine: 'No character loaded. Paste an addon export in the planner or the simulator.',
   getTheAddon: "Don't have an export? Get the addon.",
-  /** The Switch character panel's and the sim landing list's current-row marker. */
+  /** The sim landing list's current-row marker. */
   switchCurrentMarker: 'Current',
-  switchAction: 'Switch',
-  /** Home rebuild spec §3.B.4: the Switch character panel's own trailing stat for a
-   *  non-current row, once its own upgrade count is known (`HomeSwitchCharacterPanel.svelte`,
-   *  `lib/home/upgrades.ts`) -- replaces the plain "Switch" label with the one more useful
-   *  fact the mock shows there; absent (no stat at all) for a row that cannot be computed. */
-  switchUpgradesStat: (upgradeCount: number): string =>
-    `${upgradeCount} upgrade${upgradeCount === 1 ? '' : 's'}`,
   /** The spine bar's signed-out, no-pointer line -- spec 2026-09-25 section 4.1, distinct
    *  from `noCharacterLine` above (that one names the planner/simulator paste boxes
    *  specifically; this one names both entry points the bar itself offers). */

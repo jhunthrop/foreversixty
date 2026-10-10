@@ -8,14 +8,8 @@
 // by URL, so two `createHomeHero()` instances share one network read each, not two.
 import { fetchMeOnce, type Me, type MeCharacter } from './api';
 import { createQueryState } from '../data/query.svelte';
-import {
-  readCurrent,
-  writeCurrent,
-  CURRENT_CHARACTER_CHANGED,
-  onCurrentCharacterChange,
-} from '../current-character';
+import { readCurrent, onCurrentCharacterChange } from '../current-character';
 import { selectedCharacter } from './hero-character';
-import { pointerForCharacter } from './main-character';
 import { API_BASE_URL } from '../planner/config';
 import { fetchCharacterRating } from '../rankings/api';
 import type { CharacterRating } from '../rating/types';
@@ -27,7 +21,6 @@ export interface HomeHeroHandle {
   readonly hero: MeCharacter | null;
   readonly heroPath: CharacterPath | null;
   readonly rating: CharacterRating | null;
-  switchTo(character: MeCharacter): void;
 }
 
 export function createHomeHero(): HomeHeroHandle {
@@ -40,8 +33,8 @@ export function createHomeHero(): HomeHeroHandle {
   // own convention (see HomeAccountPanel's pre-refactor comment, carried over unchanged).
   const ready = $derived(session.status === 'ready' || session.status === 'failed');
 
-  // Bumped by a chip switch (this handle's own switchTo) or a sibling island's switchTo
-  // (CURRENT_CHARACTER_CHANGED), so `hero` re-reads the stored pointer either way.
+  // Bumped on CURRENT_CHARACTER_CHANGED (the header selector, a sibling island), so `hero`
+  // re-reads the stored pointer.
   let pointerVersion = $state(0);
   $effect(() => {
     const onChanged = (): void => {
@@ -77,12 +70,6 @@ export function createHomeHero(): HomeHeroHandle {
       });
   });
 
-  function switchTo(character: MeCharacter): void {
-    writeCurrent(pointerForCharacter(character));
-    pointerVersion += 1;
-    window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
-  }
-
   return {
     get me() {
       return me;
@@ -99,6 +86,5 @@ export function createHomeHero(): HomeHeroHandle {
     get rating() {
       return rating;
     },
-    switchTo,
   };
 }

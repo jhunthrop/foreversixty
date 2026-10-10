@@ -4,7 +4,7 @@
      current row only; stale and failed use text colour. The row button is one roving tab
      stop; Retry on a failed row is its own sibling button, never nested. -->
 <script lang="ts">
-  import { FACTION_MARK_SIZE, factionMarkSrc, factionName } from '../../lib/faction-mark';
+  import { FACTION_MARK_SIZE, factionLogoSrc, factionName } from '../../lib/faction-mark';
   import { selectorCopy } from '../../lib/character-selector/copy';
   import { rowLineThree, rowLineTwo, type SelectorRow } from '../../lib/character-selector/rows';
   import { classColorVar } from '../../lib/report/format';
@@ -48,7 +48,7 @@
         <span>{row.name}</span>
         {#if row.faction !== undefined}<img
             class="csel-faction"
-            src={factionMarkSrc(row.faction)}
+            src={factionLogoSrc(row.faction)}
             alt={factionName(row.faction)}
             title={factionName(row.faction)}
             width={FACTION_MARK_SIZE}

@@ -38,4 +38,16 @@ describe('HomeTimeline', () => {
     expect(html).toContain('tabindex="0"');
     expect(html).toContain('aria-label="Key dates timeline"');
   });
+
+  it('mutes a passed date at every width: dimmed row, muted value', async () => {
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(HomeTimeline, {
+      props: { dates: DATES, now: new Date('2026-09-24T00:00:00Z') },
+    });
+    expect(html.match(/data-status="past"/g)).toHaveLength(2);
+    expect(html.match(/font-semibold text-muted/g)).toHaveLength(2);
+    expect(html.match(/font-semibold text-strong/g)).toHaveLength(2);
+    expect(html).toContain('opacity-60');
+    expect(html).not.toMatch(/md:opacity|max-md:opacity/);
+  });
 });

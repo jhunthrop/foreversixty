@@ -1,6 +1,6 @@
 // web/src/lib/home-panel-copy.test.ts
 import { describe, expect, it } from 'vitest';
-import { homeHeroCardsCopy } from './home-panel-copy';
+import { homeHeroCardsCopy, homePanelCopy } from './home-panel-copy';
 
 describe('homeHeroCardsCopy', () => {
   // Review round 1 item 7: one sentence per not-yet-available card, naming the real
@@ -19,5 +19,20 @@ describe('homeHeroCardsCopy', () => {
     expect(homeHeroCardsCopy.talentsNotAvailable).toBe(
       'Not available yet: no talent export for this character. Open the addon once to send it.',
     );
+  });
+});
+
+describe('the Simulator card copy', () => {
+  it('puts the unit on both figures: "26 DPS now · 37.5 DPS at band best in slot"', () => {
+    const together = `${homeHeroCardsCopy.simulatorNowFigure('26')} · ${homeHeroCardsCopy.simulatorBandLine(37.46)}`;
+    expect(together).toBe('26 DPS now · 37.5 DPS at band best in slot');
+  });
+});
+
+describe('homePanelCopy', () => {
+  it('points at the header selector as plain text, and names the current character once', () => {
+    expect(homePanelCopy.changeCharacterHint).toBe('Change character: top right');
+    expect(homePanelCopy.currentCharacterEyebrow).toBe('Current character');
+    expect(homePanelCopy.yourCharacterEyebrow).toBe('Your character');
   });
 });

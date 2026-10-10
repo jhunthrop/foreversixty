@@ -1,8 +1,9 @@
 // web/src/lib/home-landing-copy.ts
 // The home page's own words (spec 2026-09-23, "the landing page is the product, not the
 // wiki"; spec 2026-09-25 §3.5 drops the Reference band; spec 2026-09-28's own guild card in
-// the hero's right column is, in turn, replaced by the Switch character panel there -- home
-// rebuild spec 2026-09-30 §3.B.4, HomeGuildCard.svelte and lib/guild/home-card.ts removed as
+// the hero's right column was, in turn, replaced by a Switch character panel (home rebuild
+// spec 2026-09-30 §3.B.4, itself removed by the signed-in panel spec 2026-10-10: the header
+// selector is the one way to change character), HomeGuildCard.svelte and lib/guild/home-card.ts removed as
 // dead code; home rebuild spec §1 replaces the headline with tenet 14's own fixed sentence):
 // the sky-band hero, the four product panels, and the "Get set up" card. `home-panel-copy.ts`
 // stays the account-aware strip's own copy (the signed-out sentence there is now also the

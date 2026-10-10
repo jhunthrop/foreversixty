@@ -42,7 +42,9 @@ const rows = timelineRows(dates, now);
         )}
         <span class="font-mono tabular text-[12px] text-muted">{row.key}</span>
       </div>
-      <span class="text-strong text-[13px] font-semibold">{row.value}</span>
+      <span class={`text-[13px] font-semibold ${row.status === 'past' ? 'text-muted' : 'text-strong'}`}>
+        {row.value}
+      </span>
       {row.note && <span class="text-muted text-[12px]">{row.note}</span>}
     </div>
   ))}

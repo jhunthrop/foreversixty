@@ -1,37 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { logsCardLine, plannerPointsLabel, ratingCardValue, simCardLine } from './next-steps';
-import type { SimListRow } from '../sim/types';
+import { logsCardLine, plannerPointsLabel, ratingCardValue } from './next-steps';
 import type { MyReport } from '../account/api';
 import type { CharacterRating, RatingCardPlayer } from '../rating/types';
-
-describe('simCardLine', () => {
-  it('reads the kind label and the API headline', () => {
-    const row: SimListRow = {
-      sim_id: 's1',
-      spec: 'fury-warrior',
-      dps: 842,
-      engine_version: '1',
-      created_at: '2026-09-20T00:00:00Z',
-      title: '',
-      kind: 'gear',
-      headline: "+41 DPS from Vis'kag",
-    };
-    expect(simCardLine(row)).toBe("Top Gear · +41 DPS from Vis'kag");
-  });
-
-  it('falls back to the DPS figure when the row has no headline', () => {
-    const row: SimListRow = {
-      sim_id: 's2',
-      spec: 'fury-warrior',
-      dps: 1204,
-      engine_version: '1',
-      created_at: '2026-09-20T00:00:00Z',
-      title: '',
-      kind: 'run',
-    };
-    expect(simCardLine(row)).toBe('Sim · 1,204 DPS');
-  });
-});
 
 describe('plannerPointsLabel', () => {
   it('sums a talent split string against MAX_POINTS', () => {

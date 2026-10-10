@@ -132,4 +132,21 @@ describe('CharacterIdentity', () => {
     });
     expect(explicit.body).not.toContain('<h1');
   });
+
+  it('sets the xl name at 34px, capped at two lines, in a heading box that reserves both', () => {
+    const { body } = render(CharacterIdentity, {
+      props: { character: CHAR, size: 'xl', descriptor: 'none', heading: true },
+    });
+    expect(body).toContain('text-[34px]');
+    expect(body).toContain('line-clamp-2');
+    expect(body).toContain('min-h-[calc(34px*1.1*2)]');
+  });
+
+  it('leaves every smaller name unclamped and unreserved', () => {
+    const { body } = render(CharacterIdentity, {
+      props: { character: CHAR, size: 'lg', descriptor: 'none', heading: true },
+    });
+    expect(body).not.toContain('line-clamp-2');
+    expect(body).not.toContain('min-h-');
+  });
 });
