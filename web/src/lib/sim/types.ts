@@ -393,6 +393,12 @@ export interface SimListRow {
   kind?: string;
   /** The API's own one-line summary, e.g. "+41 DPS from Vis'kag". */
   headline?: string;
+  /** The setup the run used, when the API says: the level band, faction and best-in-slot
+   *  preset ("raid" | "bare"). The home Simulator card compares a saved sim with a band's
+   *  best-in-slot DPS only when all three match (`lib/home/sim-card.ts`); absent, it cannot. */
+  band?: number;
+  faction?: string;
+  preset?: string;
 }
 
 export interface SimListPage {
