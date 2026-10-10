@@ -15,7 +15,8 @@ function capitalise(slug: string): string {
   return slug.charAt(0).toUpperCase() + slug.slice(1);
 }
 
-function sameCharacter(character: MeCharacter, name: string, classSlug: string): boolean {
+/** The account character an export or a pasted pointer names: same name and class, case-insensitive. */
+export function sameCharacter(character: MeCharacter, name: string, classSlug: string): boolean {
   return (
     character.name.toLowerCase() === name.toLowerCase() && (character.class ?? '').toLowerCase() === classSlug
   );

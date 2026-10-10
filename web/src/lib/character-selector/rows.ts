@@ -10,6 +10,7 @@ import type { CurrentCharacter } from '../current-character';
 import { relativeTime } from '../dates';
 import type { Faction } from '../faction-mark';
 import { orderCharacters } from './order';
+import { sameCharacter } from './paste';
 import { selectorCopy } from './copy';
 import { isFailed, isStale } from './stale';
 
@@ -138,16 +139,25 @@ function isPastedPointer(pointer: CurrentCharacter | null): pointer is PastedPoi
   return pointer !== null && (pointer.source === 'code' || pointer.source === 'addon');
 }
 
+/** A pasted pointer written before the account knew the character, or by an older build, is the
+ *  account character with the same name and class: one row, never the same person twice. */
+function accountCharacterOfPointer(me: Me, pointer: PastedPointer): MeCharacter | null {
+  const { name } = splitPointerLabel(pointer);
+  if (name === '' || name === capitalise(pointer.classSlug)) return null;
+  return me.characters.find((character) => sameCharacter(character, name, pointer.classSlug)) ?? null;
+}
+
 function signedInModel(me: Me, input: ModelInput, now: Date): SelectorModel {
   const { pointer } = input;
   const hasAddonCharacter = me.characters.some((character) => character.build?.source === 'addon');
-  if (isPastedPointer(pointer)) {
+  const matched = isPastedPointer(pointer) ? accountCharacterOfPointer(me, pointer) : null;
+  if (isPastedPointer(pointer) && matched === null) {
     const pasted = rowFromPointer(pointer, selectorCopy.sourcePasted, now);
     const ordered = orderCharacters(me.characters, null, input.chosenKeys);
     const rest = ordered.map((character) => rowFromCharacter(character, false, now));
     return { session: 'signed-in', rows: [pasted, ...rest], current: pasted, hasAddonCharacter };
   }
-  const pointed = pointer?.source === 'armory' ? pointer.ref : null;
+  const pointed = pointer?.source === 'armory' ? pointer.ref : (matched?.key ?? null);
   const known = me.characters.some((character) => character.key === pointed);
   const currentKey = known ? pointed : (mainCharacter(me.characters, me.main_character_key)?.key ?? null);
   const rows = orderCharacters(me.characters, currentKey, input.chosenKeys).map((character) =>

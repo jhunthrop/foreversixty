@@ -217,6 +217,23 @@ describe('the model', () => {
     expect(model.rows[1]).toMatchObject({ name: 'Tester', current: false });
   });
 
+  it('treats a code or addon pointer naming an account character as that character, never twice', () => {
+    const model = buildSelectorModel({
+      me: me([tester]),
+      pointer: pointerFor({
+        source: 'addon',
+        ref: 'FS1.def',
+        label: 'Tester · Arms Warrior',
+        classSlug: 'warrior',
+      }),
+      chosenKeys: [],
+      nowMs: NOW.getTime(),
+    });
+    expect(model.rows).toHaveLength(1);
+    expect(model.rows[0]).toMatchObject({ name: 'Tester', kind: 'account', current: true });
+    expect(model.current?.key).toBe(tester.key);
+  });
+
   it('is signed out with no rows and no pointer, and with the pasted row when a paste is stored', () => {
     const empty = buildSelectorModel({ me: null, pointer: null, chosenKeys: [], nowMs: NOW.getTime() });
     expect(empty).toMatchObject({ session: 'signed-out', rows: [], current: null });
