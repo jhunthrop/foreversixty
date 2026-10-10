@@ -25,30 +25,32 @@ const NEEDS_HIT_TARGET_PADDING = new Set(['About', 'Terms', 'Privacy']);
 // A frontmatter comment, not an HTML one: an HTML comment ships in every page.
 ---
 
-<footer class="mt-auto flex flex-col-reverse md:flex-row md:items-start md:justify-between gap-4 md:gap-8 px-[18px] md:px-12 py-6 md:py-7 border-t border-line text-[13px]">
-  <div class="flex flex-col gap-2 max-w-[720px]">
-    <div class="inline-flex items-center gap-2">
-      <Seal size={22} gradientId="footer-seal" />
-      <span class="font-display text-[13px] font-bold tracking-[0.10em] uppercase text-strong">
-        Forever Sixty
-      </span>
+<footer class="mt-auto border-t border-line text-[13px]">
+  <div class="page-column flex flex-col-reverse md:flex-row md:items-start md:justify-between gap-4 md:gap-8 px-[18px] py-6 md:py-7">
+    <div class="flex flex-col gap-2 max-w-[720px]">
+      <div class="inline-flex items-center gap-2">
+        <Seal size={22} gradientId="footer-seal" />
+        <span class="font-display text-[13px] font-bold tracking-[0.10em] uppercase text-strong">
+          Forever Sixty
+        </span>
+      </div>
+      <p class="leading-relaxed text-muted">
+        Forever Sixty helps you play your class better. Not affiliated with or endorsed by Blizzard
+        Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.
+      </p>
     </div>
-    <p class="leading-relaxed text-muted">
-      Forever Sixty helps you play your class better. Not affiliated with or endorsed by Blizzard
-      Entertainment. World of Warcraft and Warcraft are trademarks of Blizzard Entertainment, Inc.
-    </p>
+    <nav aria-label="Footer" class="flex flex-wrap gap-x-[18px]">
+      {footerLinks.map(([label, href]) => (
+        <a
+          href={href}
+          class:list={[
+            'inline-flex items-center min-h-11 md:min-h-0 text-nav hover:text-strong',
+            NEEDS_HIT_TARGET_PADDING.has(label) && 'px-2',
+          ]}
+        >
+          {label}
+        </a>
+      ))}
+    </nav>
   </div>
-  <nav aria-label="Footer" class="flex flex-wrap gap-x-[18px]">
-    {footerLinks.map(([label, href]) => (
-      <a
-        href={href}
-        class:list={[
-          'inline-flex items-center min-h-11 md:min-h-0 text-nav hover:text-strong',
-          NEEDS_HIT_TARGET_PADDING.has(label) && 'px-2',
-        ]}
-      >
-        {label}
-      </a>
-    ))}
-  </nav>
 </footer>

@@ -14,8 +14,10 @@ export interface Props {
 }
 ---
 
-<div class="art-panel">
-  <slot />
+<div class="art-panel full-bleed">
+  <div class="page-column">
+    <slot />
+  </div>
 </div>
 
 <style>
@@ -23,6 +25,5 @@ export interface Props {
     /* Flat fallback (spec §4.A/§7): a future lane swaps this for the class's own tree art
        behind a night-to-`--bg` gradient without touching this component's callers. */
     background: var(--color-raised);
-    width: 100%;
   }
 </style>

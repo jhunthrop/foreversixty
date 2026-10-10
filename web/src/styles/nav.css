@@ -5,7 +5,7 @@
    (the one stylesheet the API's server-rendered /b/{id} page links) carries it too.
 
    Breakpoints, widest first:
-     1441+      the bar sits in the 1344px content container; Discord has its label
+     1441+      the bar sits in the --page-max content container; Discord has its label
      1280-1439  Discord is the mark alone; selector 232px
      1024-1279  tighter doors; selector 176px, second line "Spec - level"
      560-1023   the 56px phone bar; the full name sits beside the crest; doors in the Menu
@@ -21,7 +21,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    padding: 18px max(48px, calc((100% - 1344px) / 2));
+    padding: 18px max(var(--page-gutter), calc((100% - var(--page-max)) / 2));
     border-bottom: 1px solid color-mix(in srgb, var(--color-line) 60%, transparent);
     background: var(--color-bg);
   }
@@ -118,7 +118,7 @@
   @media (max-width: 1439px) {
     .site-header {
       gap: 18px;
-      padding: 18px max(32px, calc((100% - 1344px) / 2));
+      padding: 18px max(32px, calc((100% - var(--page-max)) / 2));
     }
     .site-doors {
       gap: 20px;

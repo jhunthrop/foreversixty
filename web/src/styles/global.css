@@ -4,6 +4,12 @@
 @import './nav.css';
 
 @layer base {
+  body {
+    /* .full-bleed is 100vw, which counts a classic scrollbar; clip, unlike hidden, keeps
+       position: sticky working. */
+    overflow-x: clip;
+  }
+
   button:not(:disabled),
   summary {
     cursor: pointer;
@@ -67,6 +73,65 @@
 
 @utility tabular {
   font-variant-numeric: tabular-nums;
+}
+
+/* The phone inset a band's inner content keeps inside the column: 18px below md, none from
+   md up, where .page-column's own gutter takes over. Component CSS reads it instead of
+   hand-writing 18px/48px pairs. */
+:root {
+  --page-inset: 18px;
+}
+@media (min-width: 768px) {
+  :root {
+    --page-inset: 0px;
+  }
+}
+
+/* THE site column. Base.astro wraps every page in it once; nothing else may declare a
+   page-level max-width container. The gutter is the desktop one (md up): on a phone each
+   surface keeps its own 18px inset because tab strips and tables bleed edge to edge there
+   by design. A full-bleed band puts its content back in the column with this same class.
+   It sits outside any @layer on purpose: a band's inner pairs it with a Tailwind
+   `px-[18px]` phone inset, and a layered utility would otherwise beat the desktop gutter. */
+.page-column {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+}
+@media (min-width: 768px) {
+  .page-column {
+    padding-inline: var(--page-gutter);
+  }
+}
+
+@layer components {
+  /* Break a band out of the column to the full viewport width (its background runs edge to
+     edge); the column is centred, so the standard 50% - 50vw offset lands exactly on the
+     viewport edges. Put `.page-column` on the band's inner element for its content. */
+  .full-bleed {
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+  }
+  /* Reading and form measures: a narrower, centred measure inside the column. */
+  .measure-form,
+  .measure-reading,
+  .measure-wide,
+  .measure-aside {
+    width: 100%;
+    margin-inline: auto;
+  }
+  .measure-form {
+    max-width: var(--measure-form);
+  }
+  .measure-reading {
+    max-width: var(--measure-reading);
+  }
+  .measure-wide {
+    max-width: var(--measure-wide);
+  }
+  .measure-aside {
+    max-width: var(--measure-aside);
+  }
 }
 
 @layer components {

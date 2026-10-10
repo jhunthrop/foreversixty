@@ -128,7 +128,9 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
           already filled from the stored pointer. It also renders the phone Menu's first row. */}
       <CharacterSelector client:idle-after-load slot="session" />
     </Header>
-    <slot />
+    <div class="page-column">
+      <slot />
+    </div>
     <Footer />
     <script
       is:inline

@@ -21,15 +21,14 @@ interface Props {
   confidencePlacement?: 'header' | 'footer';
   /** The guide rebuild (spec §4.B/§4.C): true drops this layout's own plain `<h1>`/
    *  `UpdatedStamp`/header-placement-confidence block entirely -- the caller fills the
-   *  `beforeMain` slot with its own `ArtPanel`+`ClassHeader` region instead (full-bleed,
-   *  1344px, outside this layout's own 820/1120px `<main>`). The article grid, the sticky
-   *  aside, `SourcesList` and a `footer`-placed confidence line are all unaffected -- only
+   *  `beforeMain` slot with its own `ArtPanel`+`ClassHeader` region instead (full-bleed, outside this layout's own `<main>`).
+   *  The article grid, the sticky aside, `SourcesList` and a `footer`-placed confidence line are all unaffected -- only
    *  the title block this prop names is suppressed. A caller passing `hideHeader` should
    *  also pass `confidencePlacement="footer"`, or its confidence sentence has nowhere to
    *  render at all. */
   hideHeader?: boolean;
   /** The guide rebuild's class landing page (spec §4.B): its identity paragraph and new
-   *  spec-card row read at the header's own 1344px width, not this layout's default 820px
+   *  spec-card row read at the full site column width, not this layout's default reading measure
    *  article column -- every other caller (every `pages`/`changelog` entry, the spec guide,
    *  which supplies its own width via `hasAside`) is unaffected. */
   wide?: boolean;
@@ -64,15 +63,15 @@ const confidenceCopy: Record<Confidence, string> = {
     id="main"
     tabindex="-1"
     class:list={[
-      'mx-auto w-full px-[18px] py-10 md:px-12',
+      'w-full px-[18px] py-10 md:px-0',
       hasAside
-        ? 'grid max-w-[1120px] grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-12'
+        ? 'measure-aside grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-12'
         : wide
-          ? 'flex max-w-[1344px] flex-col gap-6'
-          : 'flex max-w-[820px] flex-col gap-6',
+          ? 'flex flex-col gap-6'
+          : 'measure-reading flex flex-col gap-6',
     ]}
   >
-    <div class:list={[hasAside ? 'flex min-w-0 flex-col gap-6 lg:max-w-[820px]' : 'contents']}>
+    <div class:list={[hasAside ? 'flex min-w-0 flex-col gap-6 lg:max-w-(--measure-reading)' : 'contents']}>
       {!hideHeader && (
         <header class="border-line flex flex-col gap-2 border-b pb-5">
           <h1 class="text-[28px] font-bold tracking-[0.02em]">{title}</h1>

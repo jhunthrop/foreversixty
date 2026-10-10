@@ -91,6 +91,17 @@
   --font-body: 'Barlow', 'Barlow Fallback', 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
 
+  /* The one site column (Base.astro wraps every page in it): its max width, border-box, so
+     the content is 1248px at the 48px desktop gutter. The header bar (nav.css) reads the
+     same two tokens, so the bar and the page can never drift apart. */
+  --page-max: 1344px;
+  --page-gutter: 48px;
+  /* Reading and form measures inside the column (.measure-* in global.css), content width. */
+  --measure-form: 480px;
+  --measure-reading: 720px;
+  --measure-wide: 900px;
+  --measure-aside: 1024px;
+
   --radius-panel: 6px;
   --radius-control: 4px;
   --radius-pill: 3px;
