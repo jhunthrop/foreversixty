@@ -57,8 +57,8 @@ const stampTitle =
     }
   </script>
   <main id="main" tabindex="-1" class="tier-page" data-testid="tier-page" data-role={role}>
-    <div class="tier-band">
-      <header class="tier-header">
+    <div class="tier-band full-bleed">
+      <header class="tier-header page-column">
         <p class="label tier-eyebrow">
           <i class="tier-eyebrow-rule" aria-hidden="true"></i>
           {data.presetLabel !== null ? tiersCopy.eyebrow(presetLabel) : 'Level 60'}
@@ -248,10 +248,7 @@ const stampTitle =
     display: flex;
     flex-direction: column;
     gap: 16px;
-    max-width: 1344px;
-    margin-inline: auto;
-    width: 100%;
-    padding: 28px 48px 24px;
+    padding: 28px var(--page-inset) 24px;
   }
   .tier-eyebrow {
     display: flex;
@@ -469,10 +466,7 @@ const stampTitle =
     display: flex;
     flex-direction: column;
     gap: 20px;
-    max-width: 1344px;
-    margin-inline: auto;
-    width: 100%;
-    padding: 28px 48px 36px;
+    padding: 28px var(--page-inset) 36px;
   }
   .tier-faction {
     display: flex;
@@ -668,14 +662,14 @@ const stampTitle =
       font-size: 22px;
     }
     .tier-header {
-      padding: 22px 18px 20px;
+      padding: 22px var(--page-inset) 20px;
       gap: 14px;
     }
     .tier-h1 {
       font-size: 26px;
     }
     .tier-body {
-      padding: 20px 18px 36px;
+      padding: 20px var(--page-inset) 36px;
       gap: 16px;
     }
     .tier-faction {

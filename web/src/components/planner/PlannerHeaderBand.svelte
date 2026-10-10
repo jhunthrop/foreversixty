@@ -1,12 +1,9 @@
 <!-- web/src/components/planner/PlannerHeaderBand.svelte -->
 <!-- Fix round 5 (owner: the live planner did not match the mock, `day3/shots/boards/
      Planner.png`, structurally): the page's own header BAND -- full-bleed, edge to edge,
-     the same shape the BiS page's `ArtPanel` + its own `.header-row` already ship (that
-     page's `<main>` carries no max-width at all, so `ArtPanel` is full-bleed simply by
-     being `width: 100%` inside it; `/planner`'s own `<main>` is a constrained
-     `max-w-[1344px]` column instead, so this band breaks out of it with the standard
-     `width: 100vw; margin-left: calc(50% - 50vw)` trick rather than restructuring
-     `planner.astro`'s own page shell).
+     the same shape the BiS page's `ArtPanel` + its own `.header-row` already ship. It breaks
+     out of the site column with the shared `.full-bleed` utility and puts its content back
+     in the column with `.page-column`.
 
      Previously: `PlannerHeader` was its own bordered, rounded, `bg-raised` BOX sitting
      inside the page's gutters, with `PlannerCharacterCard` a second, separate box beside
@@ -82,7 +79,7 @@
   });
 </script>
 
-<div class="planner-header-band" data-testid="planner-header-band">
+<div class="planner-header-band full-bleed" data-testid="planner-header-band">
   <!-- A CSS background-image, not an <img>: a nicer fit for a decorative, `aria-hidden`
        backdrop over the whole band -- see `PlannerHeader.svelte`'s own, now-historical
        comment on why this is not a way to dodge LCP candidacy (it isn't; Chrome counts a
@@ -95,7 +92,7 @@
     aria-hidden="true"
   ></div>
   <div class="planner-header-band-gradient" aria-hidden="true"></div>
-  <div class="planner-header-band-inner">
+  <div class="planner-header-band-inner page-column">
     <div class="planner-header-band-grid" class:planner-header-band-grid-split={hasCard}>
       <PlannerHeader {store} {live} {gate} {onshowdps} />
       <PlannerCharacterCard />
@@ -106,8 +103,6 @@
 <style>
   .planner-header-band {
     position: relative;
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
     overflow: hidden;
     /* Flat `--color-raised` floor (spec §13): the dominant-tree art stays off until it can
        paint from first byte without becoming the page's own LCP/TBT regression again --
@@ -139,14 +134,7 @@
   }
   .planner-header-band-inner {
     position: relative;
-    max-width: 1344px;
-    margin: 0 auto;
-    padding: 0 18px;
-  }
-  @media (min-width: 1024px) {
-    .planner-header-band-inner {
-      padding: 0 48px;
-    }
+    padding-inline: var(--page-inset);
   }
   .planner-header-band-grid {
     display: grid;

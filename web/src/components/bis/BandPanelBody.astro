@@ -157,14 +157,14 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 16px;
-    padding: 28px 48px 0 48px;
+    padding: 28px var(--page-inset) 0 var(--page-inset);
   }
 
   .the-list-section {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 28px 48px 0 48px;
+    padding: 28px var(--page-inset) 0 var(--page-inset);
   }
   .the-list-heading-row {
     display: flex;
@@ -197,7 +197,7 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
     grid-template-columns: 2fr 1fr;
     gap: 16px;
     align-items: start;
-    padding: 28px 48px 28px 48px;
+    padding: 28px var(--page-inset) 28px var(--page-inset);
   }
   .footer-col {
     display: flex;
@@ -261,12 +261,12 @@ const { view, faction, specName, guideHref, build, testSuffix = '' } = Astro.pro
   @media (max-width: 1023px) {
     .three-panel-row {
       grid-template-columns: 1fr;
-      padding: 22px 18px 0 18px;
+      padding: 22px var(--page-inset) 0 var(--page-inset);
       gap: 22px;
     }
     .the-list-section,
     .footer-row {
-      padding: 22px 18px 0 18px;
+      padding: 22px var(--page-inset) 0 var(--page-inset);
     }
     .footer-row {
       grid-template-columns: 1fr;

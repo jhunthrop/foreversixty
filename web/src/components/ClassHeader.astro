@@ -228,7 +228,7 @@ const bandTextVariants = bands.map((band) => ({
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 28px 48px 0 48px;
+    padding: 28px var(--page-inset) 0 var(--page-inset);
   }
   .class-header-eyebrow {
     display: flex;
@@ -422,7 +422,7 @@ const bandTextVariants = bands.map((band) => ({
 
   @media (max-width: 1023px) {
     .class-header {
-      padding: 22px 18px 0 18px;
+      padding: 22px var(--page-inset) 0 var(--page-inset);
     }
     /* Guide rebuild spec §7.B: "Crest + h1 (stacked, not side by side, under 1024px --
        ClassHeader's own existing max-width:1023px breakpoint already does this)" -- the

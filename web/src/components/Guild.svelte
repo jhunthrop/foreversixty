@@ -523,28 +523,22 @@
   />
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="guild" id="guild">
-    <!-- Fix round 1 (owner rule): a full-bleed band, inner content capped and centred at
-         1344px, like every other page. Built with the same breakout `LogsHeroBand.svelte`
-         and `PlannerHeaderBand.svelte` already use (`w-screen` + `ml-[calc(50%-50vw)]`),
-         not a second way of doing the same thing (tenet 10) -- this page's own hero is
+    <!-- Fix round 1 (owner rule): a full-bleed band, inner content in the site column,
+         like every other page. Built with the shared `.full-bleed` breakout and
+         `.page-column` inner (tenet 10) -- this page's own hero is
          only ever known client-side (guild name, standing, tab state), so there is no
          build-time-known markup to hoist into a separate Astro `beforeMain` region the way
          `ArtPanel`/`ClassHeader` do on the guides page; the CSS breakout keeps the one
          GuildShell island's state in one place instead of splitting it across two mount
-         points. The band's own inner uses the identical max-width/gutter column
-         `[...path].astro`'s `<main>` already gives the tab content below, so both share one
-         left edge at every width -- verified at 1440 and 2000. -->
+         points. The band's own inner is the same `.page-column` the layout wraps the tab
+         content below in, so both share one left edge at every width -- verified at 1440 and 2000. -->
     <!-- Owner note (header art round): the wash and watermark must never show below this
          band -- `overflow-hidden` here is what clips both the vignette (`inset:0` of the
          inner 1344px column below, which exactly fills this band) and the watermark's own
          top/right overrun, at the band's own bottom/right edges, never the page body below
          it. `data-testid` so the e2e suite can assert the watermark's own bounding box never
          extends past this band's bottom. -->
-    <div
-      class="bg-raised relative w-screen overflow-hidden"
-      style="margin-left:calc(50% - 50vw)"
-      data-testid="guild-header-band"
-    >
+    <div class="bg-raised full-bleed relative overflow-hidden" data-testid="guild-header-band">
       <!-- The faction wash belongs to the full-bleed band, not the 1344px inner: on a wide
            screen the inner's right edge is not the viewport's, and a wash clipped there read
            as a cut-off rectangle (owner, 2026-10-05). The watermark below stays anchored to
@@ -557,9 +551,7 @@
           data-testid="guild-header-vignette"
         ></div>
       {/if}
-      <div
-        class="relative mx-auto flex w-full max-w-[1344px] flex-col gap-3 px-[18px] pt-4 pb-[22px] md:px-12 md:pt-7 md:pb-8"
-      >
+      <div class="page-column relative flex flex-col gap-3 px-[18px] pt-4 pb-[22px] md:pt-7 md:pb-8">
         <!-- Header art round (spec §12.2, option B, the owner's pick): a sharp diagonal
              faction-colour wash plus the real flat faction logo, crisp, no filter, cropped
              by this band's own `overflow:hidden` right edge (the div above) -- never a
