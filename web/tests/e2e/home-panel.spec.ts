@@ -1,8 +1,16 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
+import {
+  OBNOXIOUS,
+  armoryPointer,
+  keyOf,
+  signInWith,
+  storePointer,
+  type FixtureCharacter,
+} from './support/selector';
 
 const fulfil = (body: unknown, status = 200) => ({
   status,
@@ -262,55 +270,168 @@ test('the signed-in hero shows a rating figure once one exists, never before', a
   await expect(page.getByTestId('home-hero-rating')).toHaveText('Performance rating 1.08');
 });
 
-test('the Switch character panel lists every character, hero first, with a Current marker', async ({
+const FROSTBYTE: FixtureCharacter = {
+  name: 'Frostbyte',
+  class: 'Mage',
+  spec: 'Frost',
+  level: 42,
+  faction: 'horde',
+  buildDaysAgo: 3,
+};
+/** Same class, spec, level, faction and realm as OBNOXIOUS: only the name differs, so a
+ *  switch between the two can move nothing but what the name itself does. */
+const TWO_LINE_NAME: FixtureCharacter = { ...OBNOXIOUS, name: 'Sir Obnoxious Yellington' };
+
+const selectorTrigger = (page: Page) => page.getByTestId('character-selector');
+const chooseInHeader = async (page: Page, character: FixtureCharacter): Promise<void> => {
+  await selectorTrigger(page).click();
+  await page
+    .getByTestId('selector-panel')
+    .getByTestId(`selector-row-${keyOf(character)}`)
+    .getByRole('button')
+    .first()
+    .click();
+};
+
+test('with several characters the hero says which is current, points at the header and has no switcher of its own', async ({
   page,
 }) => {
   await stubHeroExtras(page);
+  await signInWith(page, [OBNOXIOUS, FROSTBYTE]);
+  await storePointer(page, armoryPointer(OBNOXIOUS));
+  await page.goto('/');
+  const panel = page.getByTestId('home-account-panel');
+  await expect(panel.getByRole('heading', { name: 'Obnoxious Yell', level: 1 })).toBeVisible();
+  await expect(panel.getByTestId('home-hero-eyebrow')).toHaveText('Current character');
+  const hint = panel.getByTestId('home-hero-change-hint');
+  await expect(hint).toHaveText('Change character: top right');
+  await expect(hint.getByRole('link')).toHaveCount(0);
+  await expect(hint.getByRole('button')).toHaveCount(0);
+  expect(await hint.evaluate((el) => getComputedStyle(el).fontSize)).toBe('12px');
+  // The Switch character column, its "Add one" link and its per-row buttons are gone.
+  await expect(page.getByText('Switch character')).toHaveCount(0);
+  await expect(page.getByText('Add one')).toHaveCount(0);
+  await expect(page.getByTestId('home-switch-character-panel')).toHaveCount(0);
+  await expect(page.getByTestId('home-example-block')).toBeHidden();
+  // The real faction emblem, 16 px, with alt text (the way the selector's rows draw it).
+  const emblem = panel.getByTestId('faction-mark-alliance');
+  await expect(emblem).toHaveAttribute('alt', 'Alliance');
+  await expect(emblem).toHaveAttribute('src', '/icons/hd/faction/alliance-logo-512.webp');
+  await expect(emblem).toHaveAttribute('width', '16');
+
+  // The header selector is the one way to change character; the hero follows it in place.
+  await page.evaluate(() => {
+    (window as unknown as { __kept: boolean }).__kept = true;
+  });
+  await chooseInHeader(page, FROSTBYTE);
+  await expect(panel.getByRole('heading', { level: 1 })).toHaveText('Frostbyte');
+  expect(await page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept)).toBe(true);
+});
+
+test('with one character the hero says "Your character" and shows no header hint', async ({ page }) => {
+  await stubHeroExtras(page);
+  await signInWith(page, [OBNOXIOUS]);
+  await storePointer(page, armoryPointer(OBNOXIOUS));
+  await page.goto('/');
+  const panel = page.getByTestId('home-account-panel');
+  await expect(panel.getByTestId('home-hero-eyebrow')).toHaveText('Your character');
+  await expect(panel.getByTestId('home-hero-change-hint')).toHaveCount(0);
+});
+
+test('a header switch from a one-line to a two-line name does not move the upgrades table', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await stubHeroExtras(page);
+  await signInWith(page, [OBNOXIOUS, TWO_LINE_NAME]);
+  await storePointer(page, armoryPointer(OBNOXIOUS));
+  await page.goto('/');
+  const panel = page.getByTestId('home-account-panel');
+  const heading = panel.getByRole('heading', { level: 1 });
+  await expect(heading).toHaveText('Obnoxious Yell');
+  await expect(panel.getByTestId('home-hero-cards-slot')).toBeVisible();
+  const table = page.getByTestId('home-upgrades');
+  const oneLineTop = (await table.boundingBox())!.y;
+  const oneLineHeight = (await heading.boundingBox())!.height;
+
+  await chooseInHeader(page, TWO_LINE_NAME);
+  await expect(heading).toHaveText('Sir Obnoxious Yellington');
+  const twoLineHeight = (await heading.boundingBox())!.height;
+  expect(twoLineHeight).toBeGreaterThan(70); // two 34px lines
+  expect(twoLineHeight).toBe(oneLineHeight);
+  expect((await table.boundingBox())!.y).toBe(oneLineTop);
+});
+
+test('a name longer than two lines is cut with an ellipsis, not allowed to grow the hero', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await stubHeroExtras(page);
+  const longName: FixtureCharacter = { ...OBNOXIOUS, name: 'Sir Obnoxious Yellington the Unreasonably Long' };
+  await signInWith(page, [longName]);
+  await storePointer(page, armoryPointer(longName));
+  await page.goto('/');
+  const name = page.getByTestId('home-account-panel').getByRole('heading', { level: 1 });
+  await expect(name).toBeVisible();
+  expect((await name.boundingBox())!.height).toBeLessThan(80);
+});
+
+const SAVED_SIM = {
+  sim_id: 's1',
+  spec: 'hunter-marksmanship',
+  dps: 26.4,
+  engine_version: '1',
+  created_at: '2026-10-09T00:00:00Z',
+  title: '',
+  kind: 'run',
+};
+
+async function openHomeWithSavedSim(page: Page, context: BrowserContext, sim: object): Promise<Locator> {
+  await stubHeroExtras(page);
+  await stubRealGearData(page);
+  await context.addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route('**/v1/me', (route) =>
+    route.fulfill(fulfil({ ok: true, data: meAddonFixture, error: null, request_id: 'r' })),
+  );
+  await page.route('**/v1/sims**', (route) =>
     route.fulfill(
       fulfil({
         ok: true,
-        data: {
-          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
-          characters: [
-            {
-              key: 'us/normal/kiloz',
-              region: 'us',
-              ruleset: 'normal',
-              name: 'Kiloz',
-              class: 'warrior',
-              level: 60,
-            },
-            {
-              key: 'us/normal/dottzz',
-              region: 'us',
-              ruleset: 'normal',
-              name: 'Dottzz',
-              class: 'priest',
-              level: 12,
-            },
-          ],
-          guilds: [],
-        },
+        data: { rows: [sim], total: 1, page: 1, per_page: 1 },
         error: null,
         request_id: 'r',
       }),
     ),
   );
   await page.goto('/');
-  const switchPanel = page.getByTestId('home-switch-character-panel');
-  await expect(switchPanel).toBeVisible();
-  await expect(switchPanel).toContainText('Switch character');
-  await expect(switchPanel.getByRole('link', { name: 'Add one' })).toHaveAttribute(
-    'href',
-    '/account#add-character',
-  );
-  await expect(switchPanel.getByTestId('current-character-bar-switch-current')).toBeVisible();
-  const switchButton = switchPanel.getByTestId('current-character-bar-switch-us/normal/dottzz');
-  await switchButton.click();
-  await expect(page.getByTestId('home-account-panel').getByRole('heading', { level: 1 })).toHaveText(
-    'Dottzz',
-  );
+  return page.getByTestId('home-account-panel').getByTestId('home-hero-card-sim');
+}
+
+test('the Simulator card pairs a saved sim of the band own setup with the band best in slot, a unit on both', async ({
+  page,
+  context,
+}) => {
+  const card = await openHomeWithSavedSim(page, context, {
+    ...SAVED_SIM,
+    band: 20,
+    faction: 'horde',
+    preset: 'bare',
+  });
+  await expect(card.getByTestId('home-hero-card-sim-value')).toHaveText('26 DPS now');
+  await expect(card).toContainText(/\d+\.\d DPS at band best in slot/, { timeout: 10_000 });
+});
+
+test('the Simulator card shows the band best in slot alone when the saved sim is not comparable', async ({
+  page,
+  context,
+}) => {
+  const card = await openHomeWithSavedSim(page, context, SAVED_SIM);
+  await expect(card.getByTestId('home-hero-card-sim-value')).toHaveText(/^\d+\.\d DPS$/, {
+    timeout: 10_000,
+  });
+  await expect(card).toContainText('at band best in slot');
+  await expect(card).toContainText('Run');
+  await expect(card).not.toContainText('DPS now');
 });
 
 test('a returning signed-in visitor sees the hub from the session snapshot before /v1/me answers', async ({
@@ -413,14 +534,7 @@ test("a signed-in hero with a real gear/talent export sees real Best in slot, Ta
   // shared item tooltip, the same as every other item name on this page.
   await expect(alreadyBis.locator('[data-testid^="item-hover-"]').first()).toBeVisible();
 
-  // Switch character (§3.B.4): Frostspine's own real upgrade count, and Grokmar (no spec
-  // yet) shows no fabricated stat at all.
-  const switchPanel = page.getByTestId('home-switch-character-panel');
-  await expect(switchPanel.getByTestId('current-character-bar-switch-current')).toBeVisible();
-  await expect(
-    switchPanel.getByTestId('current-character-bar-switch-upgrades-us/normal/frostspine'),
-  ).toHaveText(/^\d+ upgrades?$/, { timeout: 10_000 });
-  await expect(
-    switchPanel.getByTestId('current-character-bar-switch-upgrades-us/normal/grokmar'),
-  ).toHaveCount(0);
+  // The worn side of a row names the item and nothing else: no "you wear this" filler.
+  await expect(page.getByTestId('home-upgrades-list')).not.toContainText('you wear this');
+  await expect(page.getByTestId('home-switch-character-panel')).toHaveCount(0);
 });
