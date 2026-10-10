@@ -393,9 +393,9 @@ export async function fetchMe(apiBase: string = API_BASE_URL): Promise<Me | null
   }
 }
 
-/** Exported (with `meKey`/`ME_QUERY_VERSION` below) for Base.astro's pre-paint account-chip
- *  script, owner-reported defect 2026-10-01: that script reads this exact query's persisted
- *  entry out of `query.ts`'s localStorage cache before AccountMenu.svelte hydrates, and
+/** Exported (with `meKey`/`ME_QUERY_VERSION` below) for Base.astro's pre-paint selector
+ *  script: that script reads this exact query's persisted entry out of `query.ts`'s
+ *  localStorage cache (for the level) before the character selector hydrates, and
  *  needs this module's own TTL/version rather than a second, drifting copy of either. */
 export const ME_TTL_MS = 10 * 60 * 1000;
 

@@ -2,6 +2,8 @@
 // web/src/components/Header.astro
 import communityLinks from '../data/links.json';
 import { TRAILING_NAV_ITEMS, PRIMARY_NAV_ITEMS, isNavItemCurrent } from '../lib/nav';
+import { OPEN_SELECTOR_EVENT } from '../lib/character-selector/config';
+import DiscordMark from './DiscordMark.astro';
 import Seal from './Seal.astro';
 
 interface Props {
@@ -16,69 +18,43 @@ interface Props {
 
 const { path = '' } = Astro.props;
 
-// "Logs" is the one label here short enough (37px) to miss the 44px hit-target floor on
-// its width alone -- the others all clear it on text length. "Get set up" clears it on text
-// length too. A little horizontal padding, only where needed, closes the gap without
-// widening every other nav entry to match.
-const NARROW_LABELS = new Set(['Logs']);
-
-function itemClass(label: string, current: boolean): (string | false)[] {
-  return [
-    'inline-flex items-center justify-center md:justify-start min-h-11 md:min-h-0 text-nav hover:text-strong whitespace-nowrap',
-    NARROW_LABELS.has(label) && 'px-2',
-    current && 'text-gold hover:text-gold',
-  ];
-}
-
 const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
 
 // Not an HTML comment: that would ship in every page and in the API's chrome snapshot.
-// Phone: one 56px bar -- wordmark, the session chip and a Menu button -- with the eight doors
-// and the Discord link in a three-column grid that opens beneath it (a ~230px stack of nav rows
-// above every page's content was the cost of showing them all the time; owner review of the
-// tier list, 2026-10-09). The grid's own `minmax(0,1fr)` wordmark column and the three-column
-// door grid (each cell 100px at 360px, wider than the longest label, "Leveling BiS") are the
-// reasons from the earlier layout that still hold. Desktop is unchanged: one row, doors inline.
-// The only script is the few lines below the markup that toggle the menu.
+// Styling lives in styles/nav.css (spec 2026-10-09-nav-character-selector.md), not in
+// utility classes, so the bar's breakpoints are in one readable place. Desktop (1024 and up):
+// wordmark, the eight doors, the character selector, Discord. Below 1024: one 56px bar --
+// wordmark, the selector's crest, a Menu button -- with the character row, the eight doors
+// in a grid and Discord opening beneath it (`.site-menu`; the selector island renders the
+// character row, which nav.css places first in the Menu). The only script is the few lines
+// below the markup that toggle the menu through `data-menu-open`.
 ---
 
-<header
-  class="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-2 gap-y-2 px-[18px] md:flex md:justify-between md:px-12 py-1.5 md:py-[18px] border-b border-line/60"
-  data-site-header
->
-  <a href="/" class="col-start-1 row-start-1 inline-flex items-center gap-2 min-h-11">
+<header class="site-header" data-site-header>
+  <a href="/" class="site-wordmark">
     <Seal size={30} gradientId="header-seal" />
-    <span class="font-display text-[16px] md:text-[20px] font-bold tracking-[0.10em] uppercase text-strong whitespace-nowrap">
-      Forever Sixty
-    </span>
+    <span>Forever Sixty</span>
   </a>
-  <div class="col-start-2 row-start-1 flex items-center md:order-3 md:gap-3">
+  <div class="site-right">
     <slot name="session" />
     <a
       href={communityLinks.discordInvite}
-      class="hidden md:inline-flex items-center justify-center gap-2 h-[38px] px-3 border border-line-warm rounded-control text-text bg-bg/50 font-semibold text-[13px]"
+      class="site-discord"
+      aria-label="Discord"
+      data-testid="discord-link"
     >
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M8 12a4 4 0 0 0 8 0M5 8a7 7 0 0 1 14 0v7l2 3H3l2-3z" />
-      </svg>
-      Discord
+      <DiscordMark />
+      <span class="site-discord-label">Discord</span>
+      <span class="site-tip" role="tooltip">
+        Discord
+      </span>
     </a>
   </div>
   <button
     type="button"
-    class="col-start-3 row-start-1 inline-flex md:hidden h-11 w-11 items-center justify-center rounded-control border border-line-warm text-text"
+    class="site-menu-button"
     aria-expanded="false"
-    aria-controls="primary-nav"
+    aria-controls="site-menu"
     aria-label="Menu"
     data-testid="menu-button"
     data-menu-button
@@ -93,64 +69,37 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
       stroke-linecap="round"
       aria-hidden="true"
     >
-      <path d="M4 7h16M4 12h16M4 17h16" />
+      <path d="M4 7h16M4 12h16M4 17h16"></path>
     </svg>
   </button>
-  <nav
-    id="primary-nav"
-    aria-label="Primary"
-    data-testid="primary-nav"
-    data-menu-panel
-    class="max-md:hidden col-span-3 row-start-2 md:order-2 md:row-auto grid grid-cols-3 gap-x-3 gap-y-2 md:flex md:flex-wrap xl:flex-nowrap md:gap-x-[22px] text-[13px] font-semibold tracking-[0.12em] uppercase"
-  >
-    {NAV_ITEMS.map((item) => {
-      const current = isNavItemCurrent(item, path);
-      return (
-        <a
-          href={item.href}
-          aria-current={current ? 'page' : undefined}
-          class:list={itemClass(item.label, current)}
-        >
+  <div id="site-menu" class="site-menu" data-menu-panel>
+    <nav id="primary-nav" aria-label="Primary" data-testid="primary-nav" class="site-doors">
+      {NAV_ITEMS.map((item) => (
+        <a href={item.href} aria-current={isNavItemCurrent(item, path) ? 'page' : undefined}>
           {item.label}
         </a>
-      );
-    })}
-  </nav>
-  <a
-    href={communityLinks.discordInvite}
-    data-menu-panel
-    class="max-md:hidden md:hidden col-span-3 row-start-3 inline-flex items-center justify-center gap-2 h-11 px-3 border border-line-warm rounded-control text-text bg-bg/50 font-semibold text-[13px]"
-  >
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M8 12a4 4 0 0 0 8 0M5 8a7 7 0 0 1 14 0v7l2 3H3l2-3z" />
-    </svg>
-    Discord
-  </a>
-  <script is:inline>
-    // The phone menu: the bar stays one 56px row and the doors open beneath it. Plain DOM, no island.
+      ))}
+    </nav>
+    <a href={communityLinks.discordInvite} class="site-menu-discord">
+      <DiscordMark />
+      Discord
+    </a>
+  </div>
+  <script is:inline define:vars={{ openEvent: OPEN_SELECTOR_EVENT }}>
+    // The phone menu: the bar stays one 56px row and the character row, doors and Discord
+    // open beneath it (CSS keys off data-menu-open). Plain DOM, no island. Opening the
+    // character sheet from the Menu's first row closes the Menu behind it.
     (() => {
       const header = document.querySelector('[data-site-header]');
       const button = header && header.querySelector('[data-menu-button]');
       if (!header || !button) return;
-      const panels = header.querySelectorAll('[data-menu-panel]');
       const setOpen = (open) => {
         if (open) header.setAttribute('data-menu-open', '');
         else header.removeAttribute('data-menu-open');
         button.setAttribute('aria-expanded', String(open));
-        // `max-md:hidden` is the Tailwind utility the API's chrome page also ships; no scoped CSS.
-        panels.forEach((panel) => panel.classList.toggle('max-md:hidden', !open));
       };
       button.addEventListener('click', () => setOpen(!header.hasAttribute('data-menu-open')));
+      window.addEventListener(openEvent, () => setOpen(false));
       header.addEventListener('keydown', (event) => {
         if (event.key !== 'Escape' || !header.hasAttribute('data-menu-open')) return;
         setOpen(false);

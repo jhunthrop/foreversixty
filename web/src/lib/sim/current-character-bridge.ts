@@ -26,8 +26,8 @@ export function recordCurrentCharacter(
     savedAt: new Date().toISOString(),
   };
   writeCurrent(pointer, storage);
-  // Task 8: every other writeCurrent call site (Account.svelte, AccountMenu.svelte,
-  // AddonPasteBox.svelte, CurrentCharacterBar.svelte's own Switch) dispatches this
+  // Task 8: every other writeCurrent call site (Account.svelte, the header
+  // character selector, AddonPasteBox.svelte) dispatches this
   // immediately after, so a sibling island on the same page -- CurrentCharacterBar's
   // `spine` mode, now mounted alongside SimView.svelte and ToolsView.svelte -- learns of
   // the new pointer without a full reload. This bridge was the one caller that did not,

@@ -118,7 +118,14 @@ describe('the list order', () => {
 
   it('puts the current character first, then the chosen ones in choice order, then newest sync', () => {
     const ordered = orderCharacters(all, current.key, [chosenRecent.key, chosenOlder.key]);
-    expect(ordered.map((c) => c.name)).toEqual(['Current', 'Recent', 'Older', 'Newest', 'Oldest', 'Unsynced']);
+    expect(ordered.map((c) => c.name)).toEqual([
+      'Current',
+      'Recent',
+      'Older',
+      'Newest',
+      'Oldest',
+      'Unsynced',
+    ]);
   });
 
   it('does not let a sync move a character the player has chosen', () => {
@@ -171,7 +178,7 @@ describe('the model', () => {
       me: me([frost, tester]),
       pointer: pointerFor({}),
       chosenKeys: [],
-      now: NOW,
+      nowMs: NOW.getTime(),
     });
     expect(model.session).toBe('signed-in');
     expect(model.rows.map((row) => [row.name, row.current])).toEqual([
@@ -186,7 +193,7 @@ describe('the model', () => {
       me: me([character('Solo', { build: build(1, { source: 'blizzard' }) })]),
       pointer: null,
       chosenKeys: [],
-      now: NOW,
+      nowMs: NOW.getTime(),
     });
     expect(model.current?.name).toBe('Solo');
     expect(model.hasAddonCharacter).toBe(false);
@@ -197,7 +204,7 @@ describe('the model', () => {
       me: me([tester]),
       pointer: pointerFor({ source: 'code', ref: 'FS1.abc', label: 'Pasty · Frost Mage', classSlug: 'mage' }),
       chosenKeys: [],
-      now: NOW,
+      nowMs: NOW.getTime(),
     });
     expect(model.rows[0]).toMatchObject({
       name: 'Pasty',
@@ -211,39 +218,51 @@ describe('the model', () => {
   });
 
   it('is signed out with no rows and no pointer, and with the pasted row when a paste is stored', () => {
-    const empty = buildSelectorModel({ me: null, pointer: null, chosenKeys: [], now: NOW });
+    const empty = buildSelectorModel({ me: null, pointer: null, chosenKeys: [], nowMs: NOW.getTime() });
     expect(empty).toMatchObject({ session: 'signed-out', rows: [], current: null });
     const pasted = buildSelectorModel({
       me: null,
       pointer: pointerFor({ source: 'addon', label: 'Warrior' }),
       chosenKeys: [],
-      now: NOW,
+      nowMs: NOW.getTime(),
     });
     expect(pasted.session).toBe('signed-out');
     expect(pasted.current).toMatchObject({ name: 'Warrior', sourceWord: 'Pasted export' });
   });
 
   it('is expired when an armory pointer outlives the session', () => {
-    const model = buildSelectorModel({ me: null, pointer: pointerFor({}), chosenKeys: [], now: NOW });
+    const model = buildSelectorModel({
+      me: null,
+      pointer: pointerFor({}),
+      chosenKeys: [],
+      nowMs: NOW.getTime(),
+    });
     expect(model.session).toBe('expired');
     expect(ringMarkOf(model)).toBe('session');
     expect(model.current?.name).toBe('Tester');
   });
 
   it('shows the pointer while /v1/me is still loading', () => {
-    const model = buildSelectorModel({ me: undefined, pointer: pointerFor({}), chosenKeys: [], now: NOW });
+    const model = buildSelectorModel({
+      me: undefined,
+      pointer: pointerFor({}),
+      chosenKeys: [],
+      nowMs: NOW.getTime(),
+    });
     expect(model.session).toBe('loading');
     expect(model.current?.name).toBe('Tester');
   });
 
   it('marks stale and failed rows, and the ring mark follows the current one', () => {
     const stale = character('Stale', { build: build(19) });
-    const failed = character('Failed', { build: build(3, { source: 'blizzard', sync_error: 'refresh failed' }) });
+    const failed = character('Failed', {
+      build: build(3, { source: 'blizzard', sync_error: 'refresh failed' }),
+    });
     const model = buildSelectorModel({
       me: me([stale, failed]),
       pointer: pointerFor({ ref: stale.key }),
       chosenKeys: [],
-      now: NOW,
+      nowMs: NOW.getTime(),
     });
     expect(model.rows.map((row) => row.status)).toEqual(['stale', 'failed']);
     expect(ringMarkOf(model)).toBe('stale');
@@ -264,7 +283,7 @@ describe('row copy', () => {
       me: me([character('Obnoxious Yell', { build: build(0.01), ...overrides })]),
       pointer: null,
       chosenKeys: [],
-      now: NOW,
+      nowMs: NOW.getTime(),
     }).rows[0];
 
   it('writes line 2 as spec class, level and realm, with the ruleset unless normal', () => {
@@ -291,7 +310,6 @@ describe('row copy', () => {
     expect(rowLineThree(stale)).toEqual({
       text: 'Battle.net · 19 days ago',
       tail: 'Refresh from your account',
-      tailHref: '/account',
       failed: false,
     });
   });
@@ -301,9 +319,13 @@ describe('row copy', () => {
       me: me([character('Alpha'), character('Beta'), character('Alphonse')]),
       pointer: null,
       chosenKeys: [],
-      now: NOW,
+      nowMs: NOW.getTime(),
     }).rows;
-    expect(filterRows(rows, ' alph ').map((r) => r.name).sort()).toEqual(['Alphonse', 'Alpha'].sort());
+    expect(
+      filterRows(rows, ' alph ')
+        .map((r) => r.name)
+        .sort(),
+    ).toEqual(['Alphonse', 'Alpha'].sort());
     expect(filterRows(rows, '')).toHaveLength(3);
   });
 });

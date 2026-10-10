@@ -39,7 +39,6 @@ export const selectorCopy = {
   refreshing: 'Refreshing from Battle.net',
   staleAddonTail: 'Log in to the game to update',
   staleBnetTail: 'Refresh from your account',
-  staleBnetHref: '/account',
   sourceAddon: 'Addon',
   sourceBnet: 'Battle.net',
   sourcePasted: 'Pasted export',

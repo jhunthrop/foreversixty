@@ -54,7 +54,8 @@ export interface ModelInput {
   me: Me | null | undefined;
   pointer: CurrentCharacter | null;
   chosenKeys: readonly string[];
-  now: Date;
+  /** The clock, in milliseconds since the epoch (a number, so reactive state can hold it). */
+  nowMs: number;
 }
 
 function capitalise(slug: string): string {
@@ -131,12 +132,14 @@ export function rowFromPointer(pointer: CurrentCharacter, sourceWord: string, no
   };
 }
 
-function isPastedPointer(pointer: CurrentCharacter | null): pointer is CurrentCharacter {
+type PastedPointer = CurrentCharacter & { source: 'code' | 'addon' };
+
+function isPastedPointer(pointer: CurrentCharacter | null): pointer is PastedPointer {
   return pointer !== null && (pointer.source === 'code' || pointer.source === 'addon');
 }
 
-function signedInModel(me: Me, input: ModelInput): SelectorModel {
-  const { pointer, now } = input;
+function signedInModel(me: Me, input: ModelInput, now: Date): SelectorModel {
+  const { pointer } = input;
   const hasAddonCharacter = me.characters.some((character) => character.build?.source === 'addon');
   if (isPastedPointer(pointer)) {
     const pasted = rowFromPointer(pointer, selectorCopy.sourcePasted, now);
@@ -166,12 +169,13 @@ function signedOutModel(pointer: CurrentCharacter | null, now: Date): SelectorMo
 }
 
 export function buildSelectorModel(input: ModelInput): SelectorModel {
+  const now = new Date(input.nowMs);
   if (input.me === undefined) {
-    const kept = input.pointer === null ? null : rowFromPointer(input.pointer, '', input.now);
+    const kept = input.pointer === null ? null : rowFromPointer(input.pointer, '', now);
     return { session: 'loading', rows: kept === null ? [] : [kept], current: kept, hasAddonCharacter: false };
   }
-  if (input.me === null) return signedOutModel(input.pointer, input.now);
-  return signedInModel(input.me, input);
+  if (input.me === null) return signedOutModel(input.pointer, now);
+  return signedInModel(input.me, input, now);
 }
 
 /** Rows whose name contains `query`, ignoring case; an empty query keeps every row. */
@@ -185,7 +189,9 @@ export function closedSecondLine(row: SelectorRow, withClass: boolean): string {
   const identity = [row.spec, withClass || row.spec === undefined ? row.className : undefined]
     .filter((part): part is string => part !== undefined && part !== '')
     .join(' ');
-  return [identity, row.level === undefined ? '' : String(row.level)].filter((part) => part !== '').join(' · ');
+  return [identity, row.level === undefined ? '' : String(row.level)]
+    .filter((part) => part !== '')
+    .join(' · ');
 }
 
 /** List line 2: `{Spec} {Class} · {level} · {Realm}`, with `· {Ruleset}` unless Normal. */
@@ -201,23 +207,20 @@ export interface RowLineThree {
   text: string;
   /** The ember clause after the plain age on a stale row. */
   tail: string;
-  /** Where the tail links to, when it is a link. */
-  tailHref: string | null;
   failed: boolean;
 }
 
 /** List line 3: source and age, plus the stale tail, or the failed sentence. */
 export function rowLineThree(row: SelectorRow): RowLineThree {
   if (row.status === 'failed') {
-    return { text: selectorCopy.failedLine(row.age), tail: '', tailHref: null, failed: true };
+    return { text: selectorCopy.failedLine(row.age), tail: '', failed: true };
   }
   const text = [row.sourceWord, row.age].filter((part) => part !== '').join(' · ');
-  if (row.status !== 'stale') return { text, tail: '', tailHref: null, failed: false };
+  if (row.status !== 'stale') return { text, tail: '', failed: false };
   const bnet = row.sourceWord === selectorCopy.sourceBnet;
   return {
     text,
     tail: bnet ? selectorCopy.staleBnetTail : selectorCopy.staleAddonTail,
-    tailHref: bnet ? selectorCopy.staleBnetHref : null,
     failed: false,
   };
 }
