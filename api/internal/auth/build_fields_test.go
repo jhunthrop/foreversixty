@@ -2,8 +2,10 @@ package auth
 
 import (
 	"context"
+	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -247,5 +249,72 @@ func TestBuildFieldsOfAMalformedExportLeavesTheCharacterIntact(t *testing.T) {
 	}
 	if c.Level != nil || c.Race != "" || c.Faction != "" || c.Realm != "" || c.Spec != "" {
 		t.Fatalf("character = %+v, want every gap-filling field left empty", c)
+	}
+}
+
+// recordSyncAt writes one character_syncs row at a fixed time, the way synclog.Record
+// would have when that sync happened.
+func recordSyncAt(t *testing.T, s *Store, key, source, outcome string, when time.Time) {
+	t.Helper()
+	if _, err := s.Pool.Exec(context.Background(),
+		`insert into character_syncs (character_key, source, outcome, created_at) values ($1, $2, $3, $4)`,
+		key, source, outcome, when); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestBuildCarriesMedianSyncGapAndSyncErrorFromHistory(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	u, err := s.UpsertEmailUser(ctx, "cadence@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	linkWithExport(t, s, u.ID, "us/pvp/nightly", "us", "pvp", "Nightly", "hunter", "blizzard", "FS1:1.60.1.70009:hunter:troll:0/0/0:")
+	base := time.Now().Add(-72 * time.Hour)
+	for _, h := range []int{0, 24, 48} {
+		recordSyncAt(t, s, "us/pvp/nightly", "blizzard", "ok", base.Add(time.Duration(h)*time.Hour))
+	}
+	recordSyncAt(t, s, "us/pvp/nightly", "blizzard", "bnet_refresh_failed", base.Add(60*time.Hour))
+
+	chars, err := s.Characters(ctx, u.ID)
+	if err != nil || len(chars) != 1 || chars[0].Build == nil {
+		t.Fatalf("characters = %v, err = %v", chars, err)
+	}
+	b := chars[0].Build
+	if b.MedianSyncGapSec == nil || *b.MedianSyncGapSec != 24*3600 {
+		t.Fatalf("median_sync_gap_sec = %v, want 86400", b.MedianSyncGapSec)
+	}
+	if b.SyncError == nil || *b.SyncError != "bnet_refresh_failed" {
+		t.Fatalf("sync_error = %v, want bnet_refresh_failed", b.SyncError)
+	}
+}
+
+func TestBuildSyncFieldsAreNullWithoutHistoryAndAlwaysInTheJSON(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	u, err := s.UpsertEmailUser(ctx, "fresh@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	linkWithExport(t, s, u.ID, "us/pvp/fresh", "us", "pvp", "Fresh", "hunter", "addon", "not an export")
+	recordSyncAt(t, s, "us/pvp/fresh", "addon", "ok", time.Now())
+	recordSyncAt(t, s, "us/pvp/fresh", "addon", "ok", time.Now().Add(time.Hour))
+
+	chars, err := s.Characters(ctx, u.ID)
+	if err != nil || len(chars) != 1 || chars[0].Build == nil {
+		t.Fatalf("characters = %v, err = %v", chars, err)
+	}
+	if chars[0].Build.MedianSyncGapSec != nil || chars[0].Build.SyncError != nil {
+		t.Fatalf("build = %+v, want both nil (two syncs is not enough, and nothing failed)", chars[0].Build)
+	}
+	raw, err := json.Marshal(chars[0].Build)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{`"median_sync_gap_sec":null`, `"sync_error":null`} {
+		if !strings.Contains(string(raw), want) {
+			t.Fatalf("build JSON = %s, want it to contain %s", raw, want)
+		}
 	}
 }

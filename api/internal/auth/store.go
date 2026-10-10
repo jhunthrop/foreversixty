@@ -11,6 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/synclog"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
@@ -156,6 +157,13 @@ type CharacterBuild struct {
 	Talents   *BuildTalents  `json:"talents,omitempty"`
 	Level     *int           `json:"level,omitempty"`
 	DataBuild string         `json:"data_build,omitempty"`
+	// MedianSyncGapSec is the median gap in seconds between this character's successive
+	// syncs (addon export or Battle.net import or refresh), read from the sync history;
+	// null with fewer than three on record. SyncError is the machine code of the last
+	// failed Battle.net refresh (synclog.OutcomeRefreshFailed); null when the last refresh
+	// succeeded or none has run. Both are always in the JSON, null when unknown.
+	MedianSyncGapSec *int    `json:"median_sync_gap_sec"`
+	SyncError        *string `json:"sync_error"`
 }
 
 // BuildTalents is a character's decoded talent split: Trees' per-tree rank string
@@ -453,7 +461,42 @@ const characterFrom = `from characters c
 // query into Characters, attaching a CharacterGuild wherever the guild
 // join matched and decoding the row's export string (buildFieldsFromExport)
 // into Build's and the character's own gap-filling fields.
-func (s *Store) scanCharacterRows(rows pgx.Rows) ([]Character, error) {
+func (s *Store) scanCharacterRows(ctx context.Context, rows pgx.Rows) ([]Character, error) {
+	out, err := s.scanCharacters(rows)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.attachSyncSummaries(ctx, out); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// attachSyncSummaries fills every Build's sync-history fields (synclog.Summaries) for the
+// characters that have a Build.
+func (s *Store) attachSyncSummaries(ctx context.Context, chars []Character) error {
+	keys := make([]string, 0, len(chars))
+	for _, c := range chars {
+		if c.Build != nil {
+			keys = append(keys, c.Key)
+		}
+	}
+	summaries, err := synclog.Summaries(ctx, s.Pool, keys)
+	if err != nil {
+		return fmt.Errorf("auth: character sync history: %w", err)
+	}
+	for i := range chars {
+		if chars[i].Build == nil {
+			continue
+		}
+		summary := summaries[chars[i].Key]
+		chars[i].Build.MedianSyncGapSec = summary.MedianGapSec
+		chars[i].Build.SyncError = summary.SyncError
+	}
+	return nil
+}
+
+func (s *Store) scanCharacters(rows pgx.Rows) ([]Character, error) {
 	defer rows.Close()
 	out := []Character{}
 	for rows.Next() {
@@ -495,7 +538,7 @@ func (s *Store) Characters(ctx context.Context, userID int64) ([]Character, erro
 	if err != nil {
 		return nil, fmt.Errorf("auth: list characters: %w", err)
 	}
-	return s.scanCharacterRows(rows)
+	return s.scanCharacterRows(ctx, rows)
 }
 
 // CharactersByKeys reads the same per-character shape Characters does,
@@ -510,7 +553,7 @@ func (s *Store) CharactersByKeys(ctx context.Context, keys []string) ([]Characte
 	if err != nil {
 		return nil, fmt.Errorf("auth: characters by keys: %w", err)
 	}
-	return s.scanCharacterRows(rows)
+	return s.scanCharacterRows(ctx, rows)
 }
 
 // LinkCharacter records a character as belonging to an account. It

@@ -21,6 +21,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/synclog"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
@@ -151,6 +152,9 @@ func (s *Store) putOneExport(ctx context.Context, tx pgx.Tx, userID int64, key, 
 		return fmt.Errorf("%w: %s", ErrCharacterClaimed, key)
 	}
 	if err := s.putOneCharacter(ctx, tx, userID, key, region, ruleset, e); err != nil {
+		return err
+	}
+	if err := synclog.Record(ctx, tx, key, synclog.SourceAddon, synclog.OutcomeOK); err != nil {
 		return err
 	}
 	return s.syncGuild(ctx, tx, userID, key, region, ruleset, e.Export)

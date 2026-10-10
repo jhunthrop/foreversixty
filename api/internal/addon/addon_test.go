@@ -188,6 +188,47 @@ func TestPutExportsStampsSourceAddonAndCapturedAt(t *testing.T) {
 	}
 }
 
+func TestPutExportsRecordsOneSyncPerExport(t *testing.T) {
+	h := newHarness(t)
+	export := Export{Name: "Kiloz", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.69893:warrior:orc:0/0/0:"}
+	for range 2 {
+		if err := h.store.PutExports(context.Background(), h.owner, []Export{export}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	var n int
+	if err := h.pool.QueryRow(context.Background(),
+		`select count(*) from character_syncs where character_key = 'us/normal/kiloz' and source = 'addon' and outcome = 'ok'`).
+		Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 2 {
+		t.Fatalf("sync rows = %d, want 2", n)
+	}
+}
+
+func TestPutExportsRefusedClaimRecordsNoSync(t *testing.T) {
+	h := newHarness(t)
+	export := Export{Name: "Kiloz", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.69893:warrior:orc:0/0/0:"}
+	stranger, err := (&auth.Store{Pool: h.pool}).UpsertEmailUser(context.Background(), "stranger-sync@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(context.Background(), h.owner, []Export{export}); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(context.Background(), stranger.ID, []Export{export}); !errors.Is(err, ErrCharacterClaimed) {
+		t.Fatalf("err = %v, want ErrCharacterClaimed", err)
+	}
+	var n int
+	if err := h.pool.QueryRow(context.Background(), `select count(*) from character_syncs`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Fatalf("sync rows = %d, want only the owner's", n)
+	}
+}
+
 func TestPutExportsClaimsAnUnclaimedCharacter(t *testing.T) {
 	h := newHarness(t)
 	if err := h.store.PutExports(context.Background(), h.owner,

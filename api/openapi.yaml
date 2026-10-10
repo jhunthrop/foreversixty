@@ -938,6 +938,15 @@ paths:
         (the tree with strictly the most) -- omitted on a tie, when no points are spent, or
         whenever any of the above cannot be read. A malformed or out-of-date export never
         fails this route; it simply leaves every one of these fields absent.
+
+
+        A build also always carries two nullable sync-history fields, read from the
+        character_syncs history (one row per addon export, Battle.net import or refresh;
+        never a stored value). median_sync_gap_sec is the median gap in whole seconds
+        between the character's successive syncs, null with fewer than three on record.
+        sync_error is a short machine code for the last failed Battle.net refresh
+        ("bnet_refresh_failed"), null when the last refresh succeeded or none has run; an
+        addon export does not clear it.
       responses:
         '200':
           description: OK

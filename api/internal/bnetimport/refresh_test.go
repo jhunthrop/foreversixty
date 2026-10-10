@@ -5,6 +5,8 @@ import (
 	"context"
 	"net/http"
 	"testing"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func TestStaleBnetCharactersFindsOnlyOldBnetRows(t *testing.T) {
@@ -161,5 +163,110 @@ func TestRunRefreshRekeysARowWhoseRealmResolvesToAnotherRuleset(t *testing.T) {
 	}
 	if ruleset != "pvp" || membershipKey != "us/pvp/dottzz" {
 		t.Fatalf("ruleset = %q, membership key = %q", ruleset, membershipKey)
+	}
+}
+
+func seedStaleBnetCharacter(t *testing.T, pool *pgxpool.Pool, uid int64, key, name string, bnetID int) {
+	t.Helper()
+	if _, err := pool.Exec(context.Background(),
+		`insert into characters (key, region, ruleset, name, user_id, realm_slug, bnet_character_id, source, refreshed_at)
+		 values ($1, 'us', 'pvp', $2, $3, 'whitemane', $4, 'bnet', now() - interval '25 hours')`,
+		key, name, uid, bnetID); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func latestSyncOutcome(t *testing.T, pool *pgxpool.Pool, key string) (source, outcome string, n int) {
+	t.Helper()
+	ctx := context.Background()
+	if err := pool.QueryRow(ctx, `select count(*) from character_syncs where character_key = $1`, key).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n == 0 {
+		return "", "", 0
+	}
+	if err := pool.QueryRow(ctx,
+		`select source, outcome from character_syncs where character_key = $1 order by id desc limit 1`, key).
+		Scan(&source, &outcome); err != nil {
+		t.Fatal(err)
+	}
+	return source, outcome, n
+}
+
+func TestRunRefreshRecordsAFailedRefreshOutsideTheRolledBackTransaction(t *testing.T) {
+	pool := testPool(t)
+	uid := seedUser(t, pool)
+	seedStaleBnetCharacter(t, pool, uid, "us/pvp/broken", "Broken", 601)
+
+	f := newBlizzardFixture(t)
+	f.realms("us", map[string]string{"whitemane": "PVP"})
+	f.json(http.MethodGet, "/profile/wow/character/whitemane/broken?namespace=profile-classic1x-us",
+		http.StatusInternalServerError, nil)
+
+	result, err := newTestService(t, pool, f).RunRefresh(context.Background(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Skipped != 1 {
+		t.Fatalf("result = %+v, want the character skipped as a failure", result)
+	}
+	source, outcome, n := latestSyncOutcome(t, pool, "us/pvp/broken")
+	if n != 1 || source != "blizzard" || outcome != "bnet_refresh_failed" {
+		t.Fatalf("sync history = %d rows, latest %s/%s, want one blizzard/bnet_refresh_failed", n, source, outcome)
+	}
+}
+
+func TestRunRefreshRecordsASuccessfulRefresh(t *testing.T) {
+	pool := testPool(t)
+	uid := seedUser(t, pool)
+	seedStaleBnetCharacter(t, pool, uid, "us/pvp/fine", "Fine", 602)
+
+	f := newBlizzardFixture(t)
+	f.realms("us", map[string]string{"whitemane": "PVP"})
+	f.json(http.MethodGet, "/profile/wow/character/whitemane/fine?namespace=profile-classic1x-us", http.StatusNotFound, nil)
+	f.json(http.MethodGet, "/profile/wow/character/whitemane/fine/equipment?namespace=profile-classic1x-us", http.StatusNotFound, nil)
+	f.json(http.MethodGet, "/profile/wow/character/whitemane/fine/character-media?namespace=profile-classic1x-us", http.StatusNotFound, nil)
+
+	result, err := newTestService(t, pool, f).RunRefresh(context.Background(), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Refreshed != 1 {
+		t.Fatalf("result = %+v, want one refreshed", result)
+	}
+	source, outcome, n := latestSyncOutcome(t, pool, "us/pvp/fine")
+	if n != 1 || source != "blizzard" || outcome != "ok" {
+		t.Fatalf("sync history = %d rows, latest %s/%s, want one blizzard/ok", n, source, outcome)
+	}
+}
+
+func TestRunRefreshKeepsSyncHistoryAcrossARekey(t *testing.T) {
+	pool := testPool(t)
+	uid := seedUser(t, pool)
+	ctx := context.Background()
+	if _, err := pool.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, user_id, realm_slug, bnet_character_id, source, refreshed_at)
+		 values ('us/normal/moved', 'us', 'normal', 'Moved', $1, 'living-flame', 603, 'bnet', now() - interval '25 hours')`, uid); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx,
+		`insert into character_syncs (character_key, source, outcome) values ('us/normal/moved', 'addon', 'ok')`); err != nil {
+		t.Fatal(err)
+	}
+	f := newBlizzardFixture(t)
+	f.realms("us", map[string]string{"living-flame": "PVP"})
+	f.json(http.MethodGet, "/profile/wow/character/living-flame/moved?namespace=profile-classic1x-us", http.StatusNotFound, nil)
+	f.json(http.MethodGet, "/profile/wow/character/living-flame/moved/equipment?namespace=profile-classic1x-us", http.StatusNotFound, nil)
+	f.json(http.MethodGet, "/profile/wow/character/living-flame/moved/character-media?namespace=profile-classic1x-us", http.StatusNotFound, nil)
+
+	if _, err := newTestService(t, pool, f).RunRefresh(ctx, nil); err != nil {
+		t.Fatal(err)
+	}
+	var n int
+	if err := pool.QueryRow(ctx, `select count(*) from character_syncs where character_key = 'us/pvp/moved'`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 2 {
+		t.Fatalf("history under the new key = %d rows, want the old addon row plus the refresh", n)
 	}
 }

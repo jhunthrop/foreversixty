@@ -14,6 +14,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/synclog"
 )
 
 // importOneCharacter writes one character's characters row and syncs its
@@ -79,6 +80,9 @@ func (s *Service) importOneCharacter(ctx context.Context, userID int64, region, 
 		return false, false, false, err
 	}
 	if err := s.buildAndWriteExport(ctx, tx, userID, key, region, ruleset, profile, rawEquipment, rawSpecializations); err != nil {
+		return false, false, false, err
+	}
+	if err := synclog.Record(ctx, tx, key, synclog.SourceBlizzard, synclog.OutcomeOK); err != nil {
 		return false, false, false, err
 	}
 	if err := tx.Commit(ctx); err != nil {

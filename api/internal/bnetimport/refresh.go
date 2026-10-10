@@ -12,6 +12,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/synclog"
 )
 
 // refreshWindow is spec §4.4's staleness threshold: a 'bnet'-sourced
@@ -95,6 +96,7 @@ func (s *Service) RunRefresh(ctx context.Context, probeGames []string) (RefreshR
 				break
 			}
 			s.logger().Warn("bnetimport", "op", "refresh_character", "bnet_character_id", sc.BnetCharacterID, "err", err)
+			s.recordRefreshFailure(ctx, sc)
 			result.Skipped++
 			continue
 		}
@@ -160,10 +162,33 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 	if err := s.buildAndWriteExport(ctx, tx, sc.UserID, key, region, ruleset, profile, rawEquipment, rawSpecializations); err != nil {
 		return err
 	}
+	if err := synclog.Record(ctx, tx, key, synclog.SourceBlizzard, synclog.OutcomeOK); err != nil {
+		return err
+	}
 	if err := tx.Commit(ctx); err != nil {
 		return fmt.Errorf("bnetimport: refresh commit %s: %w", key, err)
 	}
 	return nil
+}
+
+// recordRefreshFailure notes in the sync history that sc's refresh failed, for GET /v1/me's
+// build.sync_error. It runs outside the refresh's transaction (which the failure rolled back)
+// and looks the key up afresh, since the rolled-back transaction may have been the one
+// re-keying it. A history that cannot be written is logged, never a second failure.
+func (s *Service) recordRefreshFailure(ctx context.Context, sc staleCharacter) {
+	var key string
+	err := s.Pool.QueryRow(ctx,
+		`select key from characters where bnet_character_id = $1 and coalesce(realm_slug, '') = $2 and source = 'bnet'`,
+		sc.BnetCharacterID, sc.RealmSlug).Scan(&key)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return
+	}
+	if err == nil {
+		err = synclog.Record(ctx, s.Pool, key, synclog.SourceBlizzard, synclog.OutcomeRefreshFailed)
+	}
+	if err != nil {
+		s.logger().Warn("bnetimport", "op", "record_refresh_failure", "bnet_character_id", sc.BnetCharacterID, "err", err)
+	}
 }
 
 // runProbe requests the namespace probe for every configured region and
