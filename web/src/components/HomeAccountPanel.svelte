@@ -224,10 +224,10 @@
     <div class="min-h-[112px] min-w-0 xl:col-span-7" data-testid="home-hero-cards-slot"></div>
   </div>
 {:else}
-  <!-- The ready hero's measured height with several characters (567 / 333 / 199px at
+  <!-- The ready hero's measured height with several characters (591 / 354 / 199px at
        390 / 1024 / 1440), so a session-hinted page does not shift when /v1/me lands. -->
   <div
-    class="pointer-events-none min-h-[567px] [grid-area:1/1] md:min-h-[333px] xl:min-h-[199px]"
+    class="pointer-events-none min-h-[591px] [grid-area:1/1] md:min-h-[354px] xl:min-h-[199px]"
     aria-hidden="true"
   ></div>
 {/if}
