@@ -71,47 +71,13 @@ const entries: ClassCardEntry[] = classes.map((c) => ({
 <script>
   // The index's own signed-in callout (spec §4.A): no Svelte island (the rebuild's own
   // budget keeps every guide page static beyond the one existing `GuideBuildTree` island) --
-  // a plain module script fetches the shared, cached `/v1/me` session read and swaps this
-  // skeleton for the real callout, or removes it entirely signed-out / on a session with no
-  // usable character (never blocks the grid beside it, which needs nothing from this fetch).
-  import { fetchMeOnce } from '../../lib/account/api';
-  import { selectedCharacter } from '../../lib/account/hero-character';
-  import { readCurrent } from '../../lib/current-character';
-  import { signedInCalloutView } from '../../lib/guides/signed-in-callout';
+  // a plain module script swaps this skeleton for the real callout, or hides the slot
+  // signed-out / on a session with no usable character (never blocks the grid beside it,
+  // which needs nothing from this fetch). It follows the header character selector.
+  import { mountSignedInCallout } from '../../lib/guides/signed-in-callout-mount';
 
-  async function mount(): Promise<void> {
-    const root = document.getElementById('guides-signed-in-callout');
-    if (root === null) return;
-    const me = await fetchMeOnce().catch(() => null);
-    // The same character the header chip shows: the switched-to pointer, else the main
-    // (owner-reported defect 2026-10-07: `characters[0]` named an alt while a warrior
-    // was selected).
-    const view = signedInCalloutView(
-      me === null ? undefined : (selectedCharacter(readCurrent(), me) ?? undefined),
-    );
-    if (view === undefined) {
-      root.remove();
-      return;
-    }
-    const link = document.createElement('a');
-    link.className = 'guides-callout';
-    link.href = view.href;
-    link.dataset.testid = 'guides-signed-in-callout';
-    const img = document.createElement('img');
-    img.src = view.crestSrc;
-    img.alt = '';
-    img.width = 36;
-    img.height = 36;
-    img.className = 'guides-callout-crest';
-    img.style.setProperty('--c', view.crestColorVar);
-    const text = document.createElement('span');
-    text.className = 'guides-callout-text';
-    text.textContent = view.text;
-    link.append(img, text);
-    root.replaceChildren(link);
-  }
-
-  void mount();
+  const root = document.getElementById('guides-signed-in-callout');
+  if (root !== null) mountSignedInCallout(root);
 </script>
 
 <style>

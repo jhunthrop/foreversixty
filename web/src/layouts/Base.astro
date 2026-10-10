@@ -158,6 +158,7 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
           const rest = parts.slice(1).join(' · ');
           const spec = rest.endsWith(' ' + className) ? rest.slice(0, -className.length - 1) : '';
           let level = '';
+          let name = parts[0];
           if (pointer.source === 'armory') {
             const cached = scriptEl.dataset.meStorageKey
               ? localStorage.getItem(scriptEl.dataset.meStorageKey)
@@ -173,10 +174,11 @@ const meStorageKey = storageKey(meKey(API_BASE_URL));
                 : [];
             const match = characters.find((c) => c.key === pointer.ref);
             if (match && typeof match.level === 'number') level = String(match.level);
+            if (match && typeof match.name === 'string') name = match.name;
           }
           const full = [spec ? spec + ' ' + className : className, level].filter(Boolean).join(' · ');
           const short = [spec || className, level].filter(Boolean).join(' · ');
-          document.querySelectorAll('[data-csel-name]').forEach((el) => (el.textContent = parts[0]));
+          document.querySelectorAll('[data-csel-name]').forEach((el) => (el.textContent = name));
           document.querySelectorAll('[data-csel-sub]').forEach((el) => (el.textContent = full));
           document.querySelectorAll('[data-csel-sub-short]').forEach((el) => (el.textContent = short));
         }
