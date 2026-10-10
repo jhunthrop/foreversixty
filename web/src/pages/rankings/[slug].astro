@@ -22,7 +22,7 @@ const { slug } = Astro.params;
   <main
     id="main"
     tabindex="-1"
-    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+    class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
   >
     <Rankings client:load slug={slug ?? ''} />
   </main>

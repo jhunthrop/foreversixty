@@ -29,11 +29,7 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
   path={`/reports/${id}`}
 >
   <link rel="stylesheet" href="/report-island.css" slot="head" />
-  <main
-    id="main"
-    tabindex="-1"
-    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
-  >
+  <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
     <!--
       Reserves the report's space before the island mounts. Without it the placeholder is
       one line tall, the footer sits inside the viewport, and rendering the report shoves

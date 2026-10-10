@@ -26,11 +26,7 @@ const inline = id === FIXTURE_SIM_ID ? JSON.stringify(fixtureResult) : undefined
   path={`/sim/${id}`}
 >
   <link rel="stylesheet" href="/sim-island.css" slot="head" />
-  <main
-    id="main"
-    tabindex="-1"
-    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
-  >
+  <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
     <SimTabs currentPath="/sim" />
     <!-- This page has no `<h1>` of its own (the saved sim's own title comes from the island
          once it mounts), so ScopeNote sits directly below the tab strip instead, the

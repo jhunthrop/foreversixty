@@ -13,11 +13,7 @@ import { DEFAULT_CLASS_SLUG } from '../lib/planner/config';
   description="Plan a World of Warcraft: Forever build: talents in the order you spend them, and a short link to share it."
   path="/planner"
 >
-  <main
-    id="main"
-    tabindex="-1"
-    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pb-10 md:gap-8 md:px-12"
-  >
+  <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pb-10 md:gap-8 md:px-0">
     <!-- Rebuild spec §4.A: the h1 now lives inside the island (`PlannerHeader.svelte`) --
          it reads "{Class} talents", never the tool's own name "Build planner" (which stays
          the page's <title>, Base.astro's own <head>, unchanged). -->

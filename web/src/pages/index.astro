@@ -96,7 +96,7 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
 >
   <main id="main" tabindex="-1" class="flex flex-col">
     <SkyBand>
-      <div class="flex w-full max-w-[1344px] flex-col gap-[22px] px-[18px] py-7 mx-auto md:px-12 lg:py-8">
+      <div class="page-column flex flex-col gap-[22px] px-[18px] py-7 lg:py-8">
         <div class="flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-end lg:gap-8">
           <!-- §3.A.1 Hero left column (7/12): eyebrow, headline, sentence, nine-class
                picker, sign-in action. The signed-in hero (HomeAccountPanel) occludes this
@@ -228,7 +228,7 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
          (global.css `.home-upgrades-section`), one HomeTimeline in the DOM at every width.
          The negative bottom margin keeps the strip-to-content gap at the 32px it always had
          while the section gap is 48px from md up. -->
-    <div class="flex flex-col gap-8 md:gap-12 w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pb-8 -mt-2">
+    <div class="flex flex-col gap-8 md:gap-12 px-[18px] md:px-0 pb-8 -mt-2">
       <div class="md:-mb-4" data-testid="home-timeline-wrap">
         <HomeTimeline dates={dates} updated={updated} />
       </div>

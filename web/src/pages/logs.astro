@@ -26,13 +26,13 @@ const blockTitle = 'label text-muted';
   description="Upload a World of Warcraft: Forever combat log, or log live with the Forever Sixty companion."
   path="/logs"
 >
-  <main id="main" tabindex="-1" class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pb-10 md:gap-8">
+  <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pb-10 md:gap-8">
     <!-- §4.A: mounted client:idle -- this region sits above the fold and names the page's
          LCP candidate (the h1), so hydration must not gate first paint on anything the
          server markup does not already carry. -->
     <LogsHeroBand client:idle />
 
-    <div class="flex flex-col gap-[22px] px-[18px] md:gap-8 md:px-12">
+    <div class="flex flex-col gap-[22px] px-[18px] md:gap-8 md:px-0">
       <CurrentCharacterBar client:idle spine />
 
       <!-- Designer ruling, logs mock review (2026-10-04): the dungeon-framing sentence

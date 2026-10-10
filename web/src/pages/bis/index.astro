@@ -45,11 +45,7 @@ const classesWithSpecs = classes
 ---
 
 <Base title={bisCopy.indexTitle} description={bisCopy.indexDescription} path="/bis">
-  <main
-    id="main"
-    tabindex="-1"
-    class="max-w-[1000px] w-full mx-auto px-[18px] md:px-12 py-10 flex flex-col gap-5"
-  >
+  <main id="main" tabindex="-1" class="measure-wide px-[18px] md:px-0 py-10 flex flex-col gap-5">
     <header class="flex flex-col gap-2">
       <h1 class="text-[28px] font-bold tracking-[0.02em]">{bisCopy.indexTitle}</h1>
       {updated && <UpdatedStamp date={updated} />}

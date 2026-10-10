@@ -95,19 +95,17 @@ const specCards: SpecCardView[] = catalogEntries.flatMap((s): SpecCardView[] => 
 >
   <Fragment slot="beforeMain">
     <ArtPanel classSlug={classSlug}>
-      <div class="guide-band-inner">
-        <ClassHeader
-          classSlug={classSlug}
-          className={className}
-          specName=""
-          specTabs={specTabs}
-          bands={[]}
-          build={build}
-          minimal
-          eyebrow={guidesCopy.eyebrow}
-          titleOverride={entry.data.title}
-        />
-      </div>
+      <ClassHeader
+        classSlug={classSlug}
+        className={className}
+        specName=""
+        specTabs={specTabs}
+        bands={[]}
+        build={build}
+        minimal
+        eyebrow={guidesCopy.eyebrow}
+        titleOverride={entry.data.title}
+      />
     </ArtPanel>
   </Fragment>
   <div class="class-landing-identity" set:html={identityHtml} />
@@ -164,12 +162,6 @@ const specCards: SpecCardView[] = catalogEntries.flatMap((s): SpecCardView[] => 
 </script>
 
 <style>
-  /* Band content capped at 1344px and centred (owner 2026-10-04): the band stays full-bleed. */
-  .guide-band-inner {
-    max-width: 1344px;
-    margin-inline: auto;
-    width: 100%;
-  }
   .class-landing-identity {
     margin: 0;
   }

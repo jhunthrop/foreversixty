@@ -14,11 +14,7 @@ import IslandScript from '../components/IslandScript.astro';
   path="/reports"
 >
   <link rel="stylesheet" href="/report-island.css" slot="head" />
-  <main
-    id="main"
-    tabindex="-1"
-    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
-  >
+  <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7">
     <!-- The Worker serves this page as the shell for every /reports/<id>, so before the
          island boots it shows the report's skeleton; only a browser with no JavaScript
          reads the line about nothing being open. -->

@@ -368,14 +368,14 @@ const crossScopeCss =
     padding-bottom: 40px;
   }
   .bis-empty-wrap {
-    padding: 28px 48px;
+    padding: 28px var(--page-inset);
   }
 
   .header-row {
     display: grid;
     grid-template-columns: 1fr 440px;
     gap: 24px;
-    padding: 28px 48px 24px 48px;
+    padding: 28px var(--page-inset) 24px var(--page-inset);
     align-items: end;
   }
   .header-faction {
@@ -412,7 +412,7 @@ const crossScopeCss =
   @media (max-width: 1023px) {
     .header-row {
       grid-template-columns: 1fr;
-      padding: 22px 18px 18px 18px;
+      padding: 22px var(--page-inset) 18px var(--page-inset);
     }
   }
 </style>

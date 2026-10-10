@@ -14,11 +14,7 @@ import CheckoutLauncher from '../../components/CheckoutLauncher.svelte';
 ---
 
 <Base title="Checkout" description="Continue to checkout." path="/premium/checkout">
-  <main
-    id="main"
-    tabindex="-1"
-    class="mx-auto flex w-full max-w-[480px] flex-col gap-4 px-[18px] pt-10 pb-16 md:px-12"
-  >
+  <main id="main" tabindex="-1" class="measure-form flex flex-col gap-4 px-[18px] pt-10 pb-16 md:px-0">
     <h1 class="section-title text-[18px]">Checkout</h1>
     <CheckoutLauncher client:load />
   </main>
