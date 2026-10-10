@@ -271,7 +271,7 @@ const crossScopeCss =
         <input type="radio" name="faction" id="faction-horde" class="sr-only" />
         <style set:html={crossScopeCss}></style>
 
-        <div class="page-body">
+        <div class="page-body" data-bis-spec={specEntry.spec}>
           <ArtPanel classSlug={specEntry.class_slug}>
             <div class="header-row">
               {factions.map((faction) => (
@@ -498,4 +498,13 @@ const crossScopeCss =
     window.addEventListener('hashchange', syncActive);
     syncActive();
   })();
+</script>
+
+<script>
+  // The header selector is the one way to switch character: follow it (a bundled script, so
+  // the inline ones above stay framework-free).
+  import { mountBisFollow } from '../../../lib/bis/follow-selector-client';
+
+  const root = document.querySelector<HTMLElement>('.page-body[data-bis-spec]');
+  if (root !== null) mountBisFollow(root);
 </script>
