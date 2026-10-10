@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-test("ships only the layout's account menu island", async ({ page }) => {
+test("ships only the layout's character selector island", async ({ page }) => {
   await page.goto('/premium');
   const islands = page.locator('astro-island');
   await expect(islands).toHaveCount(1);
-  await expect(islands.first()).toHaveAttribute('component-url', /AccountMenu/);
+  await expect(islands.first()).toHaveAttribute('component-url', /CharacterSelector/);
 });
 
 test('states what is free forever, the two plans, and that there are no ads', async ({ page }) => {

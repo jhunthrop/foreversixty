@@ -34,7 +34,7 @@ test('a signed-out visitor is offered both sign-in routes', async ({ page }) => 
   );
   await page.goto('/login');
 
-  await expect(page.getByTestId('session-nav').getByRole('link', { name: 'Sign in' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sign in or choose a character' })).toBeVisible();
   await expect(page.getByTestId('battlenet')).toHaveAttribute(
     'href',
     /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Fsigned_in%3D1$/,
@@ -94,7 +94,7 @@ test('the account page lists devices, pairs one, and shows the character', async
 
   await page.goto('/account');
 
-  await expect(page.getByTestId('session-nav')).toContainText('Fixture#1234');
+  await expect(page.getByTestId('character-selector')).toBeVisible();
   await expect(page.getByText('Raid PC')).toBeVisible();
   await expect(
     page.getByTestId('account-characters').getByRole('link', { name: 'Elyra Duskvale' }),

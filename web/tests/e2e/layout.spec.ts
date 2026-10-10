@@ -25,14 +25,12 @@ test.describe('phone layout', () => {
   });
 });
 
-test('a content page carries the same account menu as every other page', async ({ page }) => {
+test('a content page carries the same character selector as every other page', async ({ page }) => {
   // Owner 2026-10-04: /guides used to render a static "Sign in" while every tool page showed
-  // the signed-in chip. The layout now mounts AccountMenu everywhere; signed out, it
-  // resolves to the Sign in link.
+  // the signed-in chip. The layout now mounts the character selector everywhere; signed out,
+  // it resolves to the Sign in slot, whose panel carries the sign-in route.
   await page.goto('/guides');
-  await expect(page.locator('astro-island[component-url*="AccountMenu"]')).toHaveCount(1);
-  await expect(page.getByRole('banner').getByRole('link', { name: 'Sign in' })).toHaveAttribute(
-    'href',
-    /\/login/,
-  );
+  await expect(page.locator('astro-island[component-url*="CharacterSelector"]')).toHaveCount(1);
+  await page.getByRole('banner').getByRole('button', { name: 'Sign in or choose a character' }).click();
+  await expect(page.getByTestId('selector-sign-in')).toHaveAttribute('href', /\/login/);
 });
