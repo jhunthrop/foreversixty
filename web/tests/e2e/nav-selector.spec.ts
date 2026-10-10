@@ -28,6 +28,14 @@ const FROSTBYTE: FixtureCharacter = {
   buildDaysAgo: 3,
   buildSource: 'blizzard',
 };
+const HORDE_FURY: FixtureCharacter = {
+  name: 'Rageclaw',
+  class: 'Warrior',
+  spec: 'Fury',
+  level: 34,
+  faction: 'horde',
+  buildDaysAgo: 1,
+};
 const SHADOWMEND: FixtureCharacter = {
   name: 'Shadowmend',
   class: 'Priest',
@@ -346,13 +354,13 @@ test.describe('choosing a character', () => {
     await expect(page.getByTestId('selector-name')).toHaveText('Frostbyte');
   });
 
-  async function chooseFrostbyte(page: Page): Promise<void> {
+  async function choose(page: Page, character: FixtureCharacter): Promise<void> {
     await page.evaluate(() => {
       (window as unknown as { __kept: boolean }).__kept = true;
     });
     await selector(page).click();
-    await rowButton(page, FROSTBYTE).click();
-    await expect(page.getByTestId('selector-name')).toHaveText('Frostbyte');
+    await rowButton(page, character).click();
+    await expect(page.getByTestId('selector-name')).toHaveText(character.name);
   }
 
   async function pageWasNotReloaded(page: Page): Promise<boolean> {
@@ -368,7 +376,7 @@ test.describe('choosing a character', () => {
     await ready(page);
     await expect(page.getByTestId('tier-callout')).toContainText('Fury Warrior is');
     await expect(page.getByTestId('tier-row-warrior-fury').first()).toHaveClass(/is-you/);
-    await chooseFrostbyte(page);
+    await choose(page, FROSTBYTE);
     await expect(page.getByTestId('tier-callout')).toContainText('Frost Mage is');
     await expect(page.getByTestId('tier-callout')).not.toContainText('Fury Warrior is');
     await expect(page.getByTestId('tier-row-mage-frost').first()).toHaveClass(/is-you/);
@@ -377,7 +385,7 @@ test.describe('choosing a character', () => {
     expect(await pageWasNotReloaded(page)).toBe(true);
   });
 
-  test('on /bis, the character card moves to the new character and the page keeps its place', async ({
+  test('on /bis, a character of another class moves the page to that character’s own spec page, band and faction', async ({
     page,
   }) => {
     await signInWith(page, [OBNOXIOUS, FROSTBYTE]);
@@ -385,10 +393,26 @@ test.describe('choosing a character', () => {
     await page.goto('/bis/warrior/fury#band-alliance-20');
     await ready(page);
     await expect(page.getByTestId('bis-character-card')).toContainText('Obnoxious Yell');
-    await chooseFrostbyte(page);
+    await choose(page, FROSTBYTE);
+    await expect(page).toHaveURL(/\/bis\/mage\/frost\?faction=horde#band-horde-40$/);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Frost');
     await expect(page.getByTestId('bis-character-card')).toContainText('Frostbyte');
     await expect(page.getByTestId('bis-character-card')).not.toContainText('Obnoxious Yell');
-    await expect(page).toHaveURL(/\/bis\/warrior\/fury#band-alliance-20$/);
+    await expect(page.getByTestId('bis-character-card')).not.toContainText('Switch');
+  });
+
+  test('on /bis, a same-spec character updates band and faction in place, with no reload', async ({
+    page,
+  }) => {
+    await signInWith(page, [OBNOXIOUS, HORDE_FURY]);
+    await storePointer(page, armoryPointer(OBNOXIOUS));
+    await page.goto('/bis/warrior/fury#band-alliance-60');
+    await ready(page);
+    await choose(page, HORDE_FURY);
+    await expect(page).toHaveURL(/\/bis\/warrior\/fury\?faction=horde#band-horde-30$/);
+    await expect(page.getByTestId('bis-faction-panel-horde')).toBeVisible();
+    await expect(page.getByTestId('bis-band-horde-30')).toBeVisible();
+    await expect(page.getByTestId('bis-character-card')).toContainText('Rageclaw');
     expect(await pageWasNotReloaded(page)).toBe(true);
   });
 
@@ -398,7 +422,7 @@ test.describe('choosing a character', () => {
     await page.goto('/planner');
     await ready(page);
     await expect(page.getByTestId('planner-header-h1')).toContainText('Warrior');
-    await chooseFrostbyte(page);
+    await choose(page, FROSTBYTE);
     await expect(page.getByTestId('planner-header-h1')).toContainText('Mage');
     await expect(page).toHaveURL(/\/planner\?class=mage/);
     await expect(page.getByTestId('planner-character-card')).toContainText('Frostbyte');
