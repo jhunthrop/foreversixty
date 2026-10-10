@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70291",
-  "engine_version": "b1b13fddc",
-  "generated_at": "2026-10-09T21:42:35Z",
+  "engine_version": "a73988d91",
+  "generated_at": "2026-10-10T14:09:48Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -622,8 +622,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.835817397,
-      "verify_run_seconds": 3.959275568,
+      "weights_run_seconds": 2.202160583,
+      "verify_run_seconds": 3.187001377,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1327,8 +1327,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.835817397,
-      "verify_run_seconds": 3.887623295,
+      "weights_run_seconds": 2.202160583,
+      "verify_run_seconds": 3.163162339,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2022,8 +2022,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 3.071461843,
-      "verify_run_seconds": 2.154576012,
+      "weights_run_seconds": 2.393541218,
+      "verify_run_seconds": 1.749581809,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2711,8 +2711,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 3.071461843,
-      "verify_run_seconds": 2.222108485,
+      "weights_run_seconds": 2.393541218,
+      "verify_run_seconds": 1.7772819530000001,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3403,8 +3403,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.299637115,
-      "verify_run_seconds": 3.051753067,
+      "weights_run_seconds": 2.5223445780000002,
+      "verify_run_seconds": 2.4193326969999998,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4096,8 +4096,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.299637115,
-      "verify_run_seconds": 3.125336042,
+      "weights_run_seconds": 2.5223445780000002,
+      "verify_run_seconds": 2.464511982,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4794,8 +4794,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.282839909,
-      "verify_run_seconds": 4.35724771,
+      "weights_run_seconds": 2.570644584,
+      "verify_run_seconds": 3.415730644,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5513,8 +5513,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.282839909,
-      "verify_run_seconds": 4.432254669,
+      "weights_run_seconds": 2.570644584,
+      "verify_run_seconds": 3.666624045,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6269,8 +6269,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.307447878,
-      "verify_run_seconds": 11.76185422,
+      "weights_run_seconds": 2.500663438,
+      "verify_run_seconds": 9.409985957,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6579,14 +6579,14 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.7677969488724483
+              "dps_delta": -0.7677969488724513
             },
             {
               "item_id": 22191,
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -4.058448600578568
+              "dps_delta": -4.058448600578571
             },
             {
               "item_id": 23087,
@@ -6707,14 +6707,14 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.8633518604601553
+              "dps_delta": -2.8633518604601527
             },
             {
               "item_id": 22385,
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -4.076048483566138
+              "dps_delta": -4.076048483566136
             },
             {
               "item_id": 14554,
@@ -7021,8 +7021,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.307447878,
-      "verify_run_seconds": 12.303378249,
+      "weights_run_seconds": 2.500663438,
+      "verify_run_seconds": 9.791515477,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7768,8 +7768,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.738313514,
-      "verify_run_seconds": 13.175958549,
+      "weights_run_seconds": 2.853469495,
+      "verify_run_seconds": 10.363539447,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8166,7 +8166,7 @@
           "item_name": "Belt of Preserved Heads",
           "source": "A Collection of Heads",
           "source_kind": "quest",
-          "score": 115.80953621337198,
+          "score": 115.80953621337197,
           "verified": true,
           "alternatives": [
             {
@@ -8174,14 +8174,14 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -2.7537607008099085
+              "dps_delta": -2.7537607008099054
             },
             {
               "item_id": 22232,
               "item_name": "Marksman's Girdle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -3.187695385036622
+              "dps_delta": -3.1876953850366188
             },
             {
               "item_id": 227814,
@@ -8521,8 +8521,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.738313514,
-      "verify_run_seconds": 13.304702919,
+      "weights_run_seconds": 2.853469495,
+      "verify_run_seconds": 10.492245246,
       "coverage": {
         "back": {
           "eligible": 456,

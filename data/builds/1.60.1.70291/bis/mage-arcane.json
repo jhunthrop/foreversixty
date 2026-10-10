@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70291",
-  "engine_version": "b1b13fddc",
-  "generated_at": "2026-10-09T20:23:47Z",
+  "engine_version": "a73988d91",
+  "generated_at": "2026-10-10T13:09:34Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.013660041,
-      "verify_run_seconds": 0.769255284,
+      "weights_run_seconds": 0.763388035,
+      "verify_run_seconds": 0.618865071,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1198,8 +1198,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.013660041,
-      "verify_run_seconds": 0.852908543,
+      "weights_run_seconds": 0.763388035,
+      "verify_run_seconds": 0.665226209,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1883,8 +1883,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.314412091,
-      "verify_run_seconds": 0.931337108,
+      "weights_run_seconds": 1.066825543,
+      "verify_run_seconds": 0.728949493,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2575,8 +2575,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.314412091,
-      "verify_run_seconds": 0.937921429,
+      "weights_run_seconds": 1.066825543,
+      "verify_run_seconds": 0.806077197,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3291,8 +3291,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.3682000859999999,
-      "verify_run_seconds": 1.09972712,
+      "weights_run_seconds": 1.072335877,
+      "verify_run_seconds": 0.868074321,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4003,8 +4003,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.3682000859999999,
-      "verify_run_seconds": 1.101422472,
+      "weights_run_seconds": 1.072335877,
+      "verify_run_seconds": 0.919074484,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4708,8 +4708,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.3480041090000001,
-      "verify_run_seconds": 1.5066644839999999,
+      "weights_run_seconds": 1.044517608,
+      "verify_run_seconds": 1.231236498,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5413,8 +5413,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.3480041090000001,
-      "verify_run_seconds": 1.415940837,
+      "weights_run_seconds": 1.044517608,
+      "verify_run_seconds": 1.153370365,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5877,7 +5877,7 @@
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.2771668875948574
+              "dps_delta": -3.2771668875948547
             },
             {
               "item_id": 227109,
@@ -6163,8 +6163,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.4276636360000001,
-      "verify_run_seconds": 3.005791653,
+      "weights_run_seconds": 1.090099312,
+      "verify_run_seconds": 2.513699835,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6392,7 +6392,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -0.21519964852838475
+              "dps_delta": -0.21519964852838358
             },
             {
               "item_id": 22149,
@@ -6409,7 +6409,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 45.427599975906574,
+          "score": 45.42759997590657,
           "verified": true,
           "alternatives": [
             {
@@ -6417,14 +6417,14 @@
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.5701390942746114
+              "dps_delta": -2.5701390942746087
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.8663253701434526
+              "dps_delta": -3.86632537014345
             },
             {
               "item_id": 272103,
@@ -6914,8 +6914,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.4276636360000001,
-      "verify_run_seconds": 2.928853218,
+      "weights_run_seconds": 1.090099312,
+      "verify_run_seconds": 2.465871983,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7118,7 +7118,7 @@
               "item_name": "Lieutenant Commander's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.510452049214394
+              "dps_delta": -0.5104520492143922
             }
           ]
         },
@@ -7655,8 +7655,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.6194167959999999,
-      "verify_run_seconds": 3.486287665,
+      "weights_run_seconds": 1.253622533,
+      "verify_run_seconds": 2.891430059,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7857,7 +7857,7 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.5104520492143922
+              "dps_delta": -0.510452049214394
             }
           ]
         },
@@ -8394,8 +8394,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.6194167959999999,
-      "verify_run_seconds": 3.417515416,
+      "weights_run_seconds": 1.253622533,
+      "verify_run_seconds": 2.830453494,
       "coverage": {
         "back": {
           "eligible": 456,

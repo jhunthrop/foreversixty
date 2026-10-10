@@ -1,8 +1,8 @@
 {
   "spec": "paladin-holy",
   "build": "1.60.1.70291",
-  "engine_version": "b1b13fddc",
-  "generated_at": "2026-10-09T20:37:00Z",
+  "engine_version": "a73988d91",
+  "generated_at": "2026-10-10T13:19:35Z",
   "bands": [
     {
       "spec": "paladin-holy",
@@ -554,8 +554,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 4.232950801,
-      "verify_run_seconds": 13.844418152,
+      "weights_run_seconds": 3.202612318,
+      "verify_run_seconds": 10.411772768,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -985,7 +985,7 @@
               "item_name": "Filigreed Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.25251064033593756
+              "dps_delta": -0.25251064033593784
             },
             {
               "item_id": 15449,
@@ -1190,8 +1190,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 4.232950801,
-      "verify_run_seconds": 13.826656836,
+      "weights_run_seconds": 3.202612318,
+      "verify_run_seconds": 10.520636106,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1463,7 +1463,7 @@
               "item_name": "Repairman's Cape",
               "source_kind": "quest",
               "source": "Data Rescue",
-              "dps_delta": -0.1511543990371826
+              "dps_delta": -0.15115439903718278
             },
             {
               "item_id": 6901,
@@ -1864,8 +1864,8 @@
         "main_hand: Royal Diplomatic Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.149965499,
-      "verify_run_seconds": 14.070907762,
+      "weights_run_seconds": 3.14544211,
+      "verify_run_seconds": 10.500249351,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2539,8 +2539,8 @@
         "main_hand: Royal Diplomatic Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 4.149965499,
-      "verify_run_seconds": 14.897960631,
+      "weights_run_seconds": 3.14544211,
+      "verify_run_seconds": 11.188627154,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2990,7 +2990,7 @@
               "item_name": "Stoneweaver Leggings",
               "source_kind": "dungeon",
               "source": "Uldaman: Ironaya",
-              "dps_delta": -0.28797072552559183
+              "dps_delta": -0.28797072552559216
             }
           ]
         },
@@ -3221,8 +3221,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 7.3814528169999996,
-      "verify_run_seconds": 29.496585187,
+      "weights_run_seconds": 5.562181831,
+      "verify_run_seconds": 21.813536919,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3904,8 +3904,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Forcestone Buckler"
       ],
-      "weights_run_seconds": 7.3814528169999996,
-      "verify_run_seconds": 29.480965262,
+      "weights_run_seconds": 5.562181831,
+      "verify_run_seconds": 21.847339668,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4651,8 +4651,8 @@
         "trinket2: Uther's Strength",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 7.885969245,
-      "verify_run_seconds": 39.311199521,
+      "weights_run_seconds": 5.929398528,
+      "verify_run_seconds": 29.393114551,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5025,18 +5025,18 @@
               "dps_delta": -0.5081320562100319
             },
             {
-              "item_id": 252551,
-              "item_name": "Mender's Leather Gauntlets",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.6750296762846713
-            },
-            {
               "item_id": 252587,
               "item_name": "Mender's Mail Gauntlets",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.6750296762846713
+            },
+            {
+              "item_id": 252551,
+              "item_name": "Mender's Leather Gauntlets",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.6750296762846717
             }
           ]
         },
@@ -5389,8 +5389,8 @@
         "trinket2: Uther's Strength",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 7.885969245,
-      "verify_run_seconds": 38.195804954,
+      "weights_run_seconds": 5.929398528,
+      "verify_run_seconds": 28.490620814,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5703,7 +5703,7 @@
               "item_name": "Devout Robe",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.0754709429063906
+              "dps_delta": -0.07547094290639232
             },
             {
               "item_id": 226984,
@@ -5800,7 +5800,7 @@
               "item_name": "Whipvine Cord",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -0.9354594706902468
+              "dps_delta": -0.9354594706902459
             },
             {
               "item_id": 14465,
@@ -6112,8 +6112,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 8.918141397,
-      "verify_run_seconds": 121.661688062,
+      "weights_run_seconds": 6.784482135,
+      "verify_run_seconds": 91.152802684,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6515,7 +6515,7 @@
               "item_name": "Whipvine Cord",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -0.9354594706902468
+              "dps_delta": -0.9354594706902459
             },
             {
               "item_id": 14465,
@@ -6581,14 +6581,14 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.312860819703129
+              "dps_delta": -1.3128608197031275
             },
             {
               "item_id": 22247,
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -1.8909012002501815
+              "dps_delta": -1.8909012002501797
             },
             {
               "item_id": 226983,
@@ -6817,8 +6817,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 8.918141397,
-      "verify_run_seconds": 118.135678355,
+      "weights_run_seconds": 6.784482135,
+      "verify_run_seconds": 88.070381216,
       "coverage": {
         "back": {
           "eligible": 455,
@@ -7546,8 +7546,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 5.164755478,
-      "verify_run_seconds": 48.937841409,
+      "weights_run_seconds": 4.036584559,
+      "verify_run_seconds": 37.339710733,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7894,7 +7894,7 @@
               "item_name": "Bracers of Prosperity",
               "source_kind": "dungeon",
               "source": "Dire Maul: King Gordok",
-              "dps_delta": -2.4024356338593433
+              "dps_delta": -2.402435633859345
             }
           ]
         },
@@ -8266,8 +8266,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 5.164755478,
-      "verify_run_seconds": 39.221897244,
+      "weights_run_seconds": 4.036584559,
+      "verify_run_seconds": 29.922069837,
       "coverage": {
         "back": {
           "eligible": 455,

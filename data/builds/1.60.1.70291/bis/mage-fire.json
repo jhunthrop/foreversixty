@@ -1,8 +1,8 @@
 {
   "spec": "mage-fire",
   "build": "1.60.1.70291",
-  "engine_version": "b1b13fddc",
-  "generated_at": "2026-10-09T20:24:40Z",
+  "engine_version": "a73988d91",
+  "generated_at": "2026-10-10T13:10:16Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -556,8 +556,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.007224799,
-      "verify_run_seconds": 0.80020441,
+      "weights_run_seconds": 0.795558341,
+      "verify_run_seconds": 0.647113443,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1195,8 +1195,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.007224799,
-      "verify_run_seconds": 0.821310208,
+      "weights_run_seconds": 0.795558341,
+      "verify_run_seconds": 0.656922497,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1873,8 +1873,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.168755481,
-      "verify_run_seconds": 0.871513533,
+      "weights_run_seconds": 0.922896863,
+      "verify_run_seconds": 0.712401596,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2555,8 +2555,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Unstable Power Core"
       ],
-      "weights_run_seconds": 1.168755481,
-      "verify_run_seconds": 0.860316288,
+      "weights_run_seconds": 0.922896863,
+      "verify_run_seconds": 0.687981526,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3255,8 +3255,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.2684267679999999,
-      "verify_run_seconds": 1.017290508,
+      "weights_run_seconds": 0.99061136,
+      "verify_run_seconds": 0.838279497,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3957,8 +3957,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.2684267679999999,
-      "verify_run_seconds": 1.047262434,
+      "weights_run_seconds": 0.99061136,
+      "verify_run_seconds": 0.840278196,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4651,8 +4651,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.293036034,
-      "verify_run_seconds": 1.455121753,
+      "weights_run_seconds": 0.941612997,
+      "verify_run_seconds": 1.110232415,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5355,8 +5355,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.293036034,
-      "verify_run_seconds": 1.339635321,
+      "weights_run_seconds": 0.941612997,
+      "verify_run_seconds": 1.049982418,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6102,8 +6102,8 @@
         "trinket2: Draconic Infused Emblem",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.2985723980000001,
-      "verify_run_seconds": 4.19645453,
+      "weights_run_seconds": 1.051202446,
+      "verify_run_seconds": 3.377145176,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6284,7 +6284,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 54.13251574235674,
+          "score": 54.132515742356745,
           "verified": true,
           "alternatives": [
             {
@@ -6299,7 +6299,7 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.7399992022161181
+              "dps_delta": -1.7399992022161201
             },
             {
               "item_id": 16686,
@@ -6348,7 +6348,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 50.905675781540324,
+          "score": 50.90567578154033,
           "verified": true,
           "alternatives": [
             {
@@ -6356,21 +6356,21 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.1911452959671096
+              "dps_delta": -3.1911452959671114
             },
             {
               "item_id": 231594,
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.2504262449409103
+              "dps_delta": -3.250426244940912
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.7697739365045373
+              "dps_delta": -3.769773936504539
             }
           ]
         },
@@ -6842,8 +6842,8 @@
         "trinket2: Serenity Field",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.2985723980000001,
-      "verify_run_seconds": 4.189274365,
+      "weights_run_seconds": 1.051202446,
+      "verify_run_seconds": 3.392486951,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7595,8 +7595,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.51517236,
-      "verify_run_seconds": 3.3155091,
+      "weights_run_seconds": 1.188533444,
+      "verify_run_seconds": 2.68764218,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8343,8 +8343,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.51517236,
-      "verify_run_seconds": 3.19933872,
+      "weights_run_seconds": 1.188533444,
+      "verify_run_seconds": 2.6299013,
       "coverage": {
         "back": {
           "eligible": 456,

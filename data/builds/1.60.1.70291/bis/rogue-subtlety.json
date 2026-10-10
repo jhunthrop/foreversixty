@@ -1,8 +1,8 @@
 {
   "spec": "rogue-subtlety",
   "build": "1.60.1.70291",
-  "engine_version": "b1b13fddc",
-  "generated_at": "2026-10-09T21:17:21Z",
+  "engine_version": "a73988d91",
+  "generated_at": "2026-10-10T13:50:09Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -579,8 +579,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.444362581,
-      "verify_run_seconds": 4.02457698,
+      "weights_run_seconds": 1.876196889,
+      "verify_run_seconds": 3.150244502,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1248,8 +1248,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.444362581,
-      "verify_run_seconds": 4.090755622,
+      "weights_run_seconds": 1.876196889,
+      "verify_run_seconds": 3.195795293,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1949,8 +1949,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.710964606,
-      "verify_run_seconds": 4.671154157,
+      "weights_run_seconds": 2.059045076,
+      "verify_run_seconds": 3.676011551,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2656,8 +2656,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.710964606,
-      "verify_run_seconds": 4.609062766,
+      "weights_run_seconds": 2.059045076,
+      "verify_run_seconds": 3.672692336,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3359,8 +3359,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.065376716,
-      "verify_run_seconds": 2.929472757,
+      "weights_run_seconds": 2.316281747,
+      "verify_run_seconds": 2.295562459,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4061,8 +4061,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.065376716,
-      "verify_run_seconds": 3.004408992,
+      "weights_run_seconds": 2.316281747,
+      "verify_run_seconds": 2.367201184,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4242,14 +4242,14 @@
               "item_name": "Embrace of the Lycan",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -0.12619578652406865
+              "dps_delta": -0.12619578652406807
             },
             {
               "item_id": 10008,
               "item_name": "White Bandit Mask",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.2441149183026845
+              "dps_delta": -1.2441149183026838
             }
           ]
         },
@@ -4284,7 +4284,7 @@
           "item_name": "Knight-Lieutenant's Leather Shoulders",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 33.488006468941244,
+          "score": 33.48800646894125,
           "verified": true,
           "alternatives": [
             {
@@ -4292,14 +4292,14 @@
               "item_name": "Skulker's Leather Shoulder",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.7352631525686555
+              "dps_delta": -0.7352631525686562
             },
             {
               "item_id": 9647,
               "item_name": "Failed Flying Experiment",
               "source_kind": "quest",
               "source": "Rescue OOX-22/FE!",
-              "dps_delta": -0.7724118948798798
+              "dps_delta": -0.7724118948798804
             },
             {
               "item_id": 274751,
@@ -4771,8 +4771,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.637355834,
-      "verify_run_seconds": 3.8292249099999998,
+      "weights_run_seconds": 2.754712071,
+      "verify_run_seconds": 3.023846005,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5481,8 +5481,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.637355834,
-      "verify_run_seconds": 3.882331606,
+      "weights_run_seconds": 2.754712071,
+      "verify_run_seconds": 3.037442123,
       "coverage": {
         "back": {
           "eligible": 324,
@@ -5788,7 +5788,7 @@
               "item_name": "Field Marshal's Leather Chestpiece",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.0627799578854025
+              "dps_delta": -2.062779957885401
             },
             {
               "item_id": 226825,
@@ -5918,10 +5918,10 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 23299,
+              "item_id": 227061,
               "item_name": "Knight-Captain's Leather Legguards",
               "source_kind": "vendor",
-              "source": "PvP rank 12 · Knight-Captain · Alliance",
+              "source": "Captain Dirgehammer",
               "dps_delta": 0
             },
             {
@@ -6245,8 +6245,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 3.488827496,
-      "verify_run_seconds": 10.228451511,
+      "weights_run_seconds": 2.6999059560000003,
+      "verify_run_seconds": 8.145690449,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7011,8 +7011,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 3.488827496,
-      "verify_run_seconds": 10.187607929,
+      "weights_run_seconds": 2.6999059560000003,
+      "verify_run_seconds": 8.098601551,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7772,8 +7772,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 3.7321659929999997,
-      "verify_run_seconds": 10.932960627,
+      "weights_run_seconds": 2.849197621,
+      "verify_run_seconds": 8.738737805,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8534,8 +8534,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 3.7321659929999997,
-      "verify_run_seconds": 10.928076355,
+      "weights_run_seconds": 2.849197621,
+      "verify_run_seconds": 8.683331366,
       "coverage": {
         "back": {
           "eligible": 457,

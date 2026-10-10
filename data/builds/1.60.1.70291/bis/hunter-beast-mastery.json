@@ -1,8 +1,8 @@
 {
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70291",
-  "engine_version": "b1b13fddc",
-  "generated_at": "2026-10-09T20:18:53Z",
+  "engine_version": "a73988d91",
+  "generated_at": "2026-10-10T13:05:43Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -533,8 +533,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.764469965,
-      "verify_run_seconds": 2.430094783,
+      "weights_run_seconds": 2.079808435,
+      "verify_run_seconds": 1.876695773,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1171,8 +1171,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.764469965,
-      "verify_run_seconds": 2.313312511,
+      "weights_run_seconds": 2.079808435,
+      "verify_run_seconds": 1.808603513,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1909,8 +1909,8 @@
         "off_hand: Vendetta",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.963712047,
-      "verify_run_seconds": 2.633919482,
+      "weights_run_seconds": 2.240366103,
+      "verify_run_seconds": 2.030576324,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2616,8 +2616,8 @@
         "off_hand: Alliance Outrunner's Sword",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.963712047,
-      "verify_run_seconds": 2.795251437,
+      "weights_run_seconds": 2.240366103,
+      "verify_run_seconds": 2.194344285,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3328,8 +3328,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.221259292,
-      "verify_run_seconds": 3.460252309,
+      "weights_run_seconds": 2.459134746,
+      "verify_run_seconds": 2.729725313,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4020,8 +4020,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.221259292,
-      "verify_run_seconds": 3.433597903,
+      "weights_run_seconds": 2.459134746,
+      "verify_run_seconds": 2.651841484,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4687,8 +4687,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.348305191,
-      "verify_run_seconds": 4.458576782,
+      "weights_run_seconds": 2.481213162,
+      "verify_run_seconds": 3.390562414,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5363,8 +5363,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.348305191,
-      "verify_run_seconds": 4.183274739,
+      "weights_run_seconds": 2.481213162,
+      "verify_run_seconds": 3.22136833,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6099,8 +6099,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.272004376,
-      "verify_run_seconds": 13.500234647,
+      "weights_run_seconds": 2.448152862,
+      "verify_run_seconds": 10.374283397,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6835,8 +6835,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.272004376,
-      "verify_run_seconds": 12.772018435,
+      "weights_run_seconds": 2.448152862,
+      "verify_run_seconds": 9.891893824,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7140,14 +7140,14 @@
               "item_name": "Field Marshal's Chain Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -6.802728172531886
+              "dps_delta": -6.802728172531882
             },
             {
               "item_id": 231581,
               "item_name": "Field Marshal's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -6.802728172531886
+              "dps_delta": -6.802728172531882
             },
             {
               "item_id": 23089,
@@ -7571,8 +7571,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.3515612519999998,
-      "verify_run_seconds": 13.482756282,
+      "weights_run_seconds": 2.488522371,
+      "verify_run_seconds": 10.637855284,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7875,14 +7875,14 @@
               "item_name": "Warlord's Chain Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -6.802728172531886
+              "dps_delta": -6.802728172531882
             },
             {
               "item_id": 231573,
               "item_name": "Warlord's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -6.802728172531886
+              "dps_delta": -6.802728172531882
             },
             {
               "item_id": 23089,
@@ -8306,8 +8306,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.3515612519999998,
-      "verify_run_seconds": 13.106955936,
+      "weights_run_seconds": 2.488522371,
+      "verify_run_seconds": 10.329151567,
       "coverage": {
         "back": {
           "eligible": 456,

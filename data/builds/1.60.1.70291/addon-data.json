@@ -34215,7 +34215,7 @@
               "source": "Friz Frazzlespark"
             },
             "feet": {
-              "item_id": 252565,
+              "item_id": 252533,
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
@@ -34292,7 +34292,7 @@
               "source": "Friz Frazzlespark"
             },
             "feet": {
-              "item_id": 252533,
+              "item_id": 252565,
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
@@ -34334,7 +34334,7 @@
             10765,
             254037,
             276201,
-            252565,
+            252533,
             272070,
             6750,
             272059,
@@ -34350,7 +34350,7 @@
             10765,
             254037,
             276201,
-            252533,
+            252565,
             272070,
             6750,
             272059,
