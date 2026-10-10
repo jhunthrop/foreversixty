@@ -94,6 +94,10 @@ export interface MeCharacter {
      *  (`data/active-build.json`) instead, the same build every other BiS comparison on the
      *  site reads against. */
     data_build?: string;
+    /** Median gap in seconds between this character's successive syncs (addon export or Battle.net refresh); `null` with fewer than three syncs on record. */
+    median_sync_gap_sec?: number | null;
+    /** Machine code of the last failed Battle.net refresh (e.g. `"bnet_refresh_failed"`); `null` when the last refresh succeeded or none has run. */
+    sync_error?: string | null;
   };
   /** Omitted when the character has no `guild_characters` row at all. */
   guild?: MeCharacterGuild;
