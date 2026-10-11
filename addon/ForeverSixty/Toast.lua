@@ -12,6 +12,7 @@ local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Follow = ns.Follow or require("Follow")
+local Progress = ns.Progress or require("Progress")
 local Talents = ns.Talents or require("Talents")
 local Theme = ns.Theme or require("Theme")
 local Widgets = ns.Widgets or require("Widgets")
@@ -42,38 +43,9 @@ function Toast.model(data, build, ranks, level)
 	return { text = string.format(L.toastMessage, level or 0, name, have + 1, maxRank) }
 end
 
---- Best-effort unspent talent point count from the trait system. Neither
---- field name is confirmed against the 1.60 client (README spike row 24);
---- a shape this client does not use reads as "cannot tell" -- the design's
---- own explicit fallback, under which the talent-event trigger never fires
---- and the toast is carried by PLAYER_LEVEL_UP alone.
+--- Best-effort unspent talent point count (Progress.unspentPoints).
 function Toast.unspentPoints()
-	if type(C_ClassTalents) ~= "table" or type(C_ClassTalents.GetActiveConfigID) ~= "function" then
-		return nil
-	end
-	local configID = C_ClassTalents.GetActiveConfigID()
-	if configID == nil or type(C_Traits) ~= "table" or type(C_Traits.GetConfigInfo) ~= "function"
-		or type(C_Traits.GetTreeInfo) ~= "function" then
-		return nil
-	end
-	local ok, info = pcall(C_Traits.GetConfigInfo, configID)
-	if not ok or type(info) ~= "table" or type(info.treeIDs) ~= "table" then
-		return nil
-	end
-	local total, found = 0, false
-	for _, treeID in ipairs(info.treeIDs) do
-		local okTree, treeInfo = pcall(C_Traits.GetTreeInfo, configID, treeID)
-		if okTree and type(treeInfo) == "table" then
-			local points = treeInfo.pointsAvailable or treeInfo.unspentPoints or treeInfo.points
-			if type(points) == "number" then
-				total, found = total + points, true
-			end
-		end
-	end
-	if not found then
-		return nil
-	end
-	return total
+	return Progress.unspentPoints()
 end
 
 --- Pure: whether a fresh read is worth a toast. Either side nil means

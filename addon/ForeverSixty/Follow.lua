@@ -271,66 +271,26 @@ local function cellKey(point)
 	return point.tab .. ":" .. point.tier .. ":" .. point.column
 end
 
---- The first point in the order the player has not spent yet.
---- `ranks` is Talents.readRanks()'s shape: ranks[tab]["<tier>:<column>"].
+--- Progress owns these numbers (spec section 2.1); it loads after this
+--- file, so it is looked up when called, never when this file loads.
+local function progressModule()
+	return ns.Progress or require("Progress")
+end
+
+--- The first point in the order the player has not spent yet
+--- (Progress.nextPoint).
 function Follow.nextPoint(build, ranks)
-	if build == nil then
-		return nil
-	end
-	local wanted = {}
-	for index, point in ipairs(build.order) do
-		local key = cellKey(point)
-		wanted[key] = (wanted[key] or 0) + 1
-		local have = (ranks[point.tab] or {})[Talents.cellKey(point.tier, point.column)] or 0
-		if wanted[key] > have then
-			return { tab = point.tab, tier = point.tier, column = point.column, index = index }
-		end
-	end
-	return nil
+	return progressModule().nextPoint(build, ranks)
 end
 
---- Every point the character has spent, whatever the plan says.
+--- Every point the character has spent (Progress.pointsSpent).
 function Follow.pointsSpent(ranks)
-	local spent = 0
-	for _, tab in pairs(ranks or {}) do
-		for _, rank in pairs(tab) do
-			spent = spent + (tonumber(rank) or 0)
-		end
-	end
-	return spent
+	return progressModule().pointsSpent(ranks)
 end
 
---- How far along the plan the character is: `matched` is every point
---- the plan wanted that the character has (a rank over the plan's own
---- counts only up to the plan), `total` the plan's length, `offPlan`
---- the points spent where the plan wanted none. The talent window, the
---- tracker and the Overview all read this one answer, so they cannot
---- disagree with each other or with the character (seen in game: a
---- "2 of 51" beside eleven spent points, because the old count stopped
---- at the first unmet point in the order).
+--- How far along the plan the character is (Progress.build).
 function Follow.progress(build, ranks)
-	if build == nil then
-		return { matched = 0, total = 0, offPlan = 0, point = nil }
-	end
-	local wanted = {}
-	for _, point in ipairs(build.order) do
-		local key = cellKey(point)
-		wanted[key] = {
-			tab = point.tab, tier = point.tier, column = point.column,
-			want = (wanted[key] and wanted[key].want or 0) + 1,
-		}
-	end
-	local matched = 0
-	for _, cell in pairs(wanted) do
-		local have = (ranks[cell.tab] or {})[Talents.cellKey(cell.tier, cell.column)] or 0
-		matched = matched + math.min(have, cell.want)
-	end
-	return {
-		matched = matched,
-		total = #build.order,
-		offPlan = math.max(0, Follow.pointsSpent(ranks) - matched),
-		point = Follow.nextPoint(build, ranks),
-	}
+	return progressModule().build(build, ranks)
 end
 
 function Follow.line(data, build, ranks)

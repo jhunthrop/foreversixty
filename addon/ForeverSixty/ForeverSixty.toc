@@ -22,6 +22,7 @@ Cards.lua
 Export.lua
 Follow.lua
 Gear.lua
+Progress.lua
 Rotation.lua
 Ratings.lua
 Tooltip.lua

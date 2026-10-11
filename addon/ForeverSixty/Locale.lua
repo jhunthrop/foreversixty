@@ -452,6 +452,10 @@ local L = {
 	-- %d the level it opens at.
 	rulesUntilLevel = "Not for you until %d: %s",
 	rulesNever = "Not for you: %s",
+
+	-- Lane addon-v2 L2.2 (2026-10-11): the level a talent point is taken
+	-- at (Progress.levelForPoint): talents start at 10, one per level.
+	progressTakeAt = "Take at level %d",
 }
 
 ns.L = L
