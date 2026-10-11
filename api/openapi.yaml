@@ -645,11 +645,11 @@ components:
           type: object
           nullable: true
           properties:
-            gear: { type: integer, description: "Gear score for the spec against its own level-60 best-in-slot set, 0-500." }
+            gear: { type: integer, description: "The gear component in points, 0-500, comparable across specs: the character's gear score for its spec as a share of that spec's own level-60 best-in-slot set in the same data build. This is contract 5's gear_score." }
             experience: { type: integer, description: "25 a distinct dungeon cleared + 40 a distinct raid boss killed across linked characters, capped at 700." }
             parses: { type: integer, description: "Mean best parse percentile per boss, scaled 0-600." }
-            attendance: { type: integer, description: "Share of the guild's nights in the last 90 days attended, times 200." }
-            discipline: { type: integer, description: "Share of rated fights with full consumables and enchants, times 100." }
+            attendance: { type: integer, description: "The attendance component in points, 0-200: the fraction of the verified guild's nights (UTC dates of its fights) in the last 90 days attended, times 200. Contract 5's attendance is that fraction itself, 0-1." }
+            discipline: { type: integer, description: "Share of rated fights with a flask, a food and every enchantable slot (chest, feet, back, main hand) enchanted, times 100." }
         experience:
           type: object
           nullable: true
@@ -1553,7 +1553,8 @@ paths:
         contract 5, computed by api/internal/rating) rides beside them as score, tier,
         components, as_of and experience (schema ForeverScore). All five are null when the
         character has no rated fight in a public report, or its account is anonymous: no logs
-        is never a zero score.
+        is never a zero score. A score that cannot be read just then is also null, and the rest
+        of the page is still served.
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }

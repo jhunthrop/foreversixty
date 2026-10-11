@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
@@ -46,6 +47,7 @@ type gearData struct {
 
 	mu      sync.Mutex
 	weights map[string]map[string]map[string]float64 // build -> spec -> stat -> weight
+	full    map[string]map[string]float64            // build -> spec -> FullGearScore
 }
 
 var (
@@ -63,7 +65,11 @@ func SetGearData(t *trees.Data, dir string) {
 		gearSrc = nil
 		return
 	}
-	gearSrc = &gearData{trees: t, dir: dir, weights: map[string]map[string]map[string]float64{}}
+	gearSrc = &gearData{
+		trees: t, dir: dir,
+		weights: map[string]map[string]map[string]float64{},
+		full:    map[string]map[string]float64{},
+	}
 }
 
 // GearScore is Gear.score summed over every item gearCode (an FS1 export
@@ -106,6 +112,116 @@ func GearScore(ctx context.Context, gearCode string, spec string) (float64, erro
 		total += statScore(item.Stats, weights)
 	}
 	return total, nil
+}
+
+// ErrNoBestInSlot is returned by FullGearScore for a spec the build has no
+// level-60 best-in-slot set for (no bis/<spec>.json, or no band-60 set in it).
+var ErrNoBestInSlot = errors.New("sims: no level-60 best-in-slot set")
+
+// fullGearBand is the band whose best-in-slot set is "full gear".
+const fullGearBand = 60
+
+// FullGearScore is the mark a gear score is measured against: GearScore of
+// spec's own level-60 best-in-slot set in build (the highest-scoring of the
+// band-60 sets <TreeDataDir>/<build>/bis/<spec>.json lists, one per preset and
+// faction), under the same build's weights GearScore uses - so a score and its
+// mark always come from one build. A spec's weights are in its own units (a
+// healer's full set scores about 400, a rogue's about 5,700), which is why
+// the mark is per spec. Computed once per (build, spec) and cached.
+func FullGearScore(ctx context.Context, build, spec string) (float64, error) {
+	if err := ctx.Err(); err != nil {
+		return 0, err
+	}
+	gearMu.RLock()
+	src := gearSrc
+	gearMu.RUnlock()
+	if src == nil {
+		return 0, fmt.Errorf("%w: no gear data is loaded", ErrGearUnscorable)
+	}
+	src.mu.Lock()
+	if v, ok := src.full[build][spec]; ok {
+		src.mu.Unlock()
+		return v, nil
+	}
+	src.mu.Unlock()
+
+	b, ok := src.trees.Build(build)
+	if !ok {
+		return 0, fmt.Errorf("%w: no data for client build %q", ErrGearUnscorable, build)
+	}
+	classSlug, _, _ := strings.Cut(spec, "-")
+	classID, ok := classIDBySlug(b, classSlug)
+	if !ok {
+		return 0, fmt.Errorf("%w: no class %q in build %s", ErrGearUnscorable, classSlug, build)
+	}
+	weights, err := src.specWeights(build, spec)
+	if err != nil {
+		return 0, err
+	}
+	sets, err := loadBestInSlot(src.dir, build, spec)
+	if err != nil {
+		return 0, err
+	}
+	best, found := 0.0, false
+	for _, items := range sets {
+		total := 0.0
+		for _, itemID := range items {
+			if item, ok := b.Item(classID, itemID); ok {
+				total += statScore(item.Stats, weights)
+			}
+		}
+		if !found || total > best {
+			best, found = total, true
+		}
+	}
+	if !found {
+		return 0, fmt.Errorf("%w: %s in build %s", ErrNoBestInSlot, spec, build)
+	}
+	src.mu.Lock()
+	if src.full[build] == nil {
+		src.full[build] = map[string]float64{}
+	}
+	src.full[build][spec] = best
+	src.mu.Unlock()
+	return best, nil
+}
+
+// loadBestInSlot reads <dir>/<build>/bis/<spec>.json's band-60 sets, each as
+// its slots' item ids (an empty slot has none). A missing file is
+// ErrNoBestInSlot.
+func loadBestInSlot(dir, build, spec string) ([][]int, error) {
+	body, err := os.ReadFile(filepath.Join(dir, build, "bis", spec+".json"))
+	if errors.Is(err, os.ErrNotExist) {
+		return nil, fmt.Errorf("%w: %s in build %s", ErrNoBestInSlot, spec, build)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("sims: read best-in-slot for %s/%s: %w", build, spec, err)
+	}
+	var file struct {
+		Bands []struct {
+			Band  int `json:"band"`
+			Slots []struct {
+				ItemID int `json:"item_id"`
+			} `json:"slots"`
+		} `json:"bands"`
+	}
+	if err := json.Unmarshal(body, &file); err != nil {
+		return nil, fmt.Errorf("sims: decode best-in-slot for %s/%s: %w", build, spec, err)
+	}
+	var sets [][]int
+	for _, band := range file.Bands {
+		if band.Band != fullGearBand {
+			continue
+		}
+		items := make([]int, 0, len(band.Slots))
+		for _, slot := range band.Slots {
+			if slot.ItemID != 0 {
+				items = append(items, slot.ItemID)
+			}
+		}
+		sets = append(sets, items)
+	}
+	return sets, nil
 }
 
 // statScore is Gear.score for one stat line.

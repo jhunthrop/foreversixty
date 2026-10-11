@@ -10,16 +10,23 @@ package rating
 // ranges are the v1 definition:
 //
 //	gear        0-500  the character's gear score for its spec, against that spec's own
-//	                   level-60 best-in-slot set (gearScoreAtFull)
+//	                   level-60 best-in-slot set in the same data build
+//	                   (sims.GearScore over sims.FullGearScore)
 //	experience  0-700  25 a distinct dungeon cleared + 40 a distinct raid boss killed, by
 //	                   any character the account has linked, capped
 //	parses      0-600  the mean of the character's best parse percentile on each boss
 //	attendance  0-200  the share of its guild's nights in the last 90 days it was at
-//	discipline  0-100  the share of its rated fights pulled with full consumables and
+//	discipline  0-100  the share of its rated fights pulled with a flask, a food and
 //	                   every enchantable slot enchanted
 //
 // score is their sum; tier names the band the score falls in. A character with no rated
 // fight has no score at all (ErrNoLogs), never a zero.
+//
+// The rater also writes a snapshot of each player's score onto the fight it just rated
+// (RollUpScores: rating_scores' score, gear_score, experience, attendance, tier). It is not
+// a history source: the backfill job re-rates a fight by withdrawing and rewriting its rows
+// and does not roll up, so a backfill-re-rated row has NULL snapshot columns. ScoreV2 never
+// reads them; it always computes from what is stored now.
 
 import (
 	"context"
@@ -32,6 +39,7 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/consumables"
@@ -92,22 +100,23 @@ func Tier(score int) string {
 	}
 }
 
-// gearScoreAtFull is each spec's sims.GearScore of its own level-60 best-in-slot set: the
-// highest of the band-60 sets in data/builds/1.60.1.70291/bis/<spec>.json, scored with that
-// build's stat-weights.json, rounded. A spec's weights are in its own units (a healer's
-// full set scores about 400, a rogue's about 5,700), so gear is measured against the
-// spec's own best rather than one number for everyone. A spec missing here scores no gear
-// component. Re-derive these when the weights or the best-in-slot lists change.
-var gearScoreAtFull = map[string]float64{
-	"druid-balance": 1150, "druid-feral": 3051, "druid-feral-bear": 1006, "druid-restoration": 428,
-	"hunter-beast-mastery": 4476, "hunter-marksmanship": 4798, "hunter-survival": 5771,
-	"mage-arcane": 1474, "mage-fire": 1766, "mage-frost": 1420,
-	"paladin-holy": 393, "paladin-protection": 1347, "paladin-retribution": 4922,
-	"priest-discipline": 514, "priest-holy": 518, "priest-shadow": 1209,
-	"rogue-assassination": 5733, "rogue-combat": 5494, "rogue-subtlety": 5724,
-	"shaman-elemental": 1309, "shaman-enhancement": 4872, "shaman-restoration": 490,
-	"warlock-affliction": 1092, "warlock-demonology": 1256, "warlock-destruction": 1348,
-	"warrior-arms": 4838, "warrior-fury": 5523, "warrior-protection": 1661,
+// specAliases maps a spec slug as the combat log names it (logs/engine/units.RetailSpecName
+// gives retail names) onto the slug the build data keys specs by
+// (data/curated/stat-weights.json, data/builds/<build>/bis/<spec>.json). With it every
+// Classic class/spec pair RetailSpecName can produce resolves to one of the data's 28 spec
+// slugs; TestEveryLoggedClassicSpecResolvesToADataSpec holds that.
+var specAliases = map[string]string{
+	"rogue-outlaw":   "rogue-combat",
+	"druid-guardian": "druid-feral-bear",
+}
+
+// dataSpecSlug is the build data's slug for a logged class and spec.
+func dataSpecSlug(class, spec string) string {
+	slug := specSlug(class, spec)
+	if alias, ok := specAliases[slug]; ok {
+		return alias
+	}
+	return slug
 }
 
 // disciplineEnchantSlots are the gear slots a fully prepared player has enchanted, as
@@ -139,10 +148,15 @@ type ScoreV2 struct {
 	// AsOf is the newest rated fight's time.
 	AsOf       time.Time
 	Components ScoreComponents
-	// GearScore is the raw sims.GearScore of the character's gear, rounded; ItemLevel its
-	// equipped item level (0 when unknown).
-	GearScore int
-	ItemLevel int
+	// GearScore is contract 5's gear_score: the gear component in points (0-500), which
+	// compares across specs. GearScoreRaw is the raw sims.GearScore, rounded, in the spec's
+	// own weight units. ItemLevel is the equipped item level (0 when unknown).
+	GearScore    int
+	GearScoreRaw int
+	ItemLevel    int
+	// Attendance is contract 5's attendance: the fraction (0-1) of the guild's nights in
+	// AttendanceWindow the character was at.
+	Attendance float64
 	// Spec is the newest rated fight's spec slug ("warrior-arms"), the one gear is scored
 	// for; Fights is how many rated fights the score rests on.
 	Spec       string
@@ -164,14 +178,15 @@ func (s *Store) ScoreV2(ctx context.Context, characterKey string) (ScoreV2, erro
 	}
 	out := ScoreV2{AsOf: fights.newest, Spec: fights.spec, Fights: fights.count}
 
-	gear, err := s.gearScore(ctx, characterKey, fights.spec)
+	raw, full, err := s.gearScore(ctx, characterKey, fights.spec)
 	if err != nil {
 		return ScoreV2{}, err
 	}
-	out.GearScore = int(math.Round(gear))
-	if full := gearScoreAtFull[fights.spec]; full > 0 {
-		out.Components.Gear = points(GearMax*gear/full, GearMax)
+	out.GearScoreRaw = int(math.Round(raw))
+	if full > 0 {
+		out.Components.Gear = points(GearMax*raw/full, GearMax)
 	}
+	out.GearScore = out.Components.Gear
 	if out.ItemLevel, err = s.itemLevel(ctx, characterKey); err != nil {
 		return ScoreV2{}, err
 	}
@@ -193,7 +208,8 @@ func (s *Store) ScoreV2(ctx context.Context, characterKey string) (ScoreV2, erro
 		return ScoreV2{}, err
 	}
 	if nights > 0 {
-		out.Components.Attendance = points(AttendanceMax*float64(attended)/float64(nights), AttendanceMax)
+		out.Attendance = float64(attended) / float64(nights)
+		out.Components.Attendance = points(AttendanceMax*out.Attendance, AttendanceMax)
 	}
 
 	if fights.disciplineKnown > 0 {
@@ -240,34 +256,47 @@ func (s *Store) ratedFights(ctx context.Context, key string) (ratedFightSummary,
 		out.newest = *newest
 	}
 	if class != nil && spec != nil {
-		out.spec = specSlug(*class, *spec)
+		out.spec = dataSpecSlug(*class, *spec)
 	}
 	return out, nil
 }
 
-// gearScore is sims.GearScore of the character's stored addon export under spec. No
-// export, no spec, or gear the loaded data cannot score is no gear score (0) rather than
-// an error: the other four components still stand.
-func (s *Store) gearScore(ctx context.Context, key, spec string) (float64, error) {
+// gearScore is sims.GearScore of the character's stored addon export under spec, and
+// the mark it is measured against, sims.FullGearScore of the same spec in the export's own
+// data build. No export or no spec is no gear (0, 0). Gear the loaded data cannot score -
+// an unknown spec, build or class, or a spec with no best-in-slot set - is also no gear,
+// with one log line naming the spec, rather than an error: the other four components
+// still stand.
+func (s *Store) gearScore(ctx context.Context, key, spec string) (raw, full float64, err error) {
 	if spec == "" {
-		return 0, nil
+		return 0, 0, nil
 	}
 	var export string
-	err := s.Pool.QueryRow(ctx, `select export from addon_exports where character_key = $1`, key).Scan(&export)
+	err = s.Pool.QueryRow(ctx, `select export from addon_exports where character_key = $1`, key).Scan(&export)
 	if errors.Is(err, pgx.ErrNoRows) {
-		return 0, nil
+		return 0, 0, nil
 	}
 	if err != nil {
-		return 0, fmt.Errorf("rating: export of %s: %w", key, err)
+		return 0, 0, fmt.Errorf("rating: export of %s: %w", key, err)
 	}
-	score, err := sims.GearScore(ctx, export, spec)
-	if errors.Is(err, sims.ErrGearUnscorable) {
-		return 0, nil
+	decoded, ok := fs1.Decode(export)
+	if !ok {
+		s.logger().Warn("rating", "op", "gear", "character", key, "spec", spec,
+			"err", "the stored export is not an FS1 code")
+		return 0, 0, nil
+	}
+	raw, err = sims.GearScore(ctx, export, spec)
+	if err == nil {
+		full, err = sims.FullGearScore(ctx, decoded.DataBuild, spec)
+	}
+	if errors.Is(err, sims.ErrGearUnscorable) || errors.Is(err, sims.ErrNoBestInSlot) {
+		s.logger().Warn("rating", "op", "gear", "character", key, "spec", spec, "err", err)
+		return 0, 0, nil
 	}
 	if err != nil {
-		return 0, fmt.Errorf("rating: gear score of %s: %w", key, err)
+		return 0, 0, fmt.Errorf("rating: gear score of %s: %w", key, err)
 	}
-	return score, nil
+	return raw, full, nil
 }
 
 // itemLevel is the Battle.net capture's equipped item level, else the newest ranked
@@ -355,23 +384,32 @@ func (s *Store) meanBestParse(ctx context.Context, key string) (float64, error) 
 	return sum / float64(n), nil
 }
 
-// guildNights counts the nights of the character's verified guild since since (a night
-// is a UTC date on which the guild filed a report that is not private) and how many of
-// them the character was ranked or rated in. No verified guild is no nights.
+// guildNights counts the nights of the character's verified guild since since and how
+// many of them the character was at. A night is a UTC date on which one of the guild's
+// reports that is not private has a fight (fights.start_ms, the fight's own fought_at); the
+// character was at it when it has a rated or ranked row in one of those reports fought on
+// that date. No verified guild is no nights.
 func (s *Store) guildNights(ctx context.Context, key string, since time.Time) (nights, attended int, err error) {
 	err = s.Pool.QueryRow(ctx,
-		`with nights as (
-		   select r.id, (r.created_at at time zone 'UTC')::date as night
-		   from reports r
+		`with guild_reports as (
+		   select r.id from reports r
 		   join guild_characters gc on gc.guild_id = r.guild_id
-		   where gc.character_key = $1 and gc.verified_at is not null
-		     and r.visibility <> 'private' and r.created_at >= $2
+		   where gc.character_key = $1 and gc.verified_at is not null and r.visibility <> 'private'
+		 ), nights as (
+		   select distinct (to_timestamp(f.start_ms / 1000.0) at time zone 'UTC')::date as night
+		   from fights f join guild_reports g on g.id = f.report_id
+		   where to_timestamp(f.start_ms / 1000.0) >= $2
+		 ), present as (
+		   select (rs.fought_at at time zone 'UTC')::date as night
+		   from rating_scores rs join guild_reports g on g.id = rs.report_id
+		   where rs.player_key = $1
+		   union
+		   select (m.fought_at at time zone 'UTC')::date
+		   from fight_metrics m join guild_reports g on g.id = m.report_id
+		   where m.player_key = $1 and m.state <> 'removed'
 		 )
-		 select (select count(distinct night) from nights),
-		        (select count(distinct n.night) from nights n
-		          where exists (select 1 from rating_scores rs where rs.report_id = n.id and rs.player_key = $1)
-		             or exists (select 1 from fight_metrics m
-		                         where m.report_id = n.id and m.player_key = $1 and m.state <> 'removed'))`,
+		 select (select count(*) from nights),
+		        (select count(*) from nights n where n.night in (select night from present))`,
 		key, since).Scan(&nights, &attended)
 	if err != nil {
 		return 0, 0, fmt.Errorf("rating: guild nights of %s: %w", key, err)
@@ -379,14 +417,33 @@ func (s *Store) guildNights(ctx context.Context, key string, since time.Time) (n
 	return nights, attended, nil
 }
 
-// fightDiscipline is whether row's player pulled fully prepared: every consumable
-// category its role's catalogue lists for flask, food and weapon enchant present, and
-// every equipped slot of disciplineEnchantSlots enchanted. nil is "not known" - no
-// catalogue for the role, or no combatant info with gear for the player.
-func fightDiscipline(fight summary.Summary, row summary.RosterRow, cat *consumables.RoleCatalogue) *bool {
-	if cat == nil {
-		return nil
+// disciplineFlasks and disciplineFoods are every flask and every food in the consumables
+// catalogue (logs/engine/mechanics/consumables/catalogue.json), across all roles: a
+// category is met by any consumable of that category, not only one listed for the
+// player's own role (a warrior on a tank's food is fed).
+//
+// The catalogue's weapon_enchant category (sharpening stones, wizard oils) is left out of
+// the requirement - treated as unknown - until a real beta log shows how stones and oils
+// appear in COMBATANT_INFO (as an aura, or as a temporary enchant on the weapon).
+var disciplineFlasks, disciplineFoods = consumableCategories()
+
+func consumableCategories() (flasks, foods map[int64]bool) {
+	flasks, foods = map[int64]bool{}, map[int64]bool{}
+	for _, rc := range consumables.Load().Roles {
+		for _, e := range rc.Flask {
+			flasks[e.SpellID] = true
+		}
+		for _, e := range rc.Food {
+			foods[e.SpellID] = true
+		}
 	}
+	return flasks, foods
+}
+
+// fightDiscipline is whether row's player pulled fully prepared: a flask and a food
+// (disciplineFlasks, disciplineFoods), and every equipped slot of disciplineEnchantSlots
+// enchanted. nil is "not known": no combatant info with gear for the player.
+func fightDiscipline(fight summary.Summary, row summary.RosterRow) *bool {
 	var combatant *summary.CombatantRow
 	for i := range fight.Combatants {
 		if fight.Combatants[i].GUID == row.GUID {
@@ -397,22 +454,15 @@ func fightDiscipline(fight summary.Summary, row summary.RosterRow, cat *consumab
 	if combatant == nil || len(combatant.Gear) == 0 {
 		return nil
 	}
-	full := carries(*combatant, cat.Flask) && carries(*combatant, cat.Food) &&
-		carries(*combatant, cat.WeaponEnchant) && enchanted(*combatant)
+	full := carries(*combatant, disciplineFlasks) && carries(*combatant, disciplineFoods) && enchanted(*combatant)
 	return &full
 }
 
-// carries is true when the combatant has any one of entries, or entries is empty (a
-// category the role is not asked for).
-func carries(c summary.CombatantRow, entries []consumables.Entry) bool {
-	if len(entries) == 0 {
-		return true
-	}
-	for _, e := range entries {
-		for _, a := range c.Consumables {
-			if a.SpellID == e.SpellID {
-				return true
-			}
+// carries is true when the combatant has any consumable of the category.
+func carries(c summary.CombatantRow, category map[int64]bool) bool {
+	for _, a := range c.Consumables {
+		if category[a.SpellID] {
+			return true
 		}
 	}
 	return false
@@ -433,8 +483,9 @@ func enchanted(c summary.CombatantRow) bool {
 }
 
 // RollUpScores writes each roster player's Forever Score, as it stands now, onto that
-// player's row of the fight f just rated (rating_scores' gear_score, experience,
-// attendance and tier). A player with no score yet (ErrNoLogs: the fight was not public,
+// player's row of the fight f just rated (rating_scores' score, gear_score - the gear
+// points - experience points, attendance - the fraction - and tier). The file comment says
+// why the snapshot is not a history source. A player with no score yet (ErrNoLogs: the fight was not public,
 // say) is left NULL. Every player is tried; the errors are returned together.
 func (s *Store) RollUpScores(ctx context.Context, f RatedFight) error {
 	var errs []error
@@ -454,10 +505,10 @@ func (s *Store) RollUpScores(ctx context.Context, f RatedFight) error {
 			continue
 		}
 		if _, err := s.Pool.Exec(ctx,
-			`update rating_scores set gear_score = $4, experience = $5, attendance = $6, tier = $7
+			`update rating_scores set score = $4, gear_score = $5, experience = $6, attendance = $7, tier = $8
 			 where report_id = $1 and fight_index = $2 and player_key = $3`,
-			f.ReportID, f.FightIndex, key, sc.GearScore, sc.Components.Experience,
-			sc.Components.Attendance, sc.Tier); err != nil {
+			f.ReportID, f.FightIndex, key, sc.Score, sc.GearScore, sc.Components.Experience,
+			sc.Attendance, sc.Tier); err != nil {
 			errs = append(errs, fmt.Errorf("rating: roll up %s/%d/%s: %w", f.ReportID, f.FightIndex, key, err))
 		}
 	}

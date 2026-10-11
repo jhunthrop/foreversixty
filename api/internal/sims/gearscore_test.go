@@ -174,3 +174,50 @@ func TestGearScoreWithNoDataWiredSaysSo(t *testing.T) {
 		t.Fatalf("err = %v, want ErrGearUnscorable", err)
 	}
 }
+
+// The full-gear mark is the spec's own best band-60 set scored with the same build's
+// weights: 4838 for warrior-arms on 1.60.1.70291, the figure the hand-derived table
+// carried before the mark was computed from the data.
+func TestFullGearScoreIsTheSpecsBestBand60Set(t *testing.T) {
+	useRepoGearData(t)
+	got, err := FullGearScore(t.Context(), "1.60.1.70291", "warrior-arms")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if math.Round(got) != 4838 {
+		t.Fatalf("FullGearScore(warrior-arms) = %v, want 4838 once rounded", got)
+	}
+	again, err := FullGearScore(t.Context(), "1.60.1.70291", "warrior-arms")
+	if err != nil || again != got {
+		t.Fatalf("the cached mark = %v, %v; want %v", again, err, got)
+	}
+}
+
+func TestFullGearScoreOfASpecWithNoBestInSlotSetIsAnError(t *testing.T) {
+	useRepoGearData(t)
+	// The same items and weights, in a data directory with no bis/ at all: the spec can
+	// be weighted but has no set to be measured against.
+	const build = "1.60.1.70291"
+	dir := t.TempDir()
+	weights, err := os.ReadFile(filepath.Join(repoBuilds, build, weightsFile))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(filepath.Join(dir, build), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, build, weightsFile), weights, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	SetGearData(repoTrees, dir)
+	t.Cleanup(func() { SetGearData(repoTrees, repoBuilds) })
+	if _, err := FullGearScore(t.Context(), build, "warrior-arms"); !errors.Is(err, ErrNoBestInSlot) {
+		t.Errorf("no best-in-slot set: err = %v, want ErrNoBestInSlot", err)
+	}
+	if _, err := FullGearScore(t.Context(), build, "warrior-gladiator"); !errors.Is(err, ErrGearUnscorable) {
+		t.Errorf("a spec with no weights: err = %v, want ErrGearUnscorable", err)
+	}
+	if _, err := FullGearScore(t.Context(), "0.0.0.1", "warrior-arms"); !errors.Is(err, ErrGearUnscorable) {
+		t.Errorf("an unknown build: err = %v, want ErrGearUnscorable", err)
+	}
+}

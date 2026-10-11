@@ -28,7 +28,8 @@ type Service struct {
 	Log   *slog.Logger
 	// Now is the clock, so a test can fix "today".
 	Now func() time.Time
-	// Scores adds the Forever Score to the character page; nil leaves it null.
+	// Scores adds the Forever Score to the character page; nil, or a failed read, leaves it
+	// null.
 	Scores Scorer
 }
 
@@ -308,9 +309,14 @@ func (s *Service) character(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if s.Scores != nil {
-		if c.ForeverScore, err = s.Scores.ForeverScore(r.Context(), c.Character.Key); err != nil {
-			s.fail(w, r, "character", err, "could not read that character just now")
-			return
+		// A score that cannot be read is logged and left null; the rest of the page still
+		// renders.
+		score, err := s.Scores.ForeverScore(r.Context(), c.Character.Key)
+		if err != nil {
+			s.logger().Error("rankings", "id", httpx.RequestIDFrom(r.Context()), "op", "forever_score",
+				"character", c.Character.Key, "err", err)
+		} else {
+			c.ForeverScore = score
 		}
 	}
 	cache(w)

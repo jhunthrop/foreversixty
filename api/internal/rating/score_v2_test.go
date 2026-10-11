@@ -23,6 +23,7 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/consumables"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+	"github.com/jhunthrop/foreversixty/logs/engine/units"
 )
 
 func TestTierNamesEveryBandAtItsThresholds(t *testing.T) {
@@ -93,40 +94,69 @@ func dropConsumable(c summary.CombatantRow, spellID int64) summary.CombatantRow 
 	return c
 }
 
-func TestFightDisciplineNeedsFlaskFoodWeaponAndEnchants(t *testing.T) {
+func TestFightDisciplineNeedsFlaskFoodAndEnchants(t *testing.T) {
 	dps, _ := consumables.Load().For("dps")
-	healer, _ := consumables.Load().For("healer")
+	tank, _ := consumables.Load().For("tank")
 	row := summary.RosterRow{GUID: "g", Name: "Prepared", Class: "Warrior", Spec: "Arms", Role: "dps"}
 	fightWith := func(c summary.CombatantRow) summary.Summary {
 		return summary.Summary{Combatants: []summary.CombatantRow{c}, Roster: []summary.RosterRow{row}}
 	}
+	check := func(name string, c summary.CombatantRow, want bool) {
+		t.Helper()
+		if got := fightDiscipline(fightWith(c), row); got == nil || *got != want {
+			t.Errorf("%s: %v, want %v", name, got, want)
+		}
+	}
 
-	if got := fightDiscipline(fightWith(preparedCombatant("g")), row, &dps); got == nil || !*got {
-		t.Errorf("a fully prepared player: %v, want true", got)
-	}
-	if got := fightDiscipline(fightWith(dropConsumable(preparedCombatant("g"), dps.Flask[0].SpellID)), row, &dps); got == nil || *got {
-		t.Errorf("no flask: %v, want false", got)
-	}
+	check("a fully prepared player", preparedCombatant("g"), true)
+	check("no flask", dropConsumable(preparedCombatant("g"), dps.Flask[0].SpellID), false)
+	check("no food", dropConsumable(preparedCombatant("g"), dps.Food[0].SpellID), false)
 	unenchanted := preparedCombatant("g")
 	unenchanted.Gear[slotBack].Enchants = nil
-	if got := fightDiscipline(fightWith(unenchanted), row, &dps); got == nil || *got {
-		t.Errorf("an unenchanted cloak: %v, want false", got)
-	}
+	check("an unenchanted cloak", unenchanted, false)
 	empty := preparedCombatant("g")
 	empty.Gear[slotFeet] = event.Item{}
-	if got := fightDiscipline(fightWith(empty), row, &dps); got == nil || !*got {
-		t.Errorf("an empty slot is not a missing enchant: %v, want true", got)
+	check("an empty slot is not a missing enchant", empty, true)
+	// Weapon stones and oils are not required until a beta log shows how they appear.
+	check("no weapon stone", dropConsumable(preparedCombatant("g"), dps.WeaponEnchant[0].SpellID), true)
+	// A category is met by any role's consumable of it: a dps warrior on a tank's food.
+	tankFood := dropConsumable(preparedCombatant("g"), dps.Food[0].SpellID)
+	tankFood.Consumables = append(tankFood.Consumables, summary.AuraRef{SpellID: tank.Food[0].SpellID})
+	if tank.Food[0].SpellID == dps.Food[0].SpellID {
+		t.Fatal("the tank and dps foods must differ for this case to mean anything")
 	}
-	healerPrepared := preparedCombatant("g")
-	healerPrepared.Consumables = []summary.AuraRef{{SpellID: healer.Flask[0].SpellID}, {SpellID: healer.Food[0].SpellID}}
-	if got := fightDiscipline(fightWith(healerPrepared), row, &healer); got == nil || !*got {
-		t.Errorf("a role whose catalogue lists no weapon enchant needs none: %v, want true", got)
-	}
-	if got := fightDiscipline(summary.Summary{Roster: []summary.RosterRow{row}}, row, &dps); got != nil {
+	check("a dps warrior on a tank's food", tankFood, true)
+	if got := fightDiscipline(summary.Summary{Roster: []summary.RosterRow{row}}, row); got != nil {
 		t.Errorf("no combatant info: %v, want unknown (nil)", *got)
 	}
-	if got := fightDiscipline(fightWith(preparedCombatant("g")), row, nil); got != nil {
-		t.Errorf("no catalogue for the role: %v, want unknown (nil)", *got)
+}
+
+// Every Classic class/spec pair the log engine can name (units.RetailSpecName) must
+// resolve to a spec the build data can weigh and measure against a full set.
+func TestEveryLoggedClassicSpecResolvesToADataSpec(t *testing.T) {
+	useRepoGearData(t)
+	classic := map[string]bool{"Druid": true, "Hunter": true, "Mage": true, "Paladin": true, "Priest": true,
+		"Rogue": true, "Shaman": true, "Warlock": true, "Warrior": true}
+	seen := 0
+	for id, spec := range units.RetailSpecName {
+		class := units.RetailSpecClass[id]
+		if !classic[class] {
+			continue
+		}
+		seen++
+		slug := dataSpecSlug(class, spec)
+		if _, err := sims.FullGearScore(context.Background(), "1.60.1.70291", slug); err != nil {
+			t.Errorf("%s %s -> %q: %v", class, spec, slug, err)
+		}
+	}
+	if seen != 28 {
+		t.Errorf("%d Classic spec ids, want 28 (nine classes, three specs each, four for the druid)", seen)
+	}
+	if got := dataSpecSlug("Rogue", "Outlaw"); got != "rogue-combat" {
+		t.Errorf("Outlaw -> %q, want rogue-combat", got)
+	}
+	if got := dataSpecSlug("Druid", "Guardian"); got != "druid-feral-bear" {
+		t.Errorf("Guardian -> %q, want druid-feral-bear", got)
 	}
 }
 
@@ -263,6 +293,8 @@ func seedLoggedRaider(t *testing.T) scoreFixture {
 				fx.missedFlask++
 			}
 			foughtAt := at.Add(time.Duration(i) * 15 * time.Minute)
+			mustExec(t, pool, `insert into fights (report_id, fight_index, encounter_id, name, difficulty, kill, start_ms)
+				values ($1, $2, $3, 'Score v2 boss', 3, true, $4)`, reportID, i, sv2Encounter+i-1, foughtAt.UnixMilli())
 			if err := fx.store.RateFight(ctx, RatedFight{
 				ReportID: reportID, FightIndex: i, Region: "us", Ruleset: "normal",
 				FoughtAt: foughtAt, EncounterID: int64(sv2Encounter + i - 1),
@@ -316,7 +348,11 @@ func TestScoreV2ScoresALoggedRaidersFiveComponents(t *testing.T) {
 	}
 	t.Logf("ScoreV2(%s) = %+v", fx.main, got)
 
-	wantGear := int(math.Round(GearMax * fx.gearScore / gearScoreAtFull["warrior-arms"]))
+	full, err := sims.FullGearScore(context.Background(), "1.60.1.70291", "warrior-arms")
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantGear := int(math.Round(GearMax * fx.gearScore / full))
 	wantParses := int(math.Round(fx.parsePercentile / 100 * ParsesMax))
 	wantDiscipline := int(math.Round(DisciplineMax * float64(fx.rated-fx.missedFlask) / float64(fx.rated)))
 	want := ScoreComponents{
@@ -351,17 +387,37 @@ func TestScoreV2ScoresALoggedRaidersFiveComponents(t *testing.T) {
 	if got.Tier != Tier(sum) {
 		t.Errorf("tier = %q, want %q", got.Tier, Tier(sum))
 	}
-	if !got.AsOf.Equal(fx.newest) {
+	if !got.AsOf.UTC().Equal(fx.newest.UTC()) {
 		t.Errorf("as_of = %v, want the newest fight %v", got.AsOf, fx.newest)
 	}
 	if got.Experience != (ScoreExperience{Dungeons: 0, RaidKills: 6, Alts: 2}) {
 		t.Errorf("experience = %+v, want 0 dungeons, 6 raid kills, 2 alts", got.Experience)
 	}
-	if got.GearScore != int(math.Round(fx.gearScore)) || got.ItemLevel != 58 {
-		t.Errorf("gear score %d at item level %d, want %d at 58", got.GearScore, got.ItemLevel, int(math.Round(fx.gearScore)))
+	// Contract 5: gear_score is the gear component in points; attendance is the fraction.
+	if got.GearScore != got.Components.Gear || got.GearScoreRaw != int(math.Round(fx.gearScore)) || got.ItemLevel != 58 {
+		t.Errorf("gear score %d (raw %d) at item level %d, want %d (raw %d) at 58",
+			got.GearScore, got.GearScoreRaw, got.ItemLevel, got.Components.Gear, int(math.Round(fx.gearScore)))
+	}
+	if got.Attendance != 1 {
+		t.Errorf("attendance = %v, want 1 (every night)", got.Attendance)
 	}
 	if got.Spec != "warrior-arms" || got.Fights != fx.rated {
 		t.Errorf("spec %q over %d fights, want warrior-arms over %d", got.Spec, got.Fights, fx.rated)
+	}
+}
+
+// Two of three guild nights is two thirds of the attendance component.
+func TestScoreV2AttendanceCountsThePartOfTheNightsAttended(t *testing.T) {
+	fx := seedLoggedRaider(t)
+	// The main was not at the first night: none of its rows there remain.
+	mustExec(t, fx.pool, `delete from rating_scores where report_id = $1 and player_key = $2`, sv2Report+"a", fx.main)
+	mustExec(t, fx.pool, `delete from fight_metrics where report_id = $1 and player_key = $2`, sv2Report+"a", fx.main)
+	got, err := fx.store.ScoreV2(context.Background(), fx.main)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Components.Attendance != 133 || math.Abs(got.Attendance-2.0/3) > 1e-9 {
+		t.Errorf("attendance %d (%v), want 133 (2/3)", got.Components.Attendance, got.Attendance)
 	}
 }
 
@@ -406,19 +462,20 @@ func TestRaterRollsTheScoreUpOntoTheRatedFight(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var gear, experience, attendance int
+	var score, gear, experience int
+	var attendance float64
 	var discipline bool
 	var tier string
 	if err := fx.pool.QueryRow(context.Background(),
-		`select gear_score, experience, attendance, discipline, tier from rating_scores
+		`select score, gear_score, experience, attendance::float8, discipline, tier from rating_scores
 		 where report_id = $1 and fight_index = 4 and player_key = $2`, f.ReportID, fx.main).
-		Scan(&gear, &experience, &attendance, &discipline, &tier); err != nil {
+		Scan(&score, &gear, &experience, &attendance, &discipline, &tier); err != nil {
 		t.Fatal(err)
 	}
-	if gear != want.GearScore || experience != want.Components.Experience ||
-		attendance != want.Components.Attendance || !discipline || tier != want.Tier {
-		t.Errorf("rolled up %d/%d/%d/%v/%q, want %d/%d/%d/true/%q", gear, experience, attendance, discipline, tier,
-			want.GearScore, want.Components.Experience, want.Components.Attendance, want.Tier)
+	if score != want.Score || gear != want.Components.Gear || experience != want.Components.Experience ||
+		attendance != want.Attendance || !discipline || tier != want.Tier {
+		t.Errorf("rolled up %d/%d/%d/%v/%v/%q, want %d/%d/%d/%v/true/%q", score, gear, experience, attendance,
+			discipline, tier, want.Score, want.Components.Gear, want.Components.Experience, want.Attendance, want.Tier)
 	}
 }
 
@@ -471,9 +528,8 @@ func TestTheCharacterEndpointCarriesTheForeverScore(t *testing.T) {
 			t.Fatalf("%s = %s: %v", field, body[field], err)
 		}
 	}
-	if score != want.Score || tier != want.Tier || asOf != want.AsOf.Format(time.DateOnly) {
-		t.Errorf("score %d %q as of %s, want %d %q as of %s", score, tier, asOf,
-			want.Score, want.Tier, want.AsOf.Format(time.DateOnly))
+	if wantAsOf := want.AsOf.UTC().Format(time.DateOnly); score != want.Score || tier != want.Tier || asOf != wantAsOf {
+		t.Errorf("score %d %q as of %s, want %d %q as of %s", score, tier, asOf, want.Score, want.Tier, wantAsOf)
 	}
 	if components != (struct{ Gear, Experience, Parses, Attendance, Discipline int }(want.Components)) {
 		t.Errorf("components = %+v, want %+v", components, want.Components)
@@ -487,6 +543,38 @@ func TestTheCharacterEndpointCarriesTheForeverScore(t *testing.T) {
 	for _, field := range []string{"score", "tier", "components", "as_of", "experience"} {
 		if string(alt[field]) != "null" {
 			t.Errorf("no logs: %s = %s, want null", field, alt[field])
+		}
+	}
+}
+
+type failingScorer struct{}
+
+func (failingScorer) ForeverScore(context.Context, string) (rankings.ForeverScore, error) {
+	return rankings.ForeverScore{}, errors.New("the score store is down")
+}
+
+// A score that cannot be read is logged and left out; the character page still renders.
+func TestTheCharacterPageSurvivesAScoreFailure(t *testing.T) {
+	fx := seedLoggedRaider(t)
+	mux := http.NewServeMux()
+	rankings.Mount(mux, &rankings.Service{Store: &rankings.Store{Pool: fx.pool}, Scores: failingScorer{}})
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/v1/characters/us/normal/sv2main", nil))
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status %d: %s", rec.Code, rec.Body)
+	}
+	var env struct {
+		Data map[string]json.RawMessage `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &env); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := env.Data["history"]; !ok {
+		t.Error("the page lost its history")
+	}
+	for _, field := range []string{"score", "tier", "components", "as_of", "experience"} {
+		if string(env.Data[field]) != "null" {
+			t.Errorf("%s = %s, want null", field, env.Data[field])
 		}
 	}
 }
