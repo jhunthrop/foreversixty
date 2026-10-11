@@ -177,6 +177,9 @@ function Options.handle(input)
 		if Comms.dropped > 0 then
 			lines[#lines + 1] = string.format(L.diagDropped, Comms.dropped)
 		end
+		if Comms.failed > 0 then
+			lines[#lines + 1] = string.format(L.diagCommsFailedCount, Comms.failed)
+		end
 		if #lines == 0 then
 			return { L.diagNone }
 		end

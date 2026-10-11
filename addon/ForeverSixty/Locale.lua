@@ -478,6 +478,8 @@ local L = {
 	-- Addon messages between players (Comms.lua): /fs hello, /fs seen and /fs diag.
 	diagNoAddonMessages = "This client cannot send addon messages; guild and group sharing is off.",
 	diagDropped = "Messages from other players ignored as unreadable or not allowed: %d",
+	diagCommsFailed = "Answering another player's addon message failed and was skipped: %s",
+	diagCommsFailedCount = "Other players' messages that could not be handled: %d",
 	commsSent = "Hello sent to your guild.",
 	commsUnknownKind = "Forever Sixty has no message of that kind.",
 	commsWrongChannel = "That message cannot go to %s.",

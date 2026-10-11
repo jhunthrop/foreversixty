@@ -113,6 +113,14 @@ describe("Comms, the FS1 protocol", function()
 			assert.is_string(reason)
 		end)
 
+		it("refuses a field carrying a carriage return or a NUL, which decode would refuse", function()
+			for _, bad in ipairs({ "Arms\rraid", "Arms\0raid" }) do
+				local text, reason = Comms.encode("push", { CODE, bad })
+				assert.is_nil(text)
+				assert.is_string(reason)
+			end
+		end)
+
 		it("writes a kind with no fields as version and kind alone", function()
 			assert.are.equal("1|snapshot?", Comms.encode("snapshot?", {}))
 			assert.are.equal("1|snapshot?", Comms.encode("snapshot?"))
@@ -169,6 +177,55 @@ describe("Comms, the FS1 protocol", function()
 			end
 			assert.are.equal(50, count)
 			assert.are.equal(50, Comms.dropped)
+		end)
+	end)
+
+	-- Another player's message must never become a Lua error here. No client is installed:
+	-- the listeners and the reply are made to fail, and onEvent has to absorb it.
+	describe("a message from another player", function()
+		local HELLO = "1|hello|20|warrior-arms|14|Arms leveling|2026-11-04"
+
+		before_each(function()
+			Comms.reset()
+			Comms.failed = 0
+		end)
+
+		it("does not raise when a listener does, and the next listener still runs", function()
+			local heard = 0
+			Comms.on("hello", function()
+				error("listener bug")
+			end)
+			Comms.on("hello", function()
+				heard = heard + 1
+			end)
+			local ok, err = pcall(Comms.onEvent, "FS1", HELLO, "GUILD", "Other-Yell")
+			assert.is_true(ok, tostring(err))
+			assert.are.equal(1, heard)
+			assert.are.equal(1, Comms.failed)
+		end)
+
+		it("does not raise when building the snapshot! reply does", function()
+			Comms.helloFields = function()
+				error("talents unreadable")
+			end
+			local ok, err = pcall(Comms.onEvent, "FS1", "1|snapshot?", "GUILD", "Other-Yell")
+			assert.is_true(ok, tostring(err))
+			assert.are.equal(1, Comms.failed)
+		end)
+
+		it("checks the snapshot! limit before building the reply", function()
+			local Theme = require("Theme")
+			local send = stub(Theme, "sendAddonMessage").returns(true)
+			local built = 0
+			Comms.helloFields = function()
+				built = built + 1
+				return { 20, "warrior-arms", 14, "Arms leveling", "-" }
+			end
+			Comms.onEvent("FS1", "1|snapshot?", "GUILD", "Other-Yell")
+			Comms.onEvent("FS1", "1|snapshot?", "GUILD", "Another-Yell")
+			send:revert()
+			assert.are.equal(1, built)
+			assert.stub(send).was.called(1)
 		end)
 	end)
 end)

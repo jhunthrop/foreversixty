@@ -31,6 +31,9 @@ Comms.MAX_BYTES = 255
 Comms.seen = {}
 --- Malformed, foreign-version and refused messages, for /fs diag.
 Comms.dropped = 0
+--- Errors raised while answering or handing on another player's message (a listener, or
+--- building a snapshot! reply), caught so they never surface as Lua errors; for /fs diag.
+Comms.failed = 0
 --- The data the hello fields are read against; Options sets it at register.
 Comms.data = ns.Data
 
@@ -151,8 +154,8 @@ end
 
 --- "1|hello|20|warrior-arms|14|Arms leveling|2026-11-04" from a kind and its fields in wire
 --- order. Each field is percent-encoded ("|" as %7C, newline as %0A, "%" as %25). Nil and a
---- reason for an unknown kind, a missing field, or a payload over the client's 255 bytes:
---- a message is never split.
+--- reason for an unknown kind, a missing field, a field carrying a carriage return or a NUL
+--- (which decode refuses), or a payload over the client's 255 bytes: a message is never split.
 function Comms.encode(kind, fields)
 	local names = Comms.FIELDS[kind]
 	if names == nil then
@@ -164,7 +167,11 @@ function Comms.encode(kind, fields)
 		if fields[index] == nil then
 			return nil, "missing field " .. names[index]
 		end
-		parts[#parts + 1] = escape(fieldText(fields[index]))
+		local value = fieldText(fields[index])
+		if value:find("[%z\r]") then
+			return nil, "control character in " .. names[index]
+		end
+		parts[#parts + 1] = escape(value)
 	end
 	local text = table.concat(parts, "|")
 	if #text > Comms.MAX_BYTES then
@@ -236,7 +243,17 @@ local handlers = {}
 --- Forget every timer, listener and sender. Specs only.
 function Comms.reset()
 	lastSent, lastHelloFrom, openLoot, handlers = {}, {}, {}, {}
-	Comms.seen, Comms.dropped = {}, 0
+	Comms.seen, Comms.dropped, Comms.failed, Comms.failureNoted = {}, 0, 0, nil
+end
+
+--- Seconds left before `kind` may go out on `channel` again, or nil when it may go now.
+local function waitFor(kind, channel, now)
+	local limit = Comms.LIMITS[kind]
+	local last = lastSent[kind .. "@" .. channel]
+	if limit ~= nil and last ~= nil and now - last < limit then
+		return math.ceil(limit - (now - last))
+	end
+	return nil
 end
 
 local function lootOpen(lootId, now)
@@ -260,10 +277,9 @@ function Comms.send(kind, fields, channel)
 		return false, L.commsNoGuild
 	end
 	local now = Theme.now()
-	local limit = Comms.LIMITS[kind]
-	local key = kind .. "@" .. channel
-	if limit ~= nil and lastSent[key] ~= nil and now - lastSent[key] < limit then
-		return false, string.format(L.commsWait, math.ceil(limit - (now - lastSent[key])))
+	local wait = waitFor(kind, channel, now)
+	if wait ~= nil then
+		return false, string.format(L.commsWait, wait)
 	end
 	fields = fields or {}
 	if kind == "loot!" and not lootOpen(fieldText(fields[1]), now) then
@@ -276,7 +292,7 @@ function Comms.send(kind, fields, channel)
 	if not Theme.sendAddonMessage(Comms.PREFIX, text, channel) then
 		return false, L.commsNoApi
 	end
-	lastSent[key] = now
+	lastSent[kind .. "@" .. channel] = now
 	if kind == "loot?" then
 		openLoot[fieldText(fields[2])] = now
 	end
@@ -390,6 +406,24 @@ local function remember(sender, named, channel, now)
 	Comms.prune(now)
 end
 
+--- Run `action` so that an error in it is counted, and the first one written to /fs diag,
+--- instead of becoming a Lua error caused by someone else's message.
+local function protect(action, ...)
+	local ok, err = pcall(action, ...)
+	if not ok then
+		Comms.failed = Comms.failed + 1
+		if not Comms.failureNoted then
+			Comms.failureNoted = true
+			Theme.note(string.format(L.diagCommsFailed, tostring(err)))
+		end
+	end
+	return ok
+end
+
+local function answerSnapshot(channel)
+	Comms.send("snapshot!", Comms.helloFields(), channel)
+end
+
 --- CHAT_MSG_ADDON. Anything not FS1, unreadable, from this player, or refused by its kind's
 --- rule is ignored (a refusal counted in Comms.dropped); the rest goes to its listeners.
 --- True when the message was taken.
@@ -414,7 +448,10 @@ function Comms.onEvent(prefix, text, channel, sender)
 	elseif kind == "snapshot!" then
 		remember(sender, named, channel, now)
 	elseif kind == "snapshot?" then
-		Comms.send("snapshot!", Comms.helloFields(), channel)
+		-- The limit is checked first, so a refused reply never reads talents, gear or score.
+		if Comms.CHANNELS["snapshot!"][channel] and waitFor("snapshot!", channel, now) == nil then
+			protect(answerSnapshot, channel)
+		end
 	elseif kind == "push" then
 		if not Comms.mayPush(sender) then
 			drop()
@@ -429,7 +466,7 @@ function Comms.onEvent(prefix, text, channel, sender)
 		end
 	end
 	for _, handler in ipairs(handlers[kind] or {}) do
-		handler(named, sender, channel)
+		protect(handler, named, sender, channel)
 	end
 	return true
 end
