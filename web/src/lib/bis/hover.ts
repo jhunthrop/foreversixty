@@ -16,7 +16,7 @@ import type { BisBand, BisFile, BisSlot, Faction } from './types';
 /** Bands run 20..60 in steps of 10 (sim/cmd/leveling-bis's own defaultBandsFlag). */
 export const MIN_BAND = 20;
 export const MAX_BAND = 60;
-const BAND_STEP = 10;
+export const BAND_STEP = 10;
 
 /**
  * The band a character level falls into: rounded down to the nearest step, clamped to the
