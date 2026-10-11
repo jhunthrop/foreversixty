@@ -4,6 +4,7 @@
 // and a mark on their row). The list itself is static HTML; nothing here is needed to read it.
 import type { Faction } from '../bis/types';
 import { onCurrentCharacterChange } from '../current-character';
+import { afterLoad, hasSessionHint } from '../page-load';
 import { hrefWithFaction, nextTabIndex, parseFaction } from './tier-controls';
 import type { TierSpecView } from './tier-callout';
 import { tiersCopy } from './tier-copy';
@@ -143,22 +144,6 @@ function wireTabKeys(): void {
       tabs[next]?.focus();
     });
   }
-}
-
-/** `<html data-session="1">`: Base.astro's pre-paint hint that a session cookie exists. */
-function hasSessionHint(): boolean {
-  return document.documentElement.dataset.session === '1';
-}
-
-/** Runs `work` once the page has loaded and the browser is idle, so the signed-in answer never
- *  competes with the first paint. */
-function afterLoad(work: () => void): void {
-  const schedule = (): void => {
-    if ('requestIdleCallback' in window) window.requestIdleCallback(work);
-    else setTimeout(work, 0);
-  };
-  if (document.readyState === 'complete') schedule();
-  else window.addEventListener('load', schedule, { once: true });
 }
 
 export function mountTierPage(): void {
