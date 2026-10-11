@@ -1,0 +1,110 @@
+{
+  "builds": [
+    {
+      "id": "b_01",
+      "name": "Arms raid",
+      "character": "Obnoxious-Yell",
+      "code": "FSB1:1.60.1.70291:warrior:111121:chest=6627:attack_power=30"
+    }
+  ],
+  "messages": [
+    {
+      "type": "build",
+      "character": "Obnoxious-Yell",
+      "name": "Arms raid",
+      "code": "FSB1:1.60.1.70291:warrior:111121:chest=6627:attack_power=30"
+    },
+    {
+      "type": "upgrade",
+      "character": "Obnoxious-Yell",
+      "slot": "chest",
+      "item_id": 6627,
+      "item_name": "Mutant Scale Breastplate",
+      "source": "Blackrock Depths",
+      "delta": 4.2,
+      "unit": "dps"
+    },
+    {
+      "type": "weights",
+      "character": "Obnoxious-Yell",
+      "spec": "warrior-arms",
+      "weights": [
+        {
+          "stat": "attack_power",
+          "weight": 1
+        },
+        {
+          "stat": "strength",
+          "weight": 2.2
+        },
+        {
+          "stat": "hit",
+          "weight": 0
+        }
+      ],
+      "caps": [
+        "hit"
+      ],
+      "dps_per_point": 0.42
+    },
+    {
+      "type": "sim_result",
+      "character": "Obnoxious-Yell",
+      "spec": "warrior-arms",
+      "dps": 412.6,
+      "error": 3.1,
+      "generated_at": "2026-11-04T20:55:00Z",
+      "slots": [
+        {
+          "slot": "chest",
+          "item_id": 6627,
+          "delta": 4.2
+        }
+      ]
+    },
+    {
+      "type": "last_raid",
+      "character": "Obnoxious-Yell",
+      "report_id": "r_8f2a1c",
+      "date": "2026-12-09",
+      "bosses": [
+        {
+          "name": "Lucifron",
+          "percentile": 71,
+          "biggest_loss": "downtime",
+          "loss_seconds": 18,
+          "deaths": 0,
+          "consumables_missed": [
+            "flask"
+          ],
+          "adherence": 0.82
+        }
+      ]
+    },
+    {
+      "type": "loot_values",
+      "character": "Obnoxious-Yell",
+      "raid": "Molten Core",
+      "items": {
+        "17076": {
+          "value": 6.3,
+          "unit": "dps",
+          "planned": true
+        }
+      }
+    },
+    {
+      "type": "guild",
+      "character": "Obnoxious-Yell",
+      "guild_name": "OLYMPUS XXVII",
+      "claim_state": "claimed",
+      "pending_approvals": 2,
+      "rank": "officer"
+    },
+    {
+      "type": "ack",
+      "character": "Obnoxious-Yell",
+      "export_seen_at": "2026-11-04T14:03:00Z"
+    }
+  ]
+}

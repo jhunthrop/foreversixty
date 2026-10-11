@@ -1,0 +1,27 @@
+{
+  "format": 1,
+  "export": {
+    "character": "Obnoxious-Yell",
+    "code": "FS1:1.60.1.70291:warrior:human:371000000/0/0:chest=6627",
+    "saved_at": "2026-11-04 14:02"
+  },
+  "sim_request": {
+    "character": "Obnoxious-Yell",
+    "spec": "warrior-arms",
+    "requested_at": "2026-11-04 14:10",
+    "gear_code": "FS1:1.60.1.70291:warrior:human:371000000/0/0:chest=6627"
+  },
+  "roster_snapshot": {
+    "guild": "OLYMPUS XXVII",
+    "members": [
+      {
+        "name": "Obnoxious-Yell",
+        "level": 20,
+        "spec": "warrior-arms",
+        "gear_gap": 14,
+        "build": "Arms leveling",
+        "seen_at": "2026-11-04 14:01"
+      }
+    ]
+  }
+}
