@@ -10,7 +10,7 @@ describe("the TOC", function()
 		"Theme.lua", "Widgets.lua", "Cards.lua", "Export.lua", "Follow.lua", "Gear.lua",
 		"Progress.lua", "Rotation.lua",
 		-- Comms reads Progress, Score, Gear and Theme, so it loads after Score.
-		"Score.lua", "Comms.lua", "Ratings.lua", "Tooltip.lua",
+		"Score.lua", "Comms.lua", "Inspect.lua", "Ratings.lua", "Tooltip.lua",
 		"TalentGlow.lua",
 		"views/ExportView.lua", "views/FollowView.lua",
 		"views/GearView.lua", "views/GuildView.lua", "views/SettingsView.lua",

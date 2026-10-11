@@ -8,7 +8,7 @@ ns = type(ns) == "table" and ns or {}
 local L = {
 	-- Chrome
 	addonName = "Forever Sixty",
-	slashHint = "/fs, /fs export, /fs follow <code>, /fs gear, /fs settings, /fs inbox, /fs record, /fs diag",
+	slashHint = "/fs, /fs export, /fs follow <code>, /fs gear, /fs settings, /fs inbox, /fs record, /fs inspect, /fs diag",
 	dataBuild = "Data build: %s",
 	buildMismatch = "This addon carries data for build %s; you are playing %s. Numbers may be out of date.",
 	-- How a printed line is prefixed with the addon's name.
@@ -493,6 +493,16 @@ local L = {
 	commsSeenLine = "%s: level %d %s, gear gap %d, %s, %s, %d min ago",
 	commsSeenNoBuild = "no build",
 	commsSeenNoScore = "no Forever Score yet",
+
+	-- Inspect queue (Inspect.lua): /fs inspect.
+	-- "Obnoxious: Arms, level 20, item level 31, missing enchants: head, main hand"
+	inspectLine = "%s: %s, level %d, item level %s, missing enchants: %s",
+	inspectUnknown = "unknown",
+	inspectNoneMissing = "none",
+	inspectNobody = "No one to inspect: target another player or join a group.",
+	inspectQueued = "Inspecting %d; results appear here as they arrive.",
+	inspectPaused = "Inspecting is paused while you are in combat; it carries on afterwards.",
+	inspectTooFar = "Too far away to inspect: %d.",
 }
 
 ns.L = L

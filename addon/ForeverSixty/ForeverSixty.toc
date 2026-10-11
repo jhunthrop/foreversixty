@@ -26,6 +26,7 @@ Progress.lua
 Rotation.lua
 Score.lua
 Comms.lua
+Inspect.lua
 Ratings.lua
 Tooltip.lua
 TalentGlow.lua

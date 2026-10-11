@@ -15,6 +15,7 @@ local Data = ns.Data or require("Data")
 local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
+local Inspect = ns.Inspect or require("Inspect")
 local Tooltip = ns.Tooltip or require("Tooltip")
 local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local Toast = ns.Toast or require("Toast")
@@ -165,6 +166,8 @@ function Options.handle(input)
 		return { sent and L.commsSent or reason }
 	elseif command == "seen" then
 		return Comms.seenLines()
+	elseif command == "inspect" then
+		return Options.inspectLines()
 	elseif command == "diag" then
 		local notes = Theme.diagnostics()
 		local lines = {}
@@ -186,6 +189,41 @@ function Options.handle(input)
 		return lines
 	end
 	return Window.buildLines(data)
+end
+
+--- Names (Inspect.keyOf) /fs inspect asked about and has not yet printed: only these are
+--- printed when INSPECT_READY brings the record, so the group panel's own inspections stay quiet.
+Options.inspecting = {}
+
+--- /fs inspect: queue the target, else every party or raid member. Answers at once with a
+--- fresh record already held, how many are queued, how many were too far, and "paused" while
+--- in combat; the rest print on INSPECT_READY.
+function Options.inspectLines()
+	Options.inspecting = {}
+	local lines = {}
+	local queued, tooFar = 0, 0
+	for _, unit in ipairs(Inspect.defaultUnits()) do
+		local ok, why = Inspect.request(unit)
+		local key = Inspect.keyOf(unit)
+		if ok and why == "cached" then
+			lines[#lines + 1] = Inspect.line(Inspect.get(key))
+		elseif ok then
+			queued = queued + 1
+			Options.inspecting[key] = true
+		elseif why == "range" then
+			tooFar = tooFar + 1
+		end
+	end
+	if queued > 0 then
+		lines[#lines + 1] = Inspect.isPaused() and L.inspectPaused or string.format(L.inspectQueued, queued)
+	end
+	if tooFar > 0 then
+		lines[#lines + 1] = string.format(L.inspectTooFar, tooFar)
+	end
+	if #lines == 0 then
+		lines[1] = L.inspectNobody
+	end
+	return lines
 end
 
 --- The slash command. The window is the surface now: /fs and the four tab
@@ -215,13 +253,26 @@ Options.EVENTS = {
 	"PLAYER_LOGIN", "PLAYER_LOGOUT", "PLAYER_ENTERING_WORLD",
 	"PLAYER_TALENT_UPDATE", "TRAIT_CONFIG_UPDATED", "PLAYER_LEVEL_UP",
 	"PLAYER_REGEN_ENABLED", "ADDON_LOADED", "GET_ITEM_INFO_RECEIVED",
-	"CHAT_MSG_ADDON",
+	"CHAT_MSG_ADDON", "INSPECT_READY", "GROUP_ROSTER_UPDATE", "PLAYER_REGEN_DISABLED",
 }
 
 function Options.onEvent(_, event, ...)
 	if event == "CHAT_MSG_ADDON" then
 		-- Every addon's messages arrive here; Comms ignores all but FS1. Nothing to redraw.
 		Comms.onEvent(...)
+		return
+	end
+	if event == "INSPECT_READY" then
+		-- A record /fs inspect asked for is printed as it arrives; the rest only fill the cache.
+		local record = Inspect.onEvent(event, ...)
+		if record ~= nil and Options.inspecting[record.key] then
+			Options.inspecting[record.key] = nil
+			print(string.format(L.chatLine, L.addonName, Inspect.line(record)))
+		end
+		return
+	end
+	if event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_REGEN_DISABLED" then
+		Inspect.onEvent(event, ...)
 		return
 	end
 	if event == "ADDON_LOADED" then
@@ -241,6 +292,7 @@ function Options.onEvent(_, event, ...)
 		return
 	end
 	if event == "PLAYER_REGEN_ENABLED" then
+		Inspect.onEvent(event, ...)
 		Toast.flushPending()
 		return
 	end
