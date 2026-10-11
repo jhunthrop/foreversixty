@@ -1,145 +1,161 @@
-"""Mock boards for the /logs landing rebuild (design/specs/2026-10-04-logs-landing.md).
+"""Mock boards for the /logs redesign (design/specs/2026-10-11-logs.md, round two; revises the 2026-10-04 board).
 
-  python3 design/mocks/gen_logs.py            -> renders/logs-signed-in.html (1440)
-  LOGS_STATE=signed-out python3 ...           -> renders/logs-signed-out.html (1440)
-  LOGS_PHONE=1 python3 ...                    -> renders/logs-phone.html (390, signed in)
+  python3 design/mocks/gen_logs.py   -> renders/logs{,-signed-out,-2000,-1024,-phone,-states}.png
 
-Numbers come from design/mocks/data (the real public sample report, refreshed by
-fetch_logs_data.py). On the signed-in board that report's own numbers stand in for the
-visitor's own newest report; the board caption says so.
+The header is the shared component (gen_character_header.py). The sample row's counts (63 fights, 12 kills)
+come from design/mocks/data/logs-sample-report.json, the public sample report. The character, its own
+reports (zones, boss counts, lengths, dates), the device and the pairing code are EXAMPLES, labelled in
+the spec only. HTML goes to a scratch dir; only PNGs land in renders/.
 """
-import json, os, html
-from mocklib import (DATA, GOLD, MUTED, TEXT, BODY, BORDER, SOFT, GREEN, CLASS_COLOR, crest, emblem,
-                     nav, nav_phone, footer, page, write)
+import json
+import sys
 
-PHONE = os.environ.get('LOGS_PHONE') == '1'
-STATE = os.environ.get('LOGS_STATE', 'signed-in')
-SIGNED_IN = STATE == 'signed-in'
-L = json.load(open(DATA / 'logs-sample-report.json'))
-R = L['report']
-ZULMARA = {'class': 'hunter', 'faction': 'horde', 'battletag': 'Zulmara'}
+import gen_character_header as H
+from mocklib import DATA, GOLD, MUTED, TEXT, BODY, BORDER, SOFT
 
-hero_title = 'Sanguine Depths' if SIGNED_IN else R['title']
-hero_day = R['created_at'][:10]
-top = L['dps'][0]
-fight = L['fight']
-HUNTER = CLASS_COLOR['hunter']
+R = json.load(open(DATA / 'logs-sample-report.json'))['report']
+SAMPLE_DAY = 'Sep 15'     # the sample's created_at 2026-09-15, older than two weeks so it prints as a date
 
-
-def btn(label, href, gold=False, fill=False, h=44):
-    cls = 'btn' + (' btn-gold' if gold else '') + (' btn-fill' if fill else '')
-    return f'<a class="{cls}" href="{href}" style="height:{h}px">{label}</a>'
+STYLE = f'''<style>
+.rr{{display:grid;grid-template-columns:1fr auto;gap:2px 16px;align-items:baseline;min-height:56px;padding:10px 0;border-bottom:1px solid {SOFT}}}
+.rr:hover .t{{text-decoration:underline;text-underline-offset:4px}}
+.rr .t{{font-weight:600;color:{TEXT}}}
+.tab{{display:inline-flex;align-items:center;height:44px;padding:0 14px;border:1px solid {BORDER};border-radius:4px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:{TEXT}}}
+.tab.on{{border-color:{GOLD};color:{GOLD};background:color-mix(in srgb,{GOLD} 8%,transparent)}}
+.drop{{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:150px;border:1px dashed #4a4030;border-radius:6px;color:{MUTED};font-size:13px;text-align:center;padding:16px}}
+.drop.on{{border-color:{GOLD};background:color-mix(in srgb,{GOLD} 6%,transparent)}}
+</style>'''
 
 
-def tab(label, active=False):
-    st = f'color:{GOLD};border-color:{GOLD};background:#e5b95514' if active else f'color:{TEXT};border-color:{BORDER}'
-    return f'<span style="display:inline-flex;align-items:center;height:44px;padding:0 14px;border:1px solid;border-radius:4px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;{st}">{label}</span>'
-
-
-def mono(s, color=MUTED, size=14):
+def mono(s: str, color: str = MUTED, size: int = 13) -> str:
     return f'<span class="mono" style="font-size:{size}px;color:{color}">{s}</span>'
 
 
-sample_pill = '' if SIGNED_IN else '<span class="pill pill-sample" style="margin-left:10px;vertical-align:4px">Sample</span>'
-facts = mono(f'{hero_day}&nbsp;·&nbsp;{R["fight_count"]} fights&nbsp;·&nbsp;{R["kill_count"]} kills')
-desc = (f'<span style="font-size:14px;color:{BODY};max-width:62ch">Every pull, ranked: damage, healing, deaths, buffs, casts and threat. '
-        f'<a href="#companion" style="color:#b9b3a4;text-decoration:underline">Log live with the companion</a> or '
-        f'<a href="#upload" style="color:#b9b3a4;text-decoration:underline">upload a log file</a>.</span>')
-dps_text = (f"{top['dps']:,} DPS" if top['dps'] >= 1000 else f"{top['dps']:.1f} DPS")
-if SIGNED_IN:
-    hook = (f'<span style="font-size:13px;color:{MUTED};display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
-            f'<span>Last kill, {html.escape(fight["name"])}:</span>'
-            f'<span class="display" style="font-size:14px;font-weight:700;color:{CLASS_COLOR.get(top["class"].lower(), TEXT)}">{top["name"]}</span>'
-            f'<span style="color:{SOFT}">·</span>{mono(dps_text, TEXT, 13)}<span style="color:{SOFT}">·</span>'
-            f'<a href="#planner" style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">Gear in the planner</a>'
-            f'<span style="color:{SOFT}">|</span><a href="#sim" style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase">Sim</a></span>')
-else:
-    hook = f'<span style="font-size:13px;color:{MUTED}">Open it to see every player\'s gear next to the planner and the simulator.</span>'
-
-hero = f'''<span class="label" style="color:{GOLD};display:flex;align-items:center;gap:10px"><i style="width:28px;height:1px;background:{GOLD};display:inline-block"></i>Logs</span>
-<h1 class="display" style="font-size:22px;line-height:1.1;font-weight:700;color:{TEXT}">{hero_title}{sample_pill}</h1>
-<span>{facts}</span>
-{desc}
-{hook}
-<span>{btn('Open this report', '#report', gold=True)}</span>'''
-
-if SIGNED_IN:
-    doors = ''.join(f'<a href="#{d.lower()}" style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:{GOLD if d == "Logs" else TEXT};{"border-bottom:2px solid " + GOLD if d == "Logs" else ""}">{d}</a>' for d in ['Planner', 'Simulator', 'Logs', 'Rankings'])
-    spine = (f'<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;min-height:44px;padding:8px 0;border-bottom:1px solid {SOFT}">'
-             f'<span style="display:flex;align-items:center;gap:10px"><img class="crest" src="{crest("hunter")}" alt="" style="width:28px;height:28px;--c:{HUNTER}">'
-             f'<span class="display" style="font-size:14px;font-weight:700;color:{HUNTER}">Zulmara</span>'
-             f'<span style="font-size:12px;color:{MUTED}"><img src="{emblem("horde")}" alt="" style="width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:4px">Level 24 Troll Hunter</span></span>'
-             f'<span style="display:flex;gap:16px">{doors}</span>'
-             f'<span style="margin-left:auto;display:flex;gap:14px"><a href="#switch" style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:{MUTED}">Switch</a>'
-             f'<a href="#forget" style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:{MUTED}">Forget</a></span></div>')
-else:
-    spine = (f'<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;min-height:44px;padding:8px 0;border-bottom:1px solid {SOFT};font-size:13px;color:{MUTED}">'
-             f'Sign in with Battle.net or paste an export to point the site at your character. <a href="#signin" style="text-decoration:underline">Sign in with Battle.net</a> <a href="#paste" style="text-decoration:underline">Paste an export</a></div>')
-
-
-def panel(title, body, aside=''):
+def panel(title: str, body: str, aside: str = '', anchor: str = '') -> str:
     a = f'<span style="font-size:12px;color:{MUTED}">{aside}</span>' if aside else ''
-    return (f'<section class="panel" style="display:flex;flex-direction:column;gap:12px;padding:16px 20px">'
-            f'<div style="display:flex;justify-content:space-between;align-items:baseline"><span class="display" style="font-size:15px;font-weight:700;color:{TEXT};letter-spacing:.02em">{title}</span>{a}</div>{body}</section>')
+    return (f'<section {anchor} class="panel" style="display:flex;flex-direction:column;gap:12px;padding:16px 20px"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">'
+            f'<span class="display" style="font-size:15px;font-weight:700;color:{TEXT};letter-spacing:.02em">{title}</span>{a}</div>{body}</section>')
 
 
-def report_row(title, day, fights, kills, guild=None):
-    g = f'<span style="font-size:12px;color:{MUTED}">{guild}</span>' if guild else ''
-    cols = '1fr' if PHONE else '1fr auto'
-    return (f'<div style="display:grid;grid-template-columns:{cols};gap:4px 16px;align-items:baseline;padding:10px 0;border-bottom:1px solid {SOFT}">'
-            f'<span style="display:flex;flex-direction:column;gap:2px;min-width:0"><a href="#r" style="font-weight:600;color:{TEXT}">{title}</a>{g}</span>'
-            f'{mono(f"{day} · {fights} fights · {kills} kills", MUTED, 13)}</div>')
+def report_row(title: str, meta: str, days: int | None, date: str = '') -> str:
+    """Title and a relative date on the first line; zone, boss kills and length under the title."""
+    when = date or H.rel_date(days or 0)
+    return (f'<a class="rr" href="#r"><span class="t">{title}</span>{mono(when)}'
+            f'<span style="font-size:12px;color:{MUTED};grid-column:1/-1">{meta}</span></a>')
 
 
-if SIGNED_IN:
-    tabs = f'<div style="display:flex;gap:6px">{tab("Mine", True)}{tab("Olympus XXVII")}</div>'
-    rows = report_row('Sanguine Depths', hero_day, R['fight_count'], R['kill_count']) + report_row('Deadmines, first clear', '2026-09-12', 24, 6) + report_row('Wailing Caverns', '2026-09-08', 31, 7)
-    mine = panel('Your reports', tabs + f'<div>{rows}</div>')
-else:
-    mine = panel('Your reports', f'<span style="font-size:14px;color:{BODY}">Sign in to see the reports you own. <a href="#email">Use an email link instead.</a></span><span>{btn("Sign in with Battle.net", "#signin")}</span>')
-recent = panel('Recent public reports', f'<span style="font-size:14px;color:{BODY}">No public reports yet. The first raid logs land in December; dungeon logs are welcome now.</span>')
+def your_reports(signed_in: bool, state: str = 'list') -> str:
+    if not signed_in:
+        return panel('Your reports', f'<span style="font-size:14px;color:{BODY}">Reports you own appear here once you are signed in.</span>')
+    tabs = '<div style="display:flex;gap:6px"><span class="tab on">Mine</span><span class="tab">Olympus XXVII</span></div>'
+    if state == 'empty':
+        return panel('Your reports', f'{tabs}<span style="font-size:14px;color:{BODY}">No reports yet. Upload a log, or log live with the companion.</span>')
+    if state == 'loading':
+        return panel('Your reports', tabs + ''.join(f'<div class="rr">{H.skel("50%", 14)}{H.skel(120, 13)}</div>' for _ in range(3)))
+    rows = (report_row('Onyxia, wipes', 'Onyxia\'s Lair · 0 bosses · 1 h 05 m', 1) + report_row('Onyxia, first kill', 'Onyxia\'s Lair · 1 boss · 48 m', 3)
+            + report_row('Sanguine Depths run', 'Sanguine Depths · 4 bosses · 2 h 10 m', 18))
+    return panel('Your reports', tabs + f'<div>{rows}</div>')
 
-status = (f'<div style="display:flex;align-items:center;gap:10px;font-size:13px;color:{BODY}">MacBook Pro · macOS · last seen {mono("4 min ago", BODY, 13)}</div>' if SIGNED_IN else '')
-pointer = f'<span style="font-size:14px;color:{BODY}">Downloads and the in-game /combatlog step are on the setup page. <a href="#setup" style="text-decoration:underline">Get set up</a></span>'
-PAIRED = os.environ.get('LOGS_PAIR') == 'success'
-if SIGNED_IN and PAIRED:
-    status = (f'<div style="display:flex;align-items:center;gap:10px;font-size:13px;color:{BODY}">MacBook Pro · macOS · paired, not seen yet</div>')
-    pairing = (f'<div style="display:flex;flex-direction:column;gap:10px;padding-top:12px;border-top:1px solid {SOFT}"><span class="label">Pair another device</span>'
-               f'<span style="font-size:14px;color:{TEXT}">MacBook Pro paired. It starts uploading as soon as you are logging.</span></div>')
-elif SIGNED_IN:
-    pairing = (f'<div style="display:flex;flex-direction:column;gap:10px;padding-top:12px;border-top:1px solid {SOFT}"><span class="label">Pair another device</span>'
-               f'<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><span class="mono" style="font-size:26px;letter-spacing:.18em;color:{TEXT};padding:8px 14px;border:1px dashed {BORDER};border-radius:4px">7K3Q-P2ND</span>'
-               f'<span style="font-size:13px;color:{MUTED}">Type this into the companion within {mono("9 minutes", MUTED, 13)}. This panel confirms the moment it pairs.</span></div></div>')
-else:
-    pairing = (f'<div style="display:flex;flex-direction:column;gap:10px;padding-top:12px;border-top:1px solid {SOFT}"><span class="label">Pair it with your account</span>'
-               f'<span style="font-size:14px;color:{BODY}">Sign in to pair the companion with your account. <a href="#signin" style="text-decoration:underline;color:{BODY}">Sign in with Battle.net</a> or <a href="#email">use an email link</a>.</span></div>')
-companion = panel('The companion', status + pointer + pairing, aside='Live, while you raid')
 
-vis = ''.join(f'<span style="display:inline-flex;align-items:center;height:36px;padding:0 12px;border:1px solid {GOLD if v == "Public" else BORDER};border-radius:4px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:{GOLD if v == "Public" else TEXT}">{v}</span>' for v in ['Public', 'Unlisted', 'Guild', 'Private'])
-upload_body = (f'<span style="font-size:14px;color:{BODY}">A whole {mono("WoWCombatLog.txt", BODY, 13)}. The first fight is readable within ten seconds of the upload finishing, and the rest appear as they are parsed.</span>'
-               f'<span style="font-size:13px;color:{MUTED}">The game writes it to its {mono("Logs", MUTED, 12)} folder, beside {mono("Interface", MUTED, 12)} and {mono("WTF", MUTED, 12)}. Up to 4 GB. Type {mono("/combatlog", MUTED, 12)} again to stop logging before you upload, so the file is whole.</span>')
-if SIGNED_IN:
-    upload_body += (f'<div style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;min-height:96px;border:1px dashed {BORDER};border-radius:6px;color:{MUTED};font-size:13px;text-align:center">Drop {mono("WoWCombatLog.txt", TEXT, 13)} here, or <span style="color:{GOLD};font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:12px">choose a file</span></div>'
-                    f'<span class="label">Title</span><span style="height:40px;border:1px solid {BORDER};border-radius:4px;padding:0 12px;display:flex;align-items:center;color:{MUTED};font-size:14px">Optional</span>'
-                    f'<span class="label">Who can open it</span><div style="display:flex;gap:6px;flex-wrap:wrap">{vis}</div><span style="font-size:12px;color:{MUTED}">Listed, ranked, anyone can open it.</span>'
-                    f'<span>{btn("Upload", "#go", gold=True, h=40)}</span>')
-else:
-    upload_body += f'<span style="font-size:14px;color:{BODY}">Sign in to upload. The report is filed under your account. <a href="#signin" style="text-decoration:underline;color:{BODY}">Sign in with Battle.net</a> or <a href="#email">use an email link</a>.</span>'
-upload = panel('Upload a log', upload_body, aside='For a night already logged')
-framing = f'<span style="font-size:13px;color:{MUTED}">Logs are for group content at any level: a dungeon run logs the same way a raid does.</span>'
+def recent() -> str:
+    sample = report_row('Sanguine Depths, sample log', f'Sanguine Depths · {R["kill_count"]} kills', None, SAMPLE_DAY)
+    return panel('Recent public reports', f'<span style="font-size:14px;color:{BODY}">No public reports yet. The first raid logs land in December; dungeon logs are welcome now.</span>'
+                 f'<div><span class="label">A sample report</span>{sample}</div>')
 
-if not PHONE:
-    body = f'''<div class="band" style="display:flex;flex-direction:column;flex-shrink:0">{nav('Logs', SIGNED_IN, ZULMARA)}
-<div style="display:flex;flex-direction:column;gap:14px;padding:28px 48px 32px 48px;max-width:1344px">{hero}</div></div>
-<div style="display:flex;flex-direction:column;gap:24px;padding:0 48px 32px 48px">
-{spine}{framing}
-<div style="display:grid;grid-template-columns:7fr 5fr;gap:24px;align-items:start">{mine}{recent}</div>
-<div style="display:grid;grid-template-columns:7fr 5fr;gap:24px;align-items:start">{companion}{upload}</div>
-</div>{footer()}'''
-    out = write(f'logs-{STATE}{"-paired" if PAIRED else ""}.html', page(body, 1440))
-else:
-    body = f'''<div class="band" style="display:flex;flex-direction:column;flex-shrink:0">{nav_phone(SIGNED_IN, ZULMARA)}
-<div style="display:flex;flex-direction:column;gap:12px;padding:18px 18px 22px 18px">{hero}</div></div>
-<div style="display:flex;flex-direction:column;gap:16px;padding:0 18px 24px 18px">{spine}{framing}{mine}{recent}{companion}{upload}</div>{footer(phone=True)}'''
-    out = write(f'logs-phone-{STATE}.html', page(body, 390))
-print(out)
+
+def upload(signed_in: bool, chosen: bool = False) -> str:
+    intro = (f'<span style="font-size:14px;color:{BODY}">A whole {mono("WoWCombatLog.txt", BODY)}. The first fight is readable within ten seconds of the upload finishing, and the rest appear as they are parsed.</span>')
+    folder = (f'<span style="font-size:13px;color:{MUTED}">The game writes it to its {mono("Logs", MUTED, 12)} folder, beside {mono("Interface", MUTED, 12)} and {mono("WTF", MUTED, 12)}. '
+              f'Up to 4 GB. Type {mono("/combatlog", MUTED, 12)} again to stop logging first, so the file is whole.</span>')
+    if not signed_in:
+        return panel('Upload a log', intro + folder + f'<span style="font-size:14px;color:{BODY}">Uploading needs a signed-in account; the report is filed under it.</span>', 'For a night already logged', 'id="upload"')
+    pick = f'<span style="color:{GOLD};font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:12px'
+    if chosen:
+        zone = f'<div class="drop on"><span class="mono" style="color:{TEXT}">WoWCombatLog.txt</span><span>412,883,201 bytes</span>{pick}">Choose another file</span></div>'
+        vis = ''.join(f'<span class="tab {"on" if v == "Public" else ""}" style="height:40px">{v}</span>' for v in ('Public', 'Unlisted', 'Guild', 'Private'))
+        form = (f'<span class="label">Title</span><span style="height:44px;border:1px solid {BORDER};border-radius:4px;padding:0 12px;display:flex;align-items:center;color:{MUTED};font-size:14px">Optional</span>'
+                f'<span class="label">Who can open it</span><div style="display:flex;gap:6px;flex-wrap:wrap">{vis}</div><span style="font-size:12px;color:{MUTED}">Listed, ranked, anyone can open it.</span>'
+                f'<span><a class="btn btn-gold" href="#go" style="height:44px">Upload</a></span>')
+    else:
+        zone = f'<div class="drop"><span>Drop {mono("WoWCombatLog.txt", TEXT)} here, or</span>{pick}">choose a file</span></div>'
+        form = ''
+    return panel('Upload a log', intro + folder + zone + form, 'For a night already logged', 'id="upload"')
+
+
+def companion(signed_in: bool, paired: bool = True) -> str:
+    status = f'<span style="font-size:13px;color:{BODY}">MacBook Pro · macOS · last seen {mono("4 min ago", BODY)}</span>' if (signed_in and paired) else ''
+    if not signed_in:
+        pair = f'<span style="font-size:14px;color:{BODY}">Pairing needs a signed-in account.</span>'
+    else:
+        pair = (f'<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><span class="mono" style="font-size:26px;letter-spacing:.18em;color:{TEXT};padding:8px 14px;border:1px dashed {BORDER};border-radius:4px">7K3Q-P2ND</span>'
+                f'<span style="font-size:13px;color:{MUTED}">Type this into the companion within {mono("9 minutes", MUTED)}.</span></div>')
+    head = f'<span class="label">{"Pair another device" if paired else "Pair it with your account"}</span>' if signed_in else ''
+    body = (status + f'<span style="font-size:14px;color:{BODY}">Log live while you raid. Downloads and the in-game /combatlog step are on the setup page. <a href="#setup" style="text-decoration:underline">Get set up</a></span>'
+            + f'<div style="display:flex;flex-direction:column;gap:10px;padding-top:12px;border-top:1px solid {SOFT}">{head}{pair}</div>')
+    return panel('The companion', body, 'Live, while you raid')
+
+
+def board(width: int, signed_in: bool, paired: bool = True) -> str:
+    phone = width < 600
+    sample = ''   # the sample report appears once, as the row in Recent public reports
+    hero = H.hero_block(width, 'Combat logs', 'Logs', 'Upload a combat log or log live, then read every pull.', sample)
+    if signed_in:
+        lead = H.character_header(width, 'logs', 'ready', action='Open your latest report →' if phone else None, page_answers=_answers(phone))
+    else:
+        lead = H.signed_out_band()
+    # The companion sits above Upload when a device is paired (the live logger's route), below when none is.
+    # Companion above Upload only when a device is paired; signed out matches signed in without a device (Upload first).
+    ways = (companion(signed_in, paired) + upload(signed_in)) if (signed_in and paired) else (upload(signed_in) + companion(signed_in, paired))
+    col = lambda inner: f'<div style="display:flex;flex-direction:column;gap:{16 if phone else 24}px;min-width:0">{inner}</div>'
+    reading = your_reports(signed_in) + recent()
+    if width < 1024:
+        grid = col(reading + ways)
+    else:
+        grid = f'<div style="display:grid;grid-template-columns:7fr 5fr;gap:24px;align-items:start">{col(reading)}{col(ways)}</div>'
+    return H.page_doc(width, 'Logs', signed_in, STYLE + hero, lead + grid)
+
+
+def _answers(phone: bool) -> dict:
+    a = {**H.PAGE_ANSWERS['logs']}
+    if phone:
+        a['href'] = '#report'
+    return {'logs': a}
+
+
+def states() -> str:
+    from mocklib import page
+    cap = lambda t: f'<span class="label" style="color:{GOLD}">{t}</span>'
+    cell = lambda t, h, w=610: f'<div style="display:flex;flex-direction:column;gap:8px;width:{w}px">{cap(t)}{h}</div>'
+    wide = 1248
+    items = [
+        cell('Header, ready: latest kill, the note says kill, and the newer report is named', H.character_header(1440, 'logs', 'ready'), wide),
+        cell('Header, no logs yet', H.character_header(1440, 'logs', 'empty'), wide),
+        cell('Header, phone: the action is Open your latest report; Upload lives only in the upload panel', f'<div style="width:390px">{H.character_header(390, "logs", "ready", layout="card", action="Open your latest report →", page_answers=_answers(True))}</div>', 390),
+        cell('Your reports, list (zone, boss kills, length; relative dates inside two weeks, else a date)', your_reports(True)), cell('Your reports, empty', your_reports(True, 'empty')),
+        cell('Your reports, loading', your_reports(True, 'loading')), cell('Your reports, signed out: plain words, no button', your_reports(False)),
+        cell('Upload, before a file: the zone only; no Upload button yet', upload(True)),
+        cell('Upload, a file chosen: title, who can open it, then the outline Upload button', upload(True, True)),
+        cell('Upload, signed out: one sentence, no button', upload(False)),
+        cell('Upload, drag over the page: gold edge and 6% tint, nothing moves', f'<div class="drop on"><span>Drop {mono("WoWCombatLog.txt", TEXT)} to upload</span></div>'),
+        cell('Upload failed (generic line; the detail stays in the console)', panel('Upload a log', f'<span style="font-size:14px;color:{BODY}">The upload did not finish. Your file is untouched; try again.</span><span><a class="btn btn-gold" href="#x" style="height:44px">Try again</a></span>')),
+        cell('Recent public reports (the sample is a different row from your own)', recent()),
+        cell('Companion, no device yet: sits below Upload and shows the pairing code', companion(True, False)),
+        cell('Companion, a device paired: sits above Upload', companion(True, True)),
+    ]
+    body = f'<div style="{H.inner(1440, "36px 0")};display:flex;flex-direction:column;gap:20px"><h1 class="display" style="font-size:22px;color:{TEXT}">Logs: states</h1><div style="display:flex;flex-wrap:wrap;gap:18px 24px;align-items:flex-start">{"".join(items)}</div></div>'
+    return page(H.CSS + STYLE + body, 1440)
+
+
+BOARDS = {
+    'logs': (lambda: board(1440, True), 1440),
+    'logs-signed-out': (lambda: board(1440, False), 1440),
+    'logs-2000': (lambda: board(2000, True), 2000),
+    'logs-1024': (lambda: board(1024, True), 1024),
+    'logs-phone': (lambda: board(390, True), 390),
+    'logs-states': (states, 1440),
+}
+
+if __name__ == '__main__':
+    for name in sys.argv[1:] or list(BOARDS):
+        build, width = BOARDS[name]
+        print(H.shoot(build(), name, width))
