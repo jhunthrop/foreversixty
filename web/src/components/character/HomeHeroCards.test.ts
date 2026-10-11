@@ -19,18 +19,22 @@ const HERO_WITH_SPEC: MeCharacter = {
 };
 
 describe('HomeHeroCards', () => {
-  it('shows "Pick a spec" on Best in slot and Talents for a character with no spec yet, never a fabricated figure', () => {
+  it('shows "Pick a spec" on Talents for a character with no spec yet, never a fabricated figure', () => {
     const { body } = render(HomeHeroCards, { props: { hero: HERO } });
     expect(body).toContain('Pick a spec');
-    expect(body).toContain('href="#upgrades"');
     expect(body).toContain('href="/planner"');
+  });
+
+  it('is exactly two cards, Talents and Simulator: Best in slot is the header’s answer now', () => {
+    const { body } = render(HomeHeroCards, { props: { hero: HERO } });
+    expect(body).toContain('data-testid="home-hero-card-talents"');
+    expect(body).toContain('data-testid="home-hero-card-sim"');
+    expect(body).not.toContain('home-hero-card-bis');
+    expect(body).not.toContain('href="#upgrades"');
   });
 
   it('shows the honest not-yet-synced sentence for a character with a spec but no addon export yet', () => {
     const { body } = render(HomeHeroCards, { props: { hero: HERO_WITH_SPEC } });
-    expect(body).toContain(
-      'Not available yet: no gear export for this character. Open the addon once to send it.',
-    );
     expect(body).toContain(
       'Not available yet: no talent export for this character. Open the addon once to send it.',
     );

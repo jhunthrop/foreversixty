@@ -4,7 +4,7 @@ import { homeHeroCardsCopy, homePanelCopy } from './home-panel-copy';
 
 describe('homeHeroCardsCopy', () => {
   // Review round 1 item 7: one sentence per not-yet-available card, naming the real
-  // reason -- shared verbatim between the Best in slot card and the "Your upgrades"
+  // reason -- shared verbatim between the header and the "Your upgrades"
   // panel, since both name the identical live-worn-gear gap. Reworded (home rebuild spec
   // §4, "Empty states stay honest") once `MeCharacter.build.gear`/`.talents` existed to
   // compare against: the gap is now this one character's own export, not a site-wide
@@ -30,9 +30,15 @@ describe('the Simulator card copy', () => {
 });
 
 describe('homePanelCopy', () => {
-  it('points at the header selector as plain text, and names the current character once', () => {
-    expect(homePanelCopy.changeCharacterHint).toBe('Change character: top right');
-    expect(homePanelCopy.currentCharacterEyebrow).toBe('Current character');
-    expect(homePanelCopy.yourCharacterEyebrow).toBe('Your character');
+  it('carries the header answer words from the character header spec', () => {
+    expect(homePanelCopy.headerAnswerLabel).toBe('Upgrades in your band');
+    expect(homePanelCopy.headerNote('60')).toBe('Best in slot for 60, together');
+    expect(homePanelCopy.headerAllMatch('60')).toBe('Every slot matches the 60 list.');
+    expect(homePanelCopy.headerAction).toBe('See your upgrades →');
+  });
+
+  it('names the slots left out of the gain, in the singular for one', () => {
+    expect(homePanelCopy.headerNotSimChecked(1)).toBe('one slot not sim-checked');
+    expect(homePanelCopy.headerNotSimChecked(3)).toBe('3 slots not sim-checked');
   });
 });

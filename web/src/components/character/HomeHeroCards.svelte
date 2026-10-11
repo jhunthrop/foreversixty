@@ -1,22 +1,17 @@
 <!-- web/src/components/character/HomeHeroCards.svelte -->
-<!-- Home rebuild spec §3.B.2: the signed-in hero's three next-action cards (Best in slot /
-     Talents / Simulator). Extracted out of HomeAccountPanel.svelte (review round 3,
-     "islands" item): the Simulator card's own fetch (lib/sim/api.ts's `listMySims`) and its
-     dependencies (lib/report/format.ts, ui/Skeleton.svelte) were
-     previously imported at HomeAccountPanel's own top level, so every signed-out visitor's
-     browser downloaded that code too, even though the component never reaches the branch
-     that uses it -- Vite/Rollup bundles a file's static imports into its own chunk
-     regardless of which conditional branch actually runs. Mounted by HomeAccountPanel.svelte
-     into its own `home-hero-cards-slot` only once `ready && me !== null && hero !== null`,
-     the same dynamic-import-once-signed-in trick it uses for the upgrades table, so a
-     signed-out page never fetches this module or its dependencies either.
+<!-- The signed-in home panel's two next-action cards, Talents and Simulator, as one row under the
+     shared character header (character header spec 2026-10-11 section 4: the Best in slot card
+     is the header's answer and button now). Extracted out of HomeAccountPanel.svelte (review
+     round 3, "islands" item): the Simulator card's own fetch (lib/sim/api.ts's `listMySims`)
+     and its dependencies (lib/report/format.ts, ui/Skeleton.svelte) would otherwise be bundled
+     into every signed-out visitor's page. Mounted by HomeAccountPanel.svelte into its own
+     `home-hero-cards-slot` only once signed in, the same dynamic-import-once-signed-in trick it
+     uses for the upgrades table.
 
-     Best in slot and Talents now read a real comparison (`lib/home/upgrades.ts`/
-     `talent-delta.ts`, over a band fetched once by `lib/home/upgrades-loader.ts` and shared
-     by both cards -- the identical real gap when it is missing, the identical band once it
-     is not). Three honest non-figure states remain, each its own real reason (never a
-     generic spinner forever, tenet 8): no spec at all, a spec but no addon export yet, or a
-     spec and an export but no published BiS file/band for it. -->
+     Talents reads a real comparison (`lib/home/talent-delta.ts`, over a band fetched once by
+     `lib/home/upgrades-loader.ts`). Three honest non-figure states remain, each its own real
+     reason (never a generic spinner forever, tenet 8): no spec at all, a spec but no addon
+     export yet, or a spec and an export but no published file/band for it. -->
 <script lang="ts">
   import { untrack } from 'svelte';
   import type { MeCharacter } from '../../lib/account/api';
@@ -28,7 +23,6 @@
   import type { SimListRow } from '../../lib/sim/types';
   import Skeleton from '../ui/Skeleton.svelte';
   import { loadBisContextFor, specKeyForCharacter, type BisContext } from '../../lib/home/upgrades-loader';
-  import { upgradesFor } from '../../lib/home/upgrades';
   import { talentDeltaFor } from '../../lib/home/talent-delta';
   import { bisCopy } from '../../lib/bis/copy';
   import { presetLabelFor } from '../../lib/bis/presets';
@@ -93,9 +87,6 @@
       : simCardFigures(latestSim, { specKey: specKeyForCharacter(hero), band: ctx?.band }),
   );
   const bandLabel = $derived(ctx === null ? '' : bisCopy.bandRangeLabel(ctx.band.band));
-  const upgrades = $derived(
-    ctx === null || hero.build?.gear === undefined ? null : upgradesFor(hero, ctx.band, ctx.items),
-  );
   const talentDelta = $derived(
     ctx === null || hero.build?.talents === undefined
       ? null
@@ -125,43 +116,7 @@
   const CARD_FIGURE_CLASS = 'font-display text-[22px] font-bold uppercase tracking-[0.01em] text-strong';
 </script>
 
-<div class="reveal grid grid-cols-1 gap-3 sm:grid-cols-3" data-testid="home-hero-cards">
-  <a href="#upgrades" class={CARD_CLASS} data-testid="home-hero-card-bis">
-    <span class="label text-gold">{homeHeroCardsCopy.bestInSlotLabel}</span>
-    {#if bandStatus === 'no-spec'}
-      <span class="text-strong text-[15px] font-semibold">{homeHeroCardsCopy.pickASpec}</span>
-      <span class="text-muted text-[12px]">{homeHeroCardsCopy.pickASpecLine}</span>
-    {:else if hero.build?.gear === undefined}
-      <span class="text-muted text-[13px]">{homeHeroCardsCopy.bestInSlotNotAvailable}</span>
-    {:else if bandStatus === 'loading'}
-      <!-- Fix round 1 item C.9 (tenet 13, no layout shift): sized for the ready figure's
-           own 22px Cinzel line (`CARD_FIGURE_CLASS`), not the 15px body-text line this
-           skeleton was built for before item B.4's display-stat treatment landed -- `h-3`
-           left the ready state ~30px taller than its own loading skeleton. -->
-      <Skeleton lines={3} rowHeight="h-4" testid="home-hero-card-bis-skeleton" />
-    {:else if bandStatus === 'no-list-yet'}
-      <span class="text-muted text-[13px]">{homeHeroCardsCopy.bestInSlotNoListYet}</span>
-    {:else if upgrades !== null}
-      {#if upgrades.upgrades.length === 0}
-        <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-bis-value">
-          {homeHeroCardsCopy.bestInSlotAllMatchFigure}
-        </span>
-        <span class="text-muted text-[12px]">{homeHeroCardsCopy.bestInSlotAllMatchLine(bandLabel)}</span>
-      {:else}
-        <span class={CARD_FIGURE_CLASS} data-testid="home-hero-card-bis-value">
-          {homeHeroCardsCopy.bestInSlotFigure(upgrades.upgrades.length)}
-        </span>
-        <span class="text-muted text-[12px]">
-          {homeHeroCardsCopy.bestInSlotUpgradesLine(
-            bandLabel,
-            upgrades.totalGainDps,
-            upgrades.notSimCheckedCount,
-            upgrades.scoreUnit,
-          )}
-        </span>
-      {/if}
-    {/if}
-  </a>
+<div class="reveal grid grid-cols-1 gap-3 sm:grid-cols-2" data-testid="home-hero-cards">
   <a href={talentsHref} class={CARD_CLASS} data-testid="home-hero-card-talents">
     <span class="label text-gold">{homeHeroCardsCopy.talentsLabel}</span>
     {#if bandStatus === 'no-spec'}
@@ -170,7 +125,8 @@
     {:else if hero.build?.talents === undefined}
       <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNotAvailable}</span>
     {:else if bandStatus === 'loading'}
-      <!-- Fix round 1 item C.9: same height fix as the Best in slot card's own skeleton. -->
+      <!-- Fix round 1 item C.9 (tenet 13, no layout shift): sized for the ready figure's own
+           22px Cinzel line (`CARD_FIGURE_CLASS`). -->
       <Skeleton lines={3} rowHeight="h-4" testid="home-hero-card-talents-skeleton" />
     {:else if bandStatus === 'no-list-yet'}
       <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNoListYet}</span>

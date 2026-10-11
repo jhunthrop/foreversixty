@@ -1,9 +1,9 @@
 // web/src/lib/home-panel-copy.ts
 // The home page's account-aware hero (spec 2026-09-22 §3.2, restyled into the hero by
 // spec 2026-09-23 §2, rebuilt by the home rebuild spec 2026-09-30 §3.B): reference, not
-// pitch -- one sentence, one button, signed out; the hero character, its descriptor, the
-// three next-action cards, signed in (no switcher: the header selector is the one way to
-// change character, home signed-in panel spec 2026-10-10).
+// pitch -- one sentence, one button, signed out; signed in, the shared character header's
+// answer words (design/specs/2026-10-11-character-header.md) and the two next-action cards
+// under it (no switcher: the header selector is the one way to change character).
 
 /** The signed-out block's `id` in `index.astro`: `HomeAccountPanel.svelte` reaches outside
  *  its own root to find it (same cross-island DOM-reach pattern as `SIM_TAB_ATTR` /
@@ -11,7 +11,6 @@
  *  the duplicate "Sign in with Battle.net" link the grid-overlay CLS trick leaves behind it
  *  is never focusable or announced. One id, exported once, so the producer (index.astro)
  *  and the consumer (HomeAccountPanel.svelte) can never drift apart. */
-import { scoreUnitWord, type SlotScoreUnit } from './bis/tank-view';
 export const HOME_SIGNED_OUT_ID = 'home-signed-out';
 
 /** The attribute `HomeAccountPanel.svelte` puts on <html> when the pre-paint session hint
@@ -27,26 +26,23 @@ export const homePanelCopy = {
    *  card names these exact two strings. */
   noSimYet: 'No sim yet.',
   runAction: 'Run',
-  /** The signed-in eyebrow label for an account with one character; with several it reads
-   *  `currentCharacterEyebrow` ("current" is the header selector's own word for the pointer). */
-  yourCharacterEyebrow: 'Your character',
-  currentCharacterEyebrow: 'Current character',
-  /** Plain 12px text under the sync line, only with two or more characters: not a link, not
-   *  a control. Returning players look for the column that used to be here; the header is
-   *  only a crest on a phone, so it names the corner. */
-  changeCharacterHint: 'Change character: top right',
-  /** §3.B.1's sync line tail, after the mono relative-time figure: "{time} from the addon
-   *  · gear and talents in sync" -- the "bags in sync" clause the mock shows is omitted,
-   *  since no field on `MeCharacter` backs it yet. */
-  syncedFromAddon: 'from the addon · gear and talents in sync',
-  /** §4's stale-sync row (> 24h): one added line, no alarm colour. */
-  reopenAddonToRefresh: 'Reopen the addon to refresh your gear.',
+  /** The shared character header's words on the home page (spec 2026-10-11 section 4). */
+  headerAnswerLabel: 'Upgrades in your band',
+  headerNote: (bandLabel: string): string => `Best in slot for ${bandLabel}, together`,
+  /** Said, not silently dropped: a slot with no sim-verified alternative is left out of the gain. */
+  headerNotSimChecked: (count: number): string =>
+    `${count === 1 ? 'one slot' : `${count} slots`} not sim-checked`,
+  headerAllMatch: (bandLabel: string): string => `Every slot matches the ${bandLabel} list.`,
+  headerNoGear: 'Add the addon to see which slots you can upgrade.',
+  headerFailed: 'Your upgrades did not load.',
+  headerAction: 'See your upgrades →',
 } as const;
 
 /**
- * Home rebuild spec §3.B.2's three next-action cards (Best in slot / Talents / Simulator)
- * and §3.B.3's "Your upgrades" panel, now that `MeCharacter.build.gear`/`.talents` exist
- * (the API lane's own extension to the contract, landed alongside this lane) and
+ * Home rebuild spec §3.B.2's next-action cards (Talents / Simulator -- Best in slot is the
+ * shared header's answer and action now) and §3.B.3's "Your upgrades" panel, now that
+ * `MeCharacter.build.gear`/`.talents` exist (the API lane's own extension to the contract,
+ * landed alongside this lane) and
  * `lib/home/upgrades.ts`/`talent-delta.ts` compute the real comparison. Three states remain
  * genuinely unavailable, each named by its own real reason rather than a generic spinner
  * (tenet 8, never a fabricated figure):
@@ -56,9 +52,8 @@ export const homePanelCopy = {
  *   - a spec and an export, but no published BiS file/band for it yet.
  */
 export const homeHeroCardsCopy = {
-  bestInSlotLabel: 'Best in slot',
-  /** §4's "no spec yet" state, named once and shared by the Best in slot and Talents cards
-   *  (both are blocked on the identical missing fact). */
+  /** §4's "no spec yet" state, named once and shared by the header, the Talents card and the
+   *  upgrades panel (all blocked on the identical missing fact). */
   pickASpec: 'Pick a spec',
   pickASpecLine: 'Set a spec in the planner to see this.',
   /** Reworded (home rebuild spec §4, "Empty states stay honest") from the pre-contract
@@ -72,26 +67,6 @@ export const homeHeroCardsCopy = {
    *  spec/band pair yet -- distinct from `bestInSlotNotAvailable` (that names a gap in THIS
    *  character's own data; this one names a gap in the site's own published data). */
   bestInSlotNoListYet: 'No best in slot list published yet for this spec and band.',
-  /** §3.B.2: `N upgrades` zero-upgrades figure/line, the "don't hide a win" case. */
-  bestInSlotFigure: (upgradeCount: number): string =>
-    `${upgradeCount} upgrade${upgradeCount === 1 ? '' : 's'}`,
-  bestInSlotAllMatchFigure: 'Best in slot',
-  bestInSlotAllMatchLine: (bandLabel: string): string => `every slot matches the ${bandLabel} list`,
-  /** Fix round 1 item A.1: `notSimCheckedCount` names how many upgrade slots this band's own
-   *  figure excludes (a weapon slot with no sim-verified alternative, `lib/home/upgrades.ts`'s
-   *  own `notSimChecked`) -- said here rather than silently dropped, so the total always adds
-   *  up to a number a player can audit against the table below it. */
-  bestInSlotUpgradesLine: (
-    bandLabel: string,
-    totalGain: number,
-    notSimCheckedCount: number,
-    unit: SlotScoreUnit = 'dps',
-  ): string => {
-    const base = `in your band, ${bandLabel} · +${totalGain.toFixed(1)} ${scoreUnitWord(unit)} together`;
-    if (notSimCheckedCount === 0) return base;
-    const clause = notSimCheckedCount === 1 ? 'one slot' : `${notSimCheckedCount} slots`;
-    return `${base}, ${clause} not sim-checked`;
-  },
   talentsLabel: 'Talents',
   talentsNotAvailable:
     'Not available yet: no talent export for this character. Open the addon once to send it.',

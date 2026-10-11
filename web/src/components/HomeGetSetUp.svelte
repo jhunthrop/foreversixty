@@ -27,14 +27,14 @@
 </script>
 
 <script lang="ts">
-  import { createHomeHero } from '../lib/account/home-hero.svelte';
+  import { createCharacterCardState } from '../lib/bis/character-card-state.svelte';
   import { getSetUpLine } from '../lib/home/get-set-up';
 
-  // Shares the same cached /v1/me read as the hero and next-steps islands (query()'s own
-  // dedupe by URL); this banner needs nothing else off the handle.
-  const homeHero = createHomeHero();
-  const me = $derived(homeHero.me);
-  const ready = $derived(homeHero.ready);
+  // Shares the same cached /v1/me read as the character header (query()'s own dedupe by URL);
+  // this banner needs nothing else off the handle.
+  const session = createCharacterCardState();
+  const me = $derived(session.me);
+  const ready = $derived(session.status === 'ready' || session.status === 'failed');
 
   $effect(() => {
     const el = document.getElementById(HOME_GET_SET_UP_SIGNED_OUT_ID);
