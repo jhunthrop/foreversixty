@@ -43,7 +43,7 @@ test.describe('the addon flows', () => {
     await page.getByTestId('talent-1001').click();
 
     await page.getByTestId('copy-addon-code').click();
-    await expect(page.getByTestId('copy-addon-code')).toHaveText(addonCopy.copiedAddonCode);
+    await expect(page.getByTestId('copy-addon-code')).toHaveText(addonCopy.copiedForGame);
 
     const code = await page.evaluate(() => navigator.clipboard.readText());
     expect(code.startsWith('FSB1:')).toBe(true);

@@ -4,6 +4,7 @@
 // the addon, a Droptimizer upgrade opens straight into the planner, the simulator is
 // honest about the level it models, and sharing a build asks before it writes.
 import { expect, test } from '@playwright/test';
+import { addonCopy } from '../../src/lib/addon/copy';
 import { ACTIVE_BUILD } from './support/active-build';
 import { shareBuild } from './support/planner';
 
@@ -197,7 +198,7 @@ test.describe('current character', () => {
     await expect(page.getByTestId('share-confirm')).toBeVisible();
 
     await page.getByTestId('share-confirm-copy-code').click();
-    await expect(page.getByTestId('share-confirm-copy-code')).toHaveText('Copied');
+    await expect(page.getByTestId('share-confirm-copy-code')).toHaveText(addonCopy.copiedForGame);
 
     await page.getByTestId('share-confirm-copy-unsaved').click();
     await expect(page.getByTestId('share-confirm-copy-unsaved')).toHaveText('Copied');

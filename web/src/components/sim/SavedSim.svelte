@@ -10,7 +10,9 @@
      exactly as it does on /sim before its own fetch lands. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
-  import { loadItems } from '../../lib/planner/load';
+  import { buildCodeFor } from '../../lib/addon/build-code';
+  import { loadItems, loadTalents } from '../../lib/planner/load';
+  import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
   import type { Item } from '../../lib/planner/types';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { loadActionNames, type ActionNames } from '../../lib/sim/action-names';
@@ -22,6 +24,7 @@
     talentPointsFromString,
     type SimCharacter,
   } from '../../lib/sim/character';
+  import { winningGear, winningTalents } from '../../lib/sim/combos';
   import { bulkCopy, simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
@@ -29,6 +32,7 @@
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { engineLabel, isStale } from '../../lib/sim/version';
+  import CopyForGame from '../CopyForGame.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
   import DetailsCard from './DetailsCard.svelte';
   import RotationCard from './RotationCard.svelte';
@@ -153,6 +157,41 @@
       items = new Map();
     }
   })();
+
+  // Task L8.1, "Copy for the game": the code needs the class's tree layout to turn the stored
+  // talents string's digits into cells. Nothing else on this page reads it (the strip skips
+  // its own load because `plannerHref` is precomputed), so it is loaded here, once, through
+  // the same cached `loadTalents` the strip and the planner use -- a static build file, not
+  // an API call. A failed load leaves the button disabled rather than copying a build with
+  // no talents in it.
+  let talentIndex = $state<TalentIndex | null>(null);
+  void (async () => {
+    try {
+      talentIndex = indexTalents(await loadTalents(character.tree_version, character.class_slug));
+    } catch {
+      talentIndex = null;
+    }
+  })();
+
+  /**
+   * The build this page's result is about, as the FSB1 code the addon's build dialog reads:
+   * a bulk run's winning set (its leader's gear and talents, the set its own table ranks
+   * first), otherwise the stored request's own character. Item stats come from the item
+   * file loaded above; a slot with no record there is left out of the code.
+   */
+  const gameCode = $derived.by(() => {
+    if (talentIndex === null) return '';
+    const bulk = kind !== 'run' && kind !== 'weights' ? (result as BulkResult) : null;
+    return buildCodeFor({
+      kind: 'sim',
+      dataBuild: character.tree_version,
+      classSlug: character.class_slug,
+      talents: bulk === null ? result.request.character.talents : winningTalents(bulk),
+      gear: bulk === null ? result.request.character.gear : winningGear(bulk),
+      talentIndex,
+      items,
+    });
+  });
 
   // D48 (dps-minmaxer review round 2): a saved run reloaded cold used to hardcode
   // `actionNames={null}` below, so every ability, aura and cast name on this page read as
@@ -318,4 +357,5 @@
   >
     {copied ? simCopy.copied : simCopy.copyLink}
   </button>
+  <CopyForGame code={gameCode} testid="sim-saved-copy-for-game" />
 </div>

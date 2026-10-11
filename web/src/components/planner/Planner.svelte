@@ -688,7 +688,7 @@
        its `getBoundingClientRect().height` below and above the md breakpoint. They measure
        1039.5 at 360px and 1379 from md up (the addon lane's Task 16 added `<ImportBox>` --
        a heading, a two-row textarea and a submit button -- inside this region on the
-       non-read-only mount, plus SharePanel's "Copy addon code" button next to Share and the
+       non-read-only mount, plus SharePanel's "Copy for the game" button next to Share and the
        always-present hint paragraph under that row; together that grew the region by about
        246.5px at 360px and 300px from md up over the 793/1079 this measured before it. The
        gearless-desktop figure below quoting 616 is on the same non-read-only mount as this

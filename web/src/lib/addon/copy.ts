@@ -29,10 +29,17 @@ export const addonCopy = {
    *  this empty" note today; this is the copy ready for when it does). */
   bagsNeedAddonForBlizzard: 'Bags and bank come from the addon. Install it to include them.',
 
-  // --- share panel ---
-  copyAddonCode: 'Copy addon code',
-  copiedAddonCode: 'Copied',
-  addonCodeHint: 'Paste this into the game with /fs follow to see the next talent point and score your bags.',
+  // --- "Copy for the game" (CopyForGame.svelte): the planner's share panel, Top Gear and a
+  //     saved sim all copy the same FSB1 build code through the same button. ---
+  copyForGame: 'Copy for the game',
+  /** Stands for 3 s after a copy, then the button reads `copyForGame` again. */
+  copiedForGame: 'Copied, paste it in game with /fs',
+  /** The clipboard refused (permission, an insecure page, no clipboard at all): the code is
+   *  shown in a read-only field under this line instead. */
+  copyFailed: 'Could not copy; select the code below instead',
+  /** The accessible name of that read-only field. */
+  buildCodeLabel: 'Build code',
+  addonCodeHint: 'Paste this in game with /fs; the chip and the talent window follow it from then on.',
 
   // --- planner import box ---
   importTitle: 'Import from addon',
@@ -82,7 +89,7 @@ export const addonCopy = {
   flowOutTitle: 'Out of the game',
   flowOutBody: 'Type /fs export in game, copy the string, paste it into the planner’s Import from addon box.',
   flowInTitle: 'Into the game',
-  flowInBody: 'Save a build here, press Copy addon code, then type /fs follow and paste it.',
+  flowInBody: 'Save a build here, press Copy for the game, then type /fs in game and paste it.',
   inGameTitle: 'The in-game window',
   inGameBody:
     'The addon window, tracker, talent glow, gear tab and minimap button are in beta testing in game. There is no screenshot here because we have not captured one yet.',

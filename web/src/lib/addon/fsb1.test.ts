@@ -44,7 +44,7 @@ describe('decodeFSB1', () => {
   it('reads a negative stat value: real items carry them and the penalty has to survive', () => {
     // Ring of Scorn is spirit -3 in data/builds/1.60.1.69893/items/*.json; 43 stat values
     // across the nine class files are negative. A decoder that refused them would refuse
-    // the code the site's own "Copy addon code" button produces for a player wearing one.
+    // the code the site's own "Copy for the game" button produces for a player wearing one.
     const result = decodeFSB1('FSB1:1.60.1.69893:warrior::finger1=3235:stamina=4;spirit=-3');
     expect(result.ok).toBe(true);
     if (!result.ok) return;
