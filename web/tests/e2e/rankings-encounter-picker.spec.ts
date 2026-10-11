@@ -1,6 +1,6 @@
 // web/tests/e2e/rankings-encounter-picker.spec.ts
-// Spec section 4: the Characters board needs an encounter picker on bare /rankings rather
-// than demanding an encounter the visitor cannot choose, and with no encounter data yet it
+// A bare /rankings opens on an encounter (the character's most recent kill, else the first the API
+// lists) with the rest one filter away; the picker is for when nothing is ranked at all, where it
 // says so plainly and offers the Guilds board instead.
 import { expect, test } from '@playwright/test';
 
@@ -10,7 +10,7 @@ const envelope = (data: unknown) => ({
   body: JSON.stringify({ ok: true, data, error: null, request_id: 'r' }),
 });
 
-test('bare /rankings offers a picker instead of asking the API for an encounter it does not have', async ({
+test('bare /rankings opens on the first listed encounter and offers the others as a filter', async ({
   page,
 }) => {
   await page.route('**/v1/encounters', (route) =>
@@ -23,9 +23,9 @@ test('bare /rankings offers a picker instead of asking the API for an encounter 
       }),
     ),
   );
-  let rankingsCalled = false;
+  const asked: string[] = [];
   await page.route('**/v1/rankings?**', (route) => {
-    rankingsCalled = true;
+    asked.push(new URL(route.request().url()).searchParams.get('encounter') ?? '');
     return route.fulfill(
       envelope({ rows: [], total: 0, page: 1, per_page: 100, updated_at: '2026-12-09T00:00:00Z' }),
     );
@@ -33,13 +33,14 @@ test('bare /rankings offers a picker instead of asking the API for an encounter 
 
   await page.goto('/rankings');
 
-  const picker = page.getByTestId('encounter-picker');
-  await expect(picker.getByRole('link', { name: 'Warden Kelthas' })).toHaveAttribute(
-    'href',
-    '/rankings/warden-kelthas',
-  );
-  await expect(picker.getByRole('link', { name: 'Skolex the Insatiable' })).toBeVisible();
-  expect(rankingsCalled).toBe(false);
+  await expect(page.getByTestId('rankings-empty')).toBeVisible();
+  await expect(page).toHaveURL(/\/rankings\/warden-kelthas$/);
+  await expect(page.getByTestId('encounter-picker')).toHaveCount(0);
+  await expect(page.getByTestId('filter-encounter').locator('option')).toHaveText([
+    'Warden Kelthas',
+    'Skolex the Insatiable',
+  ]);
+  expect(asked).toEqual(['warden-kelthas']);
 });
 
 test('with no encounter data yet, the Characters board says so and offers the Guilds board', async ({

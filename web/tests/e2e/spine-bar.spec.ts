@@ -41,10 +41,12 @@ test.describe('the spine bar opens every door on the current character', () => {
     );
   });
 
-  test('the bar mounts on /rankings and pre-fills the class filter from the pointer', async ({ page }) => {
-    // Rankings.svelte has no visible <select> for `class` (it is URL/link-driven only, per
-    // Rankings.svelte's own template read during planning) -- the request itself is the
-    // proof the prefill reached the fetch, not a visible control.
+  // Rankings rebuild spec (2026-10-11): the page's one character switch is the shared header, so
+  // the spine bar leaves it; the bar's own "Rankings for Warrior" door still opens the class's
+  // board through the URL.
+  test("/rankings has no spine bar of its own, and the bar's class door filters the board", async ({
+    page,
+  }) => {
     let requestedClass: string | null = null;
     await page.route('**/v1/rankings?*', (route) => {
       requestedClass = new URL(route.request().url()).searchParams.get('class');
@@ -57,8 +59,8 @@ test.describe('the spine bar opens every door on the current character', () => {
         }),
       });
     });
-    await pasteAndGoTo(page, '/rankings/warden-kelthas');
-    await expect(page.getByTestId('current-character-bar')).toBeVisible();
+    await pasteAndGoTo(page, '/rankings/warden-kelthas?class=warrior');
+    await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
     await expect.poll(() => requestedClass).toBe('warrior');
   });
 

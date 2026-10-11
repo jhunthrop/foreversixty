@@ -333,7 +333,7 @@ test.describe('choosing a character', () => {
     expect(stored.pointer.label).toBe('Frostbyte · Frost Mage');
     expect(stored.order).toEqual([keyOf(FROSTBYTE)]);
     expect(stored.cls).toBe('mage');
-    await expect(page.getByTestId('current-character-bar-identity')).toContainText('Frostbyte');
+    await expect(page.getByTestId('character-header-name')).toHaveText('Frostbyte');
     await page.goto('/tiers');
     await ready(page);
     await expect(page.getByTestId('selector-name')).toHaveText('Frostbyte');

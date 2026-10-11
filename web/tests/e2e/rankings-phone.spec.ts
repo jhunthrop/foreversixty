@@ -95,6 +95,7 @@ test('nothing scrolls sideways on either board', async ({ page }) => {
   for (const query of STATES) {
     await page.goto(`/rankings/warden-kelthas${query}`);
     await expect(page.getByTestId('rankings-filters')).toBeVisible();
+    await expect(page.getByTestId('ranking-1').or(page.getByTestId('guild-rows'))).toBeVisible();
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(scrollWidth, query).toBeLessThanOrEqual(PHONE_WIDTH);
   }
@@ -105,6 +106,8 @@ test('every filter control, row link and pagination control clears 44px', async 
   for (const query of STATES) {
     await page.goto(`/rankings/warden-kelthas${query}`);
     await expect(page.getByTestId('rankings-filters')).toBeVisible();
+    // The filters collapse to a summary line on a phone: open them, so their controls are measured too.
+    await page.getByTestId('rankings-filters-toggle').click();
     let measured = 0;
     const controls = await page
       .locator('button:visible, select:visible, a[href]:visible, input:visible')
@@ -113,6 +116,16 @@ test('every filter control, row link and pagination control clears 44px', async 
       // A checkbox is toggled through the label wrapping it (`Today only`), so the label
       // is the target and the box inside it is only the mark -- report-phone.spec.ts's
       // own sweep settles this the same way.
+      // The Build link inside a row's muted line is plain text in a sentence, as a link in a
+      // paragraph is (the spec keeps it a plain link; Report beside it is the 44px target).
+      if (await control.evaluate((element) => element.closest('[data-testid="ranking-meta"]') !== null)) {
+        continue;
+      }
+      // A row's name link stretches over the whole name area (its ::after), so the row's own
+      // box is the touch target, not the line of text.
+      const stretched = await control.evaluate(
+        (element) => element.getAttribute('data-testid') === 'ranking-character',
+      );
       const target = (await control.evaluate(
         (element) =>
           element instanceof HTMLInputElement &&
@@ -120,7 +133,9 @@ test('every filter control, row link and pagination control clears 44px', async 
           element.closest('label') !== null,
       ))
         ? control.locator('xpath=ancestor::label[1]')
-        : control;
+        : stretched
+          ? control.locator('xpath=ancestor::li[1]')
+          : control;
       const box = await target.boundingBox();
       if (box === null) continue;
       // The skip link is 1px until it takes focus, the one control that is that size on
