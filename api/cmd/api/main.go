@@ -564,10 +564,18 @@ func serve(log *slog.Logger) error {
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}
 
+	// The character page carries the Forever Score, which lives in the rating lane.
+	deps.Rankings.Scores = deps.Rating
+
 	deps.Sims = &sims.Service{
 		Store: simStore, Accounts: entStore, Planner: simEngine(log),
 		EngineVersion: enginever.Version, Log: log,
 	}
+	// The addon outbox's sim requests start the same server runs; the
+	// job runner is attached to deps.Sims below, when the job is reachable.
+	deps.Addon.SimRequests = deps.Sims
+	// sims.GearScore reads the item tables and the per-build weights.
+	sims.SetGearData(treeData, cfg.TreeDataDir)
 
 	var gateway billing.Gateway
 	if cfg.StripeConfigured() {

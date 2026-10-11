@@ -319,6 +319,36 @@ type Character struct {
 	Best       []CharacterBest  `json:"best"`
 	History    []CharacterFight `json:"history"`
 	BuildsSeen []BuildSeen      `json:"builds_seen"`
+	ForeverScore
+}
+
+// ForeverScore is the character page's Forever Score (api/internal/rating's ScoreV2, the
+// formula's only home). Every field is null for a character with no rated fight: "no logs
+// yet" is never shown as a zero score.
+type ForeverScore struct {
+	Score      *int             `json:"score"`
+	Tier       *string          `json:"tier"`
+	Components *ScoreComponents `json:"components"`
+	// AsOf is the newest rated fight's date, YYYY-MM-DD.
+	AsOf       *string          `json:"as_of"`
+	Experience *ScoreExperience `json:"experience"`
+}
+
+// ScoreComponents are the score's five parts; they sum to the score.
+type ScoreComponents struct {
+	Gear       int `json:"gear"`
+	Experience int `json:"experience"`
+	Parses     int `json:"parses"`
+	Attendance int `json:"attendance"`
+	Discipline int `json:"discipline"`
+}
+
+// ScoreExperience is what the experience component counts, across the account's linked
+// characters.
+type ScoreExperience struct {
+	Dungeons  int `json:"dungeons"`
+	RaidKills int `json:"raid_kills"`
+	Alts      int `json:"alts"`
 }
 
 // CharacterRef names a character.

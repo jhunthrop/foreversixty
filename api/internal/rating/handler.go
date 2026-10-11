@@ -14,6 +14,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 )
 
@@ -145,6 +146,29 @@ func (s *Service) characterRating(w http.ResponseWriter, r *http.Request) {
 	}
 	httpx.CachePublic(w, cacheSeconds*time.Second, liveBoardStale)
 	httpx.WriteOK(w, r, http.StatusOK, buildCharacterRatingDTO(playerKey, rows, hasMore))
+}
+
+var _ rankings.Scorer = (*Service)(nil)
+
+// ForeverScore is the character page's Forever Score (rankings.Scorer). A character with
+// no logs (ErrNoLogs) and one whose account asked to be anonymous both read as no score -
+// every field null - never as a zero, matching the rating endpoints' own anonymize rule.
+func (s *Service) ForeverScore(ctx context.Context, key string) (rankings.ForeverScore, error) {
+	anon, err := s.Store.anonymized(ctx, key)
+	if err != nil {
+		return rankings.ForeverScore{}, err
+	}
+	if anon {
+		return rankings.ForeverScore{}, nil
+	}
+	sc, err := s.Store.ScoreV2(ctx, key)
+	if errors.Is(err, ErrNoLogs) {
+		return rankings.ForeverScore{}, nil
+	}
+	if err != nil {
+		return rankings.ForeverScore{}, err
+	}
+	return toForeverScoreDTO(sc), nil
 }
 
 func parseTrendQuery(r *http.Request) (limit int, before *cursorPos) {

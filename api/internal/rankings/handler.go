@@ -1,6 +1,7 @@
 package rankings
 
 import (
+	"context"
 	"errors"
 	"log/slog"
 	"net/http"
@@ -27,6 +28,16 @@ type Service struct {
 	Log   *slog.Logger
 	// Now is the clock, so a test can fix "today".
 	Now func() time.Time
+	// Scores adds the Forever Score to the character page; nil, or a failed read, leaves it
+	// null.
+	Scores Scorer
+}
+
+// Scorer reads a character's Forever Score by character key. rating.Service is the one
+// implementation: the formula lives there, and this package only carries the result. A
+// character with no score is the zero ForeverScore, not an error.
+type Scorer interface {
+	ForeverScore(ctx context.Context, key string) (ForeverScore, error)
 }
 
 // Mount registers the read routes.
@@ -296,6 +307,17 @@ func (s *Service) character(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character", nil)
 		return
+	}
+	if s.Scores != nil {
+		// A score that cannot be read is logged and left null; the rest of the page still
+		// renders.
+		score, err := s.Scores.ForeverScore(r.Context(), c.Character.Key)
+		if err != nil {
+			s.logger().Error("rankings", "id", httpx.RequestIDFrom(r.Context()), "op", "forever_score",
+				"character", c.Character.Key, "err", err)
+		} else {
+			c.ForeverScore = score
+		}
 	}
 	cache(w)
 	httpx.WriteOK(w, r, http.StatusOK, c)
