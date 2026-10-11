@@ -47,7 +47,7 @@ jobs:
       - name: lua5.1 for the addon contract golden test
         # contracts_test.go loads the rendered inbox under the client's Lua; with CI set it
         # fails, rather than logs, when no interpreter is found.
-        run: sudo apt-get install -y lua5.1
+        run: sudo apt-get update && sudo apt-get install -y lua5.1
       - run: go vet -tags "$HEADLESS_TAGS" ./...
       - run: go test -tags "$HEADLESS_TAGS" ./... -race -coverprofile=cover.out -coverpkg=./...
       - name: coverage floor
