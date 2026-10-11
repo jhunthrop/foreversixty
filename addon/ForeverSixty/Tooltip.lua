@@ -482,7 +482,7 @@ function Tooltip.sections(data, itemLink, weightsMessage)
 end
 
 --- The generated data table, set once by Options.register() exactly like
---- Window.data and MinimapButton.data -- never required directly, so a
+--- MinimapButton.data -- never required directly, so a
 --- spec can hand the hook a fixture instead of the real Data.lua, and the
 --- hook does nothing (rather than erroring) before login has set it.
 Tooltip.data = nil

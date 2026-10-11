@@ -7,25 +7,29 @@
 -- the wrong type all produce a complete table of the right shape. A pref
 -- read can therefore never be the thing that errors, which matters because
 -- these are read while the UI is being drawn, where an error leaves a
--- half-built window on the screen.
+-- half-built frame on the screen.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 
 local Prefs = {}
 
 Prefs.DEFAULTS = {
-	window = { point = "CENTER", x = 0, y = 0, tab = "overview" },
+	-- The build chip (spec section 3): shown, and out of the way in combat.
+	chip = { shown = true, combatHide = true },
+	-- Guild badges on the roster and in tooltips, and this player's own hello on GUILD.
+	badges = true,
+	broadcast = true,
+	-- The keys below are the pre-v2 surfaces'; each goes with the lane that replaces it.
 	tracker = { point = "TOP", x = 0, y = -180, locked = false, shown = true },
 	minimap = { angle = 200, shown = true },
 	-- On by default: the export written at logout is what feeds the
 	-- companion, and a player who installed the companion did not ask to
 	-- turn it on a second time.
 	autoSave = true,
-	-- Off by default: the window is the surface now, and printing the same
-	-- answer into chat as well is noise.
+	-- Off by default: printing every answer into chat as well is noise.
 	chat = false,
 	-- On by default: the tooltip line and the toast are what makes the
-	-- platform's value visible outside the window, which is the point of
+	-- platform's value visible outside the addon's own frames, which is the point of
 	-- this pass (design "Addon premium pass").
 	tooltip = true,
 	toast = true,
@@ -38,10 +42,10 @@ Prefs.DEFAULTS = {
 }
 
 --- The sections resetPositions puts back.
-Prefs.POSITION_SECTIONS = { "window", "tracker", "minimap" }
+Prefs.POSITION_SECTIONS = { "tracker", "minimap" }
 
 --- The fields inside those sections that are a placement rather than a
---- choice. `shown`, `locked` and `tab` are choices and survive a reset.
+--- choice. `shown` and `locked` are choices and survive a reset.
 Prefs.PLACEMENT_FIELDS = { "point", "x", "y", "angle" }
 
 --- A new table shaped exactly like `defaults`, taking each value from
@@ -127,7 +131,7 @@ function Prefs.setFlag(name, value)
 	return value
 end
 
---- Put every window, tracker and minimap placement back where it started.
+--- Put every tracker and minimap placement back where it started.
 function Prefs.resetPositions()
 	local ui = Prefs.current()
 	local fresh = Prefs.withDefaults(nil)

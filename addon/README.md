@@ -77,39 +77,35 @@ change the named constant if it differs from the default.
 
 Run on one character per role and tick here:
 
-- [ ] `/fs` opens the window; Escape closes it; it reopens on the tab it was left on.
-- [ ] `/fs export`, `/fs follow`, `/fs gear` and `/fs settings` each open that tab.
-- [ ] The Export tab's "Copy for the site" button selects the string, the label
-      changes for two seconds, and the string pastes into the planner's
-      Import from addon box.
-- [ ] A code pasted on the Follow tab loads, the rows show tier, name and rank
-      grouped by tree, and the check mark renders as a tick rather than a box.
+- [ ] `/reload` with `/console scriptErrors 1` shows no Lua error.
+- [ ] `/fs` opens nothing yet and prints the command list (the build dialog arrives with
+      Lane L3.4).
+- [ ] A character with no saved build follows the default build for its spec once the data
+      carries `defaultBuilds` (leveling below 60, raid at 60).
 - [ ] The tracker appears, drags, locks, and says "Build complete" at the end.
 - [ ] The talent window glows the next talent (record which mapping in row 22).
-- [ ] The Gear tab lists the planned set against what is worn, and at least one
-      bagged item with a working Equip button that is disabled in combat.
-- [ ] The minimap button shows the LX seal, drags around the ring, opens the
-      window on left-click and the settings on right-click.
-- [ ] Forever Sixty appears in the game's own Settings panel, with the same
-      toggles as the window's Settings tab.
-- [ ] Logging out writes `ForeverSixtyDB.characters` and `savedAt`; the companion
-      picks it up. Turning auto-save off stops it.
-- [ ] The Export tab's export includes a `|guild=` section for a guilded character and
-      none for an unguilded one (`/fs diag` or `/dump` the saved string).
+- [ ] The minimap button shows the LX seal, drags around the ring, and prints the
+      command list on either click (the build dialog and the Settings page return with
+      Lanes L3.4 and L3.5).
+- [ ] Logging out writes `ForeverSixtyDB.characters`, `savedAt` and `ForeverSixtyDB.outbox`
+      (`format = 1`, an `export`, and a `roster_snapshot` when guilded and guildmates were
+      heard); the companion picks it up. Turning auto-save off stops it.
+- [ ] The saved export includes a `|guild=` section for a guilded character and
+      none for an unguilded one (`/dump` the saved string).
 - [ ] `/fs diag` lists nothing unexpected.
 - [ ] Hovering a planned or upgrade-worthy item shows a "Forever Sixty" tooltip line; turning the
       tooltip setting off removes it.
 - [ ] Levelling up (or gaining a talent point) with a build loaded pops the toast, fades after a
-      few seconds, and clicking it opens the Talents tab; it does not appear mid-combat and shows
-      once combat ends.
+      few seconds, and clicking it prints the command list; it does not appear mid-combat and
+      shows once combat ends.
 - [ ] The tracker's thin bar fills as points are spent.
 - [ ] The minimap tooltip lists build progress and upgrades waiting; the addon appears in the addon
       compartment on a client that has one.
-- [ ] The keybind (Key Bindings > AddOns > Forever Sixty) toggles the window.
+- [ ] The keybind (Key Bindings > AddOns > Forever Sixty) prints the command list.
 - [ ] `/fs help` prints the command list in gold.
 
-Two screenshots close this lane: the window on Follow with a build loaded, and
-the tracker plus the talent glow with the talent window open.
+One screenshot closes this lane: the tracker plus the talent glow with the talent
+window open.
 
 ## Measuring for the simulator
 

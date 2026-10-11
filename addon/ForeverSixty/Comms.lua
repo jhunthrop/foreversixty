@@ -321,11 +321,9 @@ function Comms.helloFields()
 	local ranks = data ~= nil and Talents.readRanks(data) or {}
 	local spec = data ~= nil and classSlug ~= nil and Gear.specOf(data, classSlug, ranks) or nil
 	local gap = 0
-	-- GearView loads after this file; by the time a hello is sent (PLAYER_LOGIN) it is there.
-	local GearView = ns.GearView
-	if build ~= nil and data ~= nil and GearView ~= nil then
+	if build ~= nil and data ~= nil then
 		local perPoint = type(data.dpsPerPoint) == "table" and spec ~= nil and data.dpsPerPoint[spec] or nil
-		local slots = Progress.slots(data, build, ranks, GearView.readEquipped(), perPoint and perPoint.dps or nil)
+		local slots = Progress.slots(data, build, ranks, Gear.readEquipped(), perPoint and perPoint.dps or nil)
 		local worst = Progress.biggestGap(slots)
 		if worst ~= nil then
 			gap = math.floor(-worst.delta + 0.5)

@@ -13,6 +13,7 @@ local L = ns.L or require("Locale")
 local Codec = ns.Codec or require("Codec")
 local Talents = ns.Talents or require("Talents")
 local Export = ns.Export or require("Export")
+local Compat = ns.Compat or require("Compat")
 
 local Follow = {}
 
@@ -111,6 +112,86 @@ function Follow.restore(data)
 		return nil
 	end
 	return Follow.load(active.code, data, active.name, entry.active)
+end
+
+--- The level a default build switches from leveling to raid.
+Follow.RAID_LEVEL = 60
+
+--- Gear loads after this file; looked up when called, never when this file loads.
+local function gearModule()
+	return ns.Gear or require("Gear")
+end
+
+--- True when the current character has a build saved in any slot. Reads saved variables
+--- without writing them.
+local function hasSavedBuild()
+	local follows = type(ForeverSixtyDB) == "table" and ForeverSixtyDB.follows or nil
+	local saved = type(follows) == "table" and follows[Export.characterKey()] or nil
+	for _, entry in pairs(slotted(saved).slots) do
+		if type(entry) == "table" and entry.code ~= nil then
+			return true
+		end
+	end
+	return false
+end
+
+--- An FSB1 code for a default build's order (contract 1's {tab, tier, column} triples), or
+--- nil for a triple that is not three positive whole numbers.
+local function defaultCode(data, classSlug, order)
+	local points = {}
+	for index, triple in ipairs(type(order) == "table" and order or {}) do
+		if type(triple) ~= "table" then
+			return nil
+		end
+		for position = 1, 3 do
+			local value = triple[position]
+			if type(value) ~= "number" or value < 1 or value % 1 ~= 0 then
+				return nil
+			end
+		end
+		points[index] = { tab = triple[1], tier = triple[2], column = triple[3] }
+	end
+	return Codec.encodeFSB1({ dataBuild = data.build, classSlug = classSlug, order = points })
+end
+
+--- A character with no build saved in any slot follows the data's default for its spec
+--- (`data.defaultBuilds[<spec>]`, contract 1): leveling, raid at RAID_LEVEL. The spec is
+--- Gear.specOf's, which is the class's first tree with no points spent. The build is marked
+--- `default = true` and named from the data, and nothing is saved: it is worked out again at
+--- each login, so a data update replaces it. `character` ({ classSlug, ranks, level }) is
+--- read from the client when nil. The build, or nil when there is nothing to load.
+function Follow.ensureDefault(data, character)
+	if type(data) ~= "table" or type(data.defaultBuilds) ~= "table" or hasSavedBuild() then
+		return nil
+	end
+	character = character or {
+		classSlug = Talents.playerClassSlug(),
+		ranks = Talents.readRanks(data),
+		level = Compat.playerLevel(),
+	}
+	local classSlug = character.classSlug
+	if classSlug == nil or type(data.classes) ~= "table" or data.classes[classSlug] == nil then
+		return nil
+	end
+	local spec = gearModule().specOf(data, classSlug, character.ranks or {})
+	local builds = spec ~= nil and data.defaultBuilds[spec] or nil
+	if type(builds) ~= "table" then
+		return nil
+	end
+	local kind = (character.level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+	local default = builds[kind]
+	if type(default) ~= "table" then
+		return nil
+	end
+	local code = defaultCode(data, classSlug, default.order)
+	local build = code ~= nil and Codec.loadBuild(code, data) or nil
+	if build == nil then
+		return nil
+	end
+	build.default = true
+	build.name = default.name
+	Follow.build = build
+	return build
 end
 
 --- A slot id's display name ("raid" -> L.slotRaid), the one lookup rule

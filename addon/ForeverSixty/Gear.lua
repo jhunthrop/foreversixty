@@ -34,6 +34,26 @@ function Gear.statsOf(link)
 	return stats
 end
 
+--- What the player is wearing, by the site's slot name: { itemId, link, stats }. The one
+--- thin reader of equipped items; everything that scores them takes the result as a table.
+function Gear.readEquipped()
+	local equipped = {}
+	if type(GetInventoryItemLink) ~= "function" then
+		return equipped
+	end
+	for _, entry in ipairs(Export.INVENTORY_SLOTS) do
+		local link = GetInventoryItemLink("player", entry.id)
+		if link ~= nil then
+			equipped[entry.slot] = {
+				itemId = tonumber((Compat.itemInfoInstant(link))),
+				link = link,
+				stats = Gear.statsOf(link),
+			}
+		end
+	end
+	return equipped
+end
+
 function Gear.score(stats, weights)
 	local total = 0
 	for name, value in pairs(stats or {}) do

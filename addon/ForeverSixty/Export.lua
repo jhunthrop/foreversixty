@@ -13,6 +13,7 @@ local L = ns.L or require("Locale")
 local Codec = ns.Codec or require("Codec")
 local Talents = ns.Talents or require("Talents")
 local Compat = ns.Compat or require("Compat")
+local Theme = ns.Theme or require("Theme")
 
 local Export = {}
 
@@ -325,6 +326,90 @@ function Export.save(data)
 		export = code,
 	}
 	return code
+end
+
+-- The companion outbox (contract 4, docs/contracts/addon-v2.md) ---------------------------
+
+--- The outbox format this addon writes; the companion ignores a format it does not know.
+Export.OUTBOX_FORMAT = 1
+
+--- The sim request L4.3's "Sim me" leaves for the next logout, or nil: { character, spec,
+--- requested_at, gear_code }, all as of the request.
+Export.simRequest = nil
+
+--- The members of `guild` this session heard on GUILD, by name: the six contract fields,
+--- `seen_at` as local wall time. `seen` is Comms.seen (its `time` is the game clock), `now`
+--- the game clock and `wallNow` the wall clock at the same moment.
+local function rosterMembers(seen, now, wallNow)
+	local members = {}
+	for name, entry in pairs(seen or {}) do
+		if entry.channel == "GUILD" then
+			members[#members + 1] = {
+				name = name,
+				level = entry.level or 0,
+				spec = entry.spec or "-",
+				gear_gap = entry.gearGap or 0,
+				build = entry.buildName or "",
+				seen_at = date(Export.SAVED_AT_FORMAT, wallNow - (now - (entry.time or now))),
+			}
+		end
+	end
+	table.sort(members, function(left, right)
+		return left.name < right.name
+	end)
+	return members
+end
+
+--- The outbox, built from plain values: { character, code, wallNow, simRequest, guild (a name,
+--- or nil/false outside a guild), seen, now }. Pure.
+function Export.outbox(parts)
+	local roster
+	if parts.guild then
+		local members = rosterMembers(parts.seen, parts.now or 0, parts.wallNow)
+		if #members > 0 then
+			roster = { guild = parts.guild, members = members }
+		end
+	end
+	return {
+		format = Export.OUTBOX_FORMAT,
+		export = {
+			character = parts.character,
+			code = parts.code,
+			saved_at = date(Export.SAVED_AT_FORMAT, parts.wallNow),
+		},
+		sim_request = parts.simRequest,
+		roster_snapshot = roster,
+	}
+end
+
+--- Write ForeverSixtyDB.outbox at logout, beside Export.save: the export (`code` when the
+--- caller already built it), any pending sim request, and the guild's members this session
+--- heard. nil and the reason when there is no export to carry.
+function Export.saveOutbox(data, code)
+	local message
+	if code == nil then
+		code, message = Export.string(data)
+	end
+	if code == nil then
+		return nil, message
+	end
+	local name, realm = Theme.playerNameRealm()
+	local guild = Export.guildInfo()
+	-- Comms loads after this file; by logout it is there.
+	local Comms = ns.Comms or require("Comms")
+	local now = Theme.now()
+	Comms.prune(now)
+	ForeverSixtyDB = ForeverSixtyDB or {}
+	ForeverSixtyDB.outbox = Export.outbox({
+		character = realm ~= nil and (tostring(name) .. "-" .. realm) or name,
+		code = code,
+		wallNow = time(),
+		simRequest = Export.simRequest,
+		guild = guild ~= nil and guild.name or nil,
+		seen = Comms.seen,
+		now = now,
+	})
+	return ForeverSixtyDB.outbox
 end
 
 ns.Export = Export

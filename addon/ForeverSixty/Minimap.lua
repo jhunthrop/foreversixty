@@ -8,8 +8,8 @@
 --
 -- Where it sits is one angle in the prefs and two pure functions, so the
 -- ring arithmetic is tested without a screen. What it does when clicked
--- is two injection points Options fills in, so this file -- which the
--- TOC loads before Window.lua -- never reaches forward to it.
+-- is two injection points Options fills in, so this file never reaches
+-- forward to whatever they open.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")

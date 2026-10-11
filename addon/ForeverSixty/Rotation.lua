@@ -115,12 +115,11 @@ function Rotation.newAbilities(data, build, ranks, previousLevel, level)
 end
 
 --- spellId -> true for every line Rotation.newAbilities last found fresh,
---- so the Overview's rotation card can glow the matching row (docs/
+--- so a rotation surface can glow the matching row (docs/
 --- tenets.md's standard: "the row for the ability the player just
 --- learned this level glows, the toast's same event") with a plain table
---- lookup rather than a require of Toast.lua, which loads after Window
---- (and so after the Overview) in the TOC and cannot be required that
---- late in the real client. Toast.rotationModel calls this explicitly,
+--- lookup rather than a require of Toast.lua, which loads late in the
+--- TOC and cannot be required that late in the real client. Toast.rotationModel calls this explicitly,
 --- right after computing `fresh` -- a visible side effect at its call
 --- site, not a hidden one inside this file's own pure functions above.
 Rotation.recentlyLearned = {}

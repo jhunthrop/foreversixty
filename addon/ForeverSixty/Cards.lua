@@ -1,6 +1,6 @@
 -- addon/ForeverSixty/Cards.lua
--- The larger pieces the pages are composed from: a card, a progress bar, a
--- status pill, a sidebar item, the primary button and an icon tile.
+-- The larger pieces the surfaces are composed from: a card, a progress bar,
+-- a status pill, the primary button and an icon tile.
 --
 -- Widgets holds the small controls; these are the ones that give a page
 -- hierarchy. Like Widgets, nothing here names a template or a client
@@ -113,57 +113,6 @@ function Cards.primaryButton(parent, text, onClick)
 		end
 	end)
 	return button
-end
-
---- One sidebar entry: icon, label, and a gold bar down its left edge when
---- it is the page being shown.
-function Cards.navItem(parent, iconPath, text, onClick)
-	local S = Theme.SIZES
-	local item = Theme.createFrame("Button", nil, parent)
-	item:SetSize(S.sidebarWidth, S.navHeight)
-	local ground = Theme.texture(item, "BACKGROUND", "raised")
-	ground:SetAllPoints(item)
-	ground:Hide()
-	item.foreverSixtyGround = ground
-	local bar = Theme.texture(item, "OVERLAY", "gold")
-	bar:SetPoint("TOPLEFT", item, "TOPLEFT", 0, 0)
-	bar:SetPoint("BOTTOMLEFT", item, "BOTTOMLEFT", 0, 0)
-	bar:SetWidth(S.navBar)
-	bar:Hide()
-	item.foreverSixtyBar = bar
-	item.foreverSixtyIcon = Theme.icon(item, "ARTWORK", iconPath, S.navIcon)
-	item.foreverSixtyIcon:SetPoint("LEFT", item, "LEFT", S.padding, 0)
-	local label = Widgets.label(item, text, "muted", "small")
-	label:SetPoint("LEFT", item.foreverSixtyIcon, "RIGHT", S.gap * 2, 0)
-	item.foreverSixtyLabel = label
-	item:SetScript("OnEnter", function(self)
-		if not self.foreverSixtyActive then
-			self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX.body))
-		end
-	end)
-	item:SetScript("OnLeave", function(self)
-		Cards.setNavActive(self, self.foreverSixtyActive == true)
-	end)
-	item:SetScript("OnClick", function(self)
-		onClick(self)
-	end)
-	Cards.setNavActive(item, false)
-	return item
-end
-
-function Cards.setNavActive(item, active)
-	item.foreverSixtyActive = active
-	item.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[active and "gold" or "muted"]))
-	Theme.desaturate(item.foreverSixtyIcon, not active)
-	item.foreverSixtyIcon:SetAlpha(active and 1 or Theme.ALPHA.dim)
-	if active then
-		item.foreverSixtyGround:Show()
-		item.foreverSixtyBar:Show()
-	else
-		item.foreverSixtyGround:Hide()
-		item.foreverSixtyBar:Hide()
-	end
-	return active
 end
 
 --- A card: an eyebrow naming it, one strong line, one quieter line, an

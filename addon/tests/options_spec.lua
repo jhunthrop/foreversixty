@@ -31,7 +31,7 @@ describe("Options", function()
 				{ name = "Retribution", talents = {} },
 			},
 		})
-		-- Theme is reset rather than reloaded: Options, Window and the views
+		-- Theme is reset rather than reloaded: Options and the surfaces
 		-- all reach it through package.loaded, and a reload would hand them
 		-- a different ns.Diagnostics than the one this spec asserts on.
 		require("Theme").reset()
@@ -43,13 +43,8 @@ describe("Options", function()
 		helper.load("Toast")
 		helper.load("Follow")
 		helper.load("TalentGlow")
-		helper.load("ExportView")
-		helper.load("FollowView")
-		helper.load("GearView")
-		helper.load("SettingsView")
 		helper.load("Tracker")
 		helper.load("Minimap")
-		helper.load("Window")
 		helper.load("Comms")
 		Options = helper.load("Options")
 		Options.data = DATA
@@ -59,48 +54,15 @@ describe("Options", function()
 		mock.uninstall()
 	end)
 
-	it("shows the data build id with no argument", function()
-		local lines = Options.handle("")
-		assert.are.equal(string.format(require("Locale").dataBuild, "1.60.1.69893"), lines[1])
-		assert.are.equal(require("Locale").slashHint, lines[2])
+	it("answers a bare /fs with the command list until the build dialog lands", function()
+		assert.are.same({ require("Locale").slashHint }, Options.handle(""))
 	end)
 
-	it("warns when the client build is not the data build", function()
-		_G.GetBuildInfo = function()
-			return "1.61.0", "70000", "Oct 2026", 16100
+	it("has dropped the window's tab subcommands", function()
+		for _, command in ipairs({ "export", "follow FSB1:1.60.1.69893:paladin:111:", "gear", "settings", "options" }) do
+			assert.are.same({ require("Locale").slashHint }, Options.handle(command), command)
 		end
-		local lines = Options.handle("")
-		assert.is_truthy(table.concat(lines, "\n"):find("1.61.0", 1, true))
-	end)
-
-	it("exports on /fs export", function()
-		local lines = Options.handle("export")
-		assert.is_truthy(lines[1]:find("FS1:", 1, true))
-	end)
-
-	it("loads a build on /fs follow <code> and says how many points", function()
-		local lines = Options.handle("follow FSB1:1.60.1.69893:paladin:111:")
-		assert.are.equal(string.format(require("Locale").followLoaded, "paladin", 1), lines[1])
-	end)
-
-	it("passes a refusal through verbatim on a bad code", function()
-		local lines = Options.handle("follow FS9:nope")
-		assert.is_truthy(lines[1]:find("FS9", 1, true))
-	end)
-
-	it("shows the next point on /fs follow with no code", function()
-		Options.handle("follow FSB1:1.60.1.69893:paladin:111:")
-		-- Local override: the shared rank of 5 is maxed, which the /fs
-		-- export example needs, but it leaves this build's one-point order
-		-- already satisfied. Zero it here, for this example only, so there
-		-- is an outstanding point to show.
-		state.talents[1].talents[1].rank = 0
-		local lines = Options.handle("follow")
-		assert.is_truthy(lines[1]:find("A", 1, true))
-	end)
-
-	it("routes /fs options to the same lines as bare /fs", function()
-		assert.are.same(Options.handle(""), Options.handle("options"))
+		assert.is_nil(require("Follow").build)
 	end)
 
 	it("prints the command hint in gold on /fs help", function()
@@ -118,11 +80,6 @@ describe("Options", function()
 		require("Prefs").setFlag("chat", false)
 		SlashCmdList["FOREVERSIXTY"]("help")
 		assert.are.equal(1, #state.printed)
-	end)
-
-	it("shows gear lines on /fs gear", function()
-		Options.handle("follow FSB1:1.60.1.69893:paladin:111:")
-		assert.are.same({ require("Locale").gearNone }, Options.handle("gear"))
 	end)
 
 	it("counts the builds the companion left in the inbox", function()
@@ -301,40 +258,51 @@ describe("Options", function()
 		assert.are.equal("/fs", SLASH_FOREVERSIXTY1)
 	end)
 
-	it("prints each line through the chat prefix when the chat pref is on", function()
-		-- The window is the surface now, so /fs prints only when the player
-		-- asked for chat as well. Controller ruling 6.
-		require("Prefs").setFlag("chat", true)
+	it("prints the command list through the chat prefix on a bare /fs, chat pref or not", function()
+		require("Prefs").setFlag("chat", false)
 		Options.register()
 		SlashCmdList["FOREVERSIXTY"]("")
 
 		local Locale = require("Locale")
-		assert.are.same({
-			string.format(Locale.chatLine, Locale.addonName, string.format(Locale.dataBuild, DATA.build)),
-			string.format(Locale.chatLine, Locale.addonName, Locale.slashHint),
-		}, state.printed)
+		assert.are.same({ string.format(Locale.chatLine, Locale.addonName, Locale.slashHint) }, state.printed)
 	end)
 
-	it("opens the window on a bare /fs", function()
+	it("has the minimap button, the compartment, the keybind and the toast print the command list", function()
 		Options.register()
-		SlashCmdList["FOREVERSIXTY"]("")
-		assert.is_true(require("Window").isOpen())
+		assert.are.equal(Options.showHint, require("Minimap").open)
+		assert.are.equal(Options.showHint, require("Minimap").openSettings)
+		assert.are.equal(Options.showHint, require("Toast").open)
+		assert.are.equal(Options.showHint, _G.FOREVERSIXTY_TOGGLE_WINDOW)
+		Options.showHint()
+		local Locale = require("Locale")
+		assert.are.same({ string.format(Locale.chatLine, Locale.addonName, Locale.slashHint) }, state.printed)
 	end)
 
-	it("opens the tab /fs was given", function()
-		Options.register()
-		SlashCmdList["FOREVERSIXTY"]("gear")
-		assert.is_true(require("Window").tabs.gear.foreverSixtyActive)
+	it("refreshes the tracker and the talent glow through refreshSurfaces", function()
+		local calls = {}
+		require("Tracker").refresh = function(data)
+			calls[#calls + 1] = { "tracker", data }
+		end
+		require("TalentGlow").refresh = function(data)
+			calls[#calls + 1] = { "glow", data }
+		end
+		Options.refreshSurfaces(DATA)
+		assert.are.same({ { "tracker", DATA }, { "glow", DATA } }, calls)
 	end)
 
-	it("says nothing in chat while the chat pref is off", function()
-		Options.register()
-		SlashCmdList["FOREVERSIXTY"]("")
-		assert.are.same({}, state.printed)
+	it("never raises on an addon message, and counts what Comms raised for /fs diag", function()
+		local Comms = require("Comms")
+		Comms.failed = 0
+		Comms.onEvent = function()
+			error("a malformed message")
+		end
+		assert.has_no.errors(function()
+			Options.onEvent(Options.frame, "CHAT_MSG_ADDON", "FS1", "1|hello", "GUILD", "Someone-Realm")
+		end)
+		assert.are.equal(1, Comms.failed)
 	end)
 
-	it("answers a command with no tab of its own in chat regardless", function()
-		-- /fs inbox has nowhere in the window to land, so it always prints.
+	it("answers a command in chat", function()
 		Options.register()
 		SlashCmdList["FOREVERSIXTY"]("inbox")
 		assert.are.equal(1, #state.printed)
@@ -359,5 +327,21 @@ describe("Options", function()
 		Options.register()
 		Options.onEvent(Options.frame, "PLAYER_LOGOUT")
 		assert.is_nil(_G.ForeverSixtyDB and _G.ForeverSixtyDB.characters)
+		assert.is_nil(_G.ForeverSixtyDB and _G.ForeverSixtyDB.outbox)
+	end)
+
+	it("writes the outbox beside the export at logout", function()
+		local savedTime = _G.time
+		_G.time = function()
+			return 0
+		end
+		Options.register()
+		Options.onEvent(Options.frame, "PLAYER_LOGOUT")
+		_G.time = savedTime
+		local outbox = _G.ForeverSixtyDB.outbox
+		assert.are.equal(1, outbox.format)
+		local key = require("Export").characterKey()
+		assert.are.equal(_G.ForeverSixtyDB.characters[key].export, outbox.export.code)
+		assert.are.equal("FS1:", outbox.export.code:sub(1, 4))
 	end)
 end)

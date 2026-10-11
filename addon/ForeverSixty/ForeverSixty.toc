@@ -30,15 +30,8 @@ Inspect.lua
 Ratings.lua
 Tooltip.lua
 TalentGlow.lua
-views\ExportView.lua
-views\FollowView.lua
-views\GearView.lua
-views\GuildView.lua
-views\SettingsView.lua
 Tracker.lua
-views\OverviewView.lua
 Minimap.lua
-Window.lua
 Toast.lua
 RecorderBuffer.lua
 Recorder.lua

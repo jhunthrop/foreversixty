@@ -17,11 +17,13 @@ local Talents = ns.Talents or require("Talents")
 local Theme = ns.Theme or require("Theme")
 local Widgets = ns.Widgets or require("Widgets")
 local Prefs = ns.Prefs or require("Prefs")
-local Window = ns.Window or require("Window")
 local Compat = ns.Compat or require("Compat")
 local Rotation = ns.Rotation or require("Rotation")
 
 local Toast = {}
+
+--- What a click on the toast opens. Options fills it in at register; nil does nothing.
+Toast.open = nil
 
 --- The message for `level` and the next point in `build`. nil when there
 --- is nothing worth telling the player: no build loaded, or it is done.
@@ -69,7 +71,9 @@ function Toast.ensure()
 	frame:SetPoint("TOP", UIParent, "TOP", 0, Toast.TOP_OFFSET)
 	frame:EnableMouse(true)
 	frame:SetScript("OnMouseUp", function()
-		Window.open("follow")
+		if Toast.open ~= nil then
+			Toast.open()
+		end
 	end)
 	Toast.frame = frame
 	Toast.text = Widgets.label(frame, "", "gold", "small")
@@ -127,10 +131,8 @@ function Toast.rotationModel(data, previousLevel, level)
 	local fresh = Rotation.newAbilities(data, Follow.build, Talents.readRanks(data), previousLevel, level)
 	-- docs/tenets.md's standard: the rotation card glows the row for the
 	-- ability the player just learned, off this same event. Recorded on
-	-- Rotation itself (rather than read from Toast, which loads after
-	-- Window and so after the Overview in the TOC, and would need a
-	-- require the real client cannot satisfy that late) since both this
-	-- file and the Overview already depend on Rotation directly.
+	-- Rotation itself, which every surface showing the rotation already
+	-- depends on, rather than on Toast, which loads late in the TOC.
 	Rotation.markLearned(fresh)
 	if #fresh == 0 then
 		return nil

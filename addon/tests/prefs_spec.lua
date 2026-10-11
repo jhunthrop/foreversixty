@@ -53,10 +53,10 @@ describe("Prefs", function()
 	end)
 
 	it("fills a missing nested key without dropping its siblings", function()
-		local ui = Prefs.withDefaults({ window = { x = 120 } })
-		assert.are.equal(120, ui.window.x)
-		assert.are.equal(Prefs.DEFAULTS.window.y, ui.window.y)
-		assert.are.equal(Prefs.DEFAULTS.window.tab, ui.window.tab)
+		local ui = Prefs.withDefaults({ tracker = { x = 120 } })
+		assert.are.equal(120, ui.tracker.x)
+		assert.are.equal(Prefs.DEFAULTS.tracker.y, ui.tracker.y)
+		assert.are.equal(Prefs.DEFAULTS.tracker.locked, ui.tracker.locked)
 	end)
 
 	it("drops a key the defaults do not carry", function()
@@ -65,15 +65,15 @@ describe("Prefs", function()
 	end)
 
 	it("does not mutate the saved table it was handed", function()
-		local saved = { window = { x = 120 } }
+		local saved = { tracker = { x = 120 } }
 		Prefs.withDefaults(saved)
-		assert.are.same({ window = { x = 120 } }, saved)
+		assert.are.same({ tracker = { x = 120 } }, saved)
 	end)
 
 	it("does not hand out the DEFAULTS table itself", function()
 		local ui = Prefs.withDefaults(nil)
 		assert.are_not.equal(Prefs.DEFAULTS, ui)
-		assert.are_not.equal(Prefs.DEFAULTS.window, ui.window)
+		assert.are_not.equal(Prefs.DEFAULTS.tracker, ui.tracker)
 	end)
 
 	it("creates ForeverSixtyDB.ui on the first read", function()
@@ -91,14 +91,13 @@ describe("Prefs", function()
 	end)
 
 	it("round-trips a field inside a section", function()
-		Prefs.set("window", "tab", "gear")
-		assert.are.equal("gear", Prefs.get("window", "tab"))
-		assert.are.equal("gear", _G.ForeverSixtyDB.ui.window.tab)
+		Prefs.set("tracker", "locked", true)
+		assert.is_true(Prefs.get("tracker", "locked"))
+		assert.is_true(_G.ForeverSixtyDB.ui.tracker.locked)
 	end)
 
 	it("resets placements and leaves the player's other choices alone", function()
-		Prefs.set("window", "x", 300)
-		Prefs.set("window", "tab", "gear")
+		Prefs.set("tracker", "x", 300)
 		Prefs.set("tracker", "y", -40)
 		Prefs.set("tracker", "locked", true)
 		Prefs.set("minimap", "angle", 12)
@@ -106,25 +105,24 @@ describe("Prefs", function()
 
 		Prefs.resetPositions()
 
-		assert.are.equal(Prefs.DEFAULTS.window.x, Prefs.get("window", "x"))
+		assert.are.equal(Prefs.DEFAULTS.tracker.x, Prefs.get("tracker", "x"))
 		assert.are.equal(Prefs.DEFAULTS.tracker.y, Prefs.get("tracker", "y"))
 		assert.are.equal(Prefs.DEFAULTS.minimap.angle, Prefs.get("minimap", "angle"))
-		-- Not placements: a reset must not un-lock the tracker, re-show the
-		-- minimap button or send the player back to the Export tab.
-		assert.are.equal("gear", Prefs.get("window", "tab"))
+		-- Not placements: a reset must not un-lock the tracker or re-show the
+		-- minimap button.
 		assert.is_true(Prefs.get("tracker", "locked"))
 		assert.is_false(Prefs.get("minimap", "shown"))
 	end)
 
 	it("preserves nested table identity across an unrelated accessor call", function()
 		-- A caller holding a reference to a nested section (e.g., a drag
-		-- handler holding `local window = Prefs.get("window")`) must still
+		-- handler holding `local tracker = Prefs.get("tracker")`) must still
 		-- write into the live table after any other accessor call.
-		local window = Prefs.get("window")
+		local tracker = Prefs.get("tracker")
 		Prefs.setFlag("chat", true)
-		assert.are.equal(window, Prefs.get("window"))
-		window.x = 42
-		assert.are.equal(42, Prefs.get("window", "x"))
+		assert.are.equal(tracker, Prefs.get("tracker"))
+		tracker.x = 42
+		assert.are.equal(42, Prefs.get("tracker", "x"))
 	end)
 
 	it("normalises a saved table with junk and wrong types in place", function()
@@ -133,15 +131,15 @@ describe("Prefs", function()
 		-- the same table, and now has the right shape.
 		_G.ForeverSixtyDB = {
 			ui = {
-				window = { x = 100, y = 50 },
-				tracker = 7,
+				tracker = { x = 100, y = 50 },
+				minimap = 7,
 				oldkey = "junk",
 			}
 		}
 		local ui = Prefs.current()
-		assert.are.equal(100, ui.window.x)
-		assert.are.equal(Prefs.DEFAULTS.window.tab, ui.window.tab)
-		assert.are.equal("table", type(ui.tracker))
+		assert.are.equal(100, ui.tracker.x)
+		assert.are.equal(Prefs.DEFAULTS.tracker.point, ui.tracker.point)
+		assert.are.equal("table", type(ui.minimap))
 		assert.is_nil(ui.oldkey)
 		-- The same table object, not a new one.
 		assert.are.equal(ui, _G.ForeverSixtyDB.ui)
@@ -159,5 +157,45 @@ describe("Prefs", function()
 		assert.is_false(Prefs.flag("tooltip"))
 		Prefs.setFlag("toast", false)
 		assert.is_false(Prefs.flag("toast"))
+	end)
+end)
+
+-- The v2 keys (L2.6): the build chip, the guild badges and the hello broadcast. Pure: these
+-- read withDefaults only, never the client mock.
+describe("Prefs, the v2 keys", function()
+	local Prefs
+
+	before_each(function()
+		Prefs = helper.load("Prefs")
+	end)
+
+	it("shows the chip and hides it in combat by default", function()
+		local ui = Prefs.withDefaults(nil)
+		assert.are.same({ shown = true, combatHide = true }, ui.chip)
+	end)
+
+	it("turns the badges and the broadcast on by default", function()
+		local ui = Prefs.withDefaults(nil)
+		assert.is_true(ui.badges)
+		assert.is_true(ui.broadcast)
+	end)
+
+	it("keeps the player's own chip, badge and broadcast choices", function()
+		local ui = Prefs.withDefaults({ chip = { combatHide = false }, badges = false, broadcast = false })
+		assert.is_true(ui.chip.shown)
+		assert.is_false(ui.chip.combatHide)
+		assert.is_false(ui.badges)
+		assert.is_false(ui.broadcast)
+	end)
+
+	it("keeps the old keys the surfaces still read", function()
+		local ui = Prefs.withDefaults(nil)
+		for _, key in ipairs({ "tracker", "minimap", "tooltip", "toast", "autoSave", "chat", "advancedDetail" }) do
+			assert.is_not_nil(ui[key], key)
+		end
+	end)
+
+	it("drops the window's placement now the window is gone", function()
+		assert.is_nil(Prefs.withDefaults({ window = { x = 120 } }).window)
 	end)
 end)

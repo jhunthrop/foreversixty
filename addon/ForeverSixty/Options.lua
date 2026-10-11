@@ -1,5 +1,5 @@
 -- addon/ForeverSixty/Options.lua
--- /fs, the data build id, and the companion's inbox.
+-- /fs, the events every surface refreshes on, and the companion's inbox and outbox.
 --
 -- `handle` returns the lines rather than printing them, so a spec can assert
 -- on what a player would read without a chat frame; `run` is the thin
@@ -25,15 +25,10 @@ local Recorder = ns.Recorder or require("Recorder")
 local Theme = ns.Theme or require("Theme")
 local Comms = ns.Comms or require("Comms")
 local MinimapButton = ns.Minimap or require("Minimap")
-local SettingsView = ns.SettingsView or require("SettingsView")
-local Window = ns.Window or require("Window")
+local Tracker = ns.Tracker or require("Tracker")
 
 local Options = {}
 Options.data = Data
-
---- The subcommands that are a tab in the window. Anything else (inbox,
---- diag) has nowhere in the window to land, so it always answers in chat.
-Options.TABS = { export = true, follow = true, gear = true, settings = true }
 
 --- The newest "weights" message actually about `spec` (Gear.specOf's own
 --- "class-spec" slug, the same vocabulary api/internal/addon/messages.go
@@ -122,40 +117,13 @@ function Options.colorGold(text)
 end
 
 function Options.handle(input)
-	local data = Options.data
 	local command, rest = (input or ""):match("^(%S*)%s*(.*)$")
-	if command == "export" then
-		-- The window is the copy surface now (views/ExportView.lua); this
-		-- branch only produces the line /fs prints when the chat pref is
-		-- on, so it wants the string, not a frame.
-		local code, message = Export.string(data)
-		return { code or message }
-	elseif command == "follow" then
-		if rest ~= "" then
-			local build, message = Follow.load(rest, data)
-			if build == nil then
-				return { message }
-			end
-			return { string.format(L.followLoaded, build.classSlug, #build.order) }
-		end
-		-- No nil guard on Follow.build here: Follow.line is total -- it
-		-- returns L.followNone for a nil build and cannot return nil on any
-		-- path -- so this asymmetry with the export/gear guards above is
-		-- deliberate, not a gap.
-		return { Follow.line(data, Follow.build, Talents.readRanks(data)) }
-	elseif command == "gear" then
-		return Gear.lines(data, Follow.build)
-	elseif command == "inbox" then
+	if command == "inbox" then
 		local count, message = Options.readInbox()
 		if count == 0 then
 			return { message or L.inboxEmpty }
 		end
 		return { string.format(L.inboxCount, count) }
-	elseif command == "options" then
-		-- `slashHint` advertises this subcommand, and there is no separate
-		-- options panel in this task, so the honest minimum is the same
-		-- header bare /fs already shows.
-		return Window.buildLines(data)
 	elseif command == "record" then
 		return Recorder.command(rest)
 	elseif command == "help" then
@@ -188,7 +156,9 @@ function Options.handle(input)
 		end
 		return lines
 	end
-	return Window.buildLines(data)
+	-- Bare /fs, and anything it does not know: the command list, until Lane L3.4's build
+	-- dialog is what bare /fs opens.
+	return { L.slashHint }
 end
 
 --- Names (Inspect.keyOf) /fs inspect asked about and has not yet printed: only these are
@@ -226,25 +196,28 @@ function Options.inspectLines()
 	return lines
 end
 
---- The slash command. The window is the surface now: /fs and the four tab
---- commands open it, and print as well only when the player turned the
---- chat pref on. A subcommand with no tab of its own always prints, or it
---- would have no answer at all.
+--- The slash command: every answer prints in chat, since no surface opens yet.
 function Options.run(input)
 	local lines = Options.handle(input)
-	local command = (input or ""):match("^(%S*)")
-	local tab = Options.TABS[command] and command or nil
-	local opensWindow = command == "" or tab ~= nil
-	if opensWindow then
-		Window.open(tab)
-	end
-	if opensWindow and not Prefs.flag("chat") then
-		return lines
-	end
 	for _, line in ipairs(lines) do
 		print(string.format(L.chatLine, L.addonName, line))
 	end
 	return lines
+end
+
+--- What the minimap button, the compartment entry, the keybind and a toast click do until
+--- Lanes L3.4 and L3.5 give them the build dialog and the Settings page: print the command
+--- list.
+function Options.showHint()
+	print(string.format(L.chatLine, L.addonName, L.slashHint))
+	return L.slashHint
+end
+
+--- Redraw every surface for `data`: the tracker and the talent glow today; each surface
+--- Lanes L3-L5 add calls its own refresh from here.
+function Options.refreshSurfaces(data)
+	Tracker.refresh(data)
+	TalentGlow.refresh(data)
 end
 
 --- Every event any surface refreshes on. Theme.registerEvent swallows the
@@ -259,7 +232,12 @@ Options.EVENTS = {
 function Options.onEvent(_, event, ...)
 	if event == "CHAT_MSG_ADDON" then
 		-- Every addon's messages arrive here; Comms ignores all but FS1. Nothing to redraw.
-		Comms.onEvent(...)
+		-- Another player's message must never become a Lua error here: anything Comms
+		-- raises is counted for /fs diag instead.
+		local ok = pcall(Comms.onEvent, ...)
+		if not ok then
+			Comms.failed = Comms.failed + 1
+		end
 		return
 	end
 	if event == "INSPECT_READY" then
@@ -281,13 +259,13 @@ function Options.onEvent(_, event, ...)
 		return
 	end
 	if event == "GET_ITEM_INFO_RECEIVED" then
-		-- An item the open page drew as "Loading item..." can now be named.
-		Window.refresh()
+		-- No surface draws an item name yet; the ones Lanes L3-L5 add redraw here.
 		return
 	end
 	if event == "PLAYER_LOGOUT" then
 		if Prefs.flag("autoSave") then
-			Export.save(Options.data)
+			-- The outbox (contract 4) carries the same export, so it is built once.
+			Export.saveOutbox(Options.data, Export.save(Options.data))
 		end
 		return
 	end
@@ -299,8 +277,8 @@ function Options.onEvent(_, event, ...)
 	if event == "PLAYER_LOGIN" then
 		TalentGlow.watch(Options.data)
 		Follow.restore(Options.data)
+		Follow.ensureDefault(Options.data)
 		Options.readInbox()
-		SettingsView.register(Window.context())
 		MinimapButton.data = Options.data
 		MinimapButton.refresh()
 		MinimapButton.registerCompartment()
@@ -328,34 +306,28 @@ function Options.onEvent(_, event, ...)
 		Options.sayHello()
 	end
 	Toast.refresh(Options.data)
-	Window.refreshEverything(Options.data)
+	Options.refreshSurfaces(Options.data)
 end
 
---- Runs at file load. Registers the slash command, the events and the two
---- injection points Minimap left for the window -- and builds no frame
---- except the event frame, which has no size and is never shown.
+--- Runs at file load. Registers the slash command, the events and the
+--- injection points Minimap and Toast leave for what they open -- and builds
+--- no frame except the event frame, which has no size and is never shown.
 function Options.register()
 	-- Bindings.xml names these two globals and calls the third; the client
 	-- auto-loads that file from the addon's own folder with no TOC entry.
 	BINDING_HEADER_FOREVERSIXTY = L.bindingHeader
 	BINDING_NAME_FOREVERSIXTY_TOGGLE = L.bindingToggle
-	FOREVERSIXTY_TOGGLE_WINDOW = function()
-		Window.toggle()
-	end
+	FOREVERSIXTY_TOGGLE_WINDOW = Options.showHint
 
 	SLASH_FOREVERSIXTY1 = "/fs"
 	SLASH_FOREVERSIXTY2 = "/foreversixty"
 	SlashCmdList["FOREVERSIXTY"] = Options.run
 
-	Window.data = Options.data
 	Tooltip.data = Options.data
 	Tooltip.register()
-	MinimapButton.open = function()
-		return Window.open()
-	end
-	MinimapButton.openSettings = function()
-		return Window.open("settings")
-	end
+	MinimapButton.open = Options.showHint
+	MinimapButton.openSettings = Options.showHint
+	Toast.open = Options.showHint
 
 	local frame = CreateFrame("Frame", "ForeverSixtyEventFrame", UIParent)
 	for _, event in ipairs(Options.EVENTS) do

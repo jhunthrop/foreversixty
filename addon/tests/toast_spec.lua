@@ -20,7 +20,7 @@ local CODE = "FSB1:1.60.1.69893:paladin:111111121:"
 
 describe("Toast", function()
 	local Follow, Toast
-	local Theme, Prefs, Window
+	local Theme, Prefs
 
 	local function start(install)
 		-- Returns the mock state, not (Follow, Toast): Follow and Toast are
@@ -36,17 +36,8 @@ describe("Toast", function()
 		helper.load("Gear")
 		helper.load("Codec")
 		helper.load("TalentGlow")
-		helper.load("ExportView")
-		helper.load("FollowView")
-		helper.load("GearView")
-		helper.load("SettingsView")
 		helper.load("Tracker")
 		helper.load("Minimap")
-		Window = helper.load("Window")
-		-- Window.open("follow") (the toast's click handler) reads
-		-- Window.data for its header; the client sets this at login via
-		-- Options.register(), which is not loaded in this spec.
-		Window.data = DATA
 		Toast = helper.load("Toast")
 		return state
 	end
@@ -145,13 +136,16 @@ describe("Toast", function()
 		assert.is_true(Toast.frame:IsShown())
 	end)
 
-	it("opens the Talents tab on click", function()
+	it("opens what Options handed it on click", function()
 		start()
 		local build = assert(Follow.load(CODE, DATA))
 		Toast.show(Toast.model(DATA, build, { [1] = {} }, 12))
+		local opened = 0
+		Toast.open = function()
+			opened = opened + 1
+		end
 		Toast.frame:GetScript("OnMouseUp")(Toast.frame)
-		assert.is_true(Window.isOpen())
-		assert.are.equal("follow", Window.current)
+		assert.are.equal(1, opened)
 	end)
 
 	it("always fires on level-up and resets the baseline", function()
@@ -212,14 +206,8 @@ describe("Toast, the rotation toast", function()
 		helper.load("Gear")
 		helper.load("Codec")
 		helper.load("TalentGlow")
-		helper.load("ExportView")
-		helper.load("FollowView")
-		helper.load("GearView")
-		helper.load("SettingsView")
 		helper.load("Tracker")
 		helper.load("Minimap")
-		local Window = helper.load("Window")
-		Window.data = ROTATION_DATA
 		Toast = helper.load("Toast")
 	end
 

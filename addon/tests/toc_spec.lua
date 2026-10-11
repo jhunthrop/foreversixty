@@ -1,7 +1,7 @@
 -- addon/tests/toc_spec.lua
 -- The TOC's order is the load order, and the load order is the dependency
--- order: Theme before Widgets, Widgets before the views, Tracker and
--- Minimap before Window, Options last. A file added without a TOC line
+-- order: Theme before Widgets, Widgets before Cards, the data modules
+-- before the surfaces that read them, Options last. A file added without a TOC line
 -- simply never loads in the game, which no other spec here would catch --
 -- every spec reaches its module through require, not through the TOC.
 describe("the TOC", function()
@@ -11,12 +11,7 @@ describe("the TOC", function()
 		"Progress.lua", "Rotation.lua",
 		-- Comms reads Progress, Score, Gear and Theme, so it loads after Score.
 		"Score.lua", "Comms.lua", "Inspect.lua", "Ratings.lua", "Tooltip.lua",
-		"TalentGlow.lua",
-		"views/ExportView.lua", "views/FollowView.lua",
-		"views/GearView.lua", "views/GuildView.lua", "views/SettingsView.lua",
-		-- After Tracker: the Overview reads Tracker.model, and in game a module
-		-- that is not loaded yet is simply nil.
-		"Tracker.lua", "views/OverviewView.lua", "Minimap.lua", "Window.lua", "Toast.lua",
+		"TalentGlow.lua", "Tracker.lua", "Minimap.lua", "Toast.lua",
 		-- The measurement recorder: Options routes /fs record to it.
 		"RecorderBuffer.lua", "Recorder.lua", "Options.lua",
 	}
@@ -70,7 +65,7 @@ describe("the TOC", function()
 
 	-- The character header's circular ringed class crest (design section
 	-- 2 / section 4.5.1, round-2 owner ruling): one TGA per class, plus
-	-- the one ring texture Window.lua tints per class at runtime.
+	-- the one ring texture tinted per class at runtime.
 	it("ships every class crest and the ring texture inside the packaged folder", function()
 		local CLASSES = {
 			"warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid",
