@@ -9,11 +9,11 @@
      page already titles the block, as /logs' panel does. -->
 <script lang="ts">
   import { REPORTS_PER_PAGE, listGuildReports, listMyReports, type MyReport } from '../lib/account/api';
+  import { ownReportSummary } from '../lib/logs/report-summary';
   import { logsCopy } from '../lib/reports/copy';
   import { REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
   import { myReportsCopy } from '../lib/reports/my-reports-copy';
   import ReportRow from './ReportRow.svelte';
-  import SignInPrompt from './SignInPrompt.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
@@ -22,9 +22,12 @@
     signedIn,
     heading = true,
     guilds = [],
+    uploadAction = true,
   }: {
     signedIn: boolean;
     heading?: boolean;
+    /** The empty state's "Upload a log" link; off on /logs, where the page's own header carries it. */
+    uploadAction?: boolean;
     /** §4.C.1's own tab strip source: `Me.guilds`, every guild this account belongs to. */
     guilds?: readonly { id: number; name: string }[];
   } = $props();
@@ -76,7 +79,7 @@
 <section class="flex flex-col gap-3" data-testid="my-reports">
   {#if heading}<h2 class="section-title text-[18px]">Your reports</h2>{/if}
   {#if !signedIn}
-    <SignInPrompt line="Sign in to see the reports you own." testid="reports-signin" />
+    <p class="text-[14px]" data-testid="reports-signed-out">{myReportsCopy.signedOut}</p>
   {:else}
     {#if guilds.length > 0}
       <!-- Horizontally scrolling on phone, same rule every other pill row on the site
@@ -132,7 +135,9 @@
     {:else if rows.length === 0}
       <EmptyState
         message={emptyMessage}
-        action={activeGuild === null ? { label: myReportsCopy.uploadAction, href: '/logs' } : undefined}
+        action={activeGuild === null && uploadAction
+          ? { label: myReportsCopy.uploadAction, href: '/logs' }
+          : undefined}
         testid="my-reports-empty"
       />
     {:else}
@@ -142,9 +147,11 @@
             href={`/reports/${report.id}`}
             title={report.title === '' ? report.zone : report.title}
             createdAt={report.created_at}
-            fightCount={report.fight_count}
-            killCount={report.kill_count}
-            meta={report.visibility}
+            summary={ownReportSummary({
+              zone: report.zone,
+              killCount: report.kill_count,
+              durationMs: report.duration_ms,
+            })}
             status={report.status}
           />
         {/each}

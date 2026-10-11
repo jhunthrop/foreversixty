@@ -1,14 +1,15 @@
 <!-- web/src/components/RecentReports.svelte -->
 <!-- The public "Recent public reports" feed: GET /v1/reports/recent, needing no session.
-     Mounted on /logs above "Your reports" in full, and -- per spec section 4 -- meant for
-     a compact mount on the homepage too; `compact` trims it to a handful of rows with no
-     pagination, for a panel that is not the page's main content. See ReportRow.svelte for
-     the shared row markup this shares with MyReports.svelte ("Your reports"). -->
+     Mounted on /logs below "Your reports"; `compact` trims it to a handful of rows with no
+     pagination, for a panel that is not the page's main content. Under the feed sits the
+     site's one sample report as a labelled row of its own. See ReportRow.svelte for the shared
+     row markup this shares with MyReports.svelte ("Your reports"). -->
 <script lang="ts">
   import { recentReportsCopy } from '../lib/reports/copy';
   import { REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
   import { fetchRecentReports, type RecentReport } from '../lib/reports/recent';
-  import sampleReport from '../data/sample-report.json';
+  import { publicReportSummary } from '../lib/logs/report-summary';
+  import { SAMPLE_FALLBACK_ROW, SAMPLE_LABEL, SAMPLE_REPORT_ID, loadSampleRow } from '../lib/logs/sample-row';
   import ReportRow from './ReportRow.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
@@ -34,11 +35,10 @@
     status = 'loading';
     try {
       const result = await fetchRecentReports(cursor);
-      // Logs landing spec (2026-10-04) §4.C.2, review finding 2: the canonical sample
-      // report is the header hero's own, explicitly-labelled example -- it must never
-      // double as a live feed entry, or this feed's genuinely-empty state (and its
-      // already-correct empty copy) is never reachable.
-      const filtered = result.rows.filter((row) => row.id !== sampleReport.id);
+      // Logs spec (2026-10-11) section 9: the canonical sample report is shown once, as its own
+      // labelled row under the feed -- it must never double as a feed entry, or this feed's
+      // genuinely-empty state (and its already-correct empty copy) is never reachable.
+      const filtered = result.rows.filter((row) => row.id !== SAMPLE_REPORT_ID);
       rows = compact ? filtered.slice(0, COMPACT_ROWS) : filtered;
       nextCursor = result.next_cursor;
       status = 'ready';
@@ -47,8 +47,13 @@
     }
   }
 
+  let sample = $state(SAMPLE_FALLBACK_ROW);
+
   $effect(() => {
     void load();
+    void loadSampleRow().then((row) => {
+      sample = row;
+    });
   });
 
   const hasMore = $derived(!compact && nextCursor !== undefined);
@@ -78,9 +83,7 @@
           href={`/reports/${report.id}`}
           title={report.title}
           createdAt={report.created_at}
-          fightCount={report.fight_count}
-          killCount={report.kill_count}
-          meta={report.guild_name ?? ''}
+          summary={publicReportSummary({ killCount: report.kill_count, guildName: report.guild_name })}
         />
       {/each}
     </ul>
@@ -94,4 +97,15 @@
       </button>
     {/if}
   {/if}
+  <div class="flex flex-col" data-testid="recent-reports-sample">
+    <span class="label text-muted">{SAMPLE_LABEL}</span>
+    <ul>
+      <ReportRow
+        href={`/reports/${sample.id}`}
+        title={sample.title}
+        createdAt={sample.createdAt}
+        summary={sample.summary}
+      />
+    </ul>
+  </div>
 </section>

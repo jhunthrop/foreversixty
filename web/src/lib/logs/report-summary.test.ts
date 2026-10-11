@@ -42,7 +42,11 @@ describe('ownReportSummary', () => {
 
 describe('publicReportSummary', () => {
   it('reads zone and kills, then the guild when there is one', () => {
-    expect(publicReportSummary({ zone: 'Sanguine Depths', killCount: 12 })).toBe('Sanguine Depths · 12 kills');
-    expect(publicReportSummary({ killCount: 1, guildName: 'The Last Watch' })).toBe('1 kill · The Last Watch');
+    expect(publicReportSummary({ zone: 'Sanguine Depths', killCount: 12 })).toBe(
+      'Sanguine Depths · 12 kills',
+    );
+    expect(publicReportSummary({ killCount: 1, guildName: 'The Last Watch' })).toBe(
+      '1 kill · The Last Watch',
+    );
   });
 });

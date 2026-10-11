@@ -1,56 +1,66 @@
 <!-- web/src/components/ReportRow.svelte -->
-<!-- One report's line: a title, its day, its fight and kill counts, and one line of
-     trailing detail. Shared by MyReports.svelte ("Your reports", where `meta` is the
-     report's own visibility and `status` shows a pill while it is still processing) and
-     RecentReports.svelte (the public feed, where `meta` is the report's guild name and
-     `status` is always complete, so it never shows). Extracted so the row markup that used
-     to live only in MyReports.svelte exists in exactly one place.
+<!-- One report's row (design/specs/2026-10-11-logs.md section 2.5): the title and its age on the
+     first line (relative inside two weeks, a date beyond, `relativeDay`), one summary line under
+     the title. The caller builds the summary (`lib/logs/report-summary.ts`): "Your reports" says
+     zone, bosses and length, the public feed says kills and guild. Shared by MyReports.svelte and
+     RecentReports.svelte so the row exists in exactly one place.
 
-     Player review ruling, logs mock (2026-10-04) finding 3: under 640px the facts line
-     stacks under the title rather than sharing its line with it -- a title and a pinned
-     date must never be left to collide on one line. `flex-col` is the default (phone); the
-     facts group only joins the title's own line from `sm:` (640px) up. -->
-
+     The whole row is the target: the title is the link and its ::after covers the row, so a hover
+     underlines the title and moves nothing, and every row is 56 px or taller. A report still being
+     processed shows its status as an outline pill; a complete one shows nothing. -->
 <script lang="ts">
-  import { reportDay } from '../lib/reports/hero';
+  import { relativeDay } from '../lib/dates';
 
   let {
     href,
     title,
     createdAt,
-    fightCount,
-    killCount,
-    meta = '',
+    summary,
     status = '',
   }: {
     href: string;
     title: string;
     createdAt: string;
-    fightCount: number;
-    killCount: number;
-    /** Trailing detail after the fight/kill count: a visibility, a guild name, or nothing. */
-    meta?: string;
+    summary: string;
     /** A report's processing status. A pill shows only while it is not yet complete. */
     status?: string;
   } = $props();
 </script>
 
-<li
-  class="border-line-soft flex min-h-11 flex-col gap-1 border-b py-2 text-[14px] sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-1"
-  data-testid="report-row"
->
-  <a {href} class="font-semibold">{title}</a>
-  <span class="flex flex-wrap items-center gap-x-3 gap-y-1">
-    <span class="text-muted tabular font-mono text-[13px]">{reportDay(createdAt)}</span>
-    <span class="text-muted text-[13px]">
-      <span class="tabular font-mono">{fightCount} fights · {killCount} kills</span>{meta === ''
-        ? ''
-        : ` · ${meta}`}
-    </span>
+<li class="report-row border-line-soft border-b" data-testid="report-row">
+  <a {href} class="report-title text-text font-semibold">{title}</a>
+  <span class="text-muted tabular font-mono text-[13px]" data-testid="report-row-when"
+    >{relativeDay(new Date(createdAt))}</span
+  >
+  <span class="text-muted flex flex-wrap items-center gap-x-2 text-[12px]">
+    {#if summary !== ''}<span data-testid="report-row-summary">{summary}</span>{/if}
     {#if status !== '' && status !== 'complete'}
-      <!-- Outline, not the filled gold: that fill is the account page's Main pill, and one
-           solid gold shape should mean one thing on a page. -->
       <span class="pill pill-sample" data-testid="report-status">{status}</span>
     {/if}
   </span>
 </li>
+
+<style>
+  .report-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 16px;
+    row-gap: 2px;
+    align-items: baseline;
+    min-height: 56px;
+    padding-block: 10px;
+  }
+  .report-row > :last-child {
+    grid-column: 1 / -1;
+  }
+  .report-title::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .report-row:hover .report-title {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>

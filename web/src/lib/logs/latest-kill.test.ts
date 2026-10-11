@@ -62,7 +62,11 @@ describe('logsAnswer: the latest kill against the last report', () => {
   });
 
   it('labels a healer kill HPS and skips a damage-taken row', () => {
-    const answer = logsAnswer([fight({ metric: 'damage_taken' }), fight({ metric: 'hps', value: 801 })], null, NOW);
+    const answer = logsAnswer(
+      [fight({ metric: 'damage_taken' }), fight({ metric: 'hps', value: 801 })],
+      null,
+      NOW,
+    );
     expect(answer).toMatchObject({ figures: [{ value: '801.0', unit: 'HPS' }] });
   });
 

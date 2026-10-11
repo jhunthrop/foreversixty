@@ -3,7 +3,7 @@
 // config gives `render()` Svelte's server entry, where $effect never runs, so the fetch-driven
 // states (rows, failed) are Playwright's job. What a server render can prove is the initial,
 // pre-hydration DOM: a Skeleton reserves the ready height while signed in, the signed-out
-// prompt renders in its place otherwise, and the retired "Reload the page" copy is gone.
+// sentence renders in its place otherwise, and the retired "Reload the page" copy is gone.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import MyReports from './MyReports.svelte';
@@ -15,9 +15,12 @@ describe('MyReports', () => {
     expect(body).not.toContain('Reload the page');
   });
 
-  it('renders nothing report-related when signed out', () => {
+  it('says in plain words that it needs an account when signed out, with no sign-in control', () => {
     const { body } = render(MyReports, { props: { signedIn: false } });
-    expect(body).toContain('data-testid="reports-signin"');
+    expect(body).toContain('Reports you own appear here once you are signed in.');
+    expect(body).not.toContain('Sign in');
+    expect(body).not.toContain('<a ');
+    expect(body).not.toContain('<button');
     expect(body).not.toContain('my-reports-skeleton');
   });
 });

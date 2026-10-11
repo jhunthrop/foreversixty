@@ -16,8 +16,7 @@ export function formatReportLength(durationMs: number): string {
   return `${hours} h ${String(minutes).padStart(2, '0')} m`;
 }
 
-const plural = (count: number, one: string, many: string): string =>
-  `${count} ${count === 1 ? one : many}`;
+const plural = (count: number, one: string, many: string): string => `${count} ${count === 1 ? one : many}`;
 
 function join(parts: readonly (string | undefined)[]): string {
   return parts.filter((part): part is string => part !== undefined && part !== '').join(SEPARATOR);

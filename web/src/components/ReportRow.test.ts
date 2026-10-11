@@ -6,36 +6,31 @@ import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import ReportRow from './ReportRow.svelte';
 
+const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+
 const BASE = {
   href: '/reports/abc123def456',
   title: 'Progress night',
-  createdAt: '2026-12-09T22:10:00Z',
-  fightCount: 8,
-  killCount: 3,
+  createdAt: new Date(Date.now() - THREE_DAYS_MS - 60_000).toISOString(),
+  summary: "Onyxia's Lair · 1 boss · 48 m",
 };
 
 describe('ReportRow', () => {
-  it('links the title to the report and shows the day, not the full timestamp', () => {
+  it('links the title to the report and shows a relative age inside two weeks', () => {
     const { body } = render(ReportRow, { props: BASE });
     expect(body).toContain('href="/reports/abc123def456"');
     expect(body).toContain('Progress night');
-    expect(body).toContain('2026-12-09');
-    expect(body).not.toContain('22:10:00');
+    expect(body).toContain('3 days ago');
   });
 
-  it('shows the fight and kill counts', () => {
+  it('shows a date from two weeks on', () => {
+    const { body } = render(ReportRow, { props: { ...BASE, createdAt: '2026-09-15T12:55:13Z' } });
+    expect(body).toContain('Sep 15');
+  });
+
+  it('shows the summary line the caller built', () => {
     const { body } = render(ReportRow, { props: BASE });
-    expect(body).toContain('8 fights');
-    expect(body).toContain('3 kills');
-  });
-
-  it('appends meta after the counts when given, and omits the separator when not', () => {
-    const withMeta = render(ReportRow, { props: { ...BASE, meta: 'The Last Watch' } }).body;
-    expect(withMeta).toContain('8 fights · 3 kills</span> · The Last Watch');
-
-    const withoutMeta = render(ReportRow, { props: BASE }).body;
-    expect(withoutMeta).not.toContain('· ·');
-    expect(withoutMeta).toMatch(/8 fights · 3 kills<\/span>\s*<\/span>/);
+    expect(body).toContain("Onyxia's Lair · 1 boss · 48 m");
   });
 
   it('shows a status pill only when the status is not complete', () => {
