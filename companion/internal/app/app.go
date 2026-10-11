@@ -416,6 +416,16 @@ type Snapshot struct {
 	Reports          []ReportRow          `json:"reports"`
 	Characters       []addon.Export       `json:"characters"`
 	UpdateStaged     bool                 `json:"update_staged"`
+	// AddonSeenAt is when the site last saw an export (the newest
+	// ack's export_seen_at across characters), in local time; absent
+	// until the site has acked one.
+	AddonSeenAt *time.Time `json:"addon_seen_at,omitempty"`
+	// SimRequestState is what became of the newest in-game sim
+	// request, in the ack's words (addon.SimQueued and the rest).
+	SimRequestState string `json:"sim_request_state,omitempty"`
+	// AddonLine is the two above in the player's words (AddonLine in
+	// copy.go), empty when there is no ack.
+	AddonLine string `json:"addon_line"`
 }
 
 // InstallStatus is one game folder as the status page shows it.
@@ -494,6 +504,12 @@ func (a *App) Snapshot() Snapshot {
 	}
 	if _, err := os.Stat(updater.PendingPath(a.o.Dirs.Update)); err == nil {
 		s.UpdateStaged = true
+	}
+	if st := a.sync.Status(); !st.SeenAt.IsZero() {
+		now := a.now()
+		local := st.SeenAt.In(now.Location())
+		s.AddonSeenAt, s.SimRequestState = &local, st.SimRequestState
+		s.AddonLine = AddonLine(st.SeenAt, st.SimRequestState, now)
 	}
 	return s
 }

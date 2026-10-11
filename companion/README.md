@@ -83,9 +83,13 @@ per report, `logs/companion.log`, and `update/` for a downloaded update.
 
 If the ForeverSixty addon is installed, the companion reads its saved variables after you log
 out and uploads each character's export string, so your real talents and gear reach the planner
-without a copy and paste. It writes `ForeverSixtyInbox.lua` beside them every ten minutes with
-the builds you chose on the site, which the addon loads the next time the game starts or you
-`/reload`. The game rewrites its own saved variables at logout, so an inbox written mid-session
+without a copy and paste. With them it sends what the addon left for the site at logout (a "Sim
+me" request, your guild tab's roster), once; `companion.log` says in one line each what the site
+did with it ("Sim request queued"). It writes `ForeverSixtyInbox.lua` beside them every ten
+minutes with the builds you chose on the site, your newest sim, your last raid and what the site
+last saw, which the addon loads the next time the game starts or you `/reload`. The status page
+shows "Seen by the site 14:03" once the site has your export. The companion only ever writes
+`ForeverSixtyInbox.lua`; `ForeverSixty.lua` is the game's. The game rewrites its own saved variables at logout, so an inbox written mid-session
 may be replaced; the next pass puts it back.
 
 ## Troubleshooting

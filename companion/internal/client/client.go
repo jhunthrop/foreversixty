@@ -75,6 +75,15 @@ func (e *Error) Retryable() bool {
 		e.Status >= 500
 }
 
+// Refuses reports whether the API read the request and refused the
+// named part of its body: a status no retry can change, with a field
+// error naming that part. The addon sync uses it to tell an outbox the
+// site cannot use, which is never sent again, from one the network
+// lost, which is.
+func (e *Error) Refuses(field string) bool {
+	return !e.Retryable() && e.Status >= 400 && e.Status < 500 && e.Fields[field] != ""
+}
+
 // Retryable reports whether err is worth another attempt. Transport
 // errors always are: the player closed a laptop lid, not a contract.
 func Retryable(err error) bool {

@@ -1,7 +1,7 @@
 // companion/internal/addon/sync.go
 // The addon sync loop: watch each SavedVariables file's modification
-// time, upload its exports when the player logs out, and write the
-// inbox back on a timer.
+// time, upload its exports and its outbox when the player logs out,
+// and write the inbox back on a timer.
 package addon
 
 import (
@@ -11,6 +11,7 @@ import (
 	"log/slog"
 	"reflect"
 	"slices"
+	"sync"
 	"time"
 )
 
@@ -19,8 +20,23 @@ const InboxEvery = 10 * time.Minute
 
 // API is the part of the client the sync uses.
 type API interface {
-	PostAddonExports(ctx context.Context, chars []Export) error
+	// PostAddonExports sends the character exports and, when outbox is
+	// not nil, the addon's outbox in the same request.
+	PostAddonExports(ctx context.Context, chars []Export, outbox *Outbox) (ExportsResult, error)
 	AddonInbox(ctx context.Context) (Inbox, error)
+}
+
+// refusal is how the sync tells a site that read the outbox and said
+// no from a request that never arrived: client.Error answers it. A
+// refused outbox is never sent again; a lost one is, on the next pass.
+type refusal interface {
+	Refuses(field string) bool
+}
+
+// refused reports whether err is the site refusing the outbox itself.
+func refused(err error) bool {
+	var r refusal
+	return errors.As(err, &r) && r.Refuses("outbox")
 }
 
 // Options configures a Sync.
@@ -38,6 +54,15 @@ type Options struct {
 	Cache *Cache
 }
 
+// Status is what the status page shows of the sync: when the site last
+// saw an export (the newest ack's export_seen_at across characters),
+// and what became of the newest in-game sim request, in the ack's
+// words (SimQueued and the rest). Both are zero until the site acks.
+type Status struct {
+	SeenAt          time.Time
+	SimRequestState string
+}
+
 // Sync moves strings between the addon and the API.
 type Sync struct {
 	o         Options
@@ -49,6 +74,10 @@ type Sync struct {
 	// consume the change the sync is waiting for. An upload that
 	// failed is simply not recorded, so the next pass retries it.
 	uploaded map[string]Stamp
+	// sent is, per SavedVariables file, the key of the last outbox the
+	// site answered (stored or refused): a file the game rewrites with
+	// the same outbox sends its exports again but not the outbox.
+	sent map[string]string
 	// builds, messages and body are the inbox as it was last rendered.
 	// The render is stamped with the time the content changed, not the
 	// time the file is written, so an unchanged inbox is the same
@@ -57,6 +86,11 @@ type Sync struct {
 	messages []Message
 	body     []byte
 	rendered bool
+
+	// mu guards status, which the status page reads from the loopback
+	// server's goroutine while Poll runs on the ticker's.
+	mu     sync.Mutex
+	status Status
 }
 
 // New builds a sync.
@@ -70,7 +104,14 @@ func New(o Options) *Sync {
 	if o.Cache == nil {
 		o.Cache = &Cache{}
 	}
-	return &Sync{o: o, uploaded: map[string]Stamp{}}
+	return &Sync{o: o, uploaded: map[string]Stamp{}, sent: map[string]string{}}
+}
+
+// Status is the sync's latest word from the site.
+func (s *Sync) Status() Status {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.status
 }
 
 // Poll does one pass. It is called on the same ticker as the pipeline
@@ -79,28 +120,9 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 	var errs []error
 	paths := s.o.Paths()
 	for _, p := range paths {
-		exports, at, err := s.o.Cache.Exports(p)
-		if errors.Is(err, fs.ErrNotExist) {
-			continue // the player has not installed the addon here
+		if err := s.upload(ctx, p); err != nil {
+			errs = append(errs, err)
 		}
-		if err != nil {
-			s.o.Log.Warn("could not read the addon's saved variables",
-				"component", "addon", "path", p, "err", err.Error())
-			continue
-		}
-		if len(exports) == 0 {
-			continue
-		}
-		if was, ok := s.uploaded[p]; ok && was.eq(at) {
-			continue // this version is already on the site
-		}
-		if err := s.o.API.PostAddonExports(ctx, exports); err != nil {
-			errs = append(errs, err) // unrecorded, so the next pass retries
-			continue
-		}
-		s.uploaded[p] = at
-		s.o.Log.Info("uploaded character exports", "component", "addon",
-			"path", p, "characters", len(exports))
 	}
 
 	if !s.lastInbox.IsZero() && now.Sub(s.lastInbox) < s.o.Every {
@@ -111,7 +133,12 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 		return errors.Join(append(errs, err)...)
 	}
 	s.lastInbox = now
-	// Message carries slices of its own (Weights, Caps), which are not
+	for _, why := range inbox.Skipped {
+		s.o.Log.Warn("skipped an inbox message the addon could not read",
+			"component", "addon", "why", why)
+	}
+	s.acked(inbox.Messages)
+	// Message carries slices and maps of its own, which are not
 	// comparable with slices.Equal's default ==, so the messages half
 	// of this check is a deep-equal rather than the builds half's
 	// cheap one; the inbox is small (InboxLimit builds plus a handful
@@ -129,8 +156,101 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 		}
 		if wrote {
 			s.o.Log.Info("wrote the addon inbox", "component", "addon",
-				"path", InboxPath(p), "builds", len(inbox.Builds))
+				"path", InboxPath(p), "builds", len(inbox.Builds), "messages", len(inbox.Messages))
 		}
 	}
 	return errors.Join(errs...)
+}
+
+// upload sends one SavedVariables file's exports, with its outbox when
+// the outbox is one the site has not answered yet, once per version of
+// the file. The outbox never goes alone: the site matches the outbox's
+// export to a character by name against the list that rides with it.
+func (s *Sync) upload(ctx context.Context, p string) error {
+	saved, at, err := s.o.Cache.Saved(p)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil // the player has not installed the addon here
+	}
+	if err != nil {
+		s.o.Log.Warn("could not read the addon's saved variables",
+			"component", "addon", "path", p, "err", err.Error())
+		return nil
+	}
+	if len(saved.Exports) == 0 {
+		return nil
+	}
+	if was, ok := s.uploaded[p]; ok && was.eq(at) {
+		return nil // this version is already on the site
+	}
+	ob := saved.Outbox
+	if ob != nil && s.sent[p] == ob.key() {
+		ob = nil // the site has answered this outbox already
+	}
+	res, err := s.o.API.PostAddonExports(ctx, saved.Exports, ob)
+	if err != nil && ob != nil && refused(err) {
+		// The site read the outbox and cannot use it. Sending it again
+		// would be refused again, and must not hold the exports back.
+		s.o.Log.Warn(CopyOutboxRefused, "component", "addon", "path", p, "err", err.Error())
+		s.sent[p] = ob.key()
+		ob = nil
+		res, err = s.o.API.PostAddonExports(ctx, saved.Exports, nil)
+	}
+	if err != nil {
+		return err // unrecorded, so the next pass retries, outbox and all
+	}
+	s.uploaded[p] = at
+	s.o.Log.Info("uploaded character exports", "component", "addon",
+		"path", p, "characters", len(saved.Exports), "outbox", ob != nil)
+	if ob == nil {
+		return nil
+	}
+	s.sent[p] = ob.key()
+	if res.Outbox == nil {
+		return nil // a site that predates the outbox stored the exports only
+	}
+	for _, line := range res.Outbox.Lines() {
+		s.o.Log.Info(line, "component", "addon")
+	}
+	if state := SimStateOf(res.Outbox.SimRequest); state != "" {
+		s.mu.Lock()
+		s.status.SimRequestState = state
+		s.mu.Unlock()
+	}
+	return nil
+}
+
+// acked takes the status page's line from the inbox's acks: the newest
+// export_seen_at across characters, and the sim request state of the
+// newest ack that carries one. The ack is the site's own word, so it
+// replaces what the export answer said; an inbox with no ack changes
+// nothing.
+func (s *Sync) acked(messages []Message) {
+	var seen, simAt time.Time
+	var state string
+	for _, m := range messages {
+		if m.Type != MessageAck {
+			continue
+		}
+		at, err := time.Parse(time.RFC3339, m.ExportSeenAt)
+		if err != nil {
+			s.o.Log.Warn("an ack carried a time that cannot be read", "component", "addon",
+				"export_seen_at", m.ExportSeenAt)
+			continue
+		}
+		if at.After(seen) {
+			seen = at
+		}
+		if m.SimRequestState != "" && (state == "" || at.After(simAt)) {
+			state, simAt = m.SimRequestState, at
+		}
+	}
+	if seen.IsZero() {
+		return
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.status.SeenAt = seen
+	if state != "" {
+		s.status.SimRequestState = state
+	}
 }
