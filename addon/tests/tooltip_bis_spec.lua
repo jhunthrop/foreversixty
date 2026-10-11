@@ -28,12 +28,14 @@ local DATA = {
 		["paladin-holy"] = {
 			[20] = {
 				alliance = {
-					head = { 111, "Q" },
-					chest = { 333, "D", "Wailing Caverns: Mutanus the Devourer" },
+					head = "111|Q",
+					-- Data.lua's packed pick (task L1.2): item_id|kind|source|
+					-- chance|alternatives..., decoded by Gear.pick.
+					chest = "333|D|Wailing Caverns: Mutanus the Devourer|0.14|444|Q|A Quest",
 				},
 			},
 			[30] = {
-				alliance = { head = { 222, "C", "Leatherworking" } },
+				alliance = { head = "222|C|Leatherworking" },
 			},
 		},
 	},
