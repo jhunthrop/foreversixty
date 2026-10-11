@@ -756,6 +756,18 @@ class AddonRotationBand(BaseModel):
     lines: list[AddonRotationLine]
 
 
+class AddonBisAlternative(BaseModel):
+    """One of a BiS pick's runners-up (leveling-bis's `runners_up`, the next
+    two candidates by its own ranking): the item a player who cannot get
+    the pick falls back on, in the same ids-only shape as the pick."""
+
+    item_id: int
+    #: One of pipeline.addonbis.SOURCE_KIND_CODES' keys, as on AddonBisItem.
+    source_kind: str
+    #: The short place, as on AddonBisItem.source; empty for none.
+    source: str = ""
+
+
 class AddonBisItem(BaseModel):
     """One slot's leveling BiS pick, ids only (pipeline.addonbis's own
     load-bearing decision: the item's name and swap_note are not carried
@@ -776,6 +788,15 @@ class AddonBisItem(BaseModel):
     #: pick leveling-bis wrote with no `source` at all, which the addon
     #: reads as "show no source line" rather than a placeholder.
     source: str = ""
+    #: The pick's drop chance at `source` as a fraction (0.14 is 14 percent),
+    #: from leveling-bis's own `chance` (the loot table's per-item drop rate,
+    #: percent / 100). None when the pick is not a drop or the loot table
+    #: states no rate for it, and for a bis file written before leveling-bis
+    #: emitted the field.
+    chance: float | None = None
+    #: Up to two runners-up (leveling-bis's `runners_up`), best first. Empty
+    #: for a bis file written before leveling-bis emitted the field.
+    alternatives: list[AddonBisAlternative] = []
 
 
 class AddonBisBand(BaseModel):

@@ -29,7 +29,9 @@ local DATA = {
 			[20] = {
 				alliance = {
 					head = { 111, "Q" },
-					chest = { 333, "D", "Wailing Caverns: Mutanus the Devourer" },
+					-- Task L1.2's full pick tuple: chance and alternatives are
+					-- fields 4 and 5, and fields 1-3 still read as before.
+					chest = { 333, "D", "Wailing Caverns: Mutanus the Devourer", 0.14, { { 444, "Q", "A Quest" } } },
 				},
 			},
 			[30] = {

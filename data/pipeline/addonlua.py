@@ -79,8 +79,42 @@ def _source_kind_code(source_kind: str) -> str:
     return code
 
 
+def _bis_pick_fields(item) -> str:
+    """One pick's positional fields: `itemId, sourceKindCode, source,
+    chance, { alternative, ... }`, each alternative `{ itemId,
+    sourceKindCode, source }` (contract 1 in docs/contracts/addon-v2.md;
+    fields 1-3 keep their old meaning). The positions are fixed, so a
+    missing middle field is written as `nil` (a pick with alternatives but
+    no chance reads `nil` fourth), and only trailing missing fields are
+    left out: a pick with no chance and no alternatives is the same
+    three-field table it always was, and reads back nil for both."""
+    fields = [
+        str(item.item_id),
+        _quote(_source_kind_code(item.source_kind)),
+        _quote(item.source) if item.source else "nil",
+        _number(item.chance) if item.chance is not None else "nil",
+    ]
+    if item.alternatives:
+        alternatives = ", ".join(
+            f"{{ {_bis_alternative_fields(alternative)} }}" for alternative in item.alternatives
+        )
+        fields.append(f"{{ {alternatives} }}")
+    while fields[-1] == "nil":
+        fields.pop()
+    return ", ".join(fields)
+
+
+def _bis_alternative_fields(alternative) -> str:
+    """`itemId, sourceKindCode[, source]`, the pick's own first three fields."""
+    fields = f"{alternative.item_id}, {_quote(_source_kind_code(alternative.source_kind))}"
+    if alternative.source:
+        fields += f", {_quote(alternative.source)}"
+    return fields
+
+
 def _bis_lua(bis: dict) -> list[str]:
-    """`bis[spec][band][faction][slot] = { itemId, sourceKindCode[, source] }`
+    """`bis[spec][band][faction][slot] = { itemId, sourceKindCode[, source[, chance[, alternatives]]] }`
+    (see _bis_pick_fields for the fourth and fifth fields)
     -- ids only (addonbis.py's own load-bearing decision) and positional
     rather than named fields, and faction/slot as bare Lua identifiers
     rather than quoted keys, because this table is the addition the lane
@@ -98,11 +132,7 @@ def _bis_lua(bis: dict) -> list[str]:
             for faction in sorted(band.factions):
                 lines.append(f"\t\t\t\t{faction} = {{")
                 for slot in sorted(band.factions[faction]):
-                    item = band.factions[faction][slot]
-                    code = _source_kind_code(item.source_kind)
-                    fields = f"{item.item_id}, {_quote(code)}"
-                    if item.source:
-                        fields += f", {_quote(item.source)}"
+                    fields = _bis_pick_fields(band.factions[faction][slot])
                     lines.append(f"\t\t\t\t\t{slot} = {{ {fields} }},")
                 lines.append("\t\t\t\t},")
             lines.append("\t\t\t},")
