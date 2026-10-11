@@ -336,7 +336,7 @@ end
 --- ability's icon, its name, its rank in muted text beside the name, and
 --- the condition in muted text on a second line. Hovering highlights the
 --- row; the row for the ability the player just learned this level glows
---- (Theme.showGlow/hideGlow, the toast's own event) -- both are the
+--- (Theme.showGlow/hideGlow, on the level-up event) -- both are the
 --- caller's to drive, this only builds the frame they act on.
 function Widgets.rotationRow(parent, width)
 	local S = Theme.SIZES

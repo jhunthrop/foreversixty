@@ -75,15 +75,14 @@ function Rotation.model(data, build, ranks, level, advanced)
 end
 
 --- The lines newly in `level`'s band that were not in the band the
---- character read from at `previousLevel` (by spellId) -- design section
---- 2's rotation toast: "Level 20: Sunder Armor opens your rotation now."
+--- character read from at `previousLevel` (by spellId): "Level 20: Sunder
+--- Armor opens your rotation now" (design section 2).
 --- Compared by NAME, not spellId: a line's spellId is already the
 --- highest rank learned by that band (pipeline.addonrotation's own
 --- resolving), so the same ability ranking up between two bands (Heroic
 --- Strike rank 2 to rank 3, say) would otherwise misread as a brand new
---- ability entering the rotation -- that rank-up is what the existing
---- talent-point toast already announces, and is not this toast's job to
---- repeat.
+--- ability entering the rotation -- a rank-up is the talent and spell
+--- trainer's news, not the rotation's.
 --- Empty (never an error) when: the spec has no rotation at all;
 --- `previousLevel` is nil (nothing to diff against -- a caller with no
 --- known prior level, such as the very first event after the addon
@@ -118,7 +117,7 @@ end
 --- spellId -> true for every line Rotation.newAbilities last found fresh,
 --- so a rotation surface can glow the matching row (docs/
 --- tenets.md's standard: "the row for the ability the player just
---- learned this level glows, the toast's same event") with a plain table
+--- learned this level glows") with a plain table
 --- lookup rather than a require of a surface that loads later in the TOC.
 --- Its caller calls this explicitly, right after computing `fresh` -- a
 --- visible side effect at its call site, not a hidden one inside this

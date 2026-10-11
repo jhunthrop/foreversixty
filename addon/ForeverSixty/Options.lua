@@ -108,11 +108,19 @@ function Options.sayHello()
 	return Comms.hello()
 end
 
---- Wrap `text` in the client's own colour-escape codes, gold. Used for
---- /fs help only: every other line the addon prints goes through the
---- plain chat prefix (chatLine), not a colour.
+--- Wrap `text` in the client's own colour-escape codes, gold. Every line the
+--- addon prints carries its gold "Forever Sixty:" prefix (Theme.chatLine).
 function Options.colorGold(text)
 	return string.format("|cff%s%s|r", Theme.HEX.gold, text)
+end
+
+--- A new list with `lines`' entries, so a caller can never change Locale's own.
+local function copy(lines)
+	local out = {}
+	for index, line in ipairs(lines) do
+		out[index] = line
+	end
+	return out
 end
 
 function Options.handle(input)
@@ -126,7 +134,9 @@ function Options.handle(input)
 	elseif command == "record" then
 		return Recorder.command(rest)
 	elseif command == "help" then
-		return { Options.colorGold(L.slashHint) }
+		return copy(L.slashHelpLines)
+	elseif command == "chip" then
+		return { Chip.toggle() }
 	elseif command == "hello" then
 		-- The in-client check for contract 2: one hello on GUILD, or why it did not go.
 		local sent, reason = Options.sayHello()
@@ -139,11 +149,13 @@ function Options.handle(input)
 		local notes = Theme.diagnostics()
 		local lines = {}
 		if #notes > 0 then
-			lines[1] = L.diagHeader
+			lines[1] = L.diagHeading
 			for _, note in ipairs(notes) do
 				lines[#lines + 1] = note
 			end
 		end
+		-- The chip's own render check, every time it has drawn.
+		lines[#lines + 1] = Chip.diagLine()
 		if Comms.dropped > 0 then
 			lines[#lines + 1] = string.format(L.diagDropped, Comms.dropped)
 		end
@@ -155,9 +167,9 @@ function Options.handle(input)
 		end
 		return lines
 	end
-	-- Bare /fs, and anything it does not know: the command list, until Lane L3.4's build
-	-- dialog is what bare /fs opens.
-	return { L.slashHint }
+	-- Bare /fs, and anything it does not know: the player's commands, until Lane L3.4's
+	-- build dialog is what bare /fs opens.
+	return copy(L.slashHintLines)
 end
 
 --- Names (Inspect.keyOf) /fs inspect asked about and has not yet printed: only these are
@@ -199,7 +211,7 @@ end
 function Options.run(input)
 	local lines = Options.handle(input)
 	for _, line in ipairs(lines) do
-		print(string.format(L.chatLine, L.addonName, line))
+		Theme.say(line)
 	end
 	return lines
 end
@@ -208,8 +220,11 @@ end
 --- Lanes L3.4 and L3.5 give them the build dialog and the Settings page: print the command
 --- list.
 function Options.showHint()
-	print(string.format(L.chatLine, L.addonName, L.slashHint))
-	return L.slashHint
+	local lines = copy(L.slashHintLines)
+	for _, line in ipairs(lines) do
+		Theme.say(line)
+	end
+	return lines
 end
 
 --- Redraw every surface for `data`: the chip and the talent glow today; each surface
@@ -247,7 +262,7 @@ function Options.onEvent(_, event, ...)
 		local record = Inspect.onEvent(event, ...)
 		if record ~= nil and Options.inspecting[record.key] then
 			Options.inspecting[record.key] = nil
-			print(string.format(L.chatLine, L.addonName, Inspect.line(record)))
+			Theme.say(Inspect.line(record))
 		end
 		return
 	end
@@ -273,8 +288,8 @@ function Options.onEvent(_, event, ...)
 		return
 	end
 	if event == "GET_ITEM_INFO_RECEIVED" then
-		-- The chip redraws once the item names it was waiting for arrive.
-		if Chip.pendingItems then
+		-- The chip redraws once an item name it was waiting for arrives.
+		if Chip.isPending((...)) then
 			Chip.refresh(Options.data)
 		end
 		return

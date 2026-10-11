@@ -281,6 +281,36 @@ describe("Progress.bagUpgrades", function()
 		assert.are.equal(0, #found)
 	end)
 
+	-- Seen in game (fix round 1): a shield offered to a two-handed Arms warrior.
+	it("never offers an off hand or a shield while a two-hander is worn", function()
+		local twoHanded = { main_hand = { itemId = 50, equipLoc = "INVTYPE_2HWEAPON", stats = { strength = 10 } } }
+		local shield = bagItem(51, "Burnished Shield", "INVTYPE_SHIELD", 5)
+		shield.itemClass, shield.itemSubClass = 4, 6
+		local dagger = bagItem(52, "Dagger", "INVTYPE_WEAPON", 30)
+		dagger.itemClass, dagger.itemSubClass = 2, 15
+		local found = Progress.bagUpgrades(DATA, build, ARMS_RANKS, { shield, dagger }, twoHanded, nil, 20)
+		assert.are.equal(1, #found)
+		assert.are.equal("main_hand", found[1].slot)
+		assert.are.equal(40, found[1].delta)
+	end)
+
+	it("scores a two-hander against the main hand and the off hand together", function()
+		local pair = {
+			main_hand = { itemId = 60, equipLoc = "INVTYPE_WEAPON", stats = { strength = 5 } },
+			off_hand = { itemId = 61, equipLoc = "INVTYPE_SHIELD", stats = { strength = 3 } },
+		}
+		local axe = bagItem(62, "Great Axe", "INVTYPE_2HWEAPON", 12)
+		axe.itemClass, axe.itemSubClass = 2, 1
+		local found = Progress.bagUpgrades(DATA, build, ARMS_RANKS, { axe }, pair, nil, 20)
+		assert.are.equal(1, #found)
+		assert.are.equal(24 - 10 - 6, found[1].delta)
+	end)
+
+	it("does not call a gain under 1 in its unit an upgrade", function()
+		local bag = { bagItem(11, "Better Helm", "INVTYPE_HEAD", 6) }
+		assert.are.same({}, Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped, 0.2))
+	end)
+
 	it("converts each delta to DPS when a DPS per point is given", function()
 		local bag = { bagItem(11, "Better Helm", "INVTYPE_HEAD", 6) }
 		local found = Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped, 0.5)
@@ -320,6 +350,15 @@ describe("Progress.picksHere", function()
 		}, picks)
 	end)
 
+	it("leaves out a pick worn in the other slot of a pair", function()
+		local picks = Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", "The Deadmines",
+			{ finger2 = { itemId = 1156 } })
+		for _, pick in ipairs(picks) do
+			assert.are_not.equal(1156, pick.itemId)
+		end
+		assert.are.equal(3, #picks)
+	end)
+
 	it("leaves out a slot where the pick is already worn", function()
 		local equipped = { main_hand = { itemId = 5187 }, head = { itemId = 1 } }
 		local picks = Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", "The Deadmines", equipped)
@@ -337,22 +376,19 @@ describe("Progress.picksHere", function()
 end)
 
 describe("Progress.unspentPoints", function()
-	-- Through _G: busted gives a spec file its own environment, and
-	-- Progress reads the client's globals from the real one.
-	after_each(function()
-		_G.C_ClassTalents, _G.C_Traits = nil, nil
+	-- Classic grants one point a level from 10 (fix round 1: the client's trait
+	-- reader answered a positive count with "Unspent Talents 0" on screen).
+	local TWELVE_SPENT = { [1] = { ["1:1"] = 3, ["1:3"] = 3, ["2:4"] = 2 }, [2] = { ["1:3"] = 4 } }
+
+	it("has none to spend at 21 with twelve spent, and one at 22", function()
+		assert.are.equal(0, Progress.unspentPoints(21, TWELVE_SPENT))
+		assert.are.equal(1, Progress.unspentPoints(22, TWELVE_SPENT))
 	end)
 
-	it("sums the points every tree has available", function()
-		_G.C_ClassTalents = { GetActiveConfigID = function() return 7 end }
-		_G.C_Traits = {
-			GetConfigInfo = function() return { treeIDs = { 1, 2 } } end,
-			GetTreeInfo = function(_, treeID) return { pointsAvailable = treeID } end,
-		}
-		assert.are.equal(3, Progress.unspentPoints())
-	end)
-
-	it("cannot tell on a client without the trait system", function()
-		assert.is_nil(Progress.unspentPoints())
+	it("has none below 10, one at 10, and never fewer than none", function()
+		assert.are.equal(0, Progress.unspentPoints(9, {}))
+		assert.are.equal(1, Progress.unspentPoints(10, {}))
+		assert.are.equal(0, Progress.unspentPoints(10, TWELVE_SPENT))
+		assert.are.equal(0, Progress.unspentPoints(nil, {}))
 	end)
 end)

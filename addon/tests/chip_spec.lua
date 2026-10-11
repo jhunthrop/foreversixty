@@ -1,14 +1,18 @@
 -- addon/tests/chip_spec.lua
 -- The chip (spec section 4.1): one state at a time, highest first. Chip.model
 -- is the whole of what it says and how it sits (shown, alpha, mouse), from a
--- plain table of inputs; Chip.fit is the ellipsis, with the measuring
--- function handed in; Chip.ordinal and Chip.worstBoss make the last-raid
--- line. Pure: hand-built tables only, no client mock and no frame.
+-- plain table of inputs; Chip.fit is the two-stage cut, with the measuring
+-- function handed in; Chip.tooltipLines is the hover; the rest are the small
+-- pure rules the frame reads. Pure: hand-built tables only, no client mock
+-- and no frame.
 local Chip = require("Chip")
 local L = require("Locale")
 local Theme = require("Theme")
+local Score = require("Score")
 
 local CLASS_ICON = "crest-warrior"
+--- 9 Dec 2026, 12:00 UTC: the clock the last-raid tests read.
+local CLOCK = Score.dateSeconds("2026-12-09") + 12 * 3600
 
 --- The inputs of a level-30 character with a finished build and nothing to
 --- say: every test starts from here and adds the one thing it is about.
@@ -17,8 +21,10 @@ local function inputs(overrides)
 		level = 30,
 		build = { name = "Arms leveling", order = { {}, {}, {} } },
 		progress = { matched = 3, total = 3, point = nil },
+		unspent = 0,
 		classIcon = CLASS_ICON,
 		now = 100,
+		clock = CLOCK,
 		shown = true,
 		combatHide = true,
 	}
@@ -41,6 +47,12 @@ local function pointAt(index)
 	return { matched = index - 1, total = 51, point = { tab = 1, tier = 1, column = 2, index = index } }
 end
 
+local LAST_RAID = { date = "2026-12-08", bosses = {
+	{ name = "Magmadar", percentile = 88, biggest_loss = "standing in fire" },
+	{ name = "Lucifron", percentile = 71, biggest_loss = "downtime" },
+	{ name = "Gehennas", percentile = 71, biggest_loss = "dead early" },
+} }
+
 describe("Chip.model", function()
 	it("is idle with nothing to do: the class icon at 40 percent, no text, no ring", function()
 		local model = Chip.model(inputs())
@@ -51,22 +63,35 @@ describe("Chip.model", function()
 		assert.are.equal(0.4, model.alpha)
 		assert.are.equal(0, model.waiting)
 		assert.are.same({}, model.states)
+		assert.is_nil(model.nextLine)
 		assert.is_true(model.visible)
 		assert.is_true(model.mouse)
 	end)
 
+	-- Seen in game (fix round 1): level 21, 12 points spent, the plan's next
+	-- point is #13 at 22. No point to spend means no point state.
+	it("says nothing about the next talent with no point to spend, and names it in the hover", function()
+		local model = Chip.model(inputs({ level = 21, progress = pointAt(13), unspent = 0,
+			pointName = "Improved Tactical Mastery" }))
+		assert.are.equal("idle", model.chosen.kind)
+		assert.are.equal("Next at 22: Improved Tactical Mastery", model.nextLine)
+		assert.are.equal(string.format(L.chipNextAt, 22, "Improved Tactical Mastery"), model.nextLine)
+	end)
+
 	it("names the next talent when a point is waiting, with the pulsing ring", function()
 		local model = Chip.model(inputs({
-			level = 12, progress = pointAt(3), unspent = 1,
-			pointName = "Deflection", pointIcon = "talent-icon",
+			level = 22, progress = pointAt(13), unspent = 1,
+			pointName = "Improved Tactical Mastery", pointIcon = "talent-icon",
 		}))
 		assert.are.equal("point", model.chosen.kind)
-		assert.are.equal(string.format(L.chipTake, "Deflection"), model.chosen.text)
-		assert.are.equal("Take Deflection", model.chosen.text)
+		assert.are.equal("Take Improved Tactical Mastery", model.chosen.text)
+		assert.are.equal("Improved Tactical Mastery", model.chosen.short)
 		assert.are.equal("talent-icon", model.chosen.icon)
 		assert.are.equal("talents", model.chosen.action)
+		assert.are.equal(L.chipHintTalents, model.chosen.hint)
 		assert.is_true(model.ring)
 		assert.are.equal(1, model.alpha)
+		assert.is_nil(model.nextLine)
 	end)
 
 	it("falls back to the class icon for a talent with none", function()
@@ -75,37 +100,29 @@ describe("Chip.model", function()
 		assert.is_false(model.chosen.crop)
 	end)
 
-	it("reads the level when the client cannot say how many points are unspent", function()
-		local model = Chip.model(inputs({ level = 12, progress = pointAt(3), pointName = "Deflection" }))
-		assert.are.equal("point", model.chosen.kind)
-		local early = Chip.model(inputs({ level = 11, progress = pointAt(3), pointName = "Deflection" }))
-		assert.are.equal("idle", early.chosen.kind)
-	end)
-
-	it("says nothing about the next talent at 10 or over when no point is unspent", function()
-		local model = Chip.model(inputs({ level = 14, progress = pointAt(3), unspent = 0, pointName = "Deflection" }))
-		assert.are.equal("idle", model.chosen.kind)
-	end)
-
-	it("names the first talent and its level below 10, without the ring", function()
-		local model = Chip.model(inputs({ level = 5, progress = pointAt(1), unspent = 0,
-			pointName = "Improved Heroic Strike" }))
-		assert.are.equal("point", model.chosen.kind)
-		assert.are.equal(string.format(L.chipTakeAt, "Improved Heroic Strike", 10), model.chosen.text)
+	it("shows the first talent as a muted Next at 10 line below level 10, without the ring", function()
+		local model = Chip.model(inputs({ level = 9, progress = pointAt(1), pointName = "Improved Heroic Strike" }))
+		assert.are.equal("next", model.chosen.kind)
+		assert.are.equal("Next at 10: Improved Heroic Strike", model.chosen.text)
+		assert.is_true(model.chosen.muted)
+		assert.is_nil(model.chosen.action)
 		assert.is_false(model.ring)
+		assert.is_nil(model.nextLine)
 	end)
 
-	it("offers the best bag upgrade in DPS", function()
+	it("offers the best bag upgrade in DPS, with a short form without the verb", function()
 		local model = Chip.model(inputs({ upgrades = {
 			{ name = "Chausses of Westfall", delta = 4.2, unit = "dps", link = "chausses", icon = "legs", quality = 2 },
 			{ name = "Lesser Belt", delta = 1, unit = "dps", link = "belt" },
 		} }))
 		assert.are.equal("upgrade", model.chosen.kind)
 		assert.are.equal("Equip Chausses of Westfall, +4.2 DPS", model.chosen.text)
+		assert.are.equal("Chausses of Westfall, +4.2 DPS", model.chosen.short)
 		assert.are.equal("legs", model.chosen.icon)
 		assert.are.equal(2, model.chosen.quality)
 		assert.are.equal("chausses", model.chosen.link)
 		assert.are.equal("equip", model.chosen.action)
+		assert.are.equal(L.chipHintEquip, model.chosen.hint)
 		assert.is_true(model.chosen.crop)
 		assert.are.same({ "upgrade" }, kinds(model))
 	end)
@@ -122,6 +139,7 @@ describe("Chip.model", function()
 			upgrades = { { name = "Chausses of Westfall", delta = 4.2, unit = "dps" } } }))
 		assert.are.equal(string.format(L.chipEquip, "Chausses of Westfall", L.chipInCombat), model.chosen.text)
 		assert.is_nil(model.chosen.action)
+		assert.is_nil(model.chosen.hint)
 	end)
 
 	it("fades to 25 percent and ignores the mouse in combat when the player keeps it shown", function()
@@ -132,8 +150,7 @@ describe("Chip.model", function()
 	end)
 
 	it("hides in combat by default", function()
-		local model = Chip.model(inputs({ inCombat = true }))
-		assert.is_false(model.visible)
+		assert.is_false(Chip.model(inputs({ inCombat = true })).visible)
 	end)
 
 	it("lists the loot here for you, the first with its boss and a count of the rest", function()
@@ -146,6 +163,7 @@ describe("Chip.model", function()
 		assert.are.equal("Here for you: Mutant Scale Breastplate (Mutanus), 2 more", model.chosen.text)
 		assert.are.equal("chest", model.chosen.icon)
 		assert.are.equal("targets", model.chosen.action)
+		assert.are.equal(L.chipHintList, model.chosen.hint)
 		local one = Chip.model(inputs({ here = { { name = "Smelting Pants" } } }))
 		assert.are.equal("Here for you: Smelting Pants", one.chosen.text)
 	end)
@@ -160,17 +178,21 @@ describe("Chip.model", function()
 	end)
 
 	it("tells last night's worst boss once, until it has been seen", function()
-		local lastRaid = { bosses = {
-			{ name = "Magmadar", percentile = 88, biggest_loss = "standing in fire" },
-			{ name = "Lucifron", percentile = 71, biggest_loss = "downtime" },
-			{ name = "Gehennas", percentile = 71, biggest_loss = "dead early" },
-		} }
-		local model = Chip.model(inputs({ lastRaid = lastRaid }))
+		local model = Chip.model(inputs({ lastRaid = LAST_RAID }))
 		assert.are.equal("lastnight", model.chosen.kind)
 		assert.are.equal("Lucifron: 71st percentile, biggest loss downtime", model.chosen.text)
 		assert.are.equal(CLASS_ICON, model.chosen.icon)
 		assert.are.equal("lastraid", model.chosen.action)
-		assert.are.equal("idle", Chip.model(inputs({ lastRaid = lastRaid, lastNightDone = true })).chosen.kind)
+		assert.are.equal("idle", Chip.model(inputs({ lastRaid = LAST_RAID, lastNightDone = true })).chosen.kind)
+	end)
+
+	it("never tells a raid more than 14 days old, or one with no date", function()
+		local old = { date = "2026-11-24", bosses = LAST_RAID.bosses }
+		assert.are.equal("idle", Chip.model(inputs({ lastRaid = old })).chosen.kind)
+		local fortnight = { date = "2026-11-25", bosses = LAST_RAID.bosses }
+		assert.are.equal("lastnight", Chip.model(inputs({ lastRaid = fortnight })).chosen.kind)
+		local undated = { bosses = LAST_RAID.bosses }
+		assert.are.equal("idle", Chip.model(inputs({ lastRaid = undated })).chosen.kind)
 	end)
 
 	it("says the build is complete for five seconds, then goes idle", function()
@@ -186,26 +208,27 @@ describe("Chip.model", function()
 		assert.are.equal("idle", model.chosen.kind)
 	end)
 
-	it("asks a default-build character below 10 to pick a path, above the point", function()
+	it("asks a default-build character below 10 to pick a path, above the next talent", function()
 		local model = Chip.model(inputs({
 			level = 4, build = { default = true, order = { {} } }, progress = pointAt(1),
 			pointName = "Improved Heroic Strike",
 		}))
-		assert.are.same({ "path", "point" }, kinds(model))
+		assert.are.same({ "path", "next" }, kinds(model))
 		assert.are.equal(L.chipPath, model.chosen.text)
 		assert.are.equal(CLASS_ICON, model.chosen.icon)
 		assert.are.equal("path", model.chosen.action)
+		assert.are.equal(L.chipHintPath, model.chosen.hint)
 		assert.are.equal(1, model.waiting)
 	end)
 
 	it("stops asking once a path is chosen, at 10, or with a build of the player's own", function()
 		local default = { default = true, order = { {} } }
 		local chosen = Chip.model(inputs({ level = 4, build = default, progress = pointAt(1), pathChosen = "warrior-fury" }))
-		assert.are.equal("point", chosen.chosen.kind)
+		assert.are.equal("next", chosen.chosen.kind)
 		local ten = Chip.model(inputs({ level = 10, build = default, progress = pointAt(1), unspent = 0 }))
 		assert.are.same({}, kinds(ten))
 		local own = Chip.model(inputs({ level = 4, build = { order = { {} } }, progress = pointAt(1) }))
-		assert.are.equal("point", own.chosen.kind)
+		assert.are.equal("next", own.chosen.kind)
 	end)
 
 	it("takes the highest state and counts the rest as waiting", function()
@@ -214,20 +237,78 @@ describe("Chip.model", function()
 			upgrades = { { name = "Belt", delta = 3, unit = "score" } },
 			here = { { name = "Smelting Pants", boss = "Rhahk'Zor" } },
 			raidCheck = { missing = { "flask" }, at = 100 },
-			lastRaid = { bosses = { { name = "Lucifron", percentile = 71, biggest_loss = "downtime" } } },
+			lastRaid = LAST_RAID,
 		}))
 		assert.are.same({ "point", "upgrade", "here", "raidcheck", "lastnight" }, kinds(model))
 		assert.are.equal("point", model.chosen.kind)
 		assert.are.equal(4, model.waiting)
 	end)
 
-	it("hides until the level the player asked for", function()
+	it("hides until the level the player asked for, or for good at the level cap", function()
 		assert.is_false(Chip.model(inputs({ level = 12, hiddenUntilLevel = 13 })).visible)
 		assert.is_true(Chip.model(inputs({ level = 13, hiddenUntilLevel = 13 })).visible)
+		assert.is_false(Chip.model(inputs({ level = 60, hiddenUntilLevel = math.huge })).visible)
 	end)
 
 	it("stays hidden when the player turned it off", function()
 		assert.is_false(Chip.model(inputs({ shown = false })).visible)
+	end)
+end)
+
+describe("Chip.tooltipLines", function()
+	local function gold(text)
+		return "|cff" .. Theme.HEX.gold .. text .. "|r"
+	end
+	local function body(text)
+		return "|cff" .. Theme.HEX.body .. text .. "|r"
+	end
+	local function muted(text)
+		return "|cff" .. Theme.HEX.muted .. text .. "|r"
+	end
+
+	it("leads with the addon's name, lists every state, then the hints after a gap", function()
+		local model = Chip.model(inputs({
+			level = 22, progress = pointAt(13), unspent = 1, pointName = "Improved Tactical Mastery",
+			upgrades = { { name = "Belt", delta = 3, unit = "score" } },
+		}))
+		assert.are.same({
+			gold(L.addonName),
+			body("Take Improved Tactical Mastery"),
+			body("Equip Belt, +3 score"),
+			" ",
+			muted(L.chipHintTalents),
+			muted(string.format(L.chipRightClick, L.chipHideUntilLevel)),
+			muted(L.chipShiftDrag),
+		}, Chip.tooltipLines(model))
+	end)
+
+	it("adds the muted Next at line when the next point is not spendable yet", function()
+		local model = Chip.model(inputs({
+			level = 21, progress = pointAt(13), pointName = "Improved Tactical Mastery",
+			upgrades = { { name = "Belt", delta = 3, unit = "score" } },
+		}))
+		local lines = Chip.tooltipLines(model)
+		assert.are.equal(body("Equip Belt, +3 score"), lines[2])
+		assert.are.equal(muted("Next at 22: Improved Tactical Mastery"), lines[3])
+		assert.are.equal(" ", lines[4])
+		assert.are.equal(muted(L.chipHintEquip), lines[5])
+	end)
+
+	it("shows the next talent alone when that is all there is, and nothing when idle", function()
+		local next = Chip.model(inputs({ level = 21, progress = pointAt(13), pointName = "Improved Tactical Mastery" }))
+		assert.are.same({
+			gold(L.addonName),
+			muted("Next at 22: Improved Tactical Mastery"),
+			" ",
+			muted(string.format(L.chipRightClick, L.chipHideUntilLevel)),
+			muted(L.chipShiftDrag),
+		}, Chip.tooltipLines(next))
+		assert.are.same({}, Chip.tooltipLines(Chip.model(inputs())))
+	end)
+
+	it("colours a muted state muted", function()
+		local model = Chip.model(inputs({ level = 9, progress = pointAt(1), pointName = "Improved Heroic Strike" }))
+		assert.are.equal(muted("Next at 10: Improved Heroic Strike"), Chip.tooltipLines(model)[2])
 	end)
 end)
 
@@ -238,11 +319,22 @@ describe("Chip.fit", function()
 	end
 
 	it("leaves a line that fits alone", function()
-		assert.are.equal("Take Deflection", Chip.fit("Take Deflection", measure, 184))
+		assert.are.equal("Take Deflection", Chip.fit("Take Deflection", measure, 184, "Deflection"))
 	end)
 
-	it("cuts a long line and ends it with an ellipsis, inside the width", function()
-		local text = "Equip Chausses of the Westfall Defias Brotherhood, +4.2 DPS"
+	it("drops the verb before it cuts anything", function()
+		-- "Take Improved Tactical Mastery" is 30 bytes; the name alone, 25.
+		assert.are.equal("Improved Tactical Mastery",
+			Chip.fit("Take Improved Tactical Mastery", measure, 25 * 6, "Improved Tactical Mastery"))
+	end)
+
+	it("ellipsises the short form only past that", function()
+		local fitted = Chip.fit("Take Improved Tactical Mastery", measure, 20 * 6, "Improved Tactical Mastery")
+		assert.are.equal("Improved Tactical" .. L.ellipsis, fitted)
+	end)
+
+	it("cuts a long line with no short form and ends it with an ellipsis, inside the width", function()
+		local text = "Here for you: Mutant Scale Breastplate (Mutanus), 2 more"
 		local fitted = Chip.fit(text, measure, 184)
 		assert.are.equal(L.ellipsis, fitted:sub(-#L.ellipsis))
 		assert.is_true(measure(fitted) <= 184)
@@ -262,11 +354,64 @@ describe("Chip.fit", function()
 	end)
 
 	it("gives nothing when not even the ellipsis fits", function()
-		assert.are.equal("", Chip.fit("Take Deflection", measure, 10))
+		assert.are.equal("", Chip.fit("Take Deflection", measure, 10, "Deflection"))
 	end)
 
 	it("treats a measure that answers nothing as fitting", function()
 		assert.are.equal("Take Deflection", Chip.fit("Take Deflection", function() return nil end, 184))
+	end)
+end)
+
+describe("Chip.badgeText", function()
+	it("is +N for one to nine waiting, 9+ past that, and empty for none", function()
+		assert.are.equal("", Chip.badgeText(0))
+		assert.are.equal("+1", Chip.badgeText(1))
+		assert.are.equal("+9", Chip.badgeText(9))
+		assert.are.equal("9+", Chip.badgeText(10))
+	end)
+end)
+
+describe("Chip.hideFor", function()
+	it("hides until the next level, and says how to bring it back", function()
+		local untilLevel, line = Chip.hideFor(21)
+		assert.are.equal(22, untilLevel)
+		assert.are.equal("Chip hidden until level 22. /fs chip brings it back.", line)
+	end)
+
+	it("hides until /fs chip at the level cap, so it is never lost for good", function()
+		local untilLevel, line = Chip.hideFor(60)
+		assert.are.equal(0, untilLevel)
+		assert.are.equal(L.chipHiddenMaxLine, line)
+	end)
+end)
+
+describe("Chip.isComplete and Chip.raidCheckLive", function()
+	it("calls a build complete when every point in its order is matched", function()
+		assert.is_true(Chip.isComplete({ order = { {}, {} } }, { matched = 2 }))
+		assert.is_false(Chip.isComplete({ order = { {}, {} } }, { matched = 1 }))
+		assert.is_false(Chip.isComplete({ order = {} }, { matched = 0 }))
+		assert.is_false(Chip.isComplete(nil, { matched = 0 }))
+	end)
+
+	it("keeps a ready check's findings for 60 seconds", function()
+		assert.is_true(Chip.raidCheckLive({ missing = { "flask" }, at = 10 }, 70))
+		assert.is_false(Chip.raidCheckLive({ missing = { "flask" }, at = 10 }, 71))
+		assert.is_false(Chip.raidCheckLive({ missing = {}, at = 10 }, 10))
+		assert.is_false(Chip.raidCheckLive(nil, 10))
+	end)
+end)
+
+describe("Chip.talentName", function()
+	it("names the talent, or says the next talent, never a cell like 3:2", function()
+		assert.are.equal("Deflection", Chip.talentName({ name = "Deflection" }))
+		assert.are.equal(L.chipNextTalent, Chip.talentName(nil))
+		assert.are.equal("the next talent", L.chipNextTalent)
+	end)
+end)
+
+describe("Chip.pathHeading", function()
+	it("names the race and class in the class colour", function()
+		assert.are.equal("|cffc79c6eGnome Warrior|r. Pick a path:", Chip.pathHeading("Gnome", "Warrior", "c79c6e"))
 	end)
 end)
 
@@ -289,12 +434,7 @@ end)
 
 describe("Chip.worstBoss", function()
 	it("names the lowest percentile, the first listed on a tie", function()
-		local worst = Chip.worstBoss({
-			{ name = "Magmadar", percentile = 88 },
-			{ name = "Lucifron", percentile = 71 },
-			{ name = "Gehennas", percentile = 71 },
-		})
-		assert.are.equal("Lucifron", worst.name)
+		assert.are.equal("Lucifron", Chip.worstBoss(LAST_RAID.bosses).name)
 	end)
 
 	it("skips a boss with no name or percentile, and answers nil for nothing", function()
@@ -345,17 +485,64 @@ describe("Chip.pathSpecs", function()
 	end)
 end)
 
+describe("Theme's static-after stop for the ring", function()
+	local realAfter
+	local scheduled
+
+	before_each(function()
+		realAfter = Theme.after
+		scheduled = {}
+		Theme.after = function(seconds, action)
+			scheduled[#scheduled + 1] = { seconds = seconds, action = action }
+			return true
+		end
+	end)
+
+	after_each(function()
+		Theme.after = realAfter
+	end)
+
+	it("stops the pulse once the seconds have passed", function()
+		local button, stops = {}, 0
+		Theme.scheduleStatic(button, 10, function()
+			stops = stops + 1
+		end)
+		assert.are.equal(1, #scheduled)
+		assert.are.equal(10, scheduled[1].seconds)
+		scheduled[1].action()
+		assert.are.equal(1, stops)
+	end)
+
+	it("does not stop a ring shown again, or hidden, before the time is up", function()
+		local button, stops = {}, 0
+		local function stop()
+			stops = stops + 1
+		end
+		Theme.scheduleStatic(button, 10, stop)
+		Theme.scheduleStatic(button, 10, stop)
+		scheduled[1].action()
+		assert.are.equal(0, stops)
+		Theme.cancelStatic(button)
+		scheduled[2].action()
+		assert.are.equal(0, stops)
+	end)
+end)
+
 describe("the chip's words and numbers", function()
-	it("pulses the ring between 0.4 and 1.0 over 1.2 seconds", function()
+	it("pulses the ring between 0.4 and 1.0 over 1.2 seconds, static after 10", function()
 		assert.are.equal(0.4, Theme.GLOW_PULSE.low)
 		assert.are.equal(1.2, Theme.GLOW_PULSE.seconds * 2)
 		assert.are.equal(10, Chip.STATIC_AFTER)
 	end)
 
-	it("is 28 units idle, 220 with a line, and 12 px text", function()
+	it("is 28 units idle and grows to 280 with a line of 12 px text beside a 24 px icon", function()
 		assert.are.equal(28, Theme.SIZES.chip)
-		assert.are.equal(220, Theme.SIZES.chipWide)
+		assert.are.equal(280, Theme.SIZES.chipWide)
 		assert.are.equal(12, Theme.SIZES.chipText)
+		assert.are.equal(24, Theme.SIZES.chipIcon)
+		assert.are.equal(2, Theme.SIZES.chipIconInset)
+		assert.are.equal(14, Theme.SIZES.chipBadge)
+		assert.are.equal(10, Theme.SIZES.chipBadgeText)
 	end)
 
 	it("has a short playstyle line for every spec the data has a default build for", function()

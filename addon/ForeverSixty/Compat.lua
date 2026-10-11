@@ -187,6 +187,18 @@ function Compat.playerLevel()
 	return type(UnitLevel) == "function" and UnitLevel("player") or nil
 end
 
+--- The player's race and class as the client names them ("Gnome",
+--- "Warrior") and the class token ("WARRIOR"); nil for any the client
+--- cannot give (a test double without UnitRace or UnitClass).
+function Compat.playerRaceClass()
+	local race = type(UnitRace) == "function" and UnitRace("player") or nil
+	local className, token
+	if type(UnitClass) == "function" then
+		className, token = UnitClass("player")
+	end
+	return race, className, token
+end
+
 --- "alliance" or "horde", the BiS table's own faction keys, or nil where the
 --- client cannot say (a test double with no UnitFactionGroup, a neutral
 --- character before it picks a side).

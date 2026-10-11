@@ -88,20 +88,26 @@ Theme.SIZES = {
 	buttonWidth = 150,
 	editBoxHeight = 72,
 	iconSize = 16,
-	--- The chip (spec section 4.1): square when idle, wide with a line of
-	--- 12 px text. The icon sits `chipIconInset` in from the left, and the
-	--- text gets the wide chip less `chipTextInset` (icon, gaps, padding).
+	--- The chip (spec section 4.1): square when idle, growing leftwards to
+	--- fit a line of 12 px text, up to `chipWide`. The 24 px icon sits
+	--- `chipIconInset` in from the edge; the text starts `chipTextGap` past
+	--- the icon and keeps the same gap on the right, so a line of width W
+	--- makes a chip W + `chipTextInset` wide.
 	chip = 28,
-	chipWide = 220,
+	chipWide = 280,
 	chipText = 12,
-	chipIcon = 20,
-	chipIconInset = 4,
-	chipTextInset = 36,
+	chipIcon = 24,
+	chipIconInset = 2,
+	chipTextGap = 6,
+	chipTextInset = 38,
+	--- The point state's ring: this far outside the icon, this thick.
+	chipRingInset = 2,
+	chipRingThickness = 2,
 	--- How far left of the minimap's own left edge the chip sits by default.
 	chipMinimapGap = 12,
-	--- The "+2" badge on the chip's top-right corner.
-	chipBadgeWidth = 18,
-	chipBadgeHeight = 12,
+	--- The "+2" badge straddling the chip's top-right corner, and its digits.
+	chipBadge = 14,
+	chipBadgeText = 10,
 	--- The gap under the chip before its "pick a path" card, the card's own
 	--- width and inner padding, and the space between one spec and the next.
 	chipCardGap = 4,
@@ -286,6 +292,31 @@ function Theme.reset()
 	for index = #ns.Diagnostics, 1, -1 do
 		ns.Diagnostics[index] = nil
 	end
+end
+
+--- One line of the addon's own chat output: "Forever Sixty: <text>", the
+--- name in gold. Every line the addon prints goes through this.
+function Theme.chatLine(text)
+	return string.format(L.chatLine, string.format("|cff%s%s|r", Theme.HEX.gold, L.addonName), text)
+end
+
+function Theme.say(text)
+	print(Theme.chatLine(text))
+	return text
+end
+
+--- Six hex digits for a colour given as 0..1 floats.
+function Theme.hexOf(r, g, b)
+	local function byte(value)
+		return math.floor(math.max(0, math.min(1, value or 0)) * 255 + 0.5)
+	end
+	return string.format("%02x%02x%02x", byte(r), byte(g), byte(b))
+end
+
+--- The class colour (Theme.classColor) as six hex digits, for a chat or tooltip escape.
+function Theme.classHex(token)
+	local r, g, b = Theme.classColor(token)
+	return Theme.hexOf(r, g, b)
 end
 
 function Theme.rgb(hex, alpha)
@@ -845,10 +876,12 @@ end
 --- nothing under ActionButton_ShowOverlayGlow (seen in game), and an
 --- outline the addon draws itself is visible wherever a frame is.
 --- `staticAfter`, when given, stops the outline's pulse after that many
---- seconds (Theme.after) and leaves it steady at full alpha: the chip's
---- ring breathes for ten seconds, then holds still. A later showGlow or
---- hideGlow on the same button cancels the pending stop.
-function Theme.showGlow(button, outline, staticAfter)
+--- seconds (Theme.scheduleStatic) and leaves it steady at full alpha: the
+--- chip's ring breathes for ten seconds, then holds still. A later showGlow
+--- or hideGlow on the same button cancels the pending stop. `ring`, when
+--- given ({ inset, thickness }), sizes the outline instead of glowInset and
+--- glowThickness; it is read the first time the button glows.
+function Theme.showGlow(button, outline, staticAfter, ring)
 	if hasOverlayGlow() and not outline then
 		ActionButton_ShowOverlayGlow(button)
 		return "overlay"
@@ -859,31 +892,50 @@ function Theme.showGlow(button, outline, staticAfter)
 		-- child frames, which sit above any texture on the button itself
 		-- (seen in game: an outline on the button never showed).
 		local S = Theme.SIZES
+		local inset = ring ~= nil and ring.inset or S.glowInset
+		local thickness = ring ~= nil and ring.thickness or S.glowThickness
 		local frame = CreateFrame("Frame", nil, button)
-		frame:SetPoint("TOPLEFT", button, "TOPLEFT", -S.glowInset, S.glowInset)
-		frame:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", S.glowInset, -S.glowInset)
+		frame:SetPoint("TOPLEFT", button, "TOPLEFT", -inset, inset)
+		frame:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", inset, -inset)
 		if type(button.GetFrameLevel) == "function" and type(frame.SetFrameLevel) == "function" then
 			frame:SetFrameLevel((button:GetFrameLevel() or 0) + 10)
 		end
 		button.foreverSixtyGlowFrame = frame
-		button.foreverSixtyGlow = Theme.outline(frame, S.glowThickness, "gold")
+		button.foreverSixtyGlow = Theme.outline(frame, thickness, "gold")
 	end
 	Theme.setShown(button.foreverSixtyGlow, true)
 	pulse(button.foreverSixtyGlow)
-	local generation = (button.foreverSixtyGlowGeneration or 0) + 1
-	button.foreverSixtyGlowGeneration = generation
 	if type(staticAfter) == "number" then
-		Theme.after(staticAfter, function()
-			if button.foreverSixtyGlowGeneration == generation then
-				stopPulse(button.foreverSixtyGlow)
-			end
+		Theme.scheduleStatic(button, staticAfter, function()
+			stopPulse(button.foreverSixtyGlow)
 		end)
+	else
+		Theme.cancelStatic(button)
 	end
 	return "texture"
 end
 
+--- Run `stop` after `seconds` (Theme.after), unless the button is shown
+--- or hidden again first: each call and each Theme.cancelStatic moves the
+--- button's generation on, and a callback from an older one does nothing.
+function Theme.scheduleStatic(button, seconds, stop)
+	local generation = Theme.cancelStatic(button)
+	return Theme.after(seconds, function()
+		if button.foreverSixtyGlowGeneration == generation then
+			stop()
+		end
+	end)
+end
+
+--- Cancel a pending Theme.scheduleStatic stop; the button's new generation.
+function Theme.cancelStatic(button)
+	local generation = (button.foreverSixtyGlowGeneration or 0) + 1
+	button.foreverSixtyGlowGeneration = generation
+	return generation
+end
+
 function Theme.hideGlow(button)
-	button.foreverSixtyGlowGeneration = (button.foreverSixtyGlowGeneration or 0) + 1
+	Theme.cancelStatic(button)
 	if button.foreverSixtyGlow ~= nil then
 		stopPulse(button.foreverSixtyGlow)
 		Theme.setShown(button.foreverSixtyGlow, false)
@@ -940,12 +992,13 @@ function Theme.hideTooltip()
 	return true
 end
 
---- A plain multi-line tooltip, for the minimap button.
-function Theme.showLines(owner, lines)
+--- A plain multi-line tooltip, for the minimap button and the chip.
+--- `anchor` is GameTooltip's own anchor name, ANCHOR_LEFT when nil.
+function Theme.showLines(owner, lines, anchor)
 	if not hasTooltip() then
 		return false
 	end
-	GameTooltip:SetOwner(owner, "ANCHOR_LEFT")
+	GameTooltip:SetOwner(owner, anchor or "ANCHOR_LEFT")
 	GameTooltip:ClearLines()
 	for _, line in ipairs(lines) do
 		GameTooltip:AddLine(line)

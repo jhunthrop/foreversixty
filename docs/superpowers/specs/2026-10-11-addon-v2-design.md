@@ -65,7 +65,7 @@ Forever's own rules.
 
 ### 4.1 The chip
 
-28×28 UI units idle; 220×28 with a line. Text is 12 px, one line, ellipsised by measured width,
+28×28 UI units idle; 28 to 280 wide with a line, growing leftwards to fit. Text is 12 px, one line, ellipsised by measured width,
 never wrapped. One state at a time, highest first; a "+N" badge when more wait.
 
 1. **Point to spend**: talent icon, gold ring pulsing (alpha 0.4–1.0 over 1.2 s, static after

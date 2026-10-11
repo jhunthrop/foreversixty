@@ -8,7 +8,25 @@ ns = type(ns) == "table" and ns or {}
 local L = {
 	-- Chrome
 	addonName = "Forever Sixty",
-	slashHint = "/fs inbox, /fs hello, /fs seen, /fs inspect, /fs record, /fs diag, /fs help",
+	-- Bare /fs: the commands a player uses, a few words each (L3.1 fix round 1).
+	-- Lane L3.4 adds "/fs: paste or copy a build" at the top once the dialog lands.
+	slashHintLines = {
+		"/fs chip: show or hide the chip",
+		"/fs inspect: look at your target",
+		"/fs diag: what is not working",
+		"/fs help: every command",
+	},
+	-- /fs help: every command.
+	slashHelpLines = {
+		"/fs chip: show or hide the chip",
+		"/fs inspect: look at your target, or your whole group",
+		"/fs diag: what is not working",
+		"/fs inbox: builds waiting for you from the site",
+		"/fs hello: say hello to your guild's Forever Sixty players",
+		"/fs seen: who said hello in the last hour",
+		"/fs record on, off, status or clear: record a fight for the simulator",
+		"/fs help: every command",
+	},
 	dataBuild = "Data build: %s",
 	buildMismatch = "This addon carries data for build %s; you are playing %s. Numbers may be out of date.",
 	-- How a printed line is prefixed with the addon's name.
@@ -20,7 +38,7 @@ local L = {
 	tabSettings = "Settings",
 	headerRealmLevel = "%s · level %d",
 	headerNoSpec = "No spec yet",
-	diagHeader = "What this client turned out not to have:",
+	diagHeading = "Not working:",
 
 	-- Diagnostics: what /fs diag prints. These are the only record of a
 	-- capability this client turned out not to have, and the human tester
@@ -491,8 +509,6 @@ local L = {
 	-- Lane addon-v2 L3.1 (2026-10-11): the chip (spec section 4.1), one line
 	-- at a time, highest first. "Take Improved Heroic Strike".
 	chipTake = "Take %s",
-	-- Below level 10, before a point can be spent: "Take Improved Heroic Strike at level 10".
-	chipTakeAt = "Take %s at level %d",
 	-- "Equip Chausses of Westfall, +4.2 DPS"; the second %s is one of the
 	-- three gains below, or chipInCombat while the client will not equip.
 	chipEquip = "Equip %s, %s",
@@ -519,13 +535,40 @@ local L = {
 	chipHideUntilLevel = "Hide until next level",
 	-- The hover tooltip's last line, muted: how to put the chip away.
 	chipRightClick = "Right-click: %s",
-	chipShiftDrag = "Shift-drag to move",
+	chipShiftDrag = "Shift-drag: Move",
 	-- Level 1 to 9 on a default build (spec section 5.1): the class icon and
 	-- this line; a click opens a card with one button per spec.
 	chipPath = "Pick a path",
 	-- What the chip cut a too-long line with.
 	ellipsis = "…",
 	diagChipOff = "The chip is off: its text did not fit or it was off screen",
+	-- /fs diag's line for the chip's own render check: "Chip: anchored, 212 of 280 wide, not truncated".
+	diagChipLine = "Chip: anchored, %d of %d wide, %s",
+	diagChipNotTruncated = "not truncated",
+	diagChipTruncated = "truncated",
+	diagChipHidden = "Chip: hidden. /fs chip brings it back.",
+	diagDataAddonOld = "The Forever Sixty Data addon is missing or too old. Install or update it from the site.",
+	-- Below 10, and in the hover when the next point is not spendable yet: "Next at 22: Improved Tactical Mastery".
+	chipNextAt = "Next at %d: %s",
+	-- A talent the data has no name for, never its cell ("3:2").
+	chipNextTalent = "the next talent",
+	-- The upgrade line with the verb dropped, when the whole line will not fit.
+	chipEquipShort = "%s, %s",
+	-- The hover's click hint for the state shown.
+	chipHintTalents = "Click: Open talents",
+	chipHintEquip = "Click: Equip",
+	chipHintList = "Click: Show the list",
+	chipHintPath = "Click: Choose a spec",
+	chipHintLastRaid = "Click: Show the line",
+	-- Right-click and /fs chip.
+	chipHiddenLine = "Chip hidden until level %d. /fs chip brings it back.",
+	chipHiddenMaxLine = "Chip hidden. /fs chip brings it back.",
+	chipShownLine = "Chip shown.",
+	-- The badge past nine waiting.
+	chipWaitingMany = "9+",
+	-- The "pick a path" card's heading: "Gnome Warrior. Pick a path:", race and class in the class colour.
+	chipPathHeading = "%s. Pick a path:",
+	chipRaceClass = "%s %s",
 	-- One line under each spec's button on the "pick a path" card: plain words,
 	-- at most eight, what playing it feels like. Keyed by the data's spec slug.
 	specPlaystyle = {

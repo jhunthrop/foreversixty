@@ -34,7 +34,8 @@ function Gear.statsOf(link)
 	return stats
 end
 
---- What the player is wearing, by the site's slot name: { itemId, link, stats }. The one
+--- What the player is wearing, by the site's slot name: { itemId, link, equipLoc, stats }
+--- (equipLoc, the INVTYPE_* name, tells a two-hander in the main hand). The one
 --- thin reader of equipped items; everything that scores them takes the result as a table.
 function Gear.readEquipped()
 	local equipped = {}
@@ -44,9 +45,11 @@ function Gear.readEquipped()
 	for _, entry in ipairs(Export.INVENTORY_SLOTS) do
 		local link = GetInventoryItemLink("player", entry.id)
 		if link ~= nil then
+			local id, _, _, equipLoc = Compat.itemInfoInstant(link)
 			equipped[entry.slot] = {
-				itemId = tonumber((Compat.itemInfoInstant(link))),
+				itemId = tonumber(id),
 				link = link,
+				equipLoc = equipLoc,
 				stats = Gear.statsOf(link),
 			}
 		end

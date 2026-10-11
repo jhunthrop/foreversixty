@@ -5,8 +5,8 @@
 -- paper doll can never disagree with each other or with the character.
 --
 -- Pure over plain tables: a build, Talents.readRanks()'s ranks, the worn
--- items keyed by slot ({ itemId, link, stats }) and the bag items. Only
--- unspentPoints reads the client, and only through capability checks.
+-- items keyed by slot ({ itemId, link, equipLoc, stats }) and the bag items.
+-- Only a bag link handed in as a string is read from the client, through Compat.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -260,6 +260,11 @@ local function describe(item)
 	}
 end
 
+local TWO_HANDED = "INVTYPE_2HWEAPON"
+
+--- The smallest gain, in its own unit (1 DPS or 1 score point), that counts as an upgrade.
+Progress.MIN_GAIN = 1
+
 --- Bag items that beat what is worn in a slot they fit, each once, in the
 --- slot where it gains the most; sorted by delta, biggest first. A slot
 --- with nothing worn counts what is worn as zero. An item whose link is
@@ -269,6 +274,11 @@ end
 --- `level` (Rules.canEquip, not "ok": plate before 40, a libram on a
 --- warrior). `level` is the client's when nil. `unit` is "dps" when
 --- `dpsPerPoint` is given, else "score".
+---
+--- The hands are one pair: with a two-hander worn (its `equipLoc`
+--- INVTYPE_2HWEAPON), nothing goes in the off hand, and a two-hander from
+--- the bags is scored against the main hand and the off hand together, the
+--- net of the whole swap. A gain under MIN_GAIN in its unit is no upgrade.
 function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoint, level)
 	local _, weights = weightsFor(data, build, ranks)
 	if weights == nil then
@@ -277,6 +287,10 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 	equipped = equipped or {}
 	level = level or Compat.playerLevel()
 	local classToken = build.classSlug ~= nil and build.classSlug:upper() or nil
+	local function wornScore(worn)
+		return worn ~= nil and Gear.score(worn.stats, weights) or 0
+	end
+	local twoHanderWorn = equipped.main_hand ~= nil and equipped.main_hand.equipLoc == TWO_HANDED
 	local wornLinks = {}
 	for _, worn in pairs(equipped) do
 		if worn.link ~= nil then
@@ -293,17 +307,23 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 				local worn = equipped[slot]
 				local wearable = Rules.canEquip(classToken, level, item.itemClass, item.itemSubClass,
 					item.equipLocation, slot) == "ok"
-				if wearable and (worn == nil or worn.itemId == nil or worn.itemId ~= item.itemId) then
-					local delta = score - (worn ~= nil and Gear.score(worn.stats, weights) or 0)
+				local blocked = slot == "off_hand" and twoHanderWorn
+				if wearable and not blocked and (worn == nil or worn.itemId == nil or worn.itemId ~= item.itemId) then
+					local replaced = wornScore(worn)
+					if item.equipLocation == TWO_HANDED and slot == "main_hand" then
+						replaced = replaced + wornScore(equipped.off_hand)
+					end
+					local delta = score - replaced
 					if bestDelta == nil or delta > bestDelta then
 						bestSlot, bestDelta = slot, delta
 					end
 				end
 			end
-			if bestDelta ~= nil and bestDelta > 0 then
+			local gain = bestDelta ~= nil and inUnit(bestDelta, dpsPerPoint) or nil
+			if gain ~= nil and gain >= Progress.MIN_GAIN then
 				found[#found + 1] = {
 					link = item.link, itemId = item.itemId, slot = bestSlot,
-					delta = inUnit(bestDelta, dpsPerPoint),
+					delta = gain,
 					unit = dpsPerPoint ~= nil and "dps" or "score",
 				}
 			end
@@ -330,8 +350,8 @@ end
 
 --- The band's BiS picks (Gear.pick) that drop in the instance the player is
 --- standing in, each { slot, itemId, source }, in Progress.slots' order
---- (weapons first for a melee spec). A slot where the pick is already worn
---- is left out, and an item two slots share (a ring) is listed once. The
+--- (weapons first for a melee spec). A pick worn in any slot is left out (a
+--- ring or trinket has two), and an item two slots share is listed once. The
 --- chip's "here for you" line and the panel's targets region read this.
 --- Empty with no band, faction or instance, or nothing that drops here.
 function Progress.picksHere(data, spec, band, faction, instanceName, equipped)
@@ -339,13 +359,15 @@ function Progress.picksHere(data, spec, band, faction, instanceName, equipped)
 	if spec == nil or band == nil or faction == nil or type(instanceName) ~= "string" then
 		return picks
 	end
-	equipped = equipped or {}
 	local seen = {}
+	for _, worn in pairs(equipped or {}) do
+		if type(worn) == "table" and worn.itemId ~= nil then
+			seen[worn.itemId] = true
+		end
+	end
 	for _, slot in ipairs(slotOrder(spec)) do
 		local pick = Gear.pick(spec, band, faction, slot, data)
-		local worn = equipped[slot]
-		if pick ~= nil and dropsIn(pick.source, instanceName) and not seen[pick.item_id]
-			and (worn == nil or worn.itemId ~= pick.item_id) then
+		if pick ~= nil and dropsIn(pick.source, instanceName) and not seen[pick.item_id] then
 			seen[pick.item_id] = true
 			picks[#picks + 1] = { slot = slot, itemId = pick.item_id, source = pick.source }
 		end
@@ -353,37 +375,16 @@ function Progress.picksHere(data, spec, band, faction, instanceName, equipped)
 	return picks
 end
 
---- Best-effort unspent talent point count from the trait system. Neither
---- field name is confirmed against the 1.60 client (README spike row 24);
---- a shape this client does not use reads as "cannot tell" -- the design's
---- own explicit fallback, under which the chip reads the level instead.
-function Progress.unspentPoints()
-	if type(C_ClassTalents) ~= "table" or type(C_ClassTalents.GetActiveConfigID) ~= "function" then
-		return nil
+--- Talent points the character has to spend at `level`: Classic grants one
+--- a level from 10, so it is the points earned less the points in `ranks`
+--- (a respec changes the ranks, not the rule), and never below none. Pure:
+--- the client's trait reader answered a positive count beside a talent
+--- window that said "Unspent Talents 0" (seen in game, L3.1 fix round 1).
+function Progress.unspentPoints(level, ranks)
+	if type(level) ~= "number" or level < 10 then
+		return 0
 	end
-	local configID = C_ClassTalents.GetActiveConfigID()
-	if configID == nil or type(C_Traits) ~= "table" or type(C_Traits.GetConfigInfo) ~= "function"
-		or type(C_Traits.GetTreeInfo) ~= "function" then
-		return nil
-	end
-	local ok, info = pcall(C_Traits.GetConfigInfo, configID)
-	if not ok or type(info) ~= "table" or type(info.treeIDs) ~= "table" then
-		return nil
-	end
-	local total, found = 0, false
-	for _, treeID in ipairs(info.treeIDs) do
-		local okTree, treeInfo = pcall(C_Traits.GetTreeInfo, configID, treeID)
-		if okTree and type(treeInfo) == "table" then
-			local points = treeInfo.pointsAvailable or treeInfo.unspentPoints or treeInfo.points
-			if type(points) == "number" then
-				total, found = total + points, true
-			end
-		end
-	end
-	if not found then
-		return nil
-	end
-	return total
+	return math.max(0, (level - 9) - Progress.pointsSpent(ranks))
 end
 
 ns.Progress = Progress

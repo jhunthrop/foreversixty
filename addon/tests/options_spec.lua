@@ -54,19 +54,27 @@ describe("Options", function()
 	end)
 
 	it("answers a bare /fs with the command list until the build dialog lands", function()
-		assert.are.same({ require("Locale").slashHint }, Options.handle(""))
+		assert.are.same(require("Locale").slashHintLines, Options.handle(""))
 	end)
 
 	it("has dropped the window's tab subcommands", function()
 		for _, command in ipairs({ "export", "follow FSB1:1.60.1.69893:paladin:111:", "gear", "settings", "options" }) do
-			assert.are.same({ require("Locale").slashHint }, Options.handle(command), command)
+			assert.are.same(require("Locale").slashHintLines, Options.handle(command), command)
 		end
 		assert.is_nil(require("Follow").build)
 	end)
 
-	it("prints the command hint in gold on /fs help", function()
-		local lines = Options.handle("help")
-		assert.are.equal(Options.colorGold(require("Locale").slashHint), lines[1])
+	it("lists every command, a few words each, on /fs help", function()
+		assert.are.same(require("Locale").slashHelpLines, Options.handle("help"))
+	end)
+
+	it("shows and hides the chip on /fs chip, saying so", function()
+		local Locale = require("Locale")
+		-- The mock's UnitLevel is 60, the cap: hidden until /fs chip.
+		assert.are.same({ Locale.chipHiddenMaxLine }, Options.handle("chip"))
+		assert.are.equal(0, require("Prefs").get("chip", "hiddenUntilLevel"))
+		assert.are.same({ Locale.chipShownLine }, Options.handle("chip"))
+		assert.are.equal("", require("Prefs").get("chip", "hiddenFor"))
 	end)
 
 	it("colours text with the client's own gold escape codes", function()
@@ -78,7 +86,7 @@ describe("Options", function()
 		Options.register()
 		require("Prefs").setFlag("chat", false)
 		SlashCmdList["FOREVERSIXTY"]("help")
-		assert.are.equal(1, #state.printed)
+		assert.are.equal(#require("Locale").slashHelpLines, #state.printed)
 	end)
 
 	it("counts the builds the companion left in the inbox", function()
@@ -263,7 +271,13 @@ describe("Options", function()
 		SlashCmdList["FOREVERSIXTY"]("")
 
 		local Locale = require("Locale")
-		assert.are.same({ string.format(Locale.chatLine, Locale.addonName, Locale.slashHint) }, state.printed)
+		local Theme = require("Theme")
+		local expected = {}
+		for index, line in ipairs(Locale.slashHintLines) do
+			expected[index] = Theme.chatLine(line)
+		end
+		assert.are.same(expected, state.printed)
+		assert.are.equal("|cffe5b955Forever Sixty|r: " .. Locale.slashHintLines[1], state.printed[1])
 	end)
 
 	it("has the minimap button, the compartment and the keybind print the command list", function()
@@ -273,7 +287,8 @@ describe("Options", function()
 		assert.are.equal(Options.showHint, _G.FOREVERSIXTY_TOGGLE_WINDOW)
 		Options.showHint()
 		local Locale = require("Locale")
-		assert.are.same({ string.format(Locale.chatLine, Locale.addonName, Locale.slashHint) }, state.printed)
+		assert.are.equal(#Locale.slashHintLines, #state.printed)
+		assert.are.equal(require("Theme").chatLine(Locale.slashHintLines[1]), state.printed[1])
 	end)
 
 	it("refreshes the chip and the talent glow through refreshSurfaces", function()
@@ -339,7 +354,8 @@ describe("Options", function()
 		Theme.reset()
 		Theme.note("a client refusal")
 		local lines = Options.handle("diag")
-		assert.are.equal(require("Locale").diagHeader, lines[1])
+		assert.are.equal(require("Locale").diagHeading, lines[1])
+		assert.are.equal("Not working:", lines[1])
 		assert.are.equal("a client refusal", lines[2])
 	end)
 

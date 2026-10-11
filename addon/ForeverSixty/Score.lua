@@ -47,6 +47,11 @@ local TIERS = {
 -- plain Lua, where only os.time exists.
 local clockTime = type(time) == "function" and time or os.time
 
+--- Seconds since the epoch, the clock Score.dateSeconds is compared against.
+function Score.clock()
+	return clockTime()
+end
+
 --- Seconds since the epoch at 00:00 UTC on a YYYY-MM-DD date, or nil for any
 --- other text. Plain arithmetic (days from civil), so the host's time zone
 --- never enters into it.
@@ -86,28 +91,33 @@ local function noteOnce(reason)
 	end
 end
 
-local function unavailable(reason)
-	noteOnce(reason)
+--- `diag` is the /fs diag line, when the reason is worth one.
+local function unavailable(reason, diag)
+	if diag ~= nil then
+		noteOnce(diag)
+	end
 	return { available = false, reason = reason }
 end
 
 --- Whether the record can be used, and why not when it cannot:
---- { available, generated, stale, reason }.
+--- { available, absent, generated, stale, reason }. A data addon that is
+--- simply not installed is `absent` and says nothing in /fs diag (it is
+--- optional); one that is there but unreadable or too old says so there once.
 function Score.status()
 	local data = _G.ForeverSixtyData
 	if data == nil then
-		return unavailable(L.ratingsNotInstalled)
+		return { available = false, absent = true, reason = L.ratingsNotInstalled }
 	end
 	if not wellFormed(data) then
-		return unavailable(L.ratingsUnreadable)
+		return unavailable(L.ratingsUnreadable, L.diagDataAddonOld)
 	end
 	if data.format > Score.FORMAT then
-		return unavailable(L.ratingsUpdateAddon)
+		return unavailable(L.ratingsUpdateAddon, L.ratingsUpdateAddon)
 	end
 	if data.format < Score.FORMAT then
 		-- An older data addon keys its characters differently; reading it as this
 		-- format would only find nobody.
-		return unavailable(L.ratingsUnreadable)
+		return unavailable(L.ratingsUnreadable, L.diagDataAddonOld)
 	end
 	local written = Score.dateSeconds(data.generated)
 	local stale = written == nil or clockTime() - written > Score.STALE_AFTER_SECONDS

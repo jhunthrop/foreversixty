@@ -27,7 +27,7 @@ describe("the keybind", function()
 			helper.load("Tooltip")
 			helper.load("Chip")
 			helper.load("Minimap")
-				Options = helper.load("Options")
+			Options = helper.load("Options")
 			Options.data = { build = "1.60.1.69893", classes = {}, weights = {} }
 		end)
 
@@ -43,7 +43,7 @@ describe("the keybind", function()
 
 		it("prints the command list through the global the binding calls, until the build dialog lands", function()
 			Options.register()
-			assert.are.equal(L.slashHint, _G.FOREVERSIXTY_TOGGLE_WINDOW())
+			assert.are.same(L.slashHintLines, _G.FOREVERSIXTY_TOGGLE_WINDOW())
 		end)
 
 		it("leaves no binding globals behind for the next spec file", function()
