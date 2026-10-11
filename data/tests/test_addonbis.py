@@ -376,3 +376,39 @@ def test_the_chance_pick_table_reads_back_in_a_real_lua(tmp_path):
     result = subprocess.run([lua_bin, "-e", script], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
     assert result.stdout == "7230|D|The Deadmines: Defias Overseer|0.14|2|270018,Q,Leaders of the Fang|1458"
+
+
+def test_a_legacy_band_without_runners_up_takes_two_of_its_alternatives_and_no_chance(tmp_path):
+    """bis files the nightly job wrote before leveling-bis emitted
+    `runners_up` already carry `alternatives` (up to three, best first):
+    the first two stand in until the next nightly run, chance stays nil."""
+    legacy_pick = {
+        "slot": "back",
+        "item_id": 4706,
+        "source_kind": "world_drop",
+        "source": "World drop",
+        "alternatives": [
+            {"item_id": 279865, "item_name": "Grave Shroud", "source_kind": "quest", "source": "Abominable Creatures", "dps_delta": -0.019},
+            {"item_id": 2316, "item_name": "Dark Leather Cloak", "source_kind": "crafted", "source": "Leatherworking", "dps_delta": -0.064},
+            {"item_id": 279899, "item_name": "Catacomb Cloak", "source_kind": "quest", "source": "An Ancient Grudge", "dps_delta": -0.071},
+        ],
+    }
+    _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(legacy_pick))
+    bis = build_bis(tmp_path, BUILD)
+    pick = bis["warrior-arms"][0].factions["alliance"]["back"]
+    assert pick.chance is None
+    assert [alt.item_id for alt in pick.alternatives] == [279865, 2316]
+    assert (
+        'back = { 4706, "B", "World drop", nil, '
+        '{ { 279865, "Q", "Abominable Creatures" }, { 2316, "C", "Leatherworking" } } },'
+    ) in _render_bis(bis)
+
+
+def test_runners_up_win_over_alternatives_when_a_band_has_both(tmp_path):
+    both = dict(
+        _DEADMINES_PICK,
+        alternatives=[{"item_id": 1, "source_kind": "quest", "source": "Not This One"}],
+    )
+    _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(both))
+    pick = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]["main_hand"]
+    assert [alt.item_id for alt in pick.alternatives] == [270018, 1458]

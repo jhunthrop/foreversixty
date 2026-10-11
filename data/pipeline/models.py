@@ -794,8 +794,9 @@ class AddonBisItem(BaseModel):
     #: states no rate for it, and for a bis file written before leveling-bis
     #: emitted the field.
     chance: float | None = None
-    #: Up to two runners-up (leveling-bis's `runners_up`), best first. Empty
-    #: for a bis file written before leveling-bis emitted the field.
+    #: Up to two runners-up (leveling-bis's `runners_up`), best first. For a
+    #: bis file written before leveling-bis emitted that field, the first two
+    #: of the row's own `alternatives` list instead (pipeline.addonbis._pick).
     alternatives: list[AddonBisAlternative] = []
 
 

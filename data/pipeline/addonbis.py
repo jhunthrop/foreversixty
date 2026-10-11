@@ -132,12 +132,19 @@ def _significant_weights(weights: list[dict]) -> dict[str, float]:
 def _pick(path: Path, where: str, entry: dict) -> AddonBisItem:
     """One slot row as the addon's pick. `chance` and `runners_up` are
     optional: a bis file leveling-bis wrote before it emitted them loads
-    with no chance and no alternatives."""
+    with no chance, and with the first two of its `alternatives` (if any)
+    in place of runners_up."""
     chance = entry.get("chance")
     if chance is not None and not 0 < chance <= 1:
         # loot.json states percents (0-100); the contract is a fraction.
         raise AddonBisError(f"{path}: {where} chance {chance!r} is not a fraction in (0, 1]")
-    runners_up = entry.get("runners_up") or []
+    runners_up = entry.get("runners_up")
+    if runners_up is None:
+        # A band the nightly job wrote before leveling-bis emitted
+        # `runners_up`: its own `alternatives` list (up to three, best
+        # first -- runners_up is cut from the same list) stands in until
+        # the next nightly run rewrites the band.
+        runners_up = (entry.get("alternatives") or [])[:MAX_ALTERNATIVES]
     if len(runners_up) > MAX_ALTERNATIVES:
         raise AddonBisError(
             f"{path}: {where} has {len(runners_up)} runners_up, at most {MAX_ALTERNATIVES}"
