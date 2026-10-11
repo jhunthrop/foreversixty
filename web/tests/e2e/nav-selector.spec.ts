@@ -91,7 +91,7 @@ test.describe('the doors', () => {
     await expect(page.getByRole('banner')).not.toContainText('Leveling BiS');
     await page.getByTestId('primary-nav').getByRole('link', { name: 'BiS', exact: true }).click();
     await expect(page).toHaveURL(/\/bis$/);
-    await expect(page.getByRole('heading', { name: 'BiS', level: 1 })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Best in slot', level: 1 })).toBeVisible();
   });
 
   test('Discord shows its label at 1440 and the mark with a tooltip below', async ({ page }) => {

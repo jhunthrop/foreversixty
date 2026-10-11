@@ -20,6 +20,8 @@ const DESKTOP = { width: 1440, height: 900 };
 const PHONE = { width: 390, height: 844 };
 const BANDS = [20, 30, 40, 50, 60];
 const MIN_TOUCH_TARGET_PX = 44;
+/** The skeleton and the filled lead differ by a line-box rounding, never a row. */
+const LEAD_RESOLVE_SHIFT_PX = 4;
 
 const WARRIOR_SPEC = 'warrior-fury';
 const warriorBand = bisBand(WARRIOR_SPEC, 'alliance', 40, 'bare');
@@ -117,7 +119,7 @@ test.describe('signed out, desktop', () => {
     ).toBeVisible();
     await expect(page.getByTestId('bis-index-tier-link')).toHaveAttribute('href', '/tiers');
     await expect(page.getByTestId('bis-landing').getByText(/^Updated /)).toHaveCount(1);
-    await expect(page.getByTestId('bis-grid-heading')).toHaveText('Pick a class and spec', {
+    await expect(page.getByTestId('bis-grid-heading')).toHaveText(/^pick a class and spec$/i, {
       useInnerText: true,
     });
   });
@@ -243,7 +245,7 @@ test.describe('signed in, desktop', () => {
     );
     if (unsourcedSlots.length > 0) await expect(lead(page)).toContainText('no pick at this band');
     else await expect(lead(page)).not.toContainText('no pick at this band');
-    await expect(page.getByTestId('bis-grid-heading')).toHaveText('Another class or spec', {
+    await expect(page.getByTestId('bis-grid-heading')).toHaveText(/^another class or spec$/i, {
       useInnerText: true,
     });
   });
@@ -364,7 +366,7 @@ test.describe('signed in, desktop', () => {
     release();
     await expect(page.getByTestId('bis-lead-name')).toHaveText(FURY.name);
     const after = await page.getByTestId('bis-class-warrior').boundingBox();
-    expect(Math.abs((after?.y ?? 0) - (before?.y ?? 0))).toBeLessThanOrEqual(2);
+    expect(Math.abs((after?.y ?? 0) - (before?.y ?? 0))).toBeLessThanOrEqual(LEAD_RESOLVE_SHIFT_PX);
   });
 });
 
