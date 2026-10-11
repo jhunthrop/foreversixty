@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDate, isPast, latest, relativeTime } from './dates';
+import { formatDate, isPast, latest, relativeDay, relativeTime } from './dates';
 
 describe('formatDate', () => {
   it('uses the site month style', () => {
@@ -53,5 +53,28 @@ describe('relativeTime', () => {
 
   it('never reads a future timestamp as a negative duration', () => {
     expect(relativeTime(new Date('2026-09-21T12:00:05Z'), now)).toBe('just now');
+  });
+});
+
+describe('relativeDay', () => {
+  const now = new Date('2026-10-10T12:00:00Z');
+
+  it('reads whole days inside two weeks', () => {
+    expect(relativeDay(new Date('2026-10-10T01:00:00Z'), now)).toBe('today');
+    expect(relativeDay(new Date('2026-10-09T12:00:00Z'), now)).toBe('1 day ago');
+    expect(relativeDay(new Date('2026-10-07T12:00:00Z'), now)).toBe('3 days ago');
+    expect(relativeDay(new Date('2026-09-27T12:00:01Z'), now)).toBe('12 days ago');
+    expect(relativeDay(new Date('2026-09-27T12:00:00Z'), now)).toBe('13 days ago');
+  });
+
+  it('prints a short date from two weeks on', () => {
+    expect(relativeDay(new Date('2026-09-26T12:00:00Z'), now)).toBe('Sep 26');
+    expect(relativeDay(new Date('2026-09-15T12:55:13Z'), now)).toBe('Sep 15');
+    expect(relativeDay(new Date('2026-06-01T00:00:00Z'), now)).toBe('Jun 1');
+  });
+
+  it('never reads a future timestamp as negative, and prints nothing for an invalid one', () => {
+    expect(relativeDay(new Date('2026-10-10T12:00:05Z'), now)).toBe('today');
+    expect(relativeDay(new Date('not a date'), now)).toBe('');
   });
 });

@@ -42,3 +42,19 @@ export function relativeTime(d: Date, now: Date = new Date()): string {
   if (days < RELATIVE_TIME_CEILING_DAYS) return `${days} day${days === 1 ? '' : 's'} ago`;
   return formatDate(d);
 }
+
+const RELATIVE_DAY_CEILING_DAYS = 14;
+const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/**
+ * The one age rule for dated rows (Logs, the character header): whole days relative inside two
+ * weeks ("today", "1 day ago", "3 days ago"), else the date ("Sep 15", UTC). Like `relativeTime`,
+ * a timestamp ahead of the caller's clock reads as "today", never a negative duration.
+ */
+export function relativeDay(d: Date, now: Date = new Date()): string {
+  if (Number.isNaN(d.getTime())) return '';
+  const days = Math.floor(Math.max(0, now.getTime() - d.getTime()) / DAY_MS);
+  if (days === 0) return 'today';
+  if (days < RELATIVE_DAY_CEILING_DAYS) return `${days} day${days === 1 ? '' : 's'} ago`;
+  return `${SHORT_MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
+}
