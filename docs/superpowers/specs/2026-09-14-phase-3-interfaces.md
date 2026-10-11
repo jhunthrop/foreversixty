@@ -299,3 +299,5 @@ the new key. See `docs/superpowers/specs/2026-09-28-addon-character-aware-design
   `RenderInbox` also now writes a top-level `version` field (`InboxVersion`, currently `2`) that
   nothing reads back — informational only, for a support request to name what schema a player's
   companion last wrote.
+
+See docs/contracts/addon-v2.md for the addon v2 wire contracts (2026-10-11).
