@@ -225,9 +225,9 @@
   });
 
   // Fix round 2 (wow-player review finding 1): Level must read the same real character the
-  // Character card beside this page shows, not a reconstructed figure that can openly
-  // disagree with it. The same hero-character lookup `createCharacterCardState` (Planner
-  // CharacterCard.svelte's own hook) makes, read from this mount's own session so the two
+  // character header beside this page shows, not a reconstructed figure that can openly
+  // disagree with it. The same hero-character lookup `createCharacterCardState` (the
+  // character header's own hook) makes, read from this mount's own session so the two
   // panels can never pick two different characters. `null` (an anonymous visit, or before
   // the session resolves) leaves `store.level` on its existing `levelReached(order)`
   // fallback, unchanged for every bare build.
@@ -245,7 +245,7 @@
   // Every load source writes the pointer through here (Task 10); writePlannerPointer is a
   // no-op inline or before talent data has loaded.
   // The chip this used to feed (CurrentCharacterBar's spine mode) is gone with it (rebuild
-  // spec §3: replaced by the header/CharacterCard family) -- the write itself still matters
+  // spec §3: replaced by the shared character header) -- the write itself still matters
   // (the site-wide current-character bridge every other tool page reads), so this keeps
   // calling it and simply has nothing of its own left to do with the fresh pointer back.
   function writePointer(source: 'code' | 'addon' | 'build', ref: string, cls: string, title?: string): void {
@@ -633,7 +633,7 @@
   {#if standalone}
     <!-- Rebuild spec §4.A/§4.B, fix round 5: `PlannerHeaderBand` owns the full-bleed band
          (the same shape the BiS page's `ArtPanel` + `.header-row` ships), `PlannerHeader`
-         and `PlannerCharacterCard` as its own two grid columns -- replaces the bare page
+         and the shared `CharacterHeader` card as its own two grid columns -- replaces the bare page
          title, the old current-character spine band (which duplicated Copy addon code, now
          in the Share panel below), and the prior round's boxed header beside a separate
          character-card panel. -->
@@ -847,7 +847,7 @@
        spec.ts's own two footer tests first found at 360px on the `desktop` project only --
        diagnosing it directly (measuring the reserve element itself across both states)
        showed it pinned at the reserved figure in both, unmoving. The real source sat
-       outside this region entirely: `PlannerCharacterCard` (the band's own right column
+       outside this region entirely: the shared `CharacterHeader` (the band's own right column
        from fix round 5, beside the header's own content before that, §4.B) makes
        its own `/v1/me` request, and those two tests alone left it unrouted, so it hit the
        real (unreachable here) API and resolved on its own schedule -- a second, unrelated

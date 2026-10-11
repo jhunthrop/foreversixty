@@ -57,11 +57,9 @@ export const plannerHeaderCopy = {
   factionFollowsRace: 'Faction follows your race',
 } as const;
 
-/** Rebuild spec §4.B: the Character card paired with the header, signed in only. */
+/** The planner's action on the shared character header (spec 2026-10-11 section 4). */
 export const plannerCharacterCardCopy = {
-  label: 'Your character',
   sendBuildToAddon: 'Send this build to the addon',
-  loadError: 'Your character did not load.',
 } as const;
 
 /** Rebuild spec §4.D: `BandCompare`, the new rail panel comparing a build against its own

@@ -410,21 +410,13 @@ export const bisCopy = {
       ? 'Nothing here helps at this level either.'
       : `Nothing here either until ${nextRealBand}.`,
 
-  // --- Character card (bis rebuild spec §4.B) ----------------------------------------------
-  yourCharacterLabel: 'Your character',
-  syncedRelative: (relative: string): string => `synced ${relative}`,
-  notSyncedYetLabel: 'Not synced yet',
-  characterCardIdentityLine: (level: number, race: string): string => `${level} ${capitalise(race)}`,
+  // --- Character card action (the shared character header carries the rest) ----------------
   upgradesLabel: 'Upgrades',
   togetherLabel: 'Together',
   togetherDpsValue: (delta: number): string => `+${delta.toFixed(1)} DPS`,
   equippedLabel: 'Equipped',
   equippedValue: (n: number, total: number): string => `${n} / ${total}`,
   sendListToAddon: 'Send this list to the addon',
-  installTheAddon: 'Install the addon',
-  installAddonToCompare: 'Install the addon to compare your gear against this list.',
-  gearSyncNotHereYet: "Gear sync isn't here yet — install the addon to compare your gear against this list.",
-  characterCardLoadError: 'Your character did not load.',
   /** The list row's own "You" column (spec §4.D/§7 `GearRow`'s `you` slot) -- unused today
    *  (the column itself is omitted entirely while the worn-gear gap is open, §9), kept here
    *  so the component that renders it needs no second copy module once a future lane

@@ -2,8 +2,8 @@
 // web/src/pages/bis/[class]/[spec].astro
 // Rebuild (bis rebuild spec, 2026-09-30, ux-designer, mock `Bis.dc.html`): replaces the
 // character-panel redesign's two-column paperdoll (lane bis-character-panel, 2026-09-29)
-// with the mock's single-column "The list", a real `ArtPanel`/`ClassHeader`, a
-// `CharacterCard`, and computed "Where to get it"/"New at this band" sections. See this
+// with the mock's single-column "The list", a real `ArtPanel`/`ClassHeader`, the shared
+// character header, and computed "Where to get it"/"New at this band" sections. See this
 // lane's own report for what was kept unchanged (`lib/bis/load.ts`, `types.ts`,
 // `source-cell.ts`, the tooltip-host island, the faction/band CSS toggle mechanism) and
 // what changed (`GearRow.astro`'s layout, `panel-view.ts`'s row/empty-copy computation, the
@@ -15,13 +15,13 @@
 // them), so the toggle now hides/shows one `.page-body > .header-row .header-faction.<X>`
 // and one `.page-body > .faction-content.<X>` per faction, via `~ .page-body <descendant>`
 // (a sibling combinator followed by a descendant one), rather than the OLD page's own
-// direct-sibling-only rule. `CharacterCard` sits beside the header, outside the toggle
+// direct-sibling-only rule. The character header sits beside the header, outside the toggle
 // entirely -- it shows the signed-in visitor's own character, which has nothing to do with
 // which faction's BiS list is on screen.
 import Base from '../../../layouts/Base.astro';
 import ArtPanel from '../../../components/ArtPanel.astro';
 import ClassHeader from '../../../components/ClassHeader.astro';
-import CharacterCard from '../../../components/CharacterCard.svelte';
+import BisSpecCharacterHeader from '../../../components/bis/BisSpecCharacterHeader.svelte';
 import BandPanelBody from '../../../components/bis/BandPanelBody.astro';
 import PresetControl from '../../../components/bis/PresetControl.astro';
 import PresetCaption from '../../../components/bis/PresetCaption.astro';
@@ -294,7 +294,13 @@ const crossScopeCss =
                 </div>
               ))}
               <div class="header-character-card">
-                <CharacterCard client:idle nextPath={path} />
+                <BisSpecCharacterHeader
+                  client:idle
+                  specKey={specEntry.spec}
+                  classSlug={specEntry.class_slug}
+                  specName={specEntry.name}
+                  build={build}
+                />
               </div>
             </div>
           </ArtPanel>

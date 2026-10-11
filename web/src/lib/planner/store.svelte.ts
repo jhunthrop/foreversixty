@@ -74,7 +74,7 @@ export function createPlannerStore(init: PlannerInit) {
    *  (fix round 2, wow-player review finding 1) -- `null` for an anonymous visit, where
    *  `level` stays the reconstructed `levelReached(order)` figure the spec's own "a bare
    *  build's own level is a real, always-computable fact" reasoning asks for. Set once by
-   *  the same hero-character lookup `PlannerCharacterCard`'s own session read already makes
+   *  the same hero-character lookup the character header's own session read already makes
    *  (`Planner.svelte`), never derived here: a build's own point count can honestly disagree
    *  with a real character's level (not every point unlocked is spent immediately), and the
    *  Character card beside this page is the one place that number belongs to -- every other

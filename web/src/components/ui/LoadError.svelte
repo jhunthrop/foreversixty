@@ -14,7 +14,7 @@
     onRetry?: () => void;
     testid?: string;
     /** Fix round 4 (CI: "strict mode violation", two "Try again" buttons on the same
-     *  planner page -- PlannerCharacterCard's own and Planner's own tree-load error share
+     *  planner page -- the character header's retry and Planner's own tree-load error share
      *  this component and its default accessible name). Undefined everywhere this
      *  component mounts only once per page (every other caller today), so the visible
      *  "Try again" text stays the accessible name there too -- set only where a second

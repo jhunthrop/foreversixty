@@ -12,10 +12,10 @@
      Fix round 5: this component is now the band's own LEFT COLUMN content only -- no
      background, no border, no radius, no art. `PlannerHeaderBand.svelte` (its only caller)
      owns all of that at the band level, full-bleed across both grid columns (this header's
-     own content and `PlannerCharacterCard`'s), which a box scoped to this component's own
+     own content and the character header's), which a box scoped to this component's own
      column could never reach. The crest still inlines `ClassCrest.astro`'s own recipe (a
-     Svelte file cannot import an `.astro` one at all, the same constraint `CharacterCard.
-     svelte` already documents). -->
+     Svelte file cannot import an `.astro` one at all, the same constraint
+     `CharacterHeader.svelte` documents). -->
 <script lang="ts">
   import { classCrestSrc } from '../../lib/class-crest';
   import { classColorVar } from '../../lib/report/format';

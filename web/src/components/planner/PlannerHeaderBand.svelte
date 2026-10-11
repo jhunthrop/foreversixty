@@ -1,38 +1,25 @@
 <!-- web/src/components/planner/PlannerHeaderBand.svelte -->
-<!-- Fix round 5 (owner: the live planner did not match the mock, `day3/shots/boards/
-     Planner.png`, structurally): the page's own header BAND -- full-bleed, edge to edge,
-     the same shape the BiS page's `ArtPanel` + its own `.header-row` already ship. It breaks
-     out of the site column with the shared `.full-bleed` utility and puts its content back
-     in the column with `.page-column`.
+<!-- The page's own header BAND -- full-bleed, edge to edge, the same shape the BiS page's
+     `ArtPanel` + its own `.header-row` already ship. It breaks out of the site column with the
+     shared `.full-bleed` utility and puts its content back in the column with `.page-column`.
 
-     Previously: `PlannerHeader` was its own bordered, rounded, `bg-raised` BOX sitting
-     inside the page's gutters, with `PlannerCharacterCard` a second, separate box beside
-     it (a flex row) -- the band's own background, the full-bleed edges and the two
-     columns sharing one background never existed. This component is the fix: it owns the
-     band's background (flat `--color-raised`, the night-to-`--bg` gradient over it --
-     spec §13 keeps the dominant-tree art itself off, `PlannerHeader.svelte`'s own `headerArtSrc`/
-     `HEADER_ART_ENABLED` constant, until it can paint from first byte without regressing
-     Lighthouse's TBT again), the inner content wrapper (max-width 1344px, centred, the
-     page's own 48px gutters from 1024px, 18px below it -- the exact figures the live
-     captures were checked against at 1024/1280/1440/1920), and the `1fr 440px` grid (24px
-     gap, bottom-aligned) that puts `PlannerCharacterCard` inside the band as its own right
-     column, the same shape `ClassHeader.astro`'s own `.header-row` uses on the BiS page.
-
-     The grid collapses to one column when there is nothing in the right column to show:
-     `PlannerCharacterCard` renders nothing at all for a confirmed-signed-out visitor (its
-     own spec §4.B rule, unchanged by this round), and reserving 440px of horizontal width
-     for an empty column would be the same "dead gap for the common, anonymous visit" fix
-     round 4 already ruled out for its own vertical reservation. Reads the same character-
-     card state the card itself reads (`createCharacterCardState`, cache-scoped on the
-     `/v1/me` query -- a second caller costs no second fetch, the same sharing that
-     component's own header comment already documents) purely to decide the column count. -->
+     It owns the band's background (flat `--color-raised`, the night-to-`--bg` gradient over it --
+     spec §13 keeps the dominant-tree art itself off, `HEADER_ART_ENABLED` below, until it can
+     paint from first byte without regressing Lighthouse's TBT again), the inner content wrapper
+     (max-width 1344px, centred, the page's own 48px gutters from 1024px, 18px below it), and the
+     `1fr 440px` grid (24px gap, bottom-aligned) that puts the shared character header inside the
+     band as its own right column -- its stacked card layout with the outline action and no
+     answer slot, because the planner's job is the tree, not a figure about the character
+     (design/specs/2026-10-11-character-header.md section 4). The same shape
+     `ClassHeader.astro`'s own `.header-row` uses on the BiS page. Signed out, the card column
+     holds the header's one shared signed-out band, so the grid is the same for every visitor. -->
 <script lang="ts">
-  import { createCharacterCardState } from '../../lib/bis/character-card-state.svelte';
   import { dataUrl } from '../../lib/planner/load';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
-  import PlannerCharacterCard from './PlannerCharacterCard.svelte';
+  import { plannerCharacterCardCopy } from '../../lib/planner/copy';
+  import CharacterHeader from '../character/CharacterHeader.svelte';
   import PlannerHeader from './PlannerHeader.svelte';
 
   let {
@@ -47,10 +34,7 @@
     onshowdps: () => void;
   } = $props();
 
-  const cardState = createCharacterCardState();
-  const hasCard = $derived(
-    cardState.status === 'loading' || cardState.status === 'failed' || cardState.character !== null,
-  );
+  const SEND_BUILD_ACTION = { label: plannerCharacterCardCopy.sendBuildToAddon, href: '/addon' };
 
   /** The dominant tree's own index -- the same "most points, ties to the first tree"
    *  inference the h1 suffix (`PlannerHeader.svelte`) already uses, read here for the
@@ -93,9 +77,9 @@
   ></div>
   <div class="planner-header-band-gradient" aria-hidden="true"></div>
   <div class="planner-header-band-inner page-column">
-    <div class="planner-header-band-grid" class:planner-header-band-grid-split={hasCard}>
+    <div class="planner-header-band-grid">
       <PlannerHeader {store} {live} {gate} {onshowdps} />
-      <PlannerCharacterCard />
+      <CharacterHeader layout="card" emphasis="secondary" action={SEND_BUILD_ACTION} />
     </div>
   </div>
 </div>
@@ -142,7 +126,7 @@
     gap: 16px;
   }
   @media (min-width: 1024px) {
-    .planner-header-band-grid-split {
+    .planner-header-band-grid {
       grid-template-columns: 1fr 440px;
       gap: 24px;
       align-items: end;
