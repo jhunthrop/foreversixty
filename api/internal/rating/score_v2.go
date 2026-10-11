@@ -110,6 +110,15 @@ var specAliases = map[string]string{
 	"druid-guardian": "druid-feral-bear",
 }
 
+// DataSpecSlug is the build data's spec slug ("warrior-arms") for a logged class and spec
+// ("Warrior", "Arms"), the one the addon inbox prices loot under. Empty when either is.
+func DataSpecSlug(class, spec string) string {
+	if class == "" || spec == "" {
+		return ""
+	}
+	return dataSpecSlug(class, spec)
+}
+
 // dataSpecSlug is the build data's slug for a logged class and spec.
 func dataSpecSlug(class, spec string) string {
 	slug := specSlug(class, spec)

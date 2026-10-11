@@ -58,6 +58,12 @@ local function isNameRealm(value)
 	return tostring(value):match("^[^%-]+%-[^%-]+$") ~= nil
 end
 
+-- A character key, region/ruleset/name-slug: what contract 3 addresses inbox messages to
+-- (Codec.lua's sameCharacter matches it segment by segment).
+local function isCharacterKey(value)
+	return tostring(value):match("^[^/]+/[^/]+/[^/]+$") ~= nil
+end
+
 describe("the v2 wire contracts, addon side", function()
 	describe("the nightly data addon fixture (contract 5)", function()
 		local data, path
@@ -137,9 +143,14 @@ describe("the v2 wire contracts, addon side", function()
 			assert.are.same(sortedKeys(known), sortedKeys(seen))
 		end)
 
-		it("addresses every message to a Name-Realm character", function()
+		it("is format 2 with an RFC 3339 UTC generated_at", function()
+			assert.are.equal(2, inbox.format)
+			assert.is_truthy(tostring(inbox.generated_at):match("^%d%d%d%d%-%d%d%-%d%dT%d%d:%d%d:%d%dZ$"))
+		end)
+
+		it("addresses every message to a character key", function()
 			for _, message in ipairs(inbox.messages) do
-				assert.is_true(isNameRealm(message.character), message.type)
+				assert.is_true(isCharacterKey(message.character), message.type)
 			end
 		end)
 
@@ -153,7 +164,7 @@ describe("the v2 wire contracts, addon side", function()
 			last_raid = { "bosses", "character", "date", "report_id", "type" },
 			loot_values = { "character", "items", "raid", "type" },
 			guild = { "character", "claim_state", "guild_name", "pending_approvals", "rank", "type" },
-			ack = { "character", "export_seen_at", "type" },
+			ack = { "character", "export_seen_at", "sim_request_state", "type" },
 		}
 		local NESTED = {
 			weights = { list = "weights", keys = { "stat", "weight" } },

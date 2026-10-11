@@ -48,6 +48,10 @@ type gearData struct {
 	mu      sync.Mutex
 	weights map[string]map[string]map[string]float64 // build -> spec -> stat -> weight
 	full    map[string]map[string]float64            // build -> spec -> FullGearScore
+	// dpsPerPoint and raids are lootvalues.go's per-build reads of dps-per-point.json
+	// and loot.json.
+	dpsPerPoint map[string]map[string]float64  // build -> spec -> DPS per reference point
+	raids       map[string]map[string]raidLoot // build -> raidKey -> loot
 }
 
 var (
@@ -67,9 +71,18 @@ func SetGearData(t *trees.Data, dir string) {
 	}
 	gearSrc = &gearData{
 		trees: t, dir: dir,
-		weights: map[string]map[string]map[string]float64{},
-		full:    map[string]map[string]float64{},
+		weights:     map[string]map[string]map[string]float64{},
+		full:        map[string]map[string]float64{},
+		dpsPerPoint: map[string]map[string]float64{},
+		raids:       map[string]map[string]raidLoot{},
 	}
+}
+
+// currentGearData is what SetGearData last wired, or nil.
+func currentGearData() *gearData {
+	gearMu.RLock()
+	defer gearMu.RUnlock()
+	return gearSrc
 }
 
 // GearScore is Gear.score summed over every item gearCode (an FS1 export

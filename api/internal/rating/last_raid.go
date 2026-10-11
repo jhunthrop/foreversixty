@@ -1,0 +1,205 @@
+package rating
+
+// The per-fight facts the addon's last-raid region shows (docs/contracts/addon-v2.md
+// contract 3, the last_raid message; docs/superpowers/specs/2026-10-11-addon-v2-design.md
+// §4.7, §5.2). They are worked out once, here, when the fight is rated, and stored on the
+// player's rating_scores row (migration 0036_last_raid): the inbox reads rows and never a
+// fight summary, so a companion polling every ten minutes never touches the bucket.
+
+import (
+	"math"
+	"strings"
+
+	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+)
+
+// The biggest-loss phrases. Each is plain words the addon shows as given (contract 3's
+// copy rule): never an id, never a code.
+const (
+	LossDowntime     = "downtime"
+	LossDeadEarly    = "dead early"
+	LossDiedTo       = "died to "
+	LossADeath       = "a death"
+	LossAvoidable    = "standing in fire"
+	LossConsumables  = "missing consumables"
+	LossMechanics    = "missed mechanics"
+	LossOutput       = "low output"
+	LossUtility      = "utility"
+	consumableFlask  = "flask"
+	consumableFood   = "food"
+	unknownCauseName = "Unknown cause" // the engine's own name for a death with no killing blow
+)
+
+// LastRaidFacts is what the last_raid message says about one player's fight.
+type LastRaidFacts struct {
+	// Deaths is how many times the player died.
+	Deaths int
+	// BiggestLoss is the plain phrase for the component that cost the most points; empty
+	// when no scored component cost anything.
+	BiggestLoss string
+	// LossSeconds is the downtime seconds when the loss is downtime, else the seconds the
+	// player lay dead, else 0.
+	LossSeconds int
+	// ConsumablesMissed names the consumable categories the player pulled without; empty,
+	// never nil, when none was missed or the log cannot say.
+	ConsumablesMissed []string
+}
+
+// lastRaidFacts works out row's facts from its scored card and the fight.
+func lastRaidFacts(fight summary.Summary, row summary.RosterRow, card ratingengine.Card) LastRaidFacts {
+	phrase, seconds := biggestLoss(fight, row, card)
+	return LastRaidFacts{
+		Deaths:            deathsOf(fight, row),
+		BiggestLoss:       phrase,
+		LossSeconds:       seconds,
+		ConsumablesMissed: consumablesMissed(fight, row),
+	}
+}
+
+// biggestLoss is ruling 3 of the L6.3 brief, in one place: the card's scored component
+// that cost the most points - its shortfall from 100 times the weight the card applied -
+// named in plain words, and the seconds that go with it. An excluded component cost
+// nothing (it was not scored); a tie goes to the component the card lists first.
+//
+//	activity    -> "downtime"; seconds: the time alive with nothing done
+//	survival    -> after a death in the first half of the fight, "dead early"; after a
+//	               later one, "died to <the engine's cause, lower-cased>", or "a death"
+//	               when the log never named a cause; with no death (avoidable damage
+//	               alone), "standing in fire"
+//	preparation -> "missing consumables"
+//	mechanics   -> "missed mechanics"
+//	output      -> "low output"
+//	utility     -> "utility"
+//
+// For anything but downtime, seconds is the time the player lay dead (0 alive).
+func biggestLoss(fight summary.Summary, row summary.RosterRow, card ratingengine.Card) (string, int) {
+	var worst *ratingengine.Component
+	worstCost := 0.0
+	for i := range card.Components {
+		c := &card.Components[i]
+		if c.Excluded {
+			continue
+		}
+		if cost := (100 - c.Score) * c.Weight; cost > worstCost {
+			worst, worstCost = c, cost
+		}
+	}
+	if worst == nil {
+		return "", 0
+	}
+	deathAt, died := firstDeathMS(fight, row)
+	deadSeconds := 0
+	if died {
+		deadSeconds = msToSeconds(fight.DurationMS - deathAt)
+	}
+	switch worst.Name {
+	case ratingengine.ComponentNameActivity:
+		return LossDowntime, downtimeSeconds(fight, row, deathAt, died)
+	case ratingengine.ComponentNameSurvival:
+		if !died {
+			return LossAvoidable, 0
+		}
+		if fight.DurationMS > 0 && deathAt*2 < fight.DurationMS {
+			return LossDeadEarly, deadSeconds
+		}
+		return deathCause(worst.Moments), deadSeconds
+	case ratingengine.ComponentNamePreparation:
+		return LossConsumables, deadSeconds
+	case ratingengine.ComponentNameMechanics:
+		return LossMechanics, deadSeconds
+	case ratingengine.ComponentNameOutput:
+		return LossOutput, deadSeconds
+	case ratingengine.ComponentNameUtility:
+		return LossUtility, deadSeconds
+	}
+	return strings.ReplaceAll(worst.Name, "_", " "), deadSeconds
+}
+
+// deathCause is "died to <cause>" from the survival component's first death moment, the
+// engine's own spell name lower-cased, or "a death" when the engine had no cause to name.
+func deathCause(moments []ratingengine.Moment) string {
+	for _, m := range moments {
+		if m.Kind != "death" {
+			continue
+		}
+		name := strings.TrimSpace(m.SpellName)
+		if name == "" || name == unknownCauseName {
+			return LossADeath
+		}
+		return LossDiedTo + strings.ToLower(name)
+	}
+	return LossADeath
+}
+
+// firstDeathMS is when row's player first died, and whether they did.
+func firstDeathMS(fight summary.Summary, row summary.RosterRow) (int64, bool) {
+	first, died := int64(0), false
+	for _, d := range fight.Deaths {
+		if d.GUID == row.GUID && (!died || d.AtMS < first) {
+			first, died = d.AtMS, true
+		}
+	}
+	return first, died
+}
+
+// deathsOf counts row's deaths in the fight's death list, falling back to the roster's own
+// count when the list has none for the player.
+func deathsOf(fight summary.Summary, row summary.RosterRow) int {
+	n := 0
+	for _, d := range fight.Deaths {
+		if d.GUID == row.GUID {
+			n++
+		}
+	}
+	if n == 0 {
+		return row.Deaths
+	}
+	return n
+}
+
+// downtimeSeconds is the time the player was alive and did nothing: the fight up to their
+// first death (or its end) less the time the log counts them active.
+func downtimeSeconds(fight summary.Summary, row summary.RosterRow, deathAt int64, died bool) int {
+	alive := fight.DurationMS
+	if died && deathAt < alive {
+		alive = deathAt
+	}
+	idle := alive - row.ActiveMS
+	if idle < 0 {
+		return 0
+	}
+	return msToSeconds(idle)
+}
+
+func msToSeconds(ms int64) int {
+	if ms <= 0 {
+		return 0
+	}
+	return int(math.Round(float64(ms) / 1000))
+}
+
+// consumablesMissed is the plain names of the categories the player pulled without, read
+// from the same catalogue the discipline fact uses (disciplineFlasks, disciplineFoods; the
+// weapon enchant stays out until a beta log shows how stones and oils appear, see
+// score_v2.go). With no combatant info the log cannot say, and the list is empty.
+func consumablesMissed(fight summary.Summary, row summary.RosterRow) []string {
+	missed := []string{}
+	for i := range fight.Combatants {
+		c := fight.Combatants[i]
+		if c.GUID != row.GUID {
+			continue
+		}
+		if len(c.Gear) == 0 {
+			break // no gear, no combatant info worth reading: fightDiscipline's own "not known"
+		}
+		if !carries(c, disciplineFlasks) {
+			missed = append(missed, consumableFlask)
+		}
+		if !carries(c, disciplineFoods) {
+			missed = append(missed, consumableFood)
+		}
+		break
+	}
+	return missed
+}
