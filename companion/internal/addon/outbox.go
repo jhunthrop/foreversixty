@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 // OutboxFormat is the outbox format this companion reads. An outbox of
@@ -27,6 +28,8 @@ const OutboxFormat = 1
 // what make one outbox a different one from the last: the sync sends
 // each outbox once.
 type Outbox struct {
+	// Character is export.character, the Name-Realm the outbox is for.
+	Character   string
 	SavedAt     string
 	RequestedAt string
 	RosterHash  string
@@ -74,7 +77,7 @@ func outboxOf(top map[string]any) (*Outbox, error) {
 	if err != nil {
 		return nil, fmt.Errorf("the addon's outbox cannot be sent: %w", err)
 	}
-	ob := &Outbox{SavedAt: export.Get("saved_at"), Body: body}
+	ob := &Outbox{Character: export.Get("character"), SavedAt: export.Get("saved_at"), Body: body}
 	if sim, ok := t.Fields["sim_request"].(*Table); ok {
 		ob.RequestedAt = sim.Get("requested_at")
 	}
@@ -199,22 +202,23 @@ func SimStateOf(outcome string) string {
 // The log's words for the site's answer, one line per part. They are
 // read by players pasting companion.log, so they are plain.
 const (
-	CopyOutboxIgnored    = "The site does not read this outbox format, so it was ignored"
-	CopyOutboxRefused    = "The site could not read the outbox, so it will not be sent again"
-	CopyOutboxTooLarge   = "Outbox too large to send; the character exports went up alone"
-	CopyExportStored     = "Export stored"
-	CopyExportUnknown    = "Export not stored, the site has not seen this character yet"
-	CopySimQueued        = "Sim request queued"
-	CopySimNeedsPremium  = "Sim request needs a premium account"
-	CopySimDuplicate     = "Sim request already running this hour"
-	CopySimInvalid       = "Sim request invalid, the site could not sim it"
-	CopySimUnknown       = "Sim request not taken, the site has not seen this character yet"
-	CopySimUnavailable   = "Sim request not taken, server sims are switched off"
-	CopySimNotStarted    = "Sim request not started"
-	CopyRosterStored     = "Roster snapshot stored"
-	CopyRosterNotInGuild = "Roster snapshot not stored, the character is not in that guild"
-	CopyRosterInvalid    = "Roster snapshot invalid, nothing in it could be stored"
-	CopyRosterUnknown    = "Roster snapshot not stored, the site has not seen this character yet"
+	CopyOutboxIgnored     = "The site does not read this outbox format, so it was ignored"
+	CopyOutboxRefused     = "The site could not read the outbox, so it will not be sent again"
+	CopyOutboxTooLarge    = "Outbox too large to send; the character exports went up alone"
+	CopyCharactersRefused = "The site refused the character list, so it will be sent again only after the next logout"
+	CopyExportStored      = "Export stored"
+	CopyExportUnknown     = "Export not stored, the site has not seen this character yet"
+	CopySimQueued         = "Sim request queued"
+	CopySimNeedsPremium   = "Sim request needs a premium account"
+	CopySimDuplicate      = "Sim request already running this hour"
+	CopySimInvalid        = "Sim request invalid, the site could not sim it"
+	CopySimUnknown        = "Sim request not taken, the site has not seen this character yet"
+	CopySimUnavailable    = "Sim request not taken, server sims are switched off"
+	CopySimNotStarted     = "Sim request not started"
+	CopyRosterStored      = "Roster snapshot stored"
+	CopyRosterNotInGuild  = "Roster snapshot not stored, the character is not in that guild"
+	CopyRosterInvalid     = "Roster snapshot invalid, nothing in it could be stored"
+	CopyRosterUnknown     = "Roster snapshot not stored, the site has not seen this character yet"
 )
 
 // Lines is the answer in plain words, one line per part the outbox
@@ -285,36 +289,82 @@ func ExportsBody(chars []Export, outbox *Outbox) ([]byte, error) {
 	return json.Marshal(in)
 }
 
-// exportBatches splits chars into the posts that carry them: each at
-// most MaxExportsPerPost characters and, with no outbox, at most
-// MaxExportsBody bytes. A character too large on its own goes alone
-// (the site will say so). Order is kept.
+// fill is how many of chars, from the front, fit one post whose body
+// is base bytes before any character: at most MaxExportsPerPost of
+// them and at most MaxExportsBody bytes in all.
+func fill(chars []Export, base int) (int, error) {
+	size, n := base, 0
+	for _, c := range chars {
+		one, err := json.Marshal(c)
+		if err != nil {
+			return 0, err
+		}
+		add := len(one)
+		if n > 0 {
+			add++ // the comma
+		}
+		if n == MaxExportsPerPost || size+add > MaxExportsBody {
+			break
+		}
+		size += add
+		n++
+	}
+	return n, nil
+}
+
+// exportBatches splits chars into the characters-only posts that carry
+// them, each within fill's limits. A character too large on its own
+// goes alone (the site will say so). Order is kept.
 func exportBatches(chars []Export) ([][]Export, error) {
 	empty, err := ExportsBody([]Export{}, nil)
 	if err != nil {
 		return nil, err
 	}
 	var out [][]Export
-	var batch []Export
-	size := len(empty)
-	for _, c := range chars {
-		one, err := json.Marshal(c)
+	for len(chars) > 0 {
+		n, err := fill(chars, len(empty))
 		if err != nil {
 			return nil, err
 		}
-		add := len(one)
-		if len(batch) > 0 {
-			add++ // the comma
-		}
-		if len(batch) > 0 && (len(batch) == MaxExportsPerPost || size+add > MaxExportsBody) {
-			out = append(out, batch)
-			batch, size, add = nil, len(empty), len(one)
-		}
-		batch = append(batch, c)
-		size += add
-	}
-	if len(batch) > 0 {
-		out = append(out, batch)
+		n = max(n, 1)
+		out = append(out, chars[:n:n])
+		chars = chars[n:]
 	}
 	return out, nil
+}
+
+// outboxBatches plans the posts for chars and an outbox. The outbox
+// rides the first post, and the outbox's own character (matched by
+// name, export.character's part before the realm, as the API's
+// resolveOwn matches it) is put at the front of that post so the site
+// can store the outbox's export under it; the first post is then
+// filled to fill's limits with the outbox counted, and the characters
+// left over go as characters-only posts. fits is false when even the
+// first character with the outbox is over MaxExportsBody.
+func outboxBatches(chars []Export, ob *Outbox) (first []Export, rest [][]Export, fits bool, err error) {
+	name, _, _ := strings.Cut(ob.Character, "-")
+	ordered := make([]Export, 0, len(chars))
+	for _, c := range chars {
+		if strings.EqualFold(c.Name, name) {
+			ordered = append(ordered, c)
+		}
+	}
+	for _, c := range chars {
+		if !strings.EqualFold(c.Name, name) {
+			ordered = append(ordered, c)
+		}
+	}
+	base, err := ExportsBody([]Export{}, ob)
+	if err != nil {
+		return nil, nil, false, err
+	}
+	n, err := fill(ordered, len(base))
+	if err != nil || n == 0 {
+		return nil, nil, false, err
+	}
+	rest, err = exportBatches(ordered[n:])
+	if err != nil {
+		return nil, nil, false, err
+	}
+	return ordered[:n:n], rest, true, nil
 }

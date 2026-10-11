@@ -85,6 +85,8 @@ type Server struct {
 	posts        []ExportPost
 	simOutcome   string
 	refuseOutbox bool
+	refuseChars  bool
+	attempts     int
 	clock        func() time.Time
 	acks         map[string]ack
 	inboxReads   int
@@ -218,6 +220,22 @@ func (s *Server) RefuseOutbox(v bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.refuseOutbox = v
+}
+
+// RefuseCharacters makes every export post answer 400 with a field
+// error on "characters", the API's answer to a list it cannot read.
+func (s *Server) RefuseCharacters(v bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.refuseChars = v
+}
+
+// ExportAttempts is how many export posts reached the fake, refused or
+// not.
+func (s *Server) ExportAttempts() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.attempts
 }
 
 // SetClock replaces the clock the fake stamps an ack's export_seen_at
@@ -553,6 +571,15 @@ func (s *Server) addonExports(w http.ResponseWriter, r *http.Request) {
 	raw, err := io.ReadAll(io.LimitReader(r.Body, MaxExportsBody+1))
 	if err != nil {
 		fail(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	s.mu.Lock()
+	s.attempts++
+	refuseChars := s.refuseChars
+	s.mu.Unlock()
+	if refuseChars {
+		fail(w, http.StatusBadRequest, "that export cannot be stored",
+			map[string]string{"characters": "each needs a name and an export of at most 4096 characters"})
 		return
 	}
 	if len(raw) > MaxExportsBody {

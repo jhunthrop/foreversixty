@@ -36,10 +36,13 @@ type refusal interface {
 	Refuses(field string) bool
 }
 
-// refused reports whether err is the site refusing the outbox itself.
-func refused(err error) bool {
+// refused reports whether err is the site refusing one part of the
+// body: "outbox" (the outbox cannot be used) or "characters" (the
+// character list was the wrong shape). Neither is worth sending again
+// unchanged.
+func refused(err error, field string) bool {
 	var r refusal
-	return errors.As(err, &r) && r.Refuses("outbox")
+	return errors.As(err, &r) && r.Refuses(field)
 }
 
 // Options configures a Sync.
@@ -231,9 +234,10 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 
 // upload sends one SavedVariables file's exports, with its outbox when
 // the outbox is one the site has not answered yet, once per version of
-// the file. The outbox never goes alone: the site matches the outbox's
-// export to a character by name against the list that rides with it.
-// It reports whether an outbox reached the site.
+// the file. The outbox never goes alone: it rides the first post, with
+// its own character in it, so the site can match the outbox's export
+// to a character by name; any characters that do not fit go in posts
+// of their own after it. It reports whether an outbox reached the site.
 func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 	saved, at, err := s.o.Cache.Saved(p)
 	if errors.Is(err, fs.ErrNotExist) {
@@ -255,22 +259,36 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 		ob = nil // the site has answered this outbox already
 	}
 	// dropped is an outbox too large to send: on its own (MaxOutboxBytes)
-	// or with the characters it must ride with (MaxExportsBody). It is
-	// answered, and said so, once the characters are up without it.
+	// or with even the one character it must ride with (MaxExportsBody).
+	// It is answered, and said so, once the characters are up without it.
 	var dropped *Outbox
+	var first []Export
+	var rest [][]Export
 	if ob != nil {
-		body, err := ExportsBody(saved.Exports, ob)
-		if err != nil {
-			return false, err
+		fits := len(ob.Body) <= MaxOutboxBytes
+		if fits {
+			if first, rest, fits, err = outboxBatches(saved.Exports, ob); err != nil {
+				return false, err
+			}
 		}
-		if len(ob.Body) > MaxOutboxBytes || len(body) > MaxExportsBody {
+		if !fits {
 			dropped, ob = ob, nil
 		}
 	}
-	var res ExportsResult
+
+	outboxUp := false
 	if ob != nil {
-		res, err = s.o.API.PostAddonExports(ctx, saved.Exports, ob)
-		if err != nil && refused(err) {
+		var res ExportsResult
+		res, err = s.o.API.PostAddonExports(ctx, first, ob)
+		switch {
+		case err == nil:
+			// The outbox is on the site whatever becomes of the posts
+			// after it, so it is answered now and never sent again.
+			outboxUp = true
+			s.markSent(p, ob.key())
+			s.answered(res)
+			err = s.postBatches(ctx, rest)
+		case refused(err, "outbox"):
 			// The site read the outbox and cannot use it. Sending it again
 			// would be refused again, and must not hold the exports back.
 			s.o.Log.Warn(CopyOutboxRefused, "component", "addon", "path", p, "err", err.Error())
@@ -281,25 +299,35 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 	} else {
 		err = s.postCharacters(ctx, saved.Exports)
 	}
+	if refused(err, "characters") {
+		// The site read the list and cannot use it: the identical body
+		// would be refused again on every pass. This version of the file
+		// is done with; the next logout writes a new one.
+		s.o.Log.Warn(CopyCharactersRefused, "component", "addon", "path", p, "err", err.Error())
+		s.uploaded[p] = at
+		return outboxUp, nil
+	}
 	if err != nil {
-		return false, err // unrecorded, so the next pass retries, outbox and all
+		return outboxUp, err // unrecorded, so the next pass retries what is not yet answered
 	}
 	s.uploaded[p] = at
 	s.o.Log.Info("uploaded character exports", "component", "addon",
 		"path", p, "characters", len(saved.Exports), "outbox", ob != nil)
 	if dropped != nil {
-		body, _ := ExportsBody(saved.Exports, dropped)
+		body, _ := ExportsBody(saved.Exports[:1], dropped)
 		s.o.Log.Warn(CopyOutboxTooLarge, "component", "addon", "path", p,
-			"outbox_bytes", len(dropped.Body), "body_bytes", len(body),
+			"outbox_bytes", len(dropped.Body), "smallest_body_bytes", len(body),
 			"outbox_limit", MaxOutboxBytes, "body_limit", MaxExportsBody)
 		s.markSent(p, dropped.key())
 	}
-	if ob == nil {
-		return false, nil
-	}
-	s.markSent(p, ob.key())
+	return outboxUp, nil
+}
+
+// answered logs the site's answer for an outbox, one plain line per
+// part, and keeps the sim request's outcome for the status page.
+func (s *Sync) answered(res ExportsResult) {
 	if res.Outbox == nil {
-		return true, nil // a site that predates the outbox stored the exports only
+		return // a site that predates the outbox stored the exports only
 	}
 	for _, line := range res.Outbox.Lines() {
 		s.o.Log.Info(line, "component", "addon")
@@ -309,7 +337,6 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 		s.status.SimRequestState = st
 		s.mu.Unlock()
 	}
-	return true, nil
 }
 
 // acked takes the status page's line from the inbox's acks: the newest
@@ -357,6 +384,12 @@ func (s *Sync) postCharacters(ctx context.Context, chars []Export) error {
 	if err != nil {
 		return err
 	}
+	return s.postBatches(ctx, batches)
+}
+
+// postBatches sends each batch as a characters-only post, in order,
+// stopping at the first failure.
+func (s *Sync) postBatches(ctx context.Context, batches [][]Export) error {
 	for _, batch := range batches {
 		if _, err := s.o.API.PostAddonExports(ctx, batch, nil); err != nil {
 			return err

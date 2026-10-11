@@ -567,26 +567,63 @@ func TestANullSentFileIsReadAsNothingSentAndDoesNotPanic(t *testing.T) {
 }
 
 // manyCharacters is outboxSaved with n more characters, each export at the API's maximum length.
-func manyCharacters(base string, n int) string {
+func manyCharacters(base string, n int) string { return manyNamed(base, "Char", n, 4096) }
+
+// manyNamed is base with n more characters named prefix000 and on, each export exportLen long.
+func manyNamed(base, prefix string, n, exportLen int) string {
 	var chars strings.Builder
 	for i := range n {
-		fmt.Fprintf(&chars, "\t\t[\"Char%03d-Normal\"] = { [\"name\"] = \"Char%03d\", [\"ruleset\"] = \"normal\", "+
-			"[\"region\"] = \"us\", [\"export\"] = \"FS1:%s\" },\n", i, i, strings.Repeat("x", 4096-4))
+		fmt.Fprintf(&chars, "\t\t[\"%s%03d-Normal\"] = { [\"name\"] = \"%s%03d\", [\"ruleset\"] = \"normal\", "+
+			"[\"region\"] = \"us\", [\"export\"] = \"FS1:%s\" },\n", prefix, i, prefix, i, strings.Repeat("x", exportLen-4))
 	}
 	return strings.Replace(base, "[\"characters\"] = {\n", "[\"characters\"] = {\n"+chars.String(), 1)
 }
 
-func TestAnExportsBodyOverTheBoundSendsTheCharactersWithoutTheOutbox(t *testing.T) {
-	saved := manyCharacters(paddedOutbox(880), 189) // 190 characters in all
+func TestAnOutboxOverTheBoundWithItsCharactersRidesTheFirstOfSeveralPosts(t *testing.T) {
+	saved := manyCharacters(paddedOutbox(880), 189) // 190 characters at the maximum, about 780 KiB
 	path := filepath.Join(t.TempDir(), "ForeverSixty.lua")
 	if err := os.WriteFile(path, []byte(saved), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	ob, err := addon.ScanOutbox(path)
 	if err != nil || ob == nil || len(ob.Body) < 200<<10 || len(ob.Body) > addon.MaxOutboxBytes {
-		t.Fatalf("the outbox is not 200 to 256 KiB: %v, %d bytes", err, len(ob.Body))
+		t.Fatalf("the outbox is not 200 to 256 KiB: %v", err)
 	}
 
+	r := newRig(t, saved)
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	posts := r.posts()
+	if len(posts) < 2 || len(posts[0].Outbox) == 0 {
+		t.Fatalf("posts = %d, the first with %d outbox bytes", len(posts), len(posts[0].Outbox))
+	}
+	names := map[string]bool{}
+	for i, p := range posts {
+		if p.Bytes > addon.MaxExportsBody || (i > 0 && len(p.Outbox) != 0) {
+			t.Errorf("post %d: %d bytes, outbox %d bytes", i+1, p.Bytes, len(p.Outbox))
+		}
+		for _, c := range p.Characters {
+			names[c["name"]] = true
+		}
+	}
+	if posts[0].Characters[0]["name"] != "Obnoxious" {
+		t.Errorf("the outbox's own character leads post 1 as %q", posts[0].Characters[0]["name"])
+	}
+	if len(names) != 190 {
+		t.Errorf("%d distinct characters went up, want 190", len(names))
+	}
+	if strings.Contains(r.logs.String(), "Outbox too large") {
+		t.Errorf("an outbox that fits its first post was dropped:\n%s", r.logs.String())
+	}
+}
+
+func TestAnOutboxThatCannotFitWithItsOwnCharacterIsDropped(t *testing.T) {
+	// The outbox's own character carries a 700 KiB export: with a 200 KiB outbox, no first
+	// post can hold both under the bound.
+	const code = "FS1:1.60.1.70291:warrior:human:371000000/0/0:chest=6627"
+	saved := strings.Replace(paddedOutbox(880), `["export"] = "`+code+`"`,
+		`["export"] = "FS1:`+strings.Repeat("y", 700<<10)+`"`, 1)
 	r := newRig(t, saved)
 	const line = "Outbox too large to send; the character exports went up alone"
 	// Lost to the network: nothing went up alone, so nothing says it did.
@@ -602,12 +639,8 @@ func TestAnExportsBodyOverTheBoundSendsTheCharactersWithoutTheOutbox(t *testing.
 		t.Fatal(err)
 	}
 	posts := r.posts()
-	if len(posts) != 1 || len(posts[0].Characters) != 190 || len(posts[0].Outbox) != 0 {
-		t.Fatalf("posts = %d, first with %d characters, outbox %d bytes",
-			len(posts), len(posts[0].Characters), len(posts[0].Outbox))
-	}
-	if posts[0].Bytes > addon.MaxExportsBody {
-		t.Errorf("the body was %d bytes, over %d", posts[0].Bytes, addon.MaxExportsBody)
+	if len(posts) != 1 || len(posts[0].Characters) != 1 || len(posts[0].Outbox) != 0 {
+		t.Fatalf("posts = %d", len(posts))
 	}
 	if n := strings.Count(r.logs.String(), line); n != 1 {
 		t.Fatalf("the drop was logged %d times:\n%s", n, r.logs.String())
@@ -652,5 +685,80 @@ func TestCharactersOverTheBoundGoUpInSeveralPosts(t *testing.T) {
 	}
 	if len(r.posts()) != len(posts) {
 		t.Error("a quiet pass uploaded again")
+	}
+}
+
+// Fix round 3 -------------------------------------------------------------------------------
+
+func TestAnOutboxRidesTheFirstBatchWithItsOwnCharacter(t *testing.T) {
+	// "Aaa" sorts before Obnoxious and "Zed" after it, so the outbox's own character is last,
+	// then first, in the folder's order.
+	for _, prefix := range []string{"Aaa", "Zed"} {
+		t.Run(prefix, func(t *testing.T) {
+			r := newRig(t, manyNamed(outboxSaved("2026-11-04 14:10", 1), prefix, 200, 64)) // 201 characters
+			if err := r.poll(); err != nil {
+				t.Fatal(err)
+			}
+			posts := r.posts()
+			if len(posts) != 2 {
+				t.Fatalf("posts = %d, want 2", len(posts))
+			}
+			first, second := posts[0], posts[1]
+			if len(first.Outbox) == 0 || len(second.Outbox) != 0 {
+				t.Fatalf("the outbox rode post 2 or neither: %d, %d bytes", len(first.Outbox), len(second.Outbox))
+			}
+			own := false
+			for _, c := range first.Characters {
+				own = own || c["name"] == "Obnoxious"
+			}
+			if !own {
+				t.Error("the outbox's own character is not in the post that carries the outbox")
+			}
+			names := map[string]bool{}
+			for i, p := range posts {
+				if len(p.Characters) > addon.MaxExportsPerPost || p.Bytes > addon.MaxExportsBody {
+					t.Errorf("post %d: %d characters, %d bytes", i+1, len(p.Characters), p.Bytes)
+				}
+				for _, c := range p.Characters {
+					names[c["name"]] = true
+				}
+			}
+			if len(names) != 201 {
+				t.Errorf("%d distinct characters went up, want 201", len(names))
+			}
+			// The site matched it: the outbox was stored, acked and logged as such.
+			if !strings.Contains(r.logs.String(), "Export stored") || !r.sync.Status().SeenAt.Equal(seen) {
+				t.Errorf("the outbox was not matched to its character:\n%s", r.logs.String())
+			}
+		})
+	}
+}
+
+func TestARefusedCharacterListIsNotSentAgainUntilTheFileChanges(t *testing.T) {
+	r := newRig(t, noOutbox)
+	r.srv.RefuseCharacters(true)
+	if err := r.poll(); err != nil {
+		t.Fatalf("a refused character list failed the pass: %v", err)
+	}
+	const line = "The site refused the character list"
+	for i := 1; i <= 3; i++ {
+		if err := r.sync.Poll(t.Context(), r.at.Add(time.Duration(i)*time.Second)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if n := r.srv.ExportAttempts(); n != 1 {
+		t.Errorf("the identical body was sent %d times", n)
+	}
+	if n := strings.Count(r.logs.String(), line); n != 1 {
+		t.Errorf("the refusal was logged %d times:\n%s", n, r.logs.String())
+	}
+	// The next logout is a new body, and goes up.
+	r.srv.RefuseCharacters(false)
+	r.save(noOutbox)
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	if len(r.posts()) != 1 {
+		t.Errorf("the next logout did not upload: %d posts", len(r.posts()))
 	}
 }
