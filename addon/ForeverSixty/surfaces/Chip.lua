@@ -104,12 +104,21 @@ function Chip.hideFor(level)
 	return untilLevel, string.format(L.chipHiddenLine, untilLevel)
 end
 
---- A talent's name for the chip, or "the next talent"; never a cell like "3:2".
+--- A talent's name, or nil for one the data cannot name; never a cell like "3:2".
 function Chip.talentName(talent)
 	if type(talent) == "table" and type(talent.name) == "string" and talent.name ~= "" then
 		return talent.name
 	end
-	return L.chipNextTalent
+	return nil
+end
+
+--- "Next talent at 22: Improved Tactical Mastery", or "Next talent at 22"
+--- for a talent the data cannot name.
+local function nextTalentAt(at, name)
+	if name == nil then
+		return string.format(L.chipNextTalentAtUnnamed, at)
+	end
+	return string.format(L.chipNextTalentAt, at, name)
 end
 
 --- "Gnome Rogue. Pick a path:", one colour throughout (the card's gold).
@@ -174,10 +183,12 @@ local function nextState(input)
 	if point == nil or (input.level or 0) >= firstTalentLevel() then
 		return nil
 	end
-	local name = input.pointName or L.chipNextTalent
+	local name = input.pointName
 	local text
 	if (input.level or 0) < Chip.NAME_FIRST_TALENT_FROM then
 		text = string.format(L.chipFirstTalent, at)
+	elseif name == nil then
+		text = nextTalentAt(at, nil)
 	else
 		text = string.format(L.chipNextAt, at, name)
 	end
@@ -187,7 +198,7 @@ local function nextState(input)
 		icon = input.pointIcon or input.classIcon,
 		crop = input.pointIcon ~= nil,
 		text = text,
-		tip = string.format(L.chipNextTalentAt, at, name),
+		tip = nextTalentAt(at, name),
 		muted = true,
 		info = true,
 		action = changePath and "path" or "talents",
@@ -234,7 +245,8 @@ local function upgradeState(input)
 		-- The gain, kept whole when the short form must be cut: ", +4.2 DPS".
 		keep = string.format(L.chipEquipShort, "", gain),
 		action = not input.inCombat and "equip" or nil,
-		hint = not input.inCombat and L.chipHintEquip or nil,
+		-- In combat the hint says why a click does nothing.
+		hint = input.inCombat and L.chipInCombat or L.chipHintEquip,
 	}
 end
 
@@ -315,7 +327,7 @@ local function nextLine(input)
 	if point == nil or (input.level or 0) < firstTalentLevel() or (input.unspent or 0) > 0 then
 		return nil
 	end
-	return string.format(L.chipNextTalentAt, at, input.pointName or L.chipNextTalent)
+	return nextTalentAt(at, input.pointName)
 end
 
 --- The chip, from a plain table:
@@ -501,10 +513,7 @@ end
 
 --- The specs the "pick a path" card offers for a class: every spec the data
 --- has a default build for, in talent-tree order, each { slug, name,
---- playstyle, easiest }. A spec that shares a tree ("feral-bear") sits beside
---- it. The data carries no "easiest to level" flag, so `easiest` marks the
---- class default Follow.ensureDefault loads with no points spent
---- (Gear.specOf on empty ranks: the first tree).
+--- playstyle }. A spec that shares a tree ("feral-bear") sits beside it.
 function Chip.pathSpecs(data, classSlug)
 	local list = {}
 	local builds = type(data) == "table" and type(data.defaultBuilds) == "table" and data.defaultBuilds or nil
@@ -512,7 +521,6 @@ function Chip.pathSpecs(data, classSlug)
 		return list
 	end
 	local class = type(data.classes) == "table" and data.classes[classSlug] or nil
-	local default = class ~= nil and Gear.specOf(data, classSlug, {}) or nil
 	local prefix = classSlug .. "-"
 	for slug in pairs(builds) do
 		if type(slug) == "string" and slug:sub(1, #prefix) == prefix then
@@ -521,7 +529,6 @@ function Chip.pathSpecs(data, classSlug)
 				slug = slug,
 				name = Talents.titleCase(part),
 				playstyle = L.specPlaystyle[slug],
-				easiest = slug == default,
 				tree = treeIndex(class, part),
 			}
 		end
@@ -1244,16 +1251,19 @@ local function cardHeading()
 end
 
 --- Escape closes the card (UISpecialFrames); so does a click anywhere but
---- the card and the chip (GLOBAL_MOUSE_DOWN, where the client has it, only
---- listened to while the card is open). Neither chooses anything.
+--- the card and the chip (GLOBAL_MOUSE_DOWN, registered once when the card
+--- is built and acted on only while it is open). Neither chooses anything.
+--- A client that refuses the event gets one /fs diag line saying to press
+--- Escape instead.
 local function closeOnClickOutside(card)
-	card:SetScript("OnShow", function(self)
-		Theme.registerEvent(self, "GLOBAL_MOUSE_DOWN", true)
-	end)
-	card:SetScript("OnHide", function(self)
-		Theme.unregisterEvent(self, "GLOBAL_MOUSE_DOWN")
-	end)
+	if not Theme.tryRegisterEvent(card, "GLOBAL_MOUSE_DOWN") then
+		Theme.note(L.diagNoClickOutside)
+		return
+	end
 	card:SetScript("OnEvent", function(self)
+		if not self:IsShown() then
+			return
+		end
 		local overCard = type(self.IsMouseOver) == "function" and self:IsMouseOver()
 		local overChip = Chip.frame ~= nil and type(Chip.frame.IsMouseOver) == "function" and Chip.frame:IsMouseOver()
 		if not overCard and not overChip then
@@ -1275,10 +1285,9 @@ local function cardNote(card, text, hexKey, x, y, width)
 end
 
 --- The card under the chip: a heading in gold, then one gold button per spec
---- (its label left-aligned) with its playstyle line under it, the class
---- default tagged "Easiest to level", and a muted footer saying what choosing
---- does. Laid out top to bottom from the card's own corner. Built once; the
---- class does not change.
+--- (its label left-aligned) with its playstyle line under it, and a muted
+--- footer saying what choosing does. Laid out top to bottom from the card's
+--- own corner. Built once; the class does not change.
 function Chip.ensureCard(specs)
 	if Chip.card ~= nil then
 		return Chip.card
@@ -1306,11 +1315,6 @@ function Chip.ensureCard(specs)
 		if label ~= nil then
 			label:ClearAllPoints()
 			label:SetPoint("LEFT", button, "LEFT", S.chipCardLabelInset, 0)
-		end
-		if spec.easiest then
-			local tag = sizedText(card, S.chipCardNote, "gold")
-			tag:SetText(L.chipEasiest)
-			tag:SetPoint("LEFT", button, "RIGHT", S.chipCardLabelInset, 0)
 		end
 		y = y + S.buttonHeight + S.gap
 		if spec.playstyle ~= nil then

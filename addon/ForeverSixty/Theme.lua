@@ -120,7 +120,7 @@ Theme.SIZES = {
 	--- The card's playstyle, tag and footer lines are `chipCardNote` px, and
 	--- they and the button labels start `chipCardLabelInset` in from the button's edge.
 	chipCardGap = 4,
-	chipCardWidth = 260,
+	chipCardWidth = 240,
 	chipCardNote = 11,
 	chipCardLabelInset = 8,
 	chipCardPadding = 12,
@@ -700,23 +700,20 @@ function Theme.registerSettingsPanel(panel, name)
 end
 
 --- Register one event, recording rather than raising when the client has
---- never heard of it. This is the only RegisterEvent call in the addon.
---- `optional`: a nicety the addon works without (the path card's click
---- outside), recorded as a finding rather than a fault.
-function Theme.registerEvent(frame, event, optional)
-	local ok = pcall(frame.RegisterEvent, frame, event)
+--- never heard of it. With Theme.tryRegisterEvent, the only RegisterEvent
+--- calls in the addon.
+function Theme.registerEvent(frame, event)
+	local ok = Theme.tryRegisterEvent(frame, event)
 	if not ok then
-		local note = optional and Theme.noteInfo or Theme.note
-		note(string.format(L.diagNoEvent, event))
+		Theme.note(string.format(L.diagNoEvent, event))
 	end
 	return ok
 end
 
---- The other half of an optional registration; quiet either way.
-function Theme.unregisterEvent(frame, event)
-	if type(frame.UnregisterEvent) == "function" then
-		pcall(frame.UnregisterEvent, frame, event)
-	end
+--- Register one event and say whether the client took it, noting nothing:
+--- for a caller that words the refusal itself (the path card's click outside).
+function Theme.tryRegisterEvent(frame, event)
+	return (pcall(frame.RegisterEvent, frame, event))
 end
 
 --- Run `action` later. A client with no C_Timer says so rather than

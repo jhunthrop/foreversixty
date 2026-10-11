@@ -547,7 +547,8 @@ local L = {
 	diagChipShortened = "Chip: shown, the line was shortened",
 	-- /fs diag with nothing broken.
 	diagAllWorking = "Everything is working.",
-	diagDataAddonMissing = "The Forever Sixty Data addon is not installed. Install it from the site.",
+	diagDataAddonMissingInfo = "The Forever Sixty Data addon is not installed; scores show once it is.",
+	diagNoClickOutside = "Clicking outside the path card does not close it on this client; press Escape.",
 	diagChipHidden = "Chip: hidden. /fs chip brings it back.",
 	diagChipCombat = "Chip: hidden in combat",
 	diagChipCinematic = "Chip: hidden during a cinematic",
@@ -556,6 +557,8 @@ local L = {
 	chipNextAt = "Next at %d: %s",
 	-- The hover's fuller form of that line, and the chip's line below level 8 (no name).
 	chipNextTalentAt = "Next talent at %d: %s",
+	-- The same for a talent the data cannot name.
+	chipNextTalentAtUnnamed = "Next talent at %d",
 	chipFirstTalent = "First talent at %d",
 	-- A talent the data has no name for, never its cell ("3:2").
 	chipNextTalent = "the next talent",
@@ -579,8 +582,6 @@ local L = {
 	chipRaceClass = "%s %s",
 	-- Under the card's buttons: what choosing does.
 	chipPathFooter = "Loads the leveling build. You can change it later.",
-	-- Beside the class's default spec on the card.
-	chipEasiest = "Easiest to level",
 	-- One line under each spec's button on the "pick a path" card: plain words,
 	-- at most eight, naming the weapons or the signature talents the tree is
 	-- known for in this client's data (Data.classes tabs). Keyed by spec slug.

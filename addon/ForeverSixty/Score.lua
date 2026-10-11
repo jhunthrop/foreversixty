@@ -101,11 +101,16 @@ end
 
 --- Whether the record can be used, and why not when it cannot:
 --- { available, absent, generated, stale, reason }. /fs diag says once which
---- cause it is: not installed (`absent`), or there but too old to read.
+--- cause it is: not installed (`absent`, a finding, since the data addon is
+--- optional), or there but too old to read (a fault).
 function Score.status()
 	local data = _G.ForeverSixtyData
 	if data == nil then
-		noteOnce(L.diagDataAddonMissing)
+		-- Optional, so not a fault: one finding, outside "Not working:".
+		if not noted[L.diagDataAddonMissingInfo] then
+			noted[L.diagDataAddonMissingInfo] = true
+			Theme.noteInfo(L.diagDataAddonMissingInfo)
+		end
 		return { available = false, absent = true, reason = L.ratingsNotInstalled }
 	end
 	if not wellFormed(data) then

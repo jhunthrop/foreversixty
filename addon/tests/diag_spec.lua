@@ -31,6 +31,25 @@ describe("Theme.diagReport", function()
 		assert.are.same({ "Everything is working." }, Theme.diagReport({}, nil, {}))
 	end)
 
+	it("says everything is working above a finding such as a missing data addon", function()
+		Theme.noteInfo(L.diagDataAddonMissingInfo)
+		assert.are.same({ "Everything is working.", L.diagDataAddonMissingInfo },
+			Theme.diagReport(Theme.diagnostics(), nil, Theme.infoNotes()))
+	end)
+
+	-- Fix round 4: the path card registers its click-outside once, and a client
+	-- that refuses it gets one fault line saying to press Escape.
+	it("tries an event without noting anything, so the caller words the refusal", function()
+		local refusing = { RegisterEvent = function() error("unknown event") end }
+		assert.is_false(Theme.tryRegisterEvent(refusing, "GLOBAL_MOUSE_DOWN"))
+		local taking = { RegisterEvent = function() end }
+		assert.is_true(Theme.tryRegisterEvent(taking, "GLOBAL_MOUSE_DOWN"))
+		assert.are.same({}, Theme.diagnostics())
+		assert.are.same({}, Theme.infoNotes())
+		assert.are.equal("Clicking outside the path card does not close it on this client; press Escape.",
+			L.diagNoClickOutside)
+	end)
+
 	it("forgets both lists on reset", function()
 		Theme.note("x")
 		Theme.noteInfo("y")

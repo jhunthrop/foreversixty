@@ -189,7 +189,8 @@ describe("Chip.model", function()
 			upgrades = { { name = "Chausses of Westfall", delta = 4.2, unit = "dps" } } }))
 		assert.are.equal(string.format(L.chipEquip, "Chausses of Westfall", L.chipInCombat), model.chosen.text)
 		assert.is_nil(model.chosen.action)
-		assert.is_nil(model.chosen.hint)
+		-- Fix round 4: "In combat" is the hint.
+		assert.are.equal(L.chipInCombat, model.chosen.hint)
 	end)
 
 	it("fades to 25 percent and ignores the mouse in combat when the player keeps it shown", function()
@@ -525,10 +526,21 @@ describe("Chip.isComplete and Chip.raidCheckLive", function()
 end)
 
 describe("Chip.talentName", function()
-	it("names the talent, or says the next talent, never a cell like 3:2", function()
+	-- Fix round 4: an unknown name is nil, so each line words it for itself.
+	it("names the talent, or nothing, never a cell like 3:2", function()
 		assert.are.equal("Deflection", Chip.talentName({ name = "Deflection" }))
-		assert.are.equal(L.chipNextTalent, Chip.talentName(nil))
-		assert.are.equal("the next talent", L.chipNextTalent)
+		assert.is_nil(Chip.talentName(nil))
+		assert.is_nil(Chip.talentName({ name = "" }))
+	end)
+
+	it("says Take the next talent, and Next talent at N with no name, for a talent it cannot name", function()
+		local point = Chip.model(inputs({ level = 22, progress = pointAt(13, 22), unspent = 1 }))
+		assert.are.equal("Take the next talent", point.chosen.text)
+		local later = Chip.model(inputs({ level = 21, progress = pointAt(13, 22) }))
+		assert.are.equal("Next talent at 22", later.nextLine)
+		local nine = Chip.model(inputs({ level = 9, progress = pointAt(1, 10) }))
+		assert.are.equal("Next talent at 10", nine.chosen.text)
+		assert.are.equal("Next talent at 10", nine.chosen.tip)
 	end)
 end)
 
@@ -595,11 +607,11 @@ describe("Chip.pathSpecs", function()
 		assert.are.same({ "warrior-arms", "warrior-fury", "warrior-protection" }, slugs(specs))
 		assert.are.equal("Arms", specs[1].name)
 		assert.are.equal(L.specPlaystyle["warrior-arms"], specs[1].playstyle)
-		-- Fix round 3: the data has no "easiest" flag, so the class default
-		-- Follow.ensureDefault loads with no points spent (the first tree) is tagged.
-		assert.is_true(specs[1].easiest)
-		assert.is_false(specs[2].easiest)
-		assert.is_false(specs[3].easiest)
+		-- Fix round 4: no "Easiest to level" tag; the data has no such flag.
+		for _, spec in ipairs(specs) do
+			assert.is_nil(spec.easiest)
+		end
+		assert.is_nil(L.chipEasiest)
 	end)
 
 	it("keeps a spec that shares a tree beside it", function()
