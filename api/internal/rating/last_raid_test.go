@@ -55,7 +55,7 @@ func TestBiggestLossNamesTheComponentThatCostTheMostPoints(t *testing.T) {
 			lossCard(part{"output", 95, 0.4}, part{"survival", 100, 0.2}, part{"mechanics", 100, 0.1},
 				part{"utility", 100, 0.1}, part{"preparation", 100, 0.1}, part{"activity", 40, 0.1}),
 			"downtime", 30},
-		{"downtime counts only the time alive",
+		{"downtime is the activity component's own idle time, rounded",
 			diedAt(160000),
 			lossCard(part{"output", 95, 0.4}, part{"survival", 100, 0.2}, part{"mechanics", 100, 0.1},
 				part{"utility", 100, 0.1}, part{"preparation", 100, 0.1}, part{"activity", 40, 0.1}),
@@ -105,7 +105,16 @@ func TestBiggestLossNamesTheComponentThatCostTheMostPoints(t *testing.T) {
 			"", 0},
 	} {
 		t.Run(c.name, func(t *testing.T) {
-			phrase, seconds := biggestLoss(c.fight, row, c.card)
+			// The Activity component's idle time (ratingengine.ActivityIdleMS): the downtime
+			// cases give their own; every other case gets 7 s it must not report.
+			idle, ok := map[string]int64{
+				"downtime: the seconds alive and idle":                        30000,
+				"downtime is the activity component's own idle time, rounded": 9600,
+			}[c.name]
+			if !ok {
+				idle = 7000
+			}
+			phrase, seconds := biggestLoss(c.fight, row, c.card, idle)
 			if phrase != c.phrase || seconds != c.lossSeconds {
 				t.Fatalf("biggestLoss = %q, %d; want %q, %d", phrase, seconds, c.phrase, c.lossSeconds)
 			}

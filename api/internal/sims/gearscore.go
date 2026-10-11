@@ -50,8 +50,10 @@ type gearData struct {
 	full    map[string]map[string]float64            // build -> spec -> FullGearScore
 	// dpsPerPoint and raids are lootvalues.go's per-build reads of dps-per-point.json
 	// and loot.json.
-	dpsPerPoint map[string]map[string]float64  // build -> spec -> DPS per reference point
-	raids       map[string]map[string]raidLoot // build -> raidKey -> loot
+	dpsPerPoint       map[string]map[string]DPSPoint // build -> spec -> DPS per reference point
+	dpsPerPointLogged map[string]bool                // builds whose file failed to read, logged once
+	raids             map[string]map[string]raidLoot // build -> raidKey -> loot
+	bis               map[string]map[string][][]int  // build -> spec -> band-60 sets (bestInSlot)
 }
 
 var (
@@ -71,10 +73,12 @@ func SetGearData(t *trees.Data, dir string) {
 	}
 	gearSrc = &gearData{
 		trees: t, dir: dir,
-		weights:     map[string]map[string]map[string]float64{},
-		full:        map[string]map[string]float64{},
-		dpsPerPoint: map[string]map[string]float64{},
-		raids:       map[string]map[string]raidLoot{},
+		weights:           map[string]map[string]map[string]float64{},
+		full:              map[string]map[string]float64{},
+		dpsPerPoint:       map[string]map[string]DPSPoint{},
+		dpsPerPointLogged: map[string]bool{},
+		raids:             map[string]map[string]raidLoot{},
+		bis:               map[string]map[string][][]int{},
 	}
 }
 
@@ -171,7 +175,7 @@ func FullGearScore(ctx context.Context, build, spec string) (float64, error) {
 	if err != nil {
 		return 0, err
 	}
-	sets, err := loadBestInSlot(src.dir, build, spec)
+	sets, err := src.bestInSlot(build, spec)
 	if err != nil {
 		return 0, err
 	}
@@ -197,6 +201,27 @@ func FullGearScore(ctx context.Context, build, spec string) (float64, error) {
 	src.full[build][spec] = best
 	src.mu.Unlock()
 	return best, nil
+}
+
+// bestInSlot is loadBestInSlot of build and spec, kept once read; an error is not kept.
+func (g *gearData) bestInSlot(build, spec string) ([][]int, error) {
+	g.mu.Lock()
+	sets, ok := g.bis[build][spec]
+	g.mu.Unlock()
+	if ok {
+		return sets, nil
+	}
+	sets, err := loadBestInSlot(g.dir, build, spec)
+	if err != nil {
+		return nil, err
+	}
+	g.mu.Lock()
+	if g.bis[build] == nil {
+		g.bis[build] = map[string][][]int{}
+	}
+	g.bis[build][spec] = sets
+	g.mu.Unlock()
+	return sets, nil
 }
 
 // loadBestInSlot reads <dir>/<build>/bis/<spec>.json's band-60 sets, each as

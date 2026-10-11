@@ -107,8 +107,8 @@ func (s *Service) RequestFromAddon(ctx context.Context, userID int64, characterK
 		return "", fmt.Errorf("sims: check server sims for %d: %w", userID, err)
 	}
 	if !allowed {
-		return RequestPremiumRequired, s.Store.RecordAddonRequest(ctx, userID, characterKey, in.RequestedAt,
-			SimRequestStateNeedsPremium)
+		s.recordRefusal(ctx, userID, characterKey, in.RequestedAt, SimRequestStateNeedsPremium)
+		return RequestPremiumRequired, nil
 	}
 	_, ref, ok, err := s.Store.SimInput(ctx, characterKey)
 	if err != nil {
@@ -121,7 +121,8 @@ func (s *Service) RequestFromAddon(ctx context.Context, userID int64, characterK
 	char, err := characterFromCode(name, in.GearCode)
 	if err != nil {
 		s.logger().Warn("sims", "op", "addon request", "character", characterKey, "err", err)
-		return RequestInvalid, s.Store.RecordAddonRequest(ctx, userID, characterKey, in.RequestedAt, SimRequestStateInvalid)
+		s.recordRefusal(ctx, userID, characterKey, in.RequestedAt, SimRequestStateInvalid)
+		return RequestInvalid, nil
 	}
 	char.Buffs = s.recordedBuffs(ctx, ref)
 	req := simapi.SimRequest{
@@ -134,15 +135,19 @@ func (s *Service) RequestFromAddon(ctx context.Context, userID int64, characterK
 	}
 	if err := req.ValidateLane(simapi.LaneServer); err != nil {
 		s.logger().Warn("sims", "op", "addon request", "character", characterKey, "err", err)
-		return RequestInvalid, s.Store.RecordAddonRequest(ctx, userID, characterKey, in.RequestedAt, SimRequestStateInvalid)
+		s.recordRefusal(ctx, userID, characterKey, in.RequestedAt, SimRequestStateInvalid)
+		return RequestInvalid, nil
 	}
 
 	id := auth.Base32ID(auth.ReportIDChars)
-	queued, err := s.Store.QueueAddonRequest(ctx, id, userID, characterKey, in.RequestedAt, req)
+	queued, another, err := s.Store.QueueAddonRequest(ctx, id, userID, characterKey, in.RequestedAt, req)
 	if err != nil {
 		return "", err
 	}
 	if !queued {
+		if another {
+			s.recordRefusal(ctx, userID, characterKey, in.RequestedAt, SimRequestStateDuplicate)
+		}
 		return RequestDuplicate, nil
 	}
 	if err := s.Jobs.Run(ctx, SimRunJobCommand, id); err != nil {
@@ -162,25 +167,36 @@ func (s *Service) RequestFromAddon(ctx context.Context, userID int64, characterK
 	return RequestQueued, nil
 }
 
+// recordRefusal records an in-game request that started no run, for the
+// inbox ack. It is bookkeeping: the export that carried the request is
+// already stored and the outbox post has its answer, so a failed write is
+// logged and never fails the post.
+func (s *Service) recordRefusal(ctx context.Context, userID int64, characterKey, requestedAt, state string) {
+	if err := s.Store.RecordAddonRequest(ctx, userID, characterKey, requestedAt, state); err != nil {
+		s.logger().Warn("sims", "op", "addon request record", "character", characterKey, "state", state, "err", err)
+	}
+}
+
 // QueueAddonRequest writes the queued sims row for an addon request and
-// records the request against the character, unless the same request was
-// already started a run or another started one inside SimRequestWindow; it
-// reports whether it queued. A request turned away because another started
-// a run inside the window is recorded as a duplicate (the ack says why
-// nothing happened); the same request posted again is not recorded twice.
-// Only a request that started a run counts against the window: one refused
-// for want of premium, say, may run once the account can. The check and the
-// writes are one transaction under a per-character lock, so two posts of the
-// same outbox racing each other queue one run.
-func (s *Store) QueueAddonRequest(ctx context.Context, id string, userID int64, characterKey, requestedAt string, req simapi.SimRequest) (bool, error) {
+// records the request against the character, unless the same request
+// already started a run or another started one inside SimRequestWindow. It
+// reports whether it queued and, when it did not, whether another request
+// was the reason: the caller records this one as a duplicate, so the ack
+// says why nothing happened, while the same request posted again is the
+// first request and is not recorded twice. Only a request that started a
+// run counts against the window: one refused for want of premium, say, may
+// run once the account can. The check and the writes are one transaction
+// under a per-character lock, so two posts of the same outbox racing each
+// other queue one run.
+func (s *Store) QueueAddonRequest(ctx context.Context, id string, userID int64, characterKey, requestedAt string, req simapi.SimRequest) (queued, another bool, err error) {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
-		return false, fmt.Errorf("sims: queue addon request %s: begin: %w", characterKey, err)
+		return false, false, fmt.Errorf("sims: queue addon request %s: begin: %w", characterKey, err)
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 	if _, err := tx.Exec(ctx,
 		`select pg_advisory_xact_lock(hashtext('addon_sim_requests:' || $1))`, characterKey); err != nil {
-		return false, fmt.Errorf("sims: lock addon requests for %s: %w", characterKey, err)
+		return false, false, fmt.Errorf("sims: lock addon requests for %s: %w", characterKey, err)
 	}
 	var same, recent bool
 	if err := tx.QueryRow(ctx,
@@ -189,22 +205,13 @@ func (s *Store) QueueAddonRequest(ctx context.Context, id string, userID int64, 
 		   from addon_sim_requests
 		  where character_key = $1 and coalesce(state, $4) = $4`,
 		characterKey, requestedAt, SimRequestWindow.Seconds(), SimRequestStateQueued).Scan(&same, &recent); err != nil {
-		return false, fmt.Errorf("sims: read addon requests for %s: %w", characterKey, err)
+		return false, false, fmt.Errorf("sims: read addon requests for %s: %w", characterKey, err)
 	}
-	if same {
-		return false, nil
-	}
-	if recent {
-		if err := recordAddonRequest(ctx, tx, userID, characterKey, requestedAt, SimRequestStateDuplicate); err != nil {
-			return false, err
-		}
-		if err := tx.Commit(ctx); err != nil {
-			return false, fmt.Errorf("sims: record addon request %s: commit: %w", characterKey, err)
-		}
-		return false, nil
+	if same || recent {
+		return false, !same, nil
 	}
 	if err := queueRow(ctx, tx, id, userID, req); err != nil {
-		return false, err
+		return false, false, err
 	}
 	if _, err := tx.Exec(ctx,
 		`insert into addon_sim_requests (character_key, requested_at, user_id, sim_id, state)
@@ -212,16 +219,17 @@ func (s *Store) QueueAddonRequest(ctx context.Context, id string, userID int64, 
 		 on conflict (character_key, requested_at) do update set
 		   user_id = excluded.user_id, sim_id = excluded.sim_id, state = excluded.state, created_at = now()`,
 		characterKey, requestedAt, userID, id, SimRequestStateQueued); err != nil {
-		return false, fmt.Errorf("sims: record addon request for %s: %w", characterKey, err)
+		return false, false, fmt.Errorf("sims: record addon request for %s: %w", characterKey, err)
 	}
 	if err := tx.Commit(ctx); err != nil {
-		return false, fmt.Errorf("sims: queue addon request %s: commit: %w", characterKey, err)
+		return false, false, fmt.Errorf("sims: queue addon request %s: commit: %w", characterKey, err)
 	}
-	return true, nil
+	return true, false, nil
 }
 
 // RecordAddonRequest records an in-game request that started no run, with the
-// state that says why (SimRequestStateNeedsPremium, SimRequestStateInvalid),
+// state that says why (SimRequestStateNeedsPremium, SimRequestStateDuplicate,
+// SimRequestStateInvalid),
 // for the inbox ack. A request already recorded as having started a run keeps
 // that record.
 func (s *Store) RecordAddonRequest(ctx context.Context, userID int64, characterKey, requestedAt, state string) error {

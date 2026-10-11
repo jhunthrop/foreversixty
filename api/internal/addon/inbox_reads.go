@@ -33,13 +33,19 @@ type lastRaidFight struct {
 // is not a rated fight here: its overall is a zero it cannot support. The boss's name is
 // the fight's own name, else the newest name any fight recorded for the encounter (the
 // names rankings.Store.EncounterNames reads).
+//
+// A fight rated before migration 0036 has no stored facts (deaths is NULL) and is left out
+// rather than shown as zeros; the report is still the one chosen, so a last raid whose
+// every fight predates 0036 reads as no bosses and gets no message. A backfill re-rate
+// fills the facts; whether to run one is the ops team's call.
 func (s *Store) lastRaidFights(ctx context.Context, keys []string, since time.Time) ([]lastRaidFight, error) {
 	rows, err := s.Pool.Query(ctx,
 		`with mine as (
 		   select rs.player_key, rs.report_id, rs.fight_index, rs.encounter_id, rs.fought_at, rs.overall,
 		          coalesce(rs.class, '') as class, coalesce(rs.spec, '') as spec,
 		          coalesce(rs.biggest_loss, '') as biggest_loss, coalesce(rs.loss_seconds, 0) as loss_seconds,
-		          coalesce(rs.deaths, 0) as deaths, coalesce(rs.consumables_missed, '{}') as consumables_missed
+		          coalesce(rs.deaths, 0) as deaths, coalesce(rs.consumables_missed, '{}') as consumables_missed,
+		          rs.deaths is not null as known
 		     from rating_scores rs join reports r on r.id = rs.report_id
 		    where rs.player_key = any($1) and r.visibility <> 'private'
 		      and not coalesce(rs.insufficient, false) and rs.fought_at >= $2
@@ -57,6 +63,7 @@ func (s *Store) lastRaidFights(ctx context.Context, keys []string, since time.Ti
 		   join newest n on n.player_key = m.player_key and n.report_id = m.report_id
 		   join reports r on r.id = m.report_id
 		   left join fights f on f.report_id = m.report_id and f.fight_index = m.fight_index
+		  where m.known
 		  order by m.player_key, m.fought_at, m.fight_index`, keys, since)
 	if err != nil {
 		return nil, fmt.Errorf("addon: read last raids: %w", err)

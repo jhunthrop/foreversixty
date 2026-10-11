@@ -46,9 +46,11 @@ type LastRaidFacts struct {
 	ConsumablesMissed []string
 }
 
-// lastRaidFacts works out row's facts from its scored card and the fight.
-func lastRaidFacts(fight summary.Summary, row summary.RosterRow, card ratingengine.Card) LastRaidFacts {
-	phrase, seconds := biggestLoss(fight, row, card)
+// lastRaidFacts works out row's facts from its scored card and the fight. idleMS is the
+// Activity component's own idle time for the player (ratingengine.ActivityIdleMS, under
+// the curated table and assignments the card was scored with).
+func lastRaidFacts(fight summary.Summary, row summary.RosterRow, card ratingengine.Card, idleMS int64) LastRaidFacts {
+	phrase, seconds := biggestLoss(fight, row, card, idleMS)
 	return LastRaidFacts{
 		Deaths:            deathsOf(fight, row),
 		BiggestLoss:       phrase,
@@ -62,7 +64,8 @@ func lastRaidFacts(fight summary.Summary, row summary.RosterRow, card ratingengi
 // named in plain words, and the seconds that go with it. An excluded component cost
 // nothing (it was not scored); a tie goes to the component the card lists first.
 //
-//	activity    -> "downtime"; seconds: the time alive with nothing done
+//	activity    -> "downtime"; seconds: idleMS, the Activity component's own measure of
+//	               the time alive, outside downtime and assignment windows, with nothing done
 //	survival    -> after a death in the first half of the fight, "dead early"; after a
 //	               later one, "died to <the engine's cause, lower-cased>", or "a death"
 //	               when the log never named a cause; with no death (avoidable damage
@@ -73,7 +76,7 @@ func lastRaidFacts(fight summary.Summary, row summary.RosterRow, card ratingengi
 //	utility     -> "utility"
 //
 // For anything but downtime, seconds is the time the player lay dead (0 alive).
-func biggestLoss(fight summary.Summary, row summary.RosterRow, card ratingengine.Card) (string, int) {
+func biggestLoss(fight summary.Summary, row summary.RosterRow, card ratingengine.Card, idleMS int64) (string, int) {
 	var worst *ratingengine.Component
 	worstCost := 0.0
 	for i := range card.Components {
@@ -95,7 +98,7 @@ func biggestLoss(fight summary.Summary, row summary.RosterRow, card ratingengine
 	}
 	switch worst.Name {
 	case ratingengine.ComponentNameActivity:
-		return LossDowntime, downtimeSeconds(fight, row, deathAt, died)
+		return LossDowntime, msToSeconds(idleMS)
 	case ratingengine.ComponentNameSurvival:
 		if !died {
 			return LossAvoidable, 0
@@ -156,20 +159,6 @@ func deathsOf(fight summary.Summary, row summary.RosterRow) int {
 		return row.Deaths
 	}
 	return n
-}
-
-// downtimeSeconds is the time the player was alive and did nothing: the fight up to their
-// first death (or its end) less the time the log counts them active.
-func downtimeSeconds(fight summary.Summary, row summary.RosterRow, deathAt int64, died bool) int {
-	alive := fight.DurationMS
-	if died && deathAt < alive {
-		alive = deathAt
-	}
-	idle := alive - row.ActiveMS
-	if idle < 0 {
-		return 0
-	}
-	return msToSeconds(idle)
 }
 
 func msToSeconds(ms int64) int {

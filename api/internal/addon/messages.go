@@ -18,8 +18,10 @@ package addon
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"math"
 	"sort"
+	"sync"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
@@ -98,9 +100,11 @@ type MessageEntry struct {
 	DPSPerPoint *float64 `json:"dps_per_point,omitempty"`
 
 	// messageSimResult
-	DPS         float64 `json:"dps,omitempty"`
-	Error       float64 `json:"error,omitempty"`
-	GeneratedAt string  `json:"generated_at,omitempty"`
+	// DPS and Error are pointers so a sim_result always carries both, 0.0 included,
+	// while every other type carries neither.
+	DPS         *float64 `json:"dps,omitempty"`
+	Error       *float64 `json:"error,omitempty"`
+	GeneratedAt string   `json:"generated_at,omitempty"`
 	// Slots is a pointer so a sim_result carries an empty list ("slots": [])
 	// while every other type carries no slots at all.
 	Slots *[]SimSlot `json:"slots,omitempty"`
@@ -285,7 +289,8 @@ func (s *Service) upgradeMessage(ctx context.Context, userID int64, byNameSlug m
 // best-effort addressed the same way upgradeMessage is, and the spec's
 // DPS per point of its weight-1 stat (sims.DPSPerPoint) in the data build
 // the addressed character's export names, or the newest loaded build when
-// the run names none of the account's characters.
+// the run names none of the account's characters - present only when that
+// weight-1 stat is the file's own reference.
 func (s *Service) weightsMessage(ctx context.Context, userID int64, byNameSlug map[string]string, exports map[string]Export) *MessageEntry {
 	page, err := s.Sims.Mine(ctx, userID, 1, simapi.KindWeights)
 	if err != nil || len(page.Rows) == 0 {
@@ -313,7 +318,14 @@ func (s *Service) weightsMessage(ctx context.Context, userID int64, byNameSlug m
 			build = d.DataBuild
 		}
 	}
-	if dpp, ok := sims.DPSPerPoint(build, m.Spec); ok {
+	// Only when the run is normalised to the file's own reference stat: a weight in some
+	// other stat's points times this figure would be no number the addon can use.
+	runWeights := make(map[string]float64, len(weights))
+	for _, w := range weights {
+		runWeights[w.Stat] = w.Weight
+	}
+	if p, ok := sims.DPSPerPoint(build, m.Spec); ok && p.Scales(runWeights) {
+		dpp := p.DPS
 		m.DPSPerPoint = &dpp
 	}
 	return m
@@ -435,7 +447,7 @@ func (s *Service) simResultMessages(ctx context.Context, userID int64) []Message
 		slots := slotDeltas(r.Combos)
 		out = append(out, MessageEntry{
 			Type: messageSimResult, Character: r.CharacterKey, Spec: r.Spec,
-			DPS: round1(r.DPS), Error: round1(r.Error),
+			DPS: ptr(round1(r.DPS)), Error: ptr(round1(r.Error)),
 			GeneratedAt: r.CreatedAt.UTC().Format(time.RFC3339), Slots: &slots,
 		})
 	}
@@ -552,7 +564,11 @@ func (s *Service) lootValuesMessages(ctx context.Context, raids []lastRaid, expo
 		}
 		set, ok, err := sims.LootValues(ctx, r.zone, e.Export, spec, runWeights)
 		if err != nil {
-			s.logger().Warn("addon", "op", "messages_loot_values", "character_key", r.key, "err", err)
+			// Gear the data cannot score (a spec with no shipped weights, say) stays so until
+			// a data deploy: said once per spec, not on every ten-minute poll.
+			if !errors.Is(err, sims.ErrGearUnscorable) || warnOnce(spec) {
+				s.logger().Warn("addon", "op", "messages_loot_values", "character_key", r.key, "spec", spec, "err", err)
+			}
 			continue
 		}
 		if !ok || len(set.Items) == 0 {
@@ -585,6 +601,17 @@ func (s *Service) ackMessages(ctx context.Context, userID int64) []MessageEntry 
 	}
 	return out
 }
+
+// unscorableWarned is the specs lootValuesMessages has already warned about.
+var unscorableWarned sync.Map
+
+// warnOnce reports whether this is the first warning for spec in this process.
+func warnOnce(spec string) bool {
+	_, seen := unscorableWarned.LoadOrStore(spec, true)
+	return !seen
+}
+
+func ptr(v float64) *float64 { return &v }
 
 // round1 rounds a figure the addon prints to a tenth.
 func round1(v float64) float64 { return math.Round(v*10) / 10 }

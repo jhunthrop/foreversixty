@@ -200,7 +200,7 @@ Notes for the reader:
   `"score"`; `sim_result` slots carry no `unit` field and are always `"dps"`.
 - `last_raid.date` is `YYYY-MM-DD`, shown as "as of 9 Dec". `biggest_loss` is a short plain
   phrase ("downtime", "standing in fire", "dead early") written by the API; the addon shows it
-  as given. `consumables_missed` entries are plain item names ("flask"), not ids.
+  as given. It is absent on a perfect card, where no component cost a point. `consumables_missed` entries are plain item names ("flask"), not ids.
   `adherence` is a fraction of the rotation followed (0.82 is 82 percent); it is optional, and
   absent until the rotation task lands (the fixture keeps it, being the full shape).
   `percentile` is the fight card's own overall (0 to 100). `loss_seconds` is the downtime
@@ -209,15 +209,19 @@ Notes for the reader:
   newest report that is not private with a rated fight in the last 14 days; none without one.
 - `weights.dps_per_point` is the DPS (healing per second for a healer) one point of the stat
   whose weight is exactly 1 is worth, from the data build's `dps-per-point.json` for the spec;
-  absent for a spec that file has no entry for (the tanks).
+  absent for a spec that file has no entry for (the tanks), and absent when the run's
+  weight-1 stat is not that file's `reference` stat (its points are not the file's points).
 - `sim_result.slots` carries per-slot deltas only when the run had per-item figures (a Top
   Gear run); for the plain run an in-game request queues it is an empty list, and the addon
-  prices a slot itself from `weights` (`dps_per_point` times the weight delta).
+  prices a slot itself from `weights` (`dps_per_point` times the weight delta). `dps` and
+  `error` are always present, `error = 0` included.
 - `loot_values.items` is keyed by item id (a lookup key, never printed). `planned = true` means
   the piece is on the character's plan. One `loot_values` per character with a `last_raid`, for
   the raid whose name matches that report's zone (case, spaces and punctuation ignored); none
   when no raid matches. `value` is the item's stat-line score less what the character wears in
-  that slot, in `"dps"` (score times `dps_per_point`) when the spec has one, else `"score"`;
+  that slot, in `"dps"` (score times `dps_per_point`) when the spec has one and the weights are in its
+  reference stat's points, else `"score"`; an off-hand item is left out while the character
+  wears a two-hander, and a two-hander is weighed against both hands together;
   `planned` is true for the spec's level-60 best-in-slot pick.
 - `ack.export_seen_at` is when the site last saw the character's export, an RFC 3339 time in
   UTC; the build dialog shows it as "Seen by the site 14:03" in local time. `ack` is sent only

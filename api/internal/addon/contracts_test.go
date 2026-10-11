@@ -131,7 +131,7 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 		if w := byType[messageWeights]; w.DPSPerPoint == nil || *w.DPSPerPoint != 0.42 {
 			t.Errorf("weights dps_per_point = %v, want 0.42", w.DPSPerPoint)
 		}
-		if s := byType[messageSimResult]; s.DPS != 412.6 || s.Error != 3.1 || s.Slots == nil ||
+		if s := byType[messageSimResult]; s.DPS == nil || *s.DPS != 412.6 || s.Error == nil || *s.Error != 3.1 || s.Slots == nil ||
 			len(*s.Slots) != 1 || (*s.Slots)[0] != (SimSlot{Slot: "chest", ItemID: 6627, Delta: 4.2}) {
 			t.Errorf("sim_result = %+v", s)
 		}

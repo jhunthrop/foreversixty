@@ -52,12 +52,19 @@ type outboxHarness struct {
 // sims.Store on the same database and a job runner that only records.
 func newOutboxHarness(t *testing.T, allowed bool) *outboxHarness {
 	t.Helper()
+	return newOutboxHarnessOn(t, allowed, enginever.Version)
+}
+
+// newOutboxHarnessOn is newOutboxHarness with the sims service claiming engineVersion: any
+// other than enginever.Version makes every request one the engine refuses to run.
+func newOutboxHarnessOn(t *testing.T, allowed bool, engineVersion string) *outboxHarness {
+	t.Helper()
 	h := newHarness(t)
 	h.server.Close()
 	jobs := &recordingJobs{}
 	simSvc := &sims.Service{
 		Store: &sims.Store{Pool: h.pool}, Jobs: jobs, Accounts: entitled(allowed),
-		EngineVersion: enginever.Version,
+		EngineVersion: engineVersion,
 	}
 	mux := http.NewServeMux()
 	Mount(mux, &Service{Store: h.store, Builds: h.builds, Data: h.trees, Accounts: &auth.Store{Pool: h.pool},

@@ -78,6 +78,8 @@ type ratedFight struct {
 	biggestLoss                    string
 	lossSeconds, deaths            int
 	missed                         []string
+	// legacy seeds a row rated before migration 0036: its facts are NULL.
+	legacy bool
 }
 
 func (h *harness) seedRatedFight(f ratedFight) {
@@ -104,6 +106,10 @@ func (h *harness) seedRatedFight(f ratedFight) {
 		   nullif($11, ''), $12, $13)`,
 		f.report, f.index, l63Key, l63Name, f.encounter, f.kill, f.overall, f.foughtAt, f.insufficient,
 		f.deaths, f.biggestLoss, f.lossSeconds, f.missed)
+	if f.legacy {
+		exec(`update rating_scores set deaths = null, biggest_loss = null, loss_seconds = null,
+			  consumables_missed = null where report_id = $1 and fight_index = $2`, f.report, f.index)
+	}
 }
 
 // messagesOf is the messages of one type, in the order the inbox lists them.
@@ -303,7 +309,8 @@ func TestSimResultCarriesTheNewestFinishedInGameRun(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	res.DPS = simapi.Estimate{Mean: 412.63, Error: 3.14}
+	// An error that rounds to 0.0 still travels: the addon is told the figure is exact.
+	res.DPS = simapi.Estimate{Mean: 412.63, Error: 0.04}
 	if err := simStore.Finish(context.Background(), reqs[0].simID, res); err != nil {
 		t.Fatal(err)
 	}
@@ -317,7 +324,8 @@ func TestSimResultCarriesTheNewestFinishedInGameRun(t *testing.T) {
 		t.Fatalf("sim_result = %+v, want one", got)
 	}
 	m := got[0]
-	if m.Character != obnoxiousKey || m.Spec != "warrior-arms" || m.DPS != 412.6 || m.Error != 3.1 ||
+	if m.Character != obnoxiousKey || m.Spec != "warrior-arms" || m.DPS == nil || *m.DPS != 412.6 ||
+		m.Error == nil || *m.Error != 0 ||
 		m.GeneratedAt != created.UTC().Format(time.RFC3339) {
 		t.Fatalf("sim_result = %+v", m)
 	}
@@ -332,6 +340,9 @@ func TestSimResultCarriesTheNewestFinishedInGameRun(t *testing.T) {
 	}
 	if string(wire["slots"]) != "[]" {
 		t.Fatalf("slots = %s, want []", wire["slots"])
+	}
+	if string(wire["error"]) != "0" || string(wire["dps"]) != "412.6" {
+		t.Fatalf("dps = %s, error = %s, want 412.6 and 0 on the wire", wire["dps"], wire["error"])
 	}
 }
 
@@ -458,5 +469,70 @@ func TestTheInboxAnswersFormatTwo(t *testing.T) {
 	}
 	if string(body["builds"]) != "[]" || string(body["messages"]) != "[]" {
 		t.Fatalf("builds = %s, messages = %s, want two empty lists", body["builds"], body["messages"])
+	}
+}
+
+// A fight rated before migration 0036 has no stored facts: it is left out rather than
+// shown as zeros, and a last raid of nothing but such fights gets no message.
+func TestLastRaidLeavesOutFightsRatedBeforeTheFactsWereStored(t *testing.T) {
+	h := newHarness(t)
+	cleanL63(t, h)
+	h.exportL63(l63Export)
+	now := time.Now().UTC()
+	raid := now.Add(-3 * time.Hour)
+	h.seedRatedFight(ratedFight{report: "l63-mixed", visibility: "public", zone: "Molten Core", boss: "Lucifron",
+		index: 1, encounter: 663, foughtAt: raid, overall: 71, kill: true, biggestLoss: "downtime",
+		lossSeconds: 18, missed: []string{}})
+	h.seedRatedFight(ratedFight{report: "l63-mixed", visibility: "public", zone: "Molten Core", boss: "Magmadar",
+		index: 2, encounter: 664, foughtAt: raid.Add(20 * time.Minute), overall: 60, kill: true, legacy: true})
+	s := &Service{Store: h.store, Log: quietLog()}
+	got := messagesOf(s.messages(context.Background(), h.owner, now), messageLastRaid)
+	if len(got) != 1 || len(got[0].Bosses) != 1 || got[0].Bosses[0].Name != "Lucifron" {
+		t.Fatalf("last_raid = %+v, want Lucifron alone", got)
+	}
+
+	// The newest raid is all legacy fights: no message, not an older raid in its place.
+	h.seedRatedFight(ratedFight{report: "l63-legacy", visibility: "public", zone: "Molten Core", boss: "Lucifron",
+		index: 1, encounter: 663, foughtAt: now.Add(-1 * time.Hour), overall: 80, kill: true, legacy: true})
+	if got := messagesOf(s.messages(context.Background(), h.owner, now), messageLastRaid); len(got) != 0 {
+		t.Fatalf("last_raid = %+v, want none for a raid with no stored facts", got)
+	}
+}
+
+// dps_per_point travels only when the run is normalised to the file's own reference stat.
+func TestWeightsCarryNoDPSPerPointForAnotherReference(t *testing.T) {
+	useRepoGearData(t)
+	h := newHarness(t)
+	h.exportL63(l63Export)
+	simStore := &sims.Store{Pool: h.pool}
+	t.Cleanup(func() { h.pool.Exec(context.Background(), `delete from sims where id like 'l63-%'`) })
+	// warrior-arms' reference in dps-per-point.json is attack power; this run is in strength.
+	if err := simStore.Save(context.Background(), "l63-weights-str", &h.owner, "", simapi.SimResult{
+		Request: simapi.SimRequest{Spec: "warrior-arms", Character: simapi.CharacterSpec{Name: l63Name},
+			Weights: &simapi.WeightsSpec{Stats: []string{"strength", "attack_power"}, Reference: "strength"}},
+		Weights: []simapi.StatWeight{{Stat: "strength", Weight: 1}, {Stat: "attack_power", Weight: 0.45}},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	s := &Service{Store: h.store, Sims: simStore, Log: quietLog()}
+	got := messagesOf(s.messages(context.Background(), h.owner, time.Now()), messageWeights)
+	if len(got) != 1 || got[0].Spec != "warrior-arms" || got[0].DPSPerPoint != nil {
+		t.Fatalf("weights = %+v, want warrior-arms with no dps_per_point", got)
+	}
+}
+
+// A request the engine cannot sim is recorded, and the ack says "invalid".
+func TestAckSaysInvalidForARequestThatCannotBeSimmed(t *testing.T) {
+	// A request built for an engine other than the one this API runs fails lane validation.
+	h := newOutboxHarnessOn(t, true, "not-this-engine")
+	cleanL63(t, h.harness)
+	h.pairDevice("l63-dev", false)
+	if got := h.post(withOutbox(string(contractFixture(t, "outbox-v1.json")))).Outbox.SimRequest; got != "invalid" {
+		t.Fatalf("sim_request = %q, want invalid", got)
+	}
+	s := &Service{Store: h.store, Log: quietLog()}
+	got := messagesOf(s.messages(context.Background(), h.owner, time.Now()), messageAck)
+	if len(got) != 1 || got[0].SimRequestState != "invalid" {
+		t.Fatalf("ack = %+v, want invalid", got)
 	}
 }

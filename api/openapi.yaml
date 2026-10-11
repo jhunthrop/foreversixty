@@ -97,16 +97,17 @@ components:
               type: number
               description: >-
                 DPS (healing per second for a healer) per point of the stat whose weight is 1,
-                from the data build's dps-per-point.json; absent for a spec it has no entry for
+                from the data build's dps-per-point.json; absent for a spec it has no entry for,
+                or when the run's weight-1 stat is not that file's reference stat
         - type: object
           title: sim_result
-          required: [type, character, spec, generated_at, slots]
+          required: [type, character, spec, dps, error, generated_at, slots]
           properties:
             type: { type: string, enum: [sim_result] }
             character: { type: string }
             spec: { type: string }
             dps: { type: number }
-            error: { type: number }
+            error: { type: number, description: "always present, 0 included" }
             generated_at: { type: string, format: date-time }
             slots:
               type: array

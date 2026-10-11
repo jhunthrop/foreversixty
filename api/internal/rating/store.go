@@ -107,7 +107,8 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 		cr := newCardRow(meta, row, card)
 		cr.PlayerKey = character.KeyFromUnit(f.Region, f.Ruleset, row.Name)
 		cr.Discipline = fightDiscipline(f.Summary, row)
-		cr.LastRaid = lastRaidFacts(f.Summary, row, card)
+		cr.LastRaid = lastRaidFacts(f.Summary, row, card,
+			ratingengine.ActivityIdleMS(f.Summary, row.GUID, tables.Mechanics, nil))
 		if err := insertCardRow(ctx, tx, cr); err != nil {
 			return err
 		}
