@@ -56,7 +56,7 @@ test.describe('the planner never scrolls sideways', () => {
       // The card is the whole point of this width/mode combination -- confirms the
       // two-column grid (not the one-column, signed-out shape) is actually what got
       // measured below, not a fallback that happened to also pass.
-      await page.getByTestId('planner-character-card').waitFor();
+      await page.getByTestId('character-header').waitFor();
       await noHorizontalScroll(page);
     });
   }

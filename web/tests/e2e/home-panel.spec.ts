@@ -111,7 +111,7 @@ test('a signed-in visitor with zero characters still sees the Battle.net sign-in
   await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
 });
 
-test('a signed-in hero shows the descriptor, the three next-action cards, and hides the signed-out door', async ({
+test('a signed-in panel shows the shared header, the two next-action cards, and hides the signed-out door', async ({
   page,
   context,
 }) => {
@@ -165,16 +165,27 @@ test('a signed-in hero shows the descriptor, the three next-action cards, and hi
   const panel = page.getByTestId('home-account-panel');
   await expect(panel).toBeVisible();
   await expect(panel.getByRole('heading', { name: 'Zulmara', level: 1 })).toBeVisible();
-  // Review round 1 item 1: one line, the spec's own shape, guild in angle brackets.
-  const descriptor = panel.getByTestId('home-hero-descriptor');
-  await expect(descriptor).toContainText('Level 24 Troll Hunter');
+  // The shared header's descriptor (character header spec 2026-10-11): race and class, the
+  // level and the faction; no guild and no realm clause.
+  const descriptor = panel.getByTestId('character-header-descriptor');
+  await expect(descriptor).toContainText('Troll Hunter');
+  await expect(descriptor).toContainText('Level 24');
   await expect(descriptor).toContainText('Horde');
-  await expect(descriptor).toContainText('<Sample Guild>');
-  await expect(panel.getByTestId('home-hero-guild')).toContainText('Sample Guild');
-  await expect(panel.getByTestId('home-hero-sync')).toContainText('from the addon');
-  // Best in slot / Talents: this fixture's Zulmara carries no `spec` yet, so both cards
-  // show the honest "Pick a spec" state -- never a fabricated figure (§3.B.2).
-  await expect(panel.getByTestId('home-hero-card-bis')).toContainText('Pick a spec');
+  await expect(descriptor).not.toContainText('Sample Guild');
+  // No gear on file (this build carries none): the sync line goes and the answer is one
+  // sentence with the link that fixes it -- never a zero.
+  await expect(panel.getByTestId('character-header-sync')).toHaveCount(0);
+  await expect(panel.getByTestId('character-header-no-gear')).toContainText(
+    'Add the addon to see which slots you can upgrade.',
+  );
+  await expect(panel.getByTestId('character-header-no-gear').getByRole('link')).toHaveAttribute(
+    'href',
+    '/setup',
+  );
+  await expect(panel.getByTestId('character-header-action')).toHaveText('See your upgrades →');
+  // Talents: this fixture's Zulmara carries no `spec` yet, so the card shows the honest "Pick
+  // a spec" state -- never a fabricated figure (§3.B.2). Best in slot is the header's answer.
+  await expect(panel.getByTestId('home-hero-card-bis')).toHaveCount(0);
   await expect(panel.getByTestId('home-hero-card-talents')).toContainText('Pick a spec');
   // Simulator: the one card with a real, live figure -- no saved sim for this fixture, so
   // the existing empty-state copy/action shows.
@@ -187,87 +198,6 @@ test('a signed-in hero shows the descriptor, the three next-action cards, and hi
   await expect(page.getByTestId('home-upgrades')).toBeVisible();
   await expect(page.getByTestId('home-upgrades-no-spec')).toBeVisible();
   await expect(page.getByTestId('home-another-class').getByTestId(/^class-crest-/)).toHaveCount(9);
-});
-
-test('no Battle.net data for this realm type yet is shown once, when every character has no build', async ({
-  page,
-}) => {
-  await stubHeroExtras(page);
-  await page.route('**/v1/me', (route) =>
-    route.fulfill(
-      fulfil({
-        ok: true,
-        data: {
-          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
-          characters: [
-            { key: 'us/normal/kiloz', region: 'us', ruleset: 'normal', name: 'Kiloz', class: 'warrior' },
-          ],
-          guilds: [],
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    ),
-  );
-  await page.goto('/');
-  const panel = page.getByTestId('home-account-panel');
-  await expect(panel.getByTestId('home-hero-no-bnet-data')).toHaveText(
-    'Blizzard serves no data for this realm type yet.',
-  );
-  // No build at all: the sync line has nothing honest to say, so it is absent rather than
-  // invented.
-  await expect(panel.getByTestId('home-hero-sync')).toHaveCount(0);
-});
-
-test('the signed-in hero shows a rating figure once one exists, never before', async ({ page }) => {
-  await page.route('**/v1/sims**', (route) => route.fulfill(fulfil(NO_SIMS_PAGE)));
-  await page.route('**/v1/me', (route) =>
-    route.fulfill(
-      fulfil({
-        ok: true,
-        data: {
-          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
-          characters: [
-            { key: 'us/normal/kiloz', region: 'us', ruleset: 'normal', name: 'Kiloz', class: 'Warrior' },
-          ],
-          guilds: [],
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    ),
-  );
-  await page.route('**/v1/characters/us/normal/kiloz/rating', (route) =>
-    route.fulfill(
-      fulfil({
-        ok: true,
-        data: {
-          player_key: 'us/normal/kiloz',
-          sample_size: 4,
-          trend: [],
-          best_component: 'damage',
-          worst_component: 'utility',
-          latest: { player_key: 'us/normal/kiloz', overall: 1.08 },
-        },
-        error: null,
-        request_id: 'r',
-      }),
-    ),
-  );
-  await page.addInitScript(() => {
-    window.localStorage.setItem(
-      'fs.currentCharacter',
-      JSON.stringify({
-        source: 'armory',
-        ref: 'us/normal/kiloz',
-        label: 'Kiloz · Warrior',
-        classSlug: 'warrior',
-        savedAt: new Date().toISOString(),
-      }),
-    );
-  });
-  await page.goto('/');
-  await expect(page.getByTestId('home-hero-rating')).toHaveText('Performance rating 1.08');
 });
 
 const FROSTBYTE: FixtureCharacter = {
@@ -293,55 +223,44 @@ const chooseInHeader = async (page: Page, character: FixtureCharacter): Promise<
     .click();
 };
 
-test('with several characters the hero says which is current, points at the header and has no switcher of its own', async ({
+test('the header says "Your character" with one or several characters and has no switcher of its own', async ({
   page,
 }) => {
   await stubHeroExtras(page);
-  await signInWith(page, [OBNOXIOUS, FROSTBYTE]);
+  await signInWith(page, [{ ...OBNOXIOUS, race: 'Gnome' }, FROSTBYTE]);
   await storePointer(page, armoryPointer(OBNOXIOUS));
   await page.goto('/');
   const panel = page.getByTestId('home-account-panel');
   await expect(panel.getByRole('heading', { name: 'Obnoxious Yell', level: 1 })).toBeVisible();
-  await expect(panel.getByTestId('home-hero-eyebrow')).toHaveText('Current character');
-  const hint = panel.getByTestId('home-hero-change-hint');
-  await expect(hint).toHaveText('Change character: top right');
-  await expect(hint.getByRole('link')).toHaveCount(0);
-  await expect(hint.getByRole('button')).toHaveCount(0);
-  expect(await hint.evaluate((el) => getComputedStyle(el).fontSize)).toBe('12px');
-  // The Switch character column, its "Add one" link and its per-row buttons are gone.
+  const header = panel.getByTestId('character-header');
+  await expect(header.locator('.label').first()).toHaveText('Your character');
+  await expect(header.getByTestId('character-header-descriptor')).toContainText('Gnome Fury Warrior');
+  // No hint line, no switcher: the selector in the nav bar is the one way to change character.
+  await expect(panel.getByText('Change character')).toHaveCount(0);
   await expect(page.getByText('Switch character')).toHaveCount(0);
   await expect(page.getByText('Add one')).toHaveCount(0);
   await expect(page.getByTestId('home-switch-character-panel')).toHaveCount(0);
+  await expect(header.getByRole('button')).toHaveCount(0);
   await expect(page.getByTestId('home-example-block')).toBeHidden();
-  // The real faction emblem, 16 px, with alt text (the way the selector's rows draw it).
-  const emblem = panel.getByTestId('faction-mark-alliance');
-  await expect(emblem).toHaveAttribute('alt', 'Alliance');
+  // The flat faction logo, 16 px, beside the faction word.
+  const emblem = header.locator('.ch-faction img');
   await expect(emblem).toHaveAttribute('src', '/icons/hd/faction/alliance-logo-512.webp');
   await expect(emblem).toHaveAttribute('width', '16');
 
-  // The header selector is the one way to change character; the hero follows it in place.
+  // The header selector is the one way to change character; the header follows it in place.
   await page.evaluate(() => {
     (window as unknown as { __kept: boolean }).__kept = true;
   });
   await chooseInHeader(page, FROSTBYTE);
   await expect(panel.getByRole('heading', { level: 1 })).toHaveText('Frostbyte');
+  await expect(header.locator('.label').first()).toHaveText('Your character');
   expect(await page.evaluate(() => (window as unknown as { __kept?: boolean }).__kept)).toBe(true);
 });
 
-test('with one character the hero says "Your character" and shows no header hint', async ({ page }) => {
-  await stubHeroExtras(page);
-  await signInWith(page, [OBNOXIOUS]);
-  await storePointer(page, armoryPointer(OBNOXIOUS));
-  await page.goto('/');
-  const panel = page.getByTestId('home-account-panel');
-  await expect(panel.getByTestId('home-hero-eyebrow')).toHaveText('Your character');
-  await expect(panel.getByTestId('home-hero-change-hint')).toHaveCount(0);
-});
-
-test('a header switch from a one-line to a two-line name does not move the upgrades table', async ({
+test('on a phone a header switch from a one-line to a two-line name does not move the upgrades table', async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.setViewportSize({ width: 390, height: 844 });
   await stubHeroExtras(page);
   await signInWith(page, [OBNOXIOUS, TWO_LINE_NAME]);
   await storePointer(page, armoryPointer(OBNOXIOUS));
@@ -352,17 +271,13 @@ test('a header switch from a one-line to a two-line name does not move the upgra
   await expect(panel.getByTestId('home-hero-cards-slot')).toBeVisible();
   const table = page.getByTestId('home-upgrades');
   const oneLineTop = (await table.boundingBox())!.y;
-  const oneLineHeight = (await heading.boundingBox())!.height;
 
   await chooseInHeader(page, TWO_LINE_NAME);
   await expect(heading).toHaveText('Sir Obnoxious Yellington');
-  const twoLineHeight = (await heading.boundingBox())!.height;
-  expect(twoLineHeight).toBeGreaterThan(70); // two 34px lines
-  expect(twoLineHeight).toBe(oneLineHeight);
   expect((await table.boundingBox())!.y).toBe(oneLineTop);
 });
 
-test('a name longer than two lines is cut with an ellipsis, not allowed to grow the hero', async ({
+test('a name longer than two lines is cut with an ellipsis, not allowed to grow the header', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -373,7 +288,9 @@ test('a name longer than two lines is cut with an ellipsis, not allowed to grow 
   await page.goto('/');
   const name = page.getByTestId('home-account-panel').getByRole('heading', { level: 1 });
   await expect(name).toBeVisible();
-  expect((await name.boundingBox())!.height).toBeLessThan(80);
+  // Two 24 px lines at a 1.2 line height; the whole name stays in the title.
+  expect((await name.boundingBox())!.height).toBeLessThan(60);
+  await expect(name).toHaveAttribute('title', longName.name);
 });
 
 const SAVED_SIM = {
@@ -483,7 +400,7 @@ test('a returning signed-in visitor sees the hub from the session snapshot befor
   await expect(page.getByTestId('home-signed-out')).toBeHidden();
 });
 
-test("a signed-in hero with a real gear/talent export sees real Best in slot, Talents and Your upgrades figures, matching the SignedIn mock's own state", async ({
+test("a signed-in panel with a real gear/talent export sees the two upgrade figures, Talents and Your upgrades, matching the SignedIn mock's own state", async ({
   page,
   context,
 }) => {
@@ -497,25 +414,31 @@ test("a signed-in hero with a real gear/talent export sees real Best in slot, Ta
 
   const panel = page.getByTestId('home-account-panel');
   await expect(panel.getByRole('heading', { name: 'Zulmara', level: 1 })).toBeVisible();
-  const descriptor = panel.getByTestId('home-hero-descriptor');
-  await expect(descriptor).toContainText('Level 24 Troll Marksmanship Hunter');
+  const descriptor = panel.getByTestId('character-header-descriptor');
+  await expect(descriptor).toContainText('Troll Marksmanship Hunter');
+  await expect(descriptor).toContainText('Level 24');
   await expect(descriptor).toContainText('Horde');
-  await expect(descriptor).toContainText('<Sample Guild>');
-  await expect(descriptor).toContainText('Skyborne-US');
+  await expect(panel.getByTestId('character-header-sync')).toContainText('Addon');
 
-  // Best in slot (§3.B.2): the upgrades are counted against the committed
-  // data/builds/<build>/bis/hunter-marksmanship.json band 20 (horde), which the nightly
-  // re-ranks, so the test pins the relationships between the figures and not the numbers:
-  // the card's count is the number of rows "Your upgrades" lists, every row carries a
-  // sim-verified gain, and the card's total is a DPS figure. (Fix round 1 item A.1: the
-  // total never mixes the full-sim `score` with a `scoreItem`-only estimate.)
-  const bisCard = panel.getByTestId('home-hero-card-bis');
-  const bisValue = bisCard.getByTestId('home-hero-card-bis-value');
-  await expect(bisValue).toHaveText(/^\d+ upgrades?$/, { timeout: 10_000 });
-  const upgradeCount = Number.parseInt((await bisValue.textContent()) ?? '', 10);
+  // The answer (character header spec 2026-10-11 section 4): the upgrades are counted against
+  // the committed data/builds/<build>/bis/hunter-marksmanship.json band 20 (horde), which the
+  // nightly re-ranks, so the test pins the relationships between the figures and not the
+  // numbers: the first figure is the number of rows "Your upgrades" lists, the second is the
+  // gain as a DPS figure at the same size, and the total never mixes the full-sim `score` with
+  // a `scoreItem`-only estimate (fix round 1 item A.1).
+  await expect(panel.getByTestId('character-header-answer-label')).toHaveText('Upgrades in your band');
+  const countFigure = panel.getByTestId('character-header-figure-1');
+  await expect(countFigure).toHaveText(/^\d+ upgrades?$/, { timeout: 10_000 });
+  const upgradeCount = Number.parseInt((await countFigure.textContent()) ?? '', 10);
   expect(upgradeCount).toBeGreaterThan(0);
-  await expect(bisCard).toContainText('20 to 29');
-  await expect(bisCard).toContainText(/\+\d+\.\d DPS together/);
+  await expect(panel.getByTestId('character-header-figure-2')).toHaveText(/^\+\d+\.\d DPS$/);
+  const sizes = await panel
+    .locator('.ch-figure')
+    .evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).fontSize));
+  expect(new Set(sizes).size).toBe(1);
+  await expect(panel.getByTestId('character-header-note')).toContainText(
+    'Best in slot for 20 to 29, together',
+  );
 
   // Talents (§3.B.2): some points differ from the band's own build.
   const talentsCard = panel.getByTestId('home-hero-card-talents');

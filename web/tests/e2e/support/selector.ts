@@ -8,6 +8,8 @@ export interface FixtureCharacter {
   name: string;
   class: string;
   spec: string;
+  /** "Gnome"; omitted until a Battle.net import has run, as in the API. */
+  race?: string;
   level?: number;
   realm?: string;
   faction?: 'alliance' | 'horde';
@@ -44,6 +46,7 @@ function meCharacter(character: FixtureCharacter): Record<string, unknown> {
     name: character.name,
     class: character.class,
     spec: character.spec,
+    ...(character.race === undefined ? {} : { race: character.race }),
     level: character.level ?? 60,
     realm: character.realm ?? 'Living Flame',
     faction: character.faction ?? 'alliance',

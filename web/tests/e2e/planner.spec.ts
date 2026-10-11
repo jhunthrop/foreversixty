@@ -465,7 +465,7 @@ test('opening /planner bare with a stored, non-restorable (armory) pointer still
   page,
 }) => {
   // Rebuild spec §3: the current-character spine band (which used to show a "restored"
-  // chip) is replaced by the header/CharacterCard family -- this pointer is not one of the
+  // chip) is replaced by the shared character header -- this pointer is not one of the
   // two sources ('code'/'addon') the planner ever restores from, so the only real
   // assertion left is that the page still loads cleanly rather than erroring on it.
   await page.addInitScript(() => {

@@ -392,13 +392,13 @@ test.describe('choosing a character', () => {
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.goto('/bis/warrior/fury#band-alliance-20');
     await ready(page);
-    await expect(page.getByTestId('bis-character-card')).toContainText('Obnoxious Yell');
+    await expect(page.getByTestId('character-header')).toContainText('Obnoxious Yell');
     await choose(page, FROSTBYTE);
     await expect(page).toHaveURL(/\/bis\/mage\/frost\?faction=horde#band-horde-40$/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Frost');
-    await expect(page.getByTestId('bis-character-card')).toContainText('Frostbyte');
-    await expect(page.getByTestId('bis-character-card')).not.toContainText('Obnoxious Yell');
-    await expect(page.getByTestId('bis-character-card')).not.toContainText('Switch');
+    await expect(page.getByTestId('character-header')).toContainText('Frostbyte');
+    await expect(page.getByTestId('character-header')).not.toContainText('Obnoxious Yell');
+    await expect(page.getByTestId('character-header')).not.toContainText('Switch');
   });
 
   test('on /bis, a same-spec character updates band and faction in place, with no reload', async ({
@@ -412,7 +412,7 @@ test.describe('choosing a character', () => {
     await expect(page).toHaveURL(/\/bis\/warrior\/fury\?faction=horde#band-horde-30$/);
     await expect(page.getByTestId('bis-faction-panel-horde')).toBeVisible();
     await expect(page.getByTestId('bis-band-horde-30')).toBeVisible();
-    await expect(page.getByTestId('bis-character-card')).toContainText('Rageclaw');
+    await expect(page.getByTestId('character-header')).toContainText('Rageclaw');
     expect(await pageWasNotReloaded(page)).toBe(true);
   });
 
@@ -425,7 +425,7 @@ test.describe('choosing a character', () => {
     await choose(page, FROSTBYTE);
     await expect(page.getByTestId('planner-header-h1')).toContainText('Mage');
     await expect(page).toHaveURL(/\/planner\?class=mage/);
-    await expect(page.getByTestId('planner-character-card')).toContainText('Frostbyte');
+    await expect(page.getByTestId('character-header')).toContainText('Frostbyte');
     expect(await pageWasNotReloaded(page)).toBe(true);
   });
 

@@ -71,6 +71,8 @@
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import CharacterHeaderSignedOut from './CharacterHeaderSignedOut.svelte';
 
+  const STALE_SEPARATOR = ' \u00b7 ';
+
   type ActionProp = HeaderAction | ((context: ActionContext) => HeaderAction);
 
   let {
@@ -217,7 +219,7 @@
       </span>
       {#if syncLine !== null}
         <span class="ch-sync" data-testid="character-header-sync"
-          >{syncText(syncLine)}{#if syncLine.staleTail !== null}{' \u00b7 '}<span
+          >{syncText(syncLine)}{#if syncLine.staleTail !== null}{STALE_SEPARATOR}<span
               class="ch-stale"
               data-testid="character-header-stale">{syncLine.staleTail}</span
             >{/if}</span
@@ -243,8 +245,7 @@
             class="ch-figure"
             data-testid={`character-header-figure-${index + 1}`}
             style:color={figure.color}
-            >{figure.value}{#if figure.unit !== undefined}<span class="ch-unit">
-                {figure.unit}</span
+            >{figure.value}{#if figure.unit !== undefined}<span class="ch-unit">{` ${figure.unit}`}</span
               >{/if}</span
           >
         {/each}

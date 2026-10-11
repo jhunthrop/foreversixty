@@ -24,7 +24,7 @@ test.describe('current character', () => {
     await expect(page.getByTestId('sim-character')).toBeVisible();
 
     // Planner rebuild spec §3: the spine chip (and its Forget control) that used to prove
-    // a restore on this page is replaced by the header/CharacterCard family -- the pointer
+    // a restore on this page is replaced by the shared character header -- the pointer
     // bridge itself is unchanged (`decidePlannerLoad` still restores a bare /planner from
     // the stored 'code'/'addon' pointer), so the proof here is the restored build itself:
     // the fixture's Fury Warrior string reconstructs to 24 points in Fury with nothing

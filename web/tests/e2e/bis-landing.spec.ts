@@ -1,9 +1,10 @@
 // web/tests/e2e/bis-landing.spec.ts
 // The /bis landing (design/specs/2026-10-10-bis-landing.md): signed out, the class grid's first row
 // is above the fold at 1440, the strip defaults to 20 to 29 and a pill rewrites every spec link;
-// signed in, the lead shows the selected character's band, count and one button, the strip never
-// moves it, and the header selector moves the lead, the "you" pill and the "Yours" row in place;
-// on a phone the pills are 44 px tall with no wrapped label.
+// signed in, the shared character header shows the selected character's band, count and one button,
+// the strip never moves it, and the header selector moves it, the "you" pill and the "Yours" row in
+// place; signed out, the header's one shared line stands where it would; on a phone the pills are
+// 44 px tall with no wrapped label.
 import { expect, test, type Page } from '@playwright/test';
 import { bisBand, readBisFile, readSpecCatalog } from './support/bis-file';
 import {
@@ -45,7 +46,7 @@ const HUNTER: FixtureCharacter = {
 const specLink = (page: Page, classSlug: string, specSlug: string) =>
   page.getByTestId(`bis-spec-${classSlug}-${specSlug}`);
 const pill = (page: Page, band: number) => page.getByTestId(`bis-landing-band-${band}`);
-const lead = (page: Page) => page.getByTestId('bis-lead');
+const header = (page: Page) => page.getByTestId('character-header');
 const selector = (page: Page) => page.getByTestId('character-selector');
 
 /** The client fetches each spec's published file; serve the one the build was made from. */
@@ -70,7 +71,7 @@ async function openSignedIn(
   await storePointer(page, armoryPointer(characters[0]!));
   await stubPublishedBis(page, specs);
   await page.goto('/bis');
-  await expect(page.getByTestId('bis-lead-name')).toHaveText(characters[0]!.name);
+  await expect(page.getByTestId('character-header-name')).toHaveText(characters[0]!.name);
 }
 
 async function choose(page: Page, character: FixtureCharacter): Promise<void> {
@@ -124,8 +125,18 @@ test.describe('signed out, desktop', () => {
     });
   });
 
-  test('the lead is absent and the strip defaults to 20 to 29', async ({ page }) => {
-    await expect(lead(page)).toBeHidden();
+  test('the one shared signed-out line stands where the header would, with no button and no link', async ({
+    page,
+  }) => {
+    const band = page.getByTestId('character-header-signed-out');
+    await expect(band).toHaveText('Sign in or paste an export to see your character here');
+    expect(Math.round((await band.boundingBox())?.height ?? 0)).toBe(44);
+    await expect(band.getByRole('link')).toHaveCount(0);
+    await expect(band.getByRole('button')).toHaveCount(0);
+    await expect(header(page)).toHaveCount(0);
+  });
+
+  test('the strip defaults to 20 to 29', async ({ page }) => {
     await expect(pill(page, 20)).toHaveAttribute('aria-current', 'true');
     await expect(page.getByTestId('bis-strip-head')).toHaveText('Spec links open at this band');
     await expect(pill(page, 20).locator('.pb-you')).toBeHidden();
@@ -188,6 +199,9 @@ test.describe('signed out, desktop', () => {
 
   test('hovering a spec row moves nothing', async ({ page }) => {
     const row = specLink(page, 'rogue', 'combat');
+    // The signed-out line above the grid pushes this row to the fold; hovering scrolls a
+    // half-visible row into view, which is the page moving, not the row.
+    await row.scrollIntoViewIfNeeded();
     const before = await row.boundingBox();
     const cardBefore = await page.getByTestId('bis-class-rogue').boundingBox();
     await row.hover();
@@ -227,27 +241,49 @@ test.describe('signed in, desktop', () => {
     page,
   }) => {
     await openSignedIn(page, [FURY, HUNTER]);
-    await expect(page.getByTestId('bis-lead-descriptor')).toContainText('Fury Warrior');
-    await expect(page.getByTestId('bis-lead-descriptor')).toContainText('Level 47');
-    await expect(page.getByTestId('bis-lead-descriptor')).toContainText('Alliance');
-    await expect(page.getByTestId('bis-lead-sync')).toContainText('Addon · ');
-    await expect(page.getByTestId('bis-lead-count')).toHaveText(
+    await expect(page.getByTestId('character-header-descriptor')).toContainText('Fury Warrior');
+    await expect(page.getByTestId('character-header-descriptor')).toContainText('Level 47');
+    await expect(page.getByTestId('character-header-descriptor')).toContainText('Alliance');
+    await expect(page.getByTestId('character-header-sync')).toContainText('Addon · ');
+    await expect(page.getByTestId('character-header-figure-1')).toHaveText(
       `${WORN_COUNT} of ${sourcedPicks.length} slots`,
     );
-    await expect(page.getByTestId('bis-lead-cta')).toHaveText('Fury gear for 40 to 49 →');
-    await expect(page.getByTestId('bis-lead-cta')).toHaveAttribute(
+    await expect(page.getByTestId('character-header-action')).toHaveText('Fury gear for 40 to 49 →');
+    await expect(page.getByTestId('character-header-action')).toHaveAttribute(
       'href',
       '/bis/warrior/fury?faction=alliance#band-alliance-40',
     );
-    await expect(page.getByTestId('bis-lead-link')).toHaveAttribute(
+    await expect(page.getByTestId('character-header-link')).toHaveAttribute(
       'href',
       '/bis/warrior/fury?faction=alliance#band-alliance-40',
     );
-    if (unsourcedSlots.length > 0) await expect(lead(page)).toContainText('no pick at this band');
-    else await expect(lead(page)).not.toContainText('no pick at this band');
+    if (unsourcedSlots.length > 0) await expect(header(page)).toContainText('no pick at this band');
+    else await expect(header(page)).not.toContainText('no pick at this band');
     await expect(page.getByTestId('bis-grid-heading')).toHaveText(/^another class or spec$/i, {
       useInnerText: true,
     });
+  });
+
+  test('the label is always "Your character" and the answer has its own label', async ({ page }) => {
+    await openSignedIn(page, [FURY, HUNTER]);
+    await expect(header(page).locator('.label').first()).toHaveText('Your character');
+    await expect(page.getByTestId('character-header-answer-label')).toHaveText('Best-in-slot slots you wear');
+  });
+
+  test('the descriptor is one line at 1440 and two fixed lines below 1280', async ({ page }) => {
+    await openSignedIn(page, [{ ...FURY, race: 'Gnome' }]);
+    const lines = async () =>
+      page.getByTestId('character-header-descriptor').evaluate((node) => {
+        const tops = [...node.querySelectorAll<HTMLElement>('.ch-d1, .ch-d2')].map((part) =>
+          Math.round(part.getBoundingClientRect().top),
+        );
+        return new Set(tops).size;
+      });
+    await expect(page.getByTestId('character-header-descriptor')).toContainText('Gnome Fury Warrior');
+    expect(await lines()).toBe(1);
+    await page.setViewportSize({ width: 1024, height: 900 });
+    await expect.poll(lines).toBe(2);
+    await expect(page.getByTestId('character-header-descriptor').locator('.ch-dot-wide')).toBeHidden();
   });
 
   test('the character’s band is selected and marked, and its spec row is Yours', async ({ page }) => {
@@ -271,12 +307,12 @@ test.describe('signed in, desktop', () => {
       'href',
       '/bis/mage/frost?faction=alliance#band-alliance-50',
     );
-    await expect(page.getByTestId('bis-lead-cta')).toHaveAttribute(
+    await expect(page.getByTestId('character-header-action')).toHaveAttribute(
       'href',
       '/bis/warrior/fury?faction=alliance#band-alliance-40',
     );
-    await expect(page.getByTestId('bis-lead-cta')).toHaveText('Fury gear for 40 to 49 →');
-    await expect(page.getByTestId('bis-lead-count')).toHaveText(
+    await expect(page.getByTestId('character-header-action')).toHaveText('Fury gear for 40 to 49 →');
+    await expect(page.getByTestId('character-header-figure-1')).toHaveText(
       `${WORN_COUNT} of ${sourcedPicks.length} slots`,
     );
     await expect(pill(page, 40).locator('.pb-you')).toBeVisible();
@@ -285,7 +321,7 @@ test.describe('signed in, desktop', () => {
 
   test('the gold button opens the character’s own spec at its band', async ({ page }) => {
     await openSignedIn(page, [FURY, HUNTER]);
-    await page.getByTestId('bis-lead-cta').click();
+    await page.getByTestId('character-header-action').click();
     await expect(page).toHaveURL(/\/bis\/warrior\/fury\?faction=alliance#band-alliance-40$/);
   });
 
@@ -294,11 +330,11 @@ test.describe('signed in, desktop', () => {
   }) => {
     await openSignedIn(page, [FURY, HUNTER], [WARRIOR_SPEC, 'hunter-marksmanship']);
     await choose(page, HUNTER);
-    await expect(page.getByTestId('bis-lead-name')).toHaveText('Quickshot');
-    await expect(page.getByTestId('bis-lead-descriptor')).toContainText('Marksmanship Hunter');
-    await expect(page.getByTestId('bis-lead-descriptor')).toContainText('Horde');
-    await expect(page.getByTestId('bis-lead-cta')).toHaveText('Marksmanship gear for 30 to 39 →');
-    await expect(page.getByTestId('bis-lead-cta')).toHaveAttribute(
+    await expect(page.getByTestId('character-header-name')).toHaveText('Quickshot');
+    await expect(page.getByTestId('character-header-descriptor')).toContainText('Marksmanship Hunter');
+    await expect(page.getByTestId('character-header-descriptor')).toContainText('Horde');
+    await expect(page.getByTestId('character-header-action')).toHaveText('Marksmanship gear for 30 to 39 →');
+    await expect(page.getByTestId('character-header-action')).toHaveAttribute(
       'href',
       '/bis/hunter/marksmanship?faction=horde#band-horde-30',
     );
@@ -317,34 +353,38 @@ test.describe('signed in, desktop', () => {
 
   test('a stale sync says so in the words the addon needs, and relabels the count', async ({ page }) => {
     await openSignedIn(page, [{ ...FURY, buildDaysAgo: 19 }]);
-    await expect(page.getByTestId('bis-lead-sync')).toContainText('Addon · 19 days ago');
-    await expect(page.getByTestId('bis-lead-sync')).toContainText(
-      'Log out or /reload in the game; the companion then syncs it',
-    );
-    await expect(lead(page)).toContainText('Gear you wore at the last sync');
+    await expect(page.getByTestId('character-header-sync')).toContainText('Addon · 19 days ago');
+    await expect(page.getByTestId('character-header-sync')).toContainText('Log out in the game to sync');
+    await expect(page.getByTestId('character-header-stale')).toHaveText('Log out in the game to sync');
+    await expect(header(page)).toContainText('Slots you wore at the last sync');
   });
 
   test('with no addon sync the count is one sentence and a link, never a zero', async ({ page }) => {
     await openSignedIn(page, [{ ...FURY, gear: undefined, buildSource: 'blizzard' }]);
-    await expect(lead(page)).toContainText('Add the addon to see how many of these slots you already wear.');
-    await expect(lead(page).getByRole('link', { name: 'Get the addon →' })).toHaveAttribute('href', '/setup');
-    await expect(page.getByTestId('bis-lead-count')).toBeHidden();
-    await expect(page.getByTestId('bis-lead-sync')).toBeHidden();
-    await expect(page.getByTestId('bis-lead-cta')).toHaveText('Fury gear for 40 to 49 →');
+    await expect(header(page)).toContainText(
+      'Add the addon to see how many of these slots you already wear.',
+    );
+    await expect(header(page).getByRole('link', { name: 'Get the addon →' })).toHaveAttribute(
+      'href',
+      '/setup',
+    );
+    await expect(page.getByTestId('character-header-figure-1')).toHaveCount(0);
+    await expect(page.getByTestId('character-header-sync')).toHaveCount(0);
+    await expect(page.getByTestId('character-header-action')).toHaveText('Fury gear for 40 to 49 →');
   });
 
   test('a character under 20 gets one sentence and the first band', async ({ page }) => {
     await openSignedIn(page, [{ ...FURY, level: 12 }]);
-    await expect(lead(page)).toContainText('Best in slot starts at 20.');
-    await expect(page.getByTestId('bis-lead-count')).toBeHidden();
-    await expect(page.getByTestId('bis-lead-cta')).toHaveText('Fury gear for 20 to 29 →');
+    await expect(header(page)).toContainText('Best in slot starts at 20.');
+    await expect(page.getByTestId('character-header-figure-1')).toHaveCount(0);
+    await expect(page.getByTestId('character-header-action')).toHaveText('Fury gear for 20 to 29 →');
     await expect(pill(page, 20)).toHaveAttribute('aria-current', 'true');
     await expect(page.locator('[data-band-pill][data-you]')).toHaveCount(0);
   });
 
   test('a level 60 character reads the plain top band', async ({ page }) => {
     await openSignedIn(page, [{ ...FURY, level: 60, gear: undefined }]);
-    await expect(page.getByTestId('bis-lead-cta')).toHaveText('Fury gear for 60 →');
+    await expect(page.getByTestId('character-header-action')).toHaveText('Fury gear for 60 →');
     await expect(pill(page, 60)).toHaveAttribute('aria-current', 'true');
   });
 
@@ -361,10 +401,10 @@ test.describe('signed in, desktop', () => {
       await route.fallback();
     });
     await page.goto('/bis');
-    await expect(page.getByTestId('bis-lead-skeleton')).toBeVisible();
+    await expect(page.getByTestId('character-header-loading')).toBeVisible();
     const before = await page.getByTestId('bis-class-warrior').boundingBox();
     release();
-    await expect(page.getByTestId('bis-lead-name')).toHaveText(FURY.name);
+    await expect(page.getByTestId('character-header-name')).toHaveText(FURY.name);
     const after = await page.getByTestId('bis-class-warrior').boundingBox();
     expect(Math.abs((after?.y ?? 0) - (before?.y ?? 0))).toBeLessThanOrEqual(LEAD_RESOLVE_SHIFT_PX);
   });
@@ -402,8 +442,8 @@ test.describe('phone', () => {
     await expect(pill(page, 40).locator('.pb-you')).toBeHidden();
     const visibleCaptions = page.locator('[data-testid^="bis-landing-band-caption-"]:visible');
     await expect(visibleCaptions).toHaveCount(1);
-    await expect(page.getByTestId('bis-lead-cta')).toBeVisible();
-    const cta = await page.getByTestId('bis-lead-cta').boundingBox();
+    await expect(page.getByTestId('character-header-action')).toBeVisible();
+    const cta = await page.getByTestId('character-header-action').boundingBox();
     expect(cta?.height ?? 0).toBeGreaterThanOrEqual(48);
   });
 

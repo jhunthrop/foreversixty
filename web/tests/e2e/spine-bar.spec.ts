@@ -68,7 +68,7 @@ test.describe('the spine bar opens every door on the current character', () => {
   });
 
   // Planner rebuild spec §3: the spine band is replaced on this one page by the new
-  // header/CharacterCard family -- the pointer bridge itself is unchanged (`decidePlannerLoad`
+  // shared character header -- the pointer bridge itself is unchanged (`decidePlannerLoad`
   // still restores a bare /planner from the pasted export), so this proves the restore
   // rather than a chip that no longer renders here.
   test('/planner restores the pasted export on a bare load, with no spine chip of its own', async ({
