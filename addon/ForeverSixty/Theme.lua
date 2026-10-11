@@ -100,8 +100,11 @@ Theme.SIZES = {
 	chipIconInset = 2,
 	chipTextGap = 6,
 	chipTextInset = 38,
-	--- The point state's ring: this far outside the icon, this thick.
-	chipRingInset = 2,
+	--- The point state's ring, on its own raised frame round the icon: its
+	--- outer edge this far outside the icon, this thick. 4 out from an icon
+	--- inset 2 puts the 2 px ring just outside the chip's own 1 px edge, so
+	--- the chip's border never reads as gold.
+	chipRingInset = 4,
 	chipRingThickness = 2,
 	--- How far left of the minimap's own left edge the chip sits by default.
 	chipMinimapGap = 12,

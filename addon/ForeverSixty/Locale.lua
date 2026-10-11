@@ -547,6 +547,8 @@ local L = {
 	diagChipNotTruncated = "not truncated",
 	diagChipTruncated = "truncated",
 	diagChipHidden = "Chip: hidden. /fs chip brings it back.",
+	diagChipCombat = "Chip: hidden in combat",
+	diagChipCinematic = "Chip: hidden during a cinematic",
 	diagDataAddonOld = "The Forever Sixty Data addon is missing or too old. Install or update it from the site.",
 	-- Below 10, and in the hover when the next point is not spendable yet: "Next at 22: Improved Tactical Mastery".
 	chipNextAt = "Next at %d: %s",

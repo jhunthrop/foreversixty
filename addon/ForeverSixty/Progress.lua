@@ -67,10 +67,14 @@ end
 --- the plan wanted that the character has (a rank over the plan's own
 --- counts only up to the plan), `total` the plan's length, `offPlan`
 --- the points spent where the plan wanted none, `point` the next one to
---- take and `nextLevel` the level it is taken at. `done` is true once a
+--- take. `nextLevel` is the level the character's next point arrives at
+--- (Progress.nextPointLevel) when `level` is given; without it (the legacy
+--- callers) it is the plan's own "taken at" level, 9 + the point's order
+--- index, which is wrong for a character who took cells out of the plan's
+--- order (seen in game: "Next at 16" at level 21). `done` is true once a
 --- build has no point left (seen in game: a "2 of 51" beside eleven spent
 --- points, because the old count stopped at the first unmet point).
-function Progress.build(build, ranks)
+function Progress.build(build, ranks, level)
 	if build == nil then
 		return { matched = 0, total = 0, offPlan = 0, point = nil, nextLevel = nil, done = false }
 	end
@@ -94,7 +98,7 @@ function Progress.build(build, ranks)
 		total = #build.order,
 		offPlan = math.max(0, Progress.pointsSpent(ranks) - matched),
 		point = point,
-		nextLevel = point ~= nil and (9 + point.index) or nil,
+		nextLevel = point ~= nil and (level ~= nil and Progress.nextPointLevel(level, ranks) or 9 + point.index) or nil,
 		done = point == nil,
 	}
 end
@@ -385,6 +389,17 @@ function Progress.unspentPoints(level, ranks)
 		return 0
 	end
 	return math.max(0, (level - 9) - Progress.pointsSpent(ranks))
+end
+
+--- The level the character's next talent point arrives at: `level` itself
+--- while a point is unspent, else the later of the next level and the level
+--- that grants point number pointsSpent + 1 (10 + pointsSpent). The "next
+--- at" number; Progress.levelForPoint stays the plan's own "taken at" label.
+function Progress.nextPointLevel(level, ranks)
+	if Progress.unspentPoints(level, ranks) > 0 then
+		return level
+	end
+	return math.max((level or 0) + 1, 10 + Progress.pointsSpent(ranks))
 end
 
 ns.Progress = Progress

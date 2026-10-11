@@ -37,7 +37,8 @@ Chip.STATIC_AFTER = 10
 Chip.RAID_CHECK_SECONDS = 60
 --- Days a logged raid stays worth a "last night" line.
 Chip.LAST_RAID_DAYS = 14
---- The idle chip's alpha, and the chip's alpha in combat when it stays shown.
+--- The idle chip's icon alpha (the chip itself stays opaque), and the
+--- chip's alpha in combat when it stays shown.
 Chip.IDLE_ALPHA = 0.4
 Chip.COMBAT_ALPHA = 0.25
 --- The level cap: a right-click there hides the chip until /fs chip.
@@ -133,13 +134,16 @@ local function firstTalentLevel()
 	return Progress.levelForPoint(1).level
 end
 
---- The next point in the build and the level it is taken at, or nil.
+--- The next point in the build and the level the character's next point
+--- arrives at (Progress.build's nextLevel, from Progress.nextPointLevel), or
+--- nil. Never Progress.levelForPoint: that is the plan's own "taken at" label.
 local function nextPoint(input)
-	local point = input.progress ~= nil and input.progress.point or nil
-	if input.build == nil or point == nil then
+	local progress = input.progress
+	local point = progress ~= nil and progress.point or nil
+	if input.build == nil or point == nil or progress.nextLevel == nil then
 		return nil
 	end
-	return point, Progress.levelForPoint(point.index).level
+	return point, progress.nextLevel
 end
 
 --- "Pick a path": a default build below the first talent level, no path chosen.
@@ -152,7 +156,8 @@ local function pathState(input)
 end
 
 --- Below the first talent level: "Next at 10: Improved Heroic Strike",
---- muted, no ring and no click (there is nothing to spend yet).
+--- muted, no ring and no click (there is nothing to spend yet). Information
+--- only, so it never counts toward the "+N" badge.
 local function nextState(input)
 	local point, at = nextPoint(input)
 	if point == nil or (input.level or 0) >= firstTalentLevel() then
@@ -164,6 +169,7 @@ local function nextState(input)
 		crop = input.pointIcon ~= nil,
 		text = string.format(L.chipNextAt, at, input.pointName or L.chipNextTalent),
 		muted = true,
+		info = true,
 	}
 end
 
@@ -203,6 +209,8 @@ local function upgradeState(input)
 		link = upgrade.link,
 		text = string.format(L.chipEquip, upgrade.name, gain),
 		short = string.format(L.chipEquipShort, upgrade.name, gain),
+		-- The gain, kept whole when the short form must be cut: ", +4.2 DPS".
+		keep = string.format(L.chipEquipShort, "", gain),
 		action = not input.inCombat and "equip" or nil,
 		hint = not input.inCombat and L.chipHintEquip or nil,
 	}
@@ -286,10 +294,14 @@ end
 --- { level, build, progress, pointName, pointIcon, unspent, upgrades, healing,
 ---   here, raidCheck, lastRaid, lastNightDone, completedAt, now, clock,
 ---   classIcon, inCombat, combatHide, shown, hiddenUntilLevel, pathChosen }.
---- Answers { states, chosen, waiting, nextLine, visible, alpha, mouse, ring }:
---- every state that is true, highest first; the first of them, or idle (the
---- class icon, no text); how many wait behind it; the hover's next-talent
---- line; and how the frame sits. Pure.
+--- Answers { states, chosen, waiting, nextLine, visible, hiddenBy, alpha,
+--- iconAlpha, mouse, ring }: every state that is true, highest first; the
+--- first of them, or idle (the class icon, no text); how many actionable
+--- states wait behind it (an informational one never counts); the hover's
+--- next-talent line; and how the frame sits: hidden by the "player" or by
+--- "combat", the chip's alpha (full, or 25 % in combat) and the icon's (40 %
+--- when idle, so the dark ground and border stay visible over a bright
+--- scene). Pure.
 function Chip.model(input)
 	local states = {}
 	for _, stateOf in ipairs(Chip.STATES) do
@@ -300,18 +312,27 @@ function Chip.model(input)
 	end
 	local chosen = states[1] or { kind = "idle", icon = input.classIcon, text = "" }
 	local hiddenByLevel = input.hiddenUntilLevel ~= nil and (input.level or 0) < input.hiddenUntilLevel
-	local hiddenInCombat = input.inCombat and input.combatHide ~= false
-	local alpha = chosen.kind == "idle" and Chip.IDLE_ALPHA or 1
-	if input.inCombat then
-		alpha = math.min(alpha, Chip.COMBAT_ALPHA)
+	local hiddenBy
+	if input.shown == false or hiddenByLevel then
+		hiddenBy = "player"
+	elseif input.inCombat and input.combatHide ~= false then
+		hiddenBy = "combat"
+	end
+	local waiting = 0
+	for index = 2, #states do
+		if not states[index].info then
+			waiting = waiting + 1
+		end
 	end
 	return {
 		states = states,
 		chosen = chosen,
-		waiting = math.max(0, #states - 1),
+		waiting = waiting,
 		nextLine = nextLine(input),
-		visible = input.shown ~= false and not hiddenByLevel and not hiddenInCombat,
-		alpha = alpha,
+		visible = hiddenBy == nil,
+		hiddenBy = hiddenBy,
+		alpha = input.inCombat and Chip.COMBAT_ALPHA or 1,
+		iconAlpha = chosen.kind == "idle" and Chip.IDLE_ALPHA or 1,
 		mouse = not input.inCombat,
 		ring = chosen.ring == true,
 	}
@@ -357,8 +378,9 @@ local function dropLastCharacter(text)
 end
 
 --- `text` cut character by character until it fits, ended with L.ellipsis
---- and never a dangling space or comma; "" when nothing but the ellipsis would.
-local function ellipsise(text, measure, maxWidth)
+--- (then `tail`, kept whole) and never a dangling space or comma; "" when
+--- nothing but the ellipsis would.
+local function ellipsise(text, measure, maxWidth, tail)
 	local body = text
 	while body ~= "" do
 		body = dropLastCharacter(body)
@@ -366,7 +388,7 @@ local function ellipsise(text, measure, maxWidth)
 		if trimmed == "" then
 			return ""
 		end
-		local candidate = trimmed .. L.ellipsis
+		local candidate = trimmed .. L.ellipsis .. (tail or "")
 		local width = measure(candidate)
 		if width == nil or width <= maxWidth then
 			return candidate
@@ -383,20 +405,25 @@ end
 --- The line that fits `maxWidth` as `measure` measures it, in two stages:
 --- the whole `text` when it fits; else `short` (the line without its verb,
 --- "Improved Tactical Mastery" for "Take Improved Tactical Mastery") when
---- there is one and it fits; only past that, cut with an ellipsis. A measure
---- that answers nothing counts as fitting.
-function Chip.fit(text, measure, maxWidth, short)
+--- there is one and it fits; only past that, cut with an ellipsis. `keep`
+--- is the end of `short` that is never cut (an upgrade's ", +4.2 DPS"): the
+--- part before it gives way instead. A measure that answers nothing counts
+--- as fitting.
+function Chip.fit(text, measure, maxWidth, short, keep)
 	text = text or ""
 	if fits(text, measure, maxWidth) then
 		return text
 	end
-	if short ~= nil and short ~= "" then
-		if fits(short, measure, maxWidth) then
-			return short
-		end
-		return ellipsise(short, measure, maxWidth)
+	if short == nil or short == "" then
+		return ellipsise(text, measure, maxWidth)
 	end
-	return ellipsise(text, measure, maxWidth)
+	if fits(short, measure, maxWidth) then
+		return short
+	end
+	if keep ~= nil and keep ~= "" and #keep < #short and short:sub(-#keep) == keep then
+		return ellipsise(short:sub(1, #short - #keep), measure, maxWidth, keep)
+	end
+	return ellipsise(short, measure, maxWidth)
 end
 
 --- "71st": a percentile as a player reads it, rounded to a whole number.
@@ -606,7 +633,7 @@ function Chip.inputs(data)
 	local build = Follow.build
 	local classSlug = Talents.playerClassSlug()
 	local ranks = Talents.readRanks(data)
-	local progress = Progress.build(build, ranks)
+	local progress = Progress.build(build, ranks, level)
 	local spec = classSlug ~= nil and Gear.specOf(data, classSlug, ranks) or nil
 	local perPoint = spec ~= nil and type(data.dpsPerPoint) == "table" and data.dpsPerPoint[spec] or nil
 	local input = {
@@ -980,11 +1007,11 @@ local function draw(model)
 	paintIconBorder(chosen)
 	local width, truncated = S.chip, false
 	if chosen.text ~= nil and chosen.text ~= "" then
-		local fitted = Chip.fit(chosen.text, measure, S.chipWide - S.chipTextInset, chosen.short)
+		local fitted = Chip.fit(chosen.text, measure, S.chipWide - S.chipTextInset, chosen.short, chosen.keep)
 		Chip.text:SetText(fitted)
 		Chip.text:SetTextColor(Theme.rgb(Theme.HEX[chosen.muted and "muted" or "body"]))
 		Chip.text:Show()
-		truncated = fitted:sub(-#L.ellipsis) == L.ellipsis or fitted == ""
+		truncated = fitted == "" or fitted:find(L.ellipsis, 1, true) ~= nil
 		local textWidth = Chip.text:GetStringWidth()
 		if type(textWidth) == "number" then
 			width = math.min(S.chipWide, math.max(S.chip, math.ceil(textWidth) + S.chipTextInset))
@@ -1016,6 +1043,7 @@ local function draw(model)
 		Chip.ringOn = false
 	end
 	frame:SetAlpha(model.alpha)
+	Chip.icon:SetAlpha(model.iconAlpha)
 	frame:EnableMouse(model.mouse)
 	frame:Show()
 end
@@ -1078,15 +1106,27 @@ function Chip.selfCheck()
 	return false
 end
 
+--- Why a hidden chip is hidden, for /fs diag: in combat, during a
+--- cinematic, or put away by the player (then how to bring it back).
+function Chip.hiddenLine(hiddenBy, inCinematic)
+	if inCinematic then
+		return L.diagChipCinematic
+	end
+	if hiddenBy == "combat" then
+		return L.diagChipCombat
+	end
+	return L.diagChipHidden
+end
+
 --- /fs diag's line for the chip: "Chip: anchored, 212 of 280 wide, not
---- truncated", or that it is hidden; nil before it has drawn, or once it has
+--- truncated", or why it is hidden; nil before it has drawn, or once it has
 --- turned itself off (that is already a /fs diag note).
 function Chip.diagLine()
 	if Chip.disabled or Chip.frame == nil then
 		return nil
 	end
 	if not Chip.frame:IsShown() or Chip.lastDraw == nil then
-		return L.diagChipHidden
+		return Chip.hiddenLine(Chip.current ~= nil and Chip.current.hiddenBy or nil, Chip.inCinematic)
 	end
 	local S = Theme.SIZES
 	return string.format(L.diagChipLine, math.floor(Chip.lastDraw.width + 0.5), S.chipWide,

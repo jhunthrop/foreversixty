@@ -82,6 +82,32 @@ describe("Progress.build", function()
 	end)
 end)
 
+-- Fix round 2 (seen in game): a level-21 warrior with 12 spent read "Next at 16",
+-- the plan's order index of the first unmet cell (#7) and not the level the
+-- character's next point arrives at.
+describe("Progress.nextPointLevel", function()
+	-- IHS 2, Deflection 4 of 5, Rend 3, Overpower 2, Cruelty 1: twelve spent,
+	-- and the first unmet cell in the plan's order is #7 (the fifth Deflection).
+	local OUT_OF_ORDER = { [1] = { ["1:1"] = 2, ["1:2"] = 4, ["1:3"] = 3, ["2:4"] = 2 }, [2] = { ["1:3"] = 1 } }
+
+	it("is the next level when no point is unspent, counted from the points spent", function()
+		assert.are.equal(22, Progress.nextPointLevel(21, OUT_OF_ORDER))
+		assert.are.equal(10, Progress.nextPointLevel(9, {}))
+		assert.are.equal(10, Progress.nextPointLevel(4, {}))
+	end)
+
+	it("is the level now when a point is unspent", function()
+		assert.are.equal(22, Progress.nextPointLevel(22, OUT_OF_ORDER))
+	end)
+
+	it("sets Progress.build's nextLevel when the level is given, not the plan's order index", function()
+		local progress = Progress.build(warriorBuild(), OUT_OF_ORDER, 21)
+		assert.are.equal(7, progress.point.index)
+		assert.are.equal(22, progress.nextLevel)
+		assert.are.equal(16, Progress.levelForPoint(progress.point.index).level)
+	end)
+end)
+
 describe("Progress.levelForPoint", function()
 	it("takes point N at level 9 + N", function()
 		assert.are.same({ level = 12, text = "Take at level 12" }, Progress.levelForPoint(3))
