@@ -8,9 +8,13 @@
 package character
 
 import (
+	"context"
+	"fmt"
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/jackc/pgx/v5"
 )
 
 // The four rulesets, per the Phase 3 contract.
@@ -132,4 +136,48 @@ func RulesetFromRealm(realm, fallback string) string {
 func KeyFromUnit(region, ruleset, unit string) string {
 	name, realm := SplitUnit(unit)
 	return Key(region, RulesetFromRealm(realm, ruleset), name)
+}
+
+// Querier is the one database call LinkedCharacters makes; a pool and a
+// transaction both have it.
+type Querier interface {
+	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
+}
+
+// Linked is one character an account owns. Main is true for the account's
+// main (users.main_character_key); every other linked character is an alt.
+type Linked struct {
+	Key     string
+	Region  string
+	Ruleset string
+	Name    string
+	Class   string
+	Main    bool
+}
+
+// LinkedCharacters lists the characters an account owns - exactly the
+// characters GET /v1/me lists (characters.user_id, which only the account's
+// own verified paths ever set and which never moves a character off another
+// account) - with the main first, then the alts by key. An account with no
+// characters has none, and that is not an error.
+func LinkedCharacters(ctx context.Context, q Querier, userID int64) ([]Linked, error) {
+	rows, err := q.Query(ctx,
+		`select c.key, c.region, c.ruleset, c.name, coalesce(c.class, ''),
+		        c.key = coalesce(u.main_character_key, '')
+		 from characters c join users u on u.id = c.user_id
+		 where c.user_id = $1
+		 order by 6 desc, c.key`, userID)
+	if err != nil {
+		return nil, fmt.Errorf("character: linked characters of %d: %w", userID, err)
+	}
+	defer rows.Close()
+	out := []Linked{}
+	for rows.Next() {
+		var l Linked
+		if err := rows.Scan(&l.Key, &l.Region, &l.Ruleset, &l.Name, &l.Class, &l.Main); err != nil {
+			return nil, fmt.Errorf("character: scan linked character: %w", err)
+		}
+		out = append(out, l)
+	}
+	return out, rows.Err()
 }

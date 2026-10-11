@@ -106,6 +106,7 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 		card := ratingengine.Score(f.Summary, row.GUID, tables, adapter, nil, modelInfo)
 		cr := newCardRow(meta, row, card)
 		cr.PlayerKey = character.KeyFromUnit(f.Region, f.Ruleset, row.Name)
+		cr.Discipline = fightDiscipline(f.Summary, row, tables.Consumables)
 		if err := insertCardRow(ctx, tx, cr); err != nil {
 			return err
 		}
@@ -121,20 +122,21 @@ func insertCardRow(ctx context.Context, tx pgx.Tx, cr CardRow) error {
 	_, err := tx.Exec(ctx,
 		`insert into rating_scores (report_id, fight_index, player_key, player_name, class, spec, role,
 		   encounter_id, difficulty, size, duration_ms, kill, kill_time_band, overall, overall_uncapped,
-		   overall_capped, components, model_version, fought_at, coverage, insufficient, insufficient_reason)
+		   overall_capped, components, model_version, fought_at, coverage, insufficient, insufficient_reason,
+		   discipline)
 		 values ($1, $2, $3, $4, nullif($5, ''), nullif($6, ''), nullif($7, ''), $8, $9, $10, $11, $12, $13,
-		   $14, $15, $16, $17, $18, $19, $20, $21, nullif($22, ''))
+		   $14, $15, $16, $17, $18, $19, $20, $21, nullif($22, ''), $23)
 		 on conflict (report_id, fight_index, player_key, fought_at) do update set
 		   player_name = excluded.player_name, class = excluded.class, spec = excluded.spec,
 		   role = excluded.role, overall = excluded.overall, overall_uncapped = excluded.overall_uncapped,
 		   overall_capped = excluded.overall_capped, components = excluded.components,
 		   model_version = excluded.model_version, coverage = excluded.coverage,
 		   insufficient = excluded.insufficient, insufficient_reason = excluded.insufficient_reason,
-		   computed_at = now()`,
+		   discipline = excluded.discipline, computed_at = now()`,
 		cr.ReportID, cr.FightIndex, cr.PlayerKey, cr.PlayerName, cr.Class, cr.Spec, cr.Role,
 		cr.EncounterID, cr.Difficulty, cr.Size, cr.DurationMS, cr.Kill, cr.KillTimeBand,
 		cr.Overall, cr.OverallUncapped, cr.OverallCapped, cr.Components, cr.ModelVersion, cr.FoughtAt,
-		cr.Coverage, cr.Insufficient, cr.InsufficientReason)
+		cr.Coverage, cr.Insufficient, cr.InsufficientReason, cr.Discipline)
 	if err != nil {
 		return fmt.Errorf("rating: write row %s/%d/%s: %w", cr.ReportID, cr.FightIndex, cr.PlayerKey, err)
 	}

@@ -103,6 +103,10 @@ type CardRow struct {
 	Coverage           float64
 	Insufficient       bool
 	InsufficientReason string
+	// Discipline is this fight's discipline fact for the Forever Score (score_v2.go's
+	// fightDiscipline, migration 0035_score_v2): nil when it cannot be known. Set by the
+	// caller, like PlayerKey.
+	Discipline *bool
 }
 
 // newCardRow builds a CardRow from one player's already-scored Card. PlayerKey is left

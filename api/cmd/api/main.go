@@ -564,6 +564,9 @@ func serve(log *slog.Logger) error {
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}
 
+	// The character page carries the Forever Score, which lives in the rating lane.
+	deps.Rankings.Scores = deps.Rating
+
 	deps.Sims = &sims.Service{
 		Store: simStore, Accounts: entStore, Planner: simEngine(log),
 		EngineVersion: enginever.Version, Log: log,
