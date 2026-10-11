@@ -67,7 +67,8 @@ function slugOf(className: string | undefined): string {
   return (className ?? '').toLowerCase().replace(/\s+/g, '-');
 }
 
-function sourceWordOf(character: MeCharacter): string {
+/** "Addon", "Battle.net" or "Pasted export"; empty when nothing says where it came from. */
+export function sourceWordOf(character: MeCharacter): string {
   if (character.build !== undefined) {
     return character.build.source === 'addon' ? selectorCopy.sourceAddon : selectorCopy.sourceBnet;
   }

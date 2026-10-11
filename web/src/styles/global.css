@@ -301,6 +301,16 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
   display: none;
 }
 
+/* The shared character header's server-rendered loading state (CharacterHeader.svelte): the
+   skeleton box shows only for a visitor with a session hint, the signed-out band only for one
+   without, so neither kind of visitor sees the panel change size when the island hydrates. */
+html:not([data-session='1']) .ch-hint-only {
+  display: none;
+}
+html[data-session='1'] .ch-hint-out-only {
+  display: none;
+}
+
 /* The homepage hero with a session hinted (home signed-in panel spec 2026-10-10): the
    signed-out hero's text block and its example-panel cell collapse from first paint and the
    island's cell takes the whole row, so the signed-in hero re-flows into one band without
