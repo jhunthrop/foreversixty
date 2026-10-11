@@ -1,24 +1,14 @@
 ---
 // web/src/pages/logs.astro
-// Rebuilt to the logs landing spec (design/specs/2026-10-04-logs-landing.md). The page
-// leads with a real report -- the visitor's own newest when they have one, the site's one
-// labelled sample otherwise -- in a full-bleed header band (`LogsHeroBand`, §4.A), never a
-// plain "Logs" title. The spine (`CurrentCharacterBar`, §4.B) and the dungeon-framing
-// sentence follow directly under the band, then the two report lists (§4.C), then the two
-// ways in (§4.D): live logging through the companion, or a whole-file upload.
+// The logs landing (design/specs/2026-10-11-logs.md): one job, "upload a log, or open one, and
+// read it". A full-bleed band names the page (eyebrow, h1, one job line, no stamp); under it the
+// shared character header (the latest kill, the newest report, the Upload action; signed out its
+// one shared line) and two columns split by verb, reading on the left and ways in on the right.
+// Everything below the band is one island, `LogsLanding`, because the header's action, the order
+// of the ways in and the signed-in panels all follow one session read.
 import Base from '../layouts/Base.astro';
-import Account from '../components/Account.svelte';
-import CompanionStatus from '../components/CompanionStatus.svelte';
-import CurrentCharacterBar from '../components/CurrentCharacterBar.svelte';
-import LogsHeroBand from '../components/LogsHeroBand.svelte';
-import Panel from '../components/Panel.astro';
-import RecentReports from '../components/RecentReports.svelte';
-import { RECENT_REPORTS_PRELOAD } from '../lib/reports/recent';
-import Upload from '../components/Upload.svelte';
-import { logsCompanionCopy, logsFraming } from '../lib/reports/copy';
-
-const block = 'flex flex-col gap-3 p-4 md:p-5';
-const blockTitle = 'label text-muted';
+import LogsLanding from '../components/logs/LogsLanding.svelte';
+import { logsBandCopy } from '../lib/reports/copy';
 ---
 
 <Base
@@ -26,72 +16,96 @@ const blockTitle = 'label text-muted';
   description="Upload a World of Warcraft: Forever combat log, or log live with the Forever Sixty companion."
   path="/logs"
 >
-  <main id="main" tabindex="-1" class="flex flex-col gap-[22px] pb-10 md:gap-8">
-    <!-- §4.A: mounted client:idle -- this region sits above the fold and names the page's
-         LCP candidate (the h1), so hydration must not gate first paint on anything the
-         server markup does not already carry. -->
-    <LogsHeroBand client:idle />
+  <main id="main" tabindex="-1" class="logs-page" data-testid="logs-page">
+    <div class="band full-bleed">
+      <header class="hero page-column">
+        <p class="label eyebrow">
+          <i class="eyebrow-rule" aria-hidden="true"></i>
+          {logsBandCopy.eyebrow}
+        </p>
+        <h1 class="h1">{logsBandCopy.h1}</h1>
+        <p class="job">{logsBandCopy.jobLine}</p>
+      </header>
+    </div>
 
-    <div class="flex flex-col gap-[22px] px-[18px] md:gap-8 md:px-0">
-      <CurrentCharacterBar client:idle spine />
-
-      <!-- Designer ruling, logs mock review (2026-10-04): the dungeon-framing sentence
-           sits directly under the spine on every viewport, before "Your reports". -->
-      <p class="text-muted max-w-[720px] text-[14px] leading-relaxed" data-testid="logs-framing">
-        {logsFraming}
-      </p>
-
-      <!-- The two report lists first, side by side at lg: a raid leader mostly comes back
-           to read logs, not to set logging up. The two ways in follow. -->
-      <div class="grid grid-cols-1 items-start gap-[22px] md:gap-8 lg:grid-cols-12">
-        <div class="lg:col-span-7">
-          <Panel title="Your reports">
-            <div class="p-4 md:p-5">
-              <Account client:visible mode="reports" />
-            </div>
-          </Panel>
-        </div>
-        <div class="lg:col-span-5">
-          <Panel title="Recent public reports">
-            <div class="p-4 md:p-5">
-              <RecentReports client:visible={{ rootMargin: RECENT_REPORTS_PRELOAD }} heading={false} />
-            </div>
-          </Panel>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 items-start gap-[22px] md:gap-8 lg:grid-cols-12">
-        <div id="companion" class="scroll-mt-6 lg:col-span-7">
-          <Panel title="The companion">
-            <span slot="aside" class="text-muted text-[13px]">
-              Live, while you raid
-            </span>
-            <div class={block}>
-              <!-- §4.D.1: above the pointer line, signed in with devices only. -->
-              <CompanionStatus client:load />
-              <p class="text-muted text-[13px]" data-testid="logs-companion-pointer">
-                {logsCompanionCopy.pointer}{' '}
-                <a class="text-nav underline" href="/setup">
-                  {logsCompanionCopy.pointerLink}
-                </a>
-              </p>
-            </div>
-            <div class={`${block} border-line-soft border-t`}>
-              <h3 class={blockTitle}>Pair it with your account</h3>
-              <Account client:load mode="pairing" />
-            </div>
-          </Panel>
-        </div>
-
-        <div id="upload" class="scroll-mt-6 lg:col-span-5">
-          <Panel title="Upload a log">
-            <span slot="aside" class="text-muted text-[13px]">
-              For a night already logged
-            </span>
-            <Upload client:load />
-          </Panel>
-        </div>
-      </div>
+    <div class="body">
+      <LogsLanding client:load />
     </div>
   </main>
 </Base>
+
+<style>
+  .logs-page {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .band {
+    position: relative;
+    background: var(--color-raised);
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .band::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #26405c66 0%, #07090dcc 70%, #07090d 100%);
+    pointer-events: none;
+  }
+  .hero {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-block: 28px 24px;
+  }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    color: var(--color-gold);
+  }
+  .eyebrow-rule {
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--color-gold);
+  }
+  .h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-strong);
+  }
+  .job {
+    margin: 0;
+    max-width: 62ch;
+    font-size: 14px;
+    color: #c9c2b2;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 12px var(--page-inset) 40px;
+  }
+
+  @media (max-width: 767px) {
+    .hero {
+      padding-inline: 18px;
+    }
+  }
+  @media (max-width: 599px) {
+    .hero {
+      gap: 10px;
+      padding-block: 22px 20px;
+    }
+    .h1 {
+      font-size: 26px;
+    }
+  }
+</style>

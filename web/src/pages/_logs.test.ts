@@ -4,7 +4,7 @@
 // /logs.test. Astro skips `_`-prefixed files; vitest still collects it.
 //
 // The Svelte renderer has to be handed to the container explicitly, exactly as
-// _planner.test.ts does: logs.astro mounts the Account island directly, and Astro's
+// _planner.test.ts does: logs.astro mounts the LogsLanding island directly, and Astro's
 // integrations are not loaded in a unit test, so without this the island fails to render.
 import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { createPageContainer } from '../test-support/page-container';
@@ -43,27 +43,25 @@ describe('/logs', () => {
     expect(html).not.toContain('latest/download/foreversixty-companion_windows_amd64.exe');
   });
 
-  it('names the two ways in panels, each with the id its hero links to', async () => {
-    // The two anchors themselves now live in the hero's own description
-    // (LogsHero.svelte, logs landing spec §4.A), a client-fetched island whose markup is
-    // a loading skeleton during a container test's server render (no hydration, no
-    // effect) -- covered for real by tests/e2e/logs-upload.spec.ts's "two ways in" test
-    // instead. This only asserts the two panels these links point at still exist.
+  it('names the two ways in panels, each with the id the header links to', async () => {
+    // The header's picker action and a phone's jump both point at these two anchors.
     const html = await container.renderToString(Logs);
     expect(html).toContain('id="companion"');
     expect(html).toContain('id="upload"');
   });
 
-  it('frames logs for a visitor who is not raiding yet', async () => {
+  it('has no dungeon-framing sentence, no spine bar, no report-as-hero and no Sample pill', async () => {
+    // Spec 2026-10-11 section 2: the framing line, the CurrentCharacterBar spine and the hero
+    // band that led with a report are all gone; the sample is one plain row in the public feed.
     const html = await container.renderToString(Logs);
-    expect(html).toContain(
-      'Logs are for group content at any level: a dungeon run logs the same way a raid does.',
-    );
+    expect(html).not.toContain('logs-framing');
+    expect(html).not.toContain('Logs are for group content');
+    expect(html).not.toContain('current-character-bar');
+    expect(html).not.toContain('logs-hero');
+    expect(html).not.toContain('pill-sample');
   });
 
   it('mounts Your reports first, above the recent public reports panel', async () => {
-    // Reordered by the spine mount (spec 2026-09-25 §4.1/4.2): "Your reports" is the first
-    // content panel a signed-in visitor sees, ahead of "Recent public reports".
     const html = await container.renderToString(Logs);
     const recentAt = html.indexOf('>Recent public reports<');
     // Matched by its element, not a plain text search, so a future block that happens to
@@ -72,35 +70,23 @@ describe('/logs', () => {
     expect(recentAt).toBeGreaterThan(-1);
     expect(mineAt).toBeGreaterThan(-1);
     expect(mineAt).toBeLessThan(recentAt);
-    // The panel titles it; RecentReports itself is told to leave its own heading off, so
-    // "Recent public reports" appears exactly once.
+    // The panel titles it; RecentReports is told to leave its own heading off.
     expect(html.split('Recent public reports').length - 1).toBe(1);
   });
 
-  it('leads with the full-bleed header band, before the spine and Your reports', async () => {
-    // Logs landing spec (2026-10-04) §4.A: the band carrying a real report's hero replaces
-    // the old plain "Logs" <h1> as the page's first content.
-    const html = await container.renderToString(Logs);
-    const bandAt = html.indexOf('data-testid="logs-hero-band"');
-    const mineAt = html.indexOf('>Your reports<');
-    expect(bandAt).toBeGreaterThan(-1);
-    expect(bandAt).toBeLessThan(mineAt);
-  });
-
-  it('mounts the spine bar directly under the header band, before Your reports', async () => {
-    // §4.B: the spine stays, immediately under the band -- the framing sentence (§ ux
-    // review ruling, 2026-10-04) sits between the two.
+  it('leads with the band (eyebrow, h1, job line), then the header slot, then the reading column', async () => {
     const html = await container.renderToString(Logs);
     const mainAt = html.indexOf('id="main"');
-    const bandAt = html.indexOf('data-testid="logs-hero-band"');
-    const barAt = html.indexOf('data-testid="current-character-bar"');
-    const framingAt = html.indexOf('data-testid="logs-framing"');
+    const h1At = html.indexOf('>Logs</h1>');
+    const jobAt = html.indexOf('Upload a combat log or log live, then read every pull.');
+    const headerAt = html.indexOf('character-header');
     const mineAt = html.indexOf('>Your reports<');
+    expect(html).toContain('Combat logs');
     expect(mainAt).toBeGreaterThan(-1);
-    expect(bandAt).toBeGreaterThan(mainAt);
-    expect(barAt).toBeGreaterThan(bandAt);
-    expect(framingAt).toBeGreaterThan(barAt);
-    expect(framingAt).toBeLessThan(mineAt);
+    expect(h1At).toBeGreaterThan(mainAt);
+    expect(jobAt).toBeGreaterThan(h1At);
+    expect(headerAt).toBeGreaterThan(jobAt);
+    expect(headerAt).toBeLessThan(mineAt);
   });
 
   it('uses no emoji, and no exclamation marks in its copy', async () => {
