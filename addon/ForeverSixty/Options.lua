@@ -25,6 +25,7 @@ local Theme = ns.Theme or require("Theme")
 local Comms = ns.Comms or require("Comms")
 local MinimapButton = ns.Minimap or require("Minimap")
 local Chip = ns.Chip or require("Chip")
+local TalentMarks = ns.TalentMarks or require("TalentMarks")
 local Score = ns.Score or require("Score")
 
 local Options = {}
@@ -223,11 +224,11 @@ function Options.showHint()
 	return lines
 end
 
---- Redraw every surface for `data`: the chip and the talent glow today; each surface
---- Lanes L3-L5 add calls its own refresh from here.
+--- Redraw every surface for `data`: the chip and the talent marks (which draw the
+--- talent glow first) today; each surface Lanes L3-L5 add calls its own refresh from here.
 function Options.refreshSurfaces(data)
 	Chip.refresh(data)
-	TalentGlow.refresh(data)
+	TalentMarks.refresh(data)
 end
 
 --- Every event any surface refreshes on. Theme.registerEvent swallows the
@@ -353,6 +354,10 @@ function Options.register()
 	Chip.afterChoice = function()
 		Options.refreshSurfaces(Options.data)
 	end
+	-- The talent window's own show and hide (TalentGlow.watch's hooks) draw
+	-- and clear every talent mark, the ring included.
+	TalentGlow.onShow = TalentMarks.refresh
+	TalentGlow.onHide = TalentMarks.clear
 
 	local frame = CreateFrame("Frame", "ForeverSixtyEventFrame", UIParent)
 	for _, event in ipairs(Options.EVENTS) do

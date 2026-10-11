@@ -43,6 +43,7 @@ describe("Options", function()
 		helper.load("Follow")
 		helper.load("TalentGlow")
 		helper.load("Chip")
+		helper.load("TalentMarks")
 		helper.load("Minimap")
 		helper.load("Comms")
 		Options = helper.load("Options")
@@ -291,16 +292,23 @@ describe("Options", function()
 		assert.are.equal(require("Theme").chatLine(Locale.slashHintLines[1]), state.printed[1])
 	end)
 
-	it("refreshes the chip and the talent glow through refreshSurfaces", function()
+	it("refreshes the chip and the talent marks through refreshSurfaces", function()
 		local calls = {}
 		require("Chip").refresh = function(data)
 			calls[#calls + 1] = { "chip", data }
 		end
-		require("TalentGlow").refresh = function(data)
-			calls[#calls + 1] = { "glow", data }
+		require("TalentMarks").refresh = function(data)
+			calls[#calls + 1] = { "marks", data }
 		end
 		Options.refreshSurfaces(DATA)
-		assert.are.same({ { "chip", DATA }, { "glow", DATA } }, calls)
+		assert.are.same({ { "chip", DATA }, { "marks", DATA } }, calls)
+	end)
+
+	it("hands the talent window's show and hide to the talent marks", function()
+		local TalentGlow, TalentMarks = require("TalentGlow"), require("TalentMarks")
+		Options.register()
+		assert.are.equal(TalentMarks.refresh, TalentGlow.onShow)
+		assert.are.equal(TalentMarks.clear, TalentGlow.onHide)
 	end)
 
 	it("redraws the chip on every event the plan names, and tells it about combat", function()

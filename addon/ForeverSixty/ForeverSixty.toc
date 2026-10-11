@@ -32,6 +32,7 @@ Tooltip.lua
 TalentGlow.lua
 Minimap.lua
 surfaces\Chip.lua
+surfaces\TalentMarks.lua
 RecorderBuffer.lua
 Recorder.lua
 Options.lua

@@ -424,3 +424,35 @@ describe("Progress.unspentPoints", function()
 		assert.are.equal(0, Progress.unspentPoints(nil, {}))
 	end)
 end)
+
+-- Task L3.2 ruling 1: the talent marks draw from this list only.
+describe("Progress.cells", function()
+	-- Arms 1:1 carries a trait node; Fury 1:3 is a data gap (no talent there).
+	local TALENTS = { classes = { warrior = { tabs = {
+		{ name = "Arms", talents = { { name = "Improved Heroic Strike", tier = 1, column = 1, maxRank = 3, node = 101 } } },
+		{ name = "Fury", talents = {} },
+	} } } }
+	-- Improved Heroic Strike, Cruelty, Improved Heroic Strike again.
+	local BUILD = { classSlug = "warrior", order = { IHS, CRUELTY, IHS } }
+
+	it("lists each cell once, in plan order, with its last point's index, rank and node", function()
+		local cells = Progress.cells(BUILD, { [1] = { ["1:1"] = 1 } }, TALENTS)
+		assert.are.same({
+			{ tab = 1, tier = 1, column = 1, want = 2, have = 1, lastIndex = 3, node = 101, next = false },
+			{ tab = 2, tier = 1, column = 3, want = 1, have = 0, lastIndex = 2, node = nil, next = true },
+		}, cells)
+	end)
+
+	it("marks no cell next once the build is done, and reads a missing tab as no rank", function()
+		local cells = Progress.cells(BUILD, { [1] = { ["1:1"] = 2 }, [2] = { ["1:3"] = 1 } }, TALENTS)
+		assert.is_false(cells[1].next)
+		assert.is_false(cells[2].next)
+		assert.are.equal(1, cells[2].have)
+		assert.are.equal(0, Progress.cells(BUILD, {}, TALENTS)[1].have)
+	end)
+
+	it("is empty without a build, and has no nodes without data", function()
+		assert.are.same({}, Progress.cells(nil, {}, TALENTS))
+		assert.is_nil(Progress.cells(BUILD, {}, nil)[1].node)
+	end)
+end)

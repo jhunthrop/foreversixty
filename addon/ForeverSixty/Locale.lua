@@ -53,6 +53,17 @@ local L = {
 	diagNoSettingsPanel = "This client has no options panel API; use /fs settings.",
 	diagTalentFrame = "Talent window found: %s (%s mapping)",
 	diagTalentButton = "Glow on button %s, width %s, shown %s",
+	-- The talent marks' render check (spec section 2.4): how many of the
+	-- order badges found no node button to sit on.
+	diagTalentBadges = "%d of %d talent badges found no button; badges are off",
+
+	-- The talent window's strip (spec section 4.2): the build, the plan's
+	-- count, the level the next point arrives at, and the points off plan.
+	-- The last " · " segment of each is the one coloured as a warning when
+	-- a point is off plan. The NoNext form is the level cap's: no level follows.
+	talentStrip = "%s · %d of %d · next at level %d · %d off plan",
+	talentStripDone = "%s · %d of %d · complete · %d off plan",
+	talentStripNoNext = "%s · %d of %d · %d off plan",
 
 	-- Export
 	exportTitle = "Send your character to the site",

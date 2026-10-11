@@ -109,6 +109,42 @@ function Progress.build(build, ranks, level)
 	}
 end
 
+--- Every cell the plan touches, once each, in the order the plan first
+--- reaches it: { tab, tier, column, want, have, lastIndex, node, next }.
+--- `want` is the points the plan puts there, `have` the character's rank
+--- there (0 when none), `lastIndex` the 1-based order index of the cell's
+--- last point (the talent marks' badge number, fixed by the plan), `node`
+--- the trait node id `data` carries for it (nil for a data gap), and `next`
+--- whether the plan's next point (Progress.nextPoint) is in it. The talent
+--- marks draw from this list only. Empty without a build.
+function Progress.cells(build, ranks, data)
+	local cells = {}
+	if build == nil then
+		return cells
+	end
+	ranks = ranks or {}
+	local point = Progress.nextPoint(build, ranks)
+	local byKey = {}
+	for index, step in ipairs(build.order) do
+		local key = cellKey(step)
+		local cell = byKey[key]
+		if cell == nil then
+			local talent = Talents.cellOf(data, build.classSlug, step.tab, step.tier, step.column)
+			cell = {
+				tab = step.tab, tier = step.tier, column = step.column, want = 0,
+				have = (ranks[step.tab] or {})[Talents.cellKey(step.tier, step.column)] or 0,
+				node = talent ~= nil and talent.node or nil,
+				next = point ~= nil and cellKey(point) == key,
+			}
+			byKey[key] = cell
+			cells[#cells + 1] = cell
+		end
+		cell.want = cell.want + 1
+		cell.lastIndex = index
+	end
+	return cells
+end
+
 local function hasAnyStat(stats)
 	return type(stats) == "table" and next(stats) ~= nil
 end

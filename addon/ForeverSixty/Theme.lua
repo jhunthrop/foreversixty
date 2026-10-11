@@ -52,6 +52,8 @@ Theme.ALPHA = {
 	dim = 0.55,
 	disabled = 0.4,
 	shadow = 0.5,
+	--- The talent window's strip ground (spec section 4.2).
+	strip = 0.9,
 }
 
 Theme.SIZES = {
@@ -132,6 +134,17 @@ Theme.SIZES = {
 	--- How far outside a talent button its glow ring sits, clear of the
 	--- game's own rank border.
 	glowInset = 3,
+	--- The talent marks (spec section 4.2): the order number on a planned
+	--- node, a 14 px dark square with 10 px digits, its top-right corner
+	--- `orderBadgeOffset` up and right of the node's own; the strip along
+	--- the talent window's bottom edge, `talentStripInset` in from the
+	--- window's edges, its text `talentStripPadding` in from its left.
+	orderBadge = 14,
+	orderBadgeText = 10,
+	orderBadgeOffset = 4,
+	talentStrip = 24,
+	talentStripInset = 8,
+	talentStripPadding = 12,
 	--- How long "Selected -- press Ctrl+C" stays, and how long "Build
 	--- complete" stays on the chip before it goes idle.
 	copiedSeconds = 2,
@@ -370,6 +383,12 @@ end
 function Theme.say(text)
 	print(Theme.chatLine(text))
 	return text
+end
+
+--- `text` in a token's colour, as the client's inline escape: for one
+--- segment of a line whose font string is another colour.
+function Theme.inlineColor(hexKey, text)
+	return "|cff" .. Theme.HEX[hexKey] .. text .. "|r"
 end
 
 --- Six hex digits for a colour given as 0..1 floats.

@@ -35,6 +35,16 @@ TalentGlow.CLASSIC_BUTTON = "TalentFrameTalent%d"
 --- an unbounded walk of the whole UI on a frame that has no nodes at all.
 TalentGlow.MAX_DEPTH = 3
 
+--- Seconds the ring pulses before it holds still: the chip's own ten
+--- (spec section 4.2, "pulsing as the chip does").
+TalentGlow.STATIC_AFTER = 10
+
+--- Injection points: what the window's OnShow and OnHide run. Options sets
+--- them to the talent marks' refresh and clear, which draw this ring first;
+--- unset, the hooks draw and clear the ring alone.
+TalentGlow.onShow = nil
+TalentGlow.onHide = nil
+
 --- The talent the build wants next, with everything either mapping needs.
 --- Pure. nil once the build is finished, and nil for a cell this addon's
 --- data has no talent for -- there is nothing to point at in either case.
@@ -172,10 +182,12 @@ function TalentGlow.watch(data)
 			and type(frame.HookScript) == "function" then
 			TalentGlow.hooked[name] = true
 			frame:HookScript("OnShow", function()
-				TalentGlow.refresh(data)
+				local show = TalentGlow.onShow or TalentGlow.refresh
+				show(data)
 			end)
 			frame:HookScript("OnHide", function()
-				TalentGlow.clear()
+				local hide = TalentGlow.onHide or TalentGlow.clear
+				hide()
 			end)
 		end
 	end
@@ -206,31 +218,39 @@ end
 --- Move the glow to whatever the next point is now. A closed talent
 --- window and a finished build are both "nothing to do", not failures;
 --- only an open window with no button that matched is worth recording,
---- and it is recorded once rather than on every talent event.
+--- and it is recorded once rather than on every talent event. A ring
+--- already on the right button is left as it is, so a refresh mid-pulse
+--- (a bag update with the window open) does not restart its ten seconds,
+--- as the chip's does not.
 function TalentGlow.refresh(data)
-	TalentGlow.clear()
 	if Follow.build == nil then
-		return nil
+		return TalentGlow.clear()
 	end
 	local frame = TalentGlow.openFrame()
 	if frame == nil then
-		return nil
+		return TalentGlow.clear()
 	end
 	local target = TalentGlow.target(data, Follow.build, Talents.readRanks(data))
 	if target == nil then
-		return nil
+		return TalentGlow.clear()
 	end
 	local button, how = TalentGlow.buttonFor(frame, target)
 	if button == nil then
+		TalentGlow.clear()
 		if not TalentGlow.noted then
 			TalentGlow.noted = true
 			Theme.note(L.diagNoTalentButton)
 		end
 		return nil
 	end
-	-- The trait window's buttons take the addon's own outline; the
-	-- classic buttons keep whichever glow the client offers.
-	Theme.showGlow(button, how == "trait")
+	if button == TalentGlow.glowing and how == TalentGlow.how then
+		return how
+	end
+	TalentGlow.clear()
+	-- The trait window's buttons take the addon's own outline, pulsing for
+	-- STATIC_AFTER seconds; the classic buttons keep whichever glow the
+	-- client offers.
+	Theme.showGlow(button, how == "trait", TalentGlow.STATIC_AFTER)
 	TalentGlow.glowing, TalentGlow.how = button, how
 	if not TalentGlow.notedFrame then
 		-- README spike row 22's answer, recorded once for /fs diag.
