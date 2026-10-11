@@ -257,3 +257,64 @@ func (r OutboxResult) Lines() []string {
 	}
 	return out
 }
+
+// MaxExportsBody bounds one POST /v1/addon/exports body, characters and
+// outbox together: the API reads at most 1 MiB, and this leaves room. A
+// body that would be larger goes without its outbox, and characters
+// that are larger on their own go in several posts.
+const MaxExportsBody = 900 << 10
+
+// MaxExportsPerPost is the most characters one post may carry, the
+// API's own limit (MaxExports).
+const MaxExportsPerPost = 200
+
+// exportsWire is the body of POST /v1/addon/exports.
+type exportsWire struct {
+	Characters []Export        `json:"characters"`
+	Outbox     json.RawMessage `json:"outbox,omitempty"`
+}
+
+// ExportsBody is the body of POST /v1/addon/exports for chars and,
+// when it is not nil, the outbox. The client sends exactly these
+// bytes, so the sync's size checks measure what goes on the wire.
+func ExportsBody(chars []Export, outbox *Outbox) ([]byte, error) {
+	in := exportsWire{Characters: chars}
+	if outbox != nil {
+		in.Outbox = outbox.Body
+	}
+	return json.Marshal(in)
+}
+
+// exportBatches splits chars into the posts that carry them: each at
+// most MaxExportsPerPost characters and, with no outbox, at most
+// MaxExportsBody bytes. A character too large on its own goes alone
+// (the site will say so). Order is kept.
+func exportBatches(chars []Export) ([][]Export, error) {
+	empty, err := ExportsBody([]Export{}, nil)
+	if err != nil {
+		return nil, err
+	}
+	var out [][]Export
+	var batch []Export
+	size := len(empty)
+	for _, c := range chars {
+		one, err := json.Marshal(c)
+		if err != nil {
+			return nil, err
+		}
+		add := len(one)
+		if len(batch) > 0 {
+			add++ // the comma
+		}
+		if len(batch) > 0 && (len(batch) == MaxExportsPerPost || size+add > MaxExportsBody) {
+			out = append(out, batch)
+			batch, size, add = nil, len(empty), len(one)
+		}
+		batch = append(batch, c)
+		size += add
+	}
+	if len(batch) > 0 {
+		out = append(out, batch)
+	}
+	return out, nil
+}

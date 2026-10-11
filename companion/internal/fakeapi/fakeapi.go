@@ -182,7 +182,16 @@ func (s *Server) Exports() []map[string]string {
 type ExportPost struct {
 	Characters []map[string]string
 	Outbox     json.RawMessage
+	// Bytes is the size of the request body.
+	Bytes int
 }
+
+// The API's limits on POST /v1/addon/exports (api/internal/addon
+// maxBody and MaxExports), which the fake enforces the same way.
+const (
+	MaxExportsBody = 1 << 20
+	MaxExports     = 200
+)
 
 // ExportPosts is every export post the fake stored, in order. A post
 // the fake refused (RefuseOutbox) is not among them.
@@ -541,8 +550,22 @@ func (s *Server) addonExports(w http.ResponseWriter, r *http.Request) {
 		Characters []map[string]string `json:"characters"`
 		Outbox     json.RawMessage     `json:"outbox"`
 	}
-	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
+	raw, err := io.ReadAll(io.LimitReader(r.Body, MaxExportsBody+1))
+	if err != nil {
+		fail(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	if len(raw) > MaxExportsBody {
+		fail(w, http.StatusRequestEntityTooLarge, "body must be JSON with a characters list")
+		return
+	}
+	if err := json.Unmarshal(raw, &in); err != nil {
 		fail(w, http.StatusBadRequest, "malformed body")
+		return
+	}
+	if len(in.Characters) > MaxExports {
+		fail(w, http.StatusBadRequest, "that is not a sync",
+			map[string]string{"characters": "between one and 200 characters"})
 		return
 	}
 	hasOutbox := len(in.Outbox) > 0 && string(in.Outbox) != "null"
@@ -553,7 +576,7 @@ func (s *Server) addonExports(w http.ResponseWriter, r *http.Request) {
 			map[string]string{"outbox": "export.character must be Name-Realm"})
 		return
 	}
-	post := ExportPost{Characters: in.Characters}
+	post := ExportPost{Characters: in.Characters, Bytes: len(raw)}
 	if hasOutbox {
 		post.Outbox = in.Outbox
 	}

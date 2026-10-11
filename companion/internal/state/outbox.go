@@ -33,6 +33,11 @@ func LoadOutboxSent(dir string) (map[string]string, error) {
 	if err := json.Unmarshal(b, &out); err != nil {
 		return map[string]string{}, fmt.Errorf("parse %s: %w", p, err)
 	}
+	if out == nil {
+		// JSON null decodes to a nil map, which the caller could not
+		// record into: it reads as nothing answered yet.
+		return map[string]string{}, fmt.Errorf("%s holds null", p)
+	}
 	return out, nil
 }
 

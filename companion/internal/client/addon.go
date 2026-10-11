@@ -6,7 +6,6 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/addon"
@@ -20,14 +19,7 @@ func (c *Client) PostAddonExports(ctx context.Context, chars []addon.Export, out
 	if len(chars) == 0 {
 		return addon.ExportsResult{}, nil
 	}
-	in := struct {
-		Characters []addon.Export  `json:"characters"`
-		Outbox     json.RawMessage `json:"outbox,omitempty"`
-	}{Characters: chars}
-	if outbox != nil {
-		in.Outbox = outbox.Body
-	}
-	body, err := json.Marshal(in)
+	body, err := addon.ExportsBody(chars, outbox) // the bytes the sync's size checks measured
 	if err != nil {
 		return addon.ExportsResult{}, err
 	}

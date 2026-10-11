@@ -129,7 +129,9 @@ func New(o Options) *Sync {
 			o.Log.Warn("could not read which outboxes the site has answered; starting over",
 				"component", "addon", "err", err.Error())
 		}
-		s.sent = sent
+		if sent != nil {
+			s.sent = sent
+		}
 	}
 	return s
 }
@@ -252,21 +254,32 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 	if ob != nil && s.sent[p] == ob.key() {
 		ob = nil // the site has answered this outbox already
 	}
-	if ob != nil && len(ob.Body) > MaxOutboxBytes {
-		// Never sendable as it stands, so it is answered here, once.
-		s.o.Log.Warn(CopyOutboxTooLarge, "component", "addon", "path", p,
-			"bytes", len(ob.Body), "limit", MaxOutboxBytes)
-		s.markSent(p, ob.key())
-		ob = nil
+	// dropped is an outbox too large to send: on its own (MaxOutboxBytes)
+	// or with the characters it must ride with (MaxExportsBody). It is
+	// answered, and said so, once the characters are up without it.
+	var dropped *Outbox
+	if ob != nil {
+		body, err := ExportsBody(saved.Exports, ob)
+		if err != nil {
+			return false, err
+		}
+		if len(ob.Body) > MaxOutboxBytes || len(body) > MaxExportsBody {
+			dropped, ob = ob, nil
+		}
 	}
-	res, err := s.o.API.PostAddonExports(ctx, saved.Exports, ob)
-	if err != nil && ob != nil && refused(err) {
-		// The site read the outbox and cannot use it. Sending it again
-		// would be refused again, and must not hold the exports back.
-		s.o.Log.Warn(CopyOutboxRefused, "component", "addon", "path", p, "err", err.Error())
-		s.markSent(p, ob.key())
-		ob = nil
-		res, err = s.o.API.PostAddonExports(ctx, saved.Exports, nil)
+	var res ExportsResult
+	if ob != nil {
+		res, err = s.o.API.PostAddonExports(ctx, saved.Exports, ob)
+		if err != nil && refused(err) {
+			// The site read the outbox and cannot use it. Sending it again
+			// would be refused again, and must not hold the exports back.
+			s.o.Log.Warn(CopyOutboxRefused, "component", "addon", "path", p, "err", err.Error())
+			s.markSent(p, ob.key())
+			ob = nil
+			err = s.postCharacters(ctx, saved.Exports)
+		}
+	} else {
+		err = s.postCharacters(ctx, saved.Exports)
 	}
 	if err != nil {
 		return false, err // unrecorded, so the next pass retries, outbox and all
@@ -274,6 +287,13 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 	s.uploaded[p] = at
 	s.o.Log.Info("uploaded character exports", "component", "addon",
 		"path", p, "characters", len(saved.Exports), "outbox", ob != nil)
+	if dropped != nil {
+		body, _ := ExportsBody(saved.Exports, dropped)
+		s.o.Log.Warn(CopyOutboxTooLarge, "component", "addon", "path", p,
+			"outbox_bytes", len(dropped.Body), "body_bytes", len(body),
+			"outbox_limit", MaxOutboxBytes, "body_limit", MaxExportsBody)
+		s.markSent(p, dropped.key())
+	}
 	if ob == nil {
 		return false, nil
 	}
@@ -326,4 +346,21 @@ func (s *Sync) acked(messages []Message) {
 	if state != "" {
 		s.status.SimRequestState = state
 	}
+}
+
+// postCharacters sends the character exports alone, in as many posts
+// as MaxExportsBody and MaxExportsPerPost need. Any failed post fails
+// the upload, so the next pass sends them all again; storing an export
+// twice is an overwrite.
+func (s *Sync) postCharacters(ctx context.Context, chars []Export) error {
+	batches, err := exportBatches(chars)
+	if err != nil {
+		return err
+	}
+	for _, batch := range batches {
+		if _, err := s.o.API.PostAddonExports(ctx, batch, nil); err != nil {
+			return err
+		}
+	}
+	return nil
 }

@@ -20,6 +20,7 @@ import (
 	"github.com/jhunthrop/foreversixty/companion/internal/addon"
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
 	"github.com/jhunthrop/foreversixty/companion/internal/fakeapi"
+	"github.com/jhunthrop/foreversixty/companion/internal/state"
 )
 
 var t0 = time.Date(2026, 11, 4, 20, 0, 0, 0, time.UTC)
@@ -531,5 +532,125 @@ func TestAnInboxOfAFormatTheCompanionDoesNotKnowIsNotWritten(t *testing.T) {
 	}
 	if st := r.sync.Status(); !st.SeenAt.IsZero() {
 		t.Errorf("an ack in an unknown format reached the status: %+v", st)
+	}
+}
+
+// Fix round 2 -------------------------------------------------------------------------------
+
+func TestANullSentFileIsReadAsNothingSentAndDoesNotPanic(t *testing.T) {
+	for _, body := range []string{"null", "{}"} {
+		t.Run(body, func(t *testing.T) {
+			r := newRig(t, outboxSaved("2026-11-04 14:10", 1))
+			p := filepath.Join(r.state, state.OutboxSentFile)
+			if err := os.MkdirAll(filepath.Dir(p), 0o700); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(p, []byte(body), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			r.restart()
+			if err := r.poll(); err != nil {
+				t.Fatal(err)
+			}
+			if posts := r.posts(); len(posts) != 1 || len(posts[0].Outbox) == 0 {
+				t.Fatalf("posts = %+v", posts)
+			}
+			sent, err := state.LoadOutboxSent(r.state)
+			if err != nil || len(sent) != 1 {
+				t.Errorf("the answer was not recorded: %v, %v", sent, err)
+			}
+			if n := strings.Count(r.logs.String(), "starting over"); (body == "null") != (n == 1) || n > 1 {
+				t.Errorf("%q logged the reset %d times", body, n)
+			}
+		})
+	}
+}
+
+// manyCharacters is outboxSaved with n more characters, each export at the API's maximum length.
+func manyCharacters(base string, n int) string {
+	var chars strings.Builder
+	for i := range n {
+		fmt.Fprintf(&chars, "\t\t[\"Char%03d-Normal\"] = { [\"name\"] = \"Char%03d\", [\"ruleset\"] = \"normal\", "+
+			"[\"region\"] = \"us\", [\"export\"] = \"FS1:%s\" },\n", i, i, strings.Repeat("x", 4096-4))
+	}
+	return strings.Replace(base, "[\"characters\"] = {\n", "[\"characters\"] = {\n"+chars.String(), 1)
+}
+
+func TestAnExportsBodyOverTheBoundSendsTheCharactersWithoutTheOutbox(t *testing.T) {
+	saved := manyCharacters(paddedOutbox(880), 189) // 190 characters in all
+	path := filepath.Join(t.TempDir(), "ForeverSixty.lua")
+	if err := os.WriteFile(path, []byte(saved), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	ob, err := addon.ScanOutbox(path)
+	if err != nil || ob == nil || len(ob.Body) < 200<<10 || len(ob.Body) > addon.MaxOutboxBytes {
+		t.Fatalf("the outbox is not 200 to 256 KiB: %v, %d bytes", err, len(ob.Body))
+	}
+
+	r := newRig(t, saved)
+	const line = "Outbox too large to send; the character exports went up alone"
+	// Lost to the network: nothing went up alone, so nothing says it did.
+	r.srv.Offline(true)
+	if err := r.poll(); err == nil {
+		t.Fatal("an offline pass reported no error")
+	}
+	if strings.Contains(r.logs.String(), line) {
+		t.Fatalf("the drop was logged before the exports went up:\n%s", r.logs.String())
+	}
+	r.srv.Offline(false)
+	if err := r.sync.Poll(t.Context(), r.at.Add(time.Second)); err != nil {
+		t.Fatal(err)
+	}
+	posts := r.posts()
+	if len(posts) != 1 || len(posts[0].Characters) != 190 || len(posts[0].Outbox) != 0 {
+		t.Fatalf("posts = %d, first with %d characters, outbox %d bytes",
+			len(posts), len(posts[0].Characters), len(posts[0].Outbox))
+	}
+	if posts[0].Bytes > addon.MaxExportsBody {
+		t.Errorf("the body was %d bytes, over %d", posts[0].Bytes, addon.MaxExportsBody)
+	}
+	if n := strings.Count(r.logs.String(), line); n != 1 {
+		t.Fatalf("the drop was logged %d times:\n%s", n, r.logs.String())
+	}
+	// Marked answered: the next logout does not try the outbox again.
+	r.save(saved)
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	if posts := r.posts(); len(posts) != 2 || len(posts[1].Outbox) != 0 {
+		t.Fatalf("the dropped outbox was tried again")
+	}
+	if n := strings.Count(r.logs.String(), line); n != 1 {
+		t.Errorf("the drop was logged %d times", n)
+	}
+}
+
+func TestCharactersOverTheBoundGoUpInSeveralPosts(t *testing.T) {
+	r := newRig(t, manyCharacters(noOutbox, 299)) // 300 characters, about 1.2 MiB
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	posts := r.posts()
+	if len(posts) < 2 {
+		t.Fatalf("posts = %d", len(posts))
+	}
+	seen := map[string]bool{}
+	for i, p := range posts {
+		if p.Bytes > addon.MaxExportsBody || len(p.Characters) > addon.MaxExportsPerPost || len(p.Outbox) != 0 {
+			t.Errorf("post %d: %d bytes, %d characters", i+1, p.Bytes, len(p.Characters))
+		}
+		for _, c := range p.Characters {
+			seen[c["name"]] = true
+		}
+	}
+	if len(seen) != 300 {
+		t.Errorf("%d distinct characters went up, want 300", len(seen))
+	}
+	// One version of the file, uploaded once: a quiet pass sends nothing.
+	if err := r.sync.Poll(t.Context(), r.at.Add(time.Second)); err != nil {
+		t.Fatal(err)
+	}
+	if len(r.posts()) != len(posts) {
+		t.Error("a quiet pass uploaded again")
 	}
 }

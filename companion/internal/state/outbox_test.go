@@ -37,3 +37,24 @@ func TestTheSentOutboxKeysSurviveARestartAndAreNotReports(t *testing.T) {
 		t.Error("a corrupt file was read as empty without an error")
 	}
 }
+
+func TestANullOrEmptySentFileIsAnEmptyUsableMap(t *testing.T) {
+	for body, wantErr := range map[string]bool{"null": true, "{}": false, "null\n": true} {
+		dir := t.TempDir()
+		p := filepath.Join(dir, OutboxSentFile)
+		if err := os.MkdirAll(filepath.Dir(p), 0o700); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(p, []byte(body), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		got, err := LoadOutboxSent(dir)
+		if got == nil {
+			t.Fatalf("%q: a nil map", body)
+		}
+		if len(got) != 0 || (err != nil) != wantErr {
+			t.Errorf("%q: %v, %v", body, got, err)
+		}
+		got["x"] = "y" // writable: the caller records into it
+	}
+}
