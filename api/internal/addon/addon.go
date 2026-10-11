@@ -21,6 +21,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/api/internal/synclog"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -377,7 +378,17 @@ type Service struct {
 	// follow for a build's code.
 	Guilds GuildSource
 	Sims   SimSource
-	Log    *slog.Logger
+	// SimRequests turns an outbox's sim_request into a server run.
+	// sims.Service satisfies it. Nil answers every request
+	// "unavailable"; the export it rode in with is still stored.
+	SimRequests SimRequester
+	Log         *slog.Logger
+}
+
+// SimRequester is enough of sims.Service to start the run an in-game
+// sim request asks for, for one of the caller's own characters.
+type SimRequester interface {
+	RequestFromAddon(ctx context.Context, userID int64, characterKey string, req sims.AddonSimRequest) (string, error)
 }
 
 // Mount registers the addon routes. The companion reads and writes with
@@ -403,9 +414,14 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 	httpx.WriteError(w, r, http.StatusInternalServerError, "internal", message, nil)
 }
 
-// ExportsInput is the body of POST /v1/addon/exports.
+// ExportsInput is the body of POST /v1/addon/exports: the per-character
+// exports the companion has always sent, the addon's outbox
+// (docs/contracts/addon-v2.md, contract 4), or both. Outbox stays raw
+// until its format is read: an outbox of a format this API does not know
+// is ignored whole, never half-read.
 type ExportsInput struct {
-	Characters []Export `json:"characters"`
+	Characters []Export        `json:"characters"`
+	Outbox     json.RawMessage `json:"outbox,omitempty"`
 }
 
 // validExports reports whether exports is a well-formed batch (between
@@ -443,6 +459,14 @@ func validExports(w http.ResponseWriter, r *http.Request, exports []Export) bool
 	return true
 }
 
+// ExportsResult is the body POST /v1/addon/exports answers with.
+type ExportsResult struct {
+	// Stored counts the exports written: every character in the list,
+	// plus the outbox's own export when it was stored.
+	Stored int           `json:"stored"`
+	Outbox *OutboxResult `json:"outbox,omitempty"`
+}
+
 func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
 	var in ExportsInput
 	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxBody)).Decode(&in); err != nil {
@@ -450,10 +474,29 @@ func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
 			"body must be JSON with a characters list", nil)
 		return
 	}
-	if !validExports(w, r, in.Characters) {
+	hasOutbox := len(in.Outbox) > 0 && string(in.Outbox) != "null"
+	// An outbox may arrive alone; without one the list is the sync and
+	// must hold at least one character, as it always has.
+	if (len(in.Characters) > 0 || !hasOutbox) && !validExports(w, r, in.Characters) {
 		return
 	}
-	if err := s.Store.PutExports(r.Context(), auth.ActorFrom(r.Context()).UserID, in.Characters); err != nil {
+	var outbox *Outbox
+	if hasOutbox {
+		var ok bool
+		if outbox, ok = readOutbox(w, r, in.Outbox); !ok {
+			return
+		}
+	}
+	userID := auth.ActorFrom(r.Context()).UserID
+	out := ExportsResult{Stored: len(in.Characters)}
+	err := s.Store.PutExports(r.Context(), userID, in.Characters)
+	if err == nil && hasOutbox {
+		out.Outbox, err = s.applyOutbox(r.Context(), userID, outbox)
+		if out.Outbox != nil && out.Outbox.Export == OutboxStored {
+			out.Stored++
+		}
+	}
+	if err != nil {
 		if errors.Is(err, ErrCharacterClaimed) {
 			httpx.WriteError(w, r, http.StatusConflict, "conflict",
 				"one of those characters is already synced from a different account",
@@ -463,7 +506,7 @@ func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "exports", err, "could not store those exports just now")
 		return
 	}
-	httpx.WriteOK(w, r, http.StatusOK, map[string]int{"stored": len(in.Characters)})
+	httpx.WriteOK(w, r, http.StatusOK, out)
 }
 
 // MyExportsInput is the body of POST /v1/me/exports (spec §4.5): the

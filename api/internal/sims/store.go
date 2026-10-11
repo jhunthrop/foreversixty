@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
@@ -137,6 +138,18 @@ func (s *Store) Save(ctx context.Context, id string, userID *int64, title string
 // page has something to poll before the job has produced anything and
 // the job has the request to read back.
 func (s *Store) Queue(ctx context.Context, id string, userID int64, req simapi.SimRequest) error {
+	return queueRow(ctx, s.Pool, id, userID, req)
+}
+
+// execer is the one method Queue's insert needs, which a pool and a
+// transaction both have, so QueueAddonRequest can write the same row
+// inside its own transaction.
+type execer interface {
+	Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error)
+}
+
+// queueRow is Queue's insert, on whichever of the two it is handed.
+func queueRow(ctx context.Context, db execer, id string, userID int64, req simapi.SimRequest) error {
 	stub := simapi.SimResult{
 		SimID: id, EngineVersion: req.EngineVersion, Lane: simapi.LaneServer, Request: req,
 	}
@@ -144,7 +157,7 @@ func (s *Store) Queue(ctx context.Context, id string, userID int64, req simapi.S
 	if err != nil {
 		return fmt.Errorf("sims: encode %s: %w", id, err)
 	}
-	_, err = s.Pool.Exec(ctx,
+	_, err = db.Exec(ctx,
 		`insert into sims (id, user_id, spec, kind, engine_version, lane, dps_mean, dps_error,
 		   iterations, result, state)
 		 values ($1, $2, $3, $4, $5, $6, 0, 0, $7, $8, $9)`,

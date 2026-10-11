@@ -1551,14 +1551,30 @@ paths:
         '404': { description: "No such guild", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/addon/exports:
     post:
-      summary: Store the addon's character exports (device)
+      summary: Store the addon's character exports and outbox (device)
+      description: >-
+        The body carries the per-character `characters` list, the addon's `outbox`
+        (docs/contracts/addon-v2.md, contract 4), or both; with no outbox the list must hold at
+        least one character. The list is stored first. An outbox whose `format` is not 1 is
+        ignored whole (`outbox.status` "ignored"). A format 1 outbox carries no region, so its
+        `export.character` (Name-Realm) is matched by name against the characters this account
+        has synced; a name the account has never synced, or one that matches two characters a
+        ruleset realm cannot tell apart, stores nothing ("unknown_character"). Its export is
+        stored exactly as a `characters` entry is. Its `sim_request` queues one premium server
+        run (the same sims row and job POST /v1/sims/run starts, built from the request's own
+        gear code) unless that character already has the same request, or any request in the
+        last hour ("duplicate"); an account without server sims gets "premium_required", a
+        deployment that cannot start the job "unavailable". Its `roster_snapshot` is stored as
+        the guild page's roster for the guild the exporting character belongs to, and only that
+        guild ("not_in_guild" otherwise); a newer snapshot replaces the guild's last one. A
+        sim request or snapshot that cannot be acted on never fails the sync; a malformed
+        outbox is refused 400.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [characters]
               properties:
                 characters:
                   type: array
@@ -1570,8 +1586,60 @@ paths:
                       ruleset: { type: string, description: "Normalised through the API's realm-to-ruleset mapping; an unrecognised value is not rejected" }
                       region: { type: string, enum: [us, eu, kr, tw, cn] }
                       export: { type: string, maxLength: 4096 }
+                outbox:
+                  type: object
+                  required: [format]
+                  description: "ForeverSixtyDB.outbox as the addon wrote it. Fields added inside format 1 are ignored."
+                  properties:
+                    format: { type: integer, description: "1; any other value is ignored" }
+                    export:
+                      type: object
+                      description: "Required in format 1."
+                      required: [character, code]
+                      properties:
+                        character: { type: string, description: "Name-Realm" }
+                        code: { type: string, maxLength: 4096, description: "The FS1 export string" }
+                        saved_at: { type: string, description: "Player's local time, YYYY-MM-DD HH:MM" }
+                    sim_request:
+                      type: object
+                      nullable: true
+                      required: [character, spec, requested_at, gear_code]
+                      properties:
+                        character: { type: string, description: "Name-Realm" }
+                        spec: { type: string, description: "A spec slug, e.g. warrior-arms" }
+                        requested_at: { type: string, description: "Player's local time, YYYY-MM-DD HH:MM; with the character, the request's identity" }
+                        gear_code: { type: string, maxLength: 4096, description: "The FS1 export as of the request" }
+                    roster_snapshot:
+                      type: object
+                      nullable: true
+                      required: [guild, members]
+                      properties:
+                        guild: { type: string, maxLength: 24 }
+                        members:
+                          type: array
+                          maxItems: 1000
+                          items:
+                            type: object
+                            required: [name, level, seen_at]
+                            properties:
+                              name: { type: string, description: "Name-Realm" }
+                              level: { type: integer, minimum: 1, maximum: 60 }
+                              spec: { type: string, maxLength: 64 }
+                              gear_gap: { type: integer, minimum: 0 }
+                              build: { type: string, maxLength: 64 }
+                              seen_at: { type: string, description: "Player's local time, YYYY-MM-DD HH:MM" }
       responses:
-        '200': { description: "stored", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '200':
+          description: >-
+            { stored, outbox? } where stored counts the exports written (the list plus the
+            outbox's own export) and outbox, present when the body carried one, is { status:
+            "read" | "ignored", export?: "stored" | "unknown_character", sim_request?: "queued" |
+            "duplicate" | "premium_required" | "unavailable" | "unknown_character" | "invalid" |
+            "not_started", roster_snapshot?: "stored" | "not_in_guild" | "unknown_character" },
+            each part present only when the outbox carried it
+          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+        '400': { description: "neither a characters list nor an outbox, or a malformed one", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '409': { description: "a character is already synced from a different account", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/addon/inbox:
     get:
       summary: The builds and typed messages waiting to be written into the game (device)
