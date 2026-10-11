@@ -50,6 +50,7 @@ describe("Options", function()
 		helper.load("Tracker")
 		helper.load("Minimap")
 		helper.load("Window")
+		helper.load("Comms")
 		Options = helper.load("Options")
 		Options.data = DATA
 	end)

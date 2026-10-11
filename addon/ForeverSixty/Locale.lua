@@ -474,6 +474,23 @@ local L = {
 	-- Lane addon-v2 L2.2 (2026-10-11): the level a talent point is taken
 	-- at (Progress.levelForPoint): talents start at 10, one per level.
 	progressTakeAt = "Take at level %d",
+
+	-- Addon messages between players (Comms.lua): /fs hello, /fs seen and /fs diag.
+	diagNoAddonMessages = "This client cannot send addon messages; guild and group sharing is off.",
+	diagDropped = "Messages from other players ignored as unreadable or not allowed: %d",
+	commsSent = "Hello sent to your guild.",
+	commsUnknownKind = "Forever Sixty has no message of that kind.",
+	commsWrongChannel = "That message cannot go to %s.",
+	commsNoGuild = "You are not in a guild, so there is no one to say hello to.",
+	commsWait = "Sent a moment ago; try again in %d seconds.",
+	commsNoLootRequest = "No loot question is open to answer.",
+	commsTooLong = "That message is too long to send.",
+	commsNoApi = "This client did not send the message.",
+	commsSeenNone = "No Forever Sixty player has said hello in the last hour.",
+	-- "Obnoxious-Yell: level 20 Warrior Arms, gear gap 14, Arms leveling, as of 4 Nov, 3 min ago"
+	commsSeenLine = "%s: level %d %s, gear gap %d, %s, %s, %d min ago",
+	commsSeenNoBuild = "no build",
+	commsSeenNoScore = "no Forever Score yet",
 }
 
 ns.L = L

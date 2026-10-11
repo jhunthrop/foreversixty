@@ -22,6 +22,7 @@ local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
 local Recorder = ns.Recorder or require("Recorder")
 local Theme = ns.Theme or require("Theme")
+local Comms = ns.Comms or require("Comms")
 local MinimapButton = ns.Minimap or require("Minimap")
 local SettingsView = ns.SettingsView or require("SettingsView")
 local Window = ns.Window or require("Window")
@@ -105,6 +106,13 @@ function Options.readInbox()
 	return #usable
 end
 
+--- Send the player's hello on GUILD, read against the data Options holds. True when sent,
+--- else false and why (Comms.send's own sentence; the 60 s limit is one of them).
+function Options.sayHello()
+	Comms.data = Options.data
+	return Comms.hello()
+end
+
 --- Wrap `text` in the client's own colour-escape codes, gold. Used for
 --- /fs help only: every other line the addon prints goes through the
 --- plain chat prefix (chatLine), not a colour.
@@ -151,14 +159,26 @@ function Options.handle(input)
 		return Recorder.command(rest)
 	elseif command == "help" then
 		return { Options.colorGold(L.slashHint) }
+	elseif command == "hello" then
+		-- The in-client check for contract 2: one hello on GUILD, or why it did not go.
+		local sent, reason = Options.sayHello()
+		return { sent and L.commsSent or reason }
+	elseif command == "seen" then
+		return Comms.seenLines()
 	elseif command == "diag" then
 		local notes = Theme.diagnostics()
-		if #notes == 0 then
-			return { L.diagNone }
+		local lines = {}
+		if #notes > 0 then
+			lines[1] = L.diagHeader
+			for _, note in ipairs(notes) do
+				lines[#lines + 1] = note
+			end
 		end
-		local lines = { L.diagHeader }
-		for _, note in ipairs(notes) do
-			lines[#lines + 1] = note
+		if Comms.dropped > 0 then
+			lines[#lines + 1] = string.format(L.diagDropped, Comms.dropped)
+		end
+		if #lines == 0 then
+			return { L.diagNone }
 		end
 		return lines
 	end
@@ -192,9 +212,15 @@ Options.EVENTS = {
 	"PLAYER_LOGIN", "PLAYER_LOGOUT", "PLAYER_ENTERING_WORLD",
 	"PLAYER_TALENT_UPDATE", "TRAIT_CONFIG_UPDATED", "PLAYER_LEVEL_UP",
 	"PLAYER_REGEN_ENABLED", "ADDON_LOADED", "GET_ITEM_INFO_RECEIVED",
+	"CHAT_MSG_ADDON",
 }
 
 function Options.onEvent(_, event, ...)
+	if event == "CHAT_MSG_ADDON" then
+		-- Every addon's messages arrive here; Comms ignores all but FS1. Nothing to redraw.
+		Comms.onEvent(...)
+		return
+	end
 	if event == "ADDON_LOADED" then
 		-- The talent window arrives as its own addon; hook it when it does.
 		TalentGlow.watch(Options.data)
@@ -223,6 +249,8 @@ function Options.onEvent(_, event, ...)
 		MinimapButton.data = Options.data
 		MinimapButton.refresh()
 		MinimapButton.registerCompartment()
+		Theme.registerAddonPrefix(Comms.PREFIX)
+		Options.sayHello()
 	end
 	if event == "PLAYER_LEVEL_UP" then
 		Toast.onLevelUp(Options.data, ...)
@@ -239,6 +267,10 @@ function Options.onEvent(_, event, ...)
 		-- answering that spec's caps.
 		Options.refreshWeightsMessage()
 		Tooltip.resetCache()
+	end
+	if event == "TRAIT_CONFIG_UPDATED" then
+		-- The build may have changed what the guild sees; Comms holds it to one hello a minute.
+		Options.sayHello()
 	end
 	Toast.refresh(Options.data)
 	Window.refreshEverything(Options.data)

@@ -264,6 +264,7 @@ end
 function Theme.reset()
 	Theme.templates = {}
 	Theme.glowPair = nil
+	Theme.addonMessagesNoted = nil
 	for index = #ns.Diagnostics, 1, -1 do
 		ns.Diagnostics[index] = nil
 	end
@@ -610,6 +611,121 @@ function Theme.equip(link)
 	end
 	Theme.note(L.diagNoEquipApi)
 	return false
+end
+
+-- Addon messages (contract 2): the client's own channel between players' addons on GUILD,
+-- RAID and PARTY, not a network call. C_ChatInfo where the client has it, the old globals
+-- where it does not; a client with neither is noted once in /fs diag and sends nothing.
+local function noAddonMessages()
+	if not Theme.addonMessagesNoted then
+		Theme.addonMessagesNoted = true
+		Theme.note(L.diagNoAddonMessages)
+	end
+	return false
+end
+
+--- Register an addon-message prefix so CHAT_MSG_ADDON delivers it. True when the client
+--- took it (a prefix it already had counts).
+function Theme.registerAddonPrefix(prefix)
+	local register
+	if type(C_ChatInfo) == "table" and type(C_ChatInfo.RegisterAddonMessagePrefix) == "function" then
+		register = C_ChatInfo.RegisterAddonMessagePrefix
+	elseif type(RegisterAddonMessagePrefix) == "function" then
+		register = RegisterAddonMessagePrefix
+	else
+		return noAddonMessages()
+	end
+	local ok, result = pcall(register, prefix)
+	return ok and result ~= false
+end
+
+--- Send one addon message. True when the client took it: a newer client answers with a
+--- result code (0 is success), an older one with true, the oldest with nothing.
+function Theme.sendAddonMessage(prefix, text, channel)
+	local send
+	if type(C_ChatInfo) == "table" and type(C_ChatInfo.SendAddonMessage) == "function" then
+		send = C_ChatInfo.SendAddonMessage
+	elseif type(SendAddonMessage) == "function" then
+		send = SendAddonMessage
+	else
+		return noAddonMessages()
+	end
+	local ok, result = pcall(send, prefix, text, channel)
+	return ok and (result == nil or result == true or result == 0)
+end
+
+--- Seconds on the client's clock (GetTime), for rate limits; 0 where there is no clock.
+function Theme.now()
+	if type(GetTime) == "function" then
+		return GetTime()
+	end
+	return 0
+end
+
+--- Whether the player is in a guild: true or false, or nil where the client cannot say.
+function Theme.inGuild()
+	if type(IsInGuild) == "function" then
+		local ok, inGuild = pcall(IsInGuild)
+		return ok and inGuild ~= nil and inGuild ~= false
+	end
+	if type(GetGuildInfo) == "function" then
+		local ok, guild = pcall(GetGuildInfo, "player")
+		return ok and guild ~= nil
+	end
+	return nil
+end
+
+--- A member's rank index in the player's own guild (0 is the guild master), or nil when this
+--- client cannot tell. GetGuildInfo answers for a unit the player can see; the guild roster
+--- for anyone else in the guild.
+function Theme.guildRankOf(fullName, unit)
+	if type(GetGuildInfo) ~= "function" then
+		return nil
+	end
+	local okOwn, ownGuild = pcall(GetGuildInfo, "player")
+	if not okOwn or ownGuild == nil then
+		return nil
+	end
+	local ok, guild, _, rankIndex = pcall(GetGuildInfo, unit)
+	if ok and guild == ownGuild and type(rankIndex) == "number" then
+		return rankIndex
+	end
+	if type(GetNumGuildMembers) ~= "function" or type(GetGuildRosterInfo) ~= "function" then
+		return nil
+	end
+	local okCount, count = pcall(GetNumGuildMembers)
+	for index = 1, (okCount and tonumber(count) or 0) do
+		local okRow, name, _, rank = pcall(GetGuildRosterInfo, index)
+		if okRow and (name == fullName or name == unit) and type(rank) == "number" then
+			return rank
+		end
+	end
+	return nil
+end
+
+--- Whether a unit leads the player's raid or party; false where the client cannot say.
+function Theme.isGroupLeader(unit)
+	if type(UnitIsGroupLeader) ~= "function" then
+		return false
+	end
+	local ok, leader = pcall(UnitIsGroupLeader, unit)
+	return ok and leader == true
+end
+
+--- The player's name as UnitName gives it and the realm as an addon-message sender carries
+--- it ("Name-Realm", spaces and dashes removed); either nil where the client cannot say.
+function Theme.playerNameRealm()
+	local name = type(UnitName) == "function" and UnitName("player") or nil
+	local realm
+	if type(GetNormalizedRealmName) == "function" then
+		realm = GetNormalizedRealmName()
+	elseif type(GetRealmName) == "function" then
+		realm = (GetRealmName() or ""):gsub("[%s%-]", "")
+	end
+	if realm == "" then
+		realm = nil
+	end
+	return name, realm
 end
 
 --- Whether the client's overlay glow can be both put on and taken off.
