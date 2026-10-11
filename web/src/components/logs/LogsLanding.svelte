@@ -87,7 +87,7 @@
 <div class="logs-grid" data-testid="logs-grid">
   <div class="logs-column" data-testid="logs-reading">
     <LogsPanel title="Your reports" id="reports">
-      <div class="min-h-[88px] p-4 md:p-5">
+      <div class="min-h-[88px]">
         {#if me === undefined || me === null}
           <!-- One node from the server markup through the session answer: a visitor with no session
                hint is signed out, so the sentence is the page's largest first paint, and keeping the
@@ -102,9 +102,7 @@
       </div>
     </LogsPanel>
     <LogsPanel title="Recent public reports">
-      <div class="p-4 md:p-5">
-        <RecentReports heading={false} />
-      </div>
+      <RecentReports heading={false} />
     </LogsPanel>
   </div>
 
@@ -112,14 +110,14 @@
     {#each order as way (way)}
       {#if way === 'companion'}
         <LogsPanel title="The companion" aside="Live, while you raid" id="companion">
-          <div class="flex flex-col gap-3 p-4 md:p-5">
+          <div class="flex flex-col gap-3">
             {#if devices !== null}<CompanionStatus {devices} />{/if}
             <p class="text-[14px]" data-testid="logs-companion-pointer">
               {logsCompanionCopy.pointer}
               <a class="text-nav underline" href="/setup">{logsCompanionCopy.pointerLink}</a>
             </p>
           </div>
-          <div class="border-line-soft flex flex-col gap-3 border-t p-4 md:p-5">
+          <div class="border-line-soft flex flex-col gap-3 border-t pt-3">
             {#if signedIn}
               <h3 class="label text-muted">
                 {paired ? logsCompanionCopy.pairAnotherLabel : logsCompanionCopy.pairLabel}

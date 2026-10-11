@@ -89,7 +89,7 @@
         type="button"
         role="tab"
         aria-selected={activeGuild === null}
-        class="rounded-control inline-flex h-11 shrink-0 items-center border px-4 text-[13px] font-semibold"
+        class="rounded-control inline-flex h-11 shrink-0 items-center border px-3.5 text-[12px] font-bold tracking-[0.06em] uppercase"
         class:border-gold={activeGuild === null}
         class:text-strong={activeGuild === null}
         class:border-line={activeGuild !== null}
@@ -103,7 +103,7 @@
           type="button"
           role="tab"
           aria-selected={activeGuild === guild.id}
-          class="rounded-control inline-flex h-11 shrink-0 items-center border px-4 text-[13px] font-semibold"
+          class="rounded-control inline-flex h-11 shrink-0 items-center border px-3.5 text-[12px] font-bold tracking-[0.06em] uppercase"
           class:border-gold={activeGuild === guild.id}
           class:text-strong={activeGuild === guild.id}
           class:border-line={activeGuild !== guild.id}

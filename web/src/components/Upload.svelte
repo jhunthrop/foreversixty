@@ -149,7 +149,7 @@
 </script>
 
 <!-- The panel and its title belong to the page (LogsLanding.svelte); this is the form inside it. -->
-<div class="flex flex-col gap-4 p-4 md:p-5" data-testid="upload">
+<div class="flex flex-col gap-3" data-testid="upload">
   <p class="text-[14px]">
     A whole <code class="font-mono">WoWCombatLog.txt</code>. The first fight is readable within ten seconds of
     the upload finishing, and the rest appear as they are parsed.
