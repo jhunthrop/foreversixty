@@ -1,6 +1,7 @@
 <!-- web/src/components/MyReports.svelte -->
-<!-- The reports you own. Rendered inside Account.svelte's `reports` and `account` modes so
-     there is one "who is signed in" fetch per page rather than two.
+<!-- The reports you own, for a signed-in visitor: the page that mounts it (LogsLanding.svelte, or
+     Account.svelte's account view) has already read the session, and says in plain words what a
+     signed-out visitor needs.
 
      Logs landing spec (2026-10-04) §4.C.1 adds the guild tab strip: when `guilds` is
      non-empty, a small pill row (`Mine` + one pill per guild, the same active-pill
@@ -9,22 +10,23 @@
      page already titles the block, as /logs' panel does. -->
 <script lang="ts">
   import { REPORTS_PER_PAGE, listGuildReports, listMyReports, type MyReport } from '../lib/account/api';
+  import { ownReportSummary } from '../lib/logs/report-summary';
   import { logsCopy } from '../lib/reports/copy';
   import { REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
   import { myReportsCopy } from '../lib/reports/my-reports-copy';
   import ReportRow from './ReportRow.svelte';
-  import SignInPrompt from './SignInPrompt.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
   let {
-    signedIn,
     heading = true,
     guilds = [],
+    uploadAction = true,
   }: {
-    signedIn: boolean;
     heading?: boolean;
+    /** The empty state's "Upload a log" link; off on /logs, where the page's own header carries it. */
+    uploadAction?: boolean;
     /** §4.C.1's own tab strip source: `Me.guilds`, every guild this account belongs to. */
     guilds?: readonly { id: number; name: string }[];
   } = $props();
@@ -62,8 +64,7 @@
   }
 
   $effect(() => {
-    if (signedIn) void load(1);
-    else status = 'ready';
+    void load(1);
   });
 
   const hasMore = $derived(rows.length > 0 && page * REPORTS_PER_PAGE < total);
@@ -75,88 +76,88 @@
 
 <section class="flex flex-col gap-3" data-testid="my-reports">
   {#if heading}<h2 class="section-title text-[18px]">Your reports</h2>{/if}
-  {#if !signedIn}
-    <SignInPrompt line="Sign in to see the reports you own." testid="reports-signin" />
-  {:else}
-    {#if guilds.length > 0}
-      <!-- Horizontally scrolling on phone, same rule every other pill row on the site
+  {#if guilds.length > 0}
+    <!-- Horizontally scrolling on phone, same rule every other pill row on the site
            follows (spec §7); never wraps, so every pill keeps its 44px hit height. -->
-      <div
-        class="my-reports-tabs -mx-1 flex gap-2 overflow-x-auto px-1"
-        role="tablist"
-        aria-label="Reports"
-        data-testid="my-reports-guild-tabs"
+    <div
+      class="my-reports-tabs -mx-1 flex gap-2 overflow-x-auto px-1"
+      role="tablist"
+      aria-label="Reports"
+      data-testid="my-reports-guild-tabs"
+    >
+      <button
+        type="button"
+        role="tab"
+        aria-selected={activeGuild === null}
+        class="rounded-control inline-flex h-11 shrink-0 items-center border px-3.5 text-[12px] font-bold tracking-[0.06em] uppercase"
+        class:border-gold={activeGuild === null}
+        class:text-strong={activeGuild === null}
+        class:border-line={activeGuild !== null}
+        style={activeGuild === null ? 'background: #e5b95514' : undefined}
+        onclick={() => selectTab(null)}
       >
+        Mine
+      </button>
+      {#each guilds as guild (guild.id)}
         <button
           type="button"
           role="tab"
-          aria-selected={activeGuild === null}
-          class="rounded-control inline-flex h-11 shrink-0 items-center border px-4 text-[13px] font-semibold"
-          class:border-gold={activeGuild === null}
-          class:text-strong={activeGuild === null}
-          class:border-line={activeGuild !== null}
-          style={activeGuild === null ? 'background: #e5b95514' : undefined}
-          onclick={() => selectTab(null)}
+          aria-selected={activeGuild === guild.id}
+          class="rounded-control inline-flex h-11 shrink-0 items-center border px-3.5 text-[12px] font-bold tracking-[0.06em] uppercase"
+          class:border-gold={activeGuild === guild.id}
+          class:text-strong={activeGuild === guild.id}
+          class:border-line={activeGuild !== guild.id}
+          style={activeGuild === guild.id ? 'background: #e5b95514' : undefined}
+          data-testid="my-reports-guild-tab"
+          onclick={() => selectTab(guild.id)}
         >
-          Mine
+          {guild.name}
         </button>
-        {#each guilds as guild (guild.id)}
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activeGuild === guild.id}
-            class="rounded-control inline-flex h-11 shrink-0 items-center border px-4 text-[13px] font-semibold"
-            class:border-gold={activeGuild === guild.id}
-            class:text-strong={activeGuild === guild.id}
-            class:border-line={activeGuild !== guild.id}
-            style={activeGuild === guild.id ? 'background: #e5b95514' : undefined}
-            data-testid="my-reports-guild-tab"
-            onclick={() => selectTab(guild.id)}
-          >
-            {guild.name}
-          </button>
-        {/each}
-      </div>
-    {/if}
-    {#if status === 'loading'}
-      <!-- Five rows, not REPORTS_PER_PAGE's hundred: a hundred shimmering rows would be
+      {/each}
+    </div>
+  {/if}
+  {#if status === 'loading'}
+    <!-- Five rows, not REPORTS_PER_PAGE's hundred: a hundred shimmering rows would be
            its own kind of noise, so the row count is a legible stand-in and
            REPORTS_LOADING_MIN_H carries the reservation /logs' CLS 0.05 budget needs. -->
-      <Skeleton lines={5} rowHeight="h-11" minHeight={REPORTS_LOADING_MIN_H} testid="my-reports-skeleton" />
-    {:else if status === 'failed'}
-      <LoadError
-        message={myReportsCopy.failed}
-        onRetry={() => void load(attemptedPage)}
-        testid="my-reports-error"
-      />
-    {:else if rows.length === 0}
-      <EmptyState
-        message={emptyMessage}
-        action={activeGuild === null ? { label: myReportsCopy.uploadAction, href: '/logs' } : undefined}
-        testid="my-reports-empty"
-      />
-    {:else}
-      <ul class="reveal flex flex-col">
-        {#each rows as report (report.id)}
-          <ReportRow
-            href={`/reports/${report.id}`}
-            title={report.title === '' ? report.zone : report.title}
-            createdAt={report.created_at}
-            fightCount={report.fight_count}
-            killCount={report.kill_count}
-            meta={report.visibility}
-            status={report.status}
-          />
-        {/each}
-      </ul>
-      {#if hasMore}
-        <button
-          class="border-line-warm rounded-control text-text inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
-          onclick={() => void load(page + 1)}
-        >
-          Older reports
-        </button>
-      {/if}
+    <Skeleton lines={5} rowHeight="h-11" minHeight={REPORTS_LOADING_MIN_H} testid="my-reports-skeleton" />
+  {:else if status === 'failed'}
+    <LoadError
+      message={myReportsCopy.failed}
+      onRetry={() => void load(attemptedPage)}
+      testid="my-reports-error"
+    />
+  {:else if rows.length === 0}
+    <EmptyState
+      message={emptyMessage}
+      action={activeGuild === null && uploadAction
+        ? { label: myReportsCopy.uploadAction, href: '/logs' }
+        : undefined}
+      testid="my-reports-empty"
+    />
+  {:else}
+    <ul class="reveal flex flex-col">
+      {#each rows as report (report.id)}
+        <ReportRow
+          href={`/reports/${report.id}`}
+          title={report.title === '' ? report.zone : report.title}
+          createdAt={report.created_at}
+          summary={ownReportSummary({
+            zone: report.zone,
+            killCount: report.kill_count,
+            durationMs: report.duration_ms,
+          })}
+          status={report.status}
+        />
+      {/each}
+    </ul>
+    {#if hasMore}
+      <button
+        class="border-line-warm rounded-control text-text inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
+        onclick={() => void load(page + 1)}
+      >
+        Older reports
+      </button>
     {/if}
   {/if}
 </section>

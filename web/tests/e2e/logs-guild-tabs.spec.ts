@@ -4,7 +4,7 @@
 // MinePage/MyReportPage shape and page-number pagination as GET /v1/reports?mine=1).
 import { expect, test } from '@playwright/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
-import { routeSampleReportMeta } from './support/logs-hero-fixture';
+import { routeSampleReportMeta } from './support/logs-sample-fixture';
 
 function fulfil(body: unknown, status = 200): { status: number; contentType: string; body: string } {
   return {

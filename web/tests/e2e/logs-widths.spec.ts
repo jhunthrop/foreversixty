@@ -1,13 +1,12 @@
 // web/tests/e2e/logs-widths.spec.ts
-// Logs landing spec (2026-10-04) §4.A's header band breaks out full-bleed the same way
-// PlannerHeaderBand.svelte already does (`width: 100vw; margin-left: calc(50% - 50vw)`),
-// which planner-widths.spec.ts's own history shows is exactly the kind of breakout that can
-// push a page wider than its own viewport at a laptop width. Asserts the one invariant that
-// matters: /logs never scrolls sideways, at every width this pass was asked to check, signed
-// out and signed in.
+// The /logs band breaks out full-bleed the same way PlannerHeaderBand.svelte does
+// (`width: 100vw; margin-left: calc(50% - 50vw)`), which planner-widths.spec.ts's own history
+// shows is exactly the kind of breakout that can push a page wider than its own viewport at a
+// laptop width. Asserts the one invariant that matters: /logs never scrolls sideways, at every
+// width this pass was asked to check, signed out and signed in.
 import { expect, test } from '@playwright/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
-import { routeSampleReportMeta } from './support/logs-hero-fixture';
+import { routeSampleReportMeta } from './support/logs-sample-fixture';
 
 const WIDTHS = [1024, 1100, 1280, 1440, 1920];
 
@@ -37,7 +36,7 @@ test.describe('the logs landing never scrolls sideways', () => {
       await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
       await routeSampleReportMeta(page);
       await page.goto('/logs');
-      await page.getByTestId('logs-hero-description').waitFor();
+      await page.getByTestId('logs-grid').waitFor();
       await noHorizontalScroll(page);
     });
 
@@ -67,12 +66,9 @@ test.describe('the logs landing never scrolls sideways', () => {
         ),
       );
       await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
-      // The hero's own per-player hook (§4.A.1) is a deferred third fetch; left unmocked so
-      // it fails quietly (its own spec'd behaviour) rather than widening the fixture set this
-      // width check does not need.
-      await page.route('**/v1/reports/ownreport01x', (route) => route.abort());
+      await routeSampleReportMeta(page);
       await page.goto('/logs');
-      await page.getByTestId('logs-hero-title').waitFor();
+      await page.getByTestId('report-row').first().waitFor();
       await noHorizontalScroll(page);
     });
   }

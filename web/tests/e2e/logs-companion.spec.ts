@@ -3,7 +3,7 @@
 // pairing poll's success state).
 import { expect, test, type Page } from '@playwright/test';
 import { meAddonFixture } from '../../src/fixtures/me-addon';
-import { routeSampleReportMeta } from './support/logs-hero-fixture';
+import { routeSampleReportMeta } from './support/logs-sample-fixture';
 
 function fulfil(body: unknown, status = 200): { status: number; contentType: string; body: string } {
   return {

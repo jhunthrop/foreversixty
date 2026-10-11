@@ -1,11 +1,9 @@
 // web/tests/e2e/support/logs-hero-fixture.ts
-// The header hero (LogsHero.svelte, logs landing spec 2026-10-04 §4.A) now fetches on every
-// /logs visit regardless of what a given test cares about: `/v1/me`, then either
-// `listMyReports(1)` (signed in) or the canonical sample's `GET /v1/reports/{id}` (signed
-// out, or signed in with none of their own). A spec that needs the hero to actually render
-// -- rather than just tolerate its graceful LoadError on an unmocked fetch -- routes through
-// here, the same "one fixture, several callers" convention active-build.ts and
-// character-fixture.ts already use.
+// The canonical sample report's public `GET /v1/reports/{id}`, which /logs reads on every visit
+// to draw the one sample row under "Recent public reports" (lib/logs/sample-row.ts). A spec that
+// needs the row to resolve to its real title, date and kills -- rather than the link-only fallback
+// an unmocked fetch gives -- routes through here, the same "one fixture, several callers"
+// convention active-build.ts and character-fixture.ts already use.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -70,8 +68,7 @@ function envelope(data: unknown, status = 200): { status: number; contentType: s
   };
 }
 
-/** Routes the canonical sample's own `GET /v1/reports/{id}` -- the hero's fallback for a
- *  signed-out visitor, or a signed-in one with no reports of their own. */
+/** Routes the canonical sample's own `GET /v1/reports/{id}`. */
 export async function routeSampleReportMeta(page: Page): Promise<void> {
   await page.route(`**/v1/reports/${SAMPLE_REPORT_ID}`, (route) =>
     route.fulfill(envelope(SAMPLE_REPORT_META)),

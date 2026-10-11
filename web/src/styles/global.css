@@ -303,7 +303,8 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
 
 /* The shared character header's server-rendered loading state (CharacterHeader.svelte): the
    skeleton box shows only for a visitor with a session hint, the signed-out band only for one
-   without, so neither kind of visitor sees the panel change size when the island hydrates. */
+   without, so neither kind of visitor sees the panel change size when the island hydrates.
+   /logs' "Your reports" panel reuses `.ch-hint-out-only` for its signed-out sentence. */
 html:not([data-session='1']) .ch-hint-only {
   display: none;
 }

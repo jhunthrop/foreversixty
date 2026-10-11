@@ -258,7 +258,8 @@
       {#if current.answer.note !== undefined}
         <span class="ch-note" data-testid="character-header-note"
           >{current.answer.note.text}{#if current.answer.note.link !== undefined}
-            &middot; <a class="ch-inline-link" href={current.answer.note.link.href}
+            &nbsp;&middot;
+            <a class="ch-inline-link" href={current.answer.note.link.href}
               >{current.answer.note.link.label}&nbsp;→</a
             >{/if}</span
         >

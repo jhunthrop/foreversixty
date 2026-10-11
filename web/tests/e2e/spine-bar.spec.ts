@@ -1,5 +1,5 @@
 // web/tests/e2e/spine-bar.spec.ts
-// Spec 2026-09-25 section 9, lane B: one proof per door that it opens on the current
+// Spec 2026-09-25 section 9, lane B (/logs left the spine's pages with the 2026-10-11 logs spec): one proof per door that it opens on the current
 // character, plus one proving the bar's signed-out line. current-character.spec.ts,
 // sim-landing.spec.ts and planner.spec.ts each already prove one door's own bootstrap
 // (restore-from-pointer) in depth; this file proves the *bar itself* -- that each door's
@@ -17,8 +17,8 @@ async function pasteAndGoTo(page: import('@playwright/test').Page, path: string)
 }
 
 test.describe('the spine bar opens every door on the current character', () => {
-  test("Plan and Sim carry the pasted export on /logs' bar", async ({ page }) => {
-    await pasteAndGoTo(page, '/logs');
+  test("Plan and Sim carry the pasted export on /sim's bar", async ({ page }) => {
+    await pasteAndGoTo(page, '/sim');
     await expect(page.getByTestId('current-character-bar')).toBeVisible();
     await expect(page.getByTestId('current-character-bar-plan')).toHaveAttribute(
       'href',
@@ -30,8 +30,8 @@ test.describe('the spine bar opens every door on the current character', () => {
     );
   });
 
-  test("Rankings for Warrior is on /logs' bar once a warrior export is loaded", async ({ page }) => {
-    await pasteAndGoTo(page, '/logs');
+  test("Rankings for Warrior is on /sim's bar once a warrior export is loaded", async ({ page }) => {
+    await pasteAndGoTo(page, '/sim');
     // The door carries both its labels in the DOM ("Rankings" below md, the full one from md),
     // so match the full one rather than the exact text.
     await expect(page.getByTestId('current-character-bar-rankings')).toContainText('Rankings for Warrior');
@@ -92,10 +92,10 @@ test.describe('the spine bar opens every door on the current character', () => {
 // is exactly the one visitor shape this line greets, so hiding it made the line permanently
 // unreachable rather than merely not pre-reserving space for it.
 test('the bar shows the signed-out, no-pointer line with two links, on a fresh visit', async ({ page }) => {
-  await page.goto('/logs');
+  await page.goto('/sim');
   await expect(page.getByTestId('current-character-bar-signed-out')).toBeVisible();
-  // Scoped to the bar: /logs also carries the reports, pairing and upload panels' own
-  // Battle.net links, so a page-wide lookup is a strict-mode violation.
+  // Scoped to the bar: the page's own panels may carry sign-in links of their own, so a
+  // page-wide lookup could be a strict-mode violation.
   const bar = page.getByTestId('current-character-bar');
   await expect(bar.getByRole('link', { name: 'Sign in with Battle.net' })).toHaveAttribute('href', '/login');
   await expect(bar.getByRole('link', { name: 'Paste an export' })).toHaveAttribute('href', '/setup#paste');
