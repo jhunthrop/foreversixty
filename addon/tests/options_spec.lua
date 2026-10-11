@@ -346,7 +346,9 @@ describe("Options", function()
 
 	it("says everything is working on /fs diag when nothing is broken", function()
 		require("Theme").reset()
-		assert.are.same({ require("Locale").diagAllWorking }, Options.handle("diag"))
+		-- The first line is the verdict; a once-only info line about the
+		-- data addon may follow it depending on which case ran first.
+		assert.are.equal(require("Locale").diagAllWorking, Options.handle("diag")[1])
 	end)
 
 	it("lists what this client turned out not to have on /fs diag", function()
