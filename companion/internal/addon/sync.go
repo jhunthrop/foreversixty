@@ -7,12 +7,15 @@ package addon
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io/fs"
 	"log/slog"
 	"reflect"
 	"slices"
 	"sync"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/companion/internal/state"
 )
 
 // InboxEvery is how often the inbox is refreshed, per the contract.
@@ -52,6 +55,11 @@ type Options struct {
 	// Cache gets one of its own; the companion passes the same one
 	// the status page reads through.
 	Cache *Cache
+	// StateDir is the companion's state directory, where the keys of
+	// the outboxes the site has answered are kept so a restart never
+	// sends one twice (state.LoadOutboxSent). Empty keeps them in
+	// memory only.
+	StateDir string
 }
 
 // Status is what the status page shows of the sync: when the site last
@@ -75,9 +83,16 @@ type Sync struct {
 	// failed is simply not recorded, so the next pass retries it.
 	uploaded map[string]Stamp
 	// sent is, per SavedVariables file, the key of the last outbox the
-	// site answered (stored or refused): a file the game rewrites with
-	// the same outbox sends its exports again but not the outbox.
+	// site answered (stored or refused) or the companion dropped as too
+	// large: a file the game rewrites with the same outbox sends its
+	// exports again but not the outbox. It is kept in Options.StateDir,
+	// so a restart does not send it again either.
 	sent map[string]string
+	// skipLogged and formatLogged hold what has been logged once this
+	// process: a skipped inbox message by (type, position), an inbox
+	// format this build does not render.
+	skipLogged   map[string]bool
+	formatLogged map[int]bool
 	// builds, messages and body are the inbox as it was last rendered.
 	// The render is stamped with the time the content changed, not the
 	// time the file is written, so an unchanged inbox is the same
@@ -104,7 +119,33 @@ func New(o Options) *Sync {
 	if o.Cache == nil {
 		o.Cache = &Cache{}
 	}
-	return &Sync{o: o, uploaded: map[string]Stamp{}, sent: map[string]string{}}
+	s := &Sync{o: o, uploaded: map[string]Stamp{}, sent: map[string]string{},
+		skipLogged: map[string]bool{}, formatLogged: map[int]bool{}}
+	if o.StateDir != "" {
+		sent, err := state.LoadOutboxSent(o.StateDir)
+		if err != nil {
+			// The worst a lost record costs is one outbox sent twice,
+			// which the site answers as a duplicate.
+			o.Log.Warn("could not read which outboxes the site has answered; starting over",
+				"component", "addon", "err", err.Error())
+		}
+		s.sent = sent
+	}
+	return s
+}
+
+// markSent records that the site has answered (or the companion
+// dropped) the outbox with key for file p, in memory and in the state
+// directory.
+func (s *Sync) markSent(p, key string) {
+	s.sent[p] = key
+	if s.o.StateDir == "" {
+		return
+	}
+	if err := state.SaveOutboxSent(s.o.StateDir, s.sent); err != nil {
+		s.o.Log.Warn("could not record which outboxes the site has answered",
+			"component", "addon", "err", err.Error())
+	}
 }
 
 // Status is the sync's latest word from the site.
@@ -119,13 +160,20 @@ func (s *Sync) Status() Status {
 func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 	var errs []error
 	paths := s.o.Paths()
+	// outboxUp is set when an outbox reached the site this pass: its
+	// ack is waiting, so the inbox is fetched now rather than when the
+	// ten-minute timer comes round, and the player sees "Seen by the
+	// site" within seconds of logging out.
+	outboxUp := false
 	for _, p := range paths {
-		if err := s.upload(ctx, p); err != nil {
+		sent, err := s.upload(ctx, p)
+		if err != nil {
 			errs = append(errs, err)
 		}
+		outboxUp = outboxUp || sent
 	}
 
-	if !s.lastInbox.IsZero() && now.Sub(s.lastInbox) < s.o.Every {
+	if !outboxUp && !s.lastInbox.IsZero() && now.Sub(s.lastInbox) < s.o.Every {
 		return errors.Join(errs...)
 	}
 	inbox, err := s.o.API.AddonInbox(ctx)
@@ -133,9 +181,26 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 		return errors.Join(append(errs, err)...)
 	}
 	s.lastInbox = now
-	for _, why := range inbox.Skipped {
-		s.o.Log.Warn("skipped an inbox message the addon could not read",
-			"component", "addon", "why", why)
+	if inbox.Format != 0 && inbox.Format != InboxFormat {
+		// A format this build does not know: render nothing from it and
+		// leave the file the addon has. Format 0 is an API that predates
+		// the field, whose body this build reads as it always has.
+		if !s.formatLogged[inbox.Format] {
+			s.formatLogged[inbox.Format] = true
+			s.o.Log.Warn("the site sent an inbox format this companion does not know; "+
+				"the addon keeps the inbox it has until the companion is updated",
+				"component", "addon", "format", inbox.Format)
+		}
+		return errors.Join(errs...)
+	}
+	for _, sk := range inbox.Skipped {
+		key := fmt.Sprintf("%s\x00%d", sk.Type, sk.Position)
+		if s.skipLogged[key] {
+			continue
+		}
+		s.skipLogged[key] = true
+		s.o.Log.Warn("skipped an inbox message the addon could not read", "component", "addon",
+			"type", sk.Type, "position", sk.Position, "why", sk.Why)
 	}
 	s.acked(inbox.Messages)
 	// Message carries slices and maps of its own, which are not
@@ -166,57 +231,65 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 // the outbox is one the site has not answered yet, once per version of
 // the file. The outbox never goes alone: the site matches the outbox's
 // export to a character by name against the list that rides with it.
-func (s *Sync) upload(ctx context.Context, p string) error {
+// It reports whether an outbox reached the site.
+func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 	saved, at, err := s.o.Cache.Saved(p)
 	if errors.Is(err, fs.ErrNotExist) {
-		return nil // the player has not installed the addon here
+		return false, nil // the player has not installed the addon here
 	}
 	if err != nil {
 		s.o.Log.Warn("could not read the addon's saved variables",
 			"component", "addon", "path", p, "err", err.Error())
-		return nil
+		return false, nil
 	}
 	if len(saved.Exports) == 0 {
-		return nil
+		return false, nil
 	}
 	if was, ok := s.uploaded[p]; ok && was.eq(at) {
-		return nil // this version is already on the site
+		return false, nil // this version is already on the site
 	}
 	ob := saved.Outbox
 	if ob != nil && s.sent[p] == ob.key() {
 		ob = nil // the site has answered this outbox already
+	}
+	if ob != nil && len(ob.Body) > MaxOutboxBytes {
+		// Never sendable as it stands, so it is answered here, once.
+		s.o.Log.Warn(CopyOutboxTooLarge, "component", "addon", "path", p,
+			"bytes", len(ob.Body), "limit", MaxOutboxBytes)
+		s.markSent(p, ob.key())
+		ob = nil
 	}
 	res, err := s.o.API.PostAddonExports(ctx, saved.Exports, ob)
 	if err != nil && ob != nil && refused(err) {
 		// The site read the outbox and cannot use it. Sending it again
 		// would be refused again, and must not hold the exports back.
 		s.o.Log.Warn(CopyOutboxRefused, "component", "addon", "path", p, "err", err.Error())
-		s.sent[p] = ob.key()
+		s.markSent(p, ob.key())
 		ob = nil
 		res, err = s.o.API.PostAddonExports(ctx, saved.Exports, nil)
 	}
 	if err != nil {
-		return err // unrecorded, so the next pass retries, outbox and all
+		return false, err // unrecorded, so the next pass retries, outbox and all
 	}
 	s.uploaded[p] = at
 	s.o.Log.Info("uploaded character exports", "component", "addon",
 		"path", p, "characters", len(saved.Exports), "outbox", ob != nil)
 	if ob == nil {
-		return nil
+		return false, nil
 	}
-	s.sent[p] = ob.key()
+	s.markSent(p, ob.key())
 	if res.Outbox == nil {
-		return nil // a site that predates the outbox stored the exports only
+		return true, nil // a site that predates the outbox stored the exports only
 	}
 	for _, line := range res.Outbox.Lines() {
 		s.o.Log.Info(line, "component", "addon")
 	}
-	if state := SimStateOf(res.Outbox.SimRequest); state != "" {
+	if st := SimStateOf(res.Outbox.SimRequest); st != "" {
 		s.mu.Lock()
-		s.status.SimRequestState = state
+		s.status.SimRequestState = st
 		s.mu.Unlock()
 	}
-	return nil
+	return true, nil
 }
 
 // acked takes the status page's line from the inbox's acks: the newest

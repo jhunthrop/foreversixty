@@ -148,6 +148,7 @@ func New(o Options) (*App, error) {
 	}
 	a.sync = addon.New(addon.Options{
 		Paths: a.savedVariables, API: a.client, Log: a.log, Cache: a.exports,
+		StateDir: o.Dirs.State,
 	})
 	uo := o.Updater
 	uo.Dir, uo.Log = o.Dirs.Update, a.log

@@ -122,7 +122,7 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 			t.Fatal(err)
 		}
 		if len(got.Skipped) != 0 {
-			t.Errorf("the sync skipped fixture messages: %q", got.Skipped)
+			t.Errorf("the sync skipped fixture messages: %+v", got.Skipped)
 		}
 		if !reflect.DeepEqual(got, strict) {
 			t.Errorf("the sync's decode differs from the strict one\n got: %+v\nwant: %+v", got, strict)

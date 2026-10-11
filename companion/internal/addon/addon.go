@@ -193,9 +193,18 @@ type Inbox struct {
 	GeneratedAt string    `json:"generated_at"`
 	Builds      []Build   `json:"builds"`
 	Messages    []Message `json:"messages,omitempty"`
-	// Skipped says, one line each, which messages could not be carried
-	// to the addon and why. The sync logs them.
-	Skipped []string `json:"-"`
+	// Skipped lists the messages that could not be carried to the
+	// addon, and why. The sync logs each once per process.
+	Skipped []SkippedMessage `json:"-"`
+}
+
+// SkippedMessage is one inbox message the companion could not carry:
+// its 1-based position in the API's list, its type ("" when it had
+// none) and why.
+type SkippedMessage struct {
+	Position int
+	Type     string
+	Why      string
 }
 
 // UnmarshalJSON reads the inbox message by message: a message of a
@@ -218,7 +227,11 @@ func (in *Inbox) UnmarshalJSON(b []byte) error {
 	for i, raw := range wire.Messages {
 		m, why := decodeMessage(raw)
 		if why != "" {
-			out.Skipped = append(out.Skipped, fmt.Sprintf("message %d: %s", i+1, why))
+			var head struct {
+				Type string `json:"type"`
+			}
+			_ = json.Unmarshal(raw, &head) // a message with no readable type keeps ""
+			out.Skipped = append(out.Skipped, SkippedMessage{Position: i + 1, Type: head.Type, Why: why})
 			continue
 		}
 		out.Messages = append(out.Messages, m)

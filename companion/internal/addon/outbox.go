@@ -7,6 +7,8 @@
 package addon
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -20,17 +22,26 @@ const OutboxFormat = 1
 // Outbox is one format 1 outbox, ready to send. Body is the whole
 // outbox as JSON, every field the addon wrote carried through, so a
 // field the addon adds inside format 1 reaches the site without a new
-// companion. SavedAt (export.saved_at) and RequestedAt
-// (sim_request.requested_at) are what make one outbox a different one
-// from the last: the sync sends each outbox once.
+// companion. SavedAt (export.saved_at), RequestedAt
+// (sim_request.requested_at) and RosterHash (of roster_snapshot) are
+// what make one outbox a different one from the last: the sync sends
+// each outbox once.
 type Outbox struct {
 	SavedAt     string
 	RequestedAt string
+	RosterHash  string
 	Body        json.RawMessage
 }
 
-// key is what the sync remembers of the last outbox it sent.
-func (o *Outbox) key() string { return o.SavedAt + "\x00" + o.RequestedAt }
+// MaxOutboxBytes bounds the outbox the companion sends: a guild's
+// roster of a thousand members is well under it, and the API reads
+// the whole export body into memory. A larger outbox is dropped and
+// the exports go up alone.
+const MaxOutboxBytes = 256 << 10
+
+// key is what the sync remembers, across restarts, of the last outbox
+// the site answered for a file.
+func (o *Outbox) key() string { return o.SavedAt + "|" + o.RequestedAt + "|" + o.RosterHash }
 
 // ScanOutbox reads ForeverSixtyDB.outbox out of one SavedVariables
 // file. It answers nil, with no error, when there is nothing to send:
@@ -66,6 +77,14 @@ func outboxOf(top map[string]any) (*Outbox, error) {
 	ob := &Outbox{SavedAt: export.Get("saved_at"), Body: body}
 	if sim, ok := t.Fields["sim_request"].(*Table); ok {
 		ob.RequestedAt = sim.Get("requested_at")
+	}
+	if roster, ok := t.Fields["roster_snapshot"].(*Table); ok {
+		b, err := json.Marshal(luaJSON(roster)) // map keys sorted: the same roster, the same bytes
+		if err != nil {
+			return nil, fmt.Errorf("the addon's roster snapshot cannot be sent: %w", err)
+		}
+		sum := sha256.Sum256(b)
+		ob.RosterHash = hex.EncodeToString(sum[:8])
 	}
 	return ob, nil
 }
@@ -182,6 +201,7 @@ func SimStateOf(outcome string) string {
 const (
 	CopyOutboxIgnored    = "The site does not read this outbox format, so it was ignored"
 	CopyOutboxRefused    = "The site could not read the outbox, so it will not be sent again"
+	CopyOutboxTooLarge   = "Outbox too large to send; the character exports went up alone"
 	CopyExportStored     = "Export stored"
 	CopyExportUnknown    = "Export not stored, the site has not seen this character yet"
 	CopySimQueued        = "Sim request queued"

@@ -87,6 +87,14 @@ type Server struct {
 	refuseOutbox bool
 	clock        func() time.Time
 	acks         map[string]ack
+	inboxReads   int
+}
+
+// InboxFetches is how many times GET /v1/addon/inbox has been answered.
+func (s *Server) InboxFetches() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.inboxReads
 }
 
 // EmptyInbox is the inbox v2 body the fake answers before SetInbox.
@@ -620,6 +628,7 @@ func (s *Server) applyOutbox(chars []map[string]string, raw json.RawMessage) out
 // outbox has stored.
 func (s *Server) addonInbox(w http.ResponseWriter, r *http.Request) {
 	s.mu.Lock()
+	s.inboxReads++
 	body := s.inbox
 	acks := make([]ack, 0, len(s.acks))
 	for _, a := range s.acks {

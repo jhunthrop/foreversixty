@@ -8,6 +8,7 @@ package addon_test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -80,12 +81,15 @@ const inboxV2 = `{"format":2,"generated_at":"2026-11-04T21:03:00Z","builds":[],"
 ]}`
 
 type rig struct {
-	t    *testing.T
-	srv  *fakeapi.Server
-	sync *addon.Sync
-	path string
-	logs *syncBuffer
-	at   time.Time
+	t   *testing.T
+	api addon.API
+	// state is the companion's state directory, which outlives a restart.
+	state string
+	srv   *fakeapi.Server
+	sync  *addon.Sync
+	path  string
+	logs  *syncBuffer
+	at    time.Time
 }
 
 // syncBuffer is a log sink the test reads while nothing else writes.
@@ -123,25 +127,34 @@ func newRig(t *testing.T, saved string) *rig {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	r := &rig{t: t, srv: srv, path: filepath.Join(dir, addon.SavedVariablesName+".lua"),
-		logs: &syncBuffer{}, at: t0}
-	r.sync = addon.New(addon.Options{
-		Paths: func() []string { return []string{r.path} },
-		API:   c,
-		Log:   slog.New(slog.NewTextHandler(r.logs, nil)),
-	})
+	r := &rig{t: t, srv: srv, api: c, state: t.TempDir(),
+		path: filepath.Join(dir, addon.SavedVariablesName+".lua"), logs: &syncBuffer{}, at: t0}
+	r.restart()
 	r.save(saved)
 	return r
 }
 
+// restart is the companion quitting and starting again: a new Sync, the same files.
+func (r *rig) restart() {
+	r.sync = addon.New(addon.Options{
+		Paths:    func() []string { return []string{r.path} },
+		API:      r.api,
+		Log:      slog.New(slog.NewTextHandler(r.logs, nil)),
+		StateDir: r.state,
+	})
+}
+
 // save writes the saved-variables file as the game does at logout: new content, a new
 // modification time.
-func (r *rig) save(body string) {
+func (r *rig) save(body string) { r.t.Helper(); r.saveAfter(body, time.Hour) }
+
+// saveAfter is save, d after the last one.
+func (r *rig) saveAfter(body string, d time.Duration) {
 	r.t.Helper()
 	if err := os.WriteFile(r.path, []byte(body), 0o600); err != nil {
 		r.t.Fatal(err)
 	}
-	r.at = r.at.Add(time.Hour)
+	r.at = r.at.Add(d)
 	if err := os.Chtimes(r.path, r.at, r.at); err != nil {
 		r.t.Fatal(err)
 	}
@@ -342,5 +355,181 @@ func TestASimRequestOutcomeIsLoggedAndKeptForTheStatusPage(t *testing.T) {
 				t.Errorf("status = %+v, want %s", st, want.state)
 			}
 		})
+	}
+}
+
+// Fix round 1 -------------------------------------------------------------------------------
+
+// noOutbox is outboxSaved with an outbox the companion does not send (format 2).
+var noOutbox = outboxSaved("2026-11-04 14:10", 2)
+
+func TestTheAckLandsInTheSamePassAsTheOutbox(t *testing.T) {
+	r := newRig(t, noOutbox)
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	fetches := r.srv.InboxFetches()
+	if fetches != 1 {
+		t.Fatalf("the first pass fetched the inbox %d times", fetches)
+	}
+
+	// A logout that changes only the characters, inside the ten minutes: the timer holds.
+	r.saveAfter(strings.Replace(noOutbox, `["region"] = "us",`, `["region"] = "us", ["level"] = 21,`, 1), time.Minute)
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	if got := r.srv.InboxFetches(); got != fetches {
+		t.Fatalf("a characters-only upload fetched the inbox early: %d fetches", got)
+	}
+
+	// A logout with an outbox, still inside the ten minutes: the inbox comes down at once.
+	r.saveAfter(outboxSaved("2026-11-04 14:10", 1), time.Minute)
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	if got := r.srv.InboxFetches(); got != fetches+1 {
+		t.Fatalf("the outbox upload did not fetch the inbox in the same pass: %d fetches", got)
+	}
+	body, err := os.ReadFile(addon.InboxPath(r.path))
+	if err != nil || !strings.Contains(string(body), `["export_seen_at"] = "2026-11-04T14:03:00Z"`) {
+		t.Fatalf("the ack is not in the inbox (%v):\n%s", err, body)
+	}
+	if st := r.sync.Status(); !st.SeenAt.Equal(seen) {
+		t.Errorf("status = %+v", st)
+	}
+}
+
+func TestARestartNeverResendsTheOutbox(t *testing.T) {
+	r := newRig(t, outboxSaved("2026-11-04 14:10", 1))
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	if posts := r.posts(); len(posts) != 1 || len(posts[0].Outbox) == 0 {
+		t.Fatalf("posts = %+v", posts)
+	}
+
+	// The companion restarts over the same state directory and the same saved variables.
+	r.restart()
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	for i, p := range r.posts()[1:] {
+		if len(p.Outbox) != 0 {
+			t.Fatalf("post %d after the restart resent the outbox: %s", i+2, p.Outbox)
+		}
+	}
+	// A new outbox after the restart still goes up.
+	r.save(outboxSaved("2026-11-04 15:30", 1))
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	if posts := r.posts(); !strings.Contains(string(posts[len(posts)-1].Outbox), "15:30") {
+		t.Fatalf("the new outbox did not go up: %+v", posts[len(posts)-1])
+	}
+}
+
+func TestANewRosterIsANewOutbox(t *testing.T) {
+	r := newRig(t, outboxSaved("2026-11-04 14:10", 1))
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	// Same saved_at, same requested_at, a member's build changed: a different outbox.
+	r.save(strings.Replace(outboxSaved("2026-11-04 14:10", 1), "Arms leveling", "Arms raid", 1))
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	posts := r.posts()
+	if len(posts) != 2 || !strings.Contains(string(posts[1].Outbox), "Arms raid") {
+		t.Fatalf("the changed roster did not go up: %+v", posts[len(posts)-1])
+	}
+}
+
+// paddedOutbox is outboxSaved with a roster snapshot of n long-named members.
+func paddedOutbox(n int) string {
+	var pad strings.Builder
+	for i := range n {
+		fmt.Fprintf(&pad, "\t\t\t\t{ [\"name\"] = \"Member%04d-Yell\", [\"level\"] = 60, [\"spec\"] = \"warrior-arms\", "+
+			"[\"gear_gap\"] = 0, [\"build\"] = \"%s\", [\"seen_at\"] = \"2026-11-04 14:01\" },\n", i, strings.Repeat("x", 120))
+	}
+	return strings.Replace(outboxSaved("2026-11-04 14:10", 1), "[\"members\"] = {\n", "[\"members\"] = {\n"+pad.String(), 1)
+}
+
+func TestAnOutboxTooLargeIsDroppedAndTheExportsStillGoUp(t *testing.T) {
+	big := paddedOutbox(2000)
+	r := newRig(t, big)
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	posts := r.posts()
+	if len(posts) != 1 || len(posts[0].Characters) != 1 || len(posts[0].Outbox) != 0 {
+		t.Fatalf("posts = %+v", posts)
+	}
+	const line = "Outbox too large to send; the character exports went up alone"
+	if n := strings.Count(r.logs.String(), line); n != 1 {
+		t.Fatalf("the log says %q %d times:\n%s", line, n, r.logs.String())
+	}
+	// Marked answered: the next logout with the same outbox does not try it again.
+	r.save(big)
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	if posts := r.posts(); len(posts) != 2 || len(posts[1].Outbox) != 0 {
+		t.Fatalf("posts = %+v", posts)
+	}
+	if n := strings.Count(r.logs.String(), line); n != 1 {
+		t.Errorf("the drop was logged %d times", n)
+	}
+	// Just under the bound still goes up.
+	r.save(paddedOutbox(100))
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	if posts := r.posts(); len(posts[len(posts)-1].Outbox) == 0 {
+		t.Error("an outbox under the bound was dropped")
+	}
+}
+
+func TestASkippedInboxMessageIsLoggedOncePerProcess(t *testing.T) {
+	r := newRig(t, noOutbox)
+	r.srv.SetInbox(`{"format":2,"generated_at":"2026-11-04T21:03:00Z","builds":[],"messages":[
+		{"type":"future_nested","character":"us/normal/obnoxious","rows":[1,2]}]}`)
+	for i := range 3 {
+		if err := r.sync.Poll(t.Context(), r.at.Add(time.Duration(i)*addon.InboxEvery)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if r.srv.InboxFetches() != 3 {
+		t.Fatalf("fetches = %d", r.srv.InboxFetches())
+	}
+	if n := strings.Count(r.logs.String(), "skipped an inbox message"); n != 1 {
+		t.Errorf("the skip was logged %d times:\n%s", n, r.logs.String())
+	}
+}
+
+func TestAnInboxOfAFormatTheCompanionDoesNotKnowIsNotWritten(t *testing.T) {
+	r := newRig(t, noOutbox)
+	if err := r.poll(); err != nil {
+		t.Fatal(err)
+	}
+	before, err := os.ReadFile(addon.InboxPath(r.path))
+	if err != nil {
+		t.Fatal(err)
+	}
+	r.srv.SetInbox(`{"format":3,"generated_at":"2026-11-04T21:03:00Z","builds":[],"messages":[
+		{"type":"ack","character":"us/normal/obnoxious","export_seen_at":"2026-11-04T14:03:00Z"}]}`)
+	for i := 1; i <= 2; i++ {
+		if err := r.sync.Poll(t.Context(), r.at.Add(time.Duration(i)*addon.InboxEvery)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	after, err := os.ReadFile(addon.InboxPath(r.path))
+	if err != nil || !bytes.Equal(before, after) {
+		t.Errorf("the inbox was rewritten from a format the companion does not know:\n%s", after)
+	}
+	if n := strings.Count(r.logs.String(), "inbox format"); n != 1 {
+		t.Errorf("the unknown format was logged %d times:\n%s", n, r.logs.String())
+	}
+	if st := r.sync.Status(); !st.SeenAt.IsZero() {
+		t.Errorf("an ack in an unknown format reached the status: %+v", st)
 	}
 }
