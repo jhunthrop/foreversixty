@@ -81,3 +81,108 @@ test('a scored character leads with 1830 in the epic colour, its parts and its d
   }
   await expect(page.getByTestId('character-in-game').getByTestId('score-badge')).toHaveText('1830');
 });
+
+// Fix round 1: the reviewers' capture, as the page now draws it.
+const CAPTURE = {
+  character: { name: 'Elyra Duskvale', region: 'us', ruleset: 'hardcore', class: 'Priest' },
+  best: [],
+  history: [],
+  builds_seen: [],
+  score: 1830,
+  tier: 'epic',
+  as_of: '2026-11-04',
+  components: { gear: 412, experience: 620, parses: 540, attendance: 180, discipline: 78 },
+  experience: { dungeons: 14, raid_kills: 0, alts: 2 },
+};
+
+const RATING = {
+  player_key: 'us/hardcore/elyra-duskvale',
+  sample_size: 6,
+  trend: Array.from({ length: 6 }, (_, i) => ({
+    fought_at: `2026-12-0${i + 1}T00:00:00Z`,
+    overall: 40 + i * 5,
+    report_id: 'fixture2abcd',
+    fight_index: i + 1,
+  })),
+  best_component: 'preparation',
+  worst_component: 'activity',
+  latest: {
+    player_key: 'us/hardcore/elyra-duskvale',
+    player_name: 'Elyra Duskvale',
+    class: 'Priest',
+    spec: 'Holy',
+    role: 'healer',
+    overall: 65,
+    overall_uncapped: 65,
+    overall_capped: false,
+    basis: 'percentile',
+    components: [],
+  },
+};
+
+const ok = (data: unknown) => ({
+  status: 200,
+  contentType: 'application/json',
+  body: JSON.stringify({ ok: true, data, error: null, request_id: 'r' }),
+});
+
+test('the capture: captions on both numbers, empty sections and an empty strip are absent', async ({
+  page,
+}) => {
+  await page.route(CHARACTER_URL, (route) => route.fulfill(ok(CAPTURE)));
+  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(ok(RATING)));
+  await page.goto(CHARACTER_PATH);
+
+  await expect(page.getByTestId('forever-score-caption')).toHaveText('Your whole record, as of 4 Nov.');
+  await expect(page.getByTestId('character-rating-caption')).toHaveText('Your latest logged fights.');
+  await expect(page.getByTestId('character-rating-overall')).toHaveText('65');
+  // Every rating segment is empty, so the strip is not drawn.
+  await expect(page.getByTestId('character-rating-segments')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Best per encounter' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Every ranked fight' })).toHaveCount(0);
+
+  await expect(page.getByTestId('forever-score-most-to-gain')).toHaveText(
+    'Most to gain: Gear, 88 below its top.',
+  );
+  await expect(page.getByTestId('forever-score-experience-detail')).toHaveText(
+    '14 dungeons · 0 raid bosses · 2 alts',
+  );
+  await expect(page.getByTestId('tier-strip-epic')).toHaveAttribute('aria-current', 'true');
+});
+
+test('the header names the spec of the newest fight: "Discipline Priest"', async ({ page }) => {
+  await page.route(CHARACTER_URL, (route) => route.fulfill(ok(CHARACTER.data)));
+  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
+  await page.goto(CHARACTER_PATH);
+
+  await expect(page.getByTestId('character')).toContainText('Discipline Priest');
+});
+
+test('In game: the tooltip mock for any visitor, the planner line only for the owner', async ({ page }) => {
+  await page.route(CHARACTER_URL, (route) => route.fulfill(ok(CAPTURE)));
+  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
+  await page.goto(CHARACTER_PATH);
+
+  const tooltip = page.getByTestId('character-in-game-tooltip');
+  await expect(tooltip).toContainText('Elyra Duskvale');
+  await expect(tooltip).toContainText('Forever Score 1830 · Epic · as of 4 Nov');
+  await expect(page.getByTestId('character-in-game')).toContainText(
+    'Shown on this character’s tooltip when you have the Forever Sixty addon.',
+  );
+  await expect(page.getByTestId('character-in-game-planner')).toHaveCount(0);
+});
+
+test('the no-logs page keeps the neutral crest and the same card, with what to do next', async ({ page }) => {
+  await stub(page, 'missing');
+  await page.goto(CHARACTER_PATH);
+
+  await expect(page.getByTestId('character-avatar-fallback')).toBeVisible();
+  const card = page.getByTestId('forever-score-card');
+  await expect(card).toContainText('No logs yet');
+  await expect(card).toContainText('Check the name and ruleset, or add a log of this character.');
+  await expect(card.getByRole('link', { name: 'add a log of this character' })).toHaveAttribute(
+    'href',
+    '/logs#upload',
+  );
+  await expect(page.getByTestId('character-in-game-tooltip')).toContainText(labels.noLogs);
+});

@@ -8,7 +8,7 @@
     { "key": "discipline", "label": "Discipline" }
   ],
   "tiers": {
-    "common": { "label": "Common", "color": "#9d9d9d" },
+    "common": { "label": "Common", "color": "#ffffff" },
     "uncommon": { "label": "Uncommon", "color": "#1eff00" },
     "rare": { "label": "Rare", "color": "#0070dd" },
     "epic": { "label": "Epic", "color": "#a335ee" },

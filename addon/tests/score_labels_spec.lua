@@ -25,9 +25,10 @@ local function readFixture(name)
 	error("fixture not found: " .. name, 2)
 end
 
---- Tier name -> its Locale key and the client's colour for its item quality.
+--- Tier name -> its Locale key and the client's colour for its item quality. Score.lua maps
+--- common to quality 1, which is white (Common); grey #9d9d9d is quality 0, Poor.
 local TIERS = {
-	{ tier = "common", label = "scoreTierCommon", color = "#9d9d9d" },
+	{ tier = "common", label = "scoreTierCommon", color = "#ffffff" },
 	{ tier = "uncommon", label = "scoreTierUncommon", color = "#1eff00" },
 	{ tier = "rare", label = "scoreTierRare", color = "#0070dd" },
 	{ tier = "epic", label = "scoreTierEpic", color = "#a335ee" },

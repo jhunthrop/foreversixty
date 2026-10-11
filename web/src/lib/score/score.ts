@@ -86,6 +86,76 @@ export function tierLabel(tier: string | null | undefined): string | null {
   return isTier(tier) ? labels.tiers[tier].label : null;
 }
 
+/**
+ * The colour for a tier's name written at body size. Rare and epic are too dark to read as
+ * small text on the site's ground (3.9:1), so words use design/DESIGN-SYSTEM.md's lightened
+ * variants (tokens.css `--color-rarity-rare-text` / `-epic-text`); the big number, bars,
+ * borders and the tier strip keep the exact quality colour from tierColor.
+ */
+const TIER_TEXT: Readonly<Partial<Record<Tier, string>>> = { rare: '#3d94f0', epic: '#b866f5' };
+
+export function tierTextColor(tier: string | null | undefined): string | null {
+  return isTier(tier) ? (TIER_TEXT[tier] ?? labels.tiers[tier].color) : null;
+}
+
+/** The most a score can be: the five ceilings added up. */
+export const SCORE_MAX = Object.values(COMPONENT_MAX).reduce((sum, max) => sum + max, 0);
+
+const COMPONENT_KEYS = Object.keys(COMPONENT_MAX) as ScoreComponentKey[];
+
+/**
+ * The part with the most points left to earn: the largest gap between a component and its
+ * ceiling (ties go to the earlier part, in the addon's order). Null when every part is full
+ * or there are no parts.
+ */
+export function mostToGain(
+  components: ScoreComponents | null | undefined,
+): { key: ScoreComponentKey; gap: number } | null {
+  if (components == null) return null;
+  let best: { key: ScoreComponentKey; gap: number } | null = null;
+  for (const key of COMPONENT_KEYS) {
+    const points = components[key];
+    if (typeof points !== 'number') continue;
+    const gap = COMPONENT_MAX[key] - points;
+    if (gap > 0 && (best === null || gap > best.gap)) best = { key, gap };
+  }
+  return best;
+}
+
+/** The part with the smallest share of its own ceiling, the one drawn in the tier colour so
+ *  the weak part reads at a glance. Null with no parts. */
+export function weakestPart(components: ScoreComponents | null | undefined): ScoreComponentKey | null {
+  if (components == null) return null;
+  let weakest: { key: ScoreComponentKey; share: number } | null = null;
+  for (const key of COMPONENT_KEYS) {
+    const points = components[key];
+    if (typeof points !== 'number') continue;
+    const share = points / COMPONENT_MAX[key];
+    if (weakest === null || share < weakest.share) weakest = { key, share };
+  }
+  return weakest?.key ?? null;
+}
+
+/** The five tiers as the strip draws them: label, exact colour, name colour, short range. */
+export function tierStrip(): {
+  tier: Tier;
+  label: string;
+  color: string;
+  textColor: string;
+  range: string;
+}[] {
+  return TIERS.map((tier, index) => {
+    const next = TIERS[index + 1];
+    return {
+      tier,
+      label: labels.tiers[tier].label,
+      color: labels.tiers[tier].color,
+      textColor: TIER_TEXT[tier] ?? labels.tiers[tier].color,
+      range: scoreCopy.tierShort(TIER_FROM[tier], next === undefined ? null : TIER_FROM[next] - 1),
+    };
+  });
+}
+
 /** The score fields off a character page; a page that predates them reads as no score. */
 export function foreverOf(page: Partial<ForeverScore> | null | undefined): ForeverScore {
   return {
@@ -132,13 +202,23 @@ export function lastAddonExportAt(
   characters: readonly MeCharacter[] | null | undefined,
   path: CharacterPath,
 ): string | null {
-  const own = (characters ?? []).find(
-    (character) =>
-      character.region === path.region &&
-      character.ruleset === path.ruleset &&
-      characterSlug(character.name) === decodeSlug(path.slug),
-  );
+  const own = ownCharacter(characters, path);
   return own?.build?.source === 'addon' ? own.build.captured_at : null;
+}
+
+/** The signed-in viewer's own row for the character at `path`, if it is theirs. */
+export function ownCharacter(
+  characters: readonly MeCharacter[] | null | undefined,
+  path: CharacterPath,
+): MeCharacter | null {
+  return (
+    (characters ?? []).find(
+      (character) =>
+        character.region === path.region &&
+        character.ruleset === path.ruleset &&
+        characterSlug(character.name) === decodeSlug(path.slug),
+    ) ?? null
+  );
 }
 
 function decodeSlug(slug: string): string {

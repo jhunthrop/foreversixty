@@ -217,6 +217,9 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
             </div>
           </div>
         </div>
+        <!-- Task L8.2 (fix round 1 item 2): look a character up by name, signed in or out --
+             below the hero row and above the dates strip, in the design system's Search form. -->
+        <CharacterSearch />
       </div>
     </SkyBand>
 
@@ -233,9 +236,6 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
       <div class="md:-mb-4" data-testid="home-timeline-wrap">
         <HomeTimeline dates={dates} updated={updated} />
       </div>
-
-      <!-- Task L8.2 ruling 7: look a character up by name, signed in or out. -->
-      <CharacterSearch />
 
       <!-- §3.A.4 "Best in slot by class" (signed out only) / §3.B.3 "Your upgrades"
            (signed in only) share this position. Toggled by the pre-paint session hint

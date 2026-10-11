@@ -1,5 +1,5 @@
 // web/src/lib/score/copy.ts
-// Every visible string the Forever Score surfaces use: the character page's score block and
+// Every visible string the Forever Score surfaces use: the character page's score card and
 // "In game" section, and the /ratings explainer. Reference voice (design/DESIGN-SYSTEM.md):
 // what the number is and what moves it, never a pitch.
 //
@@ -10,24 +10,35 @@ import labels from '../../../../docs/contracts/fixtures/score-labels.json';
 import type { ScoreComponentKey } from './score';
 
 /** What moves each component, in plain words (api/openapi.yaml's `ForeverScore` descriptions,
- *  rewritten for a player: "how your parses rank", never "percentile"). */
+ *  rewritten for a player: how your fights rank, never "percentile"). */
 const MOVES: Readonly<Record<string, string>> = {
   gear: 'How close the gear you wear is to your spec’s best-in-slot set at level 60. Every upgrade for your spec moves it up.',
   experience:
     '25 for each different dungeon cleared and 40 for each different raid boss killed, across your main and the alts the site has linked to it.',
   parses:
-    'How your parses rank: your best parse on each boss against the same spec, averaged over the bosses you have killed.',
+    'How your best damage or healing on each boss ranks against others of your spec, averaged over the bosses you have killed.',
   attendance: 'How many of your guild’s raid nights in the last 90 days you were in the log for.',
   discipline:
     'How many of your logged fights you went into with a flask, food, and enchants on chest, feet, back and main hand.',
 };
 
+function plural(count: number, one: string, many: string): string {
+  return `${count} ${count === 1 ? one : many}`;
+}
+
 export const scoreCopy = {
   heading: 'Forever Score',
   /** "Forever Score 1830", the addon's score line. */
   line: (score: number): string => labels.line.replace('%d', String(score)),
+  /** The addon's score line split around its number, so the number alone takes the tier colour. */
+  lineParts: (): { before: string; after: string } => {
+    const [before = '', after = ''] = labels.line.split('%d');
+    return { before, after };
+  },
   /** "as of 4 Nov". */
   asOf: (date: string): string => labels.asOf.replace('%s', date),
+  /** The addon's tooltip separator (Locale.lua's exportTreeSeparator). */
+  separator: ' · ',
   /** Where the number would be, for a character with no logs on the site. */
   noLogs: labels.noLogs,
   /** The five parts, in the order the addon's tooltip lists them. */
@@ -38,22 +49,55 @@ export const scoreCopy = {
   })),
   /** "412 of 500" beside a component's bar. */
   ofMax: (points: number, max: number): string => `${points} of ${max}`,
+  /** "of 2100" beside the badge. */
+  outOf: (max: number): string => `of ${max}`,
+  /** "Your whole record, as of 4 Nov." under the card's heading. */
+  caption: (date: string | null): string =>
+    date === null ? 'Your whole record.' : `Your whole record, as of ${date}.`,
+  /** "Most to gain: Gear, 88 below its top." -- the label is a link, so the words are split. */
+  mostToGainLead: 'Most to gain:',
+  mostToGainRest: (gap: number): string => `, ${gap} below its top.`,
+  /** "14 dungeons · 0 raid bosses · 2 alts" under the Experience bar. */
+  experienceBreakdown: (dungeons: number, raidBosses: number, alts: number): string =>
+    [
+      plural(dungeons, 'dungeon', 'dungeons'),
+      plural(raidBosses, 'raid boss', 'raid bosses'),
+      plural(alts, 'alt', 'alts'),
+    ].join(' · '),
   explainLink: 'What the score counts',
   explainHref: '/ratings#forever-score',
+  tierStripLabel: 'Forever Score tiers',
+  /** Read aloud beside the current tier in the strip. */
+  currentTier: 'this character’s tier',
+
+  /** The no-logs card. */
+  noLogsTitle: 'No logs yet',
+  noLogsCheckLead: 'Check the name and ruleset, or',
+  noLogsCheckLink: 'add a log of this character',
+  noLogsCheckHref: '/logs#upload',
 
   inGameHeading: 'In game',
-  inGameScoreLead: 'The addon shows the same score on this character’s tooltip in game:',
-  inGameNoScore: 'The addon shows no score on this character’s tooltip until the site has a log of it.',
-  inGamePlannerLead: 'To put this character into the planner: in game, /fs, Copy my character, then',
+  inGameShownOn: 'Shown on this character’s tooltip when you have the Forever Sixty addon.',
+  inGameSetupLink: 'Get set up',
+  inGameSetupHref: '/setup',
+  inGamePlannerLead: 'In game, type /fs, press Copy my character, then',
   inGamePasteLink: 'paste it here',
   inGamePasteHref: '/setup#paste',
   /** "Last seen in game 4 Nov 14:03": when the site last saw the owner's addon export. */
   lastSeen: (when: string): string => `Last seen in game ${when}`,
 
+  explainerPageTitle: 'Forever Score and ratings',
+  explainerJumpLabel: 'On this page',
   explainerHeading: 'Forever Score',
+  explainerRatingHeading: 'Performance Rating',
+  explainerScoreCaption: 'Forever Score: your whole record, 0 to 2100.',
+  explainerRatingCaption: 'Performance Rating: one fight, 0 to 100.',
+  explainerLead: 'Use it to see how your character compares and which part to work on.',
   explainerWhat:
     'The Forever Score is one number for a character, from 0 to 2100, made of five parts that add up to it. It comes only from the logs the site has: fights in public reports, and the gear those logs show. The addon shows the same number on the character’s tooltip in game, dated with the day of the newest fight it counts. A character with no logs here has no score, not a score of zero.',
+  explainerLaunch: 'Parses, attendance and raid bosses count once raids open.',
   explainerExample: 'How a score reads, here and in the addon’s tooltip:',
+  samplePill: 'Sample',
   explainerPartsHeading: 'What moves each part',
   /** "up to 500" beside a component's label. */
   upTo: (max: number): string => `up to ${max}`,
@@ -63,6 +107,13 @@ export const scoreCopy = {
   tierBelow: (next: number): string => `below ${next}`,
   tierBetween: (from: number, to: number): string => `${from} to ${to}`,
   tierFrom: (from: number): string => `${from} and up`,
+  /** The strip's short range: "0–499", ..., "2000+". */
+  tierShort: (from: number, to: number | null): string => (to === null ? `${from}+` : `${from}–${to}`),
   tiersNote:
-    'The tiers take the colours of item quality in game, as the addon colours the score. Their lines are set from the scores players have and may move.',
+    'The tiers take the colours of item quality in game. The ranges may change as more players are logged.',
+  explainerLogsHeading: 'How to get your logs here',
+  explainerLogsBody:
+    'The companion uploads your fights automatically. The companion is a small desktop app that runs beside the game and sends the site your combat log and what the addon saved; set it up on the',
+  explainerLogsLink: 'setup page',
+  explainerLogsHref: '/setup',
 } as const;

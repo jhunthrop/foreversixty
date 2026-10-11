@@ -17,12 +17,13 @@
   import { formatAmount, percentileToken, rowLink } from '../lib/report/format';
   import { encounterSlug, fetchCharacter, RankingsError, type CharacterPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
-  import { foreverOf, lastAddonExportAt } from '../lib/score/score';
+  import { bisHref, newestSpec, specClassLabel } from '../lib/character-profile';
+  import { readCurrent } from '../lib/current-character';
+  import { foreverOf, lastAddonExportAt, ownCharacter } from '../lib/score/score';
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterInGame from './CharacterInGame.svelte';
   import CharacterRatingPanel from './CharacterRatingPanel.svelte';
-  import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
@@ -91,18 +92,30 @@
       });
   });
 
-  /** When the site last saw this character's addon export -- only for the signed-in viewer
-   *  who owns it, off the same cached /v1/me every island on the page shares. */
+  /** The name a 404 page shows: the address's own slug, readable. */
+  const unloggedName = $derived(resolved === null ? '' : nameFromSlug(decodeURIComponent(resolved.slug)));
+
+  /** When the site last saw this character's addon export, and whether it is the viewer's
+   *  own (signed in and theirs, or their active character from the header selector) -- off
+   *  the same cached /v1/me every island on the page shares. */
   let lastSeenAt = $state<string | null>(null);
+  let owned = $state(false);
 
   $effect(() => {
     const requested = resolved;
     lastSeenAt = null;
+    owned = false;
     if (requested === null) return;
+    const current = readCurrent();
+    const active =
+      current?.source === 'armory' &&
+      current.ref === characterKey(requested.region, requested.ruleset, requested.slug);
+    owned = active;
     void fetchMeOnce()
       .then((me) => {
         if (resolved !== requested) return;
         lastSeenAt = lastAddonExportAt(me?.characters, requested);
+        owned = active || ownCharacter(me?.characters, requested) !== null;
       })
       .catch(() => {
         lastSeenAt = null;
@@ -122,17 +135,31 @@
   <LoadError message={error} onRetry={() => (attempt += 1)} testid="character-error" />
 {:else if status === 'unlogged' && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character-unlogged" id="character">
+    <!-- The same identity block as a logged character's, with the neutral crest (no class on
+         file), so the two states read as one page. -->
     <header class="flex flex-col gap-1">
-      <h1 class="font-display text-[18px] font-bold" data-testid="character-name">
-        {nameFromSlug(decodeURIComponent(resolved.slug))}
-      </h1>
-      <p class="text-muted text-[13px]">
-        {rulesetLabel(resolved.ruleset)}
-        {resolved.region.toUpperCase()}
-      </p>
+      <CharacterIdentity
+        character={{
+          key: characterKey(resolved.region, resolved.ruleset, resolved.slug),
+          region: resolved.region,
+          ruleset: resolved.ruleset,
+          name: unloggedName,
+        }}
+        size="lg"
+        descriptor="none"
+        heading
+        nameTestid="character-name"
+      >
+        {#snippet below()}
+          <p class="text-muted text-[13px]">
+            {rulesetLabel(resolved.ruleset)}
+            {resolved.region.toUpperCase()}
+          </p>
+        {/snippet}
+      </CharacterIdentity>
     </header>
     <CharacterRatingPanel path={resolved} forever={null} />
-    <CharacterInGame forever={null} {lastSeenAt} />
+    <CharacterInGame forever={null} name={unloggedName} {owned} {lastSeenAt} />
   </div>
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
@@ -153,7 +180,7 @@
             <p class="text-muted text-[13px]">
               {rulesetLabel(resolved.ruleset)}
               {resolved.region.toUpperCase()}
-              {#if data.character.class}· {data.character.class}{/if}
+              {#if data.character.class}· {specClassLabel(data.character.class, newestSpec(data))}{/if}
               · <span class="tabular font-mono">{data.history.length}</span> ranked fights
             </p>
           {/snippet}
@@ -171,15 +198,25 @@
       {/if}
     </header>
 
-    <CharacterRatingPanel path={resolved} forever={foreverOf(data)} />
+    <CharacterRatingPanel
+      path={resolved}
+      forever={foreverOf(data)}
+      bisHref={bisHref(data.character.class, newestSpec(data))}
+    />
 
-    <CharacterInGame forever={foreverOf(data)} {lastSeenAt} />
+    <CharacterInGame
+      forever={foreverOf(data)}
+      name={data.character.name}
+      className={data.character.class}
+      {owned}
+      {lastSeenAt}
+    />
 
-    <section class="flex flex-col gap-2">
-      <h2 class="section-title text-[18px]">Best per encounter</h2>
-      {#if data.best.length === 0}
-        <EmptyState message="Nothing ranked yet." testid="character-empty" />
-      {:else}
+    <!-- Fix round 1 item 4: a section with no rows is absent (spec principle 2), not an empty
+         "Nothing ranked yet." under its own heading. -->
+    {#if data.best.length > 0}
+      <section class="flex flex-col gap-2">
+        <h2 class="section-title text-[18px]">Best per encounter</h2>
         <ul class="flex flex-col" data-testid="character-best">
           {#each data.best as row (`${row.encounter_id}-${row.difficulty}-${row.metric}`)}
             <li
@@ -223,55 +260,57 @@
             </li>
           {/each}
         </ul>
-      {/if}
-    </section>
+      </section>
+    {/if}
 
-    <section class="flex flex-col gap-2">
-      <h2 class="section-title text-[18px]">Every ranked fight</h2>
-      <ul class="flex flex-col" data-testid="character-history">
-        {#each data.history as row, index (`${row.report_id}-${row.fight_index}-${index}`)}
-          <li
-            class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[96px_minmax(0,1fr)_88px_72px_88px_72px]"
-          >
-            <span class="text-muted tabular hidden font-mono text-[13px] md:inline"
-              >{row.fought_at.slice(0, 10)}</span
+    {#if data.history.length > 0}
+      <section class="flex flex-col gap-2">
+        <h2 class="section-title text-[18px]">Every ranked fight</h2>
+        <ul class="flex flex-col" data-testid="character-history">
+          {#each data.history as row, index (`${row.report_id}-${row.fight_index}-${index}`)}
+            <li
+              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[96px_minmax(0,1fr)_88px_72px_88px_72px]"
             >
-            <a class="{rowLink} truncate" href={`/reports/${row.report_id}?fight=${row.fight_index}`}
-              >{row.encounter}</a
-            >
-            <span class="text-muted hidden text-[13px] md:inline">{row.spec ?? ''}</span>
-            <span
-              class="tabular text-right font-mono text-[13px]"
-              style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
-              aria-label={percentileAriaLabel(row.percentile)}
-            >
-              {row.percentile === undefined ? '' : Math.round(row.percentile)}
-            </span>
-            <span
-              class="tabular text-right font-mono"
-              aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
-            >
-              {formatAmount(Math.round(row.value))}
-            </span>
-            {#if row.execution_score === null}
+              <span class="text-muted tabular hidden font-mono text-[13px] md:inline"
+                >{row.fought_at.slice(0, 10)}</span
+              >
+              <a class="{rowLink} truncate" href={`/reports/${row.report_id}?fight=${row.fight_index}`}
+                >{row.encounter}</a
+              >
+              <span class="text-muted hidden text-[13px] md:inline">{row.spec ?? ''}</span>
               <span
-                class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
-                title={executionTitle(null)}
-                aria-label={executionTitle(null)}
-                data-testid="character-execution">{executionLabel(null)}</span
+                class="tabular text-right font-mono text-[13px]"
+                style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
+                aria-label={percentileAriaLabel(row.percentile)}
               >
-            {:else}
-              <a
-                class="{rowLink} tabular hidden text-right font-mono text-[13px] md:inline"
-                href={executionHref(row.report_id, row.fight_index)}
-                title={executionTitle(row.execution_score)}
-                data-testid="character-execution">{executionLabel(row.execution_score)}</a
+                {row.percentile === undefined ? '' : Math.round(row.percentile)}
+              </span>
+              <span
+                class="tabular text-right font-mono"
+                aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
               >
-            {/if}
-          </li>
-        {/each}
-      </ul>
-    </section>
+                {formatAmount(Math.round(row.value))}
+              </span>
+              {#if row.execution_score === null}
+                <span
+                  class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
+                  title={executionTitle(null)}
+                  aria-label={executionTitle(null)}
+                  data-testid="character-execution">{executionLabel(null)}</span
+                >
+              {:else}
+                <a
+                  class="{rowLink} tabular hidden text-right font-mono text-[13px] md:inline"
+                  href={executionHref(row.report_id, row.fight_index)}
+                  title={executionTitle(row.execution_score)}
+                  data-testid="character-execution">{executionLabel(row.execution_score)}</a
+                >
+              {/if}
+            </li>
+          {/each}
+        </ul>
+      </section>
+    {/if}
 
     {#if data.builds_seen.length > 0}
       <section class="flex flex-col gap-2">

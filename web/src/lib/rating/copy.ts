@@ -12,6 +12,8 @@ export const ratingCopy = {
   headingFor: (playerName: string): string => `${playerName}’s rating`,
   explainLink: 'How is this calculated?',
   panelHeading: 'Performance rating',
+  /** Under the profile's heading: the rating reads recent fights, the Forever Score the whole record. */
+  panelCaption: 'Your latest logged fights.',
   panelMore: 'Rating tab',
   panelEmpty: 'No ratings for this fight yet.',
   /** Under half the role's weight was measurable, so there is no overall. */

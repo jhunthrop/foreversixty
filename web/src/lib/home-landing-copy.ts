@@ -133,12 +133,17 @@ export const homeGetSetUpCopy = {
  *  writes it, opens that character's profile (lib/character-search.ts). */
 export const homeCharacterSearchCopy = {
   heading: 'Look up a character',
+  /** The one muted line beside the heading. */
+  aside: 'See any character’s Forever Score.',
   nameLabel: 'Character name',
   namePlaceholder: 'Elyra Duskvale',
-  hint: 'Add the realm as the game writes it, Elyra Duskvale-Hardcore, to pick its ruleset.',
+  hint: 'Type the name, then pick the region and ruleset.',
   regionLabel: 'Region',
   rulesetLabel: 'Ruleset',
   submit: 'Look up',
   empty: 'Type a character’s name.',
   invalid: 'No character can have that name.',
+  /** The keyboard hint inside the box (design system: Search), and what it says aloud. */
+  slashKey: '/',
+  slashHint: 'Press / to search',
 } as const;

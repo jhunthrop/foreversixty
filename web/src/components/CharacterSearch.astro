@@ -1,66 +1,130 @@
 ---
 // web/src/components/CharacterSearch.astro
-// The home page's character search box (Task L8.2 ruling 7): a name, or Name-Realm as the
-// game writes it, plus the region and ruleset beside it (US and Normal to start, the site's
-// own defaults), opens /character/<region>/<ruleset>/<name>. The path is built by
-// lib/character-search.ts through characters.ts's characterHref, the one place the site turns
-// a character into an address. A plain form with a few lines of script, not a Svelte island:
-// the home page's paint budget pays for nothing it does not need.
+// The home page's character search (Task L8.2 ruling 7; fix round 1 item 2). Below the hero
+// row, above the dates strip, in the design system's Search form: 56px, warm border, gold
+// icon, a "/" key hint (pressing / focuses it). The name, then the region and ruleset (US and
+// Normal to start, the site's own defaults), opens /character/<region>/<ruleset>/<name>; the
+// path is built by lib/character-search.ts through characters.ts's characterHref. On a phone
+// the name takes the full width, region and ruleset share a row, and Look up spans the width.
+// A plain form with a few lines of script, not a Svelte island: the home page's paint budget
+// pays for nothing it does not need.
 import { DEFAULT_REGION, DEFAULT_RULESET } from '../lib/character-search';
 import { REGIONS, RULESETS } from '../lib/characters';
 import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
-import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
 
-const FIELD = 'border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]';
+const FIELD = 'border-line-warm-strong bg-raised rounded-control text-text w-full border px-3 text-[15px]';
 ---
 
-<section class="flex flex-col gap-[14px]" data-testid="home-character-search">
-  <h2 class="display text-strong text-[18px] font-bold tracking-[0.10em]">{copy.heading}</h2>
+<section class="flex flex-col gap-3" data-testid="home-character-search">
+  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+    <h2 class="display text-strong text-[18px] font-bold tracking-[0.10em]">{copy.heading}</h2>
+    <p class="text-muted text-[14px]" data-testid="home-character-search-aside">
+      {copy.aside}
+    </p>
+  </div>
   <form
-    class="flex flex-col gap-2"
+    class="grid grid-cols-2 gap-3 md:grid-cols-[minmax(0,1fr)_112px_160px_auto] md:items-end"
     data-character-search
     data-empty={copy.empty}
     data-invalid={copy.invalid}
     novalidate
   >
-    <label class="label text-muted" for="home-character-search-name">
-      {copy.nameLabel}
-    </label>
-    <div class="flex flex-wrap gap-3">
-      <input
-        id="home-character-search-name"
-        name="name"
-        type="search"
-        autocomplete="off"
-        spellcheck="false"
-        placeholder={copy.namePlaceholder}
-        aria-describedby="home-character-search-hint home-character-search-error"
-        class={`${FIELD} min-w-0 flex-1 basis-[220px]`}
-      />
-      <select name="region" aria-label={copy.regionLabel} class={FIELD}>
+    <div class="col-span-2 flex flex-col gap-2 md:col-span-1">
+      <label class="label text-muted" for="home-character-search-name">
+        {copy.nameLabel}
+      </label>
+      <div class="relative">
+        <svg
+          class="text-gold pointer-events-none absolute top-1/2 left-4 -translate-y-1/2"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5"></path>
+        </svg>
+        <input
+          id="home-character-search-name"
+          name="name"
+          type="search"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder={copy.namePlaceholder}
+          aria-describedby="home-character-search-hint home-character-search-error"
+          aria-keyshortcuts="/"
+          class={`${FIELD} peer placeholder:text-muted h-14 pr-12 pl-12 text-[17px] placeholder:text-[15px]`}
+        />
+        <kbd
+          class="border-line-warm-strong text-muted pointer-events-none absolute top-1/2 right-3 hidden -translate-y-1/2 rounded-[3px] border px-1.5 font-mono text-[12px] md:peer-placeholder-shown:inline-flex"
+          title={copy.slashHint}
+          aria-hidden="true"
+        >
+          {copy.slashKey}
+        </kbd>
+      </div>
+    </div>
+    <div class="flex flex-col gap-2">
+      <label class="label text-muted" for="home-character-search-region">
+        {copy.regionLabel}
+      </label>
+      <select id="home-character-search-region" name="region" class={`${FIELD} h-11 md:h-14`}>
         {REGIONS.map((region) => (
           <option value={region} selected={region === DEFAULT_REGION}>
             {region.toUpperCase()}
           </option>
         ))}
       </select>
-      <select name="ruleset" aria-label={copy.rulesetLabel} class={FIELD}>
+    </div>
+    <div class="flex flex-col gap-2">
+      <label class="label text-muted" for="home-character-search-ruleset">
+        {copy.rulesetLabel}
+      </label>
+      <select id="home-character-search-ruleset" name="ruleset" class={`${FIELD} h-11 md:h-14`}>
         {RULESETS.map((ruleset) => (
           <option value={ruleset.id} selected={ruleset.id === DEFAULT_RULESET}>
             {ruleset.label}
           </option>
         ))}
       </select>
-      <button type="submit" class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}>
-        {copy.submit}
-      </button>
     </div>
-    <p id="home-character-search-hint" class="text-muted text-[13px]">
-      {copy.hint}
-    </p>
-    <p id="home-character-search-error" class="text-strong min-h-[1lh] text-[13px]" role="status"></p>
+    <button
+      type="submit"
+      class={`${PRIMARY_BUTTON_FIXED} col-span-2 w-full justify-center px-6 md:col-span-1 md:h-14 md:w-auto`}
+      data-testid="home-character-search-submit"
+    >
+      {copy.submit}
+    </button>
   </form>
+  <p id="home-character-search-hint" class="text-muted text-[13px]">
+    {copy.hint}
+  </p>
+  <p id="home-character-search-error" class="text-strong min-h-[1lh] text-[13px]" role="status"></p>
 </section>
+
+<style>
+  /* The search box's clear control: the site's muted ink, gold on hover, never the browser's
+     default blue-grey cross. */
+  input[type='search']::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    background-color: var(--color-muted);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+  input[type='search']::-webkit-search-cancel-button:hover {
+    background-color: var(--color-gold-hover);
+  }
+</style>
 
 <script>
   import { characterSearchHref } from '../lib/character-search';
@@ -78,9 +142,24 @@ const FIELD = 'border-line-warm bg-raised rounded-control text-text h-11 border 
         window.location.assign(href);
         return;
       }
-      const error = form.querySelector('[role="status"]');
-      if (error !== null)
+      const error = form.parentElement?.querySelector('[role="status"]');
+      if (error !== null && error !== undefined)
         error.textContent = (name.trim() === '' ? form.dataset.empty : form.dataset.invalid) ?? '';
     });
   }
+
+  // The design system's Search: "/" anywhere outside a text field puts the cursor in the box.
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey) return;
+    const target = event.target;
+    if (
+      target instanceof HTMLElement &&
+      (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
+    )
+      return;
+    const input = document.querySelector<HTMLInputElement>('form[data-character-search] input[name="name"]');
+    if (input === null) return;
+    event.preventDefault();
+    input.focus();
+  });
 </script>

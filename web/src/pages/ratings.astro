@@ -1,21 +1,25 @@
 ---
 // web/src/pages/ratings.astro
 // The public explanation page spec section 6.3 requires: the exact weight table, the
-// formulas in plain language, the percentile-vs-absolute rule, the cap in the
-// coordinator's own words, and that a rating comes only from a public report -- linked
-// from every rating surface ("How is this calculated?"). A content page: no client
-// JavaScript of its own beyond the layout's character selector island.
+// formulas in plain language, the ranked-vs-absolute rule, the cap in the coordinator's own
+// words, and that a rating comes only from a public report -- linked from every rating
+// surface ("How is this calculated?"). A content page: no client JavaScript of its own
+// beyond the layout's character selector island.
 //
-// Task L8.2 ruling 6: the page opens with the Forever Score -- what it is, what moves each of
-// its five parts, the tier lines -- above "How ratings work". The labels are the addon's own,
-// from the shared fixture (lib/score/copy.ts); the example badge is rendered statically, so
-// the page still ships no island of its own.
+// Task L8.2 ruling 6 and fix round 1 item 7: the page covers both numbers, each in its own
+// section behind a two-item jump row. The Forever Score first -- what it is, what moves each
+// of its five parts, the tiers as a strip (a visually hidden table carries the same facts for
+// assistive tech), how logs get here -- then the Performance Rating, its headings one level
+// down. The labels are the addon's own, from the shared fixture (lib/score/copy.ts); the
+// example badge and the strip render statically, so the page still ships no island of its
+// own. The page sits on the site column's own gutter, with prose held to about 70 characters.
 import Base from '../layouts/Base.astro';
 import Panel from '../components/Panel.astro';
 import ScoreBadge from '../components/ScoreBadge.svelte';
+import TierStrip from '../components/TierStrip.svelte';
 import { ratingCopy } from '../lib/rating/copy';
 import { scoreCopy } from '../lib/score/copy';
-import { COMPONENT_MAX, shortDate, tierColor, tierLabel, tierRanges } from '../lib/score/score';
+import { COMPONENT_MAX, shortDate, tierLabel, tierRanges, tierTextColor } from '../lib/score/score';
 
 /** The example the explainer shows: the number, tier and date the profile and tooltip read. */
 const example = { score: 1830, tier: 'epic', asOf: shortDate('2026-11-04') ?? '' };
@@ -28,30 +32,76 @@ const weights = [
   { component: 'Preparation', dps: 10, healer: 10, tank: 10 },
   { component: 'Activity', dps: 5, healer: 10, tank: 5 },
 ];
+
+const JUMP =
+  'text-gold inline-flex min-h-11 items-center text-[14px] underline-offset-2 hover:underline md:min-h-0';
+const MEASURE = 'max-w-[70ch]';
 ---
 
 <Base
-  title="Forever Score and ratings"
-  description="How World of Warcraft: Forever's Forever Score and performance ratings are computed: the score's five parts and tiers, the rating's six components, their weights per role, the percentile-versus-absolute rule, and the cap."
+  title={scoreCopy.explainerPageTitle}
+  description="How World of Warcraft: Forever's Forever Score and performance ratings are computed: the score's five parts and tiers, the rating's six components, their weights per role, the ranked-versus-absolute rule, and the cap."
   path="/ratings"
 >
-  <main id="main" tabindex="-1" class="measure-wide flex flex-col gap-6 px-[18px] py-8 md:gap-8 md:px-0">
-    <section id="forever-score" class="flex flex-col gap-6 md:gap-8" data-testid="ratings-forever-score">
-      <header class="flex flex-col gap-3">
-        <h1 class="section-title text-[18px]">{scoreCopy.explainerHeading}</h1>
-        <p class="max-w-[720px] text-[14px] leading-relaxed">{scoreCopy.explainerWhat}</p>
-        <p class="text-muted flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[13px]">
-          <span>{scoreCopy.explainerExample}</span>
-          <ScoreBadge score={example.score} tier={example.tier} />
-          <span class="text-text text-[14px] font-semibold">{tierLabel(example.tier)}</span>
-          <span>{scoreCopy.asOf(example.asOf)}</span>
+  <main id="main" tabindex="-1" class="flex flex-col gap-8 px-[18px] py-8 md:gap-10 md:px-0">
+    <header class="flex flex-col gap-2">
+      <h1 class="section-title text-[18px]">{scoreCopy.explainerPageTitle}</h1>
+      <nav aria-label={scoreCopy.explainerJumpLabel} data-testid="ratings-jump">
+        <ul class="flex flex-wrap items-center gap-x-3">
+          <li>
+            <a class={JUMP} href="#forever-score">
+              {scoreCopy.explainerHeading}
+            </a>
+          </li>
+          <li class="text-muted" aria-hidden="true">
+            ·
+          </li>
+          <li>
+            <a class={JUMP} href="#performance-rating">
+              {scoreCopy.explainerRatingHeading}
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <section
+      id="forever-score"
+      class="flex scroll-mt-6 flex-col gap-6 md:gap-8"
+      data-testid="ratings-forever-score"
+    >
+      <header class={`flex flex-col gap-3 ${MEASURE}`}>
+        <h2 class="section-title text-[18px]">{scoreCopy.explainerHeading}</h2>
+        <p class="text-muted text-[13px]" data-testid="ratings-forever-caption">
+          {scoreCopy.explainerScoreCaption}
         </p>
+        <p class="text-[15px] leading-relaxed" data-testid="ratings-forever-lead">
+          {scoreCopy.explainerLead}
+        </p>
+        <p class="text-[14px] leading-relaxed">{scoreCopy.explainerWhat}</p>
+        <p class="text-[14px] leading-relaxed" data-testid="ratings-forever-launch">
+          {scoreCopy.explainerLaunch}
+        </p>
+        <div
+          class="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3"
+          data-testid="ratings-forever-example"
+        >
+          <span class="pill pill-sample">{scoreCopy.samplePill}</span>
+          <span class="text-muted text-[13px]">{scoreCopy.explainerExample}</span>
+          <span class="flex items-baseline gap-2">
+            <ScoreBadge score={example.score} tier={example.tier} />
+            <span class="text-[14px] font-semibold" style={`color: ${tierTextColor(example.tier)}`}>
+              {tierLabel(example.tier)}
+            </span>
+            <span class="text-muted text-[13px]">{scoreCopy.asOf(example.asOf)}</span>
+          </span>
+        </div>
       </header>
 
-      <Panel title={scoreCopy.explainerPartsHeading}>
-        <ul class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed">
+      <Panel title={scoreCopy.explainerPartsHeading} level={3}>
+        <ul class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed md:p-4">
           {scoreCopy.components.map((component) => (
-            <li data-testid={`ratings-forever-score-${component.key}`}>
+            <li class={MEASURE} data-testid={`ratings-forever-score-${component.key}`}>
               <strong>{component.label}</strong>
               <span class="text-muted tabular ml-2 font-mono text-[13px]">
                 {scoreCopy.upTo(COMPONENT_MAX[component.key])}
@@ -62,177 +112,195 @@ const weights = [
         </ul>
       </Panel>
 
-      <Panel title={scoreCopy.explainerTiersHeading}>
-        <div class="overflow-x-auto p-3">
-          <table class="w-full max-w-[420px] border-collapse text-[13px]" data-testid="ratings-forever-tiers">
+      <Panel title={scoreCopy.explainerTiersHeading} level={3}>
+        <div class="flex flex-col gap-3 p-3 md:p-4">
+          <div class="max-w-[520px]">
+            <TierStrip />
+          </div>
+          <table class="sr-only" data-testid="ratings-forever-tiers">
             <thead>
               <tr>
-                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-left">
-                  {scoreCopy.tierColumn}
-                </th>
-                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-right">
-                  {scoreCopy.rangeColumn}
-                </th>
+                <th scope="col">{scoreCopy.tierColumn}</th>
+                <th scope="col">{scoreCopy.rangeColumn}</th>
               </tr>
             </thead>
             <tbody>
               {tierRanges().map(({ tier, range }) => (
                 <tr>
-                  <th
-                    scope="row"
-                    class="border-line-soft border-b px-2 py-2 text-left text-[19px] font-bold"
-                    style={`color: ${tierColor(tier)}`}
-                  >
-                    {tierLabel(tier)}
+                  <th scope="row">{tierLabel(tier)}</th>
+                  <td>{range}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class={`text-muted text-[13px] ${MEASURE}`} data-testid="ratings-forever-tiers-note">
+            {scoreCopy.tiersNote}
+          </p>
+        </div>
+      </Panel>
+
+      <Panel title={scoreCopy.explainerLogsHeading} level={3}>
+        <p class={`p-3 text-[14px] leading-relaxed md:p-4 ${MEASURE}`} data-testid="ratings-forever-logs">
+          {scoreCopy.explainerLogsBody}{' '}
+          <a class="text-gold underline underline-offset-2" href={scoreCopy.explainerLogsHref}>
+            {scoreCopy.explainerLogsLink}
+          </a>
+          .
+        </p>
+      </Panel>
+    </section>
+
+    <section
+      id="performance-rating"
+      class="flex scroll-mt-6 flex-col gap-6 md:gap-8"
+      data-testid="ratings-performance-rating"
+    >
+      <header class={`flex flex-col gap-2 ${MEASURE}`}>
+        <h2 class="section-title text-[18px]">{scoreCopy.explainerRatingHeading}</h2>
+        <p class="text-muted text-[13px]" data-testid="ratings-rating-caption">
+          {scoreCopy.explainerRatingCaption}
+        </p>
+        <h3 class="section-title text-[16px]">How ratings work</h3>
+        <p class="text-muted text-[14px] leading-relaxed" data-testid="ratings-visibility">
+          A rating comes only from a public report, the same way a Warcraft Logs parse does. There is no
+          cross-guild leaderboard of ratings — a rating is one fight's roster, or one character's own history,
+          never a ranked list of players against each other site-wide.
+        </p>
+      </header>
+
+      <Panel title="One number first, then six parts" level={3}>
+        <div class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed">
+          <p>
+            Every rating starts with one overall number, 0 to 100. That number is a weighted average of six
+            components — Output, Survival, Mechanics, Utility, Preparation, Activity — each also scored 0 to
+            100. A parse is not a performance: someone who tops the meter while dying to avoidable damage and
+            skipping consumables does not rate well here, because Output is a fraction of the score, not the
+            whole of it.
+          </p>
+          <p>
+            A component the engine cannot score for a given fight — no curated table for this encounter, the
+            simulator does not model this spec yet, too few logs to compare against — is left out and said so
+            in plain words, never silently zeroed and never faked. Its weight is redistributed across the
+            components that did score.
+          </p>
+        </div>
+      </Panel>
+
+      <Panel title="What each component measures" level={3}>
+        <div class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed" data-testid="ratings-components">
+          <p>
+            <strong>Output.</strong> Damage or healing done. For a DPS spec the simulator already models,
+            Output is judged against how well the fight could have gone with your gear — rotation, GCD usage,
+            cooldown timing — not just the raw number on the meter. A healer's Output counts effective healing
+            only; overheal never adds to it. A tank still deals damage, but Output carries little weight for
+            that role, since holding threat and staying alive are the job.
+          </p>
+          <p>
+            <strong>Survival.</strong> Whether you died — an avoidable death early in a fight costs far more
+            than one near the very end — blended with how much avoidable damage you took without dying. Tanks
+            are judged on avoidable damage alone: taking damage on purpose is the job, so a fight's expected
+            hits never count against them.
+          </p>
+          <p>
+            <strong>Mechanics.</strong> Three things, averaged: the interrupts you made, valued by how much
+            damage the interrupted cast would have done; the dispels you made, valued by the healing or damage
+            they denied the enemy; and how long you personally carried a debuff that should have been
+            dispelled, where less time carrying it scores better. That last part is scored on the person
+            carrying the debuff, not on whoever should have cleansed it.
+          </p>
+          <p>
+            <strong>Utility.</strong> The average uptime across every buff, debuff, and cooldown your class
+            and spec are expected to keep running for the raid — not the single worst one. One dropped buff
+            does not sink the whole score the way judging by your worst upkeep would; this rewards broad
+            coverage instead. (Threat is not scored yet — not modeled yet, not silently left out.)
+          </p>
+          <p>
+            <strong>Preparation.</strong> Showing up ready: the right flask, food, weapon oil or stone, and
+            world buffs at the pull, plus using your class's potions during the fight — each weighed by how
+            much it matters for your role.
+          </p>
+          <p>
+            <strong>Activity.</strong> The share of the fight you spent actively doing something rather than
+            idle, after fairly excluding any period the fight itself expects you to do nothing — a scripted
+            phase transition, for instance — so it is not just raw uptime.
+          </p>
+        </div>
+      </Panel>
+
+      <Panel title="Weights, by role" level={3}>
+        <div class="overflow-x-auto p-3">
+          <table class="w-full min-w-[420px] border-collapse text-[13px]" data-testid="ratings-weights">
+            <thead>
+              <tr>
+                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-left">
+                  Component
+                </th>
+                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-right">
+                  DPS
+                </th>
+                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-right">
+                  Healer
+                </th>
+                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-right">
+                  Tank
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {weights.map((row) => (
+                <tr>
+                  <th scope="row" class="border-line-soft border-b px-2 py-2 text-left font-semibold">
+                    {row.component}
                   </th>
-                  <td class="tabular border-line-soft border-b px-2 py-2 text-right font-mono">{range}</td>
+                  <td class="tabular border-line-soft border-b px-2 py-2 text-right font-mono">{row.dps}</td>
+                  <td class="tabular border-line-soft border-b px-2 py-2 text-right font-mono">
+                    {row.healer}
+                  </td>
+                  <td class="tabular border-line-soft border-b px-2 py-2 text-right font-mono">{row.tank}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <p class="text-muted p-3 pt-0 text-[13px]">{scoreCopy.tiersNote}</p>
+        <p class="text-muted p-3 pt-0 text-[13px]" data-testid="ratings-roles">
+          Neither of the two non-DPS roles uses the DPS weights above: tanks and healers are each rated by
+          their own column in that table, since a tank's Output is worth little (10 of 100) and its Survival a
+          lot (35), because taking damage on purpose is the job. A healer's Output is measured on effective
+          healing, never raw — overheal does not count toward it.
+        </p>
+        <p class="text-muted p-3 pt-0 text-[13px]" data-testid="ratings-adjustable">
+          The weight table above, and the cap below, are both settings a guild's officers can change — this
+          page always describes the site-wide defaults.
+        </p>
+      </Panel>
+
+      <Panel title="Ranked against your spec, or absolute" level={3}>
+        <div class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed" data-testid="ratings-basis">
+          <p>
+            When at least 20 kills of the same encounter, difficulty, spec, role and roughly the same kill
+            speed exist, a component is ranked against players of your spec in those other logs — "better than
+            71% of Fury Warriors on this fight." Below that, there are not enough logs yet to compare players
+            fairly, so the score is measured against the encounter's own numbers instead and says so plainly,
+            rather than presenting a ranking built on noise.
+          </p>
+          <p data-testid="ratings-small-samples">
+            A brand-new boss, or a kill speed nobody has repeated yet, starts on the absolute standard and
+            moves to being ranked against players of your spec once its own speed band (fast, typical, or
+            slow, judged against the encounter's own kill times, not a fixed expectation) reaches 20
+            comparable logs.
+          </p>
+          <p data-testid="ratings-wipes">
+            A wipe scores differently than a kill: Survival and Mechanics are still computed — a wipe is
+            exactly where avoidable deaths and missed interrupts matter most — but Output, Utility,
+            Preparation and Activity are not, since a wipe's damage window is cut short and is not a fair
+            comparison to a full kill's.
+          </p>
+        </div>
+      </Panel>
+
+      <Panel title="The cap" level={3}>
+        <p class="p-3 text-[14px] leading-relaxed">{ratingCopy.cappedRule}</p>
       </Panel>
     </section>
-
-    <header class="flex flex-col gap-2">
-      <h2 class="section-title text-[18px]">How ratings work</h2>
-      <p class="text-muted max-w-[720px] text-[14px] leading-relaxed" data-testid="ratings-visibility">
-        A rating comes only from a public report, the same way a Warcraft Logs parse does. There is no
-        cross-guild leaderboard of ratings — a rating is one fight's roster, or one character's own history,
-        never a ranked list of players against each other site-wide.
-      </p>
-    </header>
-
-    <Panel title="One number first, then six parts">
-      <div class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed">
-        <p>
-          Every rating starts with one overall number, 0 to 100. That number is a weighted average of six
-          components — Output, Survival, Mechanics, Utility, Preparation, Activity — each also scored 0 to
-          100. A parse is not a performance: someone who tops the meter while dying to avoidable damage and
-          skipping consumables does not rate well here, because Output is a fraction of the score, not the
-          whole of it.
-        </p>
-        <p>
-          A component the engine cannot score for a given fight — no curated table for this encounter, the
-          simulator does not model this spec yet, too few logs to compare against — is left out and said so in
-          plain words, never silently zeroed and never faked. Its weight is redistributed across the
-          components that did score.
-        </p>
-      </div>
-    </Panel>
-
-    <Panel title="What each component measures">
-      <div class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed" data-testid="ratings-components">
-        <p>
-          <strong>Output.</strong> Damage or healing done. For a DPS spec the simulator already models, Output
-          is judged against how well the fight could have gone with your gear — rotation, GCD usage, cooldown
-          timing — not just the raw number on the meter. A healer's Output counts effective healing only;
-          overheal never adds to it. A tank still deals damage, but Output carries little weight for that
-          role, since holding threat and staying alive are the job.
-        </p>
-        <p>
-          <strong>Survival.</strong> Whether you died — an avoidable death early in a fight costs far more
-          than one near the very end — blended with how much avoidable damage you took without dying. Tanks
-          are judged on avoidable damage alone: taking damage on purpose is the job, so a fight's expected
-          hits never count against them.
-        </p>
-        <p>
-          <strong>Mechanics.</strong> Three things, averaged: the interrupts you made, valued by how much
-          damage the interrupted cast would have done; the dispels you made, valued by the healing or damage
-          they denied the enemy; and how long you personally carried a debuff that should have been dispelled,
-          where less time carrying it scores better. That last part is scored on the person carrying the
-          debuff, not on whoever should have cleansed it.
-        </p>
-        <p>
-          <strong>Utility.</strong> The average uptime across every buff, debuff, and cooldown your class and
-          spec are expected to keep running for the raid — not the single worst one. One dropped buff does not
-          sink the whole score the way judging by your worst upkeep would; this rewards broad coverage
-          instead. (Threat is not scored yet — not modeled yet, not silently left out.)
-        </p>
-        <p>
-          <strong>Preparation.</strong> Showing up ready: the right flask, food, weapon oil or stone, and
-          world buffs at the pull, plus using your class's potions during the fight — each weighed by how much
-          it matters for your role.
-        </p>
-        <p>
-          <strong>Activity.</strong> The share of the fight you spent actively doing something rather than
-          idle, after fairly excluding any period the fight itself expects you to do nothing — a scripted
-          phase transition, for instance — so it is not just raw uptime.
-        </p>
-      </div>
-    </Panel>
-
-    <Panel title="Weights, by role">
-      <div class="overflow-x-auto p-3">
-        <table class="w-full min-w-[420px] border-collapse text-[13px]" data-testid="ratings-weights">
-          <thead>
-            <tr>
-              <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-left">
-                Component
-              </th>
-              <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-right">
-                DPS
-              </th>
-              <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-right">
-                Healer
-              </th>
-              <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-right">
-                Tank
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {weights.map((row) => (
-              <tr>
-                <th scope="row" class="border-line-soft border-b px-2 py-2 text-left font-semibold">
-                  {row.component}
-                </th>
-                <td class="tabular border-line-soft border-b px-2 py-2 text-right font-mono">{row.dps}</td>
-                <td class="tabular border-line-soft border-b px-2 py-2 text-right font-mono">{row.healer}</td>
-                <td class="tabular border-line-soft border-b px-2 py-2 text-right font-mono">{row.tank}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <p class="text-muted p-3 pt-0 text-[13px]" data-testid="ratings-roles">
-        Neither of the two non-DPS roles uses the DPS weights above: tanks and healers are each rated by their
-        own column in that table, since a tank's Output is worth little (10 of 100) and its Survival a lot
-        (35), because taking damage on purpose is the job. A healer's Output is measured on effective healing,
-        never raw — overheal does not count toward it.
-      </p>
-      <p class="text-muted p-3 pt-0 text-[13px]" data-testid="ratings-adjustable">
-        The weight table above, and the cap below, are both settings a guild's officers can change — this page
-        always describes the site-wide defaults.
-      </p>
-    </Panel>
-
-    <Panel title="Percentile or absolute">
-      <div class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed" data-testid="ratings-basis">
-        <p>
-          When at least 20 kills of the same encounter, difficulty, spec, role and roughly the same kill speed
-          exist, a component is scored as a percentile against those other logs — "better than 71% of Fury
-          Warriors on this fight." Below that, there are not enough logs yet to compare players fairly, so the
-          score is measured against the encounter's own numbers instead and says so plainly, rather than
-          presenting a percentile built on noise.
-        </p>
-        <p data-testid="ratings-small-samples">
-          A brand-new boss, or a kill speed nobody has repeated yet, starts on the absolute standard and moves
-          to the percentile once its own speed band (fast, typical, or slow, judged against the encounter's
-          own kill times, not a fixed expectation) reaches 20 comparable logs.
-        </p>
-        <p data-testid="ratings-wipes">
-          A wipe scores differently than a kill: Survival and Mechanics are still computed — a wipe is exactly
-          where avoidable deaths and missed interrupts matter most — but Output, Utility, Preparation and
-          Activity are not, since a wipe's damage window is cut short and is not a fair comparison to a full
-          kill's.
-        </p>
-      </div>
-    </Panel>
-
-    <Panel title="The cap">
-      <p class="p-3 text-[14px] leading-relaxed">{ratingCopy.cappedRule}</p>
-    </Panel>
   </main>
 </Base>

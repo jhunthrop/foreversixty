@@ -37,4 +37,15 @@ describe('ScoreBadge', () => {
     expect(body).not.toContain('color:');
     expect(body).not.toContain('title=');
   });
+
+  it('at body size (sm) takes the lightened rare and epic text variants; md and lg keep the exact colour', () => {
+    const sm = render(ScoreBadge, { props: { score: 1830, tier: 'epic', size: 'sm' } }).body;
+    expect(sm).toContain('color: #b866f5');
+    expect(render(ScoreBadge, { props: { score: 1200, tier: 'rare', size: 'sm' } }).body).toContain(
+      'color: #3d94f0',
+    );
+    expect(render(ScoreBadge, { props: { score: 1830, tier: 'epic', size: 'lg' } }).body).toContain(
+      'color: #a335ee',
+    );
+  });
 });
