@@ -180,7 +180,7 @@ def test_bis_lua_carries_the_source_label_when_present():
         },
     )
     lua = render_lua(data)
-    assert 'chest = { 2317, "C", "Leatherworking" },' in lua
+    assert 'chest = "2317|C|Leatherworking",' in lua
 
 
 def test_bis_lua_leaves_the_source_element_out_when_there_is_none():
@@ -202,7 +202,7 @@ def test_bis_lua_leaves_the_source_element_out_when_there_is_none():
         },
     )
     lua = render_lua(data)
-    assert 'chest = { 2317, "C" },' in lua
+    assert 'chest = "2317|C",' in lua
 
 
 def test_bis_weights_lua_carries_a_measured_bands_weights():

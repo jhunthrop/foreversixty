@@ -79,42 +79,52 @@ def _source_kind_code(source_kind: str) -> str:
     return code
 
 
-def _bis_pick_fields(item) -> str:
-    """One pick's positional fields: `itemId, sourceKindCode, source,
-    chance, { alternative, ... }`, each alternative `{ itemId,
-    sourceKindCode, source }` (contract 1 in docs/contracts/addon-v2.md;
-    fields 1-3 keep their old meaning). The positions are fixed, so a
-    missing middle field is written as `nil` (a pick with alternatives but
-    no chance reads `nil` fourth), and only trailing missing fields are
-    left out: a pick with no chance and no alternatives is the same
-    three-field table it always was, and reads back nil for both."""
+#: The field separator inside a packed BiS pick string (_bis_pick_packed).
+BIS_FIELD_SEPARATOR = "|"
+
+
+def _bis_field(value: str) -> str:
+    if BIS_FIELD_SEPARATOR in value:
+        raise AddonBisError(
+            f"{value!r} contains the BiS field separator {BIS_FIELD_SEPARATOR!r}"
+        )
+    return value
+
+
+def _bis_pick_packed(item) -> str:
+    """One pick as ONE string, `|`-joined in the order
+    `item_id|kind|source|chance|alt1_id|alt1_kind|alt1_source|alt2_id|
+    alt2_kind|alt2_source` (contract 1's "physical encoding" note in
+    docs/contracts/addon-v2.md). A string per pick instead of a table plus
+    a table per alternative is what keeps Data.lua's loaded heap under the
+    addon's 2 MB idle budget; Gear.pick decodes it back into the logical
+    table. `kind` is the single-letter SOURCE_KIND_CODES code, `chance` a
+    plain number, and a missing field is empty, so the positions never
+    shift; trailing empty fields are trimmed (Gear.decodePick reads a
+    missing field as empty)."""
     fields = [
         str(item.item_id),
-        _quote(_source_kind_code(item.source_kind)),
-        _quote(item.source) if item.source else "nil",
-        _number(item.chance) if item.chance is not None else "nil",
+        _source_kind_code(item.source_kind),
+        _bis_field(item.source),
+        _number(item.chance) if item.chance is not None else "",
     ]
-    if item.alternatives:
-        alternatives = ", ".join(
-            f"{{ {_bis_alternative_fields(alternative)} }}" for alternative in item.alternatives
-        )
-        fields.append(f"{{ {alternatives} }}")
-    while fields[-1] == "nil":
+    for alternative in item.alternatives:
+        fields += [
+            str(alternative.item_id),
+            _source_kind_code(alternative.source_kind),
+            _bis_field(alternative.source),
+        ]
+    while fields[-1] == "":
         fields.pop()
-    return ", ".join(fields)
-
-
-def _bis_alternative_fields(alternative) -> str:
-    """`itemId, sourceKindCode[, source]`, the pick's own first three fields."""
-    fields = f"{alternative.item_id}, {_quote(_source_kind_code(alternative.source_kind))}"
-    if alternative.source:
-        fields += f", {_quote(alternative.source)}"
-    return fields
+    return BIS_FIELD_SEPARATOR.join(fields)
 
 
 def _bis_lua(bis: dict) -> list[str]:
-    """`bis[spec][band][faction][slot] = { itemId, sourceKindCode[, source[, chance[, alternatives]]] }`
-    (see _bis_pick_fields for the fourth and fifth fields)
+    """`bis[spec][band][faction][slot] = "itemId|sourceKindCode|source|chance|..."`,
+    one packed string per pick (_bis_pick_packed's own doc). Until task
+    L1.2's fix round 2 a pick was the positional table `{ itemId,
+    sourceKindCode[, source] }`; the size reasoning below was written for
+    that table and holds for the packed string too.
     -- ids only (addonbis.py's own load-bearing decision) and positional
     rather than named fields, and faction/slot as bare Lua identifiers
     rather than quoted keys, because this table is the addition the lane
@@ -132,8 +142,8 @@ def _bis_lua(bis: dict) -> list[str]:
             for faction in sorted(band.factions):
                 lines.append(f"\t\t\t\t{faction} = {{")
                 for slot in sorted(band.factions[faction]):
-                    fields = _bis_pick_fields(band.factions[faction][slot])
-                    lines.append(f"\t\t\t\t\t{slot} = {{ {fields} }},")
+                    packed = _bis_pick_packed(band.factions[faction][slot])
+                    lines.append(f"\t\t\t\t\t{slot} = {_quote(packed)},")
                 lines.append("\t\t\t\t},")
             lines.append("\t\t\t},")
         lines.append("\t\t},")

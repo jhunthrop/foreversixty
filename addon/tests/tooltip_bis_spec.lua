@@ -28,14 +28,14 @@ local DATA = {
 		["paladin-holy"] = {
 			[20] = {
 				alliance = {
-					head = { 111, "Q" },
-					-- Task L1.2's full pick tuple: chance and alternatives are
-					-- fields 4 and 5, and fields 1-3 still read as before.
-					chest = { 333, "D", "Wailing Caverns: Mutanus the Devourer", 0.14, { { 444, "Q", "A Quest" } } },
+					head = "111|Q",
+					-- Data.lua's packed pick (task L1.2): item_id|kind|source|
+					-- chance|alternatives..., decoded by Gear.pick.
+					chest = "333|D|Wailing Caverns: Mutanus the Devourer|0.14|444|Q|A Quest",
 				},
 			},
 			[30] = {
-				alliance = { head = { 222, "C", "Leatherworking" } },
+				alliance = { head = "222|C|Leatherworking" },
 			},
 		},
 	},

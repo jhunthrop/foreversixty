@@ -93,6 +93,89 @@ function Gear.specOf(data, classSlug, ranks)
 	return classSlug .. "-" .. Export.slugify(class.tabs[bestTab].name)
 end
 
+--- Decoded BiS picks, keyed by their packed string. Weak values: a pick
+--- nothing holds any more is dropped at the next collection rather than
+--- kept for the session, so hovering every slot never grows idle memory.
+local decodedPicks = setmetatable({}, { __mode = "v" })
+
+--- The `|`-separated fields of a packed pick, empty ones kept in place.
+local function splitFields(packed)
+	local fields, start = {}, 1
+	while true do
+		local stop = string.find(packed, "|", start, true)
+		if stop == nil then
+			fields[#fields + 1] = string.sub(packed, start)
+			return fields
+		end
+		fields[#fields + 1] = string.sub(packed, start, stop - 1)
+		start = stop + 1
+	end
+end
+
+local function nonEmpty(value)
+	if value == nil or value == "" then
+		return nil
+	end
+	return value
+end
+
+--- One Data.lua BiS pick, packed by data/pipeline/addonlua.py as one string
+--- ("item_id|kind|source|chance|alt1_id|alt1_kind|alt1_source|alt2_id|...",
+--- trailing empty fields trimmed), decoded into contract 1's logical table:
+--- { item_id, kind, source, chance, alternatives = { { item_id, kind,
+--- source }, ... } }. source and chance are nil when empty, and alternatives
+--- is always a list (empty when there are none). Positions 1-3 also hold id,
+--- kind and source, the pick tuple's old positional meaning. The table is
+--- shared between callers (memoised by string), so it must not be changed.
+--- nil for anything that is not a packed pick.
+function Gear.decodePick(packed)
+	if type(packed) ~= "string" or packed == "" then
+		return nil
+	end
+	local cached = decodedPicks[packed]
+	if cached ~= nil then
+		return cached
+	end
+	local fields = splitFields(packed)
+	local itemId = tonumber(fields[1])
+	if itemId == nil then
+		return nil
+	end
+	local source = nonEmpty(fields[3])
+	local pick = {
+		itemId,
+		fields[2],
+		source,
+		item_id = itemId,
+		kind = fields[2],
+		source = source,
+		chance = tonumber(fields[4] or ""),
+		alternatives = {},
+	}
+	local index = 5
+	while nonEmpty(fields[index]) ~= nil do
+		pick.alternatives[#pick.alternatives + 1] = {
+			item_id = tonumber(fields[index]),
+			kind = fields[index + 1],
+			source = nonEmpty(fields[index + 2]),
+		}
+		index = index + 3
+	end
+	decodedPicks[packed] = pick
+	return pick
+end
+
+--- The decoded BiS pick for one spec, level band, faction ("alliance" |
+--- "horde") and slot, or nil when the data names none. `data` defaults to
+--- ns.Data.
+function Gear.pick(spec, band, faction, slot, data)
+	data = data or ns.Data
+	local bySpec = data ~= nil and type(data.bis) == "table" and data.bis[spec] or nil
+	local byBand = bySpec ~= nil and bySpec[band] or nil
+	local byFaction = byBand ~= nil and byBand[faction] or nil
+	return Gear.decodePick(byFaction ~= nil and byFaction[slot] or nil)
+end
+
 --- The client's INVTYPE_* -> the site's slot names an item may occupy.
 Gear.SLOTS_BY_EQUIP_LOCATION = {
 	INVTYPE_HEAD = { "head" },

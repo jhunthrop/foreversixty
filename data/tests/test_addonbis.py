@@ -298,33 +298,36 @@ def test_a_pick_carries_its_drop_chance_and_two_runners_up_as_alternatives(tmp_p
     ]
 
 
-def test_chance_and_alternatives_render_as_the_fourth_and_fifth_positional_fields(tmp_path):
+def test_chance_and_alternatives_pack_into_one_string_per_pick(tmp_path):
+    """Fix round 2 (memory budget): one Lua string per pick, fields joined by
+    `|` as item_id|kind|source|chance|alt1_id|alt1_kind|alt1_source|alt2_id|
+    alt2_kind|alt2_source, trailing empty fields trimmed; Gear.pick decodes it."""
     _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(_DEADMINES_PICK))
     lua = _render_bis(build_bis(tmp_path, BUILD))
     assert (
-        'main_hand = { 7230, "D", "The Deadmines: Defias Overseer", 0.14, '
-        '{ { 270018, "Q", "Leaders of the Fang" }, { 1458, "B", "World drop" } } },'
+        'main_hand = "7230|D|The Deadmines: Defias Overseer|0.14|'
+        '270018|Q|Leaders of the Fang|1458|B|World drop",'
     ) in lua
 
 
-def test_a_pick_with_no_chance_renders_nil_in_the_fourth_field(tmp_path):
+def test_a_pick_with_no_chance_leaves_the_fourth_field_empty(tmp_path):
     quest_pick = dict(_DEADMINES_PICK, item_id=6087, source_kind="quest", source="The Defias Brotherhood")
     del quest_pick["chance"]
     _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(quest_pick))
     lua = _render_bis(build_bis(tmp_path, BUILD))
     assert (
-        'main_hand = { 6087, "Q", "The Defias Brotherhood", nil, '
-        '{ { 270018, "Q", "Leaders of the Fang" }, { 1458, "B", "World drop" } } },'
+        'main_hand = "6087|Q|The Defias Brotherhood||'
+        '270018|Q|Leaders of the Fang|1458|B|World drop",'
     ) in lua
 
 
 def test_a_pick_with_no_source_label_but_a_chance_keeps_chance_fourth(tmp_path):
-    """The positions are fixed: an empty source becomes nil in the third
-    field rather than letting chance slide into it."""
+    """The positions are fixed: an empty source is an empty field rather
+    than letting chance slide into it."""
     pick = {"slot": "head", "item_id": 111, "source_kind": "dungeon", "chance": 0.05}
     _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(pick))
     lua = _render_bis(build_bis(tmp_path, BUILD))
-    assert 'head = { 111, "D", nil, 0.05 },' in lua
+    assert 'head = "111|D||0.05",' in lua
 
 
 def test_a_band_written_before_chance_existed_has_nil_chance_and_no_alternatives(tmp_path):
@@ -336,7 +339,7 @@ def test_a_band_written_before_chance_existed_has_nil_chance_and_no_alternatives
     pick = bis["warrior-arms"][0].factions["alliance"]["chest"]
     assert pick.chance is None
     assert pick.alternatives == []
-    assert 'chest = { 2317, "C", "Leatherworking" },' in _render_bis(bis)
+    assert 'chest = "2317|C|Leatherworking",' in _render_bis(bis)
 
 
 def test_a_chance_above_one_is_a_percent_and_refuses(tmp_path):
@@ -369,13 +372,13 @@ def test_the_chance_pick_table_reads_back_in_a_real_lua(tmp_path):
     chunk.write_text(_render_bis(build_bis(tmp_path, BUILD)), encoding="utf-8")
     script = (
         f"local data = assert(loadfile({str(chunk)!r}))() "
-        "local pick = data.bis['warrior-arms'][20].alliance.main_hand "
-        "io.write(pick[1], '|', pick[2], '|', pick[3], '|', pick[4], '|', #pick[5], '|', "
-        "pick[5][1][1], ',', pick[5][1][2], ',', pick[5][1][3], '|', pick[5][2][1])"
+        "io.write(data.bis['warrior-arms'][20].alliance.main_hand)"
     )
     result = subprocess.run([lua_bin, "-e", script], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
-    assert result.stdout == "7230|D|The Deadmines: Defias Overseer|0.14|2|270018,Q,Leaders of the Fang|1458"
+    assert result.stdout == (
+        "7230|D|The Deadmines: Defias Overseer|0.14|270018|Q|Leaders of the Fang|1458|B|World drop"
+    )
 
 
 def test_a_legacy_band_without_runners_up_takes_two_of_its_alternatives_and_no_chance(tmp_path):
@@ -399,8 +402,8 @@ def test_a_legacy_band_without_runners_up_takes_two_of_its_alternatives_and_no_c
     assert pick.chance is None
     assert [alt.item_id for alt in pick.alternatives] == [279865, 2316]
     assert (
-        'back = { 4706, "B", "World drop", nil, '
-        '{ { 279865, "Q", "Abominable Creatures" }, { 2316, "C", "Leatherworking" } } },'
+        'back = "4706|B|World drop||'
+        '279865|Q|Abominable Creatures|2316|C|Leatherworking",'
     ) in _render_bis(bis)
 
 
@@ -412,3 +415,25 @@ def test_runners_up_win_over_alternatives_when_a_band_has_both(tmp_path):
     _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(both))
     pick = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]["main_hand"]
     assert [alt.item_id for alt in pick.alternatives] == [270018, 1458]
+
+
+def test_an_alternative_with_no_source_keeps_its_empty_field_in_the_middle(tmp_path):
+    pick = dict(
+        _DEADMINES_PICK,
+        runners_up=[
+            {"item_id": 5, "source_kind": "quest"},
+            {"item_id": 1458, "source_kind": "world_drop", "source": "World drop"},
+        ],
+    )
+    _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(pick))
+    lua = _render_bis(build_bis(tmp_path, BUILD))
+    assert 'main_hand = "7230|D|The Deadmines: Defias Overseer|0.14|5|Q||1458|B|World drop",' in lua
+
+
+def test_a_source_with_the_field_separator_refuses_to_pack(tmp_path):
+    from pipeline.addonbis import AddonBisError as RenderError
+
+    pick = dict(_DEADMINES_PICK, source="The Deadmines | Defias Overseer")
+    _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(pick))
+    with pytest.raises(RenderError, match="separator"):
+        _render_bis(build_bis(tmp_path, BUILD))
