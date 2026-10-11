@@ -86,6 +86,17 @@ Notes for the reader:
   that character the flag is dropped.
 - `chance` is a fraction (0.14 is 14 percent) or nil when the pick is not a drop. `source` is
   the plain name a player knows ("Lucifron", "Blackrock Depths", "Tailoring"), never an id.
+- Physical encoding of a bis pick: on disk, `Data.lua` stores each pick as one packed string,
+  not as a table, so the loaded data stays inside the addon's 2 MB idle memory budget. The
+  fields are joined by `|` in this order:
+  `item_id|kind|source|chance|alt1_id|alt1_kind|alt1_source|alt2_id|alt2_kind|alt2_source`.
+  `kind` is the one-letter source code. `chance` is a plain number, or empty when it is nil. A
+  missing field is empty, so the positions never shift. Trailing empty fields are trimmed, and
+  `source` never contains `|`. Readers never split the string themselves:
+  `Gear.pick(spec, band, faction, slot)` returns the logical table shown above,
+  `{ item_id, kind, source, chance, alternatives = { { item_id, kind, source }, ... } }`, and
+  `Gear.decodePick(packed)` decodes a single string. Positions 1-3 of that table also hold
+  the id, the kind and the source.
 - `encounterNeeds` ids are spell ids for buffs and debuffs and are used only to check the raid's
   auras; the coverage list shows spell names from the client. `resist` is a school name or nil.
 

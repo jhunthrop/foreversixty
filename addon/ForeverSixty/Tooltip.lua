@@ -383,21 +383,19 @@ function Tooltip.bisLines(data, slot)
 	local ranks = Talents.readRanks(data)
 	local spec = Gear.specOf(data, classSlug, ranks)
 	local specBis = spec ~= nil and type(data.bis) == "table" and data.bis[spec] or nil
-	local band, bandData = bisBandFor(specBis, Compat.playerLevel())
+	local band = bisBandFor(specBis, Compat.playerLevel())
 	if band == nil then
 		return {}
 	end
 	local faction = playerFaction()
-	local factionBis = faction ~= nil and bandData[faction] or nil
-	local entry = factionBis ~= nil and factionBis[slot] or nil
-	if entry == nil then
+	local pick = faction ~= nil and Gear.pick(spec, band, faction, slot, data) or nil
+	if pick == nil then
 		return {}
 	end
-	-- entry is { itemId, sourceKindCode, sourceLabel } -- addonlua.py's
-	-- positional, unnamed-field encoding (the lane brief's size budget);
-	-- sourceLabel is left out of the table literal entirely for a pick
-	-- with none, so it comes back nil rather than "".
-	local itemId, sourceCode, sourceLabel = entry[1], entry[2], entry[3]
+	-- pick is Gear.decodePick's logical table (Data.lua packs each pick as
+	-- one string to stay inside the idle memory budget); source is nil for
+	-- a pick with none.
+	local itemId, sourceCode, sourceLabel = pick.item_id, pick.kind, pick.source
 	local tag = bisTag(itemId, band, itemIdOf(equippedLinkFor(slot)), newAtBand(data, spec, band, faction))
 	local link = Tooltip.bisItemLink(itemId)
 	local icon = Theme.inlineIcon(Compat.itemIcon(itemId), Tooltip.BIS_ICON_SIZE)

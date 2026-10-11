@@ -36,7 +36,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from pipeline.models import AddonBisBand, AddonBisItem
+from pipeline.models import AddonBisAlternative, AddonBisBand, AddonBisItem
 
 #: The `preset` tag of a band entry measured on the bare character (sim/cmd/leveling-bis/preset.go).
 BARE_PRESET = "bare"
@@ -82,6 +82,10 @@ KNOWN_SLOTS = {
 #: identifiers.
 KNOWN_FACTIONS = {"alliance", "horde"}
 
+#: How many runners-up a pick carries as alternatives (contract 1 in
+#: docs/contracts/addon-v2.md: "up to two").
+MAX_ALTERNATIVES = 2
+
 
 class AddonBisError(SystemExit):
     """A bis/<spec>.json says something the addon generator will not publish."""
@@ -125,6 +129,42 @@ def _significant_weights(weights: list[dict]) -> dict[str, float]:
     }
 
 
+def _pick(path: Path, where: str, entry: dict) -> AddonBisItem:
+    """One slot row as the addon's pick. `chance` and `runners_up` are
+    optional: a bis file leveling-bis wrote before it emitted them loads
+    with no chance, and with the first two of its `alternatives` (if any)
+    in place of runners_up."""
+    chance = entry.get("chance")
+    if chance is not None and not 0 < chance <= 1:
+        # loot.json states percents (0-100); the contract is a fraction.
+        raise AddonBisError(f"{path}: {where} chance {chance!r} is not a fraction in (0, 1]")
+    runners_up = entry.get("runners_up")
+    if runners_up is None:
+        # A band the nightly job wrote before leveling-bis emitted
+        # `runners_up`: its own `alternatives` list (up to three, best
+        # first -- runners_up is cut from the same list) stands in until
+        # the next nightly run rewrites the band.
+        runners_up = (entry.get("alternatives") or [])[:MAX_ALTERNATIVES]
+    if len(runners_up) > MAX_ALTERNATIVES:
+        raise AddonBisError(
+            f"{path}: {where} has {len(runners_up)} runners_up, at most {MAX_ALTERNATIVES}"
+        )
+    return AddonBisItem(
+        item_id=entry["item_id"],
+        source_kind=entry["source_kind"],
+        source=entry.get("source", ""),
+        chance=chance,
+        alternatives=[
+            AddonBisAlternative(
+                item_id=runner_up["item_id"],
+                source_kind=runner_up["source_kind"],
+                source=runner_up.get("source", ""),
+            )
+            for runner_up in runners_up
+        ],
+    )
+
+
 def _one_band(path: Path, level: int, by_faction: dict[str, dict]) -> AddonBisBand:
     factions: dict[str, dict[str, AddonBisItem]] = {}
     new_at_band: dict[str, list[int]] = {}
@@ -137,11 +177,7 @@ def _one_band(path: Path, level: int, by_faction: dict[str, dict]) -> AddonBisBa
             if slot not in KNOWN_SLOTS:
                 raise AddonBisError(f"{path}: unknown slot {slot!r} at band {level}/{faction}")
         factions[faction] = {
-            slot: AddonBisItem(
-                item_id=entry["item_id"],
-                source_kind=entry["source_kind"],
-                source=entry.get("source", ""),
-            )
+            slot: _pick(path, f"band {level}/{faction}/{slot}", entry)
             for slot, entry in slot_lookup.items()
         }
         new_at_band[faction] = _new_item_ids(band.get("new_at_band") or [], slot_lookup)
