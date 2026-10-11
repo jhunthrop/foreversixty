@@ -54,6 +54,9 @@ const idleAfterLoadDirective = {
   },
 };
 
+const webRoot = fileURLToPath(new URL('.', import.meta.url));
+const contractFixtures = fileURLToPath(new URL('../docs/contracts/fixtures', import.meta.url));
+
 // CF_PAGES is set only inside a Cloudflare Pages build, so local and CI builds keep working
 // against the placeholder community links while a deploy fails fast and names the file.
 const placeholderGuard = {
@@ -133,5 +136,10 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+    // The Forever Score's labels and tier colours are the addon's, read from the contract
+    // fixture both sides pin (docs/contracts/fixtures/score-labels.json, lib/score/). A build
+    // bundles it like any import; `astro dev` serves it to the browser only from an allowed
+    // directory, and Vite's default allows nothing above web/.
+    server: { fs: { allow: [webRoot, contractFixtures] } },
   },
 });

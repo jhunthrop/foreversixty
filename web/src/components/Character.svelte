@@ -6,12 +6,21 @@
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import { CHARACTER_LOADING_MIN_H } from '../lib/character-layout';
-  import { characterKey, parseCharacterPath, rulesetLabel, type CharacterPath } from '../lib/characters';
+  import { fetchMeOnce } from '../lib/account/api';
+  import {
+    characterKey,
+    nameFromSlug,
+    parseCharacterPath,
+    rulesetLabel,
+    type CharacterPath,
+  } from '../lib/characters';
   import { formatAmount, percentileToken, rowLink } from '../lib/report/format';
-  import { encounterSlug, fetchCharacter, type CharacterPage } from '../lib/rankings/api';
+  import { encounterSlug, fetchCharacter, RankingsError, type CharacterPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
+  import { foreverOf, lastAddonExportAt } from '../lib/score/score';
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
+  import CharacterInGame from './CharacterInGame.svelte';
   import CharacterRatingPanel from './CharacterRatingPanel.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
@@ -40,7 +49,10 @@
   }
 
   let data = $state<CharacterPage | null>(null);
-  let status = $state<'loading' | 'ready' | 'failed' | 'missing'>('loading');
+  /** `unlogged`: the API has no record of this character (a 404). The page still answers --
+   *  the name from the address, "no logs yet" where the score would be, and how to get the
+   *  character onto the site -- since a character search lands here for anyone. */
+  let status = $state<'loading' | 'ready' | 'failed' | 'missing' | 'unlogged'>('loading');
   let error = $state('');
   let attempt = $state(0);
 
@@ -70,8 +82,30 @@
       })
       .catch((thrown: unknown) => {
         if (resolved !== requested) return;
+        if (thrown instanceof RankingsError && thrown.status === 404) {
+          status = 'unlogged';
+          return;
+        }
         status = 'failed';
         error = thrown instanceof Error ? thrown.message : 'That character did not load.';
+      });
+  });
+
+  /** When the site last saw this character's addon export -- only for the signed-in viewer
+   *  who owns it, off the same cached /v1/me every island on the page shares. */
+  let lastSeenAt = $state<string | null>(null);
+
+  $effect(() => {
+    const requested = resolved;
+    lastSeenAt = null;
+    if (requested === null) return;
+    void fetchMeOnce()
+      .then((me) => {
+        if (resolved !== requested) return;
+        lastSeenAt = lastAddonExportAt(me?.characters, requested);
+      })
+      .catch(() => {
+        lastSeenAt = null;
       });
   });
 </script>
@@ -86,6 +120,20 @@
   <Skeleton lines={6} rowHeight="h-4" minHeight={CHARACTER_LOADING_MIN_H} testid="character-skeleton" />
 {:else if status === 'failed'}
   <LoadError message={error} onRetry={() => (attempt += 1)} testid="character-error" />
+{:else if status === 'unlogged' && resolved !== null}
+  <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character-unlogged" id="character">
+    <header class="flex flex-col gap-1">
+      <h1 class="font-display text-[18px] font-bold" data-testid="character-name">
+        {nameFromSlug(decodeURIComponent(resolved.slug))}
+      </h1>
+      <p class="text-muted text-[13px]">
+        {rulesetLabel(resolved.ruleset)}
+        {resolved.region.toUpperCase()}
+      </p>
+    </header>
+    <CharacterRatingPanel path={resolved} forever={null} />
+    <CharacterInGame forever={null} {lastSeenAt} />
+  </div>
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
     <CurrentCharacterBar spine />
@@ -123,7 +171,9 @@
       {/if}
     </header>
 
-    <CharacterRatingPanel path={resolved} />
+    <CharacterRatingPanel path={resolved} forever={foreverOf(data)} />
+
+    <CharacterInGame forever={foreverOf(data)} {lastSeenAt} />
 
     <section class="flex flex-col gap-2">
       <h2 class="section-title text-[18px]">Best per encounter</h2>

@@ -19,6 +19,7 @@ import { API_BASE_URL } from '../planner/config';
 import type { CharacterPath } from '../characters';
 import { normaliseReportRatings } from '../rating/normalise';
 import type { CharacterRating, ReportRatings } from '../rating/types';
+import type { ForeverScore } from '../score/score';
 
 export const RANKINGS_FAILED = 'Rankings did not load';
 
@@ -113,7 +114,9 @@ export interface BuildSeen {
   first_seen: string;
 }
 
-export interface CharacterPage {
+/** The Forever Score fields ride on the same answer (api/openapi.yaml `ForeverScore`); optional
+ *  because an API that predates them sends none, which reads as no score. */
+export interface CharacterPage extends Partial<ForeverScore> {
   character: {
     name: string;
     region: string;

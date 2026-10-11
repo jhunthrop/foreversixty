@@ -1,0 +1,86 @@
+---
+// web/src/components/CharacterSearch.astro
+// The home page's character search box (Task L8.2 ruling 7): a name, or Name-Realm as the
+// game writes it, plus the region and ruleset beside it (US and Normal to start, the site's
+// own defaults), opens /character/<region>/<ruleset>/<name>. The path is built by
+// lib/character-search.ts through characters.ts's characterHref, the one place the site turns
+// a character into an address. A plain form with a few lines of script, not a Svelte island:
+// the home page's paint budget pays for nothing it does not need.
+import { DEFAULT_REGION, DEFAULT_RULESET } from '../lib/character-search';
+import { REGIONS, RULESETS } from '../lib/characters';
+import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
+import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+
+const FIELD = 'border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]';
+---
+
+<section class="flex flex-col gap-[14px]" data-testid="home-character-search">
+  <h2 class="display text-strong text-[18px] font-bold tracking-[0.10em]">{copy.heading}</h2>
+  <form
+    class="flex flex-col gap-2"
+    data-character-search
+    data-empty={copy.empty}
+    data-invalid={copy.invalid}
+    novalidate
+  >
+    <label class="label text-muted" for="home-character-search-name">
+      {copy.nameLabel}
+    </label>
+    <div class="flex flex-wrap gap-3">
+      <input
+        id="home-character-search-name"
+        name="name"
+        type="search"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder={copy.namePlaceholder}
+        aria-describedby="home-character-search-hint home-character-search-error"
+        class={`${FIELD} min-w-0 flex-1 basis-[220px]`}
+      />
+      <select name="region" aria-label={copy.regionLabel} class={FIELD}>
+        {REGIONS.map((region) => (
+          <option value={region} selected={region === DEFAULT_REGION}>
+            {region.toUpperCase()}
+          </option>
+        ))}
+      </select>
+      <select name="ruleset" aria-label={copy.rulesetLabel} class={FIELD}>
+        {RULESETS.map((ruleset) => (
+          <option value={ruleset.id} selected={ruleset.id === DEFAULT_RULESET}>
+            {ruleset.label}
+          </option>
+        ))}
+      </select>
+      <button type="submit" class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}>
+        {copy.submit}
+      </button>
+    </div>
+    <p id="home-character-search-hint" class="text-muted text-[13px]">
+      {copy.hint}
+    </p>
+    <p id="home-character-search-error" class="text-strong min-h-[1lh] text-[13px]" role="status"></p>
+  </form>
+</section>
+
+<script>
+  import { characterSearchHref } from '../lib/character-search';
+  import { isRegion, isRuleset } from '../lib/characters';
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('form[data-character-search]')) {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const fields = new FormData(form);
+      const name = String(fields.get('name') ?? '');
+      const region = String(fields.get('region') ?? '');
+      const ruleset = String(fields.get('ruleset') ?? '');
+      const href = isRegion(region) && isRuleset(ruleset) ? characterSearchHref(name, region, ruleset) : null;
+      if (href !== null) {
+        window.location.assign(href);
+        return;
+      }
+      const error = form.querySelector('[role="status"]');
+      if (error !== null)
+        error.textContent = (name.trim() === '' ? form.dataset.empty : form.dataset.invalid) ?? '';
+    });
+  }
+</script>

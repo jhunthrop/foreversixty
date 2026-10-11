@@ -128,3 +128,17 @@ export const homeGetSetUpCopy = {
   addonRemaining: 'Install the addon',
   companionRemaining: 'Set up the companion',
 } as const;
+
+/** Task L8.2 ruling 7: the character search box. Typing `Name`, or `Name-Realm` as the game
+ *  writes it, opens that character's profile (lib/character-search.ts). */
+export const homeCharacterSearchCopy = {
+  heading: 'Look up a character',
+  nameLabel: 'Character name',
+  namePlaceholder: 'Elyra Duskvale',
+  hint: 'Add the realm as the game writes it, Elyra Duskvale-Hardcore, to pick its ruleset.',
+  regionLabel: 'Region',
+  rulesetLabel: 'Ruleset',
+  submit: 'Look up',
+  empty: 'Type a character’s name.',
+  invalid: 'No character can have that name.',
+} as const;

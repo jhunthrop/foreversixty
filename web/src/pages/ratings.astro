@@ -5,9 +5,20 @@
 // coordinator's own words, and that a rating comes only from a public report -- linked
 // from every rating surface ("How is this calculated?"). A content page: no client
 // JavaScript of its own beyond the layout's character selector island.
+//
+// Task L8.2 ruling 6: the page opens with the Forever Score -- what it is, what moves each of
+// its five parts, the tier lines -- above "How ratings work". The labels are the addon's own,
+// from the shared fixture (lib/score/copy.ts); the example badge is rendered statically, so
+// the page still ships no island of its own.
 import Base from '../layouts/Base.astro';
 import Panel from '../components/Panel.astro';
+import ScoreBadge from '../components/ScoreBadge.svelte';
 import { ratingCopy } from '../lib/rating/copy';
+import { scoreCopy } from '../lib/score/copy';
+import { COMPONENT_MAX, shortDate, tierColor, tierLabel, tierRanges } from '../lib/score/score';
+
+/** The example the explainer shows: the number, tier and date the profile and tooltip read. */
+const example = { score: 1830, tier: 'epic', asOf: shortDate('2026-11-04') ?? '' };
 
 const weights = [
   { component: 'Output', dps: 35, healer: 30, tank: 10 },
@@ -20,13 +31,72 @@ const weights = [
 ---
 
 <Base
-  title="How ratings work"
-  description="How World of Warcraft: Forever's performance ratings are computed: the six components, their weights per role, the percentile-versus-absolute rule, and the cap."
+  title="Forever Score and ratings"
+  description="How World of Warcraft: Forever's Forever Score and performance ratings are computed: the score's five parts and tiers, the rating's six components, their weights per role, the percentile-versus-absolute rule, and the cap."
   path="/ratings"
 >
   <main id="main" tabindex="-1" class="measure-wide flex flex-col gap-6 px-[18px] py-8 md:gap-8 md:px-0">
+    <section id="forever-score" class="flex flex-col gap-6 md:gap-8" data-testid="ratings-forever-score">
+      <header class="flex flex-col gap-3">
+        <h1 class="section-title text-[18px]">{scoreCopy.explainerHeading}</h1>
+        <p class="max-w-[720px] text-[14px] leading-relaxed">{scoreCopy.explainerWhat}</p>
+        <p class="text-muted flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[13px]">
+          <span>{scoreCopy.explainerExample}</span>
+          <ScoreBadge score={example.score} tier={example.tier} />
+          <span class="text-text text-[14px] font-semibold">{tierLabel(example.tier)}</span>
+          <span>{scoreCopy.asOf(example.asOf)}</span>
+        </p>
+      </header>
+
+      <Panel title={scoreCopy.explainerPartsHeading}>
+        <ul class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed">
+          {scoreCopy.components.map((component) => (
+            <li data-testid={`ratings-forever-score-${component.key}`}>
+              <strong>{component.label}</strong>
+              <span class="text-muted tabular ml-2 font-mono text-[13px]">
+                {scoreCopy.upTo(COMPONENT_MAX[component.key])}
+              </span>
+              <span class="block">{component.moves}</span>
+            </li>
+          ))}
+        </ul>
+      </Panel>
+
+      <Panel title={scoreCopy.explainerTiersHeading}>
+        <div class="overflow-x-auto p-3">
+          <table class="w-full max-w-[420px] border-collapse text-[13px]" data-testid="ratings-forever-tiers">
+            <thead>
+              <tr>
+                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-left">
+                  {scoreCopy.tierColumn}
+                </th>
+                <th scope="col" class="label text-muted border-line-soft border-b px-2 py-2 text-right">
+                  {scoreCopy.rangeColumn}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {tierRanges().map(({ tier, range }) => (
+                <tr>
+                  <th
+                    scope="row"
+                    class="border-line-soft border-b px-2 py-2 text-left text-[19px] font-bold"
+                    style={`color: ${tierColor(tier)}`}
+                  >
+                    {tierLabel(tier)}
+                  </th>
+                  <td class="tabular border-line-soft border-b px-2 py-2 text-right font-mono">{range}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-muted p-3 pt-0 text-[13px]">{scoreCopy.tiersNote}</p>
+      </Panel>
+    </section>
+
     <header class="flex flex-col gap-2">
-      <h1 class="section-title text-[18px]">How ratings work</h1>
+      <h2 class="section-title text-[18px]">How ratings work</h2>
       <p class="text-muted max-w-[720px] text-[14px] leading-relaxed" data-testid="ratings-visibility">
         A rating comes only from a public report, the same way a Warcraft Logs parse does. There is no
         cross-guild leaderboard of ratings — a rating is one fight's roster, or one character's own history,

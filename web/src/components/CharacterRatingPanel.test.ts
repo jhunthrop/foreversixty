@@ -24,7 +24,10 @@
 // case still collapse to "no `character-rating` testid at all" once resolved).
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
+import labels from '../../../docs/contracts/fixtures/score-labels.json';
 import { ratingCopy } from '../lib/rating/copy';
+import { scoreCopy } from '../lib/score/copy';
+import type { ForeverScore } from '../lib/score/score';
 import CharacterRatingPanel from './CharacterRatingPanel.svelte';
 
 const PATH = { region: 'us' as const, ruleset: 'hardcore' as const, slug: 'elyra-duskvale' };
@@ -49,6 +52,72 @@ describe('CharacterRatingPanel', () => {
     expect(() =>
       render(CharacterRatingPanel, { props: { path: PATH, apiBase: 'https://api.test' } }),
     ).not.toThrow();
+  });
+});
+
+// Task L8.2: the Forever Score block at the top of the panel. Unlike the execution rating
+// below it, the score arrives as plain data (Character.svelte already holds the
+// GET /v1/characters/... answer that carries it), so this branch renders under
+// svelte/server and is asserted here directly.
+const SCORED: ForeverScore = {
+  score: 1830,
+  tier: 'epic',
+  as_of: '2026-11-04',
+  components: { gear: 412, experience: 640, parses: 510, attendance: 180, discipline: 88 },
+  experience: { dungeons: 4, raid_kills: 12, alts: 1 },
+};
+const UNSCORED: ForeverScore = { score: null, tier: null, as_of: null, components: null, experience: null };
+
+describe('CharacterRatingPanel Forever Score', () => {
+  it('leads with the badge: 1830 in the epic colour, the tier, "as of 4 Nov"', () => {
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
+    expect(body).toContain('data-testid="forever-score"');
+    expect(body).toContain(scoreCopy.heading);
+    expect(body).toMatch(/data-testid="score-badge"[^>]*>1830</);
+    expect(body).toContain(`color: ${labels.tiers.epic.color}`);
+    expect(body).toContain(labels.tiers.epic.label);
+    expect(body).toContain(scoreCopy.asOf('4 Nov'));
+    // The badge comes before the execution rating's own block.
+    expect(body.indexOf('data-testid="forever-score"')).toBeLessThan(
+      body.indexOf('data-testid="character-rating-loading"'),
+    );
+  });
+
+  it('lists the five components with the addon’s labels, their points and ceilings, as bars', () => {
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
+    let last = -1;
+    for (const component of labels.components) {
+      const at = body.indexOf(`data-testid="forever-score-${component.key}"`);
+      expect(at, component.key).toBeGreaterThan(last);
+      last = at;
+      expect(body).toContain(component.label);
+    }
+    expect(body).toContain(scoreCopy.ofMax(412, 500));
+    expect(body).toContain(scoreCopy.ofMax(88, 100));
+    // 412 of 500 is a bar 82.4% full.
+    expect(body).toContain('width: 82.4%');
+  });
+
+  it('a 200 with a null score shows the no-logs line in muted text: no 0, no bars, no tier', () => {
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: UNSCORED } });
+    expect(body).toContain('data-testid="forever-score-none"');
+    expect(body).toContain(labels.noLogs);
+    expect(body).toMatch(/class="[^"]*text-muted[^"]*"[^>]*data-testid="forever-score-none"/);
+    expect(body).not.toContain('score-badge');
+    expect(body).not.toContain('forever-score-gear');
+    for (const tier of Object.values(labels.tiers)) expect(body).not.toContain(tier.label);
+    expect(body).not.toMatch(/>\s*0\s*</);
+  });
+
+  it('a character the API has no record of (null) reads the same', () => {
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: null } });
+    expect(body).toContain(labels.noLogs);
+    expect(body).not.toContain('score-badge');
+  });
+
+  it('draws no score block at all where the caller passes none (the account page)', () => {
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH } });
+    expect(body).not.toContain('forever-score');
   });
 });
 

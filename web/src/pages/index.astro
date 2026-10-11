@@ -9,6 +9,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SkyBand from '../components/SkyBand.astro';
 import HomeTimeline from '../components/HomeTimeline.astro';
+import CharacterSearch from '../components/CharacterSearch.astro';
 import ToolCard from '../components/ToolCard.astro';
 import ClassCrest from '../components/ClassCrest.astro';
 import Panel from '../components/Panel.astro';
@@ -232,6 +233,9 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
       <div class="md:-mb-4" data-testid="home-timeline-wrap">
         <HomeTimeline dates={dates} updated={updated} />
       </div>
+
+      <!-- Task L8.2 ruling 7: look a character up by name, signed in or out. -->
+      <CharacterSearch />
 
       <!-- §3.A.4 "Best in slot by class" (signed out only) / §3.B.3 "Your upgrades"
            (signed in only) share this position. Toggled by the pre-paint session hint
