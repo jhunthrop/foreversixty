@@ -24,3 +24,55 @@ export const rankingsEmptyCopy = {
   action: 'Upload a log',
   href: '/logs',
 } as const;
+
+/**
+ * The page's own words (design/specs/2026-10-11-rankings.md section 6). The shared character
+ * header owns its identity and signed-out line; this is the band, the board and the header's
+ * answer.
+ */
+export const rankingsCopy = {
+  eyebrow: 'Characters',
+  h1: 'Rankings',
+  jobSignedIn: 'Where your character stands among characters like it.',
+  jobSignedOut: 'How characters rank on each encounter, kill by kill.',
+  tierQuestion: 'Comparing specs, not characters?',
+  tierLink: 'Tier list →',
+  tierHref: '/tiers',
+  updated: (date: string) => `Updated ${date}`,
+
+  answerLabel: 'Your rank',
+  action: 'See your parses →',
+  answerFailed: 'Your rank did not load.',
+  /** "of 212 Fury Warriors" once the API ranks each character's best kill; "kills" until then. */
+  answerUnit: (total: number, cohort: string, deduped: boolean) =>
+    deduped ? `of ${total} ${cohort}s` : `of ${total} ${cohort} kills`,
+  /** `rulesetScope` reads "Normal ruleset" or "all rulesets". */
+  answerNote: (encounter: string, rulesetScope: string) => `On ${encounter}, ${rulesetScope}`,
+  answerUnranked: (encounter: string) =>
+    `Not ranked yet on ${encounter}. Upload a log of a kill to get on the board.`,
+
+  everyClassAndSpec: 'Every class and spec',
+  anotherBoard: 'Another class or spec',
+  showingNote: (shown: string, own: string) => `Showing ${shown}. Your rank is on the ${own} board.`,
+  backTo: (own: string) => `Back to ${own}`,
+
+  legendLead: 'Rank colour is the percentile:',
+  legendUnderLast: 'under 25',
+
+  ownBest: 'Your best kill',
+  removed: 'Removed by a moderator',
+  atRisk: 'Under review by a moderator',
+  filtersButton: 'Filters',
+  boardTabs: 'Board',
+  pickerHeading: 'Choose an encounter',
+
+  encounterLabel: 'Encounter',
+  allRulesets: 'All rulesets',
+  allRegions: 'All regions',
+  allPhases: 'All phases',
+  everyClass: 'Every class',
+  everySpec: 'Every spec',
+  bothFactions: 'Both',
+  todayOnly: 'Today only',
+  sizeMan: (size: number) => `${size}-man`,
+} as const;

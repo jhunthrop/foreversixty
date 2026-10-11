@@ -18,6 +18,7 @@ describe('phaseAt', () => {
 describe('phaseLabel', () => {
   it('echoes an id it does not know rather than hiding it', () => {
     expect(phaseLabel('launch')).toBe('Launch');
+    expect(phaseLabel('raids-1')).toBe('Phase 1');
     expect(phaseLabel('raids-9')).toBe('raids-9');
   });
 });

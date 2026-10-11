@@ -13,7 +13,7 @@ export const PHASES = [
   { id: 'pre-beta', label: 'Pre-beta', start: '0001-01-01T00:00:00Z' },
   { id: 'beta', label: 'Beta', start: '2026-09-17T00:00:00Z' },
   { id: 'launch', label: 'Launch', start: '2026-11-04T23:00:00Z' },
-  { id: 'raids-1', label: 'Raids, phase 1', start: '2026-12-09T00:00:00Z' },
+  { id: 'raids-1', label: 'Phase 1', start: '2026-12-09T00:00:00Z' },
 ] as const;
 
 export type Phase = (typeof PHASES)[number]['id'];

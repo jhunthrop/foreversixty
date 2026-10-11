@@ -65,6 +65,12 @@ export interface RankingsPage {
   page: number;
   per_page: number;
   updated_at: string;
+  /** True when each row is a different character's best kill (`distinct=character`), so
+   *  `total` counts characters. Absent from an API that predates the parameter. */
+  deduped?: boolean;
+  /** Where the requested character stands on this board, with its best kill. Absent when
+   *  none was asked for, or the character has no ranked kill in the cohort. */
+  character_rank?: { rank: number; row: RankingRow } | null;
 }
 
 /** No moderation state here: guild rows are aggregates, not a single ranked kill. */
@@ -89,6 +95,8 @@ export interface CharacterFight {
   fought_at: string;
   report_id: string;
   fight_index: number;
+  /** False for a wipe; only history carries it, and only newer APIs. */
+  kill?: boolean;
   /** actual / simulated, clamped to [0, 2]. Null when the spec is not validated or the
    *  fight predates scoring. */
   execution_score: number | null;
@@ -191,6 +199,10 @@ export interface RankingsQuery {
   faction?: string;
   since?: string;
   page?: number;
+  /** `character` ranks each character's best kill only. */
+  distinct?: 'character';
+  /** A player key (`region/ruleset/name`) to place on the board; needs `distinct`. */
+  character?: string;
 }
 
 /**

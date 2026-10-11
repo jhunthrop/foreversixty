@@ -62,6 +62,21 @@ describe('the rankings URL state', () => {
   });
 });
 
+describe('an explicit all', () => {
+  const defaults = { class: 'warrior', spec: 'Fury', ruleset: 'normal', phase: 'raids-1', metric: 'hps' };
+
+  it('parses to the empty filter, for every aimed key', () => {
+    const state = parseRankingsState('?class=all&spec=all&ruleset=all&phase=all');
+    expect(state).toMatchObject({ class: '', spec: '', ruleset: '', phase: '' });
+  });
+
+  it('is written only where the default would otherwise come back', () => {
+    const state = { ...defaultRankingsState(), ...defaults, ruleset: '', metric: 'dps' };
+    expect(rankingsSearch(state, defaults)).toBe('?metric=dps&ruleset=all');
+    expect(rankingsSearch({ ...defaultRankingsState(), ...defaults }, defaults)).toBe('');
+  });
+});
+
 describe('requiresEncounter', () => {
   it('the Characters board always needs one', () => {
     expect(requiresEncounter({ ...defaultRankingsState(), board: 'character' })).toBe(true);
