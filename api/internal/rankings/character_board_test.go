@@ -1,6 +1,7 @@
 package rankings
 
 import (
+	"context"
 	"net/http"
 	"testing"
 	"time"
@@ -108,6 +109,23 @@ func TestRankingsRejectABadCharacterBoard(t *testing.T) {
 		res.Body.Close()
 		if res.StatusCode != http.StatusBadRequest {
 			t.Errorf("%s = %d, want 400", name, res.StatusCode)
+		}
+	}
+}
+
+func TestRankingsClassAndSpecFiltersIgnoreCase(t *testing.T) {
+	h := newHarness(t)
+	serve(t, h)
+	seedTwoKills(h)
+
+	if _, err := h.pool.Exec(context.Background(), `update fight_metrics set class = 'Warrior', spec = 'Fury'`); err != nil {
+		t.Fatal(err)
+	}
+	for _, query := range []string{"&class=warrior&spec=fury", "&class=WARRIOR&spec=FURY", "&class=Warrior&spec=Fury"} {
+		var page Page
+		h.data(h.get(boardPath+query), &page)
+		if page.Total == 0 {
+			t.Errorf("%s matched nothing", query)
 		}
 	}
 }

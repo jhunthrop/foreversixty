@@ -125,10 +125,10 @@ func (q Query) where(now time.Time) (string, []any, error) {
 		add("m.difficulty = $%d", *q.Difficulty)
 	}
 	if q.Spec != "" {
-		add("m.spec = $%d", q.Spec)
+		add("lower(m.spec) = lower($%d)", q.Spec)
 	}
 	if q.Class != "" {
-		add("m.class = $%d", q.Class)
+		add("lower(m.class) = lower($%d)", q.Class)
 	}
 	if q.Phase != "" {
 		add("m.phase = $%d", q.Phase)
