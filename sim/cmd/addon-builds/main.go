@@ -8,8 +8,8 @@
 //	go run ./sim/cmd/addon-builds -repo-root .
 //
 // Every spec in sim/specs must have a guide whose builds are stamped with
-// the active build and whose ladder adds exactly one point per level; the
-// command fails listing every build that does not, and writes nothing.
+// the active build and have a legal 51-point order; the command fails
+// listing every build that does not, and writes nothing.
 package main
 
 import (
