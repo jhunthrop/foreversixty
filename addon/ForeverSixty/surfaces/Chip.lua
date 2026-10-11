@@ -245,8 +245,8 @@ local function upgradeState(input)
 		-- The gain, kept whole when the short form must be cut: ", +4.2 DPS".
 		keep = string.format(L.chipEquipShort, "", gain),
 		action = not input.inCombat and "equip" or nil,
-		-- In combat the hint says why a click does nothing.
-		hint = input.inCombat and L.chipInCombat or L.chipHintEquip,
+		-- In combat the chip line says "In combat"; the hint says what a click does.
+		hint = input.inCombat and L.chipHintInCombat or L.chipHintEquip,
 	}
 end
 
@@ -1254,11 +1254,11 @@ end
 --- the card and the chip (GLOBAL_MOUSE_DOWN, registered once when the card
 --- is built and acted on only while it is open). Neither chooses anything.
 --- A client that refuses the event gets one /fs diag line saying to press
---- Escape instead.
-local function closeOnClickOutside(card)
+--- Escape instead. True when the card listens.
+function Chip.closeOnClickOutside(card)
 	if not Theme.tryRegisterEvent(card, "GLOBAL_MOUSE_DOWN") then
 		Theme.note(L.diagNoClickOutside)
-		return
+		return false
 	end
 	card:SetScript("OnEvent", function(self)
 		if not self:IsShown() then
@@ -1270,6 +1270,7 @@ local function closeOnClickOutside(card)
 			Chip.closePath()
 		end
 	end)
+	return true
 end
 
 --- A small line on the card at `chipCardNote` px, left-aligned with the
@@ -1326,7 +1327,7 @@ function Chip.ensureCard(specs)
 	local _, footerHeight = cardNote(card, L.chipPathFooter, "muted", pad, y, inner)
 	card:SetHeight(y + footerHeight + pad)
 	Theme.makeEscapable(Chip.CARD_NAME)
-	closeOnClickOutside(card)
+	Chip.closeOnClickOutside(card)
 	card:Hide()
 	Chip.card = card
 	return card

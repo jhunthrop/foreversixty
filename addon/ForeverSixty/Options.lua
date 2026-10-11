@@ -25,6 +25,7 @@ local Theme = ns.Theme or require("Theme")
 local Comms = ns.Comms or require("Comms")
 local MinimapButton = ns.Minimap or require("Minimap")
 local Chip = ns.Chip or require("Chip")
+local Score = ns.Score or require("Score")
 
 local Options = {}
 Options.data = Data
@@ -146,6 +147,9 @@ function Options.handle(input)
 	elseif command == "inspect" then
 		return Options.inspectLines()
 	elseif command == "diag" then
+		-- Ask the data addon now, so a fresh session reports a missing or old
+		-- one without a tooltip having read it first (Score notes it once).
+		Score.status()
 		-- Only what is broken goes under "Not working:"; the chip's own render
 		-- check and the findings (other players' unreadable messages included)
 		-- follow it.

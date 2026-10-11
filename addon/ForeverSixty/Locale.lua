@@ -570,6 +570,8 @@ local L = {
 	chipHintList = "Click: Show the list",
 	chipHintPath = "Click: Pick a path",
 	chipHintChangePath = "Click: Change your path",
+	-- The upgrade's hint in combat; the chip line itself says "In combat".
+	chipHintInCombat = "Click: nothing until combat ends",
 	chipHintLastRaid = "Click: Show the line",
 	-- Right-click and /fs chip.
 	chipHiddenLine = "Chip hidden until level %d. /fs chip brings it back.",

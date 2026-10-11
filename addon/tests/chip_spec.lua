@@ -189,8 +189,9 @@ describe("Chip.model", function()
 			upgrades = { { name = "Chausses of Westfall", delta = 4.2, unit = "dps" } } }))
 		assert.are.equal(string.format(L.chipEquip, "Chausses of Westfall", L.chipInCombat), model.chosen.text)
 		assert.is_nil(model.chosen.action)
-		-- Fix round 4: "In combat" is the hint.
-		assert.are.equal(L.chipInCombat, model.chosen.hint)
+		-- Fix round 5: the chip line says "In combat"; the hint says what a click does.
+		assert.are.equal(L.chipHintInCombat, model.chosen.hint)
+		assert.are.equal("Click: nothing until combat ends", L.chipHintInCombat)
 	end)
 
 	it("fades to 25 percent and ignores the mouse in combat when the player keeps it shown", function()
@@ -623,6 +624,49 @@ describe("Chip.pathSpecs", function()
 	it("lists nothing for a class with no default builds", function()
 		assert.are.same({}, Chip.pathSpecs(DATA, "rogue"))
 		assert.are.same({}, Chip.pathSpecs({}, "warrior"))
+	end)
+end)
+
+-- Fix round 5: the path card's click-outside refusal branch.
+describe("Chip.closeOnClickOutside", function()
+	local realTry
+
+	before_each(function()
+		realTry = Theme.tryRegisterEvent
+		Theme.reset()
+	end)
+
+	after_each(function()
+		Theme.tryRegisterEvent = realTry
+		Theme.reset()
+	end)
+
+	local function fakeCard()
+		local card = { scripts = {} }
+		function card:SetScript(name, handler)
+			self.scripts[name] = handler
+		end
+		return card
+	end
+
+	it("notes one fault and listens for nothing when the client refuses the event", function()
+		Theme.tryRegisterEvent = function()
+			return false
+		end
+		local card = fakeCard()
+		assert.is_false(Chip.closeOnClickOutside(card))
+		assert.are.same({ L.diagNoClickOutside }, Theme.diagnostics())
+		assert.is_nil(card.scripts.OnEvent)
+	end)
+
+	it("listens, noting nothing, when the client takes it", function()
+		Theme.tryRegisterEvent = function()
+			return true
+		end
+		local card = fakeCard()
+		assert.is_true(Chip.closeOnClickOutside(card))
+		assert.are.same({}, Theme.diagnostics())
+		assert.is_function(card.scripts.OnEvent)
 	end)
 end)
 
