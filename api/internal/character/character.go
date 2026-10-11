@@ -131,6 +131,23 @@ func RulesetFromRealm(realm, fallback string) string {
 	return RulesetNormal
 }
 
+// RealmForRuleset is RulesetFromRealm's inverse: the realm name a client on ruleset shows,
+// which the nightly data addon keys its characters by ("Name-Realm",
+// docs/contracts/addon-v2.md contract 5). The realm table the API has is the one
+// RulesetFromRealm reads: Forever replaced realms with rulesets, so the only realm segments
+// it recognises are the four ruleset names themselves and every other segment takes the
+// fallback. Each ruleset therefore has exactly one realm, its own name, written as the
+// client capitalises a realm ("Normal", "Pvp", "Rp", "Hardcore"). Empty for anything that
+// is not a ruleset. If a live client names its realm otherwise, this and RulesetFromRealm
+// change together.
+func RealmForRuleset(ruleset string) string {
+	r := strings.ToLower(strings.TrimSpace(ruleset))
+	if !ValidRuleset(r) {
+		return ""
+	}
+	return strings.ToUpper(r[:1]) + r[1:]
+}
+
 // KeyFromUnit builds the character key for a unit name out of a combat
 // log, in a report whose region and ruleset are region and ruleset.
 func KeyFromUnit(region, ruleset, unit string) string {

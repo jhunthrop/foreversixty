@@ -312,7 +312,7 @@ func (g *gearData) plannedItems(build, spec string) (map[int]bool, error) {
 	if err != nil {
 		return nil, err
 	}
-	for _, set := range sets {
+	for _, set := range sets[FullGearBand] {
 		for _, id := range set {
 			planned[id] = true
 		}

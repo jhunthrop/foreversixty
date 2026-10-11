@@ -264,6 +264,12 @@ func (s *Store) anonymized(ctx context.Context, playerKey string) (bool, error) 
 	return anon, nil
 }
 
+// Anonymized is anonymized for a reader outside this package: the nightly data addon leaves
+// out exactly the characters ForeverScore answers no score for.
+func (s *Store) Anonymized(ctx context.Context, playerKey string) (bool, error) {
+	return s.anonymized(ctx, playerKey)
+}
+
 // characterTrendPageSize bounds one page of the character endpoint's trend[]; a career's
 // worth of rated fights is unbounded, so this list is paginated like every other list read
 // in this API (reports/recent.go's own convention).

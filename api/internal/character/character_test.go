@@ -49,6 +49,43 @@ func TestRulesetFromRealmTakesTheSegmentThenTheFallback(t *testing.T) {
 	}
 }
 
+// The realm table RulesetFromRealm reads is the four ruleset names; each ruleset is reached
+// from exactly one realm in it, and RealmForRuleset names that realm.
+func TestRealmForRulesetIsTheOneRealmEachRulesetHas(t *testing.T) {
+	realms := map[string][]string{}
+	for _, realm := range Rulesets {
+		if r := strings.ToLower(realm); ValidRuleset(r) {
+			ruleset := RulesetFromRealm(realm, "")
+			realms[ruleset] = append(realms[ruleset], realm)
+		}
+	}
+	seen := map[string]string{}
+	for _, ruleset := range Rulesets {
+		if len(realms[ruleset]) != 1 {
+			t.Fatalf("ruleset %q has realms %v, want exactly one", ruleset, realms[ruleset])
+		}
+		realm := RealmForRuleset(ruleset)
+		if !strings.EqualFold(realm, realms[ruleset][0]) {
+			t.Errorf("RealmForRuleset(%q) = %q, want %q", ruleset, realm, realms[ruleset][0])
+		}
+		if got := RulesetFromRealm(realm, RulesetHardcore); got != ruleset {
+			t.Errorf("RulesetFromRealm(RealmForRuleset(%q)) = %q", ruleset, got)
+		}
+		if other, dup := seen[realm]; dup {
+			t.Errorf("rulesets %q and %q share the realm %q", other, ruleset, realm)
+		}
+		seen[realm] = ruleset
+	}
+	for ruleset, want := range map[string]string{"normal": "Normal", "pvp": "Pvp", "rp": "Rp", "hardcore": "Hardcore"} {
+		if got := RealmForRuleset(ruleset); got != want {
+			t.Errorf("RealmForRuleset(%q) = %q, want %q", ruleset, got, want)
+		}
+	}
+	if got := RealmForRuleset("Nightslayer"); got != "" {
+		t.Errorf("a name that is not a ruleset has no realm: %q", got)
+	}
+}
+
 func TestKeyFromUnitSplitsTheLoggedName(t *testing.T) {
 	if got := KeyFromUnit("us", "hardcore", "Baelgrim-Nightslayer"); got != "us/hardcore/baelgrim" {
 		t.Errorf("KeyFromUnit = %q", got)

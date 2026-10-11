@@ -83,17 +83,27 @@ describe("the v2 wire contracts, addon side", function()
 			assert.is_true(isDate(data.generated))
 		end)
 
-		it("gives every character a score, a tier and an as_of date", function()
+		it("gives every scored character a tier and an as_of date, and every character its profile", function()
 			local tiers = set({ "common", "uncommon", "rare", "epic", "legendary" })
-			local count = 0
+			local scored, noLogs = 0, 0
 			for key, character in pairs(data.characters) do
-				count = count + 1
 				assert.is_true(isNameRealm(key), "Name-Realm key: " .. key)
-				assert.is_number(character.score, key)
-				assert.is_true(tiers[character.tier] == true, key .. " tier " .. tostring(character.tier))
-				assert.is_true(isDate(character.as_of), key)
+				assert.is_string(character.profile, key)
+				if character.score == nil then
+					-- A verified guild member with no logs yet: score = nil, no tier, no
+					-- components, so the addon says "no logs yet" and never shows a zero.
+					noLogs = noLogs + 1
+					assert.is_nil(character.tier, key)
+					assert.is_nil(character.components, key)
+				else
+					scored = scored + 1
+					assert.is_number(character.score, key)
+					assert.is_true(tiers[character.tier] == true, key .. " tier " .. tostring(character.tier))
+					assert.is_true(isDate(character.as_of), key)
+				end
 			end
-			assert.is_true(count >= 1)
+			assert.is_true(scored >= 1)
+			assert.is_true(noLogs >= 1, "the fixture carries a no-logs record")
 		end)
 
 		it("keeps the components summing to the score and the tier matching the score", function()
@@ -105,12 +115,14 @@ describe("the v2 wire contracts, addon side", function()
 				return "legendary"
 			end
 			for key, character in pairs(data.characters) do
-				local sum = 0
-				for _, value in pairs(character.components) do
-					sum = sum + value
+				if character.score ~= nil then
+					local sum = 0
+					for _, value in pairs(character.components) do
+						sum = sum + value
+					end
+					assert.are.equal(character.score, sum, key)
+					assert.are.equal(tierOf(character.score), character.tier, key)
 				end
-				assert.are.equal(character.score, sum, key)
-				assert.are.equal(tierOf(character.score), character.tier, key)
 			end
 		end)
 

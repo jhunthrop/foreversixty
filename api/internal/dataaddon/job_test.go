@@ -3,6 +3,7 @@ package dataaddon
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -117,5 +118,46 @@ func TestRunUploadsEveryRenderedFileAndAManifest(t *testing.T) {
 	}
 	if !sawData || !sawManifest {
 		t.Errorf("calls = %+v, want Data.lua and manifest.txt uploaded", up.Calls)
+	}
+}
+
+// Name-Realm carries no region: two characters sharing one would each read as the other in
+// game, so neither is written and both are counted.
+func TestRunLeavesOutCharactersThatShareANameRealmKey(t *testing.T) {
+	pool := testPool(t)
+	ctx := context.Background()
+	now := time.Date(2026, 9, 22, 4, 0, 0, 0, time.UTC)
+	foughtAt := now.Add(-2 * 24 * time.Hour)
+	if _, err := pool.Exec(ctx,
+		`insert into reports (id, visibility, status, created_at) values ('dataaddon-job-twins', 'public', 'complete', $1)`,
+		foughtAt); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		pool.Exec(ctx, `delete from rating_scores where report_id = 'dataaddon-job-twins'`)
+		pool.Exec(ctx, `delete from reports where id = 'dataaddon-job-twins'`)
+	})
+	if err := db.EnsureRatingsPartition(ctx, pool, foughtAt); err != nil {
+		t.Fatal(err)
+	}
+	for i, key := range []string{"us/normal/dataaddon-twin", "eu/normal/dataaddon-twin"} {
+		if _, err := pool.Exec(ctx,
+			`insert into rating_scores (report_id, fight_index, player_key, player_name, encounter_id,
+			   kill, overall, overall_uncapped, overall_capped, components, model_version, fought_at)
+			 values ('dataaddon-job-twins', $1, $2, 'Twin', 1, false, 50, 50, false, '[]', 'test', $3)`,
+			i+1, key, foughtAt); err != nil {
+			t.Fatal(err)
+		}
+	}
+	log := &recordingLogger{}
+	result, err := Run(ctx, Deps{Store: &Store{Pool: pool}, Now: now, Log: log})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(result.Rendered["Data.lua"]), `"Twin-Normal"`) {
+		t.Errorf("a shared Name-Realm key was written:\n%s", result.Rendered["Data.lua"])
+	}
+	if result.SkippedRows != 2 || len(log.warnings) == 0 {
+		t.Errorf("skipped = %d with %d warnings, want both twins counted and logged", result.SkippedRows, len(log.warnings))
 	}
 }

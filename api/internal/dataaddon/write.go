@@ -6,31 +6,28 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"math"
 	"sort"
+	"strconv"
+	"strings"
 	"time"
 )
 
-// isoFormat is Ratings.lua's own pattern:
-// "^(%d%d%d%d)%-(%d%d)%-(%d%d)T(%d%d):(%d%d):(%d%d)Z$".
-const isoFormat = "2006-01-02T15:04:05Z"
-
-// dataLuaPath is the checked-in path this content replaces at release
-// time -- echoed in the file's own header comment.
-const dataLuaPath = "addon/ForeverSixtyData/Data.lua"
+// dataFormat is contract 5's version, the first field of the file.
+const dataFormat = 2
 
 // Data is everything one Render call writes.
 type Data struct {
 	Generated  time.Time
-	Build      string
-	Characters map[string]characterRow
-	Guilds     map[string]guildRow
+	Characters map[string]characterRecord // by Name-Realm
+	Guilds     map[string]guildRecord     // by guild name
 }
 
 // Render returns the file(s) to publish: one ("Data.lua") when the whole
 // file fits in maxSingleFileBytes, or a header plus one per region when it
 // does not (renderSplit, write_split.go). Every file returned, together,
 // defines the same ForeverSixtyData global the single-file form would --
-// Ratings.lua reads one global regardless of how many files built it.
+// the addon reads one global regardless of how many files built it.
 func Render(d Data) (map[string][]byte, error) {
 	return renderWithLimit(d, maxSingleFileBytes)
 }
@@ -48,57 +45,134 @@ func renderWithLimit(d Data, limit int) (map[string][]byte, error) {
 	return renderSplit(d)
 }
 
+// render writes contract 5's ForeverSixtyData global, exactly the layout of
+// docs/contracts/fixtures/data-addon-v2.lua: one field per line, records sorted by key.
 func render(w io.Writer, d Data) error {
 	bw := bufio.NewWriter(w)
-	writeHeader(bw, d)
-	fmt.Fprintln(bw, "ForeverSixtyData = {")
-	fmt.Fprintln(bw, "\tformat = 1,")
-	fmt.Fprintf(bw, "\tgenerated = %q,\n", d.Generated.UTC().Format(isoFormat))
-	fmt.Fprintf(bw, "\tbuild = %q,\n", d.Build)
+	writeOpening(bw, d)
 	fmt.Fprintln(bw, "\tcharacters = {")
 	for _, key := range sortedKeys(d.Characters) {
-		writeCharacterRow(bw, key, d.Characters[key])
+		writeCharacter(bw, key, d.Characters[key])
 	}
 	fmt.Fprintln(bw, "\t},")
 	fmt.Fprintln(bw, "\tguilds = {")
 	for _, key := range sortedKeys(d.Guilds) {
-		writeGuildRow(bw, key, d.Guilds[key])
+		writeGuild(bw, key, d.Guilds[key])
 	}
 	fmt.Fprintln(bw, "\t},")
 	fmt.Fprintln(bw, "}")
 	return bw.Flush()
 }
 
-func writeHeader(bw *bufio.Writer, d Data) {
-	fmt.Fprintf(bw, "-- %s\n", dataLuaPath)
-	fmt.Fprintf(bw, "-- Generated %s for data build %s by the nightly data-addon job (api/internal/dataaddon).\n",
-		d.Generated.UTC().Format(isoFormat), d.Build)
-	fmt.Fprintln(bw, "-- Do not edit by hand: the addon-data-release workflow overwrites this file every night.")
+// writeOpening writes the global's first three lines: its name, format and the UTC date
+// the file was generated.
+func writeOpening(bw *bufio.Writer, d Data) {
+	fmt.Fprintln(bw, "ForeverSixtyData = {")
+	fmt.Fprintf(bw, "\tformat = %d,\n", dataFormat)
+	fmt.Fprintf(bw, "\tgenerated = %s,\n", luaString(d.Generated.UTC().Format(time.DateOnly)))
 }
 
-func writeCharacterRow(bw *bufio.Writer, key string, row characterRow) {
-	fmt.Fprintf(bw, "\t\t[%q] = { rating = %d, mean90 = %d", key, row.Rating, row.Mean90)
-	for _, name := range componentNames {
-		if v, ok := row.Components[name]; ok {
-			fmt.Fprintf(bw, ", %s = %d", name, v)
+// writeCharacter writes one character record. Every number is the record's own, copied
+// from rating.ScoreV2; a no-logs record says score = nil and carries only what is known
+// about the character besides its page.
+func writeCharacter(bw *bufio.Writer, key string, rec characterRecord) {
+	fmt.Fprintf(bw, "\t\t[%s] = {\n", luaString(key))
+	field := func(name, value string) { fmt.Fprintf(bw, "\t\t\t%s = %s,\n", name, value) }
+	known := func() {
+		if rec.ItemLevel > 0 {
+			field("item_level", strconv.Itoa(rec.ItemLevel))
+		}
+		if rec.Spec != "" {
+			field("spec", luaString(rec.Spec))
 		}
 	}
-	fmt.Fprintf(bw, ", fights = %d },\n", row.Fights)
+	sc := rec.Score
+	if sc == nil {
+		field("score", "nil")
+		known()
+		field("profile", luaString(rec.Profile))
+		fmt.Fprintln(bw, "\t\t},")
+		return
+	}
+	c := sc.Components
+	field("score", strconv.Itoa(sc.Score))
+	field("tier", luaString(sc.Tier))
+	field("as_of", luaString(sc.AsOf.UTC().Format(time.DateOnly)))
+	field("components", fmt.Sprintf("{ gear = %d, experience = %d, parses = %d, attendance = %d, discipline = %d }",
+		c.Gear, c.Experience, c.Parses, c.Attendance, c.Discipline))
+	field("gear_score", strconv.Itoa(sc.GearScore))
+	known()
+	field("experience", fmt.Sprintf("{ dungeons = %d, raid_kills = %d, alts = %d }",
+		sc.Experience.Dungeons, sc.Experience.RaidKills, sc.Experience.Alts))
+	field("best_parses", bestParses(rec.BestParses))
+	field("attendance", luaFraction(sc.Attendance))
+	field("fights", strconv.Itoa(sc.Fights))
+	field("profile", luaString(rec.Profile))
+	fmt.Fprintln(bw, "\t\t},")
 }
 
-func writeGuildRow(bw *bufio.Writer, key string, row guildRow) {
-	fmt.Fprintf(bw, "\t\t[%q] = { name = %q", key, row.Name)
-	if row.Progress != "" {
-		fmt.Fprintf(bw, ", progress = %q", row.Progress)
+// writeGuild writes one guild record.
+func writeGuild(bw *bufio.Writer, key string, rec guildRecord) {
+	fmt.Fprintf(bw, "\t\t[%s] = {\n", luaString(key))
+	field := func(name, value string) { fmt.Fprintf(bw, "\t\t\t%s = %s,\n", name, value) }
+	field("standing", strconv.Itoa(rec.Standing))
+	field("nights", strconv.Itoa(rec.Nights))
+	field("roster", strconv.Itoa(rec.Roster))
+	if rec.Attendance != nil {
+		field("attendance", luaFraction(*rec.Attendance))
 	}
-	fmt.Fprintf(bw, ", nights = %d, roster = %d, members = { ", row.Nights, row.Roster)
-	for i, m := range row.Members {
-		if i > 0 {
-			fmt.Fprint(bw, ", ")
+	members := make([]string, len(rec.Members))
+	for i, m := range rec.Members {
+		members[i] = luaString(m)
+	}
+	if len(members) == 0 {
+		field("members", "{}")
+	} else {
+		field("members", "{ "+strings.Join(members, ", ")+" }")
+	}
+	fmt.Fprintln(bw, "\t\t},")
+}
+
+// bestParses is a boss -> percentile table, bosses sorted.
+func bestParses(parses map[string]int) string {
+	if len(parses) == 0 {
+		return "{}"
+	}
+	entries := make([]string, 0, len(parses))
+	for _, boss := range sortedKeys(parses) {
+		entries = append(entries, fmt.Sprintf("[%s] = %d", luaString(boss), parses[boss]))
+	}
+	return "{ " + strings.Join(entries, ", ") + " }"
+}
+
+// luaFraction writes a fraction (0.75 is 75 percent) to the hundredth, which is a whole
+// percent: the file is shown as percentages, and a 2/3 needs no sixteen digits.
+func luaFraction(v float64) string {
+	return strconv.FormatFloat(math.Round(v*100)/100, 'f', -1, 64)
+}
+
+// luaString quotes s as a Lua string literal any Lua 5.1 reads: a backslash, a double
+// quote and every control byte are escaped (a control byte as a three-digit \ddd, so a digit after it is never read into it); every
+// other byte, UTF-8 included, is written as is.
+func luaString(s string) string {
+	var b strings.Builder
+	b.WriteByte('"')
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		switch {
+		case c == '\\' || c == '"':
+			b.WriteByte('\\')
+			b.WriteByte(c)
+		case c == '\n':
+			b.WriteString(`\n`)
+		case c < 0x20 || c == 0x7f:
+			fmt.Fprintf(&b, `\%03d`, c)
+		default:
+			b.WriteByte(c)
 		}
-		fmt.Fprintf(bw, "%q", m)
 	}
-	fmt.Fprintln(bw, " } },")
+	b.WriteByte('"')
+	return b.String()
 }
 
 // sortedKeys returns m's keys in ascending byte order, for deterministic

@@ -9,180 +9,126 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/db"
 )
 
-func TestCharacterFightsAppliesTheWindowVisibilityAndAnonymizeRules(t *testing.T) {
+// windowParses keeps the 90-day window, public reports and sufficient cards, and names each
+// boss by its fight (else the encounter's newest named fight), keeping the best overall.
+func TestWindowParsesKeepsTheWindowVisibilityAndSufficiencyRules(t *testing.T) {
 	pool := testPool(t)
 	ctx := context.Background()
 	now := time.Date(2026, 9, 22, 4, 0, 0, 0, time.UTC)
-
-	var normalUser, anonUser int64
-	if err := pool.QueryRow(ctx, `insert into users (battletag) values ('Normal') returning id`).Scan(&normalUser); err != nil {
-		t.Fatal(err)
-	}
-	if err := pool.QueryRow(ctx, `insert into users (battletag, anonymize) values ('Hidden', true) returning id`).Scan(&anonUser); err != nil {
-		t.Fatal(err)
-	}
 	t.Cleanup(func() {
-		pool.Exec(ctx, `delete from users where id in ($1, $2)`, normalUser, anonUser)
+		bg := context.Background()
+		pool.Exec(bg, `delete from rating_scores where report_id like 'dataaddon-store-%'`)
+		pool.Exec(bg, `delete from fights where report_id like 'dataaddon-store-%'`)
+		pool.Exec(bg, `delete from reports where id like 'dataaddon-store-%'`)
 	})
-
-	if _, err := pool.Exec(ctx,
-		`insert into characters (key, region, ruleset, name, user_id) values
-		 ('us/normal/thoradin', 'us', 'normal', 'Thoradin', $1),
-		 ('us/normal/hiddenhero', 'us', 'normal', 'Hiddenhero', $2)`, normalUser, anonUser); err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() {
-		pool.Exec(ctx, `delete from characters where key in ('us/normal/thoradin', 'us/normal/hiddenhero')`)
-	})
-
-	insertReport := func(id, visibility string, createdAt time.Time) {
-		if _, err := pool.Exec(ctx,
-			`insert into reports (id, visibility, status, created_at) values ($1, $2, 'complete', $3)`,
-			id, visibility, createdAt); err != nil {
+	for id, visibility := range map[string]string{"dataaddon-store-public": "public", "dataaddon-store-private": "private"} {
+		if _, err := pool.Exec(ctx, `insert into reports (id, visibility, status, created_at) values ($1, $2, 'complete', $3)`,
+			id, visibility, now.Add(-2*24*time.Hour)); err != nil {
 			t.Fatal(err)
 		}
 	}
-	insertReport("dataaddon-store-public", "public", now.Add(-2*24*time.Hour))
-	insertReport("dataaddon-store-private", "private", now.Add(-2*24*time.Hour))
-	t.Cleanup(func() {
-		pool.Exec(ctx, `delete from reports where id in ('dataaddon-store-public', 'dataaddon-store-private')`)
-	})
-
-	insertScore := func(reportID string, index int, playerKey string, overall float64, foughtAt time.Time) {
-		// rating_scores is partitioned by month on fought_at (migration
-		// 0022): a plain insert with no matching partition fails outright,
-		// so every write through this test helper ensures one first, the
-		// same way rating.Store.RateFight does before its own insert.
-		if err := db.EnsureRatingsPartition(ctx, pool, foughtAt); err != nil {
-			t.Fatal(err)
-		}
-		if _, err := pool.Exec(ctx,
-			`insert into rating_scores (report_id, fight_index, player_key, player_name, encounter_id,
-			   kill, overall, overall_uncapped, overall_capped, components, model_version, fought_at)
-			 values ($1, $2, $3, $3, 1, false, $4, $4, false, '[]', 'test', $5)`,
-			reportID, index, playerKey, overall, foughtAt); err != nil {
+	fight := func(index, encounter int, name string, at time.Time) {
+		if _, err := pool.Exec(ctx, `insert into fights (report_id, fight_index, encounter_id, name, kill, start_ms)
+			values ('dataaddon-store-public', $1, $2, $3, true, $4)`, index, encounter, name, at.UnixMilli()); err != nil {
 			t.Fatal(err)
 		}
 	}
-	insertScore("dataaddon-store-public", 1, "us/normal/thoradin", 80, now.Add(-2*24*time.Hour))    // in window, public: counts
-	insertScore("dataaddon-store-public", 2, "us/normal/thoradin", 999, now.Add(-100*24*time.Hour)) // out of window: excluded
-	insertScore("dataaddon-store-private", 1, "us/normal/thoradin", 999, now.Add(-1*24*time.Hour))  // private report: excluded
-	insertScore("dataaddon-store-public", 3, "us/normal/hiddenhero", 999, now.Add(-2*24*time.Hour)) // anonymized owner: excluded
-	t.Cleanup(func() {
-		pool.Exec(ctx, `delete from rating_scores where report_id in ('dataaddon-store-public', 'dataaddon-store-private')`)
-	})
+	fight(1, 990801, "Lucifron", now.Add(-3*24*time.Hour))
+	fight(2, 990801, "", now.Add(-2*24*time.Hour)) // unnamed: the encounter's newest name
+	fight(3, 990802, "Magmadar", now.Add(-2*24*time.Hour))
 
-	store := &Store{Pool: pool}
-	rows, err := store.characterFights(ctx, now.Add(-ratingWindow))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(rows) != 1 {
-		t.Fatalf("rows = %d, want exactly 1 (thoradin's in-window public fight); got %+v", len(rows), rows)
-	}
-	if rows[0].PlayerKey != "us/normal/thoradin" || rows[0].Overall != 80 {
-		t.Errorf("row = %+v", rows[0])
-	}
-}
-
-func TestCharacterFightsExcludesInsufficientCardsAndOmitsAnAllInsufficientCharacter(t *testing.T) {
-	pool := testPool(t)
-	ctx := context.Background()
-	now := time.Date(2026, 9, 22, 4, 0, 0, 0, time.UTC)
-
-	var user1, user2 int64
-	if err := pool.QueryRow(ctx, `insert into users (battletag) values ('WithEnough') returning id`).Scan(&user1); err != nil {
-		t.Fatal(err)
-	}
-	if err := pool.QueryRow(ctx, `insert into users (battletag) values ('OnlyInsufficient') returning id`).Scan(&user2); err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() {
-		pool.Exec(ctx, `delete from users where id in ($1, $2)`, user1, user2)
-	})
-
-	if _, err := pool.Exec(ctx,
-		`insert into characters (key, region, ruleset, name, user_id) values
-		 ('us/normal/withenough', 'us', 'normal', 'Withenough', $1),
-		 ('us/normal/onlyinsufficient', 'us', 'normal', 'Onlyinsufficient', $2)`, user1, user2); err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() {
-		pool.Exec(ctx, `delete from characters where key in ('us/normal/withenough', 'us/normal/onlyinsufficient')`)
-	})
-
-	if _, err := pool.Exec(ctx,
-		`insert into reports (id, visibility, status, created_at) values ($1, 'public', 'complete', $2)`,
-		"dataaddon-store-insufficient", now.Add(-2*24*time.Hour)); err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() {
-		pool.Exec(ctx, `delete from reports where id = 'dataaddon-store-insufficient'`)
-	})
-
-	insertScore := func(index int, playerKey string, overall float64, insufficient bool, foughtAt time.Time) {
-		if err := db.EnsureRatingsPartition(ctx, pool, foughtAt); err != nil {
+	score := func(report string, index int, key string, encounter int, overall float64, insufficient bool, at time.Time) {
+		if err := db.EnsureRatingsPartition(ctx, pool, at); err != nil {
 			t.Fatal(err)
 		}
 		if _, err := pool.Exec(ctx,
 			`insert into rating_scores (report_id, fight_index, player_key, player_name, encounter_id,
 			   kill, overall, overall_uncapped, overall_capped, components, model_version, fought_at, insufficient)
-			 values ('dataaddon-store-insufficient', $1, $2, $2, 1, false, $3, $3, false, '[]', 'test', $4, $5)`,
-			index, playerKey, overall, foughtAt, insufficient); err != nil {
+			 values ($1, $2, $3, $3, $4, true, $5, $5, false, '[]', 'test', $6, $7)`,
+			report, index, key, encounter, overall, at, insufficient); err != nil {
 			t.Fatal(err)
 		}
 	}
-	insertScore(1, "us/normal/withenough", 80, false, now.Add(-2*24*time.Hour))
-	insertScore(2, "us/normal/withenough", 82, false, now.Add(-3*24*time.Hour))
-	insertScore(3, "us/normal/withenough", 0, true, now.Add(-4*24*time.Hour))
-	insertScore(4, "us/normal/onlyinsufficient", 0, true, now.Add(-2*24*time.Hour))
-	t.Cleanup(func() {
-		pool.Exec(ctx, `delete from rating_scores where report_id = 'dataaddon-store-insufficient'`)
-	})
+	const thoradin = "us/normal/dataaddon-thoradin"
+	at := now.Add(-2 * 24 * time.Hour)
+	score("dataaddon-store-public", 1, thoradin, 990801, 64.4, false, at)
+	score("dataaddon-store-public", 2, thoradin, 990801, 71.2, false, at)                       // the better Lucifron, named by fight 1
+	score("dataaddon-store-public", 3, thoradin, 990802, 99, true, at)                          // insufficient: not a score
+	score("dataaddon-store-public", 4, thoradin, 990802, 99, false, now.Add(-100*24*time.Hour)) // out of window
+	score("dataaddon-store-private", 1, thoradin, 990802, 99, false, at)                        // private report
+	score("dataaddon-store-public", 3, "us/normal/dataaddon-onlyinsufficient", 990802, 0, true, at)
 
-	store := &Store{Pool: pool}
-	rows, err := store.characterFights(ctx, now.Add(-ratingWindow))
+	got, err := (&Store{Pool: pool}).windowParses(ctx, now.Add(-ratingWindow))
 	if err != nil {
 		t.Fatal(err)
 	}
-	var withEnough []characterFightRow
-	for _, r := range rows {
-		if r.PlayerKey == "us/normal/onlyinsufficient" {
-			t.Fatalf("onlyinsufficient should have zero rows (its only card is insufficient); got %+v", r)
-		}
-		if r.PlayerKey == "us/normal/withenough" {
-			withEnough = append(withEnough, r)
-		}
+	if bosses := got[thoradin]; len(bosses) != 1 || bosses["Lucifron"] != 71.2 {
+		t.Errorf("thoradin = %v, want only Lucifron at 71.2", bosses)
 	}
-	if len(withEnough) != 2 {
-		t.Fatalf("withenough rows = %d, want exactly 2 (the insufficient row must not appear); got %+v", len(withEnough), withEnough)
-	}
-	var sum float64
-	for _, r := range withEnough {
-		sum += r.Overall
-	}
-	if sum != 162 {
-		t.Errorf("overall sum = %v, want 162 (80+82; the insufficient row's 0 must never enter the sum)", sum)
+	if _, ok := got["us/normal/dataaddon-onlyinsufficient"]; ok {
+		t.Error("a character whose only card is insufficient has no rated fight in the window")
 	}
 }
 
-func TestGuildQueriesReadVerifiedMembersNightsAndProgression(t *testing.T) {
+func TestStoredNamesPreferTheCharacterRowThenTheRatedRow(t *testing.T) {
+	pool := testPool(t)
+	ctx := context.Background()
+	at := time.Date(2026, 9, 20, 4, 0, 0, 0, time.UTC)
+	t.Cleanup(func() {
+		bg := context.Background()
+		pool.Exec(bg, `delete from rating_scores where report_id = 'dataaddon-store-names'`)
+		pool.Exec(bg, `delete from characters where key = 'us/normal/dataaddon-lady-sunwick'`)
+		pool.Exec(bg, `delete from reports where id = 'dataaddon-store-names'`)
+	})
+	if _, err := pool.Exec(ctx, `insert into characters (key, region, ruleset, name) values
+		('us/normal/dataaddon-lady-sunwick', 'us', 'normal', 'Lady Sunwick')`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx, `insert into reports (id, visibility, status, created_at) values
+		('dataaddon-store-names', 'public', 'complete', $1)`, at); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.EnsureRatingsPartition(ctx, pool, at); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx,
+		`insert into rating_scores (report_id, fight_index, player_key, player_name, encounter_id,
+		   kill, overall, overall_uncapped, overall_capped, components, model_version, fought_at)
+		 values ('dataaddon-store-names', 1, 'eu/pvp/dataaddon-mörk', 'Mörk-Pvp', 1, false, 50, 50, false, '[]', 'test', $1)`,
+		at); err != nil {
+		t.Fatal(err)
+	}
+	got, err := (&Store{Pool: pool}).storedNames(ctx,
+		[]string{"us/normal/dataaddon-lady-sunwick", "eu/pvp/dataaddon-mörk", "us/normal/dataaddon-nobody"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{
+		"us/normal/dataaddon-lady-sunwick": "Lady Sunwick",
+		"eu/pvp/dataaddon-mörk":            "Mörk-Pvp",
+		"us/normal/dataaddon-nobody":       "",
+	}
+	for key, name := range want {
+		if got[key] != name {
+			t.Errorf("%s: %q, want %q", key, got[key], name)
+		}
+	}
+}
+
+func TestGuildQueriesReadVerifiedMembersNightsAndKills(t *testing.T) {
 	pool := testPool(t)
 	ctx := context.Background()
 	now := time.Date(2026, 9, 22, 4, 0, 0, 0, time.UTC)
 
-	var u1, u2 int64
+	var u1 int64
 	if err := pool.QueryRow(ctx, `insert into users (battletag) values ('One') returning id`).Scan(&u1); err != nil {
 		t.Fatal(err)
 	}
-	if err := pool.QueryRow(ctx, `insert into users (battletag) values ('Two') returning id`).Scan(&u2); err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() { pool.Exec(ctx, `delete from users where id in ($1, $2)`, u1, u2) })
+	t.Cleanup(func() { pool.Exec(ctx, `delete from users where id = $1`, u1) })
 
 	var guildID int64
 	if err := pool.QueryRow(ctx,
-		`insert into guilds (region, ruleset, name) values ('us', 'normal', 'Iron Vanguard') returning id`,
+		`insert into guilds (region, ruleset, name) values ('us', 'normal', 'Dataaddon Vanguard') returning id`,
 	).Scan(&guildID); err != nil {
 		t.Fatal(err)
 	}
@@ -205,6 +151,7 @@ func TestGuildQueriesReadVerifiedMembersNightsAndProgression(t *testing.T) {
 	}
 	insertReport("dataaddon-guild-1", now.Add(-2*24*time.Hour))
 	insertReport("dataaddon-guild-2", now.Add(-10*24*time.Hour))
+	insertReport("dataaddon-guild-old", now.Add(-100*24*time.Hour))
 	t.Cleanup(func() { pool.Exec(ctx, `delete from reports where guild_id = $1`, guildID) })
 
 	insertFight := func(reportID string, index int, encounterID int64, kill bool) {
@@ -218,8 +165,9 @@ func TestGuildQueriesReadVerifiedMembersNightsAndProgression(t *testing.T) {
 	insertFight("dataaddon-guild-1", 2, 101, false)
 	insertFight("dataaddon-guild-2", 1, 100, true)
 	insertFight("dataaddon-guild-2", 2, 102, true)
+	insertFight("dataaddon-guild-old", 1, 103, true) // out of window
 	t.Cleanup(func() {
-		pool.Exec(ctx, `delete from fights where report_id in ('dataaddon-guild-1', 'dataaddon-guild-2')`)
+		pool.Exec(ctx, `delete from fights where report_id like 'dataaddon-guild-%'`)
 	})
 
 	store := &Store{Pool: pool}
@@ -229,9 +177,7 @@ func TestGuildQueriesReadVerifiedMembersNightsAndProgression(t *testing.T) {
 	}
 	found := false
 	for _, g := range identities {
-		if g.ID == guildID {
-			found = true
-		}
+		found = found || g.ID == guildID
 	}
 	if !found {
 		t.Fatal("the guild with a verified member should be listed")
@@ -245,7 +191,8 @@ func TestGuildQueriesReadVerifiedMembersNightsAndProgression(t *testing.T) {
 		t.Errorf("verified members = %v, want exactly [us/normal/thoradin]", members[guildID])
 	}
 
-	nights, err := store.nightsByGuild(ctx, []int64{guildID}, now.Add(-ratingWindow))
+	since := now.Add(-ratingWindow)
+	nights, err := store.nightsByGuild(ctx, []int64{guildID}, since)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -253,11 +200,11 @@ func TestGuildQueriesReadVerifiedMembersNightsAndProgression(t *testing.T) {
 		t.Errorf("nights = %d, want 2", nights[guildID])
 	}
 
-	killed, total, err := store.progressionByGuild(ctx, []int64{guildID})
+	kills, err := store.bossesKilledByGuild(ctx, []int64{guildID}, since)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if killed[guildID] != 2 || total[guildID] != 3 {
-		t.Errorf("progression = %d/%d, want 2/3", killed[guildID], total[guildID])
+	if kills[guildID] != 2 {
+		t.Errorf("bosses killed in the window = %d, want 2 (100 and 102; 101 was a wipe, 103 is too old)", kills[guildID])
 	}
 }

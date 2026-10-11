@@ -180,14 +180,14 @@ func TestGearScoreWithNoDataWiredSaysSo(t *testing.T) {
 // band-60 picks (4838, the hand-derived table's figure, before it).
 func TestFullGearScoreIsTheSpecsBestBand60Set(t *testing.T) {
 	useRepoGearData(t)
-	got, err := FullGearScore(t.Context(), "1.60.1.70291", "warrior-arms")
+	got, err := FullGearScore(t.Context(), "1.60.1.70291", "warrior-arms", FullGearBand)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if math.Round(got) != 4767 {
 		t.Fatalf("FullGearScore(warrior-arms) = %v, want 4767 once rounded", got)
 	}
-	again, err := FullGearScore(t.Context(), "1.60.1.70291", "warrior-arms")
+	again, err := FullGearScore(t.Context(), "1.60.1.70291", "warrior-arms", FullGearBand)
 	if err != nil || again != got {
 		t.Fatalf("the cached mark = %v, %v; want %v", again, err, got)
 	}
@@ -211,13 +211,83 @@ func TestFullGearScoreOfASpecWithNoBestInSlotSetIsAnError(t *testing.T) {
 	}
 	SetGearData(repoTrees, dir)
 	t.Cleanup(func() { SetGearData(repoTrees, repoBuilds) })
-	if _, err := FullGearScore(t.Context(), build, "warrior-arms"); !errors.Is(err, ErrNoBestInSlot) {
+	if _, err := FullGearScore(t.Context(), build, "warrior-arms", FullGearBand); !errors.Is(err, ErrNoBestInSlot) {
 		t.Errorf("no best-in-slot set: err = %v, want ErrNoBestInSlot", err)
 	}
-	if _, err := FullGearScore(t.Context(), build, "warrior-gladiator"); !errors.Is(err, ErrGearUnscorable) {
+	if _, err := FullGearScore(t.Context(), build, "warrior-gladiator", FullGearBand); !errors.Is(err, ErrGearUnscorable) {
 		t.Errorf("a spec with no weights: err = %v, want ErrGearUnscorable", err)
 	}
-	if _, err := FullGearScore(t.Context(), "0.0.0.1", "warrior-arms"); !errors.Is(err, ErrGearUnscorable) {
+	if _, err := FullGearScore(t.Context(), "0.0.0.1", "warrior-arms", FullGearBand); !errors.Is(err, ErrGearUnscorable) {
 		t.Errorf("an unknown build: err = %v, want ErrGearUnscorable", err)
+	}
+}
+
+// A character's band is Gear.bandFor's: the highest band at or below its level, rounded down
+// to the ten-level step and capped at 60; below 20 there is none.
+func TestGearBandIsTheHighestBandAtOrBelowTheLevel(t *testing.T) {
+	useRepoGearData(t)
+	for level, want := range map[int]int{20: 20, 24: 20, 30: 30, 39: 30, 59: 50, 60: 60} {
+		got, ok, err := GearBand(t.Context(), "1.60.1.70291", "warrior-arms", level)
+		if err != nil || !ok || got != want {
+			t.Errorf("GearBand(level %d) = %d, %v, %v; want %d", level, got, ok, err, want)
+		}
+	}
+	for _, level := range []int{1, 19} {
+		if got, ok, err := GearBand(t.Context(), "1.60.1.70291", "warrior-arms", level); err != nil || ok {
+			t.Errorf("GearBand(level %d) = %d, %v, %v; want no band below 20", level, got, ok, err)
+		}
+	}
+}
+
+// A spec whose bis file skips a band is measured in the next band down, as the addon does.
+func TestGearBandStepsDownPastABandTheSpecHasNoSetFor(t *testing.T) {
+	useRepoGearData(t)
+	const build = "1.60.1.70291"
+	dir := t.TempDir()
+	weights, err := os.ReadFile(filepath.Join(repoBuilds, build, weightsFile))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(filepath.Join(dir, build, "bis"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, build, weightsFile), weights, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	bis := `{"bands": [{"band": 20, "slots": [{"item_id": 6627}]}, {"band": 40, "slots": [{"item_id": 6627}]}]}`
+	if err := os.WriteFile(filepath.Join(dir, build, "bis", "warrior-arms.json"), []byte(bis), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	SetGearData(repoTrees, dir)
+	t.Cleanup(func() { SetGearData(repoTrees, repoBuilds) })
+	for level, want := range map[int]int{35: 20, 45: 40, 60: 40} {
+		if got, ok, err := GearBand(t.Context(), build, "warrior-arms", level); err != nil || !ok || got != want {
+			t.Errorf("GearBand(level %d) = %d, %v, %v; want %d", level, got, ok, err, want)
+		}
+	}
+	if _, err := FullGearScore(t.Context(), build, "warrior-arms", 30); !errors.Is(err, ErrNoBestInSlot) {
+		t.Errorf("a band with no set: err = %v, want ErrNoBestInSlot", err)
+	}
+}
+
+// Each band's mark is that band's own best set: the fixture's set is warrior-arms' band-20
+// alliance pick, so the band-20 mark is at least its score, and each higher band's mark is
+// higher still.
+func TestFullGearScoreOfABandIsThatBandsBestSet(t *testing.T) {
+	useRepoGearData(t)
+	f := readGearScoreFixture(t)
+	previous := 0.0
+	for _, band := range []int{20, 30, 40, 50, 60} {
+		got, err := FullGearScore(t.Context(), f.Build, f.Spec, band)
+		if err != nil {
+			t.Fatalf("band %d: %v", band, err)
+		}
+		if band == 20 && got < f.Expected {
+			t.Errorf("the band-20 mark %v is below the band-20 alliance set's own %v", got, f.Expected)
+		}
+		if got <= previous {
+			t.Errorf("the band-%d mark %v is not above the band below's %v", band, got, previous)
+		}
+		previous = got
 	}
 }

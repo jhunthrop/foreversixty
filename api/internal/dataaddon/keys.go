@@ -2,41 +2,48 @@
 package dataaddon
 
 import (
-	"regexp"
 	"strings"
+
+	"github.com/jhunthrop/foreversixty/api/internal/character"
 )
 
-// whitespaceRun matches the same class the addon's own slug function does
-// (Ratings.lua: tostring(text):lower():gsub("%s+", "-")). Lua's %s class is
-// ASCII whitespace (space, tab, newline, CR, FF, VT); Go's \s matches it
-// identically for the ASCII range every real character or guild name is
-// drawn from.
-var whitespaceRun = regexp.MustCompile(`\s+`)
-
-// slug lowercases s and collapses every run of whitespace into a single
-// hyphen -- byte-for-byte what the addon's own Ratings.lua computes
-// client-side from GetRealmName(), a character name, and a guild name.
-//
-// This cannot reuse api/internal/character.Slug: that helper trims the
-// string first and replaces only the literal space character one-for-one,
-// which is a different function for a name with a tab or a doubled space
-// (neither occurs in a real character name, but a guild name can have a
-// doubled space, and the addon's own gsub is the contract this job has to
-// match exactly, not approximate).
-func slug(s string) string {
-	return whitespaceRun.ReplaceAllString(strings.ToLower(s), "-")
+// characterKey is the addon's lookup key for a character (contract 5): "Name-Realm", the
+// name as the game shows it and the realm a client on the character's ruleset sees
+// (character.RealmForRuleset, the inverse of the API's one realm-to-ruleset mapping). The
+// addon's Score.forCharacter builds the same string from UnitName and GetRealmName. Empty
+// when the ruleset has no realm.
+func characterKey(name, ruleset string) string {
+	realm := character.RealmForRuleset(ruleset)
+	if name == "" || realm == "" {
+		return ""
+	}
+	return name + "-" + realm
 }
 
-// characterKey builds the addon's lookup key for a character:
-// "<region>:<ruleset>:<name-slug>". The dispatch's "realm" position is
-// filled with the site's ruleset -- see the plan's "Key-format
-// reconciliation" section for why.
-func characterKey(region, ruleset, name string) string {
-	return slug(region) + ":" + slug(ruleset) + ":" + slug(name)
+// displayName is the name a character is keyed by: the stored display name (characters.name,
+// else the newest rated row's player_name with any "-Realm" the log printed cut off), else
+// the key's own name slug when nothing better was ever stored.
+func displayName(stored, slug string) string {
+	name, _ := character.SplitUnit(strings.TrimSpace(stored))
+	if name == "" {
+		return slug
+	}
+	return name
 }
 
-// guildKey is characterKey's twin for a guild: the same three parts, the
-// guild's own name in the third.
-func guildKey(region, ruleset, name string) string {
-	return characterKey(region, ruleset, name)
+// profilePath is the character's page on the site, "/character/<region>/<ruleset>/<slug>",
+// which the addon shows only as a copyable address.
+func profilePath(region, ruleset, slug string) string {
+	return "/character/" + region + "/" + ruleset + "/" + slug
+}
+
+// splitCharacterKey reads region/ruleset/name-slug back out of a character key
+// ("us/normal/thoradin" -> "us", "normal", "thoradin", true), the inverse of
+// character.Key for a well-formed key.
+func splitCharacterKey(key string) (region, ruleset, slug string, ok bool) {
+	parts := strings.SplitN(key, "/", 3)
+	if len(parts) != 3 || parts[0] == "" || parts[1] == "" || parts[2] == "" {
+		return "", "", "", false
+	}
+	return parts[0], parts[1], parts[2], true
 }

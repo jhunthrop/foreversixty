@@ -795,7 +795,7 @@ components:
           type: object
           nullable: true
           properties:
-            gear: { type: integer, description: "The gear component in points, 0-500, comparable across specs: the character's gear score for its spec as a share of that spec's own level-60 best-in-slot set in the same data build. This is contract 5's gear_score." }
+            gear: { type: integer, description: "The gear component in points, 0-500, comparable across specs: the character's gear score for its spec as a share of that spec's own best-in-slot set for your level (the highest best-in-slot band at or below the character's level, 20 to 60; below 20 there is none and the component is 0) in the same data build. This is contract 5's gear_score." }
             experience: { type: integer, description: "25 a distinct dungeon cleared + 40 a distinct raid boss killed across linked characters, capped at 700." }
             parses: { type: integer, description: "Mean best parse percentile per boss, scaled 0-600." }
             attendance: { type: integer, description: "The attendance component in points, 0-200: the fraction of the verified guild's nights (UTC dates of its fights) in the last 90 days attended, times 200. Contract 5's attendance is that fraction itself, 0-1." }

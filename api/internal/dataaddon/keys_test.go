@@ -3,38 +3,44 @@ package dataaddon
 
 import "testing"
 
-func TestSlugLowercasesAndCollapsesWhitespaceToOneHyphen(t *testing.T) {
-	cases := map[string]string{
-		"Thoradin":       "thoradin",
-		"Iron  Vanguard": "iron-vanguard", // a doubled space still collapses to one hyphen
-		"O'Malley":       "o'malley",      // an apostrophe is not whitespace: untouched
-		"Mörk":           "mörk",          // non-ASCII passes through unescaped
-	}
-	for in, want := range cases {
-		if got := slug(in); got != want {
-			t.Errorf("slug(%q) = %q, want %q", in, got, want)
+func TestCharacterKeyIsNameRealm(t *testing.T) {
+	for _, c := range []struct{ name, ruleset, want string }{
+		{"Obnoxious Yell", "normal", "Obnoxious Yell-Normal"},
+		{"Mörk", "pvp", "Mörk-Pvp"},
+		{"Thoradin", "hardcore", "Thoradin-Hardcore"},
+		{"Thoradin", "nightslayer", ""}, // not a ruleset: no realm, no key
+		{"", "normal", ""},
+	} {
+		if got := characterKey(c.name, c.ruleset); got != c.want {
+			t.Errorf("characterKey(%q, %q) = %q, want %q", c.name, c.ruleset, got, c.want)
 		}
 	}
 }
 
-func TestCharacterKeyMatchesTheAddonReadersOwnFormat(t *testing.T) {
-	// addon/ForeverSixty/Ratings.lua: characterKey(region, realm, name) =
-	// slug(region) .. ":" .. slug(realm) .. ":" .. slug(name); this job's
-	// realm position is the site's ruleset (see the plan's "Key-format
-	// reconciliation" section).
-	got := characterKey("US", "normal", "Thoradin")
-	if want := "us:normal:thoradin"; got != want {
-		t.Errorf("characterKey = %q, want %q", got, want)
-	}
-	got = characterKey("EU", "pvp", "Mörk")
-	if want := "eu:pvp:mörk"; got != want {
-		t.Errorf("characterKey = %q, want %q", got, want)
+func TestDisplayNameCutsTheLoggedRealmAndFallsBackToTheSlug(t *testing.T) {
+	for _, c := range []struct{ stored, slug, want string }{
+		{"Obnoxious Yell", "obnoxious-yell", "Obnoxious Yell"},
+		{"Mörk-Pvp", "mörk", "Mörk"},
+		{"", "thoradin", "thoradin"},
+	} {
+		if got := displayName(c.stored, c.slug); got != c.want {
+			t.Errorf("displayName(%q, %q) = %q, want %q", c.stored, c.slug, got, c.want)
+		}
 	}
 }
 
-func TestGuildKeyCollapsesTheGuildNamesSpaces(t *testing.T) {
-	got := guildKey("US", "normal", "Iron Vanguard")
-	if want := "us:normal:iron-vanguard"; got != want {
-		t.Errorf("guildKey = %q, want %q", got, want)
+func TestProfilePathIsTheCharacterPage(t *testing.T) {
+	if got := profilePath("us", "normal", "obnoxious-yell"); got != "/character/us/normal/obnoxious-yell" {
+		t.Errorf("profilePath = %q", got)
+	}
+}
+
+func TestSplitCharacterKey(t *testing.T) {
+	region, ruleset, slug, ok := splitCharacterKey("eu/pvp/mörk")
+	if !ok || region != "eu" || ruleset != "pvp" || slug != "mörk" {
+		t.Errorf("splitCharacterKey = %q %q %q %v", region, ruleset, slug, ok)
+	}
+	if _, _, _, ok := splitCharacterKey("not-a-key"); ok {
+		t.Error("a key without three parts should not split")
 	}
 }

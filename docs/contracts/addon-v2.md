@@ -206,7 +206,9 @@ Notes for the reader:
   `percentile` is the fight card's own overall (0 to 100). `loss_seconds` is the downtime
   seconds when the loss is downtime, else the seconds the player lay dead, else 0.
   `consumables_missed` is a list even when empty. One `last_raid` per character, for its
-  newest report that is not private with a rated fight in the last 14 days; none without one.
+  newest report that is not private with a rated fight in the last 14 days; none without one. A
+  fight rated before migration 0036 has none of the stored facts a boss line shows and is left
+  out of `last_raid` rather than shown as zeros.
 - `weights.dps_per_point` is the DPS (healing per second for a healer) one point of the stat
   whose weight is exactly 1 is worth, from the data build's `dps-per-point.json` for the spec;
   absent for a spec that file has no entry for (the tanks), and absent when the run's
@@ -283,13 +285,15 @@ the API (`api/internal/rating`); the addon displays and dates the score and neve
 ForeverSixtyData = {
   format = 2, generated = "2026-11-04",
   characters = {
-    ["Obnoxious-Yell"] = { score = 1830, tier = "epic", as_of = "2026-11-04",
-      components = { gear = 412, experience = 620, parses = 540, attendance = 180, discipline = 78 },
+    ["Obnoxious Yell-Normal"] = { score = 1560, tier = "epic", as_of = "2026-11-04",
+      components = { gear = 412, experience = 350, parses = 540, attendance = 180, discipline = 78 },
       gear_score = 412, item_level = 31, spec = "warrior-arms",
       experience = { dungeons = 14, raid_kills = 0, alts = 2 },
-      best_parses = { ["Lucifron"] = 71 }, attendance = 0.9, fights = 12, profile = "/character/us/forever/obnoxious-yell" },
+      best_parses = { ["Lucifron"] = 71 }, attendance = 0.9, fights = 12, profile = "/character/us/normal/obnoxious-yell" },
+    -- a verified guild member with no logs yet
+    ["Quiet Fern-Normal"] = { score = nil, item_level = 22, spec = "warrior-fury", profile = "/character/us/normal/quiet-fern" },
   },
-  guilds = { ["OLYMPUS XXVII"] = { standing = 3, nights = 4, roster = 31, attendance = 0.8, members = { "Obnoxious-Yell", ... } } },
+  guilds = { ["OLYMPUS XXVII"] = { standing = 3, nights = 4, roster = 31, attendance = 0.8, members = { "Obnoxious Yell-Normal", "Quiet Fern-Normal", ... } } },
 }
 ```
 Tiers by score: `common` < 500, `uncommon` < 1000, `rare` < 1500, `epic` < 2000, `legendary` ≥ 2000. These thresholds are provisional: the API lane sets the final numbers from the live distribution before week 2 closes, and the addon reads `tier` from the record, never computing it.
@@ -302,11 +306,11 @@ Notes for the reader:
   `mechanics`, `utility`, `preparation`, `activity`) taken from the old log-based rating. Format
   2 keys characters by `Name-Realm` and guilds by guild name, carries `generated` as `YYYY-MM-DD`, and replaces `rating` and
   the six components with `score`, `tier`, `as_of` and the five components above. `fights` keeps
-  its name and meaning. `gear_score`, `item_level`, `spec`, `experience`, `best_parses`,
+  its name (it now counts the rated fights the score rests on). `gear_score`, `item_level`, `spec`, `experience`, `best_parses`,
   `attendance` and `profile` are new. Lane L2 updates `Ratings` (or replaces it with `Score`) in
   step; the old six-component tooltip line is retired with format 1.
-- `as_of` is the date the score was last calculated, `YYYY-MM-DD`; the addon shows it as "as of
-  4 Nov" beside the score and never shows a score without its date. `generated` is when the file
+- `as_of` is the date of the newest rated fight the score rests on (`rating.ScoreV2`'s own),
+  `YYYY-MM-DD`; the addon shows it as "as of 4 Nov" beside the score and never shows a score without its date. `generated` is when the file
   was written, and in format 2 it is a date-only string (`YYYY-MM-DD`). Today's `Ratings.ageOf`
   requires an RFC 3339 timestamp, so the format 2 reader must parse a date-only value (treat it
   as the start of that day, UTC). A file whose `generated` is more than three days old is shown but marked stale,
@@ -318,3 +322,26 @@ Notes for the reader:
   only as a copyable address.
 - `guilds[*].members` holds the `Name-Realm` keys of `characters`; the other guild fields are
   the site's own numbers, shown as given.
+- **Keys.** A character's `Name-Realm` is its name as the game shows it and the realm a client
+  on its ruleset shows: the site stores a ruleset, not a realm, and the realm is the inverse of
+  the API's one realm-to-ruleset mapping (`character.RealmForRuleset`: `Normal`, `Pvp`, `Rp`,
+  `Hardcore`). A guild's key is its name as `GetGuildInfo` returns it. Neither key carries the
+  region, so two characters (or guilds) that would share one are both left out rather than one
+  read as the other.
+- **Who is in the file.** Every character with a rated fight in a public report in the last 90
+  days has a scored record; every verified guild member without one has a no-logs record,
+  `{ score = nil, profile = ... }` plus `item_level` and `spec` when they are known, and no
+  `tier`, `as_of` or `components`: the addon shows "no logs yet", never a zero. A character
+  whose account asked to be anonymous has no record and is in no guild's `members`. `fights`
+  is how many rated fights in public reports the score rests on (not only the last 90 days'),
+  and `best_parses` the best overall percentile per boss from the rated fights of the last 90
+  days. `item_level` and `spec` are absent when the site does not know them. Fractions are
+  written to the hundredth.
+- **Guild fields.** `standing` is the guild's rank among every guild with a verified member, by
+  distinct raid bosses killed in the last 90 days, ties by `attendance` (guilds still tied share
+  a rank). `nights` is the distinct UTC dates of its public reports in the last 90 days.
+  `roster` is its verified member count. `attendance` is the mean of its listed members'
+  attendance fractions, absent when no member has a score.
+- `docs/contracts/fixtures/data-addon-v2.lua` is the file the API's nightly job writes for its
+  golden test's seeded database, byte for byte once the run's dates are moved onto the
+  fixture's (`api/internal/dataaddon/golden_test.go`).

@@ -5,66 +5,129 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating"
 )
 
-func TestRenderProducesOneSortedDeterministicFile(t *testing.T) {
-	d := Data{
-		Generated: time.Date(2026, 9, 22, 4, 0, 0, 0, time.UTC),
-		Build:     "1.60.1.69893",
-		Characters: map[string]characterRow{
-			"us:normal:thoradin": {Rating: 81, Mean90: 81, Components: map[string]int{
-				"output": 91, "survival": 72, "mechanics": 84, "utility": 62, "preparation": 94, "activity": 91,
-			}, Fights: 2},
-			"eu:pvp:mörk": {Rating: 88, Mean90: 88, Components: map[string]int{"output": 70, "mechanics": 70}, Fights: 1},
+// sampleData is a hand-built night: one scored character, one no-logs guild member, and
+// their guild.
+func sampleData() Data {
+	asOf := time.Date(2026, 11, 2, 21, 30, 0, 0, time.UTC)
+	return Data{
+		Generated: time.Date(2026, 11, 4, 4, 0, 0, 0, time.UTC),
+		Characters: map[string]characterRecord{
+			"Obnoxious Yell-Normal": {
+				Region: "us",
+				Score: &rating.ScoreV2{
+					Score: 1230, Tier: "rare", AsOf: asOf,
+					Components: rating.ScoreComponents{Gear: 400, Experience: 380, Parses: 250, Attendance: 150, Discipline: 50},
+					GearScore:  400, ItemLevel: 31, Attendance: 0.75, Spec: "warrior-arms", Fights: 4,
+					Experience: rating.ScoreExperience{RaidKills: 3, Alts: 1},
+				},
+				BestParses: map[string]int{"Magmadar": 58, "Lucifron": 71},
+				ItemLevel:  31, Spec: "warrior-arms",
+				Profile: "/character/us/normal/obnoxious-yell",
+			},
+			"Quiet Fern-Normal": {Region: "us", Spec: "warrior-fury", Profile: "/character/us/normal/quiet-fern"},
 		},
-		Guilds: map[string]guildRow{
-			"us:normal:iron-vanguard": {
-				Name: "Iron Vanguard", Progress: "2/3", Nights: 2, Roster: 2,
-				Members: []string{"o'malley", "thoradin"},
+		Guilds: map[string]guildRecord{
+			"OLYMPUS XXVII": {
+				Region: "us", Standing: 1, Nights: 4, Roster: 3, Attendance: fraction(2.0 / 3),
+				Members: []string{"Obnoxious Yell-Normal", "Quiet Fern-Normal"},
 			},
 		},
 	}
-	files, err := Render(d)
+}
+
+func TestRenderWritesContractFivesLayout(t *testing.T) {
+	files, err := Render(sampleData())
 	if err != nil {
 		t.Fatal(err)
 	}
 	if len(files) != 1 {
 		t.Fatalf("files = %v, want exactly Data.lua", mapKeysOf(files))
 	}
-	got := string(files["Data.lua"])
-	if !strings.Contains(got, `generated = "2026-09-22T04:00:00Z"`) {
-		t.Error("missing generated field")
-	}
-	if !strings.Contains(got, `build = "1.60.1.69893"`) {
-		t.Error("missing build field")
-	}
-	// eu:pvp:mörk sorts before us:normal:thoradin (byte order: 'e' < 'u').
-	if strings.Index(got, "eu:pvp:mörk") > strings.Index(got, "us:normal:thoradin") {
-		t.Error("characters are not sorted by key")
-	}
-	if !strings.Contains(got, `["us:normal:thoradin"] = { rating = 81, mean90 = 81, output = 91, survival = 72, mechanics = 84, utility = 62, preparation = 94, activity = 91, fights = 2 },`) {
-		t.Errorf("thoradin row wrong, got:\n%s", got)
-	}
-	if !strings.Contains(got, `["eu:pvp:mörk"] = { rating = 88, mean90 = 88, output = 70, mechanics = 70, fights = 1 },`) {
-		t.Errorf("mörk row wrong (should omit the four unscored components), got:\n%s", got)
-	}
-	if !strings.Contains(got, `["us:normal:iron-vanguard"] = { name = "Iron Vanguard", progress = "2/3", nights = 2, roster = 2, members = { "o'malley", "thoradin" } },`) {
-		t.Errorf("guild row wrong, got:\n%s", got)
+	want := `ForeverSixtyData = {
+	format = 2,
+	generated = "2026-11-04",
+	characters = {
+		["Obnoxious Yell-Normal"] = {
+			score = 1230,
+			tier = "rare",
+			as_of = "2026-11-02",
+			components = { gear = 400, experience = 380, parses = 250, attendance = 150, discipline = 50 },
+			gear_score = 400,
+			item_level = 31,
+			spec = "warrior-arms",
+			experience = { dungeons = 0, raid_kills = 3, alts = 1 },
+			best_parses = { ["Lucifron"] = 71, ["Magmadar"] = 58 },
+			attendance = 0.75,
+			fights = 4,
+			profile = "/character/us/normal/obnoxious-yell",
+		},
+		["Quiet Fern-Normal"] = {
+			score = nil,
+			spec = "warrior-fury",
+			profile = "/character/us/normal/quiet-fern",
+		},
+	},
+	guilds = {
+		["OLYMPUS XXVII"] = {
+			standing = 1,
+			nights = 4,
+			roster = 3,
+			attendance = 0.67,
+			members = { "Obnoxious Yell-Normal", "Quiet Fern-Normal" },
+		},
+	},
+}
+`
+	if got := string(files["Data.lua"]); got != want {
+		t.Errorf("Data.lua:\n%s\nwant:\n%s", got, want)
 	}
 }
 
-func TestRenderOmitsProgressWhenEmpty(t *testing.T) {
+func TestRenderOmitsWhatIsNotKnown(t *testing.T) {
 	d := Data{
-		Generated: time.Now(), Build: "x",
-		Guilds: map[string]guildRow{"us:normal:new-guild": {Name: "New Guild", Nights: 0, Roster: 1, Members: []string{"a"}}},
+		Generated:  time.Date(2026, 11, 4, 0, 0, 0, 0, time.UTC),
+		Characters: map[string]characterRecord{"Thoradin-Normal": {Region: "us", Profile: "/character/us/normal/thoradin"}},
+		Guilds:     map[string]guildRecord{"Iron Vanguard": {Region: "us", Standing: 2, Roster: 1, Members: []string{}}},
 	}
 	files, err := Render(d)
 	if err != nil {
 		t.Fatal(err)
 	}
 	got := string(files["Data.lua"])
-	if strings.Contains(got, "progress") {
-		t.Errorf("progress should be omitted entirely, got:\n%s", got)
+	if !strings.Contains(got, "\t\t[\"Thoradin-Normal\"] = {\n\t\t\tscore = nil,\n\t\t\tprofile = \"/character/us/normal/thoradin\",\n\t\t},\n") {
+		t.Errorf("a no-logs record with nothing else known should carry score = nil and its profile only:\n%s", got)
+	}
+	if strings.Contains(got, "attendance") {
+		t.Errorf("a guild with no scored member has no attendance to write:\n%s", got)
+	}
+	if !strings.Contains(got, "members = {},") {
+		t.Errorf("a guild with no listed member writes an empty list:\n%s", got)
+	}
+}
+
+func TestLuaStringEscapesOnlyWhatLuaNeeds(t *testing.T) {
+	for in, want := range map[string]string{
+		"Mörk":         `"Mörk"`,
+		`O"Malley\`:    `"O\"Malley\\"`,
+		"two\nlines":   `"two\nlines"`,
+		"tab\t1":       `"tab\0091"`,
+		"Lady Sunwick": `"Lady Sunwick"`,
+	} {
+		if got := luaString(in); got != want {
+			t.Errorf("luaString(%q) = %s, want %s", in, got, want)
+		}
+	}
+}
+
+func TestLuaFractionIsAWholePercent(t *testing.T) {
+	for v, want := range map[float64]string{0.75: "0.75", 2.0 / 3: "0.67", 1: "1", 0: "0", 0.9: "0.9"} {
+		if got := luaFraction(v); got != want {
+			t.Errorf("luaFraction(%v) = %s, want %s", v, got, want)
+		}
 	}
 }
 
