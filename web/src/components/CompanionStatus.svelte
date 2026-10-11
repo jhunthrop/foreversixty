@@ -1,28 +1,16 @@
 <!-- web/src/components/CompanionStatus.svelte -->
-<!-- Logs landing spec (2026-10-04) §4.D.1: one honest status line per paired device, above
-     the companion panel's existing `logsCompanionCopy.pointer` line. Reads `fetchMeOnce`/
-     `listDevices` -- both already shared through the client cache (web/src/lib/data/
-     query.ts), the same way `Account.svelte`'s own `pairing`/`account` modes read them, so
-     this island costs no second network round trip, only a second cache read. Nothing at
-     all for a signed-out visitor (no devices to have), and nothing for a signed-in visitor
-     with none paired yet -- the pairing block below is that case's own call to action. -->
+<!-- Logs landing spec (2026-10-04) section 4.D.1: one honest status line per paired device, above
+     the companion panel's pointer line. A pure render of the devices the page already read: the
+     page needs the same list to decide the panel order, so it owns the one read. Nothing at all
+     when no device is paired -- the pairing block below is that case's own call to action. -->
 <script lang="ts">
-  import { fetchMeOnce, listDevices, type Device } from '../lib/account/api';
+  import type { Device } from '../lib/account/api';
   import { deviceStatusLine } from '../lib/reports/device-status';
 
-  let signedIn = $state(false);
-  let devices = $state<Device[]>([]);
-
-  $effect(() => {
-    void (async () => {
-      const me = await fetchMeOnce();
-      signedIn = me !== null;
-      if (me !== null) devices = await listDevices();
-    })();
-  });
+  let { devices }: { devices: readonly Device[] } = $props();
 </script>
 
-{#if signedIn && devices.length > 0}
+{#if devices.length > 0}
   <ul class="reveal flex flex-col gap-1" data-testid="companion-status">
     {#each devices as device (device.id)}
       <li class="text-[13px]" style="color: #c9c2b2" data-testid="companion-status-line">

@@ -1,7 +1,13 @@
 <!-- web/src/components/Upload.svelte -->
 <!-- Whole-file upload for a night that was already logged. The report page fills in as the
      parse job closes each fight, so this hands off to /reports/<id> the moment the API
-     accepts the upload rather than waiting for a parse it cannot see. -->
+     accepts the upload rather than waiting for a parse it cannot see.
+
+     Logs spec (2026-10-11) section 2.4: before a file is chosen the panel is the explanation and
+     the drop zone, nothing else; Title, who can open it and the outline Upload button appear only
+     once a file is chosen. The page's header action calls `openPicker()` to open the system file
+     picker from its own click. Signed out, the panel says in plain words that uploading needs an
+     account; it carries no sign-in control. -->
 <script lang="ts">
   import { fetchMeOnce } from '../lib/account/api';
   import { formatAmount } from '../lib/report/format';
@@ -14,7 +20,6 @@
     uploadParts,
   } from '../lib/upload/multipart';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import SignInPrompt from './SignInPrompt.svelte';
   import { BUSY_CLASS } from '../lib/ui/busy';
 
   /** The one line a player ever sees on a failed upload (logs build review, fix round 1,
@@ -23,7 +28,8 @@
    *  belongs on screen. That detail is still logged (see the catch block below), just not
    *  rendered. The file stays chosen either way (only `phase`/`error` reset on failure), so
    *  "Try again" really does mean one click, not re-picking the file. */
-  const UPLOAD_FAILED_LINE = 'The upload did not finish. Try again; the file is still chosen.';
+  const UPLOAD_FAILED_LINE = 'The upload did not finish. Your file is untouched; try again.';
+  const SIGNED_OUT_LINE = 'Uploading needs a signed-in account; the report is filed under it.';
 
   const VISIBILITIES = [
     { id: 'public', label: 'Public', note: 'Listed, ranked, anyone can open it.' },
@@ -52,6 +58,13 @@
   let error = $state('');
   /** Non-null only while an upload is in flight; `cancel` is the only thing that fires it. */
   let inFlight: AbortController | null = null;
+  let fileInput = $state<HTMLInputElement | null>(null);
+  let dragging = $state(false);
+
+  /** The header action's handler: opens the system file picker from the click that called it. */
+  export function openPicker(): void {
+    fileInput?.click();
+  }
 
   const percent = $derived(file === null || uploaded === 0 ? 0 : Math.round((uploaded / file.size) * 100));
   const tooLarge = $derived(file !== null && file.size > MAX_UPLOAD_BYTES);
@@ -73,6 +86,7 @@
 
   function onDrop(event: DragEvent): void {
     event.preventDefault();
+    dragging = false;
     file = event.dataTransfer?.files?.[0] ?? null;
     uploaded = 0;
     error = tooLarge ? UPLOAD_TOO_LARGE : '';
@@ -134,9 +148,9 @@
   }
 </script>
 
-<!-- The panel and its title belong to the page (logs.astro); this is the form inside it. -->
+<!-- The panel and its title belong to the page (LogsLanding.svelte); this is the form inside it. -->
 <div class="flex flex-col gap-4 p-4 md:p-5" data-testid="upload">
-  <p class="text-muted text-[14px]">
+  <p class="text-[14px]">
     A whole <code class="font-mono">WoWCombatLog.txt</code>. The first fight is readable within ten seconds of
     the upload finishing, and the rest appear as they are parsed.
   </p>
@@ -144,104 +158,115 @@
   <p class="text-muted text-[13px]">
     The game writes it to its <code class="font-mono">Logs</code> folder, beside
     <code class="font-mono">Interface</code> and <code class="font-mono">WTF</code>. Up to 4 GB. Type
-    <code class="font-mono">/combatlog</code> again to stop logging before you upload, so the file is whole.
+    <code class="font-mono">/combatlog</code> again to stop logging first, so the file is whole.
   </p>
 
-  <!-- Above the form, not under it: a signed-out visitor reads this before they pick a file.
-       No floor is held for it. Most visitors who get this far are signed in and never see
-       it, and on a phone this panel is below the first screen either way. -->
+  <!-- Signed out the panel is these two paragraphs and one plain sentence: nobody picks a file,
+       titles it and chooses who can see it before finding out the upload was never going to
+       start, and the page carries no sign-in button. -->
   {#if session === 'out'}
-    <SignInPrompt
-      line="Sign in to upload. The report is filed under your account."
-      testid="upload-signin"
-      compact
-    />
-  {/if}
-
-  <!-- The form itself only exists for a session: signed out, the compact prompt above is
-       the whole panel, so nobody picks a file, titles it and chooses who can see it before
-       finding out the upload was never going to start. -->
-  {#if session !== 'out'}
+    <p class="text-[14px]" data-testid="upload-signed-out">{SIGNED_OUT_LINE}</p>
+  {:else}
     <div
-      class="border-line-warm rounded-panel flex flex-col items-start gap-2 border border-dashed p-4"
+      class="rounded-panel flex min-h-[150px] flex-col items-center justify-center gap-2 border border-dashed p-4 text-center text-[13px]"
+      class:border-gold={dragging}
+      class:border-line-warm-strong={!dragging}
+      style:background={dragging ? 'color-mix(in srgb, var(--color-gold) 6%, transparent)' : undefined}
       ondrop={onDrop}
-      ondragover={(event) => event.preventDefault()}
+      ondragover={(event) => {
+        event.preventDefault();
+        dragging = true;
+      }}
+      ondragleave={() => (dragging = false)}
       role="group"
       aria-label="Choose a combat log"
+      data-testid="upload-zone"
+      data-dragging={dragging}
     >
       <input
         id="upload-file"
+        bind:this={fileInput}
         class="peer sr-only"
         type="file"
         accept=".txt,text/plain"
         onchange={pick}
+        oncancel={() => fileInput?.focus()}
         disabled={locked}
         data-testid="upload-file"
       />
-      <label
-        for="upload-file"
-        class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong peer-focus-visible:outline-gold cursor-pointer px-4 peer-focus-visible:outline-2 peer-disabled:cursor-default peer-disabled:opacity-50"
-      >
-        Choose file
-      </label>
       {#if file === null}
-        <p class="text-muted text-[13px]">or drag <code class="font-mono">WoWCombatLog.txt</code> here</p>
+        <p class="text-muted">Drop <code class="text-text font-mono">WoWCombatLog.txt</code> here, or</p>
       {:else}
-        <p class="text-muted tabular font-mono text-[13px] break-all" data-testid="upload-size">
-          {file.name} · {formatAmount(file.size)} byte{file.size === 1 ? '' : 's'}
+        <p class="text-text font-mono break-all">{file.name}</p>
+        <p class="text-muted tabular font-mono" data-testid="upload-size">
+          {formatAmount(file.size)} byte{file.size === 1 ? '' : 's'}
         </p>
       {/if}
-    </div>
-
-    <div class="flex flex-col gap-1">
-      <label class="label text-muted" for="upload-title">Title</label>
-      <input
-        id="upload-title"
-        class={FIELD}
-        type="text"
-        maxlength="60"
-        placeholder="Optional"
-        bind:value={title}
-        disabled={locked}
-      />
-      <p class="text-muted text-[13px]">Optional. Without one the report is named after its zone.</p>
-    </div>
-
-    <fieldset class="flex flex-col gap-2" disabled={locked}>
-      <legend class="label text-muted mb-2">Who can see it</legend>
-      <div class="flex flex-wrap gap-2">
-        {#each VISIBILITIES as option (option.id)}
-          <label
-            class="{CHOICE} has-[:checked]:border-gold-deep has-[:checked]:text-gold has-[:focus-visible]:outline-gold has-[:focus-visible]:outline-2"
-          >
-            <input type="radio" name="visibility" value={option.id} bind:group={visibility} class="sr-only" />
-            {option.label}
-          </label>
-        {/each}
-      </div>
-      <p class="text-muted text-[13px]" data-testid="upload-visibility-note">{visibilityNote}</p>
-    </fieldset>
-
-    <div class="flex flex-wrap items-center gap-3">
-      <button
-        class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 disabled:opacity-50 ${busy ? BUSY_CLASS : ''}`}
-        onclick={() => void start()}
-        disabled={file === null || tooLarge || locked}
-        aria-busy={busy}
-        data-testid="upload-start"
+      <label
+        for="upload-file"
+        class="text-gold peer-focus-visible:outline-gold inline-flex min-h-11 cursor-pointer items-center text-[12px] font-bold tracking-[0.06em] uppercase peer-focus-visible:outline-2 peer-disabled:cursor-default peer-disabled:opacity-50"
       >
-        Upload
-      </button>
-      {#if phase === 'uploading'}
-        <button
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-muted w-fit px-4"
-          onclick={cancel}
-          data-testid="upload-cancel"
-        >
-          Cancel
-        </button>
-      {/if}
+        {file === null ? 'choose a file' : 'Choose another file'}
+      </label>
     </div>
+
+    {#if file !== null}
+      <div class="flex flex-col gap-1">
+        <label class="label text-muted" for="upload-title">Title</label>
+        <input
+          id="upload-title"
+          class={FIELD}
+          type="text"
+          maxlength="60"
+          placeholder="Optional"
+          bind:value={title}
+          disabled={locked}
+        />
+        <p class="text-muted text-[13px]">Optional. Without one the report is named after its zone.</p>
+      </div>
+
+      <fieldset class="flex flex-col gap-2" disabled={locked}>
+        <legend class="label text-muted mb-2">Who can open it</legend>
+        <div class="flex flex-wrap gap-2">
+          {#each VISIBILITIES as option (option.id)}
+            <label
+              class="{CHOICE} has-[:checked]:border-gold-deep has-[:checked]:text-gold has-[:focus-visible]:outline-gold has-[:focus-visible]:outline-2"
+            >
+              <input
+                type="radio"
+                name="visibility"
+                value={option.id}
+                bind:group={visibility}
+                class="sr-only"
+              />
+              {option.label}
+            </label>
+          {/each}
+        </div>
+        <p class="text-muted text-[13px]" data-testid="upload-visibility-note">{visibilityNote}</p>
+      </fieldset>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <button
+          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 disabled:opacity-50 ${busy ? BUSY_CLASS : ''}`}
+          onclick={() => void start()}
+          disabled={tooLarge || locked}
+          aria-busy={busy}
+          data-testid="upload-start"
+        >
+          Upload
+        </button>
+        {#if phase === 'uploading'}
+          <button
+            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-muted w-fit px-4"
+            onclick={cancel}
+            data-testid="upload-cancel"
+          >
+            Cancel
+          </button>
+        {/if}
+      </div>
+    {/if}
   {/if}
 
   {#if busy}
