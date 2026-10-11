@@ -105,7 +105,7 @@ describe("ExportView", function()
 		local model = ExportView.summary(DATA)
 		assert.are.equal(
 			string.format(L.exportProfessions,
-				"blacksmithing" .. L.exportProfessionSeparator .. "mining"),
+				"Blacksmithing" .. L.exportProfessionSeparator .. "Mining"),
 			model.professionLine)
 	end)
 

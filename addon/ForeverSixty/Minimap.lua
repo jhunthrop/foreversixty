@@ -32,10 +32,23 @@ local function atan2(y, x)
 	return math.atan(y, x)
 end
 
-function MinimapButton.position(angle)
+function MinimapButton.position(angle, radius)
 	local radians = math.rad(angle)
-	return math.cos(radians) * Theme.SIZES.minimapRadius,
-		math.sin(radians) * Theme.SIZES.minimapRadius
+	radius = radius or Theme.SIZES.minimapRadius
+	return math.cos(radians) * radius, math.sin(radians) * radius
+end
+
+--- The ring the button rides: just past the minimap's own edge, whatever
+--- size this client or the player's UI made the minimap (seen in game:
+--- the fixed radius put the button inside a larger minimap).
+function MinimapButton.radius()
+	local minimap = _G.Minimap
+	local width = type(minimap) == "table" and type(minimap.GetWidth) == "function"
+		and minimap:GetWidth() or nil
+	if type(width) ~= "number" or width <= 0 then
+		return Theme.SIZES.minimapRadius
+	end
+	return width / 2 + Theme.SIZES.minimapEdge
 end
 
 function MinimapButton.angleAt(x, y)
@@ -51,12 +64,12 @@ function MinimapButton.tooltipLines()
 		lines[#lines + 1] = L.minimapRightClick
 		return lines
 	end
-	lines[#lines + 1] = build.name or string.format(L.followBuildName, build.classSlug)
+	lines[#lines + 1] = build.name or string.format(L.followBuildName, Talents.titleCase(build.classSlug))
 	if MinimapButton.data ~= nil then
 		local ranks = Talents.readRanks(MinimapButton.data)
-		local point = Follow.nextPoint(build, ranks)
-		local spent = point ~= nil and (point.index - 1) or #build.order
-		lines[#lines + 1] = string.format(L.minimapProgress, spent, #build.order)
+		local progress = Follow.progress(build, ranks)
+		lines[#lines + 1] = string.format(L.minimapProgress, progress.matched, #build.order)
+		lines[#lines + 1] = Follow.line(MinimapButton.data, build, ranks)
 		local upgrades = Gear.upgrades(MinimapButton.data, build)
 		if #upgrades > 0 then
 			lines[#lines + 1] = string.format(L.minimapUpgrades, #upgrades)
@@ -68,7 +81,7 @@ function MinimapButton.tooltipLines()
 end
 
 function MinimapButton.place(angle)
-	local x, y = MinimapButton.position(angle)
+	local x, y = MinimapButton.position(angle, MinimapButton.radius())
 	MinimapButton.angle = angle
 	MinimapButton.button:ClearAllPoints()
 	MinimapButton.button:SetPoint("CENTER", _G.Minimap, "CENTER", x, y)
@@ -130,11 +143,24 @@ function MinimapButton.ensure()
 	button:EnableMouse(true)
 	button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	button:RegisterForDrag("LeftButton")
+	-- The LibDBIcon shape every other minimap button on this client has:
+	-- a dark disc, the icon cropped round on it, and the client's own ring.
+	local ground = button:CreateTexture(nil, "BACKGROUND")
+	ground:SetTexture(Theme.MEDIA.minimapGround)
+	ground:SetSize(Theme.SIZES.minimapGround, Theme.SIZES.minimapGround)
+	ground:SetPoint("CENTER", button, "CENTER", 0, 0)
 	local icon = button:CreateTexture(nil, "ARTWORK")
 	icon:SetTexture(Theme.MEDIA.minimapIcon)
 	icon:SetSize(Theme.SIZES.minimapIcon, Theme.SIZES.minimapIcon)
 	icon:SetPoint("CENTER", button, "CENTER", 0, 0)
-	Theme.outline(button, Theme.SIZES.border, "gold")
+	if type(icon.SetMask) == "function" then
+		icon:SetMask(Theme.MEDIA.minimapMask)
+	end
+	local ring = button:CreateTexture(nil, "OVERLAY")
+	ring:SetTexture(Theme.MEDIA.minimapRing)
+	ring:SetSize(Theme.SIZES.minimapRing, Theme.SIZES.minimapRing)
+	ring:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
+	button.foreverSixtyIcon, button.foreverSixtyRing = icon, ring
 	MinimapButton.button = button
 	wire(button)
 	return button

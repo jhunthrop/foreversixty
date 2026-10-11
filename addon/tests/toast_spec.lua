@@ -82,7 +82,7 @@ describe("Toast", function()
 		start()
 		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:191:", DATA))
 		local model = Toast.model(DATA, build, { [1] = {} }, 12)
-		local unknownName = string.format(L.followUnknownCell, 10, 1)
+		local unknownName = string.format(L.followUnknownCell, 9, 1)
 		assert.are.equal(string.format(L.toastMessage, 12, unknownName, 1, 1), model.text)
 	end)
 

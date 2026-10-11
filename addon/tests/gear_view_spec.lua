@@ -147,18 +147,17 @@ describe("GearView", function()
 		assert.are.equal(L.gearDiffers, GearView.noteFor(model.slots[1]))
 	end)
 
-	it("lists what is in the bags, and already on the character, that beats the plan", function()
+	it("lists what is in the bags that beats the plan, never what is already worn", function()
 		start()
 		local build = assert(Follow.load(CODE, DATA))
 		local upgrades = Gear.upgrades(DATA, build)
 		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, GearView.readEquipped(), upgrades)
-		assert.are.equal(2, #model.upgrades)
+		assert.are.equal(1, #model.upgrades)
 		assert.are.equal(12, model.upgrades[1].itemId)
 		assert.are.equal("|Hitem:12|h", model.upgrades[1].link)
-		-- The equipped item (11) is a legitimate second entry: Gear.upgrades
-		-- scans what is worn too, so a slot the player already has right is
-		-- never hidden as an "upgrade" the player should not act on.
-		assert.are.equal(11, model.upgrades[2].itemId)
+		-- The worn item (11) beats the plan too, but it is scored on its
+		-- own slot row, never offered as something to equip.
+		assert.is_nil(model.upgrades[2])
 	end)
 
 	it("takes equipped items and upgrades as arguments rather than reading them itself", function()
@@ -178,7 +177,7 @@ describe("GearView", function()
 		start()
 		local info = GearView.itemInfo(999, nil)
 		assert.is_false(info.cached)
-		assert.are.equal(string.format(L.gearItemUnknown, 999), info.name)
+		assert.are.equal(L.gearItemLoading, info.name)
 	end)
 
 	it("names an item the client has cached", function()
@@ -224,7 +223,7 @@ describe("GearView", function()
 		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
 		local row = view.slots.rows[1]
 		assert.is_false(row.equipped.tick:IsShown())
-		assert.are.equal(string.format(L.gearYoursBetter, 6), row.equipped.right:GetText())
+		assert.are.equal(string.format(L.gearUpgradeRow, 6), row.equipped.right:GetText())
 	end)
 
 	-- Round-3 fix (§4.5.4): the one note that is prose, not a glyph or a
@@ -272,9 +271,9 @@ describe("GearView", function()
 		assert(Follow.load(CODE, DATA))
 		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
 		local row = view.slots.rows[1]
-		assert.are.equal(string.format(L.gearItemUnknown, 10), row.planned.text:GetText())
+		assert.are.equal(L.gearItemLoading, row.planned.text:GetText())
 		assert.are.equal("Worn Helm", row.equipped.text:GetText())
-		assert.are.equal(string.format(L.gearYoursBetter, 6), row.equipped.right:GetText())
+		assert.are.equal(string.format(L.gearUpgradeRow, 6), row.equipped.right:GetText())
 	end)
 
 	it("shows Empty on whichever side has nothing, not the correctly-geared look", function()
@@ -306,7 +305,7 @@ describe("GearView", function()
 		start()
 		assert(Follow.load(CODE, DATA))
 		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
-		assert.is_truthy(view.upgrades.rows[1].text:GetText():find("head", 1, true))
+		assert.is_truthy(view.upgrades.rows[1].text:GetText():find(L.gearSlotLabels.head, 1, true))
 	end)
 
 	it("turns the Equip buttons off in combat and says why", function()

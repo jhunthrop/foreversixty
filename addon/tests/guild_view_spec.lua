@@ -235,24 +235,24 @@ describe("GuildView.standingLine", function()
 	it("says the gear gap needs a build, and that the rank is not in the data addon, with nothing loaded", function()
 		start()
 		local line = GuildView.standingLine(BUILD_DATA, nil)
-		assert.are.equal(L.guildStandingNoRank .. " · " .. L.guildStandingGapNoBuild, line)
+		assert.are.equal(L.guildStandingNoRank .. "\n" .. L.guildStandingGapNoBuild, line)
 	end)
 
 	it("says nothing beats the plan once a build is loaded with no upgrades waiting", function()
 		start()
 		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:111:head=10:strength=10", BUILD_DATA))
 		local line = GuildView.standingLine(BUILD_DATA, build)
-		assert.are.equal(L.guildStandingNoRank .. " · " .. L.guildStandingGapNone, line)
+		assert.are.equal(L.guildStandingNoRank .. "\n" .. L.guildStandingGapNone, line)
 	end)
 
-	it("names the real top gear gap once the bags (or what is worn) beat the plan", function()
+	it("names the slot where the plan beats what is worn by the most", function()
 		start({
 			equipped = { [1] = "|Hitem:11|h" }, -- slot id 1 is head
-			itemStats = { ["|Hitem:11|h"] = { __itemId = 11, __slot = "INVTYPE_HEAD", ITEM_MOD_STRENGTH_SHORT = 30 } },
+			itemStats = { ["|Hitem:11|h"] = { __itemId = 11, __slot = "INVTYPE_HEAD", ITEM_MOD_STRENGTH_SHORT = 4 } },
 		})
 		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:111:head=10:strength=10", BUILD_DATA))
 		local line = GuildView.standingLine(BUILD_DATA, build)
-		assert.are.equal(L.guildStandingNoRank .. " · " .. string.format(L.guildStandingGap, "head", 20), line)
+		assert.are.equal(L.guildStandingNoRank .. "\n" .. string.format(L.guildStandingGap, L.gearSlotLabels.head, 6), line)
 	end)
 
 	it("wires into GuildView.summary as memberStanding, every panel's own line", function()
@@ -276,7 +276,7 @@ describe("GuildView.standingLine", function()
 		Follow = helper.load("Follow")
 		GuildView = helper.load("GuildView")
 		local model = GuildView.summary(BUILD_DATA, nil)
-		assert.are.equal(L.guildStandingNoRank .. " · " .. L.guildStandingGapNoBuild, model.memberStanding)
+		assert.are.equal(L.guildStandingNoRank .. "\n" .. L.guildStandingGapNoBuild, model.memberStanding)
 	end)
 
 	it("leaves memberStanding nil for a caller that passes no build data at all (back-compat)", function()
@@ -320,6 +320,6 @@ describe("GuildView.standingLine", function()
 			data = BUILD_DATA, contentWidth = 538, select = function() end,
 		})
 		assert.is_true(view.memberStanding:IsShown())
-		assert.are.equal(L.guildStandingNoRank .. " · " .. L.guildStandingGapNoBuild, view.memberStanding:GetText())
+		assert.are.equal(L.guildStandingNoRank .. "\n" .. L.guildStandingGapNoBuild, view.memberStanding:GetText())
 	end)
 end)

@@ -289,6 +289,50 @@ function Follow.nextPoint(build, ranks)
 	return nil
 end
 
+--- Every point the character has spent, whatever the plan says.
+function Follow.pointsSpent(ranks)
+	local spent = 0
+	for _, tab in pairs(ranks or {}) do
+		for _, rank in pairs(tab) do
+			spent = spent + (tonumber(rank) or 0)
+		end
+	end
+	return spent
+end
+
+--- How far along the plan the character is: `matched` is every point
+--- the plan wanted that the character has (a rank over the plan's own
+--- counts only up to the plan), `total` the plan's length, `offPlan`
+--- the points spent where the plan wanted none. The talent window, the
+--- tracker and the Overview all read this one answer, so they cannot
+--- disagree with each other or with the character (seen in game: a
+--- "2 of 51" beside eleven spent points, because the old count stopped
+--- at the first unmet point in the order).
+function Follow.progress(build, ranks)
+	if build == nil then
+		return { matched = 0, total = 0, offPlan = 0, point = nil }
+	end
+	local wanted = {}
+	for _, point in ipairs(build.order) do
+		local key = cellKey(point)
+		wanted[key] = {
+			tab = point.tab, tier = point.tier, column = point.column,
+			want = (wanted[key] and wanted[key].want or 0) + 1,
+		}
+	end
+	local matched = 0
+	for _, cell in pairs(wanted) do
+		local have = (ranks[cell.tab] or {})[Talents.cellKey(cell.tier, cell.column)] or 0
+		matched = matched + math.min(have, cell.want)
+	end
+	return {
+		matched = matched,
+		total = #build.order,
+		offPlan = math.max(0, Follow.pointsSpent(ranks) - matched),
+		point = Follow.nextPoint(build, ranks),
+	}
+end
+
 function Follow.line(data, build, ranks)
 	if build == nil then
 		return L.followNone

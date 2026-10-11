@@ -372,6 +372,41 @@ end
 --- returns the content frame to lay out on and a function to call once the
 --- content's height is known. No scroll template: the same flat approach
 --- as Widgets.list, so the specs cover it.
+--- A thin scrollbar at the right edge of `region`, drawn on `parent`
+--- and shown only while there is more than fits, so a list or page that
+--- fits looks as it always did. `Update(shown, position)` takes the
+--- fraction that fits (1 means everything) and how far down the view
+--- is (0 to 1).
+function Widgets.scrollbar(parent, region, inset)
+	local S = Theme.SIZES
+	inset = inset or -S.gap * 2
+	local track = Theme.texture(parent, "ARTWORK", "border")
+	track:SetWidth(S.scrollbar)
+	track:SetPoint("TOPLEFT", region, "TOPRIGHT", inset, 0)
+	track:SetPoint("BOTTOMLEFT", region, "BOTTOMRIGHT", inset, 0)
+	local thumb = Theme.texture(parent, "OVERLAY", "muted")
+	thumb:SetWidth(S.scrollbar)
+	thumb:SetPoint("TOP", track, "TOP", 0, 0)
+	local bar = { track = track, thumb = thumb, region = region }
+	function bar:Update(shown, position)
+		if shown >= 1 then
+			self.track:Hide()
+			self.thumb:Hide()
+			return false
+		end
+		self.track:Show()
+		self.thumb:Show()
+		local height = self.region:GetHeight() or 0
+		local thumbHeight = math.max(S.scrollbarThumb, height * shown)
+		self.thumb:SetHeight(thumbHeight)
+		self.thumb:ClearAllPoints()
+		self.thumb:SetPoint("TOP", self.track, "TOP", 0, -(height - thumbHeight) * (position or 0))
+		return true
+	end
+	bar:Update(1, 0)
+	return bar
+end
+
 function Widgets.scrollable(holder)
 	local content = CreateFrame("Frame", nil, holder)
 	content:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
@@ -380,6 +415,7 @@ function Widgets.scrollable(holder)
 		holder:SetClipsChildren(true)
 	end
 	local scroll = { holder = holder, content = content, offset = 0, contentHeight = holder:GetHeight() }
+	scroll.bar = Widgets.scrollbar(holder, holder)
 	function scroll:Range()
 		return math.max(0, self.contentHeight - self.holder:GetHeight())
 	end
@@ -387,6 +423,9 @@ function Widgets.scrollable(holder)
 		self.offset = math.max(0, math.min(offset, self:Range()))
 		self.content:ClearAllPoints()
 		self.content:SetPoint("TOPLEFT", self.holder, "TOPLEFT", 0, self.offset)
+		local range = self:Range()
+		self.bar:Update(self.contentHeight > 0 and self.holder:GetHeight() / self.contentHeight or 1,
+			range > 0 and self.offset / range or 0)
 		return self.offset
 	end
 	function scroll:SetContentHeight(height)
@@ -424,6 +463,9 @@ function Widgets.list(parent, width, rowCount, rowBuilder)
 		list.rows[index] = row
 	end
 	list.frame = frame
+	-- Just outside the rows, in the page's own right padding, so no row
+	-- text runs under it.
+	list.bar = Widgets.scrollbar(frame, frame, Theme.SIZES.gap * 2)
 	return list
 end
 
@@ -444,12 +486,22 @@ function Widgets.List:Scroll(delta)
 	return self:Refresh()
 end
 
+--- Show only the first `count` of the rows the list was built with (all
+--- of them by default): a page that must share its height between two
+--- lists gives one of them fewer rows without rebuilding either.
+function Widgets.List:SetVisibleRows(count)
+	self.visibleRows = math.max(0, math.min(count or #self.rows, #self.rows))
+	self.frame:SetHeight(math.max(self.visibleRows, 1) * Theme.SIZES.rowHeight)
+	return self:Refresh()
+end
+
 function Widgets.List:Refresh()
-	local first, last, clamped = Widgets.visibleRange(#self.items, #self.rows, self.offset)
+	local visible = self.visibleRows or #self.rows
+	local first, last, clamped = Widgets.visibleRange(#self.items, visible, self.offset)
 	self.offset = clamped
 	for index, row in ipairs(self.rows) do
 		local position = index + first - 1
-		local item = position <= last and self.items[position] or nil
+		local item = (index <= visible and position <= last) and self.items[position] or nil
 		-- Cleared before the renderer runs: a recycled row must never
 		-- keep the previous item's tooltip target.
 		row.itemId, row.link = nil, nil
@@ -461,6 +513,11 @@ function Widgets.List:Refresh()
 			end
 			row.frame:Show()
 		end
+	end
+	if self.bar ~= nil then
+		local total = #self.items
+		local range = math.max(0, total - visible)
+		self.bar:Update(total > 0 and visible / total or 1, range > 0 and self.offset / range or 0)
 	end
 	return self
 end

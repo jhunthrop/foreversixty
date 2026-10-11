@@ -96,10 +96,10 @@ describe("Gear", function()
 		assert.are.equal(20, upgrades[1].delta)
 	end)
 
-	it("scores what the player is already wearing, not only the bags", function()
-		-- The design scores equipped items too: one already on the character
-		-- can beat the planned one, and hiding that tells a player to swap
-		-- something they should keep.
+	it("leaves what the player is already wearing out of the bag upgrades", function()
+		-- A worn piece that beats the plan is scored on the Gear page's own
+		-- slot row; listing it under "upgrades in your bags" with an Equip
+		-- button told a player to equip what they had on (seen in game).
 		mock.install({
 			class = { name = "Paladin", token = "PALADIN" },
 			talents = {
@@ -116,9 +116,7 @@ describe("Gear", function()
 			{ slot = "head", itemId = 1, stats = { spell_power = 20 } },
 		} }
 		local upgrades = Gear.upgrades(DATA, build)
-		assert.are.equal(1, #upgrades)
-		assert.are.equal(3, upgrades[1].itemId)
-		assert.are.equal(15, upgrades[1].delta)
+		assert.are.equal(0, #upgrades)
 	end)
 
 	it("says nothing about a slot whose planned item has no stats", function()
@@ -182,9 +180,10 @@ describe("Gear", function()
 				{ name = "Retribution", talents = {} },
 			},
 			equipped = { [1] = "wornHead" },
-			bags = { [0] = { "bagLegs" } },
+			bags = { [0] = { "bagLegs", "bagHead" } },
 			itemStats = {
 				wornHead = { ITEM_MOD_SPELL_POWER_SHORT = 25, __itemId = 101, __slot = "INVTYPE_HEAD" },
+				bagHead = { ITEM_MOD_SPELL_POWER_SHORT = 25, __itemId = 102, __slot = "INVTYPE_HEAD" },
 				bagLegs = { ITEM_MOD_SPELL_POWER_SHORT = 50, __itemId = 202, __slot = "INVTYPE_LEGS" },
 			},
 		})

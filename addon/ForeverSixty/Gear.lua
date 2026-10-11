@@ -155,8 +155,37 @@ function Gear.candidates()
 	return links
 end
 
---- Everything the player is carrying or wearing that beats the planned item in
---- a slot it fits.
+--- The bags alone: what the player could put on. What is already worn
+--- is scored on the Gear page's own slot rows, never listed here as an
+--- "upgrade in your bags" with an Equip button (seen in game: the worn
+--- helm offered as a +10 upgrade over itself).
+function Gear.bagLinks()
+	local links = {}
+	for _, bag in ipairs(Export.CARRIED_BAGS) do
+		for slot = 1, Export.containerSize(bag) do
+			local link = Export.containerLink(bag, slot)
+			if link ~= nil then
+				links[#links + 1] = link
+			end
+		end
+	end
+	return links
+end
+
+--- The name of the stat a spec's weights are counted in: the one whose
+--- weight is exactly 1 (the engine's own convention), or nil when the
+--- table has no such reference.
+function Gear.referenceStat(weights)
+	for name, weight in pairs(weights or {}) do
+		if weight == 1 then
+			return name
+		end
+	end
+	return nil
+end
+
+--- Everything the player is carrying that beats the planned item in a
+--- slot it fits.
 function Gear.upgrades(data, build)
 	local ranks = Talents.readRanks(data)
 	local spec = Gear.specOf(data, build.classSlug, ranks)
@@ -166,7 +195,7 @@ function Gear.upgrades(data, build)
 	end
 	local planned = plannedBySlot(build)
 	local found = {}
-	for _, link in ipairs(Gear.candidates()) do
+	for _, link in ipairs(Gear.bagLinks()) do
 		-- Through Compat, like Export.lua's itemIdOf and isEquippable, so
 		-- every call site finds the function in the same place on a client
 		-- that moved it to C_Item.

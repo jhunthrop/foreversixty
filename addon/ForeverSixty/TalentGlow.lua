@@ -18,8 +18,13 @@ local Talents = ns.Talents or require("Talents")
 
 local TalentGlow = {}
 
---- The modern name first: the 1.60 client is a modern client.
-TalentGlow.TALENT_FRAMES = { "PlayerTalentFrame", "TalentFrame" }
+--- The modern names first: the 1.60 client is a modern client with the
+--- trait-based window (PlayerSpellsFrame on the newest clients,
+--- ClassTalentFrame on the generation before), then the classic pair.
+TalentGlow.TALENT_FRAMES = { "PlayerSpellsFrame", "ClassTalentFrame", "PlayerTalentFrame", "TalentFrame" }
+
+--- Where the trait window keeps its talent tab, by client generation.
+TalentGlow.TRAIT_TABS = { "TalentsFrame", "TalentsTab" }
 
 --- The classic naming: the nth talent of the open tab.
 TalentGlow.CLASSIC_BUTTON = "TalentFrameTalent%d"
@@ -97,13 +102,46 @@ function TalentGlow.classicButton(frame, target)
 	return button
 end
 
+local function nodeOf(child)
+	if child.nodeID ~= nil then
+		return child.nodeID
+	end
+	if type(child.GetNodeID) == "function" then
+		local ok, id = pcall(child.GetNodeID, child)
+		if ok then
+			return id
+		end
+	end
+	return nil
+end
+
+--- The trait window's own lookup, when it has one: the frame itself or
+--- its talents tab answers GetTalentButtonByNodeID on the modern client.
+local function byNodeApi(frame, node)
+	local hosts = { frame }
+	for _, name in ipairs(TalentGlow.TRAIT_TABS) do
+		if type(frame[name]) == "table" then
+			hosts[#hosts + 1] = frame[name]
+		end
+	end
+	for _, host in ipairs(hosts) do
+		if type(host.GetTalentButtonByNodeID) == "function" then
+			local ok, button = pcall(host.GetTalentButtonByNodeID, host, node)
+			if ok and type(button) == "table" then
+				return button
+			end
+		end
+	end
+	return nil
+end
+
 local function walk(frame, node, depth)
 	if depth > TalentGlow.MAX_DEPTH or type(frame.GetChildren) ~= "function" then
 		return nil
 	end
 	for _, child in ipairs({ frame:GetChildren() }) do
 		if type(child) == "table" then
-			if child.nodeID == node then
+			if nodeOf(child) == node then
 				return child
 			end
 			local found = walk(child, node, depth + 1)
@@ -119,7 +157,29 @@ function TalentGlow.traitButton(frame, node)
 	if node == nil then
 		return nil
 	end
-	return walk(frame, node, 1)
+	return byNodeApi(frame, node) or walk(frame, node, 1)
+end
+
+--- Refresh the glow whenever the talent window opens: the window is a
+--- load-on-demand addon on the modern client, so each name is hooked
+--- the first time it exists (Options calls this at login and on every
+--- ADDON_LOADED). Idempotent.
+TalentGlow.hooked = {}
+function TalentGlow.watch(data)
+	for _, name in ipairs(TalentGlow.TALENT_FRAMES) do
+		local frame = _G[name]
+		if type(frame) == "table" and not TalentGlow.hooked[name]
+			and type(frame.HookScript) == "function" then
+			TalentGlow.hooked[name] = true
+			frame:HookScript("OnShow", function()
+				TalentGlow.refresh(data)
+			end)
+			frame:HookScript("OnHide", function()
+				TalentGlow.clear()
+			end)
+		end
+	end
+	return TalentGlow.hooked
 end
 
 function TalentGlow.buttonFor(frame, target)
@@ -168,8 +228,19 @@ function TalentGlow.refresh(data)
 		end
 		return nil
 	end
-	Theme.showGlow(button)
+	-- The trait window's buttons take the addon's own outline; the
+	-- classic buttons keep whichever glow the client offers.
+	Theme.showGlow(button, how == "trait")
 	TalentGlow.glowing, TalentGlow.how = button, how
+	if not TalentGlow.notedFrame then
+		-- README spike row 22's answer, recorded once for /fs diag.
+		TalentGlow.notedFrame = true
+		Theme.note(string.format(L.diagTalentFrame, select(2, TalentGlow.openFrame()) or "?", how))
+		local name = type(button.GetName) == "function" and button:GetName() or nil
+		local width = type(button.GetWidth) == "function" and button:GetWidth() or nil
+		local shown = type(button.IsShown) == "function" and button:IsShown() or nil
+		Theme.note(string.format(L.diagTalentButton, tostring(name), tostring(width), tostring(shown)))
+	end
 	return how
 end
 

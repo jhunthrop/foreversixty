@@ -165,7 +165,7 @@ describe("Minimap", function()
 	it("names an unnamed pasted build after its class", function()
 		start()
 		assert(Follow.load(CODE, DATA, nil))
-		assert.are.equal(string.format(L.followBuildName, "paladin"), Button.tooltipLines()[2])
+		assert.are.equal(string.format(L.followBuildName, "Paladin"), Button.tooltipLines()[2])
 	end)
 
 	it("shows the tooltip lines on enter and hides it on leave", function()
@@ -280,7 +280,8 @@ describe("Minimap", function()
 		local ok, lines = pcall(Button.tooltipLines)
 		Gear.upgrades = real
 		assert.is_true(ok)
-		assert.are.equal(string.format(require("Locale").minimapUpgrades, 2), lines[4])
+		-- Lines: name, build, progress, the next talent, then upgrades.
+		assert.are.equal(string.format(require("Locale").minimapUpgrades, 2), lines[5])
 	end)
 
 	it("says nothing about upgrades when there are none waiting", function()
@@ -295,7 +296,7 @@ describe("Minimap", function()
 		local ok, lines = pcall(Button.tooltipLines)
 		Gear.upgrades = real
 		assert.is_true(ok)
-		assert.are.equal(L.minimapLeftClick, lines[4])
+		assert.are.equal(L.minimapLeftClick, lines[5])
 	end)
 
 	it("has no addon compartment on a client that lacks one", function()

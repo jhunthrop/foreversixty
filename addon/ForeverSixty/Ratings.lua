@@ -108,7 +108,8 @@ function Ratings.status()
 		available = true,
 		stale = stale,
 		generated = data.generated,
-		generatedLine = string.format(L.ratingsGenerated, tostring(data.generated or ""):sub(1, 10)),
+		generatedLine = (data.generated ~= nil and data.generated ~= "")
+			and string.format(L.ratingsGenerated, tostring(data.generated):sub(1, 10)) or nil,
 		staleLine = stale and L.ratingsStale or nil,
 	}
 end

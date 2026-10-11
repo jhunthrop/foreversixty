@@ -179,7 +179,9 @@ describe("TalentGlow", function()
 		assert.are.equal("classic", TalentGlow.refresh(DATA))
 		assert.are.equal(classic, TalentGlow.glowing)
 		assert.are.equal("classic", TalentGlow.refresh(DATA))
-		assert.are.same({ L.diagTalentTabUnknown }, Theme.diagnostics())
+		assert.are.same({ L.diagTalentTabUnknown,
+			string.format(L.diagTalentFrame, "PlayerTalentFrame", "classic"),
+			string.format(L.diagTalentButton, "nil", "0", "true") }, Theme.diagnostics())
 	end)
 
 	it("finds a node button nested under a container", function()

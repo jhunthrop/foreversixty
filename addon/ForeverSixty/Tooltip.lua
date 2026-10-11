@@ -602,6 +602,13 @@ function Tooltip.onTooltip(tooltip, itemLink)
 	if Tooltip.disabled or itemLink == nil or not Prefs.flag("tooltip") then
 		return
 	end
+	-- The compare tooltip is a GameTooltip too, so the client's processor
+	-- calls this for it as well; adding lines there would open another
+	-- compare tooltip for the same item, without end (seen in game as a
+	-- C stack overflow on the first Gear row hovered).
+	if tooltip == Theme.compareTooltipFrame then
+		return
+	end
 	local ok, err = pcall(addLines, tooltip, itemLink)
 	if not ok then
 		Tooltip.disabled = true

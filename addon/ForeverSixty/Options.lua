@@ -16,6 +16,7 @@ local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local Tooltip = ns.Tooltip or require("Tooltip")
+local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local Toast = ns.Toast or require("Toast")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
@@ -190,10 +191,20 @@ end
 Options.EVENTS = {
 	"PLAYER_LOGIN", "PLAYER_LOGOUT", "PLAYER_ENTERING_WORLD",
 	"PLAYER_TALENT_UPDATE", "TRAIT_CONFIG_UPDATED", "PLAYER_LEVEL_UP",
-	"PLAYER_REGEN_ENABLED",
+	"PLAYER_REGEN_ENABLED", "ADDON_LOADED", "GET_ITEM_INFO_RECEIVED",
 }
 
 function Options.onEvent(_, event, ...)
+	if event == "ADDON_LOADED" then
+		-- The talent window arrives as its own addon; hook it when it does.
+		TalentGlow.watch(Options.data)
+		return
+	end
+	if event == "GET_ITEM_INFO_RECEIVED" then
+		-- An item the open page drew as "Loading item..." can now be named.
+		Window.refresh()
+		return
+	end
 	if event == "PLAYER_LOGOUT" then
 		if Prefs.flag("autoSave") then
 			Export.save(Options.data)
@@ -205,6 +216,7 @@ function Options.onEvent(_, event, ...)
 		return
 	end
 	if event == "PLAYER_LOGIN" then
+		TalentGlow.watch(Options.data)
 		Follow.restore(Options.data)
 		Options.readInbox()
 		SettingsView.register(Window.context())

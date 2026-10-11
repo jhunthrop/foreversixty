@@ -34,6 +34,8 @@ local L = {
 		.. "the glow may be on the wrong tree.",
 	diagNoSettingsPanel = "This client has no options panel API; use /fs settings.",
 	diagNone = "Nothing to report.",
+	diagTalentFrame = "Talent window found: %s (%s mapping)",
+	diagTalentButton = "Glow on button %s, width %s, shown %s",
 
 	-- Export
 	exportTitle = "Send your character to the site",
@@ -100,7 +102,7 @@ local L = {
 	followNone = "No build loaded. Paste a build code above and press Load.",
 	-- The Follow tab's empty state, named: a player with more than one
 	-- character wants to know whose build it would load before pasting one.
-	followNoneNamed = "No build loaded for %s. Paste a code, or queue one on the site.",
+	followNoneNamed = "No build loaded for %s. Paste a build code below.",
 	followPasteFirst = "Paste a build code first.",
 	followDone = "This build is finished; every point is spent.",
 	followNext = "%s (%s, tier %d)",
@@ -108,7 +110,12 @@ local L = {
 	-- A talent this addon's data has no name for, named by its position
 	-- instead, so the player can still find the cell.
 	followUnknownCell = "%d:%d",
-	followPasteHint = "Paste a build code from foreversixty.gg",
+	followPasteHint = "Plan it at foreversixty.gg/planner, copy the addon code, paste it here and press Load build.",
+	--- Appended to the progress line when the character has points the
+	--- plan never asked for.
+	followOffPlan = "%d off plan",
+	--- The rank cell on the row to take next, and on a finished row.
+	followNextTag = "Next · %s",
 	followLoadButton = "Load build",
 	followLoadTitle = "LOAD A BUILD",
 	followForget = "Forget build",
@@ -169,11 +176,16 @@ local L = {
 	gearEquipButton = "Equip",
 	gearInCombat = "In combat",
 	gearLoadABuild = "Load a build on the Talents page to compare your gear with the plan.",
-	gearOpenFollow = "Open the Follow tab",
+	gearOpenFollow = "Open the Talents page",
 	-- "<slot>  <name>" for an upgrade row.
 	gearSlotRow = "%s  %s",
 	gearUpgradeRow = "%+.0f",
 	gearItemUnknown = "Item %d",
+	--- An item the client has not sent yet; the row redraws when it has.
+	gearItemLoading = "Loading item...",
+	--- What the "+N" on this page is counted in: the spec's reference stat.
+	gearScoreNote = "Scored by %s weights · 1 point = 1 %s",
+	gearScoreNoteNoReference = "Scored by %s weights",
 	-- Round-2 ruling: a slot the build never planned, with something
 	-- worn there anyway -- never a false "Different from the plan", and
 	-- never the silence this read as before the ruling.
@@ -236,12 +248,12 @@ local L = {
 	-- The Overview page.
 	overviewBuildEyebrow = "YOUR BUILD",
 	overviewBuildNone = "No build loaded",
-	overviewBuildNoneHint = "Plan a build at foreversixty.gg/planner, copy its addon code and load it on the "
-		.. "Talents page. The addon then shows the next talent to take as you level.",
+	overviewBuildNoneHint = "Plan a build on the site and load its code on the Talents page.",
 	overviewBuildProgress = "%d of %d points taken",
 	overviewBuildOpen = "Open talents",
 	overviewBuildLoad = "Load a build",
 	overviewGearEyebrow = "GEAR",
+	overviewGearNoBuild = "No build loaded",
 	overviewGearSlots = "%d of %d slots filled",
 	overviewGearNeedsBuild = "Load a build to compare what you wear with what you planned, "
 		.. "and to score what is in your bags.",
@@ -266,6 +278,7 @@ local L = {
 	statusDataBuild = "Data %s",
 	statusOutOfDate = "Data out of date",
 	addonVersion = "v%s",
+	addonVersionDev = "dev",
 
 	-- Outside the window (premium pass, 2026-09-21): item tooltips, the
 	-- level-up toast, the tracker's progress bar, the minimap's tooltip
@@ -343,7 +356,7 @@ local L = {
 	-- of the roster): the rank half is never invented -- the data addon
 	-- carries no item level or spec per guild member yet -- the gap half
 	-- is this addon's own Gear.upgrades, real the instant a build loads.
-	guildStandingNoRank = "Your item-level rank among guildmates isn't in your data addon yet.",
+	guildStandingNoRank = "Your item-level rank among guildmates is not available yet.",
 	guildStandingGap = "Your biggest gear gap: %s, +%.0f by our weights.",
 	guildStandingGapNone = "Nothing in your gear is behind your plan right now.",
 	guildStandingGapNoBuild = "Load a build on the Talents page to see your gear gap.",

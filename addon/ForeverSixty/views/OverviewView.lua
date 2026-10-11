@@ -31,7 +31,9 @@ local OverviewView = {}
 --- The figure area's own placeholder when there is no number to show yet
 --- -- a plain ASCII hyphen, never a fabricated "0" (tenet 8), and never a
 --- new non-ASCII glyph (Locale.lua carries none outside "·").
-OverviewView.FIGURE_PLACEHOLDER = "-"
+--- Nothing: a lone dash where the figure goes read as a broken field
+--- (seen in game); with no figure the caption simply leads the line.
+OverviewView.FIGURE_PLACEHOLDER = ""
 
 --- Round-2 pass (owner ruling, tenets 1/4/11): every card on the grid
 --- now leads with one large figure -- "nothing reads from across the
@@ -79,8 +81,10 @@ local function gearModel(data, build, ranks)
 	local filled, slots = #Export.equippedSlots(), #Export.INVENTORY_SLOTS
 	local model = {
 		filled = filled, slots = slots, planned = 0, matched = 0, upgrades = 0,
-		fraction = slots > 0 and filled / slots or 0,
-		figure = OverviewView.FIGURE_PLACEHOLDER, caption = "",
+		-- No plan, no progress: a bar part-filled with the slot count read
+		-- as "gear 70% done" with nothing to measure against (seen in game).
+		fraction = 0,
+		figure = OverviewView.FIGURE_PLACEHOLDER, caption = L.overviewGearNoBuild,
 		detail = L.overviewGearNeedsBuild,
 		action = L.overviewGearOpen,
 	}
@@ -112,20 +116,17 @@ local function gearModel(data, build, ranks)
 	return model
 end
 
---- Each tree's points, and its share of the biggest tree so the bars
---- compare the trees with each other rather than with an arbitrary cap.
+--- Each tree's points, and its share of a tree's full depth
+--- (Theme.SIZES.treePoints), so seven points in Arms never draw a full
+--- bar beside four in Fury (seen in game, reading as "Arms is maxed").
 local function treeModels(data)
 	local trees = ExportView.treePoints(data, Talents.playerClassSlug())
-	local most = 0
-	for _, tree in ipairs(trees) do
-		most = math.max(most, tree.points)
-	end
 	local models = {}
 	for index, tree in ipairs(trees) do
 		models[index] = {
 			name = tree.name,
 			points = tree.points,
-			fraction = most > 0 and tree.points / most or 0,
+			fraction = math.min(1, tree.points / Theme.SIZES.treePoints),
 		}
 	end
 	return models
@@ -357,6 +358,13 @@ local function applyCard(card, model)
 	card.title:SetText(model.figure or "")
 	if card.caption ~= nil then
 		card.caption:SetText(model.caption or "")
+		-- With no figure the caption leads the line, flush with the eyebrow.
+		card.caption:ClearAllPoints()
+		if (model.figure or "") == "" then
+			card.caption:SetPoint("LEFT", card.title, "LEFT", 0, 0)
+		else
+			card.caption:SetPoint("LEFT", card.title, "RIGHT", Theme.SIZES.gap * 2, 0)
+		end
 	end
 	card.detail:SetText(model.detail or "")
 	if card.bar ~= nil then
@@ -394,6 +402,11 @@ local function withBar(card)
 	local S = Theme.SIZES
 	Theme.applyFont(card.title, "large")
 	card.title:SetTextColor(Theme.rgb(Theme.HEX.gold))
+	-- Cards.card gave the title the card's full inner width; the caption
+	-- hangs off its RIGHT, so a full-width figure put the caption at the
+	-- card's far edge, running into the next card (seen in game). Zero
+	-- width lets the client size the figure to its own text.
+	card.title:SetWidth(0)
 	card.caption = Widgets.label(card, "", "muted", "small")
 	card.caption:SetPoint("LEFT", card.title, "RIGHT", S.gap * 2, 0)
 	card.bar = Cards.progressBar(card, card.innerWidth)
@@ -595,6 +608,13 @@ local function layout(parent, ctx)
 	view.build = place(withBar(Cards.card(parent, width, S.cardHeight, L.overviewBuildEyebrow, function()
 		ctx.select("follow")
 	end)))
+	-- The page's one next step while nothing is loaded: a gold button,
+	-- not a paragraph that names a page (tenet 14).
+	view.build.loadButton = Cards.primaryButton(view.build, L.overviewBuildLoad, function()
+		ctx.select("follow")
+	end)
+	view.build.loadButton:SetPoint("BOTTOMLEFT", view.build, "BOTTOMLEFT", S.padding,
+		S.padding + S.progressHeight + S.gap * 3)
 	view.gear = place(withBar(Cards.card(parent, width, S.cardHeight, L.overviewGearEyebrow, function()
 		ctx.select("gear")
 	end)))
@@ -705,6 +725,11 @@ end
 
 local function applyRotation(card, model)
 	card.header:SetText(model.empty and "" or model.header)
+	if model.empty then
+		card.headerIcon:Hide()
+	else
+		card.headerIcon:Show()
+	end
 	card.reason:SetText(model.empty and (model.reason or "") or "")
 	local classToken = select(2, UnitClass("player"))
 	for index, row in ipairs(card.rows) do
@@ -734,6 +759,13 @@ function OverviewView.apply(view, model)
 	-- rather than leaving a dead gap reserved for the common case.
 	reposition(view, OverviewView.gridTop(model.arrival.visible))
 	applyCard(view.build, model.build)
+	if view.build.loadButton ~= nil then
+		if model.build.loaded then
+			view.build.loadButton:Hide()
+		else
+			view.build.loadButton:Show()
+		end
+	end
 	applyCard(view.gear, model.gear)
 	applyTrees(view.trees, model.trees, select(2, UnitClass("player")))
 	applySync(view.sync, model.sync)

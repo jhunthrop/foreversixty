@@ -142,7 +142,7 @@ describe("FollowView", function()
 		start()
 		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:191:", DATA))
 		local model = FollowView.rows(DATA, build, { [1] = {} })
-		assert.are.equal(string.format(L.followUnknownCell, 10, 1), model.rows[1].name)
+		assert.are.equal(string.format(L.followUnknownCell, 9, 1), model.rows[1].name)
 	end)
 
 	it("puts a tree heading before the first row of each tree", function()

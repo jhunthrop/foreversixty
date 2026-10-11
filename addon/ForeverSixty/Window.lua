@@ -93,7 +93,15 @@ function Window.addonVersion()
 		return nil
 	end
 	local ok, version = pcall(read, "ForeverSixty", "Version")
-	return ok and version or nil
+	if not ok or type(version) ~= "string" or version == "" then
+		return nil
+	end
+	-- A development checkout still carries the packager's own token; a
+	-- "v@project-version@" title (seen in game) names nothing to a player.
+	if version:find("@", 1, true) ~= nil then
+		return L.addonVersionDev
+	end
+	return version
 end
 
 --- "Level 11 Gnome Warrior": the client's own localised race and class.
@@ -125,7 +133,9 @@ function Window.headerModel(data)
 		name = Compat.playerName() or "",
 		classToken = select(2, UnitClass("player")),
 		levelLine = levelLine(),
-		status = warning ~= nil and L.statusOutOfDate or string.format(L.statusDataBuild, data.build),
+		-- The pill speaks only when the data and the client disagree; a
+		-- build number on every page is a pipeline counter (tenet 7).
+		status = warning ~= nil and L.statusOutOfDate or "",
 		statusColor = warning ~= nil and "warning" or "muted",
 		realmLine = string.format(L.headerRealmLevel,
 			GetRealmName() or "", UnitLevel("player") or 0),
@@ -209,7 +219,13 @@ local function buildTitleBar(frame)
 	Window.title = Widgets.label(bar, L.addonName, "gold")
 	Window.title:SetPoint("LEFT", mark, "RIGHT", Theme.SIZES.gap * 2, 0)
 	local version = Window.addonVersion()
-	Window.version = Widgets.label(bar, version and string.format(L.addonVersion, version) or "", "muted", "small")
+	local versionText = ""
+	if version == L.addonVersionDev then
+		versionText = version
+	elseif version ~= nil then
+		versionText = string.format(L.addonVersion, version)
+	end
+	Window.version = Widgets.label(bar, versionText, "muted", "small")
 	Window.version:SetPoint("LEFT", Window.title, "RIGHT", Theme.SIZES.gap * 2, 0)
 	Window.closeButton = Widgets.closeButton(bar, function()
 		Window.close()
@@ -296,7 +312,7 @@ local function buildSidebar(frame)
 		item:SetPoint("TOPLEFT", sidebar, "TOPLEFT", 0, -(S.gap * 2 + (index - 1) * S.navHeight))
 		Window.tabs[tab.name] = item
 	end
-	Window.site = Widgets.label(sidebar, L.siteName, "gold", "small")
+	Window.site = Widgets.label(sidebar, L.siteName, "muted", "small")
 	Window.site:SetPoint("BOTTOMLEFT", sidebar, "BOTTOMLEFT", S.padding, S.padding)
 	Window.sidebar = sidebar
 	return sidebar
@@ -352,6 +368,11 @@ local function applyHeader(data)
 	Window.levelLine:SetText(header.levelLine)
 	Window.spec:SetText(L.headerSpecSeparator .. header.specLabel)
 	Window.status:SetText(header.status, header.statusColor)
+	if header.status == "" then
+		Window.status:Hide()
+	else
+		Window.status:Show()
+	end
 	Window.warning:SetText(header.warning or "")
 	return header
 end

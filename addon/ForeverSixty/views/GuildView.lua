@@ -15,7 +15,8 @@ local Widgets = ns.Widgets or require("Widgets")
 local Ratings = ns.Ratings or require("Ratings")
 local Codec = ns.Codec or require("Codec")
 local Export = ns.Export or require("Export")
-local Gear = ns.Gear or require("Gear")
+local GearView = ns.GearView or require("GearView")
+local Talents = ns.Talents or require("Talents")
 local Follow = ns.Follow or require("Follow")
 
 local GuildView = {}
@@ -139,12 +140,23 @@ function GuildView.standingLine(data, build)
 	if build == nil then
 		gap = L.guildStandingGapNoBuild
 	else
-		local upgrades = Gear.upgrades(data, build)
-		gap = #upgrades > 0
-			and string.format(L.guildStandingGap, upgrades[1].slot, upgrades[1].delta)
-			or L.guildStandingGapNone
+		gap = L.guildStandingGapNone
+		local rows = GearView.rows(data, build, Talents.readRanks(data), GearView.readEquipped(), {})
+		local worst = nil
+		for _, row in ipairs(rows.slots or {}) do
+			-- delta is worn minus planned: the most negative is the gap.
+			if row.delta ~= nil and row.delta < 0 and (worst == nil or row.delta < worst.delta) then
+				worst = row
+			end
+		end
+		if worst ~= nil then
+			gap = string.format(L.guildStandingGap,
+				L.gearSlotLabels[worst.slot] or worst.slot, -worst.delta)
+		end
 	end
-	return L.guildStandingNoRank .. " · " .. gap
+	-- Two ideas, two lines (seen in game as one bold sentence with a
+	-- stray " · " in the middle).
+	return L.guildStandingNoRank .. "\n" .. gap
 end
 
 --- Everything the page shows, as plain tables and finished strings.

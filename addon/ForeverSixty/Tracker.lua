@@ -28,7 +28,8 @@ function Tracker.model(data, build, ranks)
 		return { shown = false, done = false, title = L.followNone, progress = "", fraction = 0 }
 	end
 	local total = #build.order
-	local point = Follow.nextPoint(build, ranks)
+	local progress = Follow.progress(build, ranks)
+	local point = progress.point
 	if point == nil then
 		return {
 			shown = true,
@@ -42,8 +43,8 @@ function Tracker.model(data, build, ranks)
 		shown = true,
 		done = false,
 		title = string.format(L.trackerNext, Follow.line(data, build, ranks)),
-		progress = string.format(L.trackerProgress, point.index - 1, total),
-		fraction = total > 0 and (point.index - 1) / total or 0,
+		progress = string.format(L.trackerProgress, progress.matched, total),
+		fraction = total > 0 and progress.matched / total or 0,
 	}
 end
 

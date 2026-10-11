@@ -93,7 +93,10 @@ Theme.SIZES = {
 	minimapButton = 32,
 	minimapIcon = 20,
 	minimapRadius = 80,
-	glowThickness = 2,
+	glowThickness = 3,
+	--- How far outside a talent button its glow ring sits, clear of the
+	--- game's own rank border.
+	glowInset = 3,
 	--- How long "Selected -- press Ctrl+C" stays, and how long "Build
 	--- complete" stays on the tracker before it hides.
 	copiedSeconds = 2,
@@ -124,6 +127,20 @@ Theme.SIZES = {
 	--- The one note that is still prose, not a glyph or a short tag: an
 	--- unplanned-but-equipped slot's "No plan for this slot".
 	gearNoPlanWidth = 96,
+	--- The gold "+12" tag on a slot where what is worn beats the plan.
+	gearBetterWidth = 40,
+	--- The thin scrollbar beside a list or page that holds more than fits.
+	scrollbar = 4,
+	scrollbarThumb = 16,
+	--- A tree's full width on the Overview's talent-points bars: the points
+	--- that reach a tree's last row, so seven points never read as a tree
+	--- completed.
+	treePoints = 31,
+	--- The minimap button's ring texture and how far past the minimap's
+	--- own edge the button's centre sits.
+	minimapRing = 54,
+	minimapGround = 24,
+	minimapEdge = 10,
 }
 
 --- The client's own font objects, and what to use when one is missing.
@@ -162,6 +179,13 @@ Theme.MEDIA = {
 	--- the client's own ready-check icon, already green, so this addon
 	--- ships no new art for it.
 	gearTick = "Interface\\RaidFrame\\ReadyCheck-Ready",
+	--- Its red twin, for a slot worn differently from the plan.
+	gearCross = "Interface\\RaidFrame\\ReadyCheck-NotReady",
+	--- The minimap button's round crop and the client's own ring for it,
+	--- the same two textures every LibDBIcon button on the minimap uses.
+	minimapMask = "Interface\\CharacterFrame\\TempPortraitAlphaMask",
+	minimapRing = "Interface\\Minimap\\MiniMap-TrackingBorder",
+	minimapGround = "Interface\\Minimap\\UI-Minimap-Background",
 }
 
 --- The nine classes this addon ships a crest for (addon/tools/
@@ -611,24 +635,81 @@ local function hasOverlayGlow()
 	return Theme.glowPair
 end
 
-function Theme.showGlow(button)
-	if hasOverlayGlow() then
+--- How the outline glow breathes: alpha between these two, this long
+--- each way, so it reads as "next" against the game's own static green
+--- and gold talent borders rather than as one more of them.
+Theme.GLOW_PULSE = { low = 0.35, seconds = 0.6 }
+
+local function pulse(edges)
+	for _, edge in pairs(edges) do
+		if type(edge) == "table" and type(edge.CreateAnimationGroup) == "function" and edge.foreverSixtyPulse == nil then
+			-- Every step guarded: a client (or the test double) without
+			-- animations simply shows a steady outline.
+			local group = edge:CreateAnimationGroup()
+			local fade = type(group) == "table" and type(group.CreateAnimation) == "function"
+				and group:CreateAnimation("Alpha") or nil
+			if type(fade) == "table" and type(fade.SetFromAlpha) == "function" then
+				fade:SetFromAlpha(1)
+				fade:SetToAlpha(Theme.GLOW_PULSE.low)
+				fade:SetDuration(Theme.GLOW_PULSE.seconds)
+				group:SetLooping("BOUNCE")
+				edge.foreverSixtyPulse = group
+			end
+		end
+		if type(edge) == "table" and edge.foreverSixtyPulse ~= nil then
+			edge.foreverSixtyPulse:Play()
+		end
+	end
+end
+
+local function stopPulse(edges)
+	for _, edge in pairs(edges) do
+		if type(edge) == "table" and edge.foreverSixtyPulse ~= nil then
+			edge.foreverSixtyPulse:Stop()
+		end
+	end
+end
+
+--- `outline` asks for the addon's own gold outline even on a client
+--- with the overlay glow: the trait talent window's buttons showed
+--- nothing under ActionButton_ShowOverlayGlow (seen in game), and an
+--- outline the addon draws itself is visible wherever a frame is.
+function Theme.showGlow(button, outline)
+	if hasOverlayGlow() and not outline then
 		ActionButton_ShowOverlayGlow(button)
 		return "overlay"
 	end
-	button.foreverSixtyGlow = button.foreverSixtyGlow
-		or Theme.outline(button, Theme.SIZES.glowThickness, "gold")
+	if button.foreverSixtyGlow == nil then
+		-- Its own frame, a few levels above the button and a little wider
+		-- than it: the trait window's buttons draw their rank border on
+		-- child frames, which sit above any texture on the button itself
+		-- (seen in game: an outline on the button never showed).
+		local S = Theme.SIZES
+		local frame = CreateFrame("Frame", nil, button)
+		frame:SetPoint("TOPLEFT", button, "TOPLEFT", -S.glowInset, S.glowInset)
+		frame:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", S.glowInset, -S.glowInset)
+		if type(button.GetFrameLevel) == "function" and type(frame.SetFrameLevel) == "function" then
+			frame:SetFrameLevel((button:GetFrameLevel() or 0) + 10)
+		end
+		button.foreverSixtyGlowFrame = frame
+		button.foreverSixtyGlow = Theme.outline(frame, S.glowThickness, "gold")
+	end
 	Theme.setShown(button.foreverSixtyGlow, true)
+	pulse(button.foreverSixtyGlow)
 	return "texture"
 end
 
 function Theme.hideGlow(button)
-	if hasOverlayGlow() then
+	if button.foreverSixtyGlow ~= nil then
+		stopPulse(button.foreverSixtyGlow)
+		Theme.setShown(button.foreverSixtyGlow, false)
+	end
+	if hasOverlayGlow() and button.foreverSixtyGlow == nil then
 		ActionButton_HideOverlayGlow(button)
 		return "overlay"
 	end
-	if button.foreverSixtyGlow ~= nil then
-		Theme.setShown(button.foreverSixtyGlow, false)
+	if hasOverlayGlow() then
+		ActionButton_HideOverlayGlow(button)
 	end
 	return "texture"
 end

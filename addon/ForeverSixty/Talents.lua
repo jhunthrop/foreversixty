@@ -218,7 +218,10 @@ end
 --- (the tracker, the toast, the Talents page's own unknown-cell name)
 --- goes through this first.
 function Talents.displayTier(tier)
-	return (tier or 0) + 1
+	-- Data.lua's tiers are already the rows a player counts (Improved
+	-- Heroic Strike is tier 1 and sits on the top row of the game's own
+	-- window); adding one here showed "tier 2" for it (seen in game).
+	return tier or 1
 end
 
 ns.Talents = Talents

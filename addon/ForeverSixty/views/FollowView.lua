@@ -98,10 +98,12 @@ function FollowView.rows(data, build, ranks)
 		}
 	end
 	local total = #build.order
+	local progress = Follow.progress(build, ranks)
 	return {
 		rows = rows,
 		list = FollowView.withHeadings(rows),
-		spent = nextPoint ~= nil and (nextPoint.index - 1) or total,
+		spent = progress.matched,
+		offPlan = progress.offPlan,
 		total = total,
 		-- Title-cased (Talents.titleCase, round-2 ruling 3): neither code
 		-- format carries a build name, and "paladin build" read as
@@ -156,10 +158,16 @@ function FollowView.talentRow(parent, width)
 	text:SetPoint("LEFT", icon, "RIGHT", S.gap * 2, 0)
 	local heading = Widgets.label(frame, "", "muted", "small")
 	heading:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 0, S.gap)
+	local tick = frame:CreateTexture(nil, "OVERLAY")
+	tick:SetTexture(Theme.MEDIA.gearTick)
+	tick:SetSize(S.gearPlannedTick, S.gearPlannedTick)
+	tick:SetPoint("RIGHT", frame, "RIGHT", -S.gap * 2, 0)
+	tick:Hide()
 	local right = Widgets.label(frame, "", "muted", "small")
 	right:SetJustifyH("RIGHT")
-	right:SetPoint("RIGHT", frame, "RIGHT", -S.gap * 2, 0)
-	return { frame = frame, ground = ground, edge = edge, icon = icon, text = text, heading = heading, right = right }
+	right:SetPoint("RIGHT", tick, "LEFT", -S.gap, 0)
+	return { frame = frame, ground = ground, edge = edge, icon = icon, text = text, heading = heading,
+		right = right, tick = tick }
 end
 
 local function showAs(region, shown)
@@ -179,14 +187,22 @@ local function renderRow(row, item)
 	if item.heading then
 		row.text:SetText("")
 		row.right:SetText("")
+		showAs(row.tick, false)
 		return
 	end
 	local done = item.state == "done"
 	row.icon:SetIcon(item.icon)
 	row.icon:SetAlpha(done and Theme.ALPHA.dim or 1)
 	row.text:SetText(item.name)
-	row.text:SetTextColor(Theme.rgb(Theme.HEX[ROW_COLOR[item.state]], done and Theme.ALPHA.dim or 1))
-	row.right:SetText(string.format(L.followRank, item.have, item.want))
+	-- Muted at full alpha, not body dimmed: a finished row must still be
+	-- readable (seen in game under 2.5:1).
+	row.text:SetTextColor(Theme.rgb(Theme.HEX[ROW_COLOR[item.state]]))
+	local rank = string.format(L.followRank, item.have, item.want)
+	if isNext then
+		rank = string.format(L.followNextTag, rank)
+	end
+	showAs(row.tick, done)
+	row.right:SetText(rank)
 	row.right:SetTextColor(Theme.rgb(Theme.HEX[done and "success" or (isNext and "gold" or "muted")]))
 end
 
@@ -264,6 +280,54 @@ end
 --- advanced mode scrolls past this the same way GuildView's roster does.
 FollowView.UPGRADE_LIST_ROWS = FollowView.UPGRADE_NOVICE_ROWS
 
+--- The footer -- the paste field, its Load button, the hint or error
+--- under it, the tracker toggle and Forget -- is one stack. With a build
+--- loaded it hangs from the page's bottom edge, so it is on screen
+--- whatever the list above it holds (found in game: stacked under an
+--- eleven-row list and a five-row upgrade queue it sat below the window).
+--- With nothing loaded there is no list to make room for, and the one
+--- thing the player came to do -- paste a code -- is the page.
+local function placeFooter(view, atTop)
+	local S = Theme.SIZES
+	local gap, padding = S.gap, S.padding
+	local parent = view.frame
+	local field = Widgets.field(view.code)
+	for _, region in ipairs({ view.rule, view.loadTitle, field, view.hint, view.error,
+		view.tracker.frame, view.forget }) do
+		region:ClearAllPoints()
+	end
+	if atTop then
+		view.loadTitle:SetPoint("TOPLEFT", view.slotsHolder, "BOTTOMLEFT", 0, -padding)
+		field:SetPoint("TOPLEFT", view.loadTitle, "BOTTOMLEFT", 0, -gap * 2)
+		view.hint:SetPoint("TOPLEFT", field, "BOTTOMLEFT", 0, -gap)
+		view.error:SetPoint("TOPLEFT", field, "BOTTOMLEFT", 0, -gap)
+		view.tracker.frame:SetPoint("TOPLEFT", view.hint, "BOTTOMLEFT", 0, -gap * 2)
+		view.forget:SetPoint("TOPRIGHT", view.load, "BOTTOMRIGHT", 0, -gap * 2)
+		view.rule:SetPoint("TOPLEFT", parent, "TOPLEFT", padding, 0)
+		view.rule:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -padding, 0)
+		return
+	end
+	view.tracker.frame:SetPoint("BOTTOMLEFT", parent, "BOTTOMLEFT", padding, padding)
+	view.forget:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -padding, padding)
+	view.hint:SetPoint("BOTTOMLEFT", view.tracker.frame, "TOPLEFT", 0, gap * 2)
+	view.error:SetPoint("BOTTOMLEFT", view.tracker.frame, "TOPLEFT", 0, gap * 2)
+	field:SetPoint("BOTTOMLEFT", view.hint, "TOPLEFT", 0, gap)
+	view.loadTitle:SetPoint("BOTTOMLEFT", field, "TOPLEFT", 0, gap * 2)
+	view.rule:SetPoint("BOTTOMLEFT", view.loadTitle, "TOPLEFT", 0, padding)
+	view.rule:SetPoint("BOTTOMRIGHT", view.loadTitle, "TOPLEFT", view.ctx.contentWidth, padding)
+end
+
+--- How many rows of the talent list the upgrade queue takes from it:
+--- its title, its rows, the "more" hint when there is one, and one row
+--- of air above the title. Zero when the queue is empty, so a character
+--- with no companion messages keeps the whole list.
+function FollowView.upgradeRowsTaken(count, hasMore)
+	if count == 0 then
+		return 0
+	end
+	return count + 2 + (hasMore and 1 or 0)
+end
+
 local function layout(parent, ctx)
 	local S = Theme.SIZES
 	local gap, padding = S.gap, S.padding
@@ -275,6 +339,7 @@ local function layout(parent, ctx)
 	local slotsHolder = CreateFrame("Frame", nil, parent)
 	slotsHolder:SetPoint("TOPLEFT", view.name, "BOTTOMLEFT", 0, -gap)
 	slotsHolder:SetSize(ctx.contentWidth, S.tabHeight)
+	view.slotsHolder = slotsHolder
 	view.slots = slotsRow(slotsHolder, function(slot)
 		Follow.setActiveSlot(ctx.data, slot)
 		FollowView.setError(view, "")
@@ -286,28 +351,30 @@ local function layout(parent, ctx)
 	view.list = Widgets.list(parent, ctx.contentWidth, S.followRows, FollowView.talentRow)
 	view.list.frame:SetPoint("TOPLEFT", view.bar, "BOTTOMLEFT", 0, -gap * 2)
 	view.list:SetRenderer(renderRow)
-	-- Top Gear's upgrade queue (design section 3 item 2, Wave C): the
-	-- companion's "upgrade" inbox messages, newest first, novice-capped
-	-- by FollowView.upgradeRows.
-	view.upgradesTitle = Widgets.label(parent, L.followUpgradesTitle, "muted", "small")
-	view.upgradesTitle:SetPoint("TOPLEFT", view.list.frame, "BOTTOMLEFT", 0, -padding)
-	view.upgrades = Widgets.list(parent, ctx.contentWidth, FollowView.UPGRADE_LIST_ROWS, upgradeRow)
-	view.upgrades.frame:SetPoint("TOPLEFT", view.upgradesTitle, "BOTTOMLEFT", 0, -gap)
-	view.upgrades:SetRenderer(renderUpgradeRow)
-	view.upgradesMore = Widgets.label(parent, L.overviewRotationMore, "muted", "small")
-	view.upgradesMore:SetPoint("TOPLEFT", view.upgrades.frame, "BOTTOMLEFT", 0, -gap)
-	-- Loading a build: a section at the foot, under a hairline.
+	-- The footer's parts; placeFooter anchors them per state.
+	view.rule = Theme.texture(parent, "ARTWORK", "border")
+	view.rule:SetHeight(S.border)
 	view.loadTitle = Widgets.label(parent, L.followLoadTitle, "muted", "small")
-	view.loadTitle:SetPoint("TOPLEFT", view.upgradesMore, "BOTTOMLEFT", 0, -padding)
 	view.inbox = Widgets.label(parent, L.followInbox, "gold", "small")
 	view.inbox:SetPoint("LEFT", view.loadTitle, "RIGHT", padding, 0)
 	local fieldWidth = ctx.contentWidth - (S.buttonWidth + gap * 2)
 	view.code = Widgets.editBox(parent, fieldWidth, S.buttonHeight + gap, false, true)
-	Widgets.field(view.code):SetPoint("TOPLEFT", view.loadTitle, "BOTTOMLEFT", 0, -gap * 2)
 	view.error = Widgets.label(parent, "", "warning", "small")
-	view.error:SetPoint("TOPLEFT", Widgets.field(view.code), "BOTTOMLEFT", 0, -gap)
 	view.hint = Widgets.label(parent, L.followPasteHint, "muted", "small")
-	view.hint:SetPoint("TOPLEFT", Widgets.field(view.code), "BOTTOMLEFT", 0, -gap)
+	view.tracker = Widgets.toggle(parent, L.followShowTracker, Prefs.get("tracker", "shown"),
+		function(shown)
+			ctx.setTracker(shown)
+		end)
+	-- Top Gear's upgrade queue (design section 3 item 2, Wave C): the
+	-- companion's "upgrade" inbox messages, newest first, novice-capped
+	-- by FollowView.upgradeRows. It sits just above the footer and takes
+	-- its rows from the talent list's own budget (apply()).
+	view.upgradesMore = Widgets.label(parent, L.overviewRotationMore, "muted", "small")
+	view.upgradesMore:SetPoint("BOTTOMLEFT", view.rule, "TOPLEFT", 0, gap * 2)
+	view.upgrades = Widgets.list(parent, ctx.contentWidth, FollowView.UPGRADE_LIST_ROWS, upgradeRow)
+	view.upgrades:SetRenderer(renderUpgradeRow)
+	view.upgradesTitle = Widgets.label(parent, L.followUpgradesTitle, "muted", "small")
+	view.upgradesTitle:SetPoint("BOTTOMLEFT", view.upgrades.frame, "TOPLEFT", 0, gap)
 	return view
 end
 
@@ -321,8 +388,12 @@ end
 function FollowView.apply(view, model)
 	view.model = model
 	view.name:SetText(model.empty and emptyName() or model.name)
-	view.progress:SetText(model.empty and ""
-		or string.format(L.followProgress, model.spent, model.total))
+	local progress = model.empty and "" or string.format(L.followProgress, model.spent, model.total)
+	if not model.empty and (model.offPlan or 0) > 0 then
+		progress = progress .. " · " .. string.format(L.followOffPlan, model.offPlan)
+	end
+	view.progress:SetText(progress)
+	view.progress:SetTextColor(Theme.rgb(Theme.HEX[(model.offPlan or 0) > 0 and "warning" or "muted"]))
 	view.bar:SetValue(model.total > 0 and model.spent / model.total or 0)
 	view.list:SetItems(model.list)
 	-- Follow.slotsFor() walks Follow.SLOTS in the same order slotsRow built
@@ -342,9 +413,22 @@ function FollowView.apply(view, model)
 	end
 	local upgrades = FollowView.upgradeRows(ForeverSixtyInbox, key, Prefs.flag("advancedDetail"))
 	view.upgrades:SetItems(upgrades.rows)
+	view.upgrades:SetVisibleRows(#upgrades.rows)
 	showAs(view.upgradesTitle, #upgrades.rows > 0)
 	showAs(view.upgradesMore, upgrades.hasMore)
+	-- With no build there is no list; the footer is the page.
+	showAs(view.bar, not model.empty)
+	showAs(view.list.frame, not model.empty)
+	showAs(view.upgrades.frame, not model.empty and #upgrades.rows > 0)
+	placeFooter(view, model.empty)
+	local S = Theme.SIZES
+	view.upgrades.frame:ClearAllPoints()
+	view.upgrades.frame:SetPoint("BOTTOMLEFT", view.rule, "TOPLEFT", 0,
+		S.gap * 2 + (upgrades.hasMore and S.rowHeight or 0))
+	view.list:SetVisibleRows(S.followRows
+		- FollowView.upgradeRowsTaken(#upgrades.rows, upgrades.hasMore))
 	Widgets.setEnabled(view.forget, not model.empty)
+	showAs(view.forget, not model.empty)
 	return view
 end
 
@@ -369,9 +453,17 @@ local function loadCode(view, code, name)
 	end
 	local build, message = Follow.load(code, view.ctx.data, name)
 	FollowView.setError(view, build == nil and message or "")
+	if build ~= nil then
+		-- The code has done its job; its stat tail is nothing to read.
+		Widgets.setText(view.code, "")
+	end
 	-- A refusal must not clear a build already loaded: the player still
 	-- wants the one that worked while they fix the code that did not.
 	view.refresh()
+	if build ~= nil and view.ctx.refreshEverything ~= nil then
+		-- The tracker and the talent glow live outside this page.
+		view.ctx.refreshEverything()
+	end
 	return build
 end
 
@@ -390,17 +482,14 @@ function FollowView.mount(parent, ctx)
 		end
 	end)
 	view.inboxLoad:SetPoint("LEFT", view.inbox, "RIGHT", Theme.SIZES.gap * 2, 0)
-	view.tracker = Widgets.toggle(parent, L.followShowTracker, Prefs.get("tracker", "shown"),
-		function(shown)
-			ctx.setTracker(shown)
-		end)
-	view.tracker.frame:SetPoint("TOPLEFT", view.hint, "BOTTOMLEFT", 0, -Theme.SIZES.gap * 2)
 	view.forget = Widgets.button(parent, L.followForget, function()
 		Follow.forget()
 		FollowView.setError(view, "")
 		view.refresh()
+		if ctx.refreshEverything ~= nil then
+			ctx.refreshEverything()
+		end
 	end)
-	view.forget:SetPoint("TOPRIGHT", view.load, "BOTTOMRIGHT", 0, -Theme.SIZES.gap * 2)
 	function view.refresh()
 		view.tracker:SetChecked(Prefs.get("tracker", "shown"))
 		return FollowView.apply(view,

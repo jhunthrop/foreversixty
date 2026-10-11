@@ -62,7 +62,11 @@ local function professionLine()
 	if #slugs == 0 then
 		return L.exportNoProfessions
 	end
-	return string.format(L.exportProfessions, joined(slugs, L.exportProfessionSeparator))
+	local names = {}
+	for index, slug in ipairs(slugs) do
+		names[index] = Talents.titleCase(slug)
+	end
+	return string.format(L.exportProfessions, joined(names, L.exportProfessionSeparator))
 end
 
 local function savedLine()
