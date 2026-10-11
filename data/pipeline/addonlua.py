@@ -212,6 +212,48 @@ def _default_builds_lua(default_builds: dict) -> list[str]:
     return lines
 
 
+def _dps_per_point_lua(dps_per_point: dict) -> list[str]:
+    """`dpsPerPoint[spec] = { reference, dps, healing }` (contract 1). A
+    spec with no entry is left out, never written as zero: the addon reads
+    a missing key as "show score units"."""
+    lines = ["\tdpsPerPoint = {"]
+    for spec in sorted(dps_per_point):
+        entry = dps_per_point[spec]
+        healing = "true" if entry.healing else "false"
+        lines.append(
+            f"\t\t[{_quote(spec)}] = {{ reference = {_quote(entry.reference)}, "
+            f"dps = {_number(entry.dps)}, healing = {healing} }},"
+        )
+    lines.append("\t},")
+    return lines
+
+
+def _encounter_needs_lua(encounter_needs: dict) -> list[str]:
+    """`encounterNeeds[npcId] = { buffs = {...}, debuffs = {...}, resist = "fire" }`
+    (contract 1); `resist` is left out for a boss with none, which Lua reads
+    as nil."""
+    lines = ["\tencounterNeeds = {"]
+    for npc_id in sorted(encounter_needs):
+        needs = encounter_needs[npc_id]
+        buffs = ", ".join(str(spell) for spell in needs.buffs)
+        debuffs = ", ".join(str(spell) for spell in needs.debuffs)
+        resist = f", resist = {_quote(needs.resist)}" if needs.resist is not None else ""
+        lines.append(
+            f"\t\t[{npc_id}] = {{ buffs = {{ {buffs} }}, debuffs = {{ {debuffs} }}{resist} }},"
+        )
+    lines.append("\t},")
+    return lines
+
+
+def _ability_levels_lua(ability_levels: dict) -> list[str]:
+    """`abilityLevels[spellId] = level` (contract 1), one id per line, ids ascending."""
+    lines = ["\tabilityLevels = {"]
+    for spell_id in sorted(ability_levels):
+        lines.append(f"\t\t[{spell_id}] = {ability_levels[spell_id]},")
+    lines.append("\t},")
+    return lines
+
+
 def render_lua(data: AddonData) -> str:
     lines = [
         GENERATED,
@@ -239,6 +281,9 @@ def render_lua(data: AddonData) -> str:
     lines.extend(_bis_new_lua(data.bis))
     lines.extend(_bis_weights_lua(data.bis))
     lines.extend(_default_builds_lua(data.default_builds))
+    lines.extend(_dps_per_point_lua(data.dps_per_point))
+    lines.extend(_encounter_needs_lua(data.encounter_needs))
+    lines.extend(_ability_levels_lua(data.ability_levels))
     lines.append("}")
     lines.append("")
     lines.append("return ns.Data")

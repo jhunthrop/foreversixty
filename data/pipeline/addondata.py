@@ -28,8 +28,16 @@ import json
 from pathlib import Path
 
 from pipeline.addonbis import build_bis
-from pipeline.addonrotation import build_rotations
-from pipeline.models import AddonClass, AddonData, AddonDefaultBuild, AddonTab, AddonTalent
+from pipeline.addonrotation import build_ability_levels, build_rotations
+from pipeline.encounters import load_encounter_needs
+from pipeline.models import (
+    AddonClass,
+    AddonData,
+    AddonDefaultBuild,
+    AddonDpsPerPoint,
+    AddonTab,
+    AddonTalent,
+)
 from pipeline.normalize import write_model
 from pipeline.weights import load_weights
 
@@ -96,6 +104,18 @@ def _default_builds(root: Path, build: str) -> dict[str, dict[str, AddonDefaultB
     }
 
 
+def _dps_per_point(root: Path, build: str) -> dict[str, AddonDpsPerPoint]:
+    """data/builds/<build>/dps-per-point.json, which sim/cmd/dps-per-point
+    writes: each spec's DPS (HPS for a healer) per point of its reference
+    stat. Empty when the file does not exist; a spec missing from it (every
+    tank) simply has no entry, and the addon falls back to "score" units."""
+    path = root / build / "dps-per-point.json"
+    if not path.exists():
+        return {}
+    file = json.loads(path.read_text(encoding="utf-8"))
+    return {spec: AddonDpsPerPoint(**entry) for spec, entry in sorted(file.items())}
+
+
 def build_addon_data(
     build: str,
     root: Path = Path("builds"),
@@ -114,6 +134,9 @@ def build_addon_data(
         rotations=rotations,
         bis=bis,
         default_builds=_default_builds(root, build),
+        dps_per_point=_dps_per_point(root, build),
+        encounter_needs=load_encounter_needs(root, build, curated_dir),
+        ability_levels=build_ability_levels(root, build, curated_dir=curated_dir),
     )
 
 

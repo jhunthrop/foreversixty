@@ -834,6 +834,33 @@ class AddonDefaultBuild(BaseModel):
     order: list[tuple[int, int, int]]
 
 
+class AddonDpsPerPoint(BaseModel):
+    """What one point of a spec's reference stat is worth (docs/contracts/
+    addon-v2.md, contract 1): sim/cmd/dps-per-point's raw stat-weights
+    derivative on the guide's level-60 raid character. The addon's Progress
+    multiplies a score delta, which is in reference-stat points, by `dps`."""
+
+    #: The spec's reference stat (data/curated/specs.json), the one the
+    #: addon's weights are normalised to 1.0 against.
+    reference: str
+    #: Damage per second per point; healing per second when `healing`.
+    dps: float
+    #: True for a healer: the addon says "healing" instead of "damage".
+    healing: bool
+
+
+class AddonEncounterNeeds(BaseModel):
+    """One raid boss's ready-check needs (contract 1's encounterNeeds), from
+    data/curated/encounter_needs.json through pipeline.encounters. The ids
+    are spell ids the addon checks the raid's auras against and shows by the
+    client's own spell name; they are never printed."""
+
+    buffs: list[int]
+    debuffs: list[int]
+    #: The school a raid stacks resistance against, or None.
+    resist: str | None = None
+
+
 class AddonData(BaseModel):
     build: str
     classes: dict[str, AddonClass]
@@ -852,6 +879,17 @@ class AddonData(BaseModel):
     #: addon-builds.json, written by sim/cmd/addon-builds. Empty when that
     #: file does not exist.
     default_builds: dict[str, dict[str, AddonDefaultBuild]] = {}
+    #: Keyed by spec: data/builds/<build>/dps-per-point.json, written by
+    #: sim/cmd/dps-per-point. A spec with no entry (every tank, or one the
+    #: sim has not measured) is the addon's cue to fall back to "score" units.
+    dps_per_point: dict[str, AddonDpsPerPoint] = {}
+    #: Keyed by raid boss npc id (pipeline.encounters). Empty for a build
+    #: with no loot.json raid record to check the ids against.
+    encounter_needs: dict[int, AddonEncounterNeeds] = {}
+    #: Rotation spell id -> the level the first rank of its ability is
+    #: learned (pipeline.addonrotation.build_ability_levels), for the
+    #: rotation region's "at level N". Every id any rotation line carries.
+    ability_levels: dict[int, int] = {}
 
 
 class PhaseBoundary(BaseModel):

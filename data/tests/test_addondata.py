@@ -330,3 +330,113 @@ def test_the_rendered_default_builds_load_in_a_real_lua(tmp_path):
     result = subprocess.run([lua_bin, "-e", script], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
     assert result.stdout == "Arms leveling|51|1,1"
+
+
+# --- Task L1.3: dpsPerPoint, encounterNeeds, abilityLevels (contract 1) ---
+
+#: Lucifron, Molten Core's first boss (loot.json's raid:molten-core source).
+LUCIFRON = 12118
+#: Execute's resolved ids in the Arms rotation: rank 1 (learned at 24) up to rank 5.
+EXECUTE_RANKS = (5308, 20658, 20660, 20661, 20662)
+
+
+def test_the_rendered_data_lua_carries_dps_per_point_ability_levels_and_encounter_needs(tmp_path):
+    """Task L1.3 step 1, read back through a real Lua the way the addon reads it."""
+    lua_bin = shutil.which("lua") or shutil.which("lua5.4") or shutil.which("lua5.1")
+    if not lua_bin:
+        pytest.skip("no lua interpreter is available")
+    chunk = tmp_path / "Data.lua"
+    chunk.write_text(render_lua(build_addon_data(BUILD)), encoding="utf-8")
+    script = (
+        f"local data = assert(loadfile({chunk.as_posix()!r}))() "
+        "local arms = data.dpsPerPoint['warrior-arms'] "
+        f"local lucifron = data.encounterNeeds[{LUCIFRON}] "
+        "io.write(arms.reference, '|', tostring(arms.dps > 0), '|', tostring(arms.healing), '|', "
+        f"data.abilityLevels[{EXECUTE_RANKS[-1]}], '|', #lucifron.debuffs, '|', lucifron.resist)"
+    )
+    result = subprocess.run([lua_bin, "-e", script], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    reference, positive, healing, execute, debuffs, resist = result.stdout.split("|")
+    assert (reference, positive, healing, execute, resist) == (
+        "attack_power", "true", "false", "24", "fire"
+    )
+    assert int(debuffs) > 0
+
+
+def test_dps_per_point_is_read_from_the_builds_sim_file():
+    data = build_addon_data(BUILD)
+    arms = data.dps_per_point["warrior-arms"]
+    assert arms.reference == "attack_power" and arms.dps > 0 and arms.healing is False
+    holy = data.dps_per_point["priest-holy"]
+    assert holy.reference == "healing_power" and holy.healing is True
+    # A tank's reference stat (stamina) does no damage: no entry, so the
+    # addon falls back to "score" units for it.
+    assert "warrior-protection" not in data.dps_per_point
+
+
+def test_dps_per_point_is_absent_when_the_build_has_no_sim_file(tmp_path):
+    (tmp_path / BUILD).mkdir(parents=True)
+    (tmp_path / BUILD / "classes.json").write_text("[]", encoding="utf-8")
+    (tmp_path / BUILD / "spellranks.json").write_text(
+        json.dumps({"build": BUILD, "classes": {}}), encoding="utf-8"
+    )
+    data = build_addon_data(BUILD, root=tmp_path)
+    assert data.dps_per_point == {}
+    # No loot.json either: no raid record to check npc ids against, so none ship.
+    assert data.encounter_needs == {}
+
+
+def test_ability_levels_are_the_first_ranks_learn_level_for_every_rotation_id():
+    data = build_addon_data(BUILD)
+    for spell_id in EXECUTE_RANKS:
+        assert data.ability_levels[spell_id] == 24, spell_id
+    for spec, bands in data.rotations.items():
+        for band in bands:
+            for line in band.lines:
+                level = data.ability_levels.get(line.spell_id)
+                assert level is not None, f"{spec} {band.level} {line.name} has no ability level"
+                # A band only shows abilities learned by its level.
+                assert level <= band.level, f"{spec} {band.level} {line.name} learned at {level}"
+
+
+def test_encounter_needs_cover_molten_core_and_onyxia():
+    needs = build_addon_data(BUILD).encounter_needs
+    molten_core = [12118, 11982, 12259, 12057, 12056, 12264, 12098, 11988, 12018, 11502]
+    for npc_id in molten_core:
+        assert needs[npc_id].resist == "fire", npc_id
+        assert needs[npc_id].debuffs and needs[npc_id].buffs, npc_id
+    assert needs[10184].resist is None  # Onyxia
+    assert 11597 in needs[LUCIFRON].debuffs  # Sunder Armor
+
+
+def test_the_three_additions_render_as_contract_one_shapes():
+    from pipeline.models import AddonData, AddonDpsPerPoint, AddonEncounterNeeds
+
+    data = AddonData(
+        build="x",
+        classes={},
+        weights={},
+        dps_per_point={
+            "priest-holy": AddonDpsPerPoint(reference="healing_power", dps=0.305, healing=True),
+            "warrior-arms": AddonDpsPerPoint(reference="attack_power", dps=0.2342, healing=False),
+        },
+        encounter_needs={
+            10184: AddonEncounterNeeds(buffs=[11551], debuffs=[11597, 9907]),
+            12118: AddonEncounterNeeds(buffs=[11551, 9885], debuffs=[11597], resist="fire"),
+        },
+        ability_levels={20662: 24, 5308: 24},
+    )
+    lua = render_lua(data)
+    assert (
+        "\tdpsPerPoint = {\n"
+        '\t\t["priest-holy"] = { reference = "healing_power", dps = 0.305, healing = true },\n'
+        '\t\t["warrior-arms"] = { reference = "attack_power", dps = 0.2342, healing = false },\n'
+        "\t},\n"
+    ) in lua
+    assert (
+        "\tencounterNeeds = {\n"
+        "\t\t[10184] = { buffs = { 11551 }, debuffs = { 11597, 9907 } },\n"
+        '\t\t[12118] = { buffs = { 11551, 9885 }, debuffs = { 11597 }, resist = "fire" },\n'
+        "\t},\n"
+    ) in lua
+    assert "\tabilityLevels = {\n\t\t[5308] = 24,\n\t\t[20662] = 24,\n\t},\n" in lua
