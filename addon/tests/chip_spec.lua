@@ -59,6 +59,20 @@ local LAST_RAID = { date = "2026-12-08", bosses = {
 } }
 
 describe("Chip.model", function()
+	-- L3.2 fix round 2: a cell the plan wants more than one rank of names the rank.
+	it("names the rank to take when the plan wants more than one there", function()
+		local model = Chip.model(inputs({ level = 21, progress = pointAt(1, 21), unspent = 12,
+			pointName = "Improved Heroic Strike", pointRank = { have = 0, want = 3 } }))
+		assert.are.equal("Take Improved Heroic Strike (1 of 3)", model.chosen.text)
+		assert.are.equal("Improved Heroic Strike", model.chosen.short)
+		assert.are.equal(string.format(L.chipTakeRank, "Improved Heroic Strike", 1, 3), model.chosen.text)
+		local lines = Chip.tooltipLines(model)
+		assert.are.equal("|cffe9e4d8Take Improved Heroic Strike (1 of 3)|r", lines[2])
+		local single = Chip.model(inputs({ level = 21, progress = pointAt(1, 21), unspent = 12,
+			pointName = "Anger Management", pointRank = { have = 0, want = 1 } }))
+		assert.are.equal("Take Anger Management", single.chosen.text)
+	end)
+
 	-- Fix round 2: idle keeps its dark ground and border at full alpha (the
 	-- 40 percent chip vanished over a bright roof); only the icon dims.
 	it("is idle with nothing to do: the class icon at 40 percent on a full-alpha chip, no text, no ring", function()

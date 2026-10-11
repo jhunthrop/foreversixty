@@ -214,11 +214,20 @@ local function pointState(input)
 		return nil
 	end
 	local name = input.pointName or L.chipNextTalent
+	-- "(1 of 3)" where the plan wants more than one rank there: the rank the
+	-- click takes, of the plan's ranks in the cell (Progress.cells).
+	local rank = input.pointRank
+	local text
+	if type(rank) == "table" and (rank.want or 0) > 1 then
+		text = string.format(L.chipTakeRank, name, (rank.have or 0) + 1, rank.want)
+	else
+		text = string.format(L.chipTake, name)
+	end
 	return {
 		kind = "point",
 		icon = input.pointIcon or input.classIcon,
 		crop = input.pointIcon ~= nil,
-		text = string.format(L.chipTake, name),
+		text = text,
 		short = name,
 		action = "talents",
 		hint = L.chipHintTalents,
@@ -715,6 +724,11 @@ function Chip.inputs(data)
 		local talent = Talents.cellOf(data, build.classSlug, point.tab, point.tier, point.column)
 		input.pointName = Chip.talentName(talent)
 		input.pointIcon = talent ~= nil and Talents.iconFor(talent) or nil
+		for _, cell in ipairs(Progress.cells(build, ranks, data)) do
+			if cell.next then
+				input.pointRank = { have = cell.have, want = cell.want }
+			end
+		end
 	end
 	local equipped = Gear.readEquipped()
 	if build ~= nil then

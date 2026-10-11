@@ -21,6 +21,7 @@ local L = {
 		"/fs chip: show or hide the chip",
 		"/fs inspect: gear and talents of your target, or your whole group",
 		"/fs diag: what is not working",
+		"/fs diag verbose: also what the addon found out about this client",
 		"/fs inbox: builds waiting for you from the site",
 		"/fs hello: say hello to your guild's Forever Sixty players",
 		"/fs seen: who said hello in the last hour",
@@ -52,7 +53,7 @@ local L = {
 		.. "the glow may be on the wrong tree.",
 	diagNoSettingsPanel = "This client has no options panel API; use /fs settings.",
 	diagTalentFrame = "Talent window found: %s (%s mapping)",
-	diagTalentButton = "Glow on button %s, width %s, shown %s",
+	diagTalentButton = "Glow on button %s, width %.1f, shown %s",
 	-- The talent marks' render check (spec section 2.4): how many of the
 	-- order badges found no node button to sit on.
 	diagTalentBadges = "%d of %d talent badges found no button; badges are off",
@@ -61,13 +62,27 @@ local L = {
 	diagTalentStrip = "Talent strip: %s anchor on %s, at %s, %s, %s by %s, strata %s level %s, "
 		.. "visible %s; talents frame level %s",
 
-	-- The talent window's strip (spec section 4.2): the build, the plan's
-	-- count, the level the next point arrives at, and the points off plan.
-	-- The last " · " segment of each is the one coloured as a warning when
-	-- a point is off plan. The NoNext form is the level cap's: no level follows.
-	talentStrip = "%s · %d of %d · next at level %d · %d off plan",
-	talentStripDone = "%s · %d of %d · complete · %d off plan",
-	talentStripNoNext = "%s · %d of %d · %d off plan",
+	-- /fs diag's line for the talent marks' own render check.
+	diagTalentBadgesLine = "Talent badges: %d drawn, %d missing",
+	-- /fs diag verbose: which rank fields the client's trait nodes fill.
+	diagTalentNodeFields = "Talent node: activeRank %s, currentRank %s, ranksPurchased %s; staged %s",
+
+	-- The talent window's strip (spec section 4.2, L3.2 fix round 2), in
+	-- segments joined by talentStripSeparator: the build, the plan's count,
+	-- then "spend N now" while points wait (the client shows the same
+	-- count), else the level the next point arrives at (none at the cap),
+	-- or "complete"; then the points off build (muted at 0, a warning from
+	-- 1); then, while an on-build click is staged, "click Apply Changes".
+	talentStripSeparator = " · ",
+	talentStripCount = "%d of %d points",
+	talentStripSpend = "spend %d now",
+	talentStripNext = "next point at level %d",
+	talentStripDone = "complete",
+	talentStripOffBuild = "%d off build",
+	talentStripApply = "click Apply Changes",
+	-- One line on the client's own node tooltip.
+	talentNodeLine = "Forever Sixty: points %d to %d of your build",
+	talentNodeLineOne = "Forever Sixty: point %d of your build",
 
 	-- Export
 	exportTitle = "Send your character to the site",
@@ -155,6 +170,8 @@ local L = {
 	-- Controller ruling 2: neither code format carries a build name, so a
 	-- pasted code is named after its class.
 	followBuildName = "%s build",
+	-- Between the two trees an unnamed build is named after: "Arms / Fury build".
+	followSplitSeparator = " / ",
 	-- One row of the order: tier, then the talent's name.
 	followRow = "%d  %s",
 	-- The same row once the player has matched it. The mark is a plain
@@ -523,6 +540,9 @@ local L = {
 	-- Lane addon-v2 L3.1 (2026-10-11): the chip (spec section 4.1), one line
 	-- at a time, highest first. "Take Improved Heroic Strike".
 	chipTake = "Take %s",
+	-- L3.2 fix round 2: the rank to take when the plan wants more than one
+	-- there: "Take Improved Heroic Strike (1 of 3)".
+	chipTakeRank = "Take %s (%d of %d)",
 	-- "Equip Chausses of Westfall, +4.2 DPS"; the second %s is one of the
 	-- three gains below, or chipInCombat while the client will not equip.
 	chipEquip = "Equip %s, %s",

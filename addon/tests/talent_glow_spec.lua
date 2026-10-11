@@ -180,9 +180,11 @@ describe("TalentGlow", function()
 		assert.are.equal(classic, TalentGlow.glowing)
 		assert.are.equal("classic", TalentGlow.refresh(DATA))
 		assert.are.same({ L.diagTalentTabUnknown }, Theme.diagnostics())
-		-- Which window and button answered is a finding, not a fault (L3.1 fix round 3).
+		-- Which window and button answered is a finding, not a fault (L3.1 fix round 3),
+		-- printed only by /fs diag verbose (L3.2 fix round 2), the width to one decimal.
 		assert.are.same({ string.format(L.diagTalentFrame, "PlayerTalentFrame", "classic"),
-			string.format(L.diagTalentButton, "nil", "0", "true") }, Theme.infoNotes())
+			"Glow on button nil, width 0.0, shown true" }, Theme.verboseNotes())
+		assert.are.same({}, Theme.infoNotes())
 	end)
 
 	it("finds a node button nested under a container", function()

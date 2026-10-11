@@ -64,7 +64,7 @@ function MinimapButton.tooltipLines()
 		lines[#lines + 1] = L.minimapRightClick
 		return lines
 	end
-	lines[#lines + 1] = build.name or string.format(L.followBuildName, Talents.titleCase(build.classSlug))
+	lines[#lines + 1] = Follow.buildName(MinimapButton.data, build)
 	if MinimapButton.data ~= nil then
 		local ranks = Talents.readRanks(MinimapButton.data)
 		local progress = Follow.progress(build, ranks)

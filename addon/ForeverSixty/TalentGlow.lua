@@ -39,6 +39,15 @@ TalentGlow.MAX_DEPTH = 3
 --- (spec section 4.2, "pulsing as the chip does").
 TalentGlow.STATIC_AFTER = 10
 
+--- The ring's geometry (spec section 4.2, L3.2 fix round 2): glowThickness
+--- of gold with a glowInset gap between it and the node's own border (the
+--- outline frame reaches inset + thickness out, and the gold is drawn
+--- inward from its edge), then glowEdge px of dark edge outside the gold.
+function TalentGlow.ring()
+	local S = Theme.SIZES
+	return { inset = S.glowInset + S.glowThickness, thickness = S.glowThickness, edge = S.glowEdge }
+end
+
 --- Injection points: what the window's OnShow and OnHide run. Options sets
 --- them to the talent marks' refresh and clear, which draw this ring first;
 --- unset, the hooks draw and clear the ring alone.
@@ -237,7 +246,9 @@ end
 --- `opts` (optional): `cache` is the refresh's lookup cache (traitButton);
 --- `quiet` records no miss, for the talent window's first pass on show,
 --- which runs before the trait buttons exist (seen in game: the first open
---- after a reload missed, the second found the button).
+--- after a reload missed, the second found the button); `ranks` are the
+--- ranks to read the next point from (the talent marks pass the staged
+--- ones, so the ring moves on a click before Apply Changes).
 function TalentGlow.refresh(data, opts)
 	opts = opts or {}
 	if Follow.build == nil then
@@ -247,7 +258,7 @@ function TalentGlow.refresh(data, opts)
 	if frame == nil then
 		return TalentGlow.clear()
 	end
-	local target = TalentGlow.target(data, Follow.build, Talents.readRanks(data))
+	local target = TalentGlow.target(data, Follow.build, opts.ranks or Talents.readRanks(data))
 	if target == nil then
 		return TalentGlow.clear()
 	end
@@ -267,16 +278,16 @@ function TalentGlow.refresh(data, opts)
 	-- The trait window's buttons take the addon's own outline, pulsing for
 	-- STATIC_AFTER seconds; the classic buttons keep whichever glow the
 	-- client offers.
-	Theme.showGlow(button, how == "trait", TalentGlow.STATIC_AFTER)
+	Theme.showGlow(button, how == "trait", TalentGlow.STATIC_AFTER, TalentGlow.ring())
 	TalentGlow.glowing, TalentGlow.how = button, how
 	if not TalentGlow.notedFrame then
 		-- README spike row 22's answer, recorded once for /fs diag.
 		TalentGlow.notedFrame = true
-		Theme.noteInfo(string.format(L.diagTalentFrame, select(2, TalentGlow.openFrame()) or "?", how))
+		Theme.noteVerbose(string.format(L.diagTalentFrame, select(2, TalentGlow.openFrame()) or "?", how))
 		local name = type(button.GetName) == "function" and button:GetName() or nil
-		local width = type(button.GetWidth) == "function" and button:GetWidth() or nil
+		local width = type(button.GetWidth) == "function" and tonumber(button:GetWidth()) or 0
 		local shown = type(button.IsShown) == "function" and button:IsShown() or nil
-		Theme.noteInfo(string.format(L.diagTalentButton, tostring(name), tostring(width), tostring(shown)))
+		Theme.noteVerbose(string.format(L.diagTalentButton, tostring(name), width, tostring(shown)))
 	end
 	return how
 end

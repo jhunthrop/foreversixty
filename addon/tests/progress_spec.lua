@@ -438,8 +438,8 @@ describe("Progress.cells", function()
 	it("lists each cell once, in plan order, with its last point's index, rank and node", function()
 		local cells = Progress.cells(BUILD, { [1] = { ["1:1"] = 1 } }, TALENTS)
 		assert.are.same({
-			{ tab = 1, tier = 1, column = 1, want = 2, have = 1, lastIndex = 3, node = 101, next = false },
-			{ tab = 2, tier = 1, column = 3, want = 1, have = 0, lastIndex = 2, node = nil, next = true },
+			{ tab = 1, tier = 1, column = 1, want = 2, have = 1, firstIndex = 1, lastIndex = 3, node = 101, next = false },
+			{ tab = 2, tier = 1, column = 3, want = 1, have = 0, firstIndex = 2, lastIndex = 2, node = nil, next = true },
 		}, cells)
 	end)
 
@@ -454,5 +454,15 @@ describe("Progress.cells", function()
 	it("is empty without a build, and has no nodes without data", function()
 		assert.are.same({}, Progress.cells(nil, {}, TALENTS))
 		assert.is_nil(Progress.cells(BUILD, {}, nil)[1].node)
+	end)
+end)
+
+-- Fix round 2: the plan's points the character can reach now, spent or spendable.
+describe("Progress.reachablePoints", function()
+	it("is the points spent plus the points waiting", function()
+		assert.are.equal(12, Progress.reachablePoints(21, {}))
+		assert.are.equal(12, Progress.reachablePoints(21, { [1] = { ["1:1"] = 12 } }))
+		assert.are.equal(13, Progress.reachablePoints(22, { [1] = { ["1:1"] = 12 } }))
+		assert.are.equal(0, Progress.reachablePoints(5, {}))
 	end)
 end)

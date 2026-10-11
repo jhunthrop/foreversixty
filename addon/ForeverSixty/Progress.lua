@@ -110,10 +110,11 @@ function Progress.build(build, ranks, level)
 end
 
 --- Every cell the plan touches, once each, in the order the plan first
---- reaches it: { tab, tier, column, want, have, lastIndex, node, next }.
---- `want` is the points the plan puts there, `have` the character's rank
---- there (0 when none), `lastIndex` the 1-based order index of the cell's
---- last point (the talent marks' badge number, fixed by the plan), `node`
+--- reaches it: { tab, tier, column, want, have, firstIndex, lastIndex,
+--- node, next }. `want` is the points the plan puts there, `have` the
+--- character's rank there (0 when none), `firstIndex` and `lastIndex` the
+--- 1-based order indexes of the cell's first and last points (the last is
+--- the talent marks' badge number, fixed by the plan), `node`
 --- the trait node id `data` carries for it (nil for a data gap), and `next`
 --- whether the plan's next point (Progress.nextPoint) is in it. The talent
 --- marks draw from this list only. Empty without a build.
@@ -131,7 +132,7 @@ function Progress.cells(build, ranks, data)
 		if cell == nil then
 			local talent = Talents.cellOf(data, build.classSlug, step.tab, step.tier, step.column)
 			cell = {
-				tab = step.tab, tier = step.tier, column = step.column, want = 0,
+				tab = step.tab, tier = step.tier, column = step.column, want = 0, firstIndex = index,
 				have = (ranks[step.tab] or {})[Talents.cellKey(step.tier, step.column)] or 0,
 				node = talent ~= nil and talent.node or nil,
 				next = point ~= nil and cellKey(point) == key,
@@ -431,6 +432,23 @@ function Progress.unspentPoints(level, ranks)
 		return 0
 	end
 	return math.max(0, (level - 9) - Progress.pointsSpent(ranks))
+end
+
+--- The plan's points the character can reach now: those spent plus those
+--- waiting to be spent at `level` (Progress.unspentPoints). The talent marks
+--- dim a badge whose order index lies beyond it.
+function Progress.reachablePoints(level, ranks)
+	return Progress.pointsSpent(ranks) + Progress.unspentPoints(level, ranks)
+end
+
+--- The plan's points per tree: { [tab] = count }, 0 for a tree it skips.
+--- Follow.buildName names an unnamed build after it.
+function Progress.planSplit(build)
+	local split = {}
+	for _, point in ipairs(build ~= nil and build.order or {}) do
+		split[point.tab] = (split[point.tab] or 0) + 1
+	end
+	return split
 end
 
 --- The level cap: no talent point arrives past it.

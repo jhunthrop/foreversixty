@@ -39,4 +39,13 @@ describe("/fs diag on a fresh session", function()
 		Options.handle("diag")
 		assert.are.same({ L.diagAllWorking, L.diagDataAddonMissingInfo }, Options.handle("diag"))
 	end)
+
+	-- L3.2 fix round 2: geometry findings only under /fs diag verbose.
+	it("keeps the verbose findings for /fs diag verbose", function()
+		fresh(nil)
+		require("Theme").noteVerbose("Talent window found: PlayerSpellsFrame (trait mapping)")
+		assert.are.same({ L.diagAllWorking, L.diagDataAddonMissingInfo }, Options.handle("diag"))
+		assert.are.same({ L.diagAllWorking, L.diagDataAddonMissingInfo,
+			"Talent window found: PlayerSpellsFrame (trait mapping)" }, Options.handle("diag verbose"))
+	end)
 end)

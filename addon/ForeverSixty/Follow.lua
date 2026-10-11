@@ -366,6 +366,42 @@ end
 
 --- The first point in the order the player has not spent yet
 --- (Progress.nextPoint).
+--- What to call a build: its own name, else its two biggest trees in the
+--- plan, biggest first ("Arms / Fury build", one tree "Protection build"),
+--- else its class ("Warrior build") when the trees cannot be named. Every
+--- surface that names a build reads this, so none can disagree.
+function Follow.buildName(data, build)
+	if type(build.name) == "string" and build.name ~= "" then
+		return build.name
+	end
+	local split = progressModule().planSplit(build)
+	local tabs = {}
+	for tab, count in pairs(split) do
+		if count > 0 then
+			tabs[#tabs + 1] = tab
+		end
+	end
+	table.sort(tabs, function(left, right)
+		if split[left] ~= split[right] then
+			return split[left] > split[right]
+		end
+		return left < right
+	end)
+	local names = {}
+	for index = 1, math.min(2, #tabs) do
+		local name = Talents.tabName(data, build.classSlug, tabs[index])
+		if name == nil then
+			names = {}
+			break
+		end
+		names[#names + 1] = name
+	end
+	if #names == 0 then
+		return string.format(L.followBuildName, Talents.titleCase(build.classSlug))
+	end
+	return string.format(L.followBuildName, table.concat(names, L.followSplitSeparator))
+end
+
 function Follow.nextPoint(build, ranks)
 	return progressModule().nextPoint(build, ranks)
 end

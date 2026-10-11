@@ -151,18 +151,27 @@ function Options.handle(input)
 		-- Ask the data addon now, so a fresh session reports a missing or old
 		-- one without a tooltip having read it first (Score notes it once).
 		Score.status()
-		-- Only what is broken goes under "Not working:"; the chip's own render
-		-- check and the findings (other players' unreadable messages included)
-		-- follow it.
+		-- Only what is broken goes under "Not working:"; the chip's and the
+		-- talent badges' own render checks and the findings follow it. The
+		-- geometry a tester reads (which window answered, where a frame
+		-- landed) and other players' unreadable messages only with "verbose".
 		local broken = copy(Theme.diagnostics())
 		if Comms.failed > 0 then
 			broken[#broken + 1] = string.format(L.diagCommsFailedCount, Comms.failed)
 		end
+		local surfaces = {}
+		surfaces[#surfaces + 1] = Chip.diagLine()
+		surfaces[#surfaces + 1] = TalentMarks.diagLine()
 		local info = copy(Theme.infoNotes())
-		if Comms.dropped > 0 then
-			info[#info + 1] = string.format(L.diagDropped, Comms.dropped)
+		if rest == "verbose" then
+			for _, note in ipairs(Theme.verboseNotes()) do
+				info[#info + 1] = note
+			end
+			if Comms.dropped > 0 then
+				info[#info + 1] = string.format(L.diagDropped, Comms.dropped)
+			end
 		end
-		return Theme.diagReport(broken, Chip.diagLine(), info)
+		return Theme.diagReport(broken, surfaces, info)
 	end
 	-- Bare /fs, and anything it does not know: the player's commands, until Lane L3.4's
 	-- build dialog is what bare /fs opens.
@@ -243,7 +252,17 @@ Options.EVENTS = {
 	"BAG_UPDATE_DELAYED", "ZONE_CHANGED_NEW_AREA", "READY_CHECK", "READY_CHECK_FINISHED",
 }
 
+--- The talent window's own clicks, which only the talent marks follow:
+--- registered quietly (a client without them is simply not followed between
+--- clicks, and nothing is wrong).
+Options.TRAIT_EVENTS = { "TRAIT_NODE_CHANGED", "TRAIT_TREE_CURRENCY_INFO_UPDATED" }
+
 function Options.onEvent(_, event, ...)
+	if event == "TRAIT_NODE_CHANGED" or event == "TRAIT_TREE_CURRENCY_INFO_UPDATED" then
+		-- A staged click before Apply Changes: the marks follow it, once per frame.
+		TalentMarks.requestRefresh(Options.data)
+		return
+	end
 	if event == "CHAT_MSG_ADDON" then
 		-- Every addon's messages arrive here; Comms ignores all but FS1. Nothing to redraw.
 		-- Another player's message must never become a Lua error here: anything Comms
@@ -362,6 +381,9 @@ function Options.register()
 	local frame = CreateFrame("Frame", "ForeverSixtyEventFrame", UIParent)
 	for _, event in ipairs(Options.EVENTS) do
 		Theme.registerEvent(frame, event)
+	end
+	for _, event in ipairs(Options.TRAIT_EVENTS) do
+		Theme.tryRegisterEvent(frame, event)
 	end
 	frame:SetScript("OnEvent", Options.onEvent)
 	Options.frame = frame

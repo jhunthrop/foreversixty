@@ -54,6 +54,11 @@ Theme.ALPHA = {
 	shadow = 0.5,
 	--- The talent window's strip ground (spec section 4.2).
 	strip = 0.9,
+	--- A talent badge's dark plate, a badge beyond the points spendable now,
+	--- and the talent ring's dark outer edge (L3.2 fix round 2).
+	plate = 0.7,
+	unreachable = 0.5,
+	ringEdge = 0.6,
 }
 
 Theme.SIZES = {
@@ -134,19 +139,25 @@ Theme.SIZES = {
 	--- How far outside a talent button its glow ring sits, clear of the
 	--- game's own rank border.
 	glowInset = 3,
+	--- The talent ring's 1 px dark edge just outside its gold, so it reads
+	--- on the bright talent art (L3.2 fix round 2).
+	glowEdge = 1,
 	--- The talent marks (spec section 4.2): the order number on a planned
-	--- node, a dark badge 14 px high with 10 px digits, at least 14 wide and
-	--- `orderBadgePad` wider than its digits, its top-right corner
+	--- node, a plate 16 px high with 12 px digits, at least as wide as it is
+	--- high and `orderBadgePad` wider than its digits, its top-right corner
 	--- `orderBadgeOffset` up and right of the node's own; the strip, a pill
-	--- in the talent window's bottom-left corner, `talentStripInset` in from
-	--- its left and bottom edges, its text `talentStripPadding` in from each
-	--- side, its right edge at least `talentStripGap` short of the window's
-	--- Apply Changes button.
-	orderBadge = 14,
-	orderBadgeText = 10,
+	--- in the talent window's bottom-left corner `talentStripInset` inside
+	--- the window's border art (`talentWindowBorder` thick, seen in game:
+	--- an 8 px offset sat on the border), its text `talentStripText` px and
+	--- `talentStripPadding` in from each side, its right edge at least
+	--- `talentStripGap` short of the window's Apply Changes button.
+	orderBadge = 16,
+	orderBadgeText = 12,
 	orderBadgeOffset = 4,
-	orderBadgePad = 4,
+	orderBadgePad = 6,
 	talentStrip = 24,
+	talentStripText = 12,
+	talentWindowBorder = 8,
 	talentStripInset = 8,
 	talentStripPadding = 12,
 	talentStripGap = 8,
@@ -321,6 +332,7 @@ Theme.EDGES = {
 --- found out about it (Theme.noteInfo). Read by /fs diag.
 ns.Diagnostics = ns.Diagnostics or {}
 ns.DiagnosticsInfo = ns.DiagnosticsInfo or {}
+ns.DiagnosticsVerbose = ns.DiagnosticsVerbose or {}
 Theme.templates = {}
 
 function Theme.diagnostics()
@@ -343,9 +355,20 @@ function Theme.infoNotes()
 	return ns.DiagnosticsInfo
 end
 
+--- A finding only a tester wants (where a frame landed, which mapping
+--- answered): /fs diag verbose prints it, plain /fs diag does not.
+function Theme.noteVerbose(message)
+	ns.DiagnosticsVerbose[#ns.DiagnosticsVerbose + 1] = message
+	return ns.DiagnosticsVerbose
+end
+
+function Theme.verboseNotes()
+	return ns.DiagnosticsVerbose
+end
+
 --- The /fs diag lines: "Not working:" and only the broken things, or
---- "Everything is working."; then the chip's own line (when given) and the
---- findings, outside the heading.
+--- "Everything is working."; then the surfaces' own lines (`chipLine`, a
+--- line or a list of them, when given) and the findings, outside the heading.
 function Theme.diagReport(broken, chipLine, info)
 	local lines = {}
 	if #broken > 0 then
@@ -356,7 +379,11 @@ function Theme.diagReport(broken, chipLine, info)
 	else
 		lines[1] = L.diagAllWorking
 	end
-	if chipLine ~= nil then
+	if type(chipLine) == "table" then
+		for _, line in ipairs(chipLine) do
+			lines[#lines + 1] = line
+		end
+	elseif chipLine ~= nil then
 		lines[#lines + 1] = chipLine
 	end
 	for _, note in ipairs(info or {}) do
@@ -376,6 +403,9 @@ function Theme.reset()
 	end
 	for index = #ns.DiagnosticsInfo, 1, -1 do
 		ns.DiagnosticsInfo[index] = nil
+	end
+	for index = #ns.DiagnosticsVerbose, 1, -1 do
+		ns.DiagnosticsVerbose[index] = nil
 	end
 end
 
@@ -985,8 +1015,10 @@ end
 --- seconds (Theme.scheduleStatic) and leaves it steady at full alpha: the
 --- chip's ring breathes for ten seconds, then holds still. A later showGlow
 --- or hideGlow on the same button cancels the pending stop. `ring`, when
---- given ({ inset, thickness }), sizes the outline instead of glowInset and
---- glowThickness; it is read the first time the button glows.
+--- given ({ inset, thickness, edge }), sizes the outline instead of
+--- glowInset and glowThickness, and `edge` adds that many px of dark edge
+--- (Theme.ALPHA.ringEdge) just outside it, pulsing with it; it is read the
+--- first time the button glows.
 function Theme.showGlow(button, outline, staticAfter, ring)
 	if hasOverlayGlow() and not outline then
 		ActionButton_ShowOverlayGlow(button)
@@ -1008,6 +1040,16 @@ function Theme.showGlow(button, outline, staticAfter, ring)
 		end
 		button.foreverSixtyGlowFrame = frame
 		button.foreverSixtyGlow = Theme.outline(frame, thickness, "gold")
+		local edge = ring ~= nil and ring.edge or nil
+		if type(edge) == "number" and edge > 0 then
+			local outer = CreateFrame("Frame", nil, frame)
+			outer:SetPoint("TOPLEFT", frame, "TOPLEFT", -edge, edge)
+			outer:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", edge, -edge)
+			for _, texture in ipairs(Theme.outline(outer, edge, "shadow")) do
+				Theme.paint(texture, "shadow", Theme.ALPHA.ringEdge)
+				button.foreverSixtyGlow[#button.foreverSixtyGlow + 1] = texture
+			end
+		end
 	end
 	Theme.setShown(button.foreverSixtyGlow, true)
 	pulse(button.foreverSixtyGlow)
@@ -1111,6 +1153,30 @@ function Theme.showLines(owner, lines, anchor)
 	end
 	GameTooltip:Show()
 	return true
+end
+
+--- Add one line, in a token's colour, to GameTooltip while it is showing
+--- for `owner`: the client's own tooltip (a talent node's, say) gains it
+--- after the client drew it. Nothing when another frame owns the tooltip.
+function Theme.addTooltipLine(owner, text, hexKey)
+	if not hasTooltip() or type(GameTooltip.GetOwner) ~= "function" then
+		return false
+	end
+	if GameTooltip:GetOwner() ~= owner or not GameTooltip:IsShown() then
+		return false
+	end
+	GameTooltip:AddLine(text, Theme.rgb(Theme.HEX[hexKey or "gold"]))
+	GameTooltip:Show()
+	return true
+end
+
+--- Run `action` after one of a client frame's own scripts, without
+--- replacing it. False on a frame that cannot be hooked.
+function Theme.hookScript(frame, script, action)
+	if type(frame) ~= "table" or type(frame.HookScript) ~= "function" then
+		return false
+	end
+	return (pcall(frame.HookScript, frame, script, action))
 end
 
 Theme.COMPARE_TOOLTIP_NAME = "ForeverSixtyCompareTooltip"
