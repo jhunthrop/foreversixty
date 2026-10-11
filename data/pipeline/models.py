@@ -802,6 +802,16 @@ class AddonBisBand(BaseModel):
     weights: dict[str, float] = {}
 
 
+class AddonDefaultBuild(BaseModel):
+    """One default talent build the addon loads for a character with none
+    saved (docs/contracts/addon-v2.md, contract 1): the guide's leveling or
+    raid build as sim/cmd/addon-builds orders it -- one (tab, tier, column)
+    triple per point in learning order, 1-based, the codec's own triple."""
+
+    name: str
+    order: list[tuple[int, int, int]]
+
+
 class AddonData(BaseModel):
     build: str
     classes: dict[str, AddonClass]
@@ -816,6 +826,10 @@ class AddonData(BaseModel):
     #: missing curated/apl entry (the two directories have different
     #: maturity, hence the different rule).
     bis: dict[str, list[AddonBisBand]] = {}
+    #: Keyed by spec, then "leveling" or "raid": data/builds/<build>/
+    #: addon-builds.json, written by sim/cmd/addon-builds. Empty when that
+    #: file does not exist.
+    default_builds: dict[str, dict[str, AddonDefaultBuild]] = {}
 
 
 class PhaseBoundary(BaseModel):

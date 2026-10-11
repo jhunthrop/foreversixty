@@ -263,3 +263,70 @@ def test_the_cli_check_passes_on_the_committed_file():
         text=True,
     )
     assert result.returncode == 0, result.stderr
+
+
+def test_every_weighted_spec_has_a_51_point_leveling_and_raid_build():
+    """data/builds/<build>/addon-builds.json (sim/cmd/addon-builds) is what
+    the addon loads on a character's first login; a spec without one would
+    start with no build at all."""
+    data = build_addon_data(BUILD)
+    for spec in data.weights:
+        builds = data.default_builds.get(spec)
+        assert builds is not None, f"{spec} has no default builds"
+        for kind in ("leveling", "raid"):
+            assert len(builds[kind].order) == 51, f"{spec} {kind}"
+    arms = data.default_builds["warrior-arms"]
+    assert arms["leveling"].name == "Arms leveling"
+    assert arms["raid"].name == "Arms raid"
+    # The codec's own triple, 1-based: Arms spends its first point in its own tab's top row.
+    assert arms["leveling"].order[0][:2] == (1, 1)
+
+
+def test_default_builds_are_absent_when_the_build_has_no_addon_builds_file(tmp_path):
+    (tmp_path / BUILD).mkdir(parents=True)
+    (tmp_path / BUILD / "classes.json").write_text("[]", encoding="utf-8")
+    (tmp_path / BUILD / "spellranks.json").write_text(
+        json.dumps({"build": BUILD, "classes": {}}), encoding="utf-8"
+    )
+    assert build_addon_data(BUILD, root=tmp_path).default_builds == {}
+
+
+def test_default_builds_lua_is_triples_per_point():
+    from pipeline.models import AddonData, AddonDefaultBuild
+
+    data = AddonData(
+        build="x",
+        classes={},
+        weights={},
+        default_builds={
+            "warrior-arms": {
+                "leveling": AddonDefaultBuild(name="Arms leveling", order=[(1, 1, 2), (1, 2, 3)]),
+                "raid": AddonDefaultBuild(name="Arms raid", order=[(1, 1, 3)]),
+            }
+        },
+    )
+    lua = render_lua(data)
+    start = lua.index("defaultBuilds = {")
+    assert (
+        '\t\t["warrior-arms"] = {\n'
+        '\t\t\tleveling = { name = "Arms leveling", order = { {1,1,2}, {1,2,3} } },\n'
+        '\t\t\traid = { name = "Arms raid", order = { {1,1,3} } },\n'
+        "\t\t},"
+    ) in lua[start:]
+
+
+def test_the_rendered_default_builds_load_in_a_real_lua(tmp_path):
+    """Skipped without an interpreter, like test_the_rendered_lua_is_loadable_by_a_real_lua."""
+    lua_bin = shutil.which("lua") or shutil.which("lua5.4")
+    if not lua_bin:
+        pytest.skip("no lua interpreter is available")
+    chunk = tmp_path / "Data.lua"
+    chunk.write_text(render_lua(build_addon_data(BUILD)), encoding="utf-8")
+    script = (
+        f"local data = assert(loadfile({str(chunk)!r}))() "
+        "local build = data.defaultBuilds['warrior-arms'].leveling "
+        "io.write(build.name, '|', #build.order, '|', build.order[1][1], ',', build.order[1][2])"
+    )
+    result = subprocess.run([lua_bin, "-e", script], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == "Arms leveling|51|1,1"

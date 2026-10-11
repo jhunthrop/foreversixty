@@ -153,6 +153,25 @@ def _bis_new_lua(bis: dict) -> list[str]:
     return lines
 
 
+def _default_builds_lua(default_builds: dict) -> list[str]:
+    """`defaultBuilds[spec].leveling|raid = { name, order = { {tab,tier,column}, ... } }`
+    (docs/contracts/addon-v2.md, contract 1): one 1-based triple per point
+    in learning order, the codec's own triple, written without spaces
+    inside a triple to keep 28 specs x 2 builds x 51 points small."""
+    lines = ["	defaultBuilds = {"]
+    for spec in sorted(default_builds):
+        lines.append(f"		[{_quote(spec)}] = {{")
+        for kind in ("leveling", "raid"):
+            build = default_builds[spec].get(kind)
+            if build is None:
+                continue
+            order = ", ".join("{" + ",".join(str(n) for n in point) + "}" for point in build.order)
+            lines.append(f"			{kind} = {{ name = {_quote(build.name)}, order = {{ {order} }} }},")
+        lines.append("		},")
+    lines.append("	},")
+    return lines
+
+
 def render_lua(data: AddonData) -> str:
     lines = [
         GENERATED,
@@ -179,6 +198,7 @@ def render_lua(data: AddonData) -> str:
     lines.extend(_bis_lua(data.bis))
     lines.extend(_bis_new_lua(data.bis))
     lines.extend(_bis_weights_lua(data.bis))
+    lines.extend(_default_builds_lua(data.default_builds))
     lines.append("}")
     lines.append("")
     lines.append("return ns.Data")

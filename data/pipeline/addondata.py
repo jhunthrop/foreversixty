@@ -29,7 +29,7 @@ from pathlib import Path
 
 from pipeline.addonbis import build_bis
 from pipeline.addonrotation import build_rotations
-from pipeline.models import AddonClass, AddonData, AddonTab, AddonTalent
+from pipeline.models import AddonClass, AddonData, AddonDefaultBuild, AddonTab, AddonTalent
 from pipeline.normalize import write_model
 from pipeline.weights import load_weights
 
@@ -81,6 +81,21 @@ def _tabs(root: Path, build: str, class_slug: str) -> list[AddonTab]:
     return tabs
 
 
+def _default_builds(root: Path, build: str) -> dict[str, dict[str, AddonDefaultBuild]]:
+    """data/builds/<build>/addon-builds.json, which sim/cmd/addon-builds
+    writes from each spec's guide builds: the build the addon loads for a
+    character with none saved. Empty when the file does not exist, so a
+    build directory the sim has not run against yet simply ships none."""
+    path = root / build / "addon-builds.json"
+    if not path.exists():
+        return {}
+    file = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        spec: {kind: AddonDefaultBuild(**entry) for kind, entry in builds.items()}
+        for spec, builds in file.items()
+    }
+
+
 def build_addon_data(
     build: str,
     root: Path = Path("builds"),
@@ -92,7 +107,14 @@ def build_addon_data(
     weights = {key: entry.weights for key, entry in load_weights(curated_dir).items()}
     rotations = build_rotations(root, build, curated_dir=curated_dir)
     bis = build_bis(root, build)
-    return AddonData(build=build, classes=classes, weights=weights, rotations=rotations, bis=bis)
+    return AddonData(
+        build=build,
+        classes=classes,
+        weights=weights,
+        rotations=rotations,
+        bis=bis,
+        default_builds=_default_builds(root, build),
+    )
 
 
 def write_addon_data(
