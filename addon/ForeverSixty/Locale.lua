@@ -446,6 +446,12 @@ local L = {
 	-- The muted source line: "<kind> · <place>", e.g. "Dungeon · Wailing
 	-- Caverns · Mutanus the Devourer" or "Crafted · Leatherworking".
 	tooltipBisSourceLabel = "%s · %s",
+
+	-- Lane addon-v2 L2.1 (2026-10-11): the rules engine's two refusal
+	-- lines. The first %s is Rules.canEquip's reason ("mail armor"), the
+	-- %d the level it opens at.
+	rulesUntilLevel = "Not for you until %d: %s",
+	rulesNever = "Not for you: %s",
 }
 
 ns.L = L

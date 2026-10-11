@@ -5,45 +5,17 @@
 -- planned items' stats, and everything in the bags is read from the client
 -- with GetItemStats. The two meet in one vocabulary -- parity contract
 -- 10.8's, which is also what Data.lua's weights are keyed by -- so no
--- translation table sits between a weight and a stat.
+-- translation table sits between a weight and a stat. Rules.statKey owns
+-- the map from the client's stat names into it.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Export = ns.Export or require("Export")
 local Talents = ns.Talents or require("Talents")
 local Compat = ns.Compat or require("Compat")
+local Rules = ns.Rules or require("Rules")
 
 local Gear = {}
-
---- GetItemStats' own key names -> contract 10.8's stat names. Spike check 11
---- confirms the set the beta client returns; a key absent from this table is
---- left out of the score rather than guessed at, because a wrong stat is a
---- wrong recommendation and a missing one is only a conservative score.
-Gear.STAT_KEYS = {
-	ITEM_MOD_STRENGTH_SHORT = "strength",
-	ITEM_MOD_AGILITY_SHORT = "agility",
-	ITEM_MOD_STAMINA_SHORT = "stamina",
-	ITEM_MOD_INTELLECT_SHORT = "intellect",
-	ITEM_MOD_SPIRIT_SHORT = "spirit",
-	ITEM_MOD_ATTACK_POWER_SHORT = "attack_power",
-	ITEM_MOD_RANGED_ATTACK_POWER_SHORT = "ranged_attack_power",
-	ITEM_MOD_SPELL_POWER_SHORT = "spell_power",
-	ITEM_MOD_SPELL_DAMAGE_DONE_SHORT = "spell_damage",
-	ITEM_MOD_SPELL_HEALING_DONE_SHORT = "healing_power",
-	ITEM_MOD_HIT_RATING_SHORT = "hit",
-	ITEM_MOD_CRIT_RATING_SHORT = "crit",
-	ITEM_MOD_HASTE_RATING_SHORT = "melee_haste",
-	ITEM_MOD_EXPERTISE_RATING_SHORT = "expertise",
-	ITEM_MOD_DEFENSE_SKILL_RATING_SHORT = "defense",
-	ITEM_MOD_DODGE_RATING_SHORT = "dodge",
-	ITEM_MOD_PARRY_RATING_SHORT = "parry",
-	ITEM_MOD_BLOCK_RATING_SHORT = "block",
-	ITEM_MOD_BLOCK_VALUE_SHORT = "block_value",
-	ITEM_MOD_POWER_REGEN0_SHORT = "mp5",
-	ITEM_MOD_SPELL_PENETRATION_SHORT = "spell_penetration",
-	ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT = "armor_penetration",
-	RESISTANCE0_NAME = "armor",
-}
 
 function Gear.statsOf(link)
 	local raw = link and Compat.itemStats(link) or nil
@@ -52,7 +24,7 @@ function Gear.statsOf(link)
 		return stats
 	end
 	for key, value in pairs(raw) do
-		local name = Gear.STAT_KEYS[key]
+		local name = Rules.statKey(key)
 		-- Skip the private keys the spec mock uses to stand in for
 		-- GetItemInfoInstant, and any client key this table does not know.
 		if name ~= nil and type(value) == "number" then
