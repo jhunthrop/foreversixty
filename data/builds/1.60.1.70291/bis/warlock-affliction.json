@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-10T14:05:13Z",
+  "generated_at": "2026-10-11T14:11:11Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -893,8 +893,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.592790175,
-      "verify_run_seconds": 1.050628218,
+      "weights_run_seconds": 1.3531569430000001,
+      "verify_run_seconds": 0.909257111,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1945,8 +1945,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.592790175,
-      "verify_run_seconds": 1.099192714,
+      "weights_run_seconds": 1.3531569430000001,
+      "verify_run_seconds": 0.970762569,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2634,8 +2634,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.588262862,
-      "verify_run_seconds": 1.021782783,
+      "weights_run_seconds": 1.358046778,
+      "verify_run_seconds": 0.879603959,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3322,8 +3322,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.588262862,
-      "verify_run_seconds": 1.017411118,
+      "weights_run_seconds": 1.358046778,
+      "verify_run_seconds": 0.930187263,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4044,8 +4044,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.5613917000000002,
-      "verify_run_seconds": 1.266206556,
+      "weights_run_seconds": 1.301042089,
+      "verify_run_seconds": 1.157390565,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4761,8 +4761,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 1.5613917000000002,
-      "verify_run_seconds": 1.275852107,
+      "weights_run_seconds": 1.301042089,
+      "verify_run_seconds": 1.143257709,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -5472,8 +5472,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 4.154377041,
-      "verify_run_seconds": 1.5735420100000002,
+      "weights_run_seconds": 3.5683150660000003,
+      "verify_run_seconds": 1.474524671,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -6186,8 +6186,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 4.154377041,
-      "verify_run_seconds": 1.521540742,
+      "weights_run_seconds": 3.5683150660000003,
+      "verify_run_seconds": 1.367036043,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6432,7 +6432,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 29.194152902116233,
+          "score": 29.19415290211623,
           "verified": true,
           "alternatives": [
             {
@@ -6440,14 +6440,14 @@
               "item_name": "Field Marshal's Dreadweave Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.1975395147034882
+              "dps_delta": -1.1975395147034869
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -3.3536780591952864
+              "dps_delta": -3.3536780591952846
             },
             {
               "item_id": 19059,
@@ -6928,8 +6928,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.448675947,
-      "verify_run_seconds": 3.154144356,
+      "weights_run_seconds": 3.761000443,
+      "verify_run_seconds": 3.022867066,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7168,7 +7168,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 29.19415290211623,
+          "score": 29.194152902116233,
           "verified": true,
           "alternatives": [
             {
@@ -7176,14 +7176,14 @@
               "item_name": "Warlord's Dreadweave Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.1975395147034869
+              "dps_delta": -1.1975395147034882
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -3.3536780591952846
+              "dps_delta": -3.3536780591952864
             },
             {
               "item_id": 19059,
@@ -7663,8 +7663,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.448675947,
-      "verify_run_seconds": 3.037066705,
+      "weights_run_seconds": 3.761000443,
+      "verify_run_seconds": 2.916727912,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -8176,14 +8176,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -7.396096698830832
+              "dps_delta": -7.396096698830836
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -9.768804148004588
+              "dps_delta": -9.768804148004591
             },
             {
               "item_id": 11669,
@@ -8401,8 +8401,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.285522046,
-      "verify_run_seconds": 3.407659069,
+      "weights_run_seconds": 4.595948231,
+      "verify_run_seconds": 3.293125786,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8918,14 +8918,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -7.396096698830832
+              "dps_delta": -7.396096698830836
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -9.768804148004588
+              "dps_delta": -9.768804148004591
             },
             {
               "item_id": 11669,
@@ -9142,8 +9142,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.285522046,
-      "verify_run_seconds": 3.488489895,
+      "weights_run_seconds": 4.595948231,
+      "verify_run_seconds": 3.270113054,
       "coverage": {
         "back": {
           "eligible": 456,

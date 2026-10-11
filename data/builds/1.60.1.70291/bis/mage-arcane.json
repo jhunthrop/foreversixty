@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-10T13:09:34Z",
+  "generated_at": "2026-10-11T13:25:39Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.763388035,
-      "verify_run_seconds": 0.618865071,
+      "weights_run_seconds": 0.587924172,
+      "verify_run_seconds": 0.511512947,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1198,8 +1198,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.763388035,
-      "verify_run_seconds": 0.665226209,
+      "weights_run_seconds": 0.587924172,
+      "verify_run_seconds": 0.538412616,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1883,8 +1883,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.066825543,
-      "verify_run_seconds": 0.728949493,
+      "weights_run_seconds": 0.804166805,
+      "verify_run_seconds": 0.587262668,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2575,8 +2575,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.066825543,
-      "verify_run_seconds": 0.806077197,
+      "weights_run_seconds": 0.804166805,
+      "verify_run_seconds": 0.617260165,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3291,8 +3291,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.072335877,
-      "verify_run_seconds": 0.868074321,
+      "weights_run_seconds": 0.886181362,
+      "verify_run_seconds": 0.715500113,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4003,8 +4003,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.072335877,
-      "verify_run_seconds": 0.919074484,
+      "weights_run_seconds": 0.886181362,
+      "verify_run_seconds": 0.715574896,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4264,7 +4264,7 @@
               "item_name": "Knight-Lieutenant's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -2.4363130181312282
+              "dps_delta": -2.436313018131229
             },
             {
               "item_id": 10029,
@@ -4708,8 +4708,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.044517608,
-      "verify_run_seconds": 1.231236498,
+      "weights_run_seconds": 0.810212786,
+      "verify_run_seconds": 0.967564893,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4970,7 +4970,7 @@
               "item_name": "Blood Guard's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -2.4363130181312282
+              "dps_delta": -2.436313018131229
             },
             {
               "item_id": 10029,
@@ -5413,8 +5413,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.044517608,
-      "verify_run_seconds": 1.153370365,
+      "weights_run_seconds": 0.810212786,
+      "verify_run_seconds": 0.950524019,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5640,7 +5640,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -0.21519964852838475
+              "dps_delta": -0.21519964852838358
             },
             {
               "item_id": 22149,
@@ -6163,8 +6163,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.090099312,
-      "verify_run_seconds": 2.513699835,
+      "weights_run_seconds": 0.859107849,
+      "verify_run_seconds": 2.013147585,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6392,7 +6392,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -0.21519964852838358
+              "dps_delta": -0.21519964852838475
             },
             {
               "item_id": 22149,
@@ -6627,7 +6627,7 @@
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.2771668875948547
+              "dps_delta": -3.2771668875948574
             },
             {
               "item_id": 22747,
@@ -6914,8 +6914,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.090099312,
-      "verify_run_seconds": 2.465871983,
+      "weights_run_seconds": 0.859107849,
+      "verify_run_seconds": 1.9269665759999999,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7655,8 +7655,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.253622533,
-      "verify_run_seconds": 2.891430059,
+      "weights_run_seconds": 0.991384522,
+      "verify_run_seconds": 2.305457235,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8394,8 +8394,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.253622533,
-      "verify_run_seconds": 2.830453494,
+      "weights_run_seconds": 0.991384522,
+      "verify_run_seconds": 2.208459557,
       "coverage": {
         "back": {
           "eligible": 456,

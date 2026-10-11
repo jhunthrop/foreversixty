@@ -2,7 +2,7 @@
   "spec": "druid-feral-bear",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-10T12:52:56Z",
+  "generated_at": "2026-10-11T13:12:15Z",
   "bands": [
     {
       "spec": "druid-feral-bear",
@@ -627,8 +627,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 2.753760237,
-      "verify_run_seconds": 1.486136519,
+      "weights_run_seconds": 2.2205257,
+      "verify_run_seconds": 1.294105987,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1338,8 +1338,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 2.753760237,
-      "verify_run_seconds": 1.476901627,
+      "weights_run_seconds": 2.2205257,
+      "verify_run_seconds": 1.3157718489999999,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1754,7 +1754,7 @@
           "item_name": "Ebon Vise",
           "source": "Scarlet Monastery: Fallen Champion",
           "source_kind": "dungeon",
-          "score": 15.144905102976258,
+          "score": 15.14490510297626,
           "verified": true,
           "alternatives": [
             {
@@ -1762,14 +1762,14 @@
               "item_name": "Brawler Gloves",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -55.740678366389176
+              "dps_delta": -55.74067836638921
             },
             {
               "item_id": 1978,
               "item_name": "Wolfclaw Gloves",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Overlord Ramtusk",
-              "dps_delta": -61.192466503380835
+              "dps_delta": -61.19246650338088
             },
             {
               "item_id": 270045,
@@ -2076,8 +2076,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 2.66558586,
-      "verify_run_seconds": 1.492728805,
+      "weights_run_seconds": 2.173230649,
+      "verify_run_seconds": 1.4333707150000001,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2491,7 +2491,7 @@
           "item_name": "Ebon Vise",
           "source": "Scarlet Monastery: Fallen Champion",
           "source_kind": "dungeon",
-          "score": 15.144905102976258,
+          "score": 15.14490510297626,
           "verified": true,
           "alternatives": [
             {
@@ -2507,14 +2507,14 @@
               "item_name": "Brawler Gloves",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -55.740678366389176
+              "dps_delta": -55.74067836638921
             },
             {
               "item_id": 1978,
               "item_name": "Wolfclaw Gloves",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Overlord Ramtusk",
-              "dps_delta": -61.192466503380835
+              "dps_delta": -61.19246650338088
             }
           ]
         },
@@ -2802,8 +2802,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 2.66558586,
-      "verify_run_seconds": 1.503370678,
+      "weights_run_seconds": 2.173230649,
+      "verify_run_seconds": 1.320415572,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3270,7 +3270,7 @@
               "item_name": "Scorpashi Sash",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -78.23953569200454
+              "dps_delta": -78.23953569200465
             }
           ]
         },
@@ -3312,7 +3312,7 @@
           "item_name": "Warden's Leather Shoes",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 24.343998475663927,
+          "score": 24.343998475663923,
           "verified": true,
           "alternatives": [
             {
@@ -3328,14 +3328,14 @@
               "item_name": "Skulker's Leather Shoes",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -99.83932376067042
+              "dps_delta": -99.83932376067031
             },
             {
               "item_id": 252465,
               "item_name": "Prowler's Leather Shoes",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -114.63827385583984
+              "dps_delta": -114.63827385583961
             }
           ]
         },
@@ -3548,8 +3548,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Ironshod Bludgeon"
       ],
-      "weights_run_seconds": 3.082263344,
-      "verify_run_seconds": 1.807093301,
+      "weights_run_seconds": 2.584270461,
+      "verify_run_seconds": 1.774164724,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4016,7 +4016,7 @@
               "item_name": "Scorpashi Sash",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -78.23953569200454
+              "dps_delta": -78.23953569200465
             }
           ]
         },
@@ -4295,8 +4295,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Cragwood Maul"
       ],
-      "weights_run_seconds": 3.082263344,
-      "verify_run_seconds": 1.8067722449999999,
+      "weights_run_seconds": 2.584270461,
+      "verify_run_seconds": 1.58475459,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4791,7 +4791,7 @@
               "item_name": "Knight's Crackling Leather Leggings",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -217.28673626281926
+              "dps_delta": -217.28673626281915
             },
             {
               "item_id": 220882,
@@ -4824,7 +4824,7 @@
               "item_name": "Skulker's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -162.3007171269763
+              "dps_delta": -162.3007171269762
             },
             {
               "item_id": 252468,
@@ -5061,8 +5061,8 @@
         "trinket2: Relentless Raider's Seal",
         "main_hand: Radiant Staff"
       ],
-      "weights_run_seconds": 3.459401314,
-      "verify_run_seconds": 3.70967372,
+      "weights_run_seconds": 3.003264462,
+      "verify_run_seconds": 3.437221346,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5361,7 +5361,7 @@
               "item_name": "Blood Guard's Leather Shoulders",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -19.340802448247
+              "dps_delta": -19.34080244824714
             },
             {
               "item_id": 17749,
@@ -5555,7 +5555,7 @@
               "item_name": "Stone Guard's Crackling Leather Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -217.28673626281915
+              "dps_delta": -217.28673626281926
             },
             {
               "item_id": 220883,
@@ -5587,7 +5587,7 @@
               "item_name": "Skulker's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -30.32802629974096
+              "dps_delta": -30.32802629974082
             },
             {
               "item_id": 252468,
@@ -5815,8 +5815,8 @@
         "trinket2: Relentless Raider's Seal",
         "main_hand: Radiant Staff"
       ],
-      "weights_run_seconds": 3.459401314,
-      "verify_run_seconds": 2.136591323,
+      "weights_run_seconds": 3.003264462,
+      "verify_run_seconds": 2.045952959,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6179,7 +6179,7 @@
               "item_name": "Field Marshal's Dragonhide Tunic",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.0783875751627967
+              "dps_delta": -1.0783875751618186
             },
             {
               "item_id": 23089,
@@ -6335,7 +6335,7 @@
               "item_name": "Marshal's Dragonhide Treads",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -333.1164361715567
+              "dps_delta": -333.11643617155767
             },
             {
               "item_id": 21532,
@@ -6575,8 +6575,8 @@
         "trinket2: Stormpike Insignia Rank 6",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 3.435645755,
-      "verify_run_seconds": 5.871109911,
+      "weights_run_seconds": 2.909729167,
+      "verify_run_seconds": 5.328978288,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6942,7 +6942,7 @@
               "item_name": "Warlord's Dragonhide Tunic",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.0783875751618186
+              "dps_delta": -1.0783875751627967
             },
             {
               "item_id": 23089,
@@ -7342,8 +7342,8 @@
         "trinket2: Frostwolf Insignia Rank 6",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 3.435645755,
-      "verify_run_seconds": 5.625369335,
+      "weights_run_seconds": 2.909729167,
+      "verify_run_seconds": 5.051103782,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -8102,8 +8102,8 @@
         "trinket2: Defender's Grip Stabilizer",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 3.522058523,
-      "verify_run_seconds": 7.510161753,
+      "weights_run_seconds": 3.011960804,
+      "verify_run_seconds": 7.154825723,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8490,7 +8490,7 @@
               "item_name": "Feralheart Wristguards",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -5.382096039478043
+              "dps_delta": -5.382096039477396
             },
             {
               "item_id": 22668,
@@ -8555,7 +8555,7 @@
               "item_name": "Shifter's Belt",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -598.0102101865433
+              "dps_delta": -598.0102101865439
             },
             {
               "item_id": 13252,
@@ -8652,21 +8652,21 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -829.0420002850148
+              "dps_delta": -829.0420002850153
             },
             {
               "item_id": 272409,
               "item_name": "Ring of Awareness",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -993.718796529144
+              "dps_delta": -993.7187965291447
             },
             {
               "item_id": 22680,
               "item_name": "Band of Resolution",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1034.1421691180637
+              "dps_delta": -1034.1421691180644
             }
           ]
         },
@@ -8858,8 +8858,8 @@
         "trinket2: Defender's Grip Stabilizer",
         "main_hand: Headmaster's Charge"
       ],
-      "weights_run_seconds": 3.522058523,
-      "verify_run_seconds": 5.772471456,
+      "weights_run_seconds": 3.011960804,
+      "verify_run_seconds": 5.247528925,
       "coverage": {
         "back": {
           "eligible": 457,

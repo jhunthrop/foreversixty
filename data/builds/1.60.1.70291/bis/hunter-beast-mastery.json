@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-10T13:05:43Z",
+  "generated_at": "2026-10-11T13:22:32Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -533,8 +533,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.079808435,
-      "verify_run_seconds": 1.876695773,
+      "weights_run_seconds": 1.681960389,
+      "verify_run_seconds": 1.577940919,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1171,8 +1171,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.079808435,
-      "verify_run_seconds": 1.808603513,
+      "weights_run_seconds": 1.681960389,
+      "verify_run_seconds": 1.52226937,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1909,8 +1909,8 @@
         "off_hand: Vendetta",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.240366103,
-      "verify_run_seconds": 2.030576324,
+      "weights_run_seconds": 1.940259322,
+      "verify_run_seconds": 1.7675706899999999,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2616,8 +2616,8 @@
         "off_hand: Alliance Outrunner's Sword",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.240366103,
-      "verify_run_seconds": 2.194344285,
+      "weights_run_seconds": 1.940259322,
+      "verify_run_seconds": 1.870944215,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3328,8 +3328,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.459134746,
-      "verify_run_seconds": 2.729725313,
+      "weights_run_seconds": 2.056891085,
+      "verify_run_seconds": 2.322164177,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4020,8 +4020,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.459134746,
-      "verify_run_seconds": 2.651841484,
+      "weights_run_seconds": 2.056891085,
+      "verify_run_seconds": 2.220227206,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4687,8 +4687,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.481213162,
-      "verify_run_seconds": 3.390562414,
+      "weights_run_seconds": 2.011710859,
+      "verify_run_seconds": 2.700526468,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5363,8 +5363,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 2.481213162,
-      "verify_run_seconds": 3.22136833,
+      "weights_run_seconds": 2.011710859,
+      "verify_run_seconds": 2.625024549,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6099,8 +6099,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.448152862,
-      "verify_run_seconds": 10.374283397,
+      "weights_run_seconds": 1.892426388,
+      "verify_run_seconds": 8.174804893,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6835,8 +6835,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.448152862,
-      "verify_run_seconds": 9.891893824,
+      "weights_run_seconds": 1.892426388,
+      "verify_run_seconds": 7.968429744,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7270,7 +7270,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 192.56852341553832,
+          "score": 192.56852341553835,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +3.6 DPS over it",
           "dps_delta": 3.550884357250311,
@@ -7280,21 +7280,21 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -8.912702316277235
+              "dps_delta": -8.91270231627724
             },
             {
               "item_id": 18736,
               "item_name": "Plaguehound Leggings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -9.155614423145307
+              "dps_delta": -9.155614423145312
             },
             {
               "item_id": 231577,
               "item_name": "Marshal's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -9.481558654733718
+              "dps_delta": -9.481558654733721
             }
           ]
         },
@@ -7571,8 +7571,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.488522371,
-      "verify_run_seconds": 10.637855284,
+      "weights_run_seconds": 1.8997698509999998,
+      "verify_run_seconds": 8.584248917,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7875,14 +7875,14 @@
               "item_name": "Warlord's Chain Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -6.802728172531882
+              "dps_delta": -6.802728172531886
             },
             {
               "item_id": 231573,
               "item_name": "Warlord's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -6.802728172531882
+              "dps_delta": -6.802728172531886
             },
             {
               "item_id": 23089,
@@ -8306,8 +8306,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.488522371,
-      "verify_run_seconds": 10.329151567,
+      "weights_run_seconds": 1.8997698509999998,
+      "verify_run_seconds": 8.241904795,
       "coverage": {
         "back": {
           "eligible": 456,

@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-10T13:45:36Z",
+  "generated_at": "2026-10-11T13:54:48Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.775926132,
-      "verify_run_seconds": 0.643221515,
+      "weights_run_seconds": 0.708992197,
+      "verify_run_seconds": 0.578126152,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1194,8 +1194,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.775926132,
-      "verify_run_seconds": 0.686858589,
+      "weights_run_seconds": 0.708992197,
+      "verify_run_seconds": 0.635972111,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1881,8 +1881,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.781507757,
-      "verify_run_seconds": 0.661643685,
+      "weights_run_seconds": 0.695497954,
+      "verify_run_seconds": 0.618460629,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2574,8 +2574,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.781507757,
-      "verify_run_seconds": 0.686445299,
+      "weights_run_seconds": 0.695497954,
+      "verify_run_seconds": 0.621760993,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3281,8 +3281,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.822183513,
-      "verify_run_seconds": 0.785803771,
+      "weights_run_seconds": 0.706552483,
+      "verify_run_seconds": 0.788249694,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3994,8 +3994,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.822183513,
-      "verify_run_seconds": 0.824451338,
+      "weights_run_seconds": 0.706552483,
+      "verify_run_seconds": 0.722754172,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4697,8 +4697,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.819921414,
-      "verify_run_seconds": 1.15150577,
+      "weights_run_seconds": 0.761767152,
+      "verify_run_seconds": 1.028693711,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5397,8 +5397,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.819921414,
-      "verify_run_seconds": 1.046694792,
+      "weights_run_seconds": 0.761767152,
+      "verify_run_seconds": 1.024799224,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5634,7 +5634,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -1.9428746340616636
+              "dps_delta": -1.9428746340616625
             }
           ]
         },
@@ -6139,8 +6139,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.902519266,
-      "verify_run_seconds": 2.413785357,
+      "weights_run_seconds": 0.788569964,
+      "verify_run_seconds": 2.159270054,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6884,8 +6884,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.902519266,
-      "verify_run_seconds": 2.312476587,
+      "weights_run_seconds": 0.788569964,
+      "verify_run_seconds": 2.05947383,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7624,8 +7624,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 0.98715044,
-      "verify_run_seconds": 2.762243421,
+      "weights_run_seconds": 0.861147801,
+      "verify_run_seconds": 2.499410153,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7864,7 +7864,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -2.9076671324219876
+              "dps_delta": -2.9076671324219867
             }
           ]
         },
@@ -8080,14 +8080,14 @@
               "item_name": "General's Satin Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.6316225415524827
+              "dps_delta": -0.6316225415524853
             },
             {
               "item_id": 22747,
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.11268642304151
+              "dps_delta": -2.1126864230415126
             }
           ]
         },
@@ -8137,14 +8137,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -4.460173643482231
+              "dps_delta": -4.460173643482234
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.5093885252182515
+              "dps_delta": -5.509388525218254
             },
             {
               "item_id": 11669,
@@ -8364,8 +8364,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 0.98715044,
-      "verify_run_seconds": 2.650259566,
+      "weights_run_seconds": 0.861147801,
+      "verify_run_seconds": 2.405024717,
       "coverage": {
         "back": {
           "eligible": 456,

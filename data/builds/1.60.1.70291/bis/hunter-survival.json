@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-10T13:08:57Z",
+  "generated_at": "2026-10-11T13:25:09Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -579,8 +579,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.8845811550000002,
-      "verify_run_seconds": 3.840305631,
+      "weights_run_seconds": 2.264447407,
+      "verify_run_seconds": 3.060840943,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1248,8 +1248,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.8845811550000002,
-      "verify_run_seconds": 3.708617924,
+      "weights_run_seconds": 2.264447407,
+      "verify_run_seconds": 2.908227596,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1949,8 +1949,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 3.197681615,
-      "verify_run_seconds": 2.854654978,
+      "weights_run_seconds": 2.402234123,
+      "verify_run_seconds": 2.242303494,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2651,8 +2651,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 3.197681615,
-      "verify_run_seconds": 2.183264873,
+      "weights_run_seconds": 2.402234123,
+      "verify_run_seconds": 1.7439778989999999,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3346,8 +3346,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.28439222,
-      "verify_run_seconds": 2.8583256329999998,
+      "weights_run_seconds": 2.632702048,
+      "verify_run_seconds": 2.35540797,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4041,8 +4041,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 3.28439222,
-      "verify_run_seconds": 2.798667484,
+      "weights_run_seconds": 2.632702048,
+      "verify_run_seconds": 2.204249409,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4749,8 +4749,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.220178262,
-      "verify_run_seconds": 3.418378462,
+      "weights_run_seconds": 2.644719266,
+      "verify_run_seconds": 2.711426829,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5471,8 +5471,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.220178262,
-      "verify_run_seconds": 3.307651909,
+      "weights_run_seconds": 2.644719266,
+      "verify_run_seconds": 2.700824024,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6253,8 +6253,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 3.093813014,
-      "verify_run_seconds": 11.1256637,
+      "weights_run_seconds": 2.357175464,
+      "verify_run_seconds": 8.855252169,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7035,8 +7035,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 3.093813014,
-      "verify_run_seconds": 10.745980913,
+      "weights_run_seconds": 2.357175464,
+      "verify_run_seconds": 8.730267779,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7782,8 +7782,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.732716228,
-      "verify_run_seconds": 8.840394111,
+      "weights_run_seconds": 2.140498173,
+      "verify_run_seconds": 7.154765589,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8202,7 +8202,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 218.2167133188107,
+          "score": 218.21671331881066,
           "verified": true,
           "alternatives": [
             {
@@ -8218,14 +8218,14 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -11.177530846888635
+              "dps_delta": -11.177530846888631
             },
             {
               "item_id": 231567,
               "item_name": "General's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -12.514938150986364
+              "dps_delta": -12.51493815098636
             }
           ]
         },
@@ -8525,8 +8525,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.732716228,
-      "verify_run_seconds": 8.400073615,
+      "weights_run_seconds": 2.140498173,
+      "verify_run_seconds": 6.830166525,
       "coverage": {
         "back": {
           "eligible": 456,

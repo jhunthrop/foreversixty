@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-10T12:49:36Z",
+  "generated_at": "2026-10-11T13:09:20Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -556,8 +556,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.463545215,
-      "verify_run_seconds": 0.886410227,
+      "weights_run_seconds": 1.286984653,
+      "verify_run_seconds": 0.860752448,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.463545215,
-      "verify_run_seconds": 0.878213757,
+      "weights_run_seconds": 1.286984653,
+      "verify_run_seconds": 0.824538095,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1855,8 +1855,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 1.630943147,
-      "verify_run_seconds": 0.946941038,
+      "weights_run_seconds": 1.368498021,
+      "verify_run_seconds": 0.81954402,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2525,8 +2525,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 1.630943147,
-      "verify_run_seconds": 0.955004543,
+      "weights_run_seconds": 1.368498021,
+      "verify_run_seconds": 0.85742916,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3226,8 +3226,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 1.86807141,
-      "verify_run_seconds": 1.146329376,
+      "weights_run_seconds": 1.486764394,
+      "verify_run_seconds": 1.080846903,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3926,8 +3926,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 1.86807141,
-      "verify_run_seconds": 1.1569098,
+      "weights_run_seconds": 1.486764394,
+      "verify_run_seconds": 1.020919291,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4600,8 +4600,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.882598011,
-      "verify_run_seconds": 1.500193705,
+      "weights_run_seconds": 1.574572912,
+      "verify_run_seconds": 1.305103967,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5268,8 +5268,8 @@
         "trinket1: Uther's Strength",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.882598011,
-      "verify_run_seconds": 1.427605559,
+      "weights_run_seconds": 1.574572912,
+      "verify_run_seconds": 1.254075527,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5460,7 +5460,7 @@
           "item_name": "Feralheart Cowl",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 40.024766673275295,
+          "score": 40.0247666732753,
           "verified": true,
           "alternatives": [
             {
@@ -5468,21 +5468,21 @@
               "item_name": "Field Marshal's Dragonhide Helm",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.3359161956716014
+              "dps_delta": -0.3359161956716028
             },
             {
               "item_id": 252561,
               "item_name": "Living Crown",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.6115865684929822
+              "dps_delta": -0.6115865684929837
             },
             {
               "item_id": 18727,
               "item_name": "Crimson Felt Hat",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -0.9458779939147155
+              "dps_delta": -0.9458779939147169
             }
           ]
         },
@@ -5995,8 +5995,8 @@
         "trinket2: Second Wind",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.887361359,
-      "verify_run_seconds": 4.631671981,
+      "weights_run_seconds": 1.553226332,
+      "verify_run_seconds": 4.002328332,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6252,7 +6252,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 39.026783645957906,
+          "score": 39.0267836459579,
           "verified": true,
           "alternatives": [
             {
@@ -6260,21 +6260,21 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.9396717242430588
+              "dps_delta": -0.9396717242430573
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.68578724802967
+              "dps_delta": -1.6857872480296687
             },
             {
               "item_id": 226778,
               "item_name": "Feralheart Spaulders",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.7189102907209473
+              "dps_delta": -1.7189102907209457
             }
           ]
         },
@@ -6725,8 +6725,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.887361359,
-      "verify_run_seconds": 3.813453047,
+      "weights_run_seconds": 1.553226332,
+      "verify_run_seconds": 3.382469251,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7468,8 +7468,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.125303217,
-      "verify_run_seconds": 4.459315045,
+      "weights_run_seconds": 0.950968054,
+      "verify_run_seconds": 3.9519214910000002,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7738,7 +7738,7 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.9737173000595711
+              "dps_delta": -1.973717300059573
             },
             {
               "item_id": 226778,
@@ -8199,8 +8199,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.125303217,
-      "verify_run_seconds": 3.5386532490000002,
+      "weights_run_seconds": 0.950968054,
+      "verify_run_seconds": 3.055487517,
       "coverage": {
         "back": {
           "eligible": 457,
