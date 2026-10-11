@@ -2,15 +2,16 @@
 // web/src/pages/bis/index.astro
 // /bis: the best-in-slot landing (design/specs/2026-10-10-bis-landing.md). It answers one
 // question, "what should I wear right now?", and gets a player from the front door to their own
-// spec's list at their own band in one click: the hero, the signed-in lead (the selected
-// character, how many of its slots it wears, one button), then the band strip and the nine class
-// cards in game order. No spec carries a figure here -- the tier list owns rankings. Everything
-// but the lead and the character's marks is prerendered; the page script fills those in after
-// the page settles and follows the header selector in place.
+// spec's list at their own band in one click: the hero, the shared character header (the selected
+// character, how many of its slots it wears, one button; signed out, its one muted line), then
+// the band strip and the nine class cards in game order. No spec carries a figure here -- the
+// tier list owns rankings. Everything but the live header and the character's marks is
+// prerendered; the page script mounts those after the page settles and follows the header
+// selector in place.
 import Base from '../../layouts/Base.astro';
 import BisBandStrip from '../../components/bis/BisBandStrip.astro';
 import BisClassCard from '../../components/bis/BisClassCard.astro';
-import BisLead from '../../components/bis/BisLead.astro';
+import BisLandingHeader from '../../components/bis/BisLandingHeader.svelte';
 import UpdatedStamp from '../../components/UpdatedStamp.astro';
 import activeBuild from '../../data/active-build.json';
 import { landingCopy } from '../../lib/bis/landing-copy';
@@ -47,8 +48,10 @@ const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
     </div>
 
     <div class="body">
-      <BisLead />
-      <div class="grid-wrap">
+      <div data-bis-header data-testid="bis-header-slot">
+        <BisLandingHeader config={config} />
+      </div>
+      <div class="grid-wrap" id="bis-classes">
         <h2 class="grid-heading" data-grid-heading data-testid="bis-grid-heading">
           <span data-signed-out-only>{landingCopy.gridHeadingSignedOut}</span>
           <span data-signed-in-only>{landingCopy.gridHeadingSignedIn}</span>

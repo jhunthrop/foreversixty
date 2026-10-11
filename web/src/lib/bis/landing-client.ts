@@ -2,20 +2,23 @@
 // The /bis landing's browser behaviour outside the lead: the band strip (a pill selects the band
 // every spec link opens at; the choice is kept in the URL and, per viewer, in storage) and the
 // page's answer to the selected character (the "you" pill, the "Yours" row, the faction in the
-// links, the grid heading). The page is complete HTML without any of this; the lead and the
-// character lookup load after the page settles (landing-character.ts).
+// links, the grid heading). The page is complete HTML without any of this; the shared character
+// header (components/bis/BisLandingHeader.svelte) mounts after the page settles and tells the page
+// which character it follows.
+import { mount } from 'svelte';
+import type { MeCharacter } from '../account/api';
 import { nextTabIndex } from '../tiers/tier-controls';
 import { afterLoad, hasSessionHint } from '../page-load';
 import { bandLabel, parseBandParam } from './landing-bands';
 import { landingCopy } from './landing-copy';
 import { specLinkHref } from './landing-links';
 import { landingPageView, type LandingCharacter, type LandingPageView } from './landing-page-view';
-import type { LandingConfig } from './landing-config';
+import { specKeyFor, type LandingConfig } from './landing-config';
 
 const BAND_PARAM = 'band';
 const BAND_STORAGE_KEY = 'fs.bisBand';
 
-/** What the character lookup drives; the strip drives the rest itself. */
+/** What the header drives; the strip drives the rest itself. */
 export interface LandingController {
   /** The selected character, or null when there is none (signed out, or nothing selectable). */
   setCharacter(character: LandingCharacter | null): void;
@@ -103,6 +106,33 @@ function isPlainClick(event: MouseEvent): boolean {
   return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
 }
 
+const HEADER_SLOT = '[data-bis-header]';
+
+/** Replaces the server-rendered loading header with the live one, which follows the selector. */
+function mountHeader(config: LandingConfig, controller: LandingController): void {
+  const slot = document.querySelector<HTMLElement>(HEADER_SLOT);
+  if (slot === null) return;
+  void import('../../components/bis/BisLandingHeader.svelte').then(({ default: BisLandingHeader }) => {
+    slot.replaceChildren();
+    mount(BisLandingHeader, {
+      target: slot,
+      props: {
+        config,
+        onCharacter: (character: MeCharacter | null) =>
+          controller.setCharacter(
+            character === null
+              ? null
+              : {
+                  level: character.level,
+                  faction: character.faction,
+                  specKey: specKeyFor(config, character.class, character.spec),
+                },
+          ),
+      },
+    });
+  });
+}
+
 export function mountBisLanding(config: LandingConfig): void {
   let explicitBand =
     parseBandParam(new URL(window.location.href).searchParams.get(BAND_PARAM)) ?? readStoredBand();
@@ -137,9 +167,5 @@ export function mountBisLanding(config: LandingConfig): void {
   wirePillKeys(pills);
   render();
   if (!hasSessionHint()) return;
-  afterLoad(() => {
-    void import('./landing-character').then(({ followSelectedCharacter }) => {
-      followSelectedCharacter(config, controller);
-    });
-  });
+  afterLoad(() => mountHeader(config, controller));
 }

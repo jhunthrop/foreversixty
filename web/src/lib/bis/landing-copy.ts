@@ -15,24 +15,24 @@ export const landingCopy = {
   tierLink: 'Tier list →',
   tierHref: '/tiers',
 
-  leadLabel: 'Your character',
-  countLabel: 'Best-in-slot gear you wear',
-  countLabelStale: 'Gear you wore at the last sync',
+  /** The answer slot of the shared character header (spec 2026-10-11 section 4). */
+  countLabel: 'Best-in-slot slots you wear',
+  countLabelStale: 'Slots you wore at the last sync',
+  countFailed: 'Your gear count did not load.',
   noSync: 'Add the addon to see how many of these slots you already wear.',
-  noSyncLink: 'Get the addon →',
+  noSyncLink: 'Get the addon',
   noSyncHref: '/setup',
   under20: 'Best in slot starts at 20.',
-  staleTail: 'Log out or /reload in the game; the companion then syncs it',
-  /** `Addon · 12 minutes ago`. */
-  syncLine: (age: string): string => `Addon · ${age}`,
-  /** `6 of 15 slots`: the figure and the muted rest, so the figure can be set larger. */
-  countRest: (total: number): string => ` of ${total} slots`,
+  /** `of 17 slots`: the muted unit after the figure, so the figure can be set larger. */
+  countUnit: (total: number): string => `of ${total} slots`,
   /** `Trinkets have no pick at this band.` / `Neck has no pick at this band.` */
   excludedNote: (slots: string, plural: boolean): string =>
     `${slots} ${plural ? 'have' : 'has'} no pick at this band.`,
   /** `Fury gear for 40 to 49 →`, `Fury gear for 60 →`. */
   leadButton: (specName: string, band: number): string => `${specName} gear for ${bandLabel(band)} →`,
-  levelWord: 'Level',
+  /** A character whose class the site does not know: the action points at the grid below. */
+  fallbackAction: 'Pick a spec →',
+  fallbackHref: '#bis-classes',
 
   gridHeadingSignedOut: 'Pick a class and spec',
   gridHeadingSignedIn: 'Another class or spec',
