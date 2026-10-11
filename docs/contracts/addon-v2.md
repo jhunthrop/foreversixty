@@ -119,6 +119,12 @@ Notes for the reader:
   `buildCode` and a receiver decodes them. A message is one client addon message, so a
   `buildName` that would push it past the client's 255-byte limit is shortened by the sender,
   never split across messages.
+- `buildCode` in `share` and `push` is an FSB1 build code: the site's own `FSB1:` form that
+  `Codec.decodeFSB1` reads. It is never an FS1 export string (the character export of contract
+  4). The `FS1` message prefix and the `FS1:` export-string prefix are unrelated names that
+  happen to match.
+- `snapshot?` and `snapshot!` go out on GUILD when the guild tab asks and on RAID or PARTY when
+  the group panel asks. A receiver answers on the channel the question arrived on.
 - `scoreDate` is the date of the sender's last Forever Score as `YYYY-MM-DD`, or `-` for none.
   The receiver shows it as "as of 4 Nov".
 - `push` is honoured only after the receiver has checked the sender's standing itself, with
@@ -172,6 +178,8 @@ Notes for the reader:
   the number is measured in (`"dps"`, which for a healer means healing per second, the same
   meaning as `dpsPerPoint.healing` in contract 1). The addon prints the number from this field
   and never recomputes it.
+- Which `unit` values each message may carry: `upgrade` and `loot_values` items carry `"dps"` or
+  `"score"`; `sim_result` slots carry no `unit` field and are always `"dps"`.
 - `last_raid.date` is `YYYY-MM-DD`, shown as "as of 9 Dec". `biggest_loss` is a short plain
   phrase ("downtime", "standing in fire", "dead early") written by the API; the addon shows it
   as given. `consumables_missed` entries are plain item names ("flask"), not ids.
@@ -213,7 +221,9 @@ Notes for the reader:
   as of that request, so a request made at level 20 is not answered with gear from level 24.
 - `roster_snapshot.members[*]` mirrors the `hello` fields of contract 2 plus `name` and
   `seen_at`; `build` is the member's build name as that member's addon announced it, and
-  `gear_gap` is the same integer. `seen_at` is `YYYY-MM-DD HH:MM` local. A snapshot carries only
+  `gear_gap` is the same integer. The member fields are exactly `name`, `level`, `spec`,
+  `gear_gap`, `build` and `seen_at`; there is no `scoreDate` here, because the site holds the
+  score itself. `seen_at` is `YYYY-MM-DD HH:MM` local. A snapshot carries only
   the members the guild tab has live data for.
 
 ---
@@ -255,7 +265,9 @@ Notes for the reader:
   step; the old six-component tooltip line is retired with format 1.
 - `as_of` is the date the score was last calculated, `YYYY-MM-DD`; the addon shows it as "as of
   4 Nov" beside the score and never shows a score without its date. `generated` is when the file
-  was written; a file whose `generated` is more than three days old is shown but marked stale,
+  was written, and in format 2 it is a date-only string (`YYYY-MM-DD`). Today's `Ratings.ageOf`
+  requires an RFC 3339 timestamp, so the format 2 reader must parse a date-only value (treat it
+  as the start of that day, UTC). A file whose `generated` is more than three days old is shown but marked stale,
   as today.
 - `tier` is one of the five names above, which are the client's own item-quality names and use
   the client's quality colours. A missing or unknown `tier` shows the score uncoloured.
