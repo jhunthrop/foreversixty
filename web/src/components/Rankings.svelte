@@ -1,173 +1,221 @@
 <!-- web/src/components/Rankings.svelte -->
-<!-- One encounter's rankings. Character boards and guild boards share the filter bar and
-     the page's shape; only the row differs, which is why they are one component.
-     Every filter is in the URL (src/lib/rankings/url.ts), so a filtered board is a link. -->
+<!-- The Rankings page (design/specs/2026-10-11-rankings.md): "Where does my character stand among
+     characters like it?" The band, the shared character header (signed in: your rank on this
+     encounter, one action; signed out: its one muted line), the board's heading, one filter
+     panel and the board. Character boards and guild boards share the filters and the page's
+     shape; only the rows differ. Every filter is in the URL (lib/rankings/url.ts), so a filtered
+     board is a link.
+
+     Who is looking sets where the board starts (lib/rankings/defaults.ts): the viewer's own
+     class, spec, ruleset and role's metric, the current phase, and the encounter they most
+     recently killed. The header selector re-aims the board in place. The encounter is a filter
+     like the rest, in the path (/rankings/<slug>) so a board is still a link. -->
 <script lang="ts">
-  import {
-    REGIONS,
-    RULESETS,
-    characterHref,
-    guildHref,
-    parseCharacterKey,
-    rulesetLabel,
-    splitUnitName,
-  } from '../lib/characters';
-  import { onCurrentCharacterChange, readCurrent } from '../lib/current-character';
-  import { SECONDARY_BUTTON, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import {
-    classColorVar,
-    formatAmount,
-    formatDuration,
-    percentileToken,
-    rowLink,
-  } from '../lib/report/format';
+  import { untrack } from 'svelte';
+  import type { MeCharacter } from '../lib/account/api';
+  import { formatDate } from '../lib/dates';
+  import { createCharacterCardState } from '../lib/bis/character-card-state.svelte';
+  import { guildHref } from '../lib/characters';
+  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { formatAmount, rowLink } from '../lib/report/format';
   import { titleize } from '../lib/report/og-meta';
   import {
+    fetchCharacter,
     fetchEncounters,
     fetchGuildRankings,
     fetchRankings,
     type EncounterOption,
     type GuildRankingRow,
-    type RankingRow,
+    type RankingMetric,
     type RankingsPage,
   } from '../lib/rankings/api';
-  import { encounterPickerCopy, rankingsEmptyCopy } from '../lib/rankings/copy';
-  import {
-    applyCurrentCharacterPrefilter,
-    pinCurrentCharacterRow,
-  } from '../lib/rankings/current-character-prefilter';
-  import { RANKINGS_LOADING_MIN_H, RANKING_ROW_GRID } from '../lib/rankings/layout';
+  import { encounterPickerCopy, rankingsEmptyCopy, rankingsCopy } from '../lib/rankings/copy';
+  import { applyDefaults, reaim, rankingsDefaults, resolveDefaultEncounter } from '../lib/rankings/defaults';
+  import { RANKINGS_LOADING_MIN_H } from '../lib/rankings/layout';
+  import { PENDING_ANSWER, ownParsesAction, ownRankSpec } from '../lib/rankings/own-rank';
   import { PHASES } from '../lib/rankings/phases';
+  import { cohortName, filterSummary, scopeHeading } from '../lib/rankings/scope';
   import {
-    FACTIONS,
-    GUILD_KINDS,
     RANKING_METRICS,
     parseRankingsState,
     rankingsSearch,
     requiresEncounter,
     type RankingsState,
   } from '../lib/rankings/url';
-  import { simCopy } from '../lib/sim/copy';
-  import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
-  import CurrentCharacterBar from './CurrentCharacterBar.svelte';
+  import CharacterHeader from './character/CharacterHeader.svelte';
+  import RankingsBoard from './rankings/RankingsBoard.svelte';
+  import RankingsFilters from './rankings/RankingsFilters.svelte';
+  import RankingsHeading from './rankings/RankingsHeading.svelte';
+  import RankingsHero from './rankings/RankingsHero.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
 
-  // The prerendered fixture page passes the slug; the Worker-served shell has none, so
-  // the island reads it out of the path. One component, both routes.
+  // The prerendered fixture page passes the slug; the Worker-served shell has none, so the
+  // island reads it out of the path. One component, both routes.
   let { slug = '' }: { slug?: string } = $props();
 
-  const resolvedSlug = $derived(
+  const SLUG_PATH = /^\/rankings\/([a-z0-9-]{1,64})\/?$/;
+  const PHASE_NAMES: ReadonlyMap<string, string> = new Map(PHASES.map((phase) => [phase.id, phase.label]));
+  const reads = { encounters: fetchEncounters, character: fetchCharacter };
+  const now = new Date();
+
+  const session = createCharacterCardState();
+  const viewer = $derived(session.character);
+  const settled = $derived(session.status === 'ready' || session.status === 'failed');
+  const signedIn = $derived(settled ? viewer !== null : null);
+  const ownDefaults = $derived(rankingsDefaults(viewer, now));
+
+  const initialSlug = untrack(() =>
     slug !== ''
       ? slug
       : typeof window === 'undefined'
         ? ''
-        : (/^\/rankings\/([a-z0-9-]{1,64})\/?$/.exec(window.location.pathname)?.[1] ?? ''),
+        : (SLUG_PATH.exec(window.location.pathname)?.[1] ?? ''),
   );
-  // Bare /rankings names no encounter yet, so the page says what it is rather than
-  // rendering an empty heading while the picker below offers what does exist.
-  const encounter = $derived(resolvedSlug === '' ? 'Rankings' : titleize(resolvedSlug));
+  const urlNamedAnEncounter = initialSlug !== '';
+  let encounterSlug = $state(initialSlug);
+  let encounters = $state<EncounterOption[]>([]);
   let state = $state<RankingsState>(
-    typeof window === 'undefined'
-      ? parseRankingsState('')
-      : applyCurrentCharacterPrefilter(
-          parseRankingsState(window.location.search),
-          window.location.search,
-          readCurrent(),
-        ),
+    typeof window === 'undefined' ? parseRankingsState('') : parseRankingsState(window.location.search),
   );
+  let aimed = $state(false);
+  let otherBoard = $state(false);
   let page = $state<RankingsPage | null>(null);
-  const metricLabel = $derived(
-    RANKING_METRICS.find((metric) => metric.id === state.metric)?.label ?? 'Value',
-  );
-  /** The pointer's own armory key at the time the board loaded: the row it names is pinned
-   *  first by pinCurrentCharacterRow and marked "You" in the list. */
-  let currentKey = $state<string | null>(null);
   let guildRows = $state<GuildRankingRow[]>([]);
+  let updatedAt = $state<string | null>(null);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let error = $state('');
   let attempt = $state(0);
+  /** Stamps the board's request; a later one makes an earlier answer stale. */
+  let loadTicket = 0;
+  /** Stamps the aiming; a later switch makes an earlier one stale. */
+  let aimTicket = 0;
+  /** What the visitor chose before the board knew who was looking: it lands on top of the defaults. */
+  let early: { filters: Partial<RankingsState>; encounter?: string } = { filters: {} };
 
-  /**
-   * A bare /rankings with no encounter in the URL cannot ask GET /v1/rankings or
-   * /v1/rankings/guilds for a board that needs one (requiresEncounter) -- there is
-   * nothing to name. Rather than firing that request and rendering its 400, the board
-   * this filter combination would need is swapped for the encounter picker below.
-   */
-  const needsPicker = $derived(resolvedSlug === '' && requiresEncounter(state));
-  let encounters = $state<EncounterOption[]>([]);
-  let encountersStatus = $state<'idle' | 'loading' | 'ready' | 'failed'>('idle');
-
-  async function loadEncounters(): Promise<void> {
-    encountersStatus = 'loading';
-    try {
-      const result = await fetchEncounters();
-      encounters = result.rows;
-      encountersStatus = 'ready';
-    } catch {
-      encountersStatus = 'failed';
-    }
-  }
-
-  const select =
-    'border-line-warm bg-raised rounded-control text-text h-11 w-full px-2 text-[13px] md:h-9 md:w-auto';
-
-  function patch(next: Partial<RankingsState>): void {
-    // Any filter change returns to page one: page three of a different filter is nothing.
-    state = { ...state, ...next, page: next.page ?? 1 };
-    window.history.replaceState(null, '', `${window.location.pathname}${rankingsSearch(state)}`);
-  }
-
-  // Switching character re-aims the board at the new one (its class and ruleset replace the
-  // filters, back on page one) and the effect below re-pins its row.
-  $effect(() =>
-    onCurrentCharacterChange(() => {
-      const aimed = applyCurrentCharacterPrefilter(state, '', readCurrent());
-      state = { ...aimed, page: 1 };
-      window.history.replaceState(null, '', `${window.location.pathname}${rankingsSearch(state)}`);
-    }),
+  const encounterName = $derived(
+    encounters.find((encounter) => encounter.slug === encounterSlug)?.name ?? titleize(encounterSlug),
   );
+  const needsPicker = $derived(aimed && encounterSlug === '' && requiresEncounter(state));
+  const metricLabel = $derived(
+    RANKING_METRICS.find((metric) => metric.id === state.metric)?.label ?? 'Value',
+  );
+  /** The viewer's own board: their class and spec, so their row is on it and can be marked. */
+  const ownBoard = $derived(
+    viewer !== null &&
+      ownDefaults.class !== '' &&
+      state.class === ownDefaults.class &&
+      state.spec === ownDefaults.spec,
+  );
+  const showClassAndSpec = $derived(viewer === null || ownDefaults.class === '' || otherBoard || !ownBoard);
+  const ownCohort = $derived(cohortName(ownDefaults.class, ownDefaults.spec));
+  const lastPage = $derived(page === null ? 1 : Math.max(1, Math.ceil(page.total / page.per_page)));
+
+  function urlFor(next: RankingsState, nextSlug: string): string {
+    const path = nextSlug === '' ? '/rankings' : `/rankings/${nextSlug}`;
+    return `${path}${rankingsSearch(next, ownDefaults)}`;
+  }
+
+  function show(next: RankingsState, nextSlug: string = encounterSlug): void {
+    state = next;
+    encounterSlug = nextSlug;
+    window.history.replaceState(null, '', urlFor(next, nextSlug));
+  }
+
+  /** Any filter change returns to page one: page three of a different filter is nothing. */
+  function patch(next: Partial<RankingsState>): void {
+    const changed = { ...state, ...next, page: next.page ?? 1 };
+    if (aimed) return show(changed);
+    // The server-drawn filters are live before /v1/me answers: keep the choice, show it, and
+    // put it on top of the defaults once the board knows who is looking.
+    early = { ...early, filters: { ...early.filters, ...next } };
+    state = changed;
+  }
+
+  function chooseEncounter(next: string): void {
+    if (aimed) return show({ ...state, page: 1 }, next);
+    early = { ...early, encounter: next };
+    encounterSlug = next;
+  }
 
   /**
-   * Every filter lives in the URL, so changing one always produces a brand new `state`
-   * object (the immutable update in `patch` above) rather than mutating the one in flight.
-   * That gives the effect below a cheap, exact staleness check: capture the object this
-   * run is fetching for, and before any write to shared state -- on the success path and
-   * on the rejection path alike -- compare it against the live `state` by reference. A
-   * fetch started for a filter combination nobody is looking at any more is dropped on
-   * both paths instead of painting its answer under the current filters' name. This is the
-   * same hazard report-tabs.spec.ts's `heldRoute()` and RankingsMode.svelte's own
-   * `wantedFight`/`wantedMetric` guard cover for the report island; here the whole state
-   * object stands in for "the fight and the metric" because every filter, not just two
-   * fields, can change at once.
+   * Aims the board at whoever the session says is looking: on first load, only the filters the
+   * link did not name; on a header switch, the new character's own, back on page one. The
+   * encounter follows too unless the link named one.
+   */
+  async function aim(character: MeCharacter | null, first: boolean): Promise<void> {
+    const ticket = ++aimTicket;
+    status = 'loading';
+    const defaults = rankingsDefaults(character, now);
+    const resolved = await resolveDefaultEncounter(character, reads).catch(() => ({
+      slug: '',
+      encounters: [] as EncounterOption[],
+    }));
+    if (ticket !== aimTicket) return;
+    encounters = resolved.encounters;
+    const keepEncounter = first && urlNamedAnEncounter;
+    const aimedState = first
+      ? applyDefaults(state, window.location.search, defaults)
+      : reaim(state, defaults);
+    const chosen = early;
+    early = { filters: {} };
+    otherBoard = false;
+    aimed = true;
+    show(
+      { ...aimedState, ...chosen.filters },
+      chosen.encounter ?? (keepEncounter ? encounterSlug : resolved.slug),
+    );
+  }
+
+  let aimedFor: string | null | undefined;
+  $effect(() => {
+    if (!settled) return;
+    const character = viewer;
+    const key = character?.key ?? null;
+    if (untrack(() => aimedFor) === key) return;
+    const first = untrack(() => aimedFor) === undefined;
+    aimedFor = key;
+    void untrack(() => aim(character, first));
+  });
+
+  /**
+   * Every filter lives in the URL, so changing one always produces a brand new `state` object
+   * (the immutable update in `show` above). A request is stamped with a ticket when it starts,
+   * and before any write to shared state -- on the success path and on the rejection path alike
+   * -- the stamp is compared with the latest: a fetch started for a filter combination nobody is
+   * looking at any more is dropped on both paths instead of painting its answer under the
+   * current filters' name. The same hazard report-tabs.spec.ts's `heldRoute()` covers for the
+   * report island.
    */
   $effect(() => {
     void attempt;
-    if (needsPicker) {
-      // Nothing to fetch until an encounter is chosen: clear any board this filter
-      // combination is not going to answer for, and read the picker's own list once.
-      page = null;
-      guildRows = [];
-      status = 'ready';
-      if (encountersStatus === 'idle') void loadEncounters();
+    if (!aimed || needsPicker) {
+      if (needsPicker) {
+        page = null;
+        guildRows = [];
+        status = 'ready';
+      }
       return;
     }
     const requested = state;
+    const requestedSlug = encounterSlug;
+    const own = untrack(() => (ownBoard && viewer !== null ? viewer.key : null));
+    const ticket = ++loadTicket;
     status = 'loading';
     const load =
       requested.board === 'guild'
-        ? fetchGuildRankings({ encounter: resolvedSlug, kind: requested.kind, phase: requested.phase }).then(
+        ? fetchGuildRankings({ encounter: requestedSlug, kind: requested.kind, phase: requested.phase }).then(
             (result) => {
-              if (state !== requested) return;
+              if (ticket !== loadTicket) return;
               guildRows = result.rows;
               page = null;
               status = 'ready';
             },
           )
         : fetchRankings({
-            encounter: resolvedSlug,
-            metric: requested.metric,
+            encounter: requestedSlug,
+            metric: requested.metric as RankingMetric,
             spec: requested.spec,
             class: requested.class,
             phase: requested.phase,
@@ -176,412 +224,191 @@
             faction: requested.faction,
             since: requested.since,
             page: requested.page,
+            distinct: 'character',
+            ...(own === null ? {} : { character: own }),
           }).then((result) => {
-            if (state !== requested) return;
-            const current = readCurrent();
-            currentKey = current?.source === 'armory' ? current.ref : null;
-            page = { ...result, rows: pinCurrentCharacterRow(result.rows, current) };
+            if (ticket !== loadTicket) return;
+            page = result;
+            updatedAt = result.updated_at;
             guildRows = [];
             status = 'ready';
           });
 
     void load.catch((thrown: unknown) => {
-      if (state !== requested) return;
+      if (ticket !== loadTicket) return;
       status = 'failed';
       error = thrown instanceof Error ? thrown.message : 'Rankings did not load.';
     });
   });
 
-  const lastPage = $derived(page === null ? 1 : Math.max(1, Math.ceil(page.total / page.per_page)));
+  // The header's answer follows the board's own filters but not its page, so paging never
+  // re-asks it: it is rebuilt only when the key of what it reads changes.
+  const answerKey = $derived(
+    JSON.stringify([
+      encounterSlug,
+      state.metric,
+      state.phase,
+      state.region,
+      state.ruleset,
+      state.faction,
+      state.since,
+      ownDefaults.class,
+      ownDefaults.spec,
+    ]),
+  );
+  const answer = $derived.by(() => {
+    void answerKey;
+    if (!aimed) return PENDING_ANSWER;
+    return untrack(() =>
+      ownRankSpec({
+        encounterSlug,
+        encounterName,
+        state,
+        own: { class: ownDefaults.class, spec: ownDefaults.spec },
+      }),
+    );
+  });
 
-  function plannerHref(row: RankingRow): string | null {
-    return row.build_id === undefined ? null : `/b/${row.build_id}`;
-  }
+  const summary = $derived(
+    filterSummary({ encounterName, state, defaultMetric: ownDefaults.metric }, PHASE_NAMES),
+  );
+  const updatedStamp = $derived(updatedAt === null ? null : formatDate(new Date(updatedAt)));
 
-  /**
-   * A row's own region and ruleset, read out of `player.key` rather than the row's guild --
-   * an unguilded row still fought in a real region and ruleset, and defaulting them (the
-   * way `us`/`normal` would) links a real player at someone else's server. Null when
-   * `player.key` does not parse, rather than a guess: fix round 1 caught this pointing an
-   * unguilded row at the wrong region.
-   */
-  function characterRowHref(row: RankingRow): string | null {
-    const key = parseCharacterKey(row.player.key);
-    return key === null ? null : characterHref(key.region, key.ruleset, row.player.name);
+  function backToOwnBoard(): void {
+    otherBoard = false;
+    patch({ class: ownDefaults.class, spec: ownDefaults.spec });
   }
 </script>
 
-<div class="flex flex-col gap-[22px] md:gap-6" data-testid="rankings" id="rankings">
-  <CurrentCharacterBar spine />
-  <header class="flex flex-col gap-1">
-    <h1 class="section-title text-[18px]">{encounter}</h1>
-    <p class="text-muted text-[13px]" data-testid="rankings-count">
-      {#if page !== null}
-        <span class="tabular font-mono">{page.total}</span> ranked kills · updated
-        <span class="tabular font-mono">{page.updated_at.slice(0, 10)}</span>
-      {:else if state.board === 'guild'}
-        <span class="tabular font-mono">{guildRows.length}</span> guilds
-      {/if}
-    </p>
-  </header>
+<div data-testid="rankings" id="rankings" class="flex flex-col">
+  <RankingsHero {signedIn} updated={updatedStamp} />
 
-  <!-- Two deliberate rows: the board and its scope (Characters/Guilds, Today only) first,
-       then the five filters. Before, the checkbox fell off the end of the filter row and sat
-       alone on a line of its own; on a phone the filters are a two-column grid instead of
-       five stacked full-width selects, so the first ranked kill is one short scroll away. -->
-  <div class="flex flex-col gap-2" data-testid="rankings-filters">
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <div role="tablist" aria-label="Board" class="flex items-center gap-1">
-        {#each [{ id: 'character', label: 'Characters' }, { id: 'guild', label: 'Guilds' }] as board (board.id)}
-          <button
-            type="button"
-            role="tab"
-            class="{SECONDARY_BUTTON} px-3"
-            class:border-line-warm-strong={state.board === board.id}
-            class:border-line-soft={state.board !== board.id}
-            class:text-strong={state.board === board.id}
-            class:text-nav={state.board !== board.id}
-            aria-selected={state.board === board.id}
-            data-testid={`board-${board.id}`}
-            onclick={() => patch({ board: board.id as RankingsState['board'] })}
-          >
-            {board.label}
-          </button>
-        {/each}
+  <div class="flex flex-col gap-4 px-[var(--page-inset)] pt-1 pb-10 min-[600px]:gap-[22px]">
+    <CharacterHeader action={({ character }) => ownParsesAction(character)} {answer} source={session} />
+
+    {#if viewer !== null && ownDefaults.class !== '' && !ownBoard}
+      <p class="text-muted text-[13px]" data-testid="rankings-showing-note">
+        {rankingsCopy.showingNote(
+          state.class === ''
+            ? rankingsCopy.everyClassAndSpec.toLowerCase()
+            : scopeHeading(state.class, state.spec),
+          ownCohort,
+        )}
+        <button
+          type="button"
+          class="text-gold hover:text-gold-hover inline-flex min-h-11 items-center underline underline-offset-4"
+          data-testid="rankings-back"
+          onclick={backToOwnBoard}>{rankingsCopy.backTo(`${ownCohort}s`)}</button
+        >
+      </p>
+    {/if}
+
+    <RankingsHeading
+      scope={scopeHeading(state.class, state.spec)}
+      board={state.board}
+      canChooseAnother={viewer !== null && ownDefaults.class !== '' && !showClassAndSpec}
+      onanother={() => (otherBoard = true)}
+      onboard={(board) => patch({ board })}
+    />
+
+    <RankingsFilters
+      filters={state}
+      {encounters}
+      {encounterSlug}
+      {summary}
+      {showClassAndSpec}
+      onpatch={patch}
+      onencounter={chooseEncounter}
+    />
+
+    {#if needsPicker}
+      <div data-testid="encounter-picker" class="flex flex-col gap-3">
+        {#if encounters.length === 0}
+          <p class="text-muted text-[14px]" data-testid="rankings-no-encounters">
+            {encounterPickerCopy.noneYet}
+          </p>
+          <p class="text-muted text-[14px]">
+            {encounterPickerCopy.tryGuildsProgress}
+            <button
+              type="button"
+              class={rowLink}
+              data-testid="rankings-try-guilds"
+              onclick={() => patch({ board: 'guild', kind: 'progress' })}
+            >
+              {state.board === 'guild'
+                ? encounterPickerCopy.progressButton
+                : encounterPickerCopy.guildsButton}
+            </button>
+          </p>
+        {:else}
+          <h2 class="label text-muted">{encounterPickerCopy.heading}</h2>
+          <ul class="flex flex-col" data-testid="encounter-picker-rows">
+            {#each encounters as option (option.id)}
+              <li class="border-line-soft border-b py-2 text-[14px]">
+                <a class={rowLink} href={`/rankings/${option.slug}${rankingsSearch(state, ownDefaults)}`}
+                  >{option.name}</a
+                >
+              </li>
+            {/each}
+          </ul>
+        {/if}
       </div>
-
-      <label class="flex min-h-11 items-center gap-2 text-[13px] md:min-h-0">
-        <input
-          type="checkbox"
-          checked={state.since === 'today'}
-          onchange={(event) =>
-            patch({ since: (event.currentTarget as HTMLInputElement).checked ? 'today' : '' })}
+    {:else if status === 'loading'}
+      <Skeleton lines={8} rowHeight="h-11" minHeight={RANKINGS_LOADING_MIN_H} testid="rankings-skeleton" />
+    {:else if status === 'failed'}
+      <LoadError message={error} onRetry={() => (attempt += 1)} testid="rankings-error" />
+    {:else if state.board === 'guild'}
+      {#if guildRows.length === 0}
+        <EmptyState
+          message={rankingsEmptyCopy.message}
+          action={{ label: rankingsEmptyCopy.action, href: rankingsEmptyCopy.href }}
+          testid="rankings-empty"
         />
-        Today only
-      </label>
-    </div>
-
-    <div class="grid grid-cols-2 gap-x-3 gap-y-2 md:flex md:flex-wrap md:items-center md:gap-x-4">
-      {#if state.board === 'character'}
-        <label
-          class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
-          for="rankings-metric"
-        >
-          Metric
-          <select
-            id="rankings-metric"
-            class={select}
-            value={state.metric}
-            data-testid="filter-metric"
-            onchange={(event) => patch({ metric: (event.currentTarget as HTMLSelectElement).value })}
-          >
-            {#each RANKING_METRICS as metric (metric.id)}<option value={metric.id}>{metric.label}</option
-              >{/each}
-          </select>
-        </label>
       {:else}
-        <label
-          class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
-          for="rankings-kind"
-        >
-          Board
-          <select
-            id="rankings-kind"
-            class={select}
-            value={state.kind}
-            onchange={(event) => patch({ kind: (event.currentTarget as HTMLSelectElement).value })}
-          >
-            {#each GUILD_KINDS as kind (kind.id)}<option value={kind.id}>{kind.label}</option>{/each}
-          </select>
-        </label>
-      {/if}
-
-      <label
-        class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
-        for="rankings-ruleset"
-      >
-        Ruleset
-        <select
-          id="rankings-ruleset"
-          class={select}
-          value={state.ruleset}
-          data-testid="filter-ruleset"
-          onchange={(event) => patch({ ruleset: (event.currentTarget as HTMLSelectElement).value })}
-        >
-          <option value="">Every ruleset</option>
-          {#each RULESETS as ruleset (ruleset.id)}<option value={ruleset.id}>{ruleset.label}</option>{/each}
-        </select>
-      </label>
-
-      <label
-        class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
-        for="rankings-region"
-      >
-        Region
-        <select
-          id="rankings-region"
-          class={select}
-          value={state.region}
-          onchange={(event) => patch({ region: (event.currentTarget as HTMLSelectElement).value })}
-        >
-          <option value="">Every region</option>
-          {#each REGIONS as region (region)}<option value={region}>{region.toUpperCase()}</option>{/each}
-        </select>
-      </label>
-
-      <label
-        class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
-        for="rankings-phase"
-      >
-        Phase
-        <select
-          id="rankings-phase"
-          class={select}
-          value={state.phase}
-          onchange={(event) => patch({ phase: (event.currentTarget as HTMLSelectElement).value })}
-        >
-          <option value="">Every phase</option>
-          {#each PHASES as phase (phase.id)}<option value={phase.id}>{phase.label}</option>{/each}
-        </select>
-      </label>
-
-      <label
-        class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
-        for="rankings-faction"
-      >
-        Faction
-        <select
-          id="rankings-faction"
-          class={select}
-          value={state.faction}
-          onchange={(event) => patch({ faction: (event.currentTarget as HTMLSelectElement).value })}
-        >
-          <option value="">Both</option>
-          {#each FACTIONS as faction (faction)}<option value={faction}
-              >{faction === 'horde' ? 'Horde' : 'Alliance'}</option
-            >{/each}
-        </select>
-      </label>
-    </div>
-  </div>
-
-  {#if needsPicker}
-    <div data-testid="encounter-picker" class="flex flex-col gap-3">
-      {#if encountersStatus === 'idle' || encountersStatus === 'loading'}
-        <Skeleton lines={3} rowHeight="h-4" testid="rankings-picker-skeleton" />
-      {:else if encountersStatus === 'failed'}
-        <LoadError
-          message={encounterPickerCopy.failed}
-          onRetry={() => void loadEncounters()}
-          testid="rankings-picker-error"
-        />
-      {:else if encounters.length === 0}
-        <p class="text-muted text-[14px]" data-testid="rankings-no-encounters">
-          {encounterPickerCopy.noneYet}
-        </p>
-        <p class="text-muted text-[14px]">
-          {encounterPickerCopy.tryGuildsProgress}
-          <button
-            type="button"
-            class={rowLink}
-            data-testid="rankings-try-guilds"
-            onclick={() => patch({ board: 'guild', kind: 'progress' })}
-          >
-            {state.board === 'guild' ? encounterPickerCopy.progressButton : encounterPickerCopy.guildsButton}
-          </button>
-        </p>
-      {:else}
-        <h2 class="label text-muted">{encounterPickerCopy.heading}</h2>
-        <ul class="flex flex-col" data-testid="encounter-picker-rows">
-          {#each encounters as option (option.id)}
-            <li class="border-line-soft border-b py-2 text-[14px]">
-              <a class={rowLink} href={`/rankings/${option.slug}${rankingsSearch(state)}`}>{option.name}</a>
+        <ul class="reveal flex flex-col" data-testid="guild-rows">
+          {#each guildRows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
+            <li
+              class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
+            >
+              <span class="tabular font-mono text-[12px]">{row.rank}</span>
+              <a class={rowLink} href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
+                >{row.guild.name}</a
+              >
+              <span class="tabular text-right font-mono">{formatAmount(Math.round(row.value))}</span>
             </li>
           {/each}
         </ul>
       {/if}
-    </div>
-  {:else if status === 'loading'}
-    <Skeleton lines={8} rowHeight="h-11" minHeight={RANKINGS_LOADING_MIN_H} testid="rankings-skeleton" />
-  {:else if status === 'failed'}
-    <LoadError message={error} onRetry={() => (attempt += 1)} testid="rankings-error" />
-  {:else if state.board === 'guild'}
-    {#if guildRows.length === 0}
+    {:else if page === null || page.rows.length === 0}
       <EmptyState
         message={rankingsEmptyCopy.message}
         action={{ label: rankingsEmptyCopy.action, href: rankingsEmptyCopy.href }}
         testid="rankings-empty"
       />
     {:else}
-      <ul class="reveal flex flex-col" data-testid="guild-rows">
-        {#each guildRows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
-          <li
-            class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
-          >
-            <span class="tabular font-mono text-[12px]">{row.rank}</span>
-            <a class={rowLink} href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
-              >{row.guild.name}</a
-            >
-            <span class="tabular text-right font-mono">{formatAmount(Math.round(row.value))}</span>
-          </li>
-        {/each}
-      </ul>
-    {/if}
-  {:else if page === null || page.rows.length === 0}
-    <EmptyState
-      message={rankingsEmptyCopy.message}
-      action={{ label: rankingsEmptyCopy.action, href: rankingsEmptyCopy.href }}
-      testid="rankings-empty"
-    />
-  {:else}
-    <!-- The column line: the board's one header, drawn only at md and up, where every
-         cell has its own column. On a phone the row folds its figures into labelled lines
-         of its own, so a header would name columns that are not there. -->
-    <div
-      class="{RANKING_ROW_GRID} label text-muted border-line-soft hidden gap-x-3 border-b px-2 py-1 md:grid"
-      data-testid="ranking-columns"
-    >
-      <span>#</span>
-      <span>Character</span>
-      <span>Guild</span>
-      <span class="text-right">Size</span>
-      <span class="text-right">{metricLabel}</span>
-      <span class="text-right">Executed</span>
-      <span class="text-right">Date</span>
-      <span class="text-right">Length</span>
-      <span class="text-right">Build</span>
-      <span class="text-right">Report</span>
-    </div>
-    <ul class="reveal flex flex-col" data-testid="ranking-rows">
-      {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
-        {@const buildHref = plannerHref(row)}
-        {@const characterLinkHref = characterRowHref(row)}
-        <li
-          class="{RANKING_ROW_GRID} border-line-soft grid min-h-11 items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px]"
-          class:bg-raised={currentKey !== null && row.player.key === currentKey}
-          data-testid={`ranking-${row.rank}`}
-        >
-          <span
-            class="tabular font-mono text-[12px]"
-            style={`color: ${percentileToken(Math.max(0, 100 - ((row.rank - 1) / Math.max(page.total, 1)) * 100))}`}
-          >
-            {row.rank}
-          </span>
-          <span class="flex min-w-0 items-center gap-2">
-            {#if characterLinkHref !== null}
-              <a
-                class="{rowLink} truncate font-semibold"
-                style={`color: ${classColorVar(row.player.class)}`}
-                href={characterLinkHref}
-                data-testid="ranking-character"
-              >
-                {splitUnitName(row.player.name).name}
-              </a>
-            {:else}
-              <!-- player.key did not parse into a region and ruleset: an unlinked name is
-                   the legible failure, not a guessed link that would point at the wrong
-                   character. -->
-              <span class="truncate font-semibold" style={`color: ${classColorVar(row.player.class)}`}>
-                {splitUnitName(row.player.name).name}
-              </span>
-            {/if}
-            {#if currentKey !== null && row.player.key === currentKey}
-              <span class="pill pill-sample shrink-0" data-testid="ranking-you">You</span>
-            {/if}
-          </span>
-          <span class="text-muted truncate text-[13px]">
-            {#if row.guild}
-              <a class={rowLink} href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
-                >{row.guild.name}</a
-              >
-              <span class="hidden md:inline">
-                · {rulesetLabel(row.guild.ruleset)} {row.guild.region.toUpperCase()}</span
-              >
-            {/if}
-          </span>
-          <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline">{row.size}</span>
-          <span class="tabular text-right font-mono">{formatAmount(Math.round(row.value))}</span>
-          <!-- Desktop gets its own cell; on phone the same figure joins the row's own phone-only
-               line below, because a ninth column at phone width would push the name to one word. -->
-          {#if row.execution_score === null}
-            <span
-              class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
-              title={executionTitle(null)}
-              aria-label={executionTitle(null)}
-              data-testid="ranking-execution">{executionLabel(null)}</span
-            >
-          {:else}
-            <a
-              class="tabular hidden min-h-11 items-center justify-end text-right font-mono text-[13px] md:inline-flex"
-              href={executionHref(row.report_id, row.fight_index)}
-              title={executionTitle(row.execution_score)}
-              data-testid="ranking-execution">{executionLabel(row.execution_score)}</a
-            >
-          {/if}
-          <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline">
-            {row.fought_at.slice(0, 10)}
-          </span>
-          <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline">
-            {formatDuration(row.duration_ms)}
-          </span>
-          <!-- One span on a phone (the row's third column), its two children direct grid
-               cells from md (`md:contents`), so Build and Report are two headed columns. The
-               phone span has a floor width: each row is its own grid, so without one the
-               column was as wide as that row's build code and Report drifted row to row. -->
-          <span class="flex min-w-[148px] items-center justify-end gap-3 text-[13px] md:contents">
-            {#if buildHref !== null}
-              <a class="{rowLink} md:justify-self-end" href={buildHref} data-testid="ranking-build"
-                >{row.talent_split}</a
-              >
-            {:else}
-              <span class="text-muted tabular font-mono md:justify-self-end">{row.talent_split}</span>
-            {/if}
-            <a
-              class="{rowLink} md:justify-self-end"
-              href={`/reports/${row.report_id}?fight=${row.fight_index}`}
-              data-testid="ranking-report">Report</a
-            >
-          </span>
-          <span class="text-muted label col-span-full md:hidden" data-testid="ranking-execution-phone">
-            {row.execution_score === null
-              ? simCopy.executionUnscored
-              : `${executionLabel(row.execution_score)} executed`}
-          </span>
-          {#if row.state !== 'ok'}
-            <!-- Plain text, not a colour swatch: the row's own background or a coloured dot
-                 would say nothing to a screen reader, and the design system's rule against
-                 colour-only signalling applies to moderation exactly the way it applies
-                 everywhere else. Read in order, a removed row says "...duration, removed"
-                 -- part of the same sentence the rest of the row already reads as, not a
-                 separate alert. -->
-            <span class="pill pill-sample col-span-full" data-testid="ranking-state"
-              >{row.state.replace('_', ' ')}</span
-            >
-          {/if}
-        </li>
-      {/each}
-    </ul>
+      <RankingsBoard {page} {metricLabel} ownKey={ownBoard && viewer !== null ? viewer.key : null} {now} />
 
-    <div class="flex items-center gap-3">
-      <button
-        type="button"
-        class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 disabled:opacity-50"
-        disabled={state.page <= 1}
-        data-testid="rankings-prev"
-        onclick={() => patch({ page: state.page - 1 })}
-      >
-        Previous
-      </button>
-      <span class="text-muted tabular font-mono text-[13px]">Page {state.page} of {lastPage}</span>
-      <button
-        type="button"
-        class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 disabled:opacity-50"
-        disabled={state.page >= lastPage}
-        data-testid="rankings-next"
-        onclick={() => patch({ page: state.page + 1 })}
-      >
-        Next
-      </button>
-    </div>
-  {/if}
+      <div class="flex items-center gap-3">
+        <button
+          type="button"
+          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 disabled:opacity-50"
+          disabled={state.page <= 1}
+          data-testid="rankings-prev"
+          onclick={() => patch({ page: state.page - 1 })}
+        >
+          Previous
+        </button>
+        <span class="text-muted tabular font-mono text-[13px]">Page {state.page} of {lastPage}</span>
+        <button
+          type="button"
+          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3 disabled:opacity-50"
+          disabled={state.page >= lastPage}
+          data-testid="rankings-next"
+          onclick={() => patch({ page: state.page + 1 })}
+        >
+          Next
+        </button>
+      </div>
+    {/if}
+  </div>
 </div>

@@ -64,6 +64,8 @@ describe('the colour legend', () => {
     expect(rankPercentile(1, 200)).toBe(100);
     expect(rankPercentile(101, 200)).toBe(50);
     expect(rankColor(14, 212)).toBe('var(--color-parse-purple)');
+    // The first rank is a 100th percentile but the legend ends at 99+, so it is pink, not gold.
+    expect(rankColor(1, 212)).toBe('var(--color-parse-pink)');
     expect(rankColor(204, 212)).toBe('var(--color-parse-grey-text)');
   });
 });

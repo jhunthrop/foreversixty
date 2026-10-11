@@ -16,8 +16,11 @@ export function rankPercentile(rank: number, total: number): number {
   return 100 - ((rank - 1) / Math.max(total, 1)) * 100;
 }
 
+/** The top of the legend; the first rank of a board is its 100th percentile and still reads pink. */
+const TOP_LEGEND_PERCENTILE = 99;
+
 export function rankColor(rank: number, total: number): string {
-  return percentileToken(Math.max(0, rankPercentile(rank, total)));
+  return percentileToken(Math.min(TOP_LEGEND_PERCENTILE, Math.max(0, rankPercentile(rank, total))));
 }
 
 export interface LegendStep {

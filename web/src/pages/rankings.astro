@@ -11,11 +11,7 @@ import Rankings from '../components/Rankings.svelte';
   description="World of Warcraft: Forever rankings by encounter: characters, guilds, specs and phases."
   path="/rankings"
 >
-  <main
-    id="main"
-    tabindex="-1"
-    class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
-  >
+  <main id="main" tabindex="-1" class="flex w-full flex-col">
     <Rankings client:load />
   </main>
 </Base>
