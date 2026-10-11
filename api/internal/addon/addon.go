@@ -462,7 +462,8 @@ func validExports(w http.ResponseWriter, r *http.Request, exports []Export) bool
 // ExportsResult is the body POST /v1/addon/exports answers with.
 type ExportsResult struct {
 	// Stored counts the exports written: every character in the list,
-	// plus the outbox's own export when it was stored.
+	// plus the outbox's own export when it was stored for a character
+	// the list did not already carry.
 	Stored int           `json:"stored"`
 	Outbox *OutboxResult `json:"outbox,omitempty"`
 }
@@ -491,8 +492,9 @@ func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
 	out := ExportsResult{Stored: len(in.Characters)}
 	err := s.Store.PutExports(r.Context(), userID, in.Characters)
 	if err == nil && hasOutbox {
-		out.Outbox, err = s.applyOutbox(r.Context(), userID, outbox)
-		if out.Outbox != nil && out.Outbox.Export == OutboxStored {
+		var key string
+		out.Outbox, key, err = s.applyOutbox(r.Context(), userID, outbox)
+		if key != "" && !listNames(in.Characters, key) {
 			out.Stored++
 		}
 	}
@@ -507,6 +509,16 @@ func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	httpx.WriteOK(w, r, http.StatusOK, out)
+}
+
+// listNames reports whether one of the list's exports is stored under key.
+func listNames(exports []Export, key string) bool {
+	for _, e := range exports {
+		if character.Key(e.Region, character.RulesetFromRealm(e.Ruleset, ""), e.Name) == key {
+			return true
+		}
+	}
+	return false
 }
 
 // MyExportsInput is the body of POST /v1/me/exports (spec §4.5): the

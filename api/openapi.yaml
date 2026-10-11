@@ -1566,9 +1566,14 @@ paths:
         last hour ("duplicate"); an account without server sims gets "premium_required", a
         deployment that cannot start the job "unavailable". Its `roster_snapshot` is stored as
         the guild page's roster for the guild the exporting character belongs to, and only that
-        guild ("not_in_guild" otherwise); a newer snapshot replaces the guild's last one. A
-        sim request or snapshot that cannot be acted on never fails the sync; a malformed
-        outbox is refused 400.
+        guild ("not_in_guild" otherwise); a newer snapshot replaces the guild's last one. Its
+        members come from other players' addons, so they are checked one by one: a member
+        whose fields fail validation is dropped and counted in `dropped_members`, the rest are
+        stored, and a snapshot with no usable guild name, or whose every member was dropped,
+        is answered "invalid". A sim request whose content cannot be used is likewise answered
+        "invalid". Neither part ever fails the sync: only an outbox that is structurally not
+        one (not an object, a non-numeric format, a missing or malformed export) is refused
+        400.
       requestBody:
         required: true
         content:
@@ -1625,20 +1630,22 @@ paths:
                               name: { type: string, description: "Name-Realm" }
                               level: { type: integer, minimum: 1, maximum: 60 }
                               spec: { type: string, maxLength: 64 }
-                              gear_gap: { type: integer, minimum: 0 }
+                              gear_gap: { type: integer }
                               build: { type: string, maxLength: 64 }
                               seen_at: { type: string, description: "Player's local time, YYYY-MM-DD HH:MM" }
       responses:
         '200':
           description: >-
-            { stored, outbox? } where stored counts the exports written (the list plus the
-            outbox's own export) and outbox, present when the body carried one, is { status:
-            "read" | "ignored", export?: "stored" | "unknown_character", sim_request?: "queued" |
-            "duplicate" | "premium_required" | "unavailable" | "unknown_character" | "invalid" |
-            "not_started", roster_snapshot?: "stored" | "not_in_guild" | "unknown_character" },
-            each part present only when the outbox carried it
+            { stored, outbox? } where stored counts the exports written (the list, plus the
+            outbox's own export when the list did not already carry that character) and outbox,
+            present when the body carried one, is { status: "read" | "ignored", export?: "stored" |
+            "unknown_character", sim_request?: "queued" | "duplicate" | "premium_required" |
+            "unavailable" | "unknown_character" | "invalid" | "not_started", roster_snapshot?:
+            "stored" | "not_in_guild" | "unknown_character" | "invalid", dropped_members?: the
+            number of snapshot members left out for failing validation (absent when none) }, each
+            part present only when the outbox carried it
           content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
-        '400': { description: "neither a characters list nor an outbox, or a malformed one", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "neither a characters list nor an outbox, a malformed list, or an outbox that is structurally not one", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '409': { description: "a character is already synced from a different account", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/addon/inbox:
     get:

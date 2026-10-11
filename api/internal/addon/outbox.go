@@ -47,14 +47,36 @@ const (
 	// character is not in, and only a member's addon may describe a
 	// guild's roster.
 	OutboxNotInGuild = "not_in_guild"
+	// OutboxInvalid: the part's content cannot be used (a sim request
+	// that is not one, a snapshot with no usable guild or no usable
+	// member). It is answered here, never by failing the sync the export
+	// rode in.
+	OutboxInvalid = "invalid"
 )
 
-// Outbox is contract 4's format 1.
+// outboxWire is contract 4's format 1 as it arrives. The two optional
+// parts stay raw so that their content, some of which another player's
+// addon wrote, is judged part by part rather than failing the decode.
+type outboxWire struct {
+	Format         int             `json:"format"`
+	Export         *OutboxExport   `json:"export"`
+	SimRequest     json.RawMessage `json:"sim_request"`
+	RosterSnapshot json.RawMessage `json:"roster_snapshot"`
+}
+
+// Outbox is a read format 1 outbox. A part the outbox carried whose
+// content cannot be used is marked Invalid, so the reply can say so.
 type Outbox struct {
-	Format         int                   `json:"format"`
-	Export         *OutboxExport         `json:"export"`
-	SimRequest     *sims.AddonSimRequest `json:"sim_request"`
-	RosterSnapshot *RosterSnapshot       `json:"roster_snapshot"`
+	Export OutboxExport
+
+	SimRequest        *sims.AddonSimRequest
+	SimRequestInvalid bool
+
+	RosterSnapshot *RosterSnapshot
+	RosterInvalid  bool
+	// DroppedMembers counts the snapshot's members that failed
+	// validation and were left out of what is stored.
+	DroppedMembers int
 }
 
 // OutboxExport is the outbox's export: Character is Name-Realm, Code the
@@ -89,10 +111,15 @@ type OutboxResult struct {
 	Export         string `json:"export,omitempty"`
 	SimRequest     string `json:"sim_request,omitempty"`
 	RosterSnapshot string `json:"roster_snapshot,omitempty"`
+	// DroppedMembers is how many snapshot members failed validation and
+	// were not stored.
+	DroppedMembers int `json:"dropped_members,omitempty"`
 }
 
 // readOutbox reads the outbox's format and, for format 1, the outbox
-// itself, writing a 400 for one that is not an outbox at all. A nil
+// itself. Only an outbox that is structurally not one (not an object, a
+// non-numeric format, top-level fields of the wrong type, or no usable
+// export) is answered 400; the optional parts' content never is. A nil
 // outbox with ok true is one of a format this API does not read.
 func readOutbox(w http.ResponseWriter, r *http.Request, raw json.RawMessage) (*Outbox, bool) {
 	var head struct {
@@ -106,79 +133,104 @@ func readOutbox(w http.ResponseWriter, r *http.Request, raw json.RawMessage) (*O
 	if head.Format != OutboxFormat {
 		return nil, true
 	}
-	var ob Outbox
-	if err := json.Unmarshal(raw, &ob); err != nil {
+	var wire outboxWire
+	if err := json.Unmarshal(raw, &wire); err != nil {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that outbox cannot be read",
 			map[string]string{"outbox": err.Error()})
 		return nil, false
 	}
-	if problem := ob.problem(); problem != "" {
+	if problem := exportProblem(wire.Export); problem != "" {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that outbox cannot be stored",
 			map[string]string{"outbox": problem})
 		return nil, false
 	}
-	return &ob, true
+	ob := &Outbox{Export: *wire.Export}
+	if present(wire.SimRequest) {
+		ob.SimRequest, ob.SimRequestInvalid = readSimRequest(wire.SimRequest)
+	}
+	if present(wire.RosterSnapshot) {
+		ob.RosterSnapshot, ob.DroppedMembers, ob.RosterInvalid = readRoster(wire.RosterSnapshot)
+	}
+	return ob, true
 }
 
-// problem is the first thing wrong with a format 1 outbox, or "". It also
-// normalises the snapshot's guild name the way an export's guild= is.
-func (ob *Outbox) problem() string {
-	e := ob.Export
+// present reports whether an optional part was sent: contract 4 treats a
+// missing key and nil the same.
+func present(raw json.RawMessage) bool {
+	return len(raw) > 0 && string(raw) != "null"
+}
+
+// exportProblem is what is wrong with the outbox's export, or "".
+func exportProblem(e *OutboxExport) string {
 	if e == nil || e.Code == "" || len(e.Code) > MaxExportLen {
 		return "export needs a character and a code of at most 4096 characters"
 	}
 	if !validUnit(e.Character) {
 		return "export.character must be Name-Realm"
 	}
-	if sr := ob.SimRequest; sr != nil {
-		if len(sr.GearCode) > MaxExportLen {
-			return "sim_request.gear_code is at most 4096 characters"
-		}
-		if !validUnit(sr.Character) {
-			return "sim_request.character must be Name-Realm"
-		}
-		if err := sr.Validate(); err != nil {
-			return err.Error()
-		}
-	}
-	if rs := ob.RosterSnapshot; rs != nil {
-		name, ok := validateGuildName(rs.Guild)
-		if !ok {
-			return "roster_snapshot.guild must be a guild name"
-		}
-		rs.Guild = name
-		if len(rs.Members) > maxRosterMembers {
-			return "roster_snapshot.members holds at most 1000 members"
-		}
-		for _, m := range rs.Members {
-			if problem := m.problem(); problem != "" {
-				return problem
-			}
-		}
-	}
 	return ""
 }
 
-func (m RosterMember) problem() string {
+// readSimRequest decodes and checks the sim request; invalid is true when
+// its content cannot be used.
+func readSimRequest(raw json.RawMessage) (req *sims.AddonSimRequest, invalid bool) {
+	var sr sims.AddonSimRequest
+	if err := json.Unmarshal(raw, &sr); err != nil {
+		return nil, true
+	}
+	if len(sr.GearCode) > MaxExportLen || !validUnit(sr.Character) || sr.Validate() != nil {
+		return nil, true
+	}
+	return &sr, false
+}
+
+// readRoster decodes the snapshot member by member. A member whose fields
+// fail validation (another player's addon wrote them) is dropped and
+// counted, and the rest are kept, at most maxRosterMembers of them. The
+// snapshot is invalid when it is not an object with a guild name, or when
+// it carried members and every one was dropped. The guild name is
+// normalised the way an export's guild= is.
+func readRoster(raw json.RawMessage) (snap *RosterSnapshot, dropped int, invalid bool) {
+	var wire struct {
+		Guild   string            `json:"guild"`
+		Members []json.RawMessage `json:"members"`
+	}
+	if err := json.Unmarshal(raw, &wire); err != nil {
+		return nil, 0, true
+	}
+	guild, ok := validateGuildName(wire.Guild)
+	if !ok {
+		return nil, 0, true
+	}
+	kept := []RosterMember{}
+	for _, m := range wire.Members {
+		var member RosterMember
+		if len(kept) == maxRosterMembers || json.Unmarshal(m, &member) != nil || !member.valid() {
+			dropped++
+			continue
+		}
+		kept = append(kept, member)
+	}
+	if len(wire.Members) > 0 && len(kept) == 0 {
+		return nil, dropped, true
+	}
+	return &RosterSnapshot{Guild: guild, Members: kept}, dropped, false
+}
+
+// valid reports whether a member line can go on the guild page. gear_gap
+// is any integer, as contract 2 types it.
+func (m RosterMember) valid() bool {
 	if !plainText(m.Name) || !validUnit(m.Name) {
-		return "roster_snapshot.members[].name must be Name-Realm"
+		return false
 	}
 	if m.Level < 1 || m.Level > simapi.MaxLevel {
-		return "roster_snapshot.members[].level must be between 1 and 60"
+		return false
 	}
-	if m.Spec != "" && !plainText(m.Spec) {
-		return "roster_snapshot.members[].spec is a spec slug"
+	if !plainText(m.Spec) || !plainText(m.Build) {
+		return false
 	}
-	if m.Build != "" && !plainText(m.Build) {
-		return "roster_snapshot.members[].build is a plain build name of at most 64 characters"
-	}
-	if m.GearGap < 0 {
-		return "roster_snapshot.members[].gear_gap is not negative"
-	}
-	if _, err := time.Parse(sims.RequestedAtLayout, m.SeenAt); err != nil {
-		return "roster_snapshot.members[].seen_at must be YYYY-MM-DD HH:MM"
-	}
-	return ""
+	_, err := time.Parse(sims.RequestedAtLayout, m.SeenAt)
+	return err == nil
 }
 
 // validUnit reports whether s is a Name-Realm whose name could be a
@@ -234,53 +286,61 @@ func resolveOwn(exports []Export, unit string) (Export, bool) {
 }
 
 // applyOutbox stores a read outbox's export under the account's own
-// character, starts its sim request and stores its roster snapshot. A nil
+// character, starts its sim request and stores its roster snapshot, and
+// returns the key the export was stored under ("" when it was not). A nil
 // outbox is one of a format this API does not read. Anything about the
 // outbox's content is answered in the result; only a store failure (or a
 // claimed character) is an error.
-func (s *Service) applyOutbox(ctx context.Context, userID int64, ob *Outbox) (*OutboxResult, error) {
+func (s *Service) applyOutbox(ctx context.Context, userID int64, ob *Outbox) (*OutboxResult, string, error) {
 	if ob == nil {
-		return &OutboxResult{Status: OutboxIgnored}, nil
+		return &OutboxResult{Status: OutboxIgnored}, "", nil
 	}
-	res := &OutboxResult{Status: OutboxRead}
+	res := &OutboxResult{Status: OutboxRead, DroppedMembers: ob.DroppedMembers}
+	// A part whose content cannot be used says so whatever else happens.
+	switch {
+	case ob.SimRequestInvalid:
+		res.SimRequest = OutboxInvalid
+	case ob.SimRequest != nil:
+		res.SimRequest = OutboxUnknownCharacter
+	}
+	switch {
+	case ob.RosterInvalid:
+		res.RosterSnapshot = OutboxInvalid
+	case ob.RosterSnapshot != nil:
+		res.RosterSnapshot = OutboxUnknownCharacter
+	}
 	exports, err := s.Store.Exports(ctx, userID)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	own, ok := resolveOwn(exports, ob.Export.Character)
 	if !ok {
 		res.Export = OutboxUnknownCharacter
-		if ob.SimRequest != nil {
-			res.SimRequest = OutboxUnknownCharacter
-		}
-		if ob.RosterSnapshot != nil {
-			res.RosterSnapshot = OutboxUnknownCharacter
-		}
-		return res, nil
+		return res, "", nil
 	}
 	own.Export = ob.Export.Code
 	if err := s.Store.PutExports(ctx, userID, []Export{own}); err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	res.Export = OutboxStored
 	key := character.Key(own.Region, character.RulesetFromRealm(own.Ruleset, ""), own.Name)
 
 	if ob.SimRequest != nil {
 		if res.SimRequest, err = s.simRequest(ctx, userID, exports, *ob.SimRequest); err != nil {
-			return nil, err
+			return nil, "", err
 		}
 	}
 	if ob.RosterSnapshot != nil {
 		stored, err := s.Store.PutRosterSnapshot(ctx, userID, key, *ob.RosterSnapshot)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
 		res.RosterSnapshot = OutboxNotInGuild
 		if stored {
 			res.RosterSnapshot = OutboxStored
 		}
 	}
-	return res, nil
+	return res, key, nil
 }
 
 // simRequest hands the request to SimRequests for the account's own

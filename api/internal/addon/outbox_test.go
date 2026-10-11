@@ -76,6 +76,7 @@ type exportsReply struct {
 		Export         string `json:"export"`
 		SimRequest     string `json:"sim_request"`
 		RosterSnapshot string `json:"roster_snapshot"`
+		DroppedMembers int    `json:"dropped_members"`
 	} `json:"outbox"`
 }
 
@@ -132,8 +133,8 @@ func TestTheContractOutboxIsStoredAndItsSimRequestQueuesOneRun(t *testing.T) {
 	if out.Outbox == nil || out.Outbox.Status != "read" || out.Outbox.Export != "stored" || out.Outbox.SimRequest != "queued" {
 		t.Fatalf("outbox = %+v, want read/stored/queued", out.Outbox)
 	}
-	if out.Stored != 2 {
-		t.Fatalf("stored = %d, want the character and the outbox's export", out.Stored)
+	if out.Stored != 1 {
+		t.Fatalf("stored = %d, want 1: the list and the outbox name the same character", out.Stored)
 	}
 
 	var export string
@@ -326,22 +327,14 @@ func TestAnOutboxOfAnUnknownFormatIsIgnored(t *testing.T) {
 
 func TestAnOutboxThatIsNotOneIsRefused(t *testing.T) {
 	h := newOutboxHarness(t, true)
-	fixture := string(contractFixture(t, "outbox-v1.json"))
-	// The sim request's spec, not the roster member's.
-	unknownSpec := strings.Replace(fixture, "\"spec\": \"warrior-arms\",\n    \"requested_at\"",
-		"\"spec\": \"warrior-bard\",\n    \"requested_at\"", 1)
-	if unknownSpec == fixture {
-		t.Fatal("the fixture's sim_request spec moved; update this replacement")
-	}
 	for name, body := range map[string]string{
 		"neither list":        `{}`,
+		"not an object":       withOutbox(`[1]`),
 		"no export":           withOutbox(`{"format":1}`),
+		"export not object":   withOutbox(`{"format":1,"export":"FS1:a"}`),
 		"no export character": withOutbox(`{"format":1,"export":{"character":"","code":"FS1:a"}}`),
 		"over-long code": withOutbox(`{"format":1,"export":{"character":"Obnoxious-Yell","code":"` +
 			strings.Repeat("x", MaxExportLen+1) + `"}}`),
-		"bad request time": withOutbox(strings.Replace(fixture, "2026-11-04 14:10", "soon", 1)),
-		"unknown spec":     withOutbox(unknownSpec),
-		"bad member level": withOutbox(strings.Replace(rosterOutbox, `"level":18`, `"level":99`, 1)),
 	} {
 		res := h.do(http.MethodPost, "/v1/addon/exports", body)
 		res.Body.Close()
@@ -351,5 +344,94 @@ func TestAnOutboxThatIsNotOneIsRefused(t *testing.T) {
 	}
 	if h.jobs.count() != 0 {
 		t.Fatalf("job calls = %d, want none", h.jobs.count())
+	}
+}
+
+// altbert is a second character of the account, synced in the same body.
+const altbert = `{"name":"Altbert","ruleset":"normal","region":"us","export":"FS1:1.60.1.70291:priest:human:0/0/0:"}`
+
+// Members come from other players' addons: one bad line must cost only that
+// line, never the player's own sync.
+func TestABadRosterMemberIsDroppedAndTheRestOfTheSyncStored(t *testing.T) {
+	h := newOutboxHarness(t, true)
+	members := `[
+	  {"name":"Obnoxious-Yell","level":20,"spec":"warrior-arms","gear_gap":14,"build":"Arms leveling","seen_at":"2026-11-04 14:01"},
+	  {"name":"Overlevel-Yell","level":99,"spec":"mage-fire","gear_gap":1,"build":"Fire","seen_at":"2026-11-04 14:01"},
+	  {"name":"Wrongtype-Yell","level":"twenty","spec":"rogue-combat","gear_gap":1,"build":"Combat","seen_at":"2026-11-04 14:01"},
+	  {"name":"Ahead-Yell","level":30,"spec":"priest-holy","gear_gap":-2,"build":"Holy","seen_at":"2026-11-04 13:50"}]`
+	outbox := `{"format":1,
+	 "export":{"character":"Obnoxious-Yell","code":"FS1:1.60.1.70291:warrior:human:0/0/0:chest=6627|guild=OLYMPUS%20XXVII:3","saved_at":"2026-11-04 14:02"},
+	 "roster_snapshot":{"guild":"OLYMPUS XXVII","members":` + members + `}}`
+	out := h.post(`{"characters":[` + obnoxious + `,` + altbert + `],"outbox":` + outbox + `}`)
+	if out.Stored != 2 || out.Outbox.Export != OutboxStored || out.Outbox.RosterSnapshot != OutboxStored ||
+		out.Outbox.DroppedMembers != 2 {
+		t.Fatalf("reply = %+v %+v, want 2 stored, the snapshot stored and 2 members dropped", out, out.Outbox)
+	}
+
+	var stored []RosterMember
+	if err := h.pool.QueryRow(t.Context(), `select members from guild_roster_snapshots`).Scan(&stored); err != nil {
+		t.Fatal(err)
+	}
+	if len(stored) != 2 || stored[0].Name != "Obnoxious-Yell" || stored[1].Name != "Ahead-Yell" || stored[1].GearGap != -2 {
+		t.Fatalf("stored members = %+v, want the two good lines, a negative gear gap included", stored)
+	}
+	exports, err := h.store.Exports(t.Context(), h.owner)
+	if err != nil {
+		t.Fatal(err)
+	}
+	byName := map[string]string{}
+	for _, e := range exports {
+		byName[e.Name] = e.Export
+	}
+	if byName["Altbert"] != "FS1:1.60.1.70291:priest:human:0/0/0:" ||
+		byName["Obnoxious"] != "FS1:1.60.1.70291:warrior:human:0/0/0:chest=6627|guild=OLYMPUS%20XXVII:3" {
+		t.Fatalf("exports = %v, want the list's alt and the outbox's export", byName)
+	}
+}
+
+func TestARosterWithNoUsableMemberIsAnsweredInvalid(t *testing.T) {
+	h := newOutboxHarness(t, true)
+	for name, roster := range map[string]string{
+		"every member bad": `{"guild":"OLYMPUS XXVII","members":[{"name":"","level":0}]}`,
+		"no guild name":    `{"guild":"","members":[]}`,
+		"not an object":    `"OLYMPUS XXVII"`,
+	} {
+		outbox := strings.Replace(rosterOutbox, `"roster_snapshot":{"guild":"%s","members":[`,
+			`"roster_snapshot":`+roster+`,"unused":{"members":[`, 1)
+		out := h.post(withOutbox(outbox))
+		if out.Outbox.Export != OutboxStored || out.Outbox.RosterSnapshot != OutboxInvalid {
+			t.Errorf("%s: outbox = %+v, want the export stored and the snapshot invalid", name, out.Outbox)
+		}
+	}
+	var n int
+	if err := h.pool.QueryRow(t.Context(), `select count(*) from guild_roster_snapshots`).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 0 {
+		t.Fatalf("snapshots = %d, want none", n)
+	}
+}
+
+func TestABadSimRequestIsAnsweredInvalidNotRefused(t *testing.T) {
+	h := newOutboxHarness(t, true)
+	fixture := string(contractFixture(t, "outbox-v1.json"))
+	// The sim request's spec, not the roster member's.
+	unknownSpec := strings.Replace(fixture, "\"spec\": \"warrior-arms\",\n    \"requested_at\"",
+		"\"spec\": \"warrior-bard\",\n    \"requested_at\"", 1)
+	if unknownSpec == fixture {
+		t.Fatal("the fixture's sim_request spec moved; update this replacement")
+	}
+	for name, outbox := range map[string]string{
+		"bad request time": strings.Replace(fixture, "2026-11-04 14:10", "soon", 1),
+		"unknown spec":     unknownSpec,
+		"not an object":    `{"format":1,"export":{"character":"Obnoxious-Yell","code":"FS1:1.60.1.70291:warrior:human:0/0/0:"},"sim_request":5}`,
+	} {
+		out := h.post(withOutbox(outbox))
+		if out.Outbox.Export != OutboxStored || out.Outbox.SimRequest != OutboxInvalid {
+			t.Errorf("%s: outbox = %+v, want the export stored and the request invalid", name, out.Outbox)
+		}
+	}
+	if n := len(h.simRequests()); n != 0 || h.jobs.count() != 0 {
+		t.Fatalf("sim requests = %d, job calls = %d, want none", n, h.jobs.count())
 	}
 }

@@ -97,7 +97,7 @@ func (s *Service) RequestFromAddon(ctx context.Context, userID int64, characterK
 	if !allowed {
 		return RequestPremiumRequired, nil
 	}
-	input, ref, ok, err := s.Store.SimInput(ctx, characterKey)
+	_, ref, ok, err := s.Store.SimInput(ctx, characterKey)
 	if err != nil {
 		return "", err
 	}
@@ -111,12 +111,8 @@ func (s *Service) RequestFromAddon(ctx context.Context, userID int64, characterK
 		return RequestInvalid, nil
 	}
 	char.Buffs = s.recordedBuffs(ctx, ref)
-	spec := in.Spec
-	if spec == "" {
-		spec = input.Spec
-	}
 	req := simapi.SimRequest{
-		EngineVersion: s.EngineVersion, Spec: spec, Iterations: defaultIterations,
+		EngineVersion: s.EngineVersion, Spec: in.Spec, Iterations: defaultIterations,
 		Source: simapi.CharacterSource{
 			Kind: simapi.SourceAddon, Ref: characterKey, CapturedAt: in.RequestedAt,
 		},
