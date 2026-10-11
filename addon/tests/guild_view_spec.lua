@@ -32,17 +32,16 @@ describe("GuildView", function()
 	end)
 
 	local DATA = {
-		format = 1,
-		generated = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time() - 600),
-		build = "1.60.1.69893",
+		format = 2,
+		generated = os.date("!%Y-%m-%d"),
 		characters = {
-			["us:ashbringer:thoradin"] = { rating = 81, fights = 24 },
-			["us:ashbringer:mira"] = { rating = 64, fights = 9 },
+			["Thoradin-Ashbringer"] = { score = 1810, tier = "epic", as_of = "2026-11-04", fights = 24 },
+			["Mira-Ashbringer"] = { score = 640, tier = "uncommon", as_of = "2026-11-04", fights = 9 },
 		},
 		guilds = {
-			["us:ashbringer:iron-vanguard"] = {
-				name = "Iron Vanguard", progress = "7/8 BWL", nights = 12, roster = 31,
-				members = { "thoradin", "mira", "nobody" },
+			["Iron Vanguard"] = {
+				standing = 3, nights = 12, roster = 31,
+				members = { "Thoradin-Ashbringer", "Mira-Ashbringer", "Nobody-Ashbringer" },
 			},
 		},
 	}
@@ -69,16 +68,31 @@ describe("GuildView", function()
 		start(DATA, { name = "Iron Vanguard", rankName = "Member", rankIndex = 5 })
 		local model = GuildView.summary()
 		assert.is_true(model.data.available)
-		assert.are.equal("7/8 BWL", model.standing.progress)
+		assert.are.equal(string.format(L.scoreGuildStanding, 3), model.standing.progress)
 		assert.are.equal(string.format(L.guildNights, 12), model.standing.nightsLine)
 		assert.are.equal(3, #model.roster)
-		assert.are.equal("thoradin", model.roster[1].name)
-		assert.are.equal(81, model.roster[1].rating)
-		assert.are.equal("mira", model.roster[2].name)
+		assert.are.equal("Thoradin", model.roster[1].name)
+		assert.are.equal(1810, model.roster[1].rating)
+		assert.are.equal("Mira", model.roster[2].name)
 		-- An unrated member sits last and says so.
-		assert.are.equal("nobody", model.roster[3].name)
+		assert.are.equal("Nobody", model.roster[3].name)
 		assert.is_nil(model.roster[3].rating)
 		assert.are.equal(L.guildUnrated, model.roster[3].ratingLine)
+	end)
+
+	it("names a guildmate on another realm with the realm, and one on this realm without it", function()
+		local data = {
+			format = 2, generated = os.date("!%Y-%m-%d"),
+			characters = { ["Zed-Whitemane"] = { score = 900, tier = "uncommon", as_of = "2026-11-04", fights = 4 } },
+			guilds = { ["Iron Vanguard"] = {
+				standing = 1, nights = 1, roster = 2, members = { "Zed-Whitemane", "Amy-Ashbringer" },
+			} },
+		}
+		start(data, { name = "Iron Vanguard", rankName = "Member", rankIndex = 5 })
+		local roster = GuildView.summary().roster
+		assert.are.equal("Zed-Whitemane", roster[1].name)
+		assert.are.equal(900, roster[1].rating)
+		assert.are.equal("Amy", roster[2].name)
 	end)
 
 	it("says the guild is not on the site yet when the data has no entry for it", function()

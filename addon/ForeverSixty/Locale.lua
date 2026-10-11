@@ -327,6 +327,24 @@ local L = {
 	ratingsUtility = "Utility",
 	ratingsPreparation = "Preparation",
 	ratingsActivity = "Activity",
+	-- The Forever Score, read from the nightly record (Score.lua).
+	scoreAsOf = "as of %s",
+	-- "Forever Score 1830 · Epic · as of 4 Nov": the score, its tier, its date.
+	scoreLine = "Forever Score %d",
+	scoreNoLogs = "No Forever Score yet: this character has no logs on the site.",
+	scoreTierCommon = "Common",
+	scoreTierUncommon = "Uncommon",
+	scoreTierRare = "Rare",
+	scoreTierEpic = "Epic",
+	scoreTierLegendary = "Legendary",
+	-- "<label> <points>" for one part of the score.
+	scoreComponent = "%s %d",
+	scoreGear = "Gear",
+	scoreExperience = "Experience",
+	scoreParses = "Parses",
+	scoreAttendance = "Attendance",
+	scoreDiscipline = "Discipline",
+	scoreGuildStanding = "Guild standing %d",
 	overviewRating = "Your rating on the site: %d, over %d fights",
 	-- The Overview's personal rating card (design section 3): always
 	-- shown, its detail widened by the advanced-detail toggle.

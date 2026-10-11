@@ -204,5 +204,19 @@ function Compat.unitName(unit)
 	return name, second
 end
 
+local MONTHS = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
+
+--- "2026-11-04" as "4 Nov": the day and the English month abbreviation, no
+--- locale call, so the same date reads the same on every client. Nil for
+--- anything that is not a YYYY-MM-DD date.
+function Compat.shortDate(text)
+	local month, day = tostring(text or ""):match("^%d%d%d%d%-(%d%d)%-(%d%d)$")
+	local name = month and MONTHS[tonumber(month)]
+	if name == nil or tonumber(day) < 1 or tonumber(day) > 31 then
+		return nil
+	end
+	return tonumber(day) .. " " .. name
+end
+
 ns.Compat = Compat
 return Compat

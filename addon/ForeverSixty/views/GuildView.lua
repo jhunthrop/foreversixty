@@ -97,12 +97,23 @@ local function guildInfo()
 	return { name = name, rankName = rankName, rankIndex = rankIndex }
 end
 
+--- "Thoradin-Ashbringer" reads as "Thoradin" on Ashbringer itself; a guildmate
+--- on another realm keeps the realm.
+local function displayName(member)
+	local name, realm = Ratings.splitUnitName(member)
+	local own = type(GetRealmName) == "function" and GetRealmName() or nil
+	if realm ~= nil and own ~= nil and realm:gsub("[%s%-]", "") == own:gsub("[%s%-]", "") then
+		return name
+	end
+	return member
+end
+
 local function rosterOf(guild)
 	local roster = {}
 	for _, member in ipairs(guild.members or {}) do
 		local card = Ratings.forCharacter(member)
 		roster[#roster + 1] = {
-			name = member,
+			name = displayName(member),
 			rating = card and card.rating or nil,
 			fights = card and card.fights or 0,
 			ratingLine = card and tostring(card.rating) or L.guildUnrated,

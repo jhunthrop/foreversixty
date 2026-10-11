@@ -1,49 +1,22 @@
 -- addon/ForeverSixty/Ratings.lua
--- Reading the Forever Sixty Data addon.
---
--- That addon is a nightly file on one global, ForeverSixtyData, published
--- to CurseForge and Wago every night by the site. It may be absent (the
--- player installed only this addon), newer than this addon understands,
--- days old (their addon manager did not update), or missing the character
--- asked about. Every one of those reads as "no data" with a reason a
--- player can act on, never as an error: nothing here can break the window.
---
--- Keys match the site's own: "<region>:<realm>:<name>", lowercased, spaces
--- to dashes, so the nightly job writes them and this file never guesses.
+-- A thin adapter over Score.lua for the callers that predate it: the
+-- player tooltip's unit line, the Overview's rating card and the Guild page.
+-- It reads nothing itself; it maps the format 2 record onto the shape those
+-- callers already read (rating, fights, components in order, guild progress).
+-- Lane L4.4 deletes this file once those callers read Score directly.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
-local Export = ns.Export or require("Export")
+local Compat = ns.Compat or require("Compat")
+local Score = ns.Score or require("Score")
 
 local Ratings = {}
 
 --- The newest data format this addon understands.
-Ratings.FORMAT = 1
+Ratings.FORMAT = Score.FORMAT
 
 --- A file older than this is shown, but marked stale.
-Ratings.STALE_AFTER_SECONDS = 3 * 24 * 60 * 60
-
---- Component order and their labels, the site's own.
-Ratings.COMPONENTS = {
-	{ key = "output", label = "ratingsOutput" },
-	{ key = "survival", label = "ratingsSurvival" },
-	{ key = "mechanics", label = "ratingsMechanics" },
-	{ key = "utility", label = "ratingsUtility" },
-	{ key = "preparation", label = "ratingsPreparation" },
-	{ key = "activity", label = "ratingsActivity" },
-}
-
-local function slug(text)
-	return (tostring(text or ""):lower():gsub("%s+", "-"))
-end
-
-function Ratings.characterKey(region, realm, name)
-	return slug(region) .. ":" .. slug(realm) .. ":" .. slug(name)
-end
-
-function Ratings.guildKey(region, realm, name)
-	return Ratings.characterKey(region, realm, name)
-end
+Ratings.STALE_AFTER_SECONDS = Score.STALE_AFTER_SECONDS
 
 --- "Bob-Whitemane" is Bob on Whitemane; "Thoradin" is on this realm.
 function Ratings.splitUnitName(unit)
@@ -54,103 +27,64 @@ function Ratings.splitUnitName(unit)
 	return name, realm
 end
 
-local function playerRegion()
-	return Export.REGION_NAMES[type(GetCurrentRegion) == "function" and GetCurrentRegion() or 0] or ""
-end
-
-local function playerRealm()
-	return type(GetRealmName) == "function" and GetRealmName() or ""
-end
-
--- The client has no `os` table; its clock is the `time` and `date` globals, which take the
--- same arguments as their os.* namesakes. The specs run on plain Lua, where only os.* exists
--- (their WoW mock defines `date` alone, so the pair is taken together or not at all).
-local hasClientClock = type(time) == "function" and type(date) == "function"
-local clockTime = hasClientClock and time or os.time
-local clockDate = hasClientClock and date or os.date
-
---- Seconds since an ISO 8601 UTC stamp, or nil for one this cannot read.
-local function ageOf(generated)
-	local y, mo, d, h, mi, s = tostring(generated or ""):match("^(%d%d%d%d)%-(%d%d)%-(%d%d)T(%d%d):(%d%d):(%d%d)Z$")
-	if y == nil then
-		return nil
-	end
-	-- time() reads the table as local time; the difference from a UTC
-	-- table read the same way cancels the zone out.
-	local now = clockTime(clockDate("!*t"))
-	local then_ = clockTime({ year = tonumber(y), month = tonumber(mo), day = tonumber(d),
-		hour = tonumber(h), min = tonumber(mi), sec = tonumber(s) })
-	return now - then_
-end
-
-local function wellFormed(data)
-	return type(data) == "table"
-		and type(data.format) == "number"
-		and type(data.characters) == "table"
-		and type(data.guilds) == "table"
-end
-
---- Whether the data can be used, and why not when it cannot.
+--- Whether the data can be used, and why not when it cannot, with the two
+--- lines the cards print: "Data from 4 Nov", and the stale warning.
 function Ratings.status()
-	local data = _G.ForeverSixtyData
-	if data == nil then
-		return { available = false, reason = L.ratingsNotInstalled }
+	local status = Score.status()
+	if not status.available then
+		return status
 	end
-	if not wellFormed(data) then
-		return { available = false, reason = L.ratingsUnreadable }
-	end
-	if data.format > Ratings.FORMAT then
-		return { available = false, reason = L.ratingsUpdateAddon }
-	end
-	local age = ageOf(data.generated)
-	local stale = age == nil or age > Ratings.STALE_AFTER_SECONDS
-	return {
-		available = true,
-		stale = stale,
-		generated = data.generated,
-		generatedLine = (data.generated ~= nil and data.generated ~= "")
-			and string.format(L.ratingsGenerated, tostring(data.generated):sub(1, 10)) or nil,
-		staleLine = stale and L.ratingsStale or nil,
-	}
+	local when = Compat.shortDate(status.generated) or status.generated
+	status.generatedLine = (when ~= nil and when ~= "") and string.format(L.ratingsGenerated, tostring(when)) or nil
+	status.staleLine = status.stale and L.ratingsStale or nil
+	return status
 end
 
-local function usable()
-	local status = Ratings.status()
-	return status.available and _G.ForeverSixtyData or nil
-end
-
---- A character's card: the rating, the six components in order, and how
---- many fights it rests on. Nil when there is nothing to say.
+--- A character's card: the score as `rating`, the components that are present
+--- in order, how many fights it rests on, and the record itself. Nil when there
+--- is nothing to say.
 function Ratings.forCharacter(name, realm)
-	local data = usable()
-	if data == nil or name == nil then
-		return nil
-	end
-	local row = data.characters[Ratings.characterKey(playerRegion(), realm or playerRealm(), name)]
-	if type(row) ~= "table" or type(row.rating) ~= "number" then
+	local record = Score.forCharacter(name, realm)
+	if record == nil then
 		return nil
 	end
 	local components = {}
-	for index, component in ipairs(Ratings.COMPONENTS) do
-		components[index] = { key = component.key, label = L[component.label], score = row[component.key] }
+	for _, component in ipairs(Score.COMPONENTS) do
+		local value = type(record.components) == "table" and record.components[component.key] or nil
+		if value ~= nil then
+			components[#components + 1] = { key = component.key, label = L[component.label], score = value }
+		end
 	end
-	return { rating = row.rating, fights = row.fights or 0, components = components }
+	return { rating = record.score, fights = record.fights or 0, components = components, record = record }
 end
 
-function Ratings.forGuild(name, realm)
-	local data = usable()
-	if data == nil or name == nil then
+--- The guild's record, with `progress` filled in for the Guild page's headline.
+function Ratings.guild(name)
+	local guild = Score.guild(name)
+	if guild == nil then
 		return nil
 	end
-	local row = data.guilds[Ratings.guildKey(playerRegion(), realm or playerRealm(), name)]
-	return type(row) == "table" and row or nil
+	local out = {}
+	for key, value in pairs(guild) do
+		out[key] = value
+	end
+	if out.progress == nil and type(out.standing) == "number" then
+		out.progress = string.format(L.scoreGuildStanding, out.standing)
+	end
+	return out
 end
 
+--- Kept for the callers that name the realm; a guild is found by name alone.
+function Ratings.forGuild(name)
+	return Ratings.guild(name)
+end
+
+--- "Forever Score 1830 · Epic · as of 4 Nov".
 function Ratings.tooltipLine(card)
 	if card == nil then
 		return nil
 	end
-	return string.format(L.ratingsTooltip, card.rating, card.fights)
+	return Score.lines(card.record)[1]
 end
 
 ns.Ratings = Ratings

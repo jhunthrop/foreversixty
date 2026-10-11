@@ -231,12 +231,12 @@ describe("OverviewView", function()
 		start()
 		_G.UnitName = function() return "Thoradin" end
 		_G.ForeverSixtyData = {
-			format = 1, generated = os.date("!%Y-%m-%dT%H:%M:%SZ"), build = "1.60.1.69893",
-			characters = { ["us:ashbringer:thoradin"] = { rating = 73, fights = 11 } }, guilds = {},
+			format = 2, generated = os.date("!%Y-%m-%d"),
+			characters = { ["Thoradin-Ashbringer"] = { score = 730, tier = "uncommon", fights = 11 } }, guilds = {},
 		}
 		helper.load("Ratings")
 		OverviewView = helper.load("OverviewView")
-		assert.are.equal(string.format(L.overviewRating, 73, 11), OverviewView.summary(DATA).sync.progress)
+		assert.are.equal(string.format(L.overviewRating, 730, 11), OverviewView.summary(DATA).sync.progress)
 		_G.ForeverSixtyData = nil
 		helper.load("Ratings")
 		OverviewView = helper.load("OverviewView")
@@ -448,7 +448,7 @@ describe("OverviewView", function()
 			start()
 			_G.UnitName = function() return "Thoradin" end
 			_G.ForeverSixtyData = {
-				format = 1, generated = os.date("!%Y-%m-%dT%H:%M:%SZ"), build = "1.60.1.69893",
+				format = 2, generated = os.date("!%Y-%m-%d"),
 				characters = {}, guilds = {},
 			}
 			helper.load("Ratings")
@@ -463,16 +463,18 @@ describe("OverviewView", function()
 			start()
 			_G.UnitName = function() return "Thoradin" end
 			_G.ForeverSixtyData = {
-				format = 1, generated = os.date("!%Y-%m-%dT%H:%M:%SZ"), build = "1.60.1.69893",
-				characters = { ["us:ashbringer:thoradin"] = { rating = 81, output = 90, fights = 24 } },
+				format = 2, generated = os.date("!%Y-%m-%d"),
+				characters = { ["Thoradin-Ashbringer"] = {
+					score = 810, tier = "rare", components = { gear = 900 }, fights = 24,
+				} },
 				guilds = {},
 			}
 			helper.load("Ratings")
 			OverviewView = helper.load("OverviewView")
 			local model = OverviewView.summary(DATA).rating
 			assert.is_false(model.empty)
-			assert.are.equal(string.format(L.overviewRatingHeadline, 81, 24), model.title)
-			assert.is_nil(model.detail:find(L.ratingsOutput, 1, true))
+			assert.are.equal(string.format(L.overviewRatingHeadline, 810, 24), model.title)
+			assert.is_nil(model.detail:find(L.scoreGear, 1, true))
 		end)
 
 		it("adds the top components once advanced detail is on", function()
@@ -480,15 +482,17 @@ describe("OverviewView", function()
 			require("Prefs").setFlag("advancedDetail", true)
 			_G.UnitName = function() return "Thoradin" end
 			_G.ForeverSixtyData = {
-				format = 1, generated = os.date("!%Y-%m-%dT%H:%M:%SZ"), build = "1.60.1.69893",
-				characters = { ["us:ashbringer:thoradin"] = { rating = 81, output = 90, fights = 24 } },
+				format = 2, generated = os.date("!%Y-%m-%d"),
+				characters = { ["Thoradin-Ashbringer"] = {
+					score = 810, tier = "rare", components = { gear = 900 }, fights = 24,
+				} },
 				guilds = {},
 			}
 			helper.load("Ratings")
 			OverviewView = helper.load("OverviewView")
 			local model = OverviewView.summary(DATA).rating
-			assert.is_truthy(model.detail:find(L.ratingsOutput, 1, true))
-			assert.is_truthy(model.detail:find("90", 1, true))
+			assert.is_truthy(model.detail:find(L.scoreGear, 1, true))
+			assert.is_truthy(model.detail:find("900", 1, true))
 		end)
 	end)
 

@@ -9,7 +9,7 @@ describe("the TOC", function()
 		"Locale.lua", "Data.lua", "Compat.lua", "Rules.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
 		"Theme.lua", "Widgets.lua", "Cards.lua", "Export.lua", "Follow.lua", "Gear.lua",
 		"Progress.lua", "Rotation.lua",
-		"Ratings.lua", "Tooltip.lua",
+		"Score.lua", "Ratings.lua", "Tooltip.lua",
 		"TalentGlow.lua",
 		"views/ExportView.lua", "views/FollowView.lua",
 		"views/GearView.lua", "views/GuildView.lua", "views/SettingsView.lua",

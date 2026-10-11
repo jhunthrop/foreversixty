@@ -439,8 +439,9 @@ describe("Tooltip", function()
 			-- that order, so Tooltip captures the Ratings that reads it.
 			mock.install({ class = { name = "Paladin", token = "PALADIN" }, realm = "Ashbringer", region = 1 })
 			_G.ForeverSixtyData = rating and {
-				format = 1, generated = os.date("!%Y-%m-%dT%H:%M:%SZ"), build = "1.60.1.69893",
-				characters = { ["us:ashbringer:bob"] = { rating = rating, fights = 5 } }, guilds = {},
+				format = 2, generated = os.date("!%Y-%m-%d"),
+				characters = { ["Bob-Ashbringer"] = { score = rating, tier = "epic", as_of = "2026-11-04", fights = 5 } },
+				guilds = {},
 			} or nil
 			Theme = helper.load("Theme")
 			Theme.reset()
@@ -466,7 +467,7 @@ describe("Tooltip", function()
 			local tooltip = _G.CreateFrame("GameTooltip")
 			Tooltip.onUnitTooltip(tooltip, "mouseover")
 			local call = mock.firstCall(tooltip, "AddLine")
-			assert.is_truthy(call[1]:find("rating 77", 1, true))
+			assert.is_truthy(call[1]:find("Forever Score 77", 1, true))
 		end)
 
 		it("adds nothing for an unrated player or without the data addon", function()
