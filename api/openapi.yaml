@@ -1242,6 +1242,8 @@ paths:
         - { name: ruleset, in: query, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
         - { name: faction, in: query, schema: { type: string, enum: [alliance, horde] } }
         - { name: since, in: query, schema: { type: string, example: "today" } }
+        - { name: distinct, in: query, schema: { type: string, enum: [character] }, description: "character ranks each character's best kill only, so total counts characters and the response carries deduped: true" }
+        - { name: character, in: query, schema: { type: string, example: "us/normal/obnoxious yell" }, description: "A player key (region/ruleset/name). Needs distinct=character. Adds character_rank to the response" }
         - { name: page, in: query, schema: { type: integer, minimum: 1 } }
       responses:
         '200':
@@ -1261,6 +1263,13 @@ paths:
                           page: { type: integer }
                           per_page: { type: integer, enum: [100] }
                           updated_at: { type: string, format: date-time }
+                          deduped: { type: boolean, description: "True when each row is a different character's best kill (distinct=character)" }
+                          character_rank:
+                            type: object
+                            description: "Where the requested character stands on this filtered board, with its best kill; absent when none was asked for or it has no ranked kill in the cohort"
+                            properties:
+                              rank: { type: integer }
+                              row: { $ref: '#/components/schemas/RankingRow' }
   /v1/rankings/percentile:
     get:
       summary: Where one value stands in its bracket

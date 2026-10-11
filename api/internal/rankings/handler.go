@@ -130,6 +130,9 @@ func (s *Service) rankings(w http.ResponseWriter, r *http.Request) {
 			map[string]string{"region": strings.Join(character.Regions, ", ")})
 		return
 	}
+	if !s.readCharacterBoard(w, r, &query) {
+		return
+	}
 	if v := q.Get("page"); v != "" {
 		p, err := strconv.Atoi(v)
 		if err != nil || p < 1 {
@@ -151,6 +154,31 @@ func (s *Service) rankings(w http.ResponseWriter, r *http.Request) {
 	}
 	cache(w)
 	httpx.WriteOK(w, r, http.StatusOK, page)
+}
+
+// readCharacterBoard reads `distinct` and `character`, writing the 400
+// itself when they are wrong. A character can only be placed on a board
+// that ranks characters.
+func (s *Service) readCharacterBoard(w http.ResponseWriter, r *http.Request, query *Query) bool {
+	q := r.URL.Query()
+	if v := q.Get("distinct"); v != "" {
+		if v != DistinctCharacter {
+			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a way to dedupe",
+				map[string]string{"distinct": DistinctCharacter})
+			return false
+		}
+		query.Distinct = v
+	}
+	if v := strings.ToLower(strings.TrimSpace(q.Get("character"))); v != "" {
+		if query.Distinct != DistinctCharacter || len(strings.SplitN(v, "/", 3)) != 3 {
+			httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
+				"character needs distinct=character and a region/ruleset/name key",
+				map[string]string{"character": "region/ruleset/name, with distinct=character"})
+			return false
+		}
+		query.Character = v
+	}
+	return true
 }
 
 func (s *Service) percentile(w http.ResponseWriter, r *http.Request) {

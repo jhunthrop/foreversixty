@@ -56,6 +56,19 @@ type Page struct {
 	Page      int       `json:"page"`
 	PerPage   int       `json:"per_page"`
 	UpdatedAt time.Time `json:"updated_at"`
+	// Deduped is true when each row is a different character's best
+	// kill, so Total counts characters and not kills.
+	Deduped bool `json:"deduped"`
+	// CharacterRank is where the requested character stands on this
+	// board, absent when none was asked for or it has no ranked kill.
+	CharacterRank *CharacterRank `json:"character_rank,omitempty"`
+}
+
+// CharacterRank is one character's place on a board: its best kill, with
+// its true rank, whichever page that falls on.
+type CharacterRank struct {
+	Rank int `json:"rank"`
+	Row  Row `json:"row"`
 }
 
 // Query is a leaderboard request. Encounter is required; everything
@@ -72,6 +85,12 @@ type Query struct {
 	Faction     string
 	Since       string
 	Page        int
+	// Distinct is DistinctCharacter to rank each character's best kill
+	// only, or empty to rank every kill.
+	Distinct string
+	// Character is a player key (region/ruleset/name) to place on the
+	// board; it needs Distinct, or its rank would not match any row.
+	Character string
 }
 
 // metricColumn is the column a metric ranks on.
@@ -133,48 +152,52 @@ func (q Query) where(now time.Time) (string, []any, error) {
 	return strings.Join(clauses, " and "), args, nil
 }
 
-// Rankings answers one leaderboard page.
-func (s *Store) Rankings(ctx context.Context, q Query, now time.Time) (Page, error) {
-	where, args, err := q.where(now)
-	if err != nil {
-		return Page{}, err
+// DistinctCharacter is the `distinct` value that ranks characters, not kills.
+const DistinctCharacter = "character"
+
+// rankedCTE ranks the filtered kills. When q.Distinct is set each character
+// keeps only its best kill, so the rank is a place among characters. The
+// metric is exposed as `val`, and `rk` is the 1-based place.
+func rankedCTE(q Query, where, column string) string {
+	distinctOn, lead := "", ""
+	if q.Distinct == DistinctCharacter {
+		distinctOn, lead = "distinct on (m.player_key)", "m.player_key, "
 	}
-	if q.Page < 1 {
-		q.Page = 1
-	}
-	page := Page{Rows: []Row{}, Page: q.Page, PerPage: PerPage, UpdatedAt: now.UTC()}
-	if err := s.Pool.QueryRow(ctx,
-		`select count(*) from fight_metrics m where `+where, args...).Scan(&page.Total); err != nil {
-		return Page{}, fmt.Errorf("rankings: count: %w", err)
-	}
-	column := metricColumn(q.Metric)
-	rows, err := s.Pool.Query(ctx,
-		`select m.player_key, m.player_name, coalesce(m.class, ''), coalesce(m.spec, ''),
-		        `+column+`, coalesce(m.ilvl, 0), coalesce(m.size, 0), m.fought_at,
-		        coalesce(m.duration_ms, 0), coalesce(m.talent_split, ''), m.trinkets, m.buff_count,
-		        m.report_id, m.fight_index, m.state, m.execution_score, g.name, g.region, g.ruleset
-		 from fight_metrics m
-		 left join reports r on r.id = m.report_id
+	return `with cand as (
+		   select ` + distinctOn + ` m.player_key, m.player_name, coalesce(m.class, '') as class,
+		          coalesce(m.spec, '') as spec, ` + column + ` as val, coalesce(m.ilvl, 0) as ilvl,
+		          coalesce(m.size, 0) as size, m.fought_at, coalesce(m.duration_ms, 0) as duration_ms,
+		          coalesce(m.talent_split, '') as talent_split, m.trinkets, m.buff_count,
+		          m.report_id, m.fight_index, m.state, m.execution_score
+		   from fight_metrics m where ` + where + `
+		   order by ` + lead + column + ` desc nulls last, m.fought_at desc, m.report_id, m.fight_index, m.player_key
+		 ), ranked as (
+		   select cand.*, row_number() over (order by val desc nulls last, fought_at desc,
+		          report_id, fight_index, player_key) as rk from cand
+		 )
+		 select c.rk, c.player_key, c.player_name, c.class, c.spec, c.val, c.ilvl, c.size, c.fought_at,
+		        c.duration_ms, c.talent_split, c.trinkets, c.buff_count, c.report_id, c.fight_index,
+		        c.state, c.execution_score, g.name, g.region, g.ruleset
+		 from ranked c
+		 left join reports r on r.id = c.report_id
 		 left join guilds g on g.id = r.guild_id
-		 where `+where+`
-		 order by `+column+` desc nulls last, m.fought_at desc, m.report_id, m.fight_index, m.player_key
-		 limit `+fmt.Sprint(PerPage)+` offset `+fmt.Sprint((q.Page-1)*PerPage), args...)
-	if err != nil {
-		return Page{}, fmt.Errorf("rankings: query: %w", err)
-	}
-	defer rows.Close()
-	rank := (q.Page-1)*PerPage + 1
+		 `
+}
+
+// scanRanked reads rows shaped by rankedCTE.
+func scanRanked(rows pgx.Rows) ([]Row, error) {
+	out := []Row{}
 	for rows.Next() {
 		var (
 			r                          Row
 			value                      *float64
 			guildName, region, ruleset *string
 		)
-		if err := rows.Scan(&r.Player.Key, &r.Player.Name, &r.Player.Class, &r.Player.Spec,
+		if err := rows.Scan(&r.Rank, &r.Player.Key, &r.Player.Name, &r.Player.Class, &r.Player.Spec,
 			&value, &r.Ilvl, &r.Size, &r.FoughtAt, &r.DurationMS, &r.TalentSplit, &r.Trinkets,
 			&r.BuffCount, &r.ReportID, &r.FightIndex, &r.State, &r.ExecutionScore,
 			&guildName, &region, &ruleset); err != nil {
-			return Page{}, fmt.Errorf("rankings: scan: %w", err)
+			return nil, fmt.Errorf("rankings: scan: %w", err)
 		}
 		if value != nil {
 			r.Value = *value
@@ -185,11 +208,62 @@ func (s *Store) Rankings(ctx context.Context, q Query, now time.Time) (Page, err
 		if r.Trinkets == nil {
 			r.Trinkets = []int64{}
 		}
-		r.Rank = rank
-		rank++
-		page.Rows = append(page.Rows, r)
+		out = append(out, r)
 	}
-	return page, rows.Err()
+	return out, rows.Err()
+}
+
+// Rankings answers one leaderboard page.
+func (s *Store) Rankings(ctx context.Context, q Query, now time.Time) (Page, error) {
+	where, args, err := q.where(now)
+	if err != nil {
+		return Page{}, err
+	}
+	if q.Page < 1 {
+		q.Page = 1
+	}
+	deduped := q.Distinct == DistinctCharacter
+	page := Page{Rows: []Row{}, Page: q.Page, PerPage: PerPage, UpdatedAt: now.UTC(), Deduped: deduped}
+	count := `select count(*) from fight_metrics m where ` + where
+	if deduped {
+		count = `select count(distinct m.player_key) from fight_metrics m where ` + where
+	}
+	if err := s.Pool.QueryRow(ctx, count, args...).Scan(&page.Total); err != nil {
+		return Page{}, fmt.Errorf("rankings: count: %w", err)
+	}
+	cte := rankedCTE(q, where, metricColumn(q.Metric))
+	offset := (q.Page - 1) * PerPage
+	rows, err := s.Pool.Query(ctx, cte+fmt.Sprintf(`where c.rk > %d and c.rk <= %d order by c.rk`, offset, offset+PerPage), args...)
+	if err != nil {
+		return Page{}, fmt.Errorf("rankings: query: %w", err)
+	}
+	defer rows.Close()
+	if page.Rows, err = scanRanked(rows); err != nil {
+		return Page{}, err
+	}
+	rows.Close()
+	if q.Character != "" {
+		if page.CharacterRank, err = s.characterRank(ctx, cte, args, q.Character); err != nil {
+			return Page{}, err
+		}
+	}
+	return page, nil
+}
+
+// characterRank places one character on the filtered board: its best kill
+// and the rank that kill holds, or nil when it has no ranked kill in the
+// cohort. cte must be a distinct-character ranking.
+func (s *Store) characterRank(ctx context.Context, cte string, args []any, key string) (*CharacterRank, error) {
+	rows, err := s.Pool.Query(ctx, cte+fmt.Sprintf(`where c.player_key = $%d`, len(args)+1), append(args, key)...)
+	if err != nil {
+		return nil, fmt.Errorf("rankings: character rank: %w", err)
+	}
+	defer rows.Close()
+	found, err := scanRanked(rows)
+	if err != nil || len(found) == 0 {
+		return nil, err
+	}
+	return &CharacterRank{Rank: found[0].Rank, Row: found[0]}, nil
 }
 
 // CharacterBest is a character's best parse on one encounter.
