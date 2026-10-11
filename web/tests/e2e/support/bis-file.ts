@@ -47,6 +47,8 @@ export interface BisBandFile {
   role?: 'dps' | 'tank' | 'healer';
   race?: string;
   set_dps?: number;
+  /** One row per gear slot; a slot the ranking found no source for carries no `item_id`. */
+  slots?: { slot: string; item_id?: number }[];
   weights_low_confidence?: boolean;
   generated_at?: string;
 }

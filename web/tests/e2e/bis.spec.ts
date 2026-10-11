@@ -64,12 +64,12 @@ async function expectNoReloadSoFar(page: import('@playwright/test').Page): Promi
 
 test('BiS: index links to a spec, faction and band pills switch panels with no reload', async ({ page }) => {
   await page.goto('/bis');
-  await expect(page.getByRole('heading', { name: 'BiS', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Best in slot', level: 1 })).toBeVisible();
 
-  const marksmanshipLink = page.locator('a[href="/bis/hunter/marksmanship"]');
+  const marksmanshipLink = page.getByTestId('bis-spec-hunter-marksmanship');
   await expect(marksmanshipLink).toBeVisible();
   await marksmanshipLink.click();
-  await expect(page).toHaveURL(/\/bis\/hunter\/marksmanship$/);
+  await expect(page).toHaveURL(/\/bis\/hunter\/marksmanship#band-alliance-20$/);
   await markNoReload(page);
 
   // Alliance is the default panel; its own first band's list is open. The band list is the

@@ -16,6 +16,8 @@ export interface FixtureCharacter {
   buildDaysAgo?: number;
   buildSource?: 'addon' | 'blizzard';
   syncError?: string | null;
+  /** Worn items by slot, the addon export's `build.gear`. */
+  gear?: Record<string, number>;
 }
 
 export const OBNOXIOUS: FixtureCharacter = {
@@ -52,6 +54,7 @@ function meCharacter(character: FixtureCharacter): Record<string, unknown> {
             source: character.buildSource ?? 'addon',
             captured_at: new Date(Date.now() - character.buildDaysAgo * DAY_MS).toISOString(),
             ...(character.syncError === undefined ? {} : { sync_error: character.syncError }),
+            ...(character.gear === undefined ? {} : { gear: character.gear }),
           },
         }),
   };

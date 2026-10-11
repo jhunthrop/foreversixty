@@ -290,14 +290,6 @@ test('the BiS index and the home page link to the tier list', async ({ page }) =
   await expect(page.getByTestId('home-tier-list-link').first()).toHaveAttribute('href', '/tiers');
 });
 
-test('the BiS index shows damage taken per second beside effective health for a tank', async ({ page }) => {
-  await page.goto('/bis');
-  const tank = expectedRows('tank', 'alliance')[0]!;
-  const summary = page.getByTestId(`bis-index-dps-${tank.entry.class_slug}-${tank.entry.spec_slug}`);
-  await expect(summary).toContainText('effective health');
-  await expect(summary).toContainText(`${wholeNumber(tank.band.metrics!.dtps)} damage taken per second`);
-});
-
 test.describe('phone', () => {
   test.use({ viewport: PHONE });
 

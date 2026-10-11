@@ -99,11 +99,6 @@ test('the healer weights and runners-up read in HPS', async ({ page }) => {
   }
 });
 
-test('the class index lists a healer spec in HPS, beside no ranking of specs', async ({ page }) => {
-  await page.goto('/bis');
-  await expect(page.getByTestId('bis-index-dps-priest-holy')).toHaveText(/^Level 60: \d+\.\d HPS$/);
-});
-
 test('the healer band has no horizontal scroll at 390px', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(HEALER_PAGE);
