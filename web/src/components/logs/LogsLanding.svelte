@@ -7,15 +7,17 @@
      header's action points (the file picker on a desktop, the newest report on a phone).
 
      Signed out, the header is the shared band and every panel says in plain words that it needs a
-     signed-in account; the page has no sign-in button. The right column keeps its box but is
-     hidden until the session and the device list have answered, so a paired visitor's panels never
-     visibly swap places. -->
+     signed-in account; the page has no sign-in button. For a visitor with a session hint the right
+     column keeps its box but is hidden until the device list has answered, so a paired visitor's
+     panels never visibly swap places. -->
+
 <script lang="ts">
   import { fetchMeOnce, listDevices, type Device, type Me } from '../../lib/account/api';
   import type { HeaderAction } from '../../lib/character-header/types';
   import { logsAnswerSpec, newestOwnReport, type NewestReport } from '../../lib/logs/latest-kill';
   import { waysOrder } from '../../lib/logs/panel-order';
   import { logsCompanionCopy } from '../../lib/reports/copy';
+  import { myReportsCopy } from '../../lib/reports/my-reports-copy';
   import Account from '../Account.svelte';
   import CharacterHeader from '../character/CharacterHeader.svelte';
   import CompanionStatus from '../CompanionStatus.svelte';
@@ -86,8 +88,16 @@
   <div class="logs-column" data-testid="logs-reading">
     <LogsPanel title="Your reports" id="reports">
       <div class="min-h-[88px] p-4 md:p-5">
-        {#if me !== undefined}
-          <MyReports signedIn={me !== null} heading={false} guilds={me?.guilds ?? []} uploadAction={false} />
+        {#if me === undefined || me === null}
+          <!-- One node from the server markup through the session answer: a visitor with no session
+               hint is signed out, so the sentence is the page's largest first paint, and keeping the
+               same element (only the hint class drops) keeps it the stable LCP candidate. A hinted
+               visitor sees the reserved box until the session answers. -->
+          <p class="text-[14px]" class:ch-hint-out-only={me === undefined} data-testid="reports-signed-out">
+            {myReportsCopy.signedOut}
+          </p>
+        {:else}
+          <MyReports heading={false} guilds={me.guilds ?? []} uploadAction={false} />
         {/if}
       </div>
     </LogsPanel>
@@ -140,7 +150,10 @@
     gap: 22px;
     min-width: 0;
   }
-  .logs-pending {
+  /* A hinted (signed-in) visitor's right column keeps its box but is hidden until the device list
+     answers, so a paired visitor's panels never visibly swap. A visitor with no hint is signed out,
+     whose order is already final, so their panels paint with the server markup. */
+  :global(html[data-session='1']) .logs-pending {
     visibility: hidden;
   }
   @media (min-width: 1024px) {

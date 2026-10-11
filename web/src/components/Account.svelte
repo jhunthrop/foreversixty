@@ -604,7 +604,7 @@
             </div>
 
             <StatePanel label="Your reports" testid="account-reports">
-              <MyReports {signedIn} heading={false} />
+              <MyReports heading={false} />
             </StatePanel>
           </div>
 

@@ -12,3 +12,9 @@
 // deliberate -- over-reserving costs dead space, under-reserving costs the CLS budget,
 // and /logs.html is one of the 13 URLs lighthouserc.json gates at CLS 0.05.
 export const REPORTS_LOADING_MIN_H = 'min-h-[360px]';
+
+// The public feed's own loading reserve (logs spec 2026-10-11): its ready state is, today, one
+// empty-state sentence (about three lines at a phone's width) over the one sample row, so the
+// placeholder is that sentence's height rather than a screenful. A feed with real rows grows past
+// it, below the fold the way the old client:visible mount always did.
+export const RECENT_REPORTS_LOADING_MIN_H = 'min-h-[64px]';

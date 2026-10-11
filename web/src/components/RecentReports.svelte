@@ -6,7 +6,7 @@
      row markup this shares with MyReports.svelte ("Your reports"). -->
 <script lang="ts">
   import { recentReportsCopy } from '../lib/reports/copy';
-  import { REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
+  import { RECENT_REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
   import { fetchRecentReports, type RecentReport } from '../lib/reports/recent';
   import { publicReportSummary } from '../lib/logs/report-summary';
   import { SAMPLE_FALLBACK_ROW, SAMPLE_LABEL, SAMPLE_REPORT_ID, loadSampleRow } from '../lib/logs/sample-row';
@@ -62,12 +62,10 @@
 <section class="flex flex-col gap-3" data-testid="recent-reports">
   {#if heading}<h2 class="section-title text-[18px]">{recentReportsCopy.heading}</h2>{/if}
   {#if status === 'loading'}
-    <!-- Five rows, not the page's real row count: the feed has no fixed cap, and a
-         hundred shimmering rows would be its own kind of noise. `minHeight` carries the
-         reservation instead, sized to a phone screenful of rows the way Rankings.svelte's
-         own 8-line skeleton reserves 440px -- /logs is one of the CLS-0.05 URLs in
-         lighthouserc.json, so the reserve, not the row count, is what has to hold. -->
-    <Skeleton lines={5} rowHeight="h-11" minHeight={REPORTS_LOADING_MIN_H} testid="recent-reports-skeleton" />
+    <!-- One line over a reserved sentence's height, not a screenful of rows: the feed's ready
+         state is its empty sentence (RECENT_REPORTS_LOADING_MIN_H), and the sample row under it
+         must not move when the feed answers. -->
+    <Skeleton lines={1} minHeight={RECENT_REPORTS_LOADING_MIN_H} testid="recent-reports-skeleton" />
   {:else if status === 'failed'}
     <LoadError
       message={recentReportsCopy.failed}
