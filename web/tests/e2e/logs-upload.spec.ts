@@ -1,6 +1,6 @@
 // web/tests/e2e/logs-upload.spec.ts
 import { expect, test, type Page } from '@playwright/test';
-import { routeSampleReportMeta } from './support/logs-hero-fixture';
+import { routeSampleReportMeta } from './support/logs-sample-fixture';
 
 const fulfil = (body: unknown, status = 200) => ({
   status,
@@ -37,11 +37,12 @@ async function signIn(page: Page): Promise<void> {
   );
 }
 
-/** The form is an island. A file chosen before it hydrates fires its change event at
- *  nothing, and Upload stays disabled, so wait for the island to drop its `ssr` mark. */
+/** The form is part of the page's one island. A file chosen before it hydrates fires its change
+ *  event at nothing, so wait for the island to drop its `ssr` mark. */
 async function openLogs(page: Page): Promise<void> {
+  await routeSampleReportMeta(page);
   await page.goto('/logs');
-  await expect(page.locator('astro-island[ssr]:has([data-testid="upload-file"])')).toHaveCount(0);
+  await expect(page.locator('astro-island[ssr]:has([data-testid="logs-grid"])')).toHaveCount(0);
 }
 
 test('a log uploads part by part and hands off to the report', async ({ page }) => {
@@ -109,7 +110,7 @@ test('a failed part shows what went wrong instead of a spinner', async ({ page }
   // part number, no storage vendor, no doubled "did not finish" wrapper. The technical
   // detail still reaches devtools (Upload.svelte's own console.error), not this assertion.
   await expect(page.getByTestId('upload-error')).toHaveText(
-    'The upload did not finish. Try again; the file is still chosen.',
+    'The upload did not finish. Your file is untouched; try again.',
     { timeout: 20_000 },
   );
   await expect(page.getByTestId('upload-error')).not.toContainText('R2');
@@ -184,50 +185,45 @@ test("the pairing code is on the page, and the companion's downloads point to /s
   await expect(page.getByTestId('pairing-code')).toHaveText('4821-9930');
 });
 
-test('a signed-out visitor is told to sign in before they pick a file', async ({ page }) => {
-  await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
+test('before a file is chosen the panel is the explanation and the zone, with no Upload button', async ({
+  page,
+}) => {
+  await signIn(page);
   await openLogs(page);
-
-  // Three places need an account, and each says so with a real button rather than a link
-  // buried in a sentence. Each of the three islands hydrates only once its own placeholder
-  // -- not the signin prompt nested inside it, which does not exist in the DOM until then
-  // -- has crossed the viewport at least once (client:visible); the header band grew taller
-  // once it started reserving its own ready height (logs landing spec §8), so one scroll to
-  // the footer at the top of this test no longer reliably carries "Your reports" along with
-  // it the way it did when the band was shorter. Each panel's own static container (always
-  // rendered, hydrated or not) is scrolled to individually instead.
-  // "Your reports"' own island root sits in the panel body below its heading, which can
-  // still be a few pixels past a short mobile viewport's bottom edge even once the heading
-  // itself is on screen -- scrolling to the next panel down carries the whole body with it.
-  await page.getByRole('heading', { name: 'Recent public reports' }).scrollIntoViewIfNeeded();
-  await page.locator('#companion').scrollIntoViewIfNeeded();
-  await page.locator('#upload').scrollIntoViewIfNeeded();
-  // Every sign-in link's default landed on the hub, not /logs, once this lane's "sign-in
-  // defaults" change shipped (SignInPrompt.svelte's own `next = '/account?signed_in=1'`
-  // fallback) -- none of these three prompts passes its own `next`, so all three now fall
-  // through to that default instead of the old /logs one.
-  for (const id of ['pairing-signin', 'upload-signin', 'reports-signin']) {
-    await expect(page.getByTestId(id).getByRole('link', { name: 'Sign in with Battle.net' })).toHaveAttribute(
-      'href',
-      /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Fsigned_in%3D1$/,
-    );
-  }
-  // Signed out, the form is not drawn at all: the prompt is the whole panel.
-  await expect(page.getByTestId('upload-file')).toHaveCount(0);
+  const panel = page.getByTestId('upload');
+  await expect(panel.getByTestId('upload-zone')).toContainText('WoWCombatLog.txt');
+  await expect(panel.getByText('choose a file', { exact: true })).toBeVisible();
   await expect(page.getByTestId('upload-start')).toHaveCount(0);
+  await expect(page.getByLabel('Title')).toHaveCount(0);
+
+  await page.getByTestId('upload-file').setInputFiles({
+    name: 'WoWCombatLog.txt',
+    mimeType: 'text/plain',
+    buffer: Buffer.from('x'),
+  });
+  await expect(page.getByTestId('upload-start')).toBeVisible();
+  await expect(page.getByLabel('Title')).toBeVisible();
+  await expect(page.getByText('Who can open it')).toBeVisible();
 });
 
-test('the two ways in are in the header hero and lead to their panels', async ({ page }) => {
-  // The intro's own two links moved into the hero's description (LogsHero.svelte, logs
-  // landing spec 2026-10-04 §4.A) when the plain "Logs" <h1> was replaced by the header
-  // band; the sample hero (this test is signed out) still carries them.
+test('a signed-out visitor is told in plain words, with no sign-in control anywhere on the page', async ({
+  page,
+}) => {
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
-  await routeSampleReportMeta(page);
   await openLogs(page);
-  const description = page.getByTestId('logs-hero-description');
-  const entries = description.getByRole('link');
-  await expect(entries).toHaveCount(2);
-  await entries.nth(1).click();
-  await expect(page).toHaveURL(/#upload$/);
-  await expect(page.getByTestId('upload')).toBeInViewport();
+
+  await expect(page.getByTestId('reports-signed-out')).toHaveText(
+    'Reports you own appear here once you are signed in.',
+  );
+  await expect(page.getByTestId('upload-signed-out')).toHaveText(
+    'Uploading needs a signed-in account; the report is filed under it.',
+  );
+  await expect(page.getByTestId('pairing-signed-out')).toHaveText('Pairing needs a signed-in account.');
+  // Signed out, the form is not drawn at all.
+  await expect(page.getByTestId('upload-file')).toHaveCount(0);
+  await expect(page.getByTestId('upload-start')).toHaveCount(0);
+  // Nothing inside the page asks for a sign-in: the nav's selector is the one control.
+  const main = page.locator('#main');
+  await expect(main.getByRole('link', { name: /sign in/i })).toHaveCount(0);
+  await expect(main.getByRole('button', { name: /sign in/i })).toHaveCount(0);
 });

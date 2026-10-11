@@ -1,7 +1,10 @@
 // web/tests/e2e/logs-recent-reports.spec.ts
-// Spec section 4: a "Recent public reports" panel above "Your reports" on /logs, an honest
-// empty state, and the one-line framing for a visitor who is not raiding yet.
+// Logs spec 2026-10-11 sections 2.5 and 9: the "Recent public reports" panel under "Your reports"
+// on /logs, an honest empty state, and the one sample report as a plain labelled row, shown once.
 import { expect, test } from '@playwright/test';
+import { routeSampleReportMeta, SAMPLE_REPORT_ID, SAMPLE_REPORT_META } from './support/logs-sample-fixture';
+
+const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
 const fulfil = (body: unknown, status = 200) => ({
   status,
@@ -14,18 +17,54 @@ async function signedOut(page: import('@playwright/test').Page): Promise<void> {
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
 }
 
-test('the framing line tells a non-raider what counts as a log', async ({ page }) => {
+test('the sample report is one plain labelled row, with a date and its kills, and no Sample pill', async ({
+  page,
+}) => {
   await signedOut(page);
+  await routeSampleReportMeta(page);
   await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
 
   await page.goto('/logs');
-
-  await expect(page.getByTestId('logs-framing')).toHaveText(
-    'Logs are for group content at any level: a dungeon run logs the same way a raid does.',
+  const sample = page.getByTestId('recent-reports-sample');
+  await sample.scrollIntoViewIfNeeded();
+  await expect(sample).toContainText('A sample report');
+  const row = sample.getByTestId('report-row');
+  await expect(row.getByRole('link', { name: SAMPLE_REPORT_META.title })).toHaveAttribute(
+    'href',
+    `/reports/${SAMPLE_REPORT_ID}`,
   );
+  await expect(row.getByTestId('report-row-when')).toHaveText('Sep 15');
+  await expect(row.getByTestId('report-row-summary')).toHaveText('Sanguine Depths \u00b7 1 kill');
+  await expect(page.locator('.pill-sample')).toHaveCount(0);
 });
 
-test('lists a public report by title, date, counts and guild', async ({ page }) => {
+test('the sample appears once: a feed that carries it is filtered by id', async ({ page }) => {
+  await signedOut(page);
+  await routeSampleReportMeta(page);
+  await page.route('**/v1/reports/recent**', (route) =>
+    route.fulfill(
+      fulfil({
+        rows: [
+          {
+            id: SAMPLE_REPORT_ID,
+            title: SAMPLE_REPORT_META.title,
+            created_at: SAMPLE_REPORT_META.created_at,
+            fight_count: 2,
+            kill_count: 1,
+          },
+        ],
+      }),
+    ),
+  );
+
+  await page.goto('/logs');
+  const panel = page.getByTestId('recent-reports');
+  await panel.scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('recent-reports-empty')).toBeVisible();
+  await expect(panel.getByRole('link', { name: SAMPLE_REPORT_META.title })).toHaveCount(1);
+});
+
+test('lists a public report by title, relative date, kills and guild', async ({ page }) => {
   await signedOut(page);
   await page.route('**/v1/reports/recent**', (route) =>
     route.fulfill(
@@ -34,7 +73,7 @@ test('lists a public report by title, date, counts and guild', async ({ page }) 
           {
             id: 'abc123def456',
             title: 'Progress night',
-            created_at: '2026-12-09T22:10:00Z',
+            created_at: new Date(Date.now() - THREE_DAYS_MS - 60_000).toISOString(),
             fight_count: 8,
             kill_count: 3,
             guild_name: 'The Last Watch',
@@ -46,15 +85,11 @@ test('lists a public report by title, date, counts and guild', async ({ page }) 
 
   await page.goto('/logs');
   const panel = page.getByTestId('recent-reports');
-  // The panel hydrates only once it is on screen (client:visible), the same reason
-  // logs-upload.spec.ts scrolls to reports-signin before looking for it.
   await panel.scrollIntoViewIfNeeded();
   const link = panel.getByRole('link', { name: 'Progress night' });
   await expect(link).toHaveAttribute('href', '/reports/abc123def456');
-  await expect(panel).toContainText('2026-12-09');
-  await expect(panel).toContainText('8 fights');
-  await expect(panel).toContainText('3 kills');
-  await expect(panel).toContainText('The Last Watch');
+  await expect(panel.getByTestId('report-row-when').first()).toHaveText('3 days ago');
+  await expect(panel.getByTestId('report-row-summary').first()).toHaveText('3 kills \u00b7 The Last Watch');
 });
 
 test('an honest empty state before the first public report lands', async ({ page }) => {
@@ -118,42 +153,21 @@ test('an "Older reports" control appears only when the API says a further page e
   expect(calls).toBe(2);
 });
 
-test('the spine bar mounts on /logs and "Your reports" is the first panel for a signed-in visitor', async ({
+test('"Your reports" is the first panel for a signed-in visitor, and the page has no spine bar', async ({
   page,
 }) => {
-  // The chip-slot pre-paint rule (global.css) hides the spine bar before hydration unless
-  // `fs_csrf` is present, the same signed-in-visitor cookie sim-landing.spec.ts and
-  // home-panel.spec.ts set; without it the bar's `.chip-slot` is `display: none` at first
-  // paint and this test's own visibility assertion fails regardless of the /v1/me mock.
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route('**/v1/me', (route) =>
-    route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        data: { user: { battletag: 'Fixture#1234' }, characters: [] },
-        error: null,
-      }),
-    }),
+    route.fulfill(fulfil({ user: { battletag: 'Fixture#1234' }, characters: [] })),
   );
+  await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
+  await routeSampleReportMeta(page);
   await page.goto('/logs');
-  await expect(page.getByTestId('current-character-bar')).toBeVisible();
-  const myReports = page.getByTestId('my-reports');
-  const companion = page.locator('#companion');
-  // "Your reports" is an `Account` island (`client:visible`): the `data-testid="my-reports"`
-  // element inside it does not exist in the DOM until its own placeholder has crossed the
-  // viewport at least once. The header band reserving its own ready height (logs landing
-  // spec §8) made the page taller, so "Your reports"' own heading is no longer reliably in
-  // the initial viewport on a short mobile screen -- and scrolling to that heading itself
-  // is not enough either, since the island's own root sits in the panel body below it,
-  // which can still be a few pixels past the viewport's bottom edge. Scrolling to the next
-  // panel down ("Recent public reports", stacked below it on a narrow viewport) guarantees
-  // the whole "Your reports" body, island root included, has crossed into view first.
-  await page.getByRole('heading', { name: 'Recent public reports' }).scrollIntoViewIfNeeded();
-  await myReports.waitFor();
-  const myReportsBox = await myReports.boundingBox();
-  const companionBox = await companion.boundingBox();
+  await expect(page.getByTestId('current-character-bar')).toHaveCount(0);
+  await page.getByTestId('my-reports').waitFor();
+  const myReportsBox = await page.getByTestId('my-reports').boundingBox();
+  const recentBox = await page.getByTestId('recent-reports').boundingBox();
   expect(myReportsBox).not.toBeNull();
-  expect(companionBox).not.toBeNull();
-  expect((myReportsBox as { y: number }).y).toBeLessThan((companionBox as { y: number }).y);
+  expect(recentBox).not.toBeNull();
+  expect((myReportsBox as { y: number }).y).toBeLessThan((recentBox as { y: number }).y);
 });
