@@ -146,26 +146,18 @@ function Options.handle(input)
 	elseif command == "inspect" then
 		return Options.inspectLines()
 	elseif command == "diag" then
-		local notes = Theme.diagnostics()
-		local lines = {}
-		if #notes > 0 then
-			lines[1] = L.diagHeading
-			for _, note in ipairs(notes) do
-				lines[#lines + 1] = note
-			end
-		end
-		-- The chip's own render check, every time it has drawn.
-		lines[#lines + 1] = Chip.diagLine()
-		if Comms.dropped > 0 then
-			lines[#lines + 1] = string.format(L.diagDropped, Comms.dropped)
-		end
+		-- Only what is broken goes under "Not working:"; the chip's own render
+		-- check and the findings (other players' unreadable messages included)
+		-- follow it.
+		local broken = copy(Theme.diagnostics())
 		if Comms.failed > 0 then
-			lines[#lines + 1] = string.format(L.diagCommsFailedCount, Comms.failed)
+			broken[#broken + 1] = string.format(L.diagCommsFailedCount, Comms.failed)
 		end
-		if #lines == 0 then
-			return { L.diagNone }
+		local info = copy(Theme.infoNotes())
+		if Comms.dropped > 0 then
+			info[#info + 1] = string.format(L.diagDropped, Comms.dropped)
 		end
-		return lines
+		return Theme.diagReport(broken, Chip.diagLine(), info)
 	end
 	-- Bare /fs, and anything it does not know: the player's commands, until Lane L3.4's
 	-- build dialog is what bare /fs opens.

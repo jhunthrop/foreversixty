@@ -235,11 +235,11 @@ function TalentGlow.refresh(data)
 	if not TalentGlow.notedFrame then
 		-- README spike row 22's answer, recorded once for /fs diag.
 		TalentGlow.notedFrame = true
-		Theme.note(string.format(L.diagTalentFrame, select(2, TalentGlow.openFrame()) or "?", how))
+		Theme.noteInfo(string.format(L.diagTalentFrame, select(2, TalentGlow.openFrame()) or "?", how))
 		local name = type(button.GetName) == "function" and button:GetName() or nil
 		local width = type(button.GetWidth) == "function" and button:GetWidth() or nil
 		local shown = type(button.IsShown) == "function" and button:IsShown() or nil
-		Theme.note(string.format(L.diagTalentButton, tostring(name), tostring(width), tostring(shown)))
+		Theme.noteInfo(string.format(L.diagTalentButton, tostring(name), tostring(width), tostring(shown)))
 	end
 	return how
 end

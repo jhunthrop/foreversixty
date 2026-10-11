@@ -69,6 +69,9 @@ describe("Chip.model", function()
 		assert.is_false(model.ring)
 		assert.are.equal(1, model.alpha)
 		assert.are.equal(0.4, model.iconAlpha)
+		-- Fix round 3: a click on the idle chip opens the talent window.
+		assert.are.equal("talents", model.chosen.action)
+		assert.are.equal(L.chipHintTalents, model.chosen.hint)
 		assert.are.equal(0, model.waiting)
 		assert.are.same({}, model.states)
 		assert.is_nil(model.nextLine)
@@ -82,8 +85,16 @@ describe("Chip.model", function()
 		local model = Chip.model(inputs({ level = 21, progress = pointAt(13, 22), unspent = 0,
 			pointName = "Improved Tactical Mastery" }))
 		assert.are.equal("idle", model.chosen.kind)
-		assert.are.equal("Next at 22: Improved Tactical Mastery", model.nextLine)
-		assert.are.equal(string.format(L.chipNextAt, 22, "Improved Tactical Mastery"), model.nextLine)
+		assert.are.equal("Next talent at 22: Improved Tactical Mastery", model.nextLine)
+		assert.are.equal(string.format(L.chipNextTalentAt, 22, "Improved Tactical Mastery"), model.nextLine)
+	end)
+
+	-- Fix round 3: at the level cap there is no next point (Progress.nextPointLevel is nil).
+	it("has no next line at the level cap", function()
+		local model = Chip.model(inputs({ level = 60, progress = pointAt(13, nil), unspent = 0,
+			pointName = "Improved Tactical Mastery" }))
+		assert.is_nil(model.nextLine)
+		assert.are.equal("idle", model.chosen.kind)
 	end)
 
 	-- Fix round 2 (seen in game): the first unmet cell is #7 in the plan's
@@ -91,7 +102,7 @@ describe("Chip.model", function()
 	it("names the level the next point arrives at, never the plan's order index", function()
 		local model = Chip.model(inputs({ level = 21, progress = pointAt(7, 22), unspent = 0,
 			pointName = "Improved Tactical Mastery" }))
-		assert.are.equal("Next at 22: Improved Tactical Mastery", model.nextLine)
+		assert.are.equal("Next talent at 22: Improved Tactical Mastery", model.nextLine)
 	end)
 
 	it("names the next talent when a point is waiting, with the pulsing ring", function()
@@ -118,14 +129,34 @@ describe("Chip.model", function()
 		assert.is_false(model.chosen.crop)
 	end)
 
-	it("shows the first talent as a muted Next at 10 line below level 10, without the ring", function()
+	it("shows the first talent as a muted Next at 10 line at 8 and 9, without the ring", function()
 		local model = Chip.model(inputs({ level = 9, progress = pointAt(1, 10), pointName = "Improved Heroic Strike" }))
 		assert.are.equal("next", model.chosen.kind)
 		assert.are.equal("Next at 10: Improved Heroic Strike", model.chosen.text)
+		assert.are.equal("Next talent at 10: Improved Heroic Strike", model.chosen.tip)
 		assert.is_true(model.chosen.muted)
-		assert.is_nil(model.chosen.action)
+		assert.are.equal("talents", model.chosen.action)
 		assert.is_false(model.ring)
 		assert.is_nil(model.nextLine)
+		local eight = Chip.model(inputs({ level = 8, progress = pointAt(1, 10), pointName = "Improved Heroic Strike" }))
+		assert.are.equal("Next at 10: Improved Heroic Strike", eight.chosen.text)
+	end)
+
+	-- Fix round 3: below 8 the chip line is short and names no talent.
+	it("says First talent at 10 below level 8, naming the talent only in the hover", function()
+		local model = Chip.model(inputs({ level = 5, progress = pointAt(1, 10), pointName = "Improved Heroic Strike" }))
+		assert.are.equal("First talent at 10", model.chosen.text)
+		assert.are.equal(string.format(L.chipFirstTalent, 10), model.chosen.text)
+		assert.are.equal("Next talent at 10: Improved Heroic Strike", model.chosen.tip)
+	end)
+
+	-- Fix round 3: after a path is chosen below 10, a click reopens the card.
+	it("reopens the path card from the next line once a path is chosen below 10", function()
+		local model = Chip.model(inputs({ level = 4, build = { default = true, order = { {} } },
+			progress = pointAt(1, 10), pathChosen = "warrior-fury", pointName = "Cruelty" }))
+		assert.are.equal("next", model.chosen.kind)
+		assert.are.equal("path", model.chosen.action)
+		assert.are.equal(L.chipHintChangePath, model.chosen.hint)
 	end)
 
 	it("offers the best bag upgrade in DPS, with a short form without the verb", function()
@@ -165,6 +196,8 @@ describe("Chip.model", function()
 		local model = Chip.model(inputs({ inCombat = true, combatHide = false }))
 		assert.is_true(model.visible)
 		assert.are.equal(0.25, model.alpha)
+		-- Fix round 3: the icon is not dimmed again inside the faded chip.
+		assert.are.equal(1, model.iconAlpha)
 		assert.is_false(model.mouse)
 	end)
 
@@ -194,6 +227,8 @@ describe("Chip.model", function()
 		local model = Chip.model(inputs({ raidCheck = check, now = 110 }))
 		assert.are.equal("raidcheck", model.chosen.kind)
 		assert.are.equal("Missing: weapon imbue, flask", model.chosen.text)
+		assert.are.equal("raidlist", model.chosen.action)
+		assert.are.equal(L.chipHintList, model.chosen.hint)
 		assert.are.equal("idle", Chip.model(inputs({ raidCheck = check, now = 111 })).chosen.kind)
 		assert.are.equal("idle", Chip.model(inputs({ raidCheck = { missing = {}, at = 100 } })).chosen.kind)
 	end)
@@ -221,6 +256,7 @@ describe("Chip.model", function()
 		assert.are.equal("complete", model.chosen.kind)
 		assert.are.equal(L.chipComplete, model.chosen.text)
 		assert.are.equal(Theme.MEDIA.gearTick, model.chosen.icon)
+		assert.are.equal(L.chipHintTalents, model.chosen.hint)
 		assert.are.equal("idle", Chip.model(inputs({ completedAt = 95, now = 100 })).chosen.kind)
 	end)
 
@@ -239,6 +275,7 @@ describe("Chip.model", function()
 		assert.are.equal(CLASS_ICON, model.chosen.icon)
 		assert.are.equal("path", model.chosen.action)
 		assert.are.equal(L.chipHintPath, model.chosen.hint)
+		assert.are.equal("Click: Pick a path", L.chipHintPath)
 		-- Fix round 2: the informational next line never counts toward the badge.
 		assert.are.equal(0, model.waiting)
 	end)
@@ -291,6 +328,10 @@ describe("Chip.tooltipLines", function()
 	local function muted(text)
 		return "|cff" .. Theme.HEX.muted .. text .. "|r"
 	end
+	-- Fix round 3: the hints sit one step dimmer than the muted info line.
+	local function hint(text)
+		return "|cff" .. Theme.dimHex("muted", Theme.ALPHA.hint) .. text .. "|r"
+	end
 
 	it("leads with the addon's name, lists every state, then the hints after a gap", function()
 		local model = Chip.model(inputs({
@@ -302,9 +343,9 @@ describe("Chip.tooltipLines", function()
 			body("Take Improved Tactical Mastery"),
 			body("Equip Belt, +3 score"),
 			" ",
-			muted(L.chipHintTalents),
-			muted(string.format(L.chipRightClick, L.chipHideUntilLevel)),
-			muted(L.chipShiftDrag),
+			hint(L.chipHintTalents),
+			hint(string.format(L.chipRightClick, L.chipHideUntilLevel)),
+			hint(L.chipShiftDrag),
 		}, Chip.tooltipLines(model))
 	end)
 
@@ -315,26 +356,33 @@ describe("Chip.tooltipLines", function()
 		}))
 		local lines = Chip.tooltipLines(model)
 		assert.are.equal(body("Equip Belt, +3 score"), lines[2])
-		assert.are.equal(muted("Next at 22: Improved Tactical Mastery"), lines[3])
+		assert.are.equal(muted("Next talent at 22: Improved Tactical Mastery"), lines[3])
 		assert.are.equal(" ", lines[4])
-		assert.are.equal(muted(L.chipHintEquip), lines[5])
+		assert.are.equal(hint(L.chipHintEquip), lines[5])
 	end)
 
-	it("shows the next talent alone when that is all there is, and nothing when idle", function()
+	it("shows the next talent and the idle click when that is all there is", function()
 		local next = Chip.model(inputs({ level = 21, progress = pointAt(13, 22), pointName = "Improved Tactical Mastery" }))
 		assert.are.same({
 			gold(L.addonName),
-			muted("Next at 22: Improved Tactical Mastery"),
+			muted("Next talent at 22: Improved Tactical Mastery"),
 			" ",
-			muted(string.format(L.chipRightClick, L.chipHideUntilLevel)),
-			muted(L.chipShiftDrag),
+			hint(L.chipHintTalents),
+			hint(string.format(L.chipRightClick, L.chipHideUntilLevel)),
+			hint(L.chipShiftDrag),
 		}, Chip.tooltipLines(next))
-		assert.are.same({}, Chip.tooltipLines(Chip.model(inputs())))
+		assert.are.same({
+			gold(L.addonName),
+			" ",
+			hint(L.chipHintTalents),
+			hint(string.format(L.chipRightClick, L.chipHideUntilLevel)),
+			hint(L.chipShiftDrag),
+		}, Chip.tooltipLines(Chip.model(inputs())))
 	end)
 
-	it("colours a muted state muted", function()
+	it("puts the long next-talent line in the hover for the short one on the chip", function()
 		local model = Chip.model(inputs({ level = 9, progress = pointAt(1, 10), pointName = "Improved Heroic Strike" }))
-		assert.are.equal(muted("Next at 10: Improved Heroic Strike"), Chip.tooltipLines(model)[2])
+		assert.are.equal(muted("Next talent at 10: Improved Heroic Strike"), Chip.tooltipLines(model)[2])
 	end)
 end)
 
@@ -380,6 +428,13 @@ describe("Chip.fit", function()
 		assert.are.equal("Chausses of Wes" .. L.ellipsis .. ", +4.2 DPS", fitted)
 	end)
 
+	-- Fix round 3: when not even the gain fits, the short line is cut as a whole.
+	it("cuts the whole short line when the gain alone does not fit", function()
+		local fitted = Chip.fit("Equip Chausses of Westfall, +4.2 DPS", measure, 12 * 6,
+			"Chausses of Westfall, +4.2 DPS", ", +4.2 DPS")
+		assert.are.equal("Chausses" .. L.ellipsis, fitted)
+	end)
+
 	it("drops a trailing space or comma before the ellipsis", function()
 		assert.are.equal("Equip Belt" .. L.ellipsis, Chip.fit("Equip Belt, +3 score", function(text)
 			return #text <= 13 and 0 or 999
@@ -392,6 +447,33 @@ describe("Chip.fit", function()
 
 	it("treats a measure that answers nothing as fitting", function()
 		assert.are.equal("Take Deflection", Chip.fit("Take Deflection", function() return nil end, 184))
+	end)
+end)
+
+describe("Chip.shownLine", function()
+	it("says the chip is shown, and whether its line was shortened", function()
+		assert.are.equal("Chip: shown, nothing cut off", Chip.shownLine(false))
+		assert.are.equal("Chip: shown, the line was shortened", Chip.shownLine(true))
+	end)
+end)
+
+describe("Theme.classIcon", function()
+	after_each(function()
+		_G.CLASS_ICON_TCOORDS = nil
+	end)
+
+	it("uses the client's class icon where it has one", function()
+		_G.CLASS_ICON_TCOORDS = { ROGUE = { 0.5, 0.75, 0, 0.25 } }
+		local path, coords = Theme.classIcon("ROGUE")
+		assert.are.equal(Theme.MEDIA.classIcons, path)
+		assert.are.same({ 0.5, 0.75, 0, 0.25 }, coords)
+	end)
+
+	it("falls back to the crest, then to the neutral tile", function()
+		local path, coords = Theme.classIcon("ROGUE")
+		assert.are.equal(Theme.crestPath("ROGUE"), path)
+		assert.are.same({ 0, 1, 0, 1 }, coords)
+		assert.are.equal(Theme.UNKNOWN_ICON, (Theme.classIcon("NOBODY")))
 	end)
 end)
 
@@ -452,7 +534,8 @@ end)
 
 describe("Chip.pathHeading", function()
 	it("names the race and class in the class colour", function()
-		assert.are.equal("|cffc79c6eGnome Warrior|r. Pick a path:", Chip.pathHeading("Gnome", "Warrior", "c79c6e"))
+		-- Fix round 3: one colour for the whole heading (the label's gold).
+		assert.are.equal("Gnome Rogue. Pick a path:", Chip.pathHeading("Gnome", "Rogue"))
 	end)
 end)
 
@@ -512,6 +595,11 @@ describe("Chip.pathSpecs", function()
 		assert.are.same({ "warrior-arms", "warrior-fury", "warrior-protection" }, slugs(specs))
 		assert.are.equal("Arms", specs[1].name)
 		assert.are.equal(L.specPlaystyle["warrior-arms"], specs[1].playstyle)
+		-- Fix round 3: the data has no "easiest" flag, so the class default
+		-- Follow.ensureDefault loads with no points spent (the first tree) is tagged.
+		assert.is_true(specs[1].easiest)
+		assert.is_false(specs[2].easiest)
+		assert.is_false(specs[3].easiest)
 	end)
 
 	it("keeps a spec that shares a tree beside it", function()
@@ -586,6 +674,15 @@ describe("the chip's words and numbers", function()
 		-- Fix round 2: the ring sits just outside the chip's own edge, never on it.
 		assert.are.equal(Theme.SIZES.chipRingThickness, Theme.SIZES.chipRingInset - Theme.SIZES.chipIconInset)
 		assert.are.equal(10, Theme.SIZES.chipBadgeText)
+	end)
+
+	it("dims the hints to 60 percent of the muted colour over the dark ground", function()
+		assert.are.equal(0.6, Theme.ALPHA.hint)
+		assert.are.equal("62605a", Theme.dimHex("muted", 0.6))
+	end)
+
+	it("draws the path card's playstyle lines at 11 px", function()
+		assert.are.equal(11, Theme.SIZES.chipCardNote)
 	end)
 
 	it("has a short playstyle line for every spec the data has a default build for", function()

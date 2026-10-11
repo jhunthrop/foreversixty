@@ -135,19 +135,21 @@ describe("Score", function()
 
 		-- Fix round 1: /fs diag says nothing when the data addon is simply not
 		-- installed, and one plain line when it is there but cannot be read.
-		it("says nothing in /fs diag when the data addon is not installed", function()
+		-- Fix round 3: the two causes, each with its own fix.
+		it("says in /fs diag that the data addon is not installed", function()
 			start(nil)
 			local status = Score.status()
 			assert.is_true(status.absent)
-			assert.are.equal(0, #Theme.diagnostics())
+			assert.are.same({ L.diagDataAddonMissing }, Theme.diagnostics())
+			assert.are.equal("The Forever Sixty Data addon is not installed. Install it from the site.",
+				L.diagDataAddonMissing)
 		end)
 
-		it("notes one plain line when the data addon is there but unreadable or too old", function()
+		it("says in /fs diag that the data addon is too old when it cannot be read", function()
 			start(fixture(function(data) data.format = 1 end))
 			Score.status()
 			assert.are.same({ L.diagDataAddonOld }, Theme.diagnostics())
-			assert.are.equal("The Forever Sixty Data addon is missing or too old. Install or update it from the site.",
-				L.diagDataAddonOld)
+			assert.are.equal("The Forever Sixty Data addon is too old. Update it from the site.", L.diagDataAddonOld)
 		end)
 
 		it("notes why the file is unusable once, and nothing for a usable file", function()

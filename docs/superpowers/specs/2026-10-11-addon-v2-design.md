@@ -78,7 +78,8 @@ never wrapped. One state at a time, highest first; a "+N" badge when more wait.
 5. **Last night**: once per login after a logged raid, "Lucifron: 71st percentile, biggest
    loss downtime". Click opens the tab's last-raid region.
 6. **Build complete**: check icon for 5 s, then state 7.
-7. **Nothing to do**: the class icon at 40 % alpha, no text, no ring.
+7. **Nothing to do**: the class icon at 40 % alpha, no text, no ring. Below level 10 the chip
+   carries the muted next-talent line; from 10 the idle chip has no text.
 
 Out of the way: fades to 25 % in combat and ignores the mouse; hides with the UI and in
 cinematics; right-click "Hide until next level"; shift-drag moves it; hover shows a client

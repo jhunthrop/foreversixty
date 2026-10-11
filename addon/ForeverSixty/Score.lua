@@ -100,12 +100,12 @@ local function unavailable(reason, diag)
 end
 
 --- Whether the record can be used, and why not when it cannot:
---- { available, absent, generated, stale, reason }. A data addon that is
---- simply not installed is `absent` and says nothing in /fs diag (it is
---- optional); one that is there but unreadable or too old says so there once.
+--- { available, absent, generated, stale, reason }. /fs diag says once which
+--- cause it is: not installed (`absent`), or there but too old to read.
 function Score.status()
 	local data = _G.ForeverSixtyData
 	if data == nil then
+		noteOnce(L.diagDataAddonMissing)
 		return { available = false, absent = true, reason = L.ratingsNotInstalled }
 	end
 	if not wellFormed(data) then

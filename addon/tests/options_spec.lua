@@ -344,9 +344,9 @@ describe("Options", function()
 		assert.are.equal(1, #state.printed)
 	end)
 
-	it("says there is nothing to report on /fs diag", function()
+	it("says everything is working on /fs diag when nothing is broken", function()
 		require("Theme").reset()
-		assert.are.same({ require("Locale").diagNone }, Options.handle("diag"))
+		assert.are.same({ require("Locale").diagAllWorking }, Options.handle("diag"))
 	end)
 
 	it("lists what this client turned out not to have on /fs diag", function()

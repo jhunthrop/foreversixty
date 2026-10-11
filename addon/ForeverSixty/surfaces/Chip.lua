@@ -112,10 +112,14 @@ function Chip.talentName(talent)
 	return L.chipNextTalent
 end
 
---- "Gnome Warrior. Pick a path:", the race and class in the class colour.
-function Chip.pathHeading(race, className, hex)
-	local who = string.format(L.chipRaceClass, race, className)
-	return string.format(L.chipPathHeading, string.format("|cff%s%s|r", hex, who))
+--- "Gnome Rogue. Pick a path:", one colour throughout (the card's gold).
+function Chip.pathHeading(race, className)
+	return string.format(L.chipPathHeading, string.format(L.chipRaceClass, race, className))
+end
+
+--- /fs diag's line for a shown chip: whether its line was shortened.
+function Chip.shownLine(shortened)
+	return shortened and L.diagChipShortened or L.diagChipShown
 end
 
 -- The model ---------------------------------------------------------------
@@ -155,29 +159,47 @@ local function pathState(input)
 	return { kind = "path", icon = input.classIcon, text = L.chipPath, action = "path", hint = L.chipHintPath }
 end
 
---- Below the first talent level: "Next at 10: Improved Heroic Strike",
---- muted, no ring and no click (there is nothing to spend yet). Information
---- only, so it never counts toward the "+N" badge.
+--- The level the chip line starts naming the first talent: below it the
+--- line is the short "First talent at 10" (spec section 4.1, state 7).
+Chip.NAME_FIRST_TALENT_FROM = 8
+
+--- Below the first talent level, muted and without a ring: "First talent at
+--- 10" below level 8, "Next at 10: Improved Heroic Strike" at 8 and 9; the
+--- hover reads "Next talent at 10: ..." (`tip`). A click opens the talent
+--- window, or, once a path is chosen on a default build, the path card
+--- again so the choice can change. Information only, so it never counts
+--- toward the "+N" badge.
 local function nextState(input)
 	local point, at = nextPoint(input)
 	if point == nil or (input.level or 0) >= firstTalentLevel() then
 		return nil
 	end
+	local name = input.pointName or L.chipNextTalent
+	local text
+	if (input.level or 0) < Chip.NAME_FIRST_TALENT_FROM then
+		text = string.format(L.chipFirstTalent, at)
+	else
+		text = string.format(L.chipNextAt, at, name)
+	end
+	local changePath = input.build.default and input.pathChosen ~= nil
 	return {
 		kind = "next",
 		icon = input.pointIcon or input.classIcon,
 		crop = input.pointIcon ~= nil,
-		text = string.format(L.chipNextAt, at, input.pointName or L.chipNextTalent),
+		text = text,
+		tip = string.format(L.chipNextTalentAt, at, name),
 		muted = true,
 		info = true,
+		action = changePath and "path" or "talents",
+		hint = changePath and L.chipHintChangePath or L.chipHintTalents,
 	}
 end
 
 --- "Take Improved Heroic Strike" only when a point is there to spend
 --- (Progress.unspentPoints); absent otherwise (spec section 2.2).
 local function pointState(input)
-	local point = nextPoint(input)
-	if point == nil or (input.unspent or 0) <= 0 then
+	local point = input.progress ~= nil and input.progress.point or nil
+	if input.build == nil or point == nil or (input.unspent or 0) <= 0 then
 		return nil
 	end
 	local name = input.pointName or L.chipNextTalent
@@ -243,6 +265,8 @@ local function raidCheckState(input)
 		kind = "raidcheck",
 		icon = Theme.MEDIA.gearCross,
 		text = string.format(L.chipRaidCheck, table.concat(input.raidCheck.missing, L.chipListSeparator)),
+		action = "raidlist",
+		hint = L.chipHintList,
 	}
 end
 
@@ -271,7 +295,10 @@ local function completeState(input)
 		or (input.now or 0) - input.completedAt >= Theme.SIZES.completeSeconds then
 		return nil
 	end
-	return { kind = "complete", icon = Theme.MEDIA.gearTick, text = L.chipComplete }
+	return {
+		kind = "complete", icon = Theme.MEDIA.gearTick, text = L.chipComplete,
+		action = "talents", hint = L.chipHintTalents,
+	}
 end
 
 --- Every state, highest first (spec section 4.1, with "pick a path" and the
@@ -280,14 +307,15 @@ Chip.STATES = {
 	pathState, nextState, pointState, upgradeState, hereState, raidCheckState, lastNightState, completeState,
 }
 
---- The hover's muted "Next at 22: Improved Tactical Mastery": a build's next
---- point that cannot be spent yet, from the first talent level on.
+--- The hover's muted "Next talent at 22: Improved Tactical Mastery": a
+--- build's next point that cannot be spent yet, from the first talent level
+--- on; none at the level cap.
 local function nextLine(input)
 	local point, at = nextPoint(input)
 	if point == nil or (input.level or 0) < firstTalentLevel() or (input.unspent or 0) > 0 then
 		return nil
 	end
-	return string.format(L.chipNextAt, at, input.pointName or L.chipNextTalent)
+	return string.format(L.chipNextTalentAt, at, input.pointName or L.chipNextTalent)
 end
 
 --- The chip, from a plain table:
@@ -310,7 +338,9 @@ function Chip.model(input)
 			states[#states + 1] = state
 		end
 	end
-	local chosen = states[1] or { kind = "idle", icon = input.classIcon, text = "" }
+	-- Idle: the class icon, no text; a click opens the talent window.
+	local chosen = states[1]
+		or { kind = "idle", icon = input.classIcon, text = "", action = "talents", hint = L.chipHintTalents }
 	local hiddenByLevel = input.hiddenUntilLevel ~= nil and (input.level or 0) < input.hiddenUntilLevel
 	local hiddenBy
 	if input.shown == false or hiddenByLevel then
@@ -332,34 +362,37 @@ function Chip.model(input)
 		visible = hiddenBy == nil,
 		hiddenBy = hiddenBy,
 		alpha = input.inCombat and Chip.COMBAT_ALPHA or 1,
-		iconAlpha = chosen.kind == "idle" and Chip.IDLE_ALPHA or 1,
+		-- Dimmed only on a chip at full alpha: never 40 % inside the 25 % combat fade.
+		iconAlpha = (chosen.kind == "idle" and not input.inCombat) and Chip.IDLE_ALPHA or 1,
 		mouse = not input.inCombat,
 		ring = chosen.ring == true,
 	}
 end
 
+--- A hover hint: the muted colour one step dimmer (Theme.ALPHA.hint).
+local function hinted(text)
+	return string.format("|cff%s%s|r", Theme.dimHex("muted", Theme.ALPHA.hint), text)
+end
+
 --- The hover for a model: "Forever Sixty" in gold; one line per state in
 --- priority order, the shown one first, in body colour (a muted state
---- muted); the muted next-talent line; a gap; then the muted hints: what a
---- click does on the shown state, the right-click and the shift-drag.
---- Nothing at all when idle with nothing to come.
+--- muted, in its fuller `tip` form); the muted next-talent line; a gap; then
+--- the dimmer hints: what a click does on the shown state (every state has
+--- one, idle too), the right-click and the shift-drag.
 function Chip.tooltipLines(model)
-	if #model.states == 0 and model.nextLine == nil then
-		return {}
-	end
 	local lines = { colored("gold", L.addonName) }
 	for _, state in ipairs(model.states) do
-		lines[#lines + 1] = colored(state.muted and "muted" or "body", state.text)
+		lines[#lines + 1] = colored(state.muted and "muted" or "body", state.tip or state.text)
 	end
 	if model.nextLine ~= nil then
 		lines[#lines + 1] = colored("muted", model.nextLine)
 	end
 	lines[#lines + 1] = " "
 	if model.chosen.hint ~= nil then
-		lines[#lines + 1] = colored("muted", model.chosen.hint)
+		lines[#lines + 1] = hinted(model.chosen.hint)
 	end
-	lines[#lines + 1] = colored("muted", string.format(L.chipRightClick, L.chipHideUntilLevel))
-	lines[#lines + 1] = colored("muted", L.chipShiftDrag)
+	lines[#lines + 1] = hinted(string.format(L.chipRightClick, L.chipHideUntilLevel))
+	lines[#lines + 1] = hinted(L.chipShiftDrag)
 	return lines
 end
 
@@ -421,7 +454,11 @@ function Chip.fit(text, measure, maxWidth, short, keep)
 		return short
 	end
 	if keep ~= nil and keep ~= "" and #keep < #short and short:sub(-#keep) == keep then
-		return ellipsise(short:sub(1, #short - #keep), measure, maxWidth, keep)
+		local kept = ellipsise(short:sub(1, #short - #keep), measure, maxWidth, keep)
+		if kept ~= "" then
+			return kept
+		end
+		-- Not even the gain fits beside a letter of the name: cut the short line whole.
 	end
 	return ellipsise(short, measure, maxWidth)
 end
@@ -464,7 +501,10 @@ end
 
 --- The specs the "pick a path" card offers for a class: every spec the data
 --- has a default build for, in talent-tree order, each { slug, name,
---- playstyle }. A spec that shares a tree ("feral-bear") sits beside it.
+--- playstyle, easiest }. A spec that shares a tree ("feral-bear") sits beside
+--- it. The data carries no "easiest to level" flag, so `easiest` marks the
+--- class default Follow.ensureDefault loads with no points spent
+--- (Gear.specOf on empty ranks: the first tree).
 function Chip.pathSpecs(data, classSlug)
 	local list = {}
 	local builds = type(data) == "table" and type(data.defaultBuilds) == "table" and data.defaultBuilds or nil
@@ -472,6 +512,7 @@ function Chip.pathSpecs(data, classSlug)
 		return list
 	end
 	local class = type(data.classes) == "table" and data.classes[classSlug] or nil
+	local default = class ~= nil and Gear.specOf(data, classSlug, {}) or nil
 	local prefix = classSlug .. "-"
 	for slug in pairs(builds) do
 		if type(slug) == "string" and slug:sub(1, #prefix) == prefix then
@@ -480,6 +521,7 @@ function Chip.pathSpecs(data, classSlug)
 				slug = slug,
 				name = Talents.titleCase(part),
 				playstyle = L.specPlaystyle[slug],
+				easiest = slug == default,
 				tree = treeIndex(class, part),
 			}
 		end
@@ -497,6 +539,12 @@ end
 
 --- The level, as the last PLAYER_LEVEL_UP said it if the client has not
 --- caught up yet (UnitLevel can still answer the old level during the event).
+--- The player's class token ("ROGUE"), or nil.
+function Chip.classToken()
+	local slug = Talents.playerClassSlug()
+	return slug ~= nil and slug:upper() or nil
+end
+
 function Chip.level()
 	return math.max(Compat.playerLevel() or 0, Chip.eventLevel or 0)
 end
@@ -640,7 +688,7 @@ function Chip.inputs(data)
 		level = level,
 		build = build,
 		progress = progress,
-		classIcon = Theme.crestPath(classSlug ~= nil and classSlug:upper() or nil) or Theme.UNKNOWN_ICON,
+		classIcon = Theme.classIcon(classSlug ~= nil and classSlug:upper() or nil),
 		unspent = Progress.unspentPoints(level, ranks),
 		now = Theme.now(),
 		clock = Score.clock(),
@@ -717,6 +765,13 @@ function Chip.printHere()
 	end
 end
 
+--- The ready check's findings in chat, one per line.
+function Chip.printRaidCheck()
+	for _, phrase in ipairs(Chip.raidCheck ~= nil and Chip.raidCheck.missing or {}) do
+		Theme.say(string.format(L.chipRaidCheck, phrase))
+	end
+end
+
 --- Until the tab's last-raid region lands (L4.3), the line in chat; then it is seen.
 function Chip.printLastNight(state)
 	Theme.say(state.text)
@@ -736,6 +791,8 @@ function Chip.handlerFor(chosen)
 		end
 	elseif action == "targets" then
 		return Chip.printHere
+	elseif action == "raidlist" then
+		return Chip.printRaidCheck
 	elseif action == "lastraid" then
 		return function()
 			Chip.printLastNight(chosen)
@@ -921,8 +978,9 @@ function Chip.ensure()
 	frame:RegisterForDrag("LeftButton")
 	local background = Theme.texture(frame, "BACKGROUND", "background", Theme.ALPHA.window)
 	background:SetAllPoints(frame)
-	-- The chip's own edge: 1 px, border colour, never gold, never pulsing.
-	Theme.outline(frame, S.border, "border")
+	-- The chip's own edge: 1 px, never gold, never pulsing; the idle chip's
+	-- is the muted colour at 40 % so it reads on a dark scene (paintEdge).
+	Chip.edges = Theme.outline(frame, S.border, "border")
 
 	local iconFrame = CreateFrame("Frame", nil, frame)
 	iconFrame:SetSize(S.chipIcon, S.chipIcon)
@@ -944,12 +1002,13 @@ function Chip.ensure()
 
 	frame:SetScript("OnClick", Chip.onClick)
 	frame:SetScript("OnEnter", function(self)
-		local lines = Chip.current ~= nil and Chip.tooltipLines(Chip.current) or {}
-		if #lines > 0 then
-			Theme.showLines(self, lines, "ANCHOR_BOTTOMLEFT")
+		Chip.paintEdge(true)
+		if Chip.current ~= nil then
+			Theme.showLines(self, Chip.tooltipLines(Chip.current), "ANCHOR_BOTTOMLEFT")
 		end
 	end)
 	frame:SetScript("OnLeave", function()
+		Chip.paintEdge(false)
 		Theme.hideTooltip()
 	end)
 	frame:SetScript("OnDragStart", function(self)
@@ -972,6 +1031,22 @@ function Chip.ensure()
 	Chip.frame = frame
 	Chip.place()
 	return frame
+end
+
+--- The chip's edge: the border colour, except the idle chip's, which is the
+--- muted colour at Theme.ALPHA.idleEdge until the cursor is over it.
+function Chip.paintEdge(hovered)
+	if Chip.edges == nil then
+		return
+	end
+	local idle = Chip.current ~= nil and Chip.current.chosen.kind == "idle"
+	for _, edge in ipairs(Chip.edges) do
+		if idle and not hovered then
+			Theme.paint(edge, "muted", Theme.ALPHA.idleEdge)
+		else
+			Theme.paint(edge, "border")
+		end
+	end
 end
 
 local function measure(value)
@@ -997,21 +1072,25 @@ local function draw(model)
 	local frame = Chip.ensure()
 	local chosen = model.chosen
 	Chip.icon:SetTexture(chosen.icon or Theme.UNKNOWN_ICON)
+	local classIcon, classCoords = Theme.classIcon(Chip.classToken())
 	if type(Chip.icon.SetTexCoord) == "function" then
-		if chosen.crop then
+		if chosen.icon == classIcon then
+			-- The client's class icons share one texture, cut by coords.
+			Chip.icon:SetTexCoord(classCoords[1], classCoords[2], classCoords[3], classCoords[4])
+		elseif chosen.crop then
 			Chip.icon:SetTexCoord(Theme.ICON_CROP[1], Theme.ICON_CROP[2], Theme.ICON_CROP[3], Theme.ICON_CROP[4])
 		else
 			Chip.icon:SetTexCoord(0, 1, 0, 1)
 		end
 	end
 	paintIconBorder(chosen)
-	local width, truncated = S.chip, false
+	local width, shortened = S.chip, false
 	if chosen.text ~= nil and chosen.text ~= "" then
 		local fitted = Chip.fit(chosen.text, measure, S.chipWide - S.chipTextInset, chosen.short, chosen.keep)
 		Chip.text:SetText(fitted)
 		Chip.text:SetTextColor(Theme.rgb(Theme.HEX[chosen.muted and "muted" or "body"]))
 		Chip.text:Show()
-		truncated = fitted == "" or fitted:find(L.ellipsis, 1, true) ~= nil
+		shortened = fitted ~= chosen.text
 		local textWidth = Chip.text:GetStringWidth()
 		if type(textWidth) == "number" then
 			width = math.min(S.chipWide, math.max(S.chip, math.ceil(textWidth) + S.chipTextInset))
@@ -1024,7 +1103,7 @@ local function draw(model)
 	end
 	-- The chip grows leftwards from its top-right anchor.
 	frame:SetWidth(width)
-	Chip.lastDraw = { width = width, truncated = truncated }
+	Chip.lastDraw = { width = width, shortened = shortened }
 	local badge = Chip.badgeText(model.waiting)
 	if badge ~= "" then
 		Chip.badgeDigits:SetText(badge)
@@ -1044,6 +1123,7 @@ local function draw(model)
 	end
 	frame:SetAlpha(model.alpha)
 	Chip.icon:SetAlpha(model.iconAlpha)
+	Chip.paintEdge(type(frame.IsMouseOver) == "function" and frame:IsMouseOver() == true)
 	frame:EnableMouse(model.mouse)
 	frame:Show()
 end
@@ -1118,9 +1198,9 @@ function Chip.hiddenLine(hiddenBy, inCinematic)
 	return L.diagChipHidden
 end
 
---- /fs diag's line for the chip: "Chip: anchored, 212 of 280 wide, not
---- truncated", or why it is hidden; nil before it has drawn, or once it has
---- turned itself off (that is already a /fs diag note).
+--- /fs diag's line for the chip: "Chip: shown, nothing cut off" (or "the
+--- line was shortened"), or why it is hidden; nil before it has drawn, or
+--- once it has turned itself off (that is already a /fs diag note).
 function Chip.diagLine()
 	if Chip.disabled or Chip.frame == nil then
 		return nil
@@ -1128,9 +1208,7 @@ function Chip.diagLine()
 	if not Chip.frame:IsShown() or Chip.lastDraw == nil then
 		return Chip.hiddenLine(Chip.current ~= nil and Chip.current.hiddenBy or nil, Chip.inCinematic)
 	end
-	local S = Theme.SIZES
-	return string.format(L.diagChipLine, math.floor(Chip.lastDraw.width + 0.5), S.chipWide,
-		Chip.lastDraw.truncated and L.diagChipTruncated or L.diagChipNotTruncated)
+	return Chip.shownLine(Chip.lastDraw.shortened)
 end
 
 -- The "pick a path" card (spec section 5.1) ------------------------------------------
@@ -1155,18 +1233,52 @@ function Chip.choosePath(slug)
 	end
 end
 
---- The card's heading: "Gnome Warrior. Pick a path:" in the class colour, or
---- the chip's own "Pick a path" where the client cannot name the race and class.
+--- The card's heading: "Gnome Rogue. Pick a path:", or the chip's own
+--- "Pick a path" where the client cannot name the race and class.
 local function cardHeading()
-	local race, className, token = Compat.playerRaceClass()
+	local race, className = Compat.playerRaceClass()
 	if race == nil or className == nil then
 		return L.chipPath
 	end
-	return Chip.pathHeading(race, className, Theme.classHex(token))
+	return Chip.pathHeading(race, className)
 end
 
---- The card under the chip: a heading, then one gold button per spec with
---- its playstyle line under it. Built once; the class does not change.
+--- Escape closes the card (UISpecialFrames); so does a click anywhere but
+--- the card and the chip (GLOBAL_MOUSE_DOWN, where the client has it, only
+--- listened to while the card is open). Neither chooses anything.
+local function closeOnClickOutside(card)
+	card:SetScript("OnShow", function(self)
+		Theme.registerEvent(self, "GLOBAL_MOUSE_DOWN", true)
+	end)
+	card:SetScript("OnHide", function(self)
+		Theme.unregisterEvent(self, "GLOBAL_MOUSE_DOWN")
+	end)
+	card:SetScript("OnEvent", function(self)
+		local overCard = type(self.IsMouseOver) == "function" and self:IsMouseOver()
+		local overChip = Chip.frame ~= nil and type(Chip.frame.IsMouseOver) == "function" and Chip.frame:IsMouseOver()
+		if not overCard and not overChip then
+			Chip.closePath()
+		end
+	end)
+end
+
+--- A small line on the card at `chipCardNote` px, left-aligned with the
+--- button labels, `width` wide, its top `y` below the card's top.
+local function cardNote(card, text, hexKey, x, y, width)
+	local S = Theme.SIZES
+	local line = sizedText(card, S.chipCardNote, hexKey)
+	line:SetJustifyH("LEFT")
+	line:SetWidth(width)
+	line:SetText(text)
+	line:SetPoint("TOPLEFT", card, "TOPLEFT", x, -y)
+	return line, (line:GetStringHeight() or S.rowHeight)
+end
+
+--- The card under the chip: a heading in gold, then one gold button per spec
+--- (its label left-aligned) with its playstyle line under it, the class
+--- default tagged "Easiest to level", and a muted footer saying what choosing
+--- does. Laid out top to bottom from the card's own corner. Built once; the
+--- class does not change.
 function Chip.ensureCard(specs)
 	if Chip.card ~= nil then
 		return Chip.card
@@ -1174,6 +1286,7 @@ function Chip.ensureCard(specs)
 	local S = Theme.SIZES
 	local pad = S.chipCardPadding
 	local inner = S.chipCardWidth - pad * 2
+	local labelX = pad + S.chipCardLabelInset
 	local card = Widgets.panel(UIParent, S.chipCardWidth, S.chip, Chip.CARD_NAME)
 	card:SetFrameStrata("HIGH")
 	card:SetClampedToScreen(true)
@@ -1182,25 +1295,34 @@ function Chip.ensureCard(specs)
 	local heading = Widgets.label(card, cardHeading(), "gold", "normal")
 	heading:SetWidth(inner)
 	heading:SetPoint("TOPLEFT", card, "TOPLEFT", pad, -pad)
-	local height = pad + (heading:GetStringHeight() or S.rowHeight)
-	local previous = heading
+	local y = pad + (heading:GetStringHeight() or S.rowHeight)
 	for _, spec in ipairs(specs) do
+		y = y + S.chipCardRowGap
 		local button = Cards.primaryButton(card, spec.name, function()
 			Chip.choosePath(spec.slug)
 		end)
-		button:SetPoint("TOPLEFT", previous, "BOTTOMLEFT", 0, -S.chipCardRowGap)
-		height = height + S.chipCardRowGap + S.buttonHeight + S.gap
-		previous = button
+		button:SetPoint("TOPLEFT", card, "TOPLEFT", pad, -y)
+		local label = button.foreverSixtyLabel
+		if label ~= nil then
+			label:ClearAllPoints()
+			label:SetPoint("LEFT", button, "LEFT", S.chipCardLabelInset, 0)
+		end
+		if spec.easiest then
+			local tag = sizedText(card, S.chipCardNote, "gold")
+			tag:SetText(L.chipEasiest)
+			tag:SetPoint("LEFT", button, "RIGHT", S.chipCardLabelInset, 0)
+		end
+		y = y + S.buttonHeight + S.gap
 		if spec.playstyle ~= nil then
-			local line = Widgets.label(card, spec.playstyle, "muted", "small")
-			line:SetWidth(inner)
-			line:SetPoint("TOPLEFT", button, "BOTTOMLEFT", 0, -S.gap)
-			height = height + S.gap + (line:GetStringHeight() or S.rowHeight)
-			previous = line
+			local _, lineHeight = cardNote(card, spec.playstyle, "muted", labelX, y + S.gap, inner - S.chipCardLabelInset)
+			y = y + S.gap + lineHeight
 		end
 	end
-	card:SetHeight(height + pad)
+	y = y + S.chipCardRowGap
+	local _, footerHeight = cardNote(card, L.chipPathFooter, "muted", pad, y, inner)
+	card:SetHeight(y + footerHeight + pad)
 	Theme.makeEscapable(Chip.CARD_NAME)
+	closeOnClickOutside(card)
 	card:Hide()
 	Chip.card = card
 	return card

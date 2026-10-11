@@ -12,14 +12,14 @@ local L = {
 	-- Lane L3.4 adds "/fs: paste or copy a build" at the top once the dialog lands.
 	slashHintLines = {
 		"/fs chip: show or hide the chip",
-		"/fs inspect: look at your target",
+		"/fs inspect: gear and talents of your target",
 		"/fs diag: what is not working",
 		"/fs help: every command",
 	},
 	-- /fs help: every command.
 	slashHelpLines = {
 		"/fs chip: show or hide the chip",
-		"/fs inspect: look at your target, or your whole group",
+		"/fs inspect: gear and talents of your target, or your whole group",
 		"/fs diag: what is not working",
 		"/fs inbox: builds waiting for you from the site",
 		"/fs hello: say hello to your guild's Forever Sixty players",
@@ -51,7 +51,6 @@ local L = {
 	diagTalentTabUnknown = "This client does not say which talent tab is open; "
 		.. "the glow may be on the wrong tree.",
 	diagNoSettingsPanel = "This client has no options panel API; use /fs settings.",
-	diagNone = "Nothing to report.",
 	diagTalentFrame = "Talent window found: %s (%s mapping)",
 	diagTalentButton = "Glow on button %s, width %s, shown %s",
 
@@ -543,15 +542,21 @@ local L = {
 	ellipsis = "…",
 	diagChipOff = "The chip is off: its text did not fit or it was off screen",
 	-- /fs diag's line for the chip's own render check: "Chip: anchored, 212 of 280 wide, not truncated".
-	diagChipLine = "Chip: anchored, %d of %d wide, %s",
-	diagChipNotTruncated = "not truncated",
-	diagChipTruncated = "truncated",
+	-- /fs diag's line for the chip's own render check, outside "Not working:".
+	diagChipShown = "Chip: shown, nothing cut off",
+	diagChipShortened = "Chip: shown, the line was shortened",
+	-- /fs diag with nothing broken.
+	diagAllWorking = "Everything is working.",
+	diagDataAddonMissing = "The Forever Sixty Data addon is not installed. Install it from the site.",
 	diagChipHidden = "Chip: hidden. /fs chip brings it back.",
 	diagChipCombat = "Chip: hidden in combat",
 	diagChipCinematic = "Chip: hidden during a cinematic",
-	diagDataAddonOld = "The Forever Sixty Data addon is missing or too old. Install or update it from the site.",
+	diagDataAddonOld = "The Forever Sixty Data addon is too old. Update it from the site.",
 	-- Below 10, and in the hover when the next point is not spendable yet: "Next at 22: Improved Tactical Mastery".
 	chipNextAt = "Next at %d: %s",
+	-- The hover's fuller form of that line, and the chip's line below level 8 (no name).
+	chipNextTalentAt = "Next talent at %d: %s",
+	chipFirstTalent = "First talent at %d",
 	-- A talent the data has no name for, never its cell ("3:2").
 	chipNextTalent = "the next talent",
 	-- The upgrade line with the verb dropped, when the whole line will not fit.
@@ -560,7 +565,8 @@ local L = {
 	chipHintTalents = "Click: Open talents",
 	chipHintEquip = "Click: Equip",
 	chipHintList = "Click: Show the list",
-	chipHintPath = "Click: Choose a spec",
+	chipHintPath = "Click: Pick a path",
+	chipHintChangePath = "Click: Change your path",
 	chipHintLastRaid = "Click: Show the line",
 	-- Right-click and /fs chip.
 	chipHiddenLine = "Chip hidden until level %d. /fs chip brings it back.",
@@ -568,40 +574,45 @@ local L = {
 	chipShownLine = "Chip shown.",
 	-- The badge past nine waiting.
 	chipWaitingMany = "9+",
-	-- The "pick a path" card's heading: "Gnome Warrior. Pick a path:", race and class in the class colour.
+	-- The "pick a path" card's heading: "Gnome Warrior. Pick a path:", all in the card's gold.
 	chipPathHeading = "%s. Pick a path:",
 	chipRaceClass = "%s %s",
+	-- Under the card's buttons: what choosing does.
+	chipPathFooter = "Loads the leveling build. You can change it later.",
+	-- Beside the class's default spec on the card.
+	chipEasiest = "Easiest to level",
 	-- One line under each spec's button on the "pick a path" card: plain words,
-	-- at most eight, what playing it feels like. Keyed by the data's spec slug.
+	-- at most eight, naming the weapons or the signature talents the tree is
+	-- known for in this client's data (Data.classes tabs). Keyed by spec slug.
 	specPlaystyle = {
-		["druid-balance"] = "Moonkin form, nature and arcane spells from range",
-		["druid-feral"] = "Cat form melee, stealth and bleeds",
-		["druid-feral-bear"] = "Bear form tank, takes the hits",
-		["druid-restoration"] = "Heals over time, keeps the group alive",
-		["hunter-beast-mastery"] = "Your pet does the heavy lifting",
-		["hunter-marksmanship"] = "Big shots from long range",
-		["hunter-survival"] = "Melee hunter with traps and close combat",
-		["mage-arcane"] = "Raw arcane power, watch your mana",
-		["mage-fire"] = "Big fire crits, burn things fast",
-		["mage-frost"] = "Slows and freezes, safe and steady",
-		["paladin-holy"] = "Strong heals on one target, in plate",
-		["paladin-protection"] = "Plate tank, holds many enemies at once",
-		["paladin-retribution"] = "Two-handed melee with holy strikes",
-		["priest-discipline"] = "Shields and support, stops damage before it lands",
-		["priest-holy"] = "Pure healer, big heals for the group",
-		["priest-shadow"] = "Shadow damage over time, drains life",
-		["rogue-assassination"] = "Poisons and finishing moves, big crits",
-		["rogue-combat"] = "Steady sword and mace damage, no tricks",
-		["rogue-subtlety"] = "Stealth, openers and surprise",
-		["shaman-elemental"] = "Lightning and fire from range",
-		["shaman-enhancement"] = "Melee with totems and weapon buffs",
-		["shaman-restoration"] = "Chain heals and totems for the group",
-		["warlock-affliction"] = "Curses and damage over time",
-		["warlock-demonology"] = "A stronger demon at your side",
-		["warlock-destruction"] = "Big fire and shadow bolts",
-		["warrior-arms"] = "Big two-handed hits, slow and heavy",
-		["warrior-fury"] = "Fast dual-wield attacks that build rage",
-		["warrior-protection"] = "Shield and plate, holds the enemy's attention",
+		["druid-balance"] = "Moonkin Form, Wrath and Moonfire from range",
+		["druid-feral"] = "Cat form, bleeds and Berserk",
+		["druid-feral-bear"] = "Bear form tank, Leader of the Pack",
+		["druid-restoration"] = "Heals over time, Wild Growth for groups",
+		["hunter-beast-mastery"] = "Your pet fights, Bestial Wrath makes it deadly",
+		["hunter-marksmanship"] = "Bows and guns, Barrage and Sniper Shot",
+		["hunter-survival"] = "Melee hunter, traps and Lacerating Strikes",
+		["mage-arcane"] = "Arcane Missiles, Arcane Power, watch your mana",
+		["mage-fire"] = "Fireball crits, Blast Wave and Combustion",
+		["mage-frost"] = "Frostbolt, Fingers of Frost, slows and freezes",
+		["paladin-holy"] = "Plate healer, Holy Shock and Holy Light",
+		["paladin-protection"] = "Shield tank, Holy Shield and Consecration",
+		["paladin-retribution"] = "Two-handed weapons, seals and Twist of Light",
+		["priest-discipline"] = "Shields first, Penance and Power Infusion",
+		["priest-holy"] = "Group healer, Prayer of Mending, big heals",
+		["priest-shadow"] = "Shadowform, Shadow Word: Pain and drains",
+		["rogue-assassination"] = "Daggers, poisons, Mutilate and Seal Fate",
+		["rogue-combat"] = "Swords or maces, Blade Flurry, steady damage",
+		["rogue-subtlety"] = "Daggers, stealth openers, Backstab",
+		["shaman-elemental"] = "Lightning Bolt, Lightning Overload and Lava Burst",
+		["shaman-enhancement"] = "Two-handed melee, Stormstrike and Maelstrom Weapon",
+		["shaman-restoration"] = "Chain Heal, totems and Water Shield",
+		["warlock-affliction"] = "Curses, Corruption and Siphon Life, slow kills",
+		["warlock-demonology"] = "A stronger demon, Soul Link keeps you alive",
+		["warlock-destruction"] = "Shadow Bolt, Incinerate and Fire and Brimstone",
+		["warrior-arms"] = "Two-handers, Sweeping Strikes and Mortal Strike",
+		["warrior-fury"] = "Dual wield, Flurry and Bloodthirst",
+		["warrior-protection"] = "Shield and plate, Shield Slam, holds attention",
 	},
 }
 

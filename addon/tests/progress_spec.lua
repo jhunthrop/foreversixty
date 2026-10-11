@@ -96,6 +96,12 @@ describe("Progress.nextPointLevel", function()
 		assert.are.equal(10, Progress.nextPointLevel(4, {}))
 	end)
 
+	-- Fix round 3 (re-review): no "Next at 61".
+	it("has no next level at the level cap", function()
+		assert.is_nil(Progress.nextPointLevel(60, OUT_OF_ORDER))
+		assert.is_nil(Progress.build(warriorBuild(), OUT_OF_ORDER, 60).nextLevel)
+	end)
+
 	it("is the level now when a point is unspent", function()
 		assert.are.equal(22, Progress.nextPointLevel(22, OUT_OF_ORDER))
 	end)

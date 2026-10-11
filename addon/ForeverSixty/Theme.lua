@@ -44,6 +44,10 @@ Theme.HEX = {
 
 Theme.ALPHA = {
 	window = 0.96,
+	--- The chip's hover hints: one step dimmer than the muted info line.
+	hint = 0.6,
+	--- The idle chip's edge, in the muted colour, so it reads on a dark scene.
+	idleEdge = 0.4,
 	--- A row the player has already matched, and a disabled button.
 	dim = 0.55,
 	disabled = 0.4,
@@ -113,8 +117,12 @@ Theme.SIZES = {
 	chipBadgeText = 10,
 	--- The gap under the chip before its "pick a path" card, the card's own
 	--- width and inner padding, and the space between one spec and the next.
+	--- The card's playstyle, tag and footer lines are `chipCardNote` px, and
+	--- they and the button labels start `chipCardLabelInset` in from the button's edge.
 	chipCardGap = 4,
-	chipCardWidth = 240,
+	chipCardWidth = 260,
+	chipCardNote = 11,
+	chipCardLabelInset = 8,
 	chipCardPadding = 12,
 	chipCardRowGap = 8,
 	minimapButton = 32,
@@ -213,6 +221,9 @@ Theme.MEDIA = {
 	minimapMask = "Interface\\CharacterFrame\\TempPortraitAlphaMask",
 	minimapRing = "Interface\\Minimap\\MiniMap-TrackingBorder",
 	minimapGround = "Interface\\Minimap\\UI-Minimap-Background",
+	--- The client's own round class icons (the target frame's), cut by
+	--- CLASS_ICON_TCOORDS: readable at 24 px where the crest art is not.
+	classIcons = "Interface\\TargetingFrame\\UI-Classes-Circles",
 }
 
 --- The nine classes this addon ships a crest for (addon/tools/
@@ -238,6 +249,21 @@ function Theme.crestPath(token)
 		return nil
 	end
 	return "Interface\\AddOns\\ForeverSixty\\media\\crests\\" .. token:lower()
+end
+
+--- The class's icon and its texture coords: the client's own round class
+--- icon (Theme.MEDIA.classIcons, CLASS_ICON_TCOORDS) where the client has
+--- the table, else the shipped crest, else the neutral tile.
+function Theme.classIcon(token)
+	local coords = type(CLASS_ICON_TCOORDS) == "table" and token ~= nil and CLASS_ICON_TCOORDS[token] or nil
+	if type(coords) == "table" and #coords == 4 then
+		return Theme.MEDIA.classIcons, { coords[1], coords[2], coords[3], coords[4] }
+	end
+	local crest = Theme.crestPath(token)
+	if crest ~= nil then
+		return crest, { 0, 1, 0, 1 }
+	end
+	return Theme.UNKNOWN_ICON, { Theme.ICON_CROP[1], Theme.ICON_CROP[2], Theme.ICON_CROP[3], Theme.ICON_CROP[4] }
 end
 
 --- A crest + ring texture pair, `size` square: the character header's
@@ -273,8 +299,10 @@ Theme.EDGES = {
 	{ from = "TOPRIGHT", to = "BOTTOMRIGHT", horizontal = false },
 }
 
---- What this client turned out not to have. Read by /fs diag.
+--- What is not working on this client (Theme.note), and what was merely
+--- found out about it (Theme.noteInfo). Read by /fs diag.
 ns.Diagnostics = ns.Diagnostics or {}
+ns.DiagnosticsInfo = ns.DiagnosticsInfo or {}
 Theme.templates = {}
 
 function Theme.diagnostics()
@@ -286,6 +314,39 @@ function Theme.note(message)
 	return ns.Diagnostics
 end
 
+--- A finding that is not a fault (which talent window answered, say): /fs
+--- diag prints it after the report, never under "Not working:".
+function Theme.noteInfo(message)
+	ns.DiagnosticsInfo[#ns.DiagnosticsInfo + 1] = message
+	return ns.DiagnosticsInfo
+end
+
+function Theme.infoNotes()
+	return ns.DiagnosticsInfo
+end
+
+--- The /fs diag lines: "Not working:" and only the broken things, or
+--- "Everything is working."; then the chip's own line (when given) and the
+--- findings, outside the heading.
+function Theme.diagReport(broken, chipLine, info)
+	local lines = {}
+	if #broken > 0 then
+		lines[1] = L.diagHeading
+		for _, note in ipairs(broken) do
+			lines[#lines + 1] = note
+		end
+	else
+		lines[1] = L.diagAllWorking
+	end
+	if chipLine ~= nil then
+		lines[#lines + 1] = chipLine
+	end
+	for _, note in ipairs(info or {}) do
+		lines[#lines + 1] = note
+	end
+	return lines
+end
+
 --- Forget what was learned about the client. Specs only; the game never
 --- changes its capabilities inside a session.
 function Theme.reset()
@@ -294,6 +355,9 @@ function Theme.reset()
 	Theme.addonMessagesNoted = nil
 	for index = #ns.Diagnostics, 1, -1 do
 		ns.Diagnostics[index] = nil
+	end
+	for index = #ns.DiagnosticsInfo, 1, -1 do
+		ns.DiagnosticsInfo[index] = nil
 	end
 end
 
@@ -314,6 +378,14 @@ function Theme.hexOf(r, g, b)
 		return math.floor(math.max(0, math.min(1, value or 0)) * 255 + 0.5)
 	end
 	return string.format("%02x%02x%02x", byte(r), byte(g), byte(b))
+end
+
+--- `hexKey`'s colour at `alpha` over the window ground, as six hex digits: a
+--- dimmer step of a token for a text escape (which carries no alpha of its own).
+function Theme.dimHex(hexKey, alpha)
+	local r, g, b = Theme.rgb(Theme.HEX[hexKey])
+	local gr, gg, gb = Theme.rgb(Theme.HEX.background)
+	return Theme.hexOf(r * alpha + gr * (1 - alpha), g * alpha + gg * (1 - alpha), b * alpha + gb * (1 - alpha))
 end
 
 --- The class colour (Theme.classColor) as six hex digits, for a chat or tooltip escape.
@@ -629,12 +701,22 @@ end
 
 --- Register one event, recording rather than raising when the client has
 --- never heard of it. This is the only RegisterEvent call in the addon.
-function Theme.registerEvent(frame, event)
+--- `optional`: a nicety the addon works without (the path card's click
+--- outside), recorded as a finding rather than a fault.
+function Theme.registerEvent(frame, event, optional)
 	local ok = pcall(frame.RegisterEvent, frame, event)
 	if not ok then
-		Theme.note(string.format(L.diagNoEvent, event))
+		local note = optional and Theme.noteInfo or Theme.note
+		note(string.format(L.diagNoEvent, event))
 	end
 	return ok
+end
+
+--- The other half of an optional registration; quiet either way.
+function Theme.unregisterEvent(frame, event)
+	if type(frame.UnregisterEvent) == "function" then
+		pcall(frame.UnregisterEvent, frame, event)
+	end
 end
 
 --- Run `action` later. A client with no C_Timer says so rather than

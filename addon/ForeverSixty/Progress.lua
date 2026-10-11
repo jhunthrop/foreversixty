@@ -93,12 +93,18 @@ function Progress.build(build, ranks, level)
 		matched = matched + math.min(have, cell.want)
 	end
 	local point = Progress.nextPoint(build, ranks)
+	local nextLevel
+	if point ~= nil and level ~= nil then
+		nextLevel = Progress.nextPointLevel(level, ranks)
+	elseif point ~= nil then
+		nextLevel = 9 + point.index
+	end
 	return {
 		matched = matched,
 		total = #build.order,
 		offPlan = math.max(0, Progress.pointsSpent(ranks) - matched),
 		point = point,
-		nextLevel = point ~= nil and (level ~= nil and Progress.nextPointLevel(level, ranks) or 9 + point.index) or nil,
+		nextLevel = nextLevel,
 		done = point == nil,
 	}
 end
@@ -391,11 +397,18 @@ function Progress.unspentPoints(level, ranks)
 	return math.max(0, (level - 9) - Progress.pointsSpent(ranks))
 end
 
+--- The level cap: no talent point arrives past it.
+Progress.MAX_LEVEL = 60
+
 --- The level the character's next talent point arrives at: `level` itself
 --- while a point is unspent, else the later of the next level and the level
---- that grants point number pointsSpent + 1 (10 + pointsSpent). The "next
---- at" number; Progress.levelForPoint stays the plan's own "taken at" label.
+--- that grants point number pointsSpent + 1 (10 + pointsSpent). nil at the
+--- level cap, where no level follows (no "Next at 61"). The "next at"
+--- number; Progress.levelForPoint stays the plan's own "taken at" label.
 function Progress.nextPointLevel(level, ranks)
+	if type(level) == "number" and level >= Progress.MAX_LEVEL then
+		return nil
+	end
 	if Progress.unspentPoints(level, ranks) > 0 then
 		return level
 	end
