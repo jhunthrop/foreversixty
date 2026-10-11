@@ -812,7 +812,8 @@ end
 --- before this addon was updated -- is silently dropped by
 --- Codec.inboxMessages, the same forward-compatibility rule Follow.inbox
 --- already applies to a build the addon does not recognise.
-Codec.MESSAGE_TYPES = { upgrade = true, weights = true, guild = true }
+--- `last_raid` (contract 3) is read by the chip's last-night line.
+Codec.MESSAGE_TYPES = { upgrade = true, weights = true, guild = true, last_raid = true }
 
 --- Messages of `kind` from `inbox.messages`, addressed to `key` or to no
 --- one in particular, in the order the companion wrote them. Pure: never

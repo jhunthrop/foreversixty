@@ -29,7 +29,7 @@ local L = {
 	diagNoEvent = "This client refused the event %s.",
 	diagNoEquipApi = "This client has no equip function; the Equip buttons are off.",
 	diagNoTooltipApi = "This client has no %s; the item tooltip could not be shown.",
-	diagNoTalentButton = "No talent button matched the next point; the tracker still works.",
+	diagNoTalentButton = "No talent button matched the next point; the chip still names it.",
 	diagTalentTabUnknown = "This client does not say which talent tab is open; "
 		.. "the glow may be on the wrong tree.",
 	diagNoSettingsPanel = "This client has no options panel API; use /fs settings.",
@@ -119,7 +119,6 @@ local L = {
 	followLoadButton = "Load build",
 	followLoadTitle = "LOAD A BUILD",
 	followForget = "Forget build",
-	followShowTracker = "Show tracker",
 	followProgress = "%d of %d points",
 	-- Controller ruling 2: neither code format carries a build name, so a
 	-- pasted code is named after its class.
@@ -153,12 +152,6 @@ local L = {
 	buildArrivedFirst = "This is the first build queued for this character.",
 	buildArrivedSame = "It matches your current build point for point.",
 	buildArrivedDiff = "%d talent points differ from your current build.",
-
-	-- The tracker. followNext supplies the "<talent> (<tree>, tier n)"
-	-- half, so the two surfaces cannot drift apart.
-	trackerNext = "Next: %s",
-	trackerProgress = "%d of %d",
-	trackerComplete = "Build complete",
 
 	-- Gear
 	gearTitle = "Upgrades",
@@ -230,15 +223,10 @@ local L = {
 	settingsGroupScreen = "ON SCREEN",
 	settingsGroupData = "YOUR DATA",
 	settingsMinimapHint = "Left click opens this window.",
-	settingsTrackerHint = "A small bar with the next talent to take from your loaded build.",
-	settingsTrackerLockedHint = "Unlock it to drag it somewhere else.",
 	settingsAutoSaveHint = "The companion app reads this to keep your character on the site current.",
 	settingsChatHint = "Off by default: the window already shows it.",
 	settingsTooltipHint = "On any item: whether your build plans it, and whether it beats what you wear.",
-	settingsToastHint = "A small note when you level or gain a talent point, naming what to take.",
 	settingsMinimap = "Show the minimap button",
-	settingsTracker = "Show the tracker",
-	settingsTrackerLocked = "Lock the tracker in place",
 	settingsAutoSave = "Save my export when I log out",
 	settingsChat = "Print /fs answers in chat too",
 	settingsReset = "Reset positions",
@@ -281,7 +269,7 @@ local L = {
 	addonVersionDev = "dev",
 
 	-- Outside the window (premium pass, 2026-09-21): item tooltips, the
-	-- level-up toast, the tracker's progress bar, the minimap's tooltip
+	-- minimap's tooltip
 	-- and compartment, the keybind, and /fs help. Appended, never
 	-- interleaved with the keys above, so a merge with the window lane's
 	-- own edits to this file costs one diff hunk, not a rebase through
@@ -293,10 +281,7 @@ local L = {
 	tooltipUpgrade = "Upgrade for %s: %+.0f by our weights",
 	tooltipNotUpgrade = "Not an upgrade",
 	diagTooltipHookFailed = "The item tooltip hook failed once and turned itself off: %s",
-	toastMessage = "Level %d. Take %s, rank %d of %d.",
-	-- The rotation toast (design section 2 item 3), and the Overview's
-	-- rotation card (section 6 Wave B).
-	rotationToastMessage = "Level %d: %s opens your rotation now.",
+	-- The Overview's rotation card (section 6 Wave B).
 	overviewRotationEyebrow = "YOUR ROTATION",
 	overviewRotationNone = "No curated rotation for this spec yet.",
 	overviewRotationNoBuild = "Load a build to see your rotation.",
@@ -309,7 +294,6 @@ local L = {
 	bindingHeader = "Forever Sixty",
 	bindingToggle = "Toggle Forever Sixty",
 	settingsTooltip = "Show gear tips on item tooltips",
-	settingsToast = "Show the level-up toast",
 	diagNoTooltipHook = "This client has no tooltip hook API; item tooltips will not show Forever Sixty's lines.",
 	diagCompartmentFailed = "This client's addon compartment did not accept Forever Sixty; "
 		.. "the minimap button is used instead.",
@@ -503,6 +487,77 @@ local L = {
 	inspectQueued = "Inspecting %d; results appear here as they arrive.",
 	inspectPaused = "Inspecting is paused while you are in combat; it carries on afterwards.",
 	inspectTooFar = "Too far away to inspect: %d.",
+
+	-- Lane addon-v2 L3.1 (2026-10-11): the chip (spec section 4.1), one line
+	-- at a time, highest first. "Take Improved Heroic Strike".
+	chipTake = "Take %s",
+	-- Below level 10, before a point can be spent: "Take Improved Heroic Strike at level 10".
+	chipTakeAt = "Take %s at level %d",
+	-- "Equip Chausses of Westfall, +4.2 DPS"; the second %s is one of the
+	-- three gains below, or chipInCombat while the client will not equip.
+	chipEquip = "Equip %s, %s",
+	chipGainDps = "+%.1f DPS",
+	chipGainHealing = "+%.1f healing",
+	chipGainScore = "+%d score",
+	-- "Here for you: Mutant Scale Breastplate (Mutanus), 2 more".
+	chipHere = "Here for you: %s%s",
+	chipHereItem = "%s (%s)",
+	chipHereMore = ", %d more",
+	chipRaidCheck = "Missing: %s",
+	chipListSeparator = ", ",
+	-- "Lucifron: 71st percentile, biggest loss downtime" (Chip.ordinal writes "71st").
+	chipLastNight = "%s: %s percentile, biggest loss %s",
+	chipLastNightNoLoss = "%s: %s percentile",
+	-- "71st": the number and its English suffix (Chip.ordinal), 11th to 13th excepted.
+	ordinal = "%d%s",
+	ordinalSuffixes = { "st", "nd", "rd" },
+	ordinalOther = "th",
+	-- The badge when more states wait behind the one shown: "+2".
+	chipWaiting = "+%d",
+	chipComplete = "Build complete",
+	chipInCombat = "In combat",
+	chipHideUntilLevel = "Hide until next level",
+	-- The hover tooltip's last line, muted: how to put the chip away.
+	chipRightClick = "Right-click: %s",
+	chipShiftDrag = "Shift-drag to move",
+	-- Level 1 to 9 on a default build (spec section 5.1): the class icon and
+	-- this line; a click opens a card with one button per spec.
+	chipPath = "Pick a path",
+	-- What the chip cut a too-long line with.
+	ellipsis = "…",
+	diagChipOff = "The chip is off: its text did not fit or it was off screen",
+	-- One line under each spec's button on the "pick a path" card: plain words,
+	-- at most eight, what playing it feels like. Keyed by the data's spec slug.
+	specPlaystyle = {
+		["druid-balance"] = "Moonkin form, nature and arcane spells from range",
+		["druid-feral"] = "Cat form melee, stealth and bleeds",
+		["druid-feral-bear"] = "Bear form tank, takes the hits",
+		["druid-restoration"] = "Heals over time, keeps the group alive",
+		["hunter-beast-mastery"] = "Your pet does the heavy lifting",
+		["hunter-marksmanship"] = "Big shots from long range",
+		["hunter-survival"] = "Melee hunter with traps and close combat",
+		["mage-arcane"] = "Raw arcane power, watch your mana",
+		["mage-fire"] = "Big fire crits, burn things fast",
+		["mage-frost"] = "Slows and freezes, safe and steady",
+		["paladin-holy"] = "Strong heals on one target, in plate",
+		["paladin-protection"] = "Plate tank, holds many enemies at once",
+		["paladin-retribution"] = "Two-handed melee with holy strikes",
+		["priest-discipline"] = "Shields and support, stops damage before it lands",
+		["priest-holy"] = "Pure healer, big heals for the group",
+		["priest-shadow"] = "Shadow damage over time, drains life",
+		["rogue-assassination"] = "Poisons and finishing moves, big crits",
+		["rogue-combat"] = "Steady sword and mace damage, no tricks",
+		["rogue-subtlety"] = "Stealth, openers and surprise",
+		["shaman-elemental"] = "Lightning and fire from range",
+		["shaman-enhancement"] = "Melee with totems and weapon buffs",
+		["shaman-restoration"] = "Chain heals and totems for the group",
+		["warlock-affliction"] = "Curses and damage over time",
+		["warlock-demonology"] = "A stronger demon at your side",
+		["warlock-destruction"] = "Big fire and shadow bolts",
+		["warrior-arms"] = "Big two-handed hits, slow and heavy",
+		["warrior-fury"] = "Fast dual-wield attacks that build rage",
+		["warrior-protection"] = "Shield and plate, holds the enemy's attention",
+	},
 }
 
 ns.L = L

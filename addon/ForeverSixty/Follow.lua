@@ -158,27 +158,33 @@ end
 --- (`data.defaultBuilds[<spec>]`, contract 1): leveling, raid at RAID_LEVEL. The spec is
 --- Gear.specOf's, which is the class's first tree with no points spent. The build is marked
 --- `default = true` and named from the data, and nothing is saved: it is worked out again at
---- each login, so a data update replaces it. `character` ({ classSlug, ranks, level }) is
---- read from the client when nil. The build, or nil when there is nothing to load.
+--- each login, so a data update replaces it. `character` ({ classSlug, ranks, level, spec })
+--- is read from the client for any field it leaves out. `spec`, when given, is the spec the
+--- player chose on the chip's "pick a path" card (spec section 5.1) and wins over the points;
+--- it must be one of this class's specs with a default. The build, or nil when there is
+--- nothing to load.
 function Follow.ensureDefault(data, character)
 	if type(data) ~= "table" or type(data.defaultBuilds) ~= "table" or hasSavedBuild() then
 		return nil
 	end
-	character = character or {
-		classSlug = Talents.playerClassSlug(),
-		ranks = Talents.readRanks(data),
-		level = Compat.playerLevel(),
-	}
-	local classSlug = character.classSlug
+	character = character or {}
+	local classSlug = character.classSlug or Talents.playerClassSlug()
 	if classSlug == nil or type(data.classes) ~= "table" or data.classes[classSlug] == nil then
 		return nil
 	end
-	local spec = gearModule().specOf(data, classSlug, character.ranks or {})
+	local level = character.level or Compat.playerLevel()
+	local spec = character.spec
+	if spec ~= nil and spec:sub(1, #classSlug + 1) ~= classSlug .. "-" then
+		return nil
+	end
+	if spec == nil then
+		spec = gearModule().specOf(data, classSlug, character.ranks or Talents.readRanks(data))
+	end
 	local builds = spec ~= nil and data.defaultBuilds[spec] or nil
 	if type(builds) ~= "table" then
 		return nil
 	end
-	local kind = (character.level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
 	local default = builds[kind]
 	if type(default) ~= "table" then
 		return nil

@@ -11,7 +11,9 @@ describe("the TOC", function()
 		"Progress.lua", "Rotation.lua",
 		-- Comms reads Progress, Score, Gear and Theme, so it loads after Score.
 		"Score.lua", "Comms.lua", "Inspect.lua", "Ratings.lua", "Tooltip.lua",
-		"TalentGlow.lua", "Tracker.lua", "Minimap.lua", "Toast.lua",
+		"TalentGlow.lua", "Minimap.lua",
+		-- The surfaces (spec section 7): the chip replaces the tracker and the toast.
+		"surfaces/Chip.lua",
 		-- The measurement recorder: Options routes /fs record to it.
 		"RecorderBuffer.lua", "Recorder.lua", "Options.lua",
 	}

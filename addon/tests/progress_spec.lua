@@ -250,9 +250,24 @@ describe("Progress.bagUpgrades", function()
 			bagItem(22, "Big Ring", "INVTYPE_FINGER", 4),
 		}
 		assert.are.same({
-			{ link = "|Hitem:22|h[Big Ring]|h", itemId = 22, slot = "finger1", delta = 6 },
-			{ link = "|Hitem:11|h[Better Helm]|h", itemId = 11, slot = "head", delta = 2 },
+			{ link = "|Hitem:22|h[Big Ring]|h", itemId = 22, slot = "finger1", delta = 6, unit = "score" },
+			{ link = "|Hitem:11|h[Better Helm]|h", itemId = 11, slot = "head", delta = 2, unit = "score" },
 		}, Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped))
+	end)
+
+	-- Contract 10's rules engine: a warrior wears plate from 40 and never a libram.
+	it("never offers an item the character cannot wear yet, or ever", function()
+		local plate = bagItem(30, "Plate Chest", "INVTYPE_CHEST", 40)
+		plate.itemClass, plate.itemSubClass = 4, 4
+		local libram = bagItem(31, "Libram", "INVTYPE_RELIC", 40)
+		libram.itemClass, libram.itemSubClass = 4, 7
+		local mail = bagItem(32, "Mail Chest", "INVTYPE_CHEST", 3)
+		mail.itemClass, mail.itemSubClass = 4, 3
+		local found = Progress.bagUpgrades(DATA, build, ARMS_RANKS, { plate, libram, mail }, equipped, nil, 20)
+		assert.are.equal(1, #found)
+		assert.are.equal(32, found[1].itemId)
+		local at40 = Progress.bagUpgrades(DATA, build, ARMS_RANKS, { plate }, equipped, nil, 40)
+		assert.are.equal(30, at40[1].itemId)
 	end)
 
 	it("never lists an item that is already worn", function()
@@ -268,7 +283,56 @@ describe("Progress.bagUpgrades", function()
 
 	it("converts each delta to DPS when a DPS per point is given", function()
 		local bag = { bagItem(11, "Better Helm", "INVTYPE_HEAD", 6) }
-		assert.are.equal(1, Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped, 0.5)[1].delta)
+		local found = Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped, 0.5)
+		assert.are.equal(1, found[1].delta)
+		assert.are.equal("dps", found[1].unit)
+	end)
+end)
+
+describe("Progress.picksHere", function()
+	-- Packed picks as Data.lua stores them (contract 1), under the real data's
+	-- numeric band key.
+	local HERE_DATA = {
+		bis = {
+			["warrior-arms"] = {
+				[20] = {
+					alliance = {
+						head = "10399|D|The Deadmines: Edwin VanCleef",
+						chest = "2317|C|Leatherworking",
+						finger1 = "1156|D|The Deadmines: Gilnid",
+						finger2 = "1156|D|The Deadmines: Gilnid",
+						main_hand = "5187|D|The Deadmines: Rhahk'Zor",
+						legs = "6087|D|The Deadmines",
+						feet = "6089|D|Wailing Caverns: Mutanus the Devourer",
+					},
+				},
+			},
+		},
+	}
+
+	it("lists the band's picks that drop here, weapons first for a melee spec", function()
+		local picks = Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", "The Deadmines", {})
+		assert.are.same({
+			{ slot = "main_hand", itemId = 5187, source = "The Deadmines: Rhahk'Zor" },
+			{ slot = "head", itemId = 10399, source = "The Deadmines: Edwin VanCleef" },
+			{ slot = "legs", itemId = 6087, source = "The Deadmines" },
+			{ slot = "finger1", itemId = 1156, source = "The Deadmines: Gilnid" },
+		}, picks)
+	end)
+
+	it("leaves out a slot where the pick is already worn", function()
+		local equipped = { main_hand = { itemId = 5187 }, head = { itemId = 1 } }
+		local picks = Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", "The Deadmines", equipped)
+		assert.are.equal("head", picks[1].slot)
+		assert.are.equal(3, #picks)
+	end)
+
+	it("lists nothing for another instance's name, a missing band, or no instance", function()
+		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", "The Dead", {}))
+		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", 30, "alliance", "The Deadmines", {}))
+		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", 20, "horde", "The Deadmines", {}))
+		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", nil, {}))
+		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", nil, "alliance", "The Deadmines", {}))
 	end)
 end)
 

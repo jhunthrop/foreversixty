@@ -38,6 +38,8 @@ read_globals = {
 	"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
 	"GetCursorPosition", "InterfaceOptionsFrame_OpenToCategory",
 	"AddonCompartmentFrame",
+	-- The chip (surfaces/Chip.lua), each behind a Theme capability check.
+	"GetInstanceInfo", "IsShiftKeyDown", "ToggleTalentFrame", "PlayerSpellsUtil",
 	-- Saved variables the TOC declares. ForeverSixtyInbox is written by the
 	-- companion and only ever read here; ForeverSixtyDB is the addon's own
 	-- and Export.save writes it, so it is a global, not a read_global.
@@ -88,5 +90,7 @@ files["tests/"] = {
 		"GetCursorPosition", "Settings", "InterfaceOptions_AddCategory",
 		"InterfaceOptionsFrame_OpenToCategory", "PlayerTalentFrame", "TalentFrame",
 		"AddonCompartmentFrame",
+		-- The chip (surfaces/Chip.lua), each behind a Theme capability check.
+		"GetInstanceInfo", "IsShiftKeyDown", "ToggleTalentFrame", "PlayerSpellsUtil",
 	},
 }

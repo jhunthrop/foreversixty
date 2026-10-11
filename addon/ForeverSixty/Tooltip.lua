@@ -69,30 +69,9 @@ function Tooltip.equippedSlotFor(itemLink)
 	return nil
 end
 
---- pipeline.addonbis.BIS_LEVEL_BANDS' own spacing: one BiS band every ten levels.
-local BIS_BAND_STEP = 10
-
---- The highest band key at or below `level` in a band-keyed table (bands
---- run 20..60 step 10, and a build in progress may skip one) -- shared by
---- the BiS lookup and the verdict's own band-weights lookup, so both
---- round down to the same rung. nil below `floor`, or with no table (or no
---- entry at all) to look in.
-local function highestBandAtOrBelow(bands, level, floor)
-	if type(bands) ~= "table" or type(level) ~= "number" or level < floor then
-		return nil
-	end
-	local rounded = math.min(60, math.floor(level / BIS_BAND_STEP) * BIS_BAND_STEP)
-	for candidate = rounded, floor, -BIS_BAND_STEP do
-		if bands[candidate] ~= nil then
-			return candidate
-		end
-	end
-	return nil
-end
-
---- Below this level a character has no BiS band yet (design: "below 20
---- shows nothing" -- pipeline.addonbis.BIS_LEVEL_BANDS' own floor).
-Tooltip.BIS_MIN_LEVEL = 20
+--- Below this level a character has no BiS band yet: Gear.bandFor's own
+--- floor, named here too for the tooltip's own readers.
+Tooltip.BIS_MIN_LEVEL = Gear.BIS_MIN_LEVEL
 
 --- This spec's stat weights at `level`: the nightly-measured band weights
 --- (ns.Data.bis_weights, lane addon-tooltip-polish item 4) when the
@@ -107,7 +86,7 @@ function Tooltip.weightsFor(data, spec, level)
 		return nil
 	end
 	local bisWeights = type(data.bis_weights) == "table" and data.bis_weights[spec] or nil
-	local band = highestBandAtOrBelow(bisWeights, level, Tooltip.BIS_MIN_LEVEL)
+	local band = Gear.bandFor(bisWeights, level)
 	local measured = band ~= nil and bisWeights[band] or nil
 	if type(measured) == "table" and next(measured) ~= nil then
 		return measured
@@ -266,32 +245,9 @@ Tooltip.SOURCE_KIND_NAMES = {
 	B = "World Drop",
 }
 
---- The highest bis band <= level, tolerating gaps in a partially-generated
---- spec (the nightly bis.yml workflow may not have finished every band
---- yet). Below BIS_MIN_LEVEL, or with no bis table for this spec at all:
---- nil, nil.
-local function bisBandFor(specBis, level)
-	local band = highestBandAtOrBelow(specBis, level, Tooltip.BIS_MIN_LEVEL)
-	if band == nil then
-		return nil, nil
-	end
-	return band, specBis[band]
-end
-
---- "alliance"/"horde", the bis table's own faction keys, or nil on a test
---- double with no UnitFactionGroup.
+--- "alliance"/"horde", the bis table's own faction keys (Compat.playerFaction).
 local function playerFaction()
-	if type(UnitFactionGroup) ~= "function" then
-		return nil
-	end
-	local token = UnitFactionGroup("player")
-	if token == "Alliance" then
-		return "alliance"
-	end
-	if token == "Horde" then
-		return "horde"
-	end
-	return nil
+	return Compat.playerFaction()
 end
 
 --- The item ids newly best at `band` for `faction`, or {} with no
@@ -383,7 +339,7 @@ function Tooltip.bisLines(data, slot)
 	local ranks = Talents.readRanks(data)
 	local spec = Gear.specOf(data, classSlug, ranks)
 	local specBis = spec ~= nil and type(data.bis) == "table" and data.bis[spec] or nil
-	local band = bisBandFor(specBis, Compat.playerLevel())
+	local band = Gear.bandFor(specBis, Compat.playerLevel())
 	if band == nil then
 		return {}
 	end

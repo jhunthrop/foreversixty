@@ -4,8 +4,9 @@
 -- against spellranks.json into ns.Data.rotations[spec], one band per level
 -- in its own LEVEL_BANDS (10, 20, 30, 38, 40, 50, 60). This module picks
 -- the right band for a character's level and slices it for novice
--- (top four lines) or advanced (every line) display; Toast.lua uses
--- Rotation.newAbilities for the level-up rotation toast.
+-- (top four lines) or advanced (every line) display. Rotation.newAbilities
+-- fed the level-up rotation toast, which went with the chip (L3.1); the
+-- character-panel tab's rotation region (L4.3) is its next reader.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local Gear = ns.Gear or require("Gear")
@@ -118,10 +119,10 @@ end
 --- so a rotation surface can glow the matching row (docs/
 --- tenets.md's standard: "the row for the ability the player just
 --- learned this level glows, the toast's same event") with a plain table
---- lookup rather than a require of Toast.lua, which loads late in the
---- TOC and cannot be required that late in the real client. Toast.rotationModel calls this explicitly,
---- right after computing `fresh` -- a visible side effect at its call
---- site, not a hidden one inside this file's own pure functions above.
+--- lookup rather than a require of a surface that loads later in the TOC.
+--- Its caller calls this explicitly, right after computing `fresh` -- a
+--- visible side effect at its call site, not a hidden one inside this
+--- file's own pure functions above.
 Rotation.recentlyLearned = {}
 
 function Rotation.markLearned(lines)

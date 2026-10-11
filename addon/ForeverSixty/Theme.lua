@@ -88,8 +88,26 @@ Theme.SIZES = {
 	buttonWidth = 150,
 	editBoxHeight = 72,
 	iconSize = 16,
-	trackerWidth = 240,
-	trackerHeight = 48,
+	--- The chip (spec section 4.1): square when idle, wide with a line of
+	--- 12 px text. The icon sits `chipIconInset` in from the left, and the
+	--- text gets the wide chip less `chipTextInset` (icon, gaps, padding).
+	chip = 28,
+	chipWide = 220,
+	chipText = 12,
+	chipIcon = 20,
+	chipIconInset = 4,
+	chipTextInset = 36,
+	--- How far left of the minimap's own left edge the chip sits by default.
+	chipMinimapGap = 12,
+	--- The "+2" badge on the chip's top-right corner.
+	chipBadgeWidth = 18,
+	chipBadgeHeight = 12,
+	--- The gap under the chip before its "pick a path" card, the card's own
+	--- width and inner padding, and the space between one spec and the next.
+	chipCardGap = 4,
+	chipCardWidth = 240,
+	chipCardPadding = 12,
+	chipCardRowGap = 8,
 	minimapButton = 32,
 	minimapIcon = 20,
 	minimapRadius = 80,
@@ -98,7 +116,7 @@ Theme.SIZES = {
 	--- game's own rank border.
 	glowInset = 3,
 	--- How long "Selected -- press Ctrl+C" stays, and how long "Build
-	--- complete" stays on the tracker before it hides.
+	--- complete" stays on the chip before it goes idle.
 	copiedSeconds = 2,
 	completeSeconds = 5,
 	--- The rotation card's own row height: an icon-height line for the
@@ -600,6 +618,38 @@ function Theme.inCombat()
 	return type(InCombatLockdown) == "function" and InCombatLockdown() == true
 end
 
+--- The instance the player is standing in: its name and type ("party",
+--- "raid", ...), or nil outdoors (type "none") or on a client without
+--- GetInstanceInfo.
+function Theme.instanceName()
+	if type(GetInstanceInfo) ~= "function" then
+		return nil
+	end
+	local ok, name, instanceType = pcall(GetInstanceInfo)
+	if not ok or type(name) ~= "string" or name == "" or instanceType == nil or instanceType == "none" then
+		return nil
+	end
+	return name, instanceType
+end
+
+--- Whether Shift is held, for the chip's shift-drag; false where the client cannot say.
+function Theme.shiftDown()
+	return type(IsShiftKeyDown) == "function" and IsShiftKeyDown() == true
+end
+
+--- Open (or close) the client's talent window, whichever way this client
+--- does it: the classic ToggleTalentFrame, or the modern player-spells
+--- frame. True when a call went through.
+function Theme.toggleTalents()
+	if type(ToggleTalentFrame) == "function" then
+		return (pcall(ToggleTalentFrame))
+	end
+	if type(PlayerSpellsUtil) == "table" and type(PlayerSpellsUtil.TogglePlayerSpellsFrame) == "function" then
+		return (pcall(PlayerSpellsUtil.TogglePlayerSpellsFrame))
+	end
+	return false
+end
+
 function Theme.equip(link)
 	if type(C_Item) == "table" and type(C_Item.EquipItemByName) == "function" then
 		C_Item.EquipItemByName(link)
@@ -751,10 +801,11 @@ local function hasOverlayGlow()
 	return Theme.glowPair
 end
 
---- How the outline glow breathes: alpha between these two, this long
---- each way, so it reads as "next" against the game's own static green
---- and gold talent borders rather than as one more of them.
-Theme.GLOW_PULSE = { low = 0.35, seconds = 0.6 }
+--- How the outline glow breathes: alpha between 1 and `low`, `seconds`
+--- each way (spec section 4.1: 0.4 to 1.0 over 1.2 s), so it reads as
+--- "next" against the game's own static green and gold talent borders
+--- rather than as one more of them.
+Theme.GLOW_PULSE = { low = 0.4, seconds = 0.6 }
 
 local function pulse(edges)
 	for _, edge in pairs(edges) do
@@ -783,6 +834,9 @@ local function stopPulse(edges)
 		if type(edge) == "table" and edge.foreverSixtyPulse ~= nil then
 			edge.foreverSixtyPulse:Stop()
 		end
+		if type(edge) == "table" and type(edge.SetAlpha) == "function" then
+			edge:SetAlpha(1)
+		end
 	end
 end
 
@@ -790,7 +844,11 @@ end
 --- with the overlay glow: the trait talent window's buttons showed
 --- nothing under ActionButton_ShowOverlayGlow (seen in game), and an
 --- outline the addon draws itself is visible wherever a frame is.
-function Theme.showGlow(button, outline)
+--- `staticAfter`, when given, stops the outline's pulse after that many
+--- seconds (Theme.after) and leaves it steady at full alpha: the chip's
+--- ring breathes for ten seconds, then holds still. A later showGlow or
+--- hideGlow on the same button cancels the pending stop.
+function Theme.showGlow(button, outline, staticAfter)
 	if hasOverlayGlow() and not outline then
 		ActionButton_ShowOverlayGlow(button)
 		return "overlay"
@@ -812,10 +870,20 @@ function Theme.showGlow(button, outline)
 	end
 	Theme.setShown(button.foreverSixtyGlow, true)
 	pulse(button.foreverSixtyGlow)
+	local generation = (button.foreverSixtyGlowGeneration or 0) + 1
+	button.foreverSixtyGlowGeneration = generation
+	if type(staticAfter) == "number" then
+		Theme.after(staticAfter, function()
+			if button.foreverSixtyGlowGeneration == generation then
+				stopPulse(button.foreverSixtyGlow)
+			end
+		end)
+	end
 	return "texture"
 end
 
 function Theme.hideGlow(button)
+	button.foreverSixtyGlowGeneration = (button.foreverSixtyGlowGeneration or 0) + 1
 	if button.foreverSixtyGlow ~= nil then
 		stopPulse(button.foreverSixtyGlow)
 		Theme.setShown(button.foreverSixtyGlow, false)

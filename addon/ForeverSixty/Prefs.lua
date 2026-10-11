@@ -14,13 +14,22 @@ ns = type(ns) == "table" and ns or {}
 local Prefs = {}
 
 Prefs.DEFAULTS = {
-	-- The build chip (spec section 3): shown, and out of the way in combat.
-	chip = { shown = true, combatHide = true },
+	-- The chip (spec section 4.1). Choices: shown, hidden in combat (else faded),
+	-- hidden until a level, and the spec picked on its "pick a path" card. Placement:
+	-- `point` "" is the default anchor beside the minimap; a shift-drag saves the
+	-- chip's TOPRIGHT against UIParent's. A saved nil would be dropped by normalise,
+	-- so "not hidden" is 0 and "no path" is "". `hiddenFor` and `pathFor` name the
+	-- character (Export.characterKey) the two belong to: this table is account-wide,
+	-- and a main's "hide until 31" must not hide an alt's chip.
+	chip = {
+		shown = true, combatHide = true,
+		point = "", x = 0, y = 0,
+		hiddenUntilLevel = 0, hiddenFor = "", pathChosen = "", pathFor = "",
+	},
 	-- Guild badges on the roster and in tooltips, and this player's own hello on GUILD.
 	badges = true,
 	broadcast = true,
 	-- The keys below are the pre-v2 surfaces'; each goes with the lane that replaces it.
-	tracker = { point = "TOP", x = 0, y = -180, locked = false, shown = true },
 	minimap = { angle = 200, shown = true },
 	-- On by default: the export written at logout is what feeds the
 	-- companion, and a player who installed the companion did not ask to
@@ -28,11 +37,9 @@ Prefs.DEFAULTS = {
 	autoSave = true,
 	-- Off by default: printing every answer into chat as well is noise.
 	chat = false,
-	-- On by default: the tooltip line and the toast are what makes the
-	-- platform's value visible outside the addon's own frames, which is the point of
-	-- this pass (design "Addon premium pass").
+	-- On by default: the tooltip line is what makes the platform's value
+	-- visible outside the addon's own frames (design "Addon premium pass").
 	tooltip = true,
-	toast = true,
 	-- Off by default (design section 4: "off until the account has a
 	-- level-60 export"): stat-weight breakdowns and cap call-outs are
 	-- noise to a leveling alt. Every card that has an advanced layer reads
@@ -42,10 +49,11 @@ Prefs.DEFAULTS = {
 }
 
 --- The sections resetPositions puts back.
-Prefs.POSITION_SECTIONS = { "tracker", "minimap" }
+Prefs.POSITION_SECTIONS = { "chip", "minimap" }
 
 --- The fields inside those sections that are a placement rather than a
---- choice. `shown` and `locked` are choices and survive a reset.
+--- choice. `shown`, `combatHide`, `hiddenUntilLevel` and `pathChosen` are
+--- choices and survive a reset.
 Prefs.PLACEMENT_FIELDS = { "point", "x", "y", "angle" }
 
 --- A new table shaped exactly like `defaults`, taking each value from
@@ -131,7 +139,7 @@ function Prefs.setFlag(name, value)
 	return value
 end
 
---- Put every tracker and minimap placement back where it started.
+--- Put the chip and the minimap button back where they started.
 function Prefs.resetPositions()
 	local ui = Prefs.current()
 	local fresh = Prefs.withDefaults(nil)

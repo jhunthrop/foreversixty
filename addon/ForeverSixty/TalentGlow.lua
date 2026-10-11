@@ -7,7 +7,7 @@
 -- the classic TalentFrameTalent<n> global, then a walk of the talent
 -- frame's children for a button whose nodeID is the trait node Data.lua
 -- carries. Neither is asserted to be right here; whichever one answers
--- wins, a miss is recorded once for /fs diag and skipped, and the tracker
+-- wins, a miss is recorded once for /fs diag and skipped, and the chip
 -- is untouched either way. README spike row 22 is where the answer lands.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}

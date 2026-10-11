@@ -215,7 +215,7 @@ end
 --- Tier 1 through 8, never Data.lua's own zero-based `tier` field.
 --- Round-2 section 10 ruling 4: every lookup against Data.lua (cellKey, tab
 --- indices, the codec) stays zero-based; only a string a player reads
---- (the tracker, the toast, the Talents page's own unknown-cell name)
+--- (the chip, the Talents page's own unknown-cell name)
 --- goes through this first.
 function Talents.displayTier(tier)
 	-- Data.lua's tiers are already the rows a player counts (Improved

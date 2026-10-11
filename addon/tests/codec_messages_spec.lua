@@ -103,3 +103,14 @@ describe("Codec.newestFirst", function()
 		assert.are.equal("only", reversed[1].id)
 	end)
 end)
+
+describe("Codec.inboxMessages, the last raid (contract 3)", function()
+	it("reads a last_raid message for the current character", function()
+		local Codec = helper.load("Codec")
+		local usable = Codec.inboxMessages({ messages = {
+			{ type = "last_raid", character = "us/pvp/bow-jackzon", bosses = { { name = "Lucifron", percentile = 71 } } },
+		} }, "US/PvP/Bow Jackzon", "last_raid")
+		assert.are.equal(1, #usable)
+		assert.are.equal("Lucifron", usable[1].bosses[1].name)
+	end)
+end)

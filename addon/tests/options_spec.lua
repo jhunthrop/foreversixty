@@ -40,10 +40,9 @@ describe("Options", function()
 		helper.load("Export")
 		helper.load("Gear")
 		helper.load("Tooltip")
-		helper.load("Toast")
 		helper.load("Follow")
 		helper.load("TalentGlow")
-		helper.load("Tracker")
+		helper.load("Chip")
 		helper.load("Minimap")
 		helper.load("Comms")
 		Options = helper.load("Options")
@@ -267,27 +266,49 @@ describe("Options", function()
 		assert.are.same({ string.format(Locale.chatLine, Locale.addonName, Locale.slashHint) }, state.printed)
 	end)
 
-	it("has the minimap button, the compartment, the keybind and the toast print the command list", function()
+	it("has the minimap button, the compartment and the keybind print the command list", function()
 		Options.register()
 		assert.are.equal(Options.showHint, require("Minimap").open)
 		assert.are.equal(Options.showHint, require("Minimap").openSettings)
-		assert.are.equal(Options.showHint, require("Toast").open)
 		assert.are.equal(Options.showHint, _G.FOREVERSIXTY_TOGGLE_WINDOW)
 		Options.showHint()
 		local Locale = require("Locale")
 		assert.are.same({ string.format(Locale.chatLine, Locale.addonName, Locale.slashHint) }, state.printed)
 	end)
 
-	it("refreshes the tracker and the talent glow through refreshSurfaces", function()
+	it("refreshes the chip and the talent glow through refreshSurfaces", function()
 		local calls = {}
-		require("Tracker").refresh = function(data)
-			calls[#calls + 1] = { "tracker", data }
+		require("Chip").refresh = function(data)
+			calls[#calls + 1] = { "chip", data }
 		end
 		require("TalentGlow").refresh = function(data)
 			calls[#calls + 1] = { "glow", data }
 		end
 		Options.refreshSurfaces(DATA)
-		assert.are.same({ { "tracker", DATA }, { "glow", DATA } }, calls)
+		assert.are.same({ { "chip", DATA }, { "glow", DATA } }, calls)
+	end)
+
+	it("redraws the chip on every event the plan names, and tells it about combat", function()
+		local Chip = require("Chip")
+		local calls = {}
+		Chip.refresh = function()
+			calls[#calls + 1] = Chip.combat == true
+		end
+		for _, event in ipairs({ "PLAYER_LEVEL_UP", "TRAIT_CONFIG_UPDATED", "BAG_UPDATE_DELAYED",
+			"ZONE_CHANGED_NEW_AREA", "READY_CHECK" }) do
+			Options.onEvent(Options.frame, event)
+		end
+		assert.are.equal(5, #calls)
+		Options.onEvent(Options.frame, "PLAYER_REGEN_DISABLED")
+		assert.is_true(calls[6])
+		Options.onEvent(Options.frame, "PLAYER_REGEN_ENABLED")
+		assert.is_false(calls[7])
+		for _, event in ipairs(Options.EVENTS) do
+			if event == "READY_CHECK" or event == "BAG_UPDATE_DELAYED" or event == "ZONE_CHANGED_NEW_AREA" then
+				calls.found = (calls.found or 0) + 1
+			end
+		end
+		assert.are.equal(3, calls.found)
 	end)
 
 	it("never raises on an addon message, and counts what Comms raised for /fs diag", function()

@@ -232,3 +232,31 @@ describe("Gear", function()
 		assert.are.equal("better", Gear.upgrades(DATA, build)[1].link)
 	end)
 end)
+
+-- Gear.bandFor: the BiS band for a level, the one rule the tooltip and the chip both read
+-- (lifted from Tooltip.lua's own highestBandAtOrBelow / bisBandFor). Pure: no client mock.
+describe("Gear.bandFor", function()
+	local Gear
+	local SPEC_BIS = { [20] = "twenty", [30] = "thirty", [50] = "fifty" }
+
+	before_each(function()
+		Gear = helper.load("Gear")
+	end)
+
+	it("rounds the level down to the highest band the spec has", function()
+		assert.are.same({ 20, "twenty" }, { Gear.bandFor(SPEC_BIS, 20) })
+		assert.are.same({ 30, "thirty" }, { Gear.bandFor(SPEC_BIS, 39) })
+		assert.are.same({ 50, "fifty" }, { Gear.bandFor(SPEC_BIS, 60) })
+	end)
+
+	it("skips a band the data has not generated yet", function()
+		assert.are.same({ 30, "thirty" }, { Gear.bandFor(SPEC_BIS, 45) })
+	end)
+
+	it("answers nothing below 20, with no table, or with no level", function()
+		assert.is_nil(Gear.bandFor(SPEC_BIS, 19))
+		assert.is_nil(Gear.bandFor(nil, 30))
+		assert.is_nil(Gear.bandFor(SPEC_BIS, nil))
+		assert.is_nil(Gear.bandFor({ [40] = "forty" }, 30))
+	end)
+end)

@@ -181,10 +181,27 @@ function Compat.playerName()
 end
 
 --- The player's level, or nil on a test double with no UnitLevel. The one
---- place that reads it, so Toast.lua and the rotation card can never read
+--- place that reads it, so the chip and the rotation card can never read
 --- it two different ways.
 function Compat.playerLevel()
 	return type(UnitLevel) == "function" and UnitLevel("player") or nil
+end
+
+--- "alliance" or "horde", the BiS table's own faction keys, or nil where the
+--- client cannot say (a test double with no UnitFactionGroup, a neutral
+--- character before it picks a side).
+function Compat.playerFaction()
+	if type(UnitFactionGroup) ~= "function" then
+		return nil
+	end
+	local token = UnitFactionGroup("player")
+	if token == "Alliance" then
+		return "alliance"
+	end
+	if token == "Horde" then
+		return "horde"
+	end
+	return nil
 end
 
 --- A unit's name and realm as the rest of the addon reads them: on a client

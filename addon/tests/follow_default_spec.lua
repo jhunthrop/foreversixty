@@ -105,6 +105,28 @@ describe("Follow.ensureDefault", function()
 		assert.is_nil(Follow.ensureDefault(DATA, { classSlug = "paladin", ranks = {}, level = 12 }))
 	end)
 
+	-- The chip's "pick a path" card (spec section 5.1): the player names the spec.
+	it("loads the default for a spec the player chose, over the one the points say", function()
+		local build = Follow.ensureDefault(DATA, { spec = "warrior-fury", classSlug = "warrior", ranks = {}, level = 4 })
+		assert.are.equal("Fury leveling", build.name)
+		assert.is_true(build.default)
+		assert.are.equal(build, Follow.build)
+	end)
+
+	it("refuses a chosen spec of another class, or one with no default", function()
+		assert.is_nil(Follow.ensureDefault(DATA, { spec = "mage-fire", classSlug = "warrior", ranks = {}, level = 4 }))
+		assert.is_nil(Follow.ensureDefault(DATA, { spec = "warrior-protection", classSlug = "warrior", ranks = {},
+			level = 4 }))
+	end)
+
+	it("still never replaces a saved build for a chosen spec", function()
+		local key = require("Export").characterKey()
+		_G.ForeverSixtyDB.follows = { [key] = { active = "raid", slots = {
+			raid = { code = "FSB1:1.60.1.70291:warrior:213:", name = "Mine" },
+		} } }
+		assert.is_nil(Follow.ensureDefault(DATA, { spec = "warrior-fury", classSlug = "warrior", ranks = {}, level = 4 }))
+	end)
+
 	it("refuses a malformed order rather than raising", function()
 		local data = { build = DATA.build, classes = DATA.classes, defaultBuilds = {
 			["warrior-arms"] = { leveling = { name = "Broken", order = { { 1, 1 }, { 0, 1, 1 } } } },

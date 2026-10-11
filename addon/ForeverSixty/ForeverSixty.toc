@@ -30,9 +30,8 @@ Inspect.lua
 Ratings.lua
 Tooltip.lua
 TalentGlow.lua
-Tracker.lua
 Minimap.lua
-Toast.lua
+surfaces\Chip.lua
 RecorderBuffer.lua
 Recorder.lua
 Options.lua

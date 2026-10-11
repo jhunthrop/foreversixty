@@ -1,7 +1,7 @@
 -- addon/ForeverSixty/Progress.lua
 -- One function per number (spec section 2.1): every count, delta, verdict
 -- and gap the addon shows is computed here, once, and every surface reads
--- the same answer -- so the talent window, the tracker, the chip and the
+-- the same answer -- so the talent window, the chip and the
 -- paper doll can never disagree with each other or with the character.
 --
 -- Pure over plain tables: a build, Talents.readRanks()'s ranks, the worn
@@ -14,6 +14,7 @@ local Talents = ns.Talents or require("Talents")
 local Export = ns.Export or require("Export")
 local Compat = ns.Compat or require("Compat")
 local Gear = ns.Gear or require("Gear")
+local Rules = ns.Rules or require("Rules")
 
 local Progress = {}
 
@@ -243,27 +244,39 @@ function Progress.biggestGap(slots)
 	return { slot = worst.slot, delta = worst.delta, item = worst.plannedItemId }
 end
 
---- A bag item as { link, itemId, equipLocation, stats }: a plain table is
---- taken as it is, a link string is read from the client.
+--- A bag item as { link, itemId, equipLocation, itemClass, itemSubClass,
+--- stats }: a plain table is taken as it is, a link string is read from the
+--- client (the class and subclass ids where it gives them, else its English
+--- type names, which Rules.canEquip reads too).
 local function describe(item)
 	if type(item) == "table" then
 		return item
 	end
-	local id, _, _, equipLocation = Compat.itemInfoInstant(item)
-	return { link = item, itemId = tonumber(id), equipLocation = equipLocation, stats = Gear.statsOf(item) }
+	local id, itemType, itemSubType, equipLocation, _, classId, subClassId = Compat.itemInfoInstant(item)
+	return {
+		link = item, itemId = tonumber(id), equipLocation = equipLocation,
+		itemClass = classId or itemType, itemSubClass = subClassId or itemSubType,
+		stats = Gear.statsOf(item),
+	}
 end
 
 --- Bag items that beat what is worn in a slot they fit, each once, in the
 --- slot where it gains the most; sorted by delta, biggest first. A slot
 --- with nothing worn counts what is worn as zero. An item whose link is
 --- worn is never listed (seen in game: the worn helm offered as an
---- upgrade over itself), nor is an item scored against its own copy.
-function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoint)
+--- upgrade over itself), nor is an item scored against its own copy, nor
+--- one Forever's rules say the character cannot wear in that slot at
+--- `level` (Rules.canEquip, not "ok": plate before 40, a libram on a
+--- warrior). `level` is the client's when nil. `unit` is "dps" when
+--- `dpsPerPoint` is given, else "score".
+function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoint, level)
 	local _, weights = weightsFor(data, build, ranks)
 	if weights == nil then
 		return {}
 	end
 	equipped = equipped or {}
+	level = level or Compat.playerLevel()
+	local classToken = build.classSlug ~= nil and build.classSlug:upper() or nil
 	local wornLinks = {}
 	for _, worn in pairs(equipped) do
 		if worn.link ~= nil then
@@ -278,7 +291,9 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 			local bestSlot, bestDelta
 			for _, slot in ipairs(Gear.SLOTS_BY_EQUIP_LOCATION[item.equipLocation] or {}) do
 				local worn = equipped[slot]
-				if worn == nil or worn.itemId == nil or worn.itemId ~= item.itemId then
+				local wearable = Rules.canEquip(classToken, level, item.itemClass, item.itemSubClass,
+					item.equipLocation, slot) == "ok"
+				if wearable and (worn == nil or worn.itemId == nil or worn.itemId ~= item.itemId) then
 					local delta = score - (worn ~= nil and Gear.score(worn.stats, weights) or 0)
 					if bestDelta == nil or delta > bestDelta then
 						bestSlot, bestDelta = slot, delta
@@ -289,6 +304,7 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 				found[#found + 1] = {
 					link = item.link, itemId = item.itemId, slot = bestSlot,
 					delta = inUnit(bestDelta, dpsPerPoint),
+					unit = dpsPerPoint ~= nil and "dps" or "score",
 				}
 			end
 		end
@@ -302,11 +318,45 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 	return found
 end
 
+--- Whether a pick's `source` ("The Deadmines: Gilnid", or just "The
+--- Deadmines") drops in the instance named `instanceName`.
+local function dropsIn(source, instanceName)
+	if type(source) ~= "string" then
+		return false
+	end
+	local prefix = instanceName .. ": "
+	return source == instanceName or source:sub(1, #prefix) == prefix
+end
+
+--- The band's BiS picks (Gear.pick) that drop in the instance the player is
+--- standing in, each { slot, itemId, source }, in Progress.slots' order
+--- (weapons first for a melee spec). A slot where the pick is already worn
+--- is left out, and an item two slots share (a ring) is listed once. The
+--- chip's "here for you" line and the panel's targets region read this.
+--- Empty with no band, faction or instance, or nothing that drops here.
+function Progress.picksHere(data, spec, band, faction, instanceName, equipped)
+	local picks = {}
+	if spec == nil or band == nil or faction == nil or type(instanceName) ~= "string" then
+		return picks
+	end
+	equipped = equipped or {}
+	local seen = {}
+	for _, slot in ipairs(slotOrder(spec)) do
+		local pick = Gear.pick(spec, band, faction, slot, data)
+		local worn = equipped[slot]
+		if pick ~= nil and dropsIn(pick.source, instanceName) and not seen[pick.item_id]
+			and (worn == nil or worn.itemId ~= pick.item_id) then
+			seen[pick.item_id] = true
+			picks[#picks + 1] = { slot = slot, itemId = pick.item_id, source = pick.source }
+		end
+	end
+	return picks
+end
+
 --- Best-effort unspent talent point count from the trait system. Neither
 --- field name is confirmed against the 1.60 client (README spike row 24);
 --- a shape this client does not use reads as "cannot tell" -- the design's
---- own explicit fallback, under which the talent-event trigger never fires
---- and the toast is carried by PLAYER_LEVEL_UP alone.
+--- own explicit fallback, under which the chip reads the level instead.
 function Progress.unspentPoints()
 	if type(C_ClassTalents) ~= "table" or type(C_ClassTalents.GetActiveConfigID) ~= "function" then
 		return nil

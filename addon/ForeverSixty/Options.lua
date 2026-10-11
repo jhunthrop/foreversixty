@@ -18,14 +18,13 @@ local Gear = ns.Gear or require("Gear")
 local Inspect = ns.Inspect or require("Inspect")
 local Tooltip = ns.Tooltip or require("Tooltip")
 local TalentGlow = ns.TalentGlow or require("TalentGlow")
-local Toast = ns.Toast or require("Toast")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
 local Recorder = ns.Recorder or require("Recorder")
 local Theme = ns.Theme or require("Theme")
 local Comms = ns.Comms or require("Comms")
 local MinimapButton = ns.Minimap or require("Minimap")
-local Tracker = ns.Tracker or require("Tracker")
+local Chip = ns.Chip or require("Chip")
 
 local Options = {}
 Options.data = Data
@@ -205,7 +204,7 @@ function Options.run(input)
 	return lines
 end
 
---- What the minimap button, the compartment entry, the keybind and a toast click do until
+--- What the minimap button, the compartment entry and the keybind do until
 --- Lanes L3.4 and L3.5 give them the build dialog and the Settings page: print the command
 --- list.
 function Options.showHint()
@@ -213,10 +212,10 @@ function Options.showHint()
 	return L.slashHint
 end
 
---- Redraw every surface for `data`: the tracker and the talent glow today; each surface
+--- Redraw every surface for `data`: the chip and the talent glow today; each surface
 --- Lanes L3-L5 add calls its own refresh from here.
 function Options.refreshSurfaces(data)
-	Tracker.refresh(data)
+	Chip.refresh(data)
 	TalentGlow.refresh(data)
 end
 
@@ -227,6 +226,9 @@ Options.EVENTS = {
 	"PLAYER_TALENT_UPDATE", "TRAIT_CONFIG_UPDATED", "PLAYER_LEVEL_UP",
 	"PLAYER_REGEN_ENABLED", "ADDON_LOADED", "GET_ITEM_INFO_RECEIVED",
 	"CHAT_MSG_ADDON", "INSPECT_READY", "GROUP_ROSTER_UPDATE", "PLAYER_REGEN_DISABLED",
+	-- The chip (L3.1): bags for its upgrade line, the zone for "here for you", the
+	-- ready check for its raid check (L5.2 fills that in; until then it only redraws).
+	"BAG_UPDATE_DELAYED", "ZONE_CHANGED_NEW_AREA", "READY_CHECK", "READY_CHECK_FINISHED",
 }
 
 function Options.onEvent(_, event, ...)
@@ -249,8 +251,15 @@ function Options.onEvent(_, event, ...)
 		end
 		return
 	end
-	if event == "GROUP_ROSTER_UPDATE" or event == "PLAYER_REGEN_DISABLED" then
+	if event == "GROUP_ROSTER_UPDATE" then
 		Inspect.onEvent(event, ...)
+		return
+	end
+	if event == "PLAYER_REGEN_DISABLED" or event == "PLAYER_REGEN_ENABLED" then
+		-- Combat: the chip hides (or fades and ignores the mouse) until it ends.
+		Inspect.onEvent(event, ...)
+		Chip.setCombat(event == "PLAYER_REGEN_DISABLED")
+		Chip.refresh(Options.data)
 		return
 	end
 	if event == "ADDON_LOADED" then
@@ -258,8 +267,16 @@ function Options.onEvent(_, event, ...)
 		TalentGlow.watch(Options.data)
 		return
 	end
+	if event == "READY_CHECK_FINISHED" then
+		-- The ready check's "Missing: ..." line goes with the check (setRaidCheck redraws).
+		Chip.setRaidCheck(nil)
+		return
+	end
 	if event == "GET_ITEM_INFO_RECEIVED" then
-		-- No surface draws an item name yet; the ones Lanes L3-L5 add redraw here.
+		-- The chip redraws once the item names it was waiting for arrive.
+		if Chip.pendingItems then
+			Chip.refresh(Options.data)
+		end
 		return
 	end
 	if event == "PLAYER_LOGOUT" then
@@ -269,15 +286,11 @@ function Options.onEvent(_, event, ...)
 		end
 		return
 	end
-	if event == "PLAYER_REGEN_ENABLED" then
-		Inspect.onEvent(event, ...)
-		Toast.flushPending()
-		return
-	end
 	if event == "PLAYER_LOGIN" then
 		TalentGlow.watch(Options.data)
 		Follow.restore(Options.data)
-		Follow.ensureDefault(Options.data)
+		-- A character that picked a path on the chip follows that spec's default.
+		Follow.ensureDefault(Options.data, Chip.chosenPath())
 		Options.readInbox()
 		MinimapButton.data = Options.data
 		MinimapButton.refresh()
@@ -286,7 +299,7 @@ function Options.onEvent(_, event, ...)
 		Options.sayHello()
 	end
 	if event == "PLAYER_LEVEL_UP" then
-		Toast.onLevelUp(Options.data, ...)
+		Chip.onLevelUp(...)
 		-- The tooltip cache is keyed by item link alone (Tooltip.lua); a
 		-- BiS band is chosen by level, so a link cached before this level-up
 		-- would otherwise go on answering the band the character just left.
@@ -305,12 +318,11 @@ function Options.onEvent(_, event, ...)
 		-- The build may have changed what the guild sees; Comms holds it to one hello a minute.
 		Options.sayHello()
 	end
-	Toast.refresh(Options.data)
 	Options.refreshSurfaces(Options.data)
 end
 
 --- Runs at file load. Registers the slash command, the events and the
---- injection points Minimap and Toast leave for what they open -- and builds
+--- injection points Minimap and the chip leave for what they open -- and builds
 --- no frame except the event frame, which has no size and is never shown.
 function Options.register()
 	-- Bindings.xml names these two globals and calls the third; the client
@@ -327,7 +339,9 @@ function Options.register()
 	Tooltip.register()
 	MinimapButton.open = Options.showHint
 	MinimapButton.openSettings = Options.showHint
-	Toast.open = Options.showHint
+	Chip.afterChoice = function()
+		Options.refreshSurfaces(Options.data)
+	end
 
 	local frame = CreateFrame("Frame", "ForeverSixtyEventFrame", UIParent)
 	for _, event in ipairs(Options.EVENTS) do

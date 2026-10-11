@@ -25,10 +25,9 @@ describe("the keybind", function()
 			helper.load("Follow")
 			helper.load("TalentGlow")
 			helper.load("Tooltip")
-			helper.load("Tracker")
+			helper.load("Chip")
 			helper.load("Minimap")
-			helper.load("Toast")
-			Options = helper.load("Options")
+				Options = helper.load("Options")
 			Options.data = { build = "1.60.1.69893", classes = {}, weights = {} }
 		end)
 

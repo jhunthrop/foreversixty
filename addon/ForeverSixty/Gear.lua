@@ -168,6 +168,32 @@ function Gear.pick(spec, band, faction, slot, data)
 	return Gear.decodePick(byFaction ~= nil and byFaction[slot] or nil)
 end
 
+--- Below this level a character has no BiS band yet (design: "below 20
+--- shows nothing" -- pipeline.addonbis.BIS_LEVEL_BANDS' own floor).
+Gear.BIS_MIN_LEVEL = 20
+
+--- pipeline.addonbis.BIS_LEVEL_BANDS' own spacing: one BiS band every ten levels.
+local BIS_BAND_STEP = 10
+
+--- The highest band key at or below `level` in a band-keyed table (bands run
+--- 20..60 step 10, and a spec in progress may skip one, since the nightly
+--- bis run may not have finished every band yet), and that band's entry.
+--- The one rule the item tooltip (picks and band weights) and the chip's
+--- "here for you" line both read, so they always round down to the same
+--- rung. nil below BIS_MIN_LEVEL, or with no table or level to look in.
+function Gear.bandFor(specBis, level)
+	if type(specBis) ~= "table" or type(level) ~= "number" or level < Gear.BIS_MIN_LEVEL then
+		return nil
+	end
+	local rounded = math.min(60, math.floor(level / BIS_BAND_STEP) * BIS_BAND_STEP)
+	for candidate = rounded, Gear.BIS_MIN_LEVEL, -BIS_BAND_STEP do
+		if specBis[candidate] ~= nil then
+			return candidate, specBis[candidate]
+		end
+	end
+	return nil
+end
+
 --- The client's INVTYPE_* -> the site's slot names an item may occupy.
 Gear.SLOTS_BY_EQUIP_LOCATION = {
 	INVTYPE_HEAD = { "head" },
