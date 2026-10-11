@@ -40,6 +40,8 @@ describe('landingPageView', () => {
   });
 
   it('a character with no spec yet marks no row', () => {
-    expect(landingPageView(null, { level: 30, faction: 'alliance', specKey: undefined }).yoursSpecKey).toBeUndefined();
+    expect(
+      landingPageView(null, { level: 30, faction: 'alliance', specKey: undefined }).yoursSpecKey,
+    ).toBeUndefined();
   });
 });

@@ -3,8 +3,7 @@
 // which carries the "you" mark, which faction the spec links carry, which spec row is "Yours" and
 // which heading the grid has. Re-derived whenever the viewer picks a pill or the header selector
 // changes character.
-import { characterBand } from './landing-lead';
-import { selectedLandingBand } from './landing-bands';
+import { characterBand, selectedLandingBand } from './landing-bands';
 import { landingCopy } from './landing-copy';
 import type { Faction } from './types';
 

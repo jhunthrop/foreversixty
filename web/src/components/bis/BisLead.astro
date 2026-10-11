@@ -1,0 +1,368 @@
+---
+// web/src/components/bis/BisLead.astro
+// The /bis landing's "your character" lead (design/specs/2026-10-10-bis-landing.md section 2.4):
+// the selected character, how many of its band's best-in-slot slots it wears, and the one
+// button to its own spec's list at its own band. Only the shell is prerendered, and only for a
+// visitor with a session hint (`data-signed-in-only`); the page script (lib/bis/landing-client.ts)
+// resolves the character from /v1/me and the header selector's pointer and fills the fields in.
+// The skeleton and the content share one box, so nothing moves when the character resolves, and
+// the lead never follows the strip's band.
+import ClassCrest from '../ClassCrest.astro';
+import classes from '../../data/classes.json';
+import { landingCopy } from '../../lib/bis/landing-copy';
+---
+
+<section
+  class="lead"
+  data-signed-in-only
+  data-bis-lead
+  data-testid="bis-lead"
+  aria-label={landingCopy.leadLabel}
+>
+  <div
+    class="lead-grid lead-skeleton"
+    data-lead-skeleton
+    role="status"
+    aria-busy="true"
+    data-testid="bis-lead-skeleton"
+  >
+    <span class="sr-only">Loading</span>
+    <span class="sk-identity" aria-hidden="true">
+      <span class="skeleton-block sk-crest"></span>
+      <span class="sk-text">
+        <span class="skeleton-block sk-label"></span>
+        <span class="skeleton-block sk-name"></span>
+        <span class="skeleton-block sk-meta"></span>
+      </span>
+    </span>
+    <span class="sk-count" aria-hidden="true">
+      <span class="skeleton-block sk-label"></span>
+      <span class="skeleton-block sk-figure"></span>
+      <span class="skeleton-block sk-bar"></span>
+    </span>
+    <span class="skeleton-block sk-cta" aria-hidden="true"></span>
+  </div>
+  <div class="lead-grid" data-lead-body hidden>
+    <div class="identity">
+      <a class="idl" data-lead-link data-testid="bis-lead-link" href="/bis">
+        {classes.map((c) => (
+          <span class="crest-slot" data-lead-crest={c.slug} hidden>
+            <ClassCrest slug={c.slug} size={64} />
+          </span>
+        ))}
+        <span class="ident">
+          <span class="label lead-label">{landingCopy.leadLabel}</span>
+          <span class="idn" data-lead-name data-testid="bis-lead-name"></span>
+        </span>
+      </a>
+      <span class="meta">
+        <span class="desc" data-testid="bis-lead-descriptor">
+          <span data-lead-spec-class></span>
+          <span class="dot" data-lead-level-part hidden>
+            &middot;
+          </span>
+          <span data-lead-level-part hidden>
+            {landingCopy.levelWord} <span data-lead-level></span>
+          </span>
+          <span class="dot" data-lead-faction-part hidden>
+            &middot;
+          </span>
+          <span class="faction" data-lead-faction-part hidden>
+            <img data-lead-faction-logo alt="" width="16" height="16" />
+            <span data-lead-faction></span>
+          </span>
+        </span>
+        <span class="sync" data-lead-sync data-testid="bis-lead-sync" hidden>
+          <span data-lead-sync-text></span>
+          <span data-lead-sync-stale hidden>
+            &nbsp;&middot;&nbsp;<span class="stale" data-lead-sync-stale-text></span>
+          </span>
+        </span>
+      </span>
+    </div>
+    <div class="count">
+      <div class="count-block" data-lead-count hidden>
+        <span class="label" data-lead-count-label></span>
+        <span class="figure" data-testid="bis-lead-count">
+          <span data-lead-worn></span>
+          <span class="of" data-lead-of></span>
+        </span>
+        <span class="track">
+          <span class="fill" data-lead-fill></span>
+        </span>
+        <span class="note" data-lead-note hidden></span>
+      </div>
+      <div class="count-block" data-lead-nosync hidden>
+        <span class="sentence">{landingCopy.noSync}</span>
+        <a class="nosync-link" href={landingCopy.noSyncHref}>
+          {landingCopy.noSyncLink}
+        </a>
+      </div>
+      <p class="sentence strong" data-lead-under20 hidden>
+        {landingCopy.under20}
+      </p>
+    </div>
+    <a class="cta" data-lead-cta data-testid="bis-lead-cta" href="/bis"></a>
+  </div>
+</section>
+
+<style>
+  /* The height the filled lead measures at 1440 (crest row, descriptor, sync line, padding), so
+     the skeleton holds the box the content will fill. */
+  .lead {
+    min-height: 146px;
+    padding: 18px 22px;
+    box-sizing: border-box;
+    background: var(--color-raised);
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius-panel);
+  }
+  .lead [hidden] {
+    display: none !important;
+  }
+  .lead-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) auto;
+    gap: 28px;
+    align-items: center;
+  }
+  .identity {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+  .idl {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+    color: inherit;
+  }
+  .idl:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 4px;
+    border-radius: var(--radius-panel);
+  }
+  .crest-slot {
+    display: flex;
+    flex-shrink: 0;
+  }
+  .ident {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .lead-label {
+    color: var(--color-gold);
+  }
+  .idn {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+  .idl:hover .idn {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-left: 80px;
+  }
+  .desc {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 13px;
+    color: #c9c2b2;
+  }
+  .dot {
+    color: var(--color-muted);
+  }
+  .faction {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .faction img {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+  .sync {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+  .stale {
+    color: var(--color-ember);
+  }
+  .count-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .figure {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--color-strong);
+  }
+  .of {
+    font-size: 15px;
+    color: var(--color-muted);
+  }
+  .track {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-line-soft);
+    overflow: hidden;
+  }
+  .fill {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: var(--color-gold);
+  }
+  .note {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+  .sentence {
+    margin: 0;
+    font-size: 13px;
+    color: #c9c2b2;
+  }
+  .sentence.strong {
+    font-size: 14px;
+    color: var(--color-text);
+  }
+  .nosync-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .nosync-link:hover {
+    color: var(--color-gold-hover);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 250px;
+    height: 48px;
+    padding: 0 20px;
+    border: 1px solid var(--color-gold-deep);
+    border-radius: var(--radius-control);
+    background: linear-gradient(180deg, #f0cc6c, #c99a3a);
+    box-shadow: 0 0 18px rgba(229, 185, 85, 0.18);
+    color: #1a1408;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background 120ms ease-out;
+  }
+  .cta:hover {
+    background: linear-gradient(180deg, #f5d27a, #d4a444);
+    color: #1a1408;
+  }
+  .cta:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  .cta:active {
+    background: linear-gradient(180deg, #d9b55c, #b88a32);
+  }
+
+  .sk-identity,
+  .sk-text,
+  .sk-count {
+    display: flex;
+  }
+  .sk-identity {
+    align-items: center;
+    gap: 16px;
+  }
+  .sk-text,
+  .sk-count {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sk-crest {
+    width: 64px;
+    height: 64px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .sk-label {
+    width: 120px;
+    height: 11px;
+  }
+  .sk-name {
+    width: 200px;
+    max-width: 100%;
+    height: 22px;
+  }
+  .sk-meta {
+    width: 240px;
+    max-width: 100%;
+    height: 13px;
+  }
+  .sk-figure {
+    width: 130px;
+    height: 26px;
+  }
+  .sk-bar {
+    width: 100%;
+    height: 6px;
+  }
+  .sk-cta {
+    width: 250px;
+    height: 48px;
+    border-radius: var(--radius-control);
+  }
+
+  @media (max-width: 1023px) {
+    .lead {
+      min-height: 0;
+      padding: 16px;
+    }
+    .lead-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+    }
+    .meta {
+      padding-left: 72px;
+    }
+    .cta,
+    .sk-cta {
+      width: 100%;
+      min-width: 0;
+    }
+    .lead :global(.crest) {
+      width: 56px !important;
+      height: 56px !important;
+    }
+    .sk-crest {
+      width: 56px;
+      height: 56px;
+    }
+  }
+</style>

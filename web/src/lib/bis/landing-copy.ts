@@ -38,9 +38,10 @@ export const landingCopy = {
   gridHeadingSignedIn: 'Another class or spec',
 
   stripHead: 'Spec links open at this band',
-  /** The note's sentence about the top band names the file's own raid preset label. */
-  stripNote: (raidLabel: string): string =>
-    `Each list is the best you can wear inside one band; gear changes about every ten levels. 60: full ${raidLabel} gear.`,
+  stripNote: (raidLabel: string): string => {
+    const lead = 'Each list is the best you can wear inside one band; gear changes about every ten levels.';
+    return raidLabel === '' ? lead : `${lead} 60: full ${raidLabel} gear.`;
+  },
   bandGroupLabel: 'Spec links open at this band',
   you: 'you',
   yours: 'Yours',

@@ -2,7 +2,7 @@
 // The /bis landing's band strip as pure data: the five bands, their labels, what the picks at
 // each band are mostly made of (the pill captions, computed at build time from the BiS files so
 // prose never quotes a nightly number), and which band the strip has selected.
-import { BAND_STEP, MAX_BAND, MIN_BAND } from './hover';
+import { BAND_STEP, MAX_BAND, MIN_BAND, bandForLevel } from './hover';
 import type { BisSlot } from './types';
 
 /** Signed out, or with no character: launch players are leveling, so the first band. */
@@ -12,6 +12,14 @@ export const LANDING_BANDS: readonly number[] = Array.from(
   { length: (MAX_BAND - MIN_BAND) / BAND_STEP + 1 },
   (_, index) => MIN_BAND + index * BAND_STEP,
 );
+
+/** The first level best in slot covers. */
+export const FIRST_BAND_LEVEL = MIN_BAND;
+
+/** The band a level falls in, or undefined for a character not yet level 20 (or of unknown level). */
+export function characterBand(level: number | undefined): number | undefined {
+  return level === undefined || level < FIRST_BAND_LEVEL ? undefined : bandForLevel(level);
+}
 
 /** The player-facing word for each `source_kind` the BiS files carry. */
 const SOURCE_KIND_WORDS: Readonly<Record<string, string>> = {
@@ -78,12 +86,12 @@ export function bandCaptions(
   let previous: { band: number; words: string } | undefined;
   for (const band of LANDING_BANDS) {
     const words = topSourceWords(slotsByBand.get(band) ?? []).join(', ');
-    const same = previous !== undefined && previous.words === words;
+    const same = previous?.words === words ? previous : undefined;
     captions.push({
       band,
       label: bandLabel(band),
-      same,
-      text: same ? `Same sources as ${bandLabel(previous.band)}` : `Top sources: ${words}.`,
+      same: same !== undefined,
+      text: same === undefined ? `Top sources: ${words}.` : `Same sources as ${bandLabel(same.band)}`,
     });
     previous = { band, words };
   }

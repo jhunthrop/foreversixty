@@ -69,7 +69,11 @@ describe('bandCaptions', () => {
   const captions = bandCaptions(byBand);
 
   it('gives the first band its sources as the baseline', () => {
-    expect(captions[0]).toMatchObject({ label: '20 to 29', text: 'Top sources: dungeons, crafting.', same: false });
+    expect(captions[0]).toMatchObject({
+      label: '20 to 29',
+      text: 'Top sources: dungeons, crafting.',
+      same: false,
+    });
   });
 
   it('says "Same sources as" the band before where the sources match, so no pill is bare', () => {

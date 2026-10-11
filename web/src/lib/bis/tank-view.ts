@@ -138,14 +138,3 @@ export function gapLabelFor(delta: number, unit: SlotScoreUnit): string {
     ? tankCopy.alternativeGapLabel(delta)
     : bisCopy.alternativeGapLabel(delta, rateUnitFor(unit));
 }
-
-/** One-line /bis index summary of a tank's level-60 set: effective health beside damage taken per
- *  second (the tier list sorts tanks on the latter). The index keeps its own sort. */
-export function tankIndexSummaryOf(band: Pick<BisBand, 'role' | 'metrics'>): string | undefined {
-  return isTankBand(band) && isTankMetrics(band.metrics)
-    ? tankCopy.indexSpecSummary(
-        formatWholeNumber(band.metrics.effective_health),
-        formatWholeNumber(band.metrics.dtps),
-      )
-    : undefined;
-}

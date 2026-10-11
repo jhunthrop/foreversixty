@@ -2,14 +2,8 @@
 import { describe, expect, it } from 'vitest';
 import type { MeCharacter } from '../account/api';
 import type { LandingConfig } from './landing-config';
-import {
-  buildLeadView,
-  characterBand,
-  excludedNote,
-  excludedSlotNames,
-  slotCount,
-  syncLine,
-} from './landing-lead';
+import { characterBand } from './landing-bands';
+import { buildLeadView, excludedNote, excludedSlotNames, slotCount, syncLine } from './landing-lead';
 import type { BisBand, BisSlot } from './types';
 
 const NOW = new Date('2026-10-10T12:00:00Z');
@@ -28,8 +22,23 @@ const CONFIG: LandingConfig = {
 };
 
 const SLOT_ORDER = [
-  'head', 'neck', 'shoulder', 'back', 'chest', 'wrist', 'hands', 'waist', 'legs', 'feet',
-  'finger1', 'finger2', 'trinket1', 'trinket2', 'main_hand', 'off_hand', 'ranged',
+  'head',
+  'neck',
+  'shoulder',
+  'back',
+  'chest',
+  'wrist',
+  'hands',
+  'waist',
+  'legs',
+  'feet',
+  'finger1',
+  'finger2',
+  'trinket1',
+  'trinket2',
+  'main_hand',
+  'off_hand',
+  'ranged',
 ] as const;
 
 /** A band whose slots all have a pick (item id 100 + index) except the named ones. */
@@ -41,7 +50,9 @@ function bandWithout(...missing: string[]): Pick<BisBand, 'slots'> {
 }
 
 const wearing = (...slots: string[]): Record<string, number> =>
-  Object.fromEntries(slots.map((slot) => [slot, 100 + SLOT_ORDER.indexOf(slot as (typeof SLOT_ORDER)[number])]));
+  Object.fromEntries(
+    slots.map((slot) => [slot, 100 + SLOT_ORDER.indexOf(slot as (typeof SLOT_ORDER)[number])]),
+  );
 
 function character(overrides: Partial<MeCharacter> = {}): MeCharacter {
   return {
@@ -73,7 +84,10 @@ describe('characterBand', () => {
 
 describe('slotCount', () => {
   it('counts worn picks against the slots that have a pick, and names the ones that do not', () => {
-    const count = slotCount(bandWithout('trinket1', 'trinket2'), wearing('head', 'neck', 'chest', 'legs', 'feet', 'wrist'));
+    const count = slotCount(
+      bandWithout('trinket1', 'trinket2'),
+      wearing('head', 'neck', 'chest', 'legs', 'feet', 'wrist'),
+    );
     expect(count).toEqual({ worn: 6, total: 15, excluded: ['Trinkets'] });
   });
 
@@ -90,7 +104,11 @@ describe('slotCount', () => {
 
 describe('excluded slot names and the note', () => {
   it('groups a missing pair and keeps paper-doll order', () => {
-    expect(excludedSlotNames(['ranged', 'trinket2', 'trinket1', 'off_hand'])).toEqual(['Trinkets', 'Off hand', 'Ranged']);
+    expect(excludedSlotNames(['ranged', 'trinket2', 'trinket1', 'off_hand'])).toEqual([
+      'Trinkets',
+      'Off hand',
+      'Ranged',
+    ]);
     expect(excludedSlotNames(['finger1', 'finger2'])).toEqual(['Rings']);
   });
 
@@ -140,7 +158,10 @@ describe('syncLine', () => {
 });
 
 describe('buildLeadView', () => {
-  const input = (c: MeCharacter, bandEntry: Pick<BisBand, 'slots'> | null = bandWithout('trinket1', 'trinket2')) => ({
+  const input = (
+    c: MeCharacter,
+    bandEntry: Pick<BisBand, 'slots'> | null = bandWithout('trinket1', 'trinket2'),
+  ) => ({
     character: c,
     config: CONFIG,
     bandEntry: (bandEntry ?? undefined) as BisBand | undefined,
@@ -190,7 +211,9 @@ describe('buildLeadView', () => {
   });
 
   it('a Battle.net build carries no worn items, so it is also the no-sync state', () => {
-    const view = buildLeadView(input(character({ build: { source: 'blizzard', captured_at: minutesAgo(5) } })))!;
+    const view = buildLeadView(
+      input(character({ build: { source: 'blizzard', captured_at: minutesAgo(5) } })),
+    )!;
     expect(view.count).toEqual({ kind: 'nosync' });
   });
 

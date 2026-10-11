@@ -1,64 +1,213 @@
 ---
 // web/src/components/bis/BisClassCard.astro
-// The /bis index's own class card: the class's icon (tenet 1 -- ClassTile.astro's plain
-// coloured-text tile is right for the guide index and the planner's compact rail, but this
-// page's brief specifically asks for "class cards with icons", so this is its own small
-// component rather than a change to ClassTile that would ripple into those other pages) and
-// one row per written spec, each carrying its band-60 set DPS -- the number a reader
-// scanning the index actually wants, not just a name.
+// One class on the /bis landing (design/specs/2026-10-10-bis-landing.md section 2.2): the
+// circular class crest and name in the class colour, then one row per written spec with the
+// spec's tab icon. No figure on any row -- the tier list owns rankings. A tank or healer row
+// carries its role word (Feral Bear sits beside Feral, two specs are called Restoration); the
+// character's own row swaps it for `Yours`, which the page script shows. Every row is a link to
+// the spec's page at a band; the page script rewrites the band in each href when the strip's
+// selection changes.
 import ClassCrest from '../ClassCrest.astro';
-import { bisCopy } from '../../lib/bis/copy';
-import type { RateUnit } from '../../lib/bis/types';
+import { landingCopy } from '../../lib/bis/landing-copy';
+import { specLinkHref } from '../../lib/bis/landing-links';
+import { DEFAULT_LANDING_BAND } from '../../lib/bis/landing-bands';
+import type { SpecRole } from '../../lib/sim/specs';
 
 export interface BisClassCardSpec {
-  class_slug: string;
-  spec_slug: string;
+  key: string;
+  classSlug: string;
+  specSlug: string;
   name: string;
-  hasData: boolean;
-  /** `bandEntry(file, 60, 'alliance')?.set_dps` -- undefined when the spec has no file yet,
-   *  or (rare) no level-60 alliance band. */
-  band60Dps?: number;
-  /** A tank spec's level-60 summary line, shown in place of `band60Dps` (a tank's own
-   *  damage is not its headline). */
-  band60TankSummary?: string;
-  /** The preset `band60Dps` was measured under, as the file labels it (shown as a tooltip). */
-  band60PresetLabel?: string;
-  /** `HPS` for a healer row (never placed in a ranking of specs); `DPS` when absent. */
-  unit?: RateUnit;
+  role: SpecRole;
+  /** The spec's talent-tab icon, the same one the planner's tabs show. */
+  iconSrc: string;
 }
 
 interface Props {
   name: string;
   slug: string;
+  color: string;
   specs: BisClassCardSpec[];
 }
 
-const { name, slug, specs } = Astro.props;
+const { name, slug, color, specs } = Astro.props;
+const roleWord = (role: SpecRole): string | undefined =>
+  role === 'dps' ? undefined : landingCopy.roleWords[role];
 ---
 
-<section id={slug} class="rounded-control bg-raised border-line border p-4 scroll-mt-20">
-  <div class="grid grid-cols-[56px_1fr] items-start gap-4">
-    <div class="flex flex-col items-center gap-1">
-      <ClassCrest slug={slug} size={44} />
-      <span class="text-[11px] font-bold uppercase tracking-[0.06em]">{name}</span>
-    </div>
-    <ul class="m-0 flex list-none flex-col gap-1 p-0 text-[13px]">
-      {specs.map((spec) => (
-        <li class="flex items-center justify-between gap-3">
-          <a href={`/bis/${spec.class_slug}/${spec.spec_slug}`}>{spec.name}</a>
-          {spec.hasData && (spec.band60Dps !== undefined || spec.band60TankSummary !== undefined) ? (
-            <span
-              class="tabular text-muted text-[12px]"
-              title={spec.band60PresetLabel}
-              data-testid={`bis-index-dps-${spec.class_slug}-${spec.spec_slug}`}
-            >
-              {spec.band60TankSummary ?? bisCopy.indexSpecDps60(spec.band60Dps ?? 0, spec.unit)}
-            </span>
-          ) : (
-            <span class="text-muted text-[12px]">{bisCopy.noDataYet}</span>
-          )}
-        </li>
-      ))}
-    </ul>
+<section class="card" style={`--c: ${color}`} id={slug} data-testid={`bis-class-${slug}`}>
+  <div class="card-head">
+    <ClassCrest slug={slug} size={56} />
+    <h3 class="card-name">{name}</h3>
   </div>
+  {specs.map((spec) => (
+    <a
+      class="spr"
+      href={specLinkHref({ classSlug: spec.classSlug, specSlug: spec.specSlug, band: DEFAULT_LANDING_BAND })}
+      data-spec-link
+      data-spec-key={spec.key}
+      data-class-slug={spec.classSlug}
+      data-spec-slug={spec.specSlug}
+      data-testid={`bis-spec-${spec.classSlug}-${spec.specSlug}`}
+    >
+      <img
+        class="spr-icon"
+        src={spec.iconSrc}
+        alt=""
+        width="28"
+        height="28"
+        loading="lazy"
+        decoding="async"
+      />
+      <span class="nm">{spec.name}</span>
+      {roleWord(spec.role) !== undefined && (
+        <span class="tag" data-role-tag>
+          {roleWord(spec.role)}
+        </span>
+      )}
+      <span class="pill pill-site yours" data-yours hidden>
+        {landingCopy.yours}
+      </span>
+      <svg
+        class="go"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M5 12h14M13 6l6 6-6 6"></path>
+      </svg>
+    </a>
+  ))}
 </section>
+
+<style>
+  .card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--c) 7%, var(--color-raised)) 0%,
+      var(--color-raised) 120px
+    );
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--c);
+  }
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 18px 16px;
+  }
+  .card-name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--c);
+  }
+  .spr {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 0 16px 0 14px;
+    border-left: 2px solid transparent;
+    border-top: 1px solid var(--color-line-soft);
+    color: var(--color-text);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .spr-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--color-line);
+    object-fit: cover;
+  }
+  .nm {
+    flex: 1;
+    min-width: 0;
+    color: var(--color-strong);
+  }
+  .tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .yours {
+    height: 20px;
+    font-size: 10px;
+  }
+  .yours[hidden] {
+    display: none;
+  }
+  .go {
+    flex-shrink: 0;
+    color: var(--color-muted);
+    opacity: 0;
+    transition: opacity 120ms ease-out;
+  }
+  /* Hover moves nothing: a ground, a 2px edge that was already there, an underline. */
+  .spr:hover {
+    background: #101624;
+    border-left-color: var(--c);
+  }
+  .spr:hover .go {
+    opacity: 1;
+    color: var(--color-gold);
+  }
+  .spr:hover .nm {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .spr:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: -2px;
+    background: #101624;
+  }
+  .spr:active {
+    background: #0a0d15;
+    border-left-color: var(--c);
+  }
+  .spr:active .nm {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  :global(.spr.is-you) {
+    background: color-mix(in srgb, var(--color-gold) 6%, transparent);
+    border-left-color: var(--color-gold);
+  }
+  :global(.spr.is-you:hover) {
+    border-left-color: var(--color-gold);
+  }
+  @media (max-width: 599px) {
+    .card-head {
+      padding: 12px 16px 10px;
+    }
+    .card-head :global(.crest) {
+      width: 44px !important;
+      height: 44px !important;
+    }
+    .spr {
+      min-height: 44px;
+    }
+  }
+</style>

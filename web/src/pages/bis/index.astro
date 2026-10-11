@@ -1,66 +1,209 @@
 ---
 // web/src/pages/bis/index.astro
-// BiS index: classes -> specs, one row per written spec (data/curated/specs.json,
-// the same catalog the rotation-accuracy program measures against). A spec with no ranked
-// list yet still gets a link -- its own page carries the empty state -- rather than being
-// left off the index, which would look like the class does not exist here at all.
+// /bis: the best-in-slot landing (design/specs/2026-10-10-bis-landing.md). It answers one
+// question, "what should I wear right now?", and gets a player from the front door to their own
+// spec's list at their own band in one click: the hero, the signed-in lead (the selected
+// character, how many of its slots it wears, one button), then the band strip and the nine class
+// cards in game order. No spec carries a figure here -- the tier list owns rankings. Everything
+// but the lead and the character's marks is prerendered; the page script fills those in after
+// the page settles and follows the header selector in place.
 import Base from '../../layouts/Base.astro';
-import BisClassCard, { type BisClassCardSpec } from '../../components/bis/BisClassCard.astro';
+import BisBandStrip from '../../components/bis/BisBandStrip.astro';
+import BisClassCard from '../../components/bis/BisClassCard.astro';
+import BisLead from '../../components/bis/BisLead.astro';
 import UpdatedStamp from '../../components/UpdatedStamp.astro';
-import classes from '../../data/classes.json';
 import activeBuild from '../../data/active-build.json';
-import { latest } from '../../lib/dates';
-import { bisCopy } from '../../lib/bis/copy';
-import { bandEntry, groupByClass, loadBisFile, readSpecCatalog } from '../../lib/bis/load';
-import { presetLabelFor } from '../../lib/bis/presets';
-import { headlineDpsOf, tankIndexSummaryOf } from '../../lib/bis/tank-view';
-import { rateUnitOf } from '../../lib/bis/heal-view';
+import { landingCopy } from '../../lib/bis/landing-copy';
+import { loadLandingData } from '../../lib/bis/landing-build';
 
-const catalog = readSpecCatalog();
-const grouped = groupByClass(catalog);
-const loadedFiles = catalog
-  .map((spec) => loadBisFile(spec.spec, activeBuild.build))
-  .filter((file) => file !== null);
-const updated =
-  loadedFiles.length > 0 ? latest(loadedFiles.map((file) => new Date(file.generated_at))) : null;
-const classesWithSpecs = classes
-  .map((c) => ({
-    ...c,
-    specs: (grouped.find((g) => g.classSlug === c.slug)?.specs ?? []).map((spec): BisClassCardSpec => {
-      const file = loadBisFile(spec.spec, activeBuild.build);
-      const band60 = file === null ? undefined : bandEntry(file, 60, 'alliance');
-      return {
-        class_slug: spec.class_slug,
-        spec_slug: spec.spec_slug,
-        name: spec.name,
-        hasData: file !== null,
-        band60Dps: band60 === undefined ? undefined : headlineDpsOf(band60),
-        band60TankSummary: band60 === undefined ? undefined : tankIndexSummaryOf(band60),
-        unit: band60 === undefined ? undefined : rateUnitOf(band60),
-        band60PresetLabel: file === null || band60 === undefined ? undefined : presetLabelFor(file, band60),
-      };
-    }),
-  }))
-  .filter((c) => c.specs.length > 0);
+const { cards, captions, raidLabel, updated, config } = loadLandingData(activeBuild.build);
+const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
 ---
 
-<Base title={bisCopy.indexTitle} description={bisCopy.indexDescription} path="/bis">
-  <main id="main" tabindex="-1" class="measure-wide px-[18px] md:px-0 py-10 flex flex-col gap-5">
-    <header class="flex flex-col gap-2">
-      <h1 class="text-[28px] font-bold tracking-[0.02em]">{bisCopy.indexTitle}</h1>
-      {updated && <UpdatedStamp date={updated} />}
-    </header>
-    <p class="text-muted text-[14px]">{bisCopy.indexIntro}</p>
-    <p class="text-[14px]">
-      <span class="text-muted">{bisCopy.tierListPointer}</span>{' '}
-      <a href={bisCopy.tierListHref} class="font-bold" data-testid="bis-index-tier-link">
-        {bisCopy.tierListLink}
-      </a>
-    </p>
-    <div class="flex flex-col gap-3">
-      {classesWithSpecs.map((c) => (
-        <BisClassCard name={c.name} slug={c.slug} specs={c.specs} />
-      ))}
+<Base title={landingCopy.title} description={landingCopy.description} path="/bis">
+  <main id="main" tabindex="-1" class="bis-page" data-testid="bis-landing">
+    <div class="band full-bleed">
+      <header class="hero page-column">
+        <p class="label eyebrow">
+          <i class="eyebrow-rule" aria-hidden="true"></i>
+          {landingCopy.eyebrow}
+        </p>
+        <div class="hero-head">
+          <h1 class="h1">{landingCopy.h1}</h1>
+          {updated && (
+            <span class="stamp">
+              <UpdatedStamp date={updated} />
+            </span>
+          )}
+        </div>
+        <p class="job">{landingCopy.jobLine}</p>
+        <p class="tier">
+          <span class="tier-question">{landingCopy.tierQuestion}</span>{' '}
+          <a href={landingCopy.tierHref} class="tier-link" data-testid="bis-index-tier-link">
+            {landingCopy.tierLink}
+          </a>
+        </p>
+      </header>
+    </div>
+
+    <div class="body">
+      <BisLead />
+      <div class="grid-wrap">
+        <h2 class="grid-heading" data-grid-heading data-testid="bis-grid-heading">
+          <span data-signed-out-only>{landingCopy.gridHeadingSignedOut}</span>
+          <span data-signed-in-only>{landingCopy.gridHeadingSignedIn}</span>
+        </h2>
+        <BisBandStrip captions={captions} raidLabel={raidLabel} />
+        <div class="grid" data-testid="bis-class-grid">
+          {cards.map((card) => (
+            <BisClassCard name={card.name} slug={card.slug} color={card.color} specs={card.specs} />
+          ))}
+        </div>
+      </div>
     </div>
   </main>
+  <script is:inline type="application/json" id="bis-landing-config" set:html={configJson}></script>
+  <script>
+    import { mountBisLanding } from '../../lib/bis/landing-client';
+    import type { LandingConfig } from '../../lib/bis/landing-config';
+
+    const node = document.getElementById('bis-landing-config');
+    if (node?.textContent) mountBisLanding(JSON.parse(node.textContent) as LandingConfig);
+  </script>
 </Base>
+
+<style>
+  .bis-page {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .band {
+    position: relative;
+    background: var(--color-raised);
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+  .band::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #26405c66 0%, #07090dcc 70%, #07090d 100%);
+    pointer-events: none;
+  }
+  .hero {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-block: 28px 24px;
+  }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    color: var(--color-gold);
+  }
+  .eyebrow-rule {
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--color-gold);
+  }
+  .hero-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-strong);
+  }
+  .job {
+    margin: 0;
+    max-width: 62ch;
+    font-size: 14px;
+    color: #c9c2b2;
+  }
+  .tier {
+    margin: 0;
+    font-size: 14px;
+  }
+  .tier-question {
+    color: var(--color-muted);
+  }
+  .tier-link {
+    font-weight: 700;
+  }
+  .tier-link:hover {
+    color: var(--color-gold-hover);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 12px var(--page-inset) 40px;
+  }
+  .grid-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .grid-heading {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-strong);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+  }
+
+  @media (max-width: 1023px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 767px) {
+    .hero {
+      padding-inline: 18px;
+    }
+  }
+  @media (max-width: 599px) {
+    .hero {
+      gap: 10px;
+      padding-block: 22px 20px;
+    }
+    .h1 {
+      font-size: 26px;
+    }
+    /* The one Updated stamp sits under the tier pointer on a phone. */
+    .hero-head {
+      display: contents;
+    }
+    .stamp {
+      order: 5;
+    }
+    .body {
+      gap: 16px;
+    }
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+    }
+  }
+</style>

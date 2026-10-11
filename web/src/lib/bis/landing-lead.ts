@@ -7,8 +7,7 @@ import type { MeCharacter } from '../account/api';
 import { isStale } from '../character-selector/stale';
 import { relativeTime } from '../dates';
 import { SLOTS, type Slot } from '../planner/types';
-import { bandForLevel, MIN_BAND } from './hover';
-import { DEFAULT_LANDING_BAND } from './landing-bands';
+import { DEFAULT_LANDING_BAND, FIRST_BAND_LEVEL, characterBand } from './landing-bands';
 import { classFor, specKeyFor, type LandingConfig } from './landing-config';
 import { landingCopy } from './landing-copy';
 import { specLinkHref } from './landing-links';
@@ -16,17 +15,9 @@ import { SLOT_DISPLAY_LABELS } from './slot-display-labels';
 import { hasKnownSource } from './source-cell';
 import type { BisBand, Faction } from './types';
 
-/** The first level best in slot covers. */
-export const FIRST_BAND_LEVEL = MIN_BAND;
-
 /** Slot pairs the note names together: `Trinkets`, `Rings`. */
 const PAIRED_SLOT_NAMES: Readonly<Record<string, string>> = { trinket: 'Trinkets', finger: 'Rings' };
 const PAIR_SUFFIX = /[12]$/;
-
-/** The band a level falls in, or undefined for a character not yet level 20 (or of unknown level). */
-export function characterBand(level: number | undefined): number | undefined {
-  return level === undefined || level < FIRST_BAND_LEVEL ? undefined : bandForLevel(level);
-}
 
 export interface SlotCount {
   worn: number;
@@ -161,7 +152,12 @@ export function buildLeadView(input: LeadInput): LeadView | null {
     specClass: specKey === undefined ? cls.name : `${spec.name} ${cls.name}`,
     level: character.level,
     faction: character.faction,
-    href: specLinkHref({ classSlug: spec.classSlug, specSlug: spec.specSlug, band, faction: character.faction }),
+    href: specLinkHref({
+      classSlug: spec.classSlug,
+      specSlug: spec.specSlug,
+      band,
+      faction: character.faction,
+    }),
     buttonLabel: landingCopy.leadButton(specKey === undefined ? cls.name : spec.name, band),
     sync,
     count: countViewFor(input, stale),
