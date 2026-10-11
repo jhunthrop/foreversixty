@@ -56,6 +56,10 @@ local L = {
 	-- The talent marks' render check (spec section 2.4): how many of the
 	-- order badges found no node button to sit on.
 	diagTalentBadges = "%d of %d talent badges found no button; badges are off",
+	-- A finding, once per session: where the talent strip landed, for the
+	-- tester to read off /fs diag (L3.2 fix round 1: it never drew).
+	diagTalentStrip = "Talent strip: %s anchor on %s, at %s, %s, %s by %s, strata %s level %s, "
+		.. "visible %s; talents frame level %s",
 
 	-- The talent window's strip (spec section 4.2): the build, the plan's
 	-- count, the level the next point arrives at, and the points off plan.

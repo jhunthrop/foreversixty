@@ -163,11 +163,22 @@ local function walk(frame, node, depth)
 	return nil
 end
 
-function TalentGlow.traitButton(frame, node)
+--- `cache`, when given, is one refresh's lookups by node (false for a
+--- miss), so the ring and the talent marks' badges ask the client once per
+--- node. A fresh table per refresh: a button found before the window was
+--- rebuilt must not be handed out after it.
+function TalentGlow.traitButton(frame, node, cache)
 	if node == nil then
 		return nil
 	end
-	return byNodeApi(frame, node) or walk(frame, node, 1)
+	if cache ~= nil and cache[node] ~= nil then
+		return cache[node] or nil
+	end
+	local button = byNodeApi(frame, node) or walk(frame, node, 1)
+	if cache ~= nil then
+		cache[node] = button or false
+	end
+	return button
 end
 
 --- Refresh the glow whenever the talent window opens: the window is a
@@ -194,12 +205,12 @@ function TalentGlow.watch(data)
 	return TalentGlow.hooked
 end
 
-function TalentGlow.buttonFor(frame, target)
+function TalentGlow.buttonFor(frame, target, cache)
 	local classic = TalentGlow.classicButton(frame, target)
 	if classic ~= nil then
 		return classic, "classic"
 	end
-	local trait = TalentGlow.traitButton(frame, target.node)
+	local trait = TalentGlow.traitButton(frame, target.node, cache)
 	if trait ~= nil then
 		return trait, "trait"
 	end
@@ -222,7 +233,13 @@ end
 --- already on the right button is left as it is, so a refresh mid-pulse
 --- (a bag update with the window open) does not restart its ten seconds,
 --- as the chip's does not.
-function TalentGlow.refresh(data)
+---
+--- `opts` (optional): `cache` is the refresh's lookup cache (traitButton);
+--- `quiet` records no miss, for the talent window's first pass on show,
+--- which runs before the trait buttons exist (seen in game: the first open
+--- after a reload missed, the second found the button).
+function TalentGlow.refresh(data, opts)
+	opts = opts or {}
 	if Follow.build == nil then
 		return TalentGlow.clear()
 	end
@@ -234,10 +251,10 @@ function TalentGlow.refresh(data)
 	if target == nil then
 		return TalentGlow.clear()
 	end
-	local button, how = TalentGlow.buttonFor(frame, target)
+	local button, how = TalentGlow.buttonFor(frame, target, opts.cache)
 	if button == nil then
 		TalentGlow.clear()
-		if not TalentGlow.noted then
+		if not TalentGlow.noted and not opts.quiet then
 			TalentGlow.noted = true
 			Theme.note(L.diagNoTalentButton)
 		end

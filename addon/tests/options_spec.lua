@@ -307,7 +307,7 @@ describe("Options", function()
 	it("hands the talent window's show and hide to the talent marks", function()
 		local TalentGlow, TalentMarks = require("TalentGlow"), require("TalentMarks")
 		Options.register()
-		assert.are.equal(TalentMarks.refresh, TalentGlow.onShow)
+		assert.are.equal(TalentMarks.onShow, TalentGlow.onShow)
 		assert.are.equal(TalentMarks.clear, TalentGlow.onHide)
 	end)
 

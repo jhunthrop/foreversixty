@@ -356,7 +356,7 @@ function Options.register()
 	end
 	-- The talent window's own show and hide (TalentGlow.watch's hooks) draw
 	-- and clear every talent mark, the ring included.
-	TalentGlow.onShow = TalentMarks.refresh
+	TalentGlow.onShow = TalentMarks.onShow
 	TalentGlow.onHide = TalentMarks.clear
 
 	local frame = CreateFrame("Frame", "ForeverSixtyEventFrame", UIParent)

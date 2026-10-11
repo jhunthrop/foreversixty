@@ -135,16 +135,21 @@ Theme.SIZES = {
 	--- game's own rank border.
 	glowInset = 3,
 	--- The talent marks (spec section 4.2): the order number on a planned
-	--- node, a 14 px dark square with 10 px digits, its top-right corner
-	--- `orderBadgeOffset` up and right of the node's own; the strip along
-	--- the talent window's bottom edge, `talentStripInset` in from the
-	--- window's edges, its text `talentStripPadding` in from its left.
+	--- node, a dark badge 14 px high with 10 px digits, at least 14 wide and
+	--- `orderBadgePad` wider than its digits, its top-right corner
+	--- `orderBadgeOffset` up and right of the node's own; the strip, a pill
+	--- in the talent window's bottom-left corner, `talentStripInset` in from
+	--- its left and bottom edges, its text `talentStripPadding` in from each
+	--- side, its right edge at least `talentStripGap` short of the window's
+	--- Apply Changes button.
 	orderBadge = 14,
 	orderBadgeText = 10,
 	orderBadgeOffset = 4,
+	orderBadgePad = 4,
 	talentStrip = 24,
 	talentStripInset = 8,
 	talentStripPadding = 12,
+	talentStripGap = 8,
 	--- How long "Selected -- press Ctrl+C" stays, and how long "Build
 	--- complete" stays on the chip before it goes idle.
 	copiedSeconds = 2,
