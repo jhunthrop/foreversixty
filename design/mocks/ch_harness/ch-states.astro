@@ -1,0 +1,14 @@
+---
+// design/mocks/ch_harness/ch-states.astro
+// The capture page for shoot_character_header_built.mjs: copied to web/src/pages/ for the run and
+// removed again, never shipped. A session cookie in the capture context sets `data-session`, so
+// the loading cells draw their skeleton as they do for a hinted visit.
+import Base from '../layouts/Base.astro';
+import Harness from '../components/character/__HeaderStatesHarness.svelte';
+---
+
+<Base title="Character header states" description="Capture harness, not shipped." path="/ch-states">
+  <main id="main" tabindex="-1">
+    <Harness client:load />
+  </main>
+</Base>
