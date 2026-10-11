@@ -10,7 +10,6 @@
      exactly as it does on /sim before its own fetch lands. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
-  import { buildCodeFor } from '../../lib/addon/build-code';
   import { loadItems, loadTalents } from '../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
   import type { Item } from '../../lib/planner/types';
@@ -24,10 +23,10 @@
     talentPointsFromString,
     type SimCharacter,
   } from '../../lib/sim/character';
-  import { winningGear, winningTalents } from '../../lib/sim/combos';
   import { bulkCopy, simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
+  import { gameCodeForSimResult } from '../../lib/sim/game-code';
   import { specLabel } from '../../lib/sim/spec-label';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
@@ -99,6 +98,9 @@
     // carries whatever level it actually ran at, so the strip shows that rather than
     // asserting MAX_LEVEL for every saved sim regardless of what it was.
     level: result.request.character.level,
+    // Stamped with the ACTIVE data build because the stored request carries no build of its
+    // own: a sim saved against an older talent layout maps its digits onto today's layout,
+    // and the addon cannot catch that (the code it receives names the active build).
     tree_version: activeBuild.build,
     // Genuinely unknowable here, same as a combat-log character (sources.ts): a saved sim's
     // stored request carries the engine's final talent STRING, not the click order that
@@ -175,23 +177,11 @@
 
   /**
    * The build this page's result is about, as the FSB1 code the addon's build dialog reads:
-   * a bulk run's winning set (its leader's gear and talents, the set its own table ranks
-   * first), otherwise the stored request's own character. Item stats come from the item
-   * file loaded above; a slot with no record there is left out of the code.
+   * a bulk run's winning set, otherwise the stored request's own character
+   * (`gameCodeForSimResult`, game-code.ts). Item stats come from the item file loaded above;
+   * a slot with no record there is left out of the code.
    */
-  const gameCode = $derived.by(() => {
-    if (talentIndex === null) return '';
-    const bulk = kind !== 'run' && kind !== 'weights' ? (result as BulkResult) : null;
-    return buildCodeFor({
-      kind: 'sim',
-      dataBuild: character.tree_version,
-      classSlug: character.class_slug,
-      talents: bulk === null ? result.request.character.talents : winningTalents(bulk),
-      gear: bulk === null ? result.request.character.gear : winningGear(bulk),
-      talentIndex,
-      items,
-    });
-  });
+  const gameCode = $derived(gameCodeForSimResult(result, character.tree_version, talentIndex, items));
 
   // D48 (dps-minmaxer review round 2): a saved run reloaded cold used to hardcode
   // `actionNames={null}` below, so every ability, aura and cast name on this page read as

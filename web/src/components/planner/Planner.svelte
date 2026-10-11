@@ -240,7 +240,7 @@
     store.setCharacterLevel(hero?.level ?? null);
   });
 
-  // The chip's "Copy addon code" link; shared with SharePanel's own button (Task 10).
+  // The chip's "Copy for the game" link; shared with SharePanel's own buttons (Task 10, L8.1).
 
   // Every load source writes the pointer through here (Task 10); writePlannerPointer is a
   // no-op inline or before talent data has loaded.
@@ -634,7 +634,7 @@
     <!-- Rebuild spec §4.A/§4.B, fix round 5: `PlannerHeaderBand` owns the full-bleed band
          (the same shape the BiS page's `ArtPanel` + `.header-row` ships), `PlannerHeader`
          and the shared `CharacterHeader` card as its own two grid columns -- replaces the bare page
-         title, the old current-character spine band (which duplicated Copy addon code, now
+         title, the old current-character spine band (which duplicated Copy for the game, now
          in the Share panel below), and the prior round's boxed header beside a separate
          character-card panel. -->
     <PlannerHeaderBand {store} {live} {gate} onshowdps={() => (dpsOptedIn = true)} />

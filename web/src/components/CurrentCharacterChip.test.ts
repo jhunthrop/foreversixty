@@ -1,6 +1,7 @@
 // web/src/components/CurrentCharacterChip.test.ts
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
+import { addonCopy } from '../lib/addon/copy';
 import { currentCharacterCopy } from '../lib/current-character-copy';
 import type { CurrentCharacter } from '../lib/current-character';
 import { classColorVar } from '../lib/report/format';
@@ -60,8 +61,9 @@ describe('CurrentCharacterChip', () => {
       props: { current, onforget: () => {}, addonCode: 'FS1:1:warrior:orc:0/0/0:' },
     });
     expect(body).toContain('data-testid="current-character-copy-addon"');
-    expect(body).toContain(currentCharacterCopy.copyAddonCode);
-    expect(body).not.toContain(currentCharacterCopy.copiedAddonCode);
+    // Task L8.1 fix round 1: the shared "Copy for the game" label, not a chip-only string.
+    expect(body).toContain(addonCopy.copyForGame);
+    expect(body).not.toContain(addonCopy.copiedForGame);
   });
 
   // Fix round 1 (Critical): the loaded chip and the no-character line must share the exact
