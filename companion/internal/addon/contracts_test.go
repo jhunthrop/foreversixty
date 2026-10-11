@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -33,6 +34,25 @@ var (
 	contractSupported = []string{MessageUpgrade, MessageWeights, MessageGuild}
 	contractPending   = []string{"build", "sim_result", "last_raid", "loot_values", "ack"}
 )
+
+// contractPendingKey is, per pending type, a JSON key only that type's message uses. The
+// pending test fails the moment Message gains a field with one of them: that lane must then
+// move the type from contractPending to a strict decode and round trip in this file.
+var contractPendingKey = map[string]string{
+	"build": "code", "sim_result": "slots", "last_raid": "report_id",
+	"loot_values": "items", "ack": "export_seen_at",
+}
+
+// contractHasJSONKey reports whether the struct v has a field whose JSON name is key.
+func contractHasJSONKey(v any, key string) bool {
+	typ := reflect.TypeOf(v)
+	for i := 0; i < typ.NumField(); i++ {
+		if name, _, _ := strings.Cut(typ.Field(i).Tag.Get("json"), ","); name == key {
+			return true
+		}
+	}
+	return false
+}
 
 func contractFixture(t *testing.T, name string) []byte {
 	t.Helper()
@@ -202,6 +222,13 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 	})
 
 	t.Run("v2 types pending L7", func(t *testing.T) {
+		for _, typ := range contractPending {
+			if contractHasJSONKey(Message{}, contractPendingKey[typ]) {
+				t.Errorf("Message now has the %q field, so %q is no longer pending: move it from "+
+					"contractPending to a strict decode and byte-equal round trip in this file (%s)",
+					contractPendingKey[typ], typ, "Lane L7.1")
+			}
+		}
 		pending := 0
 		for _, typ := range contractPending {
 			if seen[typ] != 1 {
@@ -283,6 +310,10 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 		if ran, ok := contractLua51(t, body); ok {
 			t.Logf("Lua 5.1 load check ran through %q", ran)
 		} else {
+			if os.Getenv("CI") != "" {
+				t.Fatal("CI is set and no Lua 5.1 interpreter was found on PATH or in WSL: " +
+					"the workflow must install lua5.1 so the rendered inbox is checked against the client's Lua")
+			}
 			t.Log("no Lua 5.1 interpreter on PATH or in WSL: only the pure-Go ParseLua check ran")
 		}
 	})

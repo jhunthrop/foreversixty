@@ -143,6 +143,62 @@ describe("the v2 wire contracts, addon side", function()
 			end
 		end)
 
+		-- Contract 3's exact key set for every message type, so a renamed or dropped field
+		-- (loss_seconds, export_seen_at, report_id, ...) fails here and not in a later lane.
+		local KEYS = {
+			build = { "character", "code", "name", "type" },
+			upgrade = { "character", "delta", "item_id", "item_name", "slot", "source", "type", "unit" },
+			weights = { "caps", "character", "dps_per_point", "spec", "type", "weights" },
+			sim_result = { "character", "dps", "error", "generated_at", "slots", "spec", "type" },
+			last_raid = { "bosses", "character", "date", "report_id", "type" },
+			loot_values = { "character", "items", "raid", "type" },
+			guild = { "character", "claim_state", "guild_name", "pending_approvals", "rank", "type" },
+			ack = { "character", "export_seen_at", "type" },
+		}
+		local NESTED = {
+			weights = { list = "weights", keys = { "stat", "weight" } },
+			sim_result = { list = "slots", keys = { "delta", "item_id", "slot" } },
+			last_raid = {
+				list = "bosses",
+				keys = { "adherence", "biggest_loss", "consumables_missed", "deaths", "loss_seconds",
+					"name", "percentile" },
+			},
+		}
+
+		local function messageOf(typ)
+			for _, message in ipairs(inbox.messages) do
+				if message.type == typ then
+					return message
+				end
+			end
+			error("no " .. typ .. " message in the fixture")
+		end
+
+		it("pins the exact keys of every message type", function()
+			for _, typ in ipairs(INBOX_TYPES) do
+				assert.are.same(KEYS[typ], sortedKeys(messageOf(typ)), typ)
+			end
+		end)
+
+		it("pins the keys of the rows nested inside weights, sim_result and last_raid", function()
+			for typ, nested in pairs(NESTED) do
+				local rows = messageOf(typ)[nested.list]
+				assert.is_true(#rows >= 1, typ)
+				for _, row in ipairs(rows) do
+					assert.are.same(nested.keys, sortedKeys(row), typ .. "." .. nested.list)
+				end
+			end
+		end)
+
+		it("pins the keys of the loot_values items", function()
+			local count = 0
+			for _, item in pairs(messageOf("loot_values").items) do
+				count = count + 1
+				assert.are.same({ "planned", "unit", "value" }, sortedKeys(item))
+			end
+			assert.is_true(count >= 1)
+		end)
+
 		it("keeps the legacy builds list beside the build messages", function()
 			assert.are.equal(1, #inbox.builds)
 			local legacy, message = inbox.builds[1], nil
@@ -221,7 +277,7 @@ describe("the v2 wire contracts, addon side", function()
 			local text = readFixture("fs1-messages.txt")
 			lines = {}
 			for line in text:gmatch("[^\n]+") do
-				lines[#lines + 1] = line
+				lines[#lines + 1] = (line:gsub("\r$", "")) -- a CRLF checkout must pass too
 			end
 		end)
 

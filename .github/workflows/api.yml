@@ -2,9 +2,9 @@ name: api
 on:
   push:
     branches: [main]
-    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'docs/contracts/**', '.github/workflows/api.yml']
   pull_request:
-    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', '.github/workflows/api.yml']
+    paths: ['api/**', 'logs/**', 'sim/**', 'data/builds/**', 'docs/contracts/**', '.github/workflows/api.yml']
   workflow_dispatch:
 jobs:
   test:

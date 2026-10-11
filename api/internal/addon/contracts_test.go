@@ -11,6 +11,8 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -32,6 +34,25 @@ var contractSupported = []string{messageUpgrade, messageWeights, messageGuild}
 // their fields (name/code, dps/error/slots, report_id/date/bosses, raid/items,
 // export_seen_at). Lane L6.3 adds them, and this test then moves them to contractSupported.
 var contractPending = []string{"build", "sim_result", "last_raid", "loot_values", "ack"}
+
+// contractPendingKey is, per pending type, a JSON key only that type's message uses. The
+// pending test fails the moment MessageEntry gains a field with one of them: that lane must then
+// move the type from contractPending to a strict decode and round trip in this file.
+var contractPendingKey = map[string]string{
+	"build": "code", "sim_result": "slots", "last_raid": "report_id",
+	"loot_values": "items", "ack": "export_seen_at",
+}
+
+// contractHasJSONKey reports whether the struct v has a field whose JSON name is key.
+func contractHasJSONKey(v any, key string) bool {
+	typ := reflect.TypeOf(v)
+	for i := 0; i < typ.NumField(); i++ {
+		if name, _, _ := strings.Cut(typ.Field(i).Tag.Get("json"), ","); name == key {
+			return true
+		}
+	}
+	return false
+}
 
 func contractFixture(t *testing.T, name string) []byte {
 	t.Helper()
@@ -149,6 +170,13 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 	})
 
 	t.Run("v2 types pending L6.3", func(t *testing.T) {
+		for _, typ := range contractPending {
+			if contractHasJSONKey(MessageEntry{}, contractPendingKey[typ]) {
+				t.Errorf("MessageEntry now has the %q field, so %q is no longer pending: move it from "+
+					"contractPending to a strict decode and byte-equal round trip in this file (%s)",
+					contractPendingKey[typ], typ, "Lane L6.3")
+			}
+		}
 		pending := 0
 		for _, typ := range contractPending {
 			if seen[typ] != 1 {
