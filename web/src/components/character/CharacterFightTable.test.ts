@@ -11,7 +11,7 @@
 //   Round 4, 8. 8px more between the amount and Date from md.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import { characterTableCopy, executionCellClass } from '../../lib/character-profile';
+import { characterTableCopy, executionCellClass, fightRowId } from '../../lib/character-profile';
 import type { CharacterFight } from '../../lib/rankings/api';
 import CharacterFightTable from './CharacterFightTable.svelte';
 
@@ -130,5 +130,28 @@ describe('CharacterFightTable', () => {
     ]);
     expect(characterTableCopy.executionUnscored).toBe('Not scored yet');
     expect(html).toMatch(/<a [^>]*title="94% of what this gear can do, simulated"[^>]*>94%<\/a>/);
+  });
+
+  // L8.5 ruling 1: the rating card's "Weakest part of a fight" anchors to a row of "Every ranked
+  // fight", so that table's rows carry an id; "Best per encounter" repeats fights and gets none.
+  it('gives each row the id the rating card links to, when asked (L8.5 ruling 1)', () => {
+    const withIds = render(CharacterFightTable, {
+      props: {
+        title: 'Every ranked fight',
+        rows: [row(1, 0.94), row(2, null)],
+        testid: 'character-history',
+        bossHref: () => '/reports/r1',
+        rowKey: (fight: CharacterFight) => String(fight.fight_index),
+        executionTestid: 'character-execution',
+        rowId: fightRowId,
+      },
+    }).body;
+    const ids = [...withIds.matchAll(/<li class="([^"]*)" id="([^"]*)"/g)];
+    expect(ids.map((match) => match[2])).toEqual(['fight-r1-1', 'fight-r1-2']);
+    // Scrolled to with room above it, and marked while it is the address's target.
+    for (const match of ids) {
+      expect(match[1].split(' ')).toEqual(expect.arrayContaining(['scroll-mt-4', 'target:bg-raised']));
+    }
+    expect(table()).not.toMatch(/<li[^>]* id="/);
   });
 });

@@ -41,14 +41,10 @@
     type ForeverScore,
     type ScorePoint,
   } from '../lib/score/score';
-  import {
-    SPARKLINE_HEIGHT,
-    SPARKLINE_WIDTH,
-    scoreHistoryFirst,
-    scoreSparkline,
-  } from '../lib/score/sparkline';
+  import { scoreHistoryFirst, scoreHistoryLine } from '../lib/score/sparkline';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import ScoreBadge from './ScoreBadge.svelte';
+  import Sparkline from './Sparkline.svelte';
   import TierStrip from './TierStrip.svelte';
 
   let {
@@ -96,20 +92,25 @@
    *  target's bottom ~7px, so the link is positioned and stacked above it (fix round 6). */
   const SENTENCE_LINK = 'relative z-10 underline underline-offset-2 max-md:py-[13.5px]';
   /** The last column holds the cue on one line: "+700 pts", the widest (Experience at 0), is
-   *  57.6px at 12px mono, so 60px (fix round 4 item 2, fix round 5 item 3). */
-  const ROW = 'grid grid-cols-[88px_minmax(0,1fr)_80px_60px] items-center gap-x-3 gap-y-1 text-[13px]';
+   *  57.6px at 12px mono, so 60px (fix round 4 item 2, fix round 5 item 3). Below 400px the label
+   *  column is 80px, the points read "412/500" in 56px and the gaps are 8px, so the bar's track
+   *  keeps room on a phone (L8.5 ruling 4). */
+  const ROW =
+    'grid grid-cols-[88px_minmax(0,1fr)_80px_60px] items-center gap-x-3 gap-y-1 text-[13px] max-[400px]:grid-cols-[80px_minmax(0,1fr)_56px_60px] max-[400px]:gap-x-2';
 
   const date = $derived(shortDate(forever?.as_of));
   const gain = $derived(mostToGain(forever?.components));
   const gaps = $derived(componentGaps(forever?.components));
   const gainLabel = $derived(scoreCopy.components.find((c) => c.key === gain?.key)?.label ?? '');
-  const sparkline = $derived(scoreSparkline(history));
+  const sparkline = $derived(scoreHistoryLine(history));
   const firstScore = $derived(scoreHistoryFirst(history));
   const gainHref = $derived(gain?.key === 'gear' && bisHref !== null ? bisHref : scoreCopy.explainHref);
 </script>
 
 {#snippet card()}
-  <div class={CARD} data-testid="forever-score-card">
+  <!-- L8.5 ruling 3: the no-logs card is capped at 720px, so on a desktop its button and "What
+       the score counts" do not sit a page-width apart. -->
+  <div class={hasScore(forever) ? CARD : `${CARD} max-w-[720px]`} data-testid="forever-score-card">
     {#if hasScore(forever)}
       {@const tier = tierLabel(forever.tier)}
       <!-- Fix round 3 item 13: from 1280 two columns -- left the number, the tier word and the
@@ -159,7 +160,9 @@
                       ></span></span
                     >
                     <span class="text-muted tabular text-right font-mono whitespace-nowrap"
-                      >{scoreCopy.ofMax(points, max)}</span
+                      ><span class="max-[400px]:hidden">{scoreCopy.ofMax(points, max)}</span><span
+                        class="min-[400px]:hidden">{scoreCopy.ofMaxShort(points, max)}</span
+                      ></span
                     >
                     <span
                       class="tabular text-right font-mono text-[12px] font-semibold whitespace-nowrap"
@@ -179,6 +182,14 @@
                         )}</span
                       >
                     {/if}
+                    {#if component.key === 'experience'}
+                      <!-- L8.5 ruling 2: what counts, in the API's own terms, so 620 with 0 raid
+                           bosses reads as intended. -->
+                      <span
+                        class="text-muted col-span-3 col-start-2 text-[12px]"
+                        data-testid="forever-score-experience-note">{scoreCopy.experienceCounts}</span
+                      >
+                    {/if}
                   </li>
                 {/if}
               {/each}
@@ -193,64 +204,23 @@
                  caption ("Up 330 since 10 Nov", which carries the first date; ", 2 readings" under
                  five points) leads the date row in the text colour and the newest date ends it,
                  mono muted (fix round 3 item 12). -->
-            <figure
-              class="order-3 m-0 flex w-full max-w-[460px] flex-col gap-1 xl:order-none xl:max-w-none"
-              data-testid="forever-score-history"
-            >
-              <div class="relative h-10 lg:h-12" data-testid="forever-score-plot">
-                <svg
-                  class="absolute inset-0 block h-full w-full overflow-visible"
-                  viewBox={`0 0 ${SPARKLINE_WIDTH} ${SPARKLINE_HEIGHT}`}
-                  preserveAspectRatio="none"
-                  role="img"
-                  aria-label={sparkline.ariaLabel}
-                  data-testid="forever-score-sparkline"
-                >
-                  <path
-                    d={sparkline.path}
-                    fill="none"
-                    stroke="var(--color-gold)"
-                    stroke-width="2"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    vector-effect="non-scaling-stroke"
-                  />
-                </svg>
-                <span
-                  class="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-                  style={`left: ${sparkline.last.x}%; top: ${sparkline.last.y}%; background-color: ${sparkline.last.color ?? 'var(--color-gold)'}`}
-                  aria-hidden="true"
-                  data-testid="forever-score-sparkline-last"
-                ></span>
-              </div>
-              <div
-                class="flex items-baseline justify-between gap-3"
-                aria-hidden="true"
-                data-testid="forever-score-history-dates"
-              >
-                <span class="text-text text-[12px]" data-testid="forever-score-history-caption"
-                  >{sparkline.caption}</span
-                >
-                <span
-                  class="text-muted tabular font-mono text-[12px]"
-                  data-testid="forever-score-history-last">{sparkline.lastLabel}</span
-                >
-              </div>
-              <table class="sr-only" data-testid="forever-score-history-table">
-                <caption>{scoreCopy.historyCaption}</caption>
-                <thead>
-                  <tr
-                    ><th scope="col">{scoreCopy.historyDate}</th><th scope="col">{scoreCopy.historyScore}</th
-                    ></tr
-                  >
-                </thead>
-                <tbody>
-                  {#each sparkline.rows as row, index (index)}
-                    <tr><td>{row.date}</td><td>{row.score}</td></tr>
-                  {/each}
-                </tbody>
-              </table>
-            </figure>
+            <Sparkline
+              line={sparkline}
+              class="order-3 w-full max-w-[460px] xl:order-none xl:max-w-none"
+              testids={{
+                figure: 'forever-score-history',
+                plot: 'forever-score-plot',
+                svg: 'forever-score-sparkline',
+                last: 'forever-score-sparkline-last',
+                dates: 'forever-score-history-dates',
+                caption: 'forever-score-history-caption',
+                lastLabel: 'forever-score-history-last',
+                table: 'forever-score-history-table',
+              }}
+              tableCaption={scoreCopy.historyCaption}
+              dateHeader={scoreCopy.historyDate}
+              valueHeader={scoreCopy.historyScore}
+            />
           {:else if firstScore !== null}
             <!-- One point is not a line (fix round 3 item 12): the date the record starts, where
                  the line would be. -->

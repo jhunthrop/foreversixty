@@ -87,7 +87,10 @@ export const addonCopy = {
   installGitHub: 'Download the latest release',
   currentDataBuild: (build: string): string => `Current data build: ${build}`,
   flowOutTitle: 'Out of the game',
-  flowOutBody: 'Type /fs export in game, copy the string, paste it into the planner’s Import from addon box.',
+  /** The addon's copy mode (L8.5 ruling 5): `/fs copy` opens it with the box selected, and
+   *  Ctrl+C is the action; there is no button, and the old export command is gone. */
+  flowOutBody:
+    'In game, type /fs copy, press Ctrl+C, then paste it into the planner’s Import from addon box.',
   flowInTitle: 'Into the game',
   flowInBody: 'Save a build here, press Copy for the game, then type /fs in game and paste it.',
   inGameTitle: 'The in-game window',

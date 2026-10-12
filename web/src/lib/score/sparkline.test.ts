@@ -8,6 +8,7 @@ import {
   SPARKLINE_HEIGHT,
   SPARKLINE_PAD,
   SPARKLINE_WIDTH,
+  ratingSparkline,
   scoreHistoryFirst,
   scoreSparkline,
 } from './sparkline';
@@ -210,5 +211,74 @@ describe('the history caption (fix round 3 item 12)', () => {
     expect(scoreSparkline(thirty.slice(0, 4))!.caption).toBe('Up 30 since 1 Sep, 4 readings');
     expect(scoreSparkline(thirty.slice(0, 5))!.caption).toBe('Up 40 since 1 Sep');
     expect(scoreSparkline(thirty)!.caption).toBe('Up 290 since 1 Sep');
+  });
+});
+
+// L8.5 ruling 1: the Performance Rating card draws its trend with the same pure model, so its
+// caption reads like the score card's ("Up 9 since 4 Dec") and the model carries the first and
+// newest values. One point per fight, ordered by when it was fought, rounded to whole points.
+describe('ratingSparkline (L8.5 ruling 1)', () => {
+  const fight = (at: string, overall: number) => ({ fought_at: at, overall });
+  const SIX = [56, 58, 60, 61, 63, 65].map((overall, index) =>
+    fight(`2026-12-0${index + 4}T20:00:00Z`, overall),
+  );
+
+  it('captions the change first to last, "Up 9 since 4 Dec", with the first and newest values', () => {
+    const line = ratingSparkline(SIX)!;
+    expect(line.caption).toBe('Up 9 since 4 Dec');
+    expect(line.first).toEqual({ value: 56, label: '4 Dec' });
+    expect(line.last.value).toBe(65);
+    expect(line.firstLabel).toBe('4 Dec');
+    expect(line.lastLabel).toBe('9 Dec');
+    expect(
+      ratingSparkline([...SIX].reverse().map((p, i) => ({ ...p, overall: SIX[i].overall })))!.caption,
+    ).toBe('Down 9 since 4 Dec');
+    expect(ratingSparkline(SIX.map((p) => ({ ...p, overall: 60 })))!.caption).toBe('No change since 4 Dec');
+  });
+
+  it('orders by fought_at, newest last, two fights on one day included, and rounds the values', () => {
+    const line = ratingSparkline([
+      fight('2026-12-09T22:10:00Z', 64.6),
+      fight('2026-12-04T20:00:00Z', 55.6),
+      fight('2026-12-09T20:00:00Z', 61.2),
+    ])!;
+    expect(line.first.value).toBe(56);
+    expect(line.last.value).toBe(65);
+    expect(line.rows.map((row) => row.value)).toEqual([56, 61, 65]);
+    expect(line.rows[0].date).toBe('4 Dec 2026');
+    const xy = coords(line.path);
+    expect(xy.map(([x]) => x)).toEqual([0, 50, 100]);
+  });
+
+  it('draws in the score card’s percentage box, edge to edge, with its end dot in gold', () => {
+    const line = ratingSparkline(SIX)!;
+    const xy = coords(line.path);
+    expect(xy[0][0]).toBe(0);
+    expect(xy[5][0]).toBe(SPARKLINE_WIDTH);
+    expect(line.last.x).toBe(SPARKLINE_WIDTH);
+    expect(line.last.color).toBeNull();
+    for (const [, y] of xy) {
+      expect(y).toBeGreaterThanOrEqual(SPARKLINE_PAD);
+      expect(y).toBeLessThanOrEqual(SPARKLINE_HEIGHT - SPARKLINE_PAD);
+    }
+  });
+
+  it('names the image for a screen reader from the first and newest values', () => {
+    expect(ratingSparkline(SIX)!.ariaLabel).toBe(
+      'Performance Rating, last 6 fights: 56 on 4 Dec, 65 on 9 Dec',
+    );
+  });
+
+  it('is null with fewer than two readable fights', () => {
+    expect(ratingSparkline([])).toBeNull();
+    expect(ratingSparkline([SIX[0]])).toBeNull();
+    expect(ratingSparkline([SIX[0], fight('not a date', 50)])).toBeNull();
+  });
+
+  it('leaves the score card’s model as it was: the same caption words from the shared core', () => {
+    const line = scoreSparkline([point('2026-11-10', 1500), point('2026-12-09', 1830)])!;
+    expect(line.first).toEqual({ value: 1500, label: '10 Nov' });
+    expect(line.last.score).toBe(1830);
+    expect(line.rows[0]).toEqual({ date: '10 Nov 2026', score: 1500 });
   });
 });

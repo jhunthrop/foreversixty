@@ -4,12 +4,27 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { ratingCopy } from '../lib/rating/copy';
+import { scoreCopy } from '../lib/score/copy';
+import { COMPONENT_MAX } from '../lib/score/score';
 import RatingCard from './RatingCard.svelte';
 
-const TREND = [40, 45, 50, 55, 60, 65].map((overall, index) => ({
-  fought_at: `2026-12-0${index + 1}T00:00:00Z`,
+const TREND = [56, 58, 60, 61, 63, 65].map((overall, index) => ({
+  fought_at: `2026-12-0${index + 4}T20:00:00Z`,
   overall,
 }));
+
+/** The class tokens of the element carrying `data-testid="<testid>"`. */
+function classOf(body: string, testid: string): string[] {
+  return new RegExp(`<[a-z]+ class="([^"]*)"[^>]*data-testid="${testid}"`).exec(body)?.[1].split(' ') ?? [];
+}
+
+function text(html: string): string {
+  return html
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 describe('RatingCard', () => {
   it('reads "65 of 100" in the card shell', () => {
@@ -24,21 +39,12 @@ describe('RatingCard', () => {
     expect(body).toContain(`>${ratingCopy.outOf100}<`);
   });
 
-  it('labels the sparkline with the count from the data: "Last 6 fights"', () => {
-    const { body } = render(RatingCard, { props: { overall: 65, trend: TREND, sampleSize: 6 } });
-    expect(body).toMatch(/data-testid="rating-card-trend-label">\s*Last 6 fights\s*</);
-    expect(body).toContain('data-testid="rating-trend"');
-    const three = render(RatingCard, {
-      props: { overall: 65, trend: TREND.slice(0, 3), sampleSize: 9 },
-    }).body;
-    expect(three).toMatch(/>\s*Last 3 fights\s*</);
-  });
-
   it('names the weakest part of a fight in one line', () => {
     const { body } = render(RatingCard, {
       props: { overall: 65, trend: TREND, sampleSize: 6, worst: 'activity' },
     });
-    expect(body).toMatch(/data-testid="rating-card-weakest">\s*Weakest part of a fight: Activity\.\s*</);
+    const line = /data-testid="rating-card-weakest">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '';
+    expect(text(line)).toBe('Weakest part of a fight: Activity.');
     expect(body).not.toContain('Best:');
   });
 
@@ -94,5 +100,108 @@ describe('RatingCard', () => {
       expect(link).toContain('underline');
       expect(link).not.toContain('text-gold');
     }
+  });
+
+  // L8.5 ruling 1: the Forever Score card's treatment. From 1280 two columns: the number, its
+  // segments and the verdict left; the sparkline filling the right column, captioned by the
+  // same pure model as the score's ("Up 9 since 4 Dec", the newest date at the right).
+  it('splits into two columns from 1280, the sparkline filling the right one (L8.5 ruling 1)', () => {
+    const { body } = render(RatingCard, {
+      props: { overall: 65, trend: TREND, sampleSize: 6, worst: 'activity', parses: 540 },
+    });
+    expect(classOf(body, 'rating-card-columns')).toEqual(
+      expect.arrayContaining(['flex', 'flex-col', 'xl:grid', 'xl:grid-cols-2', 'xl:gap-x-8']),
+    );
+    const main = body.indexOf('data-testid="rating-card-main"');
+    const side = body.indexOf('data-testid="rating-card-side"');
+    expect(main).toBeGreaterThan(-1);
+    expect(side).toBeGreaterThan(main);
+    // The number and the verdict on the left, the sparkline on the right.
+    expect(body.indexOf('character-rating-overall')).toBeGreaterThan(main);
+    expect(body.indexOf('character-rating-overall')).toBeLessThan(side);
+    expect(body.indexOf('rating-card-verdict')).toBeLessThan(side);
+    expect(body.indexOf('data-testid="rating-trend"')).toBeGreaterThan(side);
+    // The score card's plot: the whole column wide at a fixed height, stretched, an 8px end dot.
+    expect(classOf(body, 'rating-card-history')).toEqual(expect.arrayContaining(['w-full']));
+    expect(classOf(body, 'rating-card-history')).not.toContain('max-w-[460px]');
+    expect(classOf(body, 'rating-card-plot')).toEqual(
+      expect.arrayContaining(['relative', 'h-10', 'lg:h-12']),
+    );
+    expect(body).toMatch(
+      /<svg class="absolute inset-0 block h-full w-full overflow-visible"[^>]*preserveAspectRatio="none"/,
+    );
+    expect(body).not.toMatch(/data-testid="rating-trend"[^>]*width="240"/);
+    expect(classOf(body, 'rating-card-sparkline-last')).toEqual(
+      expect.arrayContaining(['size-2', 'rounded-full']),
+    );
+  });
+
+  it('captions the sparkline "Up 9 since 4 Dec" with the newest date at the right (L8.5 ruling 1)', () => {
+    const { body } = render(RatingCard, { props: { overall: 65, trend: TREND, sampleSize: 6 } });
+    expect(body).toMatch(/data-testid="rating-card-history-caption">Up 9 since 4 Dec</);
+    expect(body).toMatch(/data-testid="rating-card-history-last">9 Dec</);
+    expect(body).toContain('aria-label="Performance Rating, last 6 fights: 56 on 4 Dec, 65 on 9 Dec"');
+    expect(body).toMatch(/<table class="sr-only" data-testid="rating-card-history-table">/);
+    // The verdict carries the count now; the old "Last 6 fights" label is gone.
+    expect(body).not.toContain('rating-card-trend-label');
+  });
+
+  it('says one verdict that agrees with the score card’s Parses row in words (L8.5 ruling 1)', () => {
+    expect(ratingCopy.verdict(65, 6)).toBe('Rated 65 of 100 over the last 6 fights');
+    expect(ratingCopy.verdict(65, 1)).toBe('Rated 65 of 100 on the last fight');
+    expect(ratingCopy.countsToward('Parses', 540, 600)).toBe('counts toward Parses 540 of 600');
+    const { body } = render(RatingCard, {
+      props: { overall: 65, trend: TREND, sampleSize: 6, worst: 'activity', parses: 540 },
+    });
+    const verdict = /<p class="([^"]*)" data-testid="rating-card-verdict">([\s\S]*?)<\/p>/.exec(body);
+    expect(text(verdict?.[2] ?? '')).toBe(
+      'Rated 65 of 100 over the last 6 fights · counts toward Parses 540 of 600',
+    );
+    // "540 of 600" is the score card's own words for the Parses row.
+    expect(text(verdict?.[2] ?? '')).toContain(scoreCopy.ofMax(540, COMPONENT_MAX.parses));
+    expect(verdict?.[1].split(' ')).toEqual(expect.arrayContaining(['text-[14px]']));
+    // No Forever Score part to name (the /ratings sample, an API without one): the first half.
+    const alone = render(RatingCard, { props: { overall: 65, trend: TREND, sampleSize: 6 } }).body;
+    expect(text(/data-testid="rating-card-verdict">([\s\S]*?)<\/p>/.exec(alone)?.[1] ?? '')).toBe(
+      'Rated 65 of 100 over the last 6 fights',
+    );
+    // No overall, no verdict.
+    const none = render(RatingCard, { props: { overall: null, trend: TREND, sampleSize: 6 } }).body;
+    expect(none).not.toContain('rating-card-verdict');
+  });
+
+  it('keeps the verdict beside the too-few line when there is no sparkline yet', () => {
+    const few = render(RatingCard, {
+      props: { overall: 50, trend: TREND.slice(0, 2), sampleSize: 2, parses: 540 },
+    }).body;
+    expect(text(/data-testid="rating-card-verdict">([\s\S]*?)<\/p>/.exec(few)?.[1] ?? '')).toBe(
+      'Rated 50 of 100 over the last 2 fights · counts toward Parses 540 of 600',
+    );
+    expect(few.indexOf('character-rating-too-few')).toBeGreaterThan(few.indexOf('rating-card-side'));
+  });
+
+  it('links the weakest part to its fight’s row in "Every ranked fight" (L8.5 ruling 1)', () => {
+    const { body } = render(RatingCard, {
+      props: {
+        overall: 65,
+        trend: TREND,
+        sampleSize: 6,
+        worst: 'activity',
+        weakestHref: '#fight-fixture2abcd-3',
+      },
+    });
+    const line = /<p class="[^"]*" data-testid="rating-card-weakest">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '';
+    expect(text(line)).toBe('Weakest part of a fight: Activity.');
+    const link = /<a class="([^"]*)" href="#fight-fixture2abcd-3"[^>]*>Activity<\/a>/.exec(line);
+    expect(link).not.toBeNull();
+    // The score card's sentence link: a 44px phone target that stacks above the line under it.
+    expect(link?.[1].split(' ')).toEqual(
+      expect.arrayContaining(['relative', 'z-10', 'underline', 'max-md:py-[13.5px]']),
+    );
+    // No row to go to, no link.
+    const plain = render(RatingCard, {
+      props: { overall: 65, trend: TREND, sampleSize: 6, worst: 'activity' },
+    }).body;
+    expect(/data-testid="rating-card-weakest">([\s\S]*?)<\/p>/.exec(plain)?.[1]).not.toContain('<a');
   });
 });

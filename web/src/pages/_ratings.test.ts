@@ -190,12 +190,15 @@ describe('/ratings Forever Score section', () => {
     expect(bridge).not.toContain('them.Both');
   });
 
-  it('shows a Performance Rating sample, "65 of 100" with a labelled sparkline', () => {
+  // L8.5 ruling 1: the verdict carries the count the old "Last 6 fights" label did; the sample
+  // has no Forever Score, so it has no Parses half.
+  it('shows a Performance Rating sample, "65 of 100" with its verdict and sparkline', () => {
     const rating = section('performance-rating');
     const sample = rating.slice(rating.indexOf('data-testid="ratings-rating-sample"'));
     expect(sample).toMatch(/data-testid="character-rating-overall">65</);
     expect(sample).toContain('>of 100<');
-    expect(sample).toMatch(/data-testid="rating-card-trend-label">\s*Last 6 fights\s*</);
+    expect(sample).toMatch(/data-testid="rating-card-verdict">\s*Rated 65 of 100 over the last 6 fights\s*</);
+    expect(sample).toContain('data-testid="rating-trend"');
     expect(sample).toMatch(/class="pill pill-sample[^"]*">Sample</);
   });
 

@@ -50,6 +50,8 @@ export const scoreCopy = {
   })),
   /** "412 of 500" beside a component's bar. */
   ofMax: (points: number, max: number): string => `${points} of ${max}`,
+  /** The same below 400px, where the bar's track needs the room (L8.5 ruling 4): "412/500". */
+  ofMaxShort: (points: number, max: number): string => `${points}/${max}`,
   /** "of 2100" beside the badge. */
   outOf: (max: number): string => `of ${max}`,
   /** Under the score (L8.4 fix round 4 item 1): "170 to Legendary (2000)", the points to the
@@ -91,6 +93,11 @@ export const scoreCopy = {
       plural(raidBosses, 'raid boss', 'raid bosses'),
       plural(alts, 'alt', 'alts'),
     ].join(' · '),
+  /** Under that, what counts (L8.5 ruling 2), from api/openapi.yaml's definition of the part:
+   *  "25 a distinct dungeon cleared + 40 a distinct raid boss killed across linked characters,
+   *  capped at 700". So 620 with 0 raid bosses reads as dungeons across the alts. */
+  experienceCounts:
+    'Counts dungeon and raid kills, alts included: 25 a different dungeon, 40 a different raid boss, up to 700.',
   /** The sparkline's table equivalent (Task L8.4 ruling 3), read by a screen reader only. */
   historyCaption: 'Forever Score by date, oldest first',
   historyDate: 'Date',
@@ -156,7 +163,9 @@ export const scoreCopy = {
   inGameShownOn: 'Shown on this character’s tooltip when you have the Forever Sixty addon.',
   inGameSetupLink: 'Get set up',
   inGameSetupHref: '/setup',
-  inGamePlannerLead: 'To update this page: in game, type /fs, press Copy my character, then',
+  /** The addon's copy mode (L8.5 ruling 5; the addon's L3.4 fix 2 removed its button): `/fs copy`
+   *  opens it with the box selected, and Ctrl+C is the action. */
+  inGamePlannerLead: 'To update this page: in game, type /fs copy, press Ctrl+C, then',
   inGamePasteLink: 'paste it here',
   inGamePasteHref: '/setup#paste',
 

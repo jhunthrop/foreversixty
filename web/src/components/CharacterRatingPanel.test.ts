@@ -502,6 +502,64 @@ describe('CharacterRatingPanel Forever Score card', () => {
     const gaps = /<p class="([^"]*)" data-testid="forever-score-gaps"/.exec(body)?.[1].split(' ') ?? [];
     expect(gaps.filter((token) => /^(relative|absolute|z-)/.test(token))).toEqual([]);
   });
+
+  // L8.5 ruling 2: what Experience counts, under its breakdown, in the API's own terms
+  // (api/openapi.yaml ForeverScore.components.experience: "25 a distinct dungeon cleared + 40 a
+  // distinct raid boss killed across linked characters, capped at 700"), so 620 with 0 raid
+  // bosses reads as intended.
+  it('notes under Experience what counts: dungeon and raid kills, alts included (L8.5 ruling 2)', () => {
+    expect(scoreCopy.experienceCounts).toBe(
+      'Counts dungeon and raid kills, alts included: 25 a different dungeon, 40 a different raid boss, up to 700.',
+    );
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
+    const row = /<li[^>]*data-testid="forever-score-experience"[\s\S]*?<\/li>/.exec(body)?.[0] ?? '';
+    const note = /<span class="([^"]*)" data-testid="forever-score-experience-note">([^<]*)<\/span>/.exec(
+      row,
+    );
+    expect(note?.[2]).toBe(scoreCopy.experienceCounts);
+    expect(note?.[1].split(' ')).toEqual(
+      expect.arrayContaining(['text-muted', 'text-[12px]', 'col-span-3', 'col-start-2']),
+    );
+    expect(row.indexOf('forever-score-experience-detail')).toBeLessThan(
+      row.indexOf('forever-score-experience-note'),
+    );
+    // Only on the Experience row.
+    expect(body.match(/forever-score-experience-note/g)).toHaveLength(1);
+  });
+
+  // L8.5 ruling 4: below 400px a part's row reads "412/500" in an 80px label column, so the
+  // track keeps room; from 400px "412 of 500" as before.
+  it('shortens a part’s points to "412/500" with an 80px label column below 400px (L8.5 ruling 4)', () => {
+    expect(scoreCopy.ofMaxShort(412, 500)).toBe('412/500');
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
+    const gear = /<li class="([^"]*)"[^>]*data-testid="forever-score-gear"[\s\S]*?<\/li>/.exec(body);
+    expect(gear?.[1].split(' ')).toEqual(
+      expect.arrayContaining([
+        'grid-cols-[88px_minmax(0,1fr)_80px_60px]',
+        'max-[400px]:grid-cols-[80px_minmax(0,1fr)_56px_60px]',
+        'max-[400px]:gap-x-2',
+      ]),
+    );
+    const row = gear?.[0] ?? '';
+    expect(row).toMatch(/<span class="[^"]*\bmax-\[400px\]:hidden\b[^"]*">412 of 500<\/span>/);
+    expect(row).toMatch(/<span class="[^"]*\bmin-\[400px\]:hidden\b[^"]*">412\/500<\/span>/);
+    // The no-logs card's rows share the grid.
+    const empty = render(CharacterRatingPanel, { props: { path: PATH, forever: UNSCORED } }).body;
+    expect(
+      /<li class="([^"]*)"[^>]*data-testid="forever-score-empty-gear"/.exec(empty)?.[1].split(' '),
+    ).toContain('max-[400px]:grid-cols-[80px_minmax(0,1fr)_56px_60px]');
+  });
+
+  // L8.5 ruling 3: the no-logs card is capped at 720px, so on a desktop its button and "What the
+  // score counts" do not sit a page-width apart; a scored card keeps the content width.
+  it('caps the no-logs card at 720px, and only that card (L8.5 ruling 3)', () => {
+    const empty = render(CharacterRatingPanel, { props: { path: PATH, forever: UNSCORED } }).body;
+    const card = (html: string): string[] =>
+      (/<div class="([^"]*)" data-testid="forever-score-card"/.exec(html)?.[1] ?? '').split(' ');
+    expect(card(empty)).toContain('max-w-[720px]');
+    const scored = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } }).body;
+    expect(card(scored)).not.toContain('max-w-[720px]');
+  });
 });
 
 describe('CharacterRatingPanel empty state copy', () => {

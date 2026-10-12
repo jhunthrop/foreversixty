@@ -96,6 +96,35 @@ export function bestRepeatsHistory(
   return best.every((row) => seen.has(key(row)));
 }
 
+type FightRef = Pick<CharacterFight, 'report_id' | 'fight_index'>;
+
+/** A row of "Every ranked fight" by its report and fight (L8.5 ruling 1): "fight-fixture2abcd-3". */
+export function fightRowId(row: FightRef): string {
+  return `fight-${row.report_id}-${row.fight_index}`;
+}
+
+/**
+ * Where the rating card's "Weakest part of a fight" goes (L8.5 ruling 1): its fight's row in
+ * "Every ranked fight", or null when that fight is not a row there (or there is no trend).
+ *
+ * The rating API names the weakest part from its newest card alone (api/internal/rating/
+ * dto.go's bestWorstComponent), and neither the trend's points nor the history rows carry a
+ * per-fight part score, so the fight the part was read from is the newest rated one.
+ */
+export function weakestFightHref(
+  trend: readonly (FightRef & { fought_at: string })[],
+  history: readonly FightRef[],
+): string | null {
+  const newest = [...trend].sort(
+    (a, b) => new Date(b.fought_at).getTime() - new Date(a.fought_at).getTime(),
+  )[0];
+  if (newest === undefined) return null;
+  const row = history.find(
+    (fight) => fight.report_id === newest.report_id && fight.fight_index === newest.fight_index,
+  );
+  return row === undefined ? null : `#${fightRowId(row)}`;
+}
+
 /** The note under "Builds seen at pull" (L8.4 fix round 4 item 4), in plain words, naming
  *  every distinct split seen, newest first (fix round 5 item 4): "a 0/31/20 split" for one,
  *  "0/31/20 and 20/31/0 splits" for more. Null with no split to name. */

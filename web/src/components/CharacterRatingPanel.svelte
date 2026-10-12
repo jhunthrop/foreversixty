@@ -3,11 +3,14 @@
      (ForeverScoreCard.svelte, spec 2026-10-11 §4.6): plain data from the caller
      (Character.svelte already holds the GET /v1/characters/... answer that carries it).
      Beneath it the execution rating in the same card shell (RatingCard.svelte, fix round 2
-     item 6): "65 of 100", the six-segment bar when any segment has a score, the labelled trend
-     sparkline once there are enough fights, and the weakest part of a fight -- spec §6.2. That part fetches independently, the same self-contained pattern
+     item 6): "65 of 100", the six-segment bar when any segment has a score, the verdict that
+     names the Forever Score's Parses row, the trend sparkline once there are enough fights, and
+     the weakest part of a fight, linked to its row in "Every ranked fight" (L8.5 ruling 1) --
+     spec §6.2. That part fetches independently, the same self-contained pattern
      Character.svelte's own $effect already uses for fetchCharacter. -->
 <script lang="ts">
-  import { fetchCharacterRating, RankingsError } from '../lib/rankings/api';
+  import { weakestFightHref } from '../lib/character-profile';
+  import { fetchCharacterRating, RankingsError, type CharacterFight } from '../lib/rankings/api';
   import { ratingCopy } from '../lib/rating/copy';
   import type { ForeverScore, ScorePoint } from '../lib/score/score';
   import type { CharacterPath } from '../lib/characters';
@@ -25,6 +28,7 @@
     bisHref = null,
     owned = false,
     name = '',
+    fights = [],
   }: {
     path: CharacterPath;
     apiBase?: string;
@@ -41,6 +45,9 @@
     owned?: boolean;
     /** The character's name, for the no-logs card's "Look up another character". */
     name?: string;
+    /** "Every ranked fight"'s rows, which the rating card's weakest part links into (L8.5
+     *  ruling 1); none, no link. */
+    fights?: readonly CharacterFight[];
   } = $props();
 
   let data = $state<CharacterRating | null>(null);
@@ -116,6 +123,8 @@
         trend={data.trend}
         sampleSize={data.sample_size}
         worst={data.worst_component}
+        parses={forever?.components?.parses ?? null}
+        weakestHref={weakestFightHref(data.trend, fights)}
       />
     {/if}
   </section>

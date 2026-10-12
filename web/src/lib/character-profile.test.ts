@@ -8,12 +8,14 @@ import {
   characterHeaderCopy,
   characterTableCopy,
   executionCellClass,
+  fightRowId,
   newestBuild,
   newestSpec,
   profileHeader,
   profileSpec,
   seenSplits,
   specClassLabel,
+  weakestFightHref,
 } from './character-profile';
 import type { CharacterFight, CharacterPage } from './rankings/api';
 
@@ -335,5 +337,41 @@ describe('the Execution cell (fix round 3 items 4 and 6)', () => {
   // Fix round 5 item 7: what the dash is, read aloud and on hover.
   it('names an unscored cell "Not scored yet" (fix round 5 item 7)', () => {
     expect(characterTableCopy.executionUnscored).toBe('Not scored yet');
+  });
+});
+
+// L8.5 ruling 1: "Weakest part of a fight: Activity." goes to its fight's row in "Every ranked
+// fight". The rating API reads worst_component from its newest card only (api/internal/rating/
+// dto.go's bestWorstComponent), and neither the trend nor the history rows carry a per-fight
+// Activity, so the fight the part was read from is the newest rated one.
+describe('the weakest part’s fight (L8.5 ruling 1)', () => {
+  const ranked = (report: string, index: number, at: string): CharacterFight => ({
+    ...fight('Holy'),
+    report_id: report,
+    fight_index: index,
+    fought_at: at,
+  });
+  const TREND = [
+    { fought_at: '2026-12-08T20:00:00Z', overall: 61, report_id: 'otherreport1', fight_index: 1 },
+    { fought_at: '2026-12-09T22:10:00Z', overall: 65, report_id: 'fixture2abcd', fight_index: 3 },
+    { fought_at: '2026-12-04T20:00:00Z', overall: 56, report_id: 'older', fight_index: 2 },
+  ];
+  const HISTORY = [
+    ranked('fixture2abcd', 3, '2026-12-09T22:10:00Z'),
+    ranked('otherreport1', 1, '2026-12-08T20:00:00Z'),
+  ];
+
+  it('names a row by its report and fight: "fight-fixture2abcd-3"', () => {
+    expect(fightRowId({ report_id: 'fixture2abcd', fight_index: 3 })).toBe('fight-fixture2abcd-3');
+  });
+
+  it('is the newest rated fight’s row, whatever order the trend comes in', () => {
+    expect(weakestFightHref(TREND, HISTORY)).toBe('#fight-fixture2abcd-3');
+  });
+
+  it('is null when that fight is not a row of "Every ranked fight", or there is no trend', () => {
+    expect(weakestFightHref(TREND, HISTORY.slice(1))).toBeNull();
+    expect(weakestFightHref([], HISTORY)).toBeNull();
+    expect(weakestFightHref(TREND, [])).toBeNull();
   });
 });

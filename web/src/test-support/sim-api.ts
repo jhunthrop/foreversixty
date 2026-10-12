@@ -40,10 +40,20 @@ const WEB_ROOT = path.resolve(import.meta.dirname, '..', '..');
 export const FIXTURE_DATA_BUILD: string = activeBuild.build;
 export const FIXTURE_BUILD_ID = 'bld123456789';
 
-/** The planner's own data files, served from public/ the way the site serves them. */
+/**
+ * The planner's own data files, as FOREVER_DATA=fixture publishes them to public/data/: the
+ * checked-in fixture (src/fixtures/planner), with bis/ from the committed BiS fixture
+ * (src/data/fixtures/bis, scripts/sync-data.mjs's publishBisFixtures). Read from those
+ * sources, never from public/data/ itself (L8.5 ruling 6): `npm run check` and `npm run dev`
+ * sync the REAL data there, and a suite that read it passed or failed on whichever sync ran
+ * last (bulk-store.test.ts's five loot assertions were the ones that showed it).
+ */
 function dataFile(relative: string): Response {
+  const source = relative.startsWith('bis/')
+    ? path.join(WEB_ROOT, 'src/data/fixtures/bis', relative.slice('bis/'.length))
+    : path.join(WEB_ROOT, 'src/fixtures/planner', relative);
   try {
-    const body = readFileSync(path.join(WEB_ROOT, 'public/data', FIXTURE_DATA_BUILD, relative), 'utf8');
+    const body = readFileSync(source, 'utf8');
     return new Response(body, { status: 200, headers: { 'content-type': 'application/json' } });
   } catch {
     return new Response(null, { status: 404 });

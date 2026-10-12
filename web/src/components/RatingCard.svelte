@@ -1,14 +1,21 @@
 <!-- web/src/components/RatingCard.svelte -->
-<!-- The Performance Rating in the same card shell as the Forever Score (fix round 2 item 6):
-     "65 of 100", the six-segment bar when any segment has a score, the trend sparkline with a
-     visible "Last 6 fights" label (the count is the data's), and one line naming the weakest
-     part of a fight. The profile's CharacterRatingPanel mounts it with the fetched rating;
-     /ratings mounts it as a sample. Plain data in. -->
+<!-- The Performance Rating in the same card shell as the Forever Score (fix round 2 item 6),
+     with that card's treatment (L8.5 ruling 1): "65 of 100" and the six-segment bar when any
+     segment has a score; one verdict line that names the rating's count and, beside a Forever
+     Score, agrees with its Parses row in words ("Rated 65 of 100 over the last 6 fights ·
+     counts toward Parses 540 of 600"); the trend as the score card's sparkline (the shared
+     Sparkline figure and lib/score/sparkline.ts's model), "Up 9 since 4 Dec" under it; and one
+     line naming the weakest part of a fight, whose name links to that fight's row in "Every
+     ranked fight" when the page has one. From 1280 two columns: the number and the verdict
+     left, the sparkline filling the right. The profile's CharacterRatingPanel mounts it with the
+     fetched rating; /ratings mounts it as a sample. Plain data in. -->
 <script lang="ts">
   import { componentLabel, MIN_TREND_SAMPLES, ratingCopy } from '../lib/rating/copy';
   import { RATING_COMPONENT_ORDER, type RatingComponent } from '../lib/rating/types';
   import { scoreCopy } from '../lib/score/copy';
-  import RatingTrend from './RatingTrend.svelte';
+  import { COMPONENT_MAX } from '../lib/score/score';
+  import { ratingSparkline } from '../lib/score/sparkline';
+  import Sparkline from './Sparkline.svelte';
 
   let {
     overall,
@@ -16,6 +23,8 @@
     trend,
     sampleSize,
     worst = '',
+    parses = null,
+    weakestHref = null,
     sample = false,
   }: {
     overall: number | null;
@@ -25,6 +34,10 @@
     sampleSize: number;
     /** The weakest component's name, or '' for none. */
     worst?: string;
+    /** The character's Forever Score Parses points, for the verdict; null without a score. */
+    parses?: number | null;
+    /** The weakest part's fight's row ("#fight-<report>-<n>"), or null for no link. */
+    weakestHref?: string | null;
     sample?: boolean;
   } = $props();
 
@@ -33,6 +46,9 @@
   /** Underlined; the gold is the base `a` rule's, so hover and pressed take --gold-hover
    *  (L8.4 fix round 5 item 2). */
   const LINK = 'inline-flex min-h-11 items-center underline underline-offset-2 md:min-h-0';
+  /** The link inside a sentence, the score card's "Most to gain: Gear" one: inline, its 44px
+   *  phone target vertical padding round the text, stacked above the definition under it. */
+  const SENTENCE_LINK = 'relative z-10 underline underline-offset-2 max-md:py-[13.5px]';
 
   /** A segment's fill, 0 when the part was not scored. */
   function segmentWidth(part: RatingComponent | undefined): number {
@@ -45,50 +61,89 @@
       width: segmentWidth(components.find((c) => c.name === name)),
     })),
   );
+  const line = $derived(ratingSparkline(trend));
+  const parsesLabel = scoreCopy.components.find((component) => component.key === 'parses')?.label ?? '';
+  const verdict = $derived(
+    overall === null
+      ? null
+      : [
+          ratingCopy.verdict(Math.round(overall), sampleSize),
+          ...(parses === null ? [] : [ratingCopy.countsToward(parsesLabel, parses, COMPONENT_MAX.parses)]),
+        ].join(scoreCopy.separator),
+  );
 </script>
 
 <div class={CARD} data-testid="rating-card">
-  {#if overall !== null}
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <span class="flex items-baseline gap-2">
-        <span
-          class="text-gold tabular text-[36px] leading-none font-bold md:text-[48px]"
-          data-testid="character-rating-overall">{Math.round(overall)}</span
-        >
-        <span class="text-muted tabular font-mono text-[14px]">{ratingCopy.outOf100}</span>
-      </span>
-      {#if segments.some((segment) => segment.width > 0)}
-        <span class="flex w-32 shrink-0 gap-[2px]" aria-hidden="true" data-testid="character-rating-segments">
-          {#each segments as segment (segment.name)}
-            <span class="bg-line-soft h-2 flex-1" title={componentLabel(segment.name)}
-              ><span class="bg-gold block h-full" style={`width: ${segment.width}%`}></span></span
+  <div class="flex flex-col gap-3 xl:grid xl:grid-cols-2 xl:gap-x-8" data-testid="rating-card-columns">
+    <div class="flex flex-col gap-3" data-testid="rating-card-main">
+      {#if overall !== null}
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <span class="flex items-baseline gap-2">
+            <span
+              class="text-gold tabular text-[36px] leading-none font-bold md:text-[48px]"
+              data-testid="character-rating-overall">{Math.round(overall)}</span
             >
-          {/each}
-        </span>
+            <span class="text-muted tabular font-mono text-[14px]">{ratingCopy.outOf100}</span>
+          </span>
+          {#if segments.some((segment) => segment.width > 0)}
+            <span
+              class="flex w-32 shrink-0 gap-[2px]"
+              aria-hidden="true"
+              data-testid="character-rating-segments"
+            >
+              {#each segments as segment (segment.name)}
+                <span class="bg-line-soft h-2 flex-1" title={componentLabel(segment.name)}
+                  ><span class="bg-gold block h-full" style={`width: ${segment.width}%`}></span></span
+                >
+              {/each}
+            </span>
+          {/if}
+          {#if sample}<span class="pill pill-sample ml-auto">{scoreCopy.samplePill}</span>{/if}
+        </div>
       {/if}
-      {#if sample}<span class="pill pill-sample ml-auto">{scoreCopy.samplePill}</span>{/if}
+      {#if verdict !== null}
+        <p class="text-[14px] leading-[22px]" data-testid="rating-card-verdict">{verdict}</p>
+      {/if}
     </div>
-  {/if}
-  {#if sampleSize < MIN_TREND_SAMPLES}
-    <p class="text-muted text-[13px]" data-testid="character-rating-too-few">
-      {ratingCopy.trendTooFew(sampleSize)}
-    </p>
-  {:else}
-    <figure class="flex flex-col gap-1" data-testid="rating-card-trend">
-      <figcaption class="label text-muted" data-testid="rating-card-trend-label">
-        {ratingCopy.lastFights(trend.length)}
-      </figcaption>
-      <RatingTrend points={trend} />
-    </figure>
-  {/if}
-  <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+    <div class="flex flex-col gap-1" data-testid="rating-card-side">
+      {#if sampleSize < MIN_TREND_SAMPLES}
+        <p class="text-muted text-[13px]" data-testid="character-rating-too-few">
+          {ratingCopy.trendTooFew(sampleSize)}
+        </p>
+      {:else if line !== null}
+        <Sparkline
+          {line}
+          class="w-full"
+          testids={{
+            figure: 'rating-card-history',
+            plot: 'rating-card-plot',
+            svg: 'rating-trend',
+            last: 'rating-card-sparkline-last',
+            dates: 'rating-card-history-dates',
+            caption: 'rating-card-history-caption',
+            lastLabel: 'rating-card-history-last',
+            table: 'rating-card-history-table',
+          }}
+          tableCaption={ratingCopy.trendTableCaption}
+          dateHeader={ratingCopy.trendTableDate}
+          valueHeader={ratingCopy.trendTableRating}
+        />
+      {/if}
+    </div>
+  </div>
+  <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
     {#if worst !== ''}
       {@const definition = ratingCopy.componentDefinition(worst)}
       <!-- L8.4 fix round 4 item 3: the part named is defined under the line, a muted 12px caption
            at every width, as the fight tables define Execution. -->
       <div class="flex flex-col gap-1">
         <p class="text-[14px] leading-[22px]" data-testid="rating-card-weakest">
-          {ratingCopy.weakestPart(componentLabel(worst))}
+          {#if weakestHref === null}
+            {ratingCopy.weakestPart(componentLabel(worst))}
+          {:else}
+            {ratingCopy.weakestPartLead}
+            <a class={SENTENCE_LINK} href={weakestHref}>{componentLabel(worst)}</a>{ratingCopy.weakestPartEnd}
+          {/if}
         </p>
         {#if definition !== null}
           <p class="text-muted text-[12px]" data-testid="rating-card-weakest-definition">{definition}</p>

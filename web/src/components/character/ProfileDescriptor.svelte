@@ -8,7 +8,8 @@
           round 5 item 6). The guild links to its page: its unit is an inline-block at most the
           line's width, so it moves whole when it fits a line and a guild longer than the line
           still wraps inside it (fix round 3 item 2); its 44px phone tap target is vertical
-          padding, its focus ring at no offset so it does not reach over the dots.
+          padding; its focus ring stands 2px off like every other ring, and 4px on each dot's side of
+          the link (the ring's offset and width) keep the dots clear of it (L8.5 ruling 3).
        2. "Level 60 Night Elf", when known.
        The "HARDCORE US" chip ends the last of those lines, 8px after its text, aligned to the
           line box so it is centred on the text, and never wraps away from the last word: a word
@@ -48,25 +49,37 @@
    *  wrapping inside its unit, so a guild longer than the line wraps (fix round 3 item 2); on a
    *  phone 14px of padding above and below the 16px content box make the 44px target (15px made
    *  46: fix round 4 items 6 and 8), and an inline box's padding never moves the line. The focus
-   *  ring keeps its 2px size at no offset (fix round 3 item 11); a press takes --gold-hover, the
-   *  design system's link :active. */
+   *  ring is the site's 2px at a 2px offset (L8.5 ruling 3, replacing fix round 3 item 11's offset
+   *  0), so it reaches 4px past the text; guildLinkClass gives the link those 4px on each side a
+   *  dot sits, so the ring ends where the text used to and the space and dot beyond it stay
+   *  visible. A press takes --gold-hover, the design system's link :active. */
   const GUILD_LINK =
-    'text-muted hover:text-strong active:text-gold-hover underline underline-offset-2 focus-visible:outline-offset-0 max-md:py-[14px] whitespace-normal';
+    'text-muted hover:text-strong active:text-gold-hover underline underline-offset-2 focus-visible:outline-offset-2 max-md:py-[14px] whitespace-normal';
   /** A unit of line 1 (fix round 5 item 6): never broken inside. */
   const SEGMENT = 'whitespace-nowrap';
   /** The guild's unit: at most the line's width, so it moves whole when it fits and wraps inside
    *  itself only when it is longer than the line. */
   const GUILD_SEGMENT = 'inline-block max-w-full whitespace-nowrap';
   const LINE = 'text-muted text-[13px] leading-[22px]';
+
+  /** The guild link's classes at its place in line 1 (L8.5 ruling 3): 4px before it when a dot
+   *  precedes it, 4px after it when its own dot follows. A guild that ends the line has the chip
+   *  after it instead, which keeps its 8px. */
+  function guildLinkClass(index: number): string {
+    return [GUILD_LINK, index > 0 ? 'ml-1' : '', index < segments.length - 1 ? 'mr-1' : '']
+      .filter((token) => token !== '')
+      .join(' ');
+  }
 </script>
 
 {#snippet chip()}<span class={CHIP} data-testid="character-ruleset-chip">{header.chip}</span>{/snippet}
 
-{#snippet words(item: Segment)}{#if item.key === 'spec'}<span class="text-text" data-testid="character-spec"
-      >{item.text}</span
+{#snippet words(item: Segment, index: number)}{#if item.key === 'spec'}<span
+      class="text-text"
+      data-testid="character-spec">{item.text}</span
     >{:else if item.key === 'split'}<span class="tabular" data-testid="character-split">{item.text}</span
     >{:else if item.href !== undefined}<a
-      class={GUILD_LINK}
+      class={guildLinkClass(index)}
       href={item.href}
       data-testid="character-guild-link">{item.text}</a
     >{:else}<span data-testid={`character-${item.key}`}>{item.text}</span>{/if}{/snippet}
@@ -78,6 +91,7 @@
         data-testid="character-segment"
         >{@render words(
           item,
+          index,
         )}{#if index < segments.length - 1}{characterHeaderCopy.segmentTail}{:else if header.chipOn === 'pieces'}<span
             class="whitespace-nowrap">{characterHeaderCopy.chipGlue}{@render chip()}</span
           >{/if}</span

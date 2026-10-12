@@ -570,13 +570,15 @@ test.describe('a long realm at 360px (item 10, fix round 5 item 6)', () => {
   });
 });
 
-test('the guild link’s focus ring hugs its text: 2px at no offset (item 11)', async ({ page }) => {
+// L8.5 ruling 3 replaces item 11's offset 0: the ring stands 2px off like every other ring, and
+// the guild's 4px margins keep it off the dots (character-performance.spec.ts measures them).
+test('the guild link’s focus ring is 2px at a 2px offset (item 11, L8.5 ruling 3)', async ({ page }) => {
   await stub(page, { ...CHARACTER.data, ...SCORE });
   await page.goto(CHARACTER_PATH);
   const link = page.getByTestId('character-guild-link');
   await link.focus();
   await expect(link).toBeFocused();
-  await expect(link).toHaveCSS('outline-offset', '0px');
+  await expect(link).toHaveCSS('outline-offset', '2px');
   await expect(link).toHaveCSS('outline-width', '2px');
 });
 

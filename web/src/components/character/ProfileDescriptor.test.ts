@@ -104,12 +104,24 @@ describe('ProfileDescriptor', () => {
     expect(classes(tag(body, 'character-guild-link'))).toContain('active:text-gold-hover');
   });
 
-  // Fix round 3 item 11: the focus ring hugs the guild's text instead of reaching over the dots.
-  it('draws the guild link’s focus ring at no offset, at the ring’s own size', () => {
+  // L8.5 ruling 3 (replacing fix round 3 item 11's offset 0): the focus ring stands 2px off the
+  // guild's text like every other ring, and the guild takes 4px on each side a dot sits -- the
+  // ring's 2px offset plus its 2px width -- so the ring ends where the text did and the dots
+  // keep their space and stay visible. A guild that ends the line has the chip after it, not a
+  // dot, and keeps the chip's 8px.
+  it('draws the guild link’s focus ring at a 2px offset, with room beside each dot for it (L8.5 ruling 3)', () => {
     const { body } = view({ header: profileHeader(FULL, PATH), sync: null });
     const link = classes(tag(body, 'character-guild-link'));
-    expect(link).toContain('focus-visible:outline-offset-0');
+    expect(link).toEqual(expect.arrayContaining(['focus-visible:outline-offset-2', 'ml-1', 'mr-1']));
+    expect(link).not.toContain('focus-visible:outline-offset-0');
     expect(link.filter((token) => /outline-\d|outline-solid|outline-none/.test(token))).toEqual([]);
+    const last = view({
+      header: profileHeader({ ...FULL, character: { ...FULL.character, realm: null } }, PATH),
+      sync: null,
+    }).body;
+    const lastLink = classes(tag(last, 'character-guild-link'));
+    expect(lastLink).toContain('ml-1');
+    expect(lastLink).not.toContain('mr-1');
   });
 
   // Fix round 5 item 6 (replacing fix round 3 item 10's leading dot): every segment is one

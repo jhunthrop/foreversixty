@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { gotoHydrated } from './support/hydrated';
 import { simCopy } from '../../src/lib/sim/copy';
 
@@ -27,8 +27,28 @@ const base = {
   state: 'ok',
 };
 
+/**
+ * L8.5 ruling 6: these three failed on the mobile project (a Pixel 7, 412px) since the Rankings
+ * redesign (295def25), which puts the filters behind a summary line's toggle below 600px and
+ * drops the Execution column there (RankingRow's TABLE_UP): waiting for `filter-metric` to be
+ * visible timed out. The page is now opened on the filters' own container, which every width
+ * shows; the sort test opens the toggle first, as rankings.spec.ts's openFilters does.
+ */
+async function openRankings(page: Page): Promise<void> {
+  await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-filters');
+  const toggle = page.getByTestId('rankings-filters-toggle');
+  if (await toggle.isVisible()) await toggle.click();
+  await expect(page.getByTestId('filter-metric')).toBeVisible();
+}
+
 test.describe('the execution column', () => {
+  // The column is not drawn under 600px (the redesign's phone row); its two cell tests are
+  // desktop only. The sort order is a filter, so it runs on both.
   test('shows the score and opens compare mode on that fight', async ({ page }) => {
+    test.skip(
+      test.info().project.name !== 'desktop',
+      'no Execution column under 600px (RankingRow TABLE_UP)',
+    );
     await page.route('**/v1/rankings?**', (route) =>
       route.fulfill({
         status: 200,
@@ -36,13 +56,17 @@ test.describe('the execution column', () => {
         body: JSON.stringify(page1([{ ...base, execution_score: 0.92 }])),
       }),
     );
-    await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
+    await openRankings(page);
     const cell = page.getByTestId('ranking-execution').first();
     await expect(cell).toHaveText('92%');
     await expect(cell).toHaveAttribute('href', '/sim?source=fight&ref=fixture2abcd%3A2&mode=compare');
   });
 
   test('says why a fight has no score instead of leaving the cell blank', async ({ page }) => {
+    test.skip(
+      test.info().project.name !== 'desktop',
+      'no Execution column under 600px (RankingRow TABLE_UP)',
+    );
     await page.route('**/v1/rankings?**', (route) =>
       route.fulfill({
         status: 200,
@@ -50,7 +74,7 @@ test.describe('the execution column', () => {
         body: JSON.stringify(page1([{ ...base, execution_score: null }])),
       }),
     );
-    await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
+    await openRankings(page);
     const cell = page.getByTestId('ranking-execution').first();
     await expect(cell).toHaveText('—');
     await expect(cell).toHaveAttribute('title', simCopy.executionUnscored);
@@ -64,7 +88,7 @@ test.describe('the execution column', () => {
         body: JSON.stringify(page1([{ ...base, execution_score: 0.92 }])),
       }),
     );
-    await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
+    await openRankings(page);
     await page.getByTestId('filter-metric').selectOption('execution');
     await expect(page).toHaveURL(/metric=execution/);
   });

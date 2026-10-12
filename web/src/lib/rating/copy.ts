@@ -2,6 +2,7 @@
 // Every visible string the rating surfaces use, in the site's honest-copy voice: no
 // exclamation marks, no "AI", no claim the engine does not make. Strings quoted directly
 // from spec §6.4/§1.5 are copied verbatim; the rest follow their tone.
+import { scoreCopy } from '../score/copy';
 
 /** Spec §6.4's own worked-example threshold for showing the character trend sparkline —
  *  a display-only choice (Ruling 7), not a server-side minimum. */
@@ -15,11 +16,30 @@ export const ratingCopy = {
   /** Under the profile's heading: the rating reads recent fights, the Forever Score the whole
    *  record. "Your" only for the viewer's own character (fix round 2 item 1). */
   panelCaption: (owned: boolean): string => (owned ? 'Your latest logged fights.' : 'Latest logged fights.'),
-  /** The profile's rating card (fix round 2 item 6): "65 of 100", the sparkline's label, and
-   *  the one line naming the weakest part of a fight. */
+  /** The profile's rating card (fix round 2 item 6): "65 of 100" and the one line naming the
+   *  weakest part of a fight. The verdict below carries the count the sparkline's "Last 6
+   *  fights" label did (L8.5 ruling 1). */
   outOf100: 'of 100',
-  lastFights: (count: number): string => `Last ${count} ${count === 1 ? 'fight' : 'fights'}`,
   weakestPart: (label: string): string => `Weakest part of a fight: ${label}.`,
+  /** "Weakest part of a fight: Activity." split around the part's name, which links to its
+   *  fight's row (L8.5 ruling 1). */
+  weakestPartLead: 'Weakest part of a fight:',
+  weakestPartEnd: '.',
+  /** The card's verdict (L8.5 ruling 1): "Rated 65 of 100 over the last 6 fights", then, when
+   *  the character has a Forever Score, " · counts toward Parses 540 of 600" in the score
+   *  card's own words for that row. */
+  verdict: (overall: number, count: number): string =>
+    count === 1
+      ? `Rated ${overall} of 100 on the last fight`
+      : `Rated ${overall} of 100 over the last ${count} fights`,
+  countsToward: (part: string, points: number, max: number): string =>
+    `counts toward ${part} ${scoreCopy.ofMax(points, max)}`,
+  /** The trend sparkline's accessible name and its table (L8.5 ruling 1). */
+  trendLabel: (count: number, first: number, firstDate: string, last: number, lastDate: string): string =>
+    `Performance Rating, last ${count} fights: ${first} on ${firstDate}, ${last} on ${lastDate}`,
+  trendTableCaption: 'Performance Rating by fight, oldest first',
+  trendTableDate: 'Date',
+  trendTableRating: 'Rating',
   panelMore: 'Rating tab',
   panelEmpty: 'No ratings for this fight yet.',
   /** Under half the role's weight was measurable, so there is no overall. */

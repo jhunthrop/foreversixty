@@ -24,6 +24,7 @@
     bestRepeatsHistory,
     bisHref,
     characterBuildsCopy,
+    fightRowId,
     profileHeader,
     profileSpec,
     seenSplits,
@@ -204,6 +205,7 @@
       bisHref={bisHref(data.character.class, profileSpec(data), data.character.level, data.character.race)}
       {owned}
       name={data.character.name}
+      fights={data.history}
     />
 
     <CharacterInGame
@@ -239,6 +241,7 @@
         bossHref={(row: CharacterFight) => `/reports/${row.report_id}?fight=${row.fight_index}`}
         rowKey={(row: CharacterFight, index: number) => `${row.report_id}-${row.fight_index}-${index}`}
         executionTestid="character-execution"
+        rowId={fightRowId}
       />
     {/if}
 

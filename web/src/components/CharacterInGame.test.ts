@@ -63,8 +63,9 @@ describe('CharacterInGame', () => {
 
     const owner = render(CharacterInGame, { props: { ...BASE, forever: SCORED, owned: true } }).body;
     expect(owner).toContain('data-testid="character-in-game-planner"');
+    // L8.5 ruling 5: the addon's copy mode has no button; `/fs copy`, then Ctrl+C.
     expect(scoreCopy.inGamePlannerLead).toBe(
-      'To update this page: in game, type /fs, press Copy my character, then',
+      'To update this page: in game, type /fs copy, press Ctrl+C, then',
     );
     expect(owner).toContain(`href="${scoreCopy.inGamePasteHref}"`);
     expect(owner).toContain(scoreCopy.inGamePasteLink);

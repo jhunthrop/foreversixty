@@ -25,6 +25,7 @@
     bossHref,
     rowKey,
     executionTestid,
+    rowId = null,
   }: {
     title: string;
     rows: readonly CharacterFight[];
@@ -33,6 +34,8 @@
     bossHref: (row: CharacterFight) => string;
     rowKey: (row: CharacterFight, index: number) => string;
     executionTestid: string;
+    /** Each row's id, for a link to it ("Every ranked fight", L8.5 ruling 1); none without. */
+    rowId?: ((row: CharacterFight) => string) | null;
   } = $props();
 
   /**
@@ -73,7 +76,12 @@
       <span class="text-right max-md:ml-1">{characterTableCopy.execution}</span>
     </li>
     {#each rows as row, index (rowKey(row, index))}
-      <li class={`border-line-soft grid min-h-11 items-center gap-3 border-b px-2 py-2 text-[14px] ${GRID}`}>
+      <!-- L8.5 ruling 1: the rating card's weakest part links here; the row lands 16px under the
+           window's top and is marked while it is the address's target. -->
+      <li
+        class={`border-line-soft grid min-h-11 items-center gap-3 border-b px-2 py-2 text-[14px] ${GRID}${rowId === null ? '' : ' target:bg-raised scroll-mt-4'}`}
+        id={rowId === null ? undefined : rowId(row)}
+      >
         <a class="{rowLink} truncate" href={bossHref(row)}>{row.encounter}</a>
         <span class="text-muted hidden truncate text-[13px] md:inline">{row.spec ?? ''}</span>
         <span
