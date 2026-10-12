@@ -318,7 +318,12 @@ components:
         report_id: { type: string }
         fight_index: { type: integer }
         state: { type: string, enum: [ok, at_risk, removed] }
-        execution_score: { type: number, nullable: true }
+        execution_score:
+          type: number
+          nullable: true
+          description: >-
+            The fight's damage as a share of what the same gear and talents do in the
+            simulator (schema ExecutionScore, which gives every null rule).
     GearSlotName:
       type: string
       enum: [head, neck, shoulder, back, chest, wrist, hands, waist, legs, feet,
@@ -827,6 +832,102 @@ components:
         date: { type: string, format: date, description: "The UTC date, YYYY-MM-DD." }
         score: { type: integer }
         tier: { type: string, enum: [common, uncommon, rare, epic, legendary] }
+    CharacterGear:
+      type: object
+      description: >-
+        The gear panel fields of GET /v1/characters/{region}/{ruleset}/{name}, beside the
+        Forever Score. The spec, level and band are the Gear component's own: the spec of the
+        character's newest rated fight in a public report, the level in the export's level=
+        section (60 when it has none), and the band that level falls in (the highest of 20, 30,
+        40, 50 and 60 at or below it that the spec has a best-in-slot set for).
+      required: [gear, gear_gap_total]
+      properties:
+        gear:
+          type: array
+          items: { $ref: '#/components/schemas/CharacterGearSlot' }
+          description: >-
+            One row per slot an addon export names, always all 17 in the export's order (head,
+            neck, shoulder, back, chest, wrist, hands, waist, legs, feet, finger1, finger2,
+            trinket1, trinket2, main_hand, off_hand, ranged) when the character has an export;
+            [] when it has none (never null).
+        gear_gap_total:
+          type: number
+          nullable: true
+          description: >-
+            The score points the band's picks would add over what the character wears, summed
+            over the slots: the plain sum of every non-null gap, one decimal. It is not the Gear
+            component's distance to its top, which is measured against the best set of the band
+            across presets and factions (so a character wearing every pick can have a total of 0
+            and a Gear component still below 500). Null when no slot has a gap (no export, or
+            nothing could be scored).
+    CharacterGearSlot:
+      type: object
+      description: >-
+        One slot of the gear panel. Nothing is invented: a pick the data does not have is null,
+        and a gap that cannot be scored is null.
+      required: [slot, worn, pick, gap]
+      properties:
+        slot: { $ref: '#/components/schemas/GearSlotName' }
+        worn:
+          type: object
+          nullable: true
+          description: >-
+            The item the character wears in the slot, from its newest addon export. Null when
+            the slot is empty in the export.
+          required: [id, name, item_level]
+          properties:
+            id: { type: integer }
+            name: { type: string, nullable: true, description: "Null when the export's data build does not have the item." }
+            item_level: { type: integer, nullable: true, description: "Null when the export's data build does not have the item." }
+        pick:
+          type: object
+          nullable: true
+          description: >-
+            The band's best-in-slot pick for the spec and the character's faction (from its
+            race), as the Forever Sixty Data addon ships it: the leveling-bis ladder's pick for
+            the band without raid buffs, except that an item whose stats the client has not
+            confirmed is never a pick (the next candidate in the ladder's order takes its place),
+            the second ring or trinket is never the unique item the first already is, and there
+            is no off-hand pick beside a two-handed main-hand pick. Null when the band has no
+            pick for the slot, the character has no rated spec or is below level 20, or its
+            faction or the spec's best-in-slot data is unknown.
+          required: [id, name, source, chance]
+          properties:
+            id: { type: integer }
+            name: { type: string }
+            source:
+              type: string
+              description: >-
+                Where the item comes from, as a player knows it: "Wailing Caverns: Mutanus the
+                Devourer", "Blacksmithing", "The League of Arathor".
+            chance:
+              type: number
+              nullable: true
+              description: >-
+                The drop chance as a fraction (0.333333 is one in three). Null when the source
+                states no rate (every quest, vendor, crafted, reputation and PvP source, and a drop
+                whose loot table gives none) and when the pick took the place of an item the
+                client has not confirmed.
+        gap:
+          type: number
+          nullable: true
+          description: >-
+            The Gear component points the pick would add over the worn item, one decimal: 500 x
+            (the pick's gear score - the worn item's gear score) / the band's best set's gear
+            score, each item scored by the spec's stat weights as the Gear component scores it.
+            An empty slot scores 0. 0 when the worn item is the pick or scores at least as much.
+            Null when there is no pick, when either item is not in the data build, or when the
+            band's best set cannot be scored.
+    ExecutionScore:
+      type: number
+      nullable: true
+      description: >-
+        execution_score on ranking rows and on a character's best and history rows: the
+        fight's damage as a share of what the same gear and talents do in the simulator over
+        the same fight length (1 is the simulator's average; a lucky pull can pass it, and the
+        stored value is kept between 0 and 2). Damage only: null for healers and tanks, for a
+        spec the simulator has not validated, and for a fight whose character the simulator
+        could not rebuild from the log.
     ForeverScore:
       type: object
       description: >-
@@ -1764,7 +1865,12 @@ paths:
         a zero score. A score that cannot be read just then is also null, and the rest of the
         page is still served. score_history[] (schema ScorePoint) is the score over time, oldest
         first, never null. A character whose account is anonymised answers 404 exactly as a
-        character nobody has logged does, the rule GET .../rating already follows.
+        character nobody has logged does, the rule GET .../rating already follows. gear[]
+        (schema CharacterGearSlot) is the gear panel: the 17 slots of the character's newest
+        addon export, in the export's order, each with what it wears, the band's pick and the
+        gap; [] when the character has no export. gear_gap_total beside it is the sum of the
+        gaps (schema CharacterGear gives both and every null rule). A history row's
+        execution_score is defined in schema ExecutionScore.
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }

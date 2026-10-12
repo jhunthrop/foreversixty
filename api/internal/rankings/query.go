@@ -323,6 +323,11 @@ type Character struct {
 	// ScoreHistory is the Forever Score's history (Store.scoreHistory), oldest first; empty,
 	// never null, when no rated fight carries a snapshot.
 	ScoreHistory []ScorePoint `json:"score_history"`
+	// Gear is the gear panel (rating.Store.CharacterGear): the 17 export slots in the
+	// export's order, empty, never null, when the character has no export. GearGapTotal is
+	// GearGapTotal of its rows: null when no row has a gap.
+	Gear         []GearSlot `json:"gear"`
+	GearGapTotal *float64   `json:"gear_gap_total"`
 }
 
 // ForeverScore is the character page's Forever Score (api/internal/rating's ScoreV2, the
@@ -413,6 +418,7 @@ func (s *Store) CharacterFights(ctx context.Context, region, ruleset, name strin
 		History:      []CharacterFight{},
 		BuildsSeen:   []BuildSeen{},
 		ScoreHistory: []ScorePoint{},
+		Gear:         []GearSlot{},
 	}
 	var class *string
 	err := s.Pool.QueryRow(ctx,

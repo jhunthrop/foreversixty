@@ -23,7 +23,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
@@ -54,6 +53,7 @@ type gearData struct {
 	dpsPerPointLogged map[string]bool                       // builds whose file failed to read, logged once
 	raids             map[string]map[string]raidLoot        // build -> raidKey -> loot
 	bis               map[string]map[string]map[int][][]int // build -> spec -> band -> sets (bestInSlot)
+	bisRows           map[string]map[string][]bisEntry      // build -> spec -> entries (bandpicks.go)
 	// rotations is rotation.go's per-build read of addon-data.json and spellranks.json.
 	rotations       map[string]*buildRotations // build -> the shipped rotations
 	rotationsLogged map[string]bool            // builds whose files failed to read, logged once
@@ -82,6 +82,7 @@ func SetGearData(t *trees.Data, dir string) {
 		dpsPerPointLogged: map[string]bool{},
 		raids:             map[string]map[string]raidLoot{},
 		bis:               map[string]map[string]map[int][][]int{},
+		bisRows:           map[string]map[string][]bisEntry{},
 		rotations:         map[string]*buildRotations{},
 		rotationsLogged:   map[string]bool{},
 	}
@@ -216,16 +217,7 @@ func FullGearScore(ctx context.Context, build, spec string, band int) (float64, 
 	}
 	src.mu.Unlock()
 
-	b, ok := src.trees.Build(build)
-	if !ok {
-		return 0, fmt.Errorf("%w: no data for client build %q", ErrGearUnscorable, build)
-	}
-	classSlug, _, _ := strings.Cut(spec, "-")
-	classID, ok := classIDBySlug(b, classSlug)
-	if !ok {
-		return 0, fmt.Errorf("%w: no class %q in build %s", ErrGearUnscorable, classSlug, build)
-	}
-	weights, err := src.specWeights(build, spec)
+	b, classID, weights, err := src.specTables(build, spec)
 	if err != nil {
 		return 0, err
 	}

@@ -3,6 +3,7 @@ package server
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"gopkg.in/yaml.v3"
@@ -63,5 +64,87 @@ func TestOpenAPIListsEveryRoute(t *testing.T) {
 		if _, ok := schemas[s]; !ok {
 			t.Errorf("openapi.yaml missing schema %s", s)
 		}
+	}
+}
+
+// Task L6.7: the character page's gear panel and execution_score are documented, with every
+// null rule.
+func TestOpenAPIDocumentsTheGearPanelAndExecutionScore(t *testing.T) {
+	b, err := os.ReadFile("../../openapi.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var doc struct {
+		Paths      map[string]map[string]map[string]any `yaml:"paths"`
+		Components struct {
+			Schemas map[string]map[string]any `yaml:"schemas"`
+		} `yaml:"components"`
+	}
+	if err := yaml.Unmarshal(b, &doc); err != nil {
+		t.Fatal(err)
+	}
+	desc := func(v any) string {
+		m, _ := v.(map[string]any)
+		s, _ := m["description"].(string)
+		return s
+	}
+	props := func(schema map[string]any) map[string]any {
+		p, _ := schema["properties"].(map[string]any)
+		return p
+	}
+
+	path := doc.Paths["/v1/characters/{region}/{ruleset}/{name}"]["get"]
+	for _, want := range []string{"gear", "gear_gap_total", "CharacterGear", "ExecutionScore"} {
+		if !strings.Contains(desc(path), want) {
+			t.Errorf("the character path's description does not name %q", want)
+		}
+	}
+
+	gear, ok := doc.Components.Schemas["CharacterGear"]
+	if !ok {
+		t.Fatal("no CharacterGear schema")
+	}
+	total := desc(props(gear)["gear_gap_total"])
+	for _, want := range []string{
+		"score points the band's picks would add over what the character wears, summed over the slots",
+		"not the Gear component's distance to its top, which is measured against the best set of the band across presets and factions",
+		"null",
+	} {
+		if !strings.Contains(strings.Join(strings.Fields(total), " "), want) {
+			t.Errorf("gear_gap_total's description lacks %q: %q", want, total)
+		}
+	}
+	slot, ok := doc.Components.Schemas["CharacterGearSlot"]
+	if !ok {
+		t.Fatal("no CharacterGearSlot schema")
+	}
+	p := props(slot)
+	for _, field := range []string{"worn", "pick", "gap"} {
+		m, _ := p[field].(map[string]any)
+		if m["nullable"] != true || !strings.Contains(desc(m), "ull") {
+			t.Errorf("%s must be nullable with its null rule: %v", field, m)
+		}
+	}
+	pick, _ := p["pick"].(map[string]any)
+	chance, _ := props(pick)["chance"].(map[string]any)
+	if chance["nullable"] != true || desc(chance) == "" {
+		t.Errorf("pick.chance must be nullable with its null rule: %v", chance)
+	}
+	worn, _ := p["worn"].(map[string]any)
+	for _, field := range []string{"name", "item_level"} {
+		m, _ := props(worn)[field].(map[string]any)
+		if m["nullable"] != true {
+			t.Errorf("worn.%s must be nullable: %v", field, m)
+		}
+	}
+
+	const plain = "share of what the same gear and talents do in the simulator"
+	exec, ok := doc.Components.Schemas["ExecutionScore"]
+	if !ok || !strings.Contains(strings.Join(strings.Fields(desc(exec)), " "), plain) {
+		t.Errorf("ExecutionScore must say %q: %v", plain, exec)
+	}
+	row := props(doc.Components.Schemas["RankingRow"])["execution_score"]
+	if !strings.Contains(strings.Join(strings.Fields(desc(row)), " "), plain) {
+		t.Errorf("RankingRow.execution_score must say %q: %v", plain, row)
 	}
 }

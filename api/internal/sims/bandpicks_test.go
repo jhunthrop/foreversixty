@@ -1,0 +1,239 @@
+package sims
+
+import (
+	"errors"
+	"fmt"
+	"math"
+	"path/filepath"
+	"sort"
+	"strings"
+	"testing"
+
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
+)
+
+// Task L6.7: the band's picks the character page's gear panel shows are the data addon's:
+// bis/<spec>.json's bare entry for the band and faction, through L1.4's unconfirmed walk and
+// the band-wide rules. These run against the repository's real data/builds.
+
+const picksBuild = "1.60.1.70291"
+
+func TestBandPicksAreTheBareEntryThroughTheUnconfirmedWalk(t *testing.T) {
+	useRepoGearData(t)
+	picks, err := BandPicks(t.Context(), picksBuild, "warrior-arms", 60, "alliance")
+	if err != nil {
+		t.Fatal(err)
+	}
+	head := picks["head"]
+	if head.ItemID != 12640 || head.Name != "Lionheart Helm" || head.Source != "Blacksmithing" || head.Chance != nil || head.Promoted {
+		t.Errorf("head = %+v, want Lionheart Helm (12640) from Blacksmithing, no chance, not promoted", head)
+	}
+	// Hand of Justice (11815) and the first runner-up, Blackhand's Breadth (13965), are both
+	// client-unconfirmed: the second runner-up takes the slot, with no chance.
+	tr := picks["trinket2"]
+	if tr.ItemID != 249469 || tr.Name != "Frozen Heart of the Mountain" || tr.Source != "Enchanting" || tr.Chance != nil || !tr.Promoted {
+		t.Errorf("trinket2 = %+v, want Frozen Heart of the Mountain (249469), promoted, no chance", tr)
+	}
+	if p, ok := picks["off_hand"]; ok {
+		t.Errorf("off_hand = %+v, want no pick (the file's row has no item_id)", p)
+	}
+	if len(picks) != 16 {
+		t.Errorf("%d picks, want 16 (every slot but the off-hand)", len(picks))
+	}
+
+	// Band 20: the original pick keeps its drop chance; the unconfirmed two-hander gives way
+	// to Living Root, which carries none.
+	low, err := BandPicks(t.Context(), picksBuild, "warrior-arms", 20, "alliance")
+	if err != nil {
+		t.Fatal(err)
+	}
+	chest := low["chest"]
+	if chest.ItemID != 6627 || chest.Source != "Wailing Caverns: Mutanus the Devourer" || chest.Chance == nil || *chest.Chance != 0.333333 {
+		t.Errorf("band 20 chest = %+v, want 6627 from Mutanus with chance 0.333333", chest)
+	}
+	mh := low["main_hand"]
+	if mh.ItemID != 6631 || mh.Name != "Living Root" || mh.Chance != nil || !mh.Promoted {
+		t.Errorf("band 20 main_hand = %+v, want Living Root (6631), promoted, no chance", mh)
+	}
+}
+
+func TestBandPicksRefuseWhatTheDataDoesNotHave(t *testing.T) {
+	useRepoGearData(t)
+	if _, err := BandPicks(t.Context(), picksBuild, "warrior-arms", 25, "alliance"); !errors.Is(err, ErrNoBestInSlot) {
+		t.Errorf("a band with no entry: err = %v, want ErrNoBestInSlot", err)
+	}
+	if _, err := BandPicks(t.Context(), picksBuild, "warrior-gladiator", 60, "alliance"); !errors.Is(err, ErrNoBestInSlot) {
+		t.Errorf("a spec with no bis file: err = %v, want ErrNoBestInSlot", err)
+	}
+	if _, err := BandPicks(t.Context(), "0.0.0.1", "warrior-arms", 60, "alliance"); !errors.Is(err, ErrGearUnscorable) {
+		t.Errorf("an unknown build: err = %v, want ErrGearUnscorable", err)
+	}
+}
+
+// Every real spec, band and faction: no pick is client-unconfirmed, no unique item fills
+// both slots of a pair, and no off-hand is picked beside a two-handed main hand.
+func TestNoRealBandPickBreaksTheBandWideRules(t *testing.T) {
+	useRepoGearData(t)
+	b, ok := repoTrees.Build(picksBuild)
+	if !ok {
+		t.Fatal("no build")
+	}
+	files, err := filepath.Glob(filepath.Join(repoBuilds, picksBuild, "bis", "*.json"))
+	if err != nil || len(files) == 0 {
+		t.Fatalf("bis files: %v %v", files, err)
+	}
+	checked := 0
+	for _, f := range files {
+		spec := strings.TrimSuffix(filepath.Base(f), ".json")
+		classID, ok := classIDBySlug(b, strings.SplitN(spec, "-", 2)[0])
+		if !ok {
+			t.Fatalf("%s: no class", spec)
+		}
+		for band := FirstGearBand; band <= FullGearBand; band += 10 {
+			for _, faction := range []string{"alliance", "horde"} {
+				picks, err := BandPicks(t.Context(), picksBuild, spec, band, faction)
+				if errors.Is(err, ErrNoBestInSlot) {
+					continue
+				}
+				if err != nil {
+					t.Fatal(err)
+				}
+				checked++
+				where := fmt.Sprintf("%s %s %d", spec, faction, band)
+				for slot, p := range picks {
+					if it, ok := b.Item(classID, p.ItemID); ok && it.ClientUnconfirmed {
+						t.Errorf("%s %s: %d is client-unconfirmed", where, slot, p.ItemID)
+					}
+				}
+				for second, first := range pairMates {
+					a, ok1 := picks[first]
+					z, ok2 := picks[second]
+					if it, _ := b.Item(classID, a.ItemID); ok1 && ok2 && a.ItemID == z.ItemID && it.Unique {
+						t.Errorf("%s: unique %d in both %s and %s", where, a.ItemID, first, second)
+					}
+				}
+				if mh, ok := picks["main_hand"]; ok {
+					if it, _ := b.Item(classID, mh.ItemID); it.TwoHand {
+						if oh, ok := picks["off_hand"]; ok {
+							t.Errorf("%s: off-hand %d beside two-hander %d", where, oh.ItemID, mh.ItemID)
+						}
+					}
+				}
+			}
+		}
+	}
+	if checked < 200 {
+		t.Errorf("checked %d bands, want every spec's ten (about 270)", checked)
+	}
+}
+
+func ptrInt(v int) *int { return &v }
+
+// The walk's rules on hand-built rows, so each one is pinned whatever the real data holds.
+func TestTheWalkKeepsTheBandWideRules(t *testing.T) {
+	items := map[int]trees.Item{
+		1: {ID: 1, Name: "Unique Ring", Unique: true},
+		2: {ID: 2, Name: "Plain Ring"},
+		3: {ID: 3, Name: "Second Ring"},
+		4: {ID: 4, Name: "Unconfirmed Axe", TwoHand: true, ClientUnconfirmed: true},
+		5: {ID: 5, Name: "Confirmed Greatsword", TwoHand: true},
+		6: {ID: 6, Name: "Buckler"},
+		7: {ID: 7, Name: "Unconfirmed Cloak", ClientUnconfirmed: true},
+	}
+	lookup := func(id int) (trees.Item, bool) { it, ok := items[id]; return it, ok }
+	chance := 0.25
+	rows := []bisRow{
+		{Slot: "finger1", ItemID: ptrInt(1), Source: "A", Chance: &chance},
+		// finger2's own pick is finger1's unique ring: the next candidate takes it.
+		{Slot: "finger2", ItemID: ptrInt(1), Source: "A", Chance: &chance,
+			RunnersUp: &[]bisCandidate{{ItemID: 3, Source: "C"}}},
+		// The same plain ring in both trinket slots is allowed (not unique).
+		{Slot: "trinket1", ItemID: ptrInt(2), Source: "B"},
+		{Slot: "trinket2", ItemID: ptrInt(2), Source: "B"},
+		// The unconfirmed two-hander gives way to a confirmed two-hander (from the
+		// alternatives: an older file with no runners_up), so the off-hand pick goes.
+		{Slot: "main_hand", ItemID: ptrInt(4), Source: "D",
+			Alternatives: []bisCandidate{{ItemID: 5, ItemName: "Greatsword", Source: "E"}}},
+		{Slot: "off_hand", ItemID: ptrInt(6), Source: "F"},
+		// Every candidate unconfirmed: no pick.
+		{Slot: "back", ItemID: ptrInt(7), Source: "G", RunnersUp: &[]bisCandidate{}},
+		// No item_id: nothing eligible at the band.
+		{Slot: "neck"},
+	}
+	picks := walkBand(rows, lookup)
+	var slots []string
+	for s := range picks {
+		slots = append(slots, s)
+	}
+	sort.Strings(slots)
+	if got := strings.Join(slots, ","); got != "finger1,finger2,main_hand,trinket1,trinket2" {
+		t.Fatalf("picked slots = %s, want finger1,finger2,main_hand,trinket1,trinket2", got)
+	}
+	if p := picks["finger1"]; p.ItemID != 1 || p.Chance == nil || *p.Chance != 0.25 || p.Promoted {
+		t.Errorf("finger1 = %+v, want the unique ring with its chance", p)
+	}
+	if p := picks["finger2"]; p.ItemID != 3 || p.Source != "C" || p.Chance != nil || !p.Promoted {
+		t.Errorf("finger2 = %+v, want the second ring, promoted, no chance", p)
+	}
+	if picks["trinket2"].ItemID != 2 {
+		t.Errorf("trinket2 = %+v, want the plain ring again", picks["trinket2"])
+	}
+	if p := picks["main_hand"]; p.ItemID != 5 || p.Name != "Confirmed Greatsword" || p.Source != "E" || !p.Promoted {
+		t.Errorf("main_hand = %+v, want the confirmed greatsword, named from the tables", p)
+	}
+}
+
+// ItemGearScore is the per-item term FullGearScore sums: the band-60 mark is the sum of
+// ItemGearScore over its winning set (horde raid for warrior-arms).
+func TestItemGearScoreIsTheTermTheMarkSums(t *testing.T) {
+	useRepoGearData(t)
+	full, err := FullGearScore(t.Context(), picksBuild, "warrior-arms", FullGearBand)
+	if err != nil {
+		t.Fatal(err)
+	}
+	entries, err := loadBisEntries(repoBuilds, picksBuild, "warrior-arms")
+	if err != nil {
+		t.Fatal(err)
+	}
+	best := 0.0
+	for _, e := range entries {
+		if e.Band != FullGearBand {
+			continue
+		}
+		sum := 0.0
+		for _, r := range e.Slots {
+			if r.ItemID == nil {
+				continue
+			}
+			v, ok, err := ItemGearScore(t.Context(), picksBuild, "warrior-arms", *r.ItemID)
+			if err != nil || !ok {
+				t.Fatalf("%d: %v %v", *r.ItemID, ok, err)
+			}
+			sum += v
+		}
+		best = math.Max(best, sum)
+	}
+	if math.Abs(best-full) > scoreTolerance {
+		t.Fatalf("the best band-60 set sums to %v by ItemGearScore, FullGearScore says %v", best, full)
+	}
+	if _, ok, err := ItemGearScore(t.Context(), picksBuild, "warrior-arms", 999999999); ok || err != nil {
+		t.Errorf("an item the tables lack: ok %v err %v, want not ok and no error", ok, err)
+	}
+}
+
+func TestRaceFactionAndGearItemReadTheBuild(t *testing.T) {
+	useRepoGearData(t)
+	if got := RaceFaction(picksBuild, "human"); got != "alliance" {
+		t.Errorf("human = %q, want alliance", got)
+	}
+	if got := RaceFaction(picksBuild, "orc"); got != "horde" {
+		t.Errorf("orc = %q, want horde", got)
+	}
+	if got := RaceFaction(picksBuild, "murloc"); got != "" {
+		t.Errorf("murloc = %q, want empty", got)
+	}
+	it, ok := GearItem(picksBuild, "warrior", 12640)
+	if !ok || it.Name != "Lionheart Helm" || it.ItemLevel == 0 {
+		t.Errorf("GearItem(12640) = %+v %v", it, ok)
+	}
+}

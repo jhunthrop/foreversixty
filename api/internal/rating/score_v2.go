@@ -299,15 +299,11 @@ func (s *Store) gearScore(ctx context.Context, key, spec string) (raw, full floa
 			"err", "the stored export is not an FS1 code")
 		return 0, 0, nil
 	}
-	level := sims.FullGearBand
-	if decoded.HasLevel {
-		level = decoded.Level
-	}
 	raw, err = sims.GearScore(ctx, export, spec)
 	var band int
 	var hasBand bool
 	if err == nil {
-		band, hasBand, err = sims.GearBand(ctx, decoded.DataBuild, spec, level)
+		band, hasBand, err = sims.GearBand(ctx, decoded.DataBuild, spec, gearLevel(decoded))
 	}
 	if err == nil && !hasBand {
 		// Below the first band (level 20) the spec has no best-in-slot set to measure
@@ -326,6 +322,17 @@ func (s *Store) gearScore(ctx context.Context, key, spec string) (raw, full floa
 		return 0, 0, fmt.Errorf("rating: gear score of %s: %w", key, err)
 	}
 	return raw, full, nil
+}
+
+// gearLevel is the level an export is measured at: its level= section, else 60 (an export
+// from an addon older than that section, measured against the level-60 set as every export
+// was before the band rule). The gear component and the gear panel (CharacterGear) share it,
+// so both read the same band.
+func gearLevel(decoded fs1.Decoded) int {
+	if decoded.HasLevel {
+		return decoded.Level
+	}
+	return sims.FullGearBand
 }
 
 // ItemLevel is the item level ScoreV2 carries (itemLevel), for a reader that needs it for a

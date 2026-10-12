@@ -31,6 +31,9 @@ type Service struct {
 	// Scores adds the Forever Score to the character page; nil, or a failed read, leaves it
 	// null.
 	Scores Scorer
+	// Gear adds the gear panel to the character page; nil, or a failed read, leaves it [] and
+	// its total null.
+	Gear GearReader
 }
 
 // Scorer reads a character's Forever Score by character key. rating.Service is the one
@@ -317,6 +320,16 @@ func (s *Service) character(w http.ResponseWriter, r *http.Request) {
 				"character", c.Character.Key, "err", err)
 		} else {
 			c.ForeverScore = score
+		}
+	}
+	if s.Gear != nil {
+		// Like the score: a gear panel that cannot be read is logged and left empty.
+		gear, err := s.Gear.CharacterGear(r.Context(), c.Character.Key)
+		if err != nil {
+			s.logger().Error("rankings", "id", httpx.RequestIDFrom(r.Context()), "op", "character_gear",
+				"character", c.Character.Key, "err", err)
+		} else if gear.Slots != nil {
+			c.Gear, c.GearGapTotal = gear.Slots, gear.GapTotal
 		}
 	}
 	cache(w)
