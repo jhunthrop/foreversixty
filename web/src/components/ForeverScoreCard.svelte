@@ -94,9 +94,14 @@
   /** The last column holds the cue on one line: "+700 pts", the widest (Experience at 0), is
    *  57.6px at 12px mono, so 60px (fix round 4 item 2, fix round 5 item 3). Below 400px the label
    *  column is 80px, the points read "412/500" in 56px and the gaps are 8px, so the bar's track
-   *  keeps room on a phone (L8.5 ruling 4). */
+   *  keeps room on a phone (L8.5 ruling 4). Below 340px the cue column goes: the marked row's
+   *  "+88 pts" moves under its label (the "Most to gain" line already says it) and the track takes
+   *  its 60px (L8.5 fix round 2 item 8). */
   const ROW =
-    'grid grid-cols-[88px_minmax(0,1fr)_80px_60px] items-center gap-x-3 gap-y-1 text-[13px] max-[400px]:grid-cols-[80px_minmax(0,1fr)_56px_60px] max-[400px]:gap-x-2';
+    'grid grid-cols-[88px_minmax(0,1fr)_80px_60px] items-center gap-x-3 gap-y-1 text-[13px] max-[400px]:grid-cols-[80px_minmax(0,1fr)_56px_60px] max-[400px]:gap-x-2 max-[340px]:grid-cols-[80px_minmax(0,1fr)_56px]';
+  const CUE = 'tabular text-right font-mono text-[12px] font-semibold whitespace-nowrap';
+  /** The marked row's cue below 340px: under the label, on the row's second line. */
+  const CUE_UNDER_LABEL = 'max-[340px]:col-start-1 max-[340px]:row-start-2 max-[340px]:text-left';
 
   const date = $derived(shortDate(forever?.as_of));
   const gain = $derived(mostToGain(forever?.components));
@@ -165,7 +170,7 @@
                       ></span
                     >
                     <span
-                      class="tabular text-right font-mono text-[12px] font-semibold whitespace-nowrap"
+                      class={`${CUE} ${marked ? CUE_UNDER_LABEL : 'max-[340px]:hidden'}`}
                       style={marked && gain !== null ? `color: ${NEEDS_WORK_COLOR}` : undefined}
                       aria-label={marked && gain !== null ? scoreCopy.gainCueLabel(gain.gap) : undefined}
                       data-testid={marked ? 'forever-score-gain-cue' : undefined}
@@ -173,7 +178,7 @@
                     >
                     {#if component.key === 'experience' && forever.experience !== null}
                       <span
-                        class="text-muted col-span-3 col-start-2 text-[12px]"
+                        class="text-muted col-span-3 col-start-2 text-[12px] max-[340px]:col-span-2"
                         data-testid="forever-score-experience-detail"
                         >{scoreCopy.experienceBreakdown(
                           forever.experience.dungeons,
@@ -184,9 +189,10 @@
                     {/if}
                     {#if component.key === 'experience'}
                       <!-- L8.5 ruling 2: what counts, in the API's own terms, so 620 with 0 raid
-                           bosses reads as intended. -->
+                           bosses reads as intended; one line (fix round 2 items 4 and 6), the
+                           row's whole width on a phone. -->
                       <span
-                        class="text-muted col-span-3 col-start-2 text-[12px]"
+                        class="text-muted col-span-3 col-start-2 text-[12px] max-md:col-span-full max-md:col-start-1"
                         data-testid="forever-score-experience-note">{scoreCopy.experienceCounts}</span
                       >
                     {/if}
@@ -271,7 +277,7 @@
             <span class="text-muted">{component.label}</span>
             <span class="bg-line-soft h-2" aria-hidden="true"></span>
             <span class="text-muted tabular text-right font-mono">{scoreCopy.emptyPart}</span>
-            <span></span>
+            <span class="max-[340px]:hidden"></span>
           </li>
         {/each}
       </ul>

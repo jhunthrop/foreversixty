@@ -197,9 +197,14 @@ describe('/ratings Forever Score section', () => {
     const sample = rating.slice(rating.indexOf('data-testid="ratings-rating-sample"'));
     expect(sample).toMatch(/data-testid="character-rating-overall">65</);
     expect(sample).toContain('>of 100<');
-    expect(sample).toMatch(
-      /data-testid="rating-card-verdict">\s*Latest fight rated 65 of 100 · 6 fights rated\s*</,
-    );
+    // Fix round 2 item 7: the line is in spans now; a sample names no fight.
+    const verdict = /data-testid="rating-card-verdict">([\s\S]*?)<\/p>/.exec(sample)?.[1] ?? '';
+    expect(
+      verdict
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim(),
+    ).toBe('Latest fight rated 65 of 100 · 6 fights rated');
     expect(sample).toContain('data-testid="rating-trend"');
     // Fix round 1 item 5: the sample sits in a 560px column, so it stays one column at any
     // window width.

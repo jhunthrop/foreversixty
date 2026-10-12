@@ -7,6 +7,7 @@ import { guildHref, rulesetLabel } from './characters';
 import { factionOfRace } from './race-faction';
 import type { BuildSeen, CharacterFight, CharacterPage } from './rankings/api';
 import { scoreCopy } from './score/copy';
+import { shortDate } from './score/score';
 
 /** The spec of the character's newest fight: `history[0]`, else the first best row that has
  *  one. Null when no fight names a spec (the header then shows the class alone). */
@@ -62,6 +63,8 @@ export const characterTableCopy = {
     'Execution: the fight’s damage as a share of what the same gear and talents do in the simulator; healers and tanks have none.',
   /** The "—" cell's title and aria-label (fix round 5 item 7). */
   executionUnscored: 'Not scored yet',
+  /** Under the latest rated fight's parse (L8.5 fix round 2 item 3): "rated 65". */
+  ratedNote: (overall: number): string => `rated ${Math.round(overall)}`,
 } as const;
 
 /**
@@ -113,8 +116,34 @@ export function fightRowId(row: FightRef): string {
  */
 export function weakestFightHref(
   trend: readonly (FightRef & { fought_at: string })[],
-  history: readonly FightRef[],
+  history: readonly Pick<CharacterFight, 'report_id' | 'fight_index' | 'encounter'>[],
 ): string | null {
+  const latest = latestRatedFight(trend, history);
+  return latest === null || latest.rowId === null ? null : `#${latest.rowId}`;
+}
+
+/** The latest rated fight (L8.5 fix round 2 items 1 and 3). */
+export interface LatestRatedFight {
+  report_id: string;
+  fight_index: number;
+  /** Its encounter, from its row in "Every ranked fight"; null when it is not a row there. */
+  encounter: string | null;
+  /** "9 Dec", the site's day-month form, in UTC; null for an unreadable time. */
+  date: string | null;
+  /** Its row's id in "Every ranked fight", or null. */
+  rowId: string | null;
+}
+
+/**
+ * The latest rated fight: the trend's newest point, which is the card the rating endpoint's
+ * `latest` is built from (dto.go's buildCharacterRatingDTO); `latest` itself carries no
+ * encounter, date, report or fight index, so the trend point names the fight and "Every ranked
+ * fight" its encounter. Null with no trend.
+ */
+export function latestRatedFight(
+  trend: readonly (FightRef & { fought_at: string })[],
+  history: readonly Pick<CharacterFight, 'report_id' | 'fight_index' | 'encounter'>[],
+): LatestRatedFight | null {
   const newest = [...trend].sort(
     (a, b) => new Date(b.fought_at).getTime() - new Date(a.fought_at).getTime(),
   )[0];
@@ -122,7 +151,14 @@ export function weakestFightHref(
   const row = history.find(
     (fight) => fight.report_id === newest.report_id && fight.fight_index === newest.fight_index,
   );
-  return row === undefined ? null : `#${fightRowId(row)}`;
+  const time = new Date(newest.fought_at);
+  return {
+    report_id: newest.report_id,
+    fight_index: newest.fight_index,
+    encounter: row?.encounter ?? null,
+    date: Number.isNaN(time.getTime()) ? null : shortDate(time.toISOString().slice(0, 10)),
+    rowId: row === undefined ? null : fightRowId(row),
+  };
 }
 
 /** The note under "Builds seen at pull" (L8.4 fix round 4 item 4), in plain words, naming

@@ -95,9 +95,8 @@ export const scoreCopy = {
     ].join(' · '),
   /** Under that, what counts (L8.5 ruling 2), from api/openapi.yaml's definition of the part:
    *  "25 a distinct dungeon cleared + 40 a distinct raid boss killed across linked characters,
-   *  capped at 700". So 620 with 0 raid bosses reads as dungeons across the alts. */
-  experienceCounts:
-    'Counts dungeon and raid kills, alts included: 25 a different dungeon, 40 a different raid boss, up to 700.',
+   *  capped at 700". One line, the points named (L8.5 fix round 2 items 4 and 6). */
+  experienceCounts: '25 points a dungeon, 40 a raid boss, up to 700.',
   /** The sparkline's table equivalent (Task L8.4 ruling 3), read by a screen reader only. */
   historyCaption: 'Forever Score by date, oldest first',
   historyDate: 'Date',

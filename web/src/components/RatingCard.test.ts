@@ -175,6 +175,72 @@ describe('RatingCard', () => {
     expect(few.indexOf('character-rating-too-few')).toBeGreaterThan(few.indexOf('rating-card-side'));
   });
 
+  // Fix round 2 item 1: the line names the fight -- its encounter and its day-month date --
+  // "Latest fight (Warden Kelthas, 9 Dec) rated 65 of 100 · 6 fights rated"; the date alone when
+  // the encounter is unknown.
+  it('names the latest fight: encounter and date (fix round 2 item 1)', () => {
+    expect(ratingCopy.verdict(65, 6, { encounter: 'Warden Kelthas', date: '9 Dec' })).toBe(
+      'Latest fight (Warden Kelthas, 9 Dec) rated 65 of 100 · 6 fights rated',
+    );
+    expect(ratingCopy.verdict(65, 6, { encounter: null, date: '9 Dec' })).toBe(
+      'Latest fight (9 Dec) rated 65 of 100 · 6 fights rated',
+    );
+    expect(ratingCopy.verdict(65, 6, null)).toBe('Latest fight rated 65 of 100 · 6 fights rated');
+    const { body } = render(RatingCard, {
+      props: {
+        overall: 65,
+        trend: TREND,
+        sampleSize: 6,
+        latestFight: { encounter: 'Warden Kelthas', date: '9 Dec' },
+      },
+    });
+    expect(text(/data-testid="rating-card-verdict">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '')).toBe(
+      'Latest fight (Warden Kelthas, 9 Dec) rated 65 of 100 · 6 fights rated',
+    );
+  });
+
+  // Fix round 2 item 7: under 360px the line breaks at the dot, "6 fights rated" on a line of
+  // its own; "rated 65 of 100" never breaks inside, so a long fight name breaks before "rated".
+  it('breaks at the dot under 360px, and before "rated" when the name needs it (fix round 2 item 7)', () => {
+    const { body } = render(RatingCard, {
+      props: {
+        overall: 65,
+        trend: TREND,
+        sampleSize: 6,
+        latestFight: { encounter: 'Warden Kelthas', date: '9 Dec' },
+      },
+    });
+    const line = /data-testid="rating-card-verdict">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '';
+    const spans = [...line.matchAll(/<span class="([^"]*)"[^>]*>([^<]*)<\/span>/g)].map((m) => ({
+      classes: m[1].split(' '),
+      text: m[2],
+    }));
+    expect(spans.map((span) => span.text)).toEqual([
+      'Latest fight (Warden Kelthas, 9 Dec)',
+      'rated 65 of 100',
+      ' · ',
+      '6 fights rated',
+    ]);
+    expect(spans[1].classes).toContain('whitespace-nowrap');
+    expect(spans[2].classes).toContain('max-[360px]:hidden');
+    expect(spans[3].classes).toEqual(expect.arrayContaining(['whitespace-nowrap', 'max-[360px]:block']));
+    // The words between "…9 Dec)" and "rated" are a plain space, the only break before "rated".
+    expect(line).toMatch(/9 Dec\)<\/span> <span/);
+  });
+
+  // Fix round 2 item 2: what a parse is next to what the rating is, one muted line under it.
+  it('says how a parse differs from the rating, in one muted line under it (fix round 2 item 2)', () => {
+    expect(ratingCopy.parseVsRating).toBe(
+      'A parse is your rank against other players; the rating is how well the fight was played.',
+    );
+    const { body } = render(RatingCard, { props: { overall: 65, trend: TREND, sampleSize: 6 } });
+    const note = /<p class="([^"]*)" data-testid="rating-card-parse-vs-rating">([^<]*)<\/p>/.exec(body);
+    expect(note?.[2]).toBe(ratingCopy.parseVsRating);
+    expect(note?.[1].split(' ')).toEqual(expect.arrayContaining(['text-muted', 'text-[12px]']));
+    expect(body.indexOf('rating-card-verdict')).toBeLessThan(body.indexOf('rating-card-parse-vs-rating'));
+    expect(body.indexOf('rating-card-parse-vs-rating')).toBeLessThan(body.indexOf('rating-card-side'));
+  });
+
   it('leaves no "counts toward" claim in any string the site shows (fix round 1 item 2)', () => {
     const root = path.resolve(import.meta.dirname, '..');
     const sources = (dir: string): string[] =>

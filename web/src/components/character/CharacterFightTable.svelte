@@ -26,6 +26,7 @@
     rowKey,
     executionTestid,
     rowId = null,
+    rated = null,
   }: {
     title: string;
     rows: readonly CharacterFight[];
@@ -36,7 +37,19 @@
     executionTestid: string;
     /** Each row's id, for a link to it ("Every ranked fight", L8.5 ruling 1); none without. */
     rowId?: ((row: CharacterFight) => string) | null;
+    /** The latest rated fight and its rating (L8.5 fix round 2 item 3): its row says "rated 65"
+     *  under its parse. */
+    rated?: { report_id: string; fight_index: number; overall: number } | null;
   } = $props();
+
+  /** The address's target (L8.5 fix round 2 items 3 and 5): a 2px gold left edge and a gold tint
+   *  over the page's ground, eased over 120ms, landing 96px under the window's top. */
+  const TARGET =
+    ' scroll-mt-24 transition-[background-color,box-shadow] duration-[120ms] target:bg-[rgba(229,185,85,.08)] target:shadow-[inset_2px_0_0_var(--color-gold)]';
+  /** "rated 65" on a line of its own, right-aligned under the parse: it spans Boss to Parse %, so
+   *  it never widens a column (Spec is not drawn on a phone, so two columns there, three from
+   *  md). */
+  const RATED_NOTE = 'text-muted col-span-2 col-start-1 -mt-2 text-right text-[12px] md:col-span-3';
 
   /**
    * A percentile beside a formatted amount has no column heading at any breakpoint --
@@ -76,10 +89,10 @@
       <span class="text-right max-md:ml-1">{characterTableCopy.execution}</span>
     </li>
     {#each rows as row, index (rowKey(row, index))}
-      <!-- L8.5 ruling 1: the rating card's weakest part links here; the row lands 16px under the
-           window's top and is marked while it is the address's target. -->
+      <!-- L8.5 ruling 1: the rating card's weakest part links here (fix round 2: the target's
+           gold edge and tint, 96px under the window's top). -->
       <li
-        class={`border-line-soft grid min-h-11 items-center gap-3 border-b px-2 py-2 text-[14px] ${GRID}${rowId === null ? '' : ' target:bg-raised scroll-mt-4'}`}
+        class={`border-line-soft grid min-h-11 items-center gap-3 border-b px-2 py-2 text-[14px] ${GRID}${rowId === null ? '' : TARGET}`}
         id={rowId === null ? undefined : rowId(row)}
       >
         <a class="{rowLink} truncate" href={bossHref(row)}>{row.encounter}</a>
@@ -115,6 +128,11 @@
             href={executionHref(row.report_id, row.fight_index)}
             title={executionTitle(row.execution_score)}
             data-testid={executionTestid}>{executionLabel(row.execution_score)}</a
+          >
+        {/if}
+        {#if rated !== null && rated.report_id === row.report_id && rated.fight_index === row.fight_index}
+          <span class={RATED_NOTE} data-testid="character-fight-rated"
+            >{characterTableCopy.ratedNote(rated.overall)}</span
           >
         {/if}
       </li>

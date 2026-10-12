@@ -160,7 +160,7 @@ test('the capture: captions on both numbers, empty sections and an empty strip a
   // L8.5 ruling 1 and its fix round 1: the line carries the count the old 'Last 6 fights' label
   // did, says the 65 is the latest fight's, and makes no claim about the score's Parses.
   await expect(page.getByTestId('rating-card-verdict')).toHaveText(
-    'Latest fight rated 65 of 100 · 6 fights rated',
+    'Latest fight (6 Dec) rated 65 of 100 · 6 fights rated',
   );
   // Fix round 2 item 1: a visitor is not told to paste an export for someone else's character.
   await expect(page.getByTestId('character-needs-addon')).toHaveCount(0);

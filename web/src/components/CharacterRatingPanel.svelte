@@ -9,7 +9,7 @@
      spec §6.2. That part fetches independently, the same self-contained pattern
      Character.svelte's own $effect already uses for fetchCharacter. -->
 <script lang="ts">
-  import { weakestFightHref } from '../lib/character-profile';
+  import { latestRatedFight, weakestFightHref } from '../lib/character-profile';
   import { fetchCharacterRating, RankingsError, type CharacterFight } from '../lib/rankings/api';
   import { ratingCopy } from '../lib/rating/copy';
   import type { ForeverScore, ScorePoint } from '../lib/score/score';
@@ -29,6 +29,7 @@
     owned = false,
     name = '',
     fights = [],
+    onrated = undefined,
   }: {
     path: CharacterPath;
     apiBase?: string;
@@ -48,10 +49,15 @@
     /** "Every ranked fight"'s rows, which the rating card's weakest part links into (L8.5
      *  ruling 1); none, no link. */
     fights?: readonly CharacterFight[];
+    /** Told the latest rated fight and its rating once the rating loads (null when there is
+     *  none), so "Every ranked fight" can mark that row "rated 65" (L8.5 fix round 2 item 3). */
+    onrated?: (rated: { report_id: string; fight_index: number; overall: number } | null) => void;
   } = $props();
 
   let data = $state<CharacterRating | null>(null);
   let status = $state<'loading' | 'ready' | 'hidden'>('loading');
+  /** The latest rated fight, named in the rating card's line (L8.5 fix round 2 item 1). */
+  const latest = $derived(data === null ? null : latestRatedFight(data.trend, fights));
 
   $effect(() => {
     const requested = path;
@@ -61,6 +67,16 @@
         if (path !== requested) return;
         data = result;
         status = 'ready';
+        const newest = latestRatedFight(result.trend, []);
+        onrated?.(
+          newest === null || result.latest === null
+            ? null
+            : {
+                report_id: newest.report_id,
+                fight_index: newest.fight_index,
+                overall: result.latest.overall,
+              },
+        );
       })
       .catch((thrown: unknown) => {
         if (path !== requested) return;
@@ -74,6 +90,7 @@
         }
         data = null;
         status = 'hidden';
+        onrated?.(null);
       });
   });
 </script>
@@ -124,6 +141,7 @@
         sampleSize={data.sample_size}
         worst={data.worst_component}
         weakestHref={weakestFightHref(data.trend, fights)}
+        latestFight={latest === null ? null : { encounter: latest.encounter, date: latest.date }}
       />
     {/if}
   </section>

@@ -24,12 +24,27 @@ export const ratingCopy = {
    *  fight's row (L8.5 ruling 1). */
   weakestPartLead: 'Weakest part of a fight:',
   weakestPartEnd: '.',
-  /** The card's one line (L8.5 ruling 1, fix round 1 items 1 and 2): the number is the latest
-   *  fight's rating, never an average, and the count is how many fights are rated. It names
-   *  nothing of the Forever Score: its Parses part comes from parse percentiles, not from this
-   *  rating. "Latest fight rated 65 of 100 · 6 fights rated". */
-  verdict: (overall: number, count: number): string =>
-    `Latest fight rated ${overall} of 100 · ${count} ${count === 1 ? 'fight' : 'fights'} rated`,
+  /** The card's one line (L8.5 ruling 1, fix round 1 items 1 and 2, fix round 2 item 1): the
+   *  number is the latest fight's rating, never an average, named by its encounter and its
+   *  day-month date when known, and the count is how many fights are rated. It names nothing of
+   *  the Forever Score: its Parses part comes from parse percentiles, not from this rating.
+   *  "Latest fight (Warden Kelthas, 9 Dec) rated 65 of 100 · 6 fights rated". The card draws
+   *  the three pieces as spans so a phone can break between them (fix round 2 item 7). */
+  verdictLead: (fight: { encounter: string | null; date: string | null } | null): string => {
+    const named = [fight?.encounter ?? null, fight?.date ?? null].filter((part) => part !== null);
+    return named.length === 0 ? 'Latest fight' : `Latest fight (${named.join(', ')})`;
+  },
+  verdictRated: (overall: number): string => `rated ${overall} of 100`,
+  verdictCount: (count: number): string => `${count} ${count === 1 ? 'fight' : 'fights'} rated`,
+  verdictSeparator: ' · ',
+  verdict: (
+    overall: number,
+    count: number,
+    fight: { encounter: string | null; date: string | null } | null = null,
+  ): string =>
+    `${ratingCopy.verdictLead(fight)} ${ratingCopy.verdictRated(overall)}${ratingCopy.verdictSeparator}${ratingCopy.verdictCount(count)}`,
+  /** Under that line (fix round 2 item 2), so a parse and the rating are not read as one. */
+  parseVsRating: 'A parse is your rank against other players; the rating is how well the fight was played.',
   /** The trend sparkline's accessible name and its table (L8.5 ruling 1). */
   trendLabel: (count: number, first: number, firstDate: string, last: number, lastDate: string): string =>
     `Performance Rating, last ${count} fights: ${first} on ${firstDate}, ${last} on ${lastDate}`,

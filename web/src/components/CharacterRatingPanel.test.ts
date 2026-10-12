@@ -236,7 +236,7 @@ describe('CharacterRatingPanel Forever Score card', () => {
 
   it('breaks Experience down under its bar at 12px: "14 dungeons · 0 raid bosses · 2 alts"', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
-    expect(body).toMatch(/class="[^"]*text-\[12px\]"[^>]*data-testid="forever-score-experience-detail"/);
+    expect(body).toMatch(/class="[^"]*text-\[12px\][^"]*"[^>]*data-testid="forever-score-experience-detail"/);
     expect(body).toContain('14 dungeons · 0 raid bosses · 2 alts');
   });
 
@@ -507,10 +507,10 @@ describe('CharacterRatingPanel Forever Score card', () => {
   // (api/openapi.yaml ForeverScore.components.experience: "25 a distinct dungeon cleared + 40 a
   // distinct raid boss killed across linked characters, capped at 700"), so 620 with 0 raid
   // bosses reads as intended.
-  it('notes under Experience what counts: dungeon and raid kills, alts included (L8.5 ruling 2)', () => {
-    expect(scoreCopy.experienceCounts).toBe(
-      'Counts dungeon and raid kills, alts included: 25 a different dungeon, 40 a different raid boss, up to 700.',
-    );
+  // Fix round 2 items 4 and 6: one line, "points" named: "25 points a dungeon, 40 a raid boss,
+  // up to 700."; on a phone it takes the row's whole width so it stays one line.
+  it('notes under Experience what counts, on one line (L8.5 ruling 2, fix round 2 items 4 and 6)', () => {
+    expect(scoreCopy.experienceCounts).toBe('25 points a dungeon, 40 a raid boss, up to 700.');
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
     const row = /<li[^>]*data-testid="forever-score-experience"[\s\S]*?<\/li>/.exec(body)?.[0] ?? '';
     const note = /<span class="([^"]*)" data-testid="forever-score-experience-note">([^<]*)<\/span>/.exec(
@@ -518,7 +518,14 @@ describe('CharacterRatingPanel Forever Score card', () => {
     );
     expect(note?.[2]).toBe(scoreCopy.experienceCounts);
     expect(note?.[1].split(' ')).toEqual(
-      expect.arrayContaining(['text-muted', 'text-[12px]', 'col-span-3', 'col-start-2']),
+      expect.arrayContaining([
+        'text-muted',
+        'text-[12px]',
+        'col-span-3',
+        'col-start-2',
+        'max-md:col-span-full',
+        'max-md:col-start-1',
+      ]),
     );
     expect(row.indexOf('forever-score-experience-detail')).toBeLessThan(
       row.indexOf('forever-score-experience-note'),
@@ -548,6 +555,33 @@ describe('CharacterRatingPanel Forever Score card', () => {
     expect(
       /<li class="([^"]*)"[^>]*data-testid="forever-score-empty-gear"/.exec(empty)?.[1].split(' '),
     ).toContain('max-[400px]:grid-cols-[80px_minmax(0,1fr)_56px_60px]');
+  });
+
+  // Fix round 2 item 8: below 340px the row drops its cue column and the "+88 pts" cue moves
+  // under the Gear label (the "Most to gain" line already says it), so the track gets those
+  // 60px back; an unmarked row's empty cue cell goes, and the Experience breakdown spans the two
+  // columns after the label.
+  it('moves the cue under the label below 340px, giving the track its column (fix round 2 item 8)', () => {
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
+    const gear = /<li class="([^"]*)"[^>]*data-testid="forever-score-gear"[\s\S]*?<\/li>/.exec(body);
+    expect(gear?.[1].split(' ')).toContain('max-[340px]:grid-cols-[80px_minmax(0,1fr)_56px]');
+    const cue = /<span class="([^"]*)"[^>]*data-testid="forever-score-gain-cue"/.exec(gear?.[0] ?? '');
+    expect(cue?.[1].split(' ')).toEqual(
+      expect.arrayContaining(['max-[340px]:col-start-1', 'max-[340px]:row-start-2', 'max-[340px]:text-left']),
+    );
+    const parses = /<li[^>]*data-testid="forever-score-parses"[\s\S]*?<\/li>/.exec(body)?.[0] ?? '';
+    const cells = [...parses.matchAll(/<span class="([^"]*)"[^>]*>/g)].map((m) => m[1].split(' '));
+    expect(cells.at(-1)).toContain('max-[340px]:hidden');
+    const experience = /<li[^>]*data-testid="forever-score-experience"[\s\S]*?<\/li>/.exec(body)?.[0] ?? '';
+    expect(
+      /<span class="([^"]*)" data-testid="forever-score-experience-detail"/.exec(experience)?.[1].split(' '),
+    ).toContain('max-[340px]:col-span-2');
+    const empty = render(CharacterRatingPanel, { props: { path: PATH, forever: UNSCORED } }).body;
+    const emptyGear = /<li class="([^"]*)"[^>]*data-testid="forever-score-empty-gear"[\s\S]*?<\/li>/.exec(
+      empty,
+    );
+    expect(emptyGear?.[1].split(' ')).toContain('max-[340px]:grid-cols-[80px_minmax(0,1fr)_56px]');
+    expect(emptyGear?.[0]).toMatch(/<span class="max-\[340px\]:hidden"><\/span>/);
   });
 
   // L8.5 ruling 3: the no-logs card is capped at 720px, so on a desktop its button and "What the

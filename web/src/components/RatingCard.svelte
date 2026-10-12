@@ -25,6 +25,7 @@
     sampleSize,
     worst = '',
     weakestHref = null,
+    latestFight = null,
     sample = false,
     columns = true,
   }: {
@@ -37,6 +38,9 @@
     worst?: string;
     /** The weakest part's fight's row ("#fight-<report>-<n>"), or null for no link. */
     weakestHref?: string | null;
+    /** The latest rated fight's encounter and "9 Dec" date, named in the line (fix round 2
+     *  item 1); null names no fight. */
+    latestFight?: { encounter: string | null; date: string | null } | null;
     sample?: boolean;
     /** Two columns from 1280; false keeps one column for a narrow container. */
     columns?: boolean;
@@ -63,7 +67,7 @@
     })),
   );
   const line = $derived(ratingSparkline(trend));
-  const verdict = $derived(overall === null ? null : ratingCopy.verdict(Math.round(overall), sampleSize));
+  const rated = $derived(overall === null ? null : Math.round(overall));
 </script>
 
 <div class={CARD} data-testid="rating-card">
@@ -97,8 +101,19 @@
           {#if sample}<span class="pill pill-sample ml-auto">{scoreCopy.samplePill}</span>{/if}
         </div>
       {/if}
-      {#if verdict !== null}
-        <p class="text-[14px] leading-[22px]" data-testid="rating-card-verdict">{verdict}</p>
+      {#if rated !== null}
+        <!-- Fix round 2 item 7: three spans; "rated 65 of 100" never breaks inside, so a long
+             fight name breaks before "rated"; under 360px the dot goes and "6 fights rated" takes
+             a line of its own. -->
+        <p class="text-[14px] leading-[22px]" data-testid="rating-card-verdict">
+          <span class="text-text">{ratingCopy.verdictLead(latestFight)}</span>
+          <span class="whitespace-nowrap">{ratingCopy.verdictRated(rated)}</span><span
+            class="max-[360px]:hidden">{ratingCopy.verdictSeparator}</span
+          ><span class="whitespace-nowrap max-[360px]:block">{ratingCopy.verdictCount(sampleSize)}</span>
+        </p>
+        <p class="text-muted text-[12px]" data-testid="rating-card-parse-vs-rating">
+          {ratingCopy.parseVsRating}
+        </p>
       {/if}
     </div>
     <div class="flex flex-col gap-1" data-testid="rating-card-side">

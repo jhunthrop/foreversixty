@@ -9,6 +9,7 @@ import {
   characterTableCopy,
   executionCellClass,
   fightRowId,
+  latestRatedFight,
   newestBuild,
   newestSpec,
   profileHeader,
@@ -132,7 +133,12 @@ describe('the fight tables (fix round 2 item 6)', () => {
   });
 
   it('names the columns Boss, Spec, Parse %, Date, Execution', () => {
-    const { executionDefinition: _definition, executionUnscored: _unscored, ...columns } = characterTableCopy;
+    const {
+      executionDefinition: _definition,
+      executionUnscored: _unscored,
+      ratedNote: _rated,
+      ...columns
+    } = characterTableCopy;
     expect(Object.values(columns)).toEqual(['Boss', 'Spec', 'Parse %', 'Date', 'Execution']);
   });
 });
@@ -373,5 +379,27 @@ describe('the weakest part’s fight (L8.5 ruling 1)', () => {
     expect(weakestFightHref(TREND, HISTORY.slice(1))).toBeNull();
     expect(weakestFightHref([], HISTORY)).toBeNull();
     expect(weakestFightHref(TREND, [])).toBeNull();
+  });
+
+  // Fix round 2 items 1 and 3: the latest rated fight named for the rating card's line (its
+  // encounter from "Every ranked fight", its day-month date from the trend) and matched to its
+  // row by report and fight index. The rating endpoint's `latest` card carries neither, so it is
+  // the trend's newest point -- the card `latest` is built from.
+  it('names the latest rated fight: encounter, "9 Dec", and its row (fix round 2 items 1 and 3)', () => {
+    expect(latestRatedFight(TREND, HISTORY)).toEqual({
+      report_id: 'fixture2abcd',
+      fight_index: 3,
+      encounter: 'Warden Kelthas',
+      date: '9 Dec',
+      rowId: 'fight-fixture2abcd-3',
+    });
+    expect(latestRatedFight(TREND, HISTORY.slice(1))).toEqual({
+      report_id: 'fixture2abcd',
+      fight_index: 3,
+      encounter: null,
+      date: '9 Dec',
+      rowId: null,
+    });
+    expect(latestRatedFight([], HISTORY)).toBeNull();
   });
 });

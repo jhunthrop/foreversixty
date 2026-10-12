@@ -148,10 +148,56 @@ describe('CharacterFightTable', () => {
     }).body;
     const ids = [...withIds.matchAll(/<li class="([^"]*)" id="([^"]*)"/g)];
     expect(ids.map((match) => match[2])).toEqual(['fight-r1-1', 'fight-r1-2']);
-    // Scrolled to with room above it, and marked while it is the address's target.
+    // Fix round 2 items 3 and 5: scrolled to 96px under the window's top, and marked while it is
+    // the address's target with a 2px gold left edge and a gold tint over the page's ground,
+    // eased in over 120ms.
     for (const match of ids) {
-      expect(match[1].split(' ')).toEqual(expect.arrayContaining(['scroll-mt-4', 'target:bg-raised']));
+      expect(match[1].split(' ')).toEqual(
+        expect.arrayContaining([
+          'scroll-mt-24',
+          'target:shadow-[inset_2px_0_0_var(--color-gold)]',
+          'target:bg-[rgba(229,185,85,.08)]',
+          'transition-[background-color,box-shadow]',
+          'duration-[120ms]',
+        ]),
+      );
+      expect(match[1].split(' ')).not.toContain('target:bg-raised');
     }
     expect(table()).not.toMatch(/<li[^>]* id="/);
+  });
+
+  // Fix round 2 item 3: the latest rated fight's row carries its rating, a muted "rated 65"
+  // right-aligned under its parse; no other row does.
+  it('marks the latest rated fight’s row with "rated 65" under its parse (fix round 2 item 3)', () => {
+    expect(characterTableCopy.ratedNote(65)).toBe('rated 65');
+    const body = render(CharacterFightTable, {
+      props: {
+        title: 'Every ranked fight',
+        rows: [row(1, 0.94), row(2, null)],
+        testid: 'character-history',
+        bossHref: () => '/reports/r1',
+        rowKey: (fight: CharacterFight) => String(fight.fight_index),
+        executionTestid: 'character-execution',
+        rowId: fightRowId,
+        rated: { report_id: 'r1', fight_index: 2, overall: 64.6 },
+      },
+    }).body;
+    const rows = [...body.matchAll(/<li class="[^"]*" id="([^"]*)"[^>]*>([\s\S]*?)<\/li>/g)];
+    expect(rows.map((match) => match[1])).toEqual(['fight-r1-1', 'fight-r1-2']);
+    expect(rows[0][2]).not.toContain('character-fight-rated');
+    const note = /<span class="([^"]*)" data-testid="character-fight-rated">([^<]*)<\/span>/.exec(rows[1][2]);
+    expect(note?.[2]).toBe('rated 65');
+    expect(note?.[1].split(' ')).toEqual(
+      expect.arrayContaining([
+        'text-muted',
+        'text-[12px]',
+        'text-right',
+        'col-span-2',
+        'col-start-1',
+        'md:col-span-3',
+      ]),
+    );
+    // Without a rated fight, no note anywhere.
+    expect(table()).not.toContain('character-fight-rated');
   });
 });

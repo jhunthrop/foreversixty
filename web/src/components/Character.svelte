@@ -103,6 +103,9 @@
    *  same cached /v1/me every island on the page shares. */
   let own = $state<MeCharacter | null>(null);
   let owned = $state(false);
+  /** The latest rated fight and its rating, from the rating panel once it loads (L8.5 fix round
+   *  2 item 3): "Every ranked fight" marks that row "rated 65". */
+  let rated = $state<{ report_id: string; fight_index: number; overall: number } | null>(null);
 
   $effect(() => {
     const requested = resolved;
@@ -206,6 +209,7 @@
       {owned}
       name={data.character.name}
       fights={data.history}
+      onrated={(next) => (rated = next)}
     />
 
     <CharacterInGame
@@ -242,6 +246,7 @@
         rowKey={(row: CharacterFight, index: number) => `${row.report_id}-${row.fight_index}-${index}`}
         executionTestid="character-execution"
         rowId={fightRowId}
+        {rated}
       />
     {/if}
 

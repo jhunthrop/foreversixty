@@ -142,9 +142,16 @@ test.describe('the rating card at 1440 (L8.5 ruling 1)', () => {
     page,
   }) => {
     await open(page);
+    // Fix round 2 item 1: it names the fight, from "Every ranked fight" and the trend.
     await expect(page.getByTestId('rating-card-verdict')).toHaveText(
-      'Latest fight rated 65 of 100 · 6 fights rated',
+      'Latest fight (Warden Kelthas, 9 Dec) rated 65 of 100 · 6 fights rated',
     );
+    // Fix round 2 item 2: what a parse is next to what the rating is, muted under it.
+    const note = page.getByTestId('rating-card-parse-vs-rating');
+    await expect(note).toHaveText(
+      'A parse is your rank against other players; the rating is how well the fight was played.',
+    );
+    await expect(note).toHaveCSS('color', 'rgb(154, 148, 132)');
     await expect(page.getByTestId('rating-card')).not.toContainText('counts toward');
     await expect(page.getByTestId('rating-card')).not.toContainText('Parses');
   });
@@ -208,15 +215,25 @@ test('notes under Experience what counts, muted at 12px (L8.5 ruling 2)', async 
   );
   await expect(page.getByTestId('forever-score-experience')).toContainText('630 of 700');
   const note = page.getByTestId('forever-score-experience-note');
-  await expect(note).toHaveText(
-    'Counts dungeon and raid kills, alts included: 25 a different dungeon, 40 a different raid boss, up to 700.',
-  );
+  // Fix round 2 items 4 and 6: "points" named, on one line.
+  await expect(note).toHaveText('25 points a dungeon, 40 a raid boss, up to 700.');
   await expect(note).toBeVisible();
   await expect(note).toHaveCSS('font-size', '12px');
   await expect(note).toHaveCSS('color', 'rgb(154, 148, 132)');
   const detail = await page.getByTestId('forever-score-experience-detail').boundingBox();
   const box = await note.boundingBox();
   expect(box?.y ?? 0).toBeGreaterThanOrEqual((detail?.y ?? 0) + (detail?.height ?? 0) - 0.5);
+  expect(box?.height ?? 99).toBeLessThan(20);
+});
+
+test.describe('the Experience note on a 390px phone (fix round 2 item 6)', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('stays on one line', async ({ page }) => {
+    await open(page);
+    const box = await page.getByTestId('forever-score-experience-note').boundingBox();
+    expect(box?.height ?? 99).toBeLessThan(20);
+  });
 });
 
 test.describe('the 404 page at 1440 (L8.5 ruling 3)', () => {
@@ -278,7 +295,6 @@ test('the guild link’s 2px-offset focus ring leaves the dots either side clear
 for (const [width, track] of [
   [390, { min: 60 }],
   [360, { min: 60 }],
-  [320, { min: 30, max: 34 }],
 ] as const) {
   test.describe(`the score parts at ${width} (L8.5 ruling 4)`, () => {
     test.use({ viewport: { width, height: 844 } });
@@ -310,7 +326,6 @@ for (const [width, track] of [
       });
       expect(row.cells[0].width).toBe(80);
       expect(row.cells[1].width).toBeGreaterThanOrEqual(track.min);
-      if ('max' in track) expect(row.cells[1].width).toBeLessThanOrEqual(track.max);
       // "412/500" sits inside its 56px cell, on one line.
       expect(row.value.width).toBeLessThanOrEqual(row.cells[2].width + 0.5);
       expect(row.value.left).toBeGreaterThanOrEqual(row.cells[2].left - 0.5);
@@ -369,3 +384,95 @@ test.describe('the /ratings sample at 1440 (fix round 1 item 5)', () => {
     expect(Math.abs(boxes.sideLeft - boxes.mainLeft)).toBeLessThan(1);
   });
 });
+
+// Fix round 2 item 8: below 340px the cue moves under the Gear label and the track takes its
+// 60px column back (about 100px at 320, was about 32).
+test.describe('the score parts at 320 (fix round 2 item 8)', () => {
+  test.use({ viewport: { width: 320, height: 568 } });
+
+  test('put "+88 pts" under the Gear label and give the track its column', async ({ page }) => {
+    await open(page);
+    const gear = page.getByTestId('forever-score-gear');
+    await expect(gear.getByText('412/500', { exact: true })).toBeVisible();
+    const cue = page.getByTestId('forever-score-gain-cue');
+    await expect(cue).toHaveText('+88 pts');
+    const row = await gear.evaluate((element) => {
+      const cells = [...element.children].slice(0, 4) as HTMLElement[];
+      const r = (cell: Element) => {
+        const b = cell.getBoundingClientRect();
+        return { left: b.left, right: b.right, top: b.top, bottom: b.bottom, width: b.width };
+      };
+      const range = document.createRange();
+      range.selectNodeContents(cells[3]);
+      const text = range.getBoundingClientRect();
+      return {
+        label: r(cells[0]),
+        track: r(cells[1]),
+        value: r(cells[2]),
+        cue: r(cells[3]),
+        cueText: text.width,
+      };
+    });
+    expect(row.label.width).toBe(80);
+    expect(row.track.width).toBeGreaterThanOrEqual(90);
+    expect(row.cue.top).toBeGreaterThanOrEqual(row.label.bottom - 0.5);
+    expect(Math.abs(row.cue.left - row.label.left)).toBeLessThan(1);
+    expect(row.cueText).toBeLessThanOrEqual(row.cue.width + 0.5);
+    expect(row.value.right).toBeLessThanOrEqual(row.track.right + 8 + 56 + 0.5);
+    // An unmarked row has no second line.
+    const parses = await page.getByTestId('forever-score-parses').boundingBox();
+    expect(parses?.height ?? 99).toBeLessThan(25);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+  });
+
+  // Fix round 2 item 7: under 360px the line breaks at the dot.
+  test('breaks the rating line at the dot: "6 fights rated" on its own line', async ({ page }) => {
+    await open(page);
+    const verdict = page.getByTestId('rating-card-verdict');
+    const parts = await verdict.evaluate((element) =>
+      [...element.querySelectorAll('span')].map((span) => {
+        const b = span.getBoundingClientRect();
+        return { text: span.textContent, top: b.top, display: getComputedStyle(span).display };
+      }),
+    );
+    const rated = parts.find((part) => part.text === 'rated 65 of 100');
+    const count = parts.find((part) => part.text === '6 fights rated');
+    const dot = parts.find((part) => part.text?.trim() === '·');
+    expect(dot?.display).toBe('none');
+    expect(count?.display).toBe('block');
+    expect(count?.top ?? 0).toBeGreaterThan(rated?.top ?? 0);
+  });
+});
+
+// Fix round 2 items 3 and 5: the latest rated fight's row carries "rated 65" under its parse;
+// as the address's target it takes a 2px gold left edge and a gold tint, 96px under the top.
+for (const width of [1440, 390]) {
+  test.describe(`the weakest part’s row at ${width} (fix round 2 items 3 and 5)`, () => {
+    test.use({ viewport: { width, height: width === 1440 ? 900 : 844 } });
+
+    test('carries "rated 65" and, reached by Enter on the link, a gold left edge and tint', async ({
+      page,
+    }) => {
+      await open(page);
+      const row = page.getByTestId('character-history').locator('#fight-fixture2abcd-3');
+      await expect(row.getByTestId('character-fight-rated')).toHaveText('rated 65');
+      await expect(page.getByTestId('character-history').getByTestId('character-fight-rated')).toHaveCount(1);
+      const link = page.getByTestId('rating-card-weakest').getByRole('link', { name: 'Activity' });
+      await link.focus();
+      await page.keyboard.press('Enter');
+      await expect(page).toHaveURL(/#fight-fixture2abcd-3$/);
+      // Tailwind's shadow stack draws the edge as the last layer, the others transparent.
+      await expect(row).toHaveCSS('box-shadow', /(^|, )rgb\(229, 185, 85\) 2px 0px 0px 0px inset$/);
+      await expect(row).toHaveCSS('background-color', 'rgba(229, 185, 85, 0.08)');
+      await expect(row).toHaveCSS('scroll-margin-top', '96px');
+      await expect(row).toBeInViewport();
+      const top = await row.evaluate((element) => element.getBoundingClientRect().top);
+      expect(top).toBeGreaterThanOrEqual(95);
+      // The other row is not marked: no gold in its shadow, no tint.
+      const other = page.getByTestId('character-history').locator('#fight-otherreport1-1');
+      const otherShadow = await other.evaluate((element) => getComputedStyle(element).boxShadow);
+      expect(otherShadow).not.toContain('229, 185, 85');
+      await expect(other).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+    });
+  });
+}
