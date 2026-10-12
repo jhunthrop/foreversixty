@@ -42,7 +42,8 @@ func TestBandPicksAreTheBareEntryThroughTheUnconfirmedWalk(t *testing.T) {
 	}
 
 	// Band 20: the original pick keeps its drop chance; the unconfirmed two-hander gives way
-	// to Living Root, which carries none.
+	// to Living Root, which carries its own drop chance at its own source (loot.json's
+	// "Wailing Caverns: Verdan the Everliving", 40%), as L1.4's _drop_chances reads it.
 	low, err := BandPicks(t.Context(), picksBuild, "warrior-arms", 20, "alliance")
 	if err != nil {
 		t.Fatal(err)
@@ -52,8 +53,35 @@ func TestBandPicksAreTheBareEntryThroughTheUnconfirmedWalk(t *testing.T) {
 		t.Errorf("band 20 chest = %+v, want 6627 from Mutanus with chance 0.333333", chest)
 	}
 	mh := low["main_hand"]
-	if mh.ItemID != 6631 || mh.Name != "Living Root" || mh.Chance != nil || !mh.Promoted {
-		t.Errorf("band 20 main_hand = %+v, want Living Root (6631), promoted, no chance", mh)
+	if mh.ItemID != 6631 || mh.Name != "Living Root" || mh.Source != "Wailing Caverns: Verdan the Everliving" ||
+		mh.Chance == nil || *mh.Chance != 0.4 || !mh.Promoted {
+		t.Errorf("band 20 main_hand = %+v, want Living Root (6631), promoted, chance 0.4", mh)
+	}
+}
+
+// Fix round 1, item 1: the pair rule refuses the mate's item by id or name, unique or not,
+// and the band's own confirmed picks are fixed before any promotion is checked against them.
+func TestBandPicksNeverRepeatThePairMatesItem(t *testing.T) {
+	useRepoGearData(t)
+	// mage-fire 60 alliance: trinket1's own pick (Briarwood Reed) is unconfirmed and gives
+	// way to Weakness Analyzer; trinket2's own pick (Draconic Infused Emblem) is unconfirmed,
+	// and its next confirmed candidate is the same Weakness Analyzer (not unique), so it
+	// takes Darkmoon Card: Blue Dragon.
+	fire, err := BandPicks(t.Context(), picksBuild, "mage-fire", 60, "alliance")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fire["trinket1"].ItemID != 272438 || fire["trinket2"].ItemID != 19288 {
+		t.Errorf("mage-fire 60 alliance trinkets = %d, %d; want 272438, 19288", fire["trinket1"].ItemID, fire["trinket2"].ItemID)
+	}
+	// priest-holy 50 horde: both rings' own picks and their next two candidates are
+	// unconfirmed; Snake Hoop goes to finger1 and finger2 has nothing else.
+	holy, err := BandPicks(t.Context(), picksBuild, "priest-holy", 50, "horde")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if p, ok := holy["finger2"]; holy["finger1"].ItemID != 6750 || ok {
+		t.Errorf("priest-holy 50 horde rings = %d, %+v; want 6750 and no finger2 pick", holy["finger1"].ItemID, p)
 	}
 }
 
@@ -105,11 +133,16 @@ func TestNoRealBandPickBreaksTheBandWideRules(t *testing.T) {
 						t.Errorf("%s %s: %d is client-unconfirmed", where, slot, p.ItemID)
 					}
 				}
-				for second, first := range pairMates {
-					a, ok1 := picks[first]
-					z, ok2 := picks[second]
-					if it, _ := b.Item(classID, a.ItemID); ok1 && ok2 && a.ItemID == z.ItemID && it.Unique {
-						t.Errorf("%s: unique %d in both %s and %s", where, a.ItemID, first, second)
+				for _, pair := range [][2]string{{"finger1", "finger2"}, {"trinket1", "trinket2"}, {"main_hand", "off_hand"}} {
+					a, ok1 := picks[pair[0]]
+					z, ok2 := picks[pair[1]]
+					if !ok1 || !ok2 {
+						continue
+					}
+					ia, _ := b.Item(classID, a.ItemID)
+					iz, _ := b.Item(classID, z.ItemID)
+					if a.ItemID == z.ItemID || (ia.Name != "" && ia.Name == iz.Name) {
+						t.Errorf("%s: %d and %d (%q) in both %s and %s", where, a.ItemID, z.ItemID, ia.Name, pair[0], pair[1])
 					}
 				}
 				if mh, ok := picks["main_hand"]; ok {
@@ -129,38 +162,57 @@ func TestNoRealBandPickBreaksTheBandWideRules(t *testing.T) {
 
 func ptrInt(v int) *int { return &v }
 
-// The walk's rules on hand-built rows, so each one is pinned whatever the real data holds.
+// The walk's rules on hand-built rows, so each one is pinned whatever the real data holds:
+// L1.4's two phases (the band's confirmed own picks are fixed, then each other slot promotes
+// its first confirmed candidate the rules allow beside them), the pair rule by id or name,
+// and the two-hand rule (a promoted two-hander empties the off-hand, as leveling-bis's
+// confirmed.go does).
 func TestTheWalkKeepsTheBandWideRules(t *testing.T) {
 	items := map[int]trees.Item{
-		1: {ID: 1, Name: "Unique Ring", Unique: true},
-		2: {ID: 2, Name: "Plain Ring"},
-		3: {ID: 3, Name: "Second Ring"},
-		4: {ID: 4, Name: "Unconfirmed Axe", TwoHand: true, ClientUnconfirmed: true},
-		5: {ID: 5, Name: "Confirmed Greatsword", TwoHand: true},
-		6: {ID: 6, Name: "Buckler"},
-		7: {ID: 7, Name: "Unconfirmed Cloak", ClientUnconfirmed: true},
+		1:  {ID: 1, Name: "Plain Ring"},
+		2:  {ID: 2, Name: "Plain Ring"}, // the same item under another id
+		3:  {ID: 3, Name: "Second Ring"},
+		4:  {ID: 4, Name: "Unconfirmed Ring", ClientUnconfirmed: true},
+		5:  {ID: 5, Name: "Unconfirmed Axe", TwoHand: true, ClientUnconfirmed: true},
+		6:  {ID: 6, Name: "Confirmed Greatsword", TwoHand: true},
+		7:  {ID: 7, Name: "Buckler"},
+		8:  {ID: 8, Name: "Unconfirmed Cloak", ClientUnconfirmed: true},
+		9:  {ID: 9, Name: "Plain Trinket"},
+		10: {ID: 10, Name: "Unconfirmed Trinket", ClientUnconfirmed: true},
+		11: {ID: 11, Name: "Other Trinket"},
 	}
 	lookup := func(id int) (trees.Item, bool) { it, ok := items[id]; return it, ok }
 	chance := 0.25
+	dropped := 0.05
+	chances := func(id int, source string) *float64 {
+		if id == 11 && source == "Boss: Drop" {
+			return &dropped
+		}
+		return nil
+	}
 	rows := []bisRow{
-		{Slot: "finger1", ItemID: ptrInt(1), Source: "A", Chance: &chance},
-		// finger2's own pick is finger1's unique ring: the next candidate takes it.
-		{Slot: "finger2", ItemID: ptrInt(1), Source: "A", Chance: &chance,
-			RunnersUp: &[]bisCandidate{{ItemID: 3, Source: "C"}}},
-		// The same plain ring in both trinket slots is allowed (not unique).
-		{Slot: "trinket1", ItemID: ptrInt(2), Source: "B"},
-		{Slot: "trinket2", ItemID: ptrInt(2), Source: "B"},
+		// finger1's own pick is unconfirmed; its first confirmed candidate is finger2's own
+		// (confirmed, so already fixed) Plain Ring under another id: refused by name.
+		{Slot: "finger1", ItemID: ptrInt(4), Source: "A", Chance: &chance,
+			RunnersUp: &[]bisCandidate{{ItemID: 1, Source: "B"}, {ItemID: 3, Source: "C"}}},
+		{Slot: "finger2", ItemID: ptrInt(2), Source: "B"},
+		// trinket2's own pick is unconfirmed; its runner-up is trinket1's plain (not unique)
+		// trinket: refused by id; the next one carries its own drop chance.
+		{Slot: "trinket1", ItemID: ptrInt(9), Source: "D"},
+		{Slot: "trinket2", ItemID: ptrInt(10), Source: "E", Chance: &chance,
+			RunnersUp: &[]bisCandidate{{ItemID: 9, Source: "D"}, {ItemID: 11, Source: "Boss: Drop"}}},
 		// The unconfirmed two-hander gives way to a confirmed two-hander (from the
-		// alternatives: an older file with no runners_up), so the off-hand pick goes.
-		{Slot: "main_hand", ItemID: ptrInt(4), Source: "D",
-			Alternatives: []bisCandidate{{ItemID: 5, ItemName: "Greatsword", Source: "E"}}},
-		{Slot: "off_hand", ItemID: ptrInt(6), Source: "F"},
+		// alternatives: an older file with no runners_up), and the off-hand's own confirmed
+		// pick goes with it.
+		{Slot: "main_hand", ItemID: ptrInt(5), Source: "F",
+			Alternatives: []bisCandidate{{ItemID: 6, ItemName: "Greatsword", Source: "G"}}},
+		{Slot: "off_hand", ItemID: ptrInt(7), Source: "H"},
 		// Every candidate unconfirmed: no pick.
-		{Slot: "back", ItemID: ptrInt(7), Source: "G", RunnersUp: &[]bisCandidate{}},
+		{Slot: "back", ItemID: ptrInt(8), Source: "I", RunnersUp: &[]bisCandidate{}},
 		// No item_id: nothing eligible at the band.
 		{Slot: "neck"},
 	}
-	picks := walkBand(rows, lookup)
+	picks := walkBand(rows, lookup, chances)
 	var slots []string
 	for s := range picks {
 		slots = append(slots, s)
@@ -169,16 +221,16 @@ func TestTheWalkKeepsTheBandWideRules(t *testing.T) {
 	if got := strings.Join(slots, ","); got != "finger1,finger2,main_hand,trinket1,trinket2" {
 		t.Fatalf("picked slots = %s, want finger1,finger2,main_hand,trinket1,trinket2", got)
 	}
-	if p := picks["finger1"]; p.ItemID != 1 || p.Chance == nil || *p.Chance != 0.25 || p.Promoted {
-		t.Errorf("finger1 = %+v, want the unique ring with its chance", p)
+	if p := picks["finger1"]; p.ItemID != 3 || p.Source != "C" || p.Chance != nil || !p.Promoted {
+		t.Errorf("finger1 = %+v, want the second ring, promoted, no chance", p)
 	}
-	if p := picks["finger2"]; p.ItemID != 3 || p.Source != "C" || p.Chance != nil || !p.Promoted {
-		t.Errorf("finger2 = %+v, want the second ring, promoted, no chance", p)
+	if p := picks["finger2"]; p.ItemID != 2 || p.Promoted {
+		t.Errorf("finger2 = %+v, want its own Plain Ring, fixed first", p)
 	}
-	if picks["trinket2"].ItemID != 2 {
-		t.Errorf("trinket2 = %+v, want the plain ring again", picks["trinket2"])
+	if p := picks["trinket2"]; p.ItemID != 11 || p.Chance == nil || *p.Chance != 0.05 || !p.Promoted {
+		t.Errorf("trinket2 = %+v, want the other trinket with its own 5%% chance", p)
 	}
-	if p := picks["main_hand"]; p.ItemID != 5 || p.Name != "Confirmed Greatsword" || p.Source != "E" || !p.Promoted {
+	if p := picks["main_hand"]; p.ItemID != 6 || p.Name != "Confirmed Greatsword" || p.Source != "G" || !p.Promoted {
 		t.Errorf("main_hand = %+v, want the confirmed greatsword, named from the tables", p)
 	}
 }

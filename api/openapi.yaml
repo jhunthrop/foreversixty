@@ -318,12 +318,7 @@ components:
         report_id: { type: string }
         fight_index: { type: integer }
         state: { type: string, enum: [ok, at_risk, removed] }
-        execution_score:
-          type: number
-          nullable: true
-          description: >-
-            The fight's damage as a share of what the same gear and talents do in the
-            simulator (schema ExecutionScore, which gives every null rule).
+        execution_score: { $ref: '#/components/schemas/ExecutionScore' }
     GearSlotName:
       type: string
       enum: [head, neck, shoulder, back, chest, wrist, hands, waist, legs, feet,
@@ -883,14 +878,17 @@ components:
           type: object
           nullable: true
           description: >-
-            The band's best-in-slot pick for the spec and the character's faction (from its
-            race), as the Forever Sixty Data addon ships it: the leveling-bis ladder's pick for
-            the band without raid buffs, except that an item whose stats the client has not
-            confirmed is never a pick (the next candidate in the ladder's order takes its place),
-            the second ring or trinket is never the unique item the first already is, and there
-            is no off-hand pick beside a two-handed main-hand pick. Null when the band has no
-            pick for the slot, the character has no rated spec or is below level 20, or its
-            faction or the spec's best-in-slot data is unknown.
+            The band's best-in-slot pick for the spec and the character's faction (from the
+            export's race, else the faction the Battle.net import stored), as the Forever Sixty
+            Data addon ships it: the leveling-bis ladder's pick for the band without raid buffs,
+            except that an item whose stats the client has not confirmed is never a pick. Every
+            slot whose own pick is confirmed keeps it; each other slot takes the next confirmed
+            candidate in the ladder's order that the band's rules allow beside them: the two
+            slots of a pair (the rings, the trinkets, the two hands) never hold the same item
+            (the same id or the same name), and there is no off-hand pick beside a two-handed
+            main-hand pick. Null when the band has no pick for the slot, the character has no
+            rated spec or is below level 20, or its faction or the spec's best-in-slot data is
+            unknown.
           required: [id, name, source, chance]
           properties:
             id: { type: integer }
@@ -904,10 +902,11 @@ components:
               type: number
               nullable: true
               description: >-
-                The drop chance as a fraction (0.333333 is one in three). Null when the source
-                states no rate (every quest, vendor, crafted, reputation and PvP source, and a drop
-                whose loot table gives none) and when the pick took the place of an item the
-                client has not confirmed.
+                The drop chance as a fraction (0.333333 is one in three), at the pick's own
+                source; a pick promoted past an item the client has not confirmed carries the
+                chance of its own source. Null when the source states no rate (every
+                quest, vendor, crafted, reputation and PvP source, and a drop whose loot table
+                gives none).
         gap:
           type: number
           nullable: true
@@ -915,9 +914,15 @@ components:
             The Gear component points the pick would add over the worn item, one decimal: 500 x
             (the pick's gear score - the worn item's gear score) / the band's best set's gear
             score, each item scored by the spec's stat weights as the Gear component scores it.
-            An empty slot scores 0. 0 when the worn item is the pick or scores at least as much.
-            Null when there is no pick, when either item is not in the data build, or when the
-            band's best set cannot be scored.
+            An empty slot scores 0. 0 when the worn item is the pick or scores at least as much;
+            an upgrade worth under 0.05 points also rounds to 0. The rings and the trinkets are
+            matched to their picks whichever way round gives the smaller total, so a pick worn
+            in the other slot of its pair reads 0. When the picked or the worn main hand is
+            two-handed, the two hands count as one unit: the main hand's gap is the picked main
+            and off hands' score less the worn main and off hands' score (0 at least), and the
+            off hand's gap is 0, or null when the band has no off-hand pick. Null when there is
+            no pick, when an item is not in the data build, or when the band's best set cannot
+            be scored.
     ExecutionScore:
       type: number
       nullable: true
@@ -925,9 +930,11 @@ components:
         execution_score on ranking rows and on a character's best and history rows: the
         fight's damage as a share of what the same gear and talents do in the simulator over
         the same fight length (1 is the simulator's average; a lucky pull can pass it, and the
-        stored value is kept between 0 and 2). Damage only: null for healers and tanks, for a
-        spec the simulator has not validated, and for a fight whose character the simulator
-        could not rebuild from the log.
+        stored value is kept between 0 and 2). Damage only. Null while the fight has not been
+        simulated yet (the score is written after the fight closes, or by the nightly job), and
+        null for good for healers and tanks, for a spec the simulator has not validated, for a
+        fight whose summary has no row for the player, for a fight whose character the
+        simulator could not rebuild from the log, and when the simulation produced no damage.
     ForeverScore:
       type: object
       description: >-

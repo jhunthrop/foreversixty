@@ -31,9 +31,10 @@ type Service struct {
 	// Scores adds the Forever Score to the character page; nil, or a failed read, leaves it
 	// null.
 	Scores Scorer
-	// Gear adds the gear panel to the character page; nil, or a failed read, leaves it [] and
-	// its total null.
-	Gear GearReader
+	// ScoreGear adds the Forever Score and the gear panel to the character page in one read,
+	// in place of Scores when it is set; nil leaves the panel [] and its total null, and a
+	// failed read leaves the score null.
+	ScoreGear ScoreGearReader
 }
 
 // Scorer reads a character's Forever Score by character key. rating.Service is the one
@@ -311,25 +312,26 @@ func (s *Service) character(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character", nil)
 		return
 	}
-	if s.Scores != nil {
-		// A score that cannot be read is logged and left null; the rest of the page still
-		// renders.
-		score, err := s.Scores.ForeverScore(r.Context(), c.Character.Key)
+	// A score that cannot be read is logged and left null; the rest of the page still renders.
+	switch {
+	case s.ScoreGear != nil:
+		score, gear, err := s.ScoreGear.ScoreAndGear(r.Context(), c.Character.Key)
 		if err != nil {
 			s.logger().Error("rankings", "id", httpx.RequestIDFrom(r.Context()), "op", "forever_score",
 				"character", c.Character.Key, "err", err)
 		} else {
 			c.ForeverScore = score
 		}
-	}
-	if s.Gear != nil {
-		// Like the score: a gear panel that cannot be read is logged and left empty.
-		gear, err := s.Gear.CharacterGear(r.Context(), c.Character.Key)
-		if err != nil {
-			s.logger().Error("rankings", "id", httpx.RequestIDFrom(r.Context()), "op", "character_gear",
-				"character", c.Character.Key, "err", err)
-		} else if gear.Slots != nil {
+		if gear.Slots != nil {
 			c.Gear, c.GearGapTotal = gear.Slots, gear.GapTotal
+		}
+	case s.Scores != nil:
+		score, err := s.Scores.ForeverScore(r.Context(), c.Character.Key)
+		if err != nil {
+			s.logger().Error("rankings", "id", httpx.RequestIDFrom(r.Context()), "op", "forever_score",
+				"character", c.Character.Key, "err", err)
+		} else {
+			c.ForeverScore = score
 		}
 	}
 	cache(w)

@@ -180,16 +180,68 @@ type ScoreV2 struct {
 // docs/superpowers/specs/2026-09-21-performance-rating-design.md §5.1); experience and
 // attendance count every report that is not private, since they publish only counts.
 func (s *Store) ScoreV2(ctx context.Context, characterKey string) (ScoreV2, error) {
-	fights, err := s.ratedFights(ctx, characterKey)
-	if err != nil {
+	var in characterInputs
+	var err error
+	if in.fights, err = s.ratedFights(ctx, characterKey); err != nil {
 		return ScoreV2{}, err
 	}
+	if in.fights.count == 0 {
+		return ScoreV2{}, ErrNoLogs
+	}
+	if err := s.readExport(ctx, characterKey, &in); err != nil {
+		return ScoreV2{}, err
+	}
+	return s.scoreV2(ctx, characterKey, in)
+}
+
+// characterInputs is what the Forever Score and the character page's gear panel both read
+// about one character: its rated fights, its stored addon export and its characters.faction.
+// The character page reads them once for both (Service.ScoreAndGear).
+type characterInputs struct {
+	fights    ratedFightSummary
+	export    string
+	hasExport bool
+	// faction is characters.faction (the Battle.net import's), "" when unknown.
+	faction string
+}
+
+// characterInputs reads key's rated fights and its export: one query each.
+func (s *Store) characterInputs(ctx context.Context, key string) (characterInputs, error) {
+	var in characterInputs
+	var err error
+	if in.fights, err = s.ratedFights(ctx, key); err != nil {
+		return in, err
+	}
+	return in, s.readExport(ctx, key, &in)
+}
+
+// readExport fills in's export and faction in one query.
+func (s *Store) readExport(ctx context.Context, key string, in *characterInputs) error {
+	var export, faction *string
+	err := s.Pool.QueryRow(ctx,
+		`select (select export from addon_exports where character_key = $1),
+		        (select faction from characters where key = $1)`, key).Scan(&export, &faction)
+	if err != nil {
+		return fmt.Errorf("rating: export of %s: %w", key, err)
+	}
+	if export != nil {
+		in.export, in.hasExport = *export, true
+	}
+	if faction != nil {
+		in.faction = *faction
+	}
+	return nil
+}
+
+// scoreV2 is ScoreV2 over inputs already read.
+func (s *Store) scoreV2(ctx context.Context, characterKey string, in characterInputs) (ScoreV2, error) {
+	fights := in.fights
 	if fights.count == 0 {
 		return ScoreV2{}, ErrNoLogs
 	}
 	out := ScoreV2{AsOf: fights.newest, Spec: fights.spec, Fights: fights.count}
 
-	raw, full, err := s.gearScore(ctx, characterKey, fights.spec)
+	raw, full, err := s.gearScore(ctx, characterKey, fights.spec, in)
 	if err != nil {
 		return ScoreV2{}, err
 	}
@@ -281,18 +333,11 @@ func (s *Store) ratedFights(ctx context.Context, key string) (ratedFightSummary,
 // spec is no gear (0, 0). Gear the loaded data cannot score - an unknown spec, build or
 // class, or a spec with no best-in-slot set - is also no gear, with one log line naming
 // the spec, rather than an error: the other four components still stand.
-func (s *Store) gearScore(ctx context.Context, key, spec string) (raw, full float64, err error) {
-	if spec == "" {
+func (s *Store) gearScore(ctx context.Context, key, spec string, in characterInputs) (raw, full float64, err error) {
+	if spec == "" || !in.hasExport {
 		return 0, 0, nil
 	}
-	var export string
-	err = s.Pool.QueryRow(ctx, `select export from addon_exports where character_key = $1`, key).Scan(&export)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return 0, 0, nil
-	}
-	if err != nil {
-		return 0, 0, fmt.Errorf("rating: export of %s: %w", key, err)
-	}
+	export := in.export
 	decoded, ok := fs1.Decode(export)
 	if !ok {
 		s.logger().Warn("rating", "op", "gear", "character", key, "spec", spec,
@@ -326,7 +371,7 @@ func (s *Store) gearScore(ctx context.Context, key, spec string) (raw, full floa
 
 // gearLevel is the level an export is measured at: its level= section, else 60 (an export
 // from an addon older than that section, measured against the level-60 set as every export
-// was before the band rule). The gear component and the gear panel (CharacterGear) share it,
+// was before the band rule). The gear component and the gear panel (characterGear) share it,
 // so both read the same band.
 func gearLevel(decoded fs1.Decoded) int {
 	if decoded.HasLevel {

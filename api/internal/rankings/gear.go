@@ -7,7 +7,7 @@ import (
 
 // The character page's gear panel (Task L6.7): what the character wears in each of the 17
 // export slots, the band's pick for that slot, and the score points the pick would add. The
-// rows are computed by api/internal/rating (rating.Store.CharacterGear), where the Gear
+// rows are computed by api/internal/rating (rating.Service.ScoreAndGear), where the Gear
 // component's scale lives; this package carries them and owns the one sum, GearGapTotal.
 
 // GearWorn is the item a character wears in a slot, from its newest addon export. Name and
@@ -19,7 +19,7 @@ type GearWorn struct {
 }
 
 // GearPick is the band's pick for a slot (sims.BandPicks). Chance is the drop fraction, null
-// for a source with no stated rate and for a pick promoted past a client-unconfirmed one.
+// for a source with no stated rate (a promoted pick carries its own source's chance).
 type GearPick struct {
 	ID     int      `json:"id"`
 	Name   string   `json:"name"`
@@ -43,10 +43,12 @@ type CharacterGear struct {
 	GapTotal *float64
 }
 
-// GearReader reads a character's gear panel by character key. rating.Service is the one
-// implementation.
-type GearReader interface {
-	CharacterGear(ctx context.Context, key string) (CharacterGear, error)
+// ScoreGearReader reads a character's Forever Score and gear panel together by character
+// key, so the two share one read of the stored export and one of the rated fights.
+// rating.Service is the one implementation. The panel is always returned (empty when it
+// cannot be read, which the implementation logs); the error is the score's, as Scorer's.
+type ScoreGearReader interface {
+	ScoreAndGear(ctx context.Context, key string) (ForeverScore, CharacterGear, error)
 }
 
 // GearGapTotal is gear_gap_total: the sum of slots' non-null gaps, one decimal. It is the

@@ -8,9 +8,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
@@ -36,13 +38,60 @@ var gp67Picks = map[string]int{
 }
 
 type gearPanelFixture struct {
-	pool *pgxpool.Pool
-	mux  *http.ServeMux
+	pool   *pgxpool.Pool
+	mux    *http.ServeMux
+	tracer *countingTracer
+}
+
+// countingTracer counts the statements a pool runs, by their SQL text, so a test can hold how
+// often a page reads something (fix round 1, item 6).
+type countingTracer struct {
+	mu  sync.Mutex
+	sql []string
+}
+
+func (c *countingTracer) TraceQueryStart(ctx context.Context, _ *pgx.Conn, data pgx.TraceQueryStartData) context.Context {
+	c.mu.Lock()
+	c.sql = append(c.sql, data.SQL)
+	c.mu.Unlock()
+	return ctx
+}
+
+func (c *countingTracer) TraceQueryEnd(context.Context, *pgx.Conn, pgx.TraceQueryEndData) {}
+
+func (c *countingTracer) reset() {
+	c.mu.Lock()
+	c.sql = nil
+	c.mu.Unlock()
+}
+
+// count is how many statements since the last reset contain fragment.
+func (c *countingTracer) count(fragment string) int {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	n := 0
+	for _, q := range c.sql {
+		if strings.Contains(q, fragment) {
+			n++
+		}
+	}
+	return n
 }
 
 func newGearPanelFixture(t *testing.T) *gearPanelFixture {
 	t.Helper()
-	pool := testPool(t)
+	testPool(t) // migrates
+	cfg, err := pgxpool.ParseConfig(testURL(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	tracer := &countingTracer{}
+	cfg.ConnConfig.Tracer = tracer
+	pool, err := pgxpool.NewWithConfig(context.Background(), cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(pool.Close)
 	useRepoGearData(t)
 	cleanup := func() {
 		bg := context.Background()
@@ -58,14 +107,32 @@ func newGearPanelFixture(t *testing.T) *gearPanelFixture {
 	t.Cleanup(cleanup)
 	svc := &Service{Store: &Store{Pool: pool}}
 	mux := http.NewServeMux()
-	rankings.Mount(mux, &rankings.Service{Store: &rankings.Store{Pool: pool}, Scores: svc, Gear: svc})
-	return &gearPanelFixture{pool: pool, mux: mux}
+	rankings.Mount(mux, &rankings.Service{Store: &rankings.Store{Pool: pool}, Scores: svc, ScoreGear: svc})
+	return &gearPanelFixture{pool: pool, mux: mux, tracer: tracer}
+}
+
+// seedOpts vary a seeded character: its rated spec (Arms when empty), its export's race slug
+// (human when empty) and its characters.faction (none when empty).
+type seedOpts struct {
+	spec, race, faction string
 }
 
 // seed writes a warrior named name (key us/normal/<lower name>) with one rated Arms fight in a
 // public report, and, when gear is not nil, an addon export of a level-60 human wearing it.
 func (fx *gearPanelFixture) seed(t *testing.T, name string, gear map[string]int) string {
 	t.Helper()
+	return fx.seedWith(t, name, gear, seedOpts{})
+}
+
+// seedWith is seed with opts.
+func (fx *gearPanelFixture) seedWith(t *testing.T, name string, gear map[string]int, opts seedOpts) string {
+	t.Helper()
+	if opts.spec == "" {
+		opts.spec = "Arms"
+	}
+	if opts.race == "" {
+		opts.race = "human"
+	}
 	ctx := context.Background()
 	key := "us/normal/" + strings.ToLower(name)
 	var userID int64
@@ -73,14 +140,18 @@ func (fx *gearPanelFixture) seed(t *testing.T, name string, gear map[string]int)
 		"gp67-"+strings.ToLower(name)+"@example.com").Scan(&userID); err != nil {
 		t.Fatal(err)
 	}
-	mustExec(t, fx.pool, `insert into characters (key, region, ruleset, name, class, user_id)
-		values ($1, 'us', 'normal', $2, 'Warrior', $3)`, key, name, userID)
+	var faction *string
+	if opts.faction != "" {
+		faction = &opts.faction
+	}
+	mustExec(t, fx.pool, `insert into characters (key, region, ruleset, name, class, user_id, faction)
+		values ($1, 'us', 'normal', $2, 'Warrior', $3, $4)`, key, name, userID, faction)
 	if gear != nil {
 		var entries []string
 		for slot, id := range gear {
 			entries = append(entries, fmt.Sprintf("%s=%d", slot, id))
 		}
-		export := "FS1:" + gp67Build + ":warrior:human:0/0/0:" + strings.Join(entries, ",") + "|level=60"
+		export := "FS1:" + gp67Build + ":warrior:" + opts.race + ":0/0/0:" + strings.Join(entries, ",") + "|level=60"
 		mustExec(t, fx.pool, `insert into addon_exports (character_key, user_id, region, ruleset, name, export, captured_at)
 			values ($1, $2, 'us', 'normal', $3, $4, now())`, key, userID, name, export)
 	}
@@ -90,7 +161,7 @@ func (fx *gearPanelFixture) seed(t *testing.T, name string, gear map[string]int)
 		values ($1, $2, 'Gear panel', 'public', 'Molten Core', 'complete', $3)`, reportID, userID, at)
 	mustExec(t, fx.pool, `insert into fights (report_id, fight_index, encounter_id, name, difficulty, kill, start_ms)
 		values ($1, 1, 990671, 'Gear panel boss', 3, true, $2)`, reportID, at.UnixMilli())
-	row := summary.RosterRow{GUID: "gp67-" + name, Name: name, Class: "Warrior", Spec: "Arms", Role: "dps"}
+	row := summary.RosterRow{GUID: "gp67-" + name, Name: name, Class: "Warrior", Spec: opts.spec, Role: "dps"}
 	if err := (&Store{Pool: fx.pool}).RateFight(ctx, RatedFight{
 		ReportID: reportID, FightIndex: 1, Region: "us", Ruleset: "normal", FoughtAt: at, EncounterID: 990671,
 		Summary: summary.Summary{EncounterID: 990671, Difficulty: 3, DurationMS: 180000, Kill: true,
@@ -284,5 +355,94 @@ func TestTheGearPanelIsEmptyWithNoExport(t *testing.T) {
 	body := fx.read(t, "gp67none")
 	if string(body.raw["gear"]) != "[]" || string(body.raw["gear_gap_total"]) != "null" {
 		t.Errorf("gear = %s, gear_gap_total = %s; want [] and null", body.raw["gear"], body.raw["gear_gap_total"])
+	}
+}
+
+// Fix round 1, item 2: rings and trinkets are matched to the picks the way that gives the
+// smaller total, so a pick worn in the other slot of its pair has a gap of 0.
+func TestASwappedPairOfRingsHasNoGap(t *testing.T) {
+	fx := newGearPanelFixture(t)
+	// finger1's pick is the Signet Ring (234034, 308) and finger2's Don Julio's Band
+	// (19325, 500); this character wears them the other way round.
+	fx.seed(t, "Gp67swap", map[string]int{"finger1": 19325, "finger2": 234034})
+	body := fx.read(t, "gp67swap")
+	for _, slot := range []string{"finger1", "finger2"} {
+		row := gp67Slot(t, body, slot)
+		if row.Gap == nil || *row.Gap != 0 {
+			t.Errorf("%s: worn %+v pick %+v gap %s, want 0 (the pick is worn in the other ring slot)",
+				slot, row.Worn, row.Pick, fmtGap(row.Gap))
+		}
+	}
+	if w := gp67Slot(t, body, "finger1").Worn; w == nil || w.ID != 19325 {
+		t.Errorf("finger1 worn = %+v, want what the export says (19325)", w)
+	}
+}
+
+// Fix round 1, item 3, a picked two-hander: the arms band-60 pick is The Unstoppable Force
+// (19323, two-handed, 486) with no off-hand pick. Worn Persuader (484) and a Grand Marshal's
+// Left Hand Blade (252) score 736 together, more than the two-hander, so the main hand's gap is
+// 0 (on its own slot it would read 500 x 2 / 4766.6 = 0.2) and the off-hand's is null.
+func TestAPickedTwoHanderIsWeighedAgainstBothWornHands(t *testing.T) {
+	fx := newGearPanelFixture(t)
+	fx.seed(t, "Gp67twohandpick", map[string]int{"main_hand": 22384, "off_hand": 18847})
+	body := fx.read(t, "gp67twohandpick")
+	mh, oh := gp67Slot(t, body, "main_hand"), gp67Slot(t, body, "off_hand")
+	if mh.Pick == nil || mh.Pick.ID != 19323 || mh.Gap == nil || *mh.Gap != 0 {
+		t.Errorf("main_hand pick %+v gap %s, want The Unstoppable Force and 0", mh.Pick, fmtGap(mh.Gap))
+	}
+	if oh.Pick != nil || oh.Gap != nil {
+		t.Errorf("off_hand pick %+v gap %s, want no pick and null", oh.Pick, fmtGap(oh.Gap))
+	}
+}
+
+// Fix round 1, item 3, a worn two-hander: the fury band-60 picks are Shadowsong's Sorrow
+// (21522, 26.2) and Ravencrest's Legacy (21520, 31.0), both one-handed; the character wears
+// a Centaur Spear (271794, two-handed, 20.9) and nothing in the off-hand. The main hand
+// carries the pair's whole gap, 500 x (57.2 - 20.9) / 5522.8 = 3.2864 -> 3.3, and the
+// off-hand 0 (on their own slots they would read 0.5 and 2.8).
+func TestAWornTwoHanderIsWeighedAgainstBothPickedHands(t *testing.T) {
+	fx := newGearPanelFixture(t)
+	fx.seedWith(t, "Gp67twohandworn", map[string]int{"main_hand": 271794}, seedOpts{spec: "Fury"})
+	body := fx.read(t, "gp67twohandworn")
+	mh, oh := gp67Slot(t, body, "main_hand"), gp67Slot(t, body, "off_hand")
+	if mh.Pick == nil || mh.Pick.ID != 21522 || mh.Gap == nil || *mh.Gap != 3.3 {
+		t.Errorf("main_hand pick %+v gap %s, want Shadowsong's Sorrow and 3.3", mh.Pick, fmtGap(mh.Gap))
+	}
+	if oh.Pick == nil || oh.Pick.ID != 21520 || oh.Gap == nil || *oh.Gap != 0 {
+		t.Errorf("off_hand pick %+v gap %s, want Ravencrest's Legacy and 0", oh.Pick, fmtGap(oh.Gap))
+	}
+}
+
+// Fix round 1, item 5: when the export's race is not one the build knows, the faction comes
+// from characters.faction.
+func TestTheFactionFallsBackToTheCharactersRow(t *testing.T) {
+	fx := newGearPanelFixture(t)
+	fx.seedWith(t, "Gp67faction", map[string]int{"head": 12640}, seedOpts{race: "murloc", faction: "alliance"})
+	body := fx.read(t, "gp67faction")
+	if head := gp67Slot(t, body, "head"); head.Pick == nil || head.Pick.ID != 12640 || head.Gap == nil || *head.Gap != 0 {
+		t.Errorf("head pick %+v gap %s, want the alliance pick Lionheart Helm and 0", head.Pick, fmtGap(head.Gap))
+	}
+	fx.seedWith(t, "Gp67nofaction", map[string]int{"head": 12640}, seedOpts{race: "murloc"})
+	body = fx.read(t, "gp67nofaction")
+	if head := gp67Slot(t, body, "head"); head.Pick != nil {
+		t.Errorf("no faction anywhere: head pick %+v, want null", head.Pick)
+	}
+}
+
+// Fix round 1, item 6: the Forever Score and the gear panel share one read of the export and
+// one read of the rated fights per page.
+func TestTheScoreAndTheGearPanelReadTheExportAndTheFightsOnce(t *testing.T) {
+	fx := newGearPanelFixture(t)
+	fx.seed(t, "Gp67once", map[string]int{"head": 12640})
+	fx.tracer.reset()
+	body := fx.read(t, "gp67once")
+	if body.Components == nil || len(body.Gear) != 17 {
+		t.Fatalf("components %+v, %d gear rows; want a score and a panel", body.Components, len(body.Gear))
+	}
+	if n := fx.tracer.count("from addon_exports where character_key"); n != 1 {
+		t.Errorf("%d reads of the export, want 1", n)
+	}
+	if n := fx.tracer.count("count(rs.discipline)"); n != 1 {
+		t.Errorf("%d reads of the rated fights, want 1", n)
 	}
 }

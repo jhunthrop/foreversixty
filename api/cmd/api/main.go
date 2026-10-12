@@ -568,9 +568,9 @@ func serve(log *slog.Logger) error {
 	}
 
 	// The character page carries the Forever Score and the gear panel, which live in the rating
-	// lane.
+	// lane and share one read of the character.
 	deps.Rankings.Scores = deps.Rating
-	deps.Rankings.Gear = deps.Rating
+	deps.Rankings.ScoreGear = deps.Rating
 
 	deps.Sims = &sims.Service{
 		Store: simStore, Accounts: entStore, Planner: simEngine(log),

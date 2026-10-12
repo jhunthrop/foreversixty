@@ -143,8 +143,30 @@ func TestOpenAPIDocumentsTheGearPanelAndExecutionScore(t *testing.T) {
 	if !ok || !strings.Contains(strings.Join(strings.Fields(desc(exec)), " "), plain) {
 		t.Errorf("ExecutionScore must say %q: %v", plain, exec)
 	}
-	row := props(doc.Components.Schemas["RankingRow"])["execution_score"]
-	if !strings.Contains(strings.Join(strings.Fields(desc(row)), " "), plain) {
-		t.Errorf("RankingRow.execution_score must say %q: %v", plain, row)
+	row, _ := props(doc.Components.Schemas["RankingRow"])["execution_score"].(map[string]any)
+	if row["$ref"] != "#/components/schemas/ExecutionScore" {
+		t.Errorf("RankingRow.execution_score must $ref ExecutionScore: %v", row)
+	}
+	// Fix round 1, item 7: every null rule, in plain words.
+	words := func(v any) string { return strings.ToLower(strings.Join(strings.Fields(desc(v)), " ")) }
+	for _, want := range []string{"not been simulated yet", "healers and tanks", "not validated",
+		"could not rebuild", "produced no damage", "no row for the player"} {
+		if !strings.Contains(words(exec), want) {
+			t.Errorf("ExecutionScore's null rules lack %q: %q", want, desc(exec))
+		}
+	}
+	// Fix round 1, items 2, 3, 4, 5 and 9: the gap's pair and two-hander rules, its rounding,
+	// the promoted pick's chance and the faction's fallback.
+	gap, _ := p["gap"].(map[string]any)
+	for _, want := range []string{"other slot of its pair", "two-handed", "as one unit", "under 0.05"} {
+		if !strings.Contains(words(gap), want) {
+			t.Errorf("gap's description lacks %q: %q", want, desc(gap))
+		}
+	}
+	if !strings.Contains(words(pick), "battle.net") {
+		t.Errorf("pick's description must name the faction's Battle.net fallback: %q", desc(pick))
+	}
+	if !strings.Contains(words(chance), "its own source") || strings.Contains(words(chance), "took the place") {
+		t.Errorf("chance must say a promoted pick carries its own source's chance: %q", desc(chance))
 	}
 }

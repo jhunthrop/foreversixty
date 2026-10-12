@@ -54,6 +54,7 @@ type gearData struct {
 	raids             map[string]map[string]raidLoot        // build -> raidKey -> loot
 	bis               map[string]map[string]map[int][][]int // build -> spec -> band -> sets (bestInSlot)
 	bisRows           map[string]map[string][]bisEntry      // build -> spec -> entries (bandpicks.go)
+	chances           map[string]map[lootKey]float64        // build -> drop chances (bandpicks.go)
 	// rotations is rotation.go's per-build read of addon-data.json and spellranks.json.
 	rotations       map[string]*buildRotations // build -> the shipped rotations
 	rotationsLogged map[string]bool            // builds whose files failed to read, logged once
@@ -83,6 +84,7 @@ func SetGearData(t *trees.Data, dir string) {
 		raids:             map[string]map[string]raidLoot{},
 		bis:               map[string]map[string]map[int][][]int{},
 		bisRows:           map[string]map[string][]bisEntry{},
+		chances:           map[string]map[lootKey]float64{},
 		rotations:         map[string]*buildRotations{},
 		rotationsLogged:   map[string]bool{},
 	}

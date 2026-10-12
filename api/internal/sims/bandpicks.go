@@ -8,15 +8,19 @@ package sims
 //
 //   - the bare preset only (level 60 also carries a "raid" entry per faction, which the
 //     addon's table leaves out), for the character's own faction;
-//   - task L1.4's walk: a candidate whose stats the client has not confirmed
-//     (trees.Item.ClientUnconfirmed, items.json's client_unconfirmed) is never the pick;
-//     the next confirmed candidate in the ladder's order takes its place (the pick, then
-//     runners_up, then the alternatives past them), and a promoted candidate carries no
-//     drop chance, because the row's chance was the original pick's;
-//   - the band-wide rules L1.4's review added, so a promotion never breaks the set: the
-//     second slot of a pair (finger2, trinket2) never takes the unique item its mate
-//     (finger1, trinket1) already picked, and the off-hand has no pick beside a
-//     two-handed main-hand pick.
+//   - task L1.4's two-phase walk (addonbis._faction_picks): a candidate whose stats the
+//     client has not confirmed (trees.Item.ClientUnconfirmed, items.json's
+//     client_unconfirmed) is never the pick. Every slot whose own pick is confirmed keeps
+//     it, fixed first; then each other slot, in the slot order, promotes its first
+//     confirmed candidate in the ladder's order (the pick, then runners_up, then the
+//     alternatives past them) that the band-wide rules allow beside the picks already
+//     fixed. A promoted pick carries its own drop chance at its own source when loot.json
+//     states one (addonbis._drop_chances), else none;
+//   - the band-wide rules (leveling-bis's verify.go pairSlot and confirmed.go
+//     usableAlternative): a slot never holds its pair mate's item (finger1/finger2,
+//     trinket1/trinket2, main_hand/off_hand), the same id or the same name, unique or
+//     not; the off-hand has no pick beside a two-handed main-hand pick, and a two-hander
+//     promoted into the main hand empties the off-hand, as confirmed.go does.
 //
 // A slot the file has no row for (or a row with no item_id: nothing eligible at the band),
 // or whose candidates are all unconfirmed, has no pick.
@@ -26,8 +30,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
@@ -45,8 +51,13 @@ var GearSlots = [...]string{
 	"finger1", "finger2", "trinket1", "trinket2", "main_hand", "off_hand", "ranged",
 }
 
-// pairMates maps the second slot of a pair onto the first.
-var pairMates = map[string]string{"finger2": "finger1", "trinket2": "trinket1"}
+// pairSlot is leveling-bis's verify.go pairSlot: the slots that may never hold the same item
+// as each other.
+var pairSlot = map[string]string{
+	"finger1": "finger2", "finger2": "finger1",
+	"trinket1": "trinket2", "trinket2": "trinket1",
+	"main_hand": "off_hand", "off_hand": "main_hand",
+}
 
 // BandPick is one slot's pick in a band.
 type BandPick struct {
@@ -56,8 +67,8 @@ type BandPick struct {
 	// Source is the plain name a player knows the item's source by ("Wailing Caverns:
 	// Mutanus the Devourer", "Blacksmithing", "The League of Arathor").
 	Source string
-	// Chance is the drop fraction (0-1] the ladder states for the original pick; nil for a
-	// source with no stated rate and for a promoted candidate.
+	// Chance is the drop fraction (0-1]: the ladder's own for the original pick, loot.json's
+	// at the candidate's own source for a promoted one; nil when the source states no rate.
 	Chance *float64
 	// Promoted is true when an unconfirmed candidate gave way to this one.
 	Promoted bool
@@ -115,62 +126,105 @@ func BandPicks(ctx context.Context, build, spec string, band int, faction string
 	if err != nil {
 		return nil, err
 	}
+	chances, err := src.dropChances(build)
+	if err != nil {
+		return nil, err
+	}
+	chanceOf := func(id int, source string) *float64 {
+		if c, ok := chances[lootKey{id, source}]; ok {
+			return &c
+		}
+		return nil
+	}
 	for _, e := range entries {
 		preset := e.Preset
 		if preset == "" {
 			preset = BarePreset
 		}
 		if e.Band == band && e.Faction == faction && preset == BarePreset {
-			return walkBand(e.Slots, func(id int) (trees.Item, bool) { return b.Item(classID, id) }), nil
+			// The spec's class tables answer for every candidate: an id they do not
+			// have counts as confirmed, one-handed and nameless (so it matches its
+			// pair mate by id only), as items.json's absence of a flag does for L1.4.
+			return walkBand(e.Slots, func(id int) (trees.Item, bool) { return b.Item(classID, id) }, chanceOf), nil
 		}
 	}
 	return nil, fmt.Errorf("%w: %s band %d %s in build %s", ErrNoBestInSlot, spec, band, faction, build)
 }
 
 // walkBand applies the data addon's rules to one bare entry's rows (see the file comment).
-// item looks an id up in the spec's class tables; an id they do not have counts as
-// confirmed, not unique and one-handed, as items.json's absence of a flag does for L1.4.
-func walkBand(rows []bisRow, item func(int) (trees.Item, bool)) map[string]BandPick {
-	bySlot := make(map[string]bisRow, len(rows))
+// item looks an id up in the spec's class tables; chance is a promoted candidate's drop
+// chance at its own source.
+func walkBand(rows []bisRow, item func(int) (trees.Item, bool), chance func(int, string) *float64) map[string]BandPick {
+	candidates := map[string][]bisCandidate{}
+	ownChance := map[string]*float64{}
 	for _, r := range rows {
 		if r.ItemID != nil {
-			bySlot[r.Slot] = r
+			candidates[r.Slot] = rowCandidates(r)
+			ownChance[r.Slot] = r.Chance
 		}
 	}
-	picks := map[string]BandPick{}
+	unconfirmed := func(id int) bool {
+		it, ok := item(id)
+		return id <= 0 || (ok && it.ClientUnconfirmed)
+	}
+	twoHand := func(id int) bool {
+		it, ok := item(id)
+		return ok && it.TwoHand
+	}
+	// same is verify.go's wouldDuplicatePairMate test: the same id, or the same name.
+	same := func(a, b int) bool {
+		if a == b {
+			return true
+		}
+		ia, okA := item(a)
+		ib, okB := item(b)
+		return okA && okB && ia.Name != "" && ia.Name == ib.Name
+	}
+	pickOf := func(slot string, c bisCandidate, promoted bool) BandPick {
+		p := BandPick{ItemID: c.ItemID, Name: c.ItemName, Source: c.Source, Promoted: promoted}
+		if it, ok := item(c.ItemID); ok && it.Name != "" {
+			p.Name = it.Name
+		}
+		if !promoted {
+			p.Chance = ownChance[slot]
+		} else if chance != nil {
+			p.Chance = chance(c.ItemID, c.Source)
+		}
+		return p
+	}
+
+	// Phase one: every confirmed own pick is fixed.
+	final := map[string]BandPick{}
 	for _, slot := range GearSlots {
-		row, ok := bySlot[slot]
-		if !ok {
+		if cs, ok := candidates[slot]; ok && !unconfirmed(cs[0].ItemID) {
+			final[slot] = pickOf(slot, cs[0], false)
+		}
+	}
+	// Phase two: each other slot promotes its first confirmed candidate the rules allow
+	// beside the picks already final.
+	for _, slot := range GearSlots {
+		cs, ok := candidates[slot]
+		if _, done := final[slot]; !ok || done {
 			continue
 		}
-		if slot == "off_hand" {
-			if mh, ok := picks["main_hand"]; ok {
-				if it, ok := item(mh.ItemID); ok && it.TwoHand {
-					continue
-				}
-			}
-		}
-		mate, hasMate := picks[pairMates[slot]]
-		for i, c := range rowCandidates(row) {
-			it, known := item(c.ItemID)
-			if c.ItemID <= 0 || (known && it.ClientUnconfirmed) {
+		for _, c := range cs[1:] {
+			if unconfirmed(c.ItemID) {
 				continue
 			}
-			if hasMate && mate.ItemID == c.ItemID && known && it.Unique {
+			if mate, ok := final[pairSlot[slot]]; ok && same(mate.ItemID, c.ItemID) {
 				continue
 			}
-			pick := BandPick{ItemID: c.ItemID, Name: c.ItemName, Source: c.Source, Promoted: i > 0}
-			if known && it.Name != "" {
-				pick.Name = it.Name
+			if mh, ok := final["main_hand"]; slot == "off_hand" && ok && twoHand(mh.ItemID) {
+				continue
 			}
-			if i == 0 {
-				pick.Chance = row.Chance
-			}
-			picks[slot] = pick
+			final[slot] = pickOf(slot, c, true)
 			break
 		}
 	}
-	return picks
+	if mh, ok := final["main_hand"]; ok && twoHand(mh.ItemID) {
+		delete(final, "off_hand")
+	}
+	return final
 }
 
 // rowCandidates is the row's candidates in the ladder's order: the pick, then runners_up,
@@ -318,4 +372,88 @@ func RaceFaction(build, raceSlug string) string {
 		}
 	}
 	return ""
+}
+
+// lootKey is one (item id, source label) pair of loot.json.
+type lootKey struct {
+	itemID int
+	source string
+}
+
+// dropChances is loadDropChances of build, kept once read; an error is not kept.
+func (g *gearData) dropChances(build string) (map[lootKey]float64, error) {
+	g.mu.Lock()
+	c, ok := g.chances[build]
+	g.mu.Unlock()
+	if ok {
+		return c, nil
+	}
+	c, err := loadDropChances(g.dir, build)
+	if err != nil {
+		return nil, err
+	}
+	g.mu.Lock()
+	g.chances[build] = c
+	g.mu.Unlock()
+	return c, nil
+}
+
+// loadDropChances is addonbis._drop_chances: (item id, source label) -> drop chance as a
+// fraction, indexed the way leveling-bis's loadLootIndex labels a source (a source's own
+// items under its name, a boss's under "<source>: <boss>"; the flat quest source skipped)
+// and converted as its dropChance does (percent to fraction, math.Round(chance*1e4)/1e6; a
+// chance of 0 is none). The larger chance wins when one pair appears twice. A build with no
+// loot.json has no chances.
+func loadDropChances(dir, build string) (map[lootKey]float64, error) {
+	body, err := os.ReadFile(filepath.Join(dir, build, lootFile))
+	if errors.Is(err, os.ErrNotExist) {
+		return map[lootKey]float64{}, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("sims: read loot for %s: %w", build, err)
+	}
+	var file struct {
+		Sources []struct {
+			Kind        string             `json:"kind"`
+			Name        string             `json:"name"`
+			Items       []int              `json:"items"`
+			ItemChances map[string]float64 `json:"item_chances"`
+			Bosses      []struct {
+				Name        string             `json:"name"`
+				Items       []int              `json:"items"`
+				ItemChances map[string]float64 `json:"item_chances"`
+			} `json:"bosses"`
+		} `json:"sources"`
+	}
+	if err := json.Unmarshal(body, &file); err != nil {
+		return nil, fmt.Errorf("sims: decode loot for %s: %w", build, err)
+	}
+	out := map[lootKey]float64{}
+	add := func(id int, label string, percent float64) {
+		if percent <= 0 {
+			return
+		}
+		fraction := math.Round(percent*1e4) / 1e6
+		if k := (lootKey{id, label}); fraction > out[k] {
+			out[k] = fraction
+		}
+	}
+	for _, src := range file.Sources {
+		if src.Kind == "quest" {
+			continue
+		}
+		for _, id := range src.Items {
+			add(id, src.Name, src.ItemChances[strconv.Itoa(id)])
+		}
+		for _, boss := range src.Bosses {
+			label := src.Name
+			if boss.Name != "" {
+				label = src.Name + ": " + boss.Name
+			}
+			for _, id := range boss.Items {
+				add(id, label, boss.ItemChances[strconv.Itoa(id)])
+			}
+		}
+	}
+	return out, nil
 }
