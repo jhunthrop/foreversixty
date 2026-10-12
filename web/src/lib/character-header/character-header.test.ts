@@ -74,6 +74,20 @@ describe('syncView', () => {
     expect(syncView(character({ build: { source: 'addon', captured_at: daysAgo(1) } }), NOW)).toBeNull();
     expect(syncView(character({ build: undefined }), NOW)).toBeNull();
   });
+
+  // L8.4 fix round 3 item 3 (D3): the profile reads no gear, so its sync line stands whenever
+  // a build exists; the Character header's own pages keep the gear rule above.
+  it('keeps the line without gear for a page that reads none, and never without a build', () => {
+    const gearless = character({ build: { source: 'addon', captured_at: daysAgo(1) } });
+    expect(syncView(gearless, NOW, { needsGear: false })).toEqual({
+      source: 'Addon',
+      age: '1 day ago',
+      staleTail: null,
+    });
+    expect(syncView(gearless, NOW, { needsGear: true })).toBeNull();
+    expect(syncView(gearless, NOW)).toBeNull();
+    expect(syncView(character({ build: undefined }), NOW, { needsGear: false })).toBeNull();
+  });
 });
 
 describe('syncText', () => {

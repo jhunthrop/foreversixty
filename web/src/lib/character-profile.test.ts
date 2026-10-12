@@ -6,8 +6,11 @@ import {
   bisHref,
   characterHeaderCopy,
   characterTableCopy,
+  executionCellClass,
+  newestBuild,
   newestSpec,
   profileHeader,
+  profileSpec,
   specClassLabel,
 } from './character-profile';
 import type { CharacterFight, CharacterPage } from './rankings/api';
@@ -71,7 +74,8 @@ describe('the fight tables (fix round 2 item 6)', () => {
   });
 
   it('names the columns Boss, Spec, Parse %, Date, Execution', () => {
-    expect(Object.values(characterTableCopy)).toEqual(['Boss', 'Spec', 'Parse %', 'Date', 'Execution']);
+    const { executionDefinition: _definition, ...columns } = characterTableCopy;
+    expect(Object.values(columns)).toEqual(['Boss', 'Spec', 'Parse %', 'Date', 'Execution']);
   });
 });
 
@@ -185,5 +189,97 @@ describe('profileHeader (Task L8.4 ruling 1)', () => {
     expect(profileHeader(page(FULL, 'Holy'), PATH).chipOn).toBe('levelRace');
     expect(profileHeader(page({ ...FULL, level: null, race: null }, 'Holy'), PATH).chipOn).toBe('pieces');
     expect(profileHeader(page({ class: 'Priest' }, 'Holy'), PATH).chipOn).toBe('pieces');
+  });
+});
+
+// L8.4 fix round 3 item 8: the split shown and the spec word beside it come from one record.
+describe('the header’s spec and split (fix round 3 item 8)', () => {
+  const PATH = { region: 'us', ruleset: 'hardcore' };
+  const base = {
+    character: { name: 'Elyra Duskvale', region: 'us', ruleset: 'hardcore', class: 'Priest' },
+    history: [fight('Holy')],
+    best: [],
+  };
+
+  it('takes the spec word from the newest build when it names one, over the fights’ spec', () => {
+    const header = profileHeader(
+      {
+        ...base,
+        builds_seen: [
+          { talent_split: '0/31/20', spec: 'Holy', first_seen: '2026-11-01T20:00:00Z' },
+          { talent_split: '31/20/0', spec: 'Discipline', first_seen: '2026-12-09T22:10:00Z' },
+        ],
+      },
+      PATH,
+    );
+    expect(header.pieces[0]).toEqual({ key: 'spec', text: 'Discipline Priest', split: '31/20/0' });
+    expect(
+      profileSpec({
+        ...base,
+        builds_seen: [{ talent_split: '31/20/0', spec: 'Discipline', first_seen: 'x' }],
+      }),
+    ).toBe('Discipline');
+  });
+
+  it('falls back to the character’s spec when the newest build names none', () => {
+    const header = profileHeader(
+      { ...base, builds_seen: [{ talent_split: '0/31/20', first_seen: '2026-12-09T22:10:00Z' }] },
+      PATH,
+    );
+    expect(header.pieces[0]).toEqual({ key: 'spec', text: 'Holy Priest', split: '0/31/20' });
+    expect(newestBuild([])).toBeNull();
+    expect(profileSpec({ ...base, builds_seen: [] })).toBe('Holy');
+  });
+});
+
+// L8.4 fix round 3 item 10: a "·" is the leading glyph of the segment after it, glued to it
+// by a no-break space, so a wrap can start a line with "· Classic Beta PvP" and never end one
+// with a dangling dot.
+describe('the header’s segment separator (fix round 3 item 10)', () => {
+  it('is a breakable space, then the dot glued to what follows', () => {
+    expect(characterHeaderCopy.segmentLead).toBe(' ·\u00a0');
+  });
+});
+
+// L8.4 fix round 3 items 4, 6 and 7: one Execution cell style for both tables and both states,
+// and the column explained.
+describe('the Execution cell (fix round 3 items 4 and 6)', () => {
+  const tokens = (classes: string): string[] => classes.split(/\s+/).filter((token) => token !== '');
+
+  it('hides a scored cell and an unscored one alike where the column is phone-hidden', () => {
+    for (const scored of [true, false]) {
+      const cell = tokens(executionCellClass(false, scored));
+      expect(cell).toEqual(expect.arrayContaining(['hidden', 'md:flex']));
+      // No unprefixed display utility that could beat `hidden` on a phone (rowLink's
+      // inline-flex did).
+      expect(
+        cell.filter((token) => /^(inline-flex|flex|inline|block|inline-block|grid)$/.test(token)),
+      ).toEqual([]);
+    }
+  });
+
+  it('shows both states where the column is on phones, row-aligned the same way', () => {
+    for (const scored of [true, false]) {
+      const cell = tokens(executionCellClass(true, scored));
+      expect(cell).toContain('flex');
+      expect(cell).not.toContain('hidden');
+    }
+  });
+
+  it('centres both states in their row with the same box: 44px high, right-aligned', () => {
+    const shape = (classes: string): string[] => tokens(classes).filter((token) => token !== 'text-muted');
+    for (const onPhone of [true, false]) {
+      expect(shape(executionCellClass(onPhone, true))).toEqual(shape(executionCellClass(onPhone, false)));
+      expect(tokens(executionCellClass(onPhone, true))).toEqual(
+        expect.arrayContaining(['min-h-11', 'items-center', 'justify-end']),
+      );
+    }
+    expect(tokens(executionCellClass(true, false))).toContain('text-muted');
+  });
+
+  it('defines the column in one line (item 7)', () => {
+    expect(characterTableCopy.executionDefinition).toBe(
+      'Execution: the fight’s damage or healing as a share of what the same gear and talents do in the simulator.',
+    );
   });
 });

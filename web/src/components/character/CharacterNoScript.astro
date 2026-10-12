@@ -1,0 +1,19 @@
+---
+// web/src/components/character/CharacterNoScript.astro
+// The character page with JavaScript off (L8.4 fix round 3 item 9). Character.svelte fetches
+// the character in the browser, so the server HTML is its loading skeleton alone; without
+// JavaScript that would shimmer forever. This hides it (an inline style inside <noscript>
+// applies only when scripting is off) and says why, with the Planner as the way on. Both
+// character shells mount it beside the island.
+import { characterNoScriptCopy } from '../../lib/character-profile';
+---
+
+<noscript>
+  <style is:inline>
+    [data-testid='character-skeleton'] {
+      display: none;
+    }
+  </style>
+  <!-- prettier-ignore -->
+  <p class="text-[14px] leading-[22px]" data-testid="character-noscript">{characterNoScriptCopy.lead}{' '}<a class="text-gold underline underline-offset-2" href={characterNoScriptCopy.href}>{characterNoScriptCopy.link}</a>{characterNoScriptCopy.tail}</p>
+</noscript>

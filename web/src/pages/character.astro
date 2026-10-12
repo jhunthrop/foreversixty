@@ -4,6 +4,7 @@
 // reads the three segments out of the path.
 import Base from '../layouts/Base.astro';
 import Character from '../components/Character.svelte';
+import CharacterNoScript from '../components/character/CharacterNoScript.astro';
 ---
 
 <Base
@@ -17,5 +18,6 @@ import Character from '../components/Character.svelte';
     class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
   >
     <Character client:load />
+    <CharacterNoScript />
   </main>
 </Base>

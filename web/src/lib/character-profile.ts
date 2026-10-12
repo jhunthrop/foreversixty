@@ -36,7 +36,27 @@ export const characterTableCopy = {
   parse: 'Parse %',
   date: 'Date',
   execution: 'Execution',
+  /** What the Execution column is (fix round 3 item 7): a muted caption under each table's
+   *  title on desktop, the column header's title and screen-reader text on a phone. The API
+   *  documents execution_score as the fight's actual output over the simulated output of its
+   *  own gear and talents (docs/superpowers/specs/2026-09-14-simulator-interfaces.md,
+   *  `actual_dps / simmed_dps`); api/openapi.yaml gives the field no description of its own. */
+  executionDefinition:
+    'Execution: the fight’s damage or healing as a share of what the same gear and talents do in the simulator.',
 } as const;
+
+/**
+ * One Execution cell style for both tables and both states (fix round 3 items 4 and 6): a
+ * scored cell (a link) and an unscored one (a dash) take the same 44px, vertically centred,
+ * right-aligned flex box, so both sit on their row's centre line. Where the column is
+ * phone-hidden ("Every ranked fight") both states are `hidden` below md: there is no
+ * unprefixed display utility left to beat it, which is how rowLink's `inline-flex` used to
+ * leak a scored cell onto a grid row of its own on a phone.
+ */
+export function executionCellClass(onPhone: boolean, scored: boolean): string {
+  const display = onPhone ? 'flex' : 'hidden md:flex';
+  return `${display} min-h-11 items-center justify-end text-right tabular font-mono text-[13px]${scored ? '' : ' text-muted'}`;
+}
 
 /** The amount column's header: "HPS" or "DPS" when every row is one metric, else both. */
 export function amountHeader(rows: readonly Pick<CharacterFight, 'metric'>[]): string {
@@ -59,9 +79,27 @@ export function bestRepeatsHistory(
   return best.every((row) => seen.has(key(row)));
 }
 
+/** The page's one line with JavaScript off (fix round 3 item 9): the island fetches the
+ *  character in the browser, so without JavaScript there is nothing to show; the Planner works
+ *  without this page. Rendered "{lead} {link}{tail}" with the link to `href`. */
+export const characterNoScriptCopy = {
+  lead: 'Forever Sixty needs JavaScript to show this character. Turn it on and reload, or open the',
+  link: 'Planner',
+  href: '/planner',
+  tail: '.',
+} as const;
+
 /** The profile header's words (Task L8.4 ruling 1). */
 export const characterHeaderCopy = {
   separator: ' · ',
+  /** Between two segments of the first line (fix round 3 item 10): a breakable space, then the
+   *  dot glued to the segment after it by a no-break space. A wrap can start a line with
+   *  "· Classic Beta PvP"; it can never leave a dot dangling at a line's end. */
+  segmentLead: ' \u00b7\u00a0',
+  /** Between the last word and the chip ending the first line (fix round 3 item 2): a word
+   *  joiner, zero width, inside a nowrap span, so the chip never wraps away from that word while
+   *  the text before it (a long guild) still wraps. Not words: layout only. */
+  chipGlue: '\u2060',
   /** The second line: "Level 60 Night Elf", or whichever half is known. */
   levelRace: (level: number | null, race: string | null): string | null => {
     const parts = [level === null ? '' : `Level ${level}`, race ?? ''].filter((part) => part !== '');
@@ -96,14 +134,31 @@ export interface ProfileHeader {
   chipOn: 'levelRace' | 'pieces';
 }
 
-/** The talent split of the newest build seen at pull (the latest `first_seen`), or null. */
-export function newestSplit(builds: readonly BuildSeen[] | null | undefined): string | null {
+/** The newest build seen at pull (the latest `first_seen`), or null with none. */
+export function newestBuild(builds: readonly BuildSeen[] | null | undefined): BuildSeen | null {
   let newest: BuildSeen | null = null;
   for (const build of builds ?? []) {
     if (newest === null || build.first_seen > newest.first_seen) newest = build;
   }
-  const split = newest?.talent_split.trim() ?? '';
+  return newest;
+}
+
+/** The talent split of the newest build seen at pull, or null. */
+export function newestSplit(builds: readonly BuildSeen[] | null | undefined): string | null {
+  const split = newestBuild(builds)?.talent_split.trim() ?? '';
   return split === '' ? null : split;
+}
+
+/**
+ * The spec the profile names (fix round 3 item 8): the newest build's own spec when it carries
+ * one, so the split and the spec word beside it come from one record; else the character's
+ * spec from its fights (`newestSpec`). A Priest's 31/20/0 is Discipline whatever the newest
+ * fight row says.
+ */
+export function profileSpec(
+  page: Pick<CharacterPage, 'history' | 'best'> & Partial<Pick<CharacterPage, 'builds_seen'>>,
+): string | null {
+  return known(newestBuild(page.builds_seen)?.spec) ?? newestSpec(page);
 }
 
 function known(text: string | null | undefined): string | null {
@@ -111,7 +166,7 @@ function known(text: string | null | undefined): string | null {
 }
 
 /**
- * The profile header (Task L8.4 ruling 1, fix round 2 items 3 and 4): "Holy Priest · 31/20/0 ·
+ * The profile header (Task L8.4 ruling 1, fix round 2 items 3 and 4): "Holy Priest · 0/31/20 ·
  * <Olympus XXVII> · Classic Beta PvP", then "Level 60 Night Elf" when known, with the ruleset
  * and region as a muted chip ending the last line. A piece the API sends as null (or omits) is
  * left out. The guild links to its page: a verified membership means the site holds the guild,
@@ -123,7 +178,7 @@ export function profileHeader(
 ): ProfileHeader {
   const { character } = page;
   const pieces: ProfileHeaderPiece[] = [];
-  const specClass = specClassLabel(character.class, newestSpec(page));
+  const specClass = specClassLabel(character.class, profileSpec(page));
   const split = newestSplit(page.builds_seen);
   if (specClass !== '')
     pieces.push(split === null ? { key: 'spec', text: specClass } : { key: 'spec', text: specClass, split });

@@ -4,7 +4,8 @@
 // line's SVG path, the newest point and its tier colour, the two dates as labels, the caption
 // ("Up 330 since 10 Nov"), the image's accessible name, and the rows of the table a screen
 // reader gets, out. Null with fewer than two points: one point is not a line, and the card then
-// draws no box at all.
+// draws no box at all; it says "First score recorded 12 Oct." instead (scoreHistoryFirst, fix
+// round 3 item 12). Fewer than five points add ", 2 readings" to the caption.
 //
 // The box is a percentage box (100 x 100): the card stretches it over the whole content column
 // at a fixed height (preserveAspectRatio="none", a non-scaling stroke), so x and y are also the
@@ -26,6 +27,8 @@ const PAD = SPARKLINE_PAD;
 const MIN_SPAN = 200;
 /** The API sends the newest 30; anything longer is cut to that here too. */
 const MAX_POINTS = 30;
+/** Below this many points the caption says how many readings the line is drawn through. */
+export const SPARSE_POINTS = 5;
 
 export interface ScoreSparkline {
   /** `M x,y L x,y ...`, one vertex per point, evenly spaced, oldest at the left edge. */
@@ -37,7 +40,8 @@ export interface ScoreSparkline {
    *  history crosses a year boundary. */
   firstLabel: string;
   lastLabel: string;
-  /** "Up 330 since 10 Nov", "Down 40 since 10 Nov" or "No change since 10 Nov". */
+  /** "Up 330 since 10 Nov", "Down 40 since 10 Nov" or "No change since 10 Nov"; with fewer
+   *  than five points ", 2 readings" after it. */
   caption: string;
   /** "Forever Score history: 1500 on 10 Nov, 1830 on 9 Dec", the SVG's aria-label. */
   ariaLabel: string;
@@ -56,11 +60,25 @@ function round(value: number): number {
   return Math.round(value * 10) / 10;
 }
 
-export function scoreSparkline(history: readonly ScorePoint[] | null | undefined): ScoreSparkline | null {
-  const points = (history ?? [])
+/** The readable points, oldest first, the newest 30. */
+function readablePoints(history: readonly ScorePoint[] | null | undefined): ScorePoint[] {
+  return (history ?? [])
     .filter(readable)
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(-MAX_POINTS);
+}
+
+/** "First score recorded 12 Oct." for a history of exactly one readable point; null otherwise
+ *  (none, or a line to draw). */
+export function scoreHistoryFirst(history: readonly ScorePoint[] | null | undefined): string | null {
+  const points = readablePoints(history);
+  if (points.length !== 1) return null;
+  const date = shortDate(points[0].date);
+  return date === null ? null : scoreCopy.historyFirst(date);
+}
+
+export function scoreSparkline(history: readonly ScorePoint[] | null | undefined): ScoreSparkline | null {
+  const points = readablePoints(history);
   if (points.length < 2) return null;
 
   const scores = points.map((point) => point.score);
@@ -86,7 +104,9 @@ export function scoreSparkline(history: readonly ScorePoint[] | null | undefined
     last: { x: end.x, y: end.y, score: newest.score, color: tierColor(newest.tier) },
     firstLabel,
     lastLabel,
-    caption: scoreCopy.historyChange(newest.score - first.score, firstLabel),
+    caption:
+      scoreCopy.historyChange(newest.score - first.score, firstLabel) +
+      (points.length < SPARSE_POINTS ? scoreCopy.historyReadings(points.length) : ''),
     ariaLabel: scoreCopy.historyLabel(first.score, firstLabel, newest.score, lastLabel),
     rows: points.map((point) => ({ date: formatDayMonthYear(new Date(point.date)), score: point.score })),
   };

@@ -8,7 +8,10 @@
      more points (Task L8.4 ruling 3, fix round 2 items 1 and 2: the content column's width at a
      fixed height, the newest point marked in its tier's colour, "Up 330 since 10 Nov" and the
      newest date under it, an image named for a screen reader with the table beside it, and no
-     box at all with fewer than two); the five parts as bars against their ceilings. One part is marked as
+     box at all with fewer than two, "First score recorded 12 Oct." with one: fix round 3 item 12);
+     the five parts as bars against their ceilings. From 1280 the card is two columns (fix round 3
+     item 13): the number, tier word and parts on the left, the sparkline over the tier strip on
+     the right. One part is marked as
      the one to work on, and it is always the part "Most to gain" names (lib/score/score.ts's
      mostToGain: the largest point gap, the earlier part on a tie). It takes one neutral colour
      that is never a tier's, and a "+88" at the row's end so colour is not the only signal. With
@@ -34,7 +37,12 @@
     type ForeverScore,
     type ScorePoint,
   } from '../lib/score/score';
-  import { SPARKLINE_HEIGHT, SPARKLINE_WIDTH, scoreSparkline } from '../lib/score/sparkline';
+  import {
+    SPARKLINE_HEIGHT,
+    SPARKLINE_WIDTH,
+    scoreHistoryFirst,
+    scoreSparkline,
+  } from '../lib/score/sparkline';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import ScoreBadge from './ScoreBadge.svelte';
   import TierStrip from './TierStrip.svelte';
@@ -83,6 +91,7 @@
   const gain = $derived(mostToGain(forever?.components));
   const gainLabel = $derived(scoreCopy.components.find((c) => c.key === gain?.key)?.label ?? '');
   const sparkline = $derived(scoreSparkline(history));
+  const firstScore = $derived(scoreHistoryFirst(history));
   const gainHref = $derived(gain?.key === 'gear' && bisHref !== null ? bisHref : scoreCopy.explainHref);
 </script>
 
@@ -90,124 +99,156 @@
   <div class={CARD} data-testid="forever-score-card">
     {#if hasScore(forever)}
       {@const tier = tierLabel(forever.tier)}
-      <div class="flex flex-col gap-3">
-        <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-          <ScoreBadge score={forever.score} tier={forever.tier} size="xl" />
-          <span class="text-muted tabular font-mono text-[14px]">{scoreCopy.outOf(SCORE_MAX)}</span>
-          {#if tier !== null}<span
-              class="text-[15px] font-semibold"
-              style={`color: ${tierTextColor(forever.tier)}`}
-              data-testid="forever-score-tier">{tier}</span
-            >{/if}
-          {#if sample}<span class="pill pill-sample ml-auto">{scoreCopy.samplePill}</span>{/if}
-        </div>
-        <div class="max-w-[460px]"><TierStrip current={forever.tier} /></div>
-      </div>
-      {#if sparkline !== null}
-        <!-- Fix round 2 items 1 and 2: the tier strip's width from md, the whole content width on
-             a phone; 40px high, 48px from 1024px. The plot and the date row start on the Gear
-             label's left edge; the 8px end dot sits on the right edge and may overhang it. The
-             caption ("Up 330 since 10 Nov", which carries the first date) leads the date row and
-             the newest date ends it. -->
-        <figure class="m-0 flex w-full max-w-[460px] flex-col gap-1" data-testid="forever-score-history">
-          <div class="relative h-10 lg:h-12" data-testid="forever-score-plot">
-            <svg
-              class="absolute inset-0 block h-full w-full overflow-visible"
-              viewBox={`0 0 ${SPARKLINE_WIDTH} ${SPARKLINE_HEIGHT}`}
-              preserveAspectRatio="none"
-              role="img"
-              aria-label={sparkline.ariaLabel}
-              data-testid="forever-score-sparkline"
-            >
-              <path
-                d={sparkline.path}
-                fill="none"
-                stroke="var(--color-gold)"
-                stroke-width="2"
-                stroke-linejoin="round"
-                stroke-linecap="round"
-                vector-effect="non-scaling-stroke"
-              />
-            </svg>
-            <span
-              class="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={`left: ${sparkline.last.x}%; top: ${sparkline.last.y}%; background-color: ${sparkline.last.color ?? 'var(--color-gold)'}`}
-              aria-hidden="true"
-              data-testid="forever-score-sparkline-last"
-            ></span>
-          </div>
+      <!-- Fix round 3 item 13: from 1280 two columns -- left the number, the tier word and the
+           parts; right the sparkline (the full column) over the tier strip. Below 1280 one
+           column: the two wrappers are `display: contents`, so their children are this flex
+           column's own and `order` draws them as before (number, tier strip, sparkline, parts). -->
+      <div class="flex flex-col gap-4 xl:grid xl:grid-cols-2 xl:gap-x-8" data-testid="forever-score-columns">
+        <div class="contents xl:flex xl:flex-col xl:gap-4" data-testid="forever-score-main">
           <div
-            class="flex items-baseline justify-between gap-3"
-            aria-hidden="true"
-            data-testid="forever-score-history-dates"
+            class="order-1 flex flex-wrap items-baseline gap-x-2 gap-y-1 xl:order-none"
+            data-testid="forever-score-headline"
           >
-            <span class="text-muted text-[12px]" data-testid="forever-score-history-caption"
-              >{sparkline.caption}</span
-            >
-            <span class="text-muted tabular font-mono text-[12px]" data-testid="forever-score-history-last"
-              >{sparkline.lastLabel}</span
-            >
+            <ScoreBadge score={forever.score} tier={forever.tier} size="xl" />
+            <span class="text-muted tabular font-mono text-[14px]">{scoreCopy.outOf(SCORE_MAX)}</span>
+            {#if tier !== null}<span
+                class="text-[15px] font-semibold"
+                style={`color: ${tierTextColor(forever.tier)}`}
+                data-testid="forever-score-tier">{tier}</span
+              >{/if}
+            {#if sample}<span class="pill pill-sample ml-auto">{scoreCopy.samplePill}</span>{/if}
           </div>
-          <table class="sr-only" data-testid="forever-score-history-table">
-            <caption>{scoreCopy.historyCaption}</caption>
-            <thead>
-              <tr
-                ><th scope="col">{scoreCopy.historyDate}</th><th scope="col">{scoreCopy.historyScore}</th></tr
-              >
-            </thead>
-            <tbody>
-              {#each sparkline.rows as row, index (index)}
-                <tr><td>{row.date}</td><td>{row.score}</td></tr>
+          {#if forever.components !== null}
+            <ul
+              class="order-4 flex max-w-[600px] flex-col gap-2 xl:order-none"
+              data-testid="forever-score-parts"
+            >
+              {#each scoreCopy.components as component (component.key)}
+                {@const points = forever.components[component.key]}
+                {@const max = COMPONENT_MAX[component.key]}
+                {@const marked = gain !== null && component.key === gain.key}
+                {#if typeof points === 'number'}
+                  <li
+                    class={ROW}
+                    data-testid={`forever-score-${component.key}`}
+                    data-needs-work={marked ? 'true' : undefined}
+                  >
+                    <span>{component.label}</span>
+                    <span class="bg-line-soft h-2" aria-hidden="true"
+                      ><span
+                        class={`block h-full ${marked ? '' : 'bg-gold/60'}`}
+                        style={`width: ${share(points, max)}%${marked ? `; background-color: ${NEEDS_WORK_COLOR}` : ''}`}
+                      ></span></span
+                    >
+                    <span class="text-muted tabular text-right font-mono whitespace-nowrap"
+                      >{scoreCopy.ofMax(points, max)}</span
+                    >
+                    <span
+                      class="tabular text-right font-mono text-[12px] font-semibold"
+                      style={marked && gain !== null ? `color: ${NEEDS_WORK_COLOR}` : undefined}
+                      aria-label={marked && gain !== null ? scoreCopy.gainCueLabel(gain.gap) : undefined}
+                      data-testid={marked ? 'forever-score-gain-cue' : undefined}
+                      >{marked && gain !== null ? scoreCopy.gainCue(gain.gap) : ''}</span
+                    >
+                    {#if component.key === 'experience' && forever.experience !== null}
+                      <span
+                        class="text-muted col-span-3 col-start-2 text-[12px]"
+                        data-testid="forever-score-experience-detail"
+                        >{scoreCopy.experienceBreakdown(
+                          forever.experience.dungeons,
+                          forever.experience.raid_kills,
+                          forever.experience.alts,
+                        )}</span
+                      >
+                    {/if}
+                  </li>
+                {/if}
               {/each}
-            </tbody>
-          </table>
-        </figure>
-      {/if}
-      {#if forever.components !== null}
-        <ul class="flex max-w-[600px] flex-col gap-2">
-          {#each scoreCopy.components as component (component.key)}
-            {@const points = forever.components[component.key]}
-            {@const max = COMPONENT_MAX[component.key]}
-            {@const marked = gain !== null && component.key === gain.key}
-            {#if typeof points === 'number'}
-              <li
-                class={ROW}
-                data-testid={`forever-score-${component.key}`}
-                data-needs-work={marked ? 'true' : undefined}
-              >
-                <span>{component.label}</span>
-                <span class="bg-line-soft h-2" aria-hidden="true"
-                  ><span
-                    class={`block h-full ${marked ? '' : 'bg-gold/60'}`}
-                    style={`width: ${share(points, max)}%${marked ? `; background-color: ${NEEDS_WORK_COLOR}` : ''}`}
-                  ></span></span
+            </ul>
+          {/if}
+        </div>
+        <div class="contents xl:flex xl:flex-col xl:gap-3" data-testid="forever-score-side">
+          {#if sparkline !== null}
+            <!-- Fix round 2 items 1 and 2: the tier strip's width from md, the whole content width
+                 on a phone, the whole right column from 1280 (fix round 3 item 13); 40px high,
+                 48px from 1024px. The 8px end dot sits on the right edge and may overhang it. The
+                 caption ("Up 330 since 10 Nov", which carries the first date; ", 2 readings" under
+                 five points) leads the date row in the text colour and the newest date ends it,
+                 mono muted (fix round 3 item 12). -->
+            <figure
+              class="order-3 m-0 flex w-full max-w-[460px] flex-col gap-1 xl:order-none xl:max-w-none"
+              data-testid="forever-score-history"
+            >
+              <div class="relative h-10 lg:h-12" data-testid="forever-score-plot">
+                <svg
+                  class="absolute inset-0 block h-full w-full overflow-visible"
+                  viewBox={`0 0 ${SPARKLINE_WIDTH} ${SPARKLINE_HEIGHT}`}
+                  preserveAspectRatio="none"
+                  role="img"
+                  aria-label={sparkline.ariaLabel}
+                  data-testid="forever-score-sparkline"
                 >
-                <span class="text-muted tabular text-right font-mono whitespace-nowrap"
-                  >{scoreCopy.ofMax(points, max)}</span
+                  <path
+                    d={sparkline.path}
+                    fill="none"
+                    stroke="var(--color-gold)"
+                    stroke-width="2"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                    vector-effect="non-scaling-stroke"
+                  />
+                </svg>
+                <span
+                  class="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                  style={`left: ${sparkline.last.x}%; top: ${sparkline.last.y}%; background-color: ${sparkline.last.color ?? 'var(--color-gold)'}`}
+                  aria-hidden="true"
+                  data-testid="forever-score-sparkline-last"
+                ></span>
+              </div>
+              <div
+                class="flex items-baseline justify-between gap-3"
+                aria-hidden="true"
+                data-testid="forever-score-history-dates"
+              >
+                <span class="text-text text-[12px]" data-testid="forever-score-history-caption"
+                  >{sparkline.caption}</span
                 >
                 <span
-                  class="tabular text-right font-mono text-[12px] font-semibold"
-                  style={marked && gain !== null ? `color: ${NEEDS_WORK_COLOR}` : undefined}
-                  aria-label={marked && gain !== null ? scoreCopy.gainCueLabel(gain.gap) : undefined}
-                  data-testid={marked ? 'forever-score-gain-cue' : undefined}
-                  >{marked && gain !== null ? scoreCopy.gainCue(gain.gap) : ''}</span
+                  class="text-muted tabular font-mono text-[12px]"
+                  data-testid="forever-score-history-last">{sparkline.lastLabel}</span
                 >
-                {#if component.key === 'experience' && forever.experience !== null}
-                  <span
-                    class="text-muted col-span-3 col-start-2 text-[12px]"
-                    data-testid="forever-score-experience-detail"
-                    >{scoreCopy.experienceBreakdown(
-                      forever.experience.dungeons,
-                      forever.experience.raid_kills,
-                      forever.experience.alts,
-                    )}</span
+              </div>
+              <table class="sr-only" data-testid="forever-score-history-table">
+                <caption>{scoreCopy.historyCaption}</caption>
+                <thead>
+                  <tr
+                    ><th scope="col">{scoreCopy.historyDate}</th><th scope="col">{scoreCopy.historyScore}</th
+                    ></tr
                   >
-                {/if}
-              </li>
-            {/if}
-          {/each}
-        </ul>
-      {/if}
+                </thead>
+                <tbody>
+                  {#each sparkline.rows as row, index (index)}
+                    <tr><td>{row.date}</td><td>{row.score}</td></tr>
+                  {/each}
+                </tbody>
+              </table>
+            </figure>
+          {:else if firstScore !== null}
+            <!-- One point is not a line (fix round 3 item 12): the date the record starts, where
+                 the line would be. -->
+            <p class="text-text order-3 text-[12px] xl:order-none" data-testid="forever-score-first">
+              {firstScore}
+            </p>
+          {/if}
+          <!-- -mt-1 below 1280 keeps the strip 12px under the number, as before the two columns. -->
+          <div
+            class="order-2 max-w-[460px] max-xl:-mt-1 xl:order-none xl:max-w-none"
+            data-testid="forever-score-tiers"
+          >
+            <TierStrip current={forever.tier} />
+          </div>
+        </div>
+      </div>
       <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
         {#if gain !== null}
           <p class="text-[14px] leading-[22px]" data-testid="forever-score-most-to-gain">

@@ -28,10 +28,19 @@ export function isStaleAddonSync(character: MeCharacter, now: Date): boolean {
   return character.build?.source === 'addon' && isStale(character.build, now);
 }
 
-/** The sync line, or null when the site holds no gear for the character (the line goes). */
-export function syncView(character: MeCharacter, now: Date): SyncView | null {
+/**
+ * The sync line, or null when the site holds no build for the character. On the Character
+ * header's own pages the line also goes when no gear is on file (spec: "No gear on file"); a
+ * page that reads no gear passes `needsGear: false` and keeps the line whenever a build exists
+ * (the profile, L8.4 fix round 3 item 3).
+ */
+export function syncView(
+  character: MeCharacter,
+  now: Date,
+  { needsGear = true }: { needsGear?: boolean } = {},
+): SyncView | null {
   const build = character.build;
-  if (build === undefined || !hasGearOnFile(character)) return null;
+  if (build === undefined || (needsGear && !hasGearOnFile(character))) return null;
   return {
     source: sourceWordOf(character),
     age: relativeTime(new Date(build.captured_at), now),

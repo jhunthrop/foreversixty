@@ -1,0 +1,119 @@
+<!-- web/src/components/character/CharacterFightTable.svelte -->
+<!-- One of the character page's two fight tables, "Best per encounter" and "Every ranked fight"
+     (fix round 2 item 6): both share one column order under a header row -- Boss, Spec, Parse %,
+     the amount (HPS or DPS), Date, Execution -- and dates read "9 Dec 2026". On a phone the Spec
+     and Date columns go, and Execution goes too where `executionOnPhone` is false.
+     L8.4 fix round 3: both Execution states (a scored link, an unscored dash) take one
+     row-aligned cell style (lib/character-profile.ts's executionCellClass), hidden alike on a
+     phone where the column is (items 4 and 6); the column is explained under the title from md
+     and in the header's title and screen-reader text on a phone (item 7). -->
+<script lang="ts">
+  import { amountHeader, characterTableCopy, executionCellClass } from '../../lib/character-profile';
+  import { formatDayMonthYear } from '../../lib/dates';
+  import type { CharacterFight } from '../../lib/rankings/api';
+  import { RANKING_METRICS } from '../../lib/rankings/url';
+  import { formatAmount, percentileToken, rowLink } from '../../lib/report/format';
+  import { executionHref, executionLabel, executionTitle } from '../../lib/sim/execution';
+
+  let {
+    title,
+    rows,
+    testid,
+    bossHref,
+    rowKey,
+    executionOnPhone,
+    executionTestid,
+  }: {
+    title: string;
+    rows: readonly CharacterFight[];
+    testid: string;
+    /** Where the boss name links: its rankings board, or the fight's report. */
+    bossHref: (row: CharacterFight) => string;
+    rowKey: (row: CharacterFight, index: number) => string;
+    /** Whether the Execution column stays on a phone ("Best per encounter" keeps it). */
+    executionOnPhone: boolean;
+    executionTestid: string;
+  } = $props();
+
+  /**
+   * A percentile beside a formatted amount has no column heading at any breakpoint --
+   * unlike the report island's tables, this list never had one to lose, so the two bare
+   * numbers need their own labels rather than relying on position. `RANKING_METRICS`
+   * already holds the one label table for `dps`/`hps`/`damage_taken`; echoed as-is if the
+   * API ever returns an id this list has not heard of.
+   */
+  function metricLabel(id: string): string {
+    return RANKING_METRICS.find((metric) => metric.id === id)?.label ?? id;
+  }
+
+  function percentileAriaLabel(percentile: number | undefined): string | undefined {
+    return percentile === undefined ? undefined : `${Math.round(percentile)} percentile`;
+  }
+
+  const GRID = $derived(
+    `${executionOnPhone ? 'grid-cols-[minmax(0,1fr)_auto_auto_auto]' : 'grid-cols-[minmax(0,1fr)_auto_auto]'} md:grid-cols-[minmax(0,1fr)_112px_64px_88px_112px_72px]`,
+  );
+</script>
+
+<section class="flex flex-col gap-2">
+  <h2 class="section-title text-[18px]">{title}</h2>
+  <p class="text-muted text-[12px] max-md:sr-only" data-testid="character-execution-definition">
+    {characterTableCopy.executionDefinition}
+  </p>
+  <ul class="flex flex-col" data-testid={testid}>
+    <li
+      class={`label text-muted border-line-soft grid min-h-9 items-end gap-3 border-b px-2 pb-2 ${GRID}`}
+      aria-hidden="true"
+      data-testid="character-table-header"
+    >
+      <span>{characterTableCopy.boss}</span>
+      <span class="hidden md:inline">{characterTableCopy.spec}</span>
+      <span class="text-right">{characterTableCopy.parse}</span>
+      <span class="text-right">{amountHeader(rows)}</span>
+      <span class="hidden md:inline">{characterTableCopy.date}</span>
+      <span
+        class={`text-right ${executionOnPhone ? '' : 'hidden md:inline'}`}
+        title={characterTableCopy.executionDefinition}>{characterTableCopy.execution}</span
+      >
+    </li>
+    {#each rows as row, index (rowKey(row, index))}
+      <li class={`border-line-soft grid min-h-11 items-center gap-3 border-b px-2 py-2 text-[14px] ${GRID}`}>
+        <a class="{rowLink} truncate" href={bossHref(row)}>{row.encounter}</a>
+        <span class="text-muted hidden truncate text-[13px] md:inline">{row.spec ?? ''}</span>
+        <span
+          class="tabular text-right font-mono text-[13px]"
+          style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
+          aria-label={percentileAriaLabel(row.percentile)}
+        >
+          {row.percentile === undefined ? '' : Math.round(row.percentile)}
+        </span>
+        <a
+          class="{rowLink} tabular justify-end text-right font-mono"
+          href={`/reports/${row.report_id}?fight=${row.fight_index}`}
+          aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
+        >
+          {formatAmount(Math.round(row.value))}
+        </a>
+        <span
+          class="text-muted tabular hidden font-mono text-[13px] md:inline"
+          data-testid="character-fight-date">{formatDayMonthYear(new Date(row.fought_at))}</span
+        >
+        {#if row.execution_score === null}
+          <span
+            class={executionCellClass(executionOnPhone, false)}
+            title={executionTitle(null)}
+            aria-label={executionTitle(null)}
+            data-testid={executionTestid}>{executionLabel(null)}</span
+          >
+        {:else}
+          <a
+            class={executionCellClass(executionOnPhone, true)}
+            href={executionHref(row.report_id, row.fight_index)}
+            title={executionTitle(row.execution_score)}
+            data-testid={executionTestid}>{executionLabel(row.execution_score)}</a
+          >
+        {/if}
+      </li>
+    {/each}
+  </ul>
+</section>

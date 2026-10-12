@@ -67,6 +67,10 @@ const SCORED: ForeverScore = {
   experience: { dungeons: 14, raid_kills: 0, alts: 2 },
 };
 const UNSCORED: ForeverScore = { score: null, tier: null, as_of: null, components: null, experience: null };
+const TWO_POINTS = [
+  { date: '2026-11-10', score: 1500, tier: 'epic' },
+  { date: '2026-12-09', score: 1830, tier: 'epic' },
+];
 
 function text(html: string): string {
   return html.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, '');
@@ -104,13 +108,56 @@ describe('CharacterRatingPanel Forever Score card', () => {
     expect(owner).toContain('>Your whole record, as of 4 Nov.<');
   });
 
-  it('puts the tier strip under the number, current tier marked', () => {
-    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
-    expect(body.indexOf('data-testid="score-badge"')).toBeLessThan(body.indexOf('data-testid="tier-strip"'));
-    expect(body.indexOf('data-testid="tier-strip"')).toBeLessThan(
-      body.indexOf('data-testid="forever-score-gear"'),
-    );
+  // Fix round 3 item 13: below 1280 one column -- the number, the tier strip, the sparkline, the
+  // parts -- drawn by `order` (the two column wrappers are `display: contents` there); from
+  // 1280 two columns, the number over the parts on the left and the sparkline over the tier
+  // strip on the right.
+  it('puts the tier strip under the number below 1280, current tier marked', () => {
+    const { body } = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: SCORED, scoreHistory: TWO_POINTS },
+    });
+    const orderOf = (testid: string): number => {
+      const classes = new RegExp(`<[a-z]+ class="([^"]*)"[^>]*data-testid="${testid}"`).exec(body)?.[1] ?? '';
+      const order = /(?:^| )order-(\d+)(?: |$)/.exec(classes);
+      if (order === null) throw new Error(`${testid} has no order below xl`);
+      expect(classes.split(' '), testid).toContain('xl:order-none');
+      return Number(order[1]);
+    };
+    const drawn = [
+      'forever-score-headline',
+      'forever-score-tiers',
+      'forever-score-history',
+      'forever-score-parts',
+    ];
+    expect(drawn.map(orderOf)).toEqual([1, 2, 3, 4]);
     expect(body).toMatch(/aria-current="true"[^>]*data-testid="tier-strip-epic"/);
+  });
+
+  it('splits into two columns from 1280: the number and the parts, then the sparkline over the tier strip', () => {
+    const { body } = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: SCORED, scoreHistory: TWO_POINTS },
+    });
+    const classesOf = (testid: string): string[] =>
+      (new RegExp(`<[a-z]+ class="([^"]*)"[^>]*data-testid="${testid}"`).exec(body)?.[1] ?? '').split(' ');
+    expect(classesOf('forever-score-columns')).toEqual(
+      expect.arrayContaining(['flex', 'flex-col', 'xl:grid', 'xl:grid-cols-2']),
+    );
+    for (const column of ['forever-score-main', 'forever-score-side']) {
+      expect(classesOf(column), column).toEqual(
+        expect.arrayContaining(['contents', 'xl:flex', 'xl:flex-col']),
+      );
+    }
+    const at = (testid: string): number => body.indexOf(`data-testid="${testid}"`);
+    // Left: the number over the parts. Right: the sparkline over the tier strip.
+    expect(at('forever-score-main')).toBeLessThan(at('forever-score-headline'));
+    expect(at('forever-score-headline')).toBeLessThan(at('forever-score-parts'));
+    expect(at('forever-score-parts')).toBeLessThan(at('forever-score-side'));
+    expect(at('forever-score-side')).toBeLessThan(at('forever-score-history'));
+    expect(at('forever-score-history')).toBeLessThan(at('forever-score-tiers'));
+    // The sparkline takes the full column from 1280.
+    expect(classesOf('forever-score-history')).toEqual(
+      expect.arrayContaining(['max-w-[460px]', 'xl:max-w-none']),
+    );
   });
 
   it('lists the five parts with the addon’s labels, their points and ceilings', () => {
@@ -278,14 +325,15 @@ describe('CharacterRatingPanel Forever Score card', () => {
     expect(body).toMatch(
       /<svg[^>]*role="img"[^>]*aria-label="Forever Score history: 1500 on 10 Nov, 1830 on 9 Dec"/,
     );
-    // The caption: 12px Barlow (the body face), muted, the left of the date row; the newest
-    // date at the right edge.
+    // The caption: 12px Barlow (the body face), the left of the date row; the newest date at the
+    // right edge. Fix round 3 item 12: the caption in the text colour at every size, with
+    // ", 3 readings" under five points; the newest date stays mono muted.
     const row = /<div class="([^"]*)"[^>]*data-testid="forever-score-history-dates"[\s\S]*?<\/div>/.exec(
       body,
     );
     expect(row?.[1].split(' ')).toEqual(expect.arrayContaining(['flex', 'justify-between']));
     expect(row?.[0]).toMatch(
-      /<span class="text-muted text-\[12px\]" data-testid="forever-score-history-caption">Up 330 since 10 Nov<\/span>[\s\S]*data-testid="forever-score-history-last">9 Dec</,
+      /<span class="text-text text-\[12px\]" data-testid="forever-score-history-caption">Up 330 since 10 Nov, 3 readings<\/span>[\s\S]*<span class="text-muted tabular font-mono text-\[12px\]" data-testid="forever-score-history-last">9 Dec</,
     );
     // The table equivalent stays.
     expect(body).toMatch(/<table class="sr-only" data-testid="forever-score-history-table"/);
@@ -293,9 +341,17 @@ describe('CharacterRatingPanel Forever Score card', () => {
 
   it('draws no sparkline box at all with fewer than two points, or with no score', () => {
     const one = [{ date: '2026-11-04', score: 1830, tier: 'epic' }];
+    const single = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: SCORED, scoreHistory: one },
+    }).body;
+    expect(single).not.toContain('forever-score-history');
+    // Fix round 3 item 12: one point is a sentence where the line would be, not nothing.
+    expect(single).toMatch(
+      /<p class="text-text order-3 text-\[12px\] xl:order-none" data-testid="forever-score-first">First score recorded 4 Nov\.<\/p>/,
+    );
     expect(
-      render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED, scoreHistory: one } }).body,
-    ).not.toContain('forever-score-history');
+      render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED, scoreHistory: [] } }).body,
+    ).not.toContain('forever-score-first');
     expect(
       render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED, scoreHistory: [] } }).body,
     ).not.toContain('forever-score-history');

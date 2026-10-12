@@ -4,7 +4,13 @@
 import { describe, expect, it } from 'vitest';
 import labels from '../../../../docs/contracts/fixtures/score-labels.json';
 import type { ScorePoint } from './score';
-import { SPARKLINE_HEIGHT, SPARKLINE_PAD, SPARKLINE_WIDTH, scoreSparkline } from './sparkline';
+import {
+  SPARKLINE_HEIGHT,
+  SPARKLINE_PAD,
+  SPARKLINE_WIDTH,
+  scoreHistoryFirst,
+  scoreSparkline,
+} from './sparkline';
 
 const point = (date: string, score: number, tier = 'rare'): ScorePoint => ({ date, score, tier });
 
@@ -145,16 +151,17 @@ describe('scoreSparkline', () => {
     expect(SPARKLINE_PAD).toBeGreaterThanOrEqual(10);
   });
 
-  // Fix round 2 item 2: a caption from the first point to the last, dated by the first.
+  // Fix round 2 item 2: a caption from the first point to the last, dated by the first (two
+  // points are sparse, so fix round 3 item 12 adds ", 2 readings").
   it('captions the change from the first point to the last: up, down or none', () => {
     expect(scoreSparkline([point('2026-11-10', 1500), point('2026-12-09', 1830)])!.caption).toBe(
-      'Up 330 since 10 Nov',
+      'Up 330 since 10 Nov, 2 readings',
     );
     expect(scoreSparkline([point('2026-11-10', 1870), point('2026-12-09', 1830)])!.caption).toBe(
-      'Down 40 since 10 Nov',
+      'Down 40 since 10 Nov, 2 readings',
     );
     expect(scoreSparkline([point('2026-11-10', 1830), point('2026-12-09', 1830)])!.caption).toBe(
-      'No change since 10 Nov',
+      'No change since 10 Nov, 2 readings',
     );
   });
 
@@ -172,7 +179,36 @@ describe('scoreSparkline', () => {
     expect([same.firstLabel, same.lastLabel]).toEqual(['10 Nov', '9 Dec']);
     const crossing = scoreSparkline([point('2026-12-20', 1500), point('2027-01-05', 1540)])!;
     expect([crossing.firstLabel, crossing.lastLabel]).toEqual(['20 Dec 2026', '5 Jan 2027']);
-    expect(crossing.caption).toBe('Up 40 since 20 Dec 2026');
+    expect(crossing.caption).toBe('Up 40 since 20 Dec 2026, 2 readings');
     expect(crossing.ariaLabel).toBe('Forever Score history: 1500 on 20 Dec 2026, 1540 on 5 Jan 2027');
+  });
+});
+
+// L8.4 fix round 3 item 12: one point is a sentence, not nothing; a sparse history says how few
+// readings the line is drawn through.
+describe('the history caption (fix round 3 item 12)', () => {
+  const thirty = Array.from({ length: 30 }, (_, index) =>
+    point(`2026-09-${String(index + 1).padStart(2, '0')}`, 1500 + index * 10),
+  );
+
+  it('gives one point "First score recorded 12 Oct." and anything else no first-score line', () => {
+    expect(scoreHistoryFirst([point('2026-10-12', 1830)])).toBe('First score recorded 12 Oct.');
+    expect(scoreHistoryFirst([])).toBeNull();
+    expect(scoreHistoryFirst(null)).toBeNull();
+    expect(scoreHistoryFirst([point('2026-10-11', 1800), point('2026-10-12', 1830)])).toBeNull();
+    // An unreadable point does not count as the one.
+    expect(scoreHistoryFirst([point('not a date', 1800)])).toBeNull();
+    expect(scoreHistoryFirst([point('not a date', 1800), point('2026-10-12', 1830)])).toBe(
+      'First score recorded 12 Oct.',
+    );
+  });
+
+  it('adds ", 2 readings" when fewer than five points draw the line, and nothing from five', () => {
+    expect(scoreSparkline([point('2026-04-12', 1500), point('2026-10-12', 1830)])!.caption).toBe(
+      'Up 330 since 12 Apr, 2 readings',
+    );
+    expect(scoreSparkline(thirty.slice(0, 4))!.caption).toBe('Up 30 since 1 Sep, 4 readings');
+    expect(scoreSparkline(thirty.slice(0, 5))!.caption).toBe('Up 40 since 1 Sep');
+    expect(scoreSparkline(thirty)!.caption).toBe('Up 290 since 1 Sep');
   });
 });

@@ -91,6 +91,11 @@ export const scoreCopy = {
   /** The sparkline image's accessible name: "Forever Score history: 1500 on 10 Nov, 1830 on 9 Dec". */
   historyLabel: (firstScore: number, firstDate: string, lastScore: number, lastDate: string): string =>
     `Forever Score history: ${firstScore} on ${firstDate}, ${lastScore} on ${lastDate}`,
+  /** After the caption when fewer than five points draw the line (fix round 3 item 12), so a
+   *  straight two-point line over six months does not read as a steady climb: ", 2 readings". */
+  historyReadings: (count: number): string => `, ${count} readings`,
+  /** Where the sparkline would be, for a history of one point (fix round 3 item 12). */
+  historyFirst: (date: string): string => `First score recorded ${date}.`,
   explainLink: 'What the score counts',
   explainHref: '/ratings#forever-score',
   tierStripLabel: 'Forever Score tiers',

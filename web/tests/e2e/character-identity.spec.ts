@@ -87,11 +87,13 @@ test('the tooltip mock reads as the client prints it: name, <guild>, "Level 60 N
     '<Cx66 Olympus>',
     'Level 60 Night Elf (Player)',
     'Priest',
+    'Alliance',
     '',
     'Forever Score 1830 · Epic · as of 4 Nov',
   ]);
-  // The visitor's page knows no faction, so there is no faction line.
-  await expect(page.getByTestId('character-in-game-faction')).toHaveCount(0);
+  // Fix round 3 item 15: the faction comes from the race (a Night Elf is Alliance), so a
+  // visitor gets the same line the owner does.
+  await expect(page.getByTestId('character-in-game-faction')).toHaveText('Alliance');
 });
 
 test('a long guild name wraps inside the mock and never pushes the score line out', async ({ page }) => {
@@ -142,13 +144,19 @@ test('the score card draws the history across its content column, with a caption
   const dotBox = await dot.boundingBox();
   if (plot === null || gear === null || caption === null || last === null || dotBox === null)
     throw new Error('a sparkline part is missing');
-  expect(Math.abs(plot.x - gear.x)).toBeLessThan(1);
-  expect(Math.abs(caption.x - gear.x)).toBeLessThan(1);
-  expect(Math.abs(last.x + last.width - (plot.x + plot.width))).toBeLessThan(1);
   const viewport = page.viewportSize()?.width ?? 0;
+  if (viewport >= 1280) {
+    // Fix round 3 item 13: from 1280 the sparkline is the right column, right of the parts.
+    expect(plot.x).toBeGreaterThan(gear.x + gear.width);
+    expect(Math.abs(caption.x - plot.x)).toBeLessThan(1);
+  } else {
+    expect(Math.abs(plot.x - gear.x)).toBeLessThan(1);
+    expect(Math.abs(caption.x - gear.x)).toBeLessThan(1);
+  }
+  expect(Math.abs(last.x + last.width - (plot.x + plot.width))).toBeLessThan(1);
   expect(plot.height).toBe(viewport >= 1024 ? 48 : 40);
-  if (viewport >= 768) expect(Math.round(plot.width)).toBe(460);
-  else expect(Math.abs(plot.width - gear.width)).toBeLessThan(1);
+  if (viewport >= 768 && viewport < 1280) expect(Math.round(plot.width)).toBe(460);
+  else if (viewport < 768) expect(Math.abs(plot.width - gear.width)).toBeLessThan(1);
   expect([dotBox.width, dotBox.height]).toEqual([8, 8]);
   expect(Math.abs(dotBox.x + dotBox.width / 2 - (plot.x + plot.width))).toBeLessThan(1);
 
@@ -174,8 +182,9 @@ test('a character nobody knows the identity of: no guild, realm or level line, n
   });
   await page.goto(CHARACTER_PATH);
 
-  // "Discipline Priest" then the chip, on the one line.
-  await expect(page.getByTestId('character-descriptor')).toHaveText('Discipline PriestHardcore US');
+  // "Discipline Priest" then the chip, on the one line (a zero-width word joiner between them,
+  // fix round 3 item 2).
+  await expect(page.getByTestId('character-descriptor')).toHaveText('Discipline Priest⁠Hardcore US');
   const spec = await page.getByTestId('character-spec').boundingBox();
   const chip = await page.getByTestId('character-ruleset-chip').boundingBox();
   expect(Math.round((chip?.x ?? 0) - ((spec?.x ?? 0) + (spec?.width ?? 0)))).toBe(8);
@@ -191,9 +200,14 @@ test('a character nobody knows the identity of: no guild, realm or level line, n
     'Elyra Duskvale',
     'Forever Score 1830 · Epic · as of 4 Nov',
   ]);
-  // One point is not a line: no sparkline and no empty box where it would be.
+  // One point is not a line: no sparkline and no empty box where it would be, but the date the
+  // record starts, in the text colour (fix round 3 item 12).
   await expect(page.getByTestId('forever-score-card')).toBeVisible();
   await expect(page.getByTestId('forever-score-history')).toHaveCount(0);
+  const first = page.getByTestId('forever-score-first');
+  await expect(first).toHaveText('First score recorded 4 Nov.');
+  await expect(first).toHaveCSS('color', 'rgb(233, 228, 216)');
+  await expect(first).toHaveCSS('font-size', '12px');
   await expect(page.getByTestId('character')).not.toContainText(/null|undefined|Unknown/);
 });
 
@@ -234,7 +248,9 @@ test('the owner gets the Character header’s sync line third, on the name’s l
   expect(syncBox?.x).toBe(descriptor?.x);
   expect(syncBox?.x).toBe(level?.x);
   expect((syncBox?.y ?? 0) > (level?.y ?? 0)).toBe(true);
-  await expect(page.getByTestId('character-in-game-faction')).toHaveText('Horde');
+  // Fix round 3 item 15: the faction comes from the race, the visitor's mock exactly, not from
+  // the /v1/me row (this fixture row says Horde for a Night Elf).
+  await expect(page.getByTestId('character-in-game-faction')).toHaveText('Alliance');
 });
 
 test('a stale addon sync puts only "Log out in the game to sync" in ember', async ({ page }) => {
@@ -285,4 +301,331 @@ test('a 404 is still the no-logs page, and its owner still gets "Upload logs" (r
   await expect(action).toHaveAttribute('href', '/setup');
   await expect(page.getByTestId('forever-score-history')).toHaveCount(0);
   await expect(page.getByTestId('character-error')).toHaveCount(0);
+});
+
+// ---- L8.4 fix round 3 ----
+
+test('the 404 no-logs page draws the character header above the Forever Score card (item 1, D1)', async ({
+  page,
+}) => {
+  await stub(page, 'missing');
+  await page.goto(CHARACTER_PATH);
+
+  await expect(page.getByTestId('character-unlogged')).toBeVisible();
+  const name = await page.getByTestId('character-name').boundingBox();
+  const card = await page.getByTestId('forever-score-card').boundingBox();
+  if (name === null || card === null) throw new Error('a 404 page part is missing');
+  expect(name.y + name.height).toBeLessThan(card.y);
+});
+
+/** The line box a range of text sits on: its rect's vertical centre. */
+async function centreOf(page: Page, testid: string): Promise<number> {
+  const box = await page.getByTestId(testid).boundingBox();
+  if (box === null) throw new Error(`${testid} is missing`);
+  return box.y + box.height / 2;
+}
+
+test.describe('a 40-character guild with no realm at 320px (item 2, D2)', () => {
+  test.use({ viewport: { width: 320, height: 720 } });
+
+  test('the guild wraps and only the chip is glued to its last word', async ({ page }) => {
+    const guild = 'Olympus XXVII Veterans of the Long March'; // 40 characters
+    expect(guild).toHaveLength(40);
+    await stub(page, {
+      ...CHARACTER.data,
+      ...SCORE,
+      character: {
+        ...CHARACTER.data.character,
+        guild: { name: guild, rank: 'member' },
+        realm: null,
+        level: null,
+        race: null,
+      },
+    });
+    await page.goto(CHARACTER_PATH);
+
+    const link = page.getByTestId('character-guild-link');
+    await expect(link).toHaveText(`<${guild}>`);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+    // The guild's own text wraps: more than one line box.
+    const lines = await link.evaluate((element) =>
+      [...element.getClientRects()].map((rect) => ({
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
+      })),
+    );
+    expect(lines.length).toBeGreaterThan(1);
+    // The chip sits on the guild's last line, 8px after its last word.
+    const lastLine = lines[lines.length - 1];
+    const chip = await page.getByTestId('character-ruleset-chip').boundingBox();
+    if (chip === null) throw new Error('no chip');
+    expect(Math.round(chip.x - lastLine.right)).toBe(8);
+    expect(Math.abs(chip.y + chip.height / 2 - (lastLine.top + lastLine.bottom) / 2)).toBeLessThan(1);
+  });
+});
+
+test('an owner whose build has no gear still gets the sync line, and no "No export yet" (item 3, D3)', async ({
+  page,
+}) => {
+  const me = ownerMe();
+  const own = me.characters[0];
+  if (own.build === undefined) throw new Error('the me fixture character has no build');
+  const { gear: _gear, ...gearless } = own.build;
+  me.characters[0] = { ...own, build: gearless };
+  await page.route('**/v1/me', (route) => route.fulfill(ok(me)));
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  await page.goto(CHARACTER_PATH);
+
+  await expect(page.getByTestId('character-sync')).toHaveText(/^Addon · \d+ minutes ago$/);
+  await expect(page.getByTestId('character')).not.toContainText('No export yet');
+});
+
+/** The fixture with a third, older history row so "Best per encounter" renders as well, and one
+ *  unscored row in each table. */
+function mixedExecution(): Record<string, unknown> {
+  const [newest, second] = CHARACTER.data.history;
+  const older = {
+    ...newest,
+    value: 1656,
+    percentile: 82.4,
+    fought_at: '2026-12-07T20:00:00Z',
+    report_id: 'olderreport1',
+    fight_index: 2,
+    execution_score: 0.81,
+  };
+  return {
+    ...CHARACTER.data,
+    best: [CHARACTER.data.best[0], { ...CHARACTER.data.best[1], execution_score: null }],
+    history: [newest, { ...second, execution_score: null }, older],
+  };
+}
+
+test('a scored and an unscored Execution cell sit inside their rows in both tables (items 4 and 6)', async ({
+  page,
+}) => {
+  await stub(page, { ...mixedExecution(), ...SCORE });
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(CHARACTER_PATH);
+    await expect(page.getByTestId('character-best')).toBeVisible();
+    for (const [table, testid] of [
+      ['character-best', 'character-best-execution'],
+      ['character-history', 'character-execution'],
+    ] as const) {
+      // Each row and its cell are read in one pass, so nothing above (a panel settling) can move
+      // the page between the two reads.
+      const measured = await page.getByTestId(table).evaluate((list, cellTestid) => {
+        return [...list.querySelectorAll(':scope > li:not([data-testid="character-table-header"])')].map(
+          (li) => {
+            const cell = li.querySelector(`[data-testid="${cellTestid}"]`);
+            const shown = cell !== null && getComputedStyle(cell).display !== 'none';
+            const rect = (element: Element) => {
+              const { y, height } = element.getBoundingClientRect();
+              return { y, height };
+            };
+            return { row: rect(li), cell: shown && cell !== null ? rect(cell) : null };
+          },
+        );
+      }, testid);
+      expect(measured.length, table).toBeGreaterThan(1);
+      const heights: number[] = [];
+      for (const [index, { row, cell: box }] of measured.entries()) {
+        heights.push(Math.round(row.height));
+        if (box === null) {
+          // Only "Every ranked fight" drops the column, and only on a phone: both states alike.
+          expect(width < 768 && table === 'character-history', `${table} ${width}`).toBe(true);
+          continue;
+        }
+        const where = `${table} row ${index} at ${width}`;
+        expect(box.y, where).toBeGreaterThanOrEqual(row.y - 0.5);
+        expect(box.y + box.height, where).toBeLessThanOrEqual(row.y + row.height + 0.5);
+        // Centred on the row, not riding at its top.
+        expect(Math.abs(box.y + box.height / 2 - (row.y + row.height / 2)), where).toBeLessThan(2);
+      }
+      // A scored row and an unscored one are the same height (the phone leak made it 117 vs 61).
+      expect(new Set(heights).size, `${table} at ${width}: ${heights.join(', ')}`).toBe(1);
+    }
+  }
+});
+
+test('the Execution column is explained under each table title, and only to a screen reader on a phone (item 7)', async ({
+  page,
+}) => {
+  await stub(page, { ...mixedExecution(), ...SCORE });
+  await page.goto(CHARACTER_PATH);
+  const definitions = page.getByTestId('character-execution-definition');
+  await expect(definitions).toHaveCount(2);
+  const words =
+    'Execution: the fight’s damage or healing as a share of what the same gear and talents do in the simulator.';
+  const phone = (page.viewportSize()?.width ?? 0) < 768;
+  for (const definition of await definitions.all()) {
+    await expect(definition).toHaveText(words);
+    if (phone) await expect(definition).toHaveCSS('position', 'absolute');
+    else {
+      await expect(definition).toBeVisible();
+      await expect(definition).toHaveCSS('color', 'rgb(154, 148, 132)');
+    }
+  }
+  await expect(
+    page.getByTestId('character-best').getByTestId('character-table-header').locator(`[title="${words}"]`),
+  ).toHaveText('Execution');
+});
+
+test.describe('with JavaScript off (item 9)', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('the skeleton goes and one line says why, with the Planner link', async ({ page }) => {
+    await page.goto(CHARACTER_PATH);
+    await expect(page.getByTestId('character-skeleton')).toBeHidden();
+    const line = page.getByTestId('character-noscript');
+    await expect(line).toBeVisible();
+    await expect(line).toHaveText(
+      'Forever Sixty needs JavaScript to show this character. Turn it on and reload, or open the Planner.',
+    );
+    await expect(line.getByRole('link', { name: 'Planner' })).toHaveAttribute('href', '/planner');
+  });
+});
+
+test.describe('a long realm at 360px (item 10)', () => {
+  test.use({ viewport: { width: 360, height: 740 } });
+
+  test('the realm moves whole and no line ends on a dot', async ({ page }) => {
+    await stub(page, {
+      ...CHARACTER.data,
+      ...SCORE,
+      character: {
+        ...CHARACTER.data.character,
+        guild: { name: 'Olympus XXVII Veterans of the Long March', rank: 'member' },
+        realm: 'Classic Beta PvE Two Extended',
+      },
+    });
+    await page.goto(CHARACTER_PATH);
+
+    const realm = page.getByTestId('character-realm');
+    await expect(realm).toHaveText('Classic Beta PvE Two Extended');
+    expect(await realm.evaluate((element) => element.getClientRects().length)).toBe(1);
+    // Every "·" shares its line with the character after it (a no-break space, then the next
+    // segment): a dot is never the last thing on a line.
+    const dots = await page.getByTestId('character-descriptor').evaluate((element) => {
+      const out: { dot: number; next: number }[] = [];
+      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+      const texts: Text[] = [];
+      for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) texts.push(node as Text);
+      texts.forEach((text, index) => {
+        for (let at = text.data.indexOf('·'); at !== -1; at = text.data.indexOf('·', at + 1)) {
+          const range = document.createRange();
+          range.setStart(text, at);
+          range.setEnd(text, at + 1);
+          const dot = range.getBoundingClientRect();
+          // The first visible character after the dot and its no-break space.
+          let nextText = text;
+          let nextAt = at + 2;
+          let next = index;
+          while (nextAt >= nextText.data.length && next + 1 < texts.length) {
+            next += 1;
+            nextText = texts[next];
+            nextAt = 0;
+          }
+          range.setStart(nextText, nextAt);
+          range.setEnd(nextText, nextAt + 1);
+          out.push({ dot: dot.top, next: range.getBoundingClientRect().top });
+        }
+      });
+      return out;
+    });
+    expect(dots).toHaveLength(3);
+    for (const { dot, next } of dots) expect(Math.abs(dot - next)).toBeLessThan(2);
+  });
+});
+
+test('the guild link’s focus ring hugs its text: 2px at no offset (item 11)', async ({ page }) => {
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  await page.goto(CHARACTER_PATH);
+  const link = page.getByTestId('character-guild-link');
+  await link.focus();
+  await expect(link).toBeFocused();
+  await expect(link).toHaveCSS('outline-offset', '0px');
+  await expect(link).toHaveCSS('outline-width', '2px');
+});
+
+test('the sparkline caption is 12px in the text colour; a sparse history counts its readings (item 12)', async ({
+  page,
+}) => {
+  await stub(page, { ...CHARACTER.data, ...SCORE, score_history: [SCORE_HISTORY[0], SCORE_HISTORY[4]] });
+  await page.goto(CHARACTER_PATH);
+  const caption = page.getByTestId('forever-score-history-caption');
+  await expect(caption).toHaveText('Up 590 since 12 Oct, 2 readings');
+  await expect(caption).toHaveCSS('color', 'rgb(233, 228, 216)');
+  await expect(caption).toHaveCSS('font-size', '12px');
+  const last = page.getByTestId('forever-score-history-last');
+  await expect(last).toHaveCSS('color', 'rgb(154, 148, 132)');
+});
+
+test.describe('the score card at 1440 (item 13)', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+  test.skip(() => test.info().project.name !== 'desktop', 'a desktop width');
+
+  test('is two columns: the sparkline meets the card’s content edge, over the tier strip', async ({
+    page,
+  }) => {
+    await stub(page, { ...CHARACTER.data, ...SCORE });
+    await page.goto(CHARACTER_PATH);
+    const card = page.getByTestId('forever-score-card');
+    const edge = await card.evaluate((element) => {
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return rect.right - parseFloat(style.borderRightWidth) - parseFloat(style.paddingRight);
+    });
+    const plot = await page.getByTestId('forever-score-plot').boundingBox();
+    const tiers = await page.getByTestId('forever-score-tiers').boundingBox();
+    const parts = await page.getByTestId('forever-score-parts').boundingBox();
+    if (plot === null || tiers === null || parts === null) throw new Error('a card part is missing');
+    expect(Math.abs(plot.x + plot.width - edge)).toBeLessThan(1);
+    expect(plot.x).toBeGreaterThan(parts.x + parts.width);
+    expect(tiers.y).toBeGreaterThan(plot.y + plot.height);
+    expect(Math.abs(tiers.x - plot.x)).toBeLessThan(1);
+  });
+});
+
+test('the chip is centred on its text line (item 14)', async ({ page }) => {
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  await page.goto(CHARACTER_PATH);
+  const level = await centreOf(page, 'character-level-race');
+  const chip = await centreOf(page, 'character-ruleset-chip');
+  expect(Math.abs(chip - level)).toBeLessThan(0.5);
+});
+
+test('a visitor’s band links are 44px tap boxes on a phone (item 14)', async ({ page }) => {
+  test.skip(test.info().project.name !== 'mobile', 'a phone width');
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  await page.goto(CHARACTER_PATH);
+  const links = page.getByTestId('current-character-bar').getByRole('link');
+  await expect(links).toHaveCount(2);
+  for (const link of await links.all()) {
+    const box = await link.boundingBox();
+    if (box === null) throw new Error('a band link is missing');
+    expect(box.height, await link.innerText()).toBeGreaterThanOrEqual(44);
+    expect(box.width, await link.innerText()).toBeGreaterThanOrEqual(44);
+  }
+});
+
+test('the owner’s sync age ticks each minute while the tab lives (item 14)', async ({ page }) => {
+  const now = new Date('2026-10-12T01:34:53Z');
+  await page.clock.install({ time: now });
+  const me = ownerMe();
+  const own = me.characters[0];
+  if (own.build === undefined) throw new Error('the me fixture character has no build');
+  me.characters[0] = {
+    ...own,
+    build: { ...own.build, captured_at: new Date(now.getTime() - 4 * 60_000).toISOString() },
+  };
+  await page.route('**/v1/me', (route) => route.fulfill(ok(me)));
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  await page.goto(CHARACTER_PATH);
+
+  const sync = page.getByTestId('character-sync');
+  await expect(sync).toHaveText('Addon · 4 minutes ago');
+  await page.clock.runFor(60_000);
+  await expect(sync).toHaveText('Addon · 5 minutes ago');
 });

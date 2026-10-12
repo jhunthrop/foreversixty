@@ -4,13 +4,14 @@
      a public report is enough to have one, which is the spec's position. -->
 <script lang="ts">
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
+  import CharacterFightTable from './character/CharacterFightTable.svelte';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import ProfileDescriptor from './character/ProfileDescriptor.svelte';
+  import CharacterUnlogged from './CharacterUnlogged.svelte';
   import { CHARACTER_LOADING_MIN_H } from '../lib/character-layout';
   import { fetchMeOnce, type MeCharacter } from '../lib/account/api';
   import { syncView } from '../lib/character-header/sync';
   import { characterKey, nameFromSlug, parseCharacterPath, type CharacterPath } from '../lib/characters';
-  import { formatAmount, percentileToken, rowLink } from '../lib/report/format';
   import {
     encounterSlug,
     fetchCharacter,
@@ -19,19 +20,10 @@
     type CharacterPage,
   } from '../lib/rankings/api';
   import { formatDayMonthYear } from '../lib/dates';
-  import { RANKING_METRICS } from '../lib/rankings/url';
-  import {
-    amountHeader,
-    bestRepeatsHistory,
-    bisHref,
-    characterHeaderCopy,
-    characterTableCopy,
-    newestSpec,
-    profileHeader,
-  } from '../lib/character-profile';
+  import { bestRepeatsHistory, bisHref, profileHeader, profileSpec } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
+  import { factionOfRace } from '../lib/race-faction';
   import { foreverOf, ownCharacter } from '../lib/score/score';
-  import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterInGame from './CharacterInGame.svelte';
   import CharacterRatingPanel from './CharacterRatingPanel.svelte';
@@ -43,22 +35,6 @@
   const resolved = $derived(
     path ?? (typeof window === 'undefined' ? null : parseCharacterPath(window.location.pathname)),
   );
-
-  /**
-   * A percentile beside a formatted amount has no column heading at any breakpoint --
-   * unlike the report island's tables, this list never had one to lose, so the two bare
-   * numbers need their own labels rather than relying on position. `RANKING_METRICS`
-   * already holds the one label table for `dps`/`hps`/`damage_taken`; echoed as-is if the
-   * API ever returns an id this list has not heard of, the same fallback shape
-   * `rulesetLabel` and `phaseLabel` use.
-   */
-  function metricLabel(id: string): string {
-    return RANKING_METRICS.find((metric) => metric.id === id)?.label ?? id;
-  }
-
-  function percentileAriaLabel(percentile: number | undefined): string | undefined {
-    return percentile === undefined ? undefined : `${Math.round(percentile)} percentile`;
-  }
 
   let data = $state<CharacterPage | null>(null);
   /** `unlogged`: the API has no record of this character (a 404). The page still answers --
@@ -103,10 +79,6 @@
       });
   });
 
-  /** The ruleset-and-region chip, "Hardcore US" (Task L8.4 ruling 1), on the unlogged page;
-   *  a logged character's is ProfileDescriptor's, with the same muted text and border token. */
-  const CHIP = 'pill text-muted border-line align-middle';
-
   /** "Holy Priest · 31/20/0 · <Olympus XXVII> · Classic Beta PvP", "Level 60 Night Elf" and the
    *  chip, from the answer. */
   const header = $derived(data === null || resolved === null ? null : profileHeader(data, resolved));
@@ -141,10 +113,20 @@
       });
   });
 
+  /** The clock the owner's sync line reads, ticking each minute while the tab lives (L8.4 fix
+   *  round 3 item 14), so "Addon · 4 minutes ago" does not stand still. */
+  let now = $state(new Date());
+  $effect(() => {
+    const tick = setInterval(() => {
+      now = new Date();
+    }, 60_000);
+    return () => clearInterval(tick);
+  });
+
   /** The owner's sync line (fix round 2 item 5), the Character header's own: "Addon · 4
-   *  minutes ago", the stale words in ember past the nav spec's limit; none for a visitor or
-   *  with no gear on file. */
-  const sync = $derived(own === null ? null : syncView(own, new Date()));
+   *  minutes ago", the stale words in ember past the nav spec's limit; none for a visitor. The
+   *  profile reads no gear, so the line stands whenever a build exists (fix round 3 item 3). */
+  const sync = $derived(own === null ? null : syncView(own, now, { needsGear: false }));
 </script>
 
 {#if status === 'missing'}
@@ -158,34 +140,7 @@
 {:else if status === 'failed'}
   <LoadError message={error} onRetry={() => (attempt += 1)} testid="character-error" />
 {:else if status === 'unlogged' && resolved !== null}
-  <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character-unlogged" id="character">
-    <!-- The same identity block as a logged character's, with the neutral crest (no class on
-         file), so the two states read as one page. -->
-    <header class="flex flex-col gap-1">
-      <CharacterIdentity
-        character={{
-          key: characterKey(resolved.region, resolved.ruleset, resolved.slug),
-          region: resolved.region,
-          ruleset: resolved.ruleset,
-          name: unloggedName,
-        }}
-        size="lg"
-        descriptor="none"
-        heading
-        nameTestid="character-name"
-      >
-        {#snippet below()}
-          <p class="text-muted text-[13px]">
-            <span class={CHIP} data-testid="character-ruleset-chip"
-              >{characterHeaderCopy.chip(resolved.ruleset, resolved.region)}</span
-            >
-          </p>
-        {/snippet}
-      </CharacterIdentity>
-    </header>
-    <CharacterRatingPanel path={resolved} forever={null} {owned} name={unloggedName} />
-    <CharacterInGame forever={null} name={unloggedName} {owned} />
-  </div>
+  <CharacterUnlogged path={resolved} name={unloggedName} {owned} />
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
     <!-- At every width (fix round 3 item 4, L8.4 fix round 2 item 7): a signed-in chip first
@@ -234,7 +189,7 @@
       path={resolved}
       forever={foreverOf(data)}
       scoreHistory={data.score_history ?? []}
-      bisHref={bisHref(data.character.class, newestSpec(data))}
+      bisHref={bisHref(data.character.class, profileSpec(data))}
       {owned}
       name={data.character.name}
     />
@@ -246,110 +201,35 @@
       guild={data.character.guild?.name ?? null}
       level={data.character.level ?? null}
       race={data.character.race ?? null}
-      faction={own?.faction ?? null}
+      faction={factionOfRace(data.character.race)}
       {owned}
     />
 
-    <!-- Fix round 1 item 4: a section with no rows is absent (spec principle 2). Fix round 2
-         item 6: both tables share one column order under a header row -- Boss, Spec, Parse %,
-         the amount (HPS or DPS), Date, Execution -- dates read "9 Dec 2026", and "Best per
-         encounter" is left out when it would only repeat every ranked fight. -->
-    {#snippet fightHeader(rows: CharacterFight[], executionOnPhone: boolean)}
-      <li
-        class={`label text-muted border-line-soft grid min-h-9 items-end gap-3 border-b px-2 pb-2 ${executionOnPhone ? 'grid-cols-[minmax(0,1fr)_auto_auto_auto]' : 'grid-cols-[minmax(0,1fr)_auto_auto]'} md:grid-cols-[minmax(0,1fr)_112px_64px_88px_112px_72px]`}
-        aria-hidden="true"
-        data-testid="character-table-header"
-      >
-        <span>{characterTableCopy.boss}</span>
-        <span class="hidden md:inline">{characterTableCopy.spec}</span>
-        <span class="text-right">{characterTableCopy.parse}</span>
-        <span class="text-right">{amountHeader(rows)}</span>
-        <span class="hidden md:inline">{characterTableCopy.date}</span>
-        <span class={`text-right ${executionOnPhone ? '' : 'hidden md:inline'}`}
-          >{characterTableCopy.execution}</span
-        >
-      </li>
-    {/snippet}
-
-    {#snippet fightRow(
-      row: CharacterFight,
-      bossHref: string,
-      executionOnPhone: boolean,
-      executionTestid: string,
-    )}
-      <li
-        class={`border-line-soft grid min-h-11 items-center gap-3 border-b px-2 py-2 text-[14px] ${executionOnPhone ? 'grid-cols-[minmax(0,1fr)_auto_auto_auto]' : 'grid-cols-[minmax(0,1fr)_auto_auto]'} md:grid-cols-[minmax(0,1fr)_112px_64px_88px_112px_72px]`}
-      >
-        <a class="{rowLink} truncate" href={bossHref}>{row.encounter}</a>
-        <span class="text-muted hidden truncate text-[13px] md:inline">{row.spec ?? ''}</span>
-        <span
-          class="tabular text-right font-mono text-[13px]"
-          style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
-          aria-label={percentileAriaLabel(row.percentile)}
-        >
-          {row.percentile === undefined ? '' : Math.round(row.percentile)}
-        </span>
-        <a
-          class="{rowLink} tabular justify-end text-right font-mono"
-          href={`/reports/${row.report_id}?fight=${row.fight_index}`}
-          aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
-        >
-          {formatAmount(Math.round(row.value))}
-        </a>
-        <span
-          class="text-muted tabular hidden font-mono text-[13px] md:inline"
-          data-testid="character-fight-date">{formatDayMonthYear(new Date(row.fought_at))}</span
-        >
-        {#if row.execution_score === null}
-          <span
-            class={`text-muted tabular text-right font-mono text-[13px] ${executionOnPhone ? '' : 'hidden md:inline'}`}
-            title={executionTitle(null)}
-            aria-label={executionTitle(null)}
-            data-testid={executionTestid}>{executionLabel(null)}</span
-          >
-        {:else}
-          <a
-            class={`${rowLink} tabular justify-end text-right font-mono text-[13px] ${executionOnPhone ? '' : 'hidden md:inline'}`}
-            href={executionHref(row.report_id, row.fight_index)}
-            title={executionTitle(row.execution_score)}
-            data-testid={executionTestid}>{executionLabel(row.execution_score)}</a
-          >
-        {/if}
-      </li>
-    {/snippet}
-
+    <!-- Fix round 1 item 4: a section with no rows is absent (spec principle 2). "Best per
+         encounter" is left out when it would only repeat every ranked fight. The two tables
+         share one component (character/CharacterFightTable.svelte). -->
     {#if data.best.length > 0 && !bestRepeatsHistory(data.best, data.history)}
-      <section class="flex flex-col gap-2">
-        <h2 class="section-title text-[18px]">Best per encounter</h2>
-        <ul class="flex flex-col" data-testid="character-best">
-          {@render fightHeader(data.best, true)}
-          {#each data.best as row (`${row.encounter_id}-${row.difficulty}-${row.metric}`)}
-            {@render fightRow(
-              row,
-              `/rankings/${encounterSlug(row.encounter)}`,
-              true,
-              'character-best-execution',
-            )}
-          {/each}
-        </ul>
-      </section>
+      <CharacterFightTable
+        title="Best per encounter"
+        rows={data.best}
+        testid="character-best"
+        bossHref={(row: CharacterFight) => `/rankings/${encounterSlug(row.encounter)}`}
+        rowKey={(row: CharacterFight) => `${row.encounter_id}-${row.difficulty}-${row.metric}`}
+        executionOnPhone
+        executionTestid="character-best-execution"
+      />
     {/if}
 
     {#if data.history.length > 0}
-      <section class="flex flex-col gap-2">
-        <h2 class="section-title text-[18px]">Every ranked fight</h2>
-        <ul class="flex flex-col" data-testid="character-history">
-          {@render fightHeader(data.history, false)}
-          {#each data.history as row, index (`${row.report_id}-${row.fight_index}-${index}`)}
-            {@render fightRow(
-              row,
-              `/reports/${row.report_id}?fight=${row.fight_index}`,
-              false,
-              'character-execution',
-            )}
-          {/each}
-        </ul>
-      </section>
+      <CharacterFightTable
+        title="Every ranked fight"
+        rows={data.history}
+        testid="character-history"
+        bossHref={(row: CharacterFight) => `/reports/${row.report_id}?fight=${row.fight_index}`}
+        rowKey={(row: CharacterFight, index: number) => `${row.report_id}-${row.fight_index}-${index}`}
+        executionOnPhone={false}
+        executionTestid="character-execution"
+      />
     {/if}
 
     {#if data.builds_seen.length > 0}
