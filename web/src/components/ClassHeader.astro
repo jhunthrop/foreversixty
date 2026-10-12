@@ -75,7 +75,9 @@ interface Props {
    *  default `"{specName} {className}"` (a guide/BiS page always names a specific spec; a
    *  class landing names none). Ignored unless `minimal` is also true. */
   titleOverride?: string;
-  /** False for the second of the BiS page's two faction-toggled copies: the page has one h1. */
+  /** False for the second of the BiS page's two faction-toggled copies: the served HTML has one
+   *  h1 tag, and this copy is a level-1 heading by role, visible to assistive tech only while its
+   *  faction is the shown one. */
   asHeading?: boolean;
 }
 
@@ -98,6 +100,7 @@ const {
 } = Astro.props;
 
 const TitleTag = asHeading ? 'h1' : 'p';
+const headingRole = asHeading ? {} : { role: 'heading', 'aria-level': 1 };
 
 const color = classColorVar(className);
 const factionLabel =
@@ -124,7 +127,7 @@ const bandTextVariants = bands.map((band) => ({
   <div class="class-header-identity">
     <ClassCrest slug={classSlug} size={64} />
     <div class="class-header-titles">
-      <TitleTag class="class-header-h1" style={`color:${color}`}>
+      <TitleTag class="class-header-h1" style={`color:${color}`} {...headingRole}>
         {minimal && titleOverride !== undefined ? titleOverride : `${specName} ${className}`}{' '}
         {!minimal && (
           <span class="class-header-suffix">
