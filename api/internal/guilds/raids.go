@@ -76,6 +76,10 @@ type RaidRow struct {
 	TopParse   *TopParse          `json:"top_parse,omitempty"`
 	Fights     []RaidFight        `json:"fights"`
 	Present    []PresentCharacter `json:"present"`
+
+	// evidence is whether the report can show who was there: not private and not flagged
+	// (tampered or unverified). Any other report lists nobody.
+	evidence bool
 }
 
 // RaidsPage is the body of GET /v1/guilds/{id}/raids.
@@ -135,7 +139,8 @@ func (s *Store) Raids(ctx context.Context, guildID, userID int64, verified bool,
 	       (select count(*) from fights f where f.report_id = r.id),
 	       (select count(*) filter (where f.kill) from fights f where f.report_id = r.id),
 	       (select count(*) filter (where not f.kill) from fights f where f.report_id = r.id),
-	       coalesce((select sum(f.deaths) from fights f where f.report_id = r.id), 0)
+	       coalesce((select sum(f.deaths) from fights f where f.report_id = r.id), 0),
+	       r.visibility <> 'private' and r.flagged is null
 	     from reports r
 	     where r.guild_id = $1 and ` + visibility
 	args := []any{guildID, userID}
@@ -155,7 +160,7 @@ func (s *Store) Raids(ctx context.Context, guildID, userID int64, verified bool,
 	for rows.Next() {
 		var row RaidRow
 		if err := rows.Scan(&row.ID, &row.Title, &row.Zone, &row.CreatedAt, &row.DurationMS,
-			&row.FightCount, &row.KillCount, &row.WipeCount, &row.Deaths); err != nil {
+			&row.FightCount, &row.KillCount, &row.WipeCount, &row.Deaths, &row.evidence); err != nil {
 			return RaidsPage{}, fmt.Errorf("guilds: raids: %w", err)
 		}
 		page.Rows = append(page.Rows, row)
@@ -164,8 +169,12 @@ func (s *Store) Raids(ctx context.Context, guildID, userID int64, verified bool,
 		return RaidsPage{}, err
 	}
 
+	present, err := s.raidPresence(ctx, page.Rows)
+	if err != nil {
+		return RaidsPage{}, err
+	}
 	for i := range page.Rows {
-		if err := s.fillRaidDetail(ctx, &page.Rows[i]); err != nil {
+		if err := s.fillRaidDetail(ctx, &page.Rows[i], present[page.Rows[i].ID]); err != nil {
 			return RaidsPage{}, err
 		}
 	}
@@ -177,8 +186,34 @@ func (s *Store) Raids(ctx context.Context, guildID, userID int64, verified bool,
 	return page, nil
 }
 
-// fillRaidDetail reads one report's own fights, present roster and top parse.
-func (s *Store) fillRaidDetail(ctx context.Context, row *RaidRow) error {
+// raidPresence is report id -> the character keys present in it, for every row of the page
+// in one presence.In call: a rated or ranked row read by character key, never fights.players
+// (the log's GUIDs). A private or flagged report is not asked about, so it lists nobody.
+func (s *Store) raidPresence(ctx context.Context, rows []RaidRow) (map[string][]string, error) {
+	var ids []string
+	for _, row := range rows {
+		if row.evidence {
+			ids = append(ids, row.ID)
+		}
+	}
+	here, err := presence.In(ctx, s.Pool, ids, nil)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: raid present: %w", err)
+	}
+	out := map[string][]string{}
+	seen := map[[2]string]bool{}
+	for _, p := range here {
+		if k := [2]string{p.ReportID, p.Key}; !seen[k] {
+			seen[k] = true
+			out[p.ReportID] = append(out[p.ReportID], p.Key)
+		}
+	}
+	return out, nil
+}
+
+// fillRaidDetail reads one report's own fights, present roster (the keys raidPresence found
+// in it) and top parse.
+func (s *Store) fillRaidDetail(ctx context.Context, row *RaidRow, keys []string) error {
 	fightRows, err := s.Pool.Query(ctx,
 		`select fight_index, name, encounter_id, kill, duration_ms, deaths, coalesce(array_length(players, 1), 0)
 		 from fights where report_id = $1 order by fight_index`, row.ID)
@@ -203,15 +238,10 @@ func (s *Store) fillRaidDetail(ctx context.Context, row *RaidRow) error {
 		return err
 	}
 
-	// Who was there is presence.In (a rated or ranked row read by character key), never
-	// fights.players, which holds the log's GUIDs; a private or trash-only night lists nobody.
-	here, err := presence.In(ctx, s.Pool, []string{row.ID}, nil)
-	if err != nil {
-		return fmt.Errorf("guilds: raid present: %w", err)
-	}
-	keys := make([]string, 0, len(here))
-	for _, p := range here {
-		keys = append(keys, p.Key)
+	row.Present = []PresentCharacter{}
+	if len(keys) == 0 {
+		// A private, flagged or trash-only night, or one not ranked yet: nobody to list.
+		return s.fillTopParse(ctx, row)
 	}
 	presentRows, err := s.Pool.Query(ctx, `
 		select distinct on (p.character_key) p.character_key, coalesce(ae.name, fm.player_name, ''), coalesce(fm.class, '')
@@ -222,7 +252,6 @@ func (s *Store) fillRaidDetail(ctx context.Context, row *RaidRow) error {
 	if err != nil {
 		return fmt.Errorf("guilds: raid present: %w", err)
 	}
-	row.Present = []PresentCharacter{}
 	for presentRows.Next() {
 		var pc PresentCharacter
 		if err := presentRows.Scan(&pc.CharacterKey, &pc.Name, &pc.Class); err != nil {
@@ -236,11 +265,15 @@ func (s *Store) fillRaidDetail(ctx context.Context, row *RaidRow) error {
 		return err
 	}
 	row.Raiders = len(row.Present)
+	return s.fillTopParse(ctx, row)
+}
 
+// fillTopParse reads the report's best kill-fight parse; nil when it has none yet.
+func (s *Store) fillTopParse(ctx context.Context, row *RaidRow) error {
 	var tp TopParse
 	var role string
 	var dps, hps *float64
-	err = s.Pool.QueryRow(ctx, `
+	err := s.Pool.QueryRow(ctx, `
 		select coalesce(player_name, ''), coalesce(class, ''), coalesce(role, ''), metric_dps, metric_hps
 		from fight_metrics
 		where report_id = $1 and kill and state <> 'removed'

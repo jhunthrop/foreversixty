@@ -84,9 +84,9 @@ func TestHomePendingIsOfficerOnly(t *testing.T) {
 }
 
 // TestHomeAttendanceCountsPresenceOverLast8Reports seeds 9 boss reports (so the window drops
-// the oldest) and, newer than all of them, a private report and a trash-only report, which
-// the window skips (task L6.8: presence only exists in non-private reports with a boss
-// fight), and checks a character's attendance present/nights.
+// the oldest) and, newer than all of them, four reports the window skips (task L6.8 and its
+// fix round: a night is a non-private, unflagged report someone is present in), and checks
+// a character's attendance present/nights.
 func TestHomeAttendanceCountsPresenceOverLast8Reports(t *testing.T) {
 	h := newHTTPHarness(t)
 	gid := seedGuild(t, h.pool, "Forever")
@@ -102,14 +102,19 @@ func TestHomeAttendanceCountsPresenceOverLast8Reports(t *testing.T) {
 	// 3rd-newest (a real absence inside the window).
 	for i := 0; i < 9; i++ {
 		night := l68Night{id: fmt.Sprintf("attendance-report-%d", i), at: now.Add(-time.Duration(i+2) * time.Hour)}
-		if i != 2 { // the 3rd-newest report: this character is absent
-			night.keys = []string{key}
+		night.keys = []string{key}
+		if i == 2 { // the 3rd-newest report: this character is absent, a guildmate was there
+			night.keys = []string{"us/hardcore/attendanceother"}
 		}
 		seedL68Night(t, h.pool, gid, night)
 	}
-	// Newer than every boss report, and outside the window all the same.
+	// Newer than every boss report, and outside the window all the same: a private report, a
+	// flagged one, a trash-only one and a boss report nobody has a ranked or rated row in
+	// (fix round 1: a night nobody can be present in is never everyone's absence).
 	seedL68Night(t, h.pool, gid, l68Night{id: "attendance-private", visibility: "private", at: now, keys: []string{key}})
-	seedL68Night(t, h.pool, gid, l68Night{id: "attendance-trash", trash: true, at: now.Add(-time.Hour), keys: []string{key}})
+	seedL68Night(t, h.pool, gid, l68Night{id: "attendance-flagged", flagged: "tampered", at: now.Add(-30 * time.Minute), keys: []string{key}})
+	seedL68Night(t, h.pool, gid, l68Night{id: "attendance-trash", trash: true, at: now.Add(-time.Hour)})
+	seedL68Night(t, h.pool, gid, l68Night{id: "attendance-nobody", at: now.Add(-90 * time.Minute)})
 
 	row := rosterRowOf(t, h, gid, uid, key)
 	if row.Attendance.Nights != 8 {

@@ -23,13 +23,16 @@ const l68GUID = "Player-4395-0A1B2C3D"
 
 // l68Night is one report with one fight: a boss fight (encounter 1084) unless trash, whose
 // fights.players holds only the log's GUID, and one fight_metrics row per key in keys - the
-// rows the ingest writes for a ranked fight. owner is the report's owner_id (nil for none).
+// rows the ingest writes for a ranked fight - and one rating_scores row per key in rated.
+// owner is the report's owner_id (nil for none); flagged is reports.flagged ("" for none).
 type l68Night struct {
 	id, visibility string
 	owner          any
 	at             time.Time
 	trash          bool
 	keys           []string
+	rated          []string
+	flagged        string
 }
 
 func seedL68Night(t *testing.T, pool *pgxpool.Pool, guildID int64, n l68Night) {
@@ -39,11 +42,28 @@ func seedL68Night(t *testing.T, pool *pgxpool.Pool, guildID int64, n l68Night) {
 		n.visibility = "guild"
 	}
 	if _, err := pool.Exec(ctx,
-		`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
-		 values ($1, $2, $3, $4, 'complete', $5)`, n.id, n.owner, guildID, n.visibility, n.at); err != nil {
+		`insert into reports (id, owner_id, guild_id, visibility, status, created_at, flagged)
+		 values ($1, $2, $3, $4, 'complete', $5, nullif($6, ''))`,
+		n.id, n.owner, guildID, n.visibility, n.at, n.flagged); err != nil {
 		t.Fatal(err)
 	}
 	seedL68Fight(t, pool, n.id, !n.trash, n.keys)
+	if len(n.rated) > 0 {
+		if err := db.EnsureRatingsPartition(ctx, pool, n.at); err != nil {
+			t.Fatal(err)
+		}
+		// rating_scores has no foreign key to reports: the harness's truncate leaves it.
+		t.Cleanup(func() {
+			pool.Exec(context.Background(), `delete from rating_scores where report_id = $1`, n.id)
+		})
+	}
+	for _, key := range n.rated {
+		if _, err := pool.Exec(ctx,
+			`insert into rating_scores (report_id, fight_index, player_key, overall, components, model_version, fought_at, kill)
+			 values ($1, 0, $2, 50, '[]', '', $3, true)`, n.id, key, n.at); err != nil {
+			t.Fatal(err)
+		}
+	}
 }
 
 // seedL68Fight adds fight 0 to an existing report: a boss fight (encounter 1084) when boss,
@@ -189,5 +209,85 @@ func TestVerifyByLogsIgnoresPrivateReports(t *testing.T) {
 	pool.QueryRow(ctx, `select verified_at is not null from guild_characters where character_key = $1`, key).Scan(&verified)
 	if !verified {
 		t.Fatal("two non-private nights whose fight_metrics rows carry the key should verify the character")
+	}
+}
+
+// The same scenario with a character key in the form the ingest really builds
+// (character.KeyFromUnit: region/ruleset/name).
+func TestRosterAttendanceReadsARealCharacterKey(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid := seedGuild(t, h.pool, "L68 Guild")
+	uid := seedUser(t, h.pool, "l68-real@example.com")
+	key := "us/pvp/l68real"
+	seedCharacter(t, h.pool, gid, uid, key, "member", true)
+	seedExport(t, h.pool, uid, key, "us", "pvp", "L68real")
+	recomputeMembership(t, h.pool, gid, uid)
+	seedL68Night(t, h.pool, gid, l68Night{id: "l68-real-1", at: time.Now().Add(-3 * time.Hour), keys: []string{key}})
+	seedL68Night(t, h.pool, gid, l68Night{id: "l68-real-2", at: time.Now().Add(-2 * time.Hour), rated: []string{key}})
+	seedL68Night(t, h.pool, gid, l68Night{id: "l68-real-3", at: time.Now().Add(-1 * time.Hour), keys: []string{"us/pvp/l68other"}})
+
+	row := rosterRowOf(t, h, gid, uid, key)
+	if row.Attendance.Present != 2 || row.Attendance.Nights != 3 {
+		t.Errorf("attendance = %+v, want present 2 of 3 nights (one ranked row, one rated row, one absence)", row.Attendance)
+	}
+}
+
+// Fix round 1, item 1: a report flagged as tampered (or unverified) is never evidence. Its
+// rated rows verify nobody, count toward nobody's attendance or evidence, and list nobody on
+// the raid page; neither does a private report.
+func TestAFlaggedReportVerifiesNobodyAndCountsForNobody(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	s := &Store{Pool: h.pool}
+	gid := seedGuild(t, h.pool, "L68 Guild")
+	member := seedUser(t, h.pool, "l68f-member@example.com")
+	memberKey := "us/pvp/l68fmember"
+	seedCharacter(t, h.pool, gid, member, memberKey, "member", true)
+	seedExport(t, h.pool, member, memberKey, "us", "pvp", "L68fmember")
+	recomputeMembership(t, h.pool, gid, member)
+	candidate := seedUser(t, h.pool, "l68f-candidate@example.com")
+	candidateKey := "us/pvp/l68fcandidate"
+	seedCharacter(t, h.pool, gid, candidate, candidateKey, "member", false)
+	uploader := seedUser(t, h.pool, "l68f-uploader@example.com")
+
+	both := []string{memberKey, candidateKey}
+	now := time.Now()
+	seedL68Night(t, h.pool, gid, l68Night{id: "l68f-tampered", owner: uploader, flagged: "tampered",
+		at: now.Add(-3 * 24 * time.Hour), rated: both})
+	seedL68Night(t, h.pool, gid, l68Night{id: "l68f-unverified", owner: uploader, flagged: "unverified",
+		at: now.Add(-2 * 24 * time.Hour), rated: both, keys: both})
+	seedL68Night(t, h.pool, gid, l68Night{id: "l68f-private", owner: member, visibility: "private",
+		at: now.Add(-1 * 24 * time.Hour), rated: both, keys: both})
+
+	if err := s.VerifyByLogs(ctx); err != nil {
+		t.Fatal(err)
+	}
+	var verified bool
+	h.pool.QueryRow(ctx, `select verified_at is not null from guild_characters where character_key = $1`, candidateKey).Scan(&verified)
+	if verified {
+		t.Error("two flagged report nights verified the candidate")
+	}
+	ev, err := s.evidenceFor(ctx, gid, candidate)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ev.NightsInOthersReports != 0 {
+		t.Errorf("nights in others' reports = %d, want 0 (flagged reports are not evidence)", ev.NightsInOthersReports)
+	}
+	if row := rosterRowOf(t, h, gid, member, memberKey); row.Attendance != (Attendance{}) {
+		t.Errorf("attendance = %+v, want 0 of 0 nights (a flagged or private report is not a night)", row.Attendance)
+	}
+
+	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/raids", gid), "")
+	var page RaidsPage
+	h.data(res, &page)
+	if len(page.Rows) != 3 {
+		t.Fatalf("raids rows = %d, want the 3 nights", len(page.Rows))
+	}
+	for _, row := range page.Rows {
+		if len(row.Present) != 0 || row.Raiders != 0 {
+			t.Errorf("raid %s: present %+v, raiders %d; want nobody (flagged or private)", row.ID, row.Present, row.Raiders)
+		}
 	}
 }

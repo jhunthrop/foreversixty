@@ -202,7 +202,30 @@ func TestOpenAPIDocumentsGuildAttendanceAndRosterBestExecutionScore(t *testing.T
 	if !ok {
 		t.Fatal("no GuildAttendance schema")
 	}
-	for _, want := range []string{"last 8", "non-private", "boss fight", "character key", "guids"} {
+	// Fix round 1, items 2 and 4: the window is non-private, unflagged reports someone is
+	// present in, and the home path lists its cursor and its 400 and 404.
+	for _, want := range []string{"unflagged", "ranked or rated row"} {
+		if !strings.Contains(words(att), want) {
+			t.Errorf("GuildAttendance's description lacks %q: %q", want, words(att))
+		}
+	}
+	params, _ := home["parameters"].([]any)
+	hasCursor := false
+	for _, p := range params {
+		if m, _ := p.(map[string]any); m["name"] == "cursor" && m["in"] == "query" {
+			hasCursor = true
+		}
+	}
+	if !hasCursor {
+		t.Errorf("/v1/guilds/{id}/home must list its cursor query parameter: %v", params)
+	}
+	responses, _ := home["responses"].(map[string]any)
+	for _, code := range []string{"400", "404"} {
+		if _, ok := responses[code]; !ok {
+			t.Errorf("/v1/guilds/{id}/home must list its %s: %v", code, responses)
+		}
+	}
+	for _, want := range []string{"last 8", "non-private", "character key", "guids"} {
 		if !strings.Contains(words(att), want) {
 			t.Errorf("GuildAttendance's description lacks %q: %q", want, words(att))
 		}

@@ -20,7 +20,7 @@ import (
 )
 
 // attendanceWindow is the contract's own "last 8 guild reports" (design spec §4.B): the
-// guild's last 8 reports that are not private and have a boss fight (attendanceReports).
+// guild's last 8 non-private, unflagged reports someone is present in (attendanceReports).
 const attendanceWindow = 8
 
 // enrichRoster fills in Attendance, BestParse, Rating and LastReportAt on every row of out,
@@ -76,15 +76,17 @@ func (s *Store) enrichRoster(ctx context.Context, guildID int64, out []RosterRow
 }
 
 // attendanceReports is the attendance window: the guild's own last attendanceWindow reports
-// that are not private and have at least one boss fight, newest first. Those are the only
-// reports anyone can be present in (presence.In reads the rated and ranked rows, which
-// exist only there), so a private or trash-only report is neither a night nor an absence.
-// Fewer when the guild has not logged that many yet.
+// that are not private, not flagged (tampered or unverified) and carry evidence - at least
+// one ranked row (fight_metrics, not removed) or rated row (rating_scores) - newest first.
+// Presence (presence.In) is read from those rows, so a night nobody can be present in (a
+// private, flagged or trash-only report, or one not ranked yet) is never everyone's
+// absence. Fewer when the guild has not logged that many yet.
 func (s *Store) attendanceReports(ctx context.Context, guildID int64) ([]string, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select r.id from reports r
-		where r.guild_id = $1 and r.visibility <> 'private'
-		  and exists (select 1 from fights f where f.report_id = r.id and coalesce(f.encounter_id, 0) <> 0)
+		where r.guild_id = $1 and r.visibility <> 'private' and r.flagged is null
+		  and (exists (select 1 from fight_metrics m where m.report_id = r.id and m.state <> 'removed')
+		       or exists (select 1 from rating_scores rs where rs.report_id = r.id))
 		order by r.created_at desc, r.id desc
 		limit $2`, guildID, attendanceWindow)
 	if err != nil {

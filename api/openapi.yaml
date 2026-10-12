@@ -940,11 +940,13 @@ components:
       type: object
       description: >-
         A guild roster row's attendance (roster[].attendance and pending[].attendance on GET
-        /v1/guilds/{id}/home, candidates[].attendance on GET /v1/guilds/{id}/loot). The window
-        is the guild's last 8 non-private reports that have at least one boss fight, since
-        presence only exists there: a private or trash-only report is neither a night nor an
-        absence. A character was present in a report when it has a ranked or rated row there,
-        read by its character key, never by the log's GUIDs (fights.players).
+        /v1/guilds/{id}/home, candidates[].attendance on GET /v1/guilds/{id}/loot). A character
+        was present in a report when it has a ranked or rated row there (fight_metrics not
+        removed, or rating_scores), read by its character key, never by the log's GUIDs
+        (fights.players). The window is the guild's last 8 non-private, unflagged reports that
+        carry at least one ranked or rated row, so a night nobody can be present in (a
+        private, tampered, unverified or trash-only report, or one not ranked yet) is never
+        everyone's absence.
       properties:
         present: { type: integer, description: "How many of the window's reports the character was present in, 0 to nights; a report with several of its fights counts once." }
         nights: { type: integer, description: "How many reports the window holds: 8, or fewer while the guild has logged fewer such reports. The same for every row of the roster." }
@@ -1926,15 +1928,19 @@ paths:
         The guild, the viewer's standing, the summary, the last week's reports, the roster and
         the officer's pending queue, in the shape docs/contracts/2026-10-04-guild-centre-api.md
         gives. roster[].attendance is { present, nights } (schema GuildAttendance): presence in
-        the guild's last 8 non-private reports with a boss fight, read by character key. Any
-        member of the guild (an account with a character on its roster, verified or not) may
-        read it; anyone else gets 403.
+        the guild's last 8 non-private, unflagged reports that someone is present in, read by
+        character key. reports[] is paged by cursor (next_cursor). Any member of the guild (an
+        account with a character on its roster, verified or not) may read it; anyone else gets
+        403.
       parameters:
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: cursor, in: query, schema: { type: string }, description: "The next_cursor a previous page returned; it pages reports[] past that report." }
       responses:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "cursor is not a next_cursor this route returned", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '401': { description: "No session", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '403': { description: "Not a member of the guild", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '403': { description: "Not a member of the guild (an unknown numeric id answers 403 too: nobody is its member)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "No such guild: an id that is not a positive number, or a guild gone by the time the home is read", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/guilds/{region}/{ruleset}/{name}:
     get:
       summary: A guild's progression, roster bests, and reports
