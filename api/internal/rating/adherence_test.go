@@ -3,7 +3,10 @@ package rating
 import (
 	"context"
 	"math"
+	"os"
 	"testing"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -176,4 +179,79 @@ func TestAdherenceIsRoundedToTwoDecimals(t *testing.T) {
 	got := rateForAdherence(t, "round", name, "Warrior", "Fury", castRows("",
 		[2]int64{spellBloodthirst4, 7}, [2]int64{spellHamstring3, 4}))
 	wantAdherence(t, "7 of 11", got, 0.64)
+}
+
+// Interrupts and racials are not ability casts (ruling 1): 10 Bloodthirst with 4 Pummel and 2
+// Blood Fury (an orc racial, no warrior spell at all) is all rotation.
+func TestAdherenceLeavesOutInterruptsAndRacials(t *testing.T) {
+	const name = "Adhkick"
+	seedLevel(t, name, 60)
+	got := rateForAdherence(t, "kick", name, "Warrior", "Fury", castRows("",
+		[2]int64{spellBloodthirst4, 10}, [2]int64{6554, 4}, [2]int64{20572, 2}))
+	wantAdherence(t, "Bloodthirst, Pummel, Blood Fury", got, 1.0)
+}
+
+// A retribution paladin re-seals after every Judgement; the rotation lists Judgement and no
+// seal, and a seal is a self-buff, not an ability cast.
+func TestAdherenceLeavesOutSealsTheRotationDoesNotList(t *testing.T) {
+	const name = "Adhseal"
+	seedLevel(t, name, 60)
+	got := rateForAdherence(t, "seal", name, "Paladin", "Retribution", castRows("",
+		[2]int64{20271, 6}, [2]int64{20375, 6}, [2]int64{10314, 4}))
+	wantAdherence(t, "Judgement, Seal of Command, Exorcism", got, 1.0)
+}
+
+// Exactly AdherenceMinCasts ability casts is enough.
+func TestAdherenceIsPresentAtExactlyTenCasts(t *testing.T) {
+	const name = "Adhten"
+	seedLevel(t, name, 60)
+	wantAdherence(t, "ten Bloodthirst", rateForAdherence(t, "ten", name, "Warrior", "Fury",
+		castRows("", [2]int64{spellBloodthirst4, 10})), 1.0)
+}
+
+// Ten ability casts, none in the rotation, is adherence 0, stored, not absent.
+func TestAdherenceIsZeroWhenNoCastIsInTheRotation(t *testing.T) {
+	const name = "Adhzero"
+	seedLevel(t, name, 60)
+	wantAdherence(t, "ten Hamstring", rateForAdherence(t, "zero", name, "Warrior", "Fury",
+		castRows("", [2]int64{spellHamstring3, 10})), 0)
+}
+
+// A failed level lookup never fails the rating: the cards are stored, and adherence is absent
+// because the level band cannot be known.
+func TestAFailedLevelLookupLeavesAdherenceAbsentAndStillRates(t *testing.T) {
+	useRepoGearData(t)
+	pool := testPool(t)
+	ctx := context.Background()
+	closed, err := pgxpool.New(ctx, os.Getenv("TEST_DATABASE_URL"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	closed.Close()
+	store := &Store{Pool: pool, levels: closed}
+
+	const name = "Adhnolookup"
+	seedLevel(t, name, 60)
+	guid := "Player-" + name
+	row := summary.RosterRow{GUID: guid, Name: name, Class: "Warrior", Spec: "Fury", Role: "dps", ActiveMS: 170000}
+	f := fightFixture(adherenceTestPrefix+"nolookup", true, row)
+	f.Summary.Casts = castRows(guid, [2]int64{spellBloodthirst4, 12})
+	t.Cleanup(func() { pool.Exec(context.Background(), `delete from rating_scores where report_id = $1`, f.ReportID) })
+	if err := store.RateFight(ctx, f); err != nil {
+		t.Fatalf("RateFight with the levels query failing: %v", err)
+	}
+	var (
+		n         int
+		adherence *float64
+	)
+	if err := pool.QueryRow(ctx, `select count(*), max(adherence)::float8 from rating_scores where report_id = $1`,
+		f.ReportID).Scan(&n, &adherence); err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Fatalf("stored %d cards, want 1", n)
+	}
+	if adherence != nil {
+		t.Fatalf("adherence = %v with no level read, want absent", *adherence)
+	}
 }

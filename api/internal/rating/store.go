@@ -39,6 +39,10 @@ type RatedFight struct {
 type Store struct {
 	Pool *pgxpool.Pool
 	Log  *slog.Logger
+
+	// levels is where RateFight reads the roster's levels for the adherence band; nil reads
+	// through Pool. Tests point it at a closed pool to see a failed read.
+	levels character.Querier
 }
 
 func (s *Store) logger() *slog.Logger {
@@ -60,6 +64,9 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 	if err := db.EnsureRatingsPartition(ctx, s.Pool, f.FoughtAt); err != nil {
 		return err
 	}
+	// The roster's levels, for the adherence band, read before the transaction so a failed
+	// read can never fail the rating (adherence.go).
+	levels, levelsKnown := s.rosterLevels(ctx, f)
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("rating: begin: %w", err)
@@ -109,9 +116,7 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 		cr.Discipline = fightDiscipline(f.Summary, row)
 		cr.LastRaid = lastRaidFacts(f.Summary, row, card,
 			ratingengine.ActivityIdleMS(f.Summary, row.GUID, tables.Mechanics, nil))
-		if cr.LastRaid.Adherence, err = adherence(ctx, tx, cr.PlayerKey, f.Summary, row); err != nil {
-			return err
-		}
+		cr.LastRaid.Adherence = adherence(f.Summary, row, levels[cr.PlayerKey], levelsKnown)
 		if err := insertCardRow(ctx, tx, cr); err != nil {
 			return err
 		}

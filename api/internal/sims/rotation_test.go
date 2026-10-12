@@ -1,6 +1,13 @@
 package sims
 
-import "testing"
+import (
+	"bytes"
+	"log/slog"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+)
 
 // The band is the addon's own Rotation.bandFor rule over the shipped bands
 // (pipeline.addonrotation.LEVEL_BANDS: 10, 20, 30, 38, 40, 50, 60): the highest band at or
@@ -50,5 +57,60 @@ func TestRotationListsEveryRankOfAListedAbility(t *testing.T) {
 	}
 	if _, ok := RotationFor("0.0.0.0", "warrior-fury", 60); ok {
 		t.Error("a build with no addon-data.json has a rotation")
+	}
+}
+
+// Family names a class spell's spellranks.json family, so exclusions are matched on the
+// data's own names, never the log's; a spell no rank of any of the class's spells has none.
+func TestRotationNamesTheClassFamilyOfASpell(t *testing.T) {
+	useRepoGearData(t)
+	ret, ok := RotationFor("", "paladin-retribution", 60)
+	if !ok {
+		t.Fatal("no paladin-retribution rotation")
+	}
+	if name, ok := ret.Family(20375); !ok || name != "Seal of Command" {
+		t.Errorf("Family(20375) = %q, %v; want Seal of Command", name, ok)
+	}
+	fury, _ := RotationFor("", "warrior-fury", 60)
+	if name, ok := fury.Family(6554); !ok || name != "Pummel" {
+		t.Errorf("Family(6554) = %q, %v; want Pummel", name, ok)
+	}
+	for _, id := range []int64{20572, 6603, 17528} { // Blood Fury, Attack, Mighty Rage Potion
+		if name, ok := fury.Family(id); ok {
+			t.Errorf("Family(%d) = %q, want no warrior family", id, name)
+		}
+	}
+}
+
+// A build whose addon-data.json carries no rotations has none to measure against, and says so
+// once in the log, not on every rated player.
+func TestABuildWithNoRotationsIsLoggedOnce(t *testing.T) {
+	dir := t.TempDir()
+	useRepoGearData(t)
+	SetGearData(currentGearData().trees, dir)
+	t.Cleanup(func() { SetGearData(nil, "") })
+	if err := os.MkdirAll(filepath.Join(dir, lootBuild), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for file, body := range map[string]string{
+		"addon-data.json": `{"build":"` + lootBuild + `","classes":{}}`,
+		"spellranks.json": `{"build":"` + lootBuild + `","classes":{}}`,
+	} {
+		if err := os.WriteFile(filepath.Join(dir, lootBuild, file), []byte(body), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	var buf bytes.Buffer
+	prev := slog.Default()
+	slog.SetDefault(slog.New(slog.NewTextHandler(&buf, nil)))
+	t.Cleanup(func() { slog.SetDefault(prev) })
+
+	for i := 0; i < 3; i++ {
+		if _, ok := RotationFor(lootBuild, "warrior-fury", 60); ok {
+			t.Fatal("a build with no rotations has one")
+		}
+	}
+	if n := strings.Count(buf.String(), "no rotations"); n != 1 {
+		t.Fatalf("logged %d times, want once:\n%s", n, buf.String())
 	}
 }

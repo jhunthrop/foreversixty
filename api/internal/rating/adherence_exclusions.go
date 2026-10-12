@@ -1,97 +1,164 @@
 package rating
 
-// The casts rotation adherence does not count as ability casts (adherence.go), in one place:
-// every consumable in the engine's consumables catalogue
-// (logs/engine/mechanics/consumables/catalogue.json, the catalogue score_v2.go's discipline
-// reads), and the small curated list below, by category. An ability the rotation lists is
-// always counted, whatever its category here (a shout or a form the rotation asks for is part
-// of the rotation).
+// The casts rotation adherence does not count as ability casts (adherence.go), in one place.
+// A cast of an ability the band lists always counts first, whatever its category here (a
+// shout, a totem or a seal the rotation asks for is part of the rotation). Otherwise a cast is
+// set aside when:
 //
-// Entries match a cast row by spell id or by the log's own spell name; names cover every rank
-// of a family and every item that casts the same effect.
+//   - its spell is in the engine's consumables catalogue
+//     (logs/engine/mechanics/consumables/catalogue.json, the catalogue score_v2.go's
+//     discipline reads), every category, every role; or
+//   - its spell is no rank of any of the class's own spells (sims.Rotation.Family, from the
+//     data build's spellranks.json): an item or trinket on-use, a racial, a potion, a bandage,
+//     an item mount or a profession. This is the item, racial and consumable category, and it
+//     needs no list of names; or
+//   - its spellranks.json family name (the data's own ability name, never the log's, so a
+//     localized log matches the same) is one the curated categories below name, exactly or
+//     by a prefix or suffix ("Seal of ", " Totem").
+//
+// Overlaps worth knowing: "Shadow Protection" is the priest buff (utility below) and also the
+// effect name of the Shadow Protection Potion; the potion is no priest spell, so the item rule
+// sets it aside, and the name here only ever matches the priest's own family.
 
 import (
+	"strings"
+
+	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/consumables"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// adherenceExclusion is one category of casts that are not ability casts.
+// adherenceExclusion is one category of class spells that are not ability casts, matched on
+// the spellranks.json family name.
 type adherenceExclusion struct {
 	category string
-	ids      []int64
 	names    []string
+	prefixes []string
+	suffixes []string
 }
 
 var adherenceExclusions = []adherenceExclusion{
 	{
-		// Melee and ranged white hits: the swing timer, not a choice.
+		// Ranged white hits a class trains (melee swings and wands are no class spell).
 		category: "auto-attack",
-		ids:      []int64{6603, 75, 5019, 3018, 2480, 7918, 7919, 2764},
-		names:    []string{"Attack", "Auto Shot", "Shoot", "Shoot Bow", "Shoot Gun", "Shoot Crossbow", "Throw"},
+		names:    []string{"Auto Shot", "Shoot", "Throw"},
 	},
 	{
-		// Potions, runes, healthstones and bandages beyond the catalogue's own entries.
-		category: "consumable",
-		names: []string{"Healing Potion", "Restore Mana", "Mana Potion", "Rejuvenation Potion", "Demonic Rune",
-			"Dark Rune", "Healthstone", "Minor Healthstone", "Lesser Healthstone", "Greater Healthstone",
-			"Major Healthstone", "First Aid", "Free Action", "Living Free Action", "Invulnerability",
-			"Restoration", "Fire Protection", "Frost Protection", "Nature Protection", "Shadow Protection",
-			"Arcane Protection", "Holy Protection"},
+		category: "dispel and cleanse",
+		names: []string{"Dispel Magic", "Cleanse", "Purify", "Remove Curse", "Remove Lesser Curse",
+			"Abolish Poison", "Cure Poison", "Abolish Disease", "Cure Disease", "Purge"},
 	},
 	{
-		// Class mounts; an item mount in a boss fight is rare enough to leave unlisted.
+		category: "interrupt",
+		names:    []string{"Pummel", "Shield Bash", "Kick", "Counterspell", "Silence"},
+	},
+	{
+		category: "taunt and threat",
+		names: []string{"Taunt", "Mocking Blow", "Challenging Shout", "Growl", "Challenging Roar",
+			"Hand of Reckoning", "Righteous Defense", "Feign Death", "Fade", "Vanish", "Cower", "Feint",
+			"Soulshatter"},
+	},
+	{
+		category: "resurrection",
+		names:    []string{"Resurrection", "Redemption", "Ancestral Spirit", "Rebirth", "Soulstone Resurrection"},
+	},
+	{
+		// Self-buffs, stances, forms, seals (and the judgement a seal turns into), aspects,
+		// armors, shields, shouts and totems a rotation does not list.
+		category: "self-buff, stance, form, seal, aspect, armor, totem",
+		names: []string{"Shadowform", "Frost Armor", "Ice Armor", "Mage Armor", "Molten Armor", "Demon Armor",
+			"Demon Skin", "Inner Fire", "Lightning Shield", "Water Shield", "Earth Shield", "Righteous Fury",
+			"Thorns", "Omen of Clarity", "Battle Shout", "Commanding Shout"},
+		prefixes: []string{"Seal of ", "Judgement of ", "Aspect of the "},
+		suffixes: []string{" Form", " Stance", " Totem", " Aura"},
+	},
+	{
+		// Racials a class's own spell list happens to carry (the rest are no class spell).
+		category: "racial",
+		names: []string{"Blood Fury", "Berserking", "Stoneform", "Perception", "War Stomp", "Shadowmeld",
+			"Will of the Forsaken", "Escape Artist", "Cannibalize", "Find Treasure"},
+	},
+	{
 		category: "mount",
-		ids:      []int64{13819, 23214, 5784, 23161},
 		names:    []string{"Summon Warhorse", "Summon Charger", "Summon Felsteed", "Summon Dreadsteed"},
 	},
 	{
 		category: "movement",
-		names: []string{"Sprint", "Dash", "Blink", "Aspect of the Cheetah", "Aspect of the Pack", "Travel Form",
-			"Aquatic Form", "Ghost Wolf", "Slow Fall", "Levitate"},
+		names: []string{"Sprint", "Dash", "Blink", "Ghost Wolf", "Slow Fall", "Levitate", "Charge", "Intercept",
+			"Feral Charge"},
 	},
 	{
-		// Out-of-rotation utility: travel, gathering, conjuring and the long raid buffs cast
-		// once before the pull.
+		// Travel, gathering, conjuring, summoning, pets and the long raid buffs cast before
+		// the pull.
 		category: "utility",
-		names: []string{"Hearthstone", "Fishing", "Find Herbs", "Find Minerals", "Find Treasure",
-			"Conjure Water", "Conjure Food", "Ritual of Summoning", "Arcane Intellect", "Arcane Brilliance",
+		names: []string{"Hearthstone", "Fishing", "Arcane Intellect", "Arcane Brilliance",
 			"Power Word: Fortitude", "Prayer of Fortitude", "Divine Spirit", "Prayer of Spirit",
-			"Prayer of Shadow Protection", "Mark of the Wild", "Gift of the Wild", "Blessing of Kings",
-			"Blessing of Might", "Blessing of Wisdom", "Blessing of Salvation", "Blessing of Light",
-			"Blessing of Sanctuary", "Greater Blessing of Kings", "Greater Blessing of Might",
-			"Greater Blessing of Wisdom", "Greater Blessing of Salvation", "Greater Blessing of Light",
-			"Greater Blessing of Sanctuary"},
+			"Shadow Protection", "Prayer of Shadow Protection", "Mark of the Wild", "Gift of the Wild",
+			"Detect Magic", "Detect Invisibility", "Detect Lesser Invisibility", "Unending Breath",
+			"Water Walking", "Water Breathing", "Amplify Magic", "Dampen Magic", "Call Pet", "Revive Pet",
+			"Dismiss Pet", "Feed Pet", "Mend Pet", "Tame Beast", "Eyes of the Beast", "Eye of Kilrogg",
+			"Far Sight", "Pick Lock", "Disarm Trap", "Sense Undead", "Sense Demons"},
+		prefixes: []string{"Blessing of ", "Greater Blessing of ", "Conjure ", "Create ", "Ritual of ",
+			"Summon ", "Track ", "Find "},
 	},
 }
 
-// adherenceExcludedIDs and adherenceExcludedNames are adherenceExclusions and every entry of
-// every category of the consumables catalogue, across all roles.
-var adherenceExcludedIDs, adherenceExcludedNames = adherenceExclusionSets()
+// adherenceCatalogueIDs is every entry of every category of the consumables catalogue,
+// across all roles.
+var adherenceCatalogueIDs = catalogueSpellIDs()
 
-func adherenceExclusionSets() (map[int64]bool, map[string]bool) {
-	ids, names := map[int64]bool{}, map[string]bool{}
+// adherenceExcludedNames is every exact family name adherenceExclusions lists.
+var adherenceExcludedNames = func() map[string]bool {
+	names := map[string]bool{}
 	for _, e := range adherenceExclusions {
-		for _, id := range e.ids {
-			ids[id] = true
-		}
 		for _, n := range e.names {
 			names[n] = true
 		}
 	}
+	return names
+}()
+
+func catalogueSpellIDs() map[int64]bool {
+	ids := map[int64]bool{}
 	for _, rc := range consumables.Load().Roles {
 		for _, list := range [][]consumables.Entry{rc.Flask, rc.Food, rc.WeaponEnchant, rc.WorldBuffs, rc.CombatPotion.Entries} {
 			for _, e := range list {
 				ids[e.SpellID] = true
-				if e.Name != "" {
-					names[e.Name] = true
-				}
 			}
 		}
 	}
-	return ids, names
+	return ids
 }
 
-// excludedFromAdherence reports whether c is not an ability cast.
-func excludedFromAdherence(c summary.CastRow) bool {
-	return adherenceExcludedIDs[c.SpellID] || adherenceExcludedNames[c.SpellName]
+// excludedFromAdherence reports whether c, a cast of no ability rot lists, is not an ability
+// cast.
+func excludedFromAdherence(c summary.CastRow, rot sims.Rotation) bool {
+	if adherenceCatalogueIDs[c.SpellID] {
+		return true
+	}
+	family, ok := rot.Family(c.SpellID)
+	if !ok {
+		return true // an item, trinket, racial or consumable effect: no class spell
+	}
+	return excludedFamily(family)
+}
+
+// excludedFamily reports whether a class spell family is one adherenceExclusions names.
+func excludedFamily(family string) bool {
+	if adherenceExcludedNames[family] {
+		return true
+	}
+	for _, e := range adherenceExclusions {
+		for _, p := range e.prefixes {
+			if strings.HasPrefix(family, p) {
+				return true
+			}
+		}
+		for _, s := range e.suffixes {
+			if strings.HasSuffix(family, s) {
+				return true
+			}
+		}
+	}
+	return false
 }

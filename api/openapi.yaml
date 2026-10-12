@@ -141,7 +141,7 @@ components:
                   loss_seconds: { type: integer }
                   deaths: { type: integer }
                   consumables_missed: { type: array, items: { type: string, enum: [flask, food] } }
-                  adherence: { type: number, minimum: 0, maximum: 1, description: "share of the player's ability casts that the spec's shipped rotation lists for the character's level band, to two decimals; absent without a shipped rotation, under 10 ability casts, or for a fight rated before migration 0037" }
+                  adherence: { type: number, minimum: 0, maximum: 1, description: "share of the player's ability casts that the spec's shipped rotation lists for the character's level band, to two decimals; absent without a shipped rotation, under 10 ability casts, when the level could not be read, or for a fight rated before migration 0037" }
         - type: object
           title: loot_values
           required: [type, character, raid, items]

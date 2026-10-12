@@ -111,40 +111,47 @@ func (s *Store) identity(ctx context.Context, ref *CharacterRef) error {
 	return nil
 }
 
-// RowQuerier is the one call CharacterLevel makes; a pool and a transaction both have it.
-type RowQuerier interface {
-	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
-}
-
-// CharacterLevel is key's level as the site knows it, nil when no source knows one: the
-// level the character page shows (identity's rule, newestLevel), from the Battle.net import
-// or the stored addon export's level= section, whichever is newer. The rater reads it for
-// the rotation adherence band (api/internal/rating/adherence.go).
-func CharacterLevel(ctx context.Context, q RowQuerier, key string) (*int, error) {
-	var (
-		bnetLevel              *int
-		export                 *string
-		importedAt, capturedAt *time.Time
-	)
-	err := q.QueryRow(ctx,
-		`select c.level, c.imported_at, ae.export, ae.captured_at
-		 from (select $1::text as key) k
+// CharacterLevels is each of keys' level as the site knows it, every key present in the
+// answer and nil when no source knows its level: the level the character page shows
+// (identity's rule, newestLevel), from the Battle.net import or the stored addon export's
+// level= section, whichever is newer. One query for all keys. The rater reads it once per
+// fight for the rotation adherence band (api/internal/rating/adherence.go).
+func CharacterLevels(ctx context.Context, q character.Querier, keys []string) (map[string]*int, error) {
+	rows, err := q.Query(ctx,
+		`select k.key, c.level, c.imported_at, ae.export, ae.captured_at
+		 from unnest($1::text[]) as k(key)
 		 left join characters c on c.key = k.key
-		 left join addon_exports ae on ae.character_key = k.key`, key).
-		Scan(&bnetLevel, &importedAt, &export, &capturedAt)
+		 left join addon_exports ae on ae.character_key = k.key`, keys)
 	if err != nil {
-		return nil, fmt.Errorf("rankings: read level %s: %w", key, err)
+		return nil, fmt.Errorf("rankings: read levels: %w", err)
 	}
-	var exportLevel *int
-	if export != nil {
-		if decoded, ok := fs1.Decode(*export); ok && decoded.HasLevel {
-			exportLevel = &decoded.Level
+	defer rows.Close()
+	out := make(map[string]*int, len(keys))
+	for rows.Next() {
+		var (
+			key                    string
+			bnetLevel              *int
+			export                 *string
+			importedAt, capturedAt *time.Time
+		)
+		if err := rows.Scan(&key, &bnetLevel, &importedAt, &export, &capturedAt); err != nil {
+			return nil, fmt.Errorf("rankings: read levels: %w", err)
 		}
+		var exportLevel *int
+		if export != nil {
+			if decoded, ok := fs1.Decode(*export); ok && decoded.HasLevel {
+				exportLevel = &decoded.Level
+			}
+		}
+		out[key] = newestLevel(bnetLevel, importedAt, export != nil, exportLevel, capturedAt)
 	}
-	return newestLevel(bnetLevel, importedAt, export != nil, exportLevel, capturedAt), nil
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rankings: read levels: %w", err)
+	}
+	return out, nil
 }
 
-// newestLevel is identity's level rule, shared with CharacterLevel: the Battle.net import's
+// newestLevel is identity's level rule, shared with CharacterLevels: the Battle.net import's
 // level (characters.level; a non-positive one is none) unless the export is newer
 // (exportIsNewer) or the import carries none, and then the export's level= section when it
 // has one.

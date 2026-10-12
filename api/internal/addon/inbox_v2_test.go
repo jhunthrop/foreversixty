@@ -545,3 +545,28 @@ func TestAckSaysInvalidForARequestThatCannotBeSimmed(t *testing.T) {
 		t.Fatalf("ack = %+v, want invalid", got)
 	}
 }
+
+// An adherence of 0 (ten or more ability casts, none in the rotation) is a fact and travels
+// as "adherence":0, not as an absent field.
+func TestLastRaidSendsAZeroAdherence(t *testing.T) {
+	h := newHarness(t)
+	cleanL63(t, h)
+	h.exportL63(l63Export)
+	now := time.Now().UTC()
+	zero := 0.0
+	h.seedRatedFight(ratedFight{report: "l63-zero", visibility: "public", zone: "Molten Core", boss: "Lucifron",
+		index: 1, encounter: 663, foughtAt: now.Add(-2 * time.Hour), overall: 40, kill: true,
+		missed: []string{}, adherence: &zero})
+	s := &Service{Store: h.store, Log: quietLog()}
+	got := messagesOf(s.messages(context.Background(), h.owner, now), messageLastRaid)
+	if len(got) != 1 || len(got[0].Bosses) != 1 {
+		t.Fatalf("last_raid = %+v, want Lucifron", got)
+	}
+	b, err := json.Marshal(got[0].Bosses[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(b), `"adherence":0`) {
+		t.Fatalf("boss = %s, want \"adherence\":0", b)
+	}
+}
