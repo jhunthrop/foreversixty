@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T03:56:20Z",
+  "generated_at": "2026-10-12T22:29:15Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -701,8 +701,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 3.5643463,
-      "verify_run_seconds": 4.038109185,
+      "weights_run_seconds": 2.064242298,
+      "verify_run_seconds": 2.510342361,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1484,8 +1484,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 3.5643463,
-      "verify_run_seconds": 3.955982095,
+      "weights_run_seconds": 2.064242298,
+      "verify_run_seconds": 3.260353186,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2303,8 +2303,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 2.5722634170000003,
-      "verify_run_seconds": 3.901585751,
+      "weights_run_seconds": 2.644057176,
+      "verify_run_seconds": 3.231297628,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3130,8 +3130,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.5722634170000003,
-      "verify_run_seconds": 2.464312032,
+      "weights_run_seconds": 2.644057176,
+      "verify_run_seconds": 2.279749962,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4004,8 +4004,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 1.579563716,
-      "verify_run_seconds": 2.235782623,
+      "weights_run_seconds": 1.8021636829999998,
+      "verify_run_seconds": 2.5037664570000002,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4878,8 +4878,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 1.579563716,
-      "verify_run_seconds": 2.192153597,
+      "weights_run_seconds": 1.8021636829999998,
+      "verify_run_seconds": 2.350401963,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5718,8 +5718,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.592717742,
-      "verify_run_seconds": 2.862917965,
+      "weights_run_seconds": 1.917122258,
+      "verify_run_seconds": 7.106621572,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6565,8 +6565,8 @@
         "trinket2: Uther's Strength",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.592717742,
-      "verify_run_seconds": 2.423587317,
+      "weights_run_seconds": 1.917122258,
+      "verify_run_seconds": 6.318092036,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7467,8 +7467,8 @@
         "trinket2: Serenity Field",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.5230154439999999,
-      "verify_run_seconds": 8.970641979,
+      "weights_run_seconds": 3.894399705,
+      "verify_run_seconds": 23.574630292,
       "coverage": {
         "back": {
           "eligible": 382,
@@ -7794,7 +7794,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 25.000689027352887,
+          "score": 25.000689027352884,
           "verified": true,
           "alternatives": [
             {
@@ -7802,21 +7802,21 @@
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.8799748593134856
+              "dps_delta": -0.8799748593134848
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -1.410922236105205
+              "dps_delta": -1.4109222361052043
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -1.414021711603507
+              "dps_delta": -1.4140217116035063
             }
           ],
           "runners_up": [
@@ -8383,8 +8383,8 @@
         "trinket2: Serenity Field",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.5230154439999999,
-      "verify_run_seconds": 7.324568579,
+      "weights_run_seconds": 3.894399705,
+      "verify_run_seconds": 19.354897151,
       "coverage": {
         "back": {
           "eligible": 387,
@@ -8773,7 +8773,7 @@
               "item_name": "Field Marshal's Dragonhide Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.4442545795542441
+              "dps_delta": -0.4442545795542457
             },
             {
               "item_id": 226776,
@@ -8957,7 +8957,7 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.834620325039008
+              "dps_delta": -1.8346203250390114
             },
             {
               "item_id": 231697,
@@ -9315,8 +9315,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 1.39531383,
-      "verify_run_seconds": 9.072587866,
+      "weights_run_seconds": 3.907816416,
+      "verify_run_seconds": 24.778405662,
       "coverage": {
         "back": {
           "eligible": 382,
@@ -9877,14 +9877,14 @@
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.834620325039008
+              "dps_delta": -1.8346203250390114
             },
             {
               "item_id": 237817,
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.834620325039008
+              "dps_delta": -1.8346203250390114
             },
             {
               "item_id": 231680,
@@ -10233,8 +10233,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Serenity Field"
       ],
-      "weights_run_seconds": 1.39531383,
-      "verify_run_seconds": 7.9224457059999995,
+      "weights_run_seconds": 3.907816416,
+      "verify_run_seconds": 18.085897769,
       "coverage": {
         "back": {
           "eligible": 387,

@@ -24800,11 +24800,6 @@
                   "item_id": 776,
                   "source_kind": "dungeon",
                   "source": "Razorfen Kraul: Overlord Ramtusk"
-                },
-                {
-                  "item_id": 15962,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -25120,11 +25115,6 @@
                   "item_id": 13034,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 15962,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -25392,11 +25382,6 @@
                   "item_id": 7942,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
-                },
-                {
-                  "item_id": 15962,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -25726,11 +25711,6 @@
                   "item_id": 4091,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 9644,
-                  "source_kind": "quest",
-                  "source": "Rescue OOX-17/TN!"
                 }
               ]
             },
@@ -26026,9 +26006,9 @@
                   "source": "Bone-Bladed Weapons"
                 },
                 {
-                  "item_id": 9644,
+                  "item_id": 9684,
                   "source_kind": "quest",
-                  "source": "Rescue OOX-17/TN!"
+                  "source": "Weapons of Spirit"
                 }
               ]
             },
@@ -27749,11 +27729,6 @@
                   "item_id": 776,
                   "source_kind": "dungeon",
                   "source": "Razorfen Kraul: Overlord Ramtusk"
-                },
-                {
-                  "item_id": 15962,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -28069,11 +28044,6 @@
                   "item_id": 13034,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 15962,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -28341,11 +28311,6 @@
                   "item_id": 7942,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
-                },
-                {
-                  "item_id": 15962,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -28676,11 +28641,6 @@
                   "item_id": 4091,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 9644,
-                  "source_kind": "quest",
-                  "source": "Rescue OOX-17/TN!"
                 }
               ]
             },
@@ -30138,11 +30098,6 @@
                   "item_id": 6504,
                   "source_kind": "quest",
                   "source": "Leaders of the Fang"
-                },
-                {
-                  "item_id": 11855,
-                  "source_kind": "quest",
-                  "source": "Samophlange Manual"
                 }
               ]
             },
@@ -30461,9 +30416,9 @@
                   "source": "Gyrodrillmatic Excavationators"
                 },
                 {
-                  "item_id": 15962,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 6691,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Kraul: Agathelos the Raging"
                 }
               ]
             },
@@ -30728,14 +30683,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11855,
-                  "source_kind": "quest",
-                  "source": "Samophlange Manual"
-                },
-                {
-                  "item_id": 15962,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 6691,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Kraul: Agathelos the Raging"
                 }
               ]
             },
@@ -31323,11 +31273,6 @@
                   "item_id": 10823,
                   "source_kind": "quest",
                   "source": "Bring the End"
-                },
-                {
-                  "item_id": 15963,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -59410,13 +59355,7 @@
               "source_kind": "dungeon",
               "source": "The Deadmines: Edwin VanCleef",
               "chance": 0.2,
-              "alternatives": [
-                {
-                  "item_id": 11855,
-                  "source_kind": "quest",
-                  "source": "Samophlange Manual"
-                }
-              ]
+              "alternatives": []
             },
             "ranged": {
               "item_id": 13136,
@@ -59731,11 +59670,6 @@
                   "item_id": 9457,
                   "source_kind": "dungeon",
                   "source": "Gnomeregan: Dark Iron Ambassador"
-                },
-                {
-                  "item_id": 15962,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -60003,11 +59937,6 @@
                   "item_id": 9457,
                   "source_kind": "dungeon",
                   "source": "Gnomeregan: Dark Iron Ambassador"
-                },
-                {
-                  "item_id": 11855,
-                  "source_kind": "quest",
-                  "source": "Samophlange Manual"
                 }
               ]
             },
@@ -60314,12 +60243,7 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 15963,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 15962,
+                  "item_id": 868,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -60586,14 +60510,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 15963,
+                  "item_id": 868,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 11855,
-                  "source_kind": "quest",
-                  "source": "Samophlange Manual"
                 }
               ]
             },
@@ -62427,11 +62346,6 @@
                   "item_id": 2567,
                   "source_kind": "dungeon",
                   "source": "Blackfathom Deeps: Fallenroot Shadowstalker"
-                },
-                {
-                  "item_id": 11855,
-                  "source_kind": "quest",
-                  "source": "Samophlange Manual"
                 }
               ]
             },
@@ -62748,11 +62662,6 @@
                   "item_id": 272086,
                   "source_kind": "vendor",
                   "source": "Creeg Bothunk"
-                },
-                {
-                  "item_id": 15962,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -63020,11 +62929,6 @@
                   "item_id": 272086,
                   "source_kind": "vendor",
                   "source": "Creeg Bothunk"
-                },
-                {
-                  "item_id": 11855,
-                  "source_kind": "quest",
-                  "source": "Samophlange Manual"
                 }
               ]
             },
@@ -63334,11 +63238,6 @@
                   "item_id": 6831,
                   "source_kind": "quest",
                   "source": "In the Name of the Light"
-                },
-                {
-                  "item_id": 15963,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -63606,11 +63505,6 @@
                   "item_id": 10761,
                   "source_kind": "dungeon",
                   "source": "Razorfen Downs: Amnennar the Coldbringer"
-                },
-                {
-                  "item_id": 15963,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -63947,11 +63841,6 @@
                   "item_id": 17710,
                   "source_kind": "dungeon",
                   "source": "Maraudon: Princess Theradras"
-                },
-                {
-                  "item_id": 9644,
-                  "source_kind": "quest",
-                  "source": "Rescue OOX-17/TN!"
                 }
               ]
             },
@@ -64239,11 +64128,6 @@
                   "item_id": 17710,
                   "source_kind": "dungeon",
                   "source": "Maraudon: Princess Theradras"
-                },
-                {
-                  "item_id": 9644,
-                  "source_kind": "quest",
-                  "source": "Rescue OOX-17/TN!"
                 }
               ]
             },
@@ -64593,11 +64477,6 @@
                   "item_id": 19100,
                   "source_kind": "rep",
                   "source": "Stormpike Guard"
-                },
-                {
-                  "item_id": 9644,
-                  "source_kind": "quest",
-                  "source": "Rescue OOX-17/TN!"
                 }
               ]
             },
@@ -64896,11 +64775,6 @@
                   "item_id": 19099,
                   "source_kind": "rep",
                   "source": "Frostwolf Clan"
-                },
-                {
-                  "item_id": 9644,
-                  "source_kind": "quest",
-                  "source": "Rescue OOX-17/TN!"
                 }
               ]
             },
@@ -65458,11 +65332,6 @@
                   "item_id": 2567,
                   "source_kind": "dungeon",
                   "source": "Blackfathom Deeps: Fallenroot Shadowstalker"
-                },
-                {
-                  "item_id": 11855,
-                  "source_kind": "quest",
-                  "source": "Samophlange Manual"
                 }
               ]
             },
@@ -65779,11 +65648,6 @@
                   "item_id": 272086,
                   "source_kind": "vendor",
                   "source": "Creeg Bothunk"
-                },
-                {
-                  "item_id": 15962,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -66051,11 +65915,6 @@
                   "item_id": 272086,
                   "source_kind": "vendor",
                   "source": "Creeg Bothunk"
-                },
-                {
-                  "item_id": 11855,
-                  "source_kind": "quest",
-                  "source": "Samophlange Manual"
                 }
               ]
             },
@@ -66365,11 +66224,6 @@
                   "item_id": 6831,
                   "source_kind": "quest",
                   "source": "In the Name of the Light"
-                },
-                {
-                  "item_id": 15963,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -66637,11 +66491,6 @@
                   "item_id": 10761,
                   "source_kind": "dungeon",
                   "source": "Razorfen Downs: Amnennar the Coldbringer"
-                },
-                {
-                  "item_id": 15963,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -66976,11 +66825,6 @@
                   "item_id": 17710,
                   "source_kind": "dungeon",
                   "source": "Maraudon: Princess Theradras"
-                },
-                {
-                  "item_id": 9644,
-                  "source_kind": "quest",
-                  "source": "Rescue OOX-17/TN!"
                 }
               ]
             },
@@ -67268,11 +67112,6 @@
                   "item_id": 17710,
                   "source_kind": "dungeon",
                   "source": "Maraudon: Princess Theradras"
-                },
-                {
-                  "item_id": 9644,
-                  "source_kind": "quest",
-                  "source": "Rescue OOX-17/TN!"
                 }
               ]
             },
@@ -67609,11 +67448,6 @@
                   "item_id": 19100,
                   "source_kind": "rep",
                   "source": "Stormpike Guard"
-                },
-                {
-                  "item_id": 9644,
-                  "source_kind": "quest",
-                  "source": "Rescue OOX-17/TN!"
                 }
               ]
             },
@@ -67907,11 +67741,6 @@
                   "item_id": 19099,
                   "source_kind": "rep",
                   "source": "Frostwolf Clan"
-                },
-                {
-                  "item_id": 9644,
-                  "source_kind": "quest",
-                  "source": "Rescue OOX-17/TN!"
                 }
               ]
             },
@@ -87972,11 +87801,6 @@
                   "item_id": 2194,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 12997,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -88237,11 +88061,6 @@
               "alternatives": [
                 {
                   "item_id": 2194,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 12997,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -88562,9 +88381,9 @@
                   "source": "Gyrodrillmatic Excavationators"
                 },
                 {
-                  "item_id": 15892,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 9457,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Dark Iron Ambassador"
                 }
               ]
             },
@@ -88829,14 +88648,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 15892,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 13079,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 9457,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Dark Iron Ambassador"
                 }
               ]
             },
@@ -89155,7 +88969,7 @@
                   "source": "Gyrodrillmatic Excavationators"
                 },
                 {
-                  "item_id": 13081,
+                  "item_id": 868,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -89422,14 +89236,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13081,
+                  "item_id": 868,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 6725,
-                  "source_kind": "quest",
-                  "source": "A Vengeful Fate"
                 }
               ]
             },
@@ -110626,7 +110435,6 @@
     "6692": "Pronged Reaver",
     "6694": "Heart of Agamaggan",
     "6697": "Batwing Mantle",
-    "6725": "Marbled Buckler",
     "6726": "Razzeric's Customized Seatbelt",
     "6743": "Sustaining Ring",
     "6748": "Monkey Ring",
@@ -110887,7 +110695,6 @@
     "11822": "Omnicast Boots",
     "11841": "Senior Designer's Pantaloons",
     "11854": "Samophlange Screwdriver",
-    "11855": "Tork Wrench",
     "11859": "Jademoon Orb",
     "11862": "White Bone Band",
     "11863": "White Bone Shredder",
@@ -110943,8 +110750,6 @@
     "13071": "Plated Fist of Hakoo",
     "13073": "Mugthol's Helm",
     "13074": "Golem Shard Leggings",
-    "13079": "Shield of Thorsen",
-    "13081": "Skullance Shield",
     "13082": "Mountainside Buckler",
     "13084": "Kaleidoscope Chain",
     "13085": "Horizon Choker",
@@ -111078,10 +110883,7 @@
     "15802": "Mooncloth Boots",
     "15856": "Archlight Talisman",
     "15864": "Condor Bracers",
-    "15892": "Slayer's Shield",
     "15937": "Hibernal Sphere",
-    "15962": "Satyr's Rod",
-    "15963": "Stonecloth Branch",
     "15965": "Windchaser Orb",
     "15999": "Spellpower Goggles Xtreme Plus",
     "16004": "Dark Iron Rifle",

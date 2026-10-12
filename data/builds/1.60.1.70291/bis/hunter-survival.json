@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T03:07:23Z",
+  "generated_at": "2026-10-12T22:41:42Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -746,8 +746,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.391718132,
-      "verify_run_seconds": 4.177682791,
+      "weights_run_seconds": 1.506894719,
+      "verify_run_seconds": 4.247413436,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1485,13 +1485,6 @@
               "source": "Leaders of the Fang",
               "dps_delta": -6.39244217111343,
               "verified": true
-            },
-            {
-              "item_id": 11855,
-              "item_name": "Tork Wrench",
-              "source_kind": "quest",
-              "source": "Samophlange Manual",
-              "dps_delta": -10.234764414776722
             }
           ],
           "runners_up": [
@@ -1499,11 +1492,6 @@
               "item_id": 6504,
               "source_kind": "quest",
               "source": "Leaders of the Fang"
-            },
-            {
-              "item_id": 11855,
-              "source_kind": "quest",
-              "source": "Samophlange Manual"
             }
           ]
         },
@@ -1588,8 +1576,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.391718132,
-      "verify_run_seconds": 4.183087599,
+      "weights_run_seconds": 1.506894719,
+      "verify_run_seconds": 4.235497517,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2364,13 +2352,6 @@
               "dps_delta": -4.794574347223508
             },
             {
-              "item_id": 15962,
-              "item_name": "Satyr's Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -16.2090368229777
-            },
-            {
               "item_id": 6691,
               "item_name": "Swinetusk Shank",
               "source_kind": "dungeon",
@@ -2386,9 +2367,9 @@
               "source": "Gyrodrillmatic Excavationators"
             },
             {
-              "item_id": 15962,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 6691,
+              "source_kind": "dungeon",
+              "source": "Razorfen Kraul: Agathelos the Raging"
             }
           ]
         },
@@ -2473,8 +2454,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.314119083,
-      "verify_run_seconds": 2.483901677,
+      "weights_run_seconds": 1.384820229,
+      "verify_run_seconds": 2.601853122,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3241,20 +3222,6 @@
           "dps_delta": 17.418706024434186,
           "alternatives": [
             {
-              "item_id": 11855,
-              "item_name": "Tork Wrench",
-              "source_kind": "quest",
-              "source": "Samophlange Manual",
-              "dps_delta": -16.31202295153784
-            },
-            {
-              "item_id": 15962,
-              "item_name": "Satyr's Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -16.342828239716287
-            },
-            {
               "item_id": 6691,
               "item_name": "Swinetusk Shank",
               "source_kind": "dungeon",
@@ -3265,14 +3232,9 @@
           ],
           "runners_up": [
             {
-              "item_id": 11855,
-              "source_kind": "quest",
-              "source": "Samophlange Manual"
-            },
-            {
-              "item_id": 15962,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 6691,
+              "source_kind": "dungeon",
+              "source": "Razorfen Kraul: Agathelos the Raging"
             }
           ]
         },
@@ -3357,8 +3319,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.314119083,
-      "verify_run_seconds": 2.49196153,
+      "weights_run_seconds": 1.384820229,
+      "verify_run_seconds": 2.640365851,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4133,13 +4095,6 @@
               "source_kind": "quest",
               "source": "Gyrodrillmatic Excavationators",
               "dps_delta": -15.837587369404444
-            },
-            {
-              "item_id": 15963,
-              "item_name": "Stonecloth Branch",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -31.5586413944961
             }
           ],
           "runners_up": [
@@ -4237,8 +4192,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.397304822,
-      "verify_run_seconds": 2.9737829749999998,
+      "weights_run_seconds": 1.483775544,
+      "verify_run_seconds": 3.14917367,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -5006,20 +4961,6 @@
               "source": "Bring the End",
               "dps_delta": -0.4562995802682792,
               "verified": true
-            },
-            {
-              "item_id": 15963,
-              "item_name": "Stonecloth Branch",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -31.5586413944961
-            },
-            {
-              "item_id": 11855,
-              "item_name": "Tork Wrench",
-              "source_kind": "quest",
-              "source": "Samophlange Manual",
-              "dps_delta": -31.644688688884123
             }
           ],
           "runners_up": [
@@ -5027,11 +4968,6 @@
               "item_id": 10823,
               "source_kind": "quest",
               "source": "Bring the End"
-            },
-            {
-              "item_id": 15963,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           ]
         },
@@ -5117,8 +5053,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.397304822,
-      "verify_run_seconds": 3.032919517,
+      "weights_run_seconds": 1.483775544,
+      "verify_run_seconds": 3.071412532,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -6030,8 +5966,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.386542141,
-      "verify_run_seconds": 5.888167531,
+      "weights_run_seconds": 1.494056005,
+      "verify_run_seconds": 6.324981269,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6937,8 +6873,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.386542141,
-      "verify_run_seconds": 3.507267829,
+      "weights_run_seconds": 1.494056005,
+      "verify_run_seconds": 3.722436297,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7304,7 +7240,7 @@
               "item_name": "Field Marshal's Chain Armor",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.5212352548825196
+              "dps_delta": -0.5212352548825206
             },
             {
               "item_id": 22191,
@@ -7494,7 +7430,7 @@
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.994062041738141
+              "dps_delta": -1.9940620417381418
             },
             {
               "item_id": 237818,
@@ -7508,7 +7444,7 @@
               "item_name": "Knight-Captain's Chain Legplates",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -3.0717597168183106
+              "dps_delta": -3.0717597168183115
             }
           ],
           "runners_up": [
@@ -7885,8 +7821,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.357801149,
-      "verify_run_seconds": 12.545764866,
+      "weights_run_seconds": 1.417058392,
+      "verify_run_seconds": 12.483581815,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -8250,7 +8186,7 @@
               "item_name": "Warlord's Chain Armor",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.5212352548825196
+              "dps_delta": -0.5212352548825206
             },
             {
               "item_id": 22191,
@@ -8834,8 +8770,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.357801149,
-      "verify_run_seconds": 12.623340674,
+      "weights_run_seconds": 1.417058392,
+      "verify_run_seconds": 12.452269736,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -9777,8 +9713,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.314477541,
-      "verify_run_seconds": 9.937292541,
+      "weights_run_seconds": 1.3650958690000001,
+      "verify_run_seconds": 10.953701768,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -10142,7 +10078,7 @@
               "item_name": "Legionnaire's Chain Armor",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -4.395624722602813
+              "dps_delta": -4.395624722602811
             },
             {
               "item_id": 252484,
@@ -10719,8 +10655,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.314477541,
-      "verify_run_seconds": 10.048225966,
+      "weights_run_seconds": 1.3650958690000001,
+      "verify_run_seconds": 10.708088586,
       "coverage": {
         "back": {
           "eligible": 386,

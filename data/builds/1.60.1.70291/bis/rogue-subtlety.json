@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T03:30:12Z",
+  "generated_at": "2026-10-12T22:46:00Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -745,8 +745,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.3070964090000001,
-      "verify_run_seconds": 4.26428366,
+      "weights_run_seconds": 1.274504994,
+      "verify_run_seconds": 4.023869002,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1482,13 +1482,6 @@
               "source": "Blackfathom Deeps: Fallenroot Shadowstalker",
               "dps_delta": -3.9568780367531176,
               "verified": true
-            },
-            {
-              "item_id": 11855,
-              "item_name": "Tork Wrench",
-              "source_kind": "quest",
-              "source": "Samophlange Manual",
-              "dps_delta": -14.509850779194323
             }
           ],
           "runners_up": [
@@ -1496,11 +1489,6 @@
               "item_id": 2567,
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps: Fallenroot Shadowstalker"
-            },
-            {
-              "item_id": 11855,
-              "source_kind": "quest",
-              "source": "Samophlange Manual"
             }
           ]
         },
@@ -1586,8 +1574,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.3070964090000001,
-      "verify_run_seconds": 4.30826048,
+      "weights_run_seconds": 1.274504994,
+      "verify_run_seconds": 4.029779597,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2375,13 +2363,6 @@
               "source": "Creeg Bothunk",
               "dps_delta": -4.710405006020622,
               "verified": true
-            },
-            {
-              "item_id": 15962,
-              "item_name": "Satyr's Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -19.196646200124253
             }
           ],
           "runners_up": [
@@ -2389,11 +2370,6 @@
               "item_id": 272086,
               "source_kind": "vendor",
               "source": "Creeg Bothunk"
-            },
-            {
-              "item_id": 15962,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           ]
         },
@@ -2474,8 +2450,8 @@
         "off_hand: Torturing Poker",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.428277524,
-      "verify_run_seconds": 4.818339738,
+      "weights_run_seconds": 1.23945148,
+      "verify_run_seconds": 4.190899715,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3262,20 +3238,6 @@
               "source": "Creeg Bothunk",
               "dps_delta": -6.07733436385459,
               "verified": true
-            },
-            {
-              "item_id": 11855,
-              "item_name": "Tork Wrench",
-              "source_kind": "quest",
-              "source": "Samophlange Manual",
-              "dps_delta": -20.624922401551085
-            },
-            {
-              "item_id": 15962,
-              "item_name": "Satyr's Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -20.661410749804258
             }
           ],
           "runners_up": [
@@ -3283,11 +3245,6 @@
               "item_id": 272086,
               "source_kind": "vendor",
               "source": "Creeg Bothunk"
-            },
-            {
-              "item_id": 11855,
-              "source_kind": "quest",
-              "source": "Samophlange Manual"
             }
           ]
         },
@@ -3369,8 +3326,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.428277524,
-      "verify_run_seconds": 4.673829712,
+      "weights_run_seconds": 1.23945148,
+      "verify_run_seconds": 4.2542999120000005,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4138,20 +4095,6 @@
               "source": "In the Name of the Light",
               "dps_delta": -1.516007879781668,
               "verified": true
-            },
-            {
-              "item_id": 15963,
-              "item_name": "Stonecloth Branch",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -32.36352070407938
-            },
-            {
-              "item_id": 15962,
-              "item_name": "Satyr's Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -32.491507010550656
             }
           ],
           "runners_up": [
@@ -4159,11 +4102,6 @@
               "item_id": 6831,
               "source_kind": "quest",
               "source": "In the Name of the Light"
-            },
-            {
-              "item_id": 15963,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           ]
         },
@@ -4248,8 +4186,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.412590051,
-      "verify_run_seconds": 2.678631434,
+      "weights_run_seconds": 1.277255948,
+      "verify_run_seconds": 2.487244551,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -5016,20 +4954,6 @@
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Amnennar the Coldbringer",
               "dps_delta": 0
-            },
-            {
-              "item_id": 15963,
-              "item_name": "Stonecloth Branch",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -32.36352070407938
-            },
-            {
-              "item_id": 11855,
-              "item_name": "Tork Wrench",
-              "source_kind": "quest",
-              "source": "Samophlange Manual",
-              "dps_delta": -32.437401749539035
             }
           ],
           "runners_up": [
@@ -5037,11 +4961,6 @@
               "item_id": 10761,
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Amnennar the Coldbringer"
-            },
-            {
-              "item_id": 15963,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           ]
         },
@@ -5126,8 +5045,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.412590051,
-      "verify_run_seconds": 2.72530749,
+      "weights_run_seconds": 1.277255948,
+      "verify_run_seconds": 2.514912061,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5465,7 +5384,7 @@
           "item_name": "Knight's Leather Armor",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 42.51838378343332,
+          "score": 42.518383783433315,
           "verified": true,
           "alternatives": [
             {
@@ -5473,7 +5392,7 @@
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Tremors of the Earth",
-              "dps_delta": -0.5816582407853812
+              "dps_delta": -0.5816582407853806
             },
             {
               "item_id": 15064,
@@ -5488,7 +5407,7 @@
               "item_name": "Charred Leather Tunic",
               "source_kind": "quest",
               "source": "WANTED: Overseer Maltorius",
-              "dps_delta": -1.4378339172880614
+              "dps_delta": -1.437833917288061
             }
           ],
           "runners_up": [
@@ -5636,7 +5555,7 @@
           "item_name": "Knight's Leather Pants",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 42.518383783433315,
+          "score": 42.51838378343332,
           "verified": true,
           "alternatives": [
             {
@@ -5644,7 +5563,7 @@
               "item_name": "Serpentskin Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.5764990900262352
+              "dps_delta": -0.5764990900262358
             },
             {
               "item_id": 9652,
@@ -5659,7 +5578,7 @@
               "item_name": "Basilisk Hide Pants",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.0767235237916086
+              "dps_delta": -1.0767235237916093
             }
           ],
           "runners_up": [
@@ -5921,20 +5840,6 @@
               "source": "Maraudon: Princess Theradras",
               "dps_delta": -26.92248193056794,
               "verified": true
-            },
-            {
-              "item_id": 9644,
-              "item_name": "Thermotastic Egg Timer",
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!",
-              "dps_delta": -42.294282074158176
-            },
-            {
-              "item_id": 15963,
-              "item_name": "Stonecloth Branch",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -42.40106744697937
             }
           ],
           "runners_up": [
@@ -5942,11 +5847,6 @@
               "item_id": 17710,
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras"
-            },
-            {
-              "item_id": 9644,
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!"
             }
           ]
         },
@@ -6033,8 +5933,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.638971614,
-      "verify_run_seconds": 3.278528439,
+      "weights_run_seconds": 1.453011455,
+      "verify_run_seconds": 3.098254746,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6535,7 +6435,7 @@
           "item_name": "Stone Guard's Leather Pants",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 42.518383783433315,
+          "score": 42.51838378343332,
           "verified": true,
           "alternatives": [
             {
@@ -6543,14 +6443,14 @@
               "item_name": "Basilisk Hide Pants",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.0767235237916086
+              "dps_delta": -1.0767235237916093
             },
             {
               "item_id": 9624,
               "item_name": "Triprunner Dungarees",
               "source_kind": "quest",
               "source": "Rig Wars",
-              "dps_delta": -1.1835088966128007
+              "dps_delta": -1.1835088966128013
             },
             {
               "item_id": 8262,
@@ -6808,20 +6708,6 @@
               "source": "Maraudon: Princess Theradras",
               "dps_delta": -26.99126605158159,
               "verified": true
-            },
-            {
-              "item_id": 9644,
-              "item_name": "Thermotastic Egg Timer",
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!",
-              "dps_delta": -42.294282074158176
-            },
-            {
-              "item_id": 15963,
-              "item_name": "Stonecloth Branch",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -42.40106744697937
             }
           ],
           "runners_up": [
@@ -6829,11 +6715,6 @@
               "item_id": 17710,
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras"
-            },
-            {
-              "item_id": 9644,
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!"
             }
           ]
         },
@@ -6918,8 +6799,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.638971614,
-      "verify_run_seconds": 3.33351696,
+      "weights_run_seconds": 1.453011455,
+      "verify_run_seconds": 3.135670184,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7588,7 +7469,7 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "score": 52.9848047957665,
+          "score": 52.98480479576651,
           "verified": true,
           "alternatives": [
             {
@@ -7604,7 +7485,7 @@
               "item_name": "Protector's Band",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -2.3891552903638598
+              "dps_delta": -2.3891552903638607
             }
           ],
           "runners_up": [
@@ -7717,20 +7598,6 @@
               "source_kind": "rep",
               "source": "Stormpike Guard",
               "dps_delta": 0
-            },
-            {
-              "item_id": 9644,
-              "item_name": "Thermotastic Egg Timer",
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!",
-              "dps_delta": -66.3177791544948
-            },
-            {
-              "item_id": 15967,
-              "item_name": "Highborne Star",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -66.3177791544948
             }
           ],
           "runners_up": [
@@ -7738,11 +7605,6 @@
               "item_id": 19100,
               "source_kind": "rep",
               "source": "Stormpike Guard"
-            },
-            {
-              "item_id": 9644,
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!"
             }
           ]
         },
@@ -7829,8 +7691,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.531951719,
-      "verify_run_seconds": 9.790257571,
+      "weights_run_seconds": 1.480358359,
+      "verify_run_seconds": 9.849502796,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -8189,7 +8051,7 @@
               "item_name": "Warlord's Leather Breastplate",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.7519531909532917
+              "dps_delta": -1.7519531909532904
             },
             {
               "item_id": 252484,
@@ -8645,20 +8507,6 @@
               "source": "Frostwolf Clan",
               "dps_delta": -1.371010382727036,
               "verified": true
-            },
-            {
-              "item_id": 9644,
-              "item_name": "Thermotastic Egg Timer",
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!",
-              "dps_delta": -66.3177791544948
-            },
-            {
-              "item_id": 15967,
-              "item_name": "Highborne Star",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -66.3177791544948
             }
           ],
           "runners_up": [
@@ -8666,11 +8514,6 @@
               "item_id": 19099,
               "source_kind": "rep",
               "source": "Frostwolf Clan"
-            },
-            {
-              "item_id": 9644,
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!"
             }
           ]
         },
@@ -8757,8 +8600,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.531951719,
-      "verify_run_seconds": 9.585553633,
+      "weights_run_seconds": 1.480358359,
+      "verify_run_seconds": 9.716030506,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -9124,14 +8967,14 @@
               "item_name": "Field Marshal's Leather Chestpiece",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -4.029516351773298
+              "dps_delta": -4.029516351773295
             },
             {
               "item_id": 252484,
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -5.382634234494776
+              "dps_delta": -5.382634234494779
             }
           ],
           "runners_up": [
@@ -9556,20 +9399,6 @@
               "source": "Stormpike Guard",
               "dps_delta": 0,
               "verified": true
-            },
-            {
-              "item_id": 9644,
-              "item_name": "Thermotastic Egg Timer",
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!",
-              "dps_delta": -120.25029013202118
-            },
-            {
-              "item_id": 15967,
-              "item_name": "Highborne Star",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -120.25029013202118
             }
           ],
           "runners_up": [
@@ -9577,11 +9406,6 @@
               "item_id": 19100,
               "source_kind": "rep",
               "source": "Stormpike Guard"
-            },
-            {
-              "item_id": 9644,
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!"
             }
           ]
         },
@@ -9668,8 +9492,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.537186854,
-      "verify_run_seconds": 9.802064751,
+      "weights_run_seconds": 1.512360943,
+      "verify_run_seconds": 9.807095198,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -10041,7 +9865,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -5.382634234494776
+              "dps_delta": -5.382634234494779
             }
           ],
           "runners_up": [
@@ -10480,20 +10304,6 @@
               "source_kind": "rep",
               "source": "Frostwolf Clan",
               "dps_delta": 0
-            },
-            {
-              "item_id": 9644,
-              "item_name": "Thermotastic Egg Timer",
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!",
-              "dps_delta": -120.25029013202118
-            },
-            {
-              "item_id": 15967,
-              "item_name": "Highborne Star",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -120.25029013202118
             }
           ],
           "runners_up": [
@@ -10501,11 +10311,6 @@
               "item_id": 19099,
               "source_kind": "rep",
               "source": "Frostwolf Clan"
-            },
-            {
-              "item_id": 9644,
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!"
             }
           ]
         },
@@ -10592,8 +10397,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.537186854,
-      "verify_run_seconds": 10.514230275,
+      "weights_run_seconds": 1.512360943,
+      "verify_run_seconds": 9.829492501,
       "coverage": {
         "back": {
           "eligible": 386,

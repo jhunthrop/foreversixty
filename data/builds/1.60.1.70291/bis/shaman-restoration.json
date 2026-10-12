@@ -2,7 +2,7 @@
   "spec": "shaman-restoration",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T04:10:04Z",
+  "generated_at": "2026-10-12T22:53:24Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -703,8 +703,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 1.5776298180000001,
-      "verify_run_seconds": 4.831289127,
+      "weights_run_seconds": 1.728014744,
+      "verify_run_seconds": 5.72354977,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1030,7 +1030,7 @@
           "item_name": "Wisdom's Leather Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 29.811188678791627,
+          "score": 29.811188678791623,
           "verified": true,
           "alternatives": [
             {
@@ -1038,7 +1038,7 @@
               "item_name": "Robe of the Moccasin",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Lord Cobrahn",
-              "dps_delta": -0.09990923179859601
+              "dps_delta": -0.09990923179859586
             },
             {
               "item_id": 253901,
@@ -1053,7 +1053,7 @@
               "item_name": "Corsair's Overshirt",
               "source_kind": "dungeon",
               "source": "The Deadmines: Edwin VanCleef",
-              "dps_delta": -0.17274922430215217
+              "dps_delta": -0.17274922430215203
             }
           ],
           "runners_up": [
@@ -1488,8 +1488,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 1.5776298180000001,
-      "verify_run_seconds": 4.822837352,
+      "weights_run_seconds": 1.728014744,
+      "verify_run_seconds": 5.572080358,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2059,7 +2059,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 43.89894975582708,
+          "score": 43.898949755827076,
           "verified": true,
           "alternatives": [
             {
@@ -2067,14 +2067,14 @@
               "item_name": "Glinteye Slippers",
               "source_kind": "dungeon",
               "source": "Excavation Site: Wetlands: Saltspine",
-              "dps_delta": -0.7052673530265925
+              "dps_delta": -0.7052673530265922
             },
             {
               "item_id": 9454,
               "item_name": "Acidic Walkers",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -0.7450334342321238
+              "dps_delta": -0.7450334342321235
             },
             {
               "item_id": 274747,
@@ -2289,8 +2289,8 @@
         "finger2: Darkspear Signet",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 1.44951502,
-      "verify_run_seconds": 4.900241145,
+      "weights_run_seconds": 1.801530724,
+      "verify_run_seconds": 5.355866135,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3091,8 +3091,8 @@
         "finger2: Darkspear Signet",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 1.44951502,
-      "verify_run_seconds": 4.848603242,
+      "weights_run_seconds": 1.801530724,
+      "verify_run_seconds": 5.25836411,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3906,8 +3906,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 1.598951952,
-      "verify_run_seconds": 7.302507453,
+      "weights_run_seconds": 1.6774992439999998,
+      "verify_run_seconds": 8.190275521,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4721,8 +4721,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 1.598951952,
-      "verify_run_seconds": 13.418063707,
+      "weights_run_seconds": 1.6774992439999998,
+      "verify_run_seconds": 8.192673348,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5647,8 +5647,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Mountainside Buckler"
       ],
-      "weights_run_seconds": 4.732196808,
-      "verify_run_seconds": 18.405682241,
+      "weights_run_seconds": 2.369079221,
+      "verify_run_seconds": 13.272398706,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6082,7 +6082,7 @@
           "item_name": "Grasp of The Five Thunders",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 106.78814736551841,
+          "score": 106.78814736551843,
           "verified": true,
           "alternatives": [
             {
@@ -6098,14 +6098,14 @@
               "item_name": "Mender's Mail Gauntlets",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.2811107852119203
+              "dps_delta": -1.281110785211921
             },
             {
               "item_id": 254095,
               "item_name": "Gilded Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.4124037472176902
+              "dps_delta": -1.412403747217691
             }
           ],
           "runners_up": [
@@ -6573,8 +6573,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Mountainside Buckler"
       ],
-      "weights_run_seconds": 4.732196808,
-      "verify_run_seconds": 12.992271153,
+      "weights_run_seconds": 2.369079221,
+      "verify_run_seconds": 13.17503849,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -6967,14 +6967,14 @@
               "item_name": "Devout Bracers",
               "source_kind": "dungeon",
               "source": "Stratholme: Crimson Priest",
-              "dps_delta": -0.7170557030967217
+              "dps_delta": -0.7170557030967223
             },
             {
               "item_id": 16683,
               "item_name": "Magister's Bindings",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Rage Talon Fire Tongue",
-              "dps_delta": -0.9218651490530553
+              "dps_delta": -0.9218651490530558
             },
             {
               "item_id": 22667,
@@ -7457,8 +7457,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 2.0619657,
-      "verify_run_seconds": 29.767995103,
+      "weights_run_seconds": 3.292587185,
+      "verify_run_seconds": 30.939278979,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -7851,14 +7851,14 @@
               "item_name": "Devout Bracers",
               "source_kind": "dungeon",
               "source": "Stratholme: Crimson Priest",
-              "dps_delta": -0.7170557030967223
+              "dps_delta": -0.7170557030967217
             },
             {
               "item_id": 16576,
               "item_name": "General's Mail Bracers",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.7193910360810364
+              "dps_delta": -0.7193910360810358
             },
             {
               "item_id": 22667,
@@ -8341,8 +8341,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 2.0619657,
-      "verify_run_seconds": 26.119850341,
+      "weights_run_seconds": 3.292587185,
+      "verify_run_seconds": 32.701736076,
       "coverage": {
         "back": {
           "eligible": 387,
@@ -8726,7 +8726,7 @@
           "item_name": "Bracers of Hope",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "score": 37.17232093551538,
+          "score": 37.17232093551539,
           "verified": true,
           "alternatives": [
             {
@@ -8742,14 +8742,14 @@
               "item_name": "Nethergeld Cuffs",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.1773110874522734
+              "dps_delta": -2.1773110874522756
             },
             {
               "item_id": 252543,
               "item_name": "Mender's Leather Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.288802593288985
+              "dps_delta": -2.2888025932889873
             }
           ],
           "runners_up": [
@@ -8779,7 +8779,7 @@
               "item_name": "Grasp of The Five Thunders",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.4948196263849534
+              "dps_delta": -1.4948196263849511
             },
             {
               "item_id": 252551,
@@ -8922,7 +8922,7 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -6.709658858115143
+              "dps_delta": -6.709658858115141
             },
             {
               "item_id": 275609,
@@ -9265,8 +9265,8 @@
         "trinket2: Shard of the Splithooves",
         "off_hand: Evergreen Shield"
       ],
-      "weights_run_seconds": 1.908799504,
-      "verify_run_seconds": 19.033361501,
+      "weights_run_seconds": 2.419491326,
+      "verify_run_seconds": 24.956475765,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -9544,7 +9544,7 @@
               "item_name": "Warlord's Mail Epaulets",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -9.389175616469984
+              "dps_delta": -9.389175616469986
             }
           ],
           "runners_up": [
@@ -9649,7 +9649,7 @@
           "item_name": "Bracers of Hope",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "score": 37.17232093551539,
+          "score": 37.17232093551538,
           "verified": true,
           "alternatives": [
             {
@@ -9665,14 +9665,14 @@
               "item_name": "Nethergeld Cuffs",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.1773110874522756
+              "dps_delta": -2.1773110874522734
             },
             {
-              "item_id": 252573,
-              "item_name": "Mender's Mail Bracers",
+              "item_id": 252543,
+              "item_name": "Mender's Leather Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.2888025932889873
+              "dps_delta": -2.288802593288985
             }
           ],
           "runners_up": [
@@ -9739,7 +9739,7 @@
           "item_name": "Wisdom of the Timbermaw",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 51.28148693439029,
+          "score": 51.281486934390294,
           "verified": true,
           "alternatives": [
             {
@@ -9755,14 +9755,14 @@
               "item_name": "Mender's Leather Waistguard",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.911577391607028
+              "dps_delta": -2.91157739160703
             },
             {
               "item_id": 252591,
               "item_name": "Mender's Mail Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.911577391607028
+              "dps_delta": -2.91157739160703
             }
           ],
           "runners_up": [
@@ -10188,8 +10188,8 @@
         "trinket2: Shard of the Splithooves",
         "off_hand: Evergreen Shield"
       ],
-      "weights_run_seconds": 1.908799504,
-      "verify_run_seconds": 19.226143712,
+      "weights_run_seconds": 2.419491326,
+      "verify_run_seconds": 37.158546433,
       "coverage": {
         "back": {
           "eligible": 387,

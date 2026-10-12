@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T04:11:51Z",
+  "generated_at": "2026-10-12T22:55:36Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -762,8 +762,8 @@
         "main_hand: Smite's Mighty Hammer",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.240781459,
-      "verify_run_seconds": 3.631064892,
+      "weights_run_seconds": 2.972216597,
+      "verify_run_seconds": 5.290959269,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1604,8 +1604,8 @@
         "main_hand: Hammerbone",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.240781459,
-      "verify_run_seconds": 3.720845269,
+      "weights_run_seconds": 2.972216597,
+      "verify_run_seconds": 4.56570535,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2442,8 +2442,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.302347886,
-      "verify_run_seconds": 2.164127903,
+      "weights_run_seconds": 1.600575192,
+      "verify_run_seconds": 2.982880791,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3280,8 +3280,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.302347886,
-      "verify_run_seconds": 2.227142325,
+      "weights_run_seconds": 1.600575192,
+      "verify_run_seconds": 2.782016905,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4121,8 +4121,8 @@
         "finger2: Mark of Kern",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.315385627,
-      "verify_run_seconds": 2.6756763340000003,
+      "weights_run_seconds": 1.592291113,
+      "verify_run_seconds": 3.20802363,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4964,8 +4964,8 @@
         "finger2: Mark of Kern",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.315385627,
-      "verify_run_seconds": 2.674567782,
+      "weights_run_seconds": 1.592291113,
+      "verify_run_seconds": 3.289361818,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5828,8 +5828,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.262767905,
-      "verify_run_seconds": 3.511569566,
+      "weights_run_seconds": 1.613231854,
+      "verify_run_seconds": 4.304348152,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6348,7 +6348,7 @@
           "item_name": "Stone Guard's Plate Leggings",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 57.17038601465177,
+          "score": 57.170386014651754,
           "verified": true,
           "alternatives": [
             {
@@ -6356,14 +6356,14 @@
               "item_name": "Golem Shard Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.098194758561988
+              "dps_delta": -1.098194758561987
             },
             {
               "item_id": 10330,
               "item_name": "Scarlet Leggings",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Herod",
-              "dps_delta": -1.2649620434905058
+              "dps_delta": -1.2649620434905047
             },
             {
               "item_id": 8262,
@@ -6714,8 +6714,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.262767905,
-      "verify_run_seconds": 3.5766855509999997,
+      "weights_run_seconds": 1.613231854,
+      "verify_run_seconds": 4.197399683,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7605,8 +7605,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.312887661,
-      "verify_run_seconds": 14.080123908,
+      "weights_run_seconds": 1.50155061,
+      "verify_run_seconds": 14.486186322,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -8144,7 +8144,7 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.7549293521896407
+              "dps_delta": -1.7549293521896383
             },
             {
               "item_id": 231533,
@@ -8504,8 +8504,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.312887661,
-      "verify_run_seconds": 13.090075712,
+      "weights_run_seconds": 1.50155061,
+      "verify_run_seconds": 14.887305148,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -9394,8 +9394,8 @@
         "main_hand: Arcanite Champion",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.483284836,
-      "verify_run_seconds": 13.89013626,
+      "weights_run_seconds": 1.587479354,
+      "verify_run_seconds": 16.270800332,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -9576,7 +9576,7 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -14.570474882006378
+              "dps_delta": -14.57047488200638
             },
             {
               "item_id": 250599,
@@ -10303,8 +10303,8 @@
         "main_hand: Arcanite Champion",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.483284836,
-      "verify_run_seconds": 15.621312298,
+      "weights_run_seconds": 1.587479354,
+      "verify_run_seconds": 24.890508628,
       "coverage": {
         "back": {
           "eligible": 386,

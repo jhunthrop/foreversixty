@@ -2,7 +2,7 @@
   "spec": "druid-restoration",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T04:03:43Z",
+  "generated_at": "2026-10-12T22:36:44Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -424,7 +424,7 @@
           "item_name": "Wisdom's Leather Pants",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 33.91370727577009,
+          "score": 33.9137072757701,
           "verified": true,
           "alternatives": [
             {
@@ -440,14 +440,14 @@
               "item_name": "Darkweave Breeches",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.6094909377509259
+              "dps_delta": -1.6094909377509266
             },
             {
               "item_id": 4434,
               "item_name": "Scarecrow Trousers",
               "source_kind": "world",
               "source": "Foe Reaper 4000",
-              "dps_delta": -2.034301850146895
+              "dps_delta": -2.0343018501468957
             }
           ],
           "runners_up": [
@@ -702,8 +702,8 @@
         "finger2: Band of Purification",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 1.993173115,
-      "verify_run_seconds": 6.809743716,
+      "weights_run_seconds": 1.893615923,
+      "verify_run_seconds": 6.742303781,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1500,8 +1500,8 @@
         "finger2: Band of Purification",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 1.993173115,
-      "verify_run_seconds": 11.660667472,
+      "weights_run_seconds": 1.893615923,
+      "verify_run_seconds": 12.017337037,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2071,7 +2071,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 41.78067873778164,
+          "score": 41.78067873778165,
           "verified": true,
           "alternatives": [
             {
@@ -2079,14 +2079,14 @@
               "item_name": "Glinteye Slippers",
               "source_kind": "dungeon",
               "source": "Excavation Site: Wetlands: Saltspine",
-              "dps_delta": -1.5951096267691152
+              "dps_delta": -1.5951096267691158
             },
             {
               "item_id": 9454,
               "item_name": "Acidic Walkers",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -1.890102972415643
+              "dps_delta": -1.890102972415644
             },
             {
               "item_id": 274747,
@@ -2302,8 +2302,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.156093636,
-      "verify_run_seconds": 8.132249615,
+      "weights_run_seconds": 1.924784872,
+      "verify_run_seconds": 7.609579559,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2837,7 +2837,7 @@
               "item_name": "Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.4893983983156604
+              "dps_delta": -0.4893983983156611
             },
             {
               "item_id": 252518,
@@ -3016,14 +3016,14 @@
               "item_name": "Royal Diplomatic Scepter",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Dark Iron Ambassador",
-              "dps_delta": -2.9940447315933376
+              "dps_delta": -2.9940447315933394
             },
             {
               "item_id": 2816,
               "item_name": "Death Speaker Scepter",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Death Speaker Jargba",
-              "dps_delta": -5.777026701948263
+              "dps_delta": -5.777026701948265
             },
             {
               "item_id": 791,
@@ -3102,8 +3102,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.156093636,
-      "verify_run_seconds": 7.837265395,
+      "weights_run_seconds": 1.924784872,
+      "verify_run_seconds": 6.862095217,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3651,7 +3651,7 @@
               "item_name": "Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.0194224353652046
+              "dps_delta": -1.0194224353652053
             }
           ],
           "runners_up": [
@@ -3914,8 +3914,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 2.122521569,
-      "verify_run_seconds": 9.76310383,
+      "weights_run_seconds": 1.996921765,
+      "verify_run_seconds": 9.483241498,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4736,8 +4736,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 2.122521569,
-      "verify_run_seconds": 15.85141215,
+      "weights_run_seconds": 1.996921765,
+      "verify_run_seconds": 15.572241379,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5008,7 +5008,7 @@
               "item_name": "Mender's Leather Shoulder",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.9764533916410427
+              "dps_delta": -0.9764533916410434
             },
             {
               "item_id": 254049,
@@ -5660,8 +5660,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Twisting Essence Jar"
       ],
-      "weights_run_seconds": 2.231614084,
-      "verify_run_seconds": 9.944599032,
+      "weights_run_seconds": 2.069156847,
+      "verify_run_seconds": 10.068112478,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6583,8 +6583,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Twisting Essence Jar"
       ],
-      "weights_run_seconds": 2.231614084,
-      "verify_run_seconds": 8.740724977,
+      "weights_run_seconds": 2.069156847,
+      "verify_run_seconds": 10.103534084,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -6764,7 +6764,7 @@
               "item_name": "Feralheart Headdress",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -3.171885931284292
+              "dps_delta": -3.171885931284295
             },
             {
               "item_id": 16720,
@@ -6795,7 +6795,7 @@
           "source": "Lord Skwol",
           "source_kind": "world",
           "chance": 0.304762,
-          "score": 94.35529180532373,
+          "score": 94.35529180532372,
           "verified": true,
           "alternatives": [
             {
@@ -6803,14 +6803,14 @@
               "item_name": "Enchanted South Seas Kelp",
               "source_kind": "quest",
               "source": "Enchanted South Seas Kelp",
-              "dps_delta": -3.080211011568157
+              "dps_delta": -3.080211011568155
             },
             {
               "item_id": 19613,
               "item_name": "Pristine Enchanted South Seas Kelp",
               "source_kind": "quest",
               "source": "Pristine Enchanted South Seas Kelp",
-              "dps_delta": -3.080211011568157
+              "dps_delta": -3.080211011568155
             },
             {
               "item_id": 13002,
@@ -7249,7 +7249,7 @@
           "item_name": "Band of Piety",
           "source": "Superior Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "score": 73.65379271370456,
+          "score": 73.65379271370455,
           "verified": true,
           "alternatives": [
             {
@@ -7257,14 +7257,14 @@
               "item_name": "Channeler's Ring",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.5448437921015081
+              "dps_delta": -0.5448437921015068
             },
             {
               "item_id": 5266,
               "item_name": "Eye of Adaegus",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.6673429899448312
+              "dps_delta": -0.6673429899448299
             },
             {
               "item_id": 13096,
@@ -7516,8 +7516,8 @@
         "trinket2: Serenity Field",
         "off_hand: Lapidis Tankard of Tidesippe"
       ],
-      "weights_run_seconds": 1.858648099,
-      "verify_run_seconds": 21.110389226,
+      "weights_run_seconds": 2.198506303,
+      "verify_run_seconds": 23.516511603,
       "coverage": {
         "back": {
           "eligible": 382,
@@ -7697,7 +7697,7 @@
               "item_name": "Feralheart Headdress",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -3.171885931284295
+              "dps_delta": -3.171885931284292
             },
             {
               "item_id": 16720,
@@ -8449,8 +8449,8 @@
         "trinket2: Serenity Field",
         "off_hand: Lapidis Tankard of Tidesippe"
       ],
-      "weights_run_seconds": 1.858648099,
-      "verify_run_seconds": 19.575047854,
+      "weights_run_seconds": 2.198506303,
+      "verify_run_seconds": 19.962342903,
       "coverage": {
         "back": {
           "eligible": 387,
@@ -8706,7 +8706,7 @@
           "item_name": "Argent Elite Shoulders",
           "source": "Argent Quartermaster Hasana",
           "source_kind": "vendor",
-          "score": 108.8148834302236,
+          "score": 108.81488343022362,
           "verified": true,
           "alternatives": [
             {
@@ -8714,14 +8714,14 @@
               "item_name": "Lieutenant Commander's Dragonhide Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.40749369092734633
+              "dps_delta": -0.4074936909273484
             },
             {
               "item_id": 231705,
               "item_name": "Field Marshal's Dragonhide Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.4305345977403365
+              "dps_delta": -0.43053459774033853
             },
             {
               "item_id": 16695,
@@ -9386,8 +9386,8 @@
         "trinket2: Serenity Field",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 1.8028938129999998,
-      "verify_run_seconds": 21.843833883,
+      "weights_run_seconds": 1.785776132,
+      "verify_run_seconds": 20.902471809,
       "coverage": {
         "back": {
           "eligible": 382,
@@ -9643,7 +9643,7 @@
           "item_name": "Argent Elite Shoulders",
           "source": "Argent Quartermaster Hasana",
           "source_kind": "vendor",
-          "score": 108.8148834302236,
+          "score": 108.81488343022362,
           "verified": true,
           "alternatives": [
             {
@@ -9651,14 +9651,14 @@
               "item_name": "Champion's Dragonhide Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.40749369092734633
+              "dps_delta": -0.4074936909273484
             },
             {
               "item_id": 231672,
               "item_name": "Warlord's Dragonhide Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.4305345977403365
+              "dps_delta": -0.43053459774033853
             },
             {
               "item_id": 16695,
@@ -10323,8 +10323,8 @@
         "trinket2: Serenity Field",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 1.8028938129999998,
-      "verify_run_seconds": 19.932422056,
+      "weights_run_seconds": 1.785776132,
+      "verify_run_seconds": 20.446813345,
       "coverage": {
         "back": {
           "eligible": 387,

@@ -2,7 +2,7 @@
   "spec": "rogue-assassination",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T03:27:00Z",
+  "generated_at": "2026-10-12T22:43:09Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -746,8 +746,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.345898482,
-      "verify_run_seconds": 5.728825614,
+      "weights_run_seconds": 1.401960302,
+      "verify_run_seconds": 4.275043555,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1474,23 +1474,7 @@
           "chance": 0.2,
           "verified": true,
           "swap_note": "confirmed by the sim against Diamond Hammer (id 2194): kept the pick, +0.3 DPS over it",
-          "dps_delta": 0.3311132668076482,
-          "alternatives": [
-            {
-              "item_id": 11855,
-              "item_name": "Tork Wrench",
-              "source_kind": "quest",
-              "source": "Samophlange Manual",
-              "dps_delta": -14.65028101938372
-            }
-          ],
-          "runners_up": [
-            {
-              "item_id": 11855,
-              "source_kind": "quest",
-              "source": "Samophlange Manual"
-            }
-          ]
+          "dps_delta": 0.3311132668076482
         },
         {
           "slot": "ranged",
@@ -1574,8 +1558,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.345898482,
-      "verify_run_seconds": 6.364603351,
+      "weights_run_seconds": 1.401960302,
+      "verify_run_seconds": 4.622500484,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2359,13 +2343,6 @@
               "source": "Gnomeregan: Dark Iron Ambassador",
               "dps_delta": -5.390496349398674,
               "verified": true
-            },
-            {
-              "item_id": 15962,
-              "item_name": "Satyr's Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -21.296975953609625
             }
           ],
           "runners_up": [
@@ -2373,11 +2350,6 @@
               "item_id": 9457,
               "source_kind": "dungeon",
               "source": "Gnomeregan: Dark Iron Ambassador"
-            },
-            {
-              "item_id": 15962,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           ]
         },
@@ -2458,8 +2430,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.8681157640000001,
-      "verify_run_seconds": 4.231762337,
+      "weights_run_seconds": 1.470876185,
+      "verify_run_seconds": 4.519552382,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3243,20 +3215,6 @@
               "source": "Gnomeregan: Dark Iron Ambassador",
               "dps_delta": -5.050197004167842,
               "verified": true
-            },
-            {
-              "item_id": 11855,
-              "item_name": "Tork Wrench",
-              "source_kind": "quest",
-              "source": "Samophlange Manual",
-              "dps_delta": -21.277308781088372
-            },
-            {
-              "item_id": 15962,
-              "item_name": "Satyr's Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -21.296975953609625
             }
           ],
           "runners_up": [
@@ -3264,11 +3222,6 @@
               "item_id": 9457,
               "source_kind": "dungeon",
               "source": "Gnomeregan: Dark Iron Ambassador"
-            },
-            {
-              "item_id": 11855,
-              "source_kind": "quest",
-              "source": "Samophlange Manual"
             }
           ]
         },
@@ -3350,8 +3303,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.8681157640000001,
-      "verify_run_seconds": 6.005968932,
+      "weights_run_seconds": 1.470876185,
+      "verify_run_seconds": 4.6436691450000005,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4113,20 +4066,6 @@
           "dps_delta": 62.88886564653293,
           "alternatives": [
             {
-              "item_id": 15963,
-              "item_name": "Stonecloth Branch",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -15.217250535728912
-            },
-            {
-              "item_id": 15962,
-              "item_name": "Satyr's Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -15.267518070337012
-            },
-            {
               "item_id": 868,
               "item_name": "Ardent Custodian",
               "source_kind": "world_drop",
@@ -4137,12 +4076,7 @@
           ],
           "runners_up": [
             {
-              "item_id": 15963,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
-              "item_id": 15962,
+              "item_id": 868,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -4229,8 +4163,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.251096013,
-      "verify_run_seconds": 2.482676476,
+      "weights_run_seconds": 1.345001555,
+      "verify_run_seconds": 2.581989119,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4992,20 +4926,6 @@
           "dps_delta": 61.801298676255335,
           "alternatives": [
             {
-              "item_id": 15963,
-              "item_name": "Stonecloth Branch",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -15.217250535728912
-            },
-            {
-              "item_id": 11855,
-              "item_name": "Tork Wrench",
-              "source_kind": "quest",
-              "source": "Samophlange Manual",
-              "dps_delta": -15.251792591868586
-            },
-            {
               "item_id": 868,
               "item_name": "Ardent Custodian",
               "source_kind": "world_drop",
@@ -5016,14 +4936,9 @@
           ],
           "runners_up": [
             {
-              "item_id": 15963,
+              "item_id": 868,
               "source_kind": "world_drop",
               "source": "World drop"
-            },
-            {
-              "item_id": 11855,
-              "source_kind": "quest",
-              "source": "Samophlange Manual"
             }
           ]
         },
@@ -5108,8 +5023,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.251096013,
-      "verify_run_seconds": 2.949850777,
+      "weights_run_seconds": 1.345001555,
+      "verify_run_seconds": 2.732410417,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5897,13 +5812,6 @@
               "source_kind": "dungeon",
               "source": "Maraudon: Celebras the Cursed",
               "dps_delta": -3.830282598486512
-            },
-            {
-              "item_id": 9644,
-              "item_name": "Thermotastic Egg Timer",
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!",
-              "dps_delta": -45.12950355883582
             }
           ],
           "runners_up": [
@@ -6003,8 +5911,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.320247363,
-      "verify_run_seconds": 2.936559008,
+      "weights_run_seconds": 1.518912429,
+      "verify_run_seconds": 3.047551223,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6885,8 +6793,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.320247363,
-      "verify_run_seconds": 2.772156485,
+      "weights_run_seconds": 1.518912429,
+      "verify_run_seconds": 3.045526807,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7809,8 +7717,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.297588154,
-      "verify_run_seconds": 13.702480526,
+      "weights_run_seconds": 1.463772978,
+      "verify_run_seconds": 8.594563235,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -8761,8 +8669,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.297588154,
-      "verify_run_seconds": 8.337236818,
+      "weights_run_seconds": 1.463772978,
+      "verify_run_seconds": 8.658595087,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -9135,7 +9043,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -7.776847860710427
+              "dps_delta": -7.77684786071043
             }
           ],
           "runners_up": [
@@ -9684,8 +9592,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.310290427,
-      "verify_run_seconds": 9.295334962,
+      "weights_run_seconds": 1.3713815409999999,
+      "verify_run_seconds": 8.404729034,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -10059,7 +9967,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -7.77684786071043
+              "dps_delta": -7.776847860710427
             }
           ],
           "runners_up": [
@@ -10183,7 +10091,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -6.488731840282009
+              "dps_delta": -6.4887318402820116
             },
             {
               "item_id": 227805,
@@ -10636,8 +10544,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.310290427,
-      "verify_run_seconds": 8.380554406,
+      "weights_run_seconds": 1.3713815409999999,
+      "verify_run_seconds": 8.418740795,
       "coverage": {
         "back": {
           "eligible": 386,

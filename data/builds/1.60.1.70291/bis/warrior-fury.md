@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 00000000000000000-05150000000000000-000000000000000000)
 
-Set DPS (verified): 37.5. Weights run: 1.6s. Verify run: 4.9s. 284 eligible items had no known source.
+Set DPS (verified): 37.5. Weights run: 1.5s. Verify run: 4.7s. 284 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.319 ± 0.040, crit=0.704 ± 0.040 per rating point (14 rating = 1%, 9.863 per %), hit=0.902 ± 0.074 per rating point (10 rating = 1%, 9.016 per %), melee_haste=5.710 ± 0.801
 
@@ -29,7 +29,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Shadowfang (1482) | Shadowfang Keep: Son of Arugal [dungeon] | 248.9 attack_power points (15.05 DPS) | yes | Duskbringer (2205, +0.00 DPS) [dungeon]; Living Root (6631, +0.00 DPS) [dungeon]; Smite's Mighty Hammer (7230, +0.00 DPS) [dungeon] |
-| off_hand | Butcher's Cleaver (1292) | Shadowfang Keep: Razorclaw the Butcher [dungeon] | 239.2 attack_power points (14.46 DPS) | yes | Diamond Hammer (2194, -0.66 DPS, sim-verified) [world_drop]; Redbeard Crest (12997, -13.73 DPS) [world_drop]; Furen's Favor (6970, -14.09 DPS) [quest] |
+| off_hand | Butcher's Cleaver (1292) | Shadowfang Keep: Razorclaw the Butcher [dungeon] | 239.2 attack_power points (14.46 DPS) | yes | Diamond Hammer (2194, -0.66 DPS, sim-verified) [world_drop] |
 | ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 5.3 attack_power points (0.32 DPS) | yes | Fine Longbow (11304, -0.08 DPS) [vendor]; Dwarven Fishing Pole (3567, -0.08 DPS) [quest]; Cracked Blacksmith Hammer (285279, -0.08 DPS) [crafted] |
 
 **New at 20:** head: Veteran's Silvered Chain Helm; neck: Sentinel's Medallion; shoulder: Serpent's Shoulders; back: Grave Shroud; chest: Blackened Defias Armor; wrist: Patterned Bronze Bracers; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Brawler's Leather Boots; finger1: Protector's Band; finger2: Demon Band; main_hand: Shadowfang; off_hand: Butcher's Cleaver; ranged: Lil Timmy's Peashooter
@@ -38,7 +38,7 @@ No-known-source sample (15 of 284, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 00000000000000000-05153105010000000-000000000000000000)
 
-Set DPS (verified): 66.8. Weights run: 1.5s. Verify run: 2.8s. 499 eligible items had no known source.
+Set DPS (verified): 66.8. Weights run: 1.6s. Verify run: 2.8s. 499 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.430 ± 0.052, crit=1.075 ± 0.061 per rating point (14 rating = 1%, 15.047 per %), hit=1.382 ± 0.120 per rating point (10 rating = 1%, 13.824 per %), melee_haste=7.719 ± 1.363
 
@@ -59,7 +59,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Pronged Reaver (6692) | Razorfen Kraul: Charlga Razorflank [dungeon] | 345.4 attack_power points (21.54 DPS) | yes | Morbid Dawn (7689, +0.00 DPS) [dungeon]; Manual Crowd Pummeler (9449, +0.00 DPS) [dungeon]; Viscous Hammer (13045, +0.00 DPS) [world_drop] |
-| off_hand | Ironspine's Fist (7687) | Scarlet Monastery: Ironspine [dungeon] | 334.9 attack_power points (20.88 DPS) | yes | Shoni's Disarming Tool (9608, -6.87 DPS) [quest]; Slayer's Shield (15892, -19.87 DPS) [world_drop]; Royal Diplomatic Scepter (9457, -28.27 DPS, sim-verified) [dungeon] |
+| off_hand | Ironspine's Fist (7687) | Scarlet Monastery: Ironspine [dungeon] | 334.9 attack_power points (20.88 DPS) | yes | Shoni's Disarming Tool (9608, -6.87 DPS) [quest]; Royal Diplomatic Scepter (9457, -28.27 DPS, sim-verified) [dungeon] |
 | ranged | Glass Shooter (9456) | Gnomeregan: Dark Iron Ambassador [dungeon] | 12.0 attack_power points (0.75 DPS) | yes | Double-barreled Shotgun (2098, -0.11 DPS) [world_drop]; Booty Bay Bruiser's Buckshot (274748, -0.19 DPS) [vendor]; Golemsight Long Gun (273029, -0.21 DPS) [dungeon] |
 
 **New at 30:** head: Barbaric Iron Helm; neck: Ghostshard Talisman; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Avenger's Armor; wrist: Hawkeye's Bracers; hands: Insignia Gloves; waist: Officer's Belt; legs: Veteran's Silvered Chain Leggings; feet: Trouncing Boots; finger1: Ironspine's Eye; finger2: Protector's Band; main_hand: Pronged Reaver; off_hand: Ironspine's Fist; ranged: Glass Shooter
@@ -68,7 +68,7 @@ No-known-source sample (15 of 499, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (human, 00000000000000000-05153105022011401-000000000000000000)
 
-Set DPS (verified): 126.0. Weights run: 1.8s. Verify run: 3.9s. 682 eligible items had no known source.
+Set DPS (verified): 126.0. Weights run: 1.6s. Verify run: 3.3s. 682 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.590 ± 0.089, crit=1.557 ± 0.116 per rating point (14 rating = 1%, 21.804 per %), hit=1.199 ± 0.206 per rating point (10 rating = 1%, 11.993 per %), melee_haste=9.799 ± 1.556
 
@@ -89,7 +89,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Nightblade (1982, +0.00 DPS) [world_drop]; Coldrage Dagger (10761, +0.00 DPS) [dungeon]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor] |
-| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (126.0 DPS) | yes | Shoni's Disarming Tool (9608, -19.40 DPS) [quest]; Skullance Shield (13081, -36.84 DPS) [world_drop]; Ardent Custodian (868, -42.21 DPS, sim-verified) [world_drop] |
+| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (126.0 DPS) | yes | Shoni's Disarming Tool (9608, -19.40 DPS) [quest]; Ardent Custodian (868, -42.21 DPS, sim-verified) [world_drop] |
 | ranged | Monolithic Bow (9426) | Uldaman: Shadowforge Relic Hunter [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Master Hunter's Rifle (17687, -0.21 DPS) [quest]; The Silencer (13138, -0.24 DPS) [world_drop]; Bow of Searing Arrows (2825, -1.23 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: Chromite Barbute; neck: Sentinel's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Kolkar Marauder Chain; wrist: Ravager's Armguards; hands: Gloves of Holy Might; waist: Ogron's Sash; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Protector's Band; finger2: Ironspine's Eye; main_hand: Gut Ripper; off_hand: Jhordy's Misplaced Screwdriver; ranged: Monolithic Bow
@@ -98,7 +98,7 @@ No-known-source sample (15 of 682, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (human, 34200000000000000-05153105022011501-000000000000000000)
 
-Set DPS (verified): 177.4. Weights run: 1.9s. Verify run: 4.3s. 861 eligible items had no known source.
+Set DPS (verified): 177.4. Weights run: 2.3s. Verify run: 9.9s. 861 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.595 ± 0.093, crit=1.828 ± 0.122 per rating point (14 rating = 1%, 25.599 per %), hit=2.397 ± 0.207 per rating point (10 rating = 1%, 23.971 per %), melee_haste=9.686 ± 1.840
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 861, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 34320003002000000-05153105022011501-200000000000000000)
 
-Set DPS (verified): 300.3. Weights run: 1.5s. Verify run: 13.8s. 1585 eligible items had no known source.
+Set DPS (verified): 300.3. Weights run: 3.0s. Verify run: 18.3s. 1585 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.918 ± 0.122, crit=2.740 ± 0.175 per rating point (14 rating = 1%, 38.365 per %), hit=3.026 ± 0.330 per rating point (10 rating = 1%, 30.257 per %), melee_haste=15.140 ± 2.955
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1585, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (human, 34320003002000000-05153105022011501-200000000000000000)
 
-Set DPS (verified): 878.1. Weights run: 1.6s. Verify run: 16.0s. 1585 eligible items had no known source.
+Set DPS (verified): 878.1. Weights run: 3.9s. Verify run: 34.5s. 1585 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.005, agility=1.986 ± 0.165, crit=2.491 ± 0.230 per rating point (14 rating = 1%, 34.873 per %), hit=4.204 ± 0.415 per rating point (10 rating = 1%, 42.045 per %), melee_haste=22.461 ± 4.161
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1585, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 00000000000000000-05150000000000000-000000000000000000)
 
-Set DPS (verified): 37.8. Weights run: 1.6s. Verify run: 4.8s. 254 eligible items had no known source.
+Set DPS (verified): 37.8. Weights run: 1.5s. Verify run: 4.6s. 254 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.319 ± 0.040, crit=0.704 ± 0.040 per rating point (14 rating = 1%, 9.863 per %), hit=0.902 ± 0.074 per rating point (10 rating = 1%, 9.016 per %), melee_haste=5.710 ± 0.801
 
@@ -211,7 +211,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Shadowfang (1482) | Shadowfang Keep: Son of Arugal [dungeon] | 248.9 attack_power points (15.05 DPS) | yes | Smite's Mighty Hammer (7230, +0.00 DPS) [dungeon]; Forsaken Greataxe (251533, +0.00 DPS) [quest]; Hammerbone (270018, +0.00 DPS) [quest] |
-| off_hand | Butcher's Cleaver (1292) | Shadowfang Keep: Razorclaw the Butcher [dungeon] | 239.2 attack_power points (14.46 DPS) | yes | Diamond Hammer (2194, -0.51 DPS, sim-verified) [world_drop]; Redbeard Crest (12997, -13.73 DPS) [world_drop]; Ruga's Bulwark (7120, -14.09 DPS) [quest] |
+| off_hand | Butcher's Cleaver (1292) | Shadowfang Keep: Razorclaw the Butcher [dungeon] | 239.2 attack_power points (14.46 DPS) | yes | Diamond Hammer (2194, -0.51 DPS, sim-verified) [world_drop] |
 | ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 5.3 attack_power points (0.32 DPS) | yes | Fine Longbow (11304, -0.08 DPS) [vendor]; Cracked Blacksmith Hammer (285279, -0.08 DPS) [crafted]; Deadly Blunderbuss (4369, -0.16 DPS) [crafted] |
 
 **New at 20:** head: Veteran's Silvered Chain Helm; neck: Scout's Medallion; shoulder: Serpent's Shoulders; back: Grave Shroud; chest: Blackened Defias Armor; wrist: Patterned Bronze Bracers; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Brawler's Leather Boots; finger1: Legionnaire's Band; finger2: Demon Band; main_hand: Shadowfang; off_hand: Butcher's Cleaver; ranged: Lil Timmy's Peashooter
@@ -220,7 +220,7 @@ No-known-source sample (15 of 254, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-05153105010000000-000000000000000000)
 
-Set DPS (verified): 67.7. Weights run: 1.5s. Verify run: 3.2s. 463 eligible items had no known source.
+Set DPS (verified): 67.7. Weights run: 1.6s. Verify run: 2.5s. 463 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.430 ± 0.052, crit=1.075 ± 0.061 per rating point (14 rating = 1%, 15.047 per %), hit=1.382 ± 0.120 per rating point (10 rating = 1%, 13.824 per %), melee_haste=7.719 ± 1.363
 
@@ -241,7 +241,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Pronged Reaver (6692) | Razorfen Kraul: Charlga Razorflank [dungeon] | 345.4 attack_power points (21.54 DPS) | yes | Morbid Dawn (7689, +0.00 DPS) [dungeon]; Manual Crowd Pummeler (9449, +0.00 DPS) [dungeon]; Viscous Hammer (13045, +0.00 DPS) [world_drop] |
-| off_hand | Ironspine's Fist (7687) | Scarlet Monastery: Ironspine [dungeon] | 334.9 attack_power points (20.88 DPS) | yes | Slayer's Shield (15892, -19.87 DPS) [world_drop]; Shield of Thorsen (13079, -20.01 DPS) [world_drop]; Royal Diplomatic Scepter (9457, -28.67 DPS, sim-verified) [dungeon] |
+| off_hand | Ironspine's Fist (7687) | Scarlet Monastery: Ironspine [dungeon] | 334.9 attack_power points (20.88 DPS) | yes | Royal Diplomatic Scepter (9457, -28.67 DPS, sim-verified) [dungeon] |
 | ranged | Glass Shooter (9456) | Gnomeregan: Dark Iron Ambassador [dungeon] | 12.0 attack_power points (0.75 DPS) | yes | Double-barreled Shotgun (2098, -0.11 DPS) [world_drop]; Booty Bay Bruiser's Buckshot (274748, -0.19 DPS) [vendor]; Golemsight Long Gun (273029, -0.21 DPS) [dungeon] |
 
 **New at 30:** head: Barbaric Iron Helm; neck: Ghostshard Talisman; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Avenger's Armor; wrist: Hawkeye's Bracers; hands: Insignia Gloves; waist: Officer's Belt; legs: Veteran's Silvered Chain Leggings; feet: Trouncing Boots; finger1: Ironspine's Eye; finger2: Legionnaire's Band; main_hand: Pronged Reaver; off_hand: Ironspine's Fist; ranged: Glass Shooter
@@ -250,7 +250,7 @@ No-known-source sample (15 of 463, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-05153105022011401-000000000000000000)
 
-Set DPS (verified): 126.9. Weights run: 1.8s. Verify run: 4.7s. 635 eligible items had no known source.
+Set DPS (verified): 126.9. Weights run: 1.6s. Verify run: 3.4s. 635 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.590 ± 0.089, crit=1.557 ± 0.116 per rating point (14 rating = 1%, 21.804 per %), hit=1.199 ± 0.206 per rating point (10 rating = 1%, 11.993 per %), melee_haste=9.799 ± 1.556
 
@@ -271,7 +271,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Nightblade (1982, +0.00 DPS) [world_drop]; Coldrage Dagger (10761, +0.00 DPS) [dungeon]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor] |
-| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (126.9 DPS) | yes | Skullance Shield (13081, -36.84 DPS) [world_drop]; Marbled Buckler (6725, -37.22 DPS) [quest]; Ardent Custodian (868, -42.26 DPS, sim-verified) [world_drop] |
+| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (126.9 DPS) | yes | Ardent Custodian (868, -42.26 DPS, sim-verified) [world_drop] |
 | ranged | Monolithic Bow (9426) | Uldaman: Shadowforge Relic Hunter [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Master Hunter's Rifle (17687, -0.21 DPS) [quest]; The Silencer (13138, -0.24 DPS) [world_drop]; Bow of Searing Arrows (2825, -1.15 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: Chromite Barbute; neck: Scout's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Kolkar Marauder Chain; wrist: Ravager's Armguards; hands: Gloves of Holy Might; waist: Ogron's Sash; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Legionnaire's Band; finger2: Ironspine's Eye; main_hand: Gut Ripper; off_hand: Jhordy's Misplaced Screwdriver; ranged: Monolithic Bow
@@ -280,7 +280,7 @@ No-known-source sample (15 of 635, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 34200000000000000-05153105022011501-000000000000000000)
 
-Set DPS (verified): 182.0. Weights run: 1.9s. Verify run: 4.2s. 805 eligible items had no known source.
+Set DPS (verified): 182.0. Weights run: 2.3s. Verify run: 8.3s. 805 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.595 ± 0.093, crit=1.828 ± 0.122 per rating point (14 rating = 1%, 25.599 per %), hit=2.397 ± 0.207 per rating point (10 rating = 1%, 23.971 per %), melee_haste=9.686 ± 1.840
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 805, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 34320003002000000-05153105022011501-200000000000000000)
 
-Set DPS (verified): 308.9. Weights run: 1.5s. Verify run: 13.5s. 1556 eligible items had no known source.
+Set DPS (verified): 308.9. Weights run: 3.0s. Verify run: 33.9s. 1556 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.918 ± 0.122, crit=2.740 ± 0.175 per rating point (14 rating = 1%, 38.365 per %), hit=3.026 ± 0.330 per rating point (10 rating = 1%, 30.257 per %), melee_haste=15.140 ± 2.955
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1556, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 34320003002000000-05153105022011501-200000000000000000)
 
-Set DPS (verified): 894.6. Weights run: 1.6s. Verify run: 13.0s. 1556 eligible items had no known source.
+Set DPS (verified): 894.6. Weights run: 3.9s. Verify run: 33.4s. 1556 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.005, agility=1.986 ± 0.165, crit=2.491 ± 0.230 per rating point (14 rating = 1%, 34.873 per %), hit=4.204 ± 0.415 per rating point (10 rating = 1%, 42.045 per %), melee_haste=22.461 ± 4.161
 

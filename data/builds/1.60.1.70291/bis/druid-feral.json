@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T03:58:11Z",
+  "generated_at": "2026-10-12T22:31:14Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -692,8 +692,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 2.059662635,
-      "verify_run_seconds": 4.751736224,
+      "weights_run_seconds": 3.6155344769999997,
+      "verify_run_seconds": 5.919758377,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1466,8 +1466,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 2.059662635,
-      "verify_run_seconds": 4.772865217,
+      "weights_run_seconds": 3.6155344769999997,
+      "verify_run_seconds": 4.688203293,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2271,8 +2271,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.810929893,
-      "verify_run_seconds": 2.853112228,
+      "weights_run_seconds": 1.894669558,
+      "verify_run_seconds": 2.908019751,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3070,8 +3070,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.810929893,
-      "verify_run_seconds": 2.633923849,
+      "weights_run_seconds": 1.894669558,
+      "verify_run_seconds": 2.824270326,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3872,8 +3872,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.088640023,
-      "verify_run_seconds": 2.786603642,
+      "weights_run_seconds": 1.898400955,
+      "verify_run_seconds": 2.721832094,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4677,8 +4677,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.088640023,
-      "verify_run_seconds": 2.831433964,
+      "weights_run_seconds": 1.898400955,
+      "verify_run_seconds": 2.807528436,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5504,8 +5504,8 @@
         "trinket1: Molten Heart of the Mountain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 1.924428104,
-      "verify_run_seconds": 5.126220327,
+      "weights_run_seconds": 1.91541504,
+      "verify_run_seconds": 3.675877302,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6324,8 +6324,8 @@
         "trinket1: Rune of the Guard Captain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 1.924428104,
-      "verify_run_seconds": 5.807176333,
+      "weights_run_seconds": 1.91541504,
+      "verify_run_seconds": 3.396738148,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -6693,7 +6693,7 @@
               "item_name": "Field Marshal's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.111497904656773
+              "dps_delta": -2.1114979046567743
             },
             {
               "item_id": 16452,
@@ -7203,8 +7203,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.9696867300000003,
-      "verify_run_seconds": 12.368962617,
+      "weights_run_seconds": 1.953758138,
+      "verify_run_seconds": 12.667671268,
       "coverage": {
         "back": {
           "eligible": 382,
@@ -7380,7 +7380,7 @@
           "item_name": "Feralheart Cap",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 81.884836359227,
+          "score": 81.88483635922701,
           "verified": true,
           "alternatives": [
             {
@@ -7580,7 +7580,7 @@
               "item_name": "Warlord's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.1114979046567743
+              "dps_delta": -2.111497904656773
             },
             {
               "item_id": 16549,
@@ -8099,8 +8099,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.9696867300000003,
-      "verify_run_seconds": 10.596117469,
+      "weights_run_seconds": 1.953758138,
+      "verify_run_seconds": 12.155858157,
       "coverage": {
         "back": {
           "eligible": 387,
@@ -8608,7 +8608,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -2.3648659259820635
+              "dps_delta": -2.3648659259820617
             },
             {
               "item_id": 19044,
@@ -8951,8 +8951,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 1.7759758799999998,
-      "verify_run_seconds": 11.109958882,
+      "weights_run_seconds": 2.002596472,
+      "verify_run_seconds": 19.323995176,
       "coverage": {
         "back": {
           "eligible": 382,
@@ -9328,7 +9328,7 @@
               "item_name": "Warlord's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.439001069290016
+              "dps_delta": -3.4390010692900144
             },
             {
               "item_id": 16549,
@@ -9823,8 +9823,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 1.7759758799999998,
-      "verify_run_seconds": 10.659914959,
+      "weights_run_seconds": 2.002596472,
+      "verify_run_seconds": 15.866328835000001,
       "coverage": {
         "back": {
           "eligible": 387,

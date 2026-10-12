@@ -2,7 +2,7 @@
   "spec": "druid-feral-bear",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T04:00:23Z",
+  "generated_at": "2026-10-12T22:33:19Z",
   "bands": [
     {
       "spec": "druid-feral-bear",
@@ -785,8 +785,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 2.182836549,
-      "verify_run_seconds": 2.262067835,
+      "weights_run_seconds": 2.150784873,
+      "verify_run_seconds": 2.500731454,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1390,7 +1390,7 @@
               "item_name": "Brawler's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -27.584059317930496
+              "dps_delta": -27.584059317930528
             }
           ],
           "runners_up": [
@@ -1654,8 +1654,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 2.182836549,
-      "verify_run_seconds": 2.315245062,
+      "weights_run_seconds": 2.150784873,
+      "verify_run_seconds": 2.6630654419999997,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2210,7 +2210,7 @@
               "item_name": "Prowler's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -54.77415701882397
+              "dps_delta": -54.774157018824006
             }
           ],
           "runners_up": [
@@ -2232,7 +2232,7 @@
           "item_name": "Defender's Leather Kilt",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 17.853503074843008,
+          "score": 17.85350307484301,
           "verified": true,
           "alternatives": [
             {
@@ -2240,14 +2240,14 @@
               "item_name": "Dark Ritual Leggings",
               "source_kind": "quest",
               "source": "Blackfathom Villainy",
-              "dps_delta": -28.231138723602978
+              "dps_delta": -28.231138723603046
             },
             {
               "item_id": 252516,
               "item_name": "Brawler's Leather Legguards",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -32.734255467750174
+              "dps_delta": -32.734255467750245
             },
             {
               "item_id": 279868,
@@ -2563,8 +2563,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 2.127034001,
-      "verify_run_seconds": 2.445166042,
+      "weights_run_seconds": 2.609541788,
+      "verify_run_seconds": 3.014727927,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3140,7 +3140,7 @@
           "item_name": "Defender's Leather Kilt",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 17.853503074843008,
+          "score": 17.85350307484301,
           "verified": true,
           "alternatives": [
             {
@@ -3148,7 +3148,7 @@
               "item_name": "Brawler's Leather Legguards",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -32.734255467750174
+              "dps_delta": -32.734255467750245
             },
             {
               "item_id": 270031,
@@ -3163,7 +3163,7 @@
               "item_name": "Trapper's Leather Legguards",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -38.63074347996187
+              "dps_delta": -38.63074347996194
             }
           ],
           "runners_up": [
@@ -3460,8 +3460,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 2.127034001,
-      "verify_run_seconds": 2.460762186,
+      "weights_run_seconds": 2.609541788,
+      "verify_run_seconds": 2.819848167,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4389,8 +4389,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Mograine's Might"
       ],
-      "weights_run_seconds": 2.304382594,
-      "verify_run_seconds": 3.421465199,
+      "weights_run_seconds": 2.70900769,
+      "verify_run_seconds": 2.874332885,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -5319,8 +5319,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Cragwood Maul"
       ],
-      "weights_run_seconds": 2.304382594,
-      "verify_run_seconds": 5.586056502,
+      "weights_run_seconds": 2.70900769,
+      "verify_run_seconds": 2.753438197,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5836,7 +5836,7 @@
               "item_name": "Feralheart Fists",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -354.08144845052556
+              "dps_delta": -354.0814484505254
             }
           ],
           "runners_up": [
@@ -6272,8 +6272,8 @@
         "trinket2: Relentless Raider's Seal",
         "main_hand: Radiant Staff"
       ],
-      "weights_run_seconds": 5.243845974,
-      "verify_run_seconds": 6.321492882,
+      "weights_run_seconds": 2.709586301,
+      "verify_run_seconds": 5.241748983,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6692,7 +6692,7 @@
               "item_name": "Stone Guard's Leather Armor",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -580.8555142854684
+              "dps_delta": -580.8555142854686
             }
           ],
           "runners_up": [
@@ -6849,7 +6849,7 @@
           "item_name": "Stone Guard's Leather Pants",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 37.42333004664732,
+          "score": 37.423330046647315,
           "verified": true,
           "alternatives": [
             {
@@ -6865,14 +6865,14 @@
               "item_name": "Stone Guard's Restored Leather Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -235.24258184378024
+              "dps_delta": -235.24258184378
             },
             {
               "item_id": 14659,
               "item_name": "Scorpashi Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -252.91542748711464
+              "dps_delta": -252.91542748711439
             }
           ],
           "runners_up": [
@@ -7211,8 +7211,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Relentless Raider's Seal"
       ],
-      "weights_run_seconds": 5.243845974,
-      "verify_run_seconds": 3.50039942,
+      "weights_run_seconds": 2.709586301,
+      "verify_run_seconds": 3.219424054,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7475,7 +7475,7 @@
           "item_name": "Amulet of the Darkmoon",
           "source": "1200 Tickets - Amulet of the Darkmoon",
           "source_kind": "quest",
-          "score": 20.498195270518536,
+          "score": 20.498195270518533,
           "verified": true,
           "alternatives": [
             {
@@ -7483,21 +7483,21 @@
               "item_name": "Medallion of Grand Marshal Morris",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -128.59004438709403
+              "dps_delta": -128.5900443870938
             },
             {
               "item_id": 19538,
               "item_name": "Sentinel's Medallion",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -199.6620680031486
+              "dps_delta": -199.66206800314836
             },
             {
               "item_id": 18443,
               "item_name": "Master Sergeant's Insignia",
               "source_kind": "vendor",
               "source": "PvP rank 8 · Master Sergeant · Alliance",
-              "dps_delta": -226.39872488973728
+              "dps_delta": -226.39872488973705
             }
           ],
           "runners_up": [
@@ -7698,7 +7698,7 @@
           "item_name": "Feralheart Grips",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 53.90984579309249,
+          "score": 53.90984579309248,
           "verified": true,
           "alternatives": [
             {
@@ -7720,7 +7720,7 @@
               "item_name": "Marshal's Dragonhide Gloves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -27.71637862296917
+              "dps_delta": -27.71637862296871
             }
           ],
           "runners_up": [
@@ -7900,7 +7900,7 @@
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -1094.7020286493728
+              "dps_delta": -1094.7020286493726
             }
           ],
           "runners_up": [
@@ -7944,7 +7944,7 @@
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -464.1493049557662
+              "dps_delta": -464.14930495576596
             }
           ],
           "runners_up": [
@@ -8152,8 +8152,8 @@
         "trinket2: Talisman of Arathor",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 2.621808002,
-      "verify_run_seconds": 9.178100938,
+      "weights_run_seconds": 2.571098798,
+      "verify_run_seconds": 10.365573255,
       "coverage": {
         "back": {
           "eligible": 382,
@@ -8460,7 +8460,7 @@
           "item_name": "Glowing Mantle of the Dawn",
           "source": "Argent Quartermaster Hasana",
           "source_kind": "vendor",
-          "score": 67.07389685073093,
+          "score": 67.07389685073095,
           "verified": true,
           "alternatives": [
             {
@@ -8475,7 +8475,7 @@
               "item_name": "Warlord's Dragonhide Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -446.71898034836727
+              "dps_delta": -446.7189803483682
             },
             {
               "item_id": 20194,
@@ -8550,7 +8550,7 @@
           "item_name": "Dire Warbear Harness",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 87.50381992510336,
+          "score": 87.50381992510337,
           "verified": true,
           "alternatives": [
             {
@@ -8683,7 +8683,7 @@
           "item_name": "Feralheart Waistguard",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 49.73327599694083,
+          "score": 49.733275996940826,
           "verified": true,
           "alternatives": [
             {
@@ -8691,21 +8691,21 @@
               "item_name": "Shifter's Belt",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -450.3906593710105
+              "dps_delta": -450.39065937101003
             },
             {
               "item_id": 275614,
               "item_name": "Hivethrasher's Girdle",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -573.0431284312399
+              "dps_delta": -573.0431284312394
             },
             {
               "item_id": 20216,
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -584.7934091895053
+              "dps_delta": -584.7934091895048
             }
           ],
           "runners_up": [
@@ -8842,7 +8842,7 @@
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -1094.7020286493728
+              "dps_delta": -1094.7020286493726
             }
           ],
           "runners_up": [
@@ -8886,7 +8886,7 @@
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -464.1493049557662
+              "dps_delta": -464.14930495576596
             }
           ],
           "runners_up": [
@@ -9094,8 +9094,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: Whiteout Staff"
       ],
-      "weights_run_seconds": 2.621808002,
-      "verify_run_seconds": 8.57566136,
+      "weights_run_seconds": 2.571098798,
+      "verify_run_seconds": 9.070467365,
       "coverage": {
         "back": {
           "eligible": 387,
@@ -9403,7 +9403,7 @@
               "item_name": "Field Marshal's Dragonhide Shoulders",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -389.0412833458632
+              "dps_delta": -389.04128334586443
             },
             {
               "item_id": 231699,
@@ -9465,7 +9465,7 @@
               "item_name": "Cloak of the Honor Guard",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -1109.1009439087481
+              "dps_delta": -1109.1009439087484
             }
           ],
           "runners_up": [
@@ -9717,7 +9717,7 @@
               "item_name": "Marshal's Dragonhide Treads",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -797.4909371171098
+              "dps_delta": -797.4909371171085
             },
             {
               "item_id": 226803,
@@ -9973,35 +9973,35 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 17738,
-              "item_name": "Claw of Celebras",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Celebras the Cursed",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 234584,
-              "item_name": "Grand Marshal's Left Hand Blade",
-              "source_kind": "pvp",
-              "source": "PvP rank 18 · Grand Marshal · Alliance",
-              "dps_delta": 0
-            },
-            {
               "item_id": 234589,
               "item_name": "Grand Marshal's Tome of Power",
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance",
               "dps_delta": 0
+            },
+            {
+              "item_id": 234590,
+              "item_name": "Grand Marshal's Tome of Restoration",
+              "source_kind": "pvp",
+              "source": "PvP rank 18 · Grand Marshal · Alliance",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 19312,
+              "item_name": "Lei of the Lifegiver",
+              "source_kind": "rep",
+              "source": "Stormpike Guard",
+              "dps_delta": -431.4421424846049
             }
           ],
           "runners_up": [
             {
-              "item_id": 17738,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Celebras the Cursed"
+              "item_id": 234589,
+              "source_kind": "pvp",
+              "source": "PvP rank 18 · Grand Marshal · Alliance"
             },
             {
-              "item_id": 234584,
+              "item_id": 234590,
               "source_kind": "pvp",
               "source": "PvP rank 18 · Grand Marshal · Alliance"
             }
@@ -10058,8 +10058,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Tome of the Darkspear Prophecy"
       ],
-      "weights_run_seconds": 2.442492014,
-      "verify_run_seconds": 10.466875827,
+      "weights_run_seconds": 2.527029948,
+      "verify_run_seconds": 9.615459561,
       "coverage": {
         "back": {
           "eligible": 382,
@@ -10583,7 +10583,7 @@
           "item_name": "Feralheart Waistguard",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 58.44794933587657,
+          "score": 58.44794933587658,
           "verified": true,
           "alternatives": [
             {
@@ -10591,14 +10591,14 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -840.2125367313205
+              "dps_delta": -840.212536731321
             },
             {
               "item_id": 227805,
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -965.7875397587802
+              "dps_delta": -965.7875397587808
             },
             {
               "item_id": 272396,
@@ -10681,7 +10681,7 @@
               "item_name": "General's Dragonhide Treads",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -797.4909371171085
+              "dps_delta": -797.4909371171098
             },
             {
               "item_id": 21532,
@@ -10696,7 +10696,7 @@
               "item_name": "Feralheart Treads",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1442.0468087885515
+              "dps_delta": -1442.0468087885522
             }
           ],
           "runners_up": [
@@ -10950,37 +10950,37 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 11863,
-              "item_name": "White Bone Shredder",
-              "source_kind": "quest",
-              "source": "Bone-Bladed Weapons",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 17738,
-              "item_name": "Claw of Celebras",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Celebras the Cursed",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 234558,
-              "item_name": "High Warlord's Left Claw",
+              "item_id": 234563,
+              "item_name": "High Warlord's Tome of Destruction",
               "source_kind": "pvp",
               "source": "PvP rank 18 · High Warlord · Horde",
               "dps_delta": 0
+            },
+            {
+              "item_id": 234564,
+              "item_name": "High Warlord's Tome of Mending",
+              "source_kind": "pvp",
+              "source": "PvP rank 18 · High Warlord · Horde",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 19312,
+              "item_name": "Lei of the Lifegiver",
+              "source_kind": "rep",
+              "source": "Frostwolf Clan",
+              "dps_delta": -431.4421424846049
             }
           ],
           "runners_up": [
             {
-              "item_id": 11863,
-              "source_kind": "quest",
-              "source": "Bone-Bladed Weapons"
+              "item_id": 234563,
+              "source_kind": "pvp",
+              "source": "PvP rank 18 · High Warlord · Horde"
             },
             {
-              "item_id": 17738,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Celebras the Cursed"
+              "item_id": 234564,
+              "source_kind": "pvp",
+              "source": "PvP rank 18 · High Warlord · Horde"
             }
           ]
         },
@@ -11035,8 +11035,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Tome of the Darkspear Prophecy"
       ],
-      "weights_run_seconds": 2.442492014,
-      "verify_run_seconds": 10.093549694,
+      "weights_run_seconds": 2.527029948,
+      "verify_run_seconds": 8.761595427,
       "coverage": {
         "back": {
           "eligible": 387,

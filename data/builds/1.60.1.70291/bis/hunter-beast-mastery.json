@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T03:04:17Z",
+  "generated_at": "2026-10-12T22:38:22Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -691,8 +691,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.158678132,
-      "verify_run_seconds": 2.294010768,
+      "weights_run_seconds": 1.215993589,
+      "verify_run_seconds": 2.293324436,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1488,8 +1488,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.158678132,
-      "verify_run_seconds": 2.193897987,
+      "weights_run_seconds": 1.215993589,
+      "verify_run_seconds": 2.233474422,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2406,8 +2406,8 @@
         "off_hand: Vendetta",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.175655322,
-      "verify_run_seconds": 2.356697862,
+      "weights_run_seconds": 1.219772577,
+      "verify_run_seconds": 2.527312162,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3189,13 +3189,6 @@
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Overlord Ramtusk",
               "dps_delta": 0
-            },
-            {
-              "item_id": 15962,
-              "item_name": "Satyr's Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.203006221951377
             }
           ],
           "runners_up": [
@@ -3203,11 +3196,6 @@
               "item_id": 776,
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Overlord Ramtusk"
-            },
-            {
-              "item_id": 15962,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           ]
         },
@@ -3293,8 +3281,8 @@
         "off_hand: Alliance Outrunner's Sword",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.175655322,
-      "verify_run_seconds": 2.577245937,
+      "weights_run_seconds": 1.219772577,
+      "verify_run_seconds": 2.667786391,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4069,23 +4057,11 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": 0
-            },
-            {
-              "item_id": 15962,
-              "item_name": "Satyr's Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.2943362584012863
             }
           ],
           "runners_up": [
             {
               "item_id": 13034,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
-              "item_id": 15962,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -4173,8 +4149,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.166925709,
-      "verify_run_seconds": 2.959911492,
+      "weights_run_seconds": 1.230233667,
+      "verify_run_seconds": 3.147526537,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4941,13 +4917,6 @@
               "source_kind": "crafted",
               "source": "Blacksmithing",
               "dps_delta": 0
-            },
-            {
-              "item_id": 15962,
-              "item_name": "Satyr's Rod",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.3992993364201778
             }
           ],
           "runners_up": [
@@ -4955,11 +4924,6 @@
               "item_id": 7942,
               "source_kind": "crafted",
               "source": "Blacksmithing"
-            },
-            {
-              "item_id": 15962,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           ]
         },
@@ -5045,8 +5009,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.166925709,
-      "verify_run_seconds": 2.937316562,
+      "weights_run_seconds": 1.230233667,
+      "verify_run_seconds": 3.02264508,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5807,20 +5771,6 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": 0
-            },
-            {
-              "item_id": 9644,
-              "item_name": "Thermotastic Egg Timer",
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!",
-              "dps_delta": -1.1350017687481762
-            },
-            {
-              "item_id": 15965,
-              "item_name": "Windchaser Orb",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.513335691664235
             }
           ],
           "runners_up": [
@@ -5828,11 +5778,6 @@
               "item_id": 4091,
               "source_kind": "world_drop",
               "source": "World drop"
-            },
-            {
-              "item_id": 9644,
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!"
             }
           ]
         },
@@ -5920,8 +5865,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.192557952,
-      "verify_run_seconds": 4.080370052,
+      "weights_run_seconds": 1.176981747,
+      "verify_run_seconds": 4.057458165,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6706,13 +6651,6 @@
               "dps_delta": -0.37833392291605855
             },
             {
-              "item_id": 9644,
-              "item_name": "Thermotastic Egg Timer",
-              "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!",
-              "dps_delta": -1.1350017687481762
-            },
-            {
               "item_id": 9684,
               "item_name": "Force of the Hippogryph",
               "source_kind": "quest",
@@ -6728,9 +6666,9 @@
               "source": "Bone-Bladed Weapons"
             },
             {
-              "item_id": 9644,
+              "item_id": 9684,
               "source_kind": "quest",
-              "source": "Rescue OOX-17/TN!"
+              "source": "Weapons of Spirit"
             }
           ]
         },
@@ -6816,8 +6754,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.192557952,
-      "verify_run_seconds": 3.620386061,
+      "weights_run_seconds": 1.176981747,
+      "verify_run_seconds": 3.739743766,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7458,7 +7396,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -2.3001513434147594
+              "dps_delta": -2.3001513434147602
             },
             {
               "item_id": 9533,
@@ -7502,7 +7440,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.36427795652838413
+              "dps_delta": -0.3642779565283846
             },
             {
               "item_id": 9533,
@@ -7727,8 +7665,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.190353123,
-      "verify_run_seconds": 12.026910145,
+      "weights_run_seconds": 1.229883332,
+      "verify_run_seconds": 12.428775349,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -8612,8 +8550,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.190353123,
-      "verify_run_seconds": 11.845963743,
+      "weights_run_seconds": 1.229883332,
+      "verify_run_seconds": 11.95701801,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -9146,7 +9084,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 170.94244636603383,
+          "score": 170.94244636603386,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +3.7 DPS (763.3 vs 759.5 set DPS)",
           "dps_delta": 3.747748119247717,
@@ -9156,21 +9094,21 @@
               "item_name": "Marshal's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -7.718928810839952
+              "dps_delta": -7.718928810839956
             },
             {
               "item_id": 237818,
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -7.888716157680826
+              "dps_delta": -7.88871615768083
             },
             {
               "item_id": 231558,
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -9.551423260166649
+              "dps_delta": -9.551423260166652
             }
           ],
           "runners_up": [
@@ -9495,8 +9433,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.166601758,
-      "verify_run_seconds": 12.766222511,
+      "weights_run_seconds": 1.260007157,
+      "verify_run_seconds": 12.392656799,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -10392,8 +10330,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.166601758,
-      "verify_run_seconds": 12.008557799,
+      "weights_run_seconds": 1.260007157,
+      "verify_run_seconds": 12.21517779,
       "coverage": {
         "back": {
           "eligible": 386,

@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T04:05:06Z",
+  "generated_at": "2026-10-12T22:47:36Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -686,8 +686,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.472037699,
-      "verify_run_seconds": 2.150747848,
+      "weights_run_seconds": 1.601147542,
+      "verify_run_seconds": 2.365469314,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1460,8 +1460,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.472037699,
-      "verify_run_seconds": 2.153625622,
+      "weights_run_seconds": 1.601147542,
+      "verify_run_seconds": 2.324496709,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2271,8 +2271,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 1.449576779,
-      "verify_run_seconds": 2.253864567,
+      "weights_run_seconds": 1.583488364,
+      "verify_run_seconds": 2.274463189,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3084,8 +3084,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 1.449576779,
-      "verify_run_seconds": 2.138603626,
+      "weights_run_seconds": 1.583488364,
+      "verify_run_seconds": 2.143204437,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3936,8 +3936,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 1.5117972229999999,
-      "verify_run_seconds": 2.7870669230000003,
+      "weights_run_seconds": 1.7773859650000001,
+      "verify_run_seconds": 3.299673039,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4793,8 +4793,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 1.5117972229999999,
-      "verify_run_seconds": 2.699986445,
+      "weights_run_seconds": 1.7773859650000001,
+      "verify_run_seconds": 3.116814004,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5632,8 +5632,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.506015436,
-      "verify_run_seconds": 3.250921463,
+      "weights_run_seconds": 1.7096177780000001,
+      "verify_run_seconds": 3.319641857,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6482,8 +6482,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.506015436,
-      "verify_run_seconds": 3.276921117,
+      "weights_run_seconds": 1.7096177780000001,
+      "verify_run_seconds": 3.416642973,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7388,8 +7388,8 @@
         "trinket2: Serenity Field",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.539930228,
-      "verify_run_seconds": 11.18893321,
+      "weights_run_seconds": 1.6076294519999998,
+      "verify_run_seconds": 11.68355926,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -7665,7 +7665,7 @@
               "item_name": "Warlord's Mail Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.5808567726175139
+              "dps_delta": -0.5808567726175131
             },
             {
               "item_id": 272103,
@@ -7927,7 +7927,7 @@
               "item_name": "General's Mail Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.5202568055496246
+              "dps_delta": -0.5202568055496237
             },
             {
               "item_id": 237817,
@@ -8293,8 +8293,8 @@
         "trinket2: Serenity Field",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.539930228,
-      "verify_run_seconds": 9.091273023,
+      "weights_run_seconds": 1.6076294519999998,
+      "verify_run_seconds": 9.332254918,
       "coverage": {
         "back": {
           "eligible": 387,
@@ -9207,8 +9207,8 @@
         "main_hand: Kindling Stave",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.40364044,
-      "verify_run_seconds": 8.659394138,
+      "weights_run_seconds": 1.541619941,
+      "verify_run_seconds": 9.810883046,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -9766,7 +9766,7 @@
               "item_name": "General's Mail Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -3.1135089460360375
+              "dps_delta": -3.1135089460360343
             }
           ],
           "runners_up": [
@@ -10125,8 +10125,8 @@
         "main_hand: Kindling Stave",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.40364044,
-      "verify_run_seconds": 9.463256627,
+      "weights_run_seconds": 1.541619941,
+      "verify_run_seconds": 14.166702035,
       "coverage": {
         "back": {
           "eligible": 387,

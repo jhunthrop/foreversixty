@@ -38,7 +38,7 @@ No-known-source sample (15 of 191, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 00000000000000000-32530300001400000-0000000000000000000)
 
-Set DPS (verified): 70.9. Weights run: 1.2s. Verify run: 4.4s. 347 eligible items had no known source.
+Set DPS (verified): 70.9. Weights run: 1.2s. Verify run: 4.2s. 347 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.547 ± 0.018, crit=0.567 ± 0.019 per rating point (14 rating = 1%, 7.936 per %), hit=0.905 ± 0.051 per rating point (10 rating = 1%, 9.049 per %), melee_haste=7.066 ± 0.620
 
@@ -59,7 +59,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Swinetusk Shank (6691) | Razorfen Kraul: Agathelos the Raging [dungeon] | 322.0 attack_power points (20.11 DPS) | yes | Darkspear Insurgent's Spellblade (272086, -1.10 DPS, sim-verified) [vendor]; Thornspike (6681, -2.11 DPS) [dungeon]; Toxic Revenger (9453, -2.16 DPS) [dungeon] |
-| off_hand | Torturing Poker (7682) | Scarlet Monastery: Interrogator Vishas [dungeon] | sim-verified (70.9 DPS) | yes | Darkspear Insurgent's Spellblade (272086, -7.20 DPS, sim-verified) [vendor]; Satyr's Rod (15962, -18.42 DPS) [world_drop] |
+| off_hand | Torturing Poker (7682) | Scarlet Monastery: Interrogator Vishas [dungeon] | sim-verified (70.9 DPS) | yes | Darkspear Insurgent's Spellblade (272086, -7.20 DPS, sim-verified) [vendor] |
 | ranged | Glass Shooter (9456) | Gnomeregan: Dark Iron Ambassador [dungeon] | 12.0 attack_power points (0.75 DPS) | yes | Golemsight Long Gun (273029, -0.17 DPS) [dungeon]; Booty Bay Bruiser's Buckshot (274748, -0.19 DPS) [vendor]; Silver Star (3463, -0.27 DPS) [quest] |
 
 **New at 30:** head: Brawler's Leather Helm; neck: Ghostshard Talisman; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Dusky Leather Armor; wrist: Hawkeye's Bracers; finger1: Ironspine's Eye; finger2: Protector's Band; main_hand: Swinetusk Shank; off_hand: Torturing Poker; ranged: Glass Shooter
@@ -68,7 +68,7 @@ No-known-source sample (15 of 347, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 00000000000000000-32530300001515201-0000000000000000000)
 
-Set DPS (verified): 116.4. Weights run: 1.4s. Verify run: 2.5s. 466 eligible items had no known source.
+Set DPS (verified): 116.4. Weights run: 1.2s. Verify run: 2.5s. 466 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.393 ± 0.019, crit=0.513 ± 0.026 per rating point (14 rating = 1%, 7.183 per %), hit=1.048 ± 0.054 per rating point (10 rating = 1%, 10.475 per %), melee_haste=8.345 ± 0.768
 
@@ -89,7 +89,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-verified (116.4 DPS) | yes | Black Menace (6831, -4.01 DPS) [quest]; Coldrage Dagger (10761, -4.66 DPS, sim-verified) [dungeon]; Darkspear Insurgent's Spellblade (272085, -4.71 DPS) [vendor] |
-| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | 442.2 attack_power points (30.00 DPS) | yes | Black Menace (6831, -0.85 DPS, sim-verified) [quest]; Stonecloth Branch (15963, -29.80 DPS) [world_drop]; Satyr's Rod (15962, -29.91 DPS) [world_drop] |
+| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | 442.2 attack_power points (30.00 DPS) | yes | Black Menace (6831, -0.85 DPS, sim-verified) [quest] |
 | ranged | The Silencer (13138) | World drop [world_drop] | sim-verified (116.4 DPS) | yes | Glass Shooter (9456, -0.14 DPS) [dungeon]; Monolithic Bow (9426, -0.26 DPS) [dungeon]; Bow of Searing Arrows (2825, -1.15 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: White Bandit Mask; neck: Sentinel's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Wolffear Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Highlander's Leather Girdle; legs: Basilisk Hide Pants; feet: Skulker's Leather Shoes; finger1: Mark of Kern; finger2: Assault Band; main_hand: Gut Ripper; off_hand: Jhordy's Misplaced Screwdriver; ranged: The Silencer
@@ -98,7 +98,7 @@ No-known-source sample (15 of 466, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 32500000000000000-32530300001515201-0000000000000000000)
 
-Set DPS (verified): 161.0. Weights run: 1.4s. Verify run: 4.8s. 586 eligible items had no known source.
+Set DPS (verified): 161.0. Weights run: 1.3s. Verify run: 2.9s. 586 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.562 ± 0.020, crit=0.942 ± 0.030 per rating point (14 rating = 1%, 13.183 per %), hit=1.301 ± 0.086 per rating point (10 rating = 1%, 13.012 per %), melee_haste=5.339 ± 1.244
 
@@ -119,7 +119,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-verified (161.0 DPS) | yes | - |
 | trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (161.0 DPS) | yes | Mark of the Chosen (17774, -1.09 DPS, sim-verified) [quest] |
 | main_hand | Julie's Dagger (6660) | World drop [world_drop] | sim-verified (161.0 DPS) | yes | Charstone Dirk (17710, -0.71 DPS) [dungeon]; Darkspear Insurgent's Spellblade (272084, -1.84 DPS) [vendor]; Gut Ripper (2164, -3.16 DPS) [world_drop] |
-| off_hand | Lifeforce Dirk (10750) | The God Hakkar [quest] | 503.2 attack_power points (42.83 DPS) | yes | Charstone Dirk (17710, -29.67 DPS, sim-verified) [dungeon]; Thermotastic Egg Timer (9644, -42.43 DPS) [quest]; Stonecloth Branch (15963, -42.57 DPS) [world_drop] |
+| off_hand | Lifeforce Dirk (10750) | The God Hakkar [quest] | 503.2 attack_power points (42.83 DPS) | yes | Charstone Dirk (17710, -29.67 DPS, sim-verified) [dungeon] |
 | ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | sim-verified (161.0 DPS) | yes | Skull Splitting Crossbow (13039, -0.41 DPS) [world_drop]; Guttbuster (13139, -0.54 DPS) [world_drop]; Dark Iron Rifle (16004, -2.05 DPS, sim-verified) [crafted] |
 
 **New at 50:** head: Knight-Lieutenant's Leather Headband; neck: Skibi's Pendant; shoulder: Knight-Lieutenant's Leather Shoulders; back: Dark Phantom Cape; chest: Knight's Leather Armor; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Skulker's Leather Waistguard; legs: Knight's Leather Pants; feet: Sandstalker Ankleguards; finger1: Protector's Band; finger2: Masons Fraternity Ring; trinket1: Molten Heart of the Mountain; trinket2: Frozen Heart of the Mountain; main_hand: Julie's Dagger; off_hand: Lifeforce Dirk; ranged: Precisely Calibrated Boomstick
@@ -128,7 +128,7 @@ No-known-source sample (15 of 586, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 32531000000000000-32530300001515201-5100000000000000000)
 
-Set DPS (verified): 258.8. Weights run: 2.5s. Verify run: 10.5s. 1136 eligible items had no known source.
+Set DPS (verified): 258.8. Weights run: 1.4s. Verify run: 8.4s. 1136 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.772 ± 0.028, crit=1.595 ± 0.049 per rating point (14 rating = 1%, 22.334 per %), hit=2.223 ± 0.129 per rating point (10 rating = 1%, 22.226 per %), melee_haste=14.292 ± 1.920
 
@@ -149,7 +149,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (258.8 DPS) | yes | Frozen Heart of the Mountain (249469, -5.69 DPS, sim-verified) [crafted] |
 | trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-verified (258.8 DPS) | yes | Darkmoon Card: Blue Dragon (19288, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
 | main_hand | Shadowsong's Sorrow (21522) | Treasure of the Timeless One [quest] | sim-verified (258.8 DPS) | yes | Grand Marshal's Dirk (234582, +0.00 DPS) [pvp]; Grand Marshal's Shiv (235479, +0.00 DPS) [vendor]; Electrified Dagger (19100, -14.85 DPS, sim-verified) [rep] |
-| off_hand | The Lobotomizer (19324) | Stormpike Guard [rep] | 661.1 attack_power points (53.38 DPS) | yes | Electrified Dagger (19100, -1.12 DPS, sim-verified) [rep]; Thermotastic Egg Timer (9644, -52.95 DPS) [quest]; Highborne Star (15967, -52.95 DPS) [world_drop] |
+| off_hand | The Lobotomizer (19324) | Stormpike Guard [rep] | 661.1 attack_power points (53.38 DPS) | yes | Electrified Dagger (19100, -1.12 DPS, sim-verified) [rep] |
 | ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | sim-verified (258.8 DPS) | yes | The Purifier (22656, -0.20 DPS) [quest]; Bloodseeker (19107, -0.36 DPS) [quest]; Dark Iron Rifle (16004, -2.21 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Outlaw's Collar; neck: Medallion of the Dawn; shoulder: Stormshroud Shoulders; back: Howler's Furs; chest: Dawn Armor; wrist: Forest Stalker's Bracers; hands: Stormshroud Gloves; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Darkmantle Footpads; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Molten Heart of the Mountain; main_hand: Shadowsong's Sorrow; off_hand: The Lobotomizer
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1136, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 00532010500000000-31530300001515231-0020000000000000000)
 
-Set DPS (verified): 706.9. Weights run: 1.5s. Verify run: 10.1s. 1136 eligible items had no known source.
+Set DPS (verified): 706.9. Weights run: 1.4s. Verify run: 8.6s. 1136 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.100 ± 0.002, agility=2.080 ± 0.033, crit=1.898 ± 0.057 per rating point (14 rating = 1%, 26.572 per %), hit=3.009 ± 0.181 per rating point (10 rating = 1%, 30.093 per %), melee_haste=23.498 ± 2.451
 
@@ -179,7 +179,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (706.9 DPS) | yes | - |
 | trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (706.9 DPS) | yes | Molten Heart of the Mountain (249470, -3.78 DPS, sim-verified) [crafted] |
 | main_hand | Shadowsong's Sorrow (21522) | Treasure of the Timeless One [quest] | sim-verified (706.9 DPS) | yes | Grand Marshal's Dirk (234582, +0.00 DPS) [pvp]; Grand Marshal's Shiv (235479, +0.00 DPS) [vendor]; Electrified Dagger (19100, -37.66 DPS, sim-verified) [rep] |
-| off_hand | The Lobotomizer (19324) | Stormpike Guard [rep] | 661.1 attack_power points (112.39 DPS) | yes | Electrified Dagger (19100, +0.00 DPS) [rep]; Thermotastic Egg Timer (9644, -111.33 DPS) [quest]; Highborne Star (15967, -111.33 DPS) [world_drop] |
+| off_hand | The Lobotomizer (19324) | Stormpike Guard [rep] | 661.1 attack_power points (112.39 DPS) | yes | Electrified Dagger (19100, +0.00 DPS) [rep] |
 | ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | sim-verified (706.9 DPS) | yes | The Purifier (22656, -0.43 DPS) [quest]; Bloodseeker (19107, -0.98 DPS) [quest]; Dark Iron Rifle (16004, -6.25 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Outlaw's Collar; neck: Beads of Ogre Might; shoulder: Stormshroud Shoulders; back: Howler's Furs; chest: Dawn Armor; wrist: Forest Stalker's Bracers; hands: Stormshroud Gloves; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Darkmantle Footpads; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket1: Darkmoon Card: Maelstrom; main_hand: Shadowsong's Sorrow; off_hand: The Lobotomizer
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1136, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 00000000000000000-32510000000000000-0000000000000000000)
 
-Set DPS (verified): 41.2. Weights run: 1.3s. Verify run: 4.5s. 184 eligible items had no known source.
+Set DPS (verified): 41.2. Weights run: 1.3s. Verify run: 4.2s. 184 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.933 ± 0.020, crit=0.581 ± 0.018 per rating point (14 rating = 1%, 8.132 per %), hit=0.743 ± 0.044 per rating point (10 rating = 1%, 7.426 per %), melee_haste=3.791 ± 0.494
 
@@ -211,7 +211,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Blackfang (2236) | World drop [world_drop] | 228.6 attack_power points (14.58 DPS) | yes | Scout's Blade (20441, -0.44 DPS) [pvp]; Evocator's Blade (2567, -0.91 DPS) [dungeon]; Buzzer Blade (2169, -2.08 DPS) [dungeon] |
-| off_hand | Assassin's Blade (1935) | Shadowfang Keep: Son of Arugal [dungeon] | 228.2 attack_power points (14.55 DPS) | yes | Evocator's Blade (2567, -4.58 DPS, sim-verified) [dungeon]; Tork Wrench (11855, -14.42 DPS) [quest] |
+| off_hand | Assassin's Blade (1935) | Shadowfang Keep: Son of Arugal [dungeon] | 228.2 attack_power points (14.55 DPS) | yes | Evocator's Blade (2567, -4.58 DPS, sim-verified) [dungeon] |
 | ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 7.7 attack_power points (0.49 DPS) | yes | Fine Longbow (11304, -0.21 DPS, sim-verified) [vendor]; Deadly Blunderbuss (4369, -0.25 DPS) [crafted]; Light Bow (4576, -0.25 DPS) [world_drop] |
 
 **New at 20:** head: Brawler's Leather Hood; neck: Scout's Medallion; shoulder: Serpent's Shoulders; back: Glowing Lizardscale Cloak; chest: Blackened Defias Armor; wrist: Forest Leather Bracers; hands: Gloves of the Fang; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Blackened Defias Boots; finger1: Legionnaire's Band; finger2: Signet of the Zhevra; main_hand: Blackfang; off_hand: Assassin's Blade; ranged: Lil Timmy's Peashooter
@@ -220,7 +220,7 @@ No-known-source sample (15 of 184, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-32530300001400000-0000000000000000000)
 
-Set DPS (verified): 71.1. Weights run: 1.2s. Verify run: 4.4s. 337 eligible items had no known source.
+Set DPS (verified): 71.1. Weights run: 1.2s. Verify run: 4.2s. 337 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.547 ± 0.018, crit=0.567 ± 0.019 per rating point (14 rating = 1%, 7.936 per %), hit=0.905 ± 0.051 per rating point (10 rating = 1%, 9.049 per %), melee_haste=7.066 ± 0.620
 
@@ -241,7 +241,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Swinetusk Shank (6691) | Razorfen Kraul: Agathelos the Raging [dungeon] | 322.0 attack_power points (20.11 DPS) | yes | Scout's Blade (19545, -0.91 DPS) [pvp]; Darkspear Insurgent's Spellblade (272086, -1.37 DPS) [vendor]; Torturing Poker (7682, -1.59 DPS) [dungeon] |
-| off_hand | Serrated Raptor Claw (280805) | Changing Tastes [quest] | 319.6 attack_power points (19.96 DPS) | yes | Darkspear Insurgent's Spellblade (272086, -7.78 DPS, sim-verified) [vendor]; Tork Wrench (11855, -19.83 DPS) [quest]; Satyr's Rod (15962, -19.86 DPS) [world_drop] |
+| off_hand | Serrated Raptor Claw (280805) | Changing Tastes [quest] | 319.6 attack_power points (19.96 DPS) | yes | Darkspear Insurgent's Spellblade (272086, -7.78 DPS, sim-verified) [vendor] |
 | ranged | Glass Shooter (9456) | Gnomeregan: Dark Iron Ambassador [dungeon] | 12.0 attack_power points (0.75 DPS) | yes | Golemsight Long Gun (273029, -0.17 DPS) [dungeon]; Booty Bay Bruiser's Buckshot (274748, -0.19 DPS) [vendor]; Silver Star (3463, -0.27 DPS) [quest] |
 
 **New at 30:** head: Brawler's Leather Helm; neck: Ghostshard Talisman; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Dusky Leather Armor; wrist: Hawkeye's Bracers; hands: Blackened Defias Gloves; finger1: Ironspine's Eye; finger2: Legionnaire's Band; main_hand: Swinetusk Shank; off_hand: Serrated Raptor Claw; ranged: Glass Shooter
@@ -250,7 +250,7 @@ No-known-source sample (15 of 337, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-32530300001515201-0000000000000000000)
 
-Set DPS (verified): 115.6. Weights run: 1.4s. Verify run: 2.5s. 449 eligible items had no known source.
+Set DPS (verified): 115.6. Weights run: 1.2s. Verify run: 2.5s. 449 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.393 ± 0.019, crit=0.513 ± 0.026 per rating point (14 rating = 1%, 7.183 per %), hit=1.048 ± 0.054 per rating point (10 rating = 1%, 10.475 per %), melee_haste=8.345 ± 0.768
 
@@ -271,7 +271,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-verified (115.6 DPS) | yes | Scout's Blade (19544, -3.77 DPS) [pvp]; Darkspear Insurgent's Spellblade (272085, -4.71 DPS) [vendor]; Coldrage Dagger (10761, -5.07 DPS, sim-verified) [dungeon] |
-| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | 442.2 attack_power points (30.00 DPS) | yes | Coldrage Dagger (10761, -0.61 DPS, sim-verified) [dungeon]; Stonecloth Branch (15963, -29.80 DPS) [world_drop]; Tork Wrench (11855, -29.87 DPS) [quest] |
+| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | 442.2 attack_power points (30.00 DPS) | yes | Coldrage Dagger (10761, -0.61 DPS, sim-verified) [dungeon] |
 | ranged | The Silencer (13138) | World drop [world_drop] | sim-verified (115.6 DPS) | yes | Glass Shooter (9456, -0.14 DPS) [dungeon]; Monolithic Bow (9426, -0.26 DPS) [dungeon]; Bow of Searing Arrows (2825, -1.14 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: White Bandit Mask; neck: Scout's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Wolffear Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Defiler's Leather Girdle; legs: Basilisk Hide Pants; feet: Skulker's Leather Shoes; finger1: Mark of Kern; finger2: Assault Band; main_hand: Gut Ripper; off_hand: Jhordy's Misplaced Screwdriver; ranged: The Silencer
@@ -280,7 +280,7 @@ No-known-source sample (15 of 449, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 32500000000000000-32530300001515201-0000000000000000000)
 
-Set DPS (verified): 162.5. Weights run: 1.4s. Verify run: 5.3s. 564 eligible items had no known source.
+Set DPS (verified): 162.5. Weights run: 1.3s. Verify run: 2.9s. 564 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.562 ± 0.020, crit=0.942 ± 0.030 per rating point (14 rating = 1%, 13.183 per %), hit=1.301 ± 0.086 per rating point (10 rating = 1%, 13.012 per %), melee_haste=5.339 ± 1.244
 
@@ -301,7 +301,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (162.5 DPS) | yes | - |
 | trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (162.5 DPS) | yes | Molten Heart of the Mountain (249470, -0.88 DPS, sim-verified) [crafted] |
 | main_hand | Julie's Dagger (6660) | World drop [world_drop] | sim-verified (162.5 DPS) | yes | Gut Ripper (2164, +0.00 DPS) [world_drop]; Scout's Blade (19543, -0.37 DPS) [pvp]; Charstone Dirk (17710, -0.71 DPS) [dungeon] |
-| off_hand | Lifeforce Dirk (10750) | The God Hakkar [quest] | 503.2 attack_power points (42.83 DPS) | yes | Charstone Dirk (17710, -29.12 DPS, sim-verified) [dungeon]; Thermotastic Egg Timer (9644, -42.43 DPS) [quest]; Stonecloth Branch (15963, -42.57 DPS) [world_drop] |
+| off_hand | Lifeforce Dirk (10750) | The God Hakkar [quest] | 503.2 attack_power points (42.83 DPS) | yes | Charstone Dirk (17710, -29.12 DPS, sim-verified) [dungeon] |
 | ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | sim-verified (162.5 DPS) | yes | Skull Splitting Crossbow (13039, -0.41 DPS) [world_drop]; Guttbuster (13139, -0.54 DPS) [world_drop]; Dark Iron Rifle (16004, -2.10 DPS, sim-verified) [crafted] |
 
 **New at 50:** neck: Skibi's Pendant; back: Dark Phantom Cape; chest: Stone Guard's Leather Armor; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Skulker's Leather Waistguard; legs: Stone Guard's Leather Pants; feet: Sandstalker Ankleguards; finger1: Legionnaire's Band; finger2: White Bone Band; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Julie's Dagger; off_hand: Lifeforce Dirk; ranged: Precisely Calibrated Boomstick
@@ -310,7 +310,7 @@ No-known-source sample (15 of 564, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 32531000000000000-32530300001515201-5100000000000000000)
 
-Set DPS (verified): 263.1. Weights run: 2.5s. Verify run: 9.1s. 1132 eligible items had no known source.
+Set DPS (verified): 263.1. Weights run: 1.4s. Verify run: 8.4s. 1132 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.772 ± 0.028, crit=1.595 ± 0.049 per rating point (14 rating = 1%, 22.334 per %), hit=2.223 ± 0.129 per rating point (10 rating = 1%, 22.226 per %), melee_haste=14.292 ± 1.920
 
@@ -331,7 +331,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (263.1 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
 | trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (263.1 DPS) | yes | Frozen Heart of the Mountain (249469, -3.03 DPS) [crafted]; Molten Heart of the Mountain (249470, -5.52 DPS, sim-verified) [crafted] |
 | main_hand | Shadowsong's Sorrow (21522) | Treasure of the Timeless One [quest] | sim-verified (263.1 DPS) | yes | High Warlord's Razor (234556, +0.00 DPS) [pvp]; High Warlord's Shiv (235478, +0.00 DPS) [vendor]; Glacial Blade (19099, -16.39 DPS, sim-verified) [rep] |
-| off_hand | The Lobotomizer (19324) | Frostwolf Clan [rep] | 661.1 attack_power points (53.38 DPS) | yes | Glacial Blade (19099, +0.00 DPS) [rep]; Thermotastic Egg Timer (9644, -52.95 DPS) [quest]; Highborne Star (15967, -52.95 DPS) [world_drop] |
+| off_hand | The Lobotomizer (19324) | Frostwolf Clan [rep] | 661.1 attack_power points (53.38 DPS) | yes | Glacial Blade (19099, +0.00 DPS) [rep] |
 | ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | sim-verified (263.1 DPS) | yes | The Purifier (22656, -0.20 DPS) [quest]; Bloodseeker (19107, -0.36 DPS) [quest]; Dark Iron Rifle (16004, -2.27 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Outlaw's Collar; neck: Medallion of the Dawn; shoulder: Stormshroud Shoulders; back: Howler's Furs; chest: Dawn Armor; wrist: Forest Stalker's Bracers; hands: Stormshroud Gloves; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Darkmantle Footpads; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Rune of the Guard Captain; main_hand: Shadowsong's Sorrow; off_hand: The Lobotomizer
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1132, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 00532010500000000-31530300001515231-0020000000000000000)
 
-Set DPS (verified): 707.6. Weights run: 1.5s. Verify run: 9.5s. 1132 eligible items had no known source.
+Set DPS (verified): 707.6. Weights run: 1.4s. Verify run: 8.7s. 1132 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.100 ± 0.002, agility=2.080 ± 0.033, crit=1.898 ± 0.057 per rating point (14 rating = 1%, 26.572 per %), hit=3.009 ± 0.181 per rating point (10 rating = 1%, 30.093 per %), melee_haste=23.498 ± 2.451
 
@@ -361,7 +361,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (707.6 DPS) | yes | Frozen Heart of the Mountain (249469, -6.55 DPS, sim-verified) [crafted] |
 | trinket2 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (707.6 DPS) | yes | Frozen Heart of the Mountain (249469, -5.75 DPS, sim-verified) [crafted] |
 | main_hand | Shadowsong's Sorrow (21522) | Treasure of the Timeless One [quest] | sim-verified (707.6 DPS) | yes | High Warlord's Razor (234556, +0.00 DPS) [pvp]; High Warlord's Shiv (235478, +0.00 DPS) [vendor]; Glacial Blade (19099, -35.21 DPS, sim-verified) [rep] |
-| off_hand | The Lobotomizer (19324) | Frostwolf Clan [rep] | 661.1 attack_power points (112.39 DPS) | yes | Glacial Blade (19099, +0.00 DPS) [rep]; Thermotastic Egg Timer (9644, -111.33 DPS) [quest]; Highborne Star (15967, -111.33 DPS) [world_drop] |
+| off_hand | The Lobotomizer (19324) | Frostwolf Clan [rep] | 661.1 attack_power points (112.39 DPS) | yes | Glacial Blade (19099, +0.00 DPS) [rep] |
 | ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | sim-verified (707.6 DPS) | yes | The Purifier (22656, -0.43 DPS) [quest]; Bloodseeker (19107, -0.98 DPS) [quest]; Dark Iron Rifle (16004, -6.09 DPS, sim-verified) [crafted] |
 
 **New at 60:** head: Outlaw's Collar; neck: Beads of Ogre Might; shoulder: Stormshroud Shoulders; back: Howler's Furs; chest: Dawn Armor; wrist: Forest Stalker's Bracers; hands: Stormshroud Gloves; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Darkmantle Footpads; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket2: Darkmoon Card: Maelstrom; main_hand: Shadowsong's Sorrow; off_hand: The Lobotomizer

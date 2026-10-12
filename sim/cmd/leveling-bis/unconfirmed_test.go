@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -96,7 +97,9 @@ func TestTheLadderPicksTheConfirmedHeadAndListsTwoConfirmedRunnersUp(t *testing.
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.Contains(string(raw), "1021") || strings.Contains(string(raw), "Unconfirmed Helm") {
+	// Match the id as a JSON field, not a raw digit run: the report carries
+	// wall-clock and DPS floats that may contain "1021".
+	if regexp.MustCompile(`"item_id":\s*1021[,}\s]`).Match(raw) || strings.Contains(string(raw), "Unconfirmed Helm") {
 		t.Fatalf("the published report names the client_unconfirmed item 1021 somewhere")
 	}
 	report := readSpecReportForTest(t, path)
@@ -141,5 +144,71 @@ func TestANonDualWielderNeverTakesAnOffHandWeapon(t *testing.T) {
 	}
 	if ru := result["off_hand"].RunnerUp; ru != nil && ru.ClassID == itemClassWeapon {
 		t.Fatalf("off_hand runner-up = %+v, a weapon", ru)
+	}
+}
+
+// Fix round 1, item 3: the published-file check's active-build branch.
+// A bis file of the active build may not carry a client_unconfirmed item;
+// one of an older, never re-ranked build may.
+func TestThePublishedCheckRefusesAnUnconfirmedItemOnlyInTheActiveBuild(t *testing.T) {
+	items := []candidate{
+		{ID: 1021, Name: "Unconfirmed Helm", ClientUnconfirmed: true},
+		{ID: 1022, Name: "Confirmed Helm A"},
+	}
+	active := publishedCandidates(items, "1.60.1.70291", "1.60.1.70291")
+	if msg := unconfirmedError("item", 1021, "Unconfirmed Helm", active[1021]); !strings.Contains(msg, "client_unconfirmed") {
+		t.Fatalf("active build: unconfirmedError = %q, want a refusal", msg)
+	}
+	if msg := unconfirmedError("item", 1022, "Confirmed Helm A", active[1022]); msg != "" {
+		t.Fatalf("active build, confirmed item: unconfirmedError = %q, want none", msg)
+	}
+	older := publishedCandidates(items, "1.60.1.70009", "1.60.1.70291")
+	if msg := unconfirmedError("alternative", 1021, "Unconfirmed Helm", older[1021]); msg != "" {
+		t.Fatalf("older build: unconfirmedError = %q, want it tolerated", msg)
+	}
+}
+
+// Fix round 1, item 1: one off-hand pool per spec, so the pick, the
+// alternatives, the swaps and set completion all read the same shape.
+func TestTheOffHandPoolIsWeaponsForADualWielderAndNoWeaponsForAnyoneElse(t *testing.T) {
+	shredder := scored{candidate: candidate{ID: 11863, Name: "White Bone Shredder", ClassID: itemClassWeapon}}
+	tome := scored{candidate: candidate{ID: 272087, Name: "Tome of the Darkspear Prophecy", ClassID: 4}}
+	rod := scored{candidate: candidate{ID: 15962, Name: "Satyr's Rod", ClassID: 4}}
+	if got := offHandPool("druid-feral-bear", []scored{shredder, tome}); len(got) != 1 || got[0].ID != 272087 {
+		t.Fatalf("druid-feral-bear off-hand pool = %+v, want the held item only", got)
+	}
+	if got := offHandPool("hunter-beast-mastery", []scored{rod, shredder}); len(got) != 1 || got[0].ID != 11863 {
+		t.Fatalf("hunter-beast-mastery off-hand pool = %+v, want the weapon only", got)
+	}
+}
+
+func TestThePublishedCheckRefusesAnOffHandAlternativeOfTheWrongShape(t *testing.T) {
+	byID := map[int]candidate{
+		11863:  {ID: 11863, ClassID: itemClassWeapon},
+		272087: {ID: 272087, ClassID: 4},
+	}
+	row := func(alts ...int) map[string]slotRow {
+		r := slotRow{Slot: "off_hand", ItemID: 1}
+		for _, id := range alts {
+			r.Alternatives = append(r.Alternatives, alternativeRow{ItemID: id})
+		}
+		return map[string]slotRow{"off_hand": r}
+	}
+	label := func(s string) string { return s }
+	for _, tc := range []struct {
+		spec  string
+		alt   int
+		fails bool
+	}{
+		{"druid-feral-bear", 11863, true},
+		{"druid-feral-bear", 272087, false},
+		{"hunter-beast-mastery", 272087, true},
+		{"hunter-beast-mastery", 11863, false},
+	} {
+		tb := &fakeTB{}
+		checkOffHandAlternatives(tb, label, tc.spec, byID, row(tc.alt))
+		if got := len(tb.errors) > 0; got != tc.fails {
+			t.Errorf("%s off-hand alternative %d: refused = %v, want %v (%v)", tc.spec, tc.alt, got, tc.fails, tb.errors)
+		}
 	}
 }

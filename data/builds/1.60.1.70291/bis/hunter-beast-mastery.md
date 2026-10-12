@@ -38,7 +38,7 @@ No-known-source sample (15 of 212, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 5420001504000000-0000000000000000-000000000000000000)
 
-Set DPS (verified): 140.5. Weights run: 1.2s. Verify run: 2.4s. 380 eligible items had no known source.
+Set DPS (verified): 140.5. Weights run: 1.2s. Verify run: 2.5s. 380 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.002, agility=2.885 ± 0.018, crit=0.658 ± 0.024 per rating point (14 rating = 1%, 9.208 per %), hit=1.171 ± 0.078 per rating point (10 rating = 1%, 11.705 per %), melee_haste=10.464 ± 1.273
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 380, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 5420001505001251-0000000000000000-000000000000000000)
 
-Set DPS (verified): 183.0. Weights run: 1.2s. Verify run: 3.0s. 594 eligible items had no known source.
+Set DPS (verified): 183.0. Weights run: 1.2s. Verify run: 3.1s. 594 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.002, agility=2.803 ± 0.018, crit=0.723 ± 0.029 per rating point (14 rating = 1%, 10.121 per %), hit=1.458 ± 0.135 per rating point (10 rating = 1%, 14.580 per %), melee_haste=not significant (7.159 ± 2.067)
 
@@ -89,7 +89,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (183.0 DPS) | yes | Hellslayer Battle Axe (13017, +0.00 DPS) [world_drop]; Steel Spear (250605, +0.00 DPS) [crafted]; Gut Ripper (2164, -0.79 DPS, sim-verified) [world_drop] |
-| off_hand | Blue Glittering Axe (7942) (or Speedsteel Rapier (13034)) | Blacksmithing [crafted] | 22.4 ranged_attack_power points (1.48 DPS) | yes | Speedsteel Rapier (13034, +0.00 DPS) [world_drop]; Satyr's Rod (15962, -1.29 DPS) [world_drop] |
+| off_hand | Blue Glittering Axe (7942) (or Speedsteel Rapier (13034)) | Blacksmithing [crafted] | 22.4 ranged_attack_power points (1.48 DPS) | yes | Speedsteel Rapier (13034, +0.00 DPS) [world_drop] |
 | ranged | Bow of Searing Arrows (2825) | World drop [world_drop] | 350.0 ranged_attack_power points (23.09 DPS) | yes | Swiftwind (13038, -2.17 DPS) [world_drop]; Monolithic Bow (9426, -2.35 DPS) [dungeon]; The Silencer (13138, -2.81 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: Warden's Wizard Hat; neck: Sentinel's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Wolffear Harness; wrist: Dusky Bracers; hands: Gauntlets of Divinity; waist: Highlander's Leather Girdle; legs: Basilisk Hide Pants; feet: Swampwalker Boots; finger1: Ring of the Underwood; finger2: Falcon's Hook; main_hand: Jhordy's Misplaced Screwdriver; off_hand: Blue Glittering Axe; ranged: Bow of Searing Arrows
@@ -119,7 +119,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | trinket1 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-verified (222.5 DPS) | yes | - |
 | trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (222.5 DPS) | yes | Mark of the Chosen (17774, +0.00 DPS) [quest] |
 | main_hand | Ebon Shiv (7947) | Blacksmithing [crafted] | sim-verified (222.5 DPS) | yes | Warmonger (13052, +0.00 DPS) [world_drop]; Steel Spear (250605, +0.00 DPS) [crafted]; Hanzo Sword (8190, -1.91 DPS, sim-verified) [world_drop] |
-| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | 24.9 ranged_attack_power points (1.70 DPS) | yes | Widowmaker (4091, +0.00 DPS) [world_drop]; Thermotastic Egg Timer (9644, -1.14 DPS) [quest]; Windchaser Orb (15965, -1.51 DPS) [world_drop] |
+| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | 24.9 ranged_attack_power points (1.70 DPS) | yes | Widowmaker (4091, +0.00 DPS) [world_drop] |
 | ranged | Arcanite Blacksmith Hammer (285281) | Blacksmithing [crafted] | sim-verified (222.5 DPS) | yes | Precisely Calibrated Boomstick (2100, -1.54 DPS) [world_drop]; Gryphonwing Long Bow (13022, -2.05 DPS) [dungeon]; Dark Iron Rifle (16004, -2.79 DPS, sim-verified) [crafted] |
 
 **New at 50:** head: Knight-Lieutenant's Chain Helmet; neck: Skibi's Pendant; shoulder: Knight-Lieutenant's Chain Epaulets; back: Dark Phantom Cape; chest: Blazewind Breastplate; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Substandard Belt Chain; feet: Albino Crocscale Boots; finger1: Masons Fraternity Ring; finger2: Ring of the Underwood; trinket1: Molten Heart of the Mountain; trinket2: Frozen Heart of the Mountain; main_hand: Ebon Shiv; off_hand: Jhordy's Misplaced Screwdriver; ranged: Arcanite Blacksmith Hammer
@@ -128,7 +128,7 @@ No-known-source sample (15 of 745, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (dwarf, 5420001505001251-0053502001000000-400000000000000000)
 
-Set DPS (verified): 293.4. Weights run: 1.2s. Verify run: 12.0s. 1373 eligible items had no known source.
+Set DPS (verified): 293.4. Weights run: 1.2s. Verify run: 12.4s. 1373 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.002, agility=2.832 ± 0.023, crit=1.308 ± 0.048 per rating point (14 rating = 1%, 18.314 per %), hit=2.044 ± 0.181 per rating point (10 rating = 1%, 20.439 per %), melee_haste=15.922 ± 2.619
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1373, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 5420001505001251-0053502001000000-400000000000000000)
 
-Set DPS (verified): 763.3. Weights run: 1.2s. Verify run: 12.8s. 1373 eligible items had no known source.
+Set DPS (verified): 763.3. Weights run: 1.3s. Verify run: 12.4s. 1373 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.002, agility=2.875 ± 0.022, crit=1.352 ± 0.044 per rating point (14 rating = 1%, 18.933 per %), hit=3.244 ± 0.247 per rating point (10 rating = 1%, 32.442 per %), melee_haste=16.861 ± 3.307
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 201, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 5420001504000000-0000000000000000-000000000000000000)
 
-Set DPS (verified): 142.5. Weights run: 1.2s. Verify run: 2.6s. 365 eligible items had no known source.
+Set DPS (verified): 142.5. Weights run: 1.2s. Verify run: 2.7s. 365 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.002, agility=2.885 ± 0.018, crit=0.658 ± 0.024 per rating point (14 rating = 1%, 9.208 per %), hit=1.171 ± 0.078 per rating point (10 rating = 1%, 11.705 per %), melee_haste=10.464 ± 1.273
 
@@ -241,7 +241,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Serrated Raptor Claw (280805) | Changing Tastes [quest] | 24.4 ranged_attack_power points (1.68 DPS) | yes | Kam's Walking Stick (2280, +0.00 DPS) [dungeon]; Armor Piercer (6679, +0.00 DPS) [dungeon]; Bronze Dory (250603, +0.00 DPS) [crafted] |
-| off_hand | Alliance Outrunner's Sword (285346) | Thora Feathermoon [world] | 20.4 ranged_attack_power points (1.40 DPS) | yes | Vendetta (776, +0.00 DPS) [dungeon]; Satyr's Rod (15962, -1.20 DPS) [world_drop] |
+| off_hand | Alliance Outrunner's Sword (285346) | Thora Feathermoon [world] | 20.4 ranged_attack_power points (1.40 DPS) | yes | Vendetta (776, +0.00 DPS) [dungeon] |
 | ranged | Glass Shooter (9456) | Gnomeregan: Dark Iron Ambassador [dungeon] | 263.0 ranged_attack_power points (18.04 DPS) | yes | Booty Bay Bruiser's Buckshot (274748, +0.00 DPS, sim-verified) [vendor]; Silver Star (3463, -0.14 DPS) [quest]; Golemsight Long Gun (273029, -0.91 DPS) [dungeon] |
 
 **New at 30:** head: Brawler's Leather Helm; neck: Scout's Medallion; shoulder: Forest Tracker Epaulets; back: Tigerstrike Mantle; chest: Dusky Leather Armor; wrist: Hawkeye's Bracers; hands: Pilferer's Gloves; waist: Skulker's Leather Belt; legs: Petrolspill Leggings; feet: Vorrel's Boots; finger1: Ironspine's Eye; finger2: Monkey Ring; main_hand: Serrated Raptor Claw; off_hand: Alliance Outrunner's Sword; ranged: Glass Shooter
@@ -250,7 +250,7 @@ No-known-source sample (15 of 365, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 5420001505001251-0000000000000000-000000000000000000)
 
-Set DPS (verified): 185.0. Weights run: 1.2s. Verify run: 2.9s. 560 eligible items had no known source.
+Set DPS (verified): 185.0. Weights run: 1.2s. Verify run: 3.0s. 560 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.002, agility=2.803 ± 0.018, crit=0.723 ± 0.029 per rating point (14 rating = 1%, 10.121 per %), hit=1.458 ± 0.135 per rating point (10 rating = 1%, 14.580 per %), melee_haste=not significant (7.159 ± 2.067)
 
@@ -271,7 +271,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (185.0 DPS) | yes | Hellslayer Battle Axe (13017, +0.00 DPS) [world_drop]; Steel Spear (250605, +0.00 DPS) [crafted]; Gut Ripper (2164, -1.22 DPS, sim-verified) [world_drop] |
-| off_hand | Serrated Raptor Claw (280805) | Changing Tastes [quest] | 24.0 ranged_attack_power points (1.58 DPS) | yes | Blue Glittering Axe (7942, +0.00 DPS) [crafted]; Satyr's Rod (15962, -1.40 DPS) [world_drop] |
+| off_hand | Serrated Raptor Claw (280805) | Changing Tastes [quest] | 24.0 ranged_attack_power points (1.58 DPS) | yes | Blue Glittering Axe (7942, +0.00 DPS) [crafted] |
 | ranged | Bow of Searing Arrows (2825) | World drop [world_drop] | 350.0 ranged_attack_power points (23.09 DPS) | yes | Outrider's Bow (19560, -1.56 DPS) [pvp]; Swiftwind (13038, -2.17 DPS) [world_drop]; The Silencer (13138, -4.12 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: Warden's Wizard Hat; neck: Scout's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Wolffear Harness; wrist: Dusky Bracers; hands: Gauntlets of Divinity; waist: Defiler's Leather Girdle; legs: Basilisk Hide Pants; feet: Swampwalker Boots; finger1: Ring of the Underwood; finger2: Falcon's Hook; main_hand: Jhordy's Misplaced Screwdriver; off_hand: Serrated Raptor Claw; ranged: Bow of Searing Arrows
@@ -280,7 +280,7 @@ No-known-source sample (15 of 560, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 5420001505001251-0053200000000000-000000000000000000)
 
-Set DPS (verified): 229.5. Weights run: 1.2s. Verify run: 3.6s. 704 eligible items had no known source.
+Set DPS (verified): 229.5. Weights run: 1.2s. Verify run: 3.7s. 704 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.002, agility=2.767 ± 0.018, crit=0.899 ± 0.034 per rating point (14 rating = 1%, 12.581 per %), hit=1.475 ± 0.128 per rating point (10 rating = 1%, 14.746 per %), melee_haste=11.870 ± 2.100
 
@@ -301,7 +301,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Molten Heart of the Mountain (249470, -6.53 DPS, sim-verified) [crafted] |
 | trinket2 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Molten Heart of the Mountain (249470, +0.00 DPS) [crafted] |
 | main_hand | Ebon Shiv (7947) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hanzo Sword (8190, +0.00 DPS) [world_drop]; Warmonger (13052, +0.00 DPS) [world_drop]; Steel Spear (250605, +0.00 DPS) [crafted] |
-| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (229.5 DPS) | yes | White Bone Shredder (11863, -0.38 DPS) [quest]; Thermotastic Egg Timer (9644, -1.14 DPS) [quest]; Force of the Hippogryph (9684, -3.13 DPS, sim-verified) [quest] |
+| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (229.5 DPS) | yes | White Bone Shredder (11863, -0.38 DPS) [quest]; Force of the Hippogryph (9684, -3.13 DPS, sim-verified) [quest] |
 | ranged | Arcanite Blacksmith Hammer (285281) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Precisely Calibrated Boomstick (2100, -1.54 DPS) [world_drop]; Gryphonwing Long Bow (13022, -2.05 DPS) [dungeon]; Dark Iron Rifle (16004, -2.37 DPS, sim-verified) [crafted] |
 
 **New at 50:** head: Helm of Fire; neck: Skibi's Pendant; back: Dark Phantom Cape; chest: Blazewind Breastplate; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Substandard Belt Chain; feet: Albino Crocscale Boots; finger1: Masons Fraternity Ring; finger2: Ring of the Underwood; trinket1: Rune of the Guard Captain; trinket2: Frozen Heart of the Mountain; main_hand: Ebon Shiv; off_hand: Jhordy's Misplaced Screwdriver; ranged: Arcanite Blacksmith Hammer
@@ -310,7 +310,7 @@ No-known-source sample (15 of 704, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 5420001505001251-0053502001000000-400000000000000000)
 
-Set DPS (verified): 307.3. Weights run: 1.2s. Verify run: 11.8s. 1355 eligible items had no known source.
+Set DPS (verified): 307.3. Weights run: 1.2s. Verify run: 12.0s. 1355 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.002, agility=2.832 ± 0.023, crit=1.308 ± 0.048 per rating point (14 rating = 1%, 18.314 per %), hit=2.044 ± 0.181 per rating point (10 rating = 1%, 20.439 per %), melee_haste=15.922 ± 2.619
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1355, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 5420001505001251-0053502001000000-400000000000000000)
 
-Set DPS (verified): 780.9. Weights run: 1.2s. Verify run: 12.0s. 1355 eligible items had no known source.
+Set DPS (verified): 780.9. Weights run: 1.3s. Verify run: 12.2s. 1355 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.002, agility=2.875 ± 0.022, crit=1.352 ± 0.044 per rating point (14 rating = 1%, 18.933 per %), hit=3.244 ± 0.247 per rating point (10 rating = 1%, 32.442 per %), melee_haste=16.861 ± 3.307
 

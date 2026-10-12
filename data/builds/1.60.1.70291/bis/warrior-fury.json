@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T03:45:56Z",
+  "generated_at": "2026-10-12T22:59:00Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -689,30 +689,11 @@
               "source": "World drop",
               "dps_delta": -0.658854932692293,
               "verified": true
-            },
-            {
-              "item_id": 12997,
-              "item_name": "Redbeard Crest",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -13.730154240479276
-            },
-            {
-              "item_id": 6970,
-              "item_name": "Furen's Favor",
-              "source_kind": "quest",
-              "source": "The Shieldsmith",
-              "dps_delta": -14.092812554959803
             }
           ],
           "runners_up": [
             {
               "item_id": 2194,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
-              "item_id": 12997,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -799,8 +780,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.64931544,
-      "verify_run_seconds": 4.907737762,
+      "weights_run_seconds": 1.490139998,
+      "verify_run_seconds": 4.731814727,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1571,30 +1552,11 @@
               "source": "World drop",
               "dps_delta": -0.5106277049414274,
               "verified": true
-            },
-            {
-              "item_id": 12997,
-              "item_name": "Redbeard Crest",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -13.730154240479276
-            },
-            {
-              "item_id": 7120,
-              "item_name": "Ruga's Bulwark",
-              "source_kind": "quest",
-              "source": "Trial at the Field of Giants",
-              "dps_delta": -14.092812554959803
             }
           ],
           "runners_up": [
             {
               "item_id": 2194,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
-              "item_id": 12997,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -1681,8 +1643,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.64931544,
-      "verify_run_seconds": 4.843018381,
+      "weights_run_seconds": 1.490139998,
+      "verify_run_seconds": 4.598401445,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2450,13 +2412,6 @@
               "dps_delta": -6.871101481093311
             },
             {
-              "item_id": 15892,
-              "item_name": "Slayer's Shield",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -19.86809012955953
-            },
-            {
               "item_id": 9457,
               "item_name": "Royal Diplomatic Scepter",
               "source_kind": "dungeon",
@@ -2472,9 +2427,9 @@
               "source": "Gyrodrillmatic Excavationators"
             },
             {
-              "item_id": 15892,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 9457,
+              "source_kind": "dungeon",
+              "source": "Gnomeregan: Dark Iron Ambassador"
             }
           ]
         },
@@ -2559,8 +2514,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.542705895,
-      "verify_run_seconds": 2.762292612,
+      "weights_run_seconds": 1.568153683,
+      "verify_run_seconds": 2.789550755,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3314,20 +3269,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 15892,
-              "item_name": "Slayer's Shield",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -19.86809012955953
-            },
-            {
-              "item_id": 13079,
-              "item_name": "Shield of Thorsen",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -20.010882585344184
-            },
-            {
               "item_id": 9457,
               "item_name": "Royal Diplomatic Scepter",
               "source_kind": "dungeon",
@@ -3338,14 +3279,9 @@
           ],
           "runners_up": [
             {
-              "item_id": 15892,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
-              "item_id": 13079,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 9457,
+              "source_kind": "dungeon",
+              "source": "Gnomeregan: Dark Iron Ambassador"
             }
           ]
         },
@@ -3430,8 +3366,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.542705895,
-      "verify_run_seconds": 3.184154193,
+      "weights_run_seconds": 1.568153683,
+      "verify_run_seconds": 2.543157843,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4197,13 +4133,6 @@
               "dps_delta": -19.404662516095847
             },
             {
-              "item_id": 13081,
-              "item_name": "Skullance Shield",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -36.83542547014565
-            },
-            {
               "item_id": 868,
               "item_name": "Ardent Custodian",
               "source_kind": "world_drop",
@@ -4219,7 +4148,7 @@
               "source": "Gyrodrillmatic Excavationators"
             },
             {
-              "item_id": 13081,
+              "item_id": 868,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -4306,8 +4235,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.820116009,
-      "verify_run_seconds": 3.871726583,
+      "weights_run_seconds": 1.565999552,
+      "verify_run_seconds": 3.296910725,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -5067,20 +4996,6 @@
           "dps_delta": 42.26178932685366,
           "alternatives": [
             {
-              "item_id": 13081,
-              "item_name": "Skullance Shield",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -36.83542547014565
-            },
-            {
-              "item_id": 6725,
-              "item_name": "Marbled Buckler",
-              "source_kind": "quest",
-              "source": "A Vengeful Fate",
-              "dps_delta": -37.215308782902554
-            },
-            {
               "item_id": 868,
               "item_name": "Ardent Custodian",
               "source_kind": "world_drop",
@@ -5091,14 +5006,9 @@
           ],
           "runners_up": [
             {
-              "item_id": 13081,
+              "item_id": 868,
               "source_kind": "world_drop",
               "source": "World drop"
-            },
-            {
-              "item_id": 6725,
-              "source_kind": "quest",
-              "source": "A Vengeful Fate"
             }
           ]
         },
@@ -5183,8 +5093,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.820116009,
-      "verify_run_seconds": 4.7044185899999995,
+      "weights_run_seconds": 1.565999552,
+      "verify_run_seconds": 3.381798827,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -6077,8 +5987,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.933146447,
-      "verify_run_seconds": 4.283457746,
+      "weights_run_seconds": 2.308131597,
+      "verify_run_seconds": 9.867531048,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6986,8 +6896,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.933146447,
-      "verify_run_seconds": 4.213194213,
+      "weights_run_seconds": 2.308131597,
+      "verify_run_seconds": 8.280487445,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7332,7 +7242,7 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 139.59723063748243,
+          "score": 139.5972306374824,
           "verified": true,
           "alternatives": [
             {
@@ -7340,21 +7250,21 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.0702428795773973
+              "dps_delta": -0.07024287957739447
             },
             {
               "item_id": 22191,
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -2.5177458409879243
+              "dps_delta": -2.517745840987921
             },
             {
               "item_id": 231536,
               "item_name": "Field Marshal's Plate Armor",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -4.228474489535016
+              "dps_delta": -4.228474489535014
             }
           ],
           "runners_up": [
@@ -7509,7 +7419,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 174.1256218669296,
+          "score": 174.12562186692963,
           "verified": true,
           "alternatives": [
             {
@@ -7517,21 +7427,21 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.3109955557508952
+              "dps_delta": -1.310995555750898
             },
             {
               "item_id": 22385,
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.5212924631290448
+              "dps_delta": -1.5212924631290476
             },
             {
               "item_id": 231540,
               "item_name": "Marshal's Plate Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -2.707949850030542
+              "dps_delta": -2.707949850030545
             }
           ],
           "runners_up": [
@@ -7900,8 +7810,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.485009464,
-      "verify_run_seconds": 13.761352815,
+      "weights_run_seconds": 3.034270688,
+      "verify_run_seconds": 18.314954663,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -8083,7 +7993,7 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -7.845116129486527
+              "dps_delta": -7.8451161294865255
             },
             {
               "item_id": 279253,
@@ -8253,7 +8163,7 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 139.5972306374824,
+          "score": 139.59723063748243,
           "verified": true,
           "alternatives": [
             {
@@ -8261,21 +8171,21 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.07024287957739163
+              "dps_delta": -0.0702428795773973
             },
             {
               "item_id": 22191,
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -2.517745840987921
+              "dps_delta": -2.5177458409879243
             },
             {
               "item_id": 231530,
               "item_name": "Warlord's Plate Armor",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -4.228474489535014
+              "dps_delta": -4.228474489535016
             }
           ],
           "runners_up": [
@@ -8431,7 +8341,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 174.1256218669296,
+          "score": 174.12562186692963,
           "verified": true,
           "alternatives": [
             {
@@ -8439,21 +8349,21 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.3109955557508952
+              "dps_delta": -1.310995555750898
             },
             {
               "item_id": 22385,
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.5212924631290448
+              "dps_delta": -1.5212924631290476
             },
             {
               "item_id": 231533,
               "item_name": "General's Plate Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.707949850030542
+              "dps_delta": -2.707949850030545
             }
           ],
           "runners_up": [
@@ -8839,8 +8749,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.485009464,
-      "verify_run_seconds": 13.501231283,
+      "weights_run_seconds": 3.034270688,
+      "verify_run_seconds": 33.921005153,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -9015,7 +8925,7 @@
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -14.850000277991368
+              "dps_delta": -14.850000277991372
             },
             {
               "item_id": 250599,
@@ -9316,7 +9226,7 @@
           "item_name": "Belt of Preserved Heads",
           "source": "A Collection of Heads",
           "source_kind": "quest",
-          "score": 102.63410900808769,
+          "score": 102.6341090080877,
           "verified": true,
           "alternatives": [
             {
@@ -9324,21 +9234,21 @@
               "item_name": "Radiant Girdle of the Dawn",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -1.765815590015439
+              "dps_delta": -1.7658155900154422
             },
             {
               "item_id": 227805,
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -2.465161954465926
+              "dps_delta": -2.4651619544659287
             },
             {
               "item_id": 16482,
               "item_name": "Marshal's Plate Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -5.026778742583223
+              "dps_delta": -5.026778742583226
             }
           ],
           "runners_up": [
@@ -9368,7 +9278,7 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.7738031145921908
+              "dps_delta": -0.7738031145921968
             },
             {
               "item_id": 237825,
@@ -9751,8 +9661,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.587723815,
-      "verify_run_seconds": 15.950307583,
+      "weights_run_seconds": 3.890997032,
+      "verify_run_seconds": 34.472050986,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -9927,7 +9837,7 @@
               "item_name": "Champion's Plate Helm",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -14.850000277991368
+              "dps_delta": -14.850000277991372
             },
             {
               "item_id": 220803,
@@ -10118,7 +10028,7 @@
               "item_name": "Breastplate of Heroism",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -7.673481512792673
+              "dps_delta": -7.67348151279267
             },
             {
               "item_id": 22191,
@@ -10235,7 +10145,7 @@
           "item_name": "Belt of Preserved Heads",
           "source": "A Collection of Heads",
           "source_kind": "quest",
-          "score": 102.63410900808769,
+          "score": 102.6341090080877,
           "verified": true,
           "alternatives": [
             {
@@ -10251,14 +10161,14 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -2.465161954465926
+              "dps_delta": -2.4651619544659287
             },
             {
               "item_id": 16547,
               "item_name": "General's Plate Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -5.026778742583223
+              "dps_delta": -5.026778742583226
             }
           ],
           "runners_up": [
@@ -10698,8 +10608,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.587723815,
-      "verify_run_seconds": 12.999976166,
+      "weights_run_seconds": 3.890997032,
+      "verify_run_seconds": 33.429091749,
       "coverage": {
         "back": {
           "eligible": 386,

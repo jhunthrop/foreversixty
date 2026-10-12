@@ -143,10 +143,10 @@ Notes for the reader:
   two-handed main hand, and never a two-hander in the main hand while the off hand has a pick,
   unless that two-hander is the only confirmed main hand left, in which case it is taken and
   the off hand empties, as the ranker does. A promoted pick carries its `chance` only when the
-  loot data states one for it at its own source. A slot with no allowed confirmed candidate has
-  no pick, just like a slot the ranker found nothing for. The "new at <band>" ids are worked out from these final picks: a pick is new at a
-  band when it differs from the same slot's pick at the band before (every pick of a spec's
-  first band is new).
+  loot data states one for it at its own source. A slot with no allowed confirmed candidate
+  has no pick, just like a slot the ranker found nothing for. The "new at <band>" ids are
+  worked out from these final picks: a pick is new at a band when it differs from the same
+  slot's pick at the band before (every pick of a spec's first band is new).
 - `encounterNeeds` ids are spell ids for buffs and debuffs and are used only to check the raid's
   auras; the coverage list shows spell names from the client. `resist` is a school name or nil.
 

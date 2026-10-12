@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 32501000000000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 41.0. Weights run: 1.3s. Verify run: 5.7s. 191 eligible items had no known source.
+Set DPS (verified): 41.0. Weights run: 1.4s. Verify run: 4.3s. 191 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.957 ± 0.020, crit=0.551 ± 0.017 per rating point (14 rating = 1%, 7.713 per %), hit=0.714 ± 0.044 per rating point (10 rating = 1%, 7.141 per %), melee_haste=5.041 ± 0.566
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 191, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 32502110520000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 57.6. Weights run: 1.9s. Verify run: 4.2s. 347 eligible items had no known source.
+Set DPS (verified): 57.6. Weights run: 1.5s. Verify run: 4.5s. 347 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.704 ± 0.019, crit=0.656 ± 0.021 per rating point (14 rating = 1%, 9.178 per %), hit=0.803 ± 0.055 per rating point (10 rating = 1%, 8.025 per %), melee_haste=8.165 ± 0.689
 
@@ -59,7 +59,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Ironspine's Fist (7687) | Scarlet Monastery: Ironspine [dungeon] | 327.9 attack_power points (21.80 DPS) | yes | Royal Diplomatic Scepter (9457, -0.35 DPS) [dungeon]; Bloody Brass Knuckles (7683, -0.64 DPS) [dungeon]; Zealot Blade (13033, -1.19 DPS) [world_drop] |
-| off_hand | Swinetusk Shank (6691) | Razorfen Kraul: Agathelos the Raging [dungeon] | sim-verified (57.6 DPS) | yes | Royal Diplomatic Scepter (9457, -5.39 DPS, sim-verified) [dungeon]; Satyr's Rod (15962, -21.30 DPS) [world_drop] |
+| off_hand | Swinetusk Shank (6691) | Razorfen Kraul: Agathelos the Raging [dungeon] | sim-verified (57.6 DPS) | yes | Royal Diplomatic Scepter (9457, -5.39 DPS, sim-verified) [dungeon] |
 | ranged | Glass Shooter (9456) | Gnomeregan: Dark Iron Ambassador [dungeon] | 12.0 attack_power points (0.80 DPS) | yes | Golemsight Long Gun (273029, -0.12 DPS) [dungeon]; Booty Bay Bruiser's Buckshot (274748, -0.20 DPS) [vendor]; Silver Star (3463, -0.23 DPS) [quest] |
 
 **New at 30:** head: Brawler's Leather Helm; neck: Ghostshard Talisman; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Dusky Leather Armor; wrist: Hawkeye's Bracers; finger1: Ironspine's Eye; finger2: Protector's Band; main_hand: Ironspine's Fist; off_hand: Swinetusk Shank; ranged: Glass Shooter
@@ -68,7 +68,7 @@ No-known-source sample (15 of 347, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 32502110551401001-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 109.0. Weights run: 1.3s. Verify run: 2.5s. 466 eligible items had no known source.
+Set DPS (verified): 109.0. Weights run: 1.3s. Verify run: 2.6s. 466 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.545 ± 0.021, crit=0.708 ± 0.028 per rating point (14 rating = 1%, 9.919 per %), hit=1.733 ± 0.100 per rating point (10 rating = 1%, 17.326 per %), melee_haste=30.347 ± 1.252
 
@@ -89,7 +89,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Coldrage Dagger (10761, +0.00 DPS) [dungeon]; Ardent Custodian (868, -0.50 DPS) [world_drop]; Vanquisher's Sword (10823, -1.12 DPS) [quest] |
-| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (109.0 DPS) | yes | Stonecloth Branch (15963, -15.22 DPS) [world_drop]; Satyr's Rod (15962, -15.27 DPS) [world_drop]; Ardent Custodian (868, -62.89 DPS, sim-verified) [world_drop] |
+| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (109.0 DPS) | yes | Ardent Custodian (868, -62.89 DPS, sim-verified) [world_drop] |
 | ranged | The Silencer (13138) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glass Shooter (9456, -0.07 DPS) [dungeon]; Swiftwind (13038, -0.11 DPS) [world_drop]; Bow of Searing Arrows (2825, -0.52 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: White Bandit Mask; neck: Sentinel's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Wolffear Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Highlander's Leather Girdle; legs: Basilisk Hide Pants; feet: Skulker's Leather Shoes; finger1: Protector's Band; finger2: Mark of Kern; main_hand: Gut Ripper; off_hand: Jhordy's Misplaced Screwdriver; ranged: The Silencer
@@ -98,7 +98,7 @@ No-known-source sample (15 of 466, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 32502110551501001-30230100000000000-0000000000000000000)
 
-Set DPS (verified): 172.5. Weights run: 1.3s. Verify run: 2.9s. 586 eligible items had no known source.
+Set DPS (verified): 172.5. Weights run: 1.5s. Verify run: 3.0s. 586 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.573 ± 0.017, crit=0.949 ± 0.025 per rating point (14 rating = 1%, 13.289 per %), hit=2.174 ± 0.120 per rating point (10 rating = 1%, 21.745 per %), melee_haste=not significant (7.137 ± 1.787)
 
@@ -119,7 +119,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (172.5 DPS) | yes | - |
 | trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-verified (172.5 DPS) | yes | Mark of the Chosen (17774, +0.00 DPS) [quest] |
 | main_hand | Hammer of the Northern Wind (810) | World drop [world_drop] | sim-verified (172.5 DPS) | yes | Hanzo Sword (8190, -1.10 DPS, sim-verified) [world_drop]; Julie's Dagger (6660, -3.61 DPS) [world_drop]; Viking Warhammer (1721, -4.04 DPS) [world_drop] |
-| off_hand | Thorium Cestus (250614) | Blacksmithing [crafted] | 526.4 attack_power points (45.54 DPS) | yes | Julie's Dagger (6660, -3.10 DPS, sim-verified) [world_drop]; Claw of Celebras (17738, -3.83 DPS) [dungeon]; Thermotastic Egg Timer (9644, -45.13 DPS) [quest] |
+| off_hand | Thorium Cestus (250614) | Blacksmithing [crafted] | 526.4 attack_power points (45.54 DPS) | yes | Julie's Dagger (6660, -3.10 DPS, sim-verified) [world_drop]; Claw of Celebras (17738, -3.83 DPS) [dungeon] |
 | ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | sim-verified (172.5 DPS) | yes | Skull Splitting Crossbow (13039, -0.43 DPS) [world_drop]; Guttbuster (13139, -0.56 DPS) [world_drop]; Dark Iron Rifle (16004, -2.24 DPS, sim-verified) [crafted] |
 
 **New at 50:** head: Knight-Lieutenant's Leather Headband; neck: Skibi's Pendant; shoulder: Knight-Lieutenant's Leather Shoulders; back: Dark Phantom Cape; chest: Knight's Leather Armor; wrist: Deepfury Bracers; hands: Raider Gloves; waist: Skulker's Leather Waistguard; legs: Knight's Leather Pants; feet: Sandstalker Ankleguards; finger1: Protector's Band; finger2: Masons Fraternity Ring; trinket1: Frozen Heart of the Mountain; trinket2: Molten Heart of the Mountain; main_hand: Hammer of the Northern Wind; off_hand: Thorium Cestus; ranged: Precisely Calibrated Boomstick
@@ -128,7 +128,7 @@ No-known-source sample (15 of 586, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 32502110551501001-30230300000000000-5120000000000000000)
 
-Set DPS (verified): 286.8. Weights run: 1.3s. Verify run: 13.7s. 1136 eligible items had no known source.
+Set DPS (verified): 286.8. Weights run: 1.5s. Verify run: 8.6s. 1136 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.815 ± 0.027, crit=1.651 ± 0.044 per rating point (14 rating = 1%, 23.109 per %), hit=3.391 ± 0.168 per rating point (10 rating = 1%, 33.910 per %), melee_haste=not significant (7.550 ± 2.471)
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1136, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 01532310421501000-31530300001500000-0020000000000000000)
 
-Set DPS (verified): 739.1. Weights run: 1.3s. Verify run: 9.3s. 1136 eligible items had no known source.
+Set DPS (verified): 739.1. Weights run: 1.4s. Verify run: 8.4s. 1136 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.100 ± 0.002, agility=2.172 ± 0.030, crit=2.070 ± 0.049 per rating point (14 rating = 1%, 28.974 per %), hit=3.935 ± 0.237 per rating point (10 rating = 1%, 39.349 per %), melee_haste=16.578 ± 2.969
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1136, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 32501000000000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 40.8. Weights run: 1.3s. Verify run: 6.4s. 184 eligible items had no known source.
+Set DPS (verified): 40.8. Weights run: 1.4s. Verify run: 4.6s. 184 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.957 ± 0.020, crit=0.551 ± 0.017 per rating point (14 rating = 1%, 7.713 per %), hit=0.714 ± 0.044 per rating point (10 rating = 1%, 7.141 per %), melee_haste=5.041 ± 0.566
 
@@ -211,7 +211,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Diamond Hammer (2194) | World drop [world_drop] | sim-verified (40.8 DPS) | yes | Wingblade (6504, -0.03 DPS) [quest]; Blackfang (2236, -0.08 DPS) [world_drop]; Shadowfang (1482, -0.57 DPS, sim-verified) [dungeon] |
-| off_hand | Cruel Barb (5191) | The Deadmines: Edwin VanCleef [dungeon] | sim-verified (+0.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Tork Wrench (11855, -14.65 DPS) [quest] |
+| off_hand | Cruel Barb (5191) | The Deadmines: Edwin VanCleef [dungeon] | sim-verified (+0.3 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
 | ranged | Lil Timmy's Peashooter (13136) | World drop [world_drop] | 7.8 attack_power points (0.50 DPS) | yes | Fine Longbow (11304, -0.25 DPS, sim-verified) [vendor]; Deadly Blunderbuss (4369, -0.25 DPS) [crafted]; Light Bow (4576, -0.25 DPS) [world_drop] |
 
 **New at 20:** head: Brawler's Leather Hood; neck: Scout's Medallion; shoulder: Serpent's Shoulders; back: Glowing Lizardscale Cloak; chest: Blackened Defias Armor; wrist: Forest Leather Bracers; hands: Gloves of the Fang; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Blackened Defias Boots; finger1: Legionnaire's Band; finger2: Signet of the Zhevra; main_hand: Diamond Hammer; off_hand: Cruel Barb; ranged: Lil Timmy's Peashooter
@@ -220,7 +220,7 @@ No-known-source sample (15 of 184, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 32502110520000000-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 57.2. Weights run: 1.9s. Verify run: 6.0s. 337 eligible items had no known source.
+Set DPS (verified): 57.2. Weights run: 1.5s. Verify run: 4.6s. 337 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.704 ± 0.019, crit=0.656 ± 0.021 per rating point (14 rating = 1%, 9.178 per %), hit=0.803 ± 0.055 per rating point (10 rating = 1%, 8.025 per %), melee_haste=8.165 ± 0.689
 
@@ -241,7 +241,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Ironspine's Fist (7687) | Scarlet Monastery: Ironspine [dungeon] | 327.9 attack_power points (21.80 DPS) | yes | Royal Diplomatic Scepter (9457, -0.35 DPS) [dungeon]; Serrated Raptor Claw (280805, -0.50 DPS) [quest]; Bloody Brass Knuckles (7683, -0.64 DPS) [dungeon] |
-| off_hand | Swinetusk Shank (6691) | Razorfen Kraul: Agathelos the Raging [dungeon] | sim-verified (57.2 DPS) | yes | Royal Diplomatic Scepter (9457, -5.05 DPS, sim-verified) [dungeon]; Tork Wrench (11855, -21.28 DPS) [quest]; Satyr's Rod (15962, -21.30 DPS) [world_drop] |
+| off_hand | Swinetusk Shank (6691) | Razorfen Kraul: Agathelos the Raging [dungeon] | sim-verified (57.2 DPS) | yes | Royal Diplomatic Scepter (9457, -5.05 DPS, sim-verified) [dungeon] |
 | ranged | Glass Shooter (9456) | Gnomeregan: Dark Iron Ambassador [dungeon] | 12.0 attack_power points (0.80 DPS) | yes | Golemsight Long Gun (273029, -0.12 DPS) [dungeon]; Booty Bay Bruiser's Buckshot (274748, -0.20 DPS) [vendor]; Silver Star (3463, -0.23 DPS) [quest] |
 
 **New at 30:** head: Brawler's Leather Helm; neck: Ghostshard Talisman; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Dusky Leather Armor; wrist: Hawkeye's Bracers; hands: Blackened Defias Gloves; finger1: Ironspine's Eye; finger2: Legionnaire's Band; main_hand: Ironspine's Fist; off_hand: Swinetusk Shank; ranged: Glass Shooter
@@ -250,7 +250,7 @@ No-known-source sample (15 of 337, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 32502110551401001-00000000000000000-0000000000000000000)
 
-Set DPS (verified): 108.3. Weights run: 1.3s. Verify run: 2.9s. 449 eligible items had no known source.
+Set DPS (verified): 108.3. Weights run: 1.3s. Verify run: 2.7s. 449 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.545 ± 0.021, crit=0.708 ± 0.028 per rating point (14 rating = 1%, 9.919 per %), hit=1.733 ± 0.100 per rating point (10 rating = 1%, 17.326 per %), melee_haste=30.347 ± 1.252
 
@@ -271,7 +271,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Gut Ripper (2164) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Coldrage Dagger (10761, +0.00 DPS) [dungeon]; Ardent Custodian (868, -0.50 DPS) [world_drop]; Vanquisher's Sword (10823, -1.12 DPS) [quest] |
-| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (108.3 DPS) | yes | Stonecloth Branch (15963, -15.22 DPS) [world_drop]; Tork Wrench (11855, -15.25 DPS) [quest]; Ardent Custodian (868, -61.80 DPS, sim-verified) [world_drop] |
+| off_hand | Jhordy's Misplaced Screwdriver (274753) | Rettrick [vendor] | sim-verified (108.3 DPS) | yes | Ardent Custodian (868, -61.80 DPS, sim-verified) [world_drop] |
 | ranged | The Silencer (13138) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Glass Shooter (9456, -0.07 DPS) [dungeon]; Swiftwind (13038, -0.11 DPS) [world_drop]; Bow of Searing Arrows (2825, -0.52 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: White Bandit Mask; neck: Scout's Medallion; shoulder: Sunburn Spaulders; back: Dark Hooded Cape; chest: Wolffear Harness; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Defiler's Leather Girdle; legs: Basilisk Hide Pants; feet: Skulker's Leather Shoes; finger1: Legionnaire's Band; finger2: Mark of Kern; main_hand: Gut Ripper; off_hand: Jhordy's Misplaced Screwdriver; ranged: The Silencer
@@ -280,7 +280,7 @@ No-known-source sample (15 of 449, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 32502110551501001-30230100000000000-0000000000000000000)
 
-Set DPS (verified): 172.7. Weights run: 1.3s. Verify run: 2.8s. 564 eligible items had no known source.
+Set DPS (verified): 172.7. Weights run: 1.5s. Verify run: 3.0s. 564 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.573 ± 0.017, crit=0.949 ± 0.025 per rating point (14 rating = 1%, 13.289 per %), hit=2.174 ± 0.120 per rating point (10 rating = 1%, 21.745 per %), melee_haste=not significant (7.137 ± 1.787)
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 564, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 32502110551501001-30230300000000000-5120000000000000000)
 
-Set DPS (verified): 290.6. Weights run: 1.3s. Verify run: 8.3s. 1132 eligible items had no known source.
+Set DPS (verified): 290.6. Weights run: 1.5s. Verify run: 8.7s. 1132 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.000 ± 0.002, agility=1.815 ± 0.027, crit=1.651 ± 0.044 per rating point (14 rating = 1%, 23.109 per %), hit=3.391 ± 0.168 per rating point (10 rating = 1%, 33.910 per %), melee_haste=not significant (7.550 ± 2.471)
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1132, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 01532310421501000-31530300001500000-0020000000000000000)
 
-Set DPS (verified): 738.0. Weights run: 1.3s. Verify run: 8.4s. 1132 eligible items had no known source.
+Set DPS (verified): 738.0. Weights run: 1.4s. Verify run: 8.4s. 1132 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=1.100 ± 0.002, agility=2.172 ± 0.030, crit=2.070 ± 0.049 per rating point (14 rating = 1%, 28.974 per %), hit=3.935 ± 0.237 per rating point (10 rating = 1%, 39.349 per %), melee_haste=16.578 ± 2.969
 

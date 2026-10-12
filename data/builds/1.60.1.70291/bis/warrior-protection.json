@@ -2,7 +2,7 @@
   "spec": "warrior-protection",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T04:14:12Z",
+  "generated_at": "2026-10-12T23:01:36Z",
   "bands": [
     {
       "spec": "warrior-protection",
@@ -889,8 +889,8 @@
         "off_hand: Gold-plated Buckler",
         "ranged: Calibrated Blunderbuss"
       ],
-      "weights_run_seconds": 3.413455509,
-      "verify_run_seconds": 2.782588693,
+      "weights_run_seconds": 6.645509564,
+      "verify_run_seconds": 6.063587184,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1281,7 +1281,7 @@
               "item_name": "Grave Shroud",
               "source_kind": "quest",
               "source": "Unending Torment",
-              "dps_delta": -8.011741606462166
+              "dps_delta": -8.011741606462152
             },
             {
               "item_id": 5444,
@@ -1510,7 +1510,7 @@
               "item_name": "Veteran's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -39.42253746713605
+              "dps_delta": -39.42253746713599
             },
             {
               "item_id": 250497,
@@ -1864,8 +1864,8 @@
         "off_hand: Gold-plated Buckler",
         "ranged: Satchel of Copper Bombs"
       ],
-      "weights_run_seconds": 3.413455509,
-      "verify_run_seconds": 2.850292588,
+      "weights_run_seconds": 6.645509564,
+      "verify_run_seconds": 3.656142738,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2885,8 +2885,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 3.2325337,
-      "verify_run_seconds": 3.051987245,
+      "weights_run_seconds": 3.351390116,
+      "verify_run_seconds": 2.683622953,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3454,7 +3454,7 @@
           "item_name": "Sentinel's Belt",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 16.468283077225472,
+          "score": 16.46828307722547,
           "verified": true,
           "alternatives": [
             {
@@ -3462,21 +3462,21 @@
               "item_name": "Warder's Belt",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -7.511550510442769
+              "dps_delta": -7.511550510442662
             },
             {
               "item_id": 273023,
               "item_name": "Saltscale Girdle",
               "source_kind": "dungeon",
               "source": "Excavation Site: Wetlands: Saltspine",
-              "dps_delta": -129.9123500472234
+              "dps_delta": -129.9123500472233
             },
             {
               "item_id": 252460,
               "item_name": "Warden's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -132.73303242220504
+              "dps_delta": -132.73303242220493
             }
           ],
           "runners_up": [
@@ -3513,7 +3513,7 @@
               "item_name": "Guard's Chain Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -85.96596964846478
+              "dps_delta": -85.96596964846466
             },
             {
               "item_id": 250495,
@@ -3899,8 +3899,8 @@
         "off_hand: Heart of Agamaggan",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 3.2325337,
-      "verify_run_seconds": 3.025432733,
+      "weights_run_seconds": 3.351390116,
+      "verify_run_seconds": 2.683743235,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4944,8 +4944,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 3.186424526,
-      "verify_run_seconds": 3.081995433,
+      "weights_run_seconds": 2.8185658890000003,
+      "verify_run_seconds": 3.114737524,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -5987,8 +5987,8 @@
         "main_hand: Steelclaw Reaver",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 3.186424526,
-      "verify_run_seconds": 3.383160148,
+      "weights_run_seconds": 2.8185658890000003,
+      "verify_run_seconds": 3.183851594,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -7054,8 +7054,8 @@
         "off_hand: Aegis of Stormwind",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 6.211135873,
-      "verify_run_seconds": 5.899267846,
+      "weights_run_seconds": 6.171313418,
+      "verify_run_seconds": 6.091272967,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -7563,7 +7563,7 @@
               "item_name": "Berserker Bracers",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -83.7938785991024
+              "dps_delta": -83.79387859910257
             }
           ],
           "runners_up": [
@@ -7674,7 +7674,7 @@
           "item_name": "Stone Guard's Plate Leggings",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 31.612083588822994,
+          "score": 31.61208358882299,
           "verified": true,
           "alternatives": [
             {
@@ -7682,14 +7682,14 @@
               "item_name": "Searingscale Leggings",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Pyromancer Loregrain",
-              "dps_delta": -366.2315425707491
+              "dps_delta": -366.23154257074896
             },
             {
               "item_id": 252580,
               "item_name": "Supple Scorpid Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -397.03119093369185
+              "dps_delta": -397.0311909336917
             },
             {
               "item_id": 19124,
@@ -8119,8 +8119,8 @@
         "off_hand: Aegis of Stormwind",
         "ranged: Satchel of Iron Bombs"
       ],
-      "weights_run_seconds": 6.211135873,
-      "verify_run_seconds": 5.695462255,
+      "weights_run_seconds": 6.171313418,
+      "verify_run_seconds": 5.761893547,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -8388,7 +8388,7 @@
               "item_name": "Lieutenant Commander's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -290.562220675811
+              "dps_delta": -290.5622206758096
             },
             {
               "item_id": 12620,
@@ -8596,7 +8596,7 @@
           "item_name": "Wristguards of Heroism",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 34.84647460905442,
+          "score": 34.846474609054425,
           "verified": true,
           "alternatives": [
             {
@@ -8611,7 +8611,7 @@
               "item_name": "Sentinel's Wristguards",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -363.63287314141587
+              "dps_delta": -363.63287314141655
             },
             {
               "item_id": 19578,
@@ -8641,7 +8641,7 @@
           "item_name": "Handguards of Heroism",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 54.788734609634645,
+          "score": 54.78873460963465,
           "verified": true,
           "alternatives": [
             {
@@ -8664,7 +8664,7 @@
               "item_name": "Stronghold Gauntlets",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -575.504526228209
+              "dps_delta": -575.5045262282097
             }
           ],
           "runners_up": [
@@ -8775,7 +8775,7 @@
           "item_name": "Boots of Avoidance",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 59.02716586400388,
+          "score": 59.027165864003884,
           "verified": true,
           "alternatives": [
             {
@@ -9170,8 +9170,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrunner's Bow"
       ],
-      "weights_run_seconds": 2.809896394,
-      "verify_run_seconds": 13.341472173,
+      "weights_run_seconds": 2.910678634,
+      "verify_run_seconds": 13.200316378,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -9477,7 +9477,7 @@
               "item_name": "Strength of Mugamba",
               "source_kind": "quest",
               "source": "Strength of Mount Mugamba",
-              "dps_delta": -145.1274554839234
+              "dps_delta": -145.12745548392306
             },
             {
               "item_id": 19491,
@@ -9691,7 +9691,7 @@
           "item_name": "Handguards of Heroism",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 54.788734609634645,
+          "score": 54.78873460963465,
           "verified": true,
           "alternatives": [
             {
@@ -9706,14 +9706,14 @@
               "item_name": "Heavy Thorium Gauntlets",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -494.3269804415434
+              "dps_delta": -494.3269804415441
             },
             {
               "item_id": 12639,
               "item_name": "Stronghold Gauntlets",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -575.504526228209
+              "dps_delta": -575.5045262282097
             }
           ],
           "runners_up": [
@@ -9824,7 +9824,7 @@
           "item_name": "Boots of Avoidance",
           "source": "World drop",
           "source_kind": "world_drop",
-          "score": 59.02716586400388,
+          "score": 59.027165864003884,
           "verified": true,
           "alternatives": [
             {
@@ -10218,8 +10218,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrider's Bow"
       ],
-      "weights_run_seconds": 2.809896394,
-      "verify_run_seconds": 12.950186883,
+      "weights_run_seconds": 2.910678634,
+      "verify_run_seconds": 12.653512531,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10525,7 +10525,7 @@
               "item_name": "Strength of Mugamba",
               "source_kind": "quest",
               "source": "Strength of Mount Mugamba",
-              "dps_delta": -244.42979735506802
+              "dps_delta": -244.42979735506717
             },
             {
               "item_id": 19491,
@@ -10650,7 +10650,7 @@
           "item_name": "Chestguard of Heroism",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 107.77754586861442,
+          "score": 107.77754586861441,
           "verified": true,
           "alternatives": [
             {
@@ -10673,7 +10673,7 @@
               "item_name": "Enchanted Thorium Breastplate",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -2216.252749961348
+              "dps_delta": -2216.252749961346
             }
           ],
           "runners_up": [
@@ -10830,7 +10830,7 @@
           "item_name": "Legguards of Heroism",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 98.3980998528309,
+          "score": 98.39809985283091,
           "verified": true,
           "alternatives": [
             {
@@ -10838,21 +10838,21 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.187863330788831
+              "dps_delta": -2.187863330790521
             },
             {
               "item_id": 237825,
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -60.70494196489319
+              "dps_delta": -60.70494196489488
             },
             {
               "item_id": 231540,
               "item_name": "Marshal's Plate Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -302.986155108529
+              "dps_delta": -302.9861551085307
             }
           ],
           "runners_up": [
@@ -10919,7 +10919,7 @@
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "Anachronos",
           "source_kind": "vendor",
-          "score": 41.498342886602224,
+          "score": 41.49834288660222,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -10928,21 +10928,21 @@
               "item_name": "Band of Resolution",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1571.586680237744
+              "dps_delta": -1571.5866802377432
             },
             {
               "item_id": 272408,
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -1903.9862151462712
+              "dps_delta": -1903.9862151462703
             },
             {
               "item_id": 19514,
               "item_name": "Protector's Band",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -2389.4734938561637
+              "dps_delta": -2389.473493856163
             }
           ],
           "runners_up": [
@@ -11268,8 +11268,8 @@
         "off_hand: The Immovable Object",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.39970973,
-      "verify_run_seconds": 12.490897649,
+      "weights_run_seconds": 3.019910274,
+      "verify_run_seconds": 13.039224417,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -11574,7 +11574,7 @@
               "item_name": "Strength of Mugamba",
               "source_kind": "quest",
               "source": "Strength of Mount Mugamba",
-              "dps_delta": -244.42979735506802
+              "dps_delta": -244.42979735506717
             },
             {
               "item_id": 19491,
@@ -11699,7 +11699,7 @@
           "item_name": "Chestguard of Heroism",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 107.77754586861442,
+          "score": 107.77754586861441,
           "verified": true,
           "alternatives": [
             {
@@ -11722,7 +11722,7 @@
               "item_name": "Enchanted Thorium Breastplate",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -2216.252749961348
+              "dps_delta": -2216.252749961346
             }
           ],
           "runners_up": [
@@ -12311,8 +12311,8 @@
         "off_hand: The Immovable Object",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.39970973,
-      "verify_run_seconds": 13.07483763,
+      "weights_run_seconds": 3.019910274,
+      "verify_run_seconds": 17.220902151,
       "coverage": {
         "back": {
           "eligible": 386,
