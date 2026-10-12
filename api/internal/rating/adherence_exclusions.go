@@ -103,7 +103,7 @@ var adherenceExclusions = []adherenceExclusion{
 			"Mark of the Wild", "Gift of the Wild", "Amplify Magic", "Dampen Magic", "Revive Pet", "Mend Pet",
 			"Eyes of the Beast", "Disarm Trap"},
 		prefixes: []string{"Blessing of ", "Greater Blessing of ", "Conjure ", "Create ", "Ritual of ",
-			"Summon ", "Track ", "Find "},
+			"Summon ", "Track "},
 	},
 }
 

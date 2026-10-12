@@ -164,6 +164,8 @@ func TestEveryLoggedClassicSpecResolvesToADataSpec(t *testing.T) {
 
 var (
 	repoGearOnce sync.Once
+	// repoGearData is the repository's data/builds as useRepoGearData loaded it.
+	repoGearData *trees.Data
 	repoGearErr  error
 )
 
@@ -173,9 +175,8 @@ func useRepoGearData(t *testing.T) {
 	t.Helper()
 	const dir = "../../../data/builds"
 	repoGearOnce.Do(func() {
-		var data *trees.Data
-		if data, repoGearErr = trees.Load(dir); repoGearErr == nil {
-			sims.SetGearData(data, dir)
+		if repoGearData, repoGearErr = trees.Load(dir); repoGearErr == nil {
+			sims.SetGearData(repoGearData, dir)
 		}
 	})
 	if repoGearErr != nil {

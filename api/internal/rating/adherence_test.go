@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -277,11 +278,20 @@ func TestAdherenceExcludesManaShieldAndTranquilizingShot(t *testing.T) {
 	}
 }
 
-// Every curated exact name is a class family in the newest data build: a name that is no
-// class's family can never match (its casts are no class spell, which the item rule already
-// sets aside), so it would only be dead weight in the list.
+// Every curated exact name is a class family in the newest data build (trees.Latest, the
+// build sims.RotationFor reads when the rater asks for build ""), and every prefix and suffix
+// matches at least one: an entry that is no class's family could never match anything (its
+// casts are no class spell, which the item rule already sets aside), so it would only be dead
+// weight in the list. The list must not be empty either.
 func TestEveryCuratedExclusionNameIsAClassFamily(t *testing.T) {
-	body, err := os.ReadFile(filepath.Join("..", "..", "..", "data", "builds", "1.60.1.70291", "spellranks.json"))
+	const minNames = 30
+	useRepoGearData(t)
+	latest, ok := repoGearData.Latest()
+	if !ok {
+		t.Fatal("no data build loaded")
+	}
+	build := latest.Version
+	body, err := os.ReadFile(filepath.Join("..", "..", "..", "data", "builds", build, "spellranks.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -297,11 +307,34 @@ func TestEveryCuratedExclusionNameIsAClassFamily(t *testing.T) {
 			families[name] = true
 		}
 	}
-	for _, e := range adherenceExclusions {
-		for _, n := range e.names {
-			if !families[n] {
-				t.Errorf("%s: %q is no class family in 1.60.1.70291", e.category, n)
+	matchesSome := func(match func(family string) bool) bool {
+		for f := range families {
+			if match(f) {
+				return true
 			}
 		}
+		return false
+	}
+	checked := 0
+	for _, e := range adherenceExclusions {
+		for _, n := range e.names {
+			checked++
+			if !families[n] {
+				t.Errorf("%s: %q is no class family in %s", e.category, n, build)
+			}
+		}
+		for _, p := range e.prefixes {
+			if !matchesSome(func(f string) bool { return strings.HasPrefix(f, p) }) {
+				t.Errorf("%s: prefix %q matches no class family in %s", e.category, p, build)
+			}
+		}
+		for _, s := range e.suffixes {
+			if !matchesSome(func(f string) bool { return strings.HasSuffix(f, s) }) {
+				t.Errorf("%s: suffix %q matches no class family in %s", e.category, s, build)
+			}
+		}
+	}
+	if checked < minNames {
+		t.Errorf("checked %d curated names in %s, want at least %d", checked, build, minNames)
 	}
 }
