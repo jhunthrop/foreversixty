@@ -70,6 +70,7 @@ function Widgets.button(parent, text, onClick)
 	button:SetSize(Theme.SIZES.buttonWidth, Theme.SIZES.buttonHeight)
 	local background = Theme.texture(button, "BACKGROUND", "raised")
 	background:SetAllPoints(button)
+	button.foreverSixtyGround = background
 	Theme.outline(button, Theme.SIZES.border, "border")
 	local label = Widgets.label(button, "", "gold", "small")
 	label:SetPoint("CENTER", button, "CENTER", 0, 0)

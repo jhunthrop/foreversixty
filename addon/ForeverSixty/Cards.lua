@@ -90,6 +90,7 @@ function Cards.primaryButton(parent, text, onClick)
 	button:SetSize(Theme.SIZES.buttonWidth, Theme.SIZES.buttonHeight + Theme.SIZES.gap)
 	local background = Theme.texture(button, "BACKGROUND", "gold")
 	background:SetAllPoints(button)
+	button.foreverSixtyGround = background
 	local label = Widgets.label(button, text, "onGold", "small")
 	label:SetPoint("CENTER", button, "CENTER", 0, 0)
 	button.foreverSixtyLabel = label

@@ -812,13 +812,12 @@ L.dialogSplitSeparator = " / "
 L.dialogGearHeading = "Gear in this build"
 L.dialogGearAt = "%s · at %d"
 L.dialogGearHeadingTip = "The first three items the code plans."
--- Above "Use this build", muted: what it replaces and where the two orders first differ, and
--- the next talent the candidate gives (" · same as now" when the followed build's is the same).
+-- Above "Use this build", muted: what it replaces and where the two orders first differ (or
+-- "same point order"), and the next talent the candidate gives, alone.
 L.dialogReplaces = "Replaces %s"
 L.dialogReplacesSame = "Replaces %s · same point order"
 L.dialogReplacesDiffers = "Replaces %s · first differs at point %d: %s"
 L.dialogNextWould = "Next talent would be: %s"
-L.dialogNextWouldSame = "Next talent would be: %s · same as now"
 -- A refusal's last line, muted.
 L.dialogStillFollowing = "You are still following %s."
 -- One chat line after a build is used: "Now following Arms raid. Next: Deflection (1 of 2)."
@@ -845,7 +844,9 @@ L.dialogNoCompanion = "No companion found."
 L.dialogCompanionWhat = "The companion is a small app on your computer that sends this when you log out."
 L.dialogPasteAtSite = "Or paste it on the site at %s."
 -- The ack's sim request state (contract 3, `sim_request_state`); any other value shows nothing.
-L.dialogSimQueuedFor = "Sim queued for the %s copy. The result arrives when you next log in."
+-- "Sim queued for the 14:03 copy." today and "for the 9 Oct 20:00 copy." before yesterday.
+L.dialogSimQueuedFor = "Sim queued for the %s copy."
+L.dialogSimQueuedYesterday = "Sim queued for yesterday's %s copy."
 L.dialogSimQueued = "Sim queued. The result arrives when you next log in."
 L.dialogSimState = {
 	needs_premium = "Sim needs a premium account",

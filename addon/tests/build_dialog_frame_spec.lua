@@ -201,3 +201,146 @@ describe("BuildDialog, a second paste replaces the first (fix 3, 13)", function(
 		assert.is_true(highlighted())
 	end)
 end)
+
+describe("BuildDialog, round 4 frame checks", function()
+	local state, BuildDialog, Theme, export
+
+	local function rgbOf(texture)
+		local call = mock.lastCall(texture, "SetColorTexture")
+		return call and { call[1], call[2], call[3] } or nil
+	end
+
+	local function rgb(key)
+		local r, g, b = Theme.rgb(Theme.HEX[key])
+		return { r, g, b }
+	end
+
+	before_each(function()
+		state = mock.install({
+			class = { name = "Warrior", token = "WARRIOR" }, race = { name = "Human", token = "Human" },
+			realm = "Ashbringer", region = 1, playerName = "Bob",
+			talents = { { name = "Arms", talents = {} }, { name = "Fury", talents = {} },
+				{ name = "Protection", talents = {} } },
+		})
+		Theme = require("Theme")
+		Theme.reset()
+		_G.ForeverSixtyDB = {}
+		_G.ForeverSixtyInbox = nil
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Cards")
+		helper.load("Export")
+		helper.load("Follow")
+		helper.load("Chip")
+		BuildDialog = helper.load("BuildDialog")
+		BuildDialog.data = DATA
+		export = require("Export").string(DATA)
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("paints Use this build's hover and pressed fills, and drops its label a pixel (fix 4, 2 and 8)", function()
+		local button = require("Cards").primaryButton(_G.UIParent, "Use", function() end)
+		local ground, label = button.foreverSixtyGround, button.foreverSixtyLabel
+		button:GetScript("OnEnter")(button)
+		assert.are.same(rgb("goldHover"), rgbOf(ground))
+		local rest = mock.lastCall(label, "SetPoint")
+		button:GetScript("OnMouseDown")(button)
+		assert.are.same(rgb("goldPressed"), rgbOf(ground))
+		local down = mock.lastCall(label, "SetPoint")
+		assert.are.equal((rest[5] or 0) - Theme.PRESSED_LABEL_DROP, down[5])
+		button:GetScript("OnMouseUp")(button)
+		assert.are.same(rgb("gold"), rgbOf(ground))
+		assert.are.equal(rest[5] or 0, mock.lastCall(label, "SetPoint")[5])
+	end)
+
+	it("does not repaint a control disabled while held, and puts its label back when it hides (fix 4, 9)", function()
+		local button = require("Widgets").button(_G.UIParent, "Equip", function() end)
+		local label = button.foreverSixtyLabel
+		local rest = mock.lastCall(label, "SetPoint")
+		button:GetScript("OnMouseDown")(button)
+		require("Widgets").setEnabled(button, false)
+		button:GetScript("OnMouseUp")(button)
+		assert.are.same(rgb("inset"), rgbOf(button.foreverSixtyGround))
+		require("Widgets").setEnabled(button, true)
+		button:GetScript("OnMouseDown")(button)
+		button:GetScript("OnHide")(button)
+		assert.are.equal(rest[5] or 0, mock.lastCall(label, "SetPoint")[5])
+	end)
+
+	it("shows Enter to use on the preview only (fix 4, 5)", function()
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+		local box = BuildDialog.paste.box
+		box:SetText("FSB1:1.60.1.70291:warrior:111:")
+		box:GetScript("OnTextChanged")(box, true)
+		assert.is_true(BuildDialog.enterHint:IsShown())
+		box:GetScript("OnTabPressed")(box)
+		assert.is_false(BuildDialog.enterHint:IsShown())
+		BuildDialog.close()
+		BuildDialog.open("copy")
+		assert.is_false(BuildDialog.enterHint:IsShown())
+		BuildDialog.open("paste")
+		assert.is_false(BuildDialog.enterHint:IsShown())
+	end)
+
+	it("draws the collapsed code muted, over a selection it never shows (fix 4, 7)", function()
+		BuildDialog.open("paste")
+		local box = BuildDialog.paste.box
+		box:SetText("FSB1:1.60.1.70291:warrior:111:")
+		box:GetScript("OnTextChanged")(box, true)
+		local color = mock.lastCall(BuildDialog.paste.display, "SetTextColor")
+		assert.are.same(rgb("muted"), { color[1], color[2], color[3] })
+		assert.are.equal(0, mock.lastCall(box, "SetHighlightColor")[4])
+		assert.are.equal("HighlightText", (function()
+			local last
+			for _, call in ipairs(box.calls) do
+				if call.method == "HighlightText" or call.method == "SetText" then
+					last = call.method
+				end
+			end
+			return last
+		end)())
+	end)
+
+	it("keeps the export box selected under a readable label: no highlight drawn, the label is the export (fix 4, 1)",
+		function()
+			BuildDialog.open("copy")
+			mock.runTimers(state)
+			local copy = BuildDialog.copyTab
+			assert.is_true(BuildDialog.selected)
+			assert.are.equal(0, mock.lastCall(copy.box, "SetHighlightColor")[4])
+			assert.are.equal(export, copy.display:GetText())
+			assert.are.equal(export, copy.box:GetText())
+			assert.is_true(copy.selection:IsShown())
+			local color = mock.lastCall(copy.display, "SetTextColor")
+			assert.are.same(rgb("muted"), { color[1], color[2], color[3] })
+		end)
+
+	it("is exact after a Tab switch, before any deferred select runs (fix 4, 7)", function()
+		BuildDialog.open("copy")
+		mock.runTimers(state)
+		BuildDialog.setMode("paste")
+		BuildDialog.setMode("copy")
+		assert.are.equal(export, BuildDialog.copyTab.box:GetText())
+		assert.are.equal(export, BuildDialog.copyTab.display:GetText())
+	end)
+
+	it("scrolls the export with the wheel past the cap, with the thumb shown (fix 4, 7)", function()
+		BuildDialog.open("copy")
+		mock.runTimers(state)
+		local copy = BuildDialog.copyTab
+		copy.display.GetStringHeight = function()
+			return 40 * 14
+		end
+		BuildDialog.drawCopy(true)
+		assert.is_true(copy.lines.scroll)
+		assert.is_true(copy.bar.thumb:IsShown())
+		copy.clip:GetScript("OnMouseWheel")(copy.clip, -1)
+		assert.are.equal(1, BuildDialog.copyOffset)
+		assert.is_true(mock.lastCall(copy.display, "SetPoint")[5] > 0)
+	end)
+end)
+

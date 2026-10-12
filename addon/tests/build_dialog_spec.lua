@@ -281,18 +281,19 @@ describe("BuildDialog, paste mode's model", function()
 		assert.is_nil(BuildDialog.dialogTalent(nil, {}, DATA, 21))
 	end)
 
-	it("says the next talent is the same as now, and the two orders match (fix 3, 4)", function()
+	it("says the two orders match on the Replaces line, and the Next line is the talent alone (fix 4, 3)", function()
 		local context = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("DDI"), {}, DATA, 21)
 		assert.are.equal(string.format(L.dialogReplacesSame, "Arms raid"), context.replaces)
-		assert.are.equal("Next talent would be: Take Deflection (Arms, 1 of 2) · same as now", context.nextWould)
+		assert.are.equal("Next talent would be: Take Deflection (Arms, 1 of 2)", context.nextWould)
 	end)
 
 	it("says where the two orders first differ, by point and talent", function()
 		local same = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("DID"), {}, DATA, 21)
 		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 2, "Improved Heroic Strike (Arms)"),
 			same.replaces)
-		assert.are.equal(string.format(L.dialogNextWouldSame, string.format(L.chipTake, "Deflection (Arms, 1 of 2)")),
+		assert.are.equal(string.format(L.dialogNextWould, string.format(L.chipTake, "Deflection (Arms, 1 of 2)")),
 			same.nextWould)
+		assert.is_nil(L.dialogNextWouldSame)
 		local other = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("IDD"), {}, DATA, 21)
 		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 1, "Improved Heroic Strike (Arms)"),
 			other.replaces)
@@ -374,8 +375,28 @@ describe("BuildDialog, paste mode's model", function()
 			assert.are.equal(3 * S.rowHeight, parts.gearRows)
 			assert.is_true(parts.hintClearance >= 10)
 			assert.are.equal(8, parts.aboveReplaces)
+			-- Fix 4, 9: the gaps the frame draws (S.gap / 2 between the header's lines).
+			assert.are.equal(math.max(S.dialogClassIcon, line * 3 + S.gap) + BuildDialog.LAYOUT.previewGap, parts.header)
+			assert.are.equal(line * 2 + S.gap / 2, parts.context)
 		end
 		assert.are.equal(20, BuildDialog.GEAR_PITCH)
+	end)
+
+	it("fits the Replaces line in the content width by cutting the build name, never the talent (fix 4, 6)", function()
+		-- About 5 px a letter at 12 px, counted in letters (the "·" and "…" are several bytes).
+		local measure = function(text)
+			return utf8.len(text) * 5
+		end
+		local width = 388
+		local long = ordered("DDI", "A very long build name the site sent for this character")
+		local context = BuildDialog.previewContext(long, ordered("IDD"), {}, DATA, 21, measure, width)
+		assert.is_true(measure(context.replaces) <= width, context.replaces)
+		assert.is_truthy(context.replaces:find("Improved Heroic Strike (Arms)", 1, true))
+		assert.is_truthy(context.replaces:find(L.ellipsis, 1, true))
+		assert.is_true(measure(context.nextWould) <= width)
+		local short = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("IDD"), {}, DATA, 21, measure, width)
+		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 1, "Improved Heroic Strike (Arms)"),
+			short.replaces)
 	end)
 
 	it("lays a gear row out slot first: a 72 px slot column, the icon, then the name (fix 2, 11)", function()
@@ -491,6 +512,8 @@ describe("BuildDialog, copy mode's model", function()
 		assert.are.equal(2, BuildDialog.leadLines({ 300, 400 }, 388))
 		assert.are.equal(2, BuildDialog.leadLines({ 400, 300 }, 388))
 		assert.are.equal(1, BuildDialog.leadLines({ nil, nil }, 388))
+		-- Fix 4, 9: a no-export reason in the lead counts too.
+		assert.are.equal(2, BuildDialog.leadLines({ 300, 320, 500 }, 388))
 	end)
 
 	it("says the site has an older character when the save is newer than the ack", function()
@@ -514,10 +537,12 @@ describe("BuildDialog, copy mode's model", function()
 
 	it("words the sim request state, with the time it was queued", function()
 		local queued = { export_seen_at = ACK.export_seen_at, sim_request_state = "queued" }
-		-- Fix 3, 5: the sim belongs to the copy the site saw (the ack's export time).
-		assert.are.equal(string.format(L.dialogSimQueuedFor, "14:03"), model({ ack = queued }).sim)
-		assert.are.equal("Sim queued for the 14:03 copy. The result arrives when you next log in.",
-			model({ ack = queued }).sim)
+		-- Fix 4, 4: the sim belongs to the copy the site saw (the ack's export time), worded by day.
+		assert.are.equal("Sim queued for the 14:03 copy.", model({ ack = queued }).sim)
+		local yesterday = { export_seen_at = "2026-11-03T20:00:00Z", sim_request_state = "queued" }
+		assert.are.equal("Sim queued for yesterday's 20:00 copy.", model({ ack = yesterday }).sim)
+		local older = { export_seen_at = "2026-10-09T20:00:00Z", sim_request_state = "queued" }
+		assert.are.equal("Sim queued for the 9 Oct 20:00 copy.", model({ ack = older }).sim)
 		assert.are.equal(L.dialogSimQueued, model({ ack = { sim_request_state = "queued" } }).sim)
 		for _, state in ipairs({ "needs_premium", "duplicate", "invalid" }) do
 			assert.are.equal(L.dialogSimState[state],

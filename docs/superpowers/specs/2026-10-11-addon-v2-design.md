@@ -238,9 +238,9 @@ A good code collapses to one muted line ending in "…" (still selected, so a se
 replaces it) over the preview: class icon, name, "Warrior · Arms 33 / Fury 16 / Protection 2 · 51
 points", "You can place 12 now." while points wait, "Gear in this build · at 60" with three rows
 (slot, icon, name in its quality colour), then "Replaces Arms raid · first differs at point 7:
-Cruelty (Fury)" (or "· same point order") and "Next talent would be: Take Deflection (Arms, 1 of 2)"
-(" · same as now" when unchanged), and one gold button "Use this build" (Enter works; "Enter to use"
-shows dim at the bottom right). Use follows the build, closes the dialog and prints "Now following
+Cruelty (Fury)" (or "· same point order"; a long build name is shortened, never the talent) and
+"Next talent would be: Take Deflection (Arms, 1 of 2)", and one gold button "Use this build" (Enter
+works; "Enter to use" shows dim at the bottom right while a preview shows). Use follows the build, closes the dialog and prints "Now following
 Arms raid. Next: Deflection (1 of 2).". A bad code is an error: the codec's first sentence in red,
 its advice in body colour under it ("Copy the whole code from foreversixty.gg, it starts with
 FSB1."; "Pick a Warrior build on foreversixty.gg."; "Update the addon, then paste it again."), a
@@ -255,8 +255,9 @@ green and until the dialog closes, "You copied 14:02. Now paste it on foreversix
 client cannot write the clipboard, so the addon claims only what the player did). With the
 companion, its ack reads "Seen by the site 14:03" when it is at or after the last save, "The site
 has your character from yesterday 22:30. Yours has changed since." when older, and "Waiting for
-the site to see this copy." after a copy until a newer ack arrives; a queued sim reads "Sim queued
-for the 22:30 copy. The result arrives when you next log in.". With no ack ever seen: "No companion
+the site to see this copy." after a copy until a newer ack arrives; a queued sim names the copy it
+is for: "Sim queued for the 14:03 copy." today, "Sim queued for yesterday's 20:00 copy.", "Sim
+queued for the 9 Oct 20:00 copy.". With no ack ever seen: "No companion
 found. The companion is a small app on your computer that sends this when you log out." and "Or
 paste it on the site at foreversixty.gg.". The addon never claims an upload it cannot see.
 

@@ -500,14 +500,29 @@ function Theme.pressable(control, label, onPress, onRelease)
 		end
 		onPress(self)
 	end)
-	control:SetScript("OnMouseUp", function(self)
+	local function settle()
 		if resting ~= nil and resting[1] ~= nil then
 			label:ClearAllPoints()
 			label:SetPoint(resting[1], resting[2], resting[3], resting[4] or 0, resting[5] or 0)
 		end
 		resting = nil
+	end
+	control:SetScript("OnMouseUp", function(self)
+		settle()
+		if type(self.IsEnabled) == "function" and not self:IsEnabled() then
+			-- Turned off while held (combat, say): its disabled look stands.
+			return
+		end
 		local over = type(self.IsMouseOver) == "function" and self:IsMouseOver() == true
 		onRelease(self, over)
+	end)
+	-- Hidden while held, the label never stays a pixel low.
+	local hidden = control:GetScript("OnHide")
+	control:SetScript("OnHide", function(...)
+		settle()
+		if hidden ~= nil then
+			hidden(...)
+		end
 	end)
 	return control
 end

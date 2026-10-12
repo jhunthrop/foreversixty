@@ -50,7 +50,7 @@ BuildDialog.BREAK = "\226\128\139"
 --- The vertical spacing the preview is laid out with (BuildDialog.previewLayout).
 BuildDialog.LAYOUT = {
 	tabGap = 2, codeGap = 4, lineGap = 1, previewGap = 4, aboveReplaces = 8, buttonGap = 6,
-	hintClearance = 10, hintMargin = 3,
+	hintClearance = 10, hintMargin = 2,
 }
 
 --- Injection points Options fills: the data to read, what to redraw after a build is
@@ -300,25 +300,43 @@ end
 --- orders compare ("Replaces Arms raid · same point order", or "· first differs at point 7:
 --- Cruelty (Fury)"); absent with nothing followed. `nextWould`: the next talent the candidate
 --- gives on this character now, " · same as now" when the followed build's is the same cell.
-function BuildDialog.previewContext(followed, candidate, ranks, data, level)
+--- `format` with the build name `name` cut (with an ellipsis) until the line fits `width` as
+--- `measure` measures it; the rest of the line is never cut. Without a measure, whole.
+local function fitName(name, measure, width, format, ...)
+	local line = string.format(format, name, ...)
+	if measure == nil or width == nil then
+		return line
+	end
+	local body = name
+	while (measure(line) or 0) > width and #body > 1 do
+		body = cut(body, #body - 1)
+		line = string.format(format, (body:gsub("%s+$", "")) .. L.ellipsis, ...)
+	end
+	return line
+end
+
+--- The muted lines above "Use this build". `replaces`: what Use replaces and how the two
+--- orders compare ("Replaces Arms raid · same point order", or "· first differs at point 7:
+--- Cruelty (Fury)"), fitted to `width` by cutting the build name, never the talent; absent
+--- with nothing followed. `nextWould`: the next talent the candidate gives on this character
+--- now, alone (the Replaces line already says whether the orders match).
+function BuildDialog.previewContext(followed, candidate, ranks, data, level, measure, width)
 	local context = {}
 	if followed ~= nil and candidate ~= nil then
 		local name = escaped(Follow.buildName(data, followed))
 		local at = BuildDialog.firstDifference(followed.order, candidate.order)
 		if at == nil then
-			context.replaces = string.format(L.dialogReplacesSame, name)
+			context.replaces = fitName(name, measure, width, L.dialogReplacesSame)
 		else
 			local cell = candidate.order[at] or followed.order[at]
 			local owner = candidate.order[at] ~= nil and candidate or followed
-			context.replaces = string.format(L.dialogReplacesDiffers, name, at, talentWithTree(owner, data, cell))
+			context.replaces = fitName(name, measure, width, L.dialogReplacesDiffers, at,
+				talentWithTree(owner, data, cell))
 		end
 	end
-	local label, point = BuildDialog.dialogTalent(candidate, ranks, data, level)
+	local label = BuildDialog.dialogTalent(candidate, ranks, data, level)
 	if label ~= nil then
-		local _, now = BuildDialog.dialogTalent(followed, ranks, data, level)
-		local same = now ~= nil and now.tab == point.tab and now.tier == point.tier and now.column == point.column
-		context.nextWould = string.format(same and L.dialogNextWouldSame or L.dialogNextWould,
-			string.format(L.chipTake, label))
+		context.nextWould = string.format(L.dialogNextWould, string.format(L.chipTake, label))
 	end
 	return context
 end
@@ -333,11 +351,11 @@ function BuildDialog.previewLayout(line)
 	local parts = {
 		top = S.titleBarHeight + S.tabHeight + G.tabGap,
 		code = math.max(S.rowHeight, line + S.gap * 2) + G.codeGap,
-		header = math.max(S.dialogClassIcon, line * 3 + G.lineGap * 2) + G.previewGap,
+		header = math.max(S.dialogClassIcon, line * 3 + S.gap / 2 * 2) + G.previewGap,
 		gearHeading = S.dialogGearRow,
 		gearRows = BuildDialog.GEAR_PICKS * BuildDialog.GEAR_PITCH,
 		aboveReplaces = G.aboveReplaces,
-		context = line * 2 + G.lineGap,
+		context = line * 2 + S.gap / 2,
 		buttonGap = G.buttonGap,
 		button = S.buttonHeight + S.gap,
 		hintClearance = G.hintClearance,
@@ -526,18 +544,30 @@ local function hhmm(fields)
 	return string.format("%02d:%02d", fields.hour, fields.min)
 end
 
---- When `seconds` was, in local time: "14:02" today, "yesterday 14:02", else "2 Nov 14:02".
-function BuildDialog.when(seconds, clock)
+--- Which day `seconds` was, in local time ("today", "yesterday" or "date"), its "14:02", and
+--- "2 Nov 14:02" for a date.
+local function whenParts(seconds, clock)
 	local at, today = clock.fields(seconds), clock.fields(clock.now)
 	local dayAt = BuildDialog.civilSeconds(at.year, at.month, at.day, 0, 0, 0)
 	local dayToday = BuildDialog.civilSeconds(today.year, today.month, today.day, 0, 0, 0)
 	if dayAt == dayToday then
-		return hhmm(at)
+		return "today", hhmm(at)
 	elseif dayToday - dayAt == 86400 then
-		return string.format(L.dialogYesterday, hhmm(at))
+		return "yesterday", hhmm(at)
 	end
 	local shortDate = Compat.shortDate(string.format("%04d-%02d-%02d", at.year, at.month, at.day)) or ""
-	return string.format(L.dialogOnDate, shortDate, hhmm(at))
+	return "date", hhmm(at), string.format(L.dialogOnDate, shortDate, hhmm(at))
+end
+
+--- When `seconds` was, in local time: "14:02" today, "yesterday 14:02", else "2 Nov 14:02".
+function BuildDialog.when(seconds, clock)
+	local kind, time, dated = whenParts(seconds, clock)
+	if kind == "today" then
+		return time
+	elseif kind == "yesterday" then
+		return string.format(L.dialogYesterday, time)
+	end
+	return dated
 end
 
 -- Pure rules: copy mode ------------------------------------------------------------------
@@ -579,7 +609,11 @@ local function simLine(ack, clock)
 	if state == "queued" then
 		local seen = BuildDialog.parseUtc(ack.export_seen_at)
 		if seen ~= nil then
-			return string.format(L.dialogSimQueuedFor, BuildDialog.when(seen, clock))
+			local kind, time, dated = whenParts(seen, clock)
+			if kind == "yesterday" then
+				return string.format(L.dialogSimQueuedYesterday, time)
+			end
+			return string.format(L.dialogSimQueuedFor, dated or time)
 		end
 		return L.dialogSimQueued
 	end
@@ -1286,12 +1320,18 @@ local function buildPaste(frame, top, bottom)
 			BuildDialog.drawPaste()
 		end
 	end)
-	box:SetScript("OnMouseDown", function()
+	local function startEditing()
 		if not BuildDialog.editing and BuildDialog.verdict ~= nil then
 			BuildDialog.editing = true
 			BuildDialog.drawPaste()
+			box:SetFocus()
 		end
-	end)
+	end
+	box:SetScript("OnMouseDown", startEditing)
+	-- While collapsed the box takes no mouse (an edit box grows with its text, and the
+	-- invisible one covered the preview and the Use button, round 4); the field takes the click.
+	field:EnableMouse(true)
+	field:SetScript("OnMouseDown", startEditing)
 	box:SetScript("OnEditFocusGained", function()
 		BuildDialog.focused = true
 		BuildDialog.drawPaste()
@@ -1335,7 +1375,7 @@ local function buildPaste(frame, top, bottom)
 	paste.nextWould = text(content, "muted", width)
 	paste.nextWould:SetPoint("BOTTOMLEFT", paste.use, "TOPLEFT", 0, BuildDialog.LAYOUT.buttonGap)
 	paste.replaces = text(content, "muted", width)
-	paste.replaces:SetPoint("BOTTOMLEFT", paste.nextWould, "TOPLEFT", 0, BuildDialog.LAYOUT.lineGap)
+	paste.replaces:SetPoint("BOTTOMLEFT", paste.nextWould, "TOPLEFT", 0, S.gap / 2)
 	for _, region in ipairs({ paste.nextWould, paste.replaces }) do
 		if type(region.SetWordWrap) == "function" then
 			region:SetWordWrap(false)
@@ -1373,7 +1413,16 @@ local function buildCopy(frame, top, bottom)
 	-- display over it, which wraps a run of characters with no spaces at the edge (an edit
 	-- box wraps only at spaces, and the export has none).
 	box:SetAlpha(0)
-	copy.display = text(clip, "body", width - S.gap * 4 - S.scrollbar - S.gap * 1.5)
+	-- Its selection highlight would draw over the label (round 4: a grey block): never drawn.
+	if type(box.SetHighlightColor) == "function" then
+		box:SetHighlightColor(0, 0, 0, 0)
+	end
+	local over = Theme.createFrame("Frame", nil, clip)
+	over:SetAllPoints(clip)
+	if type(box.GetFrameLevel) == "function" and type(over.SetFrameLevel) == "function" then
+		over:SetFrameLevel((box:GetFrameLevel() or 0) + 2)
+	end
+	copy.display = text(over, "muted", width - S.gap * 4 - S.scrollbar - S.gap * 1.5)
 	copy.display:SetPoint("TOPLEFT", clip, "TOPLEFT", 0, 0)
 	if type(copy.display.SetWordWrap) == "function" then
 		copy.display:SetWordWrap(true)
@@ -1382,7 +1431,8 @@ local function buildCopy(frame, top, bottom)
 	if copy.wrapsRuns then
 		copy.display:SetNonSpaceWrap(true)
 	end
-	copy.selection = Theme.texture(clip, "BACKGROUND", "hover")
+	-- The selection, as a subtle tint behind the label.
+	copy.selection = Theme.texture(over, "BACKGROUND", "hover")
 	copy.selection:SetAllPoints(copy.display)
 	copy.selection:Hide()
 	bindKeys(box, function()
@@ -1585,7 +1635,8 @@ local function drawPreview(verdict, y)
 	preview.frame:SetHeight(headY)
 	stack(preview.frame, paste.content, y, headY)
 	-- What Use replaces and how the orders compare, and the next talent the candidate gives.
-	local ok, context = pcall(BuildDialog.previewContext, Follow.build, verdict.build, ranks, data, liveLevel())
+	local ok, context = pcall(BuildDialog.previewContext, Follow.build, verdict.build, ranks, data, liveLevel(),
+		widthOf(paste.replaces), contentWidth())
 	if not ok then
 		context = {}
 	end
@@ -1677,6 +1728,7 @@ function BuildDialog.drawPaste()
 		paste.field:SetAlpha(1)
 		y = stack(paste.field, content, y, fieldHeight) + BuildDialog.LAYOUT.codeGap
 	end
+	paste.box:EnableMouse(not view.collapsed)
 	-- The selection under a collapsed line is kept (a next Ctrl+V replaces it) but never drawn.
 	if type(paste.box.SetHighlightColor) == "function" then
 		if view.hideSelection then
@@ -1786,7 +1838,7 @@ function BuildDialog.drawCopy(select)
 	end
 	local first, advance = lineMetrics()
 	local leadLines = BuildDialog.leadLines({ leadWidth(L.dialogSelectedLead),
-		leadWidth(string.format(L.dialogYouCopied, "00:00")) }, contentWidth())
+		leadWidth(string.format(L.dialogYouCopied, "00:00")), leadWidth(model.lead.text) }, contentWidth())
 	local top = first + (leadLines - 1) * advance + S.gap * 2
 	-- The lines under the box first, so the box takes only the room left.
 	local below = 0
@@ -1881,6 +1933,7 @@ function BuildDialog.setMode(mode)
 		paste.box:ClearFocus()
 		paste.content:Hide()
 		copy.content:Show()
+		BuildDialog.enterHint:Hide()
 		-- A copy claim stays until the dialog closes (OnHide clears it), across tab switches.
 		BuildDialog.drawCopy(true)
 	end
@@ -1929,6 +1982,7 @@ function BuildDialog.close()
 		BuildDialog.paste.box:ClearFocus()
 		BuildDialog.copyTab.box:ClearFocus()
 		BuildDialog.copiedAt = nil
+		BuildDialog.enterHint:Hide()
 		BuildDialog.frame:Hide()
 	end
 end
