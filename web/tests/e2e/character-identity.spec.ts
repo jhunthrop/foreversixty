@@ -1015,12 +1015,13 @@ test('the "—" Execution cell is named "Not scored yet" in both tables (fix rou
 test.describe('the score card’s foot and the fight rows on a 390px phone (fix round 5 item 8)', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test('"What the score counts" sits 16px under the line above it; Gear keeps a 44px target', async ({
+  test('"What the score counts" sits 16px under the line above it; Gear keeps a 44px target (fix round 6)', async ({
     page,
   }) => {
     await stub(page, { ...CHARACTER.data, ...SCORE });
     await page.goto(CHARACTER_PATH);
     await expect(page.getByTestId('forever-score-gaps')).toBeVisible();
+    await page.getByTestId('forever-score-gaps').scrollIntoViewIfNeeded();
     const foot = await page.getByTestId('forever-score-card').evaluate((card) => {
       const textOf = (element: Element | null | undefined): { top: number; bottom: number } | null => {
         if (element === null || element === undefined) return null;
@@ -1033,16 +1034,28 @@ test.describe('the score card’s foot and the fight rows on a 390px phone (fix 
       const explain = textOf(
         [...card.querySelectorAll('a')].find((link) => link.textContent?.trim() === 'What the score counts'),
       );
-      const gear = card
-        .querySelector('[data-testid="forever-score-most-to-gain"] a')
-        ?.getBoundingClientRect();
-      return gaps === null || explain === null || gear === undefined
-        ? null
-        : { space: explain.top - gaps.bottom, gear: gear.height };
+      const link = card.querySelector('[data-testid="forever-score-most-to-gain"] a');
+      const gear = link?.getBoundingClientRect();
+      if (gaps === null || explain === null || link === null || gear === undefined) return null;
+      // What a tap at the top and bottom edges of the 44px target lands on (fix round 6): the
+      // link itself, not the gaps line that follows it.
+      const x = gear.left + gear.width / 2;
+      const hit = (y: number): boolean => {
+        const target = document.elementFromPoint(x, y);
+        return target !== null && (target === link || link.contains(target));
+      };
+      return {
+        space: explain.top - gaps.bottom,
+        gear: gear.height,
+        top: hit(gear.top + 0.5),
+        bottom: hit(gear.bottom - 0.5),
+      };
     });
     expect(foot).not.toBeNull();
     expect(Math.abs((foot?.space ?? 0) - 16)).toBeLessThanOrEqual(1);
     expect(foot?.gear ?? 0).toBeGreaterThanOrEqual(44);
+    expect(foot?.top).toBe(true);
+    expect(foot?.bottom).toBe(true);
   });
 
   test('a 1px --border-soft line parts the fight rows', async ({ page }) => {

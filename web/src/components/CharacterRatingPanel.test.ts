@@ -490,6 +490,18 @@ describe('CharacterRatingPanel Forever Score card', () => {
     expect(gear).toEqual(expect.arrayContaining(['underline', 'max-md:py-[13.5px]']));
     expect(gear.filter((token) => /inline-flex|min-h-11/.test(token))).toEqual([]);
   });
+
+  // L8.4 fix round 6: the gaps line under the sentence comes later in the page and would take
+  // the bottom of the Gear link's padded target; the link is positioned and stacked above it.
+  it('stacks the Gear link above the gaps line so its whole 44px target is the link’s (fix round 6)', () => {
+    const { body } = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: SCORED, bisHref: '/bis/priest/holy' },
+    });
+    const gear = /<a class="([^"]*)" href="\/bis\/priest\/holy"/.exec(body)?.[1].split(' ') ?? [];
+    expect(gear).toEqual(expect.arrayContaining(['relative', 'z-10']));
+    const gaps = /<p class="([^"]*)" data-testid="forever-score-gaps"/.exec(body)?.[1].split(' ') ?? [];
+    expect(gaps.filter((token) => /^(relative|absolute|z-)/.test(token))).toEqual([]);
+  });
 });
 
 describe('CharacterRatingPanel empty state copy', () => {

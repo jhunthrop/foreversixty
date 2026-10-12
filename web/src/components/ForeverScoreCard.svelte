@@ -91,8 +91,10 @@
    *  the base `a` rule's, so its hover and pressed --gold-hover apply (fix round 5 item 2). */
   const LINK = 'inline-flex min-h-11 items-center underline underline-offset-2 md:min-h-0';
   /** The link inside "Most to gain" (fix round 5 item 8): inline, its 44px phone target vertical
-   *  padding round the 17px content box, which never opens the sentence's line to 44px. */
-  const SENTENCE_LINK = 'underline underline-offset-2 max-md:py-[13.5px]';
+   *  padding round the 17px content box, which never opens the sentence's line to 44px. The
+   *  padding reaches over the gaps line below, which comes later in the page and would take the
+   *  target's bottom ~7px, so the link is positioned and stacked above it (fix round 6). */
+  const SENTENCE_LINK = 'relative z-10 underline underline-offset-2 max-md:py-[13.5px]';
   /** The last column holds the cue on one line: "+700 pts", the widest (Experience at 0), is
    *  57.6px at 12px mono, so 60px (fix round 4 item 2, fix round 5 item 3). */
   const ROW = 'grid grid-cols-[88px_minmax(0,1fr)_80px_60px] items-center gap-x-3 gap-y-1 text-[13px]';
