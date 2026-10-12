@@ -340,6 +340,31 @@ describe("Progress.bagUpgrades", function()
 				equipped, 20)
 			assert.are.equal(60, plain[1].delta)
 		end)
+
+		-- L3.6 ruling 1: the band's DPS per point and its measured weapon term, on
+		-- the main hand only; the chip and the tooltip read the same figures.
+		it("prices a bag weapon at the band's figures, the weapon term on the main hand", function()
+			local Gear = require("Gear")
+			local banded = { classes = DATA.classes, weights = DATA.weights, dpsPerPoint = { ["warrior-arms"] = {
+				reference = "attack_power", dps = 0.2, healing = false, weaponDps = 3,
+				[20] = { reference = "attack_power", dps = 0.05, weaponDps = 0.5 },
+				[30] = { reference = "attack_power", dps = 0.1, weaponDps = 1 } } } }
+			local worn = { main_hand = { itemId = 60, link = "item:60", equipLoc = "INVTYPE_WEAPON",
+				stats = { weapon_dps = 10 } } }
+			local sword = { link = "|Hitem:63|h[Sword]|h", itemId = 63, equipLocation = "INVTYPE_WEAPON", itemClass = 2,
+				itemSubClass = 7, stats = { strength = 5, weapon_dps = 20 } }
+			local function at(level)
+				return Chip.scoredUpgrades(banded, "warrior-arms", Gear.dpsFigure(banded, "warrior-arms", level), nil, KEY,
+					build, ARMS_RANKS, { sword }, worn, level)[1]
+			end
+			-- Band 20: 5 Str x 2 = 10 AP x 0.05 = 0.5 DPS, + 10 weapon DPS x 0.5 = 5.0: 5.5 DPS.
+			assert.are.equal("main_hand", at(25).slot)
+			assert.is_true(math.abs(at(25).delta - 5.5) < 1e-9)
+			-- Band 30: 10 x 0.1 + 10 x 1 = 11 DPS.
+			assert.is_true(math.abs(at(35).delta - 11) < 1e-9)
+			-- Below level 20, band 20; never the spec-level 0.2 / 3.
+			assert.is_true(math.abs(at(15).delta - 5.5) < 1e-9)
+		end)
 	end)
 
 	it("never lists an item that is already worn", function()

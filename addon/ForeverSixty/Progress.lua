@@ -157,32 +157,29 @@ local function inUnit(delta, dpsPerPoint)
 	return delta
 end
 
---- The sim's own rate (sim/cmd/leveling-bis/score.go attackPowerPerDPS, the
---- engine's DefaultAttackPowerPerDPS): a weapon's damage per second is worth
---- 14 attack power.
-Progress.AP_PER_WEAPON_DPS = 14
+--- What one point of a weapon's own DPS is worth in `slot` under `weapon`
+--- (Gear.weaponTerm's { slot, weight }: the band's measured term, in
+--- reference-stat points): its weight on the slot it was measured on, 0 on any
+--- other (the off hand, a hunter's melee weapon) and with no term (feral
+--- druids, casters, healers, tanks).
+local function weaponWeight(slot, weapon)
+	if type(weapon) ~= "table" or weapon.slot ~= slot then
+		return 0
+	end
+	return tonumber(weapon.weight) or 0
+end
 
---- Which attack-power stat a weapon's DPS is worth, by the slot it is scored
---- in (the sim's weaponAPStat): ranged attack power for the ranged slot,
---- attack power for either hand. A slot not listed has no weapon term.
-Progress.WEAPON_AP_STAT = { main_hand = "attack_power", off_hand = "attack_power", ranged = "ranged_attack_power" }
-
---- The reference stats whose specs swing their weapons (the sim's
---- specWeaponDPSMatters): a caster's or a healer's weapon DPS counts nothing.
-local PHYSICAL_REFERENCE = { attack_power = true, ranged_attack_power = true }
-
---- An item's score in `slot` under `weights`: its stat line (Gear.score), plus,
---- for a weapon slot and a spec whose `reference` stat is attack power or
---- ranged attack power, its own DPS (the `weapon_dps` stat, Rules.STAT_KEYS)
---- at 14 attack power per DPS, weighted by the slot's attack-power stat. A
---- shield or a held item has no DPS line, so it adds nothing. The one score
---- the chip and the item tooltip compare items by.
-function Progress.itemScore(stats, weights, slot, reference)
+--- An item's score in `slot` under `weights`: its stat line (Gear.score), plus
+--- its own DPS (the `weapon_dps` stat, Rules.STAT_KEYS) at the band's measured
+--- weapon term (`weapon`, Gear.currentWeights' own) on the slot it was
+--- measured on alone, never through attack power. A shield or a held item has
+--- no DPS line, so it adds nothing. The one score the chip and the item
+--- tooltip compare items by.
+function Progress.itemScore(stats, weights, slot, weapon)
 	local total = Gear.score(stats, weights)
 	local dps = type(stats) == "table" and stats.weapon_dps or nil
-	local apStat = Progress.WEAPON_AP_STAT[slot]
-	if type(dps) == "number" and dps > 0 and apStat ~= nil and PHYSICAL_REFERENCE[reference] then
-		total = total + dps * Progress.AP_PER_WEAPON_DPS * ((weights or {})[apStat] or 0)
+	if type(dps) == "number" and dps > 0 then
+		total = total + dps * weaponWeight(slot, weapon)
 	end
 	return total
 end
@@ -202,15 +199,11 @@ function Progress.roundedGain(value, unit)
 end
 
 --- A stat's weight in `slot`: its own weight, or for a weapon's DPS
---- (`weapon_dps`) 14 x the slot's attack-power weight for a spec that swings
---- its weapon (Progress.itemScore's own rule).
-local function weightIn(stat, slot, weights, reference)
+--- (`weapon_dps`) the measured weapon term on its own slot (Progress.itemScore's
+--- own rule).
+local function weightIn(stat, slot, weights, weapon)
 	if stat == "weapon_dps" then
-		local apStat = Progress.WEAPON_AP_STAT[slot]
-		if apStat == nil or not PHYSICAL_REFERENCE[reference] then
-			return 0
-		end
-		return Progress.AP_PER_WEAPON_DPS * ((weights or {})[apStat] or 0)
+		return weaponWeight(slot, weapon)
 	end
 	return (weights or {})[stat] or 0
 end
@@ -220,7 +213,7 @@ end
 --- already carry their enchant, Gear.readEquipped), as { stat, delta,
 --- weighted }, sorted by the weighted size, biggest first. A stat the weights
 --- do not count is left out. Weighted in score units (reference-stat points).
-function Progress.contributions(plan, worn, weights, reference)
+function Progress.contributions(plan, worn, weights, weapon)
 	local stats = {}
 	for stat in pairs(plan.stats or {}) do
 		stats[stat] = true
@@ -234,11 +227,11 @@ function Progress.contributions(plan, worn, weights, reference)
 	for stat in pairs(stats) do
 		local amount = (plan.stats or {})[stat] or 0
 		local delta = amount
-		local weighted = amount * weightIn(stat, plan.slot, weights, reference)
+		local weighted = amount * weightIn(stat, plan.slot, weights, weapon)
 		for _, side in ipairs(worn) do
 			local wornAmount = (side.stats or {})[stat] or 0
 			delta = delta - wornAmount
-			weighted = weighted - wornAmount * weightIn(stat, side.slot, weights, reference)
+			weighted = weighted - wornAmount * weightIn(stat, side.slot, weights, weapon)
 		end
 		if math.abs(weighted) > 1e-9 then
 			list[#list + 1] = { stat = stat, delta = delta, weighted = weighted }
@@ -269,10 +262,10 @@ end
 --- `delta` is worn minus planned, nil when the planned side carries no
 --- stats (an FS1 code) or there are no weights; it is in DPS when
 --- `dpsPerPoint` (DPS per 1.0 of the reference stat) is given, and
---- `unit` says which. `reference` (the spec's reference stat) lets a weapon's
---- own DPS count (Progress.itemScore). `contributions` lists what the gain
---- is made of (Progress.contributions), the planned side minus the worn side.
-function Progress.slotVerdict(slot, plan, worn, weights, dpsPerPoint, reference)
+--- `unit` says which. `weapon` (Gear.currentWeights' measured weapon term) lets
+--- a weapon's own DPS count (Progress.itemScore). `contributions` lists what the
+--- gain is made of (Progress.contributions), the planned side minus the worn side.
+function Progress.slotVerdict(slot, plan, worn, weights, dpsPerPoint, weapon)
 	local plannedItemId = plan ~= nil and plan.itemId or nil
 	local equippedItemId = worn ~= nil and worn.itemId or nil
 	if plannedItemId == nil and equippedItemId == nil then
@@ -283,7 +276,7 @@ function Progress.slotVerdict(slot, plan, worn, weights, dpsPerPoint, reference)
 	local sameLink = plan == nil or worn == nil or plan.link == nil or worn.link == nil or plan.link == worn.link
 	local scored = weights ~= nil and plannedItemId ~= nil and hasAnyStat(plan.stats)
 	local function score(stats)
-		return Progress.itemScore(stats, weights, slot, reference)
+		return Progress.itemScore(stats, weights, slot, weapon)
 	end
 	local state, delta
 	if plannedItemId ~= nil and plannedItemId == equippedItemId and sameLink then
@@ -304,7 +297,7 @@ function Progress.slotVerdict(slot, plan, worn, weights, dpsPerPoint, reference)
 		if worn ~= nil then
 			sides[1] = { stats = worn.stats, slot = slot }
 		end
-		contributions = Progress.contributions({ stats = plan.stats, slot = slot }, sides, weights, reference)
+		contributions = Progress.contributions({ stats = plan.stats, slot = slot }, sides, weights, weapon)
 	end
 	return {
 		slot = slot,
@@ -330,8 +323,9 @@ local TWO_HANDED = "INVTYPE_2HWEAPON"
 ---   the net of the whole swap (delta is both worn minus the two-hander);
 --- - everything else is Progress.slotVerdict against that hand.
 ---
---- Each item's own DPS counts in the hand it is scored in (Progress.itemScore).
-function Progress.weaponVerdict(slot, hovered, wornMain, wornOff, weights, dpsPerPoint, reference)
+--- Each item's own DPS counts in the hand it is scored in, on the hand the
+--- weapon term was measured on alone (Progress.itemScore).
+function Progress.weaponVerdict(slot, hovered, wornMain, wornOff, weights, dpsPerPoint, weapon)
 	if slot == "off_hand" and wornMain ~= nil and wornMain.equipLoc == TWO_HANDED then
 		return {
 			slot = slot, state = "blocked",
@@ -343,18 +337,18 @@ function Progress.weaponVerdict(slot, hovered, wornMain, wornOff, weights, dpsPe
 		local scored = weights ~= nil and hovered.itemId ~= nil and hasAnyStat(hovered.stats)
 		local delta
 		if scored then
-			local worn = Progress.itemScore(wornOff.stats, weights, "off_hand", reference)
+			local worn = Progress.itemScore(wornOff.stats, weights, "off_hand", weapon)
 			if wornMain ~= nil then
-				worn = worn + Progress.itemScore(wornMain.stats, weights, "main_hand", reference)
+				worn = worn + Progress.itemScore(wornMain.stats, weights, "main_hand", weapon)
 			end
-			delta = worn - Progress.itemScore(hovered.stats, weights, "main_hand", reference)
+			delta = worn - Progress.itemScore(hovered.stats, weights, "main_hand", weapon)
 		end
 		return {
 			slot = slot,
 			contributions = scored and Progress.contributions({ stats = hovered.stats, slot = "main_hand" }, {
 				{ stats = wornOff.stats, slot = "off_hand" },
 				wornMain ~= nil and { stats = wornMain.stats, slot = "main_hand" } or nil,
-			}, weights, reference) or nil,
+			}, weights, weapon) or nil,
 			plannedItemId = hovered.itemId,
 			equippedItemId = wornMain ~= nil and wornMain.itemId or wornOff.itemId,
 			delta = inUnit(delta, dpsPerPoint),
@@ -363,19 +357,19 @@ function Progress.weaponVerdict(slot, hovered, wornMain, wornOff, weights, dpsPe
 		}
 	end
 	return Progress.slotVerdict(slot, hovered, slot == "main_hand" and wornMain or wornOff, weights, dpsPerPoint,
-		reference)
+		weapon)
 end
 
 --- Progress.weaponVerdict for the two hands, Progress.slotVerdict for every
 --- other slot: the one call the chip and the item tooltip score a candidate
 --- in a slot with. `equipped` is Gear.readEquipped()'s table.
-function Progress.itemVerdict(slot, hovered, equipped, weights, dpsPerPoint, reference)
+function Progress.itemVerdict(slot, hovered, equipped, weights, dpsPerPoint, weapon)
 	equipped = equipped or {}
 	if slot == "main_hand" or slot == "off_hand" then
 		return Progress.weaponVerdict(slot, hovered, equipped.main_hand, equipped.off_hand, weights, dpsPerPoint,
-			reference)
+			weapon)
 	end
-	return Progress.slotVerdict(slot, hovered, equipped[slot], weights, dpsPerPoint, reference)
+	return Progress.slotVerdict(slot, hovered, equipped[slot], weights, dpsPerPoint, weapon)
 end
 
 --- Specs that fight in melee, whose weapons lead the slot list. Every
@@ -418,13 +412,6 @@ local function slotOrder(spec)
 		order[#order + 1] = entry.slot
 	end
 	return order
-end
-
---- The spec's reference stat (the one its DPS per point is counted in,
---- Data.dpsPerPoint), which decides whether a weapon's own DPS counts.
-function Progress.referenceOf(data, spec)
-	local perPoint = spec ~= nil and data ~= nil and type(data.dpsPerPoint) == "table" and data.dpsPerPoint[spec] or nil
-	return perPoint ~= nil and perPoint.reference or nil
 end
 
 --- The spec and its weights for a build, or nil for either.
@@ -500,7 +487,8 @@ Progress.MIN_GAIN = 1
 --- one Forever's rules say the character cannot wear in that slot at
 --- `level` (Rules.canEquip, not "ok": plate before 40, a libram on a
 --- warrior). `level` is the client's when nil. `unit` is "dps" when
---- `dpsPerPoint` is given, else "score".
+--- `dpsPerPoint` is given, else "score". A weapon's own DPS counts at the band's
+--- measured weapon term at `level` (Gear.weaponTerm), or `current`'s.
 ---
 --- The hands are one pair: with a two-hander worn (its `equipLoc`
 --- INVTYPE_2HWEAPON), nothing goes in the off hand, and a two-hander from
@@ -508,19 +496,19 @@ Progress.MIN_GAIN = 1
 --- net of the whole swap. A gain under MIN_GAIN in its unit is no upgrade.
 function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoint, level, current)
 	local spec, weights = weightsFor(data, build, ranks)
-	local reference = Progress.referenceOf(data, spec)
-	-- `current` (Gear.currentWeights, as the tooltip reads it): the sim's weights and reference
+	level = level or Compat.playerLevel()
+	local weapon = Gear.weaponTerm(Gear.dpsFigure(data, spec, level), dpsPerPoint)
+	-- `current` (Gear.currentWeights, as the tooltip reads it): the sim's weights and weapon term
 	-- when a weights message is in use (L3.4 fix 6 ruling: one source of weights).
 	if type(current) == "table" and type(current.weights) == "table" then
 		weights = current.weights
-		reference = current.reference or reference
+		weapon = current.weapon
 	end
 	local unit = dpsPerPoint ~= nil and "dps" or "score"
 	if weights == nil then
 		return {}
 	end
 	equipped = equipped or {}
-	level = level or Compat.playerLevel()
 	local classToken = build.classSlug ~= nil and build.classSlug:upper() or nil
 	local wornLinks = {}
 	for _, worn in pairs(equipped) do
@@ -539,7 +527,7 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 					item.equipLocation, slot) == "ok"
 				-- Progress.itemVerdict: the two hands as one pair (nothing in the
 				-- off hand under a two-hander; a two-hander net of both).
-				local verdict = wearable and Progress.itemVerdict(slot, candidate, equipped, weights, nil, reference) or nil
+				local verdict = wearable and Progress.itemVerdict(slot, candidate, equipped, weights, nil, weapon) or nil
 				-- A "match" is the item scored against its own copy; "blocked" a
 				-- hand the worn two-hander holds. The delta is worn minus candidate.
 				if verdict ~= nil and verdict.delta ~= nil and verdict.state ~= "match" and verdict.state ~= "blocked" then

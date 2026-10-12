@@ -264,7 +264,7 @@ Rules.STAT_KEYS = {
 	RESISTANCE0_NAME = "armor",
 	-- A weapon's own damage per second (a client that omits the key gives none,
 	-- and the weapon is scored on its stat line alone). No weight carries it:
-	-- Progress.itemScore converts it at the sim's 14 attack power per DPS.
+	-- Progress.itemScore prices it at the band's measured weapon term (Gear.weaponTerm).
 	ITEM_MOD_DAMAGE_PER_SECOND_SHORT = "weapon_dps",
 }
 

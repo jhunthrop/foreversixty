@@ -327,7 +327,8 @@ function Comms.helloFields()
 	local spec = data ~= nil and classSlug ~= nil and Gear.specOf(data, classSlug, ranks) or nil
 	local gap = 0
 	if build ~= nil and data ~= nil then
-		local perPoint = type(data.dpsPerPoint) == "table" and spec ~= nil and data.dpsPerPoint[spec] or nil
+		-- The band's DPS per point at the character's level (Gear.dpsFigure), as the tooltip reads it.
+		local perPoint = Gear.dpsFigure(data, spec, Compat.playerLevel())
 		local slots = Progress.slots(data, build, ranks, Gear.readEquipped(), perPoint and perPoint.dps or nil)
 		local worst = Progress.biggestGap(slots)
 		if worst ~= nil then

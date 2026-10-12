@@ -219,8 +219,9 @@ function Gear.readEquipped()
 end
 
 --- The weighted sum of an item's stats. A weapon's own DPS (`weapon_dps`) is never
---- summed here, whatever the weights carry: Progress.itemScore alone converts it, at
---- 14 attack power per DPS and only for a spec that swings its weapon.
+--- summed here, whatever the weights carry: Progress.itemScore alone counts it, at
+--- the band's measured weapon term (Gear.weaponTerm) and only on the slot it was
+--- measured on.
 function Gear.score(stats, weights)
 	local total = 0
 	for name, value in pairs(stats or {}) do
@@ -363,6 +364,47 @@ function Gear.bandFor(specBis, level)
 	return nil
 end
 
+--- The sim's figures for `spec` at `level` (contract 1's dpsPerPoint): the band's
+--- own { reference, dps, weaponDps }, read with the chip's band rule
+--- (Gear.bandFor over the spec's measured bands, so 20 serves 20-29), band 20 below
+--- level 20 (and with no level); the spec-level figure (the level-60 raid
+--- character's) only when no band entry is there. Second return: the band read,
+--- nil for the spec-level figure. nil for a spec with no entry (tanks).
+function Gear.dpsFigure(data, spec, level)
+	local perSpec = spec ~= nil and type(data) == "table" and type(data.dpsPerPoint) == "table"
+		and data.dpsPerPoint[spec] or nil
+	if type(perSpec) ~= "table" then
+		return nil
+	end
+	local floor = math.max(type(level) == "number" and level or Gear.BIS_MIN_LEVEL, Gear.BIS_MIN_LEVEL)
+	local band, entry = Gear.bandFor(perSpec, floor)
+	if type(entry) == "table" then
+		return entry, band
+	end
+	return perSpec, nil
+end
+
+--- The weapon term a figure (Gear.dpsFigure) measures, as { slot, weight }: the
+--- slot it was measured on (the ranged slot for a ranged-attack-power spec, else
+--- the main hand; no other slot has one) and what one more point of that weapon's
+--- own DPS is worth in reference-stat points, weaponDps / `dps`, so that a gain
+--- counted in DPS (x `dps`) prices a weapon-DPS delta at exactly weaponDps.
+--- `dps` is the DPS per point the gain is counted in (a sim's own wins); with none
+--- (a gain in score) the figure's own. nil when the figure's weaponDps is 0 or
+--- missing (feral druids, casters, healers) or there is no DPS per point to divide by.
+function Gear.weaponTerm(figure, dps)
+	local weaponDps = type(figure) == "table" and tonumber(figure.weaponDps) or nil
+	if weaponDps == nil or weaponDps <= 0 then
+		return nil
+	end
+	local perPoint = tonumber(dps) or tonumber(figure.dps)
+	if perPoint == nil or perPoint <= 0 then
+		return nil
+	end
+	return { slot = figure.reference == "ranged_attack_power" and "ranged" or "main_hand",
+		weight = weaponDps / perPoint }
+end
+
 --- The client's INVTYPE_* -> the site's slot names an item may occupy.
 Gear.SLOTS_BY_EQUIP_LOCATION = {
 	INVTYPE_HEAD = { "head" },
@@ -412,24 +454,30 @@ local function weightTable(list)
 end
 
 --- The one weights source every verdict reads (spec section 5.2):
---- { weights, dpsPerPoint, tag, caps, healing, spec, reference }. With a "weights" inbox
---- message for `characterKey` and `spec` (the companion's sim), its weights,
---- its own DPS per point (none: the unit is score) and its caps, tag "sim";
---- otherwise the shipped data.weights[spec] and data.dpsPerPoint[spec],
---- tag "default", no caps. A message with no usable weights falls back to
---- the shipped ones but keeps its caps. nil for a spec with no weights at
---- all. `healing` is the shipped per-point number's own flag (HPS, not
---- DPS). DPS per point only ever multiplies the static weights or the
---- message's own weights, never a band's measured bis_weights. Pure.
+--- { weights, dpsPerPoint, weaponDps, weapon, tag, caps, healing, spec, reference }.
+--- With a "weights" inbox message for `characterKey` and `spec` (the companion's
+--- sim), its weights, its own DPS per point (none: the unit is score) and its
+--- caps, tag "sim"; otherwise the shipped data.weights[spec] and the band's DPS
+--- per point at `level` (Gear.dpsFigure: the spec-level figure only when no band
+--- entry is there), tag "default", no caps. `weaponDps` is the band's measured
+--- DPS per +1 weapon DPS and `weapon` its term for Progress (Gear.weaponTerm), in
+--- the unit the gain counts in, so a sim's own DPS per point wins over the band
+--- and the spec figure while a weapon-DPS delta is still worth weaponDps. A
+--- message with no usable weights falls back to the shipped ones but keeps its
+--- caps. nil for a spec with no weights at all. `healing` is the shipped spec's
+--- own flag (HPS, not DPS). DPS per point only ever multiplies the static weights
+--- or the message's own weights, never a band's measured bis_weights. Pure.
 --- ("build" is the tag a build carrying its own weights will take; none
 --- does yet.)
-function Gear.currentWeights(data, spec, inbox, characterKey)
+function Gear.currentWeights(data, spec, inbox, characterKey, level)
 	if data == nil or spec == nil then
 		return nil
 	end
 	local shipped = type(data.weights) == "table" and data.weights[spec] or nil
-	local perPoint = type(data.dpsPerPoint) == "table" and data.dpsPerPoint[spec] or nil
-	local healing = perPoint ~= nil and perPoint.healing == true
+	local perSpec = type(data.dpsPerPoint) == "table" and data.dpsPerPoint[spec] or nil
+	local healing = type(perSpec) == "table" and perSpec.healing == true
+	local perPoint = Gear.dpsFigure(data, spec, level)
+	local weaponDps = perPoint ~= nil and tonumber(perPoint.weaponDps) or nil
 	local message
 	for _, candidate in ipairs(Follow.messages(inbox, characterKey, "weights")) do
 		if candidate.spec == spec then
@@ -445,6 +493,7 @@ function Gear.currentWeights(data, spec, inbox, characterKey)
 			-- Only the message's own number multiplies the message's own weights
 			-- (L1.3 carry-over): a sim that names none counts in score.
 			dpsPerPoint = message.dps_per_point,
+			weaponDps = weaponDps, weapon = Gear.weaponTerm(perPoint, message.dps_per_point),
 			tag = "sim", caps = caps, healing = healing, spec = spec,
 			-- When the sim ran (contract 3, once the API sends it): the build dialog names its copy.
 			generatedAt = message.generated_at,
@@ -457,6 +506,7 @@ function Gear.currentWeights(data, spec, inbox, characterKey)
 	return {
 		weights = shipped,
 		dpsPerPoint = perPoint ~= nil and perPoint.dps or nil,
+		weaponDps = weaponDps, weapon = Gear.weaponTerm(perPoint),
 		tag = "default", caps = caps, healing = healing, spec = spec,
 		reference = perPoint ~= nil and perPoint.reference or Gear.referenceStat(shipped),
 	}

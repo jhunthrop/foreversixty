@@ -277,6 +277,24 @@ describe("Options", function()
 		assert.are.equal("default", require("ItemTooltip").current.tag)
 	end)
 
+	-- L3.6 ruling 1: the tooltip's figure is the band's at the character's level,
+	-- and a level-up into the next band reads that band's (the event's own level:
+	-- the client may not have caught up yet).
+	it("reads the band's DPS per point at the character's level, and the new band on a level-up", function()
+		Options.data = { build = DATA.build, classes = DATA.classes, weights = DATA.weights,
+			dpsPerPoint = { ["paladin-holy"] = { reference = "healing_power", dps = 0.3, healing = true, weaponDps = 0,
+				[20] = { reference = "healing_power", dps = 0.1, weaponDps = 0 },
+				[30] = { reference = "healing_power", dps = 0.2, weaponDps = 0 } } } }
+		state.level = 29
+		_G.ForeverSixtyInbox = { generated_at = "2026-09-20T00:00:00Z", builds = {} }
+		Options.readInbox()
+		assert.are.equal(0.1, require("ItemTooltip").current.dpsPerPoint)
+		assert.is_true(require("ItemTooltip").current.healing)
+		require("Chip").refresh = function() end
+		Options.onEvent(Options.frame, "PLAYER_LEVEL_UP", 30)
+		assert.are.equal(0.2, require("ItemTooltip").current.dpsPerPoint)
+	end)
+
 	it("drops a weights message addressed to another character", function()
 		_G.ForeverSixtyInbox = {
 			generated_at = "2026-09-20T00:00:00Z",
