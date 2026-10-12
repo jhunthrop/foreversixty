@@ -103,9 +103,17 @@ func checkPublishedSpecFile(t *testing.T, path string) {
 	}
 
 	buildDir := filepath.Join(publishedRepoRoot, "data", "builds", report.Build)
-	items, _, err := loadCandidates(buildDir, spec.ClassSlug)
+	// Every class row, client_unconfirmed ones included, so a file ranked
+	// before task L1.6 is still checked item by item; the active build,
+	// the one the nightly re-ranks, must carry none of them
+	// (checkNoClientUnconfirmedItem).
+	items, _, err := loadClassCandidates(buildDir, spec.ClassSlug)
 	if err != nil {
-		t.Fatalf("%s: loadCandidates(%s, %s): %v", path, buildDir, spec.ClassSlug, err)
+		t.Fatalf("%s: loadClassCandidates(%s, %s): %v", path, buildDir, spec.ClassSlug, err)
+	}
+	activeBuild, err := leveling.ReadActiveBuild(publishedRepoRoot)
+	if err != nil {
+		t.Fatalf("ReadActiveBuild: %v", err)
 	}
 	// itemFactionRestriction mirrors main.go's own pre-pass exactly
 	// (runSpec's own comment): correctedRepSource needs it before
@@ -123,6 +131,10 @@ func checkPublishedSpecFile(t *testing.T, path string) {
 	items = applyEffectiveRequiredLevels(items, lootIdx, questFloors)
 	byID := make(map[int]candidate, len(items))
 	for _, c := range items {
+		if report.Build != activeBuild {
+			// Ranked before task L1.6, and never re-ranked: tolerated.
+			c.ClientUnconfirmed = false
+		}
 		byID[c.ID] = c
 	}
 
@@ -223,6 +235,9 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 		if !ok {
 			t.Errorf("%s: item %d (%s) is not in %s's item file at all", slotLabel(row.Slot), row.ItemID, row.ItemName, spec.ClassSlug)
 			continue
+		}
+		if c.ClientUnconfirmed {
+			t.Errorf("%s: item %d (%s) is client_unconfirmed; leveling-bis never ranks one (task L1.6)", slotLabel(row.Slot), row.ItemID, row.ItemName)
 		}
 
 		// (1) EffectiveRequiredLevel <= the band it was published at.
@@ -326,6 +341,9 @@ func checkAlternatives(t *testing.T, slotLabel func(string) string, classSlug st
 			if !ok {
 				t.Errorf("%s: alternative %d (%s) is not in %s's item file at all", slotLabel(row.Slot), alt.ItemID, alt.ItemName, band.Spec)
 				continue
+			}
+			if c.ClientUnconfirmed {
+				t.Errorf("%s: alternative %d (%s) is client_unconfirmed; leveling-bis never ranks one (task L1.6)", slotLabel(row.Slot), alt.ItemID, alt.ItemName)
 			}
 			if c.EffectiveRequiredLevel > band.Band {
 				t.Errorf("%s: alternative %d (%s) needs level %d (sim/leveling.EffectiveRequiredLevel), published at band %d", slotLabel(row.Slot), alt.ItemID, alt.ItemName, c.EffectiveRequiredLevel, band.Band)

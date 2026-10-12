@@ -333,7 +333,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		return err
 	}
 
-	items, missing, err := loadCandidates(buildDir, specInfo.ClassSlug)
+	items, unconfirmed, missing, err := loadCandidates(buildDir, specInfo.ClassSlug)
 	if err != nil {
 		return err
 	}
@@ -887,7 +887,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	if err := writeMarkdown(mdPath, specInfo, reports); err != nil {
 		return fmt.Errorf("writing %s: %w", mdPath, err)
 	}
-	log.Printf("leveling-bis: wrote %s and %s", jsonPath, mdPath)
+	log.Printf("leveling-bis: wrote %s and %s (%d client_unconfirmed item(s) excluded before ranking)", jsonPath, mdPath, unconfirmed)
 	return nil
 }
 

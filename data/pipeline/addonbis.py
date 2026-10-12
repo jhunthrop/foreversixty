@@ -24,11 +24,14 @@ Four decisions are load-bearing:
   pipeline.addonlua.
 * CLIENT-CONFIRMED ONLY (task L1.4). A candidate items.json marks
   `client_unconfirmed` is never a pick or an alternative: the client may
-  never resolve its id, and the slot falls silent. The next confirmed
+  never resolve its id, and the slot falls silent. Since task L1.6
+  leveling-bis drops such items before it ranks, so a regenerated build
+  has nothing to skip; this stays as a safety net. The next confirmed
   candidate in leveling-bis's own order that the band's pair and
   two-hand rules allow takes its place, keeping its drop chance; "new at
   <band>" is recomputed from the final picks; the skips are counted per
-  build (build_bis_with_skips, unconfirmed_skips_line).
+  build (build_bis_with_skips, unconfirmed_skips_line), and the audit line
+  must read `skipped 0` for a regenerated build.
 * The bis/ directory does not exist on main yet: .github/workflows/bis.yml
   writes it nightly and had not run as of this module's introduction.
   `build_bis` answers an empty mapping for a missing directory rather than
@@ -282,6 +285,11 @@ def _usable(facts: _ItemFacts, final: dict[str, dict], slot: str, item_id: int) 
     return True
 
 
+def _without(final: dict[str, dict], slot: str) -> dict[str, dict]:
+    """The band's final picks with one slot left out."""
+    return {key: row for key, row in final.items() if key != slot}
+
+
 def _faction_picks(
     path: Path,
     where: str,
@@ -297,8 +305,11 @@ def _faction_picks(
     Every other slot, in leveling-bis's slot order (pick.go's slotOrder),
     promotes its first confirmed candidate that _usable allows beside the
     picks already final, so a promotion never breaks the pair or two-hand
-    rules leveling-bis itself enforces. A promoted pick carries its drop
-    chance at its own source when loot.json states one (_drop_chances). The
+    rules leveling-bis itself enforces -- except that when the only
+    confirmed main hand left is a two-hander, it is adopted and the off hand
+    empties, as leveling-bis's own confirmed.go does (task L1.6). A promoted
+    pick carries its drop chance at its own source when loot.json states one
+    (_drop_chances), and no chance otherwise. The
     alternatives are the next two confirmed candidates. Every unconfirmed
     candidate passed over on the way is appended to `skips`."""
     candidates = {
@@ -312,13 +323,28 @@ def _faction_picks(
     for slot in SLOT_ORDER:
         if slot not in candidates or slot in final:
             continue
-        for row in candidates[slot]:
-            if row["item_id"] in facts.unconfirmed:
-                continue
-            if _usable(facts, final, slot, row["item_id"]):
-                chance = facts.chances.get((row["item_id"], row.get("source", "")))
-                final[slot] = dict(row, chance=chance)
-                break
+        confirmed = [row for row in candidates[slot] if row["item_id"] not in facts.unconfirmed]
+        promoted = next(
+            (row for row in confirmed if _usable(facts, final, slot, row["item_id"])), None
+        )
+        if promoted is None and slot == "main_hand":
+            # Task L1.6, ruling 4: when the only confirmed main hand left is a
+            # two-hander, adopt it and empty the off hand, exactly as
+            # confirmed.go's preferConfirmedStats does (lines 91-93).
+            promoted = next(
+                (
+                    row
+                    for row in confirmed
+                    if row["item_id"] in facts.two_hand
+                    and _usable(facts, _without(final, "off_hand"), slot, row["item_id"])
+                ),
+                None,
+            )
+            if promoted is not None:
+                final.pop("off_hand", None)
+        if promoted is not None:
+            chance = facts.chances.get((promoted["item_id"], promoted.get("source", "")))
+            final[slot] = dict(promoted, chance=chance)
     picks: dict[str, AddonBisItem] = {}
     for slot in SLOT_ORDER:
         rows = candidates.get(slot)

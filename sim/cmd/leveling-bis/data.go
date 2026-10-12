@@ -235,7 +235,38 @@ func markNotInSimDB(items []candidate) []candidate {
 // whatever its own score would have been - see flatItem.SupersededBy's
 // own doc for why the row still exists in items.json without ever
 // reaching this pool.
-func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
+//
+// An item whose class row marks client_unconfirmed (its stats are
+// 1.12's; the client may never resolve the id) is never a candidate
+// either (task L1.6): withoutClientUnconfirmed drops it here, before any
+// band ranks, so every pick, runner-up and alternative is confirmed by
+// construction. unconfirmed counts the rows dropped, for runSpec's
+// summary line.
+func loadCandidates(buildDir, classSlug string) (out []candidate, unconfirmed int, missing []string, err error) {
+	all, missing, err := loadClassCandidates(buildDir, classSlug)
+	if err != nil {
+		return nil, 0, nil, err
+	}
+	out, unconfirmed = withoutClientUnconfirmed(all)
+	return out, unconfirmed, missing, nil
+}
+
+// withoutClientUnconfirmed is the one client_unconfirmed filter: items
+// without the ones the client has not confirmed, and how many it dropped.
+func withoutClientUnconfirmed(items []candidate) ([]candidate, int) {
+	out := make([]candidate, 0, len(items))
+	for _, c := range items {
+		if !c.ClientUnconfirmed {
+			out = append(out, c)
+		}
+	}
+	return out, len(items) - len(out)
+}
+
+// loadClassCandidates is every class row as a candidate, client
+// unconfirmed ones included: loadCandidates' input, and what the
+// published-file check reads a bis file ranked before task L1.6 against.
+func loadClassCandidates(buildDir, classSlug string) (out []candidate, missing []string, err error) {
 	flatItems, err := loadFlatItems(buildDir)
 	if err != nil {
 		return nil, nil, err
@@ -248,8 +279,6 @@ func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	var out []candidate
-	var missing []string
 	for _, ci := range classFile.Items {
 		fi, ok := byID[ci.ID]
 		if !ok {

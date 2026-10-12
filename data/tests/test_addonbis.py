@@ -103,7 +103,7 @@ def test_every_pick_of_a_specs_first_band_is_new_at_that_band(tmp_path):
     assert bis["hunter-marksmanship"][0].new_at_band["alliance"] == [111, 333]
 
 
-def test_a_new_at_band_slot_with_no_matching_pick_is_skipped(tmp_path):
+def test_a_band_with_no_picks_has_nothing_new_whatever_leveling_bis_tagged(tmp_path):
     _write_bis(
         tmp_path,
         BUILD,
@@ -931,6 +931,118 @@ def test_a_promoted_drop_pick_keeps_its_drop_chance(tmp_path):
     _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(_SEVERING_SLOT))
     pick = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]["main_hand"]
     assert (pick.item_id, pick.chance) == (6631, 0.145)
+
+
+def test_a_promoted_pick_is_never_given_a_chance_the_loot_data_lacks(tmp_path):
+    """Task L1.6, ruling 4: the row's own chance belonged to the original
+    pick; a promoted runner-up whose source states no rate has none."""
+    _severing_items(tmp_path)
+    (tmp_path / BUILD / "loot.json").write_text(
+        json.dumps(
+            {
+                "sources": [
+                    {
+                        "kind": "dungeon",
+                        "name": "Wailing Caverns",
+                        "items": [],
+                        "bosses": [{"name": "Verdan the Everliving", "items": [6631]}],
+                    },
+                    {
+                        "kind": "dungeon",
+                        "name": "Shadowfang Keep",
+                        "items": [],
+                        "bosses": [
+                            {"name": "Sever", "items": [23171], "item_chances": {"23171": 20}}
+                        ],
+                    },
+                ],
+                "quests": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+    _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(_SEVERING_SLOT))
+    pick = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]["main_hand"]
+    assert (pick.item_id, pick.chance) == (6631, None)
+
+
+def test_no_real_pick_carries_a_chance_the_loot_data_lacks():
+    from pipeline.addonbis import _drop_chances
+
+    chances = _drop_chances(Path("builds"), BUILD)
+    for spec, bands in build_bis(Path("builds"), BUILD).items():
+        for band in bands:
+            for faction, slots in band.factions.items():
+                for slot, pick in slots.items():
+                    if pick.chance is not None:
+                        assert chances.get((pick.item_id, pick.source)) == pick.chance, (
+                            spec,
+                            band.level,
+                            faction,
+                            slot,
+                        )
+
+
+# --- Task L1.6: leveling-bis ignores client-unconfirmed items; the packer follows the sim ---
+
+
+def test_the_only_confirmed_main_hand_is_a_two_hander_so_it_is_adopted_and_the_off_hand_empties(
+    tmp_path,
+):
+    """confirmed.go:91-93: an adopted two-handed main hand empties the off
+    hand. The packer follows when no confirmed one-hander is left to keep
+    the off hand's pick beside (hunter-survival 50 kept no main hand)."""
+    _hands_items(
+        tmp_path,
+        [
+            (1, "Unconfirmed Sword", True, False),
+            (2, "Big Axe", False, True),
+            (4, "Shield", False, False),
+        ],
+    )
+    _write_bis(
+        tmp_path,
+        BUILD,
+        "warrior-arms",
+        [_band(20, "alliance", [_slot("main_hand", 1, [2]), _slot("off_hand", 4, [])])],
+    )
+    picks = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]
+    assert picks["main_hand"].item_id == 2
+    assert "off_hand" not in picks
+
+
+def test_the_shipped_build_has_no_client_unconfirmed_candidate_to_skip():
+    """Ruling 2: leveling-bis drops unconfirmed items before ranking, so the
+    packer's L1.4 safety net finds nothing in a regenerated build."""
+    from pipeline.addonbis import build_bis_with_skips, unconfirmed_skips_line
+
+    _, skips = build_bis_with_skips(Path("builds"), BUILD)
+    assert len(skips) == 0
+    assert unconfirmed_skips_line(BUILD, skips).startswith(
+        f"bis {BUILD}: skipped 0 client_unconfirmed candidates"
+    )
+
+
+def test_every_real_leveling_bis_pick_is_packed():
+    """No slot leveling-bis published a pick for is emptied by the packer:
+    an empty slot is one where no confirmed item exists at all."""
+    bis = build_bis(Path("builds"), BUILD)
+    emptied = []
+    for path in sorted((Path("builds") / BUILD / "bis").glob("*.json")):
+        packed = {
+            (band.level, faction, slot)
+            for band in bis[path.stem]
+            for faction, slots in band.factions.items()
+            for slot in slots
+        }
+        for band in json.loads(path.read_text(encoding="utf-8"))["bands"]:
+            if band.get("preset", "bare") != "bare":
+                continue
+            for row in band["slots"]:
+                key = (band["band"], band["faction"], row["slot"])
+                if "item_id" in row and key not in packed:
+                    emptied.append((path.stem,) + key)
+    assert emptied == []
 
 
 def test_the_drop_chance_lookup_reproduces_every_real_picks_own_chance():

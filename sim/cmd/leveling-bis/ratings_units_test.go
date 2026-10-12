@@ -48,7 +48,7 @@ func TestRankerScoresRealItemsInEnginePercent(t *testing.T) {
 		t.Fatalf("ReadActiveBuild: %v", err)
 	}
 	buildDir := filepath.Join(publishedRepoRoot, "data", "builds", activeBuild)
-	items, _, err := loadCandidates(buildDir, "warrior")
+	items, _, _, err := loadCandidates(buildDir, "warrior")
 	if err != nil {
 		t.Fatalf("loadCandidates: %v", err)
 	}
@@ -60,20 +60,36 @@ func TestRankerScoresRealItemsInEnginePercent(t *testing.T) {
 	for _, c := range convertCandidateRatings(items, factors) {
 		byID[c.ID] = c
 	}
-	for _, want := range []struct {
-		id        int
-		hit, crit float64
-	}{
-		{lionheartHelmID, 2, 2},
-		{furyVisorID, 1, 1},
-	} {
-		c, ok := byID[want.id]
-		if !ok {
-			t.Fatalf("item %d missing from the warrior candidates", want.id)
+	c, ok := byID[lionheartHelmID]
+	if !ok {
+		t.Fatalf("item %d missing from the warrior candidates", lionheartHelmID)
+	}
+	if c.Stats["hit"] != 2 || c.Stats["crit"] != 2 {
+		t.Errorf("item %d scores hit %v / crit %v, want 2 / 2", lionheartHelmID, c.Stats["hit"], c.Stats["crit"])
+	}
+	// Every aura-percent item in this build is client_unconfirmed, so none
+	// is a candidate any more (task L1.6, loadCandidates); the conversion
+	// is still checked on the real row.
+	if _, ok := byID[furyVisorID]; ok {
+		t.Errorf("item %d (client_unconfirmed) is a warrior candidate", furyVisorID)
+	}
+	classFile, err := loadClassItems(buildDir, "warrior")
+	if err != nil {
+		t.Fatalf("loadClassItems: %v", err)
+	}
+	found := false
+	for _, ci := range classFile.Items {
+		if ci.ID != furyVisorID {
+			continue
 		}
-		if c.Stats["hit"] != want.hit || c.Stats["crit"] != want.crit {
-			t.Errorf("item %d scores hit %v / crit %v, want %v / %v", want.id, c.Stats["hit"], c.Stats["crit"], want.hit, want.crit)
+		found = true
+		got := convertRatingStats(ci.Stats, ci.PercentStats, factors)
+		if got["hit"] != 1 || got["crit"] != 1 {
+			t.Errorf("item %d converts to hit %v / crit %v, want 1 / 1", furyVisorID, got["hit"], got["crit"])
 		}
+	}
+	if !found {
+		t.Fatalf("item %d missing from items/warrior.json", furyVisorID)
 	}
 	if got := byID[arcanoweaveID].Stats["hit"]; got != 1 {
 		t.Errorf("Arcanoweave Cloak hit = %v, want 1", got)
@@ -108,7 +124,7 @@ func TestTheImmovableObjectScoresBlockValueAndNoBlockChance(t *testing.T) {
 		t.Fatalf("ReadActiveBuild: %v", err)
 	}
 	buildDir := filepath.Join(publishedRepoRoot, "data", "builds", activeBuild)
-	items, _, err := loadCandidates(buildDir, "warrior")
+	items, _, _, err := loadCandidates(buildDir, "warrior")
 	if err != nil {
 		t.Fatalf("loadCandidates: %v", err)
 	}
