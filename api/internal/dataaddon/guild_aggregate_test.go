@@ -3,42 +3,29 @@ package dataaddon
 
 import "testing"
 
-func TestMemberNameOfReadsTheNameSegmentOfACharacterKey(t *testing.T) {
-	if got := memberNameOf("us/normal/thoradin"); got != "thoradin" {
-		t.Errorf("memberNameOf = %q, want thoradin", got)
+func fraction(v float64) *float64 { return &v }
+
+func TestMeanAttendanceIsTheMeanOfTheMembersFractions(t *testing.T) {
+	if got := meanAttendance([]float64{0.75, 0.25}); got == nil || *got != 0.5 {
+		t.Errorf("mean = %v, want 0.5", got)
 	}
-	if got := memberNameOf("not-a-character-key"); got != "not-a-character-key" {
-		t.Errorf("memberNameOf on an unparseable key should return it unchanged, got %q", got)
+	if got := meanAttendance(nil); got != nil {
+		t.Errorf("no scored members: %v, want none", *got)
 	}
 }
 
-func TestBuildGuildRowSortsMembersAndComputesProgress(t *testing.T) {
-	g := guildIdentity{ID: 1, Region: "us", Ruleset: "normal", Name: "Iron Vanguard"}
-	row := buildGuildRow(g, []string{"us/normal/thoradin", "us/normal/o'malley"}, 2, 2, 3)
-	if row.Name != "Iron Vanguard" {
-		t.Errorf("name = %q", row.Name)
-	}
-	if row.Progress != "2/3" {
-		t.Errorf("progress = %q, want 2/3", row.Progress)
-	}
-	if row.Nights != 2 {
-		t.Errorf("nights = %d, want 2", row.Nights)
-	}
-	if row.Roster != 2 {
-		t.Errorf("roster = %d, want 2", row.Roster)
-	}
-	want := []string{"o'malley", "thoradin"}
-	for i, name := range want {
-		if row.Members[i] != name {
-			t.Errorf("members[%d] = %q, want %q", i, row.Members[i], name)
+func TestStandingsRankByKillsThenAttendanceAndShareTies(t *testing.T) {
+	got := standings([]guildStanding{
+		{ID: 1, Kills: 2, Attendance: fraction(0.5)},
+		{ID: 2, Kills: 5, Attendance: nil},
+		{ID: 3, Kills: 2, Attendance: fraction(0.9)},
+		{ID: 4, Kills: 2, Attendance: fraction(0.5)},
+		{ID: 5, Kills: 0, Attendance: nil},
+	})
+	want := map[int64]int{2: 1, 3: 2, 1: 3, 4: 3, 5: 5}
+	for id, rank := range want {
+		if got[id] != rank {
+			t.Errorf("guild %d: standing %d, want %d (all: %v)", id, got[id], rank, got)
 		}
-	}
-}
-
-func TestBuildGuildRowOmitsProgressWithNoAttemptedEncounters(t *testing.T) {
-	g := guildIdentity{ID: 1, Region: "us", Ruleset: "normal", Name: "Iron Vanguard"}
-	row := buildGuildRow(g, []string{"us/normal/thoradin"}, 0, 0, 0)
-	if row.Progress != "" {
-		t.Errorf("progress = %q, want empty (omitted)", row.Progress)
 	}
 }

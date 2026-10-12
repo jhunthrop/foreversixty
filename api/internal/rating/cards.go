@@ -107,6 +107,9 @@ type CardRow struct {
 	// fightDiscipline, migration 0035_score_v2): nil when it cannot be known. Set by the
 	// caller, like PlayerKey.
 	Discipline *bool
+	// LastRaid is this fight's last-raid facts (last_raid.go, migration 0036_last_raid). Set by
+	// the caller, like PlayerKey.
+	LastRaid LastRaidFacts
 }
 
 // newCardRow builds a CardRow from one player's already-scored Card. PlayerKey is left

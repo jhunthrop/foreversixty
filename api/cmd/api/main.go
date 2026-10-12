@@ -310,8 +310,11 @@ func runDataAddon(ctx context.Context, log *slog.Logger) error {
 		build = latest.Version
 	} else {
 		log.Warn(dataaddon.JobCommand, "err", "no client build available",
-			"effect", "Data.lua's build field reads \"unknown\"")
+			"effect", "every gear component reads 0 and no no-logs record names a spec")
 	}
+	// The scores' gear component (rating.ScoreV2 through sims.GearScore) reads the item
+	// tables and per-build weights, exactly as the API server wires them.
+	sims.SetGearData(treeData, cfg.TreeDataDir)
 
 	bucket := os.Getenv("DATA_ADDON_BUCKET")
 	var uploader dataaddon.Uploader
@@ -327,7 +330,7 @@ func runDataAddon(ctx context.Context, log *slog.Logger) error {
 	}
 
 	result, err := dataaddon.Run(ctx, dataaddon.Deps{
-		Store: &dataaddon.Store{Pool: pool}, Upload: uploader, Bucket: bucket,
+		Store: &dataaddon.Store{Pool: pool}, Trees: treeData, Upload: uploader, Bucket: bucket,
 		Build: build, Now: time.Now().UTC(), Log: log,
 	})
 	if err != nil {
@@ -545,7 +548,7 @@ func serve(log *slog.Logger) error {
 	}
 
 	reportStore := &reports.Store{Pool: pool}
-	rankStore := &rankings.Store{Pool: pool, Specs: inferrer(treeData), APIBaseURL: cfg.APIBaseURL}
+	rankStore := &rankings.Store{Pool: pool, Specs: inferrer(treeData), APIBaseURL: cfg.APIBaseURL, Trees: treeData}
 	ratingStore := &rating.Store{Pool: pool, Log: log}
 	client := objects(cfg, log)
 

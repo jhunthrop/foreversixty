@@ -19,10 +19,18 @@ var chromeHTML string
 // changes and the copy does not.
 var Header, Footer = splitChrome(chromeHTML)
 
-// splitChrome cuts a chrome document into its header and footer halves. A
+// splitChrome cuts a chrome document into its header and footer halves. The
+// document may open with an HTML comment (chrome.html's note on how it is
+// regenerated), which is dropped: it is not part of the site's chrome. A
 // chrome file without the marker is a build-time mistake in an embedded
 // asset, not a runtime condition, so it panics rather than degrading.
 func splitChrome(s string) (template.HTML, template.HTML) {
+	s = strings.TrimSpace(s)
+	if strings.HasPrefix(s, "<!--") && !strings.HasPrefix(s, mainMarker) {
+		if _, rest, ok := strings.Cut(s, "-->"); ok {
+			s = rest
+		}
+	}
 	header, footer, ok := strings.Cut(s, mainMarker)
 	if !ok {
 		panic("site: chrome.html must contain " + mainMarker + " between the header and the footer")

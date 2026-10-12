@@ -107,6 +107,8 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 		cr := newCardRow(meta, row, card)
 		cr.PlayerKey = character.KeyFromUnit(f.Region, f.Ruleset, row.Name)
 		cr.Discipline = fightDiscipline(f.Summary, row)
+		cr.LastRaid = lastRaidFacts(f.Summary, row, card,
+			ratingengine.ActivityIdleMS(f.Summary, row.GUID, tables.Mechanics, nil))
 		if err := insertCardRow(ctx, tx, cr); err != nil {
 			return err
 		}
@@ -123,20 +125,23 @@ func insertCardRow(ctx context.Context, tx pgx.Tx, cr CardRow) error {
 		`insert into rating_scores (report_id, fight_index, player_key, player_name, class, spec, role,
 		   encounter_id, difficulty, size, duration_ms, kill, kill_time_band, overall, overall_uncapped,
 		   overall_capped, components, model_version, fought_at, coverage, insufficient, insufficient_reason,
-		   discipline)
+		   discipline, deaths, biggest_loss, loss_seconds, consumables_missed)
 		 values ($1, $2, $3, $4, nullif($5, ''), nullif($6, ''), nullif($7, ''), $8, $9, $10, $11, $12, $13,
-		   $14, $15, $16, $17, $18, $19, $20, $21, nullif($22, ''), $23)
+		   $14, $15, $16, $17, $18, $19, $20, $21, nullif($22, ''), $23, $24, nullif($25, ''), $26, $27)
 		 on conflict (report_id, fight_index, player_key, fought_at) do update set
 		   player_name = excluded.player_name, class = excluded.class, spec = excluded.spec,
 		   role = excluded.role, overall = excluded.overall, overall_uncapped = excluded.overall_uncapped,
 		   overall_capped = excluded.overall_capped, components = excluded.components,
 		   model_version = excluded.model_version, coverage = excluded.coverage,
 		   insufficient = excluded.insufficient, insufficient_reason = excluded.insufficient_reason,
-		   discipline = excluded.discipline, computed_at = now()`,
+		   discipline = excluded.discipline, deaths = excluded.deaths,
+		   biggest_loss = excluded.biggest_loss, loss_seconds = excluded.loss_seconds,
+		   consumables_missed = excluded.consumables_missed, computed_at = now()`,
 		cr.ReportID, cr.FightIndex, cr.PlayerKey, cr.PlayerName, cr.Class, cr.Spec, cr.Role,
 		cr.EncounterID, cr.Difficulty, cr.Size, cr.DurationMS, cr.Kill, cr.KillTimeBand,
 		cr.Overall, cr.OverallUncapped, cr.OverallCapped, cr.Components, cr.ModelVersion, cr.FoughtAt,
-		cr.Coverage, cr.Insufficient, cr.InsufficientReason, cr.Discipline)
+		cr.Coverage, cr.Insufficient, cr.InsufficientReason, cr.Discipline, cr.LastRaid.Deaths, cr.LastRaid.BiggestLoss,
+		cr.LastRaid.LossSeconds, consumablesOrEmpty(cr.LastRaid.ConsumablesMissed))
 	if err != nil {
 		return fmt.Errorf("rating: write row %s/%d/%s: %w", cr.ReportID, cr.FightIndex, cr.PlayerKey, err)
 	}
@@ -259,6 +264,12 @@ func (s *Store) anonymized(ctx context.Context, playerKey string) (bool, error) 
 	return anon, nil
 }
 
+// Anonymized is anonymized for a reader outside this package: the nightly data addon leaves
+// out exactly the characters ForeverScore answers no score for.
+func (s *Store) Anonymized(ctx context.Context, playerKey string) (bool, error) {
+	return s.anonymized(ctx, playerKey)
+}
+
 // characterTrendPageSize bounds one page of the character endpoint's trend[]; a career's
 // worth of rated fights is unbounded, so this list is paginated like every other list read
 // in this API (reports/recent.go's own convention).
@@ -320,4 +331,13 @@ func (s *Store) ReadCharacterRating(ctx context.Context, playerKey string, limit
 		out = out[:limit]
 	}
 	return out, hasMore, nil
+}
+
+// consumablesOrEmpty stores an unset list as an empty one, never NULL: a row rated now
+// always says what was missed, even nothing.
+func consumablesOrEmpty(missed []string) []string {
+	if missed == nil {
+		return []string{}
+	}
+	return missed
 }

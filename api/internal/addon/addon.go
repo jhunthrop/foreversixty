@@ -590,8 +590,16 @@ func (s *Service) inbox(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "inbox", err, "could not read the inbox just now")
 		return
 	}
-	httpx.WriteOK(w, r, http.StatusOK, map[string]any{
-		"builds": entries, "messages": s.messages(r.Context(), userID),
+	// Contract 3's envelope (docs/contracts/addon-v2.md): builds stays as
+	// it always was for one release, and each build is repeated as a build
+	// message ahead of the typed messages.
+	now := time.Now().UTC()
+	messages := append(buildMessages(entries), s.messages(r.Context(), userID, now)...)
+	if messages == nil {
+		messages = []MessageEntry{}
+	}
+	httpx.WriteOK(w, r, http.StatusOK, InboxResponse{
+		Format: InboxFormat, GeneratedAt: now.Format(time.RFC3339), Builds: entries, Messages: messages,
 	})
 }
 

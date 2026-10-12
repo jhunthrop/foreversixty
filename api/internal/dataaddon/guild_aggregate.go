@@ -2,58 +2,80 @@
 package dataaddon
 
 import (
-	"fmt"
 	"sort"
-	"strings"
 )
 
-// guildRow is one guild's line in Data.lua.
-type guildRow struct {
-	Name     string
-	Progress string // "" when there is nothing to report (omitted from Data.lua)
-	Nights   int
-	Roster   int
-	Members  []string // lowercased character-name slugs, sorted
+// guildRecord is one guild's entry in ForeverSixtyData.guilds (contract 5), keyed by the
+// guild's name as the game's GetGuildInfo returns it.
+type guildRecord struct {
+	// Region is which file the record goes to when the render splits. It is not written.
+	Region string
+	// Standing is the guild's rank among every guild with a verified member: by distinct
+	// raid bosses killed in the window, ties by attendance; guilds still tied share a rank.
+	Standing int
+	// Nights is the distinct UTC dates of the guild's public reports in the window.
+	Nights int
+	// Roster is the verified member count, anonymised members included (a count names no
+	// one).
+	Roster int
+	// Attendance is the mean of the listed members' attendance fractions (ScoreV2's own);
+	// nil when no member has a score, and then it is not written.
+	Attendance *float64
+	// Members is the Name-Realm keys of the guild's characters that have a record, sorted.
+	Members []string
 }
 
-// guildIdentity names one guild with at least one verified member -- the
-// only kind this job publishes a row for.
+// guildIdentity names one guild with at least one verified member -- the only kind this
+// job publishes a record for.
 type guildIdentity struct {
 	ID                    int64
 	Region, Ruleset, Name string
 }
 
-// memberNameOf reads the name segment back out of a character key
-// ("us/normal/thoradin" -> "thoradin") -- guild_characters.character_key
-// is written in api/internal/character.Key's own format
-// (<region>/<ruleset>/<name-slug>), and this is that format's inverse for
-// the one segment this package needs. An unparseable key (should not
-// happen: character_key is not-null and every write path uses
-// character.Key) is returned unchanged rather than panicking, so a bad row
-// degrades to an odd-looking member name instead of stopping the run.
-func memberNameOf(key string) string {
-	parts := strings.SplitN(key, "/", 3)
-	if len(parts) != 3 {
-		return key
+// meanAttendance is the mean of the fractions, or nil for none.
+func meanAttendance(fractions []float64) *float64 {
+	if len(fractions) == 0 {
+		return nil
 	}
-	return parts[2]
+	var sum float64
+	for _, f := range fractions {
+		sum += f
+	}
+	mean := sum / float64(len(fractions))
+	return &mean
 }
 
-// buildGuildRow assembles one guild's Data.lua row. memberKeys are that
-// guild's verified guild_characters.character_key values; killed/total
-// are attempted-encounter counts (see store.go's progressionByGuild).
-func buildGuildRow(g guildIdentity, memberKeys []string, nights, killed, total int) guildRow {
-	members := make([]string, 0, len(memberKeys))
-	for _, key := range memberKeys {
-		members = append(members, slug(memberNameOf(key)))
+// guildStanding is what a guild is ranked by.
+type guildStanding struct {
+	ID         int64
+	Kills      int
+	Attendance *float64
+}
+
+// standings ranks guilds by distinct raid bosses killed, most first, ties broken by
+// attendance (no attendance counting as none); guilds tied on both share a rank, and the
+// next rank skips past them (1, 2, 2, 4).
+func standings(guilds []guildStanding) map[int64]int {
+	attendance := func(g guildStanding) float64 {
+		if g.Attendance == nil {
+			return 0
+		}
+		return *g.Attendance
 	}
-	sort.Strings(members)
-	progress := ""
-	if total > 0 {
-		progress = fmt.Sprintf("%d/%d", killed, total)
+	sorted := append([]guildStanding(nil), guilds...)
+	sort.SliceStable(sorted, func(i, j int) bool {
+		if sorted[i].Kills != sorted[j].Kills {
+			return sorted[i].Kills > sorted[j].Kills
+		}
+		return attendance(sorted[i]) > attendance(sorted[j])
+	})
+	out := make(map[int64]int, len(sorted))
+	for i, g := range sorted {
+		if i > 0 && g.Kills == sorted[i-1].Kills && attendance(g) == attendance(sorted[i-1]) {
+			out[g.ID] = out[sorted[i-1].ID]
+			continue
+		}
+		out[g.ID] = i + 1
 	}
-	return guildRow{
-		Name: g.Name, Progress: progress, Nights: nights,
-		Roster: len(members), Members: members,
-	}
+	return out
 }

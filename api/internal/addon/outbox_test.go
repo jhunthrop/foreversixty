@@ -52,12 +52,19 @@ type outboxHarness struct {
 // sims.Store on the same database and a job runner that only records.
 func newOutboxHarness(t *testing.T, allowed bool) *outboxHarness {
 	t.Helper()
+	return newOutboxHarnessOn(t, allowed, enginever.Version)
+}
+
+// newOutboxHarnessOn is newOutboxHarness with the sims service claiming engineVersion: any
+// other than enginever.Version makes every request one the engine refuses to run.
+func newOutboxHarnessOn(t *testing.T, allowed bool, engineVersion string) *outboxHarness {
+	t.Helper()
 	h := newHarness(t)
 	h.server.Close()
 	jobs := &recordingJobs{}
 	simSvc := &sims.Service{
 		Store: &sims.Store{Pool: h.pool}, Jobs: jobs, Accounts: entitled(allowed),
-		EngineVersion: enginever.Version,
+		EngineVersion: engineVersion,
 	}
 	mux := http.NewServeMux()
 	Mount(mux, &Service{Store: h.store, Builds: h.builds, Data: h.trees, Accounts: &auth.Store{Pool: h.pool},
@@ -104,11 +111,14 @@ func withOutbox(outbox string) string {
 	return `{"characters":[` + obnoxious + `],"outbox":` + outbox + `}`
 }
 
+// simRequests is the character's recorded requests that started a run; a
+// refused one is recorded too (state needs_premium, duplicate or invalid, for
+// the inbox ack) and is read by refusedRequests.
 func (h *outboxHarness) simRequests() []struct{ requestedAt, simID string } {
 	h.t.Helper()
 	rows, err := h.pool.Query(context.Background(),
 		`select requested_at, coalesce(sim_id, '') from addon_sim_requests
-		 where character_key = $1 order by created_at`, obnoxiousKey)
+		 where character_key = $1 and state = 'queued' order by created_at`, obnoxiousKey)
 	if err != nil {
 		h.t.Fatal(err)
 	}
@@ -214,6 +224,11 @@ func TestASecondSimRequestWithinTheHourIsDeduplicated(t *testing.T) {
 	if n := len(h.simRequests()); n != 1 {
 		t.Fatalf("sim requests = %d, want 1", n)
 	}
+	// The second request is recorded as a duplicate, for the inbox ack; the
+	// re-posted identical one is the first request again and adds nothing.
+	if got := h.refusedRequests(); len(got) != 1 || got[0] != [2]string{"2026-11-04 14:40", "duplicate"} {
+		t.Fatalf("refused requests = %v, want the 14:40 one as a duplicate", got)
+	}
 	var runs int
 	if err := h.pool.QueryRow(t.Context(), `select count(*) from sims where user_id = $1`, h.owner).Scan(&runs); err != nil {
 		t.Fatal(err)
@@ -247,6 +262,35 @@ func TestASimRequestWithoutServerSimsQueuesNothing(t *testing.T) {
 	if n := len(h.simRequests()); n != 0 || h.jobs.count() != 0 {
 		t.Fatalf("sim requests = %d, job calls = %d, want none", n, h.jobs.count())
 	}
+	// The refusal is recorded, so the inbox ack can say why nothing happened.
+	if got := h.refusedRequests(); len(got) != 1 || got[0] != [2]string{"2026-11-04 14:10", "needs_premium"} {
+		t.Fatalf("refused requests = %v, want the request as needs_premium", got)
+	}
+}
+
+// refusedRequests is the character's recorded requests that started no run,
+// as (requested_at, state), oldest first.
+func (h *outboxHarness) refusedRequests() [][2]string {
+	h.t.Helper()
+	rows, err := h.pool.Query(context.Background(),
+		`select requested_at, state from addon_sim_requests
+		 where character_key = $1 and state <> 'queued' and sim_id is null order by created_at`, obnoxiousKey)
+	if err != nil {
+		h.t.Fatal(err)
+	}
+	defer rows.Close()
+	var out [][2]string
+	for rows.Next() {
+		var r [2]string
+		if err := rows.Scan(&r[0], &r[1]); err != nil {
+			h.t.Fatal(err)
+		}
+		out = append(out, r)
+	}
+	if err := rows.Err(); err != nil {
+		h.t.Fatal(err)
+	}
+	return out
 }
 
 const rosterOutbox = `{"format":1,

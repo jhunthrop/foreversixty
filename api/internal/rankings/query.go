@@ -320,6 +320,9 @@ type Character struct {
 	History    []CharacterFight `json:"history"`
 	BuildsSeen []BuildSeen      `json:"builds_seen"`
 	ForeverScore
+	// ScoreHistory is the Forever Score's history (Store.scoreHistory), oldest first; empty,
+	// never null, when no rated fight carries a snapshot.
+	ScoreHistory []ScorePoint `json:"score_history"`
 }
 
 // ForeverScore is the character page's Forever Score (api/internal/rating's ScoreV2, the
@@ -363,20 +366,53 @@ type CharacterRef struct {
 	// when the Battle.net import has not captured them.
 	AvatarURL string `json:"avatar_url,omitempty"`
 	RenderURL string `json:"render_url,omitempty"`
+	// Guild, Level, Race and Realm say who the character is in game (Store.identity); each
+	// is null when no source knows it.
+	Guild *CharacterGuild `json:"guild"`
+	Level *int            `json:"level"`
+	Race  *string         `json:"race"`
+	Realm *string         `json:"realm"`
 }
 
 // HistoryLimit is how many of a character's fights the page shows.
 const HistoryLimit = 100
 
-// Character assembles a character page. It reports false when the
-// character has no ranked fights and no row of their own.
+// Character assembles the public character page: CharacterFights, then who the character
+// is (identity) and its score history (scoreHistory). It reports false when the character
+// has no ranked fights and no row of their own, and also when its account is anonymised
+// (the rule GET .../rating already applies), so an anonymised character reads exactly as
+// one nobody has logged.
 func (s *Store) Character(ctx context.Context, region, ruleset, name string) (Character, bool, error) {
 	key := strings.ToLower(region) + "/" + strings.ToLower(ruleset) + "/" + strings.ToLower(name)
+	anon, err := s.anonymized(ctx, key)
+	if err != nil || anon {
+		return Character{}, false, err
+	}
+	out, found, err := s.CharacterFights(ctx, region, ruleset, name)
+	if err != nil || !found {
+		return out, found, err
+	}
+	if err := s.identity(ctx, &out.Character); err != nil {
+		return Character{}, false, err
+	}
+	if out.ScoreHistory, err = s.scoreHistory(ctx, key); err != nil {
+		return Character{}, false, err
+	}
+	return out, true, nil
+}
+
+// CharacterFights is the fights half of a character page: its name and class, bests,
+// history and builds seen, with no anonymise check and no identity or score history. The
+// Forever Score's parses component reads its bests (rating.Store.meanBestParse). It
+// reports false when the character has no ranked fights and no row of their own.
+func (s *Store) CharacterFights(ctx context.Context, region, ruleset, name string) (Character, bool, error) {
+	key := strings.ToLower(region) + "/" + strings.ToLower(ruleset) + "/" + strings.ToLower(name)
 	out := Character{
-		Character:  CharacterRef{Key: key, Region: region, Ruleset: ruleset, Name: name},
-		Best:       []CharacterBest{},
-		History:    []CharacterFight{},
-		BuildsSeen: []BuildSeen{},
+		Character:    CharacterRef{Key: key, Region: region, Ruleset: ruleset, Name: name},
+		Best:         []CharacterBest{},
+		History:      []CharacterFight{},
+		BuildsSeen:   []BuildSeen{},
+		ScoreHistory: []ScorePoint{},
 	}
 	var class *string
 	err := s.Pool.QueryRow(ctx,

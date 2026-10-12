@@ -11,61 +11,18 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
-	"reflect"
 	"strings"
 	"testing"
 )
 
-// contractMessageV2 is MessageEntry plus the two fields contract 3 adds to messages the
-// struct already carries: "unit" on upgrade and "dps_per_point" on weights. Lane L6.3 moves
-// them into MessageEntry itself and deletes this shim. (Once they are there, Go's
-// shallower-field-wins rule keeps this file compiling and decoding until it is deleted.)
-type contractMessageV2 struct {
-	MessageEntry
-	Unit        string  `json:"unit,omitempty"`
-	DPSPerPoint float64 `json:"dps_per_point,omitempty"`
+// contractTypes are contract 3's eight message types, every one of which MessageEntry decodes.
+var contractTypes = []string{
+	messageBuild, messageUpgrade, messageWeights, messageSimResult,
+	messageLastRaid, messageLootValues, messageGuild, messageAck,
 }
 
-// contractSupported are the message types MessageEntry can decode today. The rest of
-// contract 3's eight types are listed in contractPending.
-var contractSupported = []string{messageUpgrade, messageWeights, messageGuild}
-
-// contractPending are the contract 3 types the API cannot emit yet: MessageEntry has none of
-// their fields (name/code, dps/error/slots, report_id/date/bosses, raid/items,
-// export_seen_at). Lane L6.3 adds them, and this test then moves them to contractSupported.
-var contractPending = []string{"build", "sim_result", "last_raid", "loot_values", "ack"}
-
-// contractCarried are the keys the struct already has for the supported types; the pending
-// types share them, so they say nothing about whether a pending type has been migrated.
-var contractCarried = map[string]bool{
-	"type": true, "character": true, "spec": true, "source": true,
-	"delta": true, "slot": true, "item_id": true, "item_name": true,
-}
-
-// contractHasJSONKey reports whether the struct type typ, or any struct embedded in it
-// (however deep), has a field whose JSON name is key.
-func contractHasJSONKey(typ reflect.Type, key string) bool {
-	for typ.Kind() == reflect.Pointer {
-		typ = typ.Elem()
-	}
-	if typ.Kind() != reflect.Struct {
-		return false
-	}
-	for i := 0; i < typ.NumField(); i++ {
-		f := typ.Field(i)
-		name, _, _ := strings.Cut(f.Tag.Get("json"), ",")
-		if name == "-" {
-			continue
-		}
-		if name == "" && f.Anonymous && contractHasJSONKey(f.Type, key) {
-			return true
-		}
-		if name == key {
-			return true
-		}
-	}
-	return false
-}
+// contractCharacter is the fixture's character key.
+const contractCharacter = "us/normal/obnoxious"
 
 func contractFixture(t *testing.T, name string) []byte {
 	t.Helper()
@@ -86,132 +43,133 @@ func contractStrict(t *testing.T, raw []byte, v any) {
 	}
 }
 
-// contractRoundTrip marshals v and requires the bytes to equal raw with its whitespace removed.
+// contractSorted is raw re-encoded with every object's keys sorted and its whitespace
+// removed, so two encodings of one value compare equal whatever order a struct lists its
+// fields in.
+func contractSorted(t *testing.T, raw []byte) []byte {
+	t.Helper()
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	var v any
+	if err := dec.Decode(&v); err != nil {
+		t.Fatalf("decode %s: %v", raw, err)
+	}
+	out, err := json.Marshal(v) // a map's keys marshal sorted
+	if err != nil {
+		t.Fatal(err)
+	}
+	return out
+}
+
+// contractRoundTrip marshals v and requires it to equal raw once both have their keys sorted.
 func contractRoundTrip(t *testing.T, raw []byte, v any) {
 	t.Helper()
-	var want bytes.Buffer
-	if err := json.Compact(&want, raw); err != nil {
-		t.Fatalf("compact %s: %v", raw, err)
-	}
 	got, err := json.Marshal(v)
 	if err != nil {
 		t.Fatalf("marshal: %v", err)
 	}
-	if !bytes.Equal(got, want.Bytes()) {
-		t.Errorf("round trip changed the message\n got: %s\nwant: %s", got, want.Bytes())
+	if g, w := contractSorted(t, got), contractSorted(t, raw); !bytes.Equal(g, w) {
+		t.Errorf("round trip changed the value\n got: %s\nwant: %s", g, w)
 	}
-}
-
-func contractContains(list []string, s string) bool {
-	for _, v := range list {
-		if v == s {
-			return true
-		}
-	}
-	return false
 }
 
 func TestInboxV2FixtureGolden(t *testing.T) {
-	var inbox struct {
-		Builds   []json.RawMessage `json:"builds"`
-		Messages []json.RawMessage `json:"messages"`
-	}
-	contractStrict(t, contractFixture(t, "inbox-v2.json"), &inbox)
+	raw := contractFixture(t, "inbox-v2.json")
 
-	t.Run("builds round trip through InboxEntry", func(t *testing.T) {
-		if len(inbox.Builds) != 1 {
-			t.Fatalf("builds = %d, want 1", len(inbox.Builds))
+	t.Run("the whole body round trips through InboxResponse", func(t *testing.T) {
+		var body InboxResponse
+		contractStrict(t, raw, &body)
+		contractRoundTrip(t, raw, body)
+		if body.Format != InboxFormat || body.GeneratedAt != "2026-11-04T21:03:00Z" {
+			t.Errorf("envelope = format %d, generated_at %q", body.Format, body.GeneratedAt)
 		}
-		for _, raw := range inbox.Builds {
-			var entry InboxEntry
-			contractStrict(t, raw, &entry)
-			contractRoundTrip(t, raw, entry)
+		if len(body.Builds) != 1 || body.Builds[0].Character != contractCharacter {
+			t.Errorf("builds = %+v", body.Builds)
 		}
 	})
 
-	// The type of every message, found before any subtest runs so each can run alone.
-	seen := map[string]int{}
-	types := make([]string, len(inbox.Messages))
-	for i, raw := range inbox.Messages {
-		var head struct {
-			Type string `json:"type"`
-		}
-		if err := json.Unmarshal(raw, &head); err != nil {
-			t.Fatalf("message %s: %v", raw, err)
-		}
-		types[i] = head.Type
-		seen[head.Type]++
+	var envelope struct {
+		Format      int               `json:"format"`
+		GeneratedAt string            `json:"generated_at"`
+		Builds      []json.RawMessage `json:"builds"`
+		Messages    []json.RawMessage `json:"messages"`
 	}
+	contractStrict(t, raw, &envelope)
 
-	t.Run("supported messages round trip through MessageEntry", func(t *testing.T) {
-		for i, raw := range inbox.Messages {
-			if !contractContains(contractSupported, types[i]) {
-				continue
+	t.Run("every message strictly decodes into MessageEntry and round trips", func(t *testing.T) {
+		seen := map[string]int{}
+		for _, msg := range envelope.Messages {
+			var m MessageEntry
+			contractStrict(t, msg, &m)
+			contractRoundTrip(t, msg, m)
+			if m.Character != contractCharacter {
+				t.Errorf("%s is addressed to %q, want the character key %q", m.Type, m.Character, contractCharacter)
 			}
-			var m contractMessageV2
-			contractStrict(t, raw, &m)
-			contractRoundTrip(t, raw, m)
-			if m.Type != types[i] || m.Character != "Obnoxious-Yell" {
-				t.Errorf("%s decoded as type %q for %q", types[i], m.Type, m.Character)
-			}
+			seen[m.Type]++
 		}
-		for _, typ := range contractSupported {
+		for _, typ := range contractTypes {
 			if seen[typ] != 1 {
 				t.Errorf("fixture has %d %q messages, want 1", seen[typ], typ)
 			}
 		}
-	})
-
-	t.Run("v2 fields on supported types pending L6.3", func(t *testing.T) {
-		// "unit" rides on the upgrade and "dps_per_point" on the weights message in the
-		// fixture; MessageEntry has neither field yet, so contractMessageV2 carries them.
-		for i, raw := range inbox.Messages {
-			var m contractMessageV2
-			switch types[i] {
-			case messageUpgrade:
-				contractStrict(t, raw, &m)
-				if m.Unit != "dps" {
-					t.Errorf("upgrade unit = %q, want dps", m.Unit)
-				}
-			case messageWeights:
-				contractStrict(t, raw, &m)
-				if m.DPSPerPoint != 0.42 {
-					t.Errorf("weights dps_per_point = %v, want 0.42", m.DPSPerPoint)
-				}
-			}
+		if len(envelope.Messages) != len(contractTypes) {
+			t.Errorf("the fixture has %d messages and contract 3 names %d types", len(envelope.Messages), len(contractTypes))
 		}
 	})
 
-	t.Run("v2 types pending L6.3", func(t *testing.T) {
-		// Every key of each pending message, read from the fixture itself, must still be absent
-		// from MessageEntry: a field added for any one of them means the type has begun to migrate.
-		for i, raw := range inbox.Messages {
-			if !contractContains(contractPending, types[i]) {
-				continue
-			}
-			var keys map[string]json.RawMessage
-			if err := json.Unmarshal(raw, &keys); err != nil {
-				t.Fatalf("message %s: %v", raw, err)
-			}
-			for key := range keys {
-				if !contractCarried[key] && contractHasJSONKey(reflect.TypeOf(MessageEntry{}), key) {
-					t.Errorf("MessageEntry now has the %q field, so %q is no longer pending: move it from "+
-						"contractPending to a strict decode and byte-equal round trip in this file (%s)",
-						key, types[i], "Lane L6.3")
-				}
-			}
+	byType := map[string]MessageEntry{}
+	for _, msg := range envelope.Messages {
+		var m MessageEntry
+		contractStrict(t, msg, &m)
+		byType[m.Type] = m
+	}
+
+	t.Run("the v2 fields read as contract 3 says", func(t *testing.T) {
+		if u := byType[messageUpgrade]; u.Unit != "dps" {
+			t.Errorf("upgrade unit = %q, want dps", u.Unit)
 		}
-		pending := 0
-		for _, typ := range contractPending {
-			if seen[typ] != 1 {
-				t.Errorf("fixture has %d %q messages, want 1", seen[typ], typ)
-			}
-			pending += seen[typ]
+		if w := byType[messageWeights]; w.DPSPerPoint == nil || *w.DPSPerPoint != 0.42 {
+			t.Errorf("weights dps_per_point = %v, want 0.42", w.DPSPerPoint)
 		}
-		t.Logf("%d v2-only message types are in the fixture and not yet decodable by MessageEntry: %v",
-			pending, contractPending)
-		if got := len(contractSupported) + len(contractPending); got != len(inbox.Messages) {
-			t.Errorf("the fixture has %d messages and the type lists name %d", len(inbox.Messages), got)
+		if s := byType[messageSimResult]; s.DPS == nil || *s.DPS != 412.6 || s.Error == nil || *s.Error != 3.1 || s.Slots == nil ||
+			len(*s.Slots) != 1 || (*s.Slots)[0] != (SimSlot{Slot: "chest", ItemID: 6627, Delta: 4.2}) {
+			t.Errorf("sim_result = %+v", s)
 		}
+		lr := byType[messageLastRaid]
+		if lr.ReportID != "r_8f2a1c" || lr.Date != "2026-12-09" || len(lr.Bosses) != 1 {
+			t.Fatalf("last_raid = %+v", lr)
+		}
+		if b := lr.Bosses[0]; b.Name != "Lucifron" || b.Percentile != 71 || b.BiggestLoss != "downtime" ||
+			b.LossSeconds != 18 || len(b.ConsumablesMissed) != 1 || b.Adherence == nil || *b.Adherence != 0.82 {
+			t.Errorf("last_raid boss = %+v", b)
+		}
+		lv := byType[messageLootValues]
+		if lv.Raid != "Molten Core" || lv.Items[17076] != (LootItemValue{Value: 6.3, Unit: "dps", Planned: true}) {
+			t.Errorf("loot_values = %+v", lv)
+		}
+		if a := byType[messageAck]; a.ExportSeenAt != "2026-11-04T14:03:00Z" || a.SimRequestState != "queued" {
+			t.Errorf("ack = %+v", a)
+		}
+		if b := byType[messageBuild]; b.Name != "Arms raid" || !strings.HasPrefix(b.Code, "FSB1:") {
+			t.Errorf("build = %+v", b)
+		}
+	})
+
+	// adherence is optional (contract 3): absent until the rotation task lands, so a
+	// last_raid without it decodes strictly and stays without it.
+	t.Run("a last_raid boss without adherence decodes and round trips", func(t *testing.T) {
+		lr := byType[messageLastRaid]
+		lr.Bosses = append([]LastRaidBoss(nil), lr.Bosses...)
+		lr.Bosses[0].Adherence = nil
+		b, err := json.Marshal(lr)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if bytes.Contains(b, []byte("adherence")) {
+			t.Fatalf("adherence is on the wire: %s", b)
+		}
+		var again MessageEntry
+		contractStrict(t, b, &again)
+		contractRoundTrip(t, b, again)
 	})
 }

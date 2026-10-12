@@ -3,72 +3,111 @@ package dataaddon
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// Store is every database read this job needs.
+// Store is every database read this job makes itself; the scores come from rating.Store.
 type Store struct {
 	Pool *pgxpool.Pool
 }
 
-// characterFightRow is one public, in-window, non-anonymized, sufficient
-// rated fight -- "sufficient" meaning the engine did not mark it
-// insufficient (migration 0023: a card built from under half a role's
-// weight table gets Overall = 0, and that 0 is not a score).
-type characterFightRow struct {
-	PlayerKey  string
-	Overall    float64
-	Components json.RawMessage
-	FoughtAt   time.Time
-}
-
-// characterFights reads every rating_scores row fought_at or after since,
-// whose report is public, for a player_key whose owning account has not
-// asked to be anonymized -- the same rule api/internal/rating.Store's
-// anonymized and ReadCharacterRating apply per character, applied here
-// across every character at once. A player_key with no characters row at
-// all (never linked to an account) is not anonymized, matching
-// rating.Store.anonymized's own "nothing to hide" rule exactly. It also
-// excludes insufficient cards at this same SQL layer, with the identical
-// predicate rating.Store.ReadCharacterRating uses: `not coalesce(rs.
-// insufficient, false)`. A NULL insufficient (a row written before
-// migration 0023 added the column) reads as sufficient, matching every
-// other stale-row gap in this codebase.
-func (s *Store) characterFights(ctx context.Context, since time.Time) ([]characterFightRow, error) {
+// windowParses reads, for every character with a rated fight in the window, the best
+// overall percentile it has on each boss there: player_key -> boss name -> best overall.
+// A rated fight counts when its report is public and the engine did not mark the card
+// insufficient (migration 0023: an insufficient card's overall is a 0 that is not a score;
+// a NULL reads as sufficient, as every other read of the column does). The boss's name is
+// the fight's own name, else the newest name any fight recorded for the encounter (the
+// rule the inbox's last_raid names bosses by); a fight with no name at all still puts the
+// character in the window but adds no boss. Anonymised characters are left out by the
+// caller, with rating.Store.Anonymized.
+func (s *Store) windowParses(ctx context.Context, since time.Time) (map[string]map[string]float64, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select rs.player_key, rs.overall, rs.components, rs.fought_at
-		 from rating_scores rs
-		 join reports r on r.id = rs.report_id
-		 where r.visibility = 'public' and rs.fought_at >= $1
-		   and not coalesce(rs.insufficient, false)
-		   and not exists (
-		     select 1 from characters c join users u on u.id = c.user_id
-		     where c.key = rs.player_key and u.anonymize
-		   )
-		 order by rs.player_key`, since)
+		`with rated as (
+		   select rs.player_key, rs.overall,
+		          coalesce(nullif(f.name, ''),
+		            (select f2.name from fights f2 where f2.encounter_id = rs.encounter_id and f2.name <> ''
+		              order by f2.start_ms desc limit 1), '') as boss
+		     from rating_scores rs
+		     join reports r on r.id = rs.report_id
+		     left join fights f on f.report_id = rs.report_id and f.fight_index = rs.fight_index
+		    where r.visibility = 'public' and rs.fought_at >= $1
+		      and not coalesce(rs.insufficient, false)
+		 )
+		 select player_key, boss, max(coalesce(overall, 0))::float8
+		   from rated group by player_key, boss
+		  order by player_key, boss`, since)
 	if err != nil {
-		return nil, fmt.Errorf("dataaddon: read character fights: %w", err)
+		return nil, fmt.Errorf("dataaddon: read rated fights: %w", err)
 	}
 	defer rows.Close()
-	var out []characterFightRow
+	out := map[string]map[string]float64{}
 	for rows.Next() {
-		var r characterFightRow
-		if err := rows.Scan(&r.PlayerKey, &r.Overall, &r.Components, &r.FoughtAt); err != nil {
-			return nil, fmt.Errorf("dataaddon: scan character fight: %w", err)
+		var key, boss string
+		var best float64
+		if err := rows.Scan(&key, &boss, &best); err != nil {
+			return nil, fmt.Errorf("dataaddon: scan rated fight: %w", err)
 		}
-		out = append(out, r)
+		if out[key] == nil {
+			out[key] = map[string]float64{}
+		}
+		if boss != "" {
+			out[key][boss] = best
+		}
 	}
 	return out, rows.Err()
 }
 
-// guildsWithVerifiedMembers reads every guild that has at least one
-// verified guild_characters row -- a guild with none has nothing
-// corroborated to publish (dispatch: "only VERIFIED members count"), so it
-// is left out of this list entirely and never gets a Data.lua row.
+// identities reads who each of keys is in game (identity): the characters row's display
+// name and Battle.net realm, and the newest rated row's player_name as the log printed it.
+// A key with none of them reads as an empty identity.
+func (s *Store) identities(ctx context.Context, keys []string) (map[string]identity, error) {
+	rows, err := s.Pool.Query(ctx,
+		`select k.key, coalesce(c.name, ''), coalesce(c.realm_name, ''),
+		   coalesce((select rs.player_name from rating_scores rs where rs.player_key = k.key and rs.player_name <> ''
+		     order by rs.fought_at desc limit 1), '')
+		 from unnest($1::text[]) as k(key)
+		 left join characters c on c.key = k.key`, keys)
+	if err != nil {
+		return nil, fmt.Errorf("dataaddon: read identities: %w", err)
+	}
+	defer rows.Close()
+	out := map[string]identity{}
+	for rows.Next() {
+		var key string
+		var id identity
+		if err := rows.Scan(&key, &id.Name, &id.RealmName, &id.PlayerName); err != nil {
+			return nil, fmt.Errorf("dataaddon: scan identity: %w", err)
+		}
+		out[key] = id
+	}
+	return out, rows.Err()
+}
+
+// exports reads the stored addon export of each of keys that has one.
+func (s *Store) exports(ctx context.Context, keys []string) (map[string]string, error) {
+	rows, err := s.Pool.Query(ctx,
+		`select character_key, export from addon_exports where character_key = any($1)`, keys)
+	if err != nil {
+		return nil, fmt.Errorf("dataaddon: read exports: %w", err)
+	}
+	defer rows.Close()
+	out := map[string]string{}
+	for rows.Next() {
+		var key, export string
+		if err := rows.Scan(&key, &export); err != nil {
+			return nil, fmt.Errorf("dataaddon: scan export: %w", err)
+		}
+		out[key] = export
+	}
+	return out, rows.Err()
+}
+
+// guildsWithVerifiedMembers reads every guild that has at least one verified
+// guild_characters row -- a guild with none has nothing corroborated to publish, so it
+// is left out of this list entirely and never gets a record.
 func (s *Store) guildsWithVerifiedMembers(ctx context.Context) ([]guildIdentity, error) {
 	rows, err := s.Pool.Query(ctx,
 		`select g.id, g.region, g.ruleset, g.name
@@ -93,8 +132,8 @@ func (s *Store) guildsWithVerifiedMembers(ctx context.Context) ([]guildIdentity,
 	return out, rows.Err()
 }
 
-// verifiedMembers reads every verified guild_characters row for the given
-// guild ids, keyed by guild_id.
+// verifiedMembers reads every verified guild_characters row for the given guild ids,
+// keyed by guild_id.
 func (s *Store) verifiedMembers(ctx context.Context, guildIDs []int64) (map[int64][]string, error) {
 	rows, err := s.Pool.Query(ctx,
 		`select guild_id, character_key from guild_characters
@@ -116,12 +155,12 @@ func (s *Store) verifiedMembers(ctx context.Context, guildIDs []int64) (map[int6
 	return out, rows.Err()
 }
 
-// nightsByGuild counts, per guild id, the distinct UTC calendar dates of
-// that guild's public reports created at or after since -- this job's own
-// definition of "a raid night" (see the plan's aggregation-rule section).
+// nightsByGuild counts, per guild id, the distinct UTC calendar dates of that guild's
+// public reports created at or after since -- this job's own definition of "a raid
+// night".
 func (s *Store) nightsByGuild(ctx context.Context, guildIDs []int64, since time.Time) (map[int64]int, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select guild_id, count(distinct date(created_at))
+		`select guild_id, count(distinct (created_at at time zone 'UTC')::date)
 		 from reports
 		 where guild_id = any($1) and visibility = 'public' and created_at >= $2
 		 group by guild_id`, guildIDs, since)
@@ -141,36 +180,30 @@ func (s *Store) nightsByGuild(ctx context.Context, guildIDs []int64, since time.
 	return out, rows.Err()
 }
 
-// progressionByGuild counts, per guild id, encounters killed at least once
-// against every encounter attempted, from fights attached to a report the
-// guild's own public page would show
-// (api/internal/rankings/guilds.go's own Guild() progression query:
-// r.visibility <> 'private'). Duplicated here rather than imported:
-// api/internal/rankings is outside this lane's file ownership, and
-// api/internal/rating/backfill.go's own readSummary already sets the
-// precedent in this codebase for duplicating one small, owned query across
-// a lane boundary rather than reaching across it.
-func (s *Store) progressionByGuild(ctx context.Context, guildIDs []int64) (killed, total map[int64]int, err error) {
+// bossesKilledByGuild counts, per guild id, the distinct encounters killed at least once
+// in the window, from fights attached to a report the guild's own public page would show
+// (the progression query api/internal/rankings/guilds.go's Guild() runs: r.visibility <>
+// 'private'), limited to reports created at or after since. Duplicated here rather than
+// imported: api/internal/rankings is outside this lane's files.
+func (s *Store) bossesKilledByGuild(ctx context.Context, guildIDs []int64, since time.Time) (map[int64]int, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select r.guild_id, f.encounter_id, count(*) filter (where f.kill)
+		`select r.guild_id, count(distinct f.encounter_id)
 		 from fights f join reports r on r.id = f.report_id
-		 where r.guild_id = any($1) and f.encounter_id is not null and r.visibility <> 'private'
-		 group by r.guild_id, f.encounter_id`, guildIDs)
+		 where r.guild_id = any($1) and f.encounter_id is not null and f.kill
+		   and r.visibility <> 'private' and r.created_at >= $2
+		 group by r.guild_id`, guildIDs, since)
 	if err != nil {
-		return nil, nil, fmt.Errorf("dataaddon: read guild progression: %w", err)
+		return nil, fmt.Errorf("dataaddon: read guild kills: %w", err)
 	}
 	defer rows.Close()
-	killed, total = map[int64]int{}, map[int64]int{}
+	out := map[int64]int{}
 	for rows.Next() {
-		var id, encounterID int64
-		var kills int
-		if err := rows.Scan(&id, &encounterID, &kills); err != nil {
-			return nil, nil, fmt.Errorf("dataaddon: scan guild progression: %w", err)
+		var id int64
+		var n int
+		if err := rows.Scan(&id, &n); err != nil {
+			return nil, fmt.Errorf("dataaddon: scan guild kills: %w", err)
 		}
-		total[id]++
-		if kills > 0 {
-			killed[id]++
-		}
+		out[id] = n
 	}
-	return killed, total, rows.Err()
+	return out, rows.Err()
 }

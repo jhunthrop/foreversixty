@@ -1,22 +1,24 @@
 {
+  "format": 2,
+  "generated_at": "2026-11-04T21:03:00Z",
   "builds": [
     {
       "id": "b_01",
       "name": "Arms raid",
-      "character": "Obnoxious-Yell",
+      "character": "us/normal/obnoxious",
       "code": "FSB1:1.60.1.70291:warrior:111121:chest=6627:attack_power=30"
     }
   ],
   "messages": [
     {
       "type": "build",
-      "character": "Obnoxious-Yell",
+      "character": "us/normal/obnoxious",
       "name": "Arms raid",
       "code": "FSB1:1.60.1.70291:warrior:111121:chest=6627:attack_power=30"
     },
     {
       "type": "upgrade",
-      "character": "Obnoxious-Yell",
+      "character": "us/normal/obnoxious",
       "slot": "chest",
       "item_id": 6627,
       "item_name": "Mutant Scale Breastplate",
@@ -26,7 +28,7 @@
     },
     {
       "type": "weights",
-      "character": "Obnoxious-Yell",
+      "character": "us/normal/obnoxious",
       "spec": "warrior-arms",
       "weights": [
         {
@@ -49,7 +51,7 @@
     },
     {
       "type": "sim_result",
-      "character": "Obnoxious-Yell",
+      "character": "us/normal/obnoxious",
       "spec": "warrior-arms",
       "dps": 412.6,
       "error": 3.1,
@@ -64,7 +66,7 @@
     },
     {
       "type": "last_raid",
-      "character": "Obnoxious-Yell",
+      "character": "us/normal/obnoxious",
       "report_id": "r_8f2a1c",
       "date": "2026-12-09",
       "bosses": [
@@ -83,7 +85,7 @@
     },
     {
       "type": "loot_values",
-      "character": "Obnoxious-Yell",
+      "character": "us/normal/obnoxious",
       "raid": "Molten Core",
       "items": {
         "17076": {
@@ -95,7 +97,7 @@
     },
     {
       "type": "guild",
-      "character": "Obnoxious-Yell",
+      "character": "us/normal/obnoxious",
       "guild_name": "OLYMPUS XXVII",
       "claim_state": "claimed",
       "pending_approvals": 2,
@@ -103,8 +105,9 @@
     },
     {
       "type": "ack",
-      "character": "Obnoxious-Yell",
-      "export_seen_at": "2026-11-04T14:03:00Z"
+      "character": "us/normal/obnoxious",
+      "export_seen_at": "2026-11-04T14:03:00Z",
+      "sim_request_state": "queued"
     }
   ]
 }

@@ -49,6 +49,47 @@ func TestRulesetFromRealmTakesTheSegmentThenTheFallback(t *testing.T) {
 	}
 }
 
+// The beta's realm names spell their ruleset as a word, as the web's rulesetFromRealm reads
+// them, and the client's normalised form (spaces and hyphens gone) spells it the same way.
+func TestRulesetFromRealmReadsTheRealmNamesWords(t *testing.T) {
+	for realm, want := range map[string]string{
+		"Classic Beta PvP":   RulesetPvP,
+		"Classic Beta PvE 2": RulesetNormal,
+		"ClassicBetaPvP":     RulesetPvP,
+		"ClassicBetaPvE2":    RulesetNormal,
+		"Classic-Beta-PvP":   RulesetPvP,
+		"Forever RP":         RulesetRP,
+		"ForeverRP":          RulesetRP,
+		"Forever Roleplay":   RulesetRP,
+		"ClassicBetaHC":      RulesetHardcore,
+		"hardcore":           RulesetHardcore,
+		"Normal":             RulesetNormal,
+	} {
+		if got := RulesetFromRealm(realm, RulesetHardcore); got != want {
+			t.Errorf("RulesetFromRealm(%q) = %q, want %q", realm, got, want)
+		}
+	}
+	for _, realm := range []string{"Whitemane", "Nightslayer", "", "Sharp", "Earthshaker"} {
+		if got := RulesetFromRealm(realm, RulesetPvP); got != RulesetPvP {
+			t.Errorf("RulesetFromRealm(%q) = %q, want the fallback", realm, got)
+		}
+	}
+}
+
+func TestRealmTakesTheFirstSourceThatHasOne(t *testing.T) {
+	for _, tc := range []struct{ bnet, export, unit, want string }{
+		{"Classic Beta PvE 2", "Elsewhere", "Mörk-ClassicBetaPvP", "Classic Beta PvE 2"},
+		{"  ", " Classic Beta PvP ", "Mörk-ClassicBetaPvE2", "Classic Beta PvP"},
+		{"", "", " Mörk-ClassicBetaPvP ", "ClassicBetaPvP"},
+		{"", "", "Mörk", ""},
+		{"", "", "", ""},
+	} {
+		if got := Realm(tc.bnet, tc.export, tc.unit); got != tc.want {
+			t.Errorf("Realm(%q, %q, %q) = %q, want %q", tc.bnet, tc.export, tc.unit, got, tc.want)
+		}
+	}
+}
+
 func TestKeyFromUnitSplitsTheLoggedName(t *testing.T) {
 	if got := KeyFromUnit("us", "hardcore", "Baelgrim-Nightslayer"); got != "us/hardcore/baelgrim" {
 		t.Errorf("KeyFromUnit = %q", got)

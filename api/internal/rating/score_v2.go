@@ -10,8 +10,8 @@ package rating
 // ranges are the v1 definition:
 //
 //	gear        0-500  the character's gear score for its spec, against that spec's own
-//	                   level-60 best-in-slot set in the same data build
-//	                   (sims.GearScore over sims.FullGearScore)
+//	                   best-in-slot set for the character's level band (to 60) in the
+//	                   same data build (sims.GearScore over sims.FullGearScore)
 //	experience  0-700  25 a distinct dungeon cleared + 40 a distinct raid boss killed, by
 //	                   any character the account has linked, capped
 //	parses      0-600  the mean of the character's best parse percentile on each boss
@@ -108,6 +108,15 @@ func Tier(score int) string {
 var specAliases = map[string]string{
 	"rogue-outlaw":   "rogue-combat",
 	"druid-guardian": "druid-feral-bear",
+}
+
+// DataSpecSlug is the build data's spec slug ("warrior-arms") for a logged class and spec
+// ("Warrior", "Arms"), the one the addon inbox prices loot under. Empty when either is.
+func DataSpecSlug(class, spec string) string {
+	if class == "" || spec == "" {
+		return ""
+	}
+	return dataSpecSlug(class, spec)
 }
 
 // dataSpecSlug is the build data's slug for a logged class and spec.
@@ -263,10 +272,13 @@ func (s *Store) ratedFights(ctx context.Context, key string) (ratedFightSummary,
 
 // gearScore is sims.GearScore of the character's stored addon export under spec, and
 // the mark it is measured against, sims.FullGearScore of the same spec in the export's own
-// data build. No export or no spec is no gear (0, 0). Gear the loaded data cannot score -
-// an unknown spec, build or class, or a spec with no best-in-slot set - is also no gear,
-// with one log line naming the spec, rather than an error: the other four components
-// still stand.
+// data build, for the character's own level band (sims.GearBand, the addon's Gear.bandFor
+// rule): until 60 a character is measured against the best set for its level, not for
+// 60. An export with no level= section (an addon older than that section) is measured
+// against the level-60 set, as every export was before the band rule. No export or no
+// spec is no gear (0, 0). Gear the loaded data cannot score - an unknown spec, build or
+// class, or a spec with no best-in-slot set - is also no gear, with one log line naming
+// the spec, rather than an error: the other four components still stand.
 func (s *Store) gearScore(ctx context.Context, key, spec string) (raw, full float64, err error) {
 	if spec == "" {
 		return 0, 0, nil
@@ -285,9 +297,24 @@ func (s *Store) gearScore(ctx context.Context, key, spec string) (raw, full floa
 			"err", "the stored export is not an FS1 code")
 		return 0, 0, nil
 	}
+	level := sims.FullGearBand
+	if decoded.HasLevel {
+		level = decoded.Level
+	}
 	raw, err = sims.GearScore(ctx, export, spec)
+	var band int
+	var hasBand bool
 	if err == nil {
-		full, err = sims.FullGearScore(ctx, decoded.DataBuild, spec)
+		band, hasBand, err = sims.GearBand(ctx, decoded.DataBuild, spec, level)
+	}
+	if err == nil && !hasBand {
+		// Below the first band (level 20) the spec has no best-in-slot set to measure
+		// against, so there is no mark: the gear component is 0, not a share of a
+		// level-60 set the character cannot wear yet.
+		return raw, 0, nil
+	}
+	if err == nil {
+		full, err = sims.FullGearScore(ctx, decoded.DataBuild, spec, band)
 	}
 	if errors.Is(err, sims.ErrGearUnscorable) || errors.Is(err, sims.ErrNoBestInSlot) {
 		s.logger().Warn("rating", "op", "gear", "character", key, "spec", spec, "err", err)
@@ -297,6 +324,12 @@ func (s *Store) gearScore(ctx context.Context, key, spec string) (raw, full floa
 		return 0, 0, fmt.Errorf("rating: gear score of %s: %w", key, err)
 	}
 	return raw, full, nil
+}
+
+// ItemLevel is the item level ScoreV2 carries (itemLevel), for a reader that needs it for a
+// character with no score yet: the nightly data addon's no-logs record.
+func (s *Store) ItemLevel(ctx context.Context, key string) (int, error) {
+	return s.itemLevel(ctx, key)
 }
 
 // itemLevel is the Battle.net capture's equipped item level, else the newest ranked
@@ -360,13 +393,14 @@ func (s *Store) experience(ctx context.Context, key string) (ScoreExperience, er
 }
 
 // meanBestParse is the mean of the character's best parse percentile per boss, as the
-// rankings character page places them (rankings.Store.Character's best[]); 0 with none.
+// rankings character page places them (rankings.Store.CharacterFights' best[], the page's
+// own bests without its anonymise check, identity or score history); 0 with none.
 func (s *Store) meanBestParse(ctx context.Context, key string) (float64, error) {
 	parts := strings.SplitN(key, "/", 3)
 	if len(parts) != 3 {
 		return 0, nil
 	}
-	page, _, err := (&rankings.Store{Pool: s.Pool}).Character(ctx, parts[0], parts[1], parts[2])
+	page, _, err := (&rankings.Store{Pool: s.Pool}).CharacterFights(ctx, parts[0], parts[1], parts[2])
 	if err != nil {
 		return 0, err
 	}

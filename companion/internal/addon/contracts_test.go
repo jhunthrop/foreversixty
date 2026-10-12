@@ -136,12 +136,22 @@ func contractLua51(t *testing.T, body []byte) (ran string, ok bool) {
 	return "", false
 }
 
+// contractCharacter is the fixture's character key.
+const contractCharacter = "us/normal/obnoxious"
+
 func TestInboxV2FixtureGolden(t *testing.T) {
 	var inbox struct {
-		Builds   []json.RawMessage `json:"builds"`
-		Messages []json.RawMessage `json:"messages"`
+		Format      int               `json:"format"`
+		GeneratedAt string            `json:"generated_at"`
+		Builds      []json.RawMessage `json:"builds"`
+		Messages    []json.RawMessage `json:"messages"`
 	}
 	contractStrict(t, contractFixture(t, "inbox-v2.json"), &inbox)
+	// The body GET /v1/addon/inbox answers: contract 3's envelope, every message addressed by
+	// character key (region/ruleset/name-slug), the form Build.Character has always carried.
+	if inbox.Format != 2 || inbox.GeneratedAt != "2026-11-04T21:03:00Z" {
+		t.Fatalf("envelope = format %d, generated_at %q", inbox.Format, inbox.GeneratedAt)
+	}
 
 	// The type of every message, found before any subtest runs so each can run alone.
 	seen := map[string]int{}
@@ -205,7 +215,7 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 			var m contractMessageV2
 			contractStrict(t, raw, &m)
 			contractRoundTrip(t, raw, m)
-			if m.Type != types[i] || m.Character != "Obnoxious-Yell" {
+			if m.Type != types[i] || m.Character != contractCharacter {
 				t.Errorf("%s decoded as type %q for %q", types[i], m.Type, m.Character)
 			}
 		}
@@ -283,7 +293,7 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 			t.Fatalf("builds = %+v", builds)
 		}
 		build := builds.Items[0].(*Table)
-		if build.Get("name") != "Arms raid" || build.Get("character") != "Obnoxious-Yell" ||
+		if build.Get("name") != "Arms raid" || build.Get("character") != contractCharacter ||
 			!strings.HasPrefix(build.Get("code"), "FSB1:") {
 			t.Errorf("build = %+v", build.Fields)
 		}
@@ -294,7 +304,7 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 		}
 		for i, item := range messages.Items {
 			m := item.(*Table)
-			if m.Get("type") != types[i] || m.Get("character") != "Obnoxious-Yell" {
+			if m.Get("type") != types[i] || m.Get("character") != contractCharacter {
 				t.Errorf("message %d = %+v, want type %s", i, m.Fields, types[i])
 			}
 		}

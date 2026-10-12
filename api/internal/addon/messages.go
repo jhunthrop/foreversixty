@@ -6,23 +6,57 @@
 // character's private guild state, its saved stat weights and which of
 // them are already capped, and its best gear upgrade from its last Top
 // Gear run.
+//
+// Inbox v2 (docs/contracts/addon-v2.md contract 3, the companion's
+// ForeverSixtyInbox format 2) adds the build, sim_result, last_raid,
+// loot_values and ack messages and two fields on the old ones: unit on
+// upgrade, dps_per_point on weights. Every message is addressed by
+// character key, region/ruleset/name-slug, the form the addon's
+// sameCharacter matches.
 package addon
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
+	"math"
 	"sort"
+	"sync"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/rating"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
+// InboxFormat is contract 3's format: the version GET /v1/addon/inbox answers
+// and the companion writes into ForeverSixtyInbox.
+const InboxFormat = 2
+
 const (
-	messageUpgrade = "upgrade"
-	messageWeights = "weights"
-	messageGuild   = "guild"
+	messageBuild      = "build"
+	messageUpgrade    = "upgrade"
+	messageWeights    = "weights"
+	messageSimResult  = "sim_result"
+	messageLastRaid   = "last_raid"
+	messageLootValues = "loot_values"
+	messageGuild      = "guild"
+	messageAck        = "ack"
 )
+
+// InboxResponse is the body GET /v1/addon/inbox answers with (contract 3; the
+// fixture docs/contracts/fixtures/inbox-v2.json): the format, when the API
+// built it, the queued builds as they have always been listed (kept for one
+// release beside the build messages that repeat them), and every message.
+type InboxResponse struct {
+	Format      int            `json:"format"`
+	GeneratedAt string         `json:"generated_at"`
+	Builds      []InboxEntry   `json:"builds"`
+	Messages    []MessageEntry `json:"messages"`
+}
 
 // WeightEntry is one stat's weight inside a "weights" message.
 type WeightEntry struct {
@@ -36,27 +70,93 @@ type WeightEntry struct {
 // what companion/internal/addon.Message decodes into — the API and the
 // companion are separate Go modules with no shared package, so the JSON
 // tags are what keeps the two in step, not the Go type.
+//
+// It now carries every field of contract 3 (docs/contracts/addon-v2.md), each
+// omitted from the types that do not have it; contracts_test.go decodes the
+// shared fixture into it strictly.
 type MessageEntry struct {
 	Type      string `json:"type"`
 	Character string `json:"character,omitempty"`
 
-	// MessageUpgrade
+	// messageBuild
+	Name string `json:"name,omitempty"`
+	Code string `json:"code,omitempty"`
+
+	// messageUpgrade
 	Slot     string  `json:"slot,omitempty"`
 	ItemID   int     `json:"item_id,omitempty"`
 	ItemName string  `json:"item_name,omitempty"`
 	Source   string  `json:"source,omitempty"`
 	Delta    float64 `json:"delta,omitempty"`
+	// Unit is what Delta is measured in, sims.UnitDPS or sims.UnitScore.
+	Unit string `json:"unit,omitempty"`
 
-	// MessageWeights
+	// messageWeights (Spec also names a sim_result's spec)
 	Spec    string        `json:"spec,omitempty"`
 	Weights []WeightEntry `json:"weights,omitempty"`
 	Caps    []string      `json:"caps,omitempty"`
+	// DPSPerPoint is the DPS one point of the weight-1 stat is worth for
+	// Spec (sims.DPSPerPoint); nil, and absent, when the data has none.
+	DPSPerPoint *float64 `json:"dps_per_point,omitempty"`
 
-	// MessageGuild
+	// messageSimResult
+	// DPS and Error are pointers so a sim_result always carries both, 0.0 included,
+	// while every other type carries neither.
+	DPS         *float64 `json:"dps,omitempty"`
+	Error       *float64 `json:"error,omitempty"`
+	GeneratedAt string   `json:"generated_at,omitempty"`
+	// Slots is a pointer so a sim_result carries an empty list ("slots": [])
+	// while every other type carries no slots at all.
+	Slots *[]SimSlot `json:"slots,omitempty"`
+
+	// messageLastRaid
+	ReportID string         `json:"report_id,omitempty"`
+	Date     string         `json:"date,omitempty"`
+	Bosses   []LastRaidBoss `json:"bosses,omitempty"`
+
+	// messageLootValues
+	Raid  string                `json:"raid,omitempty"`
+	Items map[int]LootItemValue `json:"items,omitempty"`
+
+	// messageGuild
 	GuildName        string `json:"guild_name,omitempty"`
 	ClaimState       string `json:"claim_state,omitempty"`
 	PendingApprovals int    `json:"pending_approvals,omitempty"`
 	Rank             string `json:"rank,omitempty"`
+
+	// messageAck
+	ExportSeenAt string `json:"export_seen_at,omitempty"`
+	// SimRequestState is what became of the character's newest in-game sim
+	// request (sims.SimRequestState*); absent when it never asked.
+	SimRequestState string `json:"sim_request_state,omitempty"`
+}
+
+// SimSlot is one slot's DPS change inside a sim_result.
+type SimSlot struct {
+	Slot   string  `json:"slot"`
+	ItemID int     `json:"item_id"`
+	Delta  float64 `json:"delta"`
+}
+
+// LastRaidBoss is one rated boss fight inside a last_raid message: the card's
+// overall as the percentile, and the facts the rater stored with it
+// (api/internal/rating/last_raid.go). Adherence is absent until the rotation
+// task lands.
+type LastRaidBoss struct {
+	Name              string   `json:"name"`
+	Percentile        int      `json:"percentile"`
+	BiggestLoss       string   `json:"biggest_loss,omitempty"`
+	LossSeconds       int      `json:"loss_seconds"`
+	Deaths            int      `json:"deaths"`
+	ConsumablesMissed []string `json:"consumables_missed"`
+	Adherence         *float64 `json:"adherence,omitempty"`
+}
+
+// LootItemValue is one item's worth inside a loot_values message.
+type LootItemValue struct {
+	Value   float64 `json:"value"`
+	Unit    string  `json:"unit"`
+	Planned bool    `json:"planned"`
 }
 
 // GuildSource is enough of guilds.Store to build the "guild" message.
@@ -178,7 +278,7 @@ func (s *Service) upgradeMessage(ctx context.Context, userID int64, byNameSlug m
 		return &MessageEntry{
 			Type: messageUpgrade, Character: resolveCharacter(res.Request.Character.Name, byNameSlug),
 			Slot: item.Slot, ItemID: item.ItemID, ItemName: item.Name,
-			Source: item.SourceName, Delta: combo.Delta.Mean,
+			Source: item.SourceName, Delta: combo.Delta.Mean, Unit: sims.UnitDPS,
 		}
 	}
 	return nil
@@ -186,8 +286,12 @@ func (s *Service) upgradeMessage(ctx context.Context, userID int64, byNameSlug m
 
 // weightsMessage is the account's saved stat weights from its most
 // recent finished weights run, with weightCaps' capped-stat list,
-// best-effort addressed the same way upgradeMessage is.
-func (s *Service) weightsMessage(ctx context.Context, userID int64, byNameSlug map[string]string) *MessageEntry {
+// best-effort addressed the same way upgradeMessage is, and the spec's
+// DPS per point of its weight-1 stat (sims.DPSPerPoint) in the data build
+// the addressed character's export names, or the newest loaded build when
+// the run names none of the account's characters - present only when that
+// weight-1 stat is the file's own reference.
+func (s *Service) weightsMessage(ctx context.Context, userID int64, byNameSlug map[string]string, exports map[string]Export) *MessageEntry {
 	page, err := s.Sims.Mine(ctx, userID, 1, simapi.KindWeights)
 	if err != nil || len(page.Rows) == 0 {
 		return nil
@@ -204,10 +308,27 @@ func (s *Service) weightsMessage(ctx context.Context, userID int64, byNameSlug m
 	for i, w := range res.Weights {
 		weights[i] = WeightEntry{Stat: w.Stat, Weight: w.Weight}
 	}
-	return &MessageEntry{
+	m := &MessageEntry{
 		Type: messageWeights, Character: resolveCharacter(res.Request.Character.Name, byNameSlug),
 		Spec: res.Request.Spec, Weights: weights, Caps: weightCaps(res.Weights),
 	}
+	build := ""
+	if e, ok := exports[m.Character]; ok {
+		if d, ok := fs1.Decode(e.Export); ok {
+			build = d.DataBuild
+		}
+	}
+	// Only when the run is normalised to the file's own reference stat: a weight in some
+	// other stat's points times this figure would be no number the addon can use.
+	runWeights := make(map[string]float64, len(weights))
+	for _, w := range weights {
+		runWeights[w.Stat] = w.Weight
+	}
+	if p, ok := sims.DPSPerPoint(build, m.Spec); ok && p.Scales(runWeights) {
+		dpp := p.DPS
+		m.DPSPerPoint = &dpp
+	}
+	return m
 }
 
 // guildMessages is one "guild" message per character of this user's own
@@ -233,31 +354,264 @@ func (s *Service) guildMessages(ctx context.Context, byNameSlug map[string]strin
 }
 
 // messages builds every typed inbox message this user's account is
-// entitled to: guild state per character, and one upgrade and one
-// weights message from the account's saved sims. Guilds and Sims are
-// each optional (Service's own doc comment); with either or both nil,
-// or any one lookup's own error, the inbox still answers with whatever
-// it could build — never a failed sync over an advanced feature a build
-// or two never even reaches.
-func (s *Service) messages(ctx context.Context, userID int64) []MessageEntry {
+// entitled to beyond the build messages the inbox makes from its queued
+// builds (buildMessages): guild state per character; one upgrade and one
+// weights message from the account's saved sims; and per character its
+// newest finished in-game sim, its last raid, that raid's loot priced for
+// it, and (with a companion paired) the ack. Guilds and Sims are each
+// optional (Service's own doc comment); with either or both nil, or any
+// one lookup's own error, the inbox still answers with whatever it could
+// build — never a failed sync over an advanced feature a build or two
+// never even reaches. now is the moment the last-raid window counts back
+// from.
+func (s *Service) messages(ctx context.Context, userID int64, now time.Time) []MessageEntry {
+	out := []MessageEntry{}
 	exports, err := s.Store.Exports(ctx, userID)
 	if err != nil {
 		s.logger().Warn("addon", "op", "messages", "err", err)
-		return nil
+		return out
 	}
 	byNameSlug := characterKeysByNameSlug(exports)
+	byKey := exportsByKey(exports)
 
-	var out []MessageEntry
 	if s.Guilds != nil {
 		out = append(out, s.guildMessages(ctx, byNameSlug)...)
 	}
+	var weights *MessageEntry
 	if s.Sims != nil {
 		if m := s.upgradeMessage(ctx, userID, byNameSlug); m != nil {
 			out = append(out, *m)
 		}
-		if m := s.weightsMessage(ctx, userID, byNameSlug); m != nil {
-			out = append(out, *m)
+		if weights = s.weightsMessage(ctx, userID, byNameSlug, byKey); weights != nil {
+			out = append(out, *weights)
 		}
+	}
+	out = append(out, s.simResultMessages(ctx, userID)...)
+	lastRaids, raids := s.lastRaidMessages(ctx, sortedExportKeys(byKey), now)
+	out = append(out, lastRaids...)
+	out = append(out, s.lootValuesMessages(ctx, raids, byKey, weights)...)
+	out = append(out, s.ackMessages(ctx, userID)...)
+	return out
+}
+
+// exportsByKey indexes a user's exports by character key.
+func exportsByKey(exports []Export) map[string]Export {
+	out := make(map[string]Export, len(exports))
+	for _, e := range exports {
+		out[character.Key(e.Region, character.RulesetFromRealm(e.Ruleset, ""), e.Name)] = e
 	}
 	return out
 }
+
+// sortedExportKeys is exports' character keys in order.
+func sortedExportKeys(exports map[string]Export) []string {
+	keys := make([]string, 0, len(exports))
+	for k := range exports {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
+// ---------------------------------------------------------------- inbox v2 builders --
+
+// buildMessages is one "build" message per queued build the companion can write: the same
+// character, name and code as its builds entry (contract 3 keeps both for one release).
+func buildMessages(entries []InboxEntry) []MessageEntry {
+	var out []MessageEntry
+	for _, e := range entries {
+		if e.Code == "" {
+			continue
+		}
+		out = append(out, MessageEntry{Type: messageBuild, Character: e.Character, Name: e.Name, Code: e.Code})
+	}
+	return out
+}
+
+// simResultMessages is one "sim_result" per character with a finished in-game sim
+// request: the newest one's spec, DPS, error and time.
+//
+// slots: RequestFromAddon (api/internal/sims/request_job.go) queues a plain run, a
+// SimRequest with no bulk section, so its stored result has no combinations and slots is
+// an empty list; the addon prices a slot itself from the weights message (dps_per_point
+// times the weight delta). Should the request ever queue a Top Gear run, slotDeltas reads
+// its single-slot combinations here without a change to the message.
+func (s *Service) simResultMessages(ctx context.Context, userID int64) []MessageEntry {
+	rows, err := s.Store.simResults(ctx, userID)
+	if err != nil {
+		s.logger().Warn("addon", "op", "messages_sim_result", "err", err)
+		return nil
+	}
+	out := make([]MessageEntry, 0, len(rows))
+	for _, r := range rows {
+		slots := slotDeltas(r.Combos)
+		out = append(out, MessageEntry{
+			Type: messageSimResult, Character: r.CharacterKey, Spec: r.Spec,
+			DPS: ptr(round1(r.DPS)), Error: ptr(round1(r.Error)),
+			GeneratedAt: r.CreatedAt.UTC().Format(time.RFC3339), Slots: &slots,
+		})
+	}
+	return out
+}
+
+// slotDeltas is a stored bulk result's per-slot figures: every combination that changes
+// exactly one item, best first, one per slot (upgradeMessage's own rule). Empty, not nil,
+// for a plain run.
+func slotDeltas(raw json.RawMessage) []SimSlot {
+	slots := []SimSlot{}
+	if len(raw) == 0 || string(raw) == "null" {
+		return slots
+	}
+	var combos []simapi.Combo
+	if err := json.Unmarshal(raw, &combos); err != nil {
+		return slots
+	}
+	seen := map[string]bool{}
+	for _, combo := range combos {
+		var item *simapi.Substitution
+		items := 0
+		for i := range combo.Substitutions {
+			if combo.Substitutions[i].Kind == simapi.SubstitutionItem {
+				item = &combo.Substitutions[i]
+				items++
+			}
+		}
+		if items != 1 || item.Slot == "" || item.ItemID == 0 || seen[item.Slot] {
+			continue
+		}
+		seen[item.Slot] = true
+		slots = append(slots, SimSlot{Slot: item.Slot, ItemID: item.ItemID, Delta: round1(combo.Delta.Mean)})
+	}
+	return slots
+}
+
+// lastRaid is one character's last raid, as lastRaidMessages found it, for the loot
+// values message that follows it.
+type lastRaid struct {
+	key, zone, spec string
+}
+
+// lastRaidMessages is one "last_raid" per character of the account with a rated fight in
+// a report that is not private, fought within LastRaidWindow: the newest such report, every
+// rated boss fight in it (kills and wipes), with the card's own overall as the
+// percentile and the facts the rater stored with it (api/internal/rating/last_raid.go).
+// A character with no such report gets no message. It also answers each character's raid
+// zone and spec, for lootValuesMessages.
+func (s *Service) lastRaidMessages(ctx context.Context, keys []string, now time.Time) ([]MessageEntry, []lastRaid) {
+	if len(keys) == 0 {
+		return nil, nil
+	}
+	fights, err := s.Store.lastRaidFights(ctx, keys, now.Add(-LastRaidWindow))
+	if err != nil {
+		s.logger().Warn("addon", "op", "messages_last_raid", "err", err)
+		return nil, nil
+	}
+	var out []MessageEntry
+	var raids []lastRaid
+	for _, f := range fights {
+		if len(out) == 0 || out[len(out)-1].Character != f.CharacterKey {
+			out = append(out, MessageEntry{Type: messageLastRaid, Character: f.CharacterKey, ReportID: f.ReportID})
+			raids = append(raids, lastRaid{key: f.CharacterKey, zone: f.Zone})
+		}
+		m := &out[len(out)-1]
+		// Fights arrive oldest first, so the last one names the date and the spec.
+		m.Date = f.FoughtAt.UTC().Format(time.DateOnly)
+		raids[len(raids)-1].spec = rating.DataSpecSlug(f.Class, f.Spec)
+		if f.Boss == "" {
+			continue
+		}
+		missed := f.ConsumablesMissed
+		if missed == nil {
+			missed = []string{}
+		}
+		m.Bosses = append(m.Bosses, LastRaidBoss{
+			Name: f.Boss, Percentile: int(math.Round(f.Overall)), BiggestLoss: f.BiggestLoss,
+			LossSeconds: f.LossSeconds, Deaths: f.Deaths, ConsumablesMissed: missed,
+		})
+	}
+	// A raid whose fights no log or fight row ever named has no boss to show.
+	kept, keptRaids := out[:0], raids[:0]
+	for i, m := range out {
+		if len(m.Bosses) > 0 {
+			kept, keptRaids = append(kept, m), append(keptRaids, raids[i])
+		}
+	}
+	return kept, keptRaids
+}
+
+// lootValuesMessages is one "loot_values" per character with a last raid: the raid's loot
+// priced for the character by sims.LootValues, under the account's weights run when that
+// run is the character's own (weights) and the spec's shipped weights otherwise. A raid
+// whose zone names no raid in the build's loot table, a character with no export, or gear
+// the loaded data cannot score gets no message.
+func (s *Service) lootValuesMessages(ctx context.Context, raids []lastRaid, exports map[string]Export, weights *MessageEntry) []MessageEntry {
+	var out []MessageEntry
+	for _, r := range raids {
+		e, ok := exports[r.key]
+		if !ok {
+			continue
+		}
+		spec, runWeights := r.spec, map[string]float64(nil)
+		if weights != nil && weights.Character == r.key && weights.Spec != "" {
+			spec = weights.Spec
+			runWeights = make(map[string]float64, len(weights.Weights))
+			for _, w := range weights.Weights {
+				runWeights[w.Stat] = w.Weight
+			}
+		}
+		if spec == "" {
+			continue
+		}
+		set, ok, err := sims.LootValues(ctx, r.zone, e.Export, spec, runWeights)
+		if err != nil {
+			// Gear the data cannot score (a spec with no shipped weights, say) stays so until
+			// a data deploy: said once per spec, not on every ten-minute poll.
+			if !errors.Is(err, sims.ErrGearUnscorable) || warnOnce(spec) {
+				s.logger().Warn("addon", "op", "messages_loot_values", "character_key", r.key, "spec", spec, "err", err)
+			}
+			continue
+		}
+		if !ok || len(set.Items) == 0 {
+			continue
+		}
+		items := make(map[int]LootItemValue, len(set.Items))
+		for id, v := range set.Items {
+			items[id] = LootItemValue{Value: v.Value, Unit: v.Unit, Planned: v.Planned}
+		}
+		out = append(out, MessageEntry{Type: messageLootValues, Character: r.key, Raid: set.Raid, Items: items})
+	}
+	return out
+}
+
+// ackMessages is one "ack" per exported character when the account has a companion paired:
+// when the site stored the export, and what became of the character's newest in-game sim
+// request.
+func (s *Service) ackMessages(ctx context.Context, userID int64) []MessageEntry {
+	rows, err := s.Store.acks(ctx, userID)
+	if err != nil {
+		s.logger().Warn("addon", "op", "messages_ack", "err", err)
+		return nil
+	}
+	out := make([]MessageEntry, 0, len(rows))
+	for _, r := range rows {
+		out = append(out, MessageEntry{
+			Type: messageAck, Character: r.CharacterKey,
+			ExportSeenAt: r.SeenAt.UTC().Format(time.RFC3339), SimRequestState: r.SimRequestState,
+		})
+	}
+	return out
+}
+
+// unscorableWarned is the specs lootValuesMessages has already warned about.
+var unscorableWarned sync.Map
+
+// warnOnce reports whether this is the first warning for spec in this process.
+func warnOnce(spec string) bool {
+	_, seen := unscorableWarned.LoadOrStore(spec, true)
+	return !seen
+}
+
+func ptr(v float64) *float64 { return &v }
+
+// round1 rounds a figure the addon prints to a tenth.
+func round1(v float64) float64 { return math.Round(v*10) / 10 }

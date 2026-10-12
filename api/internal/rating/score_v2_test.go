@@ -145,7 +145,7 @@ func TestEveryLoggedClassicSpecResolvesToADataSpec(t *testing.T) {
 		}
 		seen++
 		slug := dataSpecSlug(class, spec)
-		if _, err := sims.FullGearScore(context.Background(), "1.60.1.70291", slug); err != nil {
+		if _, err := sims.FullGearScore(context.Background(), "1.60.1.70291", slug, sims.FullGearBand); err != nil {
 			t.Errorf("%s %s -> %q: %v", class, spec, slug, err)
 		}
 	}
@@ -348,7 +348,7 @@ func TestScoreV2ScoresALoggedRaidersFiveComponents(t *testing.T) {
 	}
 	t.Logf("ScoreV2(%s) = %+v", fx.main, got)
 
-	full, err := sims.FullGearScore(context.Background(), "1.60.1.70291", "warrior-arms")
+	full, err := sims.FullGearScore(context.Background(), "1.60.1.70291", "warrior-arms", sims.FullGearBand)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -403,6 +403,57 @@ func TestScoreV2ScoresALoggedRaidersFiveComponents(t *testing.T) {
 	}
 	if got.Spec != "warrior-arms" || got.Fights != fx.rated {
 		t.Errorf("spec %q over %d fights, want warrior-arms over %d", got.Spec, got.Fights, fx.rated)
+	}
+}
+
+// Below 60 the gear component measures against the character's own level band's best set
+// (the addon's Gear.bandFor rule): a level-30 export is a share of the band-30 set, a
+// level-15 one has no band and no gear component, and an export with no level= section is
+// measured against the level-60 set as before.
+func TestScoreV2MeasuresGearBelow60AgainstTheLevelsOwnBand(t *testing.T) {
+	fx := seedLoggedRaider(t)
+	ctx := context.Background()
+	code, _ := fixtureGear(t)
+	gearAt := func(export string) ScoreV2 {
+		t.Helper()
+		mustExec(t, fx.pool, `update addon_exports set export = $2 where character_key = $1`, fx.main, export)
+		got, err := fx.store.ScoreV2(ctx, fx.main)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return got
+	}
+
+	band30, err := sims.FullGearScore(ctx, "1.60.1.70291", "warrior-arms", 30)
+	if err != nil {
+		t.Fatal(err)
+	}
+	band60, err := sims.FullGearScore(ctx, "1.60.1.70291", "warrior-arms", sims.FullGearBand)
+	if err != nil {
+		t.Fatal(err)
+	}
+	level30 := gearAt(code + "|level=30")
+	if want := int(math.Round(GearMax * fx.gearScore / band30)); level30.Components.Gear != want {
+		t.Errorf("level 30: gear %d, want %d (%.1f of the band-30 set's %.1f)",
+			level30.Components.Gear, want, fx.gearScore, band30)
+	}
+	if level30.GearScore != level30.Components.Gear || level30.Score != level30.Components.Gear+
+		level30.Components.Experience+level30.Components.Parses+level30.Components.Attendance+
+		level30.Components.Discipline {
+		t.Errorf("level 30: gear_score %d and score %d do not follow the components %+v",
+			level30.GearScore, level30.Score, level30.Components)
+	}
+	noLevel := gearAt(code)
+	if want := int(math.Round(GearMax * fx.gearScore / band60)); noLevel.Components.Gear != want {
+		t.Errorf("no level: gear %d, want %d against the level-60 set", noLevel.Components.Gear, want)
+	}
+	if level30.Components.Gear <= noLevel.Components.Gear {
+		t.Errorf("the same gear at level 30 (%d) should score above its share of the level-60 set (%d)",
+			level30.Components.Gear, noLevel.Components.Gear)
+	}
+	if level15 := gearAt(code + "|level=15"); level15.Components.Gear != 0 || level15.GearScore != 0 {
+		t.Errorf("level 15, below the first band: gear %d (gear_score %d), want 0",
+			level15.Components.Gear, level15.GearScore)
 	}
 }
 
