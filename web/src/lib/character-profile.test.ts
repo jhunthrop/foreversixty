@@ -4,11 +4,13 @@ import {
   amountHeader,
   bestRepeatsHistory,
   bisHref,
+  characterHeaderCopy,
   characterTableCopy,
   newestSpec,
+  profileHeader,
   specClassLabel,
 } from './character-profile';
-import type { CharacterFight } from './rankings/api';
+import type { CharacterFight, CharacterPage } from './rankings/api';
 
 const fight = (spec?: string): CharacterFight => ({
   encounter: 'Warden Kelthas',
@@ -70,5 +72,85 @@ describe('the fight tables (fix round 2 item 6)', () => {
 
   it('names the columns Boss, Spec, Parse %, Date, Execution', () => {
     expect(Object.values(characterTableCopy)).toEqual(['Boss', 'Spec', 'Parse %', 'Date', 'Execution']);
+  });
+});
+
+describe('profileHeader (Task L8.4 ruling 1)', () => {
+  const PATH = { region: 'us', ruleset: 'hardcore' };
+  const page = (
+    character: Partial<CharacterPage['character']>,
+    spec?: string,
+  ): Parameters<typeof profileHeader>[0] => ({
+    character: { name: 'Elyra Duskvale', region: 'us', ruleset: 'hardcore', ...character },
+    history: spec === undefined ? [] : [fight(spec)],
+    best: [],
+  });
+  const FULL = {
+    class: 'Priest',
+    guild: { name: 'Cx66 Olympus', rank: 'officer' as const },
+    realm: 'Classic Beta PvP',
+    level: 60,
+    race: 'Night Elf',
+  };
+  const text = (header: ReturnType<typeof profileHeader>): string =>
+    header.pieces.map((piece) => piece.text).join(characterHeaderCopy.separator);
+
+  it('reads "Holy Priest · <Guild> · <Realm>", then "Level 60 Night Elf", with "Hardcore US" as the chip', () => {
+    const header = profileHeader(page(FULL, 'Holy'), PATH);
+    expect(text(header)).toBe('Holy Priest · Cx66 Olympus · Classic Beta PvP');
+    expect(header.levelRace).toBe('Level 60 Night Elf');
+    expect(header.chip).toBe('Hardcore US');
+  });
+
+  it('links the guild to its page on the character’s region and ruleset', () => {
+    const header = profileHeader(page(FULL, 'Holy'), PATH);
+    expect(header.pieces.map((piece) => piece.key)).toEqual(['spec', 'guild', 'realm']);
+    expect(header.pieces[1].href).toBe('/guild/us/hardcore/cx66-olympus');
+    expect(header.pieces[0].href).toBeUndefined();
+    expect(header.pieces[2].href).toBeUndefined();
+  });
+
+  it('drops the guild when it is null, never a placeholder', () => {
+    const header = profileHeader(page({ ...FULL, guild: null }, 'Holy'), PATH);
+    expect(text(header)).toBe('Holy Priest · Classic Beta PvP');
+  });
+
+  it('drops the realm when it is null or empty', () => {
+    expect(text(profileHeader(page({ ...FULL, realm: null }, 'Holy'), PATH))).toBe(
+      'Holy Priest · Cx66 Olympus',
+    );
+    expect(text(profileHeader(page({ ...FULL, realm: '  ' }, 'Holy'), PATH))).toBe(
+      'Holy Priest · Cx66 Olympus',
+    );
+  });
+
+  it('reads the class alone without a spec, and drops it with no class', () => {
+    expect(text(profileHeader(page(FULL), PATH))).toBe('Priest · Cx66 Olympus · Classic Beta PvP');
+    expect(text(profileHeader(page({ ...FULL, class: undefined }, 'Holy'), PATH))).toBe(
+      'Cx66 Olympus · Classic Beta PvP',
+    );
+  });
+
+  it('has no pieces at all when nothing is known, and the chip still stands', () => {
+    const header = profileHeader(page({}), PATH);
+    expect(header.pieces).toEqual([]);
+    expect(header.levelRace).toBeNull();
+    expect(header.chip).toBe('Hardcore US');
+  });
+
+  it('writes the second line from whichever of level and race is known', () => {
+    expect(profileHeader(page({ ...FULL, race: null }), PATH).levelRace).toBe('Level 60');
+    expect(profileHeader(page({ ...FULL, level: null }), PATH).levelRace).toBe('Night Elf');
+    expect(profileHeader(page({ ...FULL, level: null, race: null }), PATH).levelRace).toBeNull();
+  });
+
+  it('reads a page that predates the identity fields (all of them omitted) as all unknown', () => {
+    const header = profileHeader(page({ class: 'Priest' }, 'Holy'), PATH);
+    expect(text(header)).toBe('Holy Priest');
+    expect(header.levelRace).toBeNull();
+  });
+
+  it('echoes a ruleset the site has not heard of in the chip', () => {
+    expect(profileHeader(page(FULL), { region: 'eu', ruleset: 'seasonal' }).chip).toBe('seasonal EU');
   });
 });

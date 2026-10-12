@@ -34,6 +34,15 @@ export interface ForeverScore {
   experience: ScoreExperience | null;
 }
 
+/** One date of a character's score history (api/openapi.yaml `ScorePoint`): the score the
+ *  rater recorded on that UTC date's last rated fight. */
+export interface ScorePoint {
+  /** YYYY-MM-DD, UTC. */
+  date: string;
+  score: number;
+  tier: string;
+}
+
 /** The most points each component can give (score_v2.go's *Max constants). */
 export const COMPONENT_MAX: Readonly<ScoreComponents> = {
   gear: 500,

@@ -26,8 +26,9 @@
     className = undefined,
     owned = false,
     lastSeenAt = null,
-    level = undefined,
-    race = undefined,
+    level = null,
+    race = null,
+    guild = null,
   }: {
     forever: ForeverScore | null;
     name: string;
@@ -36,17 +37,17 @@
     owned?: boolean;
     /** `build.captured_at` of the viewer's own addon export; null for anyone else. */
     lastSeenAt?: string | null;
-    /** Level and race, for the tooltip's "Level 60 Human Priest" line; the character endpoint
-     *  carries neither yet (API lane), so the line is left out until it does. */
-    level?: number;
-    race?: string;
+    /** Level and race (the character endpoint's `CharacterIdentity`), for the tooltip's
+     *  "Level 60 Night Elf Priest" line; null when unknown, and the line is left out with
+     *  neither (Task L8.4 ruling 2). */
+    level?: number | null;
+    race?: string | null;
+    /** The guild's name, the game's line under the character's name; null with no guild. */
+    guild?: string | null;
   } = $props();
 
-  const descriptor = $derived(
-    level !== undefined && race !== undefined && className !== undefined
-      ? scoreCopy.tooltipDescriptor(level, race, className)
-      : null,
-  );
+  const descriptor = $derived(scoreCopy.tooltipDescriptor(level, race, className));
+  const guildLine = $derived(typeof guild === 'string' && guild.trim() !== '' ? guild.trim() : null);
 
   const lastSeen = $derived(owned && lastSeenAt !== null ? lastSeenText(lastSeenAt) : null);
   const line = scoreCopy.lineParts();
@@ -61,13 +62,16 @@
   <!-- Below 900px the line sits under the mock; from 900px beside it. -->
   <div class="flex flex-col gap-3 min-[900px]:flex-row min-[900px]:items-center min-[900px]:gap-6">
     <!-- The game's own tooltip frame: a dark translucent fill, a 1px grey-blue border, a 4px
-         radius, 10px padding; the name 14px bold in its class colour, the descriptor line when
-         it is known, a blank line, then the addon's line. -->
+         radius, 10px padding; the name 14px bold in its class colour, then in the game's order
+         the guild and the "Level 60 Night Elf Priest" line when known, a blank line, then the
+         addon's line. -->
     <div
       class="flex w-fit max-w-full min-w-[240px] flex-col rounded-[4px] border border-[#5d6b82] bg-[rgba(8,10,16,0.92)] p-[10px] text-[14px] leading-[20px] shadow-[0_2px_10px_rgba(0,0,0,.6)]"
       data-testid="character-in-game-tooltip"
     >
       <span class="text-[14px] font-bold" style={`color: ${classColorVar(className)}`}>{name}</span>
+      {#if guildLine !== null}<span class="text-text" data-testid="character-in-game-guild">{guildLine}</span
+        >{/if}
       {#if descriptor !== null}<span class="text-text" data-testid="character-in-game-descriptor"
           >{descriptor}</span
         >{/if}

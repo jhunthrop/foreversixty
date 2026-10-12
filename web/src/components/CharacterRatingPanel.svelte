@@ -9,7 +9,7 @@
 <script lang="ts">
   import { fetchCharacterRating, RankingsError } from '../lib/rankings/api';
   import { ratingCopy } from '../lib/rating/copy';
-  import type { ForeverScore } from '../lib/score/score';
+  import type { ForeverScore, ScorePoint } from '../lib/score/score';
   import type { CharacterPath } from '../lib/characters';
   import type { CharacterRating } from '../lib/rating/types';
   import ForeverScoreCard from './ForeverScoreCard.svelte';
@@ -21,6 +21,7 @@
     apiBase = undefined,
     heading = true,
     forever = undefined,
+    scoreHistory = null,
     bisHref = null,
     owned = false,
     name = '',
@@ -32,6 +33,8 @@
     /** The character's Forever Score; null (or a null score) for a character the site has no
      *  logs of. Left out, the panel draws no score card at all (the account page). */
     forever?: ForeverScore | null;
+    /** The character's score_history, for the score card's sparkline. */
+    scoreHistory?: readonly ScorePoint[] | null;
     /** The spec's best-in-slot page, when known (the score card's "Most to gain: Gear"). */
     bisHref?: string | null;
     /** The viewer's own character: the captions say "Your" only then (fix round 2 item 1). */
@@ -69,7 +72,15 @@
 </script>
 
 {#if forever !== undefined}
-  <ForeverScoreCard {forever} {bisHref} {owned} {name} region={path.region} ruleset={path.ruleset} />
+  <ForeverScoreCard
+    {forever}
+    history={scoreHistory}
+    {bisHref}
+    {owned}
+    {name}
+    region={path.region}
+    ruleset={path.ruleset}
+  />
 {/if}
 
 {#if status === 'loading'}

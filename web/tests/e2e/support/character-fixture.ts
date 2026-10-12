@@ -8,10 +8,30 @@ import type { Page } from '@playwright/test';
 export const CHARACTER_URL = '**/v1/characters/us/hardcore/elyra-duskvale';
 export const CHARACTER_PATH = '/character/us/hardcore/elyra-duskvale';
 
+/** Five dates of Forever Score, oldest first, rising from rare into epic. */
+export const SCORE_HISTORY = [
+  { date: '2026-10-12', score: 1240, tier: 'rare' },
+  { date: '2026-10-19', score: 1380, tier: 'rare' },
+  { date: '2026-10-26', score: 1520, tier: 'epic' },
+  { date: '2026-11-01', score: 1690, tier: 'epic' },
+  { date: '2026-11-04', score: 1830, tier: 'epic' },
+];
+
 export const CHARACTER = {
   ok: true,
   data: {
-    character: { name: 'Elyra Duskvale', region: 'us', ruleset: 'hardcore', class: 'Priest' },
+    // Who the character is (api/openapi.yaml `CharacterIdentity`, Task L8.4): each field is
+    // always sent, null when unknown -- a spec that needs a null overrides it.
+    character: {
+      name: 'Elyra Duskvale',
+      region: 'us',
+      ruleset: 'hardcore',
+      class: 'Priest',
+      guild: { name: 'Cx66 Olympus', rank: 'officer' },
+      level: 60,
+      race: 'Night Elf',
+      realm: 'Classic Beta PvP',
+    },
     best: [
       {
         encounter: 'Warden Kelthas',
@@ -65,6 +85,10 @@ export const CHARACTER = {
       },
     ],
     builds_seen: [{ talent_split: '31/20/0', spec: 'Discipline', first_seen: '2026-12-09T22:10:00Z' }],
+    // The score over time (api/openapi.yaml `ScorePoint`): one point per UTC date, oldest first.
+    // The page draws it only beside a score, which this fixture leaves out; character-score
+    // supplies one.
+    score_history: SCORE_HISTORY,
   },
   error: null,
   request_id: 'r',

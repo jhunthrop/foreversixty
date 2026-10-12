@@ -7,13 +7,7 @@
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import { CHARACTER_LOADING_MIN_H } from '../lib/character-layout';
   import { fetchMeOnce } from '../lib/account/api';
-  import {
-    characterKey,
-    nameFromSlug,
-    parseCharacterPath,
-    rulesetLabel,
-    type CharacterPath,
-  } from '../lib/characters';
+  import { characterKey, nameFromSlug, parseCharacterPath, type CharacterPath } from '../lib/characters';
   import { formatAmount, percentileToken, rowLink } from '../lib/report/format';
   import {
     encounterSlug,
@@ -28,9 +22,10 @@
     amountHeader,
     bestRepeatsHistory,
     bisHref,
+    characterHeaderCopy,
     characterTableCopy,
     newestSpec,
-    specClassLabel,
+    profileHeader,
   } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
   import { foreverOf, lastAddonExportAt, lastSeenText, ownCharacter } from '../lib/score/score';
@@ -106,6 +101,17 @@
       });
   });
 
+  /** The trailing ruleset-and-region chip, "Hardcore US" (Task L8.4 ruling 1): muted, after
+   *  the identity line, on the logged and the unlogged page alike. */
+  const CHIP = 'pill text-muted border-line align-middle';
+  /** In-text links are underlined: colour alone does not mark a link (WCAG 1.4.1). 44px tall
+   *  on a phone (character-phone.spec.ts), inline from md. */
+  const GUILD_LINK =
+    'text-nav inline-flex min-h-11 items-center underline underline-offset-2 hover:text-strong md:inline md:min-h-0';
+
+  /** "Holy Priest · <Guild> · <Realm>", "Level 60 Night Elf" and the chip, from the answer. */
+  const header = $derived(data === null || resolved === null ? null : profileHeader(data, resolved));
+
   /** The name a 404 page shows: the address's own slug, readable. */
   const unloggedName = $derived(resolved === null ? '' : nameFromSlug(decodeURIComponent(resolved.slug)));
 
@@ -166,8 +172,9 @@
       >
         {#snippet below()}
           <p class="text-muted text-[13px]">
-            {rulesetLabel(resolved.ruleset)}
-            {resolved.region.toUpperCase()}
+            <span class={CHIP} data-testid="character-ruleset-chip"
+              >{characterHeaderCopy.chip(resolved.ruleset, resolved.region)}</span
+            >
           </p>
         {/snippet}
       </CharacterIdentity>
@@ -186,7 +193,12 @@
         <CharacterIdentity
           character={{
             key: characterKey(resolved.region, resolved.ruleset, data.character.name),
-            ...data.character,
+            region: data.character.region,
+            ruleset: data.character.ruleset,
+            name: data.character.name,
+            class: data.character.class,
+            avatar_url: data.character.avatar_url,
+            render_url: data.character.render_url,
           }}
           size="lg"
           descriptor="none"
@@ -194,12 +206,27 @@
           nameTestid="character-name"
         >
           {#snippet below()}
-            <p class="text-muted text-[13px]">
-              {rulesetLabel(resolved.ruleset)}
-              {resolved.region.toUpperCase()}
-              {#if data.character.class}· {specClassLabel(data.character.class, newestSpec(data))}{/if}
-              · <span class="tabular font-mono">{data.history.length}</span> ranked fights
-            </p>
+            {#if header !== null}
+              <!-- Task L8.4 ruling 1: "Holy Priest · <Guild> · <Realm>", each piece only when
+                   known, the guild a link to its page; "Hardcore US" as a muted trailing chip;
+                   "Level 60 Night Elf" on the line below when known. -->
+              <p
+                class="text-muted flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] leading-[22px]"
+                data-testid="character-descriptor"
+              >
+                {#if header.pieces.length > 0}<span
+                    >{#each header.pieces as piece, index (piece.key)}{#if index > 0}{characterHeaderCopy.separator}{/if}{#if piece.href !== undefined}<a
+                          class={GUILD_LINK}
+                          href={piece.href}
+                          data-testid="character-guild-link">{piece.text}</a
+                        >{:else}<span data-testid={`character-${piece.key}`}>{piece.text}</span
+                        >{/if}{/each}</span
+                  >{/if}<span class={CHIP} data-testid="character-ruleset-chip">{header.chip}</span>
+              </p>
+              {#if header.levelRace !== null}
+                <p class="text-muted text-[13px]" data-testid="character-level-race">{header.levelRace}</p>
+              {/if}
+            {/if}
           {/snippet}
         </CharacterIdentity>
         <CharacterHandoffLinks
@@ -222,6 +249,7 @@
     <CharacterRatingPanel
       path={resolved}
       forever={foreverOf(data)}
+      scoreHistory={data.score_history ?? []}
       bisHref={bisHref(data.character.class, newestSpec(data))}
       {owned}
       name={data.character.name}
@@ -231,6 +259,9 @@
       forever={foreverOf(data)}
       name={data.character.name}
       className={data.character.class}
+      guild={data.character.guild?.name ?? null}
+      level={data.character.level ?? null}
+      race={data.character.race ?? null}
       {owned}
       {lastSeenAt}
     />

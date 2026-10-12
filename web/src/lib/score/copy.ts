@@ -76,6 +76,10 @@ export const scoreCopy = {
       plural(raidBosses, 'raid boss', 'raid bosses'),
       plural(alts, 'alt', 'alts'),
     ].join(' · '),
+  /** The sparkline's table equivalent (Task L8.4 ruling 3), read by a screen reader only. */
+  historyCaption: 'Forever Score by date, oldest first',
+  historyDate: 'Date',
+  historyScore: 'Score',
   explainLink: 'What the score counts',
   explainHref: '/ratings#forever-score',
   tierStripLabel: 'Forever Score tiers',
@@ -95,9 +99,19 @@ export const scoreCopy = {
   noLogsUploadHref: '/setup',
 
   inGameHeading: 'In game',
-  /** The tooltip mock's second line, the game's own: "Level 60 Human Priest". */
-  tooltipDescriptor: (level: number, race: string, className: string): string =>
-    `Level ${level} ${race} ${className}`,
+  /** The tooltip mock's level line, the game's own: "Level 60 Night Elf Priest". Written from
+   *  whichever of level and race is known (Task L8.4 ruling 2); null with neither, when the
+   *  line is left out rather than reading "Priest" alone. */
+  tooltipDescriptor: (
+    level: number | null,
+    race: string | null,
+    className: string | undefined,
+  ): string | null =>
+    level === null && race === null
+      ? null
+      : [level === null ? '' : `Level ${level}`, race ?? '', className ?? '']
+          .filter((part) => part !== '')
+          .join(' '),
   inGameShownOn: 'Shown on this character’s tooltip when you have the Forever Sixty addon.',
   inGameSetupLink: 'Get set up',
   inGameSetupHref: '/setup',

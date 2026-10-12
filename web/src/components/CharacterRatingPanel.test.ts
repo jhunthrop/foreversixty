@@ -226,6 +226,38 @@ describe('CharacterRatingPanel Forever Score card', () => {
     expect(body).toContain('>Your whole record.<');
   });
 
+  it('draws the score history as a gold sparkline with its newest point in the tier colour (Task L8.4 ruling 3)', () => {
+    const scoreHistory = [
+      { date: '2026-10-12', score: 1240, tier: 'rare' },
+      { date: '2026-11-04', score: 1830, tier: 'epic' },
+    ];
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED, scoreHistory } });
+    const figure = /<figure[^>]*data-testid="forever-score-history"[\s\S]*?<\/figure>/.exec(body)?.[0] ?? '';
+    expect(figure).toMatch(/<svg[^>]*aria-hidden="true"/);
+    expect(figure).toMatch(/<path[^>]*stroke="var\(--color-gold\)"/);
+    expect(figure).toMatch(new RegExp(`<circle[^>]*fill="${labels.tiers.epic.color}"`));
+    expect(figure).toMatch(/data-testid="forever-score-history-first">12 Oct</);
+    expect(figure).toMatch(/data-testid="forever-score-history-last">4 Nov</);
+    // The table a screen reader reads instead: a caption, then each date and score.
+    expect(figure).toMatch(/<table class="sr-only"/);
+    expect(text(figure)).toContain(scoreCopy.historyCaption);
+    expect(text(figure)).toContain('12 Oct 20261240');
+    expect(text(figure)).toContain('4 Nov 20261830');
+  });
+
+  it('draws no sparkline box at all with fewer than two points, or with no score', () => {
+    const one = [{ date: '2026-11-04', score: 1830, tier: 'epic' }];
+    expect(
+      render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED, scoreHistory: one } }).body,
+    ).not.toContain('forever-score-history');
+    expect(
+      render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED, scoreHistory: [] } }).body,
+    ).not.toContain('forever-score-history');
+    expect(render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } }).body).not.toContain(
+      'forever-score-history',
+    );
+  });
+
   it('draws no score card at all where the caller passes none (the account page)', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH } });
     expect(body).not.toContain('forever-score');

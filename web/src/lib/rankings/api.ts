@@ -19,7 +19,7 @@ import { API_BASE_URL } from '../planner/config';
 import type { CharacterPath } from '../characters';
 import { normaliseReportRatings } from '../rating/normalise';
 import type { CharacterRating, ReportRatings } from '../rating/types';
-import type { ForeverScore } from '../score/score';
+import type { ForeverScore, ScorePoint } from '../score/score';
 
 export const RANKINGS_FAILED = 'Rankings did not load';
 
@@ -114,6 +114,13 @@ export interface BuildSeen {
   first_seen: string;
 }
 
+/** A character's verified guild membership (api/openapi.yaml `CharacterIdentity.guild`): the
+ *  name and rank only, never an id. */
+export interface CharacterGuild {
+  name: string;
+  rank: 'member' | 'officer' | 'leader';
+}
+
 /** The Forever Score fields ride on the same answer (api/openapi.yaml `ForeverScore`); optional
  *  because an API that predates them sends none, which reads as no score. */
 export interface CharacterPage extends Partial<ForeverScore> {
@@ -126,10 +133,23 @@ export interface CharacterPage extends Partial<ForeverScore> {
      *  Battle.net import has not captured them. */
     avatar_url?: string;
     render_url?: string;
+    /** Who the character is in game (api/openapi.yaml `CharacterIdentity`). The API always
+     *  sends all four, null when no source knows one; optional here too, because an API that
+     *  predates them sends none, which reads as unknown. */
+    guild?: CharacterGuild | null;
+    level?: number | null;
+    /** The race's display name, "Night Elf". */
+    race?: string | null;
+    /** The realm as the client names it ("Classic Beta PvP"), or the logged unit's realm half
+     *  ("ClassicBetaPvP") when that is the only source. */
+    realm?: string | null;
   };
   best: CharacterFight[];
   history: CharacterFight[];
   builds_seen: BuildSeen[];
+  /** The Forever Score over time (api/openapi.yaml `ScorePoint`): one point per UTC date, the
+   *  newest 30, oldest first, `[]` when there is none. Optional for an API that predates it. */
+  score_history?: ScorePoint[];
 }
 
 export interface GuildProgressionRow {

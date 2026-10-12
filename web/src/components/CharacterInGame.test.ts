@@ -114,6 +114,52 @@ describe('CharacterInGame', () => {
     expect(withLine).toMatch(/data-testid="character-in-game-descriptor">Level 60 Human Priest</);
   });
 
+  it('adds the guild line under the name only when the character has a guild (Task L8.4 ruling 2)', () => {
+    const without = render(CharacterInGame, { props: { ...BASE, forever: SCORED } }).body;
+    expect(without).not.toContain('character-in-game-guild');
+    const nullGuild = render(CharacterInGame, { props: { ...BASE, forever: SCORED, guild: null } }).body;
+    expect(nullGuild).not.toContain('character-in-game-guild');
+    const withGuild = render(CharacterInGame, {
+      props: { ...BASE, forever: SCORED, guild: 'Cx66 Olympus' },
+    }).body;
+    expect(tooltipOf(withGuild)).toMatch(/data-testid="character-in-game-guild">Cx66 Olympus</);
+  });
+
+  it('keeps the game’s order: name, guild, level race class, a blank line, the score', () => {
+    const { body } = render(CharacterInGame, {
+      props: { ...BASE, forever: SCORED, guild: 'Cx66 Olympus', level: 60, race: 'Night Elf' },
+    });
+    const tooltip = tooltipOf(body);
+    const at = (needle: string): number => {
+      const index = tooltip.indexOf(needle);
+      expect(index, needle).toBeGreaterThan(-1);
+      return index;
+    };
+    const order = [
+      at('>Elyra Duskvale<'),
+      at('data-testid="character-in-game-guild"'),
+      at('data-testid="character-in-game-descriptor">Level 60 Night Elf Priest<'),
+      at('<span class="h-[20px]" aria-hidden="true"></span>'),
+      at('data-testid="character-in-game-score"'),
+    ];
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
+  });
+
+  it('writes the level line from whichever of level and race is known, and leaves it out with neither', () => {
+    const levelOnly = render(CharacterInGame, {
+      props: { ...BASE, forever: SCORED, level: 60, race: null },
+    }).body;
+    expect(levelOnly).toMatch(/data-testid="character-in-game-descriptor">Level 60 Priest</);
+    const raceOnly = render(CharacterInGame, {
+      props: { ...BASE, forever: SCORED, level: null, race: 'Night Elf' },
+    }).body;
+    expect(raceOnly).toMatch(/data-testid="character-in-game-descriptor">Night Elf Priest</);
+    const neither = render(CharacterInGame, {
+      props: { ...BASE, forever: SCORED, level: null, race: null },
+    }).body;
+    expect(neither).not.toContain('character-in-game-descriptor');
+  });
+
   it('puts the line under the mock below 900px and beside it from 900px', () => {
     const { body } = render(CharacterInGame, { props: { ...BASE, forever: SCORED } });
     expect(body).toContain('flex flex-col gap-3 min-[900px]:flex-row');
