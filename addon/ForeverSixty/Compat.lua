@@ -149,6 +149,70 @@ function Compat.itemQuality(itemId)
 	return select(3, Compat.itemInfo(itemId))
 end
 
+--- The hidden tooltip Compat.inventoryTooltipRows reads a worn item through on a
+--- client without C_TooltipInfo: made on first need (never at load), reused.
+--- The item tooltip's own hook skips it (ItemTooltip.onTooltip), so reading a
+--- worn item never draws a section onto it.
+Compat.scanFrame = nil
+
+local SCAN_NAME = "ForeverSixtyScanTooltip"
+
+local function scanRows(slotId)
+	if type(CreateFrame) ~= "function" then
+		return nil
+	end
+	if Compat.scanFrame == nil then
+		local ok, frame = pcall(CreateFrame, "GameTooltip", SCAN_NAME, nil, "GameTooltipTemplate")
+		if not ok or frame == nil then
+			return nil
+		end
+		Compat.scanFrame = frame
+	end
+	local tip = Compat.scanFrame
+	local ok = pcall(function()
+		tip:SetOwner(UIParent, "ANCHOR_NONE")
+		tip:ClearLines()
+		tip:SetInventoryItem("player", slotId)
+	end)
+	if not ok or type(tip.NumLines) ~= "function" then
+		return nil
+	end
+	local rows = {}
+	for index = 1, tip:NumLines() do
+		local left = _G[SCAN_NAME .. "TextLeft" .. index]
+		local right = _G[SCAN_NAME .. "TextRight" .. index]
+		rows[index] = {
+			left = left ~= nil and left:GetText() or nil,
+			right = right ~= nil and right:IsShown() and right:GetText() or nil,
+		}
+	end
+	tip:Hide()
+	return rows
+end
+
+--- The worn item in client slot `slotId` as the client's own tooltip reads it:
+--- { left, right } per line. C_TooltipInfo.GetInventoryItem where the client
+--- has it (no frame at all), else a hidden scanning tooltip. nil when the
+--- client can give neither.
+function Compat.inventoryTooltipRows(slotId)
+	local info = _G.C_TooltipInfo
+	if type(info) == "table" and type(info.GetInventoryItem) == "function" then
+		local ok, data = pcall(info.GetInventoryItem, "player", slotId)
+		if ok and type(data) == "table" and type(data.lines) == "table" then
+			local surface = type(_G.TooltipUtil) == "table" and _G.TooltipUtil.SurfaceArgs or nil
+			local rows = {}
+			for index, line in ipairs(data.lines) do
+				if line.leftText == nil and type(surface) == "function" then
+					pcall(surface, line)
+				end
+				rows[index] = { left = line.leftText, right = line.rightText }
+			end
+			return rows
+		end
+	end
+	return scanRows(slotId)
+end
+
 --- The item's level (GetItemInfo's fourth value), or nil until the client
 --- has it cached.
 function Compat.itemLevel(itemId)

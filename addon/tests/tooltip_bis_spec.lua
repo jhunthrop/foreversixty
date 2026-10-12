@@ -314,9 +314,10 @@ describe("Tooltip's BiS hover section", function()
 			local tooltip, calls = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:111:link")
 			-- L3.3 fix round 1: a blank line, the header with "Equipped" on its
-			-- right, then "Best for now" (the worn item is the band's pick) and
-			-- the plan.
-			assert.are.equal(" ", calls[1].text)
+			-- right, then "Best until 30" (the worn item is the band's pick) and
+			-- the plan. L3.3 fix round 4: the blank row is a double line too, so
+			-- "Equipped" can only ever sit on the header's own row.
+			assert.are.same({ kind = "doubleline", left = " ", right = " " }, calls[1])
 			assert.are.equal("doubleline", calls[2].kind)
 			assert.is_truthy(calls[2].left:find(L.addonName, 1, true))
 			assert.are.equal(L.tooltipEquipped, calls[2].right)
@@ -579,7 +580,9 @@ describe("Tooltip's BiS hover section", function()
 			local tooltip = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:111:link")
 			assert.is_nil(Theme.compareTooltipFrame)
-			assert.is_nil(Tooltip.activeHover)
+			-- L3.3 fix round 4: the hover still waits for the next rung's pick name
+			-- (its "At 30" line), never for a compare item.
+			assert.is_nil(Tooltip.activeHover.itemId)
 		end)
 
 		it("shows the next upgrade's compare tooltip, with its tab, once the client holds it", function()

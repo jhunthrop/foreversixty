@@ -35,9 +35,151 @@ function Gear.statsOf(link)
 	return stats
 end
 
---- What the player is wearing, by the site's slot name: { itemId, link, equipLoc, stats }
---- (equipLoc, the INVTYPE_* name, tells a two-hander in the main hand). The one
---- thin reader of equipped items; everything that scores them takes the result as a table.
+--- Whether an item link carries an enchant (its enchant id, the field after
+--- the item id, is not 0).
+function Gear.isEnchanted(link)
+	local enchant = type(link) == "string" and link:match("item:%-?%d+:(%d*)") or nil
+	return tonumber(enchant or "") ~= nil and tonumber(enchant) ~= 0
+end
+
+--- A Lua pattern for a client format string with one %s, anchored, the %s
+--- captured ("Enchanted: %s" -> "^Enchanted: (.+)$").
+local function patternOf(format)
+	local escaped = format:gsub("[%^%$%(%)%.%[%]%*%+%-%?]", "%%%0")
+	return "^" .. escaped:gsub("%%s", "(.+)") .. "$"
+end
+
+local function trim(text)
+	return (text:gsub("^%s+", ""):gsub("%s+$", ""))
+end
+
+--- Localized stat name (lower case) -> the stat key Rules.STAT_KEYS maps it
+--- to, read from the client's own ITEM_MOD_*_SHORT globals (`globals`, _G by
+--- default), so an enchant line reads in every locale.
+function Gear.statNames(globals)
+	globals = globals or _G
+	local names = {}
+	for clientKey, stat in pairs(Rules.STAT_KEYS) do
+		local text = globals[clientKey]
+		if type(text) == "string" and text ~= "" then
+			names[text:lower()] = stat
+		end
+	end
+	return names
+end
+
+--- What the enchant reader needs from the client: the stat names, the
+--- "Enchanted: %s" line (ENCHANTED_TOOLTIP_LINE), the weapon-speed word
+--- (SPEED) and the weapon-damage enchant wording. The client has no global
+--- for that last one, so it is the English "Weapon Damage" (Locale), the
+--- documented fallback.
+function Gear.enchantWords(globals)
+	globals = globals or _G
+	return {
+		names = Gear.statNames(globals),
+		enchanted = type(globals.ENCHANTED_TOOLTIP_LINE) == "string" and globals.ENCHANTED_TOOLTIP_LINE
+			or L.enchantedLine,
+		speed = type(globals.SPEED) == "string" and globals.SPEED or L.enchantSpeedWord,
+		weaponDamage = L.enchantWeaponDamage,
+	}
+end
+
+--- The stats a worn item's enchant adds, from that item's own tooltip rows
+--- ({ left, right } each, the client's text): the "Enchanted: ..." line split
+--- on " and " and ", ", each part "+N <stat>" or "<stat> +N" with <stat> a
+--- localized stat name, "Weapon Damage +N" read as N / the weapon's speed
+--- (its "Speed 3.50" right text) of weapon_dps. Answers { stats, unparsed }
+--- (unparsed when some part could not be read), or nil with no enchant line.
+--- Pure over `rows` and `words` (Gear.enchantWords).
+function Gear.enchantOf(rows, words)
+	local pattern = patternOf(words.enchanted)
+	local speedPattern = "^" .. words.speed:gsub("[%^%$%(%)%.%[%]%*%+%-%?]", "%%%0") .. " ([%d%.,]+)$"
+	local payload, speed
+	for _, row in ipairs(rows or {}) do
+		if payload == nil and type(row.left) == "string" then
+			payload = row.left:match(pattern)
+		end
+		if type(row.right) == "string" then
+			local found = row.right:match(speedPattern)
+			if found ~= nil then
+				speed = tonumber((found:gsub(",", ".")))
+			end
+		end
+	end
+	if payload == nil then
+		return nil
+	end
+	local stats, unparsed = {}, false
+	for part in (payload:gsub(" and ", ",") .. ","):gmatch("([^,]*),") do
+		part = trim(part)
+		if part ~= "" then
+			local amount, name = part:match("^%+(%d+%.?%d*) (.+)$")
+			if amount == nil then
+				name, amount = part:match("^(.-) %+(%d+%.?%d*)$")
+			end
+			amount = tonumber(amount)
+			local stat = name ~= nil and words.names[name:lower()] or nil
+			if amount ~= nil and name ~= nil and name:lower() == words.weaponDamage:lower() then
+				if speed ~= nil and speed > 0 then
+					stats.weapon_dps = (stats.weapon_dps or 0) + amount / speed
+				else
+					unparsed = true
+				end
+			elseif amount ~= nil and stat ~= nil then
+				stats[stat] = (stats[stat] or 0) + amount
+			else
+				unparsed = true
+			end
+		end
+	end
+	return { stats = stats, unparsed = unparsed }
+end
+
+--- Worn enchants read so far, by item link (an enchant only changes with the
+--- link), so the client's tooltip is read once per enchanted item; cleared
+--- when it grows past a bag's worth of links.
+Gear.enchantCache = {}
+local ENCHANT_CACHE_LIMIT = 40
+local enchantCacheSize = 0
+
+--- The enchant on the item worn in client slot `slotId` (Gear.enchantOf of
+--- its tooltip rows, Compat.inventoryTooltipRows), cached by link.
+function Gear.wornEnchant(slotId, link)
+	local cached = Gear.enchantCache[link]
+	if cached ~= nil then
+		return cached or nil
+	end
+	local rows = Compat.inventoryTooltipRows(slotId)
+	local enchant = rows ~= nil and Gear.enchantOf(rows, Gear.enchantWords()) or nil
+	if enchantCacheSize >= ENCHANT_CACHE_LIMIT then
+		Gear.enchantCache, enchantCacheSize = {}, 0
+	end
+	Gear.enchantCache[link] = enchant or false
+	enchantCacheSize = enchantCacheSize + 1
+	return enchant
+end
+
+--- `worn` (a Gear.readEquipped entry) with its enchant (Gear.enchantOf's answer, or nil)
+--- added to its stats, and `enchantUnparsed` set when part of it could not be read. Pure.
+function Gear.netEnchant(worn, enchant)
+	if enchant == nil then
+		return worn
+	end
+	worn.stats = worn.stats or {}
+	for stat, amount in pairs(enchant.stats or {}) do
+		worn.stats[stat] = (worn.stats[stat] or 0) + amount
+	end
+	worn.enchantUnparsed = enchant.unparsed == true
+	return worn
+end
+
+--- What the player is wearing, by the site's slot name: { itemId, link, equipLoc, stats,
+--- enchantUnparsed } (equipLoc, the INVTYPE_* name, tells a two-hander in the main hand).
+--- A worn item's stats include its enchant (Gear.wornEnchant), so every comparison
+--- against it -- the item tooltip's verdicts and next upgrade, the chip's bag upgrades --
+--- is net of the enchant the player would lose; `enchantUnparsed` says one could not be
+--- read. The one thin reader of equipped items; everything that scores them takes the
+--- result as a table.
 function Gear.readEquipped()
 	local equipped = {}
 	if type(GetInventoryItemLink) ~= "function" then
@@ -47,21 +189,29 @@ function Gear.readEquipped()
 		local link = GetInventoryItemLink("player", entry.id)
 		if link ~= nil then
 			local id, _, _, equipLoc = Compat.itemInfoInstant(link)
-			equipped[entry.slot] = {
+			local worn = {
 				itemId = tonumber(id),
 				link = link,
 				equipLoc = equipLoc,
 				stats = Gear.statsOf(link),
 			}
+			local enchant = Gear.isEnchanted(link) and Gear.wornEnchant(entry.id, link) or nil
+			Gear.netEnchant(worn, enchant)
+			equipped[entry.slot] = worn
 		end
 	end
 	return equipped
 end
 
+--- The weighted sum of an item's stats. A weapon's own DPS (`weapon_dps`) is never
+--- summed here, whatever the weights carry: Progress.itemScore alone converts it, at
+--- 14 attack power per DPS and only for a spec that swings its weapon.
 function Gear.score(stats, weights)
 	local total = 0
 	for name, value in pairs(stats or {}) do
-		total = total + value * ((weights or {})[name] or 0)
+		if name ~= "weapon_dps" then
+			total = total + value * ((weights or {})[name] or 0)
+		end
 	end
 	return total
 end

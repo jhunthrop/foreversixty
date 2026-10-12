@@ -26,6 +26,8 @@ read_globals = {
 	"C_Container",
 	-- Character
 	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion", "GetCurrentRegionName",
+	-- The worn item's enchant line (Compat.inventoryTooltipRows), each behind a type check.
+	"C_TooltipInfo", "TooltipUtil",
 	"GetProfessions", "GetProfessionInfo", "GetBuildInfo", "GetGuildInfo",
 	-- UI
 	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs", "ITEM_QUALITY_COLORS",

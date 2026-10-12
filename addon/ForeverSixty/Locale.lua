@@ -535,6 +535,11 @@ local L = {
 	-- rung, "Best until 30"; in the top band, "Best for now".
 	tooltipBestUntil = "Best until %d",
 	tooltipBestForNow = "Best for now",
+	-- The band's own pick is one the client cannot show, and so are its alternatives.
+	tooltipBestKnown = "Best known for now",
+	-- Muted under "Best until 30": the next rung's pick and where it comes from.
+	tooltipAtBand = "At %d: %s · %s",
+	tooltipAtBandName = "At %d: %s",
 	-- Gear no weights score and no pick names for its slot.
 	tooltipNotForPlan = "Not for your plan",
 	-- "Planned for Arms at 30" (the spec's tree, the level band), or the
@@ -547,8 +552,8 @@ local L = {
 	tooltipNextLabel = "Next upgrade:",
 	tooltipNextGain = "+%.1f %s",
 	tooltipNextGainScore = "+%d score",
-	-- Muted after the gain when the worn item carries an enchant: enchants are
-	-- not item stats, so the gain leaves them out.
+	-- Muted at the end of the gain when the worn item's enchant could not be read (a
+	-- read enchant is netted into every comparison, Gear.readEquipped).
 	tooltipEnchantNote = "(enchant not counted)",
 	-- The compare tooltip's tab, where the client lets it carry one.
 	tooltipCompareLabel = "Next upgrade",
@@ -562,6 +567,16 @@ local L = {
 	-- Two names too wide for one line wrap to a second rather than one dropped.
 	tooltipAlternativesFirst = "Also good: %s,",
 	tooltipAlternativesSecond = "    %s",
+	-- One alternative with its gain over what is worn, muted: "Veteran's Chain Shirt +1.1".
+	tooltipAlternativeGain = "%s %s",
+	tooltipAltGain = "%s%.1f",
+	tooltipAltGainScore = "%s%d",
+	-- The worn item's enchant, read from its own tooltip (every comparison against it is
+	-- net of it): the client's "Enchanted: %s" line and weapon-speed word where it has no
+	-- global, and the weapon-damage enchant wording, which no client global carries.
+	enchantedLine = "Enchanted: %s",
+	enchantSpeedWord = "Speed",
+	enchantWeaponDamage = "Weapon Damage",
 	-- A name the client has not sent yet (and the end of a shortened name).
 	tooltipNamePending = "…",
 	-- The section's header: "Forever Sixty · Arms · Your sim" (the spec's

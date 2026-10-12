@@ -111,16 +111,24 @@ upgrade from 1.0 of that figure: 0.96 DPS is "Upgrade +1.0" in both, 0.94 is "Si
 DPS)" and no chip upgrade. On the item worn the primary line is the slot's next upgrade ("Next
 upgrade: Mutant Scale Breastplate +6.1 DPS", the label muted, the name in its quality colour,
 the gain in the upgrade green), printed only when the pick gains at least 1.0 over what is worn;
-under it, or when the client cannot show the pick or any of its alternatives, the line is "Best
-until <the band ladder's next rung>" ("Best for now" in the top band). A pick the client cannot
+under it the line is "Best until <the band ladder's next rung>" with, muted under it, "At 30:
+<that rung's pick> · <its source>" ("Best for now", alone, in the top band); when the client can
+show neither the pick nor any of its alternatives, "Best known for now". A pick the client cannot
 show at all gives way to the first of its alternatives it can. The gain compares the items' own
 stats and, for a weapon in a weapon slot of a spec whose reference stat is attack power or ranged
 attack power, the weapon's own DPS at the sim's 14 attack power per DPS (ranged attack power for
-the ranged slot); a caster's weapon DPS counts nothing. Enchants are not counted: when the worn
-item carries one, the Next line ends with a muted "(enchant not counted)". Then the plan ("Planned
+the ranged slot); a caster's weapon DPS counts nothing. The worn item's enchant is read from its own tooltip (the
+client's "Enchanted: ..." line, each "+N <stat>" in the client's own stat words, "Weapon Damage
++N" as N divided by the weapon's speed of DPS) and added to the worn item before every comparison
+it takes part in (the Next gain, the bag verdicts against it, the chip's upgrades); only when that
+line cannot be read does the gain end with a muted "(enchant not counted)". Then the plan ("Planned
 for Arms at 30"), the source on its own line with drop chance ("Wailing Caverns · Mutanus the
-Devourer · 33% drop"), and two alternatives when the data has them ("Also good: A, B", wrapped to
-a second line rather than one dropped, never wider than the tooltip). The unit is DPS (or HPS)
+Devourer · 33% drop"), and two alternatives when the data has them, each with its gain over what is worn ("Also good:
+Veteran's Chain Shirt +1.1, Defender's Leather Armor +0.6"). Nothing in the section is ever wider
+than the client's own widest line, measured on the visible text before the section is added: the
+Next line puts its gain on a second line, the verdict puts the compared name on a second line
+(shortened only below that, never below two words), the source line shortens the boss's name,
+and the alternatives take one name per line. The unit is DPS (or HPS)
 when a sim result or DPS-per-point weights exist for the spec, else score. Hovering an item with a
 next upgrade shows that upgrade's compare tooltip beside it, as shift-compare does, once the
 client holds the item (never "Retrieving item information").
