@@ -6,6 +6,7 @@
 -- is handed in as a plain table or function.
 local ItemTooltip = require("ItemTooltip")
 local Gear = require("Gear")
+local Compat = require("Compat")
 local Rules = require("Rules")
 local Progress = require("Progress")
 local Theme = require("Theme")
@@ -408,14 +409,13 @@ describe("ItemTooltip.section", function()
 		assert.are.equal(5, #lines)
 	end)
 
-	it("prints the hovered pick's own source and alternatives, not a next pick", function()
+	it("prints the hovered pick's own source, without alternatives (those print only under a next upgrade)", function()
 		local lines = texts(ItemTooltip.section(ctx({ item = { itemId = 100, link = "item:100",
 			equipLocation = "INVTYPE_CHEST", itemClass = 4, itemSubClass = 3, stats = { strength = 20 } } })))
 		assert.are.same({
 			string.format(L.tooltipVerdictDps, 16, "Chausses of Westfall"),
 			string.format(L.tooltipPlanned, "Arms", 20),
 			NEXT_SOURCE,
-			string.format(L.tooltipAlternatives, "Quest Chest", L.tooltipNamePending),
 		}, lines)
 	end)
 
@@ -430,9 +430,8 @@ describe("ItemTooltip.section", function()
 	end)
 
 	describe("a worn item", function()
-		-- "At 30: <the next rung's pick> · <its source>", muted under "Best until 30".
-		local AT_30 = string.format(L.tooltipAtBand, 30, "Herod's Chest",
-			string.format(L.tooltipSourceDrop, "Scarlet Monastery", "Herod", 20))
+		-- "At level 30: <the next rung's pick> · <its instance>", muted under "Best until level 30".
+		local AT_30 = string.format(L.tooltipAtBand, 30, "Herod's Chest", "Scarlet Monastery")
 		local WORN = { itemId = 50, link = WORN_LINK, equipLocation = "INVTYPE_CHEST", itemClass = 4,
 			itemSubClass = 3, stats = { strength = 4 } }
 
@@ -495,7 +494,9 @@ describe("ItemTooltip.section", function()
 			}))
 			assert.are.same({ string.format(L.tooltipBestUntil, 30), AT_30,
 				string.format(L.tooltipPlanned, "Arms", 20) }, texts(lines))
-			assert.are.equal("muted", lines[1].color)
+			-- "Best until level 30" in the tooltip's text colour, the At line muted.
+			assert.are.equal("tooltipText", lines[1].color)
+			assert.are.equal("muted", lines[2].color)
 			assert.is_nil(target)
 		end)
 
@@ -772,9 +773,9 @@ describe("ItemTooltip.section", function()
 				ItemTooltip.fitVerdict(verdict, "dps", "Smite's Mighty Hammer", measure, #whole - 6))
 		end)
 
-		it("shortens the name on its own line only when it still does not fit, never below two words", function()
+		it("shortens the name on its own line only when it still does not fit, at the soonest on its second word", function()
 			local lines = ItemTooltip.fitVerdict(verdict, "dps", "Smite's Mighty Hammer", measure, 10)
-			assert.are.equal("Smite's Mighty" .. L.tooltipNamePending, lines[2])
+			assert.are.equal("Smite's M" .. L.tooltipNamePending, lines[2])
 			local wide = ItemTooltip.fitVerdict(verdict, "dps", "Smite's Mighty Hammer", measure, 20)
 			assert.are.equal("Smite's Mighty Ha" .. L.tooltipNamePending, wide[2])
 		end)
@@ -1094,10 +1095,14 @@ describe("fitting each line to the client's width", function()
 		}, two)
 	end)
 
-	it("drops the At line's source before it shortens the next rung's name", function()
-		local at = { band = 30, name = "Herod's Chest", source = "Scarlet Monastery · Herod · 20% drop" }
-		assert.are.same({ ItemTooltip.atText(at) }, ItemTooltip.fitAt(at, visible, 200))
-		assert.are.same({ string.format(L.tooltipAtBandName, 30, "Herod's Chest") }, ItemTooltip.fitAt(at, visible, 24))
+	it("puts the At line's short source on its own muted line, never cutting the name", function()
+		local at = { band = 30, name = "Herod's Chest", source = "Scarlet Monastery" }
+		assert.are.same({ string.format(L.tooltipAtBand, 30, "Herod's Chest", "Scarlet Monastery") },
+			ItemTooltip.fitAt(at, visible, 200))
+		assert.are.same({ string.format(L.tooltipAtBandName, 30, "Herod's Chest"),
+			string.format(L.tooltipAtSource, "Scarlet Monastery") }, ItemTooltip.fitAt(at, visible, 30))
+		assert.are.same({ string.format(L.tooltipAtBandName, 30, "Herod's Chest"),
+			string.format(L.tooltipAtSource, "Scarlet Monastery") }, ItemTooltip.fitAt(at, visible, 5))
 	end)
 
 	it("never splits a multibyte character when it shortens a name", function()
@@ -1237,4 +1242,239 @@ describe("the worn-item invariant over the real Arms band 20", function()
 			end)
 		end
 	end
+end)
+
+-- L3.3 fix round 5 ---------------------------------------------------------
+
+describe("the At line's source and wording", function()
+	it("says where the next pick comes from in a word or two", function()
+		assert.are.equal("Scarlet Monastery",
+			ItemTooltip.shortSource({ kind = "D", source = "Scarlet Monastery: Herod", chance = 0.2 }))
+		assert.are.equal("Molten Core", ItemTooltip.shortSource({ kind = "A", source = "Molten Core: Lucifron" }))
+		assert.are.equal("Vendor", ItemTooltip.shortSource({ kind = "V", source = "Bernard Brubaker" }))
+		assert.are.equal("Quest", ItemTooltip.shortSource({ kind = "Q", source = "Willix the Importer" }))
+		assert.are.equal("Crafted", ItemTooltip.shortSource({ kind = "C", source = "Blacksmithing" }))
+		assert.is_nil(ItemTooltip.shortSource({ kind = "Q" }))
+	end)
+
+	it("pins the wording: Best until level 30, At level 30", function()
+		assert.are.equal("Best until level 30", string.format(L.tooltipBestUntil, 30))
+		assert.are.equal("At level 30: Avenger's Armor · Scarlet Monastery",
+			string.format(L.tooltipAtBand, 30, "Avenger's Armor", "Scarlet Monastery"))
+		assert.are.equal("Best for now", L.tooltipBestForNow)
+		assert.are.equal("Best known for now", L.tooltipBestKnown)
+	end)
+
+	it("colours Best until level 30 as the tooltip's text, Best for now muted", function()
+		assert.are.equal("tooltipText", ItemTooltip.bestLine(30).color)
+		assert.are.equal("d0d0d0", Theme.HEX.tooltipText)
+		assert.are.equal("muted", ItemTooltip.bestLine(nil).color)
+		local at = ItemTooltip.atText({ band = 30, name = "Avenger's Armor", hex = "0070dd", source = "Scarlet Monastery" })
+		assert.are.equal(string.format(L.tooltipAtBand, 30, "|cff0070ddAvenger's Armor|r", "Scarlet Monastery"), at)
+	end)
+end)
+
+describe("every other line through the same fitter", function()
+	it("keeps a line whole when it fits and cuts it by measured width when not", function()
+		local refusal = "Not for you until 40: plate armor"
+		assert.are.equal(refusal, ItemTooltip.fitPlain(refusal, visible, 200))
+		local cutText = ItemTooltip.fitPlain(refusal, visible, 20)
+		assert.is_true(visible(cutText) <= 20)
+		assert.are.equal("Not for you until" .. L.tooltipNamePending, cutText)
+	end)
+
+	it("keeps colour escapes whole and closes an open colour when it cuts", function()
+		local header = ItemTooltip.headerText("Arms", "sim")
+		local cutText = ItemTooltip.fitPlain(header, visible, 16)
+		assert.is_true(visible(cutText) <= 16)
+		assert.is_truthy(cutText:find("^|cffffd100Forever Sixty|r"))
+		assert.are.equal("|r", cutText:sub(-2))
+		assert.are.equal("|cffffd100Fo" .. L.tooltipNamePending .. "|r", ItemTooltip.truncateVisible(header, 2))
+	end)
+end)
+
+describe("Gear.wornEnchant's cache", function()
+	local saved
+
+	local savedNames
+	before_each(function()
+		saved = Compat.inventoryTooltipRows
+		Gear.enchantCache = {}
+	end)
+
+	after_each(function()
+		Compat.inventoryTooltipRows = saved
+		if savedNames ~= nil then
+			_G.ITEM_MOD_ATTACK_POWER_SHORT, _G.RESISTANCE0_NAME = savedNames[1], savedNames[2]
+		end
+		Gear.enchantCache = {}
+	end)
+
+	it("never caches rows it could not read, and keeps one it parsed", function()
+		savedNames = { _G.ITEM_MOD_ATTACK_POWER_SHORT, _G.RESISTANCE0_NAME }
+		_G.ITEM_MOD_ATTACK_POWER_SHORT, _G.RESISTANCE0_NAME = "Attack Power", "Armor"
+		local answer = nil
+		local reads = 0
+		Compat.inventoryTooltipRows = function()
+			reads = reads + 1
+			return answer
+		end
+		assert.is_nil(Gear.wornEnchant(5, "item:51:1843"))
+		answer = { { left = "Abomination Bones" } }
+		assert.is_nil(Gear.wornEnchant(5, "item:51:1843"))
+		answer = { { left = "Abomination Bones" }, { left = "Enchanted: Attack Power +4 and Armor +16" } }
+		local enchant = Gear.wornEnchant(5, "item:51:1843")
+		assert.are.equal(4, enchant.stats.attack_power)
+		Gear.wornEnchant(5, "item:51:1843")
+		assert.are.equal(3, reads)
+	end)
+end)
+
+-- Re-review of dd64ab7f, item 6: the width contract and the enchant wiring at
+-- the hook, with a spec tooltip exposing GetName and the client's rows, and
+-- a plain stand-in for the client's globals (no client mock).
+describe("the hook's width contract and enchant wiring", function()
+	local NAME = "ForeverSixtySpecTip"
+	local saved = {}
+	local globals = { "GetInventoryItemLink", "GetItemInfoInstant", "GetItemStats", "ITEM_MOD_ATTACK_POWER_SHORT",
+		"ITEM_MOD_STRENGTH_SHORT", "RESISTANCE0_NAME", "ENCHANTED_TOOLTIP_LINE", "SPEED" }
+
+	--- A tooltip whose rows the client drew (`client`), growing as lines are
+	--- added, its TextLeft/TextRight font strings readable by name.
+	local function specTip(client)
+		local rows = {}
+		for index, row in ipairs(client) do
+			rows[index] = { left = row.left, right = row.right }
+		end
+		for index = 1, 40 do
+			_G[NAME .. "TextLeft" .. index] = { GetText = function() return rows[index] and rows[index].left end }
+			_G[NAME .. "TextRight" .. index] = {
+				GetText = function() return rows[index] and rows[index].right end,
+				IsShown = function() return rows[index] ~= nil and rows[index].right ~= nil end,
+			}
+		end
+		local tip = {
+			GetName = function() return NAME end,
+			NumLines = function() return #rows end,
+			AddLine = function(_, text) rows[#rows + 1] = { left = text } end,
+			AddDoubleLine = function(_, left, right) rows[#rows + 1] = { left = left, right = right } end,
+			Show = function() end,
+		}
+		return tip, rows
+	end
+
+	before_each(function()
+		saved.rawMeasure, saved.contextFor, saved.data = ItemTooltip.rawMeasure, ItemTooltip.contextFor, ItemTooltip.data
+		saved.cache, saved.rows, saved.scan = ItemTooltip.cache, Compat.inventoryTooltipRows, Compat.scanFrame
+		for _, name in ipairs(globals) do
+			saved[name] = _G[name]
+		end
+		ItemTooltip.rawMeasure = function()
+			return function(text) return #text end
+		end
+		ItemTooltip.resetCache()
+		Gear.enchantCache = {}
+	end)
+
+	after_each(function()
+		ItemTooltip.rawMeasure, ItemTooltip.contextFor, ItemTooltip.data = saved.rawMeasure, saved.contextFor, saved.data
+		ItemTooltip.cache, Compat.inventoryTooltipRows, Compat.scanFrame = saved.cache, saved.rows, saved.scan
+		for _, name in ipairs(globals) do
+			_G[name] = saved[name]
+		end
+		for index = 1, 40 do
+			_G[NAME .. "TextLeft" .. index] = nil
+			_G[NAME .. "TextRight" .. index] = nil
+		end
+		ItemTooltip.activeHover = nil
+		Gear.enchantCache = {}
+	end)
+
+	-- (a) The client's widest row is 22 wide; a Next line far wider wraps, and
+	-- the room stays the client's own width after our lines are added.
+	it("measures the client's width before any line of ours and never grows it", function()
+		local client = { { left = "Abomination Bones" }, { left = "Chest", right = "Mail" } }
+		local tip, rows = specTip(client)
+		ItemTooltip.data = { classes = { warrior = { tabs = { { name = "Arms" } } } },
+			weights = { ["warrior-arms"] = { strength = 2 } },
+			dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.5 } },
+			bis = { ["warrior-arms"] = { [20] = { alliance = { chest = "100|D|The Deadmines: Defias Overseer|0.14" } } } } }
+		ItemTooltip.contextFor = function(data)
+			return {
+				data = data, spec = "warrior-arms", classToken = "WARRIOR", level = 20, faction = "alliance",
+				current = Gear.currentWeights(data, "warrior-arms", nil, KEY),
+				equipped = { chest = { itemId = 50, link = "item:50", stats = { strength = 4 } } },
+				nameOf = function() return "A Very Long Breastplate Of The Defias Overseer" end,
+				statsOf = function() return { strength = 20 } end,
+				isCached = function() return false end, qualityHex = function() return nil end,
+				isMissing = function() return false end,
+				item = { itemId = 50, link = "item:50", equipLocation = "INVTYPE_CHEST", itemClass = 4,
+					itemSubClass = 3, stats = { strength = 4 } },
+			}
+		end
+		ItemTooltip.onTooltip(tip, "item:50")
+		assert.are.equal(#"Chest" + ItemTooltip.PAIR_GAP + #"Mail", ItemTooltip.lastRoom)
+		-- The Next line wrapped: its gain stands on a line of its own.
+		local gainLine
+		for index = #client + 1, #rows do
+			if ItemTooltip.stripEscapes(rows[index].left) == string.format(L.tooltipNextGain, 16, L.tooltipUnitDps) then
+				gainLine = index
+			end
+		end
+		assert.is_not_nil(gainLine)
+	end)
+
+	-- (b) A worn chest (+8 Strength) enchanted +4 attack power: a bag chest
+	-- with +9 Strength gains 2 over the bare chest but loses 2 to the enchanted
+	-- one, so the chip's list leaves it out.
+	it("nets the parsed enchant in readEquipped, and the chip's bag upgrades see it", function()
+		_G.ITEM_MOD_ATTACK_POWER_SHORT, _G.ITEM_MOD_STRENGTH_SHORT = "Attack Power", "Strength"
+		_G.RESISTANCE0_NAME, _G.ENCHANTED_TOOLTIP_LINE, _G.SPEED = "Armor", "Enchanted: %s", "Speed"
+		local link = "|cff1eff00|Hitem:51:1843:0:0:0:0:0:0:21|h[Abomination Bones]|h|r"
+		_G.GetInventoryItemLink = function(_, slotId) return slotId == 5 and link or nil end
+		_G.GetItemInfoInstant = function(item) return item == link and 51 or nil, nil, nil, "INVTYPE_CHEST" end
+		_G.GetItemStats = function(item) return item == link and { ITEM_MOD_STRENGTH_SHORT = 8 } or nil end
+		Compat.inventoryTooltipRows = function()
+			return { { left = "Abomination Bones" }, { left = "Enchanted: Attack Power +4 and Armor +16" } }
+		end
+		local equipped = Gear.readEquipped()
+		assert.are.same({ strength = 8, attack_power = 4, armor = 16 }, equipped.chest.stats)
+		local data = { classes = { warrior = { tabs = { { name = "Arms" } } } },
+			weights = { ["warrior-arms"] = { strength = 2, attack_power = 1 } } }
+		local build = { classSlug = "warrior", order = {}, gear = {} }
+		local bag = { link = "item:900", itemId = 900, equipLocation = "INVTYPE_CHEST", itemClass = 4,
+			itemSubClass = 3, stats = { strength = 9 } }
+		local bare = { chest = { itemId = 51, link = link, stats = { strength = 8 } } }
+		assert.are.equal(1, #Progress.bagUpgrades(data, build, {}, { bag }, bare, nil, 21))
+		assert.are.equal(0, #Progress.bagUpgrades(data, build, {}, { bag }, equipped, nil, 21))
+	end)
+
+	-- (c) Reading a worn item through the hidden scan frame must never enter the
+	-- section: the hook returns before it reads anything.
+	it("returns at once for the hidden scan frame", function()
+		local entries = 0
+		ItemTooltip.data = {}
+		ItemTooltip.contextFor = function()
+			entries = entries + 1
+			return {}
+		end
+		local scan = specTip({ { left = "Abomination Bones" } })
+		Compat.scanFrame = scan
+		ItemTooltip.onTooltip(scan, "item:51")
+		assert.are.equal(0, entries)
+		ItemTooltip.onTooltip(specTip({ { left = "Other" } }), "item:52")
+		assert.are.equal(1, entries)
+	end)
+
+	it("reads a worn item's rows from C_TooltipInfo where the client has it", function()
+		local savedInfo = _G.C_TooltipInfo
+		_G.C_TooltipInfo = { GetInventoryItem = function(unit, slotId)
+			assert.are.equal("player", unit)
+			assert.are.equal(5, slotId)
+			return { lines = { { leftText = "Abomination Bones" }, { leftText = "Chest", rightText = "Mail" } } }
+		end }
+		local rows = Compat.inventoryTooltipRows(5)
+		_G.C_TooltipInfo = savedInfo
+		assert.are.same({ { left = "Abomination Bones" }, { left = "Chest", right = "Mail" } }, rows)
+	end)
 end)

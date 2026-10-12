@@ -103,7 +103,7 @@ DPS-per-point figures are real sims), with "Equipped" on its right on the item w
 Sixty" is in the client's own tooltip gold, the spec and "Estimate" are muted, "Your sim" is in
 the tooltip's text colour. Every equippable item in a slot the plan covers gets a line: the verdict
 ("Upgrade +4.2 DPS over Chausses of Westfall", "Sidegrade (+0.3 DPS)", "Downgrade −4.2 DPS over
-Smite's Mighty Hammer", the compared name shortened before the tooltip widens), "Best until 30",
+Smite's Mighty Hammer", the compared name shortened before the tooltip widens), "Best until level 30",
 or the reason it is not one ("Not for you until 40: plate armor", "Not with your two-hander",
 alone, "Not for your plan"); only non-gear stays blank. The chip and the tooltip read one gain,
 rounded once to the figure shown (one decimal of DPS, whole points of score), and call it an
@@ -111,8 +111,11 @@ upgrade from 1.0 of that figure: 0.96 DPS is "Upgrade +1.0" in both, 0.94 is "Si
 DPS)" and no chip upgrade. On the item worn the primary line is the slot's next upgrade ("Next
 upgrade: Mutant Scale Breastplate +6.1 DPS", the label muted, the name in its quality colour,
 the gain in the upgrade green), printed only when the pick gains at least 1.0 over what is worn;
-under it the line is "Best until <the band ladder's next rung>" with, muted under it, "At 30:
-<that rung's pick> · <its source>" ("Best for now", alone, in the top band); when the client can
+under it the line is "Best until level <the band ladder's next rung>" in the tooltip's text
+colour with, muted under it, "At level 30: <that rung's pick> · <its source in a word or two>"
+(the instance, "Vendor", "Quest" or the kind's word; no boss, no chance; the source moves to its
+own muted line "· <source>" rather than widen the tooltip, and the name is never cut; the At line
+carries no alternatives) ("Best for now", alone, in the top band); when the client can
 show neither the pick nor any of its alternatives, "Best known for now". A pick the client cannot
 show at all gives way to the first of its alternatives it can. The gain compares the items' own
 stats and, for a weapon in a weapon slot of a spec whose reference stat is attack power or ranged
@@ -123,12 +126,14 @@ client's "Enchanted: ..." line, each "+N <stat>" in the client's own stat words,
 it takes part in (the Next gain, the bag verdicts against it, the chip's upgrades); only when that
 line cannot be read does the gain end with a muted "(enchant not counted)". Then the plan ("Planned
 for Arms at 30"), the source on its own line with drop chance ("Wailing Caverns · Mutanus the
-Devourer · 33% drop"), and two alternatives when the data has them, each with its gain over what is worn ("Also good:
+Devourer · 33% drop"), and, only under a "Next upgrade" line, two alternatives when the data has them, each with its
+gain over what is worn ("Also good:
 Veteran's Chain Shirt +1.1, Defender's Leather Armor +0.6"). Nothing in the section is ever wider
 than the client's own widest line, measured on the visible text before the section is added: the
 Next line puts its gain on a second line, the verdict puts the compared name on a second line
-(shortened only below that, never below two words), the source line shortens the boss's name,
-and the alternatives take one name per line. The unit is DPS (or HPS)
+(shortened only below that, on its second word at the soonest), the source line shortens the
+boss's name, the alternatives take one name per line, and every other line (the header, a refusal,
+the plan, a capped stat, "Best until level 30") is cut with an ellipsis by measured width. The unit is DPS (or HPS)
 when a sim result or DPS-per-point weights exist for the spec, else score. Hovering an item with a
 next upgrade shows that upgrade's compare tooltip beside it, as shift-compare does, once the
 client holds the item (never "Retrieving item information").

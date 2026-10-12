@@ -533,13 +533,16 @@ local L = {
 	-- The item worn is the band's own pick (or the pick is worn beside it, or
 	-- the next pick gains under the floor): it holds until the ladder's next
 	-- rung, "Best until 30"; in the top band, "Best for now".
-	tooltipBestUntil = "Best until %d",
+	tooltipBestUntil = "Best until level %d",
 	tooltipBestForNow = "Best for now",
 	-- The band's own pick is one the client cannot show, and so are its alternatives.
 	tooltipBestKnown = "Best known for now",
-	-- Muted under "Best until 30": the next rung's pick and where it comes from.
-	tooltipAtBand = "At %d: %s · %s",
-	tooltipAtBandName = "At %d: %s",
+	-- Muted under "Best until level 30": the next rung's pick and, in a word or two, where
+	-- it comes from (the instance, "Vendor", "Quest" or the kind's word; no boss, no chance).
+	tooltipAtBand = "At level %d: %s · %s",
+	tooltipAtBandName = "At level %d: %s",
+	-- The At line's source on its own muted line when the whole line would widen the tooltip.
+	tooltipAtSource = "· %s",
 	-- Gear no weights score and no pick names for its slot.
 	tooltipNotForPlan = "Not for your plan",
 	-- "Planned for Arms at 30" (the spec's tree, the level band), or the

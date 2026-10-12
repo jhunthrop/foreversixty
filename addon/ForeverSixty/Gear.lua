@@ -143,18 +143,29 @@ local ENCHANT_CACHE_LIMIT = 40
 local enchantCacheSize = 0
 
 --- The enchant on the item worn in client slot `slotId` (Gear.enchantOf of
---- its tooltip rows, Compat.inventoryTooltipRows), cached by link.
+--- its tooltip rows, Compat.inventoryTooltipRows), cached by link once the
+--- enchant line was read (parsed, or parsed in part); rows that cannot be read,
+--- or that carry no "Enchanted:" line yet, are asked for again next time.
 function Gear.wornEnchant(slotId, link)
 	local cached = Gear.enchantCache[link]
 	if cached ~= nil then
-		return cached or nil
+		return cached
 	end
 	local rows = Compat.inventoryTooltipRows(slotId)
-	local enchant = rows ~= nil and Gear.enchantOf(rows, Gear.enchantWords()) or nil
+	if rows == nil or #rows == 0 then
+		-- Nothing read (no client data yet): ask again next time, never cache it.
+		return nil
+	end
+	local enchant = Gear.enchantOf(rows, Gear.enchantWords())
+	if enchant == nil then
+		-- The link carries an enchant (the only kind asked for here), so rows with no
+		-- "Enchanted:" line are not loaded yet rather than a confirmed "none": not cached.
+		return nil
+	end
 	if enchantCacheSize >= ENCHANT_CACHE_LIMIT then
 		Gear.enchantCache, enchantCacheSize = {}, 0
 	end
-	Gear.enchantCache[link] = enchant or false
+	Gear.enchantCache[link] = enchant
 	enchantCacheSize = enchantCacheSize + 1
 	return enchant
 end
