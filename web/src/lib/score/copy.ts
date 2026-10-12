@@ -80,6 +80,17 @@ export const scoreCopy = {
   historyCaption: 'Forever Score by date, oldest first',
   historyDate: 'Date',
   historyScore: 'Score',
+  /** The sparkline's caption (fix round 2 item 2), first point to last, dated by the first:
+   *  "Up 330 since 10 Nov", "Down 40 since 10 Nov", "No change since 10 Nov". */
+  historyChange: (change: number, since: string): string =>
+    change > 0
+      ? `Up ${change} since ${since}`
+      : change < 0
+        ? `Down ${-change} since ${since}`
+        : `No change since ${since}`,
+  /** The sparkline image's accessible name: "Forever Score history: 1500 on 10 Nov, 1830 on 9 Dec". */
+  historyLabel: (firstScore: number, firstDate: string, lastScore: number, lastDate: string): string =>
+    `Forever Score history: ${firstScore} on ${firstDate}, ${lastScore} on ${lastDate}`,
   explainLink: 'What the score counts',
   explainHref: '/ratings#forever-score',
   tierStripLabel: 'Forever Score tiers',
@@ -102,17 +113,14 @@ export const scoreCopy = {
   /** The tooltip mock's guild line, the client's own form: "<Olympus XXVII>" (fix round 1
    *  item 1). */
   tooltipGuild: (name: string): string => `<${name}>`,
-  /** The tooltip mock's level line, the game's own: "Level 60 Night Elf Priest". Written from
-   *  whichever of level and race is known (Task L8.4 ruling 2); null with neither, when the
-   *  line is left out rather than reading "Priest" alone. */
-  tooltipDescriptor: (
-    level: number | null,
-    race: string | null,
-    className: string | undefined,
-  ): string | null =>
+  /** The tooltip mock's level line, the 1.60 client's own (fix round 2 item 6, from a real
+   *  client capture): "Level 60 Night Elf (Player)", the class and the faction each on a line of
+   *  their own below it. Written from whichever of level and race is known; null with neither,
+   *  when the level, class and faction lines are all left out (never "Priest" alone). */
+  tooltipLevelLine: (level: number | null, race: string | null): string | null =>
     level === null && race === null
       ? null
-      : [level === null ? '' : `Level ${level}`, race ?? '', className ?? '']
+      : [level === null ? '' : `Level ${level}`, race ?? '', '(Player)']
           .filter((part) => part !== '')
           .join(' '),
   inGameShownOn: 'Shown on this character’s tooltip when you have the Forever Sixty addon.',
@@ -121,10 +129,6 @@ export const scoreCopy = {
   inGamePlannerLead: 'To update this page: in game, type /fs, press Copy my character, then',
   inGamePasteLink: 'paste it here',
   inGamePasteHref: '/setup#paste',
-  /** "Last seen in game 4 Nov 14:03": when the site last saw the owner's addon export. */
-  lastSeen: (when: string): string => `Last seen in game ${when}`,
-  /** The same line when the export's time cannot be read. */
-  lastSeenNoTime: 'Last seen in game',
 
   explainerPageTitle: 'Forever Score and ratings',
   explainerJumpLabel: 'On this page',

@@ -233,16 +233,62 @@ describe('CharacterRatingPanel Forever Score card', () => {
     ];
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED, scoreHistory } });
     const figure = /<figure[^>]*data-testid="forever-score-history"[\s\S]*?<\/figure>/.exec(body)?.[0] ?? '';
-    expect(figure).toMatch(/<svg[^>]*aria-hidden="true"/);
     expect(figure).toMatch(/<path[^>]*stroke="var\(--color-gold\)"/);
-    expect(figure).toMatch(new RegExp(`<circle[^>]*fill="${labels.tiers.epic.color}"`));
-    expect(figure).toMatch(/data-testid="forever-score-history-first">12 Oct</);
+    const dot = /<span[^>]*data-testid="forever-score-sparkline-last"[^>]*>/.exec(figure)?.[0] ?? '';
+    expect(dot).toContain(`background-color: ${labels.tiers.epic.color}`);
     expect(figure).toMatch(/data-testid="forever-score-history-last">4 Nov</);
     // The table a screen reader reads instead: a caption, then each date and score.
     expect(figure).toMatch(/<table class="sr-only"/);
     expect(text(figure)).toContain(scoreCopy.historyCaption);
     expect(text(figure)).toContain('12 Oct 20261240');
     expect(text(figure)).toContain('4 Nov 20261830');
+  });
+
+  it('fills the content column at a fixed height, edge to edge, with an 8px end dot (fix round 2 item 1)', () => {
+    const scoreHistory = [
+      { date: '2026-11-10', score: 1500, tier: 'epic' },
+      { date: '2026-12-09', score: 1830, tier: 'epic' },
+    ];
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED, scoreHistory } });
+    const figure = /<figure([^>]*)data-testid="forever-score-history"[\s\S]*?<\/figure>/.exec(body);
+    // The tier strip's width from md (460px), the whole content width on a phone.
+    const figureClass = (/class="([^"]*)"/.exec(figure?.[1] ?? '')?.[1] ?? '').split(' ');
+    expect(figureClass).toEqual(expect.arrayContaining(['w-full', 'max-w-[460px]']));
+    expect(figureClass).not.toContain('w-[240px]');
+    // 40px high on a phone, 48px from 1024px; the SVG stretches to it, the stroke stays 2px.
+    const plot = /<div class="([^"]*)"[^>]*data-testid="forever-score-plot"/.exec(body)?.[1] ?? '';
+    expect(plot.split(' ')).toEqual(expect.arrayContaining(['relative', 'h-10', 'lg:h-12']));
+    expect(figure?.[0]).toMatch(/<svg[^>]*preserveAspectRatio="none"/);
+    expect(figure?.[0]).toMatch(/<path[^>]*vector-effect="non-scaling-stroke"/);
+    // The end dot is 8px at the plot's right edge, centred on the last point.
+    const dot = /<span[^>]*data-testid="forever-score-sparkline-last"[^>]*>/.exec(body)?.[0] ?? '';
+    expect((/class="([^"]*)"/.exec(dot)?.[1] ?? '').split(' ')).toEqual(
+      expect.arrayContaining(['absolute', 'size-2', 'rounded-full']),
+    );
+    expect(/style="([^"]*)"/.exec(dot)?.[1]).toContain('left: 100%');
+  });
+
+  it('captions the change, names the image, and dates the right edge (fix round 2 item 2)', () => {
+    const scoreHistory = [
+      { date: '2026-11-10', score: 1500, tier: 'epic' },
+      { date: '2026-11-20', score: 1600, tier: 'epic' },
+      { date: '2026-12-09', score: 1830, tier: 'epic' },
+    ];
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED, scoreHistory } });
+    expect(body).toMatch(
+      /<svg[^>]*role="img"[^>]*aria-label="Forever Score history: 1500 on 10 Nov, 1830 on 9 Dec"/,
+    );
+    // The caption: 12px Barlow (the body face), muted, the left of the date row; the newest
+    // date at the right edge.
+    const row = /<div class="([^"]*)"[^>]*data-testid="forever-score-history-dates"[\s\S]*?<\/div>/.exec(
+      body,
+    );
+    expect(row?.[1].split(' ')).toEqual(expect.arrayContaining(['flex', 'justify-between']));
+    expect(row?.[0]).toMatch(
+      /<span class="text-muted text-\[12px\]" data-testid="forever-score-history-caption">Up 330 since 10 Nov<\/span>[\s\S]*data-testid="forever-score-history-last">9 Dec</,
+    );
+    // The table equivalent stays.
+    expect(body).toMatch(/<table class="sr-only" data-testid="forever-score-history-table"/);
   });
 
   it('draws no sparkline box at all with fewer than two points, or with no score', () => {
@@ -276,5 +322,14 @@ describe('CharacterRatingPanel empty state copy', () => {
     // "character-rating-empty" turns up nothing; character-rating.spec.ts covers the
     // ready+trend, too-few-samples, and 404-hidden states, but not sample_size === 0).
     expect(ratingCopy.characterEmptyAction).toBe('Upload a log');
+  });
+});
+
+describe('the profile’s order (L8.4 fix round 2 item 7)', () => {
+  it('puts the score card second on the profile at every width (after the header, before the sign-in band)', () => {
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
+    const section = /<section class="([^"]*)"[^>]*data-testid="forever-score"/.exec(body)?.[1] ?? '';
+    expect(section.split(' ')).toContain('-order-2');
+    expect(section).not.toContain('max-md:-order-2');
   });
 });

@@ -84,6 +84,15 @@ describe('syncText', () => {
   it('is the age alone when the source is not known', () => {
     expect(syncText({ source: '', age: '12 minutes ago' })).toBe('12 minutes ago');
   });
+
+  it('is the source alone when the build time cannot be read, never a dangling dot (L8.4 fix round 2 item 5)', () => {
+    expect(syncText({ source: 'Addon', age: '' })).toBe('Addon');
+    const unreadable = syncView(
+      character({ build: { ...character().build!, captured_at: 'not a time' } }),
+      NOW,
+    );
+    expect(unreadable === null ? null : syncText(unreadable)).toBe('Addon');
+  });
 });
 
 describe('stale rule', () => {

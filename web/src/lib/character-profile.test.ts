@@ -84,6 +84,7 @@ describe('profileHeader (Task L8.4 ruling 1)', () => {
     character: { name: 'Elyra Duskvale', region: 'us', ruleset: 'hardcore', ...character },
     history: spec === undefined ? [] : [fight(spec)],
     best: [],
+    builds_seen: [],
   });
   const FULL = {
     class: 'Priest',
@@ -95,9 +96,9 @@ describe('profileHeader (Task L8.4 ruling 1)', () => {
   const text = (header: ReturnType<typeof profileHeader>): string =>
     header.pieces.map((piece) => piece.text).join(characterHeaderCopy.separator);
 
-  it('reads "Holy Priest · <Guild> · <Realm>", then "Level 60 Night Elf", with "Hardcore US" as the chip', () => {
+  it('reads "Holy Priest · <Guild> · Realm", then "Level 60 Night Elf", with "Hardcore US" as the chip', () => {
     const header = profileHeader(page(FULL, 'Holy'), PATH);
-    expect(text(header)).toBe('Holy Priest · Cx66 Olympus · Classic Beta PvP');
+    expect(text(header)).toBe('Holy Priest · <Cx66 Olympus> · Classic Beta PvP');
     expect(header.levelRace).toBe('Level 60 Night Elf');
     expect(header.chip).toBe('Hardcore US');
   });
@@ -117,17 +118,17 @@ describe('profileHeader (Task L8.4 ruling 1)', () => {
 
   it('drops the realm when it is null or empty', () => {
     expect(text(profileHeader(page({ ...FULL, realm: null }, 'Holy'), PATH))).toBe(
-      'Holy Priest · Cx66 Olympus',
+      'Holy Priest · <Cx66 Olympus>',
     );
     expect(text(profileHeader(page({ ...FULL, realm: '  ' }, 'Holy'), PATH))).toBe(
-      'Holy Priest · Cx66 Olympus',
+      'Holy Priest · <Cx66 Olympus>',
     );
   });
 
   it('reads the class alone without a spec, and drops it with no class', () => {
-    expect(text(profileHeader(page(FULL), PATH))).toBe('Priest · Cx66 Olympus · Classic Beta PvP');
+    expect(text(profileHeader(page(FULL), PATH))).toBe('Priest · <Cx66 Olympus> · Classic Beta PvP');
     expect(text(profileHeader(page({ ...FULL, class: undefined }, 'Holy'), PATH))).toBe(
-      'Cx66 Olympus · Classic Beta PvP',
+      '<Cx66 Olympus> · Classic Beta PvP',
     );
   });
 
@@ -152,5 +153,37 @@ describe('profileHeader (Task L8.4 ruling 1)', () => {
 
   it('echoes a ruleset the site has not heard of in the chip', () => {
     expect(profileHeader(page(FULL), { region: 'eu', ruleset: 'seasonal' }).chip).toBe('seasonal EU');
+  });
+
+  // Fix round 2 item 4: the guild in the client's own angle brackets, and the spec piece carries
+  // the newest build's talent split.
+  it('writes the guild the way the client does, in angle brackets, still linked', () => {
+    const header = profileHeader(page(FULL, 'Holy'), PATH);
+    expect(header.pieces[1]).toEqual({
+      key: 'guild',
+      text: '<Cx66 Olympus>',
+      href: '/guild/us/hardcore/cx66-olympus',
+    });
+  });
+
+  it('carries the newest build’s talent split on the spec piece, and none without a build', () => {
+    const builds = [
+      { talent_split: '21/30/0', spec: 'Holy', first_seen: '2026-11-01T20:00:00Z' },
+      { talent_split: '31/20/0', spec: 'Holy', first_seen: '2026-12-09T22:10:00Z' },
+      { talent_split: '0/21/30', spec: 'Shadow', first_seen: '2026-11-20T20:00:00Z' },
+    ];
+    const header = profileHeader({ ...page(FULL, 'Holy'), builds_seen: builds }, PATH);
+    expect(header.pieces[0]).toEqual({ key: 'spec', text: 'Holy Priest', split: '31/20/0' });
+    expect(profileHeader(page(FULL, 'Holy'), PATH).pieces[0]).toEqual({ key: 'spec', text: 'Holy Priest' });
+    // A page from an API that predates builds_seen reads as no build.
+    const { builds_seen: _omitted, ...older } = page(FULL, 'Holy');
+    expect(profileHeader(older, PATH).pieces[0]).toEqual({ key: 'spec', text: 'Holy Priest' });
+  });
+
+  // Fix round 2 item 3: the chip is the last item on the last text line.
+  it('puts the chip on the level line when there is one, else on the first line', () => {
+    expect(profileHeader(page(FULL, 'Holy'), PATH).chipOn).toBe('levelRace');
+    expect(profileHeader(page({ ...FULL, level: null, race: null }, 'Holy'), PATH).chipOn).toBe('pieces');
+    expect(profileHeader(page({ class: 'Priest' }, 'Holy'), PATH).chipOn).toBe('pieces');
   });
 });

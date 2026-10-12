@@ -5,8 +5,10 @@
 <script lang="ts">
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
+  import ProfileDescriptor from './character/ProfileDescriptor.svelte';
   import { CHARACTER_LOADING_MIN_H } from '../lib/character-layout';
-  import { fetchMeOnce } from '../lib/account/api';
+  import { fetchMeOnce, type MeCharacter } from '../lib/account/api';
+  import { syncView } from '../lib/character-header/sync';
   import { characterKey, nameFromSlug, parseCharacterPath, type CharacterPath } from '../lib/characters';
   import { formatAmount, percentileToken, rowLink } from '../lib/report/format';
   import {
@@ -28,7 +30,7 @@
     profileHeader,
   } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
-  import { foreverOf, lastAddonExportAt, lastSeenText, ownCharacter } from '../lib/score/score';
+  import { foreverOf, ownCharacter } from '../lib/score/score';
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterInGame from './CharacterInGame.svelte';
@@ -101,29 +103,26 @@
       });
   });
 
-  /** The trailing ruleset-and-region chip, "Hardcore US" (Task L8.4 ruling 1): muted, after
-   *  the identity line, on the logged and the unlogged page alike. */
+  /** The ruleset-and-region chip, "Hardcore US" (Task L8.4 ruling 1), on the unlogged page;
+   *  a logged character's is ProfileDescriptor's, with the same muted text and border token. */
   const CHIP = 'pill text-muted border-line align-middle';
-  /** In-text links are underlined: colour alone does not mark a link (WCAG 1.4.1). 44px tall
-   *  on a phone (character-phone.spec.ts), inline from md. */
-  const GUILD_LINK =
-    'text-nav inline-flex min-h-11 items-center underline underline-offset-2 hover:text-strong md:inline md:min-h-0';
 
-  /** "Holy Priest · <Guild> · <Realm>", "Level 60 Night Elf" and the chip, from the answer. */
+  /** "Holy Priest · 31/20/0 · <Olympus XXVII> · Classic Beta PvP", "Level 60 Night Elf" and the
+   *  chip, from the answer. */
   const header = $derived(data === null || resolved === null ? null : profileHeader(data, resolved));
 
   /** The name a 404 page shows: the address's own slug, readable. */
   const unloggedName = $derived(resolved === null ? '' : nameFromSlug(decodeURIComponent(resolved.slug)));
 
-  /** When the site last saw this character's addon export, and whether it is the viewer's
-   *  own (signed in and theirs, or their active character from the header selector) -- off
-   *  the same cached /v1/me every island on the page shares. */
-  let lastSeenAt = $state<string | null>(null);
+  /** Whether the character is the viewer's own (signed in and theirs, or their active
+   *  character from the header selector), and the viewer's own /v1/me row for it -- off the
+   *  same cached /v1/me every island on the page shares. */
+  let own = $state<MeCharacter | null>(null);
   let owned = $state(false);
 
   $effect(() => {
     const requested = resolved;
-    lastSeenAt = null;
+    own = null;
     owned = false;
     if (requested === null) return;
     const current = readCurrent();
@@ -134,13 +133,18 @@
     void fetchMeOnce()
       .then((me) => {
         if (resolved !== requested) return;
-        lastSeenAt = lastAddonExportAt(me?.characters, requested);
-        owned = active || ownCharacter(me?.characters, requested) !== null;
+        own = ownCharacter(me?.characters, requested);
+        owned = active || own !== null;
       })
       .catch(() => {
-        lastSeenAt = null;
+        own = null;
       });
   });
+
+  /** The owner's sync line (fix round 2 item 5), the Character header's own: "Addon · 4
+   *  minutes ago", the stale words in ember past the nav spec's limit; none for a visitor or
+   *  with no gear on file. */
+  const sync = $derived(own === null ? null : syncView(own, new Date()));
 </script>
 
 {#if status === 'missing'}
@@ -180,15 +184,15 @@
       </CharacterIdentity>
     </header>
     <CharacterRatingPanel path={resolved} forever={null} {owned} name={unloggedName} />
-    <CharacterInGame forever={null} name={unloggedName} {owned} {lastSeenAt} />
+    <CharacterInGame forever={null} name={unloggedName} {owned} />
   </div>
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
-    <!-- On a phone (fix round 3 item 4): a signed-in chip first, then the header (-3) and the
-         score card (-2, ForeverScoreCard), then the visitor's one-line sign-in row (-1), then the
-         rest in page order. From md everything is in page order. -->
+    <!-- At every width (fix round 3 item 4, L8.4 fix round 2 item 7): a signed-in chip first
+         (-4), then the header (-3) and the score card (-2, ForeverScoreCard), then the visitor's
+         sign-in band (-1): the character is the page's subject. Then the rest in page order. -->
     <CurrentCharacterBar spine profile />
-    <header class="flex flex-col gap-4 max-md:-order-3 lg:flex-row lg:items-end lg:justify-between">
+    <header class="-order-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div class="flex flex-col gap-1">
         <CharacterIdentity
           character={{
@@ -207,33 +211,13 @@
         >
           {#snippet below()}
             {#if header !== null}
-              <!-- Task L8.4 ruling 1: "Holy Priest · <Guild> · <Realm>", each piece only when
-                   known, the guild a link to its page; "Hardcore US" as a muted trailing chip;
-                   "Level 60 Night Elf" on the line below when known. -->
-              <p
-                class="text-muted flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] leading-[22px]"
-                data-testid="character-descriptor"
-              >
-                {#if header.pieces.length > 0}<span
-                    >{#each header.pieces as piece, index (piece.key)}{#if index > 0}{characterHeaderCopy.separator}{/if}{#if piece.href !== undefined}<a
-                          class={GUILD_LINK}
-                          href={piece.href}
-                          data-testid="character-guild-link">{piece.text}</a
-                        >{:else}<span data-testid={`character-${piece.key}`}>{piece.text}</span
-                        >{/if}{/each}</span
-                  >{/if}<span class={CHIP} data-testid="character-ruleset-chip">{header.chip}</span>
-              </p>
-              {#if header.levelRace !== null}
-                <p class="text-muted text-[13px]" data-testid="character-level-race">{header.levelRace}</p>
-              {/if}
+              <ProfileDescriptor {header} {sync} />
             {/if}
           {/snippet}
         </CharacterIdentity>
-        <CharacterHandoffLinks
-          path={resolved}
-          showNeedsExport={owned}
-          lastSeen={lastSeenAt === null ? null : lastSeenText(lastSeenAt)}
-        />
+        <!-- "No export yet · paste it here" only for an owner the site holds no build for:
+             with one, the sync line above already says when it came. -->
+        <CharacterHandoffLinks path={resolved} showNeedsExport={owned && own?.build === undefined} />
       </div>
       {#if data.character.render_url !== undefined}
         <img
@@ -262,8 +246,8 @@
       guild={data.character.guild?.name ?? null}
       level={data.character.level ?? null}
       race={data.character.race ?? null}
+      faction={own?.faction ?? null}
       {owned}
-      {lastSeenAt}
     />
 
     <!-- Fix round 1 item 4: a section with no rows is absent (spec principle 2). Fix round 2

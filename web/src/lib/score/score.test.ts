@@ -8,8 +8,6 @@ import {
   TIER_FROM,
   foreverOf,
   hasScore,
-  lastAddonExportAt,
-  lastSeenText,
   shortDate,
   tierColor,
   tierLabel,
@@ -108,36 +106,6 @@ const CHARACTER: MeCharacter = {
   build: { source: 'addon', captured_at: '2026-11-04T14:03:00Z' },
 };
 const PATH = { region: 'us' as const, ruleset: 'hardcore' as const, slug: 'elyra-duskvale' };
-
-describe('lastAddonExportAt', () => {
-  it('is the captured time of the viewer’s own character’s addon export', () => {
-    expect(lastAddonExportAt([CHARACTER], PATH)).toBe('2026-11-04T14:03:00Z');
-  });
-
-  it('is null for a character the viewer does not own, a Battle.net-only build, or no build', () => {
-    expect(lastAddonExportAt([CHARACTER], { ...PATH, slug: 'someone-else' })).toBeNull();
-    expect(lastAddonExportAt([CHARACTER], { ...PATH, ruleset: 'pvp' })).toBeNull();
-    expect(
-      lastAddonExportAt(
-        [{ ...CHARACTER, build: { source: 'blizzard', captured_at: '2026-11-04T14:03:00Z' } }],
-        PATH,
-      ),
-    ).toBeNull();
-    expect(lastAddonExportAt([{ ...CHARACTER, build: undefined }], PATH)).toBeNull();
-    expect(lastAddonExportAt(null, PATH)).toBeNull();
-  });
-});
-
-describe('lastSeenText', () => {
-  it('reads "Last seen in game 4 Nov 14:03" in the viewer’s own clock', () => {
-    const local = new Date(2026, 10, 4, 14, 3).toISOString();
-    expect(lastSeenText(local)).toBe('Last seen in game 4 Nov 14:03');
-  });
-
-  it('says "Last seen in game" without a time when the time cannot be read (fix round 4 item 3)', () => {
-    expect(lastSeenText('not a time')).toBe('Last seen in game');
-  });
-});
 
 // Fix round 1.
 const CAPTURE = { gear: 412, experience: 620, parses: 540, attendance: 180, discipline: 78 };

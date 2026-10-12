@@ -36,3 +36,16 @@ describe('CurrentCharacterBar spine mode', () => {
     expect(body).toContain('md:h-11');
   });
 });
+
+// L8.4 fix round 2 item 7: on a profile the character is the page's subject, so the visitor's
+// sign-in band sits below the Forever Score card at every width, not above the identity. The
+// profile orders its flex column: a signed-in chip -4, the header -3, the score card -2, this
+// band -1, the rest in page order.
+describe('CurrentCharacterBar on a profile', () => {
+  it('orders the signed-out band after the score card at every width, not on phones alone', () => {
+    const { body } = render(CurrentCharacterBar, { props: { spine: true, profile: true } });
+    const bar = /<div class="([^"]*)"[^>]*data-testid="current-character-bar"/.exec(body)?.[1] ?? '';
+    expect(bar.split(' ')).toContain('-order-1');
+    expect(bar).not.toContain('max-md:-order-1');
+  });
+});

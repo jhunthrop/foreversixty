@@ -256,7 +256,7 @@ function ownerMe(): typeof meAddonFixture {
   };
 }
 
-test('the owner’s header line says when the game was last seen, the same as In game, never "No export yet"', async ({
+test('the owner’s header carries the sync line, never "Last seen in game" or "No export yet" (L8.4 fix round 2 item 5)', async ({
   page,
 }) => {
   await page.route('**/v1/me', (route) => route.fulfill(ok(ownerMe())));
@@ -264,10 +264,8 @@ test('the owner’s header line says when the game was last seen, the same as In
   await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
   await page.goto(CHARACTER_PATH);
 
-  const inGame = page.getByTestId('character-in-game-last-seen');
-  await expect(inGame).toHaveText(/^Last seen in game \d{1,2} \w{3} \d{2}:\d{2}$/);
-  const header = page.getByTestId('character-handoff-last-seen');
-  await expect(header).toHaveText((await inGame.textContent()) ?? '');
+  await expect(page.getByTestId('character-sync')).toHaveText(/^Addon · \d+ minutes ago$/);
+  await expect(page.getByTestId('character')).not.toContainText('Last seen in game');
   await expect(page.getByTestId('character-needs-addon')).toHaveCount(0);
   await expect(page.getByTestId('forever-score-caption')).toHaveText('Your whole record, as of 4 Nov.');
 });
@@ -287,7 +285,7 @@ test('on a phone the visitor’s sign-in row sits below the score card, on one l
   expect(row?.height).toBe(44);
 });
 
-test('an owner whose export time cannot be read still reads "Last seen in game", never "No export yet"', async ({
+test('an owner whose sync time cannot be read gets "Addon", never a dangling dot or "No export yet"', async ({
   page,
 }) => {
   const me = ownerMe();
@@ -299,7 +297,8 @@ test('an owner whose export time cannot be read still reads "Last seen in game",
   await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
   await page.goto(CHARACTER_PATH);
 
-  await expect(page.getByTestId('character-handoff-last-seen')).toHaveText('Last seen in game');
-  await expect(page.getByTestId('character-in-game-last-seen')).toHaveText('Last seen in game');
+  await expect(page.getByTestId('character-sync')).toHaveText(/^Addon(\s·\s.*)?$/);
+  await expect(page.getByTestId('character-sync')).not.toHaveText(/^Addon · $/);
+  await expect(page.getByTestId('character')).not.toContainText('Last seen in game');
   await expect(page.getByTestId('character-needs-addon')).toHaveCount(0);
 });

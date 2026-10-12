@@ -121,4 +121,58 @@ describe('scoreSparkline', () => {
       coords(scoreSparkline([point('2026-11-01', 900), nan, point('2026-11-04', 1100)])!.path),
     ).toHaveLength(2);
   });
+
+  // Fix round 2 item 1: the plot fills its container, so the model draws in a percentage box:
+  // the oldest point on the left edge (the Gear label's), the newest on the right edge (its dot
+  // may overhang), and room above and below for the 8px end dot.
+  it('spans the box edge to edge: the oldest point at x 0, the newest at x 100', () => {
+    expect(SPARKLINE_WIDTH).toBe(100);
+    expect(SPARKLINE_HEIGHT).toBe(100);
+    const line = scoreSparkline([
+      point('2026-11-10', 1500),
+      point('2026-11-20', 1600),
+      point('2026-12-09', 1830),
+    ])!;
+    const xy = coords(line.path);
+    expect(xy[0][0]).toBe(0);
+    expect(xy[2][0]).toBe(SPARKLINE_WIDTH);
+    expect(line.last.x).toBe(SPARKLINE_WIDTH);
+    for (const [, y] of xy) {
+      expect(y).toBeGreaterThanOrEqual(SPARKLINE_PAD);
+      expect(y).toBeLessThanOrEqual(SPARKLINE_HEIGHT - SPARKLINE_PAD);
+    }
+    // The 8px dot at 40px high is 10% of the box each side of its centre.
+    expect(SPARKLINE_PAD).toBeGreaterThanOrEqual(10);
+  });
+
+  // Fix round 2 item 2: a caption from the first point to the last, dated by the first.
+  it('captions the change from the first point to the last: up, down or none', () => {
+    expect(scoreSparkline([point('2026-11-10', 1500), point('2026-12-09', 1830)])!.caption).toBe(
+      'Up 330 since 10 Nov',
+    );
+    expect(scoreSparkline([point('2026-11-10', 1870), point('2026-12-09', 1830)])!.caption).toBe(
+      'Down 40 since 10 Nov',
+    );
+    expect(scoreSparkline([point('2026-11-10', 1830), point('2026-12-09', 1830)])!.caption).toBe(
+      'No change since 10 Nov',
+    );
+  });
+
+  it('names the image for a screen reader: the first and last scores with their dates', () => {
+    const line = scoreSparkline([
+      point('2026-11-10', 1500),
+      point('2026-11-11', 1600),
+      point('2026-12-09', 1830),
+    ])!;
+    expect(line.ariaLabel).toBe('Forever Score history: 1500 on 10 Nov, 1830 on 9 Dec');
+  });
+
+  it('dates the labels with the year only when the history crosses a year boundary', () => {
+    const same = scoreSparkline([point('2026-11-10', 1500), point('2026-12-09', 1830)])!;
+    expect([same.firstLabel, same.lastLabel]).toEqual(['10 Nov', '9 Dec']);
+    const crossing = scoreSparkline([point('2026-12-20', 1500), point('2027-01-05', 1540)])!;
+    expect([crossing.firstLabel, crossing.lastLabel]).toEqual(['20 Dec 2026', '5 Jan 2027']);
+    expect(crossing.caption).toBe('Up 40 since 20 Dec 2026');
+    expect(crossing.ariaLabel).toBe('Forever Score history: 1500 on 20 Dec 2026, 1540 on 5 Jan 2027');
+  });
 });

@@ -194,20 +194,6 @@ export function asOfText(forever: ForeverScore | null | undefined): string | nul
   return date === null ? null : scoreCopy.asOf(date);
 }
 
-/**
- * When the site last saw this character's addon export, for the signed-in viewer who owns it:
- * `/v1/me`'s `build.captured_at` on the matching character, when that newest build came from
- * the addon (a paste or a companion push). Null for anyone else's character, for a build
- * built from Battle.net, and for no build at all.
- */
-export function lastAddonExportAt(
-  characters: readonly MeCharacter[] | null | undefined,
-  path: CharacterPath,
-): string | null {
-  const own = ownCharacter(characters, path);
-  return own?.build?.source === 'addon' ? own.build.captured_at : null;
-}
-
 /** The signed-in viewer's own row for the character at `path`, if it is theirs. */
 export function ownCharacter(
   characters: readonly MeCharacter[] | null | undefined,
@@ -229,17 +215,4 @@ function decodeSlug(slug: string): string {
   } catch {
     return slug;
   }
-}
-
-/**
- * "Last seen in game 4 Nov 14:03", in the viewer's own clock. An unreadable time still says the
- * game was seen -- "Last seen in game" with no time -- since the export is there either way
- * (fix round 4 item 3); it never falls back to "No export yet".
- */
-export function lastSeenText(capturedAt: string): string {
-  const when = new Date(capturedAt);
-  if (Number.isNaN(when.getTime())) return scoreCopy.lastSeenNoTime;
-  const hours = String(when.getHours()).padStart(2, '0');
-  const minutes = String(when.getMinutes()).padStart(2, '0');
-  return scoreCopy.lastSeen(`${when.getDate()} ${MONTHS[when.getMonth()]} ${hours}:${minutes}`);
 }

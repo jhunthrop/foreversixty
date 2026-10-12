@@ -70,19 +70,10 @@ describe('CharacterInGame', () => {
     expect(owner).toContain(scoreCopy.inGamePasteLink);
   });
 
-  it('shows when the site last saw the export only to the owner, and only with a time', () => {
-    const local = new Date(2026, 10, 4, 14, 3).toISOString();
-    const notOwner = render(CharacterInGame, { props: { ...BASE, forever: SCORED, lastSeenAt: local } }).body;
-    expect(notOwner).not.toContain('character-in-game-last-seen');
-
-    const noTime = render(CharacterInGame, { props: { ...BASE, forever: SCORED, owned: true } }).body;
-    expect(noTime).not.toContain('character-in-game-last-seen');
-
-    const owner = render(CharacterInGame, {
-      props: { ...BASE, forever: SCORED, owned: true, lastSeenAt: local },
-    }).body;
-    expect(owner).toContain('data-testid="character-in-game-last-seen"');
-    expect(owner).toContain('Last seen in game 4 Nov 14:03');
+  it('never says "Last seen in game": the export time is not an online time (L8.4 fix round 2 item 5)', () => {
+    const { body } = render(CharacterInGame, { props: { ...BASE, forever: SCORED, owned: true } });
+    expect(body).not.toContain('Last seen in game');
+    expect(body).not.toContain('character-in-game-last-seen');
   });
 
   it('is the game’s tooltip frame: translucent dark, 1px grey-blue border, 4px radius, 10px padding (round 2 item 3)', () => {
@@ -98,20 +89,10 @@ describe('CharacterInGame', () => {
       ]),
     );
     expect(frame).not.toContain('gold');
-    // The name 14px bold, then a blank line before the addon's line.
+    // The name 14px bold.
     expect(body).toContain(
       'class="text-[14px] font-bold" style="color: var(--color-class-priest)">Elyra Duskvale<',
     );
-    expect(tooltipOf(body)).toContain('<span class="h-[20px]" aria-hidden="true"></span>');
-  });
-
-  it('adds the game’s "Level 60 Human Priest" line only when level and race are known', () => {
-    const without = render(CharacterInGame, { props: { ...BASE, forever: SCORED } }).body;
-    expect(without).not.toContain('character-in-game-descriptor');
-    const withLine = render(CharacterInGame, {
-      props: { ...BASE, forever: SCORED, level: 60, race: 'Human' },
-    }).body;
-    expect(withLine).toMatch(/data-testid="character-in-game-descriptor">Level 60 Human Priest</);
   });
 
   it('adds the guild line under the name only when the character has a guild (Task L8.4 ruling 2)', () => {
@@ -127,9 +108,20 @@ describe('CharacterInGame', () => {
     expect(tooltipOf(withGuild)).toMatch(/data-testid="character-in-game-guild">&lt;Cx66 Olympus(&gt;|>)</);
   });
 
-  it('keeps the game’s order: name, guild, level race class, a blank line, the score', () => {
+  // Fix round 2 item 6, from the real 1.60 client (ingame-reference-client-player-tooltip.jpg):
+  // name, <Guild>, "Level 60 Night Elf (Player)", the class on its own line, the faction on its
+  // own line when known, all in the client's light grey-white; then the blank line and the
+  // addon's score line.
+  it('keeps the client’s order: name, guild, "Level 60 Night Elf (Player)", class, faction, a blank line, the score', () => {
     const { body } = render(CharacterInGame, {
-      props: { ...BASE, forever: SCORED, guild: 'Cx66 Olympus', level: 60, race: 'Night Elf' },
+      props: {
+        ...BASE,
+        forever: SCORED,
+        guild: 'Cx66 Olympus',
+        level: 60,
+        race: 'Night Elf',
+        faction: 'alliance',
+      },
     });
     const tooltip = tooltipOf(body);
     const at = (needle: string): number => {
@@ -140,39 +132,85 @@ describe('CharacterInGame', () => {
     const order = [
       at('>Elyra Duskvale<'),
       at('data-testid="character-in-game-guild"'),
-      at('data-testid="character-in-game-descriptor">Level 60 Night Elf Priest<'),
+      at('data-testid="character-in-game-descriptor">Level 60 Night Elf (Player)<'),
+      at('data-testid="character-in-game-class">Priest<'),
+      at('data-testid="character-in-game-faction">Alliance<'),
       at('<span class="h-[20px]" aria-hidden="true"></span>'),
       at('data-testid="character-in-game-score"'),
     ];
     expect([...order].sort((a, b) => a - b)).toEqual(order);
   });
 
-  it('writes the level line from whichever of level and race is known, and leaves it out with neither', () => {
+  it('draws the guild, level, class and faction lines in the client’s light grey-white', () => {
+    const { body } = render(CharacterInGame, {
+      props: {
+        ...BASE,
+        forever: SCORED,
+        guild: 'Cx66 Olympus',
+        level: 60,
+        race: 'Night Elf',
+        faction: 'alliance',
+      },
+    });
+    for (const id of ['guild', 'descriptor', 'class', 'faction']) {
+      expect(body, id).toContain(`class="text-[#dfe0e5]" data-testid="character-in-game-${id}"`);
+    }
+  });
+
+  it('leaves the faction line out when the API does not know it', () => {
+    const { body } = render(CharacterInGame, {
+      props: { ...BASE, forever: SCORED, level: 60, race: 'Night Elf', faction: null },
+    });
+    expect(body).toMatch(/data-testid="character-in-game-class">Priest</);
+    expect(body).not.toContain('character-in-game-faction');
+  });
+
+  it('writes the level line from whichever of level and race is known, and leaves the block out with neither', () => {
     const levelOnly = render(CharacterInGame, {
       props: { ...BASE, forever: SCORED, level: 60, race: null },
     }).body;
-    expect(levelOnly).toMatch(/data-testid="character-in-game-descriptor">Level 60 Priest</);
+    expect(levelOnly).toMatch(/data-testid="character-in-game-descriptor">Level 60 \(Player\)</);
     const raceOnly = render(CharacterInGame, {
       props: { ...BASE, forever: SCORED, level: null, race: 'Night Elf' },
     }).body;
-    expect(raceOnly).toMatch(/data-testid="character-in-game-descriptor">Night Elf Priest</);
+    expect(raceOnly).toMatch(/data-testid="character-in-game-descriptor">Night Elf \(Player\)</);
     const neither = render(CharacterInGame, {
-      props: { ...BASE, forever: SCORED, level: null, race: null },
+      props: { ...BASE, forever: SCORED, level: null, race: null, faction: 'alliance' },
     }).body;
     expect(neither).not.toContain('character-in-game-descriptor');
+    // Never "Priest" alone under the name.
+    expect(neither).not.toContain('character-in-game-class');
+    expect(neither).not.toContain('character-in-game-faction');
+  });
+
+  it('drops the blank line when there is neither a guild nor a level line', () => {
+    const bare = tooltipOf(render(CharacterInGame, { props: { ...BASE, forever: SCORED } }).body);
+    expect(bare).not.toContain('h-[20px]');
+    const guildOnly = tooltipOf(
+      render(CharacterInGame, { props: { ...BASE, forever: SCORED, guild: 'Cx66 Olympus' } }).body,
+    );
+    expect(guildOnly).toContain('<span class="h-[20px]" aria-hidden="true"></span>');
+    const levelOnly = tooltipOf(
+      render(CharacterInGame, { props: { ...BASE, forever: SCORED, level: 60 } }).body,
+    );
+    expect(levelOnly).toContain('<span class="h-[20px]" aria-hidden="true"></span>');
+  });
+
+  it('caps the box at the client’s width and wraps a long line, never clips it', () => {
+    const long = 'The Exceedingly Long Guild Name Of Olympus';
+    const { body } = render(CharacterInGame, { props: { ...BASE, forever: SCORED, guild: long } });
+    const frame = (
+      /<div class="([^"]*)"[^>]*data-testid="character-in-game-tooltip"/.exec(body)?.[1] ?? ''
+    ).split(' ');
+    expect(frame).toEqual(expect.arrayContaining(['max-w-[min(100%,320px)]', 'break-words']));
+    for (const clip of ['overflow-hidden', 'truncate', 'whitespace-nowrap', 'max-w-full']) {
+      expect(frame, clip).not.toContain(clip);
+    }
+    expect(tooltipOf(body)).toContain(`&lt;${long}`);
   });
 
   it('puts the line under the mock below 900px and beside it from 900px', () => {
     const { body } = render(CharacterInGame, { props: { ...BASE, forever: SCORED } });
     expect(body).toContain('flex flex-col gap-3 min-[900px]:flex-row');
-  });
-
-  it('shows "Last seen in game" without a time for an owner whose export time cannot be read (fix round 4 item 3)', () => {
-    const { body } = render(CharacterInGame, {
-      props: { ...BASE, forever: SCORED, owned: true, lastSeenAt: 'not a time' },
-    });
-    expect(body).toContain(
-      'class="text-muted text-[14px] leading-[22px]" data-testid="character-in-game-last-seen">Last seen in game<',
-    );
   });
 });

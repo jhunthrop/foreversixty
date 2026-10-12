@@ -41,9 +41,10 @@
     currentDoor?: 'plan' | 'sim' | 'logs' | 'rankings' | null;
     /** The mounting page restored the pointer from a previous visit (the chip's old note). */
     restored?: boolean;
-    /** The character page (Forever Score fix round 3 item 4): on a phone the signed-out line is
-     *  one row of its two links and sits below the score card, while a signed-in chip stays on
-     *  top. Character.svelte orders the header and the score card around it. */
+    /** The character page (Forever Score fix round 3 item 4, L8.4 fix round 2 item 7): the
+     *  signed-out line sits below the score card at every width (one row of its two links on a
+     *  phone), while a signed-in chip stays on top. Character.svelte orders the header and the
+     *  score card around it. */
     profile?: boolean;
   } = $props();
 
@@ -107,7 +108,7 @@
          -- SSR and the hydrated client render the identical line -- so hiding it here would
          make spec 2026-09-25 4.1's signed-out line permanently unreachable for exactly the
          visitor it is written for. `CHIP_HEIGHT` alone still reserves the identical height. -->
-    <div class={profile ? 'h-11 max-md:-order-1' : CHIP_HEIGHT} data-testid="current-character-bar">
+    <div class={profile ? '-order-1 h-11' : CHIP_HEIGHT} data-testid="current-character-bar">
       <!-- Sentence above, links below on a phone: as one row the two links were squeezed into
            a side column and wrapped a word per line. One row again from md. -->
       <div
@@ -131,10 +132,7 @@
          stored pointer, the session) the pre-paint script has already hinted at via
          data-pointer/data-session when either is real, so hiding it until hydration
          resolves is what stops it from ever painting a wrong guess. -->
-    <div
-      class={`chip-slot ${CHIP_HEIGHT} ${profile ? 'max-md:-order-4' : ''}`}
-      data-testid="current-character-bar"
-    >
+    <div class={`chip-slot ${CHIP_HEIGHT} ${profile ? '-order-4' : ''}`} data-testid="current-character-bar">
       <div class="flex h-full flex-col md:flex-row md:items-center md:gap-4">
         <div class="flex h-11 shrink-0 items-center md:h-auto" data-testid="current-character-bar-identity">
           {#if displayCharacter !== null}

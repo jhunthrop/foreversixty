@@ -5,9 +5,10 @@
 
      With a score: the number (48px from md), "of 2100" and the tier; the tier strip under it,
      current tier marked; the score over time as a gold sparkline when score_history has two or
-     more points (Task L8.4 ruling 3: the newest point marked in its tier's colour, the first and
-     last dates as muted labels, a screen-reader table in its place, and no box at all with fewer
-     than two); the five parts as bars against their ceilings. One part is marked as
+     more points (Task L8.4 ruling 3, fix round 2 items 1 and 2: the content column's width at a
+     fixed height, the newest point marked in its tier's colour, "Up 330 since 10 Nov" and the
+     newest date under it, an image named for a screen reader with the table beside it, and no
+     box at all with fewer than two); the five parts as bars against their ceilings. One part is marked as
      the one to work on, and it is always the part "Most to gain" names (lib/score/score.ts's
      mostToGain: the largest point gap, the earlier part on a tie). It takes one neutral colour
      that is never a tier's, and a "+88" at the row's end so colour is not the only signal. With
@@ -103,34 +104,49 @@
         <div class="max-w-[460px]"><TierStrip current={forever.tier} /></div>
       </div>
       {#if sparkline !== null}
-        <figure class="m-0 flex w-[240px] max-w-full flex-col gap-1" data-testid="forever-score-history">
-          <svg
-            class="block h-auto w-full overflow-visible"
-            viewBox={`0 0 ${SPARKLINE_WIDTH} ${SPARKLINE_HEIGHT}`}
-            aria-hidden="true"
-            data-testid="forever-score-sparkline"
-          >
-            <path
-              d={sparkline.path}
-              fill="none"
-              stroke="var(--color-gold)"
-              stroke-width="2"
-              stroke-linejoin="round"
-              stroke-linecap="round"
-            />
-            <circle
-              cx={sparkline.last.x}
-              cy={sparkline.last.y}
-              r="3.5"
-              fill={sparkline.last.color ?? 'var(--color-gold)'}
-              stroke="var(--color-raised)"
-              stroke-width="1.5"
+        <!-- Fix round 2 items 1 and 2: the tier strip's width from md, the whole content width on
+             a phone; 40px high, 48px from 1024px. The plot and the date row start on the Gear
+             label's left edge; the 8px end dot sits on the right edge and may overhang it. The
+             caption ("Up 330 since 10 Nov", which carries the first date) leads the date row and
+             the newest date ends it. -->
+        <figure class="m-0 flex w-full max-w-[460px] flex-col gap-1" data-testid="forever-score-history">
+          <div class="relative h-10 lg:h-12" data-testid="forever-score-plot">
+            <svg
+              class="absolute inset-0 block h-full w-full overflow-visible"
+              viewBox={`0 0 ${SPARKLINE_WIDTH} ${SPARKLINE_HEIGHT}`}
+              preserveAspectRatio="none"
+              role="img"
+              aria-label={sparkline.ariaLabel}
+              data-testid="forever-score-sparkline"
+            >
+              <path
+                d={sparkline.path}
+                fill="none"
+                stroke="var(--color-gold)"
+                stroke-width="2"
+                stroke-linejoin="round"
+                stroke-linecap="round"
+                vector-effect="non-scaling-stroke"
+              />
+            </svg>
+            <span
+              class="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+              style={`left: ${sparkline.last.x}%; top: ${sparkline.last.y}%; background-color: ${sparkline.last.color ?? 'var(--color-gold)'}`}
+              aria-hidden="true"
               data-testid="forever-score-sparkline-last"
-            />
-          </svg>
-          <div class="text-muted tabular flex justify-between font-mono text-[12px]" aria-hidden="true">
-            <span data-testid="forever-score-history-first">{sparkline.firstLabel}</span>
-            <span data-testid="forever-score-history-last">{sparkline.lastLabel}</span>
+            ></span>
+          </div>
+          <div
+            class="flex items-baseline justify-between gap-3"
+            aria-hidden="true"
+            data-testid="forever-score-history-dates"
+          >
+            <span class="text-muted text-[12px]" data-testid="forever-score-history-caption"
+              >{sparkline.caption}</span
+            >
+            <span class="text-muted tabular font-mono text-[12px]" data-testid="forever-score-history-last"
+              >{sparkline.lastLabel}</span
+            >
           </div>
           <table class="sr-only" data-testid="forever-score-history-table">
             <caption>{scoreCopy.historyCaption}</caption>
@@ -252,9 +268,10 @@
 {/snippet}
 
 {#if heading}
-  <!-- max-md:-order-2: on the profile (a flex column) a phone puts the score card right after
-       the header, above the sign-in row (Character.svelte, fix round 3 item 4). -->
-  <section class="flex flex-col gap-2 max-md:-order-2" data-testid="forever-score">
+  <!-- -order-2: on the profile (a flex column) the score card comes right after the header,
+       above the visitor's sign-in band, at every width (Character.svelte, fix round 3 item 4,
+       L8.4 fix round 2 item 7). -->
+  <section class="-order-2 flex flex-col gap-2" data-testid="forever-score">
     <h2 class="section-title text-[18px]">{scoreCopy.heading}</h2>
     <p class="text-muted text-[13px]" data-testid="forever-score-caption">{scoreCopy.caption(date, owned)}</p>
     {@render card()}
