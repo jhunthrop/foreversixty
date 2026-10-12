@@ -3,7 +3,10 @@
 // reference stat is worth, and writes it to
 // data/builds/<active build>/dps-per-point.json:
 //
-//	{ "warrior-arms": { "reference": "attack_power", "dps": 0.42, "healing": false }, ... }
+//	{ "warrior-arms": { "reference": "attack_power", "dps": 0.2222, "healing": false,
+//	    "weapon_dps": 3.1536,
+//	    "bands": { "20": { "level": 25, "dps": 0.0385, "dps_error": 0,
+//	                       "weapon_dps": 0.5432, "weapon_dps_error": 0.0007 }, ... } }, ... }
 //
 // The data pipeline reads that file into Data.lua's dpsPerPoint
 // (docs/contracts/addon-v2.md, contract 1); the addon's Progress
@@ -20,8 +23,8 @@
 // and race from bis/<spec>.json, the guide's leveling build at the
 // band's level, the class kit and no preset, at the middle of the levels
 // the addon reads the band for (bandLevel). Those figures go under
-// "bands"; the data pipeline checks them against the BiS ladder's own
-// per-band figure (bis/<spec>.json reference_dps_per_point).
+// "bands", and the data pipeline ships them as Data.lua's
+// dpsPerPoint[spec][band].
 //
 // The figure is the stat-weights sweep's own raw derivative before it is
 // normalised (sim/adapter.Weights divides every weight by exactly this
@@ -39,8 +42,10 @@
 //
 //	go run ./cmd/dps-per-point -repo-root .. [-specs warrior-arms,priest-holy]
 //
-// -specs measures only the named specs and merges them into the
-// existing file, so a partial run never drops another spec's figure.
+// -specs measures only the named specs and -bands only the named bands;
+// either way the run is merged into the existing file band by band, so a
+// partial run never drops another spec's figure or another band's
+// (-bands "" measures the level-60 figure alone and keeps every band).
 package main
 
 import (
@@ -72,7 +77,9 @@ import (
 )
 
 const (
-	// level is the only level measured: the raid build is a level-60 build.
+	// level is the raid character's level (the raid build is a level-60
+	// build) and the level band 60 is measured at; the other bands are
+	// measured at bandLevel.
 	level = 60
 	// bandFaction is whose raid band supplies the gear and race. Both
 	// factions' raid bands wear the same set; the racial difference in a
@@ -588,8 +595,15 @@ func referenceDerivative(values *proto.StatWeightValues, req api.SimRequest) (fl
 }
 
 // writeMerged writes got over the figures already at path (a partial
-// run keeps every spec it did not measure), one spec per line, keys
-// sorted, figures rounded to decimals.
+// run keeps every spec it did not measure, and every band of a spec it
+// did measure that this run did not), one spec per line, keys sorted,
+// figures rounded to decimals.
+//
+// Rounding to four decimals writes an error below 0.00005 as 0: a
+// warrior's paired-stream sweep reads "dps_error": 0 for that reason,
+// not because it has no error. And Data.lua's heap stood at 1,992.3 KB
+// under Lua 5.1 after task L1.5, 55.7 KB under the addon's 2 MB budget:
+// the next figure added here needs a size decision first.
 func writeMerged(path string, got map[string]entry) error {
 	merged := map[string]entry{}
 	if b, err := os.ReadFile(path); err == nil {
@@ -600,6 +614,18 @@ func writeMerged(path string, got map[string]entry) error {
 		return err
 	}
 	for k, v := range got {
+		// A band this run did not measure keeps its existing figures.
+		bands := map[string]bandEntry{}
+		for band, b := range merged[k].Bands {
+			bands[band] = b
+		}
+		for band, b := range v.Bands {
+			bands[band] = b
+		}
+		if len(bands) == 0 {
+			bands = nil
+		}
+		v.Bands = bands
 		merged[k] = v
 	}
 	keys := make([]string, 0, len(merged))

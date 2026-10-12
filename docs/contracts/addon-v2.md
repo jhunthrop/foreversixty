@@ -92,7 +92,8 @@ Notes for the reader:
 
 - `dpsPerPoint` is per spec slug and band: `dpsPerPoint[spec][band]` is `{ reference, dps,
   weaponDps }` for the BiS bands 20, 30, 40, 50 and 60. Read the band with the same rule as the
-  BiS table (`Gear.bandFor`: the highest band at or below the level, so 20 serves levels 20-29).
+  BiS table (`Gear.bandFor`: the highest band at or below the level, so 20 serves levels 20-29);
+  below level 20 read band 20, never the spec-level figure.
   A band's figures are measured by the sim on that band's own character: the band's BiS set,
   the guide's leveling build, at the middle of the band's levels (25 for band 20, 60 for 60). They
   differ from the level-60 figure by far more than 25 percent (Arms: 0.0385 DPS per attack
@@ -100,8 +101,10 @@ Notes for the reader:
   leveling character. `dps` is DPS per 1.0 of `reference`. `weaponDps` is the measured DPS one
   more point of the swung weapon's own damage per second is worth (the main hand; the ranged
   weapon when `reference` is `ranged_attack_power`): a weapon's DPS delta is multiplied by it
-  directly, never converted to attack power first. It is 0 for a spec that does not swing its
-  weapon (casters, healers, feral druids). A band the sim could not measure beyond its own error
+  directly, never converted to attack power first. It prices only the slot it was measured
+  on: the main hand, or the ranged slot for a `ranged_attack_power` spec. The off hand and a
+  hunter's melee weapon have no weapon term. It is 0 for a spec that does not swing its weapon
+  (casters, healers, feral druids). A band the sim could not measure beyond its own error
   has no key. The spec-level `reference`, `dps`, `healing` and `weaponDps` are the level-60 raid
   character's figures; `healing = true` means the numbers are healing per second and the addon
   says "healing" instead of "damage". A spec with no entry (tanks) shows no DPS wording at all.

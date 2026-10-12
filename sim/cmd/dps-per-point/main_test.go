@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
@@ -217,5 +218,46 @@ func TestWriteKeepsTheWeaponTermAndTheBands(t *testing.T) {
 		"}\n"
 	if string(b) != want {
 		t.Fatalf("file =\n%s\nwant\n%s", b, want)
+	}
+}
+
+func TestAPartialRunMergesBandByBandAndNoBandsKeepsThemAll(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "dps-per-point.json")
+	existing := `{"warrior-arms": {"reference":"attack_power","dps":0.2,"healing":false,"weapon_dps":3,` +
+		`"bands":{"20":{"level":25,"dps":0.0385,"dps_error":0,"weapon_dps":0.5432,"weapon_dps_error":0.0007},` +
+		`"30":{"level":35,"dps":0.0793,"dps_error":0.0001,"weapon_dps":0.9831,"weapon_dps_error":0.0009}}},` +
+		`"mage-frost": {"reference":"spell_power","dps":0.48,"healing":false,"weapon_dps":0,` +
+		`"bands":{"20":{"level":25,"dps":0.1811,"dps_error":0.0003,"weapon_dps":0,"weapon_dps_error":0}}}}`
+	if err := os.WriteFile(path, []byte(existing), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	err := writeMerged(path, map[string]entry{
+		// -bands 30: band 30 is replaced, band 20 is kept.
+		"warrior-arms": {Reference: "attack_power", DPS: 0.2222, WeaponDPS: 3.1536,
+			Bands: map[string]bandEntry{"30": {Level: 35, DPS: 0.08, DPSError: 0.0001, WeaponDPS: 1, WeaponError: 0.001}}},
+		// -bands "": no band measured, none dropped.
+		"mage-frost": {Reference: "spell_power", DPS: 0.4824},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got map[string]entry
+	if err := json.Unmarshal(b, &got); err != nil {
+		t.Fatal(err)
+	}
+	arms := got["warrior-arms"]
+	if arms.DPS != 0.2222 || arms.WeaponDPS != 3.1536 {
+		t.Fatalf("warrior-arms spec figures = %v / %v, want the new run's", arms.DPS, arms.WeaponDPS)
+	}
+	if len(arms.Bands) != 2 || arms.Bands["20"].DPS != 0.0385 || arms.Bands["30"].DPS != 0.08 {
+		t.Fatalf("warrior-arms bands = %+v, want 20 kept and 30 replaced", arms.Bands)
+	}
+	frost := got["mage-frost"]
+	if frost.DPS != 0.4824 || len(frost.Bands) != 1 || frost.Bands["20"].DPS != 0.1811 {
+		t.Fatalf("mage-frost = %+v, want the new spec figure and its band 20 kept", frost)
 	}
 }
