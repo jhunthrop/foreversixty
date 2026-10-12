@@ -7,6 +7,7 @@
 // band's hero content, below Base.astro's own Header.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import { HOME_DESCRIPTION, SITE_NAME } from '../lib/seo';
 import SkyBand from '../components/SkyBand.astro';
 import HomeTimeline from '../components/HomeTimeline.astro';
 import ToolCard from '../components/ToolCard.astro';
@@ -89,11 +90,7 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
   );
 ---
 
-<Base
-  title="Forever Sixty"
-  description="World of Warcraft: Forever, planned, simmed, logged and ranked. Sign in with Battle.net."
-  path="/"
->
+<Base title={SITE_NAME} description={HOME_DESCRIPTION} path="/">
   <main id="main" tabindex="-1" class="flex flex-col">
     <SkyBand>
       <div class="page-column flex flex-col gap-[22px] px-[18px] py-7 lg:py-8">

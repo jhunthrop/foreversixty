@@ -13,17 +13,29 @@ describe('Base layout', () => {
       props: { title: 'Dungeons', description: 'All nine.', path: '/dungeons' },
       slots: { default: '<main>body</main>' },
     });
-    expect(html).toContain('<title data-og="title">Dungeons · Forever Sixty</title>');
+    expect(html).toContain('<title data-og="title">Dungeons · Forever Sixty · WoW Forever</title>');
     expect(html).toContain('href="https://foreversixty.gg/dungeons"');
     expect(html).toContain('content="https://foreversixty.gg/og/dungeons.png"');
     expect(html).toContain('<main>body</main>');
   });
 
-  it('does not double the site name on the homepage', async () => {
+  it('keeps og:title in step with the title and names the site', async () => {
+    const container = await createPageContainer();
+    const html = await container.renderToString(Base, {
+      props: { title: 'Tier list', description: 'x', path: '/tiers' },
+    });
+    expect(html).toContain('property="og:title" content="Tier list · Forever Sixty · WoW Forever"');
+    expect(html).toContain('property="og:site_name" content="Forever Sixty"');
+  });
+
+  it('gives the homepage the game name and the WebSite node', async () => {
     const container = await createPageContainer();
     const html = await container.renderToString(Base, {
       props: { title: 'Forever Sixty', description: 'x', path: '/' },
     });
-    expect(html).toContain('<title data-og="title">Forever Sixty</title>');
+    expect(html).toContain(
+      '<title data-og="title">Forever Sixty · Play your class better in World of Warcraft: Forever</title>',
+    );
+    expect(html).toContain('"alternateName":"foreversixty.gg"');
   });
 });

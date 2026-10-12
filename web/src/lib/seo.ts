@@ -3,6 +3,17 @@
 // serialise into one application/ld+json script; nothing here touches the DOM.
 export const SITE_URL = 'https://foreversixty.gg';
 export const SITE_NAME = 'Forever Sixty';
+export const SITE_ALTERNATE_NAME = 'foreversixty.gg';
+export const GAME_NAME = 'World of Warcraft: Forever';
+/** The short game name every inner page title ends with, so a search for the game finds us. */
+const TITLE_GAME_TAG = 'WoW Forever';
+export const HOME_TITLE = `${SITE_NAME} · Play your class better in ${GAME_NAME}`;
+export const HOME_DESCRIPTION = `Best in slot gear, talent builds, a simulator, rankings and logs for ${GAME_NAME}. Play your class better.`;
+
+/** The <title> and og:title of a page: the home page's own line, else "<page> · Forever Sixty · WoW Forever". */
+export function pageTitle(path: string, title: string): string {
+  return path === '/' ? HOME_TITLE : `${title} · ${SITE_NAME} · ${TITLE_GAME_TAG}`;
+}
 
 const publisher = {
   '@type': 'Organization',
@@ -17,6 +28,7 @@ export function websiteLd() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: SITE_NAME,
+    alternateName: SITE_ALTERNATE_NAME,
     url: SITE_URL,
   };
 }

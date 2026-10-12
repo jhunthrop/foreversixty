@@ -5,7 +5,7 @@
 import { bandLabel } from './landing-bands';
 
 export const landingCopy = {
-  title: 'BiS',
+  title: 'Best in slot',
   description:
     'The best gear you can wear at every level band, from the simulator: one list per class and spec, built once and never per character.',
   eyebrow: 'Levels 20 to 60',
