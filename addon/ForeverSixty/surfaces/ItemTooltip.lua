@@ -7,7 +7,7 @@
 -- Westfall", "Sidegrade (+0.3 DPS)"), or why not ("Not for you until 40:
 -- plate armor", "Not with your two-hander", "Not for your plan"), or, on
 -- the item worn, the slot's next upgrade ("Next upgrade: Mutant Scale
--- Breastplate +6.1 DPS") or "Best until 30". Then any capped stat, the plan
+-- Breastplate +6.1 DPS") or "Best until level 30". Then any capped stat, the plan
 -- ("Planned for Arms at 30"), the source on its own line with its drop
 -- chance, and two alternatives in their quality colour. The compare
 -- tooltip beside it shows the next upgrade, once the client holds it.
@@ -380,10 +380,14 @@ function ItemTooltip.fitSource(pick, measure, room)
 		return {}
 	end
 	local fits = fitter(measure, room)
+	local text
 	if second ~= nil then
-		return { shorten(function(name) return ItemTooltip.sourceText(first, name, percent) end, second, fits, 1) }
+		text = shorten(function(name) return ItemTooltip.sourceText(first, name, percent) end, second, fits, 1)
+	else
+		text = shorten(function(name) return ItemTooltip.sourceText(name, nil, percent) end, first, fits, 1)
 	end
-	return { shorten(function(name) return ItemTooltip.sourceText(name, nil, percent) end, first, fits, 1) }
+	-- Still too wide with the boss down to a letter: cut the line itself.
+	return { ItemTooltip.fitPlain(text, measure, room) }
 end
 
 --- "Also good: <name>, <name>" from up to two names (already coloured, or
@@ -501,6 +505,34 @@ function ItemTooltip.headerText(specWord, tag)
 		text = text .. muted(L.tooltipHeaderSep) .. Theme.inlineColor(tagColor, L[key])
 	end
 	return text
+end
+
+--- The header row within `room`, as { left, right, carry }: the tag ("Your
+--- sim", "Estimate") and "Forever Sixty" are never cut. (a) The whole header
+--- with "Equipped" right when left + gap + right fits; (b) else without the
+--- spec word; (c) else (b)'s text alone, and "Equipped" carried to the right of
+--- the next row (`carry`). `equipped` false: no right text at all.
+function ItemTooltip.fitHeader(specWord, tag, equipped, measure, room)
+	local right = equipped and L.tooltipEquipped or nil
+	local function fits(left, withRight)
+		if type(measure) ~= "function" or room == nil then
+			return true
+		end
+		local width = measure(left) or 0
+		if withRight ~= nil then
+			width = width + ItemTooltip.PAIR_GAP + (measure(withRight) or 0)
+		end
+		return width <= room
+	end
+	local whole = ItemTooltip.headerText(specWord, tag)
+	if fits(whole, right) then
+		return { left = whole, right = right }
+	end
+	local short = ItemTooltip.headerText(nil, tag)
+	if fits(short, right) then
+		return { left = short, right = right }
+	end
+	return { left = short, carry = right ~= nil }
 end
 
 --- "dps", "hps" or "score": the unit Gear.currentWeights' answer counts in.
@@ -659,15 +691,22 @@ function ItemTooltip.atText(at, withSource)
 end
 
 --- The At line within `room`: whole when it fits, else the name on its line and
---- the source on a muted second line ("· Scarlet Monastery"). The item's name
---- is never shortened.
+--- the source on a muted second line ("· Scarlet Monastery", itself fitted). The
+--- name is shortened only when even the bare name is wider than the room.
 function ItemTooltip.fitAt(at, measure, room)
 	local fits = fitter(measure, room)
 	local whole = ItemTooltip.atText(at)
-	if fits(whole) or at.source == nil then
+	if fits(whole) then
 		return { whole }
 	end
-	return { ItemTooltip.atText(at, false), string.format(L.tooltipAtSource, at.source) }
+	-- The name is cut only when even the bare name is wider than the room.
+	local bare = shorten(function(name)
+		return ItemTooltip.atText({ band = at.band, name = name, hex = at.hex }, false)
+	end, at.name, fits, 1)
+	if at.source == nil then
+		return { bare }
+	end
+	return { bare, ItemTooltip.fitPlain(string.format(L.tooltipAtSource, at.source), measure, room) }
 end
 
 --- The gain part of the Next line: the figure in the upgrade green, then
@@ -990,7 +1029,7 @@ function ItemTooltip.section(ctx)
 			end
 		end
 	end
-	-- What is worn holds until the ladder's next rung: "Best until 30", and
+	-- What is worn holds until the ladder's next rung: "Best until level 30", and
 	-- muted under it the next rung's pick for the slot and where it comes from.
 	local atLine
 	if holds then
@@ -1329,10 +1368,6 @@ local function clientRows(tooltip)
 	return rows
 end
 
---- `measure` (visible text -> width, on the tooltip's own font) and the room
---- every line of this addon is fitted to: the client's own widest line,
---- measured before the section is added, so the section never widens the
---- tooltip. nil, nil where the client cannot say (the lines are drawn whole).
 --- The raw width of a text on `tooltip`'s own font: a hidden font string made
 --- on the first hover that needs one (never at load), set to the tooltip's
 --- body font. A field, so a spec can measure without a client.
@@ -1358,6 +1393,10 @@ function ItemTooltip.rawMeasure(tooltip)
 	end
 end
 
+--- `measure` (visible text -> width, on the tooltip's own font) and the room
+--- every line of this addon is fitted to: the client's own widest line,
+--- measured before the section is added, so the section never widens the
+--- tooltip. nil, nil where the client cannot say (the lines are drawn whole).
 local function measureFor(tooltip)
 	local ok, measure, room = pcall(function()
 		local rows = clientRows(tooltip)
@@ -1405,27 +1444,40 @@ local function addLines(tooltip, itemLink)
 	local measure, room = measureFor(tooltip)
 	-- The room every line was fitted to: the client's own width, never ours.
 	ItemTooltip.lastRoom = room
-	local header = ItemTooltip.headerText(head.specWord, head.tag)
-	local headerRoom = room
-	if head.equipped and measure ~= nil and room ~= nil then
-		headerRoom = room - ItemTooltip.PAIR_GAP - (measure(L.tooltipEquipped) or 0)
-	end
-	header = ItemTooltip.fitPlain(header, measure, headerRoom)
-	if head.equipped and type(tooltip.AddDoubleLine) == "function" then
+	local header = ItemTooltip.fitHeader(head.specWord, head.tag, head.equipped, measure, room)
+	local mr, mg, mb = opColor("muted")
+	local doubles = type(tooltip.AddDoubleLine) == "function"
+	if head.equipped and doubles then
 		-- Both rows are double lines, so the client never carries a right text
-		-- over onto the blank row: "Equipped" sits on the header's own row.
+		-- over onto the blank row: "Equipped" sits on the header's row, or on
+		-- the next one when the header needs the room (fitHeader's case c).
 		tooltip:AddDoubleLine(" ", " ")
-		local mr, mg, mb = opColor("muted")
-		tooltip:AddDoubleLine(header, L.tooltipEquipped, 1, 1, 1, mr, mg, mb)
 	else
 		tooltip:AddLine(" ")
-		tooltip:AddLine(header)
 	end
+	if header.right ~= nil and doubles then
+		tooltip:AddDoubleLine(header.left, header.right, 1, 1, 1, mr, mg, mb)
+	else
+		tooltip:AddLine(header.left)
+	end
+	local carry = header.carry and doubles
 	for _, line in ipairs(entry.lines) do
 		local r, g, b = opColor(line.color)
-		for _, text in ipairs(ItemTooltip.fitLine(line, measure, room)) do
-			tooltip:AddLine(text, r, g, b)
+		local lineRoom = room
+		if carry and measure ~= nil and room ~= nil then
+			lineRoom = room - ItemTooltip.PAIR_GAP - (measure(L.tooltipEquipped) or 0)
 		end
+		for _, text in ipairs(ItemTooltip.fitLine(line, measure, lineRoom)) do
+			if carry then
+				tooltip:AddDoubleLine(text, L.tooltipEquipped, r, g, b, mr, mg, mb)
+				carry = false
+			else
+				tooltip:AddLine(text, r, g, b)
+			end
+		end
+	end
+	if carry then
+		tooltip:AddDoubleLine(" ", L.tooltipEquipped, 1, 1, 1, mr, mg, mb)
 	end
 	tooltip:Show()
 	if entry.target ~= nil then

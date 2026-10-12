@@ -206,8 +206,12 @@ function Gear.readEquipped()
 				equipLoc = equipLoc,
 				stats = Gear.statsOf(link),
 			}
-			local enchant = Gear.isEnchanted(link) and Gear.wornEnchant(entry.id, link) or nil
-			Gear.netEnchant(worn, enchant)
+			if Gear.isEnchanted(link) then
+				local enchant = Gear.wornEnchant(entry.id, link)
+				-- An enchant the client's rows could not give (not loaded yet) is not
+				-- counted, and says so: "(enchant not counted)".
+				Gear.netEnchant(worn, enchant or { stats = {}, unparsed = true })
+			end
 			equipped[entry.slot] = worn
 		end
 	end

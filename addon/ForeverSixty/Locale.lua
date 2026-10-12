@@ -532,7 +532,7 @@ local L = {
 	tooltipTwoHander = "Not with your two-hander",
 	-- The item worn is the band's own pick (or the pick is worn beside it, or
 	-- the next pick gains under the floor): it holds until the ladder's next
-	-- rung, "Best until 30"; in the top band, "Best for now".
+	-- rung, "Best until level 30"; in the top band, "Best for now".
 	tooltipBestUntil = "Best until level %d",
 	tooltipBestForNow = "Best for now",
 	-- The band's own pick is one the client cannot show, and so are its alternatives.

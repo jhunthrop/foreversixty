@@ -1101,8 +1101,33 @@ describe("fitting each line to the client's width", function()
 			ItemTooltip.fitAt(at, visible, 200))
 		assert.are.same({ string.format(L.tooltipAtBandName, 30, "Herod's Chest"),
 			string.format(L.tooltipAtSource, "Scarlet Monastery") }, ItemTooltip.fitAt(at, visible, 30))
-		assert.are.same({ string.format(L.tooltipAtBandName, 30, "Herod's Chest"),
-			string.format(L.tooltipAtSource, "Scarlet Monastery") }, ItemTooltip.fitAt(at, visible, 5))
+	end)
+
+	-- Fix round 6: the one case the name is cut, when even the bare name is wider
+	-- than the room; the source line is fitted like any other.
+	it("cuts the At line's name only when the bare name is wider than the room", function()
+		local at = { band = 30, name = "Herod's Chest", source = "Scarlet Monastery" }
+		assert.are.same({ string.format(L.tooltipAtBandName, 30, "Hero" .. L.tooltipNamePending),
+			string.format(L.tooltipAtSource, "Scarlet Monastery") }, ItemTooltip.fitAt(at, visible, 20))
+		local narrow = ItemTooltip.fitAt(at, visible, 12)
+		assert.is_true(visible(narrow[2]) <= 12)
+		assert.is_truthy(narrow[2]:find(L.tooltipNamePending, 1, true))
+	end)
+
+	-- Fix round 6: the header's tag and "Forever Sixty" are never cut.
+	it("fits the header by dropping the spec word, then carrying Equipped to the next row", function()
+		local gap = ItemTooltip.PAIR_GAP
+		local whole = ItemTooltip.headerText("Arms", "sim")
+		local short = ItemTooltip.headerText(nil, "sim")
+		local equipped = #L.tooltipEquipped
+		assert.are.same({ left = whole, right = L.tooltipEquipped },
+			ItemTooltip.fitHeader("Arms", "sim", true, visible, visible(whole) + gap + equipped))
+		assert.are.same({ left = short, right = L.tooltipEquipped },
+			ItemTooltip.fitHeader("Arms", "sim", true, visible, visible(short) + gap + equipped))
+		assert.are.same({ left = short, carry = true },
+			ItemTooltip.fitHeader("Arms", "sim", true, visible, visible(short)))
+		assert.are.same({ left = short, carry = false }, ItemTooltip.fitHeader("Arms", "sim", false, visible, 4))
+		assert.is_truthy(short:find(L.tooltipTagSim, 1, true))
 	end)
 
 	it("never splits a multibyte character when it shortens a name", function()
@@ -1464,6 +1489,92 @@ describe("the hook's width contract and enchant wiring", function()
 		assert.are.equal(0, entries)
 		ItemTooltip.onTooltip(specTip({ { left = "Other" } }), "item:52")
 		assert.are.equal(1, entries)
+	end)
+
+	-- Fix round 6 (re-review of b595d5c6): on a narrow tooltip every line of
+	-- ours is drawn fitted -- a refusal, the plan, a capped stat, "Best until
+	-- level 30" -- and the header drops its spec word, then carries "Equipped"
+	-- to the next row; the tag is never cut. The client's widest row is
+	-- "Abomination Bones", 17 wide.
+	describe("on a narrow tooltip", function()
+		local DATA6 = { classes = { warrior = { tabs = { { name = "Arms" } } } },
+			weights = { ["warrior-arms"] = { strength = 2, attack_power = 1 } },
+			dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.5 } },
+			bis = { ["warrior-arms"] = {
+				[20] = { alliance = { chest = "100|D|The Deadmines: Defias Overseer|0.14" } },
+				[30] = { alliance = { chest = "200|D|Scarlet Monastery: Herod|0.2" } },
+			} } }
+		local ROOM = #"Abomination Bones"
+
+		local function hover(item, equipped, current)
+			local tip, rows = specTip({ { left = "Abomination Bones" } })
+			ItemTooltip.data = DATA6
+			ItemTooltip.contextFor = function(data)
+				return {
+					data = data, spec = "warrior-arms", classToken = "WARRIOR", level = 20, faction = "alliance",
+					current = current or Gear.currentWeights(data, "warrior-arms", nil, KEY),
+					equipped = equipped or {},
+					nameOf = function(id) return id == 200 and "Herod's Chest" or nil end,
+					statsOf = function() return nil end,
+					isCached = function() return false end, qualityHex = function() return nil end,
+					isMissing = function() return false end,
+					item = item,
+				}
+			end
+			ItemTooltip.onTooltip(tip, item.link)
+			return rows
+		end
+
+		local function assertFitted(rows)
+			for index = 4, #rows do
+				assert.is_true(#ItemTooltip.stripEscapes(rows[index].left) <= ROOM,
+					"row " .. index .. ": " .. tostring(rows[index].left))
+			end
+		end
+
+		it("fits a refusal and the plan, and drops the header's spec word", function()
+			local rows = hover({ itemId = 100, link = "item:100", equipLocation = "INVTYPE_CHEST", itemClass = 4,
+				itemSubClass = 4, stats = { strength = 10 } })
+			assert.are.equal(ItemTooltip.headerText(nil, "default"), rows[3].left)
+			assert.is_nil(rows[3].right)
+			assert.is_truthy(ItemTooltip.stripEscapes(rows[4].left):find("^Not for you"))
+			assert.is_truthy(ItemTooltip.stripEscapes(rows[5].left):find("^Planned"))
+			assertFitted(rows)
+		end)
+
+		it("fits Best until level 30 and a capped stat, and carries Equipped to the next row", function()
+			local current = Gear.currentWeights(DATA6, "warrior-arms", { messages = { { type = "weights",
+				spec = "warrior-arms", weights = { { stat = "strength", weight = 2 } }, caps = { "hit" },
+				dps_per_point = 0.5 } } }, KEY)
+			local worn = { itemId = 100, link = "item:100:w", stats = { strength = 20, hit = 1 } }
+			local rows = hover({ itemId = 100, link = "item:100:w", equipLocation = "INVTYPE_CHEST", itemClass = 4,
+				itemSubClass = 3, stats = { strength = 20, hit = 1 } }, { chest = worn }, current)
+			assert.are.equal(ItemTooltip.headerText(nil, "sim"), rows[3].left)
+			assert.is_nil(rows[3].right)
+			assert.are.equal(L.tooltipEquipped, rows[4].right)
+			assert.is_truthy(ItemTooltip.stripEscapes(rows[4].left):find("^B"))
+			local seen = {}
+			for index = 5, #rows do
+				seen[#seen + 1] = ItemTooltip.stripEscapes(rows[index].left)
+			end
+			assert.is_truthy(table.concat(seen, "\n"):find("Hit", 1, true))
+			assert.is_truthy(table.concat(seen, "\n"):find("Planned", 1, true))
+			assertFitted(rows)
+		end)
+	end)
+
+	-- Fix round 6: an enchanted worn link whose rows the client cannot give yet
+	-- is marked unparsed ("(enchant not counted)") and nothing is cached.
+	it("marks an enchant it could not read as not counted, caching nothing", function()
+		local link = "|cff1eff00|Hitem:51:1843:0:0:0:0:0:0:21|h[Abomination Bones]|h|r"
+		_G.GetInventoryItemLink = function(_, slotId) return slotId == 5 and link or nil end
+		_G.GetItemInfoInstant = function(item) return item == link and 51 or nil, nil, nil, "INVTYPE_CHEST" end
+		_G.GetItemStats = function(item) return item == link and { ITEM_MOD_STRENGTH_SHORT = 8 } or nil end
+		Compat.inventoryTooltipRows = function() return nil end
+		local equipped = Gear.readEquipped()
+		assert.is_true(equipped.chest.enchantUnparsed)
+		assert.are.same({ strength = 8 }, equipped.chest.stats)
+		assert.is_nil(next(Gear.enchantCache))
 	end)
 
 	it("reads a worn item's rows from C_TooltipInfo where the client has it", function()
