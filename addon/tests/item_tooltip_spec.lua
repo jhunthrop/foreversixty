@@ -8,6 +8,7 @@ local ItemTooltip = require("ItemTooltip")
 local Gear = require("Gear")
 local Rules = require("Rules")
 local Progress = require("Progress")
+local Theme = require("Theme")
 local L = require("Locale")
 
 local WORN_LINK = "|cff1eff00|Hitem:50::::::::20:::::|h[Chausses of Westfall]|h|r"
@@ -179,47 +180,58 @@ describe("ItemTooltip.alternativesLine", function()
 end)
 
 describe("ItemTooltip.fitAlternatives", function()
-	--- One unit per visible character: the colour escapes take no room.
+	--- One unit per visible byte: the colour escapes take no room.
 	local function measure(text)
 		return #(text:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""))
 	end
 	local ENTRIES = { { name = "Cruel Barb", hex = "1eff00" }, { name = "Smite's Mighty Hammer", hex = "0070dd" } }
 
-	it("names both in their quality colour when they fit", function()
-		local text = ItemTooltip.fitAlternatives(ENTRIES, measure, 200)
-		assert.are.equal(string.format(L.tooltipAlternatives, "|cff1eff00Cruel Barb|r", "|cff0070ddSmite's Mighty Hammer|r"),
-			text)
+	it("names both on one line in their quality colour when they fit", function()
+		assert.are.same(
+			{ string.format(L.tooltipAlternatives, "|cff1eff00Cruel Barb|r", "|cff0070ddSmite's Mighty Hammer|r") },
+			ItemTooltip.fitAlternatives(ENTRIES, measure, 200))
 	end)
 
-	it("drops the second name before it widens the tooltip", function()
-		local text = ItemTooltip.fitAlternatives(ENTRIES, measure, 30)
-		assert.are.equal(string.format(L.tooltipAlternativesOne, "|cff1eff00Cruel Barb|r"), text)
+	it("wraps the second name to its own line rather than drop it", function()
+		assert.are.same({
+			string.format(L.tooltipAlternativesFirst, "|cff1eff00Cruel Barb|r"),
+			string.format(L.tooltipAlternativesSecond, "|cff0070ddSmite's Mighty Hammer|r"),
+		}, ItemTooltip.fitAlternatives(ENTRIES, measure, 30))
 	end)
 
-	it("shortens the one name left with an ellipsis, by measured width", function()
-		local text = ItemTooltip.fitAlternatives(ENTRIES, measure, 18)
-		assert.is_true(measure(text) <= 18)
-		assert.is_truthy(text:find(L.tooltipNamePending, 1, true))
-		assert.is_truthy(text:find("|cff1eff00Cru", 1, true))
+	it("shortens a name with an ellipsis only when it alone is too wide", function()
+		local lines = ItemTooltip.fitAlternatives(ENTRIES, measure, 18)
+		assert.are.equal(2, #lines)
+		for _, text in ipairs(lines) do
+			assert.is_true(measure(text) <= 18)
+			assert.is_truthy(text:find(L.tooltipNamePending, 1, true))
+		end
+		assert.is_truthy(lines[1]:find("|cff1eff00Cru", 1, true))
 	end)
 
 	it("keeps the whole line with no width to keep to", function()
-		assert.are.equal(ItemTooltip.fitAlternatives(ENTRIES, nil, nil), ItemTooltip.fitAlternatives(ENTRIES, measure, 999))
+		assert.are.same(ItemTooltip.fitAlternatives(ENTRIES, nil, nil), ItemTooltip.fitAlternatives(ENTRIES, measure, 999))
 	end)
 
-	it("marks a name not sent yet, muted", function()
-		local text = ItemTooltip.fitAlternatives({ false }, measure, 200)
-		assert.is_truthy(text:find(L.tooltipNamePending, 1, true))
+	it("marks a name not sent yet", function()
+		assert.is_truthy(ItemTooltip.fitAlternatives({ false }, measure, 200)[1]:find(L.tooltipNamePending, 1, true))
 	end)
 end)
 
 describe("ItemTooltip.headerText", function()
-	it("names the spec and where the weights came from, muted, after the gold name", function()
-		local text = ItemTooltip.headerText("Arms", "sim")
-		assert.is_truthy(text:find(L.addonName, 1, true))
-		assert.is_truthy(text:find(string.format(L.tooltipHeaderParts, "Arms", L.tooltipTagSim), 1, true))
-		assert.is_truthy(ItemTooltip.headerText("Arms", "default"):find(L.tooltipTagEstimate, 1, true))
-		assert.is_truthy(ItemTooltip.headerText("Arms", "build"):find(L.tooltipTagBuild, 1, true))
+	it("is the client's gold name, the spec muted, and Your sim in the tooltip's text colour", function()
+		assert.are.equal("ffd100", Theme.HEX.clientGold)
+		assert.are.equal("d0d0d0", Theme.HEX.tooltipText)
+		assert.are.equal("b8b8b8", Theme.HEX.tooltipMuted)
+		assert.are.equal("|cffffd100" .. L.addonName .. "|r"
+			.. "|cffb8b8b8" .. L.tooltipHeaderSep .. "Arms|r"
+			.. "|cffb8b8b8" .. L.tooltipHeaderSep .. "|r|cffd0d0d0" .. L.tooltipTagSim .. "|r",
+			ItemTooltip.headerText("Arms", "sim"))
+	end)
+
+	it("mutes Estimate", function()
+		assert.is_truthy(ItemTooltip.headerText("Arms", "default"):find("|cffb8b8b8" .. L.tooltipTagEstimate, 1, true))
+		assert.is_truthy(ItemTooltip.headerText("Arms", "build"):find("|cffd0d0d0" .. L.tooltipTagBuild, 1, true))
 	end)
 
 	it("is the name and the spec with no weights, the name alone with neither", function()
@@ -322,13 +334,15 @@ describe("ItemTooltip.section", function()
 				finger1 = "400|Q|Ring Quest",
 				finger2 = "400|Q|Ring Quest",
 				off_hand = "300|D|The Deadmines: Sneed|0.1",
+				main_hand = "500|D|Shadowfang Keep: Sever||501|D|Wailing Caverns: Verdan the Everliving"
+					.. "|502|D|Shadowfang Keep: Son of Arugal",
 			} },
 			[30] = { alliance = { chest = "200|D|Scarlet Monastery: Herod|0.2" } },
 		} },
 	}
 	local NAMES = { [100] = "Defias Overseer Chest", [101] = "Quest Chest", [200] = "Herod's Chest",
-		[300] = "Sneed's Shield" }
-	local STATS = { [100] = { strength = 20 }, [300] = { strength = 30 } }
+		[300] = "Sneed's Shield", [501] = "Living Root", [502] = "Duskbringer" }
+	local STATS = { [100] = { strength = 20 }, [300] = { strength = 30 }, [501] = { strength = 30 } }
 	local SMITE = { itemId = 70, link = "|Hitem:70|h[Smite's Mighty Hammer]|h", equipLoc = "INVTYPE_2HWEAPON",
 		stats = { strength = 20 } }
 
@@ -365,7 +379,7 @@ describe("ItemTooltip.section", function()
 		local lines, target, pending, head = ItemTooltip.section(ctx())
 		assert.are.same({
 			string.format(L.tooltipVerdictDps, 6, "Chausses of Westfall"),
-			string.format(L.tooltipNextUpgradeGain, "Defias Overseer Chest", 16, L.tooltipUnitDps),
+			ItemTooltip.nextLine("Defias Overseer Chest", 16, "dps"),
 			NEXT_SOURCE,
 			string.format(L.tooltipAlternatives, "Quest Chest", L.tooltipNamePending),
 		}, texts(lines))
@@ -423,7 +437,7 @@ describe("ItemTooltip.section", function()
 			local lines, target, _, head = ItemTooltip.section(ctx({ item = WORN }))
 			assert.is_true(head.equipped)
 			assert.are.same({
-				string.format(L.tooltipNextUpgradeGain, "Defias Overseer Chest", 16, L.tooltipUnitDps),
+				ItemTooltip.nextLine("Defias Overseer Chest", 16, "dps"),
 				NEXT_SOURCE,
 				string.format(L.tooltipAlternatives, "Quest Chest", L.tooltipNamePending),
 			}, texts(lines))
@@ -432,8 +446,7 @@ describe("ItemTooltip.section", function()
 
 		it("names the next pick in its quality colour", function()
 			local lines = ItemTooltip.section(ctx({ item = WORN, qualityHex = function() return "1eff00" end }))
-			assert.are.equal(string.format(L.tooltipNextUpgradeGain, "|cff1eff00Defias Overseer Chest|r", 16,
-				L.tooltipUnitDps), lines[1].text)
+			assert.are.equal(ItemTooltip.nextLine("|cff1eff00Defias Overseer Chest|r", 16, "dps"), lines[1].text)
 		end)
 
 		-- tip2-chest.jpg: "Next upgrade: Mutant Scale Breastplate" with no gain.
@@ -465,30 +478,30 @@ describe("ItemTooltip.section", function()
 			assert.is_nil(target)
 		end)
 
-		it("says Best for now when the next pick's gain cannot be computed", function()
+		it("says Best until the next rung when the next pick's gain cannot be computed", function()
 			local lines = texts(ItemTooltip.section(ctx({ item = WORN, statsOf = function() return nil end })))
-			assert.are.same({ L.tooltipBestForNow }, lines)
+			assert.are.same({ string.format(L.tooltipBestUntil, 30) }, lines)
 		end)
 
-		it("says Best for now when it is the band's pick", function()
+		it("says Best until the next rung when it is the band's pick", function()
 			local lines, target = ItemTooltip.section(ctx({
 				equipped = { chest = { itemId = 100, link = "item:100:worn", stats = { strength = 20 } } },
 				item = { itemId = 100, link = "item:100:worn", equipLocation = "INVTYPE_CHEST", itemClass = 4,
 					itemSubClass = 3, stats = { strength = 20 } },
 			}))
-			assert.are.same({ L.tooltipBestForNow, string.format(L.tooltipPlanned, "Arms", 20) }, texts(lines))
+			assert.are.same({ string.format(L.tooltipBestUntil, 30), string.format(L.tooltipPlanned, "Arms", 20) }, texts(lines))
 			assert.are.equal("muted", lines[1].color)
 			assert.is_nil(target)
 		end)
 
-		it("says Best for now when the pick is worn in the item's other slot", function()
+		it("says Best until the next rung when the pick is worn in the item's other slot", function()
 			local ring = { itemId = 61, link = "|Hitem:61|h[Strong Ring]|h", stats = { strength = 8 } }
 			local lines = texts(ItemTooltip.section(ctx({
 				equipped = { finger1 = ring, finger2 = { itemId = 400, link = "item:400", stats = {} } },
 				item = { itemId = 61, link = ring.link, equipLocation = "INVTYPE_FINGER", itemClass = 4,
 					itemSubClass = 0, stats = { strength = 8 } },
 			})))
-			assert.are.same({ L.tooltipBestForNow }, lines)
+			assert.are.same({ string.format(L.tooltipBestUntil, 30) }, lines)
 		end)
 
 		it("scores a second copy with a different link rather than calling it Equipped", function()
@@ -595,6 +608,130 @@ describe("ItemTooltip.section", function()
 		assert.are.same({}, (ItemTooltip.section(ctx({ item = { itemId = 7, stats = {} } }))))
 	end)
 
+	-- D2 and D3: the band's own off-hand pick under a worn two-hander says only
+	-- that, with no plan, no next pick, no source, no "Also good", no compare.
+	it("says only Not with your two-hander for the band's own off-hand pick", function()
+		local lines, target = ItemTooltip.section(ctx({ equipped = { main_hand = SMITE },
+			item = { itemId = 300, link = "item:300", equipLocation = "INVTYPE_SHIELD", itemClass = 4,
+				itemSubClass = 6, stats = { strength = 30 } } }))
+		assert.are.same({ L.tooltipTwoHander }, texts(lines))
+		assert.is_nil(target)
+	end)
+
+	describe("the next upgrade line", function()
+		local ENCHANTED = "|cff1eff00|Hitem:50:1843:0:0:0:0:0:0:20|h[Chausses of Westfall]|h|r"
+
+		it("prints the gain in the upgrade green, the label muted, the name as coloured", function()
+			local text = ItemTooltip.nextLine("|cff0070ddMutant Scale Breastplate|r", 1.8, "dps")
+			assert.are.equal("|cffb8b8b8" .. L.tooltipNextLabel .. "|r |cff0070ddMutant Scale Breastplate|r |cff"
+				.. Theme.HEX.success .. string.format(L.tooltipNextGain, 1.8, L.tooltipUnitDps) .. "|r", text)
+		end)
+
+		it("ends with a muted enchant note when the worn item carries an enchant", function()
+			assert.is_true(ItemTooltip.isEnchanted(ENCHANTED))
+			assert.is_false(ItemTooltip.isEnchanted(WORN_LINK))
+			local lines = ItemTooltip.section(ctx({
+				equipped = { chest = { itemId = 50, link = ENCHANTED, stats = { strength = 4 } } },
+				item = { itemId = 50, link = ENCHANTED, equipLocation = "INVTYPE_CHEST", itemClass = 4,
+					itemSubClass = 3, stats = { strength = 4 } } }))
+			assert.are.equal(ItemTooltip.nextLine("Defias Overseer Chest", 16, "dps", true), lines[1].text)
+			assert.is_truthy(lines[1].text:find("|cffb8b8b8" .. L.tooltipEnchantNote .. "|r", 1, true))
+		end)
+	end)
+
+	-- tip3-worn-mainhand: the band's main-hand pick (The Axe of Severing, item
+	-- 23171, client_unconfirmed in the data) is an item the client never
+	-- answers for, so round 2 waited for its name for ever and drew nothing.
+	describe("a worn weapon whose band pick the client cannot show", function()
+		local function worn2H(overrides)
+			local base = { equipped = { main_hand = SMITE },
+				isMissing = function(id) return id == 500 end,
+				item = { itemId = 70, link = SMITE.link, equipLocation = "INVTYPE_2HWEAPON", itemClass = 2,
+					itemSubClass = 5, stats = SMITE.stats } }
+			for key, value in pairs(overrides or {}) do
+				base[key] = value
+			end
+			return ctx(base)
+		end
+
+		it("goes to the first alternative the client can show, with its own source", function()
+			local lines, target = ItemTooltip.section(worn2H())
+			assert.are.same({
+				ItemTooltip.nextLine("Living Root", 10, "dps"),
+				string.format(L.tooltipSourcePair, "Wailing Caverns", "Verdan the Everliving"),
+				string.format(L.tooltipAlternativesOne, "Duskbringer"),
+			}, texts(lines))
+			assert.are.equal(501, target.itemId)
+		end)
+
+		it("says Best until the next rung when that alternative gains under the floor", function()
+			local lines = texts(ItemTooltip.section(worn2H({ statsOf = function() return { strength = 20 } end })))
+			assert.are.same({ string.format(L.tooltipBestUntil, 30) }, lines)
+		end)
+
+		it("learns an item is missing from the client's failed answer", function()
+			ItemTooltip.onItemInfoReceived(23171, false)
+			assert.is_true(ItemTooltip.missing[23171])
+			ItemTooltip.missing[23171] = nil
+		end)
+	end)
+
+	-- The invariant behind tip3-worn-mainhand: a worn item in a covered slot
+	-- with band data ends with exactly one primary line, a next upgrade or
+	-- "Best until N", once the client has answered for its pick.
+	it("gives every worn item with band data exactly one next-upgrade or best-until line", function()
+		local twoHander = { itemId = 70, link = SMITE.link, equipLocation = "INVTYPE_2HWEAPON", itemClass = 2,
+			itemSubClass = 5, stats = SMITE.stats }
+		local cases = {
+			{ item = { itemId = 50, link = WORN_LINK, equipLocation = "INVTYPE_CHEST", itemClass = 4,
+				itemSubClass = 3, stats = { strength = 4 } } },
+			{ equipped = { chest = { itemId = 100, link = "item:100:w", stats = { strength = 20 } } },
+				item = { itemId = 100, link = "item:100:w", equipLocation = "INVTYPE_CHEST", itemClass = 4,
+					itemSubClass = 3, stats = { strength = 20 } } },
+			{ statsOf = function() return nil end, item = { itemId = 50, link = WORN_LINK,
+				equipLocation = "INVTYPE_CHEST", itemClass = 4, itemSubClass = 3, stats = { strength = 4 } } },
+			{ equipped = { main_hand = SMITE }, isMissing = function(id) return id == 500 end, item = twoHander },
+			{ equipped = { main_hand = SMITE }, isMissing = function() return true end, item = twoHander },
+			{ equipped = { finger1 = { itemId = 61, link = "item:61", stats = {} },
+				finger2 = { itemId = 400, link = "item:400", stats = {} } },
+				item = { itemId = 61, link = "item:61", equipLocation = "INVTYPE_FINGER", itemClass = 4,
+					itemSubClass = 0, stats = {} } },
+		}
+		local best = { [string.format(L.tooltipBestUntil, 30)] = true, [L.tooltipBestForNow] = true }
+		for index, case in ipairs(cases) do
+			local lines, _, _, head = ItemTooltip.section(ctx(case))
+			assert.is_true(head.equipped, "case " .. index)
+			local primaries = 0
+			for _, line in ipairs(lines) do
+				if best[line.text] or line.text:find(L.tooltipNextLabel, 1, true) then
+					primaries = primaries + 1
+				end
+			end
+			assert.are.equal(1, primaries, "case " .. index)
+		end
+	end)
+
+	describe("the compared item's name", function()
+		local function measure(text)
+			return #text
+		end
+		local verdict = { state = "better", delta = 24.7 }
+
+		it("is shortened with an ellipsis so the verdict and its figure stay whole", function()
+			local whole = ItemTooltip.verdictLine(verdict, "dps", "Smite's Mighty Hammer").text
+			local text = ItemTooltip.fitVerdict(verdict, "dps", "Smite's Mighty Hammer", measure, #whole - 6)
+			assert.is_true(#text <= #whole - 6)
+			assert.is_truthy(text:find(string.format(L.tooltipDown, 24.7, L.tooltipUnitDps, "Smite"), 1, true))
+			assert.is_truthy(text:find(L.tooltipNamePending, 1, true))
+		end)
+
+		it("is whole when it fits or there is nothing to measure with", function()
+			local whole = ItemTooltip.verdictLine(verdict, "dps", "Smite's Mighty Hammer").text
+			assert.are.equal(whole, ItemTooltip.fitVerdict(verdict, "dps", "Smite's Mighty Hammer", measure, 999))
+			assert.are.equal(whole, ItemTooltip.fitVerdict(verdict, "dps", "Smite's Mighty Hammer", nil, nil))
+		end)
+	end)
+
 	-- Review focus 4: Rules answers, and the tooltip never calls an item
 	-- an upgrade the character cannot equip.
 	describe("review focus 4", function()
@@ -657,29 +794,49 @@ describe("the weapon figure under the shipped Arms weights", function()
 	local Data = require("Data")
 	local weights = Data.weights["warrior-arms"]
 	local perPoint = Data.dpsPerPoint["warrior-arms"].dps
+	local reference = Data.dpsPerPoint["warrior-arms"].reference
 	local hammer = { itemId = 7230, link = "|Hitem:7230|h[Smite's Mighty Hammer]|h", equipLoc = "INVTYPE_2HWEAPON",
-		stats = { strength = 11, agility = 4 } }
+		stats = { strength = 11, agility = 4, weapon_dps = 19.7 } }
 	local tenderizer = { itemId = 5197, link = "item:5197", equipLocation = "INVTYPE_WEAPON",
-		stats = { spirit = 4 } }
+		stats = { spirit = 4, weapon_dps = 13.9 } }
 
-	it("counts the Hammer's Strength and Agility, the Tenderizer's Spirit at nothing, and no weapon DPS", function()
-		assert.are.equal(2, weights.strength)
-		assert.are.equal(0.6, weights.agility)
-		assert.is_nil(weights.spirit)
+	it("reads the client's weapon DPS line as weapon_dps", function()
+		assert.are.equal("weapon_dps", Rules.STAT_KEYS.ITEM_MOD_DAMAGE_PER_SECOND_SHORT)
+		assert.are.equal(14, Progress.AP_PER_WEAPON_DPS)
+	end)
+
+	-- Hammer: 11 Str x 2 + 4 Agi x 0.6 = 24.4 AP, plus 19.7 DPS x 14 = 275.8 AP:
+	-- 300.2. Tenderizer: 4 Spirit x 0 = 0, plus 13.9 DPS x 14 = 194.6 AP. The
+	-- gap is 24.4 + (19.7 - 13.9) x 14 = 105.6 AP x 0.2342 = 24.7 DPS.
+	it("nets 24.4 AP + (19.7 - 13.9) x 14 AP = 105.6 AP x 0.2342 = Downgrade 24.7 DPS", function()
+		assert.are.equal("attack_power", reference)
 		assert.are.equal(0.2342, perPoint)
-		-- 11 x 2 + 4 x 0.6 = 24.4 attack power; 4 Spirit x 0 = 0. No stat key
-		-- carries a weapon's damage per second, so the 19.7 and 13.9 weapon DPS
-		-- never enter the score.
-		assert.are.equal(24.4, Gear.score(hammer.stats, weights))
-		assert.are.equal(0, Gear.score(tenderizer.stats, weights))
-		for _, stat in pairs(Rules.STAT_KEYS) do
-			assert.is_nil(stat:find("damage_per_second", 1, true))
-		end
-		local verdict = Progress.itemVerdict("main_hand", tenderizer, { main_hand = hammer }, weights, perPoint)
+		assert.is_true(math.abs(Progress.itemScore(hammer.stats, weights, "main_hand", reference) - 300.2) < 1e-9)
+		assert.is_true(math.abs(Progress.itemScore(tenderizer.stats, weights, "main_hand", reference) - 194.6) < 1e-9)
+		local verdict = Progress.itemVerdict("main_hand", tenderizer, { main_hand = hammer }, weights, perPoint,
+			reference)
 		assert.are.equal("better", verdict.state)
-		assert.is_true(math.abs(verdict.delta - 24.4 * 0.2342) < 1e-9)
-		assert.are.equal(string.format(L.tooltipDown, 5.7, L.tooltipUnitDps, "Smite's Mighty Hammer"),
+		assert.is_true(math.abs(verdict.delta - 105.6 * 0.2342) < 1e-9)
+		assert.are.equal(string.format(L.tooltipDown, 24.7, L.tooltipUnitDps, "Smite's Mighty Hammer"),
 			ItemTooltip.verdictLine(verdict, "dps", "Smite's Mighty Hammer").text)
+	end)
+
+	it("ignores a weapon's DPS for a caster", function()
+		local staff = { weapon_dps = 30, spell_power = 10 }
+		assert.are.equal(10, Progress.itemScore(staff, { spell_power = 1, attack_power = 1 }, "main_hand", "spell_power"))
+	end)
+
+	it("weighs a ranged weapon's DPS by ranged attack power", function()
+		local bow = { weapon_dps = 10 }
+		local hunter = { ranged_attack_power = 1, attack_power = 0.2 }
+		assert.are.equal(140, Progress.itemScore(bow, hunter, "ranged", "ranged_attack_power"))
+		assert.are.equal(28, Progress.itemScore(bow, hunter, "main_hand", "ranged_attack_power"))
+	end)
+
+	it("gives a shield or a non-weapon slot no weapon term", function()
+		assert.are.equal(0, Progress.itemScore({ weapon_dps = 10 }, { attack_power = 1 }, "chest", "attack_power"))
+		assert.are.equal(3, Progress.itemScore({ strength = 3 }, { strength = 1, attack_power = 1 }, "off_hand",
+			"attack_power"))
 	end)
 end)
 
@@ -741,7 +898,7 @@ describe("the item hook", function()
 		NAMES[100] = "Defias Overseer Chest"
 		tooltip, calls = recording()
 		ItemTooltip.onTooltip(tooltip, "item:50")
-		assert.are.equal(string.format(L.tooltipNextUpgradeGain, "Defias Overseer Chest", 16, L.tooltipUnitDps),
+		assert.are.equal(ItemTooltip.nextLine("Defias Overseer Chest", 16, "dps"),
 			calls[3].text)
 	end)
 
@@ -752,23 +909,21 @@ describe("the item hook", function()
 		local source = calls[4]
 		assert.are.equal(string.format(L.tooltipSourceDrop, "The Deadmines", "Defias Overseer", 14), source.text)
 		for _, value in ipairs({ source.r, source.g, source.b, calls[2].r, calls[2].g, calls[2].b }) do
-			assert.is_true(value >= 0.62 - 1e-9)
+			assert.is_true(value >= 0.72 - 1e-9)
 		end
 	end)
 end)
 
 describe("the muted colours", function()
-	local Theme = require("Theme")
-
 	it("keep the site's muted token and give the tooltip one at least the client's grey", function()
 		assert.are.equal("9a9484", Theme.HEX.muted)
 		for _, channel in ipairs({ Theme.rgb(Theme.HEX.tooltipMuted) }) do
-			assert.is_true(channel >= 0.62 - 1e-9)
+			assert.is_true(channel >= 0.72 - 1e-9)
 		end
 	end)
 
 	it("mute the alternatives' label and keep each name's quality colour", function()
-		local text = ItemTooltip.fitAlternatives({ { name = "Cruel Barb", hex = "1eff00" } })
+		local text = ItemTooltip.fitAlternatives({ { name = "Cruel Barb", hex = "1eff00" } })[1]
 		assert.are.equal(string.format(L.tooltipAlternativesOne, "|cff1eff00Cruel Barb|r"), text)
 	end)
 end)
@@ -784,4 +939,31 @@ describe("ItemTooltip.alternativesRoom", function()
 		assert.are.equal(#"Wailing Caverns · Mutanus", ItemTooltip.alternativesRoom(lines, measure, 10))
 		assert.is_nil(ItemTooltip.alternativesRoom(lines, nil, 40))
 	end)
+end)
+
+-- D1: the chip's bag upgrades and the tooltip read one rounded gain
+-- (Progress.roundedGain), so they agree at 0.96 DPS (shown 1.0: an upgrade
+-- in both) and at 0.94 DPS (shown 0.9: in neither).
+describe("one floor for the chip and the tooltip", function()
+	local data = { classes = { warrior = { tabs = { { name = "Arms" } } } },
+		weights = { ["warrior-arms"] = { strength = 1 } } }
+	local build = { classSlug = "warrior", order = {}, gear = {} }
+	local worn = { chest = { itemId = 50, link = "item:50", stats = { strength = 4 } } }
+	local cases = {
+		{ strength = 100, gain = 0.96, upgrade = true },
+		{ strength = 98, gain = 0.94, upgrade = false },
+	}
+
+	for _, case in ipairs(cases) do
+		it(string.format("agree at %.2f DPS", case.gain), function()
+			local bag = { link = "item:900", itemId = 900, equipLocation = "INVTYPE_CHEST", itemClass = 4,
+				itemSubClass = 3, stats = { strength = case.strength } }
+			local listed = Progress.bagUpgrades(data, build, {}, { bag }, worn, 0.01, 20)
+			local verdict = Progress.itemVerdict("chest", bag, worn, data.weights["warrior-arms"], 0.01)
+			local line = ItemTooltip.verdictLine(verdict, "dps", "Chausses")
+			assert.is_true(math.abs(-verdict.delta - case.gain) < 1e-9)
+			assert.are.equal(case.upgrade, #listed == 1)
+			assert.are.equal(case.upgrade, line.color == "success")
+		end)
+	end
 end)

@@ -39,8 +39,12 @@ Theme.HEX = {
 	gold = "e5b955",
 	muted = "9a9484",
 	--- Muted text on the client's own tooltip, which sits on a lighter ground than
-	--- the window: never darker than the client's own grey (9d9d9d) in any channel.
-	tooltipMuted = "b3ad9f",
+	--- the window: at least 0.72 in every channel, lighter than the client's own grey.
+	tooltipMuted = "b8b8b8",
+	--- Text on the client's tooltip that must read clearly ("Your sim").
+	tooltipText = "d0d0d0",
+	--- The client's own tooltip gold (its item-set and "Requires" lines).
+	clientGold = "ffd100",
 	body = "e9e4d8",
 	warning = "ff6b5c",
 }

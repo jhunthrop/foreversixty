@@ -247,7 +247,7 @@ local function weightTable(list)
 end
 
 --- The one weights source every verdict reads (spec section 5.2):
---- { weights, dpsPerPoint, tag, caps, healing }. With a "weights" inbox
+--- { weights, dpsPerPoint, tag, caps, healing, spec, reference }. With a "weights" inbox
 --- message for `characterKey` and `spec` (the companion's sim), its weights,
 --- its own DPS per point (none: the unit is score) and its caps, tag "sim";
 --- otherwise the shipped data.weights[spec] and data.dpsPerPoint[spec],
@@ -281,6 +281,7 @@ function Gear.currentWeights(data, spec, inbox, characterKey)
 			-- (L1.3 carry-over): a sim that names none counts in score.
 			dpsPerPoint = message.dps_per_point,
 			tag = "sim", caps = caps, healing = healing, spec = spec,
+			reference = perPoint ~= nil and perPoint.reference or Gear.referenceStat(simWeights),
 		}
 	end
 	if shipped == nil then
@@ -290,6 +291,7 @@ function Gear.currentWeights(data, spec, inbox, characterKey)
 		weights = shipped,
 		dpsPerPoint = perPoint ~= nil and perPoint.dps or nil,
 		tag = "default", caps = caps, healing = healing, spec = spec,
+		reference = perPoint ~= nil and perPoint.reference or Gear.referenceStat(shipped),
 	}
 end
 

@@ -123,6 +123,20 @@ function Compat.isItemCached(itemId)
 	return Compat.itemInfo(itemId) ~= nil
 end
 
+--- Whether this client knows the item at all (C_Item.DoesItemExistByID):
+--- false for an id it has never heard of, nil where the client cannot say.
+function Compat.itemExists(itemId)
+	local namespace = _G.C_Item
+	if itemId == nil or type(namespace) ~= "table" or type(namespace.DoesItemExistByID) ~= "function" then
+		return nil
+	end
+	local ok, exists = pcall(namespace.DoesItemExistByID, itemId)
+	if not ok then
+		return nil
+	end
+	return exists == true
+end
+
 --- The item's quality (0 poor .. 5 legendary), or nil until cached.
 function Compat.itemQuality(itemId)
 	if itemId == nil then

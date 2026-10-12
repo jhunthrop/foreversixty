@@ -262,6 +262,10 @@ Rules.STAT_KEYS = {
 	ITEM_MOD_SPELL_PENETRATION_SHORT = "spell_penetration",
 	ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT = "armor_penetration",
 	RESISTANCE0_NAME = "armor",
+	-- A weapon's own damage per second (a client that omits the key gives none,
+	-- and the weapon is scored on its stat line alone). No weight carries it:
+	-- Progress.itemScore converts it at the sim's 14 attack power per DPS.
+	ITEM_MOD_DAMAGE_PER_SECOND_SHORT = "weapon_dps",
 }
 
 --- hit and crit are one stat in Forever; the key the weights table uses, or

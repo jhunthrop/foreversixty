@@ -12,9 +12,12 @@ package-as: ForeverSixty
 # beside ForeverSixty in every release: a code-free addon that only owns the
 # ForeverSixtyInbox saved variable, which the companion writes into
 # WTF/Account/<account>/SavedVariables/ForeverSixtyInbox.lua (the client reads
-# that file only for an addon of that name). This topdir cannot reach a sibling
-# folder, so the release workflow adds it to the zip as a second top-level
-# folder; until it does, a release must not go out (see addon/README.md).
+# that file only for an addon of that name). addon-release.yml copies it into
+# this topdir as ForeverSixtyInbox/ and the move below lifts it to the zip's
+# top level, so the zip holds ForeverSixty/ and ForeverSixtyInbox/; the
+# workflow checks exactly those two folders.
+move-folders:
+  ForeverSixty/ForeverSixtyInbox: ForeverSixtyInbox
 
 # No libraries are embedded: this addon has no dependencies, and a nolib
 # variant of a zip with no libs in it is a second artefact saying the same

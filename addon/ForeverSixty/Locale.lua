@@ -530,7 +530,10 @@ local L = {
 	tooltipUnitHps = "HPS",
 	-- An off hand, a shield or a held item while a two-hander is worn.
 	tooltipTwoHander = "Not with your two-hander",
-	-- The item worn is the band's own pick (or the pick is worn beside it).
+	-- The item worn is the band's own pick (or the pick is worn beside it, or
+	-- the next pick gains under the floor): it holds until the ladder's next
+	-- rung, "Best until 30"; in the top band, "Best for now".
+	tooltipBestUntil = "Best until %d",
 	tooltipBestForNow = "Best for now",
 	-- Gear no weights score and no pick names for its slot.
 	tooltipNotForPlan = "Not for your plan",
@@ -539,10 +542,14 @@ local L = {
 	tooltipPlanned = "Planned for %s at %d",
 	tooltipPlannedBuild = "Planned for %s",
 	-- The band's pick for the slot: "Next upgrade: Mutant Scale Breastplate
-	-- +6.1 DPS" (the name in its quality colour), its source on the next line.
-	tooltipNextUpgrade = "Next upgrade: %s",
-	tooltipNextUpgradeGain = "Next upgrade: %s +%.1f %s",
-	tooltipNextUpgradeScore = "Next upgrade: %s +%d score",
+	-- +6.1 DPS" (the label muted, the name in its quality colour, the gain in
+	-- the upgrade green), its source on the next line. Never without its gain.
+	tooltipNextLabel = "Next upgrade:",
+	tooltipNextGain = "+%.1f %s",
+	tooltipNextGainScore = "+%d score",
+	-- Muted after the gain when the worn item carries an enchant: enchants are
+	-- not item stats, so the gain leaves them out.
+	tooltipEnchantNote = "(enchant not counted)",
 	-- The compare tooltip's tab, where the client lets it carry one.
 	tooltipCompareLabel = "Next upgrade",
 	-- Where the item comes from: "Wailing Caverns · Mutanus the Devourer ·
@@ -552,12 +559,14 @@ local L = {
 	tooltipSourceChance = "%s · %d%% drop",
 	tooltipAlternatives = "Also good: %s, %s",
 	tooltipAlternativesOne = "Also good: %s",
+	-- Two names too wide for one line wrap to a second rather than one dropped.
+	tooltipAlternativesFirst = "Also good: %s,",
+	tooltipAlternativesSecond = "    %s",
 	-- A name the client has not sent yet (and the end of a shortened name).
 	tooltipNamePending = "…",
 	-- The section's header: "Forever Sixty · Arms · Your sim" (the spec's
-	-- tree, then where the weights came from), muted after the gold name.
-	tooltipHeaderTag = " · %s",
-	tooltipHeaderParts = "%s · %s",
+	-- tree, then where the weights came from), joined by this separator.
+	tooltipHeaderSep = " · ",
 	tooltipTagSim = "Your sim",
 	tooltipTagBuild = "Your build",
 	-- The shipped weights and DPS per point, not the player's own sim.
@@ -581,7 +590,7 @@ local L = {
 		hit = "Hit", crit = "Critical Strike", melee_haste = "Haste", expertise = "Expertise",
 		defense = "Defense", dodge = "Dodge", parry = "Parry", block = "Block", block_value = "Block Value",
 		mp5 = "Mana per 5 sec.", spell_penetration = "Spell Penetration",
-		armor_penetration = "Armor Penetration", armor = "Armor",
+		armor_penetration = "Armor Penetration", armor = "Armor", weapon_dps = "Weapon DPS",
 	},
 
 	-- Addon messages between players (Comms.lua): /fs hello, /fs seen and /fs diag.

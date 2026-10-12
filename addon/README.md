@@ -6,16 +6,21 @@ or in a string the player pasted.
 
 ## Install (development)
 
-Symlink `addon/ForeverSixty` and `addon/ForeverSixtyInbox` into the client. The second is a
-code-free addon that only owns the `ForeverSixtyInbox` saved variable: the companion writes
-`WTF/Account/<account>/SavedVariables/ForeverSixtyInbox.lua`, and the client reads that file
-only for an addon of that name. The two folders always ship together.
+Symlink the three addon folders into the client:
+
+- `addon/ForeverSixty`, the addon itself;
+- `addon/ForeverSixtyInbox`, a code-free addon that only owns the `ForeverSixtyInbox` saved
+  variable: the companion writes `WTF/Account/<account>/SavedVariables/ForeverSixtyInbox.lua`,
+  and the client reads that file only for an addon of that name. It ships in the same zip as
+  ForeverSixty;
+- `addon/ForeverSixtyData`, the nightly ratings pack (its real `Data.lua` comes from its own
+  nightly release; the folder here is the empty shape).
 
 ```bash
-ln -s "$PWD/addon/ForeverSixty" \
-  "/Applications/World of Warcraft/_beta_/Interface/AddOns/ForeverSixty"
-ln -s "$PWD/addon/ForeverSixtyInbox" \
-  "/Applications/World of Warcraft/_beta_/Interface/AddOns/ForeverSixtyInbox"
+for folder in ForeverSixty ForeverSixtyInbox ForeverSixtyData; do
+  ln -s "$PWD/addon/$folder" \
+    "/Applications/World of Warcraft/_beta_/Interface/AddOns/$folder"
+done
 ```
 
 ## Beta spike checklist
@@ -168,8 +173,9 @@ git push origin addon-v1.0.0
 
 `addon-release.yml` runs luacheck, busted, the Lua 5.1 syntax check, and the
 `Data.lua`-matches-the-pipeline check, builds the zip with the BigWigs packager,
-checks that its single top-level folder is `ForeverSixty/` and that the specs,
-`.pkgmeta` and `.superpowers` are not inside it, and attaches it to a GitHub
+checks that its top-level folders are exactly `ForeverSixty/` and
+`ForeverSixtyInbox/` and that the specs, `.pkgmeta` and `.superpowers` are not
+inside it, and attaches it to a GitHub
 release. Publishing to GitHub, CurseForge and Wago only ever happens on a real
 tag push: running the workflow by hand from the Actions tab (`Run workflow`)
 always builds and validates the zip but never publishes anything, regardless of
@@ -177,9 +183,10 @@ the `dry_run` input or which ref you pick -- use it to prove the build without
 shipping.
 
 `addon/ForeverSixtyInbox` ships beside `ForeverSixty/` in the same zip (a second
-top-level folder): the companion's inbox reaches the game only through it. The
-workflow's single-folder check predates it and must be widened to package and
-check both folders before the next release.
+top-level folder): the workflow copies it into the packager's topdir and
+`.pkgmeta`'s `move-folders` lifts it to the zip's top level. The companion's inbox
+reaches the game only through it. `ForeverSixtyData/` ships from its own nightly
+workflow (`addon-data-release.yml`).
 
 Publishing to CurseForge and Wago Addons needs two repository secrets, both
 user-owned: `CF_API_KEY` and `WAGO_API_TOKEN`. When neither is set the workflow

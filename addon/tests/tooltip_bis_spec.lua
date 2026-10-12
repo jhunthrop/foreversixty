@@ -320,7 +320,7 @@ describe("Tooltip's BiS hover section", function()
 			assert.are.equal("doubleline", calls[2].kind)
 			assert.is_truthy(calls[2].left:find(L.addonName, 1, true))
 			assert.are.equal(L.tooltipEquipped, calls[2].right)
-			assert.are.equal(L.tooltipBestForNow, calls[3].text)
+			assert.are.equal(string.format(L.tooltipBestUntil, 30), calls[3].text)
 			assert.are.equal(string.format(L.tooltipPlanned, "Holy", 20), calls[4].text)
 		end)
 
@@ -351,7 +351,7 @@ describe("Tooltip's BiS hover section", function()
 			-- upgrade with its gain (a next upgrade is never printed without one).
 			assert.are.equal(" ", calls[1].text)
 			assert.is_truthy(calls[2].text:find(L.addonName, 1, true))
-			assert.are.equal(string.format(L.tooltipNextUpgradeScore, "Helm of the Pathfinder", 10), calls[3].text)
+			assert.are.equal(Tooltip.nextLine("Helm of the Pathfinder", 10, "score"), calls[3].text)
 		end)
 
 		it("still adds nothing for an item whose equip location this band does not track at all", function()

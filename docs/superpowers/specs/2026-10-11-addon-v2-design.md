@@ -99,20 +99,31 @@ point spent off plan turns the strip's count warning-coloured; nothing pops up.
 After the client's own lines, a "Forever Sixty" section. Its header names the spec and where the
 weights came from: "Forever Sixty · Arms · Your sim" with the companion's sim, "Forever Sixty ·
 Arms · Estimate" with the shipped weights (DPS is allowed under Estimate: the shipped
-DPS-per-point figures are real sims), with "Equipped" on its right on the item worn. Every
-equippable item in a slot the plan covers gets a line: the verdict ("Upgrade +4.2 DPS over
-Chausses of Westfall", "Sidegrade (+0.3 DPS)", "Downgrade −4.2 DPS over Smite's Mighty Hammer";
-"Upgrade" only from the chip's own 1.0 floor), "Best for now", or the reason it is not one ("Not
-for you until 40: plate armor", "Not with your two-hander", "Not for your plan"); only non-gear
-stays blank. On the item worn the primary line is the slot's next upgrade ("Next upgrade: Mutant
-Scale Breastplate +6.1 DPS", the name in its quality colour), printed only when the pick gains
-at least the 1.0 floor over what is worn; under it the line is "Best for now". The gain compares
-the items' own stats: enchants are not counted. Then the plan ("Planned for Arms at
-30"), the source on its own line with drop chance ("Wailing Caverns · Mutanus the Devourer · 33%
-drop"), and two alternatives when the data has them ("Also good: A, B", never wider than the
-tooltip). The unit is DPS (or HPS) when a sim result or DPS-per-point weights exist for the spec,
-else score. Hovering an item with a next upgrade shows that upgrade's compare tooltip beside it,
-as shift-compare does, once the client holds the item (never "Retrieving item information").
+DPS-per-point figures are real sims), with "Equipped" on its right on the item worn. "Forever
+Sixty" is in the client's own tooltip gold, the spec and "Estimate" are muted, "Your sim" is in
+the tooltip's text colour. Every equippable item in a slot the plan covers gets a line: the verdict
+("Upgrade +4.2 DPS over Chausses of Westfall", "Sidegrade (+0.3 DPS)", "Downgrade −4.2 DPS over
+Smite's Mighty Hammer", the compared name shortened before the tooltip widens), "Best until 30",
+or the reason it is not one ("Not for you until 40: plate armor", "Not with your two-hander",
+alone, "Not for your plan"); only non-gear stays blank. The chip and the tooltip read one gain,
+rounded once to the figure shown (one decimal of DPS, whole points of score), and call it an
+upgrade from 1.0 of that figure: 0.96 DPS is "Upgrade +1.0" in both, 0.94 is "Sidegrade (+0.9
+DPS)" and no chip upgrade. On the item worn the primary line is the slot's next upgrade ("Next
+upgrade: Mutant Scale Breastplate +6.1 DPS", the label muted, the name in its quality colour,
+the gain in the upgrade green), printed only when the pick gains at least 1.0 over what is worn;
+under it, or when the client cannot show the pick or any of its alternatives, the line is "Best
+until <the band ladder's next rung>" ("Best for now" in the top band). A pick the client cannot
+show at all gives way to the first of its alternatives it can. The gain compares the items' own
+stats and, for a weapon in a weapon slot of a spec whose reference stat is attack power or ranged
+attack power, the weapon's own DPS at the sim's 14 attack power per DPS (ranged attack power for
+the ranged slot); a caster's weapon DPS counts nothing. Enchants are not counted: when the worn
+item carries one, the Next line ends with a muted "(enchant not counted)". Then the plan ("Planned
+for Arms at 30"), the source on its own line with drop chance ("Wailing Caverns · Mutanus the
+Devourer · 33% drop"), and two alternatives when the data has them ("Also good: A, B", wrapped to
+a second line rather than one dropped, never wider than the tooltip). The unit is DPS (or HPS)
+when a sim result or DPS-per-point weights exist for the spec, else score. Hovering an item with a
+next upgrade shows that upgrade's compare tooltip beside it, as shift-compare does, once the
+client holds the item (never "Retrieving item information").
 
 ### 4.4 Paper doll, bags, quest rewards, rolls
 
