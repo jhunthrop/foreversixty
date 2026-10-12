@@ -52,10 +52,22 @@ export function prefillFromQuery(form: HTMLFormElement, search: string = window.
   // The `#lookup` fragment scroll runs after this module and moves focus back to the page, so a
   // focus taken before `load` does not stick: wait for it, then a frame.
   if (document.readyState === 'complete') {
-    input.focus();
+    focusIfIdle(input);
   } else {
-    window.addEventListener('load', () => requestAnimationFrame(() => input.focus()), { once: true });
+    window.addEventListener('load', () => requestAnimationFrame(() => focusIfIdle(input)), { once: true });
   }
+}
+
+/**
+ * Puts the cursor in `input` only while nothing else has it (fix round 4 item 1): focus on the
+ * page itself (the body) or nowhere. Anything else -- a field the player has started typing in
+ * while the page loaded, a button they tabbed to -- keeps its focus.
+ */
+export function focusIfIdle(input: HTMLElement): void {
+  const active = document.activeElement;
+  if (active !== null && active !== document.body) return;
+  if (isTypingTarget(active)) return;
+  input.focus();
 }
 
 /** Whether a key press came from somewhere typing is expected. */

@@ -118,4 +118,13 @@ describe('CharacterInGame', () => {
     const { body } = render(CharacterInGame, { props: { ...BASE, forever: SCORED } });
     expect(body).toContain('flex flex-col gap-3 min-[900px]:flex-row');
   });
+
+  it('shows "Last seen in game" without a time for an owner whose export time cannot be read (fix round 4 item 3)', () => {
+    const { body } = render(CharacterInGame, {
+      props: { ...BASE, forever: SCORED, owned: true, lastSeenAt: 'not a time' },
+    });
+    expect(body).toContain(
+      'class="text-muted text-[14px] leading-[22px]" data-testid="character-in-game-last-seen">Last seen in game<',
+    );
+  });
 });

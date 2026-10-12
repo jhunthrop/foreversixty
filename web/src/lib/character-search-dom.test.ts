@@ -4,7 +4,7 @@
 // "Look up another character" prefill (name, region, ruleset, then focus), and the check that
 // keeps "/" from stealing a key someone is typing.
 import { describe, expect, it } from 'vitest';
-import { isTypingTarget, LOOKUP_NAME_PARAM, prefillFromQuery } from './character-search-dom';
+import { focusIfIdle, isTypingTarget, LOOKUP_NAME_PARAM, prefillFromQuery } from './character-search-dom';
 import { scoreCopy } from './score/copy';
 
 function form(): HTMLFormElement {
@@ -48,6 +48,35 @@ describe('prefillFromQuery', () => {
     prefillFromQuery(f, `?${LOOKUP_NAME_PARAM}=%20`);
     expect(field(f, 'input').value).toBe('');
     expect(submitted).toBe(false);
+  });
+});
+
+describe('focusIfIdle (fix round 4 item 1)', () => {
+  it('takes the cursor when nothing has it (focus on the page itself)', () => {
+    const f = form();
+    (document.activeElement as HTMLElement | null)?.blur();
+    expect(document.activeElement).toBe(document.body);
+    focusIfIdle(field(f, 'input'));
+    expect(document.activeElement).toBe(field(f, 'input'));
+  });
+
+  it('never steals focus from a field the player is already in', () => {
+    const f = form();
+    const other = document.createElement('input');
+    document.body.append(other);
+    other.focus();
+    focusIfIdle(field(f, 'input'));
+    expect(document.activeElement).toBe(other);
+  });
+
+  it('never steals focus from a button the player tabbed to', () => {
+    const f = form();
+    const button = document.createElement('button');
+    document.body.append(button);
+    button.focus();
+    prefillFromQuery(f, '?character=Elyra');
+    expect(field(f, 'input').value).toBe('Elyra');
+    expect(document.activeElement).toBe(button);
   });
 });
 

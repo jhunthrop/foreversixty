@@ -134,8 +134,8 @@ describe('lastSeenText', () => {
     expect(lastSeenText(local)).toBe('Last seen in game 4 Nov 14:03');
   });
 
-  it('is null for a time it cannot read', () => {
-    expect(lastSeenText('not a time')).toBeNull();
+  it('says "Last seen in game" without a time when the time cannot be read (fix round 4 item 3)', () => {
+    expect(lastSeenText('not a time')).toBe('Last seen in game');
   });
 });
 

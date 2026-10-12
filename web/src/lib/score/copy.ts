@@ -106,6 +106,8 @@ export const scoreCopy = {
   inGamePasteHref: '/setup#paste',
   /** "Last seen in game 4 Nov 14:03": when the site last saw the owner's addon export. */
   lastSeen: (when: string): string => `Last seen in game ${when}`,
+  /** The same line when the export's time cannot be read. */
+  lastSeenNoTime: 'Last seen in game',
 
   explainerPageTitle: 'Forever Score and ratings',
   explainerJumpLabel: 'On this page',

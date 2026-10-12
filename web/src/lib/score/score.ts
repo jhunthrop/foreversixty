@@ -222,10 +222,14 @@ function decodeSlug(slug: string): string {
   }
 }
 
-/** "Last seen in game 4 Nov 14:03", in the viewer's own clock; null for an unreadable time. */
-export function lastSeenText(capturedAt: string): string | null {
+/**
+ * "Last seen in game 4 Nov 14:03", in the viewer's own clock. An unreadable time still says the
+ * game was seen -- "Last seen in game" with no time -- since the export is there either way
+ * (fix round 4 item 3); it never falls back to "No export yet".
+ */
+export function lastSeenText(capturedAt: string): string {
   const when = new Date(capturedAt);
-  if (Number.isNaN(when.getTime())) return null;
+  if (Number.isNaN(when.getTime())) return scoreCopy.lastSeenNoTime;
   const hours = String(when.getHours()).padStart(2, '0');
   const minutes = String(when.getMinutes()).padStart(2, '0');
   return scoreCopy.lastSeen(`${when.getDate()} ${MONTHS[when.getMonth()]} ${hours}:${minutes}`);

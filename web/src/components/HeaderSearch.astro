@@ -7,6 +7,8 @@
 // game writes it, opens the profile at the site's default region and ruleset
 // (lib/character-search.ts); the home page's full box is the one with the region and ruleset
 // pickers. "/" outside a text field focuses the home box where there is one, else opens this.
+// Each form's status line is a live region, so it stays in the page while empty (fix round 4
+// item 2: `empty:mt-0` closes the gap without hiding it from assistive tech).
 import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
 import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 
@@ -101,7 +103,7 @@ const FIELD =
           {copy.submit}
         </button>
       </form>
-      <p id={`${id}-status`} class="text-strong mt-1 text-[13px] empty:hidden" role="status" />
+      <p id={`${id}-status`} class="text-strong mt-1 text-[13px] empty:mt-0" role="status" />
     </div>
   </div>
 ) : (
@@ -153,6 +155,6 @@ const FIELD =
         {copy.submit}
       </button>
     </form>
-    <p id={`${id}-status`} class="text-strong mt-1 text-[13px] empty:hidden" role="status" />
+    <p id={`${id}-status`} class="text-strong mt-1 text-[13px] empty:mt-0" role="status" />
   </div>
 )}

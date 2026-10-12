@@ -102,6 +102,6 @@
     </p>
   {/if}
   {#if lastSeen !== null}
-    <p class="text-muted text-[14px]" data-testid="character-in-game-last-seen">{lastSeen}</p>
+    <p class="text-muted text-[14px] leading-[22px]" data-testid="character-in-game-last-seen">{lastSeen}</p>
   {/if}
 </section>

@@ -286,3 +286,20 @@ test('on a phone the visitor’s sign-in row sits below the score card, on one l
   expect((row?.y ?? 0) > (card?.y ?? 0) + (card?.height ?? 0)).toBe(true);
   expect(row?.height).toBe(44);
 });
+
+test('an owner whose export time cannot be read still reads "Last seen in game", never "No export yet"', async ({
+  page,
+}) => {
+  const me = ownerMe();
+  const own = me.characters[0];
+  if (own.build === undefined) throw new Error('the me fixture character has no build');
+  me.characters[0] = { ...own, build: { ...own.build, captured_at: 'not a time' } };
+  await page.route('**/v1/me', (route) => route.fulfill(ok(me)));
+  await page.route(CHARACTER_URL, (route) => route.fulfill(ok(CAPTURE)));
+  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
+  await page.goto(CHARACTER_PATH);
+
+  await expect(page.getByTestId('character-handoff-last-seen')).toHaveText('Last seen in game');
+  await expect(page.getByTestId('character-in-game-last-seen')).toHaveText('Last seen in game');
+  await expect(page.getByTestId('character-needs-addon')).toHaveCount(0);
+});

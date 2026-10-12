@@ -86,4 +86,16 @@ describe('Header', () => {
     // The Menu's lookup comes before the doors.
     expect(html.indexOf('site-menu-search')).toBeLessThan(html.indexOf('id="primary-nav"'));
   });
+
+  it('keeps each lookup status live region present while empty, closing its gap without hiding it (fix round 4 item 2)', async () => {
+    const html = await renderHeader('/ratings');
+    const regions = [
+      ...html.matchAll(/<p id="site-search-(bar|menu)-status" class="([^"]*)" role="status"><\/p>/g),
+    ];
+    expect(regions).toHaveLength(2);
+    for (const [, , cls] of regions) {
+      expect(cls.split(' ')).toContain('empty:mt-0');
+      expect(cls).not.toMatch(/hidden|sr-only|display/);
+    }
+  });
 });
