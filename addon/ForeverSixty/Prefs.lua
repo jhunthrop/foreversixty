@@ -29,17 +29,16 @@ Prefs.DEFAULTS = {
 	-- The build dialog (spec section 4.10): `point` "" is the centre of the screen; a drag
 	-- by its title saves CENTER and the offset from the screen's centre.
 	dialog = { point = "", x = 0, y = 0 },
-	-- Guild badges on the roster and in tooltips, and this player's own hello on GUILD.
+	-- Guild badges on the roster and in tooltips (L4.4 adds its switch), and this player's
+	-- own hello on GUILD and answer to a snapshot request ("Share my build with my guild").
 	badges = true,
 	broadcast = true,
-	-- The keys below are the pre-v2 surfaces'; each goes with the lane that replaces it.
+	-- The minimap button: where it sits on the ring, and the "Show the minimap button" switch.
 	minimap = { angle = 200, shown = true },
 	-- On by default: the export written at logout is what feeds the
 	-- companion, and a player who installed the companion did not ask to
 	-- turn it on a second time.
 	autoSave = true,
-	-- Off by default: printing every answer into chat as well is noise.
-	chat = false,
 	-- On by default: the tooltip line is what makes the platform's value
 	-- visible outside the addon's own frames (design "Addon premium pass").
 	tooltip = true,
@@ -47,7 +46,8 @@ Prefs.DEFAULTS = {
 	-- level-60 export"): stat-weight breakdowns and cap call-outs are
 	-- noise to a leveling alt. Every card that has an advanced layer reads
 	-- this flag itself rather than a second, page-local copy of it, so
-	-- turning it on or off is consistent everywhere in the same frame.
+	-- turning it on or off is consistent everywhere in the same frame. No
+	-- Settings switch until a v2 surface reads it (L3.5 ruling 1).
 	advancedDetail = false,
 }
 
@@ -132,7 +132,7 @@ function Prefs.set(section, key, value)
 	return value
 end
 
---- A top-level boolean: autoSave, chat.
+--- A top-level boolean: tooltip, broadcast, autoSave.
 function Prefs.flag(name)
 	return Prefs.current()[name]
 end

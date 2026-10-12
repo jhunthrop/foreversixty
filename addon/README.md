@@ -94,9 +94,8 @@ Run on one character per role and tick here:
       carries `defaultBuilds` (leveling below 60, raid at 60).
 - [ ] The tracker appears, drags, locks, and says "Build complete" at the end.
 - [ ] The talent window glows the next talent (record which mapping in row 22).
-- [ ] The minimap button shows the LX seal, drags around the ring, and prints the
-      command list on either click (the build dialog and the Settings page return with
-      Lanes L3.4 and L3.5).
+- [ ] The minimap button shows the LX seal, drags around the ring, opens the build dialog on
+      a left click and the Settings page (Options > AddOns > Forever Sixty) on a right click.
 - [ ] Logging out writes `ForeverSixtyDB.characters`, `savedAt` and `ForeverSixtyDB.outbox`
       (`format = 1`, an `export`, and a `roster_snapshot` when guilded and guildmates were
       heard); the companion picks it up. Turning auto-save off stops it.
@@ -109,8 +108,11 @@ Run on one character per role and tick here:
       few seconds, and clicking it prints the command list; it does not appear mid-combat and
       shows once combat ends.
 - [ ] The tracker's thin bar fills as points are spent.
-- [ ] The minimap tooltip lists build progress and upgrades waiting; the addon appears in the addon
-      compartment on a client that has one.
+- [ ] The minimap tooltip lists build progress and upgrades waiting and ends with the two click
+      hints; the addon appears in the addon compartment on a client that has one, and its entry
+      opens the dialog on a left click and the Settings page on a right click.
+- [ ] Each Settings switch takes effect without a reload; Reset positions moves the chip, the
+      minimap button and the build dialog back at once.
 - [ ] The keybind (Key Bindings > AddOns > Forever Sixty) prints the command list.
 - [ ] `/fs help` prints the command list in gold.
 

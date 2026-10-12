@@ -17,6 +17,8 @@ describe("the TOC", function()
 		"surfaces/Chip.lua", "surfaces/TalentMarks.lua",
 		-- The build dialog (L3.4): built on its first open; Options opens it.
 		"surfaces/BuildDialog.lua",
+		-- The Settings page (L3.5): registered at login; Options opens it.
+		"surfaces/Settings.lua",
 		-- The measurement recorder: Options routes /fs record to it.
 		"RecorderBuffer.lua", "Recorder.lua", "Options.lua",
 	}

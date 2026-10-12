@@ -47,6 +47,7 @@ describe("Options", function()
 		helper.load("Minimap")
 		helper.load("Comms")
 		helper.load("BuildDialog")
+		helper.load("Settings")
 		Options = helper.load("Options")
 		Options.data = DATA
 	end)
@@ -67,13 +68,13 @@ describe("Options", function()
 
 	it("has dropped the window's tab subcommands", function()
 		for _, command in ipairs({ "export", "follow FSB1:1.60.1.69893:paladin:111:", "gear", "settings", "options" }) do
-			assert.are.same(require("Locale").slashHintLines, Options.handle(command), command)
+			assert.are.same(Options.helpLines(), Options.handle(command), command)
 		end
 		assert.is_nil(require("Follow").build)
 	end)
 
-	it("lists every command, a few words each, on /fs help", function()
-		assert.are.same(require("Locale").slashHelpLines, Options.handle("help"))
+	it("lists the player's commands, a few words each, on /fs help: the Settings page's list", function()
+		assert.are.same(require("Locale").settingsCommands, Options.handle("help"))
 	end)
 
 	it("lists /fs and /fs copy first on /fs help (L3.4 fix 6)", function()
@@ -96,11 +97,10 @@ describe("Options", function()
 		assert.are.equal("|cff" .. Theme.HEX.gold .. "hello|r", Options.colorGold("hello"))
 	end)
 
-	it("always prints /fs help regardless of the chat pref", function()
+	it("prints /fs help in chat", function()
 		Options.register()
-		require("Prefs").setFlag("chat", false)
 		SlashCmdList["FOREVERSIXTY"]("help")
-		assert.are.equal(#require("Locale").slashHelpLines, #state.printed)
+		assert.are.equal(#require("Locale").settingsCommands, #state.printed)
 	end)
 
 	it("counts the builds the companion left in the inbox", function()
@@ -307,19 +307,18 @@ describe("Options", function()
 		assert.are.equal("/fs", SLASH_FOREVERSIXTY1)
 	end)
 
-	it("prints the command list through the chat prefix on an unknown /fs command, chat pref or not", function()
-		require("Prefs").setFlag("chat", false)
+	it("prints the command list through the chat prefix on an unknown /fs command", function()
 		Options.register()
 		SlashCmdList["FOREVERSIXTY"]("nonsense")
 
 		local Locale = require("Locale")
 		local Theme = require("Theme")
 		local expected = {}
-		for index, line in ipairs(Locale.slashHintLines) do
+		for index, line in ipairs(Locale.settingsCommands) do
 			expected[index] = Theme.chatLine(line)
 		end
 		assert.are.same(expected, state.printed)
-		assert.are.equal("|cffe5b955Forever Sixty|r: " .. Locale.slashHintLines[1], state.printed[1])
+		assert.are.equal("|cffe5b955Forever Sixty|r: " .. Locale.settingsCommands[1], state.printed[1])
 	end)
 
 	it("has the minimap button and the compartment open the dialog, and the keybind toggle it", function()
@@ -335,14 +334,44 @@ describe("Options", function()
 		require("Minimap").open()
 		_G.FOREVERSIXTY_TOGGLE_WINDOW()
 		assert.are.same({ "open paste", "toggle" }, calls)
-		-- Right-click is the Settings page's (L3.5); until then it prints the commands.
-		assert.are.equal(Options.showHint, require("Minimap").openSettings)
+		-- Right-click is the Settings page's (L3.5), or the commands where it cannot open.
+		assert.are.equal(Options.openSettings, require("Minimap").openSettings)
 		-- The dialog falls back to the command list when it cannot show itself.
 		assert.are.equal(Options.showHint, BuildDialog.fallback)
 		Options.showHint()
 		local Locale = require("Locale")
-		assert.are.equal(#Locale.slashHintLines, #state.printed)
-		assert.are.equal(require("Theme").chatLine(Locale.slashHintLines[1]), state.printed[1])
+		assert.are.equal(#Locale.settingsCommands, #state.printed)
+		assert.are.equal(require("Theme").chatLine(Locale.settingsCommands[1]), state.printed[1])
+	end)
+
+	it("opens the Settings page on the launcher's right-click, or prints the commands where it cannot", function()
+		Options.register()
+		local Locale = require("Locale")
+		-- The mock has no Settings API, so the page never registered: the commands print.
+		assert.is_false(Options.openSettings())
+		assert.are.equal(#Locale.settingsCommands, #state.printed)
+		require("Settings").open = function()
+			return true
+		end
+		assert.is_true(Options.openSettings())
+		assert.are.equal(#Locale.settingsCommands, #state.printed)
+	end)
+
+	it("redraws after a Settings switch, and says hello when sharing is turned on", function()
+		Options.register()
+		local hellos, redraws = 0, 0
+		Options.sayHello = function()
+			hellos = hellos + 1
+		end
+		Options.refreshSurfaces = function()
+			redraws = redraws + 1
+		end
+		local SettingsPage = require("Settings")
+		SettingsPage.afterChange("broadcast", false)
+		SettingsPage.afterChange("broadcast", true)
+		SettingsPage.afterChange("tooltip", true)
+		assert.are.equal(1, hellos)
+		assert.are.equal(3, redraws)
 	end)
 
 	it("refreshes the chip and the talent marks through refreshSurfaces", function()

@@ -35,6 +35,7 @@ Minimap.lua
 surfaces\Chip.lua
 surfaces\TalentMarks.lua
 surfaces\BuildDialog.lua
+surfaces\Settings.lua
 RecorderBuffer.lua
 Recorder.lua
 Options.lua

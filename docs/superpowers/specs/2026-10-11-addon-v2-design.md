@@ -273,9 +273,17 @@ paste it on the site at foreversixty.gg.". The addon never claims an upload it c
 
 ### 4.11 Settings
 
-The client Settings page only: chip shown, chip hidden in combat, minimap button, tooltip
-verdicts, chat badges, broadcast my snapshot, auto-save on logout, `/fs` command list. Five
-switches and a list; no "advanced detail" mode.
+The client Settings page only (L3.5): six switches, "Show the chip" (either way it clears a
+right-click hide), "Hide the chip in combat" (off fades it to 25 %), "Show the minimap button"
+(live), "Gear tips on item tooltips", "Share my build with my guild" (off sends no hello and
+answers no snapshot request) and "Save my character for the companion, the small app on your
+PC" (the logout save the outbox reads), each with one muted hint line; the `/fs` command list
+(`L.settingsCommands`, the same list `/fs help` prints); Reset positions (the chip, the minimap
+button and the build dialog move at once through `Prefs.onReset`); and at the foot "Data for
+this client: current" or "Data for this client: an older patch; update the addon", no build
+numbers. Guild badges get their switch with L4.4; no "advanced detail" mode, and no chat switch.
+The minimap button and the addon compartment entry open the build dialog on a left click and
+this page on a right click (the command list where the client cannot open it).
 
 ## 5. Loops
 

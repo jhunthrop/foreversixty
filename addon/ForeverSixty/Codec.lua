@@ -672,6 +672,7 @@ local function compareBuilds(left, right)
 	end
 	return 0
 end
+Codec.compareBuilds = compareBuilds
 
 --- An order reconstructed from a final tree, lowest tier first, left to
 --- right. The same rule the site's `orderFromRanks` uses, and the reason the

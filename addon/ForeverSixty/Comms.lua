@@ -20,6 +20,7 @@ local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local Progress = ns.Progress or require("Progress")
 local Score = ns.Score or require("Score")
+local Prefs = ns.Prefs or require("Prefs")
 
 local Comms = {}
 
@@ -339,9 +340,18 @@ function Comms.helloFields()
 	return fields
 end
 
+--- Whether "Share my build with my guild" is on: off, no hello goes and no snapshot
+--- request is answered.
+function Comms.sharing()
+	return Prefs.flag("broadcast") ~= false
+end
+
 --- Say hello on GUILD: at login and when the talents change, at most once a minute.
---- True when sent, else false and why.
+--- True when sent, else false and why (the switch first: off sends nothing).
 function Comms.hello()
+	if not Comms.sharing() then
+		return false, L.commsSharingOff
+	end
 	return Comms.send("hello", Comms.helloFields(), "GUILD")
 end
 
@@ -419,6 +429,9 @@ local function protect(action, ...)
 end
 
 local function answerSnapshot(channel)
+	if not Comms.sharing() then
+		return
+	end
 	Comms.send("snapshot!", Comms.helloFields(), channel)
 end
 

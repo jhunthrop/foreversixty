@@ -111,6 +111,16 @@ function Compat.globalString(name)
 	return type(value) == "string" and value or nil
 end
 
+--- The client's patch ("1.60.1", GetBuildInfo's first answer), or nil where it cannot say.
+function Compat.clientVersion()
+	local fn = _G.GetBuildInfo
+	if type(fn) ~= "function" then
+		return nil
+	end
+	local ok, version = pcall(fn)
+	return ok and type(version) == "string" and version ~= "" and version or nil
+end
+
 --- The client's own name for its region ("US"), or nil where it has none.
 function Compat.regionName()
 	local fn = _G.GetCurrentRegionName

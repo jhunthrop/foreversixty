@@ -11,26 +11,14 @@ local SITE = "foreversixty.gg"
 local L = {
 	-- Chrome
 	addonName = "Forever Sixty",
-	-- Bare /fs: the commands a player uses, a few words each (L3.1 fix round 1).
-	slashHintLines = {
-		"/fs: paste a build or copy your character",
+	-- The player's commands, a few words each. One list: /fs help, an unknown /fs command
+	-- and the Settings page all print it (Options.helpLines, L3.5 ruling 3).
+	settingsCommands = {
+		"/fs: paste or copy a build",
+		"/fs copy: copy my character for the site",
 		"/fs chip: show or hide the chip",
 		"/fs inspect: gear and talents of your target",
 		"/fs diag: what is not working",
-		"/fs help: every command",
-	},
-	-- /fs help: every command.
-	slashHelpLines = {
-		"/fs: paste a build or copy your character",
-		"/fs copy: copy your character for the site",
-		"/fs chip: show or hide the chip",
-		"/fs inspect: gear and talents of your target, or your whole group",
-		"/fs diag: what is not working",
-		"/fs diag verbose: also what the addon found out about this client",
-		"/fs inbox: how many builds the site sent you",
-		"/fs hello: say hello to your guild's Forever Sixty players",
-		"/fs seen: who said hello in the last hour",
-		"/fs record on, off, status or clear: record a fight for the simulator",
 		"/fs help: every command",
 	},
 	dataBuild = "Data build: %s",
@@ -56,7 +44,7 @@ local L = {
 	diagNoTalentButton = "No talent button matched the next point; the chip still names it.",
 	diagTalentTabUnknown = "This client does not say which talent tab is open; "
 		.. "the glow may be on the wrong tree.",
-	diagNoSettingsPanel = "This client has no options panel API; use /fs settings.",
+	diagNoSettingsPanel = "This client has no Settings page API; right-click prints the commands instead.",
 	diagTalentFrame = "Talent window found: %s (%s mapping)",
 	diagTalentButton = "Glow on button %s, width %.1f, shown %s",
 	-- The talent marks' render check (spec section 2.4): how many of the
@@ -282,25 +270,32 @@ local L = {
 	recorderSchema = "The saved record is schema %s, this addon writes %s. /fs record clear discards it.",
 
 	-- Minimap
-	minimapLeftClick = "Left-click: open Forever Sixty",
+	minimapLeftClick = "Left-click: paste or copy a build",
 	minimapRightClick = "Right-click: settings",
 	minimapNoBuild = "No build loaded",
 
-	-- Settings
-	settingsTitle = "Settings",
-	settingsGroupScreen = "ON SCREEN",
-	settingsGroupData = "YOUR DATA",
-	settingsMinimapHint = "Left click opens this window.",
-	settingsAutoSaveHint = "The companion app reads this to keep your character on the site current.",
-	settingsChatHint = "Off by default: the window already shows it.",
-	settingsTooltipHint = "On any item: whether your build plans it, and whether it beats what you wear.",
+	-- The Settings page (spec section 4.11, L3.5): six switches, each with one plain hint
+	-- line; the command list; Reset positions; the data-build line at the foot, which never
+	-- prints a build number.
+	settingsChipShown = "Show the chip",
+	settingsChipShownHint = "The small square beside the minimap with your next step.",
+	settingsCombatHide = "Hide the chip in combat",
+	settingsCombatHideHint = "Off: the chip stays in combat, faded, and ignores the mouse.",
 	settingsMinimap = "Show the minimap button",
-	settingsAutoSave = "Save my export when I log out",
-	settingsChat = "Print /fs answers in chat too",
+	settingsMinimapHint = "Left-click pastes or copies a build; right-click opens this page.",
+	settingsTooltip = "Gear tips on item tooltips",
+	settingsTooltipHint = "On any item: whether your build plans it, and whether it beats what you wear.",
+	settingsBroadcast = "Share my build with my guild",
+	settingsBroadcastHint = "Guildmates with Forever Sixty see your level, spec and build. Off sends nothing.",
+	settingsAutoSave = "Save my character for the companion, the small app on your PC",
+	settingsAutoSaveHint = "Saved when you log out; the companion sends it to " .. SITE .. ".",
+	settingsCommandsHeading = "Commands",
 	settingsReset = "Reset positions",
-	settingsAdvancedDetail = "Show advanced detail",
-	settingsAdvancedDetailHint = "Stat-weight breakdowns and rating components on every card, for a raider "
-		.. "who already knows what they mean.",
+	settingsResetHint = "The chip, the minimap button and the build dialog go back where they started.",
+	settingsDataCurrent = "Data for this client: current",
+	settingsDataOlder = "Data for this client: an older patch; update the addon",
+	diagSettingsDrawn = "The Settings page drew %d of its %d controls.",
+	diagSettingsNoOpen = "This client did not open the Settings page; right-click prints the commands instead.",
 	-- The Overview page.
 	overviewBuildEyebrow = "YOUR BUILD",
 	overviewBuildNone = "No build loaded",
@@ -355,7 +350,6 @@ local L = {
 	minimapUpgrades = "%d upgrade(s) waiting",
 	bindingHeader = "Forever Sixty",
 	bindingToggle = "Toggle Forever Sixty",
-	settingsTooltip = "Show gear tips on item tooltips",
 	diagNoTooltipHook = "This client has no tooltip hook API; item tooltips will not show Forever Sixty's lines.",
 	diagCompartmentFailed = "This client's addon compartment did not accept Forever Sixty; "
 		.. "the minimap button is used instead.",
@@ -634,6 +628,7 @@ local L = {
 	diagCommsFailed = "Answering another player's addon message failed and was skipped: %s",
 	diagCommsFailedCount = "Other players' messages that could not be handled: %d",
 	commsSent = "Hello sent to your guild.",
+	commsSharingOff = "Not sent: \"Share my build with my guild\" is off in the settings.",
 	commsUnknownKind = "Forever Sixty has no message of that kind.",
 	commsWrongChannel = "That message cannot go to %s.",
 	commsNoGuild = "You are not in a guild, so there is no one to say hello to.",

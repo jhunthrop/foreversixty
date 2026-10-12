@@ -231,6 +231,15 @@ Theme.SIZES = {
 	dialogGearRow = 14,
 	--- The gear rows' fixed slot column, before the icon and the name.
 	dialogSlotColumn = 72,
+	--- The Settings page (spec section 4.11, L3.5): a 44 px row per switch so the whole row
+	--- is a target; each hint wrapped to the canvas width minus its 40 px indent (and the right
+	--- padding); a muted line's pitch; the title's line; the width a canvas the client has not
+	--- sized yet is laid out at.
+	settingsRow = 44,
+	settingsHintInset = 40,
+	settingsLine = 18,
+	settingsTitle = 24,
+	settingsWidth = 600,
 }
 
 --- The client's own font objects, and what to use when one is missing.
@@ -279,6 +288,8 @@ Theme.MEDIA = {
 	--- The client's own round class icons (the target frame's), cut by
 	--- CLASS_ICON_TCOORDS: readable at 24 px where the crest art is not.
 	classIcons = "Interface\\TargetingFrame\\UI-Classes-Circles",
+	--- The client's own check mark, tinted dark on a switch's gold square (L3.5 ruling 2).
+	check = "Interface\\Buttons\\UI-CheckBox-Check",
 }
 
 --- The nine classes this addon ships a crest for (addon/tools/
@@ -479,6 +490,13 @@ Theme.CONTROL_STATES = {
 	secondary = { rest = "raised", hover = "hover", pressed = "inset" },
 	tab = { label = "muted", hoverLabel = "body", hoverUnderline = "border", pressed = "inset" },
 	close = { label = "muted", hoverLabel = "body", hoverGround = "hover", pressed = "inset" },
+	--- A Settings switch (L3.5): on, a gold square (goldHover under the cursor, goldPressed
+	--- held) with the check in onGold; off, a 1 px border outline, muted under the cursor, an
+	--- inset ground while held.
+	toggle = {
+		on = "gold", onHover = "goldHover", onPressed = "goldPressed", check = "onGold",
+		edge = "border", edgeHover = "muted", offPressed = "inset",
+	},
 }
 Theme.PRESSED_LABEL_DROP = 1
 
@@ -639,6 +657,15 @@ end
 
 function Theme.texture(parent, layer, hexKey, alpha)
 	return Theme.paint(parent:CreateTexture(nil, layer), hexKey, alpha)
+end
+
+--- One of the client's own textures (a Theme.MEDIA path) in a token's colour: the
+--- texture's white is multiplied by it, so a light glyph reads in that colour.
+function Theme.tinted(parent, layer, path, hexKey)
+	local texture = parent:CreateTexture(nil, layer)
+	texture:SetTexture(path)
+	texture:SetVertexColor(Theme.rgb(Theme.HEX[hexKey]))
+	return texture
 end
 
 --- A one-colour border drawn from four textures, which needs no template.
@@ -833,16 +860,33 @@ end
 --- Returns which way it went, and the handle to open it with later.
 function Theme.registerSettingsPanel(panel, name)
 	if Theme.hasSettingsApi() then
-		local category = Settings.RegisterCanvasLayoutCategory(panel, name)
-		Settings.RegisterAddOnCategory(category)
-		return "settings", category
-	end
-	if type(InterfaceOptions_AddCategory) == "function" then
-		InterfaceOptions_AddCategory(panel)
-		return "interface", panel
+		local ok, category = pcall(Settings.RegisterCanvasLayoutCategory, panel, name)
+		if ok and category ~= nil and pcall(Settings.RegisterAddOnCategory, category) then
+			return "settings", category
+		end
+	elseif type(InterfaceOptions_AddCategory) == "function" then
+		if pcall(InterfaceOptions_AddCategory, panel) then
+			return "interface", panel
+		end
 	end
 	Theme.note(L.diagNoSettingsPanel)
 	return nil, nil
+end
+
+--- Open the client's options on a panel registerSettingsPanel registered (`how` and
+--- `handle` are what it answered). True when the client took the call; never raises.
+function Theme.openSettingsPanel(how, handle)
+	if how == "settings" and type(Settings) == "table" and type(Settings.OpenToCategory) == "function" then
+		local id = handle
+		if type(handle) == "table" then
+			id = type(handle.GetID) == "function" and handle:GetID() or handle.ID
+		end
+		return id ~= nil and (pcall(Settings.OpenToCategory, id)) or false
+	end
+	if how == "interface" and type(InterfaceOptionsFrame_OpenToCategory) == "function" then
+		return (pcall(InterfaceOptionsFrame_OpenToCategory, handle))
+	end
+	return false
 end
 
 --- Register one event, recording rather than raising when the client has

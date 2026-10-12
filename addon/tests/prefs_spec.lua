@@ -32,8 +32,8 @@ describe("Prefs", function()
 	end)
 
 	it("keeps a value the player already chose", function()
-		local ui = Prefs.withDefaults({ chat = true, minimap = { angle = 45 } })
-		assert.is_true(ui.chat)
+		local ui = Prefs.withDefaults({ tooltip = false, minimap = { angle = 45 } })
+		assert.is_false(ui.tooltip)
 		assert.are.equal(45, ui.minimap.angle)
 	end)
 
@@ -47,8 +47,8 @@ describe("Prefs", function()
 	it("replaces a saved value of the wrong type with the default", function()
 		-- An older or hand-edited saved table must never reach a caller as
 		-- the wrong type; that is what turns a pref read into a Lua error.
-		local ui = Prefs.withDefaults({ chat = "yes", chip = 7 })
-		assert.is_false(ui.chat)
+		local ui = Prefs.withDefaults({ tooltip = "yes", chip = 7 })
+		assert.is_true(ui.tooltip)
 		assert.are.equal(Prefs.DEFAULTS.chip.point, ui.chip.point)
 	end)
 
@@ -84,10 +84,10 @@ describe("Prefs", function()
 	end)
 
 	it("round-trips a flag, including false", function()
-		Prefs.setFlag("chat", true)
-		assert.is_true(Prefs.flag("chat"))
-		Prefs.setFlag("chat", false)
-		assert.is_false(Prefs.flag("chat"))
+		Prefs.setFlag("autoSave", false)
+		assert.is_false(Prefs.flag("autoSave"))
+		Prefs.setFlag("autoSave", true)
+		assert.is_true(Prefs.flag("autoSave"))
 	end)
 
 	it("round-trips a field inside a section", function()
@@ -127,7 +127,7 @@ describe("Prefs", function()
 		-- handler holding `local chip = Prefs.get("chip")`) must still
 		-- write into the live table after any other accessor call.
 		local chip = Prefs.get("chip")
-		Prefs.setFlag("chat", true)
+		Prefs.setFlag("autoSave", false)
 		assert.are.equal(chip, Prefs.get("chip"))
 		chip.x = 42
 		assert.are.equal(42, Prefs.get("chip", "x"))
@@ -211,7 +211,7 @@ describe("Prefs, the v2 keys", function()
 
 	it("keeps the old keys the surfaces still read", function()
 		local ui = Prefs.withDefaults(nil)
-		for _, key in ipairs({ "chip", "minimap", "tooltip", "autoSave", "chat", "advancedDetail" }) do
+		for _, key in ipairs({ "chip", "minimap", "tooltip", "autoSave", "advancedDetail" }) do
 			assert.is_not_nil(ui[key], key)
 		end
 	end)

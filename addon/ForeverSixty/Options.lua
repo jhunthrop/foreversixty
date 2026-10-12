@@ -28,6 +28,7 @@ local Chip = ns.Chip or require("Chip")
 local TalentMarks = ns.TalentMarks or require("TalentMarks")
 local Score = ns.Score or require("Score")
 local BuildDialog = ns.BuildDialog or require("BuildDialog")
+local SettingsPage = ns.SettingsPage or require("Settings")
 
 local Options = {}
 Options.data = Data
@@ -98,6 +99,12 @@ local function copy(lines)
 	return out
 end
 
+--- The player's commands: what /fs help and an unknown command print, and the list on the
+--- Settings page. One Locale table (L.settingsCommands), handed out as a copy.
+function Options.helpLines()
+	return copy(L.settingsCommands)
+end
+
 function Options.handle(input)
 	local command, rest = (input or ""):match("^(%S*)%s*(.*)$")
 	if command == "" or command == "copy" then
@@ -115,7 +122,7 @@ function Options.handle(input)
 	elseif command == "record" then
 		return Recorder.command(rest)
 	elseif command == "help" then
-		return copy(L.slashHelpLines)
+		return Options.helpLines()
 	elseif command == "chip" then
 		return { Chip.toggle() }
 	elseif command == "hello" then
@@ -153,7 +160,7 @@ function Options.handle(input)
 		return Theme.diagReport(broken, surfaces, info)
 	end
 	-- Anything /fs does not know: the player's commands.
-	return copy(L.slashHintLines)
+	return Options.helpLines()
 end
 
 --- Names (Inspect.keyOf) /fs inspect asked about and has not yet printed: only these are
@@ -201,14 +208,24 @@ function Options.run(input)
 	return lines
 end
 
---- Print the command list: an unknown /fs command, the build dialog's fallback when it
---- cannot show itself, and the minimap button's right-click until L3.5's Settings page.
+--- Print the command list: the build dialog's fallback when it cannot show itself, and the
+--- launcher's right-click on a client whose Settings page cannot open.
 function Options.showHint()
-	local lines = copy(L.slashHintLines)
+	local lines = Options.helpLines()
 	for _, line in ipairs(lines) do
 		Theme.say(line)
 	end
 	return lines
+end
+
+--- The launcher's right-click: the Settings page, or the command list where this client
+--- cannot open it. True when the page opened.
+function Options.openSettings()
+	if SettingsPage.open() then
+		return true
+	end
+	Options.showHint()
+	return false
 end
 
 --- Redraw every surface for `data`: the chip and the talent marks (which draw the
@@ -320,6 +337,9 @@ function Options.onEvent(_, event, ...)
 		MinimapButton.data = Options.data
 		MinimapButton.refresh()
 		MinimapButton.registerCompartment()
+		-- The Settings canvas: registered empty now, built the first time the client shows it.
+		SettingsPage.data = Options.data
+		SettingsPage.register()
 		Theme.registerAddonPrefix(Comms.PREFIX)
 		Options.sayHello()
 	end
@@ -365,12 +385,21 @@ function Options.register()
 
 	ItemTooltip.data = Options.data
 	ItemTooltip.register()
-	-- The minimap button and the compartment entry open the build dialog on its paste tab.
+	-- The minimap button and the compartment entry: left-click opens the build dialog on its
+	-- paste tab, right-click the Settings page (the command list where it cannot open).
 	MinimapButton.open = function()
 		BuildDialog.data = Options.data
 		BuildDialog.open("paste")
 	end
-	MinimapButton.openSettings = Options.showHint
+	MinimapButton.openSettings = Options.openSettings
+	-- A Settings switch redraws every surface; turning sharing on says hello at once.
+	SettingsPage.data = Options.data
+	SettingsPage.afterChange = function(key, value)
+		Options.refreshSurfaces(Options.data)
+		if key == "broadcast" and value then
+			Options.sayHello()
+		end
+	end
 	BuildDialog.data = Options.data
 	BuildDialog.fallback = Options.showHint
 	BuildDialog.afterUse = function()

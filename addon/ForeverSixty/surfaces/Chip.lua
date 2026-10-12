@@ -964,6 +964,11 @@ function Chip.place()
 	return "fallback"
 end
 
+-- Reset positions moves the chip at once, without a reload (L3.5 ruling 4).
+Prefs.onReset[#Prefs.onReset + 1] = function()
+	Chip.place()
+end
+
 --- After a shift-drag: the chip's top-right corner against UIParent's, so it
 --- keeps growing leftwards from where the player put it.
 function Chip.savePosition()

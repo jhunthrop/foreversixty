@@ -55,14 +55,28 @@ function MinimapButton.angleAt(x, y)
 	return math.deg(atan2(y, x)) % 360
 end
 
+--- The two click hints every launcher tooltip ends with, muted like the chip's hints:
+--- left opens the build dialog, right the Settings page (L3.5 ruling 5).
+function MinimapButton.hintLines()
+	return {
+		Theme.inlineColor("tooltipMuted", L.minimapLeftClick),
+		Theme.inlineColor("tooltipMuted", L.minimapRightClick),
+	}
+end
+
+local function withHints(lines)
+	for _, hint in ipairs(MinimapButton.hintLines()) do
+		lines[#lines + 1] = hint
+	end
+	return lines
+end
+
 function MinimapButton.tooltipLines()
 	local build = Follow.build
 	local lines = { L.addonName }
 	if build == nil then
 		lines[#lines + 1] = L.minimapNoBuild
-		lines[#lines + 1] = L.minimapLeftClick
-		lines[#lines + 1] = L.minimapRightClick
-		return lines
+		return withHints(lines)
 	end
 	lines[#lines + 1] = Follow.buildName(MinimapButton.data, build)
 	if MinimapButton.data ~= nil then
@@ -75,9 +89,7 @@ function MinimapButton.tooltipLines()
 			lines[#lines + 1] = string.format(L.minimapUpgrades, #upgrades)
 		end
 	end
-	lines[#lines + 1] = L.minimapLeftClick
-	lines[#lines + 1] = L.minimapRightClick
-	return lines
+	return withHints(lines)
 end
 
 function MinimapButton.place(angle)
@@ -101,7 +113,9 @@ function MinimapButton.onUpdate(button)
 	return button
 end
 
-local function onClick(_, mouseButton)
+--- Left opens the build dialog, right the Settings page: the two injection points Options
+--- fills (nothing happens before it has).
+local function launch(mouseButton)
 	if mouseButton == "RightButton" then
 		if MinimapButton.openSettings ~= nil then
 			MinimapButton.openSettings()
@@ -111,6 +125,32 @@ local function onClick(_, mouseButton)
 	if MinimapButton.open ~= nil then
 		MinimapButton.open()
 	end
+end
+
+local function onClick(_, mouseButton)
+	launch(mouseButton)
+end
+
+--- Which mouse button a compartment click was, from whatever the client hands its `func`:
+--- the TOC form passes ("ForeverSixty", "RightButton"), the dropdown form (self, arg1,
+--- arg2, checked, "RightButton"), the menu form (button, { buttonName = "RightButton" },
+--- menu). Anything else is a left click. Pure.
+function MinimapButton.clickedButton(...)
+	for index = 1, select("#", ...) do
+		local value = select(index, ...)
+		if value == "RightButton" or value == "LeftButton" then
+			return value
+		end
+		if type(value) == "table" and (value.buttonName == "RightButton" or value.buttonName == "LeftButton") then
+			return value.buttonName
+		end
+	end
+	return "LeftButton"
+end
+
+--- The compartment entry's click: the minimap button's own two actions.
+function MinimapButton.onCompartmentClick(...)
+	launch(MinimapButton.clickedButton(...))
 end
 
 local function wire(button)
@@ -208,10 +248,16 @@ function MinimapButton.registerCompartment()
 		text = L.addonName,
 		icon = Theme.MEDIA.minimapIcon,
 		notCheckable = true,
-		func = function()
-			if MinimapButton.open ~= nil then
-				MinimapButton.open()
+		-- The dropdown form only passes a right-click on with this set.
+		registerForAnyClick = true,
+		func = MinimapButton.onCompartmentClick,
+		funcOnEnter = function(owner)
+			if type(owner) == "table" then
+				Theme.showLines(owner, MinimapButton.tooltipLines())
 			end
+		end,
+		funcOnLeave = function()
+			Theme.hideTooltip()
 		end,
 	})
 	MinimapButton.compartmentRegistered = ok
@@ -219,6 +265,11 @@ function MinimapButton.registerCompartment()
 		Theme.note(L.diagCompartmentFailed)
 	end
 	return ok
+end
+
+-- Reset positions puts the button back on its default angle at once (L3.5 ruling 4).
+Prefs.onReset[#Prefs.onReset + 1] = function()
+	MinimapButton.refresh()
 end
 
 ns.Minimap = MinimapButton

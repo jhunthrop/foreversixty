@@ -562,27 +562,85 @@ function Widgets.List:Refresh()
 	return self
 end
 
-function Widgets.toggle(parent, text, checked, onChange)
-	local frame = CreateFrame("Button", nil, parent)
-	frame:SetSize(Theme.SIZES.buttonWidth, Theme.SIZES.rowHeight)
-	local box = Theme.texture(frame, "ARTWORK", "border")
-	box:SetSize(Theme.SIZES.iconSize, Theme.SIZES.iconSize)
-	box:SetPoint("LEFT", frame, "LEFT", 0, 0)
-	local tick = Theme.texture(frame, "OVERLAY", "gold")
-	tick:SetSize(Theme.SIZES.iconSize - Theme.SIZES.gap, Theme.SIZES.iconSize - Theme.SIZES.gap)
-	tick:SetPoint("CENTER", box, "CENTER", 0, 0)
-	local label = Widgets.label(frame, text, "body", "small")
-	label:SetPoint("LEFT", box, "RIGHT", Theme.SIZES.gap, 0)
-	local toggle = { frame = frame, box = box, tick = tick, label = label }
+--- How far right of a switch's left edge its label and hint start: the square and a gap.
+function Widgets.toggleIndent()
+	return Theme.SIZES.iconSize + Theme.SIZES.gap * 2
+end
+
+--- A switch (L3.5 ruling 2): on, a gold square with the client's check mark tinted dark on
+--- it; off, a 1 px border outline. With a `hint`, a row Theme.SIZES.settingsRow high (the
+--- whole row is the target): the label in body, the hint muted under it, wrapped at
+--- `hintWidth`. Hover and pressed come from Theme.CONTROL_STATES.toggle. `onChange` gets
+--- the new value.
+function Widgets.toggle(parent, text, checked, onChange, hint, hintWidth)
+	local S = Theme.SIZES
+	local states = Theme.CONTROL_STATES.toggle
+	local indent = Widgets.toggleIndent()
+	local frame = Theme.createFrame("Button", nil, parent)
+	local box = CreateFrame("Frame", nil, frame)
+	box:SetSize(S.iconSize, S.iconSize)
+	local fill = Theme.texture(box, "ARTWORK", states.on)
+	fill:SetAllPoints(box)
+	local edges = Theme.outline(box, S.border, states.edge)
+	local tick = Theme.tinted(box, "OVERLAY", Theme.MEDIA.check, states.check)
+	tick:SetAllPoints(box)
+	local label = Widgets.label(frame, text, "body", hint ~= nil and "normal" or "small")
+	local toggle = { frame = frame, box = box, fill = fill, edges = edges, tick = tick, label = label }
+	if hint ~= nil then
+		frame:SetSize(indent + (hintWidth or S.buttonWidth), S.settingsRow)
+		box:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -S.gap)
+		label:SetPoint("TOPLEFT", frame, "TOPLEFT", indent, -S.gap)
+		local hintLabel = Widgets.label(frame, hint, "muted", "small")
+		hintLabel:SetPoint("TOPLEFT", label, "BOTTOMLEFT", 0, -S.gap)
+		hintLabel:SetWidth(hintWidth or S.buttonWidth)
+		toggle.hint = hintLabel
+	else
+		frame:SetSize(S.buttonWidth, S.rowHeight)
+		box:SetPoint("LEFT", frame, "LEFT", 0, 0)
+		label:SetPoint("LEFT", box, "RIGHT", S.gap, 0)
+	end
+	--- Paint the square for its value and the cursor: "rest", "hover" or "pressed".
+	local function paint(look)
+		if toggle.checked then
+			local key = look == "pressed" and states.onPressed or look == "hover" and states.onHover or states.on
+			Theme.paint(fill, key)
+			fill:Show()
+			tick:Show()
+			for _, edge in ipairs(edges) do
+				Theme.paint(edge, key)
+			end
+		else
+			tick:Hide()
+			if look == "pressed" then
+				Theme.paint(fill, states.offPressed)
+				fill:Show()
+			else
+				fill:Hide()
+			end
+			for _, edge in ipairs(edges) do
+				Theme.paint(edge, look == "rest" and states.edge or states.edgeHover)
+			end
+		end
+	end
 	function toggle:SetChecked(value)
 		self.checked = value and true or false
-		if self.checked then
-			self.tick:Show()
-		else
-			self.tick:Hide()
-		end
+		paint(self.over and "hover" or "rest")
 		return self.checked
 	end
+	frame:SetScript("OnEnter", function()
+		toggle.over = true
+		paint("hover")
+	end)
+	frame:SetScript("OnLeave", function()
+		toggle.over = false
+		paint("rest")
+	end)
+	Theme.pressable(frame, label, function()
+		paint("pressed")
+	end, function(_, over)
+		toggle.over = over
+		paint(over and "hover" or "rest")
+	end)
 	frame:SetScript("OnClick", function()
 		onChange(toggle:SetChecked(not toggle.checked))
 	end)
