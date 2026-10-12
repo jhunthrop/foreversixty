@@ -89,6 +89,12 @@ func main() {
 				os.Exit(1)
 			}
 			return
+		case rating.RerateFlaggedJobCommand:
+			if err := runRerateFlagged(context.Background(), log); err != nil {
+				log.Error(rating.RerateFlaggedJobCommand, "err", err)
+				os.Exit(1)
+			}
+			return
 		case dataaddon.JobCommand:
 			if err := runDataAddon(context.Background(), log); err != nil {
 				log.Error(dataaddon.JobCommand, "err", err)
@@ -282,6 +288,31 @@ func runRatingBackfill(ctx context.Context, log *slog.Logger) error {
 		return err
 	}
 	log.Info(rating.BackfillJobCommand, "recomputed", n)
+	return nil
+}
+
+// runRerateFlagged is the on-demand Cloud Run job that brings the stored Forever Score back
+// into line once reports are flagged (rating.RerateFlagged): every character with a rated row
+// in a flagged report has its newest clean fight re-rated and its score rolled up again.
+// Idempotent, so it is safe to run again or on a schedule.
+func runRerateFlagged(ctx context.Context, log *slog.Logger) error {
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	client := objects(cfg, log)
+	if client == nil {
+		return fmt.Errorf("%s needs R2 credentials", rating.RerateFlaggedJobCommand)
+	}
+	c, err := rating.RerateFlagged(ctx, rating.BackfillDeps{
+		Store: &rating.Store{Pool: pool, Log: log}, Summaries: client, Log: log,
+	})
+	if err != nil {
+		return err
+	}
+	log.Info(rating.RerateFlaggedJobCommand, "characters", c.Characters, "fights", c.Fights,
+		"rerated", c.Rerated, "failed", c.Failed)
 	return nil
 }
 

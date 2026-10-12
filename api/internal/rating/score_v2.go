@@ -28,7 +28,10 @@ package rating
 // each UTC date), with one gap: the backfill job re-rates a fight by withdrawing and
 // rewriting its rows and does not roll up, so a backfill-re-rated row has NULL snapshot
 // columns and is left out of the history (a date keeps a point only while one of its fights
-// still carries a snapshot). ScoreV2 itself never reads the snapshot; it always computes from what is stored now.
+// still carries a snapshot). The one re-rate that does roll up is RerateFlagged (backfill.go),
+// run once reports are flagged: it re-rates each affected character's newest clean fight and
+// rolls the score, now without the flagged report, back onto it. ScoreV2 itself never reads
+// the snapshot; it always computes from what is stored now.
 
 import (
 	"context"
@@ -137,7 +140,7 @@ func dataSpecSlug(class, spec string) string {
 // (api/internal/guilds/readiness_core.go's enchantableSlots).
 var disciplineEnchantSlots = []int{4, 7, 14, 15}
 
-// ErrNoLogs is the answer for a character with no rated fight in a public report. It is
+// ErrNoLogs is the answer for a character with no rated fight in a public, unflagged report. It is
 // never a zero score: the addon shows "no logs yet" and the site shows no score.
 var ErrNoLogs = errors.New("rating: no logs")
 
@@ -179,7 +182,11 @@ type ScoreV2 struct {
 // ScoreV2 computes characterKey's Forever Score from what is stored now. Only fights in
 // public reports count toward the score's own fights (the rating endpoints' rule, spec
 // docs/superpowers/specs/2026-09-21-performance-rating-design.md §5.1); experience and
-// attendance count every report that is not private, since they publish only counts.
+// attendance count every report that is not private, since they publish only counts. No
+// input ever reads a flagged report (tampered or unverified): every reader below selects its
+// reports through presence.EvidenceReport, the rule the guild's attendance and log
+// verification share, so a forged report cannot raise a score. A flagged report's own rated
+// rows stay stored (withdrawing them is the moderation flow's job) and are never read.
 func (s *Store) ScoreV2(ctx context.Context, characterKey string) (ScoreV2, error) {
 	var in characterInputs
 	var err error
@@ -311,7 +318,7 @@ func (s *Store) ratedFights(ctx context.Context, key string) (ratedFightSummary,
 		        (array_agg(rs.class order by rs.fought_at desc) filter (where coalesce(rs.spec, '') <> ''))[1],
 		        (array_agg(rs.spec order by rs.fought_at desc) filter (where coalesce(rs.spec, '') <> ''))[1]
 		 from rating_scores rs join reports r on r.id = rs.report_id
-		 where rs.player_key = $1 and r.visibility = 'public'`, key).
+		 where rs.player_key = $1 and r.visibility = 'public' and `+presence.EvidenceReport("r"), key).
 		Scan(&out.count, &newest, &out.disciplineKnown, &out.disciplineFull, &class, &spec)
 	if err != nil {
 		return ratedFightSummary{}, fmt.Errorf("rating: rated fights of %s: %w", key, err)
@@ -388,14 +395,15 @@ func (s *Store) ItemLevel(ctx context.Context, key string) (int, error) {
 }
 
 // itemLevel is the Battle.net capture's equipped item level, else the newest ranked
-// fight's, else 0.
+// fight's in a report that is evidence (presence.EvidenceReport), else 0.
 func (s *Store) itemLevel(ctx context.Context, key string) (int, error) {
 	var ilvl int
 	err := s.Pool.QueryRow(ctx,
 		`select coalesce(
 		   (select equipped_item_level from characters where key = $1),
-		   (select ilvl from fight_metrics where player_key = $1 and ilvl is not null
-		     order by fought_at desc limit 1),
+		   (select m.ilvl from fight_metrics m join reports r on r.id = m.report_id
+		     where m.player_key = $1 and m.ilvl is not null and `+presence.EvidenceReport("r")+`
+		     order by m.fought_at desc limit 1),
 		   0)`, key).Scan(&ilvl)
 	if err != nil {
 		return 0, fmt.Errorf("rating: item level of %s: %w", key, err)
@@ -404,7 +412,8 @@ func (s *Store) itemLevel(ctx context.Context, key string) (int, error) {
 }
 
 // experience counts across the account's linked characters (character.LinkedCharacters,
-// the characters GET /v1/me lists); a character no account owns counts alone.
+// the characters GET /v1/me lists); a character no account owns counts alone. A kill counts
+// from a report that is evidence (presence.EvidenceReport): not private, not flagged.
 //
 // Dungeons is always 0 today: nothing stored says which logged instance is a dungeon (the
 // fights and reports tables carry an encounter id and a free-text zone, and the build
@@ -436,10 +445,10 @@ func (s *Store) experience(ctx context.Context, key string) (ScoreExperience, er
 	err = s.Pool.QueryRow(ctx,
 		`select count(distinct encounter_id) from (
 		   select m.encounter_id from fight_metrics m join reports r on r.id = m.report_id
-		    where m.player_key = any($1) and m.kill and m.state <> 'removed' and r.visibility <> 'private'
+		    where m.player_key = any($1) and m.kill and m.state <> 'removed' and `+presence.EvidenceReport("r")+`
 		   union
 		   select rs.encounter_id from rating_scores rs join reports r on r.id = rs.report_id
-		    where rs.player_key = any($1) and rs.kill and r.visibility <> 'private'
+		    where rs.player_key = any($1) and rs.kill and `+presence.EvidenceReport("r")+`
 		 ) kills where coalesce(encounter_id, 0) <> 0`, keys).Scan(&out.RaidKills)
 	if err != nil {
 		return out, fmt.Errorf("rating: raid kills of %s: %w", key, err)
@@ -449,7 +458,8 @@ func (s *Store) experience(ctx context.Context, key string) (ScoreExperience, er
 
 // meanBestParse is the mean of the character's best parse percentile per boss, as the
 // rankings character page places them (rankings.Store.CharacterFights' best[], the page's
-// own bests without its anonymise check, identity or score history); 0 with none.
+// own bests without its anonymise check, identity or score history, read from reports that
+// are evidence: presence.EvidenceReport); 0 with none.
 func (s *Store) meanBestParse(ctx context.Context, key string) (float64, error) {
 	parts := strings.SplitN(key, "/", 3)
 	if len(parts) != 3 {
@@ -475,7 +485,8 @@ func (s *Store) meanBestParse(ctx context.Context, key string) (float64, error) 
 
 // guildNights counts the nights of the character's verified guild since since and how
 // many of them the character was at. A night is a UTC date on which one of the guild's
-// reports that is not private has a fight (fights.start_ms, the fight's own fought_at); the
+// reports that is evidence - not private and not flagged (presence.EvidenceReport) - has a
+// fight (fights.start_ms, the fight's own fought_at); the
 // character was at it when it has a rated or ranked row in one of those reports fought on
 // that date (presence.In, the one reader of presence the guild's attendance shares). No
 // verified guild is no nights.
@@ -483,7 +494,7 @@ func (s *Store) guildNights(ctx context.Context, key string, since time.Time) (n
 	rows, err := s.Pool.Query(ctx,
 		`select r.id from reports r
 		 join guild_characters gc on gc.guild_id = r.guild_id
-		 where gc.character_key = $1 and gc.verified_at is not null and r.visibility <> 'private'`, key)
+		 where gc.character_key = $1 and gc.verified_at is not null and `+presence.EvidenceReport("r"), key)
 	if err != nil {
 		return 0, 0, fmt.Errorf("rating: guild nights of %s: %w", key, err)
 	}

@@ -264,6 +264,21 @@ version:
 
     gcloud run jobs execute rating-backfill --region us-east1 --wait
 
+`rating-rerate-flagged` brings the stored Forever Score back into line once reports are
+flagged (tampered or unverified). The score never reads a flagged report, but the snapshot
+the rater rolled onto a character's fights may have counted it. The job finds every character
+with a rated row in a flagged report, re-rates that character's newest clean fight through the
+backfill's own path and rolls the score up onto it again. It logs how many characters and
+fights it found, re-rated and failed. It is idempotent, so run it after the deploy that
+carries it and again whenever reports are flagged (or schedule it):
+
+    gcloud run jobs create rating-rerate-flagged \
+      --image <the API image> --region us-east1 --args rating-rerate-flagged \
+      --cpu 2 --memory 2Gi --task-timeout 60m \
+      --set-env-vars "$(tr '\n' ',' < .env.job)"
+
+    gcloud run jobs execute rating-rerate-flagged --region us-east1 --wait
+
 ### The data-addon job
 
 `data-addon` (`api/internal/dataaddon`) aggregates every public rated character's last 90

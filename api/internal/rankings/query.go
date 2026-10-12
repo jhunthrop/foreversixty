@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // PerPage is the fixed page size the contract sets.
@@ -408,7 +410,9 @@ func (s *Store) Character(ctx context.Context, region, ruleset, name string) (Ch
 
 // CharacterFights is the fights half of a character page: its name and class, bests,
 // history and builds seen, with no anonymise check and no identity or score history. The
-// Forever Score's parses component reads its bests (rating.Store.meanBestParse). It
+// Forever Score's parses component reads its bests (rating.Store.meanBestParse). Its rows
+// come from reports that are evidence (presence.EvidenceReport): a flagged report's rows,
+// which the moderation flow withdraws, are never shown or scored meanwhile. It
 // reports false when the character has no ranked fights and no row of their own.
 func (s *Store) CharacterFights(ctx context.Context, region, ruleset, name string) (Character, bool, error) {
 	key := strings.ToLower(region) + "/" + strings.ToLower(ruleset) + "/" + strings.ToLower(name)
@@ -435,8 +439,8 @@ func (s *Store) CharacterFights(ctx context.Context, region, ruleset, name strin
 		        m.damage_taken, coalesce(m.spec, ''), coalesce(m.talent_split, ''),
 		        coalesce(m.duration_ms, 0), m.fought_at, m.report_id, m.fight_index,
 		        coalesce(m.class, ''), coalesce(m.phase, ''), m.execution_score
-		 from fight_metrics m
-		 where m.player_key = $1 and m.state <> 'removed'
+		 from fight_metrics m join reports r on r.id = m.report_id
+		 where m.player_key = $1 and m.state <> 'removed' and `+presence.EvidenceReport("r")+`
 		 order by m.fought_at desc limit $2`, key, HistoryLimit)
 	if err != nil {
 		return Character{}, false, fmt.Errorf("rankings: read character history: %w", err)

@@ -76,15 +76,16 @@ func (s *Store) enrichRoster(ctx context.Context, guildID int64, out []RosterRow
 }
 
 // attendanceReports is the attendance window: the guild's own last attendanceWindow reports
-// that are not private, not flagged (tampered or unverified) and carry evidence - at least
-// one ranked row (fight_metrics, not removed) or rated row (rating_scores) - newest first.
+// that are evidence (presence.EvidenceReport: not private, not flagged as tampered or
+// unverified) and carry at least one ranked row (fight_metrics, not removed) or rated row
+// (rating_scores), newest first.
 // Presence (presence.In) is read from those rows, so a night nobody can be present in (a
 // private, flagged or trash-only report, or one not ranked yet) is never everyone's
 // absence. Fewer when the guild has not logged that many yet.
 func (s *Store) attendanceReports(ctx context.Context, guildID int64) ([]string, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select r.id from reports r
-		where r.guild_id = $1 and r.visibility <> 'private' and r.flagged is null
+		where r.guild_id = $1 and `+presence.EvidenceReport("r")+`
 		  and (exists (select 1 from fight_metrics m where m.report_id = r.id and m.state <> 'removed')
 		       or exists (select 1 from rating_scores rs where rs.report_id = r.id))
 		order by r.created_at desc, r.id desc

@@ -140,7 +140,7 @@ func (s *Store) Raids(ctx context.Context, guildID, userID int64, verified bool,
 	       (select count(*) filter (where f.kill) from fights f where f.report_id = r.id),
 	       (select count(*) filter (where not f.kill) from fights f where f.report_id = r.id),
 	       coalesce((select sum(f.deaths) from fights f where f.report_id = r.id), 0),
-	       r.visibility <> 'private' and r.flagged is null
+	       ` + presence.EvidenceReport("r") + `
 	     from reports r
 	     where r.guild_id = $1 and ` + visibility
 	args := []any{guildID, userID}

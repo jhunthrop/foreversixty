@@ -64,7 +64,9 @@ unflagged (not tampered or unverified) and carry at least one such row, so a nig
 be present in (private, flagged, trash-only, or not ranked yet) is never everyone's absence
 (task L6.8). Verification by logs (`verified_by: "logs"`) and the moderator's
 `nights_in_others_reports` read the same presence in non-private, unflagged reports only, so
-they count unflagged, non-private boss fights: the same evidence the Forever Score trusts.
+they count unflagged, non-private boss fights: the same evidence the Forever Score trusts. The
+guild's readers and every score input pick their reports by one rule
+(`presence.EvidenceReport`), so a flagged report counts toward no score either (task L6.10).
 
 ## GET /v1/guilds/{id}/raids?limit=20&cursor=
 

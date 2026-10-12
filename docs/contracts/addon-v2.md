@@ -342,13 +342,22 @@ Notes for the reader:
   key is its name as `GetGuildInfo` returns it. Neither key carries the region (nor the guild
   key the ruleset), so two characters or guilds that would share one are both left out rather
   than one read as the other.
-- **Who is in the file.** Every character with a rated fight in a public report in the last 90
-  days, and every verified guild member, has a record; `rating.ScoreV2` alone decides which
-  kind: a score is a scored record, and a character with no rated fight in a public report
-  has a no-logs record, `{ score = nil, profile = ... }` plus `item_level` and `spec` when
+- **Flagged reports count for nothing.** A report the site flagged as tampered or unverified
+  is not evidence of anything a record says. The score's fights, `as_of`, `fights`,
+  experience, parses, attendance, discipline and `item_level` never read it, and neither does
+  `best_parses`. A character whose only rated fights are in flagged reports has no score, so it
+  gets a no-logs record. The site keeps a flagged report's rows until moderation withdraws
+  them but never reads them. When reports are flagged, a one-off job (`rating-rerate-flagged`)
+  re-rates the newest clean fight of every character in them, so the stored score history
+  ends on the score without the flagged report. The formula and its model version do not
+  change.
+- **Who is in the file.** Every character with a rated fight in a public, unflagged report in
+  the last 90 days, and every verified guild member, has a record; `rating.ScoreV2` alone
+  decides which kind: a score is a scored record, and a character with no rated fight in a
+  public, unflagged report has a no-logs record, `{ score = nil, profile = ... }` plus `item_level` and `spec` when
   they are known, and no `tier`, `as_of` or `components`: the addon shows "no logs yet",
   never a zero. A character whose account asked to be anonymous has no record and is in no
-  guild's `members`. `fights` is how many rated fights in public reports the score rests on
+  guild's `members`. `fights` is how many rated fights in public, unflagged reports the score rests on
   (not only the last 90 days'),
   and `best_parses` the best overall percentile per boss from the rated fights of the last 90
   days (an empty table when none is that recent). `item_level` and `spec` are absent when

@@ -819,7 +819,7 @@ components:
       description: >-
         One UTC date of score_history on GET /v1/characters/{region}/{ruleset}/{name}: the
         Forever Score the rater recorded on the last rated fight of that date. The list has one
-        point per date on which a rated fight in a public report landed, the newest 30 dates,
+        point per date on which a rated fight in a public, unflagged report landed, the newest 30 dates,
         oldest first; [] when there is none. Fights rated before the score's snapshot existed
         (migration 0035), or re-rated by the backfill, carry no snapshot and are left out.
       required: [date, score, tier]
@@ -954,10 +954,12 @@ components:
       type: object
       description: >-
         The Forever Score fields of GET /v1/characters/{region}/{ruleset}/{name}. Every field
-        is null when the character has no rated fight in a public report (an anonymised
-        character's page answers 404). The components sum to score; the ceilings are gear
-        500, experience 700, parses 600, attendance 200, discipline 100
-        (api/internal/rating/score_v2.go).
+        is null when the character has no rated fight in a public, unflagged report (an
+        anonymised character's page answers 404). The components sum to score; the ceilings
+        are gear 500, experience 700, parses 600, attendance 200, discipline 100
+        (api/internal/rating/score_v2.go). A report flagged as tampered or unverified counts
+        for nothing: no component, as_of or experience figure reads it, so a forged report
+        cannot raise a score.
       properties:
         score: { type: integer, nullable: true }
         tier:

@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // Store is every database read this job makes itself; the scores come from rating.Store.
@@ -16,9 +18,10 @@ type Store struct {
 
 // windowParses reads, for every character with a rated fight in the window, the best
 // overall percentile it has on each boss there: player_key -> boss name -> best overall.
-// A rated fight counts when its report is public and the engine did not mark the card
-// insufficient (migration 0023: an insufficient card's overall is a 0 that is not a score;
-// a NULL reads as sufficient, as every other read of the column does). The boss's name is
+// A rated fight counts when its report is public and not flagged (presence.EvidenceReport)
+// and the engine did not mark the card insufficient (migration 0023: an insufficient card's
+// overall is a 0 that is not a score; a NULL reads as sufficient, as every other read of the
+// column does). The boss's name is
 // the fight's own name, else the newest name any fight recorded for the encounter (the
 // rule the inbox's last_raid names bosses by); a fight with no name at all still puts the
 // character in the window but adds no boss. Anonymised characters are left out by the
@@ -33,7 +36,7 @@ func (s *Store) windowParses(ctx context.Context, since time.Time) (map[string]m
 		     from rating_scores rs
 		     join reports r on r.id = rs.report_id
 		     left join fights f on f.report_id = rs.report_id and f.fight_index = rs.fight_index
-		    where r.visibility = 'public' and rs.fought_at >= $1
+		    where r.visibility = 'public' and `+presence.EvidenceReport("r")+` and rs.fought_at >= $1
 		      and not coalesce(rs.insufficient, false)
 		 )
 		 select player_key, boss, max(coalesce(overall, 0))::float8

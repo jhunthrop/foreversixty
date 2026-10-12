@@ -11,6 +11,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // CharacterGuild is a character's verified guild membership as the character page shows it:
@@ -200,17 +201,17 @@ func (s *Store) raceName(dataBuild, slug string) string {
 // scoreHistory is the character's Forever Score over time, oldest first: one point per UTC
 // date on which a rated fight landed, each the snapshot the rater rolled up onto the last of
 // that date's fights (rating_scores.score and .tier, written by rating.Store.RollUpScores
-// since migration 0035), for the newest ScoreHistoryDates dates. Only fights in public
-// reports count, the rule ScoreV2's own fights follow. A fight with no snapshot (rated
-// before 0035, or re-rated by the backfill, which does not roll up) is left out, so a date
-// whose fights all lack one has no point. Empty, never nil.
+// since migration 0035), for the newest ScoreHistoryDates dates. Only fights in public,
+// unflagged reports count (presence.EvidenceReport), the rule ScoreV2's own fights follow.
+// A fight with no snapshot (rated before 0035, or re-rated by the backfill, which does not
+// roll up) is left out, so a date whose fights all lack one has no point. Empty, never nil.
 func (s *Store) scoreHistory(ctx context.Context, key string) ([]ScorePoint, error) {
 	rows, err := s.Pool.Query(ctx,
 		`select to_char(d, 'YYYY-MM-DD'), score, tier from (
 		   select distinct on ((rs.fought_at at time zone 'UTC')::date)
 		          (rs.fought_at at time zone 'UTC')::date as d, rs.score, rs.tier
 		     from rating_scores rs join reports r on r.id = rs.report_id
-		    where rs.player_key = $1 and r.visibility = 'public'
+		    where rs.player_key = $1 and r.visibility = 'public' and `+presence.EvidenceReport("r")+`
 		      and rs.score is not null and rs.tier is not null
 		    order by (rs.fought_at at time zone 'UTC')::date desc, rs.fought_at desc,
 		             rs.report_id desc, rs.fight_index desc

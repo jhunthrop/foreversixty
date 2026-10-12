@@ -13,6 +13,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
@@ -348,4 +349,39 @@ func consumablesOrEmpty(missed []string) []string {
 		return []string{}
 	}
 	return missed
+}
+
+// flaggedRerates lists every character with a rated row in a flagged report, each with its
+// newest rated fight in a public report that is evidence (presence.EvidenceReport), the
+// fight RerateFlagged re-rates; ReportID is "" for a character with no such fight. The region
+// and ruleset are the character key's own, the pair its rows were keyed under.
+func (s *Store) flaggedRerates(ctx context.Context) ([]staleFight, error) {
+	rows, err := s.Pool.Query(ctx,
+		`with affected as (
+		   select distinct rs.player_key from rating_scores rs join reports r on r.id = rs.report_id
+		    where r.flagged is not null
+		 )
+		 select split_part(a.player_key, '/', 1), split_part(a.player_key, '/', 2),
+		        coalesce(n.report_id, ''), coalesce(n.fight_index, 0), coalesce(n.fought_at, 'epoch')
+		   from affected a
+		   left join lateral (
+		     select rs.report_id, rs.fight_index, rs.fought_at
+		       from rating_scores rs join reports r on r.id = rs.report_id
+		      where rs.player_key = a.player_key and r.visibility = 'public' and `+presence.EvidenceReport("r")+`
+		      order by rs.fought_at desc, rs.report_id desc, rs.fight_index desc limit 1
+		   ) n on true
+		  order by a.player_key`)
+	if err != nil {
+		return nil, fmt.Errorf("rating: characters in flagged reports: %w", err)
+	}
+	defer rows.Close()
+	var out []staleFight
+	for rows.Next() {
+		var sf staleFight
+		if err := rows.Scan(&sf.Region, &sf.Ruleset, &sf.ReportID, &sf.FightIndex, &sf.FoughtAt); err != nil {
+			return nil, fmt.Errorf("rating: characters in flagged reports: %w", err)
+		}
+		out = append(out, sf)
+	}
+	return out, rows.Err()
 }

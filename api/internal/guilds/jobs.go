@@ -171,12 +171,12 @@ const logNightsToVerify = 2
 
 // logNights counts, per candidate character key (key -> the account that holds it), the
 // distinct report dates (reports.created_at's date) within the trailing 30 days on which a
-// report of guildID that is not private, not flagged (tampered or unverified) and not owned
-// by the candidate's own account, has the character present. Presence is presence.In - a
-// rated or ranked row read by the character's key, the same evidence the Forever Score
-// trusts - never fights.players, which holds the log's GUIDs. Those rows exist only for boss
-// fights in reports that are not private, so log evidence is an unflagged, non-private boss
-// fight. Candidates with no such date are absent from the result. q is the pool or the
+// report of guildID that is evidence (presence.EvidenceReport: not private, not flagged as
+// tampered or unverified) and not owned by the candidate's own account, has the character
+// present. Presence is presence.In - a rated or ranked row read by the character's key -
+// never fights.players, which holds the log's GUIDs. Those rows exist only for boss fights,
+// so log evidence is an unflagged, non-private boss fight: the same evidence the Forever
+// Score trusts, since every score input selects its reports through EvidenceReport too. Candidates with no such date are absent from the result. q is the pool or the
 // caller's transaction.
 func logNights(ctx context.Context, q character.Querier, guildID int64, candidates map[string]int64) (map[string]int, error) {
 	out := map[string]int{}
@@ -184,9 +184,9 @@ func logNights(ctx context.Context, q character.Querier, guildID int64, candidat
 		return out, nil
 	}
 	rows, err := q.Query(ctx, `
-		select id, owner_id, to_char(created_at::date, 'YYYY-MM-DD') from reports
-		where guild_id = $1 and visibility <> 'private' and flagged is null
-		  and created_at >= now() - interval '30 days'`, guildID)
+		select r.id, r.owner_id, to_char(r.created_at::date, 'YYYY-MM-DD') from reports r
+		where r.guild_id = $1 and `+presence.EvidenceReport("r")+`
+		  and r.created_at >= now() - interval '30 days'`, guildID)
 	if err != nil {
 		return nil, fmt.Errorf("log nights: %w", err)
 	}

@@ -125,3 +125,89 @@ func readSummary(ctx context.Context, get Getter, reportID string, index int) (s
 	}
 	return s, nil
 }
+
+// RerateFlaggedJobCommand is the Cloud Run job that brings the stored Forever Score back
+// into line after reports were flagged (RerateFlagged), dispatched beside BackfillJobCommand.
+const RerateFlaggedJobCommand = "rating-rerate-flagged"
+
+// RerateCounts is what one RerateFlagged run did, for its log line.
+type RerateCounts struct {
+	// Characters is how many characters have a rated row in a flagged report.
+	Characters int
+	// Fights is how many distinct fights were picked: each such character's newest rated
+	// fight in a public, unflagged report (a raid's whole roster usually shares one). A
+	// character with no such fight left has no score and nothing to roll it onto.
+	Fights int
+	// Rerated is how many of those fights were re-rated and rolled up; Failed how many could
+	// not be (each logged).
+	Rerated, Failed int
+}
+
+// RerateFlagged re-rates, through Backfill's own path (the fight's stored summary read back
+// out of the bucket, then RateFight), the newest rated fight in a public, unflagged report
+// of every character with a rated row in a flagged report, and rolls the fight's players'
+// Forever Scores up onto it (RollUpScores, the rater's own second step). The score's inputs
+// skip a flagged report (presence.EvidenceReport), so the score rolled up is the one without
+// it, and the snapshot the character page's score history ends on drops back. The model
+// version is not bumped: the formula is the same, only its inputs changed.
+//
+// It is idempotent: a second run picks the same fights and writes the same figures (the
+// score as it stands now). A flagged report's own rows are left in place, never read; older
+// snapshots, which recorded the score of their own day, are left as they were. The roll-up
+// writes the score as it stands now for every player of a picked fight, which is the
+// rater's own rule. A run with no bucket configured is a no-op, logged, as Backfill's is.
+func RerateFlagged(ctx context.Context, d BackfillDeps) (RerateCounts, error) {
+	var out RerateCounts
+	if d.Store == nil || d.Summaries == nil {
+		d.logf().Warn("rating", "op", "rerate_flagged", "err", "no-op: Store or Summaries is nil (this deployment has no bucket configured)")
+		return out, nil
+	}
+	picks, err := d.Store.flaggedRerates(ctx)
+	if err != nil {
+		return out, fmt.Errorf("rating: rerate flagged: %w", err)
+	}
+	type fightKey struct {
+		report string
+		index  int
+	}
+	seen := map[fightKey]bool{}
+	for _, p := range picks {
+		out.Characters++
+		if p.ReportID == "" {
+			continue
+		}
+		k := fightKey{p.ReportID, p.FightIndex}
+		if seen[k] {
+			continue
+		}
+		seen[k] = true
+		out.Fights++
+		if err := rerateFight(ctx, d, p); err != nil {
+			d.logf().Error("rating", "op", "rerate_flagged", "report", p.ReportID, "fight", p.FightIndex, "err", err)
+			out.Failed++
+			continue
+		}
+		out.Rerated++
+	}
+	return out, nil
+}
+
+// rerateFight is one picked fight through Backfill's path, then the roll-up.
+func rerateFight(ctx context.Context, d BackfillDeps, sf staleFight) error {
+	region, ruleset := sf.Region, sf.Ruleset
+	if !character.ValidRegion(region) || !character.ValidRuleset(ruleset) {
+		region, ruleset = "us", character.RulesetNormal
+	}
+	sum, err := readSummary(ctx, d.Summaries, sf.ReportID, sf.FightIndex)
+	if err != nil {
+		return err
+	}
+	f := RatedFight{
+		ReportID: sf.ReportID, FightIndex: sf.FightIndex, Region: region, Ruleset: ruleset,
+		FoughtAt: sf.FoughtAt, EncounterID: sum.EncounterID, Summary: sum,
+	}
+	if err := d.Store.RateFight(ctx, f); err != nil {
+		return err
+	}
+	return d.Store.RollUpScores(ctx, f)
+}

@@ -1,8 +1,11 @@
 // api/internal/rating/presence/presence.go
 
-// Package presence is the one reader of "was this character there": the Forever Score's
-// attendance component (rating.Store.guildNights) and the guild's attendance, log
-// verification, moderator evidence and raid present list (api/internal/guilds) all call In.
+// Package presence is the one reader of "was this character there", and the one rule for which
+// reports are evidence at all (EvidenceReport): the Forever Score's inputs (rating.Store's
+// ratedFights, experience, guildNights and itemLevel, and the parses rankings.Store.CharacterFights
+// reads) and the guild's attendance, log verification, moderator evidence and raid present list
+// (api/internal/guilds) all select their reports through EvidenceReport, and all read presence
+// through In.
 //
 // It is its own package under rating, not a function in rating itself, because guilds cannot
 // import rating: rating imports rankings, which imports guilds (for the crest URL). This
@@ -16,6 +19,16 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 )
+
+// EvidenceReport is the SQL condition that makes the reports row aliased alias evidence: of who
+// was there, and of how they played. The report is not private and not flagged (reports.flagged:
+// tampered, unverified or a metrics mismatch, docs/superpowers/specs/2026-09-21-performance-
+// rating-design.md §5.1). A flagged report keeps its rows - withdrawing them is the moderation
+// flow's job - but no reader that selects its reports here ever reads them. A reader with a
+// stricter rule (the score's own fights count only public reports) adds it beside this one.
+func EvidenceReport(alias string) string {
+	return "(" + alias + ".visibility <> 'private' and " + alias + ".flagged is null)"
+}
 
 // Row is one character at one report: it has a rated row (rating_scores) or a ranked row
 // (fight_metrics, not removed) there.
@@ -33,7 +46,8 @@ type Row struct {
 
 // In lists every character present in the reports reportIDs, one row per character, report
 // and UTC night, ordered by key, report and night. keys narrows it to those characters; nil
-// means everyone. No reports gives nothing, without a query. q is a pool or a transaction.
+// means everyone. A report among reportIDs that is not evidence (EvidenceReport) has nobody
+// present. No reports gives nothing, without a query. q is a pool or a transaction.
 func In(ctx context.Context, q character.Querier, reportIDs, keys []string) ([]Row, error) {
 	if len(reportIDs) == 0 {
 		return nil, nil
@@ -49,6 +63,7 @@ func In(ctx context.Context, q character.Querier, reportIDs, keys []string) ([]R
 		  from fight_metrics m
 		  where m.report_id = any($1) and m.state <> 'removed' and ($2::text[] is null or m.player_key = any($2))
 		) present
+		where exists (select 1 from reports r where r.id = present.report_id and `+EvidenceReport("r")+`)
 		order by 1, 2, 3`, reportIDs, keys)
 	if err != nil {
 		return nil, fmt.Errorf("presence: %w", err)
