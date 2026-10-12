@@ -927,7 +927,8 @@ components:
       type: number
       nullable: true
       description: >-
-        execution_score on ranking rows and on a character's best and history rows: the
+        execution_score on ranking rows, on a character's best and history rows, and on the
+        guild page's roster_best rows (GET /v1/guilds/{region}/{ruleset}/{name}): the
         fight's damage as a share of what the same gear and talents do in the simulator over
         the same fight length (1 is the simulator's average; a lucky pull can pass it, and the
         stored value is kept between 0 and 2). Damage only. Null while the fight has not been
@@ -935,6 +936,18 @@ components:
         null for good for healers and tanks, for a spec the simulator has not validated, for a
         fight whose summary has no row for the player, for a fight whose character the
         simulator could not rebuild from the log, and when the simulation produced no damage.
+    GuildAttendance:
+      type: object
+      description: >-
+        A guild roster row's attendance (roster[].attendance and pending[].attendance on GET
+        /v1/guilds/{id}/home, candidates[].attendance on GET /v1/guilds/{id}/loot). The window
+        is the guild's last 8 non-private reports that have at least one boss fight, since
+        presence only exists there: a private or trash-only report is neither a night nor an
+        absence. A character was present in a report when it has a ranked or rated row there,
+        read by its character key, never by the log's GUIDs (fights.players).
+      properties:
+        present: { type: integer, description: "How many of the window's reports the character was present in, 0 to nights; a report with several of its fights counts once." }
+        nights: { type: integer, description: "How many reports the window holds: 8, or fewer while the guild has logged fewer such reports. The same for every row of the roster." }
     ForeverScore:
       type: object
       description: >-
@@ -1906,10 +1919,26 @@ paths:
         '400': { description: "page must be 1 or more", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '401': { description: "No session", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '404': { description: "Unknown guild, or not a member", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/guilds/{id}/home:
+    get:
+      summary: A guild's control centre home (session)
+      description: >-
+        The guild, the viewer's standing, the summary, the last week's reports, the roster and
+        the officer's pending queue, in the shape docs/contracts/2026-10-04-guild-centre-api.md
+        gives. roster[].attendance is { present, nights } (schema GuildAttendance): presence in
+        the guild's last 8 non-private reports with a boss fight, read by character key. Any
+        member of the guild (an account with a character on its roster, verified or not) may
+        read it; anyone else gets 403.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '401': { description: "No session", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '403': { description: "Not a member of the guild", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/guilds/{region}/{ruleset}/{name}:
     get:
       summary: A guild's progression, roster bests, and reports
-      description: "progression[] rows are { encounter, encounter_id, difficulty, kills, pull_count, first_kill_at? }; roster_best[] rows are { player, encounter, encounter_id, metric, value, fought_at, execution_score? }"
+      description: "progression[] rows are { encounter, encounter_id, difficulty, kills, pull_count, first_kill_at? }; roster_best[] rows are { player, encounter, encounter_id, metric, value, fought_at, execution_score? }, where execution_score is defined in schema ExecutionScore."
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }

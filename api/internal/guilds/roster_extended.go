@@ -13,34 +13,32 @@ import (
 	"fmt"
 	"sort"
 	"time"
+
+	"github.com/jackc/pgx/v5"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
-// attendanceWindow is the contract's own "last 8 guild reports" (design spec §4.B).
+// attendanceWindow is the contract's own "last 8 guild reports" (design spec §4.B): the
+// guild's last 8 reports that are not private and have a boss fight (attendanceReports).
 const attendanceWindow = 8
 
 // enrichRoster fills in Attendance, BestParse, Rating and LastReportAt on every row of out,
 // in place - called once by HomeRoster after the base query, never per row.
 func (s *Store) enrichRoster(ctx context.Context, guildID int64, out []RosterRow) error {
 	byKey := make(map[string]*RosterRow, len(out))
+	keys := make([]string, 0, len(out))
 	for i := range out {
 		byKey[out[i].CharacterKey] = &out[i]
+		keys = append(keys, out[i].CharacterKey)
 	}
 
-	nights, err := s.attendanceWindowSize(ctx, guildID)
+	nights, present, err := s.attendance(ctx, guildID, keys)
 	if err != nil {
 		return err
 	}
 	for i := range out {
-		out[i].Attendance.Nights = nights
-	}
-	present, err := s.attendancePresent(ctx, guildID)
-	if err != nil {
-		return err
-	}
-	for key, n := range present {
-		if row, ok := byKey[key]; ok {
-			row.Attendance.Present = n
-		}
+		out[i].Attendance = Attendance{Present: present[out[i].CharacterKey], Nights: nights}
 	}
 
 	bestParses, err := s.bestParses(ctx, guildID)
@@ -77,44 +75,53 @@ func (s *Store) enrichRoster(ctx context.Context, guildID int64, out []RosterRow
 	return nil
 }
 
-// attendanceWindowSize is how many of the guild's own reports the attendance window
-// actually spans - attendanceWindow, or fewer when the guild has not logged that many yet.
-func (s *Store) attendanceWindowSize(ctx context.Context, guildID int64) (int, error) {
-	var n int
-	if err := s.Pool.QueryRow(ctx,
-		`select count(*) from (select id from reports where guild_id = $1 order by created_at desc limit $2) x`,
-		guildID, attendanceWindow).Scan(&n); err != nil {
-		return 0, fmt.Errorf("guilds: attendance window: %w", err)
+// attendanceReports is the attendance window: the guild's own last attendanceWindow reports
+// that are not private and have at least one boss fight, newest first. Those are the only
+// reports anyone can be present in (presence.In reads the rated and ranked rows, which
+// exist only there), so a private or trash-only report is neither a night nor an absence.
+// Fewer when the guild has not logged that many yet.
+func (s *Store) attendanceReports(ctx context.Context, guildID int64) ([]string, error) {
+	rows, err := s.Pool.Query(ctx, `
+		select r.id from reports r
+		where r.guild_id = $1 and r.visibility <> 'private'
+		  and exists (select 1 from fights f where f.report_id = r.id and coalesce(f.encounter_id, 0) <> 0)
+		order by r.created_at desc, r.id desc
+		limit $2`, guildID, attendanceWindow)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: attendance window: %w", err)
 	}
-	return n, nil
+	ids, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		return nil, fmt.Errorf("guilds: attendance window: %w", err)
+	}
+	return ids, nil
 }
 
-// attendancePresent is character_key -> how many of the attendance window's own reports
-// that character appears in (fights.players, distinct by report so a character fought in
-// more than one fight on the same night is still counted once).
-func (s *Store) attendancePresent(ctx context.Context, guildID int64) (map[string]int, error) {
-	rows, err := s.Pool.Query(ctx, `
-		select character_key, count(distinct report_id) from (
-		  select unnest(f.players) as character_key, f.report_id
-		  from fights f
-		  join (select id from reports where guild_id = $1 order by created_at desc limit $2) recent
-		    on recent.id = f.report_id
-		) present
-		group by character_key`, guildID, attendanceWindow)
+// attendance is the attendance window's size (nights) and, per character key in keys, how
+// many of its reports that character was present in (presence.In, by key - never
+// fights.players, which holds the log's GUIDs). A character in more than one fight of a
+// report is still counted once.
+func (s *Store) attendance(ctx context.Context, guildID int64, keys []string) (int, map[string]int, error) {
+	ids, err := s.attendanceReports(ctx, guildID)
 	if err != nil {
-		return nil, fmt.Errorf("guilds: attendance present: %w", err)
+		return 0, nil, err
 	}
-	defer rows.Close()
-	out := map[string]int{}
-	for rows.Next() {
-		var key string
-		var n int
-		if err := rows.Scan(&key, &n); err != nil {
-			return nil, fmt.Errorf("guilds: attendance present: %w", err)
+	present := map[string]int{}
+	if len(keys) == 0 {
+		return len(ids), present, nil
+	}
+	rows, err := presence.In(ctx, s.Pool, ids, keys)
+	if err != nil {
+		return 0, nil, fmt.Errorf("guilds: attendance present: %w", err)
+	}
+	seen := map[[2]string]bool{}
+	for _, p := range rows {
+		if k := [2]string{p.Key, p.ReportID}; !seen[k] {
+			seen[k] = true
+			present[p.Key]++
 		}
-		out[key] = n
 	}
-	return out, rows.Err()
+	return len(ids), present, nil
 }
 
 // bestParses is character_key -> that character's single best kill-fight parse across the

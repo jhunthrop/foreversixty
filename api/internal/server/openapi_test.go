@@ -170,3 +170,55 @@ func TestOpenAPIDocumentsTheGearPanelAndExecutionScore(t *testing.T) {
 		t.Errorf("chance must say a promoted pick carries its own source's chance: %q", desc(chance))
 	}
 }
+
+// Task L6.8: the guild roster's attendance is defined in plain words (the window is the
+// guild's last 8 non-private reports with a boss fight, presence is read by character key),
+// and roster_best rows name ExecutionScore like every other row that carries it.
+func TestOpenAPIDocumentsGuildAttendanceAndRosterBestExecutionScore(t *testing.T) {
+	b, err := os.ReadFile("../../openapi.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var doc struct {
+		Paths      map[string]map[string]map[string]any `yaml:"paths"`
+		Components struct {
+			Schemas map[string]map[string]any `yaml:"schemas"`
+		} `yaml:"components"`
+	}
+	if err := yaml.Unmarshal(b, &doc); err != nil {
+		t.Fatal(err)
+	}
+	words := func(v any) string {
+		m, _ := v.(map[string]any)
+		s, _ := m["description"].(string)
+		return strings.ToLower(strings.Join(strings.Fields(s), " "))
+	}
+
+	home, ok := doc.Paths["/v1/guilds/{id}/home"]["get"]
+	if !ok || !strings.Contains(words(home), "guildattendance") {
+		t.Errorf("/v1/guilds/{id}/home must be listed and point roster[].attendance at GuildAttendance: %v", home)
+	}
+	att, ok := doc.Components.Schemas["GuildAttendance"]
+	if !ok {
+		t.Fatal("no GuildAttendance schema")
+	}
+	for _, want := range []string{"last 8", "non-private", "boss fight", "character key", "guids"} {
+		if !strings.Contains(words(att), want) {
+			t.Errorf("GuildAttendance's description lacks %q: %q", want, words(att))
+		}
+	}
+	props, _ := att["properties"].(map[string]any)
+	for _, field := range []string{"present", "nights"} {
+		if words(props[field]) == "" {
+			t.Errorf("GuildAttendance.%s has no plain-words definition", field)
+		}
+	}
+
+	if !strings.Contains(words(doc.Components.Schemas["ExecutionScore"]), "roster_best") {
+		t.Errorf("ExecutionScore must name the guild page's roster_best rows: %q", words(doc.Components.Schemas["ExecutionScore"]))
+	}
+	guild := doc.Paths["/v1/guilds/{region}/{ruleset}/{name}"]["get"]
+	if !strings.Contains(words(guild), "executionscore") {
+		t.Errorf("the guild path's roster_best description must point execution_score at ExecutionScore: %q", words(guild))
+	}
+}

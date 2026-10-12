@@ -83,11 +83,12 @@ func TestHomePendingIsOfficerOnly(t *testing.T) {
 	}
 }
 
-// TestHomeAttendanceCountsPresenceOverLast8Reports seeds 9 reports (so the window drops
-// the oldest) and checks a character's attendance present/nights.
+// TestHomeAttendanceCountsPresenceOverLast8Reports seeds 9 boss reports (so the window drops
+// the oldest) and, newer than all of them, a private report and a trash-only report, which
+// the window skips (task L6.8: presence only exists in non-private reports with a boss
+// fight), and checks a character's attendance present/nights.
 func TestHomeAttendanceCountsPresenceOverLast8Reports(t *testing.T) {
 	h := newHTTPHarness(t)
-	ctx := context.Background()
 	gid := seedGuild(t, h.pool, "Forever")
 	uid := seedUser(t, h.pool, "attendance@example.com")
 	key := "us/hardcore/attendance"
@@ -95,43 +96,24 @@ func TestHomeAttendanceCountsPresenceOverLast8Reports(t *testing.T) {
 	seedExport(t, h.pool, uid, key, "us", "hardcore", "attendance")
 	recomputeMembership(t, h.pool, gid, uid)
 
-	// 9 reports, newest first by created_at offset; the character attends every one
+	now := time.Now()
+	// 9 boss reports, newest first by created_at offset; the character attends every one
 	// except the very oldest (which the 8-report window should drop anyway) and the
 	// 3rd-newest (a real absence inside the window).
 	for i := 0; i < 9; i++ {
-		reportID := fmt.Sprintf("attendance-report-%d", i)
-		if _, err := h.pool.Exec(ctx,
-			`insert into reports (id, guild_id, visibility, status, created_at)
-			 values ($1, $2, 'guild', 'complete', now() - ($3 || ' hours')::interval)`,
-			reportID, gid, fmt.Sprint(i)); err != nil {
-			t.Fatal(err)
+		night := l68Night{id: fmt.Sprintf("attendance-report-%d", i), at: now.Add(-time.Duration(i+2) * time.Hour)}
+		if i != 2 { // the 3rd-newest report: this character is absent
+			night.keys = []string{key}
 		}
-		players := []string{key}
-		if i == 2 { // the 3rd-newest report: this character is absent
-			players = []string{}
-		}
-		if _, err := h.pool.Exec(ctx,
-			`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`,
-			reportID, players); err != nil {
-			t.Fatal(err)
-		}
+		seedL68Night(t, h.pool, gid, night)
 	}
+	// Newer than every boss report, and outside the window all the same.
+	seedL68Night(t, h.pool, gid, l68Night{id: "attendance-private", visibility: "private", at: now, keys: []string{key}})
+	seedL68Night(t, h.pool, gid, l68Night{id: "attendance-trash", trash: true, at: now.Add(-time.Hour), keys: []string{key}})
 
-	h.actor = auth.Actor{UserID: uid, Role: "user", Method: "session"}
-	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
-	var view HomeView
-	h.data(res, &view)
-	var row *RosterRow
-	for i := range view.Roster {
-		if view.Roster[i].CharacterKey == key {
-			row = &view.Roster[i]
-		}
-	}
-	if row == nil {
-		t.Fatal("character missing from roster")
-	}
+	row := rosterRowOf(t, h, gid, uid, key)
 	if row.Attendance.Nights != 8 {
-		t.Errorf("nights = %d, want 8 (the window size)", row.Attendance.Nights)
+		t.Errorf("nights = %d, want 8 (the window size; the private and trash-only reports are not in it)", row.Attendance.Nights)
 	}
 	if row.Attendance.Present != 7 {
 		t.Errorf("present = %d, want 7 (8 in-window reports minus the one absence)", row.Attendance.Present)

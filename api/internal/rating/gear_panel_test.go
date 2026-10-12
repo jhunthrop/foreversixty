@@ -378,6 +378,24 @@ func TestASwappedPairOfRingsHasNoGap(t *testing.T) {
 	}
 }
 
+// The same matching for the trinkets: trinket1's pick is 19289 and trinket2's Frozen Heart of
+// the Mountain (249469); this character wears them the other way round.
+func TestASwappedPairOfTrinketsHasNoGap(t *testing.T) {
+	fx := newGearPanelFixture(t)
+	fx.seed(t, "Gp67trswap", map[string]int{"trinket1": 249469, "trinket2": 19289})
+	body := fx.read(t, "gp67trswap")
+	for _, slot := range []string{"trinket1", "trinket2"} {
+		row := gp67Slot(t, body, slot)
+		if row.Gap == nil || *row.Gap != 0 {
+			t.Errorf("%s: worn %+v pick %+v gap %s, want 0 (the pick is worn in the other trinket slot)",
+				slot, row.Worn, row.Pick, fmtGap(row.Gap))
+		}
+	}
+	if w := gp67Slot(t, body, "trinket1").Worn; w == nil || w.ID != 249469 {
+		t.Errorf("trinket1 worn = %+v, want what the export says (249469)", w)
+	}
+}
+
 // Fix round 1, item 3, a picked two-hander: the arms band-60 pick is The Unstoppable Force
 // (19323, two-handed, 486) with no off-hand pick. Worn Persuader (484) and a Grand Marshal's
 // Left Hand Blade (252) score 736 together, more than the two-hander, so the main hand's gap is

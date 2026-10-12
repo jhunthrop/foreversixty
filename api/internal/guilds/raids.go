@@ -22,6 +22,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // RaidsDefaultLimit/RaidsMaxLimit bound the ?limit= query parameter (contract's own
@@ -202,12 +203,22 @@ func (s *Store) fillRaidDetail(ctx context.Context, row *RaidRow) error {
 		return err
 	}
 
+	// Who was there is presence.In (a rated or ranked row read by character key), never
+	// fights.players, which holds the log's GUIDs; a private or trash-only night lists nobody.
+	here, err := presence.In(ctx, s.Pool, []string{row.ID}, nil)
+	if err != nil {
+		return fmt.Errorf("guilds: raid present: %w", err)
+	}
+	keys := make([]string, 0, len(here))
+	for _, p := range here {
+		keys = append(keys, p.Key)
+	}
 	presentRows, err := s.Pool.Query(ctx, `
 		select distinct on (p.character_key) p.character_key, coalesce(ae.name, fm.player_name, ''), coalesce(fm.class, '')
-		from (select unnest(f.players) as character_key from fights f where f.report_id = $1) p
+		from unnest($2::text[]) as p(character_key)
 		left join addon_exports ae on ae.character_key = p.character_key
 		left join fight_metrics fm on fm.report_id = $1 and fm.player_key = p.character_key
-		order by p.character_key`, row.ID)
+		order by p.character_key`, row.ID, keys)
 	if err != nil {
 		return fmt.Errorf("guilds: raid present: %w", err)
 	}

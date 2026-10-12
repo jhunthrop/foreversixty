@@ -47,7 +47,7 @@ pre-migration guild within one `MembershipJob` sweep tick (5 minutes).
   "item_level": 70,                     // null without gear consent
   "logged_at": "2026-10-04T21:10:00Z",  // addon_exports.updated_at; replaces logged_recently (keep logged_recently too)
   "logged_recently": true,
-  "attendance": { "present": 6, "nights": 8 },   // last 8 guild reports
+  "attendance": { "present": 6, "nights": 8 },   // last 8 non-private guild reports with a boss fight
   "best_parse": { "metric": "dps", "value": 376.4, "percentile": null, "encounter": "Onyxia", "report_id": "...", "fight_index": 3 },
   "rating": { "overall": 65, "output": 70, "survival": 60, "mechanics": 62, "utility": 58, "preparation": 71, "activity": 66 },  // null when no rating_scores
   "professions": ["Leatherworking", "Skinning"],
@@ -56,6 +56,13 @@ pre-migration guild within one `MembershipJob` sweep tick (5 minutes).
   "may_remove": false, "may_approve": false
 }
 ```
+
+`attendance` counts the guild's last 8 non-private reports that have at least one boss fight,
+since presence (a ranked or rated row, read by character key, never the log's GUIDs in
+`fights.players`) only exists there: a private or trash-only report is neither a night nor an
+absence (task L6.8). Verification by logs (`verified_by: "logs"`) and the moderator's
+`nights_in_others_reports` read the same presence, so they count non-private boss fights only.
+That is the same evidence the Forever Score trusts.
 
 ## GET /v1/guilds/{id}/raids?limit=20&cursor=
 
@@ -69,7 +76,9 @@ pre-migration guild within one `MembershipJob` sweep tick (5 minutes).
   "present": [ { "character_key": "...", "name": "...", "class": "..." } ]
 } ], "next_cursor": null }
 ```
-Visibility follows the existing report rules for the viewer.
+Visibility follows the existing report rules for the viewer. `present` (and `raiders`, its
+count) is read by character key from the same presence as `attendance`, so a private or
+trash-only night lists nobody; `fights[].players` stays the count of units in the log.
 
 ## GET /v1/guilds/{id}/progression
 

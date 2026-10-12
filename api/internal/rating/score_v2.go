@@ -43,6 +43,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/consumables"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -476,33 +477,50 @@ func (s *Store) meanBestParse(ctx context.Context, key string) (float64, error) 
 // many of them the character was at. A night is a UTC date on which one of the guild's
 // reports that is not private has a fight (fights.start_ms, the fight's own fought_at); the
 // character was at it when it has a rated or ranked row in one of those reports fought on
-// that date. No verified guild is no nights.
+// that date (presence.In, the one reader of presence the guild's attendance shares). No
+// verified guild is no nights.
 func (s *Store) guildNights(ctx context.Context, key string, since time.Time) (nights, attended int, err error) {
-	err = s.Pool.QueryRow(ctx,
-		`with guild_reports as (
-		   select r.id from reports r
-		   join guild_characters gc on gc.guild_id = r.guild_id
-		   where gc.character_key = $1 and gc.verified_at is not null and r.visibility <> 'private'
-		 ), nights as (
-		   select distinct (to_timestamp(f.start_ms / 1000.0) at time zone 'UTC')::date as night
-		   from fights f join guild_reports g on g.id = f.report_id
-		   where to_timestamp(f.start_ms / 1000.0) >= $2
-		 ), present as (
-		   select (rs.fought_at at time zone 'UTC')::date as night
-		   from rating_scores rs join guild_reports g on g.id = rs.report_id
-		   where rs.player_key = $1
-		   union
-		   select (m.fought_at at time zone 'UTC')::date
-		   from fight_metrics m join guild_reports g on g.id = m.report_id
-		   where m.player_key = $1 and m.state <> 'removed'
-		 )
-		 select (select count(*) from nights),
-		        (select count(*) from nights n where n.night in (select night from present))`,
-		key, since).Scan(&nights, &attended)
+	rows, err := s.Pool.Query(ctx,
+		`select r.id from reports r
+		 join guild_characters gc on gc.guild_id = r.guild_id
+		 where gc.character_key = $1 and gc.verified_at is not null and r.visibility <> 'private'`, key)
 	if err != nil {
 		return 0, 0, fmt.Errorf("rating: guild nights of %s: %w", key, err)
 	}
-	return nights, attended, nil
+	reportIDs, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		return 0, 0, fmt.Errorf("rating: guild nights of %s: %w", key, err)
+	}
+	if len(reportIDs) == 0 {
+		return 0, 0, nil
+	}
+
+	rows, err = s.Pool.Query(ctx,
+		`select distinct to_char((to_timestamp(f.start_ms / 1000.0) at time zone 'UTC')::date, 'YYYY-MM-DD')
+		 from fights f
+		 where f.report_id = any($1) and to_timestamp(f.start_ms / 1000.0) >= $2`, reportIDs, since)
+	if err != nil {
+		return 0, 0, fmt.Errorf("rating: guild nights of %s: %w", key, err)
+	}
+	guildNights, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		return 0, 0, fmt.Errorf("rating: guild nights of %s: %w", key, err)
+	}
+
+	present, err := presence.In(ctx, s.Pool, reportIDs, []string{key})
+	if err != nil {
+		return 0, 0, err
+	}
+	at := make(map[string]bool, len(present))
+	for _, p := range present {
+		at[p.Night.Format("2006-01-02")] = true
+	}
+	for _, night := range guildNights {
+		if at[night] {
+			attended++
+		}
+	}
+	return len(guildNights), attended, nil
 }
 
 // disciplineFlasks and disciplineFoods are every flask and every food in the consumables
