@@ -235,8 +235,7 @@ Notes for the reader:
   with its spaces and hyphens removed ("ClassicBetaPvP"): "Obnoxious Yell-ClassicBetaPvP". The
   example above is a character with no last name on a realm called Yell.
 - `export.saved_at` is the player's local wall time as `YYYY-MM-DD HH:MM`. It is what the build
-  dialog shows as "Copied 14:02, paste it on the site"; the site's own time is in the inbox
-  `ack`, not here.
+  dialog compares the site's ack against; the site's own time is in the inbox `ack`, not here.
 - `sim_request` exists only after the player asked for a sim; `requested_at` and `gear_code` are
   as of that request, so a request made at level 20 is not answered with gear from level 24.
 - `roster_snapshot.members[*]` mirrors the `hello` fields of contract 2 plus `name` and

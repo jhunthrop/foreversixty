@@ -36,6 +36,10 @@ BuildDialog.REASON_CHARS = 120
 --- How far an edge may sit past the screen's and still count as on it (UI px).
 BuildDialog.SCREEN_TOLERANCE = 1
 BuildDialog.MODES = { "paste", "copy" }
+--- The paste box's height in lines while empty or edited (one once a code loads).
+BuildDialog.EMPTY_LINES = 2
+--- Where the "Tab to switch" hint sits: the panel's bottom left.
+BuildDialog.HINT_POINT = "BOTTOMLEFT"
 
 --- Injection points Options fills: the data to read, what to redraw after a build is
 --- used (Options.refreshSurfaces), and what to do instead when the dialog cannot show
@@ -66,9 +70,10 @@ function BuildDialog.evaluate(text, data, player)
 	return { ok = true, build = build, code = trimmed }
 end
 
---- How the paste box sits: collapsed to one line for a preview or a refusal (opened again
---- while the player edits), the refusal's lines and red border until the box is edited, the
---- gold border while it has the keyboard.
+--- How the paste box sits: two lines while empty or edited, collapsed to one muted line for a
+--- preview or a refusal (opened again while the player edits), the refusal's lines and red
+--- border until the box is edited, the gold border only while it has the keyboard, and a good
+--- paste highlighted so a second Ctrl+V replaces it.
 function BuildDialog.pasteView(verdict, editing, focused)
 	local ok = verdict ~= nil and verdict.ok == true
 	local refused = verdict ~= nil and not ok and verdict.reason ~= nil
@@ -77,12 +82,15 @@ function BuildDialog.pasteView(verdict, editing, focused)
 	if showReason then
 		border = "warning"
 	end
+	local collapsed = (ok or refused) and not editing
 	return {
-		collapsed = (ok or refused) and not editing,
+		collapsed = collapsed,
+		lines = collapsed and 1 or BuildDialog.EMPTY_LINES,
 		reason = showReason,
 		preview = ok,
 		use = ok,
 		border = border,
+		selectAll = ok and not editing,
 	}
 end
 
@@ -164,11 +172,6 @@ local function joined(...)
 	return table.concat(kept, L.dialogSeparator)
 end
 
---- "Arms 33 / Fury 16 / Protection 2 · 51 points": the split and the points, no class.
-local function splitAndPoints(build, data)
-	local points = #build.order
-	return joined(points > 0 and BuildDialog.split(build, data) or nil, pointsWord(points))
-end
 
 --- The client's own word for a code slot (HEADSLOT = "Head" in `words`, a table or a
 --- lookup), else the addon's own (L.gearSlotLabels).
@@ -188,11 +191,16 @@ function BuildDialog.slotWord(slot, words)
 	return L.gearSlotLabels[slot] or slot
 end
 
+--- A site-sent name as a font string may show it: pipes doubled, so it cannot render as markup.
+local function escaped(name)
+	return (tostring(name or ""):gsub("|", "||"))
+end
+
 --- What the preview shows for a build the codec loaded: the class token (for
---- Theme.classIcon), the name (Follow.buildName: the build's own, else its trees), the line
---- "Warrior · Arms 33 / Fury 16 · 51 points · you can place 12 now" (the last part only
---- while points wait, Progress.unspentPoints), and the code's first three gear fields with
---- their slot words under a heading ("Gear in this build · at 60" below 60). `context` =
+--- Theme.classIcon), the name (Follow.buildName: the build's own, else its trees; escaped),
+--- the line "Warrior · Arms 33 / Fury 16 · 51 points", "You can place 12 now." while points
+--- wait (Progress.unspentPoints; nil at 0), and the code's first three gear fields with their
+--- slot words under a heading ("Gear in this build · at 60" below 60). `context` =
 --- { level, unspent, slotWord = function(slot) }, all optional.
 function BuildDialog.preview(build, data, context)
 	context = context or {}
@@ -201,8 +209,7 @@ function BuildDialog.preview(build, data, context)
 	local detail = joined(
 		Talents.titleCase(build.classSlug),
 		points > 0 and BuildDialog.split(build, data) or nil,
-		pointsWord(points),
-		unspent > 0 and string.format(L.dialogPlaceNow, unspent) or nil
+		pointsWord(points)
 	)
 	local wordOf = context.slotWord or function(slot)
 		return BuildDialog.slotWord(slot, {})
@@ -225,11 +232,30 @@ function BuildDialog.preview(build, data, context)
 	end
 	return {
 		classToken = build.classSlug:upper(),
-		name = Follow.buildName(data, build),
+		name = escaped(Follow.buildName(data, build)),
 		detail = detail,
+		placeNow = unspent > 0 and string.format(L.dialogPlaceNow, unspent) or nil,
 		picks = picks,
 		heading = heading,
 	}
+end
+
+--- The two muted lines above "Use this build": what it replaces (`followed`, the build
+--- followed now; absent when none) and the next talent the candidate would give (`nextLabel`,
+--- BuildDialog.nextTalent on the candidate; absent when none).
+function BuildDialog.previewContext(followed, nextLabel, data)
+	return {
+		replaces = followed ~= nil and string.format(L.dialogReplaces, escaped(Follow.buildName(data, followed))) or nil,
+		nextWould = nextLabel ~= nil and string.format(L.dialogNextWould, string.format(L.chipTake, nextLabel)) or nil,
+	}
+end
+
+--- A gear row, slot first: the slot word in a fixed column, then the icon, then the name in
+--- what is left of `width`. The x of each, and the name's width.
+function BuildDialog.pickRowLayout(width)
+	local S = Theme.SIZES
+	local name = S.dialogSlotColumn + S.iconSize + S.gap * 2
+	return { slot = 0, icon = S.dialogSlotColumn, name = name, nameWidth = width - name }
 end
 
 --- The next talent the build wants, as the chip says it ("Deflection (1 of 2)",
@@ -261,14 +287,14 @@ function BuildDialog.followingLine(build, data)
 		return nil
 	end
 	return string.format(L.dialogFollowingLine, joined(
-		Follow.buildName(data, build), Talents.titleCase(build.classSlug), pointsWord(#build.order)
+		escaped(Follow.buildName(data, build)), Talents.titleCase(build.classSlug), pointsWord(#build.order)
 	))
 end
 
 --- The chat line after Use: "Now following Arms raid. Next: Deflection (1 of 2).", the
 --- name's pipes doubled so a site-sent name cannot render as markup.
 function BuildDialog.chatLine(name, nextLabel)
-	local safe = (tostring(name or ""):gsub("|", "||"))
+	local safe = escaped(name)
 	if nextLabel ~= nil then
 		return string.format(L.dialogNowFollowingNext, safe, nextLabel)
 	end
@@ -441,8 +467,9 @@ local function simLine(state, requestedAt, clock)
 end
 
 --- The whole of copy mode: the box's text and whether it is selected, the lead line under
---- the tabs (the copy claim only after a real Ctrl+C, `copiedAt`), whether the button
---- works, the ack's lines, and the companion's explanation when no ack was ever seen.
+--- the tabs (the copy claim, in the gain green, only after a real Ctrl+C, `copiedAt`), the
+--- ack's lines, and the companion's explanation when no ack was ever seen. No button: the
+--- box itself is what the player copies from (fix round 2, item 4).
 --- `input` = { code, reason, copiedAt, ack, savedAt, simRequestedAt, clock }.
 function BuildDialog.copyModel(input)
 	local clock = input.clock
@@ -451,19 +478,18 @@ function BuildDialog.copyModel(input)
 	if not code then
 		lead = { text = input.reason or "", hexKey = "muted" }
 	elseif input.copiedAt ~= nil then
-		lead = { text = string.format(L.dialogYouCopied, hhmm(clock.fields(input.copiedAt))), hexKey = "body" }
+		lead = { text = string.format(L.dialogYouCopied, hhmm(clock.fields(input.copiedAt))), hexKey = "success" }
 	else
 		lead = { text = L.dialogSelectedLead, hexKey = "body" }
 	end
 	local ack = type(input.ack) == "table" and input.ack or nil
 	local companion
 	if ack == nil then
-		companion = { L.dialogNoCompanion, L.dialogCompanionWhat, string.format(L.dialogPasteAtSite, L.siteHost) }
+		companion = { L.dialogNoCompanion, L.dialogCompanionWhat, string.format(L.dialogPasteAtSite, L.siteName) }
 	end
 	return {
 		text = code or "",
 		selected = code ~= nil and code ~= false,
-		button = code ~= nil and code ~= false,
 		lead = lead,
 		seen = seenLine(ack, input.savedAt, clock),
 		sim = ack ~= nil and simLine(ack.sim_request_state, input.simRequestedAt, clock) or nil,
@@ -482,6 +508,21 @@ local function outboxField(db, outboxName, part, field)
 	return entry[field]
 end
 
+--- The export box in whole lines: `textHeight` is the export's measured height, `first` one
+--- line's height and `advance` each further line's (both measured on the client), `room` the
+--- height the box may take. { total, visible, height, scroll }: the lines the text makes, the
+--- whole lines that fit (at least one), the box height for them (never a partial line), and
+--- whether the rest scrolls.
+function BuildDialog.boxLines(textHeight, first, advance, room)
+	local total = 1
+	if type(textHeight) == "number" and textHeight > first then
+		total = 1 + math.floor((textHeight - first) / advance + 0.5)
+	end
+	local fit = 1 + math.floor(((room or first) - first) / advance)
+	local visible = math.max(1, math.min(total, fit))
+	return { total = total, visible = visible, height = first + (visible - 1) * advance, scroll = total > visible }
+end
+
 function BuildDialog.savedAtFor(db, outboxName)
 	return outboxField(db, outboxName, "export", "saved_at")
 end
@@ -494,8 +535,8 @@ end
 
 --- The "from the site" rows: one per build in `builds` (Follow.inboxBuilds) whose id and
 --- code are both unused (`dismissed`, Follow.dismissedSet) and whose code loads for this
---- player, as { id, name, code, label }, the label "Arms raid · Arms 33 / Fury 16 · 51
---- points · from the site". Another class's build is left out without a word (it was sent
+--- player, as { id, name, code, split, label }, the label "Arms raid · Arms 31 / Fury 20 · from
+--- the site" (BuildDialog.rowLabel fits it). Another class's build is left out without a word (it was sent
 --- for another character of the account). The second value is the first other refusal met,
 --- for /fs inbox.
 function BuildDialog.inboxRows(builds, dismissed, data, player)
@@ -508,12 +549,13 @@ function BuildDialog.inboxRows(builds, dismissed, data, player)
 			if verdict.ok then
 				local name = type(entry.name) == "string" and entry.name ~= "" and entry.name
 					or Follow.buildName(data, verdict.build)
+				local split = BuildDialog.split(verdict.build, data)
 				rows[#rows + 1] = {
 					id = entry.id,
 					name = name,
 					code = entry.code,
-					label = string.format(L.dialogInboxRow, (name:gsub("|", "||")),
-						splitAndPoints(verdict.build, data)),
+					split = split,
+					label = BuildDialog.rowLabel(name, split),
 				}
 			elseif refusal == nil and not otherClass then
 				refusal = verdict.reason
@@ -523,8 +565,50 @@ function BuildDialog.inboxRows(builds, dismissed, data, player)
 	return rows, refusal
 end
 
---- The rows paste mode shows (at most `limit`) and "and 2 more" for the rest.
-function BuildDialog.rowsView(rows, limit)
+--- A row's label: "Arms raid · Arms 31 / Fury 20 · from the site", fitted to `width` as
+--- `measure` measures it by shortening the split with an ellipsis, never the name; the bare
+--- "Arms raid · from the site" when no split fits. Without a measure, the whole label.
+function BuildDialog.rowLabel(name, split, measure, width)
+	local safe = escaped(name)
+	local bare = string.format(L.dialogInboxRowBare, safe)
+	if split == nil or split == "" then
+		return bare
+	end
+	local function fits(text)
+		local measured = measure ~= nil and measure(text) or nil
+		return measured == nil or width == nil or measured <= width
+	end
+	local full = string.format(L.dialogInboxRow, safe, split)
+	if fits(full) then
+		return full
+	end
+	local body = split
+	while #body > 1 do
+		body = cut(body, #body - 1)
+		local trimmed = body:gsub("[%s/]+$", "")
+		if trimmed ~= "" then
+			local candidate = string.format(L.dialogInboxRow, safe, trimmed .. L.ellipsis)
+			if fits(candidate) then
+				return candidate
+			end
+		end
+	end
+	return bare
+end
+
+--- The rows paste mode shows: with nothing previewed, at most `limit` and "and 2 more" for
+--- the rest; while a row's build previews (`verdict.inboxId`), that row alone; while a pasted
+--- code previews or is refused, none.
+function BuildDialog.rowsView(rows, limit, verdict)
+	if verdict ~= nil then
+		local chosen = {}
+		for _, row in ipairs(rows) do
+			if verdict.inboxId ~= nil and row.id == verdict.inboxId then
+				chosen[1] = row
+			end
+		end
+		return { shown = chosen }
+	end
 	local shown = {}
 	for index = 1, math.min(limit, #rows) do
 		shown[index] = rows[index]
@@ -539,6 +623,21 @@ function BuildDialog.pasteTabLabel(mode, count)
 		return string.format(L.dialogTabPasteCount, L.dialogTabPaste, Theme.inlineColor("gold", tostring(count)))
 	end
 	return L.dialogTabPaste
+end
+
+--- The "Tab to switch" hint's colour: one step dimmer than an inactive tab's muted label.
+function BuildDialog.hintHex()
+	return Theme.dimHex("muted", Theme.ALPHA.hint)
+end
+
+--- The no-keyboard note for /fs diag, once a session.
+function BuildDialog.noteNoFocus()
+	if BuildDialog.focusNoted then
+		return false
+	end
+	BuildDialog.focusNoted = true
+	Theme.note(L.diagDialogFocus)
+	return true
 end
 
 function BuildDialog.modeOf(mode)
@@ -688,7 +787,13 @@ function BuildDialog.onPaste(text)
 	if BuildDialog.verdict.ok then
 		BuildDialog.editing = false
 	end
-	return BuildDialog.drawPaste()
+	local drawn = BuildDialog.drawPaste()
+	local view = BuildDialog.pasteView(BuildDialog.verdict, BuildDialog.editing == true, true)
+	if view.selectAll and BuildDialog.paste ~= nil then
+		-- A good paste stays highlighted, so a second Ctrl+V replaces it.
+		BuildDialog.paste.box:HighlightText()
+	end
+	return drawn
 end
 
 --- A "from the site" row was clicked: preview it in the same place a paste previews.
@@ -776,17 +881,29 @@ local function paintEdges(edges, hexKey)
 	end
 end
 
---- One line's height at the dialog's text size, measured once on the client.
-local function lineHeight()
-	if BuildDialog.lineHeightPx == nil then
+--- One line's height and each further line's advance at the dialog's text size, measured
+--- once on the client ("Ag", then "Ag" twice), so every box is sized in whole lines: n lines
+--- take first + (n - 1) * advance, never n * first (round 2: the copy box showed glyph tops of
+--- a sixth line because the advance is shorter than a line's own height).
+local function lineMetrics()
+	if BuildDialog.lineFirst == nil then
 		local probe = text(BuildDialog.frame, "body")
-		probe:SetText("Ag")
-		local height = type(probe.GetStringHeight) == "function" and probe:GetStringHeight() or nil
+		local function measured(value)
+			probe:SetText(value)
+			local height = type(probe.GetStringHeight) == "function" and probe:GetStringHeight() or nil
+			return type(height) == "number" and height > 0 and height or nil
+		end
+		local one, two = measured("Ag"), measured("Ag" .. string.char(10) .. "Ag")
 		probe:Hide()
-		BuildDialog.lineHeightPx = (type(height) == "number" and height > 0) and math.ceil(height)
-			or Theme.SIZES.dialogText + 2
+		local first = one or Theme.SIZES.dialogText + 2
+		BuildDialog.lineFirst = first
+		BuildDialog.lineAdvance = (two ~= nil and two > first) and (two - first) or first
 	end
-	return BuildDialog.lineHeightPx
+	return BuildDialog.lineFirst, BuildDialog.lineAdvance
+end
+
+local function lineHeight()
+	return (lineMetrics())
 end
 
 --- Where the dialog sits: the saved spot after a drag, else the middle of the screen.
@@ -858,10 +975,9 @@ local function boxInField(parent, readOnly)
 	return box, field, clip
 end
 
---- Size a field to `lines` whole lines of text.
-local function sizeField(field, clip, box, lines)
+--- Size a field to show `height` of text (whole lines, from lineMetrics or boxLines).
+local function sizeField(field, clip, box, height)
 	local S = Theme.SIZES
-	local height = lines * lineHeight()
 	clip:SetHeight(height)
 	box:SetHeight(height)
 	field:SetHeight(height + S.gap * 2)
@@ -916,20 +1032,24 @@ local function buildTab(frame, label, mode)
 	return tab
 end
 
---- One planned item in the preview: its name in its quality colour and its slot word,
---- muted, at the right; hovering shows the item.
+--- One planned item in the preview, slot first (BuildDialog.pickRowLayout): the slot word
+--- muted in its fixed column, the icon, then the name in its quality colour; hovering
+--- shows the item.
 local function buildPickRow(parent, width)
 	local S = Theme.SIZES
+	local layout = BuildDialog.pickRowLayout(width)
 	local row = Theme.createFrame("Frame", nil, parent)
 	row:SetSize(width, S.dialogGearRow)
 	row:EnableMouse(true)
+	local slot = text(row, "muted", S.dialogSlotColumn - S.gap)
+	slot:SetPoint("LEFT", row, "LEFT", layout.slot, 0)
+	if type(slot.SetWordWrap) == "function" then
+		slot:SetWordWrap(false)
+	end
 	local icon = Theme.icon(row, "ARTWORK", nil, S.iconSize)
-	icon:SetPoint("LEFT", row, "LEFT", 0, 0)
-	local slot = text(row, "muted")
-	slot:SetJustifyH("RIGHT")
-	slot:SetPoint("RIGHT", row, "RIGHT", 0, 0)
-	local name = text(row, "body", width - S.iconSize - S.gap * 2 - 80)
-	name:SetPoint("LEFT", icon, "RIGHT", S.gap * 2, 0)
+	icon:SetPoint("LEFT", row, "LEFT", layout.icon, 0)
+	local name = text(row, "body", layout.nameWidth)
+	name:SetPoint("LEFT", row, "LEFT", layout.name, 0)
 	if type(name.SetWordWrap) == "function" then
 		name:SetWordWrap(false)
 	end
@@ -952,13 +1072,18 @@ local function buildPreview(content)
 	icon:SetPoint("TOPLEFT", preview, "TOPLEFT", 0, 0)
 	local name = text(preview, "gold", inner)
 	name:SetPoint("TOPLEFT", icon, "TOPRIGHT", S.gap * 2, 0)
+	if type(name.SetWordWrap) == "function" then
+		name:SetWordWrap(false)
+	end
 	local detail = text(preview, "muted", inner)
 	detail:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -S.gap / 2)
 	setMaxLines(detail, 2)
+	-- "You can place 12 now." on its own line, in body colour.
+	local placeNow = text(preview, "body", inner)
 	local headingFrame = Theme.createFrame("Frame", nil, preview)
-	headingFrame:SetSize(inner, S.dialogGearRow)
+	headingFrame:SetSize(width, S.dialogGearRow)
 	headingFrame:EnableMouse(true)
-	local heading = text(headingFrame, "muted", inner)
+	local heading = text(headingFrame, "muted", width)
 	heading:SetPoint("LEFT", headingFrame, "LEFT", 0, 0)
 	headingFrame:SetScript("OnEnter", function(self)
 		Theme.showLines(self, { L.dialogGearHeadingTip })
@@ -968,11 +1093,11 @@ local function buildPreview(content)
 	end)
 	local picks = {}
 	for index = 1, BuildDialog.GEAR_PICKS do
-		picks[index] = buildPickRow(preview, inner)
+		picks[index] = buildPickRow(preview, width)
 	end
 	preview:Hide()
 	return {
-		frame = preview, icon = icon, name = name, detail = detail,
+		frame = preview, icon = icon, name = name, detail = detail, placeNow = placeNow,
 		headingFrame = headingFrame, heading = heading, picks = picks,
 	}
 end
@@ -1018,6 +1143,7 @@ local function buildPaste(frame, top)
 	if type(paste.following.SetWordWrap) == "function" then
 		paste.following:SetWordWrap(false)
 	end
+	paste.next = text(content, "muted", width)
 	for index = 1, S.dialogInboxRows do
 		paste.rows[index] = buildRow(content)
 	end
@@ -1028,7 +1154,7 @@ local function buildPaste(frame, top)
 	paste.placeholder = text(clip, "muted", width - S.gap * 4)
 	paste.placeholder:SetText(L.dialogPaste)
 	paste.placeholder:SetPoint("TOPLEFT", clip, "TOPLEFT", 0, 0)
-	-- Once a code loads, the box reads as one dim line with an ellipsis; a click opens it.
+	-- Once a code loads, the box reads as one muted line with an ellipsis; a click opens it.
 	paste.display = text(field, "muted", width - S.gap * 4)
 	paste.display:SetPoint("LEFT", field, "LEFT", S.gap * 2, 0)
 	if type(paste.display.SetWordWrap) == "function" then
@@ -1073,7 +1199,6 @@ local function buildPaste(frame, top)
 	paste.body = text(content, "body", width)
 	setMaxLines(paste.body, 2)
 	paste.still = text(content, "muted", width)
-	paste.next = text(content, "muted", width)
 	paste.preview = buildPreview(content)
 	paste.use = Cards.primaryButton(content, L.dialogUse, function()
 		BuildDialog.useCurrent()
@@ -1081,6 +1206,16 @@ local function buildPaste(frame, top)
 	enlarge(paste.use.foreverSixtyLabel)
 	paste.use:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", 0, 0)
 	paste.use:Hide()
+	-- Above the button: what Use replaces, and the next talent the candidate gives.
+	paste.nextWould = text(content, "muted", width)
+	paste.nextWould:SetPoint("BOTTOMLEFT", paste.use, "TOPLEFT", 0, S.gap * 2)
+	paste.replaces = text(content, "muted", width)
+	paste.replaces:SetPoint("BOTTOMLEFT", paste.nextWould, "TOPLEFT", 0, S.gap / 2)
+	for _, region in ipairs({ paste.nextWould, paste.replaces }) do
+		if type(region.SetWordWrap) == "function" then
+			region:SetWordWrap(false)
+		end
+	end
 	return paste
 end
 
@@ -1099,7 +1234,8 @@ local function buildCopy(frame, top)
 	bindKeys(box, function()
 		BuildDialog.copy()
 	end)
-	-- The one copy claim the dialog makes comes from a real Ctrl+C in this box.
+	-- The one copy claim the dialog makes comes from a real Ctrl+C in this box. Chained, so
+	-- Widgets' own focus release after Ctrl+C still runs.
 	chain(box, "OnKeyDown", function(self, key)
 		local control = type(IsControlKeyDown) == "function" and IsControlKeyDown() == true
 		local focused = type(self.HasFocus) == "function" and self:HasFocus() == true
@@ -1111,8 +1247,12 @@ local function buildCopy(frame, top)
 		end
 	end)
 	chain(box, "OnMouseDown", function()
-		-- A click places the cursor: the export is no longer all selected.
+		-- The press places the cursor: the export is no longer all selected...
 		BuildDialog.selected = false
+	end)
+	chain(box, "OnMouseUp", function()
+		-- ...and the click ends selecting it all again, for Ctrl+C.
+		BuildDialog.copy()
 	end)
 	chain(box, "OnEditFocusGained", function()
 		paintEdges(field.foreverSixtyBorder, "gold")
@@ -1121,17 +1261,14 @@ local function buildCopy(frame, top)
 		BuildDialog.selected = false
 		paintEdges(field.foreverSixtyBorder, "border")
 	end)
-	-- The whole export, wrapped; the wheel scrolls it inside its lines.
+	-- The whole export, wrapped; the wheel scrolls it a line at a time, with a thumb.
 	clip:EnableMouseWheel(true)
 	clip:SetScript("OnMouseWheel", function(_, delta)
 		BuildDialog.scrollCopy(-delta)
 	end)
+	copy.bar = Widgets.scrollbar(field, field, -S.gap)
 	copy.measure = text(content, "body", width - S.gap * 4)
 	copy.measure:Hide()
-	copy.button = Widgets.button(content, L.dialogCopy, function()
-		BuildDialog.copy()
-	end)
-	enlarge(copy.button.foreverSixtyLabel)
 	copy.seen = text(content, "muted", width)
 	setMaxLines(copy.seen, 2)
 	copy.sim = text(content, "muted", width)
@@ -1152,8 +1289,9 @@ local function onEvent(_, event, itemId)
 	end
 end
 
---- The dialog, built on the first open: a 420x300 panel titled "Forever Sixty",
---- draggable by its title, closed by Escape, with the two tabs and the hint under the title.
+--- The dialog, built on the first open: a 420x300 panel titled "Forever Sixty", draggable
+--- by its title, closed by Escape, with the two tabs under the title and "Tab to switch" at
+--- its bottom left.
 function BuildDialog.ensure()
 	if BuildDialog.frame ~= nil then
 		return BuildDialog.frame
@@ -1173,12 +1311,14 @@ function BuildDialog.ensure()
 	}
 	tabs.paste:SetPoint("TOPLEFT", frame, "TOPLEFT", S.padding, -S.titleBarHeight)
 	tabs.copy:SetPoint("LEFT", tabs.paste, "RIGHT", S.gap * 2, 0)
-	-- The hint sits at the right of the tab strip, so the panel keeps its 300 px.
+	BuildDialog.tabs = tabs
+	-- In the panel's bottom padding, under both tabs' content, a step dimmer than a tab.
 	local hint = text(frame, "muted")
 	hint:SetText(L.dialogTabHint)
-	hint:SetPoint("RIGHT", frame, "TOPRIGHT", -S.padding, -(S.titleBarHeight + S.tabHeight / 2))
-	BuildDialog.tabs = tabs
+	hint:SetTextColor(Theme.rgb(BuildDialog.hintHex()))
+	hint:SetPoint(BuildDialog.HINT_POINT, frame, BuildDialog.HINT_POINT, S.padding, S.gap / 2)
 	local top = S.titleBarHeight + S.tabHeight + S.gap * 2
+	BuildDialog.contentHeight = S.dialogHeight - top - S.padding
 	BuildDialog.paste = buildPaste(frame, top)
 	BuildDialog.copyTab = buildCopy(frame, top)
 	frame:SetScript("OnHide", function()
@@ -1207,14 +1347,22 @@ local function textHeight(region)
 	return (type(height) == "number" and height > 0) and height or lineHeight()
 end
 
-local function drawPreview(build, y)
+local function widthOf(region)
+	return function(value)
+		region:SetText(value)
+		return type(region.GetStringWidth) == "function" and region:GetStringWidth() or nil
+	end
+end
+
+local function drawPreview(verdict, y)
 	local S = Theme.SIZES
 	local paste = BuildDialog.paste
 	local preview = paste.preview
 	local data = dataOf()
-	local model = BuildDialog.preview(build, data, {
+	local ranks = liveRanks(data)
+	local model = BuildDialog.preview(verdict.build, data, {
 		level = liveLevel(),
-		unspent = Progress.unspentPoints(liveLevel(), liveRanks(data)),
+		unspent = Progress.unspentPoints(liveLevel(), ranks),
 		slotWord = function(slot)
 			return BuildDialog.slotWord(slot, SLOT_WORDS)
 		end,
@@ -1226,12 +1374,21 @@ local function drawPreview(build, y)
 	end
 	preview.name:SetText(model.name)
 	preview.detail:SetText(model.detail)
-	local headY = math.max(S.dialogClassIcon, textHeight(preview.name) + S.gap / 2 + textHeight(preview.detail))
-		+ S.gap
+	local textY = textHeight(preview.name) + S.gap / 2 + textHeight(preview.detail)
+	if model.placeNow ~= nil then
+		preview.placeNow:SetText(model.placeNow)
+		preview.placeNow:ClearAllPoints()
+		preview.placeNow:SetPoint("TOPLEFT", preview.detail, "BOTTOMLEFT", 0, -S.gap / 2)
+		preview.placeNow:Show()
+		textY = textY + S.gap / 2 + textHeight(preview.placeNow)
+	else
+		preview.placeNow:Hide()
+	end
+	local headY = math.max(S.dialogClassIcon, textY) + S.gap
 	if model.heading ~= nil then
 		preview.heading:SetText(model.heading)
 		preview.headingFrame:ClearAllPoints()
-		preview.headingFrame:SetPoint("TOPLEFT", preview.frame, "TOPLEFT", S.dialogClassIcon + S.gap * 2, -headY)
+		preview.headingFrame:SetPoint("TOPLEFT", preview.frame, "TOPLEFT", 0, -headY)
 		preview.headingFrame:Show()
 		headY = headY + S.dialogGearRow
 	else
@@ -1243,6 +1400,7 @@ local function drawPreview(build, y)
 		if entry == nil then
 			pick.frame:Hide()
 		else
+			pick.slot:SetText(entry.slotWord)
 			pick.icon:SetTexture(Compat.itemIcon(entry.itemId) or Theme.UNKNOWN_ICON)
 			local name = Compat.itemName(entry.itemId)
 			if name == nil then
@@ -1250,20 +1408,32 @@ local function drawPreview(build, y)
 			end
 			pick.name:SetText(name or "")
 			pick.name:SetTextColor(Theme.qualityColor(Compat.itemQuality(entry.itemId)))
-			pick.slot:SetText(entry.slotWord)
 			pick.frame:ClearAllPoints()
-			pick.frame:SetPoint("TOPLEFT", preview.frame, "TOPLEFT", S.dialogClassIcon + S.gap * 2, -headY)
+			pick.frame:SetPoint("TOPLEFT", preview.frame, "TOPLEFT", 0, -headY)
 			pick.frame:Show()
 			headY = headY + S.dialogGearRow
 		end
 	end
 	preview.frame:SetHeight(headY)
 	stack(preview.frame, paste.content, y, headY)
+	-- What Use replaces, and the next talent the candidate would give on this character now.
+	local nextOk, nextLabel = pcall(BuildDialog.nextTalent, verdict.build, ranks, data, liveLevel())
+	local context = BuildDialog.previewContext(Follow.build, nextOk and nextLabel or nil, data)
+	for key, region in pairs({ replaces = paste.replaces, nextWould = paste.nextWould }) do
+		if context[key] ~= nil then
+			region:SetText(context[key])
+			region:Show()
+		else
+			region:SetText("")
+			region:Hide()
+		end
+	end
 end
 
---- Redraw paste mode from the verdict: the following and next-talent lines in the empty
---- dialog, the rows from the site, the box (one dim line once a code loads), the refusal's
---- three lines or the preview, and the gold Use button.
+--- Redraw paste mode from the verdict: with nothing pasted, "Following" and "Next talent"
+--- together above a two-line box; the rows from the site (only the chosen one while it
+--- previews); the box, one muted line once a code loads; the refusal's three lines or the
+--- preview with what Use replaces; and the gold Use button.
 function BuildDialog.drawPaste()
 	local paste = BuildDialog.paste
 	if paste == nil then
@@ -1274,7 +1444,8 @@ function BuildDialog.drawPaste()
 	local verdict = BuildDialog.verdict
 	local view = BuildDialog.pasteView(verdict, BuildDialog.editing == true, BuildDialog.focused == true)
 	local content = paste.content
-	for _, region in ipairs({ paste.following, paste.more, paste.lead, paste.body, paste.still, paste.next }) do
+	for _, region in ipairs({ paste.following, paste.next, paste.more, paste.lead, paste.body, paste.still,
+		paste.replaces, paste.nextWould }) do
 		region:Hide()
 	end
 	paste.preview.frame:Hide()
@@ -1284,17 +1455,26 @@ function BuildDialog.drawPaste()
 		local line = BuildDialog.followingLine(Follow.build, data)
 		if line ~= nil then
 			paste.following:SetText(line)
-			y = stack(paste.following, content, y, textHeight(paste.following) + S.gap * 2)
+			y = stack(paste.following, content, y, textHeight(paste.following) + S.gap / 2)
+		end
+		local nextLine = BuildDialog.nextTalentLine(liveNext(Follow.build))
+		if nextLine ~= nil then
+			paste.next:SetText(nextLine)
+			y = stack(paste.next, content, y, textHeight(paste.next))
+		end
+		if y > 0 then
+			y = y + S.gap * 2
 		end
 	end
-	local rows = BuildDialog.rowsView(BuildDialog.rows or {}, S.dialogInboxRows)
+	local rows = BuildDialog.rowsView(BuildDialog.rows or {}, S.dialogInboxRows, verdict)
 	for index, row in ipairs(paste.rows) do
 		local entry = rows.shown[index]
 		row.entry = entry
 		if entry == nil then
 			row.frame:Hide()
 		else
-			row.label:SetText(entry.label)
+			row.label:SetText(BuildDialog.rowLabel(entry.name, entry.split, widthOf(row.label),
+				contentWidth() - S.gap * 2))
 			row.selected = verdict ~= nil and verdict.inboxId == entry.id
 			if row.selected then
 				row.highlight:Show()
@@ -1304,26 +1484,22 @@ function BuildDialog.drawPaste()
 			y = stack(row.frame, content, y, S.rowHeight)
 		end
 	end
-	if rows.more ~= nil and verdict == nil then
+	if rows.more ~= nil then
 		paste.more:SetText(rows.more)
 		y = stack(paste.more, content, y, textHeight(paste.more))
 	end
 	if #rows.shown > 0 then
 		y = y + S.gap
 	end
-	-- The box: whole lines, one dim line with an ellipsis once a code loads.
+	-- The box, in whole lines: two while empty or edited, one muted line once a code loads.
+	local first, advance = lineMetrics()
 	local boxText = paste.box:GetText() or ""
-	local lines = view.collapsed and 1 or S.dialogBoxLines
-	local fieldHeight = sizeField(paste.field, paste.clip, paste.box, lines)
+	local fieldHeight = sizeField(paste.field, paste.clip, paste.box, first + (view.lines - 1) * advance)
 	y = stack(paste.field, content, y, fieldHeight) + S.gap * 2
 	if view.collapsed then
 		paste.box:SetAlpha(0)
-		local measure = function(value)
-			paste.display:SetText(value)
-			return paste.display:GetStringWidth()
-		end
 		local shown = verdict.code or boxText:match("^%s*(.-)%s*$"):gsub("%s+", " ")
-		paste.display:SetText(Chip.fit(shown, measure, contentWidth() - S.gap * 4))
+		paste.display:SetText(Chip.fit(shown, widthOf(paste.display), contentWidth() - S.gap * 4))
 		paste.display:Show()
 		paste.placeholder:Hide()
 	else
@@ -1338,7 +1514,7 @@ function BuildDialog.drawPaste()
 	paintEdges(paste.field.foreverSixtyBorder, view.border)
 	if view.reason then
 		local followed = Follow.build ~= nil and Follow.buildName(data, Follow.build) or nil
-		local refusal = BuildDialog.refusal(verdict.reason, followed)
+		local refusal = BuildDialog.refusal(verdict.reason, followed and followed:gsub("|", "||") or nil)
 		paste.lead:SetText(refusal.lead)
 		y = stack(paste.lead, content, y, textHeight(paste.lead) + S.gap)
 		if refusal.body ~= nil then
@@ -1350,14 +1526,8 @@ function BuildDialog.drawPaste()
 			stack(paste.still, content, y, textHeight(paste.still))
 		end
 	elseif view.preview then
-		drawPreview(verdict.build, y)
+		drawPreview(verdict, y)
 		paste.use:Show()
-	elseif verdict == nil then
-		local line = BuildDialog.nextTalentLine(liveNext(Follow.build))
-		if line ~= nil then
-			paste.next:SetText(line)
-			stack(paste.next, content, y, textHeight(paste.next))
-		end
 	end
 	return verdict
 end
@@ -1376,23 +1546,24 @@ local function outboxName()
 	return ok and name or nil
 end
 
---- Scroll the export by `lines` inside its field.
+--- Scroll the export by `lines` whole lines inside its field, and move the thumb.
 function BuildDialog.scrollCopy(lines)
 	local copy = BuildDialog.copyTab
-	if copy == nil then
+	if copy == nil or copy.lines == nil then
 		return 0
 	end
-	local visible = Theme.SIZES.dialogCopyLines * lineHeight()
-	local total = copy.boxHeight or visible
-	local range = math.max(0, total - visible)
-	BuildDialog.copyOffset = math.max(0, math.min(range, (BuildDialog.copyOffset or 0) + lines * lineHeight()))
+	local _, advance = lineMetrics()
+	local range = math.max(0, copy.lines.total - copy.lines.visible)
+	BuildDialog.copyOffset = math.max(0, math.min(range, (BuildDialog.copyOffset or 0) + lines))
 	copy.box:ClearAllPoints()
-	copy.box:SetPoint("TOPLEFT", copy.clip, "TOPLEFT", 0, BuildDialog.copyOffset)
+	copy.box:SetPoint("TOPLEFT", copy.clip, "TOPLEFT", 0, BuildDialog.copyOffset * advance)
+	copy.bar:Update(copy.lines.visible / copy.lines.total, range > 0 and BuildDialog.copyOffset / range or 0)
 	return BuildDialog.copyOffset
 end
 
---- Fill copy mode from copyModel: the lead line, the whole export wrapped in its box (and
---- selected, when `select`), the secondary button, the ack's lines and the companion's.
+--- Fill copy mode from copyModel: the lead line, the whole export wrapped in its box in
+--- whole lines (as many as fit above the ack's and the companion's lines; the rest scrolls),
+--- selected when `select`, then the ack's lines and the companion's.
 function BuildDialog.drawCopy(select)
 	local copy = BuildDialog.copyTab
 	local S = Theme.SIZES
@@ -1415,37 +1586,15 @@ function BuildDialog.drawCopy(select)
 	local content = copy.content
 	copy.lead:SetText(model.lead.text)
 	copy.lead:SetTextColor(Theme.rgb(Theme.HEX[model.lead.hexKey]))
-	local y = textHeight(copy.lead) + S.gap * 2
-	-- The box holds the whole export; its field shows dialogCopyLines lines of it.
-	copy.measure:SetText(model.text)
-	copy.boxHeight = math.max(lineHeight(), math.ceil(textHeight(copy.measure)))
-	local fieldHeight = sizeField(copy.field, copy.clip, copy.box, S.dialogCopyLines)
-	copy.box:SetHeight(math.max(copy.boxHeight, S.dialogCopyLines * lineHeight()))
-	y = stack(copy.field, content, y, fieldHeight) + S.gap * 2
-	if select ~= false then
-		BuildDialog.copyOffset = 0
-		BuildDialog.scrollCopy(0)
-		if model.selected then
-			Widgets.selectText(copy.box, model.text)
-			BuildDialog.selected = true
-		else
-			Widgets.setText(copy.box, model.text)
+	local top = textHeight(copy.lead) + S.gap * 2
+	-- The lines under the box first, so the box takes only the room left.
+	local below = 0
+	for _, entry in ipairs({ { copy.seen, model.seen }, { copy.sim, model.sim } }) do
+		if entry[2] ~= nil then
+			entry[1]:SetText(entry[2])
+			below = below + textHeight(entry[1]) + S.gap
 		end
 	end
-	Widgets.setEnabled(copy.button, model.button)
-	y = stack(copy.button, content, y, S.buttonHeight) + S.gap * 2
-	for _, region in ipairs({ copy.seen, copy.sim }) do
-		region:Hide()
-	end
-	if model.seen ~= nil then
-		copy.seen:SetText(model.seen)
-		y = stack(copy.seen, content, y, textHeight(copy.seen) + S.gap)
-	end
-	if model.sim ~= nil then
-		copy.sim:SetText(model.sim)
-		stack(copy.sim, content, y, textHeight(copy.sim))
-	end
-	-- The companion's lines, one sentence each, from the bottom up.
 	local bottom = 0
 	for index = #copy.companion, 1, -1 do
 		local region = copy.companion[index]
@@ -1460,10 +1609,36 @@ function BuildDialog.drawCopy(select)
 			bottom = bottom + textHeight(region)
 		end
 	end
+	local first, advance = lineMetrics()
+	copy.measure:SetText(model.text)
+	local room = (BuildDialog.contentHeight or S.dialogHeight) - top - S.gap * 4 - below - bottom
+	copy.lines = BuildDialog.boxLines(textHeight(copy.measure), first, advance, room)
+	local fieldHeight = sizeField(copy.field, copy.clip, copy.box, copy.lines.height)
+	copy.box:SetHeight(first + (copy.lines.total - 1) * advance)
+	local y = stack(copy.field, content, top, fieldHeight) + S.gap * 2
+	if select ~= false then
+		BuildDialog.copyOffset = 0
+		if model.selected then
+			Widgets.selectText(copy.box, model.text)
+			BuildDialog.selected = true
+		else
+			Widgets.setText(copy.box, model.text)
+		end
+	end
+	BuildDialog.scrollCopy(0)
+	copy.seen:Hide()
+	copy.sim:Hide()
+	if model.seen ~= nil then
+		y = stack(copy.seen, content, y, textHeight(copy.seen) + S.gap)
+	end
+	if model.sim ~= nil then
+		stack(copy.sim, content, y, textHeight(copy.sim))
+	end
 	return model
 end
 
---- "Copy my character": select the export again for Ctrl+C. It claims nothing itself.
+--- Select the export again for Ctrl+C (a click in the box, Enter, the deferred refocus). It
+--- claims nothing itself.
 function BuildDialog.copy()
 	local copy = BuildDialog.copyTab
 	if BuildDialog.exportCode == nil or copy == nil then
@@ -1588,7 +1763,7 @@ function BuildDialog.selfCheck()
 	end
 	local box = BuildDialog.paste.box
 	if BuildDialog.mode == "paste" and type(box.HasFocus) == "function" and box:HasFocus() ~= true then
-		Theme.note(L.diagDialogFocus)
+		BuildDialog.noteNoFocus()
 		return false
 	end
 	return true

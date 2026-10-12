@@ -5,6 +5,9 @@
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 
+--- The site's address, written once: every line that names the site reads it.
+local SITE = "foreversixty.gg"
+
 local L = {
 	-- Chrome
 	addonName = "Forever Sixty",
@@ -101,7 +104,7 @@ local L = {
 	exportHint = "The planner and the simulator read this code: talents, gear, bags and professions.",
 	exportSteps = {
 		"Press Copy code, then Ctrl+C.",
-		"Open foreversixty.gg/planner or foreversixty.gg/sim.",
+		"Open " .. SITE .. "/planner or " .. SITE .. "/sim.",
 		"Paste it into the box marked Import from addon.",
 	},
 	exportContents = "WHAT IS IN IT",
@@ -128,8 +131,10 @@ local L = {
 	-- text before it lands in one of the `%s` slots below -- so it does not
 	-- belong here even though every other player-visible piece of text
 	-- does.
-	-- Never echoes the paste and names no format (L3.4 fix 19).
-	codecWrongPrefix = "That is not a Forever Sixty build code.",
+	-- Never echoes the paste and names no format (L3.4 fix 19); its second sentence is the
+	-- advice the build dialog shows under it (fix round 2, item 7).
+	codecWrongPrefix = "That is not a Forever Sixty build code. Copy the code from the planner on " .. SITE
+		.. ", then paste it here.",
 	codecShort = "That code is missing its talent and gear fields.",
 	codecTrees = "That code has %d talent trees; a build has %d.",
 	codecRank = "That code has an unreadable talent rank: %s.",
@@ -170,7 +175,7 @@ local L = {
 	-- A talent this addon's data has no name for, named by its position
 	-- instead, so the player can still find the cell.
 	followUnknownCell = "%d:%d",
-	followPasteHint = "Plan it at foreversixty.gg/planner, copy the addon code, paste it here and press Load build.",
+	followPasteHint = "Plan it at " .. SITE .. "/planner, copy the addon code, paste it here and press Load build.",
 	--- Appended to the progress line when the character has points the
 	--- plan never asked for.
 	followOffPlan = "%d off plan",
@@ -259,7 +264,7 @@ local L = {
 	gearPlannedTickTooltip = "As planned",
 
 	-- Inbox
-	inboxEmpty = "No builds waiting. Send one from foreversixty.gg.",
+	inboxEmpty = "No builds waiting. Send one from " .. SITE .. ".",
 	inboxCount = "%d build(s) from the site waiting. Type /fs to use one.",
 
 	-- Measurement recorder (/fs record)
@@ -322,7 +327,7 @@ local L = {
 	overviewSyncLevel = "Level %d",
 	overviewSyncCopy = "Copy code",
 	overviewSyncCopied = "Selected. Press Ctrl+C",
-	siteName = "foreversixty.gg",
+	siteName = SITE,
 	headerLevelLine = "Level %d %s %s",
 	headerSpecSeparator = "  ·  ",
 	statusDataBuild = "Data %s",
@@ -408,7 +413,7 @@ local L = {
 	guildRoster = "%d on the roster",
 	guildRosterTitle = "ROSTER BY RATING",
 	guildUnrated = "No rating yet",
-	guildNotOnSite = "This guild has no logs on foreversixty.gg yet. "
+	guildNotOnSite = "This guild has no logs on " .. SITE .. " yet. "
 		.. "Upload a raid night and it appears here the next day.",
 	-- The member standing line (wave-1 scope item 4, shown first, ahead
 	-- of the roster): the rank half is never invented -- the data addon
@@ -772,30 +777,29 @@ local L = {
 }
 
 -- The build dialog (spec section 4.10): the one frame of the addon's own.
--- The site's host, written once: the dialog's "paste it on the site" line names it.
-L.siteHost = "foreversixty.gg"
 L.dialogTabPaste = "Paste a build"
 -- The paste tab in copy mode with builds from the site waiting: "Paste a build  1", the count gold.
 L.dialogTabPasteCount = "%s  %s"
 -- The site's own words (L8.2): "In game, type /fs, press Copy my character, then paste it here."
 -- The copy tab and the copy button both read this.
 L.dialogCopy = "Copy my character"
--- Muted, at the right of the tab strip.
-L.dialogTabHint = "Tab switches"
+-- At the panel's bottom left, a step dimmer than an inactive tab.
+L.dialogTabHint = "Tab to switch"
 -- Paste mode: the box's placeholder, and the one gold button once a code loads.
-L.dialogPaste = "Paste a build code from the site (Ctrl+V)"
+L.dialogPaste = "Paste a build code from " .. SITE .. " (Ctrl+V)"
 L.dialogUse = "Use this build"
 -- Above the empty box: "Following: Arms / Fury build · Warrior · 51 points".
 L.dialogFollowingLine = "Following: %s"
 -- Under it, muted: the chip's own next-point text.
 L.dialogNextTalent = "Next talent: %s"
 -- The preview's second line, its parts joined by dialogSeparator:
--- "Warrior · Arms 33 / Fury 16 / Protection 2 · 51 points · you can place 12 now".
+-- "Warrior · Arms 33 / Fury 16 / Protection 2 · 51 points"; then, on its own line in body colour,
+-- "You can place 12 now." while points wait.
 L.dialogSeparator = " · "
 L.dialogPoints = "%d points"
 L.dialogOnePoint = "1 point"
 L.dialogNoPoints = "no talent points"
-L.dialogPlaceNow = "you can place %d now"
+L.dialogPlaceNow = "You can place %d now."
 -- One tree in the split: "Arms 31".
 L.dialogSplitPart = "%s %d"
 L.dialogSplitSeparator = " / "
@@ -803,17 +807,22 @@ L.dialogSplitSeparator = " / "
 L.dialogGearHeading = "Gear in this build"
 L.dialogGearAt = "%s · at %d"
 L.dialogGearHeadingTip = "The first three items the code plans."
+-- Above "Use this build", muted: what it replaces, and the next talent the candidate gives.
+L.dialogReplaces = "Replaces %s"
+L.dialogNextWould = "Next talent would be: %s"
 -- A refusal's last line, muted.
 L.dialogStillFollowing = "You are still following %s."
 -- One chat line after a build is used: "Now following Arms raid. Next: Deflection (1 of 2)."
 L.dialogNowFollowing = "Now following %s."
 L.dialogNowFollowingNext = "Now following %s. Next: %s."
--- A build the site sent: "Arms raid · Arms 33 / Fury 16 / Protection 2 · 51 points · from the site".
+-- A build the site sent: "Arms raid · Arms 31 / Fury 20 · from the site" (the split shortens to fit,
+-- never the name; with no split, the bare form).
 L.dialogInboxRow = "%s · %s · from the site"
+L.dialogInboxRowBare = "%s · from the site"
 L.dialogInboxMore = "and %d more"
 -- Copy mode. The lead line under the tabs until a real Ctrl+C, then the copy claim.
-L.dialogSelectedLead = "Your character is selected. Press Ctrl+C, then paste it on the site."
-L.dialogYouCopied = "You copied %s."
+L.dialogSelectedLead = "Your character is selected. Press Ctrl+C, then paste it on " .. SITE .. "."
+L.dialogYouCopied = "You copied %s. Now paste it on " .. SITE .. "."
 -- The ack: the site has this export, or an older one.
 L.dialogSeen = "Seen by the site %s"
 L.dialogSiteOlder = "The site has your character from %s. Yours has changed since."

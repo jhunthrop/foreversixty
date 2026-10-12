@@ -229,9 +229,12 @@ message ever triggers an action on the recipient's behalf.
 The one frame of our own: 420×300, opened by `/fs`, the chip's "Paste a build" state or the
 compartment entry. A focused text box; Ctrl+V validates on paste; the box is replaced by a
 preview (class icon, name, spec split, points, three gear picks with icons) and one gold button
-"Use this build" (Enter works). A bad code shows the codec's reason in muted text and keeps the
-current build. "Copy my character" selects the export and reads "Copied 14:02, paste it on the
-site" for 3 s; with the companion, "Seen by the site 14:03" from its ack. The addon never claims
+"Use this build" (Enter works). A bad code shows the codec's reason as an error: the first sentence in red, the advice under it, a muted "You are still following …", and a red border on the box; editing clears it; the dialog keeps the
+current build. "Copy my character" selects the export; the lead line reads "Your character is selected. Press
+Ctrl+C, then paste it on the site." and only a real Ctrl+C in the selected box prints "You copied 14:02."
+(the client cannot write the clipboard); with the companion, "Seen by the site 14:03" from its ack when
+the ack is at or after the export's save, else "The site has your character from yesterday 18:10. Yours
+has changed since."; "Sim queued 14:03. The result arrives when you next log in.". The addon never claims
 an upload it cannot see.
 
 ### 4.11 Settings
