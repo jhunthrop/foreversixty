@@ -254,6 +254,12 @@ func TestCharacterPageCarriesWhoTheCharacterIs(t *testing.T) {
 			t.Fatalf("%s: status %d: %s", tc.describeLine, status, body)
 		}
 		got := c.Character
+		// The rater's adherence band reads the level through the same reader (CharacterLevel).
+		if level, err := CharacterLevel(context.Background(), x.pool, "us/normal/"+tc.slug); err != nil {
+			t.Fatal(err)
+		} else if !eqPtr(level, tc.level) {
+			t.Errorf("%s: CharacterLevel = %s, want %s", tc.describeLine, show(level), show(tc.level))
+		}
 		if !eqPtr(got.Level, tc.level) || !eqPtr(got.Race, tc.race) || !eqPtr(got.Realm, tc.realm) {
 			t.Errorf("%s: level %s race %s realm %s; want %s %s %s", tc.describeLine,
 				show(got.Level), show(got.Race), show(got.Realm), show(tc.level), show(tc.race), show(tc.realm))

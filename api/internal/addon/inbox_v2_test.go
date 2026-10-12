@@ -78,6 +78,9 @@ type ratedFight struct {
 	biggestLoss                    string
 	lossSeconds, deaths            int
 	missed                         []string
+	// adherence is the stored rotation adherence; nil seeds a row rated before migration
+	// 0037, which has none.
+	adherence *float64
 	// legacy seeds a row rated before migration 0036: its facts are NULL.
 	legacy bool
 }
@@ -101,11 +104,11 @@ func (h *harness) seedRatedFight(f ratedFight) {
 	}
 	exec(`insert into rating_scores (report_id, fight_index, player_key, player_name, class, spec, role,
 		   encounter_id, difficulty, kill, overall, overall_uncapped, components, model_version, fought_at,
-		   insufficient, deaths, biggest_loss, loss_seconds, consumables_missed)
+		   insufficient, deaths, biggest_loss, loss_seconds, consumables_missed, adherence)
 		values ($1, $2, $3, $4, 'Warrior', 'Arms', 'dps', $5, 3, $6, $7, $7, '[]', 'test', $8, $9, $10,
-		   nullif($11, ''), $12, $13)`,
+		   nullif($11, ''), $12, $13, $14)`,
 		f.report, f.index, l63Key, l63Name, f.encounter, f.kill, f.overall, f.foughtAt, f.insufficient,
-		f.deaths, f.biggestLoss, f.lossSeconds, f.missed)
+		f.deaths, f.biggestLoss, f.lossSeconds, f.missed, f.adherence)
 	if f.legacy {
 		exec(`update rating_scores set deaths = null, biggest_loss = null, loss_seconds = null,
 			  consumables_missed = null where report_id = $1 and fight_index = $2`, f.report, f.index)
@@ -129,10 +132,12 @@ func TestLastRaidMessageNamesEveryBossOfTheNewestRankedRaid(t *testing.T) {
 	h.exportL63(l63Export)
 	now := time.Now().UTC()
 	raid := now.Add(-26 * time.Hour)
-	// The raid: a Lucifron kill and a Magmadar wipe, in fight order.
+	// The raid: a Lucifron kill and a Magmadar wipe, in fight order. Lucifron was rated with
+	// its rotation adherence; Magmadar was rated before migration 0037 and has none.
+	adherence := 0.82
 	h.seedRatedFight(ratedFight{report: "l63-raid", visibility: "public", zone: "Molten Core", boss: "Lucifron",
 		index: 1, encounter: 663, foughtAt: raid, overall: 71.4, kill: true, biggestLoss: "downtime",
-		lossSeconds: 18, missed: []string{"flask"}})
+		lossSeconds: 18, missed: []string{"flask"}, adherence: &adherence})
 	h.seedRatedFight(ratedFight{report: "l63-raid", visibility: "public", zone: "Molten Core", boss: "Magmadar",
 		index: 2, encounter: 664, foughtAt: raid.Add(20 * time.Minute), overall: 48.6, biggestLoss: "dead early",
 		lossSeconds: 95, deaths: 1, missed: []string{}})
@@ -156,14 +161,15 @@ func TestLastRaidMessageNamesEveryBossOfTheNewestRankedRaid(t *testing.T) {
 	}
 	want := []LastRaidBoss{
 		{Name: "Lucifron", Percentile: 71, BiggestLoss: "downtime", LossSeconds: 18, Deaths: 0,
-			ConsumablesMissed: []string{"flask"}},
+			ConsumablesMissed: []string{"flask"}, Adherence: &adherence},
 		{Name: "Magmadar", Percentile: 49, BiggestLoss: "dead early", LossSeconds: 95, Deaths: 1,
 			ConsumablesMissed: []string{}},
 	}
 	if !reflect.DeepEqual(m.Bosses, want) {
 		t.Fatalf("bosses = %+v\nwant %+v", m.Bosses, want)
 	}
-	// adherence is absent until the rotation task lands; consumables_missed is a list even empty.
+	// adherence travels when stored and is absent for a fight rated before 0037;
+	// consumables_missed is a list even empty.
 	b, err := json.Marshal(m)
 	if err != nil {
 		t.Fatal(err)
@@ -174,8 +180,11 @@ func TestLastRaidMessageNamesEveryBossOfTheNewestRankedRaid(t *testing.T) {
 	if err := json.Unmarshal(b, &wire); err != nil {
 		t.Fatal(err)
 	}
-	if _, ok := wire.Bosses[0]["adherence"]; ok {
-		t.Errorf("adherence is on the wire: %s", b)
+	if got := string(wire.Bosses[0]["adherence"]); got != "0.82" {
+		t.Errorf("Lucifron's adherence on the wire = %q, want 0.82: %s", got, b)
+	}
+	if _, ok := wire.Bosses[1]["adherence"]; ok {
+		t.Errorf("adherence is on the wire for a fight rated before 0037: %s", b)
 	}
 	if string(wire.Bosses[1]["consumables_missed"]) != "[]" {
 		t.Errorf("consumables_missed = %s, want []", wire.Bosses[1]["consumables_missed"])

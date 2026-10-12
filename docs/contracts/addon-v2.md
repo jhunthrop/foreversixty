@@ -201,8 +201,14 @@ Notes for the reader:
 - `last_raid.date` is `YYYY-MM-DD`, shown as "as of 9 Dec". `biggest_loss` is a short plain
   phrase ("downtime", "standing in fire", "dead early") written by the API; the addon shows it
   as given. It is absent on a perfect card, where no component cost a point. `consumables_missed` entries are plain item names ("flask"), not ids.
-  `adherence` is a fraction of the rotation followed (0.82 is 82 percent); it is optional, and
-  absent until the rotation task lands (the fixture keeps it, being the full shape).
+  `adherence` is a fraction of the rotation followed (0.82 is 82 percent), to two decimals: of
+  the player's own ability casts in the fight (not white hits, consumables, mounts, movement or
+  utility, and not a pet's), the share that are abilities the spec's shipped rotation lists
+  for the character's level band, at any rank. The spec is the rated card's; the level is the
+  one the site stores for the character when the fight is rated (Battle.net import or newest
+  export, else 60), so a fight re-rated later uses the level of that day. It is optional:
+  absent when the spec has no shipped rotation, when the player cast fewer than 10 abilities,
+  and for a fight rated before migration 0037. It is shown, never scored.
   `percentile` is the fight card's own overall (0 to 100). `loss_seconds` is the downtime
   seconds when the loss is downtime, else the seconds the player lay dead, else 0.
   `consumables_missed` is a list even when empty. One `last_raid` per character, for its
