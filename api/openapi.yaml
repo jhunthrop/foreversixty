@@ -772,12 +772,67 @@ components:
           format: date-time
           nullable: true
           description: Null until the nightly job has measured this spec.
+    CharacterIdentity:
+      type: object
+      description: >-
+        Who the character is in game: the fields GET /v1/characters/{region}/{ruleset}/{name}
+        adds to its character object. Each is always present and null when no source knows it.
+        Never an id.
+      required: [guild, level, race, realm]
+      properties:
+        guild:
+          type: object
+          nullable: true
+          description: >-
+            The character's verified guild membership (a guild_characters row with verified_at
+            set). Null when it has none, or its membership is not verified yet.
+          required: [name, rank]
+          properties:
+            name: { type: string }
+            rank: { type: string, enum: [member, officer, leader] }
+        level:
+          type: integer
+          nullable: true
+          description: >-
+            From the newest of the stored addon export (its level= section, dated by when it was
+            captured in game) and the Battle.net import (dated by when it ran). When the newer
+            source does not carry a level, the older one's stands; on a tie the Battle.net import
+            wins. Null when neither has one.
+        race:
+          type: string
+          nullable: true
+          description: >-
+            The race's display name ("Night Elf"), chosen like level: the newest of the addon
+            export (its race slug, named by the build data) and the Battle.net import. Null when
+            neither has one.
+        realm:
+          type: string
+          nullable: true
+          description: >-
+            The realm as the client names it, from the first source that has one: the Battle.net
+            import's realm name, else the addon export's who= realm, else the realm half of the
+            newest rated fight's logged unit (which the combat log writes without spaces, e.g.
+            "ClassicBetaPvP"). The nightly data addon keys characters by the same order. Null
+            when no source has one.
+    ScorePoint:
+      type: object
+      description: >-
+        One UTC date of score_history on GET /v1/characters/{region}/{ruleset}/{name}: the
+        Forever Score the rater recorded on the last rated fight of that date. The list has one
+        point per date on which a rated fight in a public report landed, the newest 30 dates,
+        oldest first; [] when there is none. Fights rated before the score's snapshot existed
+        (migration 0035), or re-rated by the backfill, carry no snapshot and are left out.
+      required: [date, score, tier]
+      properties:
+        date: { type: string, format: date, description: "The UTC date, YYYY-MM-DD." }
+        score: { type: integer }
+        tier: { type: string, enum: [common, uncommon, rare, epic, legendary] }
     ForeverScore:
       type: object
       description: >-
         The Forever Score fields of GET /v1/characters/{region}/{ruleset}/{name}. Every field
-        is null when the character has no rated fight in a public report (or its account is
-        anonymous). The components sum to score; the ceilings are gear 500, experience 700,
+        is null when the character has no rated fight in a public report (an anonymised
+        character's page answers 404). The components sum to score; the ceilings are gear 500, experience 700,
         parses 600, attendance 200, discipline 100 (api/internal/rating/score_v2.go).
       properties:
         score: { type: integer, nullable: true }
@@ -1697,21 +1752,25 @@ paths:
     get:
       summary: A character's bests, history, the builds they have been seen in, and their Forever Score
       description: >-
-        best[] and history[] rows are { encounter, encounter_id, difficulty, metric, value,
-        percentile?, spec?, fought_at, report_id, fight_index, execution_score? }; builds_seen[]
-        is { talent_split, spec?, first_seen }. The Forever Score (docs/contracts/addon-v2.md
-        contract 5, computed by api/internal/rating) rides beside them as score, tier,
-        components, as_of and experience (schema ForeverScore). All five are null when the
-        character has no rated fight in a public report, or its account is anonymous: no logs
-        is never a zero score. A score that cannot be read just then is also null, and the rest
-        of the page is still served.
+        character is { key, region, ruleset, name, class?, avatar_url?, render_url?, guild,
+        level, race, realm } (schema CharacterIdentity for the last four, each always present
+        and null when unknown). best[] and history[] rows are { encounter, encounter_id,
+        difficulty, metric, value, percentile?, spec?, fought_at, report_id, fight_index,
+        execution_score? }; builds_seen[] is { talent_split, spec?, first_seen }. The Forever
+        Score (docs/contracts/addon-v2.md contract 5, computed by api/internal/rating) rides
+        beside them as score, tier, components, as_of and experience (schema ForeverScore). All
+        five are null when the character has no rated fight in a public report: no logs is never
+        a zero score. A score that cannot be read just then is also null, and the rest of the
+        page is still served. score_history[] (schema ScorePoint) is the score over time, oldest
+        first, never null. A character whose account is anonymised answers 404 exactly as a
+        character nobody has logged does, the rule GET .../rating already follows.
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
         - { name: name, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '404': { description: "No such character", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "No such character, or its account is anonymised (the same answer)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/guilds/{id}/reports:
     get:
       summary: A guild's own reports, newest first (session)

@@ -393,13 +393,14 @@ func (s *Store) experience(ctx context.Context, key string) (ScoreExperience, er
 }
 
 // meanBestParse is the mean of the character's best parse percentile per boss, as the
-// rankings character page places them (rankings.Store.Character's best[]); 0 with none.
+// rankings character page places them (rankings.Store.CharacterFights' best[], the page's
+// own bests without its anonymise check, identity or score history); 0 with none.
 func (s *Store) meanBestParse(ctx context.Context, key string) (float64, error) {
 	parts := strings.SplitN(key, "/", 3)
 	if len(parts) != 3 {
 		return 0, nil
 	}
-	page, _, err := (&rankings.Store{Pool: s.Pool}).Character(ctx, parts[0], parts[1], parts[2])
+	page, _, err := (&rankings.Store{Pool: s.Pool}).CharacterFights(ctx, parts[0], parts[1], parts[2])
 	if err != nil {
 		return 0, err
 	}

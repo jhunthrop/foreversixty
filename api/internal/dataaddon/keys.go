@@ -45,26 +45,24 @@ type identity struct {
 }
 
 // nameAndRealm is the name and realm a character is keyed by. The name is the stored
-// display name, else the name half of the newest rated row's unit. The realm comes from the
-// first source that has one: the Battle.net import's realm name, else the stored export's
-// who= realm, else the realm half of the newest rated row's unit. Either is empty when no
-// source has it, and the caller writes no record for that character.
+// display name, else the name half of the newest rated row's unit. The realm is
+// character.Realm's: the Battle.net import's realm name, else the stored export's who=
+// realm, else the realm half of the newest rated row's unit (the order the character page
+// reads too). Either is empty when no source has it, and the caller writes no record for
+// that character.
 func nameAndRealm(id identity, export string) (name, realm string) {
-	loggedName, loggedRealm := character.SplitUnit(strings.TrimSpace(id.PlayerName))
+	loggedName, _ := character.SplitUnit(strings.TrimSpace(id.PlayerName))
 	name = strings.TrimSpace(id.Name)
 	if name == "" {
 		name = loggedName
 	}
-	realm = strings.TrimSpace(id.RealmName)
-	if realm == "" && export != "" {
+	var whoRealm string
+	if export != "" {
 		if decoded, ok := fs1.Decode(export); ok && decoded.HasWho {
-			realm = strings.TrimSpace(decoded.Realm)
+			whoRealm = decoded.Realm
 		}
 	}
-	if realm == "" {
-		realm = loggedRealm
-	}
-	return name, realm
+	return name, character.Realm(id.RealmName, whoRealm, id.PlayerName)
 }
 
 // profilePath is the character's page on the site, "/character/<region>/<ruleset>/<slug>",

@@ -548,7 +548,7 @@ func serve(log *slog.Logger) error {
 	}
 
 	reportStore := &reports.Store{Pool: pool}
-	rankStore := &rankings.Store{Pool: pool, Specs: inferrer(treeData), APIBaseURL: cfg.APIBaseURL}
+	rankStore := &rankings.Store{Pool: pool, Specs: inferrer(treeData), APIBaseURL: cfg.APIBaseURL, Trees: treeData}
 	ratingStore := &rating.Store{Pool: pool, Log: log}
 	client := objects(cfg, log)
 

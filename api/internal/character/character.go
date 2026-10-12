@@ -111,6 +111,22 @@ func SplitUnit(unit string) (name, realm string) {
 	return name, realm
 }
 
+// Realm is the realm a character lives on as the client names it, from the first source
+// that has one: the Battle.net import's realm name (characters.realm_name), else the addon
+// export's who= realm, else the realm half of the newest rated row's logged unit
+// ("Mörk-ClassicBetaPvP", which the combat log writes in the client's normalised form).
+// Empty when no source has one. The nightly data addon's keys and the character page both
+// read a character's realm through this one order.
+func Realm(bnetRealm, exportRealm, loggedUnit string) string {
+	for _, realm := range []string{bnetRealm, exportRealm} {
+		if realm = strings.TrimSpace(realm); realm != "" {
+			return realm
+		}
+	}
+	_, realm := SplitUnit(strings.TrimSpace(loggedUnit))
+	return realm
+}
+
 // RulesetFromRealm maps the realm segment of a logged unit name (or a realm name the
 // client or Battle.net reports) onto a ruleset. This is the single mapping the whole API
 // uses.

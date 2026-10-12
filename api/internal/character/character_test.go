@@ -76,6 +76,20 @@ func TestRulesetFromRealmReadsTheRealmNamesWords(t *testing.T) {
 	}
 }
 
+func TestRealmTakesTheFirstSourceThatHasOne(t *testing.T) {
+	for _, tc := range []struct{ bnet, export, unit, want string }{
+		{"Classic Beta PvE 2", "Elsewhere", "Mörk-ClassicBetaPvP", "Classic Beta PvE 2"},
+		{"  ", " Classic Beta PvP ", "Mörk-ClassicBetaPvE2", "Classic Beta PvP"},
+		{"", "", " Mörk-ClassicBetaPvP ", "ClassicBetaPvP"},
+		{"", "", "Mörk", ""},
+		{"", "", "", ""},
+	} {
+		if got := Realm(tc.bnet, tc.export, tc.unit); got != tc.want {
+			t.Errorf("Realm(%q, %q, %q) = %q, want %q", tc.bnet, tc.export, tc.unit, got, tc.want)
+		}
+	}
+}
+
 func TestKeyFromUnitSplitsTheLoggedName(t *testing.T) {
 	if got := KeyFromUnit("us", "hardcore", "Baelgrim-Nightslayer"); got != "us/hardcore/baelgrim" {
 		t.Errorf("KeyFromUnit = %q", got)

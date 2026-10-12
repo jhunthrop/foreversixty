@@ -21,6 +21,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/spec"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 	"github.com/jhunthrop/foreversixty/logs/engine/event"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
@@ -96,6 +97,10 @@ type Store struct {
 	// origin Guild's crest_url is built against. Empty in a harness that never
 	// reads it (every write path that constructs a Store does not need it).
 	APIBaseURL string
+	// Trees is the loaded client build data, which names the race an addon export carries
+	// as a slug ("night-elf" is "Night Elf") on the character page. Nil leaves an export's
+	// race unknown; the Battle.net import's race still shows.
+	Trees *trees.Data
 }
 
 // Store is the ingest's ranker.
