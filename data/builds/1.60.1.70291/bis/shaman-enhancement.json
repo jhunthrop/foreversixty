@@ -2,7 +2,7 @@
   "spec": "shaman-enhancement",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-11T14:00:54Z",
+  "generated_at": "2026-10-12T17:10:57Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -532,8 +532,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: The Axe of Severing"
       ],
-      "weights_run_seconds": 1.238886722,
-      "verify_run_seconds": 2.219552059,
+      "weights_run_seconds": 1.89961956,
+      "verify_run_seconds": 3.257845166,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1144,8 +1144,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.238886722,
-      "verify_run_seconds": 2.072120588,
+      "weights_run_seconds": 1.89961956,
+      "verify_run_seconds": 3.086810381,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1785,8 +1785,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.259158191,
-      "verify_run_seconds": 1.365316654,
+      "weights_run_seconds": 1.986360161,
+      "verify_run_seconds": 2.055029274,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2417,8 +2417,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.259158191,
-      "verify_run_seconds": 1.343894054,
+      "weights_run_seconds": 1.986360161,
+      "verify_run_seconds": 1.935397984,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3053,8 +3053,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 1.4969198590000001,
-      "verify_run_seconds": 1.601392647,
+      "weights_run_seconds": 2.405849202,
+      "verify_run_seconds": 2.41938426,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3687,8 +3687,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Ravager"
       ],
-      "weights_run_seconds": 1.4969198590000001,
-      "verify_run_seconds": 1.674520357,
+      "weights_run_seconds": 2.405849202,
+      "verify_run_seconds": 2.391408716,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4370,8 +4370,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.508634558,
-      "verify_run_seconds": 3.227174894,
+      "weights_run_seconds": 2.436044231,
+      "verify_run_seconds": 4.9008635,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5033,8 +5033,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.508634558,
-      "verify_run_seconds": 3.246833912,
+      "weights_run_seconds": 2.436044231,
+      "verify_run_seconds": 4.786467438,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5747,8 +5747,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.428856503,
-      "verify_run_seconds": 6.695784222,
+      "weights_run_seconds": 2.276130449,
+      "verify_run_seconds": 9.695212963,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6447,8 +6447,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.428856503,
-      "verify_run_seconds": 6.305504582,
+      "weights_run_seconds": 2.276130449,
+      "verify_run_seconds": 9.246581417,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6753,7 +6753,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.5304182732823595
+              "dps_delta": -3.5304182732823635
             },
             {
               "item_id": 22191,
@@ -6955,14 +6955,14 @@
               "item_name": "Tarnished Elven Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -3.1840273625397173
+              "dps_delta": -3.1840273625397195
             },
             {
               "item_id": 272408,
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -3.5005348716930103
+              "dps_delta": -3.500534871693012
             },
             {
               "item_id": 11669,
@@ -7162,8 +7162,8 @@
         "trinket2: Hand of Justice",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.433341904,
-      "verify_run_seconds": 6.514238825,
+      "weights_run_seconds": 2.437852564,
+      "verify_run_seconds": 9.709652937,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7582,7 +7582,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 216.69501652460698,
+          "score": 216.69501652460696,
           "verified": true,
           "alternatives": [
             {
@@ -7598,14 +7598,14 @@
               "item_name": "General's Mail Legguards",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -8.231546939874807
+              "dps_delta": -8.231546939874802
             },
             {
               "item_id": 227156,
               "item_name": "Legionnaire's Mail Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -10.064893558693745
+              "dps_delta": -10.064893558693742
             }
           ]
         },
@@ -7622,14 +7622,14 @@
               "item_name": "General's Mail Greaves",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.40410542395437676
+              "dps_delta": -0.40410542395437876
             },
             {
               "item_id": 227158,
               "item_name": "Blood Guard's Mail Greaves",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.3207787333638463
+              "dps_delta": -1.3207787333638483
             },
             {
               "item_id": 13967,
@@ -7855,8 +7855,8 @@
         "trinket1: Darkmoon Card: Maelstrom",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.433341904,
-      "verify_run_seconds": 6.680815198,
+      "weights_run_seconds": 2.437852564,
+      "verify_run_seconds": 10.012500366,
       "coverage": {
         "back": {
           "eligible": 457,

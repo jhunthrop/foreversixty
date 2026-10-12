@@ -2,7 +2,7 @@
   "spec": "priest-discipline",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-11T13:46:01Z",
+  "generated_at": "2026-10-12T16:47:20Z",
   "bands": [
     {
       "spec": "priest-discipline",
@@ -187,7 +187,7 @@
           "item_name": "Filigreed Pristine Gown",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 28.894822023286466,
+          "score": 28.894822023286462,
           "verified": true,
           "alternatives": [
             {
@@ -195,14 +195,14 @@
               "item_name": "Corsair's Overshirt",
               "source_kind": "dungeon",
               "source": "The Deadmines: Edwin VanCleef",
-              "dps_delta": -0.32259428173780713
+              "dps_delta": -0.32259428173780696
             },
             {
               "item_id": 2981,
               "item_name": "Seer's Robe",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.49734879522241243
+              "dps_delta": -0.49734879522241227
             },
             {
               "item_id": 6465,
@@ -319,7 +319,7 @@
           "item_name": "Filigreed Pristine Leggings",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 37.62328610716346,
+          "score": 37.62328610716345,
           "verified": true,
           "alternatives": [
             {
@@ -327,14 +327,14 @@
               "item_name": "Filigreed Silky Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.8409618171790522
+              "dps_delta": -0.8409618171790518
             },
             {
               "item_id": 253943,
               "item_name": "Filigreed Shadow Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.8409618171790522
+              "dps_delta": -0.8409618171790518
             },
             {
               "item_id": 12987,
@@ -568,8 +568,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 6.518261795,
-      "verify_run_seconds": 17.950838138,
+      "weights_run_seconds": 10.449374664,
+      "verify_run_seconds": 30.009120266,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -838,7 +838,7 @@
           "item_name": "Filigreed Pristine Gown",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 28.894822023286466,
+          "score": 28.894822023286462,
           "verified": true,
           "alternatives": [
             {
@@ -846,14 +846,14 @@
               "item_name": "Corsair's Overshirt",
               "source_kind": "dungeon",
               "source": "The Deadmines: Edwin VanCleef",
-              "dps_delta": -0.32259428173780713
+              "dps_delta": -0.32259428173780696
             },
             {
               "item_id": 2981,
               "item_name": "Seer's Robe",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.49734879522241243
+              "dps_delta": -0.49734879522241227
             },
             {
               "item_id": 6465,
@@ -1217,8 +1217,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 6.518261795,
-      "verify_run_seconds": 18.049568116,
+      "weights_run_seconds": 10.449374664,
+      "verify_run_seconds": 29.773494206,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1899,8 +1899,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Summoner's Wand"
       ],
-      "weights_run_seconds": 6.673867844,
-      "verify_run_seconds": 17.373922812,
+      "weights_run_seconds": 10.622262927,
+      "verify_run_seconds": 28.059627434,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2360,7 +2360,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 42.31955039315344,
+          "score": 42.319550393153435,
           "verified": true,
           "alternatives": [
             {
@@ -2368,14 +2368,14 @@
               "item_name": "Glinteye Slippers",
               "source_kind": "dungeon",
               "source": "Excavation Site: Wetlands: Saltspine",
-              "dps_delta": -1.2795099902590463
+              "dps_delta": -1.2795099902590457
             },
             {
               "item_id": 274747,
               "item_name": "Soggy Boots",
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear",
-              "dps_delta": -1.3418783552664453
+              "dps_delta": -1.3418783552664448
             },
             {
               "item_id": 9454,
@@ -2579,8 +2579,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Summoner's Wand"
       ],
-      "weights_run_seconds": 6.673867844,
-      "verify_run_seconds": 17.675656662,
+      "weights_run_seconds": 10.622262927,
+      "verify_run_seconds": 28.109686047,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3296,8 +3296,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 7.815935811,
-      "verify_run_seconds": 53.302887334,
+      "weights_run_seconds": 12.312457586,
+      "verify_run_seconds": 85.617228228,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4003,8 +4003,8 @@
         "off_hand: Prophetic Cane",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 7.815935811,
-      "verify_run_seconds": 57.858845565,
+      "weights_run_seconds": 12.312457586,
+      "verify_run_seconds": 92.206624138,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4248,7 +4248,7 @@
               "item_name": "Nethergeld Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.5730590410302454
+              "dps_delta": -0.573059041030246
             },
             {
               "item_id": 19507,
@@ -4401,7 +4401,7 @@
               "item_name": "Gilded Cord",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.602842173726496
+              "dps_delta": -0.6028421737264965
             },
             {
               "item_id": 254081,
@@ -4623,21 +4623,21 @@
               "item_name": "Spellshifter Rod",
               "source_kind": "quest",
               "source": "Tiara of the Deep",
-              "dps_delta": -3.2467523766523008
+              "dps_delta": -3.246752376652303
             },
             {
               "item_id": 6689,
               "item_name": "Wind Spirit Staff",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Earthcaller Halmgar",
-              "dps_delta": -3.3396039331101264
+              "dps_delta": -3.339603933110129
             },
             {
               "item_id": 7721,
               "item_name": "Hand of Righteousness",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Whitemane",
-              "dps_delta": -3.5788580750843533
+              "dps_delta": -3.5788580750843555
             }
           ]
         },
@@ -4755,8 +4755,8 @@
         "off_hand: Enthralled Sphere",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 7.664844794,
-      "verify_run_seconds": 32.827724162,
+      "weights_run_seconds": 12.203987699,
+      "verify_run_seconds": 54.245076498,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5397,14 +5397,14 @@
               "item_name": "Spellshifter Rod",
               "source_kind": "quest",
               "source": "Tiara of the Deep",
-              "dps_delta": -3.246752376652303
+              "dps_delta": -3.2467523766523008
             },
             {
               "item_id": 6689,
               "item_name": "Wind Spirit Staff",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Earthcaller Halmgar",
-              "dps_delta": -3.339603933110129
+              "dps_delta": -3.3396039331101264
             }
           ]
         },
@@ -5512,8 +5512,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 7.664844794,
-      "verify_run_seconds": 33.081963954,
+      "weights_run_seconds": 12.203987699,
+      "verify_run_seconds": 53.594805579,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6235,8 +6235,8 @@
         "main_hand: Dancing Sliver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 7.3988216940000004,
-      "verify_run_seconds": 42.534686365,
+      "weights_run_seconds": 11.951185798000001,
+      "verify_run_seconds": 70.883021512,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6676,7 +6676,7 @@
               "item_name": "Virtuous Skirt",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.6622712956525085
+              "dps_delta": -1.662271295652511
             },
             {
               "item_id": 13389,
@@ -6958,8 +6958,8 @@
         "main_hand: Dancing Sliver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 7.3988216940000004,
-      "verify_run_seconds": 44.271112705,
+      "weights_run_seconds": 11.951185798000001,
+      "verify_run_seconds": 71.878353245,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7139,7 +7139,7 @@
               "item_name": "Lieutenant Commander's Satin Hood",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.986433435007132
+              "dps_delta": -0.9864334350071287
             },
             {
               "item_id": 16693,
@@ -7269,7 +7269,7 @@
               "item_name": "Alanna's Embrace",
               "source_kind": "dungeon",
               "source": "Scholomance: Ras Frostwhisper",
-              "dps_delta": -0.635670467430101
+              "dps_delta": -0.6356704674300977
             },
             {
               "item_id": 14138,
@@ -7420,7 +7420,7 @@
           "item_name": "Incandescent Mooncloth Boots",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 122.22737742298301,
+          "score": 122.227377422983,
           "verified": true,
           "alternatives": [
             {
@@ -7436,14 +7436,14 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.644898385550908
+              "dps_delta": -2.6448983855509063
             },
             {
               "item_id": 22247,
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.4209067066888106
+              "dps_delta": -3.420906706688809
             }
           ]
         },
@@ -7709,8 +7709,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 4.85048765,
-      "verify_run_seconds": 24.104400894,
+      "weights_run_seconds": 7.935461668,
+      "verify_run_seconds": 38.953062687,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8171,7 +8171,7 @@
           "item_name": "Incandescent Mooncloth Boots",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 122.22737742298301,
+          "score": 122.227377422983,
           "verified": true,
           "alternatives": [
             {
@@ -8194,7 +8194,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.4209067066888106
+              "dps_delta": -3.420906706688809
             }
           ]
         },
@@ -8460,8 +8460,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 4.85048765,
-      "verify_run_seconds": 23.713194394,
+      "weights_run_seconds": 7.935461668,
+      "verify_run_seconds": 37.61488817,
       "coverage": {
         "back": {
           "eligible": 456,

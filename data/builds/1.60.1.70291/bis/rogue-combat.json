@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-11T13:57:23Z",
+  "generated_at": "2026-10-12T17:05:44Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -579,8 +579,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.912022093,
-      "verify_run_seconds": 3.156729408,
+      "weights_run_seconds": 2.940372606,
+      "verify_run_seconds": 4.768333279,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1248,8 +1248,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.912022093,
-      "verify_run_seconds": 3.268170693,
+      "weights_run_seconds": 2.940372606,
+      "verify_run_seconds": 4.680670232,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1949,8 +1949,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.869617623,
-      "verify_run_seconds": 3.409909573,
+      "weights_run_seconds": 3.006527398,
+      "verify_run_seconds": 5.152620256,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2646,8 +2646,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.869617623,
-      "verify_run_seconds": 3.484957125,
+      "weights_run_seconds": 3.006527398,
+      "verify_run_seconds": 5.191769997,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3348,8 +3348,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.055074257,
-      "verify_run_seconds": 2.055631315,
+      "weights_run_seconds": 3.282088117,
+      "verify_run_seconds": 3.092938915,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4049,8 +4049,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.055074257,
-      "verify_run_seconds": 2.322985405,
+      "weights_run_seconds": 3.282088117,
+      "verify_run_seconds": 3.145061702,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4336,7 +4336,7 @@
           "item_name": "Knight's Leather Armor",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 46.46138377552424,
+          "score": 46.46138377552423,
           "verified": true,
           "alternatives": [
             {
@@ -4344,14 +4344,14 @@
               "item_name": "Fungus Shroud Armor",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.6819748160791596
+              "dps_delta": -0.681974816079159
             },
             {
               "item_id": 11193,
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Tremors of the Earth",
-              "dps_delta": -0.6875028109304265
+              "dps_delta": -0.687502810930426
             },
             {
               "item_id": 15064,
@@ -4773,8 +4773,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.359843006,
-      "verify_run_seconds": 2.656949557,
+      "weights_run_seconds": 3.688889338,
+      "verify_run_seconds": 3.985960328,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5483,8 +5483,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.359843006,
-      "verify_run_seconds": 2.7355382390000003,
+      "weights_run_seconds": 3.688889338,
+      "verify_run_seconds": 4.018793431,
       "coverage": {
         "back": {
           "eligible": 324,
@@ -6251,8 +6251,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 1.998857302,
-      "verify_run_seconds": 7.175040632,
+      "weights_run_seconds": 3.106436165,
+      "verify_run_seconds": 10.480518769,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7018,8 +7018,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 1.998857302,
-      "verify_run_seconds": 6.982589225,
+      "weights_run_seconds": 3.106436165,
+      "verify_run_seconds": 10.209697673,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7782,8 +7782,8 @@
         "off_hand: The Lobotomizer",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.117102874,
-      "verify_run_seconds": 7.250931974,
+      "weights_run_seconds": 3.332511267,
+      "verify_run_seconds": 10.784426172,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8550,8 +8550,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.117102874,
-      "verify_run_seconds": 7.430440949,
+      "weights_run_seconds": 3.332511267,
+      "verify_run_seconds": 10.626814368,
       "coverage": {
         "back": {
           "eligible": 457,

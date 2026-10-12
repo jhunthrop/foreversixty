@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-11T13:58:47Z",
+  "generated_at": "2026-10-12T17:07:50Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -579,8 +579,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.590587326,
-      "verify_run_seconds": 2.873935411,
+      "weights_run_seconds": 2.4758575990000002,
+      "verify_run_seconds": 4.174356784,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1248,8 +1248,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.590587326,
-      "verify_run_seconds": 2.91303585,
+      "weights_run_seconds": 2.4758575990000002,
+      "verify_run_seconds": 4.182939171,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1949,8 +1949,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.774077141,
-      "verify_run_seconds": 3.275570407,
+      "weights_run_seconds": 2.769076569,
+      "verify_run_seconds": 4.840447965,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2656,8 +2656,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.774077141,
-      "verify_run_seconds": 3.285571436,
+      "weights_run_seconds": 2.769076569,
+      "verify_run_seconds": 4.761169665,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3359,8 +3359,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.9815815140000002,
-      "verify_run_seconds": 2.053342619,
+      "weights_run_seconds": 3.081556514,
+      "verify_run_seconds": 3.025657386,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4061,8 +4061,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.9815815140000002,
-      "verify_run_seconds": 2.068340553,
+      "weights_run_seconds": 3.081556514,
+      "verify_run_seconds": 3.096175657,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4242,14 +4242,14 @@
               "item_name": "Embrace of the Lycan",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Chief Ukorz Sandscalp",
-              "dps_delta": -0.12619578652406865
+              "dps_delta": -0.12619578652406807
             },
             {
               "item_id": 10008,
               "item_name": "White Bandit Mask",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.2441149183026845
+              "dps_delta": -1.2441149183026838
             }
           ]
         },
@@ -4284,7 +4284,7 @@
           "item_name": "Knight-Lieutenant's Leather Shoulders",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 33.488006468941244,
+          "score": 33.48800646894125,
           "verified": true,
           "alternatives": [
             {
@@ -4292,14 +4292,14 @@
               "item_name": "Skulker's Leather Shoulder",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.7352631525686555
+              "dps_delta": -0.7352631525686562
             },
             {
               "item_id": 9647,
               "item_name": "Failed Flying Experiment",
               "source_kind": "quest",
               "source": "Rescue OOX-22/FE!",
-              "dps_delta": -0.7724118948798798
+              "dps_delta": -0.7724118948798804
             },
             {
               "item_id": 274751,
@@ -4348,7 +4348,7 @@
           "item_name": "Knight's Leather Armor",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 43.48800646894125,
+          "score": 43.488006468941244,
           "verified": true,
           "alternatives": [
             {
@@ -4356,14 +4356,14 @@
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Tremors of the Earth",
-              "dps_delta": -0.6287127553233148
+              "dps_delta": -0.6287127553233142
             },
             {
               "item_id": 17742,
               "item_name": "Fungus Shroud Armor",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.6392238983232037
+              "dps_delta": -0.639223898323203
             },
             {
               "item_id": 15064,
@@ -4771,8 +4771,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.375913152,
-      "verify_run_seconds": 2.624559526,
+      "weights_run_seconds": 3.6533752489999998,
+      "verify_run_seconds": 3.881520774,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5067,7 +5067,7 @@
           "item_name": "Stone Guard's Leather Armor",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 43.48800646894125,
+          "score": 43.488006468941244,
           "verified": true,
           "alternatives": [
             {
@@ -5075,14 +5075,14 @@
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Broken Alliances",
-              "dps_delta": -0.6287127553233148
+              "dps_delta": -0.6287127553233142
             },
             {
               "item_id": 17742,
               "item_name": "Fungus Shroud Armor",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.6392238983232037
+              "dps_delta": -0.639223898323203
             },
             {
               "item_id": 15064,
@@ -5481,8 +5481,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.375913152,
-      "verify_run_seconds": 2.682788721,
+      "weights_run_seconds": 3.6533752489999998,
+      "verify_run_seconds": 3.9441401000000003,
       "coverage": {
         "back": {
           "eligible": 324,
@@ -6245,8 +6245,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.228903243,
-      "verify_run_seconds": 7.094534,
+      "weights_run_seconds": 3.56495999,
+      "verify_run_seconds": 10.566355628,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6552,14 +6552,14 @@
               "item_name": "Warlord's Leather Breastplate",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.062779957885401
+              "dps_delta": -2.0627799578854
             },
             {
               "item_id": 226825,
               "item_name": "Darkmantle Tunic",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -2.2089403201370765
+              "dps_delta": -2.208940320137075
             },
             {
               "item_id": 23089,
@@ -7011,8 +7011,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.228903243,
-      "verify_run_seconds": 7.054577984,
+      "weights_run_seconds": 3.56495999,
+      "verify_run_seconds": 10.54661842,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7772,8 +7772,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.350649165,
-      "verify_run_seconds": 7.535039137,
+      "weights_run_seconds": 3.820862213,
+      "verify_run_seconds": 11.337207394,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8534,8 +8534,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.350649165,
-      "verify_run_seconds": 7.769554981,
+      "weights_run_seconds": 3.820862213,
+      "verify_run_seconds": 11.214669052,
       "coverage": {
         "back": {
           "eligible": 457,

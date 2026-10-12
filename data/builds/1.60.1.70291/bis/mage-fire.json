@@ -2,7 +2,7 @@
   "spec": "mage-fire",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-11T13:26:14Z",
+  "generated_at": "2026-10-12T16:15:00Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -556,8 +556,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.606939064,
-      "verify_run_seconds": 0.527834142,
+      "weights_run_seconds": 1.045952046,
+      "verify_run_seconds": 0.852928234,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1195,8 +1195,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.606939064,
-      "verify_run_seconds": 0.534194972,
+      "weights_run_seconds": 1.045952046,
+      "verify_run_seconds": 0.858549272,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1873,8 +1873,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.69035203,
-      "verify_run_seconds": 0.612244004,
+      "weights_run_seconds": 1.227561035,
+      "verify_run_seconds": 0.906596296,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2555,8 +2555,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Unstable Power Core"
       ],
-      "weights_run_seconds": 0.69035203,
-      "verify_run_seconds": 0.564211245,
+      "weights_run_seconds": 1.227561035,
+      "verify_run_seconds": 0.899710329,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3255,8 +3255,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.785372682,
-      "verify_run_seconds": 0.697902697,
+      "weights_run_seconds": 1.311590377,
+      "verify_run_seconds": 1.097620675,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3957,8 +3957,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.785372682,
-      "verify_run_seconds": 0.71250881,
+      "weights_run_seconds": 1.311590377,
+      "verify_run_seconds": 1.110335989,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4280,7 +4280,7 @@
               "item_name": "Knight's Dreadweave Vest",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.5538856968644326
+              "dps_delta": -1.5538856968644321
             }
           ]
         },
@@ -4651,8 +4651,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.770925119,
-      "verify_run_seconds": 0.94990747,
+      "weights_run_seconds": 1.292050884,
+      "verify_run_seconds": 1.490097024,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5092,14 +5092,14 @@
               "item_name": "Red Mageweave Pants",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.40775635359242773
+              "dps_delta": -0.4077563535924283
             },
             {
               "item_id": 253991,
               "item_name": "Flame Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.0924701815010354
+              "dps_delta": -1.092470181501036
             }
           ]
         },
@@ -5355,8 +5355,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.770925119,
-      "verify_run_seconds": 0.840179598,
+      "weights_run_seconds": 1.292050884,
+      "verify_run_seconds": 1.379027504,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5570,14 +5570,14 @@
               "item_name": "Amulet of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -0.4051893542736173
+              "dps_delta": -0.40518935427361824
             },
             {
               "item_id": 22149,
               "item_name": "Beads of Ogre Mojo",
               "source_kind": "quest",
               "source": "Falrin's Vendetta",
-              "dps_delta": -1.1925612022284213
+              "dps_delta": -1.1925612022284222
             },
             {
               "item_id": 19601,
@@ -5595,7 +5595,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 50.90567578154033,
+          "score": 50.905675781540324,
           "verified": true,
           "alternatives": [
             {
@@ -5603,21 +5603,21 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.1911452959671114
+              "dps_delta": -3.1911452959671096
             },
             {
               "item_id": 231602,
               "item_name": "Field Marshal's Silk Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.250426244940912
+              "dps_delta": -3.2504262449409103
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.769773936504539
+              "dps_delta": -3.7697739365045373
             }
           ]
         },
@@ -5660,7 +5660,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 61.137623793295404,
+          "score": 61.13762379329541,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5669,14 +5669,14 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.6429452937222396
+              "dps_delta": -0.6429452937222415
             },
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -3.875748493837247
+              "dps_delta": -3.8757484938372486
             },
             {
               "item_id": 279266,
@@ -6102,8 +6102,8 @@
         "trinket2: Draconic Infused Emblem",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.841457501,
-      "verify_run_seconds": 2.883080149,
+      "weights_run_seconds": 1.366700315,
+      "verify_run_seconds": 4.308032666,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6348,7 +6348,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 50.90567578154033,
+          "score": 50.905675781540324,
           "verified": true,
           "alternatives": [
             {
@@ -6356,21 +6356,21 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.1911452959671114
+              "dps_delta": -3.1911452959671096
             },
             {
               "item_id": 231594,
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.250426244940912
+              "dps_delta": -3.2504262449409103
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.769773936504539
+              "dps_delta": -3.7697739365045373
             }
           ]
         },
@@ -6412,7 +6412,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 61.13762379329541,
+          "score": 61.137623793295404,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6421,14 +6421,14 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.6429452937222415
+              "dps_delta": -0.6429452937222396
             },
             {
               "item_id": 227106,
               "item_name": "Legionnaire's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -3.8757484938372486
+              "dps_delta": -3.875748493837247
             },
             {
               "item_id": 279266,
@@ -6842,8 +6842,8 @@
         "trinket2: Serenity Field",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 0.841457501,
-      "verify_run_seconds": 2.766987387,
+      "weights_run_seconds": 1.366700315,
+      "verify_run_seconds": 4.370334273,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7595,8 +7595,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.959492917,
-      "verify_run_seconds": 2.210005663,
+      "weights_run_seconds": 1.616668177,
+      "verify_run_seconds": 3.523604394,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8343,8 +8343,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.959492917,
-      "verify_run_seconds": 2.135659663,
+      "weights_run_seconds": 1.616668177,
+      "verify_run_seconds": 3.423747569,
       "coverage": {
         "back": {
           "eligible": 456,

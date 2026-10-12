@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-11T14:11:56Z",
+  "generated_at": "2026-10-12T17:28:21Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -570,8 +570,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.576440088,
-      "verify_run_seconds": 0.948935353,
+      "weights_run_seconds": 2.423450131,
+      "verify_run_seconds": 1.314117177,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1226,8 +1226,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.576440088,
-      "verify_run_seconds": 0.94762303,
+      "weights_run_seconds": 2.423450131,
+      "verify_run_seconds": 1.312087026,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1916,8 +1916,8 @@
         "main_hand: Hardened Root Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.660034897,
-      "verify_run_seconds": 0.949343842,
+      "weights_run_seconds": 2.401474865,
+      "verify_run_seconds": 1.382127551,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2613,8 +2613,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.660034897,
-      "verify_run_seconds": 0.998329572,
+      "weights_run_seconds": 2.401474865,
+      "verify_run_seconds": 1.292008306,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3331,8 +3331,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.32566243,
-      "verify_run_seconds": 1.035866956,
+      "weights_run_seconds": 1.9805494449999999,
+      "verify_run_seconds": 1.395119229,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3941,7 +3941,7 @@
               "item_name": "Staff of Noh'Orahil",
               "source_kind": "quest",
               "source": "The Completed Orb of Noh'Orahil",
-              "dps_delta": -3.37293884479673
+              "dps_delta": -3.372938844796731
             }
           ]
         },
@@ -4052,8 +4052,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.32566243,
-      "verify_run_seconds": 1.035957199,
+      "weights_run_seconds": 1.9805494449999999,
+      "verify_run_seconds": 1.399270497,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4767,8 +4767,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 3.592800799,
-      "verify_run_seconds": 1.346148989,
+      "weights_run_seconds": 5.147435193,
+      "verify_run_seconds": 1.785321239,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5485,8 +5485,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 3.592800799,
-      "verify_run_seconds": 1.320124851,
+      "weights_run_seconds": 5.147435193,
+      "verify_run_seconds": 1.7545795119999998,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5685,7 +5685,7 @@
               "item_name": "Deathmist Mask",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -1.4381264621825183
+              "dps_delta": -1.4381264621825194
             },
             {
               "item_id": 15999,
@@ -6235,8 +6235,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.358681857,
-      "verify_run_seconds": 2.948559708,
+      "weights_run_seconds": 2.028617271,
+      "verify_run_seconds": 3.785537396,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6984,8 +6984,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.358681857,
-      "verify_run_seconds": 2.747803949,
+      "weights_run_seconds": 2.028617271,
+      "verify_run_seconds": 3.764945472,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7730,8 +7730,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 4.533296709,
-      "verify_run_seconds": 3.042884425,
+      "weights_run_seconds": 7.055708985,
+      "verify_run_seconds": 4.037995933,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8478,8 +8478,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 4.533296709,
-      "verify_run_seconds": 3.011169081,
+      "weights_run_seconds": 7.055708985,
+      "verify_run_seconds": 4.195844162,
       "coverage": {
         "back": {
           "eligible": 456,

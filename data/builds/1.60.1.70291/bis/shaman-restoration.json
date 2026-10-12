@@ -2,7 +2,7 @@
   "spec": "shaman-restoration",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-11T14:10:22Z",
+  "generated_at": "2026-10-12T17:26:08Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -550,8 +550,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 2.889324132,
-      "verify_run_seconds": 10.311720084,
+      "weights_run_seconds": 4.7021215210000005,
+      "verify_run_seconds": 17.03505191,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 2.889324132,
-      "verify_run_seconds": 9.714464353,
+      "weights_run_seconds": 4.7021215210000005,
+      "verify_run_seconds": 15.943963926,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1827,8 +1827,8 @@
         "finger2: Darkspear Signet",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.943756955,
-      "verify_run_seconds": 10.183630578,
+      "weights_run_seconds": 4.786945167,
+      "verify_run_seconds": 16.804409064,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2472,8 +2472,8 @@
         "finger2: Darkspear Signet",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.943756955,
-      "verify_run_seconds": 9.699567501,
+      "weights_run_seconds": 4.786945167,
+      "verify_run_seconds": 15.786248948,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2638,7 +2638,7 @@
           "item_name": "Papal Fez",
           "source": "Uldaman: Shadowforge Relic Hunter",
           "source_kind": "dungeon",
-          "score": 90.41541278708257,
+          "score": 90.41541278708259,
           "verified": true,
           "alternatives": [
             {
@@ -2646,14 +2646,14 @@
               "item_name": "Miner's Hat of the Deep",
               "source_kind": "dungeon",
               "source": "Uldaman: Shadowforge Relic Hunter",
-              "dps_delta": -0.7909489290371456
+              "dps_delta": -0.7909489290371462
             },
             {
               "item_id": 10574,
               "item_name": "Corpseshroud",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Withered Warrior",
-              "dps_delta": -1.0342338190656128
+              "dps_delta": -1.0342338190656135
             },
             {
               "item_id": 7720,
@@ -2925,14 +2925,14 @@
               "item_name": "Wisdom's Leather Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.44983726349502406
+              "dps_delta": -0.44983726349502434
             }
           ]
         },
         {
           "slot": "feet",
-          "item_id": 252565,
-          "item_name": "Mender's Mail Boots",
+          "item_id": 252533,
+          "item_name": "Mender's Leather Shoes",
           "source": "Leatherworking",
           "source_kind": "crafted",
           "verified": true,
@@ -2940,11 +2940,11 @@
           "dps_delta": 0.9874689848500111,
           "alternatives": [
             {
-              "item_id": 252533,
-              "item_name": "Mender's Leather Shoes",
+              "item_id": 252565,
+              "item_name": "Mender's Mail Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.9211402186033906e-16
+              "dps_delta": 0
             },
             {
               "item_id": 254001,
@@ -3123,14 +3123,14 @@
         "hands: Bonefingers",
         "waist: Gilded Cord",
         "legs: Misplaced Pantaloons",
-        "feet: Mender's Mail Boots",
+        "feet: Mender's Leather Shoes",
         "finger1: Darkspear Signet",
         "finger2: Snake Hoop",
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 3.469168332,
-      "verify_run_seconds": 16.817126013,
+      "weights_run_seconds": 5.586492967,
+      "verify_run_seconds": 27.937020134,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3573,7 +3573,7 @@
               "item_name": "Wisdom's Leather Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.44983726349502434
+              "dps_delta": -0.44983726349502406
             },
             {
               "item_id": 7760,
@@ -3785,8 +3785,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Ankh of Life"
       ],
-      "weights_run_seconds": 3.469168332,
-      "verify_run_seconds": 16.082586448,
+      "weights_run_seconds": 5.586492967,
+      "verify_run_seconds": 26.548568593,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4517,8 +4517,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 6.017550667,
-      "verify_run_seconds": 32.421496578,
+      "weights_run_seconds": 9.657797191,
+      "verify_run_seconds": 52.142243329,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5249,8 +5249,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 6.017550667,
-      "verify_run_seconds": 31.90499405,
+      "weights_run_seconds": 9.657797191,
+      "verify_run_seconds": 50.951942299,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5429,14 +5429,14 @@
               "item_name": "Crown of the Penitent",
               "source_kind": "quest",
               "source": "Houses of the Holy",
-              "dps_delta": -0.6232542582201391
+              "dps_delta": -0.6232542582201377
             },
             {
               "item_id": 16693,
               "item_name": "Devout Crown",
               "source_kind": "dungeon",
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -1.0988548336659236
+              "dps_delta": -1.098854833665922
             }
           ]
         },
@@ -5681,7 +5681,7 @@
               "item_name": "Ghostloom Leggings",
               "source_kind": "dungeon",
               "source": "Scholomance: Jandice Barov",
-              "dps_delta": -1.7001373903237624
+              "dps_delta": -1.700137390323761
             },
             {
               "item_id": 12945,
@@ -5871,7 +5871,7 @@
               "item_name": "Quel'dorai Channeling Rod",
               "source_kind": "dungeon",
               "source": "Dire Maul: Lethtendris",
-              "dps_delta": -0.17966767222967997
+              "dps_delta": -0.17966767222968136
             },
             {
               "item_id": 17710,
@@ -5945,8 +5945,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 6.761105248,
-      "verify_run_seconds": 92.098215014,
+      "weights_run_seconds": 10.81022412,
+      "verify_run_seconds": 147.689542841,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6580,7 +6580,7 @@
               "item_name": "Quel'dorai Channeling Rod",
               "source_kind": "dungeon",
               "source": "Dire Maul: Lethtendris",
-              "dps_delta": -0.17966767222967997
+              "dps_delta": -0.17966767222968136
             },
             {
               "item_id": 17710,
@@ -6655,8 +6655,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 6.761105248,
-      "verify_run_seconds": 89.12860963,
+      "weights_run_seconds": 10.81022412,
+      "verify_run_seconds": 142.624722485,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7293,7 +7293,7 @@
               "item_name": "Wind Spirit Staff",
               "source_kind": "dungeon",
               "source": "Razorfen Kraul: Earthcaller Halmgar",
-              "dps_delta": -12.083781052644213
+              "dps_delta": -12.083781052644216
             },
             {
               "item_id": 9527,
@@ -7386,8 +7386,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 4.805572129,
-      "verify_run_seconds": 53.505178491,
+      "weights_run_seconds": 7.902668396,
+      "verify_run_seconds": 85.986419992,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7574,7 +7574,7 @@
               "item_name": "Insightful Hood",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -11.02508137058816
+              "dps_delta": -11.025081370588163
             }
           ]
         },
@@ -7694,14 +7694,14 @@
               "item_name": "Legionnaire's Mail Chestguard",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -2.6709486003327374
+              "dps_delta": -2.6709486003327414
             },
             {
               "item_id": 14138,
               "item_name": "Mooncloth Vest",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.9753341307026484
+              "dps_delta": -2.975334130702652
             }
           ],
           "set_bonus": {
@@ -7874,7 +7874,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -6.079497506963797
+              "dps_delta": -6.079497506963794
             }
           ]
         },
@@ -8118,8 +8118,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 4.805572129,
-      "verify_run_seconds": 52.682734502,
+      "weights_run_seconds": 7.902668396,
+      "verify_run_seconds": 83.990186185,
       "coverage": {
         "back": {
           "eligible": 457,

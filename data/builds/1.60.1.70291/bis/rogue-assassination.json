@@ -2,7 +2,7 @@
   "spec": "rogue-assassination",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-11T13:56:00Z",
+  "generated_at": "2026-10-12T17:03:41Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -579,8 +579,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.455692901,
-      "verify_run_seconds": 2.581003503,
+      "weights_run_seconds": 2.274376645,
+      "verify_run_seconds": 3.714491363,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1249,8 +1249,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.455692901,
-      "verify_run_seconds": 2.486201189,
+      "weights_run_seconds": 2.274376645,
+      "verify_run_seconds": 3.6967687590000002,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1948,8 +1948,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.46819764,
-      "verify_run_seconds": 2.4758199850000002,
+      "weights_run_seconds": 2.4312011829999998,
+      "verify_run_seconds": 3.719073158,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2655,8 +2655,8 @@
         "off_hand: Swinetusk Shank",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.46819764,
-      "verify_run_seconds": 2.4980291980000002,
+      "weights_run_seconds": 2.4312011829999998,
+      "verify_run_seconds": 3.702235811,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3352,8 +3352,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.465449701,
-      "verify_run_seconds": 1.7132007599999999,
+      "weights_run_seconds": 2.32966397,
+      "verify_run_seconds": 2.519136004,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4049,8 +4049,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.465449701,
-      "verify_run_seconds": 1.70751425,
+      "weights_run_seconds": 2.32966397,
+      "verify_run_seconds": 2.512410263,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4756,8 +4756,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.021774945,
-      "verify_run_seconds": 2.256913778,
+      "weights_run_seconds": 3.229645383,
+      "verify_run_seconds": 3.348789936,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5460,8 +5460,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.021774945,
-      "verify_run_seconds": 2.235897383,
+      "weights_run_seconds": 3.229645383,
+      "verify_run_seconds": 3.437729176,
       "coverage": {
         "back": {
           "eligible": 324,
@@ -6221,8 +6221,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 1.88053253,
-      "verify_run_seconds": 6.199714046,
+      "weights_run_seconds": 3.023471494,
+      "verify_run_seconds": 8.982085281,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6986,8 +6986,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 1.88053253,
-      "verify_run_seconds": 6.147586731,
+      "weights_run_seconds": 3.023471494,
+      "verify_run_seconds": 8.898596419,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7748,8 +7748,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.061524505,
-      "verify_run_seconds": 6.340441178,
+      "weights_run_seconds": 3.229621325,
+      "verify_run_seconds": 9.48047234,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8511,8 +8511,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.061524505,
-      "verify_run_seconds": 6.3398264189999995,
+      "weights_run_seconds": 3.229621325,
+      "verify_run_seconds": 9.414232706,
       "coverage": {
         "back": {
           "eligible": 457,

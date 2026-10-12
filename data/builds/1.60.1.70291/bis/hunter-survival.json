@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-11T13:25:09Z",
+  "generated_at": "2026-10-12T16:13:18Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -579,8 +579,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.264447407,
-      "verify_run_seconds": 3.060840943,
+      "weights_run_seconds": 3.82190231,
+      "verify_run_seconds": 5.019017221,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1248,8 +1248,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.264447407,
-      "verify_run_seconds": 2.908227596,
+      "weights_run_seconds": 3.82190231,
+      "verify_run_seconds": 4.8366801,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1949,8 +1949,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.402234123,
-      "verify_run_seconds": 2.242303494,
+      "weights_run_seconds": 4.203260738,
+      "verify_run_seconds": 3.754341263,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2651,8 +2651,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.402234123,
-      "verify_run_seconds": 1.7439778989999999,
+      "weights_run_seconds": 4.203260738,
+      "verify_run_seconds": 2.8453626869999997,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3346,8 +3346,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.632702048,
-      "verify_run_seconds": 2.35540797,
+      "weights_run_seconds": 4.359475764,
+      "verify_run_seconds": 3.723655466,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4041,8 +4041,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.632702048,
-      "verify_run_seconds": 2.204249409,
+      "weights_run_seconds": 4.359475764,
+      "verify_run_seconds": 3.686783864,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4749,8 +4749,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.644719266,
-      "verify_run_seconds": 2.711426829,
+      "weights_run_seconds": 4.374772076,
+      "verify_run_seconds": 4.50960905,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5471,8 +5471,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.644719266,
-      "verify_run_seconds": 2.700824024,
+      "weights_run_seconds": 4.374772076,
+      "verify_run_seconds": 4.36473797,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6253,8 +6253,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.357175464,
-      "verify_run_seconds": 8.855252169,
+      "weights_run_seconds": 4.09161956,
+      "verify_run_seconds": 14.384233846,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7035,8 +7035,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.357175464,
-      "verify_run_seconds": 8.730267779,
+      "weights_run_seconds": 4.09161956,
+      "verify_run_seconds": 14.056146736,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7455,7 +7455,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 218.21671331881066,
+          "score": 218.2167133188107,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +4.1 DPS over it",
           "dps_delta": 4.077616673489388,
@@ -7465,21 +7465,21 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -11.177530846888631
+              "dps_delta": -11.177530846888635
             },
             {
               "item_id": 231558,
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -12.51493815098636
+              "dps_delta": -12.514938150986364
             },
             {
               "item_id": 227085,
               "item_name": "Knight-Captain's Chain Legplates",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -12.799479061689276
+              "dps_delta": -12.79947906168928
             }
           ]
         },
@@ -7782,8 +7782,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.140498173,
-      "verify_run_seconds": 7.154765589,
+      "weights_run_seconds": 3.567409387,
+      "verify_run_seconds": 11.509875872,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8170,7 +8170,7 @@
           "item_name": "Belt of Preserved Heads",
           "source": "A Collection of Heads",
           "source_kind": "quest",
-          "score": 103.0290695823422,
+          "score": 103.02906958234222,
           "verified": true,
           "alternatives": [
             {
@@ -8178,21 +8178,21 @@
               "item_name": "Marksman's Girdle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -0.4023143370033731
+              "dps_delta": -0.4023143370033754
             },
             {
               "item_id": 20150,
               "item_name": "Defiler's Chain Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -4.366427748092298
+              "dps_delta": -4.3664277480923
             },
             {
               "item_id": 20190,
               "item_name": "Defiler's Leather Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -4.366427748092298
+              "dps_delta": -4.3664277480923
             }
           ]
         },
@@ -8202,7 +8202,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 218.21671331881066,
+          "score": 218.2167133188107,
           "verified": true,
           "alternatives": [
             {
@@ -8218,14 +8218,14 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -11.177530846888631
+              "dps_delta": -11.177530846888635
             },
             {
               "item_id": 231567,
               "item_name": "General's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -12.51493815098636
+              "dps_delta": -12.514938150986364
             }
           ]
         },
@@ -8525,8 +8525,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.140498173,
-      "verify_run_seconds": 6.830166525,
+      "weights_run_seconds": 3.567409387,
+      "verify_run_seconds": 10.886628071,
       "coverage": {
         "back": {
           "eligible": 456,

@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-11T13:26:43Z",
+  "generated_at": "2026-10-12T16:15:44Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -554,8 +554,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.561135375,
-      "verify_run_seconds": 0.492718808,
+      "weights_run_seconds": 0.965496358,
+      "verify_run_seconds": 0.776328164,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1200,8 +1200,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.561135375,
-      "verify_run_seconds": 0.508611366,
+      "weights_run_seconds": 0.965496358,
+      "verify_run_seconds": 0.798959502,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1894,8 +1894,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.7064382,
-      "verify_run_seconds": 0.564649116,
+      "weights_run_seconds": 1.170457735,
+      "verify_run_seconds": 0.90792629,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2588,8 +2588,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.7064382,
-      "verify_run_seconds": 0.557449397,
+      "weights_run_seconds": 1.170457735,
+      "verify_run_seconds": 0.903828413,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3300,8 +3300,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.663954906,
-      "verify_run_seconds": 0.628185507,
+      "weights_run_seconds": 1.099233595,
+      "verify_run_seconds": 1.009213901,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4013,8 +4013,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.663954906,
-      "verify_run_seconds": 0.621392199,
+      "weights_run_seconds": 1.099233595,
+      "verify_run_seconds": 0.977546439,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4713,8 +4713,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.628300731,
-      "verify_run_seconds": 0.872892473,
+      "weights_run_seconds": 1.038777298,
+      "verify_run_seconds": 1.323010073,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5421,8 +5421,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.628300731,
-      "verify_run_seconds": 0.779547449,
+      "weights_run_seconds": 1.038777298,
+      "verify_run_seconds": 1.264352443,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6166,8 +6166,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.662905981,
-      "verify_run_seconds": 2.648447612,
+      "weights_run_seconds": 1.051122394,
+      "verify_run_seconds": 3.702435124,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6917,8 +6917,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.662905981,
-      "verify_run_seconds": 2.368994822,
+      "weights_run_seconds": 1.051122394,
+      "verify_run_seconds": 3.559767909,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7328,7 +7328,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 41.93764398630435,
+          "score": 41.93764398630436,
           "verified": true,
           "alternatives": [
             {
@@ -7344,14 +7344,14 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -6.7829113623296236
+              "dps_delta": -6.782911362329626
             },
             {
               "item_id": 272393,
               "item_name": "Magician's Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -7.128362318122441
+              "dps_delta": -7.128362318122445
             }
           ]
         },
@@ -7664,8 +7664,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.695910415,
-      "verify_run_seconds": 1.9567528840000001,
+      "weights_run_seconds": 1.105520751,
+      "verify_run_seconds": 2.97963166,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8075,7 +8075,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 41.93764398630435,
+          "score": 41.93764398630436,
           "verified": true,
           "alternatives": [
             {
@@ -8091,14 +8091,14 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -6.782911362329622
+              "dps_delta": -6.782911362329626
             },
             {
               "item_id": 272393,
               "item_name": "Magician's Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -7.128362318122441
+              "dps_delta": -7.128362318122445
             }
           ]
         },
@@ -8410,8 +8410,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.695910415,
-      "verify_run_seconds": 1.907326892,
+      "weights_run_seconds": 1.105520751,
+      "verify_run_seconds": 2.83689024,
       "coverage": {
         "back": {
           "eligible": 456,
