@@ -23,10 +23,12 @@ package rating
 // fight has no score at all (ErrNoLogs), never a zero.
 //
 // The rater also writes a snapshot of each player's score onto the fight it just rated
-// (RollUpScores: rating_scores' score, gear_score, experience, attendance, tier). It is not
-// a history source: the backfill job re-rates a fight by withdrawing and rewriting its rows
-// and does not roll up, so a backfill-re-rated row has NULL snapshot columns. ScoreV2 never
-// reads them; it always computes from what is stored now.
+// (RollUpScores: rating_scores' score, gear_score, experience, attendance, tier). The
+// character page's score_history reads it (rankings.Store.scoreHistory: the last snapshot of
+// each UTC date), with one gap: the backfill job re-rates a fight by withdrawing and
+// rewriting its rows and does not roll up, so a backfill-re-rated row has NULL snapshot
+// columns and is left out of the history (a date keeps a point only while one of its fights
+// still carries a snapshot). ScoreV2 itself never reads the snapshot; it always computes from what is stored now.
 
 import (
 	"context"
@@ -41,6 +43,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/logs/engine/mechanics/consumables"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -178,16 +181,68 @@ type ScoreV2 struct {
 // docs/superpowers/specs/2026-09-21-performance-rating-design.md §5.1); experience and
 // attendance count every report that is not private, since they publish only counts.
 func (s *Store) ScoreV2(ctx context.Context, characterKey string) (ScoreV2, error) {
-	fights, err := s.ratedFights(ctx, characterKey)
-	if err != nil {
+	var in characterInputs
+	var err error
+	if in.fights, err = s.ratedFights(ctx, characterKey); err != nil {
 		return ScoreV2{}, err
 	}
+	if in.fights.count == 0 {
+		return ScoreV2{}, ErrNoLogs
+	}
+	if err := s.readExport(ctx, characterKey, &in); err != nil {
+		return ScoreV2{}, err
+	}
+	return s.scoreV2(ctx, characterKey, in)
+}
+
+// characterInputs is what the Forever Score and the character page's gear panel both read
+// about one character: its rated fights, its stored addon export and its characters.faction.
+// The character page reads them once for both (Service.ScoreAndGear).
+type characterInputs struct {
+	fights    ratedFightSummary
+	export    string
+	hasExport bool
+	// faction is characters.faction (the Battle.net import's), "" when unknown.
+	faction string
+}
+
+// characterInputs reads key's rated fights and its export: one query each.
+func (s *Store) characterInputs(ctx context.Context, key string) (characterInputs, error) {
+	var in characterInputs
+	var err error
+	if in.fights, err = s.ratedFights(ctx, key); err != nil {
+		return in, err
+	}
+	return in, s.readExport(ctx, key, &in)
+}
+
+// readExport fills in's export and faction in one query.
+func (s *Store) readExport(ctx context.Context, key string, in *characterInputs) error {
+	var export, faction *string
+	err := s.Pool.QueryRow(ctx,
+		`select (select export from addon_exports where character_key = $1),
+		        (select faction from characters where key = $1)`, key).Scan(&export, &faction)
+	if err != nil {
+		return fmt.Errorf("rating: export of %s: %w", key, err)
+	}
+	if export != nil {
+		in.export, in.hasExport = *export, true
+	}
+	if faction != nil {
+		in.faction = *faction
+	}
+	return nil
+}
+
+// scoreV2 is ScoreV2 over inputs already read.
+func (s *Store) scoreV2(ctx context.Context, characterKey string, in characterInputs) (ScoreV2, error) {
+	fights := in.fights
 	if fights.count == 0 {
 		return ScoreV2{}, ErrNoLogs
 	}
 	out := ScoreV2{AsOf: fights.newest, Spec: fights.spec, Fights: fights.count}
 
-	raw, full, err := s.gearScore(ctx, characterKey, fights.spec)
+	raw, full, err := s.gearScore(ctx, characterKey, fights.spec, in)
 	if err != nil {
 		return ScoreV2{}, err
 	}
@@ -279,33 +334,22 @@ func (s *Store) ratedFights(ctx context.Context, key string) (ratedFightSummary,
 // spec is no gear (0, 0). Gear the loaded data cannot score - an unknown spec, build or
 // class, or a spec with no best-in-slot set - is also no gear, with one log line naming
 // the spec, rather than an error: the other four components still stand.
-func (s *Store) gearScore(ctx context.Context, key, spec string) (raw, full float64, err error) {
-	if spec == "" {
+func (s *Store) gearScore(ctx context.Context, key, spec string, in characterInputs) (raw, full float64, err error) {
+	if spec == "" || !in.hasExport {
 		return 0, 0, nil
 	}
-	var export string
-	err = s.Pool.QueryRow(ctx, `select export from addon_exports where character_key = $1`, key).Scan(&export)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return 0, 0, nil
-	}
-	if err != nil {
-		return 0, 0, fmt.Errorf("rating: export of %s: %w", key, err)
-	}
+	export := in.export
 	decoded, ok := fs1.Decode(export)
 	if !ok {
 		s.logger().Warn("rating", "op", "gear", "character", key, "spec", spec,
 			"err", "the stored export is not an FS1 code")
 		return 0, 0, nil
 	}
-	level := sims.FullGearBand
-	if decoded.HasLevel {
-		level = decoded.Level
-	}
 	raw, err = sims.GearScore(ctx, export, spec)
 	var band int
 	var hasBand bool
 	if err == nil {
-		band, hasBand, err = sims.GearBand(ctx, decoded.DataBuild, spec, level)
+		band, hasBand, err = sims.GearBand(ctx, decoded.DataBuild, spec, gearLevel(decoded))
 	}
 	if err == nil && !hasBand {
 		// Below the first band (level 20) the spec has no best-in-slot set to measure
@@ -324,6 +368,17 @@ func (s *Store) gearScore(ctx context.Context, key, spec string) (raw, full floa
 		return 0, 0, fmt.Errorf("rating: gear score of %s: %w", key, err)
 	}
 	return raw, full, nil
+}
+
+// gearLevel is the level an export is measured at: its level= section, else 60 (an export
+// from an addon older than that section, measured against the level-60 set as every export
+// was before the band rule). The gear component and the gear panel (characterGear) share it,
+// so both read the same band.
+func gearLevel(decoded fs1.Decoded) int {
+	if decoded.HasLevel {
+		return decoded.Level
+	}
+	return sims.FullGearBand
 }
 
 // ItemLevel is the item level ScoreV2 carries (itemLevel), for a reader that needs it for a
@@ -422,33 +477,50 @@ func (s *Store) meanBestParse(ctx context.Context, key string) (float64, error) 
 // many of them the character was at. A night is a UTC date on which one of the guild's
 // reports that is not private has a fight (fights.start_ms, the fight's own fought_at); the
 // character was at it when it has a rated or ranked row in one of those reports fought on
-// that date. No verified guild is no nights.
+// that date (presence.In, the one reader of presence the guild's attendance shares). No
+// verified guild is no nights.
 func (s *Store) guildNights(ctx context.Context, key string, since time.Time) (nights, attended int, err error) {
-	err = s.Pool.QueryRow(ctx,
-		`with guild_reports as (
-		   select r.id from reports r
-		   join guild_characters gc on gc.guild_id = r.guild_id
-		   where gc.character_key = $1 and gc.verified_at is not null and r.visibility <> 'private'
-		 ), nights as (
-		   select distinct (to_timestamp(f.start_ms / 1000.0) at time zone 'UTC')::date as night
-		   from fights f join guild_reports g on g.id = f.report_id
-		   where to_timestamp(f.start_ms / 1000.0) >= $2
-		 ), present as (
-		   select (rs.fought_at at time zone 'UTC')::date as night
-		   from rating_scores rs join guild_reports g on g.id = rs.report_id
-		   where rs.player_key = $1
-		   union
-		   select (m.fought_at at time zone 'UTC')::date
-		   from fight_metrics m join guild_reports g on g.id = m.report_id
-		   where m.player_key = $1 and m.state <> 'removed'
-		 )
-		 select (select count(*) from nights),
-		        (select count(*) from nights n where n.night in (select night from present))`,
-		key, since).Scan(&nights, &attended)
+	rows, err := s.Pool.Query(ctx,
+		`select r.id from reports r
+		 join guild_characters gc on gc.guild_id = r.guild_id
+		 where gc.character_key = $1 and gc.verified_at is not null and r.visibility <> 'private'`, key)
 	if err != nil {
 		return 0, 0, fmt.Errorf("rating: guild nights of %s: %w", key, err)
 	}
-	return nights, attended, nil
+	reportIDs, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		return 0, 0, fmt.Errorf("rating: guild nights of %s: %w", key, err)
+	}
+	if len(reportIDs) == 0 {
+		return 0, 0, nil
+	}
+
+	rows, err = s.Pool.Query(ctx,
+		`select distinct to_char((to_timestamp(f.start_ms / 1000.0) at time zone 'UTC')::date, 'YYYY-MM-DD')
+		 from fights f
+		 where f.report_id = any($1) and to_timestamp(f.start_ms / 1000.0) >= $2`, reportIDs, since)
+	if err != nil {
+		return 0, 0, fmt.Errorf("rating: guild nights of %s: %w", key, err)
+	}
+	guildNights, err := pgx.CollectRows(rows, pgx.RowTo[string])
+	if err != nil {
+		return 0, 0, fmt.Errorf("rating: guild nights of %s: %w", key, err)
+	}
+
+	present, err := presence.In(ctx, s.Pool, reportIDs, []string{key})
+	if err != nil {
+		return 0, 0, err
+	}
+	at := make(map[string]bool, len(present))
+	for _, p := range present {
+		at[p.Night.Format("2006-01-02")] = true
+	}
+	for _, night := range guildNights {
+		if at[night] {
+			attended++
+		}
+	}
+	return len(guildNights), attended, nil
 }
 
 // disciplineFlasks and disciplineFoods are every flask and every food in the consumables
@@ -518,9 +590,10 @@ func enchanted(c summary.CombatantRow) bool {
 
 // RollUpScores writes each roster player's Forever Score, as it stands now, onto that
 // player's row of the fight f just rated (rating_scores' score, gear_score - the gear
-// points - experience points, attendance - the fraction - and tier). The file comment says
-// why the snapshot is not a history source. A player with no score yet (ErrNoLogs: the fight was not public,
-// say) is left NULL. Every player is tried; the errors are returned together.
+// points - experience points, attendance - the fraction - and tier), the snapshot the
+// character page's score_history reads; the file comment says where that history has gaps.
+// A player with no score yet (ErrNoLogs: the fight was not public, say) is left NULL. Every
+// player is tried; the errors are returned together.
 func (s *Store) RollUpScores(ctx context.Context, f RatedFight) error {
 	var errs []error
 	seen := map[string]bool{}

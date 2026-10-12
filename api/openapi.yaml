@@ -141,7 +141,7 @@ components:
                   loss_seconds: { type: integer }
                   deaths: { type: integer }
                   consumables_missed: { type: array, items: { type: string, enum: [flask, food] } }
-                  adherence: { type: number, description: "optional; absent until the rotation task lands" }
+                  adherence: { type: number, minimum: 0, maximum: 1, description: "share of the player's ability casts that the spec's shipped rotation lists for the character's level band, to two decimals; absent without a shipped rotation, under 10 ability casts, when the level could not be read, or for a fight rated before migration 0037" }
         - type: object
           title: loot_values
           required: [type, character, raid, items]
@@ -318,7 +318,7 @@ components:
         report_id: { type: string }
         fight_index: { type: integer }
         state: { type: string, enum: [ok, at_risk, removed] }
-        execution_score: { type: number, nullable: true }
+        execution_score: { $ref: '#/components/schemas/ExecutionScore' }
     GearSlotName:
       type: string
       enum: [head, neck, shoulder, back, chest, wrist, hands, waist, legs, feet,
@@ -797,7 +797,7 @@ components:
             From the newest of the stored addon export (its level= section, dated by when it was
             captured in game) and the Battle.net import (dated by when it ran). When the newer
             source does not carry a level, the older one's stands; on a tie the Battle.net import
-            wins. Null when neither has one.
+            wins, as does a stored level with no import date. Null when neither has one.
         race:
           type: string
           nullable: true
@@ -827,13 +827,137 @@ components:
         date: { type: string, format: date, description: "The UTC date, YYYY-MM-DD." }
         score: { type: integer }
         tier: { type: string, enum: [common, uncommon, rare, epic, legendary] }
+    CharacterGear:
+      type: object
+      description: >-
+        The gear panel fields of GET /v1/characters/{region}/{ruleset}/{name}, beside the
+        Forever Score. The spec, level and band are the Gear component's own: the spec of the
+        character's newest rated fight in a public report, the level in the export's level=
+        section (60 when it has none), and the band that level falls in (the highest of 20, 30,
+        40, 50 and 60 at or below it that the spec has a best-in-slot set for).
+      required: [gear, gear_gap_total]
+      properties:
+        gear:
+          type: array
+          items: { $ref: '#/components/schemas/CharacterGearSlot' }
+          description: >-
+            One row per slot an addon export names, always all 17 in the export's order (head,
+            neck, shoulder, back, chest, wrist, hands, waist, legs, feet, finger1, finger2,
+            trinket1, trinket2, main_hand, off_hand, ranged) when the character has an export;
+            [] when it has none (never null).
+        gear_gap_total:
+          type: number
+          nullable: true
+          description: >-
+            The score points the band's picks would add over what the character wears, summed
+            over the slots: the plain sum of every non-null gap, one decimal. It is not the Gear
+            component's distance to its top, which is measured against the best set of the band
+            across presets and factions (so a character wearing every pick can have a total of 0
+            and a Gear component still below 500). Null when no slot has a gap (no export, or
+            nothing could be scored).
+    CharacterGearSlot:
+      type: object
+      description: >-
+        One slot of the gear panel. Nothing is invented: a pick the data does not have is null,
+        and a gap that cannot be scored is null.
+      required: [slot, worn, pick, gap]
+      properties:
+        slot: { $ref: '#/components/schemas/GearSlotName' }
+        worn:
+          type: object
+          nullable: true
+          description: >-
+            The item the character wears in the slot, from its newest addon export. Null when
+            the slot is empty in the export.
+          required: [id, name, item_level]
+          properties:
+            id: { type: integer }
+            name: { type: string, nullable: true, description: "Null when the export's data build does not have the item." }
+            item_level: { type: integer, nullable: true, description: "Null when the export's data build does not have the item." }
+        pick:
+          type: object
+          nullable: true
+          description: >-
+            The band's best-in-slot pick for the spec and the character's faction (from the
+            export's race, else the faction the Battle.net import stored), as the Forever Sixty
+            Data addon ships it: the leveling-bis ladder's pick for the band without raid buffs,
+            except that an item whose stats the client has not confirmed is never a pick. Every
+            slot whose own pick is confirmed keeps it; each other slot takes the next confirmed
+            candidate in the ladder's order that the band's rules allow beside them: the two
+            slots of a pair (the rings, the trinkets, the two hands) never hold the same item
+            (the same id or the same name), and there is no off-hand pick beside a two-handed
+            main-hand pick. Null when the band has no pick for the slot, the character has no
+            rated spec or is below level 20, or its faction or the spec's best-in-slot data is
+            unknown.
+          required: [id, name, source, chance]
+          properties:
+            id: { type: integer }
+            name: { type: string }
+            source:
+              type: string
+              description: >-
+                Where the item comes from, as a player knows it: "Wailing Caverns: Mutanus the
+                Devourer", "Blacksmithing", "The League of Arathor".
+            chance:
+              type: number
+              nullable: true
+              description: >-
+                The drop chance as a fraction (0.333333 is one in three), at the pick's own
+                source; a pick promoted past an item the client has not confirmed carries the
+                chance of its own source. Null when the source states no rate (every
+                quest, vendor, crafted, reputation and PvP source, and a drop whose loot table
+                gives none).
+        gap:
+          type: number
+          nullable: true
+          description: >-
+            The Gear component points the pick would add over the worn item, one decimal: 500 x
+            (the pick's gear score - the worn item's gear score) / the band's best set's gear
+            score, each item scored by the spec's stat weights as the Gear component scores it.
+            An empty slot scores 0. 0 when the worn item is the pick or scores at least as much;
+            an upgrade worth under 0.05 points also rounds to 0. The rings and the trinkets are
+            matched to their picks whichever way round gives the smaller total, so a pick worn
+            in the other slot of its pair reads 0. When the picked or the worn main hand is
+            two-handed, the two hands count as one unit: the main hand's gap is the picked main
+            and off hands' score less the worn main and off hands' score (0 at least), and the
+            off hand's gap is 0, or null when the band has no off-hand pick. Null when there is
+            no pick, when an item is not in the data build, or when the band's best set cannot
+            be scored.
+    ExecutionScore:
+      type: number
+      nullable: true
+      description: >-
+        execution_score on ranking rows, on a character's best and history rows, and on the
+        guild page's roster_best rows (GET /v1/guilds/{region}/{ruleset}/{name}): the
+        fight's damage as a share of what the same gear and talents do in the simulator over
+        the same fight length (1 is the simulator's average; a lucky pull can pass it, and the
+        stored value is kept between 0 and 2). Damage only. Null while the fight has not been
+        simulated yet (the score is written after the fight closes, or by the nightly job), and
+        null for good for healers and tanks, for a spec the simulator has not validated, for a
+        fight whose summary has no row for the player, for a fight whose character the
+        simulator could not rebuild from the log, and when the simulation produced no damage.
+    GuildAttendance:
+      type: object
+      description: >-
+        A guild roster row's attendance (roster[].attendance and pending[].attendance on GET
+        /v1/guilds/{id}/home, candidates[].attendance on GET /v1/guilds/{id}/loot). A character
+        was present in a report when it has a ranked or rated row there (fight_metrics not
+        removed, or rating_scores), read by its character key, never by the log's GUIDs
+        (fights.players). The window is the guild's last 8 non-private, unflagged reports that
+        carry at least one ranked or rated row, so a night nobody can be present in (a
+        private, tampered, unverified or trash-only report, or one not ranked yet) is never
+        everyone's absence.
+      properties:
+        present: { type: integer, description: "How many of the window's reports the character was present in, 0 to nights; a report with several of its fights counts once." }
+        nights: { type: integer, description: "How many reports the window holds: 8, or fewer while the guild has logged fewer such reports. The same for every row of the roster." }
     ForeverScore:
       type: object
       description: >-
         The Forever Score fields of GET /v1/characters/{region}/{ruleset}/{name}. Every field
         is null when the character has no rated fight in a public report (an anonymised
-        character's page answers 404). The components sum to score; the ceilings are gear 500, experience 700,
-        parses 600, attendance 200, discipline 100 (api/internal/rating/score_v2.go).
+        character's page answers 404). The components sum to score; the ceilings are gear
+        500, experience 700, parses 600, attendance 200, discipline 100
+        (api/internal/rating/score_v2.go).
       properties:
         score: { type: integer, nullable: true }
         tier:
@@ -1763,14 +1887,21 @@ paths:
         a zero score. A score that cannot be read just then is also null, and the rest of the
         page is still served. score_history[] (schema ScorePoint) is the score over time, oldest
         first, never null. A character whose account is anonymised answers 404 exactly as a
-        character nobody has logged does, the rule GET .../rating already follows.
+        character nobody has logged does, the rule GET .../rating already follows. gear[]
+        (schema CharacterGearSlot) is the gear panel: the 17 slots of the character's newest
+        addon export, in the export's order, each with what it wears, the band's pick and the
+        gap; [] when the character has no export. gear_gap_total beside it is the sum of the
+        gaps (schema CharacterGear gives both and every null rule). A history row's
+        execution_score is defined in schema ExecutionScore.
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
         - { name: name, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '404': { description: "No such character, or its account is anonymised (the same answer)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404':
+          description: "No such character, or its account is anonymised (the same answer)"
+          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
   /v1/guilds/{id}/reports:
     get:
       summary: A guild's own reports, newest first (session)
@@ -1790,10 +1921,30 @@ paths:
         '400': { description: "page must be 1 or more", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '401': { description: "No session", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '404': { description: "Unknown guild, or not a member", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/guilds/{id}/home:
+    get:
+      summary: A guild's control centre home (session)
+      description: >-
+        The guild, the viewer's standing, the summary, the last week's reports, the roster and
+        the officer's pending queue, in the shape docs/contracts/2026-10-04-guild-centre-api.md
+        gives. roster[].attendance is { present, nights } (schema GuildAttendance): presence in
+        the guild's last 8 non-private, unflagged reports that someone is present in, read by
+        character key. reports[] is paged by cursor (next_cursor). Any member of the guild (an
+        account with a character on its roster, verified or not) may read it; anyone else gets
+        403.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: cursor, in: query, schema: { type: string }, description: "The next_cursor a previous page returned; it pages reports[] past that report." }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "cursor is not a next_cursor this route returned", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '401': { description: "No session", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '403': { description: "Not a member of the guild (an unknown numeric id answers 403 too: nobody is its member)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "No such guild: an id that is not a positive number, or a guild gone by the time the home is read", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/guilds/{region}/{ruleset}/{name}:
     get:
       summary: A guild's progression, roster bests, and reports
-      description: "progression[] rows are { encounter, encounter_id, difficulty, kills, pull_count, first_kill_at? }; roster_best[] rows are { player, encounter, encounter_id, metric, value, fought_at, execution_score? }"
+      description: "progression[] rows are { encounter, encounter_id, difficulty, kills, pull_count, first_kill_at? }; roster_best[] rows are { player, encounter, encounter_id, metric, value, fought_at, execution_score? }, where execution_score is defined in schema ExecutionScore."
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }

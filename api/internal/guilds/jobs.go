@@ -8,6 +8,9 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+
+	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // AgeingThreshold is how stale a guild_characters row's refreshed_at may
@@ -61,10 +64,12 @@ func (s *Store) AgeOut(ctx context.Context, at time.Time) error {
 }
 
 // VerifyByLogs corroborates every currently-unverified guild_characters
-// row against that guild's own uploaded logs: the character must appear
-// in fights.players for reports carrying this guild_id on at least two
-// distinct report dates within a trailing 30-day window. A single forged
-// export cannot satisfy this on its own — it needs two genuinely separate
+// row against that guild's own uploaded logs: the character must be
+// present (logNights: a rated or ranked row read by its key, so a boss
+// fight in a report that is not private) in reports carrying this
+// guild_id on at least two distinct report dates within a trailing
+// 30-day window. fights.players is never read: it holds the log's GUIDs.
+// A single forged export cannot satisfy this on its own — it needs two genuinely separate
 // nights of the guild's own real combat-log uploads naming the same
 // character.
 //
@@ -94,26 +99,63 @@ func (s *Store) VerifyByLogs(ctx context.Context) error {
 	defer func() { _ = tx.Rollback(ctx) }()
 
 	rows, err := tx.Query(ctx, `
-		update guild_characters gc
-		set verified_at = now(), verified_by = 'logs'
-		where gc.verified_at is null
-		  and exists (select 1 from guilds g where g.id = gc.guild_id and g.claim_contested_at is null)
-		  and (
-		    select count(distinct r2.created_at::date)
-		    from fights f2 join reports r2 on r2.id = f2.report_id
-		    where r2.guild_id = gc.guild_id
-		      and gc.character_key = any(f2.players)
-		      and r2.created_at >= now() - interval '30 days'
-		      and r2.owner_id is distinct from gc.user_id
-		  ) >= 2
-		returning guild_id, user_id
-	`)
+		select gc.guild_id, gc.character_key, gc.user_id
+		from guild_characters gc join guilds g on g.id = gc.guild_id
+		where gc.verified_at is null and g.claim_contested_at is null
+		order by gc.guild_id, gc.character_key`)
 	if err != nil {
-		return fmt.Errorf("guilds: verify by logs: update: %w", err)
+		return fmt.Errorf("guilds: verify by logs: candidates: %w", err)
 	}
-	affected, err := scanGuildUserPairs(rows)
-	if err != nil {
-		return fmt.Errorf("guilds: verify by logs: %w", err)
+	candidates := map[int64]map[string]int64{}
+	var guildOrder []int64
+	for rows.Next() {
+		var guildID, userID int64
+		var key string
+		if err := rows.Scan(&guildID, &key, &userID); err != nil {
+			rows.Close()
+			return fmt.Errorf("guilds: verify by logs: candidates: %w", err)
+		}
+		if candidates[guildID] == nil {
+			candidates[guildID] = map[string]int64{}
+			guildOrder = append(guildOrder, guildID)
+		}
+		candidates[guildID][key] = userID
+	}
+	rows.Close()
+	if err := rows.Err(); err != nil {
+		return fmt.Errorf("guilds: verify by logs: candidates: %w", err)
+	}
+
+	affected := map[guildUserPair]bool{}
+	for _, guildID := range guildOrder {
+		nights, err := logNights(ctx, tx, guildID, candidates[guildID])
+		if err != nil {
+			return fmt.Errorf("guilds: verify by logs: %w", err)
+		}
+		var verify []string
+		for key, n := range nights {
+			if n >= logNightsToVerify {
+				verify = append(verify, key)
+			}
+		}
+		if len(verify) == 0 {
+			continue
+		}
+		rows, err := tx.Query(ctx, `
+			update guild_characters set verified_at = now(), verified_by = 'logs'
+			where guild_id = $1 and character_key = any($2) and verified_at is null
+			  and exists (select 1 from guilds g where g.id = $1 and g.claim_contested_at is null)
+			returning guild_id, user_id`, guildID, verify)
+		if err != nil {
+			return fmt.Errorf("guilds: verify by logs: update: %w", err)
+		}
+		pairs, err := scanGuildUserPairs(rows)
+		if err != nil {
+			return fmt.Errorf("guilds: verify by logs: %w", err)
+		}
+		for p := range pairs {
+			affected[p] = true
+		}
 	}
 	if err := recomputeEach(ctx, tx, affected); err != nil {
 		return err
@@ -122,6 +164,77 @@ func (s *Store) VerifyByLogs(ctx context.Context) error {
 		return fmt.Errorf("guilds: verify by logs: commit: %w", err)
 	}
 	return nil
+}
+
+// logNightsToVerify is how many distinct report dates of log evidence verify a character.
+const logNightsToVerify = 2
+
+// logNights counts, per candidate character key (key -> the account that holds it), the
+// distinct report dates (reports.created_at's date) within the trailing 30 days on which a
+// report of guildID that is not private, not flagged (tampered or unverified) and not owned
+// by the candidate's own account, has the character present. Presence is presence.In - a
+// rated or ranked row read by the character's key, the same evidence the Forever Score
+// trusts - never fights.players, which holds the log's GUIDs. Those rows exist only for boss
+// fights in reports that are not private, so log evidence is an unflagged, non-private boss
+// fight. Candidates with no such date are absent from the result. q is the pool or the
+// caller's transaction.
+func logNights(ctx context.Context, q character.Querier, guildID int64, candidates map[string]int64) (map[string]int, error) {
+	out := map[string]int{}
+	if len(candidates) == 0 {
+		return out, nil
+	}
+	rows, err := q.Query(ctx, `
+		select id, owner_id, to_char(created_at::date, 'YYYY-MM-DD') from reports
+		where guild_id = $1 and visibility <> 'private' and flagged is null
+		  and created_at >= now() - interval '30 days'`, guildID)
+	if err != nil {
+		return nil, fmt.Errorf("log nights: %w", err)
+	}
+	type report struct {
+		owner *int64
+		date  string
+	}
+	reports := map[string]report{}
+	var ids []string
+	for rows.Next() {
+		var id string
+		var r report
+		if err := rows.Scan(&id, &r.owner, &r.date); err != nil {
+			rows.Close()
+			return nil, fmt.Errorf("log nights: %w", err)
+		}
+		reports[id] = r
+		ids = append(ids, id)
+	}
+	rows.Close()
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("log nights: %w", err)
+	}
+
+	keys := make([]string, 0, len(candidates))
+	for key := range candidates {
+		keys = append(keys, key)
+	}
+	present, err := presence.In(ctx, q, ids, keys)
+	if err != nil {
+		return nil, fmt.Errorf("log nights: %w", err)
+	}
+	dates := map[string]map[string]bool{}
+	for _, p := range present {
+		r := reports[p.ReportID]
+		// A report never counts toward its own account's character (VerifyByLogs' rule).
+		if r.owner != nil && *r.owner == candidates[p.Key] {
+			continue
+		}
+		if dates[p.Key] == nil {
+			dates[p.Key] = map[string]bool{}
+		}
+		dates[p.Key][r.date] = true
+	}
+	for key, d := range dates {
+		out[key] = len(d)
+	}
+	return out, nil
 }
 
 type guildUserPair struct{ guildID, userID int64 }

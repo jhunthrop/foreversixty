@@ -158,13 +158,13 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 	if err != nil {
 		return LootView{}, err
 	}
-	present, err := s.attendancePresent(ctx, guildID)
-	if err != nil {
-		return LootView{}, err
-	}
-	nights, err := s.attendanceWindowSize(ctx, guildID)
-	if err != nil {
-		return LootView{}, err
+	// The roster already carries each row's attendance (enrichRoster), the same reading the
+	// home shows. Every roster row carries the same nights (the window's size), so the last
+	// row's is the guild's.
+	nights, present := 0, make(map[string]int, len(roster))
+	for _, row := range roster {
+		present[row.CharacterKey] = row.Attendance.Present
+		nights = row.Attendance.Nights
 	}
 
 	awards, err := s.lootAwards(ctx, guildID, onyxiaEncounterID)

@@ -56,7 +56,8 @@ func (s *Store) anonymized(ctx context.Context, key string) (bool, error) {
 //     by addon_exports.captured_at) and the Battle.net import (characters.level and .race,
 //     dated by characters.imported_at). The newer source's value wins; when it does not
 //     carry the field (an export with no level= section, a race slug the build data does not
-//     know) the older source's value stands. On a tie the Battle.net import wins. An
+//     know) the older source's value stands. On a tie the Battle.net import wins, and so
+//     does a characters row with no imported_at (its values are undated, never older). An
 //     export's race slug is named by the build data (Store.Trees): "night-elf" is "Night
 //     Elf", the form the Battle.net import stores.
 //   - realm: character.Realm, the order the nightly data addon keys by.
@@ -96,17 +97,9 @@ func (s *Store) identity(ctx context.Context, ref *CharacterRef) error {
 			}
 		}
 	}
-	if bnetLevel != nil && *bnetLevel <= 0 {
-		bnetLevel = nil
-	}
 	race := strings.TrimSpace(deref(bnetRace))
-	level := bnetLevel
-	exportNewer := export != nil && capturedAt != nil && (importedAt == nil || capturedAt.After(*importedAt))
-	if exportNewer || level == nil {
-		if exportLevel != nil {
-			level = exportLevel
-		}
-	}
+	level := newestLevel(bnetLevel, importedAt, export != nil, exportLevel, capturedAt)
+	exportNewer := exportIsNewer(export != nil, capturedAt, importedAt)
 	if exportNewer || race == "" {
 		if exportRace != "" {
 			race = exportRace
@@ -116,6 +109,71 @@ func (s *Store) identity(ctx context.Context, ref *CharacterRef) error {
 	ref.Race = nonEmpty(race)
 	ref.Realm = nonEmpty(character.Realm(deref(bnetRealm), whoRealm, deref(unit)))
 	return nil
+}
+
+// CharacterLevels is each of keys' level as the site knows it, every key present in the
+// answer and nil when no source knows its level: the level the character page shows
+// (identity's rule, newestLevel), from the Battle.net import or the stored addon export's
+// level= section, whichever is newer. One query for all keys. The rater reads it once per
+// fight for the rotation adherence band (api/internal/rating/adherence.go).
+func CharacterLevels(ctx context.Context, q character.Querier, keys []string) (map[string]*int, error) {
+	rows, err := q.Query(ctx,
+		`select k.key, c.level, c.imported_at, ae.export, ae.captured_at
+		 from unnest($1::text[]) as k(key)
+		 left join characters c on c.key = k.key
+		 left join addon_exports ae on ae.character_key = k.key`, keys)
+	if err != nil {
+		return nil, fmt.Errorf("rankings: read levels: %w", err)
+	}
+	defer rows.Close()
+	out := make(map[string]*int, len(keys))
+	for rows.Next() {
+		var (
+			key                    string
+			bnetLevel              *int
+			export                 *string
+			importedAt, capturedAt *time.Time
+		)
+		if err := rows.Scan(&key, &bnetLevel, &importedAt, &export, &capturedAt); err != nil {
+			return nil, fmt.Errorf("rankings: read levels: %w", err)
+		}
+		var exportLevel *int
+		if export != nil {
+			if decoded, ok := fs1.Decode(*export); ok && decoded.HasLevel {
+				exportLevel = &decoded.Level
+			}
+		}
+		out[key] = newestLevel(bnetLevel, importedAt, export != nil, exportLevel, capturedAt)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rankings: read levels: %w", err)
+	}
+	return out, nil
+}
+
+// newestLevel is identity's level rule, shared with CharacterLevels: the Battle.net import's
+// level (characters.level; a non-positive one is none) unless the export is newer
+// (exportIsNewer) or the import carries none, and then the export's level= section when it
+// has one.
+func newestLevel(bnetLevel *int, importedAt *time.Time, hasExport bool, exportLevel *int, capturedAt *time.Time) *int {
+	if bnetLevel != nil && *bnetLevel <= 0 {
+		bnetLevel = nil
+	}
+	level := bnetLevel
+	if exportIsNewer(hasExport, capturedAt, importedAt) || level == nil {
+		if exportLevel != nil {
+			level = exportLevel
+		}
+	}
+	return level
+}
+
+// exportIsNewer reports whether the stored export is newer than the Battle.net import. The
+// export is newer only than a dated import: a characters row can carry a level with no
+// imported_at (cmd/seedguild writes one), and its values are not known to be older, so they
+// stand and the export only fills what they lack.
+func exportIsNewer(hasExport bool, capturedAt, importedAt *time.Time) bool {
+	return hasExport && capturedAt != nil && importedAt != nil && capturedAt.After(*importedAt)
 }
 
 // raceName is the display name of an export's race slug in the build data the export names,

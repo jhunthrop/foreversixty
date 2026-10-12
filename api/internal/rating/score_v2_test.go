@@ -164,6 +164,8 @@ func TestEveryLoggedClassicSpecResolvesToADataSpec(t *testing.T) {
 
 var (
 	repoGearOnce sync.Once
+	// repoGearData is the repository's data/builds as useRepoGearData loaded it.
+	repoGearData *trees.Data
 	repoGearErr  error
 )
 
@@ -173,9 +175,8 @@ func useRepoGearData(t *testing.T) {
 	t.Helper()
 	const dir = "../../../data/builds"
 	repoGearOnce.Do(func() {
-		var data *trees.Data
-		if data, repoGearErr = trees.Load(dir); repoGearErr == nil {
-			sims.SetGearData(data, dir)
+		if repoGearData, repoGearErr = trees.Load(dir); repoGearErr == nil {
+			sims.SetGearData(repoGearData, dir)
 		}
 	})
 	if repoGearErr != nil {
@@ -527,6 +528,47 @@ func TestRaterRollsTheScoreUpOntoTheRatedFight(t *testing.T) {
 		attendance != want.Attendance || !discipline || tier != want.Tier {
 		t.Errorf("rolled up %d/%d/%d/%v/%v/%q, want %d/%d/%d/%v/true/%q", score, gear, experience, attendance,
 			discipline, tier, want.Score, want.Components.Gear, want.Components.Experience, want.Attendance, want.Tier)
+	}
+}
+
+// An anonymised account hides the character page (404), but its score is still computed for
+// the rater's roll-up: the parses component reads rankings.Store.CharacterFights, which has
+// no anonymise check, so it is the same non-zero figure an open account gets.
+func TestAnAnonymisedCharactersRollUpKeepsItsParsesComponent(t *testing.T) {
+	fx := seedLoggedRaider(t)
+	ctx := context.Background()
+	open, err := fx.store.ScoreV2(ctx, fx.main)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if open.Components.Parses == 0 {
+		t.Fatal("the fixture's parses component is 0; the test needs a non-zero one")
+	}
+	mustExec(t, fx.pool, `update users set anonymize = true where id = $1`, fx.userID)
+	t.Cleanup(func() {
+		fx.pool.Exec(context.Background(), `update users set anonymize = false where id = $1`, fx.userID)
+	})
+
+	hidden, err := fx.store.ScoreV2(ctx, fx.main)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if hidden.Components.Parses != open.Components.Parses || hidden.Score != open.Score {
+		t.Fatalf("anonymised: parses %d score %d; want the open account's %d and %d",
+			hidden.Components.Parses, hidden.Score, open.Components.Parses, open.Score)
+	}
+	f := RatedFight{ReportID: sv2Report + "c", FightIndex: 4, Region: "us", Ruleset: "normal",
+		Summary: summary.Summary{Roster: []summary.RosterRow{{Name: "Sv2main"}}}}
+	if err := fx.store.RollUpScores(ctx, f); err != nil {
+		t.Fatal(err)
+	}
+	var score int
+	if err := fx.pool.QueryRow(ctx, `select score from rating_scores where report_id = $1 and fight_index = 4
+		and player_key = $2`, f.ReportID, fx.main).Scan(&score); err != nil {
+		t.Fatal(err)
+	}
+	if score != open.Score {
+		t.Fatalf("rolled-up score %d, want %d (with its %d parses points)", score, open.Score, open.Components.Parses)
 	}
 }
 

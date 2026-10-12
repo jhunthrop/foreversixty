@@ -85,8 +85,9 @@ type HomeReport struct {
 	DurationMS int64 `json:"duration_ms"`
 }
 
-// Attendance is a character's presence over the guild's last 8 reports (contract's own
-// window), design spec §4.B.
+// Attendance is a character's presence over the guild's last 8 non-private, unflagged
+// reports that someone is present in (attendanceReports; the contract's own window), design
+// spec §4.B. Nights is the window's size, the same on every roster row.
 type Attendance struct {
 	Present int `json:"present"`
 	Nights  int `json:"nights"`

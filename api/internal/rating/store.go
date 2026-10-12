@@ -39,6 +39,10 @@ type RatedFight struct {
 type Store struct {
 	Pool *pgxpool.Pool
 	Log  *slog.Logger
+
+	// levels is where RateFight reads the roster's levels for the adherence band; nil reads
+	// through Pool. Tests point it at a closed pool to see a failed read.
+	levels character.Querier
 }
 
 func (s *Store) logger() *slog.Logger {
@@ -60,6 +64,9 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 	if err := db.EnsureRatingsPartition(ctx, s.Pool, f.FoughtAt); err != nil {
 		return err
 	}
+	// The roster's levels, for the adherence band, read before the transaction so a failed
+	// read can never fail the rating (adherence.go).
+	levels, levelsKnown := s.rosterLevels(ctx, f)
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("rating: begin: %w", err)
@@ -109,6 +116,7 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 		cr.Discipline = fightDiscipline(f.Summary, row)
 		cr.LastRaid = lastRaidFacts(f.Summary, row, card,
 			ratingengine.ActivityIdleMS(f.Summary, row.GUID, tables.Mechanics, nil))
+		cr.LastRaid.Adherence = adherence(f.Summary, row, levels[cr.PlayerKey], levelsKnown)
 		if err := insertCardRow(ctx, tx, cr); err != nil {
 			return err
 		}
@@ -125,9 +133,9 @@ func insertCardRow(ctx context.Context, tx pgx.Tx, cr CardRow) error {
 		`insert into rating_scores (report_id, fight_index, player_key, player_name, class, spec, role,
 		   encounter_id, difficulty, size, duration_ms, kill, kill_time_band, overall, overall_uncapped,
 		   overall_capped, components, model_version, fought_at, coverage, insufficient, insufficient_reason,
-		   discipline, deaths, biggest_loss, loss_seconds, consumables_missed)
+		   discipline, deaths, biggest_loss, loss_seconds, consumables_missed, adherence)
 		 values ($1, $2, $3, $4, nullif($5, ''), nullif($6, ''), nullif($7, ''), $8, $9, $10, $11, $12, $13,
-		   $14, $15, $16, $17, $18, $19, $20, $21, nullif($22, ''), $23, $24, nullif($25, ''), $26, $27)
+		   $14, $15, $16, $17, $18, $19, $20, $21, nullif($22, ''), $23, $24, nullif($25, ''), $26, $27, $28)
 		 on conflict (report_id, fight_index, player_key, fought_at) do update set
 		   player_name = excluded.player_name, class = excluded.class, spec = excluded.spec,
 		   role = excluded.role, overall = excluded.overall, overall_uncapped = excluded.overall_uncapped,
@@ -136,12 +144,12 @@ func insertCardRow(ctx context.Context, tx pgx.Tx, cr CardRow) error {
 		   insufficient = excluded.insufficient, insufficient_reason = excluded.insufficient_reason,
 		   discipline = excluded.discipline, deaths = excluded.deaths,
 		   biggest_loss = excluded.biggest_loss, loss_seconds = excluded.loss_seconds,
-		   consumables_missed = excluded.consumables_missed, computed_at = now()`,
+		   consumables_missed = excluded.consumables_missed, adherence = excluded.adherence, computed_at = now()`,
 		cr.ReportID, cr.FightIndex, cr.PlayerKey, cr.PlayerName, cr.Class, cr.Spec, cr.Role,
 		cr.EncounterID, cr.Difficulty, cr.Size, cr.DurationMS, cr.Kill, cr.KillTimeBand,
 		cr.Overall, cr.OverallUncapped, cr.OverallCapped, cr.Components, cr.ModelVersion, cr.FoughtAt,
 		cr.Coverage, cr.Insufficient, cr.InsufficientReason, cr.Discipline, cr.LastRaid.Deaths, cr.LastRaid.BiggestLoss,
-		cr.LastRaid.LossSeconds, consumablesOrEmpty(cr.LastRaid.ConsumablesMissed))
+		cr.LastRaid.LossSeconds, consumablesOrEmpty(cr.LastRaid.ConsumablesMissed), cr.LastRaid.Adherence)
 	if err != nil {
 		return fmt.Errorf("rating: write row %s/%d/%s: %w", cr.ReportID, cr.FightIndex, cr.PlayerKey, err)
 	}

@@ -44,6 +44,10 @@ type LastRaidFacts struct {
 	// ConsumablesMissed names the consumable categories the player pulled without; empty,
 	// never nil, when none was missed or the log cannot say.
 	ConsumablesMissed []string
+	// Adherence is the rotation adherence (adherence.go), 0 to 1 to two decimals; nil when the
+	// spec has no shipped rotation or the player cast fewer than AdherenceMinCasts abilities.
+	// Set by the caller (Store.RateFight), which holds the database for the character's level.
+	Adherence *float64
 }
 
 // lastRaidFacts works out row's facts from its scored card and the fight. idleMS is the

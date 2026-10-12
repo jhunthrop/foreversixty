@@ -140,8 +140,9 @@ type SimSlot struct {
 
 // LastRaidBoss is one rated boss fight inside a last_raid message: the card's
 // overall as the percentile, and the facts the rater stored with it
-// (api/internal/rating/last_raid.go). Adherence is absent until the rotation
-// task lands.
+// (api/internal/rating/last_raid.go). Adherence is the rotation adherence the rater
+// stored (api/internal/rating/adherence.go), absent when it could not be worked out and
+// for a fight rated before migration 0037.
 type LastRaidBoss struct {
 	Name              string   `json:"name"`
 	Percentile        int      `json:"percentile"`
@@ -526,7 +527,7 @@ func (s *Service) lastRaidMessages(ctx context.Context, keys []string, now time.
 		}
 		m.Bosses = append(m.Bosses, LastRaidBoss{
 			Name: f.Boss, Percentile: int(math.Round(f.Overall)), BiggestLoss: f.BiggestLoss,
-			LossSeconds: f.LossSeconds, Deaths: f.Deaths, ConsumablesMissed: missed,
+			LossSeconds: f.LossSeconds, Deaths: f.Deaths, ConsumablesMissed: missed, Adherence: f.Adherence,
 		})
 	}
 	// A raid whose fights no log or fight row ever named has no boss to show.

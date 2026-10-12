@@ -25,6 +25,8 @@ type lastRaidFight struct {
 	LossSeconds       int
 	Deaths            int
 	ConsumablesMissed []string
+	// Adherence is the stored rotation adherence; nil on a fight rated before migration 0037.
+	Adherence *float64
 }
 
 // lastRaidFights reads, for each of keys, every rated boss fight of its last raid: the
@@ -45,6 +47,7 @@ func (s *Store) lastRaidFights(ctx context.Context, keys []string, since time.Ti
 		          coalesce(rs.class, '') as class, coalesce(rs.spec, '') as spec,
 		          coalesce(rs.biggest_loss, '') as biggest_loss, coalesce(rs.loss_seconds, 0) as loss_seconds,
 		          coalesce(rs.deaths, 0) as deaths, coalesce(rs.consumables_missed, '{}') as consumables_missed,
+		          rs.adherence::float8 as adherence,
 		          rs.deaths is not null as known
 		     from rating_scores rs join reports r on r.id = rs.report_id
 		    where rs.player_key = any($1) and r.visibility <> 'private'
@@ -58,7 +61,7 @@ func (s *Store) lastRaidFights(ctx context.Context, keys []string, since time.Ti
 		          (select f2.name from fights f2 where f2.encounter_id = m.encounter_id and f2.name <> ''
 		            order by f2.start_ms desc limit 1), ''),
 		        m.class, m.spec, m.fought_at, m.overall, m.biggest_loss, m.loss_seconds, m.deaths,
-		        m.consumables_missed
+		        m.consumables_missed, m.adherence
 		   from mine m
 		   join newest n on n.player_key = m.player_key and n.report_id = m.report_id
 		   join reports r on r.id = m.report_id
@@ -73,7 +76,7 @@ func (s *Store) lastRaidFights(ctx context.Context, keys []string, since time.Ti
 	for rows.Next() {
 		var f lastRaidFight
 		if err := rows.Scan(&f.CharacterKey, &f.ReportID, &f.Zone, &f.Boss, &f.Class, &f.Spec, &f.FoughtAt,
-			&f.Overall, &f.BiggestLoss, &f.LossSeconds, &f.Deaths, &f.ConsumablesMissed); err != nil {
+			&f.Overall, &f.BiggestLoss, &f.LossSeconds, &f.Deaths, &f.ConsumablesMissed, &f.Adherence); err != nil {
 			return nil, fmt.Errorf("addon: read last raids: %w", err)
 		}
 		out = append(out, f)

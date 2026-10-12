@@ -100,22 +100,26 @@ func decodeModerationCursor(s string) (moderationCursor, bool) {
 // directly rather than trusting a verdict the site already reached).
 func (s *Store) evidenceFor(ctx context.Context, guildID, userID int64) (ClaimEvidence, error) {
 	var ev ClaimEvidence
+	var key string
 	err := s.Pool.QueryRow(ctx, `
-		select gc.rank_index, gc.verified_at is not null, gc.verified_by,
-		       (select count(distinct r.created_at::date) from fights f join reports r on r.id = f.report_id
-		        where r.guild_id = gc.guild_id and gc.character_key = any(f.players)
-		          and r.owner_id is distinct from gc.user_id and r.created_at >= now() - interval '30 days')
+		select gc.rank_index, gc.verified_at is not null, gc.verified_by, gc.character_key
 		from guild_characters gc
 		where gc.guild_id = $1 and gc.user_id = $2
 		order by (gc.verified_at is not null) desc, gc.rank_index nulls last, gc.refreshed_at desc
 		limit 1
-	`, guildID, userID).Scan(&ev.RankIndex, &ev.Verified, &ev.VerifiedBy, &ev.NightsInOthersReports)
+	`, guildID, userID).Scan(&ev.RankIndex, &ev.Verified, &ev.VerifiedBy, &key)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return ClaimEvidence{}, nil
 	}
 	if err != nil {
 		return ClaimEvidence{}, fmt.Errorf("guilds: evidence for %d in guild %d: %w", userID, guildID, err)
 	}
+	// The same count VerifyByLogs reads (logNights): presence by the character's key.
+	nights, err := logNights(ctx, s.Pool, guildID, map[string]int64{key: userID})
+	if err != nil {
+		return ClaimEvidence{}, fmt.Errorf("guilds: evidence for %d in guild %d: %w", userID, guildID, err)
+	}
+	ev.NightsInOthersReports = nights[key]
 	return ev, nil
 }
 

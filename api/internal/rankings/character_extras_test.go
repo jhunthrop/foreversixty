@@ -210,6 +210,26 @@ func TestCharacterPageCarriesWhoTheCharacterIs(t *testing.T) {
 	x.rated("cx66-r1", 1, logged, "Cx Logged-OldRealm", now.Add(-96*time.Hour), nil, nil)
 	x.rated("cx66-r1", 2, logged, "Cx Logged-ClassicBetaPvE2", now.Add(-24*time.Hour), nil, nil)
 
+	// A tie: the export was captured at the very instant of the Battle.net import, so the
+	// import wins.
+	tied := x.char("cx66-tie", "Cx Tie", &owner)
+	at := now.Add(-2 * time.Hour).Truncate(time.Microsecond)
+	x.run(`update characters set realm_name = 'Classic Beta PvE 2', level = 30, race = 'Human', source = 'bnet',
+		imported_at = $2 where key = $1`, tied, at)
+	x.export(tied, owner, "FS1:test-1:warrior:dwarf:0/0/0:|level=31", at)
+
+	// Battle.net is newer but carries no level and no race: the older export's stand.
+	gap := x.char("cx66-gap", "Cx Gap", &owner)
+	x.run(`update characters set realm_name = 'Classic Beta PvE 2', source = 'bnet', imported_at = $2 where key = $1`,
+		gap, now.Add(-time.Hour))
+	x.export(gap, owner, "FS1:test-1:warrior:dwarf:0/0/0:|level=33", now.Add(-48*time.Hour))
+
+	// A level and race on the characters row with no import date (cmd/seedguild writes such
+	// rows): an undated row is not older than the export, so its values stand.
+	undated := x.char("cx66-undated", "Cx Undated", &owner)
+	x.run(`update characters set realm_name = 'Classic Beta PvE 2', level = 40, race = 'Human' where key = $1`, undated)
+	x.export(undated, owner, "FS1:test-1:warrior:dwarf:0/0/0:|level=41", now.Add(-time.Hour))
+
 	str := func(s string) *string { return &s }
 	num := func(n int) *int { return &n }
 	for _, tc := range []struct {
@@ -225,12 +245,24 @@ func TestCharacterPageCarriesWhoTheCharacterIs(t *testing.T) {
 		{"cx66-export", num(52), str("Dwarf"), str("Classic Beta PvP"), nil, []string{"guild"}, "export newest"},
 		{"cx66-mixed", num(44), str("Human"), str("Classic Beta PvE 2"), nil, []string{"guild"}, "export newest, fields missing"},
 		{"cx66-logged", nil, nil, str("ClassicBetaPvE2"), nil, []string{"guild", "level", "race"}, "logged only"},
+		{"cx66-tie", num(30), str("Human"), str("Classic Beta PvE 2"), nil, []string{"guild"}, "tie"},
+		{"cx66-gap", num(33), str("Dwarf"), str("Classic Beta PvE 2"), nil, []string{"guild"}, "Battle.net newer, fields missing"},
+		{"cx66-undated", num(40), str("Human"), str("Classic Beta PvE 2"), nil, []string{"guild"}, "undated row"},
 	} {
 		status, c, _, ref, body := x.page(tc.slug)
 		if status != http.StatusOK {
 			t.Fatalf("%s: status %d: %s", tc.describeLine, status, body)
 		}
 		got := c.Character
+		// The rater's adherence band reads the level through the same rule (CharacterLevels).
+		key := "us/normal/" + tc.slug
+		if levels, err := CharacterLevels(context.Background(), x.pool, []string{key, "us/normal/cx66-nobody"}); err != nil {
+			t.Fatal(err)
+		} else if level, ok := levels[key]; !ok || !eqPtr(level, tc.level) {
+			t.Errorf("%s: CharacterLevels = %s (present %v), want %s", tc.describeLine, show(level), ok, show(tc.level))
+		} else if nobody, ok := levels["us/normal/cx66-nobody"]; !ok || nobody != nil {
+			t.Errorf("%s: a key no source knows = %s (present %v), want present and nil", tc.describeLine, show(nobody), ok)
+		}
 		if !eqPtr(got.Level, tc.level) || !eqPtr(got.Race, tc.race) || !eqPtr(got.Realm, tc.realm) {
 			t.Errorf("%s: level %s race %s realm %s; want %s %s %s", tc.describeLine,
 				show(got.Level), show(got.Race), show(got.Realm), show(tc.level), show(tc.race), show(tc.realm))
