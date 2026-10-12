@@ -68,8 +68,11 @@ end
 --- Saved per character (ForeverSixtyDB.follows[Export.characterKey()]):
 --- the account-wide ForeverSixtyDB.follow this replaced showed the first
 --- character's build to every character that logged in after it.
-function Follow.load(code, data, name, slot)
-	local build, message = Codec.loadBuild(code, data)
+---
+--- `player` (optional, Codec.loadBuild's) refuses a code for another class; the build
+--- dialog passes it, a restore at login does not.
+function Follow.load(code, data, name, slot, player)
+	local build, message = Codec.loadBuild(code, data, player)
 	if build == nil then
 		return nil, message
 	end
@@ -264,9 +267,9 @@ function Follow.forget(slot)
 	return nil
 end
 
---- Mark an inbox build (by its companion-assigned id) as handled, so the
---- Overview's "build arrived" banner never shows it again -- whether the
---- player loaded it or dismissed it outright, both close the news item.
+--- Mark an inbox build as handled, by its companion-assigned id or by its code (the build
+--- dialog records both, so a build used once stays used after the older `builds` list,
+--- which carries the ids, goes away).
 function Follow.dismissInbox(id)
 	if id == nil then
 		return nil
@@ -277,24 +280,10 @@ function Follow.dismissInbox(id)
 	return entry.dismissed
 end
 
---- The inbox ids the current character has used or dismissed (Follow.dismissInbox), as a
---- set. The build dialog's "from the site" rows leave these out.
+--- The inbox ids and codes the current character has used or dismissed (Follow.dismissInbox),
+--- as a set. The build dialog's "from the site" rows leave these out.
 function Follow.dismissedSet()
 	return currentEntry().dismissed or {}
-end
-
---- The first inbox build addressed to this character (Follow.inbox's own
---- rule) that has not been dismissed yet, or nil. A build the player already
---- loaded or dismissed never comes back.
-function Follow.pendingArrival(inbox)
-	local usable = Follow.inbox(inbox, Export.characterKey())
-	local dismissed = Follow.dismissedSet()
-	for _, build in ipairs(usable) do
-		if build.id ~= nil and not dismissed[build.id] then
-			return build
-		end
-	end
-	return nil
 end
 
 --- Fold one "/"-separated key segment to a form both the addon's own key

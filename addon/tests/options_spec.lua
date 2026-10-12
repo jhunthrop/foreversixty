@@ -76,6 +76,12 @@ describe("Options", function()
 		assert.are.same(require("Locale").slashHelpLines, Options.handle("help"))
 	end)
 
+	it("lists /fs and /fs copy first on /fs help (L3.4 fix 6)", function()
+		local lines = Options.handle("help")
+		assert.is_truthy(lines[1]:find("^/fs: "))
+		assert.is_truthy(lines[2]:find("^/fs copy: "))
+	end)
+
 	it("shows and hides the chip on /fs chip, saying so", function()
 		local Locale = require("Locale")
 		-- The mock's UnitLevel is 60, the cap: hidden until /fs chip.
@@ -141,7 +147,7 @@ describe("Options", function()
 			builds = { { id = "a", name = "Bad Code", code = "FS9:nope" } },
 		}
 		local lines = Options.handle("inbox")
-		assert.is_truthy(lines[1]:find("FS9", 1, true))
+		assert.are.equal(require("Locale").codecWrongPrefix, lines[1])
 	end)
 
 	it("never loads an inbox build at login: the dialog lists them, and the inbox is never written", function()
@@ -171,6 +177,13 @@ describe("Options", function()
 		}
 		assert.are.same({ string.format(require("Locale").inboxCount, 1) }, Options.handle("inbox"))
 		require("Follow").dismissInbox("a")
+		assert.are.same({ require("Locale").inboxEmpty }, Options.handle("inbox"))
+	end)
+
+	it("stops counting a used build by its code once the older builds list is gone (L3.4 fix 17)", function()
+		local code = "FSB1:1.60.1.69893:paladin:111:"
+		_G.ForeverSixtyInbox = { messages = { { type = "build", name = "Deep Holy", code = code } } }
+		require("Follow").dismissInbox(code)
 		assert.are.same({ require("Locale").inboxEmpty }, Options.handle("inbox"))
 	end)
 

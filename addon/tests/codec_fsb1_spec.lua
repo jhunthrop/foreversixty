@@ -112,7 +112,7 @@ describe("Codec FSB1", function()
 		end
 	end)
 
-	it("doubles a pipe in a refused fragment so WoW's chat frame cannot render it as markup", function()
+	it("never echoes a foreign prefix, so a pasted fragment cannot render as markup (L3.4 fix 19)", function()
 		-- FSB1's grammar only reserves `:`, `,`, `;` and `=`; `|` passes
 		-- through untouched, unlike FS1 where the format's own `|` section
 		-- separator is stripped before any field is echoed back. A crafted
@@ -122,10 +122,9 @@ describe("Codec FSB1", function()
 		-- printed (or repasted into guild chat or Discord).
 		local fragment = "FS|cFF00FF00EVIL|r2"
 		local _, message = Codec.decodeFSB1(fragment .. ":1.60.1.69893:paladin:111:")
-		assert.are.equal(
-			string.format(L.codecWrongPrefix, "FS||cFF00FF00EVIL||r2", Codec.FSB1_PREFIX),
-			message
-		)
+		assert.are.equal(L.codecWrongPrefix, message)
+		assert.is_nil(message:find("EVIL", 1, true))
+		assert.is_nil(message:find("FSB1", 1, true))
 	end)
 
 	describe("loadBuild", function()
@@ -193,6 +192,19 @@ describe("Codec FSB1", function()
 
 		it("accepts a code from an older data build", function()
 			assert.is_truthy(Codec.loadBuild("FSB1:1.15.9.69722:paladin:111:", data))
+		end)
+
+		it("refuses another class's code when it is told the player's class, naming both", function()
+			-- L3.4 fix 18: the codec's own answer; the names come from the client's table when
+			-- the caller passes one, else the slug in title case.
+			local player = { classSlug = "mage", classNames = { PALADIN = "Paladin", MAGE = "Mage" } }
+			local build, message = Codec.loadBuild("FSB1:1.60.1.69893:paladin:111:", data, player)
+			assert.is_nil(build)
+			assert.are.equal(string.format(L.codecWrongClass, "Paladin", "Mage"), message)
+			local _, plain = Codec.loadBuild("FSB1:1.60.1.69893:paladin:111:", data, { classSlug = "mage" })
+			assert.are.equal(string.format(L.codecWrongClass, "Paladin", "Mage"), plain)
+			assert.is_truthy(Codec.loadBuild("FSB1:1.60.1.69893:paladin:111:", data, { classSlug = "paladin" }))
+			assert.is_truthy(Codec.loadBuild("FSB1:1.60.1.69893:paladin:111:", data))
 		end)
 
 		it("refuses a code for a class this data does not carry", function()

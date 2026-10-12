@@ -375,8 +375,8 @@ function Codec.decodeFS1(code)
 
 	local parts = split(head, ":")
 	if parts[1] ~= Codec.FS1_PREFIX then
-		local named = (parts[1] == nil or parts[1] == "") and L.codecUnlabelled or parts[1]
-		return nil, refuse(L.codecWrongPrefix, named, Codec.FS1_PREFIX)
+		-- Never echoes the paste (L3.4 fix 19): a player pasted something else.
+		return nil, L.codecWrongPrefix
 	end
 	if #parts < 6 then
 		return nil, L.codecShort
@@ -622,8 +622,7 @@ function Codec.decodeFSB1(code)
 	end
 	local parts = split(code:match("^%s*(.-)%s*$"), ":")
 	if parts[1] ~= Codec.FSB1_PREFIX then
-		local named = (parts[1] == nil or parts[1] == "") and L.codecUnlabelled or parts[1]
-		return nil, refuse(L.codecWrongPrefix, named, Codec.FSB1_PREFIX)
+		return nil, L.codecWrongPrefix
 	end
 	if #parts < 5 then
 		return nil, L.codecShort
@@ -708,6 +707,18 @@ local function approximateOrder(tabs, treeRanks)
 	return order
 end
 
+--- A class slug as a player reads it: the client's own name from `names` (keyed by the
+--- class token, LOCALIZED_CLASS_NAMES_MALE's shape) when given, else the slug in title case.
+local function className(slug, names)
+	local named = type(names) == "table" and names[slug:upper()] or nil
+	if type(named) == "string" then
+		return named
+	end
+	return (slug:gsub("^%l", string.upper):gsub("%-(%l)", function(letter)
+		return " " .. letter:upper()
+	end))
+end
+
 --- Load a build from either format.
 ---
 --- FSB1 is the site's own addon code and is taken as it stands. FS1 is the
@@ -715,7 +726,11 @@ end
 --- addon": it carries a final tree and no stats, so the order is
 --- approximated and `statsUnknown` is set, which is what stops Gear from
 --- scoring a planned item at zero and calling that a downgrade.
-function Codec.loadBuild(code, data)
+---
+--- `player` ({ classSlug, classNames }, optional) is the character logged in: a code for
+--- another class is refused by name (L3.4 fix 18). Without it no class is checked, so a
+--- saved build restores as it always did.
+function Codec.loadBuild(code, data, player)
 	-- Length-checked first, before any trimming or splitting: `code` is
 	-- the one genuinely untrusted input in the system (Follow.load is
 	-- called from Options.readInbox on a saved-variables file the addon
@@ -768,6 +783,10 @@ function Codec.loadBuild(code, data)
 
 	if data.classes[build.classSlug] == nil then
 		return nil, refuse(L.codecUnknownClass, build.classSlug)
+	end
+	if type(player) == "table" and type(player.classSlug) == "string" and player.classSlug ~= build.classSlug then
+		return nil, string.format(L.codecWrongClass, className(build.classSlug, player.classNames),
+			className(player.classSlug, player.classNames))
 	end
 	if compareBuilds(build.dataBuild, data.build) > 0 then
 		-- Plain words, no build ids (L3.4 ruling): the build dialog shows this as it stands.

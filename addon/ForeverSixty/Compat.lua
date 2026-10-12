@@ -99,6 +99,18 @@ function Compat.itemName(itemId)
 	return name
 end
 
+--- The client's localized class names keyed by class token ("WARRIOR" = "Warrior"), or nil.
+function Compat.classNames()
+	local names = _G.LOCALIZED_CLASS_NAMES_MALE
+	return type(names) == "table" and names or nil
+end
+
+--- One of the client's own global strings (HEADSLOT = "Head"), or nil where it has none.
+function Compat.globalString(name)
+	local value = _G[name]
+	return type(value) == "string" and value or nil
+end
+
 --- The client's own name for its region ("US"), or nil where it has none.
 function Compat.regionName()
 	local fn = _G.GetCurrentRegionName

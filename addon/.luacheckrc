@@ -42,6 +42,8 @@ read_globals = {
 	"AddonCompartmentFrame",
 	-- The chip (surfaces/Chip.lua), each behind a Theme capability check.
 	"GetInstanceInfo", "IsShiftKeyDown", "ToggleTalentFrame", "PlayerSpellsUtil", "CLASS_ICON_TCOORDS",
+	-- The build dialog (surfaces/BuildDialog.lua), through Compat.classNames.
+	"LOCALIZED_CLASS_NAMES_MALE",
 	-- Saved variables. ForeverSixtyInbox belongs to the code-free ForeverSixtyInbox
 	-- addon (its TOC declares it), is written by the companion and only ever read
 	-- here; ForeverSixtyDB is the addon's own and Export.save writes it, so it

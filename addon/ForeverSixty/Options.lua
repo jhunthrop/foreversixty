@@ -69,7 +69,7 @@ end
 function Options.readInbox()
 	Options.refreshWeightsMessage()
 	local rows, refusal = BuildDialog.inboxRows(Follow.inboxBuilds(ForeverSixtyInbox, Export.characterKey()),
-		Follow.dismissedSet(), Options.data)
+		Follow.dismissedSet(), Options.data, BuildDialog.player())
 	if #rows == 0 then
 		return 0, refusal
 	end

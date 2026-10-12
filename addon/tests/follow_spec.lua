@@ -84,7 +84,7 @@ describe("Follow", function()
 	it("passes a codec refusal through verbatim", function()
 		local build, message = Follow.load("FS9:x", DATA)
 		assert.is_nil(build)
-		assert.is_truthy(message:find("FS9", 1, true))
+		assert.are.equal(require("Locale").codecWrongPrefix, message)
 	end)
 
 	it("takes an FS1 export as a build too", function()
@@ -380,7 +380,7 @@ describe("Follow, named build slots", function()
 	end)
 end)
 
-describe("Follow, the build-arrived banner", function()
+describe("Follow, comparing two builds", function()
 	local Follow
 
 	before_each(function()
@@ -390,28 +390,6 @@ describe("Follow, the build-arrived banner", function()
 
 	after_each(function()
 		mock.uninstall()
-	end)
-
-	it("finds the first undismissed inbox build addressed to this character", function()
-		local inbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
-		local pending = Follow.pendingArrival(inbox)
-		assert.are.equal("a", pending.id)
-	end)
-
-	it("stops offering a build once it is dismissed", function()
-		local inbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
-		assert.is_not_nil(Follow.pendingArrival(inbox))
-		Follow.dismissInbox("a")
-		assert.is_nil(Follow.pendingArrival(inbox))
-	end)
-
-	it("moves on to the next build once the first is dismissed", function()
-		local inbox = { builds = {
-			{ id = "a", name = "First", code = CODE },
-			{ id = "b", name = "Second", code = CODE },
-		} }
-		Follow.dismissInbox("a")
-		assert.are.equal("b", Follow.pendingArrival(inbox).id)
 	end)
 
 	it("counts the talent cells two builds disagree on", function()

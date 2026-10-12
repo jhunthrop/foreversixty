@@ -142,6 +142,10 @@ function Prefs.setFlag(name, value)
 	return value
 end
 
+--- What runs after Reset positions: each surface that is on screen moves at once (the
+--- build dialog adds its own place). Functions taking no argument.
+Prefs.onReset = {}
+
 --- Put the chip, the minimap button and the build dialog back where they started.
 function Prefs.resetPositions()
 	local ui = Prefs.current()
@@ -152,6 +156,9 @@ function Prefs.resetPositions()
 				ui[section][field] = fresh[section][field]
 			end
 		end
+	end
+	for _, listener in ipairs(Prefs.onReset) do
+		listener()
 	end
 	return ui
 end

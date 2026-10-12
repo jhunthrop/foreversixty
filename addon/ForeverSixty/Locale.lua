@@ -128,9 +128,8 @@ local L = {
 	-- text before it lands in one of the `%s` slots below -- so it does not
 	-- belong here even though every other player-visible piece of text
 	-- does.
-	codecWrongPrefix = "That code is %s; this addon reads %s.",
-	-- What a code with no prefix at all is called, for codecWrongPrefix.
-	codecUnlabelled = "unlabelled",
+	-- Never echoes the paste and names no format (L3.4 fix 19).
+	codecWrongPrefix = "That is not a Forever Sixty build code.",
 	codecShort = "That code is missing its talent and gear fields.",
 	codecTrees = "That code has %d talent trees; a build has %d.",
 	codecRank = "That code has an unreadable talent rank: %s.",
@@ -147,14 +146,15 @@ local L = {
 	-- FSB1 only: an empty data build or class field. FS1 accepts an empty
 	-- field in either position (parity with the shipped site decoder).
 	codecEmptyField = "That code's %s field is empty.",
-	-- The two field names codecEmptyField names, each its own key like
-	-- codecUnlabelled above: player-visible words passed as a refuse()
-	-- argument, not fragments of untrusted input.
+	-- The two field names codecEmptyField names, each its own key: player-visible
+	-- words passed as a refuse() argument, not fragments of untrusted input.
 	codecFieldDataBuild = "data build",
 	codecFieldClass = "class",
 	codecTooLong = "That code is too long to read.",
 	-- No build ids (L3.4 ruling): the build dialog shows this reason as it stands.
-	codecNewerBuild = "That code is for a newer patch than this addon. Update the addon.",
+	codecNewerBuild = "That code is for a newer patch than this addon. Update Forever Sixty from the site.",
+	-- A build for another class than the one logged in (L3.4 fix 18): "That code is for a Mage, not a Warrior."
+	codecWrongClass = "That code is for a %s, not a %s.",
 	codecUnknownClass = "That code is for a %s; this addon carries no tree for that class.",
 
 	-- Follow
@@ -772,39 +772,69 @@ local L = {
 }
 
 -- The build dialog (spec section 4.10): the one frame of the addon's own.
+-- The site's host, written once: the dialog's "paste it on the site" line names it.
+L.siteHost = "foreversixty.gg"
 L.dialogTabPaste = "Paste a build"
+-- The paste tab in copy mode with builds from the site waiting: "Paste a build  1", the count gold.
+L.dialogTabPasteCount = "%s  %s"
 -- The site's own words (L8.2): "In game, type /fs, press Copy my character, then paste it here."
 -- The copy tab and the copy button both read this.
 L.dialogCopy = "Copy my character"
--- The paste box's placeholder, and its one button once a code loads.
-L.dialogPaste = "Paste a build code"
+-- Muted, at the right of the tab strip.
+L.dialogTabHint = "Tab switches"
+-- Paste mode: the box's placeholder, and the one gold button once a code loads.
+L.dialogPaste = "Paste a build code from the site (Ctrl+V)"
 L.dialogUse = "Use this build"
--- The preview's second line: "Warrior · Arms 31 / Fury 20 · 51 points".
-L.dialogPreview = "%s · %s · %d points"
-L.dialogPreviewOne = "%s · %s · 1 point"
-L.dialogPreviewNoPoints = "%s · no talent points"
+-- Above the empty box: "Following: Arms / Fury build · Warrior · 51 points".
+L.dialogFollowingLine = "Following: %s"
+-- Under it, muted: the chip's own next-point text.
+L.dialogNextTalent = "Next talent: %s"
+-- The preview's second line, its parts joined by dialogSeparator:
+-- "Warrior · Arms 33 / Fury 16 / Protection 2 · 51 points · you can place 12 now".
+L.dialogSeparator = " · "
+L.dialogPoints = "%d points"
+L.dialogOnePoint = "1 point"
+L.dialogNoPoints = "no talent points"
+L.dialogPlaceNow = "you can place %d now"
 -- One tree in the split: "Arms 31".
 L.dialogSplitPart = "%s %d"
 L.dialogSplitSeparator = " / "
--- One chat line after a build is used.
-L.dialogFollowing = "Now following %s."
--- A build the site sent, above the paste box, with its own button.
-L.dialogInboxRow = "%s · from the site"
-L.dialogInboxUse = "Use"
--- The copy tab: under the box, under the button, then what the companion does.
-L.dialogCopyKeys = "Selected: press Ctrl+C to copy it."
-L.dialogCopied = "Copied %s, paste it on the site"
+-- The preview's gear rows: a muted heading ("Gear in this build · at 60" below 60), its hover.
+L.dialogGearHeading = "Gear in this build"
+L.dialogGearAt = "%s · at %d"
+L.dialogGearHeadingTip = "The first three items the code plans."
+-- A refusal's last line, muted.
+L.dialogStillFollowing = "You are still following %s."
+-- One chat line after a build is used: "Now following Arms raid. Next: Deflection (1 of 2)."
+L.dialogNowFollowing = "Now following %s."
+L.dialogNowFollowingNext = "Now following %s. Next: %s."
+-- A build the site sent: "Arms raid · Arms 33 / Fury 16 / Protection 2 · 51 points · from the site".
+L.dialogInboxRow = "%s · %s · from the site"
+L.dialogInboxMore = "and %d more"
+-- Copy mode. The lead line under the tabs until a real Ctrl+C, then the copy claim.
+L.dialogSelectedLead = "Your character is selected. Press Ctrl+C, then paste it on the site."
+L.dialogYouCopied = "You copied %s."
+-- The ack: the site has this export, or an older one.
 L.dialogSeen = "Seen by the site %s"
-L.dialogCompanionLine = "The companion, the small app on your PC, sends this for you when you log out."
+L.dialogSiteOlder = "The site has your character from %s. Yours has changed since."
+-- When, for anything before today: "yesterday 22:30", "2 Nov 22:30".
+L.dialogYesterday = "yesterday %s"
+L.dialogOnDate = "%s %s"
+-- No ack ever seen: what the companion is, and the other way to the site.
+L.dialogNoCompanion = "No companion found."
+L.dialogCompanionWhat = "The companion is a small app on your computer that sends this when you log out."
+L.dialogPasteAtSite = "Or paste it on the site at %s."
 -- The ack's sim request state (contract 3, `sim_request_state`); any other value shows nothing.
+L.dialogSimQueuedAt = "Sim queued %s. The result arrives when you next log in."
+L.dialogSimQueued = "Sim queued. The result arrives when you next log in."
 L.dialogSimState = {
-	queued = "Sim queued",
 	needs_premium = "Sim needs a premium account",
 	duplicate = "Sim already running this hour",
 	invalid = "Sim request invalid",
 }
--- The dialog's render check (spec section 2.4).
+-- The dialog's render check (spec section 2.4): off screen turns it off; no keyboard is a note.
 L.diagDialogOff = "The build dialog did not open on screen; /fs printed the commands instead."
+L.diagDialogFocus = "The build dialog opened without the keyboard; click its box to type."
 
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel
