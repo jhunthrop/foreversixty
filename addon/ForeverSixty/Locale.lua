@@ -779,8 +779,10 @@ local L = {
 
 -- The build dialog (spec section 4.10): the one frame of the addon's own.
 L.dialogTabPaste = "Paste a build"
--- The paste tab in copy mode with builds from the site waiting: "Paste a build  1", the count gold.
+-- The paste tab in copy mode with builds from the site waiting: "Paste a build  1 waiting", the
+-- count in gold.
 L.dialogTabPasteCount = "%s  %s"
+L.dialogWaitingCount = "%d waiting"
 -- The site's own words (L8.2): the copy tab is named this (copy mode has no button).
 L.dialogCopy = "Copy my character"
 -- At the panel's bottom left, a step dimmer than an inactive tab.
@@ -811,11 +813,14 @@ L.dialogSplitSeparator = " / "
 -- The preview's gear rows: a muted heading ("Gear in this build · at 60" below 60), its hover.
 L.dialogGearHeading = "Gear in this build"
 L.dialogGearAt = "%s · at %d"
+-- "Gear in this build · at 60 · 3 of 17 slots": the fields the code carries over the export's slots.
+L.dialogGearSlots = "%s · %d of %d slots"
 L.dialogGearHeadingTip = "The first three items the code plans."
 -- Above "Use this build", muted: what it replaces and where the two orders first differ (or
 -- "same point order"), and the next talent the candidate gives, alone.
 L.dialogReplaces = "Replaces %s"
-L.dialogReplacesSame = "Replaces %s · same point order"
+L.dialogReplacesSameAll = "Replaces %s · same points and gear"
+L.dialogReplacesSameOrder = "Replaces %s · same points, different gear list"
 L.dialogReplacesDiffers = "Replaces %s · first differs at point %d: %s"
 L.dialogNextWould = "Next talent would be: %s"
 -- A refusal's last line, muted.
@@ -833,9 +838,9 @@ L.dialogSelectedLead = "Selected. Press Ctrl+C, then paste it on " .. SITE .. ".
 L.dialogYouCopied = "You copied %s. Now paste it on " .. SITE .. "."
 -- The ack: the site has this export, or an older one.
 L.dialogSeen = "Seen by the site %s"
-L.dialogSiteOlder = "The site has your character from %s. Yours has changed since."
+L.dialogSiteOlder = "The site has your character from %s. Yours is newer."
 -- After a real copy, until an ack at or after it arrives.
-L.dialogWaitingSite = "Waiting for the site to see this copy."
+L.dialogWaitingSite = "Waiting for the site to see this copy. It answers at your next login."
 -- When, for anything before today: "yesterday 22:30", "2 Nov 22:30".
 L.dialogYesterday = "yesterday %s"
 L.dialogOnDate = "%s %s"
@@ -848,6 +853,9 @@ L.dialogPasteAtSite = "Or paste it on the site at %s."
 L.dialogSimQueuedFor = "Sim queued for the %s copy."
 L.dialogSimQueuedYesterday = "Sim queued for yesterday's %s copy."
 L.dialogSimQueued = "Sim queued. The result arrives when you next log in."
+-- While the companion's sim weights are what the tooltip and the chip score by.
+L.dialogSimDone = "Sim done · your sim weights are in use"
+L.dialogBestUpgrade = "Best next upgrade: %s %s"
 L.dialogSimState = {
 	needs_premium = "Sim needs a premium account",
 	duplicate = "Sim already running this hour",

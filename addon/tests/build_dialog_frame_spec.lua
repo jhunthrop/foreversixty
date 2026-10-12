@@ -130,14 +130,19 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 		assert.is_nil(box():GetText():find(BuildDialog.BREAK, 1, true))
 	end)
 
-	it("still runs Widgets' own focus release after Ctrl+C (the handler is chained)", function()
+	it("keeps the box focused, wholly selected and the same height after Ctrl+C (fix 5, 8)", function()
 		control = true
-		local queued = #state.timers
+		local height = BuildDialog.copyTab.field.height
 		press("C")
 		assert.is_true(claimed())
-		assert.are.equal(queued + 1, #state.timers)
 		mock.runTimers(state)
-		assert.is_false(box():HasFocus())
+		assert.is_true(box():HasFocus())
+		assert.is_true(BuildDialog.selected)
+		assert.is_true(BuildDialog.copyTab.selection:IsShown())
+		assert.are.equal(height, BuildDialog.copyTab.field.height)
+		-- A second Ctrl+C copies again.
+		press("C")
+		assert.is_true(claimed())
 	end)
 end)
 
@@ -256,18 +261,20 @@ describe("BuildDialog, round 4 frame checks", function()
 		assert.are.equal(rest[5] or 0, mock.lastCall(label, "SetPoint")[5])
 	end)
 
-	it("does not repaint a control disabled while held, and puts its label back when it hides (fix 4, 9)", function()
+	it("puts a control disabled or hidden while held back at rest, ground and label (fix 4, 9; fix 5, 18)", function()
 		local button = require("Widgets").button(_G.UIParent, "Equip", function() end)
 		local label = button.foreverSixtyLabel
 		local rest = mock.lastCall(label, "SetPoint")
 		button:GetScript("OnMouseDown")(button)
 		require("Widgets").setEnabled(button, false)
 		button:GetScript("OnMouseUp")(button)
-		assert.are.same(rgb("inset"), rgbOf(button.foreverSixtyGround))
+		assert.are.same(rgb("raised"), rgbOf(button.foreverSixtyGround))
 		require("Widgets").setEnabled(button, true)
 		button:GetScript("OnMouseDown")(button)
+		assert.are.same(rgb("inset"), rgbOf(button.foreverSixtyGround))
 		button:GetScript("OnHide")(button)
 		assert.are.equal(rest[5] or 0, mock.lastCall(label, "SetPoint")[5])
+		assert.are.same(rgb("raised"), rgbOf(button.foreverSixtyGround))
 	end)
 
 	it("shows Enter to use on the preview only (fix 4, 5)", function()
@@ -341,6 +348,116 @@ describe("BuildDialog, round 4 frame checks", function()
 		copy.clip:GetScript("OnMouseWheel")(copy.clip, -1)
 		assert.are.equal(1, BuildDialog.copyOffset)
 		assert.is_true(mock.lastCall(copy.display, "SetPoint")[5] > 0)
+	end)
+end)
+
+describe("BuildDialog, round 5 frame checks", function()
+	local state, BuildDialog, Theme
+
+	local function lastLevel(frame)
+		local call = mock.lastCall(frame, "SetFrameLevel")
+		return call and call[1] or 0
+	end
+
+	before_each(function()
+		state = mock.install({
+			class = { name = "Warrior", token = "WARRIOR" }, race = { name = "Human", token = "Human" },
+			realm = "Ashbringer", region = 1, playerName = "Bob",
+			talents = { { name = "Arms", talents = {} }, { name = "Fury", talents = {} },
+				{ name = "Protection", talents = {} } },
+		})
+		Theme = require("Theme")
+		Theme.reset()
+		_G.ForeverSixtyDB = {}
+		_G.ForeverSixtyInbox = nil
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Cards")
+		helper.load("Export")
+		helper.load("Follow")
+		helper.load("Chip")
+		BuildDialog = helper.load("BuildDialog")
+		BuildDialog.data = DATA
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	local function paste(text)
+		local box = BuildDialog.paste.box
+		box:SetText(text)
+		box:GetScript("OnTextChanged")(box, true)
+	end
+
+	it("never shows Enter to use on the copy tab, even when an item name arrives (fix 5, 13)", function()
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+		paste("FSB1:1.60.1.70291:warrior:111:head=12640")
+		BuildDialog.setMode("copy")
+		BuildDialog.pending[12640] = true
+		BuildDialog.frame:GetScript("OnEvent")(BuildDialog.frame, "GET_ITEM_INFO_RECEIVED", 12640)
+		assert.is_false(BuildDialog.enterHint:IsShown())
+		BuildDialog.setMode("paste")
+		assert.is_true(BuildDialog.enterHint:IsShown())
+		BuildDialog.close()
+		assert.is_false(BuildDialog.enterHint:IsShown())
+	end)
+
+	it("gives the collapsed box no mouse, and opens it from a click on its field (fix 5, 16)", function()
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+		paste("FSB1:1.60.1.70291:warrior:111:")
+		local box, field = BuildDialog.paste.box, BuildDialog.paste.field
+		assert.is_false(mock.lastCall(box, "EnableMouse")[1])
+		field:GetScript("OnMouseDown")(field)
+		assert.is_true(BuildDialog.editing)
+		assert.is_true(mock.lastCall(box, "EnableMouse")[1])
+	end)
+
+	it("keeps Use this build and the preview above the box being edited (fix 5, 17)", function()
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+		paste("FSB1:1.60.1.70291:warrior:111:")
+		BuildDialog.paste.field:GetScript("OnMouseDown")(BuildDialog.paste.field)
+		assert.is_true(BuildDialog.paste.use:IsShown())
+		local boxLevel = lastLevel(BuildDialog.paste.box)
+		assert.is_true(lastLevel(BuildDialog.paste.use) > boxLevel)
+		assert.is_true(lastLevel(BuildDialog.paste.preview.frame) > boxLevel)
+	end)
+
+	it("lays the copy label over the box (fix 5, 16)", function()
+		BuildDialog.open("copy")
+		local copy = BuildDialog.copyTab
+		assert.is_true(lastLevel(copy.over) > lastLevel(copy.box))
+	end)
+
+	it("reserves two lead lines for a two-line no-export reason (fix 5, 16)", function()
+		require("Export").string = function()
+			return nil, "This character's export cannot be built on this client right now, so there is nothing to copy."
+		end
+		BuildDialog.open("copy")
+		local copy = BuildDialog.copyTab
+		copy.probe.GetUnboundedStringWidth = function(region)
+			return utf8.len(region:GetText() or "") * 6
+		end
+		BuildDialog.drawCopy(true)
+		local first, advance = 14, 14
+		assert.are.equal(-(first + advance + Theme.SIZES.gap * 2), mock.lastCall(copy.field, "SetPoint")[5])
+	end)
+
+	it("fits the Replaces line through the preview's own measure (fix 5, 16)", function()
+		local Follow = require("Follow")
+		Follow.build = require("Codec").loadBuild("FSB1:1.60.1.70291:warrior:111:", DATA)
+		Follow.build.name = "A very long build name the site sent for this character, an old patch one"
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+		local replaces = BuildDialog.paste.replaces
+		replaces.GetStringWidth = function(region)
+			return utf8.len(region:GetText() or "") * 5
+		end
+		paste("FSB1:1.60.1.70291:warrior:112:")
+		assert.is_true(utf8.len(replaces:GetText()) * 5 <= 388, replaces:GetText())
 	end)
 end)
 

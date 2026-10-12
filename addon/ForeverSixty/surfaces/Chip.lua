@@ -177,6 +177,9 @@ local function gainText(upgrade, healing)
 	return string.format(L.chipGainScore, math.floor((upgrade.delta or 0) + 0.5))
 end
 
+--- The upgrade line's gain, for the build dialog's "Best next upgrade" (one function for it).
+Chip.gainText = gainText
+
 --- The level the first talent point is taken at (Progress.levelForPoint).
 local function firstTalentLevel()
 	return Progress.levelForPoint(1).level

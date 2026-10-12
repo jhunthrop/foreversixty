@@ -49,7 +49,7 @@ BuildDialog.GEAR_PITCH = 20
 BuildDialog.BREAK = "\226\128\139"
 --- The vertical spacing the preview is laid out with (BuildDialog.previewLayout).
 BuildDialog.LAYOUT = {
-	tabGap = 2, codeGap = 4, lineGap = 1, previewGap = 4, aboveReplaces = 8, buttonGap = 6,
+	tabGap = 2, codeGap = 4, previewGap = 4, aboveReplaces = 8, buttonGap = 6,
 	hintClearance = 10, hintMargin = 2,
 }
 
@@ -244,6 +244,7 @@ function BuildDialog.preview(build, data, context)
 		if type(context.level) == "number" and context.level < Progress.MAX_LEVEL then
 			heading = string.format(L.dialogGearAt, heading, Progress.MAX_LEVEL)
 		end
+		heading = string.format(L.dialogGearSlots, heading, #(build.gear or {}), #Codec.SLOTS)
 	end
 	return {
 		classToken = build.classSlug:upper(),
@@ -268,23 +269,41 @@ function BuildDialog.firstDifference(a, b)
 	return nil
 end
 
---- A talent as the dialog names it, with its tree: "Improved Heroic Strike (Arms)", or the
---- rank a click takes where the plan wants more than one ("Deflection (Arms, 1 of 2)").
-local function talentWithTree(build, data, point, rank)
+--- A talent's parts as the dialog names it: { name, tree, have, want } (`have`/`want` only
+--- where the plan wants more than one rank and a click takes the next).
+local function talentParts(build, data, point, rank)
 	local talent = Talents.cellOf(data, build.classSlug, point.tab, point.tier, point.column)
-	local name = Chip.talentName(talent) or L.dialogUnnamedTalent
-	local tree = Talents.tabName(data, build.classSlug, point.tab)
-	if tree == nil then
-		return Chip.pointLabel(name, rank)
-	end
+	local parts = {
+		name = Chip.talentName(talent) or L.dialogUnnamedTalent,
+		tree = Talents.tabName(data, build.classSlug, point.tab),
+	}
 	if type(rank) == "table" and (rank.want or 0) > 1 and (rank.have or 0) < rank.want then
-		return string.format(L.dialogTalentTreeRank, name, tree, (rank.have or 0) + 1, rank.want)
+		parts.have, parts.want = (rank.have or 0) + 1, rank.want
 	end
-	return string.format(L.dialogTalentTree, name, tree)
+	return parts
 end
 
---- The next talent the build wants on this character (`ranks`), as the dialog names it, and
---- its point; nil with no build or nothing left to take.
+--- A talent's text: "Deflection (Arms, 1 of 2)", "Improved Heroic Strike (Arms)". `tree`
+--- replaces the tree's word (false drops it); `withRank` false drops the rank.
+local function talentText(parts, tree, withRank)
+	if tree == nil then
+		tree = parts.tree
+	end
+	local rank = withRank ~= false and parts.want ~= nil
+	if tree then
+		if rank then
+			return string.format(L.dialogTalentTreeRank, parts.name, tree, parts.have, parts.want)
+		end
+		return string.format(L.dialogTalentTree, parts.name, tree)
+	end
+	if rank then
+		return string.format(L.chipPointRank, parts.name, parts.have, parts.want)
+	end
+	return parts.name
+end
+
+--- The next talent the build wants on this character (`ranks`), as the dialog names it, its
+--- point and its parts; nil with no build or nothing left to take.
 function BuildDialog.dialogTalent(build, ranks, data, level)
 	if build == nil then
 		return nil
@@ -293,50 +312,128 @@ function BuildDialog.dialogTalent(build, ranks, data, level)
 	if point == nil then
 		return nil
 	end
-	return talentWithTree(build, data, point, Chip.pointRankAt(build, ranks, data, point)), point
+	local parts = talentParts(build, data, point, Chip.pointRankAt(build, ranks, data, point))
+	return talentText(parts), point, parts
 end
 
---- The muted lines above "Use this build". `replaces`: what Use replaces and how the two
---- orders compare ("Replaces Arms raid · same point order", or "· first differs at point 7:
---- Cruelty (Fury)"); absent with nothing followed. `nextWould`: the next talent the candidate
---- gives on this character now, " · same as now" when the followed build's is the same cell.
---- `format` with the build name `name` cut (with an ellipsis) until the line fits `width` as
---- `measure` measures it; the rest of the line is never cut. Without a measure, whole.
-local function fitName(name, measure, width, format, ...)
-	local line = string.format(format, name, ...)
-	if measure == nil or width == nil then
-		return line
-	end
-	local body = name
-	while (measure(line) or 0) > width and #body > 1 do
-		body = cut(body, #body - 1)
-		line = string.format(format, (body:gsub("%s+$", "")) .. L.ellipsis, ...)
-	end
-	return line
+--- Whether `text` fits `width` as `measure` measures it (no measure: it fits).
+local function fitsWidth(text, measure, width)
+	local measured = measure ~= nil and width ~= nil and measure(text) or nil
+	return measured == nil or measured <= width
 end
 
---- The muted lines above "Use this build". `replaces`: what Use replaces and how the two
---- orders compare ("Replaces Arms raid · same point order", or "· first differs at point 7:
---- Cruelty (Fury)"), fitted to `width` by cutting the build name, never the talent; absent
---- with nothing followed. `nextWould`: the next talent the candidate gives on this character
---- now, alone (the Replaces line already says whether the orders match).
+--- `raw` cut to `bytes` (whole letters) with an ellipsis, then escaped: a cut never leaves
+--- half of a doubled pipe.
+local function cutName(raw, bytes)
+	if bytes >= #raw then
+		return escaped(raw)
+	end
+	return escaped((cut(raw, bytes):gsub("%s+$", ""))) .. L.ellipsis
+end
+
+--- The build name keeps at least this many bytes before the Replaces line drops the talent's tree.
+BuildDialog.NAME_FLOOR = 8
+
+--- The Replaces line: "Replaces Arms raid · same points and gear" / "· same points, different
+--- gear list" / "· first differs at point N: <talent (tree)>", fitted to `width` by cutting the
+--- build name first, then dropping the talent's tree, never the talent itself.
+local function replacesLine(raw, at, parts, sameFormat, measure, width)
+	local function line(bytes, talent)
+		if at == nil then
+			return string.format(sameFormat, cutName(raw, bytes))
+		end
+		return string.format(L.dialogReplacesDiffers, cutName(raw, bytes), at, talent)
+	end
+	local talent = parts ~= nil and talentText(parts, nil, false) or nil
+	local bytes = #raw
+	while bytes > BuildDialog.NAME_FLOOR and not fitsWidth(line(bytes, talent), measure, width) do
+		bytes = #cut(raw, bytes - 1)
+	end
+	if not fitsWidth(line(bytes, talent), measure, width) and parts ~= nil and parts.tree then
+		talent = talentText(parts, false, false)
+	end
+	while bytes > 1 and not fitsWidth(line(bytes, talent), measure, width) do
+		bytes = #cut(raw, bytes - 1)
+	end
+	return line(bytes, talent)
+end
+
+--- The Next line: "Next talent would be: Take <talent (tree, rank)>", fitted to `width` by
+--- shortening the tree, then dropping the rank, then the tree, never the talent's name.
+local function nextLine(parts, measure, width)
+	local function line(text)
+		return string.format(L.dialogNextWould, string.format(L.chipTake, text))
+	end
+	local full = line(talentText(parts))
+	if fitsWidth(full, measure, width) then
+		return full
+	end
+	if parts.tree then
+		local tree = parts.tree
+		local bytes = #tree
+		while bytes > 1 do
+			bytes = #cut(tree, bytes - 1)
+			local candidate = line(talentText(parts, (cut(tree, bytes):gsub("%s+$", "")) .. L.ellipsis))
+			if fitsWidth(candidate, measure, width) then
+				return candidate
+			end
+		end
+		local shortTree = cut(tree, 1) .. L.ellipsis
+		local noRank = line(talentText(parts, shortTree, false))
+		if fitsWidth(noRank, measure, width) then
+			return noRank
+		end
+	end
+	return line(talentText(parts, false, false))
+end
+
+--- Whether two builds plan the same gear: the same slots, items and stats, in order.
+local function sameGear(a, b)
+	local left, right = a.gear or {}, b.gear or {}
+	if #left ~= #right then
+		return false
+	end
+	for index, entry in ipairs(left) do
+		local other = right[index]
+		if entry.slot ~= other.slot or entry.itemId ~= other.itemId then
+			return false
+		end
+		for stat, value in pairs(entry.stats or {}) do
+			if (other.stats or {})[stat] ~= value then
+				return false
+			end
+		end
+		for stat in pairs(other.stats or {}) do
+			if (entry.stats or {})[stat] == nil then
+				return false
+			end
+		end
+	end
+	return true
+end
+
+--- The muted lines above "Use this build". `replaces`: what Use replaces and what differs
+--- (same points and gear, same points with a different gear list, or the first point the
+--- orders part at, with its talent); absent with nothing followed. `nextWould`: the next talent
+--- the candidate gives on this character now. Both fitted to `width` as `measure` measures
+--- them (no measure: whole).
 function BuildDialog.previewContext(followed, candidate, ranks, data, level, measure, width)
 	local context = {}
 	if followed ~= nil and candidate ~= nil then
-		local name = escaped(Follow.buildName(data, followed))
+		local raw = Follow.buildName(data, followed)
 		local at = BuildDialog.firstDifference(followed.order, candidate.order)
 		if at == nil then
-			context.replaces = fitName(name, measure, width, L.dialogReplacesSame)
+			local same = sameGear(followed, candidate) and L.dialogReplacesSameAll or L.dialogReplacesSameOrder
+			context.replaces = replacesLine(raw, nil, nil, same, measure, width)
 		else
 			local cell = candidate.order[at] or followed.order[at]
 			local owner = candidate.order[at] ~= nil and candidate or followed
-			context.replaces = fitName(name, measure, width, L.dialogReplacesDiffers, at,
-				talentWithTree(owner, data, cell))
+			context.replaces = replacesLine(raw, at, talentParts(owner, data, cell), nil, measure, width)
 		end
 	end
-	local label = BuildDialog.dialogTalent(candidate, ranks, data, level)
+	local label, _, parts = BuildDialog.dialogTalent(candidate, ranks, data, level)
 	if label ~= nil then
-		context.nextWould = string.format(L.dialogNextWould, string.format(L.chipTake, label))
+		context.nextWould = nextLine(parts, measure, width)
 	end
 	return context
 end
@@ -627,7 +724,7 @@ end
 --- the tabs (the copy claim, in the gain green, only after a real Ctrl+C, `copiedAt`), the
 --- ack's lines, and the companion's explanation when no ack was ever seen. No button: the
 --- box itself is what the player copies from (fix round 2, item 4).
---- `input` = { code, reason, copiedAt, ack, savedAt, clock }.
+--- `input` = { code, reason, copiedAt, ack, savedAt, clock, simInUse, upgrade }.
 function BuildDialog.copyModel(input)
 	local clock = input.clock
 	local code = input.code or nil
@@ -644,12 +741,24 @@ function BuildDialog.copyModel(input)
 	if ack == nil then
 		companion = { L.dialogNoCompanion, L.dialogCompanionWhat, string.format(L.dialogPasteAtSite, L.siteName) }
 	end
+	-- While the companion's sim weights are in use, the sim's answer: done, and the chip's
+	-- best next upgrade by them (`upgrade` = { name, gain }); else the request's state.
+	local sim, simNext
+	if input.simInUse then
+		sim = L.dialogSimDone
+		if type(input.upgrade) == "table" and input.upgrade.name ~= nil then
+			simNext = string.format(L.dialogBestUpgrade, escaped(input.upgrade.name), input.upgrade.gain or "")
+		end
+	elseif ack ~= nil then
+		sim = simLine(ack, clock)
+	end
 	return {
 		text = code or "",
 		selected = code ~= nil and code ~= false,
 		lead = lead,
 		seen = seenLine(ack, input.savedAt, clock, input.copiedAt),
-		sim = ack ~= nil and simLine(ack, clock) or nil,
+		sim = sim,
+		simNext = simNext,
 		companion = companion,
 	}
 end
@@ -703,7 +812,7 @@ function BuildDialog.inboxRows(builds, dismissed, data, player)
 			if verdict.ok then
 				local name = type(entry.name) == "string" and entry.name ~= "" and entry.name
 					or Follow.buildName(data, verdict.build)
-				local split = BuildDialog.split(verdict.build, data)
+				local split = BuildDialog.shortSplit(verdict.build, data)
 				rows[#rows + 1] = {
 					id = entry.id,
 					name = name,
@@ -719,35 +828,37 @@ function BuildDialog.inboxRows(builds, dismissed, data, player)
 	return rows, refusal
 end
 
---- A row's label: "Arms raid · Arms 31 / Fury 20 · from the site", fitted to `width` as
---- `measure` measures it by shortening the split with an ellipsis, never the name; the bare
---- "Arms raid · from the site" when no split fits. Without a measure, the whole label.
+--- The points per tree in the players' form, in tree order: "33/16/2".
+function BuildDialog.shortSplit(build, data)
+	local counts = Progress.planSplit(build)
+	local class = data ~= nil and data.classes ~= nil and data.classes[build.classSlug] or nil
+	local trees = class ~= nil and #class.tabs or 0
+	for tab in pairs(counts) do
+		trees = math.max(trees, tab)
+	end
+	local parts = {}
+	for tab = 1, trees do
+		parts[tab] = tostring(counts[tab] or 0)
+	end
+	return table.concat(parts, "/")
+end
+
+--- A row's label: "Arms raid (old patch) · 33/16/2 · from the site", fitted to `width` as
+--- `measure` measures it by shortening the name with an ellipsis, never the split; the bare
+--- "Arms raid · from the site" with no split. Without a measure, the whole label.
 function BuildDialog.rowLabel(name, split, measure, width)
-	local safe = escaped(name)
-	local bare = string.format(L.dialogInboxRowBare, safe)
-	if split == nil or split == "" then
-		return bare
-	end
-	local function fits(text)
-		local measured = measure ~= nil and measure(text) or nil
-		return measured == nil or width == nil or measured <= width
-	end
-	local full = string.format(L.dialogInboxRow, safe, split)
-	if fits(full) then
-		return full
-	end
-	local body = split
-	while #body > 1 do
-		body = cut(body, #body - 1)
-		local trimmed = body:gsub("[%s/]+$", "")
-		if trimmed ~= "" then
-			local candidate = string.format(L.dialogInboxRow, safe, trimmed .. L.ellipsis)
-			if fits(candidate) then
-				return candidate
-			end
+	local raw = tostring(name or "")
+	local function line(bytes)
+		if split == nil or split == "" then
+			return string.format(L.dialogInboxRowBare, cutName(raw, bytes))
 		end
+		return string.format(L.dialogInboxRow, cutName(raw, bytes), split)
 	end
-	return bare
+	local bytes = #raw
+	while bytes > 1 and not fitsWidth(line(bytes), measure, width) do
+		bytes = #cut(raw, bytes - 1)
+	end
+	return line(bytes)
 end
 
 --- The rows paste mode shows: with nothing previewed, at most `limit` and "and 2 more" for
@@ -761,7 +872,7 @@ function BuildDialog.rowsView(rows, limit, verdict)
 				chosen[1] = row
 			end
 		end
-		return { shown = chosen }
+		return { shown = chosen, active = chosen[1] ~= nil and chosen[1].id or nil }
 	end
 	local shown = {}
 	for index = 1, math.min(limit, #rows) do
@@ -771,17 +882,25 @@ function BuildDialog.rowsView(rows, limit, verdict)
 	return { shown = shown, more = more }
 end
 
---- The paste tab's label: in copy mode, with builds waiting, their count in gold.
+--- The row that feeds the preview: a 2 px gold edge at its left. Every row hovers in the
+--- secondary buttons' hover ground, the cue that it can be clicked.
+BuildDialog.ROW_ACTIVE_EDGE = { width = 2, token = "gold" }
+BuildDialog.ROW_HOVER = Theme.CONTROL_STATES.secondary.hover
+
+--- The paste tab's label: in copy mode, with builds waiting, "1 waiting" in gold.
 function BuildDialog.pasteTabLabel(mode, count)
 	if mode == "copy" and (count or 0) > 0 then
-		return string.format(L.dialogTabPasteCount, L.dialogTabPaste, Theme.inlineColor("gold", tostring(count)))
+		return string.format(L.dialogTabPasteCount, L.dialogTabPaste,
+			Theme.inlineColor("gold", string.format(L.dialogWaitingCount, count)))
 	end
 	return L.dialogTabPaste
 end
 
---- The "Tab to switch" hint's colour: one step dimmer than an inactive tab's muted label.
+--- The corner hints ("Tab to switch", "Enter to use"): the muted token at HINT_ALPHA.
+BuildDialog.HINT_ALPHA = 0.75
+
 function BuildDialog.hintHex()
-	return Theme.dimHex("muted", Theme.ALPHA.hint)
+	return Theme.dimHex("muted", BuildDialog.HINT_ALPHA)
 end
 
 --- The no-keyboard note for /fs diag, once a session.
@@ -897,6 +1016,25 @@ local function liveDialogNext(build)
 	local data = dataOf()
 	local ok, label = pcall(BuildDialog.dialogTalent, build, liveRanks(data), data, liveLevel())
 	return ok and label or nil
+end
+
+--- Whether the item tooltip and the chip score by the companion's sim weights now.
+local function simWeightsInUse()
+	local ok, tooltip = pcall(function()
+		return ns.ItemTooltip or require("ItemTooltip")
+	end)
+	local current = ok and type(tooltip) == "table" and tooltip.current or nil
+	return type(current) == "table" and current.tag == "sim"
+end
+
+--- The chip's best next upgrade now, from its own inputs: { name, gain }, or nil.
+local function chipUpgrade()
+	local input = Chip.currentInput
+	local upgrade = type(input) == "table" and type(input.upgrades) == "table" and input.upgrades[1] or nil
+	if type(upgrade) ~= "table" or upgrade.name == nil then
+		return nil
+	end
+	return { name = upgrade.name, gain = Chip.gainText(upgrade, input.healing) }
 end
 
 local function currentAck()
@@ -1259,10 +1397,16 @@ local function buildRow(content)
 	local S = Theme.SIZES
 	local row = { frame = Theme.createFrame("Button", nil, content) }
 	row.frame:SetSize(contentWidth(), S.rowHeight)
-	local highlight = Theme.texture(row.frame, "BACKGROUND", "hover")
+	local highlight = Theme.texture(row.frame, "BACKGROUND", BuildDialog.ROW_HOVER)
 	highlight:SetAllPoints(row.frame)
 	highlight:Hide()
 	row.highlight = highlight
+	local E = BuildDialog.ROW_ACTIVE_EDGE
+	row.edge = Theme.texture(row.frame, "ARTWORK", E.token)
+	row.edge:SetPoint("TOPLEFT", row.frame, "TOPLEFT", 0, 0)
+	row.edge:SetPoint("BOTTOMLEFT", row.frame, "BOTTOMLEFT", 0, 0)
+	row.edge:SetWidth(E.width)
+	row.edge:Hide()
 	row.label = text(row.frame, "body", contentWidth() - S.gap * 2)
 	row.label:SetPoint("LEFT", row.frame, "LEFT", S.gap, 0)
 	if type(row.label.SetWordWrap) == "function" then
@@ -1370,6 +1514,10 @@ local function buildPaste(frame, top, bottom)
 	end)
 	enlarge(paste.use.foreverSixtyLabel)
 	paste.use:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", 0, 0)
+	-- An edit box grows with its text: the open box must never sit over the preview or Use.
+	local boxLevel = type(box.GetFrameLevel) == "function" and box:GetFrameLevel() or 0
+	paste.preview.frame:SetFrameLevel((boxLevel or 0) + 4)
+	paste.use:SetFrameLevel((boxLevel or 0) + 5)
 	paste.use:Hide()
 	-- Above the button: what Use replaces, and the next talent the candidate gives.
 	paste.nextWould = text(content, "muted", width)
@@ -1418,6 +1566,7 @@ local function buildCopy(frame, top, bottom)
 		box:SetHighlightColor(0, 0, 0, 0)
 	end
 	local over = Theme.createFrame("Frame", nil, clip)
+	copy.over = over
 	over:SetAllPoints(clip)
 	if type(box.GetFrameLevel) == "function" and type(over.SetFrameLevel) == "function" then
 		over:SetFrameLevel((box:GetFrameLevel() or 0) + 2)
@@ -1440,7 +1589,9 @@ local function buildCopy(frame, top, bottom)
 	end)
 	-- The one copy claim the dialog makes comes from a real Ctrl+C in this box. Chained, so
 	-- Widgets' own focus release after Ctrl+C still runs.
-	chain(box, "OnKeyDown", function(self, key)
+	-- Its own handler, not chained: Widgets' release after Ctrl+C would drop the keyboard and the
+	-- selection (fix round 5, item 8); a second Ctrl+C copies again, Escape closes.
+	box:SetScript("OnKeyDown", function(self, key)
 		local control = type(IsControlKeyDown) == "function" and IsControlKeyDown() == true
 		local focused = type(self.HasFocus) == "function" and self:HasFocus() == true
 		if control and key == "A" then
@@ -1480,6 +1631,7 @@ local function buildCopy(frame, top, bottom)
 	copy.seen = text(content, "muted", width)
 	setMaxLines(copy.seen, 2)
 	copy.sim = text(content, "muted", width)
+	copy.simNext = text(content, "muted", width)
 	copy.companion = {}
 	for index = 1, 3 do
 		copy.companion[index] = text(content, "muted", width)
@@ -1491,7 +1643,7 @@ end
 local function onEvent(_, event, itemId)
 	if event == "GET_ITEM_INFO_RECEIVED" and itemId ~= nil and BuildDialog.pending[itemId] then
 		BuildDialog.pending[itemId] = nil
-		if BuildDialog.frame:IsShown() then
+		if BuildDialog.frame:IsShown() and BuildDialog.mode == "paste" then
 			BuildDialog.drawPaste()
 		end
 	end
@@ -1679,9 +1831,9 @@ function BuildDialog.drawPaste()
 			paste.following:SetText(line)
 			y = stack(paste.following, content, y, textHeight(paste.following) + S.gap / 2)
 		end
-		local nextLine = BuildDialog.nextTalentLine(liveDialogNext(Follow.build))
-		if nextLine ~= nil then
-			paste.next:SetText(nextLine)
+		local talentLine = BuildDialog.nextTalentLine(liveDialogNext(Follow.build))
+		if talentLine ~= nil then
+			paste.next:SetText(talentLine)
 			y = stack(paste.next, content, y, textHeight(paste.next))
 		end
 		if y > 0 then
@@ -1701,6 +1853,11 @@ function BuildDialog.drawPaste()
 			row.label:SetText(BuildDialog.rowLabel(entry.name, entry.split, widthOf(row.label),
 				contentWidth() - S.gap * 2))
 			row.selected = verdict ~= nil and verdict.inboxId == entry.id
+			if rows.active ~= nil and rows.active == entry.id then
+				row.edge:Show()
+			else
+				row.edge:Hide()
+			end
 			if row.selected then
 				row.highlight:Show()
 			else
@@ -1771,7 +1928,9 @@ function BuildDialog.drawPaste()
 	elseif view.preview then
 		drawPreview(verdict, y)
 		paste.use:Show()
-		BuildDialog.enterHint:Show()
+		if BuildDialog.mode == "paste" then
+			BuildDialog.enterHint:Show()
+		end
 	end
 	return verdict
 end
@@ -1825,6 +1984,8 @@ function BuildDialog.drawCopy(select)
 		ack = currentAck(),
 		savedAt = BuildDialog.savedAtFor(ForeverSixtyDB, name),
 		clock = liveClock(),
+		simInUse = simWeightsInUse(),
+		upgrade = chipUpgrade(),
 	})
 	local content = copy.content
 	copy.lead:SetText(model.lead.text)
@@ -1840,9 +2001,20 @@ function BuildDialog.drawCopy(select)
 	local leadLines = BuildDialog.leadLines({ leadWidth(L.dialogSelectedLead),
 		leadWidth(string.format(L.dialogYouCopied, "00:00")), leadWidth(model.lead.text) }, contentWidth())
 	local top = first + (leadLines - 1) * advance + S.gap * 2
-	-- The lines under the box first, so the box takes only the room left.
+	-- The lines under the box first, so the box takes only the room left. The seen line is
+	-- reserved at the taller of its two states (before and after a copy), so a Ctrl+C never
+	-- changes the box's height.
 	local below = 0
-	for _, entry in ipairs({ { copy.seen, model.seen }, { copy.sim, model.sim } }) do
+	if model.seen ~= nil then
+		local tallest = 0
+		for _, line in ipairs({ L.dialogWaitingSite, model.seen }) do
+			copy.seen:SetText(line)
+			tallest = math.max(tallest, textHeight(copy.seen))
+		end
+		copy.seen:SetText(model.seen)
+		below = below + tallest + S.gap
+	end
+	for _, entry in ipairs({ { copy.sim, model.sim }, { copy.simNext, model.simNext } }) do
 		if entry[2] ~= nil then
 			entry[1]:SetText(entry[2])
 			below = below + textHeight(entry[1]) + S.gap
@@ -1881,11 +2053,15 @@ function BuildDialog.drawCopy(select)
 	paintSelection()
 	copy.seen:Hide()
 	copy.sim:Hide()
+	copy.simNext:Hide()
 	if model.seen ~= nil then
 		y = stack(copy.seen, content, y, textHeight(copy.seen) + S.gap)
 	end
 	if model.sim ~= nil then
-		stack(copy.sim, content, y, textHeight(copy.sim))
+		y = stack(copy.sim, content, y, textHeight(copy.sim) + S.gap)
+	end
+	if model.simNext ~= nil then
+		stack(copy.simNext, content, y, textHeight(copy.simNext))
 	end
 	return model
 end
