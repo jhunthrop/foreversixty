@@ -96,13 +96,21 @@ point spent off plan turns the strip's count warning-coloured; nothing pops up.
 
 ### 4.3 Item tooltip
 
-After the client's own lines, a "Forever Sixty" section: the verdict ("Upgrade +4.2 DPS over
-Chausses of Westfall", "Sidegrade", "Not for you until 40: plate", "Planned for Arms at 30"),
-the source in one line with drop chance ("The Deadmines · Defias Overseer · 14 %"), and two
-alternatives when the data has them. The unit is DPS (or HPS) when a sim result or DPS-per-point
-weights exist for the spec, else "score by Arms weights (1 = 1 attack power)", and the section's
-tag says which ("Your sim", "Your build", "Default weights"). Hovering a planned item shows the
-compare tooltip beside it, as shift-compare does.
+After the client's own lines, a "Forever Sixty" section. Its header names the spec and where the
+weights came from: "Forever Sixty · Arms · Your sim" with the companion's sim, "Forever Sixty ·
+Arms · Estimate" with the shipped weights (DPS is allowed under Estimate: the shipped
+DPS-per-point figures are real sims), with "Equipped" on its right on the item worn. Every
+equippable item in a slot the plan covers gets a line: the verdict ("Upgrade +4.2 DPS over
+Chausses of Westfall", "Sidegrade (+0.3 DPS)", "Downgrade −4.2 DPS over Smite's Mighty Hammer";
+"Upgrade" only from the chip's own 1.0 floor), "Best for now", or the reason it is not one ("Not
+for you until 40: plate armor", "Not with your two-hander", "Not for your plan"); only non-gear
+stays blank. On the item worn the primary line is the slot's next upgrade ("Next upgrade: Mutant
+Scale Breastplate +6.1 DPS", the name in its quality colour). Then the plan ("Planned for Arms at
+30"), the source on its own line with drop chance ("Wailing Caverns · Mutanus the Devourer · 33%
+drop"), and two alternatives when the data has them ("Also good: A, B", never wider than the
+tooltip). The unit is DPS (or HPS) when a sim result or DPS-per-point weights exist for the spec,
+else score. Hovering an item with a next upgrade shows that upgrade's compare tooltip beside it,
+as shift-compare does, once the client holds the item (never "Retrieving item information").
 
 ### 4.4 Paper doll, bags, quest rewards, rolls
 

@@ -40,7 +40,7 @@ describe("Tooltip", function()
 				},
 			})
 			local lines = Tooltip.capLines("item:ring", { caps = { "hit" } })
-			assert.are.same({ string.format(L.tooltipCapped, "hit") }, lines)
+			assert.are.same({ string.format(L.tooltipCapped, L.statNames.hit) }, lines)
 		end)
 
 		it("says nothing for a stat this item does not carry, even if capped", function()
@@ -63,8 +63,8 @@ describe("Tooltip", function()
 			})
 			local lines = Tooltip.capLines("item:ring", { caps = { "hit", "expertise" } })
 			assert.are.same({
-				string.format(L.tooltipCapped, "expertise"),
-				string.format(L.tooltipCapped, "hit"),
+				string.format(L.tooltipCapped, L.statNames.expertise),
+				string.format(L.tooltipCapped, L.statNames.hit),
 			}, lines)
 		end)
 

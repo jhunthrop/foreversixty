@@ -1,14 +1,19 @@
 -- addon/ForeverSixty/surfaces/ItemTooltip.lua
 -- The item tooltip (spec section 4.3): after the client's own lines, a
--- "Forever Sixty" section. A header naming where the weights came from
--- ("Forever Sixty · Your sim"), the verdict against what is worn ("Upgrade
--- +4.2 DPS over Chausses of Westfall", "Sidegrade", "Not for you until 40:
--- plate armor"), any capped stat the item carries, the plan ("Planned for
--- Arms at 30"), one source line with its drop chance and two alternatives.
--- The compare tooltip beside it shows the band's pick for the slot.
+-- "Forever Sixty" section. A header naming the spec and where the weights
+-- came from ("Forever Sixty · Arms · Your sim", "Equipped" right of it on
+-- the item worn), then one primary line for every piece of gear: the
+-- verdict against what is worn ("Upgrade +4.2 DPS over Chausses of
+-- Westfall", "Sidegrade (+0.3 DPS)"), or why not ("Not for you until 40:
+-- plate armor", "Not with your two-hander", "Not for your plan"), or, on
+-- the item worn, the slot's next upgrade ("Next upgrade: Mutant Scale
+-- Breastplate +6.1 DPS") or "Best for now". Then any capped stat, the plan
+-- ("Planned for Arms at 30"), the source on its own line with its drop
+-- chance, and two alternatives in their quality colour. The compare
+-- tooltip beside it shows the next upgrade, once the client holds it.
 --
 -- Pure model, thin hook: ItemTooltip.section builds the lines from plain
--- tables (every number from Progress.slotVerdict, the weights from
+-- tables (every number from Progress.itemVerdict, the weights from
 -- Gear.currentWeights, the wear rules from Rules.canEquip); the guarded
 -- hooks after it read the client and draw. A section with nothing to say is
 -- not drawn at all (spec section 2.2).
@@ -57,31 +62,12 @@ local function equippedLinkFor(slot)
 	return GetInventoryItemLink("player", slotId)
 end
 
---- The site slot currently holding `itemLink`, or nil (a bag item, another
---- unit's item, or nothing equipped there), by exact link.
-function ItemTooltip.equippedSlotFor(itemLink)
-	if itemLink == nil then
-		return nil
-	end
-	for slot in pairs(SLOT_IDS) do
-		if equippedLinkFor(slot) == itemLink then
-			return slot
-		end
-	end
-	return nil
-end
-
 -- ---------------------------------------------------------------------
 -- The section's lines, pure.
 -- ---------------------------------------------------------------------
 
---- Below this share of the worn item's own value a gain or a loss reads as
---- a Sidegrade, both ways: two items a stray point of a minor stat apart are
---- not an upgrade either way.
-ItemTooltip.SIDEGRADE_THRESHOLD_PERCENT = 0.5
-
 --- The smallest gain each unit prints (one decimal for DPS and HPS, none
---- for a score): anything smaller would print "+0.0", so it is a Sidegrade.
+--- for a score): anything smaller would print "+0.0".
 local SMALLEST = { dps = 0.05, hps = 0.05, score = 0.5 }
 
 local function round(value)
@@ -92,21 +78,28 @@ local function unitWord(unit)
 	return unit == "hps" and L.tooltipUnitHps or L.tooltipUnitDps
 end
 
---- The verdict line for one Progress.slotVerdict answer, as { text, color },
+--- The verdict line for one Progress.itemVerdict answer, as { text, color },
 --- or nil with nothing to say. The verdict was asked with the HOVERED item
 --- as `plan` and the worn one as `worn`, so its delta is worn minus hovered
---- and the hovered item's gain is minus the delta: `better` is the worn item
---- ahead (a downgrade), `behind` the hovered one ahead or level (an
---- upgrade), `empty` nothing worn (it fills the slot), `match` the item worn.
---- `unit` is "dps", "hps" or "score"; `wornName` the worn item's name (nil
---- while the client has not sent it); `wornScore` the worn item's value in
---- the same unit, the base of the sidegrade threshold.
-function ItemTooltip.verdictLine(verdict, unit, wornName, wornScore)
+--- and the hovered item's gain is minus the delta. `unit` is "dps", "hps"
+--- or "score"; `wornName` the worn item's name (nil while the client has not
+--- sent it).
+---
+--- One floor for the chip and the tooltip (Progress.MIN_GAIN, 1.0 in the
+--- unit): a gain from it reads "Upgrade", a loss from it "Downgrade ... over
+--- <worn>", anything between "Sidegrade (+0.3 DPS)" (the size dropped when it
+--- rounds to nothing, and for a score). An empty slot is filled, green from
+--- the floor and muted below it; `match` is "Equipped", `blocked` (a hand a
+--- worn two-hander holds) "Not with your two-hander".
+function ItemTooltip.verdictLine(verdict, unit, wornName)
 	if verdict == nil then
 		return nil
 	end
 	if verdict.state == "match" then
 		return { text = L.tooltipEquipped, color = "muted" }
+	end
+	if verdict.state == "blocked" then
+		return { text = L.tooltipTwoHander, color = "muted" }
 	end
 	if verdict.delta == nil or verdict.state == "noplan" then
 		return nil
@@ -118,40 +111,48 @@ function ItemTooltip.verdictLine(verdict, unit, wornName, wornScore)
 		if gain < SMALLEST[unit] then
 			return nil
 		end
+		local color = gain >= Progress.MIN_GAIN and "success" or "muted"
 		if unit == "score" then
-			return { text = string.format(L.tooltipFillsScore, round(gain)), color = "success" }
+			return { text = string.format(L.tooltipFillsScore, round(gain)), color = color }
 		end
-		return { text = string.format(L.tooltipFills, gain, unitWord(unit)), color = "success" }
-	end
-	local threshold = math.abs(wornScore or 0) * ItemTooltip.SIDEGRADE_THRESHOLD_PERCENT / 100
-	if size < SMALLEST[unit] or size < threshold then
-		return { text = L.tooltipSide, color = "muted" }
+		return { text = string.format(L.tooltipFills, gain, unitWord(unit)), color = color }
 	end
 	local name = wornName or L.tooltipNamePending
-	if gain > 0 then
+	if gain >= Progress.MIN_GAIN then
 		if unit == "score" then
 			return { text = string.format(L.tooltipVerdictScore, round(gain), name), color = "success" }
 		end
 		local format = unit == "hps" and L.tooltipVerdictHps or L.tooltipVerdictDps
 		return { text = string.format(format, gain, name), color = "success" }
 	end
-	if unit == "score" then
-		return { text = string.format(L.tooltipDownScore, round(size)), color = "warning" }
+	if gain <= -Progress.MIN_GAIN then
+		if unit == "score" then
+			return { text = string.format(L.tooltipDownScore, round(size), name), color = "warning" }
+		end
+		return { text = string.format(L.tooltipDown, size, unitWord(unit), name), color = "warning" }
 	end
-	return { text = string.format(L.tooltipDown, size, unitWord(unit)), color = "warning" }
+	if unit == "score" or size < SMALLEST[unit] then
+		return { text = L.tooltipSide, color = "muted" }
+	end
+	local sign = gain > 0 and "+" or L.tooltipMinus
+	return { text = string.format(L.tooltipSideGain, sign, size, unitWord(unit)), color = "muted" }
 end
 
 --- The line Rules.canEquip's refusal reads as, in place of the verdict:
---- "Not for you until 40: plate armor" or "Not for you: rogues cannot use
---- two-handed swords". `subclass` is canEquip's own plain-words reason. nil
---- for "ok".
+--- "Not for you until 40: plate armor", "Not for you: rogues cannot use
+--- two-handed swords", "Not for you: shamans cannot wield two weapons".
+--- `subclass` is canEquip's own plain-words reason. nil for "ok".
 function ItemTooltip.untilLine(classToken, answer, level, subclass)
 	if answer == "until" then
 		return string.format(L.tooltipUntil, level, subclass)
 	end
 	if answer == "never" then
 		local class = type(classToken) == "string" and L.tooltipClassPlural[classToken:upper()] or nil
-		return string.format(L.tooltipNever, class or tostring(classToken), subclass)
+		class = class or tostring(classToken)
+		if subclass == "dual wielding" then
+			return string.format(L.tooltipNeverTwoWeapons, class)
+		end
+		return string.format(L.tooltipNever, class, subclass)
 	end
 	return nil
 end
@@ -182,10 +183,10 @@ local function percentOf(chance)
 	return math.max(1, round(chance * 100))
 end
 
---- One line saying where a pick comes from: "The Deadmines · Defias
---- Overseer · 14%" for an instance drop (the source split on its first
---- ": "), "<name> · Vendor" or "<source> · Quest" for the rest (the kind
---- left out when the source already says it, "World drop"), the chance last
+--- One line saying where a pick comes from: "Wailing Caverns · Mutanus the
+--- Devourer · 33% drop" for an instance drop (the source split on its first
+--- ": "), "<name> · Vendor" or "<source> · Quest" for the rest (the kind left
+--- out when the source already says it, "World drop"), the drop chance last
 --- when the data has one. nil with no source.
 function ItemTooltip.sourceLine(pick)
 	if type(pick) ~= "table" or type(pick.source) ~= "string" or pick.source == "" then
@@ -204,7 +205,7 @@ function ItemTooltip.sourceLine(pick)
 	end
 	local percent = percentOf(pick.chance)
 	if second ~= nil and percent ~= nil then
-		return string.format(L.tooltipSource, first, second, percent)
+		return string.format(L.tooltipSourceDrop, first, second, percent)
 	end
 	if second ~= nil then
 		return string.format(L.tooltipSourcePair, first, second)
@@ -215,8 +216,9 @@ function ItemTooltip.sourceLine(pick)
 	return first
 end
 
---- "Also: <name>, <name>" from up to two names; `false` for a name the
---- client has not sent yet, which prints the pending mark. nil with none.
+--- "Also good: <name>, <name>" from up to two names (already coloured, or
+--- `false` for a name the client has not sent yet: the pending mark). nil
+--- with none.
 function ItemTooltip.alternativesLine(names)
 	local shown = {}
 	for index = 1, 2 do
@@ -239,29 +241,93 @@ function ItemTooltip.alternativesLine(names)
 	return nil
 end
 
-local TAG_TEXT = { sim = "tooltipTagSim", build = "tooltipTagBuild", default = "tooltipTagDefault" }
+local function colored(name, hex)
+	if hex == nil then
+		return name
+	end
+	return "|cff" .. hex .. name .. "|r"
+end
 
---- The section's first line: "Forever Sixty" in gold, then where the
---- weights came from, muted ("· Your sim"); the name alone with none.
-function ItemTooltip.headerText(tag)
+local function coloredNames(entries, count, cut)
+	local names = {}
+	for index = 1, count do
+		local entry = entries[index]
+		if entry == false then
+			names[index] = false
+		elseif type(entry) == "table" then
+			local name = entry.name
+			if index == 1 and cut ~= nil then
+				name = name:sub(1, cut) .. L.tooltipNamePending
+			end
+			names[index] = colored(name, entry.hex)
+		end
+	end
+	return names
+end
+
+--- The alternatives line for `entries` ({ name, hex } each, in quality
+--- colour, or false for a name not sent yet), kept within `maxWidth` as
+--- `measure` (text -> width) reads it, so it never widens the tooltip: the
+--- second name goes first, then the one left is shortened with an ellipsis.
+--- The whole line with no width or no measure. nil with no entries.
+function ItemTooltip.fitAlternatives(entries, measure, maxWidth)
+	entries = entries or {}
+	local count = math.min(2, #entries)
+	local text = ItemTooltip.alternativesLine(coloredNames(entries, count))
+	if text == nil or maxWidth == nil or type(measure) ~= "function" then
+		return text
+	end
+	local function fits(candidate)
+		local width = measure(candidate)
+		return type(width) ~= "number" or width <= maxWidth
+	end
+	if fits(text) then
+		return text
+	end
+	text = ItemTooltip.alternativesLine(coloredNames(entries, 1))
+	if fits(text) or type(entries[1]) ~= "table" then
+		return text
+	end
+	for cut = #entries[1].name - 1, 1, -1 do
+		text = ItemTooltip.alternativesLine(coloredNames(entries, 1, cut))
+		if fits(text) then
+			return text
+		end
+	end
+	return text
+end
+
+local TAG_TEXT = { sim = "tooltipTagSim", build = "tooltipTagBuild", default = "tooltipTagEstimate" }
+
+--- The section's first line: "Forever Sixty" in gold, then the spec's tree
+--- and where the weights came from, muted ("· Arms · Your sim", "· Arms ·
+--- Estimate"); the name alone with neither.
+function ItemTooltip.headerText(specWord, tag)
 	local text = Theme.inlineColor("gold", L.addonName)
 	local key = TAG_TEXT[tag]
-	if key ~= nil then
-		text = text .. Theme.inlineColor("muted", string.format(L.tooltipHeaderTag, L[key]))
+	local tagText = key ~= nil and L[key] or nil
+	local parts
+	if specWord ~= nil and tagText ~= nil then
+		parts = string.format(L.tooltipHeaderParts, specWord, tagText)
+	else
+		parts = specWord or tagText
+	end
+	if parts ~= nil then
+		text = text .. Theme.inlineColor("muted", string.format(L.tooltipHeaderTag, parts))
 	end
 	return text
 end
 
 --- "dps", "hps" or "score": the unit Gear.currentWeights' answer counts in.
 function ItemTooltip.unitOf(current)
-	if current == nil or current.dpsPerPoint == nil then
+	if not current or current.dpsPerPoint == nil then
 		return "score"
 	end
 	return current.healing and "hps" or "dps"
 end
 
---- "<stat> capped: more is wasted" for each stat the item carries that the
---- sim's weights message names as capped, sorted. Empty without caps.
+--- "<Stat> capped: more is wasted" for each stat the item carries that the
+--- sim's weights message names as capped, by its plain name, sorted.
 local function capTexts(stats, caps)
 	local lines = {}
 	if type(stats) ~= "table" or type(caps) ~= "table" then
@@ -269,7 +335,7 @@ local function capTexts(stats, caps)
 	end
 	for _, stat in ipairs(caps) do
 		if type(stats[stat]) == "number" and stats[stat] > 0 then
-			lines[#lines + 1] = string.format(L.tooltipCapped, stat)
+			lines[#lines + 1] = string.format(L.tooltipCapped, L.statNames[stat] or stat)
 		end
 	end
 	table.sort(lines)
@@ -295,23 +361,17 @@ local function wornNameOf(worn, nameOf)
 end
 
 --- The slot the hovered item is judged in, among `slots` (each one it may
---- be worn in): the one already holding it, else an empty one, else the one
---- whose worn item scores lowest (of two rings, the weaker is the one to
---- replace).
-local function chooseSlot(slots, itemId, equipped, weights)
+--- be worn in): an empty one first, else the one whose worn item scores
+--- lowest (of two rings, the weaker is the one to replace).
+local function chooseSlot(slots, equipped, weights)
 	local best, bestScore
 	for _, slot in ipairs(slots) do
-		local worn = equipped[slot]
-		if worn ~= nil and worn.itemId == itemId then
+		if equipped[slot] == nil then
 			return slot
 		end
 	end
 	for _, slot in ipairs(slots) do
-		local worn = equipped[slot]
-		if worn == nil then
-			return slot
-		end
-		local score = Gear.score(worn.stats, weights)
+		local score = Gear.score(equipped[slot].stats, weights)
 		if bestScore == nil or score < bestScore then
 			best, bestScore = slot, score
 		end
@@ -319,13 +379,16 @@ local function chooseSlot(slots, itemId, equipped, weights)
 	return best
 end
 
---- The spec's own tree name ("Arms" for "warrior-arms").
+--- The spec's own tree name ("Arms" for "warrior-arms"), Talents.tabName's.
 local function specName(data, spec)
+	if spec == nil then
+		return nil
+	end
 	local classSlug, rest = spec:match("^([^-]+)%-(.+)$")
 	local class = data.classes ~= nil and data.classes[classSlug] or nil
-	for _, tab in ipairs(class ~= nil and class.tabs or {}) do
-		if Export.slugify(tab.name) == rest then
-			return tab.name
+	for tab, entry in ipairs(class ~= nil and class.tabs or {}) do
+		if Export.slugify(entry.name) == rest then
+			return Talents.tabName(data, classSlug, tab)
 		end
 	end
 	return Talents.titleCase(rest or spec)
@@ -373,40 +436,82 @@ local function buildPlans(build, slots, itemId)
 	return false
 end
 
---- The section for one hovered item, as a list of { text, color } lines in
---- draw order, then the compare tooltip's item ({ itemId, link }, the
---- band's pick for the slot, or nil) and the ids whose names the client has
---- not sent yet (a set). `ctx` holds everything the hook read:
+--- The client reads `ctx` falls back to when a caller hands none in.
+local function itemStatsOf(itemId)
+	local _, link = Compat.itemInfo(itemId)
+	return link ~= nil and Gear.statsOf(link) or nil
+end
+
+local function qualityHexOf(itemId)
+	local quality = Compat.itemQuality(itemId)
+	if quality == nil then
+		return nil
+	end
+	return Theme.hexOf(Theme.qualityColor(quality))
+end
+
+--- "Next upgrade: <name> +6.1 DPS": the band's pick in its quality colour,
+--- with its gain over what is worn when the pick's stats are known and the
+--- gain reaches the floor (Progress.MIN_GAIN).
+local function nextUpgradeText(name, gain, unit)
+	if gain == nil or gain < Progress.MIN_GAIN then
+		return string.format(L.tooltipNextUpgrade, name)
+	end
+	if unit == "score" then
+		return string.format(L.tooltipNextUpgradeScore, name, round(gain))
+	end
+	return string.format(L.tooltipNextUpgradeGain, name, gain, unitWord(unit))
+end
+
+--- The section for one hovered item: the lines ({ text, color, kind? }) in
+--- draw order, the compare tooltip's item ({ itemId, link, label } for the
+--- next upgrade, only once the client holds it), the ids whose names the
+--- client has not sent yet (a set: the hover redraws when one arrives), and
+--- the header ({ specWord, tag, equipped }). `ctx` holds what the hook read:
 ---
 --- - `data`, `spec`, `classToken`, `level`, `faction`;
 --- - `item`: { itemId, link, equipLocation, itemClass, itemSubClass, stats };
 --- - `current`: Gear.currentWeights' answer (nil: no weights for the spec);
 --- - `equipped`: Gear.readEquipped()'s table; `build`: the loaded build;
---- - `nameOf(itemId)`: the client's name for an item, nil until cached.
+--- - `nameOf(id)`, `statsOf(id)`, `isCached(id)`, `qualityHex(id)`: the
+---   client's name, stats, cache state and quality colour for an item.
 ---
---- Rules first: an item the character cannot wear in any slot it fits gets
---- the refusal in place of the verdict, and is never called an upgrade; the
---- plan and source lines still print. One source block per tooltip: the
---- hovered item's own when it is the band's pick, else the pick's ("Next:").
+--- Every piece of gear in a slot the plan covers gets a primary line: the
+--- refusal (Rules first: never called an upgrade), "Not with your
+--- two-hander", the verdict, on the item worn (the exact link) the next
+--- upgrade or "Best for now", else "Not for your plan". One source block per
+--- tooltip: the hovered item's own when it is the band's pick, else the
+--- next upgrade's; the next upgrade waits for its name rather than print "…".
 function ItemTooltip.section(ctx)
 	local lines, pending = {}, {}
 	local item = ctx.item or {}
 	local slots = Gear.slotsFor(item.equipLocation)
 	if #slots == 0 then
-		return lines, nil, pending
+		return lines, nil, pending, nil
 	end
 	local data = ctx.data or {}
 	local equipped = ctx.equipped or {}
 	local nameOf = ctx.nameOf or Compat.itemName
-	local function named(itemId)
-		local name = nameOf(itemId)
-		if name == nil then
-			pending[itemId] = true
-			return false
-		end
-		return name
-	end
+	local statsOf = ctx.statsOf or itemStatsOf
+	local isCached = ctx.isCached or Compat.isItemCached
+	local qualityHex = ctx.qualityHex or qualityHexOf
+	local current = ctx.current or nil
+	local weights = current ~= nil and current.weights or nil
+	local unit = ItemTooltip.unitOf(current)
+	local hovered = { itemId = item.itemId, link = item.link, equipLocation = item.equipLocation, stats = item.stats }
 
+	local wornSlot
+	for _, slot in ipairs(slots) do
+		local worn = equipped[slot]
+		if worn ~= nil and item.link ~= nil and worn.link == item.link then
+			wornSlot = slot
+			break
+		end
+	end
+	local head = { specWord = specName(data, ctx.spec), tag = current ~= nil and current.tag or nil,
+		equipped = wornSlot ~= nil }
+
+	-- Rules first, then the two-hander: the slots the item may go in now.
 	local wearable, refusal = {}, nil
 	for _, slot in ipairs(slots) do
 		local answer, unlock, reason = Rules.canEquip(ctx.classToken, ctx.level, item.itemClass,
@@ -417,47 +522,54 @@ function ItemTooltip.section(ctx)
 			refusal = ItemTooltip.untilLine(ctx.classToken, answer, unlock, reason)
 		end
 	end
-
-	local current = ctx.current
-	local weights = current and current.weights or nil
-	local slot = chooseSlot(#wearable > 0 and wearable or slots, item.itemId, equipped, weights)
-	if #wearable == 0 then
-		if refusal ~= nil then
-			lines[#lines + 1] = { text = refusal, color = "warning" }
+	local usable, blocked = {}, nil
+	for _, slot in ipairs(wearable) do
+		local verdict = Progress.itemVerdict(slot, hovered, equipped, weights,
+			current ~= nil and current.dpsPerPoint or nil)
+		if verdict ~= nil and verdict.state == "blocked" then
+			blocked = verdict
+		else
+			usable[#usable + 1] = slot
 		end
-	elseif weights ~= nil then
+	end
+	local slot = wornSlot or chooseSlot(#usable > 0 and usable or slots, equipped, weights)
+
+	local primary
+	if #wearable == 0 then
+		primary = refusal ~= nil and { text = refusal, color = "warning" } or nil
+	elseif #usable == 0 then
+		primary = ItemTooltip.verdictLine(blocked, unit, nil)
+	elseif wornSlot == nil and weights ~= nil then
+		local verdict = Progress.itemVerdict(slot, hovered, equipped, weights, current.dpsPerPoint)
 		local worn = equipped[slot]
-		-- Progress.slotVerdict(slot, plan, worn, ...) with the HOVERED item as
-		-- `plan` and the worn one as `worn`: its delta is worn minus hovered,
-		-- which verdictLine reads back as the hovered item's gain.
-		local verdict = Progress.slotVerdict(slot, { itemId = item.itemId, stats = item.stats }, worn,
-			weights, current.dpsPerPoint)
-		local wornScore = worn ~= nil and Gear.score(worn.stats, weights) * (current.dpsPerPoint or 1) or nil
-		local unit = ItemTooltip.unitOf(current)
+		if slot == "main_hand" then
+			-- A two-hander scored net of both hands is named over the main hand.
+			worn = equipped.main_hand or equipped.off_hand
+		end
 		local wornName = worn ~= nil and wornNameOf(worn, nameOf) or nil
 		if worn ~= nil and wornName == nil then
 			pending[worn.itemId] = true
 		end
-		local line = ItemTooltip.verdictLine(verdict, unit, wornName, wornScore)
-		if line ~= nil then
-			lines[#lines + 1] = line
-		end
+		primary = ItemTooltip.verdictLine(verdict, unit, wornName)
+	end
+	local after = {}
+	if #usable > 0 and current ~= nil then
 		for _, text in ipairs(capTexts(item.stats, current.caps)) do
-			lines[#lines + 1] = { text = text, color = "body" }
+			after[#after + 1] = { text = text, color = "body" }
 		end
 	end
-
 	local band = ItemTooltip.plannedBand(data, ctx.spec, ctx.faction, slots, item.itemId, ctx.level)
 	if band ~= nil then
-		lines[#lines + 1] = { text = string.format(L.tooltipPlanned, specName(data, ctx.spec), band), color = "gold" }
+		after[#after + 1] = { text = string.format(L.tooltipPlanned, specName(data, ctx.spec), band), color = "gold" }
 	elseif buildPlans(ctx.build, slots, item.itemId) then
-		lines[#lines + 1] = { text = string.format(L.tooltipPlannedBuild, Follow.buildName(data, ctx.build)),
+		after[#after + 1] = { text = string.format(L.tooltipPlannedBuild, Follow.buildName(data, ctx.build)),
 			color = "gold" }
 	end
 
+	-- The source block: the band's pick for the slot.
 	local specBis = ctx.spec ~= nil and type(data.bis) == "table" and data.bis[ctx.spec] or nil
 	local currentBand = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
-	local pick, isPick
+	local pick, isPick, pickWorn
 	if currentBand ~= nil then
 		for _, candidate in ipairs(slots) do
 			local found = Gear.pick(ctx.spec, currentBand, ctx.faction, candidate, data)
@@ -469,35 +581,86 @@ function ItemTooltip.section(ctx)
 		if pick == nil then
 			pick = Gear.pick(ctx.spec, currentBand, ctx.faction, slot, data)
 		end
+		for _, candidate in ipairs(slots) do
+			local worn = equipped[candidate]
+			if pick ~= nil and worn ~= nil and worn.itemId == pick.item_id then
+				pickWorn = true
+			end
+		end
 	end
-	local target
-	if pick ~= nil then
+	local block, nextLine, target = {}, nil, nil
+	if pick ~= nil and not (isPick and wornSlot == nil) and pickWorn then
+		if wornSlot ~= nil then
+			primary = { text = L.tooltipBestForNow, color = "muted" }
+		end
+	elseif pick ~= nil then
 		local source = ItemTooltip.sourceLine(pick)
-		if isPick then
+		local showBlock = true
+		if not isPick then
+			local name = nameOf(pick.item_id)
+			if name == nil then
+				pending[pick.item_id] = true
+				showBlock = false
+			else
+				local gain
+				local stats = weights ~= nil and statsOf(pick.item_id) or nil
+				if stats ~= nil and next(stats) ~= nil then
+					local wanted = { itemId = pick.item_id, stats = stats,
+						equipLocation = select(4, Compat.itemInfoInstant(pick.item_id)) }
+					local verdict = Progress.itemVerdict(slot, wanted, equipped, weights, current.dpsPerPoint)
+					gain = verdict ~= nil and verdict.delta ~= nil and -verdict.delta or nil
+				end
+				nextLine = { text = nextUpgradeText(colored(name, qualityHex(pick.item_id)), gain, unit), color = "body" }
+				if isCached(pick.item_id) then
+					target = { itemId = pick.item_id, link = Compat.displayLink(pick.item_id),
+						label = L.tooltipCompareLabel }
+				end
+			end
+		end
+		if showBlock then
 			if source ~= nil then
-				lines[#lines + 1] = { text = source, color = "muted" }
+				block[#block + 1] = { text = source, color = "muted" }
 			end
-		else
-			local name = named(pick.item_id) or L.tooltipNamePending
-			lines[#lines + 1] = {
-				text = source ~= nil and string.format(L.tooltipNext, name, source)
-					or string.format(L.tooltipNextOnly, name),
-				color = "muted",
-			}
-		end
-		local names = {}
-		for _, alternative in ipairs(pick.alternatives or {}) do
-			if alternative.item_id ~= nil and alternative.item_id ~= item.itemId and #names < 2 then
-				names[#names + 1] = named(alternative.item_id)
+			local entries = {}
+			for _, alternative in ipairs(pick.alternatives or {}) do
+				if alternative.item_id ~= nil and alternative.item_id ~= item.itemId and #entries < 2 then
+					local name = nameOf(alternative.item_id)
+					if name == nil then
+						pending[alternative.item_id] = true
+						entries[#entries + 1] = false
+					else
+						entries[#entries + 1] = { name = name, hex = qualityHex(alternative.item_id) }
+					end
+				end
+			end
+			if #entries > 0 then
+				block[#block + 1] = { kind = "alternatives", entries = entries, color = "muted",
+					text = ItemTooltip.fitAlternatives(entries) }
 			end
 		end
-		local also = ItemTooltip.alternativesLine(names)
-		if also ~= nil then
-			lines[#lines + 1] = { text = also, color = "muted" }
-		end
-		target = { itemId = pick.item_id, link = Compat.displayLink(pick.item_id) }
 	end
-	return lines, target, pending
+
+	-- On the item worn the next upgrade leads; on any other it follows the plan.
+	if wornSlot ~= nil and nextLine ~= nil then
+		primary = nextLine
+		nextLine = nil
+	end
+	if primary == nil and wornSlot == nil and nextLine == nil and not isPick and next(pending) == nil then
+		primary = { text = L.tooltipNotForPlan, color = "muted" }
+	end
+	if primary ~= nil then
+		lines[#lines + 1] = primary
+	end
+	for _, line in ipairs(after) do
+		lines[#lines + 1] = line
+	end
+	if nextLine ~= nil then
+		lines[#lines + 1] = nextLine
+	end
+	for _, line in ipairs(block) do
+		lines[#lines + 1] = line
+	end
+	return lines, target, pending, head
 end
 
 -- ---------------------------------------------------------------------
@@ -627,7 +790,8 @@ ItemTooltip.data = nil
 ItemTooltip.current = nil
 
 --- The section, computed once per item link until something it reads
---- changes (Options resets it with every surface refresh).
+--- changes (Options resets it with every surface refresh and every change
+--- of what is worn).
 ItemTooltip.cache = {}
 
 function ItemTooltip.resetCache()
@@ -635,12 +799,18 @@ function ItemTooltip.resetCache()
 	return ItemTooltip.cache
 end
 
+local function currentSpec(data)
+	local classSlug = Talents.playerClassSlug()
+	if classSlug == nil or data == nil or data.classes == nil then
+		return nil, nil
+	end
+	return Gear.specOf(data, classSlug, Talents.readRanks(data)), classSlug
+end
+
 --- Everything ItemTooltip.section reads, from the client.
 local function contextFor(data, itemLink)
 	local id, itemType, itemSubType, equipLocation, _, classId, subClassId = Compat.itemInfoInstant(itemLink)
-	local classSlug = Talents.playerClassSlug()
-	local spec = classSlug ~= nil and data.classes ~= nil and Gear.specOf(data, classSlug, Talents.readRanks(data))
-		or nil
+	local spec, classSlug = currentSpec(data)
 	local current = ItemTooltip.current
 	if current == nil and spec ~= nil then
 		current = Gear.currentWeights(data, spec, ForeverSixtyInbox, Export.characterKey())
@@ -666,16 +836,36 @@ local function cachedSection(itemLink)
 	local data = ItemTooltip.data
 	local entry = { lines = {}, pending = {} }
 	if data ~= nil then
-		local ctx = contextFor(data, itemLink)
-		entry.lines, entry.target, entry.pending = ItemTooltip.section(ctx)
-		entry.tag = ctx.current ~= nil and ctx.current.tag or nil
+		entry.lines, entry.target, entry.pending, entry.head = ItemTooltip.section(contextFor(data, itemLink))
 	end
 	ItemTooltip.cache[itemLink] = entry
 	return entry
 end
 
+--- Ask the client once, at login, for every band pick of the character's
+--- spec (one per paper-doll slot, 17 at most) it does not hold yet, so the
+--- next upgrade's name and compare tooltip are there on the first hover.
+function ItemTooltip.warmPicks(data)
+	local spec = currentSpec(data)
+	local faction = Compat.playerFaction()
+	local specBis = spec ~= nil and type(data.bis) == "table" and data.bis[spec] or nil
+	local band = faction ~= nil and Gear.bandFor(specBis, Compat.playerLevel()) or nil
+	local asked = 0
+	if band == nil then
+		return asked
+	end
+	for _, entry in ipairs(Export.INVENTORY_SLOTS) do
+		local pick = Gear.pick(spec, band, faction, entry.slot, data)
+		if pick ~= nil and not Compat.isItemCached(pick.item_id) then
+			Compat.requestItemLoad(pick.item_id)
+			asked = asked + 1
+		end
+	end
+	return asked
+end
+
 --- The hover currently on screen, while it waits for an item the client
---- has to send (the compare tooltip's pick, a name shown as "…"):
+--- has to send (the compare tooltip's pick, a name not sent yet):
 --- GET_ITEM_INFO_RECEIVED (ItemTooltip.onItemInfoReceived) redraws it.
 ItemTooltip.activeHover = nil
 
@@ -706,23 +896,77 @@ local function drawOps(tooltip, ops)
 	end
 end
 
+--- The room a tooltip line has inside the client's own border.
+ItemTooltip.TEXT_PADDING = 20
+
+--- A hidden font string on the tooltip's own font, made on the first hover
+--- that needs one (never at load) and reused.
+local measurer
+
+--- `measure` (text -> width) and the width the tooltip already has, for
+--- fitting the alternatives line inside it; nil, nil where the client
+--- cannot say (the line is then drawn whole).
+local function measureFor(tooltip)
+	local okWidth, width = pcall(function()
+		return type(tooltip.GetWidth) == "function" and tooltip:GetWidth() or nil
+	end)
+	if not okWidth or type(width) ~= "number" or width <= ItemTooltip.TEXT_PADDING then
+		return nil, nil
+	end
+	if measurer == nil then
+		local ok, region = pcall(function()
+			local frame = CreateFrame("Frame", nil, UIParent)
+			frame:Hide()
+			return frame:CreateFontString(nil, "ARTWORK", "GameTooltipText")
+		end)
+		if not ok or region == nil then
+			return nil, nil
+		end
+		measurer = region
+	end
+	local function measure(text)
+		measurer:SetText(text)
+		if type(measurer.GetUnboundedStringWidth) == "function" then
+			return measurer:GetUnboundedStringWidth()
+		end
+		return measurer:GetStringWidth()
+	end
+	return measure, width - ItemTooltip.TEXT_PADDING
+end
+
 --- Draws the item section after the client's own lines: a blank line, the
---- header ("Forever Sixty" gold, the tag muted, the talent marks' own
---- look), then each line in its colour. Nothing at all with no lines.
+--- header ("Forever Sixty" gold, the spec and the tag muted, "Equipped"
+--- muted on its right on the item worn), then each line in its colour; the
+--- alternatives line fitted to the width the tooltip already has. Nothing at
+--- all with no lines and nothing worn.
 local function addLines(tooltip, itemLink)
+	-- A hover from before (another item) must not be redrawn onto this one.
+	ItemTooltip.activeHover = nil
 	local entry = cachedSection(itemLink)
-	if #entry.lines == 0 then
+	local head = entry.head or {}
+	if #entry.lines == 0 and not head.equipped then
 		return
 	end
 	tooltip:AddLine(" ")
-	tooltip:AddLine(ItemTooltip.headerText(entry.tag))
+	local header = ItemTooltip.headerText(head.specWord, head.tag)
+	if head.equipped and type(tooltip.AddDoubleLine) == "function" then
+		local mr, mg, mb = opColor("muted")
+		tooltip:AddDoubleLine(header, L.tooltipEquipped, 1, 1, 1, mr, mg, mb)
+	else
+		tooltip:AddLine(header)
+	end
 	for _, line in ipairs(entry.lines) do
+		local text = line.text
+		if line.kind == "alternatives" then
+			local measure, maxWidth = measureFor(tooltip)
+			text = ItemTooltip.fitAlternatives(line.entries, measure, maxWidth) or text
+		end
 		local r, g, b = opColor(line.color)
-		tooltip:AddLine(line.text, r, g, b)
+		tooltip:AddLine(text, r, g, b)
 	end
 	tooltip:Show()
 	if entry.target ~= nil then
-		Theme.showCompareTooltip(entry.target.itemId, entry.target.link)
+		Theme.showCompareTooltip(entry.target.itemId, entry.target.link, entry.target.label)
 	end
 	if entry.target == nil and next(entry.pending) == nil then
 		return

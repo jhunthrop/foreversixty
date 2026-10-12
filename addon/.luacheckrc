@@ -25,7 +25,7 @@ read_globals = {
 	"GetItemStats", "GetItemInfo", "GetItemInfoInstant", "RequestLoadItemDataByID",
 	"C_Container",
 	-- Character
-	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",
+	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion", "GetCurrentRegionName",
 	"GetProfessions", "GetProfessionInfo", "GetBuildInfo", "GetGuildInfo",
 	-- UI
 	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs", "ITEM_QUALITY_COLORS",

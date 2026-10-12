@@ -72,8 +72,8 @@ describe("Codec.inboxMessages", function()
 	end)
 end)
 
--- Codec.newestFirst: the FollowView inbox list and Tooltip.weightsMessage
--- both want the companion's own append order reversed, since nothing on
+-- Codec.newestFirst: the inbox readers (Follow.messages, and through it
+-- Gear.currentWeights for the item tooltip) want the companion's own append order reversed, since nothing on
 -- the wire timestamps one message against another.
 describe("Codec.newestFirst", function()
 	local Codec

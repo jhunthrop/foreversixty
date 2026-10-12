@@ -129,6 +129,11 @@ describe("Export.saveOutbox", function()
 		_G.GetNormalizedRealmName = function()
 			return "Yell"
 		end
+		-- L3.3 fix round 1: the outbox name comes from the same place as the
+		-- character key (Compat.playerName and GetRealmName).
+		_G.GetRealmName = function()
+			return "Yell"
+		end
 		local Comms = helper.load("Comms")
 		Comms.seen = { ["Bob-Yell"] = SEEN["Bob-Yell"] }
 		Export = helper.load("Export")

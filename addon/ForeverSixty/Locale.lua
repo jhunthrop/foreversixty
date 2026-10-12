@@ -439,8 +439,9 @@ local L = {
 	inboxWeightsLine = "Weights updated for %s",
 	inboxGuildLine = "Guild news: %s",
 
-	-- Lane inbox-wire (2026-09-28): wiring Codec.inboxMessages and
-	-- Tooltip.weightsMessage into the Follow tab and the tooltip hook
+	-- Lane inbox-wire (2026-09-28): wiring Codec.inboxMessages into the
+	-- Follow tab and the tooltip hook (the weights message now reaches the
+	-- item tooltip through Gear.currentWeights, L3.3)
 	-- (docs/superpowers/specs/2026-09-28-addon-character-aware-design.md
 	-- section 3 item 2, section 4). Appended after the Wave C block above
 	-- for the same reason it gives: the smallest surface for another
@@ -505,51 +506,82 @@ local L = {
 	-- at (Progress.levelForPoint): talents start at 10, one per level.
 	progressTakeAt = "Take at level %d",
 
-	-- Lane addon-v2 L3.3 (2026-10-11): the item tooltip's section (spec
-	-- section 4.3). The verdict prints one decimal in DPS or HPS and none in
-	-- score; the downgrade's sign is U+2212 (if the client's font has no
-	-- glyph for it, the fallback is the ASCII hyphen in these two strings).
+	-- Lane addon-v2 L3.3 (2026-10-11, fix round 1): the item tooltip's
+	-- section (spec section 4.3). The verdict prints one decimal in DPS or
+	-- HPS and none in score; "Upgrade" and "Downgrade" start at a gain of 1.0
+	-- in the unit (Progress.MIN_GAIN, the chip's own floor), "Sidegrade (+0.3
+	-- DPS)" below it. The downgrade's sign is U+2212 (tooltipMinus); if the
+	-- client's font has no glyph for it, the fallback is the ASCII hyphen.
 	tooltipVerdictDps = "Upgrade +%.1f DPS over %s",
 	tooltipVerdictHps = "Upgrade +%.1f HPS over %s",
 	tooltipVerdictScore = "Upgrade +%d score over %s",
 	tooltipSide = "Sidegrade",
-	-- "Downgrade −4.2 DPS": the second %s is tooltipUnitDps or tooltipUnitHps.
-	tooltipDown = "Downgrade −%.1f %s",
-	tooltipDownScore = "Downgrade −%d score",
+	-- "Sidegrade (+0.3 DPS)": the sign (+ or tooltipMinus), the size, the unit.
+	tooltipSideGain = "Sidegrade (%s%.1f %s)",
+	tooltipMinus = "−",
+	-- "Downgrade −4.2 DPS over Smite's Mighty Hammer": the unit, then the worn item.
+	tooltipDown = "Downgrade −%.1f %s over %s",
+	tooltipDownScore = "Downgrade −%d score over %s",
 	tooltipFills = "Fills an empty slot, +%.1f %s",
 	tooltipFillsScore = "Fills an empty slot, +%d score",
+	-- Muted, right of the header, on the item worn.
 	tooltipEquipped = "Equipped",
 	tooltipUnitDps = "DPS",
 	tooltipUnitHps = "HPS",
+	-- An off hand, a shield or a held item while a two-hander is worn.
+	tooltipTwoHander = "Not with your two-hander",
+	-- The item worn is the band's own pick (or the pick is worn beside it).
+	tooltipBestForNow = "Best for now",
+	-- Gear no weights score and no pick names for its slot.
+	tooltipNotForPlan = "Not for your plan",
 	-- "Planned for Arms at 30" (the spec's tree, the level band), or the
 	-- loaded build's own name when the build names the item.
 	tooltipPlanned = "Planned for %s at %d",
 	tooltipPlannedBuild = "Planned for %s",
-	-- Where the item comes from: "The Deadmines · Defias Overseer · 14%",
-	-- "Bernard Brubaker · Vendor", "World drop · 2%".
-	tooltipSource = "%s · %s · %d%%",
+	-- The band's pick for the slot: "Next upgrade: Mutant Scale Breastplate
+	-- +6.1 DPS" (the name in its quality colour), its source on the next line.
+	tooltipNextUpgrade = "Next upgrade: %s",
+	tooltipNextUpgradeGain = "Next upgrade: %s +%.1f %s",
+	tooltipNextUpgradeScore = "Next upgrade: %s +%d score",
+	-- The compare tooltip's tab, where the client lets it carry one.
+	tooltipCompareLabel = "Next upgrade",
+	-- Where the item comes from: "Wailing Caverns · Mutanus the Devourer ·
+	-- 33% drop", "Bernard Brubaker · Vendor", "World drop · 2% drop".
+	tooltipSourceDrop = "%s · %s · %d%% drop",
 	tooltipSourcePair = "%s · %s",
-	tooltipSourceChance = "%s · %d%%",
-	-- The band's pick for the slot, when the hovered item is not it.
-	tooltipNext = "Next: %s · %s",
-	tooltipNextOnly = "Next: %s",
-	tooltipAlternatives = "Also: %s, %s",
-	tooltipAlternativesOne = "Also: %s",
-	-- A name the client has not sent yet; the section redraws when it does.
+	tooltipSourceChance = "%s · %d%% drop",
+	tooltipAlternatives = "Also good: %s, %s",
+	tooltipAlternativesOne = "Also good: %s",
+	-- A name the client has not sent yet (and the end of a shortened name).
 	tooltipNamePending = "…",
-	-- The section's header: "Forever Sixty · Your sim".
+	-- The section's header: "Forever Sixty · Arms · Your sim" (the spec's
+	-- tree, then where the weights came from), muted after the gold name.
 	tooltipHeaderTag = " · %s",
+	tooltipHeaderParts = "%s · %s",
 	tooltipTagSim = "Your sim",
 	tooltipTagBuild = "Your build",
-	tooltipTagDefault = "Default weights",
+	-- The shipped weights and DPS per point, not the player's own sim.
+	tooltipTagEstimate = "Estimate",
 	-- "Not for you: rogues cannot use two-handed swords" (the second %s is
 	-- the rules engine's reason). tooltipUntil is rulesUntilLevel, set below.
 	tooltipNever = "Not for you: %s cannot use %s",
+	tooltipNeverTwoWeapons = "Not for you: %s cannot wield two weapons",
 	-- /fs diag verbose: which of the client's two tooltip hooks the section is drawn through.
 	diagItemTooltipHook = "Item tooltip: drawn through the %s hook",
 	tooltipClassPlural = {
 		WARRIOR = "warriors", PALADIN = "paladins", HUNTER = "hunters", ROGUE = "rogues",
 		PRIEST = "priests", SHAMAN = "shamans", MAGE = "mages", WARLOCK = "warlocks", DRUID = "druids",
+	},
+	-- Every stat the rules engine reads (Rules.STAT_KEYS' values), in plain
+	-- words: "Hit capped: more is wasted".
+	statNames = {
+		strength = "Strength", agility = "Agility", stamina = "Stamina", intellect = "Intellect",
+		spirit = "Spirit", attack_power = "Attack Power", ranged_attack_power = "Ranged Attack Power",
+		spell_power = "Spell Power", spell_damage = "Spell Damage", healing_power = "Healing",
+		hit = "Hit", crit = "Critical Strike", melee_haste = "Haste", expertise = "Expertise",
+		defense = "Defense", dodge = "Dodge", parry = "Parry", block = "Block", block_value = "Block Value",
+		mp5 = "Mana per 5 sec.", spell_penetration = "Spell Penetration",
+		armor_penetration = "Armor Penetration", armor = "Armor",
 	},
 
 	-- Addon messages between players (Comms.lua): /fs hello, /fs seen and /fs diag.

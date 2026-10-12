@@ -4,7 +4,7 @@
 -- AddDoubleLine row with a right-aligned tag and a muted source line), and
 -- the empty-slot flash fix (lane addon-tooltip-polish item 2). Covers
 -- Tooltip.bisLines (the pure section builder both hook paths share),
--- Tooltip.equippedSlotFor, Tooltip.bisItemLink and the three hook entry
+-- Tooltip.bisItemLink and the three hook entry
 -- points: the item hook (an equipped slot), the slot-button OnEnter hook
 -- (an empty one, first hover), and GameTooltip's own OnTooltipCleared/
 -- OnShow (an empty one, every hover after Blizzard's own OnUpdate
@@ -297,23 +297,6 @@ describe("Tooltip's BiS hover section", function()
 		end)
 	end)
 
-	describe("Tooltip.equippedSlotFor", function()
-		it("names the slot whose equipped link matches exactly", function()
-			start({ equipped = { [5] = "item:chest:link" } }) -- slot id 5 is chest
-			assert.are.equal("chest", Tooltip.equippedSlotFor("item:chest:link"))
-		end)
-
-		it("answers nil for a link worn nowhere", function()
-			start()
-			assert.is_nil(Tooltip.equippedSlotFor("item:bag:link"))
-		end)
-
-		it("answers nil with no link at all", function()
-			start()
-			assert.is_nil(Tooltip.equippedSlotFor(nil))
-		end)
-	end)
-
 	describe("the item hook, for an equipped slot", function()
 		it("appends the BiS section after the brand header", function()
 			start({
@@ -325,10 +308,15 @@ describe("Tooltip's BiS hover section", function()
 			Tooltip.data = DATA
 			local tooltip, calls = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:111:link")
-			-- L3.3: a blank line, the header, then the plan (the band's own pick).
+			-- L3.3 fix round 1: a blank line, the header with "Equipped" on its
+			-- right, then "Best for now" (the worn item is the band's pick) and
+			-- the plan.
 			assert.are.equal(" ", calls[1].text)
-			assert.is_truthy(calls[2].text:find(L.addonName, 1, true))
-			assert.are.equal(string.format(L.tooltipPlanned, "Holy", 20), calls[3].text)
+			assert.are.equal("doubleline", calls[2].kind)
+			assert.is_truthy(calls[2].left:find(L.addonName, 1, true))
+			assert.are.equal(L.tooltipEquipped, calls[2].right)
+			assert.are.equal(L.tooltipBestForNow, calls[3].text)
+			assert.are.equal(string.format(L.tooltipPlanned, "Holy", 20), calls[4].text)
 		end)
 
 		-- Round-2 ruling 1, adopted: the old precondition required a
@@ -341,16 +329,21 @@ describe("Tooltip's BiS hover section", function()
 			start({
 				level = 20,
 				itemStats = { ["item:bag:link"] = { __itemId = 999, __slot = "INVTYPE_HEAD" } },
-				globals = { GetItemInfo = function() return nil end },
+				globals = { GetItemInfo = function(id)
+					if id == 111 then
+						return "Helm of the Pathfinder", "item:111:link"
+					end
+					return nil
+				end },
 			})
 			Tooltip.data = DATA
 			local tooltip, calls = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:bag:link")
-			-- L3.3: a blank line, the header, then the band's pick for the slot,
-			-- its name not sent by the client yet.
+			-- L3.3 fix round 1: a blank line, the header, then the slot's next
+			-- upgrade by name (no weights here, so no gain).
 			assert.are.equal(" ", calls[1].text)
 			assert.is_truthy(calls[2].text:find(L.addonName, 1, true))
-			assert.are.equal(string.format(L.tooltipNextOnly, L.tooltipNamePending), calls[3].text)
+			assert.are.equal(string.format(L.tooltipNextUpgrade, "Helm of the Pathfinder"), calls[3].text)
 		end)
 
 		it("still adds nothing for an item whose equip location this band does not track at all", function()
@@ -567,7 +560,7 @@ describe("Tooltip's BiS hover section", function()
 			assert.are.equal(111, Tooltip.activeHover.itemId)
 		end)
 
-		it("shows the compare tooltip for an equipped item's own BiS recommendation", function()
+		it("shows no compare tooltip for the worn pick, which is best for now", function()
 			start({
 				level = 20,
 				equipped = { [1] = "item:111:link" },
@@ -577,8 +570,24 @@ describe("Tooltip's BiS hover section", function()
 			Tooltip.data = DATA
 			local tooltip = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:111:link")
-			assert.is_not_nil(Theme.compareTooltipFrame)
-			assert.are.equal(1, mock.countCalls(Theme.compareTooltipFrame, "SetHyperlink"))
+			assert.is_nil(Theme.compareTooltipFrame)
+			assert.is_nil(Tooltip.activeHover)
+		end)
+
+		it("shows the next upgrade's compare tooltip, with its tab, once the client holds it", function()
+			start({
+				level = 20,
+				itemStats = { ["item:bag:link"] = { __itemId = 999, __slot = "INVTYPE_HEAD" } },
+				globals = { GetItemInfo = function(id)
+					if id == 111 then
+						return "Helm of the Pathfinder", "item:111:link"
+					end
+					return nil
+				end },
+			})
+			Tooltip.data = DATA
+			Tooltip.onTooltip(recordingTooltip(), "item:bag:link")
+			assert.are.equal("item:111:link", mock.firstCall(Theme.compareTooltipFrame, "SetHyperlink")[1])
 			assert.are.equal(111, Tooltip.activeHover.itemId)
 		end)
 

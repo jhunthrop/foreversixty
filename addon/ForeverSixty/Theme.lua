@@ -1224,12 +1224,36 @@ function Theme.compareTooltip()
 	return frame
 end
 
+--- The compare tooltip's tab ("Next upgrade"): a small label on its top
+--- edge, made the first time one is asked for. Hidden with no `label`; a
+--- client whose frame cannot carry one simply shows none.
+local function setCompareLabel(tooltip, label)
+	local region = tooltip.foreverSixtyLabel
+	if label == nil then
+		if region ~= nil then
+			region:Hide()
+		end
+		return
+	end
+	if region == nil then
+		local ok, made = pcall(Theme.fontString, tooltip, "OVERLAY", "small")
+		if not ok or made == nil then
+			return
+		end
+		made:SetPoint("BOTTOMLEFT", tooltip, "TOPLEFT", Theme.COMPARE_TOOLTIP_GAP, 2)
+		tooltip.foreverSixtyLabel = made
+		region = made
+	end
+	region:SetText(label)
+	region:Show()
+end
+
 --- Show the compare tooltip beside GameTooltip for one item: `link` when
 --- it is known (it carries enchants and suffixes), else `itemId` for a
---- recommended item the player has never seen. Guarded exactly like
---- Theme.showItemTooltip: a missing capability degrades to "shown
---- nothing", never raises.
-function Theme.showCompareTooltip(itemId, link)
+--- recommended item the player has never seen, with `label` as its tab
+--- when given. Guarded exactly like Theme.showItemTooltip: a missing
+--- capability degrades to "shown nothing", never raises.
+function Theme.showCompareTooltip(itemId, link, label)
 	if not hasTooltip() then
 		return false
 	end
@@ -1252,6 +1276,7 @@ function Theme.showCompareTooltip(itemId, link)
 	else
 		return false
 	end
+	setCompareLabel(tooltip, label)
 	tooltip:Show()
 	return true
 end

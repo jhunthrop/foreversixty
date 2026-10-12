@@ -162,7 +162,8 @@ end
 --- entry ({ itemId, link, stats }); either may be nil, not both (nil then).
 ---
 --- - the same item id on both sides is "match", whatever the two stat
----   lines say (seen in game: a helm reading "+10 over itself");
+---   lines say (seen in game: a helm reading "+10 over itself"), unless both
+---   sides carry a link and the links differ (a second copy is scored);
 --- - a planned item with nothing worn is "empty", short by the plan's
 ---   whole score, so an empty ring is the biggest gap;
 --- - a worn item the plan never named is "noplan";
@@ -179,9 +180,12 @@ function Progress.slotVerdict(slot, plan, worn, weights, dpsPerPoint)
 	if plannedItemId == nil and equippedItemId == nil then
 		return nil
 	end
+	-- Both sides carrying a link and the links differing (a random-suffix
+	-- copy, a second copy) is two items, scored, never a match.
+	local sameLink = plan == nil or worn == nil or plan.link == nil or worn.link == nil or plan.link == worn.link
 	local scored = weights ~= nil and plannedItemId ~= nil and hasAnyStat(plan.stats)
 	local state, delta
-	if plannedItemId ~= nil and plannedItemId == equippedItemId then
+	if plannedItemId ~= nil and plannedItemId == equippedItemId and sameLink then
 		state = "match"
 		delta = scored and 0 or nil
 	elseif equippedItemId == nil then
@@ -201,6 +205,59 @@ function Progress.slotVerdict(slot, plan, worn, weights, dpsPerPoint)
 		state = state,
 		unit = dpsPerPoint ~= nil and "dps" or "score",
 	}
+end
+
+local TWO_HANDED = "INVTYPE_2HWEAPON"
+
+--- One hand slot's verdict, with the two hands as one pair: the rule the
+--- chip's bag upgrades and the item tooltip share. `hovered` is the candidate
+--- ({ itemId, link, equipLocation, stats }), `wornMain` and `wornOff` what the
+--- hands hold ({ itemId, link, equipLoc, stats }).
+---
+--- - the off hand under a worn two-hander is "blocked" (no delta): nothing
+---   goes there until the two-hander comes off;
+--- - a two-hander for the main hand is scored against both hands together,
+---   the net of the whole swap (delta is both worn minus the two-hander);
+--- - everything else is Progress.slotVerdict against that hand.
+function Progress.weaponVerdict(slot, hovered, wornMain, wornOff, weights, dpsPerPoint)
+	if slot == "off_hand" and wornMain ~= nil and wornMain.equipLoc == TWO_HANDED then
+		return {
+			slot = slot, state = "blocked",
+			plannedItemId = hovered ~= nil and hovered.itemId or nil, equippedItemId = wornMain.itemId,
+			unit = dpsPerPoint ~= nil and "dps" or "score",
+		}
+	end
+	if slot == "main_hand" and hovered ~= nil and hovered.equipLocation == TWO_HANDED and wornOff ~= nil then
+		local scored = weights ~= nil and hovered.itemId ~= nil and hasAnyStat(hovered.stats)
+		local delta
+		if scored then
+			local worn = Gear.score(wornOff.stats, weights)
+			if wornMain ~= nil then
+				worn = worn + Gear.score(wornMain.stats, weights)
+			end
+			delta = worn - Gear.score(hovered.stats, weights)
+		end
+		return {
+			slot = slot,
+			plannedItemId = hovered.itemId,
+			equippedItemId = wornMain ~= nil and wornMain.itemId or wornOff.itemId,
+			delta = inUnit(delta, dpsPerPoint),
+			state = (delta ~= nil and delta > 0) and "better" or "behind",
+			unit = dpsPerPoint ~= nil and "dps" or "score",
+		}
+	end
+	return Progress.slotVerdict(slot, hovered, slot == "main_hand" and wornMain or wornOff, weights, dpsPerPoint)
+end
+
+--- Progress.weaponVerdict for the two hands, Progress.slotVerdict for every
+--- other slot: the one call the chip and the item tooltip score a candidate
+--- in a slot with. `equipped` is Gear.readEquipped()'s table.
+function Progress.itemVerdict(slot, hovered, equipped, weights, dpsPerPoint)
+	equipped = equipped or {}
+	if slot == "main_hand" or slot == "off_hand" then
+		return Progress.weaponVerdict(slot, hovered, equipped.main_hand, equipped.off_hand, weights, dpsPerPoint)
+	end
+	return Progress.slotVerdict(slot, hovered, equipped[slot], weights, dpsPerPoint)
 end
 
 --- Specs that fight in melee, whose weapons lead the slot list. Every
@@ -307,8 +364,6 @@ local function describe(item)
 	}
 end
 
-local TWO_HANDED = "INVTYPE_2HWEAPON"
-
 --- The smallest gain, in its own unit (1 DPS or 1 score point), that counts as an upgrade.
 Progress.MIN_GAIN = 1
 
@@ -334,10 +389,6 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 	equipped = equipped or {}
 	level = level or Compat.playerLevel()
 	local classToken = build.classSlug ~= nil and build.classSlug:upper() or nil
-	local function wornScore(worn)
-		return worn ~= nil and Gear.score(worn.stats, weights) or 0
-	end
-	local twoHanderWorn = equipped.main_hand ~= nil and equipped.main_hand.equipLoc == TWO_HANDED
 	local wornLinks = {}
 	for _, worn in pairs(equipped) do
 		if worn.link ~= nil then
@@ -348,19 +399,18 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 	for _, raw in ipairs(bagLinks or {}) do
 		local item = describe(raw)
 		if item.link == nil or not wornLinks[item.link] then
-			local score = Gear.score(item.stats, weights)
+			local candidate = { itemId = item.itemId, equipLocation = item.equipLocation, stats = item.stats }
 			local bestSlot, bestDelta
 			for _, slot in ipairs(Gear.SLOTS_BY_EQUIP_LOCATION[item.equipLocation] or {}) do
-				local worn = equipped[slot]
 				local wearable = Rules.canEquip(classToken, level, item.itemClass, item.itemSubClass,
 					item.equipLocation, slot) == "ok"
-				local blocked = slot == "off_hand" and twoHanderWorn
-				if wearable and not blocked and (worn == nil or worn.itemId == nil or worn.itemId ~= item.itemId) then
-					local replaced = wornScore(worn)
-					if item.equipLocation == TWO_HANDED and slot == "main_hand" then
-						replaced = replaced + wornScore(equipped.off_hand)
-					end
-					local delta = score - replaced
+				-- Progress.itemVerdict: the two hands as one pair (nothing in the
+				-- off hand under a two-hander; a two-hander net of both).
+				local verdict = wearable and Progress.itemVerdict(slot, candidate, equipped, weights) or nil
+				-- A "match" is the item scored against its own copy; "blocked" a
+				-- hand the worn two-hander holds. The delta is worn minus candidate.
+				if verdict ~= nil and verdict.delta ~= nil and verdict.state ~= "match" and verdict.state ~= "blocked" then
+					local delta = -verdict.delta
 					if bestDelta == nil or delta > bestDelta then
 						bestSlot, bestDelta = slot, delta
 					end

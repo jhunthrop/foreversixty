@@ -492,3 +492,49 @@ describe("Progress.offPlanCells", function()
 		assert.are.same({}, Progress.offPlanCells(BUILD, { [1] = { ["1:2"] = 1 } }, nil))
 	end)
 end)
+
+-- L3.3 fix round 1: the two-hander rule the chip and the item tooltip share.
+describe("Progress.weaponVerdict", function()
+	local HANDS = { strength = 2 }
+	local SMITE = { itemId = 70, equipLoc = "INVTYPE_2HWEAPON", stats = { strength = 20 } }
+
+	it("blocks the off hand under a worn two-hander", function()
+		local shield = { itemId = 80, equipLocation = "INVTYPE_SHIELD", stats = { strength = 3 } }
+		local verdict = Progress.weaponVerdict("off_hand", shield, SMITE, nil, HANDS)
+		assert.are.equal("blocked", verdict.state)
+		assert.is_nil(verdict.delta)
+	end)
+
+	it("scores a one-hander in the main hand against the two-hander", function()
+		local mace = { itemId = 81, equipLocation = "INVTYPE_WEAPON", stats = { strength = 4 } }
+		local verdict = Progress.weaponVerdict("main_hand", mace, SMITE, nil, HANDS, 0.5)
+		assert.are.equal("better", verdict.state)
+		assert.are.equal(16, verdict.delta)
+	end)
+
+	it("scores a two-hander net of both hands", function()
+		local main = { itemId = 71, equipLoc = "INVTYPE_WEAPON", stats = { strength = 6 } }
+		local off = { itemId = 72, equipLoc = "INVTYPE_SHIELD", stats = { strength = 4 } }
+		local axe = { itemId = 82, equipLocation = "INVTYPE_2HWEAPON", stats = { strength = 12 } }
+		local verdict = Progress.weaponVerdict("main_hand", axe, main, off, HANDS)
+		assert.are.equal("behind", verdict.state)
+		assert.are.equal(-4, verdict.delta)
+		assert.are.equal(71, verdict.equippedItemId)
+	end)
+
+	it("is the plain slot verdict for every other case", function()
+		local mace = { itemId = 81, equipLocation = "INVTYPE_WEAPON", stats = { strength = 4 } }
+		assert.are.same(Progress.slotVerdict("off_hand", mace, nil, HANDS),
+			Progress.weaponVerdict("off_hand", mace, nil, nil, HANDS))
+	end)
+end)
+
+describe("Progress.slotVerdict, by link", function()
+	it("scores a second copy with a different link rather than calling it a match", function()
+		local worn = { itemId = 50, link = "item:50:a", stats = { strength = 4 } }
+		local copy = { itemId = 50, link = "item:50:b", stats = { strength = 6 } }
+		assert.are.equal("behind", Progress.slotVerdict("chest", copy, worn, { strength = 1 }).state)
+		assert.are.equal("match", Progress.slotVerdict("chest", worn, worn, { strength = 1 }).state)
+		assert.are.equal("match", Progress.slotVerdict("chest", { itemId = 50, stats = {} }, worn, { strength = 1 }).state)
+	end)
+end)

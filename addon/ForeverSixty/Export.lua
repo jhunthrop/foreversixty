@@ -237,6 +237,20 @@ function Export.characterInfo()
 	return { name = name, realm = GetRealmName() or "" }
 end
 
+--- The key's region segment: the client's own region name (Compat.regionName,
+--- "US"), else its region number through REGION_NAMES, lowercased ("us");
+--- "" when the client gives neither (seen on the beta: GetCurrentRegion
+--- answering a number no table names). An empty region matches any region
+--- (Follow.sameCharacter), so a key saved before the client said one still
+--- finds its character.
+function Export.regionSegment(regionName, regionIndex)
+	if type(regionName) == "string" and regionName ~= "" then
+		return regionName:lower()
+	end
+	local named = Export.REGION_NAMES[regionIndex]
+	return named ~= nil and named:lower() or ""
+end
+
 --- name, realm, region as both Export.characterKey and Export.save need
 --- them -- one path, so the key ForeverSixtyDB.characters and
 --- ForeverSixtyDB.follows both index by can never drift from the record
@@ -247,13 +261,16 @@ local function characterParts()
 	local name = Compat.playerName() or "player"
 	local realm = type(GetRealmName) == "function" and GetRealmName() or ""
 	local regionIndex = type(GetCurrentRegion) == "function" and GetCurrentRegion() or nil
-	local region = Export.REGION_NAMES[regionIndex] or ""
-	return name, realm, region
+	return name, realm, Export.regionSegment(Compat.regionName(), regionIndex)
 end
 
-local function characterKeyOf(name, realm, region)
-	return region .. "/" .. realm .. "/" .. name
+--- "<region>/<realm>/<name>": the key every saved record and inbox message is
+--- addressed by. Pure.
+function Export.keyFor(name, realm, region)
+	return (region or "") .. "/" .. (realm or "") .. "/" .. name
 end
+
+local characterKeyOf = Export.keyFor
 
 --- The account-wide key this client's saved data indexes by: the same
 --- region/realm/name Export.save has always written into
@@ -262,6 +279,31 @@ end
 --- second character logging in never reads the first one's build.
 function Export.characterKey()
 	return characterKeyOf(characterParts())
+end
+
+--- Move a character's records saved under a key Follow.sameCharacter
+--- matches but that is not `key` itself (the old empty-region key) to `key`,
+--- in ForeverSixtyDB.characters and .follows, at login before anything
+--- reads them. A record already under `key` is kept; another character's
+--- is never touched. Pure over `db`.
+function Export.adoptKey(db, key)
+	if type(db) ~= "table" or key == nil then
+		return db
+	end
+	local Follow = ns.Follow or require("Follow")
+	for _, field in ipairs({ "characters", "follows" }) do
+		local records = db[field]
+		if type(records) == "table" and records[key] == nil then
+			for oldKey, record in pairs(records) do
+				if oldKey ~= key and Follow.sameCharacter(oldKey, key) then
+					records[key] = record
+					records[oldKey] = nil
+					break
+				end
+			end
+		end
+	end
+	return db
 end
 
 --- The export string, or nil and the reason.
@@ -382,6 +424,19 @@ function Export.outbox(parts)
 	}
 end
 
+--- The outbox's `character`: the full name exactly as the export's who= field
+--- writes it (Compat.playerName, the same source as Export.characterKey),
+--- then the realm with its spaces and hyphens gone: "Obnoxious Yell-
+--- ClassicBetaPvP". The API matches it against the synced characters by
+--- that name. The name alone with no realm. Pure.
+function Export.outboxName(name, realm)
+	local compact = (realm or ""):gsub("[%s%-]", "")
+	if compact == "" then
+		return name
+	end
+	return name .. "-" .. compact
+end
+
 --- Write ForeverSixtyDB.outbox at logout, beside Export.save: the export (`code` when the
 --- caller already built it), any pending sim request, and the guild's members this session
 --- heard. nil and the reason when there is no export to carry.
@@ -393,7 +448,7 @@ function Export.saveOutbox(data, code)
 	if code == nil then
 		return nil, message
 	end
-	local name, realm = Theme.playerNameRealm()
+	local name, realm = characterParts()
 	local guild = Export.guildInfo()
 	-- Comms loads after this file; by logout it is there.
 	local Comms = ns.Comms or require("Comms")
@@ -401,7 +456,7 @@ function Export.saveOutbox(data, code)
 	Comms.prune(now)
 	ForeverSixtyDB = ForeverSixtyDB or {}
 	ForeverSixtyDB.outbox = Export.outbox({
-		character = realm ~= nil and (tostring(name) .. "-" .. realm) or name,
+		character = Export.outboxName(name, realm),
 		code = code,
 		wallNow = time(),
 		simRequest = Export.simRequest,

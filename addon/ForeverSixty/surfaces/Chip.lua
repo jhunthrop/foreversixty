@@ -604,7 +604,7 @@ end
 --- is account-wide, so it counts only for the character that chose it.
 local function chosenPath(classSlug)
 	local slug = Prefs.get("chip", "pathChosen")
-	if type(slug) ~= "string" or slug == "" or Prefs.get("chip", "pathFor") ~= characterKey() then
+	if type(slug) ~= "string" or slug == "" or not Follow.sameCharacter(Prefs.get("chip", "pathFor"), characterKey()) then
 		return nil
 	end
 	if classSlug ~= nil and slug:sub(1, #classSlug + 1) ~= classSlug .. "-" then
@@ -623,7 +623,8 @@ end
 --- The level the chip is hidden until for this character (math.huge for
 --- "until /fs chip"), or nil when it is not hidden.
 local function hiddenUntil()
-	if Prefs.get("chip", "hiddenFor") ~= characterKey() then
+	-- Follow.sameCharacter: a pref saved under the old empty-region key still counts.
+	if not Follow.sameCharacter(Prefs.get("chip", "hiddenFor"), characterKey()) then
 		return nil
 	end
 	local level = Prefs.get("chip", "hiddenUntilLevel")

@@ -231,7 +231,7 @@ Options.EVENTS = {
 	-- The chip (L3.1): bags for its upgrade line, the zone for "here for you", the
 	-- ready check for its raid check (L5.2 fills that in; until then it only redraws).
 	"BAG_UPDATE_DELAYED", "ZONE_CHANGED_NEW_AREA", "READY_CHECK", "READY_CHECK_FINISHED",
-	-- The item tooltip (L3.3): its verdict is against what is worn.
+	-- The item tooltip (L3.3): its verdict is against what is worn; only its cache clears.
 	"PLAYER_EQUIPMENT_CHANGED",
 }
 
@@ -293,6 +293,12 @@ function Options.onEvent(_, event, ...)
 		end
 		return
 	end
+	if event == "PLAYER_EQUIPMENT_CHANGED" then
+		-- Only the item tooltip reads what is worn on hover; the chip follows the
+		-- bags on BAG_UPDATE_DELAYED, so a slot change redraws nothing here.
+		ItemTooltip.resetCache()
+		return
+	end
 	if event == "PLAYER_LOGOUT" then
 		if Prefs.flag("autoSave") then
 			-- The outbox (contract 4) carries the same export, so it is built once.
@@ -302,10 +308,15 @@ function Options.onEvent(_, event, ...)
 	end
 	if event == "PLAYER_LOGIN" then
 		TalentGlow.watch(Options.data)
+		-- A record saved under the key before it carried the region moves to it
+		-- before anything reads one (Export.adoptKey).
+		Export.adoptKey(ForeverSixtyDB, Export.characterKey())
 		Follow.restore(Options.data)
 		-- A character that picked a path on the chip follows that spec's default.
 		Follow.ensureDefault(Options.data, Chip.chosenPath())
 		Options.readInbox()
+		-- The band's picks, asked for once so the tooltip's next upgrade is ready.
+		ItemTooltip.warmPicks(Options.data)
 		MinimapButton.data = Options.data
 		MinimapButton.refresh()
 		MinimapButton.registerCompartment()

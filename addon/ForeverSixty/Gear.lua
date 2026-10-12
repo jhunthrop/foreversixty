@@ -249,7 +249,7 @@ end
 --- The one weights source every verdict reads (spec section 5.2):
 --- { weights, dpsPerPoint, tag, caps, healing }. With a "weights" inbox
 --- message for `characterKey` and `spec` (the companion's sim), its weights,
---- its own DPS per point (else the shipped one) and its caps, tag "sim";
+--- its own DPS per point (none: the unit is score) and its caps, tag "sim";
 --- otherwise the shipped data.weights[spec] and data.dpsPerPoint[spec],
 --- tag "default", no caps. A message with no usable weights falls back to
 --- the shipped ones but keeps its caps. nil for a spec with no weights at
@@ -277,7 +277,9 @@ function Gear.currentWeights(data, spec, inbox, characterKey)
 	if simWeights ~= nil and next(simWeights) ~= nil then
 		return {
 			weights = simWeights,
-			dpsPerPoint = message.dps_per_point or (perPoint ~= nil and perPoint.dps or nil),
+			-- Only the message's own number multiplies the message's own weights
+			-- (L1.3 carry-over): a sim that names none counts in score.
+			dpsPerPoint = message.dps_per_point,
 			tag = "sim", caps = caps, healing = healing, spec = spec,
 		}
 	end

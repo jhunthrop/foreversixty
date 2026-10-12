@@ -125,9 +125,9 @@ describe("Follow, per character", function()
 	it("keys the saved build by the current character, the same key Export.save writes", function()
 		mock.install({ realm = "Ashbringer", region = 1, playerName = "Alice" })
 		Follow.load(CODE, DATA, "Deep Holy")
-		assert.are.equal("US/Ashbringer/Alice", require("Export").characterKey())
+		assert.are.equal("us/Ashbringer/Alice", require("Export").characterKey())
 		assert.are.same({ active = "raid", slots = { raid = { code = CODE, name = "Deep Holy" } } },
-			_G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
+			_G.ForeverSixtyDB.follows["us/Ashbringer/Alice"])
 	end)
 
 	it("does not offer one character's build to another", function()
@@ -151,7 +151,7 @@ describe("Follow, per character", function()
 		assert.is_nil(_G.ForeverSixtyDB.follow)
 		assert.are.same(
 			{ active = "raid", slots = { raid = { code = CODE, name = "Old Account Build" } } },
-			_G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
+			_G.ForeverSixtyDB.follows["us/Ashbringer/Alice"])
 	end)
 
 	it("does not hand the migrated build to a second character too", function()
@@ -170,7 +170,7 @@ describe("Follow, per character", function()
 		_G.ForeverSixtyDB.follows["US/Ashbringer/Bob"] = { code = CODE, name = "Bob's" }
 		Follow.forget()
 		assert.is_nil(Follow.build)
-		assert.is_nil(_G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
+		assert.is_nil(_G.ForeverSixtyDB.follows["us/Ashbringer/Alice"])
 		assert.is_truthy(_G.ForeverSixtyDB.follows["US/Ashbringer/Bob"])
 	end)
 end)

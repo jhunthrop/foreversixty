@@ -99,6 +99,42 @@ function Compat.itemName(itemId)
 	return name
 end
 
+--- The client's own name for its region ("US"), or nil where it has none.
+function Compat.regionName()
+	local fn = _G.GetCurrentRegionName
+	if type(fn) ~= "function" then
+		return nil
+	end
+	local ok, name = pcall(fn)
+	return ok and type(name) == "string" and name or nil
+end
+
+--- Whether the client holds the item's data already, so showing it never
+--- prints the client's own "Retrieving item information". Where the client
+--- cannot say, an item it can name is held.
+function Compat.isItemCached(itemId)
+	if itemId == nil then
+		return false
+	end
+	local namespace = _G.C_Item
+	if type(namespace) == "table" and type(namespace.IsItemDataCachedByID) == "function" then
+		return namespace.IsItemDataCachedByID(itemId) == true
+	end
+	return Compat.itemInfo(itemId) ~= nil
+end
+
+--- The item's quality (0 poor .. 5 legendary), or nil until cached.
+function Compat.itemQuality(itemId)
+	if itemId == nil then
+		return nil
+	end
+	local quality = call("GetItemQualityByID", itemId)
+	if quality ~= nil then
+		return quality
+	end
+	return select(3, Compat.itemInfo(itemId))
+end
+
 --- The item's level (GetItemInfo's fourth value), or nil until the client
 --- has it cached.
 function Compat.itemLevel(itemId)

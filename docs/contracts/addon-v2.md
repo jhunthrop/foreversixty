@@ -225,6 +225,10 @@ ForeverSixtyDB.outbox = {
 
 Notes for the reader:
 
+- `export.character` is `<name>-<realm>`: the name exactly as the export's `who=` field writes
+  it (first and last name on a client with last names, "Obnoxious Yell"), then the realm name
+  with its spaces and hyphens removed ("ClassicBetaPvP"): "Obnoxious Yell-ClassicBetaPvP". The
+  example above is a character with no last name on a realm called Yell.
 - `export.saved_at` is the player's local wall time as `YYYY-MM-DD HH:MM`. It is what the build
   dialog shows as "Copied 14:02, paste it on the site"; the site's own time is in the inbox
   `ack`, not here.

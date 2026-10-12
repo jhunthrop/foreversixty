@@ -802,7 +802,10 @@ local function sameCharacter(a, b)
 	if aRegion == nil or bRegion == nil then
 		return false
 	end
-	return normaliseSegment(aRegion) == normaliseSegment(bRegion)
+	-- An empty region on either side matches any region: a key saved before
+	-- the client said its region (seen on the beta: "/Classic Beta PvP/...").
+	local sameRegion = aRegion == "" or bRegion == "" or normaliseSegment(aRegion) == normaliseSegment(bRegion)
+	return sameRegion
 		and normaliseSegment(aMid) == normaliseSegment(bMid)
 		and normaliseSegment(aName) == normaliseSegment(bName)
 end
