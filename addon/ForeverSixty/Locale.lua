@@ -13,7 +13,9 @@ local L = {
 	addonName = "Forever Sixty",
 	-- The player's commands, a few words each. One list: /fs help, an unknown /fs command
 	-- and the Settings page all print it (Options.helpLines, L3.5 ruling 3); /fs help alone
-	-- adds the testers' line after it, muted (fix round 1, item 16).
+	-- adds the testers' line after it, muted (fix round 1, item 16), short enough that the
+	-- chat never wraps inside a command (fix round 2, item 7; /fs record's arguments are in
+	-- its own usage, recorderHelp).
 	settingsCommands = {
 		"/fs: paste or copy a build",
 		"/fs copy: copy my character for the site",
@@ -23,8 +25,7 @@ local L = {
 		"/fs diag: what is not working",
 		"/fs help: every command",
 	},
-	helpTesters = "For testers: /fs diag verbose, /fs inbox, /fs hello, /fs seen, "
-		.. "/fs record on, off, status or clear",
+	helpTesters = "For testers: /fs diag verbose, inbox, hello, seen, record.",
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
 	tabOverview = "Overview",
@@ -276,9 +277,11 @@ local L = {
 	minimapRightClick = "Right-click: settings",
 	minimapNoBuild = "No build loaded",
 
-	-- The Settings page (spec section 4.11, L3.5 and fix round 1): seven switches, each hint
-	-- saying what the switch does; Reset positions; the command list; the addon data and the
-	-- ratings data lines at the foot, which never print a build number.
+	-- The Settings page (spec section 4.11, L3.5 and fix rounds 1 and 2): seven switches, each
+	-- hint saying what the switch does; Reset positions; the command list; the addon data and
+	-- the player ratings lines at the foot, which never print a build number (the first that
+	-- is not current repeated under the title). ASCII ">" only: this client's font has no
+	-- angle quote (fix round 2, item 1).
 	settingsChipShown = "Show the chip",
 	settingsChipShownHint = "The small icon and line beside the minimap with your next step.",
 	settingsCombatHide = "Hide the chip in combat",
@@ -287,28 +290,33 @@ local L = {
 	settingsTalentMarksHint = "Numbers your build's talents in order, rings the next one and adds a progress strip.",
 	settingsMinimap = "Show the minimap button",
 	settingsMinimapHint = "Left-click pastes or copies a build; right-click opens this page. "
-		.. "Off: type /fs options or use Options \226\128\186 AddOns.",
+		.. "Off: type /fs options or use Options > AddOns.",
 	settingsTooltip = "Gear tips on item tooltips",
 	settingsTooltipHint = "Adds a line to item tooltips: is it in your build, and does it beat what you wear.",
 	settingsBroadcast = "Share my build with my guild",
-	settingsBroadcastHint = "Guildmates with Forever Sixty see your level, spec, build and how far your gear is "
-		.. "from it. Off: no hello, no snapshot answers. On by default.",
+	-- One line in player words; the ticked box shows the default (fix round 2, item 2).
+	settingsBroadcastHint = "Guildmates with Forever Sixty see your level, spec, build and gear gap. "
+		.. "Off: they see nothing.",
 	settingsAutoSave = "Save my character for the companion app",
-	-- Claims no upload (spec section 4.10): the addon cannot see the companion send it.
-	settingsAutoSaveHint = "Written when you log out, for the companion app (the small app on your PC) to pick up.",
+	-- Claims no upload (spec section 4.10): the addon cannot see the companion send it. It
+	-- says what the save is for (fix round 2, item 9).
+	settingsAutoSaveHint = "Written when you log out, for the companion app (the small app on your PC) to pick up, "
+		.. "so the site can read your gear and talents.",
 	settingsCommandsHeading = "Commands",
 	settingsReset = "Reset positions",
 	settingsResetDone = "Positions reset",
 	settingsResetHint = "Puts the chip, the minimap button and the build dialog back in their default places.",
-	-- The foot: a muted label, then the state, muted or (stale) in the warning colour, action first.
+	-- The foot: a muted label, then the state, muted or (stale) in the warning colour, action
+	-- first. "Player ratings", not "ratings data": a player read that as hit and crit ratings
+	-- (fix round 2, item 6); /fs diag keeps its own wording.
 	settingsAddonDataLabel = "Addon data:",
 	settingsAddonDataCurrent = "current for this patch",
 	settingsAddonDataOlder = "an older patch. Update the addon.",
-	settingsRatingsDataLabel = "Ratings data:",
+	settingsRatingsDataLabel = "Player ratings:",
 	settingsRatingsCurrent = "current",
-	settingsRatingsOld = "too old. Update it from the site.",
-	settingsRatingsNewer = "newer than this addon. Update the addon.",
-	settingsRatingsMissing = "not installed",
+	settingsRatingsOld = "too old. Get the new Forever Sixty Data from the site.",
+	settingsRatingsNewer = "made for a newer addon. Update Forever Sixty.",
+	settingsRatingsMissing = "not installed. Get Forever Sixty Data from the site.",
 	diagSettingsDrawn = "The Settings page drew %d of its %d controls.",
 	diagSettingsNoOpen = "This client did not open the Settings page; right-click prints the commands instead.",
 	-- The Overview page.
@@ -642,7 +650,7 @@ local L = {
 	diagCommsFailed = "Answering another player's addon message failed and was skipped: %s",
 	diagCommsFailedCount = "Other players' messages that could not be handled: %d",
 	commsSent = "Hello sent to your guild.",
-	commsSharingOff = "Not sent: \"Share my build with my guild\" is off in the settings.",
+	commsSharingOff = "Not sent: \"Share my build with my guild\" is off. Type /fs options to turn it on.",
 	commsUnknownKind = "Forever Sixty has no message of that kind.",
 	commsWrongChannel = "That message cannot go to %s.",
 	commsNoGuild = "You are not in a guild, so there is no one to say hello to.",

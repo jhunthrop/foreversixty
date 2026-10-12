@@ -1,11 +1,13 @@
 -- addon/ForeverSixty/surfaces/Settings.lua
 -- The Settings page (spec section 4.11, L3.5): the client's own Settings, one canvas.
 -- Seven switches, Reset positions, the /fs command list, and two lines at the foot: whether
--- the addon's data is for this client's patch, and the ratings data's state.
+-- the addon's data is for this client's patch, and the player ratings' state. The first of
+-- those that is not current is repeated under the title, in the warning colour.
 --
 -- Pure model, thin frame. SettingsPage.SWITCHES is the whole of what the page can change
 -- (each key a Prefs.DEFAULTS boolean); read, checked and apply are its only way to the prefs;
--- layout gives every number on the page; addonDataLine and ratingsLine choose the foot lines.
+-- layout gives every number on the page from the rows' measured heights; addonDataLine and
+-- ratingsLine choose the foot lines and warningLine the title's.
 -- The canvas is an empty frame registered at login and built the first time the client shows
 -- it, never at load.
 --
@@ -126,7 +128,7 @@ end
 --- ("current for this patch", muted), or for an older patch ("an older patch. Update the
 --- addon.", in the warning colour). Only the patch counts ("1.60.1" against the data's first
 --- three fields), never the build number, and no number is printed. Nil when either side is
---- unknown. { label, value, tone }. Pure.
+--- unknown. { label, value, tone, current }. Pure.
 function SettingsPage.addonDataLine(dataBuild, clientVersion)
 	if type(dataBuild) ~= "string" or dataBuild == "" or type(clientVersion) ~= "string" or clientVersion == "" then
 		return nil
@@ -143,15 +145,15 @@ function SettingsPage.addonDataLine(dataBuild, clientVersion)
 		end
 	end
 	if Codec.compareBuilds(table.concat(dataPatch, "."), clientVersion) < 0 then
-		return { label = L.settingsAddonDataLabel, value = L.settingsAddonDataOlder, tone = "warning" }
+		return { label = L.settingsAddonDataLabel, value = L.settingsAddonDataOlder, tone = "warning", current = false }
 	end
-	return { label = L.settingsAddonDataLabel, value = L.settingsAddonDataCurrent, tone = "muted" }
+	return { label = L.settingsAddonDataLabel, value = L.settingsAddonDataCurrent, tone = "muted", current = true }
 end
 
---- The foot's second line: the nightly ratings data (the Forever Sixty Data addon) in the
---- state Score.status finds it, as /fs diag names it: not installed (muted, it is optional),
---- current, too old (stale, unreadable or an older format), or newer than this addon reads.
---- { label, value, tone }. Pure.
+--- The foot's second line, "Player ratings:" (fix round 2, item 6): the nightly ratings
+--- data (the Forever Sixty Data addon) in the state Score.status finds it: not installed
+--- (muted, it is optional), current, too old (stale, unreadable or an older format), or made
+--- for a newer addon than this one. { label, value, tone, current }. Pure.
 function SettingsPage.ratingsLine(status)
 	local value, tone
 	if type(status) ~= "table" or status.absent then
@@ -163,7 +165,20 @@ function SettingsPage.ratingsLine(status)
 	else
 		value, tone = L.settingsRatingsOld, "warning"
 	end
-	return { label = L.settingsRatingsDataLabel, value = value, tone = tone }
+	return { label = L.settingsRatingsDataLabel, value = value, tone = tone, current = value == L.settingsRatingsCurrent }
+end
+
+--- The line under the title (fix round 2, item 5): the first foot line that is not current,
+--- the addon data before the player ratings, as one sentence the frame draws in the warning
+--- colour; nil while both are current (an unknown addon-data line counts as current). Pure.
+function SettingsPage.warningLine(addon, ratings)
+	if addon ~= nil and not addon.current then
+		return addon.label .. " " .. addon.value
+	end
+	if ratings ~= nil and not ratings.current then
+		return ratings.label .. " " .. ratings.value
+	end
+	return nil
 end
 
 --- A foot line as drawn on a muted font string: the label, then the state in its tone.
@@ -181,13 +196,21 @@ function SettingsPage.commandText(line)
 	return Theme.inlineColor("body", token) .. " " .. words
 end
 
---- Every number on the page, from the width of its backdrop: the left edge, the hint's
---- indent and width (the width minus the 40 px indent and the right padding), the width of
---- Reset's sentence and of the divider, and the y of the title, each switch row, Reset, the
---- commands heading, its divider and lines, and the two foot lines, and the height it all
---- needs (the page scrolls when the canvas is shorter). A backdrop the client has not sized
---- yet is laid out at Theme.SIZES.settingsWidth. Pure.
-function SettingsPage.layout(width)
+--- A switch row's height from its label's and hint's measured heights: at least the
+--- one-line row, and a wrapped hint's extra lines on top (Widgets.toggleRowHeight, which the
+--- toggle itself is sized by). Pure.
+SettingsPage.rowHeight = Widgets.toggleRowHeight
+
+--- Every number on the page, from the width of its backdrop, each row's measured height
+--- (`rowHeights`, in switch order; Theme.SIZES.settingsRow where one is missing) and whether
+--- the title carries the warning line (`warned`): the left edge, the hint's indent and width
+--- (the width minus the 40 px indent and the right padding), the width of Reset's sentence
+--- and of the divider, and the y of the title, the warning line (nil without one), each
+--- switch row, Reset, the commands heading, its divider and lines, and the two foot lines,
+--- and the height it all needs with the foot's pad (the page scrolls when the canvas is
+--- shorter). A backdrop the client has not sized yet is laid out at
+--- Theme.SIZES.settingsWidth. Pure.
+function SettingsPage.layout(width, rowHeights, warned)
 	local S = Theme.SIZES
 	if type(width) ~= "number" or width <= 0 then
 		width = S.settingsWidth
@@ -205,10 +228,16 @@ function SettingsPage.layout(width)
 	}
 	local y = S.padding
 	layout.title = -y
-	y = y + S.settingsTitle + S.gap * 2
+	y = y + S.settingsTitle
+	if warned then
+		layout.warning = -y
+		y = y + S.settingsLine
+	end
+	y = y + S.gap * 2
 	for index = 1, #SettingsPage.SWITCHES do
 		layout.rows[index] = -y
-		y = y + S.settingsRow
+		local height = type(rowHeights) == "table" and rowHeights[index] or nil
+		y = y + ((type(height) == "number" and height > 0) and height or S.settingsRow)
 	end
 	y = y + S.padding
 	layout.reset = -y
@@ -226,7 +255,7 @@ function SettingsPage.layout(width)
 		layout.data[index] = -y
 		y = y + S.settingsLine
 	end
-	layout.height = y + S.padding
+	layout.height = y + S.settingsFootPad
 	return layout
 end
 
@@ -239,13 +268,17 @@ end
 --- How long Reset reads "Positions reset", disabled, after a click.
 SettingsPage.RESET_SECONDS = 2
 
---- Reset's look: "Reset positions", or "Positions reset" and disabled for
---- SettingsPage.RESET_SECONDS after a click. Pure: reads SettingsPage.resetting.
+--- Reset's look: "Reset positions" (gold, in the border colour), or "Positions reset" and
+--- disabled for SettingsPage.RESET_SECONDS after a click, its label and its 1 px border in
+--- the muted-text grey at full alpha (fix round 2, item 4: the faded disabled look did not
+--- read). { label, enabled, text, edge }, the colours Theme.HEX keys. Pure: reads
+--- SettingsPage.resetting.
 function SettingsPage.resetLook()
+	local states = Theme.CONTROL_STATES.face
 	if SettingsPage.resetting then
-		return { label = L.settingsResetDone, enabled = false }
+		return { label = L.settingsResetDone, enabled = false, text = states.waitingLabel, edge = states.waitingEdge }
 	end
-	return { label = L.settingsReset, enabled = true }
+	return { label = L.settingsReset, enabled = true, text = states.label, edge = states.edge }
 end
 
 local function drawReset()
@@ -255,7 +288,7 @@ local function drawReset()
 	end
 	local look = SettingsPage.resetLook()
 	button:SetText(look.label)
-	Widgets.setEnabled(button, look.enabled)
+	Widgets.setButtonLook(button, look.enabled, look.text, look.edge)
 end
 
 --- Reset positions: Prefs puts the placements back, and its onReset listeners move the
@@ -279,13 +312,42 @@ end
 -- The frame -------------------------------------------------------------------
 
 local function place(region, parent, x, y)
+	region:ClearAllPoints()
 	region:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
 	return region
 end
 
+--- Put everything at the layout's numbers for the rows' measured heights and the warning
+--- line (`warned`), and size the scroll to match.
+local function arrange(warned)
+	local content = SettingsPage.content
+	local heights = {}
+	for index, toggle in ipairs(SettingsPage.toggles) do
+		heights[index] = toggle.frame:GetHeight()
+	end
+	local layout = SettingsPage.layout(SettingsPage.backdrop:GetWidth(), heights, warned)
+	place(SettingsPage.title, content, layout.x, layout.title)
+	place(SettingsPage.warningLabel, content, layout.x, layout.warning or layout.title)
+	for index, toggle in ipairs(SettingsPage.toggles) do
+		place(toggle.frame, content, layout.x, layout.rows[index])
+	end
+	place(SettingsPage.resetButton, content, layout.x, layout.reset)
+	place(SettingsPage.commandsHeading, content, layout.x, layout.commandsHeading)
+	place(SettingsPage.divider, content, layout.x, layout.divider)
+	for index, label in ipairs(SettingsPage.commandLabels) do
+		place(label, content, layout.x, layout.commands[index])
+	end
+	for index, label in ipairs(SettingsPage.dataLabels) do
+		place(label, content, layout.x, layout.data[index])
+	end
+	SettingsPage.scroll:SetContentHeight(layout.height)
+	return layout
+end
+
 --- Build the page once, at the size the client gave the canvas: an opaque backdrop 8 px
 --- inside it (the dialog's own, so no world text shows through a hint), scrolling when the
---- canvas is shorter than the page, and everything else on its content frame.
+--- canvas is shorter than the page, and everything else on its content frame, arranged once
+--- each row has measured its wrapped hint.
 function SettingsPage.build(panel)
 	if SettingsPage.toggles ~= nil then
 		return panel
@@ -302,7 +364,12 @@ function SettingsPage.build(panel)
 	SettingsPage.scroll = scroll
 	local content = scroll.content
 	SettingsPage.content = content
-	place(Widgets.label(content, L.addonName, "gold", "large"), content, layout.x, layout.title)
+	SettingsPage.title = Widgets.label(content, L.addonName, "gold", "large")
+	-- The first data state that is not current, repeated where the page opens (item 5).
+	local warning = Widgets.label(content, "", "warning", "small")
+	warning:SetWidth(layout.dividerWidth)
+	warning:Hide()
+	SettingsPage.warningLabel = warning
 	SettingsPage.toggles = {}
 	for index, switch in ipairs(SettingsPage.switches()) do
 		local key = switch.key
@@ -310,36 +377,33 @@ function SettingsPage.build(panel)
 			SettingsPage.onToggle(key, value)
 		end, switch.hint, layout.hintWidth)
 		toggle.key = key
-		place(toggle.frame, content, layout.x, layout.rows[index])
 		SettingsPage.toggles[index] = toggle
 	end
 	local reset = Widgets.button(content, L.settingsReset, SettingsPage.reset)
-	place(reset, content, layout.x, layout.reset)
 	SettingsPage.resetButton = reset
 	local resetHint = Widgets.label(content, L.settingsResetHint, "muted", "small")
 	resetHint:SetPoint("LEFT", reset, "RIGHT", S.gap * 2, 0)
 	resetHint:SetWidth(layout.resetHintWidth)
-	SettingsPage.commandsHeading = place(Widgets.label(content, L.settingsCommandsHeading, "gold", "normal"),
-		content, layout.x, layout.commandsHeading)
-	local divider = place(Theme.texture(content, "ARTWORK", "border"), content, layout.x, layout.divider)
+	SettingsPage.commandsHeading = Widgets.label(content, L.settingsCommandsHeading, "gold", "normal")
+	local divider = Theme.texture(content, "ARTWORK", "border")
 	divider:SetWidth(layout.dividerWidth)
 	divider:SetHeight(S.border)
 	SettingsPage.divider = divider
 	SettingsPage.commandLabels = {}
 	for index, line in ipairs(L.settingsCommands) do
-		SettingsPage.commandLabels[index] = place(Widgets.label(content, SettingsPage.commandText(line), "muted",
-			"small"), content, layout.x, layout.commands[index])
+		SettingsPage.commandLabels[index] = Widgets.label(content, SettingsPage.commandText(line), "muted", "small")
 	end
 	SettingsPage.dataLabels = {}
-	for index, y in ipairs(layout.data) do
-		SettingsPage.dataLabels[index] = place(Widgets.label(content, "", "muted", "small"), content, layout.x, y)
+	for index = 1, #layout.data do
+		SettingsPage.dataLabels[index] = Widgets.label(content, "", "muted", "small")
 	end
-	scroll:SetContentHeight(layout.height)
+	arrange(false)
 	return panel
 end
 
 --- Show the live prefs on every toggle ("Show the chip" off while a right-click hides it),
---- Reset's look, and the two foot lines for this client.
+--- Reset's look, the two foot lines for this client and, while either is not current, the
+--- line under the title (the page moves down to make room for it).
 function SettingsPage.refresh()
 	for _, toggle in ipairs(SettingsPage.toggles or {}) do
 		toggle:SetChecked(SettingsPage.checked(toggle.key))
@@ -348,8 +412,17 @@ function SettingsPage.refresh()
 	if SettingsPage.dataLabels ~= nil then
 		local data = SettingsPage.data or ns.Data
 		local addon = SettingsPage.addonDataLine(type(data) == "table" and data.build or nil, Compat.clientVersion())
+		local ratings = SettingsPage.ratingsLine(Score.status())
 		SettingsPage.dataLabels[1]:SetText(addon ~= nil and SettingsPage.lineText(addon) or "")
-		SettingsPage.dataLabels[2]:SetText(SettingsPage.lineText(SettingsPage.ratingsLine(Score.status())))
+		SettingsPage.dataLabels[2]:SetText(SettingsPage.lineText(ratings))
+		local warning = SettingsPage.warningLine(addon, ratings)
+		SettingsPage.warningLabel:SetText(warning or "")
+		if warning ~= nil then
+			SettingsPage.warningLabel:Show()
+		else
+			SettingsPage.warningLabel:Hide()
+		end
+		arrange(warning ~= nil)
 	end
 end
 
@@ -371,9 +444,12 @@ function SettingsPage.selfCheck()
 	return false
 end
 
+--- Every show: built once, refreshed, opened at the top whatever scroll it was left at
+--- (fix round 2, item 5), and checked.
 function SettingsPage.onShow(panel)
 	SettingsPage.build(panel)
 	SettingsPage.refresh()
+	SettingsPage.scroll:ScrollTo(0)
 	SettingsPage.selfCheck()
 end
 

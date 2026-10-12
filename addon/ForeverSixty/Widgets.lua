@@ -71,8 +71,8 @@ function Widgets.button(parent, text, onClick)
 	local background = Theme.texture(button, "BACKGROUND", "raised")
 	background:SetAllPoints(button)
 	button.foreverSixtyGround = background
-	Theme.outline(button, Theme.SIZES.border, "border")
-	local label = Widgets.label(button, "", "gold", "small")
+	button.foreverSixtyEdges = Theme.outline(button, Theme.SIZES.border, Theme.CONTROL_STATES.face.edge)
+	local label = Widgets.label(button, "", Theme.CONTROL_STATES.face.label, "small")
 	label:SetPoint("CENTER", button, "CENTER", 0, 0)
 	button.foreverSixtyLabel = label
 	button.SetText = function(self, value)
@@ -167,6 +167,23 @@ function Widgets.closeButton(parent, onClick)
 		onClick(self)
 	end)
 	return button
+end
+
+--- A Widgets.button's look set outright, at full alpha: enabled or not, its label and its
+--- 1 px border in the given Theme.HEX keys. For a button that has acted and waits, whose
+--- faded disabled look would not read (Settings' "Positions reset", fix round 2, item 4).
+function Widgets.setButtonLook(button, enabled, labelKey, edgeKey)
+	if enabled then
+		button:Enable()
+	else
+		button:Disable()
+	end
+	button:SetAlpha(1)
+	button.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[labelKey]))
+	for _, edge in ipairs(button.foreverSixtyEdges or {}) do
+		Theme.paint(edge, edgeKey)
+	end
+	return enabled
 end
 
 function Widgets.setEnabled(widget, enabled)
@@ -567,11 +584,31 @@ function Widgets.toggleIndent()
 	return Theme.SIZES.iconSize + Theme.SIZES.gap * 2
 end
 
+--- A switch row's height from its measured label and hint (fix round 2, item 3): the gap,
+--- the label, the gap, the hint, the one-line rows' bottom pad (Theme.SIZES.settingsRowPad),
+--- never under Theme.SIZES.settingsRow; that row where either height is unknown. Pure.
+function Widgets.toggleRowHeight(labelHeight, hintHeight)
+	local S = Theme.SIZES
+	if type(labelHeight) ~= "number" or type(hintHeight) ~= "number" then
+		return S.settingsRow
+	end
+	return math.max(S.settingsRow, S.gap + labelHeight + S.gap + hintHeight + S.settingsRowPad)
+end
+
+--- A font string's height as the client measured it, or nil.
+local function stringHeight(region)
+	if type(region.GetStringHeight) ~= "function" then
+		return nil
+	end
+	local height = region:GetStringHeight()
+	return type(height) == "number" and height or nil
+end
+
 --- A switch (L3.5 ruling 2): on, a gold square with the client's check mark tinted dark on
---- it; off, a 1 px border outline. With a `hint`, a row Theme.SIZES.settingsRow high (the
---- whole row is the target): the label in body, the hint muted under it, wrapped at
---- `hintWidth`. Hover and pressed come from Theme.CONTROL_STATES.toggle. `onChange` gets
---- the new value.
+--- it; off, a 1 px border outline. With a `hint`, a row as tall as its label and wrapped
+--- hint measure (Widgets.toggleRowHeight, at least Theme.SIZES.settingsRow; the whole row is
+--- the target): the label in body, the hint muted under it, wrapped at `hintWidth`. Hover
+--- and pressed come from Theme.CONTROL_STATES.toggle. `onChange` gets the new value.
 function Widgets.toggle(parent, text, checked, onChange, hint, hintWidth)
 	local S = Theme.SIZES
 	local states = Theme.CONTROL_STATES.toggle
@@ -593,6 +630,7 @@ function Widgets.toggle(parent, text, checked, onChange, hint, hintWidth)
 		local hintLabel = Widgets.label(frame, hint, states.hint, "small")
 		hintLabel:SetPoint("TOPLEFT", label, "BOTTOMLEFT", 0, -S.gap)
 		hintLabel:SetWidth(hintWidth or S.buttonWidth)
+		frame:SetHeight(Widgets.toggleRowHeight(stringHeight(label), stringHeight(hintLabel)))
 		toggle.hint = hintLabel
 	else
 		frame:SetSize(S.buttonWidth, S.rowHeight)

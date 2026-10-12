@@ -667,14 +667,6 @@ local function nextLabel(data, build, cells)
 	return nil
 end
 
---- Redraw the marks for `data`: the ring (TalentGlow), then the badges,
---- then the strip, sharing one lookup per node and one read of the ranks
---- with staged clicks counted. `pass` is the show's pass (0 at once, 1 and
---- 2 deferred), nil for an event's refresh; only the final one may record
---- a miss. A closed talent window is a no-op; with no build loaded the
---- strip and the badges are absent. Badge numbers are the plan's own order
---- indexes, fixed by the plan; only their look and the ring move.
---- TalentMarks.lastPass says what the pass found, for runPass.
 --- Whether "Marks on the talent window" is on: the one reader of the pref (L3.5 fix
 --- round 1, item 4). Off, the window carries no ring, no badges and no strip.
 function TalentMarks.enabled()
@@ -684,6 +676,15 @@ end
 -- The chip stands aside for the open talent window only while the marks replace it.
 Chip.windowMarks = TalentMarks.enabled
 
+--- Redraw the marks for `data`: the ring (TalentGlow), then the badges,
+--- then the strip, sharing one lookup per node and one read of the ranks
+--- with staged clicks counted. `pass` is the show's pass (0 at once, 1 and
+--- 2 deferred), nil for an event's refresh; only the final one may record
+--- a miss. A closed talent window is a no-op; with no build loaded the
+--- strip and the badges are absent. Badge numbers are the plan's own order
+--- indexes, fixed by the plan; only their look and the ring move.
+--- TalentMarks.lastPass says what the pass found, for runPass. With the switch off, the
+--- ring, the badges and the strip all come down and nothing is drawn.
 function TalentMarks.refresh(data, pass)
 	TalentMarks.lastPass = nil
 	if not TalentMarks.enabled() then

@@ -232,10 +232,18 @@ Theme.SIZES = {
 	--- The gear rows' fixed slot column, before the icon and the name.
 	dialogSlotColumn = 72,
 	--- The Settings page (spec section 4.11, L3.5): a 44 px row per switch so the whole row
-	--- is a target; each hint wrapped to the canvas width minus its 40 px indent (and the right
-	--- padding); a muted line's pitch; the title's line; the width a canvas the client has not
-	--- sized yet is laid out at.
+	--- is a target, the least a row is; each hint wrapped to the canvas width minus its 40 px
+	--- indent (and the right padding); a muted line's pitch; the title's line; the width a
+	--- canvas the client has not sized yet is laid out at.
 	settingsRow = 44,
+	--- A row is measured from its label and hint (fix round 2, item 3): the gap above the
+	--- label, the label, the gap, the hint's GetStringHeight, then this pad, the one-line
+	--- rows' bottom pad (the client's 12 px label over a 10 px hint makes a 44 px row), so a
+	--- wrapped hint pushes the next row down by its extra line.
+	settingsRowPad = 14,
+	--- Under the foot's last line, so a cut at the bottom of the scroll never lands on text
+	--- (fix round 2, item 5).
+	settingsFootPad = 12,
 	settingsHintInset = 40,
 	settingsLine = 18,
 	settingsTitle = 24,
@@ -487,10 +495,14 @@ end
 --- label muted to body over a 2 px underline in the border colour, the close x muted to body on
 --- a hover ground. Pressed: the primary fills goldPressed, the others inset, and every label
 --- drops PRESSED_LABEL_DROP px until the mouse comes up. No focus-visible state (no button
---- takes the keyboard) and no disabled style beyond Widgets.setEnabled's alpha.
+--- takes the keyboard) and no disabled style beyond Widgets.setEnabled's alpha, save a
+--- secondary button that has acted and waits (Settings' "Positions reset", fix round 2,
+--- item 4): its label and its 1 px border in the muted-text grey at full alpha, so it reads.
 Theme.CONTROL_STATES = {
 	primary = { rest = "gold", hover = "goldHover", pressed = "goldPressed" },
 	secondary = { rest = "raised", hover = "hover", pressed = "inset" },
+	--- A secondary button's label and 1 px border: at rest, and while it has acted and waits.
+	face = { label = "gold", edge = "border", waitingLabel = "muted", waitingEdge = "muted" },
 	tab = { label = "muted", hoverLabel = "body", hoverUnderline = "border", pressed = "inset" },
 	close = { label = "muted", hoverLabel = "body", hoverGround = "hover", pressed = "inset" },
 	--- A Settings switch (L3.5, fix round 1): on, a gold square (goldHover under the cursor,
@@ -909,7 +921,6 @@ function Theme.openSettingsPanel(how, handle, panel)
 	end
 	return shown ~= false
 end
-
 
 --- Register one event, recording rather than raising when the client has
 --- never heard of it. With Theme.tryRegisterEvent, the only RegisterEvent

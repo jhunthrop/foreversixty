@@ -83,7 +83,11 @@ never wrapped. One state at a time, highest first; a "+N" badge when more wait.
 
 Out of the way: fades to 25 % in combat and ignores the mouse; hides with the UI and in
 cinematics; right-click "Hide until next level"; shift-drag moves it; hover shows a client
-tooltip with every waiting state.
+tooltip with every waiting state. While the talent window is open (however it was opened: the
+chip's click, the N keybind, the micro menu) and its marks are drawn, the chip stands aside and the
+marks' strip leads with its next talent (section 4.2); it comes back when the window closes. With
+"Marks on the talent window" off (section 4.11) the chip stays beside the minimap with the window
+open.
 
 ### 4.2 Talent marks
 
@@ -92,7 +96,10 @@ In the client's talent window (`PlayerSpellsFrame` on this client, found by the 
 chip does, on the next node; a small order number on every node the plan touches (amended in L3.2
 fix round 4: a multi-rank cell shows the plan's point range, "7–11", a one-point cell its number); a 24 px strip
 along the window's bottom edge: "Arms leveling · 11 of 51 · next at level 22 · 0 off plan". A
-point spent off plan turns the strip's count warning-coloured; nothing pops up.
+point spent off plan turns the strip's count warning-coloured; nothing pops up. While the marks
+are drawn the chip stands aside and the strip leads with the chip's line ("Next: Deflection (1 of
+2) · …"); with "Marks on the talent window" off there is no ring, no badges and no strip, and the
+chip stays.
 
 ### 4.3 Item tooltip
 
@@ -220,6 +227,10 @@ A versioned addon-message protocol on the GUILD, RAID and PARTY channels, prefix
 | `loot!` | each member's addon | value of the item to them (DPS or score delta), their current item, whether it is their planned piece |
 | `snapshot?` / `snapshot!` | leader / members | the `hello` fields on demand |
 
+"Share my build with my guild" off (section 4.11) silences `hello` and every `snapshot!` answer
+on every channel, GUILD, RAID and PARTY alike; a `/fs hello` then says why ("Not sent: "Share my
+build with my guild" is off. Type /fs options to turn it on.").
+
 The loot council helper ranks `loot!` answers for the master looter in seconds; members
 without the addon are scored from their last inspect where one exists, else "no data". No
 message ever triggers an action on the recipient's behalf.
@@ -273,25 +284,34 @@ paste it on the site at foreversixty.gg.". The addon never claims an upload it c
 
 ### 4.11 Settings
 
-The client Settings page only (L3.5, fix round 1), on its own opaque backdrop 8 px inside the
-canvas, scrolling when the canvas is shorter. Seven switches, each with one muted hint saying
-what it does: "Show the chip" (reads off while a right-click hides the chip; either way it
-clears that hide), "Hide the chip in combat" (off: faded to 25 %), "Marks on the talent window"
+The client Settings page only (L3.5, fix rounds 1 and 2), on its own opaque backdrop 8 px inside
+the canvas, scrolling when the canvas is shorter (the wheel moves it; every show opens it at the
+top). Under the gold title, while either data state at the foot is not current, one line in the
+warning colour repeats the first such state's sentence (the addon data before the player ratings);
+the page moves down a line to make room. Seven switches, each with one muted hint saying what it
+does; each row is measured from its label and its wrapped hint (`GetStringHeight` plus the
+one-line rows' bottom pad, never less than the one-line 44 px row), so a two-line hint pushes the
+next row down by a line: "Show the chip" (reads off while a right-click hides the chip; either way
+it clears that hide), "Hide the chip in combat" (off: faded to 25 %), "Marks on the talent window"
 (the ring, the badges and the strip, all or none), "Show the minimap button" (live; off, /fs
-options or Options › AddOns reach the page), "Gear tips on item tooltips", "Share my build with
-my guild" (off: no hello and no snapshot answer on any channel) and "Save my character for the
-companion app" (written at logout for the companion to pick up; no upload is claimed). Then Reset
-positions (the chip, the minimap button and the build dialog move at once through
-`Prefs.onReset`; the button reads "Positions reset", disabled, for 2 s); the commands under a
-gold heading and a divider, each `/fs` token in body (`L.settingsCommands`, which `/fs help`
-prints too, followed there by a muted testers' line); and at the foot "Addon data: current for
-this patch" or "Addon data: an older patch. Update the addon." (the state in the warning
-colour) and the ratings data's state ("current", "too old. Update it from the site.", "newer
-than this addon. Update the addon.", "not installed"), no build numbers. Guild badges get their
-switch with L4.4; no "advanced detail" mode, and no chat switch. The minimap button and the
-addon compartment entry open the build dialog on a left click and this page on a right click;
-`/fs options` opens it too (the command list wherever the client does not show it).
-
+options or Options > AddOns reach the page), "Gear tips on item tooltips", "Share my build with
+my guild" ("Guildmates with Forever Sixty see your level, spec, build and gear gap. Off: they see
+nothing."; off silences the hello and every snapshot answer on every channel) and "Save my
+character for the companion app" (written at logout for the companion to pick up, so the site can
+read the gear and talents; no upload is claimed). Then Reset positions (the chip, the minimap
+button and the build dialog move at once through `Prefs.onReset`; for 2 s the button reads
+"Positions reset", disabled, its label and 1 px border in the muted-text grey at full alpha); the
+commands under a gold heading and a divider, each `/fs` token in body (`L.settingsCommands`,
+which `/fs help` prints too, followed there by the muted "For testers: /fs diag verbose, inbox,
+hello, seen, record."); and at the foot "Addon data: current for this patch" or "Addon data: an
+older patch. Update the addon." (the state in the warning colour) and "Player ratings:" with one
+of four states: "current", "too old. Get the new Forever Sixty Data from the site.", "not
+installed. Get Forever Sixty Data from the site." or "made for a newer addon. Update Forever
+Sixty." (`/fs diag` keeps its own wording), no build numbers, then 12 px of padding so a cut never
+lands on text. Guild badges get their switch with L4.4; no "advanced detail" mode, and no chat
+switch. The minimap button and the addon compartment entry open the build dialog on a left click
+and this page on a right click; `/fs options` opens it too (the command list wherever the client
+does not show it).
 
 ## 5. Loops
 

@@ -112,9 +112,15 @@ Run on one character per role and tick here:
       hints; the addon appears in the addon compartment on a client that has one, and its entry
       opens the dialog on a left click and the Settings page on a right click.
 - [ ] Each Settings switch takes effect without a reload; Reset positions moves the chip, the
-      minimap button and the build dialog back at once, and the button reads "Positions reset" for 2 s.
+      minimap button and the build dialog back at once, and the button reads "Positions reset" for
+      2 s, in readable grey inside a grey 1 px border.
+- [ ] The Settings page opens at the top; a hint that wraps to two lines pushes the next row down
+      a line; the minimap hint reads "Options > AddOns".
+- [ ] With Data.lua's build set to an older patch, a warning-coloured "Addon data: an older patch.
+      Update the addon." sits under the title as well as at the foot; the foot's second line reads
+      "Player ratings: ...".
 - [ ] `/fs options` opens the Settings page; "Marks on the talent window" off leaves the talent
-      window bare.
+      window bare, and the chip stays beside the minimap while the window is open.
 - [ ] The keybind (Key Bindings > AddOns > Forever Sixty) prints the command list.
 - [ ] `/fs help` prints the command list, then the muted testers' line.
 

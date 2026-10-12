@@ -1,10 +1,11 @@
 -- addon/tests/settings_spec.lua
--- The Settings page and the launcher (L3.5, fix round 1), the pure parts: the switch table
--- against Prefs.DEFAULTS and every hint's words, what each switch writes and shows, the
+-- The Settings page and the launcher (L3.5, fix rounds 1 and 2), the pure parts: the switch
+-- table against Prefs.DEFAULTS and every hint's words, what each switch writes and shows, the
 -- command list (one Locale table; /fs help adds the testers line), /fs options, the two
--- data lines, Reset's feedback, the page's layout numbers, the compartment's click, the
--- settings registration and open, the talent-marks switch, and the hello and snapshot
--- answers that "Share my build with my guild" stops. No frames: the canvas itself is
+-- data lines and the title's warning line, Reset's feedback, the page's layout numbers (rows
+-- measured from their hints), the compartment's click, the settings registration and open,
+-- the talent-marks switch (and the chip it leaves out), and the hello and snapshot answers
+-- that "Share my build with my guild" stops. No frames: the canvas itself is
 -- settings_frame_spec's.
 local helper = require("spec_helper")
 
@@ -44,7 +45,8 @@ describe("SettingsPage, the switches", function()
 		end
 	end)
 
-	-- Fix round 1, items 1, 3, 4, 7, 8, 10, 11 and 15: each label and hint, word for word.
+	-- Fix round 1, items 1, 3, 4, 7, 8, 10, 11 and 15, and fix round 2, items 1, 2 and 9:
+	-- each label and hint, word for word.
 	it("words every label and hint as the reviews ruled", function()
 		local words = {}
 		for _, switch in ipairs(SettingsPage.switches()) do
@@ -56,14 +58,42 @@ describe("SettingsPage, the switches", function()
 			{ "Marks on the talent window",
 				"Numbers your build's talents in order, rings the next one and adds a progress strip." },
 			{ "Show the minimap button", "Left-click pastes or copies a build; right-click opens this page. "
-				.. "Off: type /fs options or use Options \226\128\186 AddOns." },
+				.. "Off: type /fs options or use Options > AddOns." },
 			{ "Gear tips on item tooltips",
 				"Adds a line to item tooltips: is it in your build, and does it beat what you wear." },
-			{ "Share my build with my guild", "Guildmates with Forever Sixty see your level, spec, build and how far "
-				.. "your gear is from it. Off: no hello, no snapshot answers. On by default." },
-			{ "Save my character for the companion app",
-				"Written when you log out, for the companion app (the small app on your PC) to pick up." },
+			{ "Share my build with my guild",
+				"Guildmates with Forever Sixty see your level, spec, build and gear gap. Off: they see nothing." },
+			{ "Save my character for the companion app", "Written when you log out, for the companion app "
+				.. "(the small app on your PC) to pick up, so the site can read your gear and talents." },
 		}, words)
+	end)
+
+	-- Fix round 2, item 1: this client's font draws the right-pointing angle quote as a
+	-- middle dot.
+	it("uses no glyph the client's font lacks: no angle quote in any Locale string", function()
+		local function walk(value, path)
+			if type(value) == "string" then
+				assert.is_nil(value:find("\226\128\186", 1, true), path)
+			elseif type(value) == "table" then
+				for key, inner in pairs(value) do
+					walk(inner, path .. "." .. tostring(key))
+				end
+			end
+		end
+		walk(L, "L")
+	end)
+
+	-- Fix round 2, item 2: the ticked box shows the default; no protocol words.
+	it("says what sharing shows in player words, without the default or the message names", function()
+		assert.is_nil(L.settingsBroadcastHint:find("default"))
+		assert.is_nil(L.settingsBroadcastHint:find("hello"))
+		assert.is_nil(L.settingsBroadcastHint:find("snapshot"))
+	end)
+
+	-- Fix round 2, item 12: the hint's "25%" is the fade Chip.COMBAT_ALPHA draws.
+	it("names the combat fade the chip draws", function()
+		local percent = string.format("%d%%", math.floor(require("Chip").COMBAT_ALPHA * 100 + 0.5))
+		assert.is_truthy(L.settingsCombatHideHint:find(percent, 1, true))
 	end)
 
 	it("claims no upload in the save hint", function()
@@ -209,10 +239,26 @@ describe("SettingsPage, the command list", function()
 		assert.is_truthy(L.settingsCommands[7]:find("^/fs help: "))
 	end)
 
-	it("names every tester command in one comma-separated line, no pipes", function()
-		assert.are.equal("For testers: /fs diag verbose, /fs inbox, /fs hello, /fs seen, "
-			.. "/fs record on, off, status or clear", L.helpTesters)
+	-- Fix round 2, item 10: the list word for word.
+	it("words the seven player commands as ruled", function()
+		assert.are.same({
+			"/fs: paste or copy a build",
+			"/fs copy: copy my character for the site",
+			"/fs chip: show or hide the chip",
+			"/fs inspect: gear and talents of your target",
+			"/fs options: open the settings page",
+			"/fs diag: what is not working",
+			"/fs help: every command",
+		}, L.settingsCommands)
+	end)
+
+	-- Fix round 2, item 7: short, so the chat never wraps inside a command; /fs record's
+	-- arguments live in its own usage.
+	it("names every tester command in one short line, /fs once, no pipes", function()
+		assert.are.equal("For testers: /fs diag verbose, inbox, hello, seen, record.", L.helpTesters)
 		assert.is_nil(L.helpTesters:find("|", 1, true))
+		local _, count = L.helpTesters:gsub("/fs", "")
+		assert.are.equal(1, count)
 	end)
 
 	it("draws each command's /fs token in body and its words muted", function()
@@ -267,27 +313,55 @@ describe("SettingsPage, the data lines", function()
 		assert.is_nil(SettingsPage.addonDataLine("", ""))
 	end)
 
-	it("names the ratings data's state as /fs diag does", function()
+	-- Fix round 2, item 6: "Player ratings", never read as hit or crit ratings; four states.
+	it("names the player ratings' state in the player's words", function()
 		local cases = {
-			{ { available = false, absent = true }, "Ratings data: not installed", "muted" },
-			{ { available = true, stale = false }, "Ratings data: current", "muted" },
-			{ { available = true, stale = true }, "Ratings data: too old. Update it from the site.", "warning" },
-			{ { available = false, reason = L.ratingsUnreadable }, "Ratings data: too old. Update it from the site.",
-				"warning" },
+			{ { available = false, absent = true }, "Player ratings: not installed. Get Forever Sixty Data from the site.",
+				"muted", false },
+			{ { available = true, stale = false }, "Player ratings: current", "muted", true },
+			{ { available = true, stale = true }, "Player ratings: too old. Get the new Forever Sixty Data from the site.",
+				"warning", false },
+			{ { available = false, reason = L.ratingsUnreadable },
+				"Player ratings: too old. Get the new Forever Sixty Data from the site.", "warning", false },
 			{ { available = false, reason = L.ratingsUpdateAddon },
-				"Ratings data: newer than this addon. Update the addon.", "warning" },
+				"Player ratings: made for a newer addon. Update Forever Sixty.", "warning", false },
 		}
 		for _, case in ipairs(cases) do
-			local text, tone = words(SettingsPage.ratingsLine(case[1]))
+			local entry = SettingsPage.ratingsLine(case[1])
+			local text, tone = words(entry)
 			assert.are.equal(case[2], text)
 			assert.are.equal(case[3], tone)
+			assert.are.equal(case[4], entry.current)
 		end
 	end)
 
 	it("reads the ratings state from Score.status: not installed here", function()
 		_G.ForeverSixtyData = nil
 		local text = words(SettingsPage.ratingsLine(require("Score").status()))
-		assert.are.equal("Ratings data: not installed", text)
+		assert.are.equal("Player ratings: not installed. Get Forever Sixty Data from the site.", text)
+	end)
+
+	it("marks only the addon data's own patch, or a later one, current", function()
+		assert.is_true(SettingsPage.addonDataLine("1.60.1.70291", "1.60.1").current)
+		assert.is_true(SettingsPage.addonDataLine("1.60.2.70400", "1.60.1").current)
+		assert.is_false(SettingsPage.addonDataLine("1.60.1.70291", "1.61.0").current)
+	end)
+
+	-- Fix round 2, item 5a: the first state that is not current, repeated under the title.
+	it("repeats the first data state that is not current for the title, addon data first", function()
+		local current = SettingsPage.addonDataLine("1.60.1.70291", "1.60.1")
+		local older = SettingsPage.addonDataLine("1.60.1.70291", "1.61.0")
+		local fresh = SettingsPage.ratingsLine({ available = true, stale = false })
+		local stale = SettingsPage.ratingsLine({ available = true, stale = true })
+		local absent = SettingsPage.ratingsLine({ available = false, absent = true })
+		assert.is_nil(SettingsPage.warningLine(current, fresh))
+		assert.is_nil(SettingsPage.warningLine(nil, fresh))
+		assert.are.equal("Addon data: an older patch. Update the addon.", SettingsPage.warningLine(older, stale))
+		assert.are.equal("Addon data: an older patch. Update the addon.", SettingsPage.warningLine(older, fresh))
+		assert.are.equal("Player ratings: too old. Get the new Forever Sixty Data from the site.",
+			SettingsPage.warningLine(current, stale))
+		assert.are.equal("Player ratings: not installed. Get Forever Sixty Data from the site.",
+			SettingsPage.warningLine(nil, absent))
 	end)
 
 	it("colours only the state: the label muted, the state in its tone", function()
@@ -323,6 +397,45 @@ describe("SettingsPage, the layout", function()
 		local S = Theme.SIZES
 		local layout = SettingsPage.layout(600)
 		assert.are.equal(600 - S.padding, layout.x + S.buttonWidth + S.gap * 2 + layout.resetHintWidth)
+	end)
+
+	-- Fix round 2, item 3: a wrapped hint pushes the next row down by its extra line.
+	it("measures a row from its label and hint, never under the one-line row", function()
+		local S = Theme.SIZES
+		assert.are.equal(S.settingsRow, SettingsPage.rowHeight(nil, nil))
+		local one = SettingsPage.rowHeight(12, 10)
+		assert.are.equal(S.settingsRow, one)
+		assert.are.equal(S.gap + 12 + S.gap + 20 + S.settingsRowPad, SettingsPage.rowHeight(12, 20))
+		assert.are.equal(one + 10, SettingsPage.rowHeight(12, 20))
+		assert.are.equal(S.settingsRow, SettingsPage.rowHeight(8, 6))
+	end)
+
+	it("puts each row under the one before by that row's measured height", function()
+		local heights = { 44, 44, 44, 44, 44, 56, 44 }
+		local plain, measured = SettingsPage.layout(600), SettingsPage.layout(600, heights)
+		assert.are.equal(-56, measured.rows[7] - measured.rows[6])
+		assert.are.equal(plain.rows[6], measured.rows[6])
+		assert.are.equal(plain.reset - 12, measured.reset)
+		assert.are.equal(plain.height + 12, measured.height)
+	end)
+
+	-- Fix round 2, item 5a.
+	it("makes room for the warning line under the title only when there is one", function()
+		local S = Theme.SIZES
+		local plain, warned = SettingsPage.layout(600), SettingsPage.layout(600, nil, true)
+		assert.is_nil(plain.warning)
+		assert.is_true(warned.warning < warned.title)
+		assert.is_true(warned.rows[1] < warned.warning)
+		assert.are.equal(plain.rows[1] - S.settingsLine, warned.rows[1])
+		assert.are.equal(plain.height + S.settingsLine, warned.height)
+	end)
+
+	-- Fix round 2, item 5b: a cut at the foot never lands on text.
+	it("leaves 12 px under the foot", function()
+		local S = Theme.SIZES
+		local layout = SettingsPage.layout(600)
+		assert.are.equal(12, S.settingsFootPad)
+		assert.are.equal(-layout.data[2] + S.settingsLine + S.settingsFootPad, layout.height)
 	end)
 
 	it("gives every switch a 44 px row, one under the other", function()
@@ -405,7 +518,9 @@ describe("SettingsPage, Reset positions", function()
 		require("Chip").place = function() end
 		require("Minimap").refresh = function() end
 		require("BuildDialog").place = function() end
-		assert.are.same({ label = L.settingsReset, enabled = true }, SettingsPage.resetLook())
+		local resting = { label = L.settingsReset, enabled = true, text = "gold", edge = "border" }
+		local done = { label = L.settingsResetDone, enabled = false, text = "muted", edge = "muted" }
+		assert.are.same(resting, SettingsPage.resetLook())
 		assert.are.equal("Positions reset", L.settingsResetDone)
 		assert.are.equal(2, SettingsPage.RESET_SECONDS)
 		local waited
@@ -417,10 +532,11 @@ describe("SettingsPage, Reset positions", function()
 		end
 		SettingsPage.reset()
 		Theme.after = after
-		assert.are.same({ label = L.settingsResetDone, enabled = false }, SettingsPage.resetLook())
+		-- Fix round 2, item 4: the muted label and a muted 1 px border, never the faded button.
+		assert.are.same(done, SettingsPage.resetLook())
 		assert.are.equal(2, waited[1])
 		waited[2]()
-		assert.are.same({ label = L.settingsReset, enabled = true }, SettingsPage.resetLook())
+		assert.are.same(resting, SettingsPage.resetLook())
 	end)
 
 	it("words its sentence as the designer ruled", function()
@@ -585,6 +701,12 @@ describe("TalentMarks, the Marks on the talent window switch", function()
 	it("draws nothing with the switch off: no ring, no badges, no strip", function()
 		Prefs.setFlag("talentMarks", false)
 		local cleared, drawn = 0, 0
+		-- Fix round 2, item 10: the badges and the strip a marks-on pass left are hidden too.
+		local function shownRegion()
+			return { shown = true, Hide = function(self) self.shown = false end }
+		end
+		local badges, strip = { shownRegion(), shownRegion() }, shownRegion()
+		TalentMarks.badges, TalentMarks.strip = badges, strip
 		TalentGlow.openFrame = function()
 			return {}, "PlayerTalentFrame"
 		end
@@ -599,6 +721,9 @@ describe("TalentMarks, the Marks on the talent window switch", function()
 		assert.are.equal(1, cleared)
 		assert.are.equal(0, drawn)
 		assert.is_nil(TalentMarks.placed)
+		assert.is_false(badges[1].shown)
+		assert.is_false(badges[2].shown)
+		assert.is_false(strip.shown)
 	end)
 
 	it("is on by default", function()
@@ -610,6 +735,28 @@ describe("TalentMarks, the Marks on the talent window switch", function()
 		assert.is_true(Chip.windowMarks())
 		Prefs.setFlag("talentMarks", false)
 		assert.is_false(Chip.windowMarks())
+	end)
+
+	-- Fix round 2, item 10: the chip's own inputs, with the talent window open.
+	it("keeps the chip out with the talent window open and the marks off", function()
+		local mock = require("wow_mock")
+		mock.install({ level = 21 })
+		local ok, failure = pcall(function()
+			-- A chip and marks on this spec's TalentGlow, the marks handing the chip windowMarks.
+			local Chip = helper.load("Chip")
+			helper.load("TalentMarks")
+			TalentGlow.openFrame = function()
+				return {}, "PlayerSpellsFrame"
+			end
+			assert.is_true(Chip.inputs({}).talentsOpen)
+			assert.are.equal("talents", Chip.model(Chip.inputs({})).hiddenBy)
+			Prefs.setFlag("talentMarks", false)
+			local input = Chip.inputs({})
+			assert.is_false(input.talentsOpen)
+			assert.is_true(Chip.model(input).visible)
+		end)
+		mock.uninstall()
+		assert(ok, failure)
 	end)
 end)
 
@@ -632,6 +779,21 @@ describe("Comms, Share my build with my guild", function()
 		local ok, reason = Comms.hello()
 		assert.is_false(ok)
 		assert.are.equal(L.commsSharingOff, reason)
+	end)
+
+	-- Fix round 2, item 8: the refusal names the way back.
+	it("words the refusal with the command that turns sharing on", function()
+		assert.are.equal("Not sent: \"Share my build with my guild\" is off. Type /fs options to turn it on.",
+			L.commsSharingOff)
+	end)
+
+	it("sends no hello on any channel while the switch is off", function()
+		Prefs.setFlag("broadcast", false)
+		for _, channel in ipairs({ "GUILD", "RAID", "PARTY" }) do
+			local ok, reason = Comms.send("hello", { 20, "warrior-arms", 0, "", "-" }, channel)
+			assert.is_false(ok, channel)
+			assert.are.equal(L.commsSharingOff, reason)
+		end
 	end)
 
 	it("answers no snapshot request on any channel while the switch is off (fix 1, item 7)", function()

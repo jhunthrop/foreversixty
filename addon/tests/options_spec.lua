@@ -388,6 +388,82 @@ describe("Options", function()
 		assert.are.same({ { "chip", DATA }, { "marks", DATA } }, calls)
 	end)
 
+	-- Fix round 2 (the coordinator's N-keybind question): the binding opens the window through
+	-- the client's own code (TogglePlayerSpellsFrame, then the frame's Show), never through the
+	-- chip. The only signal the addon gets is the window's OnShow, which TalentGlow.watch hooks
+	-- when the window's load-on-demand addon arrives (ADDON_LOADED); the hook runs
+	-- TalentMarks.onShow, which redraws the chip, and Chip.inputs reads TalentGlow.openFrame().
+	describe("the talent window opened by the client itself (the N keybind)", function()
+		local hooks, window
+
+		--- The client's HookScript: every handler runs, in order, after the frame's own.
+		local function hookable(frame)
+			hooks[frame] = {}
+			frame.HookScript = function(self, script, handler)
+				hooks[self][script] = hooks[self][script] or {}
+				table.insert(hooks[self][script], handler)
+			end
+			return frame
+		end
+
+		local function fire(frame, script)
+			for _, handler in ipairs(hooks[frame][script] or {}) do
+				handler(frame)
+			end
+		end
+
+		--- What the binding does: the window shows (its talents tab with it), and the client
+		--- runs the window's OnShow scripts, ours among them. No addon code is called first.
+		local function pressN()
+			window:Show()
+			window.TalentsFrame:Show()
+			fire(window, "OnShow")
+		end
+
+		local function closeWindow()
+			window:Hide()
+			fire(window, "OnHide")
+		end
+
+		before_each(function()
+			hooks = {}
+			Options.register()
+			local Chip = require("Chip")
+			Chip.refresh(DATA)
+			assert.is_true(Chip.current.visible)
+			-- The window's addon loads after login: the frame and its talents child appear,
+			-- hidden, and ADDON_LOADED fires.
+			window = hookable(CreateFrame("Frame", "PlayerSpellsFrame", UIParent))
+			window.TalentsFrame = hookable(CreateFrame("Frame", nil, window))
+			window:Hide()
+			Options.onEvent(Options.frame, "ADDON_LOADED", "Blizzard_PlayerSpells")
+		end)
+
+		it("hooks the window's own show and hide when its addon loads", function()
+			assert.are.equal(1, #hooks[window].OnShow)
+			assert.are.equal(1, #hooks[window].OnHide)
+		end)
+
+		it("hides the chip while the marks are on, and brings it back on close", function()
+			local Chip = require("Chip")
+			pressN()
+			assert.are.equal("talents", Chip.current.hiddenBy)
+			assert.is_true(Chip.hiddenByWindow())
+			assert.is_false(Chip.frame == nil or Chip.frame:IsShown())
+			closeWindow()
+			assert.is_true(Chip.current.visible)
+			assert.is_true(Chip.frame:IsShown())
+		end)
+
+		it("keeps the chip out while the marks are off", function()
+			local Chip = require("Chip")
+			require("Prefs").setFlag("talentMarks", false)
+			pressN()
+			assert.is_true(Chip.current.visible)
+			assert.is_true(Chip.frame:IsShown())
+		end)
+	end)
+
 	it("hands the talent window's show and hide to the talent marks", function()
 		local TalentGlow, TalentMarks = require("TalentGlow"), require("TalentMarks")
 		Options.register()
