@@ -181,10 +181,14 @@ describe("Codec FSB1", function()
 			assert.is_true(build.statsUnknown)
 		end)
 
-		it("refuses a code from a newer data build, naming both", function()
-			local _, message = Codec.loadBuild("FSB1:1.99.0.99999:paladin:111:", data)
-			assert.is_truthy(message:find("1.99.0.99999", 1, true))
-			assert.is_truthy(message:find("1.60.1.69893", 1, true))
+		it("refuses a code from a newer data build, in plain words with no build ids", function()
+			-- L3.4 ruling: the build dialog shows this reason as it stands, and the
+			-- dialog's copy never prints a build number.
+			local build, message = Codec.loadBuild("FSB1:1.99.0.99999:paladin:111:", data)
+			assert.is_nil(build)
+			assert.are.equal(L.codecNewerBuild, message)
+			assert.is_nil(message:find("1.99.0.99999", 1, true))
+			assert.is_nil(message:find("1.60.1.69893", 1, true))
 		end)
 
 		it("accepts a code from an older data build", function()

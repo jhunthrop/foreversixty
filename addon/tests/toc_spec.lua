@@ -15,6 +15,8 @@ describe("the TOC", function()
 		-- The surfaces (spec section 7): the chip replaces the tracker and the toast;
 		-- the talent marks draw TalentGlow's ring and read the chip's level.
 		"surfaces/Chip.lua", "surfaces/TalentMarks.lua",
+		-- The build dialog (L3.4): built on its first open; Options opens it.
+		"surfaces/BuildDialog.lua",
 		-- The measurement recorder: Options routes /fs record to it.
 		"RecorderBuffer.lua", "Recorder.lua", "Options.lua",
 	}

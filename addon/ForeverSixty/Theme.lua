@@ -216,6 +216,16 @@ Theme.SIZES = {
 	minimapRing = 54,
 	minimapGround = 24,
 	minimapEdge = 10,
+	--- The build dialog (spec section 4.10): 420 by 300; the paste box before a code
+	--- loads, and once it has (one line); the preview's class icon; the most "from the
+	--- site" rows it lists; the width of each row's Use button.
+	dialogWidth = 420,
+	dialogHeight = 300,
+	dialogBox = 72,
+	dialogLine = 28,
+	dialogClassIcon = 32,
+	dialogInboxRows = 2,
+	dialogUseWidth = 48,
 }
 
 --- The client's own font objects, and what to use when one is missing.

@@ -27,6 +27,7 @@ local MinimapButton = ns.Minimap or require("Minimap")
 local Chip = ns.Chip or require("Chip")
 local TalentMarks = ns.TalentMarks or require("TalentMarks")
 local Score = ns.Score or require("Score")
+local BuildDialog = ns.BuildDialog or require("BuildDialog")
 
 local Options = {}
 Options.data = Data
@@ -60,25 +61,19 @@ end
 --- `companion/internal/addon/addon.go` owns that file; writing to it here
 --- would race the ten-minute sync and lose a build.
 ---
---- The companion always writes `code` for every build; a build with none is
---- a truncated or hand-edited file, not something the companion produces.
---- The addon does not own this file, so it reads it defensively anyway:
---- an entry with no `code` is skipped rather than counted. Only the first
---- usable entry is ever decoded (this only ever loads usable[1]); if it
---- fails, its refusal is returned as a second value and the count is 0.
---- Later entries are not attempted, so the count on success is the number
---- of entries that have a `code`, not a guarantee that each one decodes.
+--- It refreshes the item tooltip's weights and counts the builds the site sent this
+--- character that the player has not used or dismissed and that load (the build dialog's
+--- own "from the site" rows, BuildDialog.inboxRows). It never loads one: the player picks
+--- a build in the dialog (L3.4 ruling 4), so nothing changes the chip behind their back.
+--- With nothing to count, the first refusal met comes back as the second value.
 function Options.readInbox()
 	Options.refreshWeightsMessage()
-	local usable = Follow.inbox(ForeverSixtyInbox, Export.characterKey())
-	if #usable == 0 then
-		return 0
+	local rows, refusal = BuildDialog.inboxRows(Follow.inboxBuilds(ForeverSixtyInbox, Export.characterKey()),
+		Follow.dismissedSet(), Options.data)
+	if #rows == 0 then
+		return 0, refusal
 	end
-	local build, message = Follow.load(usable[1].code, Options.data, usable[1].name)
-	if build == nil then
-		return 0, message
-	end
-	return #usable
+	return #rows
 end
 
 --- Send the player's hello on GUILD, read against the data Options holds. True when sent,
@@ -105,7 +100,13 @@ end
 
 function Options.handle(input)
 	local command, rest = (input or ""):match("^(%S*)%s*(.*)$")
-	if command == "inbox" then
+	if command == "" or command == "copy" then
+		-- The build dialog (L3.4): bare /fs pastes a build in, /fs copy copies the character
+		-- out. It prints nothing; if it cannot show itself it prints the commands instead.
+		BuildDialog.data = Options.data
+		BuildDialog.open(command == "copy" and "copy" or "paste")
+		return {}
+	elseif command == "inbox" then
 		local count, message = Options.readInbox()
 		if count == 0 then
 			return { message or L.inboxEmpty }
@@ -151,8 +152,7 @@ function Options.handle(input)
 		end
 		return Theme.diagReport(broken, surfaces, info)
 	end
-	-- Bare /fs, and anything it does not know: the player's commands, until Lane L3.4's
-	-- build dialog is what bare /fs opens.
+	-- Anything /fs does not know: the player's commands.
 	return copy(L.slashHintLines)
 end
 
@@ -191,7 +191,8 @@ function Options.inspectLines()
 	return lines
 end
 
---- The slash command: every answer prints in chat, since no surface opens yet.
+--- The slash command: every answer prints in chat (bare /fs and /fs copy open the dialog
+--- and answer nothing).
 function Options.run(input)
 	local lines = Options.handle(input)
 	for _, line in ipairs(lines) do
@@ -200,9 +201,8 @@ function Options.run(input)
 	return lines
 end
 
---- What the minimap button, the compartment entry and the keybind do until
---- Lanes L3.4 and L3.5 give them the build dialog and the Settings page: print the command
---- list.
+--- Print the command list: an unknown /fs command, the build dialog's fallback when it
+--- cannot show itself, and the minimap button's right-click until L3.5's Settings page.
 function Options.showHint()
 	local lines = copy(L.slashHintLines)
 	for _, line in ipairs(lines) do
@@ -354,7 +354,10 @@ function Options.register()
 	-- auto-loads that file from the addon's own folder with no TOC entry.
 	BINDING_HEADER_FOREVERSIXTY = L.bindingHeader
 	BINDING_NAME_FOREVERSIXTY_TOGGLE = L.bindingToggle
-	FOREVERSIXTY_TOGGLE_WINDOW = Options.showHint
+	FOREVERSIXTY_TOGGLE_WINDOW = function()
+		BuildDialog.data = Options.data
+		return BuildDialog.toggle()
+	end
 
 	SLASH_FOREVERSIXTY1 = "/fs"
 	SLASH_FOREVERSIXTY2 = "/foreversixty"
@@ -362,8 +365,17 @@ function Options.register()
 
 	ItemTooltip.data = Options.data
 	ItemTooltip.register()
-	MinimapButton.open = Options.showHint
+	-- The minimap button and the compartment entry open the build dialog on its paste tab.
+	MinimapButton.open = function()
+		BuildDialog.data = Options.data
+		BuildDialog.open("paste")
+	end
 	MinimapButton.openSettings = Options.showHint
+	BuildDialog.data = Options.data
+	BuildDialog.fallback = Options.showHint
+	BuildDialog.afterUse = function()
+		Options.refreshSurfaces(Options.data)
+	end
 	Chip.afterChoice = function()
 		Options.refreshSurfaces(Options.data)
 	end

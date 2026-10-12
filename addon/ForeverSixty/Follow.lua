@@ -277,14 +277,18 @@ function Follow.dismissInbox(id)
 	return entry.dismissed
 end
 
+--- The inbox ids the current character has used or dismissed (Follow.dismissInbox), as a
+--- set. The build dialog's "from the site" rows leave these out.
+function Follow.dismissedSet()
+	return currentEntry().dismissed or {}
+end
+
 --- The first inbox build addressed to this character (Follow.inbox's own
---- rule) that has not been dismissed yet, or nil. This is the "build
---- arrived" banner's model source: a build the player already loaded or
---- closed the banner for never comes back.
+--- rule) that has not been dismissed yet, or nil. A build the player already
+--- loaded or dismissed never comes back.
 function Follow.pendingArrival(inbox)
 	local usable = Follow.inbox(inbox, Export.characterKey())
-	local entry = currentEntry()
-	local dismissed = entry.dismissed or {}
+	local dismissed = Follow.dismissedSet()
 	for _, build in ipairs(usable) do
 		if build.id ~= nil and not dismissed[build.id] then
 			return build
@@ -345,6 +349,36 @@ function Follow.inbox(inbox, key)
 		end
 	end
 	return usable
+end
+
+--- Every build the site sent the character at `key`, once per code: contract 3's `build`
+--- messages first (newest first, Follow.messages), then the older top-level `builds` list
+--- the companion still writes beside them (Follow.inbox). Each is { id, name, code }; the id
+--- is the `builds` entry's own when the same code is there (so a build dismissed before
+--- stays dismissed), else the code itself, since a `build` message carries no id. Pure.
+function Follow.inboxBuilds(inbox, key)
+	local legacy = Follow.inbox(inbox, key)
+	local legacyId = {}
+	for _, build in ipairs(legacy) do
+		if build.id ~= nil and legacyId[build.code] == nil then
+			legacyId[build.code] = build.id
+		end
+	end
+	local builds, seen = {}, {}
+	local function add(code, name)
+		if type(code) ~= "string" or code == "" or seen[code] then
+			return
+		end
+		seen[code] = true
+		builds[#builds + 1] = { id = legacyId[code] or code, name = name, code = code }
+	end
+	for _, message in ipairs(Follow.messages(inbox, key, "build")) do
+		add(message.code, message.name)
+	end
+	for _, build in ipairs(legacy) do
+		add(build.code, build.name)
+	end
+	return builds
 end
 
 --- Messages of `kind` addressed to `key`, or to no one, newest first --

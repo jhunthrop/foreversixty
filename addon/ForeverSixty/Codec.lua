@@ -770,7 +770,8 @@ function Codec.loadBuild(code, data)
 		return nil, refuse(L.codecUnknownClass, build.classSlug)
 	end
 	if compareBuilds(build.dataBuild, data.build) > 0 then
-		return nil, refuse(L.codecNewerBuild, build.dataBuild, data.build)
+		-- Plain words, no build ids (L3.4 ruling): the build dialog shows this as it stands.
+		return nil, L.codecNewerBuild
 	end
 	return build
 end
@@ -815,8 +816,9 @@ end
 --- before this addon was updated -- is silently dropped by
 --- Codec.inboxMessages, the same forward-compatibility rule Follow.inbox
 --- already applies to a build the addon does not recognise.
---- `last_raid` (contract 3) is read by the chip's last-night line.
-Codec.MESSAGE_TYPES = { upgrade = true, weights = true, guild = true, last_raid = true }
+--- `last_raid` (contract 3) is read by the chip's last-night line; `build` and `ack`
+--- by the build dialog (its "from the site" rows and its "Seen by the site" line).
+Codec.MESSAGE_TYPES = { upgrade = true, weights = true, guild = true, last_raid = true, build = true, ack = true }
 
 --- Messages of `kind` from `inbox.messages`, addressed to `key` or to no
 --- one in particular, in the order the companion wrote them. Pure: never

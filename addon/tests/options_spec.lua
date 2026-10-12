@@ -46,6 +46,7 @@ describe("Options", function()
 		helper.load("TalentMarks")
 		helper.load("Minimap")
 		helper.load("Comms")
+		helper.load("BuildDialog")
 		Options = helper.load("Options")
 		Options.data = DATA
 	end)
@@ -54,8 +55,14 @@ describe("Options", function()
 		mock.uninstall()
 	end)
 
-	it("answers a bare /fs with the command list until the build dialog lands", function()
-		assert.are.same(require("Locale").slashHintLines, Options.handle(""))
+	it("opens the build dialog on a bare /fs, paste mode, and on /fs copy, copy mode, printing nothing", function()
+		local opened = {}
+		require("BuildDialog").open = function(mode)
+			opened[#opened + 1] = mode
+		end
+		assert.are.same({}, Options.handle(""))
+		assert.are.same({}, Options.handle("copy"))
+		assert.are.same({ "paste", "copy" }, opened)
 	end)
 
 	it("has dropped the window's tab subcommands", function()
@@ -137,7 +144,7 @@ describe("Options", function()
 		assert.is_truthy(lines[1]:find("FS9", 1, true))
 	end)
 
-	it("loads the first inbox build at login and never writes the inbox", function()
+	it("never loads an inbox build at login: the dialog lists them, and the inbox is never written", function()
 		-- Nothing loaded yet: the before_each above reloads Follow fresh for
 		-- every example, so this proves the assertion below is not merely
 		-- true because an earlier example left a build behind.
@@ -151,11 +158,20 @@ describe("Options", function()
 		Options.readInbox()
 		assert.are.equal(before, _G.ForeverSixtyInbox)
 
-		-- Identity, not just truthiness: the loaded build must be the one
-		-- the inbox code decodes to, not any build.
-		local build = require("Follow").build
-		assert.are.equal("paladin", build.classSlug)
-		assert.are.equal(1, #build.order)
+		-- L3.4 ruling 4: the build waits in the dialog's "from the site" rows; the
+		-- chip and the talent marks keep following what the player chose.
+		assert.is_nil(require("Follow").build)
+	end)
+
+	it("stops counting an inbox build once it has been used or dismissed", function()
+		_G.ForeverSixtyInbox = {
+			generated_at = "2026-09-20T00:00:00Z",
+			builds = { { id = "a", name = "Deep Holy", code = "FSB1:1.60.1.69893:paladin:111:" } },
+			messages = { { type = "build", name = "Deep Holy", code = "FSB1:1.60.1.69893:paladin:111:" } },
+		}
+		assert.are.same({ string.format(require("Locale").inboxCount, 1) }, Options.handle("inbox"))
+		require("Follow").dismissInbox("a")
+		assert.are.same({ require("Locale").inboxEmpty }, Options.handle("inbox"))
 	end)
 
 	-- L3.3: Options stores Gear.currentWeights' answer on ItemTooltip.current; a
@@ -278,10 +294,10 @@ describe("Options", function()
 		assert.are.equal("/fs", SLASH_FOREVERSIXTY1)
 	end)
 
-	it("prints the command list through the chat prefix on a bare /fs, chat pref or not", function()
+	it("prints the command list through the chat prefix on an unknown /fs command, chat pref or not", function()
 		require("Prefs").setFlag("chat", false)
 		Options.register()
-		SlashCmdList["FOREVERSIXTY"]("")
+		SlashCmdList["FOREVERSIXTY"]("nonsense")
 
 		local Locale = require("Locale")
 		local Theme = require("Theme")
@@ -293,11 +309,23 @@ describe("Options", function()
 		assert.are.equal("|cffe5b955Forever Sixty|r: " .. Locale.slashHintLines[1], state.printed[1])
 	end)
 
-	it("has the minimap button, the compartment and the keybind print the command list", function()
+	it("has the minimap button and the compartment open the dialog, and the keybind toggle it", function()
+		local BuildDialog = require("BuildDialog")
+		local calls = {}
+		BuildDialog.open = function(mode)
+			calls[#calls + 1] = "open " .. tostring(mode)
+		end
+		BuildDialog.toggle = function()
+			calls[#calls + 1] = "toggle"
+		end
 		Options.register()
-		assert.are.equal(Options.showHint, require("Minimap").open)
+		require("Minimap").open()
+		_G.FOREVERSIXTY_TOGGLE_WINDOW()
+		assert.are.same({ "open paste", "toggle" }, calls)
+		-- Right-click is the Settings page's (L3.5); until then it prints the commands.
 		assert.are.equal(Options.showHint, require("Minimap").openSettings)
-		assert.are.equal(Options.showHint, _G.FOREVERSIXTY_TOGGLE_WINDOW)
+		-- The dialog falls back to the command list when it cannot show itself.
+		assert.are.equal(Options.showHint, BuildDialog.fallback)
 		Options.showHint()
 		local Locale = require("Locale")
 		assert.are.equal(#Locale.slashHintLines, #state.printed)

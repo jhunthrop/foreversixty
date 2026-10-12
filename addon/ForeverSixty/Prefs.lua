@@ -26,6 +26,9 @@ Prefs.DEFAULTS = {
 		point = "", x = 0, y = 0,
 		hiddenUntilLevel = 0, hiddenFor = "", pathChosen = "", pathFor = "",
 	},
+	-- The build dialog (spec section 4.10): `point` "" is the centre of the screen; a drag
+	-- by its title saves CENTER and the offset from the screen's centre.
+	dialog = { point = "", x = 0, y = 0 },
 	-- Guild badges on the roster and in tooltips, and this player's own hello on GUILD.
 	badges = true,
 	broadcast = true,
@@ -49,7 +52,7 @@ Prefs.DEFAULTS = {
 }
 
 --- The sections resetPositions puts back.
-Prefs.POSITION_SECTIONS = { "chip", "minimap" }
+Prefs.POSITION_SECTIONS = { "chip", "minimap", "dialog" }
 
 --- The fields inside those sections that are a placement rather than a
 --- choice. `shown`, `combatHide`, `hiddenUntilLevel` and `pathChosen` are
@@ -139,7 +142,7 @@ function Prefs.setFlag(name, value)
 	return value
 end
 
---- Put the chip and the minimap button back where they started.
+--- Put the chip, the minimap button and the build dialog back where they started.
 function Prefs.resetPositions()
 	local ui = Prefs.current()
 	local fresh = Prefs.withDefaults(nil)

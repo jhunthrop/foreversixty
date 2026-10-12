@@ -437,6 +437,13 @@ function Export.outboxName(name, realm)
 	return name .. "-" .. compact
 end
 
+--- This character's name as the outbox writes it (Export.outboxName), so the build
+--- dialog can tell whether the outbox it reads is this character's.
+function Export.outboxCharacter()
+	local name, realm = characterParts()
+	return Export.outboxName(name, realm)
+end
+
 --- Write ForeverSixtyDB.outbox at logout, beside Export.save: the export (`code` when the
 --- caller already built it), any pending sim request, and the guild's members this session
 --- heard. nil and the reason when there is no export to carry.

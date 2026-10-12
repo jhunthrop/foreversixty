@@ -27,6 +27,7 @@ describe("the keybind", function()
 			helper.load("ItemTooltip")
 			helper.load("Chip")
 			helper.load("Minimap")
+			helper.load("BuildDialog")
 			Options = helper.load("Options")
 			Options.data = { build = "1.60.1.69893", classes = {}, weights = {} }
 		end)
@@ -41,9 +42,14 @@ describe("the keybind", function()
 			assert.are.equal(L.bindingToggle, _G.BINDING_NAME_FOREVERSIXTY_TOGGLE)
 		end)
 
-		it("prints the command list through the global the binding calls, until the build dialog lands", function()
+		it("toggles the build dialog through the global the binding calls", function()
+			local toggled = 0
+			require("BuildDialog").toggle = function()
+				toggled = toggled + 1
+			end
 			Options.register()
-			assert.are.same(L.slashHintLines, _G.FOREVERSIXTY_TOGGLE_WINDOW())
+			_G.FOREVERSIXTY_TOGGLE_WINDOW()
+			assert.are.equal(1, toggled)
 		end)
 
 		it("leaves no binding globals behind for the next spec file", function()

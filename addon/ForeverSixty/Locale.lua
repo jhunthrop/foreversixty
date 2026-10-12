@@ -9,8 +9,8 @@ local L = {
 	-- Chrome
 	addonName = "Forever Sixty",
 	-- Bare /fs: the commands a player uses, a few words each (L3.1 fix round 1).
-	-- Lane L3.4 adds "/fs: paste or copy a build" at the top once the dialog lands.
 	slashHintLines = {
+		"/fs: paste a build or copy your character",
 		"/fs chip: show or hide the chip",
 		"/fs inspect: gear and talents of your target",
 		"/fs diag: what is not working",
@@ -18,11 +18,13 @@ local L = {
 	},
 	-- /fs help: every command.
 	slashHelpLines = {
+		"/fs: paste a build or copy your character",
+		"/fs copy: copy your character for the site",
 		"/fs chip: show or hide the chip",
 		"/fs inspect: gear and talents of your target, or your whole group",
 		"/fs diag: what is not working",
 		"/fs diag verbose: also what the addon found out about this client",
-		"/fs inbox: builds waiting for you from the site",
+		"/fs inbox: how many builds the site sent you",
 		"/fs hello: say hello to your guild's Forever Sixty players",
 		"/fs seen: who said hello in the last hour",
 		"/fs record on, off, status or clear: record a fight for the simulator",
@@ -151,7 +153,8 @@ local L = {
 	codecFieldDataBuild = "data build",
 	codecFieldClass = "class",
 	codecTooLong = "That code is too long to read.",
-	codecNewerBuild = "That code is for data build %s; this addon carries %s. Update the addon.",
+	-- No build ids (L3.4 ruling): the build dialog shows this reason as it stands.
+	codecNewerBuild = "That code is for a newer patch than this addon. Update the addon.",
 	codecUnknownClass = "That code is for a %s; this addon carries no tree for that class.",
 
 	-- Follow
@@ -257,7 +260,7 @@ local L = {
 
 	-- Inbox
 	inboxEmpty = "No builds waiting. Send one from foreversixty.gg.",
-	inboxCount = "%d build(s) waiting from the site.",
+	inboxCount = "%d build(s) from the site waiting. Type /fs to use one.",
 
 	-- Measurement recorder (/fs record)
 	recorderHelp = "/fs record on | off | status | clear -- records energy, swings, Windfury and mana "
@@ -767,6 +770,41 @@ local L = {
 		["warrior-protection"] = "Shield and plate, Shield Slam, holds attention",
 	},
 }
+
+-- The build dialog (spec section 4.10): the one frame of the addon's own.
+L.dialogTabPaste = "Paste a build"
+-- The site's own words (L8.2): "In game, type /fs, press Copy my character, then paste it here."
+-- The copy tab and the copy button both read this.
+L.dialogCopy = "Copy my character"
+-- The paste box's placeholder, and its one button once a code loads.
+L.dialogPaste = "Paste a build code"
+L.dialogUse = "Use this build"
+-- The preview's second line: "Warrior · Arms 31 / Fury 20 · 51 points".
+L.dialogPreview = "%s · %s · %d points"
+L.dialogPreviewOne = "%s · %s · 1 point"
+L.dialogPreviewNoPoints = "%s · no talent points"
+-- One tree in the split: "Arms 31".
+L.dialogSplitPart = "%s %d"
+L.dialogSplitSeparator = " / "
+-- One chat line after a build is used.
+L.dialogFollowing = "Now following %s."
+-- A build the site sent, above the paste box, with its own button.
+L.dialogInboxRow = "%s · from the site"
+L.dialogInboxUse = "Use"
+-- The copy tab: under the box, under the button, then what the companion does.
+L.dialogCopyKeys = "Selected: press Ctrl+C to copy it."
+L.dialogCopied = "Copied %s, paste it on the site"
+L.dialogSeen = "Seen by the site %s"
+L.dialogCompanionLine = "The companion, the small app on your PC, sends this for you when you log out."
+-- The ack's sim request state (contract 3, `sim_request_state`); any other value shows nothing.
+L.dialogSimState = {
+	queued = "Sim queued",
+	needs_premium = "Sim needs a premium account",
+	duplicate = "Sim already running this hour",
+	invalid = "Sim request invalid",
+}
+-- The dialog's render check (spec section 2.4).
+L.diagDialogOff = "The build dialog did not open on screen; /fs printed the commands instead."
 
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel

@@ -184,7 +184,15 @@ describe("Prefs, the v2 keys", function()
 	end)
 
 	it("puts the chip back beside the minimap on Reset positions", function()
-		assert.are.same({ "chip", "minimap" }, Prefs.POSITION_SECTIONS)
+		assert.are.same({ "chip", "minimap", "dialog" }, Prefs.POSITION_SECTIONS)
+	end)
+
+	it("opens the build dialog in the middle of the screen until it is dragged, and again on Reset", function()
+		-- L3.4: an empty point is the centre of the screen; a drag saves CENTER and the offset.
+		assert.are.same({ point = "", x = 0, y = 0 }, Prefs.withDefaults(nil).dialog)
+		_G.ForeverSixtyDB = { ui = { dialog = { point = "CENTER", x = 40, y = -12 } } }
+		Prefs.resetPositions()
+		assert.are.same({ point = "", x = 0, y = 0 }, _G.ForeverSixtyDB.ui.dialog)
 	end)
 
 	it("turns the badges and the broadcast on by default", function()
