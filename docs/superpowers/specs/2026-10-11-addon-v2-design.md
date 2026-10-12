@@ -261,8 +261,11 @@ has your character from yesterday 22:30. Yours is newer." when older, and "Waiti
 see this copy. It answers at your next login." after a copy until a newer ack arrives; a queued sim names the copy it
 is for: "Sim queued for the 14:03 copy." today, "Sim queued for yesterday's 20:00 copy.", "Sim
 queued for the 9 Oct 20:00 copy."; once the sim's weights are in use (the chip and the tooltip
-both score by them), "Sim done from the 10 Oct 20:00 copy · your sim weights are in use" (or "Sim
-done from an earlier copy · a new sim is queued") and "Your next step: <the chip's own line>". While
+both score by them), "Sim done · your sim weights are in use" and "Your next step: <the chip's own
+line>"; the request-state lines show only while no sim weights are in use. When the weights message
+carries its `generated_at` (L6.11), the line names its copy ("Sim done from the 10 Oct 20:00 copy ·
+your sim weights are in use"), and "· a new sim is queued" only when the ack's `requested_at` is
+later. While
 the site has sent builds, the paste tab carries a muted "1 waiting" badge in its own slot in both
 modes, so the tabs never move; Escape on a site row's preview goes back to the empty dialog. With no ack ever seen: "No companion
 found. The companion is a small app on your computer that sends this when you log out." and "Or

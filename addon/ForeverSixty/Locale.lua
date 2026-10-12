@@ -855,9 +855,13 @@ L.dialogSimQueued = "Sim queued. The result arrives when you next log in."
 -- While the companion's sim weights are what the tooltip and the chip score by.
 L.dialogSimDone = "Sim done · your sim weights are in use"
 -- The copy the sim is from (the ack's export time), and what the chip says to do next.
-L.dialogSimDoneFrom = "Sim done from the %s copy · your sim weights are in use"
-L.dialogSimDoneYesterday = "Sim done from yesterday's %s copy · your sim weights are in use"
-L.dialogSimDoneNewQueued = "Sim done from an earlier copy · a new sim is queued"
+-- Only once the weights message carries its `generated_at` (the API's L6.11): "the 14:03 copy",
+-- "yesterday's 20:00 copy", "the 9 Oct 20:00 copy"; "a new sim is queued" when the ack's newest
+-- request is later than that.
+L.dialogSimDoneFrom = "Sim done from %s · your sim weights are in use"
+L.dialogSimDoneQueued = "Sim done from %s · a new sim is queued"
+L.dialogCopyThe = "the %s copy"
+L.dialogCopyYesterday = "yesterday's %s copy"
 L.dialogNextStep = "Your next step: %s"
 L.dialogSimState = {
 	needs_premium = "Sim needs a premium account",

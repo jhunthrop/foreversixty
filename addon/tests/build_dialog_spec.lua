@@ -348,7 +348,7 @@ describe("BuildDialog, paste mode's model", function()
 		local measure = function(text)
 			return utf8.len(text) * 5
 		end
-		assert.is_true(BuildDialog.NAME_FLOOR > 1)
+		assert.are.equal(8, BuildDialog.NAME_FLOOR)
 		local name = "Abcdefghijklmnop"
 		local floor = name:sub(1, BuildDialog.NAME_FLOOR)
 		local expected = string.format(L.dialogReplacesDiffers, floor .. L.ellipsis, 1, "Improved Heroic Strike")
@@ -610,24 +610,38 @@ describe("BuildDialog, copy mode's model", function()
 			model({ ack = ACK, savedAt = "2026-11-04 14:05" }).seen)
 	end)
 
-	it("names the copy the sim is from and the chip's next step while sim weights are in use (fix 6, 2)", function()
-		local done = model({ ack = ACK, simInUse = true, nextStep = "Take Deflection (1 of 2)" })
-		assert.are.equal("Sim done from the 14:03 copy · your sim weights are in use", done.sim)
+	it("says only that the sim is done while its weights are in use and the message is undated (fix 7, 1)", function()
+		-- Today's weights message carries no time and no request says "done": no copy is named
+		-- and a lingering "queued" never reads as a new sim (fix round 7 ruling).
+		local queued = { export_seen_at = ACK.export_seen_at, sim_request_state = "queued" }
+		local done = model({ ack = queued, simInUse = true, nextStep = "Take Deflection (1 of 2)" })
+		assert.are.equal("Sim done · your sim weights are in use", done.sim)
 		assert.are.equal("Your next step: Take Deflection (1 of 2)", done.simNext)
-		local yesterday = model({ ack = { export_seen_at = "2026-11-03T20:00:00Z" }, simInUse = true })
-		assert.are.equal("Sim done from yesterday's 20:00 copy · your sim weights are in use", yesterday.sim)
-		assert.is_nil(yesterday.simNext)
+		assert.are.equal(L.dialogSimDone, model({ ack = ACK, simInUse = true }).sim)
 		assert.are.equal(L.dialogSimDone, model({ simInUse = true }).sim)
 		assert.is_nil(model({ simInUse = true, nextStep = "" }).simNext)
-		local queued = { export_seen_at = ACK.export_seen_at, sim_request_state = "queued" }
+		-- The request's own lines only while no sim weights are in use.
 		assert.are.equal("Sim queued for the 14:03 copy.", model({ ack = queued, simInUse = false }).sim)
 		assert.is_nil(model({ ack = queued }).simNext)
 	end)
 
-	it("says a new sim is queued while the earlier one's weights are in use (fix 6, 11)", function()
-		local queued = { export_seen_at = ACK.export_seen_at, sim_request_state = "queued" }
-		assert.are.equal("Sim done from an earlier copy · a new sim is queued", model({ ack = queued, simInUse = true }).sim)
-	end)
+	it("names the copy, and a newer request, once the weights message is dated (fix 7, 1; lights up with L6.11)",
+		function()
+			local today = model({ ack = ACK, simInUse = true, simGeneratedAt = "2026-11-04T14:03:00Z" })
+			assert.are.equal("Sim done from the 14:03 copy · your sim weights are in use", today.sim)
+			local yesterday = model({ simInUse = true, simGeneratedAt = "2026-11-03T20:00:00Z" })
+			assert.are.equal("Sim done from yesterday's 20:00 copy · your sim weights are in use", yesterday.sim)
+			local older = model({ simInUse = true, simGeneratedAt = "2026-10-09T20:00:00Z" })
+			assert.are.equal("Sim done from the 9 Oct 20:00 copy · your sim weights are in use", older.sim)
+			local newer = { export_seen_at = ACK.export_seen_at, sim_request_state = "queued",
+				requested_at = "2026-11-04T14:30:00Z" }
+			assert.are.equal("Sim done from the 14:03 copy · a new sim is queued",
+				model({ ack = newer, simInUse = true, simGeneratedAt = "2026-11-04T14:03:00Z" }).sim)
+			local stale = { export_seen_at = ACK.export_seen_at, sim_request_state = "queued",
+				requested_at = "2026-11-04T13:00:00Z" }
+			assert.are.equal("Sim done from the 14:03 copy · your sim weights are in use",
+				model({ ack = stale, simInUse = true, simGeneratedAt = "2026-11-04T14:03:00Z" }).sim)
+		end)
 
 	it("says the site has an older character when the save is newer than the ack", function()
 		assert.are.equal(string.format(L.dialogSiteOlder, "14:03"),

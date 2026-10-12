@@ -446,6 +446,8 @@ function Gear.currentWeights(data, spec, inbox, characterKey)
 			-- (L1.3 carry-over): a sim that names none counts in score.
 			dpsPerPoint = message.dps_per_point,
 			tag = "sim", caps = caps, healing = healing, spec = spec,
+			-- When the sim ran (contract 3, once the API sends it): the build dialog names its copy.
+			generatedAt = message.generated_at,
 			reference = perPoint ~= nil and perPoint.reference or Gear.referenceStat(simWeights),
 		}
 	end

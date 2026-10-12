@@ -310,6 +310,38 @@ describe("Progress.bagUpgrades", function()
 		assert.are.same({}, Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped, nil, nil, current))
 	end)
 
+	-- L3.4 fix 7, 2: the chip's own wiring (Chip.scoredUpgrades): Gear.currentWeights, the sim's
+	-- DPS per point while a weights message is in use, else the shipped one.
+	describe("the chip's bag upgrades", function()
+		local Chip = require("Chip")
+		local KEY = "US/Ashbringer/Bob"
+		local helm = function()
+			return { bagItem(11, "Strong Helm", "INVTYPE_HEAD", 15) }
+		end
+
+		it("scores by the sim's weights while a weights message is in use", function()
+			local shipped = Chip.scoredUpgrades(DATA, "warrior-arms", nil, nil, KEY, build, ARMS_RANKS, helm(), equipped, 20)
+			assert.are.equal(1, #shipped)
+			local inbox = { messages = { { type = "weights", spec = "warrior-arms",
+				weights = { { stat = "stamina", weight = 1 } } } } }
+			assert.are.same({}, Chip.scoredUpgrades(DATA, "warrior-arms", nil, inbox, KEY, build, ARMS_RANKS, helm(),
+				equipped, 20))
+		end)
+
+		it("counts in the sim's DPS per point, not the shipped one", function()
+			local inbox = { messages = { { type = "weights", spec = "warrior-arms", dps_per_point = 0.5,
+				weights = { { stat = "strength", weight = 1 } } } } }
+			local found = Chip.scoredUpgrades(DATA, "warrior-arms", { dps = 3 }, inbox, KEY, build, ARMS_RANKS, helm(),
+				equipped, 20)
+			assert.are.equal(1, #found)
+			assert.are.equal("dps", found[1].unit)
+			assert.are.equal(5, found[1].delta)
+			local plain = Chip.scoredUpgrades(DATA, "warrior-arms", { dps = 3 }, nil, KEY, build, ARMS_RANKS, helm(),
+				equipped, 20)
+			assert.are.equal(60, plain[1].delta)
+		end)
+	end)
+
 	it("never lists an item that is already worn", function()
 		local bag = { bagItem(10, "Worn Helm", "INVTYPE_HEAD", 50) }
 		local found = Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped)

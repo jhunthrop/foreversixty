@@ -514,6 +514,38 @@ describe("BuildDialog, round 6 frame checks", function()
 		local color = lastCall(paste.badge, "SetTextColor")
 		local r, g, b = Theme.rgb(Theme.HEX.muted)
 		assert.are.same({ r, g, b }, { color[1], color[2], color[3] })
+		-- Fix 7, 3: both tabs' x and the badge's gap.
+		local S = Theme.SIZES
+		assert.are.same({ "TOPLEFT", BuildDialog.frame, "TOPLEFT", S.padding, -S.titleBarHeight },
+			{ lastCall(paste, "SetPoint")[1], lastCall(paste, "SetPoint")[2], lastCall(paste, "SetPoint")[3],
+				lastCall(paste, "SetPoint")[4], lastCall(paste, "SetPoint")[5] })
+		assert.are.same({ "LEFT", paste, "RIGHT", S.gap * 2, 0 }, { anchor[1], anchor[2], anchor[3], anchor[4], anchor[5] })
+		local badgeAt = lastCall(paste.badge, "SetPoint")
+		assert.are.same({ "LEFT", paste.foreverSixtyLabel, "RIGHT", S.gap * 2, 0 },
+			{ badgeAt[1], badgeAt[2], badgeAt[3], badgeAt[4], badgeAt[5] })
+	end)
+
+	it("keeps both tabs where they are in both modes with no build waiting (fix 7, 3)", function()
+		_G.ForeverSixtyInbox = nil
+		BuildDialog.open("paste")
+		local paste, copy = BuildDialog.tabs.paste, BuildDialog.tabs.copy
+		local width = lastCall(paste, "SetWidth")[1]
+		local anchor = lastCall(copy, "SetPoint")
+		assert.is_false(paste.badge:IsShown())
+		BuildDialog.setMode("copy")
+		assert.are.equal(width, lastCall(paste, "SetWidth")[1])
+		assert.are.same(anchor, lastCall(copy, "SetPoint"))
+		assert.is_false(paste.badge:IsShown())
+	end)
+
+	it("starts a row's text at the content margin and draws its edge outside the row (fix 7, 3)", function()
+		BuildDialog.open("paste")
+		local row = BuildDialog.paste.rows[1]
+		local at = lastCall(row.label, "SetPoint")
+		assert.are.same({ "LEFT", row.frame, "LEFT", 0, 0 }, { at[1], at[2], at[3], at[4], at[5] })
+		local edge = lastCall(row.edge, "SetPoint")
+		assert.are.equal(row.frame, edge[2])
+		assert.is_true(edge[4] < 0)
 	end)
 
 	it("lets a paste replace a row's preview, and Escape clear it to the empty dialog (fix 6, 6)", function()
@@ -534,6 +566,10 @@ describe("BuildDialog, round 6 frame checks", function()
 		assert.is_nil(BuildDialog.verdict)
 		assert.is_true(BuildDialog.frame:IsShown())
 		assert.are.equal("", box:GetText())
+		-- Fix 7, 3: the box keeps the keyboard, and a second Escape closes.
+		assert.is_true(box:HasFocus())
+		box:GetScript("OnEscapePressed")(box)
+		assert.is_false(BuildDialog.frame:IsShown())
 	end)
 
 	it("keeps the copy box's height across Ctrl+C with an ack, older or newer (fix 6, 7)", function()

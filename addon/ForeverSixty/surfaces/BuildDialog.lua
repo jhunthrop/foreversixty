@@ -334,8 +334,8 @@ end
 --- The build name keeps at least this many bytes before the Replaces line drops the talent's tree.
 BuildDialog.NAME_FLOOR = 8
 
---- The Replaces line: "Replaces Arms raid · same points and gear" / "· same points, different
---- gear list" / "· first differs at point N: <talent (tree)>", fitted to `width` by cutting the
+--- The Replaces line: "Replaces Arms raid · same points and gear · nothing changes" / "· same
+--- points, different gear list" / "· first differs at point N: <talent (tree)>", fitted to `width` by cutting the
 --- build name first, then dropping the talent's tree, never the talent itself.
 local function replacesLine(raw, at, parts, sameFormat, measure, width)
 	local function line(bytes, talent)
@@ -720,32 +720,31 @@ local function simLine(ack, clock)
 	return L.dialogSimState[state]
 end
 
---- "Sim done from the 10 Oct 20:00 copy · your sim weights are in use" (the ack's export time),
---- "… from an earlier copy · a new sim is queued" while a newer request waits, or the plain line
---- with no readable ack.
-local function simDoneLine(ack, clock)
-	if ack == nil then
+--- "Sim done · your sim weights are in use" while the weights message is undated (today's
+--- contract). With its `generated_at`: "Sim done from the 10 Oct 20:00 copy · …", and "· a new
+--- sim is queued" when the ack's `requested_at` is later than it.
+local function simDoneLine(generatedAt, ack, clock)
+	local generated = BuildDialog.parseUtc(generatedAt)
+	if generated == nil then
+		-- Today's weights message carries no time, and a request's "queued" stays as its state
+		-- after the sim is done: name no copy and no new sim (fix round 7 ruling).
 		return L.dialogSimDone
 	end
-	if ack.sim_request_state == "queued" then
-		return L.dialogSimDoneNewQueued
+	local kind, time, dated = whenParts(generated, clock)
+	local copy = kind == "yesterday" and string.format(L.dialogCopyYesterday, time)
+		or string.format(L.dialogCopyThe, dated or time)
+	local requested = type(ack) == "table" and BuildDialog.parseUtc(ack.requested_at) or nil
+	if requested ~= nil and requested > generated then
+		return string.format(L.dialogSimDoneQueued, copy)
 	end
-	local seen = BuildDialog.parseUtc(ack.export_seen_at)
-	if seen == nil then
-		return L.dialogSimDone
-	end
-	local kind, time, dated = whenParts(seen, clock)
-	if kind == "yesterday" then
-		return string.format(L.dialogSimDoneYesterday, time)
-	end
-	return string.format(L.dialogSimDoneFrom, dated or time)
+	return string.format(L.dialogSimDoneFrom, copy)
 end
 
 --- The whole of copy mode: the box's text and whether it is selected, the lead line under
 --- the tabs (the copy claim, in the gain green, only after a real Ctrl+C, `copiedAt`), the
 --- ack's lines, and the companion's explanation when no ack was ever seen. No button: the
 --- box itself is what the player copies from (fix round 2, item 4).
---- `input` = { code, reason, copiedAt, ack, savedAt, clock, simInUse, nextStep }.
+--- `input` = { code, reason, copiedAt, ack, savedAt, clock, simInUse, simGeneratedAt, nextStep }.
 function BuildDialog.copyModel(input)
 	local clock = input.clock
 	local code = input.code or nil
@@ -767,7 +766,7 @@ function BuildDialog.copyModel(input)
 	-- line as the next step (`nextStep`); else the request's state.
 	local sim, simNext
 	if input.simInUse then
-		sim = simDoneLine(ack, clock)
+		sim = simDoneLine(input.simGeneratedAt, ack, clock)
 		if type(input.nextStep) == "string" and input.nextStep ~= "" then
 			simNext = string.format(L.dialogNextStep, input.nextStep)
 		end
@@ -1059,7 +1058,10 @@ local function simWeightsInUse()
 		return ns.ItemTooltip or require("ItemTooltip")
 	end)
 	local current = ok and type(tooltip) == "table" and tooltip.current or nil
-	return type(current) == "table" and current.tag == "sim"
+	if type(current) == "table" and current.tag == "sim" then
+		return true, current.generatedAt
+	end
+	return false
 end
 
 --- The chip's own line now, whatever it says (a talent, an item, or its idle line), or nil.
@@ -2037,6 +2039,7 @@ function BuildDialog.drawCopy(select)
 	end
 	BuildDialog.exportCode = code
 	local name = outboxName()
+	local simInUse, simGeneratedAt = simWeightsInUse()
 	local model = BuildDialog.copyModel({
 		code = code,
 		reason = reason,
@@ -2044,7 +2047,8 @@ function BuildDialog.drawCopy(select)
 		ack = currentAck(),
 		savedAt = BuildDialog.savedAtFor(ForeverSixtyDB, name),
 		clock = liveClock(),
-		simInUse = simWeightsInUse(),
+		simInUse = simInUse,
+		simGeneratedAt = simGeneratedAt,
 		nextStep = chipLine(),
 	})
 	local content = copy.content
