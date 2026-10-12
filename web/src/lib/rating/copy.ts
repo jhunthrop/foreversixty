@@ -2,7 +2,6 @@
 // Every visible string the rating surfaces use, in the site's honest-copy voice: no
 // exclamation marks, no "AI", no claim the engine does not make. Strings quoted directly
 // from spec §6.4/§1.5 are copied verbatim; the rest follow their tone.
-import { scoreCopy } from '../score/copy';
 
 /** Spec §6.4's own worked-example threshold for showing the character trend sparkline —
  *  a display-only choice (Ruling 7), not a server-side minimum. */
@@ -25,15 +24,12 @@ export const ratingCopy = {
    *  fight's row (L8.5 ruling 1). */
   weakestPartLead: 'Weakest part of a fight:',
   weakestPartEnd: '.',
-  /** The card's verdict (L8.5 ruling 1): "Rated 65 of 100 over the last 6 fights", then, when
-   *  the character has a Forever Score, " · counts toward Parses 540 of 600" in the score
-   *  card's own words for that row. */
+  /** The card's one line (L8.5 ruling 1, fix round 1 items 1 and 2): the number is the latest
+   *  fight's rating, never an average, and the count is how many fights are rated. It names
+   *  nothing of the Forever Score: its Parses part comes from parse percentiles, not from this
+   *  rating. "Latest fight rated 65 of 100 · 6 fights rated". */
   verdict: (overall: number, count: number): string =>
-    count === 1
-      ? `Rated ${overall} of 100 on the last fight`
-      : `Rated ${overall} of 100 over the last ${count} fights`,
-  countsToward: (part: string, points: number, max: number): string =>
-    `counts toward ${part} ${scoreCopy.ofMax(points, max)}`,
+    `Latest fight rated ${overall} of 100 · ${count} ${count === 1 ? 'fight' : 'fights'} rated`,
   /** The trend sparkline's accessible name and its table (L8.5 ruling 1). */
   trendLabel: (count: number, first: number, firstDate: string, last: number, lastDate: string): string =>
     `Performance Rating, last ${count} fights: ${first} on ${firstDate}, ${last} on ${lastDate}`,

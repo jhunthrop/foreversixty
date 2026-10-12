@@ -197,8 +197,14 @@ describe('/ratings Forever Score section', () => {
     const sample = rating.slice(rating.indexOf('data-testid="ratings-rating-sample"'));
     expect(sample).toMatch(/data-testid="character-rating-overall">65</);
     expect(sample).toContain('>of 100<');
-    expect(sample).toMatch(/data-testid="rating-card-verdict">\s*Rated 65 of 100 over the last 6 fights\s*</);
+    expect(sample).toMatch(
+      /data-testid="rating-card-verdict">\s*Latest fight rated 65 of 100 · 6 fights rated\s*</,
+    );
     expect(sample).toContain('data-testid="rating-trend"');
+    // Fix round 1 item 5: the sample sits in a 560px column, so it stays one column at any
+    // window width.
+    const columns = /<div class="([^"]*)" data-testid="rating-card-columns"/.exec(sample)?.[1] ?? '';
+    expect(columns.split(' ').filter((token) => token.startsWith('xl:'))).toEqual([]);
     expect(sample).toMatch(/class="pill pill-sample[^"]*">Sample</);
   });
 

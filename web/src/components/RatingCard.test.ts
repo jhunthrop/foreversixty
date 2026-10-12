@@ -1,11 +1,11 @@
 // web/src/components/RatingCard.test.ts
 // Fix round 2 item 6: the Performance Rating in the Forever Score card's shell -- "65 of 100",
 // the labelled sparkline with the data's own count, and the weakest part of a fight.
+import { readdirSync, readFileSync, statSync } from 'node:fs';
+import path from 'node:path';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import { ratingCopy } from '../lib/rating/copy';
-import { scoreCopy } from '../lib/score/copy';
-import { COMPONENT_MAX } from '../lib/score/score';
 import RatingCard from './RatingCard.svelte';
 
 const TREND = [56, 58, 60, 61, 63, 65].map((overall, index) => ({
@@ -107,7 +107,7 @@ describe('RatingCard', () => {
   // same pure model as the score's ("Up 9 since 4 Dec", the newest date at the right).
   it('splits into two columns from 1280, the sparkline filling the right one (L8.5 ruling 1)', () => {
     const { body } = render(RatingCard, {
-      props: { overall: 65, trend: TREND, sampleSize: 6, worst: 'activity', parses: 540 },
+      props: { overall: 65, trend: TREND, sampleSize: 6, worst: 'activity' },
     });
     expect(classOf(body, 'rating-card-columns')).toEqual(
       expect.arrayContaining(['flex', 'flex-col', 'xl:grid', 'xl:grid-cols-2', 'xl:gap-x-8']),
@@ -146,38 +146,59 @@ describe('RatingCard', () => {
     expect(body).not.toContain('rating-card-trend-label');
   });
 
-  it('says one verdict that agrees with the score card’s Parses row in words (L8.5 ruling 1)', () => {
-    expect(ratingCopy.verdict(65, 6)).toBe('Rated 65 of 100 over the last 6 fights');
-    expect(ratingCopy.verdict(65, 1)).toBe('Rated 65 of 100 on the last fight');
-    expect(ratingCopy.countsToward('Parses', 540, 600)).toBe('counts toward Parses 540 of 600');
+  // L8.5 fix round 1 items 1 and 2: the line says what the number is -- the latest fight's
+  // rating -- and how many fights are rated, never an average over them; and it makes no claim
+  // about the Forever Score's Parses, which comes from parse percentiles, not this rating.
+  it('says the latest fight’s rating and how many fights are rated (fix round 1 items 1 and 2)', () => {
+    expect(ratingCopy.verdict(65, 6)).toBe('Latest fight rated 65 of 100 · 6 fights rated');
+    expect(ratingCopy.verdict(65, 1)).toBe('Latest fight rated 65 of 100 · 1 fight rated');
+    expect('countsToward' in ratingCopy).toBe(false);
     const { body } = render(RatingCard, {
-      props: { overall: 65, trend: TREND, sampleSize: 6, worst: 'activity', parses: 540 },
+      props: { overall: 65, trend: TREND, sampleSize: 6, worst: 'activity' },
     });
     const verdict = /<p class="([^"]*)" data-testid="rating-card-verdict">([\s\S]*?)<\/p>/.exec(body);
-    expect(text(verdict?.[2] ?? '')).toBe(
-      'Rated 65 of 100 over the last 6 fights · counts toward Parses 540 of 600',
-    );
-    // "540 of 600" is the score card's own words for the Parses row.
-    expect(text(verdict?.[2] ?? '')).toContain(scoreCopy.ofMax(540, COMPONENT_MAX.parses));
+    expect(text(verdict?.[2] ?? '')).toBe('Latest fight rated 65 of 100 · 6 fights rated');
     expect(verdict?.[1].split(' ')).toEqual(expect.arrayContaining(['text-[14px]']));
-    // No Forever Score part to name (the /ratings sample, an API without one): the first half.
-    const alone = render(RatingCard, { props: { overall: 65, trend: TREND, sampleSize: 6 } }).body;
-    expect(text(/data-testid="rating-card-verdict">([\s\S]*?)<\/p>/.exec(alone)?.[1] ?? '')).toBe(
-      'Rated 65 of 100 over the last 6 fights',
-    );
-    // No overall, no verdict.
+    expect(body).not.toMatch(/counts toward|Parses/);
+    // No overall, no line.
     const none = render(RatingCard, { props: { overall: null, trend: TREND, sampleSize: 6 } }).body;
     expect(none).not.toContain('rating-card-verdict');
   });
 
-  it('keeps the verdict beside the too-few line when there is no sparkline yet', () => {
+  it('keeps the line beside the too-few line when there is no sparkline yet', () => {
     const few = render(RatingCard, {
-      props: { overall: 50, trend: TREND.slice(0, 2), sampleSize: 2, parses: 540 },
+      props: { overall: 50, trend: TREND.slice(0, 2), sampleSize: 2 },
     }).body;
     expect(text(/data-testid="rating-card-verdict">([\s\S]*?)<\/p>/.exec(few)?.[1] ?? '')).toBe(
-      'Rated 50 of 100 over the last 2 fights · counts toward Parses 540 of 600',
+      'Latest fight rated 50 of 100 · 2 fights rated',
     );
     expect(few.indexOf('character-rating-too-few')).toBeGreaterThan(few.indexOf('rating-card-side'));
+  });
+
+  it('leaves no "counts toward" claim in any string the site shows (fix round 1 item 2)', () => {
+    const root = path.resolve(import.meta.dirname, '..');
+    const sources = (dir: string): string[] =>
+      readdirSync(dir).flatMap((name) => {
+        const full = path.join(dir, name);
+        if (statSync(full).isDirectory()) return sources(full);
+        return /\.(ts|svelte|astro|md|mdx|html)$/.test(name) && !/\.test\.ts$/.test(name) ? [full] : [];
+      });
+    // A string literal or markup text that says it; a code comment about scrollWidth does not
+    // (SimTabs.astro: "trailing padding counts toward scrollWidth").
+    const claim = /(['"`>][^'"`<\n]*counts toward|counts toward (Parses|the Forever Score))/i;
+    const offenders = sources(root).filter((file) => claim.test(readFileSync(file, 'utf8')));
+    expect(offenders).toEqual([]);
+  });
+
+  // Fix round 1 item 5: the split keys off the card's own room, not the window: /ratings mounts
+  // the sample in a 560px column, where two columns from a 1280px window would be cramped.
+  it('stays one column when its container is narrow: columns={false} (fix round 1 item 5)', () => {
+    const { body } = render(RatingCard, {
+      props: { overall: 65, trend: TREND, sampleSize: 6, sample: true, columns: false },
+    });
+    const columns = classOf(body, 'rating-card-columns');
+    expect(columns).toEqual(expect.arrayContaining(['flex', 'flex-col']));
+    expect(columns.filter((token) => token.startsWith('xl:'))).toEqual([]);
   });
 
   it('links the weakest part to its fight’s row in "Every ranked fight" (L8.5 ruling 1)', () => {

@@ -2,7 +2,8 @@
 // Task L8.5: the Performance Rating card and the profile's leftovers.
 //   Ruling 1. The rating card takes the Forever Score card's treatment: two columns from 1280,
 //             the sparkline filling the right one, "Up 9 since 4 Dec" under it from the same
-//             model, one verdict line that agrees with the score card's Parses row, and the
+//             model, one line with the latest fight's rating and the count (fix round 1: no
+//             claim about the Forever Score's Parses), and the
 //             weakest part linking to its fight's row in "Every ranked fight".
 //   Ruling 2. Experience notes what counts.
 //   Ruling 3. The 404 card is capped at 720px; the guild link's focus ring stands 2px off and
@@ -25,11 +26,13 @@ const ok = (data: unknown) => ({
 });
 
 const SCORE = {
-  score: 1830,
+  // Fix round 1 item 3: Experience matches its own inputs: 14 dungeons at 25 and 7 raid bosses
+  // at 40 make 630, and the five parts add up to the score.
+  score: 1840,
   tier: 'epic',
   as_of: '2026-12-09',
-  components: { gear: 412, experience: 620, parses: 540, attendance: 180, discipline: 78 },
-  experience: { dungeons: 14, raid_kills: 0, alts: 2 },
+  components: { gear: 412, experience: 630, parses: 540, attendance: 180, discipline: 78 },
+  experience: { dungeons: 14, raid_kills: 7, alts: 2 },
 };
 
 /** Six rated fights, 4 to 9 Dec, 56 up to 65; the newest is the fixture's Warden Kelthas row in
@@ -135,13 +138,15 @@ test.describe('the rating card at 1440 (L8.5 ruling 1)', () => {
     );
   });
 
-  test('says one verdict that agrees with the score card’s Parses row', async ({ page }) => {
+  test('says the latest fight’s rating and how many are rated, with no claim about Parses (fix round 1 items 1 and 2)', async ({
+    page,
+  }) => {
     await open(page);
     await expect(page.getByTestId('rating-card-verdict')).toHaveText(
-      'Rated 65 of 100 over the last 6 fights · counts toward Parses 540 of 600',
+      'Latest fight rated 65 of 100 · 6 fights rated',
     );
-    await expect(page.getByTestId('forever-score-parses')).toContainText('Parses');
-    await expect(page.getByTestId('forever-score-parses')).toContainText('540 of 600');
+    await expect(page.getByTestId('rating-card')).not.toContainText('counts toward');
+    await expect(page.getByTestId('rating-card')).not.toContainText('Parses');
   });
 
   test('takes "Weakest part of a fight: Activity." to its fight’s row in "Every ranked fight"', async ({
@@ -197,6 +202,11 @@ test.describe('the rating card on a 390px phone (L8.5 ruling 1)', () => {
 
 test('notes under Experience what counts, muted at 12px (L8.5 ruling 2)', async ({ page }) => {
   await open(page);
+  // Fix round 1 item 3: the points are what the breakdown under them makes, 14 x 25 + 7 x 40.
+  await expect(page.getByTestId('forever-score-experience-detail')).toHaveText(
+    '14 dungeons · 7 raid bosses · 2 alts',
+  );
+  await expect(page.getByTestId('forever-score-experience')).toContainText('630 of 700');
   const note = page.getByTestId('forever-score-experience-note');
   await expect(note).toHaveText(
     'Counts dungeon and raid kills, alts included: 25 a different dungeon, 40 a different raid boss, up to 700.',
@@ -263,28 +273,56 @@ test('the guild link’s 2px-offset focus ring leaves the dots either side clear
   expect(clear.gapAfter ?? -1).toBeGreaterThanOrEqual(1);
 });
 
-for (const width of [390, 360]) {
+// Fix round 1 item 4: each value is measured against its own grid cell (the bounding width of
+// the text against the cell's), and 320 is measured too, where the track is about 32px.
+for (const [width, track] of [
+  [390, { min: 60 }],
+  [360, { min: 60 }],
+  [320, { min: 30, max: 34 }],
+] as const) {
   test.describe(`the score parts at ${width} (L8.5 ruling 4)`, () => {
     test.use({ viewport: { width, height: 844 } });
 
-    test('read "412/500" in an 80px label column, leaving the track room', async ({ page }) => {
+    test('read "412/500" in an 80px label column, every value inside its own cell', async ({ page }) => {
       await open(page);
       const gear = page.getByTestId('forever-score-gear');
       await expect(gear.getByText('412/500', { exact: true })).toBeVisible();
       await expect(gear.getByText('412 of 500', { exact: true })).toBeHidden();
-      const columns = await gear.evaluate((row) =>
-        [...row.children].slice(0, 3).map((cell) => cell.getBoundingClientRect().width),
-      );
-      expect(columns[0]).toBe(80);
-      expect(columns[1]).toBeGreaterThanOrEqual(60);
-      // "412/500" fits its column on one line.
-      const value = await gear.getByText('412/500', { exact: true }).evaluate((element) => ({
-        scroll: element.scrollWidth,
-        client: element.clientWidth,
-        height: element.getBoundingClientRect().height,
-      }));
-      expect(value.scroll).toBeLessThanOrEqual(value.client);
-      expect(value.height).toBeLessThan(25);
+      await expect(page.getByTestId('forever-score-gain-cue')).toHaveText('+88 pts');
+      const row = await gear.evaluate((element) => {
+        const cells = [...element.children].slice(0, 4) as HTMLElement[];
+        const box = (node: Node) => {
+          const range = document.createRange();
+          range.selectNodeContents(node);
+          const r = range.getBoundingClientRect();
+          return { left: r.left, right: r.right, width: r.width, height: r.height };
+        };
+        const value = [...cells[2].children].find((child) => getComputedStyle(child).display !== 'none')!;
+        return {
+          cells: cells.map((cell) => {
+            const r = cell.getBoundingClientRect();
+            return { left: r.left, right: r.right, width: r.width };
+          }),
+          value: box(value),
+          cue: box(cells[3]),
+          rowRight: element.getBoundingClientRect().right,
+        };
+      });
+      expect(row.cells[0].width).toBe(80);
+      expect(row.cells[1].width).toBeGreaterThanOrEqual(track.min);
+      if ('max' in track) expect(row.cells[1].width).toBeLessThanOrEqual(track.max);
+      // "412/500" sits inside its 56px cell, on one line.
+      expect(row.value.width).toBeLessThanOrEqual(row.cells[2].width + 0.5);
+      expect(row.value.left).toBeGreaterThanOrEqual(row.cells[2].left - 0.5);
+      expect(row.value.right).toBeLessThanOrEqual(row.cells[2].right + 0.5);
+      expect(row.value.height).toBeLessThan(25);
+      // "+88 pts" sits inside its 60px cell, on one line, inside the row.
+      expect(row.cue.width).toBeLessThanOrEqual(row.cells[3].width + 0.5);
+      expect(row.cue.left).toBeGreaterThanOrEqual(row.cells[3].left - 0.5);
+      expect(row.cue.right).toBeLessThanOrEqual(row.cells[3].right + 0.5);
+      expect(row.cue.height).toBeLessThan(25);
+      expect(row.cells[3].right).toBeLessThanOrEqual(row.rowRight + 0.5);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     });
   });
 }
@@ -310,4 +348,24 @@ test('/setup says "type /fs copy, press Ctrl+C" (L8.5 ruling 5)', async ({ page 
     ),
   ).toHaveCount(1);
   await expect(page.getByText('/fs export')).toHaveCount(0);
+});
+
+test.describe('the /ratings sample at 1440 (fix round 1 item 5)', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+  test.skip(() => test.info().project.name !== 'desktop', 'a desktop width');
+
+  test('stays one column in its 560px container, the sparkline under the line', async ({ page }) => {
+    await page.goto('/ratings');
+    const sample = page.getByTestId('ratings-rating-sample');
+    await expect(sample.getByTestId('rating-card')).toBeVisible();
+    const boxes = await sample.evaluate((element) => {
+      const box = (testid: string) =>
+        element.querySelector(`[data-testid="${testid}"]`)!.getBoundingClientRect();
+      const main = box('rating-card-main');
+      const side = box('rating-card-side');
+      return { mainBottom: main.bottom, mainLeft: main.left, sideTop: side.top, sideLeft: side.left };
+    });
+    expect(boxes.sideTop).toBeGreaterThanOrEqual(boxes.mainBottom - 0.5);
+    expect(Math.abs(boxes.sideLeft - boxes.mainLeft)).toBeLessThan(1);
+  });
 });

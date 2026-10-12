@@ -188,6 +188,8 @@ const MEASURE = 'max-w-[70ch]';
         </p>
       </header>
 
+      <!-- L8.5 fix round 1 item 5: the sample's 560px column is narrow at every window width, so
+           the card stays one column here. -->
       <div class="max-w-[560px]" data-testid="ratings-rating-sample">
         <RatingCard
           overall={65}
@@ -195,6 +197,7 @@ const MEASURE = 'max-w-[70ch]';
           sampleSize={sampleTrend.length}
           worst="activity"
           sample
+          columns={false}
         />
       </div>
 

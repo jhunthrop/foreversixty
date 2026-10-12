@@ -17,7 +17,7 @@ function sources(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
     const full = path.join(dir, name);
     if (statSync(full).isDirectory()) return sources(full);
-    return /\.(ts|svelte|astro|json)$/.test(name) && !/\.test\.ts$/.test(name) ? [full] : [];
+    return /\.(ts|svelte|astro|json|md|mdx|html)$/.test(name) && !/\.test\.ts$/.test(name) ? [full] : [];
   });
 }
 
@@ -41,10 +41,13 @@ describe('the site’s instruction for the addon’s copy mode (L8.5 ruling 5)',
   });
 
   it('leaves no "Copy my character" button or /fs export command anywhere in the site’s copy', () => {
-    const offenders = [
+    const swept = [
       ...sources(path.join(WEB_ROOT, 'src')),
       ...sources(path.join(WEB_ROOT, '..', 'docs/contracts/fixtures')),
-    ]
+    ];
+    // Fix round 1 item 6: the changelog and guide pages (.md, .mdx) and any .html are swept too.
+    expect(swept.some((file) => file.endsWith('.md'))).toBe(true);
+    const offenders = swept
       .filter((file) => /press Copy my character|\/fs export/.test(readFileSync(file, 'utf8')))
       .map((file) => path.relative(WEB_ROOT, file));
     expect(offenders).toEqual([]);

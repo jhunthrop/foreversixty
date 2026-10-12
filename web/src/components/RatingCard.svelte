@@ -1,19 +1,20 @@
 <!-- web/src/components/RatingCard.svelte -->
 <!-- The Performance Rating in the same card shell as the Forever Score (fix round 2 item 6),
      with that card's treatment (L8.5 ruling 1): "65 of 100" and the six-segment bar when any
-     segment has a score; one verdict line that names the rating's count and, beside a Forever
-     Score, agrees with its Parses row in words ("Rated 65 of 100 over the last 6 fights ·
-     counts toward Parses 540 of 600"); the trend as the score card's sparkline (the shared
+     segment has a score; one line saying the number is the latest fight's and how many fights
+     are rated ("Latest fight rated 65 of 100 · 6 fights rated", fix round 1 items 1 and 2: never
+     an average, and no claim about the Forever Score's Parses); the trend as the score card's sparkline (the shared
      Sparkline figure and lib/score/sparkline.ts's model), "Up 9 since 4 Dec" under it; and one
      line naming the weakest part of a fight, whose name links to that fight's row in "Every
-     ranked fight" when the page has one. From 1280 two columns: the number and the verdict
-     left, the sparkline filling the right. The profile's CharacterRatingPanel mounts it with the
+     ranked fight" when the page has one. From 1280 two columns: the number and that line
+     left, the sparkline filling the right; a caller whose container is narrow at every window
+     width (/ratings' 560px sample) turns the split off with `columns={false}` (fix round 1
+     item 5). The profile's CharacterRatingPanel mounts it with the
      fetched rating; /ratings mounts it as a sample. Plain data in. -->
 <script lang="ts">
   import { componentLabel, MIN_TREND_SAMPLES, ratingCopy } from '../lib/rating/copy';
   import { RATING_COMPONENT_ORDER, type RatingComponent } from '../lib/rating/types';
   import { scoreCopy } from '../lib/score/copy';
-  import { COMPONENT_MAX } from '../lib/score/score';
   import { ratingSparkline } from '../lib/score/sparkline';
   import Sparkline from './Sparkline.svelte';
 
@@ -23,9 +24,9 @@
     trend,
     sampleSize,
     worst = '',
-    parses = null,
     weakestHref = null,
     sample = false,
+    columns = true,
   }: {
     overall: number | null;
     components?: RatingComponent[];
@@ -34,11 +35,11 @@
     sampleSize: number;
     /** The weakest component's name, or '' for none. */
     worst?: string;
-    /** The character's Forever Score Parses points, for the verdict; null without a score. */
-    parses?: number | null;
     /** The weakest part's fight's row ("#fight-<report>-<n>"), or null for no link. */
     weakestHref?: string | null;
     sample?: boolean;
+    /** Two columns from 1280; false keeps one column for a narrow container. */
+    columns?: boolean;
   } = $props();
 
   const CARD =
@@ -62,19 +63,14 @@
     })),
   );
   const line = $derived(ratingSparkline(trend));
-  const parsesLabel = scoreCopy.components.find((component) => component.key === 'parses')?.label ?? '';
-  const verdict = $derived(
-    overall === null
-      ? null
-      : [
-          ratingCopy.verdict(Math.round(overall), sampleSize),
-          ...(parses === null ? [] : [ratingCopy.countsToward(parsesLabel, parses, COMPONENT_MAX.parses)]),
-        ].join(scoreCopy.separator),
-  );
+  const verdict = $derived(overall === null ? null : ratingCopy.verdict(Math.round(overall), sampleSize));
 </script>
 
 <div class={CARD} data-testid="rating-card">
-  <div class="flex flex-col gap-3 xl:grid xl:grid-cols-2 xl:gap-x-8" data-testid="rating-card-columns">
+  <div
+    class={columns ? 'flex flex-col gap-3 xl:grid xl:grid-cols-2 xl:gap-x-8' : 'flex flex-col gap-3'}
+    data-testid="rating-card-columns"
+  >
     <div class="flex flex-col gap-3" data-testid="rating-card-main">
       {#if overall !== null}
         <div class="flex flex-wrap items-center gap-x-4 gap-y-2">

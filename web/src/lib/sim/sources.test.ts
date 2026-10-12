@@ -59,8 +59,9 @@ function combatantRow(overrides: Partial<CombatantRow> & Pick<CombatantRow, 'gui
   return { gear: [], talents: [], consumables: [], raid_buffs: [], missing_buffs: [], ...overrides };
 }
 
-// Warrior only, on purpose: public/data/<build>/talents/ ships just warrior.json, and
-// `fromLoggedFight` throws when `loadTalents` 404s. Fury, Protection and a tank spec all
+// Warrior only, on purpose: the test stub serves the planner fixture's talents
+// (src/fixtures/planner/talents/, warrior and hunter only, never public/data since L8.5
+// ruling 6), and `fromLoggedFight` throws when `loadTalents` 404s. Fury, Protection and a tank spec all
 // read the same talent file, so one class is enough to cover a dps, a second dps, and a
 // non-dps named combatant.
 const FIXTURE_ROSTER: RosterRow[] = [
