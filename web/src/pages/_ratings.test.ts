@@ -184,6 +184,12 @@ describe('/ratings Forever Score section', () => {
     expect(rating).toContain(scoreCopy.explainerPreparationShared);
   });
 
+  it('renders the bridge as running text with a space between its sentences: "them. Both" (fix round 3 item 1)', () => {
+    const bridge = /<p[^>]*data-testid="ratings-rating-bridge"[^>]*>([\s\S]*?)<\/p>/.exec(html)?.[1] ?? '';
+    expect(text(bridge)).toContain('them. Both');
+    expect(bridge).not.toContain('them.Both');
+  });
+
   it('shows a Performance Rating sample, "65 of 100" with a labelled sparkline', () => {
     const rating = section('performance-rating');
     const sample = rating.slice(rating.indexOf('data-testid="ratings-rating-sample"'));

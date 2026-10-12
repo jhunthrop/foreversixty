@@ -34,3 +34,14 @@ test('on a phone the lookup sits above the beta card', async ({ page }) => {
   expect(beta).not.toBeNull();
   expect((lookup?.y ?? 0) < (beta?.y ?? 0)).toBe(true);
 });
+
+test('the lookup link’s region and ruleset fill the selects, and the name box has the cursor', async ({
+  page,
+}) => {
+  await page.goto('/?character=Elyra%20Duskvale&region=eu&ruleset=hardcore#lookup');
+  const search = page.getByTestId('home-character-search');
+  await expect(search.getByRole('searchbox')).toHaveValue('Elyra Duskvale');
+  await expect(search.getByLabel('Region')).toHaveValue('eu');
+  await expect(search.getByLabel('Ruleset')).toHaveValue('hardcore');
+  await expect(search.getByRole('searchbox')).toBeFocused();
+});

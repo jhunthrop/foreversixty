@@ -33,7 +33,7 @@
     specClassLabel,
   } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
-  import { foreverOf, lastAddonExportAt, ownCharacter } from '../lib/score/score';
+  import { foreverOf, lastAddonExportAt, lastSeenText, ownCharacter } from '../lib/score/score';
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterInGame from './CharacterInGame.svelte';
@@ -177,8 +177,11 @@
   </div>
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
-    <CurrentCharacterBar spine />
-    <header class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+    <!-- On a phone (fix round 3 item 4): a signed-in chip first, then the header (-3) and the
+         score card (-2, ForeverScoreCard), then the visitor's one-line sign-in row (-1), then the
+         rest in page order. From md everything is in page order. -->
+    <CurrentCharacterBar spine profile />
+    <header class="flex flex-col gap-4 max-md:-order-3 lg:flex-row lg:items-end lg:justify-between">
       <div class="flex flex-col gap-1">
         <CharacterIdentity
           character={{
@@ -199,7 +202,11 @@
             </p>
           {/snippet}
         </CharacterIdentity>
-        <CharacterHandoffLinks path={resolved} showNeedsExport={owned} />
+        <CharacterHandoffLinks
+          path={resolved}
+          showNeedsExport={owned}
+          lastSeen={lastSeenAt === null ? null : lastSeenText(lastSeenAt)}
+        />
       </div>
       {#if data.character.render_url !== undefined}
         <img

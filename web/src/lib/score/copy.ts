@@ -86,8 +86,10 @@ export const scoreCopy = {
   noLogsTitle: 'No logs yet',
   noLogsHint: 'Check the name and ruleset, or look up another character.',
   noLogsLookup: 'Look up another character',
-  /** The home page's lookup, the name filled in (CharacterSearch.astro reads `character`). */
-  lookupHref: (name: string): string => `/?character=${encodeURIComponent(name)}#lookup`,
+  /** The home page's lookup with the name, region and ruleset filled in (CharacterSearch.astro
+   *  reads all three; fix round 3 item 3). */
+  lookupHref: (name: string, region: string, ruleset: string): string =>
+    `/?character=${encodeURIComponent(name)}&region=${encodeURIComponent(region)}&ruleset=${encodeURIComponent(ruleset)}#lookup`,
   noLogsOwner: 'The companion uploads your fights automatically.',
   noLogsUpload: 'Upload logs',
   noLogsUploadHref: '/setup',

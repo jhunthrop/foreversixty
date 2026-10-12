@@ -32,12 +32,30 @@ export function wireSearchForm(form: HTMLFormElement): void {
   });
 }
 
-/** Fills a lookup form's name from `?character=` (no submit: the player checks and presses). */
+/**
+ * Fills a lookup form from `?character=&region=&ruleset=` -- the name, and the region and
+ * ruleset selects where the form has them and the values are ones the site knows (fix round 3
+ * item 3) -- then puts the cursor in the name box. Never submits: the player checks and presses.
+ */
 export function prefillFromQuery(form: HTMLFormElement, search: string = window.location.search): void {
-  const name = new URLSearchParams(search).get(LOOKUP_NAME_PARAM);
+  const params = new URLSearchParams(search);
+  const name = params.get(LOOKUP_NAME_PARAM);
   const input = form.querySelector<HTMLInputElement>('input[name="name"]');
   if (name === null || input === null || name.trim() === '') return;
   input.value = name.slice(0, 64);
+  const region = params.get('region');
+  const regionSelect = form.querySelector<HTMLSelectElement>('select[name="region"]');
+  if (region !== null && isRegion(region) && regionSelect !== null) regionSelect.value = region;
+  const ruleset = params.get('ruleset');
+  const rulesetSelect = form.querySelector<HTMLSelectElement>('select[name="ruleset"]');
+  if (ruleset !== null && isRuleset(ruleset) && rulesetSelect !== null) rulesetSelect.value = ruleset;
+  // The `#lookup` fragment scroll runs after this module and moves focus back to the page, so a
+  // focus taken before `load` does not stick: wait for it, then a frame.
+  if (document.readyState === 'complete') {
+    input.focus();
+  } else {
+    window.addEventListener('load', () => requestAnimationFrame(() => input.focus()), { once: true });
+  }
 }
 
 /** Whether a key press came from somewhere typing is expected. */

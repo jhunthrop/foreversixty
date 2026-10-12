@@ -51,7 +51,9 @@
   const lastSeen = $derived(owned && lastSeenAt !== null ? lastSeenText(lastSeenAt) : null);
   const line = scoreCopy.lineParts();
   /** In-text links are underlined: colour alone does not mark a link (WCAG 1.4.1). */
-  const LINK = 'text-gold inline-flex min-h-11 items-center underline underline-offset-2 md:min-h-0';
+  /** An inline link, so the paragraph keeps the body line-height on a phone (fix round 3 item
+   *  4); its vertical padding still gives it a 44px hit area without opening up the lines. */
+  const LINK = 'text-gold underline underline-offset-2 max-md:py-[14px]';
 </script>
 
 <section class="flex flex-col gap-3" data-testid="character-in-game">
@@ -94,7 +96,7 @@
     </p>
   </div>
   {#if owned}
-    <p class="text-[14px]" data-testid="character-in-game-planner">
+    <p class="text-[14px] leading-[22px]" data-testid="character-in-game-planner">
       {scoreCopy.inGamePlannerLead}
       <a class={LINK} href={scoreCopy.inGamePasteHref}>{scoreCopy.inGamePasteLink}</a>.
     </p>

@@ -38,6 +38,8 @@
     bisHref = null,
     owned = false,
     name = '',
+    region = '',
+    ruleset = '',
     heading = true,
     sample = false,
   }: {
@@ -48,6 +50,9 @@
     owned?: boolean;
     /** The character's name, for "Look up another character" (the lookup starts filled). */
     name?: string;
+    /** The character's region and ruleset, carried to the lookup with the name (round 3 item 3). */
+    region?: string;
+    ruleset?: string;
     /** False on /ratings, where the page's own heading introduces the sample. */
     heading?: boolean;
     /** Marks the card as an example, with the design system's Sample pill. */
@@ -177,7 +182,7 @@
           {:else}
             <a
               class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
-              href={scoreCopy.lookupHref(name)}
+              href={scoreCopy.lookupHref(name, region, ruleset)}
               data-testid="forever-score-empty-action">{scoreCopy.noLogsLookup}</a
             >
           {/if}
@@ -193,7 +198,9 @@
 {/snippet}
 
 {#if heading}
-  <section class="flex flex-col gap-2" data-testid="forever-score">
+  <!-- max-md:-order-2: on the profile (a flex column) a phone puts the score card right after
+       the header, above the sign-in row (Character.svelte, fix round 3 item 4). -->
+  <section class="flex flex-col gap-2 max-md:-order-2" data-testid="forever-score">
     <h2 class="section-title text-[18px]">{scoreCopy.heading}</h2>
     <p class="text-muted text-[13px]" data-testid="forever-score-caption">{scoreCopy.caption(date, owned)}</p>
     {@render card()}

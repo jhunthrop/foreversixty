@@ -12,12 +12,17 @@
     path,
     apiBase = undefined,
     showNeedsExport = true,
+    lastSeen = null,
   }: {
     path: CharacterPath;
     apiBase?: string;
     /** False on a profile the viewer does not own (fix round 2 item 1): "No export yet · paste
      *  it here" is an instruction to the character's owner, not to a visitor. */
     showNeedsExport?: boolean;
+    /** "Last seen in game 11 Oct 19:06" when the owner's /v1/me holds an addon build for this
+     *  character (fix round 3 item 2): the same words the page's "In game" section shows, in
+     *  place of "No export yet", which would contradict it. */
+    lastSeen?: string | null;
   } = $props();
 
   let code = $state<string | null>(null);
@@ -50,6 +55,8 @@
     <a class={LINK} href={plannerCodeHref(code)} data-testid="character-open-planner"
       >{handoffCopy.openInPlanner}</a
     >
+  {:else if lastSeen !== null}
+    <span class="text-muted text-[13px]" data-testid="character-handoff-last-seen">{lastSeen}</span>
   {:else if showNeedsExport}
     <span class="text-muted text-[13px]" data-testid="character-needs-addon">
       {handoffCopy.needsExportLead}

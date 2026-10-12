@@ -101,7 +101,7 @@ const FIELD =
           {copy.submit}
         </button>
       </form>
-      <p id={`${id}-status`} class="text-strong mt-1 min-h-[1lh] text-[13px]" role="status" />
+      <p id={`${id}-status`} class="text-strong mt-1 text-[13px] empty:hidden" role="status" />
     </div>
   </div>
 ) : (
@@ -153,6 +153,6 @@ const FIELD =
         {copy.submit}
       </button>
     </form>
-    <p id={`${id}-status`} class="text-strong mt-1 min-h-[1lh] text-[13px]" role="status" />
+    <p id={`${id}-status`} class="text-strong mt-1 text-[13px] empty:hidden" role="status" />
   </div>
 )}

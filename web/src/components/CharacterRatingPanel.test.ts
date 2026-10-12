@@ -211,7 +211,7 @@ describe('CharacterRatingPanel Forever Score card', () => {
     }
     expect(body).toContain('Check the name and ruleset, or look up another character.');
     expect(body).toMatch(
-      /href="\/\?character=Elyra%20Duskvale#lookup"[^>]*data-testid="forever-score-empty-action">Look up another character</,
+      /href="\/\?character=Elyra%20Duskvale&amp;region=us&amp;ruleset=hardcore#lookup"[^>]*data-testid="forever-score-empty-action">Look up another character</,
     );
     // The addon's no-logs sentence lives in the tooltip mock, not here.
     expect(body).not.toContain(labels.noLogs);

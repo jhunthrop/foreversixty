@@ -6,6 +6,7 @@
 // panel's own execution-rating read is answered 404 so only the score block is in play.
 import { expect, test, type Page } from '@playwright/test';
 import labels from '../../../docs/contracts/fixtures/score-labels.json' with { type: 'json' };
+import { meAddonFixture } from '../../src/fixtures/me-addon';
 import { CHARACTER, CHARACTER_PATH, CHARACTER_URL } from './support/character-fixture';
 
 const NOT_FOUND = {
@@ -230,6 +231,58 @@ test('the no-logs page keeps the neutral crest and the same card, with what to d
   await expect(card).toContainText('Check the name and ruleset, or look up another character.');
   await expect(card).not.toContainText(labels.noLogs);
   const lookup = card.getByRole('link', { name: 'Look up another character' });
-  await expect(lookup).toHaveAttribute('href', '/?character=Elyra%20Duskvale#lookup');
+  await expect(lookup).toHaveAttribute(
+    'href',
+    '/?character=Elyra%20Duskvale&region=us&ruleset=hardcore#lookup',
+  );
   await expect(page.getByTestId('character-in-game-tooltip')).toContainText(labels.noLogs);
+});
+
+/** The me fixture's addon-synced character, made the owner of this page's character. */
+function ownerMe(): typeof meAddonFixture {
+  const own = meAddonFixture.characters[0];
+  return {
+    ...meAddonFixture,
+    characters: [
+      {
+        ...own,
+        key: 'us/hardcore/elyra-duskvale',
+        region: 'us',
+        ruleset: 'hardcore',
+        name: 'Elyra Duskvale',
+        class: 'Priest',
+      },
+    ],
+  };
+}
+
+test('the owner’s header line says when the game was last seen, the same as In game, never "No export yet"', async ({
+  page,
+}) => {
+  await page.route('**/v1/me', (route) => route.fulfill(ok(ownerMe())));
+  await page.route(CHARACTER_URL, (route) => route.fulfill(ok(CAPTURE)));
+  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
+  await page.goto(CHARACTER_PATH);
+
+  const inGame = page.getByTestId('character-in-game-last-seen');
+  await expect(inGame).toHaveText(/^Last seen in game \d{1,2} \w{3} \d{2}:\d{2}$/);
+  const header = page.getByTestId('character-handoff-last-seen');
+  await expect(header).toHaveText((await inGame.textContent()) ?? '');
+  await expect(page.getByTestId('character-needs-addon')).toHaveCount(0);
+  await expect(page.getByTestId('forever-score-caption')).toHaveText('Your whole record, as of 4 Nov.');
+});
+
+test('on a phone the visitor’s sign-in row sits below the score card, on one line', async ({ page }) => {
+  test.skip(test.info().project.name !== 'mobile', 'phone layout only');
+  await page.route(CHARACTER_URL, (route) => route.fulfill(ok(CAPTURE)));
+  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
+  await page.goto(CHARACTER_PATH);
+
+  const card = await page.getByTestId('forever-score-card').boundingBox();
+  const bar = page.getByTestId('current-character-bar');
+  const row = await bar.boundingBox();
+  expect(card).not.toBeNull();
+  expect(row).not.toBeNull();
+  expect((row?.y ?? 0) > (card?.y ?? 0) + (card?.height ?? 0)).toBe(true);
+  expect(row?.height).toBe(44);
 });

@@ -69,7 +69,7 @@
 </script>
 
 {#if forever !== undefined}
-  <ForeverScoreCard {forever} {bisHref} {owned} {name} />
+  <ForeverScoreCard {forever} {bisHref} {owned} {name} region={path.region} ruleset={path.ruleset} />
 {/if}
 
 {#if status === 'loading'}

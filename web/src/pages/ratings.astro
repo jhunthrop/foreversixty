@@ -183,8 +183,8 @@ const MEASURE = 'max-w-[70ch]';
           {scoreCopy.explainerRatingCaption}
         </p>
         <p class="text-[15px] leading-[22px]" data-testid="ratings-rating-bridge">
-          {scoreCopy.explainerRatingBridge}
-          {scoreCopy.explainerPreparationShared}
+          {/* One string: Astro drops the whitespace between two expressions ("them.Both"). */}
+          {`${scoreCopy.explainerRatingBridge} ${scoreCopy.explainerPreparationShared}`}
         </p>
       </header>
 
