@@ -100,7 +100,7 @@ const {
 } = Astro.props;
 
 const TitleTag = asHeading ? 'h1' : 'p';
-const headingRole = asHeading ? {} : { role: 'heading', 'aria-level': 1 };
+const headingRole: astroHTML.JSX.HTMLAttributes = asHeading ? {} : { role: 'heading', 'aria-level': 1 };
 
 const color = classColorVar(className);
 const factionLabel =
