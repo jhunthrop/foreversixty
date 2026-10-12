@@ -201,6 +201,58 @@ function Progress.roundedGain(value, unit)
 	return value < 0 and -rounded or rounded
 end
 
+--- A stat's weight in `slot`: its own weight, or for a weapon's DPS
+--- (`weapon_dps`) 14 x the slot's attack-power weight for a spec that swings
+--- its weapon (Progress.itemScore's own rule).
+local function weightIn(stat, slot, weights, reference)
+	if stat == "weapon_dps" then
+		local apStat = Progress.WEAPON_AP_STAT[slot]
+		if apStat == nil or not PHYSICAL_REFERENCE[reference] then
+			return 0
+		end
+		return Progress.AP_PER_WEAPON_DPS * ((weights or {})[apStat] or 0)
+	end
+	return (weights or {})[stat] or 0
+end
+
+--- What a gain is made of: per stat, `plan`'s amount minus every worn
+--- side's (`plan` and each of `worn` are { stats, slot }; the worn stats
+--- already carry their enchant, Gear.readEquipped), as { stat, delta,
+--- weighted }, sorted by the weighted size, biggest first. A stat the weights
+--- do not count is left out. Weighted in score units (reference-stat points).
+function Progress.contributions(plan, worn, weights, reference)
+	local stats = {}
+	for stat in pairs(plan.stats or {}) do
+		stats[stat] = true
+	end
+	for _, side in ipairs(worn) do
+		for stat in pairs(side.stats or {}) do
+			stats[stat] = true
+		end
+	end
+	local list = {}
+	for stat in pairs(stats) do
+		local amount = (plan.stats or {})[stat] or 0
+		local delta = amount
+		local weighted = amount * weightIn(stat, plan.slot, weights, reference)
+		for _, side in ipairs(worn) do
+			local wornAmount = (side.stats or {})[stat] or 0
+			delta = delta - wornAmount
+			weighted = weighted - wornAmount * weightIn(stat, side.slot, weights, reference)
+		end
+		if math.abs(weighted) > 1e-9 then
+			list[#list + 1] = { stat = stat, delta = delta, weighted = weighted }
+		end
+	end
+	table.sort(list, function(left, right)
+		if math.abs(left.weighted) ~= math.abs(right.weighted) then
+			return math.abs(left.weighted) > math.abs(right.weighted)
+		end
+		return left.stat < right.stat
+	end)
+	return list
+end
+
 --- One slot's verdict: the planned item against what is worn there.
 --- `plan` is a build.gear entry ({ itemId, stats }), `worn` an equipped
 --- entry ({ itemId, link, stats }); either may be nil, not both (nil then).
@@ -218,7 +270,8 @@ end
 --- stats (an FS1 code) or there are no weights; it is in DPS when
 --- `dpsPerPoint` (DPS per 1.0 of the reference stat) is given, and
 --- `unit` says which. `reference` (the spec's reference stat) lets a weapon's
---- own DPS count (Progress.itemScore).
+--- own DPS count (Progress.itemScore). `contributions` lists what the gain
+--- is made of (Progress.contributions), the planned side minus the worn side.
 function Progress.slotVerdict(slot, plan, worn, weights, dpsPerPoint, reference)
 	local plannedItemId = plan ~= nil and plan.itemId or nil
 	local equippedItemId = worn ~= nil and worn.itemId or nil
@@ -245,8 +298,17 @@ function Progress.slotVerdict(slot, plan, worn, weights, dpsPerPoint, reference)
 		delta = scored and (score(worn.stats) - score(plan.stats)) or nil
 		state = (delta ~= nil and delta > 0) and "better" or "behind"
 	end
+	local contributions
+	if scored and state ~= "match" then
+		local sides = {}
+		if worn ~= nil then
+			sides[1] = { stats = worn.stats, slot = slot }
+		end
+		contributions = Progress.contributions({ stats = plan.stats, slot = slot }, sides, weights, reference)
+	end
 	return {
 		slot = slot,
+		contributions = contributions,
 		plannedItemId = plannedItemId,
 		equippedItemId = equippedItemId,
 		delta = inUnit(delta, dpsPerPoint),
@@ -289,6 +351,10 @@ function Progress.weaponVerdict(slot, hovered, wornMain, wornOff, weights, dpsPe
 		end
 		return {
 			slot = slot,
+			contributions = scored and Progress.contributions({ stats = hovered.stats, slot = "main_hand" }, {
+				{ stats = wornOff.stats, slot = "off_hand" },
+				wornMain ~= nil and { stats = wornMain.stats, slot = "main_hand" } or nil,
+			}, weights, reference) or nil,
 			plannedItemId = hovered.itemId,
 			equippedItemId = wornMain ~= nil and wornMain.itemId or wornOff.itemId,
 			delta = inUnit(delta, dpsPerPoint),

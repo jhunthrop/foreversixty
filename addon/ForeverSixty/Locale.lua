@@ -524,10 +524,18 @@ local L = {
 	tooltipDownScore = "Downgrade −%d score over %s",
 	tooltipFills = "Fills an empty slot, +%.1f %s",
 	tooltipFillsScore = "Fills an empty slot, +%d score",
-	-- Muted, right of the header, on the item worn.
+	-- Muted, right of the header on the item worn (or of the next row when the header
+	-- needs the room: ItemTooltip.fitHeader).
 	tooltipEquipped = "Equipped",
 	tooltipUnitDps = "DPS",
 	tooltipUnitHps = "HPS",
+	-- The breakdown under a figure: "(−11 Str, −4 Agi, −6.9 weapon DPS)", the five
+	-- primary stats by their short names, a weapon's own DPS as "weapon DPS".
+	tooltipBreakdown = "(%s)",
+	tooltipBreakdownPart = "%s %s",
+	tooltipBreakdownJoin = ", ",
+	tooltipWeaponDps = "weapon DPS",
+	statAbbrev = { strength = "Str", agility = "Agi", stamina = "Sta", intellect = "Int", spirit = "Spi" },
 	-- An off hand, a shield or a held item while a two-hander is worn.
 	tooltipTwoHander = "Not with your two-hander",
 	-- The item worn is the band's own pick (or the pick is worn beside it, or

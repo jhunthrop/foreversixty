@@ -680,10 +680,15 @@ function ItemTooltip.shortSource(pick)
 end
 
 --- "At level 30: <name> · <short source>" (muted, the name in its quality
---- colour): the next rung's pick under "Best until level 30". `withSource`
---- false: the name alone.
-function ItemTooltip.atText(at, withSource)
+--- colour, its gain over what is worn in green when it reaches the floor): the
+--- next rung's pick under "Best until level 30". `withSource` false: without the
+--- source; `withGain` false: without the gain.
+function ItemTooltip.atText(at, withSource, withGain)
 	local shown = colored(at.name, at.hex)
+	if at.gain ~= nil and withGain ~= false then
+		-- The next rung's pick's gain over what is worn, in the upgrade green.
+		shown = shown .. " " .. ItemTooltip.figureText(at.gain, at.unit)
+	end
 	if at.source ~= nil and withSource ~= false then
 		return string.format(L.tooltipAtBand, at.band, shown, at.source)
 	end
@@ -699,27 +704,124 @@ function ItemTooltip.fitAt(at, measure, room)
 	if fits(whole) then
 		return { whole }
 	end
-	-- The name is cut only when even the bare name is wider than the room.
-	local bare = shorten(function(name)
-		return ItemTooltip.atText({ band = at.band, name = name, hex = at.hex }, false)
-	end, at.name, fits, 1)
+	-- The source moves to its own line first, then the gain goes, and the name is
+	-- cut only when even the bare name is wider than the room.
+	local bare = ItemTooltip.atText(at, false)
+	if not fits(bare) then
+		bare = ItemTooltip.atText(at, false, false)
+	end
+	if not fits(bare) then
+		bare = shorten(function(name)
+			return ItemTooltip.atText({ band = at.band, name = name, hex = at.hex }, false)
+		end, at.name, fits, 1)
+	end
 	if at.source == nil then
 		return { bare }
 	end
 	return { bare, ItemTooltip.fitPlain(string.format(L.tooltipAtSource, at.source), measure, room) }
 end
 
---- The gain part of the Next line: the figure in the upgrade green, then
---- "(enchant not counted)" muted when the worn item's enchant could not be
---- read (`unparsed`; a read enchant is already netted, Gear.readEquipped).
-local function gainPart(gain, unit, unparsed)
+--- A figure as printed in the upgrade green: "+12.3 DPS" ("+12 score").
+function ItemTooltip.figureText(gain, unit)
 	local figure
 	if unit == "score" then
 		figure = string.format(L.tooltipNextGainScore, gain)
 	else
 		figure = string.format(L.tooltipNextGain, gain, unitWord(unit))
 	end
-	local text = Theme.inlineColor("success", figure)
+	return Theme.inlineColor("success", figure)
+end
+
+--- A stat in the player's words: "Str", "Agi", "Sta", "Int", "Spi" for the
+--- five primary stats (Locale), "weapon DPS" for a weapon's own DPS, else the
+--- client's own name for it (its ITEM_MOD_*_SHORT global), else Locale's.
+function ItemTooltip.statWord(stat)
+	if L.statAbbrev[stat] ~= nil then
+		return L.statAbbrev[stat]
+	end
+	if stat == "weapon_dps" then
+		return L.tooltipWeaponDps
+	end
+	local keys = {}
+	for clientKey, value in pairs(Rules.STAT_KEYS) do
+		if value == stat then
+			keys[#keys + 1] = clientKey
+		end
+	end
+	table.sort(keys)
+	for _, clientKey in ipairs(keys) do
+		if type(_G[clientKey]) == "string" and _G[clientKey] ~= "" then
+			return _G[clientKey]
+		end
+	end
+	return L.statNames[stat] or stat
+end
+
+--- Display order: the five primary stats first, then the rest, a weapon's DPS last.
+local BREAKDOWN_ORDER = { strength = 1, agility = 2, stamina = 3, intellect = 4, spirit = 5, weapon_dps = 99 }
+
+--- The breakdown line under a figure: the `count` biggest contributors to it
+--- (Progress.contributions, by weighted size), signed, in the player's words,
+--- in a fixed order: "(−11 Str, −4 Agi, −6.9 weapon DPS)". nil with none.
+function ItemTooltip.breakdownText(contributions, count)
+	local chosen = {}
+	for index = 1, math.min(count or 3, #(contributions or {})) do
+		chosen[index] = contributions[index]
+	end
+	if #chosen == 0 then
+		return nil
+	end
+	table.sort(chosen, function(left, right)
+		local leftRank, rightRank = BREAKDOWN_ORDER[left.stat] or 50, BREAKDOWN_ORDER[right.stat] or 50
+		if leftRank ~= rightRank then
+			return leftRank < rightRank
+		end
+		return math.abs(left.weighted) > math.abs(right.weighted)
+	end)
+	local parts = {}
+	for index, entry in ipairs(chosen) do
+		local size = math.abs(entry.delta)
+		local amount
+		if entry.stat ~= "weapon_dps" and math.abs(size - math.floor(size + 0.5)) < 1e-9 then
+			amount = string.format("%d", math.floor(size + 0.5))
+		else
+			amount = string.format("%.1f", size)
+		end
+		local sign = entry.delta < 0 and L.tooltipMinus or "+"
+		parts[index] = string.format(L.tooltipBreakdownPart, sign .. amount, ItemTooltip.statWord(entry.stat))
+	end
+	return string.format(L.tooltipBreakdown, table.concat(parts, L.tooltipBreakdownJoin))
+end
+
+--- The breakdown line within `room`: drops the third, then the second
+--- contributor, then cuts the line by measured width.
+function ItemTooltip.fitBreakdown(contributions, measure, room)
+	local fits = fitter(measure, room)
+	for count = 3, 1, -1 do
+		local text = ItemTooltip.breakdownText(contributions, count)
+		if text ~= nil and fits(text) then
+			return { text }
+		end
+	end
+	local one = ItemTooltip.breakdownText(contributions, 1)
+	return one ~= nil and { ItemTooltip.fitPlain(one, measure, room) } or {}
+end
+
+--- The breakdown line for a verdict that carries a figure, or nil.
+local function breakdownLine(verdict)
+	local contributions = verdict ~= nil and verdict.contributions or nil
+	if contributions == nil or #contributions == 0 then
+		return nil
+	end
+	return { kind = "breakdown", contributions = contributions, color = "muted",
+		text = ItemTooltip.breakdownText(contributions, 3) }
+end
+
+--- The gain part of the Next line: the figure in the upgrade green, then
+--- "(enchant not counted)" muted when the worn item's enchant could not be
+--- read (`unparsed`; a read enchant is already netted, Gear.readEquipped).
+local function gainPart(gain, unit, unparsed)
+	local text = ItemTooltip.figureText(gain, unit)
 	if unparsed then
 		text = text .. " " .. muted(L.tooltipEnchantNote)
 	end
@@ -908,6 +1010,10 @@ function ItemTooltip.section(ctx)
 		if primary ~= nil then
 			-- The hook fits the compared name to the tooltip's width (fitVerdict).
 			primary.kind, primary.verdict, primary.unit, primary.wornName = "verdict", verdict, unit, wornName
+			-- Under a figure, what it is made of (a plain "Sidegrade" has no figure).
+			if primary.text ~= L.tooltipSide then
+				primary.breakdown = breakdownLine(verdict)
+			end
 		end
 	end
 	-- A hand the worn two-hander holds says only that: no plan, no next pick.
@@ -945,7 +1051,7 @@ function ItemTooltip.section(ctx)
 		if verdict == nil or verdict.delta == nil then
 			return nil
 		end
-		return Progress.roundedGain(-verdict.delta, roundUnit)
+		return Progress.roundedGain(-verdict.delta, roundUnit), verdict
 	end
 	local pick, isPick, pickWorn, unshowable
 	if currentBand ~= nil and not heldByTwoHander then
@@ -982,13 +1088,14 @@ function ItemTooltip.section(ctx)
 			-- The pick's gain over what is worn, from its own stats and weapon DPS,
 			-- net of the worn enchant, as shown: a next upgrade from the floor.
 			local name = nameOf(pick.item_id)
-			local gain = gainOf(pick.item_id)
+			local gain, nextVerdict = gainOf(pick.item_id)
 			if gain ~= nil and gain >= Progress.MIN_GAIN and name ~= nil then
 				local worn = equipped[slot]
 				local upgrade = { name = name, hex = qualityHex(pick.item_id), gain = gain, unit = unit,
 					unparsed = worn ~= nil and worn.enchantUnparsed == true }
 				nextLine = { kind = "next", upgrade = upgrade, color = "body",
 					text = ItemTooltip.nextLine(colored(name, upgrade.hex), gain, unit, upgrade.unparsed) }
+				nextLine.breakdown = breakdownLine(nextVerdict)
 				if isCached(pick.item_id) then
 					target = { itemId = pick.item_id, link = Compat.displayLink(pick.item_id),
 						label = L.tooltipCompareLabel }
@@ -1042,6 +1149,10 @@ function ItemTooltip.section(ctx)
 			else
 				atLine = { kind = "at", band = nextBand, name = name, hex = qualityHex(upcoming.item_id),
 					source = ItemTooltip.shortSource(upcoming), color = "muted" }
+				local gain = gainOf(upcoming.item_id)
+				if gain ~= nil and gain >= Progress.MIN_GAIN then
+					atLine.gain, atLine.unit = gain, unit
+				end
 				atLine.text = ItemTooltip.atText(atLine)
 			end
 		end
@@ -1055,8 +1166,15 @@ function ItemTooltip.section(ctx)
 	if primary == nil and pick == nil and wornSlot == nil and not isPick and next(pending) == nil then
 		primary = { text = L.tooltipNotForPlan, color = "muted" }
 	end
+	--- A line, then the breakdown under its figure when it has one.
+	local function push(line)
+		lines[#lines + 1] = line
+		if line.breakdown ~= nil then
+			lines[#lines + 1] = line.breakdown
+		end
+	end
 	if primary ~= nil then
-		lines[#lines + 1] = primary
+		push(primary)
 	end
 	if atLine ~= nil then
 		lines[#lines + 1] = atLine
@@ -1065,7 +1183,7 @@ function ItemTooltip.section(ctx)
 		lines[#lines + 1] = line
 	end
 	if nextLine ~= nil then
-		lines[#lines + 1] = nextLine
+		push(nextLine)
 	end
 	for _, line in ipairs(block) do
 		lines[#lines + 1] = line
@@ -1424,13 +1542,16 @@ function ItemTooltip.fitLine(line, measure, room)
 		return ItemTooltip.fitSource(line.pick, measure, room)
 	elseif line.kind == "at" then
 		return ItemTooltip.fitAt(line, measure, room)
+	elseif line.kind == "breakdown" then
+		return ItemTooltip.fitBreakdown(line.contributions, measure, room)
 	end
 	return { ItemTooltip.fitPlain(line.text, measure, room) }
 end
 
 --- Draws the item section after the client's own lines: a blank row, the
---- header ("Forever Sixty" gold, the spec and the tag; "Equipped" muted as the
---- header row's own right text on the item worn), then each line in its
+--- header ("Forever Sixty" gold, the spec and the tag; "Equipped" muted at its
+--- right on the item worn, or at the next row's right when the header needs
+--- the room: ItemTooltip.fitHeader), then each line in its
 --- colour, every one fitted to the client's own widest line (measured before
 --- anything is added). Nothing at all with no lines and nothing worn.
 local function addLines(tooltip, itemLink)

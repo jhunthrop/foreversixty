@@ -101,21 +101,27 @@ weights came from: "Forever Sixty · Arms · Your sim" with the companion's sim,
 Arms · Estimate" with the shipped weights (DPS is allowed under Estimate: the shipped
 DPS-per-point figures are real sims), with "Equipped" on its right on the item worn. "Forever
 Sixty" is in the client's own tooltip gold, the spec and "Estimate" are muted, "Your sim" is in
-the tooltip's text colour. Every equippable item in a slot the plan covers gets a line: the verdict
+the tooltip's text colour. When the header plus "Equipped" exceeds the
+width, the spec word drops before the tag; the tag is never cut; "Equipped" then moves to the
+next row. Every equippable item in a slot the plan covers gets a line: the verdict
 ("Upgrade +4.2 DPS over Chausses of Westfall", "Sidegrade (+0.3 DPS)", "Downgrade −4.2 DPS over
 Smite's Mighty Hammer", the compared name shortened before the tooltip widens), "Best until level 30",
 or the reason it is not one ("Not for you until 40: plate armor", "Not with your two-hander",
 alone, "Not for your plan"); only non-gear stays blank. The chip and the tooltip read one gain,
 rounded once to the figure shown (one decimal of DPS, whole points of score), and call it an
 upgrade from 1.0 of that figure: 0.96 DPS is "Upgrade +1.0" in both, 0.94 is "Sidegrade (+0.9
-DPS)" and no chip upgrade. On the item worn the primary line is the slot's next upgrade ("Next
+DPS)" and no chip upgrade. Under every figure (the verdict's and the Next line's gain) a muted line names
+what it is made of, its three biggest contributors signed and in the player's words: "(−11 Str,
+−4 Agi, −6.9 weapon DPS)", the worn enchant folded into its stat, fewer contributors before the
+line is cut. On the item worn the primary line is the slot's next upgrade ("Next
 upgrade: Mutant Scale Breastplate +6.1 DPS", the label muted, the name in its quality colour,
 the gain in the upgrade green), printed only when the pick gains at least 1.0 over what is worn;
 under it the line is "Best until level <the band ladder's next rung>" in the tooltip's text
-colour with, muted under it, "At level 30: <that rung's pick> · <its source in a word or two>"
-(the instance, "Vendor", "Quest" or the kind's word; no boss, no chance; the source moves to its
-own muted line "· <source>" rather than widen the tooltip, and the name is never cut; the At line
-carries no alternatives) ("Best for now", alone, in the top band); when the client can
+colour with, muted under it, "At level 30: <that rung's pick> +12.3 DPS · <its source in a word or two>"
+(the gain over what is worn in green, through the same verdict, left out under the floor or with
+no stats to price it, and dropped before the name is ever cut) (the instance, "Vendor", "Quest" or the kind's word; no boss, no chance; the source moves to its
+own muted line "· <source>" rather than widen the tooltip, and the name is cut only when even the
+bare name is wider than the tooltip; the At line carries no alternatives) ("Best for now", alone, in the top band); when the client can
 show neither the pick nor any of its alternatives, "Best known for now". A pick the client cannot
 show at all gives way to the first of its alternatives it can. The gain compares the items' own
 stats and, for a weapon in a weapon slot of a spec whose reference stat is attack power or ranged

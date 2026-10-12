@@ -366,10 +366,25 @@ describe("ItemTooltip.section", function()
 		return base
 	end
 
+	-- The section's lines as text, the breakdown lines under figures left out:
+	-- those have specs of their own (fix round 7).
 	local function texts(lines)
 		local out = {}
-		for index, line in ipairs(lines) do
-			out[index] = line.text
+		for _, line in ipairs(lines) do
+			if line.kind ~= "breakdown" then
+				out[#out + 1] = line.text
+			end
+		end
+		return out
+	end
+
+	--- `lines` without the breakdown lines (fix round 7), for specs that index them.
+	local function plain(lines)
+		local out = {}
+		for _, line in ipairs(lines) do
+			if line.kind ~= "breakdown" then
+				out[#out + 1] = line
+			end
 		end
 		return out
 	end
@@ -385,7 +400,7 @@ describe("ItemTooltip.section", function()
 			string.format(L.tooltipAlternatives, "Quest Chest", L.tooltipNamePending),
 		}, texts(lines))
 		assert.are.equal("success", lines[1].color)
-		assert.are.equal("alternatives", lines[4].kind)
+		assert.are.equal("alternatives", plain(lines)[4].kind)
 		assert.are.same({ itemId = 100, link = target.link, label = L.tooltipCompareLabel }, target)
 		assert.is_true(pending[102])
 		assert.are.same({ specWord = "Arms", tag = "default", equipped = false }, head)
@@ -523,6 +538,29 @@ describe("ItemTooltip.section", function()
 		local worn = { itemId = 50, link = WORN_LINK, equipLocation = "INVTYPE_CHEST", itemClass = 4,
 			itemSubClass = 3, stats = { strength = 4 } }
 
+		-- Fix round 7: the next rung's pick's gain over what is worn, through the
+		-- same verdict; left out under the floor or with no stats to price it.
+		it("gives the At line the next rung's gain, or none under the floor", function()
+			local worn100 = { itemId = 100, link = "item:100:w", stats = { strength = 20 } }
+			local hovered = { itemId = 100, link = "item:100:w", equipLocation = "INVTYPE_CHEST", itemClass = 4,
+				itemSubClass = 3, stats = { strength = 20 } }
+			local function atOf(stats200)
+				local lines = ItemTooltip.section(ctx({ equipped = { chest = worn100 }, item = hovered,
+					statsOf = function(id) return id == 200 and stats200 or nil end }))
+				for _, line in ipairs(lines) do
+					if line.kind == "at" then
+						return line
+					end
+				end
+			end
+			-- (30 - 20) x 2 x 0.5 = 10.0 DPS.
+			local at = atOf({ strength = 30 })
+			assert.are.equal(10, at.gain)
+			assert.is_truthy(at.text:find(ItemTooltip.figureText(10, "dps"), 1, true))
+			assert.is_nil(atOf({ strength = 20.5 }).gain)
+			assert.is_nil(atOf(nil).gain)
+		end)
+
 		it("says Best for now alone in the top band", function()
 			local lines = texts(ItemTooltip.section(ctx({ level = 35, item = worn,
 				statsOf = function() return nil end })))
@@ -544,8 +582,8 @@ describe("ItemTooltip.section", function()
 			local stats = { [100] = { strength = 20 }, [101] = { strength = 6.2 }, [102] = { strength = 4.6 } }
 			local names = { [100] = "Mutant Scale Breastplate", [101] = "Veteran's Chain Shirt",
 				[102] = "Defender's Leather Armor" }
-			local lines = ItemTooltip.section(ctx({ item = worn, statsOf = function(id) return stats[id] end,
-				nameOf = function(id) return names[id] end }))
+			local lines = plain(ItemTooltip.section(ctx({ item = worn, statsOf = function(id) return stats[id] end,
+				nameOf = function(id) return names[id] end })))
 			-- (6.2 - 4) x 2 x 0.5 = 2.2 and (4.6 - 4) x 2 x 0.5 = 0.6 DPS over the worn chest.
 			assert.are.same({ { name = "Veteran's Chain Shirt", gain = 2.2, unit = "dps" },
 				{ name = "Defender's Leather Armor", gain = 0.6, unit = "dps" } },
@@ -973,9 +1011,12 @@ describe("the item hook", function()
 		NAMES[100] = "Defias Overseer Chest"
 		local tooltip, calls = recording()
 		ItemTooltip.onTooltip(tooltip, "item:50")
-		local source = calls[4]
+		-- Fix round 7: the Next line's breakdown sits between it and the source.
+		local breakdown, source = calls[4], calls[5]
+		assert.are.equal("(+16 Str)", breakdown.text)
 		assert.are.equal(string.format(L.tooltipSourceDrop, "The Deadmines", "Defias Overseer", 14), source.text)
-		for _, value in ipairs({ source.r, source.g, source.b, calls[2].r, calls[2].g, calls[2].b }) do
+		for _, value in ipairs({ source.r, source.g, source.b, breakdown.r, breakdown.g, breakdown.b,
+			calls[2].r, calls[2].g, calls[2].b }) do
 			assert.is_true(value >= 0.72 - 1e-9)
 		end
 	end)
@@ -1095,7 +1136,7 @@ describe("fitting each line to the client's width", function()
 		}, two)
 	end)
 
-	it("puts the At line's short source on its own muted line, never cutting the name", function()
+	it("puts the At line's short source on its own muted line before the name is ever cut", function()
 		local at = { band = 30, name = "Herod's Chest", source = "Scarlet Monastery" }
 		assert.are.same({ string.format(L.tooltipAtBand, 30, "Herod's Chest", "Scarlet Monastery") },
 			ItemTooltip.fitAt(at, visible, 200))
@@ -1506,8 +1547,8 @@ describe("the hook's width contract and enchant wiring", function()
 			} } }
 		local ROOM = #"Abomination Bones"
 
-		local function hover(item, equipped, current)
-			local tip, rows = specTip({ { left = "Abomination Bones" } })
+		local function hover(item, equipped, current, client)
+			local tip, rows = specTip(client or { { left = "Abomination Bones" } })
 			ItemTooltip.data = DATA6
 			ItemTooltip.contextFor = function(data)
 				return {
@@ -1540,6 +1581,22 @@ describe("the hook's width contract and enchant wiring", function()
 			assert.is_truthy(ItemTooltip.stripEscapes(rows[4].left):find("^Not for you"))
 			assert.is_truthy(ItemTooltip.stripEscapes(rows[5].left):find("^Planned"))
 			assertFitted(rows)
+		end)
+
+		-- Fix round 7 (re-review low): with room for some of the carry row, its left
+		-- text plus the gap plus "Equipped" stays within the room, and is cut to fit.
+		it("fits the carry row's left text, the gap and Equipped within the room", function()
+			local wide = string.rep("x", 40)
+			local worn = { itemId = 100, link = "item:100:w", stats = { strength = 20 } }
+			local rows = hover({ itemId = 100, link = "item:100:w", equipLocation = "INVTYPE_CHEST", itemClass = 4,
+				itemSubClass = 3, stats = { strength = 20 } }, { chest = worn }, nil, { { left = wide } })
+			assert.is_nil(rows[3].right)
+			assert.are.equal(L.tooltipEquipped, rows[4].right)
+			local left = ItemTooltip.stripEscapes(rows[4].left)
+			assert.is_true(#left + ItemTooltip.PAIR_GAP + #L.tooltipEquipped <= 40)
+			assert.are_not.equal(string.format(L.tooltipBestUntil, 30), left)
+			assert.is_truthy(left:find("^Best un"))
+			assert.is_truthy(left:find(L.tooltipNamePending, 1, true))
 		end)
 
 		it("fits Best until level 30 and a capped stat, and carries Equipped to the next row", function()
@@ -1587,5 +1644,67 @@ describe("the hook's width contract and enchant wiring", function()
 		local rows = Compat.inventoryTooltipRows(5)
 		_G.C_TooltipInfo = savedInfo
 		assert.are.same({ { left = "Abomination Bones" }, { left = "Chest", right = "Mail" } }, rows)
+	end)
+end)
+
+-- L3.3 fix round 7 ---------------------------------------------------------
+
+describe("the breakdown under a figure", function()
+	local Data = require("Data")
+	local arms = Data.weights["warrior-arms"]
+
+	-- tip7 mace: Smite's Mighty Hammer (Str 11, Agi 4, 19.7 DPS, "Weapon Damage
+	-- +4" at 3.50 netted) against Cookie's Tenderizer (Spi 4, 13.9 DPS).
+	local smite = Gear.netEnchant({ itemId = 7230, equipLoc = "INVTYPE_2HWEAPON",
+		stats = { strength = 11, agility = 4, weapon_dps = 19.7 } }, { stats = { weapon_dps = 4 / 3.5 }, unparsed = false })
+	local mace = { itemId = 5197, equipLocation = "INVTYPE_WEAPON", stats = { spirit = 4, weapon_dps = 13.9 } }
+
+	it("lists the mace's three contributors, signed, in the player's words", function()
+		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, 0.2342, "attack_power")
+		assert.are.equal("(" .. L.tooltipMinus .. "11 Str, " .. L.tooltipMinus .. "4 Agi, " .. L.tooltipMinus
+			.. "6.9 weapon DPS)", ItemTooltip.breakdownText(verdict.contributions, 3))
+		assert.are.equal("weapon_dps", verdict.contributions[1].stat)
+	end)
+
+	it("lists a stat-only gain, the enchant folded into its stat", function()
+		local bones = Gear.netEnchant({ itemId = 51, stats = { strength = 8 } },
+			{ stats = { attack_power = 4, armor = 16 }, unparsed = false })
+		local verdict = Progress.itemVerdict("chest", { itemId = 6627, stats = { strength = 10, stamina = 4 } },
+			{ chest = bones }, arms, 0.2342, "attack_power")
+		assert.are.equal("(+2 Str, " .. L.tooltipMinus .. "4 " .. L.statNames.attack_power .. ")",
+			ItemTooltip.breakdownText(verdict.contributions, 3))
+	end)
+
+	it("drops the third, then the second contributor before it cuts the line", function()
+		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, 0.2342, "attack_power")
+		local all = ItemTooltip.breakdownText(verdict.contributions, 3)
+		assert.are.same({ all }, ItemTooltip.fitBreakdown(verdict.contributions, visible, 200))
+		assert.are.same({ "(" .. L.tooltipMinus .. "11 Str, " .. L.tooltipMinus .. "6.9 weapon DPS)" },
+			ItemTooltip.fitBreakdown(verdict.contributions, visible, 30))
+		assert.are.same({ "(" .. L.tooltipMinus .. "6.9 weapon DPS)" },
+			ItemTooltip.fitBreakdown(verdict.contributions, visible, 20))
+		local cutText = ItemTooltip.fitBreakdown(verdict.contributions, visible, 10)[1]
+		assert.is_true(visible(cutText) <= 10)
+	end)
+end)
+
+describe("the At line's gain", function()
+	local at = { band = 30, name = "Manual Crowd Pummeler", source = "Gnomeregan", gain = 12.3, unit = "dps" }
+	local green = ItemTooltip.figureText(12.3, "dps")
+
+	it("prints the next rung's gain in green after the name", function()
+		assert.are.equal("|cff" .. Theme.HEX.success .. string.format(L.tooltipNextGain, 12.3, L.tooltipUnitDps) .. "|r",
+			green)
+		assert.are.same({ string.format(L.tooltipAtBand, 30, "Manual Crowd Pummeler " .. green, "Gnomeregan") },
+			ItemTooltip.fitAt(at, visible, 200))
+	end)
+
+	it("drops the gain before the name is touched", function()
+		local withGain = string.format(L.tooltipAtBandName, 30, "Manual Crowd Pummeler " .. green)
+		assert.are.same({ withGain, string.format(L.tooltipAtSource, "Gnomeregan") },
+			ItemTooltip.fitAt(at, visible, visible(withGain)))
+		local bare = string.format(L.tooltipAtBandName, 30, "Manual Crowd Pummeler")
+		assert.are.same({ bare, string.format(L.tooltipAtSource, "Gnomeregan") },
+			ItemTooltip.fitAt(at, visible, visible(bare)))
 	end)
 end)
