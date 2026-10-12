@@ -2,8 +2,10 @@ package rating
 
 import (
 	"context"
+	"encoding/json"
 	"math"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -253,5 +255,53 @@ func TestAFailedLevelLookupLeavesAdherenceAbsentAndStillRates(t *testing.T) {
 	}
 	if adherence != nil {
 		t.Fatalf("adherence = %v with no level read, want absent", *adherence)
+	}
+}
+
+// Warlock Healthstone and Spellstone uses are warlock families (so the no-class-spell rule
+// does not catch them), but they are consumables, not ability casts.
+func TestAdherenceLeavesOutWarlockStones(t *testing.T) {
+	const name = "Adhstone"
+	seedLevel(t, name, 60)
+	got := rateForAdherence(t, "stone", name, "Warlock", "Affliction", castRows("",
+		[2]int64{25307, 10}, [2]int64{23473, 2}, [2]int64{17730, 1}))
+	wantAdherence(t, "Shadow Bolt, Healthstone, Major Spellstone", got, 1.0)
+}
+
+func TestAdherenceExcludesManaShieldAndTranquilizingShot(t *testing.T) {
+	if !excludedFamily("Mana Shield") {
+		t.Error("Mana Shield (a mage self-buff) counts as an ability cast")
+	}
+	if !excludedFamily("Tranquilizing Shot") {
+		t.Error("Tranquilizing Shot (a hunter dispel) counts as an ability cast")
+	}
+}
+
+// Every curated exact name is a class family in the newest data build: a name that is no
+// class's family can never match (its casts are no class spell, which the item rule already
+// sets aside), so it would only be dead weight in the list.
+func TestEveryCuratedExclusionNameIsAClassFamily(t *testing.T) {
+	body, err := os.ReadFile(filepath.Join("..", "..", "..", "data", "builds", "1.60.1.70291", "spellranks.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var ranks struct {
+		Classes map[string]map[string]json.RawMessage `json:"classes"`
+	}
+	if err := json.Unmarshal(body, &ranks); err != nil {
+		t.Fatal(err)
+	}
+	families := map[string]bool{}
+	for _, class := range ranks.Classes {
+		for name := range class {
+			families[name] = true
+		}
+	}
+	for _, e := range adherenceExclusions {
+		for _, n := range e.names {
+			if !families[n] {
+				t.Errorf("%s: %q is no class family in 1.60.1.70291", e.category, n)
+			}
+		}
 	}
 }

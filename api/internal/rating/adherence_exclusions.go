@@ -19,6 +19,13 @@ package rating
 // Overlaps worth knowing: "Shadow Protection" is the priest buff (utility below) and also the
 // effect name of the Shadow Protection Potion; the potion is no priest spell, so the item rule
 // sets it aside, and the name here only ever matches the priest's own family.
+//
+// Item effects (trinkets, potions, bandages, racials, mounts, Hearthstone, professions) are
+// handled by the no-class-spell rule above, never by a name here. The curated names are only
+// class families, and TestEveryCuratedExclusionNameIsAClassFamily holds that against the
+// newest data build: a name that is no class's family could never match anything. The
+// warlock's Healthstones and Spellstones are the one consumable that is a class family, so
+// they are named below.
 
 import (
 	"strings"
@@ -46,17 +53,16 @@ var adherenceExclusions = []adherenceExclusion{
 	{
 		category: "dispel and cleanse",
 		names: []string{"Dispel Magic", "Cleanse", "Purify", "Remove Curse", "Remove Lesser Curse",
-			"Abolish Poison", "Cure Poison", "Abolish Disease", "Cure Disease", "Purge"},
+			"Abolish Poison", "Cure Poison", "Abolish Disease", "Cure Disease", "Purge", "Tranquilizing Shot"},
 	},
 	{
 		category: "interrupt",
-		names:    []string{"Pummel", "Shield Bash", "Kick", "Counterspell", "Silence"},
+		names:    []string{"Pummel", "Shield Bash", "Kick", "Counterspell"},
 	},
 	{
 		category: "taunt and threat",
 		names: []string{"Taunt", "Mocking Blow", "Challenging Shout", "Growl", "Challenging Roar",
-			"Hand of Reckoning", "Righteous Defense", "Feign Death", "Fade", "Vanish", "Cower", "Feint",
-			"Soulshatter"},
+			"Hand of Reckoning", "Feign Death", "Fade", "Vanish", "Cower", "Feint"},
 	},
 	{
 		category: "resurrection",
@@ -66,38 +72,36 @@ var adherenceExclusions = []adherenceExclusion{
 		// Self-buffs, stances, forms, seals (and the judgement a seal turns into), aspects,
 		// armors, shields, shouts and totems a rotation does not list.
 		category: "self-buff, stance, form, seal, aspect, armor, totem",
-		names: []string{"Shadowform", "Frost Armor", "Ice Armor", "Mage Armor", "Molten Armor", "Demon Armor",
+		names: []string{"Frost Armor", "Ice Armor", "Mage Armor", "Molten Armor", "Demon Armor",
 			"Demon Skin", "Inner Fire", "Lightning Shield", "Water Shield", "Earth Shield", "Righteous Fury",
-			"Thorns", "Omen of Clarity", "Battle Shout", "Commanding Shout"},
+			"Thorns", "Omen of Clarity", "Battle Shout", "Commanding Shout", "Mana Shield"},
 		prefixes: []string{"Seal of ", "Judgement of ", "Aspect of the "},
 		suffixes: []string{" Form", " Stance", " Totem", " Aura"},
 	},
 	{
-		// Racials a class's own spell list happens to carry (the rest are no class spell).
+		// The one racial a class's own spell list carries (the rogue's); every other racial is
+		// no class spell.
 		category: "racial",
-		names: []string{"Blood Fury", "Berserking", "Stoneform", "Perception", "War Stomp", "Shadowmeld",
-			"Will of the Forsaken", "Escape Artist", "Cannibalize", "Find Treasure"},
+		names:    []string{"Shadowmeld"},
 	},
 	{
-		category: "mount",
-		names:    []string{"Summon Warhorse", "Summon Charger", "Summon Felsteed", "Summon Dreadsteed"},
+		// Warlock Healthstones and Spellstones: consumables, but warlock families.
+		category: "consumable",
+		names: []string{"Healthstone", "Minor Healthstone", "Lesser Healthstone", "Greater Healthstone",
+			"Major Healthstone", "Spellstone", "Greater Spellstone", "Major Spellstone"},
 	},
 	{
 		category: "movement",
-		names: []string{"Sprint", "Dash", "Blink", "Ghost Wolf", "Slow Fall", "Levitate", "Charge", "Intercept",
+		names: []string{"Sprint", "Blink", "Ghost Wolf", "Slow Fall", "Levitate", "Charge", "Intercept",
 			"Feral Charge"},
 	},
 	{
-		// Travel, gathering, conjuring, summoning, pets and the long raid buffs cast before
-		// the pull.
+		// Conjuring, summoning, tracking, pets and the long raid buffs cast before the pull.
 		category: "utility",
-		names: []string{"Hearthstone", "Fishing", "Arcane Intellect", "Arcane Brilliance",
-			"Power Word: Fortitude", "Prayer of Fortitude", "Divine Spirit", "Prayer of Spirit",
-			"Shadow Protection", "Prayer of Shadow Protection", "Mark of the Wild", "Gift of the Wild",
-			"Detect Magic", "Detect Invisibility", "Detect Lesser Invisibility", "Unending Breath",
-			"Water Walking", "Water Breathing", "Amplify Magic", "Dampen Magic", "Call Pet", "Revive Pet",
-			"Dismiss Pet", "Feed Pet", "Mend Pet", "Tame Beast", "Eyes of the Beast", "Eye of Kilrogg",
-			"Far Sight", "Pick Lock", "Disarm Trap", "Sense Undead", "Sense Demons"},
+		names: []string{"Arcane Intellect", "Arcane Brilliance", "Power Word: Fortitude", "Prayer of Fortitude",
+			"Divine Spirit", "Prayer of Spirit", "Shadow Protection", "Prayer of Shadow Protection",
+			"Mark of the Wild", "Gift of the Wild", "Amplify Magic", "Dampen Magic", "Revive Pet", "Mend Pet",
+			"Eyes of the Beast", "Disarm Trap"},
 		prefixes: []string{"Blessing of ", "Greater Blessing of ", "Conjure ", "Create ", "Ritual of ",
 			"Summon ", "Track ", "Find "},
 	},
