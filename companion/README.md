@@ -83,9 +83,11 @@ per report, `logs/companion.log`, and `update/` for a downloaded update.
 
 If the ForeverSixty addon is installed, the companion reads its saved variables after you log
 out and uploads each character's export string, so your real talents and gear reach the planner
-without a copy and paste. It writes `ForeverSixtyInbox.lua` beside them every ten minutes with
-the builds you chose on the site, which the addon loads the next time the game starts or you
-`/reload`. The game rewrites its own saved variables at logout, so an inbox written mid-session
+without a copy and paste. It writes `ForeverSixtyInbox.lua` beside them
+(`WTF/Account/<account>/SavedVariables/ForeverSixtyInbox.lua`) every ten minutes with the builds
+you chose on the site, which the addon loads the next time the game starts or you `/reload`. The
+game reads that file only for the small `ForeverSixtyInbox` addon that ships in the same download
+as ForeverSixty (both folders go into `Interface/AddOns`); without it the inbox is never seen. The game rewrites its own saved variables at logout, so an inbox written mid-session
 may be replaced; the next pass puts it back.
 
 ## Troubleshooting

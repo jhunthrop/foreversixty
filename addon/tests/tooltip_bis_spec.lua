@@ -46,6 +46,11 @@ local DATA = {
 	},
 }
 
+--- DATA with stat weights for the spec, for the item hook's next upgrade (L3.3
+--- fix round 2: the next upgrade is printed only with its gain, which needs
+--- weights).
+local WEIGHTED = setmetatable({ weights = { ["paladin-holy"] = { intellect = 1 } } }, { __index = DATA })
+
 describe("Tooltip's BiS hover section", function()
 	local Tooltip, Prefs, Theme
 
@@ -328,7 +333,10 @@ describe("Tooltip's BiS hover section", function()
 		it("draws the BiS section for a bag item too, once its equip location maps to a tracked slot", function()
 			start({
 				level = 20,
-				itemStats = { ["item:bag:link"] = { __itemId = 999, __slot = "INVTYPE_HEAD" } },
+				itemStats = {
+					["item:bag:link"] = { __itemId = 999, __slot = "INVTYPE_HEAD" },
+					["item:111:link"] = { __itemId = 111, __slot = "INVTYPE_HEAD", ITEM_MOD_INTELLECT_SHORT = 10 },
+				},
 				globals = { GetItemInfo = function(id)
 					if id == 111 then
 						return "Helm of the Pathfinder", "item:111:link"
@@ -336,14 +344,14 @@ describe("Tooltip's BiS hover section", function()
 					return nil
 				end },
 			})
-			Tooltip.data = DATA
+			Tooltip.data = WEIGHTED
 			local tooltip, calls = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:bag:link")
-			-- L3.3 fix round 1: a blank line, the header, then the slot's next
-			-- upgrade by name (no weights here, so no gain).
+			-- L3.3 fix round 2: a blank line, the header, then the slot's next
+			-- upgrade with its gain (a next upgrade is never printed without one).
 			assert.are.equal(" ", calls[1].text)
 			assert.is_truthy(calls[2].text:find(L.addonName, 1, true))
-			assert.are.equal(string.format(L.tooltipNextUpgrade, "Helm of the Pathfinder"), calls[3].text)
+			assert.are.equal(string.format(L.tooltipNextUpgradeScore, "Helm of the Pathfinder", 10), calls[3].text)
 		end)
 
 		it("still adds nothing for an item whose equip location this band does not track at all", function()
@@ -577,7 +585,10 @@ describe("Tooltip's BiS hover section", function()
 		it("shows the next upgrade's compare tooltip, with its tab, once the client holds it", function()
 			start({
 				level = 20,
-				itemStats = { ["item:bag:link"] = { __itemId = 999, __slot = "INVTYPE_HEAD" } },
+				itemStats = {
+					["item:bag:link"] = { __itemId = 999, __slot = "INVTYPE_HEAD" },
+					["item:111:link"] = { __itemId = 111, __slot = "INVTYPE_HEAD", ITEM_MOD_INTELLECT_SHORT = 10 },
+				},
 				globals = { GetItemInfo = function(id)
 					if id == 111 then
 						return "Helm of the Pathfinder", "item:111:link"
@@ -585,7 +596,7 @@ describe("Tooltip's BiS hover section", function()
 					return nil
 				end },
 			})
-			Tooltip.data = DATA
+			Tooltip.data = WEIGHTED
 			Tooltip.onTooltip(recordingTooltip(), "item:bag:link")
 			assert.are.equal("item:111:link", mock.firstCall(Theme.compareTooltipFrame, "SetHyperlink")[1])
 			assert.are.equal(111, Tooltip.activeHover.itemId)

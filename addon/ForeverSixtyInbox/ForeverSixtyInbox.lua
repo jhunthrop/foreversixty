@@ -1,0 +1,3 @@
+-- addon/ForeverSixtyInbox/ForeverSixtyInbox.lua: no code. This addon only owns the
+-- ForeverSixtyInbox saved variable: the companion writes it into
+-- WTF/Account/<account>/SavedVariables/ForeverSixtyInbox.lua and the Forever Sixty addon reads it.

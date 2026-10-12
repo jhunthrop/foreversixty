@@ -150,7 +150,10 @@ Notes for the reader:
 
 **Who writes, who reads, how versioned.** Lane L6 (the API) emits the messages, Lane L7 (the
 companion) renders them into `ForeverSixtyInbox.lua` every ten minutes, and Lanes L2, L4 and L5
-read them. The file is a private, per-account exchange and is never shown to anyone else. The
+read them. The file lives at `WTF/Account/<account>/SavedVariables/ForeverSixtyInbox.lua` and belongs
+to the code-free `ForeverSixtyInbox` addon, whose TOC declares the `ForeverSixtyInbox` saved
+variable (the client loads one saved-variables file per addon, named after it); the Forever Sixty
+addon lists it in `## OptionalDeps` and reads the global. The file is a private, per-account exchange and is never shown to anyone else. The
 top-level `format` field is new and is the version this contract keys on; an addon that reads a
 `format` greater than it knows ignores the file and says so in one line in `/fs diag`. Each
 message is selected by `type`; an unknown `type` is skipped, so a new message type never needs a

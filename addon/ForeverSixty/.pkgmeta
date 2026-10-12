@@ -8,6 +8,14 @@
 # packaged by accident.
 package-as: ForeverSixty
 
+# ForeverSixtyInbox (addon/ForeverSixtyInbox, a sibling of this folder) ships
+# beside ForeverSixty in every release: a code-free addon that only owns the
+# ForeverSixtyInbox saved variable, which the companion writes into
+# WTF/Account/<account>/SavedVariables/ForeverSixtyInbox.lua (the client reads
+# that file only for an addon of that name). This topdir cannot reach a sibling
+# folder, so the release workflow adds it to the zip as a second top-level
+# folder; until it does, a release must not go out (see addon/README.md).
+
 # No libraries are embedded: this addon has no dependencies, and a nolib
 # variant of a zip with no libs in it is a second artefact saying the same
 # thing.

@@ -105,7 +105,9 @@ Chausses of Westfall", "Sidegrade (+0.3 DPS)", "Downgrade −4.2 DPS over Smite'
 "Upgrade" only from the chip's own 1.0 floor), "Best for now", or the reason it is not one ("Not
 for you until 40: plate armor", "Not with your two-hander", "Not for your plan"); only non-gear
 stays blank. On the item worn the primary line is the slot's next upgrade ("Next upgrade: Mutant
-Scale Breastplate +6.1 DPS", the name in its quality colour). Then the plan ("Planned for Arms at
+Scale Breastplate +6.1 DPS", the name in its quality colour), printed only when the pick gains
+at least the 1.0 floor over what is worn; under it the line is "Best for now". The gain compares
+the items' own stats: enchants are not counted. Then the plan ("Planned for Arms at
 30"), the source on its own line with drop chance ("Wailing Caverns · Mutanus the Devourer · 33%
 drop"), and two alternatives when the data has them ("Also good: A, B", never wider than the
 tooltip). The unit is DPS (or HPS) when a sim result or DPS-per-point weights exist for the spec,
@@ -224,7 +226,7 @@ At 60 the tab leads with "71 % of pre-raid BiS, five slots matter most", each wi
 source. With the companion, "Sim me" writes a request on logout and the result arrives at next
 login: DPS, weights in DPS per point, per-slot deltas in DPS; every verdict in the addon
 switches to that unit and tag. Without the companion the shipped DPS-per-point weights from the
-site's sim runs are used and the tag says "Default weights".
+site's sim runs are used and the tag says "Estimate" ("Your sim" once the companion's sim arrives).
 
 ### 5.3 Logs
 

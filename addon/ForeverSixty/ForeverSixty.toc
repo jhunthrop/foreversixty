@@ -7,7 +7,8 @@
 ## X-Curse-Project-ID: 1706689
 ## X-Wago-ID: XKqEdoKy
 ## X-Website: https://foreversixty.gg/addon
-## SavedVariables: ForeverSixtyDB, ForeverSixtyInbox
+## SavedVariables: ForeverSixtyDB
+## OptionalDeps: ForeverSixtyInbox, ForeverSixtyData
 
 Locale.lua
 Data.lua

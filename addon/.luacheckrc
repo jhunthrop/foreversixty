@@ -40,9 +40,10 @@ read_globals = {
 	"AddonCompartmentFrame",
 	-- The chip (surfaces/Chip.lua), each behind a Theme capability check.
 	"GetInstanceInfo", "IsShiftKeyDown", "ToggleTalentFrame", "PlayerSpellsUtil", "CLASS_ICON_TCOORDS",
-	-- Saved variables the TOC declares. ForeverSixtyInbox is written by the
-	-- companion and only ever read here; ForeverSixtyDB is the addon's own
-	-- and Export.save writes it, so it is a global, not a read_global.
+	-- Saved variables. ForeverSixtyInbox belongs to the code-free ForeverSixtyInbox
+	-- addon (its TOC declares it), is written by the companion and only ever read
+	-- here; ForeverSixtyDB is the addon's own and Export.save writes it, so it
+	-- is a global, not a read_global.
 	"ForeverSixtyInbox",
 	-- The measurement recorder (Recorder.lua). Its other client calls go through `try`.
 	"GetTime", "CombatLogGetCurrentEventInfo",

@@ -38,6 +38,9 @@ Theme.HEX = {
 	titleBottom = "0d111a",
 	gold = "e5b955",
 	muted = "9a9484",
+	--- Muted text on the client's own tooltip, which sits on a lighter ground than
+	--- the window: never darker than the client's own grey (9d9d9d) in any channel.
+	tooltipMuted = "b3ad9f",
 	body = "e9e4d8",
 	warning = "ff6b5c",
 }

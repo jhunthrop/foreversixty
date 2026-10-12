@@ -51,7 +51,18 @@ describe("ItemTooltip.verdictLine", function()
 		local side = { text = L.tooltipSide, color = "muted" }
 		assert.are.same(side, ItemTooltip.verdictLine({ state = "behind", delta = -0.04 }, "dps", "Robe"))
 		assert.are.same(side, ItemTooltip.verdictLine({ state = "behind", delta = 0 }, "dps", "Robe"))
-		assert.are.same(side, ItemTooltip.verdictLine({ state = "behind", delta = -0.6 }, "score", "Robe"))
+		assert.are.same(side, ItemTooltip.verdictLine({ state = "behind", delta = -0.4 }, "score", "Robe"))
+	end)
+
+	it("takes the word from the figure it prints, rounded once", function()
+		-- 0.96 prints "1.0", so it is an upgrade; 0.94 prints "0.9", a sidegrade.
+		assert.are.same({ text = string.format(L.tooltipVerdictDps, 1, "Robe"), color = "success" },
+			ItemTooltip.verdictLine({ state = "behind", delta = -0.96 }, "dps", "Robe"))
+		assert.are.same({ text = string.format(L.tooltipSideGain, "+", 0.9, L.tooltipUnitDps), color = "muted" },
+			ItemTooltip.verdictLine({ state = "behind", delta = -0.94 }, "dps", "Robe"))
+		assert.are.same({ text = string.format(L.tooltipDown, 1, L.tooltipUnitDps, "Robe"), color = "warning" },
+			ItemTooltip.verdictLine({ state = "better", delta = 0.96 }, "dps", "Robe"))
+		assert.are.equal("success", ItemTooltip.verdictLine({ state = "empty", delta = -0.96 }, "dps", nil).color)
 	end)
 
 	it("says Equipped, muted, for the item worn", function()
@@ -310,12 +321,14 @@ describe("ItemTooltip.section", function()
 				chest = "100|D|The Deadmines: Defias Overseer|0.14|101|Q|A Quest|102|V|Some Vendor",
 				finger1 = "400|Q|Ring Quest",
 				finger2 = "400|Q|Ring Quest",
+				off_hand = "300|D|The Deadmines: Sneed|0.1",
 			} },
 			[30] = { alliance = { chest = "200|D|Scarlet Monastery: Herod|0.2" } },
 		} },
 	}
-	local NAMES = { [100] = "Defias Overseer Chest", [101] = "Quest Chest", [200] = "Herod's Chest" }
-	local STATS = { [100] = { strength = 20 } }
+	local NAMES = { [100] = "Defias Overseer Chest", [101] = "Quest Chest", [200] = "Herod's Chest",
+		[300] = "Sneed's Shield" }
+	local STATS = { [100] = { strength = 20 }, [300] = { strength = 30 } }
 	local SMITE = { itemId = 70, link = "|Hitem:70|h[Smite's Mighty Hammer]|h", equipLoc = "INVTYPE_2HWEAPON",
 		stats = { strength = 20 } }
 
@@ -423,6 +436,40 @@ describe("ItemTooltip.section", function()
 				L.tooltipUnitDps), lines[1].text)
 		end)
 
+		-- tip2-chest.jpg: "Next upgrade: Mutant Scale Breastplate" with no gain.
+		-- Abomination Bones (+8 Strength; its +4 attack power enchant is not
+		-- an item stat) against Mutant Scale Breastplate (+10 Strength, +4
+		-- Stamina) under the shipped Arms weights: 2 Strength x 2 = 4 attack
+		-- power x 0.2342 = 0.94 DPS, under the 1.0 floor, so round 1 printed
+		-- the name with no figure. Below the floor it is "Best for now".
+		it("says Best for now when the next pick gains under the floor: the live chest", function()
+			local Data = require("Data")
+			local live = {
+				classes = DATA.classes,
+				weights = { ["warrior-arms"] = Data.weights["warrior-arms"] },
+				dpsPerPoint = { ["warrior-arms"] = Data.dpsPerPoint["warrior-arms"] },
+				bis = { ["warrior-arms"] = { [20] = { alliance = {
+					chest = "6627|D|Wailing Caverns: Mutanus the Devourer|0.33|101|Q|A Quest",
+				} } } },
+			}
+			local bones = { itemId = 51, link = "|Hitem:51:1843|h[Abomination Bones]|h", stats = { strength = 8 } }
+			local lines, target = ItemTooltip.section(ctx({
+				data = live, current = Gear.currentWeights(live, "warrior-arms", nil, KEY),
+				equipped = { chest = bones },
+				nameOf = function(id) return id == 6627 and "Mutant Scale Breastplate" or NAMES[id] end,
+				statsOf = function(id) return id == 6627 and { strength = 10, stamina = 4 } or nil end,
+				item = { itemId = 51, link = bones.link, equipLocation = "INVTYPE_CHEST", itemClass = 4,
+					itemSubClass = 3, stats = bones.stats },
+			}))
+			assert.are.same({ { text = L.tooltipBestForNow, color = "muted" } }, lines)
+			assert.is_nil(target)
+		end)
+
+		it("says Best for now when the next pick's gain cannot be computed", function()
+			local lines = texts(ItemTooltip.section(ctx({ item = WORN, statsOf = function() return nil end })))
+			assert.are.same({ L.tooltipBestForNow }, lines)
+		end)
+
 		it("says Best for now when it is the band's pick", function()
 			local lines, target = ItemTooltip.section(ctx({
 				equipped = { chest = { itemId = 100, link = "item:100:worn", stats = { strength = 20 } } },
@@ -474,6 +521,14 @@ describe("ItemTooltip.section", function()
 				equipLocation = "INVTYPE_SHIELD", itemClass = 4, itemSubClass = 6, stats = { strength = 3 } }))
 		end)
 
+		it("says only Not with your two-hander for a shield, even with a band pick for the off hand", function()
+			local lines, target = ItemTooltip.section(ctx({ equipped = { main_hand = SMITE },
+				item = { itemId = 80, link = "item:80", equipLocation = "INVTYPE_SHIELD", itemClass = 4,
+					itemSubClass = 6, stats = { strength = 3 } } }))
+			assert.are.same({ L.tooltipTwoHander }, texts(lines))
+			assert.is_nil(target)
+		end)
+
 		it("scores a one-hander against the two-hander", function()
 			assert.are.same({ string.format(L.tooltipDown, 16, L.tooltipUnitDps, "Smite's Mighty Hammer") },
 				hands({ itemId = 81, link = "item:81", equipLocation = "INVTYPE_WEAPON", itemClass = 2,
@@ -516,13 +571,24 @@ describe("ItemTooltip.section", function()
 		assert.are.same({ string.format(L.tooltipVerdictScore, 12, "Chausses of Westfall") }, lines)
 	end)
 
-	it("prints only the next pick with no weights for the spec", function()
-		local lines = texts(ItemTooltip.section(ctx({ current = false })))
-		assert.are.same({
-			string.format(L.tooltipNextUpgrade, "Defias Overseer Chest"),
-			NEXT_SOURCE,
-			string.format(L.tooltipAlternatives, "Quest Chest", L.tooltipNamePending),
-		}, lines)
+	it("never prints a next pick it cannot price: nothing with no weights for the spec", function()
+		assert.are.same({}, texts(ItemTooltip.section(ctx({ current = false }))))
+	end)
+
+	it("never prints an unqualified next upgrade on a bag item whose pick gains under the floor", function()
+		local lines = texts(ItemTooltip.section(ctx({ statsOf = function() return { strength = 4 } end })))
+		assert.are.same({ string.format(L.tooltipVerdictDps, 6, "Chausses of Westfall") }, lines)
+	end)
+
+	it("lists the alternatives the data names for the band, whatever their armour", function()
+		local lines = texts(ItemTooltip.section(ctx({
+			nameOf = function(id)
+				return ({ [100] = "Mutant Scale Breastplate", [101] = "Veteran's Chain Shirt",
+					[102] = "Defender's Leather Armor" })[id]
+			end,
+		})))
+		assert.are.equal(string.format(L.tooltipAlternatives, "Veteran's Chain Shirt", "Defender's Leather Armor"),
+			lines[4])
 	end)
 
 	it("says nothing for an item with no equip slot", function()
@@ -581,5 +647,141 @@ describe("ItemTooltip.section", function()
 				NEXT_SOURCE,
 			}, lines)
 		end)
+	end)
+end)
+
+-- The tip2-mace figure, "Downgrade −5.7 DPS over Smite's Mighty Hammer", with
+-- the engine's own breakdown: the shipped Arms weights (Data.weights, the
+-- table every level uses; band 20-29) and its DPS per point.
+describe("the weapon figure under the shipped Arms weights", function()
+	local Data = require("Data")
+	local weights = Data.weights["warrior-arms"]
+	local perPoint = Data.dpsPerPoint["warrior-arms"].dps
+	local hammer = { itemId = 7230, link = "|Hitem:7230|h[Smite's Mighty Hammer]|h", equipLoc = "INVTYPE_2HWEAPON",
+		stats = { strength = 11, agility = 4 } }
+	local tenderizer = { itemId = 5197, link = "item:5197", equipLocation = "INVTYPE_WEAPON",
+		stats = { spirit = 4 } }
+
+	it("counts the Hammer's Strength and Agility, the Tenderizer's Spirit at nothing, and no weapon DPS", function()
+		assert.are.equal(2, weights.strength)
+		assert.are.equal(0.6, weights.agility)
+		assert.is_nil(weights.spirit)
+		assert.are.equal(0.2342, perPoint)
+		-- 11 x 2 + 4 x 0.6 = 24.4 attack power; 4 Spirit x 0 = 0. No stat key
+		-- carries a weapon's damage per second, so the 19.7 and 13.9 weapon DPS
+		-- never enter the score.
+		assert.are.equal(24.4, Gear.score(hammer.stats, weights))
+		assert.are.equal(0, Gear.score(tenderizer.stats, weights))
+		for _, stat in pairs(Rules.STAT_KEYS) do
+			assert.is_nil(stat:find("damage_per_second", 1, true))
+		end
+		local verdict = Progress.itemVerdict("main_hand", tenderizer, { main_hand = hammer }, weights, perPoint)
+		assert.are.equal("better", verdict.state)
+		assert.is_true(math.abs(verdict.delta - 24.4 * 0.2342) < 1e-9)
+		assert.are.equal(string.format(L.tooltipDown, 5.7, L.tooltipUnitDps, "Smite's Mighty Hammer"),
+			ItemTooltip.verdictLine(verdict, "dps", "Smite's Mighty Hammer").text)
+	end)
+end)
+
+-- The hook, driven with a hand-made context (ItemTooltip.contextFor stands in
+-- for the client reads) and a recording tooltip: no client mock.
+describe("the item hook", function()
+	local saved = {}
+	local NAMES
+
+	local function recording()
+		local calls = {}
+		return {
+			AddLine = function(_, text, r, g, b) calls[#calls + 1] = { text = text, r = r, g = g, b = b } end,
+			AddDoubleLine = function(_, left, right, _, _, _, r, g, b)
+				calls[#calls + 1] = { text = left, right = right, r = r, g = g, b = b }
+			end,
+			Show = function() end,
+		}, calls
+	end
+
+	before_each(function()
+		saved.contextFor, saved.data, saved.cache = ItemTooltip.contextFor, ItemTooltip.data, ItemTooltip.cache
+		NAMES = {}
+		ItemTooltip.data = {
+			classes = { warrior = { tabs = { { name = "Arms" } } } },
+			weights = { ["warrior-arms"] = { strength = 2 } },
+			dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.5, healing = false } },
+			bis = { ["warrior-arms"] = { [20] = { alliance = { chest = "100|D|The Deadmines: Defias Overseer|0.14" } } } },
+		}
+		ItemTooltip.resetCache()
+		ItemTooltip.contextFor = function(data, link)
+			local worn = { itemId = 50, link = "item:50", stats = { strength = 4 } }
+			return {
+				data = data, classToken = "WARRIOR", level = 20, spec = "warrior-arms", faction = "alliance",
+				current = Gear.currentWeights(data, "warrior-arms", nil, KEY),
+				equipped = { chest = worn },
+				nameOf = function(id) return NAMES[id] end,
+				statsOf = function(id) return id == 100 and { strength = 20 } or nil end,
+				isCached = function() return false end, qualityHex = function() return nil end,
+				item = link == "item:50" and { itemId = 50, link = "item:50", equipLocation = "INVTYPE_CHEST",
+					itemClass = 4, itemSubClass = 3, stats = worn.stats }
+					or { itemId = 7, link = link, equipLocation = "INVTYPE_NECK", itemClass = 4, itemSubClass = 0,
+						stats = {} },
+			}
+		end
+	end)
+
+	after_each(function()
+		ItemTooltip.contextFor, ItemTooltip.data, ItemTooltip.cache = saved.contextFor, saved.data, saved.cache
+		ItemTooltip.activeHover = nil
+	end)
+
+	it("never keeps a section that still waits for a name: the next hover shows it", function()
+		local tooltip, calls = recording()
+		ItemTooltip.onTooltip(tooltip, "item:50")
+		assert.are.equal(L.tooltipEquipped, calls[2].right)
+		assert.is_nil(calls[3])
+		ItemTooltip.onTooltip(recording(), "item:other")
+		NAMES[100] = "Defias Overseer Chest"
+		tooltip, calls = recording()
+		ItemTooltip.onTooltip(tooltip, "item:50")
+		assert.are.equal(string.format(L.tooltipNextUpgradeGain, "Defias Overseer Chest", 16, L.tooltipUnitDps),
+			calls[3].text)
+	end)
+
+	it("draws every muted line no darker than the client's own grey", function()
+		NAMES[100] = "Defias Overseer Chest"
+		local tooltip, calls = recording()
+		ItemTooltip.onTooltip(tooltip, "item:50")
+		local source = calls[4]
+		assert.are.equal(string.format(L.tooltipSourceDrop, "The Deadmines", "Defias Overseer", 14), source.text)
+		for _, value in ipairs({ source.r, source.g, source.b, calls[2].r, calls[2].g, calls[2].b }) do
+			assert.is_true(value >= 0.62 - 1e-9)
+		end
+	end)
+end)
+
+describe("the muted colours", function()
+	local Theme = require("Theme")
+
+	it("keep the site's muted token and give the tooltip one at least the client's grey", function()
+		assert.are.equal("9a9484", Theme.HEX.muted)
+		for _, channel in ipairs({ Theme.rgb(Theme.HEX.tooltipMuted) }) do
+			assert.is_true(channel >= 0.62 - 1e-9)
+		end
+	end)
+
+	it("mute the alternatives' label and keep each name's quality colour", function()
+		local text = ItemTooltip.fitAlternatives({ { name = "Cruel Barb", hex = "1eff00" } })
+		assert.are.equal(string.format(L.tooltipAlternativesOne, "|cff1eff00Cruel Barb|r"), text)
+	end)
+end)
+
+describe("ItemTooltip.alternativesRoom", function()
+	local function measure(text)
+		return #text
+	end
+
+	it("is the tooltip's width, or the widest other line of the section when wider", function()
+		local lines = { { text = "Wailing Caverns · Mutanus" }, { kind = "alternatives", text = string.rep("x", 90) } }
+		assert.are.equal(40, ItemTooltip.alternativesRoom(lines, measure, 40))
+		assert.are.equal(#"Wailing Caverns · Mutanus", ItemTooltip.alternativesRoom(lines, measure, 10))
+		assert.is_nil(ItemTooltip.alternativesRoom(lines, nil, 40))
 	end)
 end)
