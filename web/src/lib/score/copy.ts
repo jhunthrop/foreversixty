@@ -74,6 +74,16 @@ export const scoreCopy = {
   gainCue: (gap: number): string => `+${gap} pts`,
   /** Read aloud for that cue. */
   gainCueLabel: (gap: number): string => `${gap} points to gain`,
+  /** Under "Most to gain" (L8.4 fix round 5 item 5), every part's distance to its top, largest
+   *  first (score.ts's componentGaps): "Gear +88 · Experience +80 · Parses +60 · Preparation +22
+   *  · Attendance +20". */
+  gapsLine: (gaps: readonly { key: ScoreComponentKey; gap: number }[]): string =>
+    gaps
+      .map(
+        ({ key, gap }) =>
+          `${labels.components.find((component) => component.key === key)?.label ?? key} +${gap}`,
+      )
+      .join(' · '),
   /** "14 dungeons · 0 raid bosses · 2 alts" under the Experience bar. */
   experienceBreakdown: (dungeons: number, raidBosses: number, alts: number): string =>
     [

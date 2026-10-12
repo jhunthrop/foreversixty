@@ -85,11 +85,15 @@ describe('ProfileDescriptor', () => {
   // tap target is vertical padding on the inline box, which an inline box never adds to the
   // line's height. Fix round 4 items 6 and 8: 14px above and below the 16px content box make
   // 44px, not the 46 that 15px made (Chrome measures 11px at 38).
+  // Fix round 5 item 6: inside its nowrap segment the link turns wrapping back on, so a long
+  // guild still wraps (D2) while its trailing dot stays glued to its last word.
   it('gives the guild link a 44px tap target on a phone as an inline box that can wrap', () => {
     const { body } = view({ header: profileHeader(FULL, PATH), sync: null });
     const link = tag(body, 'character-guild-link');
     expect(link).toContain('href="/guild/us/hardcore/olympus-xxvii"');
-    expect(classes(link)).toEqual(expect.arrayContaining(['max-md:py-[14px]', 'underline']));
+    expect(classes(link)).toEqual(
+      expect.arrayContaining(['max-md:py-[14px]', 'underline', 'whitespace-normal']),
+    );
     expect(classes(link).filter((token) => /inline-block|nowrap|-my-/.test(token))).toEqual([]);
     expect(classes(link)).not.toContain('min-h-11');
   });
@@ -108,17 +112,37 @@ describe('ProfileDescriptor', () => {
     expect(link.filter((token) => /outline-\d|outline-solid|outline-none/.test(token))).toEqual([]);
   });
 
-  // Fix round 3 item 10: the realm moves whole, and each "·" leads the segment after it.
-  it('keeps the realm one unit and glues every dot to the segment after it', () => {
+  // Fix round 5 item 6 (replacing fix round 3 item 10's leading dot): every segment is one
+  // nowrap unit that ends in its "·" (a no-break space, then the dot), and plain spaces outside
+  // the units part them, so a wrap falls only after a dot and no line starts with one. The
+  // realm, last, is one unit with no dot.
+  it('ends every segment but the last with its dot, inside one nowrap unit, and breaks only between them', () => {
     const { body } = view({ header: profileHeader(FULL, PATH), sync: null });
-    expect(classes(tag(body, 'character-realm'))).toContain('whitespace-nowrap');
-    const words = para(body, 'character-descriptor')
-      .replace(/&nbsp;/g, '\u00a0')
-      .replace(/<[^>]+>/g, '');
-    expect(words.match(/·/g)).toHaveLength(3);
-    // A breakable space before each dot and a no-break space after it: never "· " at a line end.
-    expect(words).not.toMatch(/·(?!\u00a0)/);
-    expect(words).not.toMatch(/[^ ]·/);
+    const line = para(body, 'character-descriptor').replace(/&nbsp;/g, '\u00a0');
+    const unit =
+      /<span class="(?:inline-block max-w-full )?whitespace-nowrap" data-testid="character-segment">([\s\S]*?)<\/span>(?= |<\/p>)/g;
+    const segments = [...line.matchAll(unit)].map((match) =>
+      match[1]
+        .replace(/<[^>]+>/g, '')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>'),
+    );
+    expect(segments).toEqual([
+      'Holy Priest\u00a0·',
+      '31/20/0\u00a0·',
+      '<Olympus XXVII>\u00a0·',
+      'Classic Beta PvP',
+    ]);
+    // Between the units only a plain, breakable space, and no dot outside them.
+    expect(line.replace(unit, '|').replace(/<[^>]+>/g, '')).toBe('| | | |');
+    // Only the guild's unit is an inline-block, so a guild longer than the line can still wrap.
+    expect(
+      line.match(/class="inline-block max-w-full whitespace-nowrap" data-testid="character-segment"><a /g),
+    ).toHaveLength(1);
+    // The realm is one unit, holding no dot.
+    expect(line).toMatch(
+      /<span class="whitespace-nowrap" data-testid="character-segment"><span data-testid="character-realm">Classic Beta PvP<\/span><\/span><\/p>/,
+    );
   });
 
   // Fix round 2 item 3, fix round 3 item 14: the chip sits on the line box, centred with its
@@ -133,7 +157,8 @@ describe('ProfileDescriptor', () => {
   });
 
   // Fix round 3 item 2 (D2): with no realm the guild ends the line; only the chip is glued to
-  // its last word (a word joiner in a nowrap span), so the guild text itself can still wrap.
+  // its last word (a word joiner in a nowrap span), so the guild text itself can still wrap
+  // (fix round 5 item 6: its segment is nowrap, the link inside it whitespace-normal).
   it('glues only the chip to a guild that ends the first line, never the whole guild', () => {
     const page: CharacterPage = {
       ...FULL,
@@ -147,10 +172,13 @@ describe('ProfileDescriptor', () => {
     };
     const line = para(view({ header: profileHeader(page, PATH), sync: null }).body, 'character-descriptor');
     expect(line).toMatch(
-      /<a [^>]*data-testid="character-guild-link">&lt;Olympus XXVII Veterans of the Long March(&gt;|>)<\/a><span class="whitespace-nowrap">\u2060<span [^>]*data-testid="character-ruleset-chip">Hardcore US<\/span><\/span><\/p>/,
+      /<a [^>]*data-testid="character-guild-link">&lt;Olympus XXVII Veterans of the Long March(&gt;|>)<\/a><span class="whitespace-nowrap">\u2060<span [^>]*data-testid="character-ruleset-chip">Hardcore US<\/span><\/span><\/span><\/p>/,
     );
-    // The link is not inside a nowrap unit.
-    expect(line).not.toMatch(/<span class="whitespace-nowrap"><a /);
+    // The guild’s segment moves whole when it fits a line and wraps inside itself when it
+    // does not (an inline-block at most the line’s width), the link turning wrapping back on.
+    expect(line).toMatch(
+      /<span class="inline-block max-w-full whitespace-nowrap" data-testid="character-segment"><a class="[^"]*\bwhitespace-normal\b/,
+    );
   });
 
   it('ends the level line with the chip, 8px after "Level 60 Night Elf"', () => {
@@ -168,9 +196,9 @@ describe('ProfileDescriptor', () => {
     expect(body).not.toContain('character-level-line');
     const line = para(body, 'character-descriptor');
     // The last word and the chip never part (fix round 3 item 2: a word joiner in a nowrap span
-    // glues the chip to it), and the piece itself is not made unbreakable.
+    // glues the chip to it), inside the spec’s own nowrap segment (fix round 5 item 6).
     expect(line).toMatch(
-      /<span class="text-text" data-testid="character-spec">Holy Priest<\/span><span class="whitespace-nowrap">\u2060<span class="[^"]*\bml-2\b[^"]*" data-testid="character-ruleset-chip">Hardcore US<\/span><\/span><\/p>/,
+      /<span class="text-text" data-testid="character-spec">Holy Priest<\/span><span class="whitespace-nowrap">\u2060<span class="[^"]*\bml-2\b[^"]*" data-testid="character-ruleset-chip">Hardcore US<\/span><\/span><\/span><\/p>/,
     );
   });
 

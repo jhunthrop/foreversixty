@@ -24,9 +24,9 @@
     bestRepeatsHistory,
     bisHref,
     characterBuildsCopy,
-    newestSplit,
     profileHeader,
     profileSpec,
+    seenSplits,
   } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
   import { factionOfRace } from '../lib/race-faction';
@@ -89,6 +89,10 @@
   /** "Holy Priest · 31/20/0 · <Olympus XXVII> · Classic Beta PvP", "Level 60 Night Elf" and the
    *  chip, from the answer. */
   const header = $derived(data === null || resolved === null ? null : profileHeader(data, resolved));
+  /** Under "Builds seen at pull": every distinct split, newest first (fix round 5 item 4). */
+  const buildsFootnote = $derived(
+    data === null ? null : characterBuildsCopy.footnote(seenSplits(data.builds_seen)),
+  );
 
   /** The name a 404 page shows: the address's own slug, readable. */
   const unloggedName = $derived(resolved === null ? '' : nameFromSlug(decodeURIComponent(resolved.slug)));
@@ -254,10 +258,11 @@
             </li>
           {/each}
         </ul>
-        <!-- L8.4 fix round 4 item 4: in plain words, naming the newest split. -->
-        <p class="text-muted text-[12px]" data-testid="character-builds-footnote">
-          {characterBuildsCopy.footnote(newestSplit(data.builds_seen) ?? data.builds_seen[0].talent_split)}
-        </p>
+        <!-- L8.4 fix round 4 item 4: in plain words. Fix round 5 item 4: naming every distinct
+             split seen, newest first; none to name, no note. -->
+        {#if buildsFootnote !== null}
+          <p class="text-muted text-[12px]" data-testid="character-builds-footnote">{buildsFootnote}</p>
+        {/if}
       </section>
     {/if}
   </div>

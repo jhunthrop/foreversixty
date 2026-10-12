@@ -17,7 +17,8 @@
      mostToGain: the largest point gap, the earlier part on a tie). It takes one neutral colour
      that is never a tier's, and a "+88 pts" at the row's end so colour is not the only signal. With
      every part at its top nothing is marked and there is no line. The footer carries "Most to
-     gain" left and "What the score counts" right.
+     gain" left, every part's gap to its top under it (fix round 5 item 5), and "What the score
+     counts" right.
 
      With no score (a 404, or a 200 whose score is null): the same shape -- "No logs yet" where
      the number would be, "of 2100" greyed, the five parts as empty tracks with a dash -- then
@@ -29,6 +30,7 @@
   import {
     COMPONENT_MAX,
     NEEDS_WORK_COLOR,
+    componentGaps,
     SCORE_MAX,
     hasScore,
     mostToGain,
@@ -85,13 +87,19 @@
 
   const CARD =
     'bg-raised border-line rounded-panel flex flex-col gap-4 border p-4 shadow-[inset_0_1px_0_rgba(229,185,85,.35)] md:p-5';
-  /** In-text links are underlined: colour alone does not mark a link (WCAG 1.4.1). */
-  const LINK = 'text-gold inline-flex min-h-11 items-center underline underline-offset-2 md:min-h-0';
-  /** The last column holds the "+88 pts" cue on one line (fix round 4 item 2). */
-  const ROW = 'grid grid-cols-[88px_minmax(0,1fr)_80px_56px] items-center gap-x-3 gap-y-1 text-[13px]';
+  /** In-text links are underlined: colour alone does not mark a link (WCAG 1.4.1). The gold is
+   *  the base `a` rule's, so its hover and pressed --gold-hover apply (fix round 5 item 2). */
+  const LINK = 'inline-flex min-h-11 items-center underline underline-offset-2 md:min-h-0';
+  /** The link inside "Most to gain" (fix round 5 item 8): inline, its 44px phone target vertical
+   *  padding round the 17px content box, which never opens the sentence's line to 44px. */
+  const SENTENCE_LINK = 'underline underline-offset-2 max-md:py-[13.5px]';
+  /** The last column holds the cue on one line: "+700 pts", the widest (Experience at 0), is
+   *  57.6px at 12px mono, so 60px (fix round 4 item 2, fix round 5 item 3). */
+  const ROW = 'grid grid-cols-[88px_minmax(0,1fr)_80px_60px] items-center gap-x-3 gap-y-1 text-[13px]';
 
   const date = $derived(shortDate(forever?.as_of));
   const gain = $derived(mostToGain(forever?.components));
+  const gaps = $derived(componentGaps(forever?.components));
   const gainLabel = $derived(scoreCopy.components.find((c) => c.key === gain?.key)?.label ?? '');
   const sparkline = $derived(scoreSparkline(history));
   const firstScore = $derived(scoreHistoryFirst(history));
@@ -257,12 +265,20 @@
           </div>
         </div>
       </div>
-      <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+      <!-- Fix round 5 items 5 and 8: under "Most to gain" every part's gap to its top, in one muted
+           line; on a phone "What the score counts" (its own 44px box) sits 16px under that
+           line's text, with no gap between the rows. -->
+      <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-1 max-md:gap-y-0">
         {#if gain !== null}
-          <p class="text-[14px] leading-[22px]" data-testid="forever-score-most-to-gain">
-            {scoreCopy.mostToGainLead}
-            <a class={LINK} href={gainHref}>{gainLabel}</a>{scoreCopy.mostToGainRest(gain.gap)}
-          </p>
+          <div class="flex flex-col gap-1">
+            <p class="text-[14px] leading-[22px]" data-testid="forever-score-most-to-gain">
+              {scoreCopy.mostToGainLead}
+              <a class={SENTENCE_LINK} href={gainHref}>{gainLabel}</a>{scoreCopy.mostToGainRest(gain.gap)}
+            </p>
+            <p class="text-muted text-[13px] leading-[20px]" data-testid="forever-score-gaps">
+              {scoreCopy.gapsLine(gaps)}
+            </p>
+          </div>
         {/if}
         {#if !sample}
           <a class={`${LINK} ml-auto text-[14px]`} href={scoreCopy.explainHref}>{scoreCopy.explainLink}</a>

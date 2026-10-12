@@ -81,4 +81,18 @@ describe('RatingCard', () => {
     expect(sample).toMatch(/class="pill pill-sample[^"]*">Sample</);
     expect(sample).not.toContain('How is this calculated?');
   });
+
+  // L8.4 fix round 5 item 2: the inline link takes its gold from the base `a` rule, so the
+  // design system's hover and pressed --gold-hover apply; a text-gold utility would pin it.
+  it('leaves the inline link’s colour to the base rule: no text-gold utility (fix round 5 item 2)', () => {
+    const { body } = render(RatingCard, {
+      props: { overall: 65, trend: TREND, sampleSize: 6, worst: 'activity' },
+    });
+    const links = [...body.matchAll(/<a class="([^"]*)"/g)].map((match) => match[1].split(' '));
+    expect(links.length).toBeGreaterThan(0);
+    for (const link of links) {
+      expect(link).toContain('underline');
+      expect(link).not.toContain('text-gold');
+    }
+  });
 });

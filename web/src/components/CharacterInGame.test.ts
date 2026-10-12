@@ -213,4 +213,16 @@ describe('CharacterInGame', () => {
     const { body } = render(CharacterInGame, { props: { ...BASE, forever: SCORED } });
     expect(body).toContain('flex flex-col gap-3 min-[900px]:flex-row');
   });
+
+  // L8.4 fix round 5 item 2: the inline links take their gold from the base `a` rule, so the
+  // design system's hover and pressed --gold-hover apply; a text-gold utility would pin them.
+  it('leaves the inline links’ colour to the base rule: no text-gold utility (fix round 5 item 2)', () => {
+    const { body } = render(CharacterInGame, { props: { ...BASE, forever: SCORED, owned: true } });
+    const links = [...body.matchAll(/<a class="([^"]*)"/g)].map((match) => match[1].split(' '));
+    expect(links).toHaveLength(2);
+    for (const link of links) {
+      expect(link).toContain('underline');
+      expect(link).not.toContain('text-gold');
+    }
+  });
 });

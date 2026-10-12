@@ -447,15 +447,16 @@ test('a scored and an unscored Execution cell sit inside their rows in both tabl
   }
 });
 
-test('the Execution column is explained under each table title, visibly at every width (item 7, fix round 4 items 6 and 7)', async ({
+test('the Execution column is explained under each table title, visibly at every width (item 7, fix round 4 items 6 and 7, fix round 5 item 1)', async ({
   page,
 }) => {
   await stub(page, { ...mixedExecution(), ...SCORE });
   await page.goto(CHARACTER_PATH);
   const definitions = page.getByTestId('character-execution-definition');
   await expect(definitions).toHaveCount(2);
+  // Damage only, as api/openapi.yaml's ExecutionScore says (fix round 5 item 1).
   const words =
-    'Execution: the fight’s damage or healing as a share of what the same gear and talents do in the simulator.';
+    'Execution: the fight’s damage as a share of what the same gear and talents do in the simulator; healers and tanks have none.';
   for (const definition of await definitions.all()) {
     await expect(definition).toHaveText(words);
     await expect(definition).toBeVisible();
@@ -482,10 +483,71 @@ test.describe('with JavaScript off (item 9)', () => {
   });
 });
 
-test.describe('a long realm at 360px (item 10)', () => {
+/**
+ * Line 1's units and dots (fix round 5 item 6): for each "·", the top of its box and of the
+ * visible character before it, which must share a line (the dot ends its segment, so no line
+ * starts with one); and how many line boxes each unit takes.
+ */
+async function headerLines(
+  page: Page,
+): Promise<{ dots: { dot: number; before: number }[]; units: number[] }> {
+  return page.getByTestId('character-descriptor').evaluate((element) => {
+    const chars: { node: Text; at: number }[] = [];
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
+      const text = node as Text;
+      for (let at = 0; at < text.data.length; at += 1)
+        if (!/[\s\u00a0\u2060]/.test(text.data[at])) chars.push({ node: text, at });
+    }
+    const top = ({ node, at }: { node: Text; at: number }): number => {
+      const range = document.createRange();
+      range.setStart(node, at);
+      range.setEnd(node, at + 1);
+      return range.getBoundingClientRect().top;
+    };
+    const dots = chars.flatMap((char, index) =>
+      char.node.data[char.at] === '·' && index > 0 ? [{ dot: top(char), before: top(chars[index - 1]) }] : [],
+    );
+    // A unit's line count: the distinct tops of its boxes (Chrome gives an inline unit with a
+    // child element and a text node more than one rect on a single line).
+    const units = [...element.querySelectorAll('[data-testid="character-segment"]')].map(
+      (unit) => new Set([...unit.getClientRects()].map((rect) => Math.round(rect.top))).size,
+    );
+    return { dots, units };
+  });
+}
+
+for (const width of [390, 360, 320]) {
+  test.describe(`the header at ${width}px (fix round 5 item 6)`, () => {
+    test.use({ viewport: { width, height: 740 } });
+
+    test('every dot ends its segment, each segment moves whole, and no line starts with a dot', async ({
+      page,
+    }) => {
+      await stub(page, { ...CHARACTER.data, ...SCORE });
+      await page.goto(CHARACTER_PATH);
+      await expect(page.getByTestId('character-descriptor')).toHaveText(
+        'Discipline Priest · 31/20/0 · <Cx66 Olympus> · Classic Beta PvP',
+      );
+      const { dots, units } = await headerLines(page);
+      expect(dots).toHaveLength(3);
+      for (const { dot, before } of dots) expect(Math.abs(dot - before)).toBeLessThan(2);
+      // "Discipline Priest", "31/20/0", "<Cx66 Olympus>" and the realm: one line box each.
+      expect(units).toEqual([1, 1, 1, 1]);
+      // The line does wrap at these widths, after a dot.
+      const tops = await page
+        .getByTestId('character-segment')
+        .evaluateAll((all) => [...new Set(all.map((unit) => Math.round(unit.getBoundingClientRect().top)))]);
+      expect(tops.length).toBeGreaterThan(1);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    });
+  });
+}
+
+test.describe('a long realm at 360px (item 10, fix round 5 item 6)', () => {
   test.use({ viewport: { width: 360, height: 740 } });
 
-  test('the realm moves whole and no line ends on a dot', async ({ page }) => {
+  test('the realm moves whole and no line starts with a dot', async ({ page }) => {
     await stub(page, {
       ...CHARACTER.data,
       ...SCORE,
@@ -500,37 +562,11 @@ test.describe('a long realm at 360px (item 10)', () => {
     const realm = page.getByTestId('character-realm');
     await expect(realm).toHaveText('Classic Beta PvE Two Extended');
     expect(await realm.evaluate((element) => element.getClientRects().length)).toBe(1);
-    // Every "·" shares its line with the character after it (a no-break space, then the next
-    // segment): a dot is never the last thing on a line.
-    const dots = await page.getByTestId('character-descriptor').evaluate((element) => {
-      const out: { dot: number; next: number }[] = [];
-      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-      const texts: Text[] = [];
-      for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) texts.push(node as Text);
-      texts.forEach((text, index) => {
-        for (let at = text.data.indexOf('·'); at !== -1; at = text.data.indexOf('·', at + 1)) {
-          const range = document.createRange();
-          range.setStart(text, at);
-          range.setEnd(text, at + 1);
-          const dot = range.getBoundingClientRect();
-          // The first visible character after the dot and its no-break space.
-          let nextText = text;
-          let nextAt = at + 2;
-          let next = index;
-          while (nextAt >= nextText.data.length && next + 1 < texts.length) {
-            next += 1;
-            nextText = texts[next];
-            nextAt = 0;
-          }
-          range.setStart(nextText, nextAt);
-          range.setEnd(nextText, nextAt + 1);
-          out.push({ dot: dot.top, next: range.getBoundingClientRect().top });
-        }
-      });
-      return out;
-    });
+    // Every "·" shares its line with the character before it: a dot ends its segment's line.
+    const { dots } = await headerLines(page);
     expect(dots).toHaveLength(3);
-    for (const { dot, next } of dots) expect(Math.abs(dot - next)).toBeLessThan(2);
+    for (const { dot, before } of dots) expect(Math.abs(dot - before)).toBeLessThan(2);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360);
   });
 });
 
@@ -851,4 +887,176 @@ test('the crest tops the name block, in the same place for a visitor and the own
   await expect(page.getByTestId('character-sync')).toBeVisible();
   const owner = await measure();
   expect(Math.abs(owner.crest - visitor.crest)).toBeLessThan(0.5);
+});
+
+// ---- L8.4 fix round 5 ----
+
+test('the score card’s links rest gold and take --gold-hover on hover and press (fix round 5 item 2)', async ({
+  page,
+}) => {
+  test.skip(test.info().project.name === 'mobile', 'hover is a pointer state');
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  await page.goto(CHARACTER_PATH);
+  const card = page.getByTestId('forever-score-card');
+  // The page settles first (the rating panel's skeleton goes, the reveal finishes), so the
+  // pointer stays over the link it hovers.
+  await expect(page.getByTestId('character-rating-loading')).toHaveCount(0);
+  await page.waitForFunction(() =>
+    document.getAnimations().every((animation) => animation.playState !== 'running'),
+  );
+  for (const link of [
+    page.getByTestId('forever-score-most-to-gain').getByRole('link', { name: 'Gear' }),
+    card.getByRole('link', { name: 'What the score counts' }),
+  ]) {
+    await expect(link).toHaveCSS('color', 'rgb(229, 185, 85)');
+    await expect(async () => {
+      await link.hover();
+      await expect(link).toHaveCSS('color', 'rgb(245, 210, 122)', { timeout: 500 });
+    }).toPass();
+    await page.mouse.down();
+    await expect(link).toHaveCSS('color', 'rgb(245, 210, 122)');
+    await page.mouse.move(0, 0);
+    await page.mouse.up();
+    await expect(link).toHaveCSS('color', 'rgb(229, 185, 85)');
+  }
+});
+
+test('"+700 pts", the widest cue, fits its column on one line (fix round 5 item 3)', async ({ page }) => {
+  await stub(page, {
+    ...CHARACTER.data,
+    ...SCORE,
+    components: { ...SCORE.components, experience: 0 },
+  });
+  await page.goto(CHARACTER_PATH);
+  const cue = page.getByTestId('forever-score-gain-cue');
+  await expect(cue).toHaveText('+700 pts');
+  const fit = await cue.evaluate((element) => {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const text = range.getBoundingClientRect();
+    const box = element.getBoundingClientRect();
+    return {
+      text: text.width,
+      box: box.width,
+      height: box.height,
+      scroll: element.scrollWidth,
+      client: element.clientWidth,
+    };
+  });
+  expect(fit.box).toBe(60);
+  expect(fit.text).toBeLessThanOrEqual(fit.box);
+  expect(fit.scroll).toBeLessThanOrEqual(fit.client);
+  expect(fit.height).toBeLessThan(20);
+});
+
+test('the builds footnote names every split when there is more than one (fix round 5 item 4)', async ({
+  page,
+}) => {
+  await stub(page, {
+    ...CHARACTER.data,
+    ...SCORE,
+    builds_seen: [
+      { talent_split: '31/20/0', spec: 'Discipline', first_seen: '2026-12-01T22:10:00Z' },
+      { talent_split: '0/31/20', spec: 'Holy', first_seen: '2026-12-09T22:10:00Z' },
+    ],
+  });
+  await page.goto(CHARACTER_PATH);
+  await expect(page.getByTestId('character-builds-footnote')).toHaveText(
+    'Seen in logs as 0/31/20 and 31/20/0 splits. Logs don’t record the order points were spent, so there is no saved build to open.',
+  );
+});
+
+test('the builds footnote is absent when no build carries a split (fix round 5 item 4)', async ({ page }) => {
+  await stub(page, {
+    ...CHARACTER.data,
+    ...SCORE,
+    builds_seen: [{ talent_split: ' ', spec: 'Discipline', first_seen: '2026-12-09T22:10:00Z' }],
+  });
+  await page.goto(CHARACTER_PATH);
+  await expect(page.getByTestId('character-builds')).toBeVisible();
+  await expect(page.getByTestId('character-builds-footnote')).toHaveCount(0);
+});
+
+test('under "Most to gain", every part’s gap to its top, largest first (fix round 5 item 5)', async ({
+  page,
+}) => {
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  await page.goto(CHARACTER_PATH);
+  const gaps = page.getByTestId('forever-score-gaps');
+  await expect(gaps).toHaveText('Gear +88 · Experience +80 · Parses +60 · Preparation +22 · Attendance +20');
+  await expect(gaps).toBeVisible();
+  await expect(gaps).toHaveCSS('color', 'rgb(154, 148, 132)');
+  const under = await page.getByTestId('forever-score-card').evaluate((card) => {
+    const sentence = card
+      .querySelector('[data-testid="forever-score-most-to-gain"]')
+      ?.getBoundingClientRect();
+    const line = card.querySelector('[data-testid="forever-score-gaps"]')?.getBoundingClientRect();
+    return sentence === undefined || line === undefined ? null : line.top - sentence.bottom;
+  });
+  expect(under).not.toBeNull();
+  expect(under ?? -1).toBeGreaterThanOrEqual(0);
+  expect(under ?? 99).toBeLessThan(8);
+});
+
+test('the "—" Execution cell is named "Not scored yet" in both tables (fix round 5 item 7)', async ({
+  page,
+}) => {
+  await stub(page, { ...mixedExecution(), ...SCORE });
+  await page.goto(CHARACTER_PATH);
+  await expect(page.getByTestId('character-best')).toBeVisible();
+  for (const testid of ['character-best-execution', 'character-execution']) {
+    const dash = page.getByTestId(testid).filter({ hasText: '—' });
+    await expect(dash).toHaveCount(1);
+    await expect(dash).toHaveAttribute('title', 'Not scored yet');
+    await expect(dash).toHaveAttribute('aria-label', 'Not scored yet');
+  }
+});
+
+test.describe('the score card’s foot and the fight rows on a 390px phone (fix round 5 item 8)', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('"What the score counts" sits 16px under the line above it; Gear keeps a 44px target', async ({
+    page,
+  }) => {
+    await stub(page, { ...CHARACTER.data, ...SCORE });
+    await page.goto(CHARACTER_PATH);
+    await expect(page.getByTestId('forever-score-gaps')).toBeVisible();
+    const foot = await page.getByTestId('forever-score-card').evaluate((card) => {
+      const textOf = (element: Element | null | undefined): { top: number; bottom: number } | null => {
+        if (element === null || element === undefined) return null;
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        const rects = [...range.getClientRects()];
+        return { top: Math.min(...rects.map((r) => r.top)), bottom: Math.max(...rects.map((r) => r.bottom)) };
+      };
+      const gaps = textOf(card.querySelector('[data-testid="forever-score-gaps"]'));
+      const explain = textOf(
+        [...card.querySelectorAll('a')].find((link) => link.textContent?.trim() === 'What the score counts'),
+      );
+      const gear = card
+        .querySelector('[data-testid="forever-score-most-to-gain"] a')
+        ?.getBoundingClientRect();
+      return gaps === null || explain === null || gear === undefined
+        ? null
+        : { space: explain.top - gaps.bottom, gear: gear.height };
+    });
+    expect(foot).not.toBeNull();
+    expect(Math.abs((foot?.space ?? 0) - 16)).toBeLessThanOrEqual(1);
+    expect(foot?.gear ?? 0).toBeGreaterThanOrEqual(44);
+  });
+
+  test('a 1px --border-soft line parts the fight rows', async ({ page }) => {
+    await stub(page, { ...mixedExecution(), ...SCORE });
+    await page.goto(CHARACTER_PATH);
+    await expect(page.getByTestId('character-best')).toBeVisible();
+    for (const table of ['character-best', 'character-history']) {
+      const rows = page.getByTestId(table).locator(':scope > li');
+      expect(await rows.count()).toBeGreaterThan(2);
+      for (const row of await rows.all()) {
+        await expect(row).toHaveCSS('border-bottom-width', '1px');
+        await expect(row).toHaveCSS('border-bottom-style', 'solid');
+        await expect(row).toHaveCSS('border-bottom-color', 'rgb(28, 34, 48)');
+      }
+    }
+  });
 });

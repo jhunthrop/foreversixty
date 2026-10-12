@@ -18,6 +18,7 @@ import {
   tierTextColor,
   NEEDS_WORK_COLOR,
   nextTierLine,
+  componentGaps,
 } from './score';
 
 // L8.4 fix round 4 item 1: the line under the score, from the score and the tier lines alone.
@@ -236,5 +237,54 @@ describe('ownCharacter', () => {
     expect(ownCharacter([CHARACTER], PATH)?.key).toBe('us/hardcore/elyra-duskvale');
     expect(ownCharacter([CHARACTER], { ...PATH, slug: 'someone-else' })).toBeNull();
     expect(ownCharacter(null, PATH)).toBeNull();
+  });
+});
+
+// L8.4 fix round 5 item 5: every part's distance to its top, not only the biggest, so the
+// card says where the rest of the points are.
+describe('componentGaps (fix round 5 item 5)', () => {
+  const PARTS = { gear: 412, experience: 620, parses: 540, attendance: 180, discipline: 78 };
+
+  it('lists each part’s gap to its top, largest first', () => {
+    expect(componentGaps(PARTS)).toEqual([
+      { key: 'gear', gap: 88 },
+      { key: 'experience', gap: 80 },
+      { key: 'parses', gap: 60 },
+      { key: 'discipline', gap: 22 },
+      { key: 'attendance', gap: 20 },
+    ]);
+    // The first is the part "Most to gain" names.
+    expect(componentGaps(PARTS)[0]).toEqual(mostToGain(PARTS));
+  });
+
+  it('leaves out a part at its top, and a part with no number', () => {
+    expect(componentGaps({ ...PARTS, parses: 600, attendance: 200 })).toEqual([
+      { key: 'gear', gap: 88 },
+      { key: 'experience', gap: 80 },
+      { key: 'discipline', gap: 22 },
+    ]);
+    expect(componentGaps({ ...PARTS, gear: Number.NaN as number })).not.toContainEqual(
+      expect.objectContaining({ key: 'gear' }),
+    );
+    expect(
+      componentGaps({ gear: 500, experience: 700, parses: 600, attendance: 200, discipline: 100 }),
+    ).toEqual([]);
+    expect(componentGaps(null)).toEqual([]);
+  });
+
+  it('breaks a tie by the addon’s order, as mostToGain does', () => {
+    expect(
+      componentGaps({ gear: 400, experience: 600, parses: 600, attendance: 200, discipline: 100 }),
+    ).toEqual([
+      { key: 'gear', gap: 100 },
+      { key: 'experience', gap: 100 },
+    ]);
+  });
+
+  it('reads "Gear +88 · Experience +80 · Parses +60 · Preparation +22 · Attendance +20"', () => {
+    expect(scoreCopy.gapsLine(componentGaps(PARTS))).toBe(
+      'Gear +88 · Experience +80 · Parses +60 · Preparation +22 · Attendance +20',
+    );
+    expect(scoreCopy.gapsLine([])).toBe('');
   });
 });

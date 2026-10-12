@@ -54,12 +54,14 @@ export const characterTableCopy = {
   date: 'Date',
   execution: 'Execution',
   /** What the Execution column is (fix round 3 item 7): a muted 12px caption under each
-   *  table's title, shown at every width (fix round 4 items 6 and 7). The API
-   *  documents execution_score as the fight's actual output over the simulated output of its
-   *  own gear and talents (docs/superpowers/specs/2026-09-14-simulator-interfaces.md,
-   *  `actual_dps / simmed_dps`); api/openapi.yaml gives the field no description of its own. */
+   *  table's title, shown at every width (fix round 4 items 6 and 7). Damage only (fix round 5
+   *  item 1), as api/openapi.yaml's `ExecutionScore` says since L6.7: "the fight's damage as a
+   *  share of what the same gear and talents do in the simulator", null for healers and tanks
+   *  (the simulator scores the dps role alone). */
   executionDefinition:
-    'Execution: the fight’s damage or healing as a share of what the same gear and talents do in the simulator.',
+    'Execution: the fight’s damage as a share of what the same gear and talents do in the simulator; healers and tanks have none.',
+  /** The "—" cell's title and aria-label (fix round 5 item 7). */
+  executionUnscored: 'Not scored yet',
 } as const;
 
 /**
@@ -94,12 +96,26 @@ export function bestRepeatsHistory(
   return best.every((row) => seen.has(key(row)));
 }
 
-/** The note under "Builds seen at pull" (L8.4 fix round 4 item 4), in plain words: the split
- *  is the newest build's. */
+/** The note under "Builds seen at pull" (L8.4 fix round 4 item 4), in plain words, naming
+ *  every distinct split seen, newest first (fix round 5 item 4): "a 0/31/20 split" for one,
+ *  "0/31/20 and 20/31/0 splits" for more. Null with no split to name. */
 export const characterBuildsCopy = {
-  footnote: (split: string): string =>
-    `Seen in logs as a ${split} split. Logs don’t record the order points were spent, so there is no saved build to open.`,
+  footnote: (splits: readonly string[]): string | null => {
+    if (splits.length === 0) return null;
+    const named =
+      splits.length === 1
+        ? `a ${splits[0]} split`
+        : `${splits.slice(0, -1).join(', ')} and ${splits[splits.length - 1]} splits`;
+    return `Seen in logs as ${named}. Logs don’t record the order points were spent, so there is no saved build to open.`;
+  },
 } as const;
+
+/** The distinct talent splits of the builds seen at pull, newest first, blank ones left out
+ *  (fix round 5 item 4). */
+export function seenSplits(builds: readonly BuildSeen[] | null | undefined): string[] {
+  const newestFirst = [...(builds ?? [])].sort((a, b) => b.first_seen.localeCompare(a.first_seen));
+  return [...new Set(newestFirst.map((build) => build.talent_split.trim()).filter((split) => split !== ''))];
+}
 
 /** The page's one line with JavaScript off (fix round 3 item 9): the island fetches the
  *  character in the browser, so without JavaScript there is nothing to show; the Planner works
@@ -114,10 +130,13 @@ export const characterNoScriptCopy = {
 /** The profile header's words (Task L8.4 ruling 1). */
 export const characterHeaderCopy = {
   separator: ' · ',
-  /** Between two segments of the first line (fix round 3 item 10): a breakable space, then the
-   *  dot glued to the segment after it by a no-break space. A wrap can start a line with
-   *  "· Classic Beta PvP"; it can never leave a dot dangling at a line's end. */
-  segmentLead: ' \u00b7\u00a0',
+  /** The end of every segment of the first line but the last (fix round 5 item 6, replacing
+   *  fix round 3 item 10's leading dot): a no-break space, then the dot, inside the segment's
+   *  nowrap unit, so the dot stays with the segment before it and a wrap never starts a line
+   *  with one: "Holy Priest · 0/31/20 · <Olympus XXVII> ·" then "Classic Beta PvP". */
+  segmentTail: '\u00a0\u00b7',
+  /** Between two segments: a plain space outside the units, the only place line 1 breaks. */
+  segmentBreak: ' ',
   /** Between the last word and the chip ending the first line (fix round 3 item 2): a word
    *  joiner, zero width, inside a nowrap span, so the chip never wraps away from that word while
    *  the text before it (a long guild) still wraps. Not words: layout only. */

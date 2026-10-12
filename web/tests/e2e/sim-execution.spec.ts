@@ -131,6 +131,10 @@ test.describe('the execution column on the character page', () => {
     await page.goto('/character/us/hardcore/elyra-duskvale');
     const cell = page.getByTestId('character-best-execution').first();
     await expect(cell).toHaveText('—');
-    await expect(cell).toHaveAttribute('title', simCopy.executionUnscored);
+    // L8.4 fix round 5 item 7: the profile names the dash "Not scored yet"
+    // (lib/character-profile.ts's characterTableCopy.executionUnscored, which this spec cannot
+    // import: the module pulls in the generated BiS data).
+    await expect(cell).toHaveAttribute('title', 'Not scored yet');
+    await expect(cell).toHaveAttribute('aria-label', 'Not scored yet');
   });
 });

@@ -30,7 +30,9 @@
 
   const CARD =
     'bg-raised border-line rounded-panel flex flex-col gap-3 border p-4 shadow-[inset_0_1px_0_rgba(229,185,85,.35)] md:p-5';
-  const LINK = 'text-gold inline-flex min-h-11 items-center underline underline-offset-2 md:min-h-0';
+  /** Underlined; the gold is the base `a` rule's, so hover and pressed take --gold-hover
+   *  (L8.4 fix round 5 item 2). */
+  const LINK = 'inline-flex min-h-11 items-center underline underline-offset-2 md:min-h-0';
 
   /** A segment's fill, 0 when the part was not scored. */
   function segmentWidth(part: RatingComponent | undefined): number {

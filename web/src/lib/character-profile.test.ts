@@ -12,6 +12,7 @@ import {
   newestSpec,
   profileHeader,
   profileSpec,
+  seenSplits,
   specClassLabel,
 } from './character-profile';
 import type { CharacterFight, CharacterPage } from './rankings/api';
@@ -69,12 +70,46 @@ describe('bisHref', () => {
   });
 });
 
-// L8.4 fix round 4 item 4: the builds footnote in plain words.
-describe('the builds footnote (fix round 4 item 4)', () => {
-  it('names the split and says why there is no build to open', () => {
-    expect(characterBuildsCopy.footnote('0/31/20')).toBe(
-      'Seen in logs as a 0/31/20 split. Logs don’t record the order points were spent, so there is no saved build to open.',
+// L8.4 fix round 4 item 4: the builds footnote in plain words. Fix round 5 item 4: every
+// distinct split seen when there is more than one, and no footnote from a blank split.
+describe('the builds footnote (fix round 4 item 4, fix round 5 item 4)', () => {
+  const TAIL = 'Logs don’t record the order points were spent, so there is no saved build to open.';
+
+  it('names the one split and says why there is no build to open', () => {
+    expect(characterBuildsCopy.footnote(['0/31/20'])).toBe(`Seen in logs as a 0/31/20 split. ${TAIL}`);
+  });
+
+  it('names every distinct split when there is more than one (fix round 5 item 4)', () => {
+    expect(characterBuildsCopy.footnote(['0/31/20', '20/31/0'])).toBe(
+      `Seen in logs as 0/31/20 and 20/31/0 splits. ${TAIL}`,
     );
+    expect(characterBuildsCopy.footnote(['0/31/20', '20/31/0', '5/31/15'])).toBe(
+      `Seen in logs as 0/31/20, 20/31/0 and 5/31/15 splits. ${TAIL}`,
+    );
+  });
+
+  it('is absent with no split to name: the blank-split fallback is gone (fix round 5 item 4)', () => {
+    expect(characterBuildsCopy.footnote([])).toBeNull();
+  });
+
+  it('reads the distinct, non-blank splits, newest first', () => {
+    expect(
+      seenSplits([
+        { talent_split: '20/31/0', spec: 'Holy', first_seen: '2026-10-01T00:00:00Z' },
+        { talent_split: '0/31/20', spec: 'Holy', first_seen: '2026-10-12T00:00:00Z' },
+        { talent_split: ' 20/31/0 ', spec: 'Holy', first_seen: '2026-10-05T00:00:00Z' },
+        { talent_split: '  ', spec: 'Holy', first_seen: '2026-10-11T00:00:00Z' },
+      ]),
+    ).toEqual(['0/31/20', '20/31/0']);
+    // Two builds with the one split name it once: a single split.
+    expect(
+      seenSplits([
+        { talent_split: '0/31/20', spec: 'Holy', first_seen: '2026-10-01T00:00:00Z' },
+        { talent_split: '0/31/20', spec: 'Discipline', first_seen: '2026-10-02T00:00:00Z' },
+      ]),
+    ).toEqual(['0/31/20']);
+    expect(seenSplits([{ talent_split: '', first_seen: '2026-10-01T00:00:00Z' }])).toEqual([]);
+    expect(seenSplits(undefined)).toEqual([]);
   });
 });
 
@@ -95,7 +130,7 @@ describe('the fight tables (fix round 2 item 6)', () => {
   });
 
   it('names the columns Boss, Spec, Parse %, Date, Execution', () => {
-    const { executionDefinition: _definition, ...columns } = characterTableCopy;
+    const { executionDefinition: _definition, executionUnscored: _unscored, ...columns } = characterTableCopy;
     expect(Object.values(columns)).toEqual(['Boss', 'Spec', 'Parse %', 'Date', 'Execution']);
   });
 });
@@ -253,12 +288,14 @@ describe('the header’s spec and split (fix round 3 item 8)', () => {
   });
 });
 
-// L8.4 fix round 3 item 10: a "·" is the leading glyph of the segment after it, glued to it
-// by a no-break space, so a wrap can start a line with "· Classic Beta PvP" and never end one
-// with a dangling dot.
-describe('the header’s segment separator (fix round 3 item 10)', () => {
-  it('is a breakable space, then the dot glued to what follows', () => {
-    expect(characterHeaderCopy.segmentLead).toBe(' ·\u00a0');
+// L8.4 fix round 5 item 6 (replacing fix round 3 item 10's leading dot): a "·" ends the
+// segment before it, glued by a no-break space, and a plain breakable space parts the
+// segments, so a wrap never starts a line with a dot.
+describe('the header’s segment separator (fix round 5 item 6)', () => {
+  it('is the dot glued to the end of the segment before it, then a breakable space', () => {
+    expect(characterHeaderCopy.segmentBreak).toBe(' ');
+    expect(characterHeaderCopy).not.toHaveProperty('segmentLead');
+    expect(characterHeaderCopy.segmentTail).toBe('\u00a0·');
   });
 });
 
@@ -286,9 +323,17 @@ describe('the Execution cell (fix round 3 items 4 and 6)', () => {
     expect(tokens(executionCellClass(true))).not.toContain('text-muted');
   });
 
-  it('defines the column in one line (item 7)', () => {
+  // Fix round 5 item 1: damage only, as api/openapi.yaml's ExecutionScore says (L6.7): the
+  // simulator scores the dps role alone, so a healer's or a tank's fight has none.
+  it('defines the column in one line, damage only (item 7, fix round 5 item 1)', () => {
     expect(characterTableCopy.executionDefinition).toBe(
-      'Execution: the fight’s damage or healing as a share of what the same gear and talents do in the simulator.',
+      'Execution: the fight’s damage as a share of what the same gear and talents do in the simulator; healers and tanks have none.',
     );
+    expect(characterTableCopy.executionDefinition).not.toContain('healing');
+  });
+
+  // Fix round 5 item 7: what the dash is, read aloud and on hover.
+  it('names an unscored cell "Not scored yet" (fix round 5 item 7)', () => {
+    expect(characterTableCopy.executionUnscored).toBe('Not scored yet');
   });
 });

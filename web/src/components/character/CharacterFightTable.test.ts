@@ -115,4 +115,20 @@ describe('CharacterFightTable', () => {
       expect(html).not.toContain(`title="${characterTableCopy.executionDefinition}"`);
     }
   });
+
+  // Fix round 5 item 7: the dash is named "Not scored yet", on hover and read aloud; a scored
+  // cell keeps its own title.
+  it('names the "—" cell "Not scored yet" in its title and aria-label (fix round 5 item 7)', () => {
+    const html = table();
+    const unscored =
+      /<span class="[^"]*" title="([^"]*)" aria-label="([^"]*)" data-testid="character-execution">—<\/span>/.exec(
+        html,
+      );
+    expect(unscored?.slice(1)).toEqual([
+      characterTableCopy.executionUnscored,
+      characterTableCopy.executionUnscored,
+    ]);
+    expect(characterTableCopy.executionUnscored).toBe('Not scored yet');
+    expect(html).toMatch(/<a [^>]*title="94% of what this gear can do, simulated"[^>]*>94%<\/a>/);
+  });
 });

@@ -411,6 +411,85 @@ describe('CharacterRatingPanel Forever Score card', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH } });
     expect(body).not.toContain('forever-score');
   });
+
+  // L8.4 fix round 5 item 2: the card's inline links take their gold from the base `a` rule,
+  // so the design system's hover and pressed --gold-hover apply.
+  it('leaves every inline link’s colour to the base rule: no text-gold utility (fix round 5 item 2)', () => {
+    const scored = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: SCORED, bisHref: '/bis/priest/holy' },
+    }).body;
+    const visitor = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: UNSCORED, name: 'Elyra Duskvale' },
+    }).body;
+    for (const [name, body, count] of [
+      ['scored', scored, 2],
+      ['no logs', visitor, 3],
+    ] as const) {
+      const card = /data-testid="forever-score-card"[\s\S]*$/.exec(body)?.[0] ?? '';
+      const links = [...card.matchAll(/<a class="([^"]*)"/g)]
+        .map((match) => match[1].split(' '))
+        .filter((link) => link.includes('underline'));
+      expect(links, name).toHaveLength(count);
+      for (const link of links) expect(link, name).not.toContain('text-gold');
+    }
+  });
+
+  // L8.4 fix round 5 item 3: "+700 pts" (the widest cue, Experience at 0) is 57.6px at 12px
+  // mono in Chrome, so the cue column is 60px, not 56.
+  it('gives the cue column room for "+700 pts" (fix round 5 item 3)', () => {
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
+    const gear = /<li class="([^"]*)"[^>]*data-testid="forever-score-gear"/.exec(body)?.[1] ?? '';
+    expect(gear.split(' ')).toContain('grid-cols-[88px_minmax(0,1fr)_80px_60px]');
+    expect(scoreCopy.gainCue(700)).toBe('+700 pts');
+  });
+
+  // L8.4 fix round 5 item 5: under "Most to gain", every part's distance to its top, largest
+  // first, in one muted line; a part at its top is left out.
+  it('lists every part’s gap under "Most to gain" in one muted line (fix round 5 item 5)', () => {
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
+    const line = /<p class="([^"]*)" data-testid="forever-score-gaps">([\s\S]*?)<\/p>/.exec(body);
+    expect(line?.[2].trim()).toBe(
+      'Gear +88 · Experience +80 · Parses +60 · Preparation +22 · Attendance +20',
+    );
+    expect(line?.[1].split(' ')).toEqual(expect.arrayContaining(['text-muted', 'text-[13px]']));
+    expect(body.indexOf('forever-score-most-to-gain')).toBeLessThan(body.indexOf('forever-score-gaps'));
+    expect(body.indexOf('forever-score-gaps')).toBeLessThan(body.indexOf('What the score counts'));
+    const some = render(CharacterRatingPanel, {
+      props: {
+        path: PATH,
+        forever: {
+          ...SCORED,
+          components: { gear: 500, experience: 620, parses: 600, attendance: 200, discipline: 78 },
+        },
+      },
+    }).body;
+    expect(text(/<p[^>]*data-testid="forever-score-gaps"[\s\S]*?<\/p>/.exec(some)?.[0] ?? '').trim()).toBe(
+      'Experience +80 · Preparation +22',
+    );
+    const full = render(CharacterRatingPanel, {
+      props: {
+        path: PATH,
+        forever: {
+          ...SCORED,
+          components: { gear: 500, experience: 700, parses: 600, attendance: 200, discipline: 100 },
+        },
+      },
+    }).body;
+    expect(full).not.toContain('forever-score-gaps');
+  });
+
+  // L8.4 fix round 5 item 8: the Gear link is an inline link whose 44px phone target is vertical
+  // padding, so it no longer opens the "Most to gain" line to 44px; the footer packs the
+  // sentence, its gaps line and "What the score counts" 16px apart on a phone.
+  it('keeps the "Most to gain" line one text line high on a phone (fix round 5 item 8)', () => {
+    const { body } = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: SCORED, bisHref: '/bis/priest/holy' },
+    });
+    const line = /<p[^>]*data-testid="forever-score-most-to-gain"[\s\S]*?<\/p>/.exec(body)?.[0] ?? '';
+    const gear = /<a class="([^"]*)" href="\/bis\/priest\/holy"/.exec(line)?.[1].split(' ') ?? [];
+    expect(gear).toEqual(expect.arrayContaining(['underline', 'max-md:py-[13.5px]']));
+    expect(gear.filter((token) => /inline-flex|min-h-11/.test(token))).toEqual([]);
+  });
 });
 
 describe('CharacterRatingPanel empty state copy', () => {

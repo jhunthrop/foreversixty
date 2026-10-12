@@ -8,7 +8,8 @@
      L8.4 fix round 3: both Execution states (a scored link, an unscored dash) take one
      row-aligned cell style (lib/character-profile.ts's executionCellClass, items 4 and 6); the
      column is explained by a muted 12px caption under the title, at every width (item 7, fix
-     round 4 items 6 and 7). -->
+     round 4 items 6 and 7). The dash is named "Not scored yet" on hover and aloud (fix round 5
+     item 7). -->
 <script lang="ts">
   import { amountHeader, characterTableCopy, executionCellClass } from '../../lib/character-profile';
   import { formatDayMonthYear } from '../../lib/dates';
@@ -96,8 +97,8 @@
         {#if row.execution_score === null}
           <span
             class={executionCellClass(false)}
-            title={executionTitle(null)}
-            aria-label={executionTitle(null)}
+            title={characterTableCopy.executionUnscored}
+            aria-label={characterTableCopy.executionUnscored}
             data-testid={executionTestid}>{executionLabel(null)}</span
           >
         {:else}

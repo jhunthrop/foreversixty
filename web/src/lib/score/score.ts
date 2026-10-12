@@ -120,15 +120,27 @@ const COMPONENT_KEYS = Object.keys(COMPONENT_MAX) as ScoreComponentKey[];
 export function mostToGain(
   components: ScoreComponents | null | undefined,
 ): { key: ScoreComponentKey; gap: number } | null {
-  if (components == null) return null;
-  let best: { key: ScoreComponentKey; gap: number } | null = null;
+  return componentGaps(components)[0] ?? null;
+}
+
+/**
+ * Every part's distance to its ceiling, largest first (L8.4 fix round 5 item 5), ties in the
+ * addon's order, so the first is the part "Most to gain" names. A part at its ceiling, or with
+ * no number, is left out; empty when there are no parts.
+ */
+export function componentGaps(
+  components: ScoreComponents | null | undefined,
+): { key: ScoreComponentKey; gap: number }[] {
+  if (components == null) return [];
+  const gaps: { key: ScoreComponentKey; gap: number }[] = [];
   for (const key of COMPONENT_KEYS) {
     const points = components[key];
     if (typeof points !== 'number') continue;
     const gap = COMPONENT_MAX[key] - points;
-    if (gap > 0 && (best === null || gap > best.gap)) best = { key, gap };
+    if (gap > 0) gaps.push({ key, gap });
   }
-  return best;
+  // Array.prototype.sort is stable, so equal gaps keep the addon's order.
+  return gaps.sort((a, b) => b.gap - a.gap);
 }
 
 /**

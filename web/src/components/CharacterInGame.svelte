@@ -56,8 +56,10 @@
   const line = scoreCopy.lineParts();
   /** In-text links are underlined: colour alone does not mark a link (WCAG 1.4.1). */
   /** An inline link, so the paragraph keeps the body line-height on a phone (fix round 3 item
-   *  4); its vertical padding still gives it a 44px hit area without opening up the lines. */
-  const LINK = 'text-gold underline underline-offset-2 max-md:py-[14px]';
+   *  4); its vertical padding still gives it a 44px hit area without opening up the lines. The
+   *  gold is the base `a` rule's, so hover and pressed take --gold-hover (L8.4 fix round 5
+   *  item 2). */
+  const LINK = 'underline underline-offset-2 max-md:py-[14px]';
   /** The client's light grey-white for every line under the name (sampled from the reference
    *  capture). */
   const LINE = 'text-[#dfe0e5]';
