@@ -720,11 +720,32 @@ local function simLine(ack, clock)
 	return L.dialogSimState[state]
 end
 
+--- "Sim done from the 10 Oct 20:00 copy · your sim weights are in use" (the ack's export time),
+--- "… from an earlier copy · a new sim is queued" while a newer request waits, or the plain line
+--- with no readable ack.
+local function simDoneLine(ack, clock)
+	if ack == nil then
+		return L.dialogSimDone
+	end
+	if ack.sim_request_state == "queued" then
+		return L.dialogSimDoneNewQueued
+	end
+	local seen = BuildDialog.parseUtc(ack.export_seen_at)
+	if seen == nil then
+		return L.dialogSimDone
+	end
+	local kind, time, dated = whenParts(seen, clock)
+	if kind == "yesterday" then
+		return string.format(L.dialogSimDoneYesterday, time)
+	end
+	return string.format(L.dialogSimDoneFrom, dated or time)
+end
+
 --- The whole of copy mode: the box's text and whether it is selected, the lead line under
 --- the tabs (the copy claim, in the gain green, only after a real Ctrl+C, `copiedAt`), the
 --- ack's lines, and the companion's explanation when no ack was ever seen. No button: the
 --- box itself is what the player copies from (fix round 2, item 4).
---- `input` = { code, reason, copiedAt, ack, savedAt, clock, simInUse, upgrade }.
+--- `input` = { code, reason, copiedAt, ack, savedAt, clock, simInUse, nextStep }.
 function BuildDialog.copyModel(input)
 	local clock = input.clock
 	local code = input.code or nil
@@ -741,13 +762,14 @@ function BuildDialog.copyModel(input)
 	if ack == nil then
 		companion = { L.dialogNoCompanion, L.dialogCompanionWhat, string.format(L.dialogPasteAtSite, L.siteName) }
 	end
-	-- While the companion's sim weights are in use, the sim's answer: done, and the chip's
-	-- best next upgrade by them (`upgrade` = { name, gain }); else the request's state.
+	-- While the companion's sim weights are in use, the sim's answer: the copy it is from (the
+	-- ack's export time; "an earlier copy" while a newer request is queued), and the chip's own
+	-- line as the next step (`nextStep`); else the request's state.
 	local sim, simNext
 	if input.simInUse then
-		sim = L.dialogSimDone
-		if type(input.upgrade) == "table" and input.upgrade.name ~= nil then
-			simNext = string.format(L.dialogBestUpgrade, escaped(input.upgrade.name), input.upgrade.gain or "")
+		sim = simDoneLine(ack, clock)
+		if type(input.nextStep) == "string" and input.nextStep ~= "" then
+			simNext = string.format(L.dialogNextStep, input.nextStep)
 		end
 	elseif ack ~= nil then
 		sim = simLine(ack, clock)
@@ -828,6 +850,9 @@ function BuildDialog.inboxRows(builds, dismissed, data, player)
 	return rows, refusal
 end
 
+--- A row's source, muted, so the row reads as two levels.
+BuildDialog.ROW_SOURCE = Theme.inlineColor("muted", L.dialogFromSite)
+
 --- The points per tree in the players' form, in tree order: "33/16/2".
 function BuildDialog.shortSplit(build, data)
 	local counts = Progress.planSplit(build)
@@ -850,9 +875,9 @@ function BuildDialog.rowLabel(name, split, measure, width)
 	local raw = tostring(name or "")
 	local function line(bytes)
 		if split == nil or split == "" then
-			return string.format(L.dialogInboxRowBare, cutName(raw, bytes))
+			return string.format(L.dialogInboxRowBare, cutName(raw, bytes), BuildDialog.ROW_SOURCE)
 		end
-		return string.format(L.dialogInboxRow, cutName(raw, bytes), split)
+		return string.format(L.dialogInboxRow, cutName(raw, bytes), split, BuildDialog.ROW_SOURCE)
 	end
 	local bytes = #raw
 	while bytes > 1 and not fitsWidth(line(bytes), measure, width) do
@@ -887,13 +912,23 @@ end
 BuildDialog.ROW_ACTIVE_EDGE = { width = 2, token = "gold" }
 BuildDialog.ROW_HOVER = Theme.CONTROL_STATES.secondary.hover
 
---- The paste tab's label: in copy mode, with builds waiting, "1 waiting" in gold.
-function BuildDialog.pasteTabLabel(mode, count)
-	if mode == "copy" and (count or 0) > 0 then
-		return string.format(L.dialogTabPasteCount, L.dialogTabPaste,
-			Theme.inlineColor("gold", string.format(L.dialogWaitingCount, count)))
+--- The paste tab's badge while builds wait ("1 waiting"), in its own slot after the label in
+--- both modes; nil when none wait.
+function BuildDialog.pasteBadge(count)
+	if (count or 0) > 0 then
+		return string.format(L.dialogWaitingCount, count)
 	end
-	return L.dialogTabPaste
+	return nil
+end
+
+--- The paste tab's width: wide enough for "Paste a build  1 waiting" whenever a build waits (in
+--- both modes, so the copy tab never moves), else for its label alone.
+function BuildDialog.pasteTabWidth(labelWidth, badgeWidth, waiting)
+	local S = Theme.SIZES
+	if waiting then
+		return labelWidth + S.gap * 2 + badgeWidth + S.padding * 2
+	end
+	return math.max(S.tabWidth, labelWidth + S.padding * 2)
 end
 
 --- The corner hints ("Tab to switch", "Enter to use"): the muted token at HINT_ALPHA.
@@ -1027,14 +1062,12 @@ local function simWeightsInUse()
 	return type(current) == "table" and current.tag == "sim"
 end
 
---- The chip's best next upgrade now, from its own inputs: { name, gain }, or nil.
-local function chipUpgrade()
-	local input = Chip.currentInput
-	local upgrade = type(input) == "table" and type(input.upgrades) == "table" and input.upgrades[1] or nil
-	if type(upgrade) ~= "table" or upgrade.name == nil then
-		return nil
-	end
-	return { name = upgrade.name, gain = Chip.gainText(upgrade, input.healing) }
+--- The chip's own line now, whatever it says (a talent, an item, or its idle line), or nil.
+local function chipLine()
+	local current = Chip.current
+	local chosen = type(current) == "table" and current.chosen or nil
+	local text = type(chosen) == "table" and chosen.text or nil
+	return type(text) == "string" and text ~= "" and text or nil
 end
 
 local function currentAck()
@@ -1246,6 +1279,12 @@ end
 --- keyboard as it hides, so the player can walk), Tab switches tabs, Enter does the tab's job.
 local function bindKeys(box, onEnter)
 	box:SetScript("OnEscapePressed", function()
+		local verdict = BuildDialog.verdict
+		if BuildDialog.mode == "paste" and verdict ~= nil and verdict.inboxId ~= nil then
+			-- A site row previewing: Escape goes back to the empty dialog, a second one closes.
+			BuildDialog.clearPaste()
+			return
+		end
 		BuildDialog.close()
 	end)
 	box:SetScript("OnTabPressed", function()
@@ -1319,7 +1358,17 @@ local function buildTab(frame, label, mode)
 	end)
 	enlarge(tab.foreverSixtyLabel)
 	local width = type(tab.foreverSixtyLabel.GetStringWidth) == "function" and tab.foreverSixtyLabel:GetStringWidth() or 0
+	tab.labelWidth = width
 	tab:SetWidth(math.max(S.tabWidth, width + S.padding * 2))
+	if mode == "paste" then
+		-- The waiting count's own slot after the label, muted, in both modes.
+		local labelText = tab.foreverSixtyLabel
+		labelText:ClearAllPoints()
+		labelText:SetPoint("LEFT", tab, "LEFT", S.padding, 0)
+		tab.badge = text(tab, "muted")
+		tab.badge:SetPoint("LEFT", labelText, "RIGHT", S.gap * 2, 0)
+		tab.badge:Hide()
+	end
 	return tab
 end
 
@@ -1403,12 +1452,13 @@ local function buildRow(content)
 	row.highlight = highlight
 	local E = BuildDialog.ROW_ACTIVE_EDGE
 	row.edge = Theme.texture(row.frame, "ARTWORK", E.token)
-	row.edge:SetPoint("TOPLEFT", row.frame, "TOPLEFT", 0, 0)
-	row.edge:SetPoint("BOTTOMLEFT", row.frame, "BOTTOMLEFT", 0, 0)
+	row.edge:SetPoint("TOPRIGHT", row.frame, "TOPLEFT", -S.gap, 0)
+	row.edge:SetPoint("BOTTOMRIGHT", row.frame, "BOTTOMLEFT", -S.gap, 0)
 	row.edge:SetWidth(E.width)
 	row.edge:Hide()
 	row.label = text(row.frame, "body", contentWidth() - S.gap * 2)
-	row.label:SetPoint("LEFT", row.frame, "LEFT", S.gap, 0)
+	-- The text starts at the content margin, like "Following".
+	row.label:SetPoint("LEFT", row.frame, "LEFT", 0, 0)
 	if type(row.label.SetWordWrap) == "function" then
 		row.label:SetWordWrap(false)
 	end
@@ -1587,10 +1637,9 @@ local function buildCopy(frame, top, bottom)
 	bindKeys(box, function()
 		BuildDialog.copy()
 	end)
-	-- The one copy claim the dialog makes comes from a real Ctrl+C in this box. Chained, so
-	-- Widgets' own focus release after Ctrl+C still runs.
-	-- Its own handler, not chained: Widgets' release after Ctrl+C would drop the keyboard and the
-	-- selection (fix round 5, item 8); a second Ctrl+C copies again, Escape closes.
+	-- The one copy claim the dialog makes comes from a real Ctrl+C in this box. Its own handler,
+	-- not chained: Widgets' release after Ctrl+C would drop the keyboard and the selection (fix
+	-- round 5, item 8); a second Ctrl+C copies again, Escape closes.
 	box:SetScript("OnKeyDown", function(self, key)
 		local control = type(IsControlKeyDown) == "function" and IsControlKeyDown() == true
 		local focused = type(self.HasFocus) == "function" and self:HasFocus() == true
@@ -1677,6 +1726,7 @@ function BuildDialog.ensure()
 	-- button, a step dimmer than a tab; "Enter to use" at the right while a preview shows.
 	local hint = text(frame, "muted")
 	hint:SetText(L.dialogTabHint)
+	BuildDialog.tabHint = hint
 	hint:SetTextColor(Theme.rgb(BuildDialog.hintHex()))
 	hint:SetPoint(BuildDialog.HINT_POINT, frame, BuildDialog.HINT_POINT, S.padding, G.hintMargin)
 	local enter = text(frame, "muted")
@@ -1935,6 +1985,16 @@ function BuildDialog.drawPaste()
 	return verdict
 end
 
+--- Back to the empty paste tab: no verdict, an empty box with the keyboard.
+function BuildDialog.clearPaste()
+	BuildDialog.verdict, BuildDialog.editing = nil, false
+	if BuildDialog.paste ~= nil then
+		BuildDialog.paste.box:SetText("")
+		BuildDialog.drawPaste()
+		BuildDialog.paste.box:SetFocus()
+	end
+end
+
 --- Select all of the paste box (a second paste replaces the code rather than appending).
 function BuildDialog.selectPaste()
 	local box = BuildDialog.paste.box
@@ -1985,7 +2045,7 @@ function BuildDialog.drawCopy(select)
 		savedAt = BuildDialog.savedAtFor(ForeverSixtyDB, name),
 		clock = liveClock(),
 		simInUse = simWeightsInUse(),
-		upgrade = chipUpgrade(),
+		nextStep = chipLine(),
 	})
 	local content = copy.content
 	copy.lead:SetText(model.lead.text)
@@ -2082,9 +2142,19 @@ end
 -- Opening and closing --------------------------------------------------------------------
 
 local function refreshTabs()
-	local count = #(BuildDialog.rows or {})
-	local label = BuildDialog.pasteTabLabel(BuildDialog.mode, count)
-	BuildDialog.tabs.paste.foreverSixtyLabel:SetText(label)
+	local tab = BuildDialog.tabs.paste
+	local badge = BuildDialog.pasteBadge(#(BuildDialog.rows or {}))
+	local badgeWidth = 0
+	if badge ~= nil then
+		tab.badge:SetText(badge)
+		tab.badge:Show()
+		badgeWidth = type(tab.badge.GetStringWidth) == "function" and tab.badge:GetStringWidth() or 0
+	else
+		tab.badge:SetText("")
+		tab.badge:Hide()
+	end
+	-- The same in both modes: the copy tab, anchored to this one's right edge, never moves.
+	tab:SetWidth(BuildDialog.pasteTabWidth(tab.labelWidth or 0, badgeWidth or 0, badge ~= nil))
 end
 
 --- Show one tab: the paste box takes the keyboard in paste mode; in copy mode the export

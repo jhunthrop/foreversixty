@@ -302,6 +302,14 @@ describe("Progress.bagUpgrades", function()
 		assert.are.equal(30, at40[1].itemId)
 	end)
 
+	it("scores by the weights it is handed, the sim's when a weights message is in use (L3.4 fix 6, 11)", function()
+		local bag = { bagItem(11, "Better Helm", "INVTYPE_HEAD", 6) }
+		assert.are.equal(1, #Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped))
+		-- A sim that weighs only stamina: strength gains nothing, so nothing upgrades.
+		local current = { weights = { stamina = 1 }, tag = "sim" }
+		assert.are.same({}, Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped, nil, nil, current))
+	end)
+
 	it("never lists an item that is already worn", function()
 		local bag = { bagItem(10, "Worn Helm", "INVTYPE_HEAD", 50) }
 		local found = Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped)

@@ -3,8 +3,8 @@
 -- in copy mode, driven through the legacy client mock because the claim lives in a
 -- key handler on the real box. Only a Ctrl+C in the focused, wholly selected export box
 -- prints "You copied HH:MM."; a click in the box, an unfocused box, a plain C and a box a
--- click deselected never do; and the handler is chained, so Widgets' own focus release
--- after Ctrl+C still runs (a SetScript that overwrote it would fail the last example).
+-- click deselected never do; and after a real Ctrl+C the box keeps the keyboard, its
+-- selection and its height (fix round 5, item 8), so a second Ctrl+C copies again.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 
@@ -458,6 +458,147 @@ describe("BuildDialog, round 5 frame checks", function()
 		end
 		paste("FSB1:1.60.1.70291:warrior:112:")
 		assert.is_true(utf8.len(replaces:GetText()) * 5 <= 388, replaces:GetText())
+	end)
+end)
+
+describe("BuildDialog, round 6 frame checks", function()
+	local state, BuildDialog, Theme, L
+
+	local CODE = "FSB1:1.60.1.70291:warrior:111:"
+
+	local function lastCall(frame, method)
+		return mock.lastCall(frame, method)
+	end
+
+	before_each(function()
+		state = mock.install({
+			class = { name = "Warrior", token = "WARRIOR" }, race = { name = "Human", token = "Human" },
+			realm = "Ashbringer", region = 1, playerName = "Bob",
+			talents = { { name = "Arms", talents = {} }, { name = "Fury", talents = {} },
+				{ name = "Protection", talents = {} } },
+		})
+		Theme = require("Theme")
+		Theme.reset()
+		L = require("Locale")
+		_G.ForeverSixtyDB = {}
+		_G.ForeverSixtyInbox = { format = 2, messages = {
+			{ type = "build", character = "US/Ashbringer/Bob", name = "Arms raid", code = CODE },
+		} }
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Cards")
+		helper.load("Export")
+		helper.load("Follow")
+		helper.load("Chip")
+		helper.load("ItemTooltip")
+		BuildDialog = helper.load("BuildDialog")
+		BuildDialog.data = DATA
+	end)
+
+	after_each(function()
+		_G.ForeverSixtyInbox = nil
+		mock.uninstall()
+	end)
+
+	it("keeps both tabs where they are in both modes, the badge in its slot (fix 6, 1 and 4)", function()
+		BuildDialog.open("paste")
+		local paste, copy = BuildDialog.tabs.paste, BuildDialog.tabs.copy
+		local width = lastCall(paste, "SetWidth")[1]
+		local anchor = lastCall(copy, "SetPoint")
+		assert.are.equal(BuildDialog.pasteBadge(1), paste.badge:GetText())
+		assert.is_true(paste.badge:IsShown())
+		BuildDialog.setMode("copy")
+		assert.are.equal(width, lastCall(paste, "SetWidth")[1])
+		assert.are.same(anchor, lastCall(copy, "SetPoint"))
+		assert.is_true(paste.badge:IsShown())
+		local color = lastCall(paste.badge, "SetTextColor")
+		local r, g, b = Theme.rgb(Theme.HEX.muted)
+		assert.are.same({ r, g, b }, { color[1], color[2], color[3] })
+	end)
+
+	it("lets a paste replace a row's preview, and Escape clear it to the empty dialog (fix 6, 6)", function()
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+		local row = BuildDialog.paste.rows[1]
+		row.frame:GetScript("OnClick")(row.frame)
+		assert.is_true(row.edge:IsShown())
+		assert.is_true(BuildDialog.paste.box:HasFocus())
+		local box = BuildDialog.paste.box
+		box:SetText("FSB1:1.60.1.70291:warrior:112:")
+		box:GetScript("OnTextChanged")(box, true)
+		assert.is_true(BuildDialog.verdict.ok)
+		assert.is_nil(BuildDialog.verdict.inboxId)
+		BuildDialog.choose(BuildDialog.rows[1])
+		assert.is_not_nil(BuildDialog.verdict.inboxId)
+		box:GetScript("OnEscapePressed")(box)
+		assert.is_nil(BuildDialog.verdict)
+		assert.is_true(BuildDialog.frame:IsShown())
+		assert.are.equal("", box:GetText())
+	end)
+
+	it("keeps the copy box's height across Ctrl+C with an ack, older or newer (fix 6, 7)", function()
+		_G.time = function()
+			return 1793800920
+		end
+		for _, seenAt in ipairs({ "2026-10-01T10:00:00Z", "2030-01-01T10:00:00Z" }) do
+			_G.ForeverSixtyInbox = { format = 2, messages = {
+				{ type = "ack", character = "US/Ashbringer/Bob", export_seen_at = seenAt },
+			} }
+			BuildDialog.close()
+			BuildDialog.copiedAt = nil
+			BuildDialog.open("copy")
+			local copy = BuildDialog.copyTab
+			copy.seen.GetStringHeight = function(region)
+				return (region:GetText() or ""):find("Waiting", 1, true) and 28 or 14
+			end
+			copy.display.GetStringHeight = function()
+				return 40 * 14
+			end
+			BuildDialog.drawCopy(true)
+			local before = copy.field.height
+			_G.IsControlKeyDown = function()
+				return true
+			end
+			copy.box:SetFocus()
+			copy.box:GetScript("OnKeyDown")(copy.box, "C")
+			if seenAt < "2026" then
+				-- An ack older than the copy: the line turns to the taller "Waiting ..." one.
+				assert.are.equal(L.dialogWaitingSite, copy.seen:GetText())
+			end
+			assert.are.equal(before, copy.field.height)
+		end
+	end)
+
+	it("wires the sim's answer and the chip's next step into the copy tab (fix 6, 10)", function()
+		require("ItemTooltip").current = { tag = "sim" }
+		require("Chip").current = { chosen = { text = "Take Deflection (1 of 2)" } }
+		BuildDialog.open("copy")
+		local copy = BuildDialog.copyTab
+		assert.are.equal(L.dialogSimDone, copy.sim:GetText())
+		assert.are.equal("Your next step: Take Deflection (1 of 2)", copy.simNext:GetText())
+	end)
+
+	it("measures a row's label in its own font string, to the content width (fix 6, 10)", function()
+		_G.ForeverSixtyInbox.messages[1].name = "A very long build name the site sent, for an old patch of the game"
+		BuildDialog.open("paste")
+		local row = BuildDialog.paste.rows[1]
+		row.label.GetStringWidth = function(region)
+			return utf8.len(region:GetText() or "") * 5
+		end
+		BuildDialog.drawPaste()
+		assert.is_true(utf8.len(row.label:GetText()) * 5 <= 388, row.label:GetText())
+		assert.is_truthy(row.label:GetText():find(L.ellipsis, 1, true))
+	end)
+
+	it("paints the corner hints in the hint colour (fix 6, 10)", function()
+		BuildDialog.open("paste")
+		local r, g, b = Theme.rgb(BuildDialog.hintHex())
+		assert.is_not_nil(BuildDialog.tabHint)
+		assert.is_not_nil(BuildDialog.enterHint)
+		for _, hint in ipairs({ BuildDialog.tabHint, BuildDialog.enterHint }) do
+			local color = lastCall(hint, "SetTextColor")
+			assert.are.same({ r, g, b }, { color[1], color[2], color[3] })
+		end
 	end)
 end)
 

@@ -506,9 +506,15 @@ Progress.MIN_GAIN = 1
 --- INVTYPE_2HWEAPON), nothing goes in the off hand, and a two-hander from
 --- the bags is scored against the main hand and the off hand together, the
 --- net of the whole swap. A gain under MIN_GAIN in its unit is no upgrade.
-function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoint, level)
+function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoint, level, current)
 	local spec, weights = weightsFor(data, build, ranks)
 	local reference = Progress.referenceOf(data, spec)
+	-- `current` (Gear.currentWeights, as the tooltip reads it): the sim's weights and reference
+	-- when a weights message is in use (L3.4 fix 6 ruling: one source of weights).
+	if type(current) == "table" and type(current.weights) == "table" then
+		weights = current.weights
+		reference = current.reference or reference
+	end
 	local unit = dpsPerPoint ~= nil and "dps" or "score"
 	if weights == nil then
 		return {}

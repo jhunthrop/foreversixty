@@ -239,8 +239,8 @@ A good code collapses to one muted line ending in "…" (still selected, so a se
 replaces it) over the preview: class icon, name, "Warrior · Arms 33 / Fury 16 / Protection 2 · 51
 points", "You can place 12 now." while points wait, "Gear in this build · at 60" with three rows
 (slot, icon, name in its quality colour) under "Gear in this build · at 60 · 3 of 17 slots", then
-"Replaces Arms raid · first differs at point 7: Cruelty (Fury)" (or "· same points and gear", or
-"· same points, different gear list"; a long build name is shortened, never the talent) and
+"Replaces Arms raid · first differs at point 7: Cruelty (Fury)" (or "· same points and gear ·
+nothing changes", or "· same points, different gear list"; a long build name is shortened, never the talent) and
 "Next talent would be: Take Deflection (Arms, 1 of 2)", and one gold button "Use this build" (Enter
 works; "Enter to use" shows dim at the bottom right while a preview shows). Use follows the build, closes the dialog and prints "Now following
 Arms raid. Next: Deflection (1 of 2).". A bad code is an error: the codec's first sentence in red,
@@ -260,9 +260,11 @@ companion, its ack reads "Seen by the site 14:03" when it is at or after the las
 has your character from yesterday 22:30. Yours is newer." when older, and "Waiting for the site to
 see this copy. It answers at your next login." after a copy until a newer ack arrives; a queued sim names the copy it
 is for: "Sim queued for the 14:03 copy." today, "Sim queued for yesterday's 20:00 copy.", "Sim
-queued for the 9 Oct 20:00 copy."; once the sim's weights are in use, "Sim done · your sim weights
-are in use" and the chip's "Best next upgrade: Lionheart Helm +4.2 DPS". In copy mode the paste
-tab reads "Paste a build  1 waiting" while the site has sent builds. With no ack ever seen: "No companion
+queued for the 9 Oct 20:00 copy."; once the sim's weights are in use (the chip and the tooltip
+both score by them), "Sim done from the 10 Oct 20:00 copy · your sim weights are in use" (or "Sim
+done from an earlier copy · a new sim is queued") and "Your next step: <the chip's own line>". While
+the site has sent builds, the paste tab carries a muted "1 waiting" badge in its own slot in both
+modes, so the tabs never move; Escape on a site row's preview goes back to the empty dialog. With no ack ever seen: "No companion
 found. The companion is a small app on your computer that sends this when you log out." and "Or
 paste it on the site at foreversixty.gg.". The addon never claims an upload it cannot see.
 

@@ -667,8 +667,8 @@ local function itemName(item)
 end
 
 --- The best bag upgrade as the model wants it, or nil.
-local function bestUpgrade(data, build, ranks, equipped, dpsPerPoint, level)
-	local found = Progress.bagUpgrades(data, build, ranks, Gear.bagLinks(), equipped, dpsPerPoint, level)
+local function bestUpgrade(data, build, ranks, equipped, dpsPerPoint, level, current)
+	local found = Progress.bagUpgrades(data, build, ranks, Gear.bagLinks(), equipped, dpsPerPoint, level, current)
 	local best = found[1]
 	if best == nil then
 		return nil
@@ -765,8 +765,14 @@ function Chip.inputs(data)
 	end
 	local equipped = Gear.readEquipped()
 	if build ~= nil then
+		-- The tooltip's own weights source (Gear.currentWeights): the sim's weights and its DPS per
+		-- point while a weights message is in use, else the shipped ones.
+		local current = Gear.currentWeights(data, spec, ForeverSixtyInbox, Export.characterKey())
 		local dps = type(perPoint) == "table" and tonumber(perPoint.dps) or nil
-		input.upgrades = { bestUpgrade(data, build, ranks, equipped, dps, level) }
+		if type(current) == "table" and current.tag == "sim" then
+			dps = current.dpsPerPoint
+		end
+		input.upgrades = { bestUpgrade(data, build, ranks, equipped, dps, level, current) }
 	end
 	Chip.pending = {}
 	input.here = picksHere(data, spec, level, equipped)

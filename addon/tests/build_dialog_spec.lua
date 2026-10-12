@@ -288,7 +288,7 @@ describe("BuildDialog, paste mode's model", function()
 	it("says the two orders match on the Replaces line, and the Next line is the talent alone (fix 4, 3)", function()
 		local context = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("DDI"), {}, DATA, 21)
 		assert.are.equal(string.format(L.dialogReplacesSameAll, "Arms raid"), context.replaces)
-		assert.are.equal("Replaces Arms raid · same points and gear", context.replaces)
+		assert.are.equal("Replaces Arms raid · same points and gear · nothing changes", context.replaces)
 		assert.are.equal("Next talent would be: Take Deflection (Arms, 1 of 2)", context.nextWould)
 	end)
 
@@ -299,7 +299,7 @@ describe("BuildDialog, paste mode's model", function()
 		local context = BuildDialog.previewContext(followed, candidate, {}, DATA, 21)
 		assert.are.equal("Replaces Arms raid · same points, different gear list", context.replaces)
 		followed.gear = { { slot = "head", itemId = 12640, stats = {} } }
-		assert.are.equal("Replaces Arms raid · same points and gear",
+		assert.are.equal("Replaces Arms raid · same points and gear · nothing changes",
 			BuildDialog.previewContext(followed, candidate, {}, DATA, 21).replaces)
 	end)
 
@@ -333,10 +333,28 @@ describe("BuildDialog, paste mode's model", function()
 			return utf8.len(text) * 5
 		end
 		local piped = ordered("DDI", string.rep("A|", 60))
-		local context = BuildDialog.previewContext(piped, ordered("IDD"), {}, DATA, 21, measure, 388)
-		-- Every pipe left is doubled: no "|" stands alone.
-		assert.is_nil(context.replaces:gsub("||", ""):find("|", 1, true))
-		assert.is_true(measure(context.replaces) <= 388)
+		-- Fix 6, 8: a sweep of widths, so escaping before cutting (which halves a "||" at some
+		-- width) fails here; the row label gets the same sweep.
+		for width = 150, 400, 5 do
+			local context = BuildDialog.previewContext(piped, ordered("IDD"), {}, DATA, 21, measure, width)
+			assert.is_nil(context.replaces:gsub("||", ""):find("|", 1, true), width .. ": " .. context.replaces)
+			local row = BuildDialog.rowLabel(string.rep("A|", 60), "33/16/2", measure, width)
+			assert.is_nil(row:gsub("||", ""):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):find("|", 1, true),
+				width .. ": " .. row)
+		end
+	end)
+
+	it("keeps the build name to NAME_FLOOR before it drops the talent's tree (fix 6, 9)", function()
+		local measure = function(text)
+			return utf8.len(text) * 5
+		end
+		assert.is_true(BuildDialog.NAME_FLOOR > 1)
+		local name = "Abcdefghijklmnop"
+		local floor = name:sub(1, BuildDialog.NAME_FLOOR)
+		local expected = string.format(L.dialogReplacesDiffers, floor .. L.ellipsis, 1, "Improved Heroic Strike")
+		local context = BuildDialog.previewContext(ordered("DDI", name), ordered("IDD"), {}, DATA, 21, measure,
+			measure(expected))
+		assert.are.equal(expected, context.replaces)
 	end)
 
 	it("fits the Next line by shortening the tree, then the rank, never the talent (fix 5, 15)", function()
@@ -357,6 +375,26 @@ describe("BuildDialog, paste mode's model", function()
 		assert.is_truthy(fitted.nextWould:find("Take Two-Handed Weapon Specialization", 1, true))
 		local narrow = BuildDialog.previewContext(nil, ret, ranks, DATA, 21, measure, 300)
 		assert.is_truthy(narrow.nextWould:find("Two-Handed Weapon Specialization", 1, true))
+		-- Fix 6, 9: down to 200 px the talent stays whole, and the tree is shortened before it is
+		-- dropped (whole tree, then a shortened one, then none: never back).
+		local function phase(text)
+			if text:find("(Retribution", 1, true) then
+				return 1
+			elseif text:find("(", 1, true) and text:find(L.ellipsis, 1, true) then
+				return 2
+			end
+			return 3
+		end
+		local last, sawShort = 1, false
+		for width = 420, 200, -2 do
+			local line = BuildDialog.previewContext(nil, ret, ranks, DATA, 21, measure, width).nextWould
+			assert.is_truthy(line:find("Take Two-Handed Weapon Specialization", 1, true), width .. ": " .. line)
+			local now = phase(line)
+			assert.is_true(now >= last, width .. ": " .. line)
+			sawShort = sawShort or now == 2
+			last = now
+		end
+		assert.is_true(sawShort)
 	end)
 
 	it("words one point and no points without a bare number", function()
@@ -572,16 +610,23 @@ describe("BuildDialog, copy mode's model", function()
 			model({ ack = ACK, savedAt = "2026-11-04 14:05" }).seen)
 	end)
 
-	it("says the sim is done and names the chip's best next upgrade while sim weights are in use (fix 5, 1)", function()
+	it("names the copy the sim is from and the chip's next step while sim weights are in use (fix 6, 2)", function()
+		local done = model({ ack = ACK, simInUse = true, nextStep = "Take Deflection (1 of 2)" })
+		assert.are.equal("Sim done from the 14:03 copy · your sim weights are in use", done.sim)
+		assert.are.equal("Your next step: Take Deflection (1 of 2)", done.simNext)
+		local yesterday = model({ ack = { export_seen_at = "2026-11-03T20:00:00Z" }, simInUse = true })
+		assert.are.equal("Sim done from yesterday's 20:00 copy · your sim weights are in use", yesterday.sim)
+		assert.is_nil(yesterday.simNext)
+		assert.are.equal(L.dialogSimDone, model({ simInUse = true }).sim)
+		assert.is_nil(model({ simInUse = true, nextStep = "" }).simNext)
 		local queued = { export_seen_at = ACK.export_seen_at, sim_request_state = "queued" }
-		local done = model({ ack = queued, simInUse = true, upgrade = { name = "Lionheart Helm", gain = "+4.2 DPS" } })
-		assert.are.equal("Sim done · your sim weights are in use", done.sim)
-		assert.are.equal("Best next upgrade: Lionheart Helm +4.2 DPS", done.simNext)
-		local none = model({ simInUse = true })
-		assert.are.equal(L.dialogSimDone, none.sim)
-		assert.is_nil(none.simNext)
 		assert.are.equal("Sim queued for the 14:03 copy.", model({ ack = queued, simInUse = false }).sim)
 		assert.is_nil(model({ ack = queued }).simNext)
+	end)
+
+	it("says a new sim is queued while the earlier one's weights are in use (fix 6, 11)", function()
+		local queued = { export_seen_at = ACK.export_seen_at, sim_request_state = "queued" }
+		assert.are.equal("Sim done from an earlier copy · a new sim is queued", model({ ack = queued, simInUse = true }).sim)
 	end)
 
 	it("says the site has an older character when the save is newer than the ack", function()
@@ -687,8 +732,10 @@ describe("BuildDialog, builds from the site", function()
 		local rows = BuildDialog.inboxRows(builds, { c = true, [code(5, 0)] = true }, DATA)
 		assert.are.equal(2, #rows)
 		assert.are.same({ id = "a", name = "Arms raid", code = MINE, split = "31/20/0",
-			label = string.format(L.dialogInboxRow, "Arms raid", "31/20/0") }, rows[1])
-		assert.are.equal("Arms raid · 31/20/0 · from the site", rows[1].label)
+			label = string.format(L.dialogInboxRow, "Arms raid", "31/20/0", BuildDialog.ROW_SOURCE) }, rows[1])
+		-- Fix 6, 5: "from the site" in the muted token, so the row reads as two levels.
+		assert.are.equal(require("Theme").inlineColor("muted", L.dialogFromSite), BuildDialog.ROW_SOURCE)
+		assert.are.equal("Arms raid · 31/20/0 · " .. BuildDialog.ROW_SOURCE, rows[1].label)
 		local fury = Follow.buildName(DATA, build(OTHER))
 		assert.are.equal(fury, rows[2].name)
 	end)
@@ -734,10 +781,10 @@ describe("BuildDialog, builds from the site", function()
 			return order
 		end)(), classSlug = "warrior" }, DATA))
 		local full = BuildDialog.rowLabel("Arms raid (old patch)", "33/16/2", measure, 388)
-		assert.are.equal("Arms raid (old patch) · 33/16/2 · from the site", full)
+		assert.are.equal("Arms raid (old patch) · 33/16/2 · " .. BuildDialog.ROW_SOURCE, full)
 		local cut = BuildDialog.rowLabel("A very long build name from the site, old patch", "33/16/2", measure, 200)
 		assert.is_true(measure(cut) <= 200, cut)
-		assert.is_truthy(cut:find(" · 33/16/2 · from the site", 1, true))
+		assert.is_truthy(cut:find(" · 33/16/2 · " .. BuildDialog.ROW_SOURCE, 1, true))
 		assert.is_truthy(cut:find(L.ellipsis, 1, true))
 	end)
 
@@ -749,14 +796,19 @@ describe("BuildDialog, builds from the site", function()
 		assert.are.equal(require("Theme").CONTROL_STATES.secondary.hover, BuildDialog.ROW_HOVER)
 	end)
 
-	it("counts the waiting builds on the paste tab, in copy mode only", function()
-		assert.are.equal(L.dialogTabPaste, BuildDialog.pasteTabLabel("paste", 2))
-		assert.are.equal(L.dialogTabPaste, BuildDialog.pasteTabLabel("copy", 0))
-		local label = BuildDialog.pasteTabLabel("copy", 2)
-		-- Fix 5, 5 and 9: "1 waiting", in gold at the tab's own size.
-		assert.are.equal(string.format(L.dialogTabPasteCount, L.dialogTabPaste,
-			require("Theme").inlineColor("gold", string.format(L.dialogWaitingCount, 2))), label)
-		assert.are.equal("2 waiting", string.format(L.dialogWaitingCount, 2))
+	it("puts the waiting count in the paste tab's own badge slot, in both modes (fix 6, 1)", function()
+		assert.are.equal("2 waiting", BuildDialog.pasteBadge(2))
+		assert.is_nil(BuildDialog.pasteBadge(0))
+		assert.is_nil(BuildDialog.pasteBadge(nil))
+	end)
+
+	it("sizes the paste tab for its whole label whenever a build waits, the same in both modes (fix 6, 12)", function()
+		local S = require("Theme").SIZES
+		local narrow = BuildDialog.pasteTabWidth(80, 60, false)
+		local wide = BuildDialog.pasteTabWidth(80, 60, true)
+		assert.are.equal(math.max(S.tabWidth, 80 + S.padding * 2), narrow)
+		assert.are.equal(80 + S.gap * 2 + 60 + S.padding * 2, wide)
+		assert.is_true(wide > narrow)
 	end)
 end)
 

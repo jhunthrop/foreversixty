@@ -779,9 +779,7 @@ local L = {
 
 -- The build dialog (spec section 4.10): the one frame of the addon's own.
 L.dialogTabPaste = "Paste a build"
--- The paste tab in copy mode with builds from the site waiting: "Paste a build  1 waiting", the
--- count in gold.
-L.dialogTabPasteCount = "%s  %s"
+-- The paste tab's badge, muted in its own slot after the label, while the site has sent builds.
 L.dialogWaitingCount = "%d waiting"
 -- The site's own words (L8.2): the copy tab is named this (copy mode has no button).
 L.dialogCopy = "Copy my character"
@@ -819,7 +817,7 @@ L.dialogGearHeadingTip = "The first three items the code plans."
 -- Above "Use this build", muted: what it replaces and where the two orders first differ (or
 -- "same point order"), and the next talent the candidate gives, alone.
 L.dialogReplaces = "Replaces %s"
-L.dialogReplacesSameAll = "Replaces %s · same points and gear"
+L.dialogReplacesSameAll = "Replaces %s · same points and gear · nothing changes"
 L.dialogReplacesSameOrder = "Replaces %s · same points, different gear list"
 L.dialogReplacesDiffers = "Replaces %s · first differs at point %d: %s"
 L.dialogNextWould = "Next talent would be: %s"
@@ -828,10 +826,11 @@ L.dialogStillFollowing = "You are still following %s."
 -- One chat line after a build is used: "Now following Arms raid. Next: Deflection (1 of 2)."
 L.dialogNowFollowing = "Now following %s."
 L.dialogNowFollowingNext = "Now following %s. Next: %s."
--- A build the site sent: "Arms raid · Arms 31 / Fury 20 · from the site" (the split shortens to fit,
--- never the name; with no split, the bare form).
-L.dialogInboxRow = "%s · %s · from the site"
-L.dialogInboxRowBare = "%s · from the site"
+-- A build the site sent: "Arms raid (old patch) · 33/16/2 · from the site" (the name shortens to fit,
+-- never the points; the source is muted; with no split, the bare form).
+L.dialogInboxRow = "%s · %s · %s"
+L.dialogInboxRowBare = "%s · %s"
+L.dialogFromSite = "from the site"
 L.dialogInboxMore = "and %d more"
 -- Copy mode. The lead line under the tabs until a real Ctrl+C, then the copy claim.
 L.dialogSelectedLead = "Selected. Press Ctrl+C, then paste it on " .. SITE .. "."
@@ -855,7 +854,11 @@ L.dialogSimQueuedYesterday = "Sim queued for yesterday's %s copy."
 L.dialogSimQueued = "Sim queued. The result arrives when you next log in."
 -- While the companion's sim weights are what the tooltip and the chip score by.
 L.dialogSimDone = "Sim done · your sim weights are in use"
-L.dialogBestUpgrade = "Best next upgrade: %s %s"
+-- The copy the sim is from (the ack's export time), and what the chip says to do next.
+L.dialogSimDoneFrom = "Sim done from the %s copy · your sim weights are in use"
+L.dialogSimDoneYesterday = "Sim done from yesterday's %s copy · your sim weights are in use"
+L.dialogSimDoneNewQueued = "Sim done from an earlier copy · a new sim is queued"
+L.dialogNextStep = "Your next step: %s"
 L.dialogSimState = {
 	needs_premium = "Sim needs a premium account",
 	duplicate = "Sim already running this hour",
