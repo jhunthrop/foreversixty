@@ -78,7 +78,11 @@ def test_a_slot_with_no_item_id_is_left_out(tmp_path):
     assert bis["hunter-marksmanship"][0].factions["alliance"] == {}
 
 
-def test_new_at_band_resolves_slot_names_to_the_bands_own_item_ids(tmp_path):
+def test_every_pick_of_a_specs_first_band_is_new_at_that_band(tmp_path):
+    """Fix round 1, item 2: "new at <band>" comes from the final picks, not
+    leveling-bis's own new_at_band strings; with no band before it, every
+    pick of the first band is new (leveling-bis's own rule: report.go
+    compares against a nil previous band)."""
     _write_bis(
         tmp_path,
         BUILD,
@@ -96,7 +100,7 @@ def test_new_at_band_resolves_slot_names_to_the_bands_own_item_ids(tmp_path):
         ],
     )
     bis = build_bis(tmp_path, BUILD)
-    assert bis["hunter-marksmanship"][0].new_at_band["alliance"] == [111]
+    assert bis["hunter-marksmanship"][0].new_at_band["alliance"] == [111, 333]
 
 
 def test_a_new_at_band_slot_with_no_matching_pick_is_skipped(tmp_path):
@@ -544,7 +548,7 @@ def test_a_slot_with_only_unconfirmed_candidates_packs_nothing(tmp_path):
 
 
 def test_the_skips_are_counted_per_build(tmp_path):
-    from pipeline.addonbis import bis_unconfirmed_skips
+    from pipeline.addonbis import build_bis_with_skips
 
     _severing_items(tmp_path)
     _write_bis(
@@ -557,7 +561,7 @@ def test_the_skips_are_counted_per_build(tmp_path):
         ],
     )
     _write_bis(tmp_path, BUILD, "warrior-fury", [_band(20, "alliance", [_SEVERING_SLOT])])
-    assert bis_unconfirmed_skips(tmp_path, BUILD) == 3
+    assert len(build_bis_with_skips(tmp_path, BUILD)[1]) == 3
 
 
 def test_the_real_arms_band_20_main_hand_is_never_the_axe_of_severing():
@@ -656,7 +660,7 @@ def test_the_name_and_dps_tables_render_beside_an_unchanged_pick_string():
 
 
 def test_the_audit_line_names_the_build_the_skips_and_the_distinct_items(tmp_path):
-    from pipeline.addonbis import unconfirmed_skips_line
+    from pipeline.addonbis import build_bis_with_skips, unconfirmed_skips_line
 
     _severing_items(tmp_path)
     _write_bis(
@@ -665,6 +669,286 @@ def test_the_audit_line_names_the_build_the_skips_and_the_distinct_items(tmp_pat
         "warrior-arms",
         [_band(20, "alliance", [_SEVERING_SLOT]), _band(20, "horde", [_SEVERING_SLOT])],
     )
-    assert unconfirmed_skips_line(tmp_path, BUILD) == (
+    _, skips = build_bis_with_skips(tmp_path, BUILD)
+    assert unconfirmed_skips_line(BUILD, skips) == (
         f"bis {BUILD}: skipped 2 client_unconfirmed candidates (1 distinct items)"
     )
+
+
+# --- Task L1.4 fix round 1 ---
+
+
+def _hands_items(root: Path, extra: list[tuple[int, str, bool, bool]]) -> None:
+    """items.json + items/warrior.json for (id, name, unconfirmed, two_hand) rows."""
+    _write_items(
+        root,
+        BUILD,
+        [_item(item_id, name, unconfirmed=unconfirmed) for item_id, name, unconfirmed, _ in extra],
+        {
+            "warrior": [
+                dict(_class_item(item_id, name, 20.0 if two_hand else 0.0), two_hand=two_hand)
+                for item_id, name, _, two_hand in extra
+            ]
+        },
+    )
+
+
+def _slot(slot: str, item_id: int, runners: list[int], **extra) -> dict:
+    return dict(
+        {
+            "slot": slot,
+            "item_id": item_id,
+            "source_kind": "dungeon",
+            "source": f"Source {item_id}",
+            "runners_up": [
+                {"item_id": runner, "source_kind": "dungeon", "source": f"Source {runner}"}
+                for runner in runners
+            ],
+        },
+        **extra,
+    )
+
+
+def test_a_promoted_main_hand_is_never_a_two_hander_beside_an_off_hand_pick(tmp_path):
+    """confirmed.go's usableAlternative: the band as a whole decides -- a
+    two-hander promoted into the main hand would leave the off hand's pick
+    unusable, so the next one-hander is promoted instead."""
+    _hands_items(
+        tmp_path,
+        [
+            (1, "Unconfirmed Sword", True, False),
+            (2, "Big Axe", False, True),
+            (3, "Small Sword", False, False),
+            (4, "Shield", False, False),
+        ],
+    )
+    _write_bis(
+        tmp_path,
+        BUILD,
+        "warrior-arms",
+        [_band(20, "alliance", [_slot("main_hand", 1, [2, 3]), _slot("off_hand", 4, [])])],
+    )
+    picks = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]
+    assert (picks["main_hand"].item_id, picks["off_hand"].item_id) == (3, 4)
+
+
+def test_a_promoted_off_hand_never_sits_under_a_two_handed_main_hand(tmp_path):
+    _hands_items(
+        tmp_path,
+        [
+            (2, "Big Axe", False, True),
+            (5, "Unconfirmed Shield", True, False),
+            (4, "Shield", False, False),
+        ],
+    )
+    _write_bis(
+        tmp_path,
+        BUILD,
+        "warrior-arms",
+        [_band(20, "alliance", [_slot("main_hand", 2, []), _slot("off_hand", 5, [4])])],
+    )
+    picks = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]
+    assert picks["main_hand"].item_id == 2
+    assert "off_hand" not in picks
+
+
+def test_a_promoted_ring_is_never_the_other_rings_pick(tmp_path):
+    """verify.go's wouldDuplicatePairMate, by id or by name."""
+    _hands_items(
+        tmp_path,
+        [
+            (10, "Unconfirmed Ring", True, False),
+            (11, "Band of Testing", False, False),
+            (12, "Band of Testing", False, False),
+            (13, "Other Ring", False, False),
+        ],
+    )
+    _write_bis(
+        tmp_path,
+        BUILD,
+        "warrior-arms",
+        [
+            _band(
+                20,
+                "alliance",
+                [
+                    _slot(
+                        "finger1",
+                        10,
+                        [11, 12],
+                        alternatives=[
+                            {"item_id": 11, "source_kind": "dungeon", "source": "Source 11"},
+                            {"item_id": 12, "source_kind": "dungeon", "source": "Source 12"},
+                            {"item_id": 13, "source_kind": "dungeon", "source": "Source 13"},
+                        ],
+                    ),
+                    _slot("finger2", 11, []),
+                ],
+            )
+        ],
+    )
+    picks = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]
+    # 11 is finger2's pick and 12 shares its name, so the next one is promoted.
+    assert (picks["finger1"].item_id, picks["finger2"].item_id) == (13, 11)
+
+
+def test_two_promoted_trinkets_never_land_on_the_same_item(tmp_path):
+    _hands_items(
+        tmp_path,
+        [
+            (20, "Unconfirmed Idol", True, False),
+            (21, "Unconfirmed Charm", True, False),
+            (22, "Lucky Charm", False, False),
+            (23, "Second Charm", False, False),
+        ],
+    )
+    _write_bis(
+        tmp_path,
+        BUILD,
+        "warrior-arms",
+        [
+            _band(
+                20,
+                "alliance",
+                [_slot("trinket1", 20, [22, 23]), _slot("trinket2", 21, [22, 23])],
+            )
+        ],
+    )
+    picks = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]
+    assert (picks["trinket1"].item_id, picks["trinket2"].item_id) == (22, 23)
+
+
+def _band_breaks(bis: dict, root: Path) -> list[tuple]:
+    """Every (spec, band, faction, rule) the final picks break."""
+    two_hand = set()
+    for path in (root / BUILD / "items").glob("*.json"):
+        for row in json.loads(path.read_text(encoding="utf-8"))["items"]:
+            if row.get("two_hand"):
+                two_hand.add(row["id"])
+    names = {
+        row["id"]: row["name"]
+        for row in json.loads((root / BUILD / "items.json").read_text(encoding="utf-8"))
+    }
+    breaks = []
+    for spec, bands in bis.items():
+        for band in bands:
+            for faction, slots in band.factions.items():
+                ids = {slot: pick.item_id for slot, pick in slots.items()}
+                where = (spec, band.level, faction)
+                if "off_hand" in ids and ids.get("main_hand") in two_hand:
+                    breaks.append(where + ("two-hander beside an off hand",))
+                for a, b in (("finger1", "finger2"), ("trinket1", "trinket2")):
+                    if a in ids and b in ids and names[ids[a]] == names[ids[b]]:
+                        breaks.append(where + (f"same item in {a} and {b}",))
+    return breaks
+
+
+def test_the_real_build_breaks_no_pair_or_two_hand_rule():
+    assert _band_breaks(build_bis(Path("builds"), BUILD), Path("builds")) == []
+
+
+def test_new_at_band_comes_from_the_final_picks(tmp_path):
+    """Band 20's unconfirmed main hand is replaced by band 10's own pick, so
+    the main hand is not new at 20 (leveling-bis's own tag named the
+    unconfirmed item); the head changed, so it is."""
+    _hands_items(
+        tmp_path,
+        [
+            (30, "Old Helm", False, False),
+            (31, "New Helm", False, False),
+            (32, "Trusty Sword", False, False),
+            (33, "Unconfirmed Sword", True, False),
+        ],
+    )
+    _write_bis(
+        tmp_path,
+        BUILD,
+        "warrior-arms",
+        [
+            _band(
+                10,
+                "alliance",
+                [_slot("head", 30, []), _slot("main_hand", 32, [])],
+                new_at_band=["head: Old Helm", "main_hand: Trusty Sword"],
+            ),
+            _band(
+                20,
+                "alliance",
+                [_slot("head", 31, []), _slot("main_hand", 33, [32])],
+                new_at_band=["main_hand: Unconfirmed Sword"],
+            ),
+        ],
+    )
+    band_10, band_20 = build_bis(tmp_path, BUILD)["warrior-arms"]
+    assert band_10.new_at_band["alliance"] == [30, 32]
+    assert band_20.factions["alliance"]["main_hand"].item_id == 32
+    assert band_20.new_at_band["alliance"] == [31]
+
+
+def test_the_real_new_at_band_tags_match_the_final_picks():
+    from pipeline.addonbis import SLOT_ORDER
+
+    for spec, bands in build_bis(Path("builds"), BUILD).items():
+        previous: dict[str, dict[str, int]] = {}
+        for band in bands:
+            for faction, slots in band.factions.items():
+                before = previous.get(faction, {})
+                expected = [
+                    slots[slot].item_id
+                    for slot in SLOT_ORDER
+                    if slot in slots and before.get(slot) != slots[slot].item_id
+                ]
+                assert band.new_at_band[faction] == expected, (spec, band.level, faction)
+                previous[faction] = {slot: pick.item_id for slot, pick in slots.items()}
+
+
+def test_a_promoted_drop_pick_keeps_its_drop_chance(tmp_path):
+    """leveling-bis's dropChance: loot.json's percent at the pick's own
+    source, as a fraction rounded to six decimals."""
+    _severing_items(tmp_path)
+    (tmp_path / BUILD / "loot.json").write_text(
+        json.dumps(
+            {
+                "sources": [
+                    {
+                        "kind": "dungeon",
+                        "name": "Wailing Caverns",
+                        "items": [],
+                        "bosses": [
+                            {
+                                "name": "Verdan the Everliving",
+                                "items": [6631],
+                                "item_chances": {"6631": 14.5},
+                            }
+                        ],
+                    }
+                ],
+                "quests": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+    _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(_SEVERING_SLOT))
+    pick = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]["main_hand"]
+    assert (pick.item_id, pick.chance) == (6631, 0.145)
+
+
+def test_the_drop_chance_lookup_reproduces_every_real_picks_own_chance():
+    """The lookup a promoted pick uses gives back exactly the chance
+    leveling-bis wrote for every pick it published with one."""
+    from pipeline.addonbis import _drop_chances
+
+    chances = _drop_chances(Path("builds"), BUILD)
+    checked = 0
+    for path in sorted((Path("builds") / BUILD / "bis").glob("*.json")):
+        for band in json.loads(path.read_text(encoding="utf-8"))["bands"]:
+            for row in band["slots"]:
+                if row.get("chance") is None:
+                    continue
+                checked += 1
+                assert chances.get((row["item_id"], row["source"])) == row["chance"], (
+                    path.stem,
+                    band["band"],
+                    row["slot"],
+                )
+    assert checked >= 20  # 25 published picks carry a chance in this build

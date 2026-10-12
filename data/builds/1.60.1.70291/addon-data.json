@@ -22194,7 +22194,6 @@
             1713
           ],
           "horde": [
-            2721,
             1714,
             254033,
             19528,
@@ -23242,7 +23241,6 @@
             226781,
             234033,
             22681,
-            1713,
             4696
           ],
           "horde": [
@@ -23257,7 +23255,6 @@
             226781,
             234033,
             22681,
-            1713,
             4696
           ]
         },
@@ -26057,7 +26054,6 @@
             226881,
             234202,
             272408,
-            249469,
             250619,
             279273
           ]
@@ -28868,7 +28864,6 @@
             226881,
             234202,
             19325,
-            249469,
             250619,
             279273
           ]
@@ -30839,19 +30834,6 @@
                 }
               ]
             },
-            "main_hand": {
-              "item_id": 812,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 13052,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                }
-              ]
-            },
             "off_hand": {
               "item_id": 250614,
               "source_kind": "crafted",
@@ -31111,19 +31093,6 @@
                 }
               ]
             },
-            "main_hand": {
-              "item_id": 812,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 13052,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                }
-              ]
-            },
             "off_hand": {
               "item_id": 250614,
               "source_kind": "crafted",
@@ -31177,7 +31146,6 @@
             19516,
             9533,
             249469,
-            812,
             250614,
             2100
           ],
@@ -31194,7 +31162,6 @@
             9533,
             249469,
             19120,
-            812,
             250614,
             2100
           ]
@@ -34023,7 +33990,6 @@
             254061,
             226930,
             12466,
-            10009,
             7553,
             281635,
             249469,
@@ -34040,7 +34006,6 @@
             254061,
             226930,
             12466,
-            10009,
             7553,
             281635,
             249469,
@@ -36810,7 +36775,6 @@
             254065,
             226930,
             254085,
-            10009,
             254111,
             7553,
             281635,
@@ -37066,15 +37030,15 @@
               ]
             },
             "trinket2": {
-              "item_id": 272438,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
+              "item_id": 19288,
+              "source_kind": "quest",
+              "source": "Darkmoon Beast Deck",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19288,
-                  "source_kind": "quest",
-                  "source": "Darkmoon Beast Deck"
+                  "item_id": 272438,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -37356,7 +37320,7 @@
             234032,
             20682,
             272438,
-            272438,
+            19288,
             279246
           ],
           "horde": [
@@ -39595,7 +39559,6 @@
             254061,
             226930,
             17755,
-            10009,
             220891,
             7553,
             281635,
@@ -42351,10 +42314,10 @@
             5266,
             272069,
             272061,
-            11302,
-            11262
+            11302
           ],
           "horde": [
+            10751,
             19303,
             252538,
             272076,
@@ -42585,7 +42548,7 @@
               "item_id": 7721,
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Whitemane",
-              "chance": null,
+              "chance": 0.2,
               "alternatives": [
                 {
                   "item_id": 234568,
@@ -42804,7 +42767,7 @@
               "item_id": 7721,
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Whitemane",
-              "chance": null,
+              "chance": 0.2,
               "alternatives": [
                 {
                   "item_id": 234546,
@@ -42834,8 +42797,7 @@
             227153,
             234033,
             22681,
-            10659,
-            7721
+            10659
           ],
           "horde": [
             21517,
@@ -42850,8 +42812,7 @@
             227862,
             234033,
             22681,
-            10659,
-            7721
+            10659
           ]
         },
         "weights": {
@@ -47388,7 +47349,6 @@
             8142,
             19536,
             274751,
-            14593,
             10020,
             14770,
             10011,
@@ -47933,7 +47893,8 @@
             9533,
             249469,
             249470,
-            7959
+            7959,
+            249442
           ],
           "horde": [
             10032,
@@ -47947,7 +47908,8 @@
             9533,
             19120,
             249469,
-            1982
+            1982,
+            249442
           ]
         },
         "weights": {
@@ -49619,7 +49581,7 @@
               "item_id": 2624,
               "source_kind": "world",
               "source": "Dustbelcher Shaman",
-              "chance": null,
+              "chance": 0.007,
               "alternatives": []
             },
             "neck": {
@@ -49889,7 +49851,7 @@
               "item_id": 2624,
               "source_kind": "world",
               "source": "Dustbelcher Shaman",
-              "chance": null,
+              "chance": 0.007,
               "alternatives": []
             },
             "neck": {
@@ -50735,18 +50697,15 @@
             13085,
             220894,
             272076,
-            10020,
             254061,
             226950,
             12466,
             10807,
             254107,
-            6750,
             5266,
             272061,
             18951,
             17710,
-            11262,
             9654
           ],
           "horde": [
@@ -50754,12 +50713,10 @@
             13085,
             254049,
             272076,
-            10020,
             254061,
             226950,
             10807,
             254107,
-            6750,
             5266,
             272061,
             11302,
@@ -50930,13 +50887,13 @@
               ]
             },
             "finger2": {
-              "item_id": 13096,
+              "item_id": 5266,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 5266,
+                  "item_id": 13096,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -51166,13 +51123,13 @@
               ]
             },
             "finger2": {
-              "item_id": 13096,
+              "item_id": 5266,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 5266,
+                  "item_id": 13096,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -51263,7 +51220,6 @@
             16694,
             226952,
             13096,
-            13096,
             744,
             13000,
             279246
@@ -51272,11 +51228,11 @@
             226947,
             19593,
             227888,
+            14138,
             22667,
             226948,
             16694,
             226952,
-            13096,
             13096,
             1713,
             13000,
@@ -52397,7 +52353,7 @@
               "item_id": 2624,
               "source_kind": "world",
               "source": "Dustbelcher Shaman",
-              "chance": null,
+              "chance": 0.007,
               "alternatives": []
             },
             "neck": {
@@ -52649,7 +52605,7 @@
               "item_id": 2624,
               "source_kind": "world",
               "source": "Dustbelcher Shaman",
-              "chance": null,
+              "chance": 0.007,
               "alternatives": []
             },
             "neck": {
@@ -52687,7 +52643,7 @@
               "item_id": 6424,
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
-              "chance": null,
+              "chance": 0.008,
               "alternatives": [
                 {
                   "item_id": 272078,
@@ -53369,13 +53325,6 @@
               "chance": null,
               "alternatives": []
             },
-            "finger2": {
-              "item_id": 6750,
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "chance": null,
-              "alternatives": []
-            },
             "trinket1": {
               "item_id": 272061,
               "source_kind": "vendor",
@@ -53486,8 +53435,6 @@
             12466,
             10807,
             220900,
-            6750,
-            6750,
             272061,
             11302,
             17710,
@@ -68302,7 +68249,7 @@
               "item_id": 6631,
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Verdan the Everliving",
-              "chance": null,
+              "chance": 0.4,
               "alternatives": [
                 {
                   "item_id": 7230,
@@ -75320,7 +75267,6 @@
             10027,
             11623,
             17755,
-            10009,
             7553,
             19523,
             20534,
@@ -75332,8 +75278,6 @@
             15999,
             17732,
             11623,
-            20166,
-            10009,
             7553,
             19519,
             20534,
@@ -78121,7 +78065,6 @@
             11623,
             254065,
             17755,
-            10009,
             7553,
             19523,
             20534,
@@ -78135,7 +78078,6 @@
             11623,
             254065,
             254085,
-            10009,
             7553,
             19519,
             20534,
@@ -81723,7 +81665,7 @@
               "item_id": 6631,
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Verdan the Everliving",
-              "chance": null,
+              "chance": 0.4,
               "alternatives": [
                 {
                   "item_id": 2205,
@@ -87190,7 +87132,6 @@
             19325,
             234202,
             19289,
-            249469,
             21522,
             21520,
             22656

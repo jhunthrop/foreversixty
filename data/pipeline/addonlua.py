@@ -314,11 +314,11 @@ def write_lua(
     root: Path = Path("builds"),
     curated_dir: Path = Path("curated"),
     lua_path: Path = LUA_PATH,
+    data: AddonData | None = None,
 ) -> Path:
     lua_path.parent.mkdir(parents=True, exist_ok=True)
-    lua_path.write_text(
-        render_lua(build_addon_data(build, root=root, curated_dir=curated_dir)), encoding="utf-8"
-    )
+    data = data or build_addon_data(build, root=root, curated_dir=curated_dir)
+    lua_path.write_text(render_lua(data), encoding="utf-8")
     return lua_path
 
 
@@ -327,6 +327,7 @@ def lua_has_drifted(
     root: Path = Path("builds"),
     curated_dir: Path = Path("curated"),
     lua_path: Path = LUA_PATH,
+    data: AddonData | None = None,
 ) -> bool:
-    wanted = render_lua(build_addon_data(build, root=root, curated_dir=curated_dir))
+    wanted = render_lua(data or build_addon_data(build, root=root, curated_dir=curated_dir))
     return not lua_path.exists() or lua_path.read_text(encoding="utf-8") != wanted

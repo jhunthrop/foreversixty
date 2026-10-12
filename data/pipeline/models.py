@@ -1,6 +1,6 @@
 from typing import Any, Literal
 
-from pydantic import BaseModel, SerializerFunctionWrapHandler, model_serializer
+from pydantic import BaseModel, Field, SerializerFunctionWrapHandler, model_serializer
 
 
 class Zone(BaseModel):
@@ -898,6 +898,11 @@ class AddonData(BaseModel):
     #: The weapons among bis_names -> their own dps at one decimal, from
     #: items/<class>.json's `dps` (what sim/cmd/leveling-bis ranks on).
     bis_dps: dict[int, float] = {}
+    #: The id of every BiS candidate pipeline.addonbis passed over because
+    #: items.json marks it client_unconfirmed (one per skip). Never written
+    #: to addon-data.json or Data.lua: it feeds the addon-data command's
+    #: audit line, so one run parses the bis files once.
+    bis_unconfirmed_skips: list[int] = Field(default_factory=list, exclude=True)
 
 
 class PhaseBoundary(BaseModel):

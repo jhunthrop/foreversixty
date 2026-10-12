@@ -3549,7 +3549,6 @@ ns.Data = {
 					hands = "272100|V|Creeg Bothunk||252548|C|Leatherworking|867|B|World drop",
 					head = "220822|V|Captain Dirgehammer||10008|C|Tailoring",
 					legs = "9652|Q|Saving Sharpbeak||8262|B|World drop|220832|V|Captain Dirgehammer",
-					main_hand = "812|B|World drop||13052|B|World drop",
 					neck = "13089|B|World drop||19539|R|Silverwing Sentinels",
 					off_hand = "250614|C|Blacksmithing||17738|D|Maraudon: Celebras the Cursed|9608|Q|Gyrodrillmatic Excavationators",
 					ranged = "2100|B|World drop||13139|B|World drop|13039|B|World drop",
@@ -3567,7 +3566,6 @@ ns.Data = {
 					hands = "272100|V|Creeg Bothunk||252548|C|Leatherworking|867|B|World drop",
 					head = "10008|C|Tailoring||220821|V|PvP rank 11 · Blood Guard · Horde",
 					legs = "220833|V|Lady Palanseer||1718|B|World drop|9624|Q|Rig Wars",
-					main_hand = "812|B|World drop||13052|B|World drop",
 					neck = "13089|B|World drop||19159|Q|Wanted: Vile Priestess Hexx and Her Minions|19535|R|Warsong Outriders",
 					off_hand = "250614|C|Blacksmithing||17738|D|Maraudon: Celebras the Cursed|11863|Q|Bone-Bladed Weapons",
 					ranged = "2100|B|World drop||13139|B|World drop|13039|B|World drop",
@@ -3955,7 +3953,7 @@ ns.Data = {
 					ranged = "279246|C|Enchanting",
 					shoulder = "227808|V|Meilosh||19050|C|Tailoring|231602|P|PvP rank 17 · Field Marshal · Alliance",
 					trinket1 = "272438|V|Pix Xizzix||19288|Q|Darkmoon Beast Deck",
-					trinket2 = "272438|V|Pix Xizzix||19288|Q|Darkmoon Beast Deck",
+					trinket2 = "19288|Q|Darkmoon Beast Deck||272438|V|Pix Xizzix",
 					waist = "228190|V|Meilosh||272393|V|Pix Xizzix|18405|C|Tailoring",
 					wrist = "19595|R|Silverwing Sentinels||254123|C|Tailoring|254065|C|Tailoring",
 				},
@@ -4312,7 +4310,7 @@ ns.Data = {
 					hands = "272097|V|Creeg Bothunk||231643|P|PvP rank 16 · Marshal · Alliance",
 					head = "21517|Q|The Only Prescription||13216|Q|Houses of the Holy|252561|C|Leatherworking",
 					legs = "252603|C|Leatherworking||250600|C|Blacksmithing",
-					main_hand = "7721|D|Scarlet Monastery: High Inquisitor Whitemane||234568|P|PvP rank 18 · Grand Marshal · Alliance|2243|B|World drop",
+					main_hand = "7721|D|Scarlet Monastery: High Inquisitor Whitemane|0.2|234568|P|PvP rank 18 · Grand Marshal · Alliance|2243|B|World drop",
 					neck = "20685|W|Lord Skwol",
 					shoulder = "226979|V|Mokvar||272104|V|Creeg Bothunk|272958|V|Creeg Bothunk",
 					trinket1 = "272061|V|Creeg Bothunk||10659|Q|Heroes of Old|272439|V|Pix Xizzix",
@@ -4329,7 +4327,7 @@ ns.Data = {
 					hands = "272097|V|Creeg Bothunk||18409|C|Tailoring",
 					head = "21517|Q|The Only Prescription||13216|Q|Houses of the Holy|252561|C|Leatherworking",
 					legs = "252603|C|Leatherworking||250600|C|Blacksmithing",
-					main_hand = "7721|D|Scarlet Monastery: High Inquisitor Whitemane||234546|P|PvP rank 18 · High Warlord · Horde|2243|B|World drop",
+					main_hand = "7721|D|Scarlet Monastery: High Inquisitor Whitemane|0.2|234546|P|PvP rank 18 · High Warlord · Horde|2243|B|World drop",
 					neck = "20685|W|Lord Skwol",
 					shoulder = "226979|V|Mokvar||272104|V|Creeg Bothunk|272958|V|Creeg Bothunk",
 					trinket1 = "272061|V|Creeg Bothunk||10659|Q|Heroes of Old|272439|V|Pix Xizzix",
@@ -4782,7 +4780,7 @@ ns.Data = {
 					finger1 = "6750|Q|Willix the Importer||1993|B|World drop|1996|W|Bloodscalp Witch Doctor",
 					finger2 = "274746|V|Gezzy Gunkgear||1993|B|World drop|5009|B|World drop",
 					hands = "10011|C|Tailoring||270029|Q|Crime and Punishment|10018|C|Tailoring",
-					head = "2624|W|Dustbelcher Shaman",
+					head = "2624|W|Dustbelcher Shaman|0.007",
 					legs = "10010|C|Tailoring||9407|D|Uldaman: Ironaya|253937|C|Tailoring",
 					main_hand = "7721|D|Scarlet Monastery: High Inquisitor Whitemane||2164|B|World drop|6689|D|Razorfen Kraul: Earthcaller Halmgar",
 					neck = "10769|D|Razorfen Downs: Mordresh Fire Eye||1714|D|Zul'Farrak: Witch Doctor's Chest",
@@ -4801,7 +4799,7 @@ ns.Data = {
 					finger1 = "6750|Q|Willix the Importer||1993|B|World drop|1996|W|Bloodscalp Witch Doctor",
 					finger2 = "274746|V|Gezzy Gunkgear||1993|B|World drop|1996|W|Bloodscalp Witch Doctor",
 					hands = "10011|C|Tailoring||254021|C|Tailoring|10018|C|Tailoring",
-					head = "2624|W|Dustbelcher Shaman",
+					head = "2624|W|Dustbelcher Shaman|0.007",
 					legs = "10010|C|Tailoring||9407|D|Uldaman: Ironaya|253937|C|Tailoring",
 					main_hand = "7721|D|Scarlet Monastery: High Inquisitor Whitemane||6689|D|Razorfen Kraul: Earthcaller Halmgar|9457|D|Gnomeregan: Dark Iron Ambassador",
 					neck = "10769|D|Razorfen Downs: Mordresh Fire Eye||1714|D|Zul'Farrak: Witch Doctor's Chest",
@@ -4859,7 +4857,7 @@ ns.Data = {
 					chest = "14138|C|Tailoring",
 					feet = "226952|Q|Anthion's Parting Words||227862|V|Meilosh|15802|C|Tailoring",
 					finger1 = "13096|B|World drop||5266|B|World drop",
-					finger2 = "13096|B|World drop||5266|B|World drop",
+					finger2 = "5266|B|World drop||13096|B|World drop",
 					hands = "226950|V|Mokvar||16692|D|Stratholme: Archivist Galford|275607|C|Tailoring",
 					head = "226947|Q|Saving the Best for Last||16693|D|Scholomance: Darkmaster Gandling|231622|V|PvP rank 17 · Field Marshal · Alliance",
 					legs = "16694|D|Stratholme: Baron Rivendare||226946|Q|Anthion's Parting Words",
@@ -4876,7 +4874,7 @@ ns.Data = {
 					chest = "14138|C|Tailoring",
 					feet = "226952|Q|Anthion's Parting Words||227862|V|Meilosh|15802|C|Tailoring",
 					finger1 = "13096|B|World drop||5266|B|World drop",
-					finger2 = "13096|B|World drop||5266|B|World drop",
+					finger2 = "5266|B|World drop||13096|B|World drop",
 					hands = "226950|V|Mokvar||16692|D|Stratholme: Archivist Galford|275607|C|Tailoring",
 					head = "226947|Q|Saving the Best for Last||16693|D|Scholomance: Darkmaster Gandling|231635|V|PvP rank 17 · Warlord · Horde",
 					legs = "16694|D|Stratholme: Baron Rivendare||226946|Q|Anthion's Parting Words",
@@ -4968,7 +4966,7 @@ ns.Data = {
 					finger1 = "6750|Q|Willix the Importer||1993|B|World drop|5009|B|World drop",
 					finger2 = "1996|W|Bloodscalp Witch Doctor||1993|B|World drop|5009|B|World drop",
 					hands = "10011|C|Tailoring||270029|Q|Crime and Punishment|10018|C|Tailoring",
-					head = "2624|W|Dustbelcher Shaman",
+					head = "2624|W|Dustbelcher Shaman|0.007",
 					legs = "10010|C|Tailoring||7062|C|Tailoring|253987|C|Tailoring",
 					main_hand = "6689|D|Razorfen Kraul: Earthcaller Halmgar||7721|D|Scarlet Monastery: High Inquisitor Whitemane|7714|D|Scarlet Monastery: Arcanist Doan",
 					neck = "10769|D|Razorfen Downs: Mordresh Fire Eye||1714|D|Zul'Farrak: Witch Doctor's Chest",
@@ -4980,13 +4978,13 @@ ns.Data = {
 					wrist = "14429|B|World drop||4043|B|World drop|4045|D|Uldaman: Ancient Treasure",
 				},
 				horde = {
-					back = "6424|D|Uldaman: Ancient Treasure||272078|V|Creeg Bothunk",
+					back = "6424|D|Uldaman: Ancient Treasure|0.008|272078|V|Creeg Bothunk",
 					chest = "10020|C|Tailoring||10007|C|Tailoring|14425|B|World drop",
 					feet = "254001|C|Tailoring||13100|B|World drop|15697|Q|Kodo Roundup",
 					finger1 = "6750|Q|Willix the Importer||1993|B|World drop|5009|B|World drop",
 					finger2 = "1996|W|Bloodscalp Witch Doctor||1993|B|World drop|5009|B|World drop",
 					hands = "10011|C|Tailoring||254021|C|Tailoring|10018|C|Tailoring",
-					head = "2624|W|Dustbelcher Shaman",
+					head = "2624|W|Dustbelcher Shaman|0.007",
 					legs = "10010|C|Tailoring||7062|C|Tailoring|9407|D|Uldaman: Ironaya",
 					main_hand = "6689|D|Razorfen Kraul: Earthcaller Halmgar||7721|D|Scarlet Monastery: High Inquisitor Whitemane|7714|D|Scarlet Monastery: Arcanist Doan",
 					neck = "10769|D|Razorfen Downs: Mordresh Fire Eye||1714|D|Zul'Farrak: Witch Doctor's Chest",
@@ -5022,7 +5020,6 @@ ns.Data = {
 					chest = "8113|B|World drop||17775|Q|Twisted Evils|220903|V|Lady Palanseer",
 					feet = "220900|V|PvP rank 9 · First Sergeant · Horde||254107|C|Tailoring|14447|B|World drop",
 					finger1 = "6750|Q|Willix the Importer",
-					finger2 = "6750|Q|Willix the Importer",
 					hands = "272098|V|Creeg Bothunk||226950|V|Mokvar|254095|C|Tailoring",
 					head = "9470|D|Zul'Farrak: Shadowpriest Sezz'ziz",
 					legs = "10807|D|Sunken Temple: Jammal'an the Prophet||220902|V|Lady Palanseer|14444|B|World drop",
@@ -6008,7 +6005,7 @@ ns.Data = {
 					hands = "10401|D|The Deadmines: Defias Overseer||7348|C|Leatherworking|14572|B|World drop",
 					head = "252447|C|Leatherworking||252504|C|Leatherworking",
 					legs = "10400|D|The Deadmines: Defias Overseer||252445|C|Leatherworking|252501|C|Leatherworking",
-					main_hand = "6631|D|Wailing Caverns: Verdan the Everliving||7230|D|The Deadmines: Mr. Smite|1318|D|Shadowfang Keep: Son of Arugal",
+					main_hand = "6631|D|Wailing Caverns: Verdan the Everliving|0.4|7230|D|The Deadmines: Mr. Smite|1318|D|Shadowfang Keep: Son of Arugal",
 					neck = "20444|R|Silverwing Sentinels||277204|Q|Friend of the Library",
 					shoulder = "5404|D|Wailing Caverns: Lady Anacondra||6461|D|Wailing Caverns: Mutanus the Devourer",
 					waist = "10403|D|The Deadmines: Captain Greenskin||6468|C|Leatherworking|5975|W|Rot Hide Bruiser",
@@ -6889,7 +6886,7 @@ ns.Data = {
 					hands = "10401|D|The Deadmines: Defias Overseer|0.03|5195|D|The Deadmines: Sneed|10413|D|Wailing Caverns: Druid of the Fang",
 					head = "250528|C|Blacksmithing||252447|C|Leatherworking|250529|C|Blacksmithing",
 					legs = "10400|D|The Deadmines: Defias Overseer|0.03|250493|C|Blacksmithing|252445|C|Leatherworking",
-					main_hand = "6631|D|Wailing Caverns: Verdan the Everliving||2205|D|Shadowfang Keep: Son of Arugal|7230|D|The Deadmines: Mr. Smite",
+					main_hand = "6631|D|Wailing Caverns: Verdan the Everliving|0.4|2205|D|Shadowfang Keep: Son of Arugal|7230|D|The Deadmines: Mr. Smite",
 					neck = "20444|R|Silverwing Sentinels||277204|Q|Friend of the Library",
 					ranged = "285279|C|Blacksmithing||3567|Q|Murloc Poachers|11304|V|Naela Trance",
 					shoulder = "3480|C|Blacksmithing||3481|C|Blacksmithing|5404|D|Wailing Caverns: Lady Anacondra",
@@ -7528,15 +7525,15 @@ ns.Data = {
 			},
 			[40] = {
 				alliance = { 2721, 1714, 254033, 19532, 10020, 13119, 10011, 254037, 10010, 252533, 272070, 6750, 272059, 1713 },
-				horde = { 2721, 1714, 254033, 19528, 10020, 13119, 10011, 254037, 10010, 252533, 272070, 6750, 272059, 1713 },
+				horde = { 1714, 254033, 19528, 10020, 13119, 10011, 254037, 10010, 252533, 272070, 6750, 272059, 1713 },
 			},
 			[50] = {
 				alliance = { 10751, 19303, 15061, 19531, 14141, 252543, 226784, 254077, 11841, 13111, 5266, 11868, 272061, 17710, 249456 },
 				horde = { 10751, 19303, 15061, 19527, 14141, 252543, 226784, 254077, 11841, 13111, 5266, 272069, 272061, 17710, 249456 },
 			},
 			[60] = {
-				alliance = { 252561, 20685, 227888, 18510, 14138, 226782, 226780, 16694, 226781, 234033, 22681, 1713, 4696 },
-				horde = { 252561, 20685, 227888, 18510, 14138, 226782, 226780, 16694, 226781, 234033, 22681, 1713, 4696 },
+				alliance = { 252561, 20685, 227888, 18510, 14138, 226782, 226780, 16694, 226781, 234033, 22681, 4696 },
+				horde = { 252561, 20685, 227888, 18510, 14138, 226782, 226780, 16694, 226781, 234033, 22681, 4696 },
 			},
 		},
 		["hunter-beast-mastery"] = {
@@ -7558,7 +7555,7 @@ ns.Data = {
 			},
 			[60] = {
 				alliance = { 226887, 19491, 272105, 13340, 252483, 226885, 16676, 226888, 237819, 226881, 234202, 272408, 250619, 279273 },
-				horde = { 226887, 19491, 272105, 13340, 252483, 226885, 16676, 226888, 237819, 226881, 234202, 272408, 249469, 250619, 279273 },
+				horde = { 226887, 19491, 272105, 13340, 252483, 226885, 16676, 226888, 237819, 226881, 234202, 272408, 250619, 279273 },
 			},
 		},
 		["hunter-marksmanship"] = {
@@ -7580,7 +7577,7 @@ ns.Data = {
 			},
 			[60] = {
 				alliance = { 226887, 19491, 272105, 13340, 252483, 226885, 16676, 226888, 237819, 226881, 234202, 19325, 249469, 250619, 279273 },
-				horde = { 226887, 19491, 272105, 13340, 252483, 226885, 16676, 226888, 237819, 226881, 234202, 19325, 249469, 250619, 279273 },
+				horde = { 226887, 19491, 272105, 13340, 252483, 226885, 16676, 226888, 237819, 226881, 234202, 19325, 250619, 279273 },
 			},
 		},
 		["hunter-survival"] = {
@@ -7597,8 +7594,8 @@ ns.Data = {
 				horde = { 10008, 19536, 274751, 5257, 13110, 19508, 10331, 20192, 1718, 6423, 19512, 7686, 2164, 274753, 13138 },
 			},
 			[50] = {
-				alliance = { 220822, 13089, 220825, 13122, 15064, 13120, 272100, 274757, 9652, 12470, 19516, 9533, 249469, 812, 250614, 2100 },
-				horde = { 13089, 13122, 15064, 13120, 272100, 274757, 220833, 12470, 19511, 9533, 249469, 19120, 812, 250614, 2100 },
+				alliance = { 220822, 13089, 220825, 13122, 15064, 13120, 272100, 274757, 9652, 12470, 19516, 9533, 249469, 250614, 2100 },
+				horde = { 13089, 13122, 15064, 13120, 272100, 274757, 220833, 12470, 19511, 9533, 249469, 19120, 250614, 2100 },
 			},
 			[60] = {
 				alliance = { 226887, 22150, 272105, 272414, 226886, 226885, 226883, 226888, 237819, 226881, 234202, 19325, 19289, 1728, 21520, 16004 },
@@ -7619,8 +7616,8 @@ ns.Data = {
 				horde = { 10502, 10769, 19507, 5965, 1716, 10019, 20166, 10009, 254013, 281635, 19520, 7714, 7515, 13064 },
 			},
 			[50] = {
-				alliance = { 10033, 23169, 17732, 11623, 17775, 254061, 226930, 12466, 10009, 7553, 281635, 249469, 11302, 9527, 11748 },
-				horde = { 10033, 23169, 17732, 19121, 17775, 254061, 226930, 12466, 10009, 7553, 281635, 249469, 19120, 9527, 11748 },
+				alliance = { 10033, 23169, 17732, 11623, 17775, 254061, 226930, 12466, 7553, 281635, 249469, 11302, 9527, 11748 },
+				horde = { 10033, 23169, 17732, 19121, 17775, 254061, 226930, 12466, 7553, 281635, 249469, 19120, 9527, 11748 },
 			},
 			[60] = {
 				alliance = { 226935, 22657, 227808, 272411, 14152, 19595, 22066, 228190, 237815, 22064, 234032, 20682, 272438, 272439, 279246 },
@@ -7641,11 +7638,11 @@ ns.Data = {
 				horde = { 10502, 10769, 19507, 5965, 10042, 10019, 254041, 10009, 254013, 281635, 19520, 7714, 7515, 13064 },
 			},
 			[50] = {
-				alliance = { 10033, 17732, 14044, 17775, 254065, 226930, 254085, 10009, 254111, 7553, 281635, 249469, 11302, 9527, 11748 },
+				alliance = { 10033, 17732, 14044, 17775, 254065, 226930, 254085, 254111, 7553, 281635, 249469, 11302, 9527, 11748 },
 				horde = { 10033, 13085, 17732, 14044, 17775, 254065, 226930, 254085, 220906, 254111, 7553, 281635, 11302, 249469, 9527, 11748 },
 			},
 			[60] = {
-				alliance = { 226935, 22657, 227808, 272411, 14152, 19595, 228190, 237815, 226931, 234032, 20682, 272438, 272438, 279246 },
+				alliance = { 226935, 22657, 227808, 272411, 14152, 19595, 228190, 237815, 226931, 234032, 20682, 272438, 19288, 279246 },
 				horde = { 226935, 19601, 227808, 272411, 14152, 226929, 228190, 237815, 226931, 234032, 20682, 272438, 272439, 279246 },
 			},
 		},
@@ -7663,7 +7660,7 @@ ns.Data = {
 				horde = { 10502, 10769, 19507, 5965, 1716, 4545, 10019, 10771, 10009, 254013, 281635, 19520, 7714, 7515, 13064 },
 			},
 			[50] = {
-				alliance = { 10033, 17732, 11623, 17775, 254061, 226930, 17755, 10009, 220891, 7553, 281635, 249469, 11302, 9527, 11748 },
+				alliance = { 10033, 17732, 11623, 17775, 254061, 226930, 17755, 220891, 7553, 281635, 249469, 11302, 9527, 11748 },
 				horde = { 10033, 13085, 17732, 19121, 17775, 254061, 226930, 17755, 220906, 220909, 7553, 281635, 249469, 11302, 9527, 11748 },
 			},
 			[60] = {
@@ -7685,12 +7682,12 @@ ns.Data = {
 				horde = { 254015, 10769, 19507, 19528, 10020, 274750, 252530, 254037, 250549, 272070, 272059, 1713, 7721, 17508 },
 			},
 			[50] = {
-				alliance = { 220810, 19303, 220808, 272076, 220813, 252543, 226982, 252477, 220809, 252472, 5266, 272069, 272061, 11302, 11262 },
-				horde = { 19303, 252538, 272076, 252543, 226982, 252477, 10807, 252472, 5266, 272069, 272061, 11302, 249456 },
+				alliance = { 220810, 19303, 220808, 272076, 220813, 252543, 226982, 252477, 220809, 252472, 5266, 272069, 272061, 11302 },
+				horde = { 10751, 19303, 252538, 272076, 252543, 226982, 252477, 10807, 252472, 5266, 272069, 272061, 11302, 249456 },
 			},
 			[60] = {
-				alliance = { 21517, 20685, 226979, 18510, 227151, 226977, 272097, 20217, 252603, 227153, 234033, 22681, 10659, 7721 },
-				horde = { 21517, 20685, 226979, 18510, 250601, 226977, 272097, 20217, 252603, 227862, 234033, 22681, 10659, 7721 },
+				alliance = { 21517, 20685, 226979, 18510, 227151, 226977, 272097, 20217, 252603, 227153, 234033, 22681, 10659 },
+				horde = { 21517, 20685, 226979, 18510, 250601, 226977, 272097, 20217, 252603, 227862, 234033, 22681, 10659 },
 			},
 		},
 		["paladin-protection"] = {
@@ -7726,11 +7723,11 @@ ns.Data = {
 			},
 			[40] = {
 				alliance = { 8142, 19540, 274751, 16336, 10020, 14770, 10011, 13117, 10010, 250546, 19515, 7686 },
-				horde = { 8142, 19536, 274751, 14593, 10020, 14770, 10011, 13117, 10010, 250546, 19512, 7686 },
+				horde = { 8142, 19536, 274751, 10020, 14770, 10011, 13117, 10010, 250546, 19512, 7686 },
 			},
 			[50] = {
-				alliance = { 220819, 13089, 220818, 13122, 220815, 13120, 220817, 20106, 220816, 220814, 19516, 9533, 249469, 249470, 7959 },
-				horde = { 10032, 13089, 10038, 13122, 13120, 252473, 10039, 19511, 9533, 19120, 249469, 1982 },
+				alliance = { 220819, 13089, 220818, 13122, 220815, 13120, 220817, 20106, 220816, 220814, 19516, 9533, 249469, 249470, 7959, 249442 },
+				horde = { 10032, 13089, 10038, 13122, 13120, 252473, 10039, 19511, 9533, 19120, 249469, 1982, 249442 },
 			},
 			[60] = {
 				alliance = { 12640, 22659, 16695, 272414, 16690, 16697, 16672, 16673, 237819, 16670, 19325, 234034, 22678, 249469, 19323, 272435 },
@@ -7751,12 +7748,12 @@ ns.Data = {
 				horde = { 2624, 10769, 19507, 272077, 10020, 14429, 10011, 254037, 10010, 274746, 272059, 1713, 7721, 16887, 13064 },
 			},
 			[50] = {
-				alliance = { 10751, 13085, 220894, 272076, 10020, 254061, 226950, 12466, 10807, 254107, 6750, 5266, 272061, 18951, 17710, 11262, 9654 },
-				horde = { 10751, 13085, 254049, 272076, 10020, 254061, 226950, 10807, 254107, 6750, 5266, 272061, 11302, 17710, 249456 },
+				alliance = { 10751, 13085, 220894, 272076, 254061, 226950, 12466, 10807, 254107, 5266, 272061, 18951, 17710, 9654 },
+				horde = { 10751, 13085, 254049, 272076, 254061, 226950, 10807, 254107, 5266, 272061, 11302, 17710, 249456 },
 			},
 			[60] = {
-				alliance = { 226947, 19593, 226951, 14138, 22667, 226948, 16694, 226952, 13096, 13096, 744, 13000, 279246 },
-				horde = { 226947, 19593, 227888, 22667, 226948, 16694, 226952, 13096, 13096, 1713, 13000, 279246 },
+				alliance = { 226947, 19593, 226951, 14138, 22667, 226948, 16694, 226952, 13096, 744, 13000, 279246 },
+				horde = { 226947, 19593, 227888, 14138, 22667, 226948, 16694, 226952, 13096, 1713, 13000, 279246 },
 			},
 		},
 		["priest-holy"] = {
@@ -7774,7 +7771,7 @@ ns.Data = {
 			},
 			[50] = {
 				alliance = { 9470, 13085, 220894, 272076, 8113, 11917, 272098, 12466, 220893, 220895, 6750, 272061, 11302, 17710, 11262 },
-				horde = { 9470, 13085, 17732, 272076, 8113, 11917, 272098, 12466, 10807, 220900, 6750, 6750, 272061, 11302, 17710, 7611 },
+				horde = { 9470, 13085, 17732, 272076, 8113, 11917, 272098, 12466, 10807, 220900, 272061, 11302, 17710, 7611 },
 			},
 			[60] = {
 				alliance = { 226947, 19593, 227888, 18510, 14154, 226949, 226950, 19047, 226946, 227862, 234033, 272407, 272439, 19312, 279246 },
@@ -7949,8 +7946,8 @@ ns.Data = {
 				horde = { 10502, 10769, 19507, 4326, 1716, 10019, 20166, 10009, 254013, 281635, 19520, 7714, 7685, 249144 },
 			},
 			[50] = {
-				alliance = { 15999, 10027, 11623, 17755, 10009, 7553, 19523, 20534, 249469, 10844, 17745 },
-				horde = { 15999, 17732, 11623, 20166, 10009, 7553, 19519, 20534, 249469, 10844, 17745 },
+				alliance = { 15999, 10027, 11623, 17755, 7553, 19523, 20534, 249469, 10844, 17745 },
+				horde = { 15999, 17732, 11623, 7553, 19519, 20534, 249469, 10844, 17745 },
 			},
 			[60] = {
 				alliance = { 231584, 23125, 227808, 272411, 14153, 19595, 20716, 228190, 237815, 234032, 20682, 22678, 272438, 279246 },
@@ -7971,8 +7968,8 @@ ns.Data = {
 				horde = { 10502, 10769, 4326, 1716, 10019, 20166, 10009, 254013, 281635, 19520, 7714, 7685, 13064 },
 			},
 			[50] = {
-				alliance = { 15999, 17732, 11623, 254065, 17755, 10009, 7553, 19523, 20534, 249469, 10844, 17745 },
-				horde = { 15999, 17732, 11623, 254065, 254085, 10009, 7553, 19519, 20534, 249469, 10844, 17745 },
+				alliance = { 15999, 17732, 11623, 254065, 17755, 7553, 19523, 20534, 249469, 10844, 17745 },
+				horde = { 15999, 17732, 11623, 254065, 254085, 7553, 19519, 20534, 249469, 10844, 17745 },
 			},
 			[60] = {
 				alliance = { 231584, 23125, 227808, 272411, 14153, 19595, 20716, 228190, 237815, 234032, 20682, 22678, 272438, 279246 },
@@ -8041,7 +8038,7 @@ ns.Data = {
 				horde = { 220803, 13089, 220796, 220801, 13120, 272096, 252473, 220798, 252468, 19511, 11862, 19120, 249469, 810, 12774, 2100 },
 			},
 			[60] = {
-				alliance = { 12640, 22659, 272105, 272414, 252483, 19587, 272099, 227814, 237819, 21995, 19325, 234202, 19289, 249469, 21522, 21520, 22656 },
+				alliance = { 12640, 22659, 272105, 272414, 252483, 19587, 272099, 227814, 237819, 21995, 19325, 234202, 19289, 21522, 21520, 22656 },
 				horde = { 12640, 22659, 272105, 272414, 252483, 19587, 272099, 227814, 237819, 21995, 19325, 234202, 19289, 19120, 21522, 21520, 22656 },
 			},
 		},

@@ -111,8 +111,14 @@ Notes for the reader:
   An item that is not a weapon has no `bisDps` entry.
 - No BiS pick or alternative is an item the build's `items.json` marks `client_unconfirmed`
   (the client may never resolve such an id). The pipeline passes over such a candidate and
-  takes the next one in the ranker's order. A slot whose candidates are all unconfirmed has no
-  pick, just like a slot the ranker found nothing for.
+  takes the next one in the ranker's order that the band's own rules allow: never the same item
+  as the paired slot (the two rings, the two trinkets, the two hands), never an off hand under a
+  two-handed main hand, and never a two-hander in the main hand while the off hand has a pick. A
+  promoted pick carries its `chance` when the loot data states one for it at its own source. A
+  slot with no allowed confirmed candidate has no pick, just like a slot the ranker found
+  nothing for. The "new at <band>" ids are worked out from these final picks: a pick is new at a
+  band when it differs from the same slot's pick at the band before (every pick of a spec's
+  first band is new).
 - `encounterNeeds` ids are spell ids for buffs and debuffs and are used only to check the raid's
   auras; the coverage list shows spell names from the client. `resist` is a school name or nil.
 

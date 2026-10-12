@@ -567,29 +567,32 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(write_weights(args.build))
     elif args.command == "addon-data":
-        from pathlib import Path
-
         from pipeline.addonbis import unconfirmed_skips_line
-        from pipeline.addondata import check_addon_data, write_addon_data
+        from pipeline.addondata import build_addon_data, check_addon_data, write_addon_data
         from pipeline.addonlua import lua_has_drifted, write_lua
 
+        # Built once and handed to every writer and checker, so one run
+        # parses the bis files once.
+        data = build_addon_data(args.build)
         # Task L1.4's audit line, on both paths so the nightly --check shows it.
-        logging.getLogger("pipeline").info(unconfirmed_skips_line(Path("builds"), args.build))
+        logging.getLogger("pipeline").info(
+            unconfirmed_skips_line(args.build, data.bis_unconfirmed_skips)
+        )
         if args.check:
             log = logging.getLogger("pipeline")
             stale = False
-            if check_addon_data(args.build):
+            if check_addon_data(args.build, data=data):
                 log.error("builds/%s/addon-data.json has drifted", args.build)
                 stale = True
-            if lua_has_drifted(args.build):
+            if lua_has_drifted(args.build, data=data):
                 log.error("addon/ForeverSixty/Data.lua has drifted")
                 stale = True
             if stale:
                 log.error("run `python -m pipeline addon-data --build %s`", args.build)
                 return 1
             return 0
-        print(write_addon_data(args.build))
-        print(write_lua(args.build))
+        print(write_addon_data(args.build, data=data))
+        print(write_lua(args.build, data=data))
     elif args.command == "recorder":
         from pathlib import Path
 

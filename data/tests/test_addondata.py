@@ -480,21 +480,80 @@ def test_every_real_pick_and_alternative_is_named():
     assert all(value > 0 and round(value, 1) == value for value in data.bis_dps.values())
 
 
+def _wsl_path(path: Path) -> str:
+    """C:\\x\\y -> /mnt/c/x/y, for a file WSL's lua5.1 must open."""
+    resolved = path.resolve()
+    drive = resolved.drive.rstrip(":").lower()
+    return f"/mnt/{drive}" + resolved.as_posix()[len(resolved.drive) :]
+
+
+def _lua51() -> tuple[list[str], object] | None:
+    """The command prefix for a Lua 5.1 (the client's own) and a function
+    mapping a local path to the path that Lua opens: `lua5.1` on PATH, else
+    WSL's `lua5.1`. None when neither is available."""
+    local = shutil.which("lua5.1")
+    if local:
+        return [local], lambda path: path.as_posix()
+    wsl = shutil.which("wsl")
+    if wsl:
+        probe = subprocess.run(
+            [wsl, "-e", "lua5.1", "-v"], capture_output=True, text=True, timeout=60
+        )
+        if probe.returncode == 0:
+            return [wsl, "-e", "lua5.1"], _wsl_path
+    return None
+
+
 def test_the_real_data_lua_stays_inside_the_two_megabyte_idle_budget(tmp_path):
     """Ruling 3 (contract 1's 2 MB idle budget), measured the way L1.2/L1.3
-    did: the heap delta of loading and calling Data.lua, after full
-    collections either side. Lua 5.1 (the client's own) when present, else the Lua on PATH."""
-    lua_bin = shutil.which("lua5.1") or shutil.which("lua")
-    if not lua_bin:
-        pytest.skip("no lua5.1 interpreter is available")
+    did, under Lua 5.1 only (fix round 1, item 3: Lua 5.4's heap is smaller
+    and would pass a file the client cannot hold): the heap delta of loading
+    and calling Data.lua, after full collections either side."""
+    lua51 = _lua51()
+    if lua51 is None:
+        pytest.skip("no Lua 5.1 (neither lua5.1 on PATH nor WSL's lua5.1): the budget is 5.1's")
+    command, path_for = lua51
     chunk = tmp_path / "Data.lua"
     chunk.write_text(render_lua(build_addon_data(BUILD)), encoding="utf-8")
-    script = (
+    script = tmp_path / "heap.lua"
+    script.write_text(
         "collectgarbage() collectgarbage() local before = collectgarbage('count') "
-        f"local data = assert(loadfile({chunk.as_posix()!r}))() "
+        "local data = assert(loadfile(arg[1]))() "
         "collectgarbage() collectgarbage() "
-        "io.write(string.format('%.1f', collectgarbage('count') - before))"
+        "io.write(_VERSION, '|', string.format('%.1f', collectgarbage('count') - before))",
+        encoding="utf-8",
     )
-    result = subprocess.run([lua_bin, "-e", script], capture_output=True, text=True)
+    result = subprocess.run(
+        command + [path_for(script), path_for(chunk)], capture_output=True, text=True, timeout=120
+    )
     assert result.returncode == 0, result.stderr
-    assert float(result.stdout) < 2048
+    version, heap = result.stdout.split("|")
+    assert version == "Lua 5.1"
+    assert float(heap) < 2048
+
+
+def test_the_cli_logs_the_unconfirmed_skips_audit_line():
+    result = subprocess.run(
+        [sys.executable, "-m", "pipeline", "addon-data", "--build", BUILD, "--check"],
+        capture_output=True,
+        text=True,
+    )
+    assert f"bis {BUILD}: skipped " in result.stderr
+    assert " client_unconfirmed candidates (" in result.stderr
+
+
+def test_one_cli_run_parses_each_bis_file_once(monkeypatch):
+    import pipeline.addonbis as addonbis
+    from pipeline.__main__ import main
+
+    parsed: list[str] = []
+    real = addonbis._spec_bis
+
+    def counting(path, *args, **kwargs):
+        parsed.append(path.stem)
+        return real(path, *args, **kwargs)
+
+    monkeypatch.setattr(addonbis, "_spec_bis", counting)
+    main(["addon-data", "--build", BUILD, "--check"])
+    specs = sorted(path.stem for path in (Path("builds") / BUILD / "bis").glob("*.json"))
+    assert sorted(parsed) == specs
