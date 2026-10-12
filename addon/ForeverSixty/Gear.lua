@@ -14,6 +14,7 @@ local Export = ns.Export or require("Export")
 local Talents = ns.Talents or require("Talents")
 local Compat = ns.Compat or require("Compat")
 local Rules = ns.Rules or require("Rules")
+local Follow = ns.Follow or require("Follow")
 
 local Gear = {}
 
@@ -223,6 +224,72 @@ Gear.SLOTS_BY_EQUIP_LOCATION = {
 	INVTYPE_THROWN = { "ranged" },
 	INVTYPE_RELIC = { "ranged" },
 }
+
+--- The site slots an item of this INVTYPE_* location may be worn in, a
+--- list (two for rings, trinkets and one-hand weapons); empty for a
+--- location no slot takes (a shirt, a bag, a reagent).
+function Gear.slotsFor(equipLocation)
+	return Gear.SLOTS_BY_EQUIP_LOCATION[equipLocation] or {}
+end
+
+--- A weights message's `weights` list ({ { stat, weight }, ... }) as a
+--- stat -> weight table; a table already keyed by stat is copied as is.
+local function weightTable(list)
+	local weights = {}
+	for key, entry in pairs(type(list) == "table" and list or {}) do
+		if type(entry) == "table" and type(entry.stat) == "string" and type(entry.weight) == "number" then
+			weights[entry.stat] = entry.weight
+		elseif type(key) == "string" and type(entry) == "number" then
+			weights[key] = entry
+		end
+	end
+	return weights
+end
+
+--- The one weights source every verdict reads (spec section 5.2):
+--- { weights, dpsPerPoint, tag, caps, healing }. With a "weights" inbox
+--- message for `characterKey` and `spec` (the companion's sim), its weights,
+--- its own DPS per point (else the shipped one) and its caps, tag "sim";
+--- otherwise the shipped data.weights[spec] and data.dpsPerPoint[spec],
+--- tag "default", no caps. A message with no usable weights falls back to
+--- the shipped ones but keeps its caps. nil for a spec with no weights at
+--- all. `healing` is the shipped per-point number's own flag (HPS, not
+--- DPS). DPS per point only ever multiplies the static weights or the
+--- message's own weights, never a band's measured bis_weights. Pure.
+--- ("build" is the tag a build carrying its own weights will take; none
+--- does yet.)
+function Gear.currentWeights(data, spec, inbox, characterKey)
+	if data == nil or spec == nil then
+		return nil
+	end
+	local shipped = type(data.weights) == "table" and data.weights[spec] or nil
+	local perPoint = type(data.dpsPerPoint) == "table" and data.dpsPerPoint[spec] or nil
+	local healing = perPoint ~= nil and perPoint.healing == true
+	local message
+	for _, candidate in ipairs(Follow.messages(inbox, characterKey, "weights")) do
+		if candidate.spec == spec then
+			message = candidate
+			break
+		end
+	end
+	local caps = message ~= nil and type(message.caps) == "table" and message.caps or {}
+	local simWeights = message ~= nil and weightTable(message.weights) or nil
+	if simWeights ~= nil and next(simWeights) ~= nil then
+		return {
+			weights = simWeights,
+			dpsPerPoint = message.dps_per_point or (perPoint ~= nil and perPoint.dps or nil),
+			tag = "sim", caps = caps, healing = healing, spec = spec,
+		}
+	end
+	if shipped == nil then
+		return nil
+	end
+	return {
+		weights = shipped,
+		dpsPerPoint = perPoint ~= nil and perPoint.dps or nil,
+		tag = "default", caps = caps, healing = healing, spec = spec,
+	}
+end
 
 local function plannedBySlot(build)
 	local planned = {}

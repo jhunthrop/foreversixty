@@ -333,12 +333,6 @@ local L = {
 	-- interleaved with the keys above, so a merge with the window lane's
 	-- own edits to this file costs one diff hunk, not a rebase through
 	-- every key.
-	-- The verdict's own absolute-points fallback, for a slot with nothing
-	-- worn in it to be a percentage OF (an empty slot; lane addon-
-	-- tooltip-polish's own verdictFor) -- tooltipVerdictUpgrade below is
-	-- what a hovered item's verdict shows against something actually worn.
-	tooltipUpgrade = "Upgrade for %s: %+.0f by our weights",
-	tooltipNotUpgrade = "Not an upgrade",
 	diagTooltipHookFailed = "The item tooltip hook failed once and turned itself off: %s",
 	-- The Overview's rotation card (section 6 Wave B).
 	overviewRotationEyebrow = "YOUR ROTATION",
@@ -495,13 +489,6 @@ local L = {
 	-- with a real place instead of a bare source kind. Appended, not
 	-- interleaved, for the same reason every block above gives: several
 	-- other lanes are editing this same file this wave.
-	-- A percentage of what is actually worn -- "Upgrade +4.2%".
-	tooltipVerdictUpgrade = "Upgrade +%.1f%%",
-	-- "Downgrade -3.1%" (an ASCII hyphen, not U+2212: Locale.lua carries no
-	-- non-ASCII outside "·", already used throughout this file, and a
-	-- second lookalike glyph is not worth introducing for one string).
-	tooltipVerdictDowngrade = "Downgrade -%.1f%%",
-	tooltipVerdictSidegrade = "Sidegrade",
 	-- The BiS row's tag when the pick is neither worn nor new: "BiS · lvl 20".
 	tooltipBisDefaultTag = "BiS · lvl %d",
 	-- The muted source line: "<kind> · <place>", e.g. "Dungeon · Wailing
@@ -517,6 +504,53 @@ local L = {
 	-- Lane addon-v2 L2.2 (2026-10-11): the level a talent point is taken
 	-- at (Progress.levelForPoint): talents start at 10, one per level.
 	progressTakeAt = "Take at level %d",
+
+	-- Lane addon-v2 L3.3 (2026-10-11): the item tooltip's section (spec
+	-- section 4.3). The verdict prints one decimal in DPS or HPS and none in
+	-- score; the downgrade's sign is U+2212 (if the client's font has no
+	-- glyph for it, the fallback is the ASCII hyphen in these two strings).
+	tooltipVerdictDps = "Upgrade +%.1f DPS over %s",
+	tooltipVerdictHps = "Upgrade +%.1f HPS over %s",
+	tooltipVerdictScore = "Upgrade +%d score over %s",
+	tooltipSide = "Sidegrade",
+	-- "Downgrade −4.2 DPS": the second %s is tooltipUnitDps or tooltipUnitHps.
+	tooltipDown = "Downgrade −%.1f %s",
+	tooltipDownScore = "Downgrade −%d score",
+	tooltipFills = "Fills an empty slot, +%.1f %s",
+	tooltipFillsScore = "Fills an empty slot, +%d score",
+	tooltipEquipped = "Equipped",
+	tooltipUnitDps = "DPS",
+	tooltipUnitHps = "HPS",
+	-- "Planned for Arms at 30" (the spec's tree, the level band), or the
+	-- loaded build's own name when the build names the item.
+	tooltipPlanned = "Planned for %s at %d",
+	tooltipPlannedBuild = "Planned for %s",
+	-- Where the item comes from: "The Deadmines · Defias Overseer · 14%",
+	-- "Bernard Brubaker · Vendor", "World drop · 2%".
+	tooltipSource = "%s · %s · %d%%",
+	tooltipSourcePair = "%s · %s",
+	tooltipSourceChance = "%s · %d%%",
+	-- The band's pick for the slot, when the hovered item is not it.
+	tooltipNext = "Next: %s · %s",
+	tooltipNextOnly = "Next: %s",
+	tooltipAlternatives = "Also: %s, %s",
+	tooltipAlternativesOne = "Also: %s",
+	-- A name the client has not sent yet; the section redraws when it does.
+	tooltipNamePending = "…",
+	-- The section's header: "Forever Sixty · Your sim".
+	tooltipHeaderTag = " · %s",
+	tooltipTagSim = "Your sim",
+	tooltipTagBuild = "Your build",
+	tooltipTagDefault = "Default weights",
+	-- "Not for you: rogues cannot use two-handed swords" (the second %s is
+	-- the rules engine's reason). tooltipUntil is rulesUntilLevel, set below.
+	tooltipNever = "Not for you: %s cannot use %s",
+	-- /fs diag verbose: which of the client's two tooltip hooks the section is drawn through.
+	diagItemTooltipHook = "Item tooltip: drawn through the %s hook",
+	tooltipClassPlural = {
+		WARRIOR = "warriors", PALADIN = "paladins", HUNTER = "hunters", ROGUE = "rogues",
+		PRIEST = "priests", SHAMAN = "shamans", MAGE = "mages", WARLOCK = "warlocks", DRUID = "druids",
+	},
 
 	-- Addon messages between players (Comms.lua): /fs hello, /fs seen and /fs diag.
 	diagNoAddonMessages = "This client cannot send addon messages; guild and group sharing is off.",
@@ -666,6 +700,9 @@ local L = {
 		["warrior-protection"] = "Shield and plate, Shield Slam, holds attention",
 	},
 }
+
+-- The item tooltip's refusal reads exactly as the rules engine's own.
+L.tooltipUntil = L.rulesUntilLevel
 
 ns.L = L
 return L

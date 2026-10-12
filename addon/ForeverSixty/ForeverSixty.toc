@@ -28,7 +28,7 @@ Score.lua
 Comms.lua
 Inspect.lua
 Ratings.lua
-Tooltip.lua
+surfaces\ItemTooltip.lua
 TalentGlow.lua
 Minimap.lua
 surfaces\Chip.lua

@@ -39,7 +39,7 @@ describe("Options", function()
 		helper.load("Widgets")
 		helper.load("Export")
 		helper.load("Gear")
-		helper.load("Tooltip")
+		helper.load("ItemTooltip")
 		helper.load("Follow")
 		helper.load("TalentGlow")
 		helper.load("Chip")
@@ -158,7 +158,12 @@ describe("Options", function()
 		assert.are.equal(1, #build.order)
 	end)
 
-	it("hands the newest weights message for the character's own spec to Tooltip at login", function()
+	-- L3.3: Options stores Gear.currentWeights' answer on ItemTooltip.current; a
+	-- message for this character and spec is the sim (its weights and caps), else
+	-- the shipped weights (DATA's paladin-holy).
+	local SIM = { { stat = "spell_power", weight = 1 } }
+
+	it("hands the newest weights message for the character's own spec to the tooltip at login", function()
 		_G.ForeverSixtyInbox = {
 			generated_at = "2026-09-20T00:00:00Z",
 			builds = {},
@@ -166,15 +171,17 @@ describe("Options", function()
 				-- DATA's own fixture (5/5 in Holy) resolves to "paladin-holy" --
 				-- Gear.specOf's slug, the same one a real weights message's
 				-- `spec` carries (api/internal/addon/messages.go's specSlugFor).
-				{ type = "weights", spec = "paladin-holy", weights = {}, caps = { "hit" } },
-				{ type = "weights", spec = "paladin-holy", weights = {}, caps = { "spirit" } },
+				{ type = "weights", spec = "paladin-holy", weights = SIM, caps = { "hit" } },
+				{ type = "weights", spec = "paladin-holy", weights = SIM, caps = { "spirit" } },
 			},
 		}
 		Options.readInbox()
 		-- Follow.messages reverses the companion's append order, so the
 		-- second entry written is the newest -- and both are Holy here,
 		-- so ties within the same spec still resolve to the newest.
-		assert.are.equal("spirit", require("Tooltip").weightsMessage.caps[1])
+		local current = require("ItemTooltip").current
+		assert.are.equal("spirit", current.caps[1])
+		assert.are.equal("sim", current.tag)
 	end)
 
 	-- Lane night-addon's own find (docs/tenets.md's standard, review item
@@ -188,11 +195,13 @@ describe("Options", function()
 			messages = {
 				-- Written after the Holy one below, so "newest" alone would
 				-- have picked this one under the old, spec-blind rule.
-				{ type = "weights", spec = "paladin-protection", weights = {}, caps = { "expertise" } },
+				{ type = "weights", spec = "paladin-protection", weights = SIM, caps = { "expertise" } },
 			},
 		}
 		Options.readInbox()
-		assert.is_nil(require("Tooltip").weightsMessage)
+		local current = require("ItemTooltip").current
+		assert.are.equal("default", current.tag)
+		assert.are.same({}, current.caps)
 	end)
 
 	it("picks the Holy message over a newer Protection one queued for the same character", function()
@@ -200,12 +209,13 @@ describe("Options", function()
 			generated_at = "2026-09-20T00:00:00Z",
 			builds = {},
 			messages = {
-				{ type = "weights", spec = "paladin-holy", weights = {}, caps = { "hit" } },
-				{ type = "weights", spec = "paladin-protection", weights = {}, caps = { "expertise" } },
+				{ type = "weights", spec = "paladin-holy", weights = SIM, caps = { "hit" } },
+				{ type = "weights", spec = "paladin-protection", weights = SIM, caps = { "expertise" } },
 			},
 		}
 		Options.readInbox()
-		assert.are.equal("paladin-holy", require("Tooltip").weightsMessage.spec)
+		assert.are.equal("paladin-holy", require("ItemTooltip").current.spec)
+		assert.are.equal("hit", require("ItemTooltip").current.caps[1])
 	end)
 
 	it("re-reads the weights message for the new spec once talents change mid-session", function()
@@ -213,13 +223,13 @@ describe("Options", function()
 			generated_at = "2026-09-20T00:00:00Z",
 			builds = {},
 			messages = {
-				{ type = "weights", spec = "paladin-holy", weights = {}, caps = { "hit" } },
-				{ type = "weights", spec = "paladin-protection", weights = {}, caps = { "expertise" } },
+				{ type = "weights", spec = "paladin-holy", weights = SIM, caps = { "hit" } },
+				{ type = "weights", spec = "paladin-protection", weights = SIM, caps = { "expertise" } },
 			},
 		}
 		Options.register()
 		Options.readInbox()
-		assert.are.equal("paladin-holy", require("Tooltip").weightsMessage.spec)
+		assert.are.equal("paladin-holy", require("ItemTooltip").current.spec)
 		-- Respec to Protection: 5/5 there now outweighs Holy's own 5.
 		state.talents = {
 			{ name = "Holy", talents = { { name = "A", tier = 1, column = 1, rank = 0, maxRank = 5 } } },
@@ -227,23 +237,25 @@ describe("Options", function()
 			{ name = "Retribution", talents = {} },
 		}
 		Options.onEvent(Options.frame, "PLAYER_TALENT_UPDATE")
-		assert.are.equal("paladin-protection", require("Tooltip").weightsMessage.spec)
+		assert.are.equal("paladin-protection", require("ItemTooltip").current.spec)
 	end)
 
-	it("leaves Tooltip.weightsMessage nil rather than erroring with no weights message queued", function()
+	it("uses the shipped weights rather than erroring with no weights message queued", function()
 		_G.ForeverSixtyInbox = { generated_at = "2026-09-20T00:00:00Z", builds = {} }
 		Options.readInbox()
-		assert.is_nil(require("Tooltip").weightsMessage)
+		assert.are.equal("default", require("ItemTooltip").current.tag)
 	end)
 
 	it("drops a weights message addressed to another character", function()
 		_G.ForeverSixtyInbox = {
 			generated_at = "2026-09-20T00:00:00Z",
 			builds = {},
-			messages = { { type = "weights", character = "US/Ashbringer/Alice", spec = "paladin-holy" } },
+			messages = { { type = "weights", character = "US/Ashbringer/Alice", spec = "paladin-holy", weights = SIM,
+				caps = { "hit" } } },
 		}
 		Options.readInbox()
-		assert.is_nil(require("Tooltip").weightsMessage)
+		assert.are.equal("default", require("ItemTooltip").current.tag)
+		assert.are.same({}, require("ItemTooltip").current.caps)
 	end)
 
 	it("register installs the slash commands", function()

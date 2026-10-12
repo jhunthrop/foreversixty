@@ -108,7 +108,7 @@ describe("Tooltip's BiS hover section", function()
 		helper.load("Gear")
 		helper.load("Talents")
 		Prefs = helper.load("Prefs")
-		Tooltip = helper.load("Tooltip")
+		Tooltip = helper.load("ItemTooltip")
 		return Tooltip
 	end
 
@@ -325,11 +325,10 @@ describe("Tooltip's BiS hover section", function()
 			Tooltip.data = DATA
 			local tooltip, calls = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:111:link")
-			assert.are.equal("line", calls[1].kind)
-			assert.is_truthy(calls[1].text:find(L.addonName, 1, true))
-			assert.are.equal("doubleline", calls[2].kind)
-			assert.are.equal(unknownIcon() .. " item:111:link", calls[2].left)
-			assert.are.equal(L.tooltipBisEquipped, calls[2].right)
+			-- L3.3: a blank line, the header, then the plan (the band's own pick).
+			assert.are.equal(" ", calls[1].text)
+			assert.is_truthy(calls[2].text:find(L.addonName, 1, true))
+			assert.are.equal(string.format(L.tooltipPlanned, "Holy", 20), calls[3].text)
 		end)
 
 		-- Round-2 ruling 1, adopted: the old precondition required a
@@ -347,10 +346,11 @@ describe("Tooltip's BiS hover section", function()
 			Tooltip.data = DATA
 			local tooltip, calls = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:bag:link")
-			assert.are.equal("line", calls[1].kind)
-			assert.are.equal("doubleline", calls[2].kind)
-			assert.are.equal(unknownIcon() .. " item:111", calls[2].left)
-			assert.are.equal(string.format(L.tooltipBisDefaultTag, 20), calls[2].right)
+			-- L3.3: a blank line, the header, then the band's pick for the slot,
+			-- its name not sent by the client yet.
+			assert.are.equal(" ", calls[1].text)
+			assert.is_truthy(calls[2].text:find(L.addonName, 1, true))
+			assert.are.equal(string.format(L.tooltipNextOnly, L.tooltipNamePending), calls[3].text)
 		end)
 
 		it("still adds nothing for an item whose equip location this band does not track at all", function()

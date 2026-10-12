@@ -16,7 +16,7 @@ local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local Inspect = ns.Inspect or require("Inspect")
-local Tooltip = ns.Tooltip or require("Tooltip")
+local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
@@ -31,51 +31,29 @@ local Score = ns.Score or require("Score")
 local Options = {}
 Options.data = Data
 
---- The newest "weights" message actually about `spec` (Gear.specOf's own
---- "class-spec" slug, the same vocabulary api/internal/addon/messages.go
---- writes into a weights message's own `spec` field). A message the
---- companion queued for a spec the character sim'd but has since
---- respecced away from -- or simply is not playing right now -- must
---- never supply THIS spec's capped-stat call-outs (Tooltip.capLines) on
---- an item scored for a different one; nil `spec` (no build loaded, no
---- resolvable class) answers no message at all rather than guessing.
-local function weightsMessageForSpec(messages, spec)
-	if spec == nil then
-		return nil
-	end
-	for _, message in ipairs(messages) do
-		if message.spec == spec then
-			return message
-		end
-	end
-	return nil
-end
-
 --- The character's current spec, Gear.specOf's own slug, or nil with no
 --- resolvable class (no build loaded is not a bar here -- Talents.
 --- readRanks and playerClassSlug read the client directly, same as the
 --- rotation card's own specTitle lookup does).
 local function currentSpec(data)
 	local classSlug = Talents.playerClassSlug()
-	if classSlug == nil then
+	if classSlug == nil or data == nil or data.classes == nil then
 		return nil
 	end
 	return Gear.specOf(data, classSlug, Talents.readRanks(data))
 end
 
---- The newest "weights" inbox message for the character currently
---- logged in AND for the spec they are playing right now, handed to
---- Tooltip so an item's own tooltip can call out a capped stat
---- (Tooltip.capLines). Read at the same point Options.readInbox already
---- reads the companion's queued builds: the companion writes both into
---- the same inbox file on its own ten-minute sync, so one read covers
---- both. Unaddressed, or addressed to a spec the character is not
---- currently playing, both answer nil -- the same "no data, no line"
---- rule Tooltip already follows when there is no message at all.
+--- The weights every item verdict reads (Gear.currentWeights): the
+--- companion's sim for the character logged in and the spec they are
+--- playing right now, else the shipped weights. Stored on ItemTooltip at
+--- login (through readInbox), when the inbox is read, and on a respec; a
+--- message for a spec the character is not playing never supplies this
+--- spec's weights or caps.
 function Options.refreshWeightsMessage()
-	local messages = Follow.messages(ForeverSixtyInbox, Export.characterKey(), "weights")
-	Tooltip.weightsMessage = weightsMessageForSpec(messages, currentSpec(Options.data))
-	return Tooltip.weightsMessage
+	ItemTooltip.current = Gear.currentWeights(Options.data, currentSpec(Options.data), ForeverSixtyInbox,
+		Export.characterKey())
+	ItemTooltip.resetCache()
+	return ItemTooltip.current
 end
 
 --- The companion's inbox, read at login and never written.
@@ -235,7 +213,10 @@ end
 
 --- Redraw every surface for `data`: the chip and the talent marks (which draw the
 --- talent glow first) today; each surface Lanes L3-L5 add calls its own refresh from here.
+--- The item tooltip draws on hover, so its cached sections are dropped instead: what
+--- is worn, carried, planned or levelled may have changed.
 function Options.refreshSurfaces(data)
+	ItemTooltip.resetCache()
 	Chip.refresh(data)
 	TalentMarks.refresh(data)
 end
@@ -250,6 +231,8 @@ Options.EVENTS = {
 	-- The chip (L3.1): bags for its upgrade line, the zone for "here for you", the
 	-- ready check for its raid check (L5.2 fills that in; until then it only redraws).
 	"BAG_UPDATE_DELAYED", "ZONE_CHANGED_NEW_AREA", "READY_CHECK", "READY_CHECK_FINISHED",
+	-- The item tooltip (L3.3): its verdict is against what is worn.
+	"PLAYER_EQUIPMENT_CHANGED",
 }
 
 --- The talent window's own clicks, which only the talent marks follow:
@@ -331,10 +314,10 @@ function Options.onEvent(_, event, ...)
 	end
 	if event == "PLAYER_LEVEL_UP" then
 		Chip.onLevelUp(...)
-		-- The tooltip cache is keyed by item link alone (Tooltip.lua); a
+		-- The tooltip cache is keyed by item link alone (surfaces/ItemTooltip.lua); a
 		-- BiS band is chosen by level, so a link cached before this level-up
 		-- would otherwise go on answering the band the character just left.
-		Tooltip.resetCache()
+		ItemTooltip.resetCache()
 	end
 	if event == "PLAYER_TALENT_UPDATE" or event == "TRAIT_CONFIG_UPDATED" then
 		-- A respec can change Gear.specOf's own answer mid-session;
@@ -343,7 +326,7 @@ function Options.onEvent(_, event, ...)
 		-- above -- an item cached under the spec just left must not go on
 		-- answering that spec's caps.
 		Options.refreshWeightsMessage()
-		Tooltip.resetCache()
+		ItemTooltip.resetCache()
 	end
 	if event == "TRAIT_CONFIG_UPDATED" then
 		-- The build may have changed what the guild sees; Comms holds it to one hello a minute.
@@ -366,8 +349,8 @@ function Options.register()
 	SLASH_FOREVERSIXTY2 = "/foreversixty"
 	SlashCmdList["FOREVERSIXTY"] = Options.run
 
-	Tooltip.data = Options.data
-	Tooltip.register()
+	ItemTooltip.data = Options.data
+	ItemTooltip.register()
 	MinimapButton.open = Options.showHint
 	MinimapButton.openSettings = Options.showHint
 	Chip.afterChoice = function()

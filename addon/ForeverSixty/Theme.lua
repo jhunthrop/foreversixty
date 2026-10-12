@@ -603,7 +603,7 @@ Theme.UNKNOWN_ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
 --- The client's own empty-slot silhouettes, one per site slot name --
 --- stable paths the client has carried since vanilla, not a template or a
 --- capability worth probing. Shirt and Tabard carry no stats and are not
---- in Gear.lua's own slot vocabulary at all (Tooltip.BIS_SLOT_BUTTONS
+--- in Gear.lua's own slot vocabulary at all (ItemTooltip.BIS_SLOT_BUTTONS
 --- skips them the same way), so they are not here either.
 Theme.SLOT_ICONS = {
 	head = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Head",

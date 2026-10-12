@@ -86,6 +86,19 @@ function Compat.displayLink(itemId)
 	return "item:" .. itemId
 end
 
+--- The item's name, or nil until the client has it cached (asking for it
+--- once, so GET_ITEM_INFO_RECEIVED follows).
+function Compat.itemName(itemId)
+	if itemId == nil then
+		return nil
+	end
+	local name = call("GetItemNameByID", itemId) or Compat.itemInfo(itemId)
+	if name == nil then
+		Compat.requestItemLoad(itemId)
+	end
+	return name
+end
+
 --- The item's level (GetItemInfo's fourth value), or nil until the client
 --- has it cached.
 function Compat.itemLevel(itemId)
