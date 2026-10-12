@@ -4,6 +4,20 @@
 // character-retry.spec.ts drives its failed state, and a fixture that drifted between the
 // two would let one of them pass against a shape the other no longer sees.
 import type { Page } from '@playwright/test';
+import { GEAR_FIXTURE_QUALITIES, GEAR_PANEL_FIXTURE } from '../../../src/fixtures/character-gear';
+
+/** The gear panel (api/openapi.yaml `CharacterGear`, Task L8.6): every row state, from
+ *  src/fixtures/character-gear.ts. The shared CHARACTER below leaves it out, as an API that
+ *  predates it does; character-gear.spec.ts adds it. */
+export const GEAR = GEAR_PANEL_FIXTURE;
+
+/** The build's items/priest.json as far as the gear panel reads it: each fixture item's id and
+ *  quality, so the names take their colours. */
+export const GEAR_ITEMS = {
+  build: 'fixture',
+  class_slug: 'priest',
+  items: Object.entries(GEAR_FIXTURE_QUALITIES).map(([id, quality]) => ({ id: Number(id), quality })),
+};
 
 export const CHARACTER_URL = '**/v1/characters/us/hardcore/elyra-duskvale';
 export const CHARACTER_PATH = '/character/us/hardcore/elyra-duskvale';

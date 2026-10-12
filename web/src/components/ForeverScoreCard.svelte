@@ -51,6 +51,7 @@
     forever,
     history = null,
     bisHref = null,
+    gearHref = null,
     owned = false,
     name = '',
     region = '',
@@ -61,8 +62,12 @@
     forever: ForeverScore | null;
     /** The character's score_history, oldest first; the sparkline needs two points or more. */
     history?: readonly ScorePoint[] | null;
-    /** The spec's best-in-slot page, when the spec is known: where "Most to gain: Gear" goes. */
+    /** The spec's best-in-slot page, when the spec is known: where "Most to gain: Gear" goes
+     *  when the page has no Gear section (an API that sends no `gear`). */
     bisHref?: string | null;
+    /** The profile's Gear section ("#gear", L8.6 ruling 2): where "Most to gain: Gear" lands
+     *  when the page has one, ahead of the BiS page (whose link is in that section's footer). */
+    gearHref?: string | null;
     /** The viewer's own character: "Your whole record" and the owner's no-logs action. */
     owned?: boolean;
     /** The character's name, for "Look up another character" (the lookup starts filled). */
@@ -109,7 +114,9 @@
   const gainLabel = $derived(scoreCopy.components.find((c) => c.key === gain?.key)?.label ?? '');
   const sparkline = $derived(scoreHistoryLine(history));
   const firstScore = $derived(scoreHistoryFirst(history));
-  const gainHref = $derived(gain?.key === 'gear' && bisHref !== null ? bisHref : scoreCopy.explainHref);
+  const gainHref = $derived(
+    gain?.key === 'gear' ? (gearHref ?? bisHref ?? scoreCopy.explainHref) : scoreCopy.explainHref,
+  );
 </script>
 
 {#snippet card()}

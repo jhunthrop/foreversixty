@@ -27,7 +27,9 @@ function slug(text: string): string {
 }
 
 /**
- * Where "Most to gain: Gear" goes until the profile has a gear panel (L8.4 fix round 4 item 2):
+ * The Gear section's footer link, "Every pick for Holy at 60" (L8.6 ruling 2; "Most to gain:
+ * Gear" lands on that section now, and comes here only for an API that sends no `gear`; L8.4 fix
+ * round 4 item 2 first pointed it here):
  * the spec's best-in-slot page at this character's band, and its faction when the race gives
  * one -- `/bis/priest/holy?faction=alliance#band-alliance-60`, the route and anchor the /bis
  * landing's spec links open (bis/landing-links.ts). With no level, the spec's page as it opens

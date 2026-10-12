@@ -19,6 +19,7 @@ import { API_BASE_URL } from '../planner/config';
 import type { CharacterPath } from '../characters';
 import { normaliseReportRatings } from '../rating/normalise';
 import type { CharacterRating, ReportRatings } from '../rating/types';
+import type { CharacterGear } from '../gear/types';
 import type { ForeverScore, ScorePoint } from '../score/score';
 
 export const RANKINGS_FAILED = 'Rankings did not load';
@@ -150,6 +151,11 @@ export interface CharacterPage extends Partial<ForeverScore> {
   /** The Forever Score over time (api/openapi.yaml `ScorePoint`): one point per UTC date, the
    *  newest 30, oldest first, `[]` when there is none. Optional for an API that predates it. */
   score_history?: ScorePoint[];
+  /** The gear panel (api/openapi.yaml `CharacterGear`, Task L6.7): the 17 slots of the newest
+   *  addon export, `[]` with none. Optional for an API that predates it, which draws no Gear
+   *  section at all. */
+  gear?: CharacterGear['gear'];
+  gear_gap_total?: CharacterGear['gear_gap_total'];
 }
 
 export interface GuildProgressionRow {

@@ -249,6 +249,18 @@ describe('CharacterRatingPanel Forever Score card', () => {
     expect(noSpec).toMatch(/data-testid="forever-score-most-to-gain"[\s\S]*?href="\/ratings#forever-score"/);
   });
 
+  // L8.6 ruling 2: with the gear panel on the page, "Most to gain: Gear" lands on its section,
+  // not the BiS page (that link moves into the section's footer); an API that sends no gear
+  // keeps the BiS page.
+  it('links Gear to the profile’s Gear section when the page has one (L8.6 ruling 2)', () => {
+    const { body } = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: SCORED, bisHref: '/bis/priest/holy', gearHref: '#gear' },
+    });
+    const line = /<p[^>]*data-testid="forever-score-most-to-gain"[\s\S]*?<\/p>/.exec(body)?.[0] ?? '';
+    expect(line).toMatch(/<a class="[^"]*" href="#gear">Gear<\/a>/);
+    expect(line).not.toContain('/bis/');
+  });
+
   it('puts "What the score counts" in the card footer, right-aligned, at 14px with a 44px phone hit area', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
     const card = /data-testid="forever-score-card"[\s\S]*$/.exec(body)?.[0] ?? '';

@@ -32,6 +32,10 @@
   import { readCurrent } from '../lib/current-character';
   import { factionOfRace } from '../lib/race-faction';
   import { foreverOf, ownCharacter } from '../lib/score/score';
+  import { bandForLevel } from '../lib/bis/hover';
+  import { GEAR_ANCHOR } from '../lib/gear/panel';
+  import { classSlugFromName } from '../lib/report/tree-sizes';
+  import CharacterGearPanel from './character/CharacterGearPanel.svelte';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterInGame from './CharacterInGame.svelte';
   import CharacterRatingPanel from './CharacterRatingPanel.svelte';
@@ -90,6 +94,13 @@
   /** "Holy Priest · 31/20/0 · <Olympus XXVII> · Classic Beta PvP", "Level 60 Night Elf" and the
    *  chip, from the answer. */
   const header = $derived(data === null || resolved === null ? null : profileHeader(data, resolved));
+  /** The spec's best-in-slot page at this band: the Gear section's footer link (L8.6 ruling 2),
+   *  and where the score card's "Most to gain: Gear" goes for an API that sends no `gear`. */
+  const specBis = $derived(
+    data === null
+      ? null
+      : bisHref(data.character.class, profileSpec(data), data.character.level, data.character.race),
+  );
   /** Under "Builds seen at pull": every distinct split, newest first (fix round 5 item 4). */
   const buildsFootnote = $derived(
     data === null ? null : characterBuildsCopy.footnote(seenSplits(data.builds_seen)),
@@ -159,8 +170,9 @@
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
     <!-- At every width (fix round 3 item 4, L8.4 fix round 2 item 7): a signed-in chip first
-         (-4), then the header (-3) and the score card (-2, ForeverScoreCard), then the visitor's
-         sign-in band (-1): the character is the page's subject. Then the rest in page order. -->
+         (-4), then the header (-3) and the score card (-2, ForeverScoreCard) with the Gear
+         section under it (-2, after it in the page: L8.6), then the visitor's sign-in band (-1):
+         the character is the page's subject. Then the rest in page order. -->
     <CurrentCharacterBar spine profile />
     <header class="-order-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div class="flex flex-col gap-1">
@@ -205,12 +217,28 @@
       path={resolved}
       forever={foreverOf(data)}
       scoreHistory={data.score_history ?? []}
-      bisHref={bisHref(data.character.class, profileSpec(data), data.character.level, data.character.race)}
+      bisHref={specBis}
+      gearHref={data.gear === undefined ? null : `#${GEAR_ANCHOR}`}
       {owned}
       name={data.character.name}
       fights={data.history}
       onrated={(next) => (rated = next)}
     />
+
+    <!-- L8.6: the Gear section, right under the score card (-order-2, after it in the page), the
+         anchor its "Most to gain: Gear" opens. An API that sends no `gear` draws nothing. -->
+    {#if data.gear !== undefined}
+      <CharacterGearPanel
+        gear={data.gear}
+        total={data.gear_gap_total ?? null}
+        classSlug={data.character.class === undefined || data.character.class === ''
+          ? null
+          : classSlugFromName(data.character.class)}
+        bisHref={specBis}
+        spec={profileSpec(data)}
+        band={typeof data.character.level === 'number' ? bandForLevel(data.character.level) : null}
+      />
+    {/if}
 
     <CharacterInGame
       forever={foreverOf(data)}

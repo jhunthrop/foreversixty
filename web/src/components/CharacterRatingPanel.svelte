@@ -26,6 +26,7 @@
     forever = undefined,
     scoreHistory = null,
     bisHref = null,
+    gearHref = null,
     owned = false,
     name = '',
     fights = [],
@@ -42,6 +43,9 @@
     scoreHistory?: readonly ScorePoint[] | null;
     /** The spec's best-in-slot page, when known (the score card's "Most to gain: Gear"). */
     bisHref?: string | null;
+    /** The profile's Gear section's anchor, when the page has one (L8.6 ruling 2): the score
+     *  card's "Most to gain: Gear" lands there instead of the BiS page. */
+    gearHref?: string | null;
     /** The viewer's own character: the captions say "Your" only then (fix round 2 item 1). */
     owned?: boolean;
     /** The character's name, for the no-logs card's "Look up another character". */
@@ -100,6 +104,7 @@
     {forever}
     history={scoreHistory}
     {bisHref}
+    {gearHref}
     {owned}
     {name}
     region={path.region}
