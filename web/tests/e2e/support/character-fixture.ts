@@ -17,6 +17,8 @@ export const SCORE_HISTORY = [
   { date: '2026-11-04', score: 1830, tier: 'epic' },
 ];
 
+/** Every best and history row carries `execution_score` (fix round 1 item 3), as the API
+ *  always sends it (a number, or null for an unscored fight): a row without one read "NaN%". */
 export const CHARACTER = {
   ok: true,
   data: {
@@ -44,6 +46,7 @@ export const CHARACTER = {
         fought_at: '2026-12-09T22:10:00Z',
         report_id: 'fixture2abcd',
         fight_index: 3,
+        execution_score: 0.94,
       },
       {
         encounter: 'Deep Warden',
@@ -56,6 +59,7 @@ export const CHARACTER = {
         fought_at: '2026-12-08T20:00:00Z',
         report_id: 'otherreport1',
         fight_index: 1,
+        execution_score: 0.81,
       },
     ],
     history: [
@@ -70,6 +74,7 @@ export const CHARACTER = {
         fought_at: '2026-12-09T22:10:00Z',
         report_id: 'fixture2abcd',
         fight_index: 3,
+        execution_score: 0.94,
       },
       {
         encounter: 'Deep Warden',
@@ -82,6 +87,7 @@ export const CHARACTER = {
         fought_at: '2026-12-08T20:00:00Z',
         report_id: 'otherreport1',
         fight_index: 1,
+        execution_score: 0.81,
       },
     ],
     builds_seen: [{ talent_split: '31/20/0', spec: 'Discipline', first_seen: '2026-12-09T22:10:00Z' }],

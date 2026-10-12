@@ -99,6 +99,9 @@ export const scoreCopy = {
   noLogsUploadHref: '/setup',
 
   inGameHeading: 'In game',
+  /** The tooltip mock's guild line, the client's own form: "<Olympus XXVII>" (fix round 1
+   *  item 1). */
+  tooltipGuild: (name: string): string => `<${name}>`,
   /** The tooltip mock's level line, the game's own: "Level 60 Night Elf Priest". Written from
    *  whichever of level and race is known (Task L8.4 ruling 2); null with neither, when the
    *  line is left out rather than reading "Priest" alone. */

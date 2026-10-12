@@ -140,7 +140,7 @@
               >
             </thead>
             <tbody>
-              {#each sparkline.rows as row (row.date)}
+              {#each sparkline.rows as row, index (index)}
                 <tr><td>{row.date}</td><td>{row.score}</td></tr>
               {/each}
             </tbody>

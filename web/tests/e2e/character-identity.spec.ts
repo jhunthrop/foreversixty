@@ -53,6 +53,9 @@ test('the header says who the character is, the guild links to its page, and the
   const chip = page.getByTestId('character-ruleset-chip');
   await expect(chip).toHaveText('Hardcore US');
   await expect(chip).toHaveCSS('color', 'rgb(154, 148, 132)');
+  // Fix round 1 item 3: the fixture's rows carry execution_score, so the column never reads NaN.
+  await expect(page.getByTestId('character-execution').first()).toHaveText('94%');
+  await expect(page.getByTestId('character-history')).not.toContainText('NaN');
 });
 
 test('the tooltip mock reads name, guild, "Level 60 Night Elf Priest", a blank line, then the score', async ({
@@ -64,7 +67,7 @@ test('the tooltip mock reads name, guild, "Level 60 Night Elf Priest", a blank l
   const lines = page.getByTestId('character-in-game-tooltip').locator(':scope > span');
   await expect(lines).toHaveText([
     'Elyra Duskvale',
-    'Cx66 Olympus',
+    '<Cx66 Olympus>',
     'Level 60 Night Elf Priest',
     '',
     'Forever Score 1830 · Epic · as of 4 Nov',

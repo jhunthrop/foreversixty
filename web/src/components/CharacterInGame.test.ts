@@ -122,7 +122,9 @@ describe('CharacterInGame', () => {
     const withGuild = render(CharacterInGame, {
       props: { ...BASE, forever: SCORED, guild: 'Cx66 Olympus' },
     }).body;
-    expect(tooltipOf(withGuild)).toMatch(/data-testid="character-in-game-guild">Cx66 Olympus</);
+    // The client's own form: the name in angle brackets, escaped in the markup.
+    expect(scoreCopy.tooltipGuild('Cx66 Olympus')).toBe('<Cx66 Olympus>');
+    expect(tooltipOf(withGuild)).toMatch(/data-testid="character-in-game-guild">&lt;Cx66 Olympus(&gt;|>)</);
   });
 
   it('keeps the game’s order: name, guild, level race class, a blank line, the score', () => {

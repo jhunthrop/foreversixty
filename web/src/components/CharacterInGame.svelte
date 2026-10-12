@@ -47,7 +47,9 @@
   } = $props();
 
   const descriptor = $derived(scoreCopy.tooltipDescriptor(level, race, className));
-  const guildLine = $derived(typeof guild === 'string' && guild.trim() !== '' ? guild.trim() : null);
+  const guildLine = $derived(
+    typeof guild === 'string' && guild.trim() !== '' ? scoreCopy.tooltipGuild(guild.trim()) : null,
+  );
 
   const lastSeen = $derived(owned && lastSeenAt !== null ? lastSeenText(lastSeenAt) : null);
   const line = scoreCopy.lineParts();

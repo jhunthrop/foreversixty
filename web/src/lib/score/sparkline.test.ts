@@ -4,7 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import labels from '../../../../docs/contracts/fixtures/score-labels.json';
 import type { ScorePoint } from './score';
-import { SPARKLINE_HEIGHT, SPARKLINE_WIDTH, scoreSparkline } from './sparkline';
+import { SPARKLINE_HEIGHT, SPARKLINE_PAD, SPARKLINE_WIDTH, scoreSparkline } from './sparkline';
 
 const point = (date: string, score: number, tier = 'rare'): ScorePoint => ({ date, score, tier });
 
@@ -66,6 +66,22 @@ describe('scoreSparkline', () => {
     ])!;
     expect(line.firstLabel).toBe('12 Oct');
     expect(line.lastLabel).toBe('4 Nov');
+  });
+
+  it('spans at least 200 points vertically, centred on the data, so a tiny move stays small', () => {
+    const line = scoreSparkline([point('2026-11-01', 1000), point('2026-11-02', 1010)])!;
+    const [[, older], [, newer]] = coords(line.path);
+    const inner = SPARKLINE_HEIGHT - 2 * SPARKLINE_PAD;
+    // 10 points of a 200-point span, centred on 1005: both sit near the middle.
+    expect(older - newer).toBeCloseTo((10 / 200) * inner, 0);
+    expect((older + newer) / 2).toBeCloseTo(SPARKLINE_HEIGHT / 2, 0);
+  });
+
+  it('uses the data’s own range once it is wider than 200 points', () => {
+    const line = scoreSparkline([point('2026-11-01', 900), point('2026-11-02', 1500)])!;
+    const [[, low], [, high]] = coords(line.path);
+    expect(low).toBeCloseTo(SPARKLINE_HEIGHT - SPARKLINE_PAD);
+    expect(high).toBeCloseTo(SPARKLINE_PAD);
   });
 
   it('gives a flat history a flat line through the middle', () => {
