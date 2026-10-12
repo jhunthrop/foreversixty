@@ -126,6 +126,21 @@ function Chip.pointLabel(name, rank)
 	return name
 end
 
+--- The plan's { have, want } at the committed next point's cell, `have`
+--- read from `ranks` (Talents.readStagedRanks' in the game, so a staged
+--- click counts); nil without a point. Pure.
+function Chip.pointRankAt(build, ranks, data, point)
+	if point == nil then
+		return nil
+	end
+	for _, cell in ipairs(Progress.cells(build, ranks, data)) do
+		if cell.tab == point.tab and cell.tier == point.tier and cell.column == point.column then
+			return { have = cell.have, want = cell.want }
+		end
+	end
+	return nil
+end
+
 --- Whether the open talent window is what hides the chip now: the talent
 --- strip then leads with the chip's own line.
 function Chip.hiddenByWindow()
@@ -742,11 +757,7 @@ function Chip.inputs(data)
 		input.pointName = Chip.talentName(talent)
 		input.pointIcon = talent ~= nil and Talents.iconFor(talent) or nil
 		-- The same reader as the talent marks: a staged click counts.
-		for _, cell in ipairs(Progress.cells(build, (Talents.readStagedRanks(data)), data)) do
-			if cell.tab == point.tab and cell.tier == point.tier and cell.column == point.column then
-				input.pointRank = { have = cell.have, want = cell.want }
-			end
-		end
+		input.pointRank = Chip.pointRankAt(build, (Talents.readStagedRanks(data)), data, point)
 	end
 	local equipped = Gear.readEquipped()
 	if build ~= nil then

@@ -69,6 +69,26 @@ describe("Chip.model", function()
 		assert.are.equal("Deflection", Chip.pointLabel("Deflection", nil))
 	end)
 
+	-- L3.2 fix round 5: the rank counts a staged click, and a cell the
+	-- staged clicks have filled names the talent plainly.
+	it("names the rank after a staged click, and plainly once the cell is full", function()
+		local function take(rank)
+			return Chip.model(inputs({ level = 21, progress = pointAt(1, 21), unspent = 12,
+				pointName = "Improved Heroic Strike", pointRank = rank })).chosen.text
+		end
+		assert.are.equal("Take Improved Heroic Strike (2 of 3)", take({ have = 1, want = 3 }))
+		assert.are.equal("Take Improved Heroic Strike", take({ have = 3, want = 3 }))
+	end)
+
+	it("reads the point's rank from the staged ranks at the committed point's cell", function()
+		local IHS = { tab = 1, tier = 1, column = 1 }
+		local build = { classSlug = "warrior", order = { IHS, IHS, IHS, { tab = 1, tier = 1, column = 2 } } }
+		local point = { tab = 1, tier = 1, column = 1, index = 1 }
+		assert.are.same({ have = 1, want = 3 }, Chip.pointRankAt(build, { [1] = { ["1:1"] = 1 } }, nil, point))
+		assert.are.same({ have = 3, want = 3 }, Chip.pointRankAt(build, { [1] = { ["1:1"] = 3 } }, nil, point))
+		assert.is_nil(Chip.pointRankAt(build, {}, nil, nil))
+	end)
+
 	-- L3.2 fix round 3: the ring and the strip replace the chip while the
 	-- talent window is open; it is not the player's pref, and it comes back.
 	it("hides while the talent window is open", function()

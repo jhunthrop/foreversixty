@@ -12,7 +12,7 @@
 -- planned node's own tooltip gains one line naming its points in the plan.
 --
 -- Pure rules, thin frames: every number comes from Progress (Progress.cells
--- for the badges, Progress.build for the strip); TalentMarks.stripText,
+-- for the badges, Progress.build for the strip); TalentMarks.stripSegments,
 -- TalentMarks.badgeLook and TalentMarks.nodeLine turn them into what is
 -- drawn. Ranks are read with the window's staged clicks counted
 -- (Talents.readStagedRanks), so the marks answer a click before Apply
@@ -120,39 +120,33 @@ local function joinSegments(segments, dropped)
 	return table.concat(parts, L.talentStripSeparator)
 end
 
---- The strip's whole line (every segment), and whether it warns.
-function TalentMarks.stripText(name, progress, state)
-	local segments, warned = TalentMarks.stripSegments(name, progress, state)
-	if segments == nil then
-		return nil, false
-	end
-	return joinSegments(segments, {}), warned
-end
-
 --- The order segments give way in when the line is wider than the pill
 --- may grow: the action ("spend N now"), then the build name, then the
 --- leading "Next: …". The count and the off-plan count always stay.
 TalentMarks.STRIP_SACRIFICE = { "action", "name", "next" }
 
---- The widest line of whole segments that fits `maxWidth` as `measure`
---- (text -> width) reads it: never a segment cut mid-word (seen in game:
---- "click Apply Chan…"). Everything when `maxWidth` is nil; the count and
---- off-plan count alone when even that is too wide.
+--- The strip's line: the widest line of whole segments that fits
+--- `maxWidth` as `measure` (text -> width) reads it, never a segment cut
+--- mid-word (seen in game: "click Apply Chan…"), and whether it fits. The
+--- whole line when there is no room to keep to or no `measure`. When even
+--- the count and the off-plan count alone are too wide, that line and
+--- false: the pill then grows to fit it (TalentMarks.pillWidth).
 function TalentMarks.fitStrip(segments, measure, maxWidth)
 	local dropped = {}
 	local text = joinSegments(segments, dropped)
-	if maxWidth == nil then
-		return text
+	if maxWidth == nil or type(measure) ~= "function" then
+		return text, true
 	end
 	for _, kind in ipairs(TalentMarks.STRIP_SACRIFICE) do
 		local width = measure(text)
 		if type(width) ~= "number" or width <= maxWidth then
-			return text
+			return text, true
 		end
 		dropped[kind] = true
 		text = joinSegments(segments, dropped)
 	end
-	return text
+	local width = measure(text)
+	return text, type(width) ~= "number" or width <= maxWidth
 end
 
 --- A badge's state for one of Progress.cells' cells: "next" for the cell
@@ -306,6 +300,17 @@ function TalentMarks.stripWidth(textWidth, stripLeft, applyLeft, windowWidth)
 		width = math.min(width, math.floor(cap))
 	end
 	return math.max(0, width)
+end
+
+--- The pill's width for a line `textWidth` wide: TalentMarks.stripWidth's
+--- capped width when the line fits (`fits`, from fitStrip); its own width
+--- past the cap when it does not, so the count and the off-plan count (the
+--- only segments left then, and short) never spill out of the pill.
+function TalentMarks.pillWidth(textWidth, fits, stripLeft, applyLeft, windowWidth)
+	if fits then
+		return TalentMarks.stripWidth(textWidth, stripLeft, applyLeft, windowWidth)
+	end
+	return math.ceil(textWidth or 0) + 2 * Theme.SIZES.talentStripPadding
 end
 
 --- The strip's bottom offset from the window's bottom edge: centred on the
@@ -562,13 +567,12 @@ local function drawStrip(frame, segments)
 	-- The widest pill the corner allows, less its padding, is the text's room.
 	local room = TalentMarks.stripWidth(math.huge, stripLeft, applyLeft, frameWidth)
 	local maxText = room ~= math.huge and room - 2 * S.talentStripPadding or nil
-	local text = TalentMarks.fitStrip(segments, function(candidate)
+	local text, fits = TalentMarks.fitStrip(segments, function(candidate)
 		label:SetText(candidate)
 		return textWidth(label)
 	end, maxText)
 	label:SetText(text)
-	local width = TalentMarks.stripWidth(textWidth(label), stripLeft, applyLeft, frameWidth)
-	strip:SetWidth(width)
+	strip:SetWidth(TalentMarks.pillWidth(textWidth(label), fits, stripLeft, applyLeft, frameWidth))
 	strip:Show()
 	return strip, host, text
 end

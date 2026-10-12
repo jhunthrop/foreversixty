@@ -11,54 +11,64 @@ local function progress(matched, total, nextLevel, offPlan, done)
 		point = (not done) and { index = matched + 1 } or nil, done = done == true }
 end
 
+--- The strip's whole line, as the fitter gives it with no measure (fix
+--- round 5: one source, no separate stripText), and whether it warns.
+local function stripLine(name, prog, state)
+	local segments, warned = TalentMarks.stripSegments(name, prog, state)
+	if segments == nil then
+		return nil, false
+	end
+	return (TalentMarks.fitStrip(segments, nil, nil)), warned
+end
+
 -- Fix round 2 (personas on marks2-*): "next at level 21" at level 21 with
 -- twelve points to spend read as "later"; the strip says "spend 12 now"
 -- while points wait. Fix round 3: "off plan" (spec section 4.2), muted at 0
 -- and a warning from 1; no "click Apply Changes" (the client's lit button says it).
 local MUTED, WARN, GOLD, BODY = "|cff9a9484", "|cffff6b5c", "|cffe5b955", "|cffe9e4d8"
 
-describe("TalentMarks.stripText", function()
+describe("the strip's line (TalentMarks.stripSegments)", function()
 	it("says spend N now while points wait, with no level", function()
-		local text, warned = TalentMarks.stripText("Arms / Fury build", progress(0, 51, 21, 0), { unspent = 12 })
+		local text, warned = stripLine("Arms / Fury build", progress(0, 51, 21, 0), { unspent = 12 })
 		assert.are.equal("Arms / Fury build · 0 of 51 points · spend 12 now · " .. MUTED .. "0 off plan|r", text)
 		assert.is_false(warned)
 	end)
 
 	it("names the level the next point arrives at when none waits", function()
-		local text = TalentMarks.stripText("Arms leveling", progress(11, 51, 22, 0), { unspent = 0 })
+		local text = stripLine("Arms leveling", progress(11, 51, 22, 0), { unspent = 0 })
 		assert.are.equal("Arms leveling · 11 of 51 points · next point at level 22 · " .. MUTED .. "0 off plan|r",
 			text)
 	end)
 
 	it("colours the off-plan count as a warning from one point", function()
-		local text, warned = TalentMarks.stripText("Arms leveling", progress(11, 51, 22, 1), { unspent = 0 })
+		local text, warned = stripLine("Arms leveling", progress(11, 51, 22, 1), { unspent = 0 })
 		assert.are.equal("Arms leveling · 11 of 51 points · next point at level 22 · " .. WARN .. "1 off plan|r",
 			text)
 		assert.is_true(warned)
 	end)
 
 	it("leaves the level out where no level follows (the level cap)", function()
-		local text = TalentMarks.stripText("Arms leveling", progress(49, 51, nil, 2), { unspent = 0 })
+		local text = stripLine("Arms leveling", progress(49, 51, nil, 2), { unspent = 0 })
 		assert.are.equal("Arms leveling · 49 of 51 points · " .. WARN .. "2 off plan|r", text)
 	end)
 
 	it("says complete once the build has no point left, spendable points or not", function()
-		local text = TalentMarks.stripText("Arms leveling", progress(51, 51, nil, 0, true), { unspent = 3 })
+		local text = stripLine("Arms leveling", progress(51, 51, nil, 0, true), { unspent = 3 })
 		assert.are.equal("Arms leveling · 51 of 51 points · complete · " .. MUTED .. "0 off plan|r", text)
 	end)
 
 	it("says nothing about Apply Changes while a click is staged", function()
-		local text = TalentMarks.stripText("Arms leveling", progress(12, 51, 21, 0), { unspent = 0, staged = true })
+		local text = stripLine("Arms leveling", progress(12, 51, 21, 0), { unspent = 0, staged = true })
 		assert.are.equal("Arms leveling · 12 of 51 points · next point at level 21 · " .. MUTED .. "0 off plan|r", text)
 	end)
 
 	it("has nothing to say without a build", function()
-		assert.is_nil(TalentMarks.stripText(nil, progress(0, 0, nil, 0), {}))
+		assert.is_nil(stripLine(nil, progress(0, 0, nil, 0), {}))
 	end)
 
 	-- Fix round 4: while the open window hides the chip, the strip leads with its line.
 	it("leads with the chip's next talent while the window hides the chip", function()
-		local text = TalentMarks.stripText("Arms / Fury build", progress(0, 51, 21, 0),
+		local text = stripLine("Arms / Fury build", progress(0, 51, 21, 0),
 			{ unspent = 12, next = "Improved Heroic Strike (1 of 3)" })
 		assert.are.equal("Next: Improved Heroic Strike (1 of 3) · Arms / Fury build · 0 of 51 points · spend 12 now · "
 			.. MUTED .. "0 off plan|r", text)
@@ -99,6 +109,19 @@ describe("TalentMarks.fitStrip", function()
 		local shortest = "1 of 51 points · " .. MUTED .. "0 off plan|r"
 		assert.are.equal(shortest, TalentMarks.fitStrip(segments, measure, #shortest))
 		assert.are.equal(shortest, TalentMarks.fitStrip(segments, measure, 3))
+	end)
+
+	-- Fix round 5: a nil measure is the whole line, whatever the room.
+	it("keeps the whole line when it cannot measure", function()
+		assert.are.same({ full, true }, { TalentMarks.fitStrip(segments, nil, 3) })
+	end)
+
+	-- Fix round 5: the count and off-plan count never give way; when even they
+	-- overflow the room, the fitter says so and the pill grows to fit them.
+	it("says when even the count and off-plan count do not fit", function()
+		local shortest = "1 of 51 points · " .. MUTED .. "0 off plan|r"
+		assert.are.same({ shortest, true }, { TalentMarks.fitStrip(segments, measure, #shortest) })
+		assert.are.same({ shortest, false }, { TalentMarks.fitStrip(segments, measure, 3) })
 	end)
 
 	it("gives up the leading Next segment last", function()
@@ -336,6 +359,19 @@ describe("TalentMarks.stripWidth", function()
 	end)
 end)
 
+-- Fix round 5: a line that fits takes the capped width; one that does not
+-- (only the count and off-plan count left) takes its own width, past the cap.
+describe("TalentMarks.pillWidth", function()
+	it("caps a line that fits at the Apply Changes button", function()
+		assert.are.equal(284, TalentMarks.pillWidth(300, true, 108, 400, 1200))
+		assert.are.equal(124, TalentMarks.pillWidth(100, true, 108, 400, 1200))
+	end)
+
+	it("grows past the cap for a line that does not fit", function()
+		assert.are.equal(324, TalentMarks.pillWidth(300, false, 108, 400, 1200))
+	end)
+end)
+
 -- Fix round 2: the pill sits 8 px inside the window's border, centred on Apply Changes.
 describe("TalentMarks.stripOffsetY", function()
 	it("centres the pill on the Apply Changes button", function()
@@ -382,5 +418,121 @@ describe("TalentGlow.traitButton's per-refresh cache", function()
 		-- Without a cache every call asks again.
 		TalentGlow.traitButton(frame, 1)
 		assert.are.equal(3, asked)
+	end)
+end)
+
+-- Fix round 5: the spellbook tab of the same window is not the talent
+-- window; the chip stays and the marks stay off there.
+describe("TalentGlow.talentsShowing", function()
+	local TalentGlow = require("TalentGlow")
+	local function shown(value)
+		return { IsShown = function()
+			return value
+		end }
+	end
+
+	it("is the talents child's own answer when the window has one", function()
+		local frame = shown(true)
+		frame.TalentsFrame = shown(false)
+		assert.is_false(TalentGlow.talentsShowing(frame))
+		frame.TalentsFrame = shown(true)
+		assert.is_true(TalentGlow.talentsShowing(frame))
+	end)
+
+	it("is the window itself when it has no talents child", function()
+		assert.is_true(TalentGlow.talentsShowing(shown(true)))
+	end)
+
+	it("makes openFrame answer nothing while the spellbook tab shows", function()
+		local saved = _G.PlayerSpellsFrame
+		local frame = shown(true)
+		frame.TalentsFrame = shown(false)
+		_G.PlayerSpellsFrame = frame
+		local closed = TalentGlow.openFrame()
+		frame.TalentsFrame = shown(true)
+		local open = TalentGlow.openFrame()
+		_G.PlayerSpellsFrame = saved
+		assert.is_nil(closed)
+		assert.are.equal(frame, open)
+	end)
+end)
+
+-- Fix round 5: the ring's dark edge keeps its alpha when the pulse stops
+-- (fake regions, no client mock): only the gold pulses and is reset to 1.
+describe("Theme.showGlow's dark edge", function()
+	local saved = {}
+
+	local function fakeRegion()
+		local region = { alphaCalls = {} }
+		function region.SetPoint() end
+		function region.SetHeight() end
+		function region.SetWidth() end
+		function region.SetFrameLevel() end
+		function region.Show(self)
+			self.shown = true
+		end
+		function region.Hide(self)
+			self.shown = false
+		end
+		function region.SetColorTexture(self, _, _, _, a)
+			self.colorAlpha = a
+		end
+		function region.SetAlpha(self, a)
+			self.alphaCalls[#self.alphaCalls + 1] = a
+		end
+		function region.CreateAnimationGroup(self)
+			self.animated = true
+			local group = {}
+			function group.CreateAnimation()
+				return { SetFromAlpha = function() end, SetToAlpha = function() end, SetDuration = function() end }
+			end
+			function group.SetLooping() end
+			function group.Play() end
+			function group.Stop() end
+			return group
+		end
+		function region.CreateTexture()
+			return fakeRegion()
+		end
+		return region
+	end
+
+	before_each(function()
+		saved.CreateFrame, saved.C_Timer = _G.CreateFrame, _G.C_Timer
+		_G.CreateFrame = function()
+			return fakeRegion()
+		end
+		-- The ten seconds pass at once: the pulse stops inside showGlow.
+		_G.C_Timer = { After = function(_, action)
+			action()
+		end }
+	end)
+
+	after_each(function()
+		_G.CreateFrame, _G.C_Timer = saved.CreateFrame, saved.C_Timer
+	end)
+
+	it("never pulses the edge nor resets its alpha, and shows and hides it with the ring", function()
+		local button = fakeRegion()
+		button.GetFrameLevel = function()
+			return 5
+		end
+		Theme.showGlow(button, true, 10, { inset = 6, thickness = 3, edge = 1 })
+		assert.are.equal(4, #button.foreverSixtyGlowEdge)
+		for _, edge in ipairs(button.foreverSixtyGlowEdge) do
+			assert.are.equal(0.6, edge.colorAlpha)
+			assert.is_nil(edge.animated)
+			assert.are.same({}, edge.alphaCalls)
+			assert.is_true(edge.shown)
+		end
+		for _, gold in ipairs(button.foreverSixtyGlow) do
+			assert.is_true(gold.animated)
+			assert.are.equal(1, gold.alphaCalls[#gold.alphaCalls])
+		end
+		Theme.hideGlow(button)
+		for _, edge in ipairs(button.foreverSixtyGlowEdge) do
+			assert.is_false(edge.shown)
+			assert.are.same({}, edge.alphaCalls)
+		end
 	end)
 end)

@@ -82,13 +82,26 @@ function TalentGlow.target(data, build, ranks)
 	return nil
 end
 
---- The talent window, if one of its two names is loaded and showing.
+--- Whether a shown talent window is showing its talents: PlayerSpellsFrame
+--- also holds the spellbook, and its talents live on the TalentsFrame child
+--- (L3.2 fix round 5: the chip hid on the spellbook tab). A window with no
+--- such child is all talents. Pure over the frame table.
+function TalentGlow.talentsShowing(frame)
+	local talents = type(frame) == "table" and frame.TalentsFrame or nil
+	if type(talents) ~= "table" or type(talents.IsShown) ~= "function" then
+		return true
+	end
+	return talents:IsShown() == true
+end
+
+--- The talent window, if one of its names is loaded, showing, and showing
+--- its talents (TalentGlow.talentsShowing).
 function TalentGlow.openFrame()
 	for _, name in ipairs(TalentGlow.TALENT_FRAMES) do
 		local frame = _G[name]
 		if type(frame) == "table" then
 			local shown = type(frame.IsShown) ~= "function" or frame:IsShown()
-			if shown then
+			if shown and TalentGlow.talentsShowing(frame) then
 				return frame, name
 			end
 		end
@@ -195,20 +208,32 @@ end
 --- the first time it exists (Options calls this at login and on every
 --- ADDON_LOADED). Idempotent.
 TalentGlow.hooked = {}
+local function hookShowHide(frame, data)
+	frame:HookScript("OnShow", function()
+		local show = TalentGlow.onShow or TalentGlow.refresh
+		show(data)
+	end)
+	frame:HookScript("OnHide", function()
+		local hide = TalentGlow.onHide or TalentGlow.clear
+		hide()
+	end)
+end
+
+--- The window's talents child is hooked too: switching to the spellbook tab
+--- and back shows and hides it without the window itself (fix round 5).
 function TalentGlow.watch(data)
 	for _, name in ipairs(TalentGlow.TALENT_FRAMES) do
 		local frame = _G[name]
 		if type(frame) == "table" and not TalentGlow.hooked[name]
 			and type(frame.HookScript) == "function" then
 			TalentGlow.hooked[name] = true
-			frame:HookScript("OnShow", function()
-				local show = TalentGlow.onShow or TalentGlow.refresh
-				show(data)
-			end)
-			frame:HookScript("OnHide", function()
-				local hide = TalentGlow.onHide or TalentGlow.clear
-				hide()
-			end)
+			hookShowHide(frame, data)
+		end
+		local talents = type(frame) == "table" and frame.TalentsFrame or nil
+		local key = name .. ".TalentsFrame"
+		if type(talents) == "table" and not TalentGlow.hooked[key] and type(talents.HookScript) == "function" then
+			TalentGlow.hooked[key] = true
+			hookShowHide(talents, data)
 		end
 	end
 	return TalentGlow.hooked
