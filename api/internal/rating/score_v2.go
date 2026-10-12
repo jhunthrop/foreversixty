@@ -23,10 +23,12 @@ package rating
 // fight has no score at all (ErrNoLogs), never a zero.
 //
 // The rater also writes a snapshot of each player's score onto the fight it just rated
-// (RollUpScores: rating_scores' score, gear_score, experience, attendance, tier). It is not
-// a history source: the backfill job re-rates a fight by withdrawing and rewriting its rows
-// and does not roll up, so a backfill-re-rated row has NULL snapshot columns. ScoreV2 never
-// reads them; it always computes from what is stored now.
+// (RollUpScores: rating_scores' score, gear_score, experience, attendance, tier). The
+// character page's score_history reads it (rankings.Store.scoreHistory: the last snapshot of
+// each UTC date), with one gap: the backfill job re-rates a fight by withdrawing and
+// rewriting its rows and does not roll up, so a backfill-re-rated row has NULL snapshot
+// columns and is left out of the history (a date keeps a point only while one of its fights
+// still carries a snapshot). ScoreV2 itself never reads the snapshot; it always computes from what is stored now.
 
 import (
 	"context"
@@ -518,9 +520,10 @@ func enchanted(c summary.CombatantRow) bool {
 
 // RollUpScores writes each roster player's Forever Score, as it stands now, onto that
 // player's row of the fight f just rated (rating_scores' score, gear_score - the gear
-// points - experience points, attendance - the fraction - and tier). The file comment says
-// why the snapshot is not a history source. A player with no score yet (ErrNoLogs: the fight was not public,
-// say) is left NULL. Every player is tried; the errors are returned together.
+// points - experience points, attendance - the fraction - and tier), the snapshot the
+// character page's score_history reads; the file comment says where that history has gaps.
+// A player with no score yet (ErrNoLogs: the fight was not public, say) is left NULL. Every
+// player is tried; the errors are returned together.
 func (s *Store) RollUpScores(ctx context.Context, f RatedFight) error {
 	var errs []error
 	seen := map[string]bool{}

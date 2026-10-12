@@ -797,7 +797,7 @@ components:
             From the newest of the stored addon export (its level= section, dated by when it was
             captured in game) and the Battle.net import (dated by when it ran). When the newer
             source does not carry a level, the older one's stands; on a tie the Battle.net import
-            wins. Null when neither has one.
+            wins, as does a stored level with no import date. Null when neither has one.
         race:
           type: string
           nullable: true
@@ -832,8 +832,9 @@ components:
       description: >-
         The Forever Score fields of GET /v1/characters/{region}/{ruleset}/{name}. Every field
         is null when the character has no rated fight in a public report (an anonymised
-        character's page answers 404). The components sum to score; the ceilings are gear 500, experience 700,
-        parses 600, attendance 200, discipline 100 (api/internal/rating/score_v2.go).
+        character's page answers 404). The components sum to score; the ceilings are gear
+        500, experience 700, parses 600, attendance 200, discipline 100
+        (api/internal/rating/score_v2.go).
       properties:
         score: { type: integer, nullable: true }
         tier:
@@ -1770,7 +1771,9 @@ paths:
         - { name: name, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '404': { description: "No such character, or its account is anonymised (the same answer)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404':
+          description: "No such character, or its account is anonymised (the same answer)"
+          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
   /v1/guilds/{id}/reports:
     get:
       summary: A guild's own reports, newest first (session)

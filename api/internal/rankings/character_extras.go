@@ -56,7 +56,8 @@ func (s *Store) anonymized(ctx context.Context, key string) (bool, error) {
 //     by addon_exports.captured_at) and the Battle.net import (characters.level and .race,
 //     dated by characters.imported_at). The newer source's value wins; when it does not
 //     carry the field (an export with no level= section, a race slug the build data does not
-//     know) the older source's value stands. On a tie the Battle.net import wins. An
+//     know) the older source's value stands. On a tie the Battle.net import wins, and so
+//     does a characters row with no imported_at (its values are undated, never older). An
 //     export's race slug is named by the build data (Store.Trees): "night-elf" is "Night
 //     Elf", the form the Battle.net import stores.
 //   - realm: character.Realm, the order the nightly data addon keys by.
@@ -101,7 +102,10 @@ func (s *Store) identity(ctx context.Context, ref *CharacterRef) error {
 	}
 	race := strings.TrimSpace(deref(bnetRace))
 	level := bnetLevel
-	exportNewer := export != nil && capturedAt != nil && (importedAt == nil || capturedAt.After(*importedAt))
+	// The export is newer only than a dated import. A characters row can carry a level with
+	// no imported_at (cmd/seedguild writes one); its values are not known to be older, so
+	// they stand and the export only fills what they lack.
+	exportNewer := export != nil && capturedAt != nil && importedAt != nil && capturedAt.After(*importedAt)
 	if exportNewer || level == nil {
 		if exportLevel != nil {
 			level = exportLevel
