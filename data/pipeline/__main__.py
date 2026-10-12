@@ -567,9 +567,14 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(write_weights(args.build))
     elif args.command == "addon-data":
+        from pathlib import Path
+
+        from pipeline.addonbis import unconfirmed_skips_line
         from pipeline.addondata import check_addon_data, write_addon_data
         from pipeline.addonlua import lua_has_drifted, write_lua
 
+        # Task L1.4's audit line, on both paths so the nightly --check shows it.
+        logging.getLogger("pipeline").info(unconfirmed_skips_line(Path("builds"), args.build))
         if args.check:
             log = logging.getLogger("pipeline")
             stale = False

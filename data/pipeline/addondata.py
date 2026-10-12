@@ -27,7 +27,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from pipeline.addonbis import build_bis
+from pipeline.addonbis import build_bis, build_bis_items
 from pipeline.addonrotation import build_ability_levels, build_rotations
 from pipeline.encounters import load_encounter_needs
 from pipeline.models import (
@@ -127,6 +127,7 @@ def build_addon_data(
     weights = {key: entry.weights for key, entry in load_weights(curated_dir).items()}
     rotations = build_rotations(root, build, curated_dir=curated_dir)
     bis = build_bis(root, build)
+    bis_names, bis_dps = build_bis_items(root, build, bis)
     return AddonData(
         build=build,
         classes=classes,
@@ -137,6 +138,8 @@ def build_addon_data(
         dps_per_point=_dps_per_point(root, build),
         encounter_needs=load_encounter_needs(root, build, curated_dir),
         ability_levels=build_ability_levels(root, build, curated_dir=curated_dir),
+        bis_names=bis_names,
+        bis_dps=bis_dps,
     )
 
 

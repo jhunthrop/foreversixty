@@ -440,3 +440,61 @@ def test_the_three_additions_render_as_contract_one_shapes():
         "\t},\n"
     ) in lua
     assert "\tabilityLevels = {\n\t\t[5308] = 24,\n\t\t[20662] = 24,\n\t},\n" in lua
+
+
+def test_the_real_data_lua_names_every_pick_and_prices_its_weapons(tmp_path):
+    """Task L1.4: bisNames/bisDps read back through a real Lua. The Arms
+    band-20 main hand is a weapon, so it has both a name and a dps; the
+    head pick is not a weapon, so it has a name and no dps."""
+    lua_bin = shutil.which("lua") or shutil.which("lua5.4") or shutil.which("lua5.1")
+    if not lua_bin:
+        pytest.skip("no lua interpreter is available")
+    chunk = tmp_path / "Data.lua"
+    chunk.write_text(render_lua(build_addon_data(BUILD)), encoding="utf-8")
+    script = (
+        f"local data = assert(loadfile({chunk.as_posix()!r}))() "
+        "local band = data.bis['warrior-arms'][20].alliance "
+        "local weapon = tonumber(band.main_hand:match('^(%d+)')) "
+        "local head = tonumber(band.head:match('^(%d+)')) "
+        "io.write(data.bisNames[weapon], '|', tostring(data.bisDps[weapon]), '|', "
+        "data.bisNames[head], '|', tostring(data.bisDps[head]))"
+    )
+    result = subprocess.run([lua_bin, "-e", script], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    weapon_name, weapon_dps, head_name, head_dps = result.stdout.split("|")
+    assert weapon_name and weapon_name != "The Axe of Severing"
+    assert float(weapon_dps) > 0
+    assert head_name
+    assert head_dps == "nil"
+
+
+def test_every_real_pick_and_alternative_is_named():
+    data = build_addon_data(BUILD)
+    for spec, bands in data.bis.items():
+        for band in bands:
+            for slots in band.factions.values():
+                for pick in slots.values():
+                    for item_id in [pick.item_id] + [alt.item_id for alt in pick.alternatives]:
+                        assert data.bis_names.get(item_id), (spec, band.level, item_id)
+    assert set(data.bis_dps) <= set(data.bis_names)
+    assert all(value > 0 and round(value, 1) == value for value in data.bis_dps.values())
+
+
+def test_the_real_data_lua_stays_inside_the_two_megabyte_idle_budget(tmp_path):
+    """Ruling 3 (contract 1's 2 MB idle budget), measured the way L1.2/L1.3
+    did: the heap delta of loading and calling Data.lua, after full
+    collections either side. Lua 5.1 (the client's own) when present, else the Lua on PATH."""
+    lua_bin = shutil.which("lua5.1") or shutil.which("lua")
+    if not lua_bin:
+        pytest.skip("no lua5.1 interpreter is available")
+    chunk = tmp_path / "Data.lua"
+    chunk.write_text(render_lua(build_addon_data(BUILD)), encoding="utf-8")
+    script = (
+        "collectgarbage() collectgarbage() local before = collectgarbage('count') "
+        f"local data = assert(loadfile({chunk.as_posix()!r}))() "
+        "collectgarbage() collectgarbage() "
+        "io.write(string.format('%.1f', collectgarbage('count') - before))"
+    )
+    result = subprocess.run([lua_bin, "-e", script], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    assert float(result.stdout) < 2048

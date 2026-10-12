@@ -890,6 +890,14 @@ class AddonData(BaseModel):
     #: learned (pipeline.addonrotation.build_ability_levels), for the
     #: rotation region's "at level N". Every id any rotation line carries.
     ability_levels: dict[int, int] = {}
+    #: Every item id that is a BiS pick or alternative in any band -> its
+    #: items.json display name (pipeline.addonbis.build_bis_items, task
+    #: L1.4), so the tooltip can name a pick before the client's item cache
+    #: fills. Once per id; the packed pick strings are unchanged.
+    bis_names: dict[int, str] = {}
+    #: The weapons among bis_names -> their own dps at one decimal, from
+    #: items/<class>.json's `dps` (what sim/cmd/leveling-bis ranks on).
+    bis_dps: dict[int, float] = {}
 
 
 class PhaseBoundary(BaseModel):

@@ -30,8 +30,8 @@ Contract 5 is the public nightly data file.
   always come from the one function that owns them (spec 2.1). The words "data addon" and
   "companion" never appear in player copy without a four-word explanation beside them.
 - **Ids are for machines.** `item_id`, `spellId`, `npcId`, `lootId` and the keys of
-  `encounterNeeds`, `abilityLevels` and `loot_values` items are lookup keys only. They are never
-  printed.
+  `encounterNeeds`, `abilityLevels`, `bisNames`, `bisDps` and `loot_values` items are lookup keys
+  only. They are never printed.
 - **No network call from the addon.** Everything below travels in shipped data, in the client's
   addon-message channels, or in saved-variable files the companion reads and writes.
 
@@ -68,6 +68,10 @@ ns.Data = {
   -- NEW: per BiS pick, the drop chance and two alternatives (addonbis renders these beside each pick)
   --   bis[spec][band][faction][slot] = { item_id, kind, source, chance = 0.14 | nil,
   --                                      alternatives = { { item_id, kind, source }, { ... } } }
+  -- NEW: the display name of every item that is a BiS pick or an alternative in any band, and the
+  -- weapon damage per second of the weapons among them, each stored once per item id
+  bisNames = { [6631] = "Living Root", ... },
+  bisDps = { [6631] = 21.2, ... },
   -- NEW: what each raid encounter needs, for the ready-check coverage list
   encounterNeeds = { [<npcId>] = { buffs = { 1126, ... }, debuffs = { 7386, ... }, resist = "fire" | nil } },
   -- NEW: the level each rotation ability is learned, so the rotation region can say "at level N"
@@ -97,6 +101,18 @@ Notes for the reader:
   `{ item_id, kind, source, chance, alternatives = { { item_id, kind, source }, ... } }`, and
   `Gear.decodePick(packed)` decodes a single string. Positions 1-3 of that table also hold
   the id, the kind and the source.
+- `bisNames` and `bisDps` sit beside `bis` and do not change it: the packed pick string keeps
+  exactly the fields above. Look a pick's or an alternative's name up by its `item_id` in
+  `bisNames`, so the tooltip can name it before the client's item cache has the item. Every id
+  that appears in `bis` has a name there. The name is the item's display name from the build's
+  `items.json`; it never contains `|` (a `|` would be written as `/`).
+  `bisDps[item_id]` is the weapon's own damage per second, rounded to one decimal. It is the
+  same figure the BiS ranker ranks weapons on (the `dps` of the build's `items/<class>.json`).
+  An item that is not a weapon has no `bisDps` entry.
+- No BiS pick or alternative is an item the build's `items.json` marks `client_unconfirmed`
+  (the client may never resolve such an id). The pipeline passes over such a candidate and
+  takes the next one in the ranker's order. A slot whose candidates are all unconfirmed has no
+  pick, just like a slot the ranker found nothing for.
 - `encounterNeeds` ids are spell ids for buffs and debuffs and are used only to check the raid's
   auras; the coverage list shows spell names from the client. `resist` is a school name or nil.
 

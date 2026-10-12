@@ -193,6 +193,24 @@ def _bis_new_lua(bis: dict) -> list[str]:
     return lines
 
 
+def _bis_items_lua(bis_names: dict, bis_dps: dict) -> list[str]:
+    """`bisNames[itemId] = "name"` and `bisDps[itemId] = dps` (task L1.4):
+    one entry per distinct pick or alternative id, so a name is stored once
+    however many picks share it. Both are left out entirely when empty."""
+    lines: list[str] = []
+    if bis_names:
+        lines.append("\tbisNames = {")
+        for item_id in sorted(bis_names):
+            lines.append(f"\t\t[{item_id}] = {_quote(bis_names[item_id])},")
+        lines.append("\t},")
+    if bis_dps:
+        lines.append("\tbisDps = {")
+        for item_id in sorted(bis_dps):
+            lines.append(f"\t\t[{item_id}] = {_number(bis_dps[item_id])},")
+        lines.append("\t},")
+    return lines
+
+
 def _default_builds_lua(default_builds: dict) -> list[str]:
     """`defaultBuilds[spec].leveling|raid = { name, order = { {tab,tier,column}, ... } }`
     (docs/contracts/addon-v2.md, contract 1): one 1-based triple per point
@@ -280,6 +298,7 @@ def render_lua(data: AddonData) -> str:
     lines.extend(_bis_lua(data.bis))
     lines.extend(_bis_new_lua(data.bis))
     lines.extend(_bis_weights_lua(data.bis))
+    lines.extend(_bis_items_lua(data.bis_names, data.bis_dps))
     lines.extend(_default_builds_lua(data.default_builds))
     lines.extend(_dps_per_point_lua(data.dps_per_point))
     lines.extend(_encounter_needs_lua(data.encounter_needs))

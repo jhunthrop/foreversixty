@@ -10,14 +10,23 @@ faction) report into the {spec -> band -> faction -> slot} shape
 pipeline.addondata hands the addon, the same way pipeline.addonrotation
 turns a curated APL into the rotation card's table.
 
-Three decisions are load-bearing:
+Four decisions are load-bearing:
 
-* IDS ONLY. leveling-bis's JSON carries the item's name and a prose
-  swap_note the client can resolve for free (Compat.itemInfo(id)) or has
-  no use for at all; carrying them again in Data.lua would roughly double
-  its size for a page a player never reads offline. `source_kind` stays
-  (advanced detail wants it) but travels as one of SOURCE_KIND_CODES'
-  single-letter codes in the rendered Lua -- see pipeline.addonlua.
+* IDS ONLY in the pick. leveling-bis's JSON carries the item's name and a
+  prose swap_note; neither goes into the packed pick string. Task L1.4
+  added the name back, once per distinct id, in a side table
+  (`bisNames`, with `bisDps` for a weapon's own dps -- build_bis_items),
+  because the tooltip must name a pick before the client's item cache
+  fills; one entry per id rather than one per pick keeps the size cost
+  small and leaves the packed string, and so Gear.decodePick, unchanged.
+  `source_kind` stays (advanced detail wants it) but travels as one of
+  SOURCE_KIND_CODES' single-letter codes in the rendered Lua -- see
+  pipeline.addonlua.
+* CLIENT-CONFIRMED ONLY (task L1.4). A candidate items.json marks
+  `client_unconfirmed` is never a pick or an alternative: the client may
+  never resolve its id, and the slot falls silent. The next confirmed
+  candidate in leveling-bis's own order takes its place; the skips are
+  counted per build (bis_unconfirmed_skips).
 * The bis/ directory does not exist on main yet: .github/workflows/bis.yml
   writes it nightly and had not run as of this module's introduction.
   `build_bis` answers an empty mapping for a missing directory rather than
@@ -102,16 +111,18 @@ def _slot_lookup(slots: list[dict]) -> dict[str, dict]:
     return lookup
 
 
-def _new_item_ids(new_at_band: list[str], slot_lookup: dict[str, dict]) -> list[int]:
+def _new_item_ids(new_at_band: list[str], picks: dict[str, AddonBisItem]) -> list[int]:
     """leveling-bis states `new_at_band` as "<slot>: <item name>" strings
     (report.go's own display format); the slot name is the join key back to
-    this band's own `slots` list, since Data.lua carries ids only."""
+    this band's own packed picks, since Data.lua carries ids only (a slot
+    whose candidates were all client-unconfirmed has no pick and is
+    skipped; one whose pick was replaced names the replacement)."""
     ids = []
     for entry in new_at_band:
         slot = entry.split(":", 1)[0]
-        item = slot_lookup.get(slot)
-        if item is not None:
-            ids.append(item["item_id"])
+        pick = picks.get(slot)
+        if pick is not None:
+            ids.append(pick.item_id)
     return ids
 
 
@@ -129,43 +140,79 @@ def _significant_weights(weights: list[dict]) -> dict[str, float]:
     }
 
 
-def _pick(path: Path, where: str, entry: dict) -> AddonBisItem:
-    """One slot row as the addon's pick. `chance` and `runners_up` are
-    optional: a bis file leveling-bis wrote before it emitted them loads
-    with no chance, and with the first two of its `alternatives` (if any)
-    in place of runners_up."""
-    chance = entry.get("chance")
-    if chance is not None and not 0 < chance <= 1:
-        # loot.json states percents (0-100); the contract is a fraction.
-        raise AddonBisError(f"{path}: {where} chance {chance!r} is not a fraction in (0, 1]")
+def _runners_up(path: Path, where: str, entry: dict) -> list[dict]:
+    """The row's own runners-up, best first: leveling-bis's `runners_up`,
+    or for a bis file written before it emitted them, its `alternatives`
+    list (up to three, best first -- runners_up is cut from the same list).
+    `alternatives` entries past the runners-up are kept on the end: they are
+    the candidates a client-unconfirmed skip (task L1.4) falls through to."""
     runners_up = entry.get("runners_up")
+    alternatives = entry.get("alternatives") or []
     if runners_up is None:
-        # A band the nightly job wrote before leveling-bis emitted
-        # `runners_up`: its own `alternatives` list (up to three, best
-        # first -- runners_up is cut from the same list) stands in until
-        # the next nightly run rewrites the band.
-        runners_up = (entry.get("alternatives") or [])[:MAX_ALTERNATIVES]
+        return list(alternatives)
     if len(runners_up) > MAX_ALTERNATIVES:
         raise AddonBisError(
             f"{path}: {where} has {len(runners_up)} runners_up, at most {MAX_ALTERNATIVES}"
         )
+    seen = {runner_up["item_id"] for runner_up in runners_up}
+    return list(runners_up) + [alt for alt in alternatives if alt["item_id"] not in seen]
+
+
+def _pick(
+    path: Path, where: str, entry: dict, unconfirmed: set[int], skips: list[int]
+) -> AddonBisItem | None:
+    """One slot row as the addon's pick. `chance` and `runners_up` are
+    optional: a bis file leveling-bis wrote before it emitted them loads
+    with no chance, and with the first two of its `alternatives` (if any)
+    in place of runners_up.
+
+    Task L1.4: a candidate whose items.json row is `client_unconfirmed` is
+    never the pick or an alternative -- the client never resolves such an
+    id, so the slot would fall silent. The next confirmed candidate, in
+    leveling-bis's own order, takes its place (a promoted runner-up carries
+    no `chance`: the row's chance was the original pick's). Every candidate
+    passed over is appended to `skips`. None when no candidate is confirmed."""
+    chance = entry.get("chance")
+    if chance is not None and not 0 < chance <= 1:
+        # loot.json states percents (0-100); the contract is a fraction.
+        raise AddonBisError(f"{path}: {where} chance {chance!r} is not a fraction in (0, 1]")
+    candidates = [dict(entry, chance=chance)] + [
+        dict(runner_up, chance=None) for runner_up in _runners_up(path, where, entry)
+    ]
+    kept: list[dict] = []
+    for candidate in candidates:
+        if len(kept) > MAX_ALTERNATIVES:
+            break
+        if candidate["item_id"] in unconfirmed:
+            skips.append(candidate["item_id"])
+            continue
+        kept.append(candidate)
+    if not kept:
+        return None
+    pick, alternatives = kept[0], kept[1:]
     return AddonBisItem(
-        item_id=entry["item_id"],
-        source_kind=entry["source_kind"],
-        source=entry.get("source", ""),
-        chance=chance,
+        item_id=pick["item_id"],
+        source_kind=pick["source_kind"],
+        source=pick.get("source", ""),
+        chance=pick["chance"],
         alternatives=[
             AddonBisAlternative(
-                item_id=runner_up["item_id"],
-                source_kind=runner_up["source_kind"],
-                source=runner_up.get("source", ""),
+                item_id=alternative["item_id"],
+                source_kind=alternative["source_kind"],
+                source=alternative.get("source", ""),
             )
-            for runner_up in runners_up
+            for alternative in alternatives
         ],
     )
 
 
-def _one_band(path: Path, level: int, by_faction: dict[str, dict]) -> AddonBisBand:
+def _one_band(
+    path: Path,
+    level: int,
+    by_faction: dict[str, dict],
+    unconfirmed: set[int],
+    skips: list[int],
+) -> AddonBisBand:
     factions: dict[str, dict[str, AddonBisItem]] = {}
     new_at_band: dict[str, list[int]] = {}
     weights: dict[str, float] = {}
@@ -176,11 +223,12 @@ def _one_band(path: Path, level: int, by_faction: dict[str, dict]) -> AddonBisBa
         for slot in slot_lookup:
             if slot not in KNOWN_SLOTS:
                 raise AddonBisError(f"{path}: unknown slot {slot!r} at band {level}/{faction}")
-        factions[faction] = {
-            slot: _pick(path, f"band {level}/{faction}/{slot}", entry)
+        picks = {
+            slot: _pick(path, f"band {level}/{faction}/{slot}", entry, unconfirmed, skips)
             for slot, entry in slot_lookup.items()
         }
-        new_at_band[faction] = _new_item_ids(band.get("new_at_band") or [], slot_lookup)
+        factions[faction] = {slot: pick for slot, pick in picks.items() if pick is not None}
+        new_at_band[faction] = _new_item_ids(band.get("new_at_band") or [], factions[faction])
         # The first faction (sorted, so always the same one for a given
         # band) stands for the band as a whole -- see AddonBisBand.weights'
         # own docstring on why factions are not kept apart here.
@@ -189,7 +237,7 @@ def _one_band(path: Path, level: int, by_faction: dict[str, dict]) -> AddonBisBa
     return AddonBisBand(level=level, factions=factions, new_at_band=new_at_band, weights=weights)
 
 
-def _spec_bis(path: Path) -> list[AddonBisBand]:
+def _spec_bis(path: Path, unconfirmed: set[int], skips: list[int]) -> list[AddonBisBand]:
     """One spec's bis/<spec>.json, regrouped from leveling-bis's flat list
     of (band, faction) reports into one AddonBisBand per level, both
     factions inline -- the shape the addon actually indexes by."""
@@ -202,7 +250,40 @@ def _spec_bis(path: Path) -> list[AddonBisBand]:
         if band.get("preset", BARE_PRESET) != BARE_PRESET:
             continue
         by_level.setdefault(band["band"], {})[band["faction"]] = band
-    return [_one_band(path, level, by_faction) for level, by_faction in sorted(by_level.items())]
+    return [
+        _one_band(path, level, by_faction, unconfirmed, skips)
+        for level, by_faction in sorted(by_level.items())
+    ]
+
+
+def _flat_items(root: Path, build: str) -> dict[int, dict]:
+    """data/builds/<build>/items.json by id; empty when the build has none."""
+    path = root / build / "items.json"
+    if not path.exists():
+        return {}
+    return {row["id"]: row for row in json.loads(path.read_text(encoding="utf-8"))}
+
+
+def _unconfirmed_ids(root: Path, build: str) -> set[int]:
+    """Every id items.json marks `client_unconfirmed` (task L1.4): stats the
+    client has not confirmed, an id the client may never resolve at all."""
+    return {
+        item_id
+        for item_id, row in _flat_items(root, build).items()
+        if row.get("client_unconfirmed")
+    }
+
+
+def _build_bis(root: Path, build: str) -> tuple[dict[str, list[AddonBisBand]], list[int]]:
+    bis_dir = root / build / "bis"
+    if not bis_dir.exists():
+        return {}, []
+    unconfirmed = _unconfirmed_ids(root, build)
+    skips: list[int] = []
+    bis = {
+        path.stem: _spec_bis(path, unconfirmed, skips) for path in sorted(bis_dir.glob("*.json"))
+    }
+    return bis, skips
 
 
 def build_bis(root: Path, build: str) -> dict[str, list[AddonBisBand]]:
@@ -211,7 +292,75 @@ def build_bis(root: Path, build: str) -> dict[str, list[AddonBisBand]]:
     module docstring's second point).
 
     Empty when data/builds/<build>/bis does not exist at all."""
-    bis_dir = root / build / "bis"
-    if not bis_dir.exists():
-        return {}
-    return {path.stem: _spec_bis(path) for path in sorted(bis_dir.glob("*.json"))}
+    return _build_bis(root, build)[0]
+
+
+def bis_unconfirmed_skips(root: Path, build: str) -> int:
+    """How many candidates build_bis passed over because items.json marks
+    them `client_unconfirmed`, across every spec, band and faction of the
+    build -- the audit line `python -m pipeline addon-data` prints."""
+    return len(_build_bis(root, build)[1])
+
+
+def unconfirmed_skips_line(root: Path, build: str) -> str:
+    """The audit line `python -m pipeline addon-data` logs for a build:
+    the skip count, and how many distinct items those skips were."""
+    skips = _build_bis(root, build)[1]
+    return (
+        f"bis {build}: skipped {len(skips)} client_unconfirmed candidates "
+        f"({len(set(skips))} distinct items)"
+    )
+
+
+#: Data.lua's bisNames values are shown in WoW tooltips, where `|` starts an
+#: escape sequence; a name never carries one (task L1.4, ruling 1).
+NAME_SEPARATOR_STAND_IN = "/"
+
+
+def _class_dps(root: Path, build: str) -> dict[int, float]:
+    """Item id -> weapon dps from data/builds/<build>/items/<class>.json, the
+    rows sim/cmd/leveling-bis/data.go reads `candidate.DPS` from
+    (pipeline.normalize.gear computes it, two decimals). Every class file
+    states the same dps for an id, so the union is taken; 0 (not a weapon)
+    is left out."""
+    dps: dict[int, float] = {}
+    for path in sorted((root / build / "items").glob("*.json")):
+        for row in json.loads(path.read_text(encoding="utf-8"))["items"]:
+            if row.get("dps"):
+                dps[row["id"]] = float(row["dps"])
+    return dps
+
+
+def build_bis_items(
+    root: Path, build: str, bis: dict[str, list[AddonBisBand]]
+) -> tuple[dict[int, str], dict[int, float]]:
+    """Data.lua's `bisNames` and `bisDps` side tables (task L1.4): every item
+    id that is a pick or an alternative in any band, to its items.json
+    display name; and, for a weapon, to its own dps at one decimal. The
+    tooltip names a pick and prices a weapon pick before the client's item
+    cache fills; the packed pick strings stay exactly as they were, so
+    Gear.decodePick reads them unchanged."""
+    ids = sorted(
+        {
+            item_id
+            for bands in bis.values()
+            for band in bands
+            for slots in band.factions.values()
+            for pick in slots.values()
+            for item_id in [pick.item_id] + [alt.item_id for alt in pick.alternatives]
+        }
+    )
+    if not ids:
+        return {}, {}
+    items = _flat_items(root, build)
+    class_dps = _class_dps(root, build)
+    names: dict[int, str] = {}
+    dps: dict[int, float] = {}
+    for item_id in ids:
+        row = items.get(item_id)
+        if row is None or not row.get("name"):
+            raise AddonBisError(f"items.json for {build} has no name for bis item {item_id}")
+        names[item_id] = row["name"].replace("|", NAME_SEPARATOR_STAND_IN)
+        if item_id in class_dps:
+            dps[item_id] = round(class_dps[item_id], 1)
+    return names, dps
