@@ -30,8 +30,8 @@ Contract 5 is the public nightly data file.
   always come from the one function that owns them (spec 2.1). The words "data addon" and
   "companion" never appear in player copy without a four-word explanation beside them.
 - **Ids are for machines.** `item_id`, `spellId`, `npcId`, `lootId` and the keys of
-  `encounterNeeds`, `abilityLevels` and `loot_values` items are lookup keys only. They are never
-  printed.
+  `encounterNeeds`, `abilityLevels`, `bisNames`, `bisDps` and `loot_values` items are lookup keys
+  only. They are never printed.
 - **No network call from the addon.** Everything below travels in shipped data, in the client's
   addon-message channels, or in saved-variable files the companion reads and writes.
 
@@ -53,8 +53,16 @@ ns.Data = {
   build = "1.60.1.70291",
   classes = { ... },            -- unchanged
   weights = { ... },            -- unchanged
-  -- NEW: DPS (or HPS for healers) per 1.0 of the spec's reference stat, from the site's sim
-  dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.42, healing = false }, ... },
+  -- NEW: DPS (or HPS for healers) per 1.0 of the spec's reference stat, from the site's sim,
+  -- per leveling band, with the DPS one more point of weapon DPS is worth
+  dpsPerPoint = {
+    ["warrior-arms"] = {
+      [20] = { reference = "attack_power", dps = 0.0385, weaponDps = 0.5432 },  -- 20 ... 60
+      ...,
+      -- the level-60 raid figure, kept for the current reader (to go once it reads by band)
+      reference = "attack_power", dps = 0.2222, healing = false, weaponDps = 3.1536,
+    }, ...
+  },
   -- NEW: default builds per spec, as the codec's own triples (tab, tier, column), 1-based
   -- The addon loads defaultBuilds[<spec>].leveling on first login when no build is saved for the
   -- character (raid at 60), and marks it default = true so the build dialog can say
@@ -68,6 +76,10 @@ ns.Data = {
   -- NEW: per BiS pick, the drop chance and two alternatives (addonbis renders these beside each pick)
   --   bis[spec][band][faction][slot] = { item_id, kind, source, chance = 0.14 | nil,
   --                                      alternatives = { { item_id, kind, source }, { ... } } }
+  -- NEW: the display name of every item that is a BiS pick or an alternative in any band, and the
+  -- weapon damage per second of the weapons among them, each stored once per item id
+  bisNames = { [6631] = "Living Root", ... },
+  bisDps = { [6631] = 21.2, ... },
   -- NEW: what each raid encounter needs, for the ready-check coverage list
   encounterNeeds = { [<npcId>] = { buffs = { 1126, ... }, debuffs = { 7386, ... }, resist = "fire" | nil } },
   -- NEW: the level each rotation ability is learned, so the rotation region can say "at level N"
@@ -78,8 +90,24 @@ ns.Data = {
 
 Notes for the reader:
 
-- `dpsPerPoint` is per spec slug; `healing = true` means the number is healing per second and
-  the addon says "healing" instead of "damage". A spec with no entry shows no DPS wording at all.
+- `dpsPerPoint` is per spec slug and band: `dpsPerPoint[spec][band]` is `{ reference, dps,
+  weaponDps }` for the BiS bands 20, 30, 40, 50 and 60. Read the band with the same rule as the
+  BiS table (`Gear.bandFor`: the highest band at or below the level, so 20 serves levels 20-29);
+  below level 20 read band 20, never the spec-level figure.
+  A band's figures are measured by the sim on that band's own character: the band's BiS set,
+  the guide's leveling build, at the middle of the band's levels (25 for band 20, 60 for 60). They
+  differ from the level-60 figure by far more than 25 percent (Arms: 0.0385 DPS per attack
+  power at band 20 against 0.2222 at 60), so a level-60 figure must not be applied to a
+  leveling character. `dps` is DPS per 1.0 of `reference`. `weaponDps` is the measured DPS one
+  more point of the swung weapon's own damage per second is worth (the main hand; the ranged
+  weapon when `reference` is `ranged_attack_power`): a weapon's DPS delta is multiplied by it
+  directly, never converted to attack power first. It prices only the slot it was measured
+  on: the main hand, or the ranged slot for a `ranged_attack_power` spec. The off hand and a
+  hunter's melee weapon have no weapon term. It is 0 for a spec that does not swing its weapon
+  (casters, healers, feral druids). A band the sim could not measure beyond its own error
+  has no key. The spec-level `reference`, `dps`, `healing` and `weaponDps` are the level-60 raid
+  character's figures; `healing = true` means the numbers are healing per second and the addon
+  says "healing" instead of "damage". A spec with no entry (tanks) shows no DPS wording at all.
 - `defaultBuilds` order lists are the 51 point spends in learning order, one `{tab, tier,
   column}` triple per point, 1-based, exactly what `Codec` encodes. The saved copy of a default
   carries `default = true`; the first time the player saves, imports or is pushed a build for
@@ -97,6 +125,28 @@ Notes for the reader:
   `{ item_id, kind, source, chance, alternatives = { { item_id, kind, source }, ... } }`, and
   `Gear.decodePick(packed)` decodes a single string. Positions 1-3 of that table also hold
   the id, the kind and the source.
+- `bisNames` and `bisDps` sit beside `bis` and do not change it: the packed pick string keeps
+  exactly the fields above. Look a pick's or an alternative's name up by its `item_id` in
+  `bisNames`, so the tooltip can name it before the client's item cache has the item. Every id
+  that appears in `bis` has a name there. The name is the item's display name from the build's
+  `items.json`; it never contains `|` (a `|` would be written as `/`).
+  `bisDps[item_id]` is the weapon's own damage per second, rounded to one decimal. It is the
+  same figure the BiS ranker ranks weapons on (the `dps` of the build's `items/<class>.json`).
+  An item that is not a weapon has no `bisDps` entry.
+- No BiS pick or alternative is an item the build's `items.json` marks `client_unconfirmed`
+  (the client may never resolve such an id). The BiS ranker drops such items before it ranks,
+  so every pick, alternative and drop chance is the ranker's own. As a safety net for a bis
+  file ranked before that rule, the pipeline passes over any such candidate it still finds
+  (its audit line counts them, and reads `skipped 0` for a regenerated build) and takes the
+  next one in the ranker's order that the band's own rules allow: never the same item as the
+  paired slot (the two rings, the two trinkets, the two hands), never an off hand under a
+  two-handed main hand, and never a two-hander in the main hand while the off hand has a pick,
+  unless that two-hander is the only confirmed main hand left, in which case it is taken and
+  the off hand empties, as the ranker does. A promoted pick carries its `chance` only when the
+  loot data states one for it at its own source. A slot with no allowed confirmed candidate
+  has no pick, just like a slot the ranker found nothing for. The "new at <band>" ids are
+  worked out from these final picks: a pick is new at a band when it differs from the same
+  slot's pick at the band before (every pick of a spec's first band is new).
 - `encounterNeeds` ids are spell ids for buffs and debuffs and are used only to check the raid's
   auras; the coverage list shows spell names from the client. `resist` is a school name or nil.
 

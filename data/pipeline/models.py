@@ -1,6 +1,6 @@
 from typing import Any, Literal
 
-from pydantic import BaseModel, SerializerFunctionWrapHandler, model_serializer
+from pydantic import BaseModel, Field, SerializerFunctionWrapHandler, model_serializer
 
 
 class Zone(BaseModel):
@@ -834,11 +834,28 @@ class AddonDefaultBuild(BaseModel):
     order: list[tuple[int, int, int]]
 
 
+class AddonDpsPerPointBand(BaseModel):
+    """One leveling band's figures (task L1.5): sim/cmd/dps-per-point's
+    derivatives on that band's own character -- the bare band's BiS set,
+    the guide's leveling build, at the middle of the band's levels."""
+
+    #: The spec's reference stat, repeated so a band table stands alone.
+    reference: str
+    #: Damage (healing for a healer) per second per reference-stat point.
+    dps: float
+    #: Damage per second one more point of the swung weapon's own damage
+    #: per second is worth (the main hand; the ranged weapon for a
+    #: ranged-attack-power spec); 0 for a spec that does not swing it.
+    weapon_dps: float
+
+
 class AddonDpsPerPoint(BaseModel):
     """What one point of a spec's reference stat is worth (docs/contracts/
     addon-v2.md, contract 1): sim/cmd/dps-per-point's raw stat-weights
     derivative on the guide's level-60 raid character. The addon's Progress
-    multiplies a score delta, which is in reference-stat points, by `dps`."""
+    multiplies a score delta, which is in reference-stat points, by `dps`.
+    Task L1.5: `bands` carries the same figures per leveling band, which
+    differ from the level-60 one by far more than 25 percent."""
 
     #: The spec's reference stat (data/curated/specs.json), the one the
     #: addon's weights are normalised to 1.0 against.
@@ -847,6 +864,12 @@ class AddonDpsPerPoint(BaseModel):
     dps: float
     #: True for a healer: the addon says "healing" instead of "damage".
     healing: bool
+    #: The level-60 raid character's DPS per +1 weapon DPS (see
+    #: AddonDpsPerPointBand.weapon_dps).
+    weapon_dps: float = 0.0
+    #: Band (20 ... 60) -> that band's figures; a band the sim could not
+    #: measure beyond its own error is absent.
+    bands: dict[int, AddonDpsPerPointBand] = {}
 
 
 class AddonEncounterNeeds(BaseModel):
@@ -890,6 +913,19 @@ class AddonData(BaseModel):
     #: learned (pipeline.addonrotation.build_ability_levels), for the
     #: rotation region's "at level N". Every id any rotation line carries.
     ability_levels: dict[int, int] = {}
+    #: Every item id that is a BiS pick or alternative in any band -> its
+    #: items.json display name (pipeline.addonbis.build_bis_items, task
+    #: L1.4), so the tooltip can name a pick before the client's item cache
+    #: fills. Once per id; the packed pick strings are unchanged.
+    bis_names: dict[int, str] = {}
+    #: The weapons among bis_names -> their own dps at one decimal, from
+    #: items/<class>.json's `dps` (what sim/cmd/leveling-bis ranks on).
+    bis_dps: dict[int, float] = {}
+    #: The id of every BiS candidate pipeline.addonbis passed over because
+    #: items.json marks it client_unconfirmed (one per skip). Never written
+    #: to addon-data.json or Data.lua: it feeds the addon-data command's
+    #: audit line, so one run parses the bis files once.
+    bis_unconfirmed_skips: list[int] = Field(default_factory=list, exclude=True)
 
 
 class PhaseBoundary(BaseModel):

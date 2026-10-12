@@ -193,6 +193,24 @@ def _bis_new_lua(bis: dict) -> list[str]:
     return lines
 
 
+def _bis_items_lua(bis_names: dict, bis_dps: dict) -> list[str]:
+    """`bisNames[itemId] = "name"` and `bisDps[itemId] = dps` (task L1.4):
+    one entry per distinct pick or alternative id, so a name is stored once
+    however many picks share it. Both are left out entirely when empty."""
+    lines: list[str] = []
+    if bis_names:
+        lines.append("\tbisNames = {")
+        for item_id in sorted(bis_names):
+            lines.append(f"\t\t[{item_id}] = {_quote(bis_names[item_id])},")
+        lines.append("\t},")
+    if bis_dps:
+        lines.append("\tbisDps = {")
+        for item_id in sorted(bis_dps):
+            lines.append(f"\t\t[{item_id}] = {_number(bis_dps[item_id])},")
+        lines.append("\t},")
+    return lines
+
+
 def _default_builds_lua(default_builds: dict) -> list[str]:
     """`defaultBuilds[spec].leveling|raid = { name, order = { {tab,tier,column}, ... } }`
     (docs/contracts/addon-v2.md, contract 1): one 1-based triple per point
@@ -213,17 +231,31 @@ def _default_builds_lua(default_builds: dict) -> list[str]:
 
 
 def _dps_per_point_lua(dps_per_point: dict) -> list[str]:
-    """`dpsPerPoint[spec] = { reference, dps, healing }` (contract 1). A
+    """`dpsPerPoint[spec] = { reference, dps, healing, weaponDps, [band] = {
+    reference, dps, weaponDps } }` (contract 1; bands from task L1.5). A
     spec with no entry is left out, never written as zero: the addon reads
     a missing key as "show score units"."""
     lines = ["\tdpsPerPoint = {"]
     for spec in sorted(dps_per_point):
         entry = dps_per_point[spec]
         healing = "true" if entry.healing else "false"
-        lines.append(
+        head = (
             f"\t\t[{_quote(spec)}] = {{ reference = {_quote(entry.reference)}, "
-            f"dps = {_number(entry.dps)}, healing = {healing} }},"
+            f"dps = {_number(entry.dps)}, healing = {healing}"
         )
+        if not entry.bands and not entry.weapon_dps:
+            lines.append(head + " },")
+            continue
+        # Task L1.5: the level-60 raid figure stays at the spec level for the
+        # current reader; each band's own figures sit under its band key.
+        lines.append(head + f", weaponDps = {_number(entry.weapon_dps)},")
+        for band in sorted(entry.bands):
+            row = entry.bands[band]
+            lines.append(
+                f"\t\t\t[{band}] = {{ reference = {_quote(row.reference)}, "
+                f"dps = {_number(row.dps)}, weaponDps = {_number(row.weapon_dps)} }},"
+            )
+        lines.append("\t\t},")
     lines.append("\t},")
     return lines
 
@@ -280,6 +312,7 @@ def render_lua(data: AddonData) -> str:
     lines.extend(_bis_lua(data.bis))
     lines.extend(_bis_new_lua(data.bis))
     lines.extend(_bis_weights_lua(data.bis))
+    lines.extend(_bis_items_lua(data.bis_names, data.bis_dps))
     lines.extend(_default_builds_lua(data.default_builds))
     lines.extend(_dps_per_point_lua(data.dps_per_point))
     lines.extend(_encounter_needs_lua(data.encounter_needs))
@@ -295,11 +328,11 @@ def write_lua(
     root: Path = Path("builds"),
     curated_dir: Path = Path("curated"),
     lua_path: Path = LUA_PATH,
+    data: AddonData | None = None,
 ) -> Path:
     lua_path.parent.mkdir(parents=True, exist_ok=True)
-    lua_path.write_text(
-        render_lua(build_addon_data(build, root=root, curated_dir=curated_dir)), encoding="utf-8"
-    )
+    data = data or build_addon_data(build, root=root, curated_dir=curated_dir)
+    lua_path.write_text(render_lua(data), encoding="utf-8")
     return lua_path
 
 
@@ -308,6 +341,7 @@ def lua_has_drifted(
     root: Path = Path("builds"),
     curated_dir: Path = Path("curated"),
     lua_path: Path = LUA_PATH,
+    data: AddonData | None = None,
 ) -> bool:
-    wanted = render_lua(build_addon_data(build, root=root, curated_dir=curated_dir))
+    wanted = render_lua(data or build_addon_data(build, root=root, curated_dir=curated_dir))
     return not lua_path.exists() or lua_path.read_text(encoding="utf-8") != wanted

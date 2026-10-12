@@ -342,6 +342,13 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 			}
 			if leveling.DualWieldSpecs[spec] {
 				list = weaponsOnly(list)
+			} else {
+				// Everyone else holds a shield or a held item there: an
+				// off-hand-only weapon (INVTYPE_WEAPONOFFHAND, filed under
+				// "off_hand") is not theirs to wield (task L1.6 found a
+				// druid-feral-bear band-60 off-hand fist weapon once its
+				// two-hander was no longer a candidate).
+				list = withoutWeapons(list)
 			}
 		}
 		var sp slotPick
@@ -405,6 +412,31 @@ func weaponsOnly(list []scored) []scored {
 	out := make([]scored, 0, len(list))
 	for _, sc := range list {
 		if sc.ClassID == itemClassWeapon {
+			out = append(out, sc)
+		}
+	}
+	return out
+}
+
+// offHandPool is a spec's one off-hand candidate pool (task L1.6 fix
+// round 1): weapons only for a dual-wielder (DualWieldSpecs), no weapons
+// for anyone else. runSpec narrows bySlot["off_hand"] with it before any
+// pass reads it, so the pick, the published alternatives and runners-up,
+// the swaps and set completion all draw from the same shape.
+func offHandPool(spec string, list []scored) []scored {
+	if leveling.DualWieldSpecs[spec] {
+		return weaponsOnly(list)
+	}
+	return withoutWeapons(list)
+}
+
+// withoutWeapons drops the candidates that are weapons (item class 2):
+// a spec that does not dual-wield holds only a shield or a held item in
+// its off hand.
+func withoutWeapons(list []scored) []scored {
+	out := make([]scored, 0, len(list))
+	for _, sc := range list {
+		if sc.ClassID != itemClassWeapon {
 			out = append(out, sc)
 		}
 	}

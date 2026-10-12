@@ -103,9 +103,17 @@ func checkPublishedSpecFile(t *testing.T, path string) {
 	}
 
 	buildDir := filepath.Join(publishedRepoRoot, "data", "builds", report.Build)
-	items, _, err := loadCandidates(buildDir, spec.ClassSlug)
+	// Every class row, client_unconfirmed ones included, so a file ranked
+	// before task L1.6 is still checked item by item; the active build,
+	// the one the nightly re-ranks, must carry none of them
+	// (checkNoClientUnconfirmedItem).
+	items, _, err := loadClassCandidates(buildDir, spec.ClassSlug)
 	if err != nil {
-		t.Fatalf("%s: loadCandidates(%s, %s): %v", path, buildDir, spec.ClassSlug, err)
+		t.Fatalf("%s: loadClassCandidates(%s, %s): %v", path, buildDir, spec.ClassSlug, err)
+	}
+	activeBuild, err := leveling.ReadActiveBuild(publishedRepoRoot)
+	if err != nil {
+		t.Fatalf("ReadActiveBuild: %v", err)
 	}
 	// itemFactionRestriction mirrors main.go's own pre-pass exactly
 	// (runSpec's own comment): correctedRepSource needs it before
@@ -121,16 +129,13 @@ func checkPublishedSpecFile(t *testing.T, path string) {
 		t.Fatalf("%s: loadLootIndex: %v", path, err)
 	}
 	items = applyEffectiveRequiredLevels(items, lootIdx, questFloors)
-	byID := make(map[int]candidate, len(items))
-	for _, c := range items {
-		byID[c.ID] = c
-	}
+	byID := publishedCandidates(items, report.Build, activeBuild)
 
 	checkHunterSurvivalWeightsMeleeNotRanged(t, path, spec)
 	checkSetDPSMonotonicAcrossBands(t, path, report.Bands)
 
 	for _, band := range report.Bands {
-		checkPublishedBand(t, path, band, spec, byID, lootIdx)
+		checkPublishedBand(t, path, band, spec, byID, lootIdx, report.Build == activeBuild)
 	}
 }
 
@@ -199,7 +204,10 @@ func checkSetDPSMonotonicAcrossBands(t testing.TB, path string, bands []bandRepo
 
 // checkPublishedBand applies checks 1-5, 7 and 8 (this lane's brief)
 // to one band+faction's published slots.
-func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInfo, byID map[int]candidate, lootIdx lootIndex) {
+// active is true for the active build, the one the nightly re-ranks: the
+// rules added in task L1.6 (no client_unconfirmed item, one off-hand pool)
+// bind its files; an older build's were ranked before them.
+func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInfo, byID map[int]candidate, lootIdx lootIndex, active bool) {
 	t.Helper()
 	bandLabel := fmt.Sprintf("%s: %s band %d %s", path, band.Spec, band.Band, band.Faction)
 	slotLabel := func(slot string) string { return bandLabel + " " + slot }
@@ -223,6 +231,9 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 		if !ok {
 			t.Errorf("%s: item %d (%s) is not in %s's item file at all", slotLabel(row.Slot), row.ItemID, row.ItemName, spec.ClassSlug)
 			continue
+		}
+		if msg := unconfirmedError("item", row.ItemID, row.ItemName, c); msg != "" {
+			t.Errorf("%s: %s", slotLabel(row.Slot), msg)
 		}
 
 		// (1) EffectiveRequiredLevel <= the band it was published at.
@@ -277,6 +288,9 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 	// weapon for a dual-wield spec; a shield/held item (never a
 	// weapon) for everyone else.
 	checkOffHandShape(t, slotLabel, spec, byID, bySlot)
+	if active {
+		checkOffHandAlternatives(t, slotLabel, spec.Spec, byID, bySlot)
+	}
 
 	// (7, first half) a band with a rotation (every published spec
 	// here is - writtenSpecs' own "written" gate) must have measured a
@@ -326,6 +340,9 @@ func checkAlternatives(t *testing.T, slotLabel func(string) string, classSlug st
 			if !ok {
 				t.Errorf("%s: alternative %d (%s) is not in %s's item file at all", slotLabel(row.Slot), alt.ItemID, alt.ItemName, band.Spec)
 				continue
+			}
+			if msg := unconfirmedError("alternative", alt.ItemID, alt.ItemName, c); msg != "" {
+				t.Errorf("%s: %s", slotLabel(row.Slot), msg)
 			}
 			if c.EffectiveRequiredLevel > band.Band {
 				t.Errorf("%s: alternative %d (%s) needs level %d (sim/leveling.EffectiveRequiredLevel), published at band %d", slotLabel(row.Slot), alt.ItemID, alt.ItemName, c.EffectiveRequiredLevel, band.Band)
@@ -472,14 +489,70 @@ func checkOffHandShape(t *testing.T, slotLabel func(string) string, spec specInf
 		return
 	}
 
-	dualWield := leveling.DualWieldSpecs[spec.Spec]
-	isWeapon := ohItem.ClassID == itemClassWeapon
+	if msg := offHandShapeError(spec.Spec, "off_hand", oh.ItemID, oh.ItemName, ohItem); msg != "" {
+		t.Errorf("%s: %s", slotLabel("off_hand"), msg)
+	}
+}
+
+// offHandShapeError is the off hand's shape rule for one item: a weapon
+// for a dual-wield spec, a shield or held item (never a weapon) for
+// everyone else. "" when the item fits.
+func offHandShapeError(specSlug, what string, id int, name string, c candidate) string {
+	dualWield := leveling.DualWieldSpecs[specSlug]
+	isWeapon := c.ClassID == itemClassWeapon
 	switch {
 	case dualWield && !isWeapon:
-		t.Errorf("%s: %s dual-wields (leveling.DualWieldSpecs), but off_hand %d (%s) is not a weapon", slotLabel("off_hand"), spec.Spec, oh.ItemID, oh.ItemName)
+		return fmt.Sprintf("%s dual-wields (leveling.DualWieldSpecs), but %s %d (%s) is not a weapon", specSlug, what, id, name)
 	case !dualWield && isWeapon:
-		t.Errorf("%s: %s does not dual-wield, but off_hand %d (%s) is a weapon (want a shield or held item)", slotLabel("off_hand"), spec.Spec, oh.ItemID, oh.ItemName)
+		return fmt.Sprintf("%s does not dual-wield, but %s %d (%s) is a weapon (want a shield or held item)", specSlug, what, id, name)
 	}
+	return ""
+}
+
+// checkOffHandAlternatives applies the off hand's shape rule to every
+// published off-hand alternative (task L1.6 fix round 1): the pick and
+// the alternatives come from one pool (pick.go's offHandPool).
+func checkOffHandAlternatives(t testing.TB, slotLabel func(string) string, specSlug string, byID map[int]candidate, bySlot map[string]slotRow) {
+	t.Helper()
+	row, ok := bySlot["off_hand"]
+	if !ok {
+		return
+	}
+	for _, alt := range row.Alternatives {
+		c, ok := byID[alt.ItemID]
+		if !ok {
+			continue // already reported as missing-from-item-file
+		}
+		if msg := offHandShapeError(specSlug, "off_hand alternative", alt.ItemID, alt.ItemName, c); msg != "" {
+			t.Errorf("%s: %s", slotLabel("off_hand"), msg)
+		}
+	}
+}
+
+// publishedCandidates is the item lookup a published file is checked
+// against: every class row, with client_unconfirmed kept only for the
+// active build (the one the nightly re-ranks; leveling-bis never ranks
+// such an item since task L1.6). An older build's files were ranked
+// before that rule and are never re-ranked, so its unconfirmed items are
+// tolerated.
+func publishedCandidates(items []candidate, build, activeBuild string) map[int]candidate {
+	byID := make(map[int]candidate, len(items))
+	for _, c := range items {
+		if build != activeBuild {
+			c.ClientUnconfirmed = false
+		}
+		byID[c.ID] = c
+	}
+	return byID
+}
+
+// unconfirmedError is the refusal for a published client_unconfirmed
+// item ("" for any other).
+func unconfirmedError(what string, id int, name string, c candidate) string {
+	if !c.ClientUnconfirmed {
+		return ""
+	}
+	return fmt.Sprintf("%s %d (%s) is client_unconfirmed; leveling-bis never ranks one (task L1.6)", what, id, name)
 }
 
 // checkWeightsCoverSpecStats applies check (8): the published weights

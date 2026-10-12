@@ -114,7 +114,7 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 		t.Fatalf("loadSpec(%q): %v", specName, err)
 	}
 
-	items, _, err := loadCandidates(buildDir, spec.ClassSlug)
+	items, _, _, err := loadCandidates(buildDir, spec.ClassSlug)
 	if err != nil {
 		t.Fatalf("loadCandidates(%s, %s): %v", buildDir, spec.ClassSlug, err)
 	}

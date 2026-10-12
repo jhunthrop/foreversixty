@@ -333,7 +333,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		return err
 	}
 
-	items, missing, err := loadCandidates(buildDir, specInfo.ClassSlug)
+	items, unconfirmed, missing, err := loadCandidates(buildDir, specInfo.ClassSlug)
 	if err != nil {
 		return err
 	}
@@ -612,6 +612,9 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				// is otherwise "NOT checked here" at all.
 				bySlot["main_hand"] = restrictToProficientWeapons(bySlot["main_hand"], weaponSubclasses)
 				bySlot["off_hand"] = restrictToProficientWeapons(bySlot["off_hand"], weaponSubclasses)
+				// One off-hand shape per spec for every pass and the report
+				// alike (pick.go's offHandPool).
+				bySlot["off_hand"] = offHandPool(specInfo.Spec, bySlot["off_hand"])
 				bySlot["main_hand"] = restrictTankMainHand(specInfo, bySlot["main_hand"])
 				bySlot["ranged"] = restrictToProficientWeapons(bySlot["ranged"], weaponSubclasses)
 				if requiresDagger {
@@ -887,7 +890,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	if err := writeMarkdown(mdPath, specInfo, reports); err != nil {
 		return fmt.Errorf("writing %s: %w", mdPath, err)
 	}
-	log.Printf("leveling-bis: wrote %s and %s", jsonPath, mdPath)
+	log.Printf("leveling-bis: wrote %s and %s (%d client_unconfirmed item(s) excluded before ranking)", jsonPath, mdPath, unconfirmed)
 	return nil
 }
 

@@ -3,12 +3,15 @@ package main
 // Preferring confirmed stats inside the noise.
 //
 // Some items carry stats the client has not confirmed: the id is in the
-// client but its ItemSparse stats row is not, so the ranker scores the 1.12
-// classic-db itemization (candidate.ClientUnconfirmed). Such an item is never
-// excluded, but it may only take a slot from a confirmed-stats item when it
-// beats that item by more than the two runs' combined standard error. A gap
-// inside the error is a tie the noise decides, and a tie goes to the item
-// whose stats we can show.
+// client but its ItemSparse stats row is not, so the ranker would score the
+// 1.12 classic-db itemization (candidate.ClientUnconfirmed). Since task L1.6
+// loadCandidates (data.go) drops every such item before any band ranks, so
+// the pool runSpec ranks is confirmed by construction and this pass finds
+// nothing to do there. It stays for a pool built some other way: such an
+// item may only take a slot from a confirmed-stats item when it beats that
+// item by more than the two runs' combined standard error. A gap inside the
+// error is a tie the noise decides, and a tie goes to the item whose stats
+// we can show.
 
 import (
 	"fmt"

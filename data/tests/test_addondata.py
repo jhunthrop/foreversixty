@@ -440,3 +440,224 @@ def test_the_three_additions_render_as_contract_one_shapes():
         "\t},\n"
     ) in lua
     assert "\tabilityLevels = {\n\t\t[5308] = 24,\n\t\t[20662] = 24,\n\t},\n" in lua
+
+
+def test_the_real_data_lua_names_every_pick_and_prices_its_weapons(tmp_path):
+    """Task L1.4: bisNames/bisDps read back through a real Lua. The Arms
+    band-20 main hand is a weapon, so it has both a name and a dps; the
+    head pick is not a weapon, so it has a name and no dps."""
+    lua_bin = shutil.which("lua") or shutil.which("lua5.4") or shutil.which("lua5.1")
+    if not lua_bin:
+        pytest.skip("no lua interpreter is available")
+    chunk = tmp_path / "Data.lua"
+    chunk.write_text(render_lua(build_addon_data(BUILD)), encoding="utf-8")
+    script = (
+        f"local data = assert(loadfile({chunk.as_posix()!r}))() "
+        "local band = data.bis['warrior-arms'][20].alliance "
+        "local weapon = tonumber(band.main_hand:match('^(%d+)')) "
+        "local head = tonumber(band.head:match('^(%d+)')) "
+        "io.write(data.bisNames[weapon], '|', tostring(data.bisDps[weapon]), '|', "
+        "data.bisNames[head], '|', tostring(data.bisDps[head]))"
+    )
+    result = subprocess.run([lua_bin, "-e", script], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    weapon_name, weapon_dps, head_name, head_dps = result.stdout.split("|")
+    assert weapon_name and weapon_name != "The Axe of Severing"
+    assert float(weapon_dps) > 0
+    assert head_name
+    assert head_dps == "nil"
+
+
+def test_every_real_pick_and_alternative_is_named():
+    data = build_addon_data(BUILD)
+    for spec, bands in data.bis.items():
+        for band in bands:
+            for slots in band.factions.values():
+                for pick in slots.values():
+                    for item_id in [pick.item_id] + [alt.item_id for alt in pick.alternatives]:
+                        assert data.bis_names.get(item_id), (spec, band.level, item_id)
+    assert set(data.bis_dps) <= set(data.bis_names)
+    assert all(value > 0 and round(value, 1) == value for value in data.bis_dps.values())
+
+
+def _wsl_path(path: Path) -> str:
+    """C:\\x\\y -> /mnt/c/x/y, for a file WSL's lua5.1 must open."""
+    resolved = path.resolve()
+    drive = resolved.drive.rstrip(":").lower()
+    return f"/mnt/{drive}" + resolved.as_posix()[len(resolved.drive) :]
+
+
+def _lua51() -> tuple[list[str], object] | None:
+    """The command prefix for a Lua 5.1 (the client's own) and a function
+    mapping a local path to the path that Lua opens: `lua5.1` on PATH, else
+    WSL's `lua5.1`. None when neither is available."""
+    local = shutil.which("lua5.1")
+    if local:
+        return [local], lambda path: path.as_posix()
+    wsl = shutil.which("wsl")
+    if wsl:
+        probe = subprocess.run(
+            [wsl, "-e", "lua5.1", "-v"], capture_output=True, text=True, timeout=60
+        )
+        if probe.returncode == 0:
+            return [wsl, "-e", "lua5.1"], _wsl_path
+    return None
+
+
+def test_the_real_data_lua_stays_inside_the_two_megabyte_idle_budget(tmp_path):
+    """Ruling 3 (contract 1's 2 MB idle budget), measured the way L1.2/L1.3
+    did, under Lua 5.1 only (fix round 1, item 3: Lua 5.4's heap is smaller
+    and would pass a file the client cannot hold): the heap delta of loading
+    and calling Data.lua, after full collections either side."""
+    lua51 = _lua51()
+    if lua51 is None:
+        pytest.skip("no Lua 5.1 (neither lua5.1 on PATH nor WSL's lua5.1): the budget is 5.1's")
+    command, path_for = lua51
+    chunk = tmp_path / "Data.lua"
+    chunk.write_text(render_lua(build_addon_data(BUILD)), encoding="utf-8")
+    script = tmp_path / "heap.lua"
+    script.write_text(
+        "collectgarbage() collectgarbage() local before = collectgarbage('count') "
+        "local data = assert(loadfile(arg[1]))() "
+        "collectgarbage() collectgarbage() "
+        "io.write(_VERSION, '|', string.format('%.1f', collectgarbage('count') - before))",
+        encoding="utf-8",
+    )
+    result = subprocess.run(
+        command + [path_for(script), path_for(chunk)], capture_output=True, text=True, timeout=120
+    )
+    assert result.returncode == 0, result.stderr
+    version, heap = result.stdout.split("|")
+    assert version == "Lua 5.1"
+    assert float(heap) < 2048
+
+
+def test_the_cli_logs_the_unconfirmed_skips_audit_line():
+    result = subprocess.run(
+        [sys.executable, "-m", "pipeline", "addon-data", "--build", BUILD, "--check"],
+        capture_output=True,
+        text=True,
+    )
+    assert f"bis {BUILD}: skipped " in result.stderr
+    assert " client_unconfirmed candidates (" in result.stderr
+
+
+def test_one_cli_run_parses_each_bis_file_once(monkeypatch):
+    import pipeline.addonbis as addonbis
+    from pipeline.__main__ import main
+
+    parsed: list[str] = []
+    real = addonbis._spec_bis
+
+    def counting(path, *args, **kwargs):
+        parsed.append(path.stem)
+        return real(path, *args, **kwargs)
+
+    monkeypatch.setattr(addonbis, "_spec_bis", counting)
+    main(["addon-data", "--build", BUILD, "--check"])
+    specs = sorted(path.stem for path in (Path("builds") / BUILD / "bis").glob("*.json"))
+    assert sorted(parsed) == specs
+
+
+# --- Task L1.5: dpsPerPoint per spec and band, with a measured weapon term ---
+
+#: Measured by sim/cmd/dps-per-point on 2026-10-11 (task L1.5 report): the
+#: warrior-arms band-20 character (the band's bare BiS set, level 25) gains
+#: 0.0385 DPS per attack power and 0.5432 DPS per +1 main-hand weapon DPS;
+#: the level-60 raid character 0.2222 and 3.1536.
+ARMS_BAND_20 = (0.0385, 0.5432)
+ARMS_RAID = (0.2222, 3.1536)
+#: The band-30 figures: 0.0793 per attack power where the BiS ladder's
+#: weapon-only character (bis/warrior-arms.json reference_dps_per_point)
+#: reads 0.0397, so shipping the ladder figure instead fails here.
+ARMS_BAND_30 = (0.0793, 0.9831)
+#: The measurement's seed-to-seed spread is about 1e-4; 2 percent is far
+#: above it and far below any other source's difference.
+MEASURED = 0.02
+#: The per-band model's threshold (task L1.5, ruling 2).
+BAND_DIFFERS = 0.25
+
+
+def test_dps_per_point_carries_each_bands_figure_and_weapon_term():
+    data = build_addon_data(BUILD)
+    arms = data.dps_per_point["warrior-arms"]
+    assert arms.dps == pytest.approx(ARMS_RAID[0], rel=MEASURED)
+    assert arms.weapon_dps == pytest.approx(ARMS_RAID[1], rel=MEASURED)
+    assert sorted(arms.bands) == [20, 30, 40, 50, 60]
+    band = arms.bands[20]
+    assert band.reference == "attack_power"
+    assert band.dps == pytest.approx(ARMS_BAND_20[0], rel=MEASURED)
+    assert band.weapon_dps == pytest.approx(ARMS_BAND_20[1], rel=MEASURED)
+    assert arms.bands[30].dps == pytest.approx(ARMS_BAND_30[0], rel=MEASURED)
+    assert arms.bands[30].weapon_dps == pytest.approx(ARMS_BAND_30[1], rel=MEASURED)
+    # The reason for the per-band model: the level-60 figure is far off at 20.
+    assert abs(band.dps - arms.dps) / arms.dps > BAND_DIFFERS
+
+
+def test_a_casters_and_a_healers_weapon_term_is_zero_in_their_reference_stat():
+    data = build_addon_data(BUILD)
+    frost, holy = data.dps_per_point["mage-frost"], data.dps_per_point["priest-holy"]
+    assert frost.reference == "spell_power" and holy.reference == "healing_power"
+    assert holy.healing is True
+    for entry in (frost, holy):
+        assert entry.weapon_dps == 0
+        assert entry.bands, entry.reference
+        for band in entry.bands.values():
+            assert band.reference == entry.reference and band.weapon_dps == 0 and band.dps > 0
+
+
+def test_dps_per_point_bands_render_beside_the_spec_figure():
+    from pipeline.models import AddonData, AddonDpsPerPoint, AddonDpsPerPointBand
+
+    data = AddonData(
+        build="x",
+        classes={},
+        weights={},
+        dps_per_point={
+            "warrior-arms": AddonDpsPerPoint(
+                reference="attack_power",
+                dps=0.2222,
+                healing=False,
+                weapon_dps=3.1536,
+                bands={
+                    30: AddonDpsPerPointBand(
+                        reference="attack_power", dps=0.0793, weapon_dps=0.9831
+                    ),
+                    20: AddonDpsPerPointBand(
+                        reference="attack_power", dps=0.0385, weapon_dps=0.5432
+                    ),
+                },
+            ),
+        },
+    )
+    assert (
+        "\tdpsPerPoint = {\n"
+        '\t\t["warrior-arms"] = { reference = "attack_power", dps = 0.2222, healing = false, '
+        "weaponDps = 3.1536,\n"
+        '\t\t\t[20] = { reference = "attack_power", dps = 0.0385, weaponDps = 0.5432 },\n'
+        '\t\t\t[30] = { reference = "attack_power", dps = 0.0793, weaponDps = 0.9831 },\n'
+        "\t\t},\n"
+        "\t},\n"
+    ) in render_lua(data)
+
+
+def test_the_real_data_lua_reads_dps_per_point_by_spec_and_band(tmp_path):
+    lua_bin = shutil.which("lua") or shutil.which("lua5.4") or shutil.which("lua5.1")
+    if not lua_bin:
+        pytest.skip("no lua interpreter is available")
+    chunk = tmp_path / "Data.lua"
+    chunk.write_text(render_lua(build_addon_data(BUILD)), encoding="utf-8")
+    script = (
+        f"local data = assert(loadfile({chunk.as_posix()!r}))() "
+        "local arms = data.dpsPerPoint['warrior-arms'] "
+        "local frost = data.dpsPerPoint['mage-frost'][20] "
+        "io.write(arms.reference, '|', arms[20].reference, '|', arms[20].dps, '|', "
+        "arms[20].weaponDps, '|', arms.dps, '|', frost.weaponDps)"
+    )
+    result = subprocess.run([lua_bin, "-e", script], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    reference, band_reference, dps, weapon, spec_dps, frost_weapon = result.stdout.split("|")
+    assert (reference, band_reference, float(frost_weapon)) == ("attack_power", "attack_power", 0)
+    assert float(dps) == pytest.approx(ARMS_BAND_20[0], rel=MEASURED)
+    assert float(weapon) == pytest.approx(ARMS_BAND_20[1], rel=MEASURED)
+    assert float(spec_dps) == pytest.approx(ARMS_RAID[0], rel=MEASURED)
