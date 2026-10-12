@@ -59,6 +59,19 @@ local LAST_RAID = { date = "2026-12-08", bosses = {
 } }
 
 describe("Chip.model", function()
+	-- L3.2 fix round 3: the ring and the strip replace the chip while the
+	-- talent window is open; it is not the player's pref, and it comes back.
+	it("hides while the talent window is open", function()
+		local model = Chip.model(inputs({ level = 21, progress = pointAt(1, 21), unspent = 12,
+			pointName = "Improved Heroic Strike", talentsOpen = true }))
+		assert.is_false(model.visible)
+		assert.are.equal("talents", model.hiddenBy)
+		assert.are.equal(L.diagChipTalents, Chip.hiddenLine("talents", false))
+		assert.is_true(Chip.model(inputs({ talentsOpen = false })).visible)
+		-- The player's own hide still names itself first.
+		assert.are.equal("player", Chip.model(inputs({ shown = false, talentsOpen = true })).hiddenBy)
+	end)
+
 	-- L3.2 fix round 2: a cell the plan wants more than one rank of names the rank.
 	it("names the rank to take when the plan wants more than one there", function()
 		local model = Chip.model(inputs({ level = 21, progress = pointAt(1, 21), unspent = 12,

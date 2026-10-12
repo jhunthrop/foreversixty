@@ -62,27 +62,32 @@ local L = {
 	diagTalentStrip = "Talent strip: %s anchor on %s, at %s, %s, %s by %s, strata %s level %s, "
 		.. "visible %s; talents frame level %s",
 
-	-- /fs diag's line for the talent marks' own render check.
+	-- /fs diag's line for the talent marks' own render check, and the same
+	-- once the check has turned the badges off for the session.
 	diagTalentBadgesLine = "Talent badges: %d drawn, %d missing",
+	diagTalentBadgesOff = "Talent badges: off (%d found no button)",
 	-- /fs diag verbose: which rank fields the client's trait nodes fill.
 	diagTalentNodeFields = "Talent node: activeRank %s, currentRank %s, ranksPurchased %s; staged %s",
 
-	-- The talent window's strip (spec section 4.2, L3.2 fix round 2), in
+	-- The talent window's strip (spec section 4.2, L3.2 fix rounds 2-3), in
 	-- segments joined by talentStripSeparator: the build, the plan's count,
 	-- then "spend N now" while points wait (the client shows the same
 	-- count), else the level the next point arrives at (none at the cap),
-	-- or "complete"; then the points off build (muted at 0, a warning from
-	-- 1); then, while an on-build click is staged, "click Apply Changes".
+	-- or "complete"; then the points off plan (muted at 0, a warning from 1).
 	talentStripSeparator = " · ",
 	talentStripCount = "%d of %d points",
 	talentStripSpend = "spend %d now",
 	talentStripNext = "next point at level %d",
 	talentStripDone = "complete",
-	talentStripOffBuild = "%d off build",
-	talentStripApply = "click Apply Changes",
-	-- One line on the client's own node tooltip.
-	talentNodeLine = "Forever Sixty: points %d to %d of your build",
-	talentNodeLineOne = "Forever Sixty: point %d of your build",
+	talentStripOffPlan = "%d off plan",
+	-- One line on the client's own node tooltip, after a blank one: the
+	-- addon's name in gold ("Forever Sixty:"), then the plan's ranks and
+	-- points there in body colour; or, on a node holding a point the plan
+	-- never wanted, one warning line.
+	talentNodeLabel = "%s:",
+	talentNodeLine = "Your build: %d ranks, points %d to %d",
+	talentNodeLineOne = "Your build: point %d",
+	talentNodeOffPlan = "%s: not in your build",
 
 	-- Export
 	exportTitle = "Send your character to the site",
@@ -586,6 +591,8 @@ local L = {
 	diagNoClickOutside = "Clicking outside the path card does not close it on this client; press Escape.",
 	diagChipHidden = "Chip: hidden. /fs chip brings it back.",
 	diagChipCombat = "Chip: hidden in combat",
+	-- L3.2 fix round 3: the ring and the strip replace it while the talent window is open.
+	diagChipTalents = "Chip: hidden while the talent window is open",
 	diagChipCinematic = "Chip: hidden during a cinematic",
 	diagDataAddonOld = "The Forever Sixty Data addon is too old. Update it from the site.",
 	-- Below 10, and in the hover when the next point is not spendable yet: "Next at 22: Improved Tactical Mastery".

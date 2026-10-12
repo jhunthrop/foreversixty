@@ -13,45 +13,43 @@ end
 
 -- Fix round 2 (personas on marks2-*): "next at level 21" at level 21 with
 -- twelve points to spend read as "later"; the strip says "spend 12 now"
--- while points wait, and "off build" is muted at 0 and a warning from 1.
-local MUTED, WARN = "|cff9a9484", "|cffff6b5c"
+-- while points wait. Fix round 3: "off plan" (spec section 4.2), muted at 0
+-- and a warning from 1; no "click Apply Changes" (the client's lit button says it).
+local MUTED, WARN, GOLD, BODY = "|cff9a9484", "|cffff6b5c", "|cffe5b955", "|cffe9e4d8"
 
 describe("TalentMarks.stripText", function()
 	it("says spend N now while points wait, with no level", function()
 		local text, warned = TalentMarks.stripText("Arms / Fury build", progress(0, 51, 21, 0), { unspent = 12 })
-		assert.are.equal("Arms / Fury build · 0 of 51 points · spend 12 now · " .. MUTED .. "0 off build|r", text)
+		assert.are.equal("Arms / Fury build · 0 of 51 points · spend 12 now · " .. MUTED .. "0 off plan|r", text)
 		assert.is_false(warned)
 	end)
 
 	it("names the level the next point arrives at when none waits", function()
 		local text = TalentMarks.stripText("Arms leveling", progress(11, 51, 22, 0), { unspent = 0 })
-		assert.are.equal("Arms leveling · 11 of 51 points · next point at level 22 · " .. MUTED .. "0 off build|r",
+		assert.are.equal("Arms leveling · 11 of 51 points · next point at level 22 · " .. MUTED .. "0 off plan|r",
 			text)
 	end)
 
-	it("colours the off-build count as a warning from one point", function()
+	it("colours the off-plan count as a warning from one point", function()
 		local text, warned = TalentMarks.stripText("Arms leveling", progress(11, 51, 22, 1), { unspent = 0 })
-		assert.are.equal("Arms leveling · 11 of 51 points · next point at level 22 · " .. WARN .. "1 off build|r",
+		assert.are.equal("Arms leveling · 11 of 51 points · next point at level 22 · " .. WARN .. "1 off plan|r",
 			text)
 		assert.is_true(warned)
 	end)
 
 	it("leaves the level out where no level follows (the level cap)", function()
 		local text = TalentMarks.stripText("Arms leveling", progress(49, 51, nil, 2), { unspent = 0 })
-		assert.are.equal("Arms leveling · 49 of 51 points · " .. WARN .. "2 off build|r", text)
+		assert.are.equal("Arms leveling · 49 of 51 points · " .. WARN .. "2 off plan|r", text)
 	end)
 
 	it("says complete once the build has no point left, spendable points or not", function()
 		local text = TalentMarks.stripText("Arms leveling", progress(51, 51, nil, 0, true), { unspent = 3 })
-		assert.are.equal("Arms leveling · 51 of 51 points · complete · " .. MUTED .. "0 off build|r", text)
+		assert.are.equal("Arms leveling · 51 of 51 points · complete · " .. MUTED .. "0 off plan|r", text)
 	end)
 
-	it("asks for Apply Changes while an on-build point is staged, not while one is off build", function()
-		local staged = TalentMarks.stripText("Arms leveling", progress(12, 51, 21, 0), { unspent = 0, staged = true })
-		assert.are.equal("Arms leveling · 12 of 51 points · next point at level 21 · " .. MUTED
-			.. "0 off build|r · click Apply Changes", staged)
-		local off = TalentMarks.stripText("Arms leveling", progress(11, 51, 21, 1), { unspent = 0, staged = true })
-		assert.are.equal("Arms leveling · 11 of 51 points · next point at level 21 · " .. WARN .. "1 off build|r", off)
+	it("says nothing about Apply Changes while a click is staged", function()
+		local text = TalentMarks.stripText("Arms leveling", progress(12, 51, 21, 0), { unspent = 0, staged = true })
+		assert.are.equal("Arms leveling · 12 of 51 points · next point at level 21 · " .. MUTED .. "0 off plan|r", text)
 	end)
 
 	it("has nothing to say without a build", function()
@@ -62,8 +60,35 @@ describe("TalentMarks.stripText", function()
 		assert.are.equal("spend %d now", L.talentStripSpend)
 		assert.are.equal("next point at level %d", L.talentStripNext)
 		assert.are.equal("%d of %d points", L.talentStripCount)
-		assert.are.equal("%d off build", L.talentStripOffBuild)
-		assert.are.equal("click Apply Changes", L.talentStripApply)
+		assert.are.equal("%d off plan", L.talentStripOffPlan)
+		assert.is_nil(L.talentStripApply)
+	end)
+end)
+
+-- Fix round 3 (seen in game: "click Apply Chan…" cut by the pill's cap): a
+-- segment fits whole or is dropped, the action first, then the build name.
+describe("TalentMarks.fitStrip", function()
+	local function measure(text)
+		return #text
+	end
+	local segments = TalentMarks.stripSegments("Arms / Fury build", progress(1, 51, 21, 0), { unspent = 11 })
+	local full = "Arms / Fury build · 1 of 51 points · spend 11 now · " .. MUTED .. "0 off plan|r"
+
+	it("keeps every segment when the line fits", function()
+		assert.are.equal(full, TalentMarks.fitStrip(segments, measure, #full))
+		assert.are.equal(full, TalentMarks.fitStrip(segments, measure, nil))
+	end)
+
+	it("drops spend N now first, whole", function()
+		local short = "Arms / Fury build · 1 of 51 points · " .. MUTED .. "0 off plan|r"
+		assert.are.equal(short, TalentMarks.fitStrip(segments, measure, #full - 1))
+		assert.are.equal(short, TalentMarks.fitStrip(segments, measure, #short))
+	end)
+
+	it("then the build name, never the count or the off-plan count", function()
+		local shortest = "1 of 51 points · " .. MUTED .. "0 off plan|r"
+		assert.are.equal(shortest, TalentMarks.fitStrip(segments, measure, #shortest))
+		assert.are.equal(shortest, TalentMarks.fitStrip(segments, measure, 3))
 	end)
 end)
 
@@ -190,35 +215,50 @@ describe("TalentMarks.badgeWidth", function()
 end)
 
 -- Fix round 2: badges on a plate; the next one inverted, the unreachable dimmed.
+-- Fix round 3: dimming takes the plate and its edge only (the digits stay at
+-- 0.6 or more: a dimmed Fury badge was a ghost), by the cell's first point.
 describe("TalentMarks.badgeLook", function()
 	it("inverts the next cell's plate: solid gold, dark digits, never dimmed", function()
-		assert.are.same({ plate = "gold", plateAlpha = 1, digits = "onGold", alpha = 1 },
-			TalentMarks.badgeLook({ next = true, have = 0, want = 5, lastIndex = 30 }, 12))
+		assert.are.same({ plate = "gold", plateAlpha = 1, edgeAlpha = 1, digits = "onGold", digitsAlpha = 1 },
+			TalentMarks.badgeLook({ next = true, have = 0, want = 5, firstIndex = 26, lastIndex = 30 }, 12))
 	end)
 
 	it("mutes a taken cell's digits on the dark plate", function()
-		assert.are.same({ plate = "background", plateAlpha = 0.7, digits = "muted", alpha = 1 },
-			TalentMarks.badgeLook({ next = false, have = 3, want = 3, lastIndex = 3 }, 12))
+		assert.are.same({ plate = "background", plateAlpha = 0.7, edgeAlpha = 1, digits = "muted", digitsAlpha = 1 },
+			TalentMarks.badgeLook({ next = false, have = 3, want = 3, firstIndex = 1, lastIndex = 3 }, 12))
 	end)
 
-	it("draws a planned cell in gold, at half alpha beyond the points spendable now", function()
-		assert.are.same({ plate = "background", plateAlpha = 0.7, digits = "gold", alpha = 1 },
-			TalentMarks.badgeLook({ next = false, have = 0, want = 3, lastIndex = 12 }, 12))
-		assert.are.same({ plate = "background", plateAlpha = 0.7, digits = "gold", alpha = 0.5 },
-			TalentMarks.badgeLook({ next = false, have = 0, want = 3, lastIndex = 13 }, 12))
+	it("keeps a cell bright while its first point is reachable", function()
+		assert.are.same({ plate = "background", plateAlpha = 0.7, edgeAlpha = 1, digits = "gold", digitsAlpha = 1 },
+			TalentMarks.badgeLook({ next = false, have = 0, want = 2, firstIndex = 12, lastIndex = 13 }, 12))
+	end)
+
+	it("dims the plate and its edge beyond the reachable points, never the digits below 0.6", function()
+		local look = TalentMarks.badgeLook({ next = false, have = 0, want = 3, firstIndex = 13, lastIndex = 15 }, 12)
+		assert.are.same({ plate = "background", plateAlpha = 0.35, edgeAlpha = 0.5, digits = "gold", digitsAlpha = 0.6 },
+			look)
+		assert.is_true(look.digitsAlpha >= 0.6)
 	end)
 end)
 
--- Fix round 2: one line on the client's own node tooltip.
+-- Fix round 3: the node tooltip gains a blank line, then "Forever Sixty" in
+-- gold and the plan's ranks and points in body colour; an off-plan node
+-- holding a point gets a warning line.
 describe("TalentMarks.nodeLine", function()
-	it("names the plan's points in the cell", function()
-		assert.are.equal("Forever Sixty: points 7 to 11 of your build",
+	it("names the plan's ranks and points in the cell", function()
+		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: 5 ranks, points 7 to 11|r",
 			TalentMarks.nodeLine({ firstIndex = 7, lastIndex = 11, want = 5 }))
+		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: 2 ranks, points 12 to 13|r",
+			TalentMarks.nodeLine({ firstIndex = 12, lastIndex = 13, want = 2 }))
 	end)
 
 	it("names a single point once", function()
-		assert.are.equal("Forever Sixty: point 3 of your build",
-			TalentMarks.nodeLine({ firstIndex = 3, lastIndex = 3, want = 1 }))
+		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: point 12|r",
+			TalentMarks.nodeLine({ firstIndex = 12, lastIndex = 12, want = 1 }))
+	end)
+
+	it("warns on a node the plan does not want", function()
+		assert.are.equal(WARN .. "Forever Sixty: not in your build|r", TalentMarks.nodeLine({ offPlan = true }))
 	end)
 end)
 
@@ -226,6 +266,11 @@ end)
 describe("TalentMarks.badgesLine", function()
 	it("counts what was drawn and what missed", function()
 		assert.are.equal("Talent badges: 18 drawn, 0 missing", TalentMarks.badgesLine(18, 0))
+	end)
+
+	-- Fix round 3: after the latch the badges are off, not "drawn".
+	it("says the badges are off after a latch, and how many found no button", function()
+		assert.are.equal("Talent badges: off (2 found no button)", TalentMarks.badgesLine(16, 2, true))
 	end)
 end)
 

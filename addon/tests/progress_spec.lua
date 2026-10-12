@@ -466,3 +466,29 @@ describe("Progress.reachablePoints", function()
 		assert.are.equal(0, Progress.reachablePoints(5, {}))
 	end)
 end)
+
+-- L3.2 fix round 3: the nodes holding a point the plan never wanted there.
+describe("Progress.offPlanCells", function()
+	local TREES = { classes = { warrior = { tabs = {
+		{ name = "Arms", talents = {
+			{ name = "Improved Heroic Strike", tier = 1, column = 1, maxRank = 3, node = 101 },
+			{ name = "Deflection", tier = 1, column = 2, maxRank = 5, node = 102 },
+		} },
+		{ name = "Fury", talents = { { name = "Cruelty", tier = 1, column = 3, maxRank = 5, node = 201 } } },
+	} } } }
+	local BUILD = { classSlug = "warrior", order = { IHS, IHS } }
+
+	it("lists every ranked node the plan does not touch, with its node id", function()
+		local ranks = { [1] = { ["1:1"] = 3, ["1:2"] = 1 }, [2] = { ["1:3"] = 2 } }
+		assert.are.same({
+			{ tab = 1, tier = 1, column = 2, have = 1, node = 102 },
+			{ tab = 2, tier = 1, column = 3, have = 2, node = 201 },
+		}, Progress.offPlanCells(BUILD, ranks, TREES))
+	end)
+
+	it("is empty with nothing off plan, no build or no data", function()
+		assert.are.same({}, Progress.offPlanCells(BUILD, { [1] = { ["1:1"] = 2, ["1:2"] = 0 } }, TREES))
+		assert.are.same({}, Progress.offPlanCells(nil, {}, TREES))
+		assert.are.same({}, Progress.offPlanCells(BUILD, { [1] = { ["1:2"] = 1 } }, nil))
+	end)
+end)

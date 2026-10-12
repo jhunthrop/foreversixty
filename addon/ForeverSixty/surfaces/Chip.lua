@@ -25,6 +25,7 @@ local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local Progress = ns.Progress or require("Progress")
 local Score = ns.Score or require("Score")
+local TalentGlow = ns.TalentGlow or require("TalentGlow")
 
 local Chip = {}
 
@@ -215,10 +216,11 @@ local function pointState(input)
 	end
 	local name = input.pointName or L.chipNextTalent
 	-- "(1 of 3)" where the plan wants more than one rank there: the rank the
-	-- click takes, of the plan's ranks in the cell (Progress.cells).
+	-- click takes, of the plan's ranks in the cell (Progress.cells), counting
+	-- a click staged in the talent window ("(2 of 3)" after one).
 	local rank = input.pointRank
 	local text
-	if type(rank) == "table" and (rank.want or 0) > 1 then
+	if type(rank) == "table" and (rank.want or 0) > 1 and (rank.have or 0) < rank.want then
 		text = string.format(L.chipTakeRank, name, (rank.have or 0) + 1, rank.want)
 	else
 		text = string.format(L.chipTake, name)
@@ -342,7 +344,8 @@ end
 --- The chip, from a plain table:
 --- { level, build, progress, pointName, pointIcon, unspent, upgrades, healing,
 ---   here, raidCheck, lastRaid, lastNightDone, completedAt, now, clock,
----   classIcon, inCombat, combatHide, shown, hiddenUntilLevel, pathChosen }.
+---   classIcon, inCombat, combatHide, shown, hiddenUntilLevel, pathChosen,
+---   pointRank, talentsOpen }.
 --- Answers { states, chosen, waiting, nextLine, visible, hiddenBy, alpha,
 --- iconAlpha, mouse, ring }: every state that is true, highest first; the
 --- first of them, or idle (the class icon, no text); how many actionable
@@ -368,6 +371,10 @@ function Chip.model(input)
 		hiddenBy = "player"
 	elseif input.inCombat and input.combatHide ~= false then
 		hiddenBy = "combat"
+	elseif input.talentsOpen then
+		-- L3.2 fix round 3: the ring and the strip replace the chip while the
+		-- talent window is open; not a pref, it comes back on close.
+		hiddenBy = "talents"
 	end
 	local waiting = 0
 	for index = 2, #states do
@@ -718,14 +725,16 @@ function Chip.inputs(data)
 		lastNightDone = Chip.lastNight == "done",
 		completedAt = Chip.completedAt,
 		healing = type(perPoint) == "table" and perPoint.healing == true,
+		talentsOpen = TalentGlow.openFrame() ~= nil,
 	}
 	local point = progress.point
 	if point ~= nil and build ~= nil then
 		local talent = Talents.cellOf(data, build.classSlug, point.tab, point.tier, point.column)
 		input.pointName = Chip.talentName(talent)
 		input.pointIcon = talent ~= nil and Talents.iconFor(talent) or nil
-		for _, cell in ipairs(Progress.cells(build, ranks, data)) do
-			if cell.next then
+		-- The same reader as the talent marks: a staged click counts.
+		for _, cell in ipairs(Progress.cells(build, (Talents.readStagedRanks(data)), data)) do
+			if cell.tab == point.tab and cell.tier == point.tier and cell.column == point.column then
 				input.pointRank = { have = cell.have, want = cell.want }
 			end
 		end
@@ -1215,6 +1224,9 @@ function Chip.hiddenLine(hiddenBy, inCinematic)
 	end
 	if hiddenBy == "combat" then
 		return L.diagChipCombat
+	end
+	if hiddenBy == "talents" then
+		return L.diagChipTalents
 	end
 	return L.diagChipHidden
 end

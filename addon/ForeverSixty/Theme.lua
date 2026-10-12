@@ -59,6 +59,9 @@ Theme.ALPHA = {
 	plate = 0.7,
 	unreachable = 0.5,
 	ringEdge = 0.6,
+	--- The least a badge's digits dim beyond the reachable points: the
+	--- plate dims, the number stays legible (L3.2 fix round 3).
+	dimDigits = 0.6,
 }
 
 Theme.SIZES = {
@@ -1017,8 +1020,9 @@ end
 --- or hideGlow on the same button cancels the pending stop. `ring`, when
 --- given ({ inset, thickness, edge }), sizes the outline instead of
 --- glowInset and glowThickness, and `edge` adds that many px of dark edge
---- (Theme.ALPHA.ringEdge) just outside it, pulsing with it; it is read the
---- first time the button glows.
+--- (Theme.ALPHA.ringEdge) just outside it, at that alpha whatever the
+--- pulse does, so the ring keeps its separation at the pulse's trough; it
+--- is read the first time the button glows.
 function Theme.showGlow(button, outline, staticAfter, ring)
 	if hasOverlayGlow() and not outline then
 		ActionButton_ShowOverlayGlow(button)
@@ -1045,11 +1049,14 @@ function Theme.showGlow(button, outline, staticAfter, ring)
 			local outer = CreateFrame("Frame", nil, frame)
 			outer:SetPoint("TOPLEFT", frame, "TOPLEFT", -edge, edge)
 			outer:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", edge, -edge)
-			for _, texture in ipairs(Theme.outline(outer, edge, "shadow")) do
+			button.foreverSixtyGlowEdge = Theme.outline(outer, edge, "shadow")
+			for _, texture in ipairs(button.foreverSixtyGlowEdge) do
 				Theme.paint(texture, "shadow", Theme.ALPHA.ringEdge)
-				button.foreverSixtyGlow[#button.foreverSixtyGlow + 1] = texture
 			end
 		end
+	end
+	if button.foreverSixtyGlowEdge ~= nil then
+		Theme.setShown(button.foreverSixtyGlowEdge, true)
 	end
 	Theme.setShown(button.foreverSixtyGlow, true)
 	pulse(button.foreverSixtyGlow)
@@ -1087,6 +1094,9 @@ function Theme.hideGlow(button)
 	if button.foreverSixtyGlow ~= nil then
 		stopPulse(button.foreverSixtyGlow)
 		Theme.setShown(button.foreverSixtyGlow, false)
+	end
+	if button.foreverSixtyGlowEdge ~= nil then
+		Theme.setShown(button.foreverSixtyGlowEdge, false)
 	end
 	if hasOverlayGlow() and button.foreverSixtyGlow == nil then
 		ActionButton_HideOverlayGlow(button)
@@ -1155,15 +1165,19 @@ function Theme.showLines(owner, lines, anchor)
 	return true
 end
 
---- Add one line, in a token's colour, to GameTooltip while it is showing
---- for `owner`: the client's own tooltip (a talent node's, say) gains it
---- after the client drew it. Nothing when another frame owns the tooltip.
-function Theme.addTooltipLine(owner, text, hexKey)
+--- Add one line, in a token's colour (inline escapes in `text` win), to
+--- GameTooltip while it is showing for `owner`: the client's own tooltip (a
+--- talent node's, say) gains it after the client drew it, after a blank
+--- line when `gap` is true. Nothing when another frame owns the tooltip.
+function Theme.addTooltipLine(owner, text, hexKey, gap)
 	if not hasTooltip() or type(GameTooltip.GetOwner) ~= "function" then
 		return false
 	end
 	if GameTooltip:GetOwner() ~= owner or not GameTooltip:IsShown() then
 		return false
+	end
+	if gap then
+		GameTooltip:AddLine(" ")
 	end
 	GameTooltip:AddLine(text, Theme.rgb(Theme.HEX[hexKey or "gold"]))
 	GameTooltip:Show()

@@ -441,6 +441,33 @@ function Progress.reachablePoints(level, ranks)
 	return Progress.pointsSpent(ranks) + Progress.unspentPoints(level, ranks)
 end
 
+--- The nodes holding a point the plan never put there, in `data`'s tree
+--- order: { tab, tier, column, have, node }. A cell the plan touches is
+--- never listed, however far over the plan it is (Progress.build counts
+--- that in offPlan). The talent marks warn on these nodes' own tooltips.
+function Progress.offPlanCells(build, ranks, data)
+	local cells = {}
+	local class = build ~= nil and data ~= nil and data.classes ~= nil and data.classes[build.classSlug] or nil
+	if class == nil then
+		return cells
+	end
+	ranks = ranks or {}
+	local planned = {}
+	for _, point in ipairs(build.order) do
+		planned[cellKey(point)] = true
+	end
+	for tab, tree in ipairs(class.tabs) do
+		for _, talent in ipairs(tree.talents or {}) do
+			local point = { tab = tab, tier = talent.tier, column = talent.column }
+			local have = (ranks[tab] or {})[Talents.cellKey(talent.tier, talent.column)] or 0
+			if have > 0 and not planned[cellKey(point)] then
+				cells[#cells + 1] = { tab = tab, tier = talent.tier, column = talent.column, have = have, node = talent.node }
+			end
+		end
+	end
+	return cells
+end
+
 --- The plan's points per tree: { [tab] = count }, 0 for a tree it skips.
 --- Follow.buildName names an unnamed build after it.
 function Progress.planSplit(build)

@@ -7,7 +7,7 @@
 -- every node the plan touches (the next one inverted, the ones beyond the
 -- points spendable now dimmed), and a 24 px strip in the window's
 -- bottom-left corner with the build, the plan's count, what to do about
--- the next point and the points spent off build. A point off build turns
+-- the next point and the points spent off plan. A point off plan turns
 -- that count warning-coloured; nothing pops up and nothing sounds. A
 -- planned node's own tooltip gains one line naming its points in the plan.
 --
@@ -60,6 +60,7 @@ TalentMarks.DEFERRED = { 0, 0.5 }
 --- generation moves on with every show and hide, so a deferred pass from an
 --- earlier show does nothing; settled is true once a show's passes are done.
 TalentMarks.badges = {}
+TalentMarks.tipButtons = {}
 TalentMarks.badgesOff = false
 TalentMarks.placed = nil
 TalentMarks.generation = 0
@@ -67,36 +68,85 @@ TalentMarks.settled = true
 
 -- Pure rules ------------------------------------------------------------------
 
---- The strip's line and whether its off-build count is in the warning
+--- The strip's segments and whether its off-plan count is in the warning
 --- colour. `name` is Follow.buildName's, `progress` Progress.build's, and
---- `state` { unspent, staged }: the points waiting to be spent and whether
---- an unapplied click is staged in the window. The segments: the name; "N
---- of M points"; "complete" for a finished build, else "spend N now" while
---- points wait (the window shows the same count), else "next point at
---- level N" (none at the level cap); "N off build", muted at 0 and a
---- warning from 1; and "click Apply Changes" while a staged click is on
---- build. nil without a build: the strip is absent.
-function TalentMarks.stripText(name, progress, state)
+--- `state` { unspent }: the points waiting to be spent. Each segment is
+--- { kind, text }: "name"; "count", "N of M points"; "action", "complete"
+--- for a finished build, else "spend N now" while points wait (the window
+--- shows the same count), else "next point at level N" (none at the level
+--- cap); "offPlan", "N off plan", muted at 0 and a warning from 1. Nothing
+--- about Apply Changes: the client's own lit button says it (fix round 3).
+--- nil without a build: the strip is absent.
+function TalentMarks.stripSegments(name, progress, state)
 	if name == nil or progress == nil then
 		return nil, false
 	end
 	state = state or {}
-	local parts = { name, string.format(L.talentStripCount, progress.matched, progress.total) }
+	local segments = {
+		{ kind = "name", text = name },
+		{ kind = "count", text = string.format(L.talentStripCount, progress.matched, progress.total) },
+	}
+	local action
 	if progress.point == nil then
-		parts[#parts + 1] = L.talentStripDone
+		action = L.talentStripDone
 	elseif (state.unspent or 0) > 0 then
-		parts[#parts + 1] = string.format(L.talentStripSpend, state.unspent)
+		action = string.format(L.talentStripSpend, state.unspent)
 	elseif progress.nextLevel ~= nil then
-		parts[#parts + 1] = string.format(L.talentStripNext, progress.nextLevel)
+		action = string.format(L.talentStripNext, progress.nextLevel)
 	end
-	local offBuild = progress.offPlan or 0
-	local warned = offBuild > 0
-	parts[#parts + 1] = Theme.inlineColor(warned and "warning" or "muted",
-		string.format(L.talentStripOffBuild, offBuild))
-	if state.staged and not warned then
-		parts[#parts + 1] = L.talentStripApply
+	if action ~= nil then
+		segments[#segments + 1] = { kind = "action", text = action }
 	end
-	return table.concat(parts, L.talentStripSeparator), warned
+	local offPlan = progress.offPlan or 0
+	local warned = offPlan > 0
+	segments[#segments + 1] = { kind = "offPlan",
+		text = Theme.inlineColor(warned and "warning" or "muted", string.format(L.talentStripOffPlan, offPlan)) }
+	return segments, warned
+end
+
+local function joinSegments(segments, dropped)
+	local parts = {}
+	for _, segment in ipairs(segments) do
+		if not dropped[segment.kind] then
+			parts[#parts + 1] = segment.text
+		end
+	end
+	return table.concat(parts, L.talentStripSeparator)
+end
+
+--- The strip's whole line (every segment), and whether it warns.
+function TalentMarks.stripText(name, progress, state)
+	local segments, warned = TalentMarks.stripSegments(name, progress, state)
+	if segments == nil then
+		return nil, false
+	end
+	return joinSegments(segments, {}), warned
+end
+
+--- The order segments give way in when the line is wider than the pill
+--- may grow: the action ("spend N now"), then the build name. The count and
+--- the off-plan count always stay.
+TalentMarks.STRIP_SACRIFICE = { "action", "name" }
+
+--- The widest line of whole segments that fits `maxWidth` as `measure`
+--- (text -> width) reads it: never a segment cut mid-word (seen in game:
+--- "click Apply Chan…"). Everything when `maxWidth` is nil; the count and
+--- off-plan count alone when even that is too wide.
+function TalentMarks.fitStrip(segments, measure, maxWidth)
+	local dropped = {}
+	local text = joinSegments(segments, dropped)
+	if maxWidth == nil then
+		return text
+	end
+	for _, kind in ipairs(TalentMarks.STRIP_SACRIFICE) do
+		local width = measure(text)
+		if type(width) ~= "number" or width <= maxWidth then
+			return text
+		end
+		dropped[kind] = true
+		text = joinSegments(segments, dropped)
+	end
+	return text
 end
 
 --- A badge's state for one of Progress.cells' cells: "next" for the cell
@@ -115,31 +165,53 @@ end
 --- How a cell's badge looks, given `reach` (Progress.reachablePoints): the
 --- next cell's plate inverted (solid gold, dark digits) so it and the ring
 --- read as one "do this now"; a taken cell's digits muted on the dark
---- plate; a planned one's gold, the whole badge at half alpha when its
---- number lies beyond the points the character can spend now.
+--- plate; a planned one's gold. A planned cell whose FIRST point lies beyond
+--- the points the character can spend now has its plate and edge at
+--- Theme.ALPHA.unreachable, its digits no dimmer than ALPHA.dimDigits
+--- (fix round 3: a fully dimmed badge read as a ghost; badge "13" for
+--- points 12-13 stays bright at 12 reachable).
 function TalentMarks.badgeLook(cell, reach)
 	local A = Theme.ALPHA
 	local state = TalentMarks.badgeState(cell)
 	if state == "next" then
-		return { plate = "gold", plateAlpha = 1, digits = "onGold", alpha = 1 }
+		return { plate = "gold", plateAlpha = 1, edgeAlpha = 1, digits = "onGold", digitsAlpha = 1 }
 	end
 	if state == "taken" then
-		return { plate = "background", plateAlpha = A.plate, digits = "muted", alpha = 1 }
+		return { plate = "background", plateAlpha = A.plate, edgeAlpha = 1, digits = "muted", digitsAlpha = 1 }
 	end
-	local beyond = type(reach) == "number" and (cell.lastIndex or 0) > reach
-	return { plate = "background", plateAlpha = A.plate, digits = "gold", alpha = beyond and A.unreachable or 1 }
+	local first = cell.firstIndex or cell.lastIndex or 0
+	if type(reach) == "number" and first > reach then
+		return { plate = "background", plateAlpha = A.plate * A.unreachable, edgeAlpha = A.unreachable,
+			digits = "gold", digitsAlpha = A.dimDigits }
+	end
+	return { plate = "background", plateAlpha = A.plate, edgeAlpha = 1, digits = "gold", digitsAlpha = 1 }
 end
 
---- The line a planned node's own tooltip gains: the plan's points in it.
+--- The line a node's own tooltip gains (after a blank one): "Forever
+--- Sixty:" in gold, then the plan's ranks and points there in body colour
+--- ("Your build: 5 ranks, points 7 to 11", "Your build: point 12"); for a
+--- node holding a point the plan never put there ({ offPlan = true }), one
+--- warning line, "Forever Sixty: not in your build".
 function TalentMarks.nodeLine(cell)
-	if (cell.want or 1) > 1 then
-		return string.format(L.talentNodeLine, cell.firstIndex, cell.lastIndex)
+	if cell.offPlan then
+		return Theme.inlineColor("warning", string.format(L.talentNodeOffPlan, L.addonName))
 	end
-	return string.format(L.talentNodeLineOne, cell.lastIndex)
+	local text
+	if (cell.want or 1) > 1 then
+		text = string.format(L.talentNodeLine, cell.want, cell.firstIndex, cell.lastIndex)
+	else
+		text = string.format(L.talentNodeLineOne, cell.lastIndex)
+	end
+	return Theme.inlineColor("gold", string.format(L.talentNodeLabel, L.addonName)) .. " "
+		.. Theme.inlineColor("body", text)
 end
 
---- /fs diag's line for the badges' render check.
-function TalentMarks.badgesLine(drawn, missing)
+--- /fs diag's line for the badges' render check: what was drawn and what
+--- missed, or, once the check turned them `off`, how many found no button.
+function TalentMarks.badgesLine(drawn, missing, off)
+	if off then
+		return string.format(L.diagTalentBadgesOff, missing)
+	end
 	return string.format(L.diagTalentBadgesLine, drawn, missing)
 end
 
@@ -266,7 +338,17 @@ end
 local function onNodeEnter(button)
 	local cell = button.foreverSixtyCell
 	if cell ~= nil then
-		Theme.addTooltipLine(button, TalentMarks.nodeLine(cell), "gold")
+		Theme.addTooltipLine(button, TalentMarks.nodeLine(cell), "body", true)
+	end
+end
+
+--- Give a node button `cell` for its tooltip line, hooking it the first
+--- time; TalentMarks.tipButtons remembers it so a hide forgets the cell.
+local function tipOn(button, cell)
+	button.foreverSixtyCell = cell
+	TalentMarks.tipButtons[#TalentMarks.tipButtons + 1] = button
+	if not button.foreverSixtyTipHooked then
+		button.foreverSixtyTipHooked = Theme.hookScript(button, "OnEnter", onNodeEnter)
 	end
 end
 
@@ -279,7 +361,7 @@ local function newBadge(parent)
 	badge:SetSize(S.orderBadge, S.orderBadge)
 	local plate = Theme.texture(badge, "BACKGROUND", "background", Theme.ALPHA.plate)
 	plate:SetAllPoints(badge)
-	Theme.outline(badge, S.border, "gold")
+	badge.edges = Theme.outline(badge, S.border, "gold")
 	local digits = sized(Theme.fontString(badge, "OVERLAY", "normal"), S.orderBadgeText)
 	digits:SetPoint("CENTER", badge, "CENTER", 0, 0)
 	badge.plate, badge.digits = plate, digits
@@ -288,10 +370,11 @@ local function newBadge(parent)
 end
 
 local function hideBadges()
+	for _, button in ipairs(TalentMarks.tipButtons) do
+		button.foreverSixtyCell = nil
+	end
+	TalentMarks.tipButtons = {}
 	for _, badge in ipairs(TalentMarks.badges) do
-		if badge.button ~= nil then
-			badge.button.foreverSixtyCell = nil
-		end
 		badge:Hide()
 	end
 end
@@ -317,18 +400,17 @@ local function placeBadge(index, button, cell, reach)
 	badge:SetWidth(TalentMarks.badgeWidth(textWidth(badge.digits)))
 	local look = TalentMarks.badgeLook(cell, reach)
 	Theme.paint(badge.plate, look.plate, look.plateAlpha)
+	for _, edge in ipairs(badge.edges) do
+		edge:SetAlpha(look.edgeAlpha)
+	end
 	badge.digits:SetTextColor(Theme.rgb(Theme.HEX[look.digits]))
+	badge.digits:SetAlpha(look.digitsAlpha)
 	if type(badge.digits.SetShadowColor) == "function" then
 		-- Dark digits on the gold plate take no shadow; light ones do.
 		badge.digits:SetShadowColor(0, 0, 0, look.digits == "onGold" and 0 or 1)
 		badge.digits:SetShadowOffset(1, -1)
 	end
-	badge:SetAlpha(look.alpha)
-	badge.button = button
-	button.foreverSixtyCell = cell
-	if not button.foreverSixtyTipHooked then
-		button.foreverSixtyTipHooked = Theme.hookScript(button, "OnEnter", onNodeEnter)
-	end
+	tipOn(button, cell)
 	badge:Show()
 end
 
@@ -352,6 +434,20 @@ local function placeBadges(frame, frameName, cells, cache, final, reach)
 		end
 	end
 	TalentMarks.placed = { missing = missing, total = #cells, final = final, drawn = used }
+end
+
+--- A warning line on the tooltip of every node holding a point the plan
+--- never put there (Progress.offPlanCells), through the same lookup.
+local function markOffPlan(frame, frameName, cells, cache)
+	if TalentMarks.CLASSIC_FRAMES[frameName] then
+		return
+	end
+	for _, cell in ipairs(cells) do
+		local button = cell.node ~= nil and TalentGlow.traitButton(frame, cell.node, cache) or nil
+		if button ~= nil then
+			tipOn(button, { offPlan = true })
+		end
+	end
 end
 
 --- Where the strip hangs: the trait window's talents frame when it has one
@@ -431,10 +527,11 @@ local function hideStrip()
 end
 
 --- Set the strip's line and fit it: anchored and sized clear of the
---- window's Apply Changes button. The label is measured unconstrained
---- (width 0 sizes a font string to its text), then held to the pill's
---- inside so a capped line is cut by the client rather than spilling.
-local function drawStrip(frame, text)
+--- window's Apply Changes button, with whole segments only
+--- (TalentMarks.fitStrip). Each candidate line is measured unconstrained
+--- (width 0 sizes a font string to its text); the pill then fits the line
+--- that was kept.
+local function drawStrip(frame, segments)
 	local S = Theme.SIZES
 	local strip, host = ensureStrip(frame)
 	local talents = isFrame(frame.TalentsFrame) and frame.TalentsFrame or nil
@@ -442,14 +539,21 @@ local function drawStrip(frame, text)
 	anchorStrip(strip, frame, apply)
 	local label = strip.label
 	label:SetWidth(0)
-	label:SetText(text)
 	local frameLeft = ask(frame, "GetLeft")
 	local stripLeft = ask(strip, "GetLeft") or (frameLeft ~= nil and frameLeft + stripInset() or nil)
-	local width = TalentMarks.stripWidth(textWidth(label), stripLeft, ask(apply, "GetLeft"), ask(frame, "GetWidth"))
+	local applyLeft, frameWidth = ask(apply, "GetLeft"), ask(frame, "GetWidth")
+	-- The widest pill the corner allows, less its padding, is the text's room.
+	local room = TalentMarks.stripWidth(math.huge, stripLeft, applyLeft, frameWidth)
+	local maxText = room ~= math.huge and room - 2 * S.talentStripPadding or nil
+	local text = TalentMarks.fitStrip(segments, function(candidate)
+		label:SetText(candidate)
+		return textWidth(label)
+	end, maxText)
+	label:SetText(text)
+	local width = TalentMarks.stripWidth(textWidth(label), stripLeft, applyLeft, frameWidth)
 	strip:SetWidth(width)
-	label:SetWidth(math.max(1, width - 2 * S.talentStripPadding))
 	strip:Show()
-	return strip, host
+	return strip, host, text
 end
 
 --- Where the strip landed and which rank fields the client's trait nodes
@@ -510,7 +614,7 @@ function TalentMarks.diagLine()
 	if placed == nil then
 		return nil
 	end
-	return TalentMarks.badgesLine(placed.drawn, placed.missing)
+	return TalentMarks.badgesLine(placed.drawn, placed.missing, TalentMarks.badgesOff)
 end
 
 --- Take every mark off: the window closed. A pass still pending from the
@@ -521,6 +625,8 @@ function TalentMarks.clear()
 	TalentGlow.clear()
 	hideBadges()
 	hideStrip()
+	-- The chip stood aside while the window was open; it comes back.
+	Chip.refresh()
 	return nil
 end
 
@@ -554,13 +660,14 @@ function TalentMarks.refresh(data, pass)
 	local level = Chip.level()
 	placeBadges(frame, frameName, Progress.cells(build, ranks, data), cache, final,
 		Progress.reachablePoints(level, ranks))
+	markOffPlan(frame, frameName, Progress.offPlanCells(build, ranks, data), cache)
 	if TalentMarks.placed ~= nil then
 		TalentMarks.lastPlaced = TalentMarks.placed
 	end
 	local _, decision = TalentMarks.selfCheck()
-	local text = TalentMarks.stripText(Follow.buildName(data, build), Progress.build(build, ranks, level),
-		{ unspent = Progress.unspentPoints(level, ranks), staged = staged })
-	local strip, host = drawStrip(frame, text)
+	local segments = TalentMarks.stripSegments(Follow.buildName(data, build), Progress.build(build, ranks, level),
+		{ unspent = Progress.unspentPoints(level, ranks) })
+	local strip, host, text = drawStrip(frame, segments)
 	if pass ~= 0 then
 		-- After the show's own pass, when the client has laid the strip out.
 		noteFindings(frame, strip, host, staged)
@@ -592,6 +699,8 @@ end
 function TalentMarks.onShow(data)
 	TalentMarks.generation = TalentMarks.generation + 1
 	TalentMarks.settled = false
+	-- The ring and the strip replace the chip while the window is open.
+	Chip.refresh()
 	return TalentMarks.runPass(data, 0, TalentMarks.generation)
 end
 
