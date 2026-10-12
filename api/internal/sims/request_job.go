@@ -2,7 +2,8 @@ package sims
 
 // A sim the player asked for in game. The addon writes the request into its
 // outbox (docs/contracts/addon-v2.md, contract 4) and the companion posts it
-// with the character's export; this turns it into one premium server run,
+// with the character's export; this turns it into one premium server run
+// (a stat-weights run, so it answers with DPS and weights both),
 // the same queued sims row and the same `api sim-run` job POST /v1/sims/run
 // starts (Run reads it back off the row), built from the character's
 // sim-input with the request's own gear code.
@@ -11,6 +12,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -68,6 +70,10 @@ const (
 	SimRequestStateNeedsPremium = "needs_premium"
 	SimRequestStateDuplicate    = "duplicate"
 	SimRequestStateInvalid      = "invalid"
+	// SimRequestStateDone and SimRequestStateFailed are read from the request's run, never
+	// stored: its sims row is done, or errored.
+	SimRequestStateDone   = "done"
+	SimRequestStateFailed = "failed"
 )
 
 // baseLevel is the planner's BASE_LEVEL: a character with no talent points
@@ -132,6 +138,15 @@ func (s *Service) RequestFromAddon(ctx context.Context, userID int64, characterK
 		},
 		Character: char,
 		Encounter: withEncounterDefaults(simapi.EncounterSpec{}),
+		// One run answers with DPS and stat weights (spec §5.2: "Sim me" brings back DPS,
+		// weights in DPS per point and per-slot deltas): the spec's own weight stats against
+		// its reference stat, the set the website's weights page starts from. The sweep runs a
+		// pass per stat each way on top of the baseline, so it costs more engine time than a
+		// plain run; simapi.WeightsIterations keeps the largest such request inside BulkBudget.
+		Weights: &simapi.WeightsSpec{
+			Stats:     slices.Clone(specs.ByKey[in.Spec].WeightStats),
+			Reference: specs.ByKey[in.Spec].ReferenceStat,
+		},
 	}
 	if err := req.ValidateLane(simapi.LaneServer); err != nil {
 		s.logger().Warn("sims", "op", "addon request", "character", characterKey, "err", err)
@@ -178,7 +193,9 @@ func (s *Service) recordRefusal(ctx context.Context, userID int64, characterKey,
 }
 
 // QueueAddonRequest writes the queued sims row for an addon request and
-// records the request against the character, unless the same request
+// records the request against the character, with the export it was made on
+// (the character's addon_exports.updated_at, the value the inbox ack carries
+// for that export, migration 0038), unless the same request
 // already started a run or another started one inside SimRequestWindow. It
 // reports whether it queued and, when it did not, whether another request
 // was the reason: the caller records this one as a duplicate, so the ack
@@ -214,10 +231,11 @@ func (s *Store) QueueAddonRequest(ctx context.Context, id string, userID int64, 
 		return false, false, err
 	}
 	if _, err := tx.Exec(ctx,
-		`insert into addon_sim_requests (character_key, requested_at, user_id, sim_id, state)
-		 values ($1, $2, $3, $4, $5)
+		`insert into addon_sim_requests (character_key, requested_at, user_id, sim_id, state, export_seen_at)
+		 values ($1, $2, $3, $4, $5, (select updated_at from addon_exports where character_key = $1))
 		 on conflict (character_key, requested_at) do update set
-		   user_id = excluded.user_id, sim_id = excluded.sim_id, state = excluded.state, created_at = now()`,
+		   user_id = excluded.user_id, sim_id = excluded.sim_id, state = excluded.state,
+		   export_seen_at = excluded.export_seen_at, created_at = now()`,
 		characterKey, requestedAt, userID, id, SimRequestStateQueued); err != nil {
 		return false, false, fmt.Errorf("sims: record addon request for %s: %w", characterKey, err)
 	}
@@ -238,10 +256,11 @@ func (s *Store) RecordAddonRequest(ctx context.Context, userID int64, characterK
 
 func recordAddonRequest(ctx context.Context, db execer, userID int64, characterKey, requestedAt, state string) error {
 	if _, err := db.Exec(ctx,
-		`insert into addon_sim_requests (character_key, requested_at, user_id, state)
-		 values ($1, $2, $3, $4)
+		`insert into addon_sim_requests (character_key, requested_at, user_id, state, export_seen_at)
+		 values ($1, $2, $3, $4, (select updated_at from addon_exports where character_key = $1))
 		 on conflict (character_key, requested_at) do update set
-		   user_id = excluded.user_id, state = excluded.state, created_at = now()
+		   user_id = excluded.user_id, state = excluded.state, export_seen_at = excluded.export_seen_at,
+		   created_at = now()
 		 where coalesce(addon_sim_requests.state, $5) <> $5`,
 		characterKey, requestedAt, userID, state, SimRequestStateQueued); err != nil {
 		return fmt.Errorf("sims: record %s addon request for %s: %w", state, characterKey, err)

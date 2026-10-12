@@ -162,12 +162,12 @@ ForeverSixtyInbox = {
   messages = {
     { type = "build",      character = "us/normal/obnoxious", name = "Arms raid", code = "FSB1:..." },
     { type = "upgrade",    character = ..., slot = "chest", item_id = 6627, item_name = ..., source = ..., delta = 4.2, unit = "dps" },
-    { type = "weights",    character = ..., spec = "warrior-arms", weights = { {stat="attack_power", weight=1}, ... }, caps = {"hit"}, dps_per_point = 0.42 },
+    { type = "weights",    character = ..., spec = "warrior-arms", weights = { {stat="attack_power", weight=1}, ... }, caps = {"hit"}, dps_per_point = 0.42, generated_at = "2026-11-04T14:11:00Z", export_seen_at = "2026-11-04T14:03:00Z" },
     { type = "sim_result", character = ..., spec = ..., dps = 412.6, error = 3.1, generated_at = ..., slots = { {slot="chest", item_id=6627, delta=4.2}, ... } },
     { type = "last_raid",  character = ..., report_id = "r_...", date = "2026-12-09", bosses = { {name="Lucifron", percentile=71, biggest_loss="downtime", loss_seconds=18, deaths=0, consumables_missed={"flask"}, adherence=0.82}, ... } },
     { type = "loot_values", character = ..., raid = "Molten Core", items = { [17076] = { value = 6.3, unit = "dps", planned = true }, ... } },
     { type = "guild",      character = ..., guild_name = ..., claim_state = ..., pending_approvals = 2, rank = "officer" },
-    { type = "ack",        character = ..., export_seen_at = "2026-11-04T14:03:00Z", sim_request_state = "queued" },
+    { type = "ack",        character = ..., export_seen_at = "2026-11-04T14:03:00Z", sim_request_state = "done", requested_at = "2026-11-04T14:11:00Z" },
   },
 }
 ```
@@ -222,10 +222,21 @@ Notes for the reader:
   whose weight is exactly 1 is worth, from the data build's `dps-per-point.json` for the spec;
   absent for a spec that file has no entry for (the tanks), and absent when the run's
   weight-1 stat is not that file's `reference` stat (its points are not the file's points).
+- **Which weights, and from when.** An in-game sim request ("Sim me", contract 4) queues one
+  server run that answers with both DPS and stat weights (the spec's own weight stats against
+  its reference stat, the set the website's weights page starts from). There is one `weights`
+  message per character. It comes from that character's newest finished in-game run. A
+  character with no finished in-game run gets the account's newest stat-weights run from the
+  website instead, when that run names the character; there is at most one such message per
+  account. `weights.generated_at` is when the run that made these weights was queued, an RFC
+  3339 time in UTC. `weights.export_seen_at` is the export the run was made on: the same value
+  the `ack` carried for that export when the request arrived, so the addon can tell whether the
+  weights in use came from the copy the site has now. It is absent for a website run and for a
+  request recorded before the site kept it.
 - `sim_result.slots` carries per-slot deltas only when the run had per-item figures (a Top
-  Gear run); for the plain run an in-game request queues it is an empty list, and the addon
-  prices a slot itself from `weights` (`dps_per_point` times the weight delta). `dps` and
-  `error` are always present, `error = 0` included.
+  Gear run); for the run an in-game request queues, which has no per-item figures, it is an
+  empty list, and the addon prices a slot itself from `weights` (`dps_per_point` times the
+  weight delta). `dps` and `error` are always present, `error = 0` included.
 - `loot_values.items` is keyed by item id (a lookup key, never printed). `planned = true` means
   the piece is on the character's plan. One `loot_values` per character with a `last_raid`, for
   the raid whose name matches that report's zone (case, spaces and punctuation ignored); none
@@ -239,8 +250,16 @@ Notes for the reader:
   to an account with a companion paired. Its optional `sim_request_state` is what became of
   the character's newest in-game sim request: `"queued"` (a run started), `"needs_premium"`
   (server sims are a premium feature), `"duplicate"` (another request started a run within
-  the hour) or `"invalid"` (the request could not be simmed); absent when the character never
-  asked.
+  the hour), `"invalid"` (the request could not be simmed), `"done"` (its run finished, so its
+  `weights` and `sim_result` are in this inbox) or `"failed"` (its run stopped with an
+  error); absent when the character never asked. `done` and `failed` are read from the run
+  itself and replace the stored state once the run ends. The addon ignores a state it does not
+  know. `ack.requested_at` is when the site received that newest
+  request, an RFC 3339 time in UTC, absent when the character never asked. The player's own
+  wall time for the request stays in the outbox (contract 4) and is not sent back. For the
+  request whose run made the weights in use, `requested_at` equals `weights.generated_at`; a
+  later `requested_at` means a newer request has arrived since, and `sim_request_state` says
+  what became of it.
 
 ---
 

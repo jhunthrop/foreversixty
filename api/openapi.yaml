@@ -99,6 +99,18 @@ components:
                 DPS (healing per second for a healer) per point of the stat whose weight is 1,
                 from the data build's dps-per-point.json; absent for a spec it has no entry for,
                 or when the run's weight-1 stat is not that file's reference stat
+            generated_at:
+              type: string
+              format: date-time
+              description: >-
+                When the run that made these weights was queued (UTC): the character's newest
+                finished in-game run, else the account's newest website weights run
+            export_seen_at:
+              type: string
+              format: date-time
+              description: >-
+                The export the in-game request was made on, the same value the ack carried
+                for it; absent for a website run and a request recorded before migration 0038
         - type: object
           title: sim_result
           required: [type, character, spec, dps, error, generated_at, slots]
@@ -111,7 +123,7 @@ components:
             generated_at: { type: string, format: date-time }
             slots:
               type: array
-              description: "per-slot DPS deltas from a Top Gear run; an empty list for a plain run"
+              description: "per-slot DPS deltas from a Top Gear run; an empty list for a run with no bulk section, such as the weights run an in-game request queues"
               items:
                 type: object
                 required: [slot, item_id, delta]
@@ -176,7 +188,13 @@ components:
             type: { type: string, enum: [ack] }
             character: { type: string }
             export_seen_at: { type: string, format: date-time }
-            sim_request_state: { type: string, enum: [queued, needs_premium, duplicate, invalid] }
+            sim_request_state: { type: string, enum: [queued, needs_premium, duplicate, invalid, done, failed] }
+            requested_at:
+              type: string
+              format: date-time
+              description: >-
+                When the site received the character's newest in-game sim request (UTC), not the
+                player's own wall time; absent when it never asked
     BuildInput:
       type: object
       required: [class_id, race_id, tree_version, point_order]

@@ -171,12 +171,12 @@ describe("the v2 wire contracts, addon side", function()
 		local KEYS = {
 			build = { "character", "code", "name", "type" },
 			upgrade = { "character", "delta", "item_id", "item_name", "slot", "source", "type", "unit" },
-			weights = { "caps", "character", "dps_per_point", "spec", "type", "weights" },
+			weights = { "caps", "character", "dps_per_point", "export_seen_at", "generated_at", "spec", "type", "weights" },
 			sim_result = { "character", "dps", "error", "generated_at", "slots", "spec", "type" },
 			last_raid = { "bosses", "character", "date", "report_id", "type" },
 			loot_values = { "character", "items", "raid", "type" },
 			guild = { "character", "claim_state", "guild_name", "pending_approvals", "rank", "type" },
-			ack = { "character", "export_seen_at", "sim_request_state", "type" },
+			ack = { "character", "export_seen_at", "requested_at", "sim_request_state", "type" },
 		}
 		local NESTED = {
 			weights = { list = "weights", keys = { "stat", "weight" } },
@@ -211,6 +211,11 @@ describe("the v2 wire contracts, addon side", function()
 					assert.are.same(nested.keys, sortedKeys(row), typ .. "." .. nested.list)
 				end
 			end
+		end)
+
+		it("names the ack's sim request state from contract 3's list", function()
+			local states = set({ "queued", "needs_premium", "duplicate", "invalid", "done", "failed" })
+			assert.is_true(states[messageOf("ack").sim_request_state] == true)
 		end)
 
 		it("pins the keys of the loot_values items", function()

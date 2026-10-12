@@ -102,9 +102,11 @@ type MessageEntry struct {
 	// messageSimResult
 	// DPS and Error are pointers so a sim_result always carries both, 0.0 included,
 	// while every other type carries neither.
-	DPS         *float64 `json:"dps,omitempty"`
-	Error       *float64 `json:"error,omitempty"`
-	GeneratedAt string   `json:"generated_at,omitempty"`
+	DPS   *float64 `json:"dps,omitempty"`
+	Error *float64 `json:"error,omitempty"`
+	// GeneratedAt is when the run was queued, RFC 3339 UTC: a sim_result's, and a weights
+	// message's (the run that made those weights).
+	GeneratedAt string `json:"generated_at,omitempty"`
 	// Slots is a pointer so a sim_result carries an empty list ("slots": [])
 	// while every other type carries no slots at all.
 	Slots *[]SimSlot `json:"slots,omitempty"`
@@ -124,11 +126,16 @@ type MessageEntry struct {
 	PendingApprovals int    `json:"pending_approvals,omitempty"`
 	Rank             string `json:"rank,omitempty"`
 
-	// messageAck
+	// messageAck: when the site stored the character's export. On a weights message from an
+	// in-game run it is the export that request was made on (the ack's value back then);
+	// absent on a website run and a request recorded before migration 0038.
 	ExportSeenAt string `json:"export_seen_at,omitempty"`
 	// SimRequestState is what became of the character's newest in-game sim
 	// request (sims.SimRequestState*); absent when it never asked.
 	SimRequestState string `json:"sim_request_state,omitempty"`
+	// RequestedAt is when the site received that request (addon_sim_requests.created_at), RFC
+	// 3339 UTC; absent when it never asked. The player's own wall time stays in the outbox.
+	RequestedAt string `json:"requested_at,omitempty"`
 }
 
 // SimSlot is one slot's DPS change inside a sim_result.
@@ -285,33 +292,77 @@ func (s *Service) upgradeMessage(ctx context.Context, userID int64, byNameSlug m
 	return nil
 }
 
-// weightsMessage is the account's saved stat weights from its most
-// recent finished weights run, with weightCaps' capped-stat list,
-// best-effort addressed the same way upgradeMessage is, and the spec's
-// DPS per point of its weight-1 stat (sims.DPSPerPoint) in the data build
-// the addressed character's export names, or the newest loaded build when
-// the run names none of the account's characters - present only when that
-// weight-1 stat is the file's own reference.
+// weightsMessage is the fallback weights message: the account's saved stat weights from its
+// most recent finished website weights run (an in-game request's run is not one: the
+// character it was for gets its own message from inGameWeightsMessages), best-effort
+// addressed the same way upgradeMessage is, with generated_at the run's queue time and no
+// export_seen_at, since a website run names no export. It reads the newest page of the
+// account's weights runs, so a page of nothing but in-game runs gives no fallback.
 func (s *Service) weightsMessage(ctx context.Context, userID int64, byNameSlug map[string]string, exports map[string]Export) *MessageEntry {
 	page, err := s.Sims.Mine(ctx, userID, 1, simapi.KindWeights)
-	if err != nil || len(page.Rows) == 0 {
+	if err != nil {
 		return nil
 	}
-	row := firstDone(page.Rows)
-	if row == nil {
+	for _, row := range page.Rows {
+		if row.State != sims.StateDone {
+			continue
+		}
+		res, _, err := s.Sims.Get(ctx, row.SimID)
+		if err != nil {
+			return nil
+		}
+		if res.Request.Source.Kind == simapi.SourceAddon {
+			continue
+		}
+		if len(res.Weights) == 0 {
+			return nil
+		}
+		m := weightsEntry(resolveCharacter(res.Request.Character.Name, byNameSlug), res.Request.Spec, res.Weights, exports)
+		if !row.CreatedAt.IsZero() {
+			m.GeneratedAt = row.CreatedAt.UTC().Format(time.RFC3339)
+		}
+		return m
+	}
+	return nil
+}
+
+// inGameWeightsMessages is one weights message per character whose in-game request has a
+// finished stat-weights run (the newest such request): that run's weights, generated_at its
+// queue time, and export_seen_at the export the request was made on, when it was recorded
+// (migration 0038).
+func (s *Service) inGameWeightsMessages(ctx context.Context, userID int64, exports map[string]Export) []MessageEntry {
+	rows, err := s.Store.inGameWeights(ctx, userID)
+	if err != nil {
+		s.logger().Warn("addon", "op", "messages_weights", "err", err)
 		return nil
 	}
-	res, _, err := s.Sims.Get(ctx, row.SimID)
-	if err != nil || len(res.Weights) == 0 {
-		return nil
+	var out []MessageEntry
+	for _, r := range rows {
+		if len(r.Weights) == 0 {
+			continue
+		}
+		m := weightsEntry(r.CharacterKey, r.Spec, r.Weights, exports)
+		m.GeneratedAt = r.CreatedAt.UTC().Format(time.RFC3339)
+		if r.ExportSeenAt != nil {
+			m.ExportSeenAt = r.ExportSeenAt.UTC().Format(time.RFC3339)
+		}
+		out = append(out, *m)
 	}
-	weights := make([]WeightEntry, len(res.Weights))
-	for i, w := range res.Weights {
+	return out
+}
+
+// weightsEntry is a weights message for key from a run's weights: weightCaps' capped-stat
+// list, and the spec's DPS per point of its weight-1 stat (sims.DPSPerPoint) in the data build
+// the addressed character's export names, or the newest loaded build when the run names none
+// of the account's characters - present only when that weight-1 stat is the file's own
+// reference.
+func weightsEntry(key, spec string, ws []simapi.StatWeight, exports map[string]Export) *MessageEntry {
+	weights := make([]WeightEntry, len(ws))
+	for i, w := range ws {
 		weights[i] = WeightEntry{Stat: w.Stat, Weight: w.Weight}
 	}
 	m := &MessageEntry{
-		Type: messageWeights, Character: resolveCharacter(res.Request.Character.Name, byNameSlug),
-		Spec: res.Request.Spec, Weights: weights, Caps: weightCaps(res.Weights),
+		Type: messageWeights, Character: key, Spec: spec, Weights: weights, Caps: weightCaps(ws),
 	}
 	build := ""
 	if e, ok := exports[m.Character]; ok {
@@ -356,8 +407,9 @@ func (s *Service) guildMessages(ctx context.Context, byNameSlug map[string]strin
 
 // messages builds every typed inbox message this user's account is
 // entitled to beyond the build messages the inbox makes from its queued
-// builds (buildMessages): guild state per character; one upgrade and one
-// weights message from the account's saved sims; and per character its
+// builds (buildMessages): guild state per character; one upgrade message from the
+// account's saved sims; one weights message per character (its newest finished in-game
+// run, else the account's website run when that names it); and per character its
 // newest finished in-game sim, its last raid, that raid's loot priced for
 // it, and (with a companion paired) the ack. Guilds and Sims are each
 // optional (Service's own doc comment); with either or both nil, or any
@@ -378,15 +430,18 @@ func (s *Service) messages(ctx context.Context, userID int64, now time.Time) []M
 	if s.Guilds != nil {
 		out = append(out, s.guildMessages(ctx, byNameSlug)...)
 	}
-	var weights *MessageEntry
+	// One weights message per character: its own in-game run first, else the account's
+	// website run when that names a character no in-game run covers.
+	weights := s.inGameWeightsMessages(ctx, userID, byKey)
 	if s.Sims != nil {
 		if m := s.upgradeMessage(ctx, userID, byNameSlug); m != nil {
 			out = append(out, *m)
 		}
-		if weights = s.weightsMessage(ctx, userID, byNameSlug, byKey); weights != nil {
-			out = append(out, *weights)
+		if m := s.weightsMessage(ctx, userID, byNameSlug, byKey); m != nil && weightsFor(weights, m.Character) == nil {
+			weights = append(weights, *m)
 		}
 	}
+	out = append(out, weights...)
 	out = append(out, s.simResultMessages(ctx, userID)...)
 	lastRaids, raids := s.lastRaidMessages(ctx, sortedExportKeys(byKey), now)
 	out = append(out, lastRaids...)
@@ -432,7 +487,7 @@ func buildMessages(entries []InboxEntry) []MessageEntry {
 // simResultMessages is one "sim_result" per character with a finished in-game sim
 // request: the newest one's spec, DPS, error and time.
 //
-// slots: RequestFromAddon (api/internal/sims/request_job.go) queues a plain run, a
+// slots: RequestFromAddon (api/internal/sims/request_job.go) queues a stat-weights run, a
 // SimRequest with no bulk section, so its stored result has no combinations and slots is
 // an empty list; the addon prices a slot itself from the weights message (dps_per_point
 // times the weight delta). Should the request ever queue a Top Gear run, slotDeltas reads
@@ -541,11 +596,11 @@ func (s *Service) lastRaidMessages(ctx context.Context, keys []string, now time.
 }
 
 // lootValuesMessages is one "loot_values" per character with a last raid: the raid's loot
-// priced for the character by sims.LootValues, under the account's weights run when that
-// run is the character's own (weights) and the spec's shipped weights otherwise. A raid
-// whose zone names no raid in the build's loot table, a character with no export, or gear
-// the loaded data cannot score gets no message.
-func (s *Service) lootValuesMessages(ctx context.Context, raids []lastRaid, exports map[string]Export, weights *MessageEntry) []MessageEntry {
+// priced for the character by sims.LootValues, under the character's own weights message
+// when it has one (weights) and the spec's shipped weights otherwise. A raid whose zone names
+// no raid in the build's loot table, a character with no export, or gear the loaded data
+// cannot score gets no message.
+func (s *Service) lootValuesMessages(ctx context.Context, raids []lastRaid, exports map[string]Export, all []MessageEntry) []MessageEntry {
 	var out []MessageEntry
 	for _, r := range raids {
 		e, ok := exports[r.key]
@@ -553,7 +608,7 @@ func (s *Service) lootValuesMessages(ctx context.Context, raids []lastRaid, expo
 			continue
 		}
 		spec, runWeights := r.spec, map[string]float64(nil)
-		if weights != nil && weights.Character == r.key && weights.Spec != "" {
+		if weights := weightsFor(all, r.key); weights != nil && weights.Spec != "" {
 			spec = weights.Spec
 			runWeights = make(map[string]float64, len(weights.Weights))
 			for _, w := range weights.Weights {
@@ -585,8 +640,8 @@ func (s *Service) lootValuesMessages(ctx context.Context, raids []lastRaid, expo
 }
 
 // ackMessages is one "ack" per exported character when the account has a companion paired:
-// when the site stored the export, and what became of the character's newest in-game sim
-// request.
+// when the site stored the export, what became of the character's newest in-game sim
+// request (its run's done or failed once the run ended), and when the site received it.
 func (s *Service) ackMessages(ctx context.Context, userID int64) []MessageEntry {
 	rows, err := s.Store.acks(ctx, userID)
 	if err != nil {
@@ -595,12 +650,26 @@ func (s *Service) ackMessages(ctx context.Context, userID int64) []MessageEntry 
 	}
 	out := make([]MessageEntry, 0, len(rows))
 	for _, r := range rows {
-		out = append(out, MessageEntry{
+		m := MessageEntry{
 			Type: messageAck, Character: r.CharacterKey,
 			ExportSeenAt: r.SeenAt.UTC().Format(time.RFC3339), SimRequestState: r.SimRequestState,
-		})
+		}
+		if r.RequestedAt != nil {
+			m.RequestedAt = r.RequestedAt.UTC().Format(time.RFC3339)
+		}
+		out = append(out, m)
 	}
 	return out
+}
+
+// weightsFor is the weights message among all addressed to key, or nil.
+func weightsFor(all []MessageEntry, key string) *MessageEntry {
+	for i := range all {
+		if all[i].Type == messageWeights && all[i].Character == key {
+			return &all[i]
+		}
+	}
+	return nil
 }
 
 // unscorableWarned is the specs lootValuesMessages has already warned about.

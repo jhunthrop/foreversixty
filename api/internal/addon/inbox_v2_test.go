@@ -338,7 +338,8 @@ func TestSimResultCarriesTheNewestFinishedInGameRun(t *testing.T) {
 		m.GeneratedAt != created.UTC().Format(time.RFC3339) {
 		t.Fatalf("sim_result = %+v", m)
 	}
-	// The in-game request queues a plain run: no per-item figures, so slots is an empty list.
+	// The in-game request queues a weights run with no bulk section: no per-item figures, so
+	// slots is an empty list.
 	b, err := json.Marshal(m)
 	if err != nil {
 		t.Fatal(err)

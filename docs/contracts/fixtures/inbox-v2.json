@@ -47,7 +47,9 @@
       "caps": [
         "hit"
       ],
-      "dps_per_point": 0.42
+      "dps_per_point": 0.42,
+      "generated_at": "2026-11-04T14:11:00Z",
+      "export_seen_at": "2026-11-04T14:03:00Z"
     },
     {
       "type": "sim_result",
@@ -107,7 +109,8 @@
       "type": "ack",
       "character": "us/normal/obnoxious",
       "export_seen_at": "2026-11-04T14:03:00Z",
-      "sim_request_state": "queued"
+      "sim_request_state": "done",
+      "requested_at": "2026-11-04T14:11:00Z"
     }
   ]
 }

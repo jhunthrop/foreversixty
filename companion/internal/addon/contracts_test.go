@@ -18,13 +18,16 @@ import (
 	"testing"
 )
 
-// contractMessageV2 is Message plus the two fields contract 3 adds to messages the struct
-// already carries: "unit" on upgrade and "dps_per_point" on weights. Lane L7 moves them into
-// Message itself (and renders them) and deletes this shim.
+// contractMessageV2 is Message plus the fields contract 3 adds to messages the struct
+// already carries: "unit" on upgrade, and "dps_per_point", "generated_at" and
+// "export_seen_at" on weights (task L6.11). Lane L7 moves them into Message itself (and
+// renders them) and deletes this shim.
 type contractMessageV2 struct {
 	Message
-	Unit        string  `json:"unit,omitempty"`
-	DPSPerPoint float64 `json:"dps_per_point,omitempty"`
+	Unit         string  `json:"unit,omitempty"`
+	DPSPerPoint  float64 `json:"dps_per_point,omitempty"`
+	GeneratedAt  string  `json:"generated_at,omitempty"`
+	ExportSeenAt string  `json:"export_seen_at,omitempty"`
 }
 
 // contractSupported are the message types Message can decode today; contractPending are the
@@ -239,6 +242,9 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 				contractStrict(t, raw, &m)
 				if m.DPSPerPoint != 0.42 {
 					t.Errorf("weights dps_per_point = %v, want 0.42", m.DPSPerPoint)
+				}
+				if m.GeneratedAt != "2026-11-04T14:11:00Z" || m.ExportSeenAt != "2026-11-04T14:03:00Z" {
+					t.Errorf("weights generated_at %q, export_seen_at %q", m.GeneratedAt, m.ExportSeenAt)
 				}
 			}
 		}

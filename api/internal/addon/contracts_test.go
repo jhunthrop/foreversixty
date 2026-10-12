@@ -131,6 +131,11 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 		if w := byType[messageWeights]; w.DPSPerPoint == nil || *w.DPSPerPoint != 0.42 {
 			t.Errorf("weights dps_per_point = %v, want 0.42", w.DPSPerPoint)
 		}
+		// The weights say when the run that made them was queued and which export it ran on:
+		// the same export_seen_at the ack carries for that export.
+		if w := byType[messageWeights]; w.GeneratedAt != "2026-11-04T14:11:00Z" || w.ExportSeenAt != byType[messageAck].ExportSeenAt {
+			t.Errorf("weights generated_at %q, export_seen_at %q", w.GeneratedAt, w.ExportSeenAt)
+		}
 		if s := byType[messageSimResult]; s.DPS == nil || *s.DPS != 412.6 || s.Error == nil || *s.Error != 3.1 || s.Slots == nil ||
 			len(*s.Slots) != 1 || (*s.Slots)[0] != (SimSlot{Slot: "chest", ItemID: 6627, Delta: 4.2}) {
 			t.Errorf("sim_result = %+v", s)
@@ -147,7 +152,8 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 		if lv.Raid != "Molten Core" || lv.Items[17076] != (LootItemValue{Value: 6.3, Unit: "dps", Planned: true}) {
 			t.Errorf("loot_values = %+v", lv)
 		}
-		if a := byType[messageAck]; a.ExportSeenAt != "2026-11-04T14:03:00Z" || a.SimRequestState != "queued" {
+		if a := byType[messageAck]; a.ExportSeenAt != "2026-11-04T14:03:00Z" || a.SimRequestState != "done" ||
+			a.RequestedAt != "2026-11-04T14:11:00Z" {
 			t.Errorf("ack = %+v", a)
 		}
 		if b := byType[messageBuild]; b.Name != "Arms raid" || !strings.HasPrefix(b.Code, "FSB1:") {

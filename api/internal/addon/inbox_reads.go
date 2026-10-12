@@ -9,6 +9,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+
+	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
 // LastRaidWindow is how far back a raid can be and still be the character's last raid.
@@ -121,23 +123,32 @@ func (s *Store) simResults(ctx context.Context, userID int64) ([]simResultRow, e
 }
 
 // ackRow is when the site stored one character's newest export, and what became of the
-// character's newest in-game sim request ("" when it never asked).
+// character's newest in-game sim request ("" when it never asked) and when the site received
+// it (nil when it never asked).
 type ackRow struct {
 	CharacterKey    string
 	SeenAt          time.Time
 	SimRequestState string
+	RequestedAt     *time.Time
 }
 
 // acks reads an ackRow for every one of userID's exports, but only when the account has a
 // companion paired (a device that is not revoked): without one nothing would carry the ack
-// into the game.
+// into the game. A request's state is its run's once the run has ended - done, or failed for
+// a run that errored - and the state recorded with the request (queued, or why no run started)
+// until then.
 func (s *Store) acks(ctx context.Context, userID int64) ([]ackRow, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select e.character_key, e.updated_at,
-		        coalesce((select coalesce(a.state, 'queued') from addon_sim_requests a
-		                   where a.character_key = e.character_key and a.user_id = e.user_id
-		                   order by a.created_at desc limit 1), '')
+		`select e.character_key, e.updated_at, coalesce(n.state, ''), n.created_at
 		   from addon_exports e
+		   left join lateral (
+		     select case sm.state when 'done' then 'done' when 'error' then 'failed'
+		                 else coalesce(a.state, 'queued') end as state,
+		            a.created_at
+		       from addon_sim_requests a left join sims sm on sm.id = a.sim_id
+		      where a.character_key = e.character_key and a.user_id = e.user_id
+		      order by a.created_at desc limit 1
+		   ) n on true
 		  where e.user_id = $1
 		    and exists (select 1 from devices d where d.user_id = $1 and d.revoked_at is null)
 		  order by e.character_key`, userID)
@@ -148,8 +159,47 @@ func (s *Store) acks(ctx context.Context, userID int64) ([]ackRow, error) {
 	var out []ackRow
 	for rows.Next() {
 		var r ackRow
-		if err := rows.Scan(&r.CharacterKey, &r.SeenAt, &r.SimRequestState); err != nil {
+		if err := rows.Scan(&r.CharacterKey, &r.SeenAt, &r.SimRequestState, &r.RequestedAt); err != nil {
 			return nil, fmt.Errorf("addon: read acks: %w", err)
+		}
+		out = append(out, r)
+	}
+	return out, rows.Err()
+}
+
+// inGameWeightsRow is a character's newest finished in-game weights run.
+type inGameWeightsRow struct {
+	CharacterKey, Spec string
+	// CreatedAt is when the run was queued (sims.created_at; the table has no finish time).
+	CreatedAt time.Time
+	// ExportSeenAt is the export the request was made on; nil for a request recorded before
+	// migration 0038.
+	ExportSeenAt *time.Time
+	Weights      []simapi.StatWeight
+}
+
+// inGameWeights reads, for each of userID's characters that asked for a sim in game, the
+// newest request whose stat-weights run finished: its spec, weights, queue time and export.
+func (s *Store) inGameWeights(ctx context.Context, userID int64) ([]inGameWeightsRow, error) {
+	rows, err := s.Pool.Query(ctx,
+		`select distinct on (a.character_key) a.character_key, sm.spec, sm.created_at, a.export_seen_at,
+		        coalesce(sm.result -> 'weights', '[]')
+		   from addon_sim_requests a join sims sm on sm.id = a.sim_id
+		  where a.user_id = $1 and sm.state = 'done' and sm.kind = 'weights'
+		  order by a.character_key, a.created_at desc`, userID)
+	if err != nil {
+		return nil, fmt.Errorf("addon: read in-game weights: %w", err)
+	}
+	defer rows.Close()
+	var out []inGameWeightsRow
+	for rows.Next() {
+		var r inGameWeightsRow
+		var raw []byte
+		if err := rows.Scan(&r.CharacterKey, &r.Spec, &r.CreatedAt, &r.ExportSeenAt, &raw); err != nil {
+			return nil, fmt.Errorf("addon: read in-game weights: %w", err)
+		}
+		if err := json.Unmarshal(raw, &r.Weights); err != nil {
+			return nil, fmt.Errorf("addon: read in-game weights of %s: %w", r.CharacterKey, err)
 		}
 		out = append(out, r)
 	}
