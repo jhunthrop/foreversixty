@@ -15,6 +15,7 @@
 // `FactionToggle`'s own pills still work from either copy: both point `for=` at the same
 // two page-level radios, and only the copy inside the currently visible faction section is
 // ever interactive at a time.
+import type { HTMLAttributes } from 'astro/types';
 import ClassCrest from './ClassCrest.astro';
 import FactionMark from './FactionMark.astro';
 import { bisCopy } from '../lib/bis/copy';
@@ -100,7 +101,7 @@ const {
 } = Astro.props;
 
 const TitleTag = asHeading ? 'h1' : 'p';
-const headingRole: astroHTML.JSX.HTMLAttributes = asHeading ? {} : { role: 'heading', 'aria-level': 1 };
+const headingRole: HTMLAttributes<'p'> = asHeading ? {} : { role: 'heading', 'aria-level': 1 };
 
 const color = classColorVar(className);
 const factionLabel =
