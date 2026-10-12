@@ -108686,128 +108686,828 @@
   "dps_per_point": {
     "druid-balance": {
       "reference": "spell_power",
-      "dps": 0.5167,
-      "healing": false
+      "dps": 0.5128,
+      "healing": false,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "spell_power",
+          "dps": 0.2241,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "spell_power",
+          "dps": 0.2412,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "spell_power",
+          "dps": 0.2401,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "spell_power",
+          "dps": 0.2806,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "spell_power",
+          "dps": 0.3296,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "druid-feral": {
       "reference": "attack_power",
       "dps": 0.1752,
-      "healing": false
+      "healing": false,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "attack_power",
+          "dps": 0.0596,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "attack_power",
+          "dps": 0.0986,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "attack_power",
+          "dps": 0.1064,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "attack_power",
+          "dps": 0.1121,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "attack_power",
+          "dps": 0.0991,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "druid-restoration": {
       "reference": "healing_power",
-      "dps": 0.2829,
-      "healing": true
+      "dps": 0.2812,
+      "healing": true,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "healing_power",
+          "dps": 0.1357,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "healing_power",
+          "dps": 0.15,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "healing_power",
+          "dps": 0.1491,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "healing_power",
+          "dps": 0.1522,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "healing_power",
+          "dps": 0.1743,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "hunter-beast-mastery": {
       "reference": "ranged_attack_power",
-      "dps": 0.1737,
-      "healing": false
+      "dps": 0.1722,
+      "healing": false,
+      "weapon_dps": 2.3311,
+      "bands": {
+        "20": {
+          "reference": "ranged_attack_power",
+          "dps": 0.0726,
+          "weapon_dps": 1.009
+        },
+        "30": {
+          "reference": "ranged_attack_power",
+          "dps": 0.0718,
+          "weapon_dps": 1.0114
+        },
+        "40": {
+          "reference": "ranged_attack_power",
+          "dps": 0.0719,
+          "weapon_dps": 1.0016
+        },
+        "50": {
+          "reference": "ranged_attack_power",
+          "dps": 0.076,
+          "weapon_dps": 1.03
+        },
+        "60": {
+          "reference": "ranged_attack_power",
+          "dps": 0.0836,
+          "weapon_dps": 1.1468
+        }
+      }
     },
     "hunter-marksmanship": {
       "reference": "ranged_attack_power",
-      "dps": 0.206,
-      "healing": false
+      "dps": 0.2023,
+      "healing": false,
+      "weapon_dps": 2.7262,
+      "bands": {
+        "20": {
+          "reference": "ranged_attack_power",
+          "dps": 0.069,
+          "weapon_dps": 0.9568
+        },
+        "30": {
+          "reference": "ranged_attack_power",
+          "dps": 0.075,
+          "weapon_dps": 1.0585
+        },
+        "40": {
+          "reference": "ranged_attack_power",
+          "dps": 0.0817,
+          "weapon_dps": 1.1358
+        },
+        "50": {
+          "reference": "ranged_attack_power",
+          "dps": 0.089,
+          "weapon_dps": 1.194
+        },
+        "60": {
+          "reference": "ranged_attack_power",
+          "dps": 0.0973,
+          "weapon_dps": 1.3288
+        }
+      }
     },
     "hunter-survival": {
       "reference": "attack_power",
-      "dps": 0.2072,
-      "healing": false
+      "dps": 0.2051,
+      "healing": false,
+      "weapon_dps": 2.3384,
+      "bands": {
+        "20": {
+          "reference": "attack_power",
+          "dps": 0.0496,
+          "weapon_dps": 0.4656
+        },
+        "30": {
+          "reference": "attack_power",
+          "dps": 0.0741,
+          "weapon_dps": 0.711
+        },
+        "40": {
+          "reference": "attack_power",
+          "dps": 0.07,
+          "weapon_dps": 0.6553
+        },
+        "50": {
+          "reference": "attack_power",
+          "dps": 0.0875,
+          "weapon_dps": 0.8451
+        },
+        "60": {
+          "reference": "attack_power",
+          "dps": 0.0956,
+          "weapon_dps": 1.0333
+        }
+      }
     },
     "mage-arcane": {
       "reference": "spell_power",
       "dps": 0.5634,
-      "healing": false
+      "healing": false,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "spell_power",
+          "dps": 0.138,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "spell_power",
+          "dps": 0.3602,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "spell_power",
+          "dps": 0.3974,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "spell_power",
+          "dps": 0.4345,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "spell_power",
+          "dps": 0.4689,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "mage-fire": {
       "reference": "spell_power",
-      "dps": 0.6737,
-      "healing": false
+      "dps": 0.6372,
+      "healing": false,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "spell_power",
+          "dps": 0.1171,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "spell_power",
+          "dps": 0.1306,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "spell_power",
+          "dps": 0.1604,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "spell_power",
+          "dps": 0.3303,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "spell_power",
+          "dps": 0.4346,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "mage-frost": {
       "reference": "spell_power",
-      "dps": 0.4882,
-      "healing": false
+      "dps": 0.4824,
+      "healing": false,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "spell_power",
+          "dps": 0.1811,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "spell_power",
+          "dps": 0.163,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "spell_power",
+          "dps": 0.1695,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "spell_power",
+          "dps": 0.3334,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "spell_power",
+          "dps": 0.3443,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "paladin-holy": {
       "reference": "healing_power",
-      "dps": 0.2959,
-      "healing": true
+      "dps": 0.3191,
+      "healing": true,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "healing_power",
+          "dps": 0.1634,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "healing_power",
+          "dps": 0.1203,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "healing_power",
+          "dps": 0.1248,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "healing_power",
+          "dps": 0.1474,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "healing_power",
+          "dps": 0.2017,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "paladin-retribution": {
       "reference": "attack_power",
       "dps": 0.1319,
-      "healing": false
+      "healing": false,
+      "weapon_dps": 1.8228,
+      "bands": {
+        "20": {
+          "reference": "attack_power",
+          "dps": 0.0474,
+          "weapon_dps": 0.6419
+        },
+        "30": {
+          "reference": "attack_power",
+          "dps": 0.0785,
+          "weapon_dps": 1.0019
+        },
+        "40": {
+          "reference": "attack_power",
+          "dps": 0.0812,
+          "weapon_dps": 1.0263
+        },
+        "50": {
+          "reference": "attack_power",
+          "dps": 0.0608,
+          "weapon_dps": 0.8466
+        },
+        "60": {
+          "reference": "attack_power",
+          "dps": 0.072,
+          "weapon_dps": 1.0045
+        }
+      }
     },
     "priest-discipline": {
       "reference": "healing_power",
       "dps": 0.2797,
-      "healing": true
+      "healing": true,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "healing_power",
+          "dps": 0.0857,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "healing_power",
+          "dps": 0.1163,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "healing_power",
+          "dps": 0.1012,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "healing_power",
+          "dps": 0.1274,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "healing_power",
+          "dps": 0.1901,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "priest-holy": {
       "reference": "healing_power",
-      "dps": 0.305,
-      "healing": true
+      "dps": 0.266,
+      "healing": true,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "healing_power",
+          "dps": 0.1166,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "healing_power",
+          "dps": 0.1165,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "healing_power",
+          "dps": 0.116,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "healing_power",
+          "dps": 0.1649,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "healing_power",
+          "dps": 0.3477,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "priest-shadow": {
       "reference": "spell_power",
-      "dps": 0.3774,
-      "healing": false
+      "dps": 0.3686,
+      "healing": false,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "spell_power",
+          "dps": 0.102,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "spell_power",
+          "dps": 0.1704,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "spell_power",
+          "dps": 0.2442,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "spell_power",
+          "dps": 0.2963,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "spell_power",
+          "dps": 0.3403,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "rogue-assassination": {
       "reference": "attack_power",
-      "dps": 0.2509,
-      "healing": false
+      "dps": 0.2474,
+      "healing": false,
+      "weapon_dps": 2.1005,
+      "bands": {
+        "20": {
+          "reference": "attack_power",
+          "dps": 0.0791,
+          "weapon_dps": 0.9106
+        },
+        "30": {
+          "reference": "attack_power",
+          "dps": 0.0626,
+          "weapon_dps": 0.8443
+        },
+        "40": {
+          "reference": "attack_power",
+          "dps": 0.0782,
+          "weapon_dps": 0.6556
+        },
+        "50": {
+          "reference": "attack_power",
+          "dps": 0.1029,
+          "weapon_dps": 0.8014
+        },
+        "60": {
+          "reference": "attack_power",
+          "dps": 0.1147,
+          "weapon_dps": 0.878
+        }
+      }
     },
     "rogue-combat": {
       "reference": "attack_power",
-      "dps": 0.2172,
-      "healing": false
+      "dps": 0.2181,
+      "healing": false,
+      "weapon_dps": 2.2357,
+      "bands": {
+        "20": {
+          "reference": "attack_power",
+          "dps": 0.0728,
+          "weapon_dps": 0.7516
+        },
+        "30": {
+          "reference": "attack_power",
+          "dps": 0.0751,
+          "weapon_dps": 0.6983
+        },
+        "40": {
+          "reference": "attack_power",
+          "dps": 0.0821,
+          "weapon_dps": 0.8279
+        },
+        "50": {
+          "reference": "attack_power",
+          "dps": 0.0943,
+          "weapon_dps": 0.8193
+        },
+        "60": {
+          "reference": "attack_power",
+          "dps": 0.103,
+          "weapon_dps": 0.9962
+        }
+      }
     },
     "rogue-subtlety": {
       "reference": "attack_power",
-      "dps": 0.2332,
-      "healing": false
+      "dps": 0.2268,
+      "healing": false,
+      "weapon_dps": 2.3934,
+      "bands": {
+        "20": {
+          "reference": "attack_power",
+          "dps": 0.0658,
+          "weapon_dps": 0.5744
+        },
+        "30": {
+          "reference": "attack_power",
+          "dps": 0.0708,
+          "weapon_dps": 0.6015
+        },
+        "40": {
+          "reference": "attack_power",
+          "dps": 0.0918,
+          "weapon_dps": 0.914
+        },
+        "50": {
+          "reference": "attack_power",
+          "dps": 0.1124,
+          "weapon_dps": 1.1057
+        },
+        "60": {
+          "reference": "attack_power",
+          "dps": 0.1252,
+          "weapon_dps": 1.2289
+        }
+      }
     },
     "shaman-elemental": {
       "reference": "spell_power",
-      "dps": 0.4873,
-      "healing": false
+      "dps": 0.4827,
+      "healing": false,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "spell_power",
+          "dps": 0.1386,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "spell_power",
+          "dps": 0.1543,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "spell_power",
+          "dps": 0.1467,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "spell_power",
+          "dps": 0.1958,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "spell_power",
+          "dps": 0.2114,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "shaman-enhancement": {
       "reference": "attack_power",
-      "dps": 0.2018,
-      "healing": false
+      "dps": 0.2029,
+      "healing": false,
+      "weapon_dps": 2.8411,
+      "bands": {
+        "20": {
+          "reference": "attack_power",
+          "dps": 0.038,
+          "weapon_dps": 0.5314
+        },
+        "30": {
+          "reference": "attack_power",
+          "dps": 0.0902,
+          "weapon_dps": 1.263
+        },
+        "40": {
+          "reference": "attack_power",
+          "dps": 0.0942,
+          "weapon_dps": 1.3188
+        },
+        "50": {
+          "reference": "attack_power",
+          "dps": 0.0848,
+          "weapon_dps": 1.1868
+        },
+        "60": {
+          "reference": "attack_power",
+          "dps": 0.1069,
+          "weapon_dps": 1.4972
+        }
+      }
     },
     "shaman-restoration": {
       "reference": "healing_power",
-      "dps": 0.2458,
-      "healing": true
+      "dps": 0.2181,
+      "healing": true,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "healing_power",
+          "dps": 0.0698,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "healing_power",
+          "dps": 0.0785,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "healing_power",
+          "dps": 0.0675,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "healing_power",
+          "dps": 0.1034,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "healing_power",
+          "dps": 0.1266,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "warlock-affliction": {
       "reference": "spell_power",
-      "dps": 0.6544,
-      "healing": false
+      "dps": 0.6636,
+      "healing": false,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "spell_power",
+          "dps": 0.2599,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "spell_power",
+          "dps": 0.2642,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "spell_power",
+          "dps": 0.3687,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "spell_power",
+          "dps": 0.3695,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "spell_power",
+          "dps": 0.4562,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "warlock-demonology": {
       "reference": "spell_power",
-      "dps": 0.5289,
-      "healing": false
+      "dps": 0.5198,
+      "healing": false,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "spell_power",
+          "dps": 0.231,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "spell_power",
+          "dps": 0.2283,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "spell_power",
+          "dps": 0.2431,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "spell_power",
+          "dps": 0.2542,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "spell_power",
+          "dps": 0.3654,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "warlock-destruction": {
       "reference": "spell_power",
-      "dps": 0.6565,
-      "healing": false
+      "dps": 0.6612,
+      "healing": false,
+      "weapon_dps": 0.0,
+      "bands": {
+        "20": {
+          "reference": "spell_power",
+          "dps": 0.2587,
+          "weapon_dps": 0.0
+        },
+        "30": {
+          "reference": "spell_power",
+          "dps": 0.2452,
+          "weapon_dps": 0.0
+        },
+        "40": {
+          "reference": "spell_power",
+          "dps": 0.3254,
+          "weapon_dps": 0.0
+        },
+        "50": {
+          "reference": "spell_power",
+          "dps": 0.3574,
+          "weapon_dps": 0.0
+        },
+        "60": {
+          "reference": "spell_power",
+          "dps": 0.4804,
+          "weapon_dps": 0.0
+        }
+      }
     },
     "warrior-arms": {
       "reference": "attack_power",
-      "dps": 0.2342,
-      "healing": false
+      "dps": 0.2222,
+      "healing": false,
+      "weapon_dps": 3.1536,
+      "bands": {
+        "20": {
+          "reference": "attack_power",
+          "dps": 0.0385,
+          "weapon_dps": 0.5432
+        },
+        "30": {
+          "reference": "attack_power",
+          "dps": 0.0793,
+          "weapon_dps": 0.9831
+        },
+        "40": {
+          "reference": "attack_power",
+          "dps": 0.1126,
+          "weapon_dps": 1.2851
+        },
+        "50": {
+          "reference": "attack_power",
+          "dps": 0.0946,
+          "weapon_dps": 1.2853
+        },
+        "60": {
+          "reference": "attack_power",
+          "dps": 0.1064,
+          "weapon_dps": 1.5548
+        }
+      }
     },
     "warrior-fury": {
       "reference": "attack_power",
-      "dps": 0.2792,
-      "healing": false
+      "dps": 0.2748,
+      "healing": false,
+      "weapon_dps": 1.8404,
+      "bands": {
+        "20": {
+          "reference": "attack_power",
+          "dps": 0.0619,
+          "weapon_dps": 0.576
+        },
+        "30": {
+          "reference": "attack_power",
+          "dps": 0.0698,
+          "weapon_dps": 0.6027
+        },
+        "40": {
+          "reference": "attack_power",
+          "dps": 0.0994,
+          "weapon_dps": 0.5733
+        },
+        "50": {
+          "reference": "attack_power",
+          "dps": 0.1194,
+          "weapon_dps": 0.6952
+        },
+        "60": {
+          "reference": "attack_power",
+          "dps": 0.1397,
+          "weapon_dps": 0.8323
+        }
+      }
     }
   },
   "encounter_needs": {

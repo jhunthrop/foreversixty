@@ -35,6 +35,7 @@ from pipeline.models import (
     AddonData,
     AddonDefaultBuild,
     AddonDpsPerPoint,
+    AddonDpsPerPointBand,
     AddonTab,
     AddonTalent,
 )
@@ -113,7 +114,21 @@ def _dps_per_point(root: Path, build: str) -> dict[str, AddonDpsPerPoint]:
     if not path.exists():
         return {}
     file = json.loads(path.read_text(encoding="utf-8"))
-    return {spec: AddonDpsPerPoint(**entry) for spec, entry in sorted(file.items())}
+    return {
+        spec: AddonDpsPerPoint(
+            reference=entry["reference"],
+            dps=entry["dps"],
+            healing=entry["healing"],
+            weapon_dps=entry.get("weapon_dps", 0.0),
+            bands={
+                int(band): AddonDpsPerPointBand(
+                    reference=entry["reference"], dps=row["dps"], weapon_dps=row["weapon_dps"]
+                )
+                for band, row in (entry.get("bands") or {}).items()
+            },
+        )
+        for spec, entry in sorted(file.items())
+    }
 
 
 def build_addon_data(

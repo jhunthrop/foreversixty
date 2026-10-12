@@ -557,3 +557,97 @@ def test_one_cli_run_parses_each_bis_file_once(monkeypatch):
     main(["addon-data", "--build", BUILD, "--check"])
     specs = sorted(path.stem for path in (Path("builds") / BUILD / "bis").glob("*.json"))
     assert sorted(parsed) == specs
+
+
+# --- Task L1.5: dpsPerPoint per spec and band, with a measured weapon term ---
+
+#: Measured by sim/cmd/dps-per-point on 2026-10-11 (task L1.5 report): the
+#: warrior-arms band-20 character (the band's bare BiS set, level 25) gains
+#: 0.0385 DPS per attack power and 0.5432 DPS per +1 main-hand weapon DPS;
+#: the level-60 raid character 0.2222 and 3.1536.
+ARMS_BAND_20 = (0.0385, 0.5432)
+ARMS_RAID = (0.2222, 3.1536)
+#: The per-band model's threshold (task L1.5, ruling 2).
+BAND_DIFFERS = 0.25
+
+
+def test_dps_per_point_carries_each_bands_figure_and_weapon_term():
+    data = build_addon_data(BUILD)
+    arms = data.dps_per_point["warrior-arms"]
+    assert arms.weapon_dps == pytest.approx(ARMS_RAID[1], rel=0.1)
+    assert sorted(arms.bands) == [20, 30, 40, 50, 60]
+    band = arms.bands[20]
+    assert band.reference == "attack_power"
+    assert band.dps == pytest.approx(ARMS_BAND_20[0], rel=0.1)
+    assert band.weapon_dps == pytest.approx(ARMS_BAND_20[1], rel=0.1)
+    # The reason for the per-band model: the level-60 figure is far off at 20.
+    assert abs(band.dps - arms.dps) / arms.dps > BAND_DIFFERS
+
+
+def test_a_casters_and_a_healers_weapon_term_is_zero_in_their_reference_stat():
+    data = build_addon_data(BUILD)
+    frost, holy = data.dps_per_point["mage-frost"], data.dps_per_point["priest-holy"]
+    assert frost.reference == "spell_power" and holy.reference == "healing_power"
+    assert holy.healing is True
+    for entry in (frost, holy):
+        assert entry.weapon_dps == 0
+        assert entry.bands, entry.reference
+        for band in entry.bands.values():
+            assert band.reference == entry.reference and band.weapon_dps == 0 and band.dps > 0
+
+
+def test_dps_per_point_bands_render_beside_the_spec_figure():
+    from pipeline.models import AddonData, AddonDpsPerPoint, AddonDpsPerPointBand
+
+    data = AddonData(
+        build="x",
+        classes={},
+        weights={},
+        dps_per_point={
+            "warrior-arms": AddonDpsPerPoint(
+                reference="attack_power",
+                dps=0.2222,
+                healing=False,
+                weapon_dps=3.1536,
+                bands={
+                    30: AddonDpsPerPointBand(
+                        reference="attack_power", dps=0.0793, weapon_dps=0.9831
+                    ),
+                    20: AddonDpsPerPointBand(
+                        reference="attack_power", dps=0.0385, weapon_dps=0.5432
+                    ),
+                },
+            ),
+        },
+    )
+    assert (
+        "\tdpsPerPoint = {\n"
+        '\t\t["warrior-arms"] = { reference = "attack_power", dps = 0.2222, healing = false, '
+        "weaponDps = 3.1536,\n"
+        '\t\t\t[20] = { reference = "attack_power", dps = 0.0385, weaponDps = 0.5432 },\n'
+        '\t\t\t[30] = { reference = "attack_power", dps = 0.0793, weaponDps = 0.9831 },\n'
+        "\t\t},\n"
+        "\t},\n"
+    ) in render_lua(data)
+
+
+def test_the_real_data_lua_reads_dps_per_point_by_spec_and_band(tmp_path):
+    lua_bin = shutil.which("lua") or shutil.which("lua5.4") or shutil.which("lua5.1")
+    if not lua_bin:
+        pytest.skip("no lua interpreter is available")
+    chunk = tmp_path / "Data.lua"
+    chunk.write_text(render_lua(build_addon_data(BUILD)), encoding="utf-8")
+    script = (
+        f"local data = assert(loadfile({chunk.as_posix()!r}))() "
+        "local arms = data.dpsPerPoint['warrior-arms'] "
+        "local frost = data.dpsPerPoint['mage-frost'][20] "
+        "io.write(arms.reference, '|', arms[20].reference, '|', arms[20].dps, '|', "
+        "arms[20].weaponDps, '|', arms.dps, '|', frost.weaponDps)"
+    )
+    result = subprocess.run([lua_bin, "-e", script], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
+    reference, band_reference, dps, weapon, spec_dps, frost_weapon = result.stdout.split("|")
+    assert (reference, band_reference, float(frost_weapon)) == ("attack_power", "attack_power", 0)
+    assert float(dps) == pytest.approx(ARMS_BAND_20[0], rel=0.1)
+    assert float(weapon) == pytest.approx(ARMS_BAND_20[1], rel=0.1)
+    assert float(spec_dps) == pytest.approx(ARMS_RAID[0], rel=0.1)

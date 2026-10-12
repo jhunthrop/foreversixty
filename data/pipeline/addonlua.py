@@ -231,17 +231,31 @@ def _default_builds_lua(default_builds: dict) -> list[str]:
 
 
 def _dps_per_point_lua(dps_per_point: dict) -> list[str]:
-    """`dpsPerPoint[spec] = { reference, dps, healing }` (contract 1). A
+    """`dpsPerPoint[spec] = { reference, dps, healing, weaponDps, [band] = {
+    reference, dps, weaponDps } }` (contract 1; bands from task L1.5). A
     spec with no entry is left out, never written as zero: the addon reads
     a missing key as "show score units"."""
     lines = ["\tdpsPerPoint = {"]
     for spec in sorted(dps_per_point):
         entry = dps_per_point[spec]
         healing = "true" if entry.healing else "false"
-        lines.append(
+        head = (
             f"\t\t[{_quote(spec)}] = {{ reference = {_quote(entry.reference)}, "
-            f"dps = {_number(entry.dps)}, healing = {healing} }},"
+            f"dps = {_number(entry.dps)}, healing = {healing}"
         )
+        if not entry.bands and not entry.weapon_dps:
+            lines.append(head + " },")
+            continue
+        # Task L1.5: the level-60 raid figure stays at the spec level for the
+        # current reader; each band's own figures sit under its band key.
+        lines.append(head + f", weaponDps = {_number(entry.weapon_dps)},")
+        for band in sorted(entry.bands):
+            row = entry.bands[band]
+            lines.append(
+                f"\t\t\t[{band}] = {{ reference = {_quote(row.reference)}, "
+                f"dps = {_number(row.dps)}, weaponDps = {_number(row.weapon_dps)} }},"
+            )
+        lines.append("\t\t},")
     lines.append("\t},")
     return lines
 

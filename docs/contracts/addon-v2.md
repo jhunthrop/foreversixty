@@ -53,8 +53,16 @@ ns.Data = {
   build = "1.60.1.70291",
   classes = { ... },            -- unchanged
   weights = { ... },            -- unchanged
-  -- NEW: DPS (or HPS for healers) per 1.0 of the spec's reference stat, from the site's sim
-  dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.42, healing = false }, ... },
+  -- NEW: DPS (or HPS for healers) per 1.0 of the spec's reference stat, from the site's sim,
+  -- per leveling band, with the DPS one more point of weapon DPS is worth
+  dpsPerPoint = {
+    ["warrior-arms"] = {
+      [20] = { reference = "attack_power", dps = 0.0385, weaponDps = 0.5432 },  -- 20 ... 60
+      ...,
+      -- the level-60 raid figure, kept for the current reader (to go once it reads by band)
+      reference = "attack_power", dps = 0.2222, healing = false, weaponDps = 3.1536,
+    }, ...
+  },
   -- NEW: default builds per spec, as the codec's own triples (tab, tier, column), 1-based
   -- The addon loads defaultBuilds[<spec>].leveling on first login when no build is saved for the
   -- character (raid at 60), and marks it default = true so the build dialog can say
@@ -82,8 +90,21 @@ ns.Data = {
 
 Notes for the reader:
 
-- `dpsPerPoint` is per spec slug; `healing = true` means the number is healing per second and
-  the addon says "healing" instead of "damage". A spec with no entry shows no DPS wording at all.
+- `dpsPerPoint` is per spec slug and band: `dpsPerPoint[spec][band]` is `{ reference, dps,
+  weaponDps }` for the BiS bands 20, 30, 40, 50 and 60. Read the band with the same rule as the
+  BiS table (`Gear.bandFor`: the highest band at or below the level, so 20 serves levels 20-29).
+  A band's figures are measured by the sim on that band's own character: the band's BiS set,
+  the guide's leveling build, at the middle of the band's levels (25 for band 20, 60 for 60). They
+  differ from the level-60 figure by far more than 25 percent (Arms: 0.0385 DPS per attack
+  power at band 20 against 0.2222 at 60), so a level-60 figure must not be applied to a
+  leveling character. `dps` is DPS per 1.0 of `reference`. `weaponDps` is the measured DPS one
+  more point of the swung weapon's own damage per second is worth (the main hand; the ranged
+  weapon when `reference` is `ranged_attack_power`): a weapon's DPS delta is multiplied by it
+  directly, never converted to attack power first. It is 0 for a spec that does not swing its
+  weapon (casters, healers, feral druids). A band the sim could not measure beyond its own error
+  has no key. The spec-level `reference`, `dps`, `healing` and `weaponDps` are the level-60 raid
+  character's figures; `healing = true` means the numbers are healing per second and the addon
+  says "healing" instead of "damage". A spec with no entry (tanks) shows no DPS wording at all.
 - `defaultBuilds` order lists are the 51 point spends in learning order, one `{tab, tier,
   column}` triple per point, 1-based, exactly what `Codec` encodes. The saved copy of a default
   carries `default = true`; the first time the player saves, imports or is pushed a build for
