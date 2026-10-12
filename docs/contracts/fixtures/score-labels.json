@@ -5,7 +5,7 @@
     { "key": "experience", "label": "Experience" },
     { "key": "parses", "label": "Parses" },
     { "key": "attendance", "label": "Attendance" },
-    { "key": "discipline", "label": "Discipline" }
+    { "key": "discipline", "label": "Preparation" }
   ],
   "tiers": {
     "common": { "label": "Common", "color": "#ffffff" },

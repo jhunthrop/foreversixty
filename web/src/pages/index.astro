@@ -160,6 +160,13 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
             <HomeAccountPanel client:idle-after-load />
           </div>
 
+          <!-- Task L8.2 (fix rounds 1-2, item 7): the character lookup. On a phone it sits
+               between the hero and the beta card (DOM order); from lg the grid puts it on its
+               own full-width row under the hero row (order-last), above the dates strip. -->
+          <div class="min-w-0 lg:order-last lg:col-span-12" data-testid="home-lookup-cell">
+            <CharacterSearch />
+          </div>
+
           <!-- §3.A.2 Hero right column (5/12): the leveling-BiS example panel, signed out
                only. With a session hinted (global.css) this cell collapses and the signed-in
                hero takes the whole row (home signed-in panel spec 2026-10-10). Demoted visual
@@ -217,9 +224,6 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
             </div>
           </div>
         </div>
-        <!-- Task L8.2 (fix round 1 item 2): look a character up by name, signed in or out --
-             below the hero row and above the dates strip, in the design system's Search form. -->
-        <CharacterSearch />
       </div>
     </SkyBand>
 

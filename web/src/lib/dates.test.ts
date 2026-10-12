@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDate, isPast, latest, relativeDay, relativeTime } from './dates';
+import { formatDate, formatDayMonthYear, isPast, latest, relativeDay, relativeTime } from './dates';
 
 describe('formatDate', () => {
   it('uses the site month style', () => {
@@ -76,5 +76,13 @@ describe('relativeDay', () => {
   it('never reads a future timestamp as negative, and prints nothing for an invalid one', () => {
     expect(relativeDay(new Date('2026-10-10T12:00:05Z'), now)).toBe('today');
     expect(relativeDay(new Date('not a date'), now)).toBe('');
+  });
+});
+
+describe('formatDayMonthYear', () => {
+  it('reads "9 Dec 2026" in UTC, the Forever Score tables’ date (fix round 2 item 6)', () => {
+    expect(formatDayMonthYear(new Date('2026-12-09T22:10:00Z'))).toBe('9 Dec 2026');
+    expect(formatDayMonthYear(new Date('2026-09-30T23:59:00Z'))).toBe('30 Sep 2026');
+    expect(formatDayMonthYear(new Date('not a date'))).toBe('');
   });
 });

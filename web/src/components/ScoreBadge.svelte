@@ -5,13 +5,19 @@
      /ratings example, the "In game" tooltip mock, and later the guild roster. A null score
      draws nothing; the caller shows the no-logs line instead, never a zero.
 
-     md and lg are large bold text (20px, 32px) in the exact quality colour: rare and epic sit
+     md, lg and xl are large bold text (20px, 32px, 36-48px) in the exact quality colour: rare and epic sit
      under 4.5:1 on the site's dark ground, and large text needs only 3:1. sm sits in a line of
      body text, so it takes the design system's lightened rare and epic text variants. -->
 <script lang="ts">
   import { tierColor, tierLabel, tierTextColor } from '../lib/score/score';
 
-  const SIZE = { sm: 'text-[14px]', md: 'text-[20px]', lg: 'text-[32px]' } as const;
+  const SIZE = {
+    sm: 'text-[14px]',
+    md: 'text-[20px]',
+    lg: 'text-[32px]',
+    /** The profile card's hero number: 36px on a phone, 48px from md. */
+    xl: 'text-[36px] md:text-[48px]',
+  } as const;
 
   let {
     score,

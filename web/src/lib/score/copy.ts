@@ -10,16 +10,17 @@ import labels from '../../../../docs/contracts/fixtures/score-labels.json';
 import type { ScoreComponentKey } from './score';
 
 /** What moves each component, in plain words (api/openapi.yaml's `ForeverScore` descriptions,
- *  rewritten for a player: how your fights rank, never "percentile"). */
+ *  rewritten for a player: how your fights rank, never "percentile"). The fifth part's key
+ *  stays `discipline` (the API field); its label is "Preparation" (fix round 2 item 11). */
 const MOVES: Readonly<Record<string, string>> = {
-  gear: 'How close the gear you wear is to your spec’s best-in-slot set at level 60. Every upgrade for your spec moves it up.',
+  gear: 'How close your gear is to your spec’s best set for your level (20, 30, 40, 50 or 60). Every upgrade for your spec moves it up.',
   experience:
     '25 for each different dungeon cleared and 40 for each different raid boss killed, across your main and the alts the site has linked to it.',
   parses:
     'How your best damage or healing on each boss ranks against others of your spec, averaged over the bosses you have killed.',
   attendance: 'How many of your guild’s raid nights in the last 90 days you were in the log for.',
   discipline:
-    'How many of your logged fights you went into with a flask, food, and enchants on chest, feet, back and main hand.',
+    'Flask, food and enchants on every logged pull: the share of your logged fights you started with all three.',
 };
 
 function plural(count: number, one: string, many: string): string {
@@ -51,12 +52,23 @@ export const scoreCopy = {
   ofMax: (points: number, max: number): string => `${points} of ${max}`,
   /** "of 2100" beside the badge. */
   outOf: (max: number): string => `of ${max}`,
-  /** "Your whole record, as of 4 Nov." under the card's heading. */
-  caption: (date: string | null): string =>
-    date === null ? 'Your whole record.' : `Your whole record, as of ${date}.`,
+  /** An empty part on the no-logs card, where "412 of 500" would be. */
+  emptyPart: '–',
+  /**
+   * Under the card's heading (fix round 2 item 1): "Your" only for the viewer's own character.
+   * "Your whole record, as of 4 Nov." for the owner, "Whole record, as of 4 Nov." for anyone.
+   */
+  caption: (date: string | null, owned: boolean): string => {
+    const lead = owned ? 'Your whole record' : 'Whole record';
+    return date === null ? `${lead}.` : `${lead}, as of ${date}.`;
+  },
   /** "Most to gain: Gear, 88 below its top." -- the label is a link, so the words are split. */
   mostToGainLead: 'Most to gain:',
   mostToGainRest: (gap: number): string => `, ${gap} below its top.`,
+  /** The words at the end of the highlighted row, so colour is not the only signal: "+88". */
+  gainCue: (gap: number): string => `+${gap}`,
+  /** Read aloud for that cue. */
+  gainCueLabel: (gap: number): string => `${gap} points to gain`,
   /** "14 dungeons · 0 raid bosses · 2 alts" under the Experience bar. */
   experienceBreakdown: (dungeons: number, raidBosses: number, alts: number): string =>
     [
@@ -70,17 +82,24 @@ export const scoreCopy = {
   /** Read aloud beside the current tier in the strip. */
   currentTier: 'this character’s tier',
 
-  /** The no-logs card. */
+  /** The no-logs card (fix round 2 item 4). */
   noLogsTitle: 'No logs yet',
-  noLogsCheckLead: 'Check the name and ruleset, or',
-  noLogsCheckLink: 'add a log of this character',
-  noLogsCheckHref: '/logs#upload',
+  noLogsHint: 'Check the name and ruleset, or look up another character.',
+  noLogsLookup: 'Look up another character',
+  /** The home page's lookup, the name filled in (CharacterSearch.astro reads `character`). */
+  lookupHref: (name: string): string => `/?character=${encodeURIComponent(name)}#lookup`,
+  noLogsOwner: 'The companion uploads your fights automatically.',
+  noLogsUpload: 'Upload logs',
+  noLogsUploadHref: '/setup',
 
   inGameHeading: 'In game',
+  /** The tooltip mock's second line, the game's own: "Level 60 Human Priest". */
+  tooltipDescriptor: (level: number, race: string, className: string): string =>
+    `Level ${level} ${race} ${className}`,
   inGameShownOn: 'Shown on this character’s tooltip when you have the Forever Sixty addon.',
   inGameSetupLink: 'Get set up',
   inGameSetupHref: '/setup',
-  inGamePlannerLead: 'In game, type /fs, press Copy my character, then',
+  inGamePlannerLead: 'To update this page: in game, type /fs, press Copy my character, then',
   inGamePasteLink: 'paste it here',
   inGamePasteHref: '/setup#paste',
   /** "Last seen in game 4 Nov 14:03": when the site last saw the owner's addon export. */
@@ -94,14 +113,12 @@ export const scoreCopy = {
   explainerRatingCaption: 'Performance Rating: one fight, 0 to 100.',
   explainerLead: 'Use it to see how your character compares and which part to work on.',
   explainerWhat:
-    'The Forever Score is one number for a character, from 0 to 2100, made of five parts that add up to it. It comes only from the logs the site has: fights in public reports, and the gear those logs show. The addon shows the same number on the character’s tooltip in game, dated with the day of the newest fight it counts. A character with no logs here has no score, not a score of zero.',
+    'The Forever Score is one number for a character, made of five parts that add up to it. It comes only from the logs the site has: fights in public reports, and the gear those logs show. The addon shows the same number on the character’s tooltip in game, dated with the day of the newest fight it counts. A character with no logs here has no score, not a score of zero.',
   explainerLaunch: 'Parses, attendance and raid bosses count once raids open.',
-  explainerExample: 'How a score reads, here and in the addon’s tooltip:',
   samplePill: 'Sample',
   explainerPartsHeading: 'What moves each part',
   /** "up to 500" beside a component's label. */
   upTo: (max: number): string => `up to ${max}`,
-  explainerTiersHeading: 'Tiers',
   tierColumn: 'Tier',
   rangeColumn: 'Score',
   tierBelow: (next: number): string => `below ${next}`,
@@ -113,7 +130,11 @@ export const scoreCopy = {
     'The tiers take the colours of item quality in game. The ranges may change as more players are logged.',
   explainerLogsHeading: 'How to get your logs here',
   explainerLogsBody:
-    'The companion uploads your fights automatically. The companion is a small desktop app that runs beside the game and sends the site your combat log and what the addon saved; set it up on the',
-  explainerLogsLink: 'setup page',
+    'The companion uploads your fights automatically. The companion is a small desktop app that runs beside the game and sends the site your combat log and what the addon saved.',
+  explainerLogsButton: 'Get the companion',
   explainerLogsHref: '/setup',
+  /** Under "Performance Rating" (fix round 2 items 5 and 11). */
+  explainerRatingBridge: 'A rating scores one fight. The Forever Score counts all of them.',
+  explainerPreparationShared:
+    'Both use the word Preparation for the same thing: the flask, food and enchants you bring to a pull.',
 } as const;

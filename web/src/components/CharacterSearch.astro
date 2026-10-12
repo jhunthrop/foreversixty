@@ -6,8 +6,10 @@
 // Normal to start, the site's own defaults), opens /character/<region>/<ruleset>/<name>; the
 // path is built by lib/character-search.ts through characters.ts's characterHref. On a phone
 // the name takes the full width, region and ruleset share a row, and Look up spans the width.
-// A plain form with a few lines of script, not a Svelte island: the home page's paint budget
-// pays for nothing it does not need.
+// A plain form with a few lines of script (lib/character-search-dom.ts, shared with the
+// header's compact lookup), not a Svelte island: the home page's paint budget pays for nothing
+// it does not need. A "Look up another character" link lands here as /?character=<name>#lookup
+// with the name filled in.
 import { DEFAULT_REGION, DEFAULT_RULESET } from '../lib/character-search';
 import { REGIONS, RULESETS } from '../lib/characters';
 import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
@@ -16,7 +18,7 @@ import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
 const FIELD = 'border-line-warm-strong bg-raised rounded-control text-text w-full border px-3 text-[15px]';
 ---
 
-<section class="flex flex-col gap-3" data-testid="home-character-search">
+<section id="lookup" class="flex scroll-mt-6 flex-col gap-3" data-testid="home-character-search">
   <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
     <h2 class="display text-strong text-[18px] font-bold tracking-[0.10em]">{copy.heading}</h2>
     <p class="text-muted text-[14px]" data-testid="home-character-search-aside">
@@ -26,6 +28,8 @@ const FIELD = 'border-line-warm-strong bg-raised rounded-control text-text w-ful
   <form
     class="grid grid-cols-2 gap-3 md:grid-cols-[minmax(0,1fr)_112px_160px_auto] md:items-end"
     data-character-search
+    data-character-search-primary
+    data-status-id="home-character-search-error"
     data-empty={copy.empty}
     data-invalid={copy.invalid}
     novalidate
@@ -127,39 +131,12 @@ const FIELD = 'border-line-warm-strong bg-raised rounded-control text-text w-ful
 </style>
 
 <script>
-  import { characterSearchHref } from '../lib/character-search';
-  import { isRegion, isRuleset } from '../lib/characters';
+  import { prefillFromQuery, wireSearchForm } from '../lib/character-search-dom';
 
-  for (const form of document.querySelectorAll<HTMLFormElement>('form[data-character-search]')) {
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const fields = new FormData(form);
-      const name = String(fields.get('name') ?? '');
-      const region = String(fields.get('region') ?? '');
-      const ruleset = String(fields.get('ruleset') ?? '');
-      const href = isRegion(region) && isRuleset(ruleset) ? characterSearchHref(name, region, ruleset) : null;
-      if (href !== null) {
-        window.location.assign(href);
-        return;
-      }
-      const error = form.parentElement?.querySelector('[role="status"]');
-      if (error !== null && error !== undefined)
-        error.textContent = (name.trim() === '' ? form.dataset.empty : form.dataset.invalid) ?? '';
-    });
+  // The form's submit and the "Look up another character" prefill; the "/" key that focuses
+  // this box lives in the site header (HeaderSearch.astro), which is on every page.
+  for (const form of document.querySelectorAll<HTMLFormElement>('form[data-character-search-primary]')) {
+    wireSearchForm(form);
+    prefillFromQuery(form);
   }
-
-  // The design system's Search: "/" anywhere outside a text field puts the cursor in the box.
-  document.addEventListener('keydown', (event) => {
-    if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey) return;
-    const target = event.target;
-    if (
-      target instanceof HTMLElement &&
-      (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
-    )
-      return;
-    const input = document.querySelector<HTMLInputElement>('form[data-character-search] input[name="name"]');
-    if (input === null) return;
-    event.preventDefault();
-    input.focus();
-  });
 </script>

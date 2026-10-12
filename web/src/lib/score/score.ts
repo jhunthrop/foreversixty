@@ -122,19 +122,12 @@ export function mostToGain(
   return best;
 }
 
-/** The part with the smallest share of its own ceiling, the one drawn in the tier colour so
- *  the weak part reads at a glance. Null with no parts. */
-export function weakestPart(components: ScoreComponents | null | undefined): ScoreComponentKey | null {
-  if (components == null) return null;
-  let weakest: { key: ScoreComponentKey; share: number } | null = null;
-  for (const key of COMPONENT_KEYS) {
-    const points = components[key];
-    if (typeof points !== 'number') continue;
-    const share = points / COMPONENT_MAX[key];
-    if (weakest === null || share < weakest.share) weakest = { key, share };
-  }
-  return weakest?.key ?? null;
-}
+/**
+ * The one colour for the part to work on (fix round 2 item 2): the bar "Most to gain" names,
+ * never a tier colour, so it cannot be read as a tier. The design system's `--gold-hover`
+ * amber, which the "+88" cue beside the bar repeats in words.
+ */
+export const NEEDS_WORK_COLOR = '#f5d27a';
 
 /** The five tiers as the strip draws them: label, exact colour, name colour, short range. */
 export function tierStrip(): {

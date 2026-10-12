@@ -18,7 +18,7 @@ import {
   ownCharacter,
   tierStrip,
   tierTextColor,
-  weakestPart,
+  NEEDS_WORK_COLOR,
 } from './score';
 
 describe('shortDate', () => {
@@ -195,10 +195,11 @@ describe('mostToGain (fix round 1 item 3)', () => {
   });
 });
 
-describe('weakestPart (fix round 1 item 3)', () => {
-  it('is the smallest share of its own ceiling: Discipline at 78 of 100', () => {
-    expect(weakestPart(CAPTURE)).toBe('discipline');
-    expect(weakestPart(null)).toBeNull();
+describe('the part to work on (fix round 2 item 2)', () => {
+  it('is the part Most to gain names, drawn in one neutral colour that is no tier colour', () => {
+    expect(NEEDS_WORK_COLOR).toBe('#f5d27a');
+    for (const tier of Object.values(labels.tiers)) expect(tier.color).not.toBe(NEEDS_WORK_COLOR);
+    expect(scoreCopy.gainCue(88)).toBe('+88');
   });
 });
 
@@ -213,9 +214,18 @@ describe('the card’s words (fix round 1 items 3 and 4)', () => {
     expect(scoreCopy.experienceBreakdown(1, 1, 1)).toBe('1 dungeon · 1 raid boss · 1 alt');
   });
 
-  it('captions the card with its date', () => {
-    expect(scoreCopy.caption('4 Nov')).toBe('Your whole record, as of 4 Nov.');
-    expect(scoreCopy.caption(null)).toBe('Your whole record.');
+  it('captions the card with its date, saying "Your" only to the owner (fix round 2 item 1)', () => {
+    expect(scoreCopy.caption('4 Nov', true)).toBe('Your whole record, as of 4 Nov.');
+    expect(scoreCopy.caption('4 Nov', false)).toBe('Whole record, as of 4 Nov.');
+    expect(scoreCopy.caption(null, true)).toBe('Your whole record.');
+    expect(scoreCopy.caption(null, false)).toBe('Whole record.');
+  });
+
+  it('labels the fifth part Preparation, keeping the API key discipline (fix round 2 item 11)', () => {
+    const fifth = scoreCopy.components[4];
+    expect(fifth.key).toBe('discipline');
+    expect(fifth.label).toBe('Preparation');
+    expect(fifth.moves.startsWith('Flask, food and enchants on every logged pull')).toBe(true);
   });
 });
 

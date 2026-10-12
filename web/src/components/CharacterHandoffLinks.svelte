@@ -8,7 +8,17 @@
   import { plannerCodeHref, simCodeHref } from '../lib/handoff-links';
   import type { CharacterPath } from '../lib/characters';
 
-  let { path, apiBase = undefined }: { path: CharacterPath; apiBase?: string } = $props();
+  let {
+    path,
+    apiBase = undefined,
+    showNeedsExport = true,
+  }: {
+    path: CharacterPath;
+    apiBase?: string;
+    /** False on a profile the viewer does not own (fix round 2 item 1): "No export yet · paste
+     *  it here" is an instruction to the character's owner, not to a visitor. */
+    showNeedsExport?: boolean;
+  } = $props();
 
   let code = $state<string | null>(null);
   let status = $state<'loading' | 'ready'>('loading');
@@ -40,7 +50,7 @@
     <a class={LINK} href={plannerCodeHref(code)} data-testid="character-open-planner"
       >{handoffCopy.openInPlanner}</a
     >
-  {:else}
+  {:else if showNeedsExport}
     <span class="text-muted text-[13px]" data-testid="character-needs-addon">
       {handoffCopy.needsExportLead}
       <a class="text-text inline-flex min-h-11 items-center underline md:min-h-0" href={handoffCopy.pasteHref}

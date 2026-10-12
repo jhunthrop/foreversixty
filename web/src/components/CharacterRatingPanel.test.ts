@@ -27,7 +27,7 @@ import { describe, expect, it } from 'vitest';
 import labels from '../../../docs/contracts/fixtures/score-labels.json';
 import { ratingCopy } from '../lib/rating/copy';
 import { scoreCopy } from '../lib/score/copy';
-import type { ForeverScore } from '../lib/score/score';
+import { NEEDS_WORK_COLOR, type ForeverScore } from '../lib/score/score';
 import CharacterRatingPanel from './CharacterRatingPanel.svelte';
 
 const PATH = { region: 'us' as const, ruleset: 'hardcore' as const, slug: 'elyra-duskvale' };
@@ -80,26 +80,37 @@ describe('CharacterRatingPanel Forever Score card', () => {
       expect(card.split(' '), token).toContain(token);
     }
     expect(card).toContain('shadow-[inset_0_1px_0_rgba(229,185,85,.35)]');
+    // Fix round 2 item 4: no fixed minimum height; the no-logs card takes the scored shape.
+    expect(card).not.toContain('min-h-');
   });
 
-  it('leads with the badge, "of 2100", then "Epic · as of 4 Nov"', () => {
+  it('leads with the 48px number, "of 2100" and the tier; "as of" once, in the caption', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
-    expect(body).toMatch(/data-testid="score-badge"[^>]*>1830</);
+    expect(body).toMatch(/class="[^"]*md:text-\[48px\][^"]*"[^>]*data-testid="score-badge"[^>]*>1830</);
     expect(body).toContain(`color: ${labels.tiers.epic.color}`);
     expect(body).toContain(scoreCopy.outOf(2100));
-    const tier = /data-testid="forever-score-tier"[\s\S]*?<\/span>\s*<\/div>/.exec(body)?.[0] ?? '';
-    expect(text(tier)).toContain(`${labels.tiers.epic.label} · as of 4 Nov`);
-    // The word "Epic" at body size takes the lightened text variant, not the 3.9:1 base colour.
-    expect(tier).toContain('color: #b866f5');
-    // The card comes before the execution rating's own block.
+    expect(body).toMatch(/style="color: #b866f5" data-testid="forever-score-tier">Epic</);
+    expect(body.match(/as of 4 Nov/g)).toHaveLength(1);
     expect(body.indexOf('data-testid="forever-score"')).toBeLessThan(
       body.indexOf('data-testid="character-rating-loading"'),
     );
   });
 
-  it('captions the heading with "Your whole record, as of 4 Nov."', () => {
+  it('says "Your whole record" only to the owner (fix round 2 item 1)', () => {
+    const visitor = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } }).body;
+    expect(visitor).toContain('>Whole record, as of 4 Nov.<');
+    expect(visitor).not.toContain('Your whole record');
+    const owner = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED, owned: true } }).body;
+    expect(owner).toContain('>Your whole record, as of 4 Nov.<');
+  });
+
+  it('puts the tier strip under the number, current tier marked', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
-    expect(body).toContain('Your whole record, as of 4 Nov.');
+    expect(body.indexOf('data-testid="score-badge"')).toBeLessThan(body.indexOf('data-testid="tier-strip"'));
+    expect(body.indexOf('data-testid="tier-strip"')).toBeLessThan(
+      body.indexOf('data-testid="forever-score-gear"'),
+    );
+    expect(body).toMatch(/aria-current="true"[^>]*data-testid="tier-strip-epic"/);
   });
 
   it('lists the five parts with the addon’s labels, their points and ceilings', () => {
@@ -111,87 +122,108 @@ describe('CharacterRatingPanel Forever Score card', () => {
       last = at;
       expect(body).toContain(component.label);
     }
+    expect(labels.components[4].label).toBe('Preparation');
     expect(body).toContain(scoreCopy.ofMax(412, 500));
     expect(body).toContain(scoreCopy.ofMax(78, 100));
-    // 412 of 500 is a bar 82.4% full.
     expect(body).toContain('width: 82.4%');
   });
 
-  it('draws the weakest share in the tier colour and the other four in 60% gold', () => {
+  it('marks the part Most to gain names, in the one neutral colour with "+88" at the row end (item 2)', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
-    // Discipline, 78 of 100, is the smallest share.
-    const discipline = /<li[^>]*data-testid="forever-score-discipline"[\s\S]*?<\/li>/.exec(body)?.[0] ?? '';
-    expect(discipline).toContain('data-weakest="true"');
-    expect(discipline).toContain(`width: 78%; background-color: ${labels.tiers.epic.color}`);
-    for (const key of ['gear', 'experience', 'parses', 'attendance']) {
+    // Gear has the largest gap (88); Preparation's 78 of 100 is a smaller share but a smaller gap.
+    const gear = /<li[^>]*data-testid="forever-score-gear"[\s\S]*?<\/li>/.exec(body)?.[0] ?? '';
+    expect(gear).toContain('data-needs-work="true"');
+    expect(gear).toContain(`width: 82.4%; background-color: ${NEEDS_WORK_COLOR}`);
+    expect(gear).toMatch(/aria-label="88 points to gain" data-testid="forever-score-gain-cue">\+88</);
+    for (const key of ['experience', 'parses', 'attendance', 'discipline']) {
       const row =
         new RegExp(`<li[^>]*data-testid="forever-score-${key}"[\\s\\S]*?</li>`).exec(body)?.[0] ?? '';
       expect(row, key).toContain('bg-gold/60');
-      expect(row, key).not.toContain('data-weakest');
+      expect(row, key).not.toContain('data-needs-work');
+      for (const tier of Object.values(labels.tiers)) expect(row, key).not.toContain(tier.color);
     }
+    const line = /<p[^>]*data-testid="forever-score-most-to-gain"[\s\S]*?<\/p>/.exec(body)?.[0] ?? '';
+    expect(text(line).replace(/\s+/g, ' ').trim()).toBe('Most to gain: Gear, 88 below its top.');
   });
 
-  it('breaks Experience down under its bar: "14 dungeons · 0 raid bosses · 2 alts"', () => {
+  it('on a tie, marks and names the earlier part', () => {
+    const tie: ForeverScore = {
+      ...SCORED,
+      components: { gear: 400, experience: 600, parses: 600, attendance: 200, discipline: 100 },
+    };
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: tie } });
+    expect(body.match(/data-needs-work="true"/g)).toHaveLength(1);
+    expect(body).toMatch(/data-testid="forever-score-gear"\s+data-needs-work="true"/);
+    expect(text(body)).toContain('Most to gain: Gear, 100 below its top.');
+  });
+
+  it('with every part at its top, marks nothing and says nothing', () => {
+    const full: ForeverScore = {
+      ...SCORED,
+      score: 2100,
+      tier: 'legendary',
+      components: { gear: 500, experience: 700, parses: 600, attendance: 200, discipline: 100 },
+    };
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: full } });
+    expect(body).not.toContain('data-needs-work');
+    expect(body).not.toContain('forever-score-gain-cue');
+    expect(body).not.toContain('forever-score-most-to-gain');
+  });
+
+  it('breaks Experience down under its bar at 12px: "14 dungeons · 0 raid bosses · 2 alts"', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
-    const experience = /<li[^>]*data-testid="forever-score-experience"[\s\S]*?<\/li>/.exec(body)?.[0] ?? '';
-    expect(experience).toContain('14 dungeons · 0 raid bosses · 2 alts');
+    expect(body).toMatch(/class="[^"]*text-\[12px\]"[^>]*data-testid="forever-score-experience-detail"/);
+    expect(body).toContain('14 dungeons · 0 raid bosses · 2 alts');
   });
 
-  it('says what has the most to gain, linking Gear to the spec’s best-in-slot page when known', () => {
+  it('links Gear to the spec’s best-in-slot page when known, else to the explainer', () => {
     const withSpec = render(CharacterRatingPanel, {
       props: { path: PATH, forever: SCORED, bisHref: '/bis/priest/holy' },
     }).body;
-    const line = /<p[^>]*data-testid="forever-score-most-to-gain"[\s\S]*?<\/p>/.exec(withSpec)?.[0] ?? '';
-    expect(text(line).replace(/\s+/g, ' ').trim()).toBe('Most to gain: Gear, 88 below its top.');
-    expect(line).toContain('href="/bis/priest/holy"');
-
+    expect(withSpec).toMatch(/data-testid="forever-score-most-to-gain"[\s\S]*?href="\/bis\/priest\/holy"/);
     const noSpec = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } }).body;
     expect(noSpec).toMatch(/data-testid="forever-score-most-to-gain"[\s\S]*?href="\/ratings#forever-score"/);
   });
 
-  it('draws the tier strip with the current tier marked', () => {
+  it('puts "What the score counts" in the card footer, right-aligned, at 14px with a 44px phone hit area', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
-    expect(body).toContain('data-testid="tier-strip"');
-    expect(body).toMatch(/aria-current="true"[^>]*data-testid="tier-strip-epic"/);
-    expect(body).not.toMatch(/aria-current="true"[^>]*data-testid="tier-strip-rare"/);
+    const card = /data-testid="forever-score-card"[\s\S]*$/.exec(body)?.[0] ?? '';
+    const link =
+      /<a class="([^"]*)" href="\/ratings#forever-score">What the score counts<\/a>/.exec(card)?.[1] ?? '';
+    expect(link.split(' ')).toEqual(
+      expect.arrayContaining(['ml-auto', 'text-[14px]', 'min-h-11', 'md:min-h-0']),
+    );
   });
 
-  it('a 200 with a null score is the same card: "No logs yet", the no-logs line in muted, what to do', () => {
-    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: UNSCORED } });
+  it('no logs, visitor: the same shape, empty tracks with a dash, and "Look up another character"', () => {
+    const { body } = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: UNSCORED, name: 'Elyra Duskvale' },
+    });
     expect(body).toContain('data-testid="forever-score-card"');
-    expect(body).toContain(scoreCopy.noLogsTitle);
-    expect(body).toContain('data-testid="forever-score-none"');
-    expect(body).toContain(labels.noLogs);
-    expect(body).toMatch(/class="[^"]*text-muted[^"]*"[^>]*data-testid="forever-score-none"/);
-    expect(text(body)).toContain('Check the name and ruleset, or add a log of this character.');
-    expect(body).toContain(`href="${scoreCopy.noLogsCheckHref}"`);
+    expect(body).toMatch(/data-testid="forever-score-empty"[\s\S]*?No logs yet/);
+    expect(body).toMatch(/data-testid="forever-score-empty-max"[^>]*>of 2100</);
+    for (const component of labels.components) {
+      const row = new RegExp(
+        `<li[^>]*data-testid="forever-score-empty-${component.key}"[\\s\\S]*?</li>`,
+      ).exec(body)?.[0];
+      expect(row, component.key).toContain(component.label);
+      expect(row, component.key).toContain('>–<');
+    }
+    expect(body).toContain('Check the name and ruleset, or look up another character.');
+    expect(body).toMatch(
+      /href="\/\?character=Elyra%20Duskvale#lookup"[^>]*data-testid="forever-score-empty-action">Look up another character</,
+    );
+    // The addon's no-logs sentence lives in the tooltip mock, not here.
+    expect(body).not.toContain(labels.noLogs);
     expect(body).not.toContain('score-badge');
-    expect(body).not.toContain('forever-score-gear');
-    expect(body).not.toContain('tier-strip');
-    for (const tier of Object.values(labels.tiers)) expect(body).not.toContain(tier.label);
     expect(body).not.toMatch(/>\s*0\s*</);
   });
 
-  it('keeps one minimum height for both states, so the card does not change size', () => {
-    const scored = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } }).body;
-    const none = render(CharacterRatingPanel, { props: { path: PATH, forever: null } }).body;
-    const cardClass = (html: string): string =>
-      /<div class="([^"]*)" data-testid="forever-score-card"/.exec(html)?.[1] ?? '';
-    expect(cardClass(scored)).toContain('md:min-h-[244px]');
-    expect(cardClass(none)).toBe(cardClass(scored));
-  });
-
-  it('a character the API has no record of (null) reads the same', () => {
-    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: null } });
-    expect(body).toContain(labels.noLogs);
-    expect(body).not.toContain('score-badge');
-  });
-
-  it('links "What the score counts" at 14px with a 44px phone hit area', () => {
-    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
-    const link =
-      /<a class="([^"]*)" href="\/ratings#forever-score">What the score counts<\/a>/.exec(body)?.[1] ?? '';
-    expect(link.split(' ')).toEqual(expect.arrayContaining(['text-[14px]', 'min-h-11', 'md:min-h-0']));
+  it('no logs, owner: "Upload logs" to setup, since the companion uploads fights automatically', () => {
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: null, owned: true } });
+    expect(body).toContain('The companion uploads your fights automatically.');
+    expect(body).toMatch(/href="\/setup"[^>]*data-testid="forever-score-empty-action">Upload logs</);
+    expect(body).toContain('>Your whole record.<');
   });
 
   it('draws no score card at all where the caller passes none (the account page)', () => {

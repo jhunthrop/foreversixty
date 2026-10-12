@@ -17,3 +17,20 @@ test('typing a name and submitting lands on the character’s profile', async ({
   await expect(page).toHaveURL(new RegExp(`${CHARACTER_PATH}$`));
   await expect(page.getByTestId('character-name')).toContainText('Elyra Duskvale');
 });
+
+test('"Look up another character" lands on the home lookup with the name filled in', async ({ page }) => {
+  await page.goto('/?character=Elyra%20Duskvale#lookup');
+  await expect(page.getByTestId('home-character-search').getByRole('searchbox')).toHaveValue(
+    'Elyra Duskvale',
+  );
+});
+
+test('on a phone the lookup sits above the beta card', async ({ page }) => {
+  test.skip(test.info().project.name !== 'mobile', 'phone layout only');
+  await page.goto('/');
+  const lookup = await page.getByTestId('home-lookup-cell').boundingBox();
+  const beta = await page.getByTestId('home-example-block').boundingBox();
+  expect(lookup).not.toBeNull();
+  expect(beta).not.toBeNull();
+  expect((lookup?.y ?? 0) < (beta?.y ?? 0)).toBe(true);
+});

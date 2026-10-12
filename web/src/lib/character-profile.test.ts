@@ -1,6 +1,13 @@
 // web/src/lib/character-profile.test.ts
 import { describe, expect, it } from 'vitest';
-import { bisHref, newestSpec, specClassLabel } from './character-profile';
+import {
+  amountHeader,
+  bestRepeatsHistory,
+  bisHref,
+  characterTableCopy,
+  newestSpec,
+  specClassLabel,
+} from './character-profile';
 import type { CharacterFight } from './rankings/api';
 
 const fight = (spec?: string): CharacterFight => ({
@@ -42,5 +49,26 @@ describe('bisHref', () => {
     expect(bisHref('Hunter', 'Beast Mastery')).toBe('/bis/hunter/beast-mastery');
     expect(bisHref('Priest', null)).toBeNull();
     expect(bisHref(undefined, 'Holy')).toBeNull();
+  });
+});
+
+describe('the fight tables (fix round 2 item 6)', () => {
+  it('heads the amount column with the metric every row shares, else both', () => {
+    expect(amountHeader([{ metric: 'hps' }, { metric: 'hps' }])).toBe('HPS');
+    expect(amountHeader([{ metric: 'dps' }])).toBe('DPS');
+    expect(amountHeader([{ metric: 'dps' }, { metric: 'hps' }])).toBe('DPS or HPS');
+  });
+
+  it('knows when "Best per encounter" only repeats every ranked fight', () => {
+    const a = { report_id: 'r1', fight_index: 3 };
+    const b = { report_id: 'r2', fight_index: 1 };
+    const c = { report_id: 'r3', fight_index: 2 };
+    expect(bestRepeatsHistory([a, b], [b, a])).toBe(true);
+    expect(bestRepeatsHistory([a], [a, b])).toBe(false);
+    expect(bestRepeatsHistory([a, c], [a, b])).toBe(false);
+  });
+
+  it('names the columns Boss, Spec, Parse %, Date, Execution', () => {
+    expect(Object.values(characterTableCopy)).toEqual(['Boss', 'Spec', 'Parse %', 'Date', 'Execution']);
   });
 });

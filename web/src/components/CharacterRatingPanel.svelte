@@ -2,19 +2,18 @@
 <!-- The character page's rating panel. At the top, the Forever Score card
      (ForeverScoreCard.svelte, spec 2026-10-11 §4.6): plain data from the caller
      (Character.svelte already holds the GET /v1/characters/... answer that carries it).
-     Beneath it the execution rating: overall score, six-segment bar (drawn only when some
-     segment has a score), a trend sparkline once there are enough fights, and the best/worst
-     component -- spec §6.2. That part fetches independently, the same self-contained pattern
+     Beneath it the execution rating in the same card shell (RatingCard.svelte, fix round 2
+     item 6): "65 of 100", the six-segment bar when any segment has a score, the labelled trend
+     sparkline once there are enough fights, and the weakest part of a fight -- spec §6.2. That part fetches independently, the same self-contained pattern
      Character.svelte's own $effect already uses for fetchCharacter. -->
 <script lang="ts">
   import { fetchCharacterRating, RankingsError } from '../lib/rankings/api';
-  import { ratingCopy, componentLabel, MIN_TREND_SAMPLES } from '../lib/rating/copy';
-  import { RATING_COMPONENT_ORDER } from '../lib/rating/types';
+  import { ratingCopy } from '../lib/rating/copy';
   import type { ForeverScore } from '../lib/score/score';
   import type { CharacterPath } from '../lib/characters';
-  import type { CharacterRating, RatingComponent } from '../lib/rating/types';
+  import type { CharacterRating } from '../lib/rating/types';
   import ForeverScoreCard from './ForeverScoreCard.svelte';
-  import RatingTrend from './RatingTrend.svelte';
+  import RatingCard from './RatingCard.svelte';
   import EmptyState from './ui/EmptyState.svelte';
 
   let {
@@ -23,6 +22,8 @@
     heading = true,
     forever = undefined,
     bisHref = null,
+    owned = false,
+    name = '',
   }: {
     path: CharacterPath;
     apiBase?: string;
@@ -33,12 +34,12 @@
     forever?: ForeverScore | null;
     /** The spec's best-in-slot page, when known (the score card's "Most to gain: Gear"). */
     bisHref?: string | null;
+    /** The viewer's own character: the captions say "Your" only then (fix round 2 item 1). */
+    owned?: boolean;
+    /** The character's name, for the no-logs card's "Look up another character". */
+    name?: string;
   } = $props();
 
-  /** A segment's fill, 0 when the part was not scored. */
-  function segmentWidth(part: RatingComponent | undefined): number {
-    return part && !part.excluded && part.score !== null ? part.score : 0;
-  }
   let data = $state<CharacterRating | null>(null);
   let status = $state<'loading' | 'ready' | 'hidden'>('loading');
 
@@ -68,7 +69,7 @@
 </script>
 
 {#if forever !== undefined}
-  <ForeverScoreCard {forever} {bisHref} />
+  <ForeverScoreCard {forever} {bisHref} {owned} {name} />
 {/if}
 
 {#if status === 'loading'}
@@ -87,7 +88,9 @@
   <section class="flex flex-col gap-2" data-testid="character-rating">
     {#if heading}
       <h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>
-      <p class="text-muted text-[13px]" data-testid="character-rating-caption">{ratingCopy.panelCaption}</p>
+      <p class="text-muted text-[13px]" data-testid="character-rating-caption">
+        {ratingCopy.panelCaption(owned)}
+      </p>
     {/if}
     {#if data.sample_size === 0}
       <EmptyState
@@ -96,48 +99,13 @@
         testid="character-rating-empty"
       />
     {:else}
-      {#if data.latest !== null}
-        {@const latest = data.latest}
-        {@const segments = RATING_COMPONENT_ORDER.map((name) => ({
-          name,
-          width: segmentWidth(latest.components.find((c) => c.name === name)),
-        }))}
-        <div class="flex items-center gap-4">
-          <span class="text-gold tabular text-[32px] font-bold" data-testid="character-rating-overall">
-            {Math.round(latest.overall)}
-          </span>
-          {#if segments.some((segment) => segment.width > 0)}
-            <span
-              class="flex w-32 shrink-0 gap-[2px]"
-              aria-hidden="true"
-              data-testid="character-rating-segments"
-            >
-              {#each segments as segment (segment.name)}
-                <span class="bg-line-soft h-2 flex-1" title={componentLabel(segment.name)}
-                  ><span class="bg-gold block h-full" style={`width: ${segment.width}%`}></span></span
-                >
-              {/each}
-            </span>
-          {/if}
-        </div>
-      {/if}
-      {#if data.sample_size < MIN_TREND_SAMPLES}
-        <p class="text-muted text-[13px]" data-testid="character-rating-too-few">
-          {ratingCopy.trendTooFew(data.sample_size)}
-        </p>
-      {:else}
-        <RatingTrend points={data.trend} />
-      {/if}
-      {#if data.best_component !== '' || data.worst_component !== ''}
-        <p class="text-muted text-[13px]">
-          {#if data.best_component !== ''}Best: {componentLabel(data.best_component)}.{/if}
-          {#if data.worst_component !== ''}Needs work: {componentLabel(data.worst_component)}.{/if}
-        </p>
-      {/if}
+      <RatingCard
+        overall={data.latest === null ? null : data.latest.overall}
+        components={data.latest?.components ?? []}
+        trend={data.trend}
+        sampleSize={data.sample_size}
+        worst={data.worst_component}
+      />
     {/if}
-    <a
-      class="text-gold inline-flex min-h-11 w-fit items-center text-[14px] underline-offset-2 hover:underline md:min-h-0"
-      href="/ratings">{ratingCopy.explainLink}</a
-    >
   </section>
 {/if}

@@ -6,23 +6,40 @@
 // surface ("How is this calculated?"). A content page: no client JavaScript of its own
 // beyond the layout's character selector island.
 //
-// Task L8.2 ruling 6 and fix round 1 item 7: the page covers both numbers, each in its own
-// section behind a two-item jump row. The Forever Score first -- what it is, what moves each
-// of its five parts, the tiers as a strip (a visually hidden table carries the same facts for
-// assistive tech), how logs get here -- then the Performance Rating, its headings one level
-// down. The labels are the addon's own, from the shared fixture (lib/score/copy.ts); the
-// example badge and the strip render statically, so the page still ships no island of its
-// own. The page sits on the site column's own gutter, with prose held to about 70 characters.
+// Task L8.2 ruling 6 and fix rounds 1-2: the page covers both numbers, each in its own
+// section behind a two-item jump row. The Forever Score leads with one sentence and the
+// profile's own card as a sample, then what it is, then what moves each part (proportional
+// bars, the tier strip beside them, a visually hidden tier table for assistive tech) and how
+// logs get here. The Performance Rating follows with its bridge sentence and its own sample
+// card, its headings one level down. Labels are the addon's, from the shared fixture
+// (lib/score/copy.ts); every card renders statically, so the page still ships no island.
 import Base from '../layouts/Base.astro';
 import Panel from '../components/Panel.astro';
-import ScoreBadge from '../components/ScoreBadge.svelte';
+import ForeverScoreCard from '../components/ForeverScoreCard.svelte';
+import RatingCard from '../components/RatingCard.svelte';
 import TierStrip from '../components/TierStrip.svelte';
 import { ratingCopy } from '../lib/rating/copy';
 import { scoreCopy } from '../lib/score/copy';
-import { COMPONENT_MAX, shortDate, tierLabel, tierRanges, tierTextColor } from '../lib/score/score';
+import { COMPONENT_MAX, tierLabel, tierRanges, type ForeverScore } from '../lib/score/score';
+import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 
-/** The example the explainer shows: the number, tier and date the profile and tooltip read. */
-const example = { score: 1830, tier: 'epic', asOf: shortDate('2026-11-04') ?? '' };
+/** The sample the page opens with: the same numbers the profile and the tooltip read. */
+const sampleScore: ForeverScore = {
+  score: 1830,
+  tier: 'epic',
+  as_of: '2026-11-04',
+  components: { gear: 412, experience: 620, parses: 540, attendance: 180, discipline: 78 },
+  experience: { dungeons: 14, raid_kills: 0, alts: 2 },
+};
+
+/** The rating's sample: six fights climbing to 65. */
+const sampleTrend = [40, 45, 50, 55, 60, 65].map((overall, index) => ({
+  fought_at: `2026-12-0${index + 1}T00:00:00Z`,
+  overall,
+}));
+
+/** The largest ceiling, so each part's bar is drawn in proportion to what it can give. */
+const LARGEST_PART = Math.max(...Object.values(COMPONENT_MAX));
 
 const weights = [
   { component: 'Output', dps: 35, healer: 30, tank: 10 },
@@ -65,94 +82,99 @@ const MEASURE = 'max-w-[70ch]';
       </nav>
     </header>
 
-    <section
-      id="forever-score"
-      class="flex scroll-mt-6 flex-col gap-6 md:gap-8"
-      data-testid="ratings-forever-score"
-    >
-      <header class={`flex flex-col gap-3 ${MEASURE}`}>
+    <section id="forever-score" class="flex scroll-mt-6 flex-col gap-6" data-testid="ratings-forever-score">
+      <header class={`flex flex-col gap-2 ${MEASURE}`}>
         <h2 class="section-title text-[18px]">{scoreCopy.explainerHeading}</h2>
         <p class="text-muted text-[13px]" data-testid="ratings-forever-caption">
           {scoreCopy.explainerScoreCaption}
         </p>
-        <p class="text-[15px] leading-relaxed" data-testid="ratings-forever-lead">
+        <p class="text-[15px] leading-[22px]" data-testid="ratings-forever-lead">
           {scoreCopy.explainerLead}
         </p>
-        <p class="text-[14px] leading-relaxed">{scoreCopy.explainerWhat}</p>
-        <p class="text-[14px] leading-relaxed" data-testid="ratings-forever-launch">
-          {scoreCopy.explainerLaunch}
-        </p>
-        <div
-          class="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3"
-          data-testid="ratings-forever-example"
-        >
-          <span class="pill pill-sample">{scoreCopy.samplePill}</span>
-          <span class="text-muted text-[13px]">{scoreCopy.explainerExample}</span>
-          <span class="flex items-baseline gap-2">
-            <ScoreBadge score={example.score} tier={example.tier} />
-            <span class="text-[14px] font-semibold" style={`color: ${tierTextColor(example.tier)}`}>
-              {tierLabel(example.tier)}
-            </span>
-            <span class="text-muted text-[13px]">{scoreCopy.asOf(example.asOf)}</span>
-          </span>
-        </div>
       </header>
 
-      <Panel title={scoreCopy.explainerPartsHeading} level={3}>
-        <ul class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed md:p-4">
-          {scoreCopy.components.map((component) => (
-            <li class={MEASURE} data-testid={`ratings-forever-score-${component.key}`}>
-              <strong>{component.label}</strong>
-              <span class="text-muted tabular ml-2 font-mono text-[13px]">
-                {scoreCopy.upTo(COMPONENT_MAX[component.key])}
-              </span>
-              <span class="block">{component.moves}</span>
-            </li>
-          ))}
-        </ul>
-      </Panel>
+      <div data-testid="ratings-forever-sample">
+        <ForeverScoreCard forever={sampleScore} heading={false} sample />
+      </div>
 
-      <Panel title={scoreCopy.explainerTiersHeading} level={3}>
-        <div class="flex flex-col gap-3 p-3 md:p-4">
-          <div class="max-w-[520px]">
+      <div class={`flex flex-col gap-3 ${MEASURE}`}>
+        <p class="text-[14px] leading-[22px]" data-testid="ratings-forever-what">
+          {scoreCopy.explainerWhat}
+        </p>
+        <p class="text-[14px] leading-[22px]" data-testid="ratings-forever-launch">
+          {scoreCopy.explainerLaunch}
+        </p>
+      </div>
+
+      <Panel title={scoreCopy.explainerPartsHeading} level={3}>
+        <div class="grid gap-6 p-3 md:p-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
+          <ul class="flex flex-col gap-4 text-[14px] leading-[22px]">
+            {scoreCopy.components.map((component) => (
+              <li
+                class={`flex flex-col gap-1 ${MEASURE}`}
+                data-testid={`ratings-forever-score-${component.key}`}
+              >
+                <span class="flex items-baseline gap-2">
+                  <strong>{component.label}</strong>
+                  <span class="text-muted tabular font-mono text-[13px]">
+                    {scoreCopy.upTo(COMPONENT_MAX[component.key])}
+                  </span>
+                </span>
+                <span class="bg-line-soft block h-2 max-w-[360px]" aria-hidden="true">
+                  <span
+                    class="bg-gold/60 block h-full"
+                    style={`width: ${Math.round((COMPONENT_MAX[component.key] / LARGEST_PART) * 1000) / 10}%`}
+                    data-testid={`ratings-forever-bar-${component.key}`}
+                  />
+                </span>
+                <span class="block">{component.moves}</span>
+              </li>
+            ))}
+          </ul>
+          <div class="flex flex-col gap-3" data-testid="ratings-forever-tiers-block">
             <TierStrip />
-          </div>
-          <table class="sr-only" data-testid="ratings-forever-tiers">
-            <thead>
-              <tr>
-                <th scope="col">{scoreCopy.tierColumn}</th>
-                <th scope="col">{scoreCopy.rangeColumn}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tierRanges().map(({ tier, range }) => (
+            <table class="sr-only" data-testid="ratings-forever-tiers">
+              <thead>
                 <tr>
-                  <th scope="row">{tierLabel(tier)}</th>
-                  <td>{range}</td>
+                  <th scope="col">{scoreCopy.tierColumn}</th>
+                  <th scope="col">{scoreCopy.rangeColumn}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <p class={`text-muted text-[13px] ${MEASURE}`} data-testid="ratings-forever-tiers-note">
-            {scoreCopy.tiersNote}
-          </p>
+              </thead>
+              <tbody>
+                {tierRanges().map(({ tier, range }) => (
+                  <tr>
+                    <th scope="row">{tierLabel(tier)}</th>
+                    <td>{range}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p class="text-muted text-[13px] leading-[20px]" data-testid="ratings-forever-tiers-note">
+              {scoreCopy.tiersNote}
+            </p>
+          </div>
         </div>
       </Panel>
 
       <Panel title={scoreCopy.explainerLogsHeading} level={3}>
-        <p class={`p-3 text-[14px] leading-relaxed md:p-4 ${MEASURE}`} data-testid="ratings-forever-logs">
-          {scoreCopy.explainerLogsBody}{' '}
-          <a class="text-gold underline underline-offset-2" href={scoreCopy.explainerLogsHref}>
-            {scoreCopy.explainerLogsLink}
+        <div class="flex flex-col items-start gap-3 p-3 md:flex-row md:items-center md:gap-6 md:p-4">
+          <p class={`text-[14px] leading-[22px] ${MEASURE}`} data-testid="ratings-forever-logs">
+            {scoreCopy.explainerLogsBody}
+          </p>
+          <a
+            class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong shrink-0 px-4`}
+            href={scoreCopy.explainerLogsHref}
+            data-testid="ratings-forever-logs-button"
+          >
+            {scoreCopy.explainerLogsButton}
           </a>
-          .
-        </p>
+        </div>
       </Panel>
     </section>
 
     <section
       id="performance-rating"
-      class="flex scroll-mt-6 flex-col gap-6 md:gap-8"
+      class="flex scroll-mt-6 flex-col gap-6"
       data-testid="ratings-performance-rating"
     >
       <header class={`flex flex-col gap-2 ${MEASURE}`}>
@@ -160,13 +182,30 @@ const MEASURE = 'max-w-[70ch]';
         <p class="text-muted text-[13px]" data-testid="ratings-rating-caption">
           {scoreCopy.explainerRatingCaption}
         </p>
+        <p class="text-[15px] leading-[22px]" data-testid="ratings-rating-bridge">
+          {scoreCopy.explainerRatingBridge}
+          {scoreCopy.explainerPreparationShared}
+        </p>
+      </header>
+
+      <div class="max-w-[560px]" data-testid="ratings-rating-sample">
+        <RatingCard
+          overall={65}
+          trend={sampleTrend}
+          sampleSize={sampleTrend.length}
+          worst="activity"
+          sample
+        />
+      </div>
+
+      <div class={`flex flex-col gap-2 ${MEASURE}`}>
         <h3 class="section-title text-[16px]">How ratings work</h3>
         <p class="text-muted text-[14px] leading-relaxed" data-testid="ratings-visibility">
           A rating comes only from a public report, the same way a Warcraft Logs parse does. There is no
           cross-guild leaderboard of ratings — a rating is one fight's roster, or one character's own history,
           never a ranked list of players against each other site-wide.
         </p>
-      </header>
+      </div>
 
       <Panel title="One number first, then six parts" level={3}>
         <div class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed">

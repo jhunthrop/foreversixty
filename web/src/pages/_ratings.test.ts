@@ -136,22 +136,72 @@ describe('/ratings Forever Score section', () => {
     );
   });
 
-  it('says how logs get here: the companion, what it is, and a link to setup', () => {
+  it('says how logs get here, with a "Get the companion" button beside it', () => {
     const logs = /<p[^>]*data-testid="ratings-forever-logs"[\s\S]*?<\/p>/.exec(html)?.[0] ?? '';
     expect(logs).toContain(scoreCopy.explainerLogsBody);
-    expect(logs).toContain(`href="${scoreCopy.explainerLogsHref}"`);
+    expect(html).toMatch(/href="\/setup" data-testid="ratings-forever-logs-button">Get the companion</);
     expect(html).toContain(`>${scoreCopy.explainerLogsHeading}<`);
   });
 
-  it('shows the example with the profile’s badge and the Sample pill, stacking on a phone', () => {
-    const example = /<div[^>]*data-testid="ratings-forever-example"[\s\S]*?<\/div>/.exec(html)?.[0] ?? '';
-    expect(example).toMatch(/class="pill pill-sample"[^>]*>Sample</);
-    expect(example).toMatch(/data-testid="score-badge"[^>]*>1830</);
-    expect(example).toMatch(/class="flex flex-col items-start/);
+  it('leads with one sentence and then the profile’s own card as a Sample (round 2 item 5)', () => {
+    const forever = section('forever-score');
+    const lead = forever.indexOf(scoreCopy.explainerLead);
+    const sample = forever.indexOf('data-testid="ratings-forever-sample"');
+    expect(lead).toBeGreaterThan(-1);
+    expect(sample).toBeGreaterThan(lead);
+    expect(sample).toBeLessThan(forever.indexOf(scoreCopy.explainerWhat));
+    const card = forever.slice(sample);
+    expect(card).toContain('data-testid="forever-score-card"');
+    expect(card).toMatch(/class="pill pill-sample[^"]*">Sample</);
+    expect(card).toMatch(/data-testid="score-badge"[^>]*>1830</);
+  });
+
+  it('says "0 to 2100" once', () => {
+    expect(section('forever-score').match(/0 to 2100/g)).toHaveLength(1);
+  });
+
+  it('draws each part’s bar in proportion to its ceiling, with the tier strip in the same panel', () => {
+    const widths = { gear: 71.4, experience: 100, parses: 85.7, attendance: 28.6, discipline: 14.3 };
+    for (const [key, width] of Object.entries(widths)) {
+      expect(html).toMatch(new RegExp(`style="width: ${width}%" data-testid="ratings-forever-bar-${key}"`));
+    }
+    const panel =
+      /What moves each part[\s\S]*?data-testid="ratings-forever-tiers-note"/.exec(html)?.[0] ?? '';
+    expect(panel).toContain('data-testid="ratings-forever-score-gear"');
+    expect(panel).toContain('data-testid="tier-strip"');
+    expect(html).not.toMatch(/>Tiers<\/h3>/);
+  });
+
+  it('reads the Gear blurb by level band', () => {
+    expect(scoreCopy.components[0].moves).toContain(
+      'How close your gear is to your spec’s best set for your level (20, 30, 40, 50 or 60)',
+    );
+  });
+
+  it('bridges to the rating in one sentence, and says the two Preparations are the same thing (item 11)', () => {
+    const rating = section('performance-rating');
+    expect(rating).toContain('A rating scores one fight. The Forever Score counts all of them.');
+    expect(rating).toContain(scoreCopy.explainerPreparationShared);
+  });
+
+  it('shows a Performance Rating sample, "65 of 100" with a labelled sparkline', () => {
+    const rating = section('performance-rating');
+    const sample = rating.slice(rating.indexOf('data-testid="ratings-rating-sample"'));
+    expect(sample).toMatch(/data-testid="character-rating-overall">65</);
+    expect(sample).toContain('>of 100<');
+    expect(sample).toMatch(/data-testid="rating-card-trend-label">\s*Last 6 fights\s*</);
+    expect(sample).toMatch(/class="pill pill-sample[^"]*">Sample</);
+  });
+
+  it('leaves 24px between the rating’s opening and "How ratings work"', () => {
+    expect(html).toMatch(/<section[^>]*id="performance-rating"[^>]*class="[^"]*gap-6[^"]*"/);
   });
 
   it('takes its labels from the fixture and its words from the copy file, never a literal', () => {
-    for (const component of labels.components) expect(source).not.toContain(`'${component.label}'`);
+    // "Preparation" is also the rating's own component in its weights table, on purpose (item 11).
+    for (const component of labels.components.filter((c) => c.key !== 'discipline')) {
+      expect(source).not.toContain(`'${component.label}'`);
+    }
     expect(source).not.toContain(scoreCopy.explainerWhat);
     expect(source).not.toContain(scoreCopy.explainerLead);
   });

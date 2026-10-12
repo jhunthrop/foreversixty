@@ -15,9 +15,23 @@
     type CharacterPath,
   } from '../lib/characters';
   import { formatAmount, percentileToken, rowLink } from '../lib/report/format';
-  import { encounterSlug, fetchCharacter, RankingsError, type CharacterPage } from '../lib/rankings/api';
+  import {
+    encounterSlug,
+    fetchCharacter,
+    RankingsError,
+    type CharacterFight,
+    type CharacterPage,
+  } from '../lib/rankings/api';
+  import { formatDayMonthYear } from '../lib/dates';
   import { RANKING_METRICS } from '../lib/rankings/url';
-  import { bisHref, newestSpec, specClassLabel } from '../lib/character-profile';
+  import {
+    amountHeader,
+    bestRepeatsHistory,
+    bisHref,
+    characterTableCopy,
+    newestSpec,
+    specClassLabel,
+  } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
   import { foreverOf, lastAddonExportAt, ownCharacter } from '../lib/score/score';
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
@@ -158,7 +172,7 @@
         {/snippet}
       </CharacterIdentity>
     </header>
-    <CharacterRatingPanel path={resolved} forever={null} />
+    <CharacterRatingPanel path={resolved} forever={null} {owned} name={unloggedName} />
     <CharacterInGame forever={null} name={unloggedName} {owned} {lastSeenAt} />
   </div>
 {:else if data !== null && resolved !== null}
@@ -185,7 +199,7 @@
             </p>
           {/snippet}
         </CharacterIdentity>
-        <CharacterHandoffLinks path={resolved} />
+        <CharacterHandoffLinks path={resolved} showNeedsExport={owned} />
       </div>
       {#if data.character.render_url !== undefined}
         <img
@@ -202,6 +216,8 @@
       path={resolved}
       forever={foreverOf(data)}
       bisHref={bisHref(data.character.class, newestSpec(data))}
+      {owned}
+      name={data.character.name}
     />
 
     <CharacterInGame
@@ -212,52 +228,86 @@
       {lastSeenAt}
     />
 
-    <!-- Fix round 1 item 4: a section with no rows is absent (spec principle 2), not an empty
-         "Nothing ranked yet." under its own heading. -->
-    {#if data.best.length > 0}
+    <!-- Fix round 1 item 4: a section with no rows is absent (spec principle 2). Fix round 2
+         item 6: both tables share one column order under a header row -- Boss, Spec, Parse %,
+         the amount (HPS or DPS), Date, Execution -- dates read "9 Dec 2026", and "Best per
+         encounter" is left out when it would only repeat every ranked fight. -->
+    {#snippet fightHeader(rows: CharacterFight[], executionOnPhone: boolean)}
+      <li
+        class={`label text-muted border-line-soft grid min-h-9 items-end gap-3 border-b px-2 pb-2 ${executionOnPhone ? 'grid-cols-[minmax(0,1fr)_auto_auto_auto]' : 'grid-cols-[minmax(0,1fr)_auto_auto]'} md:grid-cols-[minmax(0,1fr)_112px_64px_88px_112px_72px]`}
+        aria-hidden="true"
+        data-testid="character-table-header"
+      >
+        <span>{characterTableCopy.boss}</span>
+        <span class="hidden md:inline">{characterTableCopy.spec}</span>
+        <span class="text-right">{characterTableCopy.parse}</span>
+        <span class="text-right">{amountHeader(rows)}</span>
+        <span class="hidden md:inline">{characterTableCopy.date}</span>
+        <span class={`text-right ${executionOnPhone ? '' : 'hidden md:inline'}`}
+          >{characterTableCopy.execution}</span
+        >
+      </li>
+    {/snippet}
+
+    {#snippet fightRow(
+      row: CharacterFight,
+      bossHref: string,
+      executionOnPhone: boolean,
+      executionTestid: string,
+    )}
+      <li
+        class={`border-line-soft grid min-h-11 items-center gap-3 border-b px-2 py-2 text-[14px] ${executionOnPhone ? 'grid-cols-[minmax(0,1fr)_auto_auto_auto]' : 'grid-cols-[minmax(0,1fr)_auto_auto]'} md:grid-cols-[minmax(0,1fr)_112px_64px_88px_112px_72px]`}
+      >
+        <a class="{rowLink} truncate" href={bossHref}>{row.encounter}</a>
+        <span class="text-muted hidden truncate text-[13px] md:inline">{row.spec ?? ''}</span>
+        <span
+          class="tabular text-right font-mono text-[13px]"
+          style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
+          aria-label={percentileAriaLabel(row.percentile)}
+        >
+          {row.percentile === undefined ? '' : Math.round(row.percentile)}
+        </span>
+        <a
+          class="{rowLink} tabular justify-end text-right font-mono"
+          href={`/reports/${row.report_id}?fight=${row.fight_index}`}
+          aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
+        >
+          {formatAmount(Math.round(row.value))}
+        </a>
+        <span
+          class="text-muted tabular hidden font-mono text-[13px] md:inline"
+          data-testid="character-fight-date">{formatDayMonthYear(new Date(row.fought_at))}</span
+        >
+        {#if row.execution_score === null}
+          <span
+            class={`text-muted tabular text-right font-mono text-[13px] ${executionOnPhone ? '' : 'hidden md:inline'}`}
+            title={executionTitle(null)}
+            aria-label={executionTitle(null)}
+            data-testid={executionTestid}>{executionLabel(null)}</span
+          >
+        {:else}
+          <a
+            class={`${rowLink} tabular justify-end text-right font-mono text-[13px] ${executionOnPhone ? '' : 'hidden md:inline'}`}
+            href={executionHref(row.report_id, row.fight_index)}
+            title={executionTitle(row.execution_score)}
+            data-testid={executionTestid}>{executionLabel(row.execution_score)}</a
+          >
+        {/if}
+      </li>
+    {/snippet}
+
+    {#if data.best.length > 0 && !bestRepeatsHistory(data.best, data.history)}
       <section class="flex flex-col gap-2">
         <h2 class="section-title text-[18px]">Best per encounter</h2>
         <ul class="flex flex-col" data-testid="character-best">
+          {@render fightHeader(data.best, true)}
           {#each data.best as row (`${row.encounter_id}-${row.difficulty}-${row.metric}`)}
-            <li
-              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
-            >
-              <a class="{rowLink} truncate" href={`/rankings/${encounterSlug(row.encounter)}`}>
-                {row.encounter}
-              </a>
-              <span
-                class="tabular text-right font-mono text-[13px]"
-                style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
-                aria-label={percentileAriaLabel(row.percentile)}
-              >
-                {row.percentile === undefined ? '' : Math.round(row.percentile)}
-              </span>
-              <a
-                class="{rowLink} tabular justify-end text-right font-mono"
-                href={`/reports/${row.report_id}?fight=${row.fight_index}`}
-                aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
-              >
-                {formatAmount(Math.round(row.value))}
-              </a>
-              <!-- This table has no `md:` breakpoint at all -- percentile and value are always
-                   visible, not desktop-gated -- so the execution cell is always visible too,
-                   unlike the same cell on "Every ranked fight" below. -->
-              {#if row.execution_score === null}
-                <span
-                  class="text-muted tabular text-right font-mono text-[13px]"
-                  title={executionTitle(null)}
-                  aria-label={executionTitle(null)}
-                  data-testid="character-best-execution">{executionLabel(null)}</span
-                >
-              {:else}
-                <a
-                  class="{rowLink} tabular justify-end text-right font-mono text-[13px]"
-                  href={executionHref(row.report_id, row.fight_index)}
-                  title={executionTitle(row.execution_score)}
-                  data-testid="character-best-execution">{executionLabel(row.execution_score)}</a
-                >
-              {/if}
-            </li>
+            {@render fightRow(
+              row,
+              `/rankings/${encounterSlug(row.encounter)}`,
+              true,
+              'character-best-execution',
+            )}
           {/each}
         </ul>
       </section>
@@ -267,46 +317,14 @@
       <section class="flex flex-col gap-2">
         <h2 class="section-title text-[18px]">Every ranked fight</h2>
         <ul class="flex flex-col" data-testid="character-history">
+          {@render fightHeader(data.history, false)}
           {#each data.history as row, index (`${row.report_id}-${row.fight_index}-${index}`)}
-            <li
-              class="border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 border-b px-2 py-2 text-[14px] md:grid-cols-[96px_minmax(0,1fr)_88px_72px_88px_72px]"
-            >
-              <span class="text-muted tabular hidden font-mono text-[13px] md:inline"
-                >{row.fought_at.slice(0, 10)}</span
-              >
-              <a class="{rowLink} truncate" href={`/reports/${row.report_id}?fight=${row.fight_index}`}
-                >{row.encounter}</a
-              >
-              <span class="text-muted hidden text-[13px] md:inline">{row.spec ?? ''}</span>
-              <span
-                class="tabular text-right font-mono text-[13px]"
-                style={row.percentile === undefined ? undefined : `color: ${percentileToken(row.percentile)}`}
-                aria-label={percentileAriaLabel(row.percentile)}
-              >
-                {row.percentile === undefined ? '' : Math.round(row.percentile)}
-              </span>
-              <span
-                class="tabular text-right font-mono"
-                aria-label={`${formatAmount(Math.round(row.value))} ${metricLabel(row.metric)}`}
-              >
-                {formatAmount(Math.round(row.value))}
-              </span>
-              {#if row.execution_score === null}
-                <span
-                  class="text-muted tabular hidden text-right font-mono text-[13px] md:inline"
-                  title={executionTitle(null)}
-                  aria-label={executionTitle(null)}
-                  data-testid="character-execution">{executionLabel(null)}</span
-                >
-              {:else}
-                <a
-                  class="{rowLink} tabular hidden text-right font-mono text-[13px] md:inline"
-                  href={executionHref(row.report_id, row.fight_index)}
-                  title={executionTitle(row.execution_score)}
-                  data-testid="character-execution">{executionLabel(row.execution_score)}</a
-                >
-              {/if}
-            </li>
+            {@render fightRow(
+              row,
+              `/reports/${row.report_id}?fight=${row.fight_index}`,
+              false,
+              'character-execution',
+            )}
           {/each}
         </ul>
       </section>
@@ -323,7 +341,7 @@
               <span class="tabular font-mono font-semibold">{build.talent_split}</span>
               {#if build.spec}<span class="text-muted text-[13px]">{build.spec}</span>{/if}
               <span class="text-muted tabular font-mono text-[13px]"
-                >first seen {build.first_seen.slice(0, 10)}</span
+                >first seen {formatDayMonthYear(new Date(build.first_seen))}</span
               >
             </li>
           {/each}

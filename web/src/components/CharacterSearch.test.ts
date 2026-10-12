@@ -74,3 +74,15 @@ describe('CharacterSearch', () => {
     expect(html).toMatch(/<option value="normal" selected/);
   });
 });
+
+describe('CharacterSearch (fix round 2 item 7)', () => {
+  it('reads "Character name" as its placeholder', () => {
+    expect(copy.namePlaceholder).toBe('Character name');
+    expect(html).toContain('placeholder="Character name"');
+  });
+
+  it('is the #lookup target a "Look up another character" link lands on, and the box "/" focuses', () => {
+    expect(html).toMatch(/<section id="lookup"/);
+    expect(html).toContain('data-character-search-primary');
+  });
+});

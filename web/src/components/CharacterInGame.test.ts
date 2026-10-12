@@ -63,7 +63,9 @@ describe('CharacterInGame', () => {
 
     const owner = render(CharacterInGame, { props: { ...BASE, forever: SCORED, owned: true } }).body;
     expect(owner).toContain('data-testid="character-in-game-planner"');
-    expect(scoreCopy.inGamePlannerLead).toBe('In game, type /fs, press Copy my character, then');
+    expect(scoreCopy.inGamePlannerLead).toBe(
+      'To update this page: in game, type /fs, press Copy my character, then',
+    );
     expect(owner).toContain(`href="${scoreCopy.inGamePasteHref}"`);
     expect(owner).toContain(scoreCopy.inGamePasteLink);
   });
@@ -81,5 +83,39 @@ describe('CharacterInGame', () => {
     }).body;
     expect(owner).toContain('data-testid="character-in-game-last-seen"');
     expect(owner).toContain('Last seen in game 4 Nov 14:03');
+  });
+
+  it('is the game’s tooltip frame: translucent dark, 1px grey-blue border, 4px radius, 10px padding (round 2 item 3)', () => {
+    const { body } = render(CharacterInGame, { props: { ...BASE, forever: SCORED } });
+    const frame = /<div class="([^"]*)"[^>]*data-testid="character-in-game-tooltip"/.exec(body)?.[1] ?? '';
+    expect(frame.split(' ')).toEqual(
+      expect.arrayContaining([
+        'border',
+        'border-[#5d6b82]',
+        'bg-[rgba(8,10,16,0.92)]',
+        'rounded-[4px]',
+        'p-[10px]',
+      ]),
+    );
+    expect(frame).not.toContain('gold');
+    // The name 14px bold, then a blank line before the addon's line.
+    expect(body).toContain(
+      'class="text-[14px] font-bold" style="color: var(--color-class-priest)">Elyra Duskvale<',
+    );
+    expect(tooltipOf(body)).toContain('<span class="h-[20px]" aria-hidden="true"></span>');
+  });
+
+  it('adds the game’s "Level 60 Human Priest" line only when level and race are known', () => {
+    const without = render(CharacterInGame, { props: { ...BASE, forever: SCORED } }).body;
+    expect(without).not.toContain('character-in-game-descriptor');
+    const withLine = render(CharacterInGame, {
+      props: { ...BASE, forever: SCORED, level: 60, race: 'Human' },
+    }).body;
+    expect(withLine).toMatch(/data-testid="character-in-game-descriptor">Level 60 Human Priest</);
+  });
+
+  it('puts the line under the mock below 900px and beside it from 900px', () => {
+    const { body } = render(CharacterInGame, { props: { ...BASE, forever: SCORED } });
+    expect(body).toContain('flex flex-col gap-3 min-[900px]:flex-row');
   });
 });

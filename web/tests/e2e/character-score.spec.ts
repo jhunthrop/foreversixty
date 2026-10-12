@@ -38,8 +38,8 @@ test('a character the API has never heard of shows "no logs yet", not an error a
   await stub(page, 'missing');
   await page.goto(CHARACTER_PATH);
 
-  const none = page.getByTestId('forever-score-none');
-  await expect(none).toHaveText(labels.noLogs);
+  await expect(page.getByTestId('forever-score-empty')).toContainText('No logs yet');
+  await expect(page.getByTestId('character-in-game-score')).toHaveText(labels.noLogs);
   await expect(page.getByTestId('character-unlogged')).toContainText('Elyra Duskvale');
   await expect(page.getByTestId('character-error')).toHaveCount(0);
   await expect(page.getByTestId('score-badge')).toHaveCount(0);
@@ -55,7 +55,8 @@ test('a logged character whose score is null reads the same', async ({ page }) =
   await page.goto(CHARACTER_PATH);
 
   await expect(page.getByTestId('character')).toBeVisible();
-  await expect(page.getByTestId('forever-score-none')).toHaveText(labels.noLogs);
+  await expect(page.getByTestId('forever-score-empty')).toContainText('No logs yet');
+  await expect(page.getByTestId('character-in-game-score')).toHaveText(labels.noLogs);
   await expect(page.getByTestId('score-badge')).toHaveCount(0);
 });
 
@@ -133,8 +134,9 @@ test('the capture: captions on both numbers, empty sections and an empty strip a
   await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(ok(RATING)));
   await page.goto(CHARACTER_PATH);
 
-  await expect(page.getByTestId('forever-score-caption')).toHaveText('Your whole record, as of 4 Nov.');
-  await expect(page.getByTestId('character-rating-caption')).toHaveText('Your latest logged fights.');
+  // A visitor's view (fix round 2 item 1): no "Your" on someone else's profile.
+  await expect(page.getByTestId('forever-score-caption')).toHaveText('Whole record, as of 4 Nov.');
+  await expect(page.getByTestId('character-rating-caption')).toHaveText('Latest logged fights.');
   await expect(page.getByTestId('character-rating-overall')).toHaveText('65');
   // Every rating segment is empty, so the strip is not drawn.
   await expect(page.getByTestId('character-rating-segments')).toHaveCount(0);
@@ -148,6 +150,51 @@ test('the capture: captions on both numbers, empty sections and an empty strip a
     '14 dungeons · 0 raid bosses · 2 alts',
   );
   await expect(page.getByTestId('tier-strip-epic')).toHaveAttribute('aria-current', 'true');
+  // Fix round 2 item 2: the marked bar is the one Most to gain names, with its "+88".
+  await expect(page.getByTestId('forever-score-gear')).toHaveAttribute('data-needs-work', 'true');
+  await expect(page.getByTestId('forever-score-gain-cue')).toHaveText('+88');
+  // Fix round 2 item 6: the rating card.
+  await expect(page.getByTestId('rating-card-weakest')).toHaveText('Weakest part of a fight: Activity.');
+  await expect(page.getByTestId('rating-card-trend-label')).toHaveText('Last 6 fights');
+  // Fix round 2 item 1: a visitor is not told to paste an export for someone else's character.
+  await expect(page.getByTestId('character-needs-addon')).toHaveCount(0);
+});
+
+test('the fight tables: column headers, "9 Dec 2026" dates, and no Best table that repeats the list', async ({
+  page,
+}) => {
+  await page.route(CHARACTER_URL, (route) => route.fulfill(ok(CHARACTER.data)));
+  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
+  await page.goto(CHARACTER_PATH);
+
+  // The shared fixture's best rows are its history rows, so "Best per encounter" is left out.
+  await expect(page.getByTestId('character-history')).toBeVisible();
+  await expect(page.getByTestId('character-best')).toHaveCount(0);
+  const header = page.getByTestId('character-history').getByTestId('character-table-header');
+  await expect(header).toContainText('Boss');
+  await expect(header).toContainText('Parse %');
+  await expect(header).toContainText('HPS');
+  await expect(page.getByTestId('character-history')).toContainText('9 Dec 2026');
+  await expect(page.getByTestId('character-builds')).toContainText('first seen 9 Dec 2026');
+});
+
+test('"/" opens the header lookup on a page without its own box, and it routes to the profile', async ({
+  page,
+}) => {
+  await page.route(CHARACTER_URL, (route) => route.fulfill(ok(CHARACTER.data)));
+  await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
+  await page.goto('/ratings');
+  await page.locator('body').click({ position: { x: 5, y: 300 } });
+  await page.keyboard.press('/');
+  const viewport = page.viewportSize();
+  const input =
+    viewport !== null && viewport.width >= 1024
+      ? page.getByTestId('site-search-input')
+      : page.getByTestId('site-menu-search-input');
+  await expect(input).toBeFocused();
+  await input.fill('Elyra Duskvale-Hardcore');
+  await input.press('Enter');
+  await expect(page).toHaveURL(new RegExp(`${CHARACTER_PATH}$`));
 });
 
 test('the header names the spec of the newest fight: "Discipline Priest"', async ({ page }) => {
@@ -177,12 +224,12 @@ test('the no-logs page keeps the neutral crest and the same card, with what to d
   await page.goto(CHARACTER_PATH);
 
   await expect(page.getByTestId('character-avatar-fallback')).toBeVisible();
+  await expect(page.getByTestId('character-avatar-silhouette')).toBeVisible();
   const card = page.getByTestId('forever-score-card');
   await expect(card).toContainText('No logs yet');
-  await expect(card).toContainText('Check the name and ruleset, or add a log of this character.');
-  await expect(card.getByRole('link', { name: 'add a log of this character' })).toHaveAttribute(
-    'href',
-    '/logs#upload',
-  );
+  await expect(card).toContainText('Check the name and ruleset, or look up another character.');
+  await expect(card).not.toContainText(labels.noLogs);
+  const lookup = card.getByRole('link', { name: 'Look up another character' });
+  await expect(lookup).toHaveAttribute('href', '/?character=Elyra%20Duskvale#lookup');
   await expect(page.getByTestId('character-in-game-tooltip')).toContainText(labels.noLogs);
 });

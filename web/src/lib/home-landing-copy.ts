@@ -136,7 +136,7 @@ export const homeCharacterSearchCopy = {
   /** The one muted line beside the heading. */
   aside: 'See any character’s Forever Score.',
   nameLabel: 'Character name',
-  namePlaceholder: 'Elyra Duskvale',
+  namePlaceholder: 'Character name',
   hint: 'Type the name, then pick the region and ruleset.',
   regionLabel: 'Region',
   rulesetLabel: 'Ruleset',

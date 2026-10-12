@@ -1,6 +1,7 @@
 <!-- web/src/components/CharacterInGame.svelte -->
 <!-- The character page's "In game" section (Task L8.2 ruling 5, fix round 1 item 5). A mock of
-     the game's tooltip -- dark ground, gold border, the name in its class colour, then the
+     the game's tooltip (fix round 2 item 3: its own frame, the name in its class colour, a
+     descriptor line when known, a blank line), then the
      addon's own line "Forever Score 1830 · Epic · as of 4 Nov" (the fixture's `line` and
      `asOf`), or the fixture's no-logs line muted -- with one line beside it saying where it
      shows and linking setup. For the owner only (signed in and theirs, or their active
@@ -25,6 +26,8 @@
     className = undefined,
     owned = false,
     lastSeenAt = null,
+    level = undefined,
+    race = undefined,
   }: {
     forever: ForeverScore | null;
     name: string;
@@ -33,7 +36,17 @@
     owned?: boolean;
     /** `build.captured_at` of the viewer's own addon export; null for anyone else. */
     lastSeenAt?: string | null;
+    /** Level and race, for the tooltip's "Level 60 Human Priest" line; the character endpoint
+     *  carries neither yet (API lane), so the line is left out until it does. */
+    level?: number;
+    race?: string;
   } = $props();
+
+  const descriptor = $derived(
+    level !== undefined && race !== undefined && className !== undefined
+      ? scoreCopy.tooltipDescriptor(level, race, className)
+      : null,
+  );
 
   const lastSeen = $derived(owned && lastSeenAt !== null ? lastSeenText(lastSeenAt) : null);
   const line = scoreCopy.lineParts();
@@ -43,12 +56,20 @@
 
 <section class="flex flex-col gap-3" data-testid="character-in-game">
   <h2 class="section-title text-[18px]">{scoreCopy.inGameHeading}</h2>
-  <div class="flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
+  <!-- Below 900px the line sits under the mock; from 900px beside it. -->
+  <div class="flex flex-col gap-3 min-[900px]:flex-row min-[900px]:items-center min-[900px]:gap-6">
+    <!-- The game's own tooltip frame: a dark translucent fill, a 1px grey-blue border, a 4px
+         radius, 10px padding; the name 14px bold in its class colour, the descriptor line when
+         it is known, a blank line, then the addon's line. -->
     <div
-      class="border-gold/70 bg-bg flex w-fit max-w-full min-w-[240px] flex-col gap-0.5 rounded-[4px] border px-3 py-2 text-[14px] leading-snug shadow-[0_2px_10px_rgba(0,0,0,.6)]"
+      class="flex w-fit max-w-full min-w-[240px] flex-col rounded-[4px] border border-[#5d6b82] bg-[rgba(8,10,16,0.92)] p-[10px] text-[14px] leading-[20px] shadow-[0_2px_10px_rgba(0,0,0,.6)]"
       data-testid="character-in-game-tooltip"
     >
-      <span class="font-semibold" style={`color: ${classColorVar(className)}`}>{name}</span>
+      <span class="text-[14px] font-bold" style={`color: ${classColorVar(className)}`}>{name}</span>
+      {#if descriptor !== null}<span class="text-text" data-testid="character-in-game-descriptor"
+          >{descriptor}</span
+        >{/if}
+      <span class="h-[20px]" aria-hidden="true"></span>
       {#if hasScore(forever)}
         {@const tier = tierLabel(forever.tier)}
         {@const date = shortDate(forever.as_of)}
@@ -67,7 +88,7 @@
         <span class="text-muted" data-testid="character-in-game-score">{scoreCopy.noLogs}</span>
       {/if}
     </div>
-    <p class="text-[14px]">
+    <p class="text-[14px] leading-[22px]">
       {scoreCopy.inGameShownOn}
       <a class={LINK} href={scoreCopy.inGameSetupHref}>{scoreCopy.inGameSetupLink}</a>
     </p>

@@ -12,8 +12,14 @@ export const ratingCopy = {
   headingFor: (playerName: string): string => `${playerName}’s rating`,
   explainLink: 'How is this calculated?',
   panelHeading: 'Performance rating',
-  /** Under the profile's heading: the rating reads recent fights, the Forever Score the whole record. */
-  panelCaption: 'Your latest logged fights.',
+  /** Under the profile's heading: the rating reads recent fights, the Forever Score the whole
+   *  record. "Your" only for the viewer's own character (fix round 2 item 1). */
+  panelCaption: (owned: boolean): string => (owned ? 'Your latest logged fights.' : 'Latest logged fights.'),
+  /** The profile's rating card (fix round 2 item 6): "65 of 100", the sparkline's label, and
+   *  the one line naming the weakest part of a fight. */
+  outOf100: 'of 100',
+  lastFights: (count: number): string => `Last ${count} ${count === 1 ? 'fight' : 'fights'}`,
+  weakestPart: (label: string): string => `Weakest part of a fight: ${label}.`,
   panelMore: 'Rating tab',
   panelEmpty: 'No ratings for this fight yet.',
   /** Under half the role's weight was measurable, so there is no overall. */
