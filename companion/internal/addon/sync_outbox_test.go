@@ -12,6 +12,8 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -624,6 +626,9 @@ func TestAnOutboxThatCannotFitWithItsOwnCharacterIsDropped(t *testing.T) {
 	const code = "FS1:1.60.1.70291:warrior:human:371000000/0/0:chest=6627"
 	saved := strings.Replace(paddedOutbox(880), `["export"] = "`+code+`"`,
 		`["export"] = "FS1:`+strings.Repeat("y", 700<<10)+`"`, 1)
+	// A small character sorts ahead of the outbox's own, so the folder's first character is not
+	// the one the outbox must ride with.
+	saved = manyNamed(saved, "Aaa", 1, 64)
 	r := newRig(t, saved)
 	const line = "Outbox too large to send; the character exports went up alone"
 	// Lost to the network: nothing went up alone, so nothing says it did.
@@ -639,8 +644,17 @@ func TestAnOutboxThatCannotFitWithItsOwnCharacterIsDropped(t *testing.T) {
 		t.Fatal(err)
 	}
 	posts := r.posts()
-	if len(posts) != 1 || len(posts[0].Characters) != 1 || len(posts[0].Outbox) != 0 {
+	if len(posts) != 1 || len(posts[0].Characters) != 2 || len(posts[0].Outbox) != 0 {
 		t.Fatalf("posts = %d", len(posts))
+	}
+	// The size logged is of the smallest post that could carry the outbox: the outbox with its own
+	// character, which is over the bound.
+	m := regexp.MustCompile(`smallest_body_bytes=(\d+)`).FindStringSubmatch(r.logs.String())
+	if m == nil {
+		t.Fatalf("no smallest_body_bytes in the log:\n%s", r.logs.String())
+	}
+	if n, _ := strconv.Atoi(m[1]); n <= addon.MaxExportsBody {
+		t.Errorf("smallest_body_bytes = %d, not over the %d bound that dropped the outbox", n, addon.MaxExportsBody)
 	}
 	if n := strings.Count(r.logs.String(), line); n != 1 {
 		t.Fatalf("the drop was logged %d times:\n%s", n, r.logs.String())
@@ -760,5 +774,41 @@ func TestARefusedCharacterListIsNotSentAgainUntilTheFileChanges(t *testing.T) {
 	}
 	if len(r.posts()) != 1 {
 		t.Errorf("the next logout did not upload: %d posts", len(r.posts()))
+	}
+}
+
+// Fix round 4 -------------------------------------------------------------------------------
+
+func TestOnlyA400OnTheCharactersStopsTheRetries(t *testing.T) {
+	// 409: a character claimed by another account. The claim can be released, so every pass
+	// tries again, as it always has.
+	r := newRig(t, noOutbox)
+	r.srv.ClaimCharacters(true)
+	if err := r.poll(); err == nil {
+		t.Fatal("a 409 was not reported")
+	}
+	if err := r.sync.Poll(t.Context(), r.at.Add(time.Second)); err == nil {
+		t.Fatal("a 409 on the next pass was not reported")
+	}
+	if n := r.srv.ExportAttempts(); n != 2 {
+		t.Errorf("a 409 was tried %d times over two passes, want 2", n)
+	}
+	if strings.Contains(r.logs.String(), "The site refused the character list") {
+		t.Errorf("a 409 was taken for a refused list:\n%s", r.logs.String())
+	}
+
+	// 400: the list itself cannot be read. Logged once, not tried again.
+	r = newRig(t, noOutbox)
+	r.srv.RefuseCharacters(true)
+	for i := range 2 {
+		if err := r.sync.Poll(t.Context(), r.at.Add(time.Duration(i)*time.Second)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if n := r.srv.ExportAttempts(); n != 1 {
+		t.Errorf("a 400 was tried %d times over two passes, want 1", n)
+	}
+	if n := strings.Count(r.logs.String(), "The site refused the character list"); n != 1 {
+		t.Errorf("a 400 was logged %d times", n)
 	}
 }

@@ -86,6 +86,7 @@ type Server struct {
 	simOutcome   string
 	refuseOutbox bool
 	refuseChars  bool
+	claimChars   bool
 	attempts     int
 	clock        func() time.Time
 	acks         map[string]ack
@@ -228,6 +229,15 @@ func (s *Server) RefuseCharacters(v bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.refuseChars = v
+}
+
+// ClaimCharacters makes every export post answer 409 with a field error
+// on "characters", the API's answer when a character is already synced
+// from another account: a refusal that may lift, so it is retried.
+func (s *Server) ClaimCharacters(v bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.claimChars = v
 }
 
 // ExportAttempts is how many export posts reached the fake, refused or
@@ -575,8 +585,13 @@ func (s *Server) addonExports(w http.ResponseWriter, r *http.Request) {
 	}
 	s.mu.Lock()
 	s.attempts++
-	refuseChars := s.refuseChars
+	refuseChars, claimChars := s.refuseChars, s.claimChars
 	s.mu.Unlock()
+	if claimChars {
+		fail(w, http.StatusConflict, "one of those characters is already synced from a different account",
+			map[string]string{"characters": "already claimed by another account"})
+		return
+	}
 	if refuseChars {
 		fail(w, http.StatusBadRequest, "that export cannot be stored",
 			map[string]string{"characters": "each needs a name and an export of at most 4096 characters"})

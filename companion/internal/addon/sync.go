@@ -314,7 +314,9 @@ func (s *Sync) upload(ctx context.Context, p string) (bool, error) {
 	s.o.Log.Info("uploaded character exports", "component", "addon",
 		"path", p, "characters", len(saved.Exports), "outbox", ob != nil)
 	if dropped != nil {
-		body, _ := ExportsBody(saved.Exports[:1], dropped)
+		// The smallest post that could have carried it: the outbox with
+		// its own character (which it must ride with) and nothing else.
+		body, _ := ExportsBody(ownFirst(saved.Exports, dropped)[:1], dropped)
 		s.o.Log.Warn(CopyOutboxTooLarge, "component", "addon", "path", p,
 			"outbox_bytes", len(dropped.Body), "smallest_body_bytes", len(body),
 			"outbox_limit", MaxOutboxBytes, "body_limit", MaxExportsBody)

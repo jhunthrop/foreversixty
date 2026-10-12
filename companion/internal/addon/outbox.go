@@ -36,9 +36,11 @@ type Outbox struct {
 	Body        json.RawMessage
 }
 
-// MaxOutboxBytes bounds the outbox the companion sends: a guild's
-// roster of a thousand members is well under it, and the API reads
-// the whole export body into memory. A larger outbox is dropped and
+// MaxOutboxBytes bounds the outbox the companion sends. It is the
+// companion's own guard, not an API limit: the API bounds only the
+// whole body, at 1 MiB, which MaxExportsBody stays under. A guild's
+// roster of a thousand members is well under it, so an outbox past it
+// is not one the addon should have written, and it is dropped while
 // the exports go up alone.
 const MaxOutboxBytes = 256 << 10
 
@@ -342,18 +344,7 @@ func exportBatches(chars []Export) ([][]Export, error) {
 // left over go as characters-only posts. fits is false when even the
 // first character with the outbox is over MaxExportsBody.
 func outboxBatches(chars []Export, ob *Outbox) (first []Export, rest [][]Export, fits bool, err error) {
-	name, _, _ := strings.Cut(ob.Character, "-")
-	ordered := make([]Export, 0, len(chars))
-	for _, c := range chars {
-		if strings.EqualFold(c.Name, name) {
-			ordered = append(ordered, c)
-		}
-	}
-	for _, c := range chars {
-		if !strings.EqualFold(c.Name, name) {
-			ordered = append(ordered, c)
-		}
-	}
+	ordered := ownFirst(chars, ob)
 	base, err := ExportsBody([]Export{}, ob)
 	if err != nil {
 		return nil, nil, false, err
@@ -367,4 +358,24 @@ func outboxBatches(chars []Export, ob *Outbox) (first []Export, rest [][]Export,
 		return nil, nil, false, err
 	}
 	return ordered[:n:n], rest, true, nil
+}
+
+// ownFirst is chars with the outbox's own character (or characters, when
+// two share its name) moved to the front, the rest in their order. The
+// match is on the name, export.character's part before the realm,
+// case-folded, as the API's resolveOwn matches it.
+func ownFirst(chars []Export, ob *Outbox) []Export {
+	name, _, _ := strings.Cut(ob.Character, "-")
+	ordered := make([]Export, 0, len(chars))
+	for _, c := range chars {
+		if strings.EqualFold(c.Name, name) {
+			ordered = append(ordered, c)
+		}
+	}
+	for _, c := range chars {
+		if !strings.EqualFold(c.Name, name) {
+			ordered = append(ordered, c)
+		}
+	}
+	return ordered
 }

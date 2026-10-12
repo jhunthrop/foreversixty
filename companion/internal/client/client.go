@@ -76,12 +76,15 @@ func (e *Error) Retryable() bool {
 }
 
 // Refuses reports whether the API read the request and refused the
-// named part of its body: a status no retry can change, with a field
-// error naming that part. The addon sync uses it to tell an outbox the
-// site cannot use, which is never sent again, from one the network
-// lost, which is.
+// named part of its body as malformed: a 400 with a field error naming
+// that part, which the same body can never get past. The addon sync
+// uses it to tell an outbox or character list the site cannot use,
+// which is not sent again unchanged, from one the network lost, which
+// is. Any other status is not a refusal, even with a field error: a
+// 409 on "characters" (a character claimed by another account) can
+// lift, so it is retried every pass.
 func (e *Error) Refuses(field string) bool {
-	return !e.Retryable() && e.Status >= 400 && e.Status < 500 && e.Fields[field] != ""
+	return e.Status == http.StatusBadRequest && e.Fields[field] != ""
 }
 
 // Retryable reports whether err is worth another attempt. Transport
