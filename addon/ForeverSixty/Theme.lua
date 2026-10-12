@@ -93,7 +93,7 @@ Theme.SIZES = {
 	headerHeight = 56,
 	tabHeight = 24,
 	tabUnderline = 2,
-	closeButton = 18,
+	closeButton = 20,
 	tabWidth = 96,
 	border = 1,
 	padding = 16,
@@ -227,7 +227,8 @@ Theme.SIZES = {
 	dialogLine = 24,
 	dialogClassIcon = 32,
 	dialogInboxRows = 2,
-	dialogGearRow = 16,
+	--- The gear heading's line (the rows themselves are BuildDialog.GEAR_PITCH, rowHeight).
+	dialogGearRow = 14,
 	--- The gear rows' fixed slot column, before the icon and the name.
 	dialogSlotColumn = 72,
 }
@@ -467,6 +468,50 @@ function Theme.dimHex(hexKey, alpha)
 	return Theme.hexOf(r * alpha + gr * (1 - alpha), g * alpha + gg * (1 - alpha), b * alpha + gb * (1 - alpha))
 end
 
+--- Every button's states (L3.4 fix round 3 ruling), one table every surface reads.
+--- Hover: a secondary button raised to hover, the primary gold to goldHover, an inactive tab's
+--- label muted to body over a 2 px underline in the border colour, the close x muted to body on
+--- a hover ground. Pressed: the primary fills goldPressed, the others inset, and every label
+--- drops PRESSED_LABEL_DROP px until the mouse comes up. No focus-visible state (no button
+--- takes the keyboard) and no disabled style beyond Widgets.setEnabled's alpha.
+Theme.CONTROL_STATES = {
+	primary = { rest = "gold", hover = "goldHover", pressed = "goldPressed" },
+	secondary = { rest = "raised", hover = "hover", pressed = "inset" },
+	tab = { label = "muted", hoverLabel = "body", hoverUnderline = "border", pressed = "inset" },
+	close = { label = "muted", hoverLabel = "body", hoverGround = "hover", pressed = "inset" },
+}
+Theme.PRESSED_LABEL_DROP = 1
+
+--- The pressed state for any button: `onPress` and `onRelease` paint its ground, and its
+--- label drops a pixel from wherever it sits now and comes back on mouse-up.
+function Theme.pressable(control, label, onPress, onRelease)
+	local resting
+	control:SetScript("OnMouseDown", function(self)
+		if type(self.IsEnabled) == "function" and not self:IsEnabled() then
+			return
+		end
+		if label ~= nil and type(label.GetPoint) == "function" then
+			resting = { label:GetPoint() }
+			if resting[1] ~= nil then
+				label:ClearAllPoints()
+				label:SetPoint(resting[1], resting[2], resting[3], resting[4] or 0,
+					(resting[5] or 0) - Theme.PRESSED_LABEL_DROP)
+			end
+		end
+		onPress(self)
+	end)
+	control:SetScript("OnMouseUp", function(self)
+		if resting ~= nil and resting[1] ~= nil then
+			label:ClearAllPoints()
+			label:SetPoint(resting[1], resting[2], resting[3], resting[4] or 0, resting[5] or 0)
+		end
+		resting = nil
+		local over = type(self.IsMouseOver) == "function" and self:IsMouseOver() == true
+		onRelease(self, over)
+	end)
+	return control
+end
+
 --- The class colour (Theme.classColor) as six hex digits, for a chat or tooltip escape.
 function Theme.classHex(token)
 	local r, g, b = Theme.classColor(token)
@@ -479,6 +524,9 @@ function Theme.rgb(hex, alpha)
 		tonumber(hex:sub(5, 6), 16) / 255,
 		alpha or 1
 end
+
+--- The primary button's pressed ground: its gold one step dimmer.
+Theme.HEX.goldPressed = Theme.dimHex("gold", 0.85)
 
 --- Ask the client once whether it has a template for a given frame kind, by
 --- trying to use it. There is no API that answers this; building one

@@ -785,8 +785,8 @@ function Codec.loadBuild(code, data, player)
 		return nil, refuse(L.codecUnknownClass, build.classSlug)
 	end
 	if type(player) == "table" and type(player.classSlug) == "string" and player.classSlug ~= build.classSlug then
-		return nil, string.format(L.codecWrongClass, className(build.classSlug, player.classNames),
-			className(player.classSlug, player.classNames))
+		local mine = className(player.classSlug, player.classNames)
+		return nil, string.format(L.codecWrongClass, className(build.classSlug, player.classNames), mine, mine)
 	end
 	if compareBuilds(build.dataBuild, data.build) > 0 then
 		-- Plain words, no build ids (L3.4 ruling): the build dialog shows this as it stands.

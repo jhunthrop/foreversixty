@@ -99,13 +99,19 @@ function Cards.primaryButton(parent, text, onClick)
 	button.GetText = function(self)
 		return self.foreverSixtyLabel:GetText()
 	end
+	local states = Theme.CONTROL_STATES.primary
 	button:SetScript("OnEnter", function(self)
 		if self:IsEnabled() then
-			Theme.paint(background, "goldHover")
+			Theme.paint(background, states.hover)
 		end
 	end)
 	button:SetScript("OnLeave", function()
-		Theme.paint(background, "gold")
+		Theme.paint(background, states.rest)
+	end)
+	Theme.pressable(button, label, function()
+		Theme.paint(background, states.pressed)
+	end, function(_, over)
+		Theme.paint(background, over and states.hover or states.rest)
 	end)
 	button:SetScript("OnClick", function(self, ...)
 		if self:IsEnabled() then

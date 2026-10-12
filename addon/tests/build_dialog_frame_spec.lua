@@ -105,6 +105,31 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 		assert.is_false(claimed())
 	end)
 
+	it("leaves copiedAt unset on a click in the box (fix 3, 15)", function()
+		box():GetScript("OnMouseDown")(box())
+		box():GetScript("OnMouseUp")(box())
+		assert.is_nil(BuildDialog.copiedAt)
+	end)
+
+	it("keeps the claim across a tab switch and drops it when the dialog closes (fix 3, 15)", function()
+		control = true
+		press("C")
+		BuildDialog.setMode("paste")
+		BuildDialog.setMode("copy")
+		assert.is_true(claimed())
+		BuildDialog.close()
+		assert.is_nil(BuildDialog.copiedAt)
+		BuildDialog.open("copy")
+		assert.is_false(claimed())
+	end)
+
+	it("holds the export byte for byte in the box Ctrl+C copies from (fix 3, 3)", function()
+		local ok, export = pcall(require("Export").string, DATA)
+		assert.is_true(ok)
+		assert.are.equal(export, box():GetText())
+		assert.is_nil(box():GetText():find(BuildDialog.BREAK, 1, true))
+	end)
+
 	it("still runs Widgets' own focus release after Ctrl+C (the handler is chained)", function()
 		control = true
 		local queued = #state.timers
@@ -113,5 +138,66 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 		assert.are.equal(queued + 1, #state.timers)
 		mock.runTimers(state)
 		assert.is_false(box():HasFocus())
+	end)
+end)
+
+describe("BuildDialog, a second paste replaces the first (fix 3, 13)", function()
+	local state, BuildDialog
+
+	before_each(function()
+		state = mock.install({
+			class = { name = "Warrior", token = "WARRIOR" }, race = { name = "Human", token = "Human" },
+			realm = "Ashbringer", region = 1, playerName = "Bob",
+			talents = { { name = "Arms", talents = {} }, { name = "Fury", talents = {} },
+				{ name = "Protection", talents = {} } },
+		})
+		require("Theme").reset()
+		_G.ForeverSixtyDB = {}
+		_G.ForeverSixtyInbox = nil
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Export")
+		helper.load("Follow")
+		helper.load("Chip")
+		BuildDialog = helper.load("BuildDialog")
+		BuildDialog.data = {
+			build = DATA.build, weights = {},
+			classes = { warrior = DATA.classes.warrior, mage = { tabs = { { name = "Arcane", talents = {} },
+				{ name = "Fire", talents = {} }, { name = "Frost", talents = {} } } } },
+		}
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("highlights the box after a good paste and after a refused one", function()
+		local box = BuildDialog.paste.box
+		local function paste(text)
+			local before = mock.countCalls and mock.countCalls(box, "HighlightText") or #box.calls
+			box:SetText(text)
+			box:GetScript("OnTextChanged")(box, true)
+			return before
+		end
+		local function highlighted()
+			local last
+			for _, call in ipairs(box.calls) do
+				if call.method == "HighlightText" or call.method == "SetText" then
+					last = call.method
+				end
+			end
+			return last == "HighlightText"
+		end
+		paste("FSB1:1.60.1.70291:warrior:111:")
+		assert.is_true(BuildDialog.verdict.ok)
+		assert.is_true(highlighted())
+		paste("FSB1:1.60.1.70291:mage::")
+		assert.is_false(BuildDialog.verdict.ok)
+		assert.is_true(highlighted())
+		paste("FSB1:1.60.1.70291:warrior:111:")
+		assert.is_true(BuildDialog.verdict.ok)
+		assert.is_true(highlighted())
 	end)
 end)

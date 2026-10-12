@@ -49,13 +49,14 @@ end
 --- its resting colours in `foreverSixtySkin`, so a caller that changes them
 --- (an active tab) is respected when the cursor leaves.
 local function hoverable(control, background)
+	local states = Theme.CONTROL_STATES.secondary
 	control:SetScript("OnEnter", function(self)
 		if self:IsEnabled() then
-			Theme.paint(background, "hover")
+			Theme.paint(background, states.hover)
 		end
 	end)
 	control:SetScript("OnLeave", function()
-		Theme.paint(background, "raised")
+		Theme.paint(background, states.rest)
 	end)
 	return control
 end
@@ -80,6 +81,11 @@ function Widgets.button(parent, text, onClick)
 		return self.foreverSixtyLabel:GetText()
 	end
 	hoverable(button, background)
+	Theme.pressable(button, label, function()
+		Theme.paint(background, Theme.CONTROL_STATES.secondary.pressed)
+	end, function(_, over)
+		Theme.paint(background, over and Theme.CONTROL_STATES.secondary.hover or Theme.CONTROL_STATES.secondary.rest)
+	end)
 	button:SetText(text)
 	button:SetScript("OnClick", function(self, ...)
 		if self:IsEnabled() then
@@ -123,18 +129,38 @@ function Widgets.textButton(parent, text, onClick)
 	return button
 end
 
---- The small X in the title bar.
+--- The small X in the title bar: muted, body on a hover ground under the cursor
+--- (Theme.CONTROL_STATES.close), inset while pressed.
 function Widgets.closeButton(parent, onClick)
+	local states = Theme.CONTROL_STATES.close
 	local button = Theme.createFrame("Button", nil, parent)
 	button:SetSize(Theme.SIZES.closeButton, Theme.SIZES.closeButton)
-	local label = Widgets.label(button, "x", "muted")
+	local ground = Theme.texture(button, "BACKGROUND", states.hoverGround)
+	ground:SetAllPoints(button)
+	ground:Hide()
+	button.foreverSixtyGround = ground
+	local label = Widgets.label(button, "x", states.label)
 	label:SetPoint("CENTER", button, "CENTER", 0, 1)
 	button.foreverSixtyLabel = label
 	button:SetScript("OnEnter", function(self)
-		self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX.gold))
+		Theme.paint(ground, states.hoverGround)
+		ground:Show()
+		self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[states.hoverLabel]))
 	end)
 	button:SetScript("OnLeave", function(self)
-		self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX.muted))
+		ground:Hide()
+		self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[states.label]))
+	end)
+	Theme.pressable(button, label, function()
+		Theme.paint(ground, states.pressed)
+		ground:Show()
+	end, function(_, over)
+		Theme.paint(ground, states.hoverGround)
+		if over then
+			ground:Show()
+		else
+			ground:Hide()
+		end
 	end)
 	button:SetScript("OnClick", function(self)
 		onClick(self)
@@ -167,10 +193,22 @@ function Widgets.tab(parent, text, onClick)
 	underline:SetHeight(Theme.SIZES.tabUnderline)
 	underline:Hide()
 	tab.foreverSixtyUnderline = underline
+	local states = Theme.CONTROL_STATES.tab
+	local ground = Theme.texture(tab, "BACKGROUND", states.pressed)
+	ground:SetAllPoints(tab)
+	ground:Hide()
 	tab:SetScript("OnEnter", function(self)
 		if not self.foreverSixtyActive then
-			self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX.body))
+			-- An inactive tab under the cursor: body label over a 2 px border-colour underline.
+			self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[states.hoverLabel]))
+			Theme.paint(underline, states.hoverUnderline)
+			underline:Show()
 		end
+	end)
+	Theme.pressable(tab, label, function()
+		ground:Show()
+	end, function()
+		ground:Hide()
 	end)
 	tab:SetScript("OnLeave", function(self)
 		Widgets.setTabActive(self, self.foreverSixtyActive == true)
@@ -184,6 +222,7 @@ end
 function Widgets.setTabActive(tab, active)
 	tab.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[active and "gold" or "muted"]))
 	if active then
+		Theme.paint(tab.foreverSixtyUnderline, "gold")
 		tab.foreverSixtyUnderline:Show()
 	else
 		tab.foreverSixtyUnderline:Hide()

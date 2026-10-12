@@ -91,7 +91,7 @@ describe("BuildDialog.evaluate", function()
 		assert.is_true(BuildDialog.evaluate(mage, DATA).ok)
 		local verdict = BuildDialog.evaluate(mage, DATA, WARRIOR)
 		assert.is_false(verdict.ok)
-		assert.are.equal(string.format(L.codecWrongClass, "Mage", "Warrior"), verdict.reason)
+		assert.are.equal(string.format(L.codecWrongClass, "Mage", "Warrior", "Warrior"), verdict.reason)
 		assert.is_true(BuildDialog.evaluate(ARMS, DATA, WARRIOR).ok)
 	end)
 
@@ -180,6 +180,19 @@ describe("BuildDialog, paste mode's model", function()
 		assert.is_true(BuildDialog.pasteView({ ok = true }, false, true).selectAll)
 		assert.is_false(BuildDialog.pasteView({ ok = true }, true, true).selectAll)
 		assert.is_false(BuildDialog.pasteView(nil, false, true).selectAll)
+		-- Fix 3, 13: a refused paste too, so the next Ctrl+V replaces it.
+		assert.is_true(BuildDialog.pasteView({ ok = false, reason = "x" }, false, true).selectAll)
+	end)
+
+	it("keeps the selection under a collapsed code invisible, never a grey bar (fix 3, 1 and 11)", function()
+		assert.is_true(BuildDialog.pasteView({ ok = true }, false, true).hideSelection)
+		assert.is_true(BuildDialog.pasteView({ ok = false, reason = "x" }, false, true).hideSelection)
+		assert.is_false(BuildDialog.pasteView(nil, false, true).hideSelection)
+		assert.is_false(BuildDialog.pasteView({ ok = false, reason = "x" }, true, true).hideSelection)
+		-- The collapsed code is muted text on the box's inset ground: two different colours.
+		local Theme = require("Theme")
+		assert.are.equal("muted", BuildDialog.COLLAPSED_TEXT)
+		assert.are_not.equal(Theme.HEX[BuildDialog.COLLAPSED_TEXT], Theme.HEX.inset)
 	end)
 
 	it("borders a refusal in red until the box is edited, else gold while focused", function()
@@ -195,7 +208,7 @@ describe("BuildDialog, paste mode's model", function()
 	it("splits a refusal into a red lead, a body and what the player still follows", function()
 		local refusal = BuildDialog.refusal(L.codecNewerBuild, "Arms / Fury build")
 		assert.are.equal("That code is for a newer patch than this addon.", refusal.lead)
-		assert.are.equal("Update Forever Sixty from the site.", refusal.body)
+		assert.are.equal("Update the addon, then paste it again.", refusal.body)
 		assert.are.equal(string.format(L.dialogStillFollowing, "Arms / Fury build"), refusal.following)
 		local plain = BuildDialog.refusal(L.codecTooLong, nil)
 		assert.are.equal(L.codecTooLong, plain.lead)
@@ -206,7 +219,15 @@ describe("BuildDialog, paste mode's model", function()
 	it("gives garbage text advice naming the site (fix 2, 7)", function()
 		local refusal = BuildDialog.refusal(L.codecWrongPrefix, nil)
 		assert.are.equal("That is not a Forever Sixty build code.", refusal.lead)
-		assert.are.equal("Copy the code from the planner on " .. L.siteName .. ", then paste it here.", refusal.body)
+		assert.are.equal("Copy the whole code from " .. L.siteName .. ", it starts with FSB1.", refusal.body)
+	end)
+
+	it("gives another class's code advice naming the player's class (fix 3, 2 and 10)", function()
+		local reason = BuildDialog.evaluate(code(0, 0, nil, nil, "mage"), DATA, WARRIOR).reason
+		local refusal = BuildDialog.refusal(reason, "Arms raid")
+		assert.are.equal("That code is for a Mage, not a Warrior.", refusal.lead)
+		assert.are.equal("Pick a Warrior build on " .. L.siteName .. ".", refusal.body)
+		assert.are.equal(string.format(L.dialogStillFollowing, "Arms raid"), refusal.following)
 	end)
 
 	it("caps a long refusal so it never runs past two lines", function()
@@ -242,19 +263,52 @@ describe("BuildDialog, paste mode's model", function()
 			BuildDialog.followingLine(loaded, DATA))
 	end)
 
-	it("says what Use would replace and the next talent the candidate gives (fix 2, 5)", function()
-		local followed = build(ARMS)
-		followed.name = "Arms raid"
-		local context = BuildDialog.previewContext(followed, "Deflection (1 of 2)")
-		assert.are.equal(string.format(L.dialogReplaces, "Arms raid"), context.replaces)
-		assert.are.equal(string.format(L.dialogNextWould, string.format(L.chipTake, "Deflection (1 of 2)")),
-			context.nextWould)
-		assert.are.equal("Next talent would be: Take Deflection (1 of 2)", context.nextWould)
-		local fresh = BuildDialog.previewContext(nil, nil)
+	--- A build from cells: "D" Deflection (Arms 1:2, two ranks in these orders), "I" Improved
+	--- Heroic Strike (Arms 1:1).
+	local function ordered(cells, name)
+		local order = {}
+		for letter in cells:gmatch(".") do
+			order[#order + 1] = { tab = 1, tier = 1, column = letter == "D" and 2 or 1 }
+		end
+		local loaded = build(Codec.encodeFSB1({ dataBuild = DATA.build, classSlug = "warrior", order = order, gear = {} }))
+		loaded.name = name
+		return loaded
+	end
+
+	it("names a talent with its tree in the dialog, and the rank a click takes", function()
+		assert.are.equal("Deflection (Arms, 1 of 2)", BuildDialog.dialogTalent(ordered("DDI"), {}, DATA, 21))
+		assert.are.equal("Improved Heroic Strike (Arms)", BuildDialog.dialogTalent(ordered("IDD"), {}, DATA, 21))
+		assert.is_nil(BuildDialog.dialogTalent(nil, {}, DATA, 21))
+	end)
+
+	it("says the next talent is the same as now, and the two orders match (fix 3, 4)", function()
+		local context = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("DDI"), {}, DATA, 21)
+		assert.are.equal(string.format(L.dialogReplacesSame, "Arms raid"), context.replaces)
+		assert.are.equal("Next talent would be: Take Deflection (Arms, 1 of 2) · same as now", context.nextWould)
+	end)
+
+	it("says where the two orders first differ, by point and talent", function()
+		local same = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("DID"), {}, DATA, 21)
+		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 2, "Improved Heroic Strike (Arms)"),
+			same.replaces)
+		assert.are.equal(string.format(L.dialogNextWouldSame, string.format(L.chipTake, "Deflection (Arms, 1 of 2)")),
+			same.nextWould)
+		local other = BuildDialog.previewContext(ordered("DDI", "Arms raid"), ordered("IDD"), {}, DATA, 21)
+		assert.are.equal(string.format(L.dialogReplacesDiffers, "Arms raid", 1, "Improved Heroic Strike (Arms)"),
+			other.replaces)
+		assert.are.equal("Next talent would be: Take Improved Heroic Strike (Arms)", other.nextWould)
+		assert.are.equal(1, BuildDialog.firstDifference(ordered("DDI").order, ordered("IDD").order))
+		assert.are.equal(3, BuildDialog.firstDifference(ordered("DD").order, ordered("DDI").order))
+		assert.is_nil(BuildDialog.firstDifference(ordered("DDI").order, ordered("DDI").order))
+	end)
+
+	it("says nothing it cannot know: no followed build, no next talent, names escaped", function()
+		local fresh = BuildDialog.previewContext(nil, ordered("DDI"), {}, DATA, 21)
 		assert.is_nil(fresh.replaces)
-		assert.is_nil(fresh.nextWould)
-		followed.name = "A|B"
-		assert.are.equal(string.format(L.dialogReplaces, "A||B"), BuildDialog.previewContext(followed, nil).replaces)
+		assert.are.equal("Next talent would be: Take Deflection (Arms, 1 of 2)", fresh.nextWould)
+		assert.is_nil(BuildDialog.previewContext(nil, nil, {}, DATA, 21).nextWould)
+		local piped = BuildDialog.previewContext(ordered("DDI", "A|B"), ordered("DDI"), {}, DATA, 21)
+		assert.are.equal(string.format(L.dialogReplacesSame, "A||B"), piped.replaces)
 	end)
 
 	it("words one point and no points without a bare number", function()
@@ -308,6 +362,20 @@ describe("BuildDialog, paste mode's model", function()
 		assert.are.equal(string.format(L.dialogNowFollowingNext, "Arms raid", "Deflection (1 of 2)"),
 			BuildDialog.chatLine("Arms raid", "Deflection (1 of 2)"))
 		assert.are.equal(string.format(L.dialogNowFollowing, "A||B"), BuildDialog.chatLine("A|B", nil))
+	end)
+
+	it("fits the worst preview in the 300 px panel at the Theme's line heights (fix 3, 9 and 14)", function()
+		local S = require("Theme").SIZES
+		-- A chosen inbox row (or the collapsed code, never both), "You can place N now.",
+		-- "Replaces", "Next talent would be", three gear rows at pitch 20, the button and the hint.
+		for _, line in ipairs({ 12, 13, 14 }) do
+			local height, parts = BuildDialog.previewLayout(line)
+			assert.is_true(height <= S.dialogHeight, line .. " px lines: " .. height)
+			assert.are.equal(3 * S.rowHeight, parts.gearRows)
+			assert.is_true(parts.hintClearance >= 10)
+			assert.are.equal(8, parts.aboveReplaces)
+		end
+		assert.are.equal(20, BuildDialog.GEAR_PITCH)
 	end)
 
 	it("lays a gear row out slot first: a 72 px slot column, the icon, then the name (fix 2, 11)", function()
@@ -380,8 +448,7 @@ describe("BuildDialog, copy mode's model", function()
 		assert.is_true(copy.selected)
 		assert.is_nil(copy.button)
 		assert.are.same({ text = L.dialogSelectedLead, hexKey = "body" }, copy.lead)
-		assert.are.equal("Your character is selected. Press Ctrl+C, then paste it on " .. L.siteName .. ".",
-			L.dialogSelectedLead)
+		assert.are.equal("Selected. Press Ctrl+C, then paste it on " .. L.siteName .. ".", L.dialogSelectedLead)
 	end)
 
 	it("claims a copy only after a real Ctrl+C, in the gain green, and keeps saying so", function()
@@ -410,6 +477,22 @@ describe("BuildDialog, copy mode's model", function()
 		assert.are.equal(string.format(L.dialogSeen, "14:03"), model({ ack = ACK }).seen)
 	end)
 
+	it("waits for the site after a real copy until an ack at or after it arrives (fix 3, 5)", function()
+		local copied = model({ ack = ACK, savedAt = "2026-11-04 14:02", copiedAt = NOV4_1402 + 120 })
+		assert.are.equal(L.dialogWaitingSite, copied.seen)
+		local seenAfter = model({ ack = ACK, savedAt = "2026-11-04 14:02", copiedAt = NOV4_1402 + 30 })
+		assert.are.equal(string.format(L.dialogSeen, "14:03"), seenAfter.seen)
+		-- No ack, no companion: nothing to wait for, the companion lines say so.
+		assert.is_nil(model({ copiedAt = NOV4_1402 }).seen)
+	end)
+
+	it("keeps the copy tab's lead to the same number of lines in both states (fix 3, 7)", function()
+		assert.are.equal(1, BuildDialog.leadLines({ 300, 320 }, 388))
+		assert.are.equal(2, BuildDialog.leadLines({ 300, 400 }, 388))
+		assert.are.equal(2, BuildDialog.leadLines({ 400, 300 }, 388))
+		assert.are.equal(1, BuildDialog.leadLines({ nil, nil }, 388))
+	end)
+
 	it("says the site has an older character when the save is newer than the ack", function()
 		assert.are.equal(string.format(L.dialogSiteOlder, "14:03"),
 			model({ ack = ACK, savedAt = "2026-11-04 14:05" }).seen)
@@ -431,9 +514,11 @@ describe("BuildDialog, copy mode's model", function()
 
 	it("words the sim request state, with the time it was queued", function()
 		local queued = { export_seen_at = ACK.export_seen_at, sim_request_state = "queued" }
-		assert.are.equal(string.format(L.dialogSimQueuedAt, "13:40"),
-			model({ ack = queued, simRequestedAt = "2026-11-04 13:40" }).sim)
-		assert.are.equal(L.dialogSimQueued, model({ ack = queued }).sim)
+		-- Fix 3, 5: the sim belongs to the copy the site saw (the ack's export time).
+		assert.are.equal(string.format(L.dialogSimQueuedFor, "14:03"), model({ ack = queued }).sim)
+		assert.are.equal("Sim queued for the 14:03 copy. The result arrives when you next log in.",
+			model({ ack = queued }).sim)
+		assert.are.equal(L.dialogSimQueued, model({ ack = { sim_request_state = "queued" } }).sim)
 		for _, state in ipairs({ "needs_premium", "duplicate", "invalid" }) do
 			assert.are.equal(L.dialogSimState[state],
 				model({ ack = { export_seen_at = ACK.export_seen_at, sim_request_state = state } }).sim)
@@ -458,9 +543,9 @@ describe("BuildDialog, copy mode's model", function()
 		local db = { outbox = { export = { character = "Bob-Ashbringer", saved_at = "2026-11-04 14:02" },
 			sim_request = { character = "Bob-Ashbringer", requested_at = "2026-11-04 13:40" } } }
 		assert.are.equal("2026-11-04 14:02", BuildDialog.savedAtFor(db, "Bob-Ashbringer"))
-		assert.are.equal("2026-11-04 13:40", BuildDialog.simRequestedAtFor(db, "Bob-Ashbringer"))
+
 		assert.is_nil(BuildDialog.savedAtFor(db, "Alice-Ashbringer"))
-		assert.is_nil(BuildDialog.simRequestedAtFor(db, "Alice-Ashbringer"))
+
 		assert.is_nil(BuildDialog.savedAtFor({}, "Bob-Ashbringer"))
 		assert.is_nil(BuildDialog.savedAtFor(nil, "Bob-Ashbringer"))
 	end)
@@ -594,6 +679,31 @@ describe("BuildDialog, the frame's pure rules", function()
 		assert.are.equal(20, S.dialogClose)
 	end)
 
+	it("breaks the export's display only, never the copied text (fix 3, 3)", function()
+		local export = "FS1:1.60.1.70291:warrior:gnome:0/0/0:head=250528,neck=279870|level=21"
+		local shown = BuildDialog.breakable(export)
+		assert.are_not.equal(export, shown)
+		assert.are.equal(export, (shown:gsub(BuildDialog.BREAK, "")))
+		assert.are.equal("\226\128\139", BuildDialog.BREAK)
+		-- The model's text, which the box holds and Ctrl+C copies, is the export byte for byte.
+		local copy = BuildDialog.copyModel({ code = export, clock = BuildDialog.utcClock(0, 0) })
+		assert.are.equal(export, copy.text)
+		assert.is_nil(copy.text:find(BuildDialog.BREAK, 1, true))
+	end)
+
+	it("pins the control states once, in Theme (fix 3, 12)", function()
+		local Theme = require("Theme")
+		local C = Theme.CONTROL_STATES
+		assert.are.same({ rest = "gold", hover = "goldHover", pressed = "goldPressed" }, C.primary)
+		assert.are.equal(Theme.dimHex("gold", 0.85), Theme.HEX.goldPressed)
+		assert.are.same({ rest = "raised", hover = "hover", pressed = "inset" }, C.secondary)
+		assert.are.same({ label = "muted", hoverLabel = "body", hoverUnderline = "border", pressed = "inset" }, C.tab)
+		assert.are.same({ label = "muted", hoverLabel = "body", hoverGround = "hover", pressed = "inset" }, C.close)
+		assert.are.equal(1, Theme.PRESSED_LABEL_DROP)
+		assert.are.equal(2, Theme.SIZES.tabUnderline)
+		assert.are.equal(20, Theme.SIZES.closeButton)
+	end)
+
 	it("names the copy tab with the site's own words (L8.2), and the site once", function()
 		-- The site's copy says "press Copy my character": the tab keeps the name.
 		assert.are.equal("Copy my character", L.dialogCopy)
@@ -635,7 +745,7 @@ describe("BuildDialog, the frame's pure rules", function()
 		local verdict = BuildDialog.evaluate(code(0, 0, nil, nil, "mage"), DATA, player)
 		_G.LOCALIZED_CLASS_NAMES_MALE, _G.UnitClass = savedNames, savedUnitClass
 		assert.are.equal("warrior", player.classSlug)
-		assert.are.equal(string.format(L.codecWrongClass, "Magier", "Krieger"), verdict.reason)
+		assert.are.equal(string.format(L.codecWrongClass, "Magier", "Krieger", "Krieger"), verdict.reason)
 	end)
 
 	it("is put back in place when the positions are reset while it is open", function()

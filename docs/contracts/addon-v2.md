@@ -210,9 +210,8 @@ Notes for the reader:
 **Who writes, who reads, how versioned.** Lane L2 writes it from the addon on `PLAYER_LOGOUT`,
 so it holds what the player's last session left; Lane L7 (the companion) reads it from the
 `ForeverSixty.lua` saved-variables file and sends it to the site. The addon reads back only this
-character's `export.saved_at` and `sim_request.requested_at` (the build dialog compares the first
-with the inbox `ack` and shows the second beside a queued sim, `BuildDialog.savedAtFor`); it cannot
-see whether an upload happened. `format` starts at 1 and is the version this contract
+character's `export.saved_at` (the build dialog compares it with the inbox `ack`,
+`BuildDialog.savedAtFor`); it cannot see whether an upload happened. `format` starts at 1 and is the version this contract
 keys on; the companion ignores an outbox whose `format` it does not know, leaving the file
 untouched. Each of `sim_request` and `roster_snapshot` is `nil` when there is nothing to send,
 and the companion treats a missing key and `nil` the same. `export.code` is the codec's own

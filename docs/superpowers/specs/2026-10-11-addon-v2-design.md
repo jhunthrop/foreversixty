@@ -226,16 +226,39 @@ message ever triggers an action on the recipient's behalf.
 
 ### 4.10 Build dialog
 
-The one frame of our own: 420×300, opened by `/fs`, the chip's "Paste a build" state or the
-compartment entry. A focused text box; Ctrl+V validates on paste; the box is replaced by a
-preview (class icon, name, spec split, points, three gear picks with icons) and one gold button
-"Use this build" (Enter works). A bad code shows the codec's reason as an error: the first sentence in red, the advice under it, a muted "You are still following …", and a red border on the box; editing clears it; the dialog keeps the
-current build. "Copy my character" selects the export; the lead line reads "Your character is selected. Press
-Ctrl+C, then paste it on the site." and only a real Ctrl+C in the selected box prints "You copied 14:02."
-(the client cannot write the clipboard); with the companion, "Seen by the site 14:03" from its ack when
-the ack is at or after the export's save, else "The site has your character from yesterday 18:10. Yours
-has changed since."; "Sim queued 14:03. The result arrives when you next log in.". The addon never claims
-an upload it cannot see.
+The one frame of our own: 420×300, opened by `/fs` (paste) or `/fs copy`, the compartment entry
+or the minimap button; two tabs, "Paste a build" and "Copy my character", Tab switches, Escape
+closes, and "Tab to switch" sits dim at the bottom left.
+
+**Paste a build.** Empty, it says what is followed ("Following: Arms raid · Warrior · 51 points")
+and the next talent ("Next talent: Take Deflection (Arms, 1 of 2)") above a two-line box, "Paste a
+build code from foreversixty.gg (Ctrl+V)", with builds the site sent listed as rows ("Arms raid ·
+Arms 31 / Fury 20 · from the site"). A paste validates at once and nothing is applied until Use.
+A good code collapses to one muted line ending in "…" (still selected, so a second Ctrl+V
+replaces it) over the preview: class icon, name, "Warrior · Arms 33 / Fury 16 / Protection 2 · 51
+points", "You can place 12 now." while points wait, "Gear in this build · at 60" with three rows
+(slot, icon, name in its quality colour), then "Replaces Arms raid · first differs at point 7:
+Cruelty (Fury)" (or "· same point order") and "Next talent would be: Take Deflection (Arms, 1 of 2)"
+(" · same as now" when unchanged), and one gold button "Use this build" (Enter works; "Enter to use"
+shows dim at the bottom right). Use follows the build, closes the dialog and prints "Now following
+Arms raid. Next: Deflection (1 of 2).". A bad code is an error: the codec's first sentence in red,
+its advice in body colour under it ("Copy the whole code from foreversixty.gg, it starts with
+FSB1."; "Pick a Warrior build on foreversixty.gg."; "Update the addon, then paste it again."), a
+muted "You are still following Arms raid." and a red border; editing clears it; the current build
+is kept and the chip does not change.
+
+**Copy my character.** No button: the tab selects the export in its box (a click selects it all
+again) and the one-line lead reads "Selected. Press Ctrl+C, then paste it on foreversixty.gg.". The
+export wraps over whole lines at any character and scrolls beyond the room with a thin scrollbar;
+the copied text is the export byte for byte. Only a real Ctrl+C in the selected box prints, in
+green and until the dialog closes, "You copied 14:02. Now paste it on foreversixty.gg." (the
+client cannot write the clipboard, so the addon claims only what the player did). With the
+companion, its ack reads "Seen by the site 14:03" when it is at or after the last save, "The site
+has your character from yesterday 22:30. Yours has changed since." when older, and "Waiting for
+the site to see this copy." after a copy until a newer ack arrives; a queued sim reads "Sim queued
+for the 22:30 copy. The result arrives when you next log in.". With no ack ever seen: "No companion
+found. The companion is a small app on your computer that sends this when you log out." and "Or
+paste it on the site at foreversixty.gg.". The addon never claims an upload it cannot see.
 
 ### 4.11 Settings
 
