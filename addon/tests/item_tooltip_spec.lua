@@ -324,6 +324,128 @@ describe("Gear.currentWeights", function()
 	end)
 end)
 
+-- L3.6 ruling 1: DPS per point is read per band (contract 1's dpsPerPoint[spec][band]),
+-- by the chip's band rule (Gear.bandFor), band 20 below level 20; the spec-level
+-- figure only when no band entry is there; a sim's own dps_per_point over both.
+describe("the band's DPS figures", function()
+	local BANDED = {
+		weights = { ["warrior-arms"] = { attack_power = 1, strength = 2 } },
+		dpsPerPoint = {
+			["warrior-arms"] = { reference = "attack_power", dps = 0.2, healing = false, weaponDps = 3,
+				[20] = { reference = "attack_power", dps = 0.04, weaponDps = 0.6 },
+				[30] = { reference = "attack_power", dps = 0.08, weaponDps = 1.2 },
+			},
+			["warrior-fury"] = { reference = "attack_power", dps = 0.25, healing = false, weaponDps = 2,
+				[30] = { reference = "attack_power", dps = 0.07, weaponDps = 0.6 },
+			},
+		},
+	}
+	BANDED.weights["warrior-fury"] = BANDED.weights["warrior-arms"]
+
+	it("reads the band at the character's level by the chip's band rule", function()
+		assert.are.equal(0.04, Gear.dpsFigure(BANDED, "warrior-arms", 25).dps)
+		assert.are.equal(0.04, Gear.dpsFigure(BANDED, "warrior-arms", 20).dps)
+		assert.are.equal(0.08, Gear.dpsFigure(BANDED, "warrior-arms", 30).dps)
+		-- Gear.bandFor rounds down to the highest band at or below the level.
+		assert.are.equal(0.08, Gear.dpsFigure(BANDED, "warrior-arms", 47).dps)
+		assert.are.equal(0.08, Gear.dpsFigure(BANDED, "warrior-arms", 60).dps)
+	end)
+
+	it("reads band 20 below level 20, never the spec-level figure", function()
+		for _, level in ipairs({ 1, 12, 19 }) do
+			assert.are.equal(0.04, Gear.dpsFigure(BANDED, "warrior-arms", level).dps)
+		end
+	end)
+
+	it("falls back to the spec-level figure only when no band entry is there", function()
+		assert.are.equal(0.25, Gear.dpsFigure(BANDED, "warrior-fury", 25).dps)
+		assert.are.equal(0.07, Gear.dpsFigure(BANDED, "warrior-fury", 35).dps)
+		assert.are.equal(0.42, Gear.dpsFigure(WEIGHTS_DATA, "warrior-arms", 25).dps)
+		assert.is_nil(Gear.dpsFigure(BANDED, "warrior-protection", 25))
+	end)
+
+	it("hands the tooltip the band's DPS per point and its measured weapon term", function()
+		local current = Gear.currentWeights(BANDED, "warrior-arms", nil, KEY, 25)
+		assert.are.equal(0.04, current.dpsPerPoint)
+		assert.are.equal(0.6, current.weaponDps)
+		assert.are.equal("main_hand", current.weapon.slot)
+		-- In reference-stat points, so that x DPS per point it is weaponDps a weapon DPS.
+		assert.is_true(math.abs(current.weapon.weight * current.dpsPerPoint - 0.6) < 1e-12)
+		assert.are.equal(0.08, Gear.currentWeights(BANDED, "warrior-arms", nil, KEY, 31).dpsPerPoint)
+		assert.are.equal(0.04, Gear.currentWeights(BANDED, "warrior-arms", nil, KEY, 9).dpsPerPoint)
+	end)
+
+	it("lets a sim's own DPS per point win over the band and the spec figure", function()
+		local current = Gear.currentWeights(BANDED, "warrior-arms", inbox({
+			type = "weights", character = KEY, spec = "warrior-arms",
+			weights = { { stat = "attack_power", weight = 1 } }, dps_per_point = 0.5,
+		}), KEY, 25)
+		assert.are.equal(0.5, current.dpsPerPoint)
+		assert.are.equal("sim", current.tag)
+		-- The weapon term stays the band's measured one: +1 weapon DPS is still 0.6 DPS.
+		assert.is_true(math.abs(current.weapon.weight * 0.5 - 0.6) < 1e-12)
+		-- A sim that names no DPS per point counts in score: the band's own ratio.
+		local score = Gear.currentWeights(BANDED, "warrior-arms", inbox({
+			type = "weights", character = KEY, spec = "warrior-arms",
+			weights = { { stat = "attack_power", weight = 1 } },
+		}), KEY, 25)
+		assert.is_nil(score.dpsPerPoint)
+		assert.is_true(math.abs(score.weapon.weight - 0.6 / 0.04) < 1e-12)
+	end)
+
+	it("has no fixed attack-power rate for a weapon's DPS anywhere", function()
+		assert.is_nil(Progress.AP_PER_WEAPON_DPS)
+		assert.is_nil(Progress.WEAPON_AP_STAT)
+	end)
+
+	it("puts the weapon term on the slot it was measured on alone", function()
+		local weapon = { slot = "main_hand", weight = 10 }
+		local sword = { strength = 1, weapon_dps = 20 }
+		assert.are.equal(202, Progress.itemScore(sword, { strength = 2 }, "main_hand", weapon))
+		assert.are.equal(2, Progress.itemScore(sword, { strength = 2 }, "off_hand", weapon))
+		assert.are.equal(2, Progress.itemScore(sword, { strength = 2 }, "ranged", weapon))
+		assert.are.equal(2, Progress.itemScore(sword, { strength = 2 }, "main_hand", nil))
+	end)
+
+	describe("over the real data", function()
+		local Data = require("Data")
+
+		it("measures a ranged-attack-power hunter's weapon term on the ranged slot, never the melee weapon", function()
+			local current = Gear.currentWeights(Data, "hunter-marksmanship", nil, KEY, 25)
+			local band = Data.dpsPerPoint["hunter-marksmanship"][20]
+			assert.are.equal(band.dps, current.dpsPerPoint)
+			assert.are.equal("ranged", current.weapon.slot)
+			local bow = { weapon_dps = 10 }
+			assert.is_true(math.abs(Progress.itemScore(bow, current.weights, "ranged", current.weapon)
+				* current.dpsPerPoint - 10 * band.weaponDps) < 1e-9)
+			assert.are.equal(0, Progress.itemScore(bow, current.weights, "main_hand", current.weapon))
+		end)
+
+		it("ignores a feral druid's weapon DPS at every band", function()
+			for level = 10, 60, 5 do
+				local current = Gear.currentWeights(Data, "druid-feral", nil, KEY, level)
+				assert.is_nil(current.weapon, level)
+				assert.are.equal(0, Progress.itemScore({ weapon_dps = 50 }, current.weights, "main_hand",
+					current.weapon))
+			end
+		end)
+
+		it("ignores a caster's and a healer's weapon DPS", function()
+			for _, spec in ipairs({ "mage-frost", "priest-holy" }) do
+				assert.is_nil(Gear.currentWeights(Data, spec, nil, KEY, 25).weapon, spec)
+			end
+		end)
+
+		it("reads Arms band 20 as the measured 0.0385 DPS per attack power and 0.5432 per weapon DPS", function()
+			local current = Gear.currentWeights(Data, "warrior-arms", nil, KEY, 21)
+			assert.are.equal(0.0385, current.dpsPerPoint)
+			assert.are.equal(0.5432, current.weaponDps)
+			assert.are.equal(0.0385, Gear.currentWeights(Data, "warrior-arms", nil, KEY, 12).dpsPerPoint)
+			assert.are.equal(0.1064, Gear.currentWeights(Data, "warrior-arms", nil, KEY, 60).dpsPerPoint)
+		end)
+	end)
+end)
+
 describe("ItemTooltip.section", function()
 	local DATA = {
 		classes = { warrior = { tabs = { { name = "Arms" }, { name = "Fury" }, { name = "Protection" } } } },
@@ -470,8 +592,8 @@ describe("ItemTooltip.section", function()
 		-- Abomination Bones (+8 Strength; its +4 attack power enchant is not
 		-- an item stat) against Mutant Scale Breastplate (+10 Strength, +4
 		-- Stamina) under the shipped Arms weights: 2 Strength x 2 = 4 attack
-		-- power x 0.2342 = 0.94 DPS, under the 1.0 floor, so round 1 printed
-		-- the name with no figure. Below the floor it is "Best for now".
+		-- power x 0.0385 (band 20, L3.6) = 0.15 DPS, under the 1.0 floor, so round 1
+		-- printed the name with no figure. Below the floor it is "Best for now".
 		it("says Best for now when the next pick gains under the floor: the live chest", function()
 			local Data = require("Data")
 			local live = {
@@ -792,6 +914,101 @@ describe("ItemTooltip.section", function()
 		end)
 	end)
 
+	-- L3.6 ruling 2: a pick the client has not sent yet names itself from
+	-- Data.bisNames and prices a weapon from Data.bisDps until its stats arrive
+	-- (the hover still redraws when they do: the id stays pending).
+	describe("a cold pick", function()
+		local COLD = {
+			classes = DATA.classes,
+			weights = { ["warrior-arms"] = { attack_power = 1, strength = 2 } },
+			dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.2, healing = false, weaponDps = 3,
+				[20] = { reference = "attack_power", dps = 0.5, weaponDps = 2 } } },
+			bis = { ["warrior-arms"] = {
+				[20] = { alliance = { main_hand = "600|D|Shadowfang Keep: Arugal|0.1|601|Q|A Quest" } },
+				[30] = { alliance = { main_hand = "610|D|Scarlet Monastery: Herod|0.2" } },
+			} },
+			bisNames = { [600] = "Arugal's Axe", [601] = "Quest Blade", [610] = "Herod's Axe" },
+			bisDps = { [600] = 30, [601] = 25, [610] = 40 },
+		}
+		-- At band 20, +1 weapon DPS on the main hand is 2 DPS: 4 attack power at 0.5.
+		local function cold(worn, overrides)
+			local base = {
+				data = COLD, current = Gear.currentWeights(COLD, "warrior-arms", nil, KEY, 20),
+				equipped = { main_hand = worn },
+				nameOf = function() return nil end,
+				statsOf = function() return nil end,
+				isCached = function() return false end,
+				isMissing = function() return false end,
+				item = { itemId = worn.itemId, link = worn.link, equipLocation = "INVTYPE_2HWEAPON", itemClass = 2,
+					itemSubClass = 1, stats = worn.stats },
+			}
+			for key, value in pairs(overrides or {}) do
+				base[key] = value
+			end
+			return ctx(base)
+		end
+
+		-- Worn: 20 Str x 2 + 10 weapon DPS x 4 = 80. Arugal's Axe: 30 x 4 = 120.
+		-- (120 - 80) x 0.5 = +20.0 DPS; Quest Blade: (100 - 80) x 0.5 = +10.0.
+		it("names its Next line from the data and prices the weapon from its DPS", function()
+			local worn = { itemId = 70, link = "item:70", equipLoc = "INVTYPE_2HWEAPON",
+				stats = { strength = 20, weapon_dps = 10 } }
+			local lines, target, pending = ItemTooltip.section(cold(worn))
+			local shown = texts(lines)
+			assert.are.equal(ItemTooltip.nextLine("Arugal's Axe", 20, "dps"), shown[1])
+			assert.are.equal(string.format(L.tooltipSourceDrop, "Shadowfang Keep", "Arugal", 10), shown[2])
+			assert.are.equal(ItemTooltip.fitAlternatives({ { name = "Quest Blade", gain = 10, unit = "dps" } })[1],
+				shown[3])
+			for _, text in ipairs(shown) do
+				assert.is_nil(text:find(L.tooltipNamePending, 1, true), text)
+			end
+			assert.is_nil(target)
+			assert.is_true(pending[600])
+			assert.is_true(pending[601])
+		end)
+
+		it("takes the client's own name and stats once they arrive", function()
+			local worn = { itemId = 70, link = "item:70", equipLoc = "INVTYPE_2HWEAPON",
+				stats = { strength = 20, weapon_dps = 10 } }
+			local lines, _, pending = ItemTooltip.section(cold(worn, {
+				nameOf = function(id) return id == 600 and "Arugal's Axe" or nil end,
+				statsOf = function(id) return id == 600 and { strength = 10, weapon_dps = 30 } or nil end,
+			}))
+			-- 20 + 120 = 140 against 80: +30.0 DPS.
+			assert.are.equal(ItemTooltip.nextLine("Arugal's Axe", 30, "dps"), texts(lines)[1])
+			assert.is_nil(pending[600])
+		end)
+
+		-- Worn: Arugal's Axe itself (30 weapon DPS: 120). At 30, Herod's Axe:
+		-- 40 x 4 = 160, (160 - 120) x 0.5 = +20.0 DPS.
+		it("names its At line from the data and prices the weapon from its DPS", function()
+			local worn = { itemId = 600, link = "item:600", equipLoc = "INVTYPE_2HWEAPON", stats = { weapon_dps = 30 } }
+			local lines, _, pending = ItemTooltip.section(cold(worn))
+			assert.are.same({
+				string.format(L.tooltipBestUntil, 30),
+				ItemTooltip.atText({ band = 30, name = "Herod's Axe", gain = 20, unit = "dps",
+					source = "Scarlet Monastery" }),
+				string.format(L.tooltipPlanned, "Arms", 20),
+			}, texts(lines))
+			assert.is_true(pending[610])
+		end)
+
+		it("names a cold armour pick from the data with no figure until its stats arrive", function()
+			local worn = { itemId = 600, link = "item:600", equipLoc = "INVTYPE_2HWEAPON", stats = { weapon_dps = 30 } }
+			local data = {}
+			for key, value in pairs(COLD) do
+				data[key] = value
+			end
+			data.bisDps = {}
+			local lines = ItemTooltip.section(cold(worn, { data = data }))
+			assert.are.same({
+				string.format(L.tooltipBestUntil, 30),
+				ItemTooltip.atText({ band = 30, name = "Herod's Axe", source = "Scarlet Monastery" }),
+				string.format(L.tooltipPlanned, "Arms", 20),
+			}, texts(lines))
+		end)
+	end)
+
 	-- The invariant behind tip3-worn-mainhand: a worn item in a covered slot
 	-- with band data ends with exactly one primary line, a next upgrade or
 	-- "Best until N", once the client has answered for its pick.
@@ -910,14 +1127,14 @@ describe("ItemTooltip.section", function()
 	end)
 end)
 
--- The tip2-mace figure, "Downgrade −5.7 DPS over Smite's Mighty Hammer", with
--- the engine's own breakdown: the shipped Arms weights (Data.weights, the
--- table every level uses; band 20-29) and its DPS per point.
-describe("the weapon figure under the shipped Arms weights", function()
+-- The tip2-mace figure ("Downgrade −5.7 DPS over Smite's Mighty Hammer" in
+-- game) under the shipped Arms figures for band 20 (L3.6): the stat line at the
+-- band's DPS per attack power, the weapon's own DPS at the band's measured DPS
+-- per weapon DPS, never through attack power.
+describe("the weapon figure under the shipped Arms band-20 figures", function()
 	local Data = require("Data")
-	local weights = Data.weights["warrior-arms"]
-	local perPoint = Data.dpsPerPoint["warrior-arms"].dps
-	local reference = Data.dpsPerPoint["warrior-arms"].reference
+	local current = Gear.currentWeights(Data, "warrior-arms", nil, KEY, 21)
+	local weights, perPoint, weapon = current.weights, current.dpsPerPoint, current.weapon
 	local hammer = { itemId = 7230, link = "|Hitem:7230|h[Smite's Mighty Hammer]|h", equipLoc = "INVTYPE_2HWEAPON",
 		stats = { strength = 11, agility = 4, weapon_dps = 19.7 } }
 	local tenderizer = { itemId = 5197, link = "item:5197", equipLocation = "INVTYPE_WEAPON",
@@ -925,41 +1142,41 @@ describe("the weapon figure under the shipped Arms weights", function()
 
 	it("reads the client's weapon DPS line as weapon_dps", function()
 		assert.are.equal("weapon_dps", Rules.STAT_KEYS.ITEM_MOD_DAMAGE_PER_SECOND_SHORT)
-		assert.are.equal(14, Progress.AP_PER_WEAPON_DPS)
 	end)
 
-	-- Hammer: 11 Str x 2 + 4 Agi x 0.6 = 24.4 AP, plus 19.7 DPS x 14 = 275.8 AP:
-	-- 300.2. Tenderizer: 4 Spirit x 0 = 0, plus 13.9 DPS x 14 = 194.6 AP. The
-	-- gap is 24.4 + (19.7 - 13.9) x 14 = 105.6 AP x 0.2342 = 24.7 DPS.
-	it("nets 24.4 AP + (19.7 - 13.9) x 14 AP = 105.6 AP x 0.2342 = Downgrade 24.7 DPS", function()
-		assert.are.equal("attack_power", reference)
-		assert.are.equal(0.2342, perPoint)
-		assert.is_true(math.abs(Progress.itemScore(hammer.stats, weights, "main_hand", reference) - 300.2) < 1e-9)
-		assert.is_true(math.abs(Progress.itemScore(tenderizer.stats, weights, "main_hand", reference) - 194.6) < 1e-9)
-		local verdict = Progress.itemVerdict("main_hand", tenderizer, { main_hand = hammer }, weights, perPoint,
-			reference)
+	-- Hammer over Tenderizer: 11 Str x 2 + 4 Agi x 0.6 = 24.4 AP x 0.0385 = 0.94
+	-- DPS, plus (19.7 - 13.9) = 5.8 weapon DPS x 0.5432 = 3.15 DPS: 4.09 DPS.
+	it("nets 24.4 AP x 0.0385 + 5.8 weapon DPS x 0.5432 = Downgrade 4.1 DPS", function()
+		assert.are.equal(0.0385, perPoint)
+		assert.are.equal("main_hand", weapon.slot)
+		local verdict = Progress.itemVerdict("main_hand", tenderizer, { main_hand = hammer }, weights, perPoint, weapon)
 		assert.are.equal("better", verdict.state)
-		assert.is_true(math.abs(verdict.delta - 105.6 * 0.2342) < 1e-9)
-		assert.are.equal(string.format(L.tooltipDown, 24.7, L.tooltipUnitDps, "Smite's Mighty Hammer"),
+		assert.is_true(math.abs(verdict.delta - (24.4 * 0.0385 + 5.8 * 0.5432)) < 1e-9)
+		assert.are.equal(string.format(L.tooltipDown, 4.1, L.tooltipUnitDps, "Smite's Mighty Hammer"),
+			ItemTooltip.verdictLine(verdict, "dps", "Smite's Mighty Hammer").text)
+	end)
+
+	-- The pair as worn in game, Smite's "Weapon Damage +4" at 3.50 netted (tip4):
+	-- 24.4 x 0.0385 + (5.8 + 4 / 3.5) x 0.5432 = 0.94 + 3.77 = 4.7 DPS, the
+	-- "about -4.8" the brief and L1.5 expected (L1.5: 125.6 AP x 0.0385).
+	it("prices the enchanted pair at about -4.8: Downgrade 4.7 DPS", function()
+		local smite = Gear.netEnchant(hammer, { stats = { weapon_dps = 4 / 3.5 }, unparsed = false })
+		local verdict = Progress.itemVerdict("main_hand", tenderizer, { main_hand = smite }, weights, perPoint, weapon)
+		assert.is_true(math.abs(verdict.delta - (24.4 * 0.0385 + (5.8 + 4 / 3.5) * 0.5432)) < 1e-9)
+		assert.are.equal(string.format(L.tooltipDown, 4.7, L.tooltipUnitDps, "Smite's Mighty Hammer"),
 			ItemTooltip.verdictLine(verdict, "dps", "Smite's Mighty Hammer").text)
 	end)
 
 	it("ignores a weapon's DPS for a caster", function()
 		local staff = { weapon_dps = 30, spell_power = 10 }
-		assert.are.equal(10, Progress.itemScore(staff, { spell_power = 1, attack_power = 1 }, "main_hand", "spell_power"))
+		local mage = Gear.currentWeights(Data, "mage-frost", nil, KEY, 25)
+		assert.are.equal(10, Progress.itemScore(staff, { spell_power = 1, attack_power = 1 }, "main_hand", mage.weapon))
 	end)
 
-	it("weighs a ranged weapon's DPS by ranged attack power", function()
-		local bow = { weapon_dps = 10 }
-		local hunter = { ranged_attack_power = 1, attack_power = 0.2 }
-		assert.are.equal(140, Progress.itemScore(bow, hunter, "ranged", "ranged_attack_power"))
-		assert.are.equal(28, Progress.itemScore(bow, hunter, "main_hand", "ranged_attack_power"))
-	end)
-
-	it("gives a shield or a non-weapon slot no weapon term", function()
-		assert.are.equal(0, Progress.itemScore({ weapon_dps = 10 }, { attack_power = 1 }, "chest", "attack_power"))
-		assert.are.equal(3, Progress.itemScore({ strength = 3 }, { strength = 1, attack_power = 1 }, "off_hand",
-			"attack_power"))
+	it("gives a shield, an off hand or a non-weapon slot no weapon term", function()
+		assert.are.equal(0, Progress.itemScore({ weapon_dps = 10 }, { attack_power = 1 }, "chest", weapon))
+		assert.are.equal(0, Progress.itemScore({ weapon_dps = 10 }, { attack_power = 1 }, "off_hand", weapon))
+		assert.are.equal(3, Progress.itemScore({ strength = 3 }, { strength = 1, attack_power = 1 }, "off_hand", weapon))
 	end)
 end)
 
@@ -1222,12 +1439,14 @@ describe("the worn item's enchant", function()
 		assert.are.equal(4, Gear.score(enchant.stats, arms))
 	end)
 
-	it("reads 'Weapon Damage +4' at speed 3.50 as 4 / 3.5 DPS, 4 / 3.5 x 14 attack power", function()
+	it("reads 'Weapon Damage +4' at speed 3.50 as 4 / 3.5 weapon DPS, at the band's DPS per weapon DPS", function()
 		local enchant = Gear.enchantOf({ { left = "Two-Hand", right = "Mace" },
 			{ left = "65 - 99 Damage", right = "Speed 3.50" },
 			{ left = "Enchanted: Weapon Damage +4" } }, words)
 		assert.is_true(math.abs(enchant.stats.weapon_dps - 4 / 3.5) < 1e-9)
-		assert.is_true(math.abs(Progress.itemScore(enchant.stats, arms, "main_hand", "attack_power") - 16) < 1e-9)
+		local band20 = Gear.currentWeights(require("Data"), "warrior-arms", nil, KEY, 25)
+		assert.is_true(math.abs(Progress.itemScore(enchant.stats, arms, "main_hand", band20.weapon)
+			* band20.dpsPerPoint - 4 / 3.5 * 0.5432) < 1e-9)
 	end)
 
 	it("keeps the note for an enchant it cannot read, and has nothing to say with none", function()
@@ -1249,20 +1468,23 @@ describe("the worn item's enchant", function()
 	it("nets the chest's enchant into the next upgrade's gain", function()
 		local worn = Gear.netEnchant({ itemId = 51, link = "|Hitem:51:1843|h[Abomination Bones]|h",
 			stats = { strength = 8 } }, { stats = { attack_power = 4, armor = 16 }, unparsed = false })
+		local band20 = Gear.currentWeights(require("Data"), "warrior-arms", nil, KEY, 25)
 		local verdict = Progress.itemVerdict("chest", { itemId = 6627, stats = { strength = 10, stamina = 4 } },
-			{ chest = worn }, arms, 0.2342, "attack_power")
+			{ chest = worn }, arms, band20.dpsPerPoint, band20.weapon)
 		assert.are.equal(0, verdict.delta)
 	end)
 
-	-- tip4-mace with Smite's "Weapon Damage +4" at 3.50 netted: 105.6 AP + 4 /
-	-- 3.5 x 14 = 121.6 AP x 0.2342 = 28.5 DPS.
+	-- tip4-mace with Smite's "Weapon Damage +4" at 3.50 netted, at band 20: 24.4
+	-- AP x 0.0385 + (5.8 + 4 / 3.5) weapon DPS x 0.5432 = 4.7 DPS.
 	it("nets the worn weapon's enchant into the mace's verdict", function()
 		local smite = Gear.netEnchant({ itemId = 7230, equipLoc = "INVTYPE_2HWEAPON",
 			stats = { strength = 11, agility = 4, weapon_dps = 19.7 } }, { stats = { weapon_dps = 4 / 3.5 }, unparsed = false })
 		local mace = { itemId = 5197, equipLocation = "INVTYPE_WEAPON", stats = { spirit = 4, weapon_dps = 13.9 } }
-		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, 0.2342, "attack_power")
-		assert.is_true(math.abs(verdict.delta - 121.6 * 0.2342) < 1e-9)
-		assert.are.equal(string.format(L.tooltipDown, 28.5, L.tooltipUnitDps, "Smite's Mighty Hammer"),
+		local band20 = Gear.currentWeights(require("Data"), "warrior-arms", nil, KEY, 25)
+		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, band20.dpsPerPoint,
+			band20.weapon)
+		assert.is_true(math.abs(verdict.delta - (24.4 * 0.0385 + (5.8 + 4 / 3.5) * 0.5432)) < 1e-9)
+		assert.are.equal(string.format(L.tooltipDown, 4.7, L.tooltipUnitDps, "Smite's Mighty Hammer"),
 			ItemTooltip.verdictLine(verdict, "dps", "Smite's Mighty Hammer").text)
 	end)
 end)
@@ -1274,14 +1496,15 @@ describe("Gear.score and a weapon's DPS", function()
 end)
 
 describe("the two-hander against a pair, with weapon DPS", function()
-	it("nets the two-hander against both hands, each hand's DPS at 14 attack power", function()
+	it("nets the two-hander against both hands, the weapon term on the main hand alone", function()
 		local weights = { strength = 2, attack_power = 1 }
 		local main = { itemId = 71, equipLoc = "INVTYPE_WEAPON", stats = { strength = 5, weapon_dps = 20 } }
 		local off = { itemId = 72, equipLoc = "INVTYPE_WEAPON", stats = { weapon_dps = 15 } }
 		local axe = { itemId = 82, equipLocation = "INVTYPE_2HWEAPON", stats = { strength = 10, weapon_dps = 40 } }
-		-- Worn: (10 + 20 x 14) + (15 x 14) = 290 + 210 = 500. The axe: 20 + 40 x 14 = 580.
-		local verdict = Progress.weaponVerdict("main_hand", axe, main, off, weights, nil, "attack_power")
-		assert.are.equal(-80, verdict.delta)
+		-- Worn: (10 + 20 x 10) + (the off hand's 15 DPS: no term) = 210. The axe: 20 + 40 x 10 = 420.
+		local verdict = Progress.weaponVerdict("main_hand", axe, main, off, weights, nil,
+			{ slot = "main_hand", weight = 10 })
+		assert.are.equal(-210, verdict.delta)
 		assert.are.equal("behind", verdict.state)
 	end)
 end)
@@ -1306,7 +1529,7 @@ describe("the worn-item invariant over the real Arms band 20", function()
 		for _, figure in ipairs({ 1000, 0 }) do
 			it(string.format("%s, a pick worth %d", faction, figure), function()
 				local band = Data.bis["warrior-arms"][20][faction]
-				local current = Gear.currentWeights(Data, "warrior-arms", nil, KEY)
+				local current = Gear.currentWeights(Data, "warrior-arms", nil, KEY, 20)
 				local checked = 0
 				for slot, packed in pairs(band) do
 					local pick = Gear.decodePick(packed)
@@ -1337,6 +1560,44 @@ describe("the worn-item invariant over the real Arms band 20", function()
 				assert.is_true(checked >= 10)
 			end)
 		end
+
+		-- L3.6 ruling 2: with nothing in the client's cache yet, every pick names
+		-- itself from Data.bisNames (never "…"), the main-hand weapon is priced
+		-- from Data.bisDps, and each worn item still ends with one primary line.
+		it(faction .. ", every pick cold", function()
+			local band = Data.bis["warrior-arms"][20][faction]
+			local current = Gear.currentWeights(Data, "warrior-arms", nil, KEY, 20)
+			for slot, packed in pairs(band) do
+				local pick = Gear.decodePick(packed)
+				assert.is_string(Data.bisNames[pick.item_id], slot)
+				local class = CLASS[slot] or { 4, 3 }
+				local wornLink = "item:999" .. #slot .. ":0"
+				local worn = { itemId = 9990 + #slot, link = wornLink, equipLoc = LOCATION[slot], stats = { strength = 1 } }
+				local lines = ItemTooltip.section({
+					data = Data, spec = "warrior-arms", classToken = "WARRIOR", level = 20, faction = faction,
+					current = current, equipped = { [slot] = worn },
+					nameOf = function() return nil end, statsOf = function() return nil end,
+					isCached = function() return false end, qualityHex = function() return nil end,
+					isMissing = function() return false end,
+					item = { itemId = worn.itemId, link = wornLink, equipLocation = LOCATION[slot],
+						itemClass = class[1], itemSubClass = class[2], stats = worn.stats },
+				})
+				local primaries = 0
+				for _, line in ipairs(lines) do
+					assert.is_nil(line.text:find(L.tooltipNamePending, 1, true), slot .. ": " .. line.text)
+					if primaryTexts[line.text] or line.text:find(L.tooltipNextLabel, 1, true) then
+						primaries = primaries + 1
+					end
+				end
+				assert.are.equal(1, primaries, slot .. " " .. pick.item_id)
+				if slot == "main_hand" then
+					-- The band's main hand outprices a +1 Strength stand-in on its DPS alone.
+					assert.is_number(Data.bisDps[pick.item_id])
+					assert.is_truthy(lines[1].text:find(Data.bisNames[pick.item_id], 1, true), lines[1].text)
+					assert.is_truthy(lines[1].text:find(L.tooltipNextLabel, 1, true), lines[1].text)
+				end
+			end
+		end)
 	end
 end)
 
@@ -1682,6 +1943,8 @@ end)
 describe("the breakdown under a figure", function()
 	local Data = require("Data")
 	local arms = Data.weights["warrior-arms"]
+	local band20 = Gear.currentWeights(Data, "warrior-arms", nil, KEY, 25)
+	local perPoint, weapon = band20.dpsPerPoint, band20.weapon
 
 	-- tip7 mace: Smite's Mighty Hammer (Str 11, Agi 4, 19.7 DPS, "Weapon Damage
 	-- +4" at 3.50 netted) against Cookie's Tenderizer (Spi 4, 13.9 DPS).
@@ -1690,7 +1953,7 @@ describe("the breakdown under a figure", function()
 	local mace = { itemId = 5197, equipLocation = "INVTYPE_WEAPON", stats = { spirit = 4, weapon_dps = 13.9 } }
 
 	it("lists the mace's three contributors, signed, in the player's words", function()
-		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, 0.2342, "attack_power")
+		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, perPoint, weapon)
 		assert.are.equal("(" .. L.tooltipMinus .. "11 Str, " .. L.tooltipMinus .. "4 Agi, " .. L.tooltipMinus
 			.. "6.9 weapon DPS)", ItemTooltip.breakdownText(verdict.contributions, 3))
 		assert.are.equal("weapon_dps", verdict.contributions[1].stat)
@@ -1700,13 +1963,13 @@ describe("the breakdown under a figure", function()
 		local bones = Gear.netEnchant({ itemId = 51, stats = { strength = 8 } },
 			{ stats = { attack_power = 4, armor = 16 }, unparsed = false })
 		local verdict = Progress.itemVerdict("chest", { itemId = 6627, stats = { strength = 10, stamina = 4 } },
-			{ chest = bones }, arms, 0.2342, "attack_power")
+			{ chest = bones }, arms, perPoint, weapon)
 		assert.are.equal("(+2 Str, " .. L.tooltipMinus .. "4 " .. L.statNames.attack_power .. ")",
 			ItemTooltip.breakdownText(verdict.contributions, 3))
 	end)
 
 	it("drops the third, then the second contributor before it cuts the line", function()
-		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, 0.2342, "attack_power")
+		local verdict = Progress.itemVerdict("main_hand", mace, { main_hand = smite }, arms, perPoint, weapon)
 		local all = ItemTooltip.breakdownText(verdict.contributions, 3)
 		assert.are.same({ all }, ItemTooltip.fitBreakdown(verdict.contributions, visible, 200))
 		assert.are.same({ "(" .. L.tooltipMinus .. "11 Str, " .. L.tooltipMinus .. "6.9 weapon DPS)" },

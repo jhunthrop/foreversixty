@@ -667,13 +667,14 @@ local function itemName(item)
 end
 
 --- The best bag upgrade as the model wants it, or nil.
---- The bag upgrades the chip offers, scored as the tooltip scores (Gear.currentWeights): the
---- sim's weights and its DPS per point while a weights message for `spec` is in use, else the
---- shipped weights and `perPoint`'s DPS. Pure over its arguments.
+--- The bag upgrades the chip offers, scored as the tooltip scores (Gear.currentWeights at
+--- `level`): the sim's weights and its DPS per point while a weights message for `spec` is in
+--- use, else the shipped weights and the band's DPS per point and weapon term at `level`
+--- (`perPoint`, Gear.dpsFigure's, where the data has none for the spec). Pure over its arguments.
 function Chip.scoredUpgrades(data, spec, perPoint, inbox, key, build, ranks, bagLinks, equipped, level)
-	local current = Gear.currentWeights(data, spec, inbox, key)
+	local current = Gear.currentWeights(data, spec, inbox, key, level)
 	local dps = type(perPoint) == "table" and tonumber(perPoint.dps) or nil
-	if type(current) == "table" and current.tag == "sim" then
+	if type(current) == "table" and (current.tag == "sim" or current.dpsPerPoint ~= nil) then
 		dps = current.dpsPerPoint
 	end
 	return Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dps, level, current)
@@ -745,7 +746,8 @@ function Chip.inputs(data)
 	local ranks = Talents.readRanks(data)
 	local progress = Progress.build(build, ranks, level)
 	local spec = classSlug ~= nil and Gear.specOf(data, classSlug, ranks) or nil
-	local perPoint = spec ~= nil and type(data.dpsPerPoint) == "table" and data.dpsPerPoint[spec] or nil
+	-- The spec's own entry says healing; the figures are the band's (Gear.dpsFigure).
+	local perSpec = spec ~= nil and type(data.dpsPerPoint) == "table" and data.dpsPerPoint[spec] or nil
 	local input = {
 		level = level,
 		build = build,
@@ -763,7 +765,7 @@ function Chip.inputs(data)
 		lastRaid = lastRaid(),
 		lastNightDone = Chip.lastNight == "done",
 		completedAt = Chip.completedAt,
-		healing = type(perPoint) == "table" and perPoint.healing == true,
+		healing = type(perSpec) == "table" and perSpec.healing == true,
 		-- The marks stand in for the chip only while they are drawn (TalentMarks sets windowMarks).
 		talentsOpen = TalentGlow.openFrame() ~= nil and (Chip.windowMarks == nil or Chip.windowMarks()),
 	}
@@ -777,8 +779,8 @@ function Chip.inputs(data)
 	end
 	local equipped = Gear.readEquipped()
 	if build ~= nil then
-		input.upgrades = { bestUpgrade(Chip.scoredUpgrades(data, spec, perPoint, ForeverSixtyInbox,
-			Export.characterKey(), build, ranks, Gear.bagLinks(), equipped, level)) }
+		input.upgrades = { bestUpgrade(Chip.scoredUpgrades(data, spec, Gear.dpsFigure(data, spec, level),
+			ForeverSixtyInbox, Export.characterKey(), build, ranks, Gear.bagLinks(), equipped, level)) }
 	end
 	Chip.pending = {}
 	input.here = picksHere(data, spec, level, equipped)

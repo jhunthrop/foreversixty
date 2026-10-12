@@ -124,9 +124,11 @@ own muted line "· <source>" rather than widen the tooltip, and the name is cut 
 bare name is wider than the tooltip; the At line carries no alternatives) ("Best for now", alone, in the top band); when the client can
 show neither the pick nor any of its alternatives, "Best known for now". A pick the client cannot
 show at all gives way to the first of its alternatives it can. The gain compares the items' own
-stats and, for a weapon in a weapon slot of a spec whose reference stat is attack power or ranged
-attack power, the weapon's own DPS at the sim's 14 attack power per DPS (ranged attack power for
-the ranged slot); a caster's weapon DPS counts nothing. The worn item's enchant is read from its own tooltip (the
+stats at the DPS per point of the character's band (contract 1's `dpsPerPoint[spec][band]`, band 20
+below level 20) and, on the slot the band's weapon term was measured on (the main hand, or the
+ranged slot for a ranged-attack-power spec), the weapon's own DPS at the band's measured
+`weaponDps`, never through attack power; the off hand, a hunter's melee weapon and a feral
+druid's, a caster's or a healer's weapon DPS count nothing. The worn item's enchant is read from its own tooltip (the
 client's "Enchanted: ..." line, each "+N <stat>" in the client's own stat words, "Weapon Damage
 +N" as N divided by the weapon's speed of DPS) and added to the worn item before every comparison
 it takes part in (the Next gain, the bag verdicts against it, the chip's upgrades); only when that

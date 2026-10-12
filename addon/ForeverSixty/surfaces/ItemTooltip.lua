@@ -587,7 +587,7 @@ end
 --- The slot the hovered item is judged in, among `slots` (each one it may
 --- be worn in): an empty one first, else the one whose worn item scores
 --- lowest (of two rings, the weaker is the one to replace).
-local function chooseSlot(slots, equipped, weights, reference)
+local function chooseSlot(slots, equipped, weights, weapon)
 	local best, bestScore
 	for _, slot in ipairs(slots) do
 		if equipped[slot] == nil then
@@ -595,7 +595,7 @@ local function chooseSlot(slots, equipped, weights, reference)
 		end
 	end
 	for _, slot in ipairs(slots) do
-		local score = Progress.itemScore(equipped[slot].stats, weights, slot, reference)
+		local score = Progress.itemScore(equipped[slot].stats, weights, slot, weapon)
 		if bestScore == nil or score < bestScore then
 			best, bestScore = slot, score
 		end
@@ -945,9 +945,12 @@ end
 --- item worn (the exact link) the next upgrade or "Best until N", else "Not
 --- for your plan". One source block per tooltip: the hovered item's own when
 --- it is the band's pick, else the next upgrade's; the next upgrade is
---- printed only with its gain from the floor up, waits for its name rather
---- than print "…", and skips a pick the client cannot show for the first
---- alternative it can.
+--- printed only with its gain from the floor up, and skips a pick the client
+--- cannot show for the first alternative it can. A pick (or an alternative, or
+--- the next rung's pick) the client has not sent yet is named from the data
+--- (Data.bisNames, never "…") and, for a weapon, priced from its own DPS
+--- (Data.bisDps) until the client's stats arrive; its id stays pending so the
+--- hover redraws when they do. One with no name anywhere is waited for.
 function ItemTooltip.section(ctx)
 	local lines, pending = {}, {}
 	local item = ctx.item or {}
@@ -965,8 +968,30 @@ function ItemTooltip.section(ctx)
 	local current = ctx.current or nil
 	local weights = current ~= nil and current.weights or nil
 	local perPoint = current ~= nil and current.dpsPerPoint or nil
-	local reference = current ~= nil and current.reference or nil
+	local weapon = current ~= nil and current.weapon or nil
 	local unit = ItemTooltip.unitOf(current)
+	local bisNames = type(data.bisNames) == "table" and data.bisNames or {}
+	local bisDps = type(data.bisDps) == "table" and data.bisDps or {}
+	--- A pick's name: the client's, else the data's while the client has not sent
+	--- it (pending: the hover redraws with the client's own when it comes).
+	local function pickName(itemId)
+		local name = nameOf(itemId)
+		if name == nil and type(bisNames[itemId]) == "string" then
+			pending[itemId] = true
+			return bisNames[itemId]
+		end
+		return name
+	end
+	--- A pick's stats: the client's, else a weapon's own DPS from the data until
+	--- the client's arrive (pending, as above). nil for neither.
+	local function pickStats(itemId)
+		local stats = statsOf(itemId)
+		if (stats == nil or next(stats) == nil) and type(bisDps[itemId]) == "number" then
+			pending[itemId] = true
+			return { weapon_dps = bisDps[itemId] }
+		end
+		return stats
+	end
 	local hovered = { itemId = item.itemId, link = item.link, equipLocation = item.equipLocation, stats = item.stats }
 
 	local wornSlot
@@ -993,7 +1018,7 @@ function ItemTooltip.section(ctx)
 	end
 	local usable, blocked = {}, nil
 	for _, slot in ipairs(wearable) do
-		local verdict = Progress.itemVerdict(slot, hovered, equipped, weights, perPoint, reference)
+		local verdict = Progress.itemVerdict(slot, hovered, equipped, weights, perPoint, weapon)
 		if verdict ~= nil and verdict.state == "blocked" then
 			blocked = verdict
 		else
@@ -1001,7 +1026,7 @@ function ItemTooltip.section(ctx)
 		end
 	end
 	local heldByTwoHander = #wearable > 0 and #usable == 0
-	local slot = wornSlot or chooseSlot(#usable > 0 and usable or slots, equipped, weights, reference)
+	local slot = wornSlot or chooseSlot(#usable > 0 and usable or slots, equipped, weights, weapon)
 
 	local primary
 	if #wearable == 0 then
@@ -1009,7 +1034,7 @@ function ItemTooltip.section(ctx)
 	elseif heldByTwoHander then
 		primary = ItemTooltip.verdictLine(blocked, unit, nil)
 	elseif wornSlot == nil and weights ~= nil then
-		local verdict = Progress.itemVerdict(slot, hovered, equipped, weights, perPoint, reference)
+		local verdict = Progress.itemVerdict(slot, hovered, equipped, weights, perPoint, weapon)
 		local worn = equipped[slot]
 		if slot == "main_hand" then
 			-- A two-hander scored net of both hands is named over the main hand.
@@ -1055,12 +1080,12 @@ function ItemTooltip.section(ctx)
 	--- A candidate's gain over what is worn in the slot (net of the worn
 	--- enchant, Gear.readEquipped), rounded as shown; nil with no figure.
 	local function gainOf(itemId)
-		local stats = weights ~= nil and statsOf(itemId) or nil
+		local stats = weights ~= nil and pickStats(itemId) or nil
 		if stats == nil or next(stats) == nil then
 			return nil
 		end
 		local wanted = { itemId = itemId, stats = stats, equipLocation = select(4, Compat.itemInfoInstant(itemId)) }
-		local verdict = Progress.itemVerdict(slot, wanted, equipped, weights, perPoint, reference)
+		local verdict = Progress.itemVerdict(slot, wanted, equipped, weights, perPoint, weapon)
 		if verdict == nil or verdict.delta == nil then
 			return nil
 		end
@@ -1100,7 +1125,7 @@ function ItemTooltip.section(ctx)
 		if not isPick then
 			-- The pick's gain over what is worn, from its own stats and weapon DPS,
 			-- net of the worn enchant, as shown: a next upgrade from the floor.
-			local name = nameOf(pick.item_id)
+			local name = pickName(pick.item_id)
 			local gain, nextVerdict = gainOf(pick.item_id)
 			if gain ~= nil and gain >= Progress.MIN_GAIN and name ~= nil then
 				local worn = equipped[slot]
@@ -1134,7 +1159,7 @@ function ItemTooltip.section(ctx)
 			for _, alternative in ipairs(alternatives) do
 				local id = alternative.item_id
 				if id ~= nil and id ~= item.itemId and #entries < 2 and not isMissing(id) then
-					local name = nameOf(id)
+					local name = pickName(id)
 					if name == nil then
 						pending[id] = true
 						entries[#entries + 1] = false
@@ -1156,7 +1181,7 @@ function ItemTooltip.section(ctx)
 		primary = ItemTooltip.bestLine(nextBand)
 		local upcoming = nextBand ~= nil and Gear.pick(ctx.spec, nextBand, ctx.faction, slot, data) or nil
 		if upcoming ~= nil and not isMissing(upcoming.item_id) then
-			local name = nameOf(upcoming.item_id)
+			local name = pickName(upcoming.item_id)
 			if name == nil then
 				pending[upcoming.item_id] = true
 			else
@@ -1355,7 +1380,7 @@ function ItemTooltip.contextFor(data, itemLink)
 	local spec, classSlug = currentSpec(data)
 	local current = ItemTooltip.current
 	if current == nil and spec ~= nil then
-		current = Gear.currentWeights(data, spec, ForeverSixtyInbox, Export.characterKey())
+		current = Gear.currentWeights(data, spec, ForeverSixtyInbox, Export.characterKey(), Compat.playerLevel())
 	end
 	return {
 		data = data, spec = spec, current = current,

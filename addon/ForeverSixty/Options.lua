@@ -12,6 +12,7 @@ local inGame = type(ns) == "table"
 ns = inGame and ns or {}
 local L = ns.L or require("Locale")
 local Data = ns.Data or require("Data")
+local Compat = ns.Compat or require("Compat")
 local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
@@ -47,13 +48,14 @@ end
 
 --- The weights every item verdict reads (Gear.currentWeights): the
 --- companion's sim for the character logged in and the spec they are
---- playing right now, else the shipped weights. Stored on ItemTooltip at
---- login (through readInbox), when the inbox is read, and on a respec; a
---- message for a spec the character is not playing never supplies this
---- spec's weights or caps.
-function Options.refreshWeightsMessage()
+--- playing right now, else the shipped weights, with the band's DPS figures
+--- at `level` (the client's when nil). Stored on ItemTooltip at login
+--- (through readInbox), when the inbox is read, on a respec and on a
+--- level-up; a message for a spec the character is not playing never
+--- supplies this spec's weights or caps.
+function Options.refreshWeightsMessage(level)
 	ItemTooltip.current = Gear.currentWeights(Options.data, currentSpec(Options.data), ForeverSixtyInbox,
-		Export.characterKey())
+		Export.characterKey(), type(level) == "number" and level or Compat.playerLevel())
 	ItemTooltip.resetCache()
 	return ItemTooltip.current
 end
@@ -354,6 +356,9 @@ function Options.onEvent(_, event, ...)
 	end
 	if event == "PLAYER_LEVEL_UP" then
 		Chip.onLevelUp(...)
+		-- A new band reads its own DPS figures (Gear.dpsFigure), at the event's
+		-- level: the client may not have caught up with it yet.
+		Options.refreshWeightsMessage((...))
 		-- The tooltip cache is keyed by item link alone (surfaces/ItemTooltip.lua); a
 		-- BiS band is chosen by level, so a link cached before this level-up
 		-- would otherwise go on answering the band the character just left.
