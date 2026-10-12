@@ -240,6 +240,9 @@ Theme.SIZES = {
 	settingsLine = 18,
 	settingsTitle = 24,
 	settingsWidth = 600,
+	settingsHeight = 560,
+	--- How far inside the canvas the page's own opaque backdrop sits (fix round 1, item 9).
+	settingsInset = 8,
 }
 
 --- The client's own font objects, and what to use when one is missing.
@@ -490,12 +493,12 @@ Theme.CONTROL_STATES = {
 	secondary = { rest = "raised", hover = "hover", pressed = "inset" },
 	tab = { label = "muted", hoverLabel = "body", hoverUnderline = "border", pressed = "inset" },
 	close = { label = "muted", hoverLabel = "body", hoverGround = "hover", pressed = "inset" },
-	--- A Settings switch (L3.5): on, a gold square (goldHover under the cursor, goldPressed
-	--- held) with the check in onGold; off, a 1 px border outline, muted under the cursor, an
-	--- inset ground while held.
+	--- A Settings switch (L3.5, fix round 1): on, a gold square (goldHover under the cursor,
+	--- goldPressed held) with the check in onGold; off, a 1 px outline in the muted-text grey,
+	--- body under the cursor, an inset ground while held. The hint is muted text at full alpha.
 	toggle = {
 		on = "gold", onHover = "goldHover", onPressed = "goldPressed", check = "onGold",
-		edge = "border", edgeHover = "muted", offPressed = "inset",
+		edge = "muted", edgeHover = "body", offPressed = "inset", hint = "muted",
 	},
 }
 Theme.PRESSED_LABEL_DROP = 1
@@ -856,7 +859,8 @@ function Theme.hasSettingsApi()
 		and type(Settings.RegisterAddOnCategory) == "function"
 end
 
---- Put a panel in the game's own options, however this client does that.
+--- Put a panel in the game's own options, however this client does that: the modern
+--- Settings canvas first, then (when that is missing or refuses) the interface options.
 --- Returns which way it went, and the handle to open it with later.
 function Theme.registerSettingsPanel(panel, name)
 	if Theme.hasSettingsApi() then
@@ -864,30 +868,48 @@ function Theme.registerSettingsPanel(panel, name)
 		if ok and category ~= nil and pcall(Settings.RegisterAddOnCategory, category) then
 			return "settings", category
 		end
-	elseif type(InterfaceOptions_AddCategory) == "function" then
-		if pcall(InterfaceOptions_AddCategory, panel) then
-			return "interface", panel
-		end
+	end
+	if type(InterfaceOptions_AddCategory) == "function" and pcall(InterfaceOptions_AddCategory, panel) then
+		return "interface", panel
 	end
 	Theme.note(L.diagNoSettingsPanel)
 	return nil, nil
 end
 
+--- Whether a frame says it is shown: true or false, or nil when it cannot be asked.
+local function isShown(frame)
+	if type(frame) ~= "table" or type(frame.IsShown) ~= "function" then
+		return nil
+	end
+	local ok, shown = pcall(frame.IsShown, frame)
+	return ok and shown == true
+end
+
 --- Open the client's options on a panel registerSettingsPanel registered (`how` and
---- `handle` are what it answered). True when the client took the call; never raises.
-function Theme.openSettingsPanel(how, handle)
+--- `handle` are what it answered, `panel` the page itself). True only when the options
+--- window (else the page) is showing after the call: a client that takes the call and
+--- shows nothing has not opened it. Never raises.
+function Theme.openSettingsPanel(how, handle, panel)
+	local called = false
 	if how == "settings" and type(Settings) == "table" and type(Settings.OpenToCategory) == "function" then
 		local id = handle
 		if type(handle) == "table" then
 			id = type(handle.GetID) == "function" and handle:GetID() or handle.ID
 		end
-		return id ~= nil and (pcall(Settings.OpenToCategory, id)) or false
+		called = id ~= nil and (pcall(Settings.OpenToCategory, id))
+	elseif how == "interface" and type(InterfaceOptionsFrame_OpenToCategory) == "function" then
+		called = (pcall(InterfaceOptionsFrame_OpenToCategory, handle))
 	end
-	if how == "interface" and type(InterfaceOptionsFrame_OpenToCategory) == "function" then
-		return (pcall(InterfaceOptionsFrame_OpenToCategory, handle))
+	if not called then
+		return false
 	end
-	return false
+	local shown = isShown(how == "settings" and _G.SettingsPanel or _G.InterfaceOptionsFrame)
+	if shown == nil then
+		shown = isShown(panel)
+	end
+	return shown ~= false
 end
+
 
 --- Register one event, recording rather than raising when the client has
 --- never heard of it. With Theme.tryRegisterEvent, the only RegisterEvent

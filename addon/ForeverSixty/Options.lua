@@ -122,6 +122,15 @@ function Options.handle(input)
 	elseif command == "record" then
 		return Recorder.command(rest)
 	elseif command == "help" then
+		-- The player's commands, then the testers' line, muted (fix round 1, item 16).
+		local lines = Options.helpLines()
+		lines[#lines + 1] = Theme.inlineColor("muted", L.helpTesters)
+		return lines
+	elseif command == "options" then
+		-- The Settings page, or the command list where this client cannot open it.
+		if SettingsPage.open() then
+			return {}
+		end
 		return Options.helpLines()
 	elseif command == "chip" then
 		return { Chip.toggle() }

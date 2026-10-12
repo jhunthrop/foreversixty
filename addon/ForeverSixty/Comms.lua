@@ -264,12 +264,16 @@ end
 
 --- Send one message on "GUILD", "RAID" or "PARTY". True when the client took it; otherwise
 --- false and a sentence a player can read: the rate limit, a channel the kind does not go
---- on, not in a guild, too long, a loot! with no open loot? to answer, or a client that
---- cannot send addon messages.
+--- on, a hello or snapshot! while "Share my build with my guild" is off, not in a guild, too
+--- long, a loot! with no open loot? to answer, or a client that cannot send addon messages.
 function Comms.send(kind, fields, channel)
 	local allowed = Comms.CHANNELS[kind]
 	if allowed == nil then
 		return false, L.commsUnknownKind
+	end
+	-- "Share my build with my guild" off: no hello and no snapshot answer, on any channel.
+	if (kind == "hello" or kind == "snapshot!") and not Comms.sharing() then
+		return false, L.commsSharingOff
 	end
 	if not allowed[channel] then
 		return false, string.format(L.commsWrongChannel, tostring(channel))

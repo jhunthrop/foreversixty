@@ -33,6 +33,9 @@ Prefs.DEFAULTS = {
 	-- own hello on GUILD and answer to a snapshot request ("Share my build with my guild").
 	badges = true,
 	broadcast = true,
+	-- The talent window's marks (spec section 4.2): the ring, the badges and the strip, all
+	-- or none ("Marks on the talent window"; TalentMarks.enabled is the one reader).
+	talentMarks = true,
 	-- The minimap button: where it sits on the ring, and the "Show the minimap button" switch.
 	minimap = { angle = 200, shown = true },
 	-- On by default: the export written at logout is what feeds the
@@ -132,7 +135,7 @@ function Prefs.set(section, key, value)
 	return value
 end
 
---- A top-level boolean: tooltip, broadcast, autoSave.
+--- A top-level boolean: tooltip, broadcast, autoSave, talentMarks.
 function Prefs.flag(name)
 	return Prefs.current()[name]
 end

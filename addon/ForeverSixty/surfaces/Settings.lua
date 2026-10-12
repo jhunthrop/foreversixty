@@ -1,12 +1,13 @@
 -- addon/ForeverSixty/surfaces/Settings.lua
 -- The Settings page (spec section 4.11, L3.5): the client's own Settings, one canvas.
--- Six switches, the /fs command list, Reset positions, and one line on whether the
--- addon's data is for this client's patch.
+-- Seven switches, Reset positions, the /fs command list, and two lines at the foot: whether
+-- the addon's data is for this client's patch, and the ratings data's state.
 --
 -- Pure model, thin frame. SettingsPage.SWITCHES is the whole of what the page can change
--- (each key a Prefs.DEFAULTS boolean); read and apply are its only way to the prefs; layout
--- gives every number on the canvas; dataLine chooses the foot line. The canvas is an empty
--- frame registered at login and built the first time the client shows it, never at load.
+-- (each key a Prefs.DEFAULTS boolean); read, checked and apply are its only way to the prefs;
+-- layout gives every number on the page; addonDataLine and ratingsLine choose the foot lines.
+-- The canvas is an empty frame registered at login and built the first time the client shows
+-- it, never at load.
 --
 -- The module's own table is SettingsPage, not Settings: `Settings` is the client's global
 -- for its options API, and a local of that name in this file would shadow it.
@@ -19,16 +20,19 @@ local Prefs = ns.Prefs or require("Prefs")
 local Compat = ns.Compat or require("Compat")
 local Codec = ns.Codec or require("Codec")
 local MinimapButton = ns.Minimap or require("Minimap")
+local Chip = ns.Chip or require("Chip")
+local Score = ns.Score or require("Score")
 
 local SettingsPage = {}
 
 SettingsPage.FRAME_NAME = "ForeverSixtySettingsPanel"
 
---- The switches, in page order (L3.5 ruling 1). A key is a Prefs section and field
---- ("chip.shown") or a top-level flag ("tooltip").
+--- The switches, in page order (L3.5 ruling 1, fix round 1 item 4). A key is a Prefs section
+--- and field ("chip.shown") or a top-level flag ("tooltip").
 SettingsPage.SWITCHES = {
 	{ key = "chip.shown", label = L.settingsChipShown, hint = L.settingsChipShownHint },
 	{ key = "chip.combatHide", label = L.settingsCombatHide, hint = L.settingsCombatHideHint },
+	{ key = "talentMarks", label = L.settingsTalentMarks, hint = L.settingsTalentMarksHint },
 	{ key = "minimap.shown", label = L.settingsMinimap, hint = L.settingsMinimapHint },
 	{ key = "tooltip", label = L.settingsTooltip, hint = L.settingsTooltipHint },
 	{ key = "broadcast", label = L.settingsBroadcast, hint = L.settingsBroadcastHint },
@@ -51,7 +55,10 @@ function SettingsPage.defaultOf(key)
 	local section, field = split(key)
 	if section ~= nil then
 		local defaults = Prefs.DEFAULTS[section]
-		return type(defaults) == "table" and defaults[field] or nil
+		if type(defaults) ~= "table" then
+			return nil
+		end
+		return defaults[field]
 	end
 	return Prefs.DEFAULTS[key]
 end
@@ -73,6 +80,16 @@ function SettingsPage.read(key)
 		return Prefs.get(section, field)
 	end
 	return Prefs.flag(key)
+end
+
+--- What a switch shows: its pref, except that "Show the chip" reads off while a right-click
+--- keeps the chip hidden, so the page never says on while the chip is away (fix 1, item 20).
+function SettingsPage.checked(key)
+	local value = SettingsPage.read(key)
+	if key == "chip.shown" then
+		return value == true and not Chip.isHidden()
+	end
+	return value == true
 end
 
 --- Write a switch. "Show the chip" also clears a right-click hide either way: off is off,
@@ -105,18 +122,12 @@ function SettingsPage.onToggle(key, value)
 	return value
 end
 
---- Reset positions: Prefs puts the placements back, and its onReset listeners move the
---- chip, the minimap button and the build dialog at once (Chip.place,
---- MinimapButton.refresh, BuildDialog.place).
-function SettingsPage.reset()
-	return Prefs.resetPositions()
-end
-
---- The foot line: the data is for this client's patch or a later one ("current"), or for an
---- older patch than the client's. Only the patch counts ("1.60.1" against the data's first
+--- The foot's first line: the addon's data is for this client's patch or a later one
+--- ("current for this patch", muted), or for an older patch ("an older patch. Update the
+--- addon.", in the warning colour). Only the patch counts ("1.60.1" against the data's first
 --- three fields), never the build number, and no number is printed. Nil when either side is
---- unknown. Pure.
-function SettingsPage.dataLine(dataBuild, clientVersion)
+--- unknown. { label, value, tone }. Pure.
+function SettingsPage.addonDataLine(dataBuild, clientVersion)
 	if type(dataBuild) ~= "string" or dataBuild == "" or type(clientVersion) ~= "string" or clientVersion == "" then
 		return nil
 	end
@@ -132,16 +143,50 @@ function SettingsPage.dataLine(dataBuild, clientVersion)
 		end
 	end
 	if Codec.compareBuilds(table.concat(dataPatch, "."), clientVersion) < 0 then
-		return L.settingsDataOlder
+		return { label = L.settingsAddonDataLabel, value = L.settingsAddonDataOlder, tone = "warning" }
 	end
-	return L.settingsDataCurrent
+	return { label = L.settingsAddonDataLabel, value = L.settingsAddonDataCurrent, tone = "muted" }
 end
 
---- Every number on the canvas, from its width: the left edge, the hint's indent and
---- width (the canvas width minus the 40 px indent and the right padding), Reset's hint
---- width, and the y of the title, each switch row, the commands heading and lines, Reset
---- and the foot line, and the height it all needs. A canvas the client has not sized yet is
---- laid out at Theme.SIZES.settingsWidth. Pure.
+--- The foot's second line: the nightly ratings data (the Forever Sixty Data addon) in the
+--- state Score.status finds it, as /fs diag names it: not installed (muted, it is optional),
+--- current, too old (stale, unreadable or an older format), or newer than this addon reads.
+--- { label, value, tone }. Pure.
+function SettingsPage.ratingsLine(status)
+	local value, tone
+	if type(status) ~= "table" or status.absent then
+		value, tone = L.settingsRatingsMissing, "muted"
+	elseif status.available and not status.stale then
+		value, tone = L.settingsRatingsCurrent, "muted"
+	elseif not status.available and status.reason == L.ratingsUpdateAddon then
+		value, tone = L.settingsRatingsNewer, "warning"
+	else
+		value, tone = L.settingsRatingsOld, "warning"
+	end
+	return { label = L.settingsRatingsDataLabel, value = value, tone = tone }
+end
+
+--- A foot line as drawn on a muted font string: the label, then the state in its tone.
+function SettingsPage.lineText(entry)
+	return entry.label .. " " .. Theme.inlineColor(entry.tone, entry.value)
+end
+
+--- A command line as drawn on a muted font string: its "/fs ...:" token in body, the words
+--- after it muted (fix round 1, item 14). Pure.
+function SettingsPage.commandText(line)
+	local token, words = line:match("^(.-:)%s(.*)$")
+	if token == nil then
+		return line
+	end
+	return Theme.inlineColor("body", token) .. " " .. words
+end
+
+--- Every number on the page, from the width of its backdrop: the left edge, the hint's
+--- indent and width (the width minus the 40 px indent and the right padding), the width of
+--- Reset's sentence and of the divider, and the y of the title, each switch row, Reset, the
+--- commands heading, its divider and lines, and the two foot lines, and the height it all
+--- needs (the page scrolls when the canvas is shorter). A backdrop the client has not sized
+--- yet is laid out at Theme.SIZES.settingsWidth. Pure.
 function SettingsPage.layout(width)
 	local S = Theme.SIZES
 	if type(width) ~= "number" or width <= 0 then
@@ -151,10 +196,12 @@ function SettingsPage.layout(width)
 		x = S.padding,
 		hintIndent = Widgets.toggleIndent(),
 		hintWidth = width - S.settingsHintInset - S.padding,
-		-- Reset's hint sits right of the button and wraps before the right padding.
+		-- Reset's sentence sits right of the button and wraps before the right padding.
 		resetHintWidth = width - S.padding * 2 - S.buttonWidth - S.gap * 2,
+		dividerWidth = width - S.padding * 2,
 		rows = {},
 		commands = {},
+		data = {},
 	}
 	local y = S.padding
 	layout.title = -y
@@ -164,89 +211,156 @@ function SettingsPage.layout(width)
 		y = y + S.settingsRow
 	end
 	y = y + S.padding
+	layout.reset = -y
+	y = y + S.buttonHeight + S.padding
 	layout.commandsHeading = -y
 	y = y + S.settingsLine
+	layout.divider = -y
+	y = y + S.border + S.gap * 2
 	for index = 1, #L.settingsCommands do
 		layout.commands[index] = -y
 		y = y + S.settingsLine
 	end
 	y = y + S.padding
-	layout.reset = -y
-	y = y + S.buttonHeight + S.padding
-	layout.data = -y
-	y = y + S.settingsLine
+	for index = 1, 2 do
+		layout.data[index] = -y
+		y = y + S.settingsLine
+	end
 	layout.height = y + S.padding
 	return layout
 end
 
---- The canvas's own controls: one toggle per switch and the Reset button (labels are
---- regions, not children).
+--- The page's own controls: one toggle per switch and the Reset button (labels and the
+--- divider are regions, not children).
 function SettingsPage.expectedChildren()
 	return #SettingsPage.SWITCHES + 1
 end
 
+--- How long Reset reads "Positions reset", disabled, after a click.
+SettingsPage.RESET_SECONDS = 2
+
+--- Reset's look: "Reset positions", or "Positions reset" and disabled for
+--- SettingsPage.RESET_SECONDS after a click. Pure: reads SettingsPage.resetting.
+function SettingsPage.resetLook()
+	if SettingsPage.resetting then
+		return { label = L.settingsResetDone, enabled = false }
+	end
+	return { label = L.settingsReset, enabled = true }
+end
+
+local function drawReset()
+	local button = SettingsPage.resetButton
+	if button == nil then
+		return
+	end
+	local look = SettingsPage.resetLook()
+	button:SetText(look.label)
+	Widgets.setEnabled(button, look.enabled)
+end
+
+--- Reset positions: Prefs puts the placements back, and its onReset listeners move the
+--- chip, the minimap button and the build dialog at once (Chip.place,
+--- MinimapButton.refresh, BuildDialog.place). The button then says so for 2 s; a client
+--- that cannot wait says nothing rather than stick on "Positions reset".
+function SettingsPage.reset()
+	local ui = Prefs.resetPositions()
+	SettingsPage.resetting = true
+	local waiting = Theme.after(SettingsPage.RESET_SECONDS, function()
+		SettingsPage.resetting = false
+		drawReset()
+	end)
+	if not waiting then
+		SettingsPage.resetting = false
+	end
+	drawReset()
+	return ui
+end
+
 -- The frame -------------------------------------------------------------------
 
-local function place(region, panel, x, y)
-	region:SetPoint("TOPLEFT", panel, "TOPLEFT", x, y)
+local function place(region, parent, x, y)
+	region:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
 	return region
 end
 
---- Build the canvas's contents once, at the width the client gave it.
+--- Build the page once, at the size the client gave the canvas: an opaque backdrop 8 px
+--- inside it (the dialog's own, so no world text shows through a hint), scrolling when the
+--- canvas is shorter than the page, and everything else on its content frame.
 function SettingsPage.build(panel)
 	if SettingsPage.toggles ~= nil then
 		return panel
 	end
 	local S = Theme.SIZES
-	local layout = SettingsPage.layout(panel:GetWidth())
-	place(Widgets.label(panel, L.addonName, "gold", "large"), panel, layout.x, layout.title)
+	local width, height = panel:GetWidth(), panel:GetHeight()
+	width = (type(width) == "number" and width > 0) and width or S.settingsWidth + S.settingsInset * 2
+	height = (type(height) == "number" and height > 0) and height or S.settingsHeight
+	local backdrop = Widgets.panel(panel, width - S.settingsInset * 2, height - S.settingsInset * 2)
+	backdrop:SetPoint("TOPLEFT", panel, "TOPLEFT", S.settingsInset, -S.settingsInset)
+	SettingsPage.backdrop = backdrop
+	local layout = SettingsPage.layout(backdrop:GetWidth())
+	local scroll = Widgets.scrollable(backdrop)
+	SettingsPage.scroll = scroll
+	local content = scroll.content
+	SettingsPage.content = content
+	place(Widgets.label(content, L.addonName, "gold", "large"), content, layout.x, layout.title)
 	SettingsPage.toggles = {}
 	for index, switch in ipairs(SettingsPage.switches()) do
 		local key = switch.key
-		local toggle = Widgets.toggle(panel, switch.label, SettingsPage.read(key), function(value)
+		local toggle = Widgets.toggle(content, switch.label, SettingsPage.checked(key), function(value)
 			SettingsPage.onToggle(key, value)
 		end, switch.hint, layout.hintWidth)
 		toggle.key = key
-		place(toggle.frame, panel, layout.x, layout.rows[index])
+		place(toggle.frame, content, layout.x, layout.rows[index])
 		SettingsPage.toggles[index] = toggle
 	end
-	place(Widgets.label(panel, L.settingsCommandsHeading, "body", "normal"), panel, layout.x, layout.commandsHeading)
-	SettingsPage.commandLabels = {}
-	for index, line in ipairs(L.settingsCommands) do
-		SettingsPage.commandLabels[index] = place(Widgets.label(panel, line, "muted", "small"), panel,
-			layout.x, layout.commands[index])
-	end
-	local reset = Widgets.button(panel, L.settingsReset, SettingsPage.reset)
-	place(reset, panel, layout.x, layout.reset)
+	local reset = Widgets.button(content, L.settingsReset, SettingsPage.reset)
+	place(reset, content, layout.x, layout.reset)
 	SettingsPage.resetButton = reset
-	local resetHint = Widgets.label(panel, L.settingsResetHint, "muted", "small")
+	local resetHint = Widgets.label(content, L.settingsResetHint, "muted", "small")
 	resetHint:SetPoint("LEFT", reset, "RIGHT", S.gap * 2, 0)
 	resetHint:SetWidth(layout.resetHintWidth)
-	local dataLabel = place(Widgets.label(panel, "", "muted", "small"), panel, layout.x, layout.data)
-	SettingsPage.dataLabel = dataLabel
+	SettingsPage.commandsHeading = place(Widgets.label(content, L.settingsCommandsHeading, "gold", "normal"),
+		content, layout.x, layout.commandsHeading)
+	local divider = place(Theme.texture(content, "ARTWORK", "border"), content, layout.x, layout.divider)
+	divider:SetWidth(layout.dividerWidth)
+	divider:SetHeight(S.border)
+	SettingsPage.divider = divider
+	SettingsPage.commandLabels = {}
+	for index, line in ipairs(L.settingsCommands) do
+		SettingsPage.commandLabels[index] = place(Widgets.label(content, SettingsPage.commandText(line), "muted",
+			"small"), content, layout.x, layout.commands[index])
+	end
+	SettingsPage.dataLabels = {}
+	for index, y in ipairs(layout.data) do
+		SettingsPage.dataLabels[index] = place(Widgets.label(content, "", "muted", "small"), content, layout.x, y)
+	end
+	scroll:SetContentHeight(layout.height)
 	return panel
 end
 
---- Show the live prefs on every toggle, and the foot line for this client.
+--- Show the live prefs on every toggle ("Show the chip" off while a right-click hides it),
+--- Reset's look, and the two foot lines for this client.
 function SettingsPage.refresh()
 	for _, toggle in ipairs(SettingsPage.toggles or {}) do
-		toggle:SetChecked(SettingsPage.read(toggle.key))
+		toggle:SetChecked(SettingsPage.checked(toggle.key))
 	end
-	if SettingsPage.dataLabel ~= nil then
+	drawReset()
+	if SettingsPage.dataLabels ~= nil then
 		local data = SettingsPage.data or ns.Data
-		local line = SettingsPage.dataLine(type(data) == "table" and data.build or nil, Compat.clientVersion())
-		SettingsPage.dataLabel:SetText(line or "")
+		local addon = SettingsPage.addonDataLine(type(data) == "table" and data.build or nil, Compat.clientVersion())
+		SettingsPage.dataLabels[1]:SetText(addon ~= nil and SettingsPage.lineText(addon) or "")
+		SettingsPage.dataLabels[2]:SetText(SettingsPage.lineText(SettingsPage.ratingsLine(Score.status())))
 	end
 end
 
---- The render check (spec section 2.4), on every show: the canvas holds every control it
+--- The render check (spec section 2.4), on every show: the page holds every control it
 --- was built with. Otherwise one /fs diag note for the session. True when it passes.
 function SettingsPage.selfCheck()
-	local panel = SettingsPage.panel
-	if panel == nil or SettingsPage.toggles == nil then
+	local content = SettingsPage.content
+	if content == nil or SettingsPage.toggles == nil then
 		return true
 	end
-	local count = #{ panel:GetChildren() }
+	local count = #{ content:GetChildren() }
 	if count == SettingsPage.expectedChildren() then
 		return true
 	end
@@ -283,13 +397,14 @@ function SettingsPage.register()
 	return SettingsPage.how ~= nil
 end
 
---- Open the client's Settings on this page. False when it cannot (no API, not registered,
---- or the client refused); a refusal from a registered page is noted once.
+--- Open the client's Settings on this page (the launcher's right-click, /fs options). False
+--- when it cannot: no API, not registered, or the client took the call and showed nothing
+--- (Theme.openSettingsPanel); a registered page that did not open is noted once.
 function SettingsPage.open()
 	if SettingsPage.how == nil then
 		return false
 	end
-	if Theme.openSettingsPanel(SettingsPage.how, SettingsPage.handle) then
+	if Theme.openSettingsPanel(SettingsPage.how, SettingsPage.handle, SettingsPage.panel) then
 		return true
 	end
 	if not SettingsPage.openNoted then

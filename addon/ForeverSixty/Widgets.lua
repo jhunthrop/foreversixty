@@ -590,7 +590,7 @@ function Widgets.toggle(parent, text, checked, onChange, hint, hintWidth)
 		frame:SetSize(indent + (hintWidth or S.buttonWidth), S.settingsRow)
 		box:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -S.gap)
 		label:SetPoint("TOPLEFT", frame, "TOPLEFT", indent, -S.gap)
-		local hintLabel = Widgets.label(frame, hint, "muted", "small")
+		local hintLabel = Widgets.label(frame, hint, states.hint, "small")
 		hintLabel:SetPoint("TOPLEFT", label, "BOTTOMLEFT", 0, -S.gap)
 		hintLabel:SetWidth(hintWidth or S.buttonWidth)
 		toggle.hint = hintLabel

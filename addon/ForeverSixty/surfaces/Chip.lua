@@ -764,7 +764,8 @@ function Chip.inputs(data)
 		lastNightDone = Chip.lastNight == "done",
 		completedAt = Chip.completedAt,
 		healing = type(perPoint) == "table" and perPoint.healing == true,
-		talentsOpen = TalentGlow.openFrame() ~= nil,
+		-- The marks stand in for the chip only while they are drawn (TalentMarks sets windowMarks).
+		talentsOpen = TalentGlow.openFrame() ~= nil and (Chip.windowMarks == nil or Chip.windowMarks()),
 	}
 	local point = progress.point
 	if point ~= nil and build ~= nil then

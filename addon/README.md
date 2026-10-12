@@ -112,9 +112,11 @@ Run on one character per role and tick here:
       hints; the addon appears in the addon compartment on a client that has one, and its entry
       opens the dialog on a left click and the Settings page on a right click.
 - [ ] Each Settings switch takes effect without a reload; Reset positions moves the chip, the
-      minimap button and the build dialog back at once.
+      minimap button and the build dialog back at once, and the button reads "Positions reset" for 2 s.
+- [ ] `/fs options` opens the Settings page; "Marks on the talent window" off leaves the talent
+      window bare.
 - [ ] The keybind (Key Bindings > AddOns > Forever Sixty) prints the command list.
-- [ ] `/fs help` prints the command list in gold.
+- [ ] `/fs help` prints the command list, then the muted testers' line.
 
 One screenshot closes this lane: the tracker plus the talent glow with the talent
 window open.

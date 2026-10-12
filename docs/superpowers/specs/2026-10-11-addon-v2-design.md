@@ -273,17 +273,25 @@ paste it on the site at foreversixty.gg.". The addon never claims an upload it c
 
 ### 4.11 Settings
 
-The client Settings page only (L3.5): six switches, "Show the chip" (either way it clears a
-right-click hide), "Hide the chip in combat" (off fades it to 25 %), "Show the minimap button"
-(live), "Gear tips on item tooltips", "Share my build with my guild" (off sends no hello and
-answers no snapshot request) and "Save my character for the companion, the small app on your
-PC" (the logout save the outbox reads), each with one muted hint line; the `/fs` command list
-(`L.settingsCommands`, the same list `/fs help` prints); Reset positions (the chip, the minimap
-button and the build dialog move at once through `Prefs.onReset`); and at the foot "Data for
-this client: current" or "Data for this client: an older patch; update the addon", no build
-numbers. Guild badges get their switch with L4.4; no "advanced detail" mode, and no chat switch.
-The minimap button and the addon compartment entry open the build dialog on a left click and
-this page on a right click (the command list where the client cannot open it).
+The client Settings page only (L3.5, fix round 1), on its own opaque backdrop 8 px inside the
+canvas, scrolling when the canvas is shorter. Seven switches, each with one muted hint saying
+what it does: "Show the chip" (reads off while a right-click hides the chip; either way it
+clears that hide), "Hide the chip in combat" (off: faded to 25 %), "Marks on the talent window"
+(the ring, the badges and the strip, all or none), "Show the minimap button" (live; off, /fs
+options or Options › AddOns reach the page), "Gear tips on item tooltips", "Share my build with
+my guild" (off: no hello and no snapshot answer on any channel) and "Save my character for the
+companion app" (written at logout for the companion to pick up; no upload is claimed). Then Reset
+positions (the chip, the minimap button and the build dialog move at once through
+`Prefs.onReset`; the button reads "Positions reset", disabled, for 2 s); the commands under a
+gold heading and a divider, each `/fs` token in body (`L.settingsCommands`, which `/fs help`
+prints too, followed there by a muted testers' line); and at the foot "Addon data: current for
+this patch" or "Addon data: an older patch. Update the addon." (the state in the warning
+colour) and the ratings data's state ("current", "too old. Update it from the site.", "newer
+than this addon. Update the addon.", "not installed"), no build numbers. Guild badges get their
+switch with L4.4; no "advanced detail" mode, and no chat switch. The minimap button and the
+addon compartment entry open the build dialog on a left click and this page on a right click;
+`/fs options` opens it too (the command list wherever the client does not show it).
+
 
 ## 5. Loops
 

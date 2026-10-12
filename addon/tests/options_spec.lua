@@ -67,14 +67,16 @@ describe("Options", function()
 	end)
 
 	it("has dropped the window's tab subcommands", function()
-		for _, command in ipairs({ "export", "follow FSB1:1.60.1.69893:paladin:111:", "gear", "settings", "options" }) do
+		for _, command in ipairs({ "export", "follow FSB1:1.60.1.69893:paladin:111:", "gear", "settings" }) do
 			assert.are.same(Options.helpLines(), Options.handle(command), command)
 		end
 		assert.is_nil(require("Follow").build)
 	end)
 
 	it("lists the player's commands, a few words each, on /fs help: the Settings page's list", function()
-		assert.are.same(require("Locale").settingsCommands, Options.handle("help"))
+		local lines = Options.handle("help")
+		assert.are.same(require("Locale").settingsCommands, { table.unpack(lines, 1, #lines - 1) })
+		assert.are.equal(require("Theme").inlineColor("muted", require("Locale").helpTesters), lines[#lines])
 	end)
 
 	it("lists /fs and /fs copy first on /fs help (L3.4 fix 6)", function()
@@ -100,7 +102,7 @@ describe("Options", function()
 	it("prints /fs help in chat", function()
 		Options.register()
 		SlashCmdList["FOREVERSIXTY"]("help")
-		assert.are.equal(#require("Locale").settingsCommands, #state.printed)
+		assert.are.equal(#require("Locale").settingsCommands + 1, #state.printed)
 	end)
 
 	it("counts the builds the companion left in the inbox", function()

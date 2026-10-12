@@ -33,6 +33,7 @@ local Talents = ns.Talents or require("Talents")
 local Progress = ns.Progress or require("Progress")
 local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local Chip = ns.Chip or require("Chip")
+local Prefs = ns.Prefs or require("Prefs")
 
 local TalentMarks = {}
 
@@ -674,8 +675,24 @@ end
 --- strip and the badges are absent. Badge numbers are the plan's own order
 --- indexes, fixed by the plan; only their look and the ring move.
 --- TalentMarks.lastPass says what the pass found, for runPass.
+--- Whether "Marks on the talent window" is on: the one reader of the pref (L3.5 fix
+--- round 1, item 4). Off, the window carries no ring, no badges and no strip.
+function TalentMarks.enabled()
+	return Prefs.flag("talentMarks") ~= false
+end
+
+-- The chip stands aside for the open talent window only while the marks replace it.
+Chip.windowMarks = TalentMarks.enabled
+
 function TalentMarks.refresh(data, pass)
 	TalentMarks.lastPass = nil
+	if not TalentMarks.enabled() then
+		TalentGlow.clear()
+		hideBadges()
+		hideStrip()
+		TalentMarks.placed = nil
+		return nil
+	end
 	local final = TalentMarks.isFinalPass(pass, TalentMarks.settled)
 	local frame, frameName = TalentGlow.openFrame()
 	local build = Follow.build

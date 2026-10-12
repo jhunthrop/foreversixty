@@ -12,17 +12,19 @@ local L = {
 	-- Chrome
 	addonName = "Forever Sixty",
 	-- The player's commands, a few words each. One list: /fs help, an unknown /fs command
-	-- and the Settings page all print it (Options.helpLines, L3.5 ruling 3).
+	-- and the Settings page all print it (Options.helpLines, L3.5 ruling 3); /fs help alone
+	-- adds the testers' line after it, muted (fix round 1, item 16).
 	settingsCommands = {
 		"/fs: paste or copy a build",
 		"/fs copy: copy my character for the site",
 		"/fs chip: show or hide the chip",
 		"/fs inspect: gear and talents of your target",
+		"/fs options: open the settings page",
 		"/fs diag: what is not working",
 		"/fs help: every command",
 	},
-	dataBuild = "Data build: %s",
-	buildMismatch = "This addon carries data for build %s; you are playing %s. Numbers may be out of date.",
+	helpTesters = "For testers: /fs diag verbose, /fs inbox, /fs hello, /fs seen, "
+		.. "/fs record on, off, status or clear",
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
 	tabOverview = "Overview",
@@ -274,26 +276,39 @@ local L = {
 	minimapRightClick = "Right-click: settings",
 	minimapNoBuild = "No build loaded",
 
-	-- The Settings page (spec section 4.11, L3.5): six switches, each with one plain hint
-	-- line; the command list; Reset positions; the data-build line at the foot, which never
-	-- prints a build number.
+	-- The Settings page (spec section 4.11, L3.5 and fix round 1): seven switches, each hint
+	-- saying what the switch does; Reset positions; the command list; the addon data and the
+	-- ratings data lines at the foot, which never print a build number.
 	settingsChipShown = "Show the chip",
-	settingsChipShownHint = "The small square beside the minimap with your next step.",
+	settingsChipShownHint = "The small icon and line beside the minimap with your next step.",
 	settingsCombatHide = "Hide the chip in combat",
-	settingsCombatHideHint = "Off: the chip stays in combat, faded, and ignores the mouse.",
+	settingsCombatHideHint = "On: the chip hides when combat starts. Off: it stays, faded to 25%.",
+	settingsTalentMarks = "Marks on the talent window",
+	settingsTalentMarksHint = "Numbers your build's talents in order, rings the next one and adds a progress strip.",
 	settingsMinimap = "Show the minimap button",
-	settingsMinimapHint = "Left-click pastes or copies a build; right-click opens this page.",
+	settingsMinimapHint = "Left-click pastes or copies a build; right-click opens this page. "
+		.. "Off: type /fs options or use Options \226\128\186 AddOns.",
 	settingsTooltip = "Gear tips on item tooltips",
-	settingsTooltipHint = "On any item: whether your build plans it, and whether it beats what you wear.",
+	settingsTooltipHint = "Adds a line to item tooltips: is it in your build, and does it beat what you wear.",
 	settingsBroadcast = "Share my build with my guild",
-	settingsBroadcastHint = "Guildmates with Forever Sixty see your level, spec and build. Off sends nothing.",
-	settingsAutoSave = "Save my character for the companion, the small app on your PC",
-	settingsAutoSaveHint = "Saved when you log out; the companion sends it to " .. SITE .. ".",
+	settingsBroadcastHint = "Guildmates with Forever Sixty see your level, spec, build and how far your gear is "
+		.. "from it. Off: no hello, no snapshot answers. On by default.",
+	settingsAutoSave = "Save my character for the companion app",
+	-- Claims no upload (spec section 4.10): the addon cannot see the companion send it.
+	settingsAutoSaveHint = "Written when you log out, for the companion app (the small app on your PC) to pick up.",
 	settingsCommandsHeading = "Commands",
 	settingsReset = "Reset positions",
-	settingsResetHint = "The chip, the minimap button and the build dialog go back where they started.",
-	settingsDataCurrent = "Data for this client: current",
-	settingsDataOlder = "Data for this client: an older patch; update the addon",
+	settingsResetDone = "Positions reset",
+	settingsResetHint = "Puts the chip, the minimap button and the build dialog back in their default places.",
+	-- The foot: a muted label, then the state, muted or (stale) in the warning colour, action first.
+	settingsAddonDataLabel = "Addon data:",
+	settingsAddonDataCurrent = "current for this patch",
+	settingsAddonDataOlder = "an older patch. Update the addon.",
+	settingsRatingsDataLabel = "Ratings data:",
+	settingsRatingsCurrent = "current",
+	settingsRatingsOld = "too old. Update it from the site.",
+	settingsRatingsNewer = "newer than this addon. Update the addon.",
+	settingsRatingsMissing = "not installed",
 	diagSettingsDrawn = "The Settings page drew %d of its %d controls.",
 	diagSettingsNoOpen = "This client did not open the Settings page; right-click prints the commands instead.",
 	-- The Overview page.
@@ -326,7 +341,6 @@ local L = {
 	siteName = SITE,
 	headerLevelLine = "Level %d %s %s",
 	headerSpecSeparator = "  ·  ",
-	statusDataBuild = "Data %s",
 	statusOutOfDate = "Data out of date",
 	addonVersion = "v%s",
 	addonVersionDev = "dev",
