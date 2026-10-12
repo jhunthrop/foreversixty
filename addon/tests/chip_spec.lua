@@ -59,6 +59,16 @@ local LAST_RAID = { date = "2026-12-08", bosses = {
 } }
 
 describe("Chip.model", function()
+	-- L3.2 fix round 4: the one function for the talent and its rank, read
+	-- by the chip's line and the talent strip's "Next: …".
+	it("labels the next talent with its rank where the plan wants more than one", function()
+		assert.are.equal("Improved Heroic Strike (1 of 3)", Chip.pointLabel("Improved Heroic Strike", { have = 0, want = 3 }))
+		assert.are.equal("Improved Heroic Strike (2 of 3)", Chip.pointLabel("Improved Heroic Strike", { have = 1, want = 3 }))
+		assert.are.equal("Anger Management", Chip.pointLabel("Anger Management", { have = 0, want = 1 }))
+		assert.are.equal("Deflection", Chip.pointLabel("Deflection", { have = 5, want = 5 }))
+		assert.are.equal("Deflection", Chip.pointLabel("Deflection", nil))
+	end)
+
 	-- L3.2 fix round 3: the ring and the strip replace the chip while the
 	-- talent window is open; it is not the player's pref, and it comes back.
 	it("hides while the talent window is open", function()
@@ -78,7 +88,8 @@ describe("Chip.model", function()
 			pointName = "Improved Heroic Strike", pointRank = { have = 0, want = 3 } }))
 		assert.are.equal("Take Improved Heroic Strike (1 of 3)", model.chosen.text)
 		assert.are.equal("Improved Heroic Strike", model.chosen.short)
-		assert.are.equal(string.format(L.chipTakeRank, "Improved Heroic Strike", 1, 3), model.chosen.text)
+		assert.are.equal(string.format(L.chipTake, Chip.pointLabel("Improved Heroic Strike", { have = 0, want = 3 })),
+			model.chosen.text)
 		local lines = Chip.tooltipLines(model)
 		assert.are.equal("|cffe9e4d8Take Improved Heroic Strike (1 of 3)|r", lines[2])
 		local single = Chip.model(inputs({ level = 21, progress = pointAt(1, 21), unspent = 12,

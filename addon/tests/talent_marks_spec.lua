@@ -56,6 +56,15 @@ describe("TalentMarks.stripText", function()
 		assert.is_nil(TalentMarks.stripText(nil, progress(0, 0, nil, 0), {}))
 	end)
 
+	-- Fix round 4: while the open window hides the chip, the strip leads with its line.
+	it("leads with the chip's next talent while the window hides the chip", function()
+		local text = TalentMarks.stripText("Arms / Fury build", progress(0, 51, 21, 0),
+			{ unspent = 12, next = "Improved Heroic Strike (1 of 3)" })
+		assert.are.equal("Next: Improved Heroic Strike (1 of 3) · Arms / Fury build · 0 of 51 points · spend 12 now · "
+			.. MUTED .. "0 off plan|r", text)
+		assert.are.equal("Next: %s", L.talentStripNextTalent)
+	end)
+
 	it("keeps its wording in Locale", function()
 		assert.are.equal("spend %d now", L.talentStripSpend)
 		assert.are.equal("next point at level %d", L.talentStripNext)
@@ -66,7 +75,8 @@ describe("TalentMarks.stripText", function()
 end)
 
 -- Fix round 3 (seen in game: "click Apply Chan…" cut by the pill's cap): a
--- segment fits whole or is dropped, the action first, then the build name.
+-- segment fits whole or is dropped, the action first, then the build name;
+-- fix round 4: then the leading "Next: …".
 describe("TalentMarks.fitStrip", function()
 	local function measure(text)
 		return #text
@@ -89,6 +99,15 @@ describe("TalentMarks.fitStrip", function()
 		local shortest = "1 of 51 points · " .. MUTED .. "0 off plan|r"
 		assert.are.equal(shortest, TalentMarks.fitStrip(segments, measure, #shortest))
 		assert.are.equal(shortest, TalentMarks.fitStrip(segments, measure, 3))
+	end)
+
+	it("gives up the leading Next segment last", function()
+		local led = TalentMarks.stripSegments("Arms / Fury build", progress(1, 51, 21, 0),
+			{ unspent = 11, next = "Improved Heroic Strike (2 of 3)" })
+		local noName = "Next: Improved Heroic Strike (2 of 3) · 1 of 51 points · " .. MUTED .. "0 off plan|r"
+		assert.are.equal(noName, TalentMarks.fitStrip(led, measure, #noName))
+		local bare = "1 of 51 points · " .. MUTED .. "0 off plan|r"
+		assert.are.equal(bare, TalentMarks.fitStrip(led, measure, #noName - 1))
 	end)
 end)
 
@@ -215,29 +234,54 @@ describe("TalentMarks.badgeWidth", function()
 end)
 
 -- Fix round 2: badges on a plate; the next one inverted, the unreachable dimmed.
--- Fix round 3: dimming takes the plate and its edge only (the digits stay at
--- 0.6 or more: a dimmed Fury badge was a ghost), by the cell's first point.
+-- Fix round 3: dimming by the cell's first point; digits never under 0.6.
+-- Fix round 4 (seen in game: a bright icon washed the digit out through a
+-- 70 % plate): every plate is near-opaque; dimming darkens its colour.
 describe("TalentMarks.badgeLook", function()
 	it("inverts the next cell's plate: solid gold, dark digits, never dimmed", function()
 		assert.are.same({ plate = "gold", plateAlpha = 1, edgeAlpha = 1, digits = "onGold", digitsAlpha = 1 },
 			TalentMarks.badgeLook({ next = true, have = 0, want = 5, firstIndex = 26, lastIndex = 30 }, 12))
 	end)
 
-	it("mutes a taken cell's digits on the dark plate", function()
-		assert.are.same({ plate = "background", plateAlpha = 0.7, edgeAlpha = 1, digits = "muted", digitsAlpha = 1 },
+	it("mutes a taken cell's digits on the near-opaque dark plate", function()
+		assert.are.same({ plate = "background", plateAlpha = 0.9, edgeAlpha = 1, digits = "muted", digitsAlpha = 1 },
 			TalentMarks.badgeLook({ next = false, have = 3, want = 3, firstIndex = 1, lastIndex = 3 }, 12))
 	end)
 
 	it("keeps a cell bright while its first point is reachable", function()
-		assert.are.same({ plate = "background", plateAlpha = 0.7, edgeAlpha = 1, digits = "gold", digitsAlpha = 1 },
+		assert.are.same({ plate = "background", plateAlpha = 0.9, edgeAlpha = 1, digits = "gold", digitsAlpha = 1 },
 			TalentMarks.badgeLook({ next = false, have = 0, want = 2, firstIndex = 12, lastIndex = 13 }, 12))
 	end)
 
-	it("dims the plate and its edge beyond the reachable points, never the digits below 0.6", function()
+	it("dims beyond the reachable points with a darker plate, never a thinner one", function()
 		local look = TalentMarks.badgeLook({ next = false, have = 0, want = 3, firstIndex = 13, lastIndex = 15 }, 12)
-		assert.are.same({ plate = "background", plateAlpha = 0.35, edgeAlpha = 0.5, digits = "gold", digitsAlpha = 0.6 },
-			look)
-		assert.is_true(look.digitsAlpha >= 0.6)
+		assert.are.same({ plate = "inset", plateAlpha = 0.9, edgeAlpha = 0.5, digits = "gold", digitsAlpha = 0.6 }, look)
+	end)
+
+	it("never draws a plate under 0.9 alpha, nor digits under 0.6", function()
+		for _, cell in ipairs({
+			{ next = true, have = 0, want = 1, firstIndex = 1, lastIndex = 1 },
+			{ next = false, have = 1, want = 1, firstIndex = 1, lastIndex = 1 },
+			{ next = false, have = 0, want = 1, firstIndex = 5, lastIndex = 5 },
+			{ next = false, have = 0, want = 1, firstIndex = 50, lastIndex = 50 },
+		}) do
+			local look = TalentMarks.badgeLook(cell, 12)
+			assert.is_true(look.plateAlpha >= 0.9)
+			assert.is_true(look.digitsAlpha >= 0.6)
+		end
+	end)
+end)
+
+-- Fix round 4 (spec section 4.2 amended): a multi-rank cell's badge shows
+-- the plan's point range, a one-point cell's its single number.
+describe("TalentMarks.badgeText", function()
+	it("shows the range with an en dash for a multi-rank cell", function()
+		assert.are.equal("7\226\128\14711", TalentMarks.badgeText({ want = 5, firstIndex = 7, lastIndex = 11 }))
+		assert.are.equal("7–11", TalentMarks.badgeText({ want = 5, firstIndex = 7, lastIndex = 11 }))
+	end)
+
+	it("shows the single number for a one-point cell", function()
+		assert.are.equal("12", TalentMarks.badgeText({ want = 1, firstIndex = 12, lastIndex = 12 }))
 	end)
 end)
 

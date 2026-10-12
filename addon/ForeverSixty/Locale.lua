@@ -80,6 +80,11 @@ local L = {
 	talentStripNext = "next point at level %d",
 	talentStripDone = "complete",
 	talentStripOffPlan = "%d off plan",
+	-- L3.2 fix round 4: the strip's leading segment while the open window
+	-- hides the chip, the chip's own label: "Next: Improved Heroic Strike (1 of 3)".
+	talentStripNextTalent = "Next: %s",
+	-- A multi-rank cell's badge: the plan's first and last points there, en dash.
+	talentBadgeRange = "%d–%d",
 	-- One line on the client's own node tooltip, after a blank one: the
 	-- addon's name in gold ("Forever Sixty:"), then the plan's ranks and
 	-- points there in body colour; or, on a node holding a point the plan
@@ -545,9 +550,10 @@ local L = {
 	-- Lane addon-v2 L3.1 (2026-10-11): the chip (spec section 4.1), one line
 	-- at a time, highest first. "Take Improved Heroic Strike".
 	chipTake = "Take %s",
-	-- L3.2 fix round 2: the rank to take when the plan wants more than one
-	-- there: "Take Improved Heroic Strike (1 of 3)".
-	chipTakeRank = "Take %s (%d of %d)",
+	-- L3.2 fix rounds 2 and 4: the talent with the rank to take when the plan
+	-- wants more than one there, "Improved Heroic Strike (1 of 3)": inside
+	-- chipTake on the chip, inside talentStripNextTalent on the talent strip.
+	chipPointRank = "%s (%d of %d)",
 	-- "Equip Chausses of Westfall, +4.2 DPS"; the second %s is one of the
 	-- three gains below, or chipInCombat while the client will not equip.
 	chipEquip = "Equip %s, %s",

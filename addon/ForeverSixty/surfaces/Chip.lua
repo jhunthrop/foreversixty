@@ -113,6 +113,25 @@ function Chip.talentName(talent)
 	return nil
 end
 
+--- The next talent with the rank a click takes, "Improved Heroic Strike
+--- (1 of 3)", where the plan wants more than one rank there and the cell is
+--- not yet full (`rank` is { have, want } from Progress.cells, counting a
+--- click staged in the talent window: "(2 of 3)" after one); else the name.
+--- The one function for it: the chip's point line and the talent strip's
+--- "Next: …" both read it.
+function Chip.pointLabel(name, rank)
+	if type(rank) == "table" and (rank.want or 0) > 1 and (rank.have or 0) < rank.want then
+		return string.format(L.chipPointRank, name, (rank.have or 0) + 1, rank.want)
+	end
+	return name
+end
+
+--- Whether the open talent window is what hides the chip now: the talent
+--- strip then leads with the chip's own line.
+function Chip.hiddenByWindow()
+	return Chip.current ~= nil and Chip.current.hiddenBy == "talents"
+end
+
 --- "Next talent at 22: Improved Tactical Mastery", or "Next talent at 22"
 --- for a talent the data cannot name.
 local function nextTalentAt(at, name)
@@ -215,21 +234,11 @@ local function pointState(input)
 		return nil
 	end
 	local name = input.pointName or L.chipNextTalent
-	-- "(1 of 3)" where the plan wants more than one rank there: the rank the
-	-- click takes, of the plan's ranks in the cell (Progress.cells), counting
-	-- a click staged in the talent window ("(2 of 3)" after one).
-	local rank = input.pointRank
-	local text
-	if type(rank) == "table" and (rank.want or 0) > 1 and (rank.have or 0) < rank.want then
-		text = string.format(L.chipTakeRank, name, (rank.have or 0) + 1, rank.want)
-	else
-		text = string.format(L.chipTake, name)
-	end
 	return {
 		kind = "point",
 		icon = input.pointIcon or input.classIcon,
 		crop = input.pointIcon ~= nil,
-		text = text,
+		text = string.format(L.chipTake, Chip.pointLabel(name, input.pointRank)),
 		short = name,
 		action = "talents",
 		hint = L.chipHintTalents,

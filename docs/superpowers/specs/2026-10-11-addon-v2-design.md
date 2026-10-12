@@ -89,7 +89,8 @@ tooltip with every waiting state.
 
 In the client's talent window (`PlayerSpellsFrame` on this client, found by the existing
 `TalentGlow.watch` hook): a 3 px gold ring, 3 px outside the node's own border, pulsing as the
-chip does, on the next node; a small order number on every node the plan touches; a 24 px strip
+chip does, on the next node; a small order number on every node the plan touches (amended in L3.2
+fix round 4: a multi-rank cell shows the plan's point range, "7–11", a one-point cell its number); a 24 px strip
 along the window's bottom edge: "Arms leveling · 11 of 51 · next at level 22 · 0 off plan". A
 point spent off plan turns the strip's count warning-coloured; nothing pops up.
 

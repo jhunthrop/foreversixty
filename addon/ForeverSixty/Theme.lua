@@ -54,9 +54,10 @@ Theme.ALPHA = {
 	shadow = 0.5,
 	--- The talent window's strip ground (spec section 4.2).
 	strip = 0.9,
-	--- A talent badge's dark plate, a badge beyond the points spendable now,
-	--- and the talent ring's dark outer edge (L3.2 fix round 2).
-	plate = 0.7,
+	--- A talent badge's dark plate (near-opaque, L3.2 fix round 4: a bright
+	--- icon washed a 70 % plate's digit out), a badge's edge beyond the
+	--- points spendable now, and the talent ring's dark outer edge.
+	plate = 0.9,
 	unreachable = 0.5,
 	ringEdge = 0.6,
 	--- The least a badge's digits dim beyond the reachable points: the
