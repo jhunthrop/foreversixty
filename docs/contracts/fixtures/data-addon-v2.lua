@@ -2,7 +2,7 @@ ForeverSixtyData = {
 	format = 2,
 	generated = "2026-11-04",
 	characters = {
-		["Mörk-Pvp"] = {
+		["Mörk-ClassicBetaPvP"] = {
 			score = 100,
 			tier = "common",
 			as_of = "2026-11-01",
@@ -13,9 +13,9 @@ ForeverSixtyData = {
 			best_parses = { ["Gehennas"] = 88 },
 			attendance = 0,
 			fights = 1,
-			profile = "/character/eu/pvp/mörk",
+			profile = "/character/eu/pvp/dav2-mörk",
 		},
-		["Obnoxious Yell-Normal"] = {
+		["Obnoxious Yell-ClassicBetaPvE2"] = {
 			score = 1269,
 			tier = "rare",
 			as_of = "2026-10-25",
@@ -27,32 +27,28 @@ ForeverSixtyData = {
 			best_parses = { ["Gehennas"] = 40, ["Lucifron"] = 71, ["Magmadar"] = 58 },
 			attendance = 0.75,
 			fights = 4,
-			profile = "/character/us/normal/obnoxious-yell",
+			profile = "/character/us/normal/dav2-obnoxious-yell",
 		},
-		["Quiet Fern-Normal"] = {
+		["Quiet Fern-ClassicBetaPvE2"] = {
 			score = nil,
 			item_level = 22,
 			spec = "warrior-fury",
-			profile = "/character/us/normal/quiet-fern",
-		},
-		["Thoradin-Normal"] = {
-			score = nil,
-			profile = "/character/us/normal/thoradin",
+			profile = "/character/us/normal/dav2-quiet-fern",
 		},
 	},
 	guilds = {
-		["Iron Vanguard"] = {
-			standing = 2,
-			nights = 0,
-			roster = 1,
-			members = { "Thoradin-Normal" },
-		},
-		["OLYMPUS XXVII"] = {
+		["Dav2 Olympus"] = {
 			standing = 1,
 			nights = 4,
 			roster = 3,
 			attendance = 0.75,
-			members = { "Obnoxious Yell-Normal", "Quiet Fern-Normal" },
+			members = { "Obnoxious Yell-ClassicBetaPvE2", "Quiet Fern-ClassicBetaPvE2" },
+		},
+		["Dav2 Vanguard"] = {
+			standing = 2,
+			nights = 0,
+			roster = 1,
+			members = {},
 		},
 	},
 }

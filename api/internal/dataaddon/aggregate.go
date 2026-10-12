@@ -17,9 +17,9 @@ type characterRecord struct {
 	// Region is the character's region: which file the record goes to when the render
 	// splits (write_split.go). It is not written.
 	Region string
-	// Score is the character's Forever Score; nil for a verified guild member with no
-	// rated fight in the window, whose record says only score = nil (the addon shows "no
-	// logs yet") so the guild's roster still lists it.
+	// Score is the character's Forever Score; nil when rating.ScoreV2 answers ErrNoLogs
+	// (no rated fight in a public report), and then the record says score = nil (the addon
+	// shows "no logs yet") so the guild's roster still lists it.
 	Score *rating.ScoreV2
 	// BestParses is the best overall percentile per boss name from the character's rated
 	// fights in the window.

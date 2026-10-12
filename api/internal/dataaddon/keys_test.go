@@ -3,28 +3,40 @@ package dataaddon
 
 import "testing"
 
-func TestCharacterKeyIsNameRealm(t *testing.T) {
-	for _, c := range []struct{ name, ruleset, want string }{
-		{"Obnoxious Yell", "normal", "Obnoxious Yell-Normal"},
-		{"Mörk", "pvp", "Mörk-Pvp"},
-		{"Thoradin", "hardcore", "Thoradin-Hardcore"},
-		{"Thoradin", "nightslayer", ""}, // not a ruleset: no realm, no key
-		{"", "normal", ""},
+// The key is Name-<the realm with its spaces and hyphens removed>, the second form the
+// addon's Score.forCharacter looks a character up by.
+func TestCharacterKeyIsNameAndTheNormalisedRealm(t *testing.T) {
+	for _, c := range []struct{ name, realm, want string }{
+		{"Obnoxious Yell", "Classic Beta PvE 2", "Obnoxious Yell-ClassicBetaPvE2"},
+		{"Mörk", "ClassicBetaPvP", "Mörk-ClassicBetaPvP"},
+		{"Thoradin", "Classic-Beta PvP", "Thoradin-ClassicBetaPvP"},
+		{"Thoradin", "", ""},
+		{"", "Classic Beta PvP", ""},
 	} {
-		if got := characterKey(c.name, c.ruleset); got != c.want {
-			t.Errorf("characterKey(%q, %q) = %q, want %q", c.name, c.ruleset, got, c.want)
+		if got := characterKey(c.name, c.realm); got != c.want {
+			t.Errorf("characterKey(%q, %q) = %q, want %q", c.name, c.realm, got, c.want)
 		}
 	}
 }
 
-func TestDisplayNameCutsTheLoggedRealmAndFallsBackToTheSlug(t *testing.T) {
-	for _, c := range []struct{ stored, slug, want string }{
-		{"Obnoxious Yell", "obnoxious-yell", "Obnoxious Yell"},
-		{"Mörk-Pvp", "mörk", "Mörk"},
-		{"", "thoradin", "thoradin"},
+// The realm comes from the Battle.net import, else the export's who=, else the newest rated
+// row's unit; the name from the characters row, else that unit. Nothing is guessed.
+func TestNameAndRealmTakeTheFirstSourceThatHasOne(t *testing.T) {
+	const who = "FS1:1.60.1.70291:warrior:human:0/05320/0:|who=Quiet%20Fern:Classic%20Beta%20PvE%202"
+	for _, c := range []struct {
+		id                  identity
+		export, name, realm string
+	}{
+		{identity{Name: "Obnoxious Yell", RealmName: "Classic Beta PvE 2", PlayerName: "Obnoxious Yell-ClassicBetaPvP"}, who,
+			"Obnoxious Yell", "Classic Beta PvE 2"},
+		{identity{Name: "Quiet Fern", PlayerName: "Quiet Fern-ClassicBetaPvP"}, who, "Quiet Fern", "Classic Beta PvE 2"},
+		{identity{PlayerName: "Mörk-ClassicBetaPvP"}, "", "Mörk", "ClassicBetaPvP"},
+		{identity{Name: "Thoradin"}, "FS1:1.60.1.70291:warrior:human:0/05320/0:", "Thoradin", ""},
+		{identity{}, "", "", ""},
 	} {
-		if got := displayName(c.stored, c.slug); got != c.want {
-			t.Errorf("displayName(%q, %q) = %q, want %q", c.stored, c.slug, got, c.want)
+		name, realm := nameAndRealm(c.id, c.export)
+		if name != c.name || realm != c.realm {
+			t.Errorf("nameAndRealm(%+v) = %q, %q; want %q, %q", c.id, name, realm, c.name, c.realm)
 		}
 	}
 }

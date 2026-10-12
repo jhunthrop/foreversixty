@@ -111,18 +111,20 @@ func SplitUnit(unit string) (name, realm string) {
 	return name, realm
 }
 
-// RulesetFromRealm maps the realm segment of a logged unit name onto a
-// ruleset. This is the single mapping the whole API uses.
+// RulesetFromRealm maps the realm segment of a logged unit name (or a realm name the
+// client or Battle.net reports) onto a ruleset. This is the single mapping the whole API
+// uses.
 //
-// The combat log prints units as Name-Realm today. What Forever writes
-// in that segment is settled by the first beta log on Sept 17: if it
-// writes a ruleset name, the first branch already handles it; if it
-// writes something else, that translation belongs here and nowhere else.
-// Until then an unrecognised segment takes the fallback - the ruleset
-// the report's logging character declared - and RulesetNormal when the
-// report declared none.
+// A realm names its ruleset by a word in it: the ruleset itself once Forever's realms are
+// its rulesets ("Hardcore"), and the beta's realm names ("Classic Beta PvP", "Classic Beta
+// PvE 2"), the same words the web's rulesetFromRealm reads (rulesetWords). The client's
+// normalised realm name drops the spaces and hyphens ("ClassicBetaPvP",
+// GetNormalizedRealmName and the combat log's Name-Realm), so a single camel-case word is
+// read by the ruleset word it ends in, trailing digits aside. A realm with no such word
+// takes the fallback - the ruleset the report's logging character declared - and
+// RulesetNormal when the report declared none.
 func RulesetFromRealm(realm, fallback string) string {
-	if r := strings.ToLower(strings.TrimSpace(realm)); ValidRuleset(r) {
+	if r, ok := rulesetOfRealm(realm); ok {
 		return r
 	}
 	if ValidRuleset(fallback) {
@@ -131,21 +133,40 @@ func RulesetFromRealm(realm, fallback string) string {
 	return RulesetNormal
 }
 
-// RealmForRuleset is RulesetFromRealm's inverse: the realm name a client on ruleset shows,
-// which the nightly data addon keys its characters by ("Name-Realm",
-// docs/contracts/addon-v2.md contract 5). The realm table the API has is the one
-// RulesetFromRealm reads: Forever replaced realms with rulesets, so the only realm segments
-// it recognises are the four ruleset names themselves and every other segment takes the
-// fallback. Each ruleset therefore has exactly one realm, its own name, written as the
-// client capitalises a realm ("Normal", "Pvp", "Rp", "Hardcore"). Empty for anything that
-// is not a ruleset. If a live client names its realm otherwise, this and RulesetFromRealm
-// change together.
-func RealmForRuleset(ruleset string) string {
-	r := strings.ToLower(strings.TrimSpace(ruleset))
-	if !ValidRuleset(r) {
-		return ""
+// rulesetWords are the words a realm name spells a ruleset with, longest first so a
+// camel-case suffix match tries "hardcore" before "hc".
+var rulesetWords = []struct{ word, ruleset string }{
+	{"hardcore", RulesetHardcore}, {"roleplay", RulesetRP}, {"normal", RulesetNormal},
+	{"pvp", RulesetPvP}, {"pve", RulesetNormal}, {"rp", RulesetRP}, {"hc", RulesetHardcore},
+}
+
+// rulesetOfRealm is the ruleset the first word of realm that names one spells, if any.
+func rulesetOfRealm(realm string) (string, bool) {
+	words := strings.FieldsFunc(realm, func(r rune) bool {
+		return !(r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z' || r >= '0' && r <= '9')
+	})
+	for _, word := range words {
+		// Trailing digits number a realm ("PvE 2", "ClassicBetaPvE2"), they name no ruleset.
+		trimmed := strings.TrimRight(strings.ToLower(word), "0123456789")
+		camel := camelCase(word)
+		for _, w := range rulesetWords {
+			if trimmed == w.word || camel && strings.HasSuffix(trimmed, w.word) {
+				return w.ruleset, true
+			}
+		}
 	}
-	return strings.ToUpper(r[:1]) + r[1:]
+	return "", false
+}
+
+// camelCase reports whether word joins several words in the normalised form: a capital
+// letter after a lower-case one ("ClassicBetaPvP", "ForeverRP").
+func camelCase(word string) bool {
+	for i := 1; i < len(word); i++ {
+		if word[i] >= 'A' && word[i] <= 'Z' && word[i-1] >= 'a' && word[i-1] <= 'z' {
+			return true
+		}
+	}
+	return false
 }
 
 // KeyFromUnit builds the character key for a unit name out of a combat

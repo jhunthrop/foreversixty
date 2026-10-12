@@ -9,7 +9,7 @@ import (
 
 func TestRenderWithLimitSplitsByRegionAndKeepsWholeRecords(t *testing.T) {
 	d := sampleData()
-	d.Characters["Mörk-Pvp"] = characterRecord{Region: "eu", Spec: "mage-fire", Profile: "/character/eu/pvp/mörk"}
+	d.Characters["Mörk-ClassicBetaPvP"] = characterRecord{Region: "eu", Spec: "mage-fire", Profile: "/character/eu/pvp/mörk"}
 	single, err := Render(d)
 	if err != nil {
 		t.Fatal(err)
@@ -31,12 +31,12 @@ func TestRenderWithLimitSplitsByRegionAndKeepsWholeRecords(t *testing.T) {
 	if us == nil || eu == nil {
 		t.Fatalf("files = %v, want Data-us.lua and Data-eu.lua", mapKeysOf(files))
 	}
-	for _, opening := range []string{`["Obnoxious Yell-Normal"] = {`, `["Quiet Fern-Normal"] = {`, `["OLYMPUS XXVII"] = {`} {
+	for _, opening := range []string{`["Obnoxious Yell-ClassicBetaPvE2"] = {`, `["Quiet Fern-ClassicBetaPvE2"] = {`, `["OLYMPUS XXVII"] = {`} {
 		if record := recordLines(t, single["Data.lua"], opening); !bytes.Contains(us, record) {
 			t.Errorf("Data-us.lua lacks the whole record %s:\n%s", opening, us)
 		}
 	}
-	if record := recordLines(t, single["Data.lua"], `["Mörk-Pvp"] = {`); !bytes.Contains(eu, record) || bytes.Contains(us, []byte("Mörk")) {
+	if record := recordLines(t, single["Data.lua"], `["Mörk-ClassicBetaPvP"] = {`); !bytes.Contains(eu, record) || bytes.Contains(us, []byte("Mörk")) {
 		t.Errorf("Mörk's record belongs whole in Data-eu.lua only:\n%s", eu)
 	}
 	if !bytes.Contains(us, []byte("ForeverSixtyData.characters[key] = row")) {
@@ -46,7 +46,7 @@ func TestRenderWithLimitSplitsByRegionAndKeepsWholeRecords(t *testing.T) {
 
 func TestRegionsOfListsEveryRegionARecordBelongsTo(t *testing.T) {
 	d := Data{
-		Characters: map[string]characterRecord{"A-Normal": {Region: "us"}, "B-Pvp": {Region: "eu"}},
+		Characters: map[string]characterRecord{"A-ClassicBetaPvE2": {Region: "us"}, "B-ClassicBetaPvP": {Region: "eu"}},
 		Guilds:     map[string]guildRecord{"C": {Region: "kr"}},
 	}
 	got := regionsOf(d)

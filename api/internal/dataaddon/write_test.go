@@ -16,7 +16,7 @@ func sampleData() Data {
 	return Data{
 		Generated: time.Date(2026, 11, 4, 4, 0, 0, 0, time.UTC),
 		Characters: map[string]characterRecord{
-			"Obnoxious Yell-Normal": {
+			"Obnoxious Yell-ClassicBetaPvE2": {
 				Region: "us",
 				Score: &rating.ScoreV2{
 					Score: 1230, Tier: "rare", AsOf: asOf,
@@ -28,12 +28,12 @@ func sampleData() Data {
 				ItemLevel:  31, Spec: "warrior-arms",
 				Profile: "/character/us/normal/obnoxious-yell",
 			},
-			"Quiet Fern-Normal": {Region: "us", Spec: "warrior-fury", Profile: "/character/us/normal/quiet-fern"},
+			"Quiet Fern-ClassicBetaPvE2": {Region: "us", Spec: "warrior-fury", Profile: "/character/us/normal/quiet-fern"},
 		},
 		Guilds: map[string]guildRecord{
 			"OLYMPUS XXVII": {
 				Region: "us", Standing: 1, Nights: 4, Roster: 3, Attendance: fraction(2.0 / 3),
-				Members: []string{"Obnoxious Yell-Normal", "Quiet Fern-Normal"},
+				Members: []string{"Obnoxious Yell-ClassicBetaPvE2", "Quiet Fern-ClassicBetaPvE2"},
 			},
 		},
 	}
@@ -51,7 +51,7 @@ func TestRenderWritesContractFivesLayout(t *testing.T) {
 	format = 2,
 	generated = "2026-11-04",
 	characters = {
-		["Obnoxious Yell-Normal"] = {
+		["Obnoxious Yell-ClassicBetaPvE2"] = {
 			score = 1230,
 			tier = "rare",
 			as_of = "2026-11-02",
@@ -65,7 +65,7 @@ func TestRenderWritesContractFivesLayout(t *testing.T) {
 			fights = 4,
 			profile = "/character/us/normal/obnoxious-yell",
 		},
-		["Quiet Fern-Normal"] = {
+		["Quiet Fern-ClassicBetaPvE2"] = {
 			score = nil,
 			spec = "warrior-fury",
 			profile = "/character/us/normal/quiet-fern",
@@ -77,7 +77,7 @@ func TestRenderWritesContractFivesLayout(t *testing.T) {
 			nights = 4,
 			roster = 3,
 			attendance = 0.67,
-			members = { "Obnoxious Yell-Normal", "Quiet Fern-Normal" },
+			members = { "Obnoxious Yell-ClassicBetaPvE2", "Quiet Fern-ClassicBetaPvE2" },
 		},
 	},
 }
@@ -90,7 +90,7 @@ func TestRenderWritesContractFivesLayout(t *testing.T) {
 func TestRenderOmitsWhatIsNotKnown(t *testing.T) {
 	d := Data{
 		Generated:  time.Date(2026, 11, 4, 0, 0, 0, 0, time.UTC),
-		Characters: map[string]characterRecord{"Thoradin-Normal": {Region: "us", Profile: "/character/us/normal/thoradin"}},
+		Characters: map[string]characterRecord{"Thoradin-ClassicBetaPvE2": {Region: "us", Profile: "/character/us/normal/thoradin"}},
 		Guilds:     map[string]guildRecord{"Iron Vanguard": {Region: "us", Standing: 2, Roster: 1, Members: []string{}}},
 	}
 	files, err := Render(d)
@@ -98,7 +98,7 @@ func TestRenderOmitsWhatIsNotKnown(t *testing.T) {
 		t.Fatal(err)
 	}
 	got := string(files["Data.lua"])
-	if !strings.Contains(got, "\t\t[\"Thoradin-Normal\"] = {\n\t\t\tscore = nil,\n\t\t\tprofile = \"/character/us/normal/thoradin\",\n\t\t},\n") {
+	if !strings.Contains(got, "\t\t[\"Thoradin-ClassicBetaPvE2\"] = {\n\t\t\tscore = nil,\n\t\t\tprofile = \"/character/us/normal/thoradin\",\n\t\t},\n") {
 		t.Errorf("a no-logs record with nothing else known should carry score = nil and its profile only:\n%s", got)
 	}
 	if strings.Contains(got, "attendance") {

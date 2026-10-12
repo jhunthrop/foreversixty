@@ -49,40 +49,30 @@ func TestRulesetFromRealmTakesTheSegmentThenTheFallback(t *testing.T) {
 	}
 }
 
-// The realm table RulesetFromRealm reads is the four ruleset names; each ruleset is reached
-// from exactly one realm in it, and RealmForRuleset names that realm.
-func TestRealmForRulesetIsTheOneRealmEachRulesetHas(t *testing.T) {
-	realms := map[string][]string{}
-	for _, realm := range Rulesets {
-		if r := strings.ToLower(realm); ValidRuleset(r) {
-			ruleset := RulesetFromRealm(realm, "")
-			realms[ruleset] = append(realms[ruleset], realm)
+// The beta's realm names spell their ruleset as a word, as the web's rulesetFromRealm reads
+// them, and the client's normalised form (spaces and hyphens gone) spells it the same way.
+func TestRulesetFromRealmReadsTheRealmNamesWords(t *testing.T) {
+	for realm, want := range map[string]string{
+		"Classic Beta PvP":   RulesetPvP,
+		"Classic Beta PvE 2": RulesetNormal,
+		"ClassicBetaPvP":     RulesetPvP,
+		"ClassicBetaPvE2":    RulesetNormal,
+		"Classic-Beta-PvP":   RulesetPvP,
+		"Forever RP":         RulesetRP,
+		"ForeverRP":          RulesetRP,
+		"Forever Roleplay":   RulesetRP,
+		"ClassicBetaHC":      RulesetHardcore,
+		"hardcore":           RulesetHardcore,
+		"Normal":             RulesetNormal,
+	} {
+		if got := RulesetFromRealm(realm, RulesetHardcore); got != want {
+			t.Errorf("RulesetFromRealm(%q) = %q, want %q", realm, got, want)
 		}
 	}
-	seen := map[string]string{}
-	for _, ruleset := range Rulesets {
-		if len(realms[ruleset]) != 1 {
-			t.Fatalf("ruleset %q has realms %v, want exactly one", ruleset, realms[ruleset])
+	for _, realm := range []string{"Whitemane", "Nightslayer", "", "Sharp", "Earthshaker"} {
+		if got := RulesetFromRealm(realm, RulesetPvP); got != RulesetPvP {
+			t.Errorf("RulesetFromRealm(%q) = %q, want the fallback", realm, got)
 		}
-		realm := RealmForRuleset(ruleset)
-		if !strings.EqualFold(realm, realms[ruleset][0]) {
-			t.Errorf("RealmForRuleset(%q) = %q, want %q", ruleset, realm, realms[ruleset][0])
-		}
-		if got := RulesetFromRealm(realm, RulesetHardcore); got != ruleset {
-			t.Errorf("RulesetFromRealm(RealmForRuleset(%q)) = %q", ruleset, got)
-		}
-		if other, dup := seen[realm]; dup {
-			t.Errorf("rulesets %q and %q share the realm %q", other, ruleset, realm)
-		}
-		seen[realm] = ruleset
-	}
-	for ruleset, want := range map[string]string{"normal": "Normal", "pvp": "Pvp", "rp": "Rp", "hardcore": "Hardcore"} {
-		if got := RealmForRuleset(ruleset); got != want {
-			t.Errorf("RealmForRuleset(%q) = %q, want %q", ruleset, got, want)
-		}
-	}
-	if got := RealmForRuleset("Nightslayer"); got != "" {
-		t.Errorf("a name that is not a ruleset has no realm: %q", got)
 	}
 }
 

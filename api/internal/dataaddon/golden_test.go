@@ -66,21 +66,26 @@ const goldenGear = "FS1:1.60.1.70291:warrior:human:371000000/0/0:back=4706,chest
 // goldenEncounter is the first of this file's own encounter ids (990701..990704).
 const goldenEncounter = 990701
 
-// seedGolden builds the database the fixture is the nightly file of, every row under the
-// "dav2-" prefix (reports) or one of the keys below, all removed again on cleanup:
+// seedGolden builds the database the fixture is the nightly file of. Every row it writes
+// carries the "dav2" prefix (report ids "dav2-...", character slugs "dav2-...", emails
+// "dav2-...", guild names "Dav2 ...", encounter ids 990701..990704), and its cleanup
+// deletes only rows with that prefix:
 //
-//   - Obnoxious Yell (us/normal), in the guild OLYMPUS XXVII: four rated fights over three
-//     of the guild's four nights (one without a flask), a ranked Lucifron kill placed
-//     against a 1..100 curve, a level-24 export of the band-20 best-in-slot set, a
-//     Battle.net item level of 31, and a linked alt (Little Yell) with a kill of its own.
-//   - Quiet Fern (us/normal), a verified member of OLYMPUS XXVII with no rated fight: a
-//     no-logs record with the spec its export's talents name and its item level.
-//   - Hidden Hand (us/normal), a verified member of OLYMPUS XXVII with a rated fight whose
+//   - Obnoxious Yell (us/normal, Battle.net realm "Classic Beta PvE 2"), in Dav2 Olympus:
+//     four rated fights over three of the guild's four nights (one without a flask), a
+//     ranked Lucifron kill placed against a 1..100 curve, a level-24 export of the band-20
+//     best-in-slot set, a Battle.net item level of 31, and a linked alt (Little Yell) with a
+//     kill of its own.
+//   - Quiet Fern (us/normal, realm from its export's who=), a verified member of Dav2
+//     Olympus with no rated fight: a no-logs record with the spec its export's talents name
+//     and its item level.
+//   - Hidden Hand (us/normal), a verified member of Dav2 Olympus with a rated fight whose
 //     account is anonymised: no record, not listed, but counted in the roster.
-//   - Thoradin (us/normal), the one verified member of Iron Vanguard, which has no
-//     reports: a no-logs record with neither spec nor item level.
-//   - Mörk (eu/pvp), one rated fight in a guildless public report, no characters row (the
-//     name comes from the rated row), never linked: a record with no gear and no guild.
+//   - Thoradin (us/normal), the one verified member of Dav2 Vanguard, with no realm from
+//     any source: no record (counted as skipped), so its guild lists no one.
+//   - Mörk (eu/pvp), one rated fight logged as "Mörk-ClassicBetaPvP" in a guildless public
+//     report, no characters row (name and realm come from the rated row): keyed
+//     Mörk-ClassicBetaPvP, with no gear and no guild.
 //   - Oldtimer (us/normal), rated only 100 days ago: outside the window, no record.
 func seedGolden(t *testing.T, pool *pgxpool.Pool, today time.Time) {
 	t.Helper()
@@ -91,8 +96,6 @@ func seedGolden(t *testing.T, pool *pgxpool.Pool, today time.Time) {
 			t.Fatalf("%s: %v", sql, err)
 		}
 	}
-	keys := []string{"us/normal/obnoxious-yell", "us/normal/little-yell", "us/normal/quiet-fern",
-		"us/normal/hidden-hand", "us/normal/thoradin", "eu/pvp/mörk", "us/normal/oldtimer"}
 	emails := []string{"dav2-yell@example.com", "dav2-fern@example.com", "dav2-hidden@example.com",
 		"dav2-thoradin@example.com"}
 	cleanup := func() {
@@ -102,12 +105,12 @@ func seedGolden(t *testing.T, pool *pgxpool.Pool, today time.Time) {
 		pool.Exec(bg, `delete from fights where report_id like 'dav2-%'`)
 		pool.Exec(bg, `delete from reports where id like 'dav2-%'`)
 		pool.Exec(bg, `delete from percentile_digests where encounter_id between 990701 and 990704`)
-		pool.Exec(bg, `delete from addon_exports where character_key = any($1)`, keys)
-		pool.Exec(bg, `delete from guild_characters where character_key = any($1)`, keys)
-		pool.Exec(bg, `delete from guilds where name in ('OLYMPUS XXVII', 'Iron Vanguard')`)
-		pool.Exec(bg, `update users set main_character_key = null where email = any($1)`, emails)
-		pool.Exec(bg, `delete from characters where key = any($1)`, keys)
-		pool.Exec(bg, `delete from users where email = any($1)`, emails)
+		pool.Exec(bg, `delete from addon_exports where character_key like '%/dav2-%'`)
+		pool.Exec(bg, `delete from guild_characters where character_key like '%/dav2-%'`)
+		pool.Exec(bg, `delete from guilds where name like 'Dav2 %'`)
+		pool.Exec(bg, `update users set main_character_key = null where email like 'dav2-%'`)
+		pool.Exec(bg, `delete from characters where key like '%/dav2-%'`)
+		pool.Exec(bg, `delete from users where email like 'dav2-%'`)
 	}
 	cleanup()
 	t.Cleanup(cleanup)
@@ -130,23 +133,24 @@ func seedGolden(t *testing.T, pool *pgxpool.Pool, today time.Time) {
 		run(`insert into characters (key, region, ruleset, name, class, user_id) values ($1, $2, $3, $4, 'Warrior', $5)`,
 			key, parts[0], parts[1], name, userID)
 	}
-	char("us/normal/obnoxious-yell", "Obnoxious Yell", yell)
-	char("us/normal/little-yell", "Little Yell", yell)
-	char("us/normal/quiet-fern", "Quiet Fern", fern)
-	char("us/normal/hidden-hand", "Hidden Hand", hidden)
-	char("us/normal/thoradin", "Thoradin", thoradin)
-	run(`update characters set equipped_item_level = 31 where key = 'us/normal/obnoxious-yell'`)
-	run(`update characters set equipped_item_level = 22 where key = 'us/normal/quiet-fern'`)
-	run(`update users set main_character_key = 'us/normal/obnoxious-yell' where id = $1`, yell)
+	char("us/normal/dav2-obnoxious-yell", "Obnoxious Yell", yell)
+	char("us/normal/dav2-little-yell", "Little Yell", yell)
+	char("us/normal/dav2-quiet-fern", "Quiet Fern", fern)
+	char("us/normal/dav2-hidden-hand", "Hidden Hand", hidden)
+	char("us/normal/dav2-thoradin", "Thoradin", thoradin)
+	run(`update characters set realm_name = 'Classic Beta PvE 2' where key = 'us/normal/dav2-obnoxious-yell'`)
+	run(`update characters set equipped_item_level = 31 where key = 'us/normal/dav2-obnoxious-yell'`)
+	run(`update characters set equipped_item_level = 22 where key = 'us/normal/dav2-quiet-fern'`)
+	run(`update users set main_character_key = 'us/normal/dav2-obnoxious-yell' where id = $1`, yell)
 
 	export := func(key, name string, userID int64, code string) {
 		t.Helper()
 		run(`insert into addon_exports (character_key, user_id, region, ruleset, name, export, captured_at)
 			values ($1, $2, 'us', 'normal', $3, $4, now())`, key, userID, name, code)
 	}
-	export("us/normal/obnoxious-yell", "Obnoxious Yell", yell, goldenGear)
+	export("us/normal/dav2-obnoxious-yell", "Obnoxious Yell", yell, goldenGear)
 	// Ten points in the second tree (Fury), none elsewhere.
-	export("us/normal/quiet-fern", "Quiet Fern", fern, "FS1:1.60.1.70291:warrior:human:0/05320/0:|level=22")
+	export("us/normal/dav2-quiet-fern", "Quiet Fern", fern, "FS1:1.60.1.70291:warrior:human:0/05320/0:|level=22|who=Quiet%20Fern:Classic%20Beta%20PvE%202")
 
 	guild := func(name string) int64 {
 		t.Helper()
@@ -157,18 +161,18 @@ func seedGolden(t *testing.T, pool *pgxpool.Pool, today time.Time) {
 		}
 		return id
 	}
-	olympus, vanguard := guild("OLYMPUS XXVII"), guild("Iron Vanguard")
+	olympus, vanguard := guild("Dav2 Olympus"), guild("Dav2 Vanguard")
 	member := func(guildID int64, key string, userID int64) {
 		t.Helper()
 		run(`insert into guild_characters (guild_id, character_key, user_id, verified_at) values ($1, $2, $3, now())`,
 			guildID, key, userID)
 	}
-	member(olympus, "us/normal/obnoxious-yell", yell)
-	member(olympus, "us/normal/quiet-fern", fern)
-	member(olympus, "us/normal/hidden-hand", hidden)
-	member(vanguard, "us/normal/thoradin", thoradin)
+	member(olympus, "us/normal/dav2-obnoxious-yell", yell)
+	member(olympus, "us/normal/dav2-quiet-fern", fern)
+	member(olympus, "us/normal/dav2-hidden-hand", hidden)
+	member(vanguard, "us/normal/dav2-thoradin", thoradin)
 	// Not verified: never counted, never listed.
-	run(`insert into guild_characters (guild_id, character_key, user_id) values ($1, 'us/normal/little-yell', $2)`,
+	run(`insert into guild_characters (guild_id, character_key, user_id) values ($1, 'us/normal/dav2-little-yell', $2)`,
 		vanguard, yell)
 
 	night := func(daysAgo int) time.Time { return today.Add(time.Duration(-daysAgo)*24*time.Hour + 20*time.Hour) }
@@ -211,14 +215,14 @@ func seedGolden(t *testing.T, pool *pgxpool.Pool, today time.Time) {
 	fight("dav2-eu", 1, gehennas, "Gehennas", false, night(3))
 	fight("dav2-old", 1, lucifron, "Lucifron", true, night(100))
 
-	const yellKey = "us/normal/obnoxious-yell"
+	const yellKey = "us/normal/dav2-obnoxious-yell"
 	rated("dav2-a", 1, yellKey, "Obnoxious Yell", "Warrior", "Arms", lucifron, true, 71, true, a)
 	rated("dav2-b", 1, yellKey, "Obnoxious Yell", "Warrior", "Arms", lucifron, true, 64, false, b)
 	rated("dav2-b", 2, yellKey, "Obnoxious Yell", "Warrior", "Arms", magmadar, true, 58, true, b.Add(30*time.Minute))
 	rated("dav2-c", 1, yellKey, "Obnoxious Yell", "Warrior", "Arms", gehennas, false, 40, true, c)
-	rated("dav2-d", 1, "us/normal/hidden-hand", "Hidden Hand", "Rogue", "Combat", magmadar, true, 90, true, d)
-	rated("dav2-eu", 1, "eu/pvp/mörk", "Mörk", "Mage", "Fire", gehennas, false, 88, true, night(3))
-	rated("dav2-old", 1, "us/normal/oldtimer", "Oldtimer", "Warrior", "Fury", lucifron, true, 80, true, night(100))
+	rated("dav2-d", 1, "us/normal/dav2-hidden-hand", "Hidden Hand", "Rogue", "Combat", magmadar, true, 90, true, d)
+	rated("dav2-eu", 1, "eu/pvp/dav2-mörk", "Mörk-ClassicBetaPvP", "Mage", "Fire", gehennas, false, 88, true, night(3))
+	rated("dav2-old", 1, "us/normal/dav2-oldtimer", "Oldtimer", "Warrior", "Fury", lucifron, true, 80, true, night(100))
 
 	// The ranked kill the parses component places: one Lucifron kill at 71 DPS against a
 	// curve of 1..100, and the alt's own kill of a boss the main never killed.
@@ -243,7 +247,7 @@ func seedGolden(t *testing.T, pool *pgxpool.Pool, today time.Time) {
 			fightIndex, key, name, dps, encounter, a)
 	}
 	metric(1, yellKey, "Obnoxious Yell", lucifron, 71)
-	metric(5, "us/normal/little-yell", "Little Yell", garr, 50)
+	metric(5, "us/normal/dav2-little-yell", "Little Yell", garr, 50)
 }
 
 // TestGoldenDataLuaMatchesContractFive runs the real job over the seeded rows and checks
@@ -272,8 +276,9 @@ func TestGoldenDataLuaMatchesContractFive(t *testing.T) {
 	if !bytes.Equal(got, want) {
 		t.Errorf("Data.lua does not match contract 5's fixture.\ngot:\n%s\nwant:\n%s", got, want)
 	}
-	if result.Characters != 4 || result.Guilds != 2 {
-		t.Errorf("result = %d characters, %d guilds; want 4 and 2", result.Characters, result.Guilds)
+	if result.Characters != 3 || result.Guilds != 2 || result.SkippedRows != 1 {
+		t.Errorf("result = %d characters, %d guilds, %d skipped; want 3, 2 and 1 (Thoradin has no realm)",
+			result.Characters, result.Guilds, result.SkippedRows)
 	}
 	assertValidLua(t, result.Rendered["Data.lua"])
 }
@@ -300,16 +305,16 @@ func TestASplitFileKeepsWholeRecords(t *testing.T) {
 		t.Fatal(err)
 	}
 	for file, opening := range map[string]string{
-		"Data-us.lua": `["Obnoxious Yell-Normal"] = {`,
-		"Data-eu.lua": `["Mörk-Pvp"] = {`,
+		"Data-us.lua": `["Obnoxious Yell-ClassicBetaPvE2"] = {`,
+		"Data-eu.lua": `["Mörk-ClassicBetaPvP"] = {`,
 	} {
 		record := recordLines(t, single["Data.lua"], opening)
 		if !bytes.Contains(split[file], record) {
 			t.Errorf("%s does not carry the whole record:\n%s\nwant within it:\n%s", file, split[file], record)
 		}
 	}
-	if guild := recordLines(t, single["Data.lua"], `["OLYMPUS XXVII"] = {`); !bytes.Contains(split["Data-us.lua"], guild) {
-		t.Errorf("Data-us.lua does not carry OLYMPUS XXVII's whole record:\n%s", split["Data-us.lua"])
+	if guild := recordLines(t, single["Data.lua"], `["Dav2 Olympus"] = {`); !bytes.Contains(split["Data-us.lua"], guild) {
+		t.Errorf("Data-us.lua does not carry Dav2 Olympus's whole record:\n%s", split["Data-us.lua"])
 	}
 	for name, body := range split {
 		assertValidLuaChunk(t, name, body)

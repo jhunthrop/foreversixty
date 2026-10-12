@@ -285,15 +285,15 @@ the API (`api/internal/rating`); the addon displays and dates the score and neve
 ForeverSixtyData = {
   format = 2, generated = "2026-11-04",
   characters = {
-    ["Obnoxious Yell-Normal"] = { score = 1560, tier = "epic", as_of = "2026-11-04",
+    ["Obnoxious Yell-ClassicBetaPvE2"] = { score = 1560, tier = "epic", as_of = "2026-11-04",
       components = { gear = 412, experience = 350, parses = 540, attendance = 180, discipline = 78 },
       gear_score = 412, item_level = 31, spec = "warrior-arms",
       experience = { dungeons = 14, raid_kills = 0, alts = 2 },
       best_parses = { ["Lucifron"] = 71 }, attendance = 0.9, fights = 12, profile = "/character/us/normal/obnoxious-yell" },
     -- a verified guild member with no logs yet
-    ["Quiet Fern-Normal"] = { score = nil, item_level = 22, spec = "warrior-fury", profile = "/character/us/normal/quiet-fern" },
+    ["Quiet Fern-ClassicBetaPvE2"] = { score = nil, item_level = 22, spec = "warrior-fury", profile = "/character/us/normal/quiet-fern" },
   },
-  guilds = { ["OLYMPUS XXVII"] = { standing = 3, nights = 4, roster = 31, attendance = 0.8, members = { "Obnoxious Yell-Normal", "Quiet Fern-Normal", ... } } },
+  guilds = { ["OLYMPUS XXVII"] = { standing = 3, nights = 4, roster = 31, attendance = 0.8, members = { "Obnoxious Yell-ClassicBetaPvE2", "Quiet Fern-ClassicBetaPvE2", ... } } },
 }
 ```
 Tiers by score: `common` < 500, `uncommon` < 1000, `rare` < 1500, `epic` < 2000, `legendary` ≥ 2000. These thresholds are provisional: the API lane sets the final numbers from the live distribution before week 2 closes, and the addon reads `tier` from the record, never computing it.
@@ -322,26 +322,34 @@ Notes for the reader:
   only as a copyable address.
 - `guilds[*].members` holds the `Name-Realm` keys of `characters`; the other guild fields are
   the site's own numbers, shown as given.
-- **Keys.** A character's `Name-Realm` is its name as the game shows it and the realm a client
-  on its ruleset shows: the site stores a ruleset, not a realm, and the realm is the inverse of
-  the API's one realm-to-ruleset mapping (`character.RealmForRuleset`: `Normal`, `Pvp`, `Rp`,
-  `Hardcore`). A guild's key is its name as `GetGuildInfo` returns it. Neither key carries the
-  region, so two characters (or guilds) that would share one are both left out rather than one
-  read as the other.
+- **Keys.** A character's key is `Name-<realm>`: its name as the game shows it, and the
+  client's own realm normalised by removing every space and hyphen (`Classic Beta PvP` is
+  written `ClassicBetaPvP`, `Classic Beta PvE 2` is `ClassicBetaPvE2`), the second form
+  `Score.forCharacter` looks a character up by and the one every spelling of the realm reduces
+  to. The realm comes from the first source that has one: the Battle.net import's realm name
+  (`characters.realm_name`), else the stored export's `who=` realm, else the realm half of the
+  newest rated row's logged unit (`Name-Realm`). A character with no realm from any of them,
+  or no stored name, has no record (logged and counted) rather than a guessed key. A guild's
+  key is its name as `GetGuildInfo` returns it. Neither key carries the region (nor the guild
+  key the ruleset), so two characters or guilds that would share one are both left out rather
+  than one read as the other.
 - **Who is in the file.** Every character with a rated fight in a public report in the last 90
-  days has a scored record; every verified guild member without one has a no-logs record,
-  `{ score = nil, profile = ... }` plus `item_level` and `spec` when they are known, and no
-  `tier`, `as_of` or `components`: the addon shows "no logs yet", never a zero. A character
-  whose account asked to be anonymous has no record and is in no guild's `members`. `fights`
-  is how many rated fights in public reports the score rests on (not only the last 90 days'),
+  days, and every verified guild member, has a record; `rating.ScoreV2` alone decides which
+  kind: a score is a scored record, and a character with no rated fight in a public report
+  has a no-logs record, `{ score = nil, profile = ... }` plus `item_level` and `spec` when
+  they are known, and no `tier`, `as_of` or `components`: the addon shows "no logs yet",
+  never a zero. A character whose account asked to be anonymous has no record and is in no
+  guild's `members`. `fights` is how many rated fights in public reports the score rests on
+  (not only the last 90 days'),
   and `best_parses` the best overall percentile per boss from the rated fights of the last 90
-  days. `item_level` and `spec` are absent when the site does not know them. Fractions are
-  written to the hundredth.
+  days (an empty table when none is that recent). `item_level` and `spec` are absent when
+  the site does not know them. Fractions are written to the hundredth.
 - **Guild fields.** `standing` is the guild's rank among every guild with a verified member, by
   distinct raid bosses killed in the last 90 days, ties by `attendance` (guilds still tied share
   a rank). `nights` is the distinct UTC dates of its public reports in the last 90 days.
-  `roster` is its verified member count. `attendance` is the mean of its listed members'
-  attendance fractions, absent when no member has a score.
+  `roster` is its verified member count. `attendance` is the mean of the attendance fractions
+  of its listed members that have a score (a no-logs member has no fraction and is not
+  counted), absent when none has one.
 - `docs/contracts/fixtures/data-addon-v2.lua` is the file the API's nightly job writes for its
   golden test's seeded database, byte for byte once the run's dates are moved onto the
   fixture's (`api/internal/dataaddon/golden_test.go`).

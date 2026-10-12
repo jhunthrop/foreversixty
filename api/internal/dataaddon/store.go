@@ -60,27 +60,28 @@ func (s *Store) windowParses(ctx context.Context, since time.Time) (map[string]m
 	return out, rows.Err()
 }
 
-// storedNames reads the name each of keys is shown under: the characters row's display
-// name, else the newest rated row's player_name (as the log printed it), else "".
-func (s *Store) storedNames(ctx context.Context, keys []string) (map[string]string, error) {
+// identities reads who each of keys is in game (identity): the characters row's display
+// name and Battle.net realm, and the newest rated row's player_name as the log printed it.
+// A key with none of them reads as an empty identity.
+func (s *Store) identities(ctx context.Context, keys []string) (map[string]identity, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select k.key, coalesce(
-		   (select nullif(c.name, '') from characters c where c.key = k.key),
-		   (select rs.player_name from rating_scores rs where rs.player_key = k.key and rs.player_name <> ''
-		     order by rs.fought_at desc limit 1),
-		   '')
-		 from unnest($1::text[]) as k(key)`, keys)
+		`select k.key, coalesce(c.name, ''), coalesce(c.realm_name, ''),
+		   coalesce((select rs.player_name from rating_scores rs where rs.player_key = k.key and rs.player_name <> ''
+		     order by rs.fought_at desc limit 1), '')
+		 from unnest($1::text[]) as k(key)
+		 left join characters c on c.key = k.key`, keys)
 	if err != nil {
-		return nil, fmt.Errorf("dataaddon: read names: %w", err)
+		return nil, fmt.Errorf("dataaddon: read identities: %w", err)
 	}
 	defer rows.Close()
-	out := map[string]string{}
+	out := map[string]identity{}
 	for rows.Next() {
-		var key, name string
-		if err := rows.Scan(&key, &name); err != nil {
-			return nil, fmt.Errorf("dataaddon: scan name: %w", err)
+		var key string
+		var id identity
+		if err := rows.Scan(&key, &id.Name, &id.RealmName, &id.PlayerName); err != nil {
+			return nil, fmt.Errorf("dataaddon: scan identity: %w", err)
 		}
-		out[key] = name
+		out[key] = id
 	}
 	return out, rows.Err()
 }

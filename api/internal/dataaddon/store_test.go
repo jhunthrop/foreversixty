@@ -70,7 +70,7 @@ func TestWindowParsesKeepsTheWindowVisibilityAndSufficiencyRules(t *testing.T) {
 	}
 }
 
-func TestStoredNamesPreferTheCharacterRowThenTheRatedRow(t *testing.T) {
+func TestIdentitiesReadTheCharacterRowAndTheNewestRatedUnit(t *testing.T) {
 	pool := testPool(t)
 	ctx := context.Background()
 	at := time.Date(2026, 9, 20, 4, 0, 0, 0, time.UTC)
@@ -80,8 +80,8 @@ func TestStoredNamesPreferTheCharacterRowThenTheRatedRow(t *testing.T) {
 		pool.Exec(bg, `delete from characters where key = 'us/normal/dataaddon-lady-sunwick'`)
 		pool.Exec(bg, `delete from reports where id = 'dataaddon-store-names'`)
 	})
-	if _, err := pool.Exec(ctx, `insert into characters (key, region, ruleset, name) values
-		('us/normal/dataaddon-lady-sunwick', 'us', 'normal', 'Lady Sunwick')`); err != nil {
+	if _, err := pool.Exec(ctx, `insert into characters (key, region, ruleset, name, realm_name) values
+		('us/normal/dataaddon-lady-sunwick', 'us', 'normal', 'Lady Sunwick', 'Classic Beta PvE 2')`); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := pool.Exec(ctx, `insert into reports (id, visibility, status, created_at) values
@@ -91,26 +91,28 @@ func TestStoredNamesPreferTheCharacterRowThenTheRatedRow(t *testing.T) {
 	if err := db.EnsureRatingsPartition(ctx, pool, at); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := pool.Exec(ctx,
-		`insert into rating_scores (report_id, fight_index, player_key, player_name, encounter_id,
-		   kill, overall, overall_uncapped, overall_capped, components, model_version, fought_at)
-		 values ('dataaddon-store-names', 1, 'eu/pvp/dataaddon-mörk', 'Mörk-Pvp', 1, false, 50, 50, false, '[]', 'test', $1)`,
-		at); err != nil {
-		t.Fatal(err)
+	for i, unit := range []string{"Mörk-ClassicBetaPvE2", "Mörk-ClassicBetaPvP"} {
+		if _, err := pool.Exec(ctx,
+			`insert into rating_scores (report_id, fight_index, player_key, player_name, encounter_id,
+			   kill, overall, overall_uncapped, overall_capped, components, model_version, fought_at)
+			 values ('dataaddon-store-names', $1, 'eu/pvp/dataaddon-mörk', $2, 1, false, 50, 50, false, '[]', 'test', $3)`,
+			i+1, unit, at.Add(time.Duration(i)*time.Hour)); err != nil {
+			t.Fatal(err)
+		}
 	}
-	got, err := (&Store{Pool: pool}).storedNames(ctx,
+	got, err := (&Store{Pool: pool}).identities(ctx,
 		[]string{"us/normal/dataaddon-lady-sunwick", "eu/pvp/dataaddon-mörk", "us/normal/dataaddon-nobody"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := map[string]string{
-		"us/normal/dataaddon-lady-sunwick": "Lady Sunwick",
-		"eu/pvp/dataaddon-mörk":            "Mörk-Pvp",
-		"us/normal/dataaddon-nobody":       "",
+	want := map[string]identity{
+		"us/normal/dataaddon-lady-sunwick": {Name: "Lady Sunwick", RealmName: "Classic Beta PvE 2"},
+		"eu/pvp/dataaddon-mörk":            {PlayerName: "Mörk-ClassicBetaPvP"}, // the newer unit
+		"us/normal/dataaddon-nobody":       {},
 	}
-	for key, name := range want {
-		if got[key] != name {
-			t.Errorf("%s: %q, want %q", key, got[key], name)
+	for key, id := range want {
+		if got[key] != id {
+			t.Errorf("%s: %+v, want %+v", key, got[key], id)
 		}
 	}
 }

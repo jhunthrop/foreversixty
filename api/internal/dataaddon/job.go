@@ -92,14 +92,23 @@ func Run(ctx context.Context, d Deps) (Result, error) {
 	}, nil
 }
 
-// collect builds the night's records (contract 5, docs/contracts/addon-v2.md):
+// maxCharacterFailures is how many characters a run may fail to read (a ScoreV2,
+// anonymize or item-level read that errors) before it stops: past it the fault is the
+// database's or the data's, not one row's. A variable so a test can lower it.
+var maxCharacterFailures = 50
+
+// collect builds the night's records (contract 5, docs/contracts/addon-v2.md). The
+// characters are every one with a public, sufficient rated fight in the last 90 days and
+// every verified guild member:
 //
-//   - every character with a public, sufficient rated fight in the last 90 days gets its
-//     rating.ScoreV2 record, with its best parse per boss in the window;
-//   - every verified guild member without one gets a no-logs record (score = nil), so its
-//     guild's roster still lists it;
 //   - a character whose account asked to be anonymous gets no record and is listed in no
 //     guild (the endpoint's own rule, rating.Store.Anonymized): the file is public;
+//   - otherwise rating.ScoreV2 alone decides: a score is a scored record, with the best
+//     parse per boss in the window; ErrNoLogs is a no-logs record (score = nil), so the
+//     guild's roster still lists the character;
+//   - a character with no stored name, or no realm from Battle.net, its export or its
+//     newest rated row, gets no record (its key would be a guess), logged and counted;
+//   - one whose reads fail is logged and counted (fail), and the file goes on without it;
 //   - every guild with a verified member gets a record.
 //
 // Character keys are Name-Realm and guild keys the guild's name, neither of which carries
@@ -144,7 +153,7 @@ func collect(ctx context.Context, d Deps) (Data, int, error) {
 	}
 	sort.Strings(keys)
 
-	names, err := d.Store.storedNames(ctx, keys)
+	who, err := d.Store.identities(ctx, keys)
 	if err != nil {
 		return Data{}, 0, err
 	}
@@ -153,49 +162,73 @@ func collect(ctx context.Context, d Deps) (Data, int, error) {
 		return Data{}, 0, err
 	}
 
-	var skipped int
+	var skipped, failures int
+	// fail logs and counts one character that could not be read, so one bad row never costs
+	// the whole night's file; a cancelled run, or more than maxCharacterFailures of them
+	// (something wrong with the database or the data, not with one row), stops the run.
+	fail := func(key, op string, err error) error {
+		if ctxErr := ctx.Err(); ctxErr != nil {
+			return ctxErr
+		}
+		failures++
+		skipped++
+		d.logger().Warn("dataaddon", "op", op, "character", key, "err", err)
+		if failures > maxCharacterFailures {
+			return fmt.Errorf("dataaddon: more than %d characters could not be read, the last %s: %w",
+				maxCharacterFailures, key, err)
+		}
+		return nil
+	}
 	records := map[string]characterRecord{} // character key -> record
 	recordKeys := map[string][]string{}     // Name-Realm -> character keys
 	for _, key := range keys {
-		region, ruleset, slug, ok := splitCharacterKey(key)
-		nameKey := ""
-		if ok {
-			nameKey = characterKey(displayName(names[key], slug), ruleset)
-		}
-		if nameKey == "" {
-			d.logger().Warn("dataaddon", "op", "character", "character", key,
-				"err", "no Name-Realm key: the key does not name a region, ruleset and name")
-			skipped++
-			continue
-		}
+		// An anonymised character is left out before anything else is read about it, and
+		// silently: it is not a fault, and it is not counted.
 		anon, err := scores.Anonymized(ctx, key)
 		if err != nil {
-			return Data{}, 0, err
+			if err := fail(key, "anonymized", err); err != nil {
+				return Data{}, 0, err
+			}
+			continue
 		}
 		if anon {
 			continue
 		}
-		rec := characterRecord{Region: region, Profile: profilePath(region, ruleset, slug)}
-		if bosses, rated := parses[key]; rated {
-			sc, err := scores.ScoreV2(ctx, key)
-			switch {
-			case errors.Is(err, rating.ErrNoLogs):
-			case err != nil:
-				return Data{}, 0, err
-			default:
-				rec.Score = &sc
-				rec.ItemLevel, rec.Spec = sc.ItemLevel, sc.Spec
-				rec.BestParses = make(map[string]int, len(bosses))
-				for boss, overall := range bosses {
-					rec.BestParses[boss] = percentile(overall)
-				}
-			}
+		region, ruleset, slug, ok := splitCharacterKey(key)
+		nameKey := ""
+		if ok {
+			nameKey = characterKey(nameAndRealm(who[key], exports[key]))
 		}
-		if rec.Score == nil {
+		if nameKey == "" {
+			d.logger().Warn("dataaddon", "op", "character", "character", key,
+				"err", "no Name-Realm key: no stored name, or no realm from Battle.net, the export or the log")
+			skipped++
+			continue
+		}
+		rec := characterRecord{Region: region, Profile: profilePath(region, ruleset, slug)}
+		// Scored or not is ScoreV2's answer alone: ErrNoLogs is a no-logs record.
+		sc, err := scores.ScoreV2(ctx, key)
+		switch {
+		case errors.Is(err, rating.ErrNoLogs):
 			if rec.ItemLevel, err = scores.ItemLevel(ctx, key); err != nil {
-				return Data{}, 0, err
+				if err := fail(key, "item_level", err); err != nil {
+					return Data{}, 0, err
+				}
+				continue
 			}
 			rec.Spec = exportSpec(d.Trees, exports[key])
+		case err != nil:
+			if err := fail(key, "score", err); err != nil {
+				return Data{}, 0, err
+			}
+			continue
+		default:
+			rec.Score = &sc
+			rec.ItemLevel, rec.Spec = sc.ItemLevel, sc.Spec
+			rec.BestParses = make(map[string]int, len(parses[key]))
+			for boss, overall := range parses[key] {
+				rec.BestParses[boss] = percentile(overall)
+			}
 		}
 		records[key] = rec
 		recordKeys[nameKey] = append(recordKeys[nameKey], key)
