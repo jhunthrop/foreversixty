@@ -17,7 +17,41 @@ import {
   tierStrip,
   tierTextColor,
   NEEDS_WORK_COLOR,
+  nextTierLine,
 } from './score';
+
+// L8.4 fix round 4 item 1: the line under the score, from the score and the tier lines alone.
+describe('nextTierLine (fix round 4 item 1)', () => {
+  it('counts the points to the next tier at each boundary, naming it with its line', () => {
+    expect(nextTierLine(0)).toBe('500 to Uncommon (500)');
+    expect(nextTierLine(499)).toBe('1 to Uncommon (500)');
+    expect(nextTierLine(500)).toBe('500 to Rare (1000)');
+    expect(nextTierLine(999)).toBe('1 to Rare (1000)');
+    expect(nextTierLine(1000)).toBe('500 to Epic (1500)');
+    expect(nextTierLine(1499)).toBe('1 to Epic (1500)');
+    expect(nextTierLine(1500)).toBe('500 to Legendary (2000)');
+    expect(nextTierLine(1830)).toBe('170 to Legendary (2000)');
+    expect(nextTierLine(1999)).toBe('1 to Legendary (2000)');
+  });
+
+  it('reads "Top tier" in the top tier', () => {
+    expect(nextTierLine(2000)).toBe('Top tier');
+    expect(nextTierLine(2100)).toBe('Top tier');
+    expect(scoreCopy.topTier).toBe('Top tier');
+  });
+});
+
+// L8.4 fix round 4 item 2: the "+88" cue gets its unit. The design system names no unit word
+// for score points, so "pts".
+describe('the gain cue’s unit (fix round 4 item 2)', () => {
+  it('reads "+88 pts", aloud "88 points to gain", and the sentence keeps its words', () => {
+    expect(scoreCopy.gainCue(88)).toBe('+88 pts');
+    expect(scoreCopy.gainCueLabel(88)).toBe('88 points to gain');
+    expect(`${scoreCopy.mostToGainLead} Gear${scoreCopy.mostToGainRest(88)}`).toBe(
+      'Most to gain: Gear, 88 below its top.',
+    );
+  });
+});
 
 describe('shortDate', () => {
   it('reads YYYY-MM-DD as "4 Nov", the addon’s Compat.shortDate', () => {
@@ -167,7 +201,7 @@ describe('the part to work on (fix round 2 item 2)', () => {
   it('is the part Most to gain names, drawn in one neutral colour that is no tier colour', () => {
     expect(NEEDS_WORK_COLOR).toBe('#f5d27a');
     for (const tier of Object.values(labels.tiers)) expect(tier.color).not.toBe(NEEDS_WORK_COLOR);
-    expect(scoreCopy.gainCue(88)).toBe('+88');
+    expect(scoreCopy.gainCue(88)).toBe('+88 pts'); // fix round 4 item 2: with its unit
   });
 });
 

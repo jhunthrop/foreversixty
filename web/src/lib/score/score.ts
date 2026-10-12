@@ -158,6 +158,18 @@ export function tierStrip(): {
   });
 }
 
+/**
+ * The line under the score (L8.4 fix round 4 item 1): the points to the next tier's line and
+ * that tier, "170 to Legendary (2000)", or "Top tier" at or past the top tier's line. From the
+ * score and the tier lines alone, so it reads the same wherever the tier came from.
+ */
+export function nextTierLine(score: number): string {
+  const next = TIERS.find((tier) => TIER_FROM[tier] > score);
+  return next === undefined
+    ? scoreCopy.topTier
+    : scoreCopy.toNextTier(TIER_FROM[next] - score, labels.tiers[next].label, TIER_FROM[next]);
+}
+
 /** The score fields off a character page; a page that predates them reads as no score. */
 export function foreverOf(page: Partial<ForeverScore> | null | undefined): ForeverScore {
   return {

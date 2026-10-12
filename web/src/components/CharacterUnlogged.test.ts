@@ -69,8 +69,27 @@ describe('CharacterUnlogged (the 404 no-logs page)', () => {
     const visitor = render(CharacterUnlogged, {
       props: { path: PATH, name: 'Elyra Duskvale', owned: false },
     }).body;
-    expect(visitor).not.toContain(scoreCopy.noLogsUpload);
+    // A visitor's "Upload logs" is a link in the next-step line (fix round 4 item 5), never the
+    // owner's button.
+    expect(visitor).not.toContain(`data-testid="forever-score-empty-action">${scoreCopy.noLogsUpload}<`);
     expect(visitor).toContain(scoreCopy.noLogsLookup);
     expect(visitor).toContain('data-testid="character-ruleset-chip"');
+  });
+
+  // L8.4 fix round 4 item 5: the 404 page is not a dead end for a visitor.
+  it('gives a visitor a next step under the no-logs message, and leaves the owner its button alone', () => {
+    const visitor = render(CharacterUnlogged, {
+      props: { path: PATH, name: 'Elyra Duskvale', owned: false },
+    }).body;
+    const next = /data-testid="forever-score-empty-next">([\s\S]*?)<\/p>/.exec(visitor)?.[1] ?? '';
+    expect(next).toContain(`href="${scoreCopy.noLogsNext.addonHref}"`);
+    expect(next).toContain(`>${scoreCopy.noLogsNext.addon}</a>`);
+    expect(next).toContain(`href="${scoreCopy.noLogsNext.uploadHref}"`);
+    expect(next).toContain(`>${scoreCopy.noLogsNext.upload}</a>`);
+    const owner = render(CharacterUnlogged, {
+      props: { path: PATH, name: 'Elyra Duskvale', owned: true },
+    }).body;
+    expect(owner).not.toContain('forever-score-empty-next');
+    expect(owner).toMatch(/href="\/setup"[^>]*data-testid="forever-score-empty-action">Upload logs</);
   });
 });

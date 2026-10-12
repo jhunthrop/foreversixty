@@ -3,7 +3,8 @@
      the gold top highlight, 6px radius. The profile mounts it under its own heading and caption;
      /ratings mounts it bare (`heading={false}`) as the sample that opens the page.
 
-     With a score: the number (48px from md), "of 2100" and the tier; the tier strip under it,
+     With a score: the number (48px from md), "of 2100" and the tier, "170 to Legendary (2000)"
+     under them (fix round 4 item 1); the tier strip under it,
      current tier marked; the score over time as a gold sparkline when score_history has two or
      more points (Task L8.4 ruling 3, fix round 2 items 1 and 2: the content column's width at a
      fixed height, the newest point marked in its tier's colour, "Up 330 since 10 Nov" and the
@@ -14,7 +15,7 @@
      the right. One part is marked as
      the one to work on, and it is always the part "Most to gain" names (lib/score/score.ts's
      mostToGain: the largest point gap, the earlier part on a tie). It takes one neutral colour
-     that is never a tier's, and a "+88" at the row's end so colour is not the only signal. With
+     that is never a tier's, and a "+88 pts" at the row's end so colour is not the only signal. With
      every part at its top nothing is marked and there is no line. The footer carries "Most to
      gain" left and "What the score counts" right.
 
@@ -31,6 +32,7 @@
     SCORE_MAX,
     hasScore,
     mostToGain,
+    nextTierLine,
     shortDate,
     tierLabel,
     tierTextColor,
@@ -85,7 +87,8 @@
     'bg-raised border-line rounded-panel flex flex-col gap-4 border p-4 shadow-[inset_0_1px_0_rgba(229,185,85,.35)] md:p-5';
   /** In-text links are underlined: colour alone does not mark a link (WCAG 1.4.1). */
   const LINK = 'text-gold inline-flex min-h-11 items-center underline underline-offset-2 md:min-h-0';
-  const ROW = 'grid grid-cols-[88px_minmax(0,1fr)_80px_36px] items-center gap-x-3 gap-y-1 text-[13px]';
+  /** The last column holds the "+88 pts" cue on one line (fix round 4 item 2). */
+  const ROW = 'grid grid-cols-[88px_minmax(0,1fr)_80px_56px] items-center gap-x-3 gap-y-1 text-[13px]';
 
   const date = $derived(shortDate(forever?.as_of));
   const gain = $derived(mostToGain(forever?.components));
@@ -117,6 +120,11 @@
                 data-testid="forever-score-tier">{tier}</span
               >{/if}
             {#if sample}<span class="pill pill-sample ml-auto">{scoreCopy.samplePill}</span>{/if}
+            <!-- Fix round 4 item 1: under the score, on a line of its own, the points to the next
+                 tier ("170 to Legendary (2000)"), or "Top tier". -->
+            <p class="text-muted basis-full text-[13px]" data-testid="forever-score-next-tier">
+              {nextTierLine(forever.score)}
+            </p>
           </div>
           {#if forever.components !== null}
             <ul
@@ -144,7 +152,7 @@
                       >{scoreCopy.ofMax(points, max)}</span
                     >
                     <span
-                      class="tabular text-right font-mono text-[12px] font-semibold"
+                      class="tabular text-right font-mono text-[12px] font-semibold whitespace-nowrap"
                       style={marked && gain !== null ? `color: ${NEEDS_WORK_COLOR}` : undefined}
                       aria-label={marked && gain !== null ? scoreCopy.gainCueLabel(gain.gap) : undefined}
                       data-testid={marked ? 'forever-score-gain-cue' : undefined}
@@ -284,6 +292,17 @@
           <p class="text-[14px] leading-[22px]" data-testid="forever-score-empty-hint">
             {owned ? scoreCopy.noLogsOwner : scoreCopy.noLogsHint}
           </p>
+          {#if !owned}
+            <!-- Fix round 4 item 5: a visitor's next step, one line under the message: the addon
+                 and the logs upload. The owner's "Upload logs" button below stands alone. -->
+            <p class="text-muted text-[14px] leading-[22px]" data-testid="forever-score-empty-next">
+              {scoreCopy.noLogsNext.lead}
+              <a class={LINK} href={scoreCopy.noLogsNext.addonHref}>{scoreCopy.noLogsNext.addon}</a
+              >{scoreCopy.separator}<a class={LINK} href={scoreCopy.noLogsNext.uploadHref}
+                >{scoreCopy.noLogsNext.upload}</a
+              >
+            </p>
+          {/if}
           {#if owned}
             <a
               class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}

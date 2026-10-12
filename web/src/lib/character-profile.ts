@@ -1,7 +1,10 @@
 // web/src/lib/character-profile.ts
 // Small reads off the character page's GET /v1/characters/... answer (rankings/api.ts's
 // CharacterPage) that the profile header and the Forever Score card share.
+import { bandForLevel } from './bis/hover';
+import { specLinkHref } from './bis/landing-links';
 import { guildHref, rulesetLabel } from './characters';
+import { factionOfRace } from './race-faction';
 import type { BuildSeen, CharacterFight, CharacterPage } from './rankings/api';
 import { scoreCopy } from './score/copy';
 
@@ -22,11 +25,25 @@ function slug(text: string): string {
   return text.trim().toLowerCase().replace(/\s+/g, '-');
 }
 
-/** The best-in-slot page for a class and spec (`/bis/priest/holy`), or null when either is
- *  unknown. */
-export function bisHref(className: string | undefined, spec: string | null): string | null {
+/**
+ * Where "Most to gain: Gear" goes until the profile has a gear panel (L8.4 fix round 4 item 2):
+ * the spec's best-in-slot page at this character's band, and its faction when the race gives
+ * one -- `/bis/priest/holy?faction=alliance#band-alliance-60`, the route and anchor the /bis
+ * landing's spec links open (bis/landing-links.ts). With no level, the spec's page as it opens
+ * (`/bis/priest/holy`). Null when the class or spec is unknown.
+ */
+export function bisHref(
+  className: string | undefined,
+  spec: string | null,
+  level: number | null | undefined,
+  race: string | null | undefined,
+): string | null {
   if (className === undefined || className === '' || spec === null) return null;
-  return `/bis/${slug(className)}/${slug(spec)}`;
+  const classSlug = slug(className);
+  const specSlug = slug(spec);
+  if (typeof level !== 'number' || !Number.isFinite(level)) return `/bis/${classSlug}/${specSlug}`;
+  const faction = factionOfRace(race) ?? undefined;
+  return specLinkHref({ classSlug, specSlug, band: bandForLevel(level), faction });
 }
 
 /** The two fight tables' column headers (fix round 2 item 6). */
@@ -36,8 +53,8 @@ export const characterTableCopy = {
   parse: 'Parse %',
   date: 'Date',
   execution: 'Execution',
-  /** What the Execution column is (fix round 3 item 7): a muted caption under each table's
-   *  title on desktop, the column header's title and screen-reader text on a phone. The API
+  /** What the Execution column is (fix round 3 item 7): a muted 12px caption under each
+   *  table's title, shown at every width (fix round 4 items 6 and 7). The API
    *  documents execution_score as the fight's actual output over the simulated output of its
    *  own gear and talents (docs/superpowers/specs/2026-09-14-simulator-interfaces.md,
    *  `actual_dps / simmed_dps`); api/openapi.yaml gives the field no description of its own. */
@@ -47,15 +64,13 @@ export const characterTableCopy = {
 
 /**
  * One Execution cell style for both tables and both states (fix round 3 items 4 and 6): a
- * scored cell (a link) and an unscored one (a dash) take the same 44px, vertically centred,
- * right-aligned flex box, so both sit on their row's centre line. Where the column is
- * phone-hidden ("Every ranked fight") both states are `hidden` below md: there is no
- * unprefixed display utility left to beat it, which is how rowLink's `inline-flex` used to
- * leak a scored cell onto a grid row of its own on a phone.
+ * scored cell (a link) and an unscored one (a dash) take the same vertically centred,
+ * right-aligned flex box, so both sit on their row's centre line. Both tables keep the column
+ * on a phone (fix round 4 items 3 and 7): the box is at least 44px high and wide, and 4px of
+ * margin on top of the 12px column gap puts it 16px after the amount there.
  */
-export function executionCellClass(onPhone: boolean, scored: boolean): string {
-  const display = onPhone ? 'flex' : 'hidden md:flex';
-  return `${display} min-h-11 items-center justify-end text-right tabular font-mono text-[13px]${scored ? '' : ' text-muted'}`;
+export function executionCellClass(scored: boolean): string {
+  return `flex min-h-11 min-w-11 max-md:ml-1 items-center justify-end text-right tabular font-mono text-[13px]${scored ? '' : ' text-muted'}`;
 }
 
 /** The amount column's header: "HPS" or "DPS" when every row is one metric, else both. */
@@ -78,6 +93,13 @@ export function bestRepeatsHistory(
   const seen = new Set(history.map(key));
   return best.every((row) => seen.has(key(row)));
 }
+
+/** The note under "Builds seen at pull" (L8.4 fix round 4 item 4), in plain words: the split
+ *  is the newest build's. */
+export const characterBuildsCopy = {
+  footnote: (split: string): string =>
+    `Seen in logs as a ${split} split. Logs don’t record the order points were spent, so there is no saved build to open.`,
+} as const;
 
 /** The page's one line with JavaScript off (fix round 3 item 9): the island fetches the
  *  character in the browser, so without JavaScript there is nothing to show; the Planner works

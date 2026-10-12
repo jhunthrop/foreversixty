@@ -66,6 +66,8 @@ export const ratingCopy = {
   /** Spec §6's one-action rule: a ranked fight comes from an uploaded report, same as
    *  MyReports.svelte's own reports-empty action. */
   characterEmptyAction: 'Upload a log',
+  /** "Activity: the share of the fight ..." for a part, or null for one the site has no words for. */
+  componentDefinition: (name: string): string | null => COMPONENT_DEFINITIONS[name] ?? null,
 } as const;
 
 const COMPONENT_LABELS: Record<string, string> = {
@@ -80,6 +82,23 @@ const COMPONENT_LABELS: Record<string, string> = {
 export function componentLabel(name: string): string {
   return COMPONENT_LABELS[name] ?? name;
 }
+
+/** Each part of a rating in one line (L8.4 fix round 4 item 3), shortened from /ratings's "What
+ *  each component measures": shown under the profile card's "Weakest part of a fight", the
+ *  way the fight tables define Execution. */
+const COMPONENT_DEFINITIONS: Record<string, string> = {
+  output:
+    'Output: damage or healing done, judged against what your gear could do where the simulator models the spec.',
+  survival: 'Survival: whether you died, and how much avoidable damage you took.',
+  mechanics:
+    'Mechanics: the interrupts and dispels you made, and how long you carried a debuff that should have been dispelled.',
+  utility:
+    'Utility: the average uptime of the buffs, debuffs and cooldowns your spec keeps running for the raid.',
+  preparation:
+    'Preparation: the flask, food, weapon oil or stone and world buffs at the pull, and potions in the fight.',
+  activity:
+    'Activity: the share of the fight you spent doing something rather than idle, leaving out the times the fight expects you to wait.',
+};
 
 /** "Fury" + "Warrior" -> "Fury Warriors"; every vanilla class name pluralises with a bare
  *  "s", so no irregular table is needed. `role` is unused today (the bracket key includes

@@ -4,6 +4,7 @@ import {
   amountHeader,
   bestRepeatsHistory,
   bisHref,
+  characterBuildsCopy,
   characterHeaderCopy,
   characterTableCopy,
   executionCellClass,
@@ -50,10 +51,30 @@ describe('specClassLabel', () => {
 
 describe('bisHref', () => {
   it('links the spec’s best-in-slot page when class and spec are known', () => {
-    expect(bisHref('Priest', 'Holy')).toBe('/bis/priest/holy');
-    expect(bisHref('Hunter', 'Beast Mastery')).toBe('/bis/hunter/beast-mastery');
-    expect(bisHref('Priest', null)).toBeNull();
-    expect(bisHref(undefined, 'Holy')).toBeNull();
+    expect(bisHref('Priest', 'Holy', null, null)).toBe('/bis/priest/holy');
+    expect(bisHref('Hunter', 'Beast Mastery', null, null)).toBe('/bis/hunter/beast-mastery');
+    expect(bisHref('Priest', null, 60, 'Night Elf')).toBeNull();
+    expect(bisHref(undefined, 'Holy', 60, 'Night Elf')).toBeNull();
+  });
+
+  // L8.4 fix round 4 item 2: "Gear" opens the spec's page at this character's band (and, when
+  // the race gives one, faction), the same route and anchor the /bis landing links use.
+  it('opens the spec’s page at the character’s band and faction (fix round 4 item 2)', () => {
+    expect(bisHref('Priest', 'Holy', 60, 'Night Elf')).toBe(
+      '/bis/priest/holy?faction=alliance#band-alliance-60',
+    );
+    expect(bisHref('Warrior', 'Fury', 37, 'Orc')).toBe('/bis/warrior/fury?faction=horde#band-horde-30');
+    // Below 20 the earliest band; an unknown race keeps the band, with the default panel.
+    expect(bisHref('Priest', 'Holy', 12, null)).toBe('/bis/priest/holy#band-alliance-20');
+  });
+});
+
+// L8.4 fix round 4 item 4: the builds footnote in plain words.
+describe('the builds footnote (fix round 4 item 4)', () => {
+  it('names the split and says why there is no build to open', () => {
+    expect(characterBuildsCopy.footnote('0/31/20')).toBe(
+      'Seen in logs as a 0/31/20 split. Logs don’t record the order points were spent, so there is no saved build to open.',
+    );
   });
 });
 
@@ -246,35 +267,23 @@ describe('the header’s segment separator (fix round 3 item 10)', () => {
 describe('the Execution cell (fix round 3 items 4 and 6)', () => {
   const tokens = (classes: string): string[] => classes.split(/\s+/).filter((token) => token !== '');
 
-  it('hides a scored cell and an unscored one alike where the column is phone-hidden', () => {
+  // Fix round 4 items 3 and 7: the column stays on phones in both tables, so no state is hidden.
+  it('shows a scored cell and an unscored one at every width (fix round 4 item 3)', () => {
     for (const scored of [true, false]) {
-      const cell = tokens(executionCellClass(false, scored));
-      expect(cell).toEqual(expect.arrayContaining(['hidden', 'md:flex']));
-      // No unprefixed display utility that could beat `hidden` on a phone (rowLink's
-      // inline-flex did).
-      expect(
-        cell.filter((token) => /^(inline-flex|flex|inline|block|inline-block|grid)$/.test(token)),
-      ).toEqual([]);
-    }
-  });
-
-  it('shows both states where the column is on phones, row-aligned the same way', () => {
-    for (const scored of [true, false]) {
-      const cell = tokens(executionCellClass(true, scored));
+      const cell = tokens(executionCellClass(scored));
       expect(cell).toContain('flex');
-      expect(cell).not.toContain('hidden');
+      expect(cell.filter((token) => /(^|:)hidden$/.test(token))).toEqual([]);
     }
   });
 
-  it('centres both states in their row with the same box: 44px high, right-aligned', () => {
+  it('centres both states in their row with the same box: 44px high and wide, right-aligned, 16px after the amount on a phone', () => {
     const shape = (classes: string): string[] => tokens(classes).filter((token) => token !== 'text-muted');
-    for (const onPhone of [true, false]) {
-      expect(shape(executionCellClass(onPhone, true))).toEqual(shape(executionCellClass(onPhone, false)));
-      expect(tokens(executionCellClass(onPhone, true))).toEqual(
-        expect.arrayContaining(['min-h-11', 'items-center', 'justify-end']),
-      );
-    }
-    expect(tokens(executionCellClass(true, false))).toContain('text-muted');
+    expect(shape(executionCellClass(true))).toEqual(shape(executionCellClass(false)));
+    expect(tokens(executionCellClass(true))).toEqual(
+      expect.arrayContaining(['min-h-11', 'min-w-11', 'items-center', 'justify-end', 'max-md:ml-1']),
+    );
+    expect(tokens(executionCellClass(false))).toContain('text-muted');
+    expect(tokens(executionCellClass(true))).not.toContain('text-muted');
   });
 
   it('defines the column in one line (item 7)', () => {

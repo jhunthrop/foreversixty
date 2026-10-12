@@ -81,9 +81,17 @@
   {/if}
   <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
     {#if worst !== ''}
-      <p class="text-[14px] leading-[22px]" data-testid="rating-card-weakest">
-        {ratingCopy.weakestPart(componentLabel(worst))}
-      </p>
+      {@const definition = ratingCopy.componentDefinition(worst)}
+      <!-- L8.4 fix round 4 item 3: the part named is defined under the line, a muted 12px caption
+           at every width, as the fight tables define Execution. -->
+      <div class="flex flex-col gap-1">
+        <p class="text-[14px] leading-[22px]" data-testid="rating-card-weakest">
+          {ratingCopy.weakestPart(componentLabel(worst))}
+        </p>
+        {#if definition !== null}
+          <p class="text-muted text-[12px]" data-testid="rating-card-weakest-definition">{definition}</p>
+        {/if}
+      </div>
     {/if}
     {#if !sample}
       <a class={`${LINK} ml-auto text-[14px]`} href="/ratings">{ratingCopy.explainLink}</a>

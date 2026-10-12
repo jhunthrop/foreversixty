@@ -82,15 +82,22 @@ describe('ProfileDescriptor', () => {
   });
 
   // Fix round 3 item 2 (D2): the link stays inline, so a long guild name can wrap; its phone
-  // tap target is vertical padding on the inline box (16px of text plus 15px above and below),
-  // which an inline box never adds to the line's height.
+  // tap target is vertical padding on the inline box, which an inline box never adds to the
+  // line's height. Fix round 4 items 6 and 8: 14px above and below the 16px content box make
+  // 44px, not the 46 that 15px made (Chrome measures 11px at 38).
   it('gives the guild link a 44px tap target on a phone as an inline box that can wrap', () => {
     const { body } = view({ header: profileHeader(FULL, PATH), sync: null });
     const link = tag(body, 'character-guild-link');
     expect(link).toContain('href="/guild/us/hardcore/olympus-xxvii"');
-    expect(classes(link)).toEqual(expect.arrayContaining(['max-md:py-[15px]', 'underline']));
+    expect(classes(link)).toEqual(expect.arrayContaining(['max-md:py-[14px]', 'underline']));
     expect(classes(link).filter((token) => /inline-block|nowrap|-my-/.test(token))).toEqual([]);
     expect(classes(link)).not.toContain('min-h-11');
+  });
+
+  // Fix round 4 item 8: a pressed link takes --gold-hover, the design system's link :active.
+  it('gives the guild link a pressed state in --gold-hover', () => {
+    const { body } = view({ header: profileHeader(FULL, PATH), sync: null });
+    expect(classes(tag(body, 'character-guild-link'))).toContain('active:text-gold-hover');
   });
 
   // Fix round 3 item 11: the focus ring hugs the guild's text instead of reaching over the dots.

@@ -20,7 +20,14 @@
     type CharacterPage,
   } from '../lib/rankings/api';
   import { formatDayMonthYear } from '../lib/dates';
-  import { bestRepeatsHistory, bisHref, profileHeader, profileSpec } from '../lib/character-profile';
+  import {
+    bestRepeatsHistory,
+    bisHref,
+    characterBuildsCopy,
+    newestSplit,
+    profileHeader,
+    profileSpec,
+  } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
   import { factionOfRace } from '../lib/race-faction';
   import { foreverOf, ownCharacter } from '../lib/score/score';
@@ -162,6 +169,7 @@
           size="lg"
           descriptor="none"
           heading
+          align="start"
           nameTestid="character-name"
         >
           {#snippet below()}
@@ -189,7 +197,7 @@
       path={resolved}
       forever={foreverOf(data)}
       scoreHistory={data.score_history ?? []}
-      bisHref={bisHref(data.character.class, profileSpec(data))}
+      bisHref={bisHref(data.character.class, profileSpec(data), data.character.level, data.character.race)}
       {owned}
       name={data.character.name}
     />
@@ -215,7 +223,6 @@
         testid="character-best"
         bossHref={(row: CharacterFight) => `/rankings/${encounterSlug(row.encounter)}`}
         rowKey={(row: CharacterFight) => `${row.encounter_id}-${row.difficulty}-${row.metric}`}
-        executionOnPhone
         executionTestid="character-best-execution"
       />
     {/if}
@@ -227,7 +234,6 @@
         testid="character-history"
         bossHref={(row: CharacterFight) => `/reports/${row.report_id}?fight=${row.fight_index}`}
         rowKey={(row: CharacterFight, index: number) => `${row.report_id}-${row.fight_index}-${index}`}
-        executionOnPhone={false}
         executionTestid="character-execution"
       />
     {/if}
@@ -248,9 +254,9 @@
             </li>
           {/each}
         </ul>
-        <p class="text-muted text-[12px]">
-          A split, not a planner link: a saved build records the order points were spent in, and the combat
-          log does not.
+        <!-- L8.4 fix round 4 item 4: in plain words, naming the newest split. -->
+        <p class="text-muted text-[12px]" data-testid="character-builds-footnote">
+          {characterBuildsCopy.footnote(newestSplit(data.builds_seen) ?? data.builds_seen[0].talent_split)}
         </p>
       </section>
     {/if}

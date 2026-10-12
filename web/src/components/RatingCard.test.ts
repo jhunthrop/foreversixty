@@ -42,6 +42,35 @@ describe('RatingCard', () => {
     expect(body).not.toContain('Best:');
   });
 
+  // L8.4 fix round 4 item 3: "Activity" is defined the way Execution is in the fight tables, a
+  // one-line muted 12px caption from the copy module, visible at every width (item 6: no
+  // sr-only, no title).
+  it('defines the part it names in one muted 12px line under it, at every width (fix round 4 item 3)', () => {
+    expect(ratingCopy.componentDefinition('activity')).toBe(
+      'Activity: the share of the fight you spent doing something rather than idle, leaving out the times the fight expects you to wait.',
+    );
+    for (const part of ['output', 'survival', 'mechanics', 'utility', 'preparation', 'activity']) {
+      expect(ratingCopy.componentDefinition(part), part).toMatch(/^[A-Z][a-z]+: .+\.$/);
+    }
+    expect(ratingCopy.componentDefinition('threat')).toBeNull();
+    const { body } = render(RatingCard, {
+      props: { overall: 65, trend: TREND, sampleSize: 6, worst: 'activity' },
+    });
+    const definition = /<p class="([^"]*)" data-testid="rating-card-weakest-definition">([^<]*)<\/p>/.exec(
+      body,
+    );
+    expect(definition).not.toBeNull();
+    expect(definition?.[2].trim()).toBe(ratingCopy.componentDefinition('activity'));
+    const tokens = definition?.[1].split(' ') ?? [];
+    expect(tokens).toEqual(expect.arrayContaining(['text-muted', 'text-[12px]']));
+    expect(tokens.filter((token) => token.includes('sr-only') || token.includes('hidden'))).toEqual([]);
+    expect(body.indexOf('rating-card-weakest"')).toBeLessThan(body.indexOf('rating-card-weakest-definition'));
+    expect(body).not.toContain(`title="${ratingCopy.componentDefinition('activity')}"`);
+    // No weakest part, no definition.
+    const none = render(RatingCard, { props: { overall: 65, trend: TREND, sampleSize: 6 } }).body;
+    expect(none).not.toContain('rating-card-weakest-definition');
+  });
+
   it('says how many fights it needs below the trend threshold, and carries the Sample pill as a sample', () => {
     const few = render(RatingCard, { props: { overall: 50, trend: TREND.slice(0, 2), sampleSize: 2 } }).body;
     expect(few).toContain('data-testid="character-rating-too-few"');

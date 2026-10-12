@@ -151,9 +151,10 @@ test('the capture: captions on both numbers, empty sections and an empty strip a
     '14 dungeons · 0 raid bosses · 2 alts',
   );
   await expect(page.getByTestId('tier-strip-epic')).toHaveAttribute('aria-current', 'true');
-  // Fix round 2 item 2: the marked bar is the one Most to gain names, with its "+88".
+  // Fix round 2 item 2: the marked bar is the one Most to gain names, with its "+88 pts" (fix
+  // round 4 item 2: the cue carries its unit).
   await expect(page.getByTestId('forever-score-gear')).toHaveAttribute('data-needs-work', 'true');
-  await expect(page.getByTestId('forever-score-gain-cue')).toHaveText('+88');
+  await expect(page.getByTestId('forever-score-gain-cue')).toHaveText('+88 pts');
   // Fix round 2 item 6: the rating card.
   await expect(page.getByTestId('rating-card-weakest')).toHaveText('Weakest part of a fight: Activity.');
   await expect(page.getByTestId('rating-card-trend-label')).toHaveText('Last 6 fights');

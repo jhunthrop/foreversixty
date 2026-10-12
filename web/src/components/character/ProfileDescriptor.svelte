@@ -28,11 +28,12 @@
    *  a 22px pill in a 22px line box, so its centre is the line's (fix round 3 item 14). */
   const CHIP = 'pill text-muted border-line align-top ml-2';
   /** In-text links are underlined: colour alone does not mark a link (WCAG 1.4.1). Inline, so a
-   *  long guild wraps (fix round 3 item 2); on a phone 15px of padding above and below the
-   *  16px text make the 44px target, and an inline box's padding never moves the line. The
-   *  focus ring keeps its 2px size at no offset (fix round 3 item 11). */
+   *  long guild wraps (fix round 3 item 2); on a phone 14px of padding above and below the
+   *  16px content box make the 44px target (15px made 46: fix round 4 items 6 and 8), and an
+   *  inline box's padding never moves the line. The focus ring keeps its 2px size at no offset
+   *  (fix round 3 item 11); a press takes --gold-hover, the design system's link :active. */
   const GUILD_LINK =
-    'text-muted hover:text-strong underline underline-offset-2 focus-visible:outline-offset-0 max-md:py-[15px]';
+    'text-muted hover:text-strong active:text-gold-hover underline underline-offset-2 focus-visible:outline-offset-0 max-md:py-[14px]';
   const LINE = 'text-muted text-[13px] leading-[22px]';
 </script>
 

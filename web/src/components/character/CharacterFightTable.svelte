@@ -2,11 +2,13 @@
 <!-- One of the character page's two fight tables, "Best per encounter" and "Every ranked fight"
      (fix round 2 item 6): both share one column order under a header row -- Boss, Spec, Parse %,
      the amount (HPS or DPS), Date, Execution -- and dates read "9 Dec 2026". On a phone the Spec
-     and Date columns go, and Execution goes too where `executionOnPhone` is false.
+     and Date columns go; Execution stays in both tables (L8.4 fix round 4 items 3 and 7), at
+     least 44px wide and 16px after the amount. From md Date sits 8px further from the amount
+     (fix round 4 item 8).
      L8.4 fix round 3: both Execution states (a scored link, an unscored dash) take one
-     row-aligned cell style (lib/character-profile.ts's executionCellClass), hidden alike on a
-     phone where the column is (items 4 and 6); the column is explained under the title from md
-     and in the header's title and screen-reader text on a phone (item 7). -->
+     row-aligned cell style (lib/character-profile.ts's executionCellClass, items 4 and 6); the
+     column is explained by a muted 12px caption under the title, at every width (item 7, fix
+     round 4 items 6 and 7). -->
 <script lang="ts">
   import { amountHeader, characterTableCopy, executionCellClass } from '../../lib/character-profile';
   import { formatDayMonthYear } from '../../lib/dates';
@@ -21,7 +23,6 @@
     testid,
     bossHref,
     rowKey,
-    executionOnPhone,
     executionTestid,
   }: {
     title: string;
@@ -30,8 +31,6 @@
     /** Where the boss name links: its rankings board, or the fight's report. */
     bossHref: (row: CharacterFight) => string;
     rowKey: (row: CharacterFight, index: number) => string;
-    /** Whether the Execution column stays on a phone ("Best per encounter" keeps it). */
-    executionOnPhone: boolean;
     executionTestid: string;
   } = $props();
 
@@ -50,14 +49,13 @@
     return percentile === undefined ? undefined : `${Math.round(percentile)} percentile`;
   }
 
-  const GRID = $derived(
-    `${executionOnPhone ? 'grid-cols-[minmax(0,1fr)_auto_auto_auto]' : 'grid-cols-[minmax(0,1fr)_auto_auto]'} md:grid-cols-[minmax(0,1fr)_112px_64px_88px_112px_72px]`,
-  );
+  const GRID =
+    'grid-cols-[minmax(0,1fr)_auto_auto_auto] md:grid-cols-[minmax(0,1fr)_112px_64px_88px_112px_72px]';
 </script>
 
 <section class="flex flex-col gap-2">
   <h2 class="section-title text-[18px]">{title}</h2>
-  <p class="text-muted text-[12px] max-md:sr-only" data-testid="character-execution-definition">
+  <p class="text-muted text-[12px]" data-testid="character-execution-definition">
     {characterTableCopy.executionDefinition}
   </p>
   <ul class="flex flex-col" data-testid={testid}>
@@ -70,11 +68,8 @@
       <span class="hidden md:inline">{characterTableCopy.spec}</span>
       <span class="text-right">{characterTableCopy.parse}</span>
       <span class="text-right">{amountHeader(rows)}</span>
-      <span class="hidden md:inline">{characterTableCopy.date}</span>
-      <span
-        class={`text-right ${executionOnPhone ? '' : 'hidden md:inline'}`}
-        title={characterTableCopy.executionDefinition}>{characterTableCopy.execution}</span
-      >
+      <span class="hidden md:ml-2 md:inline">{characterTableCopy.date}</span>
+      <span class="text-right max-md:ml-1">{characterTableCopy.execution}</span>
     </li>
     {#each rows as row, index (rowKey(row, index))}
       <li class={`border-line-soft grid min-h-11 items-center gap-3 border-b px-2 py-2 text-[14px] ${GRID}`}>
@@ -95,19 +90,19 @@
           {formatAmount(Math.round(row.value))}
         </a>
         <span
-          class="text-muted tabular hidden font-mono text-[13px] md:inline"
+          class="text-muted tabular hidden font-mono text-[13px] md:ml-2 md:inline"
           data-testid="character-fight-date">{formatDayMonthYear(new Date(row.fought_at))}</span
         >
         {#if row.execution_score === null}
           <span
-            class={executionCellClass(executionOnPhone, false)}
+            class={executionCellClass(false)}
             title={executionTitle(null)}
             aria-label={executionTitle(null)}
             data-testid={executionTestid}>{executionLabel(null)}</span
           >
         {:else}
           <a
-            class={executionCellClass(executionOnPhone, true)}
+            class={executionCellClass(true)}
             href={executionHref(row.report_id, row.fight_index)}
             title={executionTitle(row.execution_score)}
             data-testid={executionTestid}>{executionLabel(row.execution_score)}</a

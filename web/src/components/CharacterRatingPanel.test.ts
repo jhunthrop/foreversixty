@@ -100,6 +100,21 @@ describe('CharacterRatingPanel Forever Score card', () => {
     );
   });
 
+  // L8.4 fix round 4 item 1: under the score, the points to the next tier, or "Top tier".
+  it('says under the score how far the next tier is: "170 to Legendary (2000)", or "Top tier" (fix round 4 item 1)', () => {
+    const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
+    const headline =
+      /data-testid="forever-score-headline"[\s\S]*?data-testid="forever-score-next-tier">([^<]*)</.exec(body);
+    expect(headline?.[1].trim()).toBe('170 to Legendary (2000)');
+    expect(body).toMatch(/<p class="([^"]*\bbasis-full\b[^"]*)" data-testid="forever-score-next-tier">/);
+    const top = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: { ...SCORED, score: 2040, tier: 'legendary' } },
+    }).body;
+    expect(top).toMatch(/data-testid="forever-score-next-tier">\s*Top tier\s*</);
+    const none = render(CharacterRatingPanel, { props: { path: PATH, forever: UNSCORED } }).body;
+    expect(none).not.toContain('forever-score-next-tier');
+  });
+
   it('says "Your whole record" only to the owner (fix round 2 item 1)', () => {
     const visitor = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } }).body;
     expect(visitor).toContain('>Whole record, as of 4 Nov.<');
@@ -175,13 +190,15 @@ describe('CharacterRatingPanel Forever Score card', () => {
     expect(body).toContain('width: 82.4%');
   });
 
-  it('marks the part Most to gain names, in the one neutral colour with "+88" at the row end (item 2)', () => {
+  it('marks the part Most to gain names, in the one neutral colour with "+88 pts" at the row end (item 2, fix round 4 item 2)', () => {
     const { body } = render(CharacterRatingPanel, { props: { path: PATH, forever: SCORED } });
     // Gear has the largest gap (88); Preparation's 78 of 100 is a smaller share but a smaller gap.
     const gear = /<li[^>]*data-testid="forever-score-gear"[\s\S]*?<\/li>/.exec(body)?.[0] ?? '';
     expect(gear).toContain('data-needs-work="true"');
     expect(gear).toContain(`width: 82.4%; background-color: ${NEEDS_WORK_COLOR}`);
-    expect(gear).toMatch(/aria-label="88 points to gain" data-testid="forever-score-gain-cue">\+88</);
+    expect(gear).toMatch(/aria-label="88 points to gain" data-testid="forever-score-gain-cue">\+88 pts</);
+    // The cue's column fits "+88 pts" on one line.
+    expect(gear).toMatch(/whitespace-nowrap[^"]*"[^>]*data-testid="forever-score-gain-cue"/);
     for (const key of ['experience', 'parses', 'attendance', 'discipline']) {
       const row =
         new RegExp(`<li[^>]*data-testid="forever-score-${key}"[\\s\\S]*?</li>`).exec(body)?.[0] ?? '';
@@ -271,6 +288,36 @@ describe('CharacterRatingPanel Forever Score card', () => {
     expect(body).toContain('The companion uploads your fights automatically.');
     expect(body).toMatch(/href="\/setup"[^>]*data-testid="forever-score-empty-action">Upload logs</);
     expect(body).toContain('>Your whole record.<');
+    // Fix round 4 item 5: the owner's button stands alone; the visitor's next step is not theirs.
+    expect(body).not.toContain('forever-score-empty-next');
+  });
+
+  // L8.4 fix round 4 item 5: a visitor on a no-logs page gets a next step under the message,
+  // one line with two links: the addon's page and the logs upload.
+  it('no logs, visitor: one line under the message with "Get the addon" and "Upload logs" (fix round 4 item 5)', () => {
+    const { body } = render(CharacterRatingPanel, {
+      props: { path: PATH, forever: UNSCORED, name: 'Elyra Duskvale' },
+    });
+    const line =
+      /<p class="[^"]*" data-testid="forever-score-empty-next">([\s\S]*?)<\/p>/.exec(body)?.[1] ?? '';
+    expect(line).not.toBe('');
+    const links = [...line.matchAll(/<a class="([^"]*)" href="([^"]*)"[^>]*>([^<]*)<\/a>/g)].map((m) => ({
+      classes: m[1].split(' '),
+      href: m[2],
+      text: m[3],
+    }));
+    expect(links.map(({ text: words, href }) => [words, href])).toEqual([
+      [scoreCopy.noLogsNext.addon, scoreCopy.noLogsNext.addonHref],
+      [scoreCopy.noLogsNext.upload, scoreCopy.noLogsNext.uploadHref],
+    ]);
+    expect(links.map((link) => link.text)).toEqual(['Get the addon', 'Upload logs']);
+    expect(scoreCopy.noLogsNext.addonHref).toBe('/setup');
+    expect(scoreCopy.noLogsNext.uploadHref).toBe('/logs#upload');
+    // 44px tap targets on a phone, underlined in text.
+    for (const link of links) expect(link.classes).toEqual(expect.arrayContaining(['underline', 'min-h-11']));
+    // Under the no-logs message, before the lookup button.
+    expect(body.indexOf('forever-score-empty-hint')).toBeLessThan(body.indexOf('forever-score-empty-next'));
+    expect(body.indexOf('forever-score-empty-next')).toBeLessThan(body.indexOf('forever-score-empty-action'));
   });
 
   it('draws the score history as a gold sparkline with its newest point in the tier colour (Task L8.4 ruling 3)', () => {

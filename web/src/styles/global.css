@@ -28,7 +28,8 @@
     color: var(--color-gold);
     text-decoration: none;
   }
-  a:hover {
+  a:hover,
+  a:active {
     color: var(--color-gold-hover);
   }
   h1,

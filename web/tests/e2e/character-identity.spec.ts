@@ -432,11 +432,9 @@ test('a scored and an unscored Execution cell sit inside their rows in both tabl
       const heights: number[] = [];
       for (const [index, { row, cell: box }] of measured.entries()) {
         heights.push(Math.round(row.height));
-        if (box === null) {
-          // Only "Every ranked fight" drops the column, and only on a phone: both states alike.
-          expect(width < 768 && table === 'character-history', `${table} ${width}`).toBe(true);
-          continue;
-        }
+        // Fix round 4 item 3: both tables keep the column on a phone, so every cell shows.
+        expect(box, `${table} row ${index} at ${width}`).not.toBeNull();
+        if (box === null) continue;
         const where = `${table} row ${index} at ${width}`;
         expect(box.y, where).toBeGreaterThanOrEqual(row.y - 0.5);
         expect(box.y + box.height, where).toBeLessThanOrEqual(row.y + row.height + 0.5);
@@ -449,7 +447,7 @@ test('a scored and an unscored Execution cell sit inside their rows in both tabl
   }
 });
 
-test('the Execution column is explained under each table title, and only to a screen reader on a phone (item 7)', async ({
+test('the Execution column is explained under each table title, visibly at every width (item 7, fix round 4 items 6 and 7)', async ({
   page,
 }) => {
   await stub(page, { ...mixedExecution(), ...SCORE });
@@ -458,18 +456,15 @@ test('the Execution column is explained under each table title, and only to a sc
   await expect(definitions).toHaveCount(2);
   const words =
     'Execution: the fight’s damage or healing as a share of what the same gear and talents do in the simulator.';
-  const phone = (page.viewportSize()?.width ?? 0) < 768;
   for (const definition of await definitions.all()) {
     await expect(definition).toHaveText(words);
-    if (phone) await expect(definition).toHaveCSS('position', 'absolute');
-    else {
-      await expect(definition).toBeVisible();
-      await expect(definition).toHaveCSS('color', 'rgb(154, 148, 132)');
-    }
+    await expect(definition).toBeVisible();
+    await expect(definition).toHaveCSS('position', 'static');
+    await expect(definition).toHaveCSS('color', 'rgb(154, 148, 132)');
+    await expect(definition).toHaveCSS('font-size', '12px');
   }
-  await expect(
-    page.getByTestId('character-best').getByTestId('character-table-header').locator(`[title="${words}"]`),
-  ).toHaveText('Execution');
+  // Said once: the header no longer repeats it in a title.
+  await expect(page.locator(`[title="${words}"]`)).toHaveCount(0);
 });
 
 test.describe('with JavaScript off (item 9)', () => {
@@ -628,4 +623,232 @@ test('the owner’s sync age ticks each minute while the tab lives (item 14)', a
   await expect(sync).toHaveText('Addon · 4 minutes ago');
   await page.clock.runFor(60_000);
   await expect(sync).toHaveText('Addon · 5 minutes ago');
+});
+
+// ---- L8.4 fix round 4 ----
+
+test('under the score, the points to the next tier: "170 to Legendary (2000)" (fix round 4 item 1)', async ({
+  page,
+}) => {
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  await page.goto(CHARACTER_PATH);
+  const line = page.getByTestId('forever-score-next-tier');
+  await expect(line).toHaveText('170 to Legendary (2000)');
+  // Both read in one pass, so a panel settling above cannot move the page between the reads.
+  const below = await page.getByTestId('forever-score-headline').evaluate((headline) => {
+    const badge = headline.querySelector('[data-testid="score-badge"]')?.getBoundingClientRect();
+    const next = headline.querySelector('[data-testid="forever-score-next-tier"]')?.getBoundingClientRect();
+    return badge === undefined || next === undefined ? null : next.top - badge.bottom;
+  });
+  expect(below).not.toBeNull();
+  expect(below ?? -1).toBeGreaterThanOrEqual(-0.5);
+});
+
+test('"+88 pts" on one line, and Gear opens the spec’s best-in-slot page at this band (fix round 4 item 2)', async ({
+  page,
+}) => {
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  await page.goto(CHARACTER_PATH);
+  const cue = page.getByTestId('forever-score-gain-cue');
+  await expect(cue).toHaveText('+88 pts');
+  const cueBox = await cue.boundingBox();
+  expect(cueBox?.height ?? 99).toBeLessThan(20);
+  const sentence = page.getByTestId('forever-score-most-to-gain');
+  await expect(sentence).toHaveText('Most to gain: Gear, 88 below its top.');
+  // The fixture's newest build is Discipline, the character a level 60 Night Elf.
+  await expect(sentence.getByRole('link', { name: 'Gear' })).toHaveAttribute(
+    'href',
+    '/bis/priest/discipline?faction=alliance#band-alliance-60',
+  );
+});
+
+test('the Performance rating defines the part it names, visibly at every width (fix round 4 item 3)', async ({
+  page,
+}) => {
+  await page.route(CHARACTER_URL, (route) => route.fulfill(ok({ ...CHARACTER.data, ...SCORE })));
+  await page.route(`${CHARACTER_URL}/rating`, (route) =>
+    route.fulfill(
+      ok({
+        player_key: 'us/hardcore/elyra-duskvale',
+        sample_size: 6,
+        trend: Array.from({ length: 6 }, (_, i) => ({
+          fought_at: `2026-12-0${i + 1}T00:00:00Z`,
+          overall: 40 + i * 5,
+          report_id: 'fixture2abcd',
+          fight_index: i + 1,
+        })),
+        best_component: 'preparation',
+        worst_component: 'activity',
+        latest: {
+          player_key: 'us/hardcore/elyra-duskvale',
+          player_name: 'Elyra Duskvale',
+          class: 'Priest',
+          spec: 'Holy',
+          role: 'healer',
+          overall: 65,
+          overall_uncapped: 65,
+          overall_capped: false,
+          basis: 'percentile',
+          components: [],
+        },
+      }),
+    ),
+  );
+  await page.goto(CHARACTER_PATH);
+  await expect(page.getByTestId('rating-card-weakest')).toHaveText('Weakest part of a fight: Activity.');
+  const definition = page.getByTestId('rating-card-weakest-definition');
+  await expect(definition).toHaveText(
+    'Activity: the share of the fight you spent doing something rather than idle, leaving out the times the fight expects you to wait.',
+  );
+  await expect(definition).toBeVisible();
+  await expect(definition).toHaveCSS('position', 'static');
+  await expect(definition).toHaveCSS('font-size', '12px');
+  await expect(definition).toHaveCSS('color', 'rgb(154, 148, 132)');
+});
+
+test.describe('the fight tables on a 390px phone (fix round 4 items 3 and 7)', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('both keep Execution, 44px wide and 16px after the amount; Spec and Date stay off', async ({
+    page,
+  }) => {
+    await stub(page, { ...mixedExecution(), ...SCORE });
+    await page.goto(CHARACTER_PATH);
+    for (const [table, testid] of [
+      ['character-best', 'character-best-execution'],
+      ['character-history', 'character-execution'],
+    ] as const) {
+      const list = page.getByTestId(table);
+      await expect(list).toBeVisible();
+      const header = list.getByTestId('character-table-header');
+      await expect(header.getByText('Execution', { exact: true })).toBeVisible();
+      await expect(header.getByText('Spec', { exact: true })).toBeHidden();
+      await expect(header.getByText('Date', { exact: true })).toBeHidden();
+      // The caption under the title is shown (fix round 4 item 7).
+      const caption = list.locator(
+        'xpath=preceding-sibling::p[@data-testid="character-execution-definition"]',
+      );
+      await expect(caption).toBeVisible();
+      const measured = await list.evaluate((element, cellTestid) => {
+        return [...element.querySelectorAll(':scope > li:not([data-testid="character-table-header"])')].map(
+          (li) => {
+            const cell = li.querySelector(`[data-testid="${cellTestid}"]`);
+            const amount = li.querySelector('a[href^="/reports/"][aria-label]');
+            if (cell === null || amount === null) return null;
+            const c = cell.getBoundingClientRect();
+            const a = amount.getBoundingClientRect();
+            return {
+              width: c.width,
+              gap: c.left - a.right,
+              shown: getComputedStyle(cell).display !== 'none',
+            };
+          },
+        );
+      }, testid);
+      expect(measured.length, table).toBeGreaterThan(1);
+      for (const [index, row] of measured.entries()) {
+        const where = `${table} row ${index}`;
+        expect(row, where).not.toBeNull();
+        expect(row?.shown, where).toBe(true);
+        expect(row?.width ?? 0, where).toBeGreaterThanOrEqual(44);
+        expect(Math.abs((row?.gap ?? 0) - 16), where).toBeLessThan(0.5);
+      }
+    }
+  });
+});
+
+test.describe('the fight tables at 1440 (fix round 4 item 8)', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+  test.skip(() => test.info().project.name !== 'desktop', 'a desktop width');
+
+  test('Date sits 20px after the amount, 8px more than the 12px column gap', async ({ page }) => {
+    await stub(page, { ...mixedExecution(), ...SCORE });
+    await page.goto(CHARACTER_PATH);
+    const gaps = await page.getByTestId('character-history').evaluate((element) =>
+      [...element.querySelectorAll(':scope > li:not([data-testid="character-table-header"])')].map((li) => {
+        const amount = li.querySelector('a[href^="/reports/"][aria-label]')?.getBoundingClientRect();
+        const date = li.querySelector('[data-testid="character-fight-date"]')?.getBoundingClientRect();
+        return amount === undefined || date === undefined ? null : date.left - amount.right;
+      }),
+    );
+    expect(gaps.length).toBeGreaterThan(1);
+    for (const gap of gaps) expect(Math.abs((gap ?? 0) - 20)).toBeLessThan(0.5);
+  });
+});
+
+test('the builds footnote says it in plain words (fix round 4 item 4)', async ({ page }) => {
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  await page.goto(CHARACTER_PATH);
+  await expect(page.getByTestId('character-builds-footnote')).toHaveText(
+    'Seen in logs as a 31/20/0 split. Logs don’t record the order points were spent, so there is no saved build to open.',
+  );
+});
+
+test('a visitor on the 404 page gets "Get the addon" and "Upload logs"; the owner keeps its button (fix round 4 item 5)', async ({
+  page,
+}) => {
+  await stub(page, 'missing');
+  await page.goto(CHARACTER_PATH);
+  const next = page.getByTestId('forever-score-empty-next');
+  await expect(next).toBeVisible();
+  await expect(next.getByRole('link', { name: 'Get the addon' })).toHaveAttribute('href', '/setup');
+  await expect(next.getByRole('link', { name: 'Upload logs' })).toHaveAttribute('href', '/logs#upload');
+  // Under the message: both read in one pass.
+  const under = await page.getByTestId('forever-score-card').evaluate((card) => {
+    const hint = card.querySelector('[data-testid="forever-score-empty-hint"]')?.getBoundingClientRect();
+    const line = card.querySelector('[data-testid="forever-score-empty-next"]')?.getBoundingClientRect();
+    return hint === undefined || line === undefined ? null : line.top - hint.bottom;
+  });
+  expect(under).not.toBeNull();
+  expect(under ?? -1).toBeGreaterThanOrEqual(-0.5);
+
+  await page.route('**/v1/me', (route) => route.fulfill(ok(ownerMe())));
+  await page.reload();
+  await expect(page.getByTestId('forever-score-empty-action')).toHaveText('Upload logs');
+  await expect(page.getByTestId('forever-score-empty-next')).toHaveCount(0);
+});
+
+test('the guild link’s phone box is 44px, and a press turns it --gold-hover (fix round 4 items 6 and 8)', async ({
+  page,
+}) => {
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  await page.goto(CHARACTER_PATH);
+  const link = page.getByTestId('character-guild-link');
+  const box = await link.boundingBox();
+  if (box === null) throw new Error('the guild link is missing');
+  if (test.info().project.name === 'mobile') expect(Math.abs(box.height - 44)).toBeLessThan(0.5);
+  // Hold the press, read the colour, then release off the link so the page does not navigate.
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await expect(link).toHaveCSS('color', 'rgb(245, 210, 122)');
+  await page.mouse.move(2, 2);
+  await page.mouse.up();
+});
+
+test('the crest tops the name block, in the same place for a visitor and the owner (fix round 4 item 8)', async ({
+  page,
+}) => {
+  await stub(page, { ...CHARACTER.data, ...SCORE });
+  const measure = async (): Promise<{ crest: number; name: number }> => {
+    await expect(page.getByTestId('character-name')).toBeVisible();
+    // Read in one pass, relative to the page (scroll included), so nothing settling moves one read.
+    const measured = await page.locator('header:has(h1)').evaluate((header) => {
+      const crest = header.querySelector('[data-testid^="character-avatar"]')?.getBoundingClientRect();
+      const name = header.querySelector('h1')?.getBoundingClientRect();
+      return crest === undefined || name === undefined
+        ? null
+        : { crest: crest.top + window.scrollY, name: name.top + window.scrollY };
+    });
+    if (measured === null) throw new Error('the crest or the name is missing');
+    return measured;
+  };
+  await page.goto(CHARACTER_PATH);
+  const visitor = await measure();
+  expect(Math.abs(visitor.crest - visitor.name)).toBeLessThan(0.5);
+
+  await page.route('**/v1/me', (route) => route.fulfill(ok(ownerMe())));
+  await page.reload();
+  await expect(page.getByTestId('character-sync')).toBeVisible();
+  const owner = await measure();
+  expect(Math.abs(owner.crest - visitor.crest)).toBeLessThan(0.5);
 });

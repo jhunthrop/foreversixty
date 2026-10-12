@@ -52,6 +52,10 @@ export const scoreCopy = {
   ofMax: (points: number, max: number): string => `${points} of ${max}`,
   /** "of 2100" beside the badge. */
   outOf: (max: number): string => `of ${max}`,
+  /** Under the score (L8.4 fix round 4 item 1): "170 to Legendary (2000)", the points to the
+   *  next tier, its name and its line; "Top tier" once there is none above. */
+  toNextTier: (gap: number, tier: string, from: number): string => `${gap} to ${tier} (${from})`,
+  topTier: 'Top tier',
   /** An empty part on the no-logs card, where "412 of 500" would be. */
   emptyPart: '–',
   /**
@@ -65,8 +69,9 @@ export const scoreCopy = {
   /** "Most to gain: Gear, 88 below its top." -- the label is a link, so the words are split. */
   mostToGainLead: 'Most to gain:',
   mostToGainRest: (gap: number): string => `, ${gap} below its top.`,
-  /** The words at the end of the highlighted row, so colour is not the only signal: "+88". */
-  gainCue: (gap: number): string => `+${gap}`,
+  /** The words at the end of the highlighted row, so colour is not the only signal: "+88 pts"
+   *  (fix round 4 item 2; the design system names no unit word for score points). */
+  gainCue: (gap: number): string => `+${gap} pts`,
   /** Read aloud for that cue. */
   gainCueLabel: (gap: number): string => `${gap} points to gain`,
   /** "14 dungeons · 0 raid bosses · 2 alts" under the Experience bar. */
@@ -113,6 +118,16 @@ export const scoreCopy = {
   noLogsOwner: 'The companion uploads your fights automatically.',
   noLogsUpload: 'Upload logs',
   noLogsUploadHref: '/setup',
+  /** A visitor's next step under the no-logs message (L8.4 fix round 4 item 5), one line:
+   *  "Your character? Get the addon · Upload logs" -- the addon's page (/setup since /addon was
+   *  folded into it) and the logs page's upload panel. */
+  noLogsNext: {
+    lead: 'Your character?',
+    addon: 'Get the addon',
+    addonHref: '/setup',
+    upload: 'Upload logs',
+    uploadHref: '/logs#upload',
+  },
 
   inGameHeading: 'In game',
   /** The tooltip mock's guild line, the client's own form: "<Olympus XXVII>" (fix round 1
