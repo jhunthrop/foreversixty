@@ -75,6 +75,8 @@ interface Props {
    *  default `"{specName} {className}"` (a guide/BiS page always names a specific spec; a
    *  class landing names none). Ignored unless `minimal` is also true. */
   titleOverride?: string;
+  /** False for the second of the BiS page's two faction-toggled copies: the page has one h1. */
+  asHeading?: boolean;
 }
 
 const {
@@ -92,7 +94,10 @@ const {
   summaryOverride,
   eyebrow = bisCopy.headerEyebrow,
   titleOverride,
+  asHeading = true,
 } = Astro.props;
+
+const TitleTag = asHeading ? 'h1' : 'p';
 
 const color = classColorVar(className);
 const factionLabel =
@@ -119,7 +124,7 @@ const bandTextVariants = bands.map((band) => ({
   <div class="class-header-identity">
     <ClassCrest slug={classSlug} size={64} />
     <div class="class-header-titles">
-      <h1 class="class-header-h1" style={`color:${color}`}>
+      <TitleTag class="class-header-h1" style={`color:${color}`}>
         {minimal && titleOverride !== undefined ? titleOverride : `${specName} ${className}`}{' '}
         {!minimal && (
           <span class="class-header-suffix">
@@ -132,7 +137,7 @@ const bandTextVariants = bands.map((band) => ({
             · {factionLabel}
           </span>
         )}
-      </h1>
+      </TitleTag>
       {!minimal &&
         bandTextVariants.map((variant) => (
           <p class="class-header-summary" data-band-summary-for={variant.band}>
