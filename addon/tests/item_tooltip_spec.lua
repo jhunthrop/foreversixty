@@ -636,6 +636,36 @@ describe("ItemTooltip.section", function()
 		end)
 	end)
 
+	-- Fix round 8: the breakdown row through section() itself: under an Upgrade
+	-- and a Downgrade, never under a plain "Sidegrade" (no figure), even when the
+	-- gain is made of stats that cancel out.
+	describe("the breakdown row under a verdict", function()
+		local function hovered(stats)
+			return ctx({ faction = false, item = { itemId = 901, link = "item:901", equipLocation = "INVTYPE_CHEST",
+				itemClass = 4, itemSubClass = 3, stats = stats } })
+		end
+
+		it("sits under an Upgrade", function()
+			local lines = ItemTooltip.section(hovered({ strength = 10 }))
+			assert.are.equal(string.format(L.tooltipVerdictDps, 6, "Chausses of Westfall"), lines[1].text)
+			assert.are.same({ kind = "breakdown", text = "(+6 Str)", color = "muted" },
+				{ kind = lines[2].kind, text = lines[2].text, color = lines[2].color })
+		end)
+
+		it("sits under a Downgrade", function()
+			local lines = ItemTooltip.section(hovered({ strength = 1 }))
+			assert.are.equal(string.format(L.tooltipDown, 3, L.tooltipUnitDps, "Chausses of Westfall"), lines[1].text)
+			assert.are.equal("(" .. L.tooltipMinus .. "3 Str)", lines[2].text)
+		end)
+
+		it("is absent under a plain Sidegrade, even when its stats cancel out", function()
+			-- +1 Strength (weighted +2) and -2 attack power (weighted -2): gain 0.
+			local lines = ItemTooltip.section(hovered({ strength = 5, attack_power = -2 }))
+			assert.are.equal(L.tooltipSide, lines[1].text)
+			assert.are.equal(1, #lines)
+		end)
+	end)
+
 	it("says Not for your plan for gear no weights score and no pick names", function()
 		local lines = ItemTooltip.section(ctx({ item = { itemId = 90, link = "item:90", equipLocation = "INVTYPE_NECK",
 			itemClass = 4, itemSubClass = 0, stats = { spirit = 4 } } }))
@@ -1706,5 +1736,44 @@ describe("the At line's gain", function()
 		local bare = string.format(L.tooltipAtBandName, 30, "Manual Crowd Pummeler")
 		assert.are.same({ bare, string.format(L.tooltipAtSource, "Gnomeregan") },
 			ItemTooltip.fitAt(at, visible, visible(bare)))
+	end)
+end)
+
+-- Fix round 8: the client's generic hit and crit words, never the melee,
+-- ranged or spell variants, whatever their alphabetical order.
+describe("ItemTooltip.statWord", function()
+	local NAMES = {
+		ITEM_MOD_HIT_RATING_SHORT = "Hit Rating", ITEM_MOD_HIT_MELEE_RATING_SHORT = "Melee Hit Rating",
+		ITEM_MOD_HIT_RANGED_RATING_SHORT = "Ranged Hit Rating", ITEM_MOD_HIT_SPELL_RATING_SHORT = "Spell Hit Rating",
+		ITEM_MOD_CRIT_RATING_SHORT = "Critical Strike Rating",
+		ITEM_MOD_CRIT_MELEE_RATING_SHORT = "Melee Critical Strike Rating",
+		ITEM_MOD_SPELL_POWER_SHORT = "Spell Power",
+	}
+	local saved = {}
+
+	before_each(function()
+		for key, text in pairs(NAMES) do
+			saved[key] = _G[key]
+			_G[key] = text
+		end
+	end)
+
+	after_each(function()
+		for key in pairs(NAMES) do
+			_G[key] = saved[key]
+		end
+	end)
+
+	it("reads the generic hit and crit words, never the melee variant", function()
+		assert.are.equal("Hit Rating", ItemTooltip.statWord("hit"))
+		assert.are.equal("Critical Strike Rating", ItemTooltip.statWord("crit"))
+		assert.are.equal("Spell Power", ItemTooltip.statWord("spell_power"))
+		assert.are.equal("Str", ItemTooltip.statWord("strength"))
+		assert.are.equal(L.tooltipWeaponDps, ItemTooltip.statWord("weapon_dps"))
+	end)
+
+	it("falls back to the alphabetical first variant when the generic one is missing", function()
+		_G.ITEM_MOD_HIT_RATING_SHORT = nil
+		assert.are.equal("Melee Hit Rating", ItemTooltip.statWord("hit"))
 	end)
 end)

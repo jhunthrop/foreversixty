@@ -732,9 +732,19 @@ function ItemTooltip.figureText(gain, unit)
 	return Theme.inlineColor("success", figure)
 end
 
+--- The client global a stat's word is read from first, where several of its
+--- ITEM_MOD_*_SHORT keys map to it: the generic hit and crit, never the melee,
+--- ranged or spell variant.
+ItemTooltip.STAT_WORD_KEYS = {
+	hit = { "ITEM_MOD_HIT_RATING_SHORT" },
+	crit = { "ITEM_MOD_CRIT_RATING_SHORT" },
+}
+
 --- A stat in the player's words: "Str", "Agi", "Sta", "Int", "Spi" for the
 --- five primary stats (Locale), "weapon DPS" for a weapon's own DPS, else the
---- client's own name for it (its ITEM_MOD_*_SHORT global), else Locale's.
+--- client's own name for it (its ITEM_MOD_*_SHORT global: the generic one first
+--- where a stat has several, STAT_WORD_KEYS; else the alphabetical first), else
+--- Locale's. A caster never reads "Melee Hit Rating" for hit.
 function ItemTooltip.statWord(stat)
 	if L.statAbbrev[stat] ~= nil then
 		return L.statAbbrev[stat]
@@ -749,6 +759,9 @@ function ItemTooltip.statWord(stat)
 		end
 	end
 	table.sort(keys)
+	for index = #(ItemTooltip.STAT_WORD_KEYS[stat] or {}), 1, -1 do
+		table.insert(keys, 1, ItemTooltip.STAT_WORD_KEYS[stat][index])
+	end
 	for _, clientKey in ipairs(keys) do
 		if type(_G[clientKey]) == "string" and _G[clientKey] ~= "" then
 			return _G[clientKey]
