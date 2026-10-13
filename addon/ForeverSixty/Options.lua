@@ -160,7 +160,8 @@ function Options.handle(input)
 		if Comms.failed > 0 then
 			broken[#broken + 1] = string.format(L.diagCommsFailedCount, Comms.failed)
 		end
-		local surfaces = {}
+		-- The build in force first (L3.8): default, saved, or none and why.
+		local surfaces = { Follow.diagLine(Options.data) }
 		surfaces[#surfaces + 1] = Chip.diagLine()
 		surfaces[#surfaces + 1] = TalentMarks.diagLine()
 		-- A bag addon whose buttons the bag hook has not reached (L4.1 ruling 3).
@@ -353,6 +354,8 @@ function Options.onEvent(_, event, ...)
 		Follow.restore(Options.data)
 		-- A character that picked a path on the chip follows that spec's default.
 		Follow.ensureDefault(Options.data, Chip.chosenPath())
+		-- The trait config may not answer yet: the ranks are read again once, below.
+		Options.defaultPending = true
 		Options.readInbox()
 		-- The band's picks, asked for once so the tooltip's next upgrade is ready.
 		ItemTooltip.warmPicks(Options.data)
@@ -364,6 +367,13 @@ function Options.onEvent(_, event, ...)
 		SettingsPage.register()
 		Theme.registerAddonPrefix(Comms.PREFIX)
 		Options.sayHello()
+	end
+	if Options.defaultPending and (event == "PLAYER_ENTERING_WORLD" or event == "TRAIT_CONFIG_UPDATED") then
+		-- L3.8: the first of these after login, when the ranks PLAYER_LOGIN could not read have
+		-- arrived. Once only, so a respec later never swaps the default mid-session; idempotent
+		-- (the same spec's default is kept) and a saved build is never replaced.
+		Options.defaultPending = false
+		Follow.ensureDefault(Options.data, Chip.chosenPath())
 	end
 	if event == "PLAYER_LEVEL_UP" then
 		Chip.onLevelUp(...)

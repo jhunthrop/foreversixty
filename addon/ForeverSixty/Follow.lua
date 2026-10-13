@@ -111,10 +111,20 @@ function Follow.restore(data)
 	ForeverSixtyDB.follows = ForeverSixtyDB.follows or {}
 	ForeverSixtyDB.follows[key] = entry
 	local active = entry.slots[entry.active]
-	if type(active) ~= "table" or active.code == nil then
-		return nil
+	if type(active) == "table" and active.code ~= nil then
+		return Follow.load(active.code, data, active.name, entry.active)
 	end
-	return Follow.load(active.code, data, active.name, entry.active)
+	-- L3.8: an empty active slot beside a saved build (v1's slot picker could leave one; v2 has
+	-- no picker to switch back) follows that build, the first in SLOTS order, and makes its slot
+	-- the active one. Following nothing here also kept the default out (Follow.ensureDefault
+	-- yields to a build saved in any slot), so the character had no build at all.
+	for _, slot in ipairs(Follow.SLOTS) do
+		local other = entry.slots[slot]
+		if type(other) == "table" and other.code ~= nil then
+			return Follow.load(other.code, data, other.name, slot)
+		end
+	end
+	return nil
 end
 
 --- The level a default build switches from leveling to raid.
@@ -157,6 +167,13 @@ local function defaultCode(data, classSlug, order)
 	return Codec.encodeFSB1({ dataBuild = data.build, classSlug = classSlug, order = points })
 end
 
+--- A spec slug as a player reads it, its class left off: "hunter-beast-mastery" ->
+--- "Beast Mastery", "druid-feral-bear" -> "Feral Bear".
+function Follow.specName(spec)
+	local tree = type(spec) == "string" and (spec:match("^[^-]+%-(.+)$") or spec) or "?"
+	return Talents.titleCase(tree)
+end
+
 --- A character with no build saved in any slot follows the data's default for its spec
 --- (`data.defaultBuilds[<spec>]`, contract 1): leveling, raid at RAID_LEVEL. The spec is
 --- Gear.specOf's, which is the class's first tree with no points spent. The build is marked
@@ -165,41 +182,54 @@ end
 --- is read from the client for any field it leaves out. `spec`, when given, is the spec the
 --- player chose on the chip's "pick a path" card (spec section 5.1) and wins over the points;
 --- it must be one of this class's specs with a default. The build, or nil when there is
---- nothing to load.
+--- nothing to load (Follow.noBuildReason then says why, for /fs diag). Idempotent: the
+--- default already followed for the same spec and kind is kept, never decoded again.
 function Follow.ensureDefault(data, character)
-	if type(data) ~= "table" or type(data.defaultBuilds) ~= "table" or hasSavedBuild() then
+	if type(data) ~= "table" or type(data.defaultBuilds) ~= "table" then
+		Follow.noBuildReason = L.diagBuildNoDefaults
+		return nil
+	end
+	if hasSavedBuild() then
+		Follow.noBuildReason = L.diagBuildSavedRefused
 		return nil
 	end
 	character = character or {}
 	local classSlug = character.classSlug or Talents.playerClassSlug()
 	if classSlug == nil or type(data.classes) ~= "table" or data.classes[classSlug] == nil then
+		Follow.noBuildReason = L.diagBuildNoClass
 		return nil
 	end
 	local level = character.level or Compat.playerLevel()
 	local spec = character.spec
 	if spec ~= nil and spec:sub(1, #classSlug + 1) ~= classSlug .. "-" then
+		Follow.noBuildReason = string.format(L.diagBuildNoSpec, Follow.specName(spec))
 		return nil
 	end
 	if spec == nil then
 		spec = gearModule().specOf(data, classSlug, character.ranks or Talents.readRanks(data))
 	end
 	local builds = spec ~= nil and data.defaultBuilds[spec] or nil
-	if type(builds) ~= "table" then
+	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+	local default = type(builds) == "table" and builds[kind] or nil
+	if type(default) ~= "table" then
+		Follow.noBuildReason = string.format(L.diagBuildNoSpec, Follow.specName(spec))
 		return nil
 	end
-	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
-	local default = builds[kind]
-	if type(default) ~= "table" then
-		return nil
+	local current = Follow.build
+	if current ~= nil and current.default and current.spec == spec and current.kind == kind then
+		return current
 	end
 	local code = defaultCode(data, classSlug, default.order)
 	local build = code ~= nil and Codec.loadBuild(code, data) or nil
 	if build == nil then
+		Follow.noBuildReason = string.format(L.diagBuildRefused, Follow.specName(spec))
 		return nil
 	end
 	build.default = true
 	build.name = default.name
+	build.spec, build.kind = spec, kind
 	Follow.build = build
+	Follow.noBuildReason = nil
 	return build
 end
 
@@ -426,6 +456,20 @@ function Follow.buildName(data, build)
 		return string.format(L.followBuildName, Talents.titleCase(build.classSlug))
 	end
 	return string.format(L.followBuildName, table.concat(names, L.followSplitSeparator))
+end
+
+--- /fs diag's one line for the build in force: "Build: Marksmanship leveling (default for
+--- Marksmanship)", "Build: Arms raid (saved)", or "Build: none — <why>" (Follow.noBuildReason,
+--- else "not worked out yet").
+function Follow.diagLine(data)
+	local build = Follow.build
+	if build == nil then
+		return string.format(L.diagBuildNone, Follow.noBuildReason or L.diagBuildNotYet)
+	end
+	if build.default then
+		return string.format(L.diagBuildDefault, Follow.buildName(data, build), Follow.specName(build.spec))
+	end
+	return string.format(L.diagBuildSaved, Follow.buildName(data, build))
 end
 
 function Follow.nextPoint(build, ranks)

@@ -3,17 +3,20 @@
 -- itself, so a missing or old data addon is reported without any tooltip
 -- having read it first. Pure: Options.handle("diag") with ForeverSixtyData
 -- set or not, no client mock (no frame is built; the chip has not drawn).
+-- The build line (L3.8) follows the verdict: nothing is worked out before login.
 local helper = require("spec_helper")
 
 describe("/fs diag on a fresh session", function()
-	local saved, L, Options
+	local saved, L, Options, NO_BUILD
 
 	local function fresh(data)
 		_G.ForeverSixtyData = data
 		L = helper.load("Locale")
 		require("Theme").reset()
 		helper.load("Score")
+		helper.load("Follow")
 		Options = helper.load("Options")
+		NO_BUILD = string.format(L.diagBuildNone, L.diagBuildNotYet)
 	end
 
 	before_each(function()
@@ -26,26 +29,26 @@ describe("/fs diag on a fresh session", function()
 
 	it("says the data addon is not installed, as a finding under Everything is working", function()
 		fresh(nil)
-		assert.are.same({ L.diagAllWorking, L.diagDataAddonMissingInfo }, Options.handle("diag"))
+		assert.are.same({ L.diagAllWorking, NO_BUILD, L.diagDataAddonMissingInfo }, Options.handle("diag"))
 	end)
 
 	it("says the data addon is too old, under Not working", function()
 		fresh({ format = 1, characters = {}, guilds = {} })
-		assert.are.same({ L.diagHeading, L.diagDataAddonOld }, Options.handle("diag"))
+		assert.are.same({ L.diagHeading, L.diagDataAddonOld, NO_BUILD }, Options.handle("diag"))
 	end)
 
 	it("says it once however often /fs diag is asked", function()
 		fresh(nil)
 		Options.handle("diag")
-		assert.are.same({ L.diagAllWorking, L.diagDataAddonMissingInfo }, Options.handle("diag"))
+		assert.are.same({ L.diagAllWorking, NO_BUILD, L.diagDataAddonMissingInfo }, Options.handle("diag"))
 	end)
 
 	-- L3.2 fix round 2: geometry findings only under /fs diag verbose.
 	it("keeps the verbose findings for /fs diag verbose", function()
 		fresh(nil)
 		require("Theme").noteVerbose("Talent window found: PlayerSpellsFrame (trait mapping)")
-		assert.are.same({ L.diagAllWorking, L.diagDataAddonMissingInfo }, Options.handle("diag"))
-		assert.are.same({ L.diagAllWorking, L.diagDataAddonMissingInfo,
+		assert.are.same({ L.diagAllWorking, NO_BUILD, L.diagDataAddonMissingInfo }, Options.handle("diag"))
+		assert.are.same({ L.diagAllWorking, NO_BUILD, L.diagDataAddonMissingInfo,
 			"Talent window found: PlayerSpellsFrame (trait mapping)" }, Options.handle("diag verbose"))
 	end)
 end)

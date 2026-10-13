@@ -409,6 +409,15 @@ describe("Chip.tooltipLines", function()
 		}, Chip.tooltipLines(model))
 	end)
 
+	-- L3.8: the build in force names itself on the first line, so even the idle chip says one is followed.
+	it("names the build in force after the addon's name, muted, on the idle chip too", function()
+		local model = Chip.model(inputs({ buildName = "Marksmanship leveling" }))
+		assert.are.equal("idle", model.chosen.kind)
+		assert.are.equal("", model.chosen.text)
+		assert.are.equal(gold(L.addonName) .. muted(" · Marksmanship leveling"), Chip.tooltipLines(model)[1])
+		assert.are.equal(gold(L.addonName), Chip.tooltipLines(Chip.model(inputs({ build = nil })))[1])
+	end)
+
 	it("adds the muted Next at line when the next point is not spendable yet", function()
 		local model = Chip.model(inputs({
 			level = 21, progress = pointAt(13, 22), pointName = "Improved Tactical Mastery",

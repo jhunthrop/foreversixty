@@ -372,8 +372,8 @@ end
 --- { level, build, progress, pointName, pointIcon, unspent, upgrades, healing,
 ---   here, raidCheck, lastRaid, lastNightDone, completedAt, now, clock,
 ---   classIcon, inCombat, combatHide, shown, hiddenUntilLevel, pathChosen,
----   pointRank, talentsOpen }.
---- Answers { states, chosen, waiting, nextLine, visible, hiddenBy, alpha,
+---   pointRank, talentsOpen, buildName }.
+--- Answers { states, chosen, buildName, waiting, nextLine, visible, hiddenBy, alpha,
 --- iconAlpha, mouse, ring }: every state that is true, highest first; the
 --- first of them, or idle (the class icon, no text); how many actionable
 --- states wait behind it (an informational one never counts); the hover's
@@ -412,6 +412,7 @@ function Chip.model(input)
 	return {
 		states = states,
 		chosen = chosen,
+		buildName = input.buildName,
 		waiting = waiting,
 		nextLine = nextLine(input),
 		visible = hiddenBy == nil,
@@ -429,13 +430,19 @@ local function hinted(text)
 	return string.format("|cff%s%s|r", Theme.dimHex("muted", Theme.ALPHA.hint), text)
 end
 
---- The hover for a model: "Forever Sixty" in gold; one line per state in
+--- The hover for a model: "Forever Sixty" in gold, then the build in force muted; one line per state in
 --- priority order, the shown one first, in body colour (a muted state
 --- muted, in its fuller `tip` form); the muted next-talent line; a gap; then
 --- the dimmer hints: what a click does on the shown state (every state has
 --- one, idle too), the right-click and the shift-drag.
 function Chip.tooltipLines(model)
-	local lines = { colored("gold", L.addonName) }
+	-- L3.8: the build in force names itself after the addon, muted ("Forever Sixty · Marksmanship
+	-- leveling", the item tooltip's own header form), so even the idle chip says a build is followed.
+	local header = colored("gold", L.addonName)
+	if model.buildName ~= nil then
+		header = header .. colored("muted", L.tooltipHeaderSep .. model.buildName)
+	end
+	local lines = { header }
 	for _, state in ipairs(model.states) do
 		lines[#lines + 1] = colored(state.muted and "muted" or "body", state.tip or state.text)
 	end
@@ -751,6 +758,7 @@ function Chip.inputs(data)
 	local input = {
 		level = level,
 		build = build,
+		buildName = build ~= nil and Follow.buildName(data, build) or nil,
 		progress = progress,
 		classIcon = Theme.classIcon(classSlug ~= nil and classSlug:upper() or nil),
 		unspent = Progress.unspentPoints(level, ranks),

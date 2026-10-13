@@ -83,7 +83,8 @@ never wrapped. One state at a time, highest first; a "+N" badge when more wait.
 
 Out of the way: fades to 25 % in combat and ignores the mouse; hides with the UI and in
 cinematics; right-click "Hide until next level"; shift-drag moves it; hover shows a client
-tooltip with every waiting state. While the talent window is open (however it was opened: the
+tooltip with every waiting state, headed by the build in force ("Forever Sixty · Marksmanship
+leveling", so even the idle chip says one is followed). While the talent window is open (however it was opened: the
 chip's click, the N keybind, the micro menu) and its marks are drawn, the chip stands aside and the
 marks' strip leads with its next talent (section 4.2); it comes back when the window closes. With
 "Marks on the talent window" off (section 4.11) the chip stays beside the minimap with the window
