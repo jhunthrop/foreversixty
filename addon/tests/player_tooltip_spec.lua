@@ -143,7 +143,7 @@ describe("PlayerTooltip", function()
 					assert.are.same(rgbOf("tooltipText"), { entry.rr, entry.rg, entry.rb })
 				end
 				local total = lines[7]
-				assert.are.equal("", total.text)
+				assert.are.equal(" ", total.text)
 				assert.are.equal("= 1240", total.right)
 				assert.are.equal(string.format(L.scoreTotal, 1240), total.right)
 				assert.are.same(rgbOf("tooltipMuted"), { total.rr, total.rg, total.rb })

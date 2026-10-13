@@ -86,7 +86,7 @@ function PlayerTooltip.section(record, available, live, shift)
 		for _, part in ipairs(parts) do
 			out[#out + 1] = double(part.label, tostring(part.value), "tooltipMuted", "tooltipText")
 		end
-		out[#out + 1] = double("", string.format(L.scoreTotal, record.score), "tooltipMuted", "tooltipMuted")
+		out[#out + 1] = double(" ", string.format(L.scoreTotal, record.score), "tooltipMuted", "tooltipMuted")
 	elseif #parts > 0 then
 		out[#out + 1] = line(L.scoreShiftHint .. L.exportTreeSeparator .. L.scoreLinkHint, "tooltipMuted")
 	else
