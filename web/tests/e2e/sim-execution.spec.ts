@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { gotoHydrated } from './support/hydrated';
+import { openFilters } from './support/rankings-filters';
 import { simCopy } from '../../src/lib/sim/copy';
 
 /** The rankings page reads GET /v1/rankings; the suite stubs it, the way rankings.spec.ts does. */
@@ -36,7 +37,7 @@ test.describe('the execution column', () => {
         body: JSON.stringify(page1([{ ...base, execution_score: 0.92 }])),
       }),
     );
-    await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
+    await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-scope');
     const cell = page.getByTestId('ranking-execution').first();
     await expect(cell).toHaveText('92%');
     await expect(cell).toHaveAttribute('href', '/sim?source=fight&ref=fixture2abcd%3A2&mode=compare');
@@ -50,7 +51,7 @@ test.describe('the execution column', () => {
         body: JSON.stringify(page1([{ ...base, execution_score: null }])),
       }),
     );
-    await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
+    await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-scope');
     const cell = page.getByTestId('ranking-execution').first();
     await expect(cell).toHaveText('—');
     await expect(cell).toHaveAttribute('title', simCopy.executionUnscored);
@@ -64,7 +65,8 @@ test.describe('the execution column', () => {
         body: JSON.stringify(page1([{ ...base, execution_score: 0.92 }])),
       }),
     );
-    await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
+    await gotoHydrated(page, '/rankings/warden-kelthas', 'rankings-scope');
+    await openFilters(page);
     await page.getByTestId('filter-metric').selectOption('execution');
     await expect(page).toHaveURL(/metric=execution/);
   });
