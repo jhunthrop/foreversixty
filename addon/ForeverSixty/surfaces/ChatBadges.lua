@@ -1,7 +1,7 @@
 -- addon/ForeverSixty/surfaces/ChatBadges.lua
--- Score badges in chat (spec section 4.11, L4.4): a player's Forever Score, "[1830]" in the
--- tier's colour, in front of what they say in the Trade and LookingForGroup channels, guild
--- chat and the whispers this player receives. Behind its own switch, "Score badges in chat"
+-- Score badges in chat (spec section 4.11, L4.4): a player's Forever Score, "FS 1830" in the
+-- tier's colour and a muted "·", in front of what they say in the Trade and LookingForGroup
+-- channels, guild chat and the whispers this player receives. Behind its own switch, "Score badges in chat"
 -- (Prefs.flag("badges"), on by default); off, every line shows as it came.
 --
 -- One sanctioned API: the client's chat message filter (Compat.addChatFilter, whose comment
@@ -58,15 +58,16 @@ function ChatBadges.enabled()
 	return ChatBadges.on
 end
 
---- "[1830]" in the tier's colour for a record from Score.forCharacter; uncoloured for a tier
---- the addon does not know. Pure.
+--- "FS 1830" in the tier's colour (uncoloured for a tier the addon does not know), then a
+--- muted "·", for a record from Score.forCharacter. No square brackets: a bracketed number in
+--- a quality colour reads as an item link. Pure.
 function ChatBadges.badgeText(record)
 	local text = string.format(L.badge, record.score)
 	local color = record.tierColor
-	if color == nil then
-		return text
+	if color ~= nil then
+		text = "|cff" .. Theme.hexOf(color.r, color.g, color.b) .. text .. "|r"
 	end
-	return "|cff" .. Theme.hexOf(color.r, color.g, color.b) .. text .. "|r"
+	return text .. " |cff" .. Theme.HEX.muted .. L.badgeMark .. "|r"
 end
 
 --- The one place a badge lands: in front of the message, which follows it unchanged. Pure.

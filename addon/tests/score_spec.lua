@@ -286,6 +286,17 @@ describe("Score", function()
 			assert.are.equal("Forever Score 1830 " .. DOT .. " as of 4 Nov", lines[1])
 			assert.are.same({}, Score.lines(nil))
 		end)
+
+		-- L4.4 fix round 2, item 3: the tooltip draws label and value apart.
+		it("gives the components as label and value, in order, and none for no record", function()
+			start(fixture())
+			local parts = Score.components(Score.forCharacter("Obnoxious", "Yell"))
+			assert.are.equal(5, #parts)
+			assert.are.same({ label = "Gear", value = 412 }, parts[1])
+			assert.are.same({ label = "Discipline", value = 78 }, parts[5])
+			assert.are.same({}, Score.components(nil))
+			assert.are.same({}, Score.components({ score = 10 }))
+		end)
 	end)
 
 	describe("guild", function()

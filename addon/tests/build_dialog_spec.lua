@@ -591,6 +591,15 @@ describe("BuildDialog, copy mode's model", function()
 			copied.lead)
 	end)
 
+	-- Fix round 2, item 6: a site address is read, so it is not muted; the export is a code.
+	it("draws a /fs link page in the tooltip text colour and the export muted", function()
+		local link = { url = "foreversixty.gg/character/us/pvp/bow-jackzon", name = "Bow Jackzon" }
+		assert.are.equal("tooltipText", model({ link = link }).textHex)
+		assert.are.equal("tooltipText", model({ link = link, copiedAt = NOV4_1402 }).textHex)
+		assert.are.equal(BuildDialog.COLLAPSED_TEXT, model({ code = "FS1:abc" }).textHex)
+		assert.are.equal("muted", model({ code = "FS1:abc" }).textHex)
+	end)
+
 	it("says why there is nothing to copy", function()
 		local copy = model({ code = false, reason = "No export" })
 		assert.are.equal("", copy.text)

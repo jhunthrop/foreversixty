@@ -132,12 +132,26 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 		assert.is_true(box():HasFocus())
 		assert.is_true(BuildDialog.selected)
 		assert.are.equal(string.format(L.dialogLinkLead, "Smoke Gouda"), BuildDialog.copyTab.lead:GetText())
+		-- Fix round 2, item 6: a link reads in the tooltip text colour, not muted, still selected.
+		local function displayColor()
+			local color = mock.lastCall(BuildDialog.copyTab.display, "SetTextColor")
+			return { color[1], color[2], color[3] }
+		end
+		local function hexColor(key)
+			local Theme = require("Theme")
+			local r, g, b = Theme.rgb(Theme.HEX[key])
+			return { r, g, b }
+		end
+		assert.are.same(hexColor("tooltipText"), displayColor())
+		assert.is_true(BuildDialog.copyTab.selection:IsShown())
 		control = true
 		press("C")
 		assert.are.equal(string.format(L.dialogLinkCopied, "Smoke Gouda"), BuildDialog.copyTab.lead:GetText())
+		assert.are.same(hexColor("tooltipText"), displayColor())
 		local export = require("Export").string(DATA)
 		BuildDialog.tabs.copy:GetScript("OnClick")(BuildDialog.tabs.copy)
 		assert.are.equal(export, box():GetText())
+		assert.are.same(hexColor("muted"), displayColor())
 		BuildDialog.openLink(url, "Smoke Gouda")
 		BuildDialog.close()
 		BuildDialog.open("copy")

@@ -1,11 +1,13 @@
 -- addon/ForeverSixty/surfaces/PlayerTooltip.lua
 -- The player tooltip (spec section 4.6, L4.4): after the client's own lines on a player's
 -- tooltip, the Forever Score in its tier's colour ("Forever Score 1830 · Epic · as of 4
--- Nov"); a guildmate's live line ("Level 24 Marksmanship · gap 12 (live)", muted) while
--- their hello or snapshot is fresh; the score's components while Shift is held, else one
--- muted hint ("Shift: score details · /fs link: site page"). A character the record does
--- not have, or with no logs, reads "Forever Score: no logs yet", never a zero. Nothing for
--- a non-player, and nothing at all while "Gear tips on item tooltips" is off.
+-- Nov"); a guildmate's live line ("Level 24 Marksmanship · gear gap 12 (live)", muted) while
+-- their hello or snapshot is fresh; the score's components while Shift is held (label muted
+-- left, value right-aligned, then "= 1830"), else one muted hint ("Shift: score details ·
+-- target them, then /fs link"). A character the record does not have, or with no logs,
+-- reads "Forever Score: no logs yet", never a zero, then "Target them, then /fs link: site
+-- page". Nothing for a non-player, and nothing at all while "Gear tips on item tooltips" is
+-- off.
 --
 -- Pure model, thin hook: PlayerTooltip.section builds the lines from plain values (the
 -- record from Score.forCharacter, the live entry from Comms.seen); the hook reads the
@@ -33,18 +35,30 @@ local function line(text, hexKey)
 	return { text = text, r = r, g = g, b = b }
 end
 
---- The live line for a Comms.seen entry: "Level 24 Marksmanship · gap 12 (live)". A sender
---- with no spec ("-") reads "Level 5 · gap 0 (live)". Pure.
+--- The live line for a Comms.seen entry: "Level 24 Marksmanship · gear gap 12 (live)". A
+--- sender with no spec ("-") reads "Level 5 · gear gap 0 (live)". Pure.
 function PlayerTooltip.liveLine(entry)
 	local spec = Talents.titleCase(entry.spec ~= "-" and entry.spec or "")
 	local text = string.format(L.scoreLive, entry.level or 0, spec, entry.gearGap or 0)
 	return (text:gsub("  +", " "))
 end
 
---- The lines after the client's own, each { text, r, g, b }: `record` is
---- Score.forCharacter's (nil for none), `available` whether the data addon can be read at
---- all (without it nothing is said about a score), `live` a Comms.seen entry or nil, `shift`
---- whether Shift is held. Pure.
+--- A double line: `left` in the `leftKey` colour, `right` right-aligned in the `rightKey`
+--- colour (AddDoubleLine).
+local function double(left, right, leftKey, rightKey)
+	local entry = line(left, leftKey)
+	entry.right = right
+	entry.rr, entry.rg, entry.rb = Theme.rgb(Theme.HEX[rightKey])
+	return entry
+end
+
+--- The lines after the client's own, each { text, r, g, b }, a double line also { right,
+--- rr, rg, rb }: `record` is Score.forCharacter's (nil for none), `available` whether the
+--- data addon can be read at all (without it nothing is said about a score), `live` a
+--- Comms.seen entry or nil, `shift` whether Shift is held. While Shift is held the
+--- components are a secondary block: the label muted on the left, the value right-aligned
+--- in the text colour, then a muted right-aligned total ("= 1240", the record's score).
+--- Otherwise one muted hint naming the step to the site page. Pure.
 function PlayerTooltip.section(record, available, live, shift)
 	local out = {}
 	local lines = Score.lines(record)
@@ -62,16 +76,21 @@ function PlayerTooltip.section(record, available, live, shift)
 		out[#out + 1] = line(PlayerTooltip.liveLine(live), "tooltipMuted")
 	end
 	if #lines == 0 then
+		if available then
+			out[#out + 1] = line(L.scoreLinkAlone, "tooltipMuted")
+		end
 		return out
 	end
-	if shift and #lines > 1 then
-		for index = 2, #lines do
-			out[#out + 1] = line(lines[index], "tooltipText")
+	local parts = Score.components(record)
+	if shift and #parts > 0 then
+		for _, part in ipairs(parts) do
+			out[#out + 1] = double(part.label, tostring(part.value), "tooltipMuted", "tooltipText")
 		end
-	elseif #lines > 1 then
+		out[#out + 1] = double("", string.format(L.scoreTotal, record.score), "tooltipMuted", "tooltipMuted")
+	elseif #parts > 0 then
 		out[#out + 1] = line(L.scoreShiftHint .. L.exportTreeSeparator .. L.scoreLinkHint, "tooltipMuted")
 	else
-		out[#out + 1] = line(L.scoreLinkHint, "tooltipMuted")
+		out[#out + 1] = line(L.scoreLinkAlone, "tooltipMuted")
 	end
 	return out
 end
@@ -159,7 +178,11 @@ local function addLines(tooltip, unit)
 		return
 	end
 	for _, entry in ipairs(lines) do
-		tooltip:AddLine(entry.text, entry.r, entry.g, entry.b)
+		if entry.right ~= nil then
+			tooltip:AddDoubleLine(entry.text, entry.right, entry.r, entry.g, entry.b, entry.rr, entry.rg, entry.rb)
+		else
+			tooltip:AddLine(entry.text, entry.r, entry.g, entry.b)
+		end
 	end
 	tooltip:Show()
 end

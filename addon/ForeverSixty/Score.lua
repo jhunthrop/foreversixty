@@ -209,14 +209,25 @@ function Score.lines(record)
 		head[#head + 1] = record.asOfText
 	end
 	local lines = { table.concat(head, L.exportTreeSeparator) }
-	local components = type(record.components) == "table" and record.components or {}
+	for _, part in ipairs(Score.components(record)) do
+		lines[#lines + 1] = string.format(L.scoreComponent, part.label, part.value)
+	end
+	return lines
+end
+
+--- The components a record carries, in Score.COMPONENTS order, each { label, value }
+--- ("Gear", 380): what the player tooltip draws as label and right-aligned value. Empty for
+--- no record or none.
+function Score.components(record)
+	local parts = {}
+	local components = type(record) == "table" and type(record.components) == "table" and record.components or {}
 	for _, component in ipairs(Score.COMPONENTS) do
 		local value = components[component.key]
 		if type(value) == "number" then
-			lines[#lines + 1] = string.format(L.scoreComponent, L[component.label], value)
+			parts[#parts + 1] = { label = L[component.label], value = value }
 		end
 	end
-	return lines
+	return parts
 end
 
 --- The guild's record by name, or nil.

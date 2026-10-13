@@ -61,7 +61,8 @@ describe("SettingsPage, the switches", function()
 			{ "Show the minimap button", "Left-click pastes or copies a build; right-click opens this page. "
 				.. "Off: type /fs options or use Options > AddOns." },
 			{ "Gear tips on item tooltips",
-				"Adds a line to item tooltips: is it in your build, and does it beat what you wear." },
+				"Adds a line to item tooltips: is it in your build, and does it beat what you wear. "
+				.. "Off: also hides the score on player tooltips." },
 			{ "Score badges in chat",
 				"Shows a player's Forever Score before their message in LFG, Trade, guild chat and whispers." },
 			{ "Share my build with my guild",

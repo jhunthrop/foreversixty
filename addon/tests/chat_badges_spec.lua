@@ -1,7 +1,8 @@
 -- addon/tests/chat_badges_spec.lua
 -- The chat badges (spec section 4.11, L4.4): a message filter on LFG and Trade, guild chat
--- and incoming whispers that puts a player's Forever Score, "[1830]" in the tier colour, in
--- front of their message. The filter never hides a line (never returns true) and returns
+-- and incoming whispers that puts a player's Forever Score, "FS 1830" in the tier colour and
+-- then a muted "·", in front of their message (fix round 2: no square brackets, which read
+-- as an item link). The filter never hides a line (never returns true) and returns
 -- every argument it was given, the message changed only by the badge in front of it and the
 -- name never touched (a chat filter's name is also the line's whisper link and the reply
 -- target). Cached per full name until the record changes; "Score badges in chat" off leaves
@@ -29,8 +30,10 @@ local function record()
 	}
 end
 
-local RARE = "|cff0070de[1240]|r"
-local EPIC = "|cffa336ed[1610]|r"
+local DOT = "\194\183" -- the middle dot
+local MUTED_DOT = "|cff9a9484" .. DOT .. "|r"
+local RARE = "|cff0070deFS 1240|r " .. MUTED_DOT
+local EPIC = "|cffa336edFS 1610|r " .. MUTED_DOT
 
 describe("ChatBadges", function()
 	local state, ChatBadges, Prefs, Theme, Score
@@ -89,7 +92,20 @@ describe("ChatBadges", function()
 			start(record())
 			local list = args("lf tank for rfc", "Smoke Gouda-ClassicBetaPvP")
 			assertOnly(run("CHAT_MSG_GUILD", list), list, EPIC .. " lf tank for rfc")
-			assert.are.equal("|cffa336ed" .. string.format(L.badge, 1610) .. "|r", EPIC)
+			assert.are.equal("|cffa336ed" .. string.format(L.badge, 1610) .. "|r " .. MUTED_DOT, EPIC)
+		end)
+
+		-- Fix round 2, item 1: "[1240]" in rare blue read as a rare item link.
+		it("reads FS and the score, then a muted dot, with no square brackets anywhere", function()
+			start(record())
+			local list = args("testing an addon", "Bow Jackzon-ClassicBetaPvP")
+			local shown = run("CHAT_MSG_GUILD", list)[2]
+			assert.are.equal("FS %d", L.badge)
+			assert.are.equal("|cff0070deFS 1240|r |cff9a9484" .. DOT .. "|r testing an addon", shown)
+			local plain = shown:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+			assert.are.equal("FS 1240 " .. DOT .. " testing an addon", plain)
+			assert.is_nil(plain:find("[", 1, true))
+			assert.is_nil(plain:find("]", 1, true))
 		end)
 
 		it("badges an incoming whisper and leaves its sender, the reply target, as it came", function()
@@ -173,7 +189,7 @@ describe("ChatBadges", function()
 		it("finds a name with another realm, and a tier it does not know shows uncoloured", function()
 			start(record())
 			local list = args("hi", "Bob-Whitemane")
-			assertOnly(run("CHAT_MSG_GUILD", list), list, "[700] hi")
+			assertOnly(run("CHAT_MSG_GUILD", list), list, "FS 700 " .. MUTED_DOT .. " hi")
 		end)
 
 		it("finds a bare name on this realm", function()
@@ -282,7 +298,7 @@ describe("ChatBadges", function()
 			data.characters["Smoke Gouda-ClassicBetaPvP"].score = 1700
 			_G.ForeverSixtyData = data
 			local list = args("hi", "Smoke Gouda-ClassicBetaPvP")
-			assertOnly(run("CHAT_MSG_GUILD", list), list, "|cffa336ed[1700]|r hi")
+			assertOnly(run("CHAT_MSG_GUILD", list), list, "|cffa336edFS 1700|r " .. MUTED_DOT .. " hi")
 		end)
 	end)
 

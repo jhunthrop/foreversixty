@@ -302,7 +302,9 @@ local L = {
 	settingsMinimapHint = "Left-click pastes or copies a build; right-click opens this page. "
 		.. "Off: type /fs options or use Options > AddOns.",
 	settingsTooltip = "Gear tips on item tooltips",
-	settingsTooltipHint = "Adds a line to item tooltips: is it in your build, and does it beat what you wear.",
+	-- L4.4 fix round 2, item 2: the switch also governs the player tooltip's score.
+	settingsTooltipHint = "Adds a line to item tooltips: is it in your build, and does it beat what you wear. "
+		.. "Off: also hides the score on player tooltips.",
 	-- L4.4: the eighth switch (spec section 4.11). The badge leads the message, after the
 	-- name: a chat filter cannot touch the name without breaking its link and the reply.
 	settingsBadges = "Score badges in chat",
@@ -405,12 +407,20 @@ local L = {
 	-- A character the record does not have, or with no logs: never a zero (spec section 4.6).
 	scoreNoLogs = "Forever Score: no logs yet",
 	-- A guildmate's hello or snapshot, after the score: level, spec, gear gap (L4.4).
-	scoreLive = "Level %d %s · gap %d (live)",
-	-- The player tooltip's muted hint, its parts joined by exportTreeSeparator.
+	scoreLive = "Level %d %s · gear gap %d (live)",
+	-- The player tooltip's muted hint, its parts joined by exportTreeSeparator: "Shift: score
+	-- details · target them, then /fs link" (fix round 2: /fs link reads the target).
 	scoreShiftHint = "Shift: score details",
-	scoreLinkHint = "/fs link: site page",
-	-- The score before a message in chat, in the tier colour (surfaces/ChatBadges.lua).
-	badge = "[%d]",
+	scoreLinkHint = "target them, then /fs link",
+	-- The hint alone, where there is no Shift: a no-logs player, a record without components.
+	scoreLinkAlone = "Target them, then /fs link: site page",
+	-- After the components while Shift is held, right-aligned and muted: the record's score.
+	scoreTotal = "= %d",
+	-- The score before a message in chat, in the tier colour, then a muted badgeMark
+	-- (surfaces/ChatBadges.lua): "FS 1240 · testing". Fix round 2: never in square brackets,
+	-- which read as an item link.
+	badge = "FS %d",
+	badgeMark = "·",
 	scoreTierCommon = "Common",
 	scoreTierUncommon = "Uncommon",
 	scoreTierRare = "Rare",

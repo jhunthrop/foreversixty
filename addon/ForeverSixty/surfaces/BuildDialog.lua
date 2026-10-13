@@ -780,6 +780,9 @@ function BuildDialog.copyModel(input)
 	end
 	return {
 		text = code or "",
+		-- The box's text colour: a site address is read, so it takes the tooltip text colour
+		-- (L4.4 fix round 2, item 6); the export is a code, muted.
+		textHex = link ~= nil and "tooltipText" or BuildDialog.COLLAPSED_TEXT,
 		selected = code ~= nil and code ~= false,
 		lead = lead,
 		seen = seenLine(ack, input.savedAt, clock, input.copiedAt),
@@ -2119,6 +2122,7 @@ function BuildDialog.drawCopy(select)
 		end
 	end
 	copy.display:SetText(copy.wrapsRuns and model.text or BuildDialog.breakable(model.text))
+	copy.display:SetTextColor(Theme.rgb(Theme.HEX[model.textHex]))
 	local room = (BuildDialog.contentHeight or S.dialogHeight) - top - S.gap * 4 - below - bottom
 	copy.lines = BuildDialog.boxLines(textHeight(copy.display), first, advance, room)
 	local fieldHeight = sizeField(copy.field, copy.clip, copy.box, copy.lines.height)
