@@ -12,6 +12,80 @@ local mock = {}
 -- busted itself) need it to keep existing after this spec's uninstall runs.
 local realPrint = _G.print
 
+--- The name prefixes of the client's own frames on the character pane and the bags
+--- (L4.1 fix round 2): the addon must never write into one of these. On the live
+--- client a texture made on a slot button and an OnShow hooked on the pane tainted
+--- the pane's own Show and Hide ("attempt to compare a secret number value").
+mock.CLIENT_PREFIXES = { "Character", "PaperDoll", "ContainerFrame" }
+
+function mock.isClientName(name)
+	if type(name) ~= "string" then
+		return false
+	end
+	for _, prefix in ipairs(mock.CLIENT_PREFIXES) do
+		if name:sub(1, #prefix) == prefix then
+			return true
+		end
+	end
+	return false
+end
+
+--- The source file of the Lua code `level` frames up the stack ("./ForeverSixty/..."),
+--- stepping over C frames: a `pcall(frame.HookScript, frame, ...)` (Theme.hookScript)
+--- is the addon's call, not pcall's.
+local function callerSource(level)
+	local index = level + 1
+	while true do
+		local info = debug.getinfo(index, "S")
+		if info == nil then
+			return "?"
+		end
+		if info.what ~= "C" then
+			return info.short_src
+		end
+		index = index + 1
+	end
+end
+
+--- Whether a source file is the addon's own code (not a spec, not this mock).
+function mock.isAddonSource(source)
+	return type(source) == "string" and source:find("ForeverSixty/", 1, true) ~= nil
+end
+
+--- The methods that write into a client frame.
+local WRITING_METHODS = { CreateTexture = true, CreateFontString = true, HookScript = true, SetScript = true }
+
+--- `frame` behind a proxy that records, in `state.clientWrites`, every write the addon's
+--- own code makes into it: a field set on its table, and CreateTexture, CreateFontString,
+--- HookScript and SetScript called on it ({ frame, kind, key, source }). The mock's own
+--- writes and a spec's set-up writes are not the addon's and are not recorded.
+function mock.watchClientFrame(state, frame)
+	local name = frame.name
+	return setmetatable({}, {
+		__index = function(_, key)
+			local value = frame[key]
+			if WRITING_METHODS[key] and type(value) == "function" then
+				return function(self, ...)
+					local source = callerSource(2)
+					if mock.isAddonSource(source) then
+						state.clientWrites[#state.clientWrites + 1] = { frame = name, kind = key, key = select(1, ...),
+							source = source }
+					end
+					return value(self, ...)
+				end
+			end
+			return value
+		end,
+		__newindex = function(_, key, value)
+			local source = callerSource(2)
+			if mock.isAddonSource(source) then
+				state.clientWrites[#state.clientWrites + 1] = { frame = name, kind = "field", key = key, source = source }
+			end
+			frame[key] = value
+		end,
+	})
+end
+
 --- Install a fresh mock into _G and return its state table.
 -- @param state table with any of: talents, traits, equipped, bags, itemStats,
 --   class, race, realm, region, professions, build, guild
@@ -28,6 +102,7 @@ function mock.install(state)
 	state.itemStats = state.itemStats or {}
 	state.professions = state.professions or {}
 	state.frames = {}
+	state.clientWrites = {}
 	state.widgets = {}
 	state.timers = {}
 	state.itemIcons = state.itemIcons or {}
@@ -381,6 +456,9 @@ function mock.install(state)
 			return region
 		end
 		setmetatable(frame, { __index = methodFactory(state.missingMethods) })
+		if mock.isClientName(name) then
+			frame = mock.watchClientFrame(state, frame)
+		end
 		if track then
 			state.frames[#state.frames + 1] = frame
 		end

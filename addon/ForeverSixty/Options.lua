@@ -250,11 +250,12 @@ end
 --- calls its own refresh from here. The item tooltip draws on hover, so its cached
 --- sections are dropped instead, first (the slot marks read them): what is worn,
 --- carried, planned or levelled may have changed.
-function Options.refreshSurfaces(data)
+function Options.refreshSurfaces(data, event)
 	ItemTooltip.resetCache()
 	Chip.refresh(data)
 	TalentMarks.refresh(data)
-	SlotMarks.refresh(data)
+	-- The event: a bag update keeps the slots' own targets (SlotMarks.refresh).
+	SlotMarks.refresh(data, event)
 end
 
 --- Every event any surface refreshes on. Theme.registerEvent swallows the
@@ -310,6 +311,10 @@ function Options.onEvent(_, event, ...)
 		-- Combat: the chip hides (or fades and ignores the mouse) until it ends.
 		Inspect.onEvent(event, ...)
 		Chip.setCombat(event == "PLAYER_REGEN_DISABLED")
+		if event == "PLAYER_REGEN_ENABLED" then
+			-- A slot mark held back in combat (a new overlay on a client button) draws now.
+			SlotMarks.onCombatEnd()
+		end
 		Chip.refresh(Options.data)
 		return
 	end
@@ -390,7 +395,7 @@ function Options.onEvent(_, event, ...)
 		-- The build may have changed what the guild sees; Comms holds it to one hello a minute.
 		Options.sayHello()
 	end
-	Options.refreshSurfaces(Options.data)
+	Options.refreshSurfaces(Options.data, event)
 end
 
 --- Runs at file load. Registers the slash command, the events and the

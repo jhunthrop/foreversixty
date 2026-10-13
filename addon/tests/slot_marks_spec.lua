@@ -342,34 +342,104 @@ describe("SlotMarks", function()
 	end)
 
 	describe("the frames", function()
-		it("creates no texture before the panel first opens", function()
+		-- Fix round 2: on the live client a texture made on a slot button and an OnShow
+		-- hooked on the pane tainted the pane's own Show and Hide. The marks live on addon
+		-- overlays parented to the buttons; nothing is hooked or written on the pane.
+		it("hooks nothing on the character pane and makes nothing before a mark is needed", function()
 			start({ chest = WORN_CHEST }, { BAG_CHEST })
 			local chest = slotButton("CharacterChestSlot")
 			local paperDoll = _G.CreateFrame("Frame", "PaperDollFrame")
+			local characterFrame = _G.CreateFrame("Frame", "CharacterFrame")
 			SlotMarks.register()
-			assert.are.equal(0, #chest.regions)
-			-- The panel's own OnShow draws them.
-			local hook
-			for _, call in ipairs(paperDoll.calls) do
-				if call.method == "HookScript" and call[1] == "OnShow" then
-					hook = call[2]
-				end
-			end
-			assert.is_function(hook)
-			hook(paperDoll)
-			assert.is_true(arrowOn(chest))
+			assert.are.equal(0, mock.countCalls(paperDoll, "HookScript"))
+			assert.are.equal(0, mock.countCalls(characterFrame, "HookScript"))
+			assert.is_nil(SlotMarks.marksOn(chest))
+			assert.are.equal(0, #chest.children)
 		end)
 
-		it("anchors the arrow at the top right and the target at the bottom right, 12 px", function()
+		it("draws on an addon overlay parented to the button, covering it, with no script of its own", function()
 			start({ chest = WORN_CHEST }, { BAG_CHEST })
 			local chest = slotButton("CharacterChestSlot")
 			SlotMarks.drawPaperDoll()
 			local marks = SlotMarks.marksOn(chest)
-			assert.are.same({ "TOPRIGHT", chest, "TOPRIGHT", 0, 0 }, marks.arrow.points[1])
+			local overlay = marks.overlay
+			assert.are.equal(chest, overlay.parent)
+			assert.is_nil(overlay.name)
+			assert.are.same({ chest }, { mock.firstCall(overlay, "SetAllPoints")[1] })
+			assert.are.equal(0, mock.countCalls(overlay, "SetScript"))
+			assert.are.equal(0, mock.countCalls(overlay, "HookScript"))
+			assert.are.equal(0, #chest.regions)
+			assert.are.equal(overlay, marks.arrow.parent)
+			assert.are.same({ "TOPRIGHT", overlay, "TOPRIGHT", 0, 0 }, marks.arrow.points[1])
 			assert.are.equal(12, marks.arrow:GetWidth())
 			assert.are.equal(12, marks.arrow:GetHeight())
+			assert.are.equal(overlay, marks.target[1].parent)
 			assert.are.equal("BOTTOMRIGHT", marks.target[1].points[1][1])
-			assert.are.equal("BOTTOMRIGHT", marks.target[2].points[1][1])
+			assert.are.equal(overlay, marks.target[2].points[1][2])
+		end)
+
+		it("keeps the paper doll's marks current on the events, the pane shown or not", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			local chest = slotButton("CharacterChestSlot")
+			chest.IsVisible = function() return false end
+			SlotMarks.refresh(DATA)
+			assert.is_true(arrowOn(chest))
+		end)
+
+		it("never writes into a client frame: no texture, script, hook or field, through every path", function()
+			local mixin = { UpdateNewItem = function() end }
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, {
+				ContainerFrameItemButtonMixin = mixin, ToggleBackpack = function() end,
+			})
+			for _, slotName in pairs(ItemTooltip.SLOT_BUTTONS) do
+				slotButton(slotName)
+			end
+			_G.CreateFrame("Frame", "PaperDollFrame")
+			_G.CreateFrame("Frame", "CharacterFrame")
+			local frame = containerFrame(0, 1)
+			frame.Items = { _G.ContainerFrame1Item1 }
+			frame.UpdateItems = function() end
+			_G.ContainerFrame_Update = function() end
+			-- Built, drawn, refreshed, toggled, through every bag path.
+			SlotMarks.register()
+			SlotMarks.drawPaperDoll()
+			frame:UpdateItems()
+			_G.ContainerFrame_Update(frame)
+			_G.ContainerFrame1Item1.UpdateNewItem = mixin.UpdateNewItem
+			_G.ContainerFrame1Item1:UpdateNewItem(2)
+			_G.ToggleBackpack()
+			SlotMarks.refresh(DATA, "BAG_UPDATE_DELAYED")
+			SlotMarks.refresh(DATA, "PLAYER_EQUIPMENT_CHANGED")
+			Prefs.setFlag("tooltip", false)
+			SlotMarks.refresh(DATA)
+			Prefs.setFlag("tooltip", true)
+			SlotMarks.refresh(DATA)
+			SlotMarks.onItemInfo(400)
+			SlotMarks.onCombatEnd()
+			assert.is_true(arrowOn(_G.CharacterChestSlot))
+			assert.is_true(arrowOn(_G.ContainerFrame1Item1))
+			assert.are.same({}, state.clientWrites)
+		end)
+
+		it("the mock catches a write into a client frame (the spec above can fail)", function()
+			start()
+			local chest = slotButton("CharacterChestSlot")
+			local probe = assert(load("local button = ...; button:CreateTexture(nil, 'OVERLAY'); button.fsMark = true",
+				"@./ForeverSixty/surfaces/Probe.lua"))
+			probe(chest)
+			assert.are.equal(2, #state.clientWrites)
+			assert.are.equal("CreateTexture", state.clientWrites[1].kind)
+			assert.are.equal("field", state.clientWrites[2].kind)
+		end)
+
+		it("waits for the end of combat to make a new overlay, then draws it", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, { InCombatLockdown = function() return true end })
+			local chest = slotButton("CharacterChestSlot")
+			SlotMarks.drawPaperDoll()
+			assert.is_nil(SlotMarks.marksOn(chest))
+			_G.InCombatLockdown = function() return false end
+			SlotMarks.onCombatEnd()
+			assert.is_true(arrowOn(chest))
 		end)
 
 		-- Ruling 6: the marks follow "Gear tips on item tooltips".

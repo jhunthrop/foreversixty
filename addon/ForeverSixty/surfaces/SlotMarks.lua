@@ -14,10 +14,13 @@
 -- Pure model, thin frames: SlotMarks.marks and SlotMarks.targets are plain
 -- tables in, plain tables out; SlotMarks.compute reads the client once and is
 -- kept, by item link, until SlotMarks.refresh drops it (BAG_UPDATE_DELAYED and
--- PLAYER_EQUIPMENT_CHANGED, through Options). The marks are textures on the
--- client's own buttons, made the first time one is needed (never at load), so
--- they hide with the panel and the bags. Nothing polls. They follow the "Gear
--- tips on item tooltips" switch (ruling 6).
+-- PLAYER_EQUIPMENT_CHANGED, through Options). The marks are textures on addon-owned
+-- overlay frames parented to the client's buttons (fix round 2): nothing is ever
+-- written into a client frame and nothing on the character pane is hooked, so no
+-- addon code runs in the pane's own Show or Hide (that tainted the pane on the live
+-- client). The overlays are made the first time a mark is needed (never at load) and
+-- show and hide with their buttons. Nothing polls. They follow the "Gear tips on
+-- item tooltips" switch (ruling 6).
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -191,6 +194,11 @@ end
 --- GET_ITEM_INFO_RECEIVED redraws the marks (SlotMarks.onItemInfo).
 SlotMarks.waiting = {}
 
+--- The slots' own next targets ({ targets, waiting }), kept across bag updates until
+--- something they read changes (SlotMarks.refresh with any other event); never kept
+--- while a section still waits on an item.
+SlotMarks.rawTargets = nil
+
 --- The marks, read once and kept by item link until SlotMarks.refresh drops them.
 --- The targets (a section per slot) are read only when `withTargets` asks for them
 --- (the paper doll): the bags need the arrows alone. Targets read while a section still
@@ -204,9 +212,20 @@ function SlotMarks.current(withTargets)
 		SlotMarks.state = state
 	end
 	if withTargets and state.targets == nil then
-		local targets, waiting = targetsOf(state.read)
-		local kept = SlotMarks.marks(nil, targets, state.read.bagLinks, wearableBy(state.read.base)).targets
-		SlotMarks.waiting = waiting
+		-- The slots' own targets follow what is worn, the level and the spec, never the
+		-- bags: a bag update (fix round 2: the marks now redraw on every one, shown or
+		-- not) keeps them and only re-reads which of them are carried.
+		local raw = SlotMarks.rawTargets
+		if raw == nil then
+			local targets, waiting = targetsOf(state.read)
+			raw = { targets = targets, waiting = waiting }
+			SlotMarks.waiting = waiting
+			if next(waiting) == nil then
+				SlotMarks.rawTargets = raw
+			end
+		end
+		local waiting = raw.waiting
+		local kept = SlotMarks.marks(nil, raw.targets, state.read.bagLinks, wearableBy(state.read.base)).targets
 		if next(waiting) ~= nil then
 			-- Not final: these targets serve this draw only.
 			local drawn = {}
@@ -250,20 +269,47 @@ function SlotMarks.marksOn(button)
 	return marksByButton[button]
 end
 
---- The OVERLAY layer's top sublevel, so a mark sits over the client's own quality
---- border, search overlay and new-item glow on the same button.
+--- The OVERLAY layer's top sublevel, on the overlay frame (itself a level above the
+--- button), so a mark sits over the client's own quality border and overlays.
 local MARK_SUBLEVEL = 7
+
+--- Fix round 2 (the character pane taint): the addon never writes into a client frame.
+--- No texture is made on a slot or bag button, no script is set or hooked on the pane,
+--- and no key is set in a client frame's table. Each marked button gets one addon-owned
+--- frame parented to it and covering it: the marks are textures on that frame, so they
+--- show and hide with the button without any addon code running in the pane's own Show
+--- or Hide (the overlay has no scripts at all). Made the first time a mark is needed on
+--- that button, never in combat (a new frame on a secure button waits for its end).
+local overlays = setmetatable({}, { __mode = "k" })
+
+local function overlayFor(button)
+	local overlay = overlays[button]
+	if overlay == nil then
+		if Theme.inCombat() then
+			SlotMarks.deferred = true
+			return nil
+		end
+		overlay = CreateFrame("Frame", nil, button)
+		overlay:SetAllPoints(button)
+		overlays[button] = overlay
+	end
+	return overlay
+end
 
 local function marksFor(button)
 	local marks = marksByButton[button]
 	if marks == nil then
-		marks = {}
+		local overlay = overlayFor(button)
+		if overlay == nil then
+			return nil
+		end
+		marks = { overlay = overlay }
 		marksByButton[button] = marks
 	end
 	return marks
 end
 
---- The arrow at the button's top right: made the first time it shows.
+--- The arrow at the button's top right, on its overlay: made the first time it shows.
 local function setArrow(button, shown)
 	local marks = marksByButton[button]
 	if not shown then
@@ -273,19 +319,22 @@ local function setArrow(button, shown)
 		return
 	end
 	marks = marksFor(button)
+	if marks == nil then
+		return
+	end
 	if marks.arrow == nil then
-		-- The top sublevel: above the client's own quality border and overlays.
-		local arrow = button:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL)
+		local arrow = marks.overlay:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL)
 		arrow:SetTexture(Theme.MEDIA.arrow)
 		arrow:SetSize(Theme.SIZES.mark, Theme.SIZES.mark)
-		arrow:SetPoint("TOPRIGHT", button, "TOPRIGHT", 0, 0)
+		arrow:SetPoint("TOPRIGHT", marks.overlay, "TOPRIGHT", 0, 0)
 		marks.arrow = arrow
 	end
 	marks.arrow:Show()
 end
 
---- The target corner at the button's bottom right: two gold legs, `mark` long and
---- `markEdge` thick, along the bottom and up the right edge. Made the first time it shows.
+--- The target corner at the button's bottom right, on its overlay: two gold legs,
+--- `mark` long and `markEdge` thick, along the bottom and up the right edge. Made the
+--- first time it shows.
 local function setTarget(button, shown)
 	local marks = marksByButton[button]
 	if not shown then
@@ -296,13 +345,17 @@ local function setTarget(button, shown)
 		return
 	end
 	marks = marksFor(button)
+	if marks == nil then
+		return
+	end
 	if marks.target == nil then
-		local across = Theme.paint(button:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL), "gold")
+		local overlay = marks.overlay
+		local across = Theme.paint(overlay:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL), "gold")
 		across:SetSize(Theme.SIZES.mark, Theme.SIZES.markEdge)
-		across:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
-		local up = Theme.paint(button:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL), "gold")
+		across:SetPoint("BOTTOMRIGHT", overlay, "BOTTOMRIGHT", 0, 0)
+		local up = Theme.paint(overlay:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL), "gold")
 		up:SetSize(Theme.SIZES.markEdge, Theme.SIZES.mark)
-		up:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
+		up:SetPoint("BOTTOMRIGHT", overlay, "BOTTOMRIGHT", 0, 0)
 		marks.target = { across, up }
 	end
 	marks.target[1]:Show()
@@ -427,6 +480,16 @@ function SlotMarks.onContainerFrame(frame)
 	end
 end
 
+--- Combat ended: draws the marks a combat lockdown held back (a new overlay on a
+--- client button waits for it), and does nothing when none was.
+function SlotMarks.onCombatEnd()
+	if not SlotMarks.deferred then
+		return
+	end
+	SlotMarks.deferred = nil
+	SlotMarks.refresh()
+end
+
 --- Hides every mark already drawn (the switch went off, or the marks failed).
 function SlotMarks.hideAll()
 	for button in pairs(marksByButton) do
@@ -436,23 +499,24 @@ function SlotMarks.hideAll()
 end
 
 --- Drops what was read (an item moved, or something was put on or taken off) and
---- redraws the marks on screen: the paper doll while it shows, and every bag item
---- button the hook reached that still shows. Nothing is read while nothing shows.
-function SlotMarks.refresh(data)
+--- redraws the marks: the paper doll's always (fix round 2: no addon code may run in
+--- the pane's own Show, so its marks are kept current on the events and simply show
+--- with it), and every bag item button the hook reached that still shows. A bag
+--- update (`event` BAG_UPDATE_DELAYED) keeps the slots' own targets, which follow what
+--- is worn and not the bags; any other event drops them too.
+function SlotMarks.refresh(data, event)
 	if data ~= nil then
 		SlotMarks.data = data
 	end
 	SlotMarks.state = nil
+	if event ~= "BAG_UPDATE_DELAYED" then
+		SlotMarks.rawTargets = nil
+	end
 	if not enabled() then
 		SlotMarks.hideAll()
 		return
 	end
-	for _, buttonName in pairs(ItemTooltip.SLOT_BUTTONS) do
-		if visible(Compat.clientGlobal(buttonName, "table")) then
-			SlotMarks.drawPaperDoll()
-			break
-		end
-	end
+	SlotMarks.drawPaperDoll()
 	for button, bag in pairs(bagButtons) do
 		if visible(button) then
 			SlotMarks.markBagButton(button, bag, ask(button, "GetID"))
@@ -503,19 +567,14 @@ function SlotMarks.hookBags()
 	return SlotMarks.bagHooks
 end
 
---- Hooks the paper doll's show (the marks are drawn the first time it opens, never
---- at load) and the bags. Idempotent.
+--- Hooks the bags (function hooks through hooksecurefunc only). Nothing on the
+--- character pane is hooked (fix round 2): its marks are drawn on the events
+--- (SlotMarks.refresh) onto addon overlays that show with the pane. Idempotent.
 function SlotMarks.register()
 	if SlotMarks.registered then
 		return
 	end
 	SlotMarks.registered = true
-	for _, name in ipairs({ "PaperDollFrame", "CharacterFrame" }) do
-		local frame = Compat.clientGlobal(name, "table")
-		if frame ~= nil then
-			Theme.hookScript(frame, "OnShow", SlotMarks.drawPaperDoll)
-		end
-	end
 	local hooks = SlotMarks.hookBags()
 	if #hooks > 0 then
 		Theme.noteVerbose(string.format(L.diagBagHooks, table.concat(hooks, ", ")))
