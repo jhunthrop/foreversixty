@@ -116,7 +116,7 @@ Run on one character per role and tick here:
       2 s, in readable grey inside a grey 1 px border.
 - [ ] The Settings page opens at the top; a hint that wraps to two lines pushes the next row down
       a line; the minimap hint reads "Options > AddOns".
-- [ ] With Data.lua's build set to an older patch, "Addon data: an older patch. Update the addon at
+- [ ] With Data.lua's build set to an older patch, "Addon data: for an older patch. Update Forever Sixty at
       foreversixty.gg." sits under the title, the whole sentence in the warning colour, as well as at
       the foot; "Player ratings (on player tooltips): not installed. …" stays at the foot only, muted.
 - [ ] Wheeling one notch at a time to the end of the page shows the foot's last line with space

@@ -255,7 +255,7 @@ describe("SettingsPage, the command list", function()
 	-- Fix round 3, item 5: two chat lines, so /fs diag verbose never reads as having the
 	-- others for options; /fs record's arguments live in its own usage.
 	it("names every tester command in two short chat lines, no pipes", function()
-		assert.are.same({ "For testers: /fs diag verbose", "Also /fs inbox, /fs hello, /fs seen, /fs record" },
+		assert.are.same({ "For testers: /fs diag verbose", "For testers: /fs inbox, /fs hello, /fs seen, /fs record" },
 			L.helpTesters)
 		for _, line in ipairs(L.helpTesters) do
 			assert.is_nil(line:find("|", 1, true))
@@ -300,7 +300,7 @@ describe("SettingsPage, the data lines", function()
 	it("says an older patch, action first, in the warning colour when the client has moved on", function()
 		for _, client in ipairs({ "1.60.2", "1.61.0" }) do
 			local text, tone = words(SettingsPage.addonDataLine("1.60.1.70291", client))
-			assert.are.equal("Addon data: an older patch. Update the addon at foreversixty.gg.", text)
+			assert.are.equal("Addon data: for an older patch. Update Forever Sixty at foreversixty.gg.", text)
 			assert.are.equal("warning", tone)
 		end
 	end)
@@ -342,7 +342,7 @@ describe("SettingsPage, the data lines", function()
 	it("keeps each data sentence in one Locale string", function()
 		assert.are.same({
 			"Addon data: current for this patch",
-			"Addon data: an older patch. Update the addon at foreversixty.gg.",
+			"Addon data: for an older patch. Update Forever Sixty at foreversixty.gg.",
 			"Player ratings (on player tooltips): current",
 			"Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at foreversixty.gg.",
 			"Player ratings (on player tooltips): not installed. Get Forever Sixty Data at foreversixty.gg.",
@@ -383,7 +383,7 @@ describe("SettingsPage, the data lines", function()
 		local Theme = require("Theme")
 		local entry = SettingsPage.addonDataLine("1.60.1.70291", "1.61.0")
 		assert.are.equal("Addon data: "
-			.. Theme.inlineColor("warning", "an older patch. Update the addon at foreversixty.gg."),
+			.. Theme.inlineColor("warning", "for an older patch. Update Forever Sixty at foreversixty.gg."),
 			SettingsPage.lineText(entry))
 		local ratings = SettingsPage.ratingsLine({ available = true, stale = true })
 		assert.are.equal("Player ratings (on player tooltips): "

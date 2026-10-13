@@ -307,10 +307,10 @@ talents."; no upload is claimed). Then Reset positions (the chip, the minimap bu
 build dialog move at once through `Prefs.onReset`; for 2 s the button reads "Positions reset",
 disabled, its label and 1 px border in the muted-text grey at full alpha); the commands under a
 gold heading and a divider, each `/fs` token in body (`L.settingsCommands`, which `/fs help`
-prints too, followed there by two muted lines, "For testers: /fs diag verbose" and "Also /fs
+prints too, followed there by two muted lines, "For testers: /fs diag verbose" and "For testers: /fs
 inbox, /fs hello, /fs seen, /fs record"); and at the foot two lines, one sentence per state (the
 subject muted, the state muted or in the warning colour): "Addon data: current for this patch"
-or "Addon data: an older patch. Update the addon at foreversixty.gg.", and "Player ratings (on
+or "Addon data: for an older patch. Update Forever Sixty at foreversixty.gg.", and "Player ratings (on
 player tooltips): current", "…: too old. Get the new Forever Sixty Data at foreversixty.gg.",
 "…: not installed. Get Forever Sixty Data at foreversixty.gg." or "…: made for a newer addon.
 Update Forever Sixty at foreversixty.gg." (`/fs diag` keeps its own wording), no build numbers,

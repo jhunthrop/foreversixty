@@ -562,7 +562,8 @@ describe("SettingsPage, the canvas", function()
 		show()
 		assert.are.equal(SettingsPage.lineText(SettingsPage.addonDataLine(DATA.build, "1.61.0")),
 			SettingsPage.dataLabels[1]:GetText())
-		assert.is_truthy(SettingsPage.dataLabels[1]:GetText():find("an older patch. Update the addon at foreversixty.gg.",
+		assert.is_truthy(SettingsPage.dataLabels[1]:GetText():find(
+			"for an older patch. Update Forever Sixty at foreversixty.gg.",
 			1, true))
 	end)
 
@@ -581,7 +582,8 @@ describe("SettingsPage, the canvas", function()
 		assert.are.equal(layout.warning, mock.lastCall(warning, "SetPoint")[5])
 		assert.are.equal(layout.rows[1], rowY(SettingsPage.toggles[1]))
 		assert.are.equal(layout.height, SettingsPage.scroll.contentHeight)
-		assert.is_truthy(SettingsPage.dataLabels[1]:GetText():find("an older patch. Update the addon at foreversixty.gg.",
+		assert.is_truthy(SettingsPage.dataLabels[1]:GetText():find(
+			"for an older patch. Update Forever Sixty at foreversixty.gg.",
 			1, true))
 		assert.are.equal(SettingsPage.lineText(SettingsPage.ratingsLine({ available = true, stale = false })),
 			SettingsPage.dataLabels[2]:GetText())

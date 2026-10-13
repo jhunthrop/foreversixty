@@ -27,7 +27,7 @@ local L = {
 	},
 	helpTesters = {
 		"For testers: /fs diag verbose",
-		"Also /fs inbox, /fs hello, /fs seen, /fs record",
+		"For testers: /fs inbox, /fs hello, /fs seen, /fs record",
 	},
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
@@ -316,7 +316,7 @@ local L = {
 	-- player read "ratings" as hit and crit ratings; the place to get them is named. /fs diag
 	-- keeps its own wording.
 	settingsAddonDataCurrent = "Addon data: current for this patch",
-	settingsAddonDataOlder = "Addon data: an older patch. Update the addon at " .. SITE .. ".",
+	settingsAddonDataOlder = "Addon data: for an older patch. Update Forever Sixty at " .. SITE .. ".",
 	settingsRatingsCurrent = "Player ratings (on player tooltips): current",
 	settingsRatingsOld = "Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at " .. SITE .. ".",
 	settingsRatingsNewer = "Player ratings (on player tooltips): made for a newer addon. Update Forever Sixty at "
