@@ -7,7 +7,7 @@
 --   - Smoke Gouda, a guildmate: logged, a score in another tier;
 --   - Facep Alm, a guildmate: no logs yet (score 0, no fights), which reads "no logs yet";
 --   - four guild roster members for the guild tab captures (L5.1): Onearm Lopen (epic), Sanna
---     Widebraid (uncommon), Aelith Mooncalw (rare, offline), Belee Dai (legendary, offline).
+--     Widebraid (uncommon), Aelith Moonclaw (rare, offline), Belee Dat (legendary, offline).
 -- The data is invented for the captures; the site never wrote it. Install: addon/README.md,
 -- "The L4.4 data fixture". Stale (the settings page says "too old") three days after
 -- `generated`: move the date forward to capture later.
@@ -71,7 +71,7 @@ ForeverSixtyData = {
 			fights = 4,
 			profile = "/character/us/pvp/sanna-widebraid",
 		},
-		["Aelith Mooncalw-ClassicBetaPvP"] = {
+		["Aelith Moonclaw-ClassicBetaPvP"] = {
 			score = 1180,
 			tier = "rare",
 			as_of = "2026-10-13",
@@ -83,9 +83,9 @@ ForeverSixtyData = {
 			best_parses = {},
 			attendance = 0.6,
 			fights = 8,
-			profile = "/character/us/pvp/aelith-mooncalw",
+			profile = "/character/us/pvp/aelith-moonclaw",
 		},
-		["Belee Dai-ClassicBetaPvP"] = {
+		["Belee Dat-ClassicBetaPvP"] = {
 			score = 2310,
 			tier = "legendary",
 			as_of = "2026-10-13",
@@ -97,7 +97,7 @@ ForeverSixtyData = {
 			best_parses = {},
 			attendance = 1,
 			fights = 26,
-			profile = "/character/us/pvp/belee-dai",
+			profile = "/character/us/pvp/belee-dat",
 		},
 		["Facep Alm-ClassicBetaPvP"] = {
 			score = 0,
