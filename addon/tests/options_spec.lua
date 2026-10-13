@@ -50,6 +50,7 @@ describe("Options", function()
 		helper.load("Settings")
 		helper.load("RewardMarks")
 		helper.load("PanelTab")
+		helper.load("GuildTab")
 		Options = helper.load("Options")
 		Options.data = DATA
 	end)
@@ -812,6 +813,55 @@ describe("Options", function()
 	it("hands the panel tab the data at load", function()
 		Options.register()
 		assert.are.equal(Options.data, require("PanelTab").data)
+	end)
+
+	-- L5.1: the guild tab redraws on the roster it asked for (and nothing else does), its
+	-- button is made when the guild frame loads, and /fs diag prints its line.
+	it("routes GUILD_ROSTER_UPDATE to the guild tab alone", function()
+		local GuildTab, Chip = require("GuildTab"), require("Chip")
+		local roster, chip = 0, 0
+		GuildTab.onRosterUpdate = function()
+			roster = roster + 1
+		end
+		Chip.refresh = function()
+			chip = chip + 1
+		end
+		local listed = false
+		for _, event in ipairs(Options.EVENTS) do
+			listed = listed or event == "GUILD_ROSTER_UPDATE"
+		end
+		assert.is_true(listed)
+		Options.onEvent(Options.frame, "GUILD_ROSTER_UPDATE")
+		assert.are.equal(1, roster)
+		assert.are.equal(0, chip)
+	end)
+
+	it("refreshes the guild tab with every surface and when an addon (the guild frame) loads", function()
+		local GuildTab, Chip, SlotMarks = require("GuildTab"), require("Chip"), require("SlotMarks")
+		Chip.refresh = function() end
+		SlotMarks.refresh = function() end
+		local calls = 0
+		GuildTab.refresh = function()
+			calls = calls + 1
+		end
+		Options.refreshSurfaces(DATA)
+		Options.onEvent(Options.frame, "ADDON_LOADED", "Blizzard_Communities")
+		assert.are.equal(2, calls)
+	end)
+
+	it("prints the guild tab's line on /fs diag, and hands it the data at load", function()
+		local GuildTab = require("GuildTab")
+		require("Theme").reset()
+		GuildTab.diagLine = function()
+			return "the guild line"
+		end
+		local found = false
+		for _, line in ipairs(Options.handle("diag")) do
+			found = found or line == "the guild line"
+		end
+		assert.is_true(found)
+		Options.register()
+		assert.are.equal(Options.data, GuildTab.data)
 	end)
 
 	-- L4.2 ruling 4: the chip's here line follows the instance entered.

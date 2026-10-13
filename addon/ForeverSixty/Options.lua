@@ -35,6 +35,7 @@ local Score = ns.Score or require("Score")
 local BuildDialog = ns.BuildDialog or require("BuildDialog")
 local SettingsPage = ns.SettingsPage or require("Settings")
 local PanelTab = ns.PanelTab or require("PanelTab")
+local GuildTab = ns.GuildTab or require("GuildTab")
 
 local Options = {}
 Options.data = Data
@@ -189,6 +190,8 @@ function Options.handle(input)
 		surfaces[#surfaces + 1] = SlotMarks.diagLine()
 		-- The character-panel tab (L4.3 ruling 7): open or closed, its targets and rotation rows.
 		surfaces[#surfaces + 1] = PanelTab.diagLine()
+		-- The guild tab (L5.1 ruling 6): open or closed, its rows and live rows, officer or not.
+		surfaces[#surfaces + 1] = GuildTab.diagLine()
 		local info = copy(Theme.infoNotes())
 		if rest == "verbose" then
 			for _, note in ipairs(Theme.verboseNotes()) do
@@ -322,6 +325,8 @@ function Options.refreshSurfaces(data, event)
 	RewardMarks.refresh(data)
 	-- The character-panel tab (L4.3): its button made and placed, an open flyout redrawn.
 	PanelTab.refresh(data, event)
+	-- The guild tab (L5.1): its button made once the guild frame exists, an open flyout redrawn.
+	GuildTab.refresh(data)
 	-- The chat badges' switch, read once here rather than on every chat line (L4.4).
 	ChatBadges.refresh()
 end
@@ -341,6 +346,8 @@ Options.EVENTS = {
 	"PLAYER_EQUIPMENT_CHANGED",
 	-- The quest reward and roll marks (L4.2): the reward panel opening and closing, a roll.
 	"QUEST_COMPLETE", "QUEST_FINISHED", "START_LOOT_ROLL",
+	-- The guild tab (L5.1): the roster the flyout asked for has arrived.
+	"GUILD_ROSTER_UPDATE",
 }
 
 --- The talent window's own clicks, which only the talent marks follow:
@@ -382,6 +389,11 @@ function Options.onEvent(_, event, ...)
 		end
 		return
 	end
+	if event == "GUILD_ROSTER_UPDATE" then
+		-- Only the guild tab reads the guild roster: an open flyout redraws, nothing else.
+		GuildTab.onRosterUpdate()
+		return
+	end
 	if event == "GROUP_ROSTER_UPDATE" then
 		Inspect.onEvent(event, ...)
 		return
@@ -395,6 +407,8 @@ function Options.onEvent(_, event, ...)
 			SlotMarks.onCombatEnd()
 			-- The panel tab's button, held back in combat, is made now.
 			PanelTab.onCombatEnd()
+			-- The guild tab's button, held back in combat, is made now.
+			GuildTab.onCombatEnd()
 		end
 		Chip.refresh(Options.data)
 		return
@@ -402,6 +416,8 @@ function Options.onEvent(_, event, ...)
 	if event == "ADDON_LOADED" then
 		-- The talent window arrives as its own addon; hook it when it does.
 		TalentGlow.watch(Options.data)
+		-- So does the guild frame (Blizzard_Communities): the guild tab's button is made on it.
+		GuildTab.refresh(Options.data)
 		return
 	end
 	if event == "READY_CHECK_FINISHED" then
@@ -532,6 +548,10 @@ function Options.register()
 	-- The character-panel tab (L4.3): its button the first time a refresh finds the pane, its
 	-- flyout on the first click. Nothing on the pane is hooked.
 	PanelTab.data = Options.data
+	-- The guild tab (L5.1): its button once the guild frame loads, its flyout on the first
+	-- click; it listens for the guild's snapshot! answers. Nothing on the guild frame is hooked.
+	GuildTab.data = Options.data
+	GuildTab.register()
 	-- The minimap button and the compartment entry: left-click opens the build dialog on its
 	-- paste tab, right-click the Settings page (the command list where it cannot open).
 	MinimapButton.open = function()

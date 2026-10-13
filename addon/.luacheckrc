@@ -54,6 +54,8 @@ read_globals = {
 	-- Addon messages (Comms.lua, contract 2), all behind Theme's capability checks.
 	"C_ChatInfo", "SendAddonMessage", "RegisterAddonMessagePrefix",
 	"IsInGuild", "GetNumGuildMembers", "GetGuildRosterInfo", "UnitIsGroupLeader",
+	-- The guild tab (L5.1): the roster request, behind Theme's capability checks.
+	"C_GuildInfo", "GuildRoster",
 	-- The player tooltip and the chat badges (L4.4), each behind a type check. The chat
 	-- filter API itself is read through _G in Compat.addChatFilter.
 	"UnitExists", "UnitIsUnit", "GetPlayerInfoByGUID",

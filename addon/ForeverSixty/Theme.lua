@@ -289,6 +289,18 @@ Theme.SIZES = {
 	panelButtonHeight = 22,
 	--- The room a target row keeps at its right for the gain ("+12.3 DPS") beside the name.
 	panelGainWidth = 64,
+	--- The guild tab (spec section 4.7, L5.1): its flyout's width (its button is the panel
+	--- tab's), one roster row, the column header row and its sort arrow, the gap between two
+	--- columns, and the "Online only" row above the headers. The officer region's push
+	--- button is `guildPushWidth` wide; the push confirm frame `guildConfirmWidth`.
+	guildFlyoutWidth = 480,
+	guildRow = 16,
+	guildHeaderRow = 16,
+	guildSortArrow = 8,
+	guildColumnGap = 4,
+	guildToolbar = 20,
+	guildPushWidth = 200,
+	guildConfirmWidth = 300,
 }
 
 --- The client's own font objects, and what to use when one is missing.
@@ -344,7 +356,14 @@ Theme.MEDIA = {
 	--- instead only with Theme.ARROW_FROM_ATLAS on and where the client knows the atlas
 	--- (C_Texture.GetAtlasInfo).
 	arrowAtlas = "bags-greenarrow",
+	--- The guild tab's column sort arrow (L5.1): the client's own, the one its Who and
+	--- classic guild roster headers draw, pointing down for high to low (Theme.SORT_COORDS).
+	sortArrow = "Interface\\Buttons\\UI-SortArrow",
 }
+
+--- The sort arrow's texture coordinates: the art's left 9 of 16 pixels, upright for high to
+--- low (down), flipped for low to high (up), as the client's own headers cut it.
+Theme.SORT_COORDS = { descending = { 0, 0.5625, 0, 1 }, ascending = { 0, 0.5625, 1, 0 } }
 
 --- Whether the slot marks' arrow is the client's `bags-greenarrow` atlas (where the client
 --- knows it) rather than the addon's own 12 px glyph (SlotMarks.ARROW_PARTS). Off: on the live
@@ -1173,6 +1192,54 @@ function Theme.guildRankOf(fullName, unit)
 		end
 	end
 	return nil
+end
+
+--- The player's guild and rank index (0 is the guild master), or nil where the player has no
+--- guild or the client cannot say (GetGuildInfo("player"), its rank name never read).
+function Theme.playerGuild()
+	if type(GetGuildInfo) ~= "function" then
+		return nil
+	end
+	local ok, name, _, rankIndex = pcall(GetGuildInfo, "player")
+	if not ok or name == nil then
+		return nil
+	end
+	return name, type(rankIndex) == "number" and rankIndex or nil
+end
+
+--- The guild roster as the client holds it (L5.1): one { name, rankIndex, level, classToken,
+--- online } per GetGuildRosterInfo row, the name as the client gives it ("Name-Realm"). Empty
+--- where the client has no roster API or has not sent the roster yet. Only read.
+function Theme.guildRoster()
+	local roster = {}
+	if type(GetNumGuildMembers) ~= "function" or type(GetGuildRosterInfo) ~= "function" then
+		return roster
+	end
+	local okCount, count = pcall(GetNumGuildMembers)
+	for index = 1, (okCount and tonumber(count) or 0) do
+		local ok, name, _, rankIndex, level, _, _, _, _, online, _, classToken = pcall(GetGuildRosterInfo, index)
+		if ok and type(name) == "string" and name ~= "" then
+			roster[#roster + 1] = {
+				name = name, rankIndex = tonumber(rankIndex), level = tonumber(level),
+				classToken = type(classToken) == "string" and classToken or nil, online = online == true or online == 1,
+			}
+		end
+	end
+	return roster
+end
+
+--- Asks the server for the guild roster (C_GuildInfo.GuildRoster, else the old GuildRoster):
+--- GUILD_ROSTER_UPDATE answers. True when asked.
+function Theme.requestGuildRoster()
+	local ask
+	if type(C_GuildInfo) == "table" and type(C_GuildInfo.GuildRoster) == "function" then
+		ask = C_GuildInfo.GuildRoster
+	elseif type(GuildRoster) == "function" then
+		ask = GuildRoster
+	else
+		return false
+	end
+	return (pcall(ask))
 end
 
 --- Whether a unit leads the player's raid or party; false where the client cannot say.

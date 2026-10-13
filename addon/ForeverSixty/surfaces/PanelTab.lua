@@ -122,18 +122,7 @@ end
 --- sample on it (the flyout's own measurer), then GetStringHeight is read, rounded up, never
 --- under `panelLine`; `panelLine` where the client cannot say.
 function PanelTab.measuredLine(probe, measure)
-	if type(probe) ~= "table" or type(probe.GetStringHeight) ~= "function" then
-		return S.panelLine
-	end
-	if type(measure) == "function" then
-		pcall(measure, PanelTab.LINE_SAMPLE)
-	end
-	local ok, height = pcall(probe.GetStringHeight, probe)
-	if not ok or type(height) ~= "number" then
-		return S.panelLine
-	end
-	-- A hair over a whole pixel is that pixel (12.0001 is 12), not the next one.
-	return math.max(S.panelLine, math.ceil(height - 0.01))
+	return Widgets.measuredLine(probe, measure, PanelTab.LINE_SAMPLE, S.panelLine)
 end
 --- Rotation.plainCondition's answers by measure, then by width and text (fix round 1, item 7):
 --- a condition is measured word by word, so each is measured once.
@@ -850,66 +839,13 @@ local function pane()
 	return Compat.clientGlobal("CharacterFrame", "table")
 end
 
---- Whether a frame shows (its own flag) or is visible (it and every parent), asked, never
---- written (a client frame is only ever read).
-local function ask(frame, method)
-	if type(frame) ~= "table" or type(frame[method]) ~= "function" then
-		return false
-	end
-	local ok, answer = pcall(frame[method], frame)
-	return ok and answer == true
-end
-
-local function isShown(frame)
-	return ask(frame, "IsShown")
-end
-
-local function isVisible(frame)
-	return ask(frame, "IsVisible")
-end
-
---- Whether the client has laid `frame` out (fix round 2): GetLeft answers a number. A frame
---- that is hidden up its chain or anchored to nothing answers nil, and a frame anchored to it
---- has no position either.
-local function hasRect(frame)
-	if type(frame) ~= "table" or type(frame.GetLeft) ~= "function" then
-		return false
-	end
-	local ok, left = pcall(frame.GetLeft, frame)
-	return ok and type(left) == "number"
-end
-
---- A client frame something of ours may anchor to: it shows and it has a rect.
-local function placed(frame)
-	return isShown(frame) and hasRect(frame)
-end
+-- The client-frame reads (shown, laid out, height) are Widgets' (L5.1 ruling 1: shared with
+-- the guild tab), each asked, never written.
+local isShown, isVisible, placed = Widgets.isShown, Widgets.isVisible, Widgets.placed
 
 --- The pane's height, read, or nil where the client cannot say.
 local function paneHeight()
-	local frame = pane()
-	if frame == nil or type(frame.GetHeight) ~= "function" then
-		return nil
-	end
-	local ok, height = pcall(frame.GetHeight, frame)
-	return ok and type(height) == "number" and height or nil
-end
-
---- The client global `name` when it is a table, through a guarded lookup; nil otherwise.
-local function clientFrame(name)
-	local ok, frame = pcall(Compat.clientGlobal, name, "table")
-	return ok and frame or nil
-end
-
---- The highest of `<prefix>1..PanelTab.MAX_TABS` that shows with a rect, or nil.
-local function lastShown(prefix)
-	local found
-	for index = 1, PanelTab.MAX_TABS do
-		local tab = clientFrame(prefix .. index)
-		if tab ~= nil and placed(tab) then
-			found = tab
-		end
-	end
-	return found
+	return Widgets.frameHeight(pane())
 end
 
 --- The client's own tabs the button sits right of (fix round 1, item 5; fix round 2, item 2),
@@ -923,7 +859,7 @@ local function tabAnchor(frame)
 		return system
 	end
 	for _, prefix in ipairs(PanelTab.TAB_PREFIXES) do
-		local tab = lastShown(prefix)
+		local tab = Widgets.lastPlaced(prefix, PanelTab.MAX_TABS)
 		if tab ~= nil then
 			return tab
 		end
@@ -934,7 +870,7 @@ end
 --- The pane's mode-tab column when it shows with a rect (fix round 2, item 1), looked up again
 --- each time: it may appear after the flyout was made. Only read.
 local function modeTabs()
-	local frame = clientFrame(PanelTab.MODE_TABS)
+	local frame = Widgets.clientFrame(PanelTab.MODE_TABS)
 	if frame ~= nil and placed(frame) then
 		return frame
 	end
@@ -944,13 +880,7 @@ end
 --- The flyout TOPLEFT at the mode tabs' TOPRIGHT (the panel offset across, level with their
 --- top), else at the pane's TOPRIGHT: it never covers the column it used to interleave with.
 local function placeFlyout(flyout, frame)
-	local tabs = modeTabs()
-	flyout:ClearAllPoints()
-	if tabs ~= nil then
-		flyout:SetPoint("TOPLEFT", tabs, "TOPRIGHT", S.panelOffsetX, 0)
-	else
-		flyout:SetPoint("TOPLEFT", frame, "TOPRIGHT", S.panelOffsetX, S.panelOffsetY)
-	end
+	Widgets.placeFlyout(flyout, frame, modeTabs(), S.panelOffsetX, S.panelOffsetY)
 end
 
 --- The button right of the client's own tabs, else under the pane's bottom right; anchored
@@ -973,22 +903,7 @@ end
 --- A failure here must never become a Lua error on every event: the tab turns itself off until
 --- /reload, hides what it drew and says so once in /fs diag.
 local function guarded(action, ...)
-	if PanelTab.disabled then
-		return nil
-	end
-	local ok, result = pcall(action, ...)
-	if not ok then
-		PanelTab.disabled = true
-		for _, key in ipairs({ "flyout", "button" }) do
-			local frame = PanelTab[key]
-			if frame ~= nil then
-				pcall(frame.Hide, frame)
-			end
-		end
-		Theme.note(string.format(L.diagPanelFailed, tostring(result)))
-		return nil
-	end
-	return result
+	return Widgets.guarded(PanelTab, L.diagPanelFailed, action, ...)
 end
 
 --- The "Forever Sixty" button (fix round 1, item 5: it read as plain text over the world): the
@@ -1020,19 +935,7 @@ function PanelTab.ensureButton()
 		end)
 		-- Its hover says what it is and what a click does (fix round 3, item 3), after its own
 		-- brighten.
-		local enter, leave = button:GetScript("OnEnter"), button:GetScript("OnLeave")
-		button:SetScript("OnEnter", function(self)
-			if enter ~= nil then
-				enter(self)
-			end
-			Theme.showLines(self, PanelTab.buttonHint(), "ANCHOR_RIGHT")
-		end)
-		button:SetScript("OnLeave", function(self)
-			if leave ~= nil then
-				leave(self)
-			end
-			Theme.hideTooltip()
-		end)
+		Widgets.withHint(button, PanelTab.buttonHint)
 		PanelTab.button = button
 	end
 	placeButton(button, frame)

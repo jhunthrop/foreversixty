@@ -763,5 +763,217 @@ function Widgets.toggle(parent, text, checked, onChange, hint, hintWidth)
 	return toggle
 end
 
+-- Client frames, only ever read (L4.3, shared with the guild tab L5.1) ----------------------
+--
+-- The 1.60 client taints a frame of its own on any HookScript, CreateTexture or field write
+-- (L4.1, L4.3), so the surfaces that sit beside a client frame (the character panel tab, the
+-- guild tab) only ask it questions: whether it shows, whether it has been laid out, how tall it
+-- is. Each answer goes through pcall: a client frame may refuse a question (a secret value).
+
+--- Whether `frame` answers true to `method` (IsShown, IsVisible); false for anything that is
+--- not a frame or cannot answer. Asked, never written.
+function Widgets.ask(frame, method)
+	if type(frame) ~= "table" or type(frame[method]) ~= "function" then
+		return false
+	end
+	local ok, answer = pcall(frame[method], frame)
+	return ok and answer == true
+end
+
+--- Whether a frame shows (its own flag).
+function Widgets.isShown(frame)
+	return Widgets.ask(frame, "IsShown")
+end
+
+--- Whether a frame is visible (it and every parent).
+function Widgets.isVisible(frame)
+	return Widgets.ask(frame, "IsVisible")
+end
+
+--- Whether the client has laid `frame` out (L4.3 fix round 2): GetLeft answers a number. A
+--- frame that is hidden up its chain or anchored to nothing answers nil, and a frame anchored
+--- to it has no position either.
+function Widgets.hasRect(frame)
+	if type(frame) ~= "table" or type(frame.GetLeft) ~= "function" then
+		return false
+	end
+	local ok, left = pcall(frame.GetLeft, frame)
+	return ok and type(left) == "number"
+end
+
+--- A client frame something of ours may anchor to: it shows and it has a rect.
+function Widgets.placed(frame)
+	return Widgets.isShown(frame) and Widgets.hasRect(frame)
+end
+
+--- The client global `name` when it is a table, through a guarded lookup; nil otherwise.
+function Widgets.clientFrame(name)
+	local ok, frame = pcall(function()
+		return _G[name]
+	end)
+	return ok and type(frame) == "table" and frame or nil
+end
+
+--- A frame's height, read, or nil where the client cannot say.
+function Widgets.frameHeight(frame)
+	if type(frame) ~= "table" or type(frame.GetHeight) ~= "function" then
+		return nil
+	end
+	local ok, height = pcall(frame.GetHeight, frame)
+	return ok and type(height) == "number" and height or nil
+end
+
+--- A frame's edge (`method`: "GetRight", "GetTop"), read, or nil where the client cannot say.
+function Widgets.frameEdge(frame, method)
+	if type(frame) ~= "table" or type(frame[method]) ~= "function" then
+		return nil
+	end
+	local ok, edge = pcall(frame[method], frame)
+	return ok and type(edge) == "number" and edge or nil
+end
+
+--- The highest of the client globals `<prefix>1..most` that shows with a rect, or nil.
+function Widgets.lastPlaced(prefix, most)
+	local found
+	for index = 1, most do
+		local frame = Widgets.clientFrame(prefix .. index)
+		if frame ~= nil and Widgets.placed(frame) then
+			found = frame
+		end
+	end
+	return found
+end
+
+--- An addon flyout beside a client frame: its TOPLEFT at the TOPRIGHT of `column` (a client
+--- column of tabs at the frame's right edge that shows with a rect; `offsetX` across, level
+--- with its top), else at `frame`'s own TOPRIGHT (`offsetX`, `offsetY`). It never covers the
+--- column. The flyout's own points only: nothing is set on either client frame.
+function Widgets.placeFlyout(flyout, frame, column, offsetX, offsetY)
+	flyout:ClearAllPoints()
+	if column ~= nil then
+		flyout:SetPoint("TOPLEFT", column, "TOPRIGHT", offsetX or 0, 0)
+	else
+		flyout:SetPoint("TOPLEFT", frame, "TOPRIGHT", offsetX or 0, offsetY or 0)
+	end
+	return flyout
+end
+
+--- The height of one line of `probe`'s font (L4.3 fix round 2, re-review a): `measure` sets
+--- `sample` on it (the flyout's own measurer), then GetStringHeight is read, rounded up, never
+--- under `floor`; `floor` where the client cannot say.
+function Widgets.measuredLine(probe, measure, sample, floor)
+	if type(probe) ~= "table" or type(probe.GetStringHeight) ~= "function" then
+		return floor
+	end
+	if type(measure) == "function" then
+		pcall(measure, sample)
+	end
+	local ok, height = pcall(probe.GetStringHeight, probe)
+	if not ok or type(height) ~= "number" then
+		return floor
+	end
+	-- A hair over a whole pixel is that pixel (12.0001 is 12), not the next one.
+	return math.max(floor, math.ceil(height - 0.01))
+end
+
+--- Runs `action` for a surface (`owner`: a table with `disabled`, `flyout`, `button`) so a
+--- failure never becomes a Lua error on every event: the surface turns itself off until
+--- /reload, hides what it drew and says so once in /fs diag (`failedNote`, "%s" the error).
+function Widgets.guarded(owner, failedNote, action, ...)
+	if owner.disabled then
+		return nil
+	end
+	local ok, result = pcall(action, ...)
+	if not ok then
+		owner.disabled = true
+		for _, key in ipairs({ "flyout", "button" }) do
+			local frame = owner[key]
+			if frame ~= nil then
+				pcall(frame.Hide, frame)
+			end
+		end
+		Theme.note(string.format(failedNote, tostring(result)))
+		return nil
+	end
+	return result
+end
+
+--- An edged button's hover hint (L4.3 fix round 3, item 3): `lines()` shown on the
+--- client's tooltip at the button's right after its own brighten, hidden after its own
+--- leave. On the addon's own button only.
+function Widgets.withHint(button, lines)
+	local enter, leave = button:GetScript("OnEnter"), button:GetScript("OnLeave")
+	button:SetScript("OnEnter", function(self)
+		if enter ~= nil then
+			enter(self)
+		end
+		Theme.showLines(self, lines(), "ANCHOR_RIGHT")
+	end)
+	button:SetScript("OnLeave", function(self)
+		if leave ~= nil then
+			leave(self)
+		end
+		Theme.hideTooltip()
+	end)
+	return button
+end
+
+--- The addon's own confirm frame (L5.1 ruling 4, never the client's StaticPopup): a panel
+--- `width` wide on `parent`, at the dialog strata, holding a wrapped line of text and two
+--- buttons, the confirm at the left and Cancel at the right. Hidden until Widgets.openConfirm.
+--- `name` (optional) names it for a /run probe.
+function Widgets.confirmFrame(parent, width, name, cancelLabel)
+	local S = Theme.SIZES
+	local frame = Widgets.panel(parent, width, S.padding * 2, name)
+	if type(frame.SetFrameStrata) == "function" then
+		frame:SetFrameStrata("DIALOG")
+	end
+	frame:EnableMouse(true)
+	local text = Widgets.label(frame, "", "body", "small")
+	text:SetPoint("TOPLEFT", frame, "TOPLEFT", S.padding, -S.padding)
+	text:SetWidth(width - S.padding * 2)
+	if type(text.SetWordWrap) == "function" then
+		text:SetWordWrap(true)
+	end
+	frame.foreverSixtyText = text
+	local half = math.floor((width - S.padding * 2 - S.gap) / 2)
+	local confirm = Widgets.button(frame, "", function()
+		local action = frame.foreverSixtyOnConfirm
+		frame:Hide()
+		if action ~= nil then
+			action()
+		end
+	end)
+	confirm:SetSize(half, S.buttonHeight)
+	local cancel = Widgets.button(frame, cancelLabel or "", function()
+		frame:Hide()
+	end)
+	cancel:SetSize(half, S.buttonHeight)
+	frame.foreverSixtyConfirm, frame.foreverSixtyCancel = confirm, cancel
+	frame:Hide()
+	return frame
+end
+
+--- Shows a confirm frame asking `text` (wrapped into `textHeight` px, measured by the caller;
+--- two rows when nil), its confirm button reading `confirmLabel` and running `onConfirm` once
+--- clicked. The frame hides on either button.
+function Widgets.openConfirm(frame, text, confirmLabel, onConfirm, textHeight)
+	local S = Theme.SIZES
+	local height = textHeight or 2 * S.rowHeight
+	local label = frame.foreverSixtyText
+	label:SetText(text)
+	label:SetHeight(height)
+	frame.foreverSixtyOnConfirm = onConfirm
+	local confirm, cancel = frame.foreverSixtyConfirm, frame.foreverSixtyCancel
+	confirm:SetText(confirmLabel)
+	confirm:ClearAllPoints()
+	confirm:SetPoint("TOPLEFT", label, "BOTTOMLEFT", 0, -S.gap * 2)
+	cancel:ClearAllPoints()
+	cancel:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -S.padding, -(S.padding + height + S.gap * 2))
+	frame:SetHeight(S.padding * 2 + height + S.gap * 2 + S.buttonHeight)
+	frame:Show()
+	return frame
+end
+
 ns.Widgets = Widgets
 return Widgets

@@ -1032,6 +1032,58 @@ L.diagChatBadgesFailed = "The chat badges failed once and turned themselves off:
 L.dialogLinkLead = "%s's page on " .. L.siteName .. ". Press Ctrl+C, then paste it in your browser."
 L.dialogLinkCopied = "You copied %s's page. Paste it in your browser."
 
+-- The guild tab (spec section 4.7, L5.1): the "Forever Sixty" button under the client's guild
+-- frame and its flyout: the roster, and for an officer the site's queue and the push.
+L.guildTabLabel = L.addonName
+L.guildTabHeader = L.addonName .. " · Guild"
+-- The button's hover, muted under "Forever Sixty" in gold (as the panel tab's).
+L.guildTabHint = {
+	"Your guild's Forever Scores, gear and live builds.",
+	"Click to open or close.",
+}
+L.guildTabOnlineOnly = "Online only"
+-- Right of the switch, muted: "12 of 97 shown · 2 live" (live: guildmates whose addon answered).
+L.guildTabCounts = "%d of %d shown · %d live"
+-- The column headers; a click sorts by one, a second click turns it round.
+L.guildTabColumns = {
+	name = "Name", level = "Level", spec = "Spec", gear = "Gear", score = "Score", attendance = "Attendance",
+	gap = "Gap",
+}
+-- Cells: a member the nightly record has no logs for (never a zero), a value nobody has sent
+-- (muted), attendance as a percent, and a gear gap a guildmate's own addon sent this session.
+L.guildTabNoLogs = "no logs"
+L.guildTabDash = "-"
+L.guildTabPercent = "%d%%"
+L.guildTabLive = "%d (live)"
+-- A row's hover: the member's build as their addon announced it, and offline.
+L.guildTabBuild = "Build: %s"
+L.guildTabOffline = "Offline"
+-- In place of the rows: no roster yet, or nobody online with the switch on.
+L.guildTabNoRoster = "No guild roster yet. It arrives from the server in a moment."
+L.guildTabNobodyOnline = "Nobody online. Turn off Online only to see everyone."
+-- The officer region (an officer or the guild master): the inbox guild message's queue.
+L.guildTabOfficer = "Officer"
+L.guildTabApprovals = "%d approvals waiting on the site"
+L.guildTabApproval = "1 approval waiting on the site"
+L.guildTabNoApprovals = "No approvals waiting"
+-- "Guild on the site: Claimed" (the claim state in the Guild page's own words).
+L.guildTabClaim = "Guild on the site: %s"
+L.guildTabPush = "Push the raid build to guild"
+L.guildTabPushNoBuild = "Load a build with /fs to push it."
+-- The addon's own confirm frame, naming the build.
+L.guildTabPushConfirm = "Push %s to the guild? Guildmates with Forever Sixty get it as a build they "
+	.. "can choose to use. Nothing changes for them until they do."
+L.guildTabPushYes = "Push"
+L.guildTabCancel = "Cancel"
+-- After the push, muted: "Pushed BM raid to guild at 21:04"; a refusal in the warning colour.
+L.guildTabPushed = "Pushed %s to guild at %s"
+L.guildTabPushFailed = "Not pushed: %s"
+-- /fs diag: "Guild tab: closed, 12 rows (2 live), officer no" (L5.1 ruling 6).
+L.diagGuildTab = "Guild tab: %s, %d rows (%d live), officer %s"
+L.diagGuildTabYes = "yes"
+L.diagGuildTabNo = "no"
+L.diagGuildTabFailed = "The guild tab failed and is off until /reload: %s"
+
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel
 

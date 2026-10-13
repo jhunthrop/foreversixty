@@ -28,6 +28,8 @@ describe("the TOC", function()
 		-- The character-panel tab (L4.3): reads the tooltip's Next lines, the rotation, the
 		-- build dialog's split and opens it; Options refreshes it.
 		"surfaces/PanelTab.lua",
+		-- The guild tab (L5.1): reads Score, Comms.seen and the inbox; Options refreshes it.
+		"surfaces/GuildTab.lua",
 		-- The measurement recorder: Options routes /fs record to it.
 		"RecorderBuffer.lua", "Recorder.lua", "Options.lua",
 	}
