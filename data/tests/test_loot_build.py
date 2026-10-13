@@ -24,7 +24,7 @@ from pipeline.simdb.statmap import PROTO_STAT_ALIASES, STAT_IDS
 QUEST_FACTION_VALUES = {"alliance", "horde", "both", "unknown"}
 FACTION_VALUES = {"alliance", "horde"}
 
-BUILD = "1.60.1.70291"
+BUILD = "1.60.1.70338"
 BUILD_DIR = Path("builds") / BUILD
 IDS_MD = Path("../sim/request/IDS.md")
 

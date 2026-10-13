@@ -13,7 +13,7 @@ from pipeline.addonlua import lua_has_drifted
 from pipeline.audit import check_addon
 from pipeline.audit.context import AuditContext
 
-BUILD = "1.60.1.70291"
+BUILD = "1.60.1.70338"
 
 
 def test_clean_build_has_no_drift_findings():
