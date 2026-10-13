@@ -20,7 +20,8 @@ export type GearRowState = 'upgrade' | 'best' | 'empty' | 'worn-only' | 'none';
 
 export interface GearItemView {
   id: number;
-  /** The item's name; "Unknown item" when the export's data build does not have it. */
+  /** The item's name; for a worn item the export's data build does not have (no name), the muted
+   *  "Worn item not in our list" (gearCopy.unknownItem, fix round 4 item 5). */
   name: string;
   /** False for an item the data build does not have: no tooltip, no icon, muted. */
   known: boolean;
@@ -40,7 +41,8 @@ export interface GearRow {
   chance: string | null;
   /** "Best for your band", "no pick for your band yet", "comes with the main-hand swap". */
   note: string | null;
-  /** The row has no source line: below 1024px its note shares the items' line (two lines). */
+  /** The row has no source line: its note is the meta line's whole text, below 1024px a line of
+   *  its own under the items with no dot (fix round 5 item 1). */
   inline: boolean;
   /** "+18.4 pts", "+0 pts", "Not scored"; null when the gap cell is blank. */
   gap: string | null;

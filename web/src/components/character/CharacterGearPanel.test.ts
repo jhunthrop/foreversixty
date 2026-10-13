@@ -3,9 +3,11 @@
 // effects run). `preloaded` stands in for the build's items file having loaded (or failed);
 // without it the section is still waiting for that file. The e2e spec character-gear.spec.ts
 // checks the same in a browser.
+import { readFileSync } from 'node:fs';
+import { compile } from 'svelte/compiler';
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
-import { GEAR_FIXTURE, GEAR_FIXTURE_ITEMS } from '../../fixtures/character-gear';
+import { GEAR_FIXTURE, GEAR_FIXTURE_ITEMS, GEAR_FIXTURE_LONG_NAME } from '../../fixtures/character-gear';
 import { gearCopy } from '../../lib/gear/copy';
 import type { GearItemTable } from '../../lib/gear/qualities';
 import CharacterGearPanel from './CharacterGearPanel.svelte';
@@ -48,12 +50,27 @@ function classesOf(html: string, testid: string): string[] {
 
 /** Hover styling only where there is a fine pointer that hovers (fix 4 item C). */
 const POINTER_HOVER = '[@media(hover:hover)_and_(pointer:fine)]:hover:';
-/** A separator drawn before its text, never a text node of its own (fix 4 item B). */
-const DOT_BEFORE = "before:content-['\\00a0·\\00a0']";
-const INLINE_DOT_BEFORE = "min-[360px]:max-lg:before:content-['·\\00a0']";
+/** A separator drawn before its text, never a text node of its own (fix 4 item B), from the
+ *  component's own CSS so that no screen reader reads it (fix 5 item 2). */
+const DOT_BEFORE = 'gear-dot-before';
 
 /** The separator a dot-trailing element draws after itself: a no-break space, then the dot. */
-const TRAILING_DOT = "after:content-['\\00a0·']";
+const TRAILING_DOT = 'gear-dot-after';
+
+/** The rows with no source line, whose note is the meta line's whole text. */
+const NOTE_ROWS = ['shoulder', 'hands', 'feet', 'finger1', 'finger2', 'trinket1', 'trinket2', 'ranged'];
+
+/** The component's compiled CSS (its scoped <style>). */
+function componentCss(): string {
+  const source = readFileSync(new URL('./CharacterGearPanel.svelte', import.meta.url), 'utf8');
+  return compile(source, { filename: 'CharacterGearPanel.svelte', css: 'external' }).css?.code ?? '';
+}
+
+/** The declarations of the first rule whose selector names `className` and `pseudo`. */
+function pseudoRule(css: string, className: string, pseudo: '::before' | '::after'): string {
+  const rule = new RegExp(`\\.${className}[^{},]*${pseudo}\\s*\\{([^}]*)\\}`).exec(css);
+  return rule?.[1].replace(/\s+/g, ' ').trim() ?? '';
+}
 
 describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
   it('is the section the Gear link opens, landing 96px under the top', () => {
@@ -71,8 +88,9 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
 
   it('the title’s dot trails "Gear"; at 480px and under the summary is its own block, no dot (fix 2 ruling 4)', () => {
     const { body } = render(CharacterGearPanel, { props: PROPS });
-    expect(classesOf(body, 'character-gear-heading')).toEqual(
-      expect.arrayContaining([TRAILING_DOT, 'max-[480px]:after:content-none']),
+    expect(classesOf(body, 'character-gear-heading')).toEqual(expect.arrayContaining([TRAILING_DOT]));
+    expect(componentCss()).toMatch(
+      /@media \(max-width: 480px\)\s*\{\s*\.gear-dot-after[^{]*::after\s*\{\s*content:\s*none;?\s*\}/,
     );
     expect(classesOf(body, 'character-gear-summary')).toContain('max-[480px]:block');
     // The summary's own dot is glued to the word before it.
@@ -239,10 +257,6 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
       expect(piece, JSON.stringify(piece)).not.toMatch(/^·/);
       expect(piece, JSON.stringify(piece)).not.toMatch(/·$/);
     }
-    // A note on the items' line below 1024px: the dot is its ::before; under 360px the note is a
-    // line of its own with no dot.
-    const note = classesOf(rowHtml(body, 'shoulder'), 'character-gear-meta');
-    expect(note).toEqual(expect.arrayContaining([INLINE_DOT_BEFORE, 'max-[359px]:basis-full']));
     expect(classesOf(rowHtml(body, 'shoulder'), 'character-gear-items').join(' ')).not.toContain('after:');
     // The chance and the swap note draw their dots before themselves.
     const off = rowHtml(body, 'off_hand');
@@ -250,6 +264,40 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(classesOf(off, 'character-gear-note')).toContain(DOT_BEFORE);
     // No dot in the row's text: only in the drawn ::before.
     expect(text(off)).not.toContain('·');
+  });
+
+  it('below 1024px a row’s note is a line of its own under the items, with no dot, at every width (fix 5 item 1)', () => {
+    for (const gear of [GEAR_FIXTURE, GEAR_FIXTURE_LONG_NAME]) {
+      const { body } = render(CharacterGearPanel, { props: { ...PROPS, gear } });
+      for (const slot of NOTE_ROWS) {
+        const row = rowHtml(body, slot);
+        const note = classesOf(row, 'character-gear-meta');
+        // The same full-width line as a source line: no width puts it beside the items.
+        expect(note, slot).toContain('basis-full');
+        expect(
+          note.filter((c) => /before:|after:|gear-dot|min-\[|max-\[/.test(c)),
+          slot,
+        ).toEqual([]);
+        expect(row, slot).not.toContain('·');
+      }
+    }
+    const long = render(CharacterGearPanel, { props: { ...PROPS, gear: GEAR_FIXTURE_LONG_NAME } }).body;
+    expect(text(rowHtml(long, 'shoulder'))).toBe(
+      'Shoulder Mantle of the Unforgiving Majesty Best for your band',
+    );
+  });
+
+  it('every drawn separator is read by no screen reader: content "·" / "", after the plain dot for a browser without that form (fix 5 item 2)', () => {
+    const css = componentCss();
+    expect(pseudoRule(css, DOT_BEFORE, '::before')).toBe(
+      "content: '\\00a0·\\00a0'; content: '\\00a0·\\00a0' / '';",
+    );
+    expect(pseudoRule(css, TRAILING_DOT, '::after')).toBe("content: '\\00a0·'; content: '\\00a0·' / '';");
+    // No drawn dot comes from a content utility: one declaration, so no fallback.
+    for (const preloaded of [FACTS, null, undefined]) {
+      const { body } = render(CharacterGearPanel, { props: { ...PROPS, preloaded } });
+      expect(body).not.toMatch(/content-\[/);
+    }
   });
 
   it('an unscored gap reads "Not scored", muted and right-aligned', () => {

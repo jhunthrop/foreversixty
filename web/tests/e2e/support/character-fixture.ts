@@ -5,12 +5,20 @@
 // two would let one of them pass against a shape the other no longer sees.
 import type { Page } from '@playwright/test';
 import { readFileSync, existsSync } from 'node:fs';
-import { GEAR_FIXTURE_ITEMS, GEAR_PANEL_FIXTURE } from '../../../src/fixtures/character-gear';
+import {
+  GEAR_FIXTURE_ITEMS,
+  GEAR_FIXTURE_LONG_NAME,
+  GEAR_PANEL_FIXTURE,
+} from '../../../src/fixtures/character-gear';
 
 /** The gear panel (api/openapi.yaml `CharacterGear`, Task L8.6): every row state, from
  *  src/fixtures/character-gear.ts. The shared CHARACTER below leaves it out, as an API that
  *  predates it does; character-gear.spec.ts adds it. */
 export const GEAR = GEAR_PANEL_FIXTURE;
+
+/** The same with Shoulder worn as "Mantle of the Unforgiving Majesty", a long name whose note
+ *  cannot share its line on a phone (fix round 5 item 1). */
+export const GEAR_LONG_NAME = { ...GEAR_PANEL_FIXTURE, gear: GEAR_FIXTURE_LONG_NAME };
 
 /** The build's items/priest.json for the fixture's ids: the real rows (quality, icon,
  *  two-handed, stats), so the names take their colours and icons and the tooltip has a row. */

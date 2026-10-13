@@ -75,9 +75,10 @@
   let lastX = NaN;
   let lastY = NaN;
 
-  /** The name whose tooltip was just closed by Escape or a click while the pointer rests on it:
-   *  it stays shut, however the pointer moves on it, until the pointer leaves it (L8.6 fix round
-   *  4 item 6). */
+  /** The name whose tooltip was just closed by Escape or a click: it stays shut, however the
+   *  pointer moves on it, until the pointer leaves it (L8.6 fix round 4 item 6), or until the
+   *  mouse enters it from outside -- after an Escape on a name that keyboard focus opened, the
+   *  mouse elsewhere, its first hover opens it (fix round 5 item 3). */
   let dismissed: HTMLElement | null = null;
 
   /** A real move: the mouse is at coordinates it has not been at (and its last place is known). */
@@ -158,9 +159,18 @@
 
   /** Hover opens for a mouse only (L8.6 fix round 2 ruling 2): a touch or pen opens on its tap.
    *  And only on a real move (fix round 3 item 1): a pointerenter at the pointer's last
-   *  coordinates is a row sliding under a parked pointer, and opens nothing. */
+   *  coordinates is a row sliding under a parked pointer, and opens nothing.
+   *
+   *  The mouse entering a dismissed name itself (the event's target is the name, not a part of
+   *  it, so the pointer came from outside) ends the dismissal (fix round 5 item 3): a dismissal
+   *  made while the pointer rests on the name sees no such entry before a pointerleave, so it
+   *  still holds against every move on the name; one made with the mouse elsewhere (an Escape
+   *  after keyboard focus) no longer swallows the first hover. A row sliding under a parked
+   *  pointer ends it too, opening nothing until the next real move. */
   function onPointerEnter(event: PointerEvent): void {
-    if (event.pointerType !== 'mouse' || !moved(event)) return;
+    if (event.pointerType !== 'mouse') return;
+    if (dismissed !== null && event.target === dismissed) dismissed = null;
+    if (!moved(event)) return;
     const host = hostFor(event.target);
     if (host !== null && host !== dismissed) openHost(host);
   }

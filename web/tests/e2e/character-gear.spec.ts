@@ -18,6 +18,7 @@ import {
   CHARACTER_URL,
   GEAR,
   GEAR_ITEMS,
+  GEAR_LONG_NAME,
   routeGearIcons,
 } from './support/character-fixture';
 
@@ -454,12 +455,12 @@ for (const width of [390, 320]) {
       // Three lines where there is a source: it sits under the items.
       for (const slot of ['head', 'neck', 'back', 'chest', 'legs', 'off_hand'])
         expect(byslot.get(slot)!.meta!.top, slot).toBeGreaterThanOrEqual(byslot.get(slot)!.items!.bottom - 1);
-      // Best-for-band and no-pick rows: the note follows the items on their line at 390 (two
-      // lines); at 320 a long name can push it under them.
+      // Best-for-band and no-pick rows: the note is a line of its own under the items, at their
+      // left edge, at every phone width (fix 5 item 1).
       for (const slot of ['shoulder', 'trinket2', 'ranged']) {
         const r = byslot.get(slot)!;
-        if (width === 390) expect(Math.abs(r.meta!.top - r.items!.top), slot).toBeLessThan(6);
-        else expect(r.meta!.top, slot).toBeGreaterThanOrEqual(r.items!.top - 1);
+        expect(r.meta!.top, slot).toBeGreaterThanOrEqual(r.items!.bottom - 1);
+        expect(Math.abs(r.meta!.left - r.items!.left), slot).toBeLessThan(1);
       }
       // The gaps share one right edge.
       const rights = rows.flatMap((r) => (r.gap!.right === r.gap!.left ? [] : [r.gap!.right]));
@@ -489,57 +490,153 @@ for (const width of [1440, 1280, 1024]) {
   });
 }
 
-for (const width of [390, 320]) {
-  test.describe(`separators at ${width} (fix 2 ruling 4)`, () => {
-    test.use({ viewport: { width, height: width === 390 ? 844 : 568 } });
+/** A drawn separator, read by no screen reader: the dot glued by no-break spaces, alt text ""
+ *  (fix 5 item 2). */
+const DRAWN_DOT = '"\u00a0·\u00a0" / ""';
 
-    test('no text begins or ends with "·"; no drawn dot starts or ends a line (fix 4 item B)', async ({
-      page,
-    }) => {
-      await open(page);
-      await rowsDrawn(page);
-      const found = await page.getByTestId('character-gear').evaluate((section) => {
-        const edged: string[] = [];
-        const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT);
-        for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
-          const text = (node.textContent ?? '').trim();
-          if (text.startsWith('·') || text.endsWith('·')) edged.push(text);
-        }
-        const drawn: string[] = [];
-        for (const element of section.querySelectorAll('*'))
-          for (const pseudo of ['::before', '::after']) {
-            const content = getComputedStyle(element, pseudo).content;
-            if (content.includes('·')) drawn.push(content);
+/** The rows with no source line, whose note is the meta line's whole text. */
+const NOTE_ROWS = ['shoulder', 'hands', 'feet', 'finger1', 'finger2', 'trinket1', 'trinket2', 'ranged'];
+
+// Fix round 4 item B, fix round 5 item 1: below 1024px a row's note is a line of its own with no
+// dot at every width, so no dot can lead or trail a line; each dot left is drawn (a pseudo-element)
+// between two texts that share its line. Checked on the fixture and with a long worn name on
+// Shoulder, whose note could never share its line.
+for (const width of [320, 360, 375, 390, 414]) {
+  test.describe(`separators at ${width} (fix 2 ruling 4, fix 5 item 1)`, () => {
+    test.use({ viewport: { width, height: width === 320 ? 568 : 844 } });
+
+    for (const [fixture, gear] of [
+      ['the fixture', GEAR],
+      ['a long worn name', GEAR_LONG_NAME],
+    ] as const) {
+      test(`${fixture}: no text begins or ends with "·"; no drawn dot starts or ends a line`, async ({
+        page,
+      }) => {
+        await open(page, { gear });
+        await rowsDrawn(page);
+        const found = await page.getByTestId('character-gear').evaluate((section) => {
+          const texts: Text[] = [];
+          const edged: string[] = [];
+          const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT);
+          for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
+            const text = (node as Text).data.trim();
+            if (text === '') continue;
+            texts.push(node as Text);
+            if (text.startsWith('·') || text.endsWith('·')) edged.push(text);
           }
-        return { edged, drawn };
-      });
-      expect(found.edged).toEqual([]);
-      // A dot between two texts is glued to both by no-break spaces; the inline note's own dot
-      // is followed by one; and "Gear"'s is gone at this width.
-      for (const content of found.drawn) expect(['"\u00a0·\u00a0"', '"·\u00a0"'], content).toContain(content);
-      // The inline note: at 390 it shares the items' line after its dot; under 360 it is a line
-      // of its own with no dot.
-      for (const slot of ['shoulder', 'trinket1', 'ranged']) {
-        const meta = row(page, slot).getByTestId('character-gear-meta');
-        const items = row(page, slot).getByTestId('character-gear-items');
-        const [metaBox, itemsBox] = [await meta.boundingBox(), await items.boundingBox()];
-        const before = await meta.evaluate((element) => getComputedStyle(element, '::before').content);
-        if (width === 320) {
-          expect(before, slot).toBe('none');
-          expect(metaBox!.y, slot).toBeGreaterThanOrEqual(itemsBox!.y + itemsBox!.height - 1);
-          expect(metaBox!.x, slot).toBeLessThanOrEqual(itemsBox!.x + 1);
-        } else {
-          expect(before, slot).toBe('"·\u00a0"');
-          expect(Math.abs(metaBox!.y - itemsBox!.y), slot).toBeLessThan(6);
+          /** The box of a text's first or last glyph. */
+          const glyph = (node: Text, last: boolean): DOMRect => {
+            const at = last
+              ? node.data.trimEnd().length - 1
+              : node.data.length - node.data.trimStart().length;
+            const range = document.createRange();
+            range.setStart(node, at);
+            range.setEnd(node, at + 1);
+            return range.getBoundingClientRect();
+          };
+          const oneLine = (a: DOMRect, b: DOMRect): boolean => a.top < b.bottom - 1 && b.top < a.bottom - 1;
+          // Every dot drawn as a pseudo-element: the glyphs either side of it share its line.
+          const drawn: { where: string; content: string; oneLine: boolean }[] = [];
+          for (const element of section.querySelectorAll<HTMLElement>('*')) {
+            if (getComputedStyle(element).visibility === 'hidden') continue;
+            for (const pseudo of ['::before', '::after'] as const) {
+              const content = getComputedStyle(element, pseudo).content;
+              if (!content.includes('·')) continue;
+              const inside = texts.filter((t) => element.contains(t));
+              const outside = (flag: number) =>
+                texts.filter(
+                  (t) => !element.contains(t) && (element.compareDocumentPosition(t) & flag) !== 0,
+                );
+              const [left, right] =
+                pseudo === '::before'
+                  ? [outside(Node.DOCUMENT_POSITION_PRECEDING).at(-1), inside[0]]
+                  : [inside.at(-1), outside(Node.DOCUMENT_POSITION_FOLLOWING)[0]];
+              drawn.push({
+                where: `${element.closest('li')?.dataset.testid ?? 'title'} ${element.dataset.testid}${pseudo}`,
+                content,
+                oneLine:
+                  left !== undefined &&
+                  right !== undefined &&
+                  oneLine(glyph(left, true), glyph(right, false)),
+              });
+            }
+          }
+          // Each note-only row: the note's first line against the name's last, and its dot.
+          const notes = [...section.querySelectorAll<HTMLElement>('li')].flatMap((li) => {
+            const meta = li.querySelector<HTMLElement>('[data-testid="character-gear-meta"]');
+            const items = li.querySelector<HTMLElement>('[data-testid="character-gear-items"]');
+            if (meta === null || items === null) return [];
+            if (!['Best for your band', 'No pick for your band yet'].includes(meta.textContent?.trim() ?? ''))
+              return [];
+            const name = [...items.getClientRects()].at(-1)!;
+            const note = meta.getClientRects()[0];
+            return [
+              {
+                slot: li.dataset.testid?.replace('character-gear-row-', '') ?? '',
+                shareLine: oneLine(name, note),
+                below: note.top >= name.bottom - 1,
+                leftEdge: Math.abs(note.left - items.getBoundingClientRect().left) < 1,
+                before: getComputedStyle(meta, '::before').content,
+              },
+            ];
+          });
+          return { edged, drawn, notes };
+        });
+        expect(found.edged).toEqual([]);
+        // The chances and the swap note: each dot glued to the texts either side, on their line.
+        expect(found.drawn.length).toBeGreaterThan(0);
+        for (const dot of found.drawn) {
+          expect(dot.content, dot.where).toBe(DRAWN_DOT);
+          expect(dot.oneLine, dot.where).toBe(true);
         }
-      }
-      // At 480px and under the title's summary is its own block, with no dot after "Gear".
-      const heading = page.getByTestId('character-gear-heading');
-      expect(await heading.evaluate((element) => getComputedStyle(element, '::after').content)).toBe('none');
-      await expect(page.getByTestId('character-gear-summary')).toHaveCSS('display', 'block');
-    });
+        // A note's dot is drawn only when the note shares the name's line, and below 1024px it
+        // never does: the note is its own line, at the items' left edge, with no dot.
+        expect(found.notes.map((note) => note.slot)).toEqual(NOTE_ROWS);
+        for (const note of found.notes) {
+          if (!note.shareLine) expect(note.before, note.slot).toBe('none');
+          expect(note, note.slot).toMatchObject({
+            shareLine: false,
+            below: true,
+            leftEdge: true,
+            before: 'none',
+          });
+        }
+        if (gear === GEAR_LONG_NAME)
+          await expect(row(page, 'shoulder').getByTestId('character-gear-worn')).toHaveText(
+            'Mantle of the Unforgiving Majesty',
+          );
+        // At 480px and under the title's summary is its own block, with no dot after "Gear".
+        const heading = page.getByTestId('character-gear-heading');
+        expect(await heading.evaluate((element) => getComputedStyle(element, '::after').content)).toBe(
+          'none',
+        );
+        await expect(page.getByTestId('character-gear-summary')).toHaveCSS('display', 'block');
+      });
+    }
   });
 }
+
+// Fix round 5 item 2: above 480px the title's dot after "Gear" is drawn too; no drawn dot is read
+// by a screen reader, so the heading's name is its text alone.
+test.describe('drawn dots at 1440 (fix 5 item 2)', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test('each is drawn with alt text "", so the heading reads without its dot', async ({ page }) => {
+    await open(page);
+    await rowsDrawn(page);
+    const pseudo = (slot: string | null, testid: string, which: '::before' | '::after') =>
+      (slot === null ? page : row(page, slot))
+        .getByTestId(testid)
+        .evaluate((element, p) => getComputedStyle(element, p).content, which);
+    expect(await pseudo(null, 'character-gear-heading', '::after')).toBe('"\u00a0·" / ""');
+    expect(await pseudo('head', 'character-gear-chance', '::before')).toBe(DRAWN_DOT);
+    expect(await pseudo('off_hand', 'character-gear-chance', '::before')).toBe(DRAWN_DOT);
+    expect(await pseudo('off_hand', 'character-gear-note', '::before')).toBe(DRAWN_DOT);
+    await expect(page.getByTestId('character-gear-title')).toHaveAccessibleName(
+      'Gear +70 pts across 7 slots · 1 not scored',
+    );
+  });
+});
 
 // Fix round 2 ruling 8, fix round 3 item 2: mid-load the labels, gaps and sources draw, each name
 // is held as its own text, unpainted, on a bar, so every row wraps exactly as it will once the
@@ -703,6 +800,63 @@ test.describe('dismissal at 1440 (fix 4 item 6)', () => {
     // Leave the name, then come back.
     await page.mouse.move(box.x + box.width / 2, box.y - 60);
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toContainText('Halo of Transcendence');
+  });
+});
+
+// Fix round 5 item 3: Escape after keyboard focus, the mouse elsewhere, holds nothing against the
+// mouse: a hover on that name opens it. A dismissal while the mouse rests on the name (Escape, or a
+// click that closes it) still holds until the pointer leaves.
+test.describe('dismissal and the mouse at 1440 (fix 5 item 3)', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test('Tab to a name, Escape, then hover it: open; Escape again on the hover holds', async ({ page }) => {
+    await open(page);
+    await settled(page);
+    const worn = row(page, 'head').locator('[data-bis-item="10504"]');
+    const pick = row(page, 'head').locator('[data-bis-item="16921"]');
+    const tooltip = page.getByTestId('item-tooltip');
+    await worn.focus();
+    await page.keyboard.press('Tab');
+    await expect(pick).toBeFocused();
+    await expect(tooltip).toContainText('Halo of Transcendence');
+    await page.keyboard.press('Escape');
+    await expect(tooltip).toHaveCount(0);
+    await pick.hover();
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toContainText('Halo of Transcendence');
+    // Now the mouse rests on it: Escape holds against the 1px and 3px moves.
+    const box = (await pick.boundingBox())!;
+    await page.keyboard.press('Escape');
+    await expect(tooltip).toHaveCount(0);
+    await page.mouse.move(box.x + box.width / 2 + 1, box.y + box.height / 2);
+    await page.waitForTimeout(300);
+    await expect(tooltip).toHaveCount(0);
+    await page.mouse.move(box.x + box.width / 2 + 3, box.y + box.height / 2 + 1);
+    await page.waitForTimeout(300);
+    await expect(tooltip).toHaveCount(0);
+  });
+
+  test('a click that closes a name holds it shut until the pointer leaves', async ({ page }) => {
+    await open(page);
+    await settled(page);
+    const pick = row(page, 'head').locator('[data-bis-item="16921"]');
+    const tooltip = page.getByTestId('item-tooltip');
+    await pick.hover();
+    await expect(tooltip).toBeVisible();
+    const box = (await pick.boundingBox())!;
+    const [x, y] = [box.x + box.width / 2, box.y + box.height / 2];
+    await page.mouse.click(x, y);
+    await expect(tooltip).toHaveCount(0);
+    await page.mouse.move(x + 1, y);
+    await page.waitForTimeout(300);
+    await expect(tooltip).toHaveCount(0);
+    await page.mouse.move(x + 3, y + 1);
+    await page.waitForTimeout(300);
+    await expect(tooltip).toHaveCount(0);
+    await page.mouse.move(x, box.y - 60);
+    await page.mouse.move(x, y);
     await expect(tooltip).toBeVisible();
     await expect(tooltip).toContainText('Halo of Transcendence');
   });

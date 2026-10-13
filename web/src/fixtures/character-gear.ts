@@ -261,6 +261,20 @@ export const GEAR_FIXTURE: CharacterGearSlot[] = [
 /** Both fields as the API sends them: the gaps' plain sum, one decimal. */
 export const GEAR_PANEL_FIXTURE: CharacterGear = { gear: GEAR_FIXTURE, gear_gap_total: 70 };
 
+/** A long worn name for the separator checks (L8.6 fix round 5 item 1): the panel above with
+ *  Shoulder's "Best for your band" row worn as "Mantle of the Unforgiving Majesty", a name that
+ *  cannot share a line with its note at 360 to 414px. 99002 is a stub id the build does not
+ *  carry (the name in the body colour, an empty icon box). */
+export const GEAR_FIXTURE_LONG_NAME: CharacterGearSlot[] = GEAR_FIXTURE.map((slot) =>
+  slot.slot === 'shoulder' && slot.pick !== null
+    ? {
+        ...slot,
+        worn: { id: 99002, name: 'Mantle of the Unforgiving Majesty', item_level: 76 },
+        pick: { ...slot.pick, id: 99002, name: 'Mantle of the Unforgiving Majesty' },
+      }
+    : slot,
+);
+
 /** The build's items/priest.json rows for every fixture id (99001 is not in the build): the
  *  e2e stub of that file, so the names take their qualities and icons, the worn staff reads as
  *  two-handed, and the tooltip has a real row to show. */

@@ -7,28 +7,32 @@
      The title line reads "Gear · +70 pts across 7 slots" (" · 1 not scored" when a pick has no
      gap); the dot after "Gear" is drawn as its ::after, glued by a no-break space, and at 480px
      and under the summary is its own line with no dot, so no line ever starts with "·" (fix
-     round 2 ruling 4). 4px under it one muted 13px line sets the two totals side by side ("The
+     round 2 ruling 4). Every separator the section draws is a pseudo-element (the <style> at
+     the end), never a text node, with alt text "" so no screen reader reads it (fix round 5
+     item 2). 4px under the title one muted 13px line sets the two totals side by side ("The
      card’s 88 counts the band’s best set. These 70 count the picks you can wear."), 16px above
      row 1. The footer holds only the BiS page link, 12px of padding above and below it.
 
      Each known name is marked the way /bis marks an item (`data-bis-item`, a focusable button,
      the quality colour and a 20px quality-bordered icon), and the shared BisTooltipHost opens
      the item tooltip (a mouse's hover, keyboard focus, a tap; fix round 2 ruling 2), its model
-     fetched at runtime. Each icon sits in a 20px box filled #12151c that stays, empty, when the
-     image fails or the item has no icon (ruling 1). Until the build's items file (quality, icon,
-     two-handed) answers, the slot labels, gaps and sources draw at once and each name is held
-     behind a 14px bar, so no name is ever painted white first and nothing moves when they come
-     (ruling 8): the bar holds the real name, unpainted, in the name's own box, so every row
-     wraps the same before and after (fix round 3 item 2); a failed file draws the names in the
-     body colour.
+     fetched at runtime. Each icon sits in a 20px box filled #14171f: with an image, a 1px
+     border in its quality colour; with none (no icon, a failed image, a failed items file) the
+     box stays, empty, in the muted line border (ruling 1, fix round 4 item A). Until the
+     build's items file (quality, icon, two-handed) answers, the slot labels, gaps and sources
+     draw at once and each name is held behind a 14px bar, so no name is ever painted white
+     first and nothing moves when they come (ruling 8): the bar holds the real name, unpainted,
+     in the name's own box, so every row wraps the same before and after (fix round 3 item 2);
+     a failed file draws the names in the body colour.
 
      Layout. Below 1024px three lines a row: the slot label and the gap on one top, then worn →
      pick, then the source and chance; a row with no source ("Best for your band", no pick) has
-     its note on the items' line, the dot drawn after the items. From 1024px one line: slot 104 |
-     worn → pick 5fr | source 4fr | gap 88, a faint tint on hover and focus; every row is 44px at
-     1440, 1280 and 1024 (ruling 3). The list spans the page column: site-column.test.ts bans a
-     container width of 800px and up. Each row is named by its slot label (aria-labelledby), the
-     list "Gear by slot" (ruling 9).
+     its note as that third line, under the items with no dot, at every width from 320px to
+     1024px, so no dot can lead or trail a line (fix round 5 item 1). From 1024px one line: slot
+     104 | worn → pick 5fr | source or note 4fr | gap 88, a faint tint on a fine pointer's hover
+     and on keyboard focus; every row is 44px at 1440, 1280 and 1024 (ruling 3). The list spans
+     the page column: site-column.test.ts bans a container width of 800px and up. Each row is
+     named by its slot label (aria-labelledby), the list "Gear by slot" (ruling 9).
 
      `gear: []` (no export) draws the heading over one line that keeps the anchor; the caller
      draws nothing at all for an API that sends no `gear`. -->
@@ -226,9 +230,8 @@
     {#if summary === null}
       <span class="section-title text-[18px]" data-testid="character-gear-heading">{gearCopy.heading}</span>
     {:else}
-      <span
-        class="section-title text-[18px] after:content-['\00a0·'] max-[480px]:after:content-none"
-        data-testid="character-gear-heading">{gearCopy.heading}</span
+      <span class="section-title gear-dot-after text-[18px]" data-testid="character-gear-heading"
+        >{gearCopy.heading}</span
       >
       <span
         class="text-strong font-body text-[15px] font-semibold max-[480px]:block max-[480px]:basis-full"
@@ -274,30 +277,24 @@
         >
           <span class={SLOT} id={`gear-slot-${row.slot}`} data-testid="character-gear-slot">{row.label}</span>
           <span class={LINE} data-testid="character-gear-line">
+            <span class={ITEMS} data-testid="character-gear-items">{@render items(row)}</span>
             {#if row.inline}
-              <!-- The note shares this line from 360px to 1024px, its dot drawn before it; under
-                   360px it is a line of its own with no dot (fix round 4 item B). -->
-              <span class={ITEMS} data-testid="character-gear-items">{@render items(row)}</span>
-              <span
-                class="{META} max-[359px]:basis-full min-[360px]:max-lg:before:content-['·\00a0']"
-                data-testid="character-gear-meta">{row.note}</span
-              >
-            {:else}
-              <span class={ITEMS} data-testid="character-gear-items">{@render items(row)}</span>
-            {/if}
-            {#if !row.inline && row.source !== null}
+              <!-- A row with no source: its note is the third line, under the items with no dot,
+                   at every width below 1024px; from 1024px the source column (fix round 5 item 1). -->
+              <span class={`${META} basis-full`} data-testid="character-gear-meta">{row.note}</span>
+            {:else if row.source !== null}
               <span class={`${META} basis-full`} data-testid="character-gear-meta"
                 >{row.source}{#if row.chance !== null}<span
-                    class="whitespace-nowrap before:content-['\00a0·\00a0']"
+                    class="gear-dot-before whitespace-nowrap"
                     data-testid="character-gear-chance">{row.chance}</span
                   >{/if}{#if row.note !== null && row.noteUnknown && loading}<span
                     class="rounded-[2px] bg-[#1a1d24]"
                     data-testid="character-gear-note-bar"
-                    ><span class="invisible before:content-['\00a0·\00a0']" data-testid="character-gear-note"
+                    ><span class="gear-dot-before invisible" data-testid="character-gear-note"
                       >{row.note}</span
                     ></span
                   >{:else if row.note !== null}<span
-                    class="before:content-['\00a0·\00a0']{row.noteUnknown ? ' invisible' : ''}"
+                    class="gear-dot-before{row.noteUnknown ? ' invisible' : ''}"
                     data-testid="character-gear-note">{row.note}</span
                   >{/if}</span
               >
@@ -333,3 +330,27 @@
     />
   {/if}
 {/if}
+
+<style>
+  /* The drawn separators (fix round 2 ruling 4, fix round 4 item B): each dot is a pseudo-element
+     glued by no-break spaces to the texts either side of it, never a text node. Its alt text is ""
+     so that no screen reader reads it (fix round 5 item 2); a browser without content's alt text
+     drops that declaration and draws the plain one before it, the same glyph. Global, so that
+     the markup carries no scoping class: the names are this section's own. */
+  :global(.gear-dot-before)::before {
+    content: '\00a0·\00a0';
+    content: '\00a0·\00a0' / '';
+  }
+
+  :global(.gear-dot-after)::after {
+    content: '\00a0·';
+    content: '\00a0·' / '';
+  }
+
+  /* At 480px and under the title's summary is a line of its own: no dot after "Gear". */
+  @media (max-width: 480px) {
+    :global(.gear-dot-after)::after {
+      content: none;
+    }
+  }
+</style>
