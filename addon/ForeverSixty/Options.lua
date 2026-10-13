@@ -18,6 +18,8 @@ local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local Inspect = ns.Inspect or require("Inspect")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
+local PlayerTooltip = ns.PlayerTooltip or require("PlayerTooltip")
+local ChatBadges = ns.ChatBadges or require("ChatBadges")
 local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
@@ -165,6 +167,8 @@ function Options.handle(input)
 		return Comms.seenLines()
 	elseif command == "inspect" then
 		return Options.inspectLines()
+	elseif command == "link" then
+		return Options.link(rest)
 	elseif command == "diag" then
 		-- Ask the data addon now, so a fresh session reports a missing or old
 		-- one without a tooltip having read it first (Score notes it once).
@@ -198,6 +202,44 @@ function Options.handle(input)
 	end
 	-- Anything /fs does not know: the player's commands.
 	return Options.helpLines()
+end
+
+--- Whom /fs link means: the name typed ("Bow Jackzon-ClassicBetaPvP", or a bare name on this
+--- realm), else the target, else the player under the mouse, else this character. The name
+--- and the realm (nil: this realm). A typed name is split at its last hyphen only where what
+--- follows is this realm (Compat.isOwnRealmName), so "Jean-Luc" stays one name.
+function Options.linkTarget(rest)
+	local typed = (rest or ""):match("^%s*(.-)%s*$")
+	if typed ~= "" then
+		local name, realm = typed:match("^(.-)%-([^%-]+)$")
+		if name ~= nil and name ~= "" and Compat.isOwnRealmName(realm) then
+			return name, nil
+		end
+		return typed, nil
+	end
+	for _, unit in ipairs({ "target", "mouseover" }) do
+		if type(UnitExists) == "function" and UnitExists(unit) and type(UnitIsPlayer) == "function"
+			and UnitIsPlayer(unit) then
+			local name, realm = PlayerTooltip.nameOf(unit)
+			if type(name) == "string" and name ~= "" then
+				return name, realm
+			end
+		end
+	end
+	return Compat.playerName() or "", nil
+end
+
+--- /fs link [Name-Realm] (L4.4, for the player tooltip's score, which cannot be clicked): the
+--- build dialog's copy box holding the character's site page; printed instead where the
+--- dialog cannot show itself.
+function Options.link(rest)
+	local name, realm = Options.linkTarget(rest)
+	local url = PlayerTooltip.siteLink(name, realm)
+	BuildDialog.data = Options.data
+	if BuildDialog.openLink(url, name) then
+		return {}
+	end
+	return { url }
 end
 
 --- Names (Inspect.keyOf) /fs inspect asked about and has not yet printed: only these are
@@ -280,6 +322,8 @@ function Options.refreshSurfaces(data, event)
 	RewardMarks.refresh(data)
 	-- The character-panel tab (L4.3): its button made and placed, an open flyout redrawn.
 	PanelTab.refresh(data, event)
+	-- The chat badges' switch, read once here rather than on every chat line (L4.4).
+	ChatBadges.refresh()
 end
 
 --- Every event any surface refreshes on. Theme.registerEvent swallows the
@@ -473,6 +517,10 @@ function Options.register()
 
 	ItemTooltip.data = Options.data
 	ItemTooltip.register()
+	-- The player tooltip's unit hook and the chat badges' filter (L4.4): the two sanctioned
+	-- client APIs, registered once; neither writes into a client frame.
+	PlayerTooltip.register()
+	ChatBadges.register()
 	-- The paper-doll and bag marks: their bag hooks now (nothing on the pane is hooked); their
 	-- overlays the first time a mark is needed, drawn on the events (fix round 2).
 	SlotMarks.data = Options.data

@@ -1,7 +1,9 @@
 -- addon/tests/score_spec.lua
 -- Score.lua reads the nightly record (contract 5, docs/contracts/addon-v2.md) and never
 -- computes a number. Pure: no wow_mock. ForeverSixtyData is set to the L0 golden fixture,
--- loaded with plain Lua, and read back through the real reader.
+-- loaded with plain Lua, and read back through the real reader. L4.4 folds in what
+-- ratings_spec.lua covered when the Ratings adapter was deleted: a bare name is read on the
+-- client's own realm.
 local helper = require("spec_helper")
 
 local ROOTS = { "../docs/contracts/fixtures/", "docs/contracts/fixtures/" }
@@ -191,6 +193,24 @@ describe("Score", function()
 				data.characters["Bob-ClassicBetaPvP"] = { score = 700, tier = "uncommon", as_of = "2026-11-03", fights = 3 }
 			end))
 			assert.are.equal(700, Score.forCharacter("Bob", "Classic Beta PvP").score)
+		end)
+
+		it("reads a bare name on the client's own realm, and a name on another realm only with it", function()
+			local saved = _G.GetRealmName
+			_G.GetRealmName = function()
+				return "Yell"
+			end
+			start(fixture(function(data)
+				data.characters["Bob-Whitemane"] = { score = 500, tier = "uncommon", as_of = "2026-11-03", fights = 3 }
+			end))
+			local ok, err = pcall(function()
+				assert.are.equal(1830, Score.forCharacter("Obnoxious").score)
+				assert.are.equal(500, Score.forCharacter("Bob", "Whitemane").score)
+				assert.are.equal(500, Score.forCharacter("Bob-Whitemane").score)
+				assert.is_nil(Score.forCharacter("Bob"))
+			end)
+			_G.GetRealmName = saved
+			assert(ok, err)
 		end)
 
 		it("answers nil for a name the record does not have", function()

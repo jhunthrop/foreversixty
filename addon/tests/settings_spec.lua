@@ -25,13 +25,14 @@ describe("SettingsPage, the switches", function()
 		_G.ForeverSixtyDB = nil
 	end)
 
-	it("lists seven switches in page order", function()
+	-- L4.4: the eighth, "Score badges in chat", after the tooltips (spec section 4.11).
+	it("lists eight switches in page order", function()
 		local keys = {}
 		for index, switch in ipairs(SettingsPage.switches()) do
 			keys[index] = switch.key
 		end
-		assert.are.same({ "chip.shown", "chip.combatHide", "talentMarks", "minimap.shown", "tooltip", "broadcast",
-			"autoSave" }, keys)
+		assert.are.same({ "chip.shown", "chip.combatHide", "talentMarks", "minimap.shown", "tooltip", "badges",
+			"broadcast", "autoSave" }, keys)
 	end)
 
 	it("gives every switch a label, a hint and its default from Prefs.DEFAULTS", function()
@@ -61,6 +62,8 @@ describe("SettingsPage, the switches", function()
 				.. "Off: type /fs options or use Options > AddOns." },
 			{ "Gear tips on item tooltips",
 				"Adds a line to item tooltips: is it in your build, and does it beat what you wear." },
+			{ "Score badges in chat",
+				"Shows a player's Forever Score before their message in LFG, Trade, guild chat and whispers." },
 			{ "Share my build with my guild",
 				"Guildmates with Forever Sixty see your level, spec, build and gear gap. Off: they see nothing." },
 			{ "Save my character for the companion app",
@@ -121,12 +124,12 @@ describe("SettingsPage, the switches", function()
 		assert.is_nil(SettingsPage.defaultOf("nothing.here"))
 	end)
 
-	it("has no switch for advanced detail, the guild badges or chat", function()
+	it("has no switch for advanced detail or chat beyond the score badges, which default on", function()
 		for _, switch in ipairs(SettingsPage.SWITCHES) do
 			assert.are_not.equal("advancedDetail", switch.key)
-			assert.are_not.equal("badges", switch.key)
 			assert.are_not.equal("chat", switch.key)
 		end
+		assert.is_true(SettingsPage.defaultOf("badges"))
 	end)
 
 	it("drops the chat pref, which nothing reads", function()
@@ -224,8 +227,8 @@ describe("SettingsPage, the command list", function()
 		SettingsPage = helper.load("Settings")
 	end)
 
-	it("is the seven player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
-		assert.are.equal(7, #L.settingsCommands)
+	it("is the eight player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
+		assert.are.equal(8, #L.settingsCommands)
 		local options = 0
 		for _, line in ipairs(L.settingsCommands) do
 			assert.is_truthy(line:find("^/fs[%a ]*: "), line)
@@ -236,16 +239,17 @@ describe("SettingsPage, the command list", function()
 		assert.are.equal(1, options)
 		assert.is_truthy(L.settingsCommands[1]:find("^/fs: "))
 		assert.is_truthy(L.settingsCommands[2]:find("^/fs copy: "))
-		assert.is_truthy(L.settingsCommands[7]:find("^/fs help: "))
+		assert.is_truthy(L.settingsCommands[8]:find("^/fs help: "))
 	end)
 
-	-- Fix round 2, item 10: the list word for word.
-	it("words the seven player commands as ruled", function()
+	-- Fix round 2, item 10: the list word for word. L4.4 adds /fs link.
+	it("words the eight player commands as ruled", function()
 		assert.are.same({
 			"/fs: paste or copy a build",
 			"/fs copy: copy my character for the site",
 			"/fs chip: show or hide the chip",
 			"/fs inspect: gear and talents of your target",
+			"/fs link: copy a player's site page",
 			"/fs options: open the settings page",
 			"/fs diag: what is not working",
 			"/fs help: every command",

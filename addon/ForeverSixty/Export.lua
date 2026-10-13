@@ -437,6 +437,70 @@ function Export.outboxName(name, realm)
 	return name .. "-" .. compact
 end
 
+--- The words a realm's name spells a ruleset with, as the site reads them
+--- (web/src/lib/characters.ts RULESET_WORDS): the ruleset itself on Forever, PvE/PvP on the beta.
+Export.RULESET_WORDS = {
+	normal = "normal", pve = "normal", pvp = "pvp", rp = "rp", roleplay = "rp",
+	hardcore = "hardcore", hc = "hardcore",
+}
+
+--- The first ruleset word among `words`, each word alone or run together with the next
+--- (a run-together realm's "PvP" opens into "Pv" and "P"). nil for none.
+local function rulesetIn(words, pairsToo)
+	for index, word in ipairs(words) do
+		local ruleset = Export.RULESET_WORDS[word]
+		if ruleset == nil and pairsToo and words[index + 1] ~= nil then
+			ruleset = Export.RULESET_WORDS[word .. words[index + 1]]
+		end
+		if ruleset ~= nil then
+			return ruleset
+		end
+	end
+	return nil
+end
+
+--- The ruleset segment of a site path for a realm's name, as the site's rulesetFromRealm reads
+--- it: the first of its words (split at anything not a letter or a digit, lower-cased) that
+--- names a ruleset. A realm as a sender spells it, its words run together ("ClassicBetaPvP"),
+--- is opened at its capitals and digits first. "normal" where no word names one. Pure.
+function Export.rulesetFromRealm(realm)
+	realm = type(realm) == "string" and realm or ""
+	local words = {}
+	for word in realm:lower():gmatch("[%a%d]+") do
+		words[#words + 1] = word
+	end
+	local ruleset = rulesetIn(words, false)
+	if ruleset ~= nil then
+		return ruleset
+	end
+	local opened = realm:gsub("(%l)(%u)", "%1 %2"):gsub("(%a)(%d)", "%1 %2"):gsub("(%d)(%a)", "%1 %2")
+	words = {}
+	for word in opened:lower():gmatch("[%a%d]+") do
+		words[#words + 1] = word
+	end
+	return rulesetIn(words, true) or "normal"
+end
+
+--- A character's slug as the site and the API write it (characters.ts characterSlug,
+--- api/internal/character Slug): the name alone, trimmed, lower-cased, each run of spaces
+--- one hyphen. Pure.
+function Export.characterSlug(name)
+	local trimmed = (name or ""):match("^%s*(.-)%s*$")
+	return (trimmed:lower():gsub("%s+", "-"))
+end
+
+--- A character's page on the site: SITE/character/<region>/<ruleset>/<slug>, the one form the
+--- site's parsePath serves: the region ("us" where none is given; Compat.siteRegion is the
+--- client's), the ruleset the realm's words name (Export.rulesetFromRealm) and the name's slug,
+--- no realm in it. Pure.
+function Export.siteLink(name, realm, region)
+	if type(region) ~= "string" or region == "" then
+		region = Compat.SITE_REGIONS[1]
+	end
+	return L.siteName .. "/character/" .. region:lower() .. "/" .. Export.rulesetFromRealm(realm) .. "/"
+		.. Export.characterSlug(name)
+end
+
 --- This character's name as the outbox writes it (Export.outboxName), so the build
 --- dialog can tell whether the outbox it reads is this character's.
 function Export.outboxCharacter()

@@ -1,0 +1,8 @@
+## Interface: 16001
+## Title: Forever Sixty Data
+## Notes: L4.4 capture fixture: three characters on Classic Beta PvP, for the player tooltip and the chat badges. Not for release.
+## Author: foreversixty.gg
+## Version: l44-fixture
+## LoadOnDemand: 0
+
+Data.lua

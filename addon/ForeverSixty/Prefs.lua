@@ -29,8 +29,9 @@ Prefs.DEFAULTS = {
 	-- The build dialog (spec section 4.10): `point` "" is the centre of the screen; a drag
 	-- by its title saves CENTER and the offset from the screen's centre.
 	dialog = { point = "", x = 0, y = 0 },
-	-- Guild badges on the roster and in tooltips (L4.4 adds its switch), and this player's
-	-- own hello on GUILD and answer to a snapshot request ("Share my build with my guild").
+	-- Score badges in chat ("Score badges in chat", L4.4, surfaces/ChatBadges.lua), and this
+	-- player's own hello on GUILD and answer to a snapshot request ("Share my build with my
+	-- guild").
 	badges = true,
 	broadcast = true,
 	-- The talent window's marks (spec section 4.2): the ring, the badges and the strip, all
@@ -135,7 +136,7 @@ function Prefs.set(section, key, value)
 	return value
 end
 
---- A top-level boolean: tooltip, broadcast, autoSave, talentMarks.
+--- A top-level boolean: tooltip, badges, broadcast, autoSave, talentMarks.
 function Prefs.flag(name)
 	return Prefs.current()[name]
 end

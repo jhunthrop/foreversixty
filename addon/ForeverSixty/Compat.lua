@@ -157,6 +157,21 @@ function Compat.regionName()
 	return ok and type(name) == "string" and name or nil
 end
 
+--- The site's regions in GetCurrentRegion's numbering (web/src/lib/characters.ts REGIONS).
+Compat.SITE_REGIONS = { "us", "kr", "eu", "tw", "cn" }
+
+--- This client's region as the site's character paths spell it: GetCurrentRegion's number
+--- through SITE_REGIONS, "us" where the client cannot name one (the beta answers a number
+--- no table names).
+function Compat.siteRegion()
+	local fn = _G.GetCurrentRegion
+	if type(fn) ~= "function" then
+		return Compat.SITE_REGIONS[1]
+	end
+	local ok, number = pcall(fn)
+	return ok and Compat.SITE_REGIONS[number] or Compat.SITE_REGIONS[1]
+end
+
 --- Whether the client holds the item's data already, so showing it never
 --- prints the client's own "Retrieving item information". Where the client
 --- cannot say, an item it can name is held.
@@ -333,6 +348,32 @@ local function isOwnRealm(value)
 	return normalized ~= nil and value == normalized
 end
 
+--- Whether `text` names this client's own realm as a player might type it: GetRealmName or
+--- GetNormalizedRealmName, spaces and hyphens removed on both sides, case ignored
+--- ("classicbetapvp" is "Classic Beta PvP"). The one realm the client knows by name.
+function Compat.isOwnRealmName(text)
+	if type(text) ~= "string" then
+		return false
+	end
+	local function squeeze(value)
+		return type(value) == "string" and value:gsub("[%s%-]", ""):lower() or ""
+	end
+	local wanted = squeeze(text)
+	if wanted == "" then
+		return false
+	end
+	for _, name in ipairs({ "GetRealmName", "GetNormalizedRealmName" }) do
+		local fn = _G[name]
+		if type(fn) == "function" then
+			local ok, realm = pcall(fn)
+			if ok and squeeze(realm) == wanted then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 --- Whether this client gives characters a last name, in the slot other
 --- clients use for the realm. Forever's client (from 1.60.1.70009) answers
 --- UnitFullName("player") with first name, last name and UnitName("player")
@@ -430,6 +471,91 @@ function Compat.shortDate(text)
 		return nil
 	end
 	return tonumber(day) .. " " .. name
+end
+
+-- Chat ------------------------------------------------------------------------------------
+
+--- Add a chat message filter for `event`: ChatFrame_AddMessageEventFilter, else
+--- ChatFrameUtil.AddMessageEventFilter where a newer client moved it. The name of the API
+--- that took it, or nil where this client has neither (or refused the call).
+---
+--- The filter's shape, from Blizzard's own chat frame source (ChatFrame_MessageEventHandler,
+--- the Classic and retail UI alike; README row 49 confirms it on 1.60): it is called as
+--- filter(chatFrame, event, arg1, arg2, ...) with the event's own arguments: arg1 the
+--- message, arg2 the sender ("Name-Realm"), arg3 the language, arg4 the channel ("2. Trade
+--- - City"), arg5 a target, arg6 the AFK/DND/GM flag, arg7 the zone channel id, arg8 the
+--- channel number, arg9 the channel's base name ("Trade - City"), arg10 the language id,
+--- arg11 the line id, arg12 the sender's GUID, then the client's own extras. It answers
+--- `true` to hide the line, or `false` and the arguments to show it with; with no second
+--- answer the line keeps its own. The handler reads arg2 after the filters as the name's
+--- player link (click to whisper, the right-click menu) and, for a whisper, as the reply
+--- target, so a filter that writes into arg2 breaks both: nothing here ever does.
+function Compat.addChatFilter(event, filter)
+	local add, how = _G.ChatFrame_AddMessageEventFilter, "ChatFrame_AddMessageEventFilter"
+	if type(add) ~= "function" then
+		local util = _G.ChatFrameUtil
+		add = type(util) == "table" and util.AddMessageEventFilter or nil
+		how = "ChatFrameUtil.AddMessageEventFilter"
+	end
+	if type(add) ~= "function" then
+		return nil
+	end
+	local ok = pcall(add, event, filter)
+	return ok and how or nil
+end
+
+--- The client's zone channel ids for Trade and LookingForGroup.
+Compat.BADGE_CHANNEL_IDS = { 2, 26 }
+--- Their English names, which every client's channel list still answers to.
+Compat.BADGE_CHANNEL_NAMES = { "trade", "lookingforgroup" }
+
+--- Whether a chat line's zone channel id (CHAT_MSG_CHANNEL's arg7) is Trade or
+--- LookingForGroup: true or false for an id, nil where the line carries none (nil or 0, a
+--- custom channel or a client that does not say), when only the channel's name can tell. Pure.
+function Compat.isBadgeChannelId(zoneId)
+	zoneId = tonumber(zoneId)
+	if zoneId == nil or zoneId == 0 then
+		return nil
+	end
+	for _, id in ipairs(Compat.BADGE_CHANNEL_IDS) do
+		if zoneId == id then
+			return true
+		end
+	end
+	return false
+end
+
+--- The names of the Trade and LookingForGroup channels, lower-cased, as a set: the English
+--- names and whatever this client calls them, asked of `localName` (Theme.channelShortcut:
+--- the client's name for a zone channel id, nil where it cannot say) for the two ids.
+function Compat.badgeChannelNames(localName)
+	local names = {}
+	for _, name in ipairs(Compat.BADGE_CHANNEL_NAMES) do
+		names[name] = true
+	end
+	if type(localName) == "function" then
+		for _, id in ipairs(Compat.BADGE_CHANNEL_IDS) do
+			local name = localName(id)
+			if type(name) == "string" and name ~= "" then
+				names[name:lower()] = true
+			end
+		end
+	end
+	return names
+end
+
+--- A chat channel's own name, lower-cased, from a chat event: its base name (arg9, "Trade -
+--- City"), else its numbered name (arg4, "2. Trade - City"), less the number and the zone
+--- after " - ". Nil when the event names neither. Pure.
+function Compat.channelBase(channelName, baseName)
+	local name = type(baseName) == "string" and baseName ~= "" and baseName or nil
+	if name == nil and type(channelName) == "string" and channelName ~= "" then
+		name = channelName:gsub("^%d+%.%s*", "")
+	end
+	if name == nil then
+		return nil
+	end
+	return (name:match("^(.-)%s+%-%s+") or name):lower()
 end
 
 ns.Compat = Compat

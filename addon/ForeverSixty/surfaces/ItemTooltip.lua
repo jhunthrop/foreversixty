@@ -19,8 +19,8 @@
 -- nothing to say is not drawn at all (spec section 2.2).
 --
 -- An EMPTY character slot (L4.1) shows the same section with the band's pick
--- for the slot (ItemTooltip.emptySlotSection); the player tooltip's rating line
--- (onUnitTooltip) is kept as it was.
+-- for the slot (ItemTooltip.emptySlotSection). A player's tooltip is
+-- surfaces/PlayerTooltip.lua's (L4.4): this file draws on items only.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -1932,69 +1932,6 @@ function ItemTooltip.itemLinkFrom(tooltip)
 	return link
 end
 
---- The Ratings line on a player's tooltip. Same guard as the item hook.
-local Ratings = ns.Ratings or require("Ratings")
-
-local function addUnitLines(tooltip, unit)
-	if type(UnitIsPlayer) == "function" and not UnitIsPlayer(unit) then
-		return
-	end
-	local name, realm = Compat.unitName(unit)
-	local card = Ratings.forCharacter(name, realm)
-	if card == nil then
-		return
-	end
-	tooltip:AddLine(Ratings.tooltipLine(card), Theme.rgb(Theme.HEX.gold))
-	tooltip:Show()
-end
-
-function ItemTooltip.onUnitTooltip(tooltip, unit)
-	if ItemTooltip.unitDisabled or unit == nil or not Prefs.flag("tooltip") then
-		return
-	end
-	local ok, err = pcall(addUnitLines, tooltip, unit)
-	if not ok then
-		ItemTooltip.unitDisabled = true
-		Theme.note(string.format(L.diagTooltipHookFailed, tostring(err)))
-	end
-end
-
-function ItemTooltip.unitFrom(tooltip)
-	if type(tooltip) ~= "table" or type(tooltip.GetUnit) ~= "function" then
-		return nil
-	end
-	local ok, _, unit = pcall(tooltip.GetUnit, tooltip)
-	return ok and unit or nil
-end
-
-function ItemTooltip.hasUnitProcessor()
-	return ItemTooltip.hasProcessor() and Enum.TooltipDataType.Unit ~= nil
-end
-
---- The unit hook, registered beside the item hook by the same rule.
-function ItemTooltip.registerUnit()
-	if ItemTooltip.unitRegistered then
-		return ItemTooltip.unitHow
-	end
-	ItemTooltip.unitRegistered = true
-	if ItemTooltip.hasUnitProcessor() then
-		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip)
-			ItemTooltip.onUnitTooltip(tooltip, ItemTooltip.unitFrom(tooltip))
-		end)
-		ItemTooltip.unitHow = "processor"
-		return ItemTooltip.unitHow
-	end
-	if type(GameTooltip) == "table" and type(GameTooltip.HookScript) == "function" then
-		GameTooltip:HookScript("OnTooltipSetUnit", function(tooltip)
-			ItemTooltip.onUnitTooltip(tooltip, ItemTooltip.unitFrom(tooltip))
-		end)
-		ItemTooltip.unitHow = "legacy"
-		return ItemTooltip.unitHow
-	end
-	ItemTooltip.unitHow = nil
-	return nil
-end
-
 --- The client's paper-doll button for a site slot, or nil where this client has none.
 local function slotButton(slot)
 	local buttonName = ItemTooltip.SLOT_BUTTONS[slot]
@@ -2192,7 +2129,6 @@ function ItemTooltip.register()
 		return ItemTooltip.how
 	end
 	ItemTooltip.registered = true
-	ItemTooltip.registerUnit()
 	ItemTooltip.registerSlotButtons()
 	ItemTooltip.registerEmptySlotRefresh()
 	ItemTooltip.registerItemInfoRefresh()

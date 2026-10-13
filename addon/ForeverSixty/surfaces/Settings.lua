@@ -1,6 +1,6 @@
 -- addon/ForeverSixty/surfaces/Settings.lua
 -- The Settings page (spec section 4.11, L3.5): the client's own Settings, one canvas.
--- Seven switches, Reset positions, the /fs command list, and two lines at the foot: whether
+-- Eight switches, Reset positions, the /fs command list, and two lines at the foot: whether
 -- the addon's data is for this client's patch, and the player ratings' state. The first of
 -- those in the warning colour is repeated under the title, its whole sentence in that colour.
 --
@@ -29,14 +29,16 @@ local SettingsPage = {}
 
 SettingsPage.FRAME_NAME = "ForeverSixtySettingsPanel"
 
---- The switches, in page order (L3.5 ruling 1, fix round 1 item 4). A key is a Prefs section
---- and field ("chip.shown") or a top-level flag ("tooltip").
+--- The switches, in page order (L3.5 ruling 1, fix round 1 item 4; L4.4 adds the chat badges
+--- after the tooltips). A key is a Prefs section and field ("chip.shown") or a top-level flag
+--- ("tooltip").
 SettingsPage.SWITCHES = {
 	{ key = "chip.shown", label = L.settingsChipShown, hint = L.settingsChipShownHint },
 	{ key = "chip.combatHide", label = L.settingsCombatHide, hint = L.settingsCombatHideHint },
 	{ key = "talentMarks", label = L.settingsTalentMarks, hint = L.settingsTalentMarksHint },
 	{ key = "minimap.shown", label = L.settingsMinimap, hint = L.settingsMinimapHint },
 	{ key = "tooltip", label = L.settingsTooltip, hint = L.settingsTooltipHint },
+	{ key = "badges", label = L.settingsBadges, hint = L.settingsBadgesHint },
 	{ key = "broadcast", label = L.settingsBroadcast, hint = L.settingsBroadcastHint },
 	{ key = "autoSave", label = L.settingsAutoSave, hint = L.settingsAutoSaveHint },
 }

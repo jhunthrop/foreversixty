@@ -73,3 +73,46 @@ describe("Export.outboxName", function()
 		assert.are.equal("Obnoxious Yell", Export.outboxName("Obnoxious Yell", ""))
 	end)
 end)
+
+-- L4.4 fix round 1 (D1): the site serves /character/<region>/<ruleset>/<slug> only, with the
+-- ruleset one of normal|pvp|rp|hardcore and the slug the name alone (web/src/lib/characters.ts
+-- parsePath, rulesetFromRealm, characterSlug).
+describe("Export.siteLink", function()
+	it("reads the ruleset from the realm's words as the site does, normal by default", function()
+		local cases = {
+			["Classic Beta PvP"] = "pvp", ["Classic Beta PvE"] = "normal", ["Classic Beta PvE 2"] = "normal",
+			["Normal"] = "normal", ["RP Realm"] = "rp", ["Classic Roleplay"] = "rp", ["Hardcore"] = "hardcore",
+			["Classic HC"] = "hardcore", ["Classic-Beta-PvP"] = "pvp", ["Ashbringer"] = "normal", [""] = "normal",
+		}
+		for realm, ruleset in pairs(cases) do
+			assert.are.equal(ruleset, Export.rulesetFromRealm(realm), realm)
+		end
+		assert.are.equal("normal", Export.rulesetFromRealm(nil))
+	end)
+
+	it("reads the realm as a sender spells it, its words run together", function()
+		local cases = {
+			ClassicBetaPvP = "pvp", ClassicBetaPvE2 = "normal", ClassicBetaRP = "rp",
+			ClassicBetaRoleplay = "rp", ClassicBetaHC = "hardcore", Whitemane = "normal",
+		}
+		for realm, ruleset in pairs(cases) do
+			assert.are.equal(ruleset, Export.rulesetFromRealm(realm), realm)
+		end
+	end)
+
+	it("slugs the name alone: lower case, each run of spaces one hyphen", function()
+		assert.are.equal("bow-jackzon", Export.characterSlug("Bow Jackzon"))
+		assert.are.equal("smoke-gouda", Export.characterSlug("  Smoke   Gouda "))
+		assert.are.equal("jean-luc", Export.characterSlug("Jean-Luc"))
+	end)
+
+	it("is SITE/character/<region>/<ruleset>/<slug>, with no realm in the slug", function()
+		assert.are.equal("foreversixty.gg/character/us/pvp/bow-jackzon",
+			Export.siteLink("Bow Jackzon", "Classic Beta PvP", "us"))
+		assert.are.equal("foreversixty.gg/character/eu/rp/smoke-gouda",
+			Export.siteLink("Smoke Gouda", "Classic Roleplay", "eu"))
+		assert.are.equal("foreversixty.gg/character/us/hardcore/facep-alm",
+			Export.siteLink("Facep Alm", "Hardcore", nil))
+		assert.are.equal("foreversixty.gg/character/us/normal/bob", Export.siteLink("Bob", "Ashbringer", ""))
+	end)
+end)

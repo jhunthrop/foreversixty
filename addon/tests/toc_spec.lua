@@ -10,7 +10,9 @@ describe("the TOC", function()
 		"Theme.lua", "Widgets.lua", "Cards.lua", "Export.lua", "Follow.lua", "Gear.lua",
 		"Progress.lua", "Rotation.lua",
 		-- Comms reads Progress, Score, Gear and Theme, so it loads after Score.
-		"Score.lua", "Comms.lua", "Inspect.lua", "Ratings.lua", "surfaces/ItemTooltip.lua",
+		"Score.lua", "Comms.lua", "Inspect.lua", "surfaces/ItemTooltip.lua",
+		-- The player tooltip and the chat badges (L4.4): read Score and Comms.seen.
+		"surfaces/PlayerTooltip.lua", "surfaces/ChatBadges.lua",
 		"TalentGlow.lua", "Minimap.lua",
 		-- The surfaces (spec section 7): the chip replaces the tracker and the toast;
 		-- the talent marks draw TalentGlow's ring and read the chip's level.
