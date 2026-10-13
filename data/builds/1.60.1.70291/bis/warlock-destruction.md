@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 00000000000000000-0000000000000000000-2053100000000000)
 
-Set DPS (verified): 39.7. Weights run: 1.7s. Verify run: 1.3s. 192 eligible items had no known source.
+Set DPS (verified): 39.7. Weights run: 1.5s. Verify run: 1.3s. 148 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.062 ± 0.004, crit=0.031 ± 0.001 per rating point (14 rating = 1%, 0.432 per %), hit=0.125 ± 0.005 per rating point (10 rating = 1%, 1.252 per %), spell_haste=0.602 ± 0.065, spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.764 ± 0.002, fire_power=0.236 ± 0.000
 
@@ -34,11 +34,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 20:** head: Pristine Circlet; shoulder: Magician's Mantle; back: Heavy Woolen Cloak; chest: Filigreed Pristine Gown; wrist: Windsong Bangles; hands: Serpent Gloves; waist: Pristine Sash; legs: Abomination Skin Leggings; feet: Spidersilk Boots; finger1: Minor Channeling Ring; finger2: Lorekeeper's Ring; main_hand: Twisted Chanter's Staff; ranged: Cookie's Stirring Rod
 
-No-known-source sample (15 of 192, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1917 Jeweled Dagger; 2235 Brackclaw; 2241 Desperado Cape; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff; 3229 Tarantula Silk Sash; 3563 Seafarer's Pantaloons; 3738 Brewing Rod; 3902 Staff of Nobles
+No-known-source sample (15 of 148, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 6478 Rat Stompers; 10049 Diabolist's Blade; 14145 Cursed Felblade; 14148 Crystalline Cuffs; 14149 Subterranean Cape; 14150 Robe of Evocation; 14151 Chanting Blade; 14389 Durability Shoulderpads; 18852 Insignia of the Horde
 
 ### Band 30 (gnome, 00000000000000000-0000000000000000000-2053225101000000)
 
-Set DPS (verified): 83.1. Weights run: 1.6s. Verify run: 1.5s. 319 eligible items had no known source.
+Set DPS (verified): 83.1. Weights run: 1.6s. Verify run: 1.4s. 260 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.338 ± 0.012, crit=0.072 ± 0.003 per rating point (14 rating = 1%, 1.004 per %), hit=0.168 ± 0.011 per rating point (10 rating = 1%, 1.683 per %), spell_haste=not significant (0.095 ± 0.167), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.767 ± 0.002, fire_power=0.233 ± 0.000
 
@@ -64,11 +64,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 30:** head: Holy Shroud; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Vine Pruner's Cloak; chest: Green Silk Armor; wrist: Spidertank Oilrag; hands: Shilly Mitts; waist: Highlander's Cloth Girdle; legs: Gaze Dreamer Pants; feet: Gilded Slippers; finger1: Lorekeeper's Ring; finger2: Sea Giant's Toe Ring; main_hand: Hardened Root Staff; ranged: Starfaller
 
-No-known-source sample (15 of 319, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1917 Jeweled Dagger; 2035 Sword of the Night Sky; 2235 Brackclaw; 2241 Desperado Cape; 2944 Cursed Eye of Paleth; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff; 3229 Tarantula Silk Sash; 3563 Seafarer's Pantaloons
+No-known-source sample (15 of 260, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 10049 Diabolist's Blade; 14145 Cursed Felblade; 14148 Crystalline Cuffs; 14149 Subterranean Cape
 
 ### Band 40 (gnome, 00000000000000000-0000000000000000000-2053225103101321)
 
-Set DPS (verified): 138.5. Weights run: 1.7s. Verify run: 1.9s. 402 eligible items had no known source.
+Set DPS (verified): 138.5. Weights run: 1.5s. Verify run: 1.6s. 334 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.621 ± 0.029, crit=0.119 ± 0.006 per rating point (14 rating = 1%, 1.670 per %), hit=0.294 ± 0.028 per rating point (10 rating = 1%, 2.942 per %), spell_haste=not significant (0.329 ± 0.228), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.282 ± 0.001, fire_power=0.718 ± 0.002
 
@@ -94,11 +94,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 40:** head: Spellpower Goggles Xtreme; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Robe of the Magi; wrist: Phoenix Bindings; hands: Dreamweave Gloves; waist: Highlander's Cloth Girdle; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; finger2: Lorekeeper's Ring; main_hand: Hypnotic Blade; off_hand: Orb of the Forgotten Seer; ranged: Umbral Wand
 
-No-known-source sample (15 of 402, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1917 Jeweled Dagger; 2035 Sword of the Night Sky; 2235 Brackclaw; 2241 Desperado Cape; 2622 Nimar's Tribal Headdress; 2944 Cursed Eye of Paleth; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff; 3229 Tarantula Silk Sash
+No-known-source sample (15 of 334, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7749 Omega Orb; 9362 Brilliant Gold Ring
 
 ### Band 50 (gnome, 25000000000000000-0000000000000000000-2053225103101351)
 
-Set DPS (verified): 236.6. Weights run: 1.6s. Verify run: 2.1s. 488 eligible items had no known source.
+Set DPS (verified): 236.6. Weights run: 1.5s. Verify run: 1.9s. 417 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.202 ± 0.031, crit=0.168 ± 0.007 per rating point (14 rating = 1%, 2.346 per %), hit=0.447 ± 0.035 per rating point (10 rating = 1%, 4.472 per %), spell_haste=not significant (-0.308 ± 0.543), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.280 ± 0.001, fire_power=0.720 ± 0.002
 
@@ -124,11 +124,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 50:** head: Spellpower Goggles Xtreme Plus; shoulder: Rotgrip Mantle; back: Spritecaster Cape; wrist: Netherflame Cuffs; waist: Satyrmane Sash; legs: Wizardweave Leggings; finger1: Band of the Unicorn; finger2: Lorekeeper's Ring; trinket1: Abyss Shard; trinket2: Frozen Heart of the Mountain; main_hand: Kindling Stave; ranged: Noxious Shooter
 
-No-known-source sample (15 of 488, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1917 Jeweled Dagger; 2035 Sword of the Night Sky; 2235 Brackclaw; 2241 Desperado Cape; 2622 Nimar's Tribal Headdress; 2944 Cursed Eye of Paleth; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff; 3229 Tarantula Silk Sash
+No-known-source sample (15 of 417, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers
 
 ### Band 60 (gnome, 25532000000000000-0000000000000000000-2053225103101351)
 
-Set DPS (verified): 469.6. Weights run: 1.9s. Verify run: 4.9s. 938 eligible items had no known source.
+Set DPS (verified): 469.6. Weights run: 1.5s. Verify run: 3.9s. 867 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.330 ± 0.036, crit=0.200 ± 0.008 per rating point (14 rating = 1%, 2.800 per %), hit=0.500 ± 0.039 per rating point (10 rating = 1%, 5.004 per %), spell_haste=not significant (0.991 ± 0.538), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.350 ± 0.001, fire_power=0.650 ± 0.001
 
@@ -154,11 +154,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Deathmist Mask; neck: Chains of the Lich; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Robe of the Void; wrist: Dryad's Wrist Bindings; hands: Sandworm Skin Gloves; waist: Knowledge of the Timbermaw; legs: Sentinel's Silk Leggings; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Talisman of Ascendance; trinket2: Serenity Field; ranged: Brilliant Wand
 
-No-known-source sample (15 of 938, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1917 Jeweled Dagger; 2035 Sword of the Night Sky; 2235 Brackclaw; 2241 Desperado Cape; 2622 Nimar's Tribal Headdress; 2944 Cursed Eye of Paleth; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff; 3229 Tarantula Silk Sash
+No-known-source sample (15 of 867, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers
 
 ### Band 60, raid preset (gnome, 25500000000000000-0005000000000000000-2053045103101351)
 
-Set DPS (verified): 879.5. Weights run: 4.0s. Verify run: 4.8s. 938 eligible items had no known source.
+Set DPS (verified): 879.5. Weights run: 3.4s. Verify run: 4.0s. 867 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.060 ± 0.033, crit=0.256 ± 0.010 per rating point (14 rating = 1%, 3.588 per %), hit=0.738 ± 0.067 per rating point (10 rating = 1%, 7.376 per %), spell_haste=not significant (1.047 ± 0.857), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.279 ± 0.001, fire_power=0.721 ± 0.002
 
@@ -184,13 +184,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** neck: Chains of the Lich; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Robe of the Void; wrist: Dryad's Wrist Bindings; hands: Sandworm Skin Gloves; waist: Knowledge of the Timbermaw; legs: Sentinel's Silk Leggings; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Talisman of Ascendance; trinket2: Serenity Field; main_hand: Spire of Hakkar; ranged: Brilliant Wand
 
-No-known-source sample (15 of 938, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1917 Jeweled Dagger; 2035 Sword of the Night Sky; 2235 Brackclaw; 2241 Desperado Cape; 2622 Nimar's Tribal Headdress; 2944 Cursed Eye of Paleth; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff; 3229 Tarantula Silk Sash
+No-known-source sample (15 of 867, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4765 Enamelled Broadsword; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers
 
 ## Horde
 
 ### Band 20 (troll, 00000000000000000-0000000000000000000-2053100000000000)
 
-Set DPS (verified): 38.6. Weights run: 1.7s. Verify run: 1.3s. 181 eligible items had no known source.
+Set DPS (verified): 38.6. Weights run: 1.5s. Verify run: 1.3s. 137 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.062 ± 0.004, crit=0.031 ± 0.001 per rating point (14 rating = 1%, 0.432 per %), hit=0.125 ± 0.005 per rating point (10 rating = 1%, 1.252 per %), spell_haste=0.602 ± 0.065, spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.764 ± 0.002, fire_power=0.236 ± 0.000
 
@@ -216,11 +216,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 20:** head: Pristine Circlet; shoulder: Magician's Mantle; back: Heavy Woolen Cloak; chest: Filigreed Pristine Gown; wrist: Tabitha's Cuffs; hands: Serpent Gloves; waist: Pristine Sash; legs: Abomination Skin Leggings; feet: Spidersilk Boots; finger1: Advisor's Ring; finger2: Lavishly Jeweled Ring; main_hand: Gnarled Necromancer's Staff; ranged: Cookie's Stirring Rod
 
-No-known-source sample (15 of 181, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1832 Lucky Trousers; 1917 Jeweled Dagger; 2235 Brackclaw; 2241 Desperado Cape; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff; 3229 Tarantula Silk Sash; 3563 Seafarer's Pantaloons; 3738 Brewing Rod
+No-known-source sample (15 of 137, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 6478 Rat Stompers; 10049 Diabolist's Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 18858 Insignia of the Alliance; 209615 Insignia of the Alliance; 241089 Scarlet Dagger; 248006 Militia Sword; 248007 Militia Shortblade; 248008 Apprentice's Spellstaff; 254779 A'sharahm, the Roiling Tempest; 263007 Skyseer's Vest
 
 ### Band 30 (troll, 00000000000000000-0000000000000000000-2053225101000000)
 
-Set DPS (verified): 72.7. Weights run: 1.6s. Verify run: 1.5s. 302 eligible items had no known source.
+Set DPS (verified): 72.7. Weights run: 1.6s. Verify run: 1.3s. 243 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.338 ± 0.012, crit=0.072 ± 0.003 per rating point (14 rating = 1%, 1.004 per %), hit=0.168 ± 0.011 per rating point (10 rating = 1%, 1.683 per %), spell_haste=not significant (0.095 ± 0.167), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.767 ± 0.002, fire_power=0.233 ± 0.000
 
@@ -246,11 +246,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 30:** head: Holy Shroud; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Hillman's Cloak; chest: Tree Bark Jacket; wrist: Spidertank Oilrag; hands: Jutebraid Gloves; waist: Defiler's Cloth Girdle; legs: Gaze Dreamer Pants; feet: Gilded Slippers; finger1: Advisor's Ring; finger2: Sea Giant's Toe Ring; main_hand: Staff of Soran'ruk; ranged: Starfaller
 
-No-known-source sample (15 of 302, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1832 Lucky Trousers; 1917 Jeweled Dagger; 2035 Sword of the Night Sky; 2235 Brackclaw; 2241 Desperado Cape; 2944 Cursed Eye of Paleth; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff; 3229 Tarantula Silk Sash
+No-known-source sample (15 of 243, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3556 Dread Mage Hat; 3738 Brewing Rod; 5000 Coral Band; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 10049 Diabolist's Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape; 18440 Sergeant's Cape; 18442 Master Sergeant's Insignia
 
 ### Band 40 (troll, 00000000000000000-0000000000000000000-2053225103101321)
 
-Set DPS (verified): 138.0. Weights run: 1.7s. Verify run: 2.0s. 381 eligible items had no known source.
+Set DPS (verified): 138.0. Weights run: 1.5s. Verify run: 1.6s. 313 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.621 ± 0.029, crit=0.119 ± 0.006 per rating point (14 rating = 1%, 1.670 per %), hit=0.294 ± 0.028 per rating point (10 rating = 1%, 2.942 per %), spell_haste=not significant (0.329 ± 0.228), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.282 ± 0.001, fire_power=0.718 ± 0.002
 
@@ -276,11 +276,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 40:** head: Spellpower Goggles Xtreme; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Robe of the Magi; wrist: Phoenix Bindings; hands: Dreamweave Gloves; waist: Defiler's Cloth Girdle; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Philanthropist's Ring; finger2: Advisor's Ring; main_hand: Hypnotic Blade; off_hand: Orb of the Forgotten Seer; ranged: Umbral Wand
 
-No-known-source sample (15 of 381, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1832 Lucky Trousers; 1917 Jeweled Dagger; 2035 Sword of the Night Sky; 2235 Brackclaw; 2241 Desperado Cape; 2622 Nimar's Tribal Headdress; 2944 Cursed Eye of Paleth; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff
+No-known-source sample (15 of 313, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3556 Dread Mage Hat; 3738 Brewing Rod; 4116 Olmann Sewar; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9718 Reforged Blade of Heroes; 10049 Diabolist's Blade; 14389 Durability Shoulderpads
 
 ### Band 50 (troll, 25000000000000000-0000000000000000000-2053225103101351)
 
-Set DPS (verified): 234.9. Weights run: 1.6s. Verify run: 2.1s. 463 eligible items had no known source.
+Set DPS (verified): 234.9. Weights run: 1.5s. Verify run: 1.9s. 392 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.202 ± 0.031, crit=0.168 ± 0.007 per rating point (14 rating = 1%, 2.346 per %), hit=0.447 ± 0.035 per rating point (10 rating = 1%, 4.472 per %), spell_haste=not significant (-0.308 ± 0.543), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.280 ± 0.001, fire_power=0.720 ± 0.002
 
@@ -306,11 +306,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 50:** head: Spellpower Goggles Xtreme Plus; shoulder: Rotgrip Mantle; back: Spritecaster Cape; wrist: Netherflame Cuffs; waist: Satyrmane Sash; legs: Wizardweave Leggings; finger1: Band of the Unicorn; finger2: Advisor's Ring; trinket1: Abyss Shard; trinket2: Frozen Heart of the Mountain; main_hand: Kindling Stave; ranged: Noxious Shooter
 
-No-known-source sample (15 of 463, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1832 Lucky Trousers; 1917 Jeweled Dagger; 2035 Sword of the Night Sky; 2235 Brackclaw; 2241 Desperado Cape; 2622 Nimar's Tribal Headdress; 2944 Cursed Eye of Paleth; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff
+No-known-source sample (15 of 392, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3556 Dread Mage Hat; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9380 Jang'thraze the Protector
 
 ### Band 60 (troll, 25532000000000000-0000000000000000000-2053225103101351)
 
-Set DPS (verified): 460.4. Weights run: 1.9s. Verify run: 4.8s. 928 eligible items had no known source.
+Set DPS (verified): 460.4. Weights run: 1.5s. Verify run: 4.0s. 857 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.330 ± 0.036, crit=0.200 ± 0.008 per rating point (14 rating = 1%, 2.800 per %), hit=0.500 ± 0.039 per rating point (10 rating = 1%, 5.004 per %), spell_haste=not significant (0.991 ± 0.538), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.350 ± 0.001, fire_power=0.650 ± 0.001
 
@@ -336,11 +336,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Deathmist Mask; neck: Chains of the Lich; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Robe of the Void; wrist: Dryad's Wrist Bindings; hands: Sandworm Skin Gloves; waist: Knowledge of the Timbermaw; legs: Sentinel's Silk Leggings; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Talisman of Ascendance; trinket2: Serenity Field; ranged: Brilliant Wand
 
-No-known-source sample (15 of 928, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1832 Lucky Trousers; 1917 Jeweled Dagger; 2035 Sword of the Night Sky; 2235 Brackclaw; 2241 Desperado Cape; 2622 Nimar's Tribal Headdress; 2944 Cursed Eye of Paleth; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff
+No-known-source sample (15 of 857, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3556 Dread Mage Hat; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9380 Jang'thraze the Protector
 
 ### Band 60, raid preset (troll, 25500000000000000-0005000000000000000-2053045103101351)
 
-Set DPS (verified): 885.0. Weights run: 4.0s. Verify run: 4.9s. 928 eligible items had no known source.
+Set DPS (verified): 885.0. Weights run: 3.4s. Verify run: 4.1s. 857 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.060 ± 0.033, crit=0.256 ± 0.010 per rating point (14 rating = 1%, 3.588 per %), hit=0.738 ± 0.067 per rating point (10 rating = 1%, 7.376 per %), spell_haste=not significant (1.047 ± 0.857), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.279 ± 0.001, fire_power=0.721 ± 0.002
 
@@ -366,5 +366,5 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** neck: Chains of the Lich; shoulder: Rugged Mantle of the Timbermaw; back: Arcanoweave Cloak; chest: Robe of the Void; wrist: Dryad's Wrist Bindings; hands: Sandworm Skin Gloves; waist: Knowledge of the Timbermaw; legs: Sentinel's Silk Leggings; finger1: Signet Ring of the Bronze Dragonflight; finger2: Blessed Band of Light; trinket1: Talisman of Ascendance; trinket2: Serenity Field; main_hand: Spire of Hakkar; ranged: Brilliant Wand
 
-No-known-source sample (15 of 928, see the JSON for more): 1189 Overseer's Ring; 1355 Buckskin Cape; 1539 Gnarled Hermit's Staff; 1832 Lucky Trousers; 1917 Jeweled Dagger; 2035 Sword of the Night Sky; 2235 Brackclaw; 2241 Desperado Cape; 2622 Nimar's Tribal Headdress; 2944 Cursed Eye of Paleth; 3018 Hide of Lupos; 3019 Noble's Robe; 3224 Silver-lined Bracers; 3225 Bloodstained Knife; 3227 Nightbane Staff
+No-known-source sample (15 of 857, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3556 Dread Mage Hat; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9380 Jang'thraze the Protector
 

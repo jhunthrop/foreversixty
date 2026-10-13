@@ -689,6 +689,12 @@ type itemSource struct {
 	// item has, and buildBandPool never lets such a drop take a slot
 	// another candidate can fill.
 	RareSpawn bool
+	// SharedTrashCreatures is, for a shared trash drop named by its
+	// instance alone (sharedTrashDrops), the creatures loot.json lists for
+	// the item, in its order; nil for every other source. Only the
+	// published-file check reads it: an older build's frozen files name
+	// one of these creatures.
+	SharedTrashCreatures []string
 }
 
 // rareLabelSuffix ends a rare spawn's source label (task L1.7: "otherwise
@@ -738,6 +744,21 @@ func sharedTrashDrops(src lootSource) map[int]bool {
 		}
 	}
 	return shared
+}
+
+// trashCreatures is the names of src's creatures that drop item id, in
+// loot.json's order.
+func trashCreatures(src lootSource, id int) []string {
+	var names []string
+	for _, boss := range src.Bosses {
+		for _, item := range boss.Items {
+			if item == id && boss.Name != "" {
+				names = append(names, boss.Name)
+				break
+			}
+		}
+	}
+	return names
 }
 
 // repSide names the reputations only one side can earn, by the client's
@@ -1067,6 +1088,9 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 		for _, id := range src.Trash {
 			if rare, ok := shared[id]; ok {
 				add(id, src.Name, 0, rare)
+				if srcs := idx[id]; len(srcs) > 0 {
+					srcs[len(srcs)-1].SharedTrashCreatures = trashCreatures(src, id)
+				}
 			}
 		}
 		for _, boss := range src.Bosses {

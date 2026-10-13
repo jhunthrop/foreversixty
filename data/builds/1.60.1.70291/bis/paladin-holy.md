@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 05320001000000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 27.3. Weights run: 1.5s. Verify run: 5.7s. 291 eligible items had no known source.
+Set DPS (verified): 27.3. Weights run: 1.4s. Verify run: 4.0s. 225 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.901 ± 0.003, spirit=0.222 ± 0.001, mp5=1.699 ± 0.033, crit=0.037 ± 0.002 per rating point (14 rating = 1%, 0.512 per %), spell_haste=0.104 ± 0.016
 
@@ -34,11 +34,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 20:** head: Acolyte's Silvered Chain Helm; neck: Tarnished Locket; shoulder: Magician's Mantle; back: Caretaker's Cape; chest: Acolyte's Chain Shirt; wrist: Mindthrust Bracers; hands: Acolyte's Gloves; waist: Pristine Sash; legs: Acolyte's Chain Leggings; feet: Acolyte's Boots; finger1: Lavishly Jeweled Ring; finger2: Lorekeeper's Ring; main_hand: Sword of the Fallen
 
-No-known-source sample (15 of 291, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape; 2254 Icepane Warhammer; 3000 Brood Mother Carapace; 3018 Hide of Lupos; 3019 Noble's Robe
+No-known-source sample (15 of 225, see the JSON for more): 1189 Overseer's Ring; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk; 4964 Goblin Smasher; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets
 
 ### Band 30 (human, 05320003224000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 49.0. Weights run: 2.5s. Verify run: 7.3s. 498 eligible items had no known source.
+Set DPS (verified): 49.0. Weights run: 1.3s. Verify run: 4.2s. 409 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.985 ± 0.005, spirit=0.496 ± 0.004, mp5=2.104 ± 0.011, crit=0.092 ± 0.005 per rating point (14 rating = 1%, 1.288 per %), spell_haste=not significant (0.037 ± 0.013)
 
@@ -64,11 +64,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Death Speaker Mantle; back: Caretaker's Cape; chest: Death Speaker Robes; hands: Truefaith Gloves; waist: Prefect's Belt; legs: Acolyte's Silvered Chain Leggings; feet: Gilded Slippers; finger1: Sea Giant's Toe Ring; finger2: Snake Hoop; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
 
-No-known-source sample (15 of 498, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape; 2254 Icepane Warhammer; 2944 Cursed Eye of Paleth
+No-known-source sample (15 of 409, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk; 4833 Glorious Shoulders
 
 ### Band 40 (human, 05320003225111051-0000000000000000-00000000000000000)
 
-Set DPS (verified): 77.0. Weights run: 2.7s. Verify run: 11.2s. 662 eligible items had no known source.
+Set DPS (verified): 77.0. Weights run: 1.6s. Verify run: 6.7s. 560 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.164 ± 0.009, spirit=0.728 ± 0.008, mp5=2.684 ± 0.012, crit=0.162 ± 0.009 per rating point (14 rating = 1%, 2.271 per %), spell_haste=not significant (0.080 ± 0.025)
 
@@ -94,11 +94,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 40:** neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Caretaker's Cape; chest: Stormcloth Vest; wrist: Reflective Wristguards; hands: Mender's Leather Gloves; waist: Gilded Cord; feet: Prefect's Boots; finger2: Darkspear Signet; trinket1: Darkspear Voodoo Seal; trinket2: Ankh of Life; main_hand: Hand of Righteousness; off_hand: Orb of Lorica
 
-No-known-source sample (15 of 662, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1678 Black Ogre Kickers; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape; 2254 Icepane Warhammer
+No-known-source sample (15 of 560, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
 
 ### Band 50 (human, 05320003225111051-5500000000000000-00000000000000000)
 
-Set DPS (verified): 109.5. Weights run: 2.3s. Verify run: 12.1s. 820 eligible items had no known source.
+Set DPS (verified): 109.5. Weights run: 1.7s. Verify run: 9.5s. 715 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.002, intellect=1.851 ± 0.018, spirit=1.397 ± 0.016, mp5=4.657 ± 0.021, crit=0.325 ± 0.021 per rating point (14 rating = 1%, 4.550 per %), spell_haste=not significant (0.062 ± 0.067)
 
@@ -124,11 +124,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 50:** head: Knight-Lieutenant's Imbued Helmet; neck: Darkmoon Necklace; shoulder: Knight-Lieutenant's Imbued Pauldrons; back: Darkspear Raider's Cloak; chest: Knight's Imbued Armor; wrist: Mender's Leather Bracers; hands: Soulforge Fists; waist: Mender's Leather Waistguard; legs: Knight's Imbued Leggings; feet: Mender's Leather Boots; finger1: Darkspear Signet; finger2: Eye of Adaegus; trinket1: Darkspear Voodoo Seal; trinket2: Uther's Strength
 
-No-known-source sample (15 of 820, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1678 Black Ogre Kickers; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape; 2254 Icepane Warhammer
+No-known-source sample (15 of 715, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
 
 ### Band 60 (human, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 204.2. Weights run: 1.8s. Verify run: 37.9s. 1472 eligible items had no known source.
+Set DPS (verified): 204.2. Weights run: 1.8s. Verify run: 33.0s. 1367 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.136, intellect=4.683 ± 0.078, spirit=1.589 ± 0.017, mp5=6.636 ± 0.062, crit=0.464 ± 0.044 per rating point (14 rating = 1%, 6.491 per %), spell_haste=not significant (0.057 ± 0.055)
 
@@ -154,11 +154,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Gnomish Turban of Psychic Might; neck: Wavefront Necklace; shoulder: Soulforge Epaulets; back: Hide of the Wild; chest: Knight-Captain's Lamellar Chestplate; wrist: Soulforge Bindings; hands: Raider Handwraps; waist: Belt of Tiny Heads; legs: Knight-Captain's Lamellar Legguards; feet: Soulforge Treads; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Shard of the Splithooves; off_hand: Lei of the Lifegiver
 
-No-known-source sample (15 of 1472, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1678 Black Ogre Kickers; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape; 2254 Icepane Warhammer
+No-known-source sample (15 of 1367, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
 
 ### Band 60, raid preset (human, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 575.2. Weights run: 1.8s. Verify run: 17.3s. 1472 eligible items had no known source.
+Set DPS (verified): 575.2. Weights run: 1.5s. Verify run: 17.4s. 1367 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.852, intellect=1.784 ± 0.122, spirit=0.691 ± 0.118, mp5=4.105 ± 0.149, crit=0.893 ± 0.140 per rating point (14 rating = 1%, 12.506 per %), spell_haste=not significant (-2.578 ± 1.753)
 
@@ -184,13 +184,13 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Wavefront Necklace; shoulder: Argent Elite Shoulders; back: Hide of the Wild; chest: Knight-Captain's Lamellar Chestplate; wrist: Bracers of Hope; hands: Raider Handwraps; waist: Wisdom of the Timbermaw; legs: Knight-Captain's Lamellar Legguards; feet: Knight-Lieutenant's Lamellar Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Serenity Field; off_hand: Evergreen Shield
 
-No-known-source sample (15 of 1472, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1678 Black Ogre Kickers; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape; 2254 Icepane Warhammer
+No-known-source sample (15 of 1367, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
 
 ## Horde
 
 ### Band 20 (undead, 05320001000000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 26.9. Weights run: 1.5s. Verify run: 5.9s. 271 eligible items had no known source.
+Set DPS (verified): 26.9. Weights run: 1.4s. Verify run: 4.1s. 205 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.901 ± 0.003, spirit=0.222 ± 0.001, mp5=1.699 ± 0.033, crit=0.037 ± 0.002 per rating point (14 rating = 1%, 0.512 per %), spell_haste=0.104 ± 0.016
 
@@ -216,11 +216,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 20:** head: Acolyte's Silvered Chain Helm; neck: Roadwatcher's Confidence; shoulder: Magician's Mantle; back: Battle Healer's Cloak; chest: Acolyte's Chain Shirt; wrist: Mindthrust Bracers; hands: Acolyte's Gloves; waist: Pristine Sash; legs: Acolyte's Chain Leggings; feet: Acolyte's Boots; finger1: Lavishly Jeweled Ring; finger2: Loop of Sacrifice; main_hand: Sword of the Fallen
 
-No-known-source sample (15 of 271, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1832 Lucky Trousers; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape; 2254 Icepane Warhammer; 3000 Brood Mother Carapace; 3018 Hide of Lupos
+No-known-source sample (15 of 205, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9602 Brushwood Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 15402 Noosegrip Gauntlets; 18864 Insignia of the Alliance; 205218 Libram of Discovery; 209614 Insignia of the Alliance; 213513 Libram of Deliverance; 248005 Northshire Hammer
 
 ### Band 30 (undead, 05320003224000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 48.6. Weights run: 2.5s. Verify run: 6.0s. 476 eligible items had no known source.
+Set DPS (verified): 48.6. Weights run: 1.3s. Verify run: 4.5s. 387 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.985 ± 0.005, spirit=0.496 ± 0.004, mp5=2.104 ± 0.011, crit=0.092 ± 0.005 per rating point (14 rating = 1%, 1.288 per %), spell_haste=not significant (0.037 ± 0.013)
 
@@ -246,11 +246,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 30:** head: Holy Shroud; neck: Scorn's Icy Choker; shoulder: Mantle of Woe; back: Battle Healer's Cloak; chest: Death Speaker Robes; hands: Truefaith Gloves; waist: Prefect's Belt; legs: Acolyte's Silvered Chain Leggings; feet: Gilded Slippers; finger1: Sea Giant's Toe Ring; finger2: Snake Hoop; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
 
-No-known-source sample (15 of 476, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1832 Lucky Trousers; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape; 2254 Icepane Warhammer
+No-known-source sample (15 of 387, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4196 Feathered Mantle; 5000 Coral Band; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9602 Brushwood Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 15402 Noosegrip Gauntlets
 
 ### Band 40 (undead, 05320003225111051-0000000000000000-00000000000000000)
 
-Set DPS (verified): 90.0. Weights run: 2.7s. Verify run: 12.3s. 632 eligible items had no known source.
+Set DPS (verified): 90.0. Weights run: 1.6s. Verify run: 7.5s. 530 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.164 ± 0.009, spirit=0.728 ± 0.008, mp5=2.684 ± 0.012, crit=0.162 ± 0.009 per rating point (14 rating = 1%, 2.271 per %), spell_haste=not significant (0.080 ± 0.025)
 
@@ -276,11 +276,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 40:** neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Battle Healer's Cloak; chest: Stormcloth Vest; wrist: Reflective Wristguards; hands: Mender's Leather Gloves; waist: Gilded Cord; feet: Prefect's Boots; finger2: Darkspear Signet; trinket1: Darkspear Voodoo Seal; trinket2: Ankh of Life; main_hand: Hand of Righteousness; off_hand: Forcestone Buckler
 
-No-known-source sample (15 of 632, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1678 Black Ogre Kickers; 1832 Lucky Trousers; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape
+No-known-source sample (15 of 530, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 7748 Forcestone Buckler; 8708 Hammer of Expertise
 
 ### Band 50 (undead, 05320003225111051-5500000000000000-00000000000000000)
 
-Set DPS (verified): 113.8. Weights run: 2.3s. Verify run: 10.6s. 798 eligible items had no known source.
+Set DPS (verified): 113.8. Weights run: 1.7s. Verify run: 8.6s. 693 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.002, intellect=1.851 ± 0.018, spirit=1.397 ± 0.016, mp5=4.657 ± 0.021, crit=0.325 ± 0.021 per rating point (14 rating = 1%, 4.550 per %), spell_haste=not significant (0.062 ± 0.067)
 
@@ -306,11 +306,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 50:** head: Gemburst Circlet; neck: Darkmoon Necklace; shoulder: Mender's Leather Shoulder; back: Darkspear Raider's Cloak; wrist: Mender's Leather Bracers; hands: Soulforge Fists; waist: Mender's Leather Waistguard; legs: Kilt of the Atal'ai Prophet; feet: Mender's Leather Boots; finger1: Darkspear Signet; finger2: Eye of Adaegus; trinket1: Darkspear Voodoo Seal; trinket2: Uther's Strength; off_hand: Mountainside Buckler
 
-No-known-source sample (15 of 798, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1678 Black Ogre Kickers; 1832 Lucky Trousers; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape
+No-known-source sample (15 of 693, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
 
 ### Band 60 (undead, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 194.7. Weights run: 1.8s. Verify run: 36.7s. 1496 eligible items had no known source.
+Set DPS (verified): 194.7. Weights run: 1.8s. Verify run: 31.6s. 1391 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.136, intellect=4.683 ± 0.078, spirit=1.589 ± 0.017, mp5=6.636 ± 0.062, crit=0.464 ± 0.044 per rating point (14 rating = 1%, 6.491 per %), spell_haste=not significant (0.057 ± 0.055)
 
@@ -336,11 +336,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Gnomish Turban of Psychic Might; neck: Wavefront Necklace; shoulder: Soulforge Epaulets; back: Hide of the Wild; chest: Breastplate of Salvation; wrist: Soulforge Bindings; hands: Raider Handwraps; waist: Belt of Tiny Heads; legs: Martyr's Legplates; feet: Soulforge Treads; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Shard of the Splithooves; off_hand: Lei of the Lifegiver
 
-No-known-source sample (15 of 1496, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1678 Black Ogre Kickers; 1832 Lucky Trousers; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape
+No-known-source sample (15 of 1391, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
 
 ### Band 60, raid preset (undead, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 565.2. Weights run: 1.8s. Verify run: 16.3s. 1496 eligible items had no known source.
+Set DPS (verified): 565.2. Weights run: 1.5s. Verify run: 16.5s. 1391 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.852, intellect=1.784 ± 0.122, spirit=0.691 ± 0.118, mp5=4.105 ± 0.149, crit=0.893 ± 0.140 per rating point (14 rating = 1%, 12.506 per %), spell_haste=not significant (-2.578 ± 1.753)
 
@@ -366,5 +366,5 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Wavefront Necklace; shoulder: Argent Elite Shoulders; back: Hide of the Wild; chest: Breastplate of Salvation; wrist: Bracers of Hope; hands: Raider Handwraps; waist: Wisdom of the Timbermaw; legs: Martyr's Legplates; feet: Incandescent Mooncloth Boots; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Serenity Field; off_hand: Evergreen Shield
 
-No-known-source sample (15 of 1496, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1678 Black Ogre Kickers; 1832 Lucky Trousers; 1913 Studded Blackjack; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2204 Brashclaw's Skewer; 2241 Desperado Cape
+No-known-source sample (15 of 1391, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
 

@@ -337,7 +337,7 @@ func TestBuildBandPoolSeparatesEligibleSourcedCrossClassAndUnsourced(t *testing.
 		4: {{Kind: "quest", Label: "A Quest"}},
 		5: {{Kind: "quest", Label: "A Quest"}},
 	}
-	pool := buildBandPool(items, idx, "hunter", 20, "horde", map[string]float64{"agility": 2}, 0, false)
+	pool := buildBandPool(items, idx, "hunter", 20, "horde", map[string]float64{"agility": 2}, 0, false, false)
 
 	if len(pool.Scored) != 2 {
 		t.Fatalf("pool.Scored = %+v, want 2 (helm + bow)", pool.Scored)
@@ -369,7 +369,7 @@ func TestBuildBandPoolSetsDeadStatCount(t *testing.T) {
 		{ID: 2, Name: "One Dead Stat", RequiredLevel: 10, EffectiveRequiredLevel: 10, Stats: map[string]float64{"agility": 6, "spell_power": 7}, Slots: []string{"hands"}},
 	}
 	idx := lootIndex{1: {{Kind: "quest", Label: "A Quest"}}, 2: {{Kind: "quest", Label: "A Quest"}}}
-	pool := buildBandPool(items, idx, "rogue", 20, "horde", map[string]float64{"agility": 1}, 0, false)
+	pool := buildBandPool(items, idx, "rogue", 20, "horde", map[string]float64{"agility": 1}, 0, false, false)
 	for _, s := range pool.Scored {
 		switch s.ID {
 		case 1:
@@ -391,7 +391,7 @@ func TestBuildBandPoolSkipsItemsWithNoSlots(t *testing.T) {
 	// added to any bucket.
 	items := []candidate{{ID: 1, RequiredLevel: 1, Slots: nil}}
 	idx := lootIndex{1: {{Kind: "quest", Label: "A Quest"}}}
-	pool := buildBandPool(items, idx, "hunter", 20, "horde", nil, 0, false)
+	pool := buildBandPool(items, idx, "hunter", 20, "horde", nil, 0, false, false)
 	if len(pool.Scored) != 0 || len(pool.NoSource) != 0 {
 		t.Fatalf("pool = %+v, want everything empty for a slotless item", pool)
 	}
@@ -560,7 +560,7 @@ func TestBuildBandPoolGatesEveryLegendaryRegardlessOfSourceKind(t *testing.T) {
 		810:   {{Kind: "world_drop", Label: "World drop"}},
 	}
 	weights := map[string]float64{"spell_power": 1, "agility": 1}
-	pool := buildBandPool(items, idx, "warrior", 60, "alliance", weights, 0, false)
+	pool := buildBandPool(items, idx, "warrior", 60, "alliance", weights, 0, false, false)
 
 	scoredIDs := make(map[int]bool, len(pool.Scored))
 	for _, s := range pool.Scored {

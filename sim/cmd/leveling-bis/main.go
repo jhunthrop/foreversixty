@@ -602,7 +602,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 
 			work := make(map[string]*factionWork, len(factions))
 			for _, f := range factions {
-				pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, bandReferenceDPSPerPoint, castsShoot)
+				pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, bandReferenceDPSPerPoint, castsShoot, leveling.DualWieldSpecs[specInfo.Spec])
 				bySlot := candidatesBySlot(pool.Scored)
 				// This lane's brief (bis-ranker-integrity-10), item 3:
 				// applied before the dagger/ranged-type restrictions below
@@ -869,7 +869,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				// band, logged above), trinket-rank and verify seconds
 				// separately per faction, so a slow band/spec is visible
 				// without re-deriving it from timestamps.
-				log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, effect-rank+set-completion %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, effectSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), len(verifyErrors))
+				log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, effect-rank+set-completion %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d rare-spawn drop(s) given way (%s), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, effectSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), pool.RareSpawnSkipped, rareSpawnSlotSummary(pool.Coverage), len(verifyErrors))
 				// lane rank-guardrails, guardrail A: one line per band+faction
 				// naming how much of the slot table a reader is actually
 				// looking at versus how much the ranker could see at all -

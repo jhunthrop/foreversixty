@@ -257,7 +257,7 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 		if !ok {
 			t.Errorf("%s: item %d (%s) has no source obtainable by a %s character at level %d (sourceFor), but was published as a pick", slotLabel(row.Slot), row.ItemID, row.ItemName, band.Faction, band.Band)
 		} else {
-			if msg := sourceLabelError("item", row.ItemID, row.ItemName, row.Source, src.Label, active); msg != "" {
+			if msg := sourceLabelError("item", row.ItemID, row.ItemName, row.Source, src, active); msg != "" {
 				t.Errorf("%s: %s", slotLabel(row.Slot), msg)
 			}
 			if row.SourceKind != src.Kind {
@@ -356,7 +356,7 @@ func checkAlternatives(t *testing.T, slotLabel func(string) string, classSlug st
 				t.Errorf("%s: alternative %d (%s) has no source obtainable by a %s character at level %d (sourceFor), but was published as an alternative", slotLabel(row.Slot), alt.ItemID, alt.ItemName, band.Faction, band.Band)
 			} else if alt.SourceKind != src.Kind {
 				t.Errorf("%s: alternative %d (%s) published source %q/%q, sourceFor says %q/%q", slotLabel(row.Slot), alt.ItemID, alt.ItemName, alt.Source, alt.SourceKind, src.Label, src.Kind)
-			} else if msg := sourceLabelError("alternative", alt.ItemID, alt.ItemName, alt.Source, src.Label, active); msg != "" {
+			} else if msg := sourceLabelError("alternative", alt.ItemID, alt.ItemName, alt.Source, src, active); msg != "" {
 				t.Errorf("%s: %s", slotLabel(row.Slot), msg)
 			}
 
@@ -548,25 +548,29 @@ func publishedCandidates(items []candidate, build, activeBuild string) map[int]c
 	return byID
 }
 
-// unconfirmedError is the refusal for a published client_unconfirmed
-// item ("" for any other).
-// sourceLabelError is check (3)'s source-label half: a published source
-// must be sourceFor's own label. The active build's files must match it
-// exactly. An older build's were ranked before task L1.7 and are never
-// re-ranked, so there the check accepts exactly L1.7's two relabels: a
-// drop now named by its instance alone ("Gnomeregan" for "Gnomeregan:
-// Caverndeep Burrower", a trash drop several creatures share), and a rare
-// spawn's drop now ending rareLabelSuffix.
-func sourceLabelError(what string, id int, name, published, want string, active bool) string {
-	if published == want {
+// sourceLabelError is check (3)'s source-label half ("" when the label is
+// right): a published source must be sourceFor's own label (want). The
+// active build's files must match it exactly. An older build's were ranked
+// before task L1.7 and are never re-ranked; there the check accepts the one
+// relabel L1.7 made, and only where it applies: want is a shared trash
+// drop named by its instance alone, and the published label is that
+// instance plus one of the creatures loot.json lists for the item.
+func sourceLabelError(what string, id int, name, published string, want itemSource, active bool) string {
+	if published == want.Label {
 		return ""
 	}
-	if !active && (strings.HasPrefix(published, want+": ") || published+rareLabelSuffix == want) {
-		return ""
+	if !active {
+		for _, creature := range want.SharedTrashCreatures {
+			if published == want.Label+": "+creature {
+				return ""
+			}
+		}
 	}
-	return fmt.Sprintf("%s %d (%s) published source %q, sourceFor says %q", what, id, name, published, want)
+	return fmt.Sprintf("%s %d (%s) published source %q, sourceFor says %q", what, id, name, published, want.Label)
 }
 
+// unconfirmedError is the refusal for a published client_unconfirmed
+// item ("" for any other).
 func unconfirmedError(what string, id int, name string, c candidate) string {
 	if !c.ClientUnconfirmed {
 		return ""

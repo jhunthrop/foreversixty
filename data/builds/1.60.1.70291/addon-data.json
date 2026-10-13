@@ -41104,9 +41104,9 @@
                   "source": "PvP rank 16 · General · Horde"
                 },
                 {
-                  "item_id": 231599,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 16 · General · Horde"
+                  "item_id": 22066,
+                  "source_kind": "quest",
+                  "source": "Just Compensation"
                 }
               ]
             },
@@ -41122,9 +41122,9 @@
                   "source": "Pix Xizzix"
                 },
                 {
-                  "item_id": 18405,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 19090,
+                  "source_kind": "rep",
+                  "source": "Frostwolf Clan"
                 }
               ]
             },
@@ -75060,13 +75060,13 @@
               ]
             },
             "wrist": {
-              "item_id": 252543,
+              "item_id": 252573,
               "source_kind": "crafted",
               "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252573,
+                  "item_id": 252543,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
@@ -75350,13 +75350,13 @@
               ]
             },
             "wrist": {
-              "item_id": 252543,
+              "item_id": 252573,
               "source_kind": "crafted",
               "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252573,
+                  "item_id": 252543,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
@@ -75374,12 +75374,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252587,
+                  "item_id": 252551,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252551,
+                  "item_id": 252587,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -75556,7 +75556,7 @@
             15067,
             272076,
             14141,
-            252543,
+            252573,
             227014,
             14803,
             10807,
@@ -75574,7 +75574,7 @@
             15067,
             272076,
             14141,
-            252543,
+            252573,
             227014,
             14803,
             10807,
@@ -76540,9 +76540,9 @@
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 1929,
-                  "source_kind": "dungeon",
-                  "source": "The Deadmines: Defias Evoker"
+                  "item_id": 274741,
+                  "source_kind": "vendor",
+                  "source": "Winklespark"
                 }
               ]
             },
@@ -76553,12 +76553,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 4313,
+                  "item_id": 253889,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 253889,
+                  "item_id": 4313,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -76569,7 +76569,26 @@
               "source_kind": "rep",
               "source": "Warsong Outriders",
               "chance": null,
-              "alternatives": []
+              "alternatives": [
+                {
+                  "item_id": 1462,
+                  "source_kind": "world",
+                  "source": "Shadowhide Darkweaver"
+                }
+              ]
+            },
+            "finger2": {
+              "item_id": 286535,
+              "source_kind": "world",
+              "source": "Sludge Beast (rare)",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 1462,
+                  "source_kind": "world",
+                  "source": "Shadowhide Darkweaver"
+                }
+              ]
             },
             "main_hand": {
               "item_id": 2567,
@@ -76645,6 +76664,7 @@
             23173,
             4320,
             20426,
+            286535,
             2567,
             274743,
             5198
@@ -112246,6 +112266,7 @@
     "285277": "Satchel of Iron Bombs",
     "285279": "Cracked Blacksmith Hammer",
     "285281": "Arcanite Blacksmith Hammer",
+    "286535": "Sludge-Stained Band",
     "286750": "Wisesight Wand",
     "286977": "Sword of the Fallen",
     "286981": "Death Bindings"

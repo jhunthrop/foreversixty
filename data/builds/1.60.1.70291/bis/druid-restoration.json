@@ -2,7 +2,7 @@
   "spec": "druid-restoration",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T19:37:28Z",
+  "generated_at": "2026-10-13T21:15:36Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -671,23 +671,23 @@
         }
       ],
       "set_dps": 46.40650696053889,
-      "no_source_count": 253,
+      "no_source_count": 188,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer",
-        "3000 Brood Mother Carapace",
-        "3018 Hide of Lupos"
+        "3738 Brewing Rod",
+        "4777 Ironwood Maul",
+        "4778 Heavy Spiked Mace",
+        "4797 Fiery Cloak",
+        "4798 Heavy Runed Cloak",
+        "4799 Antiquated Cloak",
+        "4964 Goblin Smasher",
+        "5821 Darkstalker Boots",
+        "6478 Rat Stompers",
+        "14148 Crystalline Cuffs",
+        "14149 Subterranean Cape",
+        "14150 Robe of Evocation",
+        "14151 Chanting Blade",
+        "14389 Durability Shoulderpads"
       ],
       "new_at_band": [
         "head: Pristine Circlet",
@@ -704,32 +704,38 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 2.040862499,
-      "verify_run_seconds": 6.285012568,
+      "weights_run_seconds": 1.797470253,
+      "verify_run_seconds": 6.381843228,
       "coverage": {
         "back": {
           "eligible": 98,
-          "sourced": 71
+          "sourced": 80,
+          "rare_spawn_skipped": 11
         },
         "chest": {
           "eligible": 136,
-          "sourced": 113
+          "sourced": 122,
+          "rare_spawn_skipped": 9
         },
         "feet": {
           "eligible": 92,
-          "sourced": 78
+          "sourced": 81,
+          "rare_spawn_skipped": 3
         },
         "finger1": {
           "eligible": 32,
-          "sourced": 16
+          "sourced": 19,
+          "rare_spawn_skipped": 3
         },
         "finger2": {
           "eligible": 32,
-          "sourced": 16
+          "sourced": 19,
+          "rare_spawn_skipped": 3
         },
         "hands": {
           "eligible": 100,
-          "sourced": 82
+          "sourced": 88,
+          "rare_spawn_skipped": 6
         },
         "head": {
           "eligible": 23,
@@ -737,11 +743,13 @@
         },
         "legs": {
           "eligible": 107,
-          "sourced": 94
+          "sourced": 99,
+          "rare_spawn_skipped": 5
         },
         "main_hand": {
           "eligible": 189,
-          "sourced": 112
+          "sourced": 132,
+          "rare_spawn_skipped": 20
         },
         "neck": {
           "eligible": 15,
@@ -749,7 +757,8 @@
         },
         "off_hand": {
           "eligible": 26,
-          "sourced": 17
+          "sourced": 19,
+          "rare_spawn_skipped": 2
         },
         "ranged": {
           "eligible": 10,
@@ -769,11 +778,13 @@
         },
         "waist": {
           "eligible": 85,
-          "sourced": 74
+          "sourced": 79,
+          "rare_spawn_skipped": 5
         },
         "wrist": {
           "eligible": 62,
-          "sourced": 45
+          "sourced": 48,
+          "rare_spawn_skipped": 3
         }
       },
       "reference_dps_per_point": 0.10309756666666078,
@@ -1211,7 +1222,7 @@
           "item_name": "Wisdom's Leather Pants",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 33.91370727577009,
+          "score": 33.9137072757701,
           "verified": true,
           "alternatives": [
             {
@@ -1227,14 +1238,14 @@
               "item_name": "Darkweave Breeches",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.6094909377509259
+              "dps_delta": -1.6094909377509266
             },
             {
               "item_id": 253939,
               "item_name": "Filigreed Silky Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.0619513333332153
+              "dps_delta": -2.0619513333332162
             }
           ],
           "runners_up": [
@@ -1455,23 +1466,23 @@
         }
       ],
       "set_dps": 47.60800369546431,
-      "no_source_count": 243,
+      "no_source_count": 178,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer",
-        "3000 Brood Mother Carapace"
+        "3738 Brewing Rod",
+        "5821 Darkstalker Boots",
+        "6478 Rat Stompers",
+        "14389 Durability Shoulderpads",
+        "15401 Welldrip Gloves",
+        "18863 Insignia of the Alliance",
+        "209617 Insignia of the Alliance",
+        "241089 Scarlet Dagger",
+        "248005 Northshire Hammer",
+        "248007 Militia Shortblade",
+        "248008 Apprentice's Spellstaff",
+        "263006 Scout Ranger's Tunic",
+        "263007 Skyseer's Vest"
       ],
       "new_at_band": [
         "head: Pristine Circlet",
@@ -1488,32 +1499,38 @@
         "finger2: Deep Fathom Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 2.040862499,
-      "verify_run_seconds": 6.270783675,
+      "weights_run_seconds": 1.797470253,
+      "verify_run_seconds": 6.354846109,
       "coverage": {
         "back": {
           "eligible": 99,
-          "sourced": 76
+          "sourced": 85,
+          "rare_spawn_skipped": 11
         },
         "chest": {
           "eligible": 134,
-          "sourced": 111
+          "sourced": 120,
+          "rare_spawn_skipped": 9
         },
         "feet": {
           "eligible": 92,
-          "sourced": 75
+          "sourced": 78,
+          "rare_spawn_skipped": 3
         },
         "finger1": {
           "eligible": 33,
-          "sourced": 18
+          "sourced": 21,
+          "rare_spawn_skipped": 3
         },
         "finger2": {
           "eligible": 33,
-          "sourced": 18
+          "sourced": 21,
+          "rare_spawn_skipped": 3
         },
         "hands": {
           "eligible": 94,
-          "sourced": 75
+          "sourced": 81,
+          "rare_spawn_skipped": 6
         },
         "head": {
           "eligible": 23,
@@ -1521,11 +1538,13 @@
         },
         "legs": {
           "eligible": 105,
-          "sourced": 90
+          "sourced": 95,
+          "rare_spawn_skipped": 5
         },
         "main_hand": {
           "eligible": 194,
-          "sourced": 128
+          "sourced": 148,
+          "rare_spawn_skipped": 20
         },
         "neck": {
           "eligible": 15,
@@ -1533,7 +1552,8 @@
         },
         "off_hand": {
           "eligible": 26,
-          "sourced": 14
+          "sourced": 16,
+          "rare_spawn_skipped": 2
         },
         "ranged": {
           "eligible": 10,
@@ -1553,11 +1573,13 @@
         },
         "waist": {
           "eligible": 84,
-          "sourced": 70
+          "sourced": 75,
+          "rare_spawn_skipped": 5
         },
         "wrist": {
           "eligible": 64,
-          "sourced": 51
+          "sourced": 54,
+          "rare_spawn_skipped": 3
         }
       },
       "reference_dps_per_point": 0.10309756666666078,
@@ -2059,7 +2081,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 41.78067873778165,
+          "score": 41.78067873778164,
           "verified": true,
           "alternatives": [
             {
@@ -2067,14 +2089,14 @@
               "item_name": "Glinteye Slippers",
               "source_kind": "dungeon",
               "source": "Excavation Site: Wetlands: Saltspine",
-              "dps_delta": -1.5951096267691158
+              "dps_delta": -1.5951096267691152
             },
             {
               "item_id": 9454,
               "item_name": "Acidic Walkers",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -1.890102972415644
+              "dps_delta": -1.890102972415643
             },
             {
               "item_id": 274747,
@@ -2299,23 +2321,23 @@
         }
       ],
       "set_dps": 89.48022945321853,
-      "no_source_count": 424,
+      "no_source_count": 340,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2058 Kazon's Maul",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer",
-        "2944 Cursed Eye of Paleth"
+        "2944 Cursed Eye of Paleth",
+        "3738 Brewing Rod",
+        "4196 Feathered Mantle",
+        "4777 Ironwood Maul",
+        "4778 Heavy Spiked Mace",
+        "4797 Fiery Cloak",
+        "4798 Heavy Runed Cloak",
+        "4799 Antiquated Cloak",
+        "4964 Goblin Smasher",
+        "5000 Coral Band",
+        "5821 Darkstalker Boots",
+        "5971 Feathered Cape",
+        "6478 Rat Stompers",
+        "9362 Brilliant Gold Ring"
       ],
       "new_at_band": [
         "head: Holy Shroud",
@@ -2332,52 +2354,63 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 2.549527764,
-      "verify_run_seconds": 7.85574043,
+      "weights_run_seconds": 2.054120219,
+      "verify_run_seconds": 7.827036239,
       "coverage": {
         "back": {
           "eligible": 179,
-          "sourced": 131
+          "sourced": 143,
+          "rare_spawn_skipped": 14
         },
         "chest": {
           "eligible": 227,
-          "sourced": 197
+          "sourced": 206,
+          "rare_spawn_skipped": 9
         },
         "feet": {
           "eligible": 148,
-          "sourced": 127
+          "sourced": 130,
+          "rare_spawn_skipped": 3
         },
         "finger1": {
           "eligible": 83,
-          "sourced": 46
+          "sourced": 50,
+          "rare_spawn_skipped": 5
         },
         "finger2": {
           "eligible": 83,
-          "sourced": 46
+          "sourced": 50,
+          "rare_spawn_skipped": 5
         },
         "hands": {
           "eligible": 156,
-          "sourced": 131
+          "sourced": 137,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 76,
-          "sourced": 61
+          "sourced": 64,
+          "rare_spawn_skipped": 5
         },
         "legs": {
           "eligible": 180,
-          "sourced": 154
+          "sourced": 160,
+          "rare_spawn_skipped": 7
         },
         "main_hand": {
           "eligible": 295,
-          "sourced": 182
+          "sourced": 208,
+          "rare_spawn_skipped": 31
         },
         "neck": {
           "eligible": 36,
-          "sourced": 17
+          "sourced": 18,
+          "rare_spawn_skipped": 3
         },
         "off_hand": {
           "eligible": 55,
-          "sourced": 35
+          "sourced": 38,
+          "rare_spawn_skipped": 3
         },
         "ranged": {
           "eligible": 11,
@@ -2385,7 +2418,8 @@
         },
         "shoulder": {
           "eligible": 74,
-          "sourced": 63
+          "sourced": 63,
+          "rare_spawn_skipped": 1
         },
         "trinket1": {
           "eligible": 18,
@@ -2397,11 +2431,13 @@
         },
         "waist": {
           "eligible": 152,
-          "sourced": 131
+          "sourced": 138,
+          "rare_spawn_skipped": 7
         },
         "wrist": {
           "eligible": 115,
-          "sourced": 88
+          "sourced": 92,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.10191310250001077,
@@ -3144,23 +3180,23 @@
         }
       ],
       "set_dps": 89.74885214843711,
-      "no_source_count": 416,
+      "no_source_count": 332,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2058 Kazon's Maul",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer"
+        "2944 Cursed Eye of Paleth",
+        "3738 Brewing Rod",
+        "4196 Feathered Mantle",
+        "5000 Coral Band",
+        "5821 Darkstalker Boots",
+        "5971 Feathered Cape",
+        "6478 Rat Stompers",
+        "9362 Brilliant Gold Ring",
+        "14389 Durability Shoulderpads",
+        "15401 Welldrip Gloves",
+        "16315 Sergeant Major's Cape",
+        "18440 Sergeant's Cape",
+        "18442 Master Sergeant's Insignia"
       ],
       "new_at_band": [
         "head: Holy Shroud",
@@ -3177,52 +3213,63 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 2.549527764,
-      "verify_run_seconds": 8.211179074,
+      "weights_run_seconds": 2.054120219,
+      "verify_run_seconds": 7.633023721,
       "coverage": {
         "back": {
           "eligible": 179,
-          "sourced": 134
+          "sourced": 146,
+          "rare_spawn_skipped": 14
         },
         "chest": {
           "eligible": 224,
-          "sourced": 193
+          "sourced": 202,
+          "rare_spawn_skipped": 9
         },
         "feet": {
           "eligible": 153,
-          "sourced": 127
+          "sourced": 130,
+          "rare_spawn_skipped": 3
         },
         "finger1": {
           "eligible": 84,
-          "sourced": 49
+          "sourced": 53,
+          "rare_spawn_skipped": 5
         },
         "finger2": {
           "eligible": 84,
-          "sourced": 49
+          "sourced": 53,
+          "rare_spawn_skipped": 5
         },
         "hands": {
           "eligible": 151,
-          "sourced": 124
+          "sourced": 130,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 76,
-          "sourced": 63
+          "sourced": 66,
+          "rare_spawn_skipped": 5
         },
         "legs": {
           "eligible": 176,
-          "sourced": 149
+          "sourced": 155,
+          "rare_spawn_skipped": 7
         },
         "main_hand": {
           "eligible": 295,
-          "sourced": 196
+          "sourced": 222,
+          "rare_spawn_skipped": 31
         },
         "neck": {
           "eligible": 36,
-          "sourced": 16
+          "sourced": 17,
+          "rare_spawn_skipped": 3
         },
         "off_hand": {
           "eligible": 52,
-          "sourced": 30
+          "sourced": 33,
+          "rare_spawn_skipped": 3
         },
         "ranged": {
           "eligible": 11,
@@ -3230,7 +3277,8 @@
         },
         "shoulder": {
           "eligible": 73,
-          "sourced": 62
+          "sourced": 62,
+          "rare_spawn_skipped": 1
         },
         "trinket1": {
           "eligible": 18,
@@ -3242,11 +3290,13 @@
         },
         "waist": {
           "eligible": 156,
-          "sourced": 132
+          "sourced": 139,
+          "rare_spawn_skipped": 7
         },
         "wrist": {
           "eligible": 118,
-          "sourced": 93
+          "sourced": 97,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.10191310250001077,
@@ -4006,23 +4056,23 @@
         }
       ],
       "set_dps": 134.18365515786587,
-      "no_source_count": 539,
+      "no_source_count": 445,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2058 Kazon's Maul",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer",
-        "2622 Nimar's Tribal Headdress"
+        "2944 Cursed Eye of Paleth",
+        "3738 Brewing Rod",
+        "4196 Feathered Mantle",
+        "4777 Ironwood Maul",
+        "4778 Heavy Spiked Mace",
+        "4797 Fiery Cloak",
+        "4798 Heavy Runed Cloak",
+        "4799 Antiquated Cloak",
+        "4964 Goblin Smasher",
+        "5000 Coral Band",
+        "5008 Quicksilver Ring",
+        "5743 Prismstone Ring",
+        "5821 Darkstalker Boots",
+        "5971 Feathered Cape"
       ],
       "new_at_band": [
         "neck: Necklace of Calisea",
@@ -4040,52 +4090,63 @@
         "trinket2: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 2.545313458,
-      "verify_run_seconds": 16.269698331,
+      "weights_run_seconds": 2.039309569,
+      "verify_run_seconds": 15.064443782,
       "coverage": {
         "back": {
           "eligible": 243,
-          "sourced": 190
+          "sourced": 204,
+          "rare_spawn_skipped": 16
         },
         "chest": {
           "eligible": 299,
-          "sourced": 258
+          "sourced": 269,
+          "rare_spawn_skipped": 11
         },
         "feet": {
           "eligible": 204,
-          "sourced": 176
+          "sourced": 179,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 120,
-          "sourced": 71
+          "sourced": 75,
+          "rare_spawn_skipped": 5
         },
         "finger2": {
           "eligible": 120,
-          "sourced": 71
+          "sourced": 75,
+          "rare_spawn_skipped": 5
         },
         "hands": {
           "eligible": 226,
-          "sourced": 196
+          "sourced": 202,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 137,
-          "sourced": 115
+          "sourced": 120,
+          "rare_spawn_skipped": 7
         },
         "legs": {
           "eligible": 226,
-          "sourced": 192
+          "sourced": 198,
+          "rare_spawn_skipped": 7
         },
         "main_hand": {
           "eligible": 376,
-          "sourced": 237
+          "sourced": 265,
+          "rare_spawn_skipped": 33
         },
         "neck": {
           "eligible": 51,
-          "sourced": 25
+          "sourced": 27,
+          "rare_spawn_skipped": 4
         },
         "off_hand": {
           "eligible": 75,
-          "sourced": 49
+          "sourced": 52,
+          "rare_spawn_skipped": 3
         },
         "ranged": {
           "eligible": 12,
@@ -4093,7 +4154,8 @@
         },
         "shoulder": {
           "eligible": 123,
-          "sourced": 107
+          "sourced": 108,
+          "rare_spawn_skipped": 2
         },
         "trinket1": {
           "eligible": 33,
@@ -4105,11 +4167,13 @@
         },
         "waist": {
           "eligible": 206,
-          "sourced": 182
+          "sourced": 189,
+          "rare_spawn_skipped": 7
         },
         "wrist": {
           "eligible": 161,
-          "sourced": 126
+          "sourced": 130,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.1027983849999985,
@@ -4869,23 +4933,23 @@
         }
       ],
       "set_dps": 132.96551341471366,
-      "no_source_count": 525,
+      "no_source_count": 431,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2058 Kazon's Maul",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer"
+        "2944 Cursed Eye of Paleth",
+        "3738 Brewing Rod",
+        "4196 Feathered Mantle",
+        "5000 Coral Band",
+        "5008 Quicksilver Ring",
+        "5743 Prismstone Ring",
+        "5821 Darkstalker Boots",
+        "5971 Feathered Cape",
+        "6478 Rat Stompers",
+        "8708 Hammer of Expertise",
+        "9362 Brilliant Gold Ring",
+        "14389 Durability Shoulderpads",
+        "15401 Welldrip Gloves"
       ],
       "new_at_band": [
         "neck: Necklace of Calisea",
@@ -4903,52 +4967,63 @@
         "trinket2: Ankh of Life",
         "main_hand: Hand of Righteousness"
       ],
-      "weights_run_seconds": 2.545313458,
-      "verify_run_seconds": 15.195271425,
+      "weights_run_seconds": 2.039309569,
+      "verify_run_seconds": 12.565889649,
       "coverage": {
         "back": {
           "eligible": 245,
-          "sourced": 194
+          "sourced": 208,
+          "rare_spawn_skipped": 16
         },
         "chest": {
           "eligible": 295,
-          "sourced": 254
+          "sourced": 265,
+          "rare_spawn_skipped": 11
         },
         "feet": {
           "eligible": 209,
-          "sourced": 176
+          "sourced": 179,
+          "rare_spawn_skipped": 4
         },
         "finger1": {
           "eligible": 119,
-          "sourced": 72
+          "sourced": 76,
+          "rare_spawn_skipped": 5
         },
         "finger2": {
           "eligible": 119,
-          "sourced": 72
+          "sourced": 76,
+          "rare_spawn_skipped": 5
         },
         "hands": {
           "eligible": 221,
-          "sourced": 188
+          "sourced": 194,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 138,
-          "sourced": 118
+          "sourced": 123,
+          "rare_spawn_skipped": 7
         },
         "legs": {
           "eligible": 223,
-          "sourced": 189
+          "sourced": 195,
+          "rare_spawn_skipped": 7
         },
         "main_hand": {
           "eligible": 378,
-          "sourced": 255
+          "sourced": 283,
+          "rare_spawn_skipped": 33
         },
         "neck": {
           "eligible": 51,
-          "sourced": 24
+          "sourced": 26,
+          "rare_spawn_skipped": 4
         },
         "off_hand": {
           "eligible": 71,
-          "sourced": 44
+          "sourced": 47,
+          "rare_spawn_skipped": 3
         },
         "ranged": {
           "eligible": 12,
@@ -4956,7 +5031,8 @@
         },
         "shoulder": {
           "eligible": 121,
-          "sourced": 106
+          "sourced": 107,
+          "rare_spawn_skipped": 2
         },
         "trinket1": {
           "eligible": 33,
@@ -4968,11 +5044,13 @@
         },
         "waist": {
           "eligible": 210,
-          "sourced": 183
+          "sourced": 190,
+          "rare_spawn_skipped": 7
         },
         "wrist": {
           "eligible": 166,
-          "sourced": 135
+          "sourced": 139,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.1027983849999985,
@@ -5792,23 +5870,23 @@
         }
       ],
       "set_dps": 200.45716933291314,
-      "no_source_count": 677,
+      "no_source_count": 580,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2058 Kazon's Maul",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer",
-        "2622 Nimar's Tribal Headdress"
+        "2944 Cursed Eye of Paleth",
+        "3738 Brewing Rod",
+        "4196 Feathered Mantle",
+        "4777 Ironwood Maul",
+        "4778 Heavy Spiked Mace",
+        "4797 Fiery Cloak",
+        "4798 Heavy Runed Cloak",
+        "4799 Antiquated Cloak",
+        "4964 Goblin Smasher",
+        "4988 Burning Obsidian Band",
+        "4989 Mage Dragon Robe",
+        "5000 Coral Band",
+        "5008 Quicksilver Ring",
+        "5743 Prismstone Ring"
       ],
       "new_at_band": [
         "head: Gemburst Circlet",
@@ -5827,52 +5905,63 @@
         "main_hand: Charstone Dirk",
         "off_hand: Twisting Essence Jar"
       ],
-      "weights_run_seconds": 1.892815023,
-      "verify_run_seconds": 8.875296852,
+      "weights_run_seconds": 1.7385972920000001,
+      "verify_run_seconds": 8.33229449,
       "coverage": {
         "back": {
           "eligible": 310,
-          "sourced": 247
+          "sourced": 261,
+          "rare_spawn_skipped": 16
         },
         "chest": {
           "eligible": 368,
-          "sourced": 317
+          "sourced": 328,
+          "rare_spawn_skipped": 12
         },
         "feet": {
           "eligible": 273,
-          "sourced": 235
+          "sourced": 238,
+          "rare_spawn_skipped": 5
         },
         "finger1": {
           "eligible": 144,
-          "sourced": 87
+          "sourced": 91,
+          "rare_spawn_skipped": 5
         },
         "finger2": {
           "eligible": 144,
-          "sourced": 87
+          "sourced": 91,
+          "rare_spawn_skipped": 5
         },
         "hands": {
           "eligible": 294,
-          "sourced": 258
+          "sourced": 264,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 202,
-          "sourced": 166
+          "sourced": 171,
+          "rare_spawn_skipped": 7
         },
         "legs": {
           "eligible": 279,
-          "sourced": 235
+          "sourced": 241,
+          "rare_spawn_skipped": 7
         },
         "main_hand": {
           "eligible": 453,
-          "sourced": 290
+          "sourced": 319,
+          "rare_spawn_skipped": 34
         },
         "neck": {
           "eligible": 65,
-          "sourced": 33
+          "sourced": 36,
+          "rare_spawn_skipped": 5
         },
         "off_hand": {
           "eligible": 95,
-          "sourced": 62
+          "sourced": 66,
+          "rare_spawn_skipped": 4
         },
         "ranged": {
           "eligible": 12,
@@ -5880,7 +5969,8 @@
         },
         "shoulder": {
           "eligible": 180,
-          "sourced": 157
+          "sourced": 158,
+          "rare_spawn_skipped": 2
         },
         "trinket1": {
           "eligible": 70,
@@ -5892,11 +5982,13 @@
         },
         "waist": {
           "eligible": 265,
-          "sourced": 236
+          "sourced": 243,
+          "rare_spawn_skipped": 7
         },
         "wrist": {
           "eligible": 216,
-          "sourced": 174
+          "sourced": 178,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.09884533232060262,
@@ -6715,23 +6807,23 @@
         }
       ],
       "set_dps": 198.2709373284706,
-      "no_source_count": 659,
+      "no_source_count": 562,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2058 Kazon's Maul",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer"
+        "2944 Cursed Eye of Paleth",
+        "3738 Brewing Rod",
+        "4196 Feathered Mantle",
+        "4988 Burning Obsidian Band",
+        "4989 Mage Dragon Robe",
+        "5000 Coral Band",
+        "5008 Quicksilver Ring",
+        "5743 Prismstone Ring",
+        "5821 Darkstalker Boots",
+        "5971 Feathered Cape",
+        "6478 Rat Stompers",
+        "8708 Hammer of Expertise",
+        "9362 Brilliant Gold Ring"
       ],
       "new_at_band": [
         "head: Gemburst Circlet",
@@ -6750,52 +6842,63 @@
         "main_hand: Charstone Dirk",
         "off_hand: Twisting Essence Jar"
       ],
-      "weights_run_seconds": 1.892815023,
-      "verify_run_seconds": 8.704624789,
+      "weights_run_seconds": 1.7385972920000001,
+      "verify_run_seconds": 7.81548194,
       "coverage": {
         "back": {
           "eligible": 315,
-          "sourced": 254
+          "sourced": 268,
+          "rare_spawn_skipped": 16
         },
         "chest": {
           "eligible": 365,
-          "sourced": 314
+          "sourced": 325,
+          "rare_spawn_skipped": 12
         },
         "feet": {
           "eligible": 279,
-          "sourced": 236
+          "sourced": 239,
+          "rare_spawn_skipped": 5
         },
         "finger1": {
           "eligible": 145,
-          "sourced": 90
+          "sourced": 94,
+          "rare_spawn_skipped": 5
         },
         "finger2": {
           "eligible": 145,
-          "sourced": 90
+          "sourced": 94,
+          "rare_spawn_skipped": 5
         },
         "hands": {
           "eligible": 292,
-          "sourced": 253
+          "sourced": 259,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 203,
-          "sourced": 169
+          "sourced": 174,
+          "rare_spawn_skipped": 7
         },
         "legs": {
           "eligible": 275,
-          "sourced": 231
+          "sourced": 237,
+          "rare_spawn_skipped": 7
         },
         "main_hand": {
           "eligible": 456,
-          "sourced": 311
+          "sourced": 340,
+          "rare_spawn_skipped": 34
         },
         "neck": {
           "eligible": 67,
-          "sourced": 34
+          "sourced": 37,
+          "rare_spawn_skipped": 5
         },
         "off_hand": {
           "eligible": 92,
-          "sourced": 58
+          "sourced": 62,
+          "rare_spawn_skipped": 4
         },
         "ranged": {
           "eligible": 12,
@@ -6803,7 +6906,8 @@
         },
         "shoulder": {
           "eligible": 178,
-          "sourced": 156
+          "sourced": 157,
+          "rare_spawn_skipped": 2
         },
         "trinket1": {
           "eligible": 70,
@@ -6815,11 +6919,13 @@
         },
         "waist": {
           "eligible": 269,
-          "sourced": 237
+          "sourced": 244,
+          "rare_spawn_skipped": 7
         },
         "wrist": {
           "eligible": 220,
-          "sourced": 184
+          "sourced": 188,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.09884533232060262,
@@ -6931,7 +7037,7 @@
               "item_name": "Feralheart Headdress",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -3.171885931284295
+              "dps_delta": -3.171885931284292
             },
             {
               "item_id": 16720,
@@ -7030,7 +7136,7 @@
               "item_name": "Field Marshal's Dragonhide Pauldrons",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.1643203264149875
+              "dps_delta": -3.164320326414986
             }
           ],
           "runners_up": [
@@ -7650,23 +7756,23 @@
         }
       ],
       "set_dps": 341.30560544320394,
-      "no_source_count": 1319,
+      "no_source_count": 1222,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2058 Kazon's Maul",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer",
-        "2622 Nimar's Tribal Headdress"
+        "2944 Cursed Eye of Paleth",
+        "3738 Brewing Rod",
+        "4196 Feathered Mantle",
+        "4777 Ironwood Maul",
+        "4778 Heavy Spiked Mace",
+        "4797 Fiery Cloak",
+        "4798 Heavy Runed Cloak",
+        "4799 Antiquated Cloak",
+        "4964 Goblin Smasher",
+        "4988 Burning Obsidian Band",
+        "4989 Mage Dragon Robe",
+        "5000 Coral Band",
+        "5008 Quicksilver Ring",
+        "5743 Prismstone Ring"
       ],
       "new_at_band": [
         "head: Living Crown",
@@ -7683,52 +7789,63 @@
         "trinket2: Serenity Field",
         "off_hand: Lapidis Tankard of Tidesippe"
       ],
-      "weights_run_seconds": 1.9983135170000002,
-      "verify_run_seconds": 22.088879286,
+      "weights_run_seconds": 1.7236758129999998,
+      "verify_run_seconds": 17.988205622,
       "coverage": {
         "back": {
           "eligible": 382,
-          "sourced": 291
+          "sourced": 305,
+          "rare_spawn_skipped": 17
         },
         "chest": {
           "eligible": 499,
-          "sourced": 400
+          "sourced": 411,
+          "rare_spawn_skipped": 12
         },
         "feet": {
           "eligible": 379,
-          "sourced": 311
+          "sourced": 314,
+          "rare_spawn_skipped": 6
         },
         "finger1": {
           "eligible": 314,
-          "sourced": 149
+          "sourced": 153,
+          "rare_spawn_skipped": 5
         },
         "finger2": {
           "eligible": 314,
-          "sourced": 149
+          "sourced": 153,
+          "rare_spawn_skipped": 5
         },
         "hands": {
           "eligible": 395,
-          "sourced": 312
+          "sourced": 318,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 311,
-          "sourced": 230
+          "sourced": 235,
+          "rare_spawn_skipped": 7
         },
         "legs": {
           "eligible": 399,
-          "sourced": 311
+          "sourced": 317,
+          "rare_spawn_skipped": 7
         },
         "main_hand": {
           "eligible": 586,
-          "sourced": 360
+          "sourced": 389,
+          "rare_spawn_skipped": 34
         },
         "neck": {
           "eligible": 149,
-          "sourced": 62
+          "sourced": 65,
+          "rare_spawn_skipped": 5
         },
         "off_hand": {
           "eligible": 132,
-          "sourced": 81
+          "sourced": 85,
+          "rare_spawn_skipped": 4
         },
         "ranged": {
           "eligible": 22,
@@ -7736,7 +7853,8 @@
         },
         "shoulder": {
           "eligible": 298,
-          "sourced": 232
+          "sourced": 233,
+          "rare_spawn_skipped": 2
         },
         "trinket1": {
           "eligible": 142,
@@ -7748,11 +7866,13 @@
         },
         "waist": {
           "eligible": 361,
-          "sourced": 297
+          "sourced": 304,
+          "rare_spawn_skipped": 7
         },
         "wrist": {
           "eligible": 294,
-          "sourced": 216
+          "sourced": 220,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.09857709535426086,
@@ -7895,7 +8015,7 @@
           "source": "Lord Skwol",
           "source_kind": "world",
           "chance": 0.304762,
-          "score": 94.35529180532373,
+          "score": 94.35529180532372,
           "verified": true,
           "alternatives": [
             {
@@ -7903,14 +8023,14 @@
               "item_name": "Enchanted South Seas Kelp",
               "source_kind": "quest",
               "source": "Enchanted South Seas Kelp",
-              "dps_delta": -3.080211011568157
+              "dps_delta": -3.080211011568155
             },
             {
               "item_id": 19613,
               "item_name": "Pristine Enchanted South Seas Kelp",
               "source_kind": "quest",
               "source": "Pristine Enchanted South Seas Kelp",
-              "dps_delta": -3.080211011568157
+              "dps_delta": -3.080211011568155
             },
             {
               "item_id": 13002,
@@ -8583,23 +8703,23 @@
         }
       ],
       "set_dps": 339.4531023355558,
-      "no_source_count": 1315,
+      "no_source_count": 1218,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2058 Kazon's Maul",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer"
+        "2944 Cursed Eye of Paleth",
+        "3738 Brewing Rod",
+        "4196 Feathered Mantle",
+        "4988 Burning Obsidian Band",
+        "4989 Mage Dragon Robe",
+        "5000 Coral Band",
+        "5008 Quicksilver Ring",
+        "5743 Prismstone Ring",
+        "5821 Darkstalker Boots",
+        "5971 Feathered Cape",
+        "6478 Rat Stompers",
+        "8708 Hammer of Expertise",
+        "9362 Brilliant Gold Ring"
       ],
       "new_at_band": [
         "head: Living Crown",
@@ -8616,52 +8736,63 @@
         "trinket2: Serenity Field",
         "off_hand: Lapidis Tankard of Tidesippe"
       ],
-      "weights_run_seconds": 1.9983135170000002,
-      "verify_run_seconds": 19.070776421,
+      "weights_run_seconds": 1.7236758129999998,
+      "verify_run_seconds": 17.081718124,
       "coverage": {
         "back": {
           "eligible": 387,
-          "sourced": 297
+          "sourced": 311,
+          "rare_spawn_skipped": 17
         },
         "chest": {
           "eligible": 497,
-          "sourced": 399
+          "sourced": 410,
+          "rare_spawn_skipped": 12
         },
         "feet": {
           "eligible": 384,
-          "sourced": 311
+          "sourced": 314,
+          "rare_spawn_skipped": 6
         },
         "finger1": {
           "eligible": 315,
-          "sourced": 152
+          "sourced": 156,
+          "rare_spawn_skipped": 5
         },
         "finger2": {
           "eligible": 315,
-          "sourced": 152
+          "sourced": 156,
+          "rare_spawn_skipped": 5
         },
         "hands": {
           "eligible": 394,
-          "sourced": 308
+          "sourced": 314,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 312,
-          "sourced": 232
+          "sourced": 237,
+          "rare_spawn_skipped": 7
         },
         "legs": {
           "eligible": 394,
-          "sourced": 305
+          "sourced": 311,
+          "rare_spawn_skipped": 7
         },
         "main_hand": {
           "eligible": 591,
-          "sourced": 375
+          "sourced": 404,
+          "rare_spawn_skipped": 34
         },
         "neck": {
           "eligible": 151,
-          "sourced": 63
+          "sourced": 66,
+          "rare_spawn_skipped": 5
         },
         "off_hand": {
           "eligible": 130,
-          "sourced": 78
+          "sourced": 82,
+          "rare_spawn_skipped": 4
         },
         "ranged": {
           "eligible": 22,
@@ -8669,7 +8800,8 @@
         },
         "shoulder": {
           "eligible": 295,
-          "sourced": 230
+          "sourced": 231,
+          "rare_spawn_skipped": 2
         },
         "trinket1": {
           "eligible": 142,
@@ -8681,11 +8813,13 @@
         },
         "waist": {
           "eligible": 364,
-          "sourced": 297
+          "sourced": 304,
+          "rare_spawn_skipped": 7
         },
         "wrist": {
           "eligible": 297,
-          "sourced": 221
+          "sourced": 225,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.09857709535426086,
@@ -9092,7 +9226,7 @@
           "item_name": "Feralheart Cord",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 97.03923344737062,
+          "score": 97.0392334473706,
           "verified": true,
           "alternatives": [
             {
@@ -9107,7 +9241,7 @@
               "item_name": "Devout Belt",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Blackhand Summoner",
-              "dps_delta": -0.7160090579913154
+              "dps_delta": -0.7160090579913133
             },
             {
               "item_id": 19047,
@@ -9520,23 +9654,23 @@
         }
       ],
       "set_dps": 640.7688430882491,
-      "no_source_count": 1319,
+      "no_source_count": 1222,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2058 Kazon's Maul",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer",
-        "2622 Nimar's Tribal Headdress"
+        "2944 Cursed Eye of Paleth",
+        "3738 Brewing Rod",
+        "4196 Feathered Mantle",
+        "4777 Ironwood Maul",
+        "4778 Heavy Spiked Mace",
+        "4797 Fiery Cloak",
+        "4798 Heavy Runed Cloak",
+        "4799 Antiquated Cloak",
+        "4964 Goblin Smasher",
+        "4988 Burning Obsidian Band",
+        "4989 Mage Dragon Robe",
+        "5000 Coral Band",
+        "5008 Quicksilver Ring",
+        "5743 Prismstone Ring"
       ],
       "new_at_band": [
         "head: Living Crown",
@@ -9553,52 +9687,63 @@
         "trinket2: Serenity Field",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 1.670379489,
-      "verify_run_seconds": 21.630140341,
+      "weights_run_seconds": 1.565825976,
+      "verify_run_seconds": 19.310701636,
       "coverage": {
         "back": {
           "eligible": 382,
-          "sourced": 291
+          "sourced": 305,
+          "rare_spawn_skipped": 17
         },
         "chest": {
           "eligible": 499,
-          "sourced": 400
+          "sourced": 411,
+          "rare_spawn_skipped": 12
         },
         "feet": {
           "eligible": 379,
-          "sourced": 311
+          "sourced": 314,
+          "rare_spawn_skipped": 6
         },
         "finger1": {
           "eligible": 314,
-          "sourced": 149
+          "sourced": 153,
+          "rare_spawn_skipped": 5
         },
         "finger2": {
           "eligible": 314,
-          "sourced": 149
+          "sourced": 153,
+          "rare_spawn_skipped": 5
         },
         "hands": {
           "eligible": 395,
-          "sourced": 312
+          "sourced": 318,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 311,
-          "sourced": 230
+          "sourced": 235,
+          "rare_spawn_skipped": 7
         },
         "legs": {
           "eligible": 399,
-          "sourced": 311
+          "sourced": 317,
+          "rare_spawn_skipped": 7
         },
         "main_hand": {
           "eligible": 586,
-          "sourced": 360
+          "sourced": 389,
+          "rare_spawn_skipped": 34
         },
         "neck": {
           "eligible": 149,
-          "sourced": 62
+          "sourced": 65,
+          "rare_spawn_skipped": 5
         },
         "off_hand": {
           "eligible": 132,
-          "sourced": 81
+          "sourced": 85,
+          "rare_spawn_skipped": 4
         },
         "ranged": {
           "eligible": 22,
@@ -9606,7 +9751,8 @@
         },
         "shoulder": {
           "eligible": 298,
-          "sourced": 232
+          "sourced": 233,
+          "rare_spawn_skipped": 2
         },
         "trinket1": {
           "eligible": 142,
@@ -9618,11 +9764,13 @@
         },
         "waist": {
           "eligible": 361,
-          "sourced": 297
+          "sourced": 304,
+          "rare_spawn_skipped": 7
         },
         "wrist": {
           "eligible": 294,
-          "sourced": 216
+          "sourced": 220,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.14573026705621714,
@@ -10132,14 +10280,14 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.8863321903549433
+              "dps_delta": -2.8863321903549415
             },
             {
               "item_id": 16691,
               "item_name": "Devout Sandals",
               "source_kind": "dungeon",
               "source": "Stratholme: Maleki the Pallid",
-              "dps_delta": -4.833969135520096
+              "dps_delta": -4.833969135520094
             },
             {
               "item_id": 227862,
@@ -10457,23 +10605,23 @@
         }
       ],
       "set_dps": 639.2268354167497,
-      "no_source_count": 1315,
+      "no_source_count": 1218,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "1215 Support Girdle",
-        "1314 Ghoul Fingers",
-        "1355 Buckskin Cape",
-        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "1913 Studded Blackjack",
-        "1917 Jeweled Dagger",
-        "1938 Block Mallet",
-        "1965 White Wolf Gloves",
-        "2058 Kazon's Maul",
-        "2069 Black Bear Hide Vest",
-        "2235 Brackclaw",
-        "2241 Desperado Cape",
-        "2254 Icepane Warhammer"
+        "2944 Cursed Eye of Paleth",
+        "3738 Brewing Rod",
+        "4196 Feathered Mantle",
+        "4988 Burning Obsidian Band",
+        "4989 Mage Dragon Robe",
+        "5000 Coral Band",
+        "5008 Quicksilver Ring",
+        "5743 Prismstone Ring",
+        "5821 Darkstalker Boots",
+        "5971 Feathered Cape",
+        "6478 Rat Stompers",
+        "8708 Hammer of Expertise",
+        "9362 Brilliant Gold Ring"
       ],
       "new_at_band": [
         "head: Living Crown",
@@ -10490,52 +10638,63 @@
         "trinket2: Serenity Field",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 1.670379489,
-      "verify_run_seconds": 24.04496872,
+      "weights_run_seconds": 1.565825976,
+      "verify_run_seconds": 20.055083021,
       "coverage": {
         "back": {
           "eligible": 387,
-          "sourced": 297
+          "sourced": 311,
+          "rare_spawn_skipped": 17
         },
         "chest": {
           "eligible": 497,
-          "sourced": 399
+          "sourced": 410,
+          "rare_spawn_skipped": 12
         },
         "feet": {
           "eligible": 384,
-          "sourced": 311
+          "sourced": 314,
+          "rare_spawn_skipped": 6
         },
         "finger1": {
           "eligible": 315,
-          "sourced": 152
+          "sourced": 156,
+          "rare_spawn_skipped": 5
         },
         "finger2": {
           "eligible": 315,
-          "sourced": 152
+          "sourced": 156,
+          "rare_spawn_skipped": 5
         },
         "hands": {
           "eligible": 394,
-          "sourced": 308
+          "sourced": 314,
+          "rare_spawn_skipped": 7
         },
         "head": {
           "eligible": 312,
-          "sourced": 232
+          "sourced": 237,
+          "rare_spawn_skipped": 7
         },
         "legs": {
           "eligible": 394,
-          "sourced": 305
+          "sourced": 311,
+          "rare_spawn_skipped": 7
         },
         "main_hand": {
           "eligible": 591,
-          "sourced": 375
+          "sourced": 404,
+          "rare_spawn_skipped": 34
         },
         "neck": {
           "eligible": 151,
-          "sourced": 63
+          "sourced": 66,
+          "rare_spawn_skipped": 5
         },
         "off_hand": {
           "eligible": 130,
-          "sourced": 78
+          "sourced": 82,
+          "rare_spawn_skipped": 4
         },
         "ranged": {
           "eligible": 22,
@@ -10543,7 +10702,8 @@
         },
         "shoulder": {
           "eligible": 295,
-          "sourced": 230
+          "sourced": 231,
+          "rare_spawn_skipped": 2
         },
         "trinket1": {
           "eligible": 142,
@@ -10555,11 +10715,13 @@
         },
         "waist": {
           "eligible": 364,
-          "sourced": 297
+          "sourced": 304,
+          "rare_spawn_skipped": 7
         },
         "wrist": {
           "eligible": 297,
-          "sourced": 221
+          "sourced": 225,
+          "rare_spawn_skipped": 5
         }
       },
       "reference_dps_per_point": 0.14573026705621714,

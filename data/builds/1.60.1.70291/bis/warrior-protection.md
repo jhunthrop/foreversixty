@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 00000000000000000-00000000000000000-050510000000000000)
 
-Set DPS (verified): 20.2. Weights run: 2.8s. Verify run: 2.3s. 370 eligible items had no known source.
+Set DPS (verified): 20.2. Weights run: 3.3s. Verify run: 2.6s. 284 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=0.037 ± 0.007, defense=not significant (0.220 ± 0.085) per rating point (1 rating = 1%, 0.220 per %), dodge=0.121 ± 0.016 per rating point (12 rating = 1%, 1.450 per %), parry=0.099 ± 0.013 per rating point (15 rating = 1%, 1.485 per %), block=not significant (0.000 ± 0.000) per rating point (5 rating = 1%, 0.000 per %), block_value=not significant (0.000 ± 0.000), strength=0.046 ± 0.000, agility=0.183 ± 0.011, attack_power=0.023 ± 0.000, hit=not significant (0.036 ± 0.016) per rating point (10 rating = 1%, 0.363 per %), crit=0.028 ± 0.006 per rating point (14 rating = 1%, 0.396 per %), expertise=1.515 ± 0.159
 
@@ -34,11 +34,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 20:** head: Guard's Silvered Chain Helm; neck: Tarnished Locket; shoulder: Durable Chain Shoulders; back: Sporid Cape; chest: Remembrance Armor; wrist: Rift Bracers; hands: Guard's Gloves; waist: Deviate Scale Belt; legs: Guard's Chain Leggings; feet: Nat Pagle's Extreme Anglin' Boots; finger1: Sustaining Ring; finger2: Slain Baron's Signet; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Barrens Basher; off_hand: Redbeard Crest; ranged: Calibrated Blunderbuss
 
-No-known-source sample (15 of 370, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2069 Black Bear Hide Vest; 2203 Brashclaw's Chopper; 2204 Brashclaw's Skewer; 2235 Brackclaw; 2241 Desperado Cape
+No-known-source sample (15 of 284, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk; 4964 Goblin Smasher
 
 ### Band 30 (dwarf, 00000000000000000-00000000000000000-050533120200000000)
 
-Set DPS (verified): 31.0. Weights run: 2.7s. Verify run: 2.4s. 616 eligible items had no known source.
+Set DPS (verified): 31.0. Weights run: 2.6s. Verify run: 2.4s. 499 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.048, armor=not significant (0.022 ± 0.009), defense=0.473 ± 0.105 per rating point (1 rating = 1%, 0.473 per %), dodge=0.280 ± 0.019 per rating point (12 rating = 1%, 3.358 per %), parry=0.216 ± 0.015 per rating point (15 rating = 1%, 3.244 per %), block=0.327 ± 0.038 per rating point (5 rating = 1%, 1.633 per %), block_value=not significant (0.348 ± 0.160), strength=0.042 ± 0.008, agility=0.229 ± 0.012, attack_power=0.012 ± 0.000, hit=not significant (0.064 ± 0.022) per rating point (10 rating = 1%, 0.636 per %), crit=not significant (0.015 ± 0.008) per rating point (14 rating = 1%, 0.204 per %), expertise=1.724 ± 0.228
 
@@ -64,11 +64,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 30:** head: Frostreaver Crown; neck: Souvenir Sea Shell; shoulder: Sparkleshell Mantle; back: Mourning Shawl; chest: Fire Hardened Hauberk; wrist: Beetle Clasps; hands: Silvered Gauntlets; waist: Sentinel's Belt; legs: Guard's Silvered Chain Leggings; feet: Scarlet Boots; finger1: Insurgent's Band; finger2: Darkspear Signet; trinket2: Talisman of Arathor; main_hand: Darkspear Skirmisher's Bludgeon; off_hand: Heart of Agamaggan; ranged: Chesterfall Musket
 
-No-known-source sample (15 of 616, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2203 Brashclaw's Chopper; 2204 Brashclaw's Skewer
+No-known-source sample (15 of 499, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler
 
 ### Band 40 (dwarf, 00000000000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 98.2. Weights run: 2.8s. Verify run: 3.1s. 813 eligible items had no known source.
+Set DPS (verified): 98.2. Weights run: 2.7s. Verify run: 2.8s. 682 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.068, armor=not significant (0.027 ± 0.010), defense=not significant (0.285 ± 0.119) per rating point (1 rating = 1%, 0.285 per %), dodge=0.192 ± 0.025 per rating point (12 rating = 1%, 2.306 per %), parry=0.147 ± 0.018 per rating point (15 rating = 1%, 2.206 per %), block=not significant (0.013 ± 0.033) per rating point (5 rating = 1%, 0.066 per %), block_value=not significant (0.380 ± 0.173), strength=0.035 ± 0.009, agility=0.181 ± 0.017, attack_power=0.008 ± 0.000, hit=not significant (0.046 ± 0.034) per rating point (10 rating = 1%, 0.456 per %), crit=not significant (0.018 ± 0.009) per rating point (14 rating = 1%, 0.256 per %), expertise=2.444 ± 0.355
 
@@ -94,11 +94,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 40:** head: Symbolic Crown; shoulder: Tyrant's Epaulets; chest: Carapace of Tuten'kash; wrist: Crushridge Bindings; hands: Plated Fist of Hakoo; legs: Legguards of the Vault; feet: Boots of Avoidance; finger1: Suspicious Spare Part; finger2: Insurgent's Band; trinket1: Rune of Perfection; trinket2: Darkspear Voodoo Seal; main_hand: Sword of Serenity; off_hand: Aegis of the Scarlet Commander
 
-No-known-source sample (15 of 813, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1678 Black Ogre Kickers; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2203 Brashclaw's Chopper
+No-known-source sample (15 of 682, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
 
 ### Band 50 (dwarf, 35200000000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 122.2. Weights run: 8.0s. Verify run: 5.6s. 996 eligible items had no known source.
+Set DPS (verified): 122.2. Weights run: 5.8s. Verify run: 5.4s. 861 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.085, armor=not significant (0.028 ± 0.011), defense=not significant (0.356 ± 0.172) per rating point (1 rating = 1%, 0.356 per %), dodge=0.284 ± 0.038 per rating point (12 rating = 1%, 3.406 per %), parry=0.242 ± 0.028 per rating point (15 rating = 1%, 3.624 per %), block=not significant (0.009 ± 0.043) per rating point (5 rating = 1%, 0.045 per %), block_value=not significant (0.121 ± 0.150), strength=0.026 ± 0.006, agility=0.247 ± 0.024, attack_power=0.008 ± 0.000, hit=not significant (0.063 ± 0.048) per rating point (10 rating = 1%, 0.626 per %), crit=not significant (0.025 ± 0.009) per rating point (14 rating = 1%, 0.351 per %), expertise=3.357 ± 0.529
 
@@ -124,11 +124,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 50:** head: Avenguard Helm; neck: Master Sergeant's Insignia; shoulder: Knight-Lieutenant's Plate Pauldrons; back: Nightfall Drape; chest: Hydralick Armor; wrist: Sergeant Major's Plate Wristguards; hands: Handguards of Heroism; waist: Sentinel's Waistguard; legs: Knight's Plate Leggings; feet: Sergeant Major's Plate Greaves; finger1: Insurgent's Band; finger2: Darkmoon Ring; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal; main_hand: Axe of Rin'ji; off_hand: Aegis of Stormwind; ranged: Satchel of Iron Bombs
 
-No-known-source sample (15 of 996, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1678 Black Ogre Kickers; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2203 Brashclaw's Chopper
+No-known-source sample (15 of 861, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
 
 ### Band 60 (dwarf, 35305013000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 170.6. Weights run: 3.0s. Verify run: 13.9s. 1720 eligible items had no known source.
+Set DPS (verified): 170.6. Weights run: 2.7s. Verify run: 12.0s. 1585 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=not significant (0.042 ± 0.014), defense=1.244 ± 0.298 per rating point (1 rating = 1%, 1.244 per %), dodge=0.947 ± 0.065 per rating point (12 rating = 1%, 11.368 per %), parry=0.737 ± 0.047 per rating point (15 rating = 1%, 11.059 per %), block=not significant (0.028 ± 0.050) per rating point (5 rating = 1%, 0.139 per %), block_value=not significant (0.643 ± 0.239), strength=0.062 ± 0.012, agility=0.725 ± 0.041, attack_power=0.015 ± 0.000, hit=not significant (0.204 ± 0.074) per rating point (10 rating = 1%, 2.043 per %), crit=not significant (0.082 ± 0.023) per rating point (14 rating = 1%, 1.152 per %), expertise=7.959 ± 0.846
 
@@ -154,11 +154,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 60:** head: Faceguard of Heroism; neck: Rage of Mugamba; shoulder: Highlander's Plate Spaulders; back: Shifting Cloak; chest: Chestguard of Heroism; wrist: Wristguards of Heroism; waist: Waistguard of Heroism; legs: Sentinel's Plate Legguards; feet: Boots of Avoidance; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Resolution; trinket1: Darkmoon Card: Maelstrom; trinket2: Stormpike Insignia Rank 6; main_hand: Shadowsong's Sorrow; off_hand: The Immovable Object; ranged: Outrunner's Bow
 
-No-known-source sample (15 of 1720, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1678 Black Ogre Kickers; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2203 Brashclaw's Chopper
+No-known-source sample (15 of 1585, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
 
 ### Band 60, raid preset (dwarf, 35305013000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 308.6. Weights run: 3.2s. Verify run: 13.2s. 1720 eligible items had no known source.
+Set DPS (verified): 308.6. Weights run: 2.9s. Verify run: 12.4s. 1585 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.066 ± 0.013, defense=2.056 ± 0.329 per rating point (1 rating = 1%, 2.056 per %), dodge=1.320 ± 0.078 per rating point (12 rating = 1%, 15.845 per %), parry=1.080 ± 0.057 per rating point (15 rating = 1%, 16.206 per %), block=not significant (-0.006 ± 0.049) per rating point (5 rating = 1%, -0.031 per %), block_value=not significant (0.888 ± 0.228), strength=0.107 ± 0.013, agility=1.101 ± 0.050, attack_power=0.023 ± 0.000, hit=not significant (0.206 ± 0.099) per rating point (10 rating = 1%, 2.063 per %), crit=0.116 ± 0.019 per rating point (14 rating = 1%, 1.631 per %), expertise=11.501 ± 1.058
 
@@ -184,13 +184,13 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 60:** head: Faceguard of Heroism; neck: Rage of Mugamba; shoulder: Highlander's Plate Spaulders; back: Shifting Cloak; chest: Chestguard of Heroism; wrist: Wristguards of Heroism; waist: Waistguard of Heroism; legs: Legguards of Heroism; feet: Boots of Avoidance; finger1: Signet Ring of the Bronze Dragonflight; finger2: Ring of Awareness; trinket1: Defender's Grip Stabilizer; trinket2: Stormpike Insignia Rank 6; main_hand: Shadowsong's Sorrow; off_hand: The Immovable Object; ranged: Precisely Calibrated Boomstick
 
-No-known-source sample (15 of 1720, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1678 Black Ogre Kickers; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2203 Brashclaw's Chopper
+No-known-source sample (15 of 1585, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
 
 ## Horde
 
 ### Band 20 (tauren, 00000000000000000-00000000000000000-050510000000000000)
 
-Set DPS (verified): 20.6. Weights run: 2.8s. Verify run: 2.3s. 340 eligible items had no known source.
+Set DPS (verified): 20.6. Weights run: 3.3s. Verify run: 2.3s. 254 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=0.037 ± 0.007, defense=not significant (0.220 ± 0.085) per rating point (1 rating = 1%, 0.220 per %), dodge=0.121 ± 0.016 per rating point (12 rating = 1%, 1.450 per %), parry=0.099 ± 0.013 per rating point (15 rating = 1%, 1.485 per %), block=not significant (0.000 ± 0.000) per rating point (5 rating = 1%, 0.000 per %), block_value=not significant (0.000 ± 0.000), strength=0.046 ± 0.000, agility=0.183 ± 0.011, attack_power=0.023 ± 0.000, hit=not significant (0.036 ± 0.016) per rating point (10 rating = 1%, 0.363 per %), crit=0.028 ± 0.006 per rating point (14 rating = 1%, 0.396 per %), expertise=1.515 ± 0.159
 
@@ -216,11 +216,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 20:** head: Guard's Silvered Chain Helm; neck: Erudite's Amulet; shoulder: Rough Bronze Shoulders; back: Sporid Cape; chest: Guard's Chain Shirt; wrist: Spare Part Bindings; hands: Guard's Gloves; waist: Deviate Scale Belt; legs: Guard's Chain Leggings; feet: Nat Pagle's Extreme Anglin' Boots; finger1: Slain Baron's Signet; finger2: Blood Ring; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: The Stitcher; off_hand: Redbeard Crest; ranged: Satchel of Copper Bombs
 
-No-known-source sample (15 of 340, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1832 Lucky Trousers; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2069 Black Bear Hide Vest; 2203 Brashclaw's Chopper; 2204 Brashclaw's Skewer; 2235 Brackclaw
+No-known-source sample (15 of 254, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9602 Brushwood Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 15402 Noosegrip Gauntlets; 18854 Insignia of the Alliance; 209616 Insignia of the Alliance; 241089 Scarlet Dagger
 
 ### Band 30 (tauren, 00000000000000000-00000000000000000-050533120200000000)
 
-Set DPS (verified): 32.2. Weights run: 2.7s. Verify run: 2.5s. 580 eligible items had no known source.
+Set DPS (verified): 32.2. Weights run: 2.6s. Verify run: 2.3s. 463 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.048, armor=not significant (0.022 ± 0.009), defense=0.473 ± 0.105 per rating point (1 rating = 1%, 0.473 per %), dodge=0.280 ± 0.019 per rating point (12 rating = 1%, 3.358 per %), parry=0.216 ± 0.015 per rating point (15 rating = 1%, 3.244 per %), block=0.327 ± 0.038 per rating point (5 rating = 1%, 1.633 per %), block_value=not significant (0.348 ± 0.160), strength=0.042 ± 0.008, agility=0.229 ± 0.012, attack_power=0.012 ± 0.000, hit=not significant (0.064 ± 0.022) per rating point (10 rating = 1%, 0.636 per %), crit=not significant (0.015 ± 0.008) per rating point (14 rating = 1%, 0.204 per %), expertise=1.724 ± 0.228
 
@@ -246,11 +246,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 30:** head: Frostreaver Crown; neck: Souvenir Sea Shell; shoulder: Sparkleshell Mantle; back: Grimsteel Cape; chest: Brutal Hauberk; wrist: Undead Knight's Bracers; hands: Braced Handguards; waist: Sentinel's Belt; legs: Guard's Silvered Chain Leggings; feet: Scarlet Boots; finger1: Insurgent's Band; finger2: Seal of Sylvanas; trinket2: Defiler's Talisman; main_hand: Darkspear Skirmisher's Bludgeon; off_hand: Heart of Agamaggan; ranged: Chesterfall Musket
 
-No-known-source sample (15 of 580, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1832 Lucky Trousers; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest; 2203 Brashclaw's Chopper
+No-known-source sample (15 of 463, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9602 Brushwood Blade; 14389 Durability Shoulderpads
 
 ### Band 40 (tauren, 00000000000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 97.4. Weights run: 2.8s. Verify run: 3.0s. 766 eligible items had no known source.
+Set DPS (verified): 97.4. Weights run: 2.7s. Verify run: 2.7s. 635 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.068, armor=not significant (0.027 ± 0.010), defense=not significant (0.285 ± 0.119) per rating point (1 rating = 1%, 0.285 per %), dodge=0.192 ± 0.025 per rating point (12 rating = 1%, 2.306 per %), parry=0.147 ± 0.018 per rating point (15 rating = 1%, 2.206 per %), block=not significant (0.013 ± 0.033) per rating point (5 rating = 1%, 0.066 per %), block_value=not significant (0.380 ± 0.173), strength=0.035 ± 0.009, agility=0.181 ± 0.017, attack_power=0.008 ± 0.000, hit=not significant (0.046 ± 0.034) per rating point (10 rating = 1%, 0.456 per %), crit=not significant (0.018 ± 0.009) per rating point (14 rating = 1%, 0.256 per %), expertise=2.444 ± 0.355
 
@@ -276,11 +276,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 40:** head: Symbolic Crown; shoulder: Tyrant's Epaulets; back: Wing of the Whelpling; chest: Carapace of Tuten'kash; wrist: Crushridge Bindings; hands: Plated Fist of Hakoo; legs: Legguards of the Vault; feet: Boots of Avoidance; finger1: Suspicious Spare Part; finger2: Insurgent's Band; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Steelclaw Reaver; off_hand: Aegis of the Scarlet Commander
 
-No-known-source sample (15 of 766, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1678 Black Ogre Kickers; 1832 Lucky Trousers; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest
+No-known-source sample (15 of 635, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ### Band 50 (tauren, 35200000000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 121.9. Weights run: 8.0s. Verify run: 5.6s. 940 eligible items had no known source.
+Set DPS (verified): 121.9. Weights run: 5.8s. Verify run: 5.2s. 805 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.085, armor=not significant (0.028 ± 0.011), defense=not significant (0.356 ± 0.172) per rating point (1 rating = 1%, 0.356 per %), dodge=0.284 ± 0.038 per rating point (12 rating = 1%, 3.406 per %), parry=0.242 ± 0.028 per rating point (15 rating = 1%, 3.624 per %), block=not significant (0.009 ± 0.043) per rating point (5 rating = 1%, 0.045 per %), block_value=not significant (0.121 ± 0.150), strength=0.026 ± 0.006, agility=0.247 ± 0.024, attack_power=0.008 ± 0.000, hit=not significant (0.063 ± 0.048) per rating point (10 rating = 1%, 0.626 per %), crit=not significant (0.025 ± 0.009) per rating point (14 rating = 1%, 0.351 per %), expertise=3.357 ± 0.529
 
@@ -306,11 +306,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 50:** head: Avenguard Helm; neck: Senior Sergeant's Insignia; shoulder: Hulkstone Pauldrons; back: Nightfall Drape; chest: Stone Guard's Plate Armor; wrist: First Sergeant's Plate Bracers; hands: Handguards of Heroism; waist: Sentinel's Waistguard; legs: Stone Guard's Plate Leggings; feet: First Sergeant's Plate Greaves; finger1: Insurgent's Band; finger2: Darkmoon Ring; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal; main_hand: Axe of Rin'ji; off_hand: Aegis of Stormwind; ranged: Satchel of Iron Bombs
 
-No-known-source sample (15 of 940, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1678 Black Ogre Kickers; 1832 Lucky Trousers; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest
+No-known-source sample (15 of 805, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 
 ### Band 60 (tauren, 35305013000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 167.7. Weights run: 3.0s. Verify run: 13.1s. 1691 eligible items had no known source.
+Set DPS (verified): 167.7. Weights run: 2.7s. Verify run: 11.4s. 1556 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=not significant (0.042 ± 0.014), defense=1.244 ± 0.298 per rating point (1 rating = 1%, 1.244 per %), dodge=0.947 ± 0.065 per rating point (12 rating = 1%, 11.368 per %), parry=0.737 ± 0.047 per rating point (15 rating = 1%, 11.059 per %), block=not significant (0.028 ± 0.050) per rating point (5 rating = 1%, 0.139 per %), block_value=not significant (0.643 ± 0.239), strength=0.062 ± 0.012, agility=0.725 ± 0.041, attack_power=0.015 ± 0.000, hit=not significant (0.204 ± 0.074) per rating point (10 rating = 1%, 2.043 per %), crit=not significant (0.082 ± 0.023) per rating point (14 rating = 1%, 1.152 per %), expertise=7.959 ± 0.846
 
@@ -336,11 +336,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 60:** head: Faceguard of Heroism; neck: Rage of Mugamba; shoulder: Defiler's Plate Spaulders; back: Shifting Cloak; chest: Chestguard of Heroism; wrist: Wristguards of Heroism; waist: Waistguard of Heroism; legs: Sentinel's Plate Legguards; feet: Boots of Avoidance; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Resolution; trinket1: Frostwolf Insignia Rank 6; trinket2: Defiler's Talisman; main_hand: Shadowsong's Sorrow; off_hand: The Immovable Object; ranged: Outrider's Bow
 
-No-known-source sample (15 of 1691, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1678 Black Ogre Kickers; 1832 Lucky Trousers; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest
+No-known-source sample (15 of 1556, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 
 ### Band 60, raid preset (tauren, 35305013000000000-00000000000000000-050533120330001311)
 
-Set DPS (verified): 312.2. Weights run: 3.2s. Verify run: 13.8s. 1691 eligible items had no known source.
+Set DPS (verified): 312.2. Weights run: 2.9s. Verify run: 12.4s. 1556 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.066 ± 0.013, defense=2.056 ± 0.329 per rating point (1 rating = 1%, 2.056 per %), dodge=1.320 ± 0.078 per rating point (12 rating = 1%, 15.845 per %), parry=1.080 ± 0.057 per rating point (15 rating = 1%, 16.206 per %), block=not significant (-0.006 ± 0.049) per rating point (5 rating = 1%, -0.031 per %), block_value=not significant (0.888 ± 0.228), strength=0.107 ± 0.013, agility=1.101 ± 0.050, attack_power=0.023 ± 0.000, hit=not significant (0.206 ± 0.099) per rating point (10 rating = 1%, 2.063 per %), crit=0.116 ± 0.019 per rating point (14 rating = 1%, 1.631 per %), expertise=11.501 ± 1.058
 
@@ -366,5 +366,5 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 60:** head: Faceguard of Heroism; neck: Rage of Mugamba; shoulder: Defiler's Plate Spaulders; back: Shifting Cloak; chest: Chestguard of Heroism; wrist: Wristguards of Heroism; waist: Waistguard of Heroism; legs: Legguards of Heroism; feet: Boots of Avoidance; finger1: Signet Ring of the Bronze Dragonflight; finger2: Ring of Awareness; trinket1: Frostwolf Insignia Rank 6; trinket2: Defender's Grip Stabilizer; main_hand: Shadowsong's Sorrow; off_hand: The Immovable Object; ranged: Precisely Calibrated Boomstick
 
-No-known-source sample (15 of 1691, see the JSON for more): 1189 Overseer's Ring; 1215 Support Girdle; 1314 Ghoul Fingers; 1355 Buckskin Cape; 1387 Ghoulfang; 1539 Gnarled Hermit's Staff; 1678 Black Ogre Kickers; 1832 Lucky Trousers; 1913 Studded Blackjack; 1917 Jeweled Dagger; 1938 Block Mallet; 1965 White Wolf Gloves; 2035 Sword of the Night Sky; 2058 Kazon's Maul; 2069 Black Bear Hide Vest
+No-known-source sample (15 of 1556, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 

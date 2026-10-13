@@ -162,7 +162,7 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 				continue
 			}
 			weights := reconstructWeights(bandRow.Weights)
-			pool := buildBandPool(items, lootIdx, spec.ClassSlug, band, faction, weights, referenceDPSPerPointOrZero(bandRow), castsShoot)
+			pool := buildBandPool(items, lootIdx, spec.ClassSlug, band, faction, weights, referenceDPSPerPointOrZero(bandRow), castsShoot, leveling.DualWieldSpecs[spec.Spec])
 			// pickBySlot mirrors main.go's own runSpec exactly (this
 			// lane's brief, item 3): without excludeAbovePvpRankCap, this
 			// test's own locally-recomputed "primary.Item" reconstructs a

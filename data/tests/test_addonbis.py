@@ -1126,31 +1126,133 @@ def test_the_chance_lookup_names_a_rare_spawn_rare_and_a_shared_trash_drop_by_it
     assert not [key for key in chances if key[0] == 9509]
 
 
+def _rare_ring_build(root: Path, finger2: dict) -> None:
+    """A band-20 hunter whose finger2 nothing but a rare spawn's drop
+    fills: Signet of the Zhevra, from Swiftmane (a Barrens rare) and a zone
+    source leveling-bis never picks (fix round 1, D1 and D2)."""
+    _write_items(
+        root,
+        BUILD,
+        [
+            _item(285330, "Signet of the Zhevra"),
+            _item(1491, "Ring of Precision"),
+            _item(23171, "Unconfirmed Band", unconfirmed=True),
+        ],
+        {
+            "hunter": [
+                _class_item(285330, "Signet of the Zhevra"),
+                _class_item(1491, "Ring of Precision"),
+                _class_item(23171, "Unconfirmed Band"),
+            ]
+        },
+    )
+    (root / BUILD / "loot.json").write_text(
+        json.dumps(
+            {
+                "sources": [
+                    {
+                        "id": "world:swiftmane",
+                        "kind": "world",
+                        "name": "Swiftmane",
+                        "rare_spawn": True,
+                        "items": [285330],
+                        "item_chances": {"285330": 30},
+                    },
+                    {"id": "zone:17", "kind": "zone", "name": "The Barrens", "items": [285330]},
+                    {
+                        "kind": "dungeon",
+                        "name": "Blackfathom Deeps",
+                        "trash": [1491],
+                        "bosses": [
+                            {"name": "Fallenroot Shadowstalker", "items": [1491]},
+                            {"name": "Blackfathom Tide Priestess", "items": [1491]},
+                        ],
+                    },
+                ],
+                "quests": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+    finger1 = {
+        "slot": "finger1",
+        "item_id": 1491,
+        "source_kind": "dungeon",
+        "source": "Blackfathom Deeps",
+    }
+    _write_bis(root, BUILD, "hunter-marksmanship", [_band(20, "alliance", [finger1, finger2])])
+
+
+def test_a_rare_pick_nothing_else_covers_keeps_its_rare_label_and_chance(tmp_path):
+    """Fix round 1, D5: the "(rare)" label and its chance reach the addon
+    through the Python path, for a pick leveling-bis made and for one the
+    packer promotes (its chance looked up by the "(rare)" label)."""
+    rare = {"item_id": 285330, "source_kind": "world", "source": "Swiftmane (rare)"}
+    _rare_ring_build(tmp_path, dict(rare, slot="finger2", chance=0.3))
+    bis = build_bis(tmp_path, BUILD)
+    pick = bis["hunter-marksmanship"][0].factions["alliance"]["finger2"]
+    assert (pick.item_id, pick.source_kind, pick.source, pick.chance) == (
+        285330,
+        "world",
+        "Swiftmane (rare)",
+        0.3,
+    )
+    assert 'finger2 = "285330|W|Swiftmane (rare)|0.3",' in _render_bis(bis)
+
+    _rare_ring_build(
+        tmp_path,
+        {
+            "slot": "finger2",
+            "item_id": 23171,
+            "source_kind": "dungeon",
+            "source": "Shadowfang Keep: Sever",
+            "chance": 0.2,
+            "runners_up": [rare],
+        },
+    )
+    promoted = build_bis(tmp_path, BUILD)["hunter-marksmanship"][0].factions["alliance"]["finger2"]
+    assert (promoted.item_id, promoted.source, promoted.chance) == (
+        285330,
+        "Swiftmane (rare)",
+        0.3,
+    )
+
+
 def test_no_real_pick_is_a_rare_spawns_drop_while_another_source_fills_its_slot():
-    """Task L1.7's rule on the shipped picks: a pick whose source ends
-    "(rare)" only where nothing from another source fills the slot -- so
-    never beside an alternative that is not itself a rare spawn's drop --
-    and Ironspine's Eye is no hunter's band-30 ring."""
-    rare_picks = 0
-    for spec, bands in build_bis(Path("builds"), BUILD).items():
-        for band in bands:
-            for faction, slots in band.factions.items():
-                for slot, pick in slots.items():
-                    if not pick.source.endswith(" (rare)"):
+    """Task L1.7's rule on the shipped picks (fix round 1): a pick whose
+    source ends "(rare)" only where nothing from another source fills the
+    slot. leveling-bis leaves the pair-mate's pick out of a slot's
+    alternatives, so beside a rare pick every alternative from another
+    source adds nothing to the spec: its score (the pick's score plus its
+    dps_delta in reference-stat points) is 0. The addon ships each rare pick
+    with its "(rare)" label, and Ironspine's Eye is no hunter's band-30 ring."""
+    rare_picks = []
+    for path in sorted((Path("builds") / BUILD / "bis").glob("*.json")):
+        for band in json.loads(path.read_text(encoding="utf-8"))["bands"]:
+            where = (band["spec"], band["band"], band["faction"], band.get("preset"))
+            for row in band["slots"]:
+                if not row.get("source", "").endswith(" (rare)"):
+                    continue
+                rare_picks.append((*where, row["slot"], row["item_id"], row["source"]))
+                for alt in row.get("alternatives", []):
+                    if alt["source"].endswith(" (rare)"):
                         continue
-                    rare_picks += 1
-                    assert all(alt.source.endswith(" (rare)") for alt in pick.alternatives), (
-                        spec,
-                        band.level,
-                        faction,
-                        slot,
-                    )
-    hunter = build_bis(Path("builds"), BUILD)
+                    reference = band["reference_dps_per_point"]
+                    alt_score = row.get("score", 0) + alt.get("dps_delta", 0) / reference
+                    assert alt_score <= 1e-6, (where, row["slot"], alt["item_id"], alt_score)
+    assert rare_picks, "fix round 1 restores a rare pick (warlock-affliction 20 horde finger2)"
+    assert len(rare_picks) < 10  # a rare spawn's drop is the last resort, not a habit
+    shipped = build_bis(Path("builds"), BUILD)
+    for spec, level, faction, preset, slot, item_id, source in rare_picks:
+        if preset != "bare":
+            continue
+        band = next(band for band in shipped[spec] if band.level == level)
+        pick = band.factions[faction][slot]
+        assert (pick.item_id, pick.source) == (item_id, source), (spec, level, faction, slot)
     for spec in ("hunter-beast-mastery", "hunter-marksmanship"):
-        band_30 = next(band for band in hunter[spec] if band.level == 30)
+        band_30 = next(band for band in shipped[spec] if band.level == 30)
         for slots in band_30.factions.values():
             assert 7686 not in {slots["finger1"].item_id, slots["finger2"].item_id}, spec
-    assert rare_picks < 10  # a rare spawn's drop is the last resort, not a habit
 
 
 def test_petrolspill_leggings_are_named_by_gnomeregan_alone():
