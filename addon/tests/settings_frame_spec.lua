@@ -1,5 +1,5 @@
 -- addon/tests/settings_frame_spec.lua
--- The Settings page's one frame spec (L3.5, fix rounds 1 and 2), the frame as the subject:
+-- The Settings page's one frame spec (L3.5, fix rounds 1 to 3), the frame as the subject:
 -- registered at login and empty until the client shows it; built once on the first show on
 -- an opaque backdrop 8 px inside the canvas, one toggle per switch and the Reset button on
 -- it; each row as tall as its measured hint; each toggle's look on and off; hints in the
@@ -7,8 +7,9 @@
 -- reads off while a right-click hides the chip; Reset puts the placements back and says so
 -- for 2 s in the muted grey with a muted border; the commands with their tokens in body; the
 -- render check notes a short page once; the two data lines at the foot and the warning line
--- under the title; the scroll (the wheel, the top on every show, Reset in view); and the
--- open, counted only when the page shows.
+-- under the title (warning-coloured states only); the scroll (its backdrop the clip, the wheel
+-- reaching both ends and the foot's pad, the top on every show, Reset in view, a resized
+-- canvas); and the open, counted only when the page shows.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 
@@ -117,16 +118,45 @@ describe("SettingsPage, the canvas", function()
 		return mock.lastCall(toggle.frame, "SetPoint")[5]
 	end
 
-	--- Both data states current: the title carries no warning line.
-	local function ratingsCurrent()
+	--- Score.status answers `status` until the example ends.
+	local function ratingsStatus(status)
 		local Score = require("Score")
-		local status = Score.status
+		local original = Score.status
 		restoreScore = function()
-			Score.status = status
+			Score.status = original
 		end
 		Score.status = function()
-			return { available = true, stale = false }
+			return status
 		end
+	end
+
+	--- Both data states current: the title carries no warning line.
+	local function ratingsCurrent()
+		ratingsStatus({ available = true, stale = false })
+	end
+
+	--- The ratings too old: a warning-coloured state, so the title carries its line.
+	local function ratingsStale()
+		ratingsStatus({ available = true, stale = true })
+	end
+
+	--- Wheel the page down until it stops (or 50 notches), as a player's wheel does.
+	local function wheelToEnd()
+		local backdrop = SettingsPage.backdrop
+		local wheel = backdrop:GetScript("OnMouseWheel")
+		for _ = 1, 50 do
+			local before = SettingsPage.scroll.offset
+			wheel(backdrop, -1)
+			if SettingsPage.scroll.offset == before then
+				break
+			end
+		end
+		return SettingsPage.scroll.offset
+	end
+
+	--- The page's last foot line's bottom edge, from where the page put it.
+	local function footBottom()
+		return -mock.lastCall(SettingsPage.dataLabels[2], "SetPoint")[5] + Theme.SIZES.settingsLine
 	end
 
 	after_each(function()
@@ -225,6 +255,7 @@ describe("SettingsPage, the canvas", function()
 			return region.inherits == "GameFontNormalSmall" and 10 or 12
 		end
 		start()
+		ratingsStale()
 		SettingsPage.register()
 		local panel = SettingsPage.panel
 		panel:SetSize(Theme.SIZES.settingsWidth + Theme.SIZES.settingsInset * 2, Theme.SIZES.settingsHeight)
@@ -258,9 +289,95 @@ describe("SettingsPage, the canvas", function()
 		for index, toggle in ipairs(SettingsPage.toggles) do
 			heights[index] = toggle.frame:GetHeight()
 		end
-		local layout = SettingsPage.layout(600 - S.settingsInset * 2, heights, true)
+		local layout = SettingsPage.layout(600 - S.settingsInset * 2, heights)
 		assert.are.equal(layout.reset, mock.lastCall(SettingsPage.resetButton, "SetPoint")[5])
 		assert.are.equal(layout.height, SettingsPage.scroll.contentHeight)
+	end)
+
+	-- Fix round 3, item 1: the page's own backdrop is the scroll's holder and its clip, and it
+	-- is anchored to the canvas at both corners, so it is never taller than what shows.
+	it("scrolls inside its backdrop, which clips and spans the canvas less the inset", function()
+		start()
+		SettingsPage.register()
+		local panel = show()
+		local backdrop, inset = SettingsPage.backdrop, Theme.SIZES.settingsInset
+		assert.are.equal(backdrop, SettingsPage.scroll.holder)
+		assert.is_true(mock.lastCall(backdrop, "SetClipsChildren")[1])
+		local corners = {}
+		for _, call in ipairs(backdrop.calls) do
+			if call.method == "SetPoint" then
+				corners[#corners + 1] = { table.unpack(call, 1, call.n) }
+			end
+		end
+		assert.are.same({ { "TOPLEFT", panel, "TOPLEFT", inset, -inset },
+			{ "BOTTOMRIGHT", panel, "BOTTOMRIGHT", -inset, inset } }, corners)
+		assert.are.equal(SettingsPage.scroll.content, ({ backdrop:GetChildren() })[1])
+	end)
+
+	-- Fix round 3, item 1: at the end of the wheel the last foot line and its 12 px pad are in
+	-- view, with no warning line, with one, and with both data states in the warning colour.
+	it("reaches the foot and its pad at the end of the wheel, warning line or not", function()
+		local cases = {
+			{ nil, ratingsCurrent, false },
+			{ nil, ratingsStale, true },
+			{ "1.61.0", ratingsStale, true },
+		}
+		for _, case in ipairs(cases) do
+			start(nil, case[1])
+			case[2]()
+			SettingsPage.register()
+			show()
+			assert.are.equal(case[3], SettingsPage.warningLabel:IsShown())
+			local scroll, S = SettingsPage.scroll, Theme.SIZES
+			assert.are.equal(footBottom() + S.settingsFootPad, scroll.contentHeight)
+			local offset = wheelToEnd()
+			assert.are.equal(scroll.contentHeight - SettingsPage.backdrop:GetHeight(), offset)
+			assert.are.equal(scroll.contentHeight, offset + SettingsPage.backdrop:GetHeight())
+			assert.is_true(footBottom() <= offset + SettingsPage.backdrop:GetHeight() - S.settingsFootPad)
+			restoreScore()
+			restoreScore = nil
+			mock.uninstall()
+		end
+	end)
+
+	-- Fix round 3, item 1: 40 px over the clip, one notch reaches each end.
+	it("reaches both ends with the wheel when the page is 40 px taller than its clip", function()
+		start()
+		ratingsCurrent()
+		SettingsPage.register()
+		local height = SettingsPage.layout(600 - Theme.SIZES.settingsInset * 2).height
+		local panel = SettingsPage.panel
+		panel:SetSize(600, height - 40 + Theme.SIZES.settingsInset * 2)
+		panel:Show()
+		panel:GetScript("OnShow")(panel)
+		local backdrop, scroll = SettingsPage.backdrop, SettingsPage.scroll
+		assert.are.equal(height - 40, backdrop:GetHeight())
+		local wheel = backdrop:GetScript("OnMouseWheel")
+		wheel(backdrop, -1)
+		assert.are.equal(40, scroll.offset)
+		wheel(backdrop, -1)
+		assert.are.equal(40, scroll.offset)
+		assert.are.equal(footBottom() + Theme.SIZES.settingsFootPad, scroll.offset + backdrop:GetHeight())
+		wheel(backdrop, 1)
+		assert.are.equal(0, scroll.offset)
+		wheel(backdrop, 1)
+		assert.are.equal(0, scroll.offset)
+	end)
+
+	-- Fix round 3, item 1: a canvas the client resizes after the first show keeps the range
+	-- true to what shows.
+	it("keeps the wheel's end on the foot when the canvas changes size", function()
+		start()
+		ratingsCurrent()
+		SettingsPage.register()
+		show()
+		local backdrop, scroll = SettingsPage.backdrop, SettingsPage.scroll
+		backdrop:SetHeight(400)
+		backdrop:GetScript("OnSizeChanged")(backdrop, backdrop:GetWidth(), 400)
+		assert.are.equal(scroll.contentHeight - 400, wheelToEnd())
+		backdrop:SetHeight(scroll.contentHeight + 20)
+		backdrop:GetScript("OnSizeChanged")(backdrop, backdrop:GetWidth(), scroll.contentHeight + 20)
+		assert.are.equal(0, scroll.offset)
 	end)
 
 	it("wraps each hint to the layout's width, in the muted token at full alpha", function()
@@ -445,35 +562,52 @@ describe("SettingsPage, the canvas", function()
 		show()
 		assert.are.equal(SettingsPage.lineText(SettingsPage.addonDataLine(DATA.build, "1.61.0")),
 			SettingsPage.dataLabels[1]:GetText())
-		assert.is_truthy(SettingsPage.dataLabels[1]:GetText():find(L.settingsAddonDataOlder, 1, true))
+		assert.is_truthy(SettingsPage.dataLabels[1]:GetText():find("an older patch. Update the addon at foreversixty.gg.",
+			1, true))
 	end)
 
-	-- Fix round 2, item 5a: the state in view under the title; the foot keeps both lines.
-	it("repeats a data state that is not current under the title, in the warning colour", function()
+	-- Fix round 2, item 5a, and round 3, items 2 and 3: the warning-coloured state in view
+	-- under the title, its whole sentence in the warning colour; the foot keeps both lines.
+	it("repeats a warning-coloured data state under the title, in the warning colour", function()
 		start(nil, "1.61.0")
 		ratingsCurrent()
 		SettingsPage.register()
 		show()
 		local warning = SettingsPage.warningLabel
 		assert.is_true(warning:IsShown())
-		assert.are.equal(L.settingsAddonDataLabel .. " " .. L.settingsAddonDataOlder, warning:GetText())
+		assert.are.equal(L.settingsAddonDataOlder, warning:GetText())
 		assert.are.same(color("warning"), { table.unpack(mock.lastCall(warning, "SetTextColor")) })
 		local layout = SettingsPage.layout(600 - Theme.SIZES.settingsInset * 2, nil, true)
 		assert.are.equal(layout.warning, mock.lastCall(warning, "SetPoint")[5])
 		assert.are.equal(layout.rows[1], rowY(SettingsPage.toggles[1]))
 		assert.are.equal(layout.height, SettingsPage.scroll.contentHeight)
-		assert.is_truthy(SettingsPage.dataLabels[1]:GetText():find(L.settingsAddonDataOlder, 1, true))
+		assert.is_truthy(SettingsPage.dataLabels[1]:GetText():find("an older patch. Update the addon at foreversixty.gg.",
+			1, true))
 		assert.are.equal(SettingsPage.lineText(SettingsPage.ratingsLine({ available = true, stale = false })),
 			SettingsPage.dataLabels[2]:GetText())
 	end)
 
-	it("names the player ratings under the title when the addon data is current", function()
+	it("names too-old player ratings under the title when the addon data is current", function()
 		start()
+		ratingsStale()
 		SettingsPage.register()
 		show()
 		assert.is_true(SettingsPage.warningLabel:IsShown())
-		assert.are.equal(L.settingsRatingsDataLabel .. " " .. L.settingsRatingsMissing,
-			SettingsPage.warningLabel:GetText())
+		assert.are.equal(L.settingsRatingsOld, SettingsPage.warningLabel:GetText())
+	end)
+
+	-- Fix round 3, item 2: the data addon is optional; "not installed" stays at the foot.
+	it("keeps not installed at the foot only, muted, with no line under the title", function()
+		start()
+		SettingsPage.register()
+		show()
+		assert.is_false(SettingsPage.warningLabel:IsShown())
+		assert.are.equal(SettingsPage.lineText(SettingsPage.ratingsLine({ available = false, absent = true })),
+			SettingsPage.dataLabels[2]:GetText())
+		assert.is_falsy(SettingsPage.dataLabels[2]:GetText():find(Theme.inlineColor("warning", ""):sub(1, 10), 1,
+			true))
+		local layout = SettingsPage.layout(600 - Theme.SIZES.settingsInset * 2)
+		assert.are.equal(layout.rows[1], rowY(SettingsPage.toggles[1]))
 	end)
 
 	it("has no line under the title while both data states are current", function()

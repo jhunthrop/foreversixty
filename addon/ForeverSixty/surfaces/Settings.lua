@@ -2,7 +2,7 @@
 -- The Settings page (spec section 4.11, L3.5): the client's own Settings, one canvas.
 -- Seven switches, Reset positions, the /fs command list, and two lines at the foot: whether
 -- the addon's data is for this client's patch, and the player ratings' state. The first of
--- those that is not current is repeated under the title, in the warning colour.
+-- those in the warning colour is repeated under the title, its whole sentence in that colour.
 --
 -- Pure model, thin frame. SettingsPage.SWITCHES is the whole of what the page can change
 -- (each key a Prefs.DEFAULTS boolean); read, checked and apply are its only way to the prefs;
@@ -124,11 +124,18 @@ function SettingsPage.onToggle(key, value)
 	return value
 end
 
+--- A data line from its one sentence (fix round 3, item 3): { text, label, value, tone },
+--- the label the subject up to the first ": " and the value the state after it.
+local function dataLine(text, tone)
+	local label, value = text:match("^(.-:)%s(.*)$")
+	return { text = text, label = label or "", value = value or text, tone = tone }
+end
+
 --- The foot's first line: the addon's data is for this client's patch or a later one
---- ("current for this patch", muted), or for an older patch ("an older patch. Update the
---- addon.", in the warning colour). Only the patch counts ("1.60.1" against the data's first
---- three fields), never the build number, and no number is printed. Nil when either side is
---- unknown. { label, value, tone, current }. Pure.
+--- ("Addon data: current for this patch", muted), or for an older patch ("Addon data: an
+--- older patch. Update the addon at foreversixty.gg.", in the warning colour). Only the patch
+--- counts ("1.60.1" against the data's first three fields), never the build number, and no
+--- number is printed. Nil when either side is unknown. { text, label, value, tone }. Pure.
 function SettingsPage.addonDataLine(dataBuild, clientVersion)
 	if type(dataBuild) ~= "string" or dataBuild == "" or type(clientVersion) ~= "string" or clientVersion == "" then
 		return nil
@@ -145,43 +152,40 @@ function SettingsPage.addonDataLine(dataBuild, clientVersion)
 		end
 	end
 	if Codec.compareBuilds(table.concat(dataPatch, "."), clientVersion) < 0 then
-		return { label = L.settingsAddonDataLabel, value = L.settingsAddonDataOlder, tone = "warning", current = false }
+		return dataLine(L.settingsAddonDataOlder, "warning")
 	end
-	return { label = L.settingsAddonDataLabel, value = L.settingsAddonDataCurrent, tone = "muted", current = true }
+	return dataLine(L.settingsAddonDataCurrent, "muted")
 end
 
---- The foot's second line, "Player ratings:" (fix round 2, item 6): the nightly ratings
---- data (the Forever Sixty Data addon) in the state Score.status finds it: not installed
---- (muted, it is optional), current, too old (stale, unreadable or an older format), or made
---- for a newer addon than this one. { label, value, tone, current }. Pure.
+--- The foot's second line, "Player ratings (on player tooltips):" (fix rounds 2 and 3): the
+--- nightly ratings data (the Forever Sixty Data addon) in the state Score.status finds it:
+--- not installed (muted, it is optional), current, too old (stale, unreadable or an older
+--- format), or made for a newer addon than this one. { text, label, value, tone }. Pure.
 function SettingsPage.ratingsLine(status)
-	local value, tone
 	if type(status) ~= "table" or status.absent then
-		value, tone = L.settingsRatingsMissing, "muted"
+		return dataLine(L.settingsRatingsMissing, "muted")
 	elseif status.available and not status.stale then
-		value, tone = L.settingsRatingsCurrent, "muted"
+		return dataLine(L.settingsRatingsCurrent, "muted")
 	elseif not status.available and status.reason == L.ratingsUpdateAddon then
-		value, tone = L.settingsRatingsNewer, "warning"
-	else
-		value, tone = L.settingsRatingsOld, "warning"
+		return dataLine(L.settingsRatingsNewer, "warning")
 	end
-	return { label = L.settingsRatingsDataLabel, value = value, tone = tone, current = value == L.settingsRatingsCurrent }
+	return dataLine(L.settingsRatingsOld, "warning")
 end
 
---- The line under the title (fix round 2, item 5): the first foot line that is not current,
---- the addon data before the player ratings, as one sentence the frame draws in the warning
---- colour; nil while both are current (an unknown addon-data line counts as current). Pure.
+--- The line under the title (fix round 3, item 2): the first foot line in the warning
+--- colour, the addon data before the player ratings, its whole sentence (the frame draws it
+--- in the warning colour); nil otherwise. "Not installed" is muted and stays at the foot:
+--- the data addon is optional. Pure.
 function SettingsPage.warningLine(addon, ratings)
-	if addon ~= nil and not addon.current then
-		return addon.label .. " " .. addon.value
-	end
-	if ratings ~= nil and not ratings.current then
-		return ratings.label .. " " .. ratings.value
+	for _, entry in ipairs({ addon or false, ratings or false }) do
+		if entry and entry.tone == "warning" then
+			return entry.text
+		end
 	end
 	return nil
 end
 
---- A foot line as drawn on a muted font string: the label, then the state in its tone.
+--- A foot line as drawn on a muted font string: the subject, then the state in its tone.
 function SettingsPage.lineText(entry)
 	return entry.label .. " " .. Theme.inlineColor(entry.tone, entry.value)
 end
@@ -344,10 +348,11 @@ local function arrange(warned)
 	return layout
 end
 
---- Build the page once, at the size the client gave the canvas: an opaque backdrop 8 px
---- inside it (the dialog's own, so no world text shows through a hint), scrolling when the
---- canvas is shorter than the page, and everything else on its content frame, arranged once
---- each row has measured its wrapped hint.
+--- Build the page once: an opaque backdrop 8 px inside the canvas (the dialog's own, so no
+--- world text shows through a hint), anchored to the canvas at both corners so it is always
+--- exactly what shows (fix round 3, item 1; the size the client gave the canvas at the first
+--- show is only its fallback), scrolling when the canvas is shorter than the page, and
+--- everything else on its content frame, arranged once each row has measured its hint.
 function SettingsPage.build(panel)
 	if SettingsPage.toggles ~= nil then
 		return panel
@@ -358,6 +363,7 @@ function SettingsPage.build(panel)
 	height = (type(height) == "number" and height > 0) and height or S.settingsHeight
 	local backdrop = Widgets.panel(panel, width - S.settingsInset * 2, height - S.settingsInset * 2)
 	backdrop:SetPoint("TOPLEFT", panel, "TOPLEFT", S.settingsInset, -S.settingsInset)
+	backdrop:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -S.settingsInset, S.settingsInset)
 	SettingsPage.backdrop = backdrop
 	local layout = SettingsPage.layout(backdrop:GetWidth())
 	local scroll = Widgets.scrollable(backdrop)
@@ -402,7 +408,7 @@ function SettingsPage.build(panel)
 end
 
 --- Show the live prefs on every toggle ("Show the chip" off while a right-click hides it),
---- Reset's look, the two foot lines for this client and, while either is not current, the
+--- Reset's look, the two foot lines for this client and, while either is in the warning colour, the
 --- line under the title (the page moves down to make room for it).
 function SettingsPage.refresh()
 	for _, toggle in ipairs(SettingsPage.toggles or {}) do

@@ -13,9 +13,9 @@ local L = {
 	addonName = "Forever Sixty",
 	-- The player's commands, a few words each. One list: /fs help, an unknown /fs command
 	-- and the Settings page all print it (Options.helpLines, L3.5 ruling 3); /fs help alone
-	-- adds the testers' line after it, muted (fix round 1, item 16), short enough that the
-	-- chat never wraps inside a command (fix round 2, item 7; /fs record's arguments are in
-	-- its own usage, recorderHelp).
+	-- adds the testers' two lines after it, muted (fix round 1, item 16; fix round 3, item 5:
+	-- one line read as options of /fs diag; /fs record's arguments are in its own usage,
+	-- recorderHelp).
 	settingsCommands = {
 		"/fs: paste or copy a build",
 		"/fs copy: copy my character for the site",
@@ -25,7 +25,10 @@ local L = {
 		"/fs diag: what is not working",
 		"/fs help: every command",
 	},
-	helpTesters = "For testers: /fs diag verbose, inbox, hello, seen, record.",
+	helpTesters = {
+		"For testers: /fs diag verbose",
+		"Also /fs inbox, /fs hello, /fs seen, /fs record",
+	},
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
 	tabOverview = "Overview",
@@ -299,24 +302,27 @@ local L = {
 		.. "Off: they see nothing.",
 	settingsAutoSave = "Save my character for the companion app",
 	-- Claims no upload (spec section 4.10): the addon cannot see the companion send it. It
-	-- says what the save is for (fix round 2, item 9).
-	settingsAutoSaveHint = "Written when you log out, for the companion app (the small app on your PC) to pick up, "
-		.. "so the site can read your gear and talents.",
+	-- says what the save is for (fix round 2, item 9), on one line (fix round 3, item 4).
+	settingsAutoSaveHint = "Written at logout for the companion app on your PC, so the site can read your gear "
+		.. "and talents.",
 	settingsCommandsHeading = "Commands",
 	settingsReset = "Reset positions",
 	settingsResetDone = "Positions reset",
 	settingsResetHint = "Puts the chip, the minimap button and the build dialog back in their default places.",
-	-- The foot: a muted label, then the state, muted or (stale) in the warning colour, action
-	-- first. "Player ratings", not "ratings data": a player read that as hit and crit ratings
-	-- (fix round 2, item 6); /fs diag keeps its own wording.
-	settingsAddonDataLabel = "Addon data:",
-	settingsAddonDataCurrent = "current for this patch",
-	settingsAddonDataOlder = "an older patch. Update the addon.",
-	settingsRatingsDataLabel = "Player ratings:",
-	settingsRatingsCurrent = "current",
-	settingsRatingsOld = "too old. Get the new Forever Sixty Data from the site.",
-	settingsRatingsNewer = "made for a newer addon. Update Forever Sixty.",
-	settingsRatingsMissing = "not installed. Get Forever Sixty Data from the site.",
+	-- The data lines: one sentence per state, the foot's and the title line's alike (fix
+	-- round 3, item 3). The foot draws the subject (up to the first ": ") muted and the state
+	-- muted or (stale) in the warning colour, action first; the title line draws a warning
+	-- state's whole sentence in the warning colour. "Player ratings (on player tooltips)": a
+	-- player read "ratings" as hit and crit ratings; the place to get them is named. /fs diag
+	-- keeps its own wording.
+	settingsAddonDataCurrent = "Addon data: current for this patch",
+	settingsAddonDataOlder = "Addon data: an older patch. Update the addon at " .. SITE .. ".",
+	settingsRatingsCurrent = "Player ratings (on player tooltips): current",
+	settingsRatingsOld = "Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at " .. SITE .. ".",
+	settingsRatingsNewer = "Player ratings (on player tooltips): made for a newer addon. Update Forever Sixty at "
+		.. SITE .. ".",
+	settingsRatingsMissing = "Player ratings (on player tooltips): not installed. Get Forever Sixty Data at " .. SITE
+		.. ".",
 	diagSettingsDrawn = "The Settings page drew %d of its %d controls.",
 	diagSettingsNoOpen = "This client did not open the Settings page; right-click prints the commands instead.",
 	-- The Overview page.

@@ -63,8 +63,8 @@ describe("SettingsPage, the switches", function()
 				"Adds a line to item tooltips: is it in your build, and does it beat what you wear." },
 			{ "Share my build with my guild",
 				"Guildmates with Forever Sixty see your level, spec, build and gear gap. Off: they see nothing." },
-			{ "Save my character for the companion app", "Written when you log out, for the companion app "
-				.. "(the small app on your PC) to pick up, so the site can read your gear and talents." },
+			{ "Save my character for the companion app",
+				"Written at logout for the companion app on your PC, so the site can read your gear and talents." },
 		}, words)
 	end)
 
@@ -252,13 +252,14 @@ describe("SettingsPage, the command list", function()
 		}, L.settingsCommands)
 	end)
 
-	-- Fix round 2, item 7: short, so the chat never wraps inside a command; /fs record's
-	-- arguments live in its own usage.
-	it("names every tester command in one short line, /fs once, no pipes", function()
-		assert.are.equal("For testers: /fs diag verbose, inbox, hello, seen, record.", L.helpTesters)
-		assert.is_nil(L.helpTesters:find("|", 1, true))
-		local _, count = L.helpTesters:gsub("/fs", "")
-		assert.are.equal(1, count)
+	-- Fix round 3, item 5: two chat lines, so /fs diag verbose never reads as having the
+	-- others for options; /fs record's arguments live in its own usage.
+	it("names every tester command in two short chat lines, no pipes", function()
+		assert.are.same({ "For testers: /fs diag verbose", "Also /fs inbox, /fs hello, /fs seen, /fs record" },
+			L.helpTesters)
+		for _, line in ipairs(L.helpTesters) do
+			assert.is_nil(line:find("|", 1, true))
+		end
 	end)
 
 	it("draws each command's /fs token in body and its words muted", function()
@@ -286,7 +287,7 @@ describe("SettingsPage, the data lines", function()
 	end)
 
 	local function words(entry)
-		return entry.label .. " " .. entry.value, entry.tone
+		return entry.text, entry.tone
 	end
 
 	it("says current for this patch when the data is for the client's own patch", function()
@@ -295,16 +296,17 @@ describe("SettingsPage, the data lines", function()
 		assert.are.equal("muted", tone)
 	end)
 
+	-- Fix round 3, item 3: the place named, foreversixty.gg.
 	it("says an older patch, action first, in the warning colour when the client has moved on", function()
 		for _, client in ipairs({ "1.60.2", "1.61.0" }) do
 			local text, tone = words(SettingsPage.addonDataLine("1.60.1.70291", client))
-			assert.are.equal("Addon data: an older patch. Update the addon.", text)
+			assert.are.equal("Addon data: an older patch. Update the addon at foreversixty.gg.", text)
 			assert.are.equal("warning", tone)
 		end
 	end)
 
 	it("says current for data newer than the client", function()
-		assert.are.equal(L.settingsAddonDataCurrent, SettingsPage.addonDataLine("1.60.2.70400", "1.60.1").value)
+		assert.are.equal(L.settingsAddonDataCurrent, SettingsPage.addonDataLine("1.60.2.70400", "1.60.1").text)
 	end)
 
 	it("says nothing about the addon data when either side is unknown", function()
@@ -313,62 +315,80 @@ describe("SettingsPage, the data lines", function()
 		assert.is_nil(SettingsPage.addonDataLine("", ""))
 	end)
 
-	-- Fix round 2, item 6: "Player ratings", never read as hit or crit ratings; four states.
-	it("names the player ratings' state in the player's words", function()
+	-- Fix round 3, item 3: what the ratings are for (player tooltips) and where to get them;
+	-- one sentence per state, the foot's and the title line's.
+	it("names the player ratings' state, their place and the site, one sentence per state", function()
 		local cases = {
-			{ { available = false, absent = true }, "Player ratings: not installed. Get Forever Sixty Data from the site.",
-				"muted", false },
-			{ { available = true, stale = false }, "Player ratings: current", "muted", true },
-			{ { available = true, stale = true }, "Player ratings: too old. Get the new Forever Sixty Data from the site.",
-				"warning", false },
+			{ { available = false, absent = true },
+				"Player ratings (on player tooltips): not installed. Get Forever Sixty Data at foreversixty.gg.", "muted" },
+			{ { available = true, stale = false }, "Player ratings (on player tooltips): current", "muted" },
+			{ { available = true, stale = true },
+				"Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at foreversixty.gg.",
+				"warning" },
 			{ { available = false, reason = L.ratingsUnreadable },
-				"Player ratings: too old. Get the new Forever Sixty Data from the site.", "warning", false },
+				"Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at foreversixty.gg.",
+				"warning" },
 			{ { available = false, reason = L.ratingsUpdateAddon },
-				"Player ratings: made for a newer addon. Update Forever Sixty.", "warning", false },
+				"Player ratings (on player tooltips): made for a newer addon. Update Forever Sixty at foreversixty.gg.",
+				"warning" },
 		}
 		for _, case in ipairs(cases) do
-			local entry = SettingsPage.ratingsLine(case[1])
-			local text, tone = words(entry)
+			local text, tone = words(SettingsPage.ratingsLine(case[1]))
 			assert.are.equal(case[2], text)
 			assert.are.equal(case[3], tone)
-			assert.are.equal(case[4], entry.current)
 		end
+	end)
+
+	it("keeps each data sentence in one Locale string", function()
+		assert.are.same({
+			"Addon data: current for this patch",
+			"Addon data: an older patch. Update the addon at foreversixty.gg.",
+			"Player ratings (on player tooltips): current",
+			"Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at foreversixty.gg.",
+			"Player ratings (on player tooltips): not installed. Get Forever Sixty Data at foreversixty.gg.",
+			"Player ratings (on player tooltips): made for a newer addon. Update Forever Sixty at foreversixty.gg.",
+		}, { L.settingsAddonDataCurrent, L.settingsAddonDataOlder, L.settingsRatingsCurrent, L.settingsRatingsOld,
+			L.settingsRatingsMissing, L.settingsRatingsNewer })
+		assert.is_nil(L.settingsAddonDataLabel)
+		assert.is_nil(L.settingsRatingsDataLabel)
 	end)
 
 	it("reads the ratings state from Score.status: not installed here", function()
 		_G.ForeverSixtyData = nil
 		local text = words(SettingsPage.ratingsLine(require("Score").status()))
-		assert.are.equal("Player ratings: not installed. Get Forever Sixty Data from the site.", text)
+		assert.are.equal(L.settingsRatingsMissing, text)
 	end)
 
-	it("marks only the addon data's own patch, or a later one, current", function()
-		assert.is_true(SettingsPage.addonDataLine("1.60.1.70291", "1.60.1").current)
-		assert.is_true(SettingsPage.addonDataLine("1.60.2.70400", "1.60.1").current)
-		assert.is_false(SettingsPage.addonDataLine("1.60.1.70291", "1.61.0").current)
-	end)
-
-	-- Fix round 2, item 5a: the first state that is not current, repeated under the title.
-	it("repeats the first data state that is not current for the title, addon data first", function()
+	-- Fix round 3, item 2 (reversing round 2): only a state the foot shows in the warning
+	-- colour goes under the title; "not installed" stays at the foot, muted (the data addon is
+	-- optional).
+	it("repeats the first warning-coloured data state for the title, addon data first", function()
 		local current = SettingsPage.addonDataLine("1.60.1.70291", "1.60.1")
 		local older = SettingsPage.addonDataLine("1.60.1.70291", "1.61.0")
 		local fresh = SettingsPage.ratingsLine({ available = true, stale = false })
 		local stale = SettingsPage.ratingsLine({ available = true, stale = true })
+		local newer = SettingsPage.ratingsLine({ available = false, reason = L.ratingsUpdateAddon })
 		local absent = SettingsPage.ratingsLine({ available = false, absent = true })
 		assert.is_nil(SettingsPage.warningLine(current, fresh))
 		assert.is_nil(SettingsPage.warningLine(nil, fresh))
-		assert.are.equal("Addon data: an older patch. Update the addon.", SettingsPage.warningLine(older, stale))
-		assert.are.equal("Addon data: an older patch. Update the addon.", SettingsPage.warningLine(older, fresh))
-		assert.are.equal("Player ratings: too old. Get the new Forever Sixty Data from the site.",
-			SettingsPage.warningLine(current, stale))
-		assert.are.equal("Player ratings: not installed. Get Forever Sixty Data from the site.",
-			SettingsPage.warningLine(nil, absent))
+		assert.is_nil(SettingsPage.warningLine(current, absent))
+		assert.is_nil(SettingsPage.warningLine(nil, absent))
+		assert.are.equal(L.settingsAddonDataOlder, SettingsPage.warningLine(older, stale))
+		assert.are.equal(L.settingsAddonDataOlder, SettingsPage.warningLine(older, absent))
+		assert.are.equal(L.settingsRatingsOld, SettingsPage.warningLine(current, stale))
+		assert.are.equal(L.settingsRatingsNewer, SettingsPage.warningLine(nil, newer))
 	end)
 
-	it("colours only the state: the label muted, the state in its tone", function()
+	it("colours only the state at the foot: the subject muted, the state in its tone", function()
 		local Theme = require("Theme")
 		local entry = SettingsPage.addonDataLine("1.60.1.70291", "1.61.0")
-		assert.are.equal(L.settingsAddonDataLabel .. " " .. Theme.inlineColor("warning", L.settingsAddonDataOlder),
+		assert.are.equal("Addon data: "
+			.. Theme.inlineColor("warning", "an older patch. Update the addon at foreversixty.gg."),
 			SettingsPage.lineText(entry))
+		local ratings = SettingsPage.ratingsLine({ available = true, stale = true })
+		assert.are.equal("Player ratings (on player tooltips): "
+			.. Theme.inlineColor("warning", "too old. Get the new Forever Sixty Data at foreversixty.gg."),
+			SettingsPage.lineText(ratings))
 	end)
 
 	it("prints no build number on any line", function()
@@ -563,9 +583,10 @@ describe("Options, /fs help and /fs options", function()
 		assert.are_not.equal("changed", L.settingsCommands[1])
 	end)
 
-	it("adds the muted testers line on /fs help only", function()
+	it("adds the two muted testers lines on /fs help only", function()
 		local expected = Options.helpLines()
-		expected[#expected + 1] = Theme.inlineColor("muted", L.helpTesters)
+		expected[#expected + 1] = Theme.inlineColor("muted", L.helpTesters[1])
+		expected[#expected + 1] = Theme.inlineColor("muted", L.helpTesters[2])
 		assert.are.same(expected, Options.handle("help"))
 		assert.are.same(Options.helpLines(), Options.handle("nonsense"))
 	end)

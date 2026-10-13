@@ -286,34 +286,38 @@ paste it on the site at foreversixty.gg.". The addon never claims an upload it c
 
 ### 4.11 Settings
 
-The client Settings page only (L3.5, fix rounds 1 and 2), on its own opaque backdrop 8 px inside
-the canvas, scrolling when the canvas is shorter (the wheel moves it; every show opens it at the
-top). Under the gold title, while either data state at the foot is not current, one line in the
-warning colour repeats the first such state's sentence (the addon data before the player ratings);
-the page moves down a line to make room. Seven switches, each with one muted hint saying what it
-does; each row is measured from its label and its wrapped hint (`GetStringHeight` plus the
-one-line rows' bottom pad, never less than the one-line 44 px row), so a two-line hint pushes the
-next row down by a line: "Show the chip" (reads off while a right-click hides the chip; either way
-it clears that hide), "Hide the chip in combat" (off: faded to 25 %), "Marks on the talent window"
-(the ring, the badges and the strip, all or none), "Show the minimap button" (live; off, /fs
-options or Options > AddOns reach the page), "Gear tips on item tooltips", "Share my build with
-my guild" ("Guildmates with Forever Sixty see your level, spec, build and gear gap. Off: they see
-nothing."; off silences the hello and every snapshot answer on every channel) and "Save my
-character for the companion app" (written at logout for the companion to pick up, so the site can
-read the gear and talents; no upload is claimed). Then Reset positions (the chip, the minimap
-button and the build dialog move at once through `Prefs.onReset`; for 2 s the button reads
-"Positions reset", disabled, its label and 1 px border in the muted-text grey at full alpha); the
-commands under a gold heading and a divider, each `/fs` token in body (`L.settingsCommands`,
-which `/fs help` prints too, followed there by the muted "For testers: /fs diag verbose, inbox,
-hello, seen, record."); and at the foot "Addon data: current for this patch" or "Addon data: an
-older patch. Update the addon." (the state in the warning colour) and "Player ratings:" with one
-of four states: "current", "too old. Get the new Forever Sixty Data from the site.", "not
-installed. Get Forever Sixty Data from the site." or "made for a newer addon. Update Forever
-Sixty." (`/fs diag` keeps its own wording), no build numbers, then 12 px of padding so a cut never
-lands on text. Guild badges get their switch with L4.4; no "advanced detail" mode, and no chat
-switch. The minimap button and the addon compartment entry open the build dialog on a left click
-and this page on a right click; `/fs options` opens it too (the command list wherever the client
-does not show it).
+The client Settings page only (L3.5, fix rounds 1 to 3), on its own opaque backdrop 8 px inside
+the canvas and anchored to it at both corners (the backdrop is the scroll's clip, never taller
+than what shows), scrolling when the canvas is shorter (the wheel moves it a notch at a time and
+its end shows the foot's last line and its pad; every show opens it at the top). Under the gold
+title, while either data state at the foot is in the warning colour, one line repeats the first
+such state's whole sentence in the warning colour (the addon data before the player ratings); the
+page moves down a line to make room. "Not installed" stays at the foot, muted: the data addon is
+optional. Seven switches, each with one muted hint saying what it does; each row is measured from
+its label and its wrapped hint (`GetStringHeight` plus the one-line rows' bottom pad, never less
+than the one-line 44 px row), so a two-line hint pushes the next row down by a line: "Show the
+chip" (reads off while a right-click hides the chip; either way it clears that hide), "Hide the
+chip in combat" (off: faded to 25 %), "Marks on the talent window" (the ring, the badges and the
+strip, all or none), "Show the minimap button" (live; off, /fs options or Options > AddOns reach
+the page), "Gear tips on item tooltips", "Share my build with my guild" ("Guildmates with Forever
+Sixty see your level, spec, build and gear gap. Off: they see nothing."; off silences the hello
+and every snapshot answer on every channel) and "Save my character for the companion app"
+("Written at logout for the companion app on your PC, so the site can read your gear and
+talents."; no upload is claimed). Then Reset positions (the chip, the minimap button and the
+build dialog move at once through `Prefs.onReset`; for 2 s the button reads "Positions reset",
+disabled, its label and 1 px border in the muted-text grey at full alpha); the commands under a
+gold heading and a divider, each `/fs` token in body (`L.settingsCommands`, which `/fs help`
+prints too, followed there by two muted lines, "For testers: /fs diag verbose" and "Also /fs
+inbox, /fs hello, /fs seen, /fs record"); and at the foot two lines, one sentence per state (the
+subject muted, the state muted or in the warning colour): "Addon data: current for this patch"
+or "Addon data: an older patch. Update the addon at foreversixty.gg.", and "Player ratings (on
+player tooltips): current", "…: too old. Get the new Forever Sixty Data at foreversixty.gg.",
+"…: not installed. Get Forever Sixty Data at foreversixty.gg." or "…: made for a newer addon.
+Update Forever Sixty at foreversixty.gg." (`/fs diag` keeps its own wording), no build numbers,
+then 12 px of padding so a cut never lands on text. Guild badges get their switch with L4.4; no
+"advanced detail" mode, and no chat switch. The minimap button and the addon compartment entry
+open the build dialog on a left click and this page on a right click; `/fs options` opens it too
+(the command list wherever the client does not show it).
 
 ## 5. Loops
 

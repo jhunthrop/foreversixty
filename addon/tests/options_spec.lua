@@ -75,8 +75,10 @@ describe("Options", function()
 
 	it("lists the player's commands, a few words each, on /fs help: the Settings page's list", function()
 		local lines = Options.handle("help")
-		assert.are.same(require("Locale").settingsCommands, { table.unpack(lines, 1, #lines - 1) })
-		assert.are.equal(require("Theme").inlineColor("muted", require("Locale").helpTesters), lines[#lines])
+		local Locale, Theme = require("Locale"), require("Theme")
+		assert.are.same(Locale.settingsCommands, { table.unpack(lines, 1, #lines - 2) })
+		assert.are.same({ Theme.inlineColor("muted", Locale.helpTesters[1]), Theme.inlineColor("muted",
+			Locale.helpTesters[2]) }, { table.unpack(lines, #lines - 1) })
 	end)
 
 	it("lists /fs and /fs copy first on /fs help (L3.4 fix 6)", function()
@@ -102,7 +104,8 @@ describe("Options", function()
 	it("prints /fs help in chat", function()
 		Options.register()
 		SlashCmdList["FOREVERSIXTY"]("help")
-		assert.are.equal(#require("Locale").settingsCommands + 1, #state.printed)
+		-- The seven player lines, then the testers' two (fix round 3, item 5).
+		assert.are.equal(#require("Locale").settingsCommands + 2, #state.printed)
 	end)
 
 	it("counts the builds the companion left in the inbox", function()

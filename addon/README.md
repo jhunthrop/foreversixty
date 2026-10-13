@@ -116,13 +116,15 @@ Run on one character per role and tick here:
       2 s, in readable grey inside a grey 1 px border.
 - [ ] The Settings page opens at the top; a hint that wraps to two lines pushes the next row down
       a line; the minimap hint reads "Options > AddOns".
-- [ ] With Data.lua's build set to an older patch, a warning-coloured "Addon data: an older patch.
-      Update the addon." sits under the title as well as at the foot; the foot's second line reads
-      "Player ratings: ...".
+- [ ] With Data.lua's build set to an older patch, "Addon data: an older patch. Update the addon at
+      foreversixty.gg." sits under the title, the whole sentence in the warning colour, as well as at
+      the foot; "Player ratings (on player tooltips): not installed. …" stays at the foot only, muted.
+- [ ] Wheeling one notch at a time to the end of the page shows the foot's last line with space
+      under it, with and without the line under the title.
 - [ ] `/fs options` opens the Settings page; "Marks on the talent window" off leaves the talent
       window bare, and the chip stays beside the minimap while the window is open.
 - [ ] The keybind (Key Bindings > AddOns > Forever Sixty) prints the command list.
-- [ ] `/fs help` prints the command list, then the muted testers' line.
+- [ ] `/fs help` prints the command list, then the two muted testers' lines.
 
 One screenshot closes this lane: the tracker plus the talent glow with the talent
 window open.

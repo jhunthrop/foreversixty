@@ -494,6 +494,10 @@ function Widgets.scrollable(holder)
 	holder:SetScript("OnMouseWheel", function(_, delta)
 		scroll:ScrollTo(scroll.offset - delta * Widgets.SCROLL_STEP)
 	end)
+	-- A holder the client resizes (an anchored canvas) keeps the range true to what shows.
+	holder:SetScript("OnSizeChanged", function()
+		scroll:SetContentHeight(scroll.contentHeight)
+	end)
 	return scroll
 end
 
