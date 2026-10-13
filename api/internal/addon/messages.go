@@ -293,31 +293,31 @@ func (s *Service) upgradeMessage(ctx context.Context, userID int64, byNameSlug m
 }
 
 // weightsMessage is the fallback weights message: the account's saved stat weights from its
-// most recent finished website weights run (an in-game request's run is not one: the
-// character it was for gets its own message from inGameWeightsMessages), best-effort
-// addressed the same way upgradeMessage is, with generated_at the run's queue time and no
-// export_seen_at, since a website run names no export. It reads the newest page of the
-// account's weights runs, so a page of nothing but in-game runs gives no fallback.
+// most recent finished website weights run (an in-game request's run is not one, sims.Row's
+// FromAddon: the character it was for gets its own message from inGameWeightsMessages),
+// addressed the way upgradeMessage is, with generated_at the run's queue time and no
+// export_seen_at, since a website run names no export. A run whose character name matches
+// none of the account's characters gives no message: the addon reads messages by character,
+// so an unaddressed one would reach nobody. It reads the newest page of the account's weights
+// runs, so a page of nothing but in-game runs gives no fallback.
 func (s *Service) weightsMessage(ctx context.Context, userID int64, byNameSlug map[string]string, exports map[string]Export) *MessageEntry {
 	page, err := s.Sims.Mine(ctx, userID, 1, simapi.KindWeights)
 	if err != nil {
 		return nil
 	}
 	for _, row := range page.Rows {
-		if row.State != sims.StateDone {
+		if row.State != sims.StateDone || row.FromAddon {
 			continue
 		}
 		res, _, err := s.Sims.Get(ctx, row.SimID)
-		if err != nil {
+		if err != nil || len(res.Weights) == 0 {
 			return nil
 		}
-		if res.Request.Source.Kind == simapi.SourceAddon {
-			continue
-		}
-		if len(res.Weights) == 0 {
+		key := resolveCharacter(res.Request.Character.Name, byNameSlug)
+		if key == "" {
 			return nil
 		}
-		m := weightsEntry(resolveCharacter(res.Request.Character.Name, byNameSlug), res.Request.Spec, res.Weights, exports)
+		m := weightsEntry(key, res.Request.Spec, res.Weights, exports)
 		if !row.CreatedAt.IsZero() {
 			m.GeneratedAt = row.CreatedAt.UTC().Format(time.RFC3339)
 		}
@@ -412,8 +412,10 @@ func (s *Service) guildMessages(ctx context.Context, byNameSlug map[string]strin
 // run, else the account's website run when that names it); and per character its
 // newest finished in-game sim, its last raid, that raid's loot priced for
 // it, and (with a companion paired) the ack. Guilds and Sims are each
-// optional (Service's own doc comment); with either or both nil, or any
-// one lookup's own error, the inbox still answers with whatever it could
+// optional (Service's own doc comment): with Sims nil there is no upgrade and no
+// website weights fallback, while the in-game weights, the sim results and the acks
+// still come from Store, which reads them itself. With either or both nil, or
+// any one lookup's own error, the inbox still answers with whatever it could
 // build — never a failed sync over an advanced feature a build or two
 // never even reaches. now is the moment the last-raid window counts back
 // from.

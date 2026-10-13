@@ -110,7 +110,7 @@ components:
               format: date-time
               description: >-
                 The export the in-game request was made on, the same value the ack carried
-                for it; absent for a website run and a request recorded before migration 0038
+                for it; absent for a website run and for an in-game request with no export recorded
         - type: object
           title: sim_result
           required: [type, character, spec, dps, error, generated_at, slots]

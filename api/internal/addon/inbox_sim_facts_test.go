@@ -10,6 +10,7 @@ import (
 	"context"
 	"encoding/json"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -31,6 +32,12 @@ func inGameRequest(t *testing.T, h *outboxHarness) string {
 }
 
 // finishWeights finishes run id the way the sim job does, with DPS and two stat weights.
+//
+// These tests run no engine: the result is written here as the `api sim-run` job would
+// write it. That a real weights run carries its baseline DPS and error beside the weights,
+// rather than zeros, is the engine's contract, held by sim/cmd/forever-sim's
+// TestAWeightsRunReportsItsBaselineDPS through the real engine; the figures below stand in
+// for what that run answers.
 func finishWeights(t *testing.T, store *sims.Store, id string) {
 	t.Helper()
 	res, _, err := store.Get(context.Background(), id)
@@ -205,5 +212,92 @@ func TestAPre0038RequestsWeightsHaveNoExportSeenAt(t *testing.T) {
 	}
 	if _, ok := wire["export_seen_at"]; ok {
 		t.Fatalf("export_seen_at is on the wire: %s", b)
+	}
+}
+
+// A run that failed does not hold the hourly window: a new request inside the hour after a
+// failure starts a run, and the ack reads queued again, not duplicate. The same request posted
+// again still records nothing new (the companion re-posts the outbox).
+func TestAFailedRunDoesNotBlockAskingAgain(t *testing.T) {
+	h := newOutboxHarness(t, true)
+	cleanL63(t, h.harness)
+	h.pairDevice("l63-dev", false)
+	simStore := &sims.Store{Pool: h.pool}
+	fixture := string(contractFixture(t, "outbox-v1.json"))
+	id := inGameRequest(t, h)
+	if err := simStore.Fail(context.Background(), id, "the engine stopped"); err != nil {
+		t.Fatal(err)
+	}
+	if out := h.post(withOutbox(fixture)); out.Outbox == nil || out.Outbox.SimRequest != sims.RequestDuplicate {
+		t.Fatalf("the failed request posted again = %+v, want duplicate (it is the same request)", out.Outbox)
+	}
+	out := h.post(withOutbox(strings.Replace(fixture, "2026-11-04 14:10", "2026-11-04 14:40", 1)))
+	if out.Outbox == nil || out.Outbox.SimRequest != sims.RequestQueued {
+		t.Fatalf("a new request after a failed run = %+v, want queued", out.Outbox)
+	}
+	if reqs := h.simRequests(); len(reqs) != 2 {
+		t.Fatalf("requests that started a run = %+v, want two", reqs)
+	}
+	s := &Service{Store: h.store, Sims: simStore, Log: quietLog()}
+	acks := messagesOf(s.messages(context.Background(), h.owner, time.Now()), messageAck)
+	if len(acks) != 1 || acks[0].SimRequestState != sims.SimRequestStateQueued {
+		t.Fatalf("ack = %+v, want queued", acks)
+	}
+}
+
+// The website fallback is sent only when its run names a character of the account: an
+// unaddressed weights message reaches no character in game.
+func TestAWebsiteRunNamingNoCharacterSendsNoWeights(t *testing.T) {
+	h := newHarness(t)
+	cleanL63(t, h)
+	h.exportL63(l63Export)
+	simStore := &sims.Store{Pool: h.pool}
+	if err := simStore.Save(context.Background(), "l63-web-nobody", &h.owner, "", simapi.SimResult{
+		Request: simapi.SimRequest{Spec: "warrior-arms", Character: simapi.CharacterSpec{Name: "Somebody Else"},
+			Weights: &simapi.WeightsSpec{Stats: []string{"attack_power"}, Reference: "attack_power"}},
+		Weights: []simapi.StatWeight{{Stat: "attack_power", Weight: 1}},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	s := &Service{Store: h.store, Sims: simStore, Log: quietLog()}
+	if got := messagesOf(s.messages(context.Background(), h.owner, time.Now()), messageWeights); len(got) != 0 {
+		t.Fatalf("weights = %+v, want none for a run that names no character of the account", got)
+	}
+}
+
+// A finished in-game run with no weights is passed over: the character keeps the weights of
+// its last run that had some.
+func TestAnInGameRunWithNoWeightsKeepsTheLastWeights(t *testing.T) {
+	h := newOutboxHarness(t, true)
+	cleanL63(t, h.harness)
+	simStore := &sims.Store{Pool: h.pool}
+	ctx := context.Background()
+	first := inGameRequest(t, h)
+	finishWeights(t, simStore, first)
+	// Two hours ago, so the next request is outside the window.
+	if _, err := h.pool.Exec(ctx, `update addon_sim_requests set created_at = now() - interval '2 hours' where sim_id = $1`, first); err != nil {
+		t.Fatal(err)
+	}
+	fixture := string(contractFixture(t, "outbox-v1.json"))
+	if out := h.post(withOutbox(strings.Replace(fixture, "2026-11-04 14:10", "2026-11-04 16:10", 1))); out.Outbox == nil ||
+		out.Outbox.SimRequest != sims.RequestQueued {
+		t.Fatalf("second request = %+v, want queued", out.Outbox)
+	}
+	var second string
+	if err := h.pool.QueryRow(ctx, `select sim_id from addon_sim_requests where requested_at = '2026-11-04 16:10'`).Scan(&second); err != nil {
+		t.Fatal(err)
+	}
+	res, _, err := simStore.Get(ctx, second)
+	if err != nil {
+		t.Fatal(err)
+	}
+	res.DPS = simapi.Estimate{Mean: 400, Error: 3}
+	if err := simStore.Finish(ctx, second, res); err != nil {
+		t.Fatal(err)
+	}
+	s := &Service{Store: h.store, Sims: simStore, Log: quietLog()}
+	w := weightsFor(s.messages(ctx, h.owner, time.Now()), obnoxiousKey)
+	if w == nil || w.GeneratedAt != rfc3339(t, h, `select created_at from sims where id = $1`, first) || len(w.Weights) != 2 {
+		t.Fatalf("weights = %+v, want the first run's", w)
 	}
 }

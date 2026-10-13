@@ -202,7 +202,11 @@ func (s *Service) recordRefusal(ctx context.Context, userID int64, characterKey,
 // says why nothing happened, while the same request posted again is the
 // first request and is not recorded twice. Only a request that started a
 // run counts against the window: one refused for want of premium, say, may
-// run once the account can. The check and the writes are one transaction
+// run once the account can, and one whose run errored (the job failed, or
+// could not start) does not hold the window either, so the player can ask
+// again at once. The same request posted again is still the same request
+// whatever became of its run, so a run that could not start is not started
+// again by the companion's next re-post. The check and the writes are one transaction
 // under a per-character lock, so two posts of the same outbox racing each
 // other queue one run.
 func (s *Store) QueueAddonRequest(ctx context.Context, id string, userID int64, characterKey, requestedAt string, req simapi.SimRequest) (queued, another bool, err error) {
@@ -217,10 +221,11 @@ func (s *Store) QueueAddonRequest(ctx context.Context, id string, userID int64, 
 	}
 	var same, recent bool
 	if err := tx.QueryRow(ctx,
-		`select coalesce(bool_or(requested_at = $2), false),
-		        coalesce(bool_or(created_at > now() - make_interval(secs => $3)), false)
-		   from addon_sim_requests
-		  where character_key = $1 and coalesce(state, $4) = $4`,
+		`select coalesce(bool_or(a.requested_at = $2), false),
+		        coalesce(bool_or(a.created_at > now() - make_interval(secs => $3)
+		                         and sm.state is distinct from 'error'), false)
+		   from addon_sim_requests a left join sims sm on sm.id = a.sim_id
+		  where a.character_key = $1 and coalesce(a.state, $4) = $4`,
 		characterKey, requestedAt, SimRequestWindow.Seconds(), SimRequestStateQueued).Scan(&same, &recent); err != nil {
 		return false, false, fmt.Errorf("sims: read addon requests for %s: %w", characterKey, err)
 	}

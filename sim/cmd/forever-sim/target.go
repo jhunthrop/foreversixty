@@ -12,6 +12,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"sync/atomic"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
@@ -19,6 +20,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/combine"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
+	"github.com/jhunthrop/foreversixty/sim/internal/simdrain"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
@@ -111,18 +113,27 @@ func ExecuteToTarget(req api.SimRequest, progress io.Writer) (api.SimResult, err
 	return pooled, nil
 }
 
-// executeWeights computes stat weights natively, over the engine's own
-// StatWeightsAsync - the same call the browser makes.
+// executeWeights computes stat weights natively, and the baseline DPS beside them: one
+// weights run answers with both (the in-game "Sim me" request is one such run, and its
+// sim_result reads DPS and error off this result).
 //
-// This does NOT go through sim/internal/simdrain.ToResult, unlike
-// execute. That helper drains to the channel's close because a
-// SUCCESSFUL raid sim closes progress on its way out; core.StatWeightsAsync
-// has no such path - on every outcome it sends exactly one
-// ProgressMetrics.FinalWeightResult and returns without ever closing the
-// channel. Draining to close here would hang on every successful weights
-// run. Taking the first FinalWeightResult and stopping, as
-// sim/cmd/wasm's runWeights does, is therefore correct rather than a
-// shortcut.
+// It drives the engine's own sweep step by step rather than through core.StatWeightsAsync,
+// because StatWeightsAsync keeps its baseline sim to itself and answers only the weights.
+// The steps are the engine's exported halves of that same call, in the same order
+// (runStatWeights in the wowsims fork's sim/core/statweight.go):
+//
+//   - core.StatWeightRequests builds the baseline request and one low/high pair per stat,
+//     with the halved iteration count and the shared seed that line their random streams up;
+//   - each request runs to its result, the baseline first, on the engine's concurrent
+//     entry point (the single-threaded one for a test request, as the engine itself picks);
+//   - core.StatWeightCompute turns the baseline and the pairs into the weights.
+//
+// So the weights are the ones StatWeightsAsync would compute, and the baseline's Summary,
+// DPS and error are this result's, the same fields a plain run fills. IterationsRun is the
+// sweep's total across every sub-sim. Each sub-sim registers its own signal id
+// (simsignals refuses a duplicate while the last one is still registered), and an interrupt
+// stops whichever one is running; a stopped sub-sim stops the sweep, answered as an aborted
+// result with the empty summary and no weights, the way an aborted plain run is.
 func executeWeights(req api.SimRequest, progress io.Writer) (api.SimResult, error) {
 	registerOnce.Do(engine.RegisterAll)
 	start := time.Now()
@@ -134,82 +145,123 @@ func executeWeights(req api.SimRequest, progress io.Writer) (api.SimResult, erro
 	if err := simdb.AttachWeights(engineReq); err != nil {
 		return api.SimResult{}, err
 	}
+	data := core.StatWeightRequests(engineReq)
 
-	reporter := make(chan *proto.ProgressMetrics, 32)
-	id := runID()
-	defer onInterrupt(id)()
-	core.StatWeightsAsync(engineReq, reporter, id)
+	total := data.BaseRequest.SimOptions.Iterations
+	sims := int32(1)
+	for _, pair := range data.StatSimRequests {
+		total += pair.RequestLow.SimOptions.Iterations + pair.RequestHigh.SimOptions.Iterations
+		sims += 2
+	}
+	entry := core.RunRaidSimConcurrentAsync
+	if data.BaseRequest.SimOptions.GetIsTest() {
+		entry = core.RunRaidSimAsync
+	}
+
+	var current atomic.Value
+	current.Store("")
+	defer onInterruptFunc(func() string { return current.Load().(string) })()
 
 	var enc *json.Encoder
 	if progress != nil {
 		enc = json.NewEncoder(progress)
 	}
-	var engineRes *proto.StatWeightsResult
-	// The engine's own running total across the WHOLE sweep, not the
-	// per-sim count: iterations_run must report the sweep's total
-	// (2*len(stats)+1 sub-sims), never the per-sim req.Iterations.
-	var iterationsRun int
-	for p := range reporter {
-		if p.FinalWeightResult != nil {
-			engineRes = p.FinalWeightResult
-			break
-		}
-		iterationsRun = int(p.CompletedIterations)
-		if enc != nil {
-			// A weights run is many sims, so the sim counts are the
-			// honest progress and the iteration count alone would
-			// restart per stat. They ride the same three fields a
-			// bulk stage uses.
-			_ = enc.Encode(struct {
-				Completed   int32   `json:"completed"`
-				Total       int32   `json:"total"`
-				DPS         float64 `json:"dps"`
-				CombosDone  int32   `json:"combos_done"`
-				CombosTotal int32   `json:"combos_total"`
-			}{p.CompletedIterations, p.TotalIterations, p.Dps, p.CompletedSims, p.TotalSims})
-		}
-	}
-	if engineRes == nil {
-		return api.SimResult{}, errors.New("the engine produced no weights")
-	}
-	if iterationsRun == 0 {
-		iterationsRun = req.Iterations
-	}
-
-	// Switching on the type, not on the message: an aborted weights run's
-	// ErrorOutcome carries none, so a message check would misreport Stop
-	// as a corrupt result (adapter.Weights only branches on a non-empty
-	// message). This mirrors execute's own adapter.ResultError type
-	// check for a plain run; StatWeightsResult has no ResultError of its
-	// own to call. See sim/cmd/wasm's weightsResult, which this follows.
-	if engineRes.GetError().GetType() == proto.ErrorOutcomeType_ErrorOutcomeAborted {
-		// adapter.ErrAborted, not nil: main's switch on
-		// errors.Is(err, adapter.ErrAborted) is what turns a stopped
-		// run into exit 130 rather than 0, and every sibling arm
-		// (Execute, executeBulk) returns the error alongside the
-		// partial result for exactly that reason.
+	// finished is the iterations of every sub-sim that has ended; running is the one under way.
+	var finished, running, completedSims int32
+	aborted := func() (api.SimResult, error) {
 		return api.SimResult{
 			EngineVersion: enginever.Version,
 			Request:       req,
 			Lane:          api.LaneServer,
 			Aborted:       true,
-			IterationsRun: iterationsRun,
+			IterationsRun: int(finished + running),
 			DurationMS:    time.Since(start).Milliseconds(),
 			Summary:       adapter.EmptySummary(),
 		}, adapter.ErrAborted
 	}
+	// run is one sub-sim of the sweep, to its result. A weights run is many sims, so the sim
+	// counts are the honest progress and the iteration count alone would restart per stat:
+	// they ride the same three fields a bulk stage uses.
+	run := func(r *proto.RaidSimRequest) (*proto.RaidSimResult, error) {
+		id := runID()
+		current.Store(id)
+		reporter := make(chan *proto.ProgressMetrics, 32)
+		entry(r, reporter, id)
+		running = 0
+		res := simdrain.ToResult(reporter, func(p *proto.ProgressMetrics) {
+			running = p.CompletedIterations
+			if enc != nil {
+				_ = enc.Encode(struct {
+					Completed   int32   `json:"completed"`
+					Total       int32   `json:"total"`
+					DPS         float64 `json:"dps"`
+					CombosDone  int32   `json:"combos_done"`
+					CombosTotal int32   `json:"combos_total"`
+				}{finished + running, total, p.Dps, completedSims, sims})
+			}
+		})
+		if res == nil {
+			return nil, errors.New("the engine produced no result")
+		}
+		completedSims++
+		finished += res.IterationsDone
+		running = 0
+		// Switching on the type, not on the message: an abort's ErrorOutcome carries none.
+		if err := adapter.ResultError(res); err != nil {
+			if errors.Is(err, adapter.ErrAborted) {
+				return nil, err
+			}
+			return nil, fmt.Errorf("the sim failed: %w", err)
+		}
+		return res, nil
+	}
 
+	base, err := run(data.BaseRequest)
+	if err != nil {
+		if errors.Is(err, adapter.ErrAborted) {
+			return aborted()
+		}
+		return api.SimResult{}, err
+	}
+	pairs := make([]*proto.StatWeightsStatResultData, 0, len(data.StatSimRequests))
+	for _, pair := range data.StatSimRequests {
+		low, err := run(pair.RequestLow)
+		if err == nil {
+			var high *proto.RaidSimResult
+			if high, err = run(pair.RequestHigh); err == nil {
+				pairs = append(pairs, &proto.StatWeightsStatResultData{
+					StatData: pair.StatData, ResultLow: low, ResultHigh: high,
+				})
+				continue
+			}
+		}
+		if errors.Is(err, adapter.ErrAborted) {
+			return aborted()
+		}
+		return api.SimResult{}, err
+	}
+	engineRes := core.StatWeightCompute(&proto.StatWeightsCalcRequest{
+		BaseResult: base, EpReferenceStat: data.EpReferenceStat, StatSimResults: pairs,
+	})
+	if engineRes.GetError().GetType() == proto.ErrorOutcomeType_ErrorOutcomeAborted {
+		return aborted()
+	}
 	weights, err := adapter.Weights(engineRes, req)
 	if err != nil {
 		return api.SimResult{}, err
+	}
+	sum, err := adapter.Summarize(base, req)
+	if err != nil {
+		return api.SimResult{}, fmt.Errorf("adapting the baseline: %w", err)
 	}
 	return api.SimResult{
 		EngineVersion: enginever.Version,
 		Request:       req,
 		Lane:          api.LaneServer,
-		IterationsRun: iterationsRun,
+		IterationsRun: int(finished),
 		DurationMS:    time.Since(start).Milliseconds(),
-		Summary:       adapter.EmptySummary(),
+		Summary:       sum,
+		DPS:           adapter.DPS(base),
 		Weights:       weights,
 	}, nil
 }

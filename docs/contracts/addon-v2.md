@@ -227,12 +227,14 @@ Notes for the reader:
   its reference stat, the set the website's weights page starts from). There is one `weights`
   message per character. It comes from that character's newest finished in-game run. A
   character with no finished in-game run gets the account's newest stat-weights run from the
-  website instead, when that run names the character; there is at most one such message per
-  account. `weights.generated_at` is when the run that made these weights was queued, an RFC
-  3339 time in UTC. `weights.export_seen_at` is the export the run was made on: the same value
-  the `ack` carried for that export when the request arrived, so the addon can tell whether the
-  weights in use came from the copy the site has now. It is absent for a website run and for a
-  request recorded before the site kept it.
+  website instead, sent only when that run names one of the account's synced characters (a
+  weights message is never unaddressed); there is at most one such message per account.
+  `weights.generated_at` is when the run that made these weights was queued, an RFC 3339 time
+  in UTC. `weights.export_seen_at` is the export the run was made on: the same value the `ack`
+  carried for that export when the request arrived, so the addon can tell whether the weights
+  in use came from the copy the site has now. It is absent for a website run, and for an
+  in-game request the site recorded no export for. The same run's `sim_result` carries its DPS
+  and error: those of the sweep's baseline sim, the character as it is.
 - `sim_result.slots` carries per-slot deltas only when the run had per-item figures (a Top
   Gear run); for the run an in-game request queues, which has no per-item figures, it is an
   empty list, and the addon prices a slot itself from `weights` (`dps_per_point` times the
@@ -250,12 +252,12 @@ Notes for the reader:
   to an account with a companion paired. Its optional `sim_request_state` is what became of
   the character's newest in-game sim request: `"queued"` (a run started), `"needs_premium"`
   (server sims are a premium feature), `"duplicate"` (another request started a run within
-  the hour), `"invalid"` (the request could not be simmed), `"done"` (its run finished, so its
-  `weights` and `sim_result` are in this inbox) or `"failed"` (its run stopped with an
-  error); absent when the character never asked. `done` and `failed` are read from the run
-  itself and replace the stored state once the run ends. The addon ignores a state it does not
-  know. `ack.requested_at` is when the site received that newest
-  request, an RFC 3339 time in UTC, absent when the character never asked. The player's own
+  the hour; a run that failed does not count, so the player can ask again at once),
+  `"invalid"` (the request could not be simmed), `"done"` (its run finished, so its `weights`
+  and `sim_result` are in this inbox) or `"failed"` (its run stopped with an error); absent
+  when the character never asked. `done` and `failed` are read from the run itself and replace
+  the stored state once the run ends. The addon ignores a state it does not know.
+  `ack.requested_at` is when the site received that newest request, an RFC 3339 time in UTC, absent when the character never asked. The player's own
   wall time for the request stays in the outbox (contract 4) and is not sent back. For the
   request whose run made the weights in use, `requested_at` equals `weights.generated_at`; a
   later `requested_at` means a newer request has arrived since, and `sim_request_state` says

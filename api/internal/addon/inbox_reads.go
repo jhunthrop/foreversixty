@@ -172,20 +172,26 @@ type inGameWeightsRow struct {
 	CharacterKey, Spec string
 	// CreatedAt is when the run was queued (sims.created_at; the table has no finish time).
 	CreatedAt time.Time
-	// ExportSeenAt is the export the request was made on; nil for a request recorded before
-	// migration 0038.
+	// ExportSeenAt is the export the request was made on, nil when it was not recorded. A
+	// request recorded before migration 0038 queued a plain run (no weights), so it is never
+	// read here; in practice nil means the character had no stored export when it asked,
+	// which the outbox path, storing the export first, does not produce.
 	ExportSeenAt *time.Time
 	Weights      []simapi.StatWeight
 }
 
 // inGameWeights reads, for each of userID's characters that asked for a sim in game, the
-// newest request whose stat-weights run finished: its spec, weights, queue time and export.
+// newest request whose stat-weights run finished with weights (a done run with an empty list
+// is passed over for an older one, so the character still gets its last real weights): its
+// spec, weights, queue time and export.
 func (s *Store) inGameWeights(ctx context.Context, userID int64) ([]inGameWeightsRow, error) {
 	rows, err := s.Pool.Query(ctx,
 		`select distinct on (a.character_key) a.character_key, sm.spec, sm.created_at, a.export_seen_at,
 		        coalesce(sm.result -> 'weights', '[]')
 		   from addon_sim_requests a join sims sm on sm.id = a.sim_id
 		  where a.user_id = $1 and sm.state = 'done' and sm.kind = 'weights'
+		    and case when jsonb_typeof(sm.result -> 'weights') = 'array'
+		             then jsonb_array_length(sm.result -> 'weights') else 0 end > 0
 		  order by a.character_key, a.created_at desc`, userID)
 	if err != nil {
 		return nil, fmt.Errorf("addon: read in-game weights: %w", err)

@@ -78,6 +78,10 @@ type Row struct {
 	EngineVersion string    `json:"engine_version"`
 	CreatedAt     time.Time `json:"created_at"`
 	Title         string    `json:"title"`
+	// FromAddon is whether an in-game request (addon_sim_requests) queued this run. It is not
+	// on the wire: the inbox's website weights fallback reads it to skip in-game runs without
+	// reading each one's result.
+	FromAddon bool `json:"-"`
 }
 
 // Page is a page of that history.
@@ -269,7 +273,8 @@ func (s *Store) Mine(ctx context.Context, userID int64, page int, kind string) (
 	}
 	rows, err := s.Pool.Query(ctx,
 		`select id, spec, kind, dps_mean, headline, state, engine_version, created_at,
-		        coalesce(title, '')
+		        coalesce(title, ''),
+		        exists (select 1 from addon_sim_requests a where a.sim_id = sims.id)
 		 from sims where `+where+
 			fmt.Sprintf(" order by created_at desc, id limit $%d offset $%d",
 				len(args)+1, len(args)+2),
@@ -281,7 +286,7 @@ func (s *Store) Mine(ctx context.Context, userID int64, page int, kind string) (
 	for rows.Next() {
 		var r Row
 		if err := rows.Scan(&r.SimID, &r.Spec, &r.Kind, &r.DPS, &r.Headline, &r.State,
-			&r.EngineVersion, &r.CreatedAt, &r.Title); err != nil {
+			&r.EngineVersion, &r.CreatedAt, &r.Title, &r.FromAddon); err != nil {
 			return Page{}, fmt.Errorf("sims: scan: %w", err)
 		}
 		out.Rows = append(out.Rows, r)
