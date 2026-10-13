@@ -316,11 +316,10 @@ Theme.MEDIA = {
 	classIcons = "Interface\\TargetingFrame\\UI-Classes-Circles",
 	--- The client's own check mark, tinted dark on a switch's gold square (L3.5 ruling 2).
 	check = "Interface\\Buttons\\UI-CheckBox-Check",
-	--- The paper-doll and bag marks' corner arrow (spec section 4.4, L4.1): the client's own
-	--- green arrow, at the top right of a slot a bag item beats and of that bag item.
-	arrow = "Interface\\Buttons\\UI-MicroStream-Green",
-	--- The client's own bag upgrade arrow, used instead where the client knows the atlas
-	--- (C_Texture.GetAtlasInfo): a full 12 px glyph pointing up (L4.1 fix round 5).
+	--- The paper-doll and bag marks' corner arrow (spec section 4.4, L4.1) is drawn, the
+	--- addon's own parts (SlotMarks.ARROW_PARTS). The client's own bag upgrade arrow, used
+	--- instead only with Theme.ARROW_FROM_ATLAS on and where the client knows the atlas
+	--- (C_Texture.GetAtlasInfo).
 	arrowAtlas = "bags-greenarrow",
 }
 

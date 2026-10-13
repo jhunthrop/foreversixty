@@ -440,6 +440,16 @@ local function hinted(text)
 	return string.format("|cff%s%s|r", Theme.dimHex("muted", Theme.ALPHA.hint), text)
 end
 
+--- A legend line: its key words (`key`, the line's leading text) in `hexKey`'s colour and
+--- the rest muted, as separate colour runs (the client does not nest them); the whole
+--- line muted when it does not start with `key`.
+local function legendLine(hexKey, key, line)
+	if type(key) ~= "string" or key == "" or line:sub(1, #key) ~= key then
+		return colored("muted", line)
+	end
+	return colored(hexKey, key) .. colored("muted", line:sub(#key + 1))
+end
+
 --- The hover for a model: "Forever Sixty" in gold, then the build in force muted; one line per state in
 --- priority order, the shown one first, in body colour (a muted state
 --- muted, in its fuller `tip` form); the muted next-talent line; a gap; then
@@ -459,10 +469,12 @@ function Chip.tooltipLines(model)
 	if model.nextLine ~= nil then
 		lines[#lines + 1] = colored("muted", model.nextLine)
 	end
-	-- What the paper doll's and the bags' marks mean, while they are on (L4.1 fix round 5).
+	-- What the paper doll's and the bags' marks mean, while they are on (L4.1 fix round 5);
+	-- each key word in its mark's colour, the arrow's upgrade green and the corner's gold
+	-- (fix round 7).
 	if model.marksLegend then
-		lines[#lines + 1] = colored("muted", L.chipMarksLegendArrow)
-		lines[#lines + 1] = colored("muted", L.chipMarksLegendCorner)
+		lines[#lines + 1] = legendLine("success", L.chipMarksLegendArrowKey, L.chipMarksLegendArrow)
+		lines[#lines + 1] = legendLine("gold", L.chipMarksLegendCornerKey, L.chipMarksLegendCorner)
 	end
 	lines[#lines + 1] = " "
 	if model.chosen.hint ~= nil then

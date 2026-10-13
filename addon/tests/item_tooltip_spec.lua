@@ -194,21 +194,90 @@ describe("ItemTooltip.fitAlternatives", function()
 			ItemTooltip.fitAlternatives(ENTRIES, measure, 200))
 	end)
 
-	it("wraps the second name to its own line rather than drop it", function()
+	-- L4.1 fix round 7 (designer, hunter-20): when both do not fit on the label's row, the
+	-- label stands alone and each alternative takes its own indented row, whole; no row
+	-- ends in a comma.
+	it("puts the label alone and each name whole on its own row rather than drop one", function()
+		assert.are.equal("Also good:", L.tooltipAlternativesLabel)
+		assert.is_nil(L.tooltipAlternativesFirst)
+		assert.is_nil(L.tooltipAlternativesSecond)
+		local lines = ItemTooltip.fitAlternatives(ENTRIES, measure, 30)
 		assert.are.same({
-			string.format(L.tooltipAlternativesFirst, "|cff1eff00Cruel Barb|r"),
-			string.format(L.tooltipAlternativesSecond, "|cff0070ddSmite's Mighty Hammer|r"),
-		}, ItemTooltip.fitAlternatives(ENTRIES, measure, 30))
+			L.tooltipAlternativesLabel,
+			string.format(L.tooltipAlternativesRow, "|cff1eff00Cruel Barb|r"),
+			string.format(L.tooltipAlternativesRow, "|cff0070ddSmite's Mighty Hammer|r"),
+		}, lines)
+		for _, text in ipairs(lines) do
+			assert.is_nil(text:find(",%s*$"))
+			assert.is_nil(text:find(L.tooltipNamePending, 1, true))
+		end
 	end)
 
-	it("shortens a name with an ellipsis only when it alone is too wide", function()
+	it("puts one alternative alone under the label too when the line is too wide", function()
+		assert.are.same({ L.tooltipAlternativesLabel, string.format(L.tooltipAlternativesRow,
+			"|cff0070ddSmite's Mighty Hammer|r") }, ItemTooltip.fitAlternatives({ ENTRIES[2] }, measure, 30))
+	end)
+
+	it("shortens a name with an ellipsis only when it alone is too wide for its own row", function()
 		local lines = ItemTooltip.fitAlternatives(ENTRIES, measure, 18)
-		assert.are.equal(2, #lines)
-		for _, text in ipairs(lines) do
-			assert.is_true(measure(text) <= 18)
-			assert.is_truthy(text:find(L.tooltipNamePending, 1, true))
-		end
-		assert.is_truthy(lines[1]:find("|cff1eff00Cru", 1, true))
+		assert.are.equal(3, #lines)
+		assert.are.equal(L.tooltipAlternativesLabel, lines[1])
+		assert.are.equal(string.format(L.tooltipAlternativesRow, "|cff1eff00Cruel Barb|r"), lines[2])
+		assert.is_true(measure(lines[3]) <= 18)
+		assert.is_truthy(lines[3]:find(L.tooltipNamePending, 1, true))
+		assert.is_truthy(lines[3]:find("|cff0070ddSmi", 1, true))
+	end)
+
+	-- The hunter's Ranged section (hunter-20-ranged-tooltip): at the real 41-character width
+	-- "Also good: Lil Ti… +2.2 (needs bullets)," named no item; now each name is whole.
+	describe("the hunter's Ranged alternatives", function()
+		local tag = "|cffb8b8b8" .. L.tooltipNeedsBullets .. "|r"
+		local HUNTER = {
+			{ name = "Lil Timmy's Peashooter", hex = "1eff00", gain = 2.2, unit = "dps", flag = L.tooltipNeedsBullets },
+			{ name = "Cracked Blacksmith Hammer", hex = "ffffff", gain = 0.8, unit = "dps" },
+		}
+		local timmy = "|cff1eff00Lil Timmy's Peashooter|r |cffb8b8b8+2.2|r"
+		local hammer = "|cffffffffCracked Blacksmith Hammer|r |cffb8b8b8+0.8|r"
+
+		it("keeps both whole at the real 41-character width, the tag on a muted row under its name", function()
+			local lines = ItemTooltip.fitAlternatives(HUNTER, measure, 41)
+			assert.are.same({
+				L.tooltipAlternativesLabel,
+				string.format(L.tooltipAlternativesRow, timmy),
+				string.format(L.tooltipAlternativesRow, tag),
+				string.format(L.tooltipAlternativesRow, hammer),
+			}, lines)
+			for _, text in ipairs(lines) do
+				assert.is_true(measure(text) <= 41)
+				assert.is_nil(text:find(L.tooltipNamePending, 1, true))
+				assert.is_nil(text:find(",%s*$"))
+			end
+		end)
+
+		it("keeps the tag on its name's row when that row fits", function()
+			assert.are.same({
+				L.tooltipAlternativesLabel,
+				string.format(L.tooltipAlternativesRow, timmy .. " " .. tag),
+				string.format(L.tooltipAlternativesRow, hammer),
+			}, ItemTooltip.fitAlternatives(HUNTER, measure, 47))
+		end)
+
+		it("drops the tag to its own row before the name is ever cut", function()
+			-- 31 is exactly "    Lil Timmy's Peashooter +2.2": whole, the tag under it.
+			local lines = ItemTooltip.fitAlternatives({ HUNTER[1] }, measure, 31)
+			assert.are.same({ L.tooltipAlternativesLabel, string.format(L.tooltipAlternativesRow, timmy),
+				string.format(L.tooltipAlternativesRow, tag) }, lines)
+		end)
+
+		it("cuts the name only when the bare name and gain are wider than the room", function()
+			local lines = ItemTooltip.fitAlternatives({ HUNTER[1] }, measure, 25)
+			assert.are.equal(3, #lines)
+			assert.is_true(measure(lines[2]) <= 25)
+			assert.is_truthy(lines[2]:find(L.tooltipNamePending, 1, true))
+			assert.is_truthy(lines[2]:find("|cffb8b8b8+2.2|r", 1, true))
+			assert.is_nil(lines[2]:find(L.tooltipNeedsBullets, 1, true))
+			assert.are.equal(string.format(L.tooltipAlternativesRow, tag), lines[3])
+		end)
 	end)
 
 	it("keeps the whole line with no width to keep to", function()
@@ -1555,10 +1624,12 @@ describe("fitting each line to the client's width", function()
 		assert.are.same({ string.format(L.tooltipAlternatives,
 			"|cff1eff00Veteran's Chain Shirt|r |cffb8b8b8+1.1|r", "|cff1eff00Defender's Leather Armor|r |cffb8b8b8+0.6|r") },
 			one)
+		-- L4.1 fix round 7: the label alone, then each alternative on its own row.
 		local two = ItemTooltip.fitAlternatives(entries, visible, 40)
 		assert.are.same({
-			string.format(L.tooltipAlternativesFirst, "|cff1eff00Veteran's Chain Shirt|r |cffb8b8b8+1.1|r"),
-			string.format(L.tooltipAlternativesSecond, "|cff1eff00Defender's Leather Armor|r |cffb8b8b8+0.6|r"),
+			L.tooltipAlternativesLabel,
+			string.format(L.tooltipAlternativesRow, "|cff1eff00Veteran's Chain Shirt|r |cffb8b8b8+1.1|r"),
+			string.format(L.tooltipAlternativesRow, "|cff1eff00Defender's Leather Armor|r |cffb8b8b8+0.6|r"),
 		}, two)
 	end)
 

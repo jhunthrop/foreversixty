@@ -401,23 +401,38 @@ describe("Chip.tooltipLines", function()
 
 	-- L4.1 fix round 5: what the paper doll's and the bags' marks mean, while they are on.
 	-- Fix round 6: two short lines, so the chip's tooltip (which never wraps) is not widened.
-	it("carries the marks' legend as two muted lines while the marks are on, and not otherwise", function()
+	-- L4.1 fix round 7 (designer's tiers): the key words in the marks' own colours, "Green
+	-- arrow" in the arrow's upgrade green and "Gold corner" in the corner's gold, the rest muted.
+	it("carries the marks' legend as two lines while the marks are on, and not otherwise", function()
+		local arrow = "|cff" .. Theme.HEX.success .. L.chipMarksLegendArrowKey .. "|r"
+			.. muted(L.chipMarksLegendArrow:sub(#L.chipMarksLegendArrowKey + 1))
+		local corner = "|cff" .. Theme.HEX.gold .. L.chipMarksLegendCornerKey .. "|r"
+			.. muted(L.chipMarksLegendCorner:sub(#L.chipMarksLegendCornerKey + 1))
 		local on = Chip.tooltipLines(Chip.model(inputs({ marksLegend = true })))
 		local found
 		for index, line in ipairs(on) do
-			if line == muted(L.chipMarksLegendArrow) then
+			if line == arrow then
 				found = index
 			end
 		end
 		assert.is_not_nil(found)
-		assert.are.equal(muted(L.chipMarksLegendCorner), on[found + 1])
+		assert.are.equal(corner, on[found + 1])
 		assert.are.equal(" ", on[found + 2])
 		for _, line in ipairs(Chip.tooltipLines(Chip.model(inputs({ marksLegend = false })))) do
-			assert.are_not.equal(muted(L.chipMarksLegendArrow), line)
-			assert.are_not.equal(muted(L.chipMarksLegendCorner), line)
+			assert.are_not.equal(arrow, line)
+			assert.are_not.equal(corner, line)
 		end
+		assert.are.equal("Green arrow", L.chipMarksLegendArrowKey)
+		assert.are.equal("Gold corner", L.chipMarksLegendCornerKey)
 		assert.are.equal("Green arrow: a bag item beats what you wear.", L.chipMarksLegendArrow)
 		assert.are.equal("Gold corner: next upgrade to chase.", L.chipMarksLegendCorner)
+		assert.are.equal("6fcf8e", Theme.HEX.success)
+		assert.are.equal("e5b955", Theme.HEX.gold)
+		-- Plain text no wider than 48 characters, so the chip's tooltip is not widened.
+		for _, line in ipairs({ on[found], on[found + 1] }) do
+			local plain = line:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+			assert.is_true(#plain <= 48)
+		end
 		assert.is_nil(L.chipMarksLegend)
 	end)
 	-- Fix round 3: the hints sit one step dimmer than the muted info line.

@@ -374,10 +374,14 @@ local function buildArrow(overlay)
 	glyph:SetPoint("TOPRIGHT", overlay, "TOPRIGHT", 0, 0)
 	if atlasArrow() then
 		local texture = glyph:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL)
-		texture:SetAtlas(Theme.MEDIA.arrowAtlas, true)
-		texture:SetSize(size, size)
-		texture:SetPoint("TOPLEFT", glyph, "TOPLEFT", 0, 0)
-		return glyph, { { fill = texture } }
+		-- A texture without SetAtlas draws the addon's parts instead (fix round 7).
+		if type(texture.SetAtlas) == "function" then
+			texture:SetAtlas(Theme.MEDIA.arrowAtlas, true)
+			texture:SetSize(size, size)
+			texture:SetPoint("TOPLEFT", glyph, "TOPLEFT", 0, 0)
+			return glyph, { { fill = texture } }
+		end
+		texture:Hide()
 	end
 	local parts = {}
 	for index, part in ipairs(SlotMarks.ARROW_PARTS) do

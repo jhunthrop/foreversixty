@@ -218,10 +218,13 @@ describe("SlotMarks", function()
 	end)
 
 	describe("the theme", function()
-		it("draws a 12 px mark with the client's green arrow", function()
+		-- L4.1 fix round 7: the arrow is drawn (SlotMarks.ARROW_PARTS); the unread texture
+		-- path is gone, the atlas name kept for the atlas branch.
+		it("draws a 12 px mark, the arrow the addon's own parts", function()
 			start()
 			assert.are.equal(12, Theme.SIZES.mark)
-			assert.are.equal("Interface\\Buttons\\UI-MicroStream-Green", Theme.MEDIA.arrow)
+			assert.is_nil(Theme.MEDIA.arrow)
+			assert.are.equal("bags-greenarrow", Theme.MEDIA.arrowAtlas)
 		end)
 	end)
 
@@ -1034,6 +1037,23 @@ describe("SlotMarks", function()
 			end
 			assert.is_true(atlas ~= nil and size ~= nil and atlas < size)
 			assert.are.equal(1, #SlotMarks.marksOn(chest).arrowParts)
+		end)
+
+		-- Fix round 7 (fix-6 reviewer): a texture without SetAtlas never takes the atlas branch.
+		it("draws the addon's arrow when the atlas branch is on but the texture cannot SetAtlas", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, { C_Texture = {
+				GetAtlasInfo = function(name) return name == "bags-greenarrow" and PROBE or nil end,
+			} })
+			state.missingMethods.SetAtlas = true
+			Theme.ARROW_FROM_ATLAS = true
+			local chest = slotButton("CharacterChestSlot")
+			local ok, failure = pcall(SlotMarks.drawPaperDoll)
+			Theme.ARROW_FROM_ATLAS = false
+			state.missingMethods.SetAtlas = nil
+			assert.is_true(ok, tostring(failure))
+			local parts = SlotMarks.marksOn(chest).arrowParts
+			assert.are.equal(#SlotMarks.ARROW_PARTS, #parts)
+			assert.is_not_nil(parts[1].outline)
 		end)
 
 		it("draws the addon's arrow when the atlas branch is on but the client has no such atlas", function()

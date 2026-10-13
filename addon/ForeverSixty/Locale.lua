@@ -597,9 +597,11 @@ local L = {
 	tooltipSourceChance = "%s · %d%% drop",
 	tooltipAlternatives = "Also good: %s, %s",
 	tooltipAlternativesOne = "Also good: %s",
-	-- Two names too wide for one line wrap to a second rather than one dropped.
-	tooltipAlternativesFirst = "Also good: %s,",
-	tooltipAlternativesSecond = "    %s",
+	-- Too wide for one line (L4.1 fix round 7, hunter-20): the label alone on its row, then
+	-- each alternative whole on its own indented row (its tag, "(needs bullets)", on a muted
+	-- row under it when still too wide), no row ending in a comma; none is dropped.
+	tooltipAlternativesLabel = "Also good:",
+	tooltipAlternativesRow = "    %s",
 	-- One alternative with its gain over what is worn, muted: "Veteran's Chain Shirt +1.1".
 	tooltipAlternativeGain = "%s %s",
 	tooltipAltGain = "%s%.1f",
@@ -726,8 +728,12 @@ local L = {
 	chipShiftDrag = "Shift-drag: Move",
 	-- L4.1 fix round 5: the marks' legend in the chip's hover, while the marks are on; two short
 	-- lines (fix round 6), since the chip's tooltip never wraps a line.
+	-- Each line's key words (its leading text) are drawn in the mark's own colour, the rest
+	-- muted (fix round 7).
 	chipMarksLegendArrow = "Green arrow: a bag item beats what you wear.",
+	chipMarksLegendArrowKey = "Green arrow",
 	chipMarksLegendCorner = "Gold corner: next upgrade to chase.",
+	chipMarksLegendCornerKey = "Gold corner",
 	-- Level 1 to 9 on a default build (spec section 5.1): the class icon and
 	-- this line; a click opens a card with one button per spec.
 	chipPath = "Pick a path",

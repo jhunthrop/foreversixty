@@ -479,8 +479,9 @@ end
 
 --- One alternative as it is printed: its name in its quality colour (`name`
 --- given: the shortened one), then its gain muted when known; the pending
---- mark for a name not sent yet.
-local function entryText(entry, name)
+--- mark for a name not sent yet. `bare`: without its tag ("(needs bullets)"), for
+--- the row the tag has left (ItemTooltip.fitAlternatives).
+local function entryText(entry, name, bare)
 	if type(entry) ~= "table" then
 		return L.tooltipNamePending
 	end
@@ -490,7 +491,7 @@ local function entryText(entry, name)
 		text = string.format(L.tooltipAlternativeGain, text, muted(gain))
 	end
 	-- A ranged alternative of the other ammo type, kept but flagged (L4.1 fix round 5).
-	if entry.flag ~= nil then
+	if entry.flag ~= nil and not bare then
 		text = text .. " " .. muted(entry.flag)
 	end
 	return text
@@ -512,21 +513,35 @@ function ItemTooltip.ammoFlag(wornSub, altSub)
 	return alt == "bullets" and L.tooltipNeedsBullets or L.tooltipNeedsArrows
 end
 
---- `template` (one %s) around an entry, its name shortened until it fits.
-local function fitEntry(template, entry, fits)
-	if type(entry) ~= "table" then
-		return string.format(template, entryText(entry))
+--- One alternative's own rows, indented under the label (L.tooltipAlternativesRow): the
+--- whole name, gain and tag when that fits; else the tag ("(needs bullets)") on a muted
+--- row of its own under the name and gain; and only when the bare name and gain are still
+--- wider than the room, the name shortened with an ellipsis (L4.1 fix round 7).
+local function entryRows(entry, measure, room)
+	local fits = fitter(measure, room)
+	local row = string.format(L.tooltipAlternativesRow, entryText(entry))
+	if type(entry) ~= "table" or fits(row) then
+		return { row }
 	end
-	return shorten(function(name) return string.format(template, entryText(entry, name)) end, entry.name, fits, 1)
+	local rows = { shorten(function(name)
+		return string.format(L.tooltipAlternativesRow, entryText(entry, name, true))
+	end, entry.name, fits, 1) }
+	if entry.flag ~= nil then
+		rows[2] = ItemTooltip.fitPlain(string.format(L.tooltipAlternativesRow, muted(entry.flag)), measure, room)
+	end
+	return rows
 end
 
---- The alternatives as printed lines, for `entries` ({ name, hex, gain, unit }
+--- The alternatives as printed lines, for `entries` ({ name, hex, gain, unit, flag }
 --- each: the name in quality colour, the gain over what is worn muted; or
 --- false for a name not sent yet), within `room` as `measure` reads it, so the
---- tooltip never widens: both on one line when they fit ("Also good: A +1.1,
---- B +0.6"), else one name per line ("Also good: A +1.1," then "B +0.6"),
---- each name shortened with an ellipsis only when its own line is still too
---- wide. The one line with no measure or room. Empty with no entries.
+--- tooltip never widens: both on the label's row when they fit ("Also good: A +1.1,
+--- B +0.6"); else "Also good:" alone and each alternative whole on its own indented
+--- row ("Lil Timmy's Peashooter +2.2 (needs bullets)", then "Cracked Blacksmith Hammer
+--- +0.8"), no row ending in a comma; a row still too wide puts its tag on a muted row
+--- under it, and only a bare name and gain wider than the room are cut with an ellipsis
+--- (L4.1 fix round 7, hunter-20). The one line with no measure or room. Empty with no
+--- entries.
 function ItemTooltip.fitAlternatives(entries, measure, room)
 	entries = entries or {}
 	local count = math.min(2, #entries)
@@ -542,13 +557,13 @@ function ItemTooltip.fitAlternatives(entries, measure, room)
 	if fits(text) then
 		return { text }
 	end
-	if count == 1 then
-		return { fitEntry(L.tooltipAlternativesOne, entries[1], fits) }
+	local lines = { ItemTooltip.fitPlain(L.tooltipAlternativesLabel, measure, room) }
+	for index = 1, count do
+		for _, row in ipairs(entryRows(entries[index], measure, room)) do
+			lines[#lines + 1] = row
+		end
 	end
-	return {
-		fitEntry(L.tooltipAlternativesFirst, entries[1], fits),
-		fitEntry(L.tooltipAlternativesSecond, entries[2], fits),
-	}
+	return lines
 end
 
 local TAG_TEXT = { sim = "tooltipTagSim", build = "tooltipTagBuild", default = "tooltipTagEstimate" }
