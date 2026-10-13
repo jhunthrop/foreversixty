@@ -38,6 +38,7 @@ surfaces\SlotMarks.lua
 surfaces\RewardMarks.lua
 surfaces\BuildDialog.lua
 surfaces\Settings.lua
+surfaces\PanelTab.lua
 RecorderBuffer.lua
 Recorder.lua
 Options.lua

@@ -266,6 +266,27 @@ Theme.SIZES = {
 	settingsHeight = 560,
 	--- How far inside the canvas the page's own opaque backdrop sits (fix round 1, item 9).
 	settingsInset = 8,
+	--- The character-panel tab (spec section 4.5, L4.3): the "Forever Sixty" button beside the
+	--- client's last tab (its size, its gap from that tab) and the flyout at the pane's top
+	--- right (its width, where it sits from the pane's corner, its padding, the gap between
+	--- rows and between regions, a line of its small text, a region's title line, the
+	--- header line, the icons on its rows, its buttons' height).
+	panelTabWidth = 112,
+	panelTabHeight = 24,
+	panelTabGap = 0,
+	panelWidth = 300,
+	panelOffsetX = 0,
+	panelOffsetY = 0,
+	panelPadding = 10,
+	panelRowGap = 4,
+	panelRegionGap = 10,
+	panelLine = 13,
+	panelTitle = 16,
+	panelHeader = 18,
+	panelIcon = 16,
+	panelButtonHeight = 22,
+	--- The room a target row keeps at its right for the gain ("+12.3 DPS") beside the name.
+	panelGainWidth = 64,
 }
 
 --- The client's own font objects, and what to use when one is missing.
@@ -706,6 +727,24 @@ end
 
 function Theme.texture(parent, layer, hexKey, alpha)
 	return Theme.paint(parent:CreateTexture(nil, layer), hexKey, alpha)
+end
+
+--- The measure helper (L4.3): a function text -> width in UI units as `region` (a font
+--- string) draws it, the unbounded width where the client has it (a font string with a
+--- width set reports at most that width otherwise). The width is nil where the client
+--- cannot measure, which every fit in this addon reads as "fits".
+function Theme.measurer(region)
+	return function(text)
+		region:SetText(text)
+		local width
+		if type(region.GetUnboundedStringWidth) == "function" then
+			width = region:GetUnboundedStringWidth()
+		end
+		if type(width) ~= "number" and type(region.GetStringWidth) == "function" then
+			width = region:GetStringWidth()
+		end
+		return type(width) == "number" and width or nil
+	end
 end
 
 --- One of the client's own textures (a Theme.MEDIA path) in a token's colour: the

@@ -836,9 +836,11 @@ end
 --- before this addon was updated -- is silently dropped by
 --- Codec.inboxMessages, the same forward-compatibility rule Follow.inbox
 --- already applies to a build the addon does not recognise.
---- `last_raid` (contract 3) is read by the chip's last-night line; `build` and `ack`
---- by the build dialog (its "from the site" rows and its "Seen by the site" line).
-Codec.MESSAGE_TYPES = { upgrade = true, weights = true, guild = true, last_raid = true, build = true, ack = true }
+--- `last_raid` (contract 3) is read by the chip's last-night line and the character-panel
+--- tab's last-raid region; `build` and `ack` by the build dialog (its "from the site" rows and
+--- its "Seen by the site" line); `sim_result` by the panel tab's sim region (its DPS, L4.3).
+Codec.MESSAGE_TYPES = { upgrade = true, weights = true, guild = true, last_raid = true, build = true, ack = true,
+	sim_result = true }
 
 --- Messages of `kind` from `inbox.messages`, addressed to `key` or to no
 --- one in particular, in the order the companion wrote them. Pure: never

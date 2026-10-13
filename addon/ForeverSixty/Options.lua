@@ -32,6 +32,7 @@ local RewardMarks = ns.RewardMarks or require("RewardMarks")
 local Score = ns.Score or require("Score")
 local BuildDialog = ns.BuildDialog or require("BuildDialog")
 local SettingsPage = ns.SettingsPage or require("Settings")
+local PanelTab = ns.PanelTab or require("PanelTab")
 
 local Options = {}
 Options.data = Data
@@ -86,6 +87,8 @@ end
 --- With nothing to count, the first refusal met comes back as the second value.
 function Options.readInbox()
 	Options.refreshWeightsMessage()
+	-- The panel tab's sim and last-raid regions read the inbox (L4.3): an open flyout redraws.
+	PanelTab.refresh(Options.data)
 	local rows, refusal = BuildDialog.inboxRows(Follow.inboxBuilds(ForeverSixtyInbox, Export.characterKey()),
 		Follow.dismissedSet(), Options.data, BuildDialog.player())
 	if #rows == 0 then
@@ -180,6 +183,8 @@ function Options.handle(input)
 		surfaces[#surfaces + 1] = TalentMarks.diagLine()
 		-- A bag addon whose buttons the bag hook has not reached (L4.1 ruling 3).
 		surfaces[#surfaces + 1] = SlotMarks.diagLine()
+		-- The character-panel tab (L4.3 ruling 7): open or closed, its targets and rotation rows.
+		surfaces[#surfaces + 1] = PanelTab.diagLine()
 		local info = copy(Theme.infoNotes())
 		if rest == "verbose" then
 			for _, note in ipairs(Theme.verboseNotes()) do
@@ -273,6 +278,8 @@ function Options.refreshSurfaces(data, event)
 	-- The event: a bag update keeps the slots' own targets (SlotMarks.refresh).
 	SlotMarks.refresh(data, event)
 	RewardMarks.refresh(data)
+	-- The character-panel tab (L4.3): its button made and placed, an open flyout redrawn.
+	PanelTab.refresh(data, event)
 end
 
 --- Every event any surface refreshes on. Theme.registerEvent swallows the
@@ -342,6 +349,8 @@ function Options.onEvent(_, event, ...)
 		if event == "PLAYER_REGEN_ENABLED" then
 			-- A slot mark held back in combat (a new overlay on a client button) draws now.
 			SlotMarks.onCombatEnd()
+			-- The panel tab's button, held back in combat, is made now.
+			PanelTab.onCombatEnd()
 		end
 		Chip.refresh(Options.data)
 		return
@@ -365,6 +374,8 @@ function Options.onEvent(_, event, ...)
 		SlotMarks.onItemInfo((...))
 		-- A reward label or a roll line waiting on this item redraws (L4.2); no work otherwise.
 		RewardMarks.onItemInfo((...))
+		-- The panel tab's targets waiting on this item redraw (L4.3); no work otherwise.
+		PanelTab.onItemInfo((...))
 		return
 	end
 	if event == "PLAYER_EQUIPMENT_CHANGED" then
@@ -373,6 +384,8 @@ function Options.onEvent(_, event, ...)
 		-- tooltip cache (first: the marks read it) and the marks, never the chip.
 		ItemTooltip.resetCache()
 		SlotMarks.refresh(Options.data)
+		-- The panel tab's targets are the worn items' Next lines (L4.3): an open flyout redraws.
+		PanelTab.refresh(Options.data, event)
 		return
 	end
 	if event == "PLAYER_LOGOUT" then
@@ -468,6 +481,9 @@ function Options.register()
 	-- their overlays the first time a label or line is needed.
 	RewardMarks.data = Options.data
 	RewardMarks.register()
+	-- The character-panel tab (L4.3): its button the first time a refresh finds the pane, its
+	-- flyout on the first click. Nothing on the pane is hooked.
+	PanelTab.data = Options.data
 	-- The minimap button and the compartment entry: left-click opens the build dialog on its
 	-- paste tab, right-click the Settings page (the command list where it cannot open).
 	MinimapButton.open = function()

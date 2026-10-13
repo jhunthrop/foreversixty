@@ -49,6 +49,7 @@ describe("Options", function()
 		helper.load("BuildDialog")
 		helper.load("Settings")
 		helper.load("RewardMarks")
+		helper.load("PanelTab")
 		Options = helper.load("Options")
 		Options.data = DATA
 	end)
@@ -694,6 +695,46 @@ describe("Options", function()
 		assert.are.equal(1, refreshed)
 		Options.onEvent(Options.frame, "GET_ITEM_INFO_RECEIVED", 201, true)
 		assert.are.same({ 201 }, info)
+	end)
+
+	-- L4.3 ruling 1: the character-panel tab refreshes on the chip's events (every surface
+	-- refresh, the equipment change, the inbox's load) and on an item it waits on.
+	it("refreshes the panel tab with every surface, on an equipment change and on the inbox's load", function()
+		local PanelTab, Chip, SlotMarks = require("PanelTab"), require("Chip"), require("SlotMarks")
+		Chip.refresh = function() end
+		SlotMarks.refresh = function() end
+		local events, info = {}, {}
+		PanelTab.refresh = function(_, event)
+			events[#events + 1] = event or "none"
+		end
+		PanelTab.onItemInfo = function(itemId)
+			info[#info + 1] = itemId
+		end
+		Options.onEvent(Options.frame, "BAG_UPDATE_DELAYED")
+		Options.onEvent(Options.frame, "PLAYER_EQUIPMENT_CHANGED", 5, false)
+		Options.onEvent(Options.frame, "TRAIT_CONFIG_UPDATED")
+		Options.readInbox()
+		assert.are.same({ "BAG_UPDATE_DELAYED", "PLAYER_EQUIPMENT_CHANGED", "TRAIT_CONFIG_UPDATED", "none" }, events)
+		Options.onEvent(Options.frame, "GET_ITEM_INFO_RECEIVED", 300, true)
+		assert.are.same({ 300 }, info)
+	end)
+
+	it("prints the panel tab's line on /fs diag", function()
+		local PanelTab = require("PanelTab")
+		require("Theme").reset()
+		PanelTab.diagLine = function()
+			return "the panel line"
+		end
+		local found = false
+		for _, line in ipairs(Options.handle("diag")) do
+			found = found or line == "the panel line"
+		end
+		assert.is_true(found)
+	end)
+
+	it("hands the panel tab the data at load", function()
+		Options.register()
+		assert.are.equal(Options.data, require("PanelTab").data)
 	end)
 
 	-- L4.2 ruling 4: the chip's here line follows the instance entered.

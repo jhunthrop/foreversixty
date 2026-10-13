@@ -461,6 +461,10 @@ local function slotOrder(spec)
 	return order
 end
 
+--- The slot order every slot list reads (weapons first for a melee spec): the character-panel
+--- tab's targets break an equal gain by it (L4.3 ruling 2, spec section 4.5).
+Progress.slotOrder = slotOrder
+
 --- The spec and its weights for a build, or nil for either.
 local function weightsFor(data, build, ranks)
 	if build == nil then

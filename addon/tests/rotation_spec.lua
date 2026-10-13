@@ -7,6 +7,7 @@
 -- shape addonlua.py renders into Data.lua.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
+local L = require("Locale")
 
 local function line(spellId, name, condition)
 	return { spellId = spellId, name = name, condition = condition or "" }
@@ -147,6 +148,98 @@ describe("Rotation", function()
 			Rotation.markLearned(Rotation.newAbilities(DATA, BUILD, RANKS, 20, 40))
 			Rotation.markLearned(nil)
 			assert.are.same({}, Rotation.recentlyLearned)
+		end)
+	end)
+
+	-- L4.3 ruling 3: the character-panel tab's rotation region prints each line's condition in
+	-- plain words (parentheticals stripped, cut at the first sentence end, at most two lines of
+	-- the panel's width as the panel measures it).
+	describe("plainCondition", function()
+		--- One unit per character: the width the specs measure lines in.
+		local function measure(text)
+			return #text
+		end
+
+		it("strips parentheticals and cuts at the first sentence end", function()
+			assert.are.equal("Arcane Shot as the last filler, only when mana is above a 25% reserve.",
+				Rotation.plainCondition("Arcane Shot as the last filler, only when mana is above a 25% reserve "
+					.. "(Multi-Shot and Serpent Sting are the shots worth saving for). It is instant."))
+		end)
+
+		it("strips a nested parenthetical whole", function()
+			assert.are.equal("Mongoose Bite after a dodge.",
+				Rotation.plainCondition("Mongoose Bite after a dodge (Defensive State (spell 5302) opens it)."))
+		end)
+
+		it("strips an aside set off by a double dash, and keeps a clause after a colon, often the rule itself", function()
+			assert.are.equal("Serpent Sting kept up whenever it is about to fall off.",
+				Rotation.plainCondition("Serpent Sting kept up whenever it is about to fall off -- the cited "
+					.. "guide's own rotation step, not skipped."))
+			assert.are.equal("Rend kept up while the target lives.",
+				Rotation.plainCondition("Rend kept up -- an aside -- while the target lives."))
+			assert.are.equal("Flash Heal is the dear one: only for a tank that is genuinely low.",
+				Rotation.plainCondition("Flash Heal is the dear one: only for a tank that is genuinely low. Not more."))
+		end)
+
+		it("keeps a decimal point, and ends a condition that has no end of its own", function()
+			assert.are.equal("Slam inside the 1.5 second swing window.",
+				Rotation.plainCondition("Slam inside the 1.5 second swing window"))
+		end)
+
+		it("answers the line count it wraps to at the measured width", function()
+			local text, lines = Rotation.plainCondition("Aimed Shot on cooldown.", measure, 40)
+			assert.are.equal("Aimed Shot on cooldown.", text)
+			assert.are.equal(1, lines)
+			text, lines = Rotation.plainCondition("Aimed Shot on cooldown, timed so its cast does not clip the next "
+				.. "auto shot.", measure, 40)
+			assert.are.equal("Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.", text)
+			assert.are.equal(2, lines)
+		end)
+
+		it("never runs past two lines: the second is cut on a word with an ellipsis", function()
+			local long = "Heroic Strike only when rage is above sixty and Bloodthirst and Whirlwind are both on "
+				.. "cooldown for at least a full global."
+			local text, lines = Rotation.plainCondition(long, measure, 30)
+			assert.are.equal(2, lines)
+			assert.are.equal(L.tooltipNamePending, text:sub(-#L.tooltipNamePending))
+			-- Wrapped again at the same width, the cut text still takes two lines at most.
+			local again = select(2, Rotation.plainCondition(text, measure, 30))
+			assert.is_true(again <= 2)
+		end)
+
+		it("answers the plain words whole, with no line count, when there is nothing to measure with", function()
+			local text, lines = Rotation.plainCondition("Aimed Shot on cooldown (when it is up).")
+			assert.are.equal("Aimed Shot on cooldown.", text)
+			assert.is_nil(lines)
+		end)
+
+		it("answers nothing for no condition", function()
+			assert.is_nil(Rotation.plainCondition(nil))
+			assert.is_nil(Rotation.plainCondition(""))
+			assert.is_nil(Rotation.plainCondition("   "))
+		end)
+	end)
+
+	-- L4.3 ruling 3: the level an ability is first learned at, from Data.abilityLevels
+	-- (contract 1; every rank of an ability maps to its first rank's level).
+	describe("learnedAt", function()
+		it("reads Data.abilityLevels by the line's own spell id", function()
+			local data = { abilityLevels = { [5308] = 24, [20662] = 24, [2687] = 10 } }
+			assert.are.equal(24, Rotation.learnedAt(5308, data))
+			assert.are.equal(24, Rotation.learnedAt(20662, data))
+			assert.are.equal(10, Rotation.learnedAt(2687, data))
+		end)
+
+		it("answers nil for a spell the data has no level for, or data without the table", function()
+			assert.is_nil(Rotation.learnedAt(12345, { abilityLevels = {} }))
+			assert.is_nil(Rotation.learnedAt(5308, {}))
+			assert.is_nil(Rotation.learnedAt(nil, { abilityLevels = { [5308] = 24 } }))
+		end)
+
+		it("reads the shipped data: Execute at 24 in every rank", function()
+			local data = require("Data")
+			assert.are.equal(24, Rotation.learnedAt(5308, data))
+			assert.are.equal(24, Rotation.learnedAt(20662, data))
 		end)
 	end)
 end)

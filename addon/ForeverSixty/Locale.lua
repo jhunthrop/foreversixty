@@ -925,6 +925,60 @@ L.dialogSimState = {
 L.diagDialogOff = "The build dialog did not open on screen; /fs printed the commands instead."
 L.diagDialogFocus = "The build dialog opened without the keyboard; click its box to type."
 
+
+-- The "Forever Sixty" character-panel tab (spec section 4.5, L4.3): the button beside the
+-- client's tabs, and the flyout's header and region titles.
+L.panelTabLabel = L.addonName
+L.panelHeader = L.addonName
+L.panelTargets = "Next targets"
+L.panelRotation = "Rotation"
+L.panelBuild = "Build"
+L.panelSim = "Sim"
+L.panelLastRaid = "Last raid"
+-- "Last raid · as of 9 Dec" (contract 3: the message's date as "as of 9 Dec").
+L.panelLastRaidAsOf = "Last raid · as of %s"
+-- A target's second line: the slot in the client's own word, then the item tooltip's own
+-- source line ("Chest · Wailing Caverns · Mutanus the Devourer · 33% drop").
+L.panelTargetDetail = "%s · %s"
+-- An ability the character has not learned yet, muted and listed last.
+L.panelRotationAt = "at level %d"
+-- The build: its split in the dialog's words ("Arms 31 / Fury 20"), then these two.
+L.panelProgress = "%d of %d points on plan"
+L.panelOffPlan = "%d off plan"
+L.panelUseOther = "Use a different build"
+L.panelCopy = L.dialogCopy
+-- At 60: the sim. "Your sim: 412.6 DPS", then the top three weights: "Strength: 0.92 DPS
+-- per point" ("Strength: 2.20" with no DPS per point to price it).
+L.panelSimDps = "Your sim: %.1f %s"
+L.panelSimWeight = "%s: %.2f %s per point"
+L.panelSimWeightScore = "%s: %.2f"
+L.panelSimMe = "Sim me"
+L.panelSimQueued = "Sim queued; results after your next login"
+-- Sim me's hover: what it does, and the sim entitlement it needs on the site (L6.2 ruling).
+L.panelSimMeHint = {
+	"Asks the site to sim this character when you next log out.",
+	"Sims need the site's sim access (a premium account).",
+}
+-- At 60: the last raid, per boss. "Lucifron · 71st percentile", then, muted, "biggest loss
+-- downtime · 0 deaths · missed flask · rotation 82%".
+L.panelRaidBoss = "%s · %s percentile"
+L.panelRaidLoss = "biggest loss %s"
+L.panelRaidDeaths = "%d deaths"
+L.panelRaidDeath = "%d death"
+L.panelRaidMissed = "missed %s"
+L.panelRaidMissedJoin = ", "
+L.panelRaidAdherence = "rotation %d%%"
+L.panelRaidJoin = " · "
+-- Every region empty (no build, nothing to chase): the flyout says so rather than stand blank.
+L.panelEmpty = "Nothing to show yet. Load a build with /fs."
+-- /fs diag: "Panel: closed, 3 targets, rotation 4 rows" (L4.3 ruling 7, for the captures).
+L.diagPanel = "Panel: %s, %d targets, rotation %d rows"
+L.diagPanelOpen = "open"
+L.diagPanelClosed = "closed"
+L.diagPanelFailed = "The character panel tab failed and is off until /reload: %s"
+L.diagPanelNoPane = "Panel: this client has no character pane (CharacterFrame); the tab is off"
+L.diagPanelTall = "Panel: the flyout is taller than the screen"
+
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel
 

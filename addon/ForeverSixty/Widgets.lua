@@ -64,9 +64,10 @@ end
 --- A button the player can turn off. The OnClick wrapper checks IsEnabled
 --- itself rather than trusting the client to swallow the click, so the
 --- combat lockout on the Equip buttons holds on every client. Drawn flat:
---- a raised panel, a hairline border, a gold label.
-function Widgets.button(parent, text, onClick)
-	local button = Theme.createFrame("Button", nil, parent)
+--- a raised panel, a hairline border, a gold label. `name` (optional) names the
+--- frame, for a button a /run probe reaches (the character-panel tab's, L4.3).
+function Widgets.button(parent, text, onClick, name)
+	local button = Theme.createFrame("Button", name, parent)
 	button:SetSize(Theme.SIZES.buttonWidth, Theme.SIZES.buttonHeight)
 	local background = Theme.texture(button, "BACKGROUND", "raised")
 	background:SetAllPoints(button)

@@ -5,10 +5,12 @@
 -- in its own LEVEL_BANDS (10, 20, 30, 38, 40, 50, 60). This module picks
 -- the right band for a character's level and slices it for novice
 -- (top four lines) or advanced (every line) display. Rotation.newAbilities
--- fed the level-up rotation toast, which went with the chip (L3.1); the
--- character-panel tab's rotation region (L4.3) is its next reader.
+-- fed the level-up rotation toast, which went with the chip (L3.1). The
+-- character-panel tab's rotation region (L4.3) reads Rotation.model with
+-- Rotation.plainCondition and Rotation.learnedAt.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
+local L = ns.L or require("Locale")
 local Gear = ns.Gear or require("Gear")
 
 local Rotation = {}
@@ -131,6 +133,94 @@ function Rotation.markLearned(lines)
 	end
 	Rotation.recentlyLearned = set
 	return set
+end
+
+-- The character-panel tab's rotation region (L4.3) -------------------------------
+
+--- The level an ability is first learned at (Data.abilityLevels, contract 1: every rank of
+--- an ability maps to its first rank's level, keyed by the very id a band's line carries),
+--- or nil for a spell the data has no level for. `data` is Data.lua's table (ns.Data when nil).
+function Rotation.learnedAt(spellId, data)
+	data = data or ns.Data
+	local levels = type(data) == "table" and data.abilityLevels or nil
+	if spellId == nil or type(levels) ~= "table" then
+		return nil
+	end
+	return tonumber(levels[spellId])
+end
+
+--- The ellipsis a cut condition ends with (the tooltip's own).
+local ELLIPSIS = L.tooltipNamePending
+
+--- `text` wrapped on spaces at `width` as `measure` (text -> width) reads it, greedily, the
+--- way a font string of that width wraps: the lines, each a string.
+local function wrap(text, measure, width)
+	local lines, current = {}, nil
+	for word in text:gmatch("%S+") do
+		local candidate = current == nil and word or (current .. " " .. word)
+		local size = measure(candidate)
+		if current ~= nil and type(size) == "number" and size > width then
+			lines[#lines + 1] = current
+			current = word
+		else
+			current = candidate
+		end
+	end
+	if current ~= nil then
+		lines[#lines + 1] = current
+	end
+	return lines
+end
+
+--- A rotation line's condition in plain words (L4.3 ruling 3): parentheticals stripped (a
+--- nested one whole), and an aside set off by " -- " with them (the data's editorial asides:
+--- "-- the cited guide's own rotation step, not skipped"); cut at the first sentence end; ended
+--- with a full stop. A colon is kept: what follows one is often the rule itself ("Flash Heal
+--- ...: it is only for a tank that is genuinely low"). With `measure` and `width` (the
+--- panel's), never more than two lines: the second is cut on a word with an ellipsis.
+--- Answers the text and the line count it wraps to (nil with nothing to measure with); nil
+--- for no condition.
+function Rotation.plainCondition(text, measure, width)
+	if type(text) ~= "string" then
+		return nil
+	end
+	local plain = text:gsub("%s*%b()", "")
+	-- " -- an aside -- " in the middle, then a lone " -- " running to the end.
+	plain = plain:gsub("%s+%-%-%s.-%s%-%-%s+", " ")
+	plain = plain:gsub("%s+%-%-%s.*$", "")
+	-- The first sentence end: a stop, question or exclamation mark before a space (a decimal
+	-- point has a digit after it).
+	local cut = plain:find("[%.!?]%s")
+	if cut ~= nil then
+		plain = plain:sub(1, cut - 1)
+	end
+	plain = plain:gsub("%s+", " "):gsub("^ ", ""):gsub(" $", "")
+	plain = plain:gsub("[%.!?:;,]$", "")
+	if plain == "" then
+		return nil
+	end
+	plain = plain .. "."
+	if type(measure) ~= "function" or type(width) ~= "number" or type(measure(plain)) ~= "number" then
+		return plain, nil
+	end
+	local lines = wrap(plain, measure, width)
+	if #lines <= 2 then
+		return plain, #lines
+	end
+	-- The second line, a word at a time, until it and the ellipsis fit.
+	local words = {}
+	for word in lines[2]:gmatch("%S+") do
+		words[#words + 1] = word
+	end
+	local second = ""
+	for count = #words, 1, -1 do
+		second = table.concat(words, " ", 1, count) .. ELLIPSIS
+		local size = measure(second)
+		if type(size) ~= "number" or size <= width then
+			break
+		end
+	end
+	return lines[1] .. " " .. second, 2
 end
 
 ns.Rotation = Rotation

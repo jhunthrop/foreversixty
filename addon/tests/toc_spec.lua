@@ -23,6 +23,9 @@ describe("the TOC", function()
 		"surfaces/BuildDialog.lua",
 		-- The Settings page (L3.5): registered at login; Options opens it.
 		"surfaces/Settings.lua",
+		-- The character-panel tab (L4.3): reads the tooltip's Next lines, the rotation, the
+		-- build dialog's split and opens it; Options refreshes it.
+		"surfaces/PanelTab.lua",
 		-- The measurement recorder: Options routes /fs record to it.
 		"RecorderBuffer.lua", "Recorder.lua", "Options.lua",
 	}
