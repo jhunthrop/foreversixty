@@ -207,6 +207,27 @@ describe("Rotation", function()
 			assert.is_true(again <= 2)
 		end)
 
+		-- L4.3 fix round 3, item 2: the cut prefers a clause boundary in the last 40% of the second
+		-- line, and never leaves a figure without the word it measures.
+		it("cuts at a clause boundary when one lies in the last 40% of the second line", function()
+			local text, lines = Rotation.plainCondition("Slam when the swing timer resets and rage is high, or when "
+				.. "Whirlwind is ready soon.", measure, 30)
+			assert.are.equal(2, lines)
+			assert.are.equal("Slam when the swing timer resets and rage is high" .. L.tooltipNamePending, text)
+		end)
+
+		it("cuts on a word, never ending on a connector, when no clause boundary lies in the last 40%", function()
+			local text = Rotation.plainCondition("Slam when the swing timer resets, and only while rage is above "
+				.. "forty, never when Whirlwind is ready.", measure, 30)
+			assert.are.equal("Slam when the swing timer resets, and only while rage" .. L.tooltipNamePending, text)
+		end)
+
+		it("goes back to the last clause boundary rather than cut a figure from its word", function()
+			local text = Rotation.plainCondition("Slam when the swing timer resets and rage is above 40 rage, never "
+				.. "lower.", measure, 30)
+			assert.are.equal("Slam when the swing timer resets" .. L.tooltipNamePending, text)
+		end)
+
 		it("answers the plain words whole, with no line count, when there is nothing to measure with", function()
 			local text, lines = Rotation.plainCondition("Aimed Shot on cooldown (when it is up).")
 			assert.are.equal("Aimed Shot on cooldown.", text)

@@ -1392,7 +1392,9 @@ function Theme.hideTooltip()
 end
 
 --- A plain multi-line tooltip, for the minimap button and the chip.
---- `anchor` is GameTooltip's own anchor name, ANCHOR_LEFT when nil.
+--- `anchor` is GameTooltip's own anchor name, ANCHOR_LEFT when nil. A line is a string, or
+--- { text = ..., wrap = true } for one the tooltip wraps at its own width rather than widen
+--- to (the panel's full rotation condition, L4.3 fix round 3); its colour is its own escape.
 function Theme.showLines(owner, lines, anchor)
 	if not hasTooltip() then
 		return false
@@ -1400,7 +1402,11 @@ function Theme.showLines(owner, lines, anchor)
 	GameTooltip:SetOwner(owner, anchor or "ANCHOR_LEFT")
 	GameTooltip:ClearLines()
 	for _, line in ipairs(lines) do
-		GameTooltip:AddLine(line)
+		if type(line) == "table" then
+			GameTooltip:AddLine(line.text, 1, 1, 1, line.wrap == true)
+		else
+			GameTooltip:AddLine(line)
+		end
 	end
 	GameTooltip:Show()
 	return true

@@ -211,14 +211,70 @@ local function wrap(text, measure, width)
 	return lines
 end
 
+--- The words a clause boundary falls before (L4.3 fix round 3, item 2), besides a word ending
+--- in ",", ";" or ":".
+Rotation.CONNECTORS = { ["and"] = true, ["or"] = true, ["when"] = true, ["unless"] = true }
+--- Where in the second line a clause boundary is preferred to a word cut: from this share of
+--- its measured width on (the last 40%).
+Rotation.CLAUSE_FROM = 0.6
+
+local function isConnector(word)
+	return word ~= nil and Rotation.CONNECTORS[word:lower()] == true
+end
+
+--- The first `count` of `words`, joined, a trailing ",", ";" or ":" dropped before the ellipsis.
+local function kept(words, count)
+	return (table.concat(words, " ", 1, count):gsub("[,;:]$", ""))
+end
+
+--- How many words of the second line (`words`; `following` the first word after it) a cut
+--- condition keeps before its ellipsis, within `width` as `measure` reads it (fix round 3,
+--- item 2): the last clause boundary (after a word ending in ",", ";" or ":", or before
+--- "and", "or", "when", "unless") lying in the last 40% of the line; else a cut on a word,
+--- never left on a connector, and never just after a figure ("a 25%" cut from "reserve"):
+--- there the last clause boundary anywhere in the line, when it has one.
+function Rotation.cutCount(words, following, measure, width)
+	local function fits(count)
+		local size = measure(kept(words, count) .. ELLIPSIS)
+		return type(size) ~= "number" or size <= width
+	end
+	local line = measure(table.concat(words, " "))
+	local latest
+	for count = #words, 1, -1 do
+		local word = words[count]
+		local after = words[count + 1] or following
+		if not isConnector(word) and (word:find("[,;:]$") ~= nil or isConnector(after)) and fits(count) then
+			local size = measure(kept(words, count))
+			if type(line) == "number" and type(size) == "number" and size >= Rotation.CLAUSE_FROM * line then
+				return count
+			end
+			latest = latest or count
+		end
+	end
+	local count = 1
+	for candidate = #words, 1, -1 do
+		if fits(candidate) then
+			count = candidate
+			break
+		end
+	end
+	if count > 1 and isConnector(words[count]) then
+		count = count - 1
+	end
+	if latest ~= nil and words[count]:find("%d") ~= nil then
+		return latest
+	end
+	return count
+end
+
 --- A rotation line's condition in plain words (L4.3 ruling 3): parentheticals stripped (a
 --- nested one whole), and an aside set off by " -- " with them (the data's editorial asides:
 --- "-- the cited guide's own rotation step, not skipped"); cut at the first sentence end; ended
 --- with a full stop. A colon is kept: what follows one is often the rule itself ("Flash Heal
 --- ...: it is only for a tank that is genuinely low"). With `measure` and `width` (the
---- panel's), never more than two lines: the second is cut on a word with an ellipsis.
---- Answers the text and the line count it wraps to (nil with nothing to measure with); nil
---- for no condition.
+--- panel's), never more than two lines: the second is cut with an ellipsis, at a clause where
+--- one lies near its end (Rotation.cutCount). Answers the text and the line count it wraps to
+--- (nil with nothing to measure with); nil for no condition.
 function Rotation.plainCondition(text, measure, width)
 	if type(text) ~= "string" then
 		return nil
@@ -246,20 +302,12 @@ function Rotation.plainCondition(text, measure, width)
 	if #lines <= 2 then
 		return plain, #lines
 	end
-	-- The second line, a word at a time, until it and the ellipsis fit.
 	local words = {}
 	for word in lines[2]:gmatch("%S+") do
 		words[#words + 1] = word
 	end
-	local second = ""
-	for count = #words, 1, -1 do
-		second = table.concat(words, " ", 1, count) .. ELLIPSIS
-		local size = measure(second)
-		if type(size) ~= "number" or size <= width then
-			break
-		end
-	end
-	return lines[1] .. " " .. second, 2
+	local count = Rotation.cutCount(words, lines[3]:match("^%S+"), measure, width)
+	return lines[1] .. " " .. kept(words, count) .. ELLIPSIS, 2
 end
 
 ns.Rotation = Rotation

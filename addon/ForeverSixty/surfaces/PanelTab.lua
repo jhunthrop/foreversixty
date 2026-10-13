@@ -32,6 +32,15 @@
 -- doll's sidebar; a text line is the small font's measured height, at least `panelLine`; an
 -- event while the pane is closed marks the open flyout stale, and the button's show script
 -- redraws it.
+--
+-- Fix round 3 (the designer and player personas on the hunter-24 captures): the build reads
+-- as the plan ("Plan: ..."), its progress counted against the points the level allows, its
+-- off-plan count naming the talents on hover; every rotation row's hover holds the ability's
+-- full condition, and a cut condition ends at a clause; the button shows when the flyout is
+-- open and says what it does on hover; target and rotation rows light a hover ground; a
+-- target's line names the worn item it replaces when there is room; a rule above the
+-- Rotation and Build titles; the not-yet-learned rows dimmed; a line under fewer than five
+-- targets.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -153,7 +162,8 @@ end
 
 --- The next targets (ruling 2): per worn slot, the Next line its own tooltip prints
 --- (`sectionOf(link)`: ItemTooltip.sectionFor, { lines, pending }), with the section's source
---- line, as { slot, itemId, name, hex, gain, unit, source, pick, boe, pending }; a slot the bag
+--- line, as { slot, itemId, name, hex, gain, unit, source, pick, boe, pending, worn } (`worn`
+--- the worn item's name from its link, fix round 3 item 4); a slot the bag
 --- arrow marks lists the bag item instead, as its hover leads with it (`bagOf(slot)`, optional:
 --- ItemTooltip.bagLead; PanelTab.bagRow). A pick two slots name (a ring pair) is listed once,
 --- at its bigger gain. Biggest gain first, at most PanelTab.MAX_TARGETS; an equal gain goes by
@@ -199,6 +209,7 @@ function PanelTab.targets(ctx, sectionOf, bagOf)
 					end
 				end
 				if row ~= nil then
+					row.worn = type(worn.link) == "string" and worn.link:match("%[(.-)%]") or nil
 					local seen = byItem[row.itemId]
 					if seen == nil then
 						found[#found + 1] = row
@@ -254,15 +265,17 @@ end
 --- learned lines numbered in priority order, then each line the character has not learned
 --- yet (Rotation.learnedAt above `level`), muted, unnumbered, "at level N", in its own order;
 --- then the next band's abilities not learned yet (Rotation.upcoming, at most
---- PanelTab.MAX_UPCOMING; fix round 1, item 4), the same way. Empty with no build or no
---- rotation for the spec.
+--- PanelTab.MAX_UPCOMING; fix round 1, item 4), the same way. Each row also keeps the whole
+--- plain condition (`fullCondition`, never cut) and the level a later one is learned at
+--- (`atLevel`) for its hover (fix round 3, item 2). Empty with no build or no rotation for
+--- the spec.
 function PanelTab.rotationRows(data, build, ranks, level, measure, width)
 	local model = Rotation.model(data, build, ranks or {}, level, true)
 	local rows, later = {}, {}
 	local function rowOf(line)
 		local condition, lines = plainCondition(line.condition, measure, width)
 		return { spellId = line.spellId, name = line.name, condition = condition, conditionLines = lines,
-			muted = false }
+			fullCondition = Rotation.plainCondition(line.condition), muted = false }
 	end
 	for _, line in ipairs(model.lines or {}) do
 		local row = rowOf(line)
@@ -270,6 +283,7 @@ function PanelTab.rotationRows(data, build, ranks, level, measure, width)
 		if at ~= nil and type(level) == "number" and at > level then
 			row.muted = true
 			row.at = string.format(L.panelRotationAt, at)
+			row.atLevel = at
 			later[#later + 1] = row
 		else
 			rows[#rows + 1] = row
@@ -283,26 +297,88 @@ function PanelTab.rotationRows(data, build, ranks, level, measure, width)
 		local row = rowOf(found.line)
 		row.muted = true
 		row.at = string.format(L.panelRotationAt, found.at)
+		row.atLevel = found.at
 		row.upcoming = true
 		rows[#rows + 1] = row
 	end
 	return rows
 end
 
---- The build (ruling 4): its split in the build dialog's words ("Arms 31 / Fury 20",
---- BuildDialog.split), "N of M points on plan" and "K off plan" (absent at none), both
---- Progress.build's. nil with no build.
+--- The plan's points the character's level allows (fix round 3, item 1): one a level from 10
+--- (level - 9, Progress.unspentPoints' rule), never more than the plan holds; the plan's
+--- whole length where the level is not known.
+function PanelTab.pointsAllowed(build, level)
+	local total = build ~= nil and #build.order or 0
+	if type(level) ~= "number" then
+		return total
+	end
+	return math.min(total, math.max(0, level - 9))
+end
+
+--- The off-plan talents, one line each (fix round 3, item 1), from what the talent marks
+--- compute: each node holding a point the plan never put there (Progress.offPlanCells,
+--- "Improved Wrath · Balance · Rank 2/5"), then each planned node holding more than the plan
+--- asks (Progress.cells, "... · Rank 4/5 (plan 3)"); by tree, then tier and column. Together
+--- they account for Progress.build's offPlan. nil with none, or no data for the class.
+function PanelTab.offPlanTalents(build, ranks, data)
+	if build == nil then
+		return nil
+	end
+	local found = {}
+	for _, cell in ipairs(Progress.offPlanCells(build, ranks, data)) do
+		found[#found + 1] = { tab = cell.tab, tier = cell.tier, column = cell.column, have = cell.have }
+	end
+	for _, cell in ipairs(Progress.cells(build, ranks, data)) do
+		if cell.have > cell.want then
+			found[#found + 1] = { tab = cell.tab, tier = cell.tier, column = cell.column, have = cell.have,
+				want = cell.want }
+		end
+	end
+	table.sort(found, function(left, right)
+		if left.tab ~= right.tab then
+			return left.tab < right.tab
+		end
+		if left.tier ~= right.tier then
+			return left.tier < right.tier
+		end
+		return left.column < right.column
+	end)
+	local lines = {}
+	for _, cell in ipairs(found) do
+		local talent = Talents.cellOf(data, build.classSlug, cell.tab, cell.tier, cell.column)
+		local tree = Talents.tabName(data, build.classSlug, cell.tab)
+		if talent ~= nil and tree ~= nil then
+			local most = tonumber(talent.maxRank) or cell.have
+			if cell.want ~= nil then
+				lines[#lines + 1] = string.format(L.panelOverPlanTalent, talent.name, tree, cell.have, most, cell.want)
+			else
+				lines[#lines + 1] = string.format(L.panelOffPlanTalent, talent.name, tree, cell.have, most)
+			end
+		end
+	end
+	return #lines > 0 and lines or nil
+end
+
+--- The build (ruling 4): its split in the build dialog's words as the plan ("Plan: Arms 31 /
+--- Fury 20", BuildDialog.split), "N of M points on plan" with M the points the level allows
+--- (PanelTab.pointsAllowed: "12 of 15" at 24, "N of 51" at 60) and "K off plan" (absent at
+--- none), both from Progress.build, with the off-plan talents for its hover
+--- (PanelTab.offPlanTalents). nil with no build.
 function PanelTab.buildRegion(build, data, ranks, level)
 	if build == nil then
 		return nil
 	end
-	local progress = Progress.build(build, ranks or {}, level)
+	ranks = ranks or {}
+	local progress = Progress.build(build, ranks, level)
 	local split = BuildDialog.split(build, data)
+	local allowed = PanelTab.pointsAllowed(build, level)
+	local offPlan = progress.offPlan > 0
 	return {
 		kind = "build",
-		split = split ~= "" and split or nil,
-		progress = string.format(L.panelProgress, progress.matched, progress.total),
-		offPlan = progress.offPlan > 0 and string.format(L.panelOffPlan, progress.offPlan) or nil,
+		split = split ~= "" and string.format(L.panelPlanSplit, split) or nil,
+		progress = string.format(L.panelProgress, math.min(progress.matched, allowed), allowed),
+		offPlan = offPlan and string.format(L.panelOffPlan, progress.offPlan) or nil,
+		offPlanTalents = offPlan and PanelTab.offPlanTalents(build, ranks, data) or nil,
 	}
 end
 
@@ -406,13 +482,15 @@ end
 --- The flyout's model: the regions with something to show, in PanelTab.ORDER (ruling 6: a
 --- region with nothing to show is absent), each list capped with the count left over in
 --- `more` (fix round 1, item 3: at most PanelTab.MAX_ROTATION rotation rows and
---- PanelTab.MAX_BOSSES bosses), and the counts /fs diag prints (the whole lists').
+--- PanelTab.MAX_BOSSES bosses), and the counts /fs diag prints (the whole lists'). Targets
+--- fewer than PanelTab.MAX_TARGETS carry `rest`: the muted "Other slots are best for your
+--- level." under them (fix round 3, item 6).
 function PanelTab.model(input)
 	local regions = {}
 	local targets, rotation = input.targets or {}, input.rotation or {}
 	if #targets > 0 then
 		local rows, more = capped(targets, PanelTab.MAX_TARGETS)
-		regions[#regions + 1] = { kind = "targets", rows = rows, more = more }
+		regions[#regions + 1] = { kind = "targets", rows = rows, more = more, rest = #targets < PanelTab.MAX_TARGETS }
 	end
 	if #rotation > 0 then
 		local rows, more = capped(rotation, PanelTab.MAX_ROTATION)
@@ -515,6 +593,9 @@ function PanelTab.regionHeight(entry)
 			heights[index] = PanelTab.targetRowHeight()
 		end
 		body = stacked(heights, entry.more)
+		if entry.rest then
+			body = body + (#heights > 0 and S.panelRowGap or 0) + PanelTab.lineHeight()
+		end
 	elseif entry.kind == "rotation" then
 		local heights = {}
 		for index, row in ipairs(entry.rows) do
@@ -611,7 +692,16 @@ end
 --- tooltip's own source line>", shortened as the tooltip shortens its source line
 --- (ItemTooltip.fitSource: the chance goes, then the place, never the boss); where even that
 --- would need a second row, cut by width with an ellipsis. Whole with nothing to measure with.
+--- Fix round 3, item 4: a pick's line ends with a muted " · over <worn item>" when the whole
+--- line fits; it is the first thing dropped, before the chance, and never cut or widened.
 function PanelTab.detailText(entry, slotWord, measure, room)
+	if entry.source ~= nil and entry.worn ~= nil and not entry.bag then
+		local whole = string.format(L.panelTargetDetail, slotWord, entry.source) .. "|cff" .. Theme.HEX.muted
+			.. string.format(L.panelTargetOver, entry.worn) .. "|r"
+		if ItemTooltip.fitPlain(whole, measure, room) == whole then
+			return whole
+		end
+	end
 	if entry.source == nil then
 		return ItemTooltip.fitPlain(slotWord, measure, room)
 	end
@@ -640,6 +730,39 @@ function PanelTab.rotationName(entry)
 		parts[#parts + 1] = muted(rank)
 	end
 	return table.concat(parts, " ")
+end
+
+--- A rotation row's hover (fix round 3, item 2): the ability's name, its whole plain
+--- condition (never cut), and "Learned at level N" muted for one not learned yet.
+function PanelTab.rotationHint(entry)
+	local lines = { entry.name or "" }
+	if entry.fullCondition ~= nil then
+		lines[#lines + 1] = Theme.inlineColor("tooltipText", entry.fullCondition)
+	end
+	if entry.atLevel ~= nil then
+		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", string.format(L.panelRotationLearnedAt, entry.atLevel))
+	end
+	return lines
+end
+
+--- The button's hover (fix round 3, item 3): "Forever Sixty" in gold, then what it holds and
+--- what a click does, muted.
+function PanelTab.buttonHint()
+	local lines = { Theme.inlineColor("gold", L.addonName) }
+	for _, text in ipairs(L.panelTabHint) do
+		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", text)
+	end
+	return lines
+end
+
+--- The off-plan count's hover (fix round 3, item 1): the count in the warning colour, then
+--- each off-plan talent (PanelTab.offPlanTalents), one a line.
+function PanelTab.offPlanHint(entry)
+	local lines = { Theme.inlineColor("warning", entry.offPlan or "") }
+	for _, text in ipairs(entry.offPlanTalents or {}) do
+		lines[#lines + 1] = Theme.inlineColor("tooltipText", text)
+	end
+	return lines
 end
 
 --- The newest inbox message of `kind` for this character (Follow.messages, the chip's own
@@ -895,6 +1018,21 @@ function PanelTab.ensureButton()
 		button:SetScript("OnShow", function(self)
 			PanelTab.onButtonShow(self)
 		end)
+		-- Its hover says what it is and what a click does (fix round 3, item 3), after its own
+		-- brighten.
+		local enter, leave = button:GetScript("OnEnter"), button:GetScript("OnLeave")
+		button:SetScript("OnEnter", function(self)
+			if enter ~= nil then
+				enter(self)
+			end
+			Theme.showLines(self, PanelTab.buttonHint(), "ANCHOR_RIGHT")
+		end)
+		button:SetScript("OnLeave", function(self)
+			if leave ~= nil then
+				leave(self)
+			end
+			Theme.hideTooltip()
+		end)
 		PanelTab.button = button
 	end
 	placeButton(button, frame)
@@ -945,6 +1083,10 @@ local function iconRow(region, withGain)
 	local frame = CreateFrame("Button", nil, region)
 	frame:SetWidth(PanelTab.innerWidth())
 	frame:EnableMouse(true)
+	-- The hover ground (fix round 3, item 4): the whole row, shown while the cursor is on it.
+	local ground = Theme.texture(frame, "BACKGROUND", "hover")
+	ground:SetAllPoints(frame)
+	ground:Hide()
 	local icon = Theme.icon(frame, "ARTWORK", nil, S.rowIcon)
 	icon:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
 	icon:SetPoint("BOTTOMRIGHT", frame, "TOPLEFT", S.rowIcon, -S.rowIcon)
@@ -954,7 +1096,7 @@ local function iconRow(region, withGain)
 	local second = Widgets.label(frame, "", "muted", "small")
 	second:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, 0)
 	sized(second, PanelTab.textRoom())
-	local row = { frame = frame, icon = icon, name = name, second = second }
+	local row = { frame = frame, ground = ground, icon = icon, name = name, second = second }
 	if withGain then
 		local gain = Widgets.label(frame, "", "success", "small")
 		gain:SetJustifyH("RIGHT")
@@ -1013,7 +1155,20 @@ local function drawTexts(region, lines, y)
 	return y
 end
 
---- One target row, pooled: hovering shows the item's own tooltip.
+--- A row's hover (fix round 3, item 4): its ground lit while the cursor is on it, `show(frame)`
+--- its tooltip; both go when the cursor leaves.
+local function hoverRow(row, show)
+	row.frame:SetScript("OnEnter", function(self)
+		row.ground:Show()
+		show(self)
+	end)
+	row.frame:SetScript("OnLeave", function()
+		row.ground:Hide()
+		Theme.hideTooltip()
+	end)
+end
+
+--- One target row, pooled: hovering lights it and shows the item's own tooltip.
 local function targetRow(region, index)
 	local row = PanelTab.targetRows[index]
 	if row ~= nil then
@@ -1021,11 +1176,11 @@ local function targetRow(region, index)
 	end
 	row = iconRow(region, true)
 	row.detail = row.second
-	Widgets.attachTooltip(row.frame, function()
-		if row.itemId == nil then
-			return nil
+	hoverRow(row, function(frame)
+		if row.itemId ~= nil then
+			Theme.showItemTooltip(frame, row.itemId,
+				Compat.isItemCached(row.itemId) and Compat.displayLink(row.itemId) or nil)
 		end
-		return row.itemId, Compat.isItemCached(row.itemId) and Compat.displayLink(row.itemId) or nil
 	end)
 	PanelTab.targetRows[index] = row
 	return row
@@ -1058,7 +1213,21 @@ local function drawTargets(region, model)
 		PanelTab.targetRows[index].frame:Hide()
 		PanelTab.targetRows[index].itemId = nil
 	end
-	return moreLine(region, model.more, y, #model.rows > 0)
+	y = moreLine(region, model.more, y, #model.rows > 0)
+	-- Fewer than five targets (fix round 3, item 6): the muted line under them.
+	local rest = region.rest
+	if not model.rest then
+		rest:Hide()
+		return y
+	end
+	if #model.rows > 0 then
+		y = y + S.panelRowGap
+	end
+	rest:ClearAllPoints()
+	rest:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -y)
+	rest:SetText(fitted(L.panelTargetsRest, PanelTab.innerWidth()))
+	rest:Show()
+	return y + PanelTab.lineHeight()
 end
 
 local function rotationWidget(region, index)
@@ -1066,6 +1235,16 @@ local function rotationWidget(region, index)
 	if widget == nil then
 		widget = iconRow(region, false)
 		widget.condition = widget.second
+		-- Its hover: the ability and its whole condition (fix round 3, item 2).
+		hoverRow(widget, function(frame)
+			if widget.entry ~= nil then
+				local lines = {}
+				for line, text in ipairs(PanelTab.rotationHint(widget.entry)) do
+					lines[line] = line == 1 and text or { text = text, wrap = true }
+				end
+				Theme.showLines(frame, lines, "ANCHOR_RIGHT")
+			end
+		end)
 		PanelTab.rotationWidgets[index] = widget
 	end
 	return widget
@@ -1083,6 +1262,7 @@ local function drawRotation(region, model)
 		widget.frame:ClearAllPoints()
 		widget.frame:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -y)
 		widget.frame:SetHeight(height)
+		widget.entry = entry
 		setIcon(widget.icon, Compat.spellTexture(entry.spellId))
 		Theme.desaturate(widget.icon, entry.muted == true)
 		widget.name:SetTextColor(Theme.rgb(Theme.HEX[entry.muted and "muted" or "body"]))
@@ -1091,6 +1271,11 @@ local function drawRotation(region, model)
 		local lines = entry.condition ~= nil and math.max(1, math.min(2, entry.conditionLines or 1)) or 1
 		sized(widget.condition, room, lines)
 		widget.condition:SetText(entry.condition or "")
+		-- A row not learned yet is dimmed whole: icon, name and condition (fix round 3, item 5).
+		local alpha = entry.muted and Theme.ALPHA.dim or 1
+		for _, part in ipairs({ widget.icon, widget.name, widget.condition }) do
+			part:SetAlpha(alpha)
+		end
 		widget.frame:Show()
 		y = y + height
 	end
@@ -1101,7 +1286,23 @@ local function drawRotation(region, model)
 end
 
 local function drawBuild(region, model)
-	local y = drawTexts(region, buildLines(model), S.panelTitle) + S.panelRowGap
+	local lines = buildLines(model)
+	local y = drawTexts(region, lines, S.panelTitle) + S.panelRowGap
+	-- The off-plan count's hover names the talents (fix round 3, item 1): over that line, as
+	-- wide as its text where the client can measure it.
+	local hover = region.offPlanHover
+	if model.offPlan ~= nil then
+		local text = region.texts[#lines]
+		local width = type(PanelTab.measure) == "function" and PanelTab.measure(text:GetText() or "") or nil
+		hover:ClearAllPoints()
+		hover:SetPoint("TOPLEFT", text, "TOPLEFT", 0, 0)
+		hover:SetSize(math.min(PanelTab.innerWidth(), math.max(1, width or PanelTab.innerWidth())), PanelTab.lineHeight())
+		hover.lines = PanelTab.offPlanHint(model)
+		hover:Show()
+	else
+		hover.lines = nil
+		hover:Hide()
+	end
 	region.useOther:ClearAllPoints()
 	region.useOther:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -y)
 	region.copy:ClearAllPoints()
@@ -1139,8 +1340,13 @@ local DRAWERS = { targets = drawTargets, rotation = drawRotation, build = drawBu
 local TITLES = { targets = L.panelTargets, rotation = L.panelRotation, build = L.panelBuild, sim = L.panelSim,
 	raid = L.panelLastRaid }
 
+--- The regions with a 1 px rule above their title (fix round 3, item 5).
+PanelTab.RULED = { rotation = true, build = true }
+
 --- One region's frame: its title in gold on its own row, its "N more" line, its own buttons
---- where it has any. No script of its own.
+--- where it has any. No script of its own. Rotation and Build have a 1 px `border` rule above
+--- the title, halfway up the region gap (the gap itself unchanged); Next targets its muted
+--- line under fewer than five targets; Build a hover frame over its off-plan count.
 local function regionFrame(flyout, kind)
 	local region = CreateFrame("Frame", nil, flyout)
 	region:SetWidth(PanelTab.innerWidth())
@@ -1148,7 +1354,29 @@ local function regionFrame(flyout, kind)
 	region.title:SetPoint("TOPLEFT", region, "TOPLEFT", 0, 0)
 	region.more = sized(Widgets.label(region, "", "muted", "small"), PanelTab.innerWidth())
 	region.more:Hide()
+	if PanelTab.RULED[kind] then
+		local rule = Theme.texture(region, "ARTWORK", "border")
+		rule:SetSize(PanelTab.innerWidth(), S.border)
+		rule:SetPoint("TOPLEFT", region, "TOPLEFT", 0, S.panelRegionGap / 2)
+		region.rule = rule
+	end
+	if kind == "targets" then
+		region.rest = sized(Widgets.label(region, L.panelTargetsRest, "muted", "small"), PanelTab.innerWidth())
+		region.rest:Hide()
+	end
 	if kind == "build" then
+		local hover = CreateFrame("Button", nil, region)
+		hover:EnableMouse(true)
+		hover:SetScript("OnEnter", function(self)
+			if self.lines ~= nil then
+				Theme.showLines(self, self.lines, "ANCHOR_RIGHT")
+			end
+		end)
+		hover:SetScript("OnLeave", function()
+			Theme.hideTooltip()
+		end)
+		hover:Hide()
+		region.offPlanHover = hover
 		local half = math.floor((PanelTab.innerWidth() - S.gap) / 2)
 		region.useOther = Widgets.button(region, L.panelUseOther, PanelTab.useOther)
 		region.useOther:SetSize(half, S.panelButtonHeight)
@@ -1195,10 +1423,13 @@ function PanelTab.ensureFlyout()
 	flyout:Hide()
 	local header = Widgets.label(flyout, L.panelHeader, "gold", "normal")
 	header:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding, -S.panelPadding)
+	-- The x: its glyph small, its hit rectangle closeButton (20) square (fix round 3, item 4).
 	local close = Widgets.closeButton(flyout, function()
 		flyout:Hide()
+		PanelTab.syncButton()
 	end)
 	close:SetPoint("TOPRIGHT", flyout, "TOPRIGHT", -S.gap, -S.gap)
+	PanelTab.closeButton = close
 	-- The measure helper's own string, never shown: every line is fitted on it.
 	local probe = Widgets.label(flyout, "", "muted", "small")
 	probe:Hide()
@@ -1296,13 +1527,24 @@ function PanelTab.toggle()
 		end
 		if flyout:IsShown() then
 			flyout:Hide()
+			PanelTab.syncButton()
 			return false
 		end
 		placeFlyout(flyout, pane())
 		flyout:Show()
+		PanelTab.syncButton()
 		PanelTab.draw()
 		return true
 	end)
+end
+
+--- The button reads open while the flyout is (fix round 3, item 3: the label in body over
+--- the inset ground of a pressed tab), closed otherwise.
+function PanelTab.syncButton()
+	local button, flyout = PanelTab.button, PanelTab.flyout
+	if button ~= nil then
+		Widgets.setEdgedOpen(button, flyout ~= nil and flyout:IsShown())
+	end
 end
 
 --- The chip's events (Options): the button is made and placed, and an open flyout redraws

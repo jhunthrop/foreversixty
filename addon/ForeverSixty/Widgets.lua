@@ -122,14 +122,22 @@ function Widgets.edgedButton(parent, text, onClick, name, width, height)
 	button.GetText = function(self)
 		return self.foreverSixtyLabel:GetText()
 	end
-	--- Rest or lit: the fill, the edge and the label together.
+	--- Rest or lit, closed or open (Widgets.setEdgedOpen): the fill, the edge and the label
+	--- together. Open (L4.3 fix round 3, item 3): the label in body over the inset ground of a
+	--- pressed tab; lit while open, the label brightens and the inset ground stays.
 	local function look(lit)
-		Theme.paint(ground, lit and "hover" or "background", not lit and Theme.ALPHA.window or nil)
+		local open = button.foreverSixtyOpen == true
+		if open then
+			Theme.paint(ground, Theme.CONTROL_STATES.tab.pressed)
+		else
+			Theme.paint(ground, lit and "hover" or "background", not lit and Theme.ALPHA.window or nil)
+		end
 		for _, edge in ipairs(button.foreverSixtyEdges) do
 			Theme.paint(edge, lit and "goldHover" or "gold")
 		end
-		label:SetTextColor(Theme.rgb(Theme.HEX[lit and "goldHover" or "gold"]))
+		label:SetTextColor(Theme.rgb(Theme.HEX[lit and "goldHover" or (open and "body" or "gold")]))
 	end
+	button.foreverSixtyLook = look
 	button:SetScript("OnEnter", function()
 		look(true)
 	end)
@@ -148,6 +156,17 @@ function Widgets.edgedButton(parent, text, onClick, name, width, height)
 	end)
 	button:SetText(text)
 	return button
+end
+
+--- An edged button's open state (what it opens is showing), drawn at once: lit when the
+--- cursor is over it, else open or at rest.
+function Widgets.setEdgedOpen(button, open)
+	button.foreverSixtyOpen = open == true
+	local over = type(button.IsMouseOver) == "function" and button:IsMouseOver() == true
+	if type(button.foreverSixtyLook) == "function" then
+		button.foreverSixtyLook(over)
+	end
+	return button.foreverSixtyOpen
 end
 
 --- A label the player can click, with no border or background of its own

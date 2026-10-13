@@ -375,8 +375,9 @@ describe("PanelTab", function()
 			start()
 			local ranks = require("Talents").readRanks(DATA)
 			local region = PanelTab.buildRegion(BUILD, DATA, ranks, 21)
-			assert.are.equal(string.format(L.dialogSplitPart, "Arms", 3) .. L.dialogSplitSeparator
-				.. string.format(L.dialogSplitPart, "Fury", 1), region.split)
+			-- Fix round 3, item 1: the split reads as the plan ("Plan: Arms 3 / Fury 1").
+			assert.are.equal(string.format(L.panelPlanSplit, string.format(L.dialogSplitPart, "Arms", 3)
+				.. L.dialogSplitSeparator .. string.format(L.dialogSplitPart, "Fury", 1)), region.split)
 			assert.are.equal(string.format(L.panelProgress, 3, 4), region.progress)
 			assert.are.equal(string.format(L.panelOffPlan, 1), region.offPlan)
 		end)
@@ -581,8 +582,10 @@ describe("PanelTab", function()
 			assert.is_truthy(row.name:GetText():find("Mutant Scale Breastplate", 1, true))
 			assert.is_truthy(row.name:GetText():find("|cff", 1, true))
 			assert.are.equal(ItemTooltip.figureText(1.0, "dps"), row.gain:GetText())
+			-- Fix round 3, item 4: the line ends with a muted "· over <worn item>" when it fits.
 			assert.are.equal(string.format(L.panelTargetDetail, L.gearSlotLabels.chest,
-				"Wailing Caverns · Mutanus the Devourer · 33% drop"), row.detail:GetText())
+				"Wailing Caverns · Mutanus the Devourer · 33% drop") .. "|cff" .. Theme.HEX.muted
+				.. string.format(L.panelTargetOver, "Worn Chest") .. "|r", row.detail:GetText())
 		end)
 
 		it("opens the build dialog and the copy from the build region's two buttons", function()
@@ -1381,6 +1384,393 @@ describe("PanelTab", function()
 			button:GetScript("OnShow")(button)
 			assertPoint({ "LEFT", tab, "RIGHT", S.panelTabGap, 0 }, button.points[#button.points])
 			assert.are.same({}, state.clientWrites)
+		end)
+	end)
+
+	-- Fix round 3 (the designer and player personas on the hunter-24 captures).
+	describe("fix round 3", function()
+		local function open(worn, options)
+			local pane = start(worn, options)
+			PanelTab.refresh(DATA)
+			click(_G[PanelTab.BUTTON_NAME])
+			return pane, _G[PanelTab.FLYOUT_NAME]
+		end
+
+		local function rgb(key, alpha)
+			return { Theme.rgb(Theme.HEX[key], alpha) }
+		end
+
+		local function colorOf(region, method)
+			local call = mock.lastCall(region, method or "SetTextColor")
+			return { call[1], call[2], call[3], call[4] }
+		end
+
+		--- GameTooltip's lines since its last ClearLines: the texts, and whether each wraps.
+		local function tooltip()
+			local texts, wraps = {}, {}
+			for _, call in ipairs(_G.GameTooltip.calls) do
+				if call.method == "ClearLines" then
+					texts, wraps = {}, {}
+				elseif call.method == "AddLine" then
+					texts[#texts + 1] = call[1]
+					wraps[#wraps + 1] = call[5] == true
+				end
+			end
+			return texts, wraps
+		end
+
+		local function regionOf(model, kind)
+			for _, region in ipairs(model.regions) do
+				if region.kind == kind then
+					return region
+				end
+			end
+			return nil
+		end
+
+		--- The level 24 hunter on the shipped data, read as beast mastery.
+		local HUNTER = { classSlug = "hunter", order = {}, gear = {} }
+		local HUNTER_RANKS = { [1] = { ["1:1"] = 5 } }
+
+		--- A measure calibrated on the hunter-24 capture (4.6 units a character): at the 280 unit
+		--- text room the Arcane Shot condition wraps after "Aimed Shot will" and after "a 25%", as drawn.
+		local function hunterWidth(text)
+			local visible = ItemTooltip.stripEscapes(text):gsub("[\128-\191]", "")
+			return #visible * 4.6
+		end
+
+		-- Item 1: the build region reads as the plan, measured against the level.
+		describe("the build region", function()
+			--- A 51-point plan: Arms A thirty times, Fury C twenty-one times.
+			local PLAN = { classSlug = "warrior", gear = {}, order = {} }
+			for index = 1, 30 do
+				PLAN.order[index] = { tab = 1, tier = 1, column = 1 }
+			end
+			for index = 31, 51 do
+				PLAN.order[index] = { tab = 2, tier = 1, column = 1 }
+			end
+			local RANKS = { [1] = { ["1:1"] = 10, ["1:2"] = 1 }, [2] = { ["1:1"] = 2 } }
+
+			it("prefixes the split with Plan:", function()
+				start()
+				local region = PanelTab.buildRegion(PLAN, DATA, RANKS, 24)
+				assert.are.equal(string.format(L.panelPlanSplit, string.format(L.dialogSplitPart, "Arms", 30)
+					.. L.dialogSplitSeparator .. string.format(L.dialogSplitPart, "Fury", 21)), region.split)
+				assert.are.equal("Plan: Arms 30 / Fury 21", region.split)
+			end)
+
+			it("counts the points on plan against the points the level allows: 15 at 24", function()
+				start()
+				assert.are.equal("12 of 15 points on plan", PanelTab.buildRegion(PLAN, DATA, RANKS, 24).progress)
+				assert.are.equal(15, PanelTab.pointsAllowed(PLAN, 24))
+			end)
+
+			it("caps the points allowed at the plan's own total: 51 at 60", function()
+				start()
+				assert.are.equal("12 of 51 points on plan", PanelTab.buildRegion(PLAN, DATA, RANKS, 60).progress)
+				assert.are.equal(51, PanelTab.pointsAllowed(PLAN, 60))
+				-- A short plan is its own cap below 60 too; a level the client cannot say reads the plan.
+				assert.are.equal(4, PanelTab.pointsAllowed(BUILD, 24))
+				assert.are.equal(51, PanelTab.pointsAllowed(PLAN, nil))
+				assert.are.equal(0, PanelTab.pointsAllowed(PLAN, 8))
+			end)
+
+			it("names each off-plan talent with its tree and rank, one per line", function()
+				start()
+				-- B is a node the plan never touches (1 of 1); C is planned once and holds 3.
+				local ranks = { [1] = { ["1:1"] = 2, ["1:2"] = 1 }, [2] = { ["1:1"] = 3 } }
+				local region = PanelTab.buildRegion(BUILD, DATA, ranks, 24)
+				assert.are.equal(string.format(L.panelOffPlan, 3), region.offPlan)
+				assert.are.same({
+					string.format(L.panelOffPlanTalent, "B", "Arms", 1, 1),
+					string.format(L.panelOverPlanTalent, "C", "Fury", 3, 5, 1),
+				}, region.offPlanTalents)
+				assert.are.same({ "B · Arms · Rank 1/1", "C · Fury · Rank 3/5 (plan 1)" }, region.offPlanTalents)
+				assert.is_nil(PanelTab.buildRegion(BUILD, DATA, { [1] = { ["1:1"] = 3 }, [2] = { ["1:1"] = 1 } },
+					24).offPlanTalents)
+			end)
+
+			it("keeps the off-plan count red and names the talents on its hover", function()
+				open({ chest = WORN_CHEST })
+				local region = PanelTab.regionFrames.build
+				local entry = regionOf(PanelTab.last, "build")
+				assert.are.equal(entry.offPlan, region.texts[3]:GetText())
+				assert.are.same(rgb("warning"), colorOf(region.texts[3]))
+				local hover = region.offPlanHover
+				assert.is_true(hover:IsShown())
+				assertPoint({ "TOPLEFT", region.texts[3], "TOPLEFT", 0, 0 }, hover.points[#hover.points])
+				hover:GetScript("OnEnter")(hover)
+				local lines = tooltip()
+				assert.are.equal(Theme.inlineColor("warning", entry.offPlan), lines[1])
+				assert.are.equal(1 + #entry.offPlanTalents, #lines)
+				for index, text in ipairs(entry.offPlanTalents) do
+					assert.are.equal(Theme.inlineColor("tooltipText", text), lines[index + 1])
+				end
+				hover:GetScript("OnLeave")(hover)
+				assert.is_false(_G.GameTooltip:IsShown())
+				-- None off plan: no line and no hover.
+				Follow.build = { classSlug = "warrior", gear = {}, order = {
+					{ tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 2 },
+					{ tab = 2, tier = 1, column = 1 },
+				} }
+				PanelTab.refresh(DATA)
+				assert.is_nil(regionOf(PanelTab.last, "build").offPlan)
+				assert.is_false(hover:IsShown())
+				assert.are.same({}, state.clientWrites)
+			end)
+		end)
+
+		-- Item 2: the rotation conditions never lose the rule.
+		describe("the rotation rows", function()
+			it("cuts the hunter's Arcane Shot at a clause on the real width, never mid-figure", function()
+				start()
+				local data = require("Data")
+				local Rotation = require("Rotation")
+				local rows = PanelTab.rotationRows(data, HUNTER, HUNTER_RANKS, 24, hunterWidth, PanelTab.textRoom())
+				local arcane
+				for _, row in ipairs(rows) do
+					if row.name == "Arcane Shot" then
+						arcane = row
+					end
+				end
+				assert.are.equal(280, PanelTab.textRoom())
+				assert.are.equal(2, arcane.conditionLines)
+				assert.are.equal("Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global"
+					.. L.tooltipNamePending, arcane.condition)
+				assert.is_nil(arcane.condition:find("25%", 1, true))
+				-- The full plain condition is kept for the hover.
+				local raw
+				for _, entry in ipairs(Rotation.model(data, HUNTER, HUNTER_RANKS, 24, true).lines) do
+					if entry.name == "Arcane Shot" then
+						raw = entry.condition
+					end
+				end
+				assert.are.equal(Rotation.plainCondition(raw), arcane.fullCondition)
+				assert.is_truthy(arcane.fullCondition:find("mana is above a 25% reserve", 1, true))
+			end)
+
+			it("shows the ability name and the full plain condition on a row's hover, over the hover ground", function()
+				open({ chest = WORN_CHEST })
+				local widget = PanelTab.rotationWidgets[1]
+				assert.is_false(widget.ground:IsShown())
+				assert.are.same(rgb("hover"), colorOf(widget.ground, "SetColorTexture"))
+				widget.frame:GetScript("OnEnter")(widget.frame)
+				assert.is_true(widget.ground:IsShown())
+				local lines, wraps = tooltip()
+				assert.are.same({ "Rend", Theme.inlineColor("tooltipText", "Rend kept up.") }, lines)
+				assert.are.same({ false, true }, wraps)
+				widget.frame:GetScript("OnLeave")(widget.frame)
+				assert.is_false(widget.ground:IsShown())
+				assert.is_false(_G.GameTooltip:IsShown())
+				-- A row learned later adds "Learned at level N".
+				local later = PanelTab.rotationWidgets[2]
+				later.frame:GetScript("OnEnter")(later.frame)
+				assert.are.same({ "Execute", Theme.inlineColor("tooltipText", "Execute below 20% health."),
+					Theme.inlineColor("tooltipMuted", string.format(L.panelRotationLearnedAt, 24)) }, (tooltip()))
+				assert.are.same({}, state.clientWrites)
+			end)
+
+			it("names the next band's row and the level it is learned at on its hover (shipped data)", function()
+				start()
+				local data = require("Data")
+				local rows = PanelTab.rotationRows(data, HUNTER, HUNTER_RANKS, 24)
+				local rapid = rows[#rows]
+				assert.are.equal("Rapid Fire", rapid.name)
+				assert.are.equal(26, rapid.atLevel)
+				assert.are.same({ "Rapid Fire", Theme.inlineColor("tooltipText", rapid.fullCondition),
+					Theme.inlineColor("tooltipMuted", "Learned at level 26") }, PanelTab.rotationHint(rapid))
+			end)
+		end)
+
+		-- Item 3: the button's states and hint.
+		describe("the button", function()
+			it("reads closed, lit under the cursor, and open while the flyout shows", function()
+				start({ chest = WORN_CHEST })
+				PanelTab.refresh(DATA)
+				local button = _G[PanelTab.BUTTON_NAME]
+				local label, ground = button.foreverSixtyLabel, button.foreverSixtyGround
+				-- Closed.
+				assert.are.same(rgb("gold"), colorOf(label))
+				assert.are.same(rgb("background", Theme.ALPHA.window), colorOf(ground, "SetColorTexture"))
+				-- Hover.
+				button:GetScript("OnEnter")(button)
+				assert.are.same(rgb("goldHover"), colorOf(label))
+				assert.are.same(rgb("hover"), colorOf(ground, "SetColorTexture"))
+				button:GetScript("OnLeave")(button)
+				-- Open: the label in body over the inset ground of a pressed tab.
+				click(button)
+				assert.are.equal("inset", Theme.CONTROL_STATES.tab.pressed)
+				assert.are.same(rgb("body"), colorOf(label))
+				assert.are.same(rgb(Theme.CONTROL_STATES.tab.pressed), colorOf(ground, "SetColorTexture"))
+				-- Open under the cursor: the brighter label on the inset ground; open again on leave.
+				button:GetScript("OnEnter")(button)
+				assert.are.same(rgb("goldHover"), colorOf(label))
+				assert.are.same(rgb("inset"), colorOf(ground, "SetColorTexture"))
+				button:GetScript("OnLeave")(button)
+				assert.are.same(rgb("body"), colorOf(label))
+				-- Closed by its own click, and by the flyout's x.
+				click(button)
+				assert.are.same(rgb("gold"), colorOf(label))
+				assert.are.same(rgb("background", Theme.ALPHA.window), colorOf(ground, "SetColorTexture"))
+				click(button)
+				assert.are.same(rgb("body"), colorOf(label))
+				click(PanelTab.closeButton)
+				assert.is_false(_G[PanelTab.FLYOUT_NAME]:IsShown())
+				assert.are.same(rgb("gold"), colorOf(label))
+				assert.are.same({}, state.clientWrites)
+			end)
+
+			it("says what it is and what a click does on its hover", function()
+				start()
+				PanelTab.refresh(DATA)
+				local button = _G[PanelTab.BUTTON_NAME]
+				button:GetScript("OnEnter")(button)
+				assert.are.same({
+					Theme.inlineColor("gold", "Forever Sixty"),
+					Theme.inlineColor("tooltipMuted", "Your next targets, rotation and build."),
+					Theme.inlineColor("tooltipMuted", "Click to open or close."),
+				}, (tooltip()))
+				assert.is_true(_G.GameTooltip:IsShown())
+				button:GetScript("OnLeave")(button)
+				assert.is_false(_G.GameTooltip:IsShown())
+				assert.are.same({}, state.clientWrites)
+			end)
+		end)
+
+		-- Item 4: row affordance and context.
+		describe("row affordance", function()
+			it("lights a target row's hover ground and still shows the item's own tooltip", function()
+				open({ chest = WORN_CHEST })
+				local row = PanelTab.targetRows[1]
+				assert.is_false(row.ground:IsShown())
+				assert.are.same(rgb("hover"), colorOf(row.ground, "SetColorTexture"))
+				row.frame:GetScript("OnEnter")(row.frame)
+				assert.is_true(row.ground:IsShown())
+				assert.is_truthy(mock.lastCall(_G.GameTooltip, "SetHyperlink") or mock.lastCall(_G.GameTooltip, "SetItemByID"))
+				row.frame:GetScript("OnLeave")(row.frame)
+				assert.is_false(row.ground:IsShown())
+			end)
+
+			it("ends the source line with a muted over <worn item> when it fits, dropped first when not", function()
+				start()
+				local pick = { source = "The Deadmines: Captain Greenskin", kind = "D", chance = 0.3 }
+				local entry = { slot = "waist", source = ItemTooltip.sourceLine(pick), pick = pick, worn = "Short Ash Bow" }
+				local over = "|cff" .. Theme.HEX.muted .. string.format(L.panelTargetOver, "Short Ash Bow") .. "|r"
+				local whole = "Waist · The Deadmines · Captain Greenskin · 30% drop"
+				assert.are.equal(" · over Short Ash Bow", string.format(L.panelTargetOver, "Short Ash Bow"))
+				assert.are.equal(whole .. over, PanelTab.detailText(entry, "Waist"))
+				local function sixPerByte(text)
+					return #ItemTooltip.stripEscapes(text) * 6
+				end
+				local room = sixPerByte(whole .. over)
+				assert.are.equal(whole .. over, PanelTab.detailText(entry, "Waist", sixPerByte, room))
+				-- One unit short: the "over" goes first, the chance stays.
+				assert.are.equal(whole, PanelTab.detailText(entry, "Waist", sixPerByte, room - 1))
+				-- Narrower: the tooltip's own shortening, never wider than the room.
+				local narrow = PanelTab.detailText(entry, "Waist", sixPerByte, sixPerByte(whole) - 6)
+				assert.is_nil(narrow:find("over", 1, true))
+				assert.is_true(sixPerByte(narrow) <= sixPerByte(whole) - 6)
+			end)
+
+			it("draws the worn item's name at the end of a target row's source line", function()
+				open({ chest = WORN_CHEST })
+				local row = PanelTab.targetRows[1]
+				assert.are.equal(string.format(L.panelTargetDetail, L.gearSlotLabels.chest,
+					"Wailing Caverns · Mutanus the Devourer · 33% drop") .. "|cff" .. Theme.HEX.muted
+					.. string.format(L.panelTargetOver, "Worn Chest") .. "|r", row.detail:GetText())
+			end)
+
+			it("lights a rotation row's hover ground the same way", function()
+				open({ chest = WORN_CHEST })
+				local widget = PanelTab.rotationWidgets[1]
+				assert.are.equal(widget.frame, widget.ground.parent)
+				widget.frame:GetScript("OnEnter")(widget.frame)
+				assert.is_true(widget.ground:IsShown())
+				assert.are.same(rgb("hover"), colorOf(widget.ground, "SetColorTexture"))
+				widget.frame:GetScript("OnLeave")(widget.frame)
+				assert.is_false(widget.ground:IsShown())
+			end)
+
+			it("gives the close x a hit rectangle of at least 20 x 20", function()
+				open({ chest = WORN_CHEST })
+				local close = PanelTab.closeButton
+				assert.are.equal(_G[PanelTab.FLYOUT_NAME], close.parent)
+				assert.is_true(close:GetWidth() >= 20)
+				assert.is_true(close:GetHeight() >= 20)
+			end)
+		end)
+
+		-- Item 5: hierarchy and the unlearned row.
+		describe("hierarchy", function()
+			it("draws a 1 px border rule above the Rotation and Build titles, inside the 10 px gap", function()
+				open({ chest = WORN_CHEST })
+				local S = Theme.SIZES
+				assert.are.equal(10, S.panelRegionGap)
+				for _, kind in ipairs({ "rotation", "build" }) do
+					local region = PanelTab.regionFrames[kind]
+					local rule = region.rule
+					assert.is_not_nil(rule, kind)
+					assert.are.equal(region, rule.parent)
+					assert.are.same(rgb("border"), colorOf(rule, "SetColorTexture"))
+					assert.are.same({ PanelTab.innerWidth(), S.border }, { rule.width, rule.height })
+					assertPoint({ "TOPLEFT", region, "TOPLEFT", 0, S.panelRegionGap / 2 }, rule.points[#rule.points])
+				end
+				assert.is_nil(PanelTab.regionFrames.targets.rule)
+				-- The gap stays: the rotation region still sits a region gap under the targets.
+				local targets, rotation = PanelTab.regionFrames.targets, PanelTab.regionFrames.rotation
+				local below = -targets.points[#targets.points][5] + targets:GetHeight()
+				assert.are.equal(below + S.panelRegionGap, -rotation.points[#rotation.points][5])
+			end)
+
+			it("draws the at-level rows at the dim alpha, icon, name and condition, still last and unnumbered", function()
+				open({ chest = WORN_CHEST })
+				local learned, later = PanelTab.rotationWidgets[1], PanelTab.rotationWidgets[2]
+				for _, key in ipairs({ "icon", "name", "condition" }) do
+					assert.are.equal(Theme.ALPHA.dim, mock.lastCall(later[key], "SetAlpha")[1], key)
+					assert.are.equal(1, mock.lastCall(learned[key], "SetAlpha")[1], key)
+				end
+				local rows = regionOf(PanelTab.last, "rotation").rows
+				assert.is_nil(rows[#rows].number)
+				assert.is_true(rows[#rows].muted)
+				assert.is_nil(rows[2].number)
+				assert.are.equal(1, rows[1].number)
+			end)
+		end)
+
+		-- Item 6: fewer than five targets.
+		describe("fewer than five targets", function()
+			it("adds one muted line saying the other slots are best for the level", function()
+				open({ chest = WORN_CHEST, legs = THIN_LEGS })
+				local S = Theme.SIZES
+				local region = PanelTab.regionFrames.targets
+				assert.are.equal("Other slots are best for your level.", L.panelTargetsRest)
+				assert.is_true(region.rest:IsShown())
+				assert.are.equal(L.panelTargetsRest, region.rest:GetText())
+				assert.are.same(rgb("muted"), colorOf(region.rest))
+				local y = S.panelTitle + 2 * PanelTab.targetRowHeight() + 2 * S.panelRowGap
+				assertPoint({ "TOPLEFT", region, "TOPLEFT", 0, -y }, region.rest.points[#region.rest.points])
+				assert.are.equal(y + PanelTab.lineHeight(), region:GetHeight())
+				local entry = regionOf(PanelTab.last, "targets")
+				assert.is_true(entry.rest)
+				assert.are.equal(PanelTab.regionHeight(entry), region:GetHeight())
+			end)
+
+			it("has no such line with five targets", function()
+				start()
+				local S = Theme.SIZES
+				local targets = {}
+				for index = 1, 5 do
+					targets[index] = { slot = "chest", itemId = index, name = "T" .. index, gain = 1, unit = "dps" }
+				end
+				local five = PanelTab.model({ targets = targets }).regions[1]
+				assert.is_false(five.rest)
+				assert.are.equal(S.panelTitle + 5 * PanelTab.targetRowHeight() + 4 * S.panelRowGap,
+					PanelTab.regionHeight(five))
+				local four = PanelTab.model({ targets = { targets[1], targets[2], targets[3], targets[4] } }).regions[1]
+				assert.is_true(four.rest)
+				assert.are.equal(S.panelTitle + 4 * PanelTab.targetRowHeight() + 4 * S.panelRowGap + PanelTab.lineHeight(),
+					PanelTab.regionHeight(four))
+			end)
 		end)
 	end)
 end)

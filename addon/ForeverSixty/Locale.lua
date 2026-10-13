@@ -940,19 +940,40 @@ L.panelLastRaidAsOf = "Last raid · as of %s"
 -- A target's second line: the slot in the client's own word, then the item tooltip's own
 -- source line ("Chest · Wailing Caverns · Mutanus the Devourer · 33% drop").
 L.panelTargetDetail = "%s · %s"
+-- Fix round 3, item 4: the worn item a target replaces, muted at the end of that line when it
+-- fits ("Waist · The Deadmines · Captain Greenskin · 30% drop · over Cord of the Wild").
+L.panelTargetOver = " · over %s"
+-- Fix round 3, item 6: under fewer than five targets.
+L.panelTargetsRest = "Other slots are best for your level."
 -- A learned rotation line's number, before its name ("1. Aimed Shot Rank 1").
 L.panelRotationNumber = "%d."
 -- An ability the character has not learned yet, muted and listed last; the next band's
 -- abilities not learned yet come after them (fix round 1, item 4).
 L.panelRotationAt = "at level %d"
+-- Fix round 3, item 2: a rotation row's hover, after its name and its full condition, for an
+-- ability not learned yet.
+L.panelRotationLearnedAt = "Learned at level %d"
+-- Fix round 3, item 3: the button's hover, muted under "Forever Sixty" in gold.
+L.panelTabHint = {
+	"Your next targets, rotation and build.",
+	"Click to open or close.",
+}
 -- A slot the bag arrow marks: its row is the bag item, as its hover leads with it ("In your
 -- bags: Bag Chest +2.0 DPS", then "Chest · Right-click it in your bags to equip.").
 L.panelInYourBags = L.tooltipInYourBags .. ":"
 -- Under a region cut short (at most 8 rotation rows, 6 raid bosses; fix round 1, item 3).
 L.panelMore = "%d more"
 -- The build: its split in the dialog's words ("Arms 31 / Fury 20"), then these two.
+-- Fix round 3, item 1: the split reads as the plan ("Plan: Beast Mastery 31 / Marksmanship 20"),
+-- and the progress counts against the points the level allows (level - 9, at most the plan's).
+L.panelPlanSplit = "Plan: %s"
 L.panelProgress = "%d of %d points on plan"
 L.panelOffPlan = "%d off plan"
+-- The off-plan count's hover, one talent a line: a node the plan never touches ("Improved
+-- Wrath · Balance · Rank 2/5"), and a planned node holding more than the plan asks
+-- ("Improved Wrath · Balance · Rank 4/5 (plan 3)").
+L.panelOffPlanTalent = "%s · %s · Rank %d/%d"
+L.panelOverPlanTalent = "%s · %s · Rank %d/%d (plan %d)"
 L.panelUseOther = "Use a different build"
 L.panelCopy = L.dialogCopy
 -- At 60: the sim. "Your sim: 412.6 DPS", then the top three weights: "Strength: 0.92 DPS
