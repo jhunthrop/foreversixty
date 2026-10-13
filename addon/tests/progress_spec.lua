@@ -466,6 +466,19 @@ describe("Progress.picksHere", function()
 		}, picks)
 	end)
 
+	-- L4.2 ruling 4: the chip's click prints each pick with its boss and its chance.
+	it("carries each pick's drop chance", function()
+		local data = { bis = { ["warrior-arms"] = { [20] = { alliance = {
+			main_hand = "7230|D|The Deadmines: Mr. Smite|0.2",
+			legs = "6087|D|The Deadmines",
+		} } } } }
+		local picks = Progress.picksHere(data, "warrior-arms", 20, "alliance", "The Deadmines", {})
+		assert.are.same({
+			{ slot = "main_hand", itemId = 7230, source = "The Deadmines: Mr. Smite", chance = 0.2 },
+			{ slot = "legs", itemId = 6087, source = "The Deadmines" },
+		}, picks)
+	end)
+
 	it("leaves out a pick worn in the other slot of a pair", function()
 		local picks = Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", "The Deadmines",
 			{ finger2 = { itemId = 1156 } })

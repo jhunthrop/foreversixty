@@ -28,6 +28,7 @@ local MinimapButton = ns.Minimap or require("Minimap")
 local Chip = ns.Chip or require("Chip")
 local TalentMarks = ns.TalentMarks or require("TalentMarks")
 local SlotMarks = ns.SlotMarks or require("SlotMarks")
+local RewardMarks = ns.RewardMarks or require("RewardMarks")
 local Score = ns.Score or require("Score")
 local BuildDialog = ns.BuildDialog or require("BuildDialog")
 local SettingsPage = ns.SettingsPage or require("Settings")
@@ -260,7 +261,8 @@ function Options.openSettings()
 end
 
 --- Redraw every surface for `data`: the chip, the talent marks (which draw the
---- talent glow first) and the paper-doll and bag marks; each surface Lanes L3-L5 add
+--- talent glow first), the paper-doll and bag marks, and the quest reward and roll
+--- marks shown (L4.2); each surface Lanes L3-L5 add
 --- calls its own refresh from here. The item tooltip draws on hover, so its cached
 --- sections are dropped instead, first (the slot marks read them): what is worn,
 --- carried, planned or levelled may have changed.
@@ -270,6 +272,7 @@ function Options.refreshSurfaces(data, event)
 	TalentMarks.refresh(data)
 	-- The event: a bag update keeps the slots' own targets (SlotMarks.refresh).
 	SlotMarks.refresh(data, event)
+	RewardMarks.refresh(data)
 end
 
 --- Every event any surface refreshes on. Theme.registerEvent swallows the
@@ -285,6 +288,8 @@ Options.EVENTS = {
 	-- The item tooltip (L3.3): its verdict is against what is worn; only its cache clears,
 	-- and the paper-doll and bag marks (L4.1) redraw.
 	"PLAYER_EQUIPMENT_CHANGED",
+	-- The quest reward and roll marks (L4.2): the reward panel opening and closing, a roll.
+	"QUEST_COMPLETE", "QUEST_FINISHED", "START_LOOT_ROLL",
 }
 
 --- The talent window's own clicks, which only the talent marks follow:
@@ -292,7 +297,16 @@ Options.EVENTS = {
 --- clicks, and nothing is wrong).
 Options.TRAIT_EVENTS = { "TRAIT_NODE_CHANGED", "TRAIT_TREE_CURRENCY_INFO_UPDATED" }
 
+--- The quest and roll events the reward marks alone follow (L4.2): no other surface
+--- redraws on them.
+Options.REWARD_EVENTS = { QUEST_COMPLETE = true, QUEST_ITEM_UPDATE = true, QUEST_FINISHED = true,
+	START_LOOT_ROLL = true }
+
 function Options.onEvent(_, event, ...)
+	if Options.REWARD_EVENTS[event] then
+		RewardMarks.onEvent(event, ...)
+		return
+	end
 	if event == "TRAIT_NODE_CHANGED" or event == "TRAIT_TREE_CURRENCY_INFO_UPDATED" then
 		-- A staged click before Apply Changes: the marks follow it, once per frame.
 		TalentMarks.requestRefresh(Options.data)
@@ -349,6 +363,8 @@ function Options.onEvent(_, event, ...)
 		end
 		-- A target corner waiting on this item redraws (L4.1 fix round 1, M1); no work otherwise.
 		SlotMarks.onItemInfo((...))
+		-- A reward label or a roll line waiting on this item redraws (L4.2); no work otherwise.
+		RewardMarks.onItemInfo((...))
 		return
 	end
 	if event == "PLAYER_EQUIPMENT_CHANGED" then
@@ -448,6 +464,10 @@ function Options.register()
 	-- overlays the first time a mark is needed, drawn on the events (fix round 2).
 	SlotMarks.data = Options.data
 	SlotMarks.register()
+	-- The quest reward and roll marks (L4.2): one hooksecurefunc on the reward list's redraw;
+	-- their overlays the first time a label or line is needed.
+	RewardMarks.data = Options.data
+	RewardMarks.register()
 	-- The minimap button and the compartment entry: left-click opens the build dialog on its
 	-- paste tab, right-click the Settings page (the command list where it cannot open).
 	MinimapButton.open = function()
@@ -481,6 +501,10 @@ function Options.register()
 		Theme.registerEvent(frame, event)
 	end
 	for _, event in ipairs(Options.TRAIT_EVENTS) do
+		Theme.tryRegisterEvent(frame, event)
+	end
+	-- The reward list's own refresh: a client without it is simply not followed.
+	for _, event in ipairs(RewardMarks.QUIET_EVENTS) do
 		Theme.tryRegisterEvent(frame, event)
 	end
 	frame:SetScript("OnEvent", Options.onEvent)

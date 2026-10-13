@@ -82,6 +82,12 @@ Theme.SIZES = {
 	--- The target corner sits this far in from the button's bottom right corner, clear of the
 	--- client's quality border (L4.1 fix round 5).
 	markInset = 2,
+	--- The quest reward label and the roll line (L4.2): the dark plate's padding round
+	--- the text, the roll line's gap from the roll frame's right edge, and the widest the
+	--- roll line grows before the verdict puts the compared name on a second line.
+	labelPad = 2,
+	rollGap = 6,
+	rollLineWidth = 240,
 	windowWidth = 720,
 	windowHeight = 500,
 	--- The left navigation, and one item in it.

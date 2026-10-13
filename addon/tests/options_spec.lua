@@ -48,6 +48,7 @@ describe("Options", function()
 		helper.load("Comms")
 		helper.load("BuildDialog")
 		helper.load("Settings")
+		helper.load("RewardMarks")
 		Options = helper.load("Options")
 		Options.data = DATA
 	end)
@@ -646,5 +647,64 @@ describe("Options", function()
 		assert.are.equal(0, ended)
 		Options.onEvent(Options.frame, "PLAYER_REGEN_ENABLED")
 		assert.are.equal(1, ended)
+	end)
+	-- L4.2: the quest and roll events reach the reward marks alone (no other surface
+	-- redraws on them); every surface refresh and every item-info event reach them too.
+	it("hands the quest and roll events to the reward marks alone", function()
+		local RewardMarks, Chip, SlotMarks = require("RewardMarks"), require("Chip"), require("SlotMarks")
+		local seen, others = {}, 0
+		RewardMarks.onEvent = function(event, rollId)
+			seen[#seen + 1] = event .. ":" .. tostring(rollId)
+		end
+		Chip.refresh = function()
+			others = others + 1
+		end
+		SlotMarks.refresh = Chip.refresh
+		for _, event in ipairs({ "QUEST_COMPLETE", "QUEST_ITEM_UPDATE", "QUEST_FINISHED", "START_LOOT_ROLL" }) do
+			Options.onEvent(Options.frame, event, 3)
+		end
+		assert.are.same({ "QUEST_COMPLETE:3", "QUEST_ITEM_UPDATE:3", "QUEST_FINISHED:3", "START_LOOT_ROLL:3" }, seen)
+		assert.are.equal(0, others)
+	end)
+
+	it("registers the quest and roll events, and the reward marks' quest-log hook, at load", function()
+		local RewardMarks = require("RewardMarks")
+		local registered = 0
+		RewardMarks.register = function()
+			registered = registered + 1
+		end
+		Options.register()
+		assert.are.equal(1, registered)
+		assert.are.equal(Options.data, RewardMarks.data)
+		for _, event in ipairs({ "QUEST_COMPLETE", "QUEST_FINISHED", "START_LOOT_ROLL", "QUEST_ITEM_UPDATE" }) do
+			assert.is_true(Options.frame.events[event] == true, event)
+		end
+	end)
+
+	it("refreshes the reward marks with every surface, and hands them every item-info event", function()
+		local RewardMarks = require("RewardMarks")
+		local refreshed, info = 0, {}
+		RewardMarks.refresh = function()
+			refreshed = refreshed + 1
+		end
+		RewardMarks.onItemInfo = function(itemId)
+			info[#info + 1] = itemId
+		end
+		Options.refreshSurfaces(DATA)
+		assert.are.equal(1, refreshed)
+		Options.onEvent(Options.frame, "GET_ITEM_INFO_RECEIVED", 201, true)
+		assert.are.same({ 201 }, info)
+	end)
+
+	-- L4.2 ruling 4: the chip's here line follows the instance entered.
+	it("redraws the chip on entering the world and on a zone change", function()
+		local Chip = require("Chip")
+		local calls = 0
+		Chip.refresh = function()
+			calls = calls + 1
+		end
+		Options.onEvent(Options.frame, "PLAYER_ENTERING_WORLD")
+		Options.onEvent(Options.frame, "ZONE_CHANGED_NEW_AREA")
+		assert.are.equal(2, calls)
 	end)
 end)

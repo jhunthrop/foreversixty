@@ -15,8 +15,11 @@ local realPrint = _G.print
 --- The name prefixes of the client's own frames on the character pane and the bags
 --- (L4.1 fix round 2): the addon must never write into one of these. On the live
 --- client a texture made on a slot button and an OnShow hooked on the pane tainted
---- the pane's own Show and Hide ("attempt to compare a secret number value").
-mock.CLIENT_PREFIXES = { "Character", "PaperDoll", "ContainerFrame" }
+--- the pane's own Show and Hide ("attempt to compare a secret number value"). L4.2 adds
+--- the quest frame's reward buttons (QuestInfoRewardsFrameQuestInfoItem<n>, the classic
+--- QuestRewardItem<n>, QuestInfoFrame) and the group loot roll frames (GroupLootFrame<n>,
+--- GroupLootContainer): the reward and roll marks draw on addon overlays there too.
+mock.CLIENT_PREFIXES = { "Character", "PaperDoll", "ContainerFrame", "QuestInfo", "QuestReward", "GroupLoot" }
 
 function mock.isClientName(name)
 	if type(name) ~= "string" then

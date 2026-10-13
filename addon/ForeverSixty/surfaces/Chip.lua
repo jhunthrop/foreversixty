@@ -26,6 +26,7 @@ local Gear = ns.Gear or require("Gear")
 local Progress = ns.Progress or require("Progress")
 local Score = ns.Score or require("Score")
 local TalentGlow = ns.TalentGlow or require("TalentGlow")
+local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 
 local Chip = {}
 
@@ -292,7 +293,9 @@ local function upgradeState(input)
 	}
 end
 
---- "Here for you: Mutant Scale Breastplate (Mutanus), 2 more".
+--- "Here for you: Mutant Scale Breastplate (Mutanus), 2 more". Ellipsised by measured
+--- width (Chip.fit, L4.2): the boss goes first ("Here for you: Mutant Scale Breastplate,
+--- 2 more"), then the name is cut, and the count is never cut.
 local function hereState(input)
 	local first = input.here ~= nil and input.here[1] or nil
 	if first == nil or first.name == nil then
@@ -305,6 +308,8 @@ local function hereState(input)
 		icon = first.icon or input.classIcon,
 		crop = first.icon ~= nil,
 		text = string.format(L.chipHere, label, more),
+		short = string.format(L.chipHere, first.name, more),
+		keep = more ~= "" and more or nil,
 		action = "targets",
 		hint = L.chipHintList,
 	}
@@ -713,8 +718,11 @@ local function bestUpgrade(found)
 	}
 end
 
---- The BiS picks that drop where the player stands, named ones first (the
---- client may not have sent every name yet; those redraw when it does).
+--- The BiS picks that drop where the player stands (Progress.picksHere, in its order),
+--- each { itemId, name, boss, chance, icon }, and the instance's name. A pick the client
+--- has not sent yet is named from the data (Data.bisNames, L4.2: the L3.6 carry) and stays
+--- pending, so the chip redraws with the client's own name when it comes; one with no
+--- name anywhere goes last.
 local function picksHere(data, spec, level, equipped)
 	local instanceName = Theme.instanceName()
 	if instanceName == nil or spec == nil then
@@ -723,25 +731,31 @@ local function picksHere(data, spec, level, equipped)
 	local specBis = type(data.bis) == "table" and data.bis[spec] or nil
 	local band = Gear.bandFor(specBis, level)
 	local picks = Progress.picksHere(data, spec, band, Compat.playerFaction(), instanceName, equipped)
+	local bisNames = type(data.bisNames) == "table" and data.bisNames or {}
 	local named, unnamed = {}, {}
 	for _, pick in ipairs(picks) do
 		local entry = {
+			itemId = pick.itemId,
 			name = (Compat.itemInfo(pick.itemId)),
 			boss = bossOf(pick.source, instanceName),
+			chance = pick.chance,
 			icon = Compat.itemIcon(pick.itemId),
 		}
+		if entry.name == nil then
+			Compat.requestItemLoad(pick.itemId)
+			Chip.pending[pick.itemId] = true
+			entry.name = bisNames[pick.itemId]
+		end
 		if entry.name ~= nil then
 			named[#named + 1] = entry
 		else
-			Compat.requestItemLoad(pick.itemId)
-			Chip.pending[pick.itemId] = true
 			unnamed[#unnamed + 1] = entry
 		end
 	end
 	for _, entry in ipairs(unnamed) do
 		named[#named + 1] = entry
 	end
-	return named
+	return named, instanceName
 end
 
 --- Whether GET_ITEM_INFO_RECEIVED for `itemId` brings a name the chip is waiting on.
@@ -804,7 +818,7 @@ function Chip.inputs(data)
 			ForeverSixtyInbox, Export.characterKey(), build, ranks, Gear.bagLinks(), equipped, level)) }
 	end
 	Chip.pending = {}
-	input.here = picksHere(data, spec, level, equipped)
+	input.here, input.hereIn = picksHere(data, spec, level, equipped)
 	return input
 end
 
@@ -845,11 +859,19 @@ end
 
 -- What a click does -------------------------------------------------------------
 
---- Until the character-panel tab's targets region lands (L4.3), the list in chat.
+--- Until the character-panel tab's targets region lands (L4.3), the list in chat: "Here
+--- for you in The Deadmines:", then each pick in the item tooltip's own source words with
+--- its boss and its chance, "Smite's Mighty Hammer · Mr. Smite · 20% drop".
 function Chip.printHere()
-	for _, entry in ipairs(Chip.currentInput ~= nil and Chip.currentInput.here or {}) do
+	local input = Chip.currentInput
+	local here = input ~= nil and input.here or {}
+	if #here == 0 then
+		return
+	end
+	Theme.say(string.format(L.chipHereHeading, input.hereIn or ""))
+	for _, entry in ipairs(here) do
 		if entry.name ~= nil then
-			Theme.say(entry.boss ~= nil and string.format(L.chipHereItem, entry.name, entry.boss) or entry.name)
+			Theme.say(ItemTooltip.sourceText(entry.name, entry.boss, ItemTooltip.percentOf(entry.chance)))
 		end
 	end
 end

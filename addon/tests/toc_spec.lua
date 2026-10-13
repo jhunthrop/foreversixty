@@ -17,6 +17,8 @@ describe("the TOC", function()
 		"surfaces/Chip.lua", "surfaces/TalentMarks.lua",
 		-- The paper-doll and bag marks (L4.1): read the chip's list and the tooltip's Next line.
 		"surfaces/SlotMarks.lua",
+		-- The quest reward, roll and dungeon marks (L4.2): read the tooltip's own verdict.
+		"surfaces/RewardMarks.lua",
 		-- The build dialog (L3.4): built on its first open; Options opens it.
 		"surfaces/BuildDialog.lua",
 		-- The Settings page (L3.5): registered at login; Options opens it.

@@ -634,6 +634,12 @@ local L = {
 	diagBagHooks = "Bag marks: hooked through %s",
 	diagNoBagHook = "Bag marks: this client has no bag hook; the bag marks are off.",
 	diagSlotMarksFailed = "The paper-doll and bag marks failed once and turned themselves off until /reload: %s",
+	-- Lane addon-v2 L4.2 (2026-10-13): the quest reward and roll marks (spec section 4.4).
+	-- "Best for Arms" (the spec's tree) on the reward the weights prefer, in gold; "Vendor",
+	-- muted, on each reward when none is of any use to the character now.
+	rewardBest = "Best for %s",
+	rewardVendor = "Vendor",
+	diagRewardMarksFailed = "The quest reward and roll marks failed once and turned themselves off until /reload: %s",
 	tooltipClassPlural = {
 		WARRIOR = "warriors", PALADIN = "paladins", HUNTER = "hunters", ROGUE = "rogues",
 		PRIEST = "priests", SHAMAN = "shamans", MAGE = "mages", WARLOCK = "warlocks", DRUID = "druids",
@@ -697,6 +703,10 @@ local L = {
 	chipHere = "Here for you: %s%s",
 	chipHereItem = "%s (%s)",
 	chipHereMore = ", %d more",
+	-- L4.2: the chip's click, until the character panel's targets region (L4.3): a heading,
+	-- then one line per pick in the item tooltip's own source words, "Smite's Mighty Hammer ·
+	-- Mr. Smite · 20% drop" (tooltipSourceDrop).
+	chipHereHeading = "Here for you in %s:",
 	chipRaidCheck = "Missing: %s",
 	chipListSeparator = ", ",
 	-- "Lucifron: 71st percentile, biggest loss downtime" (Chip.ordinal writes "71st").
