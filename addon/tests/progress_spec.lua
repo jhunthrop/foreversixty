@@ -408,6 +408,25 @@ describe("Progress.bagUpgrades", function()
 		assert.are.same({}, Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped, 0.2))
 	end)
 
+	-- L4.1 fix round 3, 2 (hunter-10): an item that fills an EMPTY slot is always an
+	-- upgrade, whatever its gain; a sidegrade over a WORN item stays under the floor.
+	it("calls an item that fills an empty slot an upgrade below the floor", function()
+		-- 2 Str x 2 = 4 points x 0.2 = 0.8 DPS into the empty legs slot.
+		local legs = bagItem(13, "Thin Leggings", "INVTYPE_LEGS", 2)
+		local found = Progress.bagUpgrades(DATA, build, ARMS_RANKS, { legs }, equipped, 0.2)
+		assert.are.equal(1, #found)
+		assert.are.equal("legs", found[1].slot)
+		assert.is_true(math.abs(found[1].delta - 0.8) < 1e-9)
+		-- The same gain over a worn helm is still no upgrade.
+		local helm = bagItem(11, "Slightly Better Helm", "INVTYPE_HEAD", 7)
+		assert.are.same({}, Progress.bagUpgrades(DATA, build, ARMS_RANKS, { helm }, equipped, 0.2))
+	end)
+
+	it("never calls an item that adds nothing to an empty slot an upgrade", function()
+		local legs = bagItem(14, "Plain Leggings", "INVTYPE_LEGS", 0)
+		assert.are.same({}, Progress.bagUpgrades(DATA, build, ARMS_RANKS, { legs }, equipped, 0.2))
+	end)
+
 	it("converts each delta to DPS when a DPS per point is given", function()
 		local bag = { bagItem(11, "Better Helm", "INVTYPE_HEAD", 6) }
 		local found = Progress.bagUpgrades(DATA, build, ARMS_RANKS, bag, equipped, 0.5)

@@ -47,6 +47,7 @@ local BAG_AXE = link(212, "Great Axe")
 local PICK_CHEST = link(300, "Mutant Scale Breastplate")
 local PICK_LEGS = link(400, "Chausses of Westfall")
 local WORN_RING = link(500, "Quest Ring")
+local THIN_LEGS = link(410, "Thin Leggings")
 
 --- Every item the client "knows": its id, equip location, class and subclass
 --- ids, and stats, keyed by link (and by id for the picks the tooltip names).
@@ -65,6 +66,8 @@ local ITEMS = {
 		stats = { ITEM_MOD_STRENGTH_SHORT = 30 } },
 	[PICK_CHEST] = { id = 300, slot = "INVTYPE_CHEST", class = 4, sub = 3, name = "Mutant Scale Breastplate",
 		stats = { ITEM_MOD_STRENGTH_SHORT = 10 } },
+	[THIN_LEGS] = { id = 410, slot = "INVTYPE_LEGS", class = 4, sub = 3, name = "Thin Leggings",
+		stats = { ITEM_MOD_STRENGTH_SHORT = 4 } },
 	[WORN_RING] = { id = 500, slot = "INVTYPE_FINGER", class = 4, sub = 0, name = "Quest Ring",
 		stats = { ITEM_MOD_STAMINA_SHORT = 2 } },
 	[PICK_LEGS] = { id = 400, slot = "INVTYPE_LEGS", class = 4, sub = 3, name = "Chausses of Westfall",
@@ -762,6 +765,78 @@ describe("SlotMarks", function()
 			start({ main_hand = WORN_MAIN }, {})
 			SlotMarks.data, ItemTooltip.data = offData, offData
 			assert.are.equal(211, SlotMarks.compute(offData).targets.off_hand)
+		end)
+	end)
+
+	-- Fix round 3 (hunter-9/10).
+	describe("fix round 3", function()
+		-- 1: the corner means a next target for THIS band, never a later band's At line.
+		it("draws no corner on a slot whose hover says Best until with an At line for a later band", function()
+			start({ chest = BAG_CHEST }, {})
+			local lines = ItemTooltip.sectionFor(BAG_CHEST, ItemTooltip.baseContext(DATA)).lines
+			assert.are.equal(string.format(L.tooltipBestUntil, 30), lines[1].text)
+			assert.are.equal("at", lines[2].kind)
+			local chest = slotButton("CharacterChestSlot")
+			SlotMarks.drawPaperDoll()
+			assert.is_false(targetOn(chest))
+		end)
+
+		it("draws the corner on a slot whose hover prints a Next upgrade line", function()
+			start({ chest = WORN_CHEST }, {})
+			local lines = ItemTooltip.sectionFor(WORN_CHEST, ItemTooltip.baseContext(DATA)).lines
+			assert.are.equal("next", lines[1].kind)
+			local chest = slotButton("CharacterChestSlot")
+			SlotMarks.drawPaperDoll()
+			assert.is_true(targetOn(chest))
+		end)
+
+		-- A worn item the client has not sent yet scores as nothing: its section would
+		-- print a Next line it does not mean. The targets wait for it, and redraw.
+		it("waits for a worn item the client has not sent, then takes the corner away", function()
+			start({ chest = BAG_CHEST }, {})
+			HIDDEN[201] = true
+			state.itemStats[BAG_CHEST] = nil
+			local chest = slotButton("CharacterChestSlot")
+			SlotMarks.drawPaperDoll()
+			assert.is_true(SlotMarks.isWaiting(201))
+			HIDDEN[201] = nil
+			state.itemStats[BAG_CHEST] = ITEMS[BAG_CHEST].stats
+			SlotMarks.onItemInfo(201)
+			assert.is_false(targetOn(chest))
+			assert.is_false(SlotMarks.isWaiting(201))
+		end)
+
+		-- 2: an item that fills an EMPTY slot is an upgrade below the chip's floor.
+		it("marks a bag item that fills an empty slot: the chip, the tooltip and both arrows", function()
+			start({ chest = WORN_CHEST }, { THIN_LEGS })
+			-- 4 Str x 2 = 8 points x 0.1 = 0.8 DPS, under the 1.0 floor.
+			local model = Chip.model(Chip.inputs(DATA))
+			assert.are.equal(string.format(L.chipEquip, "Thin Leggings", string.format(L.chipGainDps, 0.8)),
+				model.chosen.text)
+			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, THIN_LEGS))
+			assert.are.same({ text = string.format(L.tooltipFills, 0.8, L.tooltipUnitDps), color = "success" },
+				{ text = lines[1].text, color = lines[1].color })
+			local marks = SlotMarks.compute(DATA)
+			assert.is_true(marks.arrows.legs)
+			assert.is_true(marks.links[THIN_LEGS])
+			local legs = slotButton("CharacterLegsSlot")
+			local frame = containerFrame(0, 1)
+			_G.ContainerFrame_Update = function() end
+			SlotMarks.register()
+			SlotMarks.drawPaperDoll()
+			_G.ContainerFrame_Update(frame)
+			assert.is_true(arrowOn(legs))
+			assert.is_true(arrowOn(_G.ContainerFrame1Item1))
+		end)
+
+		-- 4: the overlay sits one level above its button.
+		it("puts the overlay one frame level above its button", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			local chest = slotButton("CharacterChestSlot")
+			chest.GetFrameLevel = function() return 5 end
+			SlotMarks.drawPaperDoll()
+			assert.are.equal(6, mock.lastCall(SlotMarks.marksOn(chest).overlay, "SetFrameLevel")[1])
+			assert.are.same({}, state.clientWrites)
 		end)
 	end)
 end)

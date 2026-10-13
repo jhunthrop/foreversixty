@@ -217,6 +217,16 @@ describe("Chip.model", function()
 		assert.are.equal(L.chipHintChangePath, model.chosen.hint)
 	end)
 
+	-- L4.1 fix round 3 (hunter-10): an item filling an empty slot reaches the chip below the
+	-- 1.0 floor (Progress.bagUpgrades lets it through); the chip says Equip with its gain.
+	it("offers an empty-slot filler under the floor as Equip with its own gain", function()
+		local model = Chip.model(inputs({ upgrades = {
+			{ name = "Thin Leggings", delta = 0.8, unit = "dps", link = "thin" },
+		} }))
+		assert.are.equal("upgrade", model.chosen.kind)
+		assert.are.equal("Equip Thin Leggings, +0.8 DPS", model.chosen.text)
+	end)
+
 	it("offers the best bag upgrade in DPS, with a short form without the verb", function()
 		local model = Chip.model(inputs({ upgrades = {
 			{ name = "Chausses of Westfall", delta = 4.2, unit = "dps", link = "chausses", icon = "legs", quality = 2 },

@@ -493,7 +493,8 @@ Progress.MIN_GAIN = 1
 --- The hands are one pair: with a two-hander worn (its `equipLoc`
 --- INVTYPE_2HWEAPON), nothing goes in the off hand, and a two-hander from
 --- the bags is scored against the main hand and the off hand together, the
---- net of the whole swap. A gain under MIN_GAIN in its unit is no upgrade.
+--- net of the whole swap. A gain under MIN_GAIN in its unit is no upgrade, except
+--- for an item that fills an EMPTY slot: that is one at any gain that shows.
 function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoint, level, current)
 	local spec, weights = weightsFor(data, build, ranks)
 	level = level or Compat.playerLevel()
@@ -521,7 +522,7 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 		local item = describe(raw)
 		if item.link == nil or not wornLinks[item.link] then
 			local candidate = { itemId = item.itemId, equipLocation = item.equipLocation, stats = item.stats }
-			local bestSlot, bestDelta
+			local bestSlot, bestDelta, bestState
 			for _, slot in ipairs(Gear.SLOTS_BY_EQUIP_LOCATION[item.equipLocation] or {}) do
 				local wearable = Rules.canEquip(classToken, level, item.itemClass, item.itemSubClass,
 					item.equipLocation, slot) == "ok"
@@ -533,14 +534,17 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 				if verdict ~= nil and verdict.delta ~= nil and verdict.state ~= "match" and verdict.state ~= "blocked" then
 					local delta = -verdict.delta
 					if bestDelta == nil or delta > bestDelta then
-						bestSlot, bestDelta = slot, delta
+						bestSlot, bestDelta, bestState = slot, delta, verdict.state
 					end
 				end
 			end
 			local gain = bestDelta ~= nil and inUnit(bestDelta, dpsPerPoint) or nil
 			-- The floor reads the gain as shown (Progress.roundedGain), as the tooltip does.
+			-- An item that fills an EMPTY slot is an upgrade at any gain that shows (L4.1
+			-- fix round 3: "Fills an empty slot, +0.8 DPS" with no chip line and no arrow).
 			local shown = Progress.roundedGain(gain, unit)
-			if shown ~= nil and shown >= Progress.MIN_GAIN then
+			local fills = bestState == "empty" and shown ~= nil and shown > 0
+			if shown ~= nil and (shown >= Progress.MIN_GAIN or fills) then
 				found[#found + 1] = {
 					link = item.link, itemId = item.itemId, slot = bestSlot,
 					delta = gain,

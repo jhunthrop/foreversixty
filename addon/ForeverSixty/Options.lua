@@ -417,7 +417,8 @@ function Options.register()
 
 	ItemTooltip.data = Options.data
 	ItemTooltip.register()
-	-- The paper-doll and bag marks: their hooks now, their textures on the panel's first open.
+	-- The paper-doll and bag marks: their bag hooks now (nothing on the pane is hooked); their
+	-- overlays the first time a mark is needed, drawn on the events (fix round 2).
 	SlotMarks.data = Options.data
 	SlotMarks.register()
 	-- The minimap button and the compartment entry: left-click opens the build dialog on its

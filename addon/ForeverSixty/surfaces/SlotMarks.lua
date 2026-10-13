@@ -63,6 +63,14 @@ function SlotMarks.nextOf(lines)
 	return nil
 end
 
+--- The band's own pick for `slot` (Gear.pick at the band `ctx.level` falls in), or nil.
+local function bandPick(ctx, slot)
+	local data = ctx.data or {}
+	local specBis = ctx.spec and type(data.bis) == "table" and data.bis[ctx.spec] or nil
+	local band = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
+	return band ~= nil and Gear.pick(ctx.spec, band, ctx.faction, slot, data) or nil
+end
+
 --- Each paper-doll slot's next target, { [slot] = itemId }: the item the Next line
 --- of the slot's own hover names. `ctx` is ItemTooltip.baseContext's (its `equipped`
 --- says what is worn); `sectionOf(link)` answers a worn item's section ({ lines,
@@ -86,6 +94,18 @@ function SlotMarks.targets(ctx, sectionOf)
 		targets[entry.slot] = SlotMarks.nextOf(lines)
 		for itemId in pairs(pending or {}) do
 			waiting[itemId] = true
+		end
+		-- A worn item, or the slot's band pick, the client has not sent yet scores as
+		-- nothing (fix round 3, hunter-9: a corner read at login while the worn hands
+		-- had no stats yet stayed on a slot whose hover says "Best until level 30").
+		-- Neither marks its section pending, so the targets wait for them here.
+		if worn ~= nil and worn.itemId ~= nil and not Compat.isItemCached(worn.itemId) then
+			waiting[worn.itemId] = true
+		end
+		local pick = bandPick(ctx, entry.slot)
+		if pick ~= nil and pick.item_id ~= nil and not Compat.isItemCached(pick.item_id)
+			and Compat.itemExists(pick.item_id) ~= false then
+			waiting[pick.item_id] = true
 		end
 	end
 	return targets, waiting
@@ -147,8 +167,9 @@ end
 ---
 --- The chip's own run (Chip.inputs) is not shared (review N2): the chip refreshes on
 --- BAG_UPDATE_DELAYED but, by ruling, not on PLAYER_EQUIPMENT_CHANGED, so its list can be
---- stale exactly when the marks redraw. This run is cheap: once per event, and only while
---- the paper doll or a bag is on screen (SlotMarks.refresh reads nothing otherwise).
+--- stale exactly when the marks redraw. This run is the chip's own bag scan again, once
+--- per event (fix round 2: the paper doll's marks are kept current whether the pane shows
+--- or not, since no addon code may run in its Show); a bag update keeps the slot targets.
 local function readClient(data)
 	data = data or SlotMarks.data or ns.Data
 	local base = ItemTooltip.baseContext(data)
@@ -252,6 +273,9 @@ function SlotMarks.onItemInfo(itemId)
 		return
 	end
 	SlotMarks.waiting[tonumber(itemId)] = nil
+	-- A section read before the item came is in the tooltip's cache when it waited on
+	-- nothing the tooltip knew of (a worn item with no stats yet): read it again.
+	ItemTooltip.resetCache()
 	SlotMarks.refresh()
 end
 
@@ -291,6 +315,12 @@ local function overlayFor(button)
 		end
 		overlay = CreateFrame("Frame", nil, button)
 		overlay:SetAllPoints(button)
+		-- One level above its button, pinned rather than left to the client's default
+		-- (reading the button's level is no write into it).
+		local level = type(button.GetFrameLevel) == "function" and button:GetFrameLevel() or nil
+		if type(level) == "number" then
+			overlay:SetFrameLevel(level + 1)
+		end
 		overlays[button] = overlay
 	end
 	return overlay

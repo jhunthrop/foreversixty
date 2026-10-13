@@ -77,10 +77,11 @@ describe("ItemTooltip.verdictLine", function()
 			ItemTooltip.verdictLine({ state = "blocked" }, "dps", nil))
 	end)
 
-	it("fills an empty slot, green from the floor, muted below it", function()
+	it("fills an empty slot, green at any gain above nothing", function()
 		assert.are.same({ text = string.format(L.tooltipFills, 4.2, L.tooltipUnitDps), color = "success" },
 			ItemTooltip.verdictLine({ state = "empty", delta = -4.2 }, "dps", nil))
-		assert.are.same({ text = string.format(L.tooltipFills, 0.4, L.tooltipUnitDps), color = "muted" },
+		-- L4.1 fix round 3: a fill is an upgrade at any gain (the chip offers it), so green.
+		assert.are.same({ text = string.format(L.tooltipFills, 0.4, L.tooltipUnitDps), color = "success" },
 			ItemTooltip.verdictLine({ state = "empty", delta = -0.4 }, "dps", nil))
 		assert.are.equal(string.format(L.tooltipFillsScore, 10),
 			ItemTooltip.verdictLine({ state = "empty", delta = -10 }, "score", nil).text)
@@ -1123,6 +1124,49 @@ describe("ItemTooltip.section", function()
 				string.format(L.tooltipPlanned, "Enhancement", 20),
 				NEXT_SOURCE,
 			}, lines)
+		end)
+	end)
+
+	-- L4.1 fix round 3, 3 (hunter-9-mainhand): every worn item gets a line. A worn weapon
+	-- the band names no pick for read a bare "Equipped".
+	describe("a worn item the band names no pick for", function()
+		local NO_WEAPON = { classes = DATA.classes, weights = DATA.weights, dpsPerPoint = DATA.dpsPerPoint,
+			bis = { ["warrior-arms"] = { [20] = { alliance = { chest = "100|D|The Deadmines: Defias Overseer|0.14" } } } } }
+		local SWORD = { itemId = 71, link = "|Hitem:71|h[Short Sword]|h", equipLoc = "INVTYPE_WEAPON",
+			stats = { strength = 3 } }
+		local function wornSword(overrides)
+			local base = { data = NO_WEAPON, equipped = { main_hand = SWORD },
+				item = { itemId = 71, link = SWORD.link, equipLocation = "INVTYPE_WEAPON", itemClass = 2,
+					itemSubClass = 7, stats = SWORD.stats } }
+			for key, value in pairs(overrides or {}) do
+				base[key] = value
+			end
+			return ctx(base)
+		end
+
+		it("says No pick for your band yet, muted, under Equipped", function()
+			local lines, target, _, head = ItemTooltip.section(wornSword())
+			assert.are.same({ L.tooltipNoPick }, texts(lines))
+			assert.are.equal("muted", lines[1].color)
+			assert.is_nil(lines[1].itemId)
+			assert.is_nil(target)
+			assert.is_true(head.equipped)
+		end)
+
+		it("says it below the band floor too, never a bare Equipped", function()
+			assert.are.same({ L.tooltipNoPick }, texts((ItemTooltip.section(wornSword({ level = 15 })))))
+		end)
+
+		it("keeps the worn pick's Best until line and a Next line for a pick it trails", function()
+			local withPick = setmetatable({ bis = { ["warrior-arms"] = { [20] = { alliance = {
+				main_hand = "71|V|Sword Vendor" } }, [30] = { alliance = { main_hand = "500|V|Later Vendor" } } } } },
+				{ __index = NO_WEAPON })
+			local lines = texts((ItemTooltip.section(wornSword({ data = withPick }))))
+			assert.are.equal(string.format(L.tooltipBestUntil, 30), lines[1])
+			local trailing = setmetatable({ bis = { ["warrior-arms"] = { [20] = { alliance = {
+				main_hand = "501|D|Wailing Caverns: Verdan the Everliving" } } } } }, { __index = NO_WEAPON })
+			local trailingLines = ItemTooltip.section(wornSword({ data = trailing }))
+			assert.are.equal("next", trailingLines[1].kind)
 		end)
 	end)
 

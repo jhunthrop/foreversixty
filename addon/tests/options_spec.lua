@@ -626,4 +626,25 @@ describe("Options", function()
 		Options.onEvent(Options.frame, "GET_ITEM_INFO_RECEIVED", 400, true)
 		assert.are.same({ 400 }, seen)
 	end)
+
+	-- L4.1 fix round 3 (re-review minors): the event reaches SlotMarks.refresh (a bag update
+	-- keeps the slots' own targets), and the end of combat draws what combat held back.
+	it("hands the event to SlotMarks.refresh, and the end of combat to SlotMarks.onCombatEnd", function()
+		local SlotMarks, Chip = require("SlotMarks"), require("Chip")
+		Chip.refresh = function() end
+		local events, ended = {}, 0
+		SlotMarks.refresh = function(_, event)
+			events[#events + 1] = event or "none"
+		end
+		SlotMarks.onCombatEnd = function()
+			ended = ended + 1
+		end
+		Options.onEvent(Options.frame, "BAG_UPDATE_DELAYED")
+		Options.onEvent(Options.frame, "ZONE_CHANGED_NEW_AREA")
+		assert.are.same({ "BAG_UPDATE_DELAYED", "ZONE_CHANGED_NEW_AREA" }, events)
+		Options.onEvent(Options.frame, "PLAYER_REGEN_DISABLED")
+		assert.are.equal(0, ended)
+		Options.onEvent(Options.frame, "PLAYER_REGEN_ENABLED")
+		assert.are.equal(1, ended)
+	end)
 end)

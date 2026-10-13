@@ -109,7 +109,9 @@ function ItemTooltip.verdictLine(verdict, unit, wornName)
 		if gain <= 0 then
 			return nil
 		end
-		local color = gain >= Progress.MIN_GAIN and "success" or "muted"
+		-- Any fill that shows a gain is an upgrade (L4.1 fix round 3): the chip offers
+		-- it and the slot carries an arrow, so it reads green here too.
+		local color = "success"
 		if unit == "score" then
 			return { text = string.format(L.tooltipFillsScore, gain), color = color }
 		end
@@ -1216,6 +1218,13 @@ function ItemTooltip.section(ctx)
 	end
 	if primary == nil and pick == nil and wornSlot == nil and not isPick and next(pending) == nil then
 		primary = { text = L.tooltipNotForPlan, color = "muted" }
+	end
+	-- Every worn item gets a line (L4.1 fix round 3, hunter-9-mainhand): one the band names
+	-- no pick for (or below the floor, with no band at all) says so rather than a bare
+	-- "Equipped". A hand the worn two-hander holds already said so above.
+	if primary == nil and wornSlot ~= nil and pick == nil and not unshowable and not heldByTwoHander
+		and next(pending) == nil then
+		primary = { text = L.tooltipNoPick, color = "muted" }
 	end
 	--- A line, then the breakdown under its figure when it has one.
 	local function push(line)
