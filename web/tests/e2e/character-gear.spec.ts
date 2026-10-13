@@ -53,7 +53,7 @@ const RGB = {
 
 interface OpenOptions {
   gear?: unknown;
-  /** Hold the items file this long before answering. */
+  /** Hold the items file this long before answering (a failure too). */
   itemsDelayMs?: number;
   /** Answer the items file 500 this many times first. */
   itemsFailures?: number;
@@ -70,11 +70,11 @@ async function open(page: Page, options: OpenOptions = {}): Promise<string[]> {
   await page.route(`${CHARACTER_URL}/rating`, (route) => route.fulfill(NOT_FOUND));
   let failures = options.itemsFailures ?? 0;
   await page.route('**/data/*/items/priest.json', async (route) => {
+    if (options.itemsDelayMs !== undefined) await new Promise((r) => setTimeout(r, options.itemsDelayMs));
     if (failures > 0) {
       failures -= 1;
       return route.fulfill({ status: 500, body: '' });
     }
-    if (options.itemsDelayMs !== undefined) await new Promise((r) => setTimeout(r, options.itemsDelayMs));
     return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(GEAR_ITEMS) });
   });
   await routeGearIcons(page, options.missingIcons);
@@ -116,6 +116,35 @@ async function rowBoxes(page: Page) {
         items: box('character-gear-items'),
         meta: box('character-gear-meta'),
         gap: box('character-gear-gap'),
+      };
+    }),
+  );
+}
+
+/** Every name and empty-slot word, and every note, with what would keep it from being seen: its
+ *  own visibility, and the opacity of it and each ancestor (fix 6 item 1). */
+async function namesSeen(page: Page) {
+  return page.getByTestId('character-gear-list').evaluate((list) =>
+    [...list.querySelectorAll<HTMLElement>('li')].map((li) => {
+      const cells = [
+        ...li.querySelectorAll<HTMLElement>(
+          '[data-testid="character-gear-worn"], [data-testid="character-gear-pick"], [data-testid="character-gear-empty"], [data-testid="character-gear-meta"]',
+        ),
+      ];
+      return {
+        slot: li.dataset.testid?.replace('character-gear-row-', '') ?? '',
+        cells: cells.map((cell) => {
+          let opacity = 1;
+          for (let el: HTMLElement | null = cell; el !== null && el !== list; el = el.parentElement)
+            opacity *= Number(getComputedStyle(el).opacity);
+          const box = cell.getBoundingClientRect();
+          return {
+            text: cell.textContent?.trim() ?? '',
+            visibility: getComputedStyle(cell).visibility,
+            opacity,
+            drawn: box.width > 0 && box.height > 0,
+          };
+        }),
       };
     }),
   );
@@ -192,9 +221,10 @@ for (const width of [1440, 390]) {
       await expect(box).toHaveCSS('width', '20px');
       await expect(box).toHaveCSS('height', '20px');
       await expect(box).toHaveCSS('border-top-color', 'rgb(163, 53, 238)');
-      expect(await box.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(
-        0,
-      );
+      // A lazy image: wait for it to decode rather than read it once.
+      await expect
+        .poll(() => box.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth))
+        .toBeGreaterThan(0);
       await expect(row(page, 'back').getByTestId('character-gear-meta')).toContainText('<1% drop');
       await expect(row(page, 'chest').getByTestId('character-gear-meta')).toHaveText('Tailoring');
       await expect(row(page, 'shoulder').getByTestId('character-gear-meta')).toContainText(
@@ -333,6 +363,31 @@ for (const width of [1440, 390]) {
       await expect(row(page, 'off_hand').getByTestId('character-gear-note-bar')).toHaveCount(0);
       await expect(page.getByTestId('character-gear-failed')).toHaveText('Item details didn’t load.');
       await expect(page.getByTestId('character-gear-failed')).toHaveCSS('color', RGB.muted);
+      // In the footer, under the BiS link (fix 6 item 2).
+      await expect(
+        page.getByTestId('character-gear-footer').getByTestId('character-gear-failed'),
+      ).toHaveCount(1);
+      const [link, failed] = await Promise.all(
+        ['character-gear-bis', 'character-gear-failed'].map((id) => page.getByTestId(id).boundingBox()),
+      );
+      expect(failed!.y).toBeGreaterThanOrEqual(link!.y + link!.height - 1);
+      // Every row's names and notes are seen, none held: the Ranged row's worn item with no pick
+      // too (fix 6 item 1).
+      await expect(page.getByTestId('character-gear-skeleton')).toHaveCount(0);
+      const seen = await namesSeen(page);
+      expect(seen).toHaveLength(17);
+      for (const { slot, cells } of seen) {
+        expect(cells.length, slot).toBeGreaterThan(0);
+        for (const cell of cells)
+          expect(cell, `${slot} ${cell.text}`).toMatchObject({
+            visibility: 'visible',
+            opacity: 1,
+            drawn: true,
+          });
+      }
+      const ranged = seen.find((r) => r.slot === 'ranged')!.cells.map((cell) => cell.text);
+      expect(ranged).toEqual(["Skul's Ghastly Touch", 'No pick for your band yet']);
+      await expect(row(page, 'ranged').getByTestId('character-gear-worn')).toHaveCSS('color', RGB.body);
       // Every icon box the muted line, no white border.
       const borders = await page
         .getByTestId('character-gear-icon')
@@ -593,7 +648,6 @@ for (const width of [320, 360, 375, 390, 414]) {
         // never does: the note is its own line, at the items' left edge, with no dot.
         expect(found.notes.map((note) => note.slot)).toEqual(NOTE_ROWS);
         for (const note of found.notes) {
-          if (!note.shareLine) expect(note.before, note.slot).toBe('none');
           expect(note, note.slot).toMatchObject({
             shareLine: false,
             below: true,
@@ -689,6 +743,76 @@ for (const [width, height] of [
       const after = await measure();
       expect(after.rows).toEqual(before.rows);
       expect(Math.abs(after.footer - before.footer)).toBeLessThan(1);
+    });
+
+    test('a failed file moves no row and not the footer link; its line comes under the link (fix 6 item 2)', async ({
+      page,
+    }) => {
+      await open(page, { itemsDelayMs: 2500, itemsFailures: 1 });
+      const list = page.getByTestId('character-gear-list');
+      await expect(list).toHaveAttribute('aria-busy', 'true');
+      await expect(list.locator('[data-testid^="character-gear-row-"]')).toHaveCount(17);
+      const measure = () =>
+        page.getByTestId('character-gear').evaluate((section) => {
+          const top = section.getBoundingClientRect().top;
+          const rows = [...section.querySelectorAll('[data-testid^="character-gear-row-"]')].map((li) => {
+            const r = li.getBoundingClientRect();
+            return `${li.getAttribute('data-testid')?.slice(19)}:${(r.top - top).toFixed(1)}/${r.height.toFixed(1)}`;
+          });
+          const link = section.querySelector('[data-testid="character-gear-bis"]')!.getBoundingClientRect();
+          const list = section.querySelector('[data-testid="character-gear-list"]')!.getBoundingClientRect();
+          return { rows, list: list.top - top, footer: link.top - top };
+        });
+      const before = await measure();
+      await rowsDrawn(page);
+      await expect(page.getByTestId('character-gear-failed')).toBeVisible();
+      const after = await measure();
+      expect(after.rows).toEqual(before.rows);
+      expect(Math.abs(after.list - before.list)).toBeLessThan(1);
+      expect(Math.abs(after.footer - before.footer)).toBeLessThan(1);
+    });
+  });
+}
+
+// Fix round 6 item 3: "main-hand swap" is kept on one line, so neither "main-" nor "swap" is left
+// at a line's end or start, at every phone width.
+for (const [width, height] of [
+  [320, 568],
+  [360, 740],
+  [375, 812],
+  [390, 844],
+  [414, 896],
+] as const) {
+  test.describe(`the swap note at ${width} (fix 6 item 3)`, () => {
+    test.use({ viewport: { width, height } });
+
+    test('"main-hand swap" is one line box', async ({ page }) => {
+      await open(page);
+      await rowsDrawn(page);
+      const note = row(page, 'off_hand').getByTestId('character-gear-note');
+      await expect(note).toHaveText('comes with the main-hand swap');
+      // The words' own line boxes, read with a Range over the text, whatever the markup.
+      const kept = await note.evaluate((element) => {
+        const range = document.createRange();
+        const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+        const nodes: Text[] = [];
+        for (let n = walker.nextNode(); n !== null; n = walker.nextNode()) nodes.push(n as Text);
+        const all = nodes.map((n) => n.data).join('');
+        const start = all.indexOf('main-hand swap');
+        const end = start + 'main-hand swap'.length;
+        let seen = 0;
+        for (const n of nodes) {
+          if (start >= seen && start <= seen + n.data.length) range.setStart(n, start - seen);
+          if (end >= seen && end <= seen + n.data.length) range.setEnd(n, end - seen);
+          seen += n.data.length;
+        }
+        const tops = new Set(
+          [...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top)),
+        );
+        return { text: range.toString(), lines: tops.size };
+      });
+      expect(kept).toEqual({ text: 'main-hand swap', lines: 1 });
+      await noSidewaysScroll(page);
     });
   });
 }

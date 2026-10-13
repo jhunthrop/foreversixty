@@ -169,6 +169,43 @@ test('no ratings yet for this fight is a truthful empty state, not a spinner or 
   await expect(page.getByTestId('rating-tab-empty')).toBeVisible();
 });
 
+// L8.6 fix round 6 item 5: the API answers 404 "flagged" for a flagged report the caller may open;
+// the page says so in one muted line, never the error. "not_found" is still the error.
+const apiError = (code: string, message: string) => ({
+  status: 404,
+  contentType: 'application/json',
+  body: JSON.stringify({ ok: false, data: null, error: { code, message }, request_id: 'r' }),
+});
+
+test('a flagged report: the panel and the tab say it is flagged and not rated, not an error', async ({
+  page,
+}) => {
+  await page.route('**/v1/reports/fixture2abcd/fights/3/ratings', (route) =>
+    route.fulfill(apiError('flagged', 'that report is flagged, so its fights have no ratings to show')),
+  );
+  await page.goto(`${REPORT}?fight=3`);
+  const panel = page.getByTestId('rating-panel-flagged');
+  await expect(panel).toHaveText('This report is flagged and not rated.');
+  await expect(panel).toHaveCSS('color', 'rgb(154, 148, 132)');
+  await expect(page.getByTestId('rating-panel-error')).toHaveCount(0);
+  await expect(page.getByTestId('rating-panel').getByRole('alert')).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Rating tab' }).click();
+  const tab = page.getByTestId('rating-tab-flagged');
+  await expect(tab).toHaveText('This report is flagged and not rated.');
+  await expect(tab).toHaveCSS('color', 'rgb(154, 148, 132)');
+  await expect(page.getByTestId('rating-tab-error')).toHaveCount(0);
+});
+
+test('a report the caller cannot open (404 not_found) still shows the load error', async ({ page }) => {
+  await page.route('**/v1/reports/fixture2abcd/fights/3/ratings', (route) =>
+    route.fulfill(apiError('not_found', 'no such report')),
+  );
+  await page.goto(`${REPORT}?fight=3&tab=rating`);
+  await expect(page.getByTestId('rating-tab-error')).toBeVisible();
+  await expect(page.getByTestId('rating-tab-flagged')).toHaveCount(0);
+});
+
 test('the whole night has no ratings view; it explains why rather than rendering nothing', async ({
   page,
 }) => {

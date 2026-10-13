@@ -17,6 +17,8 @@ export class AccountError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** The API's own `error.code` ("not_found", "flagged"), when the envelope carried one. */
+    readonly code: string | null = null,
   ) {
     super(message);
     this.name = 'AccountError';
@@ -227,7 +229,7 @@ export function csrfToken(): string {
 interface Envelope<T> {
   ok: boolean;
   data: T | null;
-  error: { message?: string } | null;
+  error: { code?: string; message?: string } | null;
 }
 
 export interface EnvelopeResult<T> {
@@ -366,6 +368,7 @@ export async function requestEnvelope<T>(
     throw new AccountError(
       envelope?.error?.message ?? init.failureMessage ?? ACCOUNT_FAILED,
       response.status,
+      envelope?.error?.code ?? null,
     );
   }
 

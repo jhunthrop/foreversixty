@@ -72,14 +72,19 @@ export const gearCopy = {
   empty: 'Empty',
   /** A worn item the export's data build does not have. */
   unknownItem: 'Worn item not in our list',
-  /** Under the title when the build's items file did not load (fix round 4, nice-to-have). */
+  /** In the footer, under the BiS link, when the build's items file did not load (fix round 4,
+   *  nice-to-have; fix round 6 item 2). */
   failed: 'Item details didn’t load.',
   /** The worn item is the pick (or as good as it): no arrow. */
   best: 'Best for your band',
   /** The band has no pick for the slot (fix round 2 ruling 6: capitalised everywhere). */
   noPick: 'No pick for your band yet',
-  /** The off hand under a worn two-hander: its pick comes with the main hand's (ruling 9). */
+  /** The off hand under a worn two-hander: its pick comes with the main hand's (ruling 9). It is
+   *  drawn as `swapLead` then `swapKept` on one unbroken line, so "main-hand swap" never splits at
+   *  its hyphen or leaves "swap" alone (fix round 6 item 3). */
   swap: 'comes with the main-hand swap',
+  swapLead: 'comes with the ',
+  swapKept: 'main-hand swap',
   /** The drawn arrow between the worn item and the pick, with its spaces; a screen reader hears
    *  the label instead ("Green Lens, best for your band: Halo of Transcendence"). */
   arrow: ' → ',

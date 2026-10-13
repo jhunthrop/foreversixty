@@ -60,6 +60,9 @@ export const ratingCopy = {
   tabEmpty:
     'No ratings for this fight yet. Ratings are computed after a report finishes processing, and some encounters do not have a curated table yet.',
   fetchFailed: 'Ratings did not load.',
+  /** GET .../ratings answered 404 "flagged": a flagged report is evidence of nothing, so it has
+   *  no ratings to show (L8.6 fix round 6 item 5). A plain "not_found" is still `fetchFailed`. */
+  flagged: 'This report is flagged and not rated.',
   nightNotOnePull: 'Ratings are one pull’s. Pick a boss pull from the list to see one.',
   enemiesHaveNone: 'Ratings are for your raid, not the enemy.',
   noMatchingRow: 'This player has no rating for this fight.',

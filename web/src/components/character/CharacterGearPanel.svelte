@@ -11,7 +11,8 @@
      the end), never a text node, with alt text "" so no screen reader reads it (fix round 5
      item 2). 4px under the title one muted 13px line sets the two totals side by side ("The
      card’s 88 counts the band’s best set. These 70 count the picks you can wear."), 16px above
-     row 1. The footer holds only the BiS page link, 12px of padding above and below it.
+     row 1. The footer holds the BiS page link, 12px of padding above and below it, and, when the
+     items file failed, one muted line under it (fix round 6 item 2).
 
      Each known name is marked the way /bis marks an item (`data-bis-item`, a focusable button,
      the quality colour and a 20px quality-bordered icon), and the shared BisTooltipHost opens
@@ -23,7 +24,8 @@
      draw at once and each name is held behind a 14px bar, so no name is ever painted white
      first and nothing moves when they come (ruling 8): the bar holds the real name, unpainted,
      in the name's own box, so every row wraps the same before and after (fix round 3 item 2);
-     a failed file draws the names in the body colour.
+     a failed file draws every name in the body colour, none held (fix round 6 item 1), and says
+     so in the footer, under the link, where nothing moves (fix round 6 item 2).
 
      Layout. Below 1024px three lines a row: the slot label and the gap on one top, then worn →
      pick, then the source and chance; a row with no source ("Best for your band", no pick) has
@@ -143,7 +145,8 @@
     };
   });
 
-  /** Phone: [slot | gap] / [items, note] / [source]. From 1024px: [slot | items | source | gap]. */
+  /** Below 1024px: [slot | gap] / [items] / [source, or the note on its own line]. From 1024px:
+   *  [slot | items | source or note | gap]. */
   const ROW =
     'border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] transition-colors duration-[120ms] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[rgba(255,255,255,0.04)] has-[:focus-visible]:bg-[rgba(255,255,255,0.04)] lg:grid-cols-[104px_minmax(0,5fr)_minmax(0,4fr)_88px] lg:items-center lg:py-0';
   const SLOT = 'text-muted col-start-1 row-start-1 text-[13px] leading-5';
@@ -174,6 +177,8 @@
   const SENTENCE_LINK = 'underline underline-offset-2 max-md:py-[13.5px]';
   /** The footer link: 12px of padding above and below, a 44px target. */
   const LINK = 'inline-flex items-center self-start py-3 text-[14px] underline underline-offset-2';
+  /** The failed file's line: muted 13px under the link; with no link, 12px under the list. */
+  const FAILED = 'text-muted text-[13px] leading-5 first:pt-3';
   const HEADING = 'flex flex-wrap items-baseline gap-x-2 focus:outline-none focus-visible:outline-2';
 </script>
 
@@ -217,6 +222,12 @@
   {/if}
 {/snippet}
 
+<!-- "main-hand swap" is one unbreakable run, so neither "main-" nor "swap" is left alone at a
+     line's end or start (fix round 6 item 3); the words are the copy's. -->
+{#snippet noteText(note: string)}{#if note === gearCopy.swap}{gearCopy.swapLead}<span
+      class="whitespace-nowrap">{gearCopy.swapKept}</span
+    >{:else}{note}{/if}{/snippet}
+
 {#snippet items(row: GearRow)}
   {#if row.worn === null}<span class="text-muted" data-testid="character-gear-empty">{gearCopy.empty}</span
     >{:else}{@render item(row.worn, 'character-gear-worn')}{/if}{#if row.pick !== null}<span
@@ -258,11 +269,6 @@
     {#if totalsLine !== null}
       <p class="text-muted mt-1 text-[13px] leading-5" data-testid="character-gear-totals">{totalsLine}</p>
     {/if}
-    {#if table === null}
-      <p class="text-muted mt-1 text-[13px] leading-5" data-testid="character-gear-failed">
-        {gearCopy.failed}
-      </p>
-    {/if}
     <ul
       class="mt-4 flex flex-col"
       aria-label={gearCopy.listLabel}
@@ -291,11 +297,11 @@
                     class="rounded-[2px] bg-[#1a1d24]"
                     data-testid="character-gear-note-bar"
                     ><span class="gear-dot-before invisible" data-testid="character-gear-note"
-                      >{row.note}</span
+                      >{@render noteText(row.note)}</span
                     ></span
                   >{:else if row.note !== null}<span
                     class="gear-dot-before{row.noteUnknown ? ' invisible' : ''}"
-                    data-testid="character-gear-note">{row.note}</span
+                    data-testid="character-gear-note">{@render noteText(row.note)}</span
                   >{/if}</span
               >
             {/if}
@@ -312,13 +318,21 @@
         </li>
       {/each}
     </ul>
-    {#if bisHref !== null && spec !== null}
-      <!-- Held (visibility, not display) while the items file loads, so nothing moves after. -->
+    {#if (bisHref !== null && spec !== null) || table === null}
+      <!-- The link is held (visibility, not display) while the items file loads, so nothing moves
+           after. A failed file is said here, under the link, so no row and not the link moves
+           (fix round 6 item 2). -->
       <footer data-testid="character-gear-footer">
-        <a class={loading ? `${LINK} invisible` : LINK} href={bisHref} data-testid="character-gear-bis"
-          >{gearCopy.bisLink(spec, band)}{gearCopy.bisGlue}<span aria-hidden="true">{gearCopy.bisArrow}</span
-          ></a
-        >
+        {#if bisHref !== null && spec !== null}
+          <a class={loading ? `${LINK} invisible` : LINK} href={bisHref} data-testid="character-gear-bis"
+            >{gearCopy.bisLink(spec, band)}{gearCopy.bisGlue}<span aria-hidden="true"
+              >{gearCopy.bisArrow}</span
+            ></a
+          >
+        {/if}
+        {#if table === null}
+          <p class={FAILED} data-testid="character-gear-failed">{gearCopy.failed}</p>
+        {/if}
       </footer>
     {/if}
   </section>

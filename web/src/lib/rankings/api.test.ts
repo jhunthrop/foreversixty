@@ -218,6 +218,40 @@ describe('fetchReportRatings', () => {
     );
     await expect(fetchReportRatings('fixture2abcd', 3, API)).rejects.toBeInstanceOf(RankingsError);
   });
+
+  it('a 404 carries the API’s error code: "flagged" for a flagged report, "not_found" otherwise (L8.6 fix 6 item 5)', async () => {
+    const answer = (code: string, message: string): Response =>
+      new Response(JSON.stringify({ ok: false, data: null, error: { code, message }, request_id: 'r' }), {
+        status: 404,
+        headers: { 'content-type': 'application/json' },
+      });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () =>
+        answer('flagged', 'that report is flagged, so its fights have no ratings to show'),
+      ),
+    );
+    await expect(fetchReportRatings('flaggedreport', 1, API)).rejects.toMatchObject({
+      name: 'RankingsError',
+      status: 404,
+      code: 'flagged',
+    });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => answer('not_found', 'no such report')),
+    );
+    await expect(fetchReportRatings('missingreport', 1, API)).rejects.toMatchObject({
+      status: 404,
+      code: 'not_found',
+      message: 'no such report',
+    });
+    // A failure with no envelope has no code.
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => new Response('', { status: 502 })),
+    );
+    await expect(fetchReportRatings('brokenreport', 1, API)).rejects.toMatchObject({ code: null });
+  });
 });
 
 describe('fetchCharacterRating', () => {

@@ -40,6 +40,11 @@ function text(html: string): string {
     .trim();
 }
 
+/** The markup without Svelte's hydration comments. */
+function bare(html: string): string {
+  return html.replace(/<!--[\s\S]*?-->/g, '');
+}
+
 function rowHtml(body: string, slot: string): string {
   return new RegExp(`<li[^>]*data-testid="character-gear-row-${slot}"[\\s\\S]*?</li>`).exec(body)?.[0] ?? '';
 }
@@ -154,8 +159,8 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(text(rowHtml(body, 'legs'))).toContain('Worn item not in our list');
     expect(text(rowHtml(body, 'trinket2'))).toBe('Trinket 2 Empty No pick for your band yet');
     // The off hand's swap note's line is reserved as a bar of its width (fix 4 item 4).
-    expect(rowHtml(body, 'off_hand')).toMatch(
-      /<span class="[^"]*bg-\[#1a1d24\][^"]*" data-testid="character-gear-note-bar"><span class="[^"]*invisible[^"]*"[^>]*>comes with the main-hand swap<\/span><\/span>/,
+    expect(bare(rowHtml(body, 'off_hand'))).toMatch(
+      /<span class="[^"]*bg-\[#1a1d24\][^"]*" data-testid="character-gear-note-bar"><span class="[^"]*invisible[^"]*"[^>]*>comes with the <span class="whitespace-nowrap">main-hand swap<\/span><\/span><\/span>/,
     );
     expect(/data-testid="character-gear-gap">([^<]*)</.exec(rowHtml(body, 'off_hand'))?.[1]).toBe('');
     // The footer link holds its place (visibility, not display).
@@ -226,17 +231,69 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     const off = rowHtml(body, 'off_hand');
     expect(/data-testid="character-gear-gap">([^<]*)</.exec(off)?.[1]).toBe('');
     // The note's line is kept, blank: the same rows as mid-load (fix 4 item 4).
-    expect(off).toMatch(
-      /<span class="[^"]*invisible[^"]*" data-testid="character-gear-note">comes with the main-hand swap<\/span>/,
+    expect(bare(off)).toMatch(
+      /<span class="[^"]*invisible[^"]*" data-testid="character-gear-note">comes with the <span class="whitespace-nowrap">main-hand swap<\/span><\/span>/,
     );
     expect(off).not.toContain('character-gear-note-bar');
     // Every icon box takes the muted line border: no quality is known.
     expect(body).not.toContain('style="border-color');
-    // One muted line under the title says so.
+    // One muted line says so, in the footer (fix 6 item 2).
     expect(text(/<p[^>]*data-testid="character-gear-failed">[^<]*<\/p>/.exec(body)?.[0] ?? '')).toBe(
       'Item details didn’t load.',
     );
     expect(render(CharacterGearPanel, { props: PROPS }).body).not.toContain('character-gear-failed');
+  });
+
+  it('a failed items file: every name is drawn, none held, and each note shows (fix 6 item 1)', () => {
+    const { body } = render(CharacterGearPanel, { props: { ...PROPS, preloaded: null } });
+    expect(body).not.toContain('character-gear-skeleton');
+    expect(body).not.toContain('aria-busy');
+    // The only thing kept unpainted is the off hand's swap note (fix 4 item 4).
+    for (const slot of GEAR_FIXTURE.map((s) => s.slot)) {
+      const row = rowHtml(body, slot);
+      const unpainted = [...row.matchAll(/<span class="([^"]*)"[^>]*data-testid="([^"]*)"/g)]
+        .filter((m) => m[1].split(' ').includes('invisible'))
+        .map((m) => m[2]);
+      expect(unpainted, slot).toEqual(slot === 'off_hand' ? ['character-gear-note'] : []);
+    }
+    // A worn item with no pick: the name in the body colour, its note beside it.
+    const ranged = rowHtml(body, 'ranged');
+    expect(ranged).toMatch(
+      /<span class="text-text"[^>]*data-testid="character-gear-worn">Skul's Ghastly Touch<\/span>/,
+    );
+    expect(text(ranged)).toBe("Ranged Skul's Ghastly Touch No pick for your band yet");
+  });
+
+  it('the failed line sits in the footer under the link, so nothing above it moves (fix 6 item 2)', () => {
+    const { body } = render(CharacterGearPanel, { props: { ...PROPS, preloaded: null } });
+    const footer = /<footer[^>]*data-testid="character-gear-footer"[\s\S]*?<\/footer>/.exec(body)?.[0] ?? '';
+    expect(footer).toMatch(/data-testid="character-gear-bis"[\s\S]*data-testid="character-gear-failed"/);
+    expect(text(footer)).toBe('Full Discipline BiS list at 60 → Item details didn’t load.');
+    expect(classesOf(footer, 'character-gear-failed')).toEqual(
+      expect.arrayContaining(['text-muted', 'text-[13px]', 'leading-5']),
+    );
+    // Nothing between the totals line and the list.
+    expect(body).toMatch(/data-testid="character-gear-totals">[^<]*<\/p>\s*(<!--[^>]*-->\s*)*<ul/);
+    // With no BiS link the footer holds the line alone.
+    const bare = render(CharacterGearPanel, { props: { ...PROPS, preloaded: null, bisHref: null } }).body;
+    const alone = /<footer[^>]*data-testid="character-gear-footer"[\s\S]*?<\/footer>/.exec(bare)?.[0] ?? '';
+    expect(text(alone)).toBe('Item details didn’t load.');
+    expect(alone).not.toContain('character-gear-bis');
+    // Loaded or loading, no footer line.
+    expect(render(CharacterGearPanel, { props: { ...PROPS, preloaded: undefined } }).body).not.toContain(
+      'character-gear-failed',
+    );
+  });
+
+  it('"main-hand swap" never breaks: kept on one line in every state (fix 6 item 3)', () => {
+    const kept = '>comes with the <span class="whitespace-nowrap">main-hand swap</span></span>';
+    for (const preloaded of [FACTS, null, undefined]) {
+      const off = rowHtml(render(CharacterGearPanel, { props: { ...PROPS, preloaded } }).body, 'off_hand');
+      expect(bare(off), String(preloaded)).toContain(kept);
+      expect(text(off), String(preloaded)).toContain('comes with the main-hand swap');
+    }
+    // The words are unchanged.
+    expect(gearCopy.swap).toBe('comes with the main-hand swap');
   });
 
   it('copy: "No pick for your band yet", "Best for your band", "17% drop" (fix 2 ruling 6)', () => {

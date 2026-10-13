@@ -28,6 +28,9 @@ export class RankingsError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** The API's own `error.code`, when it sent one: GET .../ratings answers 404 "flagged" for a
+     *  flagged report and "not_found" for one the caller cannot open (L8.6 fix round 6 item 5). */
+    readonly code: string | null = null,
   ) {
     super(message);
     this.name = 'RankingsError';
@@ -285,7 +288,7 @@ async function get<T>(path: string, apiBase: string): Promise<T> {
       failureMessage: RANKINGS_FAILED,
     });
   } catch (error) {
-    if (error instanceof AccountError) throw new RankingsError(error.message, error.status);
+    if (error instanceof AccountError) throw new RankingsError(error.message, error.status, error.code);
     throw new RankingsError(RANKINGS_FAILED, 0);
   }
   if (result.data === null) throw new RankingsError(result.message ?? RANKINGS_FAILED, result.status);
