@@ -1557,6 +1557,20 @@ describe("fitting each line to the client's width", function()
 		assert.is_truthy(short:find(L.tooltipTagSim, 1, true))
 	end)
 
+	-- L4.1 fix round 4 (hunter-12-mainhand): "Planned for <build name>" is cut by measured
+	-- width with the ellipsis, never wider than the room (the client never cuts it).
+	it("ellipsises a long Planned for <build name> line to the room", function()
+		local text = string.format(L.tooltipPlannedBuild, "Beast Mastery / Marksmanship leveling build")
+		local line = { text = text, color = "gold" }
+		local fitted = ItemTooltip.fitLine(line, visible, 30)
+		assert.are.equal(1, #fitted)
+		assert.is_true(visible(fitted[1]) <= 30)
+		assert.is_truthy(fitted[1]:find(L.tooltipNamePending, 1, true))
+		assert.are.equal(string.format(L.tooltipPlannedBuild, "Beast"), fitted[1]:sub(1, #string.format(
+			L.tooltipPlannedBuild, "Beast")))
+		assert.are.same({ text }, ItemTooltip.fitLine(line, visible, visible(text)))
+	end)
+
 	it("never splits a multibyte character when it shortens a name", function()
 		local name = "Ëlune's Ålpha"
 		assert.are.equal("Ël" .. L.tooltipNamePending, ItemTooltip.cut(name, 2))

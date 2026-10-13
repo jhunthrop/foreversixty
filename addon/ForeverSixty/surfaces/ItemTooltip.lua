@@ -86,9 +86,9 @@ end
 --- unit), read off the gain as shown (Progress.roundedGain, the chip's own):
 --- a gain from it reads "Upgrade", a loss from it "Downgrade ... over
 --- <worn>", anything between "Sidegrade (+0.3 DPS)" (the size dropped when it
---- shows as nothing, and for a score). An empty slot is filled, green from
---- the floor and muted below it; `match` is "Equipped", `blocked` (a hand a
---- worn two-hander holds) "Not with your two-hander".
+--- shows as nothing, and for a score). An empty slot is filled, green at any
+--- gain that shows (an upgrade whatever the floor, L4.1 fix round 3); `match` is
+--- "Equipped", `blocked` (a hand a worn two-hander holds) "Not with your two-hander".
 function ItemTooltip.verdictLine(verdict, unit, wornName)
 	if verdict == nil then
 		return nil
@@ -913,6 +913,10 @@ ItemTooltip.missing = {}
 local function missingOf(itemId)
 	return ItemTooltip.missing[itemId] == true or Compat.itemExists(itemId) == false
 end
+
+--- Whether this client cannot show `itemId` at all (a failed GET_ITEM_INFO_RECEIVED, or
+--- an id it has never heard of): the section's own rule, for the slot marks too.
+ItemTooltip.isMissing = missingOf
 
 --- A pick's name: the client's, else the data's (Data.bisNames) while the client
 --- has not sent it (`pending`: the hover redraws with the client's own when it

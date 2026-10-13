@@ -95,16 +95,19 @@ function SlotMarks.targets(ctx, sectionOf)
 		for itemId in pairs(pending or {}) do
 			waiting[itemId] = true
 		end
-		-- A worn item, or the slot's band pick, the client has not sent yet scores as
-		-- nothing (fix round 3, hunter-9: a corner read at login while the worn hands
-		-- had no stats yet stayed on a slot whose hover says "Best until level 30").
-		-- Neither marks its section pending, so the targets wait for them here.
+		-- A worn item the client has not sent yet scores as nothing, so its section can
+		-- print a Next line it does not mean: no corner while it is on its way (fix round
+		-- 4, the review: a false corner that shows and then disappears), and the targets
+		-- wait for it. The section does not mark it pending, so it is waited on here.
 		if worn ~= nil and worn.itemId ~= nil and not Compat.isItemCached(worn.itemId) then
+			targets[entry.slot] = nil
 			waiting[worn.itemId] = true
 		end
+		-- The slot's band pick on its way: its section holds ("Best until", no corner),
+		-- and the targets wait for it. One the client cannot show at all is not waited on.
 		local pick = bandPick(ctx, entry.slot)
 		if pick ~= nil and pick.item_id ~= nil and not Compat.isItemCached(pick.item_id)
-			and Compat.itemExists(pick.item_id) ~= false then
+			and not ItemTooltip.isMissing(pick.item_id) then
 			waiting[pick.item_id] = true
 		end
 	end

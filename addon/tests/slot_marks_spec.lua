@@ -791,19 +791,48 @@ describe("SlotMarks", function()
 		end)
 
 		-- A worn item the client has not sent yet scores as nothing: its section would
-		-- print a Next line it does not mean. The targets wait for it, and redraw.
-		it("waits for a worn item the client has not sent, then takes the corner away", function()
+		-- print a Next line it does not mean. Fix round 4 (the review): no corner at all
+		-- while it is on its way, never a false one that shows and then disappears; the
+		-- targets wait for it and redraw when it comes.
+		it("draws no corner while a worn item is on its way, and the right one once it comes", function()
+			-- The worn chest (5 Str) trails the band's pick (10 Str): once known, a corner.
+			start({ chest = WORN_CHEST }, {})
+			HIDDEN[200] = true
+			state.itemStats[WORN_CHEST] = nil
+			local chest = slotButton("CharacterChestSlot")
+			SlotMarks.drawPaperDoll()
+			assert.is_false(targetOn(chest))
+			assert.is_true(SlotMarks.isWaiting(200))
+			HIDDEN[200] = nil
+			state.itemStats[WORN_CHEST] = ITEMS[WORN_CHEST].stats
+			SlotMarks.onItemInfo(200)
+			assert.is_true(targetOn(chest))
+			assert.is_false(SlotMarks.isWaiting(200))
+		end)
+
+		it("draws no corner during the wait for a worn item that holds, nor after it comes", function()
 			start({ chest = BAG_CHEST }, {})
 			HIDDEN[201] = true
 			state.itemStats[BAG_CHEST] = nil
 			local chest = slotButton("CharacterChestSlot")
 			SlotMarks.drawPaperDoll()
-			assert.is_true(SlotMarks.isWaiting(201))
+			assert.is_false(targetOn(chest))
 			HIDDEN[201] = nil
 			state.itemStats[BAG_CHEST] = ITEMS[BAG_CHEST].stats
 			SlotMarks.onItemInfo(201)
 			assert.is_false(targetOn(chest))
-			assert.is_false(SlotMarks.isWaiting(201))
+		end)
+
+		-- A band pick the client cannot show at all (ItemTooltip.missing, as the section
+		-- reads it) is never waited on, so the targets are kept across bag updates.
+		it("never waits on a band pick the client cannot show", function()
+			start({ chest = WORN_CHEST }, {})
+			HIDDEN[400] = true
+			ItemTooltip.missing[400] = true
+			slotButton("CharacterLegsSlot")
+			SlotMarks.drawPaperDoll()
+			assert.is_false(SlotMarks.isWaiting(400))
+			ItemTooltip.missing[400] = nil
 		end)
 
 		-- 2: an item that fills an EMPTY slot is an upgrade below the chip's floor.
@@ -837,6 +866,95 @@ describe("SlotMarks", function()
 			SlotMarks.drawPaperDoll()
 			assert.are.equal(6, mock.lastCall(SlotMarks.marksOn(chest).overlay, "SetFrameLevel")[1])
 			assert.are.same({}, state.clientWrites)
+		end)
+	end)
+
+	-- Fix round 4, ruling 1 (hunter-12): the hunter's worn Gloves of the Fang are the band's
+	-- pick, so the hover reads "Best until level 30 / At level 30: Pilferer's Gloves ·
+	-- Crafted / Planned for Beast Mastery at 20". Through the real section path with the
+	-- real Data: no Next line, so no corner; the At line's later pick never becomes a target.
+	describe("fix round 4: the hunter's Best until slot, from the real data", function()
+		local GLOVES = "|cff1eff00|Hitem:10413::::::::24:::::|h[Gloves of the Fang]|h|r"
+		local BELT = "|cff1eff00|Hitem:4999::::::::24:::::|h[Azora's Will]|h|r"
+		local REAL = {
+			[GLOVES] = { id = 10413, slot = "INVTYPE_HAND", name = "Gloves of the Fang",
+				stats = { ITEM_MOD_STRENGTH_SHORT = 4, ITEM_MOD_AGILITY_SHORT = 6 } },
+			[BELT] = { id = 4999, slot = "INVTYPE_WAIST", name = "Azora's Will", stats = { ITEM_MOD_STAMINA_SHORT = 1 } },
+		}
+		local REAL_BY_ID = { [10413] = REAL[GLOVES], [4999] = REAL[BELT], [7358] = { name = "Pilferer's Gloves" },
+			[10403] = { name = "Blackened Defias Belt", stats = { ITEM_MOD_AGILITY_SHORT = 11 },
+				link = "|cff1eff00|Hitem:10403::::::::24:::::|h[Blackened Defias Belt]|h|r" } }
+
+		local function hunter()
+			local itemStats = { [GLOVES] = REAL[GLOVES].stats, [BELT] = REAL[BELT].stats,
+				[REAL_BY_ID[10403].link] = REAL_BY_ID[10403].stats }
+			mock.install({
+				class = { name = "Hunter", token = "HUNTER" }, level = 24,
+				equipped = { [10] = GLOVES, [6] = BELT },
+				itemStats = itemStats,
+				globals = {
+					UnitFactionGroup = function() return "Alliance" end,
+					GetItemInfoInstant = function(item)
+						local info = type(item) == "number" and REAL_BY_ID[item] or REAL[item]
+						if info == nil or info.slot == nil then
+							return nil
+						end
+						return info.id, "Armor", "Leather", info.slot, nil, 4, 2
+					end,
+					GetItemInfo = function(item)
+						local info = type(item) == "number" and REAL_BY_ID[item] or REAL[item]
+						if info == nil then
+							return nil
+						end
+						return info.name, info.link or item, 2
+					end,
+				},
+			})
+			require("Theme").reset()
+			helper.load("Compat")
+			helper.load("Export")
+			helper.load("Gear")
+			helper.load("Talents")
+			helper.load("Prefs")
+			helper.load("Follow")
+			helper.load("Progress")
+			ItemTooltip = helper.load("ItemTooltip")
+			helper.load("Chip")
+			SlotMarks = helper.load("SlotMarks")
+			local Data = require("Data")
+			ItemTooltip.data, SlotMarks.data = Data, Data
+			return Data
+		end
+
+		it("draws no corner on the Hands: the section is Best until with an At line, never a Next line", function()
+			local Data = hunter()
+			local base = ItemTooltip.baseContext(Data)
+			assert.are.equal("hunter-beast-mastery", base.spec)
+			local lines = ItemTooltip.sectionFor(GLOVES, base).lines
+			local texts = {}
+			for index, line in ipairs(lines) do
+				texts[index] = line.text
+			end
+			assert.are.equal(string.format(L.tooltipBestUntil, 30), texts[1])
+			assert.are.equal("at", lines[2].kind)
+			assert.is_truthy(texts[2]:find("Pilferer's Gloves", 1, true))
+			assert.are.equal(string.format(L.tooltipPlanned, "Beast Mastery", 20), texts[3])
+			assert.is_nil(SlotMarks.nextOf(lines))
+			assert.is_nil(SlotMarks.compute(Data).targets.hands)
+			local hands = _G.CreateFrame("Button", "CharacterHandsSlot")
+			SlotMarks.drawPaperDoll()
+			local marks = SlotMarks.marksOn(hands)
+			assert.is_true(marks == nil or marks.target == nil or not marks.target[1]:IsShown())
+		end)
+
+		-- The capture's corner sits on the slot BELOW the Hands: the Waist (crops in the
+		-- fix-4 report). A worn belt the band's pick beats prints a Next line: a corner.
+		it("draws the corner on the Waist, whose hover prints Next upgrade for the band's belt", function()
+			local Data = hunter()
+			local lines = ItemTooltip.sectionFor(BELT, ItemTooltip.baseContext(Data)).lines
+			assert.are.equal("next", lines[1].kind)
+			assert.are.equal(10403, lines[1].itemId)
+			assert.are.equal(10403, SlotMarks.compute(Data).targets.waist)
 		end)
 	end)
 end)
