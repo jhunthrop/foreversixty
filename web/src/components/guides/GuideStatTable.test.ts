@@ -12,7 +12,7 @@ import { hitCapLine } from '../../lib/bis/hit-cap';
 import { railStatRows } from '../../lib/guides/rail-stats';
 import GuideStatTable from './GuideStatTable.astro';
 
-const BUILD = '1.60.1.70291';
+const BUILD = '1.60.1.70338';
 const STAT_PRIORITY = ['Strength', 'Critical strike', 'Attack power', 'Hit', 'Melee haste', 'Agility'];
 
 describe('GuideStatTable', () => {

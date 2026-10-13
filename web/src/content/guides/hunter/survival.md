@@ -16,11 +16,11 @@ sources:
   - label: 'Talents Forever (demo transcription)'
     url: https://talentsforever.com/data.json
     kind: community
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70291/talents/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70291/talents/hunter.json
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70338/talents/hunter.json'
+    url: https://foreversixty.gg/data/1.60.1.70338/talents/hunter.json
     kind: datamined
-  - label: 'Forever Sixty build data, data/builds/1.60.1.70291/spellconst/hunter.json'
-    url: https://foreversixty.gg/data/1.60.1.70291/spellconst/hunter.json
+  - label: 'Forever Sixty build data, data/builds/1.60.1.70338/spellconst/hunter.json'
+    url: https://foreversixty.gg/data/1.60.1.70338/spellconst/hunter.json
     kind: datamined
   - label: 'Forever Sixty build data, data/builds/1.60.1.69893/combos.json'
     url: https://foreversixty.gg/data/1.60.1.69893/combos.json

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { readItemTooltipModel } from './lookup';
 
-const BUILD = '1.60.1.70291';
+const BUILD = '1.60.1.70338';
 
 describe('readItemTooltipModel', () => {
   it('reads a plain armor row straight off the real build files', () => {
