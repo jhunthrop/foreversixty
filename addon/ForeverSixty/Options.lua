@@ -47,6 +47,19 @@ local function currentSpec(data)
 	return Gear.specOf(data, classSlug, Talents.readRanks(data))
 end
 
+--- Whether the client answered at least one talent rank (Talents.readRanks): before the
+--- trait config is readable every rank reads 0.
+function Options.ranksReadable(data)
+	for _, ranks in pairs(Talents.readRanks(data)) do
+		for _, rank in pairs(ranks) do
+			if rank > 0 then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 --- The weights every item verdict reads (Gear.currentWeights): the
 --- companion's sim for the character logged in and the spec they are
 --- playing right now, else the shipped weights, with the band's DPS figures
@@ -369,10 +382,14 @@ function Options.onEvent(_, event, ...)
 		Options.sayHello()
 	end
 	if Options.defaultPending and (event == "PLAYER_ENTERING_WORLD" or event == "TRAIT_CONFIG_UPDATED") then
-		-- L3.8: the first of these after login, when the ranks PLAYER_LOGIN could not read have
-		-- arrived. Once only, so a respec later never swaps the default mid-session; idempotent
-		-- (the same spec's default is kept) and a saved build is never replaced.
-		Options.defaultPending = false
+		-- L3.8: the ranks PLAYER_LOGIN could not read are read again. The retry ends at the
+		-- first of these that reads a rank, or at the first TRAIT_CONFIG_UPDATED (the config
+		-- has answered); a PLAYER_ENTERING_WORLD that still reads none keeps it. After that a
+		-- respec never swaps the default mid-session. Idempotent (the same spec's default is
+		-- kept, not decoded again) and a saved build is never replaced.
+		if event == "TRAIT_CONFIG_UPDATED" or Options.ranksReadable(Options.data) then
+			Options.defaultPending = false
+		end
 		Follow.ensureDefault(Options.data, Chip.chosenPath())
 	end
 	if event == "PLAYER_LEVEL_UP" then

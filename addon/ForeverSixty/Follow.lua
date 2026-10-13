@@ -47,6 +47,29 @@ local function slotted(entry)
 	return { slots = slots, active = Follow.DEFAULT_SLOT }
 end
 
+--- Whether a slot's saved record holds a build code.
+local function hasCode(saved)
+	return type(saved) == "table" and saved.code ~= nil
+end
+
+--- The one definition of "a saved build" (L3.8 fix round 1): every slot of `entry` (a
+--- slotted entry) holding a code, in Follow.SLOTS order, as an iterator of slot, record.
+--- Follow.restore's fallback and hasSavedBuild both walk this, so they can never disagree.
+local function savedSlots(entry)
+	local index = 0
+	return function()
+		while index < #Follow.SLOTS do
+			index = index + 1
+			local slot = Follow.SLOTS[index]
+			local saved = entry.slots[slot]
+			if hasCode(saved) then
+				return slot, saved
+			end
+		end
+		return nil
+	end
+end
+
 --- The current character's slotted entry, read from (and, on first touch,
 --- written back into) ForeverSixtyDB.follows -- so a caller that only
 --- reads (Follow.slotsFor) never needs to know about the pre-slot shape.
@@ -111,19 +134,31 @@ function Follow.restore(data)
 	ForeverSixtyDB.follows = ForeverSixtyDB.follows or {}
 	ForeverSixtyDB.follows[key] = entry
 	local active = entry.slots[entry.active]
-	if type(active) == "table" and active.code ~= nil then
-		return Follow.load(active.code, data, active.name, entry.active)
-	end
-	-- L3.8: an empty active slot beside a saved build (v1's slot picker could leave one; v2 has
-	-- no picker to switch back) follows that build, the first in SLOTS order, and makes its slot
-	-- the active one. Following nothing here also kept the default out (Follow.ensureDefault
-	-- yields to a build saved in any slot), so the character had no build at all.
-	for _, slot in ipairs(Follow.SLOTS) do
-		local other = entry.slots[slot]
-		if type(other) == "table" and other.code ~= nil then
-			return Follow.load(other.code, data, other.name, slot)
+	if hasCode(active) then
+		local build = Follow.load(active.code, data, active.name, entry.active)
+		if build ~= nil then
+			Follow.noBuildReason = nil
+			return build
 		end
 	end
+	-- L3.8: an empty active slot beside a saved build (v1's slot picker could leave one; v2 has
+	-- no picker to switch back), or an active one whose code no longer loads, follows the first
+	-- other saved build that loads, in SLOTS order, and makes its slot the active one.
+	-- Following nothing here also kept the default out (Follow.ensureDefault yields to any
+	-- saved build), so the character had no build at all.
+	local tried = false
+	for slot, record in savedSlots(entry) do
+		tried = true
+		if slot ~= entry.active then
+			local build = Follow.load(record.code, data, record.name, slot)
+			if build ~= nil then
+				Follow.noBuildReason = nil
+				return build
+			end
+		end
+	end
+	-- Every saved code failed to load: /fs diag says so (the default stays out all the same).
+	Follow.noBuildReason = tried and L.diagBuildSavedRefused or nil
 	return nil
 end
 
@@ -135,17 +170,12 @@ local function gearModule()
 	return ns.Gear or require("Gear")
 end
 
---- True when the current character has a build saved in any slot. Reads saved variables
---- without writing them.
+--- True when the current character (its own key only) has a build saved in any slot
+--- (savedSlots). Reads saved variables without writing them.
 local function hasSavedBuild()
 	local follows = type(ForeverSixtyDB) == "table" and ForeverSixtyDB.follows or nil
 	local saved = type(follows) == "table" and follows[Export.characterKey()] or nil
-	for _, entry in pairs(slotted(saved).slots) do
-		if type(entry) == "table" and entry.code ~= nil then
-			return true
-		end
-	end
-	return false
+	return savedSlots(slotted(saved))() ~= nil
 end
 
 --- An FSB1 code for a default build's order (contract 1's {tab, tier, column} triples), or
@@ -190,7 +220,7 @@ function Follow.ensureDefault(data, character)
 		return nil
 	end
 	if hasSavedBuild() then
-		Follow.noBuildReason = L.diagBuildSavedRefused
+		-- A saved build is in force, or Follow.restore found none of them loads and said so.
 		return nil
 	end
 	character = character or {}
@@ -420,8 +450,11 @@ local function progressModule()
 	return ns.Progress or require("Progress")
 end
 
---- The first point in the order the player has not spent yet
---- (Progress.nextPoint).
+--- Follow.buildName's worked-out names, per build table (weak keys: a build nothing holds
+--- any more drops out), with the data they were worked out against. The chip asks on every
+--- refresh; a build's order and the data's tree names never change under it.
+local builtNames = setmetatable({}, { __mode = "k" })
+
 --- What to call a build: its own name, else its two biggest trees in the
 --- plan, biggest first ("Arms / Fury build", one tree "Protection build"),
 --- else its class ("Warrior build") when the trees cannot be named. Every
@@ -429,6 +462,10 @@ end
 function Follow.buildName(data, build)
 	if type(build.name) == "string" and build.name ~= "" then
 		return build.name
+	end
+	local cached = builtNames[build]
+	if cached ~= nil and cached.data == data then
+		return cached.name
 	end
 	local split = progressModule().planSplit(build)
 	local tabs = {}
@@ -452,10 +489,14 @@ function Follow.buildName(data, build)
 		end
 		names[#names + 1] = name
 	end
+	local name
 	if #names == 0 then
-		return string.format(L.followBuildName, Talents.titleCase(build.classSlug))
+		name = string.format(L.followBuildName, Talents.titleCase(build.classSlug))
+	else
+		name = string.format(L.followBuildName, table.concat(names, L.followSplitSeparator))
 	end
-	return string.format(L.followBuildName, table.concat(names, L.followSplitSeparator))
+	builtNames[build] = { data = data, name = name }
+	return name
 end
 
 --- /fs diag's one line for the build in force: "Build: Marksmanship leveling (default for
@@ -472,6 +513,8 @@ function Follow.diagLine(data)
 	return string.format(L.diagBuildSaved, Follow.buildName(data, build))
 end
 
+--- The first point in the order the player has not spent yet
+--- (Progress.nextPoint).
 function Follow.nextPoint(build, ranks)
 	return progressModule().nextPoint(build, ranks)
 end

@@ -93,7 +93,8 @@ local MINE = "FSB1:1.60.1.70291:hunter:213213213:"
 local state
 
 --- Log `classSlug` in through Options' own PLAYER_LOGIN. `traits` is the trait mock's
---- { configID, ranks }; `opts.follows`, when given, is the character's saved entry.
+--- { configID, ranks }; `opts.follows`, when given, is the character's saved entry, and
+--- `opts.others` saved entries under other keys.
 local function login(classSlug, traits, opts)
 	opts = opts or {}
 	state = mock.install({
@@ -112,6 +113,12 @@ local function login(classSlug, traits, opts)
 	local Export = helper.load("Export")
 	if opts.follows ~= nil then
 		_G.ForeverSixtyDB.follows = { [Export.characterKey()] = opts.follows }
+	end
+	if opts.others ~= nil then
+		_G.ForeverSixtyDB.follows = _G.ForeverSixtyDB.follows or {}
+		for key, entry in pairs(opts.others) do
+			_G.ForeverSixtyDB.follows[key] = entry
+		end
 	end
 	helper.load("Talents")
 	helper.load("Gear")
@@ -304,5 +311,169 @@ describe("the chip's hover with a build in force", function()
 		assert.are.equal("", Chip.current.chosen.text)
 		assert.are.equal("|cff" .. Theme.HEX.gold .. L.addonName .. "|r|cff" .. Theme.HEX.muted
 			.. " · Marksmanship leveling|r", Chip.tooltipLines(Chip.current)[1])
+	end)
+end)
+
+-- L3.8 fix round 1 ------------------------------------------------------------------------
+
+-- A code no data build this addon carries can load: made on a newer patch (Codec refuses it).
+local STALE = "FSB1:9.99.9.99999:hunter:213213213:"
+
+describe("a PLAYER_ENTERING_WORLD that still reads no ranks", function()
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("keeps the retry, so the first TRAIT_CONFIG_UPDATED swaps the default exactly once", function()
+		local Options = login("hunter", { configID = nil, ranks = {} })
+		local Follow, Codec = require("Follow"), require("Codec")
+		assert.are.equal("Beast Mastery leveling", Follow.build.name)
+		local loadBuild = Codec.loadBuild
+		local decoded = 0
+		Codec.loadBuild = function(...)
+			decoded = decoded + 1
+			return loadBuild(...)
+		end
+		Options.onEvent(Options.frame, "PLAYER_ENTERING_WORLD")
+		assert.are.equal("Beast Mastery leveling", Follow.build.name)
+		assert.is_true(Options.defaultPending)
+		state.traits.configID = 7
+		state.traits.ranks = traitRanks("hunter", { [2] = 12, [1] = 3 })
+		Options.onEvent(Options.frame, "TRAIT_CONFIG_UPDATED")
+		assert.are.equal("Marksmanship leveling", Follow.build.name)
+		state.traits.ranks = traitRanks("hunter", { [3] = 14 })
+		Options.onEvent(Options.frame, "TRAIT_CONFIG_UPDATED")
+		Options.onEvent(Options.frame, "PLAYER_ENTERING_WORLD")
+		Codec.loadBuild = loadBuild
+		assert.are.equal("Marksmanship leveling", Follow.build.name)
+		assert.are.equal(1, decoded)
+		assert.is_false(Options.defaultPending)
+	end)
+end)
+
+describe("one definition of a saved build", function()
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("ignores a build saved under another character's key", function()
+		local other = "us/Other Realm/Someone"
+		login("hunter", { configID = nil, ranks = {} },
+			{ others = { [other] = { active = "raid", slots = { raid = { code = MINE, name = "Theirs" } } } } })
+		local Follow = require("Follow")
+		assert.are.equal("Beast Mastery leveling", Follow.build.name)
+		assert.is_true(Follow.build.default)
+		assert.are.equal(MINE, _G.ForeverSixtyDB.follows[other].slots.raid.code)
+	end)
+
+	it("goes past a saved code that does not load to the next one that does", function()
+		login("hunter", { configID = 7, ranks = {} }, { follows = { active = "raid", slots = {
+			raid = { code = STALE, name = "Stale" }, pvp = { code = MINE, name = "Mine" },
+		} } })
+		assert.are.equal("Mine", require("Follow").build.name)
+		local entry = _G.ForeverSixtyDB.follows[require("Export").characterKey()]
+		assert.are.equal("pvp", entry.active)
+		assert.are.equal(STALE, entry.slots.raid.code)
+	end)
+
+	it("follows nothing when no saved code loads, keeps them, and /fs diag says why", function()
+		local L = require("Locale")
+		local Options = login("hunter", { configID = 7, ranks = {} }, { follows = { active = "leveling", slots = {
+			raid = { code = STALE }, pvp = { code = STALE },
+		} } })
+		assert.is_nil(require("Follow").build)
+		local entry = _G.ForeverSixtyDB.follows[require("Export").characterKey()]
+		assert.are.equal(STALE, entry.slots.raid.code)
+		assert.are.equal(STALE, entry.slots.pvp.code)
+		local found = false
+		for _, line in ipairs(Options.handle("diag")) do
+			found = found or line == string.format(L.diagBuildNone, L.diagBuildSavedRefused)
+		end
+		assert.is_true(found, "Build: none — the saved build does not load")
+	end)
+end)
+
+describe("the default build's reasons and kinds", function()
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	local function buildLine(lines)
+		for _, line in ipairs(lines) do
+			if line:find("^Build: ") then
+				return line
+			end
+		end
+		return nil
+	end
+
+	it("takes the raid default at level 60", function()
+		local Options = login("hunter", { configID = nil, ranks = {} }, { level = 60 })
+		local build = require("Follow").build
+		assert.are.equal("Beast Mastery raid", build.name)
+		assert.are.equal("raid", build.kind)
+		assert.are.equal("Build: Beast Mastery raid (default for Beast Mastery)", buildLine(Options.handle("diag")))
+	end)
+
+	it("names the winning tree for a mixed spend: Marksmanship with most", function()
+		login("hunter", { configID = 7, ranks = traitRanks("hunter", { [1] = 4, [2] = 8, [3] = 3 }) })
+		assert.are.equal("Marksmanship leveling", require("Follow").build.name)
+		assert.are.equal("hunter-marksmanship", require("Follow").build.spec)
+	end)
+
+	it("says the class is not in the data", function()
+		local L = require("Locale")
+		local Options = login("monk", { configID = nil, ranks = {} })
+		assert.is_nil(require("Follow").build)
+		assert.are.equal(string.format(L.diagBuildNone, L.diagBuildNoClass), buildLine(Options.handle("diag")))
+	end)
+
+	it("says the spec has no default", function()
+		local L = require("Locale")
+		local Options = login("hunter", { configID = nil, ranks = {} })
+		local Follow = require("Follow")
+		Follow.build = nil
+		local builds = {}
+		for spec, default in pairs(Data.defaultBuilds) do
+			if spec ~= "hunter-beast-mastery" then
+				builds[spec] = default
+			end
+		end
+		assert.is_nil(Follow.ensureDefault({ build = Data.build, classes = Data.classes, defaultBuilds = builds }))
+		assert.are.equal(string.format(L.diagBuildNone, string.format(L.diagBuildNoSpec, "Beast Mastery")),
+			buildLine(Options.handle("diag")))
+	end)
+
+	it("says the default does not load", function()
+		local L = require("Locale")
+		local Options = login("hunter", { configID = nil, ranks = {} })
+		local Follow = require("Follow")
+		Follow.build = nil
+		assert.is_nil(Follow.ensureDefault({ build = Data.build, classes = Data.classes, defaultBuilds = {
+			["hunter-beast-mastery"] = { leveling = { name = "Broken", order = { { 0, 1, 1 } } } },
+		} }))
+		assert.are.equal(string.format(L.diagBuildNone, string.format(L.diagBuildRefused, "Beast Mastery")),
+			buildLine(Options.handle("diag")))
+	end)
+end)
+
+describe("Follow.buildName", function()
+	it("works a build's name out once per build and data", function()
+		local Follow = helper.load("Follow")
+		local Progress = require("Progress")
+		local planSplit = Progress.planSplit
+		local calls = 0
+		Progress.planSplit = function(...)
+			calls = calls + 1
+			return planSplit(...)
+		end
+		local build = { classSlug = "hunter", order = { { tab = 1, tier = 1, column = 2 }, { tab = 2, tier = 1, column = 1 },
+			{ tab = 1, tier = 1, column = 2 } } }
+		local first = Follow.buildName(Data, build)
+		local again = Follow.buildName(Data, build)
+		Progress.planSplit = planSplit
+		assert.are.equal("Beast Mastery / Marksmanship build", first)
+		assert.are.equal(first, again)
+		assert.are.equal(1, calls)
 	end)
 end)
