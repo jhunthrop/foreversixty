@@ -27,15 +27,15 @@ local Prefs = ns.Prefs or require("Prefs")
 local Compat = ns.Compat or require("Compat")
 local Progress = ns.Progress or require("Progress")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
+local Gear = ns.Gear or require("Gear")
 
 local RewardMarks = {}
 
 --- The generated data table, set by Options.register().
 RewardMarks.data = nil
 
---- The events Options hands here (registered with the rest), and the ones registered
---- quietly: the reward list's own refresh, which an older client may not have.
-RewardMarks.EVENTS = { "QUEST_COMPLETE", "QUEST_FINISHED", "START_LOOT_ROLL" }
+--- The event registered quietly (Options names the rest): the reward list's own refresh,
+--- which an older client may not have.
 RewardMarks.QUIET_EVENTS = { "QUEST_ITEM_UPDATE" }
 
 --- The client's reward buttons, by name prefix: the QuestInfo template's
@@ -66,38 +66,56 @@ local function scorable(base)
 end
 
 --- One item judged as the tooltip judges it: { itemId, gear, pending, wearable, gain,
---- primary }. `gear`: it goes in a slot the plan covers; `pending`: the client has not
---- sent it yet (nothing else is said); `wearable`: the character can put it on now (Rules
---- allow it and no worn two-hander holds the hand); `gain`: its gain over what is worn,
---- rounded as shown (ItemTooltip.verdictLine's own figure; nil where it cannot be scored);
---- `primary`: the tooltip's own verdict line ({ text, color, kind?, ... }).
+--- upgrade, primary, waits }. `gear`: it goes in a slot the plan covers; `pending`: the
+--- client has not sent it yet (nothing else is said); `wearable`: the character can put it
+--- on now (Rules allow it and no worn two-hander holds the hand); `gain`: its gain over
+--- what is worn, rounded as shown (ItemTooltip.verdictLine's own figure; nil where it
+--- cannot be scored); `upgrade`: its tooltip calls it one (fix round 1: from the 1.0 floor
+--- over a worn item, at any gain that shows into an empty slot: the line in the success
+--- colour); `primary`: the tooltip's own verdict line ({ text, color, kind?, ... });
+--- `waits`: the item ids that line still waits on (a worn item's name not sent yet).
 function RewardMarks.judge(link, base)
 	local ctx = ItemTooltip.withItem(base, link)
 	local itemId = ctx.item.itemId
-	local judged = ItemTooltip.judge(ctx, {})
-	local result = { itemId = itemId, gear = judged.gear, primary = judged.primary }
-	if not judged.gear then
-		return result
+	-- The item itself first (fix round 1): gear the client has not sent is not judged at all.
+	if itemId ~= nil and #Gear.slotsFor(ctx.item.equipLocation) > 0 and not Compat.isItemCached(itemId) then
+		return { itemId = itemId, gear = true, pending = true, waits = {} }
 	end
-	if itemId ~= nil and not Compat.isItemCached(itemId) then
-		result.pending, result.primary = true, nil
+	local waits = {}
+	local judged = ItemTooltip.judge(ctx, waits)
+	local result = { itemId = itemId, gear = judged.gear, primary = judged.primary, waits = waits }
+	if not judged.gear then
 		return result
 	end
 	result.wearable = #judged.usable > 0
 	local verdict = judged.verdict
 	if verdict ~= nil and verdict.delta ~= nil then
-		result.gain = Progress.roundedGain(-verdict.delta, judged.unit == "score" and "score" or "dps")
+		local gain = Progress.roundedGain(-verdict.delta, judged.unit == "score" and "score" or "dps")
+		result.gain = gain
+		result.upgrade = (verdict.state == "empty" and gain > 0) or gain >= Progress.MIN_GAIN
 	elseif judged.wornSlot ~= nil then
 		result.gain = 0
 	end
 	return result
 end
 
+--- Every id a judgement waits on goes to RewardMarks.waiting: its GET_ITEM_INFO_RECEIVED
+--- redraws the label or the line (fix round 1: a worn item's name too).
+local function noteWaits(judged)
+	if judged.pending and judged.itemId ~= nil then
+		RewardMarks.waiting[judged.itemId] = true
+	end
+	for id in pairs(judged.waits or {}) do
+		RewardMarks.waiting[id] = true
+	end
+end
+
 --- The labels for `count` reward choices from their judgements (RewardMarks.judge's, by
 --- choice index): { [index] = { text, color, kind } }.
 ---
---- - "Best for <specWord>" (gold) on the choice with the biggest gain above nothing that
----   the character can wear now (the first on a tie): a plate choice at 21 never is;
+--- - "Best for <specWord>" (gold) on the choice with the biggest gain that the character
+---   can wear now and that its tooltip calls an upgrade (the first on a tie): a plate choice
+---   at 21 never is, nor a +0.3 Sidegrade (fix round 1: that one gets no label at all);
 --- - "Vendor" (muted) on every choice only when none is of any use: each is gear that
 ---   scores nothing over what is worn (a gain of 0 or less as shown) or cannot be worn
 ---   now. A choice that is not gear, or gear the weights cannot price, may be of use: no
@@ -116,7 +134,7 @@ function RewardMarks.rewardLabels(judgements, count, specWord)
 			useless = false
 		elseif judged.wearable and judged.gain > 0 then
 			useless = false
-			if bestGain == nil or judged.gain > bestGain then
+			if judged.upgrade and (bestGain == nil or judged.gain > bestGain) then
 				best, bestGain = index, judged.gain
 			end
 		end
@@ -373,9 +391,7 @@ local function drawRewards()
 			local link = call("GetQuestItemLink", "choice", index)
 			if type(link) == "string" then
 				local judged = RewardMarks.judge(link, base)
-				if judged.pending and judged.itemId ~= nil then
-					RewardMarks.waiting[judged.itemId] = true
-				end
+				noteWaits(judged)
 				judgements[index] = judged
 			end
 		end
@@ -400,12 +416,25 @@ function RewardMarks.drawRewards()
 	guarded(drawRewards)
 end
 
+--- Every line drawn on a frame that no longer shows the roll it was drawn for (the client
+--- reused the frame for another roll), hidden (fix round 1).
+local function clearStaleLines()
+	for frame, drawn in pairs(lines) do
+		if drawn.rollId ~= nil and frame.rollID ~= drawn.rollId then
+			setLine(frame, nil)
+			drawn.rollId = nil
+		end
+	end
+end
+
 --- One roll's line: the item's verdict beside the frame showing it. A frame the client has
---- not opened yet is looked for once more on the next frame (`retried`).
+--- not opened yet is looked for once more on the next frame (`retried`). A frame reused
+--- for another roll loses its old line first, whether the new roll's frame is found or not.
 local function drawRoll(rollId, retried)
 	if not enabled() then
 		return
 	end
+	clearStaleLines()
 	local frame = rollFrameFor(rollId)
 	if frame == nil then
 		if not retried then
@@ -421,12 +450,13 @@ local function drawRoll(rollId, retried)
 	if type(link) == "string" then
 		local base = baseContext()
 		local judged = RewardMarks.judge(link, base)
-		if judged.pending and judged.itemId ~= nil then
-			RewardMarks.waiting[judged.itemId] = true
-		end
+		noteWaits(judged)
 		line = judged.primary
 	end
 	setLine(frame, line)
+	if lines[frame] ~= nil then
+		lines[frame].rollId = line ~= nil and rollId or nil
+	end
 end
 
 function RewardMarks.drawRoll(rollId)

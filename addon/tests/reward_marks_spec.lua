@@ -37,6 +37,10 @@ local BAG_CHEST = link(201, "Bag Chest")
 local PLATE_CHEST = link(202, "Plate Chest")
 local RAG_CHEST = link(203, "Rag Chest")
 local LIGHT_VEST = link(204, "Light Vest")
+local OLD_CHEST = "|Hitem:205::::::::21:::::|h|h"
+local LONG_CHEST = link(206, "Chestguard of the Unreasonably Long Defias Overseer Name")
+local FILL_VEST = link(207, "Fill Vest")
+local FAIR_CLOAK = link(222, "Fair Cloak")
 local WORN_BACK = link(220, "Worn Cloak")
 local THIN_CLOAK = link(221, "Thin Cloak")
 local WORN_FEET = link(230, "Worn Boots")
@@ -59,6 +63,16 @@ local ITEMS = {
 		stats = { ITEM_MOD_STAMINA_SHORT = 1 } },
 	[LIGHT_VEST] = { id = 204, slot = "INVTYPE_CHEST", class = 4, sub = 3, name = "Light Vest",
 		stats = { ITEM_MOD_STRENGTH_SHORT = 2 } },
+	-- A worn chest whose link carries no name: its name comes from the client (fix round 1).
+	[OLD_CHEST] = { id = 205, slot = "INVTYPE_CHEST", class = 4, sub = 3, name = "Old Chest",
+		stats = { ITEM_MOD_STRENGTH_SHORT = 5 } },
+	[LONG_CHEST] = { id = 206, slot = "INVTYPE_CHEST", class = 4, sub = 3,
+		name = "Chestguard of the Unreasonably Long Defias Overseer Name", stats = { ITEM_MOD_STRENGTH_SHORT = 5 } },
+	[FILL_VEST] = { id = 207, slot = "INVTYPE_CHEST", class = 4, sub = 3, name = "Fill Vest",
+		stats = { ITEM_MOD_STRENGTH_SHORT = 4 } },
+	-- 3 Str and 3 AP over the worn cloak's 3 Str: +0.3 DPS, a Sidegrade on its tooltip.
+	[FAIR_CLOAK] = { id = 222, slot = "INVTYPE_CLOAK", class = 4, sub = 1, name = "Fair Cloak",
+		stats = { ITEM_MOD_STRENGTH_SHORT = 3, ITEM_MOD_ATTACK_POWER_SHORT = 3 } },
 	[WORN_BACK] = { id = 220, slot = "INVTYPE_CLOAK", class = 4, sub = 1, name = "Worn Cloak",
 		stats = { ITEM_MOD_STRENGTH_SHORT = 3 } },
 	[THIN_CLOAK] = { id = 221, slot = "INVTYPE_CLOAK", class = 4, sub = 1, name = "Thin Cloak",
@@ -523,6 +537,119 @@ describe("RewardMarks", function()
 			RewardMarks.onEvent("START_LOOT_ROLL", 5, 60)
 			assert.are.equal("Not for you until 40: plate armor", lineText(frame))
 		end)
+	end)
+
+	-- Fix round 1, item 1: Best needs the tooltip's own Upgrade (the 1.0 floor over a worn
+	-- item, any gain that shows for an empty slot); a 0 < gain < 1 choice gets no label.
+	describe("fix round 1: Best needs an upgrade", function()
+		it("gives a lone +0.3 choice (a Sidegrade on its tooltip) neither Best nor Vendor", function()
+			start({ chest = WORN_CHEST, back = WORN_BACK, feet = WORN_FEET })
+			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, FAIR_CLOAK))
+			assert.are.equal(string.format(L.tooltipSideGain, "+", 0.3, L.tooltipUnitDps), lines[1].text)
+			local buttons = offer({ FAIR_CLOAK, RAG_CHEST, SOFT_BOOTS })
+			RewardMarks.onEvent("QUEST_COMPLETE")
+			mock.runTimers(state)
+			for index = 1, 3 do
+				assert.is_nil(labelText(buttons[index]))
+			end
+		end)
+
+		it("puts Best on the +2.0 upgrade beside a +0.3 sidegrade", function()
+			start({ chest = WORN_CHEST, back = WORN_BACK })
+			local buttons = offer({ FAIR_CLOAK, BAG_CHEST })
+			RewardMarks.onEvent("QUEST_COMPLETE")
+			mock.runTimers(state)
+			assert.is_nil(labelText(buttons[1]))
+			assert.are.equal("Best for Arms", labelText(buttons[2]))
+		end)
+
+		it("calls an empty-slot +0.8 fill best: it is an upgrade on its tooltip", function()
+			start({ back = WORN_BACK })
+			local judged = RewardMarks.judge(FILL_VEST, ItemTooltip.baseContext(DATA))
+			assert.are.equal(0.8, judged.gain)
+			assert.is_true(judged.upgrade)
+			assert.are.equal("success", judged.primary.color)
+			local buttons = offer({ THIN_CLOAK, FILL_VEST })
+			RewardMarks.onEvent("QUEST_COMPLETE")
+			mock.runTimers(state)
+			assert.are.equal("Best for Arms", labelText(buttons[2]))
+		end)
+	end)
+
+	describe("fix round 1: the roll line", function()
+		-- Item 2: a worn item whose name the client has not sent reads "…" until it comes.
+		it("redraws when the worn item's name arrives", function()
+			start({ chest = OLD_CHEST })
+			HIDDEN[205] = true
+			local frame = rollFrame(3, BAG_CHEST)
+			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
+			assert.are.equal(string.format(L.tooltipVerdictDps, 2, L.tooltipNamePending), lineText(frame))
+			assert.is_true(RewardMarks.isWaiting(205))
+			HIDDEN[205] = nil
+			RewardMarks.onItemInfo(205)
+			assert.are.equal(string.format(L.tooltipVerdictDps, 2, "Old Chest"), lineText(frame))
+		end)
+
+		-- Item 3: the 240 px fit, measured on the line's own font string.
+		it("fits a long worn name within the 240 px line: the name on its own line, ellipsised", function()
+			start({ chest = LONG_CHEST })
+			local function widest(text)
+				local most = 0
+				for part in (text or ""):gmatch("[^\n]+") do
+					most = math.max(most, #part * 6)
+				end
+				return most
+			end
+			local create = _G.CreateFrame
+			_G.CreateFrame = function(...)
+				local made = create(...)
+				local makeString = made.CreateFontString
+				made.CreateFontString = function(self, ...)
+					local region = makeString(self, ...)
+					region.GetStringWidth = function(own)
+						return widest(own.text)
+					end
+					return region
+				end
+				return made
+			end
+			local frame = rollFrame(3, BAG_CHEST)
+			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
+			local text = lineText(frame)
+			local head, name = text:match("^(.-)\n(.+)$")
+			assert.are.equal("Upgrade +2.0 DPS over", head)
+			assert.are.equal(L.tooltipNamePending, name:sub(-#L.tooltipNamePending))
+			assert.is_true(widest(text) <= 240)
+			local plate = RewardMarks.lineOn(frame).plate
+			assert.is_true(plate:GetWidth() <= 240 + require("Theme").SIZES.labelPad * 4)
+		end)
+
+		-- Item 4: a reused frame that no longer shows the roll drawn on it loses its line.
+		it("clears a reused frame's old line when the new roll's frame cannot be found", function()
+			start({ chest = WORN_CHEST })
+			local frame = rollFrame(3, BAG_CHEST)
+			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
+			assert.is_not_nil(lineText(frame))
+			raw("GroupLootFrame1").rollID = 6
+			RewardMarks.onEvent("START_LOOT_ROLL", 5, 60)
+			mock.runTimers(state)
+			assert.is_nil(lineText(frame))
+		end)
+
+		it("clears a reused frame's old line when its new roll has no item link", function()
+			start({ chest = WORN_CHEST })
+			local frame = rollFrame(3, BAG_CHEST)
+			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
+			raw("GroupLootFrame1").rollID = 5
+			RewardMarks.onEvent("START_LOOT_ROLL", 5, 60)
+			assert.is_nil(lineText(frame))
+		end)
+	end)
+
+	-- Item 5: the unread event table is gone.
+	it("keeps no unread event list (Options names the events)", function()
+		start()
+		assert.is_nil(RewardMarks.EVENTS)
 	end)
 
 	-- Ruling 6: the labels follow "Gear tips on item tooltips".
