@@ -318,10 +318,10 @@ Theme.MEDIA = {
 	arrowAtlas = "bags-greenarrow",
 }
 
---- The microstream arrow's art bounds in its padded square (left, right, top, bottom): the
---- crop that makes the fallback arrow fill the 12 px mark (L4.1 fix round 5). Measured
---- against the capture; tune here if the client's art sits elsewhere.
-Theme.ARROW_CROP = { 0.25, 0.75, 0.25, 0.75 }
+--- Whether the slot marks' arrow is the client's `bags-greenarrow` atlas (where the client
+--- knows it) rather than the addon's own 12 px glyph (SlotMarks.ARROW_PARTS). Off: on the live
+--- 1.60 client the atlas art drew a ~6 px dot in the 12 px frame (L4.1 fix round 6).
+Theme.ARROW_FROM_ATLAS = false
 
 --- The nine classes this addon ships a crest for (addon/tools/
 --- make_class_crests.py), keyed by UnitClass's own second return

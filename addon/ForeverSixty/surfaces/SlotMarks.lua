@@ -342,31 +342,63 @@ local function marksFor(button)
 	return marks
 end
 
---- The arrow at the button's top right, on its overlay: made the first time it shows.
---- The arrow's art on `texture` (L4.1 fix round 5: the old art drew a ~6 px dot): the
---- client's own bag upgrade arrow (the `bags-greenarrow` atlas) where the client knows it,
---- else the microstream arrow cropped to its art (Theme.ARROW_CROP), so the glyph fills
---- the 12 px square. Answers "atlas" or "crop".
-function SlotMarks.paintArrow(texture)
-	local textures = Compat.clientGlobal("C_Texture", "table")
-	local known = textures ~= nil and type(textures.GetAtlasInfo) == "function"
-		and textures.GetAtlasInfo(Theme.MEDIA.arrowAtlas) ~= nil
-	if known and type(texture.SetAtlas) == "function" then
-		texture:SetAtlas(Theme.MEDIA.arrowAtlas)
-		return "atlas"
+--- The arrow's parts in its 12 x 12 box, { x, y, width, height } from the box's top left
+--- (L4.1 fix round 6): an up-pointing head of six 1 px rows, 2 to 12 wide, over a 4 x 6 shaft.
+--- The client's bags-greenarrow atlas drew a ~6 px dot on the live client although the client
+--- knows it (its art does not fill the frame), so the arrow is the addon's own glyph,
+--- guaranteed 12 px and pointing up whatever the client's art.
+SlotMarks.ARROW_PARTS = {
+	{ 5, 0, 2, 1 }, { 4, 1, 4, 1 }, { 3, 2, 6, 1 }, { 2, 3, 8, 1 }, { 1, 4, 10, 1 }, { 0, 5, 12, 1 },
+	{ 4, 6, 4, 6 },
+}
+
+--- Whether the arrow is the client's atlas: only with Theme.ARROW_FROM_ATLAS on (off: the
+--- live atlas art does not fill 12 px) and a client that knows it (C_Texture.GetAtlasInfo).
+local function atlasArrow()
+	if not Theme.ARROW_FROM_ATLAS then
+		return false
 	end
-	texture:SetTexture(Theme.MEDIA.arrow)
-	local crop = Theme.ARROW_CROP
-	texture:SetTexCoord(crop[1], crop[2], crop[3], crop[4])
-	return "crop"
+	local textures = Compat.clientGlobal("C_Texture", "table")
+	return textures ~= nil and type(textures.GetAtlasInfo) == "function"
+		and textures.GetAtlasInfo(Theme.MEDIA.arrowAtlas) ~= nil
 end
 
+--- The arrow on `overlay`: an addon frame, 12 x 12 at its top right, holding the glyph's
+--- textures ({ fill, outline } each). From the atlas: SetAtlas(name, true), then the explicit
+--- 12 x 12 (the order keeps the atlas's own tex coords). Else the addon's own parts, green,
+--- each with a 1 px black outline a sublevel behind.
+local function buildArrow(overlay)
+	local size = Theme.SIZES.mark
+	local glyph = CreateFrame("Frame", nil, overlay)
+	glyph:SetSize(size, size)
+	glyph:SetPoint("TOPRIGHT", overlay, "TOPRIGHT", 0, 0)
+	if atlasArrow() then
+		local texture = glyph:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL)
+		texture:SetAtlas(Theme.MEDIA.arrowAtlas, true)
+		texture:SetSize(size, size)
+		texture:SetPoint("TOPLEFT", glyph, "TOPLEFT", 0, 0)
+		return glyph, { { fill = texture } }
+	end
+	local parts = {}
+	for index, part in ipairs(SlotMarks.ARROW_PARTS) do
+		local x, y, width, height = part[1], part[2], part[3], part[4]
+		local outline = Theme.paintRGB(glyph:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL - 1), 0, 0, 0, 1)
+		outline:SetSize(width + 2, height + 2)
+		outline:SetPoint("TOPLEFT", glyph, "TOPLEFT", x - 1, -y + 1)
+		local fill = Theme.paint(glyph:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL), "success")
+		fill:SetSize(width, height)
+		fill:SetPoint("TOPLEFT", glyph, "TOPLEFT", x, -y)
+		parts[index] = { fill = fill, outline = outline }
+	end
+	return glyph, parts
+end
+
+--- The arrow at the button's top right, on its overlay: made the first time it shows.
 local function setArrow(button, shown)
 	local marks = marksByButton[button]
 	if not shown then
 		if marks ~= nil and marks.arrow ~= nil then
 			marks.arrow:Hide()
-			marks.arrowOutline:Hide()
 		end
 		return
 	end
@@ -375,20 +407,8 @@ local function setArrow(button, shown)
 		return
 	end
 	if marks.arrow == nil then
-		local size = Theme.SIZES.mark
-		-- A 1 px dark outline: the same glyph in black, a pixel larger all round, behind it.
-		local outline = marks.overlay:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL - 1)
-		SlotMarks.paintArrow(outline)
-		outline:SetVertexColor(0, 0, 0, 1)
-		outline:SetSize(size + 2, size + 2)
-		outline:SetPoint("TOPRIGHT", marks.overlay, "TOPRIGHT", 1, 1)
-		local arrow = marks.overlay:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL)
-		SlotMarks.paintArrow(arrow)
-		arrow:SetSize(size, size)
-		arrow:SetPoint("TOPRIGHT", marks.overlay, "TOPRIGHT", 0, 0)
-		marks.arrow, marks.arrowOutline = arrow, outline
+		marks.arrow, marks.arrowParts = buildArrow(marks.overlay)
 	end
-	marks.arrowOutline:Show()
 	marks.arrow:Show()
 end
 
@@ -582,6 +602,13 @@ function SlotMarks.bagUpgradeFor(slot)
 	return nil
 end
 ItemTooltip.bagUpgradeFor = SlotMarks.bagUpgradeFor
+
+--- Whether the marks are drawing: the switch on and the marks not turned off (Chip.marksShown:
+--- the chip's legend follows them, L4.1 fix round 6).
+function SlotMarks.shown()
+	return enabled()
+end
+Chip.marksShown = SlotMarks.shown
 
 --- Hides every mark already drawn (the switch went off, or the marks failed).
 function SlotMarks.hideAll()

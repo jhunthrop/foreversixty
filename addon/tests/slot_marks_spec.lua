@@ -966,32 +966,95 @@ describe("SlotMarks", function()
 
 	-- Fix round 5 (the designer's and the player's first pass).
 	describe("fix round 5", function()
-		-- 1: a real 12 px arrow, not a 6 px dot.
-		it("paints the arrow from the client's bags-greenarrow atlas when the client knows it", function()
+		-- 1 (fix round 6, hunter-19): a real 12 px arrow, not a ~6 px dot. The client's
+		-- bags-greenarrow atlas drew a dot on the live client although it knows the atlas, so
+		-- the arrow is the addon's own 12 x 12 glyph: an up-pointing head of six 1 px rows
+		-- (2, 4 ... 12 wide) over a 4 x 6 shaft, green, each part with a 1 px black outline.
+		local PROBE = { height = 22, file = 969828, leftTexCoord = 0.12890625, bottomTexCoord = 0.44921875,
+			tilesHorizontally = false, tilesVertically = false }
+
+		it("draws the addon's own 12 px up arrow, even on a client that knows the atlas", function()
 			start({ chest = WORN_CHEST }, { BAG_CHEST }, { C_Texture = {
-				GetAtlasInfo = function(name) return name == "bags-greenarrow" and { width = 12 } or nil end,
+				GetAtlasInfo = function(name) return name == "bags-greenarrow" and PROBE or nil end,
 			} })
 			local chest = slotButton("CharacterChestSlot")
 			SlotMarks.drawPaperDoll()
 			local marks = SlotMarks.marksOn(chest)
-			assert.are.equal("bags-greenarrow", mock.lastCall(marks.arrow, "SetAtlas")[1])
-			assert.is_nil(mock.lastCall(marks.arrow, "SetTexCoord"))
-			-- The 1 px dark outline: the same glyph in black, 14 px, behind it.
-			assert.are.equal("bags-greenarrow", mock.lastCall(marks.arrowOutline, "SetAtlas")[1])
-			assert.are.same({ 0, 0, 0, 1 }, { table.unpack(mock.lastCall(marks.arrowOutline, "SetVertexColor"), 1, 4) })
-			assert.are.equal(14, marks.arrowOutline:GetWidth())
-			assert.are.equal(12, marks.arrow:GetWidth())
+			local glyph = marks.arrow
+			assert.are.equal(marks.overlay, glyph.parent)
+			assert.are.same({ "TOPRIGHT", marks.overlay, "TOPRIGHT", 0, 0 }, glyph.points[1])
+			assert.are.equal(12, glyph:GetWidth())
+			assert.are.equal(12, glyph:GetHeight())
+			local expected = {
+				{ 5, 0, 2, 1 }, { 4, 1, 4, 1 }, { 3, 2, 6, 1 }, { 2, 3, 8, 1 }, { 1, 4, 10, 1 }, { 0, 5, 12, 1 },
+				{ 4, 6, 4, 6 },
+			}
+			assert.are.same(expected, SlotMarks.ARROW_PARTS)
+			assert.are.equal(#expected, #marks.arrowParts)
+			local red, greenValue, blue = Theme.rgb(Theme.HEX.success)
+			local green = { red, greenValue, blue }
+			for index, part in ipairs(expected) do
+				local fill, outline = marks.arrowParts[index].fill, marks.arrowParts[index].outline
+				assert.are.same({ "TOPLEFT", glyph, "TOPLEFT", part[1], -part[2] }, fill.points[1])
+				assert.are.same({ part[3], part[4] }, { fill:GetWidth(), fill:GetHeight() })
+				assert.are.same({ "TOPLEFT", glyph, "TOPLEFT", part[1] - 1, -part[2] + 1 }, outline.points[1])
+				assert.are.same({ part[3] + 2, part[4] + 2 }, { outline:GetWidth(), outline:GetHeight() })
+				assert.are.same(green, { table.unpack(mock.lastCall(fill, "SetColorTexture"), 1, 3) })
+				assert.are.same({ 0, 0, 0, 1 }, { table.unpack(mock.lastCall(outline, "SetColorTexture"), 1, 4) })
+			end
+			-- The bag item carries the same glyph.
+			local frame = containerFrame(0, 1)
+			_G.ContainerFrame_Update = function() end
+			SlotMarks.register()
+			_G.ContainerFrame_Update(frame)
+			assert.are.equal(#expected, #SlotMarks.marksOn(_G.ContainerFrame1Item1).arrowParts)
+			assert.are.same({}, state.clientWrites)
 		end)
 
-		it("crops the microstream arrow to its art when the client has no such atlas", function()
-			start({ chest = WORN_CHEST }, { BAG_CHEST })
+		-- The atlas branch, kept for a client whose atlas art fills its frame (Theme.ARROW_FROM_ATLAS):
+		-- SetAtlas with useAtlasSize, then the explicit 12 x 12, in that order, with the probe's table.
+		it("sizes the atlas after SetAtlas(name, true) when the atlas branch is on", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, { C_Texture = {
+				GetAtlasInfo = function(name) return name == "bags-greenarrow" and PROBE or nil end,
+			} })
+			Theme.ARROW_FROM_ATLAS = true
 			local chest = slotButton("CharacterChestSlot")
 			SlotMarks.drawPaperDoll()
-			local arrow = SlotMarks.marksOn(chest).arrow
-			assert.are.equal(Theme.MEDIA.arrow, mock.lastCall(arrow, "SetTexture")[1])
-			local crop = mock.lastCall(arrow, "SetTexCoord")
-			assert.are.same(Theme.ARROW_CROP, { crop[1], crop[2], crop[3], crop[4] })
-			assert.is_true(crop[2] - crop[1] < 1)
+			Theme.ARROW_FROM_ATLAS = false
+			local texture = SlotMarks.marksOn(chest).arrowParts[1].fill
+			local atlas, size
+			for index, call in ipairs(texture.calls) do
+				if call.method == "SetAtlas" then
+					atlas = atlas or index
+					assert.are.same({ "bags-greenarrow", true }, { call[1], call[2] })
+				elseif call.method == "SetSize" then
+					size = index
+					assert.are.same({ 12, 12 }, { call[1], call[2] })
+				end
+			end
+			assert.is_true(atlas ~= nil and size ~= nil and atlas < size)
+			assert.are.equal(1, #SlotMarks.marksOn(chest).arrowParts)
+		end)
+
+		it("draws the addon's arrow when the atlas branch is on but the client has no such atlas", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			Theme.ARROW_FROM_ATLAS = true
+			local chest = slotButton("CharacterChestSlot")
+			SlotMarks.drawPaperDoll()
+			Theme.ARROW_FROM_ATLAS = false
+			assert.are.equal(#SlotMarks.ARROW_PARTS, #SlotMarks.marksOn(chest).arrowParts)
+		end)
+
+		-- Fix round 6, 4: the legend follows the marks: off with the switch, and off once the
+		-- marks have turned themselves off.
+		it("hides the chip's legend once the marks have turned themselves off", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			assert.is_true(Chip.inputs(DATA).marksLegend)
+			Prefs.setFlag("tooltip", false)
+			assert.is_false(Chip.inputs(DATA).marksLegend)
+			Prefs.setFlag("tooltip", true)
+			SlotMarks.disabled = true
+			assert.is_false(Chip.inputs(DATA).marksLegend)
 		end)
 
 		-- 4: the bracket clears the quality border, with a shadow behind the gold.
@@ -1054,6 +1117,8 @@ describe("SlotMarks", function()
 			for _, text in ipairs(calls) do
 				assert.is_nil(text:find("Wailing Caverns", 1, true))
 			end
+			-- The compare tooltip beside it shows the bag item that beats it (fix round 6, 4).
+			assert.are.equal(BAG_CHEST, mock.lastCall(Theme.compareTooltipFrame, "SetHyperlink")[1])
 		end)
 	end)
 end)

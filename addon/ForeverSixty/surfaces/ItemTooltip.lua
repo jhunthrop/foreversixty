@@ -569,7 +569,7 @@ end
 --- The header row within `room`, as { left, right, carry }: the tag ("Your
 --- sim", "Estimate") and "Forever Sixty" are never cut. (a) The whole header
 --- with "Equipped" right when left + gap + right fits; (b) else the whole header
---- alone, "Equipped" carried to the right of the next row (`carry`: L4.1 fix round 5,
+--- alone, "Equipped" on its own right-aligned row under it (`carry`: L4.1 fix rounds 5-6,
 --- the spec word stays on a narrow weapon tooltip); (c) else without the spec word,
 --- "Equipped" beside it when it fits; (d) else (c)'s text alone and `carry`.
 --- `equipped` false: no right text at all.
@@ -1759,24 +1759,17 @@ local function drawEntry(tooltip, entry, measure, room, redraw)
 	else
 		tooltip:AddLine(header.left)
 	end
-	local carry = header.carry and doubles
+	-- "Equipped" the header cannot hold gets its own right-aligned row directly under it,
+	-- never a content line's: every content line keeps the whole room (L4.1 fix round 6:
+	-- "Next upgrade: Blackene…   Equipped" cut the pick's name to make room for it).
+	if header.carry and doubles then
+		tooltip:AddDoubleLine(" ", L.tooltipEquipped, 1, 1, 1, mr, mg, mb)
+	end
 	for _, line in ipairs(entry.lines) do
 		local r, g, b = opColor(line.color)
-		local lineRoom = room
-		if carry and measure ~= nil and room ~= nil then
-			lineRoom = room - ItemTooltip.PAIR_GAP - (measure(L.tooltipEquipped) or 0)
+		for _, text in ipairs(ItemTooltip.fitLine(line, measure, room)) do
+			tooltip:AddLine(text, r, g, b)
 		end
-		for _, text in ipairs(ItemTooltip.fitLine(line, measure, lineRoom)) do
-			if carry then
-				tooltip:AddDoubleLine(text, L.tooltipEquipped, r, g, b, mr, mg, mb)
-				carry = false
-			else
-				tooltip:AddLine(text, r, g, b)
-			end
-		end
-	end
-	if carry then
-		tooltip:AddDoubleLine(" ", L.tooltipEquipped, 1, 1, 1, mr, mg, mb)
 	end
 	tooltip:Show()
 	if entry.target ~= nil then

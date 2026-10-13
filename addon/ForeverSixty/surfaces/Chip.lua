@@ -52,6 +52,10 @@ Chip.FALLBACK_Y = -16
 --- to its own refreshSurfaces, so the talent marks follow the new build too.
 Chip.afterChoice = nil
 
+--- Injection point: whether the paper-doll and bag marks are drawing (surfaces/SlotMarks.lua
+--- sets it); the chip's hover carries their legend only then. nil: no legend.
+Chip.marksShown = nil
+
 --- Item ids whose names the chip is waiting on; GET_ITEM_INFO_RECEIVED for
 --- one of them redraws it.
 Chip.pending = {}
@@ -452,7 +456,8 @@ function Chip.tooltipLines(model)
 	end
 	-- What the paper doll's and the bags' marks mean, while they are on (L4.1 fix round 5).
 	if model.marksLegend then
-		lines[#lines + 1] = colored("muted", L.chipMarksLegend)
+		lines[#lines + 1] = colored("muted", L.chipMarksLegendArrow)
+		lines[#lines + 1] = colored("muted", L.chipMarksLegendCorner)
 	end
 	lines[#lines + 1] = " "
 	if model.chosen.hint ~= nil then
@@ -781,8 +786,9 @@ function Chip.inputs(data)
 		healing = type(perSpec) == "table" and perSpec.healing == true,
 		-- The marks stand in for the chip only while they are drawn (TalentMarks sets windowMarks).
 		talentsOpen = TalentGlow.openFrame() ~= nil and (Chip.windowMarks == nil or Chip.windowMarks()),
-		-- The slot marks follow "Gear tips on item tooltips"; their legend with them (L4.1 fix round 5).
-		marksLegend = Prefs.flag("tooltip") ~= false,
+		-- The legend follows the slot marks themselves (L4.1 fix rounds 5-6): off with "Gear tips on
+		-- item tooltips", and off once the marks have turned themselves off (Chip.marksShown).
+		marksLegend = Chip.marksShown ~= nil and Chip.marksShown() == true or false,
 	}
 	local point = progress.point
 	if point ~= nil and build ~= nil then

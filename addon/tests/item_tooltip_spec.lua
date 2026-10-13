@@ -2130,20 +2130,21 @@ describe("the hook's width contract and enchant wiring", function()
 			assertFitted(rows)
 		end)
 
-		-- Fix round 7 (re-review low): with room for some of the carry row, its left
-		-- text plus the gap plus "Equipped" stays within the room, and is cut to fit.
-		it("fits the carry row's left text, the gap and Equipped within the room", function()
+		-- L4.1 fix round 6 (hunter-19): "Equipped" never shares a row with a content line.
+		-- When the header cannot hold it, it gets its own right-aligned row under the header,
+		-- and the first content line keeps the whole room.
+		it("gives Equipped its own row under the header, the first line keeping the whole room", function()
 			local wide = string.rep("x", 40)
 			local worn = { itemId = 100, link = "item:100:w", stats = { strength = 20 } }
 			local rows = hover({ itemId = 100, link = "item:100:w", equipLocation = "INVTYPE_CHEST", itemClass = 4,
 				itemSubClass = 3, stats = { strength = 20 } }, { chest = worn }, nil, { { left = wide } })
 			assert.is_nil(rows[3].right)
-			assert.are.equal(L.tooltipEquipped, rows[4].right)
-			local left = ItemTooltip.stripEscapes(rows[4].left)
-			assert.is_true(#left + ItemTooltip.PAIR_GAP + #L.tooltipEquipped <= 40)
-			assert.are_not.equal(string.format(L.tooltipBestUntil, 30), left)
-			assert.is_truthy(left:find("^Best un"))
-			assert.is_truthy(left:find(L.tooltipNamePending, 1, true))
+			assert.are.same({ left = " ", right = L.tooltipEquipped }, rows[4])
+			assert.are.equal(string.format(L.tooltipBestUntil, 30), ItemTooltip.stripEscapes(rows[5].left))
+			assert.is_nil(rows[5].right)
+			for index = 5, #rows do
+				assert.is_nil(rows[index].right)
+			end
 		end)
 
 		it("fits Best until level 30 and a capped stat, and carries Equipped to the next row", function()
@@ -2155,8 +2156,8 @@ describe("the hook's width contract and enchant wiring", function()
 				itemSubClass = 3, stats = { strength = 20, hit = 1 } }, { chest = worn }, current)
 			assert.are.equal(ItemTooltip.headerText(nil, "sim"), rows[3].left)
 			assert.is_nil(rows[3].right)
-			assert.are.equal(L.tooltipEquipped, rows[4].right)
-			assert.is_truthy(ItemTooltip.stripEscapes(rows[4].left):find("^B"))
+			assert.are.same({ left = " ", right = L.tooltipEquipped }, rows[4])
+			assert.is_truthy(ItemTooltip.stripEscapes(rows[5].left):find("^B"))
 			local seen = {}
 			for index = 5, #rows do
 				seen[#seen + 1] = ItemTooltip.stripEscapes(rows[index].left)
@@ -2164,6 +2165,67 @@ describe("the hook's width contract and enchant wiring", function()
 			assert.is_truthy(table.concat(seen, "\n"):find("Hit", 1, true))
 			assert.is_truthy(table.concat(seen, "\n"):find("Planned", 1, true))
 			assertFitted(rows)
+		end)
+	end)
+
+	-- L4.1 fix round 6 (hunter-19-waist / -ranged): the hunter's Waist and Ranged hovers at the
+	-- client's own width (its widest row, "Press F6 to submit an issue for this Item", 41
+	-- wide): the header, then "Equipped" on its own row, then the Next line with the pick's
+	-- whole name; never "Next upgrade: Blackene…   Equipped".
+	describe("the hunter's Waist and Ranged at the client's width", function()
+		local F6 = "Press F6 to submit an issue for this Item"
+		local DATA7 = { classes = { warrior = { tabs = { { name = "Arms" } } } },
+			weights = { ["warrior-arms"] = { strength = 2, attack_power = 1 } },
+			dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.55 } },
+			bis = { ["warrior-arms"] = { [20] = { alliance = {
+				waist = "300|D|The Deadmines: Captain Greenskin|0.3",
+				ranged = "400|B|World drop",
+			} } } } }
+		local NAMES7 = { [300] = "Blackened Defias Belt", [400] = "Ranger Bow" }
+		local STATS7 = { [300] = { strength = 6 }, [400] = { strength = 8 } }
+
+		local function hover(slot, equipLocation, worn)
+			local tip, rows = specTip({ { left = "Worn Thing" }, { left = F6 } })
+			ItemTooltip.data = DATA7
+			ItemTooltip.contextFor = function(data)
+				return {
+					data = data, spec = "warrior-arms", classToken = "WARRIOR", level = 24, faction = "alliance",
+					current = Gear.currentWeights(data, "warrior-arms", nil, KEY, 24),
+					equipped = { [slot] = worn },
+					nameOf = function(id) return NAMES7[id] end, statsOf = function(id) return STATS7[id] end,
+					isCached = function() return false end, qualityHex = function() return nil end,
+					isMissing = function() return false end, bindTypeOf = function() return nil end,
+					item = { itemId = worn.itemId, link = worn.link, equipLocation = equipLocation, itemClass = 4,
+						itemSubClass = 2, stats = worn.stats },
+				}
+			end
+			ItemTooltip.onTooltip(tip, worn.link)
+			local plain = {}
+			for index = 3, #rows do
+				plain[#plain + 1] = { left = ItemTooltip.stripEscapes(rows[index].left), right = rows[index].right }
+			end
+			return plain
+		end
+
+		it("Ranged: the header, Equipped on its own row, the Next line whole with its gain", function()
+			local rows = hover("ranged", "INVTYPE_RANGED", { itemId = 41, link = "item:41:bow", stats = { strength = 5 } })
+			assert.are.same({ left = "Forever Sixty · Arms · Estimate" }, rows[2])
+			assert.are.same({ left = " ", right = L.tooltipEquipped }, rows[3])
+			-- 3 Strength x 2 x 0.55 = 3.3 DPS, the name whole, the gain on the same row.
+			assert.are.same({ left = "Next upgrade: Ranger Bow +3.3 DPS" }, rows[4])
+		end)
+
+		it("Waist: the pick's whole name, never cut for Equipped; its gain on the next row only past the room", function()
+			local rows = hover("waist", "INVTYPE_WAIST", { itemId = 42, link = "item:42:belt", stats = { strength = 5 } })
+			assert.are.same({ left = "Forever Sixty · Arms · Estimate" }, rows[2])
+			assert.are.same({ left = " ", right = L.tooltipEquipped }, rows[3])
+			-- "Next upgrade: Blackened Defias Belt +1.1 DPS" is 44 wide, the client's widest row
+			-- 41: section 4.3 moves the gain, never the name, to the next row.
+			assert.are.same({ left = "Next upgrade: Blackened Defias Belt" }, rows[4])
+			assert.are.same({ left = "+1.1 DPS" }, rows[5])
+			for _, row in ipairs(rows) do
+				assert.is_nil(row.left:find(L.tooltipNamePending, 1, true), row.left)
+			end
 		end)
 	end)
 

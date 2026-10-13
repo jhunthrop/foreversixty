@@ -714,8 +714,10 @@ local L = {
 	-- The hover tooltip's last line, muted: how to put the chip away.
 	chipRightClick = "Right-click: %s",
 	chipShiftDrag = "Shift-drag: Move",
-	-- L4.1 fix round 5: the marks' legend in the chip's hover, while the marks are on.
-	chipMarksLegend = "Green arrow: a bag item beats what you wear. Gold corner: next upgrade to chase.",
+	-- L4.1 fix round 5: the marks' legend in the chip's hover, while the marks are on; two short
+	-- lines (fix round 6), since the chip's tooltip never wraps a line.
+	chipMarksLegendArrow = "Green arrow: a bag item beats what you wear.",
+	chipMarksLegendCorner = "Gold corner: next upgrade to chase.",
 	-- Level 1 to 9 on a default build (spec section 5.1): the class icon and
 	-- this line; a click opens a card with one button per spec.
 	chipPath = "Pick a path",
