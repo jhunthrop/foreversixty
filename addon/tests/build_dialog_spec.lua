@@ -571,6 +571,26 @@ describe("BuildDialog, copy mode's model", function()
 		assert.is_false(BuildDialog.copyKey("V", true, true, true))
 	end)
 
+	-- L4.4 ruling 2: /fs link puts a character's site page in the box instead of the export.
+	it("holds a /fs link page under its own leads, with nothing about the export", function()
+		local link = { url = "foreversixty.gg/character/us/classic-beta-pvp/bow-jackzon-classicbetapvp",
+			name = "Bow Jackzon" }
+		local copy = model({ link = link, ack = ACK, savedAt = "2026-11-04 14:02", simInUse = true,
+			nextStep = "Next talent" })
+		assert.are.equal(link.url, copy.text)
+		assert.is_true(copy.selected)
+		assert.are.same({ text = string.format(L.dialogLinkLead, "Bow Jackzon"), hexKey = "body" }, copy.lead)
+		assert.are.equal("Bow Jackzon's page on " .. L.siteName .. ". Press Ctrl+C, then paste it in your browser.",
+			copy.lead.text)
+		assert.is_nil(copy.seen)
+		assert.is_nil(copy.sim)
+		assert.is_nil(copy.simNext)
+		assert.is_nil(copy.companion)
+		local copied = model({ link = link, copiedAt = NOV4_1402 })
+		assert.are.same({ text = "You copied Bow Jackzon's page. Paste it in your browser.", hexKey = "success" },
+			copied.lead)
+	end)
+
 	it("says why there is nothing to copy", function()
 		local copy = model({ code = false, reason = "No export" })
 		assert.are.equal("", copy.text)

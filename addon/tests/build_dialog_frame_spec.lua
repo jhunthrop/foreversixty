@@ -123,6 +123,28 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 		assert.is_false(claimed())
 	end)
 
+	-- L4.4 ruling 2: /fs link.
+	it("holds a /fs link page selected in the box, and the export again after a tab click or a close", function()
+		local url = "foreversixty.gg/character/us/ashbringer/smoke-gouda-ashbringer"
+		assert.is_true(BuildDialog.openLink(url, "Smoke Gouda"))
+		mock.runTimers(state)
+		assert.are.equal(url, box():GetText())
+		assert.is_true(box():HasFocus())
+		assert.is_true(BuildDialog.selected)
+		assert.are.equal(string.format(L.dialogLinkLead, "Smoke Gouda"), BuildDialog.copyTab.lead:GetText())
+		control = true
+		press("C")
+		assert.are.equal(string.format(L.dialogLinkCopied, "Smoke Gouda"), BuildDialog.copyTab.lead:GetText())
+		local export = require("Export").string(DATA)
+		BuildDialog.tabs.copy:GetScript("OnClick")(BuildDialog.tabs.copy)
+		assert.are.equal(export, box():GetText())
+		BuildDialog.openLink(url, "Smoke Gouda")
+		BuildDialog.close()
+		BuildDialog.open("copy")
+		assert.are.equal(export, box():GetText())
+		assert.are.same({}, state.clientWrites)
+	end)
+
 	it("holds the export byte for byte in the box Ctrl+C copies from (fix 3, 3)", function()
 		local ok, export = pcall(require("Export").string, DATA)
 		assert.is_true(ok)

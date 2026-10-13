@@ -744,28 +744,33 @@ end
 --- the tabs (the copy claim, in the gain green, only after a real Ctrl+C, `copiedAt`), the
 --- ack's lines, and the companion's explanation when no ack was ever seen. No button: the
 --- box itself is what the player copies from (fix round 2, item 4).
---- `input` = { code, reason, copiedAt, ack, savedAt, clock, simInUse, simGeneratedAt, nextStep }.
+--- `input` = { code, reason, copiedAt, ack, savedAt, clock, simInUse, simGeneratedAt, nextStep,
+--- link }. With `link` ({ url, name }, /fs link, L4.4) the box holds that character's site
+--- page instead of the export, under its own two leads, and nothing about the export follows.
 function BuildDialog.copyModel(input)
 	local clock = input.clock
-	local code = input.code or nil
+	local link = type(input.link) == "table" and input.link or nil
+	local code = link ~= nil and link.url or input.code or nil
 	local lead
 	if not code then
 		lead = { text = input.reason or "", hexKey = "muted" }
 	elseif input.copiedAt ~= nil then
-		lead = { text = string.format(L.dialogYouCopied, hhmm(clock.fields(input.copiedAt))), hexKey = "success" }
+		lead = { text = link ~= nil and string.format(L.dialogLinkCopied, link.name)
+			or string.format(L.dialogYouCopied, hhmm(clock.fields(input.copiedAt))), hexKey = "success" }
 	else
-		lead = { text = L.dialogSelectedLead, hexKey = "body" }
+		lead = { text = link ~= nil and string.format(L.dialogLinkLead, link.name) or L.dialogSelectedLead,
+			hexKey = "body" }
 	end
-	local ack = type(input.ack) == "table" and input.ack or nil
+	local ack = link == nil and type(input.ack) == "table" and input.ack or nil
 	local companion
-	if ack == nil then
+	if ack == nil and link == nil then
 		companion = { L.dialogNoCompanion, L.dialogCompanionWhat, string.format(L.dialogPasteAtSite, L.siteName) }
 	end
 	-- While the companion's sim weights are in use, the sim's answer: the copy it is from (the
 	-- ack's export time; "an earlier copy" while a newer request is queued), and the chip's own
 	-- line as the next step (`nextStep`); else the request's state.
 	local sim, simNext
-	if input.simInUse then
+	if link == nil and input.simInUse then
 		sim = simDoneLine(input.simGeneratedAt, ack, clock)
 		if type(input.nextStep) == "string" and input.nextStep ~= "" then
 			simNext = string.format(L.dialogNextStep, input.nextStep)
@@ -1356,6 +1361,8 @@ end
 local function buildTab(frame, label, mode)
 	local S = Theme.SIZES
 	local tab = Widgets.tab(frame, label, function()
+		-- A tab click is the player's own copy again, never the /fs link page.
+		BuildDialog.link = nil
 		BuildDialog.setMode(mode)
 	end)
 	enlarge(tab.foreverSixtyLabel)
@@ -1748,6 +1755,7 @@ function BuildDialog.ensure()
 		BuildDialog.paste.box:ClearFocus()
 		BuildDialog.copyTab.box:ClearFocus()
 		BuildDialog.copiedAt = nil
+		BuildDialog.link = nil
 	end)
 	frame:SetScript("OnEvent", onEvent)
 	Theme.registerEvent(frame, "GET_ITEM_INFO_RECEIVED")
@@ -2032,25 +2040,33 @@ end
 function BuildDialog.drawCopy(select)
 	local copy = BuildDialog.copyTab
 	local S = Theme.SIZES
-	-- Guarded: a client answer the export cannot encode must never leave a half-drawn tab.
-	local ran, code, reason = pcall(Export.string, dataOf())
-	if not ran then
-		code, reason = nil, nil
+	local link = BuildDialog.link
+	local model
+	if link ~= nil then
+		-- /fs link: a character's site page, nothing about this character's export.
+		model = BuildDialog.copyModel({ link = link, copiedAt = BuildDialog.copiedAt, clock = liveClock() })
+		BuildDialog.exportCode = model.text
+	else
+		-- Guarded: a client answer the export cannot encode must never leave a half-drawn tab.
+		local ran, code, reason = pcall(Export.string, dataOf())
+		if not ran then
+			code, reason = nil, nil
+		end
+		BuildDialog.exportCode = code
+		local name = outboxName()
+		local simInUse, simGeneratedAt = simWeightsInUse()
+		model = BuildDialog.copyModel({
+			code = code,
+			reason = reason,
+			copiedAt = BuildDialog.copiedAt,
+			ack = currentAck(),
+			savedAt = BuildDialog.savedAtFor(ForeverSixtyDB, name),
+			clock = liveClock(),
+			simInUse = simInUse,
+			simGeneratedAt = simGeneratedAt,
+			nextStep = chipLine(),
+		})
 	end
-	BuildDialog.exportCode = code
-	local name = outboxName()
-	local simInUse, simGeneratedAt = simWeightsInUse()
-	local model = BuildDialog.copyModel({
-		code = code,
-		reason = reason,
-		copiedAt = BuildDialog.copiedAt,
-		ack = currentAck(),
-		savedAt = BuildDialog.savedAtFor(ForeverSixtyDB, name),
-		clock = liveClock(),
-		simInUse = simInUse,
-		simGeneratedAt = simGeneratedAt,
-		nextStep = chipLine(),
-	})
 	local content = copy.content
 	copy.lead:SetText(model.lead.text)
 	copy.lead:SetTextColor(Theme.rgb(Theme.HEX[model.lead.hexKey]))
@@ -2062,8 +2078,12 @@ function BuildDialog.drawCopy(select)
 		return width
 	end
 	local first, advance = lineMetrics()
-	local leadLines = BuildDialog.leadLines({ leadWidth(L.dialogSelectedLead),
-		leadWidth(string.format(L.dialogYouCopied, "00:00")), leadWidth(model.lead.text) }, contentWidth())
+	local before, after = L.dialogSelectedLead, string.format(L.dialogYouCopied, "00:00")
+	if link ~= nil then
+		before, after = string.format(L.dialogLinkLead, link.name), string.format(L.dialogLinkCopied, link.name)
+	end
+	local leadLines = BuildDialog.leadLines({ leadWidth(before), leadWidth(after), leadWidth(model.lead.text) },
+		contentWidth())
 	local top = first + (leadLines - 1) * advance + S.gap * 2
 	-- The lines under the box first, so the box takes only the room left. The seen line is
 	-- reserved at the taller of its two states (before and after a copy), so a Ctrl+C never
@@ -2193,14 +2213,16 @@ end
 --- Open the dialog on `mode` ("paste" by default, or "copy"). The paste box starts empty.
 --- One frame later the tab's box takes the keyboard again (the chat box that ran /fs lets
 --- go of it after the command; copy mode selects the export again) and the render check
---- runs. False when the dialog turned itself off earlier (the fallback ran instead).
-function BuildDialog.open(mode)
+--- runs. False when the dialog turned itself off earlier (the fallback ran instead). `link`
+--- is BuildDialog.openLink's.
+function BuildDialog.open(mode, link)
 	if BuildDialog.disabled then
-		if BuildDialog.fallback ~= nil then
+		if BuildDialog.fallback ~= nil and link == nil then
 			BuildDialog.fallback()
 		end
 		return false
 	end
+	BuildDialog.link = link
 	local frame = BuildDialog.ensure()
 	BuildDialog.place()
 	BuildDialog.verdict, BuildDialog.editing = nil, false
@@ -2223,6 +2245,14 @@ function BuildDialog.open(mode)
 		BuildDialog.selfCheck()
 	end
 	return true
+end
+
+--- /fs link (L4.4): the copy tab holding a character's site page (`url`) instead of the
+--- export, selected for Ctrl+C, under "<name>'s page on foreversixty.gg. Press Ctrl+C, then
+--- paste it in your browser." A tab click or closing the dialog goes back to the export.
+--- False when the dialog cannot show itself (the caller prints the address instead).
+function BuildDialog.openLink(url, name)
+	return BuildDialog.open("copy", { url = url, name = name })
 end
 
 --- Hide the dialog and give the keyboard back (OnHide does it too, for the Escape the

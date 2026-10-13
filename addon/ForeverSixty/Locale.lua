@@ -21,6 +21,7 @@ local L = {
 		"/fs copy: copy my character for the site",
 		"/fs chip: show or hide the chip",
 		"/fs inspect: gear and talents of your target",
+		"/fs link: copy a player's site page",
 		"/fs options: open the settings page",
 		"/fs diag: what is not working",
 		"/fs help: every command",
@@ -286,7 +287,7 @@ local L = {
 	minimapRightClick = "Right-click: settings",
 	minimapNoBuild = "No build loaded",
 
-	-- The Settings page (spec section 4.11, L3.5 and fix rounds 1 and 2): seven switches, each
+	-- The Settings page (spec section 4.11, L3.5 and fix rounds 1 and 2): eight switches, each
 	-- hint saying what the switch does; Reset positions; the command list; the addon data and
 	-- the player ratings lines at the foot, which never print a build number (the first that
 	-- is not current repeated under the title). ASCII ">" only: this client's font has no
@@ -302,6 +303,11 @@ local L = {
 		.. "Off: type /fs options or use Options > AddOns.",
 	settingsTooltip = "Gear tips on item tooltips",
 	settingsTooltipHint = "Adds a line to item tooltips: is it in your build, and does it beat what you wear.",
+	-- L4.4: the eighth switch (spec section 4.11). The badge leads the message, after the
+	-- name: a chat filter cannot touch the name without breaking its link and the reply.
+	settingsBadges = "Score badges in chat",
+	settingsBadgesHint = "Shows a player's Forever Score before their message in LFG, Trade, guild chat and "
+		.. "whispers.",
 	settingsBroadcast = "Share my build with my guild",
 	-- One line in player words; the ticked box shows the default (fix round 2, item 2).
 	settingsBroadcastHint = "Guildmates with Forever Sixty see your level, spec, build and gear gap. "
@@ -392,20 +398,19 @@ local L = {
 		.. "It updates every night.",
 	ratingsUnreadable = "The Forever Sixty Data addon could not be read. Update both addons.",
 	ratingsUpdateAddon = "Your Forever Sixty Data is newer than this addon understands. Update Forever Sixty.",
-	ratingsGenerated = "Data from %s",
-	ratingsStale = "This data is more than three days old. Update Forever Sixty Data.",
-	ratingsTooltip = "Forever Sixty rating %d, over %d fights",
-	ratingsOutput = "Output",
-	ratingsSurvival = "Survival",
-	ratingsMechanics = "Mechanics",
-	ratingsUtility = "Utility",
-	ratingsPreparation = "Preparation",
-	ratingsActivity = "Activity",
 	-- The Forever Score, read from the nightly record (Score.lua).
 	scoreAsOf = "as of %s",
 	-- "Forever Score 1830 · Epic · as of 4 Nov": the score, its tier, its date.
 	scoreLine = "Forever Score %d",
-	scoreNoLogs = "No Forever Score yet: this character has no logs on the site.",
+	-- A character the record does not have, or with no logs: never a zero (spec section 4.6).
+	scoreNoLogs = "Forever Score: no logs yet",
+	-- A guildmate's hello or snapshot, after the score: level, spec, gear gap (L4.4).
+	scoreLive = "Level %d %s · gap %d (live)",
+	-- The player tooltip's muted hint, its parts joined by exportTreeSeparator.
+	scoreShiftHint = "Shift: score details",
+	scoreLinkHint = "/fs link: site page",
+	-- The score before a message in chat, in the tier colour (surfaces/ChatBadges.lua).
+	badge = "[%d]",
 	scoreTierCommon = "Common",
 	scoreTierUncommon = "Uncommon",
 	scoreTierRare = "Rare",
@@ -418,7 +423,6 @@ local L = {
 	scoreParses = "Parses",
 	scoreAttendance = "Attendance",
 	scoreDiscipline = "Discipline",
-	scoreGuildStanding = "Guild standing %d",
 	overviewRating = "Your rating on the site: %d, over %d fights",
 	-- The Overview's personal rating card (design section 3): always
 	-- shown, its detail widened by the advanced-detail toggle.
@@ -978,6 +982,16 @@ L.diagPanelClosed = "closed"
 L.diagPanelFailed = "The character panel tab failed and is off until /reload: %s"
 L.diagPanelNoPane = "Panel: this client has no character pane (CharacterFrame); the tab is off"
 L.diagPanelTall = "Panel: the flyout is taller than the screen"
+
+-- The player tooltip and the chat badges (L4.4).
+L.diagPlayerTooltipHook = "Player tooltip: drawn through the %s hook"
+L.diagPlayerTooltipFailed = "The player tooltip hook failed once and turned itself off: %s"
+L.diagChatBadges = "Chat badges: %s"
+L.diagNoChatFilter = "This client has no chat filter API; chat shows no score badges."
+L.diagChatBadgesFailed = "The chat badges failed once and turned themselves off: %s"
+-- /fs link: the build dialog's copy box holds the character's site page.
+L.dialogLinkLead = "%s's page on " .. L.siteName .. ". Press Ctrl+C, then paste it in your browser."
+L.dialogLinkCopied = "You copied %s's page. Paste it in your browser."
 
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel

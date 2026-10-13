@@ -54,6 +54,9 @@ read_globals = {
 	-- Addon messages (Comms.lua, contract 2), all behind Theme's capability checks.
 	"C_ChatInfo", "SendAddonMessage", "RegisterAddonMessagePrefix",
 	"IsInGuild", "GetNumGuildMembers", "GetGuildRosterInfo", "UnitIsGroupLeader",
+	-- The player tooltip and the chat badges (L4.4), each behind a type check. The chat
+	-- filter API itself is read through _G in Compat.addChatFilter.
+	"UnitExists", "UnitIsUnit", "GetPlayerInfoByGUID",
 	-- `unpack` is a Lua 5.1 global (5.4 only has `table.unpack`); std =
 	-- lua51 already declares it standard, so it needs no entry here.
 	-- Codec.lua binds whichever of the two exists -- see the narrow

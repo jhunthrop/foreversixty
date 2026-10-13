@@ -88,6 +88,38 @@ change the named constant if it differs from the default.
 | 45 | Character-panel tab button (L4.3) | open the character pane (C): a flat "Forever Sixty" button at the pane's bottom edge right of the client's last tab (at the pane's bottom right when no `CharacterFrameTab<n>` resolves); nothing on the pane is hooked or written. `/dump CharacterFrame ~= nil, CharacterFrameTab1 ~= nil, CharacterFrame.numTabs, ForeverSixtyPanelTab ~= nil` then `/run local p,r,rp,x,y=ForeverSixtyPanelTab:GetPoint() print(p, r and r:GetName(), rp, x, y, ForeverSixtyPanelTab:GetParent():GetName())` | `PanelTab.ensureButton`, `lastTab` (`CharacterFrameTab1..10`, the highest shown), `Theme.SIZES.panelTabWidth`/`panelTabHeight`/`panelTabGap` |
 | 46 | Panel flyout at 24 (L4.3) | the level 24 hunter on the default build: click the button: a panel TOPLEFT at the pane's TOPRIGHT headed "Forever Sixty" with "Next targets" (up to five rows: icon, name in its quality colour, "+N DPS" in green, "<slot> · <the tooltip's own source line>" muted; each the worn slot's hover "Next upgrade"), "Rotation" (the band's list numbered, conditions in plain words, two lines at most, no parentheses; an ability not learned yet muted, "at level N", last), "Build" ("Beast Mastery 31 / Marksmanship 20", "N of M points on plan", "K off plan" in red only when K > 0, "Use a different build" and "Copy my character" opening the dialog's two tabs); no Sim or Last raid below 60. Click again: gone; close the pane with it open: it goes with the pane. Counts: `/fs diag` reads "Panel: open, N targets, rotation M rows"; the regions: `/run for _,c in ipairs({ForeverSixtyPanelFlyout:GetChildren()}) do if c.title and c:IsShown() then local n=0 for _,k in ipairs({c:GetChildren()}) do if k:IsShown() then n=n+1 end end print(c.title:GetText(), n) end end` (rows for targets and rotation, buttons for build and sim) | `PanelTab` `targets`/`rotationRows`/`buildRegion`/`model`/`layout`, `Rotation.plainCondition`/`learnedAt`, `Theme.SIZES.panel*` |
 | 47 | Panel at 60 with the inbox fixture (L4.3) | on the level 60 character, `docs/contracts/fixtures/inbox-v2.json`'s `weights`, `sim_result` and `last_raid` messages copied into `WTF/.../SavedVariables/ForeverSixtyInbox.lua` (as Lua) with `character` set to that character's key (`us/<Realm>/<Name>`, as `ForeverSixtyDB.characters` spells it) and the `weights` spec its own: "Sim" with "Your sim: 412.6 DPS" and the top three weights in DPS per point, "Sim me" (hover: the two lines naming the site's sim access); click it: it reads "Sim queued; results after your next login" and `/dump ForeverSixtyDB.outbox.sim_request` shows character, spec, requested_at and an FS1 gear_code; "Last raid · as of 9 Dec" with "Lucifron · 71st percentile" and "biggest loss downtime · 0 deaths · missed flask · rotation 82%" muted. Without the messages both regions are absent | `PanelTab.simRegion`/`raidRegion`/`simMe`, `Codec.MESSAGE_TYPES.sim_result`, `Export.simRequest` → `Export.saveOutbox` |
+| 48 | Player tooltip hook (L4.4) | `/dump TooltipDataProcessor ~= nil, Enum and Enum.TooltipDataType and Enum.TooltipDataType.Unit`, then `/fs diag verbose`: "Player tooltip: drawn through the processor hook" (or "legacy": `GameTooltip`'s `OnTooltipSetUnit`) | `PlayerTooltip.hasUnitProcessor`; the item tooltip no longer hooks units |
+| 49 | Chat filter API and its arguments (L4.4) | `/dump ChatFrame_AddMessageEventFilter ~= nil, ChatFrameUtil and ChatFrameUtil.AddMessageEventFilter ~= nil`; then `/run ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", function(_, _, ...) print(select("#", ...), (select(2, ...)), (select(4, ...)), (select(7, ...)), (select(9, ...)), (select(12, ...))) end)` and wait for a Trade line (it prints once per chat frame; `/reload` removes it): expect 14 or more arguments, the sender `Name-Realm`, `2. Trade - <zone>`, `2`, `Trade - <zone>`, a `Player-...` GUID. `/fs diag verbose` then names the API the badges took ("Chat badges: ChatFrame_AddMessageEventFilter") | `Compat.addChatFilter` (its comment states the shape), `Compat.channelBase` |
+| 50 | Sender names and channel names (L4.4) | the row 49 probe on `"CHAT_MSG_GUILD"` while a guildmate speaks: does the sender carry the last name (`Smoke Gouda-ClassicBetaPvP`) or the first alone (`Smoke-ClassicBetaPvP`)? With them targeted, `/dump GetPlayerInfoByGUID(UnitGUID("target"))` (the 6th value is the name the badges fall back to); `/dump C_ChatInfo and C_ChatInfo.GetChannelShortcutForChannelID and C_ChatInfo.GetChannelShortcutForChannelID(2), C_ChatInfo and C_ChatInfo.GetChannelShortcutForChannelID and C_ChatInfo.GetChannelShortcutForChannelID(26)` | `ChatBadges`' GUID fallback (`recordFor`); `Compat.BADGE_CHANNEL_NAMES`, `Theme.channelShortcut` |
+| 51 | A logged character's tooltip (L4.4) | with the L4.4 data fixture installed (below), hover Bow Jackzon (yourself: target yourself and hover the portrait, or have a guildmate capture you): after the client's lines, "Forever Score 1240 · Rare · as of 13 Oct" in the rare blue, then muted "Shift: score details · /fs link: site page". An NPC: nothing added | `PlayerTooltip.section`, `Score.lines`, `Score.tierColor` |
+| 52 | An unlogged character (L4.4) | hover Facep Alm (no logs in the fixture) or any player the fixture does not have: one muted line, "Forever Score: no logs yet", never a zero. Without the data addon (the empty `addon/ForeverSixtyData`): no score line at all | `L.scoreNoLogs` |
+| 53 | Shift held (L4.4) | hover Bow Jackzon, then hold Shift without moving the mouse: the hint goes and "Gear 380", "Experience 410", "Parses 300", "Attendance 100", "Discipline 50" follow the score; let go: the hint is back | `PlayerTooltip.onModifierChanged` (`MODIFIER_STATE_CHANGED`, `GameTooltip:SetUnit`) |
+| 54 | A guildmate with the addon: the live line (L4.4) | Smoke Gouda online with Forever Sixty and "Share my build with my guild" on; `/fs seen` lists them; hover them: "Forever Score 1610 · Epic · as of 12 Oct", then muted "Level <n> <Spec> · gap <n> (live)". Facep Alm with the addon: "Forever Score: no logs yet" then the live line | `PlayerTooltip.liveEntry`, `Comms.seen` |
+| 55 | Trade with two badged names (L4.4) | Bow Jackzon and Smoke Gouda each say a line in Trade (and in guild chat, and Smoke whispers Bow): "[1240]" in rare blue and "[1610]" in epic purple in front of each message, the message itself as typed; each name unchanged and still a link (a click whispers that player); after Smoke's whisper, R replies to Smoke. General chat: no badge | `ChatBadges.filter`, `ChatBadges.decorate` |
+| 56 | Badges off (L4.4) | Settings > "Score badges in chat" off: the next Trade, guild and whisper lines show no badge; on: back without a reload. "Gear tips on item tooltips" off: the player tooltip's section is gone too | `ChatBadges.refresh`, `Prefs.flag("badges")` |
+| 57 | `/fs link` (L4.4) | target Smoke Gouda, `/fs link`: the build dialog opens on its copy tab with "foreversixty.gg/character/us/classic-beta-pvp/smoke-gouda-classicbetapvp" selected, under "Smoke Gouda's page on foreversixty.gg. Press Ctrl+C, then paste it in your browser."; Ctrl+C reads "You copied Smoke Gouda's page. ..."; a click on "Copy my character" shows the export again. `/fs link Bow Jackzon-ClassicBetaPvP` and a bare `/fs link` (no target, nothing under the mouse: yourself) do the same; `/fs help` lists it | `Options.link`, `PlayerTooltip.siteLink`, `BuildDialog.openLink` |
+
+### The L4.4 data fixture
+
+`addon/fixtures/ForeverSixtyData-l44/` is a whole `ForeverSixtyData` addon (TOC and `Data.lua`)
+in the current record format, generated 2026-10-13, for three characters on Classic Beta PvP:
+Bow Jackzon (logged: 1240, rare, all five components), Smoke Gouda (logged: 1610, epic) and
+Facep Alm (no logs). It is invented for the captures and never ships. To install it, `/logout`
+to the character screen, point the client's `ForeverSixtyData` folder at it, then Enter World
+(the folder name must stay `ForeverSixtyData`; the TOC inside is named for it). From a Windows
+command prompt:
+
+```bat
+cd "C:\Program Files (x86)\World of Warcraft\_classic_beta_\Interface\AddOns"
+rmdir ForeverSixtyData
+mklink /D ForeverSixtyData C:\Users\jhunt\Documents\Repos\foreversixty\addon\fixtures\ForeverSixtyData-l44
+```
+
+`rmdir` removes only the existing link, never the repository folder it points at. To restore,
+the same at the character screen with `...\addon\ForeverSixtyData` as the target. `/fs diag`
+and the Settings page's foot read "Player ratings (on player tooltips): current" with it in
+place; three days after its date they say "too old" (move `generated` and `as_of` forward to
+capture later).
 
 ## Findings
 
@@ -139,6 +171,13 @@ Run on one character per role and tick here:
       window bare, and the chip stays beside the minimap while the window is open.
 - [ ] The keybind (Key Bindings > AddOns > Forever Sixty) prints the command list.
 - [ ] `/fs help` prints the command list, then the two muted testers' lines.
+- [ ] With the data addon installed, a logged player's tooltip ends with the Forever Score in its
+      tier colour and the muted Shift hint; Shift shows the components; a player with no logs reads
+      "Forever Score: no logs yet"; a guildmate heard on GUILD adds the live line (rows 51-54).
+- [ ] Trade, LookingForGroup, guild chat and received whispers put the sender's score in front of
+      the message, the name still a working link and R still replying to the right player;
+      "Score badges in chat" off leaves every line plain (rows 55-56).
+- [ ] `/fs link` opens the build dialog's copy tab on the player's site page (row 57).
 
 One screenshot closes this lane: the tracker plus the talent glow with the talent
 window open.

@@ -28,8 +28,9 @@ Rotation.lua
 Score.lua
 Comms.lua
 Inspect.lua
-Ratings.lua
 surfaces\ItemTooltip.lua
+surfaces\PlayerTooltip.lua
+surfaces\ChatBadges.lua
 TalentGlow.lua
 Minimap.lua
 surfaces\Chip.lua

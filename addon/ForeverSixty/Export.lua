@@ -437,6 +437,31 @@ function Export.outboxName(name, realm)
 	return name .. "-" .. compact
 end
 
+--- One segment of a site path the way the site and the companion slug it: lower-cased,
+--- each run of spaces one hyphen (web/src/lib/characters.ts characterSlug,
+--- companion/internal/character Key). Pure.
+local function siteSegment(text)
+	return (text or ""):lower():gsub("%s+", "-")
+end
+
+--- A character's page on the site: SITE/character/<region>/<ruleset>/<name-realm>, the
+--- ruleset being the realm (Export.save's own `ruleset = realm`) and the name-realm the
+--- outbox's (Export.outboxName). A region this client cannot name ("" from
+--- Export.regionSegment) is read as the first one, "us". Pure.
+function Export.siteLink(name, realm, region)
+	if region == nil or region == "" then
+		region = Export.REGION_NAMES[1]:lower()
+	end
+	return L.siteName .. "/character/" .. siteSegment(region) .. "/" .. siteSegment(realm) .. "/"
+		.. siteSegment(Export.outboxName(name, realm))
+end
+
+--- This client's region segment for Export.siteLink.
+function Export.region()
+	local regionIndex = type(GetCurrentRegion) == "function" and GetCurrentRegion() or nil
+	return Export.regionSegment(Compat.regionName(), regionIndex)
+end
+
 --- This character's name as the outbox writes it (Export.outboxName), so the build
 --- dialog can tell whether the outbox it reads is this character's.
 function Export.outboxCharacter()

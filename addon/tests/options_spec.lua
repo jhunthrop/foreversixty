@@ -68,6 +68,68 @@ describe("Options", function()
 		assert.are.same({ "paste", "copy" }, opened)
 	end)
 
+	-- L4.4 ruling 2: the player tooltip cannot be clicked, so /fs link copies the site page.
+	describe("/fs link", function()
+		local opened
+
+		before_each(function()
+			opened = {}
+			require("BuildDialog").openLink = function(url, name)
+				opened[#opened + 1] = { url = url, name = name }
+				return true
+			end
+		end)
+
+		after_each(function()
+			_G.UnitExists, _G.UnitIsPlayer, _G.ForeverSixtyData = nil, nil, nil
+		end)
+
+		it("opens the copy box on the named character's site page, printing nothing", function()
+			assert.are.same({}, Options.handle("link Smoke Gouda-Whitemane"))
+			assert.are.same({ url = "foreversixty.gg/character/us/whitemane/smoke-gouda-whitemane", name = "Smoke Gouda" },
+				opened[1])
+		end)
+
+		it("reads a bare name, and a name with this realm spelled as senders spell it, on this realm", function()
+			Options.handle("link Alice")
+			Options.handle("link Alice-Ashbringer")
+			assert.are.equal("foreversixty.gg/character/us/ashbringer/alice-ashbringer", opened[1].url)
+			assert.are.equal(opened[1].url, opened[2].url)
+		end)
+
+		it("takes the record's own profile where the data addon has one", function()
+			_G.ForeverSixtyData = { format = 2, generated = "2026-11-04", guilds = {}, characters = {
+				["Alice-Ashbringer"] = { score = 900, tier = "uncommon", fights = 3, profile = "/character/us/normal/alice" },
+			} }
+			Options.handle("link Alice")
+			assert.are.equal("foreversixty.gg/character/us/normal/alice", opened[1].url)
+		end)
+
+		it("means the target, else the player under the mouse, else this character", function()
+			local exists = { target = true, mouseover = true }
+			local players = { target = true, mouseover = true }
+			_G.UnitExists = function(unit) return exists[unit] == true end
+			_G.UnitIsPlayer = function(unit) return players[unit] == true end
+			_G.UnitName = function(unit)
+				return ({ target = "Tara", mouseover = "Moe", player = "Bob" })[unit], nil
+			end
+			Options.handle("link")
+			players.target = false
+			Options.handle("link")
+			exists.mouseover = false
+			Options.handle("link ")
+			assert.are.same({ "Tara", "Moe", "Bob" }, { opened[1].name, opened[2].name, opened[3].name })
+			assert.are.equal("foreversixty.gg/character/us/ashbringer/bob-ashbringer", opened[3].url)
+		end)
+
+		it("prints the address where the dialog cannot show itself", function()
+			require("BuildDialog").openLink = function()
+				return false
+			end
+			assert.are.same({ "foreversixty.gg/character/us/ashbringer/bob-ashbringer" }, Options.handle("link"))
+		end)
+	end)
+
 	it("has dropped the window's tab subcommands", function()
 		for _, command in ipairs({ "export", "follow FSB1:1.60.1.69893:paladin:111:", "gear", "settings" }) do
 			assert.are.same(Options.helpLines(), Options.handle(command), command)
@@ -106,7 +168,7 @@ describe("Options", function()
 	it("prints /fs help in chat", function()
 		Options.register()
 		SlashCmdList["FOREVERSIXTY"]("help")
-		-- The seven player lines, then the testers' two (fix round 3, item 5).
+		-- The player lines, then the testers' two (fix round 3, item 5).
 		assert.are.equal(#require("Locale").settingsCommands + 2, #state.printed)
 	end)
 

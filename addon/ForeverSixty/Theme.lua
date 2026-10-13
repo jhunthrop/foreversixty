@@ -1113,6 +1113,17 @@ function Theme.sendAddonMessage(prefix, text, channel)
 	return ok and (result == nil or result == true or result == 0)
 end
 
+--- The client's own name for a zone chat channel by its id (2 Trade, 26 LookingForGroup), or
+--- nil where it cannot say: the chat badges' channel names (Compat.badgeChannelNames). Here,
+--- beside the addon messages, as the one file that names C_ChatInfo.
+function Theme.channelShortcut(id)
+	if type(C_ChatInfo) ~= "table" or type(C_ChatInfo.GetChannelShortcutForChannelID) ~= "function" then
+		return nil
+	end
+	local ok, name = pcall(C_ChatInfo.GetChannelShortcutForChannelID, id)
+	return ok and type(name) == "string" and name ~= "" and name or nil
+end
+
 --- Seconds on the client's clock (GetTime), for rate limits; 0 where there is no clock.
 function Theme.now()
 	if type(GetTime) == "function" then
