@@ -14,6 +14,7 @@ local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Compat = ns.Compat or require("Compat")
+local Export = ns.Export or require("Export")
 local Talents = ns.Talents or require("Talents")
 local Theme = ns.Theme or require("Theme")
 local Follow = ns.Follow or require("Follow")
@@ -316,15 +317,17 @@ local function shorten(name)
 end
 
 --- The player's hello (and snapshot!) fields: level, spec, gear gap, build name, score date.
---- The gear gap is Progress.biggestGap's delta as a whole number (0 with no build or nothing
---- behind), in DPS where the data has a DPS per point for the spec; the score date is the
---- Forever Score record's as_of, or "-" with none.
+--- The spec is Comms.ownSpec's (the one the guild tab's own row shows) and the gear gap
+--- Comms.gearGap's in it, so a guildmate reads the number the player's own row does. Contract 2
+--- makes the gap an integer, so with nothing to score (no build, no weights, no stats) it goes
+--- as 0 (L5.1 fix round 2: a v1 receiver drops a hello whose gap is not digits). The score date
+--- is the Forever Score record's as_of, or "-" with none.
 function Comms.helloFields()
 	local data = Comms.data or ns.Data
 	local build = Follow.build
 	local classSlug = Talents.playerClassSlug()
 	local ranks = data ~= nil and Talents.readRanks(data) or {}
-	local spec = data ~= nil and classSlug ~= nil and Gear.specOf(data, classSlug, ranks) or nil
+	local spec = data ~= nil and Comms.ownSpec(data, build, classSlug, ranks) or nil
 	local gap = Comms.gearGap(data, build, spec, ranks) or 0
 	local record = Score.forCharacter(Compat.playerName() or "")
 	local asOf = record ~= nil and type(record.as_of) == "string" and record.as_of or "-"
@@ -336,20 +339,89 @@ function Comms.helloFields()
 	return fields
 end
 
---- The player's gear gap as a hello sends it, and its unit: Progress.biggestGap's delta as a
---- whole number (0 with nothing behind) in DPS ("dps") where the data has a DPS per point
---- for `spec` at the character's level (Gear.dpsFigure, as the tooltip reads it), else in
---- score points ("pts"). nil without a build or data. The guild tab's own row reads it too
---- (L5.1 fix round 1, item 2).
-function Comms.gearGap(data, build, spec, ranks)
-	if build == nil or data == nil then
+--- The tree an active build is for, as a spec slug: the build's own `spec` (a data default
+--- carries one), else the class tree its plan spends the most points in ("hunter-marksmanship"
+--- for a Marksmanship plan, whatever is spent so far); nil when neither says.
+function Comms.buildSpec(data, build)
+	if type(build) ~= "table" then
 		return nil
 	end
-	local perPoint = Gear.dpsFigure(data, spec, Compat.playerLevel())
-	local dps = perPoint ~= nil and perPoint.dps or nil
-	local slots = Progress.slots(data, build, ranks or {}, Gear.readEquipped(), dps)
+	if type(build.spec) == "string" and build.spec ~= "" then
+		return build.spec
+	end
+	local class = type(data) == "table" and type(data.classes) == "table" and data.classes[build.classSlug] or nil
+	if type(class) ~= "table" or type(class.tabs) ~= "table" then
+		return nil
+	end
+	local spent = {}
+	for _, point in ipairs(build.order or {}) do
+		if type(point) == "table" and type(point.tab) == "number" then
+			spent[point.tab] = (spent[point.tab] or 0) + 1
+		end
+	end
+	local best, bestTab = 0, nil
+	for tab, entry in ipairs(class.tabs) do
+		if (spent[tab] or 0) > best and type(entry) == "table" and type(entry.name) == "string" then
+			best, bestTab = spent[tab], tab
+		end
+	end
+	return bestTab ~= nil and build.classSlug .. "-" .. Export.slugify(class.tabs[bestTab].name) or nil
+end
+
+--- The player's spec as the guild sees it: the active build's (Comms.buildSpec), else the
+--- talents' leading tree (Gear.specOf, the chip's); nil without either. The hello names it,
+--- the gear gap is measured in it, and the guild tab's own row shows it (L5.1 fix round 2: the
+--- unit word comes from the spec the row shows).
+function Comms.ownSpec(data, build, classSlug, ranks)
+	local spec = Comms.buildSpec(data, build)
+	if spec ~= nil then
+		return spec
+	end
+	if classSlug == nil or type(data) ~= "table" or type(data.classes) ~= "table"
+		or type(data.classes[classSlug]) ~= "table" then
+		return nil
+	end
+	local ok, talentSpec = pcall(Gear.specOf, data, classSlug, ranks or {})
+	return ok and talentSpec or nil
+end
+
+--- The player's gear gap in `spec`, scored as the chip scores (L5.1 fix round 2, the L3.4
+--- "one source of weights" ruling): Gear.currentWeights at the character's level (the sim's
+--- weights and DPS per point while a weights message for `spec` is in use, else the shipped
+--- weights and the band's figure) with its weapon term, so a planned weapon's own DPS counts
+--- (Chip.scoredUpgrades' rule). Answers the biggest slot behind (Progress.biggestGap) rounded
+--- as the chip shows it (Progress.roundedGain: one decimal in DPS, whole points) and then to a
+--- whole number for the wire, and its unit: "dps" with a DPS per point, else "pts"; 0 when
+--- nothing is behind. nil when nothing can be scored: no build, data or spec, no weights for
+--- `spec`, or no planned slot carrying stats. `equipped` (Gear.readEquipped's) and `level`
+--- (the client's) may be given.
+function Comms.gearGap(data, build, spec, ranks, equipped, level)
+	if build == nil or type(data) ~= "table" or spec == nil then
+		return nil
+	end
+	level = level or Compat.playerLevel()
+	local current = Gear.currentWeights(data, spec, ForeverSixtyInbox, Export.characterKey(), level)
+	if type(current) ~= "table" or type(current.weights) ~= "table" then
+		return nil
+	end
+	-- Chip.scoredUpgrades counts in the sim's own DPS per point while one is in use, else the
+	-- band's: both are current.dpsPerPoint.
+	local dps = current.dpsPerPoint
+	local slots = Progress.slots(data, build, ranks or {}, equipped or Gear.readEquipped(), dps, current)
+	local scored = false
+	for _, row in ipairs(slots) do
+		scored = scored or row.delta ~= nil
+	end
+	if not scored then
+		return nil
+	end
+	local unit = dps ~= nil and "dps" or "pts"
 	local worst = Progress.biggestGap(slots)
-	return worst ~= nil and math.floor(-worst.delta + 0.5) or 0, dps ~= nil and "dps" or "pts"
+	if worst == nil then
+		return 0, unit
+	end
+	local shown = Progress.roundedGain(-worst.delta, dps ~= nil and "dps" or "score")
+	return math.floor(shown + 0.5), unit
 end
 
 --- The unit a guildmate's gear gap is in, read from their spec and level the way their own

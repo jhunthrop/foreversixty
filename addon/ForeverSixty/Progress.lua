@@ -477,17 +477,24 @@ end
 
 --- A slotVerdict for every slot the plan or the paper doll names, in
 --- paper-doll order (weapons first for a melee spec). With no build,
---- every worn item reads "noplan".
-function Progress.slots(data, build, ranks, equipped, dpsPerPoint)
+--- every worn item reads "noplan". `current` (Gear.currentWeights' answer,
+--- optional): its spec, weights and weapon term, so a weapon's own DPS counts
+--- as the chip and the tooltip count it (L5.1 fix round 2); without it, the
+--- talents' spec and its shipped weights, and no weapon term.
+function Progress.slots(data, build, ranks, equipped, dpsPerPoint, current)
 	equipped = equipped or {}
 	local spec, weights = weightsFor(data, build, ranks)
+	local weapon
+	if type(current) == "table" and type(current.weights) == "table" then
+		spec, weights, weapon = current.spec or spec, current.weights, current.weapon
+	end
 	local planned = {}
 	for _, entry in ipairs(build ~= nil and build.gear or {}) do
 		planned[entry.slot] = entry
 	end
 	local rows = {}
 	for _, slot in ipairs(slotOrder(spec)) do
-		local verdict = Progress.slotVerdict(slot, planned[slot], equipped[slot], weights, dpsPerPoint)
+		local verdict = Progress.slotVerdict(slot, planned[slot], equipped[slot], weights, dpsPerPoint, weapon)
 		if verdict ~= nil then
 			rows[#rows + 1] = verdict
 		end

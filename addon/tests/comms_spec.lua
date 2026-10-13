@@ -180,6 +180,33 @@ describe("Comms, the FS1 protocol", function()
 		end)
 	end)
 
+	-- L5.1 fix round 2, item 1: the gap a hello carries is scored as the chip scores.
+	describe("the gear gap a hello carries", function()
+		local DATA = {
+			classes = { hunter = { tabs = { { name = "Beast Mastery" }, { name = "Marksmanship" }, { name = "Survival" } } } },
+			weights = { ["hunter-marksmanship"] = { agility = 1 } },
+			dpsPerPoint = { ["hunter-marksmanship"] = { reference = "ranged_attack_power", dps = 0.07, weaponDps = 1.1,
+				[20] = { reference = "ranged_attack_power", dps = 0.1, weaponDps = 1 } } },
+		}
+		local BUILD = { classSlug = "hunter", order = { { tab = 2, tier = 1, column = 1 } },
+			gear = { { slot = "ranged", itemId = 9001, stats = { weapon_dps = 7.5 } } } }
+		local WORN = { ranged = { itemId = 9002, link = "item:9002", stats = { weapon_dps = 4 } } }
+
+		it("counts a planned weapon's own DPS at the band's weapon term, rounded as the chip shows it", function()
+			-- 3.5 DPS behind (7.5 - 4 weapon DPS at 1 DPS each), shown 3.5, sent as 4.
+			assert.are.same({ 4, "dps" }, { Comms.gearGap(DATA, BUILD, "hunter-marksmanship", {}, WORN, 26) })
+		end)
+
+		it("measures in the build's spec, and is nil with nothing to score", function()
+			assert.are.equal("hunter-marksmanship", Comms.ownSpec(DATA, BUILD, "hunter", {}))
+			assert.are.equal("hunter-beast-mastery", Comms.ownSpec(DATA, nil, "hunter", {}))
+			assert.is_nil(Comms.gearGap(DATA, BUILD, "hunter-beast-mastery", {}, WORN, 26))
+			assert.is_nil(Comms.gearGap(DATA, { classSlug = "hunter", gear = { { slot = "ranged", itemId = 9001 } } },
+				"hunter-marksmanship", {}, WORN, 26))
+			assert.is_nil(Comms.gearGap(DATA, nil, "hunter-marksmanship", {}, WORN, 26))
+		end)
+	end)
+
 	-- Another player's message must never become a Lua error here. No client is installed:
 	-- the listeners and the reply are made to fail, and onEvent has to absorb it.
 	describe("a message from another player", function()

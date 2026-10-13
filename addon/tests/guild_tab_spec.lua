@@ -252,16 +252,17 @@ describe("GuildTab", function()
 			assert.are.same({ "Bow Jackzon", "Facep Alm", "Smoke Gouda", "Quiet Person" }, names(rows))
 		end)
 
-		it("sorts by any column either way, members without a value last both ways", function()
+		it("sorts by any column either way, online first, members without a value last both ways", function()
+			-- Online rows lead in every sort (fix round 2, persona item 4): Bow and Facep, then Smoke and Quiet.
 			local characters = _G.ForeverSixtyData.characters
 			local up = GuildTab.rows(ROSTER, characters, {}, { key = "level", descending = false })
 			assert.are.same({ "Facep Alm", "Bow Jackzon", "Quiet Person", "Smoke Gouda" }, names(up))
 			local down = GuildTab.rows(ROSTER, characters, {}, { key = "gear", descending = true })
-			assert.are.same({ "Smoke Gouda", "Bow Jackzon", "Facep Alm", "Quiet Person" }, names(down))
+			assert.are.same({ "Bow Jackzon", "Facep Alm", "Smoke Gouda", "Quiet Person" }, names(down))
 			local gearUp = GuildTab.rows(ROSTER, characters, {}, { key = "gear", descending = false })
-			assert.are.same({ "Bow Jackzon", "Smoke Gouda", "Facep Alm", "Quiet Person" }, names(gearUp))
+			assert.are.same({ "Bow Jackzon", "Facep Alm", "Smoke Gouda", "Quiet Person" }, names(gearUp))
 			local byName = GuildTab.rows(ROSTER, characters, {}, { key = "name", descending = true })
-			assert.are.same({ "Smoke Gouda", "Quiet Person", "Facep Alm", "Bow Jackzon" }, names(byName))
+			assert.are.same({ "Facep Alm", "Bow Jackzon", "Smoke Gouda", "Quiet Person" }, names(byName))
 		end)
 
 		it("toggles a header's direction on a second click; a new header starts high to low for numbers", function()
@@ -520,7 +521,7 @@ describe("GuildTab", function()
 			start()
 			open()
 			click(GuildTab.headers.level.button)
-			assert.are.same({ "Smoke Gouda", "Quiet Person", "Bow Jackzon", "Facep Alm" }, drawnNames())
+			assert.are.same({ "Bow Jackzon", "Facep Alm", "Smoke Gouda", "Quiet Person" }, drawnNames())
 			click(GuildTab.headers.level.button)
 			assert.are.same({ "Facep Alm", "Bow Jackzon", "Quiet Person", "Smoke Gouda" }, drawnNames())
 			-- The sorted column's header is gold with its arrow; the others muted, no arrow.
@@ -910,7 +911,7 @@ describe("GuildTab", function()
 				assert.are.equal("90%", drawn.cells.attendance:GetText())
 				-- It counts in the live tally.
 				assert.are.equal(1, GuildTab.last.counts.live)
-				assert.is_truthy(GuildTab.countsLine:GetText():find("1 of 2 online run", 1, true))
+				assert.is_truthy(GuildTab.countsLine:GetText():find("1 live of 2 online", 1, true))
 			end)
 
 			it("reads its spec from the build's own spec, the plan's tree, else the talents", function()
@@ -986,12 +987,27 @@ describe("GuildTab", function()
 			it("says on hover what Gear and Gap hold", function()
 				start()
 				open()
-				for key, text in pairs({ gear = "Gear score from the nightly record",
-					gap = "Gear gap reported live by the member's addon" }) do
+				-- Fix round 2 (persona item 1): Gap says what it measures and what 0 means.
+				for key, text in pairs({ gear = { "Gear score from the nightly record" },
+					gap = { "Gear gap reported live by the member's addon.",
+						"Biggest slot behind their build, in DPS or points; 0 means on plan." } }) do
 					local button = GuildTab.headers[key].button
+					local before = mock.countCalls(_G.GameTooltip, "AddLine")
 					button:GetScript("OnEnter")(button)
-					local added = mock.lastCall(_G.GameTooltip, "AddLine")
-					assert.are.equal(Theme.inlineColor("tooltipText", text), added[1])
+					local added, seen = {}, 0
+					for _, call in ipairs(_G.GameTooltip.calls) do
+						if call.method == "AddLine" then
+							seen = seen + 1
+							if seen > before then
+								added[#added + 1] = call[1]
+							end
+						end
+					end
+					local expected = { Theme.inlineColor("tooltipText", text[1]) }
+					for index = 2, #text do
+						expected[index] = Theme.inlineColor("tooltipMuted", text[index])
+					end
+					assert.are.same(expected, added, key)
 					button:GetScript("OnLeave")(button)
 				end
 			end)
@@ -1004,44 +1020,6 @@ describe("GuildTab", function()
 				for _, key in ipairs({ "spec", "gear", "attendance", "gap" }) do
 					assert.are.equal("", facep.cells[key]:GetText(), key)
 				end
-			end)
-		end)
-
-		-- Review item 5: every column sorts both ways, blanks last both ways.
-		describe("sorting each column", function()
-			local SEEN = {
-				["Bow Jackzon-ClassicBetaPvP"] = { spec = "hunter-survival", gearGap = 4, time = 990 },
-				["Facep Alm-ClassicBetaPvP"] = { spec = "mage-arcane", gearGap = 20, time = 990 },
-			}
-
-			local function sorted(key, descending)
-				return names(GuildTab.rows(ROSTER, _G.ForeverSixtyData.characters, SEEN,
-					{ key = key, descending = descending }))
-			end
-
-			before_each(function()
-				start()
-			end)
-
-			it("sorts by spec either way, a member without one last", function()
-				-- Arcane (Facep), Arms (Smoke, the record's), Survival (Bow); Quiet has none.
-				assert.are.same({ "Facep Alm", "Smoke Gouda", "Bow Jackzon", "Quiet Person" }, sorted("spec", false))
-				assert.are.same({ "Bow Jackzon", "Smoke Gouda", "Facep Alm", "Quiet Person" }, sorted("spec", true))
-			end)
-
-			it("sorts by score low to high as well as high to low, no score last", function()
-				assert.are.same({ "Bow Jackzon", "Smoke Gouda", "Facep Alm", "Quiet Person" }, sorted("score", false))
-				assert.are.same({ "Smoke Gouda", "Bow Jackzon", "Facep Alm", "Quiet Person" }, sorted("score", true))
-			end)
-
-			it("sorts by attendance either way, no attendance last", function()
-				assert.are.same({ "Smoke Gouda", "Bow Jackzon", "Facep Alm", "Quiet Person" }, sorted("attendance", false))
-				assert.are.same({ "Bow Jackzon", "Smoke Gouda", "Facep Alm", "Quiet Person" }, sorted("attendance", true))
-			end)
-
-			it("sorts by gap either way, no live gap last", function()
-				assert.are.same({ "Bow Jackzon", "Facep Alm", "Quiet Person", "Smoke Gouda" }, sorted("gap", false))
-				assert.are.same({ "Facep Alm", "Bow Jackzon", "Quiet Person", "Smoke Gouda" }, sorted("gap", true))
 			end)
 		end)
 
@@ -1203,33 +1181,6 @@ describe("GuildTab", function()
 			end)
 		end)
 
-		-- Item 6: the count line.
-		describe("the count line", function()
-			it("reads shown of total, then online guildmates running Forever Sixty", function()
-				start()
-				open()
-				assert.are.equal(string.format(L.guildTabCounts, 4, 4, 1, 2), GuildTab.countsLine:GetText())
-				assert.are.equal("4 of 4 shown · 1 of 2 online run Forever Sixty", GuildTab.countsLine:GetText())
-			end)
-
-			it("adds sharing off while the share switch is off, and the range while the list scrolls", function()
-				local many = {}
-				for index = 1, 30 do
-					many[index] = member(string.format("M%02d-ClassicBetaPvP", index), 60 - index, "MAGE", true)
-				end
-				start({ roster = many, sharingOff = true, data = false })
-				open()
-				assert.are.equal("30 of 30 shown · 0 of 30 online run Forever Sixty · sharing off · 1–20 of 30",
-					GuildTab.countsLine:GetText())
-				local wheel = GuildTab.holder:GetScript("OnMouseWheel")
-				wheel(GuildTab.holder, -1)
-				assert.are.equal("30 of 30 shown · 0 of 30 online run Forever Sixty · sharing off · 4–23 of 30",
-					GuildTab.countsLine:GetText())
-				assert.are.equal("3 of 97 shown · 0 of 3 online run Forever Sixty",
-					GuildTab.countsText({ shown = 3, total = 97, live = 0, online = 3 }, true, 1, 3, 3))
-			end)
-		end)
-
 		-- Item 7: the geometry the mock can see.
 		describe("the geometry", function()
 			it("draws an 8-unit scroll thumb on a track one step lighter than the border", function()
@@ -1251,9 +1202,10 @@ describe("GuildTab", function()
 				-- Bow and Facep online, then Smoke and Quiet: the rule in Facep's (row 2's) bottom pixel.
 				assert.are.equal(-(2 * height - Theme.SIZES.border), rule.points[#rule.points][5])
 				assert.are.equal(GuildTab.flyoutHeight(4, nil, false), flyout:GetHeight())
-				-- Sorted by a column, online and offline mix: no rule.
+				-- Sorted by a column (fix round 2, persona item 4): online rows still lead, the rule stays.
 				click(GuildTab.headers.level.button)
-				assert.is_false(rule:IsShown())
+				assert.is_true(rule:IsShown())
+				assert.are.equal(-(2 * height - Theme.SIZES.border), rule.points[#rule.points][5])
 			end)
 		end)
 
@@ -1306,6 +1258,287 @@ describe("GuildTab", function()
 				file:close()
 				assert.is_truthy(source:find("Comms.canPush(rankIndex)", 1, true))
 				assert.is_nil(source:find("PUSH_RANK", 1, true))
+			end)
+		end)
+	end)
+
+	-- L5.1 fix round 2 (the re-review of d2c901d1) and the personas' round-2 additions.
+	describe("fix round 2", function()
+		--- A font string's last colour, as six hex digits.
+		local function colorOf(region)
+			local call = mock.lastCall(region, "SetTextColor")
+			return call and Theme.hexOf(call[1], call[2], call[3]) or nil
+		end
+
+		--- The drawn row whose name cell reads `short`.
+		local function drawnRow(short)
+			for _, row in ipairs(GuildTab.rowFrames) do
+				if row.frame:IsShown() and row.cells.name:GetText() == short then
+					return row
+				end
+			end
+			return nil
+		end
+
+		--- The tooltip lines added since `before` AddLine calls.
+		local function addedLines(before)
+			local added, seen = {}, 0
+			for _, call in ipairs(_G.GameTooltip.calls) do
+				if call.method == "AddLine" then
+					seen = seen + 1
+					if seen > before then
+						added[#added + 1] = call[1]
+					end
+				end
+			end
+			return added
+		end
+
+		-- Item 1: the gear gap scores as the chip does (the weights, the weapon term, the rounding).
+		describe("the gear gap", function()
+			local SHORT_ASH_BOW, RANGER_BOW = 9002, 9001
+			local Gear, Progress, equipped
+
+			--- A hunter-like plan: the plan's tree is Marksmanship (the talents, with no points
+			--- spent, lead in Beast Mastery), a Ranger Bow planned over a worn Short Ash Bow. Only
+			--- Marksmanship has weights and a DPS figure, so the gap is measured in the spec the
+			--- row shows.
+			local function hunter(planStats)
+				start()
+				local data = GuildTab.data
+				data.weights = { ["hunter-marksmanship"] = { agility = 1, ranged_attack_power = 0.5 } }
+				data.dpsPerPoint = { ["hunter-marksmanship"] = { reference = "ranged_attack_power", dps = 0.07,
+					weaponDps = 1.1, healing = false,
+					[20] = { reference = "ranged_attack_power", dps = 0.1, weaponDps = 1 } } }
+				Comms.data = data
+				Follow.build = { classSlug = "hunter", dataBuild = "1.60.1.69893", name = "MM leveling",
+					order = { { tab = 2, tier = 1, column = 1 } },
+					gear = { { slot = "ranged", itemId = RANGER_BOW, stats = planStats } } }
+				Gear = require("Gear")
+				Progress = require("Progress")
+				equipped = { ranged = { itemId = SHORT_ASH_BOW, link = "item:" .. SHORT_ASH_BOW,
+					equipLoc = "INVTYPE_RANGED", stats = { weapon_dps = 4 } } }
+				stub(Gear, "readEquipped").returns(equipped)
+				return data
+			end
+
+			after_each(function()
+				if Gear ~= nil and type(Gear.readEquipped) == "table" then
+					Gear.readEquipped:revert()
+				end
+			end)
+
+			it("counts a planned bow's own DPS at the weapon term: the self row and the hello carry the chip's figure",
+				function()
+					local data = hunter({ weapon_dps = 7.5 })
+					-- The chip's own score for the swap (Gear.currentWeights through Progress.itemVerdict):
+					-- +3.5 DPS (Ranger Bow).
+					local current = Gear.currentWeights(data, "hunter-marksmanship", nil, nil, 26)
+					local verdict = Progress.itemVerdict("ranged", Follow.build.gear[1], equipped, current.weights,
+						current.dpsPerPoint, current.weapon)
+					assert.are.equal(3.5, Progress.roundedGain(-verdict.delta, "dps"))
+					open()
+					local own = drawnRow("Bow Jackzon")
+					assert.are.equal("Marksmanship", own.cells.spec:GetText())
+					assert.are.equal("4 DPS", own.cells.gap:GetText())
+					assert.are.equal(Theme.HEX.body, colorOf(own.cells.gap))
+					local fields = Comms.helloFields()
+					assert.are.equal("hunter-marksmanship", fields[2])
+					assert.are.equal(4, fields[3])
+					assert.are.same({ 4, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+				end)
+
+			it("takes its unit from the spec the row shows, not the talents' leading tree", function()
+				local data = hunter({ weapon_dps = 7.5 })
+				-- Beast Mastery (the talents' tree here) has no weights: nothing to score in it.
+				assert.is_nil(Comms.gearGap(data, Follow.build, "hunter-beast-mastery", {}))
+				local own = GuildTab.ownLive(data)
+				assert.are.equal("hunter-marksmanship", own.spec)
+				assert.are.equal("dps", own.unit)
+				assert.are.equal(Comms.ownSpec(data, Follow.build, "hunter", {}), own.spec)
+			end)
+
+			it("is nil when nothing can be scored, so the cell is blank; the hello still sends the contract's integer",
+				function()
+					local data = hunter(nil)
+					assert.is_nil(Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}))
+					open()
+					assert.are.equal("", drawnRow("Bow Jackzon").cells.gap:GetText())
+					assert.is_true(drawnRow("Bow Jackzon").entry.live)
+					-- Its hover says no gap either, rather than "gear gap 0".
+					local hint = table.concat(GuildTab.rowHint(drawnRow("Bow Jackzon").entry), " ")
+					assert.is_nil(hint:find("gear gap", 1, true))
+					assert.is_truthy(hint:find("Level 26 Marksmanship (live)", 1, true))
+					-- Contract 2: gearGap is an integer on the wire; a v1 receiver drops a hello without one.
+					assert.are.equal(0, Comms.helloFields()[3])
+					assert.is_nil(Comms.gearGap(data, nil, "hunter-marksmanship", {}))
+					assert.is_nil(Comms.gearGap(data, Follow.build, nil, {}))
+				end)
+
+			it("reads 0 when the plan is met, drawn muted so the eye goes to rows that need gear", function()
+				local data = hunter({ weapon_dps = 7.5 })
+				equipped.ranged = { itemId = RANGER_BOW, link = "item:" .. RANGER_BOW, equipLoc = "INVTYPE_RANGED",
+					stats = { weapon_dps = 7.5 } }
+				assert.are.same({ 0, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+				open()
+				local cell = drawnRow("Bow Jackzon").cells.gap
+				assert.are.equal("0 DPS", cell:GetText())
+				assert.are.equal(Theme.HEX.muted, colorOf(cell))
+				local cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 0, unit = "pts" })
+				assert.are.same({ text = "0 pts", hex = Theme.HEX.muted }, cells.gap)
+				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 9, unit = "pts" })
+				assert.are.same({ text = "9 pts", hex = Theme.HEX.body }, cells.gap)
+			end)
+		end)
+
+		-- Item 2: the count line, four forms, the longest within its 62 characters.
+		describe("the count line", function()
+			local COUNTS = { shown = 97, total = 97, live = 2, online = 4 }
+
+			--- Characters, not bytes: the middle dot and the en dash are one each.
+			local function width(text)
+				return #(text:gsub("[\128-\191]", ""))
+			end
+
+			it("reads shown of total and live of online at the top; the range once scrolled; sharing off", function()
+				start()
+				assert.are.equal("97 of 97 shown · 2 live of 4 online", GuildTab.countsText(COUNTS, true, 1, 20, 97))
+				assert.are.equal("4–23 of 97 · 2 live of 4 online", GuildTab.countsText(COUNTS, true, 4, 23, 97))
+				assert.are.equal("97 of 97 shown · sharing off", GuildTab.countsText(COUNTS, false, 1, 20, 97))
+				assert.are.equal("4–23 of 97 · sharing off", GuildTab.countsText(COUNTS, false, 4, 23, 97))
+				-- No range at the top, nor with no rows.
+				assert.are.equal("0 of 97 shown · 0 live of 0 online",
+					GuildTab.countsText({ shown = 0, total = 97, live = 0, online = 0 }, true, nil, nil, 0))
+			end)
+
+			it("fits its longest form in 62 characters, the room at 6 units a character", function()
+				start()
+				assert.are.equal(62, math.floor((GuildTab.innerWidth() - Theme.SIZES.guildToggleRoom) / 6))
+				local big = { shown = 1000, total = 1000, live = 1000, online = 1000 }
+				for _, text in ipairs({ GuildTab.countsText(big, true, 1, 20, 1000),
+					GuildTab.countsText(big, true, 981, 1000, 1000), GuildTab.countsText(big, false, 1, 20, 1000),
+					GuildTab.countsText(big, false, 981, 1000, 1000) }) do
+					assert.is_true(width(text) <= 62, width(text) .. ": " .. text)
+				end
+			end)
+
+			it("follows the wheel in the flyout, and says on hover what live means", function()
+				local many = {}
+				for index = 1, 30 do
+					many[index] = member(string.format("M%02d-ClassicBetaPvP", index), 60 - index, "MAGE", true)
+				end
+				start({ roster = many, sharingOff = true, data = false })
+				open()
+				assert.are.equal("30 of 30 shown · sharing off", GuildTab.countsLine:GetText())
+				local wheel = GuildTab.holder:GetScript("OnMouseWheel")
+				wheel(GuildTab.holder, -1)
+				assert.are.equal("4–23 of 30 · sharing off", GuildTab.countsLine:GetText())
+				local hover = GuildTab.countsHover
+				assert.are.equal(1, mock.countCalls(hover, "EnableMouse"))
+				local before = mock.countCalls(_G.GameTooltip, "AddLine")
+				hover:GetScript("OnEnter")(hover)
+				assert.are.same({ Theme.inlineColor("tooltipText",
+					"Live: guildmates running Forever Sixty share their spec and gear gap.") }, addedLines(before))
+				hover:GetScript("OnLeave")(hover)
+			end)
+		end)
+
+		-- Item 3 and persona item 4: every column both ways; online rows lead in any sort.
+		describe("sorting each column", function()
+			local SORT_ROSTER = {
+				member("Ash Arrow-ClassicBetaPvP", 20, "HUNTER", true),
+				member("Bree Cole-ClassicBetaPvP", 30, "MAGE", true),
+				member("Cid Dorn-ClassicBetaPvP", 25, "MAGE", true),
+				member("Dax Eld-ClassicBetaPvP", 40, "WARRIOR", false),
+				member("Eve Fay-ClassicBetaPvP", 35, "WARRIOR", false),
+				member("Fen Gale-ClassicBetaPvP", 22, "HUNTER", true),
+				member("Gil Hart-ClassicBetaPvP", 28, "MAGE", true),
+			}
+			local RECORD = {
+				["Ash Arrow-ClassicBetaPvP"] = { score = 900, fights = 3, gear_score = 300, attendance = 0.5 },
+				["Bree Cole-ClassicBetaPvP"] = { score = 1100, fights = 3, gear_score = 200, attendance = 0.8 },
+				["Dax Eld-ClassicBetaPvP"] = { score = 1500, fights = 3, gear_score = 450, attendance = 0.6,
+					spec = "warrior-arms" },
+				["Eve Fay-ClassicBetaPvP"] = { score = 700, fights = 3, gear_score = 100, attendance = 0.9,
+					spec = "warrior-protection" },
+				["Fen Gale-ClassicBetaPvP"] = { score = 1000, fights = 3, gear_score = 250, attendance = 0.7 },
+				["Gil Hart-ClassicBetaPvP"] = { score = 800, fights = 3, gear_score = 350, attendance = 0.6 },
+			}
+			-- Ash and Fen in DPS (a hunter figure), Bree and Gil in points; Cid has nothing live.
+			local SEEN = {
+				["Ash Arrow-ClassicBetaPvP"] = { spec = "hunter-survival", gearGap = 4, time = 990 },
+				["Fen Gale-ClassicBetaPvP"] = { spec = "hunter-survival", gearGap = 9, time = 990 },
+				["Bree Cole-ClassicBetaPvP"] = { spec = "mage-arcane", gearGap = 20, time = 990 },
+				["Gil Hart-ClassicBetaPvP"] = { spec = "mage-fire", gearGap = 3, time = 990 },
+			}
+			local DATA = { dpsPerPoint = { ["hunter-survival"] = { reference = "attack_power", dps = 0.1,
+				[20] = { reference = "attack_power", dps = 0.1 } } } }
+
+			local function sorted(key, descending)
+				return names(GuildTab.rows(SORT_ROSTER, RECORD, SEEN, { key = key, descending = descending }, nil,
+					{ now = 1000, data = DATA }))
+			end
+
+			before_each(function()
+				start()
+			end)
+
+			local CASES = {
+				{ key = "name", up = { "Ash Arrow", "Bree Cole", "Cid Dorn", "Fen Gale", "Gil Hart", "Dax Eld", "Eve Fay" },
+					down = { "Gil Hart", "Fen Gale", "Cid Dorn", "Bree Cole", "Ash Arrow", "Eve Fay", "Dax Eld" } },
+				{ key = "level", up = { "Ash Arrow", "Fen Gale", "Cid Dorn", "Gil Hart", "Bree Cole", "Eve Fay", "Dax Eld" },
+					down = { "Bree Cole", "Gil Hart", "Cid Dorn", "Fen Gale", "Ash Arrow", "Dax Eld", "Eve Fay" } },
+				{ key = "spec", up = { "Bree Cole", "Gil Hart", "Ash Arrow", "Fen Gale", "Cid Dorn", "Dax Eld", "Eve Fay" },
+					down = { "Ash Arrow", "Fen Gale", "Gil Hart", "Bree Cole", "Cid Dorn", "Eve Fay", "Dax Eld" } },
+				{ key = "gear", up = { "Bree Cole", "Fen Gale", "Ash Arrow", "Gil Hart", "Cid Dorn", "Eve Fay", "Dax Eld" },
+					down = { "Gil Hart", "Ash Arrow", "Fen Gale", "Bree Cole", "Cid Dorn", "Dax Eld", "Eve Fay" } },
+				{ key = "score", up = { "Gil Hart", "Ash Arrow", "Fen Gale", "Bree Cole", "Cid Dorn", "Eve Fay", "Dax Eld" },
+					down = { "Bree Cole", "Fen Gale", "Ash Arrow", "Gil Hart", "Cid Dorn", "Dax Eld", "Eve Fay" } },
+				{ key = "attendance", up = { "Ash Arrow", "Gil Hart", "Fen Gale", "Bree Cole", "Cid Dorn", "Dax Eld",
+					"Eve Fay" }, down = { "Bree Cole", "Fen Gale", "Gil Hart", "Ash Arrow", "Cid Dorn", "Eve Fay", "Dax Eld" } },
+				-- DPS rows before points rows, each by number; no live gap last.
+				{ key = "gap", up = { "Ash Arrow", "Fen Gale", "Gil Hart", "Bree Cole", "Cid Dorn", "Dax Eld", "Eve Fay" },
+					down = { "Fen Gale", "Ash Arrow", "Bree Cole", "Gil Hart", "Cid Dorn", "Dax Eld", "Eve Fay" } },
+			}
+			for _, case in ipairs(CASES) do
+				it("sorts by " .. case.key .. " low to high and high to low, online first, blanks last", function()
+					assert.are.same(case.up, sorted(case.key, false))
+					assert.are.same(case.down, sorted(case.key, true))
+				end)
+			end
+
+			it("covers every column", function()
+				local keys = {}
+				for _, case in ipairs(CASES) do
+					keys[case.key] = true
+				end
+				for _, column in ipairs(GuildTab.COLUMNS) do
+					assert.is_true(keys[column.key], column.key)
+				end
+			end)
+
+			it("rules under the last online row in a header's sort too", function()
+				local rows = GuildTab.rows(SORT_ROSTER, RECORD, SEEN, { key = "level", descending = true })
+				assert.are.equal(5, GuildTab.lastOnline(rows))
+			end)
+		end)
+
+		-- Item 3 and persona item 3: muted text on an offline row still reads.
+		describe("muted text on an offline row", function()
+			it("draws no logs offline in the brighter muted token, 3:1 at the row alpha", function()
+				start()
+				open()
+				local ground = Theme.HEX.background
+				-- Quiet (offline) and Facep (online) both have no logs.
+				assert.are.equal(L.guildTabNoLogs, drawnRow("Quiet Person").cells.score:GetText())
+				assert.are.equal(Theme.HEX.mutedDimmed, colorOf(drawnRow("Quiet Person").cells.score))
+				assert.are.equal(Theme.HEX.muted, colorOf(drawnRow("Facep Alm").cells.score))
+				local dimmed = Theme.overGround(Theme.HEX.mutedDimmed, Theme.ALPHA.dim)
+				assert.is_true(Theme.contrast(dimmed, ground) >= Theme.CONTRAST.dimmed)
+				-- The plain muted grey would not: 2.7:1. The token stays below the body text.
+				assert.is_true(Theme.contrast(Theme.overGround(Theme.HEX.muted, Theme.ALPHA.dim), ground) < 3)
+				assert.is_true(Theme.luminance(Theme.HEX.mutedDimmed) < Theme.luminance(Theme.HEX.body))
+				assert.is_true(Theme.luminance(Theme.HEX.mutedDimmed) > Theme.luminance(Theme.HEX.muted))
 			end)
 		end)
 	end)

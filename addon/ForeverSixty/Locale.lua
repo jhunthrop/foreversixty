@@ -1042,12 +1042,16 @@ L.guildTabHint = {
 	"Click to open or close.",
 }
 L.guildTabOnlineOnly = "Online only"
--- Right of the switch, muted (fix round 1, item 6): "3 of 97 shown · 0 of 3 online run Forever
--- Sixty" (run: online guildmates whose addon answered, and the player), then " · sharing off"
--- while "Share my build with my guild" is off, and " · 1–20 of 97" while the list scrolls.
-L.guildTabCounts = "%d of %d shown · %d of %d online run Forever Sixty"
-L.guildTabSharingOff = " · sharing off"
-L.guildTabRange = " · %d–%d of %d"
+-- Right of the switch, muted, in two parts (fix round 2, item 2; 62 characters at most): "3 of
+-- 97 shown", or once scrolled past the top the rows in view "4–23 of 97"; then "2 live of 4
+-- online" (live: online guildmates whose addon answered, and the player), or "sharing off"
+-- while "Share my build with my guild" is off. Its hover says what live means.
+L.guildTabShown = "%d of %d shown"
+L.guildTabRange = "%d–%d of %d"
+L.guildTabLiveOf = "%d live of %d online"
+L.guildTabSharingOff = "sharing off"
+L.guildTabCountsJoin = " · "
+L.guildTabCountsHint = "Live: guildmates running Forever Sixty share their spec and gear gap."
 -- Under the count line, muted, while the ratings cannot be read or are old (fix round 1,
 -- item 1): the Settings foot's state for them, said once for the whole list ("Player
 -- ratings: too old. Get the new Forever Sixty Data at foreversixty.gg.").
@@ -1064,13 +1068,17 @@ L.guildTabNoLogs = "no logs"
 L.guildTabPercent = "%d%%"
 L.guildTabGapDps = "%d DPS"
 L.guildTabGapPts = "%d pts"
--- The Gear and Gap headers' hover (fix round 1, item 3).
+-- The Gear and Gap headers' hover (fix round 1, item 3), a line each: the first as text, the
+-- rest muted (fix round 2: Gap says what it measures and what 0 means).
 L.guildTabHeaderHints = {
-	gear = "Gear score from the nightly record",
-	gap = "Gear gap reported live by the member's addon",
+	gear = { "Gear score from the nightly record" },
+	gap = { "Gear gap reported live by the member's addon.",
+		"Biggest slot behind their build, in DPS or points; 0 means on plan." },
 }
 -- A row's hover: the member's build as their addon announced it, and offline.
 L.guildTabBuild = "Build: %s"
+-- A live row's hover line when its gear gap could not be scored (fix round 2): no "gear gap 0".
+L.guildTabLiveNoGap = "Level %d %s (live)"
 L.guildTabOffline = "Offline"
 -- In place of the rows: no roster yet, or nobody online with the switch on.
 L.guildTabNoRoster = "No guild roster yet. It arrives from the server in a moment."

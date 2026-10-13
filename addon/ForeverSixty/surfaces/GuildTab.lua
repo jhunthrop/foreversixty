@@ -33,7 +33,6 @@ local Score = ns.Score or require("Score")
 local Comms = ns.Comms or require("Comms")
 local Compat = ns.Compat or require("Compat")
 local Talents = ns.Talents or require("Talents")
-local Gear = ns.Gear or require("Gear")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 
 local GuildTab = {}
@@ -234,17 +233,21 @@ local function valueOf(row, key)
 	return row[key]
 end
 
---- The order for `sort` ({ key, descending }; nil: online first, then Score high to low).
---- Equal values go by name, A to Z.
+--- The order for `sort` ({ key, descending }; nil: Score high to low): online rows above
+--- offline ones in every sort, as the client's roster keeps them (fix round 2, persona item 4),
+--- then the column's values, a blank last both ways. Gap puts the gaps in DPS before those in
+--- points, each by number (fix round 2, item 3). Equal values go by name, A to Z.
 local function comparator(sort)
 	local key = sort ~= nil and sort.key or "score"
 	local descending = sort == nil or sort.descending == true
-	local onlineFirst = sort == nil
 	return function(left, right)
-		if onlineFirst and left.online ~= right.online then
+		if left.online ~= right.online then
 			return left.online
 		end
 		local a, b = valueOf(left, key), valueOf(right, key)
+		if key == "gap" and a ~= nil and b ~= nil and (left.unit == "dps") ~= (right.unit == "dps") then
+			return left.unit == "dps"
+		end
 		if a ~= b then
 			if a == nil then
 				return false
@@ -318,8 +321,10 @@ local function plain(text)
 	return { text = text, hex = Theme.HEX.body }
 end
 
-local function muted(text)
-	return { text = text, hex = Theme.HEX.muted }
+--- Muted text: Theme.HEX.muted on a row online, Theme.HEX.mutedDimmed on one offline, drawn at
+--- the row's ALPHA.dim, where plain muted would read 2.7:1 (fix round 2, item 3).
+local function muted(text, online)
+	return { text = text, hex = online == false and Theme.HEX.mutedDimmed or Theme.HEX.muted }
 end
 
 --- A cell nobody has a value for (fix round 1, item 3): blank, never a dash.
@@ -330,10 +335,17 @@ end
 --- A row's cells, each { text, hex }: the name in its class colour lifted for the panel
 --- (Theme.panelClassHex), the score in its tier's panel colour (Theme.panelTierHex; "no logs"
 --- muted only where a readable record has nothing for the member), attendance as "80%", the
---- live gap in its sender's unit ("14 DPS", "9 pts"); blank where there is no value. An
---- offline row is dimmed once, as a whole, where it is drawn.
+--- live gap in its sender's unit ("14 DPS", "9 pts"), muted at 0 so the eye goes to the rows
+--- that need gear (fix round 2, persona item 2); blank where there is no value. An offline row
+--- is dimmed once, as a whole, where it is drawn; its muted text is the brighter token.
 function GuildTab.cells(row)
 	local gapText = row.unit == "dps" and L.guildTabGapDps or L.guildTabGapPts
+	local gap
+	if type(row.gap) == "number" then
+		local rounded = math.floor(row.gap + 0.5)
+		local text = string.format(gapText, rounded)
+		gap = rounded == 0 and muted(text, row.online) or plain(text)
+	end
 	local cells = {
 		name = { text = row.short, hex = row.classToken ~= nil and Theme.panelClassHex(row.classToken) or Theme.HEX.body },
 		level = type(row.level) == "number" and plain(whole(row.level)) or blank(),
@@ -341,14 +353,14 @@ function GuildTab.cells(row)
 		gear = type(row.gearScore) == "number" and plain(whole(row.gearScore)) or blank(),
 		attendance = type(row.attendance) == "number" and plain(string.format(L.guildTabPercent, row.attendance))
 			or blank(),
-		gap = type(row.gap) == "number" and plain(string.format(gapText, math.floor(row.gap + 0.5))) or blank(),
+		gap = gap or blank(),
 	}
 	if type(row.score) == "number" then
 		local r, g, b = Score.tierColor(row.tier)
 		local hex = Theme.panelTierHex(row.tier, r ~= nil and Theme.hexOf(r, g, b) or nil)
 		cells.score = { text = whole(row.score), hex = hex or Theme.HEX.body }
 	elseif row.noLogs then
-		cells.score = muted(L.guildTabNoLogs)
+		cells.score = muted(L.guildTabNoLogs, row.online)
 	else
 		cells.score = blank()
 	end
@@ -368,7 +380,10 @@ function GuildTab.rowHint(row)
 	end
 	if row.live then
 		local spec = row.spec ~= nil and Follow.specName(row.spec) or ""
-		local live = string.format(L.scoreLive, row.level or 0, spec, math.floor((row.gap or 0) + 0.5))
+		-- With no gap to say (nothing scored, fix round 2), the line leaves it out rather than say 0.
+		local live = type(row.gap) == "number"
+			and string.format(L.scoreLive, row.level or 0, spec, math.floor(row.gap + 0.5))
+			or string.format(L.guildTabLiveNoGap, row.level or 0, spec)
 		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", (live:gsub("  +", " ")))
 		if row.buildName ~= nil then
 			lines[#lines + 1] = Theme.inlineColor("tooltipText", string.format(L.guildTabBuild, row.buildName))
@@ -380,20 +395,20 @@ function GuildTab.rowHint(row)
 	return lines
 end
 
---- The count line (fix round 1, item 6): "3 of 97 shown · 0 of 3 online run Forever Sixty",
---- then " · sharing off" while the share switch is off (`sharing` false), then " · 1–20 of 97"
---- while the list holds more rows than show (`first` to `last` of `total`). Pure.
+--- The count line (fix round 2, item 2), two parts: "3 of 97 shown", or once scrolled past
+--- the top (`first` above 1) the rows in view, "4–23 of 97" (`first` to `last` of `total`);
+--- then "2 live of 4 online", or "sharing off" while the share switch is off (`sharing`
+--- false). 62 characters at most, the room right of the switch. Pure.
 function GuildTab.countsText(counts, sharing, first, last, total)
-	local text = string.format(L.guildTabCounts, counts.shown or 0, counts.total or 0, counts.live or 0,
-		counts.online or 0)
-	if sharing == false then
-		text = text .. L.guildTabSharingOff
+	local head
+	if type(first) == "number" and first > 1 and type(last) == "number" and type(total) == "number" then
+		head = string.format(L.guildTabRange, first, last, total)
+	else
+		head = string.format(L.guildTabShown, counts.shown or 0, counts.total or 0)
 	end
-	if type(first) == "number" and type(last) == "number" and type(total) == "number"
-		and last - first + 1 < total then
-		text = text .. string.format(L.guildTabRange, first, last, total)
-	end
-	return text
+	local tail = sharing == false and L.guildTabSharingOff
+		or string.format(L.guildTabLiveOf, counts.live or 0, counts.online or 0)
+	return head .. L.guildTabCountsJoin .. tail
 end
 
 --- The one line said for the whole list while the ratings cannot be read or are old (fix
@@ -569,41 +584,16 @@ end
 
 -- The player's own row and the model as drawn (fix round 1, item 2) -------------------------
 
---- The tree an active build is for, as a spec slug: the build's own `spec` (a data default
---- carries one), else the class tree its plan spends the most points in ("hunter-marksmanship"
---- for a Marksmanship plan, whatever is spent so far); nil when neither says.
-function GuildTab.buildSpec(data, build)
-	if type(build) ~= "table" then
-		return nil
-	end
-	if type(build.spec) == "string" and build.spec ~= "" then
-		return build.spec
-	end
-	local class = type(data) == "table" and type(data.classes) == "table" and data.classes[build.classSlug] or nil
-	if type(class) ~= "table" or type(class.tabs) ~= "table" then
-		return nil
-	end
-	local spent = {}
-	for _, point in ipairs(build.order or {}) do
-		if type(point) == "table" and type(point.tab) == "number" then
-			spent[point.tab] = (spent[point.tab] or 0) + 1
-		end
-	end
-	local best, bestTab = 0, nil
-	for tab, entry in ipairs(class.tabs) do
-		if (spent[tab] or 0) > best and type(entry) == "table" and type(entry.name) == "string" then
-			best, bestTab = spent[tab], tab
-		end
-	end
-	return bestTab ~= nil and build.classSlug .. "-" .. Export.slugify(class.tabs[bestTab].name) or nil
-end
+--- The tree an active build is for, as a spec slug (Comms.buildSpec: the build's own `spec`,
+--- else the tree its plan spends the most points in); nil when neither says.
+GuildTab.buildSpec = Comms.buildSpec
 
 --- The player's own live fields, read on this client rather than heard (Comms ignores the
 --- player's own messages): { name, realm, level, spec, gearGap, unit, buildName }. The spec is
---- the active build's (GuildTab.buildSpec), else the talents' (Gear.specOf, the chip's); the
---- gap and its unit are Comms.gearGap's, the one a hello sends (Progress, as the chip reads
---- it; nil without a build); the build name is the chip's (Follow.buildName). nil without a
---- name or the data.
+--- Comms.ownSpec's (the active build's, else the talents'), the one a hello names; the gap and
+--- its unit are Comms.gearGap's in that spec (fix round 2, item 1: scored as the chip scores,
+--- the unit from the spec the row shows; nil, a blank cell, with nothing to score); the build
+--- name is the chip's (Follow.buildName). nil without a name or the data.
 function GuildTab.ownLive(data)
 	local name = Compat.playerName()
 	if name == nil or type(data) ~= "table" or type(data.classes) ~= "table" then
@@ -611,16 +601,11 @@ function GuildTab.ownLive(data)
 	end
 	local _, realm = Theme.playerNameRealm()
 	local build = Follow.build
-	local classSlug = Talents.playerClassSlug()
 	local ranks = Talents.readRanks(data) or {}
-	local talentSpec
-	if classSlug ~= nil and type(data.classes[classSlug]) == "table" then
-		local ok, spec = pcall(Gear.specOf, data, classSlug, ranks)
-		talentSpec = ok and spec or nil
-	end
-	local gap, unit = Comms.gearGap(data, build, talentSpec, ranks)
+	local spec = Comms.ownSpec(data, build, Talents.playerClassSlug(), ranks)
+	local gap, unit = Comms.gearGap(data, build, spec, ranks)
 	return {
-		name = name, realm = realm, level = Compat.playerLevel(), spec = GuildTab.buildSpec(data, build) or talentSpec,
+		name = name, realm = realm, level = Compat.playerLevel(), spec = spec,
 		gearGap = gap, unit = unit, buildName = build ~= nil and Follow.buildName(data, build) or nil,
 	}
 end
@@ -833,7 +818,8 @@ end
 --- The column headers (fix round 1, items 3 and 5): an addon Button per column, its label
 --- (right-aligned columns' ending `guildSortReserve` short of the edge), the client's sort
 --- arrow (8 x 8) just after the label inside that room, an inset ground while held; the Gear
---- and Gap headers say on hover what they hold. Placed by layoutHeaders.
+--- and Gap headers say on hover what they hold (L.guildTabHeaderHints: the first line as
+--- text, the rest muted). Placed by layoutHeaders.
 local function makeHeaders(flyout)
 	local states = Theme.CONTROL_STATES.header
 	for _, column in ipairs(GuildTab.COLUMNS) do
@@ -861,7 +847,11 @@ local function makeHeaders(flyout)
 			header.over = true
 			paintHeader(key)
 			if hint ~= nil then
-				Theme.showLines(self, { Theme.inlineColor("tooltipText", hint) }, "ANCHOR_TOP")
+				local lines = {}
+				for index, text in ipairs(hint) do
+					lines[index] = Theme.inlineColor(index == 1 and "tooltipText" or "tooltipMuted", text)
+				end
+				Theme.showLines(self, lines, "ANCHOR_TOP")
 			end
 		end)
 		button:SetScript("OnLeave", function()
@@ -963,6 +953,18 @@ function GuildTab.ensureFlyout()
 	counts:SetPoint("TOPRIGHT", flyout, "TOPRIGHT", -S.panelPadding,
 		-(top + math.floor((S.guildToolbar - GuildTab.lineHeight()) / 2)))
 	GuildTab.countsLine = counts
+	-- Its hover says what "live" means (fix round 2, item 2): an addon frame over the line, as a
+	-- font string takes no mouse.
+	local countsHover = CreateFrame("Frame", nil, flyout)
+	countsHover:SetAllPoints(counts)
+	countsHover:EnableMouse(true)
+	countsHover:SetScript("OnEnter", function(self)
+		Theme.showLines(self, { Theme.inlineColor("tooltipText", L.guildTabCountsHint) }, "ANCHOR_TOP")
+	end)
+	countsHover:SetScript("OnLeave", function()
+		Theme.hideTooltip()
+	end)
+	GuildTab.countsHover = countsHover
 	-- Under it, one muted line while the ratings cannot be read or are old (item 1).
 	local notice = sized(Widgets.label(flyout, "", "muted", "small"), GuildTab.innerWidth())
 	notice:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding, -GuildTab.noticeTop())
@@ -1019,12 +1021,9 @@ local function drawHeaders()
 	end
 end
 
---- The index of the last online row when offline rows follow it in the default order (online
---- first), or nil.
-function GuildTab.lastOnline(rows, sort)
-	if sort ~= nil then
-		return nil
-	end
+--- The index of the last online row when offline rows follow it (online rows lead in every
+--- sort, fix round 2, persona item 4), or nil.
+function GuildTab.lastOnline(rows)
 	for index = 1, #rows - 1 do
 		if rows[index].online and not rows[index + 1].online then
 			return index
@@ -1067,7 +1066,7 @@ function GuildTab.renderRows()
 		row.entry = nil
 		row.frame:Hide()
 	end
-	local divide = GuildTab.lastOnline(rows, GuildTab.sort)
+	local divide = GuildTab.lastOnline(rows)
 	local rule = GuildTab.onlineRule
 	if divide ~= nil and divide >= first and divide <= last then
 		rule:ClearAllPoints()

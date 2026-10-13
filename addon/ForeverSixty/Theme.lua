@@ -38,6 +38,9 @@ Theme.HEX = {
 	titleBottom = "0d111a",
 	gold = "e5b955",
 	muted = "9a9484",
+	--- Muted text on a row drawn at ALPHA.dim (an offline guildmate's "no logs", L5.1 fix
+	--- round 2): `muted` reads 2.7:1 there; this reaches 3.2:1 and stays below `body`.
+	mutedDimmed = "b0aa9c",
 	--- Muted text on the client's own tooltip, which sits on a lighter ground than
 	--- the window: at least 0.72 in every channel, lighter than the client's own grey.
 	tooltipMuted = "b8b8b8",
