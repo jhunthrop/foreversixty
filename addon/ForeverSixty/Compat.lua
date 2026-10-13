@@ -157,6 +157,21 @@ function Compat.regionName()
 	return ok and type(name) == "string" and name or nil
 end
 
+--- The site's regions in GetCurrentRegion's numbering (web/src/lib/characters.ts REGIONS).
+Compat.SITE_REGIONS = { "us", "kr", "eu", "tw", "cn" }
+
+--- This client's region as the site's character paths spell it: GetCurrentRegion's number
+--- through SITE_REGIONS, "us" where the client cannot name one (the beta answers a number
+--- no table names).
+function Compat.siteRegion()
+	local fn = _G.GetCurrentRegion
+	if type(fn) ~= "function" then
+		return Compat.SITE_REGIONS[1]
+	end
+	local ok, number = pcall(fn)
+	return ok and Compat.SITE_REGIONS[number] or Compat.SITE_REGIONS[1]
+end
+
 --- Whether the client holds the item's data already, so showing it never
 --- prints the client's own "Retrieving item information". Where the client
 --- cannot say, an item it can name is held.
@@ -333,6 +348,32 @@ local function isOwnRealm(value)
 	return normalized ~= nil and value == normalized
 end
 
+--- Whether `text` names this client's own realm as a player might type it: GetRealmName or
+--- GetNormalizedRealmName, spaces and hyphens removed on both sides, case ignored
+--- ("classicbetapvp" is "Classic Beta PvP"). The one realm the client knows by name.
+function Compat.isOwnRealmName(text)
+	if type(text) ~= "string" then
+		return false
+	end
+	local function squeeze(value)
+		return type(value) == "string" and value:gsub("[%s%-]", ""):lower() or ""
+	end
+	local wanted = squeeze(text)
+	if wanted == "" then
+		return false
+	end
+	for _, name in ipairs({ "GetRealmName", "GetNormalizedRealmName" }) do
+		local fn = _G[name]
+		if type(fn) == "function" then
+			local ok, realm = pcall(fn)
+			if ok and squeeze(realm) == wanted then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 --- Whether this client gives characters a last name, in the slot other
 --- clients use for the realm. Forever's client (from 1.60.1.70009) answers
 --- UnitFullName("player") with first name, last name and UnitName("player")
@@ -467,6 +508,22 @@ end
 Compat.BADGE_CHANNEL_IDS = { 2, 26 }
 --- Their English names, which every client's channel list still answers to.
 Compat.BADGE_CHANNEL_NAMES = { "trade", "lookingforgroup" }
+
+--- Whether a chat line's zone channel id (CHAT_MSG_CHANNEL's arg7) is Trade or
+--- LookingForGroup: true or false for an id, nil where the line carries none (nil or 0, a
+--- custom channel or a client that does not say), when only the channel's name can tell. Pure.
+function Compat.isBadgeChannelId(zoneId)
+	zoneId = tonumber(zoneId)
+	if zoneId == nil or zoneId == 0 then
+		return nil
+	end
+	for _, id in ipairs(Compat.BADGE_CHANNEL_IDS) do
+		if zoneId == id then
+			return true
+		end
+	end
+	return false
+end
 
 --- The names of the Trade and LookingForGroup channels, lower-cased, as a set: the English
 --- names and whatever this client calls them, asked of `localName` (Theme.channelShortcut:

@@ -101,10 +101,11 @@ function PlayerTooltip.liveEntry(seen, fullName, firstName, realm, ownRealm, now
 	return nil
 end
 
---- A character's page on the site: the record's own `profile` where it has one, else built
---- the way Export builds the companion's names (Export.siteLink). `realm` nil, or this
---- client's realm in any spelling ("ClassicBetaPvP" as a sender carries it), is this
---- client's own, spelled as the client spells it.
+--- A character's page on the site: the record's own `profile` where it has one, else
+--- Export.siteLink: this client's region (Compat.siteRegion), the ruleset the realm's words
+--- name and the name alone. `realm` nil, or this client's realm in any spelling
+--- ("ClassicBetaPvP" as a sender carries it), is this client's own, spelled as the client
+--- spells it ("Classic Beta PvP"), so its words read.
 function PlayerTooltip.siteLink(name, realm)
 	local own = type(GetRealmName) == "function" and GetRealmName() or ""
 	if realm ~= nil and compact(realm) == compact(own) then
@@ -114,7 +115,7 @@ function PlayerTooltip.siteLink(name, realm)
 	if record ~= nil and type(record.profile) == "string" and record.profile:sub(1, 1) == "/" then
 		return L.siteName .. record.profile
 	end
-	return Export.siteLink(name, realm or own, Export.region())
+	return Export.siteLink(name, realm or own, Compat.siteRegion())
 end
 
 -- The hook -------------------------------------------------------------------------------

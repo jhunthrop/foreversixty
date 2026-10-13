@@ -437,29 +437,68 @@ function Export.outboxName(name, realm)
 	return name .. "-" .. compact
 end
 
---- One segment of a site path the way the site and the companion slug it: lower-cased,
---- each run of spaces one hyphen (web/src/lib/characters.ts characterSlug,
---- companion/internal/character Key). Pure.
-local function siteSegment(text)
-	return (text or ""):lower():gsub("%s+", "-")
-end
+--- The words a realm's name spells a ruleset with, as the site reads them
+--- (web/src/lib/characters.ts RULESET_WORDS): the ruleset itself on Forever, PvE/PvP on the beta.
+Export.RULESET_WORDS = {
+	normal = "normal", pve = "normal", pvp = "pvp", rp = "rp", roleplay = "rp",
+	hardcore = "hardcore", hc = "hardcore",
+}
 
---- A character's page on the site: SITE/character/<region>/<ruleset>/<name-realm>, the
---- ruleset being the realm (Export.save's own `ruleset = realm`) and the name-realm the
---- outbox's (Export.outboxName). A region this client cannot name ("" from
---- Export.regionSegment) is read as the first one, "us". Pure.
-function Export.siteLink(name, realm, region)
-	if region == nil or region == "" then
-		region = Export.REGION_NAMES[1]:lower()
+--- The first ruleset word among `words`, each word alone or run together with the next
+--- (a run-together realm's "PvP" opens into "Pv" and "P"). nil for none.
+local function rulesetIn(words, pairsToo)
+	for index, word in ipairs(words) do
+		local ruleset = Export.RULESET_WORDS[word]
+		if ruleset == nil and pairsToo and words[index + 1] ~= nil then
+			ruleset = Export.RULESET_WORDS[word .. words[index + 1]]
+		end
+		if ruleset ~= nil then
+			return ruleset
+		end
 	end
-	return L.siteName .. "/character/" .. siteSegment(region) .. "/" .. siteSegment(realm) .. "/"
-		.. siteSegment(Export.outboxName(name, realm))
+	return nil
 end
 
---- This client's region segment for Export.siteLink.
-function Export.region()
-	local regionIndex = type(GetCurrentRegion) == "function" and GetCurrentRegion() or nil
-	return Export.regionSegment(Compat.regionName(), regionIndex)
+--- The ruleset segment of a site path for a realm's name, as the site's rulesetFromRealm reads
+--- it: the first of its words (split at anything not a letter or a digit, lower-cased) that
+--- names a ruleset. A realm as a sender spells it, its words run together ("ClassicBetaPvP"),
+--- is opened at its capitals and digits first. "normal" where no word names one. Pure.
+function Export.rulesetFromRealm(realm)
+	realm = type(realm) == "string" and realm or ""
+	local words = {}
+	for word in realm:lower():gmatch("[%a%d]+") do
+		words[#words + 1] = word
+	end
+	local ruleset = rulesetIn(words, false)
+	if ruleset ~= nil then
+		return ruleset
+	end
+	local opened = realm:gsub("(%l)(%u)", "%1 %2"):gsub("(%a)(%d)", "%1 %2"):gsub("(%d)(%a)", "%1 %2")
+	words = {}
+	for word in opened:lower():gmatch("[%a%d]+") do
+		words[#words + 1] = word
+	end
+	return rulesetIn(words, true) or "normal"
+end
+
+--- A character's slug as the site and the API write it (characters.ts characterSlug,
+--- api/internal/character Slug): the name alone, trimmed, lower-cased, each run of spaces
+--- one hyphen. Pure.
+function Export.characterSlug(name)
+	local trimmed = (name or ""):match("^%s*(.-)%s*$")
+	return (trimmed:lower():gsub("%s+", "-"))
+end
+
+--- A character's page on the site: SITE/character/<region>/<ruleset>/<slug>, the one form the
+--- site's parsePath serves: the region ("us" where none is given; Compat.siteRegion is the
+--- client's), the ruleset the realm's words name (Export.rulesetFromRealm) and the name's slug,
+--- no realm in it. Pure.
+function Export.siteLink(name, realm, region)
+	if type(region) ~= "string" or region == "" then
+		region = Compat.SITE_REGIONS[1]
+	end
+	return L.siteName .. "/character/" .. region:lower() .. "/" .. Export.rulesetFromRealm(realm) .. "/"
+		.. Export.characterSlug(name)
 end
 
 --- This character's name as the outbox writes it (Export.outboxName), so the build

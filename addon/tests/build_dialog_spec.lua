@@ -573,7 +573,7 @@ describe("BuildDialog, copy mode's model", function()
 
 	-- L4.4 ruling 2: /fs link puts a character's site page in the box instead of the export.
 	it("holds a /fs link page under its own leads, with nothing about the export", function()
-		local link = { url = "foreversixty.gg/character/us/classic-beta-pvp/bow-jackzon-classicbetapvp",
+		local link = { url = "foreversixty.gg/character/us/pvp/bow-jackzon",
 			name = "Bow Jackzon" }
 		local copy = model({ link = link, ack = ACK, savedAt = "2026-11-04 14:02", simInUse = true,
 			nextStep = "Next talent" })

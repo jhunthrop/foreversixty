@@ -85,16 +85,31 @@ describe("Options", function()
 		end)
 
 		it("opens the copy box on the named character's site page, printing nothing", function()
-			assert.are.same({}, Options.handle("link Smoke Gouda-Whitemane"))
-			assert.are.same({ url = "foreversixty.gg/character/us/whitemane/smoke-gouda-whitemane", name = "Smoke Gouda" },
-				opened[1])
+			assert.are.same({}, Options.handle("link Smoke Gouda-Ashbringer"))
+			assert.are.same({ url = "foreversixty.gg/character/us/normal/smoke-gouda", name = "Smoke Gouda" }, opened[1])
 		end)
 
-		it("reads a bare name, and a name with this realm spelled as senders spell it, on this realm", function()
+		it("reads a bare name, and a name with this realm in any spelling, on this realm", function()
 			Options.handle("link Alice")
 			Options.handle("link Alice-Ashbringer")
-			assert.are.equal("foreversixty.gg/character/us/ashbringer/alice-ashbringer", opened[1].url)
-			assert.are.equal(opened[1].url, opened[2].url)
+			Options.handle("link Alice-ashbringer")
+			assert.are.equal("foreversixty.gg/character/us/normal/alice", opened[1].url)
+			assert.are.same({ opened[1].url, opened[1].url }, { opened[2].url, opened[3].url })
+			assert.are.same({ "Alice", "Alice", "Alice" }, { opened[1].name, opened[2].name, opened[3].name })
+		end)
+
+		it("keeps a hyphenated name whole when what follows the last hyphen is no realm it knows", function()
+			Options.handle("link Jean-Luc")
+			assert.are.same({ url = "foreversixty.gg/character/us/normal/jean-luc", name = "Jean-Luc" }, opened[1])
+			Options.handle("link Jean-Luc-Ashbringer")
+			assert.are.same({ url = "foreversixty.gg/character/us/normal/jean-luc", name = "Jean-Luc" }, opened[2])
+		end)
+
+		it("reads the ruleset from this realm's words and the region from the client", function()
+			_G.GetRealmName = function() return "Classic Beta PvP" end
+			_G.GetCurrentRegion = function() return 3 end
+			Options.handle("link Bow Jackzon-ClassicBetaPvP")
+			assert.are.equal("foreversixty.gg/character/eu/pvp/bow-jackzon", opened[1].url)
 		end)
 
 		it("takes the record's own profile where the data addon has one", function()
@@ -119,14 +134,14 @@ describe("Options", function()
 			exists.mouseover = false
 			Options.handle("link ")
 			assert.are.same({ "Tara", "Moe", "Bob" }, { opened[1].name, opened[2].name, opened[3].name })
-			assert.are.equal("foreversixty.gg/character/us/ashbringer/bob-ashbringer", opened[3].url)
+			assert.are.equal("foreversixty.gg/character/us/normal/bob", opened[3].url)
 		end)
 
 		it("prints the address where the dialog cannot show itself", function()
 			require("BuildDialog").openLink = function()
 				return false
 			end
-			assert.are.same({ "foreversixty.gg/character/us/ashbringer/bob-ashbringer" }, Options.handle("link"))
+			assert.are.same({ "foreversixty.gg/character/us/normal/bob" }, Options.handle("link"))
 		end)
 	end)
 

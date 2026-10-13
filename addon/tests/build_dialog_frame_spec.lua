@@ -125,7 +125,7 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 
 	-- L4.4 ruling 2: /fs link.
 	it("holds a /fs link page selected in the box, and the export again after a tab click or a close", function()
-		local url = "foreversixty.gg/character/us/ashbringer/smoke-gouda-ashbringer"
+		local url = "foreversixty.gg/character/us/normal/smoke-gouda"
 		assert.is_true(BuildDialog.openLink(url, "Smoke Gouda"))
 		mock.runTimers(state)
 		assert.are.equal(url, box():GetText())

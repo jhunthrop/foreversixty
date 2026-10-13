@@ -13,7 +13,9 @@
 --
 -- Cheap per line: after the first line from a name, one table lookup (ChatBadges.cache, by
 -- the full name the line carries, a miss cached as false), cleared when the data record
--- changes. A channel's name is looked up the same way. No frame, no OnUpdate.
+-- changes. A channel is placed by its zone channel id (arg7: 2 Trade, 26 LookingForGroup),
+-- which no client translates; only a line with no id (nil or 0) is placed by its name, cached
+-- the same way. No frame, no OnUpdate.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -101,9 +103,14 @@ function ChatBadges.badgeFor(author, guid)
 	return badge
 end
 
---- Whether a CHAT_MSG_CHANNEL line is in Trade or LookingForGroup, by the channel's name in
---- the line (Compat.channelBase) against the client's names for the two (Compat). Cached.
-function ChatBadges.isBadgeChannel(channelName, baseName)
+--- Whether a CHAT_MSG_CHANNEL line is in Trade or LookingForGroup: by its zone channel id
+--- (Compat.isBadgeChannelId) where it carries one; else by the channel's name in the line
+--- (Compat.channelBase) against the client's names for the two (Compat), cached.
+function ChatBadges.isBadgeChannel(channelName, baseName, zoneId)
+	local byId = Compat.isBadgeChannelId(zoneId)
+	if byId ~= nil then
+		return byId
+	end
 	local key = (type(baseName) == "string" and baseName ~= "") and baseName or channelName
 	if type(key) ~= "string" then
 		return false
@@ -124,8 +131,9 @@ local function badged(event, message, author, ...)
 		return message
 	end
 	if event == "CHAT_MSG_CHANNEL" then
-		local channelName, baseName = select(2, ...), select(7, ...)
-		if not ChatBadges.isBadgeChannel(channelName, baseName) then
+		-- After the message and the sender: arg4 the channel, arg7 its zone id, arg9 its base name.
+		local channelName, zoneId, baseName = select(2, ...), select(5, ...), select(7, ...)
+		if not ChatBadges.isBadgeChannel(channelName, baseName, zoneId) then
 			return message
 		end
 	end

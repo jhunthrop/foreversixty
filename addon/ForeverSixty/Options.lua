@@ -206,13 +206,14 @@ end
 
 --- Whom /fs link means: the name typed ("Bow Jackzon-ClassicBetaPvP", or a bare name on this
 --- realm), else the target, else the player under the mouse, else this character. The name
---- and the realm (nil: this realm).
+--- and the realm (nil: this realm). A typed name is split at its last hyphen only where what
+--- follows is this realm (Compat.isOwnRealmName), so "Jean-Luc" stays one name.
 function Options.linkTarget(rest)
 	local typed = (rest or ""):match("^%s*(.-)%s*$")
 	if typed ~= "" then
 		local name, realm = typed:match("^(.-)%-([^%-]+)$")
-		if name ~= nil and name ~= "" then
-			return name, realm
+		if name ~= nil and name ~= "" and Compat.isOwnRealmName(realm) then
+			return name, nil
 		end
 		return typed, nil
 	end

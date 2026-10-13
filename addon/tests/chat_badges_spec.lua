@@ -63,8 +63,9 @@ describe("ChatBadges", function()
 	--- The client's argument list for one chat event after `message` and `author`: language,
 	--- channel ("2. Trade - City"), target, flags, zone channel id, channel index, channel base
 	--- name, language id, line id, GUID, BN id, mobile, subtitle, hide sender, no raid icons.
-	local function args(message, author, channel, baseName)
-		return { message, author, "Common", channel or "", "", "", channel and 2 or 0, channel and 2 or 0,
+	--- The zone channel id (arg7) is 0 unless given: the name gate is then the one that decides.
+	local function args(message, author, channel, baseName, zoneId)
+		return { message, author, "Common", channel or "", "", "", zoneId or 0, channel and 2 or 0,
 			baseName or "", 7, 4021, "Player-4395-0ABC1234", 0, false, false, false, false, n = 17 }
 	end
 
@@ -127,6 +128,32 @@ describe("ChatBadges", function()
 				local list = args("hello", "Smoke Gouda-ClassicBetaPvP", "1. " .. base, base)
 				assertOnly(run("CHAT_MSG_CHANNEL", list), list, "hello")
 			end
+		end)
+
+		-- L4.4 fix round 1 (D4): the zone channel id decides before any name does.
+		it("badges Trade and LookingForGroup by their zone channel id, whatever the client calls them", function()
+			start(record())
+			local list = args("VK Taschen", "Smoke Gouda-ClassicBetaPvP", "2. Handel - Stadt", "Handel - Stadt", 2)
+			assertOnly(run("CHAT_MSG_CHANNEL", list), list, EPIC .. " VK Taschen")
+			list = args("LFM", "Smoke Gouda-ClassicBetaPvP", "4. BuscarGrupo", "BuscarGrupo", 26)
+			assertOnly(run("CHAT_MSG_CHANNEL", list), list, EPIC .. " LFM")
+		end)
+
+		it("falls back to the name only where the id is 0 or absent", function()
+			start(record())
+			local list = args("WTS bags", "Smoke Gouda-ClassicBetaPvP", "2. Trade - City", "Trade - City", 0)
+			assertOnly(run("CHAT_MSG_CHANNEL", list), list, EPIC .. " WTS bags")
+			list = args("WTS bags", "Smoke Gouda-ClassicBetaPvP", "2. Trade - City", "Trade - City")
+			list[7] = nil
+			assertOnly(run("CHAT_MSG_CHANNEL", list), list, EPIC .. " WTS bags")
+		end)
+
+		it("leaves a line alone that neither the id nor the name places in Trade or LookingForGroup", function()
+			start(record())
+			local list = args("hello", "Smoke Gouda-ClassicBetaPvP", "1. General - City", "General - City", 0)
+			assertOnly(run("CHAT_MSG_CHANNEL", list), list, "hello")
+			list = args("hello", "Smoke Gouda-ClassicBetaPvP", "1. Trade - City", "Trade - City", 1)
+			assertOnly(run("CHAT_MSG_CHANNEL", list), list, "hello")
 		end)
 
 		it("reads the client's own name for the channels, through Compat", function()

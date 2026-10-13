@@ -274,3 +274,44 @@ describe("Compat", function()
 		end)
 	end)
 end)
+
+-- L4.4 fix round 1: the site link's region (D1) and the realm /fs link may split off (D5).
+describe("Compat, the site's region and this realm", function()
+	local Compat
+
+	before_each(function()
+		mock.install({ realm = "Classic Beta PvP" })
+		Compat = helper.load("Compat")
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("names the region by GetCurrentRegion's number, us where it cannot", function()
+		local expected = { "us", "kr", "eu", "tw", "cn" }
+		for number, region in ipairs(expected) do
+			_G.GetCurrentRegion = function() return number end
+			assert.are.equal(region, Compat.siteRegion())
+		end
+		_G.GetCurrentRegion = function() return 72 end
+		assert.are.equal("us", Compat.siteRegion())
+		_G.GetCurrentRegion = function() error("no region") end
+		assert.are.equal("us", Compat.siteRegion())
+		_G.GetCurrentRegion = nil
+		assert.are.equal("us", Compat.siteRegion())
+	end)
+
+	it("knows this realm in any spelling, spaces gone and case ignored", function()
+		for _, text in ipairs({ "Classic Beta PvP", "ClassicBetaPvP", "classicbetapvp", "CLASSIC BETA PVP" }) do
+			assert.is_true(Compat.isOwnRealmName(text), text)
+		end
+		_G.GetRealmName = nil
+		_G.GetNormalizedRealmName = function() return "ClassicBetaPvE2" end
+		assert.is_true(Compat.isOwnRealmName("classicbetapve2"))
+		for _, text in ipairs({ "Luc", "Whitemane", "", false }) do
+			assert.is_false(Compat.isOwnRealmName(text), tostring(text))
+		end
+		assert.is_false(Compat.isOwnRealmName(nil))
+	end)
+end)

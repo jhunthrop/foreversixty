@@ -24,7 +24,7 @@ local function record()
 			["Bow Jackzon-ClassicBetaPvP"] = {
 				score = 1240, tier = "rare", as_of = "2026-11-04",
 				components = { gear = 380, experience = 410, parses = 300, attendance = 100, discipline = 50 },
-				fights = 9, profile = "/character/us/classic-beta-pvp/bow-jackzon-classicbetapvp",
+				fights = 9, profile = "/character/us/pvp/bow-jackzon",
 			},
 			["Facep Alm-ClassicBetaPvP"] = { score = 0, tier = "common", as_of = "2026-11-04", fights = 0 },
 			["Bob-Whitemane"] = { score = 700, tier = "uncommon", as_of = "2026-11-03", fights = 2 },
@@ -42,7 +42,7 @@ describe("PlayerTooltip", function()
 		install = install or {}
 		install.class = { name = "Hunter", token = "HUNTER" }
 		install.realm = "Classic Beta PvP"
-		install.region = 1
+		install.region = install.region or 1
 		install.playerName = "Bow"
 		install.globals = install.globals or {}
 		install.globals.ITEM_QUALITY_COLORS = QUALITY
@@ -369,19 +369,29 @@ describe("PlayerTooltip", function()
 	end)
 
 	describe("the site link", function()
-		it("is the record's own profile on the site", function()
-			start(record())
-			assert.are.equal("foreversixty.gg/character/us/classic-beta-pvp/bow-jackzon-classicbetapvp",
+		it("is the record's own profile on the site where it has one", function()
+			local data = record()
+			data.characters["Bow Jackzon-ClassicBetaPvP"].profile = "/character/eu/pvp/bow-jackzon"
+			start(data)
+			assert.are.equal("foreversixty.gg/character/eu/pvp/bow-jackzon",
 				PlayerTooltip.siteLink("Bow Jackzon", "Classic Beta PvP"))
 		end)
 
-		it("is built from region, ruleset and name-realm for a character the record does not have", function()
+		it("is built from the region, the realm's ruleset and the name alone otherwise", function()
 			start(record())
-			assert.are.equal("foreversixty.gg/character/us/classic-beta-pvp/smoke-gouda-classicbetapvp",
-				PlayerTooltip.siteLink("Smoke Gouda"))
+			assert.are.equal("foreversixty.gg/character/us/pvp/smoke-gouda", PlayerTooltip.siteLink("Smoke Gouda"))
+			assert.are.equal("foreversixty.gg/character/us/pvp/smoke-gouda",
+				PlayerTooltip.siteLink("Smoke Gouda", "ClassicBetaPvP"))
+			assert.are.equal("foreversixty.gg/character/us/pvp/facep-alm", PlayerTooltip.siteLink("Facep Alm"))
 			start(nil)
-			assert.are.equal("foreversixty.gg/character/us/whitemane/bob-whitemane",
-				PlayerTooltip.siteLink("Bob", "Whitemane"))
+			assert.are.equal("foreversixty.gg/character/us/normal/bob", PlayerTooltip.siteLink("Bob", "Whitemane"))
+		end)
+
+		it("takes the region from the client, us where it cannot name one", function()
+			start(record(), { region = 3 })
+			assert.are.equal("foreversixty.gg/character/eu/pvp/smoke-gouda", PlayerTooltip.siteLink("Smoke Gouda"))
+			start(record(), { region = 72 })
+			assert.are.equal("foreversixty.gg/character/us/pvp/smoke-gouda", PlayerTooltip.siteLink("Smoke Gouda"))
 		end)
 	end)
 
