@@ -102,14 +102,10 @@
   const table = $derived(preloaded !== undefined ? preloaded : facts);
   const loading = $derived(table === undefined);
 
-  /** A failed items file (null) cannot say whether the main hand is two-handed. While it loads,
-   *  an empty off hand at 0 under a worn main hand is laid out as the swap (the API's 0 there is
-   *  the two-hand unit's), its note held invisible: when the file answers nothing moves. */
+  /** Until the items file answers (or when it failed) the main hand's two-handedness is unknown:
+   *  the empty off hand at 0 holds its swap note's line (`noteUnknown`, fix round 4 item 4). */
   const rows = $derived(
-    gearRows(
-      gear,
-      table === null ? null : table === undefined ? () => true : (id) => table.get(id)?.twoHand === true,
-    ),
+    gearRows(gear, table === undefined || table === null ? null : (id) => table.get(id)?.twoHand === true),
   );
   /** After "Gear": "+70 pts across 7 slots · 1 not scored", or nothing. */
   const summary = $derived(gearTitleSummary(gear, total));
@@ -145,25 +141,30 @@
 
   /** Phone: [slot | gap] / [items, note] / [source]. From 1024px: [slot | items | source | gap]. */
   const ROW =
-    'border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] transition-colors duration-[120ms] hover:bg-[rgba(255,255,255,0.04)] focus-within:bg-[rgba(255,255,255,0.04)] lg:grid-cols-[104px_minmax(0,5fr)_minmax(0,4fr)_88px] lg:items-center lg:py-0';
+    'border-line-soft grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] transition-colors duration-[120ms] [@media(hover:hover)_and_(pointer:fine)]:hover:bg-[rgba(255,255,255,0.04)] has-[:focus-visible]:bg-[rgba(255,255,255,0.04)] lg:grid-cols-[104px_minmax(0,5fr)_minmax(0,4fr)_88px] lg:items-center lg:py-0';
   const SLOT = 'text-muted col-start-1 row-start-1 text-[13px] leading-5';
   const LINE = 'col-span-2 row-start-2 flex min-w-0 flex-wrap items-baseline gap-x-1 gap-y-1 lg:contents';
   const ITEMS = 'min-w-0 break-words lg:col-start-2 lg:row-start-1';
   const META = 'text-muted min-w-0 text-[13px] lg:col-start-3 lg:row-start-1';
   const GAP =
     'tabular col-start-2 row-start-1 text-right font-mono text-[13px] leading-5 whitespace-nowrap lg:col-start-4 lg:row-start-1';
-  /** A known name: the /bis item marking, its tooltip host, underlined on hover; the focus ring
-   *  is the site's 2px gold `:focus-visible` outline. */
+  /** A known name: the /bis item marking, its tooltip host, underlined on hover where there is a
+   *  fine pointer that hovers (fix round 4 item C: a tap never leaves it underlined); the focus
+   *  ring is the site's 2px gold `:focus-visible` outline. */
   const NAME =
-    'relative inline-flex min-h-6 max-w-full items-center gap-1.5 align-middle hover:underline underline-offset-2';
-  /** The icon's box: 20px, a 1px quality border, filled so a failed image shows no glyph. */
-  const ICON_BOX = 'rounded-control inline-block h-5 w-5 shrink-0 overflow-hidden border bg-[#12151c]';
+    'relative inline-flex min-h-6 max-w-full items-center gap-1.5 align-middle [@media(hover:hover)_and_(pointer:fine)]:hover:underline underline-offset-2';
+  /** The icon's box: 20px, filled #14171f so a failed image shows no glyph. With an image, a 1px
+   *  quality border; without one (no icon, a failed image, a failed items file), the skeleton's
+   *  treatment, the muted line border (fix round 4 item A). */
+  const ICON_BOX = 'rounded-control inline-block h-5 w-5 shrink-0 overflow-hidden border bg-[#14171f]';
   /** A held name (fix round 3 item 2): the loaded name's own shape -- the same inline-flex box,
    *  a 20px icon place and the real name's text -- so it is exactly as wide and wraps exactly as
    *  the name will; the text is unpainted on a 14px bar. */
   const SKELETON_NAME = 'relative inline-flex min-h-6 max-w-full items-center gap-1.5 align-middle';
   const SKELETON_ICON = 'rounded-control inline-block h-5 w-5 shrink-0 bg-[#1a1d24]';
-  const SKELETON = 'rounded-[2px] bg-[#1a1d24] leading-[14px] text-transparent select-none';
+  /** The bar is the wrapper's background; the name inside is visibility-hidden, its width kept
+   *  and never found by a page search (fix round 4 item 7). */
+  const SKELETON = 'rounded-[2px] bg-[#1a1d24] leading-[14px] select-none';
   /** An inline link in a sentence: its 44px phone target is vertical padding, which never opens
    *  the line (ForeverScoreCard's SENTENCE_LINK). */
   const SENTENCE_LINK = 'underline underline-offset-2 max-md:py-[13.5px]';
@@ -178,7 +179,7 @@
   {:else if loading}
     <span class={SKELETON_NAME} aria-hidden="true"
       ><span class={SKELETON_ICON}></span><span class={SKELETON} data-testid="character-gear-skeleton"
-        >{view.name}</span
+        ><span class="invisible">{view.name}</span></span
       ></span
     >
   {:else}
@@ -191,8 +192,10 @@
       aria-haspopup="true"
       data-testid={`item-hover-${view.id}`}
       ><span
-        class={ICON_BOX}
-        style={`border-color: ${rarityBorderColorFor(table?.get(view.id)?.quality ?? 1)}`}
+        class={icon === null ? `${ICON_BOX} border-line` : ICON_BOX}
+        style={icon === null
+          ? undefined
+          : `border-color: ${rarityBorderColorFor(table?.get(view.id)?.quality ?? 1)}`}
         aria-hidden="true"
         data-testid="character-gear-icon"
         >{#if icon !== null}<img
@@ -252,6 +255,11 @@
     {#if totalsLine !== null}
       <p class="text-muted mt-1 text-[13px] leading-5" data-testid="character-gear-totals">{totalsLine}</p>
     {/if}
+    {#if table === null}
+      <p class="text-muted mt-1 text-[13px] leading-5" data-testid="character-gear-failed">
+        {gearCopy.failed}
+      </p>
+    {/if}
     <ul
       class="mt-4 flex flex-col"
       aria-label={gearCopy.listLabel}
@@ -267,20 +275,30 @@
           <span class={SLOT} id={`gear-slot-${row.slot}`} data-testid="character-gear-slot">{row.label}</span>
           <span class={LINE} data-testid="character-gear-line">
             {#if row.inline}
-              <!-- The note shares this line below 1024px: the dot trails the items. -->
-              <span class="{ITEMS} max-lg:after:content-['\00a0·']" data-testid="character-gear-items"
-                >{@render items(row)}</span
+              <!-- The note shares this line from 360px to 1024px, its dot drawn before it; under
+                   360px it is a line of its own with no dot (fix round 4 item B). -->
+              <span class={ITEMS} data-testid="character-gear-items">{@render items(row)}</span>
+              <span
+                class="{META} max-[359px]:basis-full min-[360px]:max-lg:before:content-['·\00a0']"
+                data-testid="character-gear-meta">{row.note}</span
               >
-              <span class={META} data-testid="character-gear-meta">{row.note}</span>
             {:else}
               <span class={ITEMS} data-testid="character-gear-items">{@render items(row)}</span>
             {/if}
             {#if !row.inline && row.source !== null}
               <span class={`${META} basis-full`} data-testid="character-gear-meta"
-                >{row.source}{#if row.chance !== null}<span class="whitespace-nowrap"
-                    >{gearCopy.chanceLead}{row.chance}</span
-                  >{/if}{#if row.note !== null}<span class={loading ? 'invisible' : undefined}
-                    >{gearCopy.noteLead}{row.note}</span
+                >{row.source}{#if row.chance !== null}<span
+                    class="whitespace-nowrap before:content-['\00a0·\00a0']"
+                    data-testid="character-gear-chance">{row.chance}</span
+                  >{/if}{#if row.note !== null && row.noteUnknown && loading}<span
+                    class="rounded-[2px] bg-[#1a1d24]"
+                    data-testid="character-gear-note-bar"
+                    ><span class="invisible before:content-['\00a0·\00a0']" data-testid="character-gear-note"
+                      >{row.note}</span
+                    ></span
+                  >{:else if row.note !== null}<span
+                    class="before:content-['\00a0·\00a0']{row.noteUnknown ? ' invisible' : ''}"
+                    data-testid="character-gear-note">{row.note}</span
                   >{/if}</span
               >
             {/if}

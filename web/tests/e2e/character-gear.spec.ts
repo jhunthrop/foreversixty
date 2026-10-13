@@ -180,7 +180,9 @@ for (const width of [1440, 390]) {
       await expect(head.getByTestId('character-gear-slot')).toHaveText('Head');
       await expect(head.getByTestId('character-gear-worn')).toHaveCSS('color', RGB.rare);
       await expect(head.getByTestId('character-gear-pick')).toHaveCSS('color', RGB.epic);
-      await expect(head.getByTestId('character-gear-meta')).toHaveText("Onyxia's Lair: Onyxia · 17% drop");
+      // The dot between the source and the chance is drawn (::before), not text.
+      await expect(head.getByTestId('character-gear-meta')).toContainText("Onyxia's Lair: Onyxia");
+      await expect(head.getByTestId('character-gear-chance')).toHaveText('17% drop');
       await expect(head.getByTestId('character-gear-gap')).toHaveText('+18.4 pts');
       await expect(head.getByTestId('character-gear-gap')).toHaveCSS('font-weight', '700');
       await expect(row(page, 'wrist').getByTestId('character-gear-gap')).toHaveCSS('font-weight', '400');
@@ -207,14 +209,15 @@ for (const width of [1440, 390]) {
         'No pick for your band yet',
       );
       const legs = row(page, 'legs');
-      await expect(legs.getByTestId('character-gear-worn')).toHaveText('Unknown item');
+      await expect(legs.getByTestId('character-gear-worn')).toHaveText('Worn item not in our list');
       await expect(legs.getByTestId('character-gear-worn')).toHaveCSS('color', RGB.muted);
       await expect(legs.getByTestId('character-gear-gap')).toHaveText('Not scored');
       await expect(legs.getByTestId('character-gear-gap')).toHaveCSS('color', RGB.muted);
       const off = row(page, 'off_hand');
-      await expect(off.getByTestId('character-gear-meta')).toHaveText(
-        'Blackrock Spire: Gyth · 9% drop · comes with the main-hand swap',
-      );
+      await expect(off.getByTestId('character-gear-meta')).toContainText('Blackrock Spire: Gyth');
+      await expect(off.getByTestId('character-gear-chance')).toHaveText('9% drop');
+      await expect(off.getByTestId('character-gear-note')).toHaveText('comes with the main-hand swap');
+      await expect(off.getByTestId('character-gear-note')).toHaveCSS('visibility', 'visible');
       await expect(off.getByTestId('character-gear-gap')).toHaveText('');
       expect(errors).toEqual([]);
     });
@@ -289,8 +292,9 @@ for (const width of [1440, 390]) {
       await expect(box.locator('img')).toHaveCount(0);
       await expect(box).toBeVisible();
       await expect(box).toHaveCSS('width', '20px');
-      await expect(box).toHaveCSS('background-color', 'rgb(18, 21, 28)');
-      await expect(box).toHaveCSS('border-top-color', 'rgb(163, 53, 238)');
+      // The skeleton's treatment: #14171f, the muted line border, never a white checkbox (fix 4 A).
+      await expect(box).toHaveCSS('background-color', 'rgb(20, 23, 31)');
+      await expect(box).toHaveCSS('border-top-color', 'rgb(38, 46, 64)');
       // The others load.
       const worn = row(page, 'head').locator('[data-bis-item="10504"] img');
       expect(await worn.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
@@ -318,11 +322,25 @@ for (const width of [1440, 390]) {
       await open(page, { itemsFailures: 1 });
       await rowsDrawn(page);
       await expect(row(page, 'head').getByTestId('character-gear-pick')).toHaveCSS('color', RGB.body);
-      // The swap cannot be known: the empty off hand shows no figure (fix 2 ruling 7).
+      // The swap cannot be known: the empty off hand shows no figure (fix 2 ruling 7), its note's
+      // line kept blank (fix 4 item 4).
       await expect(row(page, 'off_hand').getByTestId('character-gear-gap')).toHaveText('');
+      await expect(row(page, 'off_hand').getByTestId('character-gear-note')).toHaveCSS(
+        'visibility',
+        'hidden',
+      );
+      await expect(row(page, 'off_hand').getByTestId('character-gear-note-bar')).toHaveCount(0);
+      await expect(page.getByTestId('character-gear-failed')).toHaveText('Item details didn’t load.');
+      await expect(page.getByTestId('character-gear-failed')).toHaveCSS('color', RGB.muted);
+      // Every icon box the muted line, no white border.
+      const borders = await page
+        .getByTestId('character-gear-icon')
+        .evaluateAll((boxes) => [...new Set(boxes.map((box) => getComputedStyle(box).borderTopColor))]);
+      expect(borders).toEqual(['rgb(38, 46, 64)']);
       await page.reload();
       await rowsDrawn(page);
       await expect(row(page, 'head').getByTestId('character-gear-pick')).toHaveCSS('color', RGB.epic);
+      await expect(page.getByTestId('character-gear-failed')).toHaveCount(0);
     });
   });
 }
@@ -475,27 +493,46 @@ for (const width of [390, 320]) {
   test.describe(`separators at ${width} (fix 2 ruling 4)`, () => {
     test.use({ viewport: { width, height: width === 390 ? 844 : 568 } });
 
-    test('no text begins with "·": each dot trails the word before it', async ({ page }) => {
+    test('no text begins or ends with "·"; no drawn dot starts or ends a line (fix 4 item B)', async ({
+      page,
+    }) => {
       await open(page);
       await rowsDrawn(page);
       const found = await page.getByTestId('character-gear').evaluate((section) => {
-        const leading: string[] = [];
+        const edged: string[] = [];
         const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT);
         for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
-          const text = node.textContent ?? '';
-          if (/^[ \t\r\n]*·/.test(text)) leading.push(text);
+          const text = (node.textContent ?? '').trim();
+          if (text.startsWith('·') || text.endsWith('·')) edged.push(text);
         }
-        const afters: string[] = [];
-        for (const element of section.querySelectorAll('*')) {
-          const content = getComputedStyle(element, '::after').content;
-          if (content.includes('·')) afters.push(content);
-        }
-        return { leading, afters };
+        const drawn: string[] = [];
+        for (const element of section.querySelectorAll('*'))
+          for (const pseudo of ['::before', '::after']) {
+            const content = getComputedStyle(element, pseudo).content;
+            if (content.includes('·')) drawn.push(content);
+          }
+        return { edged, drawn };
       });
-      expect(found.leading).toEqual([]);
-      // Every drawn dot is a no-break space then the dot, so it stays on its word's line.
-      for (const content of found.afters) expect(content.charCodeAt(1), content).toBe(160);
-      expect(found.afters.length).toBeGreaterThan(0);
+      expect(found.edged).toEqual([]);
+      // A dot between two texts is glued to both by no-break spaces; the inline note's own dot
+      // is followed by one; and "Gear"'s is gone at this width.
+      for (const content of found.drawn) expect(['"\u00a0·\u00a0"', '"·\u00a0"'], content).toContain(content);
+      // The inline note: at 390 it shares the items' line after its dot; under 360 it is a line
+      // of its own with no dot.
+      for (const slot of ['shoulder', 'trinket1', 'ranged']) {
+        const meta = row(page, slot).getByTestId('character-gear-meta');
+        const items = row(page, slot).getByTestId('character-gear-items');
+        const [metaBox, itemsBox] = [await meta.boundingBox(), await items.boundingBox()];
+        const before = await meta.evaluate((element) => getComputedStyle(element, '::before').content);
+        if (width === 320) {
+          expect(before, slot).toBe('none');
+          expect(metaBox!.y, slot).toBeGreaterThanOrEqual(itemsBox!.y + itemsBox!.height - 1);
+          expect(metaBox!.x, slot).toBeLessThanOrEqual(itemsBox!.x + 1);
+        } else {
+          expect(before, slot).toBe('"·\u00a0"');
+          expect(Math.abs(metaBox!.y - itemsBox!.y), slot).toBeLessThan(6);
+        }
+      }
       // At 480px and under the title's summary is its own block, with no dot after "Gear".
       const heading = page.getByTestId('character-gear-heading');
       expect(await heading.evaluate((element) => getComputedStyle(element, '::after').content)).toBe('none');
@@ -525,16 +562,18 @@ for (const [width, height] of [
       await expect(list.locator('[data-testid^="character-gear-row-"]')).toHaveCount(17);
       await expect(row(page, 'head').getByTestId('character-gear-slot')).toBeVisible();
       await expect(row(page, 'head').getByTestId('character-gear-gap')).toHaveText('+18.4 pts');
-      await expect(row(page, 'head').getByTestId('character-gear-meta')).toHaveText(
-        "Onyxia's Lair: Onyxia · 17% drop",
-      );
+      await expect(row(page, 'head').getByTestId('character-gear-chance')).toHaveText('17% drop');
       await expect(page.getByTestId('character-gear-pick')).toHaveCount(0);
       await expect(list.locator('[data-bis-item]')).toHaveCount(0);
-      // The held name: its own text, unpainted, on a 14px bar.
+      // The held name: a 14px bar, the wrapper's background, its name inside visibility-hidden.
       const bar = row(page, 'head').getByTestId('character-gear-skeleton').last();
       await expect(bar).toHaveCSS('height', '14px');
       await expect(bar).toHaveCSS('background-color', 'rgb(26, 29, 36)');
-      await expect(bar).toHaveCSS('color', 'rgba(0, 0, 0, 0)');
+      await expect(bar.locator('span')).toHaveCSS('visibility', 'hidden');
+      // The off hand's note line is reserved as a bar of the note's width (fix 4 item 4).
+      const noteBar = row(page, 'off_hand').getByTestId('character-gear-note-bar');
+      await expect(noteBar).toHaveCSS('background-color', 'rgb(26, 29, 36)');
+      await expect(noteBar.getByTestId('character-gear-note')).toHaveCSS('visibility', 'hidden');
       const footer = page.getByTestId('character-gear-bis');
       await expect(footer).toHaveCSS('visibility', 'hidden');
       const measure = () =>
@@ -607,5 +646,64 @@ test.describe('the parked pointer at 1440 (fix 3 item 1)', () => {
     await expect(tooltip).toBeVisible();
     await expect(tooltip).toContainText('Halo of Transcendence');
     expect(errors).toEqual([]);
+  });
+});
+
+// Fix round 4 item C: hover styling lives in @media (hover: hover) and (pointer: fine), and the
+// row's tint follows keyboard focus only, so a landing or a tap on a touch phone leaves nothing lit.
+test.describe('no sticky hover on a touch phone at 390 (fix 4 item C)', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('a landing by tap and a tap on a name leave no row tinted and no name underlined', async ({
+    page,
+  }, info) => {
+    test.skip(info.project.use.hasTouch !== true, 'a tap needs a touch device (the mobile project)');
+    await open(page);
+    await settled(page);
+    const lit = () =>
+      page.getByTestId('character-gear').evaluate((section) => ({
+        rows: [...section.querySelectorAll('[data-testid^="character-gear-row-"]')]
+          .filter((li) => getComputedStyle(li).backgroundColor !== 'rgba(0, 0, 0, 0)')
+          .map((li) => li.getAttribute('data-testid')),
+        names: [...section.querySelectorAll('[data-bis-item]')]
+          .filter((name) => getComputedStyle(name).textDecorationLine.includes('underline'))
+          .map((name) => name.getAttribute('data-bis-item')),
+      }));
+    await page.getByTestId('forever-score-most-to-gain').getByRole('link', { name: 'Gear' }).tap();
+    await expect(page).toHaveURL(/#gear$/);
+    await page.waitForTimeout(400);
+    expect(await lit()).toEqual({ rows: [], names: [] });
+    await row(page, 'head').locator('[data-bis-item="16921"]').tap();
+    await expect(page.getByTestId('item-tooltip')).toBeVisible();
+    expect(await lit()).toEqual({ rows: [], names: [] });
+  });
+});
+
+// Fix round 4 item 6: a tooltip dismissed by Escape (or a click) stays shut while the pointer
+// rests on that name, whatever it moves; leaving the name and coming back opens it again.
+test.describe('dismissal at 1440 (fix 4 item 6)', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test('Escape, then a 1px move: still closed; leave and re-enter: open', async ({ page }) => {
+    await open(page);
+    await settled(page);
+    const pick = row(page, 'head').locator('[data-bis-item="16921"]');
+    const tooltip = page.getByTestId('item-tooltip');
+    await pick.hover();
+    await expect(tooltip).toBeVisible();
+    const box = (await pick.boundingBox())!;
+    await page.keyboard.press('Escape');
+    await expect(tooltip).toHaveCount(0);
+    await page.mouse.move(box.x + box.width / 2 + 1, box.y + box.height / 2);
+    await page.waitForTimeout(300);
+    await expect(tooltip).toHaveCount(0);
+    await page.mouse.move(box.x + box.width / 2 + 3, box.y + box.height / 2 + 1);
+    await page.waitForTimeout(300);
+    await expect(tooltip).toHaveCount(0);
+    // Leave the name, then come back.
+    await page.mouse.move(box.x + box.width / 2, box.y - 60);
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toContainText('Halo of Transcendence');
   });
 });

@@ -48,6 +48,10 @@ export interface GearRow {
   gapLabel: string | null;
   /** One of the five largest non-zero gaps: drawn in weight 700 (fix round 1 ruling 6). */
   strong: boolean;
+  /** The note is the main-hand swap's, but the items file has not said (loading) or cannot say
+   *  (failed) whether the worn main hand is two-handed: its line is held, not shown (fix round 4
+   *  item 4). */
+  noteUnknown: boolean;
 }
 
 /** How many gaps are drawn strong. */
@@ -73,9 +77,9 @@ function strongSlots(gear: readonly CharacterGearSlot[]): Set<GearSlotName> {
  * The section's rows, one per slot, in the order the API sends them (the export's).
  * `twoHand` says whether an item is two-handed, from the build's items file: an empty off hand
  * under a worn two-hander, its gap 0, has its pick "come with the main-hand swap" and a blank gap
- * (fix round 1 ruling 9); with a one-handed main hand the API's "+0 pts" stands. `null` is a
- * failed items file: the swap cannot be known, so that off hand shows no figure (fix round 2
- * ruling 7).
+ * (fix round 1 ruling 9); with a one-handed main hand the API's "+0 pts" stands. `null` is an
+ * items file that has not answered or failed: the swap cannot be known, so that off hand shows no
+ * figure (fix round 2 ruling 7) and holds the note's line (`noteUnknown`, fix round 4 item 4).
  */
 export function gearRows(
   gear: readonly CharacterGearSlot[],
@@ -95,6 +99,7 @@ export function gearRows(
       gap: null,
       gapLabel: null,
       strong: false,
+      noteUnknown: false,
     };
     const { pick } = slot;
     if (pick === null)
@@ -109,7 +114,7 @@ export function gearRows(
       return { ...bare, state: 'best', pick: null, note: gearCopy.best, inline: true };
     const emptyOffHandAtZero = slot.slot === 'off_hand' && slot.worn === null && slot.gap === 0;
     const swap = emptyOffHandAtZero && twoHand !== null && mainHand !== null && twoHand(mainHand.id);
-    const unknown = emptyOffHandAtZero && twoHand === null;
+    const unknown = emptyOffHandAtZero && twoHand === null && mainHand !== null;
     const blank = swap || unknown;
     const scored = slot.gap !== null;
     return {
@@ -118,7 +123,8 @@ export function gearRows(
       pick: { id: pick.id, name: pick.name, known: true },
       source: pick.source,
       chance: pick.chance === null ? null : gearCopy.chance(pick.chance),
-      note: swap ? gearCopy.swap : null,
+      note: swap || unknown ? gearCopy.swap : null,
+      noteUnknown: unknown,
       inline: false,
       gap: blank ? null : scored ? gearCopy.gap(slot.gap ?? 0) : gearCopy.gapUnscored,
       gapLabel: blank || !scored ? null : gearCopy.gapLabel(slot.gap ?? 0),

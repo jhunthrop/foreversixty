@@ -63,6 +63,7 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       gap: '+18.4 pts',
       gapLabel: '18.4 points to gain',
       strong: true,
+      noteUnknown: false,
     });
   });
 
@@ -90,6 +91,7 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       gap: null,
       gapLabel: null,
       strong: false,
+      noteUnknown: false,
     });
     for (const slot of ['hands', 'feet', 'trinket1', 'finger1', 'finger2'] as const)
       expect(row(slot).state).toBe('best');
@@ -126,10 +128,10 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
     });
   });
 
-  it('a gap the API could not score reads "Not scored"; an unknown worn item "Unknown item"', () => {
+  it('a gap the API could not score reads "Not scored"; a worn item the build lacks "Worn item not in our list" (fix 4 item 5)', () => {
     expect(row('legs')).toMatchObject({
       state: 'upgrade',
-      worn: { id: 99001, name: 'Unknown item', known: false },
+      worn: { id: 99001, name: 'Worn item not in our list', known: false },
       gap: 'Not scored',
       gapLabel: null,
       strong: false,
@@ -149,14 +151,23 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
     expect(row('off_hand', () => false)).toMatchObject({ note: null, gap: '+0 pts' });
   });
 
-  it('a failed items file: the swap cannot be known, so the empty off hand shows no figure (fix 2 ruling 7)', () => {
-    expect(row('off_hand', null as unknown as (id: number) => boolean)).toMatchObject({
-      note: null,
+  it('an unknown main hand (the file loading or failed): the swap note is held, unknown, and no figure (fix 4 item 4)', () => {
+    const failed = gearRows(GEAR_FIXTURE, null);
+    expect(failed.find((r) => r.slot === 'off_hand')).toMatchObject({
+      note: 'comes with the main-hand swap',
+      noteUnknown: true,
       gap: null,
       gapLabel: null,
     });
-    const failed = gearRows(GEAR_FIXTURE, null);
-    expect(failed.find((r) => r.slot === 'off_hand')).toMatchObject({ note: null, gap: null });
+    // With no worn main hand there is no swap to hold: the API's 0 stands.
+    const noMain = GEAR_FIXTURE.map((slot) => (slot.slot === 'main_hand' ? { ...slot, worn: null } : slot));
+    expect(gearRows(noMain, null).find((r) => r.slot === 'off_hand')).toMatchObject({
+      note: null,
+      noteUnknown: false,
+      gap: '+0 pts',
+    });
+    // Known, the note is plain.
+    expect(row('off_hand')).toMatchObject({ noteUnknown: false });
     // Everything else as built.
     expect(failed.find((r) => r.slot === 'head')?.gap).toBe('+18.4 pts');
     expect(failed.find((r) => r.slot === 'legs')?.gap).toBe('Not scored');
@@ -232,7 +243,7 @@ describe('gearTotalsLine (L8.6 fix round 1 ruling 3)', () => {
     );
     // A total of 0 has its own wording (fix 2 ruling 5).
     expect(gearTotalsLine(26, 0)).toBe(
-      'The card’s 26 counts the band’s best set. The picks you can wear add 0.',
+      'The card’s 26 counts the band’s best set. Nothing you can wear adds to it.',
     );
     expect(gearTotalsLine(88, 18.4)).toContain('These 18.4 count');
   });

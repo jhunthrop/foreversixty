@@ -56,7 +56,7 @@ export const gearCopy = {
     `The card’s ${points(cardGap)} counts the band’s best set. These ${points(total)} count the picks you can wear.`,
   /** The same at a total of 0 (fix round 2 ruling 5). */
   totalsZero: (cardGap: number): string =>
-    `The card’s ${points(cardGap)} counts the band’s best set. The picks you can wear add 0.`,
+    `The card’s ${points(cardGap)} counts the band’s best set. Nothing you can wear adds to it.`,
   /** A row's gap: "+18.4 pts", and read aloud "18.4 points to gain". */
   gap: (gap: number): string => `+${points(gap)} pts`,
   gapLabel: (gap: number): string => `${points(gap)} points to gain`,
@@ -71,7 +71,9 @@ export const gearCopy = {
   /** An empty slot, and a row with neither a worn item nor a pick. */
   empty: 'Empty',
   /** A worn item the export's data build does not have. */
-  unknownItem: 'Unknown item',
+  unknownItem: 'Worn item not in our list',
+  /** Under the title when the build's items file did not load (fix round 4, nice-to-have). */
+  failed: 'Item details didn’t load.',
   /** The worn item is the pick (or as good as it): no arrow. */
   best: 'Best for your band',
   /** The band has no pick for the slot (fix round 2 ruling 6: capitalised everywhere). */
@@ -82,12 +84,6 @@ export const gearCopy = {
    *  the label instead ("Green Lens, best for your band: Halo of Transcendence"). */
   arrow: ' → ',
   arrowLabel: ' best for your band: ',
-  /** Between the source and its chance: no-break spaces either side of the dot, so the chance
-   *  travels with the source's last word and a wrapped line never starts or ends on the dot. */
-  chanceLead: '\u00a0·\u00a0',
-  /** Before a note that ends the source line: " · comes with the main-hand swap", its dot glued
-   *  to the word before it. */
-  noteLead: '\u00a0· ',
   /** `gear: []`: under the heading, this one line; its two phrases link where each happens. */
   noGear: 'No gear on file. Upload a log or sync the addon.',
   noGearParts: {

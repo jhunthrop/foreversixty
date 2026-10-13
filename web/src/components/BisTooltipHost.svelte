@@ -75,6 +75,11 @@
   let lastX = NaN;
   let lastY = NaN;
 
+  /** The name whose tooltip was just closed by Escape or a click while the pointer rests on it:
+   *  it stays shut, however the pointer moves on it, until the pointer leaves it (L8.6 fix round
+   *  4 item 6). */
+  let dismissed: HTMLElement | null = null;
+
   /** A real move: the mouse is at coordinates it has not been at (and its last place is known). */
   function moved(event: PointerEvent): boolean {
     return !Number.isNaN(lastX) && (event.clientX !== lastX || event.clientY !== lastY);
@@ -157,7 +162,7 @@
   function onPointerEnter(event: PointerEvent): void {
     if (event.pointerType !== 'mouse' || !moved(event)) return;
     const host = hostFor(event.target);
-    if (host !== null) openHost(host);
+    if (host !== null && host !== dismissed) openHost(host);
   }
 
   /** A real move records where the mouse is and opens what it now rests on: the 2px nudge after
@@ -169,7 +174,7 @@
     lastX = event.clientX;
     lastY = event.clientY;
     const host = hostFor(event.target);
-    if (host !== null) openHost(host);
+    if (host !== null && host !== dismissed) openHost(host);
   }
 
   function onPointerDown(): void {
@@ -180,6 +185,7 @@
     if (event.pointerType !== 'mouse') return;
     const host = hostFor(event.target);
     if (host === null || host === relatedHostFor(event)) return; // still inside the same host
+    if (dismissed === host) dismissed = null; // left: the next entry opens it again
     closeHost(host);
   }
 
@@ -188,7 +194,9 @@
   function onFocusIn(event: FocusEvent): void {
     if (performance.now() - pressedAt < 1000) return;
     const host = hostFor(event.target);
-    if (host !== null) openHost(host);
+    if (host === null) return;
+    dismissed = null;
+    openHost(host);
   }
 
   function onFocusOut(event: FocusEvent): void {
@@ -208,13 +216,19 @@
       return;
     }
     event.preventDefault();
-    if (activeHost === host) closeHost(host);
-    else openHost(host);
+    if (activeHost === host) {
+      closeHost(host);
+      dismissed = host;
+    } else {
+      dismissed = null;
+      openHost(host);
+    }
   }
 
   function onKeyDown(event: KeyboardEvent): void {
     if (event.key !== 'Escape' || activeHost === null) return;
     event.stopPropagation();
+    dismissed = activeHost;
     closeHost(activeHost);
   }
 

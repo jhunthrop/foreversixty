@@ -46,6 +46,12 @@ function classesOf(html: string, testid: string): string[] {
   return new RegExp(`<[a-z]+ class="([^"]*)"[^>]*data-testid="${testid}"`).exec(html)?.[1].split(' ') ?? [];
 }
 
+/** Hover styling only where there is a fine pointer that hovers (fix 4 item C). */
+const POINTER_HOVER = '[@media(hover:hover)_and_(pointer:fine)]:hover:';
+/** A separator drawn before its text, never a text node of its own (fix 4 item B). */
+const DOT_BEFORE = "before:content-['\\00a0·\\00a0']";
+const INLINE_DOT_BEFORE = "min-[360px]:max-lg:before:content-['·\\00a0']";
+
 /** The separator a dot-trailing element draws after itself: a no-break space, then the dot. */
 const TRAILING_DOT = "after:content-['\\00a0·']";
 
@@ -103,10 +109,11 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(list?.[1].split(' ')).not.toContain('invisible');
     expect(list?.[0]).toContain('aria-busy="true"');
     // Each held name is the name's own box -- a 20px icon place, then the real name -- hidden from
-    // a screen reader, its text unpainted on the bar, so it is exactly as wide as the name.
+    // a screen reader: the bar is the wrapper's background, the name inside it visibility-hidden
+    // (its width kept, never found by a page search) (fix 3 item 2, fix 4 item 7).
     const held = [
       ...rowHtml(body, 'head').matchAll(
-        /<span class="([^"]*)" aria-hidden="true"><span class="([^"]*)"><\/span><span class="([^"]*)" data-testid="character-gear-skeleton">([^<]*)<\/span><\/span>/g,
+        /<span class="([^"]*)" aria-hidden="true"><span class="([^"]*)"><\/span><span class="([^"]*)" data-testid="character-gear-skeleton"><span class="invisible">([^<]*)<\/span><\/span><\/span>/g,
       ),
     ];
     expect(held.map((m) => m[4])).toEqual(['Green Lens', 'Halo of Transcendence']);
@@ -115,9 +122,8 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
         expect.arrayContaining(['inline-flex', 'min-h-6', 'max-w-full', 'items-center', 'gap-1.5']),
       );
       expect(icon.split(' ')).toEqual(expect.arrayContaining(['h-5', 'w-5', 'bg-[#1a1d24]']));
-      expect(bar.split(' ')).toEqual(
-        expect.arrayContaining(['bg-[#1a1d24]', 'leading-[14px]', 'text-transparent']),
-      );
+      expect(bar.split(' ')).toEqual(expect.arrayContaining(['bg-[#1a1d24]', 'leading-[14px]']));
+      expect(bar.split(' ')).not.toContain('text-transparent');
     }
     // The loaded name's box has the same shape classes, so the two wrap alike.
     const loaded = render(CharacterGearPanel, { props: PROPS }).body;
@@ -126,12 +132,12 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     // Nothing opens a tooltip yet, and no name is drawn in its colour.
     expect(body).not.toContain('data-bis-item');
     expect(body).not.toContain('character-gear-pick');
-    // "Empty" and "Unknown item" are not names: they draw at once.
-    expect(text(rowHtml(body, 'legs'))).toContain('Unknown item');
+    // "Empty" and "Worn item not in our list" are not names: they draw at once.
+    expect(text(rowHtml(body, 'legs'))).toContain('Worn item not in our list');
     expect(text(rowHtml(body, 'trinket2'))).toBe('Trinket 2 Empty No pick for your band yet');
-    // The off hand's swap note is laid out but held, so nothing moves when the file answers.
+    // The off hand's swap note's line is reserved as a bar of its width (fix 4 item 4).
     expect(rowHtml(body, 'off_hand')).toMatch(
-      /<span class="invisible">[^<]*comes with the main-hand swap<\/span>/,
+      /<span class="[^"]*bg-\[#1a1d24\][^"]*" data-testid="character-gear-note-bar"><span class="[^"]*invisible[^"]*"[^>]*>comes with the main-hand swap<\/span><\/span>/,
     );
     expect(/data-testid="character-gear-gap">([^<]*)</.exec(rowHtml(body, 'off_hand'))?.[1]).toBe('');
     // The footer link holds its place (visibility, not display).
@@ -149,7 +155,10 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     const { body } = render(CharacterGearPanel, { props: PROPS });
     const head = rowHtml(body, 'head');
     const host = /<span class="([^"]*)" data-bis-item="16921"([^>]*)>([\s\S]*?)<\/span><\/span>/.exec(head);
-    expect(host?.[1].split(' ')).toEqual(expect.arrayContaining(['relative', 'hover:underline', 'min-h-6']));
+    expect(host?.[1].split(' ')).toEqual(
+      expect.arrayContaining(['relative', `${POINTER_HOVER}underline`, 'min-h-6']),
+    );
+    expect(host?.[1].split(' ')).not.toContain('hover:underline');
     expect(host?.[2]).toContain('tabindex="0"');
     expect(host?.[2]).toContain('role="button"');
     expect(host?.[2]).toContain('aria-haspopup="true"');
@@ -159,10 +168,12 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     );
     const legs = rowHtml(body, 'legs');
     expect(legs).not.toContain('data-bis-item="99001"');
-    expect(legs).toMatch(/<span class="text-muted"[^>]*data-testid="character-gear-worn">Unknown item/);
+    expect(legs).toMatch(
+      /<span class="text-muted"[^>]*data-testid="character-gear-worn">Worn item not in our list/,
+    );
   });
 
-  it('every icon sits in a 20px bordered box filled #12151c; no icon name, the box alone (fix 2 ruling 1)', () => {
+  it('every icon sits in a 20px box filled #14171f; with no image it takes the muted line border (fix 4 item A)', () => {
     const noIcon: GearItemTable = new Map(
       [...FACTS].map(([id, facts]) => [id, id === 16921 ? { ...facts, icon: null } : facts]),
     );
@@ -170,19 +181,23 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     const head = rowHtml(body, 'head');
     const boxes = [
       ...head.matchAll(
-        /<span class="([^"]*)" style="border-color: ?([^;"]+);?" aria-hidden="true" data-testid="character-gear-icon">([\s\S]*?)<\/span>/g,
+        /<span class="([^"]*)"(?: style="border-color: ?([^;"]+);?")? aria-hidden="true" data-testid="character-gear-icon">([\s\S]*?)<\/span>/g,
       ),
     ];
     expect(boxes).toHaveLength(2);
     for (const box of boxes)
       expect(box[1].split(' ')).toEqual(
-        expect.arrayContaining(['h-5', 'w-5', 'border', 'bg-[#12151c]', 'overflow-hidden']),
+        expect.arrayContaining(['h-5', 'w-5', 'border', 'bg-[#14171f]', 'overflow-hidden']),
       );
-    // Green Lens has its icon, 20 by 20; Halo of Transcendence (no icon name) keeps the empty box.
+    // Green Lens has its icon, 20 by 20, in its quality's border.
     expect(boxes[0][3]).toMatch(
       /<img src="\/data\/[^"]+\/icons\/inv_helmet_44\.webp" alt="" width="20" height="20"/,
     );
-    expect(boxes[1][2]).toBe('var(--color-rarity-epic)');
+    expect(boxes[0][2]).toBe('var(--color-rarity-rare)');
+    // Halo of Transcendence (no icon name): the skeleton's treatment, the muted line border, no
+    // quality colour, never a white checkbox.
+    expect(boxes[1][1].split(' ')).toContain('border-line');
+    expect(boxes[1][2]).toBeUndefined();
     expect(boxes[1][3]).not.toContain('<img');
   });
 
@@ -192,7 +207,18 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(body).not.toContain('text-rarity-');
     const off = rowHtml(body, 'off_hand');
     expect(/data-testid="character-gear-gap">([^<]*)</.exec(off)?.[1]).toBe('');
-    expect(text(off)).not.toContain('swap');
+    // The note's line is kept, blank: the same rows as mid-load (fix 4 item 4).
+    expect(off).toMatch(
+      /<span class="[^"]*invisible[^"]*" data-testid="character-gear-note">comes with the main-hand swap<\/span>/,
+    );
+    expect(off).not.toContain('character-gear-note-bar');
+    // Every icon box takes the muted line border: no quality is known.
+    expect(body).not.toContain('style="border-color');
+    // One muted line under the title says so.
+    expect(text(/<p[^>]*data-testid="character-gear-failed">[^<]*<\/p>/.exec(body)?.[0] ?? '')).toBe(
+      'Item details didn’t load.',
+    );
+    expect(render(CharacterGearPanel, { props: PROPS }).body).not.toContain('character-gear-failed');
   });
 
   it('copy: "No pick for your band yet", "Best for your band", "17% drop" (fix 2 ruling 6)', () => {
@@ -201,23 +227,29 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(text(rowHtml(body, 'ranged'))).toBe("Ranged Skul's Ghastly Touch No pick for your band yet");
     expect(text(rowHtml(body, 'shoulder'))).toBe('Shoulder Pauldrons of Transcendence Best for your band');
     expect(text(rowHtml(body, 'head'))).toBe(
-      "Head Green Lens → best for your band: Halo of Transcendence Onyxia's Lair: Onyxia · 17% drop +18.4 pts",
+      "Head Green Lens → best for your band: Halo of Transcendence Onyxia's Lair: Onyxia17% drop +18.4 pts",
     );
+    expect(text(rowHtml(body, 'legs'))).toContain('Worn item not in our list');
   });
 
-  it('no separator starts a text: the dots are glued to what precedes them (fix 2 ruling 4)', () => {
+  it('no text begins or ends with a separator: each dot is drawn before its text (fix 4 item B)', () => {
     const { body } = render(CharacterGearPanel, { props: PROPS });
-    const texts = [...body.replace(/<!--[\s\S]*?-->/g, '').matchAll(/>([^<]+)</g)].map((m) => m[1]);
-    for (const piece of texts) expect(piece, JSON.stringify(piece)).not.toMatch(/^[ \t\r\n]*·/);
-    // Below 1024px a note on the items' line has its dot drawn after the items.
-    expect(classesOf(rowHtml(body, 'shoulder'), 'character-gear-items')).toEqual(
-      expect.arrayContaining(["max-lg:after:content-['\\00a0·']"]),
-    );
-    expect(classesOf(rowHtml(body, 'head'), 'character-gear-items')).not.toContain(
-      "max-lg:after:content-['\\00a0·']",
-    );
-    expect(text(rowHtml(body, 'off_hand'))).toContain('9% drop · comes with the main-hand swap');
-    expect(rowHtml(body, 'off_hand')).toMatch(/\u00a0· comes with the main-hand swap/);
+    const texts = [...body.replace(/<!--[\s\S]*?-->/g, '').matchAll(/>([^<]+)</g)].map((m) => m[1].trim());
+    for (const piece of texts) {
+      expect(piece, JSON.stringify(piece)).not.toMatch(/^·/);
+      expect(piece, JSON.stringify(piece)).not.toMatch(/·$/);
+    }
+    // A note on the items' line below 1024px: the dot is its ::before; under 360px the note is a
+    // line of its own with no dot.
+    const note = classesOf(rowHtml(body, 'shoulder'), 'character-gear-meta');
+    expect(note).toEqual(expect.arrayContaining([INLINE_DOT_BEFORE, 'max-[359px]:basis-full']));
+    expect(classesOf(rowHtml(body, 'shoulder'), 'character-gear-items').join(' ')).not.toContain('after:');
+    // The chance and the swap note draw their dots before themselves.
+    const off = rowHtml(body, 'off_hand');
+    expect(classesOf(off, 'character-gear-chance')).toContain(DOT_BEFORE);
+    expect(classesOf(off, 'character-gear-note')).toContain(DOT_BEFORE);
+    // No dot in the row's text: only in the drawn ::before.
+    expect(text(off)).not.toContain('·');
   });
 
   it('an unscored gap reads "Not scored", muted and right-aligned', () => {
@@ -274,10 +306,11 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(/<li [^>]*class="([^"]*)"/.exec(head)?.[1].split(' ')).toEqual(
       expect.arrayContaining([
         'lg:grid-cols-[104px_minmax(0,5fr)_minmax(0,4fr)_88px]',
-        'hover:bg-[rgba(255,255,255,0.04)]',
-        'focus-within:bg-[rgba(255,255,255,0.04)]',
+        `${POINTER_HOVER}bg-[rgba(255,255,255,0.04)]`,
+        'has-[:focus-visible]:bg-[rgba(255,255,255,0.04)]',
       ]),
     );
+    expect(/<li [^>]*class="([^"]*)"/.exec(head)?.[1]).not.toMatch(/(^| )(hover|focus-within):/);
     expect(classesOf(head, 'character-gear-line')).toContain('lg:contents');
     expect(classesOf(head, 'character-gear-meta')).toEqual(
       expect.arrayContaining(['lg:col-start-3', 'lg:row-start-1']),
