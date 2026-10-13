@@ -18,7 +18,9 @@
      image fails or the item has no icon (ruling 1). Until the build's items file (quality, icon,
      two-handed) answers, the slot labels, gaps and sources draw at once and each name is held
      behind a 14px bar, so no name is ever painted white first and nothing moves when they come
-     (ruling 8); a failed file draws the names in the body colour.
+     (ruling 8): the bar holds the real name, unpainted, in the name's own box, so every row
+     wraps the same before and after (fix round 3 item 2); a failed file draws the names in the
+     body colour.
 
      Layout. Below 1024px three lines a row: the slot label and the gap on one top, then worn →
      pick, then the source and chance; a row with no source ("Best for your band", no pick) has
@@ -114,10 +116,6 @@
   /** Icons whose image failed: their box stays, empty (fix round 2 ruling 1). */
   const brokenIcons = new SvelteSet<number>();
 
-  /** A name's bar while the items file loads: about the width the icon and the name will take. */
-  function skeletonWidth(name: string): number {
-    return 26 + Math.round(name.length * 6.2);
-  }
   const totalsLine = $derived(gearTotalsLine(cardGap, total));
 
   /** The landing (fix round 1 ruling 11): when the address is #gear, focus moves to the heading,
@@ -160,9 +158,12 @@
     'relative inline-flex min-h-6 max-w-full items-center gap-1.5 align-middle hover:underline underline-offset-2';
   /** The icon's box: 20px, a 1px quality border, filled so a failed image shows no glyph. */
   const ICON_BOX = 'rounded-control inline-block h-5 w-5 shrink-0 overflow-hidden border bg-[#12151c]';
-  /** A held name: the 24px line a name takes, a 14px bar on it. */
-  const SKELETON_LINE = 'inline-flex min-h-6 items-center align-middle';
-  const SKELETON = 'inline-block h-[14px] rounded-[2px] bg-[#1a1d24]';
+  /** A held name (fix round 3 item 2): the loaded name's own shape -- the same inline-flex box,
+   *  a 20px icon place and the real name's text -- so it is exactly as wide and wraps exactly as
+   *  the name will; the text is unpainted on a 14px bar. */
+  const SKELETON_NAME = 'relative inline-flex min-h-6 max-w-full items-center gap-1.5 align-middle';
+  const SKELETON_ICON = 'rounded-control inline-block h-5 w-5 shrink-0 bg-[#1a1d24]';
+  const SKELETON = 'rounded-[2px] bg-[#1a1d24] leading-[14px] text-transparent select-none';
   /** An inline link in a sentence: its 44px phone target is vertical padding, which never opens
    *  the line (ForeverScoreCard's SENTENCE_LINK). */
   const SENTENCE_LINK = 'underline underline-offset-2 max-md:py-[13.5px]';
@@ -175,13 +176,10 @@
   {#if !view.known}
     <span class="text-muted" data-testid={testid}>{view.name}</span>
   {:else if loading}
-    <span class={SKELETON_LINE}
-      ><span
-        class={SKELETON}
-        style={`width: ${skeletonWidth(view.name)}px`}
-        aria-hidden="true"
-        data-testid="character-gear-skeleton"
-      ></span></span
+    <span class={SKELETON_NAME} aria-hidden="true"
+      ><span class={SKELETON_ICON}></span><span class={SKELETON} data-testid="character-gear-skeleton"
+        >{view.name}</span
+      ></span
     >
   {:else}
     {@const icon = brokenIcons.has(view.id) ? null : iconOf(table ?? null, view.id)}

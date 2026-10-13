@@ -97,27 +97,35 @@ describe('CharacterGearPanel (L8.6 fix rounds 1 and 2)', () => {
     expect(classesOf(footer, 'character-gear-bis')).not.toContain('invisible');
   });
 
-  it('mid-load: labels, gaps and sources draw at once; each name is a 14px bar; the footer keeps its height (fix 2 ruling 8)', () => {
+  it('mid-load: labels, gaps and sources draw at once; each name is held, unpainted, on a 14px bar; the footer keeps its height (fix 2 ruling 8, fix 3 item 2)', () => {
     const { body } = render(CharacterGearPanel, { props: { ...PROPS, preloaded: undefined } });
     const list = /<ul class="([^"]*)"[^>]*data-testid="character-gear-list"[^>]*>/.exec(body);
     expect(list?.[1].split(' ')).not.toContain('invisible');
     expect(list?.[0]).toContain('aria-busy="true"');
-    expect(text(rowHtml(body, 'head'))).toBe(
-      "Head → best for your band: Onyxia's Lair: Onyxia · 17% drop +18.4 pts",
-    );
-    const bars = [
+    // Each held name is the name's own box -- a 20px icon place, then the real name -- hidden from
+    // a screen reader, its text unpainted on the bar, so it is exactly as wide as the name.
+    const held = [
       ...rowHtml(body, 'head').matchAll(
-        /<span class="([^"]*)" style="width: (\d+)px;?" aria-hidden="true" data-testid="character-gear-skeleton"/g,
+        /<span class="([^"]*)" aria-hidden="true"><span class="([^"]*)"><\/span><span class="([^"]*)" data-testid="character-gear-skeleton">([^<]*)<\/span><\/span>/g,
       ),
     ];
-    expect(bars).toHaveLength(2);
-    for (const bar of bars) {
-      expect(bar[1].split(' ')).toEqual(expect.arrayContaining(['inline-block', 'h-[14px]', 'bg-[#1a1d24]']));
-      expect(Number(bar[2])).toBeGreaterThan(40);
+    expect(held.map((m) => m[4])).toEqual(['Green Lens', 'Halo of Transcendence']);
+    for (const [, box, icon, bar] of held) {
+      expect(box.split(' ')).toEqual(
+        expect.arrayContaining(['inline-flex', 'min-h-6', 'max-w-full', 'items-center', 'gap-1.5']),
+      );
+      expect(icon.split(' ')).toEqual(expect.arrayContaining(['h-5', 'w-5', 'bg-[#1a1d24]']));
+      expect(bar.split(' ')).toEqual(
+        expect.arrayContaining(['bg-[#1a1d24]', 'leading-[14px]', 'text-transparent']),
+      );
     }
-    // No name is painted, and nothing opens a tooltip yet.
-    expect(body).not.toContain('Halo of Transcendence');
+    // The loaded name's box has the same shape classes, so the two wrap alike.
+    const loaded = render(CharacterGearPanel, { props: PROPS }).body;
+    const host = /<span class="([^"]*)" data-bis-item="16921"/.exec(loaded)?.[1].split(' ') ?? [];
+    expect(host).toEqual(expect.arrayContaining(held[1][1].split(' ')));
+    // Nothing opens a tooltip yet, and no name is drawn in its colour.
     expect(body).not.toContain('data-bis-item');
+    expect(body).not.toContain('character-gear-pick');
     // "Empty" and "Unknown item" are not names: they draw at once.
     expect(text(rowHtml(body, 'legs'))).toContain('Unknown item');
     expect(text(rowHtml(body, 'trinket2'))).toBe('Trinket 2 Empty No pick for your band yet');

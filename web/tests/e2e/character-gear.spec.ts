@@ -280,38 +280,6 @@ for (const width of [1440, 390]) {
       expect(await page.evaluate(() => (window as unknown as { __white: string[] }).__white)).toEqual([]);
     });
 
-    test('mid-load: 17 rows with labels, gaps and sources, the names held as bars; the footer stays put (fix 2 ruling 8)', async ({
-      page,
-    }) => {
-      await open(page, { itemsDelayMs: 2500 });
-      const list = page.getByTestId('character-gear-list');
-      await expect(list).toHaveAttribute('aria-busy', 'true');
-      await expect(list.locator('[data-testid^="character-gear-row-"]')).toHaveCount(17);
-      await expect(row(page, 'head').getByTestId('character-gear-slot')).toBeVisible();
-      await expect(row(page, 'head').getByTestId('character-gear-gap')).toHaveText('+18.4 pts');
-      await expect(row(page, 'head').getByTestId('character-gear-meta')).toHaveText(
-        "Onyxia's Lair: Onyxia · 17% drop",
-      );
-      await expect(page.getByTestId('character-gear-pick')).toHaveCount(0);
-      await expect(list.locator('[data-bis-item]')).toHaveCount(0);
-      const bar = row(page, 'head').getByTestId('character-gear-skeleton').first();
-      await expect(bar).toHaveCSS('height', '14px');
-      await expect(bar).toHaveCSS('background-color', 'rgb(26, 29, 36)');
-      const footer = page.getByTestId('character-gear-bis');
-      await expect(footer).toHaveCSS('visibility', 'hidden');
-      const before = await footer.evaluate(
-        (element) =>
-          element.getBoundingClientRect().top - element.closest('section')!.getBoundingClientRect().top,
-      );
-      await rowsDrawn(page);
-      await expect(footer).toHaveCSS('visibility', 'visible');
-      const after = await footer.evaluate(
-        (element) =>
-          element.getBoundingClientRect().top - element.closest('section')!.getBoundingClientRect().top,
-      );
-      expect(Math.abs(after - before)).toBeLessThan(1);
-    });
-
     test('an icon that fails keeps its bordered box, never the broken-image glyph (fix 2 ruling 1)', async ({
       page,
     }) => {
@@ -535,3 +503,109 @@ for (const width of [390, 320]) {
     });
   });
 }
+
+// Fix round 2 ruling 8, fix round 3 item 2: mid-load the labels, gaps and sources draw, each name
+// is held as its own text, unpainted, on a bar, so every row wraps exactly as it will once the
+// names come; nothing below moves, at every width.
+for (const [width, height] of [
+  [1440, 900],
+  [1024, 900],
+  [390, 844],
+  [320, 568],
+] as const) {
+  test.describe(`mid-load at ${width} (fix 2 ruling 8, fix 3 item 2)`, () => {
+    test.use({ viewport: { width, height } });
+
+    test('17 rows with labels, gaps and sources, the names held as bars; no row and not the footer moves', async ({
+      page,
+    }) => {
+      await open(page, { itemsDelayMs: 2500 });
+      const list = page.getByTestId('character-gear-list');
+      await expect(list).toHaveAttribute('aria-busy', 'true');
+      await expect(list.locator('[data-testid^="character-gear-row-"]')).toHaveCount(17);
+      await expect(row(page, 'head').getByTestId('character-gear-slot')).toBeVisible();
+      await expect(row(page, 'head').getByTestId('character-gear-gap')).toHaveText('+18.4 pts');
+      await expect(row(page, 'head').getByTestId('character-gear-meta')).toHaveText(
+        "Onyxia's Lair: Onyxia · 17% drop",
+      );
+      await expect(page.getByTestId('character-gear-pick')).toHaveCount(0);
+      await expect(list.locator('[data-bis-item]')).toHaveCount(0);
+      // The held name: its own text, unpainted, on a 14px bar.
+      const bar = row(page, 'head').getByTestId('character-gear-skeleton').last();
+      await expect(bar).toHaveCSS('height', '14px');
+      await expect(bar).toHaveCSS('background-color', 'rgb(26, 29, 36)');
+      await expect(bar).toHaveCSS('color', 'rgba(0, 0, 0, 0)');
+      const footer = page.getByTestId('character-gear-bis');
+      await expect(footer).toHaveCSS('visibility', 'hidden');
+      const measure = () =>
+        page.getByTestId('character-gear').evaluate((section) => {
+          const top = section.getBoundingClientRect().top;
+          const rows = [...section.querySelectorAll('[data-testid^="character-gear-row-"]')].map((li) => {
+            const r = li.getBoundingClientRect();
+            return `${li.getAttribute('data-testid')?.slice(19)}:${(r.top - top).toFixed(1)}/${r.height.toFixed(1)}`;
+          });
+          const link = section.querySelector('[data-testid="character-gear-bis"]')!.getBoundingClientRect();
+          return { rows, footer: link.top - top };
+        });
+      const before = await measure();
+      await rowsDrawn(page);
+      await expect(footer).toHaveCSS('visibility', 'visible');
+      const after = await measure();
+      expect(after.rows).toEqual(before.rows);
+      expect(Math.abs(after.footer - before.footer)).toBeLessThan(1);
+    });
+  });
+}
+
+// Fix round 3 item 1: a tooltip opens only from a real mouse move. A page that jumps under a
+// parked pointer (an anchor landing, scrollBy) fires a pointerenter at the pointer's old place,
+// sometimes before its scroll event: that never opens one.
+test.describe('the parked pointer at 1440 (fix 3 item 1)', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test('a landing and a scrollBy under a parked pointer open nothing; a 2px move does', async ({ page }) => {
+    const errors = await open(page);
+    await settled(page);
+    const tooltip = page.getByTestId('item-tooltip');
+    // Where Halo of Transcendence will sit once the section lands 96px under the top.
+    const spot = await page.evaluate(() => {
+      const section = document.querySelector('[data-testid="character-gear"]')!.getBoundingClientRect();
+      const pick = document
+        .querySelector('[data-testid="character-gear-row-head"] [data-bis-item="16921"]')!
+        .getBoundingClientRect();
+      return { x: pick.left + pick.width / 2, y: 96 + (pick.top + pick.height / 2 - section.top) };
+    });
+    await page.mouse.move(spot.x, spot.y);
+    // Land by keyboard, so the pointer stays parked.
+    const link = page.getByTestId('forever-score-most-to-gain').getByRole('link', { name: 'Gear' });
+    await link.focus();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/#gear$/);
+    const under = await page.evaluate(
+      ({ x, y }) =>
+        document.elementFromPoint(x, y)?.closest('[data-bis-item]')?.getAttribute('data-bis-item'),
+      spot,
+    );
+    expect(under).toBe('16921');
+    await page.waitForTimeout(600);
+    await expect(tooltip).toHaveCount(0);
+    // A scrollBy away and back, the pointer still parked: nothing opens.
+    await page.evaluate(() => window.scrollBy(0, -300));
+    await page.waitForTimeout(300);
+    await page.evaluate(() => window.scrollBy(0, 300));
+    await page.waitForTimeout(600);
+    await expect(tooltip).toHaveCount(0);
+    // A wheel scroll under the parked pointer: nothing opens either.
+    await page.mouse.wheel(0, 44);
+    await page.waitForTimeout(600);
+    await expect(tooltip).toHaveCount(0);
+    await page.mouse.wheel(0, -44);
+    await page.waitForTimeout(600);
+    await expect(tooltip).toHaveCount(0);
+    // A real 2px move opens what the pointer rests on.
+    await page.mouse.move(spot.x + 2, spot.y);
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toContainText('Halo of Transcendence');
+    expect(errors).toEqual([]);
+  });
+});

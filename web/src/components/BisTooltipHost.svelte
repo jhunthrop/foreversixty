@@ -68,12 +68,17 @@
   /** When a pointer was last pressed: the focus that press gives a host is the pointer's, not
    *  the keyboard's, so it opens nothing (the click decides; L8.6 fix round 2 ruling 2). */
   let pressedAt = -Infinity;
-  /** Where the mouse last moved to, and whether the page has scrolled since: a page scroll or
-   *  an anchor landing slides a row under a stationary pointer, and the browser's fake
-   *  pointerenter for that must not open a tooltip (L8.6 fix round 2 ruling 2). */
+  /** Where the mouse last really moved to. A page scroll or an anchor landing slides a row under
+   *  a parked pointer, and the browser's fake pointerenter for it carries these same
+   *  coordinates -- in Chrome sometimes before the scroll event itself -- so only a pointer event
+   *  at new coordinates, a real move, may open a tooltip (L8.6 fix round 3 item 1). */
   let lastX = NaN;
   let lastY = NaN;
-  let scrolledSinceMove = false;
+
+  /** A real move: the mouse is at coordinates it has not been at (and its last place is known). */
+  function moved(event: PointerEvent): boolean {
+    return !Number.isNaN(lastX) && (event.clientX !== lastX || event.clientY !== lastY);
+  }
 
   function loadModels(): void {
     const script = document.getElementById(modelsElementId);
@@ -146,33 +151,29 @@
     unmountPanel();
   }
 
-  /** Hover opens for a mouse only (L8.6 fix round 2 ruling 2): a touch or pen opens on its tap,
-   *  and a row that slid under a stationary mouse (a scroll, an anchor landing) waits for the
-   *  mouse to move. */
+  /** Hover opens for a mouse only (L8.6 fix round 2 ruling 2): a touch or pen opens on its tap.
+   *  And only on a real move (fix round 3 item 1): a pointerenter at the pointer's last
+   *  coordinates is a row sliding under a parked pointer, and opens nothing. */
   function onPointerEnter(event: PointerEvent): void {
-    if (event.pointerType !== 'mouse' || scrolledSinceMove) return;
+    if (event.pointerType !== 'mouse' || !moved(event)) return;
     const host = hostFor(event.target);
     if (host !== null) openHost(host);
   }
 
+  /** A real move records where the mouse is and opens what it now rests on: the 2px nudge after
+   *  a scroll, or the first move on a page whose pointer was never seen. A move at the same
+   *  coordinates (the browser's fake one after a scroll) does nothing. */
   function onPointerMove(event: PointerEvent): void {
     if (event.pointerType !== 'mouse') return;
-    if (event.clientX === lastX && event.clientY === lastY) return; // the browser's fake move after a scroll
+    if (event.clientX === lastX && event.clientY === lastY) return;
     lastX = event.clientX;
     lastY = event.clientY;
-    if (!scrolledSinceMove) return;
-    scrolledSinceMove = false;
-    // The mouse moved after the scroll: what it now rests on may open.
-    const host = hostFor(document.elementFromPoint(event.clientX, event.clientY));
+    const host = hostFor(event.target);
     if (host !== null) openHost(host);
   }
 
   function onPointerDown(): void {
     pressedAt = performance.now();
-  }
-
-  function onScroll(): void {
-    scrolledSinceMove = true;
   }
 
   function onPointerLeave(event: PointerEvent): void {
@@ -227,7 +228,6 @@
     document.addEventListener('pointerleave', onPointerLeave, true);
     document.addEventListener('pointermove', onPointerMove, true);
     document.addEventListener('pointerdown', onPointerDown, true);
-    document.addEventListener('scroll', onScroll, { capture: true, passive: true });
     document.addEventListener('focusin', onFocusIn);
     document.addEventListener('focusout', onFocusOut);
     document.addEventListener('click', onClick);
@@ -245,7 +245,6 @@
       document.removeEventListener('pointerleave', onPointerLeave, true);
       document.removeEventListener('pointermove', onPointerMove, true);
       document.removeEventListener('pointerdown', onPointerDown, true);
-      document.removeEventListener('scroll', onScroll, { capture: true });
       document.removeEventListener('focusin', onFocusIn);
       document.removeEventListener('focusout', onFocusOut);
       document.removeEventListener('click', onClick);
