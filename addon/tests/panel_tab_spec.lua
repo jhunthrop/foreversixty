@@ -96,6 +96,26 @@ describe("PanelTab", function()
 	local PanelTab, ItemTooltip, Follow, Export, Theme, BuildDialog
 	local state
 
+	--- A client frame given a rect: GetLeft answers a number, as the client's does for a frame
+	--- it has laid out (fix round 2: a hidden or unplaced frame answers nil).
+	local function withRect(frame, left)
+		frame.GetLeft = function()
+			return left
+		end
+		return frame
+	end
+
+	--- A recorded point equals `expected` element by element, frames by identity (fix round 2:
+	--- assert.are.same compares tables deeply, and every watched client frame is an empty proxy,
+	--- so any two of them compared the same).
+	local function assertPoint(expected, actual)
+		assert.is_not_nil(actual)
+		assert.are.equal(#expected, #actual)
+		for index = 1, #expected do
+			assert.is_true(rawequal(expected[index], actual[index]), "point element " .. index)
+		end
+	end
+
 	--- `worn` is { [slot] = link }; `options` { level, inbox, noPane, tabs }. Answers the pane.
 	local function start(worn, options)
 		options = options or {}
@@ -177,7 +197,7 @@ describe("PanelTab", function()
 		if not options.noPane then
 			pane = _G.CreateFrame("Frame", "CharacterFrame", _G.UIParent)
 			for index = 1, options.tabs or 3 do
-				_G.CreateFrame("Button", "CharacterFrameTab" .. index, pane)
+				withRect(_G.CreateFrame("Button", "CharacterFrameTab" .. index, pane), 20 + 60 * index)
 			end
 		end
 		return pane
@@ -467,7 +487,7 @@ describe("PanelTab", function()
 			local button = _G[PanelTab.BUTTON_NAME]
 			assert.is_not_nil(button)
 			assert.are.equal(pane, button.parent)
-			assert.are.same({ "LEFT", _G.CharacterFrameTab3, "RIGHT", Theme.SIZES.panelTabGap, 0 },
+			assertPoint({ "LEFT", _G.CharacterFrameTab3, "RIGHT", Theme.SIZES.panelTabGap, 0 },
 				button.points[#button.points])
 			assert.are.equal(L.panelTabLabel, button:GetText())
 			-- The flyout waits for the first click.
@@ -482,7 +502,7 @@ describe("PanelTab", function()
 			local pane = start({}, { tabs = 0 })
 			PanelTab.refresh(DATA)
 			local button = _G[PanelTab.BUTTON_NAME]
-			assert.are.same({ "TOPRIGHT", pane, "BOTTOMRIGHT", 0, 0 }, button.points[#button.points])
+			assertPoint({ "TOPRIGHT", pane, "BOTTOMRIGHT", 0, 0 }, button.points[#button.points])
 			assert.are.same({}, state.clientWrites)
 		end)
 
@@ -517,7 +537,7 @@ describe("PanelTab", function()
 			click(_G[PanelTab.BUTTON_NAME])
 			local flyout = _G[PanelTab.FLYOUT_NAME]
 			assert.are.equal(pane, flyout.parent)
-			assert.are.same({ "TOPLEFT", pane, "TOPRIGHT", Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
+			assertPoint({ "TOPLEFT", pane, "TOPRIGHT", Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
 				flyout.points[1])
 			assert.is_true(flyout:IsShown())
 			click(_G[PanelTab.BUTTON_NAME])
@@ -667,9 +687,13 @@ describe("PanelTab", function()
 			file:close()
 			-- No call of these, and no script by these names (the header's prose names them).
 			for _, call in ipairs({ "HookScript(", "hooksecurefunc(", "PanelTemplates_SetNumTabs(", '"OnUpdate"',
-				'"OnShow"', '"OnHide"' }) do
+				'"OnHide"' }) do
 				assert.is_nil(source:find(call, 1, true), call)
 			end
+			-- One OnShow (fix round 2, re-review b): on the addon's own button, never on the pane.
+			local _, onShows = source:gsub('"OnShow"', "")
+			assert.are.equal(1, onShows)
+			assert.is_truthy(source:find('button:SetScript("OnShow"', 1, true))
 		end)
 	end)
 
@@ -744,7 +768,7 @@ describe("PanelTab", function()
 					assert.are.same({ S.rowIcon, S.rowIcon }, { size[1], size[2] })
 					assert.is_true(hasPoint(row.icon, { "TOPLEFT", row.frame, "TOPLEFT", 0, 0 }))
 					assert.is_true(hasPoint(row.icon, { "BOTTOMRIGHT", row.frame, "TOPLEFT", S.rowIcon, -S.rowIcon }))
-					assert.are.same({ "TOPLEFT", row.icon, "TOPRIGHT", S.gap, 0 }, row.name.points[#row.name.points])
+					assertPoint({ "TOPLEFT", row.icon, "TOPRIGHT", S.gap, 0 }, row.name.points[#row.name.points])
 				end
 			end)
 
@@ -760,7 +784,7 @@ describe("PanelTab", function()
 				for index = 1, 2 do
 					local row = PanelTab.targetRows[index]
 					assert.are.equal(PanelTab.targetRowHeight(), row.frame:GetHeight())
-					assert.are.same({ "TOPLEFT", PanelTab.regionFrames.targets, "TOPLEFT", 0, -y },
+					assertPoint({ "TOPLEFT", PanelTab.regionFrames.targets, "TOPLEFT", 0, -y },
 						row.frame.points[#row.frame.points])
 					y = y + PanelTab.targetRowHeight() + S.panelRowGap
 				end
@@ -769,13 +793,13 @@ describe("PanelTab", function()
 				for index, entry in ipairs(rotation.rows) do
 					local widget = PanelTab.rotationWidgets[index]
 					assert.are.equal(PanelTab.rotationRowHeight(entry), widget.frame:GetHeight())
-					assert.are.same({ "TOPLEFT", PanelTab.regionFrames.rotation, "TOPLEFT", 0, -y },
+					assertPoint({ "TOPLEFT", PanelTab.regionFrames.rotation, "TOPLEFT", 0, -y },
 						widget.frame.points[#widget.frame.points])
 					y = y + PanelTab.rotationRowHeight(entry) + S.panelRowGap
 				end
 				for _, kind in ipairs({ "targets", "rotation", "build" }) do
 					local title = PanelTab.regionFrames[kind].title
-					assert.are.same({ "TOPLEFT", PanelTab.regionFrames[kind], "TOPLEFT", 0, 0 }, title.points[#title.points])
+					assertPoint({ "TOPLEFT", PanelTab.regionFrames[kind], "TOPLEFT", 0, 0 }, title.points[#title.points])
 					assert.are.equal(PanelTab.regionHeight(regionOf(PanelTab.last, kind)),
 						PanelTab.regionFrames[kind]:GetHeight())
 				end
@@ -988,32 +1012,17 @@ describe("PanelTab", function()
 				assert.are.same({}, state.clientWrites)
 			end)
 
-			it("sits right of the client's own tabs: TabSystem, then CharacterFrameTab<n>, then the sidebar tabs", function()
+			it("sits right of the client's own tabs: TabSystem, then CharacterFrameTab<n>", function()
 				local pane = start({}, { tabs = 0 })
 				local S = Theme.SIZES
-				local sidebar = {}
-				for index = 1, 3 do
-					sidebar[index] = _G.CreateFrame("Button", "PaperDollSidebarTab" .. index, pane)
-				end
+				local tab = withRect(_G.CreateFrame("Button", "CharacterFrameTab1", pane), 80)
 				PanelTab.refresh(DATA)
 				local button = _G[PanelTab.BUTTON_NAME]
-				assert.are.same({ "LEFT", sidebar[3], "RIGHT", S.panelTabGap, 0 }, button.points[#button.points])
-				local tab = _G.CreateFrame("Button", "CharacterFrameTab1", pane)
-				PanelTab.refresh(DATA)
-				assert.are.equal(tab, button.points[#button.points][2])
-				local system = _G.CreateFrame("Frame", nil, pane)
+				assertPoint({ "LEFT", tab, "RIGHT", S.panelTabGap, 0 }, button.points[#button.points])
+				local system = withRect(_G.CreateFrame("Frame", nil, pane), 20)
 				pane.TabSystem = system
 				PanelTab.refresh(DATA)
-				assert.are.same({ "LEFT", system, "RIGHT", S.panelTabGap, 0 }, button.points[#button.points])
-				assert.are.same({}, state.clientWrites)
-			end)
-
-			it("anchors to the paper doll's sidebar tab holder when only it resolves", function()
-				local pane = start({}, { tabs = 0 })
-				local holder = _G.CreateFrame("Frame", "PaperDollSidebarTabs", pane)
-				PanelTab.refresh(DATA)
-				local button = _G[PanelTab.BUTTON_NAME]
-				assert.are.equal(holder, button.points[#button.points][2])
+				assertPoint({ "LEFT", system, "RIGHT", S.panelTabGap, 0 }, button.points[#button.points])
 				assert.are.same({}, state.clientWrites)
 			end)
 		end)
@@ -1070,8 +1079,8 @@ describe("PanelTab", function()
 				assert.are.same(rgb("muted"), colorOf(region.texts[2]))
 				assert.are.same(rgb("warning"), colorOf(region.texts[3]))
 				local y = S.panelTitle + 3 * S.panelLine + S.panelRowGap
-				assert.are.same({ "TOPLEFT", region, "TOPLEFT", 0, -y }, region.useOther.points[#region.useOther.points])
-				assert.are.same({ "TOPRIGHT", region, "TOPRIGHT", 0, -y }, region.copy.points[#region.copy.points])
+				assertPoint({ "TOPLEFT", region, "TOPLEFT", 0, -y }, region.useOther.points[#region.useOther.points])
+				assertPoint({ "TOPRIGHT", region, "TOPRIGHT", 0, -y }, region.copy.points[#region.copy.points])
 				assert.are.equal(PanelTab.regionHeight(entry), region:GetHeight())
 				assert.are.equal(y + S.panelButtonHeight, region:GetHeight())
 				assert.are.same({}, state.clientWrites)
@@ -1080,18 +1089,15 @@ describe("PanelTab", function()
 
 		-- Item 7: no draw while hidden (review D5), and the conditions measured once.
 		describe("drawing only what shows", function()
-			it("skips the draw while the pane is closed, and never shows the flyout stale when it opens again", function()
+			it("skips the draw while the pane is closed", function()
 				local pane, flyout = open({ chest = WORN_CHEST })
 				local draws = PanelTab.draws
 				pane:Hide()
 				PanelTab.refresh(DATA)
 				assert.are.equal(draws, PanelTab.draws)
-				assert.is_false(flyout:IsShown())
-				pane:Show()
+				-- Fix round 2 (re-review b): it stays open, marked stale, for the button's OnShow.
+				assert.is_true(flyout:IsShown())
 				assert.is_false(flyout:IsVisible())
-				click(_G[PanelTab.BUTTON_NAME])
-				assert.are.equal(draws + 1, PanelTab.draws)
-				assert.is_true(flyout:IsVisible())
 				assert.are.same({}, state.clientWrites)
 			end)
 
@@ -1153,6 +1159,228 @@ describe("PanelTab", function()
 				assert.are.equal(ItemTooltip.figureText(chest.gain, chest.unit), drawn.gain:GetText())
 				assert.are.same({}, state.clientWrites)
 			end)
+		end)
+	end)
+
+	-- Fix round 2 (the 1.60 client's probes on fix round 1, and the fix-1 re-review).
+	describe("fix round 2", function()
+		--- Whether the button's last point is the pane's bottom-right fallback.
+		local function atFallback(pane, button)
+			local point = button.points[#button.points]
+			return point ~= nil and point[1] == "TOPRIGHT" and point[2] == pane and point[3] == "BOTTOMRIGHT"
+		end
+
+		-- Item 2: PaperDollSidebarTab4 is not visible and has no rect; the button anchored to it had none.
+		it("never anchors the button to the paper doll's sidebar tabs or their holder", function()
+			local pane = start({}, { tabs = 0 })
+			for index = 1, 4 do
+				withRect(_G.CreateFrame("Button", "PaperDollSidebarTab" .. index, pane), 400 + 30 * index)
+			end
+			withRect(_G.CreateFrame("Frame", "PaperDollSidebarTabs", pane), 400)
+			PanelTab.refresh(DATA)
+			assert.is_true(atFallback(pane, _G[PanelTab.BUTTON_NAME]))
+			assert.are.same({}, state.clientWrites)
+		end)
+
+		it("takes a tab only when it shows and has a rect, else falls through to the fallback", function()
+			local pane = start({}, { tabs = 0 })
+			local S = Theme.SIZES
+			-- Shown, no rect: GetLeft answers nil.
+			local tab = _G.CreateFrame("Button", "CharacterFrameTab1", pane)
+			local system = _G.CreateFrame("Frame", nil, pane)
+			pane.TabSystem = system
+			PanelTab.refresh(DATA)
+			local button = _G[PanelTab.BUTTON_NAME]
+			assert.is_true(atFallback(pane, button))
+			-- A rect, but hidden.
+			withRect(tab, 80):Hide()
+			withRect(system, 20):Hide()
+			PanelTab.refresh(DATA)
+			assert.is_true(atFallback(pane, button))
+			-- Shown with a rect: taken.
+			tab:Show()
+			PanelTab.refresh(DATA)
+			assertPoint({ "LEFT", tab, "RIGHT", S.panelTabGap, 0 }, button.points[#button.points])
+			-- A GetLeft that is not a number, or that fails, is no rect.
+			tab.GetLeft = function()
+				return "647"
+			end
+			PanelTab.refresh(DATA)
+			assert.is_true(atFallback(pane, button))
+			tab.GetLeft = function()
+				error("secret")
+			end
+			PanelTab.refresh(DATA)
+			assert.is_true(atFallback(pane, button))
+			assert.are.same({}, state.clientWrites)
+		end)
+
+		-- Item 1: the flyout covered CharacterFrameModeTabs, a 64 px column at the pane's right.
+		it("watches CharacterFrameModeTabs as a client frame", function()
+			assert.is_true(mock.isClientName("CharacterFrameModeTabs"))
+			local found = false
+			for _, name in ipairs(mock.CLIENT_NAMES) do
+				found = found or name == "CharacterFrameModeTabs"
+			end
+			assert.is_true(found)
+		end)
+
+		it("opens the flyout right of the pane's mode tabs when they show with a rect", function()
+			local pane = start({ chest = WORN_CHEST })
+			local S = Theme.SIZES
+			local modeTabs = withRect(_G.CreateFrame("Frame", "CharacterFrameModeTabs", pane), 647)
+			PanelTab.refresh(DATA)
+			click(_G[PanelTab.BUTTON_NAME])
+			local flyout = _G[PanelTab.FLYOUT_NAME]
+			assert.is_true(flyout:IsShown())
+			assertPoint({ "TOPLEFT", modeTabs, "TOPRIGHT", S.panelOffsetX, 0 }, flyout.points[#flyout.points])
+			assert.are.same({}, state.clientWrites)
+		end)
+
+		it("opens the flyout at the pane's top right when the mode tabs are absent, hidden or rect-less", function()
+			local pane = start({ chest = WORN_CHEST })
+			local S = Theme.SIZES
+			local paneAnchor = { "TOPLEFT", pane, "TOPRIGHT", S.panelOffsetX, S.panelOffsetY }
+			PanelTab.refresh(DATA)
+			local button = _G[PanelTab.BUTTON_NAME]
+			click(button)
+			local flyout = _G[PanelTab.FLYOUT_NAME]
+			assertPoint(paneAnchor, flyout.points[#flyout.points])
+			click(button)
+			-- They appear later, with no rect yet: still the pane.
+			local modeTabs = _G.CreateFrame("Frame", "CharacterFrameModeTabs", pane)
+			click(button)
+			assertPoint(paneAnchor, flyout.points[#flyout.points])
+			click(button)
+			-- A rect but hidden: still the pane.
+			withRect(modeTabs, 647):Hide()
+			click(button)
+			assertPoint(paneAnchor, flyout.points[#flyout.points])
+			click(button)
+			-- Shown with a rect: resolved again on this open.
+			modeTabs:Show()
+			click(button)
+			assertPoint({ "TOPLEFT", modeTabs, "TOPRIGHT", S.panelOffsetX, 0 }, flyout.points[#flyout.points])
+			assert.are.same({}, state.clientWrites)
+		end)
+
+		-- Item 3: the chat box cuts a /run line at about 200 characters.
+		it("keeps every /run and /dump probe in README rows 45-47 under 180 characters", function()
+			local file = assert(io.open("README.md", "r"))
+			local count = 0
+			for row in file:lines() do
+				local number = tonumber(row:match("^| (%d+) |"))
+				if number ~= nil and number >= 45 and number <= 47 then
+					for probe in row:gmatch("`(/%a+ [^`]*)`") do
+						count = count + 1
+						assert.is_true(#probe < 180, #probe .. ": " .. probe)
+					end
+				end
+			end
+			file:close()
+			assert.is_true(count >= 8)
+		end)
+
+		-- Re-review (a): the line box follows the client's measured small font, at least panelLine.
+		it("measures a panel line from the small font, never under panelLine", function()
+			start()
+			local S = Theme.SIZES
+			local function probe(height)
+				return { SetText = function() end, GetStringHeight = function()
+					return height
+				end }
+			end
+			local measure = function()
+				return 10
+			end
+			assert.are.equal(S.panelLine, PanelTab.measuredLine(probe(9.5), measure))
+			assert.are.equal(S.panelLine, PanelTab.measuredLine(probe(nil), measure))
+			assert.are.equal(S.panelLine, PanelTab.measuredLine(probe(12), measure))
+			assert.are.equal(15, PanelTab.measuredLine(probe(14.2), measure))
+			assert.are.equal(S.panelLine, PanelTab.measuredLine(nil, measure))
+			-- It reads the height of the line the measurer just set.
+			local set
+			local region = { SetText = function(_, text)
+				set = text
+			end, GetStringHeight = function()
+				return set ~= nil and 13 or nil
+			end }
+			assert.are.equal(13, PanelTab.measuredLine(region, Theme.measurer(region)))
+			assert.are.equal(PanelTab.LINE_SAMPLE, set)
+		end)
+
+		it("sizes every line box and row from the measured line", function()
+			start({ chest = WORN_CHEST, legs = THIN_LEGS })
+			local Widgets = require("Widgets")
+			local label = Widgets.label
+			Widgets.label = function(...)
+				local region = label(...)
+				region.GetStringHeight = function()
+					return 14.2
+				end
+				return region
+			end
+			PanelTab.refresh(DATA)
+			click(_G[PanelTab.BUTTON_NAME])
+			Widgets.label = label
+			local S = Theme.SIZES
+			assert.are.equal(15, PanelTab.lineHeight())
+			assert.are.equal(math.max(S.rowIcon, 30), PanelTab.targetRowHeight())
+			assert.are.equal(45, PanelTab.rotationRowHeight({ condition = "x.", conditionLines = 2 }))
+			local row = PanelTab.targetRows[1]
+			assert.are.equal(15, mock.lastCall(row.name, "SetSize")[2])
+			assert.are.equal(15, mock.lastCall(row.second, "SetSize")[2])
+			assert.are.equal(30, row.frame:GetHeight())
+			local flyout = _G[PanelTab.FLYOUT_NAME]
+			assert.are.equal(PanelTab.flyoutHeight(PanelTab.last), flyout:GetHeight())
+		end)
+
+		-- Re-review (b): an event while the pane is closed marks the open flyout stale; the
+		-- button's own OnShow (it shows with the pane) redraws it once.
+		it("leaves the flyout open but stale on a refresh while the pane is closed, redrawn once on show", function()
+			local pane = start({ chest = WORN_CHEST })
+			PanelTab.refresh(DATA)
+			local button = _G[PanelTab.BUTTON_NAME]
+			click(button)
+			local flyout = _G[PanelTab.FLYOUT_NAME]
+			local draws = PanelTab.draws
+			pane:Hide()
+			PanelTab.refresh(DATA)
+			assert.are.equal(draws, PanelTab.draws)
+			assert.is_true(flyout:IsShown())
+			assert.is_true(PanelTab.stale)
+			pane:Show()
+			local onShow = button:GetScript("OnShow")
+			assert.is_function(onShow)
+			onShow(button)
+			assert.are.equal(draws + 1, PanelTab.draws)
+			assert.is_falsy(PanelTab.stale)
+			assert.is_true(flyout:IsVisible())
+			onShow(button)
+			assert.are.equal(draws + 1, PanelTab.draws)
+			-- A closed flyout is never drawn on show, stale or not.
+			click(button)
+			pane:Hide()
+			PanelTab.refresh(DATA)
+			pane:Show()
+			onShow(button)
+			assert.are.equal(draws + 1, PanelTab.draws)
+			assert.are.equal(0, mock.countCalls(pane, "SetScript"))
+			assert.are.equal(0, mock.countCalls(flyout, "SetScript"))
+			assert.are.same({}, state.clientWrites)
+		end)
+
+		it("places the button again when the pane shows, once a tab has its rect", function()
+			local pane = start({}, { tabs = 0 })
+			local S = Theme.SIZES
+			local tab = _G.CreateFrame("Button", "CharacterFrameTab1", pane)
+			PanelTab.refresh(DATA)
+			local button = _G[PanelTab.BUTTON_NAME]
+			assert.is_true(atFallback(pane, button))
+			withRect(tab, 80)
+			button:GetScript("OnShow")(button)
+			assertPoint({ "LEFT", tab, "RIGHT", S.panelTabGap, 0 }, button.points[#button.points])
+			assert.are.same({}, state.clientWrites)
 		end)
 	end)
 end)

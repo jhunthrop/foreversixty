@@ -7,10 +7,11 @@
 -- (L4.1). So the "tab" is an addon-owned button and an addon-owned flyout, both made by the
 -- addon, parented to CharacterFrame (as L4.1's overlays are parented to the slot buttons) and
 -- anchored to it: the button right of the client's own tabs (else under the pane's bottom
--- right), the flyout TOPLEFT at the pane's TOPRIGHT. Client frames are only ever read. Scripts
--- sit only on the addon's own frames (the flyout itself has none); the flyout hides with the
--- pane because it is its child. Nothing polls: the flyout redraws on the chip's events
--- (Options), on an item it waits on, and on each open, and only while it shows.
+-- right), the flyout TOPLEFT at the TOPRIGHT of the pane's mode-tab column (else of the pane).
+-- Client frames are only ever read. Scripts sit only on the addon's own frames (the flyout
+-- itself has none; the button has its show script); the flyout hides with the pane because it
+-- is its child. Nothing polls: the flyout redraws on the chip's events (Options), on an item it
+-- waits on, on each open, and when the pane shows again over a flyout an event made stale.
 --
 -- Pure model, thin frames: PanelTab.targets, rotationRows, buildRegion, simRegion,
 -- raidRegion, model, regionHeight, flyoutHeight and fitHeight are plain tables in, plain
@@ -24,6 +25,13 @@
 -- at its top left and its text right of it; every single-line text is fitted to its room by
 -- measure with an ellipsis (ItemTooltip's fit helpers); the flyout is `flyoutWidth` wide and
 -- never taller than the pane (no scrolling: caps, then the last raid's bosses go first).
+--
+-- Fix round 2 (the 1.60 client's probes): the flyout clears CharacterFrameModeTabs, the 64 px
+-- column of icon tabs at the pane's right edge; the button takes a client tab only when it
+-- shows and has a rect (PaperDollSidebarTab4 is not visible and has none), never the paper
+-- doll's sidebar; a text line is the small font's measured height, at least `panelLine`; an
+-- event while the pane is closed marks the open flyout stale, and the button's show script
+-- redraws it.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -56,11 +64,17 @@ PanelTab.MAX_BOSSES = 6
 PanelTab.MAX_UPCOMING = 2
 --- How many of the client's numbered tabs the button looks along for the last one shown.
 PanelTab.MAX_TABS = 10
---- The client's own tabs the button sits right of, in this order after the pane's TabSystem
---- (fix round 1, item 5): its bottom tabs, then the paper doll's sidebar tabs, then the
---- sidebar's holder. Read, never written.
-PanelTab.TAB_PREFIXES = { "CharacterFrameTab", "PaperDollSidebarTab" }
-PanelTab.SIDEBAR_TABS = "PaperDollSidebarTabs"
+--- The client's own tabs the button sits right of, after the pane's TabSystem (fix round 1,
+--- item 5): its bottom tabs. Fix round 2, item 2: not the paper doll's sidebar tabs (on 1.60
+--- PaperDollSidebarTab4 is not visible and has no rect, so a button anchored to it had no
+--- position, and the sidebar sits at the pane's top right under the flyout). Read, never
+--- written.
+PanelTab.TAB_PREFIXES = { "CharacterFrameTab" }
+--- The pane's column of icon tabs (portrait, reputation, skills, ...) whose left edge is the
+--- pane's right edge (fix round 2, item 1): the flyout opens right of it. Read, never written.
+PanelTab.MODE_TABS = "CharacterFrameModeTabs"
+--- The text a panel line is measured on (re-review a): a capital, an ascender and descenders.
+PanelTab.LINE_SAMPLE = "Agjy"
 --- The regions, top to bottom.
 PanelTab.ORDER = { "targets", "rotation", "build", "sim", "raid" }
 
@@ -83,6 +97,35 @@ PanelTab.emptyLine = nil
 --- The measure every line is fitted with (text -> width, the flyout's small font), set when
 --- the flyout is made; nil before, which every fit reads as "fits".
 PanelTab.measure = nil
+--- A text line's height as measured on the flyout's small font (fix round 2, re-review a), set
+--- when the flyout is made; nil before (PanelTab.lineHeight answers `panelLine`).
+PanelTab.line = nil
+--- True when an event found the open flyout hidden by the closed pane (re-review b): the
+--- button's show script redraws it once when the pane shows again.
+PanelTab.stale = nil
+
+--- A text line's height: the measured one, else `panelLine`. Every row and box follows it.
+function PanelTab.lineHeight()
+	return PanelTab.line or S.panelLine
+end
+
+--- The height of one line of `probe`'s font (fix round 2, re-review a): `measure` sets the
+--- sample on it (the flyout's own measurer), then GetStringHeight is read, rounded up, never
+--- under `panelLine`; `panelLine` where the client cannot say.
+function PanelTab.measuredLine(probe, measure)
+	if type(probe) ~= "table" or type(probe.GetStringHeight) ~= "function" then
+		return S.panelLine
+	end
+	if type(measure) == "function" then
+		pcall(measure, PanelTab.LINE_SAMPLE)
+	end
+	local ok, height = pcall(probe.GetStringHeight, probe)
+	if not ok or type(height) ~= "number" then
+		return S.panelLine
+	end
+	-- A hair over a whole pixel is that pixel (12.0001 is 12), not the next one.
+	return math.max(S.panelLine, math.ceil(height - 0.01))
+end
 --- Rotation.plainCondition's answers by measure, then by width and text (fix round 1, item 7):
 --- a condition is measured word by word, so each is measured once.
 PanelTab.conditionCache = setmetatable({}, { __mode = "k" })
@@ -392,7 +435,7 @@ end
 
 --- A target row: its name line and its slot and source line, never under the icon.
 function PanelTab.targetRowHeight()
-	return math.max(S.rowIcon, 2 * S.panelLine)
+	return math.max(S.rowIcon, 2 * PanelTab.lineHeight())
 end
 
 --- A rotation row: its name line and its condition's lines (two at most, as measured; one
@@ -402,7 +445,7 @@ function PanelTab.rotationRowHeight(entry)
 	if entry.condition ~= nil then
 		lines = math.max(1, math.min(2, entry.conditionLines or 1))
 	end
-	return math.max(S.rowIcon, S.panelLine * (1 + lines))
+	return math.max(S.rowIcon, PanelTab.lineHeight() * (1 + lines))
 end
 
 --- Rows of `heights` with the row gap between them, then the "N more" line when `more` > 0.
@@ -412,7 +455,7 @@ local function stacked(heights, more)
 		total = total + height + (index > 1 and S.panelRowGap or 0)
 	end
 	if (more or 0) > 0 then
-		total = total + (#heights > 0 and S.panelRowGap or 0) + S.panelLine
+		total = total + (#heights > 0 and S.panelRowGap or 0) + PanelTab.lineHeight()
 	end
 	return total
 end
@@ -458,7 +501,7 @@ end
 local function linesHeight(lines)
 	local total = 0
 	for _, line in ipairs(lines) do
-		total = total + (line.gap or 0) + S.panelLine
+		total = total + (line.gap or 0) + PanelTab.lineHeight()
 	end
 	return total
 end
@@ -486,7 +529,7 @@ function PanelTab.regionHeight(entry)
 		local lines = raidLines(entry)
 		body = linesHeight(lines)
 		if (entry.more or 0) > 0 then
-			body = body + (#lines > 0 and S.panelRowGap or 0) + S.panelLine
+			body = body + (#lines > 0 and S.panelRowGap or 0) + PanelTab.lineHeight()
 		end
 	end
 	return S.panelTitle + body
@@ -497,7 +540,7 @@ end
 function PanelTab.flyoutHeight(model)
 	local height = S.panelPadding + S.panelHeader
 	if #model.regions == 0 then
-		height = height + S.panelRegionGap + S.panelLine
+		height = height + S.panelRegionGap + PanelTab.lineHeight()
 	end
 	for _, region in ipairs(model.regions) do
 		height = height + S.panelRegionGap + PanelTab.regionHeight(region)
@@ -702,6 +745,22 @@ local function isVisible(frame)
 	return ask(frame, "IsVisible")
 end
 
+--- Whether the client has laid `frame` out (fix round 2): GetLeft answers a number. A frame
+--- that is hidden up its chain or anchored to nothing answers nil, and a frame anchored to it
+--- has no position either.
+local function hasRect(frame)
+	if type(frame) ~= "table" or type(frame.GetLeft) ~= "function" then
+		return false
+	end
+	local ok, left = pcall(frame.GetLeft, frame)
+	return ok and type(left) == "number"
+end
+
+--- A client frame something of ours may anchor to: it shows and it has a rect.
+local function placed(frame)
+	return isShown(frame) and hasRect(frame)
+end
+
 --- The pane's height, read, or nil where the client cannot say.
 local function paneHeight()
 	local frame = pane()
@@ -712,26 +771,32 @@ local function paneHeight()
 	return ok and type(height) == "number" and height or nil
 end
 
---- The highest of `<prefix>1..PanelTab.MAX_TABS` that shows, or nil.
+--- The client global `name` when it is a table, through a guarded lookup; nil otherwise.
+local function clientFrame(name)
+	local ok, frame = pcall(Compat.clientGlobal, name, "table")
+	return ok and frame or nil
+end
+
+--- The highest of `<prefix>1..PanelTab.MAX_TABS` that shows with a rect, or nil.
 local function lastShown(prefix)
 	local found
 	for index = 1, PanelTab.MAX_TABS do
-		local tab = Compat.clientGlobal(prefix .. index, "table")
-		if tab ~= nil and isShown(tab) then
+		local tab = clientFrame(prefix .. index)
+		if tab ~= nil and placed(tab) then
 			found = tab
 		end
 	end
 	return found
 end
 
---- The client's own tabs the button sits right of (fix round 1, item 5), each only read: the
---- pane's TabSystem, else its last shown CharacterFrameTab<n>, else the paper doll's last
---- shown sidebar tab, else the sidebar's tab holder; nil when none resolves.
+--- The client's own tabs the button sits right of (fix round 1, item 5; fix round 2, item 2),
+--- each only read and taken only when it shows with a rect: the pane's TabSystem, else its
+--- last such CharacterFrameTab<n>; nil when none resolves (the fallback, as on 1.60).
 local function tabAnchor(frame)
 	local ok, system = pcall(function()
 		return frame.TabSystem
 	end)
-	if ok and type(system) == "table" and isShown(system) then
+	if ok and type(system) == "table" and placed(system) then
 		return system
 	end
 	for _, prefix in ipairs(PanelTab.TAB_PREFIXES) do
@@ -740,11 +805,29 @@ local function tabAnchor(frame)
 			return tab
 		end
 	end
-	local holder = Compat.clientGlobal(PanelTab.SIDEBAR_TABS, "table")
-	if holder ~= nil and isShown(holder) then
-		return holder
+	return nil
+end
+
+--- The pane's mode-tab column when it shows with a rect (fix round 2, item 1), looked up again
+--- each time: it may appear after the flyout was made. Only read.
+local function modeTabs()
+	local frame = clientFrame(PanelTab.MODE_TABS)
+	if frame ~= nil and placed(frame) then
+		return frame
 	end
 	return nil
+end
+
+--- The flyout TOPLEFT at the mode tabs' TOPRIGHT (the panel offset across, level with their
+--- top), else at the pane's TOPRIGHT: it never covers the column it used to interleave with.
+local function placeFlyout(flyout, frame)
+	local tabs = modeTabs()
+	flyout:ClearAllPoints()
+	if tabs ~= nil then
+		flyout:SetPoint("TOPLEFT", tabs, "TOPRIGHT", S.panelOffsetX, 0)
+	else
+		flyout:SetPoint("TOPLEFT", frame, "TOPRIGHT", S.panelOffsetX, S.panelOffsetY)
+	end
 end
 
 --- The button right of the client's own tabs, else under the pane's bottom right; anchored
@@ -807,6 +890,11 @@ function PanelTab.ensureButton()
 		button = Widgets.edgedButton(frame, L.panelTabLabel, function()
 			PanelTab.toggle()
 		end, PanelTab.BUTTON_NAME, S.panelTabWidth, S.panelTabHeight)
+		-- The addon's own button, a child of the pane: it shows each time the pane does
+		-- (re-review b). Nothing is set on the pane.
+		button:SetScript("OnShow", function(self)
+			PanelTab.onButtonShow(self)
+		end)
 		PanelTab.button = button
 	end
 	placeButton(button, frame)
@@ -822,7 +910,7 @@ end
 --- aligned: the client never grows it into the next row.
 local function sized(region, width, lines)
 	lines = lines or 1
-	region:SetSize(width, S.panelLine * lines)
+	region:SetSize(width, PanelTab.lineHeight() * lines)
 	if type(region.SetWordWrap) == "function" then
 		region:SetWordWrap(lines > 1)
 	end
@@ -891,7 +979,7 @@ local function moreLine(region, more, y, hasRows)
 	line:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -y)
 	line:SetText(string.format(L.panelMore, more))
 	line:Show()
-	return y + S.panelLine
+	return y + PanelTab.lineHeight()
 end
 
 --- The `index`th pooled text line of a region, made on first need: one panel line, the
@@ -917,7 +1005,7 @@ local function drawTexts(region, lines, y)
 		text:SetText(fitted(line.text, PanelTab.innerWidth()))
 		text:SetTextColor(Theme.rgb(Theme.HEX[line.color or "body"]))
 		text:Show()
-		y = y + S.panelLine
+		y = y + PanelTab.lineHeight()
 	end
 	for rest = #lines + 1, #(region.texts or {}) do
 		region.texts[rest]:Hide()
@@ -1092,8 +1180,8 @@ local function regionFrame(flyout, kind)
 end
 
 --- The flyout, made on the first click: an addon panel `flyoutWidth` wide parented to the
---- pane, TOPLEFT at the pane's TOPRIGHT (where the client's compare tooltip would sit), hidden
---- until shown. It carries no script; its close button, rows and buttons carry their own.
+--- pane, hidden until shown; placed on each open (placeFlyout). It carries no script; its close
+--- button, rows and buttons carry their own.
 function PanelTab.ensureFlyout()
 	if PanelTab.flyout ~= nil then
 		return PanelTab.flyout
@@ -1103,7 +1191,6 @@ function PanelTab.ensureFlyout()
 		return nil
 	end
 	local flyout = Widgets.panel(frame, S.flyoutWidth, S.panelPadding * 2, PanelTab.FLYOUT_NAME)
-	flyout:SetPoint("TOPLEFT", frame, "TOPRIGHT", S.panelOffsetX, S.panelOffsetY)
 	flyout:EnableMouse(true)
 	flyout:Hide()
 	local header = Widgets.label(flyout, L.panelHeader, "gold", "normal")
@@ -1117,6 +1204,8 @@ function PanelTab.ensureFlyout()
 	probe:Hide()
 	PanelTab.probe = probe
 	PanelTab.measure = ItemTooltip.visibleMeasure(Theme.measurer(probe))
+	-- Every line box and row height follows the font's own line (re-review a).
+	PanelTab.line = PanelTab.measuredLine(probe, PanelTab.measure)
 	for _, kind in ipairs(PanelTab.ORDER) do
 		PanelTab.regionFrames[kind] = regionFrame(flyout, kind)
 	end
@@ -1157,7 +1246,7 @@ local function layout(flyout, model)
 		empty:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding, -y)
 		empty:SetText(fitted(L.panelEmpty, PanelTab.innerWidth()))
 		empty:Show()
-		y = y + S.panelLine
+		y = y + PanelTab.lineHeight()
 	else
 		empty:Hide()
 	end
@@ -1175,6 +1264,7 @@ function PanelTab.draw()
 	local model = PanelTab.fitHeight(PanelTab.model(input), paneHeight())
 	PanelTab.last = model
 	layout(flyout, model)
+	PanelTab.stale = nil
 	PanelTab.draws = PanelTab.draws + 1
 	PanelTab.selfCheck()
 	return model
@@ -1208,6 +1298,7 @@ function PanelTab.toggle()
 			flyout:Hide()
 			return false
 		end
+		placeFlyout(flyout, pane())
 		flyout:Show()
 		PanelTab.draw()
 		return true
@@ -1216,8 +1307,8 @@ end
 
 --- The chip's events (Options): the button is made and placed, and an open flyout redraws
 --- while it is on screen. A closed one is not drawn (it draws on its next open). One the
---- closed pane hides is not drawn either (fix round 1, item 7) and is closed, so the pane
---- never opens again on what this event made stale: the button opens it fresh.
+--- closed pane hides is not drawn either (fix round 1, item 7): it stays open and is marked
+--- stale (re-review b), and the button's show script redraws it when the pane opens again.
 function PanelTab.refresh(data)
 	if data ~= nil then
 		PanelTab.data = data
@@ -1231,7 +1322,28 @@ function PanelTab.refresh(data)
 		if isVisible(flyout) then
 			PanelTab.draw()
 		else
-			flyout:Hide()
+			PanelTab.stale = true
+		end
+	end)
+end
+
+--- The button's show script (it shows with the pane): the button placed again (a tab may have
+--- its rect only now), an open flyout placed again, and redrawn once when an event made it
+--- stale while the pane was closed. Nothing here touches a client frame.
+function PanelTab.onButtonShow(button)
+	guarded(function()
+		local frame = pane()
+		if frame == nil then
+			return
+		end
+		placeButton(button, frame)
+		local flyout = PanelTab.flyout
+		if flyout == nil or not flyout:IsShown() then
+			return
+		end
+		placeFlyout(flyout, frame)
+		if PanelTab.stale and isVisible(flyout) then
+			PanelTab.draw()
 		end
 	end)
 end

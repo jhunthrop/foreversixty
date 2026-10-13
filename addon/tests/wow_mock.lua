@@ -20,10 +20,19 @@ local realPrint = _G.print
 --- QuestRewardItem<n>, QuestInfoFrame) and the group loot roll frames (GroupLootFrame<n>,
 --- GroupLootContainer): the reward and roll marks draw on addon overlays there too.
 mock.CLIENT_PREFIXES = { "Character", "PaperDoll", "ContainerFrame", "QuestInfo", "QuestReward", "GroupLoot" }
+--- Client frames named one by one, whatever the prefixes cover (L4.3 fix round 2): the pane's
+--- CharacterFrameModeTabs column, which the panel flyout anchors beside and must never write
+--- into.
+mock.CLIENT_NAMES = { "CharacterFrameModeTabs" }
 
 function mock.isClientName(name)
 	if type(name) ~= "string" then
 		return false
+	end
+	for _, exact in ipairs(mock.CLIENT_NAMES) do
+		if name == exact then
+			return true
+		end
 	end
 	for _, prefix in ipairs(mock.CLIENT_PREFIXES) do
 		if name:sub(1, #prefix) == prefix then
