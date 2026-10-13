@@ -209,7 +209,9 @@ the addon also broadcast a live snapshot (level, spec, gear gap, build name), so
 current before any log exists.
 
 Chat badges (L4.4): on the LFG and Trade channels, guild chat and incoming whispers, a sender with a
-score gets "[1830]" in the tier colour at the start of the message text, never in the sender
+score gets "FS 1830" in the tier colour followed by a muted "·" at the start of the message text
+("[Bow Jackzon]: FS 1240 · testing an addon"), never in square brackets (a bracketed number in a
+quality colour reads as an item link) and never in the sender
 argument (the client builds the name's whisper link, right-click menu and reply target from it),
 behind the eighth switch "Score badges in chat" (section 4.11). Tooltips cannot be clicked, so the
 site link is copied with `/fs link [Name-Realm]` (target, else mouseover, else you), which opens the
