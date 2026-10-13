@@ -5,8 +5,13 @@
 import { describe, expect, it } from 'vitest';
 import { GEAR_FIXTURE, GEAR_PANEL_FIXTURE } from '../../fixtures/character-gear';
 import { gearCopy } from './copy';
-import { gearGapCount, gearRows, gearTitle, gearTotalsLine, type GearRow } from './panel';
+import { gearGapCount, gearRows, gearTitle, gearTitleSummary, gearTotalsLine, type GearRow } from './panel';
 import type { CharacterGearSlot } from './types';
+
+/** The title as read: its no-break spaces (which keep each dot on the line before it) as spaces. */
+function title(gear: readonly CharacterGearSlot[], total: number | null): string {
+  return gearTitle(gear, total).replace(/\u00a0/g, ' ');
+}
 
 /** The worn staff (13000) is two-handed in the build's items file. */
 const TWO_HAND = (id: number): boolean => id === 13000;
@@ -102,12 +107,12 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
     });
   });
 
-  it('no pick: "no pick for your band yet" beside the worn item, or beside "Empty" (fix 1 ruling 8)', () => {
+  it('no pick: "No pick for your band yet" beside the worn item, or beside "Empty" (fix 2 ruling 6)', () => {
     expect(row('ranged')).toMatchObject({
       state: 'worn-only',
       worn: { id: 13396, name: "Skul's Ghastly Touch", known: true },
       pick: null,
-      note: 'no pick for your band yet',
+      note: 'No pick for your band yet',
       inline: true,
       gap: null,
     });
@@ -115,7 +120,7 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       state: 'none',
       worn: null,
       pick: null,
-      note: 'no pick for your band yet',
+      note: 'No pick for your band yet',
       inline: true,
       gap: null,
     });
@@ -140,8 +145,21 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
       inline: false,
       gap: null,
     });
-    // Without the items file's word on the main hand, the API's 0 stands.
+    // The items file says the main hand is one-handed: the API's 0 stands.
     expect(row('off_hand', () => false)).toMatchObject({ note: null, gap: '+0 pts' });
+  });
+
+  it('a failed items file: the swap cannot be known, so the empty off hand shows no figure (fix 2 ruling 7)', () => {
+    expect(row('off_hand', null as unknown as (id: number) => boolean)).toMatchObject({
+      note: null,
+      gap: null,
+      gapLabel: null,
+    });
+    const failed = gearRows(GEAR_FIXTURE, null);
+    expect(failed.find((r) => r.slot === 'off_hand')).toMatchObject({ note: null, gap: null });
+    // Everything else as built.
+    expect(failed.find((r) => r.slot === 'head')?.gap).toBe('+18.4 pts');
+    expect(failed.find((r) => r.slot === 'legs')?.gap).toBe('Not scored');
   });
 
   it('the five largest non-zero gaps are strong, ties by export order (fix 1 ruling 6)', () => {
@@ -166,29 +184,44 @@ describe('gearRows (L8.6 ruling 1, fix round 1)', () => {
 describe('gearTitle (L8.6 fix round 1 ruling 3)', () => {
   it('"Gear · +70 pts across 7 slots · 1 not scored" from gear_gap_total, the gaps and the nulls', () => {
     expect(gearGapCount(GEAR_FIXTURE)).toBe(7);
-    expect(gearTitle(GEAR_PANEL_FIXTURE.gear, GEAR_PANEL_FIXTURE.gear_gap_total)).toBe(
+    expect(title(GEAR_PANEL_FIXTURE.gear, GEAR_PANEL_FIXTURE.gear_gap_total)).toBe(
       'Gear · +70 pts across 7 slots · 1 not scored',
     );
   });
 
   it('with every gap scored there is no "not scored"; one slot is "slot"', () => {
     const scored = GEAR_FIXTURE.filter((slot) => slot.slot !== 'legs');
-    expect(gearTitle(scored, 70)).toBe('Gear · +70 pts across 7 slots');
-    expect(gearTitle([GEAR_FIXTURE[0], GEAR_FIXTURE[2]], 18.4)).toBe('Gear · +18.4 pts across 1 slot');
+    expect(title(scored, 70)).toBe('Gear · +70 pts across 7 slots');
+    expect(title([GEAR_FIXTURE[0], GEAR_FIXTURE[2]], 18.4)).toBe('Gear · +18.4 pts across 1 slot');
   });
 
-  it('a total of 0: "every slot is the best you can wear"; a null total is the word alone', () => {
-    const allPicks = GEAR_FIXTURE.filter((slot) => slot.slot !== 'legs').map((slot) => ({
-      ...slot,
-      gap: slot.gap === null ? null : 0,
-    }));
-    expect(gearTitle(allPicks, 0)).toBe('Gear · every slot is the best you can wear');
-    expect(gearTitle([GEAR_FIXTURE[13], GEAR_FIXTURE[16]], null)).toBe('Gear');
+  it('a total of 0 with an arrow left: "+0 pts from the picks you can wear" (fix 2 ruling 5)', () => {
+    // The fixture with every scored gap 0: Neck and Off hand are still empty, their picks shown.
+    const zero = GEAR_FIXTURE.map((slot) => ({ ...slot, gap: slot.gap === null ? null : 0 }));
+    expect(title(zero, 0)).toBe('Gear · +0 pts from the picks you can wear · 1 not scored');
+    expect(
+      title(
+        zero.filter((slot) => slot.slot !== 'legs'),
+        0,
+      ),
+    ).toBe('Gear · +0 pts from the picks you can wear');
+  });
+
+  it('a total of 0 with no arrow anywhere: "every slot is the best you can wear" (fix 2 ruling 5)', () => {
+    // Every pick worn: no row shows an arrow.
+    const worn = GEAR_FIXTURE.filter((slot) => slot.pick === null || slot.worn?.id === slot.pick.id);
+    expect(title(worn, 0)).toBe('Gear · every slot is the best you can wear');
+    expect(title([GEAR_FIXTURE[13], GEAR_FIXTURE[16]], null)).toBe('Gear');
+  });
+
+  it('the summary after "Gear" alone, its own dots glued to the word before them (fix 2 ruling 4)', () => {
+    expect(gearTitleSummary(GEAR_PANEL_FIXTURE.gear, 70)).toBe('+70 pts across 7 slots · 1 not scored');
+    expect(gearTitleSummary([GEAR_FIXTURE[13]], null)).toBeNull();
   });
 
   it('nulls are counted with any total: "Gear · 2 not scored"', () => {
     const unscored = [GEAR_FIXTURE[8], { ...GEAR_FIXTURE[0], gap: null }];
-    expect(gearTitle(unscored, null)).toBe('Gear · 2 not scored');
+    expect(title(unscored, null)).toBe('Gear · 2 not scored');
   });
 });
 
@@ -197,8 +230,9 @@ describe('gearTotalsLine (L8.6 fix round 1 ruling 3)', () => {
     expect(gearTotalsLine(88, 70)).toBe(
       'The card’s 88 counts the band’s best set. These 70 count the picks you can wear.',
     );
+    // A total of 0 has its own wording (fix 2 ruling 5).
     expect(gearTotalsLine(26, 0)).toBe(
-      'The card’s 26 counts the band’s best set. These 0 count the picks you can wear.',
+      'The card’s 26 counts the band’s best set. The picks you can wear add 0.',
     );
     expect(gearTotalsLine(88, 18.4)).toContain('These 18.4 count');
   });

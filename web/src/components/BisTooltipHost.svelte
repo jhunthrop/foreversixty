@@ -65,9 +65,15 @@
   // two "open" calls racing the same promise, and both would otherwise mount their own
   // panel instance into the row.
   let openToken = 0;
-  /** When the open host was opened: a tap's own pointerenter/focus opens it just before its
-   *  click, which must not then read as a second tap closing it. */
-  let openedAt = 0;
+  /** When a pointer was last pressed: the focus that press gives a host is the pointer's, not
+   *  the keyboard's, so it opens nothing (the click decides; L8.6 fix round 2 ruling 2). */
+  let pressedAt = -Infinity;
+  /** Where the mouse last moved to, and whether the page has scrolled since: a page scroll or
+   *  an anchor landing slides a row under a stationary pointer, and the browser's fake
+   *  pointerenter for that must not open a tooltip (L8.6 fix round 2 ruling 2). */
+  let lastX = NaN;
+  let lastY = NaN;
+  let scrolledSinceMove = false;
 
   function loadModels(): void {
     const script = document.getElementById(modelsElementId);
@@ -121,7 +127,6 @@
     if (activeHost === host) return; // already open, or already opening, this exact host
     unmountPanel();
     activeHost = host;
-    openedAt = performance.now();
     host.setAttribute('aria-describedby', TOOLTIP_ID);
     const token = ++openToken;
     const model: Promise<ItemTooltipModel | null> =
@@ -141,18 +146,46 @@
     unmountPanel();
   }
 
+  /** Hover opens for a mouse only (L8.6 fix round 2 ruling 2): a touch or pen opens on its tap,
+   *  and a row that slid under a stationary mouse (a scroll, an anchor landing) waits for the
+   *  mouse to move. */
   function onPointerEnter(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse' || scrolledSinceMove) return;
     const host = hostFor(event.target);
     if (host !== null) openHost(host);
   }
 
+  function onPointerMove(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') return;
+    if (event.clientX === lastX && event.clientY === lastY) return; // the browser's fake move after a scroll
+    lastX = event.clientX;
+    lastY = event.clientY;
+    if (!scrolledSinceMove) return;
+    scrolledSinceMove = false;
+    // The mouse moved after the scroll: what it now rests on may open.
+    const host = hostFor(document.elementFromPoint(event.clientX, event.clientY));
+    if (host !== null) openHost(host);
+  }
+
+  function onPointerDown(): void {
+    pressedAt = performance.now();
+  }
+
+  function onScroll(): void {
+    scrolledSinceMove = true;
+  }
+
   function onPointerLeave(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') return;
     const host = hostFor(event.target);
     if (host === null || host === relatedHostFor(event)) return; // still inside the same host
     closeHost(host);
   }
 
+  /** Keyboard focus opens; the focus a pointer press gives (a tap, a click) leaves it to the
+   *  click. */
   function onFocusIn(event: FocusEvent): void {
+    if (performance.now() - pressedAt < 1000) return;
     const host = hostFor(event.target);
     if (host !== null) openHost(host);
   }
@@ -163,20 +196,18 @@
     closeHost(host);
   }
 
-  /** Touch has no hover: a tap toggles instead, the same rule ItemHover.svelte's own
-   *  `toggle` follows. `preventDefault` keeps a tap from also activating anything the row
-   *  happens to sit inside. */
+  /** Touch has no hover: a tap toggles instead (a second tap on the same name closes it), the
+   *  same rule ItemHover.svelte's own `toggle` follows; a tap or click anywhere else closes the
+   *  open one. `preventDefault` keeps a tap from also activating anything the row happens to
+   *  sit inside. */
   function onClick(event: MouseEvent): void {
     const host = hostFor(event.target);
-    if (host === null) return;
+    if (host === null) {
+      if (activeHost !== null) closeHost(activeHost);
+      return;
+    }
     event.preventDefault();
-    // A touch tap fires pointerenter and focus (which open the host) just before its click:
-    // that click is the same tap, not a second one, so it leaves the tooltip open.
-    const sameTap =
-      'pointerType' in event &&
-      (event as PointerEvent).pointerType === 'touch' &&
-      performance.now() - openedAt < 700;
-    if (activeHost === host && !sameTap) closeHost(host);
+    if (activeHost === host) closeHost(host);
     else openHost(host);
   }
 
@@ -194,6 +225,9 @@
     // event's own bubbles flag.
     document.addEventListener('pointerenter', onPointerEnter, true);
     document.addEventListener('pointerleave', onPointerLeave, true);
+    document.addEventListener('pointermove', onPointerMove, true);
+    document.addEventListener('pointerdown', onPointerDown, true);
+    document.addEventListener('scroll', onScroll, { capture: true, passive: true });
     document.addEventListener('focusin', onFocusIn);
     document.addEventListener('focusout', onFocusOut);
     document.addEventListener('click', onClick);
@@ -209,6 +243,9 @@
       delete document.documentElement.dataset.tooltipHost;
       document.removeEventListener('pointerenter', onPointerEnter, true);
       document.removeEventListener('pointerleave', onPointerLeave, true);
+      document.removeEventListener('pointermove', onPointerMove, true);
+      document.removeEventListener('pointerdown', onPointerDown, true);
+      document.removeEventListener('scroll', onScroll, { capture: true });
       document.removeEventListener('focusin', onFocusIn);
       document.removeEventListener('focusout', onFocusOut);
       document.removeEventListener('click', onClick);

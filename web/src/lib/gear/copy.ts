@@ -13,6 +13,8 @@ export function points(value: number): string {
 
 export const gearCopy = {
   heading: 'Gear',
+  /** The list's accessible name (fix round 2 ruling 9). */
+  listLabel: 'Gear by slot',
   /** The client's paperdoll words, the pairs numbered in export order (fix round 1 ruling 7). */
   slotLabels: {
     head: 'Head',
@@ -33,19 +35,28 @@ export const gearCopy = {
     off_hand: 'Off hand',
     ranged: 'Ranged',
   },
-  /** Read after the slot label, so a row's name is its label first: "Trinket 2, Empty". */
-  labelEnd: ',',
-  /** The title line: "Gear · +70 pts across 7 slots", from gear_gap_total and the count of slots
-   *  whose gap is above 0. */
-  title: (total: number, slots: number): string =>
-    `Gear · +${points(total)} pts across ${slots} ${slots === 1 ? 'slot' : 'slots'}`,
-  /** A total of 0: every scored slot holds its pick, or something at least as good. */
-  titleZero: 'Gear · every slot is the best you can wear',
-  /** After the title when a slot with a pick has no gap: " · 1 not scored". */
-  titleNotScored: (count: number): string => ` · ${count} not scored`,
+  /** The title line is "Gear" then its summary: "+70 pts across 7 slots", from gear_gap_total
+   *  and the count of slots whose gap is above 0. The dot between them is drawn after "Gear"
+   *  (fix round 2 ruling 4), so no line starts with it. */
+  summary: (total: number, slots: number): string =>
+    `+${points(total)} pts across ${slots} ${slots === 1 ? 'slot' : 'slots'}`,
+  /** A total of 0 with no row showing an arrow: every pick is worn (fix round 2 ruling 5). */
+  summaryAllWorn: 'every slot is the best you can wear',
+  /** A total of 0 with an arrow left (an empty slot, a pick scoring no more than the worn item). */
+  summaryZero: '+0 pts from the picks you can wear',
+  /** After the summary when a slot with a pick has no gap: " · 1 not scored", its dot glued to
+   *  the word before it. */
+  notScored: (count: number): string => `\u00a0· ${count} not scored`,
+  /** The same with nothing before it (no total): "2 not scored". */
+  unscored: (count: number): string => `${count} not scored`,
+  /** Between "Gear" and the summary, as read and as tested; drawn as "Gear"'s ::after. */
+  titleSeparator: ' · ',
   /** Under the title (fix round 1 ruling 3): both numbers, what each counts. */
   totals: (cardGap: number, total: number): string =>
     `The card’s ${points(cardGap)} counts the band’s best set. These ${points(total)} count the picks you can wear.`,
+  /** The same at a total of 0 (fix round 2 ruling 5). */
+  totalsZero: (cardGap: number): string =>
+    `The card’s ${points(cardGap)} counts the band’s best set. The picks you can wear add 0.`,
   /** A row's gap: "+18.4 pts", and read aloud "18.4 points to gain". */
   gap: (gap: number): string => `+${points(gap)} pts`,
   gapLabel: (gap: number): string => `${points(gap)} points to gain`,
@@ -63,8 +74,8 @@ export const gearCopy = {
   unknownItem: 'Unknown item',
   /** The worn item is the pick (or as good as it): no arrow. */
   best: 'Best for your band',
-  /** The band has no pick for the slot (fix round 1 ruling 8). */
-  noPick: 'no pick for your band yet',
+  /** The band has no pick for the slot (fix round 2 ruling 6: capitalised everywhere). */
+  noPick: 'No pick for your band yet',
   /** The off hand under a worn two-hander: its pick comes with the main hand's (ruling 9). */
   swap: 'comes with the main-hand swap',
   /** The drawn arrow between the worn item and the pick, with its spaces; a screen reader hears
@@ -74,11 +85,9 @@ export const gearCopy = {
   /** Between the source and its chance: no-break spaces either side of the dot, so the chance
    *  travels with the source's last word and a wrapped line never starts or ends on the dot. */
   chanceLead: '\u00a0·\u00a0',
-  /** Before a note that ends the source line: " · comes with the main-hand swap". */
-  noteLead: ' · ',
-  /** Below 1024px a note that shares the items' line ("· Best for your band") starts with a dot;
-   *  from 1024px it stands in the source column, without one. */
-  inlineLead: '· ',
+  /** Before a note that ends the source line: " · comes with the main-hand swap", its dot glued
+   *  to the word before it. */
+  noteLead: '\u00a0· ',
   /** `gear: []`: under the heading, this one line; its two phrases link where each happens. */
   noGear: 'No gear on file. Upload a log or sync the addon.',
   noGearParts: {

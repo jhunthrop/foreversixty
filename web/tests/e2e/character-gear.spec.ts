@@ -56,6 +56,8 @@ interface OpenOptions {
   itemsDelayMs?: number;
   /** Answer the items file 500 this many times first. */
   itemsFailures?: number;
+  /** Icon file names to answer 404. */
+  missingIcons?: string[];
 }
 
 async function open(page: Page, options: OpenOptions = {}): Promise<string[]> {
@@ -74,7 +76,7 @@ async function open(page: Page, options: OpenOptions = {}): Promise<string[]> {
     if (options.itemsDelayMs !== undefined) await new Promise((r) => setTimeout(r, options.itemsDelayMs));
     return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(GEAR_ITEMS) });
   });
-  await routeGearIcons(page);
+  await routeGearIcons(page, options.missingIcons);
   await page.goto(CHARACTER_PATH);
   await expect(page.getByTestId('forever-score-card')).toBeVisible();
   return errors;
@@ -136,7 +138,7 @@ for (const width of [1440, 390]) {
       await open(page);
       await rowsDrawn(page);
       await expect(page.getByTestId('character-gear-title')).toHaveText(
-        'Gear · +70 pts across 7 slots · 1 not scored',
+        'Gear +70 pts across 7 slots · 1 not scored',
       );
       const totals = page.getByTestId('character-gear-totals');
       await expect(totals).toHaveText(
@@ -175,28 +177,35 @@ for (const width of [1440, 390]) {
       const errors = await open(page);
       await rowsDrawn(page);
       const head = row(page, 'head');
-      await expect(head.getByTestId('character-gear-slot')).toHaveText('Head,');
+      await expect(head.getByTestId('character-gear-slot')).toHaveText('Head');
       await expect(head.getByTestId('character-gear-worn')).toHaveCSS('color', RGB.rare);
       await expect(head.getByTestId('character-gear-pick')).toHaveCSS('color', RGB.epic);
       await expect(head.getByTestId('character-gear-meta')).toHaveText("Onyxia's Lair: Onyxia · 17% drop");
       await expect(head.getByTestId('character-gear-gap')).toHaveText('+18.4 pts');
       await expect(head.getByTestId('character-gear-gap')).toHaveCSS('font-weight', '700');
       await expect(row(page, 'wrist').getByTestId('character-gear-gap')).toHaveCSS('font-weight', '400');
-      // Icons: 20px, the pick's border its quality.
-      const icon = head.locator('[data-bis-item="16921"] img');
-      await expect(icon).toHaveCSS('width', '20px');
-      await expect(icon).toHaveCSS('border-top-color', 'rgb(163, 53, 238)');
-      expect(await icon.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
+      // Icons: a 20px box, the pick's border its quality, the image loaded in it.
+      const box = head.locator('[data-bis-item="16921"] [data-testid="character-gear-icon"]');
+      await expect(box).toHaveCSS('width', '20px');
+      await expect(box).toHaveCSS('height', '20px');
+      await expect(box).toHaveCSS('border-top-color', 'rgb(163, 53, 238)');
+      expect(await box.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(
+        0,
+      );
       await expect(row(page, 'back').getByTestId('character-gear-meta')).toContainText('<1% drop');
       await expect(row(page, 'chest').getByTestId('character-gear-meta')).toHaveText('Tailoring');
       await expect(row(page, 'shoulder').getByTestId('character-gear-meta')).toContainText(
         'Best for your band',
       );
       await expect(row(page, 'shoulder').getByTestId('character-gear-gap')).toHaveText('');
-      await expect(row(page, 'finger1').getByTestId('character-gear-slot')).toHaveText('Ring 1,');
-      await expect(row(page, 'trinket2').getByTestId('character-gear-slot')).toHaveText('Trinket 2,');
-      await expect(row(page, 'trinket2')).toContainText('Empty · no pick for your band yet');
-      await expect(row(page, 'ranged')).toContainText("Skul's Ghastly Touch · no pick for your band yet");
+      await expect(row(page, 'finger1').getByTestId('character-gear-slot')).toHaveText('Ring 1');
+      await expect(row(page, 'trinket2').getByTestId('character-gear-slot')).toHaveText('Trinket 2');
+      await expect(row(page, 'trinket2').getByTestId('character-gear-meta')).toHaveText(
+        'No pick for your band yet',
+      );
+      await expect(row(page, 'ranged').getByTestId('character-gear-meta')).toHaveText(
+        'No pick for your band yet',
+      );
       const legs = row(page, 'legs');
       await expect(legs.getByTestId('character-gear-worn')).toHaveText('Unknown item');
       await expect(legs.getByTestId('character-gear-worn')).toHaveCSS('color', RGB.muted);
@@ -215,9 +224,14 @@ for (const width of [1440, 390]) {
       await rowsDrawn(page);
       const link = page.getByTestId('forever-score-most-to-gain').getByRole('link', { name: 'Gear' });
       await expect(link).toHaveAttribute('href', '#gear');
+      await settled(page);
+      // A real pointer click: the mouse stays where the link was while the page scrolls.
       await link.click();
       await expect(page).toHaveURL(/#gear$/);
       await expect(page.getByTestId('character-gear-title')).toBeFocused();
+      // Whatever row now sits under the stationary pointer opens no tooltip (fix 2 ruling 2).
+      await page.waitForTimeout(600);
+      await expect(page.getByTestId('item-tooltip')).toHaveCount(0);
       const top = await page
         .getByTestId('character-gear')
         .evaluate((element) => element.getBoundingClientRect().top);
@@ -266,12 +280,78 @@ for (const width of [1440, 390]) {
       expect(await page.evaluate(() => (window as unknown as { __white: string[] }).__white)).toEqual([]);
     });
 
+    test('mid-load: 17 rows with labels, gaps and sources, the names held as bars; the footer stays put (fix 2 ruling 8)', async ({
+      page,
+    }) => {
+      await open(page, { itemsDelayMs: 2500 });
+      const list = page.getByTestId('character-gear-list');
+      await expect(list).toHaveAttribute('aria-busy', 'true');
+      await expect(list.locator('[data-testid^="character-gear-row-"]')).toHaveCount(17);
+      await expect(row(page, 'head').getByTestId('character-gear-slot')).toBeVisible();
+      await expect(row(page, 'head').getByTestId('character-gear-gap')).toHaveText('+18.4 pts');
+      await expect(row(page, 'head').getByTestId('character-gear-meta')).toHaveText(
+        "Onyxia's Lair: Onyxia · 17% drop",
+      );
+      await expect(page.getByTestId('character-gear-pick')).toHaveCount(0);
+      await expect(list.locator('[data-bis-item]')).toHaveCount(0);
+      const bar = row(page, 'head').getByTestId('character-gear-skeleton').first();
+      await expect(bar).toHaveCSS('height', '14px');
+      await expect(bar).toHaveCSS('background-color', 'rgb(26, 29, 36)');
+      const footer = page.getByTestId('character-gear-bis');
+      await expect(footer).toHaveCSS('visibility', 'hidden');
+      const before = await footer.evaluate(
+        (element) =>
+          element.getBoundingClientRect().top - element.closest('section')!.getBoundingClientRect().top,
+      );
+      await rowsDrawn(page);
+      await expect(footer).toHaveCSS('visibility', 'visible');
+      const after = await footer.evaluate(
+        (element) =>
+          element.getBoundingClientRect().top - element.closest('section')!.getBoundingClientRect().top,
+      );
+      expect(Math.abs(after - before)).toBeLessThan(1);
+    });
+
+    test('an icon that fails keeps its bordered box, never the broken-image glyph (fix 2 ruling 1)', async ({
+      page,
+    }) => {
+      await open(page, { missingIcons: ['inv_helmet_24.webp'] });
+      await rowsDrawn(page);
+      const box = row(page, 'head').locator('[data-bis-item="16921"] [data-testid="character-gear-icon"]');
+      await expect(box.locator('img')).toHaveCount(0);
+      await expect(box).toBeVisible();
+      await expect(box).toHaveCSS('width', '20px');
+      await expect(box).toHaveCSS('background-color', 'rgb(18, 21, 28)');
+      await expect(box).toHaveCSS('border-top-color', 'rgb(163, 53, 238)');
+      // The others load.
+      const worn = row(page, 'head').locator('[data-bis-item="10504"] img');
+      expect(await worn.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
+    });
+
+    test('names the list "Gear by slot" and each row by its slot; 24px name targets (fix 2 ruling 9)', async ({
+      page,
+    }) => {
+      await open(page);
+      await rowsDrawn(page);
+      const list = page.getByRole('list', { name: 'Gear by slot' });
+      await expect(list).toBeVisible();
+      await expect(list.getByRole('listitem', { name: 'Trinket 2', exact: true })).toHaveCount(1);
+      await expect(list.getByRole('listitem', { name: 'Head', exact: true })).toHaveCount(1);
+      const name = row(page, 'head').locator('[data-bis-item="16921"]');
+      const height = await name.evaluate((element) => element.getBoundingClientRect().height);
+      expect(height).toBeGreaterThanOrEqual(24);
+      await expect(page.getByTestId('character-gear-bis')).toHaveCSS('padding-top', '12px');
+      await expect(page.getByTestId('character-gear-bis')).toHaveCSS('padding-bottom', '12px');
+    });
+
     test('a failed items file draws the names in the body colour; the next open retries (fix 2)', async ({
       page,
     }) => {
       await open(page, { itemsFailures: 1 });
       await rowsDrawn(page);
       await expect(row(page, 'head').getByTestId('character-gear-pick')).toHaveCSS('color', RGB.body);
+      // The swap cannot be known: the empty off hand shows no figure (fix 2 ruling 7).
+      await expect(row(page, 'off_hand').getByTestId('character-gear-gap')).toHaveText('');
       await page.reload();
       await rowsDrawn(page);
       await expect(row(page, 'head').getByTestId('character-gear-pick')).toHaveCSS('color', RGB.epic);
@@ -336,10 +416,35 @@ test.describe('the item tooltip on a 390px phone (fix 1)', () => {
     test.skip(info.project.use.hasTouch !== true, 'a tap needs a touch device (the mobile project)');
     const errors = await open(page);
     await settled(page);
-    await row(page, 'head').locator('[data-bis-item="16921"]').tap();
-    await expect(page.getByTestId('item-tooltip')).toBeVisible();
-    await expect(page.getByTestId('item-tooltip')).toContainText('Halo of Transcendence');
+    const pick = row(page, 'head').locator('[data-bis-item="16921"]');
+    const tooltip = page.getByTestId('item-tooltip');
+    await pick.tap();
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toContainText('Halo of Transcendence');
     expect(errors).toEqual([]);
+  });
+
+  test('a second tap on the name closes it; so do a tap elsewhere and Escape (fix 2 ruling 2)', async ({
+    page,
+  }, info) => {
+    test.skip(info.project.use.hasTouch !== true, 'a tap needs a touch device (the mobile project)');
+    await open(page);
+    await settled(page);
+    const pick = row(page, 'head').locator('[data-bis-item="16921"]');
+    const tooltip = page.getByTestId('item-tooltip');
+    await pick.tap();
+    await expect(tooltip).toBeVisible();
+    await page.waitForTimeout(800);
+    await pick.tap();
+    await expect(tooltip).toHaveCount(0);
+    await pick.tap();
+    await expect(tooltip).toBeVisible();
+    await page.getByTestId('character-gear-totals').tap();
+    await expect(tooltip).toHaveCount(0);
+    await pick.tap();
+    await expect(tooltip).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(tooltip).toHaveCount(0);
   });
 });
 
@@ -374,6 +479,59 @@ for (const width of [390, 320]) {
       const rights = rows.flatMap((r) => (r.gap!.right === r.gap!.left ? [] : [r.gap!.right]));
       for (const right of rights) expect(Math.abs(right - rights[0])).toBeLessThan(1);
       await noSidewaysScroll(page);
+    });
+  });
+}
+
+for (const width of [1440, 1280, 1024]) {
+  test.describe(`row rhythm at ${width} (fix 2 ruling 3)`, () => {
+    test.use({ viewport: { width, height: 900 } });
+
+    test('every row is 44px, the names column wide enough for the longest pair', async ({ page }) => {
+      await open(page);
+      await settled(page);
+      const rows = await rowBoxes(page);
+      expect(rows).toHaveLength(17);
+      for (const r of rows) expect(r.height, r.slot).toBeCloseTo(44, 0);
+      if (width >= 1280) {
+        const column = await row(page, 'main_hand').evaluate(
+          (li) => getComputedStyle(li).gridTemplateColumns.split(' ').map(parseFloat)[1],
+        );
+        expect(column).toBeGreaterThanOrEqual(440);
+      }
+    });
+  });
+}
+
+for (const width of [390, 320]) {
+  test.describe(`separators at ${width} (fix 2 ruling 4)`, () => {
+    test.use({ viewport: { width, height: width === 390 ? 844 : 568 } });
+
+    test('no text begins with "·": each dot trails the word before it', async ({ page }) => {
+      await open(page);
+      await rowsDrawn(page);
+      const found = await page.getByTestId('character-gear').evaluate((section) => {
+        const leading: string[] = [];
+        const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT);
+        for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
+          const text = node.textContent ?? '';
+          if (/^[ \t\r\n]*·/.test(text)) leading.push(text);
+        }
+        const afters: string[] = [];
+        for (const element of section.querySelectorAll('*')) {
+          const content = getComputedStyle(element, '::after').content;
+          if (content.includes('·')) afters.push(content);
+        }
+        return { leading, afters };
+      });
+      expect(found.leading).toEqual([]);
+      // Every drawn dot is a no-break space then the dot, so it stays on its word's line.
+      for (const content of found.afters) expect(content.charCodeAt(1), content).toBe(160);
+      expect(found.afters.length).toBeGreaterThan(0);
+      // At 480px and under the title's summary is its own block, with no dot after "Gear".
+      const heading = page.getByTestId('character-gear-heading');
+      expect(await heading.evaluate((element) => getComputedStyle(element, '::after').content)).toBe('none');
+      await expect(page.getByTestId('character-gear-summary')).toHaveCSS('display', 'block');
     });
   });
 }

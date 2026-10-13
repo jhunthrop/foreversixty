@@ -73,11 +73,13 @@ function strongSlots(gear: readonly CharacterGearSlot[]): Set<GearSlotName> {
  * The section's rows, one per slot, in the order the API sends them (the export's).
  * `twoHand` says whether an item is two-handed, from the build's items file: an empty off hand
  * under a worn two-hander, its gap 0, has its pick "come with the main-hand swap" and a blank gap
- * (fix round 1 ruling 9); without it the API's "+0 pts" stands.
+ * (fix round 1 ruling 9); with a one-handed main hand the API's "+0 pts" stands. `null` is a
+ * failed items file: the swap cannot be known, so that off hand shows no figure (fix round 2
+ * ruling 7).
  */
 export function gearRows(
   gear: readonly CharacterGearSlot[],
-  twoHand: (id: number) => boolean = () => false,
+  twoHand: ((id: number) => boolean) | null = () => false,
 ): GearRow[] {
   const strong = strongSlots(gear);
   const mainHand = gear.find((slot) => slot.slot === 'main_hand')?.worn ?? null;
@@ -105,12 +107,10 @@ export function gearRows(
       };
     if (slot.worn !== null && (slot.worn.id === pick.id || slot.gap === 0))
       return { ...bare, state: 'best', pick: null, note: gearCopy.best, inline: true };
-    const swap =
-      slot.slot === 'off_hand' &&
-      slot.worn === null &&
-      slot.gap === 0 &&
-      mainHand !== null &&
-      twoHand(mainHand.id);
+    const emptyOffHandAtZero = slot.slot === 'off_hand' && slot.worn === null && slot.gap === 0;
+    const swap = emptyOffHandAtZero && twoHand !== null && mainHand !== null && twoHand(mainHand.id);
+    const unknown = emptyOffHandAtZero && twoHand === null;
+    const blank = swap || unknown;
     const scored = slot.gap !== null;
     return {
       ...bare,
@@ -120,8 +120,8 @@ export function gearRows(
       chance: pick.chance === null ? null : gearCopy.chance(pick.chance),
       note: swap ? gearCopy.swap : null,
       inline: false,
-      gap: swap ? null : scored ? gearCopy.gap(slot.gap ?? 0) : gearCopy.gapUnscored,
-      gapLabel: swap || !scored ? null : gearCopy.gapLabel(slot.gap ?? 0),
+      gap: blank ? null : scored ? gearCopy.gap(slot.gap ?? 0) : gearCopy.gapUnscored,
+      gapLabel: blank || !scored ? null : gearCopy.gapLabel(slot.gap ?? 0),
       strong: strong.has(slot.slot),
     };
   });
@@ -138,24 +138,38 @@ export function gearUnscoredCount(gear: readonly CharacterGearSlot[]): number {
 }
 
 /**
- * The title line (fix round 1 ruling 3): "Gear · +70 pts across 7 slots" from gear_gap_total and
- * the count of non-zero gaps; "Gear · every slot is the best you can wear" at 0; "Gear" when the
- * API scored no slot (a null total); then " · 1 not scored" when a slot's pick has no gap.
+ * What follows "Gear" on the title line (fix round 1 ruling 3, fix round 2 rulings 4 and 5):
+ * "+70 pts across 7 slots" from gear_gap_total and the count of non-zero gaps; at a total of 0
+ * "every slot is the best you can wear" when no row shows an arrow, else "+0 pts from the picks
+ * you can wear"; then " · 1 not scored" when a slot's pick has no gap, its dot glued to the word
+ * before it. Null when there is nothing to say (no total, every pick scored).
  */
-export function gearTitle(gear: readonly CharacterGearSlot[], total: number | null): string {
+export function gearTitleSummary(gear: readonly CharacterGearSlot[], total: number | null): string | null {
   const unscored = gearUnscoredCount(gear);
-  const tail = unscored > 0 ? gearCopy.titleNotScored(unscored) : '';
-  if (total === null) return `${gearCopy.heading}${tail}`;
+  if (total === null) return unscored > 0 ? gearCopy.unscored(unscored) : null;
   const slots = gearGapCount(gear);
-  if (total <= 0 || slots === 0) return `${gearCopy.titleZero}${tail}`;
-  return `${gearCopy.title(total, slots)}${tail}`;
+  const arrow = gearRows(gear).some((row) => row.pick !== null);
+  const lead =
+    total > 0 && slots > 0
+      ? gearCopy.summary(total, slots)
+      : arrow
+        ? gearCopy.summaryZero
+        : gearCopy.summaryAllWorn;
+  return unscored > 0 ? `${lead}${gearCopy.notScored(unscored)}` : lead;
 }
 
-/** The line under the title: the card's gear gap and gear_gap_total, what each counts. Null
- *  when the card has no gear gap (no score, or Gear at its top) or the API scored no slot. */
+/** The title line as read: "Gear · +70 pts across 7 slots · 1 not scored", or "Gear". */
+export function gearTitle(gear: readonly CharacterGearSlot[], total: number | null): string {
+  const summary = gearTitleSummary(gear, total);
+  return summary === null ? gearCopy.heading : `${gearCopy.heading}${gearCopy.titleSeparator}${summary}`;
+}
+
+/** The line under the title: the card's gear gap and gear_gap_total, what each counts ("The
+ *  picks you can wear add 0." at 0). Null when the card has no gear gap (no score, or Gear at its
+ *  top) or the API scored no slot. */
 export function gearTotalsLine(cardGap: number | null, total: number | null): string | null {
   if (cardGap === null || cardGap <= 0 || total === null) return null;
-  return gearCopy.totals(cardGap, total);
+  return total <= 0 ? gearCopy.totalsZero(cardGap) : gearCopy.totals(cardGap, total);
 }
 
 /** The Gear section's id: the score card's "Most to gain: Gear" opens `#gear` (L8.6 ruling 2). */

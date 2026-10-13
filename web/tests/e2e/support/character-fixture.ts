@@ -19,12 +19,12 @@ export const GEAR_ITEMS = { build: 'fixture', class_slug: 'priest', items: GEAR_
 const ICONS = new URL('../../../../data/builds/1.60.1.70291/icons/', import.meta.url);
 
 /** Serves an item icon from the repository's real build, which the fixture build does not
- *  carry; 404 for one it lacks. */
-export async function routeGearIcons(page: Page): Promise<void> {
+ *  carry; 404 for one it lacks, and for each name in `missing`. */
+export async function routeGearIcons(page: Page, missing: readonly string[] = []): Promise<void> {
   await page.route('**/data/*/icons/*.webp', (route) => {
     const name = new URL(route.request().url()).pathname.split('/').pop() ?? '';
     const file = new URL(name, ICONS);
-    return existsSync(file)
+    return existsSync(file) && !missing.includes(name)
       ? route.fulfill({ status: 200, contentType: 'image/webp', body: readFileSync(file) })
       : route.fulfill({ status: 404, body: '' });
   });
