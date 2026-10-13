@@ -292,10 +292,10 @@ const characterTrendPageSize = 20
 // it is non-nil. hasMore is true when a further page exists. Insufficient cards (spec §1.5's
 // coverage ruling, dated 2026-09-21) are excluded outright, at the SQL level: they are real
 // per-component data worth showing on a fight's own report card, but their Overall is
-// zero-valued and does not belong in any character-level mean or count this endpoint's trend/sample_size/
-// latest/best-worst-component all are. A NULL insufficient (a row written before this
-// column existed) reads as sufficient until the backfill re-rates it under the bumped
-// DefaultModelVersion, the same way every other stale-row gap already resolves itself.
+// zero-valued and does not belong in any character-level mean or count this endpoint's
+// trend/sample_size/latest/best-worst-component all are. A NULL insufficient (a row written
+// before this column existed) reads as sufficient until the backfill re-rates it under the
+// bumped DefaultModelVersion, the same way every other stale-row gap already resolves itself.
 func (s *Store) ReadCharacterRating(ctx context.Context, playerKey string, limit int, before *cursorPos) ([]CardRow, bool, error) {
 	if limit <= 0 || limit > characterTrendPageSize {
 		limit = characterTrendPageSize

@@ -64,8 +64,8 @@ func TestHomeRequiresMembership(t *testing.T) {
 	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
 	res = h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
 	res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		t.Fatalf("an unverified member reading home = %d, want 200 (the home shell is open to any member)", res.StatusCode)
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("an unverified member reading home = %d, want 403 (home opens to a verified row only)", res.StatusCode)
 	}
 }
 
@@ -264,12 +264,14 @@ func TestHomeReportsHidesGuildVisibilityFromAnUnverifiedMember(t *testing.T) {
 		}
 	}
 
-	h.actor = auth.Actor{UserID: unverified, Role: "user", Method: "session"}
-	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
-	var view HomeView
-	h.data(res, &view)
+	// The route itself answers an unverified row 403 (TestHomeAndLootRequireAVerifiedRow);
+	// HomeReports still keeps its own rule for an unverified viewer.
+	reports, err := h.store.HomeReports(ctx, gid, unverified, false, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
 	seen := map[string]bool{}
-	for _, r := range view.Reports {
+	for _, r := range reports {
 		seen[r.ID] = true
 	}
 	if !seen["unverifiedpublic"] {

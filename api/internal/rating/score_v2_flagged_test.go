@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -502,5 +503,35 @@ func TestRerateFlaggedGuildmatesAreTheMembersAndTheWindowsRaiders(t *testing.T) 
 	got = guildmates(oldNight.Add(-time.Hour))
 	if _, ok := got[old]; !ok || len(got) != 2 {
 		t.Errorf("guild-mates with the window past the old night = %+v, want %s and %s", got, member, old)
+	}
+}
+
+// An invite row (the synthetic account: key an invite link writes, verified at once) is no
+// character, so it is never a guild-mate of a flagged night: there is no score to re-rate.
+func TestRerateFlaggedGuildmatesLeaveOutAnInviteRow(t *testing.T) {
+	fx := seedLoggedRaider(t)
+	ctx := context.Background()
+	var invitee int64
+	if err := fx.pool.QueryRow(ctx, `insert into users (email) values ('scorev2-invitee@example.com')
+		on conflict (email) do update set email = excluded.email returning id`).Scan(&invitee); err != nil {
+		t.Fatal(err)
+	}
+	invite := fmt.Sprintf("account:%d", invitee)
+	t.Cleanup(func() {
+		bg := context.Background()
+		fx.pool.Exec(bg, `delete from guild_characters where character_key = $1`, invite)
+		fx.pool.Exec(bg, `delete from users where email = 'scorev2-invitee@example.com'`)
+	})
+	mustExec(t, fx.pool, `insert into guild_characters (guild_id, character_key, user_id, rank, source, verified_at, verified_by)
+		values ($1, $2, $3, 'member', 'invite', now(), 'invite')`, fx.guildID, invite, invitee)
+	flagReport(t, fx, sv2Report+"c")
+	picks, err := fx.store.flaggedRerates(ctx, time.Now().Add(-AttendanceWindow))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range picks {
+		if p.key == invite {
+			t.Errorf("the invite row %s is picked for a re-rate: %+v", invite, p)
+		}
 	}
 }

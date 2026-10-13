@@ -50,8 +50,13 @@ import (
 //     (TestRosterRatingIgnoresAFlaggedReport),
 //     HomeRoster's class/spec/item level (TestRosterClassSpecAndItemLevelIgnoreAFlaggedReport),
 //     bestByRole (TestProgressionBestByRoleIgnoresAFlaggedReport), fillTopParse
-//     (TestRaidsTopParseIgnoresAFlaggedReport), progression's counts
-//     (TestProgressionCountsAPrivateKillAndNeverAFlaggedOne), the home summary
+//     (TestRaidsTopParseIgnoresAFlaggedReport), progression's counts, which pick NotFlagged
+//     for a verified member and EvidenceReport for anyone else (countedReports: names neither
+//     rule beside a visibility, so a swapped branch passes here)
+//     (TestProgressionCountsAPrivateKillAndNeverAFlaggedOne,
+//     TestProgressionCountsFollowTheViewer), the Raids tab's rows and fights (visibilityClause,
+//     a flagged report only to a verified member who owns it)
+//     (TestRaidsShowAFlaggedReportOnlyToAMemberWhoOwnsIt), the home summary
 //     (TestHomeSummaryCountsAPrivateKillAndNeverAFlaggedOne), the Loot tab's killed
 //     (TestLootKilledIgnoresAFlaggedKillAndCountsAPrivateOne);
 //   - the nightly record (dataaddon windowParses, nightsByGuild, bossesKilledByGuild):
@@ -105,9 +110,6 @@ var notEvidence = []struct{ file, expr, why string }{
 		"visible(): who may open a report, mirroring reports.mayView (access)"},
 	{"internal/guilds/home.go", "r.owner_id = $3 or r.visibility = 'public'",
 		"HomeReports: which reports the viewer may open, its own included (access)"},
-	{"internal/guilds/raids.go", "r.owner_id = $2 or r.visibility = 'public'",
-		"the Raids tab's report rows: which reports the viewer may open (access); what each row " +
-			"says about a night (present, top_parse) reads EvidenceReport"},
 }
 
 // unit is one expression the check reads: its source text and where it starts.

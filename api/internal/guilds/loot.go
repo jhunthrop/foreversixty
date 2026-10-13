@@ -457,7 +457,8 @@ func (s *Store) DeleteLootAward(ctx context.Context, guildID, awardID int64) err
 // loot is member-and-officer, identical content either way - the contract's own "member:
 // read-only" is about which mutation routes an officer additionally gets, never about
 // withholding any of this read's own data from a plain member (design spec §10.1's
-// proposed ruling: "Shown, read-only").
+// proposed ruling: "Shown, read-only"). The gate is a verified row (IsVerifiedMember):
+// killed counts the guild's private nights, so an unverified row gets 403 (task L6.12).
 func (s *Service) loot(w http.ResponseWriter, r *http.Request) {
 	guildID, ok := guildIDFrom(r)
 	if !ok {
@@ -465,7 +466,7 @@ func (s *Service) loot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	actor := auth.ActorFrom(r.Context())
-	member, err := s.Store.IsMember(r.Context(), guildID, actor.UserID)
+	member, err := s.Store.IsVerifiedMember(r.Context(), guildID, actor.UserID)
 	if err != nil {
 		s.fail(w, r, "loot", err, "could not load that guild's loot just now")
 		return

@@ -464,9 +464,10 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 	return view, nil
 }
 
-// home is gated by IsMember — verified or not — never by GuildRank: an
-// unverified member still sees the home shell, just as they still
-// appear on the roster. Report *content* access stays governed by
+// home is gated by IsVerifiedMember: the summary counts the guild's
+// private nights (task L6.12), so an unverified row (a bare export,
+// possibly forged, or an account an officer has not approved) gets 403
+// like any other non-member. Report *content* access stays governed by
 // mayView server-side wherever a report link is actually followed.
 func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 	guildID, ok := guildIDFrom(r)
@@ -475,7 +476,7 @@ func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	actor := auth.ActorFrom(r.Context())
-	member, err := s.Store.IsMember(r.Context(), guildID, actor.UserID)
+	member, err := s.Store.IsVerifiedMember(r.Context(), guildID, actor.UserID)
 	if err != nil {
 		s.fail(w, r, "home", err, "could not load that guild's home just now")
 		return

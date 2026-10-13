@@ -68,9 +68,11 @@ they count unflagged, non-private boss fights: the same evidence the Forever Sco
 guild's readers of rows a player sees (attendance, best parse, rating, class and spec, top
 parses, best per role) and every score input pick their reports by one rule
 (`presence.EvidenceReport`: not private, not flagged), so a flagged report counts toward no score
-either (task L6.10). The guild's own counts (progression's pulls, kills, first kill and nights,
-the summary's `named_encounters_down` and `pulls_this_tier`, the Loot tab's `killed`) include
-its private nights but never a flagged report (`presence.NotFlagged`, task L6.12).
+either (task L6.10). The guild's own counts (the summary's `named_encounters_down` and
+`pulls_this_tier`, the Loot tab's `killed`, and progression's counts for a verified member)
+include its private nights but never a flagged report (`presence.NotFlagged`, task L6.12). Home
+and Loot open to a verified member only: an account whose only rows in the guild are unverified
+gets 403, like any other non-member.
 
 ## GET /v1/guilds/{id}/raids?limit=20&cursor=
 
@@ -84,7 +86,11 @@ its private nights but never a flagged report (`presence.NotFlagged`, task L6.12
   "present": [ { "character_key": "...", "name": "...", "class": "..." } ]
 } ], "next_cursor": null }
 ```
-Visibility follows the existing report rules for the viewer. `present` (and `raiders`, its
+Visibility follows the existing report rules for the viewer, and a flagged report (tampered or
+unverified) is listed, row and fights, only to a verified member who owns it: everyone else,
+signed out or not, sees the public reports that are not flagged (`presence.EvidenceReport`) and
+their own unflagged ones, and a verified member the guild's public and guild-visibility reports
+that are not flagged (`presence.NotFlagged`) and their own. `present` (and `raiders`, its
 count) is read by character key from the same presence as `attendance`, so a private,
 flagged or trash-only night lists nobody; `fights[].players` stays the count of units in the log.
 
@@ -102,6 +108,17 @@ flagged or trash-only night lists nobody; `fights[].players` stays the count of 
   "unnamed": [ { "zone": "Barrow Deeps", "pulls": 7, "nights": 1 } ] }
 ```
 `ParseRef` = `{ "name", "class", "spec", "metric", "value", "report_id", "fight_index" }`.
+
+The tab is public (no session needed), and the counts depend on the viewer (task L6.12). A
+verified member of the guild reads its own numbers: `pulls`, `kills`, `first_kill_at`,
+`best_kill_ms`, `deaths_per_pull`, `pulls_by_night` (with each night's `report_id`),
+`unnamed` and `tier.down` count the guild's private nights too, never a flagged report
+(`presence.NotFlagged`), and the answer is `Cache-Control: private, no-cache`. Everyone else
+(signed out, another account, an account whose rows in the guild are unverified) reads the
+public numbers, the ones the public guild page prints: reports that are not private and not
+flagged (`presence.EvidenceReport`), in a shareable answer (`public, max-age=30,
+stale-while-revalidate=60`). Both answers carry `Vary: Cookie, Authorization`. `best_by_role`
+reads `presence.EvidenceReport` for every viewer.
 
 ## GET /v1/guilds/{id}/readiness   (member and officer; member sees every row, officer gets `nudge_text`)
 

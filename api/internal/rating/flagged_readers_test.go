@@ -110,3 +110,30 @@ func TestFightRatingsIs404FlaggedForAFlaggedReport(t *testing.T) {
 		t.Fatalf("status = %d, body = %s; want 404 with error code \"flagged\"", rec.Code, rec.Body.String())
 	}
 }
+
+// A flagged report the caller may not open answers the plain not_found, never "flagged":
+// the flag is asked only once the report is visible, so it says nothing about a report the
+// caller could not see.
+func TestFightRatingsIsPlainNotFoundForAFlaggedReportTheCallerCannotOpen(t *testing.T) {
+	svc, rs := newTestService(t)
+	mustCreateReport(t, rs, "handler-flagged-private-1", reports.Private)
+	f := fightFixture("handler-flagged-private-1", true,
+		summary.RosterRow{GUID: "g1", Name: "Hidden", Class: "Rogue", Spec: "Combat", Role: "dps"},
+	)
+	if err := svc.Store.RateFight(context.Background(), f); err != nil {
+		t.Fatal(err)
+	}
+	mustExec(t, rs.Pool, `update reports set flagged = 'tampered' where id = 'handler-flagged-private-1'`)
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	req := httptest.NewRequest(http.MethodGet, "/v1/reports/handler-flagged-private-1/fights/1/ratings", nil)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	var env httpx.Envelope
+	if err := json.Unmarshal(rec.Body.Bytes(), &env); err != nil {
+		t.Fatal(err)
+	}
+	if rec.Code != http.StatusNotFound || env.Error == nil || env.Error.Code != "not_found" {
+		t.Fatalf("status = %d, body = %s; want 404 with error code \"not_found\"", rec.Code, rec.Body.String())
+	}
+}

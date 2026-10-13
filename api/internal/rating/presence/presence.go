@@ -8,11 +8,15 @@
 //   - EvidenceReport (not private, not flagged) is the rule for what is public or scored: the
 //     Forever Score's inputs, the guild's attendance, log verification, moderator evidence and
 //     raid present list, the rating endpoints, the inbox's last_raid, the public guild page,
-//     the recent-reports feed, and the guild centre's roster, best parses and top parses.
+//     the recent-reports feed, the guild centre's roster, best parses and top parses, and,
+//     for anyone but a verified member of the guild, the Progression tab's counts and the
+//     Raids tab's rows.
 //   - NotFlagged (private allowed, flagged never) is the rule for the guild centre's own
-//     aggregate counts, shown to the guild, which count the guild's private nights too:
-//     progression's pulls, kills, first kill and nights, the home summary's bosses down and
-//     pulls this tier, and the Loot tab's killed.
+//     counts as the guild's verified members see them, which count the guild's private
+//     nights too: the Progression tab's pulls, kills, first kill and nights for a verified
+//     member (a private response), the home summary's bosses down and pulls this tier and
+//     the Loot tab's killed (both open to a verified member only), and the Raids tab's rows
+//     for a verified member.
 //
 // Presence itself is read through In. evidence_source_test.go checks the rule over the source
 // tree, and lists what such a check cannot see.

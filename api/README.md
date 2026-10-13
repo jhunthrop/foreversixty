@@ -103,7 +103,12 @@ Every `GET` route sets its `Cache-Control` through one of two `httpx` helpers
 
 A route whose answer depends on who is asking — a report that is public for one viewer and
 private for another — branches between the two at request time rather than picking one
-statically; see `reports.Service.get` or `sims.Service.simInput` for the pattern.
+statically; see `reports.Service.get` or `sims.Service.simInput` for the pattern. The guild
+centre's Progression tab (`GET /v1/guilds/{id}/progression`) is public, and its counts depend
+on the viewer: a verified member of the guild reads the guild's own numbers, which count its
+private nights (never a flagged report), in a private answer; anyone else reads the public
+numbers the public guild page prints, in a public answer. Both carry `Vary: Cookie,
+Authorization`.
 
 Every successful (2xx) `GET` also carries `ETag: W/"<16 hex chars>"`, a weak tag computed over
 the envelope's `data` field alone. A matching `If-None-Match` (weak or strong, comma-separated)

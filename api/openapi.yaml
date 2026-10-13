@@ -1977,9 +1977,9 @@ paths:
         the officer's pending queue, in the shape docs/contracts/2026-10-04-guild-centre-api.md
         gives. roster[].attendance is { present, nights } (schema GuildAttendance): presence in
         the guild's last 8 non-private, unflagged reports that someone is present in, read by
-        character key. reports[] is paged by cursor (next_cursor). Any member of the guild (an
-        account with a character on its roster, verified or not) may read it; anyone else gets
-        403.
+        character key. reports[] is paged by cursor (next_cursor). A verified member of the
+        guild (an account with a verified character on its roster) may read it; anyone else,
+        an account whose rows are all unverified included, gets 403.
       parameters:
         - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
         - { name: cursor, in: query, schema: { type: string }, description: "The next_cursor a previous page returned; it pages reports[] past that report." }
@@ -1987,7 +1987,7 @@ paths:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '400': { description: "cursor is not a next_cursor this route returned", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '401': { description: "No session", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '403': { description: "Not a member of the guild (an unknown numeric id answers 403 too: nobody is its member)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '403': { description: "Not a verified member of the guild (an unknown numeric id answers 403 too: nobody is its member)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '404': { description: "No such guild: an id that is not a positive number, or a guild gone by the time the home is read", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/guilds/{region}/{ruleset}/{name}:
     get:

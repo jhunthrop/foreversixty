@@ -104,7 +104,7 @@ func TestRosterClassSpecAndItemLevelIgnoreAFlaggedReport(t *testing.T) {
 // The Progression tab's best parse per role (bestByRole) is never a flagged report's.
 func TestProgressionBestByRoleIgnoresAFlaggedReport(t *testing.T) {
 	g := seedL612Guild(t)
-	view, err := g.store.Progression(context.Background(), g.guildID)
+	view, err := g.store.Progression(context.Background(), g.guildID, true)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -118,9 +118,14 @@ func TestProgressionBestByRoleIgnoresAFlaggedReport(t *testing.T) {
 }
 
 // The Raids tab's top parse (fillTopParse) is never a flagged report's: the flagged night is
-// still listed (visibility decides that), with no top parse, as it lists nobody present.
+// still listed to the verified member who owns it (visibilityClause), with no top parse, as
+// it lists nobody present.
 func TestRaidsTopParseIgnoresAFlaggedReport(t *testing.T) {
 	g := seedL612Guild(t)
+	if _, err := g.pool.Exec(context.Background(),
+		`update reports set owner_id = $1 where id = $2`, g.userID, g.flaggedID); err != nil {
+		t.Fatal(err)
+	}
 	page, err := g.store.Raids(context.Background(), g.guildID, g.userID, true, RaidsDefaultLimit, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -180,11 +185,12 @@ func seedL612Counts(t *testing.T, flaggedEncounter int64) (*Store, int64) {
 	return &Store{Pool: pool}, gid
 }
 
-// The Progression tab's pulls, kills, first kill, nights and unnamed-zone pulls count the
-// private night and not the flagged one.
+// The Progression tab's pulls, kills, first kill, nights and unnamed-zone pulls, as a verified
+// member reads them, count the private night and not the flagged one
+// (TestProgressionCountsFollowTheViewer has every other viewer).
 func TestProgressionCountsAPrivateKillAndNeverAFlaggedOne(t *testing.T) {
 	s, gid := seedL612Counts(t, 1084)
-	view, err := s.Progression(context.Background(), gid)
+	view, err := s.Progression(context.Background(), gid, true)
 	if err != nil {
 		t.Fatal(err)
 	}

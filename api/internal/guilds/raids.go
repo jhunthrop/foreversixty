@@ -2,8 +2,9 @@
 //
 // GET /v1/guilds/{id}/raids (contract step 3,
 // docs/contracts/2026-10-04-guild-centre-api.md): every raid night, cursor-paginated,
-// visibility-filtered the same rule HomeReports already applies (public reports to anyone,
-// guild-visibility reports to a verified member, every report to its own owner) - this
+// visibility-filtered by the report rules for the viewer (public reports to anyone,
+// guild-visibility reports to a verified member, every report to its own owner), and a
+// flagged report to no one but a verified member who owns it (visibilityClause) - this
 // route is reachable by a signed-out visitor (design spec §4.0's own table: "Raids: Shown
 // (public reports only)"), so it is mounted with no auth.RequireSession wrap.
 package guilds
@@ -116,19 +117,26 @@ func decodeRaidsCursor(s string) (raidsCursor, bool) {
 	return raidsCursor{CreatedAt: t, ID: id}, true
 }
 
-// visibilityClause is HomeReports' own visibility rule, factored out so both routes build
-// it identically (contract: "Visibility follows the existing report rules for the viewer").
+// visibilityClause is the Raids tab's rule for which reports a viewer sees: the report
+// rules for the viewer (contract: "Visibility follows the existing report rules for the
+// viewer"), and a flagged report (tampered or unverified) only to a verified member who owns
+// it, who manages it. A verified member sees their own reports, and the guild's public and
+// guild-visibility ones that are not flagged (presence.NotFlagged). Anyone else (signed out,
+// another account, an unverified row) sees the public reports that are evidence
+// (presence.EvidenceReport), and their own reports that are not flagged.
 func visibilityClause(verified bool) string {
 	if verified {
-		return `(r.owner_id = $2 or r.visibility = 'public' or r.visibility = 'guild')`
+		return `(r.owner_id = $2 or ((r.visibility = 'public' or r.visibility = 'guild') and ` +
+			presence.NotFlagged("r") + `))`
 	}
-	return `(r.owner_id = $2 or r.visibility = 'public')`
+	return `((r.owner_id = $2 and ` + presence.NotFlagged("r") + `) or (r.visibility = 'public' and ` +
+		presence.EvidenceReport("r") + `))`
 }
 
 // Raids lists guildID's reports, newest first, keyset-paginated, each with its fights and
 // present-roster list. userID is 0 for a signed-out visitor - the visibility clause's own
 // r.owner_id = $2 then simply never matches, which is exactly "a signed-out visitor only
-// ever sees public reports."
+// ever sees public, unflagged reports."
 func (s *Store) Raids(ctx context.Context, guildID, userID int64, verified bool, limit int, before *raidsCursor) (RaidsPage, error) {
 	if limit <= 0 || limit > RaidsMaxLimit {
 		limit = RaidsDefaultLimit

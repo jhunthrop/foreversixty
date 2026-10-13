@@ -234,7 +234,8 @@ func TestRosterAttendanceReadsARealCharacterKey(t *testing.T) {
 
 // Fix round 1, item 1: a report flagged as tampered (or unverified) is never evidence. Its
 // rated rows verify nobody, count toward nobody's attendance or evidence, and list nobody on
-// the raid page; neither does a private report.
+// the raid page; neither does a private report. The member uploaded all three, so the Raids
+// tab lists the flagged ones to them (visibilityClause).
 func TestAFlaggedReportVerifiesNobodyAndCountsForNobody(t *testing.T) {
 	h := newHTTPHarness(t)
 	ctx := context.Background()
@@ -248,13 +249,12 @@ func TestAFlaggedReportVerifiesNobodyAndCountsForNobody(t *testing.T) {
 	candidate := seedUser(t, h.pool, "l68f-candidate@example.com")
 	candidateKey := "us/pvp/l68fcandidate"
 	seedCharacter(t, h.pool, gid, candidate, candidateKey, "member", false)
-	uploader := seedUser(t, h.pool, "l68f-uploader@example.com")
 
 	both := []string{memberKey, candidateKey}
 	now := time.Now()
-	seedL68Night(t, h.pool, gid, l68Night{id: "l68f-tampered", owner: uploader, flagged: "tampered",
+	seedL68Night(t, h.pool, gid, l68Night{id: "l68f-tampered", owner: member, flagged: "tampered",
 		at: now.Add(-3 * 24 * time.Hour), rated: both})
-	seedL68Night(t, h.pool, gid, l68Night{id: "l68f-unverified", owner: uploader, flagged: "unverified",
+	seedL68Night(t, h.pool, gid, l68Night{id: "l68f-unverified", owner: member, flagged: "unverified",
 		at: now.Add(-2 * 24 * time.Hour), rated: both, keys: both})
 	seedL68Night(t, h.pool, gid, l68Night{id: "l68f-private", owner: member, visibility: "private",
 		at: now.Add(-1 * 24 * time.Hour), rated: both, keys: both})

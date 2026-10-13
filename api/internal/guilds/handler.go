@@ -84,11 +84,12 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	// Raids is reachable signed-out (design spec §4.0: public reports only) - no
 	// RequireSession wrap; the handler reads whatever actor the auth middleware already
 	// put in context (the zero Actor for an anonymous request) and the visibility clause
-	// does the rest.
+	// does the rest, a flagged report included (shown only to a verified member who owns it).
 	mux.HandleFunc("GET /v1/guilds/{id}/raids", s.raids)
-	// Progression is fully public (design spec §4.0) and, matching
-	// rankings.Store.Guild's own choice for this kind of aggregate, not gated by
-	// individual report visibility - no RequireSession wrap, no actor read at all.
+	// Progression is public (design spec §4.0) - no RequireSession wrap - and its counts
+	// depend on the viewer: the handler reads whatever actor the auth middleware put in
+	// context, and a verified member gets the guild's own numbers (private nights counted,
+	// a private response) where anyone else gets the public guild page's (shareable).
 	mux.HandleFunc("GET /v1/guilds/{id}/progression", s.progression)
 	// Readiness is member/officer only (design spec §4.0: "Not shown" to the public).
 	mux.HandleFunc("GET /v1/guilds/{id}/readiness", auth.RequireSession(s.readiness))

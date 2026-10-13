@@ -374,7 +374,10 @@ Notes for the reader:
   sees leaves it out: this file, the inbox (contract 3's `last_raid`), the site's rating pages
   and fight cards, its recent-reports feed and its guild pages. They select reports by one of
   two rules: not private and not flagged (`presence.EvidenceReport`), or, for the guild centre's
-  own counts, which include the guild's private nights, not flagged (`presence.NotFlagged`).
+  own counts as the guild's verified members see them, which include the guild's private
+  nights, not flagged (`presence.NotFlagged`). The guild centre's Progression tab is public and
+  its counts depend on the viewer: a verified member reads the guild's own numbers, anyone else
+  the public ones (`presence.EvidenceReport`).
   When reports are flagged, a one-off job (`rating-rerate-flagged`) re-rates the newest clean
   fight of every character whose score they moved (the characters in them; their guild-mates,
   the guild's verified members and its raiders of the last 90 days; and the characters linked
