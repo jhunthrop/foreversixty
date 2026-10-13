@@ -77,6 +77,12 @@ Theme.SIZES = {
 	--- the target corner's two gold legs, each `mark` long and `markEdge` thick.
 	mark = 12,
 	markEdge = 2,
+	--- The quest reward label and the roll line (L4.2): the dark plate's padding round
+	--- the text, the roll line's gap from the roll frame's right edge, and the widest the
+	--- roll line grows before the verdict puts the compared name on a second line.
+	labelPad = 2,
+	rollGap = 6,
+	rollLineWidth = 240,
 	windowWidth = 720,
 	windowHeight = 500,
 	--- The left navigation, and one item in it.

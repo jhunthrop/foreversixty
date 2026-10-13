@@ -327,6 +327,9 @@ local function percentOf(chance)
 	return math.max(1, math.floor(chance * 100 + 0.5))
 end
 
+--- The drop chance as printed, for the chip's dungeon list (L4.2).
+ItemTooltip.percentOf = percentOf
+
 --- One line saying where a pick comes from: "Wailing Caverns · Mutanus the
 --- Devourer · 33% drop" for an instance drop (the source split on its first
 --- ": "), "<name> · Vendor" or "<source> · Quest" for the rest (the kind left
@@ -620,6 +623,9 @@ local function specName(data, spec)
 	end
 	return Talents.titleCase(rest or spec)
 end
+
+--- The spec's own tree name, for the quest reward's "Best for Arms" (L4.2).
+ItemTooltip.specName = specName
 
 --- The lowest band at or above the character's own (any band below 20)
 --- whose pick for one of `slots` is `itemId`, or nil.
@@ -952,6 +958,100 @@ local function reachablePick(pick, isMissing)
 	return nil
 end
 
+--- The part of the section that scores one item (L4.2 ruling 1): the one verdict the
+--- item tooltip, the quest reward labels and the roll line all read, so they can never
+--- disagree. `ctx` is ItemTooltip.section's; `pending` (optional) gathers the worn item
+--- whose name the client has not sent. Answers { gear, slots, wornSlot, wearable, usable,
+--- refusal, blocked, heldByTwoHander, slot, verdict, primary, unit }:
+---
+--- - `gear`: the item goes in a slot the plan covers (none: nothing else is set);
+--- - `wearable`: the slots Rules.canEquip allows now (none: `refusal`, "Not for you until
+---   40: plate armor", is the primary line, in the warning colour);
+--- - `heldByTwoHander`: every allowed slot is a hand the worn two-hander holds ("Not with
+---   your two-hander");
+--- - `slot` the slot it is judged in, `verdict` Progress.itemVerdict's answer there (on an
+---   item not worn, with weights), and `primary` the verdict line (the 1.0 floor, the
+---   empty-slot fill and the two-hander pair rule, ItemTooltip.verdictLine's own).
+function ItemTooltip.judge(ctx, pending)
+	pending = pending or {}
+	local item = ctx.item or {}
+	local slots = Gear.slotsFor(item.equipLocation)
+	if #slots == 0 then
+		return { gear = false, slots = slots, wearable = {}, usable = {} }
+	end
+	local equipped = ctx.equipped or {}
+	local nameOf = ctx.nameOf or Compat.itemName
+	local current = ctx.current or nil
+	local weights = current ~= nil and current.weights or nil
+	local perPoint = current ~= nil and current.dpsPerPoint or nil
+	local weapon = current ~= nil and current.weapon or nil
+	local unit = ItemTooltip.unitOf(current)
+	local hovered = { itemId = item.itemId, link = item.link, equipLocation = item.equipLocation, stats = item.stats }
+
+	local wornSlot
+	for _, slot in ipairs(slots) do
+		local worn = equipped[slot]
+		if worn ~= nil and item.link ~= nil and worn.link == item.link then
+			wornSlot = slot
+			break
+		end
+	end
+	-- Rules first, then the two-hander: the slots the item may go in now.
+	local wearable, refusal = {}, nil
+	for _, slot in ipairs(slots) do
+		local answer, unlock, reason = Rules.canEquip(ctx.classToken, ctx.level, item.itemClass,
+			item.itemSubClass, item.equipLocation, slot)
+		if answer == "ok" then
+			wearable[#wearable + 1] = slot
+		elseif refusal == nil then
+			refusal = ItemTooltip.untilLine(ctx.classToken, answer, unlock, reason)
+		end
+	end
+	local usable, blocked = {}, nil
+	for _, slot in ipairs(wearable) do
+		local verdict = Progress.itemVerdict(slot, hovered, equipped, weights, perPoint, weapon)
+		if verdict ~= nil and verdict.state == "blocked" then
+			blocked = verdict
+		else
+			usable[#usable + 1] = slot
+		end
+	end
+	local heldByTwoHander = #wearable > 0 and #usable == 0
+	local slot = wornSlot or chooseSlot(#usable > 0 and usable or slots, equipped, weights, weapon)
+
+	local primary, verdict
+	if #wearable == 0 then
+		primary = refusal ~= nil and { text = refusal, color = "warning" } or nil
+	elseif heldByTwoHander then
+		primary = ItemTooltip.verdictLine(blocked, unit, nil)
+	elseif wornSlot == nil and weights ~= nil then
+		verdict = Progress.itemVerdict(slot, hovered, equipped, weights, perPoint, weapon)
+		local worn = equipped[slot]
+		if slot == "main_hand" then
+			-- A two-hander scored net of both hands is named over the main hand.
+			worn = equipped.main_hand or equipped.off_hand
+		end
+		local wornName = worn ~= nil and wornNameOf(worn, nameOf) or nil
+		if worn ~= nil and wornName == nil then
+			pending[worn.itemId] = true
+		end
+		primary = ItemTooltip.verdictLine(verdict, unit, wornName)
+		if primary ~= nil then
+			-- The hook fits the compared name to the tooltip's width (fitVerdict).
+			primary.kind, primary.verdict, primary.unit, primary.wornName = "verdict", verdict, unit, wornName
+			-- Under a figure, what it is made of (a plain "Sidegrade" has no figure).
+			if primary.text ~= L.tooltipSide then
+				primary.breakdown = breakdownLine(verdict)
+			end
+		end
+	end
+	return {
+		gear = true, slots = slots, wornSlot = wornSlot, wearable = wearable, usable = usable,
+		refusal = refusal, blocked = blocked, heldByTwoHander = heldByTwoHander, slot = slot,
+		verdict = verdict, primary = primary, unit = unit,
+	}
+end
+
 --- The section for one hovered item: the lines ({ text, color, kind? }) in
 --- draw order, the compare tooltip's item ({ itemId, link, label } for the
 --- next upgrade, only once the client holds it), the ids whose names the
@@ -1011,68 +1111,12 @@ function ItemTooltip.section(ctx)
 		end
 		return stats
 	end
-	local hovered = { itemId = item.itemId, link = item.link, equipLocation = item.equipLocation, stats = item.stats }
-
-	local wornSlot
-	for _, slot in ipairs(slots) do
-		local worn = equipped[slot]
-		if worn ~= nil and item.link ~= nil and worn.link == item.link then
-			wornSlot = slot
-			break
-		end
-	end
+	local judged = ItemTooltip.judge(ctx, pending)
+	local wornSlot, usable, slot = judged.wornSlot, judged.usable, judged.slot
+	local heldByTwoHander = judged.heldByTwoHander
 	local head = { specWord = specName(data, ctx.spec), tag = current ~= nil and current.tag or nil,
 		equipped = wornSlot ~= nil }
-
-	-- Rules first, then the two-hander: the slots the item may go in now.
-	local wearable, refusal = {}, nil
-	for _, slot in ipairs(slots) do
-		local answer, unlock, reason = Rules.canEquip(ctx.classToken, ctx.level, item.itemClass,
-			item.itemSubClass, item.equipLocation, slot)
-		if answer == "ok" then
-			wearable[#wearable + 1] = slot
-		elseif refusal == nil then
-			refusal = ItemTooltip.untilLine(ctx.classToken, answer, unlock, reason)
-		end
-	end
-	local usable, blocked = {}, nil
-	for _, slot in ipairs(wearable) do
-		local verdict = Progress.itemVerdict(slot, hovered, equipped, weights, perPoint, weapon)
-		if verdict ~= nil and verdict.state == "blocked" then
-			blocked = verdict
-		else
-			usable[#usable + 1] = slot
-		end
-	end
-	local heldByTwoHander = #wearable > 0 and #usable == 0
-	local slot = wornSlot or chooseSlot(#usable > 0 and usable or slots, equipped, weights, weapon)
-
-	local primary
-	if #wearable == 0 then
-		primary = refusal ~= nil and { text = refusal, color = "warning" } or nil
-	elseif heldByTwoHander then
-		primary = ItemTooltip.verdictLine(blocked, unit, nil)
-	elseif wornSlot == nil and weights ~= nil then
-		local verdict = Progress.itemVerdict(slot, hovered, equipped, weights, perPoint, weapon)
-		local worn = equipped[slot]
-		if slot == "main_hand" then
-			-- A two-hander scored net of both hands is named over the main hand.
-			worn = equipped.main_hand or equipped.off_hand
-		end
-		local wornName = worn ~= nil and wornNameOf(worn, nameOf) or nil
-		if worn ~= nil and wornName == nil then
-			pending[worn.itemId] = true
-		end
-		primary = ItemTooltip.verdictLine(verdict, unit, wornName)
-		if primary ~= nil then
-			-- The hook fits the compared name to the tooltip's width (fitVerdict).
-			primary.kind, primary.verdict, primary.unit, primary.wornName = "verdict", verdict, unit, wornName
-			-- Under a figure, what it is made of (a plain "Sidegrade" has no figure).
-			if primary.text ~= L.tooltipSide then
-				primary.breakdown = breakdownLine(verdict)
-			end
-		end
-	end
+	local primary = judged.primary
 	-- A hand the worn two-hander holds says only that: no plan, no next pick.
 	local after = {}
 	if not heldByTwoHander then
@@ -1404,6 +1448,10 @@ local function withItem(base, itemLink)
 	}
 	return ctx
 end
+
+--- `base` with one item read from the client: the quest reward and roll marks judge
+--- each item through it, as the hover does (L4.2).
+ItemTooltip.withItem = withItem
 
 --- Everything ItemTooltip.section reads, from the client. A field so a spec
 --- can hand the hook a context of its own (no client mock).

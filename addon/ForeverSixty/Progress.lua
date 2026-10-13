@@ -650,7 +650,7 @@ function Progress.slotPicks(data, spec, band, faction, equipped, keep)
 end
 
 --- The band's BiS picks (Gear.pick) that drop in the instance the player is
---- standing in, each { slot, itemId, source }, in Progress.slots' order
+--- standing in, each { slot, itemId, source, chance }, in Progress.slots' order
 --- (weapons first for a melee spec), under Progress.slotPicks' pair rule. The
 --- chip's "here for you" line and the panel's targets region read this.
 --- Empty with no band, faction or instance, or nothing that drops here.
@@ -664,7 +664,7 @@ function Progress.picksHere(data, spec, band, faction, instanceName, equipped)
 	end)
 	for _, slot in ipairs(order) do
 		local pick = picks[slot]
-		here[#here + 1] = { slot = slot, itemId = pick.item_id, source = pick.source }
+		here[#here + 1] = { slot = slot, itemId = pick.item_id, source = pick.source, chance = pick.chance }
 	end
 	return here
 end
