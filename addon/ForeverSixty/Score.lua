@@ -129,6 +129,24 @@ function Score.status()
 	return { available = true, generated = data.generated, stale = stale }
 end
 
+--- The record's state in one word, for the lines that say it (Settings' foot, the guild
+--- tab's notice; L5.1 fix round 1, item 1): "Missing" (not installed), "Current", "Newer"
+--- (made for a newer addon) or "Old" (stale, unreadable or an older format). `status` is
+--- Score.status()'s; Score.status() is asked when it is nil. Pure over a given status.
+function Score.ratingsState(status)
+	if status == nil then
+		status = Score.status()
+	end
+	if type(status) ~= "table" or status.absent then
+		return "Missing"
+	elseif status.available and not status.stale then
+		return "Current"
+	elseif not status.available and status.reason == L.ratingsUpdateAddon then
+		return "Newer"
+	end
+	return "Old"
+end
+
 local function usable()
 	local status = Score.status()
 	return status.available and _G.ForeverSixtyData or nil

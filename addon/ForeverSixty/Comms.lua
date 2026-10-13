@@ -325,16 +325,7 @@ function Comms.helloFields()
 	local classSlug = Talents.playerClassSlug()
 	local ranks = data ~= nil and Talents.readRanks(data) or {}
 	local spec = data ~= nil and classSlug ~= nil and Gear.specOf(data, classSlug, ranks) or nil
-	local gap = 0
-	if build ~= nil and data ~= nil then
-		-- The band's DPS per point at the character's level (Gear.dpsFigure), as the tooltip reads it.
-		local perPoint = Gear.dpsFigure(data, spec, Compat.playerLevel())
-		local slots = Progress.slots(data, build, ranks, Gear.readEquipped(), perPoint and perPoint.dps or nil)
-		local worst = Progress.biggestGap(slots)
-		if worst ~= nil then
-			gap = math.floor(-worst.delta + 0.5)
-		end
-	end
+	local gap = Comms.gearGap(data, build, spec, ranks) or 0
 	local record = Score.forCharacter(Compat.playerName() or "")
 	local asOf = record ~= nil and type(record.as_of) == "string" and record.as_of or "-"
 	local fields = { Compat.playerLevel() or 0, spec or "-", gap, build ~= nil and build.name or "", asOf }
@@ -343,6 +334,35 @@ function Comms.helloFields()
 		fields[4] = shorten(fields[4])
 	end
 	return fields
+end
+
+--- The player's gear gap as a hello sends it, and its unit: Progress.biggestGap's delta as a
+--- whole number (0 with nothing behind) in DPS ("dps") where the data has a DPS per point
+--- for `spec` at the character's level (Gear.dpsFigure, as the tooltip reads it), else in
+--- score points ("pts"). nil without a build or data. The guild tab's own row reads it too
+--- (L5.1 fix round 1, item 2).
+function Comms.gearGap(data, build, spec, ranks)
+	if build == nil or data == nil then
+		return nil
+	end
+	local perPoint = Gear.dpsFigure(data, spec, Compat.playerLevel())
+	local dps = perPoint ~= nil and perPoint.dps or nil
+	local slots = Progress.slots(data, build, ranks or {}, Gear.readEquipped(), dps)
+	local worst = Progress.biggestGap(slots)
+	return worst ~= nil and math.floor(-worst.delta + 0.5) or 0, dps ~= nil and "dps" or "pts"
+end
+
+--- The unit a guildmate's gear gap is in, read from their spec and level the way their own
+--- addon chose it (Comms.gearGap): "dps" where the data has a DPS per point, else "pts".
+function Comms.gapUnit(data, spec, level)
+	local perPoint = data ~= nil and spec ~= nil and spec ~= "-" and Gear.dpsFigure(data, spec, level) or nil
+	return perPoint ~= nil and perPoint.dps ~= nil and "dps" or "pts"
+end
+
+--- Whether a guild rank index may push a build (0 is the guild master): the one rule the
+--- sender's officer region and the receiver's check share (L5.1 review).
+function Comms.canPush(rankIndex)
+	return type(rankIndex) == "number" and rankIndex <= Comms.PUSH_RANK
 end
 
 --- Whether "Share my build with my guild" is on: off, no hello goes and no snapshot
@@ -394,8 +414,7 @@ end
 --- index 1 or lower) or the group's leader, as this client sees them.
 function Comms.mayPush(sender)
 	local unit = unitOf(sender)
-	local rank = Theme.guildRankOf(sender, unit)
-	if rank ~= nil and rank <= Comms.PUSH_RANK then
+	if Comms.canPush(Theme.guildRankOf(sender, unit)) then
 		return true
 	end
 	return Theme.isGroupLeader(unit)

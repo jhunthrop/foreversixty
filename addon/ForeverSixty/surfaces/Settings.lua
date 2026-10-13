@@ -163,15 +163,12 @@ end
 --- nightly ratings data (the Forever Sixty Data addon) in the state Score.status finds it:
 --- not installed (muted, it is optional), current, too old (stale, unreadable or an older
 --- format), or made for a newer addon than this one. { text, label, value, tone }. Pure.
+--- The state is Score.ratingsState's, which the guild tab's notice shares (L5.1 fix round 1).
+local RATINGS_TONE = { Missing = "muted", Current = "muted", Newer = "warning", Old = "warning" }
+
 function SettingsPage.ratingsLine(status)
-	if type(status) ~= "table" or status.absent then
-		return dataLine(L.settingsRatingsMissing, "muted")
-	elseif status.available and not status.stale then
-		return dataLine(L.settingsRatingsCurrent, "muted")
-	elseif not status.available and status.reason == L.ratingsUpdateAddon then
-		return dataLine(L.settingsRatingsNewer, "warning")
-	end
-	return dataLine(L.settingsRatingsOld, "warning")
+	local state = Score.ratingsState(type(status) == "table" and status or false)
+	return dataLine(L["settingsRatings" .. state], RATINGS_TONE[state])
 end
 
 --- The line under the title (fix round 3, item 2): the first foot line in the warning

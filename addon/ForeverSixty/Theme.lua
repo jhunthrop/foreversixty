@@ -47,6 +47,15 @@ Theme.HEX = {
 	clientGold = "ffd100",
 	body = "e9e4d8",
 	warning = "ff6b5c",
+	--- A scroll track one step lighter than `border`, so the guild tab's track reads on the
+	--- panel (L5.1 fix round 1, item 7).
+	scrollTrack = "323b52",
+	--- The score tiers' colours lifted for the dark panel (L5.1 fix round 1, item 4): the
+	--- client's rare blue (0070dd), epic purple (a335ee) and legendary orange (ff8000) read
+	--- under 4.5:1 on it, or under 3:1 on an offline row. Theme.PANEL_TIER maps a tier to these.
+	rareBright = "6eaeec",
+	epicBright = "cd92f5",
+	legendaryBright = "ff8f1f",
 }
 
 Theme.ALPHA = {
@@ -301,6 +310,15 @@ Theme.SIZES = {
 	guildToolbar = 20,
 	guildPushWidth = 200,
 	guildConfirmWidth = 300,
+	--- L5.1 fix round 1: the room every column header keeps after its label for the sort
+	--- arrow (items 3 and 5; a right-aligned column's cells end where its label does), the
+	--- gap the flyout keeps from the guild frame's side tabs (item 7), the guild list's scroll
+	--- thumb and track width (item 7), and the room the "Online only" switch takes at the left
+	--- of the count line.
+	guildSortReserve = 10,
+	guildSideClear = 4,
+	guildScrollbar = 8,
+	guildToggleRoom = 88,
 }
 
 --- The client's own font objects, and what to use when one is missing.
@@ -580,6 +598,10 @@ Theme.CONTROL_STATES = {
 	--- A secondary button's label and 1 px border: at rest, and while it has acted and waits.
 	face = { label = "gold", edge = "border", waitingLabel = "muted", waitingEdge = "muted" },
 	tab = { label = "muted", hoverLabel = "body", hoverUnderline = "border", pressed = "inset" },
+	--- A sortable column header (the guild tab, L5.1 fix round 1, item 5): muted, brightened to
+	--- the text white under the cursor and on an inset ground while held; the sorted column
+	--- gold whatever the cursor does.
+	header = { label = "muted", hoverLabel = "body", active = "gold", pressed = "inset" },
 	close = { label = "muted", hoverLabel = "body", hoverGround = "hover", pressed = "inset" },
 	--- A Settings switch (L3.5, fix round 1): on, a gold square (goldHover under the cursor,
 	--- goldPressed held) with the check in onGold; off, a 1 px outline in the muted-text grey,
@@ -655,6 +677,106 @@ end
 
 --- The primary button's pressed ground: its gold one step dimmer.
 Theme.HEX.goldPressed = Theme.dimHex("gold", 0.85)
+
+-- Contrast on the dark panel (L5.1 fix round 1, item 4) ---------------------------------------
+
+--- The least contrast text keeps on the panel's fill (Theme.HEX.background): `text` at full
+--- alpha, `dimmed` on a row drawn at Theme.ALPHA.dim (an offline guildmate).
+Theme.CONTRAST = { text = 4.5, dimmed = 3 }
+
+--- A colour's relative luminance (WCAG 2), from six hex digits.
+function Theme.luminance(hex)
+	local r, g, b = Theme.rgb(hex)
+	local function channel(value)
+		if value <= 0.03928 then
+			return value / 12.92
+		end
+		return ((value + 0.055) / 1.055) ^ 2.4
+	end
+	return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+end
+
+--- The contrast ratio between two colours (1 to 21), each six hex digits.
+function Theme.contrast(hexA, hexB)
+	local a, b = Theme.luminance(hexA), Theme.luminance(hexB)
+	return (math.max(a, b) + 0.05) / (math.min(a, b) + 0.05)
+end
+
+--- `hex` drawn at `alpha` over `ground` (six hex digits; the panel's fill when nil).
+function Theme.overGround(hex, alpha, ground)
+	local r, g, b = Theme.rgb(hex)
+	local gr, gg, gb = Theme.rgb(ground or Theme.HEX.background)
+	return Theme.hexOf(r * alpha + gr * (1 - alpha), g * alpha + gg * (1 - alpha), b * alpha + gb * (1 - alpha))
+end
+
+--- Whether text in `hex` reads on the panel: Theme.CONTRAST.text at full alpha and
+--- Theme.CONTRAST.dimmed at Theme.ALPHA.dim.
+function Theme.readsOnPanel(hex)
+	local ground = Theme.HEX.background
+	return Theme.contrast(hex, ground) >= Theme.CONTRAST.text
+		and Theme.contrast(Theme.overGround(hex, Theme.ALPHA.dim), ground) >= Theme.CONTRAST.dimmed
+end
+
+--- `hex` mixed toward white, a twentieth at a time, until it reads on the panel
+--- (Theme.readsOnPanel); a colour that already reads comes back as it is. Each answer is kept:
+--- a roster of 97 asks the same few colours on every draw.
+local liftCache = {}
+
+function Theme.liftForPanel(hex)
+	if liftCache[hex] == nil then
+		liftCache[hex] = Theme.liftedHex(hex)
+	end
+	return liftCache[hex]
+end
+
+--- Theme.liftForPanel's answer, worked out.
+function Theme.liftedHex(hex)
+	local r, g, b = Theme.rgb(hex)
+	local lifted = hex
+	for step = 1, 20 do
+		if Theme.readsOnPanel(lifted) then
+			return lifted
+		end
+		local t = step / 20
+		lifted = Theme.hexOf(r + (1 - r) * t, g + (1 - g) * t, b + (1 - b) * t)
+	end
+	return lifted
+end
+
+--- The class colours the dark panel lifts (the guild tab's names): the client's shaman blue,
+--- warlock violet, druid orange, mage cyan and warrior tan, each mixed toward white just far
+--- enough to keep Theme.CONTRAST on the panel, an offline row's too. Any other class takes
+--- the client's colour through Theme.liftForPanel.
+Theme.PANEL_CLASS = {
+	SHAMAN = "6eaeec",
+	WARLOCK = "a2a2f1",
+	DRUID = "ff8e2a",
+	MAGE = "5ccfee",
+	WARRIOR = "cba378",
+}
+
+--- A class's name colour on the dark panel: Theme.PANEL_CLASS's, else the client's lifted.
+function Theme.panelClassHex(token)
+	local mapped = token ~= nil and Theme.PANEL_CLASS[token] or nil
+	if mapped ~= nil then
+		return mapped
+	end
+	return Theme.liftForPanel(Theme.classHex(token))
+end
+
+--- The score tiers whose client colour does not read on the dark panel, and the Theme.HEX
+--- key each is drawn in there instead (common white and uncommon green read as they are).
+Theme.PANEL_TIER = { rare = "rareBright", epic = "epicBright", legendary = "legendaryBright" }
+
+--- A tier's colour on the dark panel: its Theme.PANEL_TIER token, else `hex` (the client's
+--- quality colour) lifted; nil without either.
+function Theme.panelTierHex(tier, hex)
+	local key = type(tier) == "string" and Theme.PANEL_TIER[tier] or nil
+	if key ~= nil then
+		return Theme.HEX[key]
+	end
+	return hex ~= nil and Theme.liftForPanel(hex) or nil
+end
 
 --- Ask the client once whether it has a template for a given frame kind, by
 --- trying to use it. There is no API that answers this; building one

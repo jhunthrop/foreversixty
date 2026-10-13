@@ -506,16 +506,19 @@ end
 --- and shown only while there is more than fits, so a list or page that
 --- fits looks as it always did. `Update(shown, position)` takes the
 --- fraction that fits (1 means everything) and how far down the view
---- is (0 to 1).
-function Widgets.scrollbar(parent, region, inset)
+--- is (0 to 1). `width` (default Theme.SIZES.scrollbar) and `trackKey` (a Theme.HEX key,
+--- default "border") are for a list that needs a wider thumb on a lighter track (the guild
+--- tab, L5.1 fix round 1, item 7).
+function Widgets.scrollbar(parent, region, inset, width, trackKey)
 	local S = Theme.SIZES
 	inset = inset or -S.gap * 2
-	local track = Theme.texture(parent, "ARTWORK", "border")
-	track:SetWidth(S.scrollbar)
+	width = width or S.scrollbar
+	local track = Theme.texture(parent, "ARTWORK", trackKey or "border")
+	track:SetWidth(width)
 	track:SetPoint("TOPLEFT", region, "TOPRIGHT", inset, 0)
 	track:SetPoint("BOTTOMLEFT", region, "BOTTOMRIGHT", inset, 0)
 	local thumb = Theme.texture(parent, "OVERLAY", "muted")
-	thumb:SetWidth(S.scrollbar)
+	thumb:SetWidth(width)
 	thumb:SetPoint("TOP", track, "TOP", 0, 0)
 	local bar = { track = track, thumb = thumb, region = region }
 	function bar:Update(shown, position)

@@ -154,7 +154,9 @@ describe("GuildTab", function()
 		if options.sharingOff then
 			Prefs.setFlag("broadcast", false)
 		end
-		GuildTab.data = { build = "1.60.1.69893", classes = { hunter = { tabs = {} } } }
+		GuildTab.data = { build = "1.60.1.69893", classes = { hunter = { tabs = {
+			{ name = "Beast Mastery", talents = {} }, { name = "Marksmanship", talents = {} },
+			{ name = "Survival", talents = {} } } } } }
 		local frame
 		if not options.noFrame then
 			frame = _G.CreateFrame("Frame", "CommunitiesFrame", _G.UIParent)
@@ -209,8 +211,8 @@ describe("GuildTab", function()
 			assert.are.equal("Bow Jackzon", bow.short)
 			assert.are.equal("Bow Jackzon-ClassicBetaPvP", bow.name)
 			assert.are.equal("HUNTER", bow.classToken)
-			-- Live: the snapshot's level, spec, gap and build.
-			assert.are.equal(27, bow.level)
+			-- Live: the snapshot's spec, gap and build; the roster's level (review item 2).
+			assert.are.equal(26, bow.level)
 			assert.are.equal("hunter-marksmanship", bow.spec)
 			assert.are.equal(14, bow.gap)
 			assert.are.equal("MM leveling", bow.buildName)
@@ -277,7 +279,7 @@ describe("GuildTab", function()
 				time = 990 }, ["Smoke Gouda-ClassicBetaPvP"] = { level = 41, gearGap = 3, time = 990 } }
 			local rows, counts = GuildTab.rows(ROSTER, _G.ForeverSixtyData.characters, seen, nil, { onlineOnly = true })
 			assert.are.same({ "Bow Jackzon", "Facep Alm" }, names(rows))
-			assert.are.same({ total = 4, shown = 2, live = 1 }, counts)
+			assert.are.same({ total = 4, shown = 2, live = 1, online = 2 }, counts)
 			-- A "-" spec from a snapshot is no spec: the record's is kept.
 			assert.are.equal("hunter-beast-mastery", rows[1].spec)
 		end)
@@ -302,36 +304,47 @@ describe("GuildTab", function()
 			start()
 		end)
 
-		it("draws the name in its class colour, the score in its tier colour, attendance as a percent", function()
+		it("draws the name in its panel class colour, the score in its tier's, attendance as a percent", function()
 			local rows = GuildTab.rows(ROSTER, require("Score").forCharacter,
 				{ ["Bow Jackzon-ClassicBetaPvP"] = { level = 26, spec = "hunter-beast-mastery", gearGap = 14, time = 990 } })
 			local cells = GuildTab.cells(rows[1])
 			assert.are.equal("Bow Jackzon", cells.name.text)
-			assert.are.equal(Theme.classHex("HUNTER"), cells.name.hex)
+			assert.are.equal(Theme.panelClassHex("HUNTER"), cells.name.hex)
 			assert.are.equal("26", cells.level.text)
 			assert.are.equal("Beast Mastery", cells.spec.text)
 			assert.are.equal("380", cells.gear.text)
 			assert.are.equal("1240", cells.score.text)
-			assert.are.equal(Theme.hexOf(0, 0.44, 0.87), cells.score.hex)
+			-- The rare blue on this panel is the lighter token (fix round 1, item 4).
+			assert.are.equal(Theme.HEX.rareBright, cells.score.hex)
 			assert.are.equal("90%", cells.attendance.text)
-			assert.are.equal(string.format(L.guildTabLive, 14), cells.gap.text)
+			-- No DPS per point in the data for the spec: the gap is in points (item 3).
+			assert.are.equal(string.format(L.guildTabGapPts, 14), cells.gap.text)
 		end)
 
-		it("reads no logs muted and a missing value as a muted dash", function()
+		it("reads no logs muted in Score alone and leaves every other missing value blank", function()
 			local rows = GuildTab.rows({ member("Facep Alm-ClassicBetaPvP", 12, "MAGE", true) },
 				require("Score").forCharacter, {})
 			local cells = GuildTab.cells(rows[1])
 			assert.are.equal(L.guildTabNoLogs, cells.score.text)
 			assert.are.equal(Theme.HEX.muted, cells.score.hex)
 			for _, key in ipairs({ "spec", "gear", "attendance", "gap" }) do
-				assert.are.equal(L.guildTabDash, cells[key].text, key)
-				assert.are.equal(Theme.HEX.muted, cells[key].hex, key)
+				assert.are.equal("", cells[key].text, key)
 			end
+			assert.is_nil(L.guildTabDash)
 		end)
 
-		it("dims an offline member's name", function()
-			local rows = GuildTab.rows({ member("Quiet Person-ClassicBetaPvP", 30, "MAGE", false) }, {}, {})
-			assert.is_true(GuildTab.cells(rows[1]).name.dim)
+		it("writes the live gap in the sender's unit: DPS where the data has a DPS per point for the spec", function()
+			local data = { dpsPerPoint = { ["warrior-arms"] = { dps = 0.4 } } }
+			local seen = { ["Facep Alm-ClassicBetaPvP"] = { level = 12, spec = "warrior-arms", gearGap = 14, time = 990 },
+				["Bow Jackzon-ClassicBetaPvP"] = { level = 26, spec = "-", gearGap = 9, time = 990 } }
+			local rows = GuildTab.rows(ROSTER, {}, seen, nil, nil, { data = data })
+			local byName = {}
+			for _, row in ipairs(rows) do
+				byName[row.short] = GuildTab.cells(row)
+			end
+			assert.are.equal("14 DPS", byName["Facep Alm"].gap.text)
+			assert.are.equal("9 pts", byName["Bow Jackzon"].gap.text)
+			assert.are.equal("", byName["Smoke Gouda"].gap.text)
 		end)
 	end)
 
@@ -434,8 +447,10 @@ describe("GuildTab", function()
 			local roster = withRect(_G.CreateFrame("CheckButton", nil, frame), 917, 951)
 			frame.RosterTab = roster
 			local flyout = open()
-			assertPoint({ "TOPLEFT", frame, "TOPRIGHT", 37 + Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
-				flyout.points[#flyout.points])
+			-- Clear of the tabs by guildSideClear (fix round 1, item 7).
+			assert.are.equal(4, Theme.SIZES.guildSideClear)
+			assertPoint({ "TOPLEFT", frame, "TOPRIGHT", 37 + Theme.SIZES.panelOffsetX + Theme.SIZES.guildSideClear,
+				Theme.SIZES.panelOffsetY }, flyout.points[#flyout.points])
 			click(_G[GuildTab.BUTTON_NAME])
 			-- Hidden, or with no rect: not taken.
 			chat:Hide()
@@ -452,7 +467,8 @@ describe("GuildTab", function()
 			local chat = withRect(_G.CreateFrame("CheckButton", nil, frame), 917, nil)
 			frame.ChatTab = chat
 			local flyout = open()
-			assertPoint({ "TOPLEFT", chat, "TOPRIGHT", Theme.SIZES.panelOffsetX, 0 }, flyout.points[#flyout.points])
+			assertPoint({ "TOPLEFT", chat, "TOPRIGHT", Theme.SIZES.panelOffsetX + Theme.SIZES.guildSideClear, 0 },
+				flyout.points[#flyout.points])
 		end)
 
 		-- Ruling 2 and 3: one roster request and one snapshot? per open, at most once a minute.
@@ -589,17 +605,17 @@ describe("GuildTab", function()
 			local draws = GuildTab.draws
 			GuildTab.onRosterUpdate()
 			assert.are.equal(draws + 1, GuildTab.draws)
-			Comms.onEvent("FS1", "1|snapshot!|41|warrior-arms|9|Arms raid|2026-11-04", "GUILD",
-				"Smoke Gouda-ClassicBetaPvP")
+			Comms.onEvent("FS1", "1|snapshot!|12|mage-frost|9|Frost leveling|2026-11-04", "GUILD",
+				"Facep Alm-ClassicBetaPvP")
 			assert.are.equal(draws + 2, GuildTab.draws)
-			-- Smoke's row is live now.
+			-- Facep's row is live now; with the player's own row, two live.
 			for _, row in ipairs(GuildTab.last.rows) do
-				if row.short == "Smoke Gouda" then
+				if row.short == "Facep Alm" then
 					assert.is_true(row.live)
 					assert.are.equal(9, row.gap)
 				end
 			end
-			assert.are.equal(1, GuildTab.last.counts.live)
+			assert.are.equal(2, GuildTab.last.counts.live)
 		end)
 
 		it("does not draw a closed flyout on an event, and redraws a hidden open one when it shows", function()
@@ -707,10 +723,11 @@ describe("GuildTab", function()
 		-- Ruling 6: /fs diag.
 		it("prints its /fs diag line: open or closed, rows, live, officer", function()
 			start({ rank = 1 })
-			assert.are.equal(string.format(L.diagGuildTab, L.diagPanelClosed, 4, 0, L.diagGuildTabYes),
+			-- The player's own row is live from this client (fix round 1, item 2).
+			assert.are.equal(string.format(L.diagGuildTab, L.diagPanelClosed, 4, 1, L.diagGuildTabYes),
 				GuildTab.diagLine())
 			open()
-			assert.are.equal(string.format(L.diagGuildTab, L.diagPanelOpen, 4, 0, L.diagGuildTabYes),
+			assert.are.equal(string.format(L.diagGuildTab, L.diagPanelOpen, 4, 1, L.diagGuildTabYes),
 				GuildTab.diagLine())
 		end)
 
@@ -767,6 +784,529 @@ describe("GuildTab", function()
 				listed = listed or name == "CommunitiesFrame"
 			end
 			assert.is_true(listed)
+		end)
+	end)
+
+	-- L5.1 fix round 1 and the review of ba9c39d7.
+	describe("fix round 1", function()
+		--- A font string's last colour, as six hex digits.
+		local function colorOf(region)
+			local call = mock.lastCall(region, "SetTextColor")
+			return call and Theme.hexOf(call[1], call[2], call[3]) or nil
+		end
+
+		--- A texture's last colour, as six hex digits.
+		local function paintOf(texture)
+			local call = mock.lastCall(texture, "SetColorTexture")
+			return call and Theme.hexOf(call[1], call[2], call[3]) or nil
+		end
+
+		--- The drawn row whose name cell reads `short`.
+		local function drawnRow(short)
+			for _, row in ipairs(GuildTab.rowFrames) do
+				if row.frame:IsShown() and row.cells.name:GetText() == short then
+					return row
+				end
+			end
+			return nil
+		end
+
+		-- Item 1: a data addon that is missing, too old or too new is said once.
+		describe("the ratings notice", function()
+			local STATUSES = {
+				{ what = "not installed", data = false, key = "settingsRatingsMissing" },
+				{ what = "too old (an older format)", data = { format = 1, generated = "2026-11-04", characters = {},
+					guilds = {} }, key = "settingsRatingsOld" },
+				{ what = "unreadable", data = { format = 2 }, key = "settingsRatingsOld" },
+				{ what = "made for a newer addon", data = { format = 3, generated = "2026-11-04", characters = {},
+					guilds = {} }, key = "settingsRatingsNewer" },
+			}
+			for _, case in ipairs(STATUSES) do
+				it("says once, under the count line, that the ratings are " .. case.what .. ", and leaves the cells blank",
+					function()
+						start({ data = case.data })
+						open()
+						local value = L[case.key]:match("^.-:%s(.*)$")
+						local line = GuildTab.noticeLine
+						assert.is_true(line:IsShown())
+						assert.are.equal("Player ratings: " .. value, line:GetText())
+						assert.are.equal(Theme.HEX.muted, colorOf(line))
+						-- No "no logs" in any row: the Score, Gear and Attendance cells are blank.
+						for _, row in ipairs(GuildTab.rowFrames) do
+							if row.frame:IsShown() then
+								for _, key in ipairs({ "score", "gear", "attendance" }) do
+									assert.are.equal("", row.cells[key]:GetText(), key)
+								end
+							end
+						end
+						-- The headers and rows sit under the notice.
+						local header = GuildTab.headers.name.button
+						assert.are.equal(-GuildTab.headerTop(true), header.points[#header.points][5])
+						assert.are.equal(-GuildTab.rowsTop(true), GuildTab.holder.points[#GuildTab.holder.points][5])
+						assert.is_true(GuildTab.headerTop(true) > GuildTab.headerTop(false))
+					end)
+			end
+
+			it("reads the record's age as too old while still drawing its scores", function()
+				local data = nightly()
+				data.generated = "2020-01-01"
+				start({ data = data })
+				open()
+				assert.are.equal("Player ratings: " .. L.settingsRatingsOld:match("^.-:%s(.*)$"),
+					GuildTab.noticeLine:GetText())
+				assert.are.equal("1240", drawnRow("Bow Jackzon").cells.score:GetText())
+				assert.are.equal(L.guildTabNoLogs, drawnRow("Facep Alm").cells.score:GetText())
+			end)
+
+			it("says nothing while the ratings are current, and no logs only for a member the record lacks", function()
+				start()
+				open()
+				assert.is_false(GuildTab.noticeLine:IsShown())
+				assert.is_nil(GuildTab.ratingsNotice(require("Score").status()))
+				assert.are.equal(L.guildTabNoLogs, drawnRow("Facep Alm").cells.score:GetText())
+				assert.are.equal("1240", drawnRow("Bow Jackzon").cells.score:GetText())
+				local header = GuildTab.headers.name.button
+				assert.are.equal(-GuildTab.headerTop(false), header.points[#header.points][5])
+			end)
+
+			it("shares the Settings foot's state for the ratings (Score.ratingsState)", function()
+				local Score = require("Score")
+				assert.are.equal("Missing", Score.ratingsState({ available = false, absent = true }))
+				assert.are.equal("Current", Score.ratingsState({ available = true, stale = false }))
+				assert.are.equal("Old", Score.ratingsState({ available = true, stale = true }))
+				assert.are.equal("Newer", Score.ratingsState({ available = false, reason = L.ratingsUpdateAddon }))
+				assert.are.equal("Old", Score.ratingsState({ available = false, reason = L.ratingsUnreadable }))
+			end)
+		end)
+
+		-- Item 2: the player's own row, live from this client.
+		describe("the player's own row", function()
+			it("is live with the active build's spec, the gap and the build name, the record filling the rest", function()
+				start()
+				Follow.build = { classSlug = "hunter", dataBuild = "1.60.1.69893", name = "MM leveling",
+					order = { { tab = 2, tier = 1, column = 1 }, { tab = 2, tier = 1, column = 2 }, { tab = 1, tier = 1,
+						column = 1 } } }
+				Comms.gearGap = function()
+					return 14, "dps"
+				end
+				open()
+				local own
+				for _, row in ipairs(GuildTab.last.rows) do
+					if row.short == "Bow Jackzon" then
+						own = row
+					end
+				end
+				assert.is_true(own.live)
+				assert.is_true(own.own)
+				assert.are.equal("hunter-marksmanship", own.spec)
+				assert.are.equal("MM leveling", own.buildName)
+				assert.are.equal(14, own.gap)
+				assert.are.equal(1240, own.score)
+				assert.are.equal(90, own.attendance)
+				local drawn = drawnRow("Bow Jackzon")
+				assert.are.equal("Marksmanship", drawn.cells.spec:GetText())
+				assert.are.equal("14 DPS", drawn.cells.gap:GetText())
+				assert.are.equal("1240", drawn.cells.score:GetText())
+				assert.are.equal("90%", drawn.cells.attendance:GetText())
+				-- It counts in the live tally.
+				assert.are.equal(1, GuildTab.last.counts.live)
+				assert.is_truthy(GuildTab.countsLine:GetText():find("1 of 2 online run", 1, true))
+			end)
+
+			it("reads its spec from the build's own spec, the plan's tree, else the talents", function()
+				start()
+				local data = GuildTab.data
+				assert.are.equal("hunter-survival", GuildTab.buildSpec(data, { classSlug = "hunter", spec = "hunter-survival" }))
+				assert.are.equal("hunter-marksmanship", GuildTab.buildSpec(data, { classSlug = "hunter",
+					order = { { tab = 2, tier = 1, column = 1 } } }))
+				assert.is_nil(GuildTab.buildSpec(data, nil))
+				Follow.build = nil
+				local own = GuildTab.ownLive(data)
+				assert.are.equal("Bow Jackzon", own.name)
+				assert.are.equal("hunter-beast-mastery", own.spec)
+				assert.is_nil(own.gearGap)
+				assert.is_nil(own.buildName)
+			end)
+
+			it("matches the player by bare name, and by realm where both carry one", function()
+				start()
+				local own = { name = "Bow Jackzon", realm = "ClassicBetaPvP", gearGap = 3, unit = "pts" }
+				local roster = { member("Bow Jackzon-ClassicBetaPvP", 26, "HUNTER", true),
+					member("Bow Jackzon-OtherRealm", 20, "HUNTER", true), member("Bow Jackzon", 26, "HUNTER", true) }
+				local rows = GuildTab.rows(roster, {}, {}, { key = "level", descending = true }, nil, { own = own })
+				assert.is_true(rows[1].own)
+				assert.is_true(rows[2].own)
+				assert.is_nil(rows[3].own)
+				assert.are.equal("3 pts", GuildTab.cells(rows[1]).gap.text)
+			end)
+		end)
+
+		-- Item 3: the columns.
+		describe("the columns", function()
+			it("keeps the widths, Spec room for Marksmanship, and fits the flyout less half the track", function()
+				start()
+				local widths = {}
+				local total = 0
+				for index, column in ipairs(GuildTab.COLUMNS) do
+					widths[column.key] = column.width
+					total = total + column.width + (index > 1 and Theme.SIZES.guildColumnGap or 0)
+				end
+				assert.are.same({ name = 90, level = 40, spec = 82, gear = 44, score = 52, attendance = 68, gap = 52 },
+					widths)
+				assert.is_true(total + Theme.SIZES.guildColumnGap <= GuildTab.innerWidth() - Theme.SIZES.guildScrollbar / 2)
+				-- "Marksmanship" is 12 characters; at the small font's widest ~6.2 units a character it fits 82.
+				assert.is_true(#"Marksmanship" * 6.2 <= widths.spec)
+			end)
+
+			it("right-aligns Level, Gear, Score, Attendance and Gap under their labels, the arrow's room after", function()
+				start()
+				open()
+				local reserve = Theme.SIZES.guildSortReserve
+				assert.are.equal(10, reserve)
+				local row = GuildTab.rowFrames[1]
+				for index, column in ipairs(GuildTab.COLUMNS) do
+					local header = GuildTab.headers[column.key]
+					local cell = row.cells[column.key]
+					local labelPoint = header.label.points[#header.label.points]
+					if column.right then
+						assert.are.equal("RIGHT", mock.lastCall(cell, "SetJustifyH")[1], column.key)
+						assert.are.equal("RIGHT", mock.lastCall(header.label, "SetJustifyH")[1], column.key)
+						assert.are.same({ "RIGHT", "RIGHT", -reserve }, { labelPoint[1], labelPoint[3], labelPoint[4] })
+						-- The cell ends where the label does: its left edge plus its width.
+						assert.are.equal(GuildTab.columnX(index) + column.width - reserve,
+							cell.points[#cell.points][4] + cell:GetWidth(), column.key)
+					else
+						assert.are.equal("LEFT", mock.lastCall(cell, "SetJustifyH")[1], column.key)
+						assert.are.same({ "LEFT", "LEFT", 0 }, { labelPoint[1], labelPoint[3], labelPoint[4] })
+					end
+				end
+				assert.is_true(GuildTab.COLUMNS[1].right == nil and GuildTab.COLUMNS[3].right == nil)
+			end)
+
+			it("says on hover what Gear and Gap hold", function()
+				start()
+				open()
+				for key, text in pairs({ gear = "Gear score from the nightly record",
+					gap = "Gear gap reported live by the member's addon" }) do
+					local button = GuildTab.headers[key].button
+					button:GetScript("OnEnter")(button)
+					local added = mock.lastCall(_G.GameTooltip, "AddLine")
+					assert.are.equal(Theme.inlineColor("tooltipText", text), added[1])
+					button:GetScript("OnLeave")(button)
+				end
+			end)
+
+			it("shows no logs once in Score and blanks elsewhere for a member with no record", function()
+				start()
+				open()
+				local facep = drawnRow("Facep Alm")
+				assert.are.equal(L.guildTabNoLogs, facep.cells.score:GetText())
+				for _, key in ipairs({ "spec", "gear", "attendance", "gap" }) do
+					assert.are.equal("", facep.cells[key]:GetText(), key)
+				end
+			end)
+		end)
+
+		-- Review item 5: every column sorts both ways, blanks last both ways.
+		describe("sorting each column", function()
+			local SEEN = {
+				["Bow Jackzon-ClassicBetaPvP"] = { spec = "hunter-survival", gearGap = 4, time = 990 },
+				["Facep Alm-ClassicBetaPvP"] = { spec = "mage-arcane", gearGap = 20, time = 990 },
+			}
+
+			local function sorted(key, descending)
+				return names(GuildTab.rows(ROSTER, _G.ForeverSixtyData.characters, SEEN,
+					{ key = key, descending = descending }))
+			end
+
+			before_each(function()
+				start()
+			end)
+
+			it("sorts by spec either way, a member without one last", function()
+				-- Arcane (Facep), Arms (Smoke, the record's), Survival (Bow); Quiet has none.
+				assert.are.same({ "Facep Alm", "Smoke Gouda", "Bow Jackzon", "Quiet Person" }, sorted("spec", false))
+				assert.are.same({ "Bow Jackzon", "Smoke Gouda", "Facep Alm", "Quiet Person" }, sorted("spec", true))
+			end)
+
+			it("sorts by score low to high as well as high to low, no score last", function()
+				assert.are.same({ "Bow Jackzon", "Smoke Gouda", "Facep Alm", "Quiet Person" }, sorted("score", false))
+				assert.are.same({ "Smoke Gouda", "Bow Jackzon", "Facep Alm", "Quiet Person" }, sorted("score", true))
+			end)
+
+			it("sorts by attendance either way, no attendance last", function()
+				assert.are.same({ "Smoke Gouda", "Bow Jackzon", "Facep Alm", "Quiet Person" }, sorted("attendance", false))
+				assert.are.same({ "Bow Jackzon", "Smoke Gouda", "Facep Alm", "Quiet Person" }, sorted("attendance", true))
+			end)
+
+			it("sorts by gap either way, no live gap last", function()
+				assert.are.same({ "Bow Jackzon", "Facep Alm", "Quiet Person", "Smoke Gouda" }, sorted("gap", false))
+				assert.are.same({ "Facep Alm", "Bow Jackzon", "Quiet Person", "Smoke Gouda" }, sorted("gap", true))
+			end)
+		end)
+
+		-- Review items 1 and 2: a live row is online and fresh; the roster's level wins.
+		describe("live rows", function()
+			before_each(function()
+				start()
+			end)
+
+			it("takes no snapshot for a member offline", function()
+				local seen = { ["Smoke Gouda-ClassicBetaPvP"] = { level = 41, spec = "warrior-fury", gearGap = 3, time = 990 } }
+				local rows = GuildTab.rows(ROSTER, {}, seen)
+				for _, row in ipairs(rows) do
+					if row.short == "Smoke Gouda" then
+						assert.is_false(row.live)
+						assert.is_nil(row.gap)
+						assert.is_nil(row.spec)
+					end
+				end
+			end)
+
+			it("takes no snapshot older than Comms.SEEN_FOR", function()
+				local seen = { ["Facep Alm-ClassicBetaPvP"] = { level = 12, gearGap = 3, time = 1000 } }
+				local function facep(now)
+					for _, row in ipairs(GuildTab.rows(ROSTER, {}, seen, nil, nil, { now = now })) do
+						if row.short == "Facep Alm" then
+							return row
+						end
+					end
+				end
+				assert.is_true(facep(1000 + Comms.SEEN_FOR).live)
+				assert.is_false(facep(1000 + Comms.SEEN_FOR + 1).live)
+			end)
+
+			it("keeps the roster's level for a member online, the snapshot's only where the roster has none", function()
+				local seen = { ["Facep Alm-ClassicBetaPvP"] = { level = 9, gearGap = 3, time = 990 } }
+				local roster = { member("Facep Alm-ClassicBetaPvP", 12, "MAGE", true),
+					member("Quiet Person-ClassicBetaPvP", nil, "MAGE", true) }
+				seen["Quiet Person-ClassicBetaPvP"] = { level = 30, gearGap = 1, time = 990 }
+				local rows = GuildTab.rows(roster, {}, seen, { key = "name", descending = false })
+				assert.are.equal(12, rows[1].level)
+				assert.are.equal(30, rows[2].level)
+			end)
+
+			it("seeds a guildmate's live fields for a capture, and the open flyout redraws", function()
+				open()
+				local draws = GuildTab.draws
+				assert.is_true(_G[GuildTab.BUTTON_NAME].seedLive("Facep Alm", { level = 12, spec = "mage-frost",
+					gearGap = 7, buildName = "Frost" }))
+				assert.are.equal(draws + 1, GuildTab.draws)
+				local facep = drawnRow("Facep Alm")
+				assert.are.equal("Frost", facep.cells.spec:GetText())
+				assert.are.equal("7 pts", facep.cells.gap:GetText())
+				assert.is_false(GuildTab.seedLive("", {}))
+			end)
+		end)
+
+		-- Item 4: offline rows dimmed once; colours that read on the panel.
+		describe("the colours", function()
+			--- The client's class colours (classic and the 1.60 client's blue shaman both).
+			local CLIENT_CLASSES = {
+				WARRIOR = { r = 0.78, g = 0.61, b = 0.43 }, PALADIN = { r = 0.96, g = 0.55, b = 0.73 },
+				HUNTER = { r = 0.67, g = 0.83, b = 0.45 }, ROGUE = { r = 1, g = 0.96, b = 0.41 },
+				PRIEST = { r = 1, g = 1, b = 1 }, SHAMAN = { r = 0, g = 0.44, b = 0.87 },
+				MAGE = { r = 0.25, g = 0.78, b = 0.92 }, WARLOCK = { r = 0.53, g = 0.53, b = 0.93 },
+				DRUID = { r = 1, g = 0.49, b = 0.04 }, DEATHKNIGHT = { r = 0.77, g = 0.12, b = 0.23 },
+			}
+
+			before_each(function()
+				start()
+				_G.RAID_CLASS_COLORS = CLIENT_CLASSES
+			end)
+
+			it("dims an offline row once, as a whole, and never a cell", function()
+				open()
+				local quiet, bow = drawnRow("Quiet Person"), drawnRow("Bow Jackzon")
+				assert.are.equal(Theme.ALPHA.dim, mock.lastCall(quiet.frame, "SetAlpha")[1])
+				assert.are.equal(1, mock.lastCall(bow.frame, "SetAlpha")[1])
+				for _, cell in pairs(quiet.cells) do
+					assert.are.equal(0, mock.countCalls(cell, "SetAlpha"))
+				end
+				assert.is_nil(GuildTab.cells(GuildTab.last.rows[4]).name.dim)
+			end)
+
+			it("lifts the dark class colours through a Theme map: 4.5:1 online, 3:1 offline on the panel", function()
+				for _, token in ipairs({ "SHAMAN", "WARLOCK", "DRUID", "MAGE" }) do
+					assert.is_string(Theme.PANEL_CLASS[token], token)
+				end
+				local ground = Theme.HEX.background
+				for token in pairs(CLIENT_CLASSES) do
+					local hex = Theme.panelClassHex(token)
+					assert.is_true(Theme.contrast(hex, ground) >= 4.5, token .. " online")
+					assert.is_true(Theme.contrast(Theme.overGround(hex, Theme.ALPHA.dim), ground) >= 3, token .. " offline")
+				end
+				-- The client's own shaman blue would not read: under 3:1 offline.
+				local shaman = Theme.classHex("SHAMAN")
+				assert.is_true(Theme.contrast(Theme.overGround(shaman, Theme.ALPHA.dim), ground) < 3)
+			end)
+
+			it("draws every score tier in a colour that reads on the panel, rare in the lighter token", function()
+				local ground = Theme.HEX.background
+				for _, tier in ipairs({ "common", "uncommon", "rare", "epic", "legendary" }) do
+					local cells = GuildTab.cells({ short = "A", name = "A", online = true, score = 1000, tier = tier })
+					assert.is_true(Theme.contrast(cells.score.hex, ground) >= 4.5, tier)
+					assert.is_true(Theme.contrast(Theme.overGround(cells.score.hex, Theme.ALPHA.dim), ground) >= 3, tier)
+				end
+				assert.are.equal(Theme.HEX.rareBright,
+					GuildTab.cells({ short = "A", name = "A", online = true, score = 1, tier = "rare" }).score.hex)
+				assert.is_true(Theme.contrast(Theme.hexOf(0, 0.44, 0.87), ground) < 4.5)
+			end)
+
+			it("measures contrast as WCAG 2 does", function()
+				assert.are.equal(21, math.floor(Theme.contrast("ffffff", "000000") + 0.5))
+				assert.are.equal(1, Theme.contrast("0d111a", "0d111a"))
+				assert.are.equal("ffffff", Theme.liftForPanel("ffffff"))
+			end)
+		end)
+
+		-- Item 5: the sort arrow and the header states.
+		describe("the headers", function()
+			before_each(function()
+				start()
+			end)
+
+			it("draws the client's sort arrow 8 x 8 after the label, flipped for low to high", function()
+				open()
+				local header = GuildTab.headers.score
+				assert.are.equal("Interface\\Buttons\\UI-SortArrow", mock.lastCall(header.arrow, "SetTexture")[1])
+				assert.are.same({ 8, 8 }, { header.arrow:GetWidth(), header.arrow:GetHeight() })
+				local point = header.arrow.points[#header.arrow.points]
+				assert.are.same({ "LEFT", "RIGHT" }, { point[1], point[3] })
+				assert.is_true(rawequal(header.label, point[2]))
+				-- The arrow fits the room after the label, with the column gap still before the next.
+				assert.is_true(point[4] + Theme.SIZES.guildSortArrow <= Theme.SIZES.guildSortReserve)
+				assert.is_true(Theme.SIZES.guildColumnGap >= 4)
+				local down = mock.lastCall(header.arrow, "SetTexCoord")
+				assert.are.same(Theme.SORT_COORDS.descending, { down[1], down[2], down[3], down[4] })
+				click(header.button)
+				local up = mock.lastCall(header.arrow, "SetTexCoord")
+				assert.are.same(Theme.SORT_COORDS.ascending, { up[1], up[2], up[3], up[4] })
+			end)
+
+			it("brightens an unsorted header under the cursor, insets it while held, keeps the sorted one gold", function()
+				open()
+				local level, score = GuildTab.headers.level, GuildTab.headers.score
+				assert.are.equal(Theme.HEX.muted, colorOf(level.label))
+				level.button:GetScript("OnEnter")(level.button)
+				assert.are.equal(Theme.HEX.body, colorOf(level.label))
+				level.button:GetScript("OnMouseDown")(level.button)
+				assert.is_true(level.ground:IsShown())
+				assert.are.equal(Theme.HEX.inset, paintOf(level.ground))
+				level.button:GetScript("OnMouseUp")(level.button)
+				assert.is_false(level.ground:IsShown())
+				level.button:GetScript("OnLeave")(level.button)
+				assert.are.equal(Theme.HEX.muted, colorOf(level.label))
+				assert.are.equal(Theme.HEX.gold, colorOf(score.label))
+				score.button:GetScript("OnEnter")(score.button)
+				assert.are.equal(Theme.HEX.gold, colorOf(score.label))
+			end)
+		end)
+
+		-- Item 6: the count line.
+		describe("the count line", function()
+			it("reads shown of total, then online guildmates running Forever Sixty", function()
+				start()
+				open()
+				assert.are.equal(string.format(L.guildTabCounts, 4, 4, 1, 2), GuildTab.countsLine:GetText())
+				assert.are.equal("4 of 4 shown · 1 of 2 online run Forever Sixty", GuildTab.countsLine:GetText())
+			end)
+
+			it("adds sharing off while the share switch is off, and the range while the list scrolls", function()
+				local many = {}
+				for index = 1, 30 do
+					many[index] = member(string.format("M%02d-ClassicBetaPvP", index), 60 - index, "MAGE", true)
+				end
+				start({ roster = many, sharingOff = true, data = false })
+				open()
+				assert.are.equal("30 of 30 shown · 0 of 30 online run Forever Sixty · sharing off · 1–20 of 30",
+					GuildTab.countsLine:GetText())
+				local wheel = GuildTab.holder:GetScript("OnMouseWheel")
+				wheel(GuildTab.holder, -1)
+				assert.are.equal("30 of 30 shown · 0 of 30 online run Forever Sixty · sharing off · 4–23 of 30",
+					GuildTab.countsLine:GetText())
+				assert.are.equal("3 of 97 shown · 0 of 3 online run Forever Sixty",
+					GuildTab.countsText({ shown = 3, total = 97, live = 0, online = 3 }, true, 1, 3, 3))
+			end)
+		end)
+
+		-- Item 7: the geometry the mock can see.
+		describe("the geometry", function()
+			it("draws an 8-unit scroll thumb on a track one step lighter than the border", function()
+				start()
+				open()
+				assert.are.equal(8, GuildTab.bar.thumb:GetWidth())
+				assert.are.equal(8, GuildTab.bar.track:GetWidth())
+				assert.are.equal(Theme.HEX.scrollTrack, paintOf(GuildTab.bar.track))
+				assert.is_true(Theme.luminance(Theme.HEX.scrollTrack) > Theme.luminance(Theme.HEX.border))
+			end)
+
+			it("rules 1 px under the last online row when offline rows follow, adding no height", function()
+				start()
+				local flyout = open()
+				local rule = GuildTab.onlineRule
+				assert.is_true(rule:IsShown())
+				assert.are.equal(Theme.SIZES.border, rule:GetHeight())
+				local height = GuildTab.rowHeight()
+				-- Bow and Facep online, then Smoke and Quiet: the rule in Facep's (row 2's) bottom pixel.
+				assert.are.equal(-(2 * height - Theme.SIZES.border), rule.points[#rule.points][5])
+				assert.are.equal(GuildTab.flyoutHeight(4, nil, false), flyout:GetHeight())
+				-- Sorted by a column, online and offline mix: no rule.
+				click(GuildTab.headers.level.button)
+				assert.is_false(rule:IsShown())
+			end)
+		end)
+
+		-- Review items 3 and 4: the push confirm.
+		describe("the push", function()
+			it("hides the confirm when the flyout closes by its x or by the button", function()
+				start({ rank = 0 })
+				Follow.build = { classSlug = "hunter", dataBuild = "1.60.1.69893", name = "BM raid", order = {} }
+				local flyout = open()
+				local confirm = _G[GuildTab.CONFIRM_NAME]
+				click(GuildTab.officerFrame.push)
+				assert.is_true(confirm:IsShown())
+				click(_G[GuildTab.BUTTON_NAME])
+				assert.is_false(confirm:IsShown())
+				click(_G[GuildTab.BUTTON_NAME])
+				click(GuildTab.officerFrame.push)
+				assert.is_true(confirm:IsShown())
+				local close
+				for _, child in ipairs(flyout.children) do
+					if child.foreverSixtyLabel ~= nil and child.foreverSixtyLabel:GetText() == "x" then
+						close = child
+					end
+				end
+				click(close)
+				assert.is_false(flyout:IsShown())
+				assert.is_false(confirm:IsShown())
+			end)
+
+			it("says why when no code can be made instead of doing nothing", function()
+				start({ rank = 0 })
+				Follow.build = { classSlug = "hunter", name = "BM raid", order = {} }
+				GuildTab.data = { classes = GuildTab.data.classes }
+				open()
+				click(GuildTab.officerFrame.push)
+				assert.is_false(_G[GuildTab.CONFIRM_NAME]:IsShown())
+				local pushed = GuildTab.officerFrame.pushed
+				assert.is_true(pushed:IsShown())
+				assert.are.equal(string.format(L.guildTabPushFailed, L.guildTabPushNoCode), pushed:GetText())
+				assert.are.equal(Theme.HEX.warning, colorOf(pushed))
+			end)
+
+			it("gates the officer region and a received push on one rule, Comms.canPush", function()
+				start()
+				assert.is_true(Comms.canPush(0))
+				assert.is_true(Comms.canPush(1))
+				assert.is_false(Comms.canPush(2))
+				assert.is_false(Comms.canPush(nil))
+				local file = assert(io.open("ForeverSixty/surfaces/GuildTab.lua", "r"))
+				local source = file:read("a")
+				file:close()
+				assert.is_truthy(source:find("Comms.canPush(rankIndex)", 1, true))
+				assert.is_nil(source:find("PUSH_RANK", 1, true))
+			end)
 		end)
 	end)
 

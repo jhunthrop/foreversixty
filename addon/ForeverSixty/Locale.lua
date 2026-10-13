@@ -1042,19 +1042,33 @@ L.guildTabHint = {
 	"Click to open or close.",
 }
 L.guildTabOnlineOnly = "Online only"
--- Right of the switch, muted: "12 of 97 shown · 2 live" (live: guildmates whose addon answered).
-L.guildTabCounts = "%d of %d shown · %d live"
+-- Right of the switch, muted (fix round 1, item 6): "3 of 97 shown · 0 of 3 online run Forever
+-- Sixty" (run: online guildmates whose addon answered, and the player), then " · sharing off"
+-- while "Share my build with my guild" is off, and " · 1–20 of 97" while the list scrolls.
+L.guildTabCounts = "%d of %d shown · %d of %d online run Forever Sixty"
+L.guildTabSharingOff = " · sharing off"
+L.guildTabRange = " · %d–%d of %d"
+-- Under the count line, muted, while the ratings cannot be read or are old (fix round 1,
+-- item 1): the Settings foot's state for them, said once for the whole list ("Player
+-- ratings: too old. Get the new Forever Sixty Data at foreversixty.gg.").
+L.guildTabRatings = "Player ratings: %s"
 -- The column headers; a click sorts by one, a second click turns it round.
 L.guildTabColumns = {
 	name = "Name", level = "Level", spec = "Spec", gear = "Gear", score = "Score", attendance = "Attendance",
 	gap = "Gap",
 }
--- Cells: a member the nightly record has no logs for (never a zero), a value nobody has sent
--- (muted), attendance as a percent, and a gear gap a guildmate's own addon sent this session.
+-- Cells: a member a readable nightly record has no logs for (never a zero), attendance as a
+-- percent, and a live gear gap in its sender's unit (fix round 1, item 3: DPS where the data
+-- has a DPS per point for their spec, else score points). A value nobody has is blank.
 L.guildTabNoLogs = "no logs"
-L.guildTabDash = "-"
 L.guildTabPercent = "%d%%"
-L.guildTabLive = "%d (live)"
+L.guildTabGapDps = "%d DPS"
+L.guildTabGapPts = "%d pts"
+-- The Gear and Gap headers' hover (fix round 1, item 3).
+L.guildTabHeaderHints = {
+	gear = "Gear score from the nightly record",
+	gap = "Gear gap reported live by the member's addon",
+}
 -- A row's hover: the member's build as their addon announced it, and offline.
 L.guildTabBuild = "Build: %s"
 L.guildTabOffline = "Offline"
@@ -1078,6 +1092,8 @@ L.guildTabCancel = "Cancel"
 -- After the push, muted: "Pushed BM raid to guild at 21:04"; a refusal in the warning colour.
 L.guildTabPushed = "Pushed %s to guild at %s"
 L.guildTabPushFailed = "Not pushed: %s"
+-- Why a push could not even be offered for sending (L5.1 review item 4).
+L.guildTabPushNoCode = "this build could not be made into a code to send."
 -- /fs diag: "Guild tab: closed, 12 rows (2 live), officer no" (L5.1 ruling 6).
 L.diagGuildTab = "Guild tab: %s, %d rows (%d live), officer %s"
 L.diagGuildTabYes = "yes"
