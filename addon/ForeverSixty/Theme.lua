@@ -67,6 +67,8 @@ Theme.ALPHA = {
 	plate = 0.9,
 	unreachable = 0.5,
 	ringEdge = 0.6,
+	--- The 1 px black shadow behind the slot marks' gold corner (L4.1 fix round 5).
+	markShadow = 0.6,
 	--- The least a badge's digits dim beyond the reachable points: the
 	--- plate dims, the number stays legible (L3.2 fix round 3).
 	dimDigits = 0.6,
@@ -77,6 +79,9 @@ Theme.SIZES = {
 	--- the target corner's two gold legs, each `mark` long and `markEdge` thick.
 	mark = 12,
 	markEdge = 2,
+	--- The target corner sits this far in from the button's bottom right corner, clear of the
+	--- client's quality border (L4.1 fix round 5).
+	markInset = 2,
 	windowWidth = 720,
 	windowHeight = 500,
 	--- The left navigation, and one item in it.
@@ -308,7 +313,15 @@ Theme.MEDIA = {
 	--- The paper-doll and bag marks' corner arrow (spec section 4.4, L4.1): the client's own
 	--- green arrow, at the top right of a slot a bag item beats and of that bag item.
 	arrow = "Interface\\Buttons\\UI-MicroStream-Green",
+	--- The client's own bag upgrade arrow, used instead where the client knows the atlas
+	--- (C_Texture.GetAtlasInfo): a full 12 px glyph pointing up (L4.1 fix round 5).
+	arrowAtlas = "bags-greenarrow",
 }
+
+--- The microstream arrow's art bounds in its padded square (left, right, top, bottom): the
+--- crop that makes the fallback arrow fill the 12 px mark (L4.1 fix round 5). Measured
+--- against the capture; tune here if the client's art sits elsewhere.
+Theme.ARROW_CROP = { 0.25, 0.75, 0.25, 0.75 }
 
 --- The nine classes this addon ships a crest for (addon/tools/
 --- make_class_crests.py), keyed by UnitClass's own second return
@@ -434,12 +447,21 @@ function Theme.diagReport(broken, chipLine, info)
 	else
 		lines[1] = L.diagAllWorking
 	end
+	local status = {}
 	if type(chipLine) == "table" then
 		for _, line in ipairs(chipLine) do
-			lines[#lines + 1] = line
+			status[#status + 1] = line
 		end
 	elseif chipLine ~= nil then
-		lines[#lines + 1] = chipLine
+		status[1] = chipLine
+	end
+	-- The surfaces' status lines ("Build:", "Chip:", "Talent badges:", "Bag marks:") never
+	-- read as faults: under "Not working:" they get their own heading (L4.1 fix round 5).
+	if #broken > 0 and #status > 0 then
+		lines[#lines + 1] = L.diagWorkingHeading
+	end
+	for _, line in ipairs(status) do
+		lines[#lines + 1] = line
 	end
 	for _, note in ipairs(info or {}) do
 		lines[#lines + 1] = note

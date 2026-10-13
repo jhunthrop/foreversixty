@@ -34,7 +34,8 @@ describe("/fs diag on a fresh session", function()
 
 	it("says the data addon is too old, under Not working", function()
 		fresh({ format = 1, characters = {}, guilds = {} })
-		assert.are.same({ L.diagHeading, L.diagDataAddonOld, NO_BUILD }, Options.handle("diag"))
+		-- L4.1 fix round 5: the status lines under their own "Working:" heading.
+		assert.are.same({ L.diagHeading, L.diagDataAddonOld, L.diagWorkingHeading, NO_BUILD }, Options.handle("diag"))
 	end)
 
 	it("says it once however often /fs diag is asked", function()

@@ -112,8 +112,11 @@ Arms · Estimate" with the shipped weights (DPS is allowed under Estimate: the s
 DPS-per-point figures are real sims), with "Equipped" on its right on the item worn. "Forever
 Sixty" is in the client's own tooltip gold, the spec and "Estimate" are muted, "Your sim" is in
 the tooltip's text colour. When the header plus "Equipped" exceeds the
-width, the spec word drops before the tag; the tag is never cut; "Equipped" then moves to the
-next row. Every equippable item in a slot the plan covers gets a line: the verdict
+width, "Equipped" moves to the next row first, so the header keeps the spec word on every slot
+(a narrow weapon tooltip's too, L4.1 fix round 5); only when the header alone is wider does the
+spec word drop, before the tag; the tag is never cut. Every equippable item in a slot the plan
+covers gets a line (an item that fills an empty slot reads "Fills an empty slot" at any gain that
+shows, and is an upgrade at that gain, L4.1 fix round 3): the verdict
 ("Upgrade +4.2 DPS over Chausses of Westfall", "Sidegrade (+0.3 DPS)", "Downgrade −4.2 DPS over
 Smite's Mighty Hammer", the compared name shortened before the tooltip widens), "Best until level 30",
 or the reason it is not one ("Not for you until 40: plate armor", "Not with your two-hander",
@@ -158,8 +161,12 @@ client holds the item (never "Retrieving item information").
 
 ### 4.4 Paper doll, bags, quest rewards, rolls
 
-A 12 px corner arrow on a paper-doll slot when a bag item beats it, and on the bag item that
-beats it; a 12 px target corner on a slot with a known next target. "Best for Arms" on the
+A 12 px corner arrow on a paper-doll slot when a bag item beats it (or fills it when empty, at
+any gain that shows), and on the bag item that beats it; a 12 px target corner on a slot whose
+hover names a next upgrade for the band (none on a slot carrying the arrow, whose hover leads
+with "In your bags / <item> +0.8 DPS / Right-click it in your bags to equip."). The chip's
+hover carries the marks' legend while they are on: "Green arrow: a bag item beats what you
+wear. Gold corner: next upgrade to chase." "Best for Arms" on the
 quest reward the weights prefer; "Vendor" when none scores. The roll frame carries the
 tooltip's verdict line beside the item. All read the same `Gear` functions the tooltip reads.
 

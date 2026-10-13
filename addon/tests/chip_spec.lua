@@ -398,6 +398,24 @@ describe("Chip.tooltipLines", function()
 	local function muted(text)
 		return "|cff" .. Theme.HEX.muted .. text .. "|r"
 	end
+
+	-- L4.1 fix round 5: what the paper doll's and the bags' marks mean, while they are on.
+	it("carries the marks' legend, muted, while the marks are on, and not otherwise", function()
+		local on = Chip.tooltipLines(Chip.model(inputs({ marksLegend = true })))
+		local found
+		for index, line in ipairs(on) do
+			if line == muted(L.chipMarksLegend) then
+				found = index
+			end
+		end
+		assert.is_not_nil(found)
+		assert.are.equal(" ", on[found + 1])
+		for _, line in ipairs(Chip.tooltipLines(Chip.model(inputs({ marksLegend = false })))) do
+			assert.are_not.equal(muted(L.chipMarksLegend), line)
+		end
+		assert.are.equal("Green arrow: a bag item beats what you wear. Gold corner: next upgrade to chase.",
+			L.chipMarksLegend)
+	end)
 	-- Fix round 3: the hints sit one step dimmer than the muted info line.
 	local function hint(text)
 		return "|cff" .. Theme.dimHex("muted", Theme.ALPHA.hint) .. text .. "|r"

@@ -569,7 +569,8 @@ describe("ItemTooltip.section", function()
 
 	describe("a worn item", function()
 		-- "At level 30: <the next rung's pick> · <its instance>", muted under "Best until level 30".
-		local AT_30 = string.format(L.tooltipAtBand, 30, "Herod's Chest", "Scarlet Monastery")
+		-- L4.1 fix round 5: the At line's source carries the boss and the chance.
+		local AT_30 = string.format(L.tooltipAtBand, 30, "Herod's Chest", "Scarlet Monastery · Herod · 20% drop")
 		local WORN = { itemId = 50, link = WORN_LINK, equipLocation = "INVTYPE_CHEST", itemClass = 4,
 			itemSubClass = 3, stats = { strength = 4 } }
 
@@ -988,7 +989,7 @@ describe("ItemTooltip.section", function()
 			assert.are.same({
 				string.format(L.tooltipBestUntil, 30),
 				ItemTooltip.atText({ band = 30, name = "Herod's Axe", gain = 20, unit = "dps",
-					source = "Scarlet Monastery" }),
+					source = "Scarlet Monastery · Herod · 20% drop" }),
 				string.format(L.tooltipPlanned, "Arms", 20),
 			}, texts(lines))
 			assert.is_true(pending[610])
@@ -1004,7 +1005,7 @@ describe("ItemTooltip.section", function()
 			local lines = ItemTooltip.section(cold(worn, { data = data }))
 			assert.are.same({
 				string.format(L.tooltipBestUntil, 30),
-				ItemTooltip.atText({ band = 30, name = "Herod's Axe", source = "Scarlet Monastery" }),
+				ItemTooltip.atText({ band = 30, name = "Herod's Axe", source = "Scarlet Monastery · Herod · 20% drop" }),
 				string.format(L.tooltipPlanned, "Arms", 20),
 			}, texts(lines))
 		end)
@@ -1124,6 +1125,55 @@ describe("ItemTooltip.section", function()
 				string.format(L.tooltipPlanned, "Enhancement", 20),
 				NEXT_SOURCE,
 			}, lines)
+		end)
+	end)
+
+	-- L4.1 fix round 5 through the section: the BoE world drop's source and the ranged
+	-- alternative of the other ammo type.
+	describe("the section's fix-5 lines", function()
+		local BOW = { itemId = 59, link = "|Hitem:59|h[Worn Bow]|h", equipLoc = "INVTYPE_RANGED",
+			stats = { agility = 1 } }
+		local RANGED = { classes = DATA.classes, weights = DATA.weights, dpsPerPoint = DATA.dpsPerPoint,
+			bis = { ["warrior-arms"] = { [20] = { alliance = {
+				ranged = "600|B|World drop||601|B|World drop|602|B|World drop" } } } } }
+		local NAMES5 = { [600] = "Ranger Bow", [601] = "Lil Timmy's Peashooter", [602] = "Hunting Bow" }
+		local STATS5 = { [600] = { strength = 20 }, [601] = { strength = 15 }, [602] = { strength = 10 } }
+		local SUB = { [59] = 2, ["|Hitem:59|h[Worn Bow]|h"] = 2, [600] = 2, [601] = 3, [602] = 2 }
+		local function wornBow(overrides)
+			local base = { data = RANGED, equipped = { ranged = BOW },
+				nameOf = function(id) return NAMES5[id] end, statsOf = function(id) return STATS5[id] end,
+				isCached = function() return true end, subClassOf = function(item) return SUB[item] end,
+				item = { itemId = 59, link = BOW.link, equipLocation = "INVTYPE_RANGED", itemClass = 2,
+					itemSubClass = 2, stats = BOW.stats } }
+			for key, value in pairs(overrides or {}) do
+				base[key] = value
+			end
+			return ctx(base)
+		end
+
+		it("flags the alternative that fires the other ammo, and only that one", function()
+			local lines = ItemTooltip.section(wornBow())
+			local alternatives
+			for _, line in ipairs(lines) do
+				if line.kind == "alternatives" then
+					alternatives = line
+				end
+			end
+			assert.are.equal(L.tooltipNeedsBullets, alternatives.entries[1].flag)
+			assert.is_nil(alternatives.entries[2].flag)
+			assert.is_truthy(ItemTooltip.fitAlternatives(alternatives.entries)[1]:find(L.tooltipNeedsBullets, 1, true))
+		end)
+
+		it("reads World drop · check the AH for a pick that binds when equipped", function()
+			local lines = ItemTooltip.section(wornBow({ bindTypeOf = function(id) return id == 600 and 2 or 1 end }))
+			local source
+			for _, line in ipairs(lines) do
+				if line.kind == "source" then
+					source = line
+				end
+			end
+			assert.are.equal("World drop · check the AH", source.text)
+			assert.are.same({ "World drop · check the AH" }, ItemTooltip.fitLine(source, nil, nil))
 		end)
 	end)
 
@@ -1498,16 +1548,6 @@ describe("fitting each line to the client's width", function()
 		assert.is_truthy(lines[2]:find(string.format(L.tooltipNextGain, 1.8, L.tooltipUnitDps), 1, true))
 	end)
 
-	it("shortens the source line's boss, keeping the place and the drop chance", function()
-		local pick = { kind = "D", source = "Wailing Caverns: Mutanus the Devourer", chance = 0.33 }
-		assert.are.same({ string.format(L.tooltipSourceDrop, "Wailing Caverns", "Mutanus the Devourer", 33) },
-			ItemTooltip.fitSource(pick, visible, 200))
-		local text = ItemTooltip.fitSource(pick, visible, 41)[1]
-		assert.is_true(visible(text) <= 41)
-		assert.is_truthy(text:find("^Wailing Caverns · Mutanus"))
-		assert.is_truthy(text:find(L.tooltipNamePending .. " · 33% drop", 1, true))
-	end)
-
 	it("puts one alternative per line, each with its gain, rather than dropping one", function()
 		local entries = { { name = "Veteran's Chain Shirt", hex = "1eff00", gain = 1.1, unit = "dps" },
 			{ name = "Defender's Leather Armor", hex = "1eff00", gain = 0.6, unit = "dps" } }
@@ -1541,34 +1581,97 @@ describe("fitting each line to the client's width", function()
 		assert.is_truthy(narrow[2]:find(L.tooltipNamePending, 1, true))
 	end)
 
-	-- Fix round 6: the header's tag and "Forever Sixty" are never cut.
-	it("fits the header by dropping the spec word, then carrying Equipped to the next row", function()
+	-- Fix round 6: the header's tag and "Forever Sixty" are never cut. L4.1 fix round 5
+	-- (both personas, hunter-12-mainhand): the header keeps the spec word on every slot:
+	-- "Equipped" moves to the next row first, and the spec word drops only when the whole
+	-- header is wider than the room on its own.
+	it("fits the header by carrying Equipped to the next row, then dropping the spec word", function()
 		local gap = ItemTooltip.PAIR_GAP
-		local whole = ItemTooltip.headerText("Arms", "sim")
-		local short = ItemTooltip.headerText(nil, "sim")
+		local whole = ItemTooltip.headerText("Beast Mastery", "default")
+		local short = ItemTooltip.headerText(nil, "default")
 		local equipped = #L.tooltipEquipped
 		assert.are.same({ left = whole, right = L.tooltipEquipped },
-			ItemTooltip.fitHeader("Arms", "sim", true, visible, visible(whole) + gap + equipped))
-		assert.are.same({ left = short, right = L.tooltipEquipped },
-			ItemTooltip.fitHeader("Arms", "sim", true, visible, visible(short) + gap + equipped))
+			ItemTooltip.fitHeader("Beast Mastery", "default", true, visible, visible(whole) + gap + equipped))
+		-- The weapon's case: too narrow for the header and Equipped, wide enough for the header.
+		assert.are.same({ left = whole, carry = true },
+			ItemTooltip.fitHeader("Beast Mastery", "default", true, visible, visible(whole) + gap))
+		assert.are.same({ left = whole, carry = true },
+			ItemTooltip.fitHeader("Beast Mastery", "default", true, visible, visible(whole)))
+		-- Narrower than the whole header: the spec word drops, Equipped carried.
 		assert.are.same({ left = short, carry = true },
-			ItemTooltip.fitHeader("Arms", "sim", true, visible, visible(short)))
-		assert.are.same({ left = short, carry = false }, ItemTooltip.fitHeader("Arms", "sim", false, visible, 4))
-		assert.is_truthy(short:find(L.tooltipTagSim, 1, true))
+			ItemTooltip.fitHeader("Beast Mastery", "default", true, visible, visible(short)))
+		assert.are.same({ left = short, carry = false },
+			ItemTooltip.fitHeader("Beast Mastery", "default", false, visible, 4))
+		assert.is_truthy(short:find(L.tooltipTagEstimate, 1, true))
 	end)
 
-	-- L4.1 fix round 4 (hunter-12-mainhand): "Planned for <build name>" is cut by measured
-	-- width with the ellipsis, never wider than the room (the client never cuts it).
-	it("ellipsises a long Planned for <build name> line to the room", function()
-		local text = string.format(L.tooltipPlannedBuild, "Beast Mastery / Marksmanship leveling build")
-		local line = { text = text, color = "gold" }
-		local fitted = ItemTooltip.fitLine(line, visible, 30)
-		assert.are.equal(1, #fitted)
-		assert.is_true(visible(fitted[1]) <= 30)
-		assert.is_truthy(fitted[1]:find(L.tooltipNamePending, 1, true))
-		assert.are.equal(string.format(L.tooltipPlannedBuild, "Beast"), fitted[1]:sub(1, #string.format(
-			L.tooltipPlannedBuild, "Beast")))
+	-- L4.1 fix round 5: a plan line too wide for the build's name names "your build" instead
+	-- of a cut name; with a band, "at 20".
+	it("prints Planned for your build when the build's name does not fit", function()
+		local text = string.format(L.tooltipPlannedBuild, "Beast Mastery / Marksmanship build")
+		local line = { kind = "planned", text = text, color = "gold" }
+		assert.are.same({ L.tooltipPlannedYourBuild }, ItemTooltip.fitLine(line, visible, 30))
 		assert.are.same({ text }, ItemTooltip.fitLine(line, visible, visible(text)))
+		local banded = { kind = "planned", band = 20, color = "gold",
+			text = string.format(L.tooltipPlanned, "Beast Mastery / Marksmanship", 20) }
+		assert.are.same({ string.format(L.tooltipPlannedYourBuildAt, 20) }, ItemTooltip.fitLine(banded, visible, 32))
+		assert.are.equal("Planned for your build at 20", string.format(L.tooltipPlannedYourBuildAt, 20))
+	end)
+
+	-- L4.1 fix round 5: the mob is never cut. The chance goes first, then the instance.
+	it("fits a source line by dropping the chance, then shortening the instance, never the boss", function()
+		local pick = { kind = "D", source = "The Deadmines: Captain Greenskin", chance = 0.3 }
+		local whole = "The Deadmines · Captain Greenskin · 30% drop"
+		assert.are.equal(whole, ItemTooltip.sourceLine(pick))
+		assert.are.same({ whole }, ItemTooltip.fitSource(pick, visible, visible(whole)))
+		local noChance = "The Deadmines · Captain Greenskin"
+		assert.are.same({ noChance }, ItemTooltip.fitSource(pick, visible, visible(noChance)))
+		local cut = "The Dead" .. L.tooltipNamePending .. " · Captain Greenskin"
+		assert.are.same({ cut }, ItemTooltip.fitSource(pick, visible, visible(cut)))
+		-- Narrower than one letter of the instance allows: the boss takes a row of its own, whole.
+		assert.are.same({ "The Deadmines", string.format(L.tooltipAtSource, "Captain Greenskin") },
+			ItemTooltip.fitSource(pick, visible, 20))
+	end)
+
+	-- L4.1 fix round 5: the At line carries the pick's boss and chance as the Next line does;
+	-- a crafted pick reads "Crafted · <profession>", or "Crafted" when the data names none.
+	it("gives the At line the pick's whole source, crafted ones Crafted first", function()
+		local ironspine = { kind = "D", source = "Scarlet Monastery: Ironspine" }
+		local at = { band = 30, name = "Ironspine's Eye", pick = ironspine, source = ItemTooltip.sourceLine(ironspine) }
+		assert.are.equal("At level 30: Ironspine's Eye · Scarlet Monastery · Ironspine", ItemTooltip.atText(at))
+		assert.are.equal("Crafted · Leatherworking", ItemTooltip.sourceLine({ kind = "C", source = "Leatherworking" }))
+		assert.are.equal("Crafted", ItemTooltip.sourceLine({ kind = "C" }))
+		local gloves = { kind = "C", source = "Leatherworking" }
+		local crafted = { band = 30, name = "Pilferer's Gloves", pick = gloves, source = ItemTooltip.sourceLine(gloves) }
+		assert.are.equal("At level 30: Pilferer's Gloves · Crafted · Leatherworking", ItemTooltip.atText(crafted))
+		-- Too wide: the source on its own row, fitted as every source line is.
+		local sourceRow = string.format(L.tooltipAtSource, "Scarlet Monastery · Ironspine")
+		local row = ItemTooltip.fitAt(at, visible, visible(sourceRow))
+		assert.are.equal(sourceRow, row[2])
+		-- Narrower: the place shortens, the boss stays whole.
+		local narrow = ItemTooltip.fitAt(at, visible, visible(sourceRow) - 9)[2]
+		assert.is_truthy(narrow:find("^· Scarl"))
+		assert.is_truthy(narrow:find(L.tooltipNamePending .. " · Ironspine$"))
+		assert.is_true(visible(narrow) <= visible(sourceRow) - 9)
+	end)
+
+	-- L4.1 fix round 5: a world drop that binds when equipped is on the auction house.
+	it("reads World drop · check the AH for a world drop that binds when equipped", function()
+		local pick = { kind = "B", source = "World drop" }
+		assert.are.equal("World drop · check the AH", ItemTooltip.sourceLine(pick, true))
+		assert.are.equal("World drop", ItemTooltip.sourceLine(pick, false))
+		assert.are.equal("Bernard Brubaker · Vendor",
+			ItemTooltip.sourceLine({ kind = "V", source = "Bernard Brubaker" }, true))
+	end)
+
+	-- L4.1 fix round 5: a ranged alternative firing other ammo is kept, flagged.
+	it("flags a ranged alternative that needs the other ammo", function()
+		assert.are.equal(L.tooltipNeedsBullets, ItemTooltip.ammoFlag(2, 3))
+		assert.are.equal(L.tooltipNeedsArrows, ItemTooltip.ammoFlag(3, 18))
+		assert.is_nil(ItemTooltip.ammoFlag(2, 18))
+		assert.is_nil(ItemTooltip.ammoFlag(2, 16))
+		assert.is_nil(ItemTooltip.ammoFlag(nil, 3))
+		assert.are.equal("(needs bullets)", L.tooltipNeedsBullets)
 	end)
 
 	it("never splits a multibyte character when it shortens a name", function()

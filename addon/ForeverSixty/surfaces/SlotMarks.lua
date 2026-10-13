@@ -343,11 +343,30 @@ local function marksFor(button)
 end
 
 --- The arrow at the button's top right, on its overlay: made the first time it shows.
+--- The arrow's art on `texture` (L4.1 fix round 5: the old art drew a ~6 px dot): the
+--- client's own bag upgrade arrow (the `bags-greenarrow` atlas) where the client knows it,
+--- else the microstream arrow cropped to its art (Theme.ARROW_CROP), so the glyph fills
+--- the 12 px square. Answers "atlas" or "crop".
+function SlotMarks.paintArrow(texture)
+	local textures = Compat.clientGlobal("C_Texture", "table")
+	local known = textures ~= nil and type(textures.GetAtlasInfo) == "function"
+		and textures.GetAtlasInfo(Theme.MEDIA.arrowAtlas) ~= nil
+	if known and type(texture.SetAtlas) == "function" then
+		texture:SetAtlas(Theme.MEDIA.arrowAtlas)
+		return "atlas"
+	end
+	texture:SetTexture(Theme.MEDIA.arrow)
+	local crop = Theme.ARROW_CROP
+	texture:SetTexCoord(crop[1], crop[2], crop[3], crop[4])
+	return "crop"
+end
+
 local function setArrow(button, shown)
 	local marks = marksByButton[button]
 	if not shown then
 		if marks ~= nil and marks.arrow ~= nil then
 			marks.arrow:Hide()
+			marks.arrowOutline:Hide()
 		end
 		return
 	end
@@ -356,12 +375,20 @@ local function setArrow(button, shown)
 		return
 	end
 	if marks.arrow == nil then
+		local size = Theme.SIZES.mark
+		-- A 1 px dark outline: the same glyph in black, a pixel larger all round, behind it.
+		local outline = marks.overlay:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL - 1)
+		SlotMarks.paintArrow(outline)
+		outline:SetVertexColor(0, 0, 0, 1)
+		outline:SetSize(size + 2, size + 2)
+		outline:SetPoint("TOPRIGHT", marks.overlay, "TOPRIGHT", 1, 1)
 		local arrow = marks.overlay:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL)
-		arrow:SetTexture(Theme.MEDIA.arrow)
-		arrow:SetSize(Theme.SIZES.mark, Theme.SIZES.mark)
+		SlotMarks.paintArrow(arrow)
+		arrow:SetSize(size, size)
 		arrow:SetPoint("TOPRIGHT", marks.overlay, "TOPRIGHT", 0, 0)
-		marks.arrow = arrow
+		marks.arrow, marks.arrowOutline = arrow, outline
 	end
+	marks.arrowOutline:Show()
 	marks.arrow:Show()
 end
 
@@ -372,8 +399,9 @@ local function setTarget(button, shown)
 	local marks = marksByButton[button]
 	if not shown then
 		if marks ~= nil and marks.target ~= nil then
-			marks.target[1]:Hide()
-			marks.target[2]:Hide()
+			for _, leg in ipairs(marks.target) do
+				leg:Hide()
+			end
 		end
 		return
 	end
@@ -383,16 +411,30 @@ local function setTarget(button, shown)
 	end
 	if marks.target == nil then
 		local overlay = marks.overlay
-		local across = Theme.paint(overlay:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL), "gold")
-		across:SetSize(Theme.SIZES.mark, Theme.SIZES.markEdge)
-		across:SetPoint("BOTTOMRIGHT", overlay, "BOTTOMRIGHT", 0, 0)
-		local up = Theme.paint(overlay:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL), "gold")
-		up:SetSize(Theme.SIZES.markEdge, Theme.SIZES.mark)
-		up:SetPoint("BOTTOMRIGHT", overlay, "BOTTOMRIGHT", 0, 0)
-		marks.target = { across, up }
+		-- Inset 2 px so the bracket clears the client's quality border, with a 1 px black
+		-- shadow at 0.6 alpha behind the gold, a pixel down and right (L4.1 fix round 5).
+		local inset, mark, edge = Theme.SIZES.markInset, Theme.SIZES.mark, Theme.SIZES.markEdge
+		local legs = {}
+		for index, spec in ipairs({
+			{ "shadow", mark, edge, -inset + 1, inset - 1 }, { "shadow", edge, mark, -inset + 1, inset - 1 },
+			{ "gold", mark, edge, -inset, inset }, { "gold", edge, mark, -inset, inset },
+		}) do
+			local leg = overlay:CreateTexture(nil, "OVERLAY", nil, spec[1] == "gold" and MARK_SUBLEVEL or MARK_SUBLEVEL - 1)
+			if spec[1] == "gold" then
+				Theme.paint(leg, "gold")
+			else
+				Theme.paintRGB(leg, 0, 0, 0, Theme.ALPHA.markShadow)
+			end
+			leg:SetSize(spec[2], spec[3])
+			leg:SetPoint("BOTTOMRIGHT", overlay, "BOTTOMRIGHT", spec[4], spec[5])
+			legs[index] = leg
+		end
+		-- target[1] and [2] the gold legs (across, up); [3] and [4] their shadows.
+		marks.target = { legs[3], legs[4], legs[1], legs[2] }
 	end
-	marks.target[1]:Show()
-	marks.target[2]:Show()
+	for _, leg in ipairs(marks.target) do
+		leg:Show()
+	end
 end
 
 local function visible(frame)
@@ -427,7 +469,9 @@ local function drawPaperDoll()
 		local button = Compat.clientGlobal(buttonName, "table")
 		if button ~= nil then
 			setArrow(button, on and state.arrows[slot] == true)
-			setTarget(button, on and state.targets[slot] ~= nil)
+			-- A slot carrying the arrow leads its hover with the bag fact, so it carries no
+			-- corner: the corner would name a target its hover no longer shows (L4.1 fix round 5).
+			setTarget(button, on and state.targets[slot] ~= nil and state.arrows[slot] ~= true)
 		end
 	end
 end
@@ -522,6 +566,22 @@ function SlotMarks.onCombatEnd()
 	SlotMarks.deferred = nil
 	SlotMarks.refresh()
 end
+
+--- The chip's list entry that puts the arrow on paper-doll `slot` (its biggest gain), or nil
+--- with the marks off or no bag item for the slot. The slot hovers lead with it
+--- (ItemTooltip.bagUpgradeFor, L4.1 fix round 5): the same list the arrow is drawn from.
+function SlotMarks.bagUpgradeFor(slot)
+	if not enabled() then
+		return nil
+	end
+	for _, upgrade in ipairs(SlotMarks.current().read.upgrades or {}) do
+		if upgrade.slot == slot then
+			return upgrade
+		end
+	end
+	return nil
+end
+ItemTooltip.bagUpgradeFor = SlotMarks.bagUpgradeFor
 
 --- Hides every mark already drawn (the switch went off, or the marks failed).
 function SlotMarks.hideAll()

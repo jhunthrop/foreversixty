@@ -20,11 +20,18 @@ describe("Theme.diagReport", function()
 		assert.are.equal("Everything is working.", L.diagAllWorking)
 	end)
 
-	it("heads only the broken things, then the chip line and the findings outside the heading", function()
+	-- L4.1 fix round 5: the status lines get their own "Working:" heading under the faults,
+	-- never read as one of them.
+	it("heads only the broken things, then the status lines under Working:, then the findings", function()
 		Theme.note("a broken thing")
 		Theme.noteInfo("a finding")
-		assert.are.same({ "Not working:", "a broken thing", "Chip: hidden in combat", "a finding" },
+		assert.are.same({ "Not working:", "a broken thing", "Working:", "Chip: hidden in combat", "a finding" },
 			Theme.diagReport(Theme.diagnostics(), "Chip: hidden in combat", Theme.infoNotes()))
+		assert.are.same({ "Not working:", "a broken thing", "Working:", "Build: x", "Bag marks: y", "a finding" },
+			Theme.diagReport(Theme.diagnostics(), { "Build: x", "Bag marks: y" }, Theme.infoNotes()))
+		assert.are.same({ "Not working:", "a broken thing", "a finding" },
+			Theme.diagReport(Theme.diagnostics(), {}, Theme.infoNotes()))
+		assert.are.equal("Working:", L.diagWorkingHeading)
 	end)
 
 	it("leaves the chip line out before the chip has drawn", function()

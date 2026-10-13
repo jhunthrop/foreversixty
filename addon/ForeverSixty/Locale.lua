@@ -39,6 +39,8 @@ local L = {
 	headerRealmLevel = "%s · level %d",
 	headerNoSpec = "No spec yet",
 	diagHeading = "Not working:",
+	-- L4.1 fix round 5: the surfaces' status lines under their own heading, never under the above.
+	diagWorkingHeading = "Working:",
 
 	-- Diagnostics: what /fs diag prints. These are the only record of a
 	-- capability this client turned out not to have, and the human tester
@@ -555,6 +557,16 @@ local L = {
 	-- An empty paper-doll slot the band names no pick for (L4.1 fix round 1): the web
 	-- panel's own wording, muted, never silence.
 	tooltipNoPick = "No pick for your band yet",
+	-- L4.1 fix round 5 (the personas): a slot carrying the green arrow leads its hover with the
+	-- bag fact; a plan line too wide for the build's name; a world drop that binds when
+	-- equipped; a ranged alternative firing other ammo than the worn ranged weapon.
+	tooltipInYourBags = "In your bags",
+	tooltipRightClickEquip = "Right-click it in your bags to equip.",
+	tooltipPlannedYourBuild = "Planned for your build",
+	tooltipPlannedYourBuildAt = "Planned for your build at %d",
+	tooltipCheckAH = "check the AH",
+	tooltipNeedsBullets = "(needs bullets)",
+	tooltipNeedsArrows = "(needs arrows)",
 	-- Muted under "Best until level 30": the next rung's pick and, in a word or two, where
 	-- it comes from (the instance, "Vendor", "Quest" or the kind's word; no boss, no chance).
 	tooltipAtBand = "At level %d: %s · %s",
@@ -702,6 +714,8 @@ local L = {
 	-- The hover tooltip's last line, muted: how to put the chip away.
 	chipRightClick = "Right-click: %s",
 	chipShiftDrag = "Shift-drag: Move",
+	-- L4.1 fix round 5: the marks' legend in the chip's hover, while the marks are on.
+	chipMarksLegend = "Green arrow: a bag item beats what you wear. Gold corner: next upgrade to chase.",
 	-- Level 1 to 9 on a default build (spec section 5.1): the class icon and
 	-- this line; a click opens a card with one button per spec.
 	chipPath = "Pick a path",

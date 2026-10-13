@@ -330,29 +330,45 @@ end
 --- One line saying where a pick comes from: "Wailing Caverns · Mutanus the
 --- Devourer · 33% drop" for an instance drop (the source split on its first
 --- ": "), "<name> · Vendor" or "<source> · Quest" for the rest (the kind left
---- out when the source already says it, "World drop"), the drop chance last
---- when the data has one. nil with no source.
-function ItemTooltip.sourceLine(pick)
-	local first, second, percent = ItemTooltip.sourceParts(pick)
+--- out when the source already says it, "World drop"), "Crafted · Leatherworking"
+--- for a crafted pick ("Crafted" alone when the data names no profession), the drop
+--- chance last when the data has one. A world drop that binds when equipped (`boe`)
+--- reads "World drop · check the AH" (L4.1 fix round 5). nil with no source.
+function ItemTooltip.sourceLine(pick, boe)
+	local first, second, percent = ItemTooltip.sourceParts(pick, boe)
 	return ItemTooltip.sourceText(first, second, percent)
 end
 
 --- A pick's source as its parts: the place (or the source), the boss (or the
 --- kind's name, nil when the source already says it) and the drop chance as a
---- whole percent (nil for no drop). Nothing with no source.
-function ItemTooltip.sourceParts(pick)
-	if type(pick) ~= "table" or type(pick.source) ~= "string" or pick.source == "" then
+--- whole percent (nil for no drop). Nothing with no source, but a crafted pick.
+function ItemTooltip.sourceParts(pick, boe)
+	if type(pick) ~= "table" then
+		return nil
+	end
+	local crafted = ItemTooltip.SOURCE_KIND_NAMES.C
+	if type(pick.source) ~= "string" or pick.source == "" then
+		-- A crafted pick says so even when the data names no profession (L4.1 fix round 5).
+		if pick.kind == "C" then
+			return crafted, nil, nil
+		end
 		return nil
 	end
 	local first, second
 	local place, boss = pick.source:match("^(.-): (.+)$")
 	if INSTANCE_KINDS[pick.kind] and place ~= nil then
 		first, second = place, boss
+	elseif pick.kind == "C" then
+		-- "Crafted · Leatherworking": the kind leads, the profession follows.
+		first, second = crafted, pick.source
 	else
 		first = pick.source
 		local kindName = ItemTooltip.SOURCE_KIND_NAMES[pick.kind]
 		if kindName ~= nil and kindName:lower() ~= first:lower() then
 			second = kindName
+		end
+		if boe and pick.kind == "B" and second == nil then
+			second = L.tooltipCheckAH
 		end
 	end
 	return first, second, percentOf(pick.chance)
@@ -375,22 +391,42 @@ function ItemTooltip.sourceText(first, second, percent)
 	return first
 end
 
---- The source line within `room`: the boss's name (else the source's own)
---- shortened with an ellipsis, the place and the drop chance kept whole.
-function ItemTooltip.fitSource(pick, measure, room)
-	local first, second, percent = ItemTooltip.sourceParts(pick)
+--- The source line within `room` (L4.1 fix round 5: the mob is never cut): whole when
+--- it fits; else without the drop chance; else the place (the instance) shortened with
+--- an ellipsis, the boss always whole ("The Dead… · Captain Greenskin"). A source with
+--- no boss is cut by measured width. `prefix` (a format with one %s, optional) wraps
+--- the line ("· %s", the At line's own source row); `boe` as for ItemTooltip.sourceLine.
+function ItemTooltip.fitSource(pick, measure, room, boe, prefix)
+	local first, second, percent = ItemTooltip.sourceParts(pick, boe)
 	if first == nil then
 		return {}
 	end
-	local fits = fitter(measure, room)
-	local text
-	if second ~= nil then
-		text = shorten(function(name) return ItemTooltip.sourceText(first, name, percent) end, second, fits, 1)
-	else
-		text = shorten(function(name) return ItemTooltip.sourceText(name, nil, percent) end, first, fits, 1)
+	local function text(place, other, chance)
+		local line = ItemTooltip.sourceText(place, other, chance)
+		return prefix ~= nil and string.format(prefix, line) or line
 	end
-	-- Still too wide with the boss down to a letter: cut the line itself.
-	return { ItemTooltip.fitPlain(text, measure, room) }
+	local fits = fitter(measure, room)
+	local whole = text(first, second, percent)
+	if fits(whole) then
+		return { whole }
+	end
+	if percent ~= nil and fits(text(first, second, nil)) then
+		return { text(first, second, nil) }
+	end
+	if second ~= nil then
+		-- The place gives way, a letter at a time; the boss never does. When even one
+		-- letter of the place leaves the line too wide, the boss takes a row of its own.
+		local shortened = shorten(function(name) return text(name, second, nil) end, first, fits, 1)
+		if fits(shortened) then
+			return { shortened }
+		end
+		-- The boss is cut only when its name alone is wider than the whole tooltip, as the
+		-- Next line's name is: the tooltip never widens.
+		local place = prefix ~= nil and string.format(prefix, first) or first
+		return { ItemTooltip.fitPlain(place, measure, room),
+			ItemTooltip.fitPlain(string.format(L.tooltipAtSource, second), measure, room) }
+	end
+	return { ItemTooltip.fitPlain(text(first, nil, percent), measure, room) }
 end
 
 --- "Also good: <name>, <name>" from up to two names (already coloured, or
@@ -450,7 +486,27 @@ local function entryText(entry, name)
 	if gain ~= nil then
 		text = string.format(L.tooltipAlternativeGain, text, muted(gain))
 	end
+	-- A ranged alternative of the other ammo type, kept but flagged (L4.1 fix round 5).
+	if entry.flag ~= nil then
+		text = text .. " " .. muted(entry.flag)
+	end
 	return text
+end
+
+--- Ranged weapon subclass ids -> the ammo they fire (bows and crossbows arrows, guns
+--- bullets); none for thrown weapons and wands.
+ItemTooltip.AMMO_BY_SUBCLASS = { [2] = "arrows", [18] = "arrows", [3] = "bullets" }
+
+--- "(needs bullets)" for an alternative firing other ammo than the worn ranged weapon,
+--- from the two items' subclass ids (`wornSub`, `altSub`); nil when they match or either
+--- fires none. Pure.
+function ItemTooltip.ammoFlag(wornSub, altSub)
+	local worn = ItemTooltip.AMMO_BY_SUBCLASS[tonumber(wornSub)]
+	local alt = ItemTooltip.AMMO_BY_SUBCLASS[tonumber(altSub)]
+	if worn == nil or alt == nil or worn == alt then
+		return nil
+	end
+	return alt == "bullets" and L.tooltipNeedsBullets or L.tooltipNeedsArrows
 end
 
 --- `template` (one %s) around an entry, its name shortened until it fits.
@@ -512,9 +568,11 @@ end
 
 --- The header row within `room`, as { left, right, carry }: the tag ("Your
 --- sim", "Estimate") and "Forever Sixty" are never cut. (a) The whole header
---- with "Equipped" right when left + gap + right fits; (b) else without the
---- spec word; (c) else (b)'s text alone, and "Equipped" carried to the right of
---- the next row (`carry`). `equipped` false: no right text at all.
+--- with "Equipped" right when left + gap + right fits; (b) else the whole header
+--- alone, "Equipped" carried to the right of the next row (`carry`: L4.1 fix round 5,
+--- the spec word stays on a narrow weapon tooltip); (c) else without the spec word,
+--- "Equipped" beside it when it fits; (d) else (c)'s text alone and `carry`.
+--- `equipped` false: no right text at all.
 function ItemTooltip.fitHeader(specWord, tag, equipped, measure, room)
 	local right = equipped and L.tooltipEquipped or nil
 	local function fits(left, withRight)
@@ -530,6 +588,11 @@ function ItemTooltip.fitHeader(specWord, tag, equipped, measure, room)
 	local whole = ItemTooltip.headerText(specWord, tag)
 	if fits(whole, right) then
 		return { left = whole, right = right }
+	end
+	-- L4.1 fix round 5 (both personas): the header keeps the spec word on every slot, a
+	-- narrow weapon tooltip's too; "Equipped" moves to the next row before the word drops.
+	if fits(whole) then
+		return { left = whole, carry = right ~= nil }
 	end
 	local short = ItemTooltip.headerText(nil, tag)
 	if fits(short, right) then
@@ -682,7 +745,8 @@ function ItemTooltip.shortSource(pick)
 	return ItemTooltip.SOURCE_KIND_NAMES[pick.kind] or place or pick.source
 end
 
---- "At level 30: <name> · <short source>" (muted, the name in its quality
+--- "At level 30: <name> · <source>" (the source as the Next line's: boss and drop
+--- chance included, L4.1 fix round 5) (muted, the name in its quality
 --- colour, its gain over what is worn in green when it reaches the floor): the
 --- next rung's pick under "Best until level 30". `withSource` false: without the
 --- source; `withGain` false: without the gain.
@@ -720,6 +784,15 @@ function ItemTooltip.fitAt(at, measure, room)
 	end
 	if at.source == nil then
 		return { bare }
+	end
+	-- The source row is fitted as every source line is (ItemTooltip.fitSource: the chance
+	-- goes first, then the place shortens, never the boss).
+	if at.pick ~= nil then
+		local rows = { bare }
+		for _, row in ipairs(ItemTooltip.fitSource(at.pick, measure, room, at.boe, L.tooltipAtSource)) do
+			rows[#rows + 1] = row
+		end
+		return rows
 	end
 	return { bare, ItemTooltip.fitPlain(string.format(L.tooltipAtSource, at.source), measure, room) }
 end
@@ -874,6 +947,59 @@ function ItemTooltip.fitNext(upgrade, measure, room)
 	return { head, gainPart(upgrade.gain, upgrade.unit, upgrade.unparsed) }
 end
 
+--- The plan line within `room` (L4.1 fix round 5): whole when it fits; else "Planned for
+--- your build" (" at 20" when the line names a band) rather than a cut build name; that
+--- too cut by measured width only when even it is wider than the room.
+function ItemTooltip.fitPlanned(line, measure, room)
+	local fits = fitter(measure, room)
+	if fits(line.text) then
+		return line.text
+	end
+	local short = line.band ~= nil and string.format(L.tooltipPlannedYourBuildAt, line.band) or L.tooltipPlannedYourBuild
+	return ItemTooltip.fitPlain(short, measure, room)
+end
+
+--- The arrow slot's item line (L4.1 fix round 5): "<name> +0.8 DPS", the name in its
+--- quality colour and the gain in the upgrade green; the name shortened before the gain is
+--- ever cut. `upgrade` is { name, hex, gain, unit }.
+function ItemTooltip.bagItemText(upgrade, name)
+	return colored(name or upgrade.name, upgrade.hex) .. " " .. ItemTooltip.figureText(upgrade.gain, upgrade.unit)
+end
+
+function ItemTooltip.fitBagLine(upgrade, measure, room)
+	local fits = fitter(measure, room)
+	return shorten(function(name) return ItemTooltip.bagItemText(upgrade, name) end, upgrade.name, fits, 1)
+end
+
+--- The section of a paper-doll slot that carries the arrow (L4.1 fix round 5): the bag fact
+--- leads and stands alone: "In your bags" (muted), "<item> +0.8 DPS" (the gain the chip's list
+--- gives, Progress.bagUpgrades, as shown), "Right-click it in your bags to equip." (muted); no
+--- source line. The compare tooltip shows the bag item, titled "Next upgrade". `found` is the
+--- chip's list entry ({ link, itemId, delta, unit }); `head` the hover's own header.
+function ItemTooltip.bagSection(found, head, unit, qualityHex)
+	local name = type(found.link) == "string" and found.link:match("%[(.-)%]") or Compat.itemName(found.itemId)
+	if name == nil then
+		return nil
+	end
+	local shownUnit = found.unit == "dps" and (unit == "hps" and "hps" or "dps") or "score"
+	local upgrade = { name = name, hex = (qualityHex or ItemTooltip.qualityHexOf)(found.itemId), unit = shownUnit,
+		gain = Progress.roundedGain(found.delta, found.unit == "score" and "score" or "dps") }
+	return {
+		lines = {
+			{ text = L.tooltipInYourBags, color = "muted" },
+			{ kind = "bag", upgrade = upgrade, color = "body", text = ItemTooltip.bagItemText(upgrade) },
+			{ text = L.tooltipRightClickEquip, color = "muted" },
+		},
+		target = { itemId = found.itemId, link = found.link, label = L.tooltipCompareLabel },
+		pending = {},
+		head = head,
+	}
+end
+
+--- Injection point (surfaces/SlotMarks.lua sets it): the chip's list entry that puts an
+--- arrow on a paper-doll slot, or nil. The slot hovers read it to lead with the bag fact.
+ItemTooltip.bagUpgradeFor = nil
+
 local function buildPlans(build, slots, itemId)
 	if type(build) ~= "table" then
 		return false
@@ -903,6 +1029,7 @@ local function qualityHexOf(itemId)
 	end
 	return Theme.hexOf(Theme.qualityColor(quality))
 end
+ItemTooltip.qualityHexOf = qualityHexOf
 
 --- Item ids this client cannot show at all (it answered GET_ITEM_INFO_RECEIVED
 --- with a failure, or says the item does not exist): a band pick the data
@@ -1012,6 +1139,20 @@ function ItemTooltip.section(ctx)
 		return stats
 	end
 	local hovered = { itemId = item.itemId, link = item.link, equipLocation = item.equipLocation, stats = item.stats }
+	--- Whether an item binds when equipped (the client's bind type 2): a world drop of one
+	--- is on the auction house (L4.1 fix round 5).
+	local function isBoe(itemId)
+		return (ctx.bindTypeOf or Compat.itemBindType)(itemId) == 2
+	end
+	--- An item's subclass id (a ranged weapon's: bow, gun, crossbow), from the client.
+	local function subClassOf(itemOrLink)
+		if ctx.subClassOf ~= nil then
+			return ctx.subClassOf(itemOrLink)
+		end
+		return select(7, Compat.itemInfoInstant(itemOrLink))
+	end
+	local wornRanged = equipped.ranged
+	local wornSub = wornRanged ~= nil and subClassOf(wornRanged.link or wornRanged.itemId) or nil
 
 	local wornSlot
 	for _, slot in ipairs(slots) do
@@ -1022,7 +1163,7 @@ function ItemTooltip.section(ctx)
 		end
 	end
 	local head = { specWord = specName(data, ctx.spec), tag = current ~= nil and current.tag or nil,
-		equipped = wornSlot ~= nil }
+		equipped = wornSlot ~= nil, slot = wornSlot }
 
 	-- Rules first, then the two-hander: the slots the item may go in now.
 	local wearable, refusal = {}, nil
@@ -1083,11 +1224,11 @@ function ItemTooltip.section(ctx)
 		end
 		local band = ItemTooltip.plannedBand(data, ctx.spec, ctx.faction, slots, item.itemId, ctx.level)
 		if band ~= nil then
-			after[#after + 1] = { text = string.format(L.tooltipPlanned, specName(data, ctx.spec), band),
-				color = "gold" }
+			after[#after + 1] = { kind = "planned", band = band, color = "gold",
+				text = string.format(L.tooltipPlanned, specName(data, ctx.spec), band) }
 		elseif buildPlans(ctx.build, slots, item.itemId) then
-			after[#after + 1] = { text = string.format(L.tooltipPlannedBuild, Follow.buildName(data, ctx.build)),
-				color = "gold" }
+			after[#after + 1] = { kind = "planned", color = "gold",
+				text = string.format(L.tooltipPlannedBuild, Follow.buildName(data, ctx.build)) }
 		end
 	end
 
@@ -1168,9 +1309,10 @@ function ItemTooltip.section(ctx)
 			end
 		end
 		if showBlock then
-			local source = ItemTooltip.sourceLine(pick)
+			local boe = isBoe(pick.item_id)
+			local source = ItemTooltip.sourceLine(pick, boe)
 			if source ~= nil then
-				block[#block + 1] = { kind = "source", pick = pick, text = source, color = "muted" }
+				block[#block + 1] = { kind = "source", pick = pick, boe = boe, text = source, color = "muted" }
 			end
 			local entries = {}
 			-- Alternatives only under a next upgrade: they are the other ways to it.
@@ -1183,7 +1325,9 @@ function ItemTooltip.section(ctx)
 						pending[id] = true
 						entries[#entries + 1] = false
 					else
-						entries[#entries + 1] = { name = name, hex = qualityHex(id), gain = gainOf(id), unit = unit }
+						entries[#entries + 1] = { name = name, hex = qualityHex(id), gain = gainOf(id), unit = unit,
+							flag = slot == "ranged" and wornSub ~= nil and ItemTooltip.ammoFlag(wornSub, subClassOf(id))
+								or nil }
 					end
 				end
 			end
@@ -1204,8 +1348,9 @@ function ItemTooltip.section(ctx)
 			if name == nil then
 				pending[upcoming.item_id] = true
 			else
+				local boe = isBoe(upcoming.item_id)
 				atLine = { kind = "at", band = nextBand, name = name, hex = qualityHex(upcoming.item_id),
-					source = ItemTooltip.shortSource(upcoming), color = "muted" }
+					pick = upcoming, boe = boe, source = ItemTooltip.sourceLine(upcoming, boe), color = "muted" }
 				local gain = gainOf(upcoming.item_id)
 				if gain ~= nil and gain >= Progress.MIN_GAIN then
 					atLine.gain, atLine.unit = gain, unit
@@ -1576,7 +1721,11 @@ function ItemTooltip.fitLine(line, measure, room)
 	elseif line.kind == "next" then
 		return ItemTooltip.fitNext(line.upgrade, measure, room)
 	elseif line.kind == "source" then
-		return ItemTooltip.fitSource(line.pick, measure, room)
+		return ItemTooltip.fitSource(line.pick, measure, room, line.boe)
+	elseif line.kind == "planned" then
+		return { ItemTooltip.fitPlanned(line, measure, room) }
+	elseif line.kind == "bag" then
+		return { ItemTooltip.fitBagLine(line.upgrade, measure, room) }
 	elseif line.kind == "at" then
 		return ItemTooltip.fitAt(line, measure, room)
 	elseif line.kind == "breakdown" then
@@ -1646,11 +1795,29 @@ end
 --- Draws the item section after the client's own lines (drawEntry), every line
 --- fitted to the client's own widest line (measured before anything is added).
 --- Nothing at all with no lines and nothing worn.
+--- The bag fact for a paper-doll slot that carries the arrow (ItemTooltip.bagSection), or
+--- nil: no arrow, no injected reader, or a reader that failed (never a broken hover).
+local function bagLead(slot, head)
+	local find = ItemTooltip.bagUpgradeFor
+	if slot == nil or type(find) ~= "function" then
+		return nil
+	end
+	local ok, found = pcall(find, slot)
+	if not ok or type(found) ~= "table" then
+		return nil
+	end
+	return ItemTooltip.bagSection(found, head, ItemTooltip.unitOf(ItemTooltip.current))
+end
+
 local function addLines(tooltip, itemLink)
 	-- A hover from before (another item) must not be redrawn onto this one.
 	ItemTooltip.activeHover = nil
 	local entry = ItemTooltip.sectionFor(itemLink)
 	local head = entry.head or {}
+	-- The worn item of a slot a bag item beats: the bag fact leads, alone (L4.1 fix round 5).
+	if head.equipped then
+		entry = bagLead(head.slot, head) or entry
+	end
 	if #entry.lines == 0 and not head.equipped then
 		return
 	end
@@ -1811,6 +1978,8 @@ function ItemTooltip.appendEmptySlotSection(tooltip, slot, button)
 	entry.lines, entry.target, entry.pending, entry.head =
 		ItemTooltip.emptySlotSection(ItemTooltip.baseContext(data), slot)
 	ItemTooltip.activeHover = nil
+	-- An empty slot a bag item fills: the bag fact leads, alone (L4.1 fix round 5).
+	entry = bagLead(slot, entry.head) or entry
 	local function redraw()
 		ItemTooltip.onSlotEnter(slot, button, true)
 	end

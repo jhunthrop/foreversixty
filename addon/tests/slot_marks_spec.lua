@@ -376,9 +376,13 @@ describe("SlotMarks", function()
 			assert.are.same({ "TOPRIGHT", overlay, "TOPRIGHT", 0, 0 }, marks.arrow.points[1])
 			assert.are.equal(12, marks.arrow:GetWidth())
 			assert.are.equal(12, marks.arrow:GetHeight())
-			assert.are.equal(overlay, marks.target[1].parent)
-			assert.are.equal("BOTTOMRIGHT", marks.target[1].points[1][1])
-			assert.are.equal(overlay, marks.target[2].points[1][2])
+			-- The corner, on a slot without the arrow (fix round 5: an arrow slot has none).
+			local legs = slotButton("CharacterLegsSlot")
+			SlotMarks.drawPaperDoll()
+			local legMarks = SlotMarks.marksOn(legs)
+			assert.are.equal(legMarks.overlay, legMarks.target[1].parent)
+			assert.are.equal("BOTTOMRIGHT", legMarks.target[1].points[1][1])
+			assert.are.equal(legMarks.overlay, legMarks.target[2].points[1][2])
 		end)
 
 		it("keeps the paper doll's marks current on the events, the pane shown or not", function()
@@ -454,12 +458,14 @@ describe("SlotMarks", function()
 			SlotMarks.register()
 			SlotMarks.drawPaperDoll()
 			_G.ContainerFrame_Update(frame)
+			local legs = slotButton("CharacterLegsSlot")
+			SlotMarks.drawPaperDoll()
 			assert.is_true(arrowOn(chest))
-			assert.is_true(targetOn(chest))
+			assert.is_true(targetOn(legs))
 			Prefs.setFlag("tooltip", false)
 			SlotMarks.refresh(DATA)
 			assert.is_false(arrowOn(chest))
-			assert.is_false(targetOn(chest))
+			assert.is_false(targetOn(legs))
 			assert.is_false(arrowOn(_G.ContainerFrame1Item1))
 		end)
 
@@ -955,6 +961,99 @@ describe("SlotMarks", function()
 			assert.are.equal("next", lines[1].kind)
 			assert.are.equal(10403, lines[1].itemId)
 			assert.are.equal(10403, SlotMarks.compute(Data).targets.waist)
+		end)
+	end)
+
+	-- Fix round 5 (the designer's and the player's first pass).
+	describe("fix round 5", function()
+		-- 1: a real 12 px arrow, not a 6 px dot.
+		it("paints the arrow from the client's bags-greenarrow atlas when the client knows it", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, { C_Texture = {
+				GetAtlasInfo = function(name) return name == "bags-greenarrow" and { width = 12 } or nil end,
+			} })
+			local chest = slotButton("CharacterChestSlot")
+			SlotMarks.drawPaperDoll()
+			local marks = SlotMarks.marksOn(chest)
+			assert.are.equal("bags-greenarrow", mock.lastCall(marks.arrow, "SetAtlas")[1])
+			assert.is_nil(mock.lastCall(marks.arrow, "SetTexCoord"))
+			-- The 1 px dark outline: the same glyph in black, 14 px, behind it.
+			assert.are.equal("bags-greenarrow", mock.lastCall(marks.arrowOutline, "SetAtlas")[1])
+			assert.are.same({ 0, 0, 0, 1 }, { table.unpack(mock.lastCall(marks.arrowOutline, "SetVertexColor"), 1, 4) })
+			assert.are.equal(14, marks.arrowOutline:GetWidth())
+			assert.are.equal(12, marks.arrow:GetWidth())
+		end)
+
+		it("crops the microstream arrow to its art when the client has no such atlas", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			local chest = slotButton("CharacterChestSlot")
+			SlotMarks.drawPaperDoll()
+			local arrow = SlotMarks.marksOn(chest).arrow
+			assert.are.equal(Theme.MEDIA.arrow, mock.lastCall(arrow, "SetTexture")[1])
+			local crop = mock.lastCall(arrow, "SetTexCoord")
+			assert.are.same(Theme.ARROW_CROP, { crop[1], crop[2], crop[3], crop[4] })
+			assert.is_true(crop[2] - crop[1] < 1)
+		end)
+
+		-- 4: the bracket clears the quality border, with a shadow behind the gold.
+		it("insets the bracket 2 px from the bottom right, a 0.6 black shadow a pixel behind it", function()
+			start({ chest = WORN_CHEST }, {})
+			local chest = slotButton("CharacterChestSlot")
+			SlotMarks.drawPaperDoll()
+			local marks = SlotMarks.marksOn(chest)
+			local overlay = marks.overlay
+			assert.are.same({ "BOTTOMRIGHT", overlay, "BOTTOMRIGHT", -2, 2 }, marks.target[1].points[1])
+			assert.are.same({ "BOTTOMRIGHT", overlay, "BOTTOMRIGHT", -2, 2 }, marks.target[2].points[1])
+			assert.are.same({ "BOTTOMRIGHT", overlay, "BOTTOMRIGHT", -1, 1 }, marks.target[3].points[1])
+			assert.are.same({ 0, 0, 0, 0.6 }, { table.unpack(mock.lastCall(marks.target[3], "SetColorTexture"), 1, 4) })
+			assert.is_true(targetOn(chest))
+		end)
+
+		-- 3: the arrow slot's hover leads with the bag fact; that slot carries no corner.
+		it("draws no corner on a slot carrying the arrow, keeping the other slots' corners", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			local chest, legs = slotButton("CharacterChestSlot"), slotButton("CharacterLegsSlot")
+			SlotMarks.drawPaperDoll()
+			assert.is_true(arrowOn(chest))
+			assert.is_false(targetOn(chest))
+			assert.is_true(targetOn(legs))
+		end)
+
+		local function addedLines()
+			local lines = {}
+			for _, call in ipairs(_G.GameTooltip.calls) do
+				if call.method == "AddLine" then
+					lines[#lines + 1] = call[1]
+				end
+			end
+			return lines
+		end
+
+		it("leads an empty slot's hover with the bag item that fills it", function()
+			start({ chest = WORN_CHEST }, { THIN_LEGS })
+			local legs = slotButton("CharacterLegsSlot")
+			ItemTooltip.onSlotEnter("legs", legs)
+			local lines = addedLines()
+			local upgrade = { name = "Thin Leggings", hex = ItemTooltip.qualityHexOf(410), gain = 0.8, unit = "dps" }
+			assert.are.same({ " ", lines[2], L.tooltipInYourBags, ItemTooltip.bagItemText(upgrade),
+				L.tooltipRightClickEquip }, lines)
+			assert.are.equal(THIN_LEGS, mock.firstCall(Theme.compareTooltipFrame, "SetHyperlink")[1])
+		end)
+
+		it("leads a beaten worn slot's hover with the bag item that beats it, no source line", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			local calls = {}
+			local tooltip = {
+				AddLine = function(_, text) calls[#calls + 1] = text end,
+				AddDoubleLine = function(_, left) calls[#calls + 1] = left end,
+				Show = function() end,
+			}
+			ItemTooltip.onTooltip(tooltip, WORN_CHEST)
+			local upgrade = { name = "Bag Chest", hex = ItemTooltip.qualityHexOf(201), gain = 2, unit = "dps" }
+			assert.are.same({ L.tooltipInYourBags, ItemTooltip.bagItemText(upgrade), L.tooltipRightClickEquip },
+				{ calls[#calls - 2], calls[#calls - 1], calls[#calls] })
+			for _, text in ipairs(calls) do
+				assert.is_nil(text:find("Wailing Caverns", 1, true))
+			end
 		end)
 	end)
 end)

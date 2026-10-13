@@ -413,6 +413,7 @@ function Chip.model(input)
 		states = states,
 		chosen = chosen,
 		buildName = input.buildName,
+		marksLegend = input.marksLegend == true,
 		waiting = waiting,
 		nextLine = nextLine(input),
 		visible = hiddenBy == nil,
@@ -448,6 +449,10 @@ function Chip.tooltipLines(model)
 	end
 	if model.nextLine ~= nil then
 		lines[#lines + 1] = colored("muted", model.nextLine)
+	end
+	-- What the paper doll's and the bags' marks mean, while they are on (L4.1 fix round 5).
+	if model.marksLegend then
+		lines[#lines + 1] = colored("muted", L.chipMarksLegend)
 	end
 	lines[#lines + 1] = " "
 	if model.chosen.hint ~= nil then
@@ -776,6 +781,8 @@ function Chip.inputs(data)
 		healing = type(perSpec) == "table" and perSpec.healing == true,
 		-- The marks stand in for the chip only while they are drawn (TalentMarks sets windowMarks).
 		talentsOpen = TalentGlow.openFrame() ~= nil and (Chip.windowMarks == nil or Chip.windowMarks()),
+		-- The slot marks follow "Gear tips on item tooltips"; their legend with them (L4.1 fix round 5).
+		marksLegend = Prefs.flag("tooltip") ~= false,
 	}
 	local point = progress.point
 	if point ~= nil and build ~= nil then

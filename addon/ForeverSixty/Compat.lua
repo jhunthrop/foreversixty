@@ -185,6 +185,16 @@ function Compat.itemExists(itemId)
 	return exists == true
 end
 
+--- The item's bind type (GetItemInfo's fourteenth answer: 1 binds when picked up, 2 when
+--- equipped), or nil until cached or where the client gives none.
+function Compat.itemBindType(itemId)
+	if itemId == nil then
+		return nil
+	end
+	local bindType = select(14, Compat.itemInfo(itemId))
+	return tonumber(bindType)
+end
+
 --- The item's quality (0 poor .. 5 legendary), or nil until cached.
 function Compat.itemQuality(itemId)
 	if itemId == nil then
