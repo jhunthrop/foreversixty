@@ -1305,20 +1305,25 @@ describe("GuildTab", function()
 			local Gear, Progress, equipped
 
 			--- A hunter-like plan: the plan's tree is Marksmanship (the talents, with no points
-			--- spent, lead in Beast Mastery), a Ranger Bow planned over a worn Short Ash Bow. Only
+			--- spent, lead in Beast Mastery), the band's Ranger Bow (priced from Data.bisDps at
+			--- `planStats`' weapon DPS; unpriced with none) over a worn Short Ash Bow. Only
 			--- Marksmanship has weights and a DPS figure, so the gap is measured in the spec the
-			--- row shows.
+			--- row shows. The saved build's gear list is the equipment at export (the worn bow, as
+			--- an FSB1 code carries it): fix round 4, never a target.
 			local function hunter(planStats)
-				start()
+				start({ faction = "Alliance" })
 				local data = GuildTab.data
 				data.weights = { ["hunter-marksmanship"] = { agility = 1, ranged_attack_power = 0.5 } }
 				data.dpsPerPoint = { ["hunter-marksmanship"] = { reference = "ranged_attack_power", dps = 0.07,
 					weaponDps = 1.1, healing = false,
 					[20] = { reference = "ranged_attack_power", dps = 0.1, weaponDps = 1 } } }
+				data.bis = { ["hunter-marksmanship"] = { [20] = { alliance = {
+					ranged = RANGER_BOW .. "|V|Wenna Silkbeard" } } } }
+				data.bisDps = { [RANGER_BOW] = planStats ~= nil and planStats.weapon_dps or nil }
 				Comms.data = data
 				Follow.build = { classSlug = "hunter", dataBuild = "1.60.1.69893", name = "MM leveling",
 					order = { { tab = 2, tier = 1, column = 1 } },
-					gear = { { slot = "ranged", itemId = RANGER_BOW, stats = planStats } } }
+					gear = { { slot = "ranged", itemId = SHORT_ASH_BOW } } }
 				Gear = require("Gear")
 				Progress = require("Progress")
 				equipped = { ranged = { itemId = SHORT_ASH_BOW, link = "item:" .. SHORT_ASH_BOW,
@@ -1333,14 +1338,14 @@ describe("GuildTab", function()
 				end
 			end)
 
-			it("counts a planned bow's own DPS at the weapon term: the self row and the hello carry the chip's figure",
+			it("counts the band's bow at the weapon term: the self row and the hello carry the chip's figure",
 				function()
 					local data = hunter({ weapon_dps = 7.5 })
 					-- The chip's own score for the swap (Gear.currentWeights through Progress.itemVerdict):
 					-- +3.5 DPS (Ranger Bow).
 					local current = Gear.currentWeights(data, "hunter-marksmanship", nil, nil, 26)
-					local verdict = Progress.itemVerdict("ranged", Follow.build.gear[1], equipped, current.weights,
-						current.dpsPerPoint, current.weapon)
+					local verdict = Progress.itemVerdict("ranged", { itemId = RANGER_BOW, stats = { weapon_dps = 7.5 } },
+						equipped, current.weights, current.dpsPerPoint, current.weapon)
 					assert.are.equal(3.5, Progress.roundedGain(-verdict.delta, "dps"))
 					open()
 					local own = drawnRow("Bow Jackzon")
@@ -1548,17 +1553,20 @@ describe("GuildTab", function()
 		end)
 	end)
 	-- L5.1 fix round 3: the gear gap follows the tooltip's targets. One target per slot, shared
-	-- (Progress.slotTargets): the build's gear-list entry for the slot, else the band's pick, scored
-	-- as the tooltip's Next line scores it; the tooltip's Next line and Comms.gearGap both read it.
+	-- (Progress.slotTargets), scored as the tooltip's Next line scores it; the tooltip's Next line and
+	-- Comms.gearGap both read it. Fix round 4: that target is the band's pick; a build's gear list (a
+	-- build code's snapshot of equipment at export) is never one.
 	describe("fix round 3: the gear gap follows the tooltip's targets", function()
-		local SHORT_ASH_BOW, RANGER_BOW, HEAVY_BOW = 9002, 9001, 9003
-		local NAMES = { [SHORT_ASH_BOW] = "Short Ash Bow", [RANGER_BOW] = "Ranger Bow", [HEAVY_BOW] = "Heavy Recurve Bow" }
+		local SHORT_ASH_BOW, RANGER_BOW, HEAVY_BOW, LONGBOW = 9002, 9001, 9003, 9004
+		local NAMES = { [SHORT_ASH_BOW] = "Short Ash Bow", [RANGER_BOW] = "Ranger Bow", [HEAVY_BOW] = "Heavy Recurve Bow",
+			[LONGBOW] = "Hunting Longbow" }
 		local Gear, Progress, ItemTooltip, equipped
 
 		--- The live hunter: level 26, Alliance, a Short Ash Bow (4 weapon DPS) worn, the data's
 		--- default Marksmanship build (its own `spec`, no gear list unless `gear` is given), and the
-		--- band's ranged pick the Ranger Bow, which the client has not cached: it is priced from
-		--- Data.bisDps (`bisDps`, default 7.5 weapon DPS) as the tooltip prices it.
+		--- band's ranged pick the Ranger Bow (a vendor's, the Hunting Longbow its alternative), which
+		--- the client has not cached: it is priced from Data.bisDps (`bisDps`, default 7.5 weapon DPS)
+		--- as the tooltip prices it.
 		local function hunter(gear, bisDps)
 			start({ faction = "Alliance" })
 			local data = GuildTab.data
@@ -1567,7 +1575,7 @@ describe("GuildTab", function()
 				weaponDps = 1.1, healing = false,
 				[20] = { reference = "ranged_attack_power", dps = 0.1, weaponDps = 1 } } }
 			data.bis = { ["hunter-marksmanship"] = { [20] = { alliance = {
-				ranged = RANGER_BOW .. "|V|Wenna Silkbeard" } } } }
+				ranged = RANGER_BOW .. "|V|Wenna Silkbeard||" .. LONGBOW .. "|V|Kyle Radue" } } } }
 			data.bisDps = bisDps or { [RANGER_BOW] = 7.5 }
 			Comms.data = data
 			Follow.build = { classSlug = "hunter", spec = "hunter-marksmanship", dataBuild = "1.60.1.69893",
@@ -1588,7 +1596,7 @@ describe("GuildTab", function()
 		end)
 
 		--- The worn bow's hover as the item tooltip builds it (the data, the build, what is worn,
-		--- the shipped weights at 26), and its Next line (nil without one).
+		--- the shipped weights at 26): its Next line (nil without one), and its lines by kind.
 		local function wornBowNext(data)
 			local current = Gear.currentWeights(data, "hunter-marksmanship", nil, nil, 26)
 			local lines = ItemTooltip.section({
@@ -1612,12 +1620,23 @@ describe("GuildTab", function()
 					return 2
 				end,
 			})
+			local byKind = {}
 			for _, line in ipairs(lines) do
-				if line.kind == "next" then
-					return line
-				end
+				byKind[line.kind or "?"] = byKind[line.kind or "?"] or line
 			end
-			return nil
+			return byKind.next, byKind
+		end
+
+		--- The hover's Next line, source line and alternatives agree with the default build's: the
+		--- Ranger Bow at +3.5 DPS, sold by Wenna Silkbeard, the Hunting Longbow beside it.
+		local function assertBandPickHover(data)
+			local nextLine, byKind = wornBowNext(data)
+			assert.are.equal(RANGER_BOW, nextLine.itemId)
+			assert.are.equal(3.5, nextLine.upgrade.gain)
+			assert.are.equal(RANGER_BOW, byKind.source.pick.item_id)
+			assert.is_truthy(byKind.source.text:find("Wenna Silkbeard", 1, true))
+			assert.is_truthy(byKind.alternatives.text:find("Hunting Longbow", 1, true))
+			assert.is_nil(byKind.at)
 		end
 
 		--- The player's own drawn row.
@@ -1633,8 +1652,8 @@ describe("GuildTab", function()
 		--- Progress.slotTargets' ranged row, as Comms.gearGap reads it.
 		local function rangedTarget(data)
 			local current = Gear.currentWeights(data, "hunter-marksmanship", nil, nil, 26)
-			for _, row in ipairs(Progress.slotTargets(data, Follow.build, "hunter-marksmanship", 20, "alliance",
-				equipped, current)) do
+			for _, row in ipairs(Progress.slotTargets(data, "hunter-marksmanship", 20, "alliance", equipped,
+				current)) do
 				if row.slot == "ranged" then
 					return row
 				end
@@ -1645,9 +1664,7 @@ describe("GuildTab", function()
 		it("measures a default build against the band's picks: the row shows the tooltip's figure, the hello sends it",
 			function()
 				local data = hunter(nil)
-				local nextLine = wornBowNext(data)
-				assert.are.equal(RANGER_BOW, nextLine.itemId)
-				assert.are.equal(3.5, nextLine.upgrade.gain)
+				assertBandPickHover(data)
 				assert.are.same({ RANGER_BOW, 3.5 }, { rangedTarget(data).itemId, rangedTarget(data).gain })
 				assert.are.same({ 4, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
 				open()
@@ -1662,18 +1679,31 @@ describe("GuildTab", function()
 					button.ownLive().unit, button.helloFields()[3] })
 			end)
 
-		it("takes a build's gear-list entry over the band's pick for its slot, in the tooltip and the gap alike",
-			function()
-				local data = hunter({ { slot = "ranged", itemId = HEAVY_BOW, stats = { weapon_dps = 5.2 } } })
-				local nextLine = wornBowNext(data)
-				assert.are.equal(HEAVY_BOW, nextLine.itemId)
-				assert.are.equal(1.2, nextLine.upgrade.gain)
-				assert.are.same({ HEAVY_BOW, 1.2 }, { rangedTarget(data).itemId, rangedTarget(data).gain })
-				assert.are.same({ 1, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
-				open()
-				assert.are.equal("1 DPS", ownRow().cells.gap:GetText())
-				assert.are.equal(1, Comms.helloFields()[3])
-			end)
+		it("ignores a build's gear list: the band's pick wins, its source line and alternatives stay", function()
+			local data = hunter({ { slot = "ranged", itemId = HEAVY_BOW, stats = { weapon_dps = 5.2 } } })
+			assertBandPickHover(data)
+			assert.are.same({ RANGER_BOW, 3.5 }, { rangedTarget(data).itemId, rangedTarget(data).gain })
+			assert.are.same({ 4, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+			open()
+			assert.are.equal("4 DPS", ownRow().cells.gap:GetText())
+			assert.are.equal(4, Comms.helloFields()[3])
+		end)
+
+		it("gives a saved build whose gear list is the equipment at export the default build's figure", function()
+			-- The live hunter-32 case: the saved build's FSB1 code carries ranged = the worn bow. The
+			-- hover still names the Ranger Bow (never "Best until level 30"), the row and hello say 4.
+			local data = hunter({ { slot = "ranged", itemId = SHORT_ASH_BOW } })
+			Follow.build.name = "Beast Mastery / Marksmanship build"
+			assertBandPickHover(data)
+			assert.are.same({ RANGER_BOW, 3.5 }, { rangedTarget(data).itemId, rangedTarget(data).gain })
+			assert.is_nil(rangedTarget(data).holds)
+			assert.are.same({ 4, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+			open()
+			assert.are.equal("4 DPS", ownRow().cells.gap:GetText())
+			assert.are.equal(4, Comms.helloFields()[3])
+			local button = _G[GuildTab.BUTTON_NAME]
+			assert.are.same({ 4, 4 }, { button.ownLive().gearGap, button.helloFields()[3] })
+		end)
 
 		it("counts a pick the client has not cached as unscored: with none scored the cell is blank, the hello 0",
 			function()

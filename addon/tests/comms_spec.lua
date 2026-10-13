@@ -192,22 +192,9 @@ describe("Comms, the FS1 protocol", function()
 			gear = { { slot = "ranged", itemId = 9001, stats = { weapon_dps = 7.5 } } } }
 		local WORN = { ranged = { itemId = 9002, link = "item:9002", stats = { weapon_dps = 4 } } }
 
-		it("counts a planned weapon's own DPS at the band's weapon term, rounded as the chip shows it", function()
-			-- 3.5 DPS behind (7.5 - 4 weapon DPS at 1 DPS each), shown 3.5, sent as 4.
-			assert.are.same({ 4, "dps" }, { Comms.gearGap(DATA, BUILD, "hunter-marksmanship", {}, WORN, 26) })
-		end)
-
-		it("measures in the build's spec, and is nil with nothing to score", function()
-			assert.are.equal("hunter-marksmanship", Comms.ownSpec(DATA, BUILD, "hunter", {}))
-			assert.are.equal("hunter-beast-mastery", Comms.ownSpec(DATA, nil, "hunter", {}))
-			assert.is_nil(Comms.gearGap(DATA, BUILD, "hunter-beast-mastery", {}, WORN, 26))
-			assert.is_nil(Comms.gearGap(DATA, { classSlug = "hunter", gear = { { slot = "ranged", itemId = 9001 } } },
-				"hunter-marksmanship", {}, WORN, 26))
-			assert.is_nil(Comms.gearGap(DATA, nil, "hunter-marksmanship", {}, WORN, 26))
-		end)
-
-		-- L5.1 fix round 3: the gap follows the tooltip's targets (Progress.slotTargets): the build's
-		-- gear-list entry for a slot, else the band's pick, scored as the tooltip's Next line scores it.
+		-- L5.1 fix round 3: the gap follows the tooltip's targets (Progress.slotTargets), scored as the
+		-- tooltip's Next line scores them. Fix round 4: every target is the band's pick; a build's gear
+		-- list (a build code's snapshot of equipment) is never one.
 		--- DATA with the band's ranged pick, a bow priced from Data.bisDps at `bowDps` weapon DPS.
 		local function withPick(bowDps)
 			local data = {}
@@ -220,6 +207,23 @@ describe("Comms, the FS1 protocol", function()
 		end
 		local DEFAULT = { classSlug = "hunter", spec = "hunter-marksmanship", order = {} }
 
+		it("counts the band pick's weapon DPS at the band's weapon term, rounded as the chip shows it", function()
+			-- 3.5 DPS behind (7.5 - 4 weapon DPS at 1 DPS each), shown 3.5, sent as 4.
+			assert.are.same({ 4, "dps" }, { Comms.gearGap(withPick(7.5), BUILD, "hunter-marksmanship", {}, WORN, 26,
+				"alliance") })
+			-- The build's gear list alone is no target: with no band pick there is nothing to measure.
+			assert.is_nil(Comms.gearGap(DATA, BUILD, "hunter-marksmanship", {}, WORN, 26, "alliance"))
+		end)
+
+		it("measures in the build's spec, and is nil with nothing to score", function()
+			assert.are.equal("hunter-marksmanship", Comms.ownSpec(DATA, BUILD, "hunter", {}))
+			assert.are.equal("hunter-beast-mastery", Comms.ownSpec(DATA, nil, "hunter", {}))
+			assert.is_nil(Comms.gearGap(DATA, BUILD, "hunter-beast-mastery", {}, WORN, 26))
+			assert.is_nil(Comms.gearGap(DATA, { classSlug = "hunter", gear = { { slot = "ranged", itemId = 9001 } } },
+				"hunter-marksmanship", {}, WORN, 26))
+			assert.is_nil(Comms.gearGap(DATA, nil, "hunter-marksmanship", {}, WORN, 26))
+		end)
+
 		it("measures a default build (no gear list) against the band's picks, as the tooltip does", function()
 			-- The band's Ranger Bow at 7.5 over the worn 4: +3.5 DPS, sent as 4.
 			assert.are.same({ 4, "dps" }, { Comms.gearGap(withPick(7.5), DEFAULT, "hunter-marksmanship", {}, WORN, 26,
@@ -227,8 +231,14 @@ describe("Comms, the FS1 protocol", function()
 			-- The tooltip's targets need no build: neither does the gap.
 			assert.are.same({ 4, "dps" }, { Comms.gearGap(withPick(7.5), nil, "hunter-marksmanship", {}, WORN, 26,
 				"alliance") })
-			-- The build's own entry for the slot wins over the band's pick.
-			assert.are.same({ 4, "dps" }, { Comms.gearGap(withPick(20), BUILD, "hunter-marksmanship", {}, WORN, 26,
+			-- A build gear list is ignored: the band's pick wins over the build's entry for the slot.
+			assert.are.same({ 16, "dps" }, { Comms.gearGap(withPick(20), BUILD, "hunter-marksmanship", {}, WORN, 26,
+				"alliance") })
+			-- A saved build whose gear list is the equipment at export (the worn bow) gives the default
+			-- build's figure, never "on plan".
+			local saved = { classSlug = "hunter", spec = "hunter-marksmanship", order = {},
+				gear = { { slot = "ranged", itemId = 9002 } } }
+			assert.are.same({ 4, "dps" }, { Comms.gearGap(withPick(7.5), saved, "hunter-marksmanship", {}, WORN, 26,
 				"alliance") })
 			-- No faction: no band pick to measure against.
 			assert.is_nil(Comms.gearGap(withPick(7.5), DEFAULT, "hunter-marksmanship", {}, WORN, 26))

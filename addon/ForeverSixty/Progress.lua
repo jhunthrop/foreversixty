@@ -683,7 +683,8 @@ end
 -- One target per slot (L5.1 fix round 3) ------------------------------------------------------
 -- The item tooltip's Next line and the gear gap (Comms.gearGap: the guild row and the hello)
 -- read one target per slot and score it one way, so the row can never say "on plan" while the
--- hover names an upgrade.
+-- hover names an upgrade. The target is always the band's pick (fix round 4): a build code's gear
+-- list is the equipment at export (the companion path), never a plan, so nothing here reads a build.
 
 --- Whether the client cannot show an item at all, by default: it says the item does not exist
 --- (Compat.itemExists). The item tooltip hands in its own rule (ItemTooltip.isMissing), which
@@ -692,16 +693,9 @@ function Progress.isMissing(itemId)
 	return Compat.itemExists(itemId) == false
 end
 
---- The one target for `slot`: the build's gear-list entry for it when the build carries one,
---- else the band's pick (Gear.pick; nil with no spec, band or faction). A build entry reads as a
---- pick, { item_id, stats, alternatives = {}, planned = true }, its stats the build's own.
-function Progress.slotTarget(data, build, spec, band, faction, slot)
-	local gear = type(build) == "table" and type(build.gear) == "table" and build.gear or {}
-	for _, entry in ipairs(gear) do
-		if type(entry) == "table" and entry.slot == slot and entry.itemId ~= nil then
-			return { item_id = entry.itemId, stats = entry.stats, alternatives = {}, planned = true }
-		end
-	end
+--- The one target for `slot`: the band's pick (Gear.pick, with its source and alternatives); nil
+--- with no spec, band or faction. A build's gear list is never a target (fix round 4).
+function Progress.slotTarget(data, spec, band, faction, slot)
 	if spec == nil or not band or not faction then
 		return nil
 	end
@@ -737,19 +731,19 @@ end
 --- - else `pick` is `slot`'s target or the first of its alternatives the client can show
 ---   (Progress.reachablePick), and `unshowable` says the data names one it can show none of;
 --- - `worn`: `pick` is worn in one of `slots`.
-function Progress.targetFor(data, build, spec, band, faction, slots, slot, itemId, equipped, isMissing)
+function Progress.targetFor(data, spec, band, faction, slots, slot, itemId, equipped, isMissing)
 	isMissing = isMissing or Progress.isMissing
 	equipped = equipped or {}
 	local pick, isPick, worn, unshowable
 	for _, candidate in ipairs(slots) do
-		local found = Progress.slotTarget(data, build, spec, band, faction, candidate)
+		local found = Progress.slotTarget(data, spec, band, faction, candidate)
 		if found ~= nil and found.item_id == itemId then
 			pick, isPick = found, true
 			break
 		end
 	end
 	if pick == nil then
-		local named = Progress.slotTarget(data, build, spec, band, faction, slot)
+		local named = Progress.slotTarget(data, spec, band, faction, slot)
 		pick = Progress.reachablePick(named, isMissing)
 		unshowable = named ~= nil and pick == nil
 	end
@@ -762,17 +756,14 @@ function Progress.targetFor(data, build, spec, band, faction, slots, slot, itemI
 	return { pick = pick, isPick = isPick, worn = worn, unshowable = unshowable }
 end
 
---- A target's stats: the client's (`statsOf(itemId)`, Gear.itemStatsOf by default), else `own`
---- (a build entry's), else a weapon's own DPS from the data (Data.bisDps) until the client's
---- arrive (`standIn(itemId)`, optional, is told: the hover redraws when they do). The client's
---- answer (nil or empty) with none of these: unscored.
-function Progress.pickStats(data, statsOf, itemId, own, standIn)
+--- A target's stats: the client's (`statsOf(itemId)`, Gear.itemStatsOf by default), else a
+--- weapon's own DPS from the data (Data.bisDps) until the client's arrive (`standIn(itemId)`,
+--- optional, is told: the hover redraws when they do). The client's answer (nil or empty) with
+--- neither: unscored.
+function Progress.pickStats(data, statsOf, itemId, standIn)
 	local stats = (statsOf or Gear.itemStatsOf)(itemId)
 	if hasAnyStat(stats) then
 		return stats
-	end
-	if hasAnyStat(own) then
-		return own
 	end
 	local bisDps = type(data) == "table" and type(data.bisDps) == "table" and data.bisDps or {}
 	if type(bisDps[itemId]) == "number" then
@@ -815,7 +806,7 @@ end
 ---
 --- A slot with no target is left out. `current` is Gear.currentWeights' answer; `statsOf`
 --- (Gear.itemStatsOf) and `isMissing` (Progress.isMissing) are optional.
-function Progress.slotTargets(data, build, spec, band, faction, equipped, current, statsOf, isMissing)
+function Progress.slotTargets(data, spec, band, faction, equipped, current, statsOf, isMissing)
 	equipped = equipped or {}
 	local wornIds = {}
 	for _, worn in pairs(equipped) do
@@ -840,13 +831,13 @@ function Progress.slotTargets(data, build, spec, band, faction, equipped, curren
 				table.insert(slots, 1, slot)
 			end
 		end
-		local target = Progress.targetFor(data, build, spec, band, faction, slots, slot,
+		local target = Progress.targetFor(data, spec, band, faction, slots, slot,
 			worn ~= nil and worn.itemId or nil, equipped, isMissing)
 		local pick = target.pick
 		if pick ~= nil and worn ~= nil and (target.isPick or target.worn) then
 			rows[#rows + 1] = { slot = slot, itemId = pick.item_id, gain = 0, holds = true }
 		elseif pick ~= nil and (worn ~= nil or not wornIds[pick.item_id]) then
-			local stats = scoring and Progress.pickStats(data, statsOf, pick.item_id, pick.stats) or nil
+			local stats = scoring and Progress.pickStats(data, statsOf, pick.item_id) or nil
 			local gain, verdict = Progress.pickGain(slot, pick.item_id, stats, equipped, current)
 			rows[#rows + 1] = { slot = slot, itemId = pick.item_id, gain = gain, verdict = verdict }
 		end

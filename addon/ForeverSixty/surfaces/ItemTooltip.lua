@@ -1273,23 +1273,22 @@ function ItemTooltip.section(ctx)
 	local currentBand = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
 	local nextBand = ItemTooltip.nextBand(specBis, currentBand)
 	--- A candidate's gain over what is worn in the slot (net of the worn enchant,
-	--- Gear.readEquipped), rounded as shown; nil with no figure. Its stats are the client's,
-	--- else `own` (a build entry's), else a weapon's own DPS from the data until the client's
-	--- arrive (Progress.pickStats); the gear gap scores every slot's target this one way
-	--- (Progress.pickGain).
-	local function gainOf(itemId, own)
-		local stats = weights ~= nil and Progress.pickStats(data, statsOf, itemId, own, standIn) or nil
+	--- Gear.readEquipped), rounded as shown; nil with no figure. Its stats are the client's, else
+	--- a weapon's own DPS from the data until the client's arrive (Progress.pickStats); the gear
+	--- gap scores every slot's target this one way (Progress.pickGain).
+	local function gainOf(itemId)
+		local stats = weights ~= nil and Progress.pickStats(data, statsOf, itemId, standIn) or nil
 		return Progress.pickGain(slot, itemId, stats, equipped, current)
 	end
-	-- The slot's one target (L5.1 fix round 3, Progress.targetFor): the build's gear-list entry
-	-- for it, else the band's pick; the data naming one the client can show none of is
+	-- The slot's one target (L5.1 fix round 3, Progress.targetFor): the band's pick (fix round 4: a
+	-- build's gear list is never a target); the data naming one the client can show none of is
 	-- `unshowable`. The gear gap (Comms.gearGap through Progress.slotTargets) measures the same
 	-- target. The hover reads it in the talents' spec (ctx.spec, Gear.specOf, as Chip.scoredUpgrades
 	-- does); the gap in Comms.ownSpec's (the build's own, the spec the guild row shows), which is
 	-- the same spec whenever the talents lead in the build's tree.
 	local pick, isPick, pickWorn, unshowable
 	if not heldByTwoHander then
-		local aimed = Progress.targetFor(data, ctx.build, ctx.spec, currentBand, ctx.faction, slots, slot,
+		local aimed = Progress.targetFor(data, ctx.spec, currentBand, ctx.faction, slots, slot,
 			item.itemId, equipped, isMissing)
 		pick, isPick, pickWorn, unshowable = aimed.pick, aimed.isPick, aimed.worn, aimed.unshowable
 	end
@@ -1306,7 +1305,7 @@ function ItemTooltip.section(ctx)
 			-- The pick's gain over what is worn, from its own stats and weapon DPS,
 			-- net of the worn enchant, as shown: a next upgrade from the floor.
 			local name = pickName(pick.item_id)
-			local gain, nextVerdict = gainOf(pick.item_id, pick.stats)
+			local gain, nextVerdict = gainOf(pick.item_id)
 			if gain ~= nil and gain >= Progress.MIN_GAIN and name ~= nil then
 				local worn = equipped[slot]
 				local upgrade = { name = name, hex = qualityHex(pick.item_id), gain = gain, unit = unit,

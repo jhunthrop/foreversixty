@@ -746,7 +746,8 @@ describe("Progress.slotVerdict, by link", function()
 end)
 
 -- L5.1 fix round 3: one target per slot, shared by the item tooltip's Next line and the gear gap
--- (Comms.gearGap): the build's gear-list entry for the slot, else the band's pick.
+-- (Comms.gearGap). Fix round 4: that target is the band's pick (Gear.pick); a build's gear list is
+-- a snapshot of equipment, never a target, so the helpers take no build.
 describe("Progress.slotTargets", function()
 	local TARGET_DATA = {
 		bis = { ["warrior-arms"] = { [20] = { alliance = {
@@ -767,8 +768,8 @@ describe("Progress.slotTargets", function()
 	local function never()
 		return false
 	end
-	local function targets(build, equipped, current, isMissing, stats)
-		local rows = Progress.slotTargets(TARGET_DATA, build, "warrior-arms", 20, "alliance", equipped,
+	local function targets(equipped, current, isMissing, stats)
+		local rows = Progress.slotTargets(TARGET_DATA, "warrior-arms", 20, "alliance", equipped,
 			current == nil and CURRENT or current, stats or statsOf, isMissing or never)
 		local bySlot = {}
 		for _, row in ipairs(rows) do
@@ -779,7 +780,7 @@ describe("Progress.slotTargets", function()
 	local CHEST = { itemId = 50, link = "item:50", equipLoc = "INVTYPE_CHEST", stats = { strength = 4 } }
 
 	it("scores each slot's band pick over what is worn, rounded as the tooltip shows it", function()
-		local bySlot = targets(nil, { chest = CHEST })
+		local bySlot = targets({ chest = CHEST })
 		assert.are.same({ 100, 6 }, { bySlot.chest.itemId, bySlot.chest.gain })
 		-- An empty slot is a fill: the pick's whole score.
 		assert.are.same({ 200, 5 }, { bySlot.finger1.itemId, bySlot.finger1.gain })
@@ -787,24 +788,36 @@ describe("Progress.slotTargets", function()
 		assert.is_nil(bySlot.head)
 	end)
 
-	it("takes the build's gear-list entry for a slot over the band's pick, with its own stats", function()
-		local build = { classSlug = "warrior", gear = { { slot = "chest", itemId = 110 },
-			{ slot = "wrist", itemId = 120, stats = { strength = 2 } } } }
-		local bySlot = targets(build, { chest = CHEST })
-		assert.are.same({ 110, 26 }, { bySlot.chest.itemId, bySlot.chest.gain })
-		assert.are.same({ 120, 2 }, { bySlot.wrist.itemId, bySlot.wrist.gain })
-		assert.are.equal(Progress.slotTarget(TARGET_DATA, build, "warrior-arms", 20, "alliance", "chest").item_id, 110)
-		assert.are.equal(Progress.slotTarget(TARGET_DATA, build, "warrior-arms", 20, "alliance", "legs").item_id, 400)
-		assert.is_nil(Progress.slotTarget(TARGET_DATA, nil, "warrior-arms", nil, "alliance", "legs"))
-	end)
+	it("ignores a build's gear list: each slot's target is the band's pick, its source and alternatives kept",
+		function()
+			-- Fix round 4: a build code's gear list is the equipment at export, never a plan. The
+			-- helpers read no build, so a slot no band pick names has no target.
+			local bySlot = targets({ chest = CHEST })
+			assert.are.same({ 100, 6 }, { bySlot.chest.itemId, bySlot.chest.gain })
+			assert.is_nil(bySlot.wrist)
+			local chest = Progress.slotTarget(TARGET_DATA, "warrior-arms", 20, "alliance", "chest")
+			assert.are.same({ 100, "D", "The Deadmines: Defias Overseer" }, { chest.item_id, chest.kind, chest.source })
+			assert.is_nil(chest.planned)
+			local legs = Progress.slotTarget(TARGET_DATA, "warrior-arms", 20, "alliance", "legs")
+			assert.are.same({ 400, "Gone", 401, "A trouser vendor" }, { legs.item_id, legs.source,
+				legs.alternatives[1].item_id, legs.alternatives[1].source })
+			assert.is_nil(Progress.slotTarget(TARGET_DATA, "warrior-arms", nil, "alliance", "legs"))
+			assert.is_nil(Progress.slotTarget(TARGET_DATA, "warrior-arms", 20, nil, "legs"))
+			assert.is_nil(Progress.slotTarget(TARGET_DATA, nil, 20, "alliance", "legs"))
+			-- The worn item's own hover reads the same target (Progress.targetFor).
+			local target = Progress.targetFor(TARGET_DATA, "warrior-arms", 20, "alliance", { "chest" }, "chest", 50,
+				{ chest = CHEST }, never)
+			assert.are.equal(100, target.pick.item_id)
+			assert.is_nil(target.isPick)
+		end)
 
 	it("holds a slot whose worn item is a pick of its pair, or whose pick is worn in the pair", function()
 		local ring = { itemId = 201, link = "item:201", equipLoc = "INVTYPE_FINGER", stats = { strength = 5 } }
-		local bySlot = targets(nil, { finger1 = ring })
+		local bySlot = targets({ finger1 = ring })
 		assert.are.same({ 0, true }, { bySlot.finger1.gain, bySlot.finger1.holds })
 		-- The empty finger2's pick is worn in finger1: nothing to go and get there.
 		assert.is_nil(bySlot.finger2)
-		bySlot = targets(nil, { finger2 = { itemId = 202, link = "item:202", equipLoc = "INVTYPE_FINGER",
+		bySlot = targets({ finger2 = { itemId = 202, link = "item:202", equipLoc = "INVTYPE_FINGER",
 			stats = { strength = 1 } }, finger1 = { itemId = 201, link = "item:201", equipLoc = "INVTYPE_FINGER",
 			stats = { strength = 5 } } })
 		assert.are.same({ 0, true }, { bySlot.finger2.gain, bySlot.finger2.holds })
@@ -812,39 +825,47 @@ describe("Progress.slotTargets", function()
 
 	it("leaves a hand the worn two-hander holds unscored", function()
 		local axe = { itemId = 70, link = "item:70", equipLoc = "INVTYPE_2HWEAPON", stats = { strength = 20 } }
-		local bySlot = targets(nil, { main_hand = axe })
+		local bySlot = targets({ main_hand = axe })
 		assert.are.equal(300, bySlot.off_hand.itemId)
 		assert.is_nil(bySlot.off_hand.gain)
 	end)
 
 	it("goes to the first alternative the client can show when it cannot show the pick", function()
-		local bySlot = targets(nil, {}, nil, function(itemId)
+		local bySlot = targets({}, nil, function(itemId)
 			return itemId == 400
 		end)
 		assert.are.same({ 401, 7 }, { bySlot.legs.itemId, bySlot.legs.gain })
 	end)
 
 	it("counts a pick with no stats (not cached, no DPS in the data) or no weights as unscored", function()
-		local bySlot = targets(nil, { chest = CHEST }, nil, nil, function()
+		local bySlot = targets({ chest = CHEST }, nil, nil, function()
 			return nil
 		end)
 		assert.are.equal(100, bySlot.chest.itemId)
 		assert.is_nil(bySlot.chest.gain)
-		local _, rows = targets(nil, { chest = CHEST }, false)
+		local _, rows = targets({ chest = CHEST }, false)
 		for _, row in ipairs(rows) do
 			assert.is_nil(row.gain)
 		end
 	end)
 
 	it("prices a weapon the client has not cached from Data.bisDps, as the tooltip does", function()
+		local told
+		local function standIn(itemId)
+			told = itemId
+		end
 		assert.are.same({ weapon_dps = 7.5 }, Progress.pickStats({ bisDps = { [9001] = 7.5 } }, function()
 			return {}
-		end, 9001))
-		assert.are.same({ agility = 3 }, Progress.pickStats({}, function()
+		end, 9001, standIn))
+		assert.are.equal(9001, told)
+		told = nil
+		assert.are.same({ agility = 3 }, Progress.pickStats({ bisDps = { [9001] = 7.5 } }, function()
 			return { agility = 3 }
-		end, 9001, { agility = 9 }))
-		assert.are.same({ agility = 9 }, Progress.pickStats({}, function()
+		end, 9001, standIn))
+		assert.is_nil(told)
+		-- Fix round 4: no build entry's own stats to fall back on: the client's, else the data's DPS.
+		assert.is_nil(Progress.pickStats({}, function()
 			return nil
-		end, 9001, { agility = 9 }))
+		end, 9001, standIn))
 	end)
 end)

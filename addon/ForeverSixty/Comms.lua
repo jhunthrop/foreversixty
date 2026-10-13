@@ -386,19 +386,19 @@ function Comms.ownSpec(data, build, classSlug, ranks)
 end
 
 --- The player's gear gap in `spec` (L5.1 fix round 3: it follows the tooltip's targets). Every
---- slot's one target is Progress.slotTargets': the build's gear-list entry for the slot when the
---- build carries one, else the band's pick (a default build with no gear list, or no build at
---- all, is measured against the band), priced and scored exactly as the item tooltip's Next line
---- prints it (the client's stats, else a build entry's own, else Data.bisDps for a weapon;
---- Gear.currentWeights at the character's level with its weapon term; Progress.roundedGain).
+--- slot's one target is Progress.slotTargets': the band's pick (fix round 4: a build's gear list
+--- is the equipment at export, never a target, so a default build, a saved build or no build at
+--- all are measured alike), priced and scored exactly as the item tooltip's Next line prints it
+--- (the client's stats, else Data.bisDps for a weapon; Gear.currentWeights at the character's
+--- level with its weapon term; Progress.roundedGain).
 --- Answers the biggest slot gain rounded half-up to a whole number for the wire, except that a
 --- gain between 0 and 0.5 is 1 (never "on plan" while behind), and its unit: "dps" with a DPS
 --- per point, else "pts"; 0 when every scored slot is on plan or ahead. nil when no slot could be
 --- scored: no data or spec, no weights for `spec`, or every target unscored (a pick the client
 --- has not cached). `equipped` (Gear.readEquipped's), `level` (the client's) and `faction`
---- (Compat.playerFaction's) may be given. `ranks` is no longer read (the spec carries the tree);
---- the callers' argument order is kept.
-function Comms.gearGap(data, build, spec, ranks, equipped, level, faction) -- luacheck: ignore 212/ranks
+--- (Compat.playerFaction's) may be given. Neither `build` nor `ranks` is read any more (the spec
+--- carries the tree; the targets read no build); the callers' argument order is kept.
+function Comms.gearGap(data, build, spec, ranks, equipped, level, faction) -- luacheck: ignore 212/build 212/ranks
 	if type(data) ~= "table" or spec == nil then
 		return nil
 	end
@@ -414,8 +414,8 @@ function Comms.gearGap(data, build, spec, ranks, equipped, level, faction) -- lu
 	-- as Chip.scoredUpgrades does); the gap is in Comms.ownSpec's, the build's own, the spec the
 	-- guild row shows and the hello names. The two agree whenever the talents lead in the build's tree.
 	local tooltip = ns.ItemTooltip
-	local rows = Progress.slotTargets(data, build, spec, band, faction, equipped or Gear.readEquipped(), current,
-		nil, tooltip ~= nil and tooltip.isMissing or nil)
+	local rows = Progress.slotTargets(data, spec, band, faction, equipped or Gear.readEquipped(), current, nil,
+		tooltip ~= nil and tooltip.isMissing or nil)
 	local scored, best = false, 0
 	for _, row in ipairs(rows) do
 		if row.gain ~= nil then
