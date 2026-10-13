@@ -83,11 +83,12 @@ never wrapped. One state at a time, highest first; a "+N" badge when more wait.
 
 Out of the way: fades to 25 % in combat and ignores the mouse; hides with the UI and in
 cinematics; right-click "Hide until next level"; shift-drag moves it; hover shows a client
-tooltip with every waiting state. While the talent window is open (however it was opened: the
-chip's click, the N keybind, the micro menu) and its marks are drawn, the chip stands aside and the
-marks' strip leads with its next talent (section 4.2); it comes back when the window closes. With
-"Marks on the talent window" off (section 4.11) the chip stays beside the minimap with the window
-open.
+tooltip with every waiting state, headed by the build in force ("Forever Sixty · Marksmanship
+leveling", so even the idle chip says one is followed). While the talent window is open
+(however it was opened: the chip's click, the N keybind, the micro menu) and its marks are
+drawn, the chip stands aside and the marks' strip leads with its next talent (section 4.2); it
+comes back when the window closes. With "Marks on the talent window" off (section 4.11) the
+chip stays beside the minimap with the window open.
 
 ### 4.2 Talent marks
 
@@ -313,7 +314,8 @@ subject muted, the state muted or in the warning colour): "Addon data: current f
 or "Addon data: for an older patch. Update Forever Sixty at foreversixty.gg.", and "Player ratings (on
 player tooltips): current", "…: too old. Get the new Forever Sixty Data at foreversixty.gg.",
 "…: not installed. Get Forever Sixty Data at foreversixty.gg." or "…: made for a newer addon.
-Update Forever Sixty at foreversixty.gg." (`/fs diag` keeps its own wording), no build numbers,
+Update Forever Sixty at foreversixty.gg." (`/fs diag` keeps its own wording, and adds its
+"Build:" line for the build in force, section 5.1), no build numbers,
 then 12 px of padding so a cut never lands on text. Guild badges get their switch with L4.4; no
 "advanced detail" mode, and no chat switch. The minimap button and the addon compartment entry
 open the build dialog on a left click and this page on a right click; `/fs options` opens it too
@@ -328,6 +330,15 @@ playstyle; the sim's guide leveling build for the spec loads at once. From then 
 the talent marks, the tooltip and the quest-reward mark do the work; a dungeon entrance prints
 the "here for you" line; the targets region ticks itself off from bags and gear. No site visit
 is needed at any level; pasting a build from the planner replaces the default.
+
+The default is the one for the tree with the most points (the first tree with none), leveling
+below 60 and raid at 60; it is never saved, so it is worked out again at each login, and read
+again when the talent ranks arrive after login (until the first that reads a rank, or the first
+trait-config update), never swapped by a respec later in the session. A build saved in any slot
+wins over it: when the active slot is empty, or its code no longer loads, the first saved build
+that loads is followed and its slot becomes the active one. `/fs diag` names the build in force
+on one line: "Build: Marksmanship leveling (default for Marksmanship)", "Build: Arms raid
+(saved)", or "Build: none — <why>" (for example "the saved build does not load").
 
 ### 5.2 Sixty and simulation
 

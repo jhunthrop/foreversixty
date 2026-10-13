@@ -47,6 +47,29 @@ local function slotted(entry)
 	return { slots = slots, active = Follow.DEFAULT_SLOT }
 end
 
+--- Whether a slot's saved record holds a build code.
+local function hasCode(saved)
+	return type(saved) == "table" and saved.code ~= nil
+end
+
+--- The one definition of "a saved build" (L3.8 fix round 1): every slot of `entry` (a
+--- slotted entry) holding a code, in Follow.SLOTS order, as an iterator of slot, record.
+--- Follow.restore's fallback and hasSavedBuild both walk this, so they can never disagree.
+local function savedSlots(entry)
+	local index = 0
+	return function()
+		while index < #Follow.SLOTS do
+			index = index + 1
+			local slot = Follow.SLOTS[index]
+			local saved = entry.slots[slot]
+			if hasCode(saved) then
+				return slot, saved
+			end
+		end
+		return nil
+	end
+end
+
 --- The current character's slotted entry, read from (and, on first touch,
 --- written back into) ForeverSixtyDB.follows -- so a caller that only
 --- reads (Follow.slotsFor) never needs to know about the pre-slot shape.
@@ -111,10 +134,32 @@ function Follow.restore(data)
 	ForeverSixtyDB.follows = ForeverSixtyDB.follows or {}
 	ForeverSixtyDB.follows[key] = entry
 	local active = entry.slots[entry.active]
-	if type(active) ~= "table" or active.code == nil then
-		return nil
+	if hasCode(active) then
+		local build = Follow.load(active.code, data, active.name, entry.active)
+		if build ~= nil then
+			Follow.noBuildReason = nil
+			return build
+		end
 	end
-	return Follow.load(active.code, data, active.name, entry.active)
+	-- L3.8: an empty active slot beside a saved build (v1's slot picker could leave one; v2 has
+	-- no picker to switch back), or an active one whose code no longer loads, follows the first
+	-- other saved build that loads, in SLOTS order, and makes its slot the active one.
+	-- Following nothing here also kept the default out (Follow.ensureDefault yields to any
+	-- saved build), so the character had no build at all.
+	local tried = false
+	for slot, record in savedSlots(entry) do
+		tried = true
+		if slot ~= entry.active then
+			local build = Follow.load(record.code, data, record.name, slot)
+			if build ~= nil then
+				Follow.noBuildReason = nil
+				return build
+			end
+		end
+	end
+	-- Every saved code failed to load: /fs diag says so (the default stays out all the same).
+	Follow.noBuildReason = tried and L.diagBuildSavedRefused or nil
+	return nil
 end
 
 --- The level a default build switches from leveling to raid.
@@ -125,17 +170,12 @@ local function gearModule()
 	return ns.Gear or require("Gear")
 end
 
---- True when the current character has a build saved in any slot. Reads saved variables
---- without writing them.
+--- True when the current character (its own key only) has a build saved in any slot
+--- (savedSlots). Reads saved variables without writing them.
 local function hasSavedBuild()
 	local follows = type(ForeverSixtyDB) == "table" and ForeverSixtyDB.follows or nil
 	local saved = type(follows) == "table" and follows[Export.characterKey()] or nil
-	for _, entry in pairs(slotted(saved).slots) do
-		if type(entry) == "table" and entry.code ~= nil then
-			return true
-		end
-	end
-	return false
+	return savedSlots(slotted(saved))() ~= nil
 end
 
 --- An FSB1 code for a default build's order (contract 1's {tab, tier, column} triples), or
@@ -157,6 +197,13 @@ local function defaultCode(data, classSlug, order)
 	return Codec.encodeFSB1({ dataBuild = data.build, classSlug = classSlug, order = points })
 end
 
+--- A spec slug as a player reads it, its class left off: "hunter-beast-mastery" ->
+--- "Beast Mastery", "druid-feral-bear" -> "Feral Bear".
+function Follow.specName(spec)
+	local tree = type(spec) == "string" and (spec:match("^[^-]+%-(.+)$") or spec) or "?"
+	return Talents.titleCase(tree)
+end
+
 --- A character with no build saved in any slot follows the data's default for its spec
 --- (`data.defaultBuilds[<spec>]`, contract 1): leveling, raid at RAID_LEVEL. The spec is
 --- Gear.specOf's, which is the class's first tree with no points spent. The build is marked
@@ -165,41 +212,54 @@ end
 --- is read from the client for any field it leaves out. `spec`, when given, is the spec the
 --- player chose on the chip's "pick a path" card (spec section 5.1) and wins over the points;
 --- it must be one of this class's specs with a default. The build, or nil when there is
---- nothing to load.
+--- nothing to load (Follow.noBuildReason then says why, for /fs diag). Idempotent: the
+--- default already followed for the same spec and kind is kept, never decoded again.
 function Follow.ensureDefault(data, character)
-	if type(data) ~= "table" or type(data.defaultBuilds) ~= "table" or hasSavedBuild() then
+	if type(data) ~= "table" or type(data.defaultBuilds) ~= "table" then
+		Follow.noBuildReason = L.diagBuildNoDefaults
+		return nil
+	end
+	if hasSavedBuild() then
+		-- A saved build is in force, or Follow.restore found none of them loads and said so.
 		return nil
 	end
 	character = character or {}
 	local classSlug = character.classSlug or Talents.playerClassSlug()
 	if classSlug == nil or type(data.classes) ~= "table" or data.classes[classSlug] == nil then
+		Follow.noBuildReason = L.diagBuildNoClass
 		return nil
 	end
 	local level = character.level or Compat.playerLevel()
 	local spec = character.spec
 	if spec ~= nil and spec:sub(1, #classSlug + 1) ~= classSlug .. "-" then
+		Follow.noBuildReason = string.format(L.diagBuildNoSpec, Follow.specName(spec))
 		return nil
 	end
 	if spec == nil then
 		spec = gearModule().specOf(data, classSlug, character.ranks or Talents.readRanks(data))
 	end
 	local builds = spec ~= nil and data.defaultBuilds[spec] or nil
-	if type(builds) ~= "table" then
+	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+	local default = type(builds) == "table" and builds[kind] or nil
+	if type(default) ~= "table" then
+		Follow.noBuildReason = string.format(L.diagBuildNoSpec, Follow.specName(spec))
 		return nil
 	end
-	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
-	local default = builds[kind]
-	if type(default) ~= "table" then
-		return nil
+	local current = Follow.build
+	if current ~= nil and current.default and current.spec == spec and current.kind == kind then
+		return current
 	end
 	local code = defaultCode(data, classSlug, default.order)
 	local build = code ~= nil and Codec.loadBuild(code, data) or nil
 	if build == nil then
+		Follow.noBuildReason = string.format(L.diagBuildRefused, Follow.specName(spec))
 		return nil
 	end
 	build.default = true
 	build.name = default.name
+	build.spec, build.kind = spec, kind
 	Follow.build = build
+	Follow.noBuildReason = nil
 	return build
 end
 
@@ -390,8 +450,11 @@ local function progressModule()
 	return ns.Progress or require("Progress")
 end
 
---- The first point in the order the player has not spent yet
---- (Progress.nextPoint).
+--- Follow.buildName's worked-out names, per build table (weak keys: a build nothing holds
+--- any more drops out), with the data they were worked out against. The chip asks on every
+--- refresh; a build's order and the data's tree names never change under it.
+local builtNames = setmetatable({}, { __mode = "k" })
+
 --- What to call a build: its own name, else its two biggest trees in the
 --- plan, biggest first ("Arms / Fury build", one tree "Protection build"),
 --- else its class ("Warrior build") when the trees cannot be named. Every
@@ -399,6 +462,10 @@ end
 function Follow.buildName(data, build)
 	if type(build.name) == "string" and build.name ~= "" then
 		return build.name
+	end
+	local cached = builtNames[build]
+	if cached ~= nil and cached.data == data then
+		return cached.name
 	end
 	local split = progressModule().planSplit(build)
 	local tabs = {}
@@ -422,12 +489,32 @@ function Follow.buildName(data, build)
 		end
 		names[#names + 1] = name
 	end
+	local name
 	if #names == 0 then
-		return string.format(L.followBuildName, Talents.titleCase(build.classSlug))
+		name = string.format(L.followBuildName, Talents.titleCase(build.classSlug))
+	else
+		name = string.format(L.followBuildName, table.concat(names, L.followSplitSeparator))
 	end
-	return string.format(L.followBuildName, table.concat(names, L.followSplitSeparator))
+	builtNames[build] = { data = data, name = name }
+	return name
 end
 
+--- /fs diag's one line for the build in force: "Build: Marksmanship leveling (default for
+--- Marksmanship)", "Build: Arms raid (saved)", or "Build: none — <why>" (Follow.noBuildReason,
+--- else "not worked out yet").
+function Follow.diagLine(data)
+	local build = Follow.build
+	if build == nil then
+		return string.format(L.diagBuildNone, Follow.noBuildReason or L.diagBuildNotYet)
+	end
+	if build.default then
+		return string.format(L.diagBuildDefault, Follow.buildName(data, build), Follow.specName(build.spec))
+	end
+	return string.format(L.diagBuildSaved, Follow.buildName(data, build))
+end
+
+--- The first point in the order the player has not spent yet
+--- (Progress.nextPoint).
 function Follow.nextPoint(build, ranks)
 	return progressModule().nextPoint(build, ranks)
 end

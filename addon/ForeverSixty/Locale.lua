@@ -718,6 +718,16 @@ local L = {
 	diagChipTalents = "Chip: hidden while the talent window is open",
 	diagChipCinematic = "Chip: hidden during a cinematic",
 	diagDataAddonOld = "The Forever Sixty Data addon is too old. Update it from the site.",
+	-- L3.8: /fs diag's one line for the build in force (Follow.diagLine), and why there is none.
+	diagBuildDefault = "Build: %s (default for %s)",
+	diagBuildSaved = "Build: %s (saved)",
+	diagBuildNone = "Build: none — %s",
+	diagBuildNotYet = "not worked out yet",
+	diagBuildNoDefaults = "the addon's data carries no default builds",
+	diagBuildNoClass = "this class is not in the addon's data",
+	diagBuildNoSpec = "no default build for %s",
+	diagBuildRefused = "the default build for %s does not load",
+	diagBuildSavedRefused = "the saved build does not load",
 	-- Below 10, and in the hover when the next point is not spendable yet: "Next at 22: Improved Tactical Mastery".
 	chipNextAt = "Next at %d: %s",
 	-- The hover's fuller form of that line, and the chip's line below level 8 (no name).
