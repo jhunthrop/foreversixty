@@ -73,6 +73,10 @@ Theme.ALPHA = {
 }
 
 Theme.SIZES = {
+	--- The paper-doll and bag marks (spec section 4.4, L4.1): the corner arrow's side, and
+	--- the target corner's two gold legs, each `mark` long and `markEdge` thick.
+	mark = 12,
+	markEdge = 2,
 	windowWidth = 720,
 	windowHeight = 500,
 	--- The left navigation, and one item in it.
@@ -301,6 +305,9 @@ Theme.MEDIA = {
 	classIcons = "Interface\\TargetingFrame\\UI-Classes-Circles",
 	--- The client's own check mark, tinted dark on a switch's gold square (L3.5 ruling 2).
 	check = "Interface\\Buttons\\UI-CheckBox-Check",
+	--- The paper-doll and bag marks' corner arrow (spec section 4.4, L4.1): the client's own
+	--- green arrow, at the top right of a slot a bag item beats and of that bag item.
+	arrow = "Interface\\Buttons\\UI-MicroStream-Green",
 }
 
 --- The nine classes this addon ships a crest for (addon/tools/
@@ -733,7 +740,7 @@ Theme.UNKNOWN_ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
 --- The client's own empty-slot silhouettes, one per site slot name --
 --- stable paths the client has carried since vanilla, not a template or a
 --- capability worth probing. Shirt and Tabard carry no stats and are not
---- in Gear.lua's own slot vocabulary at all (ItemTooltip.BIS_SLOT_BUTTONS
+--- in Gear.lua's own slot vocabulary at all (ItemTooltip.SLOT_BUTTONS
 --- skips them the same way), so they are not here either.
 Theme.SLOT_ICONS = {
 	head = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Head",

@@ -111,6 +111,32 @@ function Compat.globalString(name)
 	return type(value) == "string" and value or nil
 end
 
+--- One of the client's own globals by name, when it is of `kind` ("table", "function"):
+--- a frame (CharacterHeadSlot), a mixin (ContainerFrameItemButtonMixin) or a function
+--- (hooksecurefunc, ContainerFrame_Update); nil where this client has no such thing.
+function Compat.clientGlobal(name, kind)
+	local value = _G[name]
+	if kind ~= nil and type(value) ~= kind then
+		return nil
+	end
+	return value
+end
+
+--- Whether the addon `name` is loaded (C_AddOns.IsAddOnLoaded, else the old global);
+--- false where the client cannot say.
+function Compat.isAddOnLoaded(name)
+	local namespace = _G.C_AddOns
+	local fn = type(namespace) == "table" and namespace.IsAddOnLoaded or nil
+	if type(fn) ~= "function" then
+		fn = _G.IsAddOnLoaded
+	end
+	if type(fn) ~= "function" then
+		return false
+	end
+	local ok, loaded = pcall(fn, name)
+	return ok and loaded == true or false
+end
+
 --- The client's patch ("1.60.1", GetBuildInfo's first answer), or nil where it cannot say.
 function Compat.clientVersion()
 	local fn = _G.GetBuildInfo

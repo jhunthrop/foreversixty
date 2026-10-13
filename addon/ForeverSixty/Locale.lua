@@ -484,24 +484,10 @@ local L = {
 	followUpgradeSource = "from %s",
 	followUpgradeDelta = "+%.0f",
 
-	-- Lane bis-hover-addon (2026-09-28): the character-frame equipment
-	-- slot hover (design/lane-bis-hover-addon.md item 2). Appended after
-	-- the inbox-wire block above for the same reason it gives: two other
-	-- lanes are editing this same file today, and an appended block is
-	-- the smallest surface for the controller to merge.
-	-- The BiS row's own right-aligned tag (lane addon-tooltip-polish
-	-- restyled this row onto one AddDoubleLine; there is no separate
-	-- "Best in slot · <band> · <spec>" header line any more -- the tag
-	-- alone says why the row is there).
-	tooltipBisEquipped = "equipped",
-	-- "new at <band>".
-	tooltipBisNew = "new at %d",
-
 	-- Lane addon-premium (2026-09-28): the addon to the standard of the
-	-- best WoW addon ever made (docs/tenets.md) -- the BiS hover's item
-	-- level line, the rotation card's redesign and header strip, and the
-	-- Top Gear upgrade row's icon.
-	tooltipBisItemLevel = "Item Level %d",
+	-- best WoW addon ever made (docs/tenets.md) -- the rotation card's
+	-- redesign and header strip, and the Top Gear upgrade row's icon. (The
+	-- old empty-slot hover's strings went with it in L4.1.)
 	-- The rotation card's header strip: "<spec> · Level <band>+ · updated <build>".
 	overviewRotationHeaderStrip = "%s · Level %d+ · updated %s",
 	-- The expand-in-place affordance, replacing the old "turn on advanced
@@ -512,20 +498,6 @@ local L = {
 	-- spell id, and its cooldown when it has one worth naming.
 	overviewRotationDetail = "%s · #%d",
 	overviewRotationDetailCooldown = "%s · #%d · %ds cooldown",
-
-	-- Lane addon-tooltip-polish (2026-09-28): the item tooltip section
-	-- restyled to docs/tenets.md's standard -- a single brand header, the
-	-- BiS row as one AddDoubleLine (icon + coloured link left, a tag
-	-- right), the upgrade verdict coloured by meaning and scored against
-	-- the nightly band weights when they exist, and a muted source line
-	-- with a real place instead of a bare source kind. Appended, not
-	-- interleaved, for the same reason every block above gives: several
-	-- other lanes are editing this same file this wave.
-	-- The BiS row's tag when the pick is neither worn nor new: "BiS · lvl 20".
-	tooltipBisDefaultTag = "BiS · lvl %d",
-	-- The muted source line: "<kind> · <place>", e.g. "Dungeon · Wailing
-	-- Caverns · Mutanus the Devourer" or "Crafted · Leatherworking".
-	tooltipBisSourceLabel = "%s · %s",
 
 	-- Lane addon-v2 L2.1 (2026-10-11): the rules engine's two refusal
 	-- lines. The first %s is Rules.canEquip's reason ("mail armor"), the
@@ -634,6 +606,13 @@ local L = {
 	tooltipNeverTwoWeapons = "Not for you: %s cannot wield two weapons",
 	-- /fs diag verbose: which of the client's two tooltip hooks the section is drawn through.
 	diagItemTooltipHook = "Item tooltip: drawn through the %s hook",
+	-- Lane addon-v2 L4.1 (2026-10-12): the paper-doll and bag marks. /fs diag names a bag
+	-- addon whose buttons the bag hook has not reached (its bags carry no marks).
+	diagBagAddon = "Bag marks: off in %s's bags. The marks on your character panel still show.",
+	-- /fs diag verbose: which of the client's bag paths the bag marks hooked.
+	diagBagHooks = "Bag marks: hooked through %s",
+	diagNoBagHook = "Bag marks: this client has no bag hook; the bag marks are off.",
+	diagSlotMarksFailed = "The paper-doll and bag marks failed once and turned themselves off: %s",
 	tooltipClassPlural = {
 		WARRIOR = "warriors", PALADIN = "paladins", HUNTER = "hunters", ROGUE = "rogues",
 		PRIEST = "priests", SHAMAN = "shamans", MAGE = "mages", WARLOCK = "warlocks", DRUID = "druids",

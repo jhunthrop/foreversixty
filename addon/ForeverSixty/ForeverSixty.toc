@@ -34,6 +34,7 @@ TalentGlow.lua
 Minimap.lua
 surfaces\Chip.lua
 surfaces\TalentMarks.lua
+surfaces\SlotMarks.lua
 surfaces\BuildDialog.lua
 surfaces\Settings.lua
 RecorderBuffer.lua

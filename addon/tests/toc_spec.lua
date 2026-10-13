@@ -15,6 +15,8 @@ describe("the TOC", function()
 		-- The surfaces (spec section 7): the chip replaces the tracker and the toast;
 		-- the talent marks draw TalentGlow's ring and read the chip's level.
 		"surfaces/Chip.lua", "surfaces/TalentMarks.lua",
+		-- The paper-doll and bag marks (L4.1): read the chip's list and the tooltip's Next line.
+		"surfaces/SlotMarks.lua",
 		-- The build dialog (L3.4): built on its first open; Options opens it.
 		"surfaces/BuildDialog.lua",
 		-- The Settings page (L3.5): registered at login; Options opens it.

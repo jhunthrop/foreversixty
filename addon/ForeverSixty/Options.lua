@@ -27,6 +27,7 @@ local Comms = ns.Comms or require("Comms")
 local MinimapButton = ns.Minimap or require("Minimap")
 local Chip = ns.Chip or require("Chip")
 local TalentMarks = ns.TalentMarks or require("TalentMarks")
+local SlotMarks = ns.SlotMarks or require("SlotMarks")
 local Score = ns.Score or require("Score")
 local BuildDialog = ns.BuildDialog or require("BuildDialog")
 local SettingsPage = ns.SettingsPage or require("Settings")
@@ -162,6 +163,8 @@ function Options.handle(input)
 		local surfaces = {}
 		surfaces[#surfaces + 1] = Chip.diagLine()
 		surfaces[#surfaces + 1] = TalentMarks.diagLine()
+		-- A bag addon whose buttons the bag hook has not reached (L4.1 ruling 3).
+		surfaces[#surfaces + 1] = SlotMarks.diagLine()
 		local info = copy(Theme.infoNotes())
 		if rest == "verbose" then
 			for _, note in ipairs(Theme.verboseNotes()) do
@@ -242,14 +245,16 @@ function Options.openSettings()
 	return false
 end
 
---- Redraw every surface for `data`: the chip and the talent marks (which draw the
---- talent glow first) today; each surface Lanes L3-L5 add calls its own refresh from here.
---- The item tooltip draws on hover, so its cached sections are dropped instead: what
---- is worn, carried, planned or levelled may have changed.
+--- Redraw every surface for `data`: the chip, the talent marks (which draw the
+--- talent glow first) and the paper-doll and bag marks; each surface Lanes L3-L5 add
+--- calls its own refresh from here. The item tooltip draws on hover, so its cached
+--- sections are dropped instead, first (the slot marks read them): what is worn,
+--- carried, planned or levelled may have changed.
 function Options.refreshSurfaces(data)
 	ItemTooltip.resetCache()
 	Chip.refresh(data)
 	TalentMarks.refresh(data)
+	SlotMarks.refresh(data)
 end
 
 --- Every event any surface refreshes on. Theme.registerEvent swallows the
@@ -262,7 +267,8 @@ Options.EVENTS = {
 	-- The chip (L3.1): bags for its upgrade line, the zone for "here for you", the
 	-- ready check for its raid check (L5.2 fills that in; until then it only redraws).
 	"BAG_UPDATE_DELAYED", "ZONE_CHANGED_NEW_AREA", "READY_CHECK", "READY_CHECK_FINISHED",
-	-- The item tooltip (L3.3): its verdict is against what is worn; only its cache clears.
+	-- The item tooltip (L3.3): its verdict is against what is worn; only its cache clears,
+	-- and the paper-doll and bag marks (L4.1) redraw.
 	"PLAYER_EQUIPMENT_CHANGED",
 }
 
@@ -325,9 +331,11 @@ function Options.onEvent(_, event, ...)
 		return
 	end
 	if event == "PLAYER_EQUIPMENT_CHANGED" then
-		-- Only the item tooltip reads what is worn on hover; the chip follows the
-		-- bags on BAG_UPDATE_DELAYED, so a slot change redraws nothing here.
+		-- Only the item tooltip and the slot marks read what is worn here; the chip
+		-- follows the bags on BAG_UPDATE_DELAYED, so a slot change stays cheap: the
+		-- tooltip cache (first: the marks read it) and the marks, never the chip.
 		ItemTooltip.resetCache()
+		SlotMarks.refresh(Options.data)
 		return
 	end
 	if event == "PLAYER_LOGOUT" then
@@ -402,6 +410,9 @@ function Options.register()
 
 	ItemTooltip.data = Options.data
 	ItemTooltip.register()
+	-- The paper-doll and bag marks: their hooks now, their textures on the panel's first open.
+	SlotMarks.data = Options.data
+	SlotMarks.register()
 	-- The minimap button and the compartment entry: left-click opens the build dialog on its
 	-- paste tab, right-click the Settings page (the command list where it cannot open).
 	MinimapButton.open = function()

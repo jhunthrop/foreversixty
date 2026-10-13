@@ -299,7 +299,7 @@ than the one-line 44 px row), so a two-line hint pushes the next row down by a l
 chip" (reads off while a right-click hides the chip; either way it clears that hide), "Hide the
 chip in combat" (off: faded to 25 %), "Marks on the talent window" (the ring, the badges and the
 strip, all or none), "Show the minimap button" (live; off, /fs options or Options > AddOns reach
-the page), "Gear tips on item tooltips", "Share my build with my guild" ("Guildmates with Forever
+the page), "Gear tips on item tooltips" (off also hides the paper-doll and bag marks, section 4.4), "Share my build with my guild" ("Guildmates with Forever
 Sixty see your level, spec, build and gear gap. Off: they see nothing."; off silences the hello
 and every snapshot answer on every channel) and "Save my character for the companion app"
 ("Written at logout for the companion app on your PC, so the site can read your gear and

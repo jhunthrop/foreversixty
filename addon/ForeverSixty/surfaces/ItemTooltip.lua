@@ -18,8 +18,9 @@
 -- the guarded hooks after it read the client and draw. A section with
 -- nothing to say is not drawn at all (spec section 2.2).
 --
--- The empty character-slot hover (ItemTooltip.bisLines and its hooks) and
--- the player tooltip's rating line (onUnitTooltip) are kept as they were.
+-- An EMPTY character slot (L4.1) shows the same section with the band's pick
+-- for the slot (ItemTooltip.emptySlotSection); the player tooltip's rating line
+-- (onUnitTooltip) is kept as it was.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -844,15 +845,19 @@ end
 --- "Next upgrade: <name> +6.1 DPS": the label muted, the name as given (in its
 --- quality colour), the gain in the upgrade green, already rounded
 --- (Progress.roundedGain) and at the floor or above; the enchant note muted
---- after it only when the worn item's enchant could not be read.
+--- after it only when the worn item's enchant could not be read. With no gain
+--- (an empty slot: nothing worn to gain over, L4.1 ruling 5) the label and the name.
 function ItemTooltip.nextLine(name, gain, unit, unparsed)
+	if gain == nil then
+		return muted(L.tooltipNextLabel) .. " " .. name
+	end
 	return muted(L.tooltipNextLabel) .. " " .. name .. " " .. gainPart(gain, unit, unparsed)
 end
 
 --- The Next line within `room`: one line when it fits; else "Next upgrade:
 --- <name>" (the name shortened only if that line is still too wide) and, on
 --- the second line, the gain (and the enchant note). The gain is never cut.
---- `upgrade` is { name, hex, gain, unit, unparsed }.
+--- `upgrade` is { name, hex, gain, unit, unparsed }; with no gain, one line.
 function ItemTooltip.fitNext(upgrade, measure, room)
 	local one = ItemTooltip.nextLine(colored(upgrade.name, upgrade.hex), upgrade.gain, upgrade.unit, upgrade.unparsed)
 	local fits = fitter(measure, room)
@@ -861,6 +866,9 @@ function ItemTooltip.fitNext(upgrade, measure, room)
 	end
 	local head = shorten(function(name) return muted(L.tooltipNextLabel) .. " " .. colored(name, upgrade.hex) end,
 		upgrade.name, fits, 1)
+	if upgrade.gain == nil then
+		return { head }
+	end
 	return { head, gainPart(upgrade.gain, upgrade.unit, upgrade.unparsed) }
 end
 
@@ -902,6 +910,19 @@ ItemTooltip.missing = {}
 
 local function missingOf(itemId)
 	return ItemTooltip.missing[itemId] == true or Compat.itemExists(itemId) == false
+end
+
+--- A pick's name: the client's, else the data's (Data.bisNames) while the client
+--- has not sent it (`pending`: the hover redraws with the client's own when it
+--- comes). nil for neither.
+local function pickNameOf(data, nameOf, pending, itemId)
+	local name = nameOf(itemId)
+	local bisNames = type(data.bisNames) == "table" and data.bisNames or {}
+	if name == nil and type(bisNames[itemId]) == "string" then
+		pending[itemId] = true
+		return bisNames[itemId]
+	end
+	return name
 end
 
 --- The pick the section goes and gets: the band's pick, or, when the client
@@ -970,17 +991,9 @@ function ItemTooltip.section(ctx)
 	local perPoint = current ~= nil and current.dpsPerPoint or nil
 	local weapon = current ~= nil and current.weapon or nil
 	local unit = ItemTooltip.unitOf(current)
-	local bisNames = type(data.bisNames) == "table" and data.bisNames or {}
 	local bisDps = type(data.bisDps) == "table" and data.bisDps or {}
-	--- A pick's name: the client's, else the data's while the client has not sent
-	--- it (pending: the hover redraws with the client's own when it comes).
 	local function pickName(itemId)
-		local name = nameOf(itemId)
-		if name == nil and type(bisNames[itemId]) == "string" then
-			pending[itemId] = true
-			return bisNames[itemId]
-		end
-		return name
+		return pickNameOf(data, nameOf, pending, itemId)
 	end
 	--- A pick's stats: the client's, else a weapon's own DPS from the data until
 	--- the client's arrive (pending, as above). nil for neither.
@@ -1131,7 +1144,7 @@ function ItemTooltip.section(ctx)
 				local worn = equipped[slot]
 				local upgrade = { name = name, hex = qualityHex(pick.item_id), gain = gain, unit = unit,
 					unparsed = worn ~= nil and worn.enchantUnparsed == true }
-				nextLine = { kind = "next", upgrade = upgrade, color = "body",
+				nextLine = { kind = "next", itemId = pick.item_id, upgrade = upgrade, color = "body",
 					text = ItemTooltip.nextLine(colored(name, upgrade.hex), gain, unit, upgrade.unparsed) }
 				nextLine.breakdown = breakdownLine(nextVerdict)
 				if isCached(pick.item_id) then
@@ -1230,11 +1243,14 @@ function ItemTooltip.section(ctx)
 end
 
 -- ---------------------------------------------------------------------
--- The empty character-slot hover (kept as it was; L4 replaces it).
+-- The empty character-slot hover (L4.1 ruling 5): the section with the
+-- band's pick for the slot, as the worn item prints its Next line.
 -- ---------------------------------------------------------------------
 
---- Site slot name -> the Blizzard PaperDoll button's global frame name.
-ItemTooltip.BIS_SLOT_BUTTONS = {
+--- Site slot name -> the client's paper-doll button's global frame name (shirt and
+--- tabard carry no stats and are left out). The empty-slot hover and the slot marks
+--- (surfaces/SlotMarks.lua) both find the client's buttons through this table.
+ItemTooltip.SLOT_BUTTONS = {
 	head = "CharacterHeadSlot",
 	neck = "CharacterNeckSlot",
 	shoulder = "CharacterShoulderSlot",
@@ -1254,93 +1270,49 @@ ItemTooltip.BIS_SLOT_BUTTONS = {
 	ranged = "CharacterRangedSlot",
 }
 
---- The item ids newly best at `band` for `faction`, or {}.
-local function newAtBand(data, spec, band, faction)
-	local bySpec = type(data.bis_new) == "table" and data.bis_new[spec] or nil
-	local byBand = bySpec ~= nil and bySpec[band] or nil
-	return (byBand ~= nil and byBand[faction]) or {}
-end
-
-local function isAmong(ids, itemId)
-	for _, id in ipairs(ids) do
-		if id == itemId then
-			return true
-		end
-	end
-	return false
-end
-
---- The empty-slot row's right-aligned tag, as { text, color }: "equipped"
---- beats "new at <band>" beats "BiS · lvl <band>".
-local function bisTag(itemId, band, equippedItemId, newIds)
-	if equippedItemId == itemId then
-		return { text = L.tooltipBisEquipped, color = "success" }
-	end
-	if isAmong(newIds, itemId) then
-		return { text = string.format(L.tooltipBisNew, band), color = "gold" }
-	end
-	return { text = string.format(L.tooltipBisDefaultTag, band), color = "muted" }
-end
-
---- The item's link once GetItemInfo knows it, else "item:<id>".
-function ItemTooltip.bisItemLink(itemId)
-	return Compat.displayLink(itemId)
-end
-
---- The empty-slot section's muted source line, "<kind> · <place>".
-local function bisSourceLine(sourceCode, sourceLabel)
-	if type(sourceLabel) ~= "string" or sourceLabel == "" then
-		return nil
-	end
-	local kindName = ItemTooltip.SOURCE_KIND_NAMES[sourceCode] or sourceCode
-	return string.format(L.tooltipBisSourceLabel, kindName, (sourceLabel:gsub(": ", " · ")))
-end
-
-ItemTooltip.BIS_ICON_SIZE = 18
-
---- The empty-slot section for one site slot, as draw ops: a "doubleline"
---- op for the pick (icon + link left, the tag right), then the item level
---- (once cached) and the muted source line. Empty in combat, with no class,
---- spec, band or pick. The second return is the pick for the compare tooltip.
-function ItemTooltip.bisLines(data, slot)
-	if data == nil or slot == nil then
-		return {}
-	end
-	if type(InCombatLockdown) == "function" and InCombatLockdown() then
-		return {}
-	end
-	local classSlug = Talents.playerClassSlug()
-	if classSlug == nil then
-		return {}
-	end
-	local ranks = Talents.readRanks(data)
-	local spec = Gear.specOf(data, classSlug, ranks)
-	local specBis = spec ~= nil and type(data.bis) == "table" and data.bis[spec] or nil
-	local band = Gear.bandFor(specBis, Compat.playerLevel())
+--- The section for an EMPTY paper-doll slot, in ItemTooltip.section's shape (lines,
+--- the compare tooltip's item, the ids still pending, the header): the band's pick
+--- for `slot` (Progress.slotPicks' pair rule: a pick worn in either slot of a pair is
+--- not offered, and one two slots share is offered on the first), the first of its
+--- alternatives the client can show when it cannot show the pick, printed exactly as
+--- the worn item prints its Next line, with no gain (nothing is worn to gain over),
+--- then its source line. `ctx` is ItemTooltip.section's without `item`. No lines below
+--- the band floor, with no faction, or with no pick for the slot.
+function ItemTooltip.emptySlotSection(ctx, slot)
+	local lines, pending = {}, {}
+	local data = ctx.data or {}
+	local current = ctx.current or nil
+	local head = { specWord = specName(data, ctx.spec), tag = current ~= nil and current.tag or nil, equipped = false }
+	local specBis = ctx.spec ~= nil and type(data.bis) == "table" and data.bis[ctx.spec] or nil
+	local band = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
 	if band == nil then
-		return {}
+		return lines, nil, pending, head
 	end
-	local faction = Compat.playerFaction()
-	local pick = faction ~= nil and Gear.pick(spec, band, faction, slot, data) or nil
+	local isMissing = ctx.isMissing or missingOf
+	local picks = Progress.slotPicks(data, ctx.spec, band, ctx.faction, ctx.equipped or {})
+	local pick = reachablePick(picks[slot], isMissing)
 	if pick == nil then
-		return {}
+		return lines, nil, pending, head
 	end
 	local itemId = pick.item_id
-	local tag = bisTag(itemId, band, itemIdOf(equippedLinkFor(slot)), newAtBand(data, spec, band, faction))
-	local link = ItemTooltip.bisItemLink(itemId)
-	local icon = Theme.inlineIcon(Compat.itemIcon(itemId), ItemTooltip.BIS_ICON_SIZE)
-	local ops = {
-		{ kind = "doubleline", left = icon .. " " .. link, right = tag.text, rightColor = tag.color },
-	}
-	local level = Compat.itemLevel(itemId)
-	if level ~= nil then
-		ops[#ops + 1] = { kind = "line", text = string.format(L.tooltipBisItemLevel, level), color = "muted" }
+	local name = pickNameOf(data, ctx.nameOf or Compat.itemName, pending, itemId)
+	if name == nil then
+		-- Not sent yet: wait for it (the hover redraws), never print "…".
+		pending[itemId] = true
+		return lines, nil, pending, head
 	end
-	local source = bisSourceLine(pick.kind, pick.source)
+	local upgrade = { name = name, hex = (ctx.qualityHex or qualityHexOf)(itemId), unit = ItemTooltip.unitOf(current) }
+	lines[1] = { kind = "next", itemId = itemId, upgrade = upgrade, color = "body",
+		text = ItemTooltip.nextLine(colored(name, upgrade.hex)) }
+	local source = ItemTooltip.sourceLine(pick)
 	if source ~= nil then
-		ops[#ops + 1] = { kind = "line", text = source, color = "muted" }
+		lines[2] = { kind = "source", pick = pick, text = source, color = "muted" }
 	end
-	return ops, { itemId = itemId, link = link }
+	local target
+	if (ctx.isCached or Compat.isItemCached)(itemId) then
+		target = { itemId = itemId, link = Compat.displayLink(itemId), label = L.tooltipCompareLabel }
+	end
+	return lines, target, pending, head
 end
 
 -- ---------------------------------------------------------------------
@@ -1373,10 +1345,10 @@ local function currentSpec(data)
 	return Gear.specOf(data, classSlug, Talents.readRanks(data)), classSlug
 end
 
---- Everything ItemTooltip.section reads, from the client. A field so a spec
---- can hand the hook a context of its own (no client mock).
-function ItemTooltip.contextFor(data, itemLink)
-	local id, itemType, itemSubType, equipLocation, _, classId, subClassId = Compat.itemInfoInstant(itemLink)
+--- Everything ItemTooltip.section reads from the client but the item: the data, the
+--- spec and its weights, the class, level, faction, what is worn and the build. The
+--- empty-slot hover reads this alone; the slot marks read it once for every slot.
+function ItemTooltip.baseContext(data)
 	local spec, classSlug = currentSpec(data)
 	local current = ItemTooltip.current
 	if current == nil and spec ~= nil then
@@ -1387,15 +1359,36 @@ function ItemTooltip.contextFor(data, itemLink)
 		classToken = classSlug ~= nil and classSlug:upper() or nil,
 		level = Compat.playerLevel(), faction = Compat.playerFaction(),
 		equipped = Gear.readEquipped(), build = Follow.build,
-		item = {
-			itemId = tonumber(id) or itemIdOf(itemLink), link = itemLink, equipLocation = equipLocation,
-			itemClass = classId or itemType, itemSubClass = subClassId or itemSubType,
-			stats = Gear.statsOf(itemLink),
-		},
 	}
 end
 
-local function cachedSection(itemLink)
+--- `base` (ItemTooltip.baseContext's) with the item `itemLink` read from the client.
+local function withItem(base, itemLink)
+	local id, itemType, itemSubType, equipLocation, _, classId, subClassId = Compat.itemInfoInstant(itemLink)
+	local ctx = {}
+	for key, value in pairs(base) do
+		ctx[key] = value
+	end
+	ctx.item = {
+		itemId = tonumber(id) or itemIdOf(itemLink), link = itemLink, equipLocation = equipLocation,
+		itemClass = classId or itemType, itemSubClass = subClassId or itemSubType,
+		stats = Gear.statsOf(itemLink),
+	}
+	return ctx
+end
+
+--- Everything ItemTooltip.section reads, from the client. A field so a spec
+--- can hand the hook a context of its own (no client mock).
+function ItemTooltip.contextFor(data, itemLink)
+	return withItem(ItemTooltip.baseContext(data), itemLink)
+end
+
+--- The section for `itemLink` ({ lines, target, pending, head }), computed once per
+--- link until the cache is reset; `base` (optional, ItemTooltip.baseContext's) saves
+--- reading the client again for every item when one caller asks for several (the
+--- slot marks). The hover and the slot marks read this one cache, so a slot's
+--- target corner and its hover's Next line can never disagree.
+function ItemTooltip.sectionFor(itemLink, base)
 	local cached = ItemTooltip.cache[itemLink]
 	if cached ~= nil then
 		return cached
@@ -1403,7 +1396,8 @@ local function cachedSection(itemLink)
 	local data = ItemTooltip.data
 	local entry = { lines = {}, pending = {} }
 	if data ~= nil then
-		entry.lines, entry.target, entry.pending, entry.head = ItemTooltip.section(ItemTooltip.contextFor(data, itemLink))
+		local ctx = base ~= nil and withItem(base, itemLink) or ItemTooltip.contextFor(data, itemLink)
+		entry.lines, entry.target, entry.pending, entry.head = ItemTooltip.section(ctx)
 	end
 	-- A section still waiting for a name is never kept: the next hover asks
 	-- again, even when the name arrived while another item was hovered.
@@ -1450,29 +1444,6 @@ local function opColor(key)
 		key = "tooltipMuted"
 	end
 	return Theme.rgb(Theme.HEX[key or "body"])
-end
-
---- The empty-slot section's header strip icon.
-ItemTooltip.HEADER_ICON_SIZE = Theme.SIZES.rotationHeaderIcon
-
---- Draws the empty-slot section's ops, its brand header first.
-local function drawOps(tooltip, ops)
-	if #ops == 0 then
-		return
-	end
-	local hr, hg, hb = opColor("gold")
-	tooltip:AddLine(Theme.inlineIcon(Theme.MEDIA.minimapIcon, ItemTooltip.HEADER_ICON_SIZE) .. " " .. L.addonName,
-		hr, hg, hb)
-	for _, op in ipairs(ops) do
-		if op.kind == "doubleline" then
-			local lr, lg, lb = opColor(op.leftColor)
-			local rr, rg, rb = opColor(op.rightColor)
-			tooltip:AddDoubleLine(op.left, op.right, lr, lg, lb, rr, rg, rb)
-		else
-			local r, g, b = opColor(op.color)
-			tooltip:AddLine(op.text, r, g, b)
-		end
-	end
 end
 
 --- The gap the client keeps between a double line's left and right text.
@@ -1586,23 +1557,15 @@ function ItemTooltip.fitLine(line, measure, room)
 	return { ItemTooltip.fitPlain(line.text, measure, room) }
 end
 
---- Draws the item section after the client's own lines: a blank row, the
---- header ("Forever Sixty" gold, the spec and the tag; "Equipped" muted at its
---- right on the item worn, or at the next row's right when the header needs
---- the room: ItemTooltip.fitHeader), then each line in its
---- colour, every one fitted to the client's own widest line (measured before
---- anything is added). Nothing at all with no lines and nothing worn.
-local function addLines(tooltip, itemLink)
-	-- A hover from before (another item) must not be redrawn onto this one.
-	ItemTooltip.activeHover = nil
-	local entry = cachedSection(itemLink)
+--- Draws a section (`entry`: { lines, target, pending, head }) after the lines already
+--- on `tooltip`: a blank row, the header ("Forever Sixty" gold, the spec and the tag;
+--- "Equipped" muted at its right on the item worn, or at the next row's right when the
+--- header needs the room: ItemTooltip.fitHeader), then each line in its colour, every
+--- one fitted to `room` as `measure` reads it (nil: drawn whole). Then the compare
+--- tooltip for the entry's target, and the hover `redraw` re-runs once an item it waits
+--- for arrives (ItemTooltip.onItemInfoReceived).
+local function drawEntry(tooltip, entry, measure, room, redraw)
 	local head = entry.head or {}
-	if #entry.lines == 0 and not head.equipped then
-		return
-	end
-	local measure, room = measureFor(tooltip)
-	-- The room every line was fitted to: the client's own width, never ours.
-	ItemTooltip.lastRoom = room
 	local header = ItemTooltip.fitHeader(head.specWord, head.tag, head.equipped, measure, room)
 	local mr, mg, mb = opColor("muted")
 	local doubles = type(tooltip.AddDoubleLine) == "function"
@@ -1642,22 +1605,39 @@ local function addLines(tooltip, itemLink)
 	if entry.target ~= nil then
 		Theme.showCompareTooltip(entry.target.itemId, entry.target.link, entry.target.label)
 	end
-	if entry.target == nil and next(entry.pending) == nil then
+	if entry.target == nil and next(entry.pending or {}) == nil then
 		return
 	end
 	ItemTooltip.activeHover = {
 		itemId = entry.target ~= nil and entry.target.itemId or nil,
 		pending = entry.pending,
-		redraw = function()
-			-- Re-running SetHyperlink re-fires the hook that called
-			-- onTooltip, so the tooltip is rebuilt with the data that
-			-- just arrived rather than gaining a second copy of the section.
-			if type(tooltip.SetHyperlink) == "function"
-				and type(tooltip.IsShown) == "function" and tooltip:IsShown() then
-				tooltip:SetHyperlink(itemLink)
-			end
-		end,
+		redraw = redraw,
 	}
+end
+
+--- Draws the item section after the client's own lines (drawEntry), every line
+--- fitted to the client's own widest line (measured before anything is added).
+--- Nothing at all with no lines and nothing worn.
+local function addLines(tooltip, itemLink)
+	-- A hover from before (another item) must not be redrawn onto this one.
+	ItemTooltip.activeHover = nil
+	local entry = ItemTooltip.sectionFor(itemLink)
+	local head = entry.head or {}
+	if #entry.lines == 0 and not head.equipped then
+		return
+	end
+	local measure, room = measureFor(tooltip)
+	-- The room every line was fitted to: the client's own width, never ours.
+	ItemTooltip.lastRoom = room
+	drawEntry(tooltip, entry, measure, room, function()
+		-- Re-running SetHyperlink re-fires the hook that called
+		-- onTooltip, so the tooltip is rebuilt with the data that
+		-- just arrived rather than gaining a second copy of the section.
+		if type(tooltip.SetHyperlink) == "function"
+			and type(tooltip.IsShown) == "function" and tooltip:IsShown() then
+			tooltip:SetHyperlink(itemLink)
+		end
+	end)
 end
 
 --- One guarded body for both hook shapes. A Lua error inside a tooltip hook
@@ -1759,16 +1739,17 @@ function ItemTooltip.registerUnit()
 	return nil
 end
 
+--- The client's paper-doll button for a site slot, or nil where this client has none.
 local function slotButton(slot)
-	local buttonName = ItemTooltip.BIS_SLOT_BUTTONS[slot]
-	return buttonName ~= nil and _G[buttonName] or nil
+	local buttonName = ItemTooltip.SLOT_BUTTONS[slot]
+	return buttonName ~= nil and Compat.clientGlobal(buttonName, "table") or nil
 end
 
 local function slotForOwner(owner)
 	if owner == nil then
 		return nil
 	end
-	for slot in pairs(ItemTooltip.BIS_SLOT_BUTTONS) do
+	for slot in pairs(ItemTooltip.SLOT_BUTTONS) do
 		if slotButton(slot) == owner then
 			return slot
 		end
@@ -1776,38 +1757,52 @@ local function slotForOwner(owner)
 	return nil
 end
 
+--- The client's own name for an empty slot ("Head"): its button's name less
+--- "Character", upper-cased (HEADSLOT), as the client's own slot tooltip reads it.
+local function slotTitle(slot)
+	local buttonName = ItemTooltip.SLOT_BUTTONS[slot]
+	return buttonName ~= nil and Compat.globalString(buttonName:gsub("^Character", ""):upper()) or nil
+end
+
 --- Whether the empty-slot section is already on a tooltip since its last
 --- OnTooltipCleared (weak keys: a tooltip nothing else holds is collected).
 local appendedSection = setmetatable({}, { __mode = "k" })
 
---- An EMPTY slot's section, appended onto `tooltip` unless already there.
+--- An EMPTY slot's section (ItemTooltip.emptySlotSection), appended onto `tooltip`
+--- unless already there. Drawn whole: the client's own line on an empty slot is the
+--- slot's name alone, far narrower than any section line.
 function ItemTooltip.appendEmptySlotSection(tooltip, slot, button)
 	if appendedSection[tooltip] then
 		return
 	end
-	local ops, target = ItemTooltip.bisLines(ItemTooltip.data, slot)
-	if #ops == 0 then
+	local data = ItemTooltip.data
+	if data == nil then
 		return
 	end
-	drawOps(tooltip, ops)
+	local entry = {}
+	entry.lines, entry.target, entry.pending, entry.head =
+		ItemTooltip.emptySlotSection(ItemTooltip.baseContext(data), slot)
+	ItemTooltip.activeHover = nil
+	local function redraw()
+		ItemTooltip.onSlotEnter(slot, button, true)
+	end
+	if #entry.lines == 0 then
+		if next(entry.pending) ~= nil then
+			-- The pick's name is on its way: draw the section when it comes.
+			ItemTooltip.activeHover = { pending = entry.pending, redraw = redraw }
+		end
+		return
+	end
+	drawEntry(tooltip, entry, nil, nil, redraw)
 	appendedSection[tooltip] = true
-	tooltip:Show()
-	if target == nil then
-		return
-	end
-	Theme.showCompareTooltip(target.itemId, target.link)
-	ItemTooltip.activeHover = {
-		itemId = target.itemId,
-		redraw = function()
-			appendedSection[tooltip] = nil
-			ItemTooltip.onSlotEnter(slot, button)
-		end,
-	}
 end
 
---- The character-frame slot buttons' own OnEnter: an EMPTY slot's section.
---- A slot holding an item is the item hook's.
-function ItemTooltip.onSlotEnter(slot, button)
+--- The character-frame slot buttons' own OnEnter: an EMPTY slot's section. A
+--- slot holding an item is the item hook's. The client's own tooltip for the slot
+--- (its name) stays when the client already drew it for this button; else, or
+--- with `rebuild` (an item the hover waited for arrived), the tooltip is built
+--- afresh: the slot's name, then the section.
+function ItemTooltip.onSlotEnter(slot, button, rebuild)
 	if ItemTooltip.slotDisabled or not Prefs.flag("tooltip") then
 		return
 	end
@@ -1815,9 +1810,17 @@ function ItemTooltip.onSlotEnter(slot, button)
 		return
 	end
 	local ok, err = pcall(function()
-		GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-		GameTooltip:ClearLines()
-		appendedSection[GameTooltip] = nil
+		local owned = type(GameTooltip.GetOwner) == "function" and GameTooltip:GetOwner() == button
+			and type(GameTooltip.IsShown) == "function" and GameTooltip:IsShown()
+		if rebuild or not owned then
+			GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+			GameTooltip:ClearLines()
+			appendedSection[GameTooltip] = nil
+			local title = slotTitle(slot)
+			if title ~= nil then
+				GameTooltip:AddLine(title, 1, 1, 1)
+			end
+		end
 		ItemTooltip.appendEmptySlotSection(GameTooltip, slot, button)
 	end)
 	if not ok then
@@ -1826,15 +1829,15 @@ function ItemTooltip.onSlotEnter(slot, button)
 	end
 end
 
---- Hooks every BIS_SLOT_BUTTONS global this client has. Idempotent.
-function ItemTooltip.registerBisSlotButtons()
-	if ItemTooltip.bisButtonsRegistered then
+--- Hooks every SLOT_BUTTONS global this client has. Idempotent.
+function ItemTooltip.registerSlotButtons()
+	if ItemTooltip.slotButtonsRegistered then
 		return
 	end
-	ItemTooltip.bisButtonsRegistered = true
-	for slot, buttonName in pairs(ItemTooltip.BIS_SLOT_BUTTONS) do
-		local button = _G[buttonName]
-		if type(button) == "table" and type(button.HookScript) == "function" then
+	ItemTooltip.slotButtonsRegistered = true
+	for slot in pairs(ItemTooltip.SLOT_BUTTONS) do
+		local button = slotButton(slot)
+		if button ~= nil and type(button.HookScript) == "function" then
 			button:HookScript("OnEnter", function(self)
 				ItemTooltip.onSlotEnter(slot, self)
 			end)
@@ -1932,7 +1935,7 @@ function ItemTooltip.register()
 	end
 	ItemTooltip.registered = true
 	ItemTooltip.registerUnit()
-	ItemTooltip.registerBisSlotButtons()
+	ItemTooltip.registerSlotButtons()
 	ItemTooltip.registerEmptySlotRefresh()
 	ItemTooltip.registerItemInfoRefresh()
 	if ItemTooltip.hasProcessor() then

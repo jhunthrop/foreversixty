@@ -470,6 +470,38 @@ describe("Progress.picksHere", function()
 		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", 20, "alliance", nil, {}))
 		assert.are.same({}, Progress.picksHere(HERE_DATA, "warrior-arms", nil, "alliance", "The Deadmines", {}))
 	end)
+
+	-- L4.1 ruling 5: an empty paper-doll slot's pick follows picksHere's pair rule,
+	-- read from the one function both call.
+	describe("Progress.slotPicks", function()
+		it("gives each slot the band's pick, wherever it drops", function()
+			local picks = Progress.slotPicks(HERE_DATA, "warrior-arms", 20, "alliance", {})
+			assert.are.equal(2317, picks.chest.item_id)
+			assert.are.equal(6089, picks.feet.item_id)
+			assert.are.equal(5187, picks.main_hand.item_id)
+		end)
+
+		it("offers a pick two slots share once, on the first in order", function()
+			local picks = Progress.slotPicks(HERE_DATA, "warrior-arms", 20, "alliance", {})
+			assert.are.equal(1156, picks.finger1.item_id)
+			assert.is_nil(picks.finger2)
+		end)
+
+		it("leaves out a pick worn in any slot, the other of a pair included", function()
+			local picks = Progress.slotPicks(HERE_DATA, "warrior-arms", 20, "alliance",
+				{ finger2 = { itemId = 1156 }, head = { itemId = 10399 } })
+			assert.is_nil(picks.finger1)
+			assert.is_nil(picks.finger2)
+			assert.is_nil(picks.head)
+			assert.are.equal(2317, picks.chest.item_id)
+		end)
+
+		it("gives nothing with no band, faction or spec", function()
+			assert.are.same({}, (Progress.slotPicks(HERE_DATA, "warrior-arms", nil, "alliance", {})))
+			assert.are.same({}, (Progress.slotPicks(HERE_DATA, "warrior-arms", 20, nil, {})))
+			assert.are.same({}, (Progress.slotPicks(HERE_DATA, nil, 20, "alliance", {})))
+		end)
+	end)
 end)
 
 describe("Progress.unspentPoints", function()

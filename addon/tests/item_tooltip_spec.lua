@@ -1125,6 +1125,70 @@ describe("ItemTooltip.section", function()
 			}, lines)
 		end)
 	end)
+
+	-- L4.1 ruling 5: an EMPTY paper-doll slot's hover is the section with the band's
+	-- pick for the slot, printed as the worn item's Next line and source line, with no
+	-- gain (nothing is worn to gain over); the old empty-slot section is gone.
+	describe("ItemTooltip.emptySlotSection", function()
+		local function empty(overrides)
+			local base = ctx(overrides)
+			base.item = nil
+			return base
+		end
+
+		it("prints the band's pick as the Next line, without a gain, then its source", function()
+			local lines, target, pending, head = ItemTooltip.emptySlotSection(empty({ equipped = {} }), "chest")
+			assert.are.same({ ItemTooltip.nextLine("Defias Overseer Chest"), NEXT_SOURCE }, texts(lines))
+			assert.are.equal(Theme.inlineColor("tooltipMuted", L.tooltipNextLabel) .. " Defias Overseer Chest",
+				lines[1].text)
+			assert.are.equal("next", lines[1].kind)
+			assert.are.equal(100, lines[1].itemId)
+			assert.are.equal("source", lines[2].kind)
+			assert.are.same({ itemId = 100, link = target.link, label = L.tooltipCompareLabel }, target)
+			assert.are.same({}, pending)
+			assert.are.same({ specWord = "Arms", tag = "default", equipped = false }, head)
+		end)
+
+		it("fits the Next line without a gain: the name alone, shortened only when it must be", function()
+			local upgrade = { name = "Defias Overseer Chest" }
+			assert.are.same({ ItemTooltip.nextLine("Defias Overseer Chest") }, ItemTooltip.fitNext(upgrade, nil, nil))
+			local measure = function(text) return #ItemTooltip.stripEscapes(text) end
+			local fitted = ItemTooltip.fitNext(upgrade, measure, 20)
+			assert.are.equal(1, #fitted)
+			assert.is_true(#ItemTooltip.stripEscapes(fitted[1]) <= 20)
+		end)
+
+		it("names a pick the client has not sent from the data, and waits for the client's own", function()
+			local data = setmetatable({ bisNames = { [100] = "Data Chest" } }, { __index = DATA })
+			local lines, target, pending = ItemTooltip.emptySlotSection(empty({ data = data, equipped = {},
+				nameOf = function() return nil end, isCached = function() return false end }), "chest")
+			assert.are.equal(ItemTooltip.nextLine("Data Chest"), lines[1].text)
+			assert.is_nil(target)
+			assert.is_true(pending[100])
+		end)
+
+		it("follows the pair rule: a pick two slots share once, and never one worn in the other slot", function()
+			local named = function(id) return id == 400 and "Quest Ring" or NAMES[id] end
+			local lines = ItemTooltip.emptySlotSection(empty({ equipped = {}, nameOf = named }), "finger1")
+			assert.are.equal(ItemTooltip.nextLine("Quest Ring"), lines[1].text)
+			assert.are.same({}, (ItemTooltip.emptySlotSection(empty({ equipped = {}, nameOf = named }), "finger2")))
+			local worn = { finger2 = { itemId = 400, link = "item:400", stats = {} } }
+			assert.are.same({}, (ItemTooltip.emptySlotSection(empty({ equipped = worn }), "finger1")))
+		end)
+
+		it("says nothing below the band floor, with no faction, or for a slot with no pick", function()
+			assert.are.same({}, (ItemTooltip.emptySlotSection(empty({ equipped = {}, level = 15 }), "chest")))
+			assert.are.same({}, (ItemTooltip.emptySlotSection(empty({ equipped = {}, faction = false }), "chest")))
+			assert.are.same({}, (ItemTooltip.emptySlotSection(empty({ equipped = {} }), "head")))
+		end)
+
+		it("goes to the first alternative the client can show when it cannot show the pick", function()
+			local lines = ItemTooltip.emptySlotSection(empty({ equipped = {},
+				isMissing = function(id) return id == 100 end }), "chest")
+			assert.are.equal(ItemTooltip.nextLine("Quest Chest"), lines[1].text)
+			assert.are.equal(101, lines[1].itemId)
+		end)
+	end)
 end)
 
 -- The tip2-mace figure ("Downgrade −5.7 DPS over Smite's Mighty Hammer" in

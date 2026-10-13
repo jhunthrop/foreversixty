@@ -572,4 +572,47 @@ describe("Options", function()
 		assert.are.equal(_G.ForeverSixtyDB.characters[key].export, outbox.export.code)
 		assert.are.equal("FS1:", outbox.export.code:sub(1, 4))
 	end)
+
+	-- L4.1 ruling 3: the marks refresh on both events; the equipment event stays
+	-- cheap (the tooltip cache and the marks, never a full chip refresh).
+	it("refreshes the slot marks on a bag or equipment change, the chip only on the bags", function()
+		local SlotMarks, Chip = require("SlotMarks"), require("Chip")
+		local marks, chips = 0, 0
+		SlotMarks.refresh = function()
+			marks = marks + 1
+		end
+		Chip.refresh = function()
+			chips = chips + 1
+		end
+		Options.onEvent(Options.frame, "PLAYER_EQUIPMENT_CHANGED", 5, false)
+		assert.are.equal(1, marks)
+		assert.are.equal(0, chips)
+		Options.onEvent(Options.frame, "BAG_UPDATE_DELAYED")
+		assert.are.equal(2, marks)
+		assert.are.equal(1, chips)
+	end)
+
+	it("registers the slot marks' hooks at load", function()
+		local SlotMarks = require("SlotMarks")
+		local registered = 0
+		SlotMarks.register = function()
+			registered = registered + 1
+		end
+		Options.register()
+		assert.are.equal(1, registered)
+		assert.are.equal(Options.data, SlotMarks.data)
+	end)
+
+	it("prints the slot marks' bag-addon line on /fs diag", function()
+		local SlotMarks = require("SlotMarks")
+		require("Theme").reset()
+		SlotMarks.diagLine = function()
+			return "the bag line"
+		end
+		local found = false
+		for _, line in ipairs(Options.handle("diag")) do
+			found = found or line == "the bag line"
+		end
+		assert.is_true(found)
+	end)
 end)
