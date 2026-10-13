@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"io"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -130,44 +131,92 @@ func readSummary(ctx context.Context, get Getter, reportID string, index int) (s
 // into line after reports were flagged (RerateFlagged), dispatched beside BackfillJobCommand.
 const RerateFlaggedJobCommand = "rating-rerate-flagged"
 
-// RerateCounts is what one RerateFlagged run did, for its log line.
-type RerateCounts struct {
-	// Characters is how many characters have a rated row in a flagged report.
+// rerateGroup is why a character's score moved with a flagged report, the order
+// RerateFlagged takes them in: a character is counted in the first group it is in.
+type rerateGroup int
+
+const (
+	// rerateInFlagged: the character has a rated row in a flagged report (its fights,
+	// as_of, discipline and parses counted it).
+	rerateInFlagged rerateGroup = iota
+	// rerateGuildmate: the character has a rated fight in the attendance window in a report of
+	// a guild with a flagged report (the night counted toward its attendance's nights).
+	rerateGuildmate
+	// rerateLinked: the character is linked to the same account as a character in a flagged
+	// report (the report's kills counted toward its experience).
+	rerateLinked
+)
+
+// RerateGroup is what one RerateFlagged run did for one group of characters.
+type RerateGroup struct {
+	// Characters is how many characters are in the group.
 	Characters int
-	// Fights is how many distinct fights were picked: each such character's newest rated
-	// fight in a public, unflagged report (a raid's whole roster usually shares one). A
-	// character with no such fight left has no score and nothing to roll it onto.
+	// Fights is how many distinct fights the group's characters picked that no earlier
+	// group had picked: each character's newest rated fight in a public, unflagged report (a
+	// raid's whole roster usually shares one). A character with no such fight left has no
+	// score and nothing to roll it onto.
 	Fights int
 	// Rerated is how many of those fights were re-rated and rolled up; Failed how many could
 	// not be (each logged).
 	Rerated, Failed int
 }
 
+// RerateCounts is what one RerateFlagged run did, per group, for its log line.
+type RerateCounts struct {
+	// Flagged is the characters with a rated row in a flagged report.
+	Flagged RerateGroup
+	// Guildmates is the other characters with a rated fight in the last AttendanceWindow in a
+	// report of a guild that has a flagged report: the night was one of their guild's nights,
+	// so their attendance's denominator moved, whether they were there or not.
+	Guildmates RerateGroup
+	// Linked is the other characters linked to the account of a character in Flagged: the
+	// flagged report's kills counted toward their experience.
+	Linked RerateGroup
+}
+
+// Failed is how many fights of every group could not be re-rated.
+func (c RerateCounts) Failed() int { return c.Flagged.Failed + c.Guildmates.Failed + c.Linked.Failed }
+
+// Fights is how many distinct fights every group picked.
+func (c RerateCounts) Fights() int { return c.Flagged.Fights + c.Guildmates.Fights + c.Linked.Fights }
+
+func (c *RerateCounts) group(g rerateGroup) *RerateGroup {
+	switch g {
+	case rerateGuildmate:
+		return &c.Guildmates
+	case rerateLinked:
+		return &c.Linked
+	default:
+		return &c.Flagged
+	}
+}
+
 // RerateFlagged re-rates, through Backfill's own path (the fight's stored summary read back
 // out of the bucket, then RateFight), the newest rated fight in a public, unflagged report
-// of every character with a rated row in a flagged report, and rolls the fight's players'
+// of every character whose score a flagged report moved, and rolls the fight's players'
 // Forever Scores up onto it (RollUpScores, the rater's own second step). The score's inputs
 // skip a flagged report (presence.EvidenceReport), so the score rolled up is the one without
 // it, and the snapshot the character page's score history ends on drops back. The model
 // version is not bumped: the formula is the same, only its inputs changed.
+//
+// The affected set is three groups (RerateCounts): the characters in a flagged report; the
+// guild-mates of a flagged night (every character with a rated fight in the attendance window
+// in that guild's reports, whose attendance counted the night among the guild's nights,
+// present or absent); and the characters linked to the account of a character in a flagged
+// report (whose experience counted its kills). A character is in the first group it fits.
 //
 // It is idempotent: a second run picks the same fights and writes the same figures (the
 // score as it stands now). A flagged report's own rows are left in place, never read; older
 // snapshots, which recorded the score of their own day, are left as they were. The roll-up
 // writes the score as it stands now for every player of a picked fight, which is the
 // rater's own rule. A run with no bucket configured is a no-op, logged, as Backfill's is.
-//
-// The affected set is the characters with a rated row in a flagged report. A guildmate who
-// missed that night (whose attendance counted it as an absence) and a linked alt (whose
-// experience counted its kills) keep their newest snapshot until their next ordinary
-// roll-up; their live score is already right. Widening the set is task L6.12.
 func RerateFlagged(ctx context.Context, d BackfillDeps) (RerateCounts, error) {
 	var out RerateCounts
 	if d.Store == nil || d.Summaries == nil {
 		d.logf().Warn("rating", "op", "rerate_flagged", "err", "no-op: Store or Summaries is nil (this deployment has no bucket configured)")
 		return out, nil
 	}
-	picks, err := d.Store.flaggedRerates(ctx)
+	picks, err := d.Store.flaggedRerates(ctx, time.Now().Add(-AttendanceWindow))
 	if err != nil {
 		return out, fmt.Errorf("rating: rerate flagged: %w", err)
 	}
@@ -177,7 +226,8 @@ func RerateFlagged(ctx context.Context, d BackfillDeps) (RerateCounts, error) {
 	}
 	seen := map[fightKey]bool{}
 	for _, p := range picks {
-		out.Characters++
+		g := out.group(p.group)
+		g.Characters++
 		if p.ReportID == "" {
 			continue
 		}
@@ -186,13 +236,13 @@ func RerateFlagged(ctx context.Context, d BackfillDeps) (RerateCounts, error) {
 			continue
 		}
 		seen[k] = true
-		out.Fights++
-		if err := rerateFight(ctx, d, p); err != nil {
+		g.Fights++
+		if err := rerateFight(ctx, d, p.staleFight); err != nil {
 			d.logf().Error("rating", "op", "rerate_flagged", "report", p.ReportID, "fight", p.FightIndex, "err", err)
-			out.Failed++
+			g.Failed++
 			continue
 		}
-		out.Rerated++
+		g.Rerated++
 	}
 	return out, nil
 }

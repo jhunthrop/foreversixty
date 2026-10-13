@@ -128,7 +128,8 @@ func (s *Store) attendance(ctx context.Context, guildID int64, keys []string) (i
 }
 
 // bestParses is character_key -> that character's single best kill-fight parse across the
-// guild's own reports - dps for every role but healer, hps for healer, matching
+// guild's own reports that are evidence (presence.EvidenceReport: not private, not flagged) -
+// dps for every role but healer, hps for healer, matching
 // rankings.Store's own metricOf convention without importing that package.
 func (s *Store) bestParses(ctx context.Context, guildID int64) (map[string]BestParse, error) {
 	rows, err := s.Pool.Query(ctx, `
@@ -137,7 +138,7 @@ func (s *Store) bestParses(ctx context.Context, guildID int64) (map[string]BestP
 		from fight_metrics m
 		join reports r on r.id = m.report_id
 		join fights f on f.report_id = m.report_id and f.fight_index = m.fight_index
-		where r.guild_id = $1 and m.kill and m.state <> 'removed'
+		where r.guild_id = $1 and m.kill and m.state <> 'removed' and `+presence.EvidenceReport("r")+`
 		order by m.player_key,
 		  (case when m.role = 'healer' then coalesce(m.metric_hps, 0) else coalesce(m.metric_dps, 0) end) desc`,
 		guildID)
@@ -181,13 +182,13 @@ type ratingComponentScore struct {
 }
 
 // latestRatings is character_key -> its latest sufficient rating_scores row's overall and
-// six named components, for the guild's own reports.
+// six named components, for the guild's own reports that are evidence (presence.EvidenceReport).
 func (s *Store) latestRatings(ctx context.Context, guildID int64) (map[string]RatingView, error) {
 	rows, err := s.Pool.Query(ctx, `
 		select distinct on (rs.player_key) rs.player_key, rs.overall, rs.components
 		from rating_scores rs
 		join reports r on r.id = rs.report_id
-		where r.guild_id = $1 and not coalesce(rs.insufficient, false)
+		where r.guild_id = $1 and not coalesce(rs.insufficient, false) and `+presence.EvidenceReport("r")+`
 		order by rs.player_key, rs.fought_at desc`, guildID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: latest ratings: %w", err)

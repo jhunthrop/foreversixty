@@ -142,3 +142,15 @@ func (h *httpHarness) data(res *http.Response, into any) {
 		}
 	}
 }
+
+// seedRankedReport inserts the public, complete report a hand-written fight_metrics row
+// belongs to: the ingest never writes a ranked row without its report, and every reader of
+// ranked rows joins it (presence.EvidenceReport).
+func seedRankedReport(t *testing.T, pool *pgxpool.Pool, guildID int64, id string) {
+	t.Helper()
+	if _, err := pool.Exec(context.Background(),
+		`insert into reports (id, guild_id, visibility, status) values ($1, $2, 'public', 'complete')
+		 on conflict (id) do nothing`, id, guildID); err != nil {
+		t.Fatal(err)
+	}
+}

@@ -5,7 +5,9 @@
 // every role) and, matching rankings.Store.Guild's own existing choice for this same kind of
 // aggregate, not filtered by individual report visibility - a progression count is a
 // guild-wide stat, not report content; only the report list shown to a given viewer is
-// gated by visibility, and this endpoint shows no report list.
+// gated by visibility, and this endpoint shows no report list. The best parse per role, a
+// parse a player sees and opens, is read from reports that are evidence (presence.EvidenceReport:
+// not private, not flagged), as every other parse reader is (task L6.12).
 //
 // The tier (Barrow Deeps/Hyjal Summit/Onyxia's Lair, Onyxia the one published encounter)
 // is hardcoded rather than read from data/curated/loot/forever-raid-phases.json, matching
@@ -26,6 +28,7 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 const (
@@ -201,6 +204,8 @@ func (s *Store) encounterProgress(ctx context.Context, guildID, encounterID int6
 	return ep, ep.Kills > 0, nil
 }
 
+// bestByRole is the guild's best kill parse on encounterID for role, from its reports that are
+// evidence (presence.EvidenceReport: not private, not flagged); false when it has none.
 func (s *Store) bestByRole(ctx context.Context, guildID, encounterID int64, role string) (ParseRef, bool, error) {
 	metric := roleMetric(role)
 	orderCol := "metric_dps"
@@ -214,6 +219,7 @@ func (s *Store) bestByRole(ctx context.Context, guildID, encounterID int64, role
 		       coalesce(m.`+orderCol+`, 0), m.report_id, m.fight_index
 		from fight_metrics m join reports r on r.id = m.report_id
 		where r.guild_id = $1 and m.encounter_id = $2 and m.role = $3 and m.kill and m.state <> 'removed'
+		  and `+presence.EvidenceReport("r")+`
 		order by coalesce(m.`+orderCol+`, 0) desc limit 1`,
 		guildID, encounterID, role).Scan(&ref.Name, &ref.Class, &ref.Spec, &ref.Value, &ref.ReportID, &ref.FightIndex)
 	if errors.Is(err, pgx.ErrNoRows) {

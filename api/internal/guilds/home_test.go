@@ -80,6 +80,8 @@ func TestHomeRosterHonoursConsent(t *testing.T) {
 	if err := db.EnsureMetricsPartitions(ctx, h.pool, time.Now(), 0); err != nil {
 		t.Fatal(err)
 	}
+	seedRankedReport(t, h.pool, gid, "homefight1")
+	seedRankedReport(t, h.pool, gid, "homefight2")
 
 	rosterMember := seedUser(t, h.pool, "roster-consent@example.com")
 	seedCharacter(t, h.pool, gid, rosterMember, "us/hardcore/rosterconsent", "member", true)

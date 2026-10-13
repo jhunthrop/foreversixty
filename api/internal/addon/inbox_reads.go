@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
@@ -32,8 +33,8 @@ type lastRaidFight struct {
 }
 
 // lastRaidFights reads, for each of keys, every rated boss fight of its last raid: the
-// newest report that is not private (reports.Ranked) holding a rated fight of the
-// character fought since since, oldest fight first. A card the engine marked insufficient
+// newest report that is evidence (presence.EvidenceReport: not private, not flagged) holding
+// a rated fight of the character fought since since, oldest fight first. A card the engine marked insufficient
 // is not a rated fight here: its overall is a zero it cannot support. The boss's name is
 // the fight's own name, else the newest name any fight recorded for the encounter (the
 // names rankings.Store.EncounterNames reads).
@@ -52,7 +53,7 @@ func (s *Store) lastRaidFights(ctx context.Context, keys []string, since time.Ti
 		          rs.adherence::float8 as adherence,
 		          rs.deaths is not null as known
 		     from rating_scores rs join reports r on r.id = rs.report_id
-		    where rs.player_key = any($1) and r.visibility <> 'private'
+		    where rs.player_key = any($1) and `+presence.EvidenceReport("r")+`
 		      and not coalesce(rs.insufficient, false) and rs.fought_at >= $2
 		 ), newest as (
 		   select distinct on (player_key) player_key, report_id

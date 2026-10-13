@@ -113,6 +113,10 @@ func ExecuteToTarget(req api.SimRequest, progress io.Writer) (api.SimResult, err
 	return pooled, nil
 }
 
+// afterSubSim, when set, runs each time a sub-sim of a weights sweep has ended and before the
+// next one starts: the gap between two engine sims. It is nil outside tests.
+var afterSubSim func()
+
 // executeWeights computes stat weights natively, and the baseline DPS beside them: one
 // weights run answers with both (the in-game "Sim me" request is one such run, and its
 // sim_result reads DPS and error off this result).
@@ -124,8 +128,8 @@ func ExecuteToTarget(req api.SimRequest, progress io.Writer) (api.SimResult, err
 //
 //   - core.StatWeightRequests builds the baseline request and one low/high pair per stat,
 //     with the halved iteration count and the shared seed that line their random streams up;
-//   - each request runs to its result, the baseline first, on the engine's concurrent
-//     entry point (the single-threaded one for a test request, as the engine itself picks);
+//   - each request runs to its result, the baseline first, on the engine's concurrent entry
+//     point (BuildWeights never makes a test request, so the single-threaded one never applies);
 //   - core.StatWeightCompute turns the baseline and the pairs into the weights.
 //
 // So the weights are the ones StatWeightsAsync would compute, and the baseline's Summary,
@@ -153,14 +157,10 @@ func executeWeights(req api.SimRequest, progress io.Writer) (api.SimResult, erro
 		total += pair.RequestLow.SimOptions.Iterations + pair.RequestHigh.SimOptions.Iterations
 		sims += 2
 	}
-	entry := core.RunRaidSimConcurrentAsync
-	if data.BaseRequest.SimOptions.GetIsTest() {
-		entry = core.RunRaidSimAsync
-	}
-
 	var current atomic.Value
 	current.Store("")
-	defer onInterruptFunc(func() string { return current.Load().(string) })()
+	interrupted, stop := onInterruptFunc(func() string { return current.Load().(string) })
+	defer stop()
 
 	var enc *json.Encoder
 	if progress != nil {
@@ -183,10 +183,16 @@ func executeWeights(req api.SimRequest, progress io.Writer) (api.SimResult, erro
 	// counts are the honest progress and the iteration count alone would restart per stat:
 	// they ride the same three fields a bulk stage uses.
 	run := func(r *proto.RaidSimRequest) (*proto.RaidSimResult, error) {
+		// A signal that landed while no sub-sim was registered to take it (between two of them,
+		// or before the engine registered this one) is latched: the next sub-sim never starts,
+		// and one that ran to its end anyway is not used.
+		if interrupted() {
+			return nil, adapter.ErrAborted
+		}
 		id := runID()
 		current.Store(id)
 		reporter := make(chan *proto.ProgressMetrics, 32)
-		entry(r, reporter, id)
+		core.RunRaidSimConcurrentAsync(r, reporter, id)
 		running = 0
 		res := simdrain.ToResult(reporter, func(p *proto.ProgressMetrics) {
 			running = p.CompletedIterations
@@ -212,6 +218,12 @@ func executeWeights(req api.SimRequest, progress io.Writer) (api.SimResult, erro
 				return nil, err
 			}
 			return nil, fmt.Errorf("the sim failed: %w", err)
+		}
+		if interrupted() {
+			return nil, adapter.ErrAborted
+		}
+		if afterSubSim != nil {
+			afterSubSim()
 		}
 		return res, nil
 	}

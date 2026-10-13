@@ -250,8 +250,11 @@ func TestRerateFlaggedRollsTheScoreBackDown(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if got != (RerateCounts{Characters: 1, Fights: 1, Rerated: 1}) {
-			t.Errorf("run %d: counts %+v, want 1 character, 1 fight, 1 re-rated, none failed", run, got)
+		// The main's two alts are linked to its account; neither has a rated fight to roll onto.
+		wantCounts := RerateCounts{Flagged: RerateGroup{Characters: 1, Fights: 1, Rerated: 1},
+			Linked: RerateGroup{Characters: 2}}
+		if got != wantCounts {
+			t.Errorf("run %d: counts %+v, want %+v", run, got, wantCounts)
 		}
 		score, tier, computed := snapshot()
 		if score != want.Score || tier != want.Tier {
@@ -282,5 +285,156 @@ func TestRerateFlaggedRollsTheScoreBackDown(t *testing.T) {
 	rows.Close()
 	if len(versions) != 1 || versions[0] != ratingengine.DefaultModelVersion {
 		t.Errorf("model versions %v, want only %s (no bump)", versions, ratingengine.DefaultModelVersion)
+	}
+}
+
+// Task L6.12: the re-rate reaches everyone whose score the flagged night moved, not only the
+// characters in it. On one flagged guild night: the main was there (its fights, as_of,
+// discipline); a guild-mate who missed it had it counted as an absence (attendance's
+// denominator); and the main's alt, never in that guild, had the night's one unique kill
+// counted (experience, across the account's linked characters). Each gets its newest clean
+// fight re-rated and its score rolled back onto it; a second run changes nothing.
+func TestRerateFlaggedReachesTheNightsGuildmatesAndTheAccountsAlts(t *testing.T) {
+	fx := seedLoggedRaider(t)
+	ctx := context.Background()
+	flagged, mateKey, altReport := sv2Report+"c", "us/normal/sv2mate", sv2Report+"alt"
+	t.Cleanup(func() {
+		bg := context.Background()
+		fx.pool.Exec(bg, `delete from guild_characters where character_key = $1`, mateKey)
+		fx.pool.Exec(bg, `delete from characters where key = $1`, mateKey)
+		fx.pool.Exec(bg, `delete from users where email = 'scorev2-mate@example.com'`)
+	})
+	var mateUser int64
+	if err := fx.pool.QueryRow(ctx, `insert into users (email) values ('scorev2-mate@example.com')
+		on conflict (email) do update set email = excluded.email returning id`).Scan(&mateUser); err != nil {
+		t.Fatal(err)
+	}
+	mustExec(t, fx.pool, `insert into characters (key, region, ruleset, name, class, user_id)
+		values ($1, 'us', 'normal', 'Sv2mate', 'Warrior', $2) on conflict (key) do update set user_id = excluded.user_id`,
+		mateKey, mateUser)
+	mustExec(t, fx.pool, `insert into guild_characters (guild_id, character_key, user_id, verified_at)
+		values ($1, $2, $3, now()) on conflict (guild_id, character_key) do update set verified_at = now()`,
+		fx.guildID, mateKey, mateUser)
+
+	rosterOf := func(name, guid string) summary.Summary {
+		row := summary.RosterRow{GUID: guid, Name: name, Class: "Warrior", Spec: "Arms", Role: "dps",
+			ExecutionScore: execScorePtr(0.8)}
+		return summary.Summary{EncounterID: sv2Encounter, Difficulty: 3, DurationMS: 180000, Kill: true,
+			Roster: []summary.RosterRow{row}, Combatants: []summary.CombatantRow{preparedCombatant(guid)}}
+	}
+	rate := func(reportID string, index int, foughtAt time.Time, sum summary.Summary) RatedFight {
+		t.Helper()
+		mustExec(t, fx.pool, `insert into fights (report_id, fight_index, encounter_id, name, difficulty, kill, start_ms)
+			values ($1, $2, $3, 'Score v2 boss', 3, true, $4)`, reportID, index, sum.EncounterID, foughtAt.UnixMilli())
+		f := RatedFight{ReportID: reportID, FightIndex: index, Region: "us", Ruleset: "normal",
+			FoughtAt: foughtAt, EncounterID: sum.EncounterID, Summary: sum}
+		if err := fx.store.RateFight(ctx, f); err != nil {
+			t.Fatal(err)
+		}
+		return f
+	}
+	nightOf := func(reportID string) time.Time {
+		t.Helper()
+		var at time.Time
+		if err := fx.pool.QueryRow(ctx, `select created_at from reports where id = $1`, reportID).Scan(&at); err != nil {
+			t.Fatal(err)
+		}
+		return at
+	}
+
+	// The guild-mate was at the first two nights and missed the flagged third.
+	mateSum := rosterOf("Sv2mate", "sv2-mate")
+	rate(sv2Report+"a", 5, nightOf(sv2Report+"a").Add(80*time.Minute), mateSum)
+	mateFight := rate(sv2Report+"b", 5, nightOf(sv2Report+"b").Add(80*time.Minute), mateSum)
+	// The alt raided once, outside the guild.
+	mustExec(t, fx.pool, `insert into reports (id, owner_id, title, visibility, zone, status, created_at)
+		values ($1, $2, 'Alt night', 'public', 'Molten Core', 'complete', $3)`,
+		altReport, fx.userID, nightOf(sv2Report+"b").Add(24*time.Hour))
+	altSum := rosterOf("Sv2alta", "sv2-alta")
+	altFight := rate(altReport, 1, nightOf(altReport).Add(15*time.Minute), altSum)
+	// The flagged night holds a kill nobody on the account made anywhere else.
+	unique := nightOf(flagged).Add(2 * time.Hour)
+	if err := db.EnsureRatingsPartition(ctx, fx.pool, unique); err != nil {
+		t.Fatal(err)
+	}
+	mustExec(t, fx.pool, `insert into rating_scores (report_id, fight_index, player_key, overall, components,
+		model_version, fought_at, kill, encounter_id) values ($1, 7, $2, 50, '[]', $3, $4, true, $5)`,
+		flagged, fx.main, ratingengine.DefaultModelVersion, unique, sv2Encounter+6)
+
+	// The rater rolled both scores up while the flagged night still counted.
+	snapshot := func(f RatedFight, key string) (score int, computed time.Time) {
+		t.Helper()
+		if err := fx.pool.QueryRow(ctx, `select coalesce(score, -1), computed_at from rating_scores
+			where report_id = $1 and fight_index = $2 and player_key = $3`, f.ReportID, f.FightIndex, key).
+			Scan(&score, &computed); err != nil {
+			t.Fatal(err)
+		}
+		return score, computed
+	}
+	type member struct {
+		name, key      string
+		fight          RatedFight
+		before, want   int
+		computedBefore time.Time
+	}
+	members := []*member{{name: "guild-mate", key: mateKey, fight: mateFight}, {name: "alt", key: fx.altA, fight: altFight}}
+	for _, m := range members {
+		if err := fx.store.RollUpScores(ctx, m.fight); err != nil {
+			t.Fatal(err)
+		}
+		m.before, m.computedBefore = snapshot(m.fight, m.key)
+	}
+	flagReport(t, fx, flagged)
+	for _, m := range members {
+		sc, err := fx.store.ScoreV2(ctx, m.key)
+		if err != nil {
+			t.Fatal(err)
+		}
+		m.want = sc.Score
+		if m.want == m.before {
+			t.Fatalf("the fixture's flagged night does not move the %s's score (%d)", m.name, m.before)
+		}
+	}
+
+	objects := map[string][]byte{}
+	for _, f := range []RatedFight{mateFight, altFight} {
+		body, err := json.Marshal(f.Summary)
+		if err != nil {
+			t.Fatal(err)
+		}
+		objects[store.Keys{ReportID: f.ReportID}.FightSummary(f.FightIndex)] = body
+	}
+	mainSum := rosterOf("Sv2main", "sv2-g")
+	mainSum.EncounterID = sv2Encounter + 3 // the newest clean fight's own boss
+	mainBody, err := json.Marshal(mainSum)
+	if err != nil {
+		t.Fatal(err)
+	}
+	objects[store.Keys{ReportID: sv2Report + "b"}.FightSummary(4)] = mainBody
+	deps := BackfillDeps{Store: fx.store, Summaries: fakeGetter{objects: objects}}
+	want := RerateCounts{
+		Flagged:    RerateGroup{Characters: 1, Fights: 1, Rerated: 1},
+		Guildmates: RerateGroup{Characters: 1, Fights: 1, Rerated: 1},
+		// The main's other alt has no rated fight, so no score to roll up.
+		Linked: RerateGroup{Characters: 2, Fights: 1, Rerated: 1},
+	}
+	for run := 1; run <= 2; run++ {
+		got, err := RerateFlagged(ctx, deps)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != want {
+			t.Errorf("run %d: counts %+v, want %+v", run, got, want)
+		}
+		for _, m := range members {
+			score, computed := snapshot(m.fight, m.key)
+			if score != m.want {
+				t.Errorf("run %d: the %s's newest clean fight's snapshot is %d, want %d (the score without the flagged night; it was %d)",
+					run, m.name, score, m.want, m.before)
+			}
+			if !computed.After(m.computedBefore) {
+				t.Errorf("run %d: the %s's fight was not re-rated (computed_at %v, was %v)", run, m.name, computed, m.computedBefore)
+			}
+		}
 	}
 }

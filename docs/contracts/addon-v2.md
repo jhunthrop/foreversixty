@@ -162,12 +162,14 @@ ForeverSixtyInbox = {
   messages = {
     { type = "build",      character = "us/normal/obnoxious", name = "Arms raid", code = "FSB1:..." },
     { type = "upgrade",    character = ..., slot = "chest", item_id = 6627, item_name = ..., source = ..., delta = 4.2, unit = "dps" },
-    { type = "weights",    character = ..., spec = "warrior-arms", weights = { {stat="attack_power", weight=1}, ... }, caps = {"hit"}, dps_per_point = 0.42, generated_at = "2026-11-04T14:11:00Z", export_seen_at = "2026-11-04T14:03:00Z" },
+    { type = "weights",    character = ..., spec = "warrior-arms", weights = { {stat="attack_power", weight=1}, ... },
+      caps = {"hit"}, dps_per_point = 0.42, generated_at = "2026-11-04T14:11:00Z", export_seen_at = "2026-11-04T14:03:00Z" },
     { type = "sim_result", character = ..., spec = ..., dps = 412.6, error = 3.1, generated_at = ..., slots = { {slot="chest", item_id=6627, delta=4.2}, ... } },
     { type = "last_raid",  character = ..., report_id = "r_...", date = "2026-12-09", bosses = { {name="Lucifron", percentile=71, biggest_loss="downtime", loss_seconds=18, deaths=0, consumables_missed={"flask"}, adherence=0.82}, ... } },
     { type = "loot_values", character = ..., raid = "Molten Core", items = { [17076] = { value = 6.3, unit = "dps", planned = true }, ... } },
     { type = "guild",      character = ..., guild_name = ..., claim_state = ..., pending_approvals = 2, rank = "officer" },
-    { type = "ack",        character = ..., export_seen_at = "2026-11-04T14:03:00Z", sim_request_state = "done", requested_at = "2026-11-04T14:11:00Z" },
+    { type = "ack",        character = ..., export_seen_at = "2026-11-04T14:03:00Z", sim_request_state = "done",
+      requested_at = "2026-11-04T14:11:00Z" },
   },
 }
 ```
@@ -215,9 +217,9 @@ Notes for the reader:
   `percentile` is the fight card's own overall (0 to 100). `loss_seconds` is the downtime
   seconds when the loss is downtime, else the seconds the player lay dead, else 0.
   `consumables_missed` is a list even when empty. One `last_raid` per character, for its
-  newest report that is not private with a rated fight in the last 14 days; none without one. A
-  fight rated before migration 0036 has none of the stored facts a boss line shows and is left
-  out of `last_raid` rather than shown as zeros.
+  newest report that is neither private nor flagged with a rated fight in the last 14 days; none
+  without one. A fight rated before migration 0036 has none of the stored facts a boss line
+  shows and is left out of `last_raid` rather than shown as zeros.
 - `weights.dps_per_point` is the DPS (healing per second for a healer) one point of the stat
   whose weight is exactly 1 is worth, from the data build's `dps-per-point.json` for the spec;
   absent for a spec that file has no entry for (the tanks), and absent when the run's
@@ -368,10 +370,13 @@ Notes for the reader:
   experience, parses, attendance, discipline and `item_level` never read it, and neither do
   `best_parses` or a guild's `nights` and `standing`. A character whose only rated fights are
   in flagged reports has no score, so it gets a no-logs record. The site keeps a flagged
-  report's rows until moderation withdraws them but never reads them. When reports are
-  flagged, a one-off job (`rating-rerate-flagged`) re-rates the newest clean fight of every
-  character in them, so the stored score history ends on the score without the flagged
-  report. The formula and its model version do not change.
+  report's rows until moderation withdraws them, but nothing a player or guild sees reads
+  them: not this file, the inbox (contract 3's `last_raid`), the site's rating pages or its
+  guild pages. When reports are flagged, a one-off job (`rating-rerate-flagged`) re-rates the
+  newest clean fight of every character whose score they moved (the characters in them, their
+  guild-mates of that night, and the characters linked to the same accounts), so the stored
+  score history ends on the score without the flagged report. The formula and its model
+  version do not change.
 - **Who is in the file.** Every character with a rated fight in a public, unflagged report in
   the last 90 days, and every verified guild member, has a record; `rating.ScoreV2` alone
   decides which kind: a score is a scored record, and a character with no rated fight in a

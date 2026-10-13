@@ -209,6 +209,7 @@ func TestHomeStandingRanksAmongVerifiedSameSpecGearConsentPeers(t *testing.T) {
 		seedCharacter(t, h.pool, gid, uid, key, "member", true)
 		seedExport(t, h.pool, uid, key, "us", "hardcore", key)
 		recomputeMembership(t, h.pool, gid, uid)
+		seedRankedReport(t, h.pool, gid, "standing-"+key)
 		if _, err := h.pool.Exec(ctx,
 			`insert into fight_metrics (report_id, fight_index, player_key, class, spec, ilvl, fought_at)
 			 values ($1, 0, $2, $3, $4, $5, now())`, "standing-"+key, key, class, spec, ilvl); err != nil {

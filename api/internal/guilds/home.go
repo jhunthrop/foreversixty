@@ -13,6 +13,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // HomeReportsPerPage is the page size of the guild home's "this week's
@@ -269,6 +270,9 @@ func (s *Store) HomeReports(ctx context.Context, guildID, userID int64, verified
 // invite rows excluded — they have no class/spec/item level to show),
 // verified and unverified both, gear columns withheld in the query
 // itself for any row whose account has not consented to show them.
+// Class, spec, role, item level and faction are the character's newest
+// ranked row in a report that is evidence (presence.EvidenceReport: not
+// private, not flagged).
 // "Logged recently" (the literal `interval '24 hours'` below) is a
 // 24-hour proxy for "ran the companion recently", in the absence of a
 // real raid-night concept to anchor to. MayRemove is computed per row
@@ -291,8 +295,10 @@ func (s *Store) HomeRoster(ctx context.Context, guildID int64, g Guild, actorID 
 		join addon_exports ae on ae.character_key = gc.character_key
 		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id
 		left join lateral (
-		  select class, spec, role, ilvl, faction from fight_metrics
-		  where player_key = gc.character_key order by fought_at desc limit 1
+		  select m.class, m.spec, m.role, m.ilvl, m.faction
+		  from fight_metrics m join reports r on r.id = m.report_id
+		  where m.player_key = gc.character_key and `+presence.EvidenceReport("r")+`
+		  order by m.fought_at desc limit 1
 		) fm on true
 		where gc.guild_id = $1 and gc.character_key not like 'account:%'
 		order by case gc.rank when 'leader' then 0 when 'officer' then 1 else 2 end, ae.name

@@ -29,8 +29,9 @@ package rating
 // rewriting its rows and does not roll up, so a backfill-re-rated row has NULL snapshot
 // columns and is left out of the history (a date keeps a point only while one of its fights
 // still carries a snapshot). The one re-rate that does roll up is RerateFlagged (backfill.go),
-// run once reports are flagged: it re-rates each affected character's newest clean fight and
-// rolls the score, now without the flagged report, back onto it. ScoreV2 itself never reads
+// run once reports are flagged: it re-rates the newest clean fight of each character the
+// report moved (in it, a guild-mate of its night, an alt on its account) and rolls the score,
+// now without the flagged report, back onto it. ScoreV2 itself never reads
 // the snapshot; it always computes from what is stored now.
 
 import (
@@ -187,9 +188,8 @@ type ScoreV2 struct {
 // selects its reports through presence.EvidenceReport, the rule the guild's attendance and
 // log verification share, so a forged report cannot raise a score. A flagged report's own
 // rated rows stay stored (withdrawing them is the moderation flow's job) and are never read
-// here. Two display readers still read them: the rating endpoints (ReadCharacterRating, the
-// fight cards and trend) and the inbox's last_raid. Neither feeds the score; moving them onto
-// EvidenceReport is task L6.12.
+// here, nor by any reader a player or guild sees (the rating endpoints, the inbox's last_raid,
+// the guild pages: task L6.12).
 func (s *Store) ScoreV2(ctx context.Context, characterKey string) (ScoreV2, error) {
 	var in characterInputs
 	var err error

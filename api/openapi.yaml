@@ -118,8 +118,12 @@ components:
             type: { type: string, enum: [sim_result] }
             character: { type: string }
             spec: { type: string }
-            dps: { type: number }
-            error: { type: number, description: "always present, 0 included" }
+            dps:
+              type: number
+              description: >-
+                the run's DPS; for the weights run an in-game request queues, the DPS of the
+                sweep's baseline sim (the character as it is), over the baseline's own iterations
+            error: { type: number, description: "always present, 0 included; for a weights run, the baseline sim's" }
             generated_at: { type: string, format: date-time }
             slots:
               type: array
@@ -188,7 +192,13 @@ components:
             type: { type: string, enum: [ack] }
             character: { type: string }
             export_seen_at: { type: string, format: date-time }
-            sim_request_state: { type: string, enum: [queued, needs_premium, duplicate, invalid, done, failed] }
+            sim_request_state:
+              type: string
+              enum: [queued, needs_premium, duplicate, invalid, done, failed]
+              description: >-
+                what became of the character's newest in-game sim request; "duplicate" when
+                another request started a run within the hour (a run that failed does not count),
+                "done" and "failed" read from its run once it ends
             requested_at:
               type: string
               format: date-time
@@ -1986,7 +1996,9 @@ paths:
         stored exactly as a `characters` entry is. Its `sim_request` queues one premium server
         run (the same sims row and job POST /v1/sims/run starts, built from the request's own
         gear code) unless that character already has the same request, or any request in the
-        last hour ("duplicate"); an account without server sims gets "premium_required", a
+        last hour whose run has not failed ("duplicate"; a run that failed does not hold the
+        hour, so the player can ask again at once); an account without server sims gets
+        "premium_required", a
         deployment that cannot start the job "unavailable". Its `roster_snapshot` is stored as
         the guild page's roster for the guild the exporting character belongs to, and only that
         guild ("not_in_guild" otherwise); a newer snapshot replaces the guild's last one. Its

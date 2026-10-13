@@ -268,16 +268,18 @@ func (s *Store) fillRaidDetail(ctx context.Context, row *RaidRow, keys []string)
 	return s.fillTopParse(ctx, row)
 }
 
-// fillTopParse reads the report's best kill-fight parse; nil when it has none yet.
+// fillTopParse reads the report's best kill-fight parse; nil when it has none yet, and for a
+// report that is not evidence (presence.EvidenceReport: private or flagged), which lists
+// nobody present either.
 func (s *Store) fillTopParse(ctx context.Context, row *RaidRow) error {
 	var tp TopParse
 	var role string
 	var dps, hps *float64
 	err := s.Pool.QueryRow(ctx, `
-		select coalesce(player_name, ''), coalesce(class, ''), coalesce(role, ''), metric_dps, metric_hps
-		from fight_metrics
-		where report_id = $1 and kill and state <> 'removed'
-		order by (case when role = 'healer' then coalesce(metric_hps, 0) else coalesce(metric_dps, 0) end) desc
+		select coalesce(m.player_name, ''), coalesce(m.class, ''), coalesce(m.role, ''), m.metric_dps, m.metric_hps
+		from fight_metrics m join reports r on r.id = m.report_id
+		where m.report_id = $1 and m.kill and m.state <> 'removed' and `+presence.EvidenceReport("r")+`
+		order by (case when m.role = 'healer' then coalesce(m.metric_hps, 0) else coalesce(m.metric_dps, 0) end) desc
 		limit 1`, row.ID).Scan(&tp.Name, &tp.Class, &role, &dps, &hps)
 	switch {
 	case errors.Is(err, pgx.ErrNoRows):

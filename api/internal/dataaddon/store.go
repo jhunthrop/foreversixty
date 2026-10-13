@@ -185,10 +185,9 @@ func (s *Store) nightsByGuild(ctx context.Context, guildIDs []int64, since time.
 
 // bossesKilledByGuild counts, per guild id, the distinct encounters killed at least once
 // in the window, from fights attached to a report that is evidence (presence.EvidenceReport:
-// not private, not flagged), limited to reports created at or after since. The guild's own
-// progression query (api/internal/rankings/guilds.go's Guild()) still counts a flagged
-// report's kills (task L6.12); this one does not, so a forged report cannot lift a guild's
-// standing.
+// not private, not flagged), limited to reports created at or after since, so a forged report
+// cannot lift a guild's standing. The guild page's own progression (api/internal/rankings/
+// guilds.go's Guild()) reads the same rule.
 func (s *Store) bossesKilledByGuild(ctx context.Context, guildIDs []int64, since time.Time) (map[int64]int, error) {
 	rows, err := s.Pool.Query(ctx,
 		`select r.guild_id, count(distinct f.encounter_id)

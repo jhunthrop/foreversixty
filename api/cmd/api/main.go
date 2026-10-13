@@ -292,9 +292,10 @@ func runRatingBackfill(ctx context.Context, log *slog.Logger) error {
 }
 
 // runRerateFlagged is the on-demand Cloud Run job that brings the stored Forever Score back
-// into line once reports are flagged (rating.RerateFlagged): every character with a rated row
-// in a flagged report has its newest clean fight re-rated and its score rolled up again.
-// Idempotent, so it is safe to run again or on a schedule.
+// into line once reports are flagged (rating.RerateFlagged): every character whose score a
+// flagged report moved (in it, a guild-mate of its night, or an alt on the same account) has
+// its newest clean fight re-rated and its score rolled up again. Idempotent, so it is safe to
+// run again or on a schedule.
 func runRerateFlagged(ctx context.Context, log *slog.Logger) error {
 	cfg, pool, err := start(ctx)
 	if err != nil {
@@ -305,17 +306,28 @@ func runRerateFlagged(ctx context.Context, log *slog.Logger) error {
 	if client == nil {
 		return fmt.Errorf("%s needs R2 credentials", rating.RerateFlaggedJobCommand)
 	}
-	c, err := rating.RerateFlagged(ctx, rating.BackfillDeps{
+	return rerateFlagged(ctx, rating.BackfillDeps{
 		Store: &rating.Store{Pool: pool, Log: log}, Summaries: client, Log: log,
-	})
+	}, log)
+}
+
+// rerateFlagged is the job's run once its dependencies are wired: it logs the counts of each
+// group, then fails when any fight could not be re-rated (every fight is still tried first),
+// so the job exits non-zero and its failure alert fires.
+func rerateFlagged(ctx context.Context, d rating.BackfillDeps, log *slog.Logger) error {
+	c, err := rating.RerateFlagged(ctx, d)
 	if err != nil {
 		return err
 	}
-	log.Info(rating.RerateFlaggedJobCommand, "characters", c.Characters, "fights", c.Fights,
-		"rerated", c.Rerated, "failed", c.Failed)
-	if c.Failed > 0 {
-		// Every fight was still tried; the exit code is what makes the Cloud Run job alert.
-		return fmt.Errorf("%d of %d fights could not be re-rated (each logged above)", c.Failed, c.Fights)
+	for _, g := range []struct {
+		name   string
+		counts rating.RerateGroup
+	}{{"flagged", c.Flagged}, {"guildmates", c.Guildmates}, {"linked", c.Linked}} {
+		log.Info(rating.RerateFlaggedJobCommand, "group", g.name, "characters", g.counts.Characters,
+			"fights", g.counts.Fights, "rerated", g.counts.Rerated, "failed", g.counts.Failed)
+	}
+	if failed := c.Failed(); failed > 0 {
+		return fmt.Errorf("%d of %d fights could not be re-rated (each logged above)", failed, c.Fights())
 	}
 	return nil
 }

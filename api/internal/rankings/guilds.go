@@ -10,6 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // sortBest orders a character's bests by encounter then difficulty, so
@@ -203,7 +204,7 @@ func (s *Store) Guild(ctx context.Context, region, ruleset, name string) (Guild,
 		`select f.encounter_id, coalesce(f.difficulty, 0),
 		        count(*) filter (where f.kill), count(*), min(f.start_ms) filter (where f.kill)
 		 from fights f join reports r on r.id = f.report_id
-		 where r.guild_id = $1 and f.encounter_id is not null and r.visibility <> 'private'
+		 where r.guild_id = $1 and f.encounter_id is not null and `+presence.EvidenceReport("r")+`
 		 group by f.encounter_id, f.difficulty order by f.encounter_id`, out.Guild.ID)
 	if err != nil {
 		return Guild{}, false, fmt.Errorf("rankings: read progression: %w", err)
@@ -233,7 +234,7 @@ func (s *Store) Guild(ctx context.Context, region, ruleset, name string) (Guild,
 		        m.encounter_id, m.role, m.metric_dps, m.metric_hps, m.damage_taken, m.fought_at,
 		        m.execution_score
 		 from fight_metrics m join reports r on r.id = m.report_id
-		 where r.guild_id = $1 and m.kill and m.state <> 'removed'
+		 where r.guild_id = $1 and m.kill and m.state <> 'removed' and `+presence.EvidenceReport("r")+`
 		 order by m.player_key, m.encounter_id, greatest(coalesce(m.metric_dps, 0),
 		          coalesce(m.metric_hps, 0), coalesce(m.damage_taken, 0)) desc`, out.Guild.ID)
 	if err != nil {
@@ -287,12 +288,14 @@ func (s *Store) Guild(ctx context.Context, region, ruleset, name string) (Guild,
 	// than the derived aggregates above: "guild" means the guild may
 	// read it, and reports.mayView refuses the body to everyone else.
 	// Listing it here would tell the world the report exists and what
-	// it is called. The progression counts stay on reports.Ranked,
-	// which is the right rule for an aggregate.
+	// it is called. The progression counts and roster bests above
+	// read presence.EvidenceReport (not private, not flagged), the
+	// rule for an aggregate; this list takes it too, beside its own,
+	// so a flagged report is not listed (task L6.12).
 	reps, err := s.Pool.Query(ctx,
-		`select id, title, zone, status, created_at from reports
-		 where guild_id = $1 and visibility in ('public', 'unlisted')
-		 order by created_at desc limit $2`, out.Guild.ID, GuildReportLimit)
+		`select r.id, r.title, r.zone, r.status, r.created_at from reports r
+		 where r.guild_id = $1 and r.visibility in ('public', 'unlisted') and `+presence.EvidenceReport("r")+`
+		 order by r.created_at desc limit $2`, out.Guild.ID, GuildReportLimit)
 	if err != nil {
 		return Guild{}, false, fmt.Errorf("rankings: read guild reports: %w", err)
 	}

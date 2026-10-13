@@ -5,7 +5,11 @@
 // ratedFights, experience, guildNights and itemLevel, and the parses rankings.Store.CharacterFights
 // reads) and the guild's attendance, log verification, moderator evidence and raid present list
 // (api/internal/guilds) all select their reports through EvidenceReport, and all read presence
-// through In.
+// through In. So does every other reader of a report's rated or ranked rows that a player or
+// guild sees: the rating endpoints, the inbox's last_raid, the guild page and the guild centre's
+// roster, progression and raids (task L6.12). evidence_source_test.go checks it over the source
+// tree: a condition on a report's visibility sits beside EvidenceReport or is on its list of
+// access rules (which reports a viewer may open), which are not readers of evidence.
 //
 // It is its own package under rating, not a function in rating itself, because guilds cannot
 // import rating: rating imports rankings, which imports guilds (for the crest URL). This
