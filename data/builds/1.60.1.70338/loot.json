@@ -52755,6 +52755,17 @@
       "source_origin": "classic-db"
     },
     {
+      "id": "world:arcane-anomaly",
+      "kind": "world",
+      "name": "Arcane Anomaly",
+      "items": [
+        273031,
+        273034,
+        273035
+      ],
+      "source_origin": "wowhead"
+    },
+    {
       "id": "world:arcane-chimaerok",
       "kind": "world",
       "name": "Arcane Chimaerok",
@@ -52765,6 +52776,15 @@
         "21024": 48.7075
       },
       "source_origin": "classic-db"
+    },
+    {
+      "id": "world:arcanic-enigma",
+      "kind": "world",
+      "name": "Arcanic Enigma",
+      "items": [
+        273043
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "world:archmage-allistarj",
@@ -53459,6 +53479,16 @@
         "5839": 95.9635
       },
       "source_origin": "classic-db"
+    },
+    {
+      "id": "world:atrexis-the-grave-knight",
+      "kind": "world",
+      "name": "Atrexis the Grave Knight",
+      "items": [
+        273032,
+        273033
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "world:auberdine",
@@ -61289,6 +61319,15 @@
         "5744": 30.0
       },
       "source_origin": "classic-db"
+    },
+    {
+      "id": "world:fel-ancient",
+      "kind": "world",
+      "name": "Fel Ancient",
+      "items": [
+        273037
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "world:fel-steed",
@@ -69410,6 +69449,17 @@
       "source_origin": "classic-db"
     },
     {
+      "id": "world:lyn-the-ignored",
+      "kind": "world",
+      "name": "Lyn the Ignored",
+      "items": [
+        273053,
+        273054,
+        273055
+      ],
+      "source_origin": "wowhead"
+    },
+    {
       "id": "world:macgranns-meat-locker",
       "kind": "world",
       "name": "MacGrann's Meat Locker",
@@ -69704,6 +69754,15 @@
         "2723": 75.0
       },
       "source_origin": "classic-db"
+    },
+    {
+      "id": "world:mana-devourer",
+      "kind": "world",
+      "name": "Mana Devourer",
+      "items": [
+        273040
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "world:mana-eater",
@@ -74909,6 +74968,16 @@
         "6809": 100.0
       },
       "source_origin": "classic-db"
+    },
+    {
+      "id": "world:shade-of-the-archmage",
+      "kind": "world",
+      "name": "Shade of the Archmage",
+      "items": [
+        273049,
+        273051
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "world:shadethicket-oracle",
@@ -82802,6 +82871,15 @@
         "21935": 80.0
       },
       "source_origin": "classic-db"
+    },
+    {
+      "id": "world:unstable-sentinel",
+      "kind": "world",
+      "name": "Unstable Sentinel",
+      "items": [
+        273048
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "world:urs-treatise-on-shadow-magic",
@@ -97989,7 +98067,21 @@
         4810,
         5245,
         6327,
-        6331
+        6331,
+        273031,
+        273032,
+        273033,
+        273034,
+        273035,
+        273037,
+        273040,
+        273043,
+        273048,
+        273049,
+        273051,
+        273053,
+        273054,
+        273055
       ]
     },
     {
@@ -114452,6 +114544,8 @@
         279836,
         279837,
         279838,
+        279845,
+        279846,
         279847,
         279848,
         279864,
@@ -160113,6 +160207,28 @@
         "quest_id": 92457,
         "name": "Starving Arcane",
         "faction": "alliance",
+        "faction_source": "wowhead",
+        "min_level": 24,
+        "level": 33,
+        "level_source": "wowhead"
+      }
+    ],
+    "279845": [
+      {
+        "quest_id": 96987,
+        "name": "Opportunistic Education",
+        "faction": "horde",
+        "faction_source": "wowhead",
+        "min_level": 24,
+        "level": 33,
+        "level_source": "wowhead"
+      }
+    ],
+    "279846": [
+      {
+        "quest_id": 96987,
+        "name": "Opportunistic Education",
+        "faction": "horde",
         "faction_source": "wowhead",
         "min_level": 24,
         "level": 33,
