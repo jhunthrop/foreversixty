@@ -154,7 +154,10 @@ Veteran's Chain Shirt +1.1, Defender's Leather Armor +0.6"). Nothing in the sect
 than the client's own widest line, measured on the visible text before the section is added: the
 Next line puts its gain on a second line, the verdict puts the compared name on a second line
 (shortened only below that, on its second word at the soonest), the source line shortens the
-boss's name, the alternatives take one name per line, and every other line (the header, a refusal,
+boss's name, the alternatives split when the pair is too wide ("Also good:" alone on its row, then each
+alternative on its own indented row with its whole name and gain; a tag such as "(needs bullets)"
+drops to a muted row under the name before the name is ever shortened; no trailing commas; L4.1 fix
+round 7), and every other line (the header, a refusal,
 the plan, a capped stat, "Best until level 30") is cut with an ellipsis by measured width. The unit is DPS (or HPS)
 when a sim result or DPS-per-point weights exist for the spec, else score. Hovering an item with a
 next upgrade shows that upgrade's compare tooltip beside it, as shift-compare does, once the
