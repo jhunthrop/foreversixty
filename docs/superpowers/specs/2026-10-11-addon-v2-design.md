@@ -203,8 +203,8 @@ character records rather than keys:
 - discipline: consumables and enchants in logged fights.
 
 The formula lives on the site; the addon shows what the nightly data addon carries, dated
-("as of 4 Nov"). A character with no logs shows "no logs yet", never a zero. Clicking the score
-copies the character's site link, where the live number and the full profile are. Players with
+("as of 4 Nov"). A character with no logs shows "no logs yet", never a zero. The character's site link, where the live number and the full profile are, is copied with
+`/fs link` (below). Players with
 the addon also broadcast a live snapshot (level, spec, gear gap, build name), so their line is
 current before any log exists.
 
@@ -315,7 +315,7 @@ its end shows the foot's last line and its pad; every show opens it at the top).
 title, while either data state at the foot is in the warning colour, one line repeats the first
 such state's whole sentence in the warning colour (the addon data before the player ratings); the
 page moves down a line to make room. "Not installed" stays at the foot, muted: the data addon is
-optional. Seven switches, each with one muted hint saying what it does; each row is measured from
+optional. Eight switches, each with one muted hint saying what it does; each row is measured from
 its label and its wrapped hint (`GetStringHeight` plus the one-line rows' bottom pad, never less
 than the one-line 44 px row), so a two-line hint pushes the next row down by a line: "Show the
 chip" (reads off while a right-click hides the chip; either way it clears that hide), "Hide the
@@ -337,8 +337,8 @@ player tooltips): current", "…: too old. Get the new Forever Sixty Data at for
 "…: not installed. Get Forever Sixty Data at foreversixty.gg." or "…: made for a newer addon.
 Update Forever Sixty at foreversixty.gg." (`/fs diag` keeps its own wording, and adds its
 "Build:" line for the build in force, section 5.1), no build numbers,
-then 12 px of padding so a cut never lands on text. Guild badges get their switch with L4.4; no
-"advanced detail" mode, and no chat switch. The minimap button and the addon compartment entry
+then 12 px of padding so a cut never lands on text. The eighth switch, "Score badges in chat" (L4.4: "Shows a player's Forever Score before their
+message in LFG, Trade, guild chat and whispers."); no "advanced detail" mode. The minimap button and the addon compartment entry
 open the build dialog on a left click and this page on a right click; `/fs options` opens it too
 (the command list wherever the client does not show it).
 
