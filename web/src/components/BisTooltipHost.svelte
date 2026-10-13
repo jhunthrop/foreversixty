@@ -33,8 +33,19 @@
   import type { ItemTooltipModel } from '../lib/items/tooltip';
   import { positionTooltipPanel } from '../lib/items/tooltip-position';
 
-  let { build, modelsElementId = 'bis-tooltip-models' }: { build: string; modelsElementId?: string } =
-    $props();
+  let {
+    build,
+    modelsElementId = 'bis-tooltip-models',
+    resolve = undefined,
+  }: {
+    build: string;
+    modelsElementId?: string;
+    /** A page with no build-time models (the character profile's Gear section, L8.6 fix round
+     *  1): the model for an id the map lacks, fetched at runtime (lib/items/lookup.ts's
+     *  fetchItemTooltipModel) and kept; null when the build does not carry the id. /bis passes
+     *  none and keeps its build-time-only rule. */
+    resolve?: (itemId: number) => Promise<ItemTooltipModel | null>;
+  } = $props();
 
   // Fixed rather than per-row: exactly one panel is ever mounted, so every row's
   // aria-describedby (when it is the open one) can point at the same id.
@@ -54,6 +65,9 @@
   // two "open" calls racing the same promise, and both would otherwise mount their own
   // panel instance into the row.
   let openToken = 0;
+  /** When the open host was opened: a tap's own pointerenter/focus opens it just before its
+   *  click, which must not then read as a second tap closing it. */
+  let openedAt = 0;
 
   function loadModels(): void {
     const script = document.getElementById(modelsElementId);
@@ -102,16 +116,22 @@
 
   function openHost(host: HTMLElement): void {
     const itemId = Number(host.dataset.bisItem);
-    const model = models.get(itemId);
-    if (model === undefined) return; // no build-time model for this id -- nothing to show
+    const known = models.get(itemId);
+    if (known === undefined && resolve === undefined) return; // no build-time model for this id -- nothing to show
     if (activeHost === host) return; // already open, or already opening, this exact host
     unmountPanel();
     activeHost = host;
+    openedAt = performance.now();
     host.setAttribute('aria-describedby', TOOLTIP_ID);
     const token = ++openToken;
-    void ensurePanelLoaded().then((component) => {
+    const model: Promise<ItemTooltipModel | null> =
+      known !== undefined
+        ? Promise.resolve(known)
+        : (resolve as (itemId: number) => Promise<ItemTooltipModel | null>)(itemId).catch(() => null);
+    void Promise.all([ensurePanelLoaded(), model]).then(([component, resolved]) => {
       if (token !== openToken) return; // superseded (a close, or a later open) before this resolved
-      mountedInstance = mount(component, { target: host, props: { model, build, id: TOOLTIP_ID } });
+      if (resolved === null) return; // the build does not carry the id: no tooltip
+      mountedInstance = mount(component, { target: host, props: { model: resolved, build, id: TOOLTIP_ID } });
       positionTooltipPanel(host);
     });
   }
@@ -150,7 +170,13 @@
     const host = hostFor(event.target);
     if (host === null) return;
     event.preventDefault();
-    if (activeHost === host) closeHost(host);
+    // A touch tap fires pointerenter and focus (which open the host) just before its click:
+    // that click is the same tap, not a second one, so it leaves the tooltip open.
+    const sameTap =
+      'pointerType' in event &&
+      (event as PointerEvent).pointerType === 'touch' &&
+      performance.now() - openedAt < 700;
+    if (activeHost === host && !sameTap) closeHost(host);
     else openHost(host);
   }
 

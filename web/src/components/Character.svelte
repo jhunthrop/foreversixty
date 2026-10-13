@@ -31,7 +31,7 @@
   } from '../lib/character-profile';
   import { readCurrent } from '../lib/current-character';
   import { factionOfRace } from '../lib/race-faction';
-  import { foreverOf, ownCharacter } from '../lib/score/score';
+  import { componentGaps, foreverOf, ownCharacter } from '../lib/score/score';
   import { bandForLevel } from '../lib/bis/hover';
   import { GEAR_ANCHOR } from '../lib/gear/panel';
   import { classSlugFromName } from '../lib/report/tree-sizes';
@@ -231,6 +231,7 @@
       <CharacterGearPanel
         gear={data.gear}
         total={data.gear_gap_total ?? null}
+        cardGap={componentGaps(foreverOf(data).components).find((part) => part.key === 'gear')?.gap ?? null}
         classSlug={data.character.class === undefined || data.character.class === ''
           ? null
           : classSlugFromName(data.character.class)}

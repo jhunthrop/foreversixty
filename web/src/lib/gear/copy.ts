@@ -1,35 +1,61 @@
 // web/src/lib/gear/copy.ts
-// Every visible string of the profile's Gear section (Task L8.6), from GET /v1/characters/...'s
-// `gear` and `gear_gap_total` (api/openapi.yaml `CharacterGear`). Its words stay apart from the
-// score card's (ruling 3): the card's "88 below its top" measures the Gear part against the
-// band's best set; the section's total is the slot gaps "across" the character's slots, against
-// the picks the character can wear. One muted sentence in the footer says so.
+// Every visible string of the profile's Gear section (Task L8.6 and its fix round 1), from GET
+// /v1/characters/...'s `gear` and `gear_gap_total` (api/openapi.yaml `CharacterGear`). Its
+// words stay apart from the score card's: the card's "88 below its top" measures the Gear part
+// against the band's best set; the section's total counts the slot gaps against the picks the
+// character can wear. The line under the title says so with both numbers (fix round 1 ruling 3).
 
 /** "+18.4 pts", one decimal as the API serves it, a whole number without its ".0". */
-function points(value: number): string {
+export function points(value: number): string {
   const tenths = Math.round(value * 10) / 10;
   return Number.isInteger(tenths) ? String(tenths) : tenths.toFixed(1);
 }
 
 export const gearCopy = {
   heading: 'Gear',
-  /** The title line (ruling 1): "Gear · +88 pts across 6 slots", from gear_gap_total and the
-   *  count of slots whose gap is above 0. */
+  /** The client's paperdoll words, the pairs numbered in export order (fix round 1 ruling 7). */
+  slotLabels: {
+    head: 'Head',
+    neck: 'Neck',
+    shoulder: 'Shoulder',
+    back: 'Back',
+    chest: 'Chest',
+    wrist: 'Wrist',
+    hands: 'Hands',
+    waist: 'Waist',
+    legs: 'Legs',
+    feet: 'Feet',
+    finger1: 'Ring 1',
+    finger2: 'Ring 2',
+    trinket1: 'Trinket 1',
+    trinket2: 'Trinket 2',
+    main_hand: 'Main hand',
+    off_hand: 'Off hand',
+    ranged: 'Ranged',
+  },
+  /** Read after the slot label, so a row's name is its label first: "Trinket 2, Empty". */
+  labelEnd: ',',
+  /** The title line: "Gear · +70 pts across 7 slots", from gear_gap_total and the count of slots
+   *  whose gap is above 0. */
   title: (total: number, slots: number): string =>
     `Gear · +${points(total)} pts across ${slots} ${slots === 1 ? 'slot' : 'slots'}`,
   /** A total of 0: every scored slot holds its pick, or something at least as good. */
-  titleNoGaps: 'Gear · nothing to gain over the picks',
+  titleZero: 'Gear · every slot is the best you can wear',
+  /** After the title when a slot with a pick has no gap: " · 1 not scored". */
+  titleNotScored: (count: number): string => ` · ${count} not scored`,
+  /** Under the title (fix round 1 ruling 3): both numbers, what each counts. */
+  totals: (cardGap: number, total: number): string =>
+    `The card’s ${points(cardGap)} counts the band’s best set. These ${points(total)} count the picks you can wear.`,
   /** A row's gap: "+18.4 pts", and read aloud "18.4 points to gain". */
   gap: (gap: number): string => `+${points(gap)} pts`,
   gapLabel: (gap: number): string => `${points(gap)} points to gain`,
   /** A gap the API could not score (an item the data build does not have). */
-  gapUnscored: '–',
-  gapUnscoredLabel: 'Not scored',
-  /** The drop chance, rounded the way the client and Wowhead show it (bisCopy's
-   *  dropChanceLabel): whole percent, "<1%" below one. */
+  gapUnscored: 'Not scored',
+  /** The drop chance in the addon's words, rounded the way the client and Wowhead show it
+   *  (bisCopy's dropChanceLabel): "17% drop", "<1% drop" (fix round 1 ruling 8). */
   chance: (fraction: number): string => {
     const percent = fraction * 100;
-    return percent < 1 ? '<1%' : `${Math.round(percent)}%`;
+    return `${percent < 1 ? '<1' : Math.round(percent)}% drop`;
   },
   /** An empty slot, and a row with neither a worn item nor a pick. */
   empty: 'Empty',
@@ -37,18 +63,23 @@ export const gearCopy = {
   unknownItem: 'Unknown item',
   /** The worn item is the pick (or as good as it): no arrow. */
   best: 'Best for your band',
+  /** The band has no pick for the slot (fix round 1 ruling 8). */
+  noPick: 'no pick for your band yet',
+  /** The off hand under a worn two-hander: its pick comes with the main hand's (ruling 9). */
+  swap: 'comes with the main-hand swap',
   /** The drawn arrow between the worn item and the pick, with its spaces; a screen reader hears
    *  the label instead ("Green Lens, best for your band: Halo of Transcendence"). */
   arrow: ' → ',
   arrowLabel: ' best for your band: ',
   /** Between the source and its chance: no-break spaces either side of the dot, so the chance
-   *  travels with the source's last word and a wrapped line never starts or ends on the dot
-   *  ("Dire Maul: Tendris" / "Warpwood · <1%"). */
+   *  travels with the source's last word and a wrapped line never starts or ends on the dot. */
   chanceLead: '\u00a0·\u00a0',
-  /** From md the source follows the pick on its line: "· Onyxia's Lair: Onyxia · 17%". On a
-   *  phone it starts the second line, without the dot. */
-  metaLead: '· ',
-  /** `gear: []`: no section, this one line (ruling 1); its two phrases link where each happens. */
+  /** Before a note that ends the source line: " · comes with the main-hand swap". */
+  noteLead: ' · ',
+  /** Below 1024px a note that shares the items' line ("· Best for your band") starts with a dot;
+   *  from 1024px it stands in the source column, without one. */
+  inlineLead: '· ',
+  /** `gear: []`: under the heading, this one line; its two phrases link where each happens. */
   noGear: 'No gear on file. Upload a log or sync the addon.',
   noGearParts: {
     lead: 'No gear on file. ',
@@ -59,15 +90,12 @@ export const gearCopy = {
     syncHref: '/setup',
     end: '.',
   },
-  /** The footer's muted sentence (ruling 3). */
-  difference:
-    'Below its top measures against the band’s best set; the slot gaps measure against the picks you can wear.',
-  /** The footer link to the spec's best-in-slot page (ruling 2): "Every pick for Holy at 60",
-   *  a band below 60 by its range as the /bis band tabs name it ("30 to 39"). */
+  /** The footer link to the spec's best-in-slot page (fix round 1 ruling 3): "Full Holy BiS list
+   *  at 60", a band below 60 by its range as the /bis band tabs name it ("30 to 39"). */
   bisLink: (spec: string, band: number | null): string =>
     band === null
-      ? `Every pick for ${spec}`
-      : `Every pick for ${spec} at ${band === 60 ? '60' : `${band} to ${band + 9}`}`,
+      ? `Full ${spec} BiS list`
+      : `Full ${spec} BiS list at ${band === 60 ? '60' : `${band} to ${band + 9}`}`,
   bisArrow: '→',
   /** A no-break space, so the arrow never wraps alone. */
   bisGlue: '\u00a0',
