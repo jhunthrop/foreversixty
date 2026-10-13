@@ -208,6 +208,14 @@ copies the character's site link, where the live number and the full profile are
 the addon also broadcast a live snapshot (level, spec, gear gap, build name), so their line is
 current before any log exists.
 
+Chat badges (L4.4): on the LFG and Trade channels, guild chat and incoming whispers, a sender with a
+score gets "[1830]" in the tier colour at the start of the message text, never in the sender
+argument (the client builds the name's whisper link, right-click menu and reply target from it),
+behind the eighth switch "Score badges in chat" (section 4.11). Tooltips cannot be clicked, so the
+site link is copied with `/fs link [Name-Realm]` (target, else mouseover, else you), which opens the
+build dialog's copy box; the tooltip's muted hint names it. With no data addon installed the tooltip
+shows no score line at all rather than "no logs yet" for everyone.
+
 ### 4.7 Guild tab
 
 On the guild frame: roster with level, spec, gear score, Forever Score, attendance and gear gap,
