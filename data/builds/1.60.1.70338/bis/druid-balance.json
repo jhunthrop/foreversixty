@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T08:30:21Z",
+  "generated_at": "2026-10-13T14:28:59Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -556,8 +556,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.147038526,
-      "verify_run_seconds": 0.81573774,
+      "weights_run_seconds": 1.887689605,
+      "verify_run_seconds": 1.078707631,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.147038526,
-      "verify_run_seconds": 0.848795639,
+      "weights_run_seconds": 1.887689605,
+      "verify_run_seconds": 1.127530797,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1861,8 +1861,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 1.35686106,
-      "verify_run_seconds": 0.9381756,
+      "weights_run_seconds": 2.303841313,
+      "verify_run_seconds": 1.226562754,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2538,8 +2538,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 1.35686106,
-      "verify_run_seconds": 0.889823029,
+      "weights_run_seconds": 2.303841313,
+      "verify_run_seconds": 1.237793432,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3239,8 +3239,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 1.521556238,
-      "verify_run_seconds": 1.176007648,
+      "weights_run_seconds": 2.32140175,
+      "verify_run_seconds": 1.469780381,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3939,8 +3939,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 1.521556238,
-      "verify_run_seconds": 1.068812605,
+      "weights_run_seconds": 2.32140175,
+      "verify_run_seconds": 1.502442457,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4613,8 +4613,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.599285617,
-      "verify_run_seconds": 1.340053965,
+      "weights_run_seconds": 2.515128551,
+      "verify_run_seconds": 1.902784033,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5281,8 +5281,8 @@
         "trinket1: Uther's Strength",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.599285617,
-      "verify_run_seconds": 1.328360249,
+      "weights_run_seconds": 2.515128551,
+      "verify_run_seconds": 1.7890461530000001,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5742,7 +5742,7 @@
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.871106216002124
+              "dps_delta": -1.8711062160021226
             },
             {
               "item_id": 22752,
@@ -6008,8 +6008,8 @@
         "trinket2: Second Wind",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.4921862479999999,
-      "verify_run_seconds": 4.109490311,
+      "weights_run_seconds": 2.408277882,
+      "verify_run_seconds": 5.606438932,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6336,7 +6336,7 @@
               "item_name": "Warlord's Dragonhide Armor",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.1939623930189142
+              "dps_delta": -0.1939623930189156
             },
             {
               "item_id": 18373,
@@ -6738,8 +6738,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.4921862479999999,
-      "verify_run_seconds": 3.294094009,
+      "weights_run_seconds": 2.408277882,
+      "verify_run_seconds": 4.613145038,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7481,8 +7481,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 0.969305287,
-      "verify_run_seconds": 3.935375987,
+      "weights_run_seconds": 1.432528655,
+      "verify_run_seconds": 5.303264982,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8212,8 +8212,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 0.969305287,
-      "verify_run_seconds": 3.141973638,
+      "weights_run_seconds": 1.432528655,
+      "verify_run_seconds": 4.198537257,
       "coverage": {
         "back": {
           "eligible": 457,

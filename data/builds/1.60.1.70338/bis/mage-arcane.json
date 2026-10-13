@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T08:46:06Z",
+  "generated_at": "2026-10-13T14:54:16Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -552,8 +552,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.614254136,
-      "verify_run_seconds": 0.555816261,
+      "weights_run_seconds": 0.995353375,
+      "verify_run_seconds": 0.803606747,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1197,8 +1197,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.614254136,
-      "verify_run_seconds": 0.606038004,
+      "weights_run_seconds": 0.995353375,
+      "verify_run_seconds": 0.839149383,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1898,8 +1898,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.824107735,
-      "verify_run_seconds": 0.626721012,
+      "weights_run_seconds": 1.307715647,
+      "verify_run_seconds": 0.940042136,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2593,8 +2593,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.824107735,
-      "verify_run_seconds": 0.642533646,
+      "weights_run_seconds": 1.307715647,
+      "verify_run_seconds": 0.887191738,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3309,8 +3309,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.902675648,
-      "verify_run_seconds": 0.749397051,
+      "weights_run_seconds": 1.378994213,
+      "verify_run_seconds": 1.114769686,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4021,8 +4021,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.902675648,
-      "verify_run_seconds": 0.755168091,
+      "weights_run_seconds": 1.378994213,
+      "verify_run_seconds": 1.118065591,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4503,7 +4503,7 @@
               "item_name": "Sergeant Major's Dreadweave Boots",
               "source_kind": "vendor",
               "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -0.8903110673049377
+              "dps_delta": -0.8903110673049366
             },
             {
               "item_id": 254107,
@@ -4726,8 +4726,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.881890677,
-      "verify_run_seconds": 1.024548001,
+      "weights_run_seconds": 1.344925841,
+      "verify_run_seconds": 1.50308686,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4988,7 +4988,7 @@
               "item_name": "Blood Guard's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -2.436313018131229
+              "dps_delta": -2.4363130181312282
             },
             {
               "item_id": 10029,
@@ -5431,8 +5431,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.881890677,
-      "verify_run_seconds": 0.973338825,
+      "weights_run_seconds": 1.344925841,
+      "verify_run_seconds": 1.433679822,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5675,7 +5675,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 45.427599975906574,
+          "score": 45.42759997590657,
           "verified": true,
           "alternatives": [
             {
@@ -5683,14 +5683,14 @@
               "item_name": "Field Marshal's Silk Spaulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.5701390942746114
+              "dps_delta": -2.5701390942746087
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.8663253701434526
+              "dps_delta": -3.86632537014345
             },
             {
               "item_id": 272103,
@@ -5755,7 +5755,7 @@
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -4.889446191839203
             },
@@ -5895,12 +5895,12 @@
               "item_name": "Sorcerer's Leggings",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.2771668875948547
+              "dps_delta": -3.2771668875948574
             },
             {
               "item_id": 227109,
               "item_name": "Knight-Captain's Silk Legguards",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -3.5932599159703638
             }
@@ -6181,8 +6181,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.925189272,
-      "verify_run_seconds": 2.092153535,
+      "weights_run_seconds": 1.387410548,
+      "verify_run_seconds": 3.038983662,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6410,7 +6410,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -0.21519964852838358
+              "dps_delta": -0.21519964852838475
             },
             {
               "item_id": 22149,
@@ -6427,7 +6427,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 45.42759997590657,
+          "score": 45.427599975906574,
           "verified": true,
           "alternatives": [
             {
@@ -6435,14 +6435,14 @@
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.5701390942746087
+              "dps_delta": -2.5701390942746114
             },
             {
               "item_id": 19050,
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.86632537014345
+              "dps_delta": -3.8663253701434526
             },
             {
               "item_id": 272103,
@@ -6932,8 +6932,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.925189272,
-      "verify_run_seconds": 2.029892659,
+      "weights_run_seconds": 1.387410548,
+      "verify_run_seconds": 2.997992538,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7136,7 +7136,7 @@
               "item_name": "Lieutenant Commander's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.510452049214394
+              "dps_delta": -0.5104520492143922
             }
           ]
         },
@@ -7266,7 +7266,7 @@
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -9.388552283445417
             }
@@ -7673,8 +7673,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.05657161,
-      "verify_run_seconds": 2.427131916,
+      "weights_run_seconds": 1.602613566,
+      "verify_run_seconds": 3.578376244,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7875,7 +7875,7 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.510452049214394
+              "dps_delta": -0.5104520492143922
             }
           ]
         },
@@ -8412,8 +8412,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.05657161,
-      "verify_run_seconds": 2.455183042,
+      "weights_run_seconds": 1.602613566,
+      "verify_run_seconds": 3.580856711,
       "coverage": {
         "back": {
           "eligible": 456,

@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 000000000000000000-03503000000000000-000000000000000000)
 
-Set DPS (verified): 40.9. Weights run: 5.9s. Verify run: 17.0s. 151 eligible items had no known source.
+Set DPS (verified): 40.9. Weights run: 10.1s. Verify run: 29.0s. 151 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.006, intellect=1.334 ± 0.006, spirit=0.605 ± 0.003, mp5=1.556 ± 0.011, crit=0.070 ± 0.003 per rating point (14 rating = 1%, 0.982 per %), spell_haste=not significant (-0.005 ± 0.014)
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 151, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 000000000000000000-03505003030110000-000000000000000000)
 
-Set DPS (verified): 70.6. Weights run: 6.0s. Verify run: 16.5s. 262 eligible items had no known source.
+Set DPS (verified): 70.6. Weights run: 10.1s. Verify run: 28.5s. 262 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.013, intellect=1.413 ± 0.007, spirit=0.841 ± 0.004, mp5=1.628 ± 0.015, crit=0.098 ± 0.005 per rating point (14 rating = 1%, 1.379 per %), spell_haste=0.351 ± 0.047
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 262, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 000000000000000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 85.8. Weights run: 6.2s. Verify run: 44.0s. 348 eligible items had no known source.
+Set DPS (verified): 85.8. Weights run: 10.3s. Verify run: 73.9s. 348 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.066, intellect=4.383 ± 0.038, spirit=0.671 ± 0.023, mp5=0.754 ± 0.022, crit=0.207 ± 0.015 per rating point (14 rating = 1%, 2.895 per %), spell_haste=7.521 ± 0.580
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 348, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 025003000000000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 105.8. Weights run: 6.4s. Verify run: 52.8s. 449 eligible items had no known source.
+Set DPS (verified): 105.8. Weights run: 10.6s. Verify run: 89.0s. 449 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -130,7 +130,7 @@ No-known-source sample (15 of 449, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 025003031303000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 378.1. Weights run: 5.9s. Verify run: 50.1s. 1129 eligible items had no known source.
+Set DPS (verified): 378.1. Weights run: 9.4s. Verify run: 78.6s. 1129 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -146,7 +146,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | wrist | Virtuous Bracers (226949) | An Earnest Proposition [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Bracers of Mending (23129, +0.00 DPS) [dungeon]; Marshal's Satin Bracers (17606, -1.02 DPS) [pvp]; Bracers of Hope (22667, -12.53 DPS, sim-verified) [quest] |
 | hands | Virtuous Mitts (226950) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hands of the Exalted Herald (12554, +0.00 DPS) [dungeon]; Raider Handwraps (272097, +0.00 DPS) [vendor]; Desert Bloom Gloves (20717, -13.22 DPS, sim-verified) [quest] |
 | waist | Wisdom of the Timbermaw (19047) | Tailoring [crafted] | 57.6 healing_power points (9.88 DPS) | yes | Whipvine Cord (18327, -1.90 DPS) [dungeon]; Penitent's Cinch (272394, -2.07 DPS) [vendor]; Virtuous Belt (226948, -2.88 DPS, sim-verified) [quest] |
-| legs | Virtuous Skirt (226946) | Anthion's Parting Words [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Knight-Captain's Satin Legguards (227125, +0.00 DPS) [vendor]; Marshal's Satin Legguards (231626, +0.00 DPS) [vendor]; Padre's Trousers (18386, -11.41 DPS, sim-verified) [dungeon] |
+| legs | Virtuous Skirt (226946) | Anthion's Parting Words [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Knight-Captain's Satin Legguards (227125, +0.00 DPS) [pvp]; Marshal's Satin Legguards (231626, +0.00 DPS) [vendor]; Padre's Trousers (18386, -11.41 DPS, sim-verified) [dungeon] |
 | feet | Incandescent Mooncloth Boots (227862) | Meilosh [vendor] | 75.3 healing_power points (12.91 DPS) | yes | Mooncloth Boots (15802, -3.59 DPS) [crafted]; Faith Healer's Boots (22247, -3.85 DPS) [dungeon]; Virtuous Sandals (226952, -7.44 DPS, sim-verified) [quest] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234033) | Anachronos [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Mending (22334, -0.72 DPS) [dungeon]; Fordring's Seal (16058, -1.10 DPS) [quest]; Naglering (11669, -19.21 DPS, sim-verified) [dungeon] |
 | finger2 | Blessed Band of Light (272407) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Fordring's Seal (16058, +0.00 DPS) [quest]; Band of Mending (22334, +0.00 DPS) [dungeon]; Emerald Flame Ring (18395, -0.07 DPS) [dungeon] |
@@ -162,7 +162,7 @@ No-known-source sample (15 of 1129, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (gnome, 025003031303000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 751.2. Weights run: 3.9s. Verify run: 18.2s. 1129 eligible items had no known source.
+Set DPS (verified): 751.2. Weights run: 6.2s. Verify run: 29.0s. 1129 eligible items had no known source.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -178,7 +178,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | wrist | Virtuous Bracers (226949) | An Earnest Proposition [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Bracers of Mending (23129, +0.00 DPS) [dungeon]; Marshal's Satin Bracers (17606, -0.84 DPS) [pvp]; Bracers of Hope (22667, -12.99 DPS, sim-verified) [quest] |
 | hands | Raider Handwraps (272097) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hands of the Exalted Herald (12554, +0.00 DPS) [dungeon]; Desert Bloom Gloves (20717, -0.58 DPS) [quest]; Virtuous Mitts (226950, -1.10 DPS) [vendor] |
 | waist | Virtuous Belt (226948) | Just Compensation [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Whipvine Cord (18327, -0.09 DPS) [dungeon]; Marshal's Satin Sash (17609, -1.33 DPS) [pvp]; Wisdom of the Timbermaw (19047, -11.49 DPS, sim-verified) [crafted] |
-| legs | Virtuous Skirt (226946) | Anthion's Parting Words [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Padre's Trousers (18386, +0.00 DPS) [dungeon]; Knight-Captain's Satin Legguards (227125, +0.00 DPS) [vendor]; Marshal's Satin Legguards (231626, +0.00 DPS) [vendor] |
+| legs | Virtuous Skirt (226946) | Anthion's Parting Words [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Padre's Trousers (18386, +0.00 DPS) [dungeon]; Knight-Captain's Satin Legguards (227125, +0.00 DPS) [pvp]; Marshal's Satin Legguards (231626, +0.00 DPS) [vendor] |
 | feet | Incandescent Mooncloth Boots (227862) | Meilosh [vendor] | 83.0 healing_power points (21.70 DPS) | yes | Mooncloth Boots (15802, -5.54 DPS) [crafted]; Faith Healer's Boots (22247, -6.16 DPS) [dungeon]; Virtuous Sandals (226952, -6.62 DPS, sim-verified) [quest] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234033) | Anachronos [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Mending (22334, -3.06 DPS) [dungeon]; Fordring's Seal (16058, -4.19 DPS) [quest]; Naglering (11669, -22.67 DPS, sim-verified) [dungeon] |
 | finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Mending (22334, +0.00 DPS) [dungeon]; Fordring's Seal (16058, -0.60 DPS) [quest]; Emerald Flame Ring (18395, -0.94 DPS) [dungeon] |
@@ -196,7 +196,7 @@ No-known-source sample (15 of 1129, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (troll, 000000000000000000-03503000000000000-000000000000000000)
 
-Set DPS (verified): 38.8. Weights run: 5.9s. Verify run: 16.8s. 141 eligible items had no known source.
+Set DPS (verified): 38.8. Weights run: 10.1s. Verify run: 29.2s. 141 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.006, intellect=1.334 ± 0.006, spirit=0.605 ± 0.003, mp5=1.556 ± 0.011, crit=0.070 ± 0.003 per rating point (14 rating = 1%, 0.982 per %), spell_haste=not significant (-0.005 ± 0.014)
 
@@ -226,7 +226,7 @@ No-known-source sample (15 of 141, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 000000000000000000-03505003030110000-000000000000000000)
 
-Set DPS (verified): 68.4. Weights run: 6.0s. Verify run: 17.8s. 248 eligible items had no known source.
+Set DPS (verified): 68.4. Weights run: 10.1s. Verify run: 30.8s. 248 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.013, intellect=1.413 ± 0.007, spirit=0.841 ± 0.004, mp5=1.628 ± 0.015, crit=0.098 ± 0.005 per rating point (14 rating = 1%, 1.379 per %), spell_haste=0.351 ± 0.047
 
@@ -256,7 +256,7 @@ No-known-source sample (15 of 248, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 000000000000000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 86.5. Weights run: 6.2s. Verify run: 45.3s. 330 eligible items had no known source.
+Set DPS (verified): 86.5. Weights run: 10.3s. Verify run: 76.9s. 330 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -288,7 +288,7 @@ No-known-source sample (15 of 330, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 025003000000000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 98.4. Weights run: 6.4s. Verify run: 32.2s. 428 eligible items had no known source.
+Set DPS (verified): 98.4. Weights run: 10.6s. Verify run: 53.6s. 428 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -320,7 +320,7 @@ No-known-source sample (15 of 428, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 025003031303000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 369.4. Weights run: 5.9s. Verify run: 50.8s. 1119 eligible items had no known source.
+Set DPS (verified): 369.4. Weights run: 9.4s. Verify run: 81.5s. 1119 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -352,7 +352,7 @@ No-known-source sample (15 of 1119, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (troll, 025003031303000000-03505003030121431-000000000000000000)
 
-Set DPS (verified): 733.6. Weights run: 3.9s. Verify run: 19.5s. 1119 eligible items had no known source.
+Set DPS (verified): 733.6. Weights run: 6.2s. Verify run: 30.6s. 1119 eligible items had no known source.
 
 4 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 

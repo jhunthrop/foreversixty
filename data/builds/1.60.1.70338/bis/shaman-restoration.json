@@ -2,7 +2,7 @@
   "spec": "shaman-restoration",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T09:30:28Z",
+  "generated_at": "2026-10-13T16:06:04Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -550,8 +550,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 2.956077246,
-      "verify_run_seconds": 9.509982369,
+      "weights_run_seconds": 4.70662498,
+      "verify_run_seconds": 17.043856138,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 2.956077246,
-      "verify_run_seconds": 8.881750095,
+      "weights_run_seconds": 4.70662498,
+      "verify_run_seconds": 15.909405759,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1827,8 +1827,8 @@
         "finger2: The Queen's Jewel",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.948050188,
-      "verify_run_seconds": 9.224141363,
+      "weights_run_seconds": 4.815822997,
+      "verify_run_seconds": 16.874541978,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2472,8 +2472,8 @@
         "finger2: The Queen's Jewel",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 2.948050188,
-      "verify_run_seconds": 8.901020124,
+      "weights_run_seconds": 4.815822997,
+      "verify_run_seconds": 15.946964808,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3158,8 +3158,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Battered Viking Shield"
       ],
-      "weights_run_seconds": 3.448857666,
-      "verify_run_seconds": 15.355171782,
+      "weights_run_seconds": 5.75604265,
+      "verify_run_seconds": 27.395217514,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3324,7 +3324,7 @@
           "item_name": "Papal Fez",
           "source": "Uldaman: Shadowforge Relic Hunter",
           "source_kind": "dungeon",
-          "score": 90.41541278708257,
+          "score": 90.41541278708259,
           "verified": true,
           "alternatives": [
             {
@@ -3332,14 +3332,14 @@
               "item_name": "Miner's Hat of the Deep",
               "source_kind": "dungeon",
               "source": "Uldaman: Shadowforge Relic Hunter",
-              "dps_delta": -0.7909489290371456
+              "dps_delta": -0.7909489290371462
             },
             {
               "item_id": 10574,
               "item_name": "Corpseshroud",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Withered Warrior",
-              "dps_delta": -1.0342338190656128
+              "dps_delta": -1.0342338190656135
             },
             {
               "item_id": 7720,
@@ -3609,7 +3609,7 @@
               "item_name": "Wisdom's Leather Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.48359414357823843
+              "dps_delta": -0.48359414357823877
             }
           ]
         },
@@ -3843,8 +3843,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Battered Viking Shield"
       ],
-      "weights_run_seconds": 3.448857666,
-      "verify_run_seconds": 14.7241706,
+      "weights_run_seconds": 5.75604265,
+      "verify_run_seconds": 26.04787983,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4571,8 +4571,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Mountainside Buckler"
       ],
-      "weights_run_seconds": 5.926581651,
-      "verify_run_seconds": 30.077767076,
+      "weights_run_seconds": 9.648955775,
+      "verify_run_seconds": 52.288407707,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5298,8 +5298,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Mountainside Buckler"
       ],
-      "weights_run_seconds": 5.926581651,
-      "verify_run_seconds": 29.638872055,
+      "weights_run_seconds": 9.648955775,
+      "verify_run_seconds": 50.973460265,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6003,8 +6003,8 @@
         "trinket2: Serenity Field",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 6.676503941,
-      "verify_run_seconds": 89.515354716,
+      "weights_run_seconds": 11.002277447,
+      "verify_run_seconds": 148.604608766,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6718,8 +6718,8 @@
         "trinket2: Serenity Field",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 6.676503941,
-      "verify_run_seconds": 87.505846702,
+      "weights_run_seconds": 11.002277447,
+      "verify_run_seconds": 143.461865622,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6917,7 +6917,7 @@
           "item_name": "Wavefront Necklace",
           "source": "Lord Skwol",
           "source_kind": "world",
-          "score": 48.70175461488841,
+          "score": 48.701754614888415,
           "verified": true,
           "alternatives": [
             {
@@ -6925,7 +6925,7 @@
               "item_name": "Animated Chain Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Ramstein the Gorger",
-              "dps_delta": -3.0121042145657784
+              "dps_delta": -3.01210421456578
             },
             {
               "item_id": 21531,
@@ -6940,7 +6940,7 @@
               "item_name": "Amulet of the Redeemed",
               "source_kind": "dungeon",
               "source": "Stratholme: Sothos and Jarien's Heirlooms",
-              "dps_delta": -4.591494275201204
+              "dps_delta": -4.591494275201206
             }
           ]
         },
@@ -7212,7 +7212,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -6.079497506963797
+              "dps_delta": -6.079497506963794
             }
           ]
         },
@@ -7460,8 +7460,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 4.893973654,
-      "verify_run_seconds": 53.560889166,
+      "weights_run_seconds": 7.993947346,
+      "verify_run_seconds": 86.388850673,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7649,7 +7649,7 @@
               "item_name": "Insightful Hood",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": -11.025081370588163
+              "dps_delta": -11.02508137058816
             }
           ]
         },
@@ -7708,7 +7708,7 @@
               "item_name": "Champion's Mail Epaulets",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -7.529792245927364
+              "dps_delta": -7.529792245927366
             },
             {
               "item_id": 231665,
@@ -7954,7 +7954,7 @@
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -6.079497506963794
+              "dps_delta": -6.079497506963797
             }
           ]
         },
@@ -8202,8 +8202,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 4.893973654,
-      "verify_run_seconds": 52.773451514,
+      "weights_run_seconds": 7.993947346,
+      "verify_run_seconds": 84.118618427,
       "coverage": {
         "back": {
           "eligible": 457,

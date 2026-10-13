@@ -2,7 +2,7 @@
   "spec": "warlock-destruction",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T09:32:36Z",
+  "generated_at": "2026-10-13T16:09:16Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -569,8 +569,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.451454694,
-      "verify_run_seconds": 0.830705546,
+      "weights_run_seconds": 2.400202261,
+      "verify_run_seconds": 1.280470311,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1225,8 +1225,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.451454694,
-      "verify_run_seconds": 0.825531628,
+      "weights_run_seconds": 2.400202261,
+      "verify_run_seconds": 1.23933845,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1932,8 +1932,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.523017087,
-      "verify_run_seconds": 0.862498746,
+      "weights_run_seconds": 2.481124572,
+      "verify_run_seconds": 1.33911747,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2632,8 +2632,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.523017087,
-      "verify_run_seconds": 0.846224018,
+      "weights_run_seconds": 2.481124572,
+      "verify_run_seconds": 1.270477169,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3355,8 +3355,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.299325864,
-      "verify_run_seconds": 0.988980804,
+      "weights_run_seconds": 2.015138479,
+      "verify_run_seconds": 1.494910263,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4079,8 +4079,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.299325864,
-      "verify_run_seconds": 0.96964863,
+      "weights_run_seconds": 2.015138479,
+      "verify_run_seconds": 1.5007239559999999,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4793,8 +4793,8 @@
         "main_hand: Kindling Stave",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.302891281,
-      "verify_run_seconds": 1.275766503,
+      "weights_run_seconds": 2.021386144,
+      "verify_run_seconds": 1.898307831,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5518,8 +5518,8 @@
         "main_hand: Kindling Stave",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.302891281,
-      "verify_run_seconds": 1.19166106,
+      "weights_run_seconds": 2.021386144,
+      "verify_run_seconds": 1.78130923,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5763,7 +5763,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -1.615422760498704
+              "dps_delta": -1.6154227604987053
             }
           ]
         },
@@ -5805,7 +5805,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 24.891345193534892,
+          "score": 24.891345193534896,
           "verified": true,
           "alternatives": [
             {
@@ -5813,21 +5813,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -1.3279524254285002
+              "dps_delta": -1.3279524254285016
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -2.709508683614003
+              "dps_delta": -2.7095086836140045
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.7941983106060992
+              "dps_delta": -2.794198310606101
             }
           ]
         },
@@ -5859,7 +5859,7 @@
             {
               "item_id": 227096,
               "item_name": "Knight-Captain's Dreadweave Tunic",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -6.61987331444321
             }
@@ -5990,7 +5990,7 @@
             {
               "item_id": 227095,
               "item_name": "Knight-Captain's Dreadweave Legguards",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -3.4256720012620976
             }
@@ -6268,8 +6268,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.375506461,
-      "verify_run_seconds": 2.793223186,
+      "weights_run_seconds": 2.241598406,
+      "verify_run_seconds": 4.053497019,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6790,14 +6790,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -6.057318474630593
+              "dps_delta": -6.05731847463059
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -6.534808083762172
+              "dps_delta": -6.53480808376217
             },
             {
               "item_id": 11669,
@@ -7015,8 +7015,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.375506461,
-      "verify_run_seconds": 2.65922024,
+      "weights_run_seconds": 2.241598406,
+      "verify_run_seconds": 3.940088864,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7252,7 +7252,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -1.7942345284028192
+              "dps_delta": -1.7942345284028172
             },
             {
               "item_id": 22657,
@@ -7355,7 +7355,7 @@
             {
               "item_id": 227096,
               "item_name": "Knight-Captain's Dreadweave Tunic",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -11.050420444453366
             }
@@ -7485,7 +7485,7 @@
             {
               "item_id": 227095,
               "item_name": "Knight-Captain's Dreadweave Legguards",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -6.522670027884073
             }
@@ -7537,14 +7537,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -7.482388365471295
+              "dps_delta": -7.482388365471292
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -10.77065838878517
+              "dps_delta": -10.770658388785167
             },
             {
               "item_id": 11669,
@@ -7761,8 +7761,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.641702178,
-      "verify_run_seconds": 3.045411207,
+      "weights_run_seconds": 2.848812515,
+      "verify_run_seconds": 4.412228357,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7998,7 +7998,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -1.7942345284028192
+              "dps_delta": -1.7942345284028172
             },
             {
               "item_id": 22657,
@@ -8048,7 +8048,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 25.83126592152298,
+          "score": 25.831265921522977,
           "verified": true,
           "alternatives": [
             {
@@ -8056,21 +8056,21 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -2.996232957007008
+              "dps_delta": -2.996232957007006
             },
             {
               "item_id": 18350,
               "item_name": "Amplifying Cloak",
               "source_kind": "dungeon",
               "source": "Dire Maul: Magister Kalendris",
-              "dps_delta": -4.434303216839893
+              "dps_delta": -4.434303216839891
             },
             {
               "item_id": 18510,
               "item_name": "Hide of the Wild",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -5.935203904274442
+              "dps_delta": -5.935203904274441
             }
           ]
         },
@@ -8505,8 +8505,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.641702178,
-      "verify_run_seconds": 3.0368986590000002,
+      "weights_run_seconds": 2.848812515,
+      "verify_run_seconds": 4.496219795,
       "coverage": {
         "back": {
           "eligible": 456,

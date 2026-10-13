@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T09:19:12Z",
+  "generated_at": "2026-10-13T15:47:45Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -579,8 +579,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.540807821,
-      "verify_run_seconds": 2.677088073,
+      "weights_run_seconds": 2.495938487,
+      "verify_run_seconds": 4.0526066,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1248,8 +1248,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.540807821,
-      "verify_run_seconds": 2.751890987,
+      "weights_run_seconds": 2.495938487,
+      "verify_run_seconds": 4.15047869,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1956,8 +1956,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.714542249,
-      "verify_run_seconds": 3.126960404,
+      "weights_run_seconds": 2.761285017,
+      "verify_run_seconds": 4.824981903,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2673,8 +2673,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.714542249,
-      "verify_run_seconds": 3.17343794,
+      "weights_run_seconds": 2.761285017,
+      "verify_run_seconds": 4.800883549,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3376,8 +3376,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.965663448,
-      "verify_run_seconds": 1.950471212,
+      "weights_run_seconds": 3.06584915,
+      "verify_run_seconds": 3.011046586,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4078,8 +4078,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.965663448,
-      "verify_run_seconds": 2.064356167,
+      "weights_run_seconds": 3.06584915,
+      "verify_run_seconds": 3.043376265,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4788,8 +4788,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.261313372,
-      "verify_run_seconds": 2.573966431,
+      "weights_run_seconds": 3.680717042,
+      "verify_run_seconds": 3.870051947,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5084,7 +5084,7 @@
           "item_name": "Stone Guard's Leather Armor",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 43.488006468941244,
+          "score": 43.48800646894125,
           "verified": true,
           "alternatives": [
             {
@@ -5092,14 +5092,14 @@
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Broken Alliances",
-              "dps_delta": -0.6287127553233142
+              "dps_delta": -0.6287127553233148
             },
             {
               "item_id": 17742,
               "item_name": "Fungus Shroud Armor",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.639223898323203
+              "dps_delta": -0.6392238983232037
             },
             {
               "item_id": 15064,
@@ -5498,8 +5498,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.261313372,
-      "verify_run_seconds": 2.649318885,
+      "weights_run_seconds": 3.680717042,
+      "verify_run_seconds": 3.9726220359999997,
       "coverage": {
         "back": {
           "eligible": 324,
@@ -5805,7 +5805,7 @@
               "item_name": "Field Marshal's Leather Chestpiece",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.0627799578854025
+              "dps_delta": -2.062779957885401
             },
             {
               "item_id": 226825,
@@ -5935,10 +5935,10 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 23299,
+              "item_id": 227061,
               "item_name": "Knight-Captain's Leather Legguards",
               "source_kind": "vendor",
-              "source": "PvP rank 12 · Knight-Captain · Alliance",
+              "source": "Captain Dirgehammer",
               "dps_delta": 0
             },
             {
@@ -6262,8 +6262,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.242841797,
-      "verify_run_seconds": 7.068432035,
+      "weights_run_seconds": 3.597365215,
+      "verify_run_seconds": 10.44877676,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7028,8 +7028,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.242841797,
-      "verify_run_seconds": 7.089168643,
+      "weights_run_seconds": 3.597365215,
+      "verify_run_seconds": 10.397132031,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7789,8 +7789,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.385910273,
-      "verify_run_seconds": 7.317814835,
+      "weights_run_seconds": 3.747395682,
+      "verify_run_seconds": 11.101805482,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8551,8 +8551,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.385910273,
-      "verify_run_seconds": 7.393441281,
+      "weights_run_seconds": 3.747395682,
+      "verify_run_seconds": 11.068599635,
       "coverage": {
         "back": {
           "eligible": 457,

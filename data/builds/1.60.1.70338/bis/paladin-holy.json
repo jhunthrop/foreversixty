@@ -2,7 +2,7 @@
   "spec": "paladin-holy",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T08:53:54Z",
+  "generated_at": "2026-10-13T15:07:32Z",
   "bands": [
     {
       "spec": "paladin-holy",
@@ -341,7 +341,7 @@
               "item_name": "Filigreed Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.25251064033593756
+              "dps_delta": -0.25251064033593784
             },
             {
               "item_id": 252503,
@@ -554,8 +554,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 2.502763667,
-      "verify_run_seconds": 7.45618679,
+      "weights_run_seconds": 4.21448556,
+      "verify_run_seconds": 13.803006888,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -985,7 +985,7 @@
               "item_name": "Filigreed Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.25251064033593756
+              "dps_delta": -0.25251064033593784
             },
             {
               "item_id": 15449,
@@ -1190,8 +1190,8 @@
         "finger2: Loop of Sacrifice",
         "main_hand: Sword of the Fallen"
       ],
-      "weights_run_seconds": 2.502763667,
-      "verify_run_seconds": 7.495808788,
+      "weights_run_seconds": 4.21448556,
+      "verify_run_seconds": 13.989487417,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1874,8 +1874,8 @@
         "main_hand: Royal Diplomatic Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 2.518186937,
-      "verify_run_seconds": 7.734819404,
+      "weights_run_seconds": 4.178176393,
+      "verify_run_seconds": 14.285382811,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2547,8 +2547,8 @@
         "main_hand: Royal Diplomatic Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 2.518186937,
-      "verify_run_seconds": 7.788461359,
+      "weights_run_seconds": 4.178176393,
+      "verify_run_seconds": 14.616414494,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2998,7 +2998,7 @@
               "item_name": "Warchief Kilt",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Houndmaster Loksey",
-              "dps_delta": -0.0937084373959584
+              "dps_delta": -0.09370843739595776
             }
           ]
         },
@@ -3229,8 +3229,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 4.4921856479999995,
-      "verify_run_seconds": 16.17369588,
+      "weights_run_seconds": 7.406666979,
+      "verify_run_seconds": 29.604881955,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3682,7 +3682,7 @@
               "item_name": "Warchief Kilt",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Houndmaster Loksey",
-              "dps_delta": -0.09370843739595776
+              "dps_delta": -0.0937084373959584
             }
           ]
         },
@@ -3912,8 +3912,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Forcestone Buckler"
       ],
-      "weights_run_seconds": 4.4921856479999995,
-      "verify_run_seconds": 16.164731685,
+      "weights_run_seconds": 7.406666979,
+      "verify_run_seconds": 29.642729481,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4078,7 +4078,7 @@
           "item_name": "Knight-Lieutenant's Imbued Helmet",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 78.29275234206303,
+          "score": 78.29275234206304,
           "verified": true,
           "alternatives": [
             {
@@ -4086,14 +4086,14 @@
               "item_name": "Gemburst Circlet",
               "source_kind": "quest",
               "source": "The God Hakkar",
-              "dps_delta": -0.887731969005742
+              "dps_delta": -0.887731969005744
             },
             {
               "item_id": 10630,
               "item_name": "Soulcatcher Halo",
               "source_kind": "dungeon",
               "source": "Sunken Temple: Atal'ai Warrior",
-              "dps_delta": -1.2822527445164473
+              "dps_delta": -1.2822527445164484
             },
             {
               "item_id": 9431,
@@ -4294,18 +4294,18 @@
               "dps_delta": -0.5081320562100319
             },
             {
-              "item_id": 252587,
-              "item_name": "Mender's Mail Gauntlets",
+              "item_id": 252551,
+              "item_name": "Mender's Leather Gauntlets",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.6750296762846713
             },
             {
-              "item_id": 252551,
-              "item_name": "Mender's Leather Gauntlets",
+              "item_id": 252587,
+              "item_name": "Mender's Mail Gauntlets",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.6750296762846717
+              "dps_delta": -0.6750296762846713
             }
           ]
         },
@@ -4353,7 +4353,7 @@
           "item_name": "Knight's Imbued Leggings",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 71.7646094131387,
+          "score": 71.76460941313871,
           "verified": true,
           "alternatives": [
             {
@@ -4361,14 +4361,14 @@
               "item_name": "Senior Designer's Pantaloons",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: General Angerforge",
-              "dps_delta": -0.5993474694014673
+              "dps_delta": -0.5993474694014683
             },
             {
               "item_id": 9474,
               "item_name": "Jinxed Hoodoo Kilt",
               "source_kind": "dungeon",
               "source": "Zul'Farrak: Shadowpriest Sezz'ziz",
-              "dps_delta": -0.7451665587920703
+              "dps_delta": -0.7451665587920713
             },
             {
               "item_id": 10807,
@@ -4410,11 +4410,11 @@
               "dps_delta": -0.0501753146251103
             },
             {
-              "item_id": 252565,
-              "item_name": "Mender's Mail Boots",
+              "item_id": 252533,
+              "item_name": "Mender's Leather Shoes",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.10782238340562045
+              "dps_delta": -0.10782238340562096
             }
           ]
         },
@@ -4659,8 +4659,8 @@
         "trinket2: Uther's Strength",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 4.711900526,
-      "verify_run_seconds": 22.215464755,
+      "weights_run_seconds": 7.948893339,
+      "verify_run_seconds": 39.745376515,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5038,18 +5038,18 @@
               "verified": true
             },
             {
-              "item_id": 252551,
-              "item_name": "Mender's Leather Gauntlets",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.6750296762846713
-            },
-            {
               "item_id": 252587,
               "item_name": "Mender's Mail Gauntlets",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.6750296762846713
+            },
+            {
+              "item_id": 252551,
+              "item_name": "Mender's Leather Gauntlets",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.6750296762846717
             }
           ]
         },
@@ -5158,7 +5158,7 @@
               "item_name": "Mender's Leather Shoes",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.10782238340562045
+              "dps_delta": -0.10782238340562096
             }
           ]
         },
@@ -5403,8 +5403,8 @@
         "trinket2: Uther's Strength",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 4.711900526,
-      "verify_run_seconds": 21.445789439,
+      "weights_run_seconds": 7.948893339,
+      "verify_run_seconds": 38.597215345,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5814,7 +5814,7 @@
               "item_name": "Whipvine Cord",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -0.9354594706902468
+              "dps_delta": -0.9354594706902459
             },
             {
               "item_id": 14465,
@@ -6126,8 +6126,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 5.351589437,
-      "verify_run_seconds": 71.480746472,
+      "weights_run_seconds": 8.965307907,
+      "verify_run_seconds": 121.728682128,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6595,14 +6595,14 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.3128608197031275
+              "dps_delta": -1.312860819703129
             },
             {
               "item_id": 22247,
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -1.8909012002501797
+              "dps_delta": -1.8909012002501815
             },
             {
               "item_id": 226983,
@@ -6831,8 +6831,8 @@
         "trinket2: Mindtap Talisman",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 5.351589437,
-      "verify_run_seconds": 67.874327068,
+      "weights_run_seconds": 8.965307907,
+      "verify_run_seconds": 117.522936796,
       "coverage": {
         "back": {
           "eligible": 455,
@@ -7187,7 +7187,7 @@
               "item_name": "Bracers of Prosperity",
               "source_kind": "dungeon",
               "source": "Dire Maul: King Gordok",
-              "dps_delta": -0.056587604994271776
+              "dps_delta": -0.05658760499427364
             }
           ]
         },
@@ -7566,8 +7566,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 3.133790922,
-      "verify_run_seconds": 28.321426661,
+      "weights_run_seconds": 5.263204057,
+      "verify_run_seconds": 49.439861996,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8291,8 +8291,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 3.133790922,
-      "verify_run_seconds": 22.508611653,
+      "weights_run_seconds": 5.263204057,
+      "verify_run_seconds": 39.368713261,
       "coverage": {
         "back": {
           "eligible": 455,

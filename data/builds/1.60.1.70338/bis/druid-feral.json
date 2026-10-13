@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T08:31:52Z",
+  "generated_at": "2026-10-13T14:31:19Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -544,8 +544,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 2.5930728370000002,
-      "verify_run_seconds": 3.195105722,
+      "weights_run_seconds": 4.143767774,
+      "verify_run_seconds": 4.904430597,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1170,8 +1170,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 2.5930728370000002,
-      "verify_run_seconds": 3.18085354,
+      "weights_run_seconds": 4.143767774,
+      "verify_run_seconds": 4.830965901,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1818,8 +1818,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.800471361,
-      "verify_run_seconds": 1.877082504,
+      "weights_run_seconds": 4.528856203,
+      "verify_run_seconds": 2.943092556,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2467,8 +2467,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.800471361,
-      "verify_run_seconds": 1.921078553,
+      "weights_run_seconds": 4.528856203,
+      "verify_run_seconds": 2.910299298,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3112,8 +3112,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.130628121,
-      "verify_run_seconds": 2.265723513,
+      "weights_run_seconds": 4.98195019,
+      "verify_run_seconds": 3.472657656,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3757,8 +3757,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 3.130628121,
-      "verify_run_seconds": 2.2235615810000002,
+      "weights_run_seconds": 4.98195019,
+      "verify_run_seconds": 3.428685754,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4410,8 +4410,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 3.240070022,
-      "verify_run_seconds": 3.021201477,
+      "weights_run_seconds": 5.037212362,
+      "verify_run_seconds": 4.538151362,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5059,8 +5059,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 3.240070022,
-      "verify_run_seconds": 2.8260585799999998,
+      "weights_run_seconds": 5.037212362,
+      "verify_run_seconds": 4.265992669,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5560,7 +5560,7 @@
             {
               "item_id": 227182,
               "item_name": "Knight-Lieutenant's Dragonhide Treads",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
               "dps_delta": -0.2510093087407769
             },
@@ -5804,8 +5804,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.124314565,
-      "verify_run_seconds": 8.667957742,
+      "weights_run_seconds": 4.962497525,
+      "verify_run_seconds": 12.752058646,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6125,14 +6125,14 @@
               "item_name": "Warlord's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.0894535936281198
+              "dps_delta": -2.089453593628119
             },
             {
               "item_id": 16549,
               "item_name": "Warlord's Dragonhide Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.1143503827227583
+              "dps_delta": -2.114350382722757
             },
             {
               "item_id": 23089,
@@ -6553,8 +6553,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 3.124314565,
-      "verify_run_seconds": 7.928975214,
+      "weights_run_seconds": 4.962497525,
+      "verify_run_seconds": 12.027536711,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6872,14 +6872,14 @@
               "item_name": "Dawn Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.7847141828657405
+              "dps_delta": -2.7847141828657445
             },
             {
               "item_id": 231690,
               "item_name": "Field Marshal's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.4349724485344604
+              "dps_delta": -3.4349724485344644
             },
             {
               "item_id": 23089,
@@ -6948,7 +6948,7 @@
             {
               "item_id": 227183,
               "item_name": "Knight-Lieutenant's Dragonhide Grips",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
               "dps_delta": -2.4310984763235997
             }
@@ -6968,7 +6968,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -2.36197049943988
+              "dps_delta": -2.3619704994398822
             },
             {
               "item_id": 19044,
@@ -7030,7 +7030,7 @@
             {
               "item_id": 227182,
               "item_name": "Knight-Lieutenant's Dragonhide Treads",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
               "dps_delta": 0
             },
@@ -7278,8 +7278,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 2.972203688,
-      "verify_run_seconds": 8.258724465,
+      "weights_run_seconds": 4.799909249,
+      "verify_run_seconds": 12.391723236,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7678,7 +7678,7 @@
               "item_name": "Blood Guard's Dragonhide Grips",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -2.4310984763235974
+              "dps_delta": -2.4310984763235997
             }
           ]
         },
@@ -8013,8 +8013,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 2.972203688,
-      "verify_run_seconds": 7.416460624,
+      "weights_run_seconds": 4.799909249,
+      "verify_run_seconds": 11.543423389,
       "coverage": {
         "back": {
           "eligible": 457,

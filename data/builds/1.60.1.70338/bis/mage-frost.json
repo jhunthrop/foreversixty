@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T08:47:12Z",
+  "generated_at": "2026-10-13T14:55:53Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -553,8 +553,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.590639312,
-      "verify_run_seconds": 0.496616718,
+      "weights_run_seconds": 0.925213178,
+      "verify_run_seconds": 0.733031334,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1198,8 +1198,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.590639312,
-      "verify_run_seconds": 0.512090469,
+      "weights_run_seconds": 0.925213178,
+      "verify_run_seconds": 0.761711372,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1902,8 +1902,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.726117731,
-      "verify_run_seconds": 0.568927361,
+      "weights_run_seconds": 1.105548453,
+      "verify_run_seconds": 0.865182791,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2601,8 +2601,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.726117731,
-      "verify_run_seconds": 0.580601936,
+      "weights_run_seconds": 1.105548453,
+      "verify_run_seconds": 0.878569601,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3311,8 +3311,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.732152719,
-      "verify_run_seconds": 0.685483111,
+      "weights_run_seconds": 1.064849134,
+      "verify_run_seconds": 0.976719169,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4022,8 +4022,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.732152719,
-      "verify_run_seconds": 0.702525769,
+      "weights_run_seconds": 1.064849134,
+      "verify_run_seconds": 0.98097357,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4722,8 +4722,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.660935318,
-      "verify_run_seconds": 0.855714951,
+      "weights_run_seconds": 0.99042833,
+      "verify_run_seconds": 1.318134226,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4919,7 +4919,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.8763172519890532
+              "dps_delta": -1.8763172519890539
             },
             {
               "item_id": 15999,
@@ -4991,7 +4991,7 @@
               "item_name": "Blood Guard's Dreadweave Mantle",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -2.079337793182391
+              "dps_delta": -2.07933779318239
             }
           ]
         },
@@ -5430,8 +5430,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.660935318,
-      "verify_run_seconds": 0.834404249,
+      "weights_run_seconds": 0.99042833,
+      "verify_run_seconds": 1.235400044,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5756,7 +5756,7 @@
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -3.207353007459232
             },
@@ -6175,8 +6175,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.682105929,
-      "verify_run_seconds": 2.560274391,
+      "weights_run_seconds": 1.062230988,
+      "verify_run_seconds": 3.670098752,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6926,8 +6926,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.682105929,
-      "verify_run_seconds": 2.476800372,
+      "weights_run_seconds": 1.062230988,
+      "verify_run_seconds": 3.578065076,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7260,7 +7260,7 @@
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
-              "source_kind": "vendor",
+              "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
               "dps_delta": -7.56362272083299
             }
@@ -7353,7 +7353,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -6.782911362329622
+              "dps_delta": -6.7829113623296236
             },
             {
               "item_id": 272393,
@@ -7673,8 +7673,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.711201596,
-      "verify_run_seconds": 2.070388947,
+      "weights_run_seconds": 1.134867876,
+      "verify_run_seconds": 2.87046826,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8419,8 +8419,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.711201596,
-      "verify_run_seconds": 1.990746599,
+      "weights_run_seconds": 1.134867876,
+      "verify_run_seconds": 2.7840193600000003,
       "coverage": {
         "back": {
           "eligible": 456,

@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T09:17:49Z",
+  "generated_at": "2026-10-13T15:45:40Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -579,8 +579,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.884127183,
-      "verify_run_seconds": 3.229282507,
+      "weights_run_seconds": 2.899033171,
+      "verify_run_seconds": 4.6521101080000005,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1248,8 +1248,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.884127183,
-      "verify_run_seconds": 3.144698601,
+      "weights_run_seconds": 2.899033171,
+      "verify_run_seconds": 4.649517776,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1956,8 +1956,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.935833527,
-      "verify_run_seconds": 3.463466983,
+      "weights_run_seconds": 2.981409365,
+      "verify_run_seconds": 5.155882167,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2672,8 +2672,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.935833527,
-      "verify_run_seconds": 3.417433874,
+      "weights_run_seconds": 2.981409365,
+      "verify_run_seconds": 5.135480854,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3374,8 +3374,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.046803359,
-      "verify_run_seconds": 2.060607323,
+      "weights_run_seconds": 3.250560328,
+      "verify_run_seconds": 3.050952114,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4075,8 +4075,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.046803359,
-      "verify_run_seconds": 2.16436908,
+      "weights_run_seconds": 3.250560328,
+      "verify_run_seconds": 3.12993489,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4362,7 +4362,7 @@
           "item_name": "Knight's Leather Armor",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 46.46138377552424,
+          "score": 46.46138377552423,
           "verified": true,
           "alternatives": [
             {
@@ -4370,14 +4370,14 @@
               "item_name": "Fungus Shroud Armor",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.6819748160791596
+              "dps_delta": -0.681974816079159
             },
             {
               "item_id": 11193,
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Tremors of the Earth",
-              "dps_delta": -0.6875028109304265
+              "dps_delta": -0.687502810930426
             },
             {
               "item_id": 15064,
@@ -4492,7 +4492,7 @@
           "item_name": "Knight's Leather Pants",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 46.46138377552423,
+          "score": 46.46138377552424,
           "verified": true,
           "alternatives": [
             {
@@ -4500,14 +4500,14 @@
               "item_name": "Serpentskin Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.7487569745071379
+              "dps_delta": -0.7487569745071384
             },
             {
               "item_id": 1718,
               "item_name": "Basilisk Hide Pants",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.1959049849490042
+              "dps_delta": -1.1959049849490049
             },
             {
               "item_id": 9652,
@@ -4799,8 +4799,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.40679139,
-      "verify_run_seconds": 2.685578769,
+      "weights_run_seconds": 3.661052598,
+      "verify_run_seconds": 4.015381963,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5509,8 +5509,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.40679139,
-      "verify_run_seconds": 2.750882474,
+      "weights_run_seconds": 3.661052598,
+      "verify_run_seconds": 3.978926575,
       "coverage": {
         "back": {
           "eligible": 324,
@@ -6277,8 +6277,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.063857428,
-      "verify_run_seconds": 7.108265988,
+      "weights_run_seconds": 3.076026165,
+      "verify_run_seconds": 10.255449537,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7044,8 +7044,8 @@
         "off_hand: Felstriker",
         "ranged: Satyr's Bow"
       ],
-      "weights_run_seconds": 2.063857428,
-      "verify_run_seconds": 6.907646115,
+      "weights_run_seconds": 3.076026165,
+      "verify_run_seconds": 10.197505547,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7808,8 +7808,8 @@
         "off_hand: The Lobotomizer",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.090588082,
-      "verify_run_seconds": 7.155096127,
+      "weights_run_seconds": 3.270840743,
+      "verify_run_seconds": 10.432179606,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8576,8 +8576,8 @@
         "off_hand: Felstriker",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.090588082,
-      "verify_run_seconds": 7.022024286,
+      "weights_run_seconds": 3.270840743,
+      "verify_run_seconds": 10.436867582,
       "coverage": {
         "back": {
           "eligible": 457,

@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 0000000000000000-55100000000000000000-0000000000000000)
 
-Set DPS (verified): 67.6. Weights run: 2.6s. Verify run: 3.2s. 194 eligible items had no known source.
+Set DPS (verified): 67.6. Weights run: 4.1s. Verify run: 4.9s. 194 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=2.100 ± 0.013, crit=0.686 ± 0.012 per rating point (14 rating = 1%, 9.603 per %), hit=0.958 ± 0.030 per rating point (10 rating = 1%, 9.576 per %), melee_haste=5.988 ± 0.357
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 194, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-55232031000000000000-0000000000000000)
 
-Set DPS (verified): 122.3. Weights run: 2.8s. Verify run: 1.9s. 351 eligible items had no known source.
+Set DPS (verified): 122.3. Weights run: 4.5s. Verify run: 2.9s. 351 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.985 ± 0.015, crit=0.781 ± 0.016 per rating point (14 rating = 1%, 10.940 per %), hit=0.954 ± 0.032 per rating point (10 rating = 1%, 9.540 per %), melee_haste=5.539 ± 0.450
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 351, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-55232032121032000000-0000000000000000)
 
-Set DPS (verified): 168.6. Weights run: 3.1s. Verify run: 2.3s. 468 eligible items had no known source.
+Set DPS (verified): 168.6. Weights run: 5.0s. Verify run: 3.5s. 468 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.925 ± 0.022, crit=0.909 ± 0.026 per rating point (14 rating = 1%, 12.724 per %), hit=1.026 ± 0.043 per rating point (10 rating = 1%, 10.260 per %), melee_haste=5.760 ± 0.591
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 468, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0100000000000000-55232032121032012001-5000000000000000)
 
-Set DPS (verified): 184.5. Weights run: 3.2s. Verify run: 3.0s. 615 eligible items had no known source.
+Set DPS (verified): 184.5. Weights run: 5.0s. Verify run: 4.5s. 615 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -130,7 +130,7 @@ No-known-source sample (15 of 615, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 0100000000000000-55232032121032012001-5053200000000000)
 
-Set DPS (verified): 287.6. Weights run: 3.1s. Verify run: 8.7s. 1461 eligible items had no known source.
+Set DPS (verified): 287.6. Weights run: 5.0s. Verify run: 12.8s. 1461 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.789 ± 0.028, crit=1.127 ± 0.040 per rating point (14 rating = 1%, 15.772 per %), hit=1.129 ± 0.063 per rating point (10 rating = 1%, 11.291 per %), melee_haste=5.837 ± 1.062
 
@@ -145,7 +145,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | hands | Feralheart Fists (226793) | Mokvar [vendor] | sim-verified (287.6 DPS) | yes | Timbermaw Brawlers (19049, +0.00 DPS) [crafted]; Raider Gloves (272099, +0.00 DPS) [vendor]; Stormshroud Gloves (21278, -13.16 DPS, sim-verified) [crafted] |
 | waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 87.6 attack_power points (7.48 DPS) | yes | Shifter's Belt (272396, -1.14 DPS, sim-verified) [vendor]; Might of the Timbermaw (19044, -1.40 DPS) [crafted]; Belt of Preserved Heads (20216, -1.60 DPS) [quest] |
 | legs | Feralheart Trousers (226791) | Mokvar [vendor] | sim-verified (287.6 DPS) | yes | Warbear Woolies (15065, +0.00 DPS) [crafted]; Marshal's Dragonhide Leggings (231691, +0.00 DPS) [vendor]; Stormshroud Pants (15057, -13.64 DPS, sim-verified) [crafted] |
-| feet | Drudge Boots (21532) | The Nightmare Manifests [quest] | 59.0 attack_power points (5.04 DPS) | yes | Marshal's Dragonhide Treads (231692, +0.00 DPS) [vendor]; Knight-Lieutenant's Dragonhide Treads (227182, -0.25 DPS) [vendor]; Boots of Ferocity (22472, -0.90 DPS, sim-verified) [dungeon] |
+| feet | Drudge Boots (21532) | The Nightmare Manifests [quest] | 59.0 attack_power points (5.04 DPS) | yes | Marshal's Dragonhide Treads (231692, +0.00 DPS) [vendor]; Knight-Lieutenant's Dragonhide Treads (227182, -0.25 DPS) [pvp]; Boots of Ferocity (22472, -0.90 DPS, sim-verified) [dungeon] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | sim-verified (287.6 DPS) | yes | Don Julio's Band (19325, -1.80 DPS) [rep]; Tarnished Elven Ring (18500, -2.22 DPS) [dungeon]; Naglering (11669, -5.37 DPS, sim-verified) [dungeon] |
 | finger2 | Protector's Band (19514) | Silverwing Sentinels [rep] | sim-verified (287.6 DPS) | yes | Don Julio's Band (19325, -0.26 DPS) [rep]; Tarnished Elven Ring (18500, -0.68 DPS) [dungeon]; Naglering (11669, -4.71 DPS, sim-verified) [dungeon] |
 | trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (287.6 DPS) | yes | Blackhand's Breadth (13965, +0.00 DPS) [quest]; Eye of the Beast (13968, +0.00 DPS) [quest]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon] |
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1461, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 0500200000000000-45211031021032212001-5053000000000000)
 
-Set DPS (verified): 658.7. Weights run: 3.0s. Verify run: 8.3s. 1461 eligible items had no known source.
+Set DPS (verified): 658.7. Weights run: 4.8s. Verify run: 12.4s. 1461 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -174,10 +174,10 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | 54.3 attack_power points (8.33 DPS) | yes | Windshear Cape (20691, -0.10 DPS) [world]; Cloak of Revanchion (23127, -1.11 DPS) [dungeon]; Blackveil Cape (11626, -1.19 DPS) [dungeon] |
 | chest | Timbermaw Tunic (252484) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dawn Armor (252483, -2.78 DPS) [crafted]; Field Marshal's Dragonhide Chestpiece (231690, -3.43 DPS) [vendor]; Tunic of Undead Slaying (23089, -25.71 DPS, sim-verified) [world] |
 | wrist | Feralheart Bands (226788) | Mokvar [vendor] | sim-verified (+14.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Forest Stalker's Bracers (19589, +0.00 DPS) [rep]; Bracers of Subterfuge (22668, +0.00 DPS) [quest] |
-| hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | 88.4 attack_power points (13.56 DPS) | yes | Timbermaw Brawlers (19049, -0.85 DPS) [crafted]; Marshal's Dragonhide Grips (231694, -1.15 DPS) [vendor]; Knight-Lieutenant's Dragonhide Grips (227183, -2.43 DPS) [vendor] |
+| hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | 88.4 attack_power points (13.56 DPS) | yes | Timbermaw Brawlers (19049, -0.85 DPS) [crafted]; Marshal's Dragonhide Grips (231694, -1.15 DPS) [vendor]; Knight-Lieutenant's Dragonhide Grips (227183, -2.43 DPS) [pvp] |
 | waist | Ferocity of the Timbermaw (227805) | Meilosh [vendor] | 101.8 attack_power points (15.61 DPS) | yes | Belt of Preserved Heads (20216, -2.36 DPS) [quest]; Might of the Timbermaw (19044, -2.91 DPS) [crafted]; Shifter's Belt (272396, -3.08 DPS, sim-verified) [vendor] |
 | legs | Warbear Woolies (15065) | Leatherworking [crafted] | 109.0 attack_power points (16.71 DPS) | yes | Marshal's Dragonhide Leggings (231691, +0.00 DPS) [vendor]; Sentinel's Leather Pants (237818, -0.56 DPS) [vendor]; Knight-Captain's Dragonhide Leggings (227178, -1.91 DPS) [vendor] |
-| feet | Feralheart Walkers (226794) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Knight-Lieutenant's Dragonhide Treads (227182, +0.00 DPS) [vendor]; Marshal's Dragonhide Treads (231692, +0.00 DPS) [vendor]; Drudge Boots (21532, -16.28 DPS, sim-verified) [quest] |
+| feet | Feralheart Walkers (226794) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Knight-Lieutenant's Dragonhide Treads (227182, +0.00 DPS) [pvp]; Marshal's Dragonhide Treads (231692, +0.00 DPS) [vendor]; Drudge Boots (21532, -16.28 DPS, sim-verified) [quest] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Protector's Band (19514, -3.39 DPS) [rep]; Tarnished Elven Ring (18500, -3.64 DPS) [dungeon]; Naglering (11669, -15.40 DPS, sim-verified) [dungeon] |
 | finger2 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Protector's Band (19514, -0.27 DPS) [rep]; Tarnished Elven Ring (18500, -0.53 DPS) [dungeon]; Naglering (11669, -10.88 DPS, sim-verified) [dungeon] |
 | trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Blackhand's Breadth (13965, +0.00 DPS) [quest]; Eye of the Beast (13968, +0.00 DPS) [quest] |
@@ -194,7 +194,7 @@ No-known-source sample (15 of 1461, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-55100000000000000000-0000000000000000)
 
-Set DPS (verified): 66.2. Weights run: 2.6s. Verify run: 3.2s. 184 eligible items had no known source.
+Set DPS (verified): 66.2. Weights run: 4.1s. Verify run: 4.8s. 184 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=2.100 ± 0.013, crit=0.686 ± 0.012 per rating point (14 rating = 1%, 9.603 per %), hit=0.958 ± 0.030 per rating point (10 rating = 1%, 9.576 per %), melee_haste=5.988 ± 0.357
 
@@ -224,7 +224,7 @@ No-known-source sample (15 of 184, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-55232031000000000000-0000000000000000)
 
-Set DPS (verified): 120.1. Weights run: 2.8s. Verify run: 1.9s. 341 eligible items had no known source.
+Set DPS (verified): 120.1. Weights run: 4.5s. Verify run: 2.9s. 341 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.985 ± 0.015, crit=0.781 ± 0.016 per rating point (14 rating = 1%, 10.940 per %), hit=0.954 ± 0.032 per rating point (10 rating = 1%, 9.540 per %), melee_haste=5.539 ± 0.450
 
@@ -254,7 +254,7 @@ No-known-source sample (15 of 341, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-55232032121032000000-0000000000000000)
 
-Set DPS (verified): 165.9. Weights run: 3.1s. Verify run: 2.2s. 451 eligible items had no known source.
+Set DPS (verified): 165.9. Weights run: 5.0s. Verify run: 3.4s. 451 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.925 ± 0.022, crit=0.909 ± 0.026 per rating point (14 rating = 1%, 12.724 per %), hit=1.026 ± 0.043 per rating point (10 rating = 1%, 10.260 per %), melee_haste=5.760 ± 0.591
 
@@ -284,7 +284,7 @@ No-known-source sample (15 of 451, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0100000000000000-55232032121032012001-5000000000000000)
 
-Set DPS (verified): 188.0. Weights run: 3.2s. Verify run: 2.8s. 594 eligible items had no known source.
+Set DPS (verified): 188.0. Weights run: 5.0s. Verify run: 4.3s. 594 eligible items had no known source.
 
 3 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -316,7 +316,7 @@ No-known-source sample (15 of 594, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 0100000000000000-55232032121032012001-5053200000000000)
 
-Set DPS (verified): 290.2. Weights run: 3.1s. Verify run: 7.9s. 1453 eligible items had no known source.
+Set DPS (verified): 290.2. Weights run: 5.0s. Verify run: 12.0s. 1453 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.200 ± 0.002, agility=1.789 ± 0.028, crit=1.127 ± 0.040 per rating point (14 rating = 1%, 15.772 per %), hit=1.129 ± 0.063 per rating point (10 rating = 1%, 11.291 per %), melee_haste=5.837 ± 1.062
 
@@ -346,7 +346,7 @@ No-known-source sample (15 of 1453, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 0500200000000000-45211031021032212001-5053000000000000)
 
-Set DPS (verified): 666.8. Weights run: 3.0s. Verify run: 7.4s. 1453 eligible items had no known source.
+Set DPS (verified): 666.8. Weights run: 4.8s. Verify run: 11.5s. 1453 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.420 ± 0.002, agility=2.289 ± 0.035, crit=1.554 ± 0.047 per rating point (14 rating = 1%, 21.756 per %), hit=1.821 ± 0.084 per rating point (10 rating = 1%, 18.214 per %), melee_haste=12.856 ± 1.295
 

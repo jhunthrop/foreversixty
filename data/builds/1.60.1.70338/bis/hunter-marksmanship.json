@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T08:44:05Z",
+  "generated_at": "2026-10-13T14:51:10Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -534,8 +534,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.533261967,
-      "verify_run_seconds": 1.461880101,
+      "weights_run_seconds": 2.394037304,
+      "verify_run_seconds": 2.149170694,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1165,8 +1165,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.533261967,
-      "verify_run_seconds": 1.422401885,
+      "weights_run_seconds": 2.394037304,
+      "verify_run_seconds": 2.076322223,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1909,8 +1909,8 @@
         "off_hand: Vendetta",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.635138023,
-      "verify_run_seconds": 1.66301759,
+      "weights_run_seconds": 2.579031836,
+      "verify_run_seconds": 2.486161056,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2663,8 +2663,8 @@
         "off_hand: Vendetta",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 1.635138023,
-      "verify_run_seconds": 1.613667958,
+      "weights_run_seconds": 2.579031836,
+      "verify_run_seconds": 2.4001173270000002,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3377,8 +3377,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.66329782,
-      "verify_run_seconds": 2.001436503,
+      "weights_run_seconds": 2.677787301,
+      "verify_run_seconds": 3.026029515,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4091,8 +4091,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.66329782,
-      "verify_run_seconds": 1.972898204,
+      "weights_run_seconds": 2.677787301,
+      "verify_run_seconds": 2.9808741039999997,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4776,8 +4776,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.740106543,
-      "verify_run_seconds": 4.131597127,
+      "weights_run_seconds": 2.749188496,
+      "verify_run_seconds": 6.08305833,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5459,8 +5459,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.740106543,
-      "verify_run_seconds": 2.606979791,
+      "weights_run_seconds": 2.749188496,
+      "verify_run_seconds": 3.833376917,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5763,14 +5763,14 @@
               "item_name": "Field Marshal's Chain Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.983073309570835
+              "dps_delta": -2.983073309570837
             },
             {
               "item_id": 231581,
               "item_name": "Field Marshal's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -2.983073309570835
+              "dps_delta": -2.983073309570837
             },
             {
               "item_id": 23089,
@@ -6195,8 +6195,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.670974899,
-      "verify_run_seconds": 7.821336798,
+      "weights_run_seconds": 2.721965832,
+      "verify_run_seconds": 11.932481964,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6499,14 +6499,14 @@
               "item_name": "Warlord's Chain Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.983073309570835
+              "dps_delta": -2.983073309570837
             },
             {
               "item_id": 231573,
               "item_name": "Warlord's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.983073309570835
+              "dps_delta": -2.983073309570837
             },
             {
               "item_id": 23089,
@@ -6930,8 +6930,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.670974899,
-      "verify_run_seconds": 7.62237323,
+      "weights_run_seconds": 2.721965832,
+      "verify_run_seconds": 11.207849562,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7667,8 +7667,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.7363805700000001,
-      "verify_run_seconds": 8.170916934,
+      "weights_run_seconds": 2.795707819,
+      "verify_run_seconds": 12.235779833,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8402,8 +8402,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.7363805700000001,
-      "verify_run_seconds": 7.902515666,
+      "weights_run_seconds": 2.795707819,
+      "verify_run_seconds": 11.775042662,
       "coverage": {
         "back": {
           "eligible": 456,
