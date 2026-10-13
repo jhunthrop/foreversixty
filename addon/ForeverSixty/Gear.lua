@@ -35,6 +35,13 @@ function Gear.statsOf(link)
 	return stats
 end
 
+--- An item's stats by id, read from the client (its link, then Gear.statsOf): nil until the
+--- client holds the item. The item tooltip and the gear gap price a pick through this one read.
+function Gear.itemStatsOf(itemId)
+	local _, link = Compat.itemInfo(itemId)
+	return link ~= nil and Gear.statsOf(link) or nil
+end
+
 --- Whether an item link carries an enchant (its enchant id, the field after
 --- the item id, is not 0).
 function Gear.isEnchanted(link)

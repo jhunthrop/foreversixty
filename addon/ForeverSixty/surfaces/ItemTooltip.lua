@@ -1037,10 +1037,10 @@ local function buildPlans(build, slots, itemId)
 	return false
 end
 
---- The client reads `ctx` falls back to when a caller hands none in.
+--- The client reads `ctx` falls back to when a caller hands none in (Gear.itemStatsOf: the
+--- gear gap's own read).
 local function itemStatsOf(itemId)
-	local _, link = Compat.itemInfo(itemId)
-	return link ~= nil and Gear.statsOf(link) or nil
+	return Gear.itemStatsOf(itemId)
 end
 
 local function qualityHexOf(itemId)
@@ -1081,24 +1081,9 @@ end
 
 --- The pick the section goes and gets: the band's pick, or, when the client
 --- cannot show it, the first of its alternatives it can (with the rest as
---- its own alternatives). nil when it can show none.
-local function reachablePick(pick, isMissing)
-	if pick == nil or not isMissing(pick.item_id) then
-		return pick
-	end
-	local alternatives = pick.alternatives or {}
-	for index, alternative in ipairs(alternatives) do
-		if alternative.item_id ~= nil and not isMissing(alternative.item_id) then
-			local rest = {}
-			for other = index + 1, #alternatives do
-				rest[#rest + 1] = alternatives[other]
-			end
-			return { item_id = alternative.item_id, kind = alternative.kind, source = alternative.source,
-				alternatives = rest }
-		end
-	end
-	return nil
-end
+--- its own alternatives). nil when it can show none. Progress.reachablePick, the
+--- gear gap's own rule (L5.1 fix round 3).
+local reachablePick = Progress.reachablePick
 
 --- The part of the section that scores one item (L4.2 ruling 1): the one verdict the
 --- item tooltip, the quest reward labels and the roll line all read, so they can never
@@ -1236,22 +1221,13 @@ function ItemTooltip.section(ctx)
 	local isMissing = ctx.isMissing or missingOf
 	local current = ctx.current or nil
 	local weights = current ~= nil and current.weights or nil
-	local perPoint = current ~= nil and current.dpsPerPoint or nil
-	local weapon = current ~= nil and current.weapon or nil
 	local unit = ItemTooltip.unitOf(current)
-	local bisDps = type(data.bisDps) == "table" and data.bisDps or {}
 	local function pickName(itemId)
 		return pickNameOf(data, nameOf, pending, itemId)
 	end
-	--- A pick's stats: the client's, else a weapon's own DPS from the data until
-	--- the client's arrive (pending, as above). nil for neither.
-	local function pickStats(itemId)
-		local stats = statsOf(itemId)
-		if (stats == nil or next(stats) == nil) and type(bisDps[itemId]) == "number" then
-			pending[itemId] = true
-			return { weapon_dps = bisDps[itemId] }
-		end
-		return stats
+	--- A weapon priced from the data's own DPS waits for the client's stats (pending, as above).
+	local function standIn(itemId)
+		pending[itemId] = true
 	end
 	--- Whether an item binds when equipped (the client's bind type 2): a world drop of one
 	--- is on the auction house (L4.1 fix round 5).
@@ -1296,42 +1272,26 @@ function ItemTooltip.section(ctx)
 	local specBis = ctx.spec ~= nil and type(data.bis) == "table" and data.bis[ctx.spec] or nil
 	local currentBand = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
 	local nextBand = ItemTooltip.nextBand(specBis, currentBand)
-	local roundUnit = unit == "score" and "score" or "dps"
-	--- A candidate's gain over what is worn in the slot (net of the worn
-	--- enchant, Gear.readEquipped), rounded as shown; nil with no figure.
-	local function gainOf(itemId)
-		local stats = weights ~= nil and pickStats(itemId) or nil
-		if stats == nil or next(stats) == nil then
-			return nil
-		end
-		local wanted = { itemId = itemId, stats = stats, equipLocation = select(4, Compat.itemInfoInstant(itemId)) }
-		local verdict = Progress.itemVerdict(slot, wanted, equipped, weights, perPoint, weapon)
-		if verdict == nil or verdict.delta == nil then
-			return nil
-		end
-		return Progress.roundedGain(-verdict.delta, roundUnit), verdict
+	--- A candidate's gain over what is worn in the slot (net of the worn enchant,
+	--- Gear.readEquipped), rounded as shown; nil with no figure. Its stats are the client's,
+	--- else `own` (a build entry's), else a weapon's own DPS from the data until the client's
+	--- arrive (Progress.pickStats); the gear gap scores every slot's target this one way
+	--- (Progress.pickGain).
+	local function gainOf(itemId, own)
+		local stats = weights ~= nil and Progress.pickStats(data, statsOf, itemId, own, standIn) or nil
+		return Progress.pickGain(slot, itemId, stats, equipped, current)
 	end
+	-- The slot's one target (L5.1 fix round 3, Progress.targetFor): the build's gear-list entry
+	-- for it, else the band's pick; the data naming one the client can show none of is
+	-- `unshowable`. The gear gap (Comms.gearGap through Progress.slotTargets) measures the same
+	-- target. The hover reads it in the talents' spec (ctx.spec, Gear.specOf, as Chip.scoredUpgrades
+	-- does); the gap in Comms.ownSpec's (the build's own, the spec the guild row shows), which is
+	-- the same spec whenever the talents lead in the build's tree.
 	local pick, isPick, pickWorn, unshowable
-	if currentBand ~= nil and not heldByTwoHander then
-		for _, candidate in ipairs(slots) do
-			local found = Gear.pick(ctx.spec, currentBand, ctx.faction, candidate, data)
-			if found ~= nil and found.item_id == item.itemId then
-				pick, isPick = found, true
-				break
-			end
-		end
-		if pick == nil then
-			local named = Gear.pick(ctx.spec, currentBand, ctx.faction, slot, data)
-			pick = reachablePick(named, isMissing)
-			-- The data names a pick but the client can show none of it.
-			unshowable = named ~= nil and pick == nil
-		end
-		for _, candidate in ipairs(slots) do
-			local worn = equipped[candidate]
-			if pick ~= nil and worn ~= nil and worn.itemId == pick.item_id then
-				pickWorn = true
-			end
-		end
+	if not heldByTwoHander then
+		local aimed = Progress.targetFor(data, ctx.build, ctx.spec, currentBand, ctx.faction, slots, slot,
+			item.itemId, equipped, isMissing)
+		pick, isPick, pickWorn, unshowable = aimed.pick, aimed.isPick, aimed.worn, aimed.unshowable
 	end
 	local block, nextLine, target = {}, nil, nil
 	local holds = false
@@ -1346,7 +1306,7 @@ function ItemTooltip.section(ctx)
 			-- The pick's gain over what is worn, from its own stats and weapon DPS,
 			-- net of the worn enchant, as shown: a next upgrade from the floor.
 			local name = pickName(pick.item_id)
-			local gain, nextVerdict = gainOf(pick.item_id)
+			local gain, nextVerdict = gainOf(pick.item_id, pick.stats)
 			if gain ~= nil and gain >= Progress.MIN_GAIN and name ~= nil then
 				local worn = equipped[slot]
 				local upgrade = { name = name, hex = qualityHex(pick.item_id), gain = gain, unit = unit,

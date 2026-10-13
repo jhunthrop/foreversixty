@@ -102,7 +102,7 @@ describe("GuildTab", function()
 		}
 	end
 
-	--- `options`: { roster, rank, noFrame, frameHeight, data, inbox, sharingOff }. Answers the
+	--- `options`: { roster, rank, noFrame, frameHeight, data, inbox, sharingOff, faction }. Answers the
 	--- guild frame.
 	local function start(options)
 		options = options or {}
@@ -124,6 +124,11 @@ describe("GuildTab", function()
 			return true
 		end }
 		globals.RAID_CLASS_COLORS = CLASS_COLORS
+		if options.faction ~= nil then
+			globals.UnitFactionGroup = function()
+				return options.faction
+			end
+		end
 		globals.ITEM_QUALITY_COLORS = QUALITY
 		globals.GetNormalizedRealmName = function()
 			return "ClassicBetaPvP"
@@ -1542,6 +1547,159 @@ describe("GuildTab", function()
 			end)
 		end)
 	end)
+	-- L5.1 fix round 3: the gear gap follows the tooltip's targets. One target per slot, shared
+	-- (Progress.slotTargets): the build's gear-list entry for the slot, else the band's pick, scored
+	-- as the tooltip's Next line scores it; the tooltip's Next line and Comms.gearGap both read it.
+	describe("fix round 3: the gear gap follows the tooltip's targets", function()
+		local SHORT_ASH_BOW, RANGER_BOW, HEAVY_BOW = 9002, 9001, 9003
+		local NAMES = { [SHORT_ASH_BOW] = "Short Ash Bow", [RANGER_BOW] = "Ranger Bow", [HEAVY_BOW] = "Heavy Recurve Bow" }
+		local Gear, Progress, ItemTooltip, equipped
+
+		--- The live hunter: level 26, Alliance, a Short Ash Bow (4 weapon DPS) worn, the data's
+		--- default Marksmanship build (its own `spec`, no gear list unless `gear` is given), and the
+		--- band's ranged pick the Ranger Bow, which the client has not cached: it is priced from
+		--- Data.bisDps (`bisDps`, default 7.5 weapon DPS) as the tooltip prices it.
+		local function hunter(gear, bisDps)
+			start({ faction = "Alliance" })
+			local data = GuildTab.data
+			data.weights = { ["hunter-marksmanship"] = { agility = 1, ranged_attack_power = 0.5 } }
+			data.dpsPerPoint = { ["hunter-marksmanship"] = { reference = "ranged_attack_power", dps = 0.07,
+				weaponDps = 1.1, healing = false,
+				[20] = { reference = "ranged_attack_power", dps = 0.1, weaponDps = 1 } } }
+			data.bis = { ["hunter-marksmanship"] = { [20] = { alliance = {
+				ranged = RANGER_BOW .. "|V|Wenna Silkbeard" } } } }
+			data.bisDps = bisDps or { [RANGER_BOW] = 7.5 }
+			Comms.data = data
+			Follow.build = { classSlug = "hunter", spec = "hunter-marksmanship", dataBuild = "1.60.1.69893",
+				name = "Marksmanship leveling", order = {}, gear = gear }
+			Gear = require("Gear")
+			Progress = require("Progress")
+			ItemTooltip = require("ItemTooltip")
+			equipped = { ranged = { itemId = SHORT_ASH_BOW, link = "item:" .. SHORT_ASH_BOW,
+				equipLoc = "INVTYPE_RANGED", stats = { weapon_dps = 4 } } }
+			stub(Gear, "readEquipped").returns(equipped)
+			return data
+		end
+
+		after_each(function()
+			if Gear ~= nil and type(Gear.readEquipped) == "table" then
+				Gear.readEquipped:revert()
+			end
+		end)
+
+		--- The worn bow's hover as the item tooltip builds it (the data, the build, what is worn,
+		--- the shipped weights at 26), and its Next line (nil without one).
+		local function wornBowNext(data)
+			local current = Gear.currentWeights(data, "hunter-marksmanship", nil, nil, 26)
+			local lines = ItemTooltip.section({
+				data = data, spec = "hunter-marksmanship", current = current, classToken = "HUNTER",
+				level = 26, faction = "alliance", equipped = equipped, build = Follow.build,
+				item = { itemId = SHORT_ASH_BOW, link = "item:" .. SHORT_ASH_BOW, equipLocation = "INVTYPE_RANGED",
+					itemClass = 2, itemSubClass = 2, stats = { weapon_dps = 4 } },
+				nameOf = function(id)
+					return NAMES[id]
+				end,
+				isCached = function()
+					return false
+				end,
+				qualityHex = function()
+					return "1eff00"
+				end,
+				bindTypeOf = function()
+					return nil
+				end,
+				subClassOf = function()
+					return 2
+				end,
+			})
+			for _, line in ipairs(lines) do
+				if line.kind == "next" then
+					return line
+				end
+			end
+			return nil
+		end
+
+		--- The player's own drawn row.
+		local function ownRow()
+			for _, row in ipairs(GuildTab.rowFrames) do
+				if row.frame:IsShown() and row.cells.name:GetText() == "Bow Jackzon" then
+					return row
+				end
+			end
+			return nil
+		end
+
+		--- Progress.slotTargets' ranged row, as Comms.gearGap reads it.
+		local function rangedTarget(data)
+			local current = Gear.currentWeights(data, "hunter-marksmanship", nil, nil, 26)
+			for _, row in ipairs(Progress.slotTargets(data, Follow.build, "hunter-marksmanship", 20, "alliance",
+				equipped, current)) do
+				if row.slot == "ranged" then
+					return row
+				end
+			end
+			return nil
+		end
+
+		it("measures a default build against the band's picks: the row shows the tooltip's figure, the hello sends it",
+			function()
+				local data = hunter(nil)
+				local nextLine = wornBowNext(data)
+				assert.are.equal(RANGER_BOW, nextLine.itemId)
+				assert.are.equal(3.5, nextLine.upgrade.gain)
+				assert.are.same({ RANGER_BOW, 3.5 }, { rangedTarget(data).itemId, rangedTarget(data).gain })
+				assert.are.same({ 4, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+				open()
+				assert.are.equal("Marksmanship", ownRow().cells.spec:GetText())
+				assert.are.equal("4 DPS", ownRow().cells.gap:GetText())
+				local fields = Comms.helloFields()
+				assert.are.equal("hunter-marksmanship", fields[2])
+				assert.are.equal(4, fields[3])
+				-- The /run probe's capture helpers on the button read the same.
+				local button = _G[GuildTab.BUTTON_NAME]
+				assert.are.same({ "hunter-marksmanship", 4, "dps", 4 }, { button.ownLive().spec, button.ownLive().gearGap,
+					button.ownLive().unit, button.helloFields()[3] })
+			end)
+
+		it("takes a build's gear-list entry over the band's pick for its slot, in the tooltip and the gap alike",
+			function()
+				local data = hunter({ { slot = "ranged", itemId = HEAVY_BOW, stats = { weapon_dps = 5.2 } } })
+				local nextLine = wornBowNext(data)
+				assert.are.equal(HEAVY_BOW, nextLine.itemId)
+				assert.are.equal(1.2, nextLine.upgrade.gain)
+				assert.are.same({ HEAVY_BOW, 1.2 }, { rangedTarget(data).itemId, rangedTarget(data).gain })
+				assert.are.same({ 1, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+				open()
+				assert.are.equal("1 DPS", ownRow().cells.gap:GetText())
+				assert.are.equal(1, Comms.helloFields()[3])
+			end)
+
+		it("counts a pick the client has not cached as unscored: with none scored the cell is blank, the hello 0",
+			function()
+				local data = hunter(nil, {})
+				assert.is_nil(wornBowNext(data))
+				assert.are.equal(RANGER_BOW, rangedTarget(data).itemId)
+				assert.is_nil(rangedTarget(data).gain)
+				assert.is_nil(Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}))
+				open()
+				assert.are.equal("", ownRow().cells.gap:GetText())
+				assert.are.equal(0, Comms.helloFields()[3])
+			end)
+
+		it("shows and sends a gain between 0 and 0.5 as 1, never on plan while behind", function()
+			-- 4.3 weapon DPS over 4, at the band's 1 DPS a weapon DPS: +0.3 DPS, under the tooltip's
+			-- floor (no Next line), still behind.
+			local data = hunter(nil, { [RANGER_BOW] = 4.3 })
+			assert.is_nil(wornBowNext(data))
+			assert.are.equal(0.3, rangedTarget(data).gain)
+			assert.are.same({ 1, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+			open()
+			assert.are.equal("1 DPS", ownRow().cells.gap:GetText())
+			assert.are.equal(1, Comms.helloFields()[3])
+		end)
+	end)
+
 
 	-- Ruling 1: the placement and measure helpers PanelTab and the guild tab share.
 	describe("the shared helpers in Widgets", function()

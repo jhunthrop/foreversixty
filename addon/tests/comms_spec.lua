@@ -205,6 +205,49 @@ describe("Comms, the FS1 protocol", function()
 				"hunter-marksmanship", {}, WORN, 26))
 			assert.is_nil(Comms.gearGap(DATA, nil, "hunter-marksmanship", {}, WORN, 26))
 		end)
+
+		-- L5.1 fix round 3: the gap follows the tooltip's targets (Progress.slotTargets): the build's
+		-- gear-list entry for a slot, else the band's pick, scored as the tooltip's Next line scores it.
+		--- DATA with the band's ranged pick, a bow priced from Data.bisDps at `bowDps` weapon DPS.
+		local function withPick(bowDps)
+			local data = {}
+			for key, value in pairs(DATA) do
+				data[key] = value
+			end
+			data.bis = { ["hunter-marksmanship"] = { [20] = { alliance = { ranged = "9001|V|Wenna Silkbeard" } } } }
+			data.bisDps = { [9001] = bowDps }
+			return data
+		end
+		local DEFAULT = { classSlug = "hunter", spec = "hunter-marksmanship", order = {} }
+
+		it("measures a default build (no gear list) against the band's picks, as the tooltip does", function()
+			-- The band's Ranger Bow at 7.5 over the worn 4: +3.5 DPS, sent as 4.
+			assert.are.same({ 4, "dps" }, { Comms.gearGap(withPick(7.5), DEFAULT, "hunter-marksmanship", {}, WORN, 26,
+				"alliance") })
+			-- The tooltip's targets need no build: neither does the gap.
+			assert.are.same({ 4, "dps" }, { Comms.gearGap(withPick(7.5), nil, "hunter-marksmanship", {}, WORN, 26,
+				"alliance") })
+			-- The build's own entry for the slot wins over the band's pick.
+			assert.are.same({ 4, "dps" }, { Comms.gearGap(withPick(20), BUILD, "hunter-marksmanship", {}, WORN, 26,
+				"alliance") })
+			-- No faction: no band pick to measure against.
+			assert.is_nil(Comms.gearGap(withPick(7.5), DEFAULT, "hunter-marksmanship", {}, WORN, 26))
+		end)
+
+		it("sends a gain between 0 and 0.5 as 1, and a gain that shows as nothing as 0", function()
+			assert.are.same({ 1, "dps" }, { Comms.gearGap(withPick(4.3), DEFAULT, "hunter-marksmanship", {}, WORN, 26,
+				"alliance") })
+			assert.are.same({ 0, "dps" }, { Comms.gearGap(withPick(4.04), DEFAULT, "hunter-marksmanship", {}, WORN, 26,
+				"alliance") })
+			assert.are.same({ 0, "dps" }, { Comms.gearGap(withPick(3), DEFAULT, "hunter-marksmanship", {}, WORN, 26,
+				"alliance") })
+		end)
+
+		it("is nil when no pick could be scored (the client has none cached, the data prices none)", function()
+			local data = withPick(7.5)
+			data.bisDps = {}
+			assert.is_nil(Comms.gearGap(data, DEFAULT, "hunter-marksmanship", {}, WORN, 26, "alliance"))
+		end)
 	end)
 
 	-- Another player's message must never become a Lua error here. No client is installed:

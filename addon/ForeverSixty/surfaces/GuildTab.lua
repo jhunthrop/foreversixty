@@ -591,8 +591,9 @@ GuildTab.buildSpec = Comms.buildSpec
 --- The player's own live fields, read on this client rather than heard (Comms ignores the
 --- player's own messages): { name, realm, level, spec, gearGap, unit, buildName }. The spec is
 --- Comms.ownSpec's (the active build's, else the talents'), the one a hello names; the gap and
---- its unit are Comms.gearGap's in that spec (fix round 2, item 1: scored as the chip scores,
---- the unit from the spec the row shows; nil, a blank cell, with nothing to score); the build
+--- its unit are Comms.gearGap's in that spec (fix round 2, item 1: the unit from the spec the row
+--- shows; nil, a blank cell, with nothing to score; fix round 3: measured against the item
+--- tooltip's own per-slot targets, Progress.slotTargets, so the row reads the hover's figure); the build
 --- name is the chip's (Follow.buildName). nil without a name or the data.
 function GuildTab.ownLive(data)
 	local name = Compat.playerName()
@@ -706,7 +707,7 @@ end
 --- The "Forever Sixty" button under the guild frame's bottom right, the panel tab's look
 --- (Widgets.edgedButton, 112 x 24) and hover hint. Made the first time a refresh finds the
 --- guild frame (never in combat: it waits for its end). nil without one. It carries the
---- capture helper GuildTab.seedLive for a /run (README row 60).
+--- capture helpers GuildTab.seedLive (README row 60), ownLive and helloFields for a /run.
 function GuildTab.ensureButton()
 	local frame = pane()
 	if frame == nil then
@@ -729,6 +730,12 @@ function GuildTab.ensureButton()
 		button:ClearAllPoints()
 		button:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, 0)
 		button.seedLive = GuildTab.seedLive
+		-- Capture helpers for a /run (L5.1 fix round 3): the player's own live fields as the row
+		-- shows them, and the hello's (its third field is the gear gap on the wire).
+		button.ownLive = function()
+			return GuildTab.ownLive(GuildTab.data or ns.Data)
+		end
+		button.helloFields = Comms.helloFields
 		GuildTab.button = button
 	end
 	return button

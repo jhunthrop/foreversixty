@@ -319,9 +319,9 @@ end
 --- The player's hello (and snapshot!) fields: level, spec, gear gap, build name, score date.
 --- The spec is Comms.ownSpec's (the one the guild tab's own row shows) and the gear gap
 --- Comms.gearGap's in it, so a guildmate reads the number the player's own row does. Contract 2
---- makes the gap an integer, so with nothing to score (no build, no weights, no stats) it goes
---- as 0 (L5.1 fix round 2: a v1 receiver drops a hello whose gap is not digits). The score date
---- is the Forever Score record's as_of, or "-" with none.
+--- makes the gap an integer, so with nothing to score (no weights, no slot's target the client
+--- could price) it goes as 0 (L5.1 fix round 2: a v1 receiver drops a hello whose gap is not
+--- digits). The score date is the Forever Score record's as_of, or "-" with none.
 function Comms.helloFields()
 	local data = Comms.data or ns.Data
 	local build = Follow.build
@@ -385,18 +385,21 @@ function Comms.ownSpec(data, build, classSlug, ranks)
 	return ok and talentSpec or nil
 end
 
---- The player's gear gap in `spec`, scored as the chip scores (L5.1 fix round 2, the L3.4
---- "one source of weights" ruling): Gear.currentWeights at the character's level (the sim's
---- weights and DPS per point while a weights message for `spec` is in use, else the shipped
---- weights and the band's figure) with its weapon term, so a planned weapon's own DPS counts
---- (Chip.scoredUpgrades' rule). Answers the biggest slot behind (Progress.biggestGap) rounded
---- as the chip shows it (Progress.roundedGain: one decimal in DPS, whole points) and then to a
---- whole number for the wire, and its unit: "dps" with a DPS per point, else "pts"; 0 when
---- nothing is behind. nil when nothing can be scored: no build, data or spec, no weights for
---- `spec`, or no planned slot carrying stats. `equipped` (Gear.readEquipped's) and `level`
---- (the client's) may be given.
-function Comms.gearGap(data, build, spec, ranks, equipped, level)
-	if build == nil or type(data) ~= "table" or spec == nil then
+--- The player's gear gap in `spec` (L5.1 fix round 3: it follows the tooltip's targets). Every
+--- slot's one target is Progress.slotTargets': the build's gear-list entry for the slot when the
+--- build carries one, else the band's pick (a default build with no gear list, or no build at
+--- all, is measured against the band), priced and scored exactly as the item tooltip's Next line
+--- prints it (the client's stats, else a build entry's own, else Data.bisDps for a weapon;
+--- Gear.currentWeights at the character's level with its weapon term; Progress.roundedGain).
+--- Answers the biggest slot gain rounded half-up to a whole number for the wire, except that a
+--- gain between 0 and 0.5 is 1 (never "on plan" while behind), and its unit: "dps" with a DPS
+--- per point, else "pts"; 0 when every scored slot is on plan or ahead. nil when no slot could be
+--- scored: no data or spec, no weights for `spec`, or every target unscored (a pick the client
+--- has not cached). `equipped` (Gear.readEquipped's), `level` (the client's) and `faction`
+--- (Compat.playerFaction's) may be given. `ranks` is no longer read (the spec carries the tree);
+--- the callers' argument order is kept.
+function Comms.gearGap(data, build, spec, ranks, equipped, level, faction) -- luacheck: ignore 212/ranks
+	if type(data) ~= "table" or spec == nil then
 		return nil
 	end
 	level = level or Compat.playerLevel()
@@ -404,24 +407,30 @@ function Comms.gearGap(data, build, spec, ranks, equipped, level)
 	if type(current) ~= "table" or type(current.weights) ~= "table" then
 		return nil
 	end
-	-- Chip.scoredUpgrades counts in the sim's own DPS per point while one is in use, else the
-	-- band's: both are current.dpsPerPoint.
-	local dps = current.dpsPerPoint
-	local slots = Progress.slots(data, build, ranks or {}, equipped or Gear.readEquipped(), dps, current)
-	local scored = false
-	for _, row in ipairs(slots) do
-		scored = scored or row.delta ~= nil
+	faction = faction or Compat.playerFaction()
+	local specBis = type(data.bis) == "table" and data.bis[spec] or nil
+	local band = faction and Gear.bandFor(specBis, level) or nil
+	-- The item tooltip reads the same targets (Progress.targetFor) in the talents' spec (Gear.specOf,
+	-- as Chip.scoredUpgrades does); the gap is in Comms.ownSpec's, the build's own, the spec the
+	-- guild row shows and the hello names. The two agree whenever the talents lead in the build's tree.
+	local tooltip = ns.ItemTooltip
+	local rows = Progress.slotTargets(data, build, spec, band, faction, equipped or Gear.readEquipped(), current,
+		nil, tooltip ~= nil and tooltip.isMissing or nil)
+	local scored, best = false, 0
+	for _, row in ipairs(rows) do
+		if row.gain ~= nil then
+			scored = true
+			best = math.max(best, row.gain)
+		end
 	end
 	if not scored then
 		return nil
 	end
-	local unit = dps ~= nil and "dps" or "pts"
-	local worst = Progress.biggestGap(slots)
-	if worst == nil then
+	local unit = current.dpsPerPoint ~= nil and "dps" or "pts"
+	if best <= 0 then
 		return 0, unit
 	end
-	local shown = Progress.roundedGain(-worst.delta, dps ~= nil and "dps" or "score")
-	return math.floor(shown + 0.5), unit
+	return best < 0.5 and 1 or math.floor(best + 0.5), unit
 end
 
 --- The unit a guildmate's gear gap is in, read from their spec and level the way their own

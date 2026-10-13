@@ -680,6 +680,180 @@ function Progress.picksHere(data, spec, band, faction, instanceName, equipped)
 	return here
 end
 
+-- One target per slot (L5.1 fix round 3) ------------------------------------------------------
+-- The item tooltip's Next line and the gear gap (Comms.gearGap: the guild row and the hello)
+-- read one target per slot and score it one way, so the row can never say "on plan" while the
+-- hover names an upgrade.
+
+--- Whether the client cannot show an item at all, by default: it says the item does not exist
+--- (Compat.itemExists). The item tooltip hands in its own rule (ItemTooltip.isMissing), which
+--- also counts a failed GET_ITEM_INFO_RECEIVED.
+function Progress.isMissing(itemId)
+	return Compat.itemExists(itemId) == false
+end
+
+--- The one target for `slot`: the build's gear-list entry for it when the build carries one,
+--- else the band's pick (Gear.pick; nil with no spec, band or faction). A build entry reads as a
+--- pick, { item_id, stats, alternatives = {}, planned = true }, its stats the build's own.
+function Progress.slotTarget(data, build, spec, band, faction, slot)
+	local gear = type(build) == "table" and type(build.gear) == "table" and build.gear or {}
+	for _, entry in ipairs(gear) do
+		if type(entry) == "table" and entry.slot == slot and entry.itemId ~= nil then
+			return { item_id = entry.itemId, stats = entry.stats, alternatives = {}, planned = true }
+		end
+	end
+	if spec == nil or not band or not faction then
+		return nil
+	end
+	return Gear.pick(spec, band, faction, slot, data)
+end
+
+--- The target to go and get: `pick`, or, when the client cannot show it (`isMissing`), the
+--- first of its alternatives it can (with the rest as its own alternatives). nil when it can
+--- show none.
+function Progress.reachablePick(pick, isMissing)
+	if pick == nil or not isMissing(pick.item_id) then
+		return pick
+	end
+	local alternatives = pick.alternatives or {}
+	for index, alternative in ipairs(alternatives) do
+		if alternative.item_id ~= nil and not isMissing(alternative.item_id) then
+			local rest = {}
+			for other = index + 1, #alternatives do
+				rest[#rest + 1] = alternatives[other]
+			end
+			return { item_id = alternative.item_id, kind = alternative.kind, source = alternative.source,
+				alternatives = rest }
+		end
+	end
+	return nil
+end
+
+--- A slot's target as an item in it sees it (the item tooltip's rule): `slots` are the item's
+--- own (Gear.slotsFor), `slot` the one it is judged in, `itemId` its id (nil for an empty
+--- slot). Answers { pick, isPick, worn, unshowable }:
+---
+--- - `isPick`: the item is the target of one of its slots, and `pick` that target;
+--- - else `pick` is `slot`'s target or the first of its alternatives the client can show
+---   (Progress.reachablePick), and `unshowable` says the data names one it can show none of;
+--- - `worn`: `pick` is worn in one of `slots`.
+function Progress.targetFor(data, build, spec, band, faction, slots, slot, itemId, equipped, isMissing)
+	isMissing = isMissing or Progress.isMissing
+	equipped = equipped or {}
+	local pick, isPick, worn, unshowable
+	for _, candidate in ipairs(slots) do
+		local found = Progress.slotTarget(data, build, spec, band, faction, candidate)
+		if found ~= nil and found.item_id == itemId then
+			pick, isPick = found, true
+			break
+		end
+	end
+	if pick == nil then
+		local named = Progress.slotTarget(data, build, spec, band, faction, slot)
+		pick = Progress.reachablePick(named, isMissing)
+		unshowable = named ~= nil and pick == nil
+	end
+	for _, candidate in ipairs(slots) do
+		local held = equipped[candidate]
+		if pick ~= nil and held ~= nil and held.itemId == pick.item_id then
+			worn = true
+		end
+	end
+	return { pick = pick, isPick = isPick, worn = worn, unshowable = unshowable }
+end
+
+--- A target's stats: the client's (`statsOf(itemId)`, Gear.itemStatsOf by default), else `own`
+--- (a build entry's), else a weapon's own DPS from the data (Data.bisDps) until the client's
+--- arrive (`standIn(itemId)`, optional, is told: the hover redraws when they do). The client's
+--- answer (nil or empty) with none of these: unscored.
+function Progress.pickStats(data, statsOf, itemId, own, standIn)
+	local stats = (statsOf or Gear.itemStatsOf)(itemId)
+	if hasAnyStat(stats) then
+		return stats
+	end
+	if hasAnyStat(own) then
+		return own
+	end
+	local bisDps = type(data) == "table" and type(data.bisDps) == "table" and data.bisDps or {}
+	if type(bisDps[itemId]) == "number" then
+		if standIn ~= nil then
+			standIn(itemId)
+		end
+		return { weapon_dps = bisDps[itemId] }
+	end
+	return stats
+end
+
+--- `itemId`'s gain (with `stats`) over what is worn in `slot`: Progress.itemVerdict (the two
+--- hands as one pair, net of the worn enchant, a weapon's own DPS at `current`'s weapon term),
+--- rounded as the item tooltip shows it (Progress.roundedGain: one decimal in DPS, whole
+--- points), and the verdict. `current` is Gear.currentWeights' answer. nil with no weights, no
+--- stats or no figure (a hand the worn two-hander holds).
+function Progress.pickGain(slot, itemId, stats, equipped, current)
+	local weights = type(current) == "table" and current.weights or nil
+	if weights == nil or not hasAnyStat(stats) then
+		return nil
+	end
+	local wanted = { itemId = itemId, stats = stats, equipLocation = select(4, Compat.itemInfoInstant(itemId)) }
+	local verdict = Progress.itemVerdict(slot, wanted, equipped, weights, current.dpsPerPoint, current.weapon)
+	if verdict == nil or verdict.delta == nil then
+		return nil
+	end
+	return Progress.roundedGain(-verdict.delta, current.dpsPerPoint ~= nil and "dps" or "score"), verdict
+end
+
+--- Every slot's one target and its gain over what is worn there, as the item tooltip's Next
+--- line prints it on the item worn (Progress.targetFor, Progress.pickStats, Progress.pickGain),
+--- in Progress.slots' order: { slot, itemId, gain, verdict, holds }.
+---
+--- - a worn item that is a target of its slots, or whose slot's target is worn in one of them,
+---   holds: gain 0 (the tooltip's "Best until level N");
+--- - an empty slot's target is scored as filling it, unless it is worn in another slot;
+--- - `gain` is nil where nothing could be scored: a pick the client has not cached and the data
+---   prices no DPS for, a hand the worn two-hander holds, no weights;
+--- - a gain under the tooltip's floor (Progress.MIN_GAIN) is kept: the gap still counts it.
+---
+--- A slot with no target is left out. `current` is Gear.currentWeights' answer; `statsOf`
+--- (Gear.itemStatsOf) and `isMissing` (Progress.isMissing) are optional.
+function Progress.slotTargets(data, build, spec, band, faction, equipped, current, statsOf, isMissing)
+	equipped = equipped or {}
+	local wornIds = {}
+	for _, worn in pairs(equipped) do
+		if type(worn) == "table" and worn.itemId ~= nil then
+			wornIds[worn.itemId] = true
+		end
+	end
+	local scoring = type(current) == "table" and current.weights ~= nil
+	local rows = {}
+	for _, slot in ipairs(slotOrder(spec)) do
+		local worn = equipped[slot]
+		local slots = { slot }
+		if worn ~= nil then
+			-- The worn item's own slots (a ring's two), as the tooltip reads them on its hover.
+			slots = {}
+			local listed = false
+			for _, candidate in ipairs(Gear.slotsFor(worn.equipLoc)) do
+				slots[#slots + 1] = candidate
+				listed = listed or candidate == slot
+			end
+			if not listed then
+				table.insert(slots, 1, slot)
+			end
+		end
+		local target = Progress.targetFor(data, build, spec, band, faction, slots, slot,
+			worn ~= nil and worn.itemId or nil, equipped, isMissing)
+		local pick = target.pick
+		if pick ~= nil and worn ~= nil and (target.isPick or target.worn) then
+			rows[#rows + 1] = { slot = slot, itemId = pick.item_id, gain = 0, holds = true }
+		elseif pick ~= nil and (worn ~= nil or not wornIds[pick.item_id]) then
+			local stats = scoring and Progress.pickStats(data, statsOf, pick.item_id, pick.stats) or nil
+			local gain, verdict = Progress.pickGain(slot, pick.item_id, stats, equipped, current)
+			rows[#rows + 1] = { slot = slot, itemId = pick.item_id, gain = gain, verdict = verdict }
+		end
+	end
+	return rows
+end
+
 --- Talent points the character has to spend at `level`: Classic grants one
 --- a level from 10, so it is the points earned less the points in `ranks`
 --- (a respec changes the ranks, not the rule), and never below none. Pure:
