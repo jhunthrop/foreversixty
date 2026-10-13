@@ -313,6 +313,10 @@ func runRerateFlagged(ctx context.Context, log *slog.Logger) error {
 	}
 	log.Info(rating.RerateFlaggedJobCommand, "characters", c.Characters, "fights", c.Fights,
 		"rerated", c.Rerated, "failed", c.Failed)
+	if c.Failed > 0 {
+		// Every fight was still tried; the exit code is what makes the Cloud Run job alert.
+		return fmt.Errorf("%d of %d fights could not be re-rated (each logged above)", c.Failed, c.Fights)
+	}
 	return nil
 }
 

@@ -257,11 +257,11 @@ Notes for the reader:
   and `sim_result` are in this inbox) or `"failed"` (its run stopped with an error); absent
   when the character never asked. `done` and `failed` are read from the run itself and replace
   the stored state once the run ends. The addon ignores a state it does not know.
-  `ack.requested_at` is when the site received that newest request, an RFC 3339 time in UTC, absent when the character never asked. The player's own
-  wall time for the request stays in the outbox (contract 4) and is not sent back. For the
-  request whose run made the weights in use, `requested_at` equals `weights.generated_at`; a
-  later `requested_at` means a newer request has arrived since, and `sim_request_state` says
-  what became of it.
+  `ack.requested_at` is when the site received that newest request, an RFC 3339 time in UTC,
+  absent when the character never asked. The player's own wall time for the request stays in
+  the outbox (contract 4) and is not sent back. For the request whose run made the weights in
+  use, `requested_at` equals `weights.generated_at`; a later `requested_at` means a newer
+  request has arrived since, and `sim_request_state` says what became of it.
 
 ---
 
@@ -365,27 +365,28 @@ Notes for the reader:
   than one read as the other.
 - **Flagged reports count for nothing.** A report the site flagged as tampered or unverified
   is not evidence of anything a record says. The score's fights, `as_of`, `fights`,
-  experience, parses, attendance, discipline and `item_level` never read it, and neither does
-  `best_parses`. A character whose only rated fights are in flagged reports has no score, so it
-  gets a no-logs record. The site keeps a flagged report's rows until moderation withdraws
-  them but never reads them. When reports are flagged, a one-off job (`rating-rerate-flagged`)
-  re-rates the newest clean fight of every character in them, so the stored score history
-  ends on the score without the flagged report. The formula and its model version do not
-  change.
+  experience, parses, attendance, discipline and `item_level` never read it, and neither do
+  `best_parses` or a guild's `nights` and `standing`. A character whose only rated fights are
+  in flagged reports has no score, so it gets a no-logs record. The site keeps a flagged
+  report's rows until moderation withdraws them but never reads them. When reports are
+  flagged, a one-off job (`rating-rerate-flagged`) re-rates the newest clean fight of every
+  character in them, so the stored score history ends on the score without the flagged
+  report. The formula and its model version do not change.
 - **Who is in the file.** Every character with a rated fight in a public, unflagged report in
   the last 90 days, and every verified guild member, has a record; `rating.ScoreV2` alone
   decides which kind: a score is a scored record, and a character with no rated fight in a
-  public, unflagged report has a no-logs record, `{ score = nil, profile = ... }` plus `item_level` and `spec` when
-  they are known, and no `tier`, `as_of` or `components`: the addon shows "no logs yet",
-  never a zero. A character whose account asked to be anonymous has no record and is in no
-  guild's `members`. `fights` is how many rated fights in public, unflagged reports the score rests on
-  (not only the last 90 days'),
-  and `best_parses` the best overall percentile per boss from the rated fights of the last 90
-  days (an empty table when none is that recent). `item_level` and `spec` are absent when
-  the site does not know them. Fractions are written to the hundredth.
+  public, unflagged report has a no-logs record, `{ score = nil, profile = ... }` plus
+  `item_level` and `spec` when they are known, and no `tier`, `as_of` or `components`: the
+  addon shows "no logs yet", never a zero. A character whose account asked to be anonymous
+  has no record and is in no guild's `members`. `fights` is how many rated fights in public,
+  unflagged reports the score rests on (not only the last 90 days'), and `best_parses` the
+  best overall percentile per boss from the rated fights of the last 90 days (an empty table
+  when none is that recent). `item_level` and `spec` are absent when the site does not know
+  them. Fractions are written to the hundredth.
 - **Guild fields.** `standing` is the guild's rank among every guild with a verified member, by
-  distinct raid bosses killed in the last 90 days, ties by `attendance` (guilds still tied share
-  a rank). `nights` is the distinct UTC dates of its public reports in the last 90 days.
+  distinct raid bosses killed in its unflagged reports in the last 90 days, ties by
+  `attendance` (guilds still tied share a rank). `nights` is the distinct UTC dates of its
+  public, unflagged reports in the last 90 days.
   `roster` is its verified member count. `attendance` is the mean of the attendance fractions
   of its listed members that have a score (a no-logs member has no fraction and is not
   counted), absent when none has one.

@@ -176,8 +176,9 @@ const logNightsToVerify = 2
 // present. Presence is presence.In - a rated or ranked row read by the character's key -
 // never fights.players, which holds the log's GUIDs. Those rows exist only for boss fights,
 // so log evidence is an unflagged, non-private boss fight: the same evidence the Forever
-// Score trusts, since every score input selects its reports through EvidenceReport too. Candidates with no such date are absent from the result. q is the pool or the
-// caller's transaction.
+// Score trusts, since every score input selects its reports through EvidenceReport too.
+// Candidates with no such date are absent from the result. q is the pool or the caller's
+// transaction.
 func logNights(ctx context.Context, q character.Querier, guildID int64, candidates map[string]int64) (map[string]int, error) {
 	out := map[string]int{}
 	if len(candidates) == 0 {

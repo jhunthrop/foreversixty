@@ -180,13 +180,16 @@ type ScoreV2 struct {
 }
 
 // ScoreV2 computes characterKey's Forever Score from what is stored now. Only fights in
-// public reports count toward the score's own fights (the rating endpoints' rule, spec
+// public, unflagged reports count toward the score's own fights (spec
 // docs/superpowers/specs/2026-09-21-performance-rating-design.md §5.1); experience and
-// attendance count every report that is not private, since they publish only counts. No
-// input ever reads a flagged report (tampered or unverified): every reader below selects its
-// reports through presence.EvidenceReport, the rule the guild's attendance and log
-// verification share, so a forged report cannot raise a score. A flagged report's own rated
-// rows stay stored (withdrawing them is the moderation flow's job) and are never read.
+// attendance count every report that is not private and not flagged, since they publish only
+// counts. No input ever reads a flagged report (tampered or unverified): every reader below
+// selects its reports through presence.EvidenceReport, the rule the guild's attendance and
+// log verification share, so a forged report cannot raise a score. A flagged report's own
+// rated rows stay stored (withdrawing them is the moderation flow's job) and are never read
+// here. Two display readers still read them: the rating endpoints (ReadCharacterRating, the
+// fight cards and trend) and the inbox's last_raid. Neither feeds the score; moving them onto
+// EvidenceReport is task L6.12.
 func (s *Store) ScoreV2(ctx context.Context, characterKey string) (ScoreV2, error) {
 	var in characterInputs
 	var err error

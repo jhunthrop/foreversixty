@@ -269,8 +269,14 @@ flagged (tampered or unverified). The score never reads a flagged report, but th
 the rater rolled onto a character's fights may have counted it. The job finds every character
 with a rated row in a flagged report, re-rates that character's newest clean fight through the
 backfill's own path and rolls the score up onto it again. It logs how many characters and
-fights it found, re-rated and failed. It is idempotent, so run it after the deploy that
-carries it and again whenever reports are flagged (or schedule it):
+fights it found, re-rated and failed, and exits non-zero when any fight failed (every fight
+is still tried), so the job's failure alert fires. It is idempotent, so run it after the
+deploy that carries it and again whenever reports are flagged (or schedule it).
+
+Only characters with a rated row in a flagged report are re-rated. A guildmate who missed
+that night, or a linked alt whose experience counted a forged kill, keeps their newest
+snapshot until their next ordinary roll-up (their next rated fight); the live score on the
+site and in the nightly file is already right, since it is computed fresh:
 
     gcloud run jobs create rating-rerate-flagged \
       --image <the API image> --region us-east1 --args rating-rerate-flagged \

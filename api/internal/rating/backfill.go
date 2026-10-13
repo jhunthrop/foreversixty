@@ -156,6 +156,11 @@ type RerateCounts struct {
 // snapshots, which recorded the score of their own day, are left as they were. The roll-up
 // writes the score as it stands now for every player of a picked fight, which is the
 // rater's own rule. A run with no bucket configured is a no-op, logged, as Backfill's is.
+//
+// The affected set is the characters with a rated row in a flagged report. A guildmate who
+// missed that night (whose attendance counted it as an absence) and a linked alt (whose
+// experience counted its kills) keep their newest snapshot until their next ordinary
+// roll-up; their live score is already right. Widening the set is task L6.12.
 func RerateFlagged(ctx context.Context, d BackfillDeps) (RerateCounts, error) {
 	var out RerateCounts
 	if d.Store == nil || d.Summaries == nil {

@@ -21,11 +21,10 @@ type Store struct {
 // A rated fight counts when its report is public and not flagged (presence.EvidenceReport)
 // and the engine did not mark the card insufficient (migration 0023: an insufficient card's
 // overall is a 0 that is not a score; a NULL reads as sufficient, as every other read of the
-// column does). The boss's name is
-// the fight's own name, else the newest name any fight recorded for the encounter (the
-// rule the inbox's last_raid names bosses by); a fight with no name at all still puts the
-// character in the window but adds no boss. Anonymised characters are left out by the
-// caller, with rating.Store.Anonymized.
+// column does). The boss's name is the fight's own name, else the newest name any fight
+// recorded for the encounter (the rule the inbox's last_raid names bosses by); a fight with
+// no name at all still puts the character in the window but adds no boss. Anonymised
+// characters are left out by the caller, with rating.Store.Anonymized.
 func (s *Store) windowParses(ctx context.Context, since time.Time) (map[string]map[string]float64, error) {
 	rows, err := s.Pool.Query(ctx,
 		`with rated as (
@@ -160,13 +159,14 @@ func (s *Store) verifiedMembers(ctx context.Context, guildIDs []int64) (map[int6
 
 // nightsByGuild counts, per guild id, the distinct UTC calendar dates of that guild's
 // public reports created at or after since -- this job's own definition of "a raid
-// night".
+// night". A flagged report (presence.EvidenceReport) is no night.
 func (s *Store) nightsByGuild(ctx context.Context, guildIDs []int64, since time.Time) (map[int64]int, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select guild_id, count(distinct (created_at at time zone 'UTC')::date)
-		 from reports
-		 where guild_id = any($1) and visibility = 'public' and created_at >= $2
-		 group by guild_id`, guildIDs, since)
+		`select r.guild_id, count(distinct (r.created_at at time zone 'UTC')::date)
+		 from reports r
+		 where r.guild_id = any($1) and r.visibility = 'public' and `+presence.EvidenceReport("r")+`
+		   and r.created_at >= $2
+		 group by r.guild_id`, guildIDs, since)
 	if err != nil {
 		return nil, fmt.Errorf("dataaddon: read guild nights: %w", err)
 	}
@@ -184,16 +184,17 @@ func (s *Store) nightsByGuild(ctx context.Context, guildIDs []int64, since time.
 }
 
 // bossesKilledByGuild counts, per guild id, the distinct encounters killed at least once
-// in the window, from fights attached to a report the guild's own public page would show
-// (the progression query api/internal/rankings/guilds.go's Guild() runs: r.visibility <>
-// 'private'), limited to reports created at or after since. Duplicated here rather than
-// imported: api/internal/rankings is outside this lane's files.
+// in the window, from fights attached to a report that is evidence (presence.EvidenceReport:
+// not private, not flagged), limited to reports created at or after since. The guild's own
+// progression query (api/internal/rankings/guilds.go's Guild()) still counts a flagged
+// report's kills (task L6.12); this one does not, so a forged report cannot lift a guild's
+// standing.
 func (s *Store) bossesKilledByGuild(ctx context.Context, guildIDs []int64, since time.Time) (map[int64]int, error) {
 	rows, err := s.Pool.Query(ctx,
 		`select r.guild_id, count(distinct f.encounter_id)
 		 from fights f join reports r on r.id = f.report_id
 		 where r.guild_id = any($1) and f.encounter_id is not null and f.kill
-		   and r.visibility <> 'private' and r.created_at >= $2
+		   and `+presence.EvidenceReport("r")+` and r.created_at >= $2
 		 group by r.guild_id`, guildIDs, since)
 	if err != nil {
 		return nil, fmt.Errorf("dataaddon: read guild kills: %w", err)
