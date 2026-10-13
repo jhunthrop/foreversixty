@@ -615,4 +615,15 @@ describe("Options", function()
 		end
 		assert.is_true(found)
 	end)
+
+	-- L4.1 fix round 1, M1: an item the marks wait on redraws them when it arrives.
+	it("hands every item-info event to the slot marks, which act only on an id they wait on", function()
+		local SlotMarks = require("SlotMarks")
+		local seen = {}
+		SlotMarks.onItemInfo = function(itemId)
+			seen[#seen + 1] = itemId
+		end
+		Options.onEvent(Options.frame, "GET_ITEM_INFO_RECEIVED", 400, true)
+		assert.are.same({ 400 }, seen)
+	end)
 end)

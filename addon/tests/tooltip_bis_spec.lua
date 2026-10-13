@@ -253,6 +253,21 @@ describe("Tooltip's slot hovers", function()
 			assert.are.equal(string.format(L.tooltipSourceDrop, "Wailing Caverns", "Mutanus the Devourer", 14), lines[4])
 		end)
 
+		-- L4.1 fix round 1 (the hunter's empty trinkets showed nothing): never silence.
+		it("draws the header and No pick for your band yet on an empty slot the band names no pick for", function()
+			start({ level = 20, globals = { GetItemInfo = namedItems, TRINKET0SLOT = "Trinket" } })
+			Tooltip.data = DATA
+			local button = _G.CreateFrame("Button", "CharacterTrinket0Slot")
+			Tooltip.registerSlotButtons()
+			mock.firstCall(button, "HookScript")[2](button)
+			local lines = addedLines()
+			assert.are.equal("Trinket", lines[1])
+			assert.are.equal(" ", lines[2])
+			assert.is_truthy(lines[3]:find(L.addonName, 1, true))
+			assert.are.equal(L.tooltipNoPick, lines[4])
+			assert.are.equal(4, #lines)
+		end)
+
 		it("keeps the client's own tooltip when the client already drew it for this slot", function()
 			start({ level = 20, globals = { GetItemInfo = namedItems } })
 			Tooltip.data = DATA

@@ -1280,18 +1280,33 @@ ItemTooltip.SLOT_BUTTONS = {
 --- the band floor, with no faction, or with no pick for the slot.
 function ItemTooltip.emptySlotSection(ctx, slot)
 	local lines, pending = {}, {}
+	if not ctx.spec then
+		-- No spec to read a band from: nothing to say at all.
+		return lines, nil, pending, nil
+	end
 	local data = ctx.data or {}
 	local current = ctx.current or nil
+	local equipped = ctx.equipped or {}
 	local head = { specWord = specName(data, ctx.spec), tag = current ~= nil and current.tag or nil, equipped = false }
-	local specBis = ctx.spec ~= nil and type(data.bis) == "table" and data.bis[ctx.spec] or nil
+	-- An empty off hand under a worn two-hander: nothing goes there (fix round 1, N1).
+	if slot == "off_hand" and equipped.main_hand ~= nil and equipped.main_hand.equipLoc == "INVTYPE_2HWEAPON" then
+		lines[1] = { text = L.tooltipTwoHander, color = "muted" }
+		return lines, nil, pending, head
+	end
+	-- Never silence (fix round 1): no pick of its own for the band (none in the data,
+	-- below the floor, no faction, or the pair rule leaves it none) says so, muted.
+	local noPick = { text = L.tooltipNoPick, color = "muted" }
+	local specBis = type(data.bis) == "table" and data.bis[ctx.spec] or nil
 	local band = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
 	if band == nil then
+		lines[1] = noPick
 		return lines, nil, pending, head
 	end
 	local isMissing = ctx.isMissing or missingOf
-	local picks = Progress.slotPicks(data, ctx.spec, band, ctx.faction, ctx.equipped or {})
+	local picks = Progress.slotPicks(data, ctx.spec, band, ctx.faction, equipped)
 	local pick = reachablePick(picks[slot], isMissing)
 	if pick == nil then
+		lines[1] = noPick
 		return lines, nil, pending, head
 	end
 	local itemId = pick.item_id

@@ -548,6 +548,9 @@ local L = {
 	tooltipBestForNow = "Best for now",
 	-- The band's own pick is one the client cannot show, and so are its alternatives.
 	tooltipBestKnown = "Best known for now",
+	-- An empty paper-doll slot the band names no pick for (L4.1 fix round 1): the web
+	-- panel's own wording, muted, never silence.
+	tooltipNoPick = "No pick for your band yet",
 	-- Muted under "Best until level 30": the next rung's pick and, in a word or two, where
 	-- it comes from (the instance, "Vendor", "Quest" or the kind's word; no boss, no chance).
 	tooltipAtBand = "At level %d: %s · %s",
@@ -609,10 +612,12 @@ local L = {
 	-- Lane addon-v2 L4.1 (2026-10-12): the paper-doll and bag marks. /fs diag names a bag
 	-- addon whose buttons the bag hook has not reached (its bags carry no marks).
 	diagBagAddon = "Bag marks: off in %s's bags. The marks on your character panel still show.",
+	-- Before the bags were opened this session there is nothing to judge yet (fix round 1, M4).
+	diagBagAddonUnchecked = "Bag marks: not checked yet (open your bags)",
 	-- /fs diag verbose: which of the client's bag paths the bag marks hooked.
 	diagBagHooks = "Bag marks: hooked through %s",
 	diagNoBagHook = "Bag marks: this client has no bag hook; the bag marks are off.",
-	diagSlotMarksFailed = "The paper-doll and bag marks failed once and turned themselves off: %s",
+	diagSlotMarksFailed = "The paper-doll and bag marks failed once and turned themselves off until /reload: %s",
 	tooltipClassPlural = {
 		WARRIOR = "warriors", PALADIN = "paladins", HUNTER = "hunters", ROGUE = "rogues",
 		PRIEST = "priests", SHAMAN = "shamans", MAGE = "mages", WARLOCK = "warlocks", DRUID = "druids",

@@ -98,6 +98,15 @@ local function hooksecurefunc(target, method, hook)
 	end
 end
 
+--- The client's English item type subtypes, by class and subclass id.
+local SUBTYPES = {
+	[2] = { [1] = "Two-Handed Axes", [7] = "One-Handed Swords" },
+	[4] = { [0] = "Miscellaneous", [3] = "Mail", [4] = "Plate", [6] = "Shields" },
+}
+
+--- Item ids the client has not sent yet (GetItemInfo answers nil for them).
+local HIDDEN = {}
+
 local SLOT_IDS = { head = 1, chest = 5, legs = 7, finger1 = 11, finger2 = 12, trinket1 = 13, trinket2 = 14,
 	main_hand = 16, off_hand = 17 }
 
@@ -106,7 +115,7 @@ describe("SlotMarks", function()
 	local state
 
 	--- `worn` is { [slot] = link }, `bag` a list of links in bag 0, `extra` more client globals.
-	local function start(worn, bag, extra)
+	local function start(worn, bag, extra, level)
 		local equipped = {}
 		for slot, itemLink in pairs(worn or {}) do
 			equipped[SLOT_IDS[slot]] = itemLink
@@ -122,11 +131,13 @@ describe("SlotMarks", function()
 				if info == nil then
 					return nil
 				end
-				return info.id, nil, nil, info.slot, nil, info.class, info.sub
+				-- The client's shape, type and subtype as strings (fix round 1, I1).
+				return info.id, info.class == 2 and "Weapon" or "Armor", SUBTYPES[info.class][info.sub] or "Miscellaneous",
+					info.slot, nil, info.class, info.sub
 			end,
 			GetItemInfo = function(item)
 				local info = lookup(item)
-				if info == nil then
+				if info == nil or HIDDEN[info.id] then
 					return nil
 				end
 				return info.name, info.link, 2
@@ -138,7 +149,7 @@ describe("SlotMarks", function()
 		end
 		state = mock.install({
 			class = { name = "Warrior", token = "WARRIOR" },
-			level = 21,
+			level = level or 21,
 			equipped = equipped,
 			bags = { [0] = bag or {} },
 			itemStats = itemStats,
@@ -197,6 +208,10 @@ describe("SlotMarks", function()
 
 	after_each(function()
 		mock.uninstall()
+		_G.ContainerFrame_Update = nil
+		for id in pairs(HIDDEN) do
+			HIDDEN[id] = nil
+		end
 	end)
 
 	describe("the theme", function()
@@ -463,9 +478,26 @@ describe("SlotMarks", function()
 			assert.is_true(arrowOn(button))
 		end)
 
-		it("names the bag addon in /fs diag while the hook has not reached its buttons", function()
-			start({}, {}, { C_AddOns = { IsAddOnLoaded = function(name) return name == "Baganator" end } })
+		-- Fix round 1, M4: "not checked yet" until the bags were opened, "off" only after
+		-- they were opened and the hook reached none of the bag addon's buttons.
+		it("says not checked yet until the bags open, then names the bag addon the hook did not reach", function()
+			start({}, {}, {
+				C_AddOns = { IsAddOnLoaded = function(name) return name == "Baganator" end },
+				ToggleBackpack = function() end,
+			})
 			SlotMarks.register()
+			assert.are.equal(L.diagBagAddonUnchecked, SlotMarks.diagLine())
+			_G.ToggleBackpack()
+			assert.are.equal(string.format(L.diagBagAddon, "Baganator"), SlotMarks.diagLine())
+		end)
+
+		it("counts a client bag frame's own update as the bags opened", function()
+			start({}, {}, { C_AddOns = { IsAddOnLoaded = function(name) return name == "Baganator" end } })
+			local frame = containerFrame(0, 1)
+			frame.Items = { _G.ContainerFrame1Item1 }
+			frame.UpdateItems = function() end
+			SlotMarks.register()
+			frame:UpdateItems()
 			assert.are.equal(string.format(L.diagBagAddon, "Baganator"), SlotMarks.diagLine())
 		end)
 
@@ -490,6 +522,176 @@ describe("SlotMarks", function()
 			start({}, {}, { C_AddOns = { IsAddOnLoaded = function() return false end } })
 			SlotMarks.register()
 			assert.is_nil(SlotMarks.diagLine())
+		end)
+	end)
+
+	-- Fix round 1 (the live hunter, the review). I1: GetItemInfoInstant's second return is
+	-- the item type, a string; feeding the whole multi-return to tonumber made it the base.
+	describe("fix round 1", function()
+		it("reads a bag item's id from the client's real multi-return (I1)", function()
+			start({}, {}, { GetItemInfoInstant = function()
+				return 202, "Armor", "Plate", "INVTYPE_CHEST", 132000, 4, 4
+			end })
+			local marks
+			assert.has_no.errors(function()
+				marks = SlotMarks.marks({}, { chest = 202, legs = 400 }, { PLATE_CHEST })
+			end)
+			assert.is_nil(marks.targets.chest)
+			assert.are.equal(400, marks.targets.legs)
+		end)
+
+		it("survives a full bag scan on the client's shape: no mark turns itself off (I1)", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST, PICK_LEGS })
+			local chest = slotButton("CharacterChestSlot")
+			SlotMarks.drawPaperDoll()
+			assert.is_nil(SlotMarks.disabled)
+			assert.is_true(arrowOn(chest))
+		end)
+
+		-- M1: a target whose name the client has not sent is not cached; its info event
+		-- redraws the marks, and an event for an id nobody waits on does no work.
+		it("draws the corner once the client sends the pick it was waiting on (M1)", function()
+			start({ chest = WORN_CHEST }, {})
+			local unnamed = setmetatable({ bisNames = {} }, { __index = DATA })
+			SlotMarks.data, ItemTooltip.data = unnamed, unnamed
+			HIDDEN[400] = true
+			local legs = slotButton("CharacterLegsSlot")
+			SlotMarks.drawPaperDoll()
+			assert.is_false(targetOn(legs))
+			assert.is_true(SlotMarks.isWaiting(400))
+			HIDDEN[400] = nil
+			SlotMarks.onItemInfo(400)
+			assert.is_true(targetOn(legs))
+			assert.is_false(SlotMarks.isWaiting(400))
+		end)
+
+		it("does no work for an item id the marks are not waiting on (M1)", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			slotButton("CharacterChestSlot")
+			SlotMarks.drawPaperDoll()
+			local calls = 0
+			local scored = Chip.scoredUpgrades
+			Chip.scoredUpgrades = function(...)
+				calls = calls + 1
+				return scored(...)
+			end
+			SlotMarks.onItemInfo(999)
+			assert.are.equal(0, calls)
+		end)
+
+		-- M2: the 1.60 client has no ContainerFrame_Update; its frames' own UpdateItems over
+		-- frame.Items, the combined bag, and the bag read from the button or else the frame.
+		it("marks through a frame's own UpdateItems over its Items, the bag from each button (M2)", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			local frame = _G.CreateFrame("Frame", "ContainerFrame2")
+			frame.GetName = function() return "ContainerFrame2" end
+			frame.GetID = function() return 3 end
+			frame.UpdateItems = function() end
+			local button = _G.CreateFrame("Button", nil, frame)
+			button.GetBagID = function() return 0 end
+			button.GetID = function() return 1 end
+			button.GetParent = function() return frame end
+			frame.Items = { button }
+			SlotMarks.register()
+			-- No ContainerFrame_Update on 1.60: the frames' own UpdateItems is the path.
+			assert.are.same({ "UpdateItems" }, SlotMarks.bagHooks)
+			frame:UpdateItems()
+			assert.is_true(arrowOn(button))
+		end)
+
+		it("marks the combined bag's items through its UpdateItems (M2)", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			local frame = _G.CreateFrame("Frame", "ContainerFrameCombinedBags")
+			frame.GetName = function() return "ContainerFrameCombinedBags" end
+			frame.UpdateItems = function() end
+			local first = _G.CreateFrame("Button", nil, frame)
+			first.GetBagID = function() return 0 end
+			first.GetID = function() return 1 end
+			frame.Items = { first }
+			SlotMarks.register()
+			frame:UpdateItems()
+			assert.is_true(arrowOn(first))
+		end)
+
+		it("reads the bag from the frame when a button has no GetBagID (M2)", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			local frame = _G.CreateFrame("Frame", "ContainerFrame3")
+			frame.GetName = function() return "ContainerFrame3" end
+			frame.GetID = function() return 0 end
+			frame.UpdateItems = function() end
+			local button = _G.CreateFrame("Button", nil, frame)
+			button.GetID = function() return 1 end
+			frame.Items = { button }
+			SlotMarks.register()
+			frame:UpdateItems()
+			assert.is_true(arrowOn(button))
+		end)
+
+		it("marks a client button reached through the mixin's UpdateNewItem, not counted as a bag addon's (M2)", function()
+			local mixin = { UpdateNewItem = function() end }
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, {
+				ContainerFrameItemButtonMixin = mixin,
+				C_AddOns = { IsAddOnLoaded = function(name) return name == "Baganator" end },
+			})
+			local frame = containerFrame(0, 1)
+			local button = _G.ContainerFrame1Item1
+			SlotMarks.register()
+			assert.are.equal("ContainerFrameItemButtonMixin.UpdateNewItem", SlotMarks.bagHooks[1])
+			button.UpdateNewItem = mixin.UpdateNewItem
+			button:UpdateNewItem(2)
+			assert.is_true(arrowOn(button))
+			assert.is_not_nil(frame)
+			assert.are.equal(string.format(L.diagBagAddon, "Baganator"), SlotMarks.diagLine())
+		end)
+
+		-- M3: a carried pick the character cannot equip yet is not "carried": the corner shows.
+		it("keeps the corner for a carried pick the character cannot wear yet (M3)", function()
+			local plateData = setmetatable({ bis = { ["warrior-arms"] = { [20] = { alliance = {
+				chest = "202|V|Plate Vendor" } } } } }, { __index = DATA })
+			start({ chest = WORN_CHEST }, { PLATE_CHEST })
+			SlotMarks.data, ItemTooltip.data = plateData, plateData
+			local marks = SlotMarks.compute(plateData)
+			assert.are.equal(202, marks.targets.chest)
+			assert.is_nil(marks.arrows.chest)
+			-- At 40 the plate chest is wearable: it is carried, so no corner, and it is an upgrade.
+			start({ chest = WORN_CHEST }, { PLATE_CHEST }, nil, 40)
+			SlotMarks.data, ItemTooltip.data = plateData, plateData
+			local at40 = SlotMarks.compute(plateData)
+			assert.is_nil(at40.targets.chest)
+			assert.is_true(at40.arrows.chest)
+		end)
+
+		-- M4: one failure turns the marks off until /reload, says so once, never spams.
+		it("turns itself off until /reload after one failure, and says so once (M4)", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST })
+			slotButton("CharacterChestSlot")
+			Chip.scoredUpgrades = function()
+				error("boom")
+			end
+			SlotMarks.drawPaperDoll()
+			SlotMarks.refresh(DATA)
+			SlotMarks.drawPaperDoll()
+			assert.is_true(SlotMarks.disabled)
+			local notes = 0
+			for _, note in ipairs(Theme.diagnostics()) do
+				if note:find(L.diagSlotMarksFailed:match("^(.-)%%s"), 1, true) then
+					notes = notes + 1
+				end
+			end
+			assert.are.equal(1, notes)
+			assert.is_truthy(L.diagSlotMarksFailed:find("until /reload", 1, true))
+		end)
+
+		-- N1: an empty off hand under a worn two-hander says so on its hover and has no corner.
+		it("draws no corner on an empty off hand under a worn two-hander (N1)", function()
+			local offData = setmetatable({ bis = { ["warrior-arms"] = { [20] = { alliance = {
+				off_hand = "211|V|Shield Vendor" } } } } }, { __index = DATA })
+			start({ main_hand = BAG_AXE }, {})
+			SlotMarks.data, ItemTooltip.data = offData, offData
+			assert.is_nil(SlotMarks.compute(offData).targets.off_hand)
+			start({ main_hand = WORN_MAIN }, {})
+			SlotMarks.data, ItemTooltip.data = offData, offData
+			assert.are.equal(211, SlotMarks.compute(offData).targets.off_hand)
 		end)
 	end)
 end)

@@ -328,6 +328,8 @@ function Options.onEvent(_, event, ...)
 		if Chip.isPending((...)) then
 			Chip.refresh(Options.data)
 		end
+		-- A target corner waiting on this item redraws (L4.1 fix round 1, M1); no work otherwise.
+		SlotMarks.onItemInfo((...))
 		return
 	end
 	if event == "PLAYER_EQUIPMENT_CHANGED" then

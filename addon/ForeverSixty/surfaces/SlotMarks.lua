@@ -30,6 +30,7 @@ local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 local Chip = ns.Chip or require("Chip")
+local Rules = ns.Rules or require("Rules")
 
 local SlotMarks = {}
 
@@ -61,32 +62,49 @@ end
 
 --- Each paper-doll slot's next target, { [slot] = itemId }: the item the Next line
 --- of the slot's own hover names. `ctx` is ItemTooltip.baseContext's (its `equipped`
---- says what is worn); `sectionOf(link)` answers a worn item's section lines (the
---- hover's own cache, ItemTooltip.sectionFor). An empty slot's section is
---- ItemTooltip.emptySlotSection (Progress.slotPicks' pair rule).
+--- says what is worn); `sectionOf(link)` answers a worn item's section ({ lines,
+--- pending }: the hover's own cache, ItemTooltip.sectionFor). An empty slot's section is
+--- ItemTooltip.emptySlotSection (Progress.slotPicks' pair rule). The second answer is
+--- the set of item ids any of those sections still waits on (a name or stats the client
+--- has not sent): while it is not empty the targets are not final (fix round 1, M1).
 function SlotMarks.targets(ctx, sectionOf)
-	local targets = {}
+	local targets, waiting = {}, {}
 	local equipped = ctx.equipped or {}
 	for _, entry in ipairs(Export.INVENTORY_SLOTS) do
 		local worn = equipped[entry.slot]
-		local lines
+		local lines, pending
 		if worn ~= nil and worn.link ~= nil then
-			lines = sectionOf(worn.link)
+			local section = sectionOf(worn.link)
+			lines, pending = section.lines, section.pending
 		else
-			lines = ItemTooltip.emptySlotSection(ctx, entry.slot)
+			local emptyLines, _, emptyPending = ItemTooltip.emptySlotSection(ctx, entry.slot)
+			lines, pending = emptyLines, emptyPending
 		end
 		targets[entry.slot] = SlotMarks.nextOf(lines)
+		for itemId in pairs(pending or {}) do
+			waiting[itemId] = true
+		end
 	end
-	return targets
+	return targets, waiting
+end
+
+--- The item id in a link: GetItemInfoInstant's FIRST answer alone (its second is the
+--- item type, a string: handed whole to tonumber it became the base and raised on the
+--- live client, fix round 1, I1), else the link's own "item:<id>".
+local function linkItemId(link)
+	local id = Compat.itemInfoInstant(link)
+	return tonumber(id) or tonumber(tostring(link):match("item:(%d+)"))
 end
 
 --- The marks from what the chip and the hovers say: `upgrades` is the chip's list
 --- (Progress.bagUpgrades: { link, slot, ... }), `targets` each slot's next target
---- (SlotMarks.targets), `bagLinks` the links in the bags. Answers { arrows = { [slot]
---- = true }, links = { [link] = true }, targets = { [slot] = itemId } }: a slot's
---- arrow where an upgrade goes, a bag item's where it is one, and a target corner
---- where the slot's next target is not already in the bags.
-function SlotMarks.marks(upgrades, targets, bagLinks)
+--- (SlotMarks.targets), `bagLinks` the links in the bags, `canWear(link, slot)` (optional,
+--- else every bag item counts) whether the character can put a carried item in that slot
+--- now. Answers { arrows = { [slot] = true }, links = { [link] = true }, targets = { [slot]
+--- = itemId } }: a slot's arrow where an upgrade goes, a bag item's where it is one, and a
+--- target corner where the slot's next target is not carried in a form the character can
+--- wear (a plate pick carried at 21 keeps its corner: fix round 1, M3).
+function SlotMarks.marks(upgrades, targets, bagLinks, canWear)
 	local arrows, links, kept = {}, {}, {}
 	for _, upgrade in ipairs(upgrades or {}) do
 		if upgrade.slot ~= nil then
@@ -98,13 +116,20 @@ function SlotMarks.marks(upgrades, targets, bagLinks)
 	end
 	local carried = {}
 	for _, link in ipairs(bagLinks or {}) do
-		local id = tonumber(Compat.itemInfoInstant(link)) or tonumber(tostring(link):match("item:(%d+)"))
+		local id = linkItemId(link)
 		if id ~= nil then
-			carried[id] = true
+			carried[id] = carried[id] or {}
+			table.insert(carried[id], link)
 		end
 	end
 	for slot, itemId in pairs(targets or {}) do
-		if not carried[itemId] then
+		local wearable = false
+		for _, link in ipairs(carried[itemId] or {}) do
+			if canWear == nil or canWear(link, slot) then
+				wearable = true
+			end
+		end
+		if not wearable then
 			kept[slot] = itemId
 		end
 	end
@@ -116,6 +141,11 @@ end
 --- What the marks read from the client: the hovers' own context (what is worn
 --- included), the bag's links, and the chip's list exactly as Chip.inputs asks
 --- for it (no build: no list, as the chip offers none).
+---
+--- The chip's own run (Chip.inputs) is not shared (review N2): the chip refreshes on
+--- BAG_UPDATE_DELAYED but, by ruling, not on PLAYER_EQUIPMENT_CHANGED, so its list can be
+--- stale exactly when the marks redraw. This run is cheap: once per event, and only while
+--- the paper doll or a bag is on screen (SlotMarks.refresh reads nothing otherwise).
 local function readClient(data)
 	data = data or SlotMarks.data or ns.Data
 	local base = ItemTooltip.baseContext(data)
@@ -133,22 +163,38 @@ local function readClient(data)
 	return { base = base, upgrades = upgrades, bagLinks = bagLinks }
 end
 
---- Each slot's next target from the hovers' own sections (the tooltip's cache).
+--- Whether the character can put the carried `link` in `slot` now (Rules.canEquip), the
+--- rule the chip's list and the tooltip's refusal already read.
+local function wearableBy(base)
+	return function(link, slot)
+		local _, itemType, itemSubType, equipLocation, _, classId, subClassId = Compat.itemInfoInstant(link)
+		return Rules.canEquip(base.classToken, base.level, classId or itemType, subClassId or itemSubType,
+			equipLocation, slot) == "ok"
+	end
+end
+
+--- Each slot's next target from the hovers' own sections (the tooltip's cache), and the
+--- item ids they still wait on.
 local function targetsOf(read)
 	return SlotMarks.targets(read.base, function(link)
-		return ItemTooltip.sectionFor(link, read.base).lines
+		return ItemTooltip.sectionFor(link, read.base)
 	end)
 end
 
 --- The marks now, read from the client. Not cached; SlotMarks.current is.
 function SlotMarks.compute(data)
 	local read = readClient(data)
-	return SlotMarks.marks(read.upgrades, targetsOf(read), read.bagLinks)
+	return SlotMarks.marks(read.upgrades, (targetsOf(read)), read.bagLinks, wearableBy(read.base))
 end
+
+--- The item ids the target corners wait on (a section still pending them): their
+--- GET_ITEM_INFO_RECEIVED redraws the marks (SlotMarks.onItemInfo).
+SlotMarks.waiting = {}
 
 --- The marks, read once and kept by item link until SlotMarks.refresh drops them.
 --- The targets (a section per slot) are read only when `withTargets` asks for them
---- (the paper doll): the bags need the arrows alone.
+--- (the paper doll): the bags need the arrows alone. Targets read while a section still
+--- waited on an item are drawn but never kept: the next draw reads them again (M1).
 function SlotMarks.current(withTargets)
 	local state = SlotMarks.state
 	if state == nil then
@@ -158,9 +204,36 @@ function SlotMarks.current(withTargets)
 		SlotMarks.state = state
 	end
 	if withTargets and state.targets == nil then
-		state.targets = SlotMarks.marks(nil, targetsOf(state.read), state.read.bagLinks).targets
+		local targets, waiting = targetsOf(state.read)
+		local kept = SlotMarks.marks(nil, targets, state.read.bagLinks, wearableBy(state.read.base)).targets
+		SlotMarks.waiting = waiting
+		if next(waiting) ~= nil then
+			-- Not final: these targets serve this draw only.
+			local drawn = {}
+			for key, value in pairs(state) do
+				drawn[key] = value
+			end
+			drawn.targets = kept
+			return drawn
+		end
+		state.targets = kept
 	end
 	return state
+end
+
+--- Whether the target corners wait on `itemId`.
+function SlotMarks.isWaiting(itemId)
+	return SlotMarks.waiting[tonumber(itemId)] == true
+end
+
+--- GET_ITEM_INFO_RECEIVED: redraws the marks when they wait on this item, and does
+--- nothing at all otherwise.
+function SlotMarks.onItemInfo(itemId)
+	if not SlotMarks.isWaiting(itemId) then
+		return
+	end
+	SlotMarks.waiting[tonumber(itemId)] = nil
+	SlotMarks.refresh()
 end
 
 -- The frames -----------------------------------------------------------------
@@ -245,7 +318,8 @@ local function enabled()
 end
 
 --- A failure here must never become a Lua error on every bag update: the marks
---- turn themselves off once and say so in /fs diag.
+--- turn themselves off until /reload (one error must not spam every bag update),
+--- hide what they drew and say so once in /fs diag (fix round 1, M4).
 local function guarded(action, ...)
 	if SlotMarks.disabled then
 		return
@@ -253,7 +327,7 @@ local function guarded(action, ...)
 	local ok, err = pcall(action, ...)
 	if not ok then
 		SlotMarks.disabled = true
-		SlotMarks.hideAll()
+		pcall(SlotMarks.hideAll)
 		Theme.note(string.format(L.diagSlotMarksFailed, tostring(err)))
 	end
 end
@@ -314,6 +388,7 @@ function SlotMarks.onItemButton(button)
 	local parent = ask(button, "GetParent")
 	local bag = ask(button, "GetBagID") or ask(parent, "GetID")
 	local slot = ask(button, "GetID")
+	SlotMarks.bagsOpened = true
 	if type(bag) == "number" and type(slot) == "number" and not isClientFrame(parent) then
 		SlotMarks.reachedAddonButton = true
 	end
@@ -345,6 +420,7 @@ function SlotMarks.onContainerFrame(frame)
 	if type(frame) ~= "table" then
 		return
 	end
+	SlotMarks.bagsOpened = true
 	local frameBag = ask(frame, "GetID")
 	for _, button in ipairs(frameButtons(frame)) do
 		SlotMarks.markBagButton(button, ask(button, "GetBagID") or frameBag, ask(button, "GetID"))
@@ -446,16 +522,41 @@ function SlotMarks.register()
 	else
 		Theme.noteVerbose(L.diagNoBagHook)
 	end
+	SlotMarks.hookBagOpen()
 end
 
---- /fs diag's line: the bag addon that draws its own bags while the hook has not
---- reached one of its buttons (its bags carry no marks), or nil.
+--- The client's own ways to open the bags (the B key, the bag bar, open-all): a bag
+--- addon that draws its own bags answers these too, so they say the bags were opened
+--- even when no client bag frame ever draws. Hooked after the original, guarded.
+SlotMarks.BAG_OPENERS = { "ToggleBackpack", "OpenBackpack", "OpenAllBags", "ToggleAllBags", "ToggleBag", "OpenBag" }
+
+function SlotMarks.hookBagOpen()
+	local hook = Compat.clientGlobal("hooksecurefunc", "function")
+	if hook == nil then
+		return
+	end
+	for _, name in ipairs(SlotMarks.BAG_OPENERS) do
+		if Compat.clientGlobal(name, "function") ~= nil then
+			hook(name, function()
+				SlotMarks.bagsOpened = true
+			end)
+		end
+	end
+end
+
+--- /fs diag's line for a bag addon that draws its own bags (fix round 1, M4): "not
+--- checked yet (open your bags)" until the bags were opened (a bag-open call or any
+--- bag update the hooks saw), then "off in <addon>'s bags" while the hook has reached
+--- none of its buttons; nil once it has, or with no such addon loaded.
 function SlotMarks.diagLine()
 	if SlotMarks.reachedAddonButton then
 		return nil
 	end
 	for _, name in ipairs(SlotMarks.BAG_ADDONS) do
 		if Compat.isAddOnLoaded(name) then
+			if not SlotMarks.bagsOpened then
+				return L.diagBagAddonUnchecked
+			end
 			return string.format(L.diagBagAddon, name)
 		end
 	end

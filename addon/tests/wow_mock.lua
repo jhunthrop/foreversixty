@@ -132,9 +132,17 @@ function mock.install(state)
 		return state.itemStats[link]
 	end
 
+	-- The client's own shape: id, then the item type and subtype as STRINGS ("Armor",
+	-- "Mail"), the equip location, the icon, then the class and subclass ids. Realistic
+	-- strings on purpose: a `tonumber(GetItemInfoInstant(...))` takes the type as its
+	-- base and raises, as it did on the live client (L4.1 fix round 1, I1).
 	_G.GetItemInfoInstant = function(link)
 		local info = state.itemStats[link]
-		return info and info.__itemId or nil, nil, nil, info and info.__slot or nil
+		if info == nil then
+			return nil
+		end
+		return info.__itemId, info.__type or "Miscellaneous", info.__subType or "Junk", info.__slot, info.__icon,
+			info.__class, info.__subclass
 	end
 
 	_G.UnitClass = function()

@@ -1167,19 +1167,50 @@ describe("ItemTooltip.section", function()
 			assert.is_true(pending[100])
 		end)
 
+		-- Fix round 1, 6: an empty slot is never silent. With no pick of its own for the band
+		-- (none in the data, below the floor, no faction, or the pair rule leaves it none) it
+		-- prints the header and the muted "No pick for your band yet"; no Next line, no target.
+		local NO_PICK = { { text = L.tooltipNoPick, color = "muted" } }
+
+		local function noPick(lines)
+			assert.are.same(NO_PICK, { { text = lines[1].text, color = lines[1].color } })
+			assert.are.equal(1, #lines)
+			assert.is_nil(lines[1].itemId)
+		end
+
 		it("follows the pair rule: a pick two slots share once, and never one worn in the other slot", function()
 			local named = function(id) return id == 400 and "Quest Ring" or NAMES[id] end
 			local lines = ItemTooltip.emptySlotSection(empty({ equipped = {}, nameOf = named }), "finger1")
 			assert.are.equal(ItemTooltip.nextLine("Quest Ring"), lines[1].text)
-			assert.are.same({}, (ItemTooltip.emptySlotSection(empty({ equipped = {}, nameOf = named }), "finger2")))
+			noPick((ItemTooltip.emptySlotSection(empty({ equipped = {}, nameOf = named }), "finger2")))
 			local worn = { finger2 = { itemId = 400, link = "item:400", stats = {} } }
-			assert.are.same({}, (ItemTooltip.emptySlotSection(empty({ equipped = worn }), "finger1")))
+			noPick((ItemTooltip.emptySlotSection(empty({ equipped = worn }), "finger1")))
 		end)
 
-		it("says nothing below the band floor, with no faction, or for a slot with no pick", function()
-			assert.are.same({}, (ItemTooltip.emptySlotSection(empty({ equipped = {}, level = 15 }), "chest")))
-			assert.are.same({}, (ItemTooltip.emptySlotSection(empty({ equipped = {}, faction = false }), "chest")))
-			assert.are.same({}, (ItemTooltip.emptySlotSection(empty({ equipped = {} }), "head")))
+		it("says No pick for your band yet below the band floor, with no faction, or for a slot with no pick", function()
+			noPick((ItemTooltip.emptySlotSection(empty({ equipped = {}, level = 15 }), "chest")))
+			noPick((ItemTooltip.emptySlotSection(empty({ equipped = {}, faction = false }), "chest")))
+			local lines, target, pending, head = ItemTooltip.emptySlotSection(empty({ equipped = {} }), "head")
+			noPick(lines)
+			assert.is_nil(target)
+			assert.are.same({}, pending)
+			assert.are.same({ specWord = "Arms", tag = "default", equipped = false }, head)
+		end)
+
+		it("says Not with your two-hander on an empty off hand under a worn two-hander (N1)", function()
+			local lines, target = ItemTooltip.emptySlotSection(empty({ equipped = { main_hand = SMITE } }), "off_hand")
+			assert.are.same({ { text = L.tooltipTwoHander, color = "muted" } },
+				{ { text = lines[1].text, color = lines[1].color } })
+			assert.are.equal(1, #lines)
+			assert.is_nil(target)
+			-- With a one-hander worn, the off hand's own pick.
+			local oneHand = { itemId = 71, link = "item:71", equipLoc = "INVTYPE_WEAPON", stats = {} }
+			local withOneHand = ItemTooltip.emptySlotSection(empty({ equipped = { main_hand = oneHand } }), "off_hand")
+			assert.are.equal(ItemTooltip.nextLine("Sneed's Shield"), withOneHand[1].text)
+		end)
+
+		it("says nothing at all with no spec to read the band from", function()
+			assert.are.same({}, (ItemTooltip.emptySlotSection(empty({ equipped = {}, spec = false }), "chest")))
 		end)
 
 		it("goes to the first alternative the client can show when it cannot show the pick", function()
@@ -1853,7 +1884,7 @@ describe("the hook's width contract and enchant wiring", function()
 		_G.RESISTANCE0_NAME, _G.ENCHANTED_TOOLTIP_LINE, _G.SPEED = "Armor", "Enchanted: %s", "Speed"
 		local link = "|cff1eff00|Hitem:51:1843:0:0:0:0:0:0:21|h[Abomination Bones]|h|r"
 		_G.GetInventoryItemLink = function(_, slotId) return slotId == 5 and link or nil end
-		_G.GetItemInfoInstant = function(item) return item == link and 51 or nil, nil, nil, "INVTYPE_CHEST" end
+		_G.GetItemInfoInstant = function(item) return item == link and 51 or nil, "Armor", "Mail", "INVTYPE_CHEST" end
 		_G.GetItemStats = function(item) return item == link and { ITEM_MOD_STRENGTH_SHORT = 8 } or nil end
 		Compat.inventoryTooltipRows = function()
 			return { { left = "Abomination Bones" }, { left = "Enchanted: Attack Power +4 and Armor +16" } }
@@ -1980,7 +2011,7 @@ describe("the hook's width contract and enchant wiring", function()
 	it("marks an enchant it could not read as not counted, caching nothing", function()
 		local link = "|cff1eff00|Hitem:51:1843:0:0:0:0:0:0:21|h[Abomination Bones]|h|r"
 		_G.GetInventoryItemLink = function(_, slotId) return slotId == 5 and link or nil end
-		_G.GetItemInfoInstant = function(item) return item == link and 51 or nil, nil, nil, "INVTYPE_CHEST" end
+		_G.GetItemInfoInstant = function(item) return item == link and 51 or nil, "Armor", "Mail", "INVTYPE_CHEST" end
 		_G.GetItemStats = function(item) return item == link and { ITEM_MOD_STRENGTH_SHORT = 8 } or nil end
 		Compat.inventoryTooltipRows = function() return nil end
 		local equipped = Gear.readEquipped()
