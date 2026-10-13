@@ -438,3 +438,69 @@ func TestRerateFlaggedReachesTheNightsGuildmatesAndTheAccountsAlts(t *testing.T)
 		}
 	}
 }
+
+// The guild-mates of a flagged night are the guild's verified members (the membership
+// guildNights counts nights for), with or without a rated fight, and anyone with a rated fight
+// in the guild's reports inside the attendance window; a raider whose only fight in the guild
+// is older than the window is not one.
+func TestRerateFlaggedGuildmatesAreTheMembersAndTheWindowsRaiders(t *testing.T) {
+	fx := seedLoggedRaider(t)
+	ctx := context.Background()
+	const member, old = "us/normal/sv2member", "us/normal/sv2old"
+	t.Cleanup(func() {
+		bg := context.Background()
+		fx.pool.Exec(bg, `delete from guild_characters where character_key = $1`, member)
+		fx.pool.Exec(bg, `delete from rating_scores where player_key = $1`, old)
+		fx.pool.Exec(bg, `delete from users where email = 'scorev2-member@example.com'`)
+	})
+	var memberUser int64
+	if err := fx.pool.QueryRow(ctx, `insert into users (email) values ('scorev2-member@example.com')
+		on conflict (email) do update set email = excluded.email returning id`).Scan(&memberUser); err != nil {
+		t.Fatal(err)
+	}
+	// A verified member with no rated fight anywhere.
+	mustExec(t, fx.pool, `insert into guild_characters (guild_id, character_key, user_id, verified_at)
+		values ($1, $2, $3, now()) on conflict (guild_id, character_key) do update set verified_at = now()`,
+		fx.guildID, member, memberUser)
+	// A raider of the guild's, no member, whose only fight was 120 days ago.
+	oldNight := time.Now().UTC().Add(-120 * 24 * time.Hour)
+	mustExec(t, fx.pool, `insert into reports (id, owner_id, guild_id, title, visibility, zone, status, created_at)
+		values ($1, $2, $3, 'Old night', 'public', 'Molten Core', 'complete', $4)`,
+		sv2Report+"old", fx.userID, fx.guildID, oldNight)
+	if err := db.EnsureRatingsPartition(ctx, fx.pool, oldNight); err != nil {
+		t.Fatal(err)
+	}
+	mustExec(t, fx.pool, `insert into rating_scores (report_id, fight_index, player_key, overall, components,
+		model_version, fought_at, kill) values ($1, 1, $2, 50, '[]', '', $3, true)`, sv2Report+"old", old, oldNight)
+	flagReport(t, fx, sv2Report+"c")
+
+	guildmates := func(since time.Time) map[string]reratePick {
+		t.Helper()
+		picks, err := fx.store.flaggedRerates(ctx, since)
+		if err != nil {
+			t.Fatal(err)
+		}
+		out := map[string]reratePick{}
+		for _, p := range picks {
+			if p.group == rerateGuildmate {
+				out[p.key] = p
+			}
+		}
+		return out
+	}
+	got := guildmates(time.Now().Add(-AttendanceWindow))
+	if p, ok := got[member]; !ok || p.ReportID != "" {
+		t.Errorf("the verified member with no rated fight: %+v (in the set %v), want a guild-mate with no fight to re-rate", p, ok)
+	}
+	if _, ok := got[old]; ok {
+		t.Errorf("the raider whose only fight is 120 days old is a guild-mate: %+v", got)
+	}
+	if len(got) != 1 {
+		t.Errorf("guild-mates = %+v, want only %s", got, member)
+	}
+	// With the window reaching back past the old night, the old raider is a guild-mate too.
+	got = guildmates(oldNight.Add(-time.Hour))
+	if _, ok := got[old]; !ok || len(got) != 2 {
+		t.Errorf("guild-mates with the window past the old night = %+v, want %s and %s", got, member, old)
+	}
+}

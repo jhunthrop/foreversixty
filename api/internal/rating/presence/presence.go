@@ -1,15 +1,21 @@
 // api/internal/rating/presence/presence.go
 
 // Package presence is the one reader of "was this character there", and the one rule for which
-// reports are evidence at all (EvidenceReport): the Forever Score's inputs (rating.Store's
-// ratedFights, experience, guildNights and itemLevel, and the parses rankings.Store.CharacterFights
-// reads) and the guild's attendance, log verification, moderator evidence and raid present list
-// (api/internal/guilds) all select their reports through EvidenceReport, and all read presence
-// through In. So does every other reader of a report's rated or ranked rows that a player or
-// guild sees: the rating endpoints, the inbox's last_raid, the guild page and the guild centre's
-// roster, progression and raids (task L6.12). evidence_source_test.go checks it over the source
-// tree: a condition on a report's visibility sits beside EvidenceReport or is on its list of
-// access rules (which reports a viewer may open), which are not readers of evidence.
+// reports count at all. A flagged report (tampered, unverified or a metrics mismatch) is
+// evidence of nothing: every reader of reports a player or guild sees selects them through one
+// of two predicates, and both leave a flagged report out.
+//
+//   - EvidenceReport (not private, not flagged) is the rule for what is public or scored: the
+//     Forever Score's inputs, the guild's attendance, log verification, moderator evidence and
+//     raid present list, the rating endpoints, the inbox's last_raid, the public guild page,
+//     the recent-reports feed, and the guild centre's roster, best parses and top parses.
+//   - NotFlagged (private allowed, flagged never) is the rule for the guild centre's own
+//     aggregate counts, shown to the guild, which count the guild's private nights too:
+//     progression's pulls, kills, first kill and nights, the home summary's bosses down and
+//     pulls this tier, and the Loot tab's killed.
+//
+// Presence itself is read through In. evidence_source_test.go checks the rule over the source
+// tree, and lists what such a check cannot see.
 //
 // It is its own package under rating, not a function in rating itself, because guilds cannot
 // import rating: rating imports rankings, which imports guilds (for the crest URL). This
@@ -32,6 +38,13 @@ import (
 // stricter rule (the score's own fights count only public reports) adds it beside this one.
 func EvidenceReport(alias string) string {
 	return "(" + alias + ".visibility <> 'private' and " + alias + ".flagged is null)"
+}
+
+// NotFlagged is the SQL condition that the reports row aliased alias is not flagged, whatever
+// its visibility: the rule for a count the guild centre shows the guild itself, which may count
+// the guild's own private nights but never a flagged one.
+func NotFlagged(alias string) string {
+	return "(" + alias + ".flagged is null)"
 }
 
 // Row is one character at one report: it has a rated row (rating_scores) or a ranked row

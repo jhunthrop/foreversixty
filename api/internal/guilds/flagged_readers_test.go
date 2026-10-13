@@ -150,3 +150,95 @@ func deref[T any](p *T) any {
 	}
 	return *p
 }
+
+// The guild centre's own counts read presence.NotFlagged: a private night still counts, a
+// flagged one never does. seedL612Counts gives a guild one private Onyxia kill and one flagged
+// kill of flaggedEncounter, and in Barrow Deeps one private and one flagged trash pull.
+func seedL612Counts(t *testing.T, flaggedEncounter int64) (*Store, int64) {
+	t.Helper()
+	pool := testPool(t)
+	gid := seedGuild(t, pool, "L612 Counts")
+	now := time.Now()
+	seedL68Night(t, pool, gid, l68Night{id: "l612-private-kill", visibility: "private", at: now.Add(-72 * time.Hour)})
+	seedL68Night(t, pool, gid, l68Night{id: "l612-flagged-kill", visibility: "public", at: now.Add(-48 * time.Hour),
+		flagged: "tampered"})
+	seedL68Night(t, pool, gid, l68Night{id: "l612-private-trash", visibility: "private", at: now.Add(-71 * time.Hour), trash: true})
+	seedL68Night(t, pool, gid, l68Night{id: "l612-flagged-trash", visibility: "public", at: now.Add(-47 * time.Hour),
+		trash: true, flagged: "tampered"})
+	ctx := context.Background()
+	for _, q := range []struct {
+		sql  string
+		args []any
+	}{
+		{`update fights set encounter_id = $2 where report_id = $1`, []any{"l612-flagged-kill", flaggedEncounter}},
+		{`update reports set zone = 'Barrow Deeps' where id in ('l612-private-trash', 'l612-flagged-trash')`, nil},
+	} {
+		if _, err := pool.Exec(ctx, q.sql, q.args...); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return &Store{Pool: pool}, gid
+}
+
+// The Progression tab's pulls, kills, first kill, nights and unnamed-zone pulls count the
+// private night and not the flagged one.
+func TestProgressionCountsAPrivateKillAndNeverAFlaggedOne(t *testing.T) {
+	s, gid := seedL612Counts(t, 1084)
+	view, err := s.Progression(context.Background(), gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ony := view.Encounters[0]
+	if ony.Pulls != 1 || ony.Kills != 1 || ony.FirstKillAt == nil || len(ony.PullsByNight) != 1 ||
+		ony.PullsByNight[0].ReportID != "l612-private-kill" {
+		t.Errorf("Onyxia = pulls %d, kills %d, first kill %v, nights %+v; want the private kill alone",
+			ony.Pulls, ony.Kills, ony.FirstKillAt, ony.PullsByNight)
+	}
+	if view.Tier.Down != 1 {
+		t.Errorf("tier down = %d, want 1 (the private kill)", view.Tier.Down)
+	}
+	for _, u := range view.Unnamed {
+		if u.Zone == "Barrow Deeps" && (u.Pulls != 1 || u.Nights != 1) {
+			t.Errorf("Barrow Deeps = %+v, want the private night's one pull", u)
+		}
+	}
+}
+
+// The home summary's bosses down and pulls this tier count the private kill and not the
+// flagged one (a kill of another boss, which would make two bosses down).
+func TestHomeSummaryCountsAPrivateKillAndNeverAFlaggedOne(t *testing.T) {
+	s, gid := seedL612Counts(t, 1085)
+	sv, err := s.homeSummary(context.Background(), gid, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if sv.NamedEncountersDown != 1 || sv.PullsThisTier != 2 {
+		t.Errorf("named encounters down %d, pulls this tier %d; want 1 and 2 (the private night's kill and trash pull)",
+			sv.NamedEncountersDown, sv.PullsThisTier)
+	}
+}
+
+// The Loot tab's killed reads a flagged Onyxia kill as no kill, and a private one as a kill.
+func TestLootKilledIgnoresAFlaggedKillAndCountsAPrivateOne(t *testing.T) {
+	s, gid := seedL612Counts(t, 1084)
+	ctx := context.Background()
+	if _, err := s.Pool.Exec(ctx, `update fights set kill = false where report_id = 'l612-private-kill'`); err != nil {
+		t.Fatal(err)
+	}
+	view, err := s.Loot(ctx, gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if view.Encounters[0].Killed {
+		t.Errorf("Onyxia reads killed with only a flagged kill")
+	}
+	if _, err := s.Pool.Exec(ctx, `update fights set kill = true where report_id = 'l612-private-kill'`); err != nil {
+		t.Fatal(err)
+	}
+	if view, err = s.Loot(ctx, gid); err != nil {
+		t.Fatal(err)
+	}
+	if !view.Encounters[0].Killed {
+		t.Errorf("Onyxia reads not killed with a private kill")
+	}
+}

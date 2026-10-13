@@ -34,10 +34,10 @@ type lastRaidFight struct {
 
 // lastRaidFights reads, for each of keys, every rated boss fight of its last raid: the
 // newest report that is evidence (presence.EvidenceReport: not private, not flagged) holding
-// a rated fight of the character fought since since, oldest fight first. A card the engine marked insufficient
-// is not a rated fight here: its overall is a zero it cannot support. The boss's name is
-// the fight's own name, else the newest name any fight recorded for the encounter (the
-// names rankings.Store.EncounterNames reads).
+// a rated fight of the character fought since since, oldest fight first. A card the engine
+// marked insufficient is not a rated fight here: its overall is a zero it cannot support. The
+// boss's name is the fight's own name, else the newest name any fight recorded for the
+// encounter (the names rankings.Store.EncounterNames reads).
 //
 // A fight rated before migration 0036 has no stored facts (deaths is NULL) and is left out
 // rather than shown as zeros; the report is still the one chosen, so a last raid whose

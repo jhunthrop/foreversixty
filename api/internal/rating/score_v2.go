@@ -188,8 +188,9 @@ type ScoreV2 struct {
 // selects its reports through presence.EvidenceReport, the rule the guild's attendance and
 // log verification share, so a forged report cannot raise a score. A flagged report's own
 // rated rows stay stored (withdrawing them is the moderation flow's job) and are never read
-// here, nor by any reader a player or guild sees (the rating endpoints, the inbox's last_raid,
-// the guild pages: task L6.12).
+// here, nor by any other reader of reports a player or guild sees: each selects its reports
+// through presence.EvidenceReport (not private, not flagged) or, for the guild centre's own
+// counts that include the guild's private nights, presence.NotFlagged (task L6.12).
 func (s *Store) ScoreV2(ctx context.Context, characterKey string) (ScoreV2, error) {
 	var in characterInputs
 	var err error

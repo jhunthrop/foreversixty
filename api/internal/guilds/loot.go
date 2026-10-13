@@ -19,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	"github.com/jhunthrop/foreversixty/api/internal/spec"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -135,12 +136,13 @@ type LootView struct {
 // Loot assembles the Loot tab for guildID. Onyxia is the only selectable encounter today
 // (the only real, named boss this tier publishes) - any requested encounter id other than
 // 1084 is ignored rather than answered with an empty page or an error, since there is
-// nothing else to select yet (design spec's own "next unkilled: none, farm" copy).
+// nothing else to select yet (design spec's own "next unkilled: none, farm" copy). Killed
+// counts the guild's private nights too, never a flagged report (presence.NotFlagged).
 func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 	var kills int
 	if err := s.Pool.QueryRow(ctx, `
 		select count(*) filter (where f.kill) from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and f.encounter_id = $2`, guildID, onyxiaEncounterID).Scan(&kills); err != nil {
+		where r.guild_id = $1 and f.encounter_id = $2 and `+presence.NotFlagged("r"), guildID, onyxiaEncounterID).Scan(&kills); err != nil {
 		return LootView{}, fmt.Errorf("guilds: loot kills: %w", err)
 	}
 

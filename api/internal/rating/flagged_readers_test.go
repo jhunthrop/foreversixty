@@ -7,8 +7,15 @@ package rating
 
 import (
 	"context"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/reports"
+	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
 // The character's rating history never lists a flagged report's card.
@@ -68,5 +75,38 @@ func TestStaleFightsSkipsAFlaggedReportsUnratedFights(t *testing.T) {
 	}
 	if got["000l612-flagged"] {
 		t.Errorf("the flagged report's unrated fight was picked for rating")
+	}
+}
+
+// The per-fight ratings endpoint answers a flagged report's fight 404 "flagged": its cards are
+// not evidence. The same fight in the same report, unflagged, is served.
+func TestFightRatingsIs404FlaggedForAFlaggedReport(t *testing.T) {
+	svc, rs := newTestService(t)
+	mustCreateReport(t, rs, "handler-flagged-1", reports.Public)
+	f := fightFixture("handler-flagged-1", true,
+		summary.RosterRow{GUID: "g1", Name: "Forged", Class: "Rogue", Spec: "Combat", Role: "dps"},
+	)
+	if err := svc.Store.RateFight(context.Background(), f); err != nil {
+		t.Fatal(err)
+	}
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	get := func() *httptest.ResponseRecorder {
+		req := httptest.NewRequest(http.MethodGet, "/v1/reports/handler-flagged-1/fights/1/ratings", nil)
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+		return rec
+	}
+	if rec := get(); rec.Code != http.StatusOK {
+		t.Fatalf("before the flag: status = %d, body = %s", rec.Code, rec.Body.String())
+	}
+	mustExec(t, rs.Pool, `update reports set flagged = 'tampered' where id = 'handler-flagged-1'`)
+	rec := get()
+	var env httpx.Envelope
+	if err := json.Unmarshal(rec.Body.Bytes(), &env); err != nil {
+		t.Fatal(err)
+	}
+	if rec.Code != http.StatusNotFound || env.Error == nil || env.Error.Code != "flagged" {
+		t.Fatalf("status = %d, body = %s; want 404 with error code \"flagged\"", rec.Code, rec.Body.String())
 	}
 }

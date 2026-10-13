@@ -123,7 +123,9 @@ components:
               description: >-
                 the run's DPS; for the weights run an in-game request queues, the DPS of the
                 sweep's baseline sim (the character as it is), over the baseline's own iterations
-            error: { type: number, description: "always present, 0 included; for a weights run, the baseline sim's" }
+            error:
+              type: number
+              description: "always present, 0 included; for a weights run, the baseline sim's"
             generated_at: { type: string, format: date-time }
             slots:
               type: array
@@ -1525,6 +1527,22 @@ paths:
         '201': { description: "Stored and verified", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '200': { description: "Already stored with the same raw hash", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '409': { description: "The metrics do not match the events; error.fields.metrics says how", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports/{id}/fights/{n}/ratings:
+    get:
+      summary: One fight's rating cards
+      description: >-
+        Every player's rating card for fight n (counted from one), an anonymized player's card
+        left out. Visibility follows the report's own rules: a report the caller may not open
+        answers 404 not_found, as a missing one does. A flagged report (tampered or unverified)
+        is evidence of nothing, so its fights answer 404 with error code "flagged" to a caller
+        who may open the report.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: n, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200': { description: "fight_index, kill, kill_time_band, model_version and players", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "n is not a number counted from one", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "not_found (no such report, not visible to you, or no ratings for that fight) or flagged (the report is flagged)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/reports/{id}/fights/{n}/live:
     put:
       summary: The running summary of a fight in progress (device)

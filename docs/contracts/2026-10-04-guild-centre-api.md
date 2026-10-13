@@ -65,8 +65,12 @@ be present in (private, flagged, trash-only, or not ranked yet) is never everyon
 (task L6.8). Verification by logs (`verified_by: "logs"`) and the moderator's
 `nights_in_others_reports` read the same presence in non-private, unflagged reports only, so
 they count unflagged, non-private boss fights: the same evidence the Forever Score trusts. The
-guild's readers and every score input pick their reports by one rule
-(`presence.EvidenceReport`), so a flagged report counts toward no score either (task L6.10).
+guild's readers of rows a player sees (attendance, best parse, rating, class and spec, top
+parses, best per role) and every score input pick their reports by one rule
+(`presence.EvidenceReport`: not private, not flagged), so a flagged report counts toward no score
+either (task L6.10). The guild's own counts (progression's pulls, kills, first kill and nights,
+the summary's `named_encounters_down` and `pulls_this_tier`, the Loot tab's `killed`) include
+its private nights but never a flagged report (`presence.NotFlagged`, task L6.12).
 
 ## GET /v1/guilds/{id}/raids?limit=20&cursor=
 

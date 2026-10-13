@@ -74,6 +74,15 @@ func (s *Service) fightRatings(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such report", nil)
 		return
 	}
+	if rep.Flagged != nil {
+		// A flagged report (tampered or unverified) is evidence of nothing, so its fight cards
+		// are not shown either (presence.EvidenceReport's rule). Its rows stay stored until
+		// moderation withdraws them. Asked only once the caller may see the report at all, so
+		// it says nothing about a report the caller could not open.
+		httpx.WriteError(w, r, http.StatusNotFound, "flagged",
+			"that report is flagged, so its fights have no ratings to show", nil)
+		return
+	}
 	rows, ok, err := s.Store.ReadFightRatings(r.Context(), rep.ID, n)
 	if err != nil {
 		s.fail(w, r, "fight", err, "could not read that fight's ratings just now")

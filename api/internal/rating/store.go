@@ -288,11 +288,11 @@ const characterTrendPageSize = 20
 // ReadCharacterRating reads up to limit rows of playerKey's rating history, newest first,
 // from public, unflagged reports only (spec §5.1's ruling: "public at time of query",
 // enforced here by joining the live reports.visibility column, beside presence.EvidenceReport,
-// rather than trusting anything cached on the row at write time), starting after before when it is non-nil. hasMore is true when
-// a further page exists. Insufficient cards (spec §1.5's coverage ruling, dated
-// 2026-09-21) are excluded outright, at the SQL level: they are real per-component data
-// worth showing on a fight's own report card, but their Overall is zero-valued and does
-// not belong in any character-level mean or count this endpoint's trend/sample_size/
+// rather than trusting anything cached on the row at write time), starting after before when
+// it is non-nil. hasMore is true when a further page exists. Insufficient cards (spec §1.5's
+// coverage ruling, dated 2026-09-21) are excluded outright, at the SQL level: they are real
+// per-component data worth showing on a fight's own report card, but their Overall is
+// zero-valued and does not belong in any character-level mean or count this endpoint's trend/sample_size/
 // latest/best-worst-component all are. A NULL insufficient (a row written before this
 // column existed) reads as sufficient until the backfill re-rates it under the bumped
 // DefaultModelVersion, the same way every other stale-row gap already resolves itself.
@@ -357,26 +357,36 @@ func consumablesOrEmpty(missed []string) []string {
 type reratePick struct {
 	staleFight
 	group rerateGroup
+	// key is the character's key.
+	key string
 }
 
 // flaggedRerates lists every character whose Forever Score a flagged report moved, by group
 // (rerateGroup, a character in the first group it fits), each with its newest rated fight in
 // a public report that is evidence (presence.EvidenceReport): the fight RerateFlagged
 // re-rates; ReportID is "" for a character with no such fight. The groups are the characters
-// with a rated row in a flagged report; the characters with a rated fight fought since since
-// (the attendance window) in a report of a guild that has a flagged report; and the
-// characters linked to the account of a character of the first group. The region and ruleset
-// are the character key's own, the pair its rows were keyed under.
+// with a rated row in a flagged report; the guild-mates of a guild with a flagged report (its
+// verified members, the membership guildNights counts nights for, and anyone with a rated
+// fight fought since since, the attendance window, in its reports); and the characters linked
+// to the account of a character of the first group. The region and ruleset are the character
+// key's own, the pair its rows were keyed under.
 func (s *Store) flaggedRerates(ctx context.Context, since time.Time) ([]reratePick, error) {
 	rows, err := s.Pool.Query(ctx,
 		`with in_flagged as (
 		   select distinct rs.player_key from rating_scores rs join reports r on r.id = rs.report_id
 		    where r.flagged is not null
+		 ), flagged_guilds as (
+		   select distinct guild_id from reports where flagged is not null and guild_id is not null
 		 ), guildmates as (
-		   select distinct rs.player_key from rating_scores rs join reports r on r.id = rs.report_id
-		    where r.guild_id in (select guild_id from reports where flagged is not null and guild_id is not null)
-		      and rs.fought_at >= $1
-		      and rs.player_key not in (select player_key from in_flagged)
+		   select player_key from (
+		     select rs.player_key from rating_scores rs join reports r on r.id = rs.report_id
+		      where r.guild_id in (select guild_id from flagged_guilds) and rs.fought_at >= $1
+		     union
+		     select gc.character_key from guild_characters gc
+		      where gc.guild_id in (select guild_id from flagged_guilds) and gc.verified_at is not null
+		        and gc.character_key not like 'account:%'
+		   ) mates
+		    where player_key not in (select player_key from in_flagged)
 		 ), linked as (
 		   select c.key as player_key from characters c
 		    where c.user_id in (select o.user_id from characters o
@@ -388,7 +398,7 @@ func (s *Store) flaggedRerates(ctx context.Context, since time.Time) ([]reratePi
 		   union all select player_key, 1 from guildmates
 		   union all select player_key, 2 from linked
 		 )
-		 select a.grp, split_part(a.player_key, '/', 1), split_part(a.player_key, '/', 2),
+		 select a.grp, a.player_key, split_part(a.player_key, '/', 1), split_part(a.player_key, '/', 2),
 		        coalesce(n.report_id, ''), coalesce(n.fight_index, 0), coalesce(n.fought_at, 'epoch')
 		   from affected a
 		   left join lateral (
@@ -408,7 +418,7 @@ func (s *Store) flaggedRerates(ctx context.Context, since time.Time) ([]reratePi
 			p   reratePick
 			grp int
 		)
-		if err := rows.Scan(&grp, &p.Region, &p.Ruleset, &p.ReportID, &p.FightIndex, &p.FoughtAt); err != nil {
+		if err := rows.Scan(&grp, &p.key, &p.Region, &p.Ruleset, &p.ReportID, &p.FightIndex, &p.FoughtAt); err != nil {
 			return nil, fmt.Errorf("rating: characters a flagged report moved: %w", err)
 		}
 		p.group = rerateGroup(grp)

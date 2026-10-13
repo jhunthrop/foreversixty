@@ -139,8 +139,9 @@ const (
 	// rerateInFlagged: the character has a rated row in a flagged report (its fights,
 	// as_of, discipline and parses counted it).
 	rerateInFlagged rerateGroup = iota
-	// rerateGuildmate: the character has a rated fight in the attendance window in a report of
-	// a guild with a flagged report (the night counted toward its attendance's nights).
+	// rerateGuildmate: the character is a verified member of a guild with a flagged report, or
+	// has a rated fight in the attendance window in one of its reports (the night counted
+	// toward its attendance's nights).
 	rerateGuildmate
 	// rerateLinked: the character is linked to the same account as a character in a flagged
 	// report (the report's kills counted toward its experience).
@@ -165,8 +166,9 @@ type RerateGroup struct {
 type RerateCounts struct {
 	// Flagged is the characters with a rated row in a flagged report.
 	Flagged RerateGroup
-	// Guildmates is the other characters with a rated fight in the last AttendanceWindow in a
-	// report of a guild that has a flagged report: the night was one of their guild's nights,
+	// Guildmates is the other verified members of a guild that has a flagged report (the
+	// membership guildNights counts nights for), and the other characters with a rated fight in
+	// the last AttendanceWindow in one of its reports: the night was one of their guild's nights,
 	// so their attendance's denominator moved, whether they were there or not.
 	Guildmates RerateGroup
 	// Linked is the other characters linked to the account of a character in Flagged: the
@@ -200,10 +202,11 @@ func (c *RerateCounts) group(g rerateGroup) *RerateGroup {
 // version is not bumped: the formula is the same, only its inputs changed.
 //
 // The affected set is three groups (RerateCounts): the characters in a flagged report; the
-// guild-mates of a flagged night (every character with a rated fight in the attendance window
-// in that guild's reports, whose attendance counted the night among the guild's nights,
-// present or absent); and the characters linked to the account of a character in a flagged
-// report (whose experience counted its kills). A character is in the first group it fits.
+// guild-mates of a flagged night (the verified members of its guild, and every character with a
+// rated fight in the attendance window in that guild's reports, whose attendance counted the
+// night among the guild's nights, present or absent); and the characters linked to the account
+// of a character in a flagged report (whose experience counted its kills). A character is in
+// the first group it fits.
 //
 // It is idempotent: a second run picks the same fights and writes the same figures (the
 // score as it stands now). A flagged report's own rows are left in place, never read; older

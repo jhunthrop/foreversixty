@@ -270,9 +270,10 @@ the rater rolled onto a character's fights may have counted it. The job finds ev
 whose score a flagged report moved, in three groups, each character in the first it fits:
 
 - the characters with a rated row in a flagged report (its fights, discipline and parses);
-- the guild-mates of the flagged night: every character with a rated fight in the last 90 days
-  (the attendance window) in a report of that guild, whose attendance counted the night among
-  the guild's nights, there or not;
+- the guild-mates of the flagged night, whose attendance counted it among the guild's nights,
+  there or not: the guild's verified members (the membership the score's attendance counts
+  nights for), and every character with a rated fight in the last 90 days (the attendance
+  window) in a report of that guild;
 - the characters linked to the same account as a character in the flagged report, whose
   experience counted its kills.
 

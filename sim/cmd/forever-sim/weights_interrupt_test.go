@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"os/signal"
+	"runtime"
 	"testing"
 	"time"
 
@@ -17,6 +18,9 @@ import (
 // sub-sim never starts and the run answers aborted, as an interrupt during a sub-sim does.
 // The signal is real: it is sent to this process at the gap after the baseline.
 func TestExecuteWeightsStopsOnASignalBetweenSubSims(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("a process cannot send itself SIGINT on Windows (os.Process.Signal(os.Interrupt) is not implemented there)")
+	}
 	if testing.Short() {
 		t.Skip("runs the engine")
 	}

@@ -370,11 +370,15 @@ Notes for the reader:
   experience, parses, attendance, discipline and `item_level` never read it, and neither do
   `best_parses` or a guild's `nights` and `standing`. A character whose only rated fights are
   in flagged reports has no score, so it gets a no-logs record. The site keeps a flagged
-  report's rows until moderation withdraws them, but nothing a player or guild sees reads
-  them: not this file, the inbox (contract 3's `last_raid`), the site's rating pages or its
-  guild pages. When reports are flagged, a one-off job (`rating-rerate-flagged`) re-rates the
-  newest clean fight of every character whose score they moved (the characters in them, their
-  guild-mates of that night, and the characters linked to the same accounts), so the stored
+  report's rows until moderation withdraws them, but every reader of reports a player or guild
+  sees leaves it out: this file, the inbox (contract 3's `last_raid`), the site's rating pages
+  and fight cards, its recent-reports feed and its guild pages. They select reports by one of
+  two rules: not private and not flagged (`presence.EvidenceReport`), or, for the guild centre's
+  own counts, which include the guild's private nights, not flagged (`presence.NotFlagged`).
+  When reports are flagged, a one-off job (`rating-rerate-flagged`) re-rates the newest clean
+  fight of every character whose score they moved (the characters in them; their guild-mates,
+  the guild's verified members and its raiders of the last 90 days; and the characters linked
+  to the same accounts), so the stored
   score history ends on the score without the flagged report. The formula and its model
   version do not change.
 - **Who is in the file.** Every character with a rated fight in a public, unflagged report in

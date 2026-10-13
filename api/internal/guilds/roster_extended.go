@@ -288,7 +288,8 @@ func belowRatingFloor(roster []RosterRow) int {
 
 // homeSummary assembles the Overview tab's own glance row from the already-enriched roster
 // plus two small guild-wide counts (named encounters down, pulls this tier) that do not fit
-// naturally on any one roster row.
+// naturally on any one roster row. Both count the guild's private nights too, never a flagged
+// report (presence.NotFlagged).
 func (s *Store) homeSummary(ctx context.Context, guildID int64, roster []RosterRow) (SummaryView, error) {
 	sv := SummaryView{UpdatedAt: time.Now().UTC()}
 	for _, row := range roster {
@@ -302,7 +303,7 @@ func (s *Store) homeSummary(ctx context.Context, guildID int64, roster []RosterR
 
 	if err := s.Pool.QueryRow(ctx, `
 		select count(distinct f.encounter_id) from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and f.kill and f.encounter_id is not null`, guildID).
+		where r.guild_id = $1 and f.kill and f.encounter_id is not null and `+presence.NotFlagged("r"), guildID).
 		Scan(&sv.NamedEncountersDown); err != nil {
 		return SummaryView{}, fmt.Errorf("guilds: named encounters down: %w", err)
 	}
@@ -310,7 +311,8 @@ func (s *Store) homeSummary(ctx context.Context, guildID int64, roster []RosterR
 	// timestamp exists anywhere queryable (the design doc's own 9 December 2026 tier
 	// open is a future calendar date, not a stored marker) - see CONTROL_CENTRE.md.
 	if err := s.Pool.QueryRow(ctx, `
-		select count(*) from fights f join reports r on r.id = f.report_id where r.guild_id = $1`, guildID).
+		select count(*) from fights f join reports r on r.id = f.report_id
+		where r.guild_id = $1 and `+presence.NotFlagged("r"), guildID).
 		Scan(&sv.PullsThisTier); err != nil {
 		return SummaryView{}, fmt.Errorf("guilds: pulls this tier: %w", err)
 	}

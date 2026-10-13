@@ -2,12 +2,13 @@
 //
 // GET /v1/guilds/{id}/progression (contract step 4,
 // docs/contracts/2026-10-04-guild-centre-api.md). Fully public (design spec §4.0: shown to
-// every role) and, matching rankings.Store.Guild's own existing choice for this same kind of
-// aggregate, not filtered by individual report visibility - a progression count is a
-// guild-wide stat, not report content; only the report list shown to a given viewer is
-// gated by visibility, and this endpoint shows no report list. The best parse per role, a
-// parse a player sees and opens, is read from reports that are evidence (presence.EvidenceReport:
-// not private, not flagged), as every other parse reader is (task L6.12).
+// every role). Its counts (pulls, kills, first kill, best kill, deaths per pull, pulls by
+// night, the unnamed zones' pulls and nights) are guild-wide stats, not report content, so
+// they count the guild's private nights too; a flagged report (tampered or unverified) they
+// never count (presence.NotFlagged), since it is evidence of nothing. The best parse per
+// role, a parse a player sees and opens, is read from reports that are evidence
+// (presence.EvidenceReport: not private, not flagged), as every other parse reader is. The
+// public guild page's own progression (rankings.Store.Guild) reads EvidenceReport (task L6.12).
 //
 // The tier (Barrow Deeps/Hyjal Summit/Onyxia's Lair, Onyxia the one published encounter)
 // is hardcoded rather than read from data/curated/loot/forever-raid-phases.json, matching
@@ -154,7 +155,7 @@ func (s *Store) encounterProgress(ctx context.Context, guildID, encounterID int6
 		       min(f.start_ms) filter (where f.kill), min(f.duration_ms) filter (where f.kill),
 		       avg(f.deaths)
 		from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and f.encounter_id = $2`,
+		where r.guild_id = $1 and f.encounter_id = $2 and `+presence.NotFlagged("r"),
 		guildID, encounterID).Scan(&ep.Pulls, &ep.Kills, &firstKillMS, &bestKillMS, &avgDeaths)
 	if err != nil {
 		return EncounterProgress{}, false, fmt.Errorf("guilds: encounter progress: %w", err)
@@ -171,7 +172,7 @@ func (s *Store) encounterProgress(ctx context.Context, guildID, encounterID int6
 	nightRows, err := s.Pool.Query(ctx, `
 		select r.id, r.created_at::date, count(*), count(*) filter (where f.kill) > 0
 		from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and f.encounter_id = $2
+		where r.guild_id = $1 and f.encounter_id = $2 and `+presence.NotFlagged("r")+`
 		group by r.id, r.created_at order by r.created_at`,
 		guildID, encounterID)
 	if err != nil {
@@ -236,7 +237,8 @@ func (s *Store) unnamedZoneProgress(ctx context.Context, guildID int64, zone str
 	if err := s.Pool.QueryRow(ctx, `
 		select count(*), count(distinct r.id)
 		from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and r.zone = $2 and (f.encounter_id is null or f.encounter_id = 0)`,
+		where r.guild_id = $1 and r.zone = $2 and (f.encounter_id is null or f.encounter_id = 0)
+		  and `+presence.NotFlagged("r"),
 		guildID, zone).Scan(&uz.Pulls, &uz.Nights); err != nil {
 		return UnnamedZoneProgress{}, fmt.Errorf("guilds: unnamed zone %s: %w", zone, err)
 	}
