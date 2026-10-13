@@ -109,12 +109,58 @@ function Progress.build(build, ranks, level)
 	}
 end
 
+--- Add order index `index` to a cell's runs: it extends the last run when it
+--- follows that run's last point, else it opens a new one.
+local function addToRuns(runs, index)
+	local last = runs[#runs]
+	if last ~= nil and last[2] == index - 1 then
+		last[2] = index
+	else
+		runs[#runs + 1] = { index, index }
+	end
+end
+
+--- The plan's points at one cell as its consecutive runs, in order:
+--- { { first, last }, ... } of 1-based order indexes (Task L3.2 fix, runs:
+--- the hunter's Lethal Attacks, taken at points 8-11 and 36, is
+--- { { 8, 11 }, { 36, 36 } }). Empty without a build or for a cell the plan
+--- never touches.
+function Progress.runsFor(build, tab, tier, column)
+	local runs = {}
+	if build == nil then
+		return runs
+	end
+	for index, step in ipairs(build.order) do
+		if step.tab == tab and step.tier == tier and step.column == column then
+			addToRuns(runs, index)
+		end
+	end
+	return runs
+end
+
+--- The run (Progress.runsFor's) the character's next rank at the cell falls
+--- in, given `have` ranks taken there: the first run whose ranks are not all
+--- taken. Nil once every rank in the runs is taken (or overspent), or with no
+--- runs. A run is taken whole: 2 of the 4 ranks in { 8, 11 } still name it.
+function Progress.nextRun(runs, have)
+	local taken = tonumber(have) or 0
+	local counted = 0
+	for _, run in ipairs(runs or {}) do
+		counted = counted + run[2] - run[1] + 1
+		if taken < counted then
+			return run
+		end
+	end
+	return nil
+end
+
 --- Every cell the plan touches, once each, in the order the plan first
 --- reaches it: { tab, tier, column, want, have, firstIndex, lastIndex,
---- node, next }. `want` is the points the plan puts there, `have` the
+--- runs, node, next }. `want` is the points the plan puts there, `have` the
 --- character's rank there (0 when none), `firstIndex` and `lastIndex` the
---- 1-based order indexes of the cell's first and last points (the last is
---- the talent marks' badge number, fixed by the plan), `node`
+--- 1-based order indexes of the cell's first and last points, `runs` those
+--- points as consecutive runs (Progress.runsFor's shape; the badge names the
+--- next one, Progress.nextRun), `node`
 --- the trait node id `data` carries for it (nil for a data gap), and `next`
 --- whether the plan's next point (Progress.nextPoint) is in it. The talent
 --- marks draw from this list only. Empty without a build.
@@ -132,7 +178,7 @@ function Progress.cells(build, ranks, data)
 		if cell == nil then
 			local talent = Talents.cellOf(data, build.classSlug, step.tab, step.tier, step.column)
 			cell = {
-				tab = step.tab, tier = step.tier, column = step.column, want = 0, firstIndex = index,
+				tab = step.tab, tier = step.tier, column = step.column, want = 0, firstIndex = index, runs = {},
 				have = (ranks[step.tab] or {})[Talents.cellKey(step.tier, step.column)] or 0,
 				node = talent ~= nil and talent.node or nil,
 				next = point ~= nil and cellKey(point) == key,
@@ -142,6 +188,7 @@ function Progress.cells(build, ranks, data)
 		end
 		cell.want = cell.want + 1
 		cell.lastIndex = index
+		addToRuns(cell.runs, index)
 	end
 	return cells
 end

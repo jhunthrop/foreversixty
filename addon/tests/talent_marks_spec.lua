@@ -5,6 +5,30 @@
 local TalentMarks = require("TalentMarks")
 local L = require("Locale")
 local Theme = require("Theme")
+local Progress = require("Progress")
+
+-- Task L3.2 fix (runs), user-reported on the hunter (hunter-13-*): the saved
+-- 31/20 build's 51 points as tab, tier, column triples, decoded from the
+-- SavedVariables code. Lethal Attacks (Marksmanship 1/3) is taken at points
+-- 8-11 and 36.
+local HUNTER_ORDER = "112x5 121x2 213x4 113x3 132 133x5 143x5 144 152 154x2 163x5 172 213 221x3 222x5 231x2 242 232x4"
+
+--- Progress.cells' cell at tab, tier, column for the hunter's build with `ranks`.
+local function hunterCell(ranks, tab, tier, column)
+	local order = {}
+	for triple in HUNTER_ORDER:gmatch("%S+") do
+		local t, r, c, times = triple:match("^(%d)(%d)(%d)x?(%d*)$")
+		for _ = 1, tonumber(times) or 1 do
+			order[#order + 1] = { tab = tonumber(t), tier = tonumber(r), column = tonumber(c) }
+		end
+	end
+	for _, cell in ipairs(Progress.cells({ classSlug = "hunter", order = order }, ranks, nil)) do
+		if cell.tab == tab and cell.tier == tier and cell.column == column then
+			return cell
+		end
+	end
+	return nil
+end
 
 local function progress(matched, total, nextLevel, offPlan, done)
 	return { matched = matched, total = total, nextLevel = nextLevel, offPlan = offPlan,
@@ -281,6 +305,15 @@ describe("TalentMarks.badgeLook", function()
 		assert.are.same({ plate = "inset", plateAlpha = 0.9, edgeAlpha = 0.5, digits = "gold", digitsAlpha = 0.6 }, look)
 	end)
 
+	-- Task L3.2 fix (runs): the dimming reads the run the badge names.
+	it("dims a split cell by its next run's first point", function()
+		local lethal = hunterCell({ [2] = { ["1:3"] = 4 } }, 2, 1, 3)
+		assert.are.same({ plate = "inset", plateAlpha = 0.9, edgeAlpha = 0.5, digits = "gold", digitsAlpha = 0.6 },
+			TalentMarks.badgeLook(lethal, 30))
+		assert.are.equal("gold", TalentMarks.badgeLook(lethal, 36).digits)
+		assert.are.equal(1, TalentMarks.badgeLook(lethal, 36).digitsAlpha)
+	end)
+
 	it("never draws a plate under 0.9 alpha, nor digits under 0.6", function()
 		for _, cell in ipairs({
 			{ next = true, have = 0, want = 1, firstIndex = 1, lastIndex = 1 },
@@ -306,6 +339,35 @@ describe("TalentMarks.badgeText", function()
 	it("shows the single number for a one-point cell", function()
 		assert.are.equal("12", TalentMarks.badgeText({ want = 1, firstIndex = 12, lastIndex = 12 }))
 	end)
+
+	-- Task L3.2 fix (runs), ruling 1: a split cell's badge names its next run.
+	it("names the hunter's next Lethal Attacks run: 8-11, then 36", function()
+		assert.are.equal("8–11", TalentMarks.badgeText(hunterCell({}, 2, 1, 3)))
+		assert.are.equal("8–11", TalentMarks.badgeText(hunterCell({ [2] = { ["1:3"] = 3 } }, 2, 1, 3)))
+		assert.are.equal("36", TalentMarks.badgeText(hunterCell({ [2] = { ["1:3"] = 4 } }, 2, 1, 3)))
+	end)
+
+	it("keeps a fully taken split cell's done look on its last run", function()
+		local lethal = hunterCell({ [2] = { ["1:3"] = 5 } }, 2, 1, 3)
+		assert.are.equal("36", TalentMarks.badgeText(lethal))
+		assert.are.equal("taken", TalentMarks.badgeState(lethal))
+		assert.are.equal("muted", TalentMarks.badgeLook(lethal, 51).digits)
+	end)
+
+	it("leaves a consecutive cell's first-last unchanged, and a one-point run its number", function()
+		assert.are.equal("40–44", TalentMarks.badgeText(hunterCell({}, 2, 2, 2)))
+		assert.are.equal("40–44", TalentMarks.badgeText(hunterCell({ [2] = { ["2:2"] = 2 } }, 2, 2, 2)))
+		assert.are.equal("47", TalentMarks.badgeText(hunterCell({}, 2, 4, 2)))
+	end)
+
+	it("walks three runs", function()
+		local cell = { want = 5, have = 0, firstIndex = 8, lastIndex = 36, runs = { { 8, 9 }, { 20, 20 }, { 35, 36 } } }
+		assert.are.equal("8–9", TalentMarks.badgeText(cell))
+		cell.have = 2
+		assert.are.equal("20", TalentMarks.badgeText(cell))
+		cell.have = 3
+		assert.are.equal("35–36", TalentMarks.badgeText(cell))
+	end)
 end)
 
 -- Fix round 3: the node tooltip gains a blank line, then "Forever Sixty" in
@@ -313,10 +375,24 @@ end)
 -- holding a point gets a warning line.
 describe("TalentMarks.nodeLine", function()
 	it("names the plan's ranks and points in the cell", function()
-		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: 5 ranks, points 7 to 11|r",
+		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: 5 ranks, points 7–11|r",
 			TalentMarks.nodeLine({ firstIndex = 7, lastIndex = 11, want = 5 }))
-		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: 2 ranks, points 12 to 13|r",
+		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: 2 ranks, points 12–13|r",
 			TalentMarks.nodeLine({ firstIndex = 12, lastIndex = 13, want = 2 }))
+	end)
+
+	-- Task L3.2 fix (runs), ruling 2: the tooltip lists every run.
+	it("lists every run: one, two (the hunter's Lethal Attacks) and three", function()
+		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: 5 ranks, points 8–12|r",
+			TalentMarks.nodeLine({ firstIndex = 8, lastIndex = 12, want = 5, runs = { { 8, 12 } } }))
+		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: 5 ranks, points 8–11 and 36|r",
+			TalentMarks.nodeLine(hunterCell({}, 2, 1, 3)))
+		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: 5 ranks, points 8–11 and 36|r",
+			TalentMarks.nodeLine(hunterCell({ [2] = { ["1:3"] = 4 } }, 2, 1, 3)))
+		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: 6 ranks, points 8–11, 20 and 36|r",
+			TalentMarks.nodeLine({ firstIndex = 8, lastIndex = 36, want = 6, runs = { { 8, 11 }, { 20, 20 }, { 36, 36 } } }))
+		assert.are.equal(GOLD .. "Forever Sixty:|r " .. BODY .. "Your build: 2 ranks, points 12 and 20|r",
+			TalentMarks.nodeLine({ firstIndex = 12, lastIndex = 20, want = 2, runs = { { 12, 12 }, { 20, 20 } } }))
 	end)
 
 	it("names a single point once", function()
