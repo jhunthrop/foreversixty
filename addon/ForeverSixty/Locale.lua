@@ -82,14 +82,18 @@ local L = {
 	-- L3.2 fix round 4: the strip's leading segment while the open window
 	-- hides the chip, the chip's own label: "Next: Improved Heroic Strike (1 of 3)".
 	talentStripNextTalent = "Next: %s",
-	-- A multi-rank cell's badge: the plan's first and last points there, en dash.
+	-- A run of the plan's points at a cell, en dash: a badge names the next
+	-- run ("8–11", then "36"), the node tooltip lists every one.
 	talentBadgeRange = "%d–%d",
 	-- One line on the client's own node tooltip, after a blank one: the
 	-- addon's name in gold ("Forever Sixty:"), then the plan's ranks and
-	-- points there in body colour; or, on a node holding a point the plan
-	-- never wanted, one warning line.
+	-- every run of its points there in body colour ("Your build: 5 ranks,
+	-- points 8–11 and 36", "points 8–11, 20 and 36", "points 8–12"); or, on
+	-- a node holding a point the plan never wanted, one warning line.
 	talentNodeLabel = "%s:",
-	talentNodeLine = "Your build: %d ranks, points %d to %d",
+	talentNodeLine = "Your build: %d ranks, points %s",
+	talentNodeRunsSeparator = ", ",
+	talentNodeRunsLast = " and ",
 	talentNodeLineOne = "Your build: point %d",
 	talentNodeOffPlan = "%s: not in your build",
 

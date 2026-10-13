@@ -95,7 +95,9 @@ chip stays beside the minimap with the window open.
 In the client's talent window (`PlayerSpellsFrame` on this client, found by the existing
 `TalentGlow.watch` hook): a 3 px gold ring, 3 px outside the node's own border, pulsing as the
 chip does, on the next node; a small order number on every node the plan touches (amended in L3.2
-fix round 4: a multi-rank cell shows the plan's point range, "7–11", a one-point cell its number); a 24 px strip
+fix round 4: a multi-rank cell shows the plan's point range, "7–11", a one-point cell its number; amended
+in the L3.2 runs fix: a cell whose points are not consecutive shows its next run, "8–11" then "36", and
+the node tooltip lists every run, "Your build: 5 ranks, points 8–11 and 36"); a 24 px strip
 along the window's bottom edge: "Arms leveling · 11 of 51 · next at level 22 · 0 off plan". A
 point spent off plan turns the strip's count warning-coloured; nothing pops up. While the marks
 are drawn the chip stands aside and the strip leads with the chip's line ("Next: Deflection (1 of

@@ -554,8 +554,10 @@ describe("Progress.cells", function()
 	it("lists each cell once, in plan order, with its last point's index, rank and node", function()
 		local cells = Progress.cells(BUILD, { [1] = { ["1:1"] = 1 } }, TALENTS)
 		assert.are.same({
-			{ tab = 1, tier = 1, column = 1, want = 2, have = 1, firstIndex = 1, lastIndex = 3, node = 101, next = false },
-			{ tab = 2, tier = 1, column = 3, want = 1, have = 0, firstIndex = 2, lastIndex = 2, node = nil, next = true },
+			{ tab = 1, tier = 1, column = 1, want = 2, have = 1, firstIndex = 1, lastIndex = 3, node = 101, next = false,
+				runs = { { 1, 1 }, { 3, 3 } } },
+			{ tab = 2, tier = 1, column = 3, want = 1, have = 0, firstIndex = 2, lastIndex = 2, node = nil, next = true,
+				runs = { { 2, 2 } } },
 		}, cells)
 	end)
 
@@ -570,6 +572,81 @@ describe("Progress.cells", function()
 	it("is empty without a build, and has no nodes without data", function()
 		assert.are.same({}, Progress.cells(nil, {}, TALENTS))
 		assert.is_nil(Progress.cells(BUILD, {}, nil)[1].node)
+	end)
+end)
+
+-- Task L3.2 fix (runs), user-reported on the hunter (hunter-13-*): the saved
+-- 31/20 build takes Lethal Attacks (Marksmanship 1/3) at points 8-11 and 36.
+-- The 51 points as tab, tier, column triples, decoded from the SavedVariables code.
+local HUNTER_ORDER = "112x5 121x2 213x4 113x3 132 133x5 143x5 144 152 154x2 163x5 172 213 221x3 222x5 231x2 242 232x4"
+
+--- The hunter's saved build, its order expanded from HUNTER_ORDER.
+local function hunterBuild()
+	local order = {}
+	for triple in HUNTER_ORDER:gmatch("%S+") do
+		local tab, tier, column, times = triple:match("^(%d)(%d)(%d)x?(%d*)$")
+		for _ = 1, tonumber(times) or 1 do
+			order[#order + 1] = cell(tonumber(tab), tonumber(tier), tonumber(column))
+		end
+	end
+	return { classSlug = "hunter", order = order }
+end
+
+describe("Progress.runsFor", function()
+	it("pins the hunter's order: 51 points, Lethal Attacks in runs 8-11 and 36", function()
+		local build = hunterBuild()
+		assert.are.equal(51, #build.order)
+		assert.are.same({ { 8, 11 }, { 36, 36 } }, Progress.runsFor(build, 2, 1, 3))
+	end)
+
+	it("keeps a consecutive talent one run", function()
+		local build = hunterBuild()
+		assert.are.same({ { 1, 5 } }, Progress.runsFor(build, 1, 1, 2))
+		assert.are.same({ { 37, 39 } }, Progress.runsFor(build, 2, 2, 1))
+		assert.are.same({ { 47, 47 } }, Progress.runsFor(build, 2, 4, 2))
+	end)
+
+	it("splits three runs in plan order", function()
+		local build = { classSlug = "warrior", order = { IHS, IHS, DEFLECTION, IHS, REND, REND, IHS, IHS } }
+		assert.are.same({ { 1, 2 }, { 4, 4 }, { 7, 8 } }, Progress.runsFor(build, 1, 1, 1))
+	end)
+
+	it("is empty for a cell the plan never touches, and without a build", function()
+		assert.are.same({}, Progress.runsFor(hunterBuild(), 3, 1, 1))
+		assert.are.same({}, Progress.runsFor(nil, 2, 1, 3))
+	end)
+end)
+
+describe("Progress.nextRun", function()
+	local RUNS = { { 8, 11 }, { 36, 36 } }
+
+	it("is the first run while any of its ranks is missing", function()
+		assert.are.same({ 8, 11 }, Progress.nextRun(RUNS, 0))
+		assert.are.same({ 8, 11 }, Progress.nextRun(RUNS, 3))
+		assert.are.same({ 8, 11 }, Progress.nextRun(RUNS, nil))
+	end)
+
+	it("moves to the next run once a run's ranks are all taken", function()
+		assert.are.same({ 36, 36 }, Progress.nextRun(RUNS, 4))
+	end)
+
+	it("is nil once every rank is taken, or overspent, and for no runs", function()
+		assert.is_nil(Progress.nextRun(RUNS, 5))
+		assert.is_nil(Progress.nextRun(RUNS, 6))
+		assert.is_nil(Progress.nextRun({}, 0))
+		assert.is_nil(Progress.nextRun(nil, 0))
+	end)
+
+	it("reads the hunter's Lethal Attacks cell from Progress.cells", function()
+		local ranks = { [1] = { ["1:2"] = 5, ["2:1"] = 2 }, [2] = { ["1:3"] = 4 } }
+		local lethal
+		for _, entry in ipairs(Progress.cells(hunterBuild(), ranks, nil)) do
+			if entry.tab == 2 and entry.tier == 1 and entry.column == 3 then
+				lethal = entry
+			end
+		end
+		assert.are.same({ { 8, 11 }, { 36, 36 } }, lethal.runs)
+		assert.are.same({ 36, 36 }, Progress.nextRun(lethal.runs, lethal.have))
 	end)
 end)
 

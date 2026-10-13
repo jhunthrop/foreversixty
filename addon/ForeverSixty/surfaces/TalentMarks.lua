@@ -163,14 +163,45 @@ function TalentMarks.badgeState(cell)
 	return "planned"
 end
 
---- What a cell's badge says (spec section 4.2, amended in L3.2 fix round
---- 4): the plan's point range for a multi-rank cell, "7–11", and the single
---- number for a one-point cell, "12".
-function TalentMarks.badgeText(cell)
-	if (cell.want or 1) > 1 then
-		return string.format(L.talentBadgeRange, cell.firstIndex, cell.lastIndex)
+--- A cell's runs (Progress.cells' `runs`), or, for a cell built without
+--- them, its first to last points as one run; none without a last point.
+local function runsOf(cell)
+	if type(cell.runs) == "table" and #cell.runs > 0 then
+		return cell.runs
 	end
-	return tostring(cell.lastIndex)
+	if cell.lastIndex == nil then
+		return {}
+	end
+	return { { cell.firstIndex or cell.lastIndex, cell.lastIndex } }
+end
+
+--- One run as the marks print it: "8–11", or "36" for a one-point run.
+local function runText(run)
+	if run[1] == run[2] then
+		return tostring(run[2])
+	end
+	return string.format(L.talentBadgeRange, run[1], run[2])
+end
+
+--- The run a cell's badge names: the next one (Progress.nextRun), or the
+--- last once every rank is taken; nil without runs.
+local function badgeRun(cell)
+	local runs = runsOf(cell)
+	return Progress.nextRun(runs, cell.have) or runs[#runs]
+end
+
+--- What a cell's badge says (spec section 4.2, amended in L3.2 fix round
+--- 4 and the runs fix): the plan's NEXT run of points there, "7–11" for a
+--- consecutive run and the single number for a one-point run, "12". A split
+--- cell names the run still to take (the hunter's Lethal Attacks at points
+--- 8-11 and 36: "8–11", then "36" once four ranks are in), never the whole
+--- span; a fully taken cell keeps its last run.
+function TalentMarks.badgeText(cell)
+	local run = badgeRun(cell)
+	if run == nil then
+		return tostring(cell.lastIndex)
+	end
+	return runText(run)
 end
 
 --- How a cell's badge looks, given `reach` (Progress.reachablePoints): the
@@ -181,7 +212,8 @@ end
 --- cell whose FIRST point lies beyond the points the character can spend
 --- now dims by a darker plate (the inset tone), its edge at
 --- ALPHA.unreachable and its digits at ALPHA.dimDigits (fix round 3: badge
---- "13" for points 12-13 stays bright at 12 reachable).
+--- "13" for points 12-13 stays bright at 12 reachable). The first point is
+--- the one of the run the badge names (runs fix: "36" dims at 30 reachable).
 function TalentMarks.badgeLook(cell, reach)
 	local A = Theme.ALPHA
 	local state = TalentMarks.badgeState(cell)
@@ -191,7 +223,8 @@ function TalentMarks.badgeLook(cell, reach)
 	if state == "taken" then
 		return { plate = "background", plateAlpha = A.plate, edgeAlpha = 1, digits = "muted", digitsAlpha = 1 }
 	end
-	local first = cell.firstIndex or cell.lastIndex or 0
+	local run = badgeRun(cell)
+	local first = run ~= nil and run[1] or cell.firstIndex or cell.lastIndex or 0
 	if type(reach) == "number" and first > reach then
 		return { plate = "inset", plateAlpha = A.plate, edgeAlpha = A.unreachable,
 			digits = "gold", digitsAlpha = A.dimDigits }
@@ -199,9 +232,24 @@ function TalentMarks.badgeLook(cell, reach)
 	return { plate = "background", plateAlpha = A.plate, edgeAlpha = 1, digits = "gold", digitsAlpha = 1 }
 end
 
+--- Every run of a cell, as the node tooltip lists them: "8–12",
+--- "8–11 and 36", "8–11, 20 and 36".
+local function runsText(runs)
+	local texts = {}
+	for index, run in ipairs(runs) do
+		texts[index] = runText(run)
+	end
+	if #texts < 2 then
+		return texts[1] or ""
+	end
+	local last = table.remove(texts)
+	return table.concat(texts, L.talentNodeRunsSeparator) .. L.talentNodeRunsLast .. last
+end
+
 --- The line a node's own tooltip gains (after a blank one): "Forever
---- Sixty:" in gold, then the plan's ranks and points there in body colour
---- ("Your build: 5 ranks, points 7 to 11", "Your build: point 12"); for a
+--- Sixty:" in gold, then the plan's ranks and every run of its points there
+--- in body colour ("Your build: 5 ranks, points 8–11 and 36", "Your build:
+--- 5 ranks, points 7–11", "Your build: point 12"); for a
 --- node holding a point the plan never put there ({ offPlan = true }), one
 --- warning line, "Forever Sixty: not in your build".
 function TalentMarks.nodeLine(cell)
@@ -210,7 +258,7 @@ function TalentMarks.nodeLine(cell)
 	end
 	local text
 	if (cell.want or 1) > 1 then
-		text = string.format(L.talentNodeLine, cell.want, cell.firstIndex, cell.lastIndex)
+		text = string.format(L.talentNodeLine, cell.want, runsText(runsOf(cell)))
 	else
 		text = string.format(L.talentNodeLineOne, cell.lastIndex)
 	end
