@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T21:20:12Z",
+  "generated_at": "2026-10-13T22:31:36Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -745,8 +745,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.318601867,
-      "verify_run_seconds": 4.058343079,
+      "weights_run_seconds": 1.491365493,
+      "verify_run_seconds": 4.527215891,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -799,7 +799,7 @@
         "off_hand": {
           "eligible": 25,
           "sourced": 18,
-          "rare_spawn_skipped": 13
+          "rare_spawn_skipped": 11
         },
         "ranged": {
           "eligible": 37,
@@ -1584,8 +1584,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.318601867,
-      "verify_run_seconds": 4.030866889,
+      "weights_run_seconds": 1.491365493,
+      "verify_run_seconds": 4.420324109,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1638,7 +1638,7 @@
         "off_hand": {
           "eligible": 25,
           "sourced": 15,
-          "rare_spawn_skipped": 13
+          "rare_spawn_skipped": 11
         },
         "ranged": {
           "eligible": 36,
@@ -2474,8 +2474,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.314824667,
-      "verify_run_seconds": 2.319399867,
+      "weights_run_seconds": 1.5173671629999999,
+      "verify_run_seconds": 2.540845128,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2530,7 +2530,7 @@
         "off_hand": {
           "eligible": 55,
           "sourced": 38,
-          "rare_spawn_skipped": 22
+          "rare_spawn_skipped": 19
         },
         "ranged": {
           "eligible": 76,
@@ -3355,8 +3355,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.314824667,
-      "verify_run_seconds": 2.345369753,
+      "weights_run_seconds": 1.5173671629999999,
+      "verify_run_seconds": 2.602008829,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3411,7 +3411,7 @@
         "off_hand": {
           "eligible": 51,
           "sourced": 32,
-          "rare_spawn_skipped": 22
+          "rare_spawn_skipped": 19
         },
         "ranged": {
           "eligible": 75,
@@ -4245,8 +4245,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.340544003,
-      "verify_run_seconds": 2.865055969,
+      "weights_run_seconds": 1.495612109,
+      "verify_run_seconds": 3.155195599,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4301,7 +4301,7 @@
         "off_hand": {
           "eligible": 75,
           "sourced": 52,
-          "rare_spawn_skipped": 26
+          "rare_spawn_skipped": 23
         },
         "ranged": {
           "eligible": 106,
@@ -5121,8 +5121,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.340544003,
-      "verify_run_seconds": 2.752311223,
+      "weights_run_seconds": 1.495612109,
+      "verify_run_seconds": 3.161987431,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5177,7 +5177,7 @@
         "off_hand": {
           "eligible": 70,
           "sourced": 46,
-          "rare_spawn_skipped": 26
+          "rare_spawn_skipped": 23
         },
         "ranged": {
           "eligible": 106,
@@ -6051,8 +6051,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.343318353,
-      "verify_run_seconds": 5.611967736,
+      "weights_run_seconds": 1.519163012,
+      "verify_run_seconds": 6.209646699,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6107,7 +6107,7 @@
         "off_hand": {
           "eligible": 95,
           "sourced": 66,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 130,
@@ -6971,8 +6971,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.343318353,
-      "verify_run_seconds": 3.312454978,
+      "weights_run_seconds": 1.519163012,
+      "verify_run_seconds": 3.63547017,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7027,7 +7027,7 @@
         "off_hand": {
           "eligible": 91,
           "sourced": 61,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 131,
@@ -7367,7 +7367,7 @@
               "item_name": "Knight-Captain's Chain Armor",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.5989329299626893
+              "dps_delta": -1.5989329299626904
             }
           ],
           "runners_up": [
@@ -7557,7 +7557,7 @@
               "item_name": "Knight-Captain's Chain Legplates",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -3.0717597168183106
+              "dps_delta": -3.0717597168183115
             }
           ],
           "runners_up": [
@@ -7934,8 +7934,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.326947104,
-      "verify_run_seconds": 11.868116168,
+      "weights_run_seconds": 1.489627847,
+      "verify_run_seconds": 13.357668433,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -7990,7 +7990,7 @@
         "off_hand": {
           "eligible": 132,
           "sourced": 85,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 183,
@@ -8329,7 +8329,7 @@
               "item_name": "Legionnaire's Chain Armor",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -1.5989329299626904
+              "dps_delta": -1.5989329299626893
             }
           ],
           "runners_up": [
@@ -8629,7 +8629,7 @@
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "score": 67.25571055227267,
+          "score": 67.25571055227266,
           "verified": true,
           "alternatives": [
             {
@@ -8637,14 +8637,14 @@
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.9538940195356356
+              "dps_delta": -0.9538940195356346
             },
             {
               "item_id": 19510,
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.172508611701543
+              "dps_delta": -2.172508611701542
             }
           ],
           "runners_up": [
@@ -8898,8 +8898,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.326947104,
-      "verify_run_seconds": 12.166685484,
+      "weights_run_seconds": 1.489627847,
+      "verify_run_seconds": 13.548932887,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8954,7 +8954,7 @@
         "off_hand": {
           "eligible": 129,
           "sourced": 81,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 183,
@@ -9856,8 +9856,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.271718312,
-      "verify_run_seconds": 9.647442228,
+      "weights_run_seconds": 1.484408287,
+      "verify_run_seconds": 10.655737911,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -9912,7 +9912,7 @@
         "off_hand": {
           "eligible": 132,
           "sourced": 85,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 183,
@@ -10813,8 +10813,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.271718312,
-      "verify_run_seconds": 9.961558532,
+      "weights_run_seconds": 1.484408287,
+      "verify_run_seconds": 10.857967497,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10869,7 +10869,7 @@
         "off_hand": {
           "eligible": 129,
           "sourced": 81,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 183,

@@ -191,22 +191,27 @@ func candidatesBySlot(pool []scored) map[string][]scored {
 			out[slot] = append(out[slot], s)
 		}
 	}
-	for slot, list := range out {
-		sort.SliceStable(list, func(i, j int) bool {
-			if list[i].Score != list[j].Score {
-				return list[i].Score > list[j].Score
-			}
-			if list[i].DeadStatCount != list[j].DeadStatCount {
-				return list[i].DeadStatCount < list[j].DeadStatCount
-			}
-			if list[i].ItemLevel != list[j].ItemLevel {
-				return list[i].ItemLevel > list[j].ItemLevel
-			}
-			return list[i].ID < list[j].ID
-		})
-		out[slot] = list
+	for _, list := range out {
+		sortCandidates(list)
 	}
 	return out
+}
+
+// sortCandidates puts one slot's list in candidatesBySlot's order: best
+// score first, then fewer dead stats, then higher item level, then id.
+func sortCandidates(list []scored) {
+	sort.SliceStable(list, func(i, j int) bool {
+		if list[i].Score != list[j].Score {
+			return list[i].Score > list[j].Score
+		}
+		if list[i].DeadStatCount != list[j].DeadStatCount {
+			return list[i].DeadStatCount < list[j].DeadStatCount
+		}
+		if list[i].ItemLevel != list[j].ItemLevel {
+			return list[i].ItemLevel > list[j].ItemLevel
+		}
+		return list[i].ID < list[j].ID
+	})
 }
 
 // pick chooses one item per planner slot, greedily, best score first,

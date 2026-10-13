@@ -2,7 +2,7 @@
   "spec": "rogue-assassination",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T21:38:40Z",
+  "generated_at": "2026-10-13T22:51:47Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -746,8 +746,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.339395792,
-      "verify_run_seconds": 4.193077085,
+      "weights_run_seconds": 1.331318574,
+      "verify_run_seconds": 4.299874294,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -800,7 +800,7 @@
         "off_hand": {
           "eligible": 25,
           "sourced": 18,
-          "rare_spawn_skipped": 14
+          "rare_spawn_skipped": 12
         },
         "ranged": {
           "eligible": 38,
@@ -1568,8 +1568,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.339395792,
-      "verify_run_seconds": 4.277940964,
+      "weights_run_seconds": 1.331318574,
+      "verify_run_seconds": 4.404741649,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1622,7 +1622,7 @@
         "off_hand": {
           "eligible": 25,
           "sourced": 15,
-          "rare_spawn_skipped": 14
+          "rare_spawn_skipped": 12
         },
         "ranged": {
           "eligible": 37,
@@ -2461,8 +2461,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.345512141,
-      "verify_run_seconds": 4.35506385,
+      "weights_run_seconds": 1.391856854,
+      "verify_run_seconds": 4.571890337,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2517,7 +2517,7 @@
         "off_hand": {
           "eligible": 54,
           "sourced": 37,
-          "rare_spawn_skipped": 25
+          "rare_spawn_skipped": 22
         },
         "ranged": {
           "eligible": 77,
@@ -3358,8 +3358,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.345512141,
-      "verify_run_seconds": 4.45906484,
+      "weights_run_seconds": 1.391856854,
+      "verify_run_seconds": 4.551965663,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3414,7 +3414,7 @@
         "off_hand": {
           "eligible": 51,
           "sourced": 32,
-          "rare_spawn_skipped": 25
+          "rare_spawn_skipped": 22
         },
         "ranged": {
           "eligible": 76,
@@ -4232,8 +4232,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.280397222,
-      "verify_run_seconds": 2.539516656,
+      "weights_run_seconds": 1.3557272,
+      "verify_run_seconds": 2.7331297770000003,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4288,7 +4288,7 @@
         "off_hand": {
           "eligible": 74,
           "sourced": 51,
-          "rare_spawn_skipped": 29
+          "rare_spawn_skipped": 26
         },
         "ranged": {
           "eligible": 107,
@@ -5105,8 +5105,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.280397222,
-      "verify_run_seconds": 2.518313589,
+      "weights_run_seconds": 1.3557272,
+      "verify_run_seconds": 2.607546907,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5161,7 +5161,7 @@
         "off_hand": {
           "eligible": 70,
           "sourced": 46,
-          "rare_spawn_skipped": 29
+          "rare_spawn_skipped": 26
         },
         "ranged": {
           "eligible": 107,
@@ -5995,8 +5995,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.676240707,
-      "verify_run_seconds": 2.68975994,
+      "weights_run_seconds": 1.485049369,
+      "verify_run_seconds": 2.9701058270000003,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6051,7 +6051,7 @@
         "off_hand": {
           "eligible": 94,
           "sourced": 65,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 27
         },
         "ranged": {
           "eligible": 131,
@@ -6891,8 +6891,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.676240707,
-      "verify_run_seconds": 2.592120412,
+      "weights_run_seconds": 1.485049369,
+      "verify_run_seconds": 2.927726157,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -6947,7 +6947,7 @@
         "off_hand": {
           "eligible": 91,
           "sourced": 61,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 27
         },
         "ranged": {
           "eligible": 132,
@@ -7267,7 +7267,7 @@
               "item_name": "Field Marshal's Leather Chestpiece",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.6682315185659817
+              "dps_delta": -1.6682315185659828
             },
             {
               "item_id": 226825,
@@ -7830,8 +7830,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.254549207,
-      "verify_run_seconds": 7.878420628,
+      "weights_run_seconds": 1.447436834,
+      "verify_run_seconds": 8.553940518,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -7886,7 +7886,7 @@
         "off_hand": {
           "eligible": 131,
           "sourced": 84,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 27
         },
         "ranged": {
           "eligible": 183,
@@ -8797,8 +8797,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.254549207,
-      "verify_run_seconds": 7.850042797,
+      "weights_run_seconds": 1.447436834,
+      "verify_run_seconds": 8.058792423,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8853,7 +8853,7 @@
         "off_hand": {
           "eligible": 129,
           "sourced": 81,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 27
         },
         "ranged": {
           "eligible": 183,
@@ -9186,7 +9186,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -7.77684786071043
+              "dps_delta": -7.776847860710427
             }
           ],
           "runners_up": [
@@ -9735,8 +9735,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.228636027,
-      "verify_run_seconds": 8.015265965,
+      "weights_run_seconds": 1.282555433,
+      "verify_run_seconds": 8.234913096,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -9791,7 +9791,7 @@
         "off_hand": {
           "eligible": 131,
           "sourced": 84,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 27
         },
         "ranged": {
           "eligible": 183,
@@ -10702,8 +10702,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.228636027,
-      "verify_run_seconds": 8.104503634,
+      "weights_run_seconds": 1.282555433,
+      "verify_run_seconds": 8.239253699,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10758,7 +10758,7 @@
         "off_hand": {
           "eligible": 129,
           "sourced": 81,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 27
         },
         "ranged": {
           "eligible": 183,

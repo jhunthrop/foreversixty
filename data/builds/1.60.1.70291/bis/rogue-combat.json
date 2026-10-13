@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T21:40:01Z",
+  "generated_at": "2026-10-13T22:53:08Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -745,8 +745,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.199406741,
-      "verify_run_seconds": 3.884630776,
+      "weights_run_seconds": 1.203228819,
+      "verify_run_seconds": 3.966048642,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -790,7 +790,7 @@
         "main_hand": {
           "eligible": 159,
           "sourced": 110,
-          "rare_spawn_skipped": 12
+          "rare_spawn_skipped": 6
         },
         "neck": {
           "eligible": 15,
@@ -799,7 +799,7 @@
         "off_hand": {
           "eligible": 25,
           "sourced": 18,
-          "rare_spawn_skipped": 14
+          "rare_spawn_skipped": 6
         },
         "ranged": {
           "eligible": 38,
@@ -1584,8 +1584,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.199406741,
-      "verify_run_seconds": 3.944436057,
+      "weights_run_seconds": 1.203228819,
+      "verify_run_seconds": 3.996606482,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1629,7 +1629,7 @@
         "main_hand": {
           "eligible": 159,
           "sourced": 119,
-          "rare_spawn_skipped": 12
+          "rare_spawn_skipped": 6
         },
         "neck": {
           "eligible": 15,
@@ -1638,7 +1638,7 @@
         "off_hand": {
           "eligible": 25,
           "sourced": 15,
-          "rare_spawn_skipped": 14
+          "rare_spawn_skipped": 6
         },
         "ranged": {
           "eligible": 37,
@@ -2477,8 +2477,8 @@
         "off_hand: Torturing Poker",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.195932011,
-      "verify_run_seconds": 3.963856243,
+      "weights_run_seconds": 1.148141109,
+      "verify_run_seconds": 4.068520985,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2523,7 +2523,7 @@
         "main_hand": {
           "eligible": 245,
           "sourced": 172,
-          "rare_spawn_skipped": 22
+          "rare_spawn_skipped": 11
         },
         "neck": {
           "eligible": 36,
@@ -2533,7 +2533,7 @@
         "off_hand": {
           "eligible": 54,
           "sourced": 37,
-          "rare_spawn_skipped": 25
+          "rare_spawn_skipped": 11
         },
         "ranged": {
           "eligible": 77,
@@ -3374,8 +3374,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.195932011,
-      "verify_run_seconds": 4.030417729,
+      "weights_run_seconds": 1.148141109,
+      "verify_run_seconds": 4.070832804,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3420,7 +3420,7 @@
         "main_hand": {
           "eligible": 244,
           "sourced": 186,
-          "rare_spawn_skipped": 22
+          "rare_spawn_skipped": 11
         },
         "neck": {
           "eligible": 36,
@@ -3430,7 +3430,7 @@
         "off_hand": {
           "eligible": 51,
           "sourced": 32,
-          "rare_spawn_skipped": 25
+          "rare_spawn_skipped": 11
         },
         "ranged": {
           "eligible": 76,
@@ -4254,8 +4254,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.237471869,
-      "verify_run_seconds": 2.344661559,
+      "weights_run_seconds": 1.207820666,
+      "verify_run_seconds": 2.33111359,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4300,7 +4300,7 @@
         "main_hand": {
           "eligible": 320,
           "sourced": 223,
-          "rare_spawn_skipped": 26
+          "rare_spawn_skipped": 12
         },
         "neck": {
           "eligible": 51,
@@ -4310,7 +4310,7 @@
         "off_hand": {
           "eligible": 74,
           "sourced": 51,
-          "rare_spawn_skipped": 29
+          "rare_spawn_skipped": 12
         },
         "ranged": {
           "eligible": 107,
@@ -5132,8 +5132,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.237471869,
-      "verify_run_seconds": 2.361008648,
+      "weights_run_seconds": 1.207820666,
+      "verify_run_seconds": 2.392906082,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5178,7 +5178,7 @@
         "main_hand": {
           "eligible": 320,
           "sourced": 240,
-          "rare_spawn_skipped": 26
+          "rare_spawn_skipped": 12
         },
         "neck": {
           "eligible": 51,
@@ -5188,7 +5188,7 @@
         "off_hand": {
           "eligible": 70,
           "sourced": 46,
-          "rare_spawn_skipped": 29
+          "rare_spawn_skipped": 12
         },
         "ranged": {
           "eligible": 107,
@@ -6009,8 +6009,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.264681343,
-      "verify_run_seconds": 2.719453486,
+      "weights_run_seconds": 1.288390305,
+      "verify_run_seconds": 2.751316926,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6055,7 +6055,7 @@
         "main_hand": {
           "eligible": 379,
           "sourced": 267,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 65,
@@ -6065,7 +6065,7 @@
         "off_hand": {
           "eligible": 94,
           "sourced": 65,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 131,
@@ -6889,8 +6889,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.264681343,
-      "verify_run_seconds": 2.69463469,
+      "weights_run_seconds": 1.288390305,
+      "verify_run_seconds": 2.768841682,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -6935,7 +6935,7 @@
         "main_hand": {
           "eligible": 378,
           "sourced": 285,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 67,
@@ -6945,7 +6945,7 @@
         "off_hand": {
           "eligible": 91,
           "sourced": 61,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 132,
@@ -7819,8 +7819,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.311449107,
-      "verify_run_seconds": 8.334698214,
+      "weights_run_seconds": 1.303105025,
+      "verify_run_seconds": 8.206973102,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -7865,7 +7865,7 @@
         "main_hand": {
           "eligible": 507,
           "sourced": 342,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 149,
@@ -7875,7 +7875,7 @@
         "off_hand": {
           "eligible": 131,
           "sourced": 84,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 183,
@@ -8752,8 +8752,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.311449107,
-      "verify_run_seconds": 8.228113335,
+      "weights_run_seconds": 1.303105025,
+      "verify_run_seconds": 8.367779563,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8798,7 +8798,7 @@
         "main_hand": {
           "eligible": 507,
           "sourced": 353,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 151,
@@ -8808,7 +8808,7 @@
         "off_hand": {
           "eligible": 129,
           "sourced": 81,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 183,
@@ -9669,8 +9669,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.309799288,
-      "verify_run_seconds": 8.206485506,
+      "weights_run_seconds": 1.337212111,
+      "verify_run_seconds": 8.600708171,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -9715,7 +9715,7 @@
         "main_hand": {
           "eligible": 507,
           "sourced": 342,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 149,
@@ -9725,7 +9725,7 @@
         "off_hand": {
           "eligible": 131,
           "sourced": 84,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 183,
@@ -10602,8 +10602,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.309799288,
-      "verify_run_seconds": 8.411656513,
+      "weights_run_seconds": 1.337212111,
+      "verify_run_seconds": 8.369722405,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10648,7 +10648,7 @@
         "main_hand": {
           "eligible": 507,
           "sourced": 353,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 151,
@@ -10658,7 +10658,7 @@
         "off_hand": {
           "eligible": 129,
           "sourced": 81,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 183,

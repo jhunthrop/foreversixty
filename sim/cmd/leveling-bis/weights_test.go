@@ -163,7 +163,7 @@ func TestBandPoolNeverPublishesANegativeScoreFromANegativeWeight(t *testing.T) {
 		{ID: 1, Name: "Evergreen Gloves", RequiredLevel: 5, EffectiveRequiredLevel: 5, Stats: map[string]float64{"spirit": 40}, Slots: []string{"hands"}},
 	}
 	idx := lootIndex{1: {{Kind: "quest", Label: "A Quest"}}}
-	pool := buildBandPool(items, idx, "mage", 10, "alliance", weights, 0, true, false)
+	pool := buildBandPool(items, idx, "mage", 10, "alliance", weights, 0, true)
 	if len(pool.Scored) != 1 {
 		t.Fatalf("len(pool.Scored) = %d, want 1", len(pool.Scored))
 	}

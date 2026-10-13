@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T21:53:02Z",
+  "generated_at": "2026-10-13T23:06:03Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -781,8 +781,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.425514484,
-      "verify_run_seconds": 3.987136404,
+      "weights_run_seconds": 1.319273494,
+      "verify_run_seconds": 3.793610267,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -835,7 +835,7 @@
         "off_hand": {
           "eligible": 81,
           "sourced": 63,
-          "rare_spawn_skipped": 20
+          "rare_spawn_skipped": 16
         },
         "ranged": {
           "eligible": 37,
@@ -1655,8 +1655,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.425514484,
-      "verify_run_seconds": 4.242646289,
+      "weights_run_seconds": 1.319273494,
+      "verify_run_seconds": 3.881383154,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1709,7 +1709,7 @@
         "off_hand": {
           "eligible": 80,
           "sourced": 64,
-          "rare_spawn_skipped": 20
+          "rare_spawn_skipped": 16
         },
         "ranged": {
           "eligible": 36,
@@ -2532,8 +2532,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 1.412920558,
-      "verify_run_seconds": 2.532443132,
+      "weights_run_seconds": 1.243864621,
+      "verify_run_seconds": 2.256674909,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2588,7 +2588,7 @@
         "off_hand": {
           "eligible": 149,
           "sourced": 115,
-          "rare_spawn_skipped": 32
+          "rare_spawn_skipped": 26
         },
         "ranged": {
           "eligible": 76,
@@ -3397,8 +3397,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 1.412920558,
-      "verify_run_seconds": 2.774769826,
+      "weights_run_seconds": 1.243864621,
+      "verify_run_seconds": 2.464482246,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3453,7 +3453,7 @@
         "off_hand": {
           "eligible": 145,
           "sourced": 114,
-          "rare_spawn_skipped": 32
+          "rare_spawn_skipped": 26
         },
         "ranged": {
           "eligible": 75,
@@ -4279,8 +4279,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.472338125,
-      "verify_run_seconds": 3.248781049,
+      "weights_run_seconds": 1.468895715,
+      "verify_run_seconds": 2.748181864,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4335,7 +4335,7 @@
         "off_hand": {
           "eligible": 216,
           "sourced": 169,
-          "rare_spawn_skipped": 38
+          "rare_spawn_skipped": 31
         },
         "ranged": {
           "eligible": 106,
@@ -5148,8 +5148,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.472338125,
-      "verify_run_seconds": 3.175438943,
+      "weights_run_seconds": 1.468895715,
+      "verify_run_seconds": 2.788557135,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5204,7 +5204,7 @@
         "off_hand": {
           "eligible": 212,
           "sourced": 171,
-          "rare_spawn_skipped": 38
+          "rare_spawn_skipped": 31
         },
         "ranged": {
           "eligible": 106,
@@ -6064,8 +6064,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.48447604,
-      "verify_run_seconds": 3.951130661,
+      "weights_run_seconds": 1.374424598,
+      "verify_run_seconds": 3.552209085,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6120,7 +6120,7 @@
         "off_hand": {
           "eligible": 272,
           "sourced": 213,
-          "rare_spawn_skipped": 40
+          "rare_spawn_skipped": 32
         },
         "ranged": {
           "eligible": 130,
@@ -6986,8 +6986,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.48447604,
-      "verify_run_seconds": 4.039440944,
+      "weights_run_seconds": 1.374424598,
+      "verify_run_seconds": 3.5322907150000002,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7042,7 +7042,7 @@
         "off_hand": {
           "eligible": 269,
           "sourced": 216,
-          "rare_spawn_skipped": 40
+          "rare_spawn_skipped": 32
         },
         "ranged": {
           "eligible": 131,
@@ -7347,7 +7347,7 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 139.5972306374824,
+          "score": 139.59723063748243,
           "verified": true,
           "alternatives": [
             {
@@ -7355,21 +7355,21 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.07024287957739447
+              "dps_delta": -0.0702428795773973
             },
             {
               "item_id": 22191,
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -2.517745840987921
+              "dps_delta": -2.5177458409879243
             },
             {
               "item_id": 231536,
               "item_name": "Field Marshal's Plate Armor",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -4.228474489535014
+              "dps_delta": -4.228474489535016
             }
           ],
           "runners_up": [
@@ -7916,8 +7916,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.591734616,
-      "verify_run_seconds": 13.095455032,
+      "weights_run_seconds": 1.300939235,
+      "verify_run_seconds": 12.230009958,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -7972,7 +7972,7 @@
         "off_hand": {
           "eligible": 357,
           "sourced": 266,
-          "rare_spawn_skipped": 40
+          "rare_spawn_skipped": 32
         },
         "ranged": {
           "eligible": 181,
@@ -8114,7 +8114,7 @@
               "item_name": "Blood Guard's Plate Helm",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -7.8451161294865255
+              "dps_delta": -7.845116129486527
             },
             {
               "item_id": 279253,
@@ -8284,7 +8284,7 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 139.59723063748243,
+          "score": 139.5972306374824,
           "verified": true,
           "alternatives": [
             {
@@ -8292,21 +8292,21 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.0702428795773973
+              "dps_delta": -0.07024287957739447
             },
             {
               "item_id": 22191,
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -2.5177458409879243
+              "dps_delta": -2.517745840987921
             },
             {
               "item_id": 231530,
               "item_name": "Warlord's Plate Armor",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -4.228474489535016
+              "dps_delta": -4.228474489535014
             }
           ],
           "runners_up": [
@@ -8462,7 +8462,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 174.1256218669296,
+          "score": 174.12562186692963,
           "verified": true,
           "alternatives": [
             {
@@ -8470,21 +8470,21 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.3109955557508952
+              "dps_delta": -1.310995555750898
             },
             {
               "item_id": 22385,
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -1.5212924631290448
+              "dps_delta": -1.5212924631290476
             },
             {
               "item_id": 231533,
               "item_name": "General's Plate Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.707949850030542
+              "dps_delta": -2.707949850030545
             }
           ],
           "runners_up": [
@@ -8870,8 +8870,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.591734616,
-      "verify_run_seconds": 13.047164891,
+      "weights_run_seconds": 1.300939235,
+      "verify_run_seconds": 12.01722815,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8926,7 +8926,7 @@
         "off_hand": {
           "eligible": 356,
           "sourced": 271,
-          "rare_spawn_skipped": 40
+          "rare_spawn_skipped": 32
         },
         "ranged": {
           "eligible": 181,
@@ -9406,7 +9406,7 @@
           "item_name": "Titanic Leggings",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 184.96243938790946,
+          "score": 184.96243938790943,
           "verified": true,
           "alternatives": [
             {
@@ -9414,21 +9414,21 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.7738031145922027
+              "dps_delta": -0.7738031145921908
             },
             {
               "item_id": 237825,
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.9084926352719456
+              "dps_delta": -2.90849263527194
             },
             {
               "item_id": 231540,
               "item_name": "Marshal's Plate Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -6.160739575653982
+              "dps_delta": -6.160739575653976
             }
           ],
           "runners_up": [
@@ -9798,8 +9798,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.503655927,
-      "verify_run_seconds": 13.494826321,
+      "weights_run_seconds": 1.383922956,
+      "verify_run_seconds": 12.547402783999999,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -9854,7 +9854,7 @@
         "off_hand": {
           "eligible": 357,
           "sourced": 266,
-          "rare_spawn_skipped": 40
+          "rare_spawn_skipped": 32
         },
         "ranged": {
           "eligible": 181,
@@ -10342,7 +10342,7 @@
           "item_name": "Titanic Leggings",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 184.96243938790946,
+          "score": 184.96243938790943,
           "verified": true,
           "alternatives": [
             {
@@ -10350,21 +10350,21 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.7738031145922027
+              "dps_delta": -0.7738031145921908
             },
             {
               "item_id": 237825,
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.9084926352719456
+              "dps_delta": -2.90849263527194
             },
             {
               "item_id": 231533,
               "item_name": "General's Plate Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -6.160739575653982
+              "dps_delta": -6.160739575653976
             }
           ],
           "runners_up": [
@@ -10760,8 +10760,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.503655927,
-      "verify_run_seconds": 13.190342102,
+      "weights_run_seconds": 1.383922956,
+      "verify_run_seconds": 12.403865202,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10816,7 +10816,7 @@
         "off_hand": {
           "eligible": 356,
           "sourced": 271,
-          "rare_spawn_skipped": 40
+          "rare_spawn_skipped": 32
         },
         "ranged": {
           "eligible": 181,

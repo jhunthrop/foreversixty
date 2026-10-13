@@ -127,7 +127,8 @@ func TestBuildBandPoolKeepsARareSpawnsDropOnlyWhereNothingElseFillsTheSlot(t *te
 		6748: {{Kind: "vendor", Label: "Willix the Importer"}},
 		9001: {{Kind: "world", Label: "Lupos (rare)", RareSpawn: true}},
 	}
-	pool := buildBandPool(items, idx, "hunter", 30, "alliance", map[string]float64{"agility": 1}, 0, false, true)
+	pool := buildBandPool(items, idx, "hunter", 30, "alliance", map[string]float64{"agility": 1}, 0, false)
+	slotPoolsFor(&pool, "hunter-marksmanship", "hunter")
 	got := map[int]bool{}
 	for _, s := range pool.Scored {
 		got[s.ID] = true
@@ -161,6 +162,17 @@ func TestSourceForKeepsARareSpawnWhoseOtherSourcesCannotBePicked(t *testing.T) {
 	if src, ok := sourceFor(286535, 20, "horde", "", idx); !ok || src.Label != "Wailing Caverns: Deviate Faerie Dragon (rare)" || src.Chance != 4 {
 		t.Errorf("sourceFor(286535) = %+v, %v, want the rare boss with its chance", src, ok)
 	}
+}
+
+// slotPoolsFor is bandSlotPools for the rare rule's fixtures: every weapon
+// subclass proficient and no dagger gate, so only the rule (and the
+// spec's off-hand shape) shapes the pools.
+func slotPoolsFor(pool *bandPool, spec, classSlug string) map[string][]scored {
+	every := make(map[int]bool)
+	for id := 0; id <= 20; id++ {
+		every[id] = true
+	}
+	return bandSlotPools(pool, specInfo{Spec: spec, ClassSlug: classSlug}, every, false)
 }
 
 func idsOf(list []scored) map[int]bool {
@@ -212,8 +224,8 @@ func TestAPairedSlotKeepsARareDropForTheSlotItsRivalsCannotFill(t *testing.T) {
 		for _, r := range c.rivals {
 			idx[r.ID] = []itemSource{{Kind: "vendor", Label: "A Vendor"}}
 		}
-		pool := buildBandPool(items, idx, "warlock", 20, "horde", map[string]float64{"intellect": 1}, 0, false, false)
-		bySlot := candidatesBySlot(pool.Scored)
+		pool := buildBandPool(items, idx, "warlock", 20, "horde", map[string]float64{"intellect": 1}, 0, false)
+		bySlot := slotPoolsFor(&pool, "warlock-affliction", "warlock")
 		if got := idsOf(bySlot["finger1"])[286535]; got != c.inFinger1 {
 			t.Errorf("%s: rare ring among finger1's candidates = %v, want %v", c.name, got, c.inFinger1)
 		}
@@ -249,7 +261,8 @@ func TestTheCoverageBlockCountsTheRareDropsEachSlotKeptOut(t *testing.T) {
 		9001: {{Kind: "world", Label: "Rohh the Silent (rare)", RareSpawn: true}},
 		9002: {{Kind: "vendor", Label: "A Vendor"}},
 	}
-	pool := buildBandPool(items, idx, "hunter", 30, "alliance", map[string]float64{"agility": 1}, 0, false, true)
+	pool := buildBandPool(items, idx, "hunter", 30, "alliance", map[string]float64{"agility": 1}, 0, false)
+	slotPoolsFor(&pool, "hunter-marksmanship", "hunter")
 	want := map[string]coverageRow{
 		"finger1": {Eligible: 2, Sourced: 2, RareSpawnSkipped: 1},
 		"finger2": {Eligible: 2, Sourced: 2},
@@ -282,8 +295,8 @@ func TestTheWeaponHandsAndTrinketsArePairedForTheRareRule(t *testing.T) {
 	}
 	weights := map[string]float64{"agility": 1}
 
-	pool := buildBandPool([]candidate{rareSword, sword(9101, "Plain Sword", 10)}, idx, "rogue", 20, "horde", weights, 0, false, true)
-	bySlot := candidatesBySlot(pool.Scored)
+	pool := buildBandPool([]candidate{rareSword, sword(9101, "Plain Sword", 10)}, idx, "rogue", 20, "horde", weights, 0, false)
+	bySlot := slotPoolsFor(&pool, "rogue-combat", "rogue")
 	if idsOf(bySlot["main_hand"])[9100] || !idsOf(bySlot["off_hand"])[9100] {
 		t.Errorf("dual-wield, one rival: main_hand %v, off_hand %v, want the rare sword in the off hand only", idsOf(bySlot["main_hand"]), idsOf(bySlot["off_hand"]))
 	}
@@ -292,12 +305,14 @@ func TestTheWeaponHandsAndTrinketsArePairedForTheRareRule(t *testing.T) {
 		t.Errorf("dual-wield, one rival: picks main %d off %d, want 9101 and 9100", pickID(picks["main_hand"]), pickID(picks["off_hand"]))
 	}
 
-	pool = buildBandPool([]candidate{rareSword, sword(9101, "Plain Sword", 10), sword(9102, "Other Sword", 9)}, idx, "rogue", 20, "horde", weights, 0, false, true)
+	pool = buildBandPool([]candidate{rareSword, sword(9101, "Plain Sword", 10), sword(9102, "Other Sword", 9)}, idx, "rogue", 20, "horde", weights, 0, false)
+	slotPoolsFor(&pool, "rogue-combat", "rogue")
 	if idsOf(pool.Scored)[9100] {
 		t.Errorf("dual-wield, two rivals: the rare sword stayed in the pool")
 	}
 
-	pool = buildBandPool([]candidate{rareSword, sword(9101, "Plain Sword", 10)}, idx, "paladin", 20, "horde", weights, 0, false, false)
+	pool = buildBandPool([]candidate{rareSword, sword(9101, "Plain Sword", 10)}, idx, "paladin", 20, "horde", weights, 0, false)
+	slotPoolsFor(&pool, "paladin-retribution", "paladin")
 	if idsOf(pool.Scored)[9100] {
 		t.Errorf("one weapon hand, one rival: the rare sword stayed in the pool")
 	}
@@ -313,7 +328,8 @@ func TestTheWeaponHandsAndTrinketsArePairedForTheRareRule(t *testing.T) {
 		9201: {{Kind: "quest", Label: "A Quest"}},
 		9202: {{Kind: "quest", Label: "A Quest"}},
 	}
-	bySlot = candidatesBySlot(buildBandPool(items, idx, "rogue", 20, "horde", weights, 0, false, true).Scored)
+	pool = buildBandPool(items, idx, "rogue", 20, "horde", weights, 0, false)
+	bySlot = slotPoolsFor(&pool, "rogue-combat", "rogue")
 	if idsOf(bySlot["trinket1"])[9200] || !idsOf(bySlot["trinket2"])[9200] {
 		t.Errorf("trinkets, one rival with a use effect: trinket1 %v, trinket2 %v, want the rare charm in trinket2 only", idsOf(bySlot["trinket1"]), idsOf(bySlot["trinket2"]))
 	}
@@ -371,5 +387,116 @@ func TestTheRareSpawnSlotSummaryNamesEachSlotInOrder(t *testing.T) {
 	}
 	if got := rareSpawnSlotSummary(map[string]coverageRow{"head": {Eligible: 1}}); got != "no slot" {
 		t.Errorf("rareSpawnSlotSummary(none) = %q, want \"no slot\"", got)
+	}
+}
+
+// Fix round 2: the rare rule sees the pool the weapon limits leave
+// (bandSlotPools runs it after proficiency, the off-hand shape, the shield
+// tank's one-hander and the dagger gate). A rival those limits remove does
+// not cover the slot. The reviewer's case: a dual-wield, dagger-only rogue
+// with a rare dagger and one non-rare sword kept only the sword in the main
+// hand, which the dagger gate then emptied.
+func TestTheRareRuleSeesThePoolTheWeaponLimitsLeave(t *testing.T) {
+	const oneHandSword, twoHandSword = 7, 8 // the client's weapon subclasses
+	weapon := func(id int, name string, subclass int, twoHand bool) candidate {
+		return candidate{ID: id, Name: name, EffectiveRequiredLevel: 20, ClassID: itemClassWeapon, SubclassID: subclass, TwoHand: twoHand, DPS: 10, Stats: map[string]float64{"agility": 2}, Slots: []string{"main_hand"}}
+	}
+	idx := lootIndex{
+		9300: {{Kind: "world", Label: "Lupos (rare)", RareSpawn: true}},
+		9301: {{Kind: "vendor", Label: "A Vendor"}},
+		9302: {{Kind: "vendor", Label: "A Vendor"}},
+	}
+	weights := map[string]float64{"agility": 1}
+	proficient := map[int]bool{daggerSubclassID: true, oneHandSword: true, twoHandSword: true}
+	cases := []struct {
+		name           string
+		spec           specInfo
+		requiresDagger bool
+		items          []candidate
+	}{
+		{"dual-wield, dagger only: a rare dagger and a non-rare sword", specInfo{Spec: "rogue-assassination", ClassSlug: "rogue"}, true,
+			[]candidate{weapon(9300, "Rare Dagger", daggerSubclassID, false), weapon(9301, "Plain Sword", oneHandSword, false)}},
+		{"shield tank: a rare one-hander and a non-rare two-hander", specInfo{Spec: "warrior-protection", ClassSlug: "warrior", Role: roleTank}, false,
+			[]candidate{weapon(9300, "Rare Sword", oneHandSword, false), weapon(9302, "Plain Greatsword", twoHandSword, true)}},
+	}
+	for _, c := range cases {
+		pool := buildBandPool(c.items, idx, c.spec.ClassSlug, 20, "horde", weights, 0, false)
+		bySlot := bandSlotPools(&pool, c.spec, proficient, c.requiresDagger)
+		if !idsOf(bySlot["main_hand"])[9300] {
+			t.Errorf("%s: main_hand candidates %v, want the rare weapon kept there", c.name, idsOf(bySlot["main_hand"]))
+		}
+		picks := pick(c.spec.Spec, bySlot)
+		mh := picks["main_hand"]
+		if pickID(mh) != 9300 || !strings.HasSuffix(mh.Item.Source.Label, rareLabelSuffix) {
+			t.Errorf("%s: main_hand pick %+v, want 9300 labelled %q", c.name, mh.Item, "Lupos (rare)")
+		}
+		if pool.RareSpawnSkipped != 0 || pool.Coverage["main_hand"].RareSpawnSkipped != 0 {
+			t.Errorf("%s: RareSpawnSkipped %d, main_hand's %d, want 0 and 0", c.name, pool.RareSpawnSkipped, pool.Coverage["main_hand"].RareSpawnSkipped)
+		}
+	}
+}
+
+// Fix round 2: a rival above the PvP rank cap is never a default pick
+// (excludeAbovePvpRankCap), so it does not cover the slot; one at the cap
+// does. The above-cap rival stays in the slot's pool for the alternatives.
+func TestARivalAboveThePvpRankCapDoesNotCoverTheSlot(t *testing.T) {
+	items := []candidate{
+		{ID: 9400, Name: "Rare Cloak", EffectiveRequiredLevel: 25, Stats: map[string]float64{"agility": 3}, Slots: []string{"back"}},
+		{ID: 9401, Name: "Rank Cloak", EffectiveRequiredLevel: 25, Stats: map[string]float64{"agility": 8}, Slots: []string{"back"}},
+	}
+	spec := specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}
+	for _, c := range []struct {
+		rank     int
+		rareKept bool
+	}{{pvpRankCap + 1, true}, {pvpRankCap, false}} {
+		idx := lootIndex{
+			9400: {{Kind: "world", Label: "Rohh the Silent (rare)", RareSpawn: true}},
+			9401: {{Kind: "pvp", Label: "Rank (Horde)", Side: "horde", Rank: c.rank}},
+		}
+		pool := buildBandPool(items, idx, "hunter", 30, "horde", map[string]float64{"agility": 1}, 0, false)
+		bySlot := bandSlotPools(&pool, spec, nil, false)
+		if got := idsOf(bySlot["back"]); got[9400] != c.rareKept || !got[9401] {
+			t.Errorf("rival at rank %d: back candidates %v, want the rare cloak kept = %v and the rank cloak kept", c.rank, got, c.rareKept)
+		}
+		if !c.rareKept {
+			continue
+		}
+		picks := pick(spec.Spec, map[string][]scored{"back": excludeAbovePvpRankCap(bySlot["back"])})
+		if pickID(picks["back"]) != 9400 {
+			t.Errorf("rival at rank %d: back pick %d, want the rare cloak", c.rank, pickID(picks["back"]))
+		}
+	}
+}
+
+// Fix round 2: an implemented effect makes a 0-score candidate a rival in a
+// trinket slot only, where the trinket tournament sims every qualifying
+// candidate. Elsewhere the effect pass only re-ranks a slot that already
+// has a pick, and a 0-score pick is published empty (report.go's
+// no_dps_value), so a 0-score proc cloak covers nothing: the rare cloak
+// stays. 2243 is an id effectids_generated.go lists.
+func TestOnlyATrinketSlotCountsAZeroScoreEffectAsARival(t *testing.T) {
+	trinket := []string{"trinket1", "trinket2"}
+	items := []candidate{
+		{ID: 9400, Name: "Rare Cloak", EffectiveRequiredLevel: 25, Stats: map[string]float64{"agility": 3}, Slots: []string{"back"}},
+		{ID: 2243, Name: "Proc Cloak", EffectiveRequiredLevel: 25, EffectText: "Equip: Chance on hit to do something.", Slots: []string{"back"}},
+		{ID: 9500, Name: "Rare Charm", EffectiveRequiredLevel: 25, Stats: map[string]float64{"agility": 3}, Slots: trinket},
+		{ID: 3854, Name: "Proc Charm", EffectiveRequiredLevel: 25, EffectText: "Equip: Chance on hit to do something.", Slots: trinket},
+	}
+	if !hasImplementedEffect(items[1]) || !hasImplementedEffect(items[3]) {
+		t.Fatal("the fixture's proc items must carry an engine-implemented effect")
+	}
+	idx := lootIndex{
+		9400: {{Kind: "world", Label: "Rohh the Silent (rare)", RareSpawn: true}},
+		2243: {{Kind: "vendor", Label: "A Vendor"}},
+		9500: {{Kind: "world", Label: "Mother Fang (rare)", RareSpawn: true}},
+		3854: {{Kind: "vendor", Label: "A Vendor"}},
+	}
+	pool := buildBandPool(items, idx, "hunter", 30, "horde", map[string]float64{"agility": 1}, 0, false)
+	bySlot := bandSlotPools(&pool, specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}, nil, false)
+	if !idsOf(bySlot["back"])[9400] {
+		t.Errorf("back candidates %v, want the rare cloak kept: a 0-score proc cloak is no rival outside a trinket slot", idsOf(bySlot["back"]))
+	}
+	if idsOf(bySlot["trinket1"])[9500] || !idsOf(bySlot["trinket2"])[9500] {
+		t.Errorf("trinket1 %v, trinket2 %v, want the rare charm in trinket2 only: the proc charm covers trinket1", idsOf(bySlot["trinket1"]), idsOf(bySlot["trinket2"]))
 	}
 }

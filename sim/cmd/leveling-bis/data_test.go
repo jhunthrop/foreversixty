@@ -978,14 +978,14 @@ func TestBuildBandPoolExcludesAClassRestrictedQuestRewardForTheWrongClass(t *tes
 		20036: {{Kind: "quest", Label: "Destroy Morphaz", Classes: []string{"mage"}}},
 	}
 	weights := map[string]float64{}
-	hunterPool := buildBandPool(items, idx, "hunter", 50, "alliance", weights, 0, false, false)
+	hunterPool := buildBandPool(items, idx, "hunter", 50, "alliance", weights, 0, false)
 	if len(hunterPool.Scored) != 0 {
 		t.Fatalf("hunter pool.Scored = %+v, want empty: Fire Ruby's own quest is mage-only", hunterPool.Scored)
 	}
 	if len(hunterPool.NoSource) != 1 || hunterPool.NoSource[0].ID != 20036 {
 		t.Fatalf("hunter pool.NoSource = %+v, want Fire Ruby (class-excluded, same bucket as no source at all)", hunterPool.NoSource)
 	}
-	magePool := buildBandPool(items, idx, "mage", 50, "alliance", weights, 0, false, false)
+	magePool := buildBandPool(items, idx, "mage", 50, "alliance", weights, 0, false)
 	if len(magePool.Scored) != 1 || magePool.Scored[0].ID != 20036 {
 		t.Fatalf("mage pool.Scored = %+v, want Fire Ruby (the quest's own class)", magePool.Scored)
 	}

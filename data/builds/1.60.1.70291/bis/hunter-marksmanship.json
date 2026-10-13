@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T21:18:40Z",
+  "generated_at": "2026-10-13T22:29:55Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -672,8 +672,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.065360809,
-      "verify_run_seconds": 2.026065517,
+      "weights_run_seconds": 1.185258126,
+      "verify_run_seconds": 2.300837003,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -726,7 +726,7 @@
         "off_hand": {
           "eligible": 25,
           "sourced": 18,
-          "rare_spawn_skipped": 13
+          "rare_spawn_skipped": 11
         },
         "ranged": {
           "eligible": 37,
@@ -1467,8 +1467,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.065360809,
-      "verify_run_seconds": 1.981942412,
+      "weights_run_seconds": 1.185258126,
+      "verify_run_seconds": 2.204620968,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1521,7 +1521,7 @@
         "off_hand": {
           "eligible": 25,
           "sourced": 15,
-          "rare_spawn_skipped": 13
+          "rare_spawn_skipped": 11
         },
         "ranged": {
           "eligible": 36,
@@ -2349,8 +2349,8 @@
         "off_hand: Sentinel's Blade",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.046880643,
-      "verify_run_seconds": 2.389830197,
+      "weights_run_seconds": 1.207218148,
+      "verify_run_seconds": 2.650176461,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2405,7 +2405,7 @@
         "off_hand": {
           "eligible": 55,
           "sourced": 38,
-          "rare_spawn_skipped": 22
+          "rare_spawn_skipped": 19
         },
         "ranged": {
           "eligible": 76,
@@ -3231,8 +3231,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.046880643,
-      "verify_run_seconds": 2.215507446,
+      "weights_run_seconds": 1.207218148,
+      "verify_run_seconds": 2.461730253,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3287,7 +3287,7 @@
         "off_hand": {
           "eligible": 51,
           "sourced": 32,
-          "rare_spawn_skipped": 22
+          "rare_spawn_skipped": 19
         },
         "ranged": {
           "eligible": 75,
@@ -4120,8 +4120,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.031955858,
-      "verify_run_seconds": 2.628932106,
+      "weights_run_seconds": 1.153947948,
+      "verify_run_seconds": 2.927727393,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4176,7 +4176,7 @@
         "off_hand": {
           "eligible": 75,
           "sourced": 52,
-          "rare_spawn_skipped": 26
+          "rare_spawn_skipped": 23
         },
         "ranged": {
           "eligible": 106,
@@ -5001,8 +5001,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.031955858,
-      "verify_run_seconds": 2.658340166,
+      "weights_run_seconds": 1.153947948,
+      "verify_run_seconds": 2.94014919,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5057,7 +5057,7 @@
         "off_hand": {
           "eligible": 70,
           "sourced": 46,
-          "rare_spawn_skipped": 26
+          "rare_spawn_skipped": 23
         },
         "ranged": {
           "eligible": 106,
@@ -5873,8 +5873,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.065439171,
-      "verify_run_seconds": 3.340131254,
+      "weights_run_seconds": 1.245465018,
+      "verify_run_seconds": 3.82567032,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -5929,7 +5929,7 @@
         "off_hand": {
           "eligible": 95,
           "sourced": 66,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 130,
@@ -6783,8 +6783,8 @@
         "off_hand: Force of the Hippogryph",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.065439171,
-      "verify_run_seconds": 3.359046229,
+      "weights_run_seconds": 1.245465018,
+      "verify_run_seconds": 3.6130572020000002,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -6839,7 +6839,7 @@
         "off_hand": {
           "eligible": 91,
           "sourced": 61,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 131,
@@ -7684,8 +7684,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.109231783,
-      "verify_run_seconds": 10.908849487,
+      "weights_run_seconds": 1.216460618,
+      "verify_run_seconds": 12.391686145,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -7740,7 +7740,7 @@
         "off_hand": {
           "eligible": 132,
           "sourced": 85,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 183,
@@ -8600,8 +8600,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.109231783,
-      "verify_run_seconds": 10.703476764,
+      "weights_run_seconds": 1.216460618,
+      "verify_run_seconds": 12.214931987,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8656,7 +8656,7 @@
         "off_hand": {
           "eligible": 129,
           "sourced": 81,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 183,
@@ -8957,7 +8957,7 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 170.41757523140657,
+          "score": 170.4175752314066,
           "verified": true,
           "alternatives": [
             {
@@ -8965,14 +8965,14 @@
               "item_name": "Field Marshal's Chain Breastplate",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -7.144202951458985
+              "dps_delta": -7.14420295145899
             },
             {
               "item_id": 231581,
               "item_name": "Field Marshal's Chain Hauberk",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -7.144202951458985
+              "dps_delta": -7.14420295145899
             },
             {
               "item_id": 16721,
@@ -9163,7 +9163,7 @@
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -12.926714181841886
+              "dps_delta": -12.926714181841882
             }
           ],
           "runners_up": [
@@ -9479,8 +9479,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.060959232,
-      "verify_run_seconds": 9.101289693,
+      "weights_run_seconds": 1.211910444,
+      "verify_run_seconds": 10.519307467,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -9535,7 +9535,7 @@
         "off_hand": {
           "eligible": 132,
           "sourced": 85,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 183,
@@ -10374,8 +10374,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.060959232,
-      "verify_run_seconds": 10.914397298,
+      "weights_run_seconds": 1.211910444,
+      "verify_run_seconds": 12.110508854,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10430,7 +10430,7 @@
         "off_hand": {
           "eligible": 129,
           "sourced": 81,
-          "rare_spawn_skipped": 28
+          "rare_spawn_skipped": 24
         },
         "ranged": {
           "eligible": 183,

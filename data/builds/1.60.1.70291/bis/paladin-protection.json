@@ -2,7 +2,7 @@
   "spec": "paladin-protection",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T21:28:18Z",
+  "generated_at": "2026-10-13T22:40:37Z",
   "bands": [
     {
       "spec": "paladin-protection",
@@ -847,8 +847,8 @@
         "main_hand: Barrens Basher",
         "off_hand: Redbeard Crest"
       ],
-      "weights_run_seconds": 2.800360005,
-      "verify_run_seconds": 2.379958503,
+      "weights_run_seconds": 3.219740302,
+      "verify_run_seconds": 2.481611749,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -892,7 +892,7 @@
         "main_hand": {
           "eligible": 165,
           "sourced": 122,
-          "rare_spawn_skipped": 13
+          "rare_spawn_skipped": 6
         },
         "neck": {
           "eligible": 15,
@@ -1790,8 +1790,8 @@
         "main_hand: The Stitcher",
         "off_hand: Redbeard Crest"
       ],
-      "weights_run_seconds": 2.800360005,
-      "verify_run_seconds": 2.384620839,
+      "weights_run_seconds": 3.219740302,
+      "verify_run_seconds": 2.540697707,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1835,7 +1835,7 @@
         "main_hand": {
           "eligible": 163,
           "sourced": 129,
-          "rare_spawn_skipped": 13
+          "rare_spawn_skipped": 6
         },
         "neck": {
           "eligible": 15,
@@ -2782,8 +2782,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 2.799933464,
-      "verify_run_seconds": 2.3713350650000002,
+      "weights_run_seconds": 3.005826507,
+      "verify_run_seconds": 2.582774335,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2828,7 +2828,7 @@
         "main_hand": {
           "eligible": 263,
           "sourced": 193,
-          "rare_spawn_skipped": 20
+          "rare_spawn_skipped": 10
         },
         "neck": {
           "eligible": 36,
@@ -3766,8 +3766,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 2.799933464,
-      "verify_run_seconds": 2.335452729,
+      "weights_run_seconds": 3.005826507,
+      "verify_run_seconds": 2.59110714,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3812,7 +3812,7 @@
         "main_hand": {
           "eligible": 257,
           "sourced": 200,
-          "rare_spawn_skipped": 20
+          "rare_spawn_skipped": 10
         },
         "neck": {
           "eligible": 36,
@@ -4784,8 +4784,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 3.248706888,
-      "verify_run_seconds": 3.340978516,
+      "weights_run_seconds": 3.294455496,
+      "verify_run_seconds": 3.5911631440000003,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4830,7 +4830,7 @@
         "main_hand": {
           "eligible": 346,
           "sourced": 255,
-          "rare_spawn_skipped": 23
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 51,
@@ -5151,7 +5151,7 @@
               "item_name": "Fleshhide Shoulders",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Glutton",
-              "dps_delta": -7.682559663248374
+              "dps_delta": -7.682559663248473
             },
             {
               "item_id": 7918,
@@ -5804,8 +5804,8 @@
         "main_hand: Darkspear Skirmisher's Bludgeon",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 3.248706888,
-      "verify_run_seconds": 3.030730777,
+      "weights_run_seconds": 3.294455496,
+      "verify_run_seconds": 3.254092479,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5850,7 +5850,7 @@
         "main_hand": {
           "eligible": 340,
           "sourced": 263,
-          "rare_spawn_skipped": 23
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 51,
@@ -6850,8 +6850,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Aegis of Stormwind"
       ],
-      "weights_run_seconds": 2.939756041,
-      "verify_run_seconds": 5.996341021,
+      "weights_run_seconds": 3.329233911,
+      "verify_run_seconds": 6.926317561,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6896,7 +6896,7 @@
         "main_hand": {
           "eligible": 414,
           "sourced": 309,
-          "rare_spawn_skipped": 23
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 65,
@@ -7215,7 +7215,7 @@
               "item_name": "Sentinel's Pauldrons",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -126.24539910883273
+              "dps_delta": -126.24539910883259
             },
             {
               "item_id": 220796,
@@ -7886,8 +7886,8 @@
         "main_hand: Viking Warhammer",
         "off_hand: Aegis of Stormwind"
       ],
-      "weights_run_seconds": 2.939756041,
-      "verify_run_seconds": 5.392282696,
+      "weights_run_seconds": 3.329233911,
+      "verify_run_seconds": 6.018595571,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7932,7 +7932,7 @@
         "main_hand": {
           "eligible": 408,
           "sourced": 318,
-          "rare_spawn_skipped": 23
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 67,
@@ -8925,8 +8925,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 2.9754180569999997,
-      "verify_run_seconds": 16.001991526,
+      "weights_run_seconds": 3.34516022,
+      "verify_run_seconds": 17.565601711,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -8971,7 +8971,7 @@
         "main_hand": {
           "eligible": 549,
           "sourced": 384,
-          "rare_spawn_skipped": 23
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 149,
@@ -9968,8 +9968,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 2.9754180569999997,
-      "verify_run_seconds": 16.049555669,
+      "weights_run_seconds": 3.34516022,
+      "verify_run_seconds": 16.659919856,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10014,7 +10014,7 @@
         "main_hand": {
           "eligible": 543,
           "sourced": 390,
-          "rare_spawn_skipped": 23
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 147,
@@ -10284,7 +10284,7 @@
           "item_name": "Amulet of the Darkmoon",
           "source": "1200 Tickets - Amulet of the Darkmoon",
           "source_kind": "quest",
-          "score": 34.323963720595046,
+          "score": 34.32396372059504,
           "verified": true,
           "alternatives": [
             {
@@ -10292,14 +10292,14 @@
               "item_name": "Medallion of Grand Marshal Morris",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -361.58101027831447
+              "dps_delta": -361.58101027831367
             },
             {
               "item_id": 19538,
               "item_name": "Sentinel's Medallion",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -699.4561006011077
+              "dps_delta": -699.4561006011069
             }
           ],
           "runners_up": [
@@ -10998,8 +10998,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 3.524239218,
-      "verify_run_seconds": 16.992326387,
+      "weights_run_seconds": 3.524844415,
+      "verify_run_seconds": 17.656588222,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -11044,7 +11044,7 @@
         "main_hand": {
           "eligible": 549,
           "sourced": 384,
-          "rare_spawn_skipped": 23
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 149,
@@ -11347,7 +11347,7 @@
           "item_name": "Defiler's Plate Spaulders",
           "source": "The Defilers",
           "source_kind": "rep",
-          "score": 77.37078133541469,
+          "score": 77.3707813354147,
           "verified": true,
           "alternatives": [
             {
@@ -11355,7 +11355,7 @@
               "item_name": "Soulforge Pauldrons",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -708.4333751657753
+              "dps_delta": -708.4333751657784
             },
             {
               "item_id": 227818,
@@ -11370,7 +11370,7 @@
               "item_name": "Spaulders of Valor",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -1033.4311039291783
+              "dps_delta": -1033.43110392918
             }
           ],
           "runners_up": [
@@ -12020,8 +12020,8 @@
         "main_hand: Ravencrest's Legacy",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 3.524239218,
-      "verify_run_seconds": 14.471306518,
+      "weights_run_seconds": 3.524844415,
+      "verify_run_seconds": 14.329887483,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -12066,7 +12066,7 @@
         "main_hand": {
           "eligible": 543,
           "sourced": 390,
-          "rare_spawn_skipped": 23
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 147,

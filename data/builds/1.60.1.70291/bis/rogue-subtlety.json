@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T21:41:25Z",
+  "generated_at": "2026-10-13T22:54:37Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -745,8 +745,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.214472435,
-      "verify_run_seconds": 3.815315502,
+      "weights_run_seconds": 1.248142493,
+      "verify_run_seconds": 3.966645179,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -790,7 +790,7 @@
         "main_hand": {
           "eligible": 159,
           "sourced": 110,
-          "rare_spawn_skipped": 12
+          "rare_spawn_skipped": 6
         },
         "neck": {
           "eligible": 15,
@@ -799,7 +799,7 @@
         "off_hand": {
           "eligible": 25,
           "sourced": 18,
-          "rare_spawn_skipped": 14
+          "rare_spawn_skipped": 6
         },
         "ranged": {
           "eligible": 38,
@@ -1584,8 +1584,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.214472435,
-      "verify_run_seconds": 3.783458817,
+      "weights_run_seconds": 1.248142493,
+      "verify_run_seconds": 3.9586627549999998,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1629,7 +1629,7 @@
         "main_hand": {
           "eligible": 159,
           "sourced": 119,
-          "rare_spawn_skipped": 12
+          "rare_spawn_skipped": 6
         },
         "neck": {
           "eligible": 15,
@@ -1638,7 +1638,7 @@
         "off_hand": {
           "eligible": 25,
           "sourced": 15,
-          "rare_spawn_skipped": 14
+          "rare_spawn_skipped": 6
         },
         "ranged": {
           "eligible": 37,
@@ -2478,8 +2478,8 @@
         "off_hand: Torturing Poker",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.170018479,
-      "verify_run_seconds": 3.924279669,
+      "weights_run_seconds": 1.249814559,
+      "verify_run_seconds": 4.016008533,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2524,7 +2524,7 @@
         "main_hand": {
           "eligible": 245,
           "sourced": 172,
-          "rare_spawn_skipped": 22
+          "rare_spawn_skipped": 11
         },
         "neck": {
           "eligible": 36,
@@ -2534,7 +2534,7 @@
         "off_hand": {
           "eligible": 54,
           "sourced": 37,
-          "rare_spawn_skipped": 25
+          "rare_spawn_skipped": 11
         },
         "ranged": {
           "eligible": 77,
@@ -3378,8 +3378,8 @@
         "off_hand: Serrated Raptor Claw",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.170018479,
-      "verify_run_seconds": 3.9867496,
+      "weights_run_seconds": 1.249814559,
+      "verify_run_seconds": 4.3144538709999996,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3424,7 +3424,7 @@
         "main_hand": {
           "eligible": 244,
           "sourced": 186,
-          "rare_spawn_skipped": 22
+          "rare_spawn_skipped": 11
         },
         "neck": {
           "eligible": 36,
@@ -3434,7 +3434,7 @@
         "off_hand": {
           "eligible": 51,
           "sourced": 32,
-          "rare_spawn_skipped": 25
+          "rare_spawn_skipped": 11
         },
         "ranged": {
           "eligible": 76,
@@ -4261,8 +4261,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.246013273,
-      "verify_run_seconds": 2.347407073,
+      "weights_run_seconds": 1.435061613,
+      "verify_run_seconds": 2.731311949,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -4307,7 +4307,7 @@
         "main_hand": {
           "eligible": 320,
           "sourced": 223,
-          "rare_spawn_skipped": 26
+          "rare_spawn_skipped": 12
         },
         "neck": {
           "eligible": 51,
@@ -4317,7 +4317,7 @@
         "off_hand": {
           "eligible": 74,
           "sourced": 51,
-          "rare_spawn_skipped": 29
+          "rare_spawn_skipped": 12
         },
         "ranged": {
           "eligible": 107,
@@ -5142,8 +5142,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.246013273,
-      "verify_run_seconds": 2.342542118,
+      "weights_run_seconds": 1.435061613,
+      "verify_run_seconds": 2.735314573,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -5188,7 +5188,7 @@
         "main_hand": {
           "eligible": 320,
           "sourced": 240,
-          "rare_spawn_skipped": 26
+          "rare_spawn_skipped": 12
         },
         "neck": {
           "eligible": 51,
@@ -5198,7 +5198,7 @@
         "off_hand": {
           "eligible": 70,
           "sourced": 46,
-          "rare_spawn_skipped": 29
+          "rare_spawn_skipped": 12
         },
         "ranged": {
           "eligible": 107,
@@ -5655,7 +5655,7 @@
           "item_name": "Knight's Leather Pants",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 42.518383783433315,
+          "score": 42.51838378343332,
           "verified": true,
           "alternatives": [
             {
@@ -5663,7 +5663,7 @@
               "item_name": "Serpentskin Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.5764990900262352
+              "dps_delta": -0.5764990900262358
             },
             {
               "item_id": 9652,
@@ -5678,7 +5678,7 @@
               "item_name": "Basilisk Hide Pants",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.0767235237916086
+              "dps_delta": -1.0767235237916093
             }
           ],
           "runners_up": [
@@ -6032,8 +6032,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.337456575,
-      "verify_run_seconds": 3.054503258,
+      "weights_run_seconds": 1.521379428,
+      "verify_run_seconds": 3.467691409,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6078,7 +6078,7 @@
         "main_hand": {
           "eligible": 379,
           "sourced": 267,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 65,
@@ -6088,7 +6088,7 @@
         "off_hand": {
           "eligible": 94,
           "sourced": 65,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 131,
@@ -6385,7 +6385,7 @@
           "item_name": "Stone Guard's Leather Armor",
           "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 42.518383783433315,
+          "score": 42.51838378343332,
           "verified": true,
           "alternatives": [
             {
@@ -6393,14 +6393,14 @@
               "item_name": "Blazewind Breastplate",
               "source_kind": "quest",
               "source": "Broken Alliances",
-              "dps_delta": -0.5816582407853806
+              "dps_delta": -0.5816582407853812
             },
             {
               "item_id": 19127,
               "item_name": "Charred Leather Tunic",
               "source_kind": "quest",
               "source": "WANTED: Overseer Maltorius",
-              "dps_delta": -1.437833917288061
+              "dps_delta": -1.4378339172880614
             },
             {
               "item_id": 15064,
@@ -6912,8 +6912,8 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.337456575,
-      "verify_run_seconds": 3.191514128,
+      "weights_run_seconds": 1.521379428,
+      "verify_run_seconds": 3.14482522,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -6958,7 +6958,7 @@
         "main_hand": {
           "eligible": 378,
           "sourced": 285,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 67,
@@ -6968,7 +6968,7 @@
         "off_hand": {
           "eligible": 91,
           "sourced": 61,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 132,
@@ -7819,8 +7819,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.512569503,
-      "verify_run_seconds": 9.317454604,
+      "weights_run_seconds": 1.5594672630000002,
+      "verify_run_seconds": 10.036211474,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -7865,7 +7865,7 @@
         "main_hand": {
           "eligible": 507,
           "sourced": 342,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 149,
@@ -7875,7 +7875,7 @@
         "off_hand": {
           "eligible": 131,
           "sourced": 84,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 183,
@@ -8743,8 +8743,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.512569503,
-      "verify_run_seconds": 9.408149258,
+      "weights_run_seconds": 1.5594672630000002,
+      "verify_run_seconds": 9.690125641,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -8789,7 +8789,7 @@
         "main_hand": {
           "eligible": 507,
           "sourced": 353,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 151,
@@ -8799,7 +8799,7 @@
         "off_hand": {
           "eligible": 129,
           "sourced": 81,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 183,
@@ -9109,7 +9109,7 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 125.08837300164174,
+          "score": 125.08837300164176,
           "verified": true,
           "alternatives": [
             {
@@ -9125,14 +9125,14 @@
               "item_name": "Field Marshal's Leather Chestpiece",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -4.029516351773295
+              "dps_delta": -4.0295163517733
             },
             {
               "item_id": 252484,
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -5.382634234494776
+              "dps_delta": -5.382634234494779
             }
           ],
           "runners_up": [
@@ -9650,8 +9650,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.554005254,
-      "verify_run_seconds": 9.677437104,
+      "weights_run_seconds": 1.633678759,
+      "verify_run_seconds": 9.463681483,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -9696,7 +9696,7 @@
         "main_hand": {
           "eligible": 507,
           "sourced": 342,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 149,
@@ -9706,7 +9706,7 @@
         "off_hand": {
           "eligible": 131,
           "sourced": 84,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 183,
@@ -10015,7 +10015,7 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 125.08837300164174,
+          "score": 125.08837300164176,
           "verified": true,
           "alternatives": [
             {
@@ -10570,8 +10570,8 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 1.554005254,
-      "verify_run_seconds": 9.61805005,
+      "weights_run_seconds": 1.633678759,
+      "verify_run_seconds": 8.928096484,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -10616,7 +10616,7 @@
         "main_hand": {
           "eligible": 507,
           "sourced": 353,
-          "rare_spawn_skipped": 27
+          "rare_spawn_skipped": 13
         },
         "neck": {
           "eligible": 151,
@@ -10626,7 +10626,7 @@
         "off_hand": {
           "eligible": 129,
           "sourced": 81,
-          "rare_spawn_skipped": 31
+          "rare_spawn_skipped": 13
         },
         "ranged": {
           "eligible": 183,
