@@ -1064,3 +1064,108 @@ def test_the_drop_chance_lookup_reproduces_every_real_picks_own_chance():
                     row["slot"],
                 )
     assert checked >= 20  # 25 published picks carry a chance in this build
+
+
+# --- Task L1.7: the packer names a rare spawn's source and a shared trash drop as leveling-bis does ---
+
+
+def test_the_chance_lookup_names_a_rare_spawn_rare_and_a_shared_trash_drop_by_its_instance(
+    tmp_path,
+):
+    """_drop_chances keys each rate by the label leveling-bis itself writes:
+    a rare spawn's source ends "(rare)" (sim/cmd/leveling-bis rareLabelSuffix),
+    and a trash drop several creatures share with no rate is the instance
+    alone and so carries no chance at all."""
+    from pipeline.addonbis import _drop_chances
+
+    (tmp_path / BUILD).mkdir(parents=True)
+    (tmp_path / BUILD / "loot.json").write_text(
+        json.dumps(
+            {
+                "sources": [
+                    {
+                        "kind": "dungeon",
+                        "name": "Scarlet Monastery",
+                        "bosses": [
+                            {
+                                "name": "Ironspine",
+                                "rare_spawn": True,
+                                "items": [7686],
+                                "item_chances": {"7686": 12.5},
+                            },
+                            {"name": "Herod", "items": [7718], "item_chances": {"7718": 20}},
+                        ],
+                    },
+                    {
+                        "kind": "world",
+                        "name": "Swiftmane",
+                        "rare_spawn": True,
+                        "items": [285330],
+                        "item_chances": {"285330": 30},
+                    },
+                    {
+                        "kind": "dungeon",
+                        "name": "Gnomeregan",
+                        "trash": [9509],
+                        "bosses": [
+                            {"name": "Caverndeep Burrower", "items": [9509]},
+                            {"name": "Caverndeep Ambusher", "items": [9509]},
+                        ],
+                    },
+                ],
+                "quests": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+    chances = _drop_chances(tmp_path, BUILD)
+    assert chances[(7686, "Scarlet Monastery: Ironspine (rare)")] == 0.125
+    assert (7686, "Scarlet Monastery: Ironspine") not in chances
+    assert chances[(7718, "Scarlet Monastery: Herod")] == 0.2
+    assert chances[(285330, "Swiftmane (rare)")] == 0.3
+    assert not [key for key in chances if key[0] == 9509]
+
+
+def test_no_real_pick_is_a_rare_spawns_drop_while_another_source_fills_its_slot():
+    """Task L1.7's rule on the shipped picks: a pick whose source ends
+    "(rare)" only where nothing from another source fills the slot -- so
+    never beside an alternative that is not itself a rare spawn's drop --
+    and Ironspine's Eye is no hunter's band-30 ring."""
+    rare_picks = 0
+    for spec, bands in build_bis(Path("builds"), BUILD).items():
+        for band in bands:
+            for faction, slots in band.factions.items():
+                for slot, pick in slots.items():
+                    if not pick.source.endswith(" (rare)"):
+                        continue
+                    rare_picks += 1
+                    assert all(alt.source.endswith(" (rare)") for alt in pick.alternatives), (
+                        spec,
+                        band.level,
+                        faction,
+                        slot,
+                    )
+    hunter = build_bis(Path("builds"), BUILD)
+    for spec in ("hunter-beast-mastery", "hunter-marksmanship"):
+        band_30 = next(band for band in hunter[spec] if band.level == 30)
+        for slots in band_30.factions.values():
+            assert 7686 not in {slots["finger1"].item_id, slots["finger2"].item_id}, spec
+    assert rare_picks < 10  # a rare spawn's drop is the last resort, not a habit
+
+
+def test_petrolspill_leggings_are_named_by_gnomeregan_alone():
+    """Task L1.7, ruling 2: a trash drop several Gnomeregan creatures share,
+    none at a stated rate, is "Gnomeregan", never one creature."""
+    seen = 0
+    for bands in build_bis(Path("builds"), BUILD).values():
+        for band in bands:
+            for slots in band.factions.values():
+                for pick in slots.values():
+                    rows = [(pick.item_id, pick.source)] + [
+                        (alt.item_id, alt.source) for alt in pick.alternatives
+                    ]
+                    for item_id, source in rows:
+                        if item_id == 9509:
+                            seen += 1
+                            assert source == "Gnomeregan"
+    assert seen > 0

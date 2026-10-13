@@ -185,6 +185,7 @@ func sourceFor(id, level int, faction, itemFactionRestriction string, idx lootIn
 		}
 		obtainable = append(obtainable, s)
 	}
+	obtainable = withoutRareSpawnsWhenAnyOther(obtainable)
 	if quest, ok := bestOfKind(obtainable, "quest"); ok {
 		return quest, true
 	}
@@ -197,6 +198,23 @@ func sourceFor(id, level int, faction, itemFactionRestriction string, idx lootIn
 		}
 	}
 	return itemSource{}, false
+}
+
+// withoutRareSpawnsWhenAnyOther is task L1.7's rule at the source level:
+// a rare spawn's drop is never the source named for an item that any
+// other obtainable source also gives - the player is sent to a place the
+// item is there every time. An item only rare spawns drop keeps them.
+func withoutRareSpawnsWhenAnyOther(obtainable []itemSource) []itemSource {
+	others := make([]itemSource, 0, len(obtainable))
+	for _, s := range obtainable {
+		if !s.RareSpawn {
+			others = append(others, s)
+		}
+	}
+	if len(others) == 0 {
+		return obtainable
+	}
+	return others
 }
 
 // bestOfKind is the highest-Chance obtainable source of exactly this
@@ -351,6 +369,9 @@ type bandPool struct {
 	// to any slot and is not counted here either, matching NoSource's
 	// own silent drop for the same case.
 	Coverage map[string]coverageRow
+	// RareSpawnSkipped counts the candidates withoutRareSpawnDrops took
+	// out of Scored (task L1.7).
+	RareSpawnSkipped int
 }
 
 // weaponSlots is which planner slots score.go's weaponAPStat also
@@ -515,8 +536,47 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 			DeadStatCount: deadStatCount(c, weights),
 		})
 	}
+	out.Scored, out.RareSpawnSkipped = withoutRareSpawnDrops(out.Scored)
 	sort.Slice(out.NoSource, func(i, j int) bool { return out.NoSource[i].ID < out.NoSource[j].ID })
 	return out
+}
+
+// withoutRareSpawnDrops is task L1.7's rule at the slot level ("a
+// rare-spawn drop is never a pick when a non-rare source exists at the
+// band; otherwise it is allowed with 'rare' in its source"): a candidate
+// whose only source is a rare spawn leaves the band's pool when every
+// slot it fits has a candidate from another source - so it is never the
+// pick, nor a runner-up, nor a verify swap or set completion. Where
+// nothing else fills a slot it stays, its label already ending
+// rareLabelSuffix. The second value is how many candidates it took out.
+func withoutRareSpawnDrops(pool []scored) ([]scored, int) {
+	covered := make(map[string]bool)
+	for _, s := range pool {
+		if s.HasSource && !s.Source.RareSpawn {
+			for _, slot := range s.Slots {
+				covered[slot] = true
+			}
+		}
+	}
+	kept := make([]scored, 0, len(pool))
+	skipped := 0
+	for _, s := range pool {
+		if s.HasSource && s.Source.RareSpawn && everySlotCovered(s.Slots, covered) {
+			skipped++
+			continue
+		}
+		kept = append(kept, s)
+	}
+	return kept, skipped
+}
+
+func everySlotCovered(slots []string, covered map[string]bool) bool {
+	for _, slot := range slots {
+		if !covered[slot] {
+			return false
+		}
+	}
+	return len(slots) > 0
 }
 
 // coverageRow is one slot's answer to "how many eligible items exist,

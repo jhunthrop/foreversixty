@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70291",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-12T22:31:14Z",
+  "generated_at": "2026-10-13T19:31:52Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -128,7 +128,7 @@
               "item_name": "Erudite's Amulet",
               "source_kind": "quest",
               "source": "Friend of the Library",
-              "dps_delta": -0.49737105602358156,
+              "dps_delta": -0.5061287076364351,
               "verified": true
             }
           ],
@@ -155,7 +155,7 @@
               "item_name": "Slime-encrusted Pads",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Mutanus the Devourer",
-              "dps_delta": -0.6232551008082936,
+              "dps_delta": -0.6245374626919329,
               "verified": true
             }
           ],
@@ -219,7 +219,7 @@
           "source": "The Deadmines: Edwin VanCleef",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 67.55638490747407,
+          "sim_dps": 67.30154609683242,
           "verified": true,
           "alternatives": [
             {
@@ -241,7 +241,7 @@
               "item_name": "Brawler's Leather Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.0524431505368597,
+              "dps_delta": -3.0344997748611036,
               "verified": true
             }
           ],
@@ -314,7 +314,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 67.55638490747407,
+          "sim_dps": 67.30154609683242,
           "verified": true,
           "alternatives": [
             {
@@ -336,7 +336,7 @@
               "item_name": "Gloves of the Fang",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Druid of the Fang",
-              "dps_delta": -3.1893828000462747,
+              "dps_delta": -3.1771163407020424,
               "verified": true
             }
           ],
@@ -376,18 +376,18 @@
               "dps_delta": -0.052753708570541104
             },
             {
-              "item_id": 5975,
-              "item_name": "Ruffian Belt",
-              "source_kind": "world",
-              "source": "Rot Hide Bruiser",
-              "dps_delta": -0.26084120877068445
+              "item_id": 5780,
+              "item_name": "Murloc Scale Belt",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.39900359416103964
             },
             {
               "item_id": 252428,
               "item_name": "Brawler's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.7072277178764352,
+              "dps_delta": -3.6853726291534414,
               "verified": true
             }
           ],
@@ -398,9 +398,9 @@
               "source": "Leatherworking"
             },
             {
-              "item_id": 5975,
-              "source_kind": "world",
-              "source": "Rot Hide Bruiser"
+              "item_id": 5780,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             }
           ]
         },
@@ -411,7 +411,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 67.55638490747407,
+          "sim_dps": 67.30154609683242,
           "verified": true,
           "alternatives": [
             {
@@ -433,7 +433,7 @@
               "item_name": "Brawler's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.3048247087504876,
+              "dps_delta": -3.2893718699873773,
               "verified": true
             }
           ],
@@ -507,16 +507,9 @@
           "source_kind": "rep",
           "score": 17.1433809915788,
           "verified": true,
-          "swap_note": "confirmed by the sim against Signet of the Zhevra (id 285330): kept the pick, +1.0 DPS (67.6 vs 66.6 set DPS)",
-          "dps_delta": 0.9987247558676984,
+          "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +1.0 DPS (67.3 vs 66.3 set DPS)",
+          "dps_delta": 1.0041788911633347,
           "alternatives": [
-            {
-              "item_id": 12054,
-              "item_name": "Demon Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.4533953298078686
-            },
             {
               "item_id": 8350,
               "item_name": "The 1 Ring",
@@ -530,63 +523,70 @@
               "source_kind": "dungeon",
               "source": "The Deadmines: Gilnid",
               "dps_delta": -0.704906547650191
+            },
+            {
+              "item_id": 12052,
+              "item_name": "Ring of the Moon",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.8120519918675612
             }
           ],
           "runners_up": [
             {
-              "item_id": 12054,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
               "item_id": 8350,
               "source_kind": "world",
               "source": "Fishing"
+            },
+            {
+              "item_id": 1156,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Gilnid"
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 285330,
-          "item_name": "Signet of the Zhevra",
-          "source": "Swiftmane",
-          "source_kind": "world",
-          "score": 12.515071487368182,
+          "item_id": 12054,
+          "item_name": "Demon Band",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 8.80000000000001,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 12054,
-              "item_name": "Demon Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.25483881064164393,
-              "verified": true
-            },
             {
               "item_id": 8350,
               "item_name": "The 1 Ring",
               "source_kind": "world",
               "source": "Fishing",
-              "dps_delta": -0.4471919415732716
+              "dps_delta": -0.20187394225385447,
+              "verified": true
             },
             {
               "item_id": 1156,
               "item_name": "Lavishly Jeweled Ring",
               "source_kind": "dungeon",
               "source": "The Deadmines: Gilnid",
-              "dps_delta": -0.4533953298078685
+              "dps_delta": -0.2515112178423224
+            },
+            {
+              "item_id": 12052,
+              "item_name": "Ring of the Moon",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.3586566620596925
             }
           ],
           "runners_up": [
             {
-              "item_id": 12054,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
               "item_id": 8350,
               "source_kind": "world",
               "source": "Fishing"
+            },
+            {
+              "item_id": 1156,
+              "source_kind": "dungeon",
+              "source": "The Deadmines: Gilnid"
             }
           ]
         },
@@ -629,7 +629,7 @@
               "item_name": "Living Root",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Verdan the Everliving",
-              "dps_delta": -1.8760937305948175,
+              "dps_delta": -1.8757667123354054,
               "verified": true
             }
           ],
@@ -658,24 +658,24 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 67.55638490747407,
-      "no_source_count": 188,
+      "set_dps": 67.30154609683242,
+      "no_source_count": 253,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "3738 Brewing Rod",
-        "4777 Ironwood Maul",
-        "4778 Heavy Spiked Mace",
-        "4797 Fiery Cloak",
-        "4798 Heavy Runed Cloak",
-        "4799 Antiquated Cloak",
-        "4964 Goblin Smasher",
-        "5821 Darkstalker Boots",
-        "6478 Rat Stompers",
-        "14148 Crystalline Cuffs",
-        "14149 Subterranean Cape",
-        "14150 Robe of Evocation",
-        "14151 Chanting Blade",
-        "14389 Durability Shoulderpads"
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer",
+        "3000 Brood Mother Carapace",
+        "3018 Hide of Lupos"
       ],
       "new_at_band": [
         "head: Defender's Leather Hood",
@@ -689,35 +689,35 @@
         "legs: Blackened Defias Leggings",
         "feet: Feet of the Lynx",
         "finger1: Protector's Band",
-        "finger2: Signet of the Zhevra",
+        "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.6155344769999997,
-      "verify_run_seconds": 5.919758377,
+      "weights_run_seconds": 2.27830214,
+      "verify_run_seconds": 4.761108203,
       "coverage": {
         "back": {
           "eligible": 98,
-          "sourced": 80
+          "sourced": 71
         },
         "chest": {
           "eligible": 136,
-          "sourced": 122
+          "sourced": 113
         },
         "feet": {
           "eligible": 92,
-          "sourced": 81
+          "sourced": 78
         },
         "finger1": {
           "eligible": 32,
-          "sourced": 19
+          "sourced": 16
         },
         "finger2": {
           "eligible": 32,
-          "sourced": 19
+          "sourced": 16
         },
         "hands": {
           "eligible": 100,
-          "sourced": 88
+          "sourced": 82
         },
         "head": {
           "eligible": 23,
@@ -725,11 +725,11 @@
         },
         "legs": {
           "eligible": 107,
-          "sourced": 99
+          "sourced": 94
         },
         "main_hand": {
           "eligible": 189,
-          "sourced": 132
+          "sourced": 112
         },
         "neck": {
           "eligible": 15,
@@ -737,7 +737,7 @@
         },
         "off_hand": {
           "eligible": 26,
-          "sourced": 19
+          "sourced": 17
         },
         "ranged": {
           "eligible": 10,
@@ -757,11 +757,11 @@
         },
         "waist": {
           "eligible": 85,
-          "sourced": 79
+          "sourced": 74
         },
         "wrist": {
           "eligible": 62,
-          "sourced": 48
+          "sourced": 45
         }
       },
       "reference_dps_per_point": 0.05434191849389275,
@@ -902,7 +902,7 @@
               "item_name": "Erudite's Amulet",
               "source_kind": "quest",
               "source": "Friend of the Library",
-              "dps_delta": -0.5057762030453716,
+              "dps_delta": -0.5005989656974066,
               "verified": true
             }
           ],
@@ -929,7 +929,7 @@
               "item_name": "Slime-encrusted Pads",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Mutanus the Devourer",
-              "dps_delta": -0.6428488468511375,
+              "dps_delta": -0.6291308017169825,
               "verified": true
             }
           ],
@@ -993,7 +993,7 @@
           "source": "The Deadmines: Edwin VanCleef",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 66.24104560530321,
+          "sim_dps": 65.95520231771741,
           "verified": true,
           "alternatives": [
             {
@@ -1015,7 +1015,7 @@
               "item_name": "Brawler's Leather Armor",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.111513438364632,
+              "dps_delta": -3.0898781598021685,
               "verified": true
             }
           ],
@@ -1088,7 +1088,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 66.24104560530321,
+          "sim_dps": 65.95520231771741,
           "verified": true,
           "alternatives": [
             {
@@ -1110,7 +1110,7 @@
               "item_name": "Gloves of the Fang",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Druid of the Fang",
-              "dps_delta": -3.2250942196857793,
+              "dps_delta": -3.2050480532011676,
               "verified": true
             }
           ],
@@ -1150,18 +1150,18 @@
               "dps_delta": -0.052753708570541104
             },
             {
-              "item_id": 5975,
-              "item_name": "Ruffian Belt",
-              "source_kind": "world",
-              "source": "Rot Hide Bruiser",
-              "dps_delta": -0.26084120877068445
+              "item_id": 5780,
+              "item_name": "Murloc Scale Belt",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.39900359416103964
             },
             {
               "item_id": 252428,
               "item_name": "Brawler's Leather Belt",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.7490972705896795,
+              "dps_delta": -3.7232967905391448,
               "verified": true
             }
           ],
@@ -1172,9 +1172,9 @@
               "source": "Leatherworking"
             },
             {
-              "item_id": 5975,
-              "source_kind": "world",
-              "source": "Rot Hide Bruiser"
+              "item_id": 5780,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             }
           ]
         },
@@ -1185,7 +1185,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 66.24104560530321,
+          "sim_dps": 65.95520231771741,
           "verified": true,
           "alternatives": [
             {
@@ -1207,7 +1207,7 @@
               "item_name": "Brawler's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -3.344770733620244,
+              "dps_delta": -3.3367281140985483,
               "verified": true
             }
           ],
@@ -1281,16 +1281,9 @@
           "source_kind": "rep",
           "score": 17.1433809915788,
           "verified": true,
-          "swap_note": "confirmed by the sim against Signet of the Zhevra (id 285330): kept the pick, +1.0 DPS (66.2 vs 65.2 set DPS)",
-          "dps_delta": 0.9940436338357301,
+          "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +1.0 DPS (66.0 vs 65.0 set DPS)",
+          "dps_delta": 0.9855104994722979,
           "alternatives": [
-            {
-              "item_id": 12054,
-              "item_name": "Demon Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.4533953298078686
-            },
             {
               "item_id": 281673,
               "item_name": "Loop of Sacrifice",
@@ -1304,63 +1297,69 @@
               "source_kind": "quest",
               "source": "Hezrul Bloodmark",
               "dps_delta": -0.5915577151982239
+            },
+            {
+              "item_id": 8350,
+              "item_name": "The 1 Ring",
+              "source_kind": "world",
+              "source": "Fishing",
+              "dps_delta": -0.698703159415594
             }
           ],
           "runners_up": [
             {
-              "item_id": 12054,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
               "item_id": 281673,
               "source_kind": "quest",
               "source": "The Offering of Blood"
+            },
+            {
+              "item_id": 5351,
+              "source_kind": "quest",
+              "source": "Hezrul Bloodmark"
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 285330,
-          "item_name": "Signet of the Zhevra",
-          "source": "Swiftmane",
-          "source_kind": "world",
-          "score": 12.515071487368182,
+          "item_id": 12054,
+          "item_name": "Demon Band",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 8.80000000000001,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 12054,
-              "item_name": "Demon Band",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.2858432875858057,
-              "verified": true
-            },
             {
               "item_id": 281673,
               "item_name": "Loop of Sacrifice",
               "source_kind": "quest",
               "source": "The Offering of Blood",
-              "dps_delta": -0.32143633265211036
+              "dps_delta": -0.11955222068656421
             },
             {
               "item_id": 5351,
               "item_name": "Bounty Hunter's Ring",
               "source_kind": "quest",
               "source": "Hezrul Bloodmark",
-              "dps_delta": -0.3400464973559014
+              "dps_delta": -0.1381623853903553
+            },
+            {
+              "item_id": 8350,
+              "item_name": "The 1 Ring",
+              "source_kind": "world",
+              "source": "Fishing",
+              "dps_delta": -0.24530782960772538
             }
           ],
           "runners_up": [
             {
-              "item_id": 12054,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
               "item_id": 281673,
               "source_kind": "quest",
               "source": "The Offering of Blood"
+            },
+            {
+              "item_id": 5351,
+              "source_kind": "quest",
+              "source": "Hezrul Bloodmark"
             }
           ]
         },
@@ -1392,19 +1391,19 @@
               "dps_delta": -0.49573220908017057
             },
             {
+              "item_id": 270018,
+              "item_name": "Hammerbone",
+              "source_kind": "quest",
+              "source": "Leaders of the Fang",
+              "dps_delta": -0.6218268491411294,
+              "verified": true
+            },
+            {
               "item_id": 6631,
               "item_name": "Living Root",
               "source_kind": "dungeon",
               "source": "Wailing Caverns: Verdan the Everliving",
               "dps_delta": -0.6272894689883276
-            },
-            {
-              "item_id": 270018,
-              "item_name": "Hammerbone",
-              "source_kind": "quest",
-              "source": "Leaders of the Fang",
-              "dps_delta": -0.6278430607429613,
-              "verified": true
             }
           ],
           "runners_up": [
@@ -1414,9 +1413,9 @@
               "source": "Leaders of the Fang"
             },
             {
-              "item_id": 6631,
-              "source_kind": "dungeon",
-              "source": "Wailing Caverns: Verdan the Everliving"
+              "item_id": 270018,
+              "source_kind": "quest",
+              "source": "Leaders of the Fang"
             }
           ]
         },
@@ -1432,24 +1431,24 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 66.24104560530321,
-      "no_source_count": 178,
+      "set_dps": 65.95520231771741,
+      "no_source_count": 243,
       "no_source_sample": [
         "1189 Overseer's Ring",
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "3738 Brewing Rod",
-        "5821 Darkstalker Boots",
-        "6478 Rat Stompers",
-        "14389 Durability Shoulderpads",
-        "15401 Welldrip Gloves",
-        "18863 Insignia of the Alliance",
-        "209617 Insignia of the Alliance",
-        "241089 Scarlet Dagger",
-        "248005 Northshire Hammer",
-        "248007 Militia Shortblade",
-        "248008 Apprentice's Spellstaff",
-        "263006 Scout Ranger's Tunic",
-        "263007 Skyseer's Vest"
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer",
+        "3000 Brood Mother Carapace"
       ],
       "new_at_band": [
         "head: Defender's Leather Hood",
@@ -1463,35 +1462,35 @@
         "legs: Blackened Defias Leggings",
         "feet: Feet of the Lynx",
         "finger1: Legionnaire's Band",
-        "finger2: Signet of the Zhevra",
+        "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 3.6155344769999997,
-      "verify_run_seconds": 4.688203293,
+      "weights_run_seconds": 2.27830214,
+      "verify_run_seconds": 4.596648757,
       "coverage": {
         "back": {
           "eligible": 99,
-          "sourced": 85
+          "sourced": 76
         },
         "chest": {
           "eligible": 134,
-          "sourced": 120
+          "sourced": 111
         },
         "feet": {
           "eligible": 92,
-          "sourced": 78
+          "sourced": 75
         },
         "finger1": {
           "eligible": 33,
-          "sourced": 21
+          "sourced": 18
         },
         "finger2": {
           "eligible": 33,
-          "sourced": 21
+          "sourced": 18
         },
         "hands": {
           "eligible": 94,
-          "sourced": 81
+          "sourced": 75
         },
         "head": {
           "eligible": 23,
@@ -1499,11 +1498,11 @@
         },
         "legs": {
           "eligible": 105,
-          "sourced": 95
+          "sourced": 90
         },
         "main_hand": {
           "eligible": 194,
-          "sourced": 148
+          "sourced": 128
         },
         "neck": {
           "eligible": 15,
@@ -1511,7 +1510,7 @@
         },
         "off_hand": {
           "eligible": 26,
-          "sourced": 16
+          "sourced": 14
         },
         "ranged": {
           "eligible": 10,
@@ -1531,11 +1530,11 @@
         },
         "waist": {
           "eligible": 84,
-          "sourced": 75
+          "sourced": 70
         },
         "wrist": {
           "eligible": 64,
-          "sourced": 54
+          "sourced": 51
         }
       },
       "reference_dps_per_point": 0.05434191849389275,
@@ -1665,7 +1664,7 @@
               "item_name": "Brawler's Leather Helm",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.48634066326935965,
+              "dps_delta": -0.4496591395992482,
               "verified": true
             }
           ],
@@ -1699,13 +1698,6 @@
               "dps_delta": -0.05299659573805475
             },
             {
-              "item_id": 7731,
-              "item_name": "Ghostshard Talisman",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.181046616251795
-            },
-            {
               "item_id": 279837,
               "item_name": "Fallen Guard's Pendant",
               "source_kind": "quest",
@@ -1720,9 +1712,9 @@
               "source": "Silverwing Sentinels"
             },
             {
-              "item_id": 7731,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Azshir the Sleepless"
+              "item_id": 279837,
+              "source_kind": "quest",
+              "source": "Starving Arcane"
             }
           ]
         },
@@ -1739,7 +1731,7 @@
               "item_id": 2264,
               "item_name": "Mantle of Thieves",
               "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source": "Razorfen Kraul",
               "dps_delta": -0.8449092950282681
             },
             {
@@ -1754,7 +1746,7 @@
               "item_name": "Barbaric Shoulders",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.1207748179042483,
+              "dps_delta": -1.1578501685356315,
               "verified": true
             }
           ],
@@ -1762,7 +1754,7 @@
             {
               "item_id": 2264,
               "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source": "Razorfen Kraul"
             },
             {
               "item_id": 14573,
@@ -1795,10 +1787,10 @@
               "dps_delta": -0.29930196358877426
             },
             {
-              "item_id": 4447,
-              "item_name": "Cloak of Night",
-              "source_kind": "world",
-              "source": "Rohh the Silent",
+              "item_id": 6340,
+              "item_name": "Fenrus' Hide",
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Fenrus the Devourer",
               "dps_delta": -0.5588564803740074
             }
           ],
@@ -1869,18 +1861,11 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 6198,
-              "item_name": "Jurassic Wristguards",
-              "source_kind": "world",
-              "source": "Razormaw Matriarch",
-              "dps_delta": -0.2860528146542605
-            },
-            {
               "item_id": 18948,
               "item_name": "Barbaric Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.36639033566250134,
+              "dps_delta": -0.3740558990316458,
               "verified": true
             },
             {
@@ -1889,18 +1874,25 @@
               "source_kind": "quest",
               "source": "Morganth",
               "dps_delta": -0.4025809241123634
+            },
+            {
+              "item_id": 6902,
+              "item_name": "Bands of Serra'kis",
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps: Old Serra'kis",
+              "dps_delta": -0.4926107357014388
             }
           ],
           "runners_up": [
             {
-              "item_id": 6198,
-              "source_kind": "world",
-              "source": "Razormaw Matriarch"
-            },
-            {
               "item_id": 18948,
               "source_kind": "crafted",
               "source": "Leatherworking"
+            },
+            {
+              "item_id": 270033,
+              "source_kind": "quest",
+              "source": "Morganth"
             }
           ]
         },
@@ -1924,7 +1916,7 @@
               "item_id": 1978,
               "item_name": "Wolfclaw Gloves",
               "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source": "Razorfen Kraul",
               "dps_delta": -0.2860528146542603
             },
             {
@@ -1944,7 +1936,7 @@
             {
               "item_id": 1978,
               "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source": "Razorfen Kraul"
             }
           ]
         },
@@ -2082,66 +2074,15 @@
         },
         {
           "slot": "finger1",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 26.76584116314017,
-          "verified": true,
-          "swap_note": "confirmed by the sim against Protector's Band (id 19517): kept the pick, +2.5 DPS (122.3 vs 119.8 set DPS)",
-          "dps_delta": 2.459173248793263,
-          "alternatives": [
-            {
-              "item_id": 13097,
-              "item_name": "Thunderbrow Ring",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.2065579210471783
-            },
-            {
-              "item_id": 6749,
-              "item_name": "Tiger Band",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -0.7389161035521582
-            },
-            {
-              "item_id": 6748,
-              "item_name": "Monkey Ring",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -0.8316601460937543
-            }
-          ],
-          "runners_up": [
-            {
-              "item_id": 13097,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
-              "item_id": 6749,
-              "source_kind": "quest",
-              "source": "Willix the Importer"
-            }
-          ]
-        },
-        {
-          "slot": "finger2",
           "item_id": 19517,
           "item_name": "Protector's Band",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
           "score": 25.17722744209345,
           "verified": true,
+          "swap_note": "confirmed by the sim against Thunderbrow Ring (id 13097): kept the pick, +2.3 DPS (121.9 vs 119.6 set DPS)",
+          "dps_delta": 2.3124987787010127,
           "alternatives": [
-            {
-              "item_id": 13097,
-              "item_name": "Thunderbrow Ring",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.10327896052358915
-            },
             {
               "item_id": 6749,
               "item_name": "Tiger Band",
@@ -2155,18 +2096,70 @@
               "source_kind": "quest",
               "source": "Willix the Importer",
               "dps_delta": -0.7283811855701651
+            },
+            {
+              "item_id": 2933,
+              "item_name": "Seal of Wrynn",
+              "source_kind": "quest",
+              "source": "An Audience with the King",
+              "dps_delta": -0.8184109971592405
             }
           ],
           "runners_up": [
             {
-              "item_id": 13097,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
               "item_id": 6749,
               "source_kind": "quest",
               "source": "Willix the Importer"
+            },
+            {
+              "item_id": 6748,
+              "source_kind": "quest",
+              "source": "Willix the Importer"
+            }
+          ]
+        },
+        {
+          "slot": "finger2",
+          "item_id": 13097,
+          "item_name": "Thunderbrow Ring",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 23.58861372104673,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 6748,
+              "item_name": "Monkey Ring",
+              "source_kind": "quest",
+              "source": "Willix the Importer",
+              "dps_delta": -0.625102225046576
+            },
+            {
+              "item_id": 2933,
+              "item_name": "Seal of Wrynn",
+              "source_kind": "quest",
+              "source": "An Audience with the King",
+              "dps_delta": -0.7151320366356513
+            },
+            {
+              "item_id": 6749,
+              "item_name": "Tiger Band",
+              "source_kind": "quest",
+              "source": "Willix the Importer",
+              "dps_delta": -0.7613962639585594,
+              "verified": true
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 6748,
+              "source_kind": "quest",
+              "source": "Willix the Importer"
+            },
+            {
+              "item_id": 2933,
+              "source_kind": "quest",
+              "source": "An Audience with the King"
             }
           ]
         },
@@ -2187,29 +2180,29 @@
           "source": "Gnomeregan: Crowd Pummeler 9-60",
           "source_kind": "dungeon",
           "chance": 0.4,
-          "sim_dps": 122.2714957669317,
+          "sim_dps": 121.92461195252137,
           "verified": true,
           "alternatives": [
             {
               "item_id": 7730,
               "item_name": "Cobalt Crusher",
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey",
+              "source": "Scarlet Monastery",
               "dps_delta": -3.0192239333936137
             },
             {
-              "item_id": 6689,
-              "item_name": "Wind Spirit Staff",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Earthcaller Halmgar",
-              "dps_delta": -5.058000357838525
+              "item_id": 791,
+              "item_name": "Gnarled Ash Staff",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -6.0136768067970765
             },
             {
               "item_id": 13045,
               "item_name": "Viscous Hammer",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -24.25169634840546,
+              "dps_delta": -24.14896178822015,
               "verified": true
             }
           ],
@@ -2217,12 +2210,12 @@
             {
               "item_id": 7730,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey"
+              "source": "Scarlet Monastery"
             },
             {
-              "item_id": 6689,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Earthcaller Halmgar"
+              "item_id": 791,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -2238,24 +2231,24 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 122.2714957669317,
-      "no_source_count": 340,
+      "set_dps": 121.92461195252137,
+      "no_source_count": 424,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4777 Ironwood Maul",
-        "4778 Heavy Spiked Mace",
-        "4797 Fiery Cloak",
-        "4798 Heavy Runed Cloak",
-        "4799 Antiquated Cloak",
-        "4964 Goblin Smasher",
-        "5000 Coral Band",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "9362 Brilliant Gold Ring"
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2058 Kazon's Maul",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer",
+        "2944 Cursed Eye of Paleth"
       ],
       "new_at_band": [
         "head: Defender's Leather Helm",
@@ -2267,56 +2260,56 @@
         "hands: Insignia Gloves",
         "waist: Prowler's Leather Belt",
         "legs: Brawler's Leather Legguards",
-        "finger1: Ironspine's Eye",
-        "finger2: Protector's Band",
+        "finger1: Protector's Band",
+        "finger2: Thunderbrow Ring",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.894669558,
-      "verify_run_seconds": 2.908019751,
+      "weights_run_seconds": 1.821711509,
+      "verify_run_seconds": 2.979392426,
       "coverage": {
         "back": {
           "eligible": 179,
-          "sourced": 143
+          "sourced": 131
         },
         "chest": {
           "eligible": 227,
-          "sourced": 206
+          "sourced": 197
         },
         "feet": {
           "eligible": 148,
-          "sourced": 130
+          "sourced": 127
         },
         "finger1": {
           "eligible": 83,
-          "sourced": 50
+          "sourced": 46
         },
         "finger2": {
           "eligible": 83,
-          "sourced": 50
+          "sourced": 46
         },
         "hands": {
           "eligible": 156,
-          "sourced": 137
+          "sourced": 131
         },
         "head": {
           "eligible": 76,
-          "sourced": 64
+          "sourced": 61
         },
         "legs": {
           "eligible": 180,
-          "sourced": 160
+          "sourced": 154
         },
         "main_hand": {
           "eligible": 295,
-          "sourced": 208
+          "sourced": 182
         },
         "neck": {
           "eligible": 36,
-          "sourced": 18
+          "sourced": 17
         },
         "off_hand": {
           "eligible": 55,
-          "sourced": 38
+          "sourced": 35
         },
         "ranged": {
           "eligible": 11,
@@ -2336,11 +2329,11 @@
         },
         "waist": {
           "eligible": 152,
-          "sourced": 138
+          "sourced": 131
         },
         "wrist": {
           "eligible": 115,
-          "sourced": 92
+          "sourced": 88
         }
       },
       "reference_dps_per_point": 0.06501200333051373,
@@ -2456,7 +2449,7 @@
               "item_name": "Brawler's Leather Helm",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.3983912860745278,
+              "dps_delta": -0.39635853559731515,
               "verified": true
             },
             {
@@ -2504,11 +2497,11 @@
               "dps_delta": -0.05299659573805475
             },
             {
-              "item_id": 7731,
-              "item_name": "Ghostshard Talisman",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.181046616251795
+              "item_id": 13087,
+              "item_name": "River Pride Choker",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.5191090335704661
             }
           ],
           "runners_up": [
@@ -2518,9 +2511,9 @@
               "source": "Warsong Outriders"
             },
             {
-              "item_id": 7731,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Azshir the Sleepless"
+              "item_id": 13087,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -2537,7 +2530,7 @@
               "item_id": 2264,
               "item_name": "Mantle of Thieves",
               "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source": "Razorfen Kraul",
               "dps_delta": -0.8449092950282681
             },
             {
@@ -2552,7 +2545,7 @@
               "item_name": "Barbaric Shoulders",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.1052829749435205,
+              "dps_delta": -1.1576452285296455,
               "verified": true
             }
           ],
@@ -2560,7 +2553,7 @@
             {
               "item_id": 2264,
               "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source": "Razorfen Kraul"
             },
             {
               "item_id": 14573,
@@ -2590,14 +2583,14 @@
               "item_name": "Tigerstrike Mantle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.36730326279803194,
+              "dps_delta": -0.3690094716495622,
               "verified": true
             },
             {
-              "item_id": 4447,
-              "item_name": "Cloak of Night",
-              "source_kind": "world",
-              "source": "Rohh the Silent",
+              "item_id": 6745,
+              "item_name": "Swiftrunner Cape",
+              "source_kind": "quest",
+              "source": "Alliance Relations",
               "dps_delta": -0.5588564803740074
             }
           ],
@@ -2668,18 +2661,11 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 6198,
-              "item_name": "Jurassic Wristguards",
-              "source_kind": "world",
-              "source": "Razormaw Matriarch",
-              "dps_delta": -0.2860528146542605
-            },
-            {
               "item_id": 18948,
               "item_name": "Barbaric Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.3568698798708141,
+              "dps_delta": -0.38685622609638415,
               "verified": true
             },
             {
@@ -2688,18 +2674,25 @@
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps: Old Serra'kis",
               "dps_delta": -0.4926107357014388
+            },
+            {
+              "item_id": 6410,
+              "item_name": "Insignia Bracers",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.572105629308521
             }
           ],
           "runners_up": [
             {
-              "item_id": 6198,
-              "source_kind": "world",
-              "source": "Razormaw Matriarch"
-            },
-            {
               "item_id": 18948,
               "source_kind": "crafted",
               "source": "Leatherworking"
+            },
+            {
+              "item_id": 6902,
+              "source_kind": "dungeon",
+              "source": "Blackfathom Deeps: Old Serra'kis"
             }
           ]
         },
@@ -2723,7 +2716,7 @@
               "item_id": 1978,
               "item_name": "Wolfclaw Gloves",
               "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk",
+              "source": "Razorfen Kraul",
               "dps_delta": -0.2860528146542603
             },
             {
@@ -2743,7 +2736,7 @@
             {
               "item_id": 1978,
               "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "source": "Razorfen Kraul"
             }
           ]
         },
@@ -2881,66 +2874,15 @@
         },
         {
           "slot": "finger1",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 26.76584116314017,
-          "verified": true,
-          "swap_note": "confirmed by the sim against Legionnaire's Band (id 19513): kept the pick, +2.5 DPS (120.1 vs 117.6 set DPS)",
-          "dps_delta": 2.4535414232571924,
-          "alternatives": [
-            {
-              "item_id": 13097,
-              "item_name": "Thunderbrow Ring",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.2065579210471783
-            },
-            {
-              "item_id": 17694,
-              "item_name": "Band of the Fist",
-              "source_kind": "quest",
-              "source": "Allegiance to the Old Gods",
-              "dps_delta": -0.648886291963083
-            },
-            {
-              "item_id": 6749,
-              "item_name": "Tiger Band",
-              "source_kind": "quest",
-              "source": "Willix the Importer",
-              "dps_delta": -0.7389161035521582
-            }
-          ],
-          "runners_up": [
-            {
-              "item_id": 13097,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            {
-              "item_id": 17694,
-              "source_kind": "quest",
-              "source": "Allegiance to the Old Gods"
-            }
-          ]
-        },
-        {
-          "slot": "finger2",
           "item_id": 19513,
           "item_name": "Legionnaire's Band",
           "source": "Warsong Outriders",
           "source_kind": "rep",
           "score": 25.17722744209345,
           "verified": true,
+          "swap_note": "confirmed by the sim against Thunderbrow Ring (id 13097): kept the pick, +2.3 DPS (119.7 vs 117.4 set DPS)",
+          "dps_delta": 2.2851649073491984,
           "alternatives": [
-            {
-              "item_id": 13097,
-              "item_name": "Thunderbrow Ring",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.10327896052358915
-            },
             {
               "item_id": 17694,
               "item_name": "Band of the Fist",
@@ -2954,13 +2896,65 @@
               "source_kind": "quest",
               "source": "Willix the Importer",
               "dps_delta": -0.6356371430285691
+            },
+            {
+              "item_id": 6748,
+              "item_name": "Monkey Ring",
+              "source_kind": "quest",
+              "source": "Willix the Importer",
+              "dps_delta": -0.7283811855701651
             }
           ],
           "runners_up": [
             {
-              "item_id": 13097,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 17694,
+              "source_kind": "quest",
+              "source": "Allegiance to the Old Gods"
+            },
+            {
+              "item_id": 6749,
+              "source_kind": "quest",
+              "source": "Willix the Importer"
+            }
+          ]
+        },
+        {
+          "slot": "finger2",
+          "item_id": 13097,
+          "item_name": "Thunderbrow Ring",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 23.58861372104673,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 6749,
+              "item_name": "Tiger Band",
+              "source_kind": "quest",
+              "source": "Willix the Importer",
+              "dps_delta": -0.5323581825049799
+            },
+            {
+              "item_id": 17694,
+              "item_name": "Band of the Fist",
+              "source_kind": "quest",
+              "source": "Allegiance to the Old Gods",
+              "dps_delta": -0.5581492258604754,
+              "verified": true
+            },
+            {
+              "item_id": 6748,
+              "item_name": "Monkey Ring",
+              "source_kind": "quest",
+              "source": "Willix the Importer",
+              "dps_delta": -0.625102225046576
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 6749,
+              "source_kind": "quest",
+              "source": "Willix the Importer"
             },
             {
               "item_id": 17694,
@@ -2986,14 +2980,14 @@
           "source": "Gnomeregan: Crowd Pummeler 9-60",
           "source_kind": "dungeon",
           "chance": 0.4,
-          "sim_dps": 120.05267103533453,
+          "sim_dps": 119.70320853850197,
           "verified": true,
           "alternatives": [
             {
               "item_id": 7730,
               "item_name": "Cobalt Crusher",
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey",
+              "source": "Scarlet Monastery",
               "dps_delta": -3.0192239333936137
             },
             {
@@ -3008,7 +3002,7 @@
               "item_name": "Viscous Hammer",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -23.67284390629581,
+              "dps_delta": -23.605088835685407,
               "verified": true
             }
           ],
@@ -3016,7 +3010,7 @@
             {
               "item_id": 7730,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey"
+              "source": "Scarlet Monastery"
             },
             {
               "item_id": 19569,
@@ -3037,24 +3031,24 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 120.05267103533453,
-      "no_source_count": 332,
+      "set_dps": 119.70320853850197,
+      "no_source_count": 416,
       "no_source_sample": [
         "1189 Overseer's Ring",
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "5000 Coral Band",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "9362 Brilliant Gold Ring",
-        "14389 Durability Shoulderpads",
-        "15401 Welldrip Gloves",
-        "16315 Sergeant Major's Cape",
-        "18440 Sergeant's Cape",
-        "18442 Master Sergeant's Insignia"
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2058 Kazon's Maul",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer"
       ],
       "new_at_band": [
         "head: Defender's Leather Helm",
@@ -3066,56 +3060,56 @@
         "hands: Insignia Gloves",
         "waist: Prowler's Leather Belt",
         "legs: Brawler's Leather Legguards",
-        "finger1: Ironspine's Eye",
-        "finger2: Legionnaire's Band",
+        "finger1: Legionnaire's Band",
+        "finger2: Thunderbrow Ring",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.894669558,
-      "verify_run_seconds": 2.824270326,
+      "weights_run_seconds": 1.821711509,
+      "verify_run_seconds": 3.064809276,
       "coverage": {
         "back": {
           "eligible": 179,
-          "sourced": 146
+          "sourced": 134
         },
         "chest": {
           "eligible": 224,
-          "sourced": 202
+          "sourced": 193
         },
         "feet": {
           "eligible": 153,
-          "sourced": 130
+          "sourced": 127
         },
         "finger1": {
           "eligible": 84,
-          "sourced": 53
+          "sourced": 49
         },
         "finger2": {
           "eligible": 84,
-          "sourced": 53
+          "sourced": 49
         },
         "hands": {
           "eligible": 151,
-          "sourced": 130
+          "sourced": 124
         },
         "head": {
           "eligible": 76,
-          "sourced": 66
+          "sourced": 63
         },
         "legs": {
           "eligible": 176,
-          "sourced": 155
+          "sourced": 149
         },
         "main_hand": {
           "eligible": 295,
-          "sourced": 222
+          "sourced": 196
         },
         "neck": {
           "eligible": 36,
-          "sourced": 17
+          "sourced": 16
         },
         "off_hand": {
           "eligible": 52,
-          "sourced": 33
+          "sourced": 30
         },
         "ranged": {
           "eligible": 11,
@@ -3135,11 +3129,11 @@
         },
         "waist": {
           "eligible": 156,
-          "sourced": 139
+          "sourced": 132
         },
         "wrist": {
           "eligible": 118,
-          "sourced": 97
+          "sourced": 93
         }
       },
       "reference_dps_per_point": 0.06501200333051373,
@@ -3269,7 +3263,7 @@
               "item_name": "Hawkeye's Helm",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.5488516993557369,
+              "dps_delta": -1.5516562386588646,
               "verified": true
             }
           ],
@@ -3303,18 +3297,18 @@
               "dps_delta": -0.34308510883730614
             },
             {
-              "item_id": 7731,
-              "item_name": "Ghostshard Talisman",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.5264101340317183
-            },
-            {
               "item_id": 279837,
               "item_name": "Fallen Guard's Pendant",
               "source_kind": "quest",
               "source": "Starving Arcane",
               "dps_delta": -0.5857869733572948
+            },
+            {
+              "item_id": 13087,
+              "item_name": "River Pride Choker",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.9123595896479885
             }
           ],
           "runners_up": [
@@ -3324,9 +3318,9 @@
               "source": "World drop"
             },
             {
-              "item_id": 7731,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Azshir the Sleepless"
+              "item_id": 279837,
+              "source_kind": "quest",
+              "source": "Starving Arcane"
             }
           ]
         },
@@ -3350,7 +3344,7 @@
               "item_id": 7755,
               "item_name": "Flintrock Shoulders",
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey",
+              "source": "Scarlet Monastery",
               "dps_delta": -0.21653966935964233
             },
             {
@@ -3370,52 +3364,52 @@
             {
               "item_id": 7755,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey"
+              "source": "Scarlet Monastery"
             }
           ]
         },
         {
           "slot": "back",
-          "item_id": 5257,
-          "item_name": "Dark Hooded Cape",
-          "source": "Nimar the Slayer",
-          "source_kind": "world",
-          "chance": 0.1,
-          "score": 27.9749674545385,
+          "item_id": 16336,
+          "item_name": "Sergeant Major's Cape",
+          "source": "PvP rank 9 · Sergeant Major · Alliance",
+          "source_kind": "pvp",
+          "score": 24.704980472723136,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 16336,
-              "item_name": "Sergeant Major's Cape",
-              "source_kind": "pvp",
-              "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -0.2427018645199882
+              "item_id": 2805,
+              "item_name": "Yeti Fur Cloak",
+              "source_kind": "quest",
+              "source": "Bartolo's Yeti Fur Cloak",
+              "dps_delta": -0.4898589244360407
+            },
+            {
+              "item_id": 10518,
+              "item_name": "Parachute Cloak",
+              "source_kind": "crafted",
+              "source": "Engineering",
+              "dps_delta": -0.6950806084667401
             },
             {
               "item_id": 14593,
               "item_name": "Hawkeye's Cloak",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.5902421687533584
-            },
-            {
-              "item_id": 2805,
-              "item_name": "Yeti Fur Cloak",
-              "source_kind": "quest",
-              "source": "Bartolo's Yeti Fur Cloak",
-              "dps_delta": -0.7325607889560289
+              "dps_delta": -1.1323554663961488,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 16336,
-              "source_kind": "pvp",
-              "source": "PvP rank 9 · Sergeant Major · Alliance"
+              "item_id": 2805,
+              "source_kind": "quest",
+              "source": "Bartolo's Yeti Fur Cloak"
             },
             {
-              "item_id": 14593,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10518,
+              "source_kind": "crafted",
+              "source": "Engineering"
             }
           ]
         },
@@ -3429,13 +3423,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 5739,
-              "item_name": "Barbaric Harness",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.137863424806607
-            },
-            {
               "item_id": 8175,
               "item_name": "Nightscape Tunic",
               "source_kind": "crafted",
@@ -3448,16 +3435,24 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.30114973295195363
+            },
+            {
+              "item_id": 5739,
+              "item_name": "Barbaric Harness",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.5459837781742465,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 5739,
+              "item_id": 8175,
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
             {
-              "item_id": 8175,
+              "item_id": 252508,
               "source_kind": "crafted",
               "source": "Leatherworking"
             }
@@ -3487,11 +3482,11 @@
               "dps_delta": -0.284637240405341
             },
             {
-              "item_id": 6198,
-              "item_name": "Jurassic Wristguards",
-              "source_kind": "world",
-              "source": "Razormaw Matriarch",
-              "dps_delta": -0.3265726162906937
+              "item_id": 7378,
+              "item_name": "Dusky Bracers",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.36850799217604635
             }
           ],
           "runners_up": [
@@ -3691,16 +3686,9 @@
           "source_kind": "rep",
           "score": 32.93997396363085,
           "verified": true,
-          "swap_note": "confirmed by the sim against Ironspine's Eye (id 7686): kept the pick, +3.3 DPS (166.4 vs 163.0 set DPS)",
-          "dps_delta": 3.3369970200783996,
+          "swap_note": "confirmed by the sim against Protector's Band (ilvl 33) (id 19517): kept the pick, +0.9 DPS (166.5 vs 165.6 set DPS)",
+          "dps_delta": 0.8736653065892881,
           "alternatives": [
-            {
-              "item_id": 7552,
-              "item_name": "Falcon's Hook",
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure",
-              "dps_delta": -0.674112920524064
-            },
             {
               "item_id": 2951,
               "item_name": "Ring of the Underwood",
@@ -3714,16 +3702,23 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.711593101013353
+            },
+            {
+              "item_id": 2262,
+              "item_name": "Mark of Kern",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery",
+              "dps_delta": -0.9604184436446286
             }
           ],
           "runners_up": [
             {
-              "item_id": 7552,
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure"
+              "item_id": 2951,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             {
-              "item_id": 2951,
+              "item_id": 13097,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -3731,43 +3726,44 @@
         },
         {
           "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
+          "item_id": 7552,
+          "item_name": "Falcon's Hook",
+          "source": "Uldaman: Ancient Treasure",
           "source_kind": "dungeon",
-          "score": 26.057470709084654,
+          "chance": 0.016,
+          "score": 23.857470709084645,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 7552,
-              "item_name": "Falcon's Hook",
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure",
-              "dps_delta": -0.1632863081453469
-            },
             {
               "item_id": 2951,
               "item_name": "Ring of the Underwood",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.1842539960880233
+              "dps_delta": -0.020967687942676397
             },
             {
               "item_id": 13097,
               "item_name": "Thunderbrow Ring",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.20076648863463592
+              "dps_delta": -0.037480180489289035
+            },
+            {
+              "item_id": 2262,
+              "item_name": "Mark of Kern",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery",
+              "dps_delta": -0.2863055231205646
             }
           ],
           "runners_up": [
             {
-              "item_id": 7552,
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure"
+              "item_id": 2951,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             {
-              "item_id": 2951,
+              "item_id": 13097,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -3790,7 +3786,7 @@
           "source": "Gnomeregan: Crowd Pummeler 9-60",
           "source_kind": "dungeon",
           "chance": 0.4,
-          "sim_dps": 166.3801851727912,
+          "sim_dps": 166.48078269018683,
           "verified": true,
           "alternatives": [
             {
@@ -3812,7 +3808,7 @@
               "item_name": "Gut Ripper",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -31.097880900509267,
+              "dps_delta": -31.714981454975458,
               "verified": true
             }
           ],
@@ -3840,84 +3836,84 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 166.3801851727912,
-      "no_source_count": 445,
+      "set_dps": 166.48078269018683,
+      "no_source_count": 539,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4777 Ironwood Maul",
-        "4778 Heavy Spiked Mace",
-        "4797 Fiery Cloak",
-        "4798 Heavy Runed Cloak",
-        "4799 Antiquated Cloak",
-        "4964 Goblin Smasher",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape"
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2058 Kazon's Maul",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer",
+        "2622 Nimar's Tribal Headdress"
       ],
       "new_at_band": [
         "head: White Bandit Mask",
         "neck: Sentinel's Medallion",
         "shoulder: Sunburn Spaulders",
-        "back: Dark Hooded Cape",
+        "back: Sergeant Major's Cape",
         "chest: Wolffear Harness",
         "hands: Prowler's Leather Gloves",
         "waist: Ogron's Sash",
         "legs: Triprunner Dungarees",
         "feet: Prowler's Leather Shoes",
         "finger1: Protector's Band",
-        "finger2: Ironspine's Eye"
+        "finger2: Falcon's Hook"
       ],
-      "weights_run_seconds": 1.898400955,
-      "verify_run_seconds": 2.721832094,
+      "weights_run_seconds": 2.49792743,
+      "verify_run_seconds": 3.213641333,
       "coverage": {
         "back": {
           "eligible": 243,
-          "sourced": 204
+          "sourced": 190
         },
         "chest": {
           "eligible": 299,
-          "sourced": 269
+          "sourced": 258
         },
         "feet": {
           "eligible": 204,
-          "sourced": 179
+          "sourced": 176
         },
         "finger1": {
           "eligible": 120,
-          "sourced": 75
+          "sourced": 71
         },
         "finger2": {
           "eligible": 120,
-          "sourced": 75
+          "sourced": 71
         },
         "hands": {
           "eligible": 226,
-          "sourced": 202
+          "sourced": 196
         },
         "head": {
           "eligible": 137,
-          "sourced": 120
+          "sourced": 115
         },
         "legs": {
           "eligible": 226,
-          "sourced": 198
+          "sourced": 192
         },
         "main_hand": {
           "eligible": 376,
-          "sourced": 265
+          "sourced": 237
         },
         "neck": {
           "eligible": 51,
-          "sourced": 27
+          "sourced": 25
         },
         "off_hand": {
           "eligible": 75,
-          "sourced": 52
+          "sourced": 49
         },
         "ranged": {
           "eligible": 12,
@@ -3925,7 +3921,7 @@
         },
         "shoulder": {
           "eligible": 123,
-          "sourced": 108
+          "sourced": 107
         },
         "trinket1": {
           "eligible": 33,
@@ -3937,11 +3933,11 @@
         },
         "waist": {
           "eligible": 206,
-          "sourced": 189
+          "sourced": 182
         },
         "wrist": {
           "eligible": 161,
-          "sourced": 130
+          "sourced": 126
         }
       },
       "reference_dps_per_point": 0.07422104915697553,
@@ -4071,7 +4067,7 @@
               "item_name": "Hawkeye's Helm",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.5195477846796734,
+              "dps_delta": -1.515558401370157,
               "verified": true
             }
           ],
@@ -4112,11 +4108,11 @@
               "dps_delta": -0.34308510883730614
             },
             {
-              "item_id": 7731,
-              "item_name": "Ghostshard Talisman",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Azshir the Sleepless",
-              "dps_delta": -0.5264101340317183
+              "item_id": 13087,
+              "item_name": "River Pride Choker",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.9123595896479885
             }
           ],
           "runners_up": [
@@ -4152,7 +4148,7 @@
               "item_id": 7755,
               "item_name": "Flintrock Shoulders",
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey",
+              "source": "Scarlet Monastery",
               "dps_delta": -0.21653966935964233
             },
             {
@@ -4172,53 +4168,52 @@
             {
               "item_id": 7755,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Houndmaster Loksey"
+              "source": "Scarlet Monastery"
             }
           ]
         },
         {
           "slot": "back",
-          "item_id": 5257,
-          "item_name": "Dark Hooded Cape",
-          "source": "Nimar the Slayer",
-          "source_kind": "world",
-          "chance": 0.1,
-          "score": 27.9749674545385,
+          "item_id": 14593,
+          "item_name": "Hawkeye's Cloak",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 20.022477218176952,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 279848,
-              "item_name": "Construct Cloak",
-              "source_kind": "quest",
-              "source": "Source of Power",
-              "dps_delta": -0.9333272775906648
-            },
-            {
-              "item_id": 14593,
-              "item_name": "Hawkeye's Cloak",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.9354472927645361,
-              "verified": true
+              "item_id": 6432,
+              "item_name": "Imperial Cloak",
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure",
+              "dps_delta": -0.34754030423336996
             },
             {
               "item_id": 10518,
               "item_name": "Parachute Cloak",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -0.9377824729867283
+              "dps_delta": -0.34754030423336996
+            },
+            {
+              "item_id": 279848,
+              "item_name": "Construct Cloak",
+              "source_kind": "quest",
+              "source": "Source of Power",
+              "dps_delta": -0.5506875115270589,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 279848,
-              "source_kind": "quest",
-              "source": "Source of Power"
+              "item_id": 6432,
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             },
             {
-              "item_id": 14593,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 10518,
+              "source_kind": "crafted",
+              "source": "Engineering"
             }
           ]
         },
@@ -4250,7 +4245,7 @@
               "item_name": "Barbaric Harness",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5505124638520442,
+              "dps_delta": -0.58621867322978,
               "verified": true
             }
           ],
@@ -4471,7 +4466,7 @@
               "item_name": "Skulker's Leather Shoes",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5694850690141493,
+              "dps_delta": -0.5176708882032415,
               "verified": true
             }
           ],
@@ -4496,16 +4491,9 @@
           "source_kind": "rep",
           "score": 32.93997396363085,
           "verified": true,
-          "swap_note": "confirmed by the sim against Ironspine's Eye (id 7686): kept the pick, +3.3 DPS (164.1 vs 160.8 set DPS)",
-          "dps_delta": 3.2610479384233315,
+          "swap_note": "confirmed by the sim against Legionnaire's Band (ilvl 33) (id 19513): kept the pick, +0.8 DPS (162.9 vs 162.2 set DPS)",
+          "dps_delta": 0.7506190827366765,
           "alternatives": [
-            {
-              "item_id": 7552,
-              "item_name": "Falcon's Hook",
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure",
-              "dps_delta": -0.674112920524064
-            },
             {
               "item_id": 2951,
               "item_name": "Ring of the Underwood",
@@ -4519,16 +4507,23 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.711593101013353
+            },
+            {
+              "item_id": 2262,
+              "item_name": "Mark of Kern",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery",
+              "dps_delta": -0.9604184436446286
             }
           ],
           "runners_up": [
             {
-              "item_id": 7552,
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure"
+              "item_id": 2951,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             {
-              "item_id": 2951,
+              "item_id": 13097,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -4536,43 +4531,44 @@
         },
         {
           "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
+          "item_id": 7552,
+          "item_name": "Falcon's Hook",
+          "source": "Uldaman: Ancient Treasure",
           "source_kind": "dungeon",
-          "score": 26.057470709084654,
+          "chance": 0.016,
+          "score": 23.857470709084645,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 7552,
-              "item_name": "Falcon's Hook",
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure",
-              "dps_delta": -0.1632863081453469
-            },
             {
               "item_id": 2951,
               "item_name": "Ring of the Underwood",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.1842539960880233
+              "dps_delta": -0.020967687942676397
             },
             {
               "item_id": 13097,
               "item_name": "Thunderbrow Ring",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.20076648863463592
+              "dps_delta": -0.037480180489289035
+            },
+            {
+              "item_id": 2262,
+              "item_name": "Mark of Kern",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery",
+              "dps_delta": -0.2863055231205646
             }
           ],
           "runners_up": [
             {
-              "item_id": 7552,
-              "source_kind": "dungeon",
-              "source": "Uldaman: Ancient Treasure"
+              "item_id": 2951,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             {
-              "item_id": 2951,
+              "item_id": 13097,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -4595,7 +4591,7 @@
           "source": "Gnomeregan: Crowd Pummeler 9-60",
           "source_kind": "dungeon",
           "chance": 0.4,
-          "sim_dps": 164.05880289425295,
+          "sim_dps": 162.90684725843553,
           "verified": true,
           "alternatives": [
             {
@@ -4617,7 +4613,7 @@
               "item_name": "Gut Ripper",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -30.823827871054505,
+              "dps_delta": -30.56444336453663,
               "verified": true
             }
           ],
@@ -4645,84 +4641,83 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 164.05880289425295,
-      "no_source_count": 431,
+      "set_dps": 162.90684725843553,
+      "no_source_count": 525,
       "no_source_sample": [
         "1189 Overseer's Ring",
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "8708 Hammer of Expertise",
-        "9362 Brilliant Gold Ring",
-        "14389 Durability Shoulderpads",
-        "15401 Welldrip Gloves"
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2058 Kazon's Maul",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer"
       ],
       "new_at_band": [
         "head: White Bandit Mask",
         "neck: Scout's Medallion",
         "shoulder: Sunburn Spaulders",
-        "back: Dark Hooded Cape",
         "chest: Wolffear Harness",
         "hands: Prowler's Leather Gloves",
         "waist: Ogron's Sash",
         "legs: Triprunner Dungarees",
         "feet: Prowler's Leather Shoes",
         "finger1: Legionnaire's Band",
-        "finger2: Ironspine's Eye"
+        "finger2: Falcon's Hook"
       ],
-      "weights_run_seconds": 1.898400955,
-      "verify_run_seconds": 2.807528436,
+      "weights_run_seconds": 2.49792743,
+      "verify_run_seconds": 2.984123292,
       "coverage": {
         "back": {
           "eligible": 245,
-          "sourced": 208
+          "sourced": 194
         },
         "chest": {
           "eligible": 295,
-          "sourced": 265
+          "sourced": 254
         },
         "feet": {
           "eligible": 209,
-          "sourced": 179
+          "sourced": 176
         },
         "finger1": {
           "eligible": 119,
-          "sourced": 76
+          "sourced": 72
         },
         "finger2": {
           "eligible": 119,
-          "sourced": 76
+          "sourced": 72
         },
         "hands": {
           "eligible": 221,
-          "sourced": 194
+          "sourced": 188
         },
         "head": {
           "eligible": 138,
-          "sourced": 123
+          "sourced": 118
         },
         "legs": {
           "eligible": 223,
-          "sourced": 195
+          "sourced": 189
         },
         "main_hand": {
           "eligible": 378,
-          "sourced": 283
+          "sourced": 255
         },
         "neck": {
           "eligible": 51,
-          "sourced": 26
+          "sourced": 24
         },
         "off_hand": {
           "eligible": 71,
-          "sourced": 47
+          "sourced": 44
         },
         "ranged": {
           "eligible": 12,
@@ -4730,7 +4725,7 @@
         },
         "shoulder": {
           "eligible": 121,
-          "sourced": 107
+          "sourced": 106
         },
         "trinket1": {
           "eligible": 33,
@@ -4742,11 +4737,11 @@
         },
         "waist": {
           "eligible": 210,
-          "sourced": 190
+          "sourced": 183
         },
         "wrist": {
           "eligible": 166,
-          "sourced": 139
+          "sourced": 135
         }
       },
       "reference_dps_per_point": 0.07422104915697553,
@@ -5000,12 +4995,11 @@
               "dps_delta": -0.3682749813404548
             },
             {
-              "item_id": 5257,
-              "item_name": "Dark Hooded Cape",
-              "source_kind": "world",
-              "source": "Nimar the Slayer",
-              "dps_delta": -0.8354120706651429,
-              "verified": true
+              "item_id": 13109,
+              "item_name": "Blackflame Cape",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.4492312959183124
             }
           ],
           "runners_up": [
@@ -5043,7 +5037,7 @@
               "item_name": "Knight's Leather Armor",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.1867260369462707
+              "dps_delta": -1.1867260369462702
             },
             {
               "item_id": 19127,
@@ -5260,18 +5254,18 @@
               "dps_delta": -0.05397087638523825
             },
             {
-              "item_id": 12470,
-              "item_name": "Sandstalker Ankleguards",
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Zerillis",
-              "dps_delta": -0.33864183265443804
-            },
-            {
               "item_id": 17728,
               "item_name": "Albino Crocscale Boots",
               "source_kind": "dungeon",
               "source": "Maraudon: Rotgrip",
               "dps_delta": -0.9497857577284657
+            },
+            {
+              "item_id": 252465,
+              "item_name": "Prowler's Leather Shoes",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.9524334682218631
             }
           ],
           "runners_up": [
@@ -5281,9 +5275,9 @@
               "source": "Leatherworking"
             },
             {
-              "item_id": 12470,
+              "item_id": 17728,
               "source_kind": "dungeon",
-              "source": "Zul'Farrak: Zerillis"
+              "source": "Maraudon: Rotgrip"
             }
           ]
         },
@@ -5299,13 +5293,6 @@
           "dps_delta": 0.6633502334749153,
           "alternatives": [
             {
-              "item_id": 7686,
-              "item_name": "Ironspine's Eye",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Ironspine",
-              "dps_delta": -1.0603752209923396
-            },
-            {
               "item_id": 7552,
               "item_name": "Falcon's Hook",
               "source_kind": "dungeon",
@@ -5318,18 +5305,25 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.2519209988340712
+            },
+            {
+              "item_id": 2951,
+              "item_name": "Ring of the Underwood",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.2640898626836823
             }
           ],
           "runners_up": [
             {
-              "item_id": 7686,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Ironspine"
-            },
-            {
               "item_id": 7552,
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure"
+            },
+            {
+              "item_id": 13097,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -5343,13 +5337,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 7686,
-              "item_name": "Ironspine's Eye",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Ironspine",
-              "dps_delta": -0.04180201253562735
-            },
-            {
               "item_id": 7552,
               "item_name": "Falcon's Hook",
               "source_kind": "dungeon",
@@ -5362,18 +5349,25 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.23334779037735884
+            },
+            {
+              "item_id": 2951,
+              "item_name": "Ring of the Underwood",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.24551665422697003
             }
           ],
           "runners_up": [
             {
-              "item_id": 7686,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Ironspine"
-            },
-            {
               "item_id": 7552,
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure"
+            },
+            {
+              "item_id": 13097,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -5471,23 +5465,23 @@
         }
       ],
       "set_dps": 216.82527264457815,
-      "no_source_count": 580,
+      "no_source_count": 677,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4777 Ironwood Maul",
-        "4778 Heavy Spiked Mace",
-        "4797 Fiery Cloak",
-        "4798 Heavy Runed Cloak",
-        "4799 Antiquated Cloak",
-        "4964 Goblin Smasher",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring"
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2058 Kazon's Maul",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer",
+        "2622 Nimar's Tribal Headdress"
       ],
       "new_at_band": [
         "neck: Skibi's Pendant",
@@ -5504,52 +5498,52 @@
         "trinket1: Molten Heart of the Mountain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 1.91541504,
-      "verify_run_seconds": 3.675877302,
+      "weights_run_seconds": 2.118392882,
+      "verify_run_seconds": 3.628174714,
       "coverage": {
         "back": {
           "eligible": 310,
-          "sourced": 261
+          "sourced": 247
         },
         "chest": {
           "eligible": 368,
-          "sourced": 328
+          "sourced": 317
         },
         "feet": {
           "eligible": 273,
-          "sourced": 238
+          "sourced": 235
         },
         "finger1": {
           "eligible": 144,
-          "sourced": 91
+          "sourced": 87
         },
         "finger2": {
           "eligible": 144,
-          "sourced": 91
+          "sourced": 87
         },
         "hands": {
           "eligible": 294,
-          "sourced": 264
+          "sourced": 258
         },
         "head": {
           "eligible": 202,
-          "sourced": 171
+          "sourced": 166
         },
         "legs": {
           "eligible": 279,
-          "sourced": 241
+          "sourced": 235
         },
         "main_hand": {
           "eligible": 453,
-          "sourced": 319
+          "sourced": 290
         },
         "neck": {
           "eligible": 65,
-          "sourced": 36
+          "sourced": 33
         },
         "off_hand": {
           "eligible": 95,
-          "sourced": 66
+          "sourced": 62
         },
         "ranged": {
           "eligible": 12,
@@ -5557,7 +5551,7 @@
         },
         "shoulder": {
           "eligible": 180,
-          "sourced": 158
+          "sourced": 157
         },
         "trinket1": {
           "eligible": 70,
@@ -5569,11 +5563,11 @@
         },
         "waist": {
           "eligible": 265,
-          "sourced": 243
+          "sourced": 236
         },
         "wrist": {
           "eligible": 216,
-          "sourced": 178
+          "sourced": 174
         }
       },
       "reference_dps_per_point": 0.0803314561357832,
@@ -5812,35 +5806,36 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 5257,
-              "item_name": "Dark Hooded Cape",
-              "source_kind": "world",
-              "source": "Nimar the Slayer",
-              "dps_delta": -0.04180201253562735
+              "item_id": 13109,
+              "item_name": "Blackflame Cape",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.4492312959183124
+            },
+            {
+              "item_id": 8259,
+              "item_name": "Serpentskin Cloak",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.5989750612244166
             },
             {
               "item_id": 14673,
               "item_name": "Pridelord Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.3682749813404548
-            },
-            {
-              "item_id": 13109,
-              "item_name": "Blackflame Cape",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.4492312959183124
+              "dps_delta": -0.7864900489430227,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 5257,
-              "source_kind": "world",
-              "source": "Nimar the Slayer"
+              "item_id": 13109,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             {
-              "item_id": 14673,
+              "item_id": 8259,
               "source_kind": "world_drop",
               "source": "World drop"
             }
@@ -6079,18 +6074,18 @@
               "dps_delta": -0.05397087638523825
             },
             {
-              "item_id": 12470,
-              "item_name": "Sandstalker Ankleguards",
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Zerillis",
-              "dps_delta": -0.33864183265443804
-            },
-            {
               "item_id": 17728,
               "item_name": "Albino Crocscale Boots",
               "source_kind": "dungeon",
               "source": "Maraudon: Rotgrip",
               "dps_delta": -0.9497857577284657
+            },
+            {
+              "item_id": 252465,
+              "item_name": "Prowler's Leather Shoes",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -0.9524334682218631
             }
           ],
           "runners_up": [
@@ -6100,9 +6095,9 @@
               "source": "Leatherworking"
             },
             {
-              "item_id": 12470,
+              "item_id": 17728,
               "source_kind": "dungeon",
-              "source": "Zul'Farrak: Zerillis"
+              "source": "Maraudon: Rotgrip"
             }
           ]
         },
@@ -6118,13 +6113,6 @@
           "dps_delta": 0.7101144339737573,
           "alternatives": [
             {
-              "item_id": 7686,
-              "item_name": "Ironspine's Eye",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Ironspine",
-              "dps_delta": -1.0603752209923396
-            },
-            {
               "item_id": 11862,
               "item_name": "White Bone Band",
               "source_kind": "quest",
@@ -6137,18 +6125,25 @@
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
               "dps_delta": -1.237104424491063
+            },
+            {
+              "item_id": 13097,
+              "item_name": "Thunderbrow Ring",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.2519209988340712
             }
           ],
           "runners_up": [
             {
-              "item_id": 7686,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Ironspine"
-            },
-            {
               "item_id": 11862,
               "source_kind": "quest",
               "source": "Bone-Bladed Weapons"
+            },
+            {
+              "item_id": 7552,
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             }
           ]
         },
@@ -6162,13 +6157,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 7686,
-              "item_name": "Ironspine's Eye",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Ironspine",
-              "dps_delta": -0.04180201253562735
-            },
-            {
               "item_id": 11862,
               "item_name": "White Bone Band",
               "source_kind": "quest",
@@ -6181,18 +6169,25 @@
               "source_kind": "dungeon",
               "source": "Uldaman: Ancient Treasure",
               "dps_delta": -0.2185312160343506
+            },
+            {
+              "item_id": 13097,
+              "item_name": "Thunderbrow Ring",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.23334779037735884
             }
           ],
           "runners_up": [
             {
-              "item_id": 7686,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Ironspine"
-            },
-            {
               "item_id": 11862,
               "source_kind": "quest",
               "source": "Bone-Bladed Weapons"
+            },
+            {
+              "item_id": 7552,
+              "source_kind": "dungeon",
+              "source": "Uldaman: Ancient Treasure"
             }
           ]
         },
@@ -6291,23 +6286,23 @@
         }
       ],
       "set_dps": 220.65865738501108,
-      "no_source_count": 562,
+      "no_source_count": 659,
       "no_source_sample": [
         "1189 Overseer's Ring",
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "8708 Hammer of Expertise",
-        "9362 Brilliant Gold Ring"
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2058 Kazon's Maul",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer"
       ],
       "new_at_band": [
         "neck: Skibi's Pendant",
@@ -6324,52 +6319,52 @@
         "trinket1: Rune of the Guard Captain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 1.91541504,
-      "verify_run_seconds": 3.396738148,
+      "weights_run_seconds": 2.118392882,
+      "verify_run_seconds": 3.597540596,
       "coverage": {
         "back": {
           "eligible": 315,
-          "sourced": 268
+          "sourced": 254
         },
         "chest": {
           "eligible": 365,
-          "sourced": 325
+          "sourced": 314
         },
         "feet": {
           "eligible": 279,
-          "sourced": 239
+          "sourced": 236
         },
         "finger1": {
           "eligible": 145,
-          "sourced": 94
+          "sourced": 90
         },
         "finger2": {
           "eligible": 145,
-          "sourced": 94
+          "sourced": 90
         },
         "hands": {
           "eligible": 292,
-          "sourced": 259
+          "sourced": 253
         },
         "head": {
           "eligible": 203,
-          "sourced": 174
+          "sourced": 169
         },
         "legs": {
           "eligible": 275,
-          "sourced": 237
+          "sourced": 231
         },
         "main_hand": {
           "eligible": 456,
-          "sourced": 340
+          "sourced": 311
         },
         "neck": {
           "eligible": 67,
-          "sourced": 37
+          "sourced": 34
         },
         "off_hand": {
           "eligible": 92,
-          "sourced": 62
+          "sourced": 58
         },
         "ranged": {
           "eligible": 12,
@@ -6377,7 +6372,7 @@
         },
         "shoulder": {
           "eligible": 178,
-          "sourced": 157
+          "sourced": 156
         },
         "trinket1": {
           "eligible": 70,
@@ -6389,11 +6384,11 @@
         },
         "waist": {
           "eligible": 269,
-          "sourced": 244
+          "sourced": 237
         },
         "wrist": {
           "eligible": 220,
-          "sourced": 188
+          "sourced": 184
         }
       },
       "reference_dps_per_point": 0.0803314561357832,
@@ -7168,23 +7163,23 @@
         }
       ],
       "set_dps": 286.20914158551676,
-      "no_source_count": 1222,
+      "no_source_count": 1319,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4777 Ironwood Maul",
-        "4778 Heavy Spiked Mace",
-        "4797 Fiery Cloak",
-        "4798 Heavy Runed Cloak",
-        "4799 Antiquated Cloak",
-        "4964 Goblin Smasher",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring"
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2058 Kazon's Maul",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer",
+        "2622 Nimar's Tribal Headdress"
       ],
       "new_at_band": [
         "head: Feralheart Cap",
@@ -7203,52 +7198,52 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 1.953758138,
-      "verify_run_seconds": 12.667671268,
+      "weights_run_seconds": 1.948492011,
+      "verify_run_seconds": 11.539768115,
       "coverage": {
         "back": {
           "eligible": 382,
-          "sourced": 305
+          "sourced": 291
         },
         "chest": {
           "eligible": 499,
-          "sourced": 411
+          "sourced": 400
         },
         "feet": {
           "eligible": 379,
-          "sourced": 314
+          "sourced": 311
         },
         "finger1": {
           "eligible": 314,
-          "sourced": 153
+          "sourced": 149
         },
         "finger2": {
           "eligible": 314,
-          "sourced": 153
+          "sourced": 149
         },
         "hands": {
           "eligible": 395,
-          "sourced": 318
+          "sourced": 312
         },
         "head": {
           "eligible": 311,
-          "sourced": 235
+          "sourced": 230
         },
         "legs": {
           "eligible": 399,
-          "sourced": 317
+          "sourced": 311
         },
         "main_hand": {
           "eligible": 586,
-          "sourced": 389
+          "sourced": 360
         },
         "neck": {
           "eligible": 149,
-          "sourced": 65
+          "sourced": 62
         },
         "off_hand": {
           "eligible": 132,
-          "sourced": 85
+          "sourced": 81
         },
         "ranged": {
           "eligible": 22,
@@ -7256,7 +7251,7 @@
         },
         "shoulder": {
           "eligible": 298,
-          "sourced": 233
+          "sourced": 232
         },
         "trinket1": {
           "eligible": 142,
@@ -7268,11 +7263,11 @@
         },
         "waist": {
           "eligible": 361,
-          "sourced": 304
+          "sourced": 297
         },
         "wrist": {
           "eligible": 294,
-          "sourced": 220
+          "sourced": 216
         }
       },
       "reference_dps_per_point": 0.08536445949910462,
@@ -7380,7 +7375,7 @@
           "item_name": "Feralheart Cap",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 81.88483635922701,
+          "score": 81.884836359227,
           "verified": true,
           "alternatives": [
             {
@@ -7580,7 +7575,7 @@
               "item_name": "Warlord's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.111497904656773
+              "dps_delta": -2.1114979046567743
             },
             {
               "item_id": 16549,
@@ -8063,23 +8058,23 @@
         }
       ],
       "set_dps": 290.1614795378233,
-      "no_source_count": 1218,
+      "no_source_count": 1315,
       "no_source_sample": [
         "1189 Overseer's Ring",
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "8708 Hammer of Expertise",
-        "9362 Brilliant Gold Ring"
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2058 Kazon's Maul",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer"
       ],
       "new_at_band": [
         "head: Feralheart Cap",
@@ -8099,52 +8094,52 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 1.953758138,
-      "verify_run_seconds": 12.155858157,
+      "weights_run_seconds": 1.948492011,
+      "verify_run_seconds": 12.038748923,
       "coverage": {
         "back": {
           "eligible": 387,
-          "sourced": 311
+          "sourced": 297
         },
         "chest": {
           "eligible": 497,
-          "sourced": 410
+          "sourced": 399
         },
         "feet": {
           "eligible": 384,
-          "sourced": 314
+          "sourced": 311
         },
         "finger1": {
           "eligible": 315,
-          "sourced": 156
+          "sourced": 152
         },
         "finger2": {
           "eligible": 315,
-          "sourced": 156
+          "sourced": 152
         },
         "hands": {
           "eligible": 394,
-          "sourced": 314
+          "sourced": 308
         },
         "head": {
           "eligible": 312,
-          "sourced": 237
+          "sourced": 232
         },
         "legs": {
           "eligible": 394,
-          "sourced": 311
+          "sourced": 305
         },
         "main_hand": {
           "eligible": 591,
-          "sourced": 404
+          "sourced": 375
         },
         "neck": {
           "eligible": 151,
-          "sourced": 66
+          "sourced": 63
         },
         "off_hand": {
           "eligible": 130,
-          "sourced": 82
+          "sourced": 78
         },
         "ranged": {
           "eligible": 22,
@@ -8152,7 +8147,7 @@
         },
         "shoulder": {
           "eligible": 295,
-          "sourced": 231
+          "sourced": 230
         },
         "trinket1": {
           "eligible": 142,
@@ -8164,11 +8159,11 @@
         },
         "waist": {
           "eligible": 364,
-          "sourced": 304
+          "sourced": 297
         },
         "wrist": {
           "eligible": 297,
-          "sourced": 225
+          "sourced": 221
         }
       },
       "reference_dps_per_point": 0.08536445949910462,
@@ -8608,7 +8603,7 @@
               "item_name": "Belt of Preserved Heads",
               "source_kind": "quest",
               "source": "A Collection of Heads",
-              "dps_delta": -2.3648659259820617
+              "dps_delta": -2.3648659259820635
             },
             {
               "item_id": 19044,
@@ -8916,23 +8911,23 @@
         }
       ],
       "set_dps": 658.7156726351541,
-      "no_source_count": 1222,
+      "no_source_count": 1319,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4777 Ironwood Maul",
-        "4778 Heavy Spiked Mace",
-        "4797 Fiery Cloak",
-        "4798 Heavy Runed Cloak",
-        "4799 Antiquated Cloak",
-        "4964 Goblin Smasher",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring"
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2058 Kazon's Maul",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer",
+        "2622 Nimar's Tribal Headdress"
       ],
       "new_at_band": [
         "head: Feralheart Cap",
@@ -8951,52 +8946,52 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 2.002596472,
-      "verify_run_seconds": 19.323995176,
+      "weights_run_seconds": 2.221495901,
+      "verify_run_seconds": 12.878055486000001,
       "coverage": {
         "back": {
           "eligible": 382,
-          "sourced": 305
+          "sourced": 291
         },
         "chest": {
           "eligible": 499,
-          "sourced": 411
+          "sourced": 400
         },
         "feet": {
           "eligible": 379,
-          "sourced": 314
+          "sourced": 311
         },
         "finger1": {
           "eligible": 314,
-          "sourced": 153
+          "sourced": 149
         },
         "finger2": {
           "eligible": 314,
-          "sourced": 153
+          "sourced": 149
         },
         "hands": {
           "eligible": 395,
-          "sourced": 318
+          "sourced": 312
         },
         "head": {
           "eligible": 311,
-          "sourced": 235
+          "sourced": 230
         },
         "legs": {
           "eligible": 399,
-          "sourced": 317
+          "sourced": 311
         },
         "main_hand": {
           "eligible": 586,
-          "sourced": 389
+          "sourced": 360
         },
         "neck": {
           "eligible": 149,
-          "sourced": 65
+          "sourced": 62
         },
         "off_hand": {
           "eligible": 132,
-          "sourced": 85
+          "sourced": 81
         },
         "ranged": {
           "eligible": 22,
@@ -9004,7 +8999,7 @@
         },
         "shoulder": {
           "eligible": 298,
-          "sourced": 233
+          "sourced": 232
         },
         "trinket1": {
           "eligible": 142,
@@ -9016,11 +9011,11 @@
         },
         "waist": {
           "eligible": 361,
-          "sourced": 304
+          "sourced": 297
         },
         "wrist": {
           "eligible": 294,
-          "sourced": 220
+          "sourced": 216
         }
       },
       "reference_dps_per_point": 0.15345947297308513,
@@ -9328,7 +9323,7 @@
               "item_name": "Warlord's Dragonhide Chestpiece",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.4390010692900144
+              "dps_delta": -3.439001069290016
             },
             {
               "item_id": 16549,
@@ -9787,23 +9782,23 @@
         }
       ],
       "set_dps": 666.8093211894379,
-      "no_source_count": 1218,
+      "no_source_count": 1315,
       "no_source_sample": [
         "1189 Overseer's Ring",
+        "1215 Support Girdle",
+        "1314 Ghoul Fingers",
+        "1355 Buckskin Cape",
+        "1539 Gnarled Hermit's Staff",
         "1832 Lucky Trousers",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "8708 Hammer of Expertise",
-        "9362 Brilliant Gold Ring"
+        "1913 Studded Blackjack",
+        "1917 Jeweled Dagger",
+        "1938 Block Mallet",
+        "1965 White Wolf Gloves",
+        "2058 Kazon's Maul",
+        "2069 Black Bear Hide Vest",
+        "2235 Brackclaw",
+        "2241 Desperado Cape",
+        "2254 Icepane Warhammer"
       ],
       "new_at_band": [
         "head: Feralheart Cap",
@@ -9823,52 +9818,52 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 2.002596472,
-      "verify_run_seconds": 15.866328835000001,
+      "weights_run_seconds": 2.221495901,
+      "verify_run_seconds": 12.05346642,
       "coverage": {
         "back": {
           "eligible": 387,
-          "sourced": 311
+          "sourced": 297
         },
         "chest": {
           "eligible": 497,
-          "sourced": 410
+          "sourced": 399
         },
         "feet": {
           "eligible": 384,
-          "sourced": 314
+          "sourced": 311
         },
         "finger1": {
           "eligible": 315,
-          "sourced": 156
+          "sourced": 152
         },
         "finger2": {
           "eligible": 315,
-          "sourced": 156
+          "sourced": 152
         },
         "hands": {
           "eligible": 394,
-          "sourced": 314
+          "sourced": 308
         },
         "head": {
           "eligible": 312,
-          "sourced": 237
+          "sourced": 232
         },
         "legs": {
           "eligible": 394,
-          "sourced": 311
+          "sourced": 305
         },
         "main_hand": {
           "eligible": 591,
-          "sourced": 404
+          "sourced": 375
         },
         "neck": {
           "eligible": 151,
-          "sourced": 66
+          "sourced": 63
         },
         "off_hand": {
           "eligible": 130,
-          "sourced": 82
+          "sourced": 78
         },
         "ranged": {
           "eligible": 22,
@@ -9876,7 +9871,7 @@
         },
         "shoulder": {
           "eligible": 295,
-          "sourced": 231
+          "sourced": 230
         },
         "trinket1": {
           "eligible": 142,
@@ -9888,11 +9883,11 @@
         },
         "waist": {
           "eligible": 364,
-          "sourced": 304
+          "sourced": 297
         },
         "wrist": {
           "eligible": 297,
-          "sourced": 225
+          "sourced": 221
         }
       },
       "reference_dps_per_point": 0.15345947297308513,

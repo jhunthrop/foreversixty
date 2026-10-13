@@ -689,6 +689,8 @@ _OPTIONAL_SOURCE_KEYS = {
     "source_origin",
     "level_min",
     "level_max",
+    # Task L1.7: a `world` source whose creature is a rare spawn (Swiftmane).
+    "rare_spawn",
 }
 
 
@@ -713,6 +715,8 @@ def test_a_source_only_carries_the_keys_its_kind_needs():
     world_drop = next(s for s in loot()["sources"] if s["kind"] == "world_drop")
     assert set(world_drop) <= always | {"level_min", "level_max", "source_origin", "item_chances"}
     assert "source_origin" in world_drop
+    # Task L1.7: only a `world` source is ever flagged a rare spawn.
+    assert {s["kind"] for s in loot()["sources"] if "rare_spawn" in s} == {"world"}
 
 
 def test_every_item_list_is_sorted_and_free_of_duplicates():

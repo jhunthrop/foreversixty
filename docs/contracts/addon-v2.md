@@ -114,6 +114,14 @@ Notes for the reader:
   that character the flag is dropped.
 - `chance` is a fraction (0.14 is 14 percent) or nil when the pick is not a drop. `source` is
   the plain name a player knows ("Lucifron", "Blackrock Depths", "Tailoring"), never an id.
+- A rare spawn's drop (a creature that is not there on every run: Ironspine, Swiftmane) is
+  never a pick or an alternative while something from another source fills the slot at the
+  band. Where nothing else does, it stays, and its `source` ends " (rare)" ("Scarlet
+  Monastery: Ironspine (rare)", "Swiftmane (rare)"). An item that also drops elsewhere is
+  sourced there. Whether a creature is a rare spawn comes from the pinned classic-db dump: a
+  rare or rare-elite creature with a pooled spawn, or with a spawn in the open world.
+- A trash drop that several creatures of one instance share, none at a stated rate, is
+  sourced by the instance alone ("Gnomeregan"), with no creature and no `chance`.
 - Physical encoding of a bis pick: on disk, `Data.lua` stores each pick as one packed string,
   not as a table, so the loaded data stays inside the addon's 2 MB idle memory budget. The
   fields are joined by `|` in this order:
