@@ -96,8 +96,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 10 | 000000000000000000-01000000000000000-000000000000000000 | main_hand:263937 | 3.1 | 1 | spell:139=21.0 | {SpellID: 25316} |
 | 20 | 000000000000000000-03503000000000000-000000000000000000 | main_hand:890 | 23.2 | 6 | spell:2061=21.7, other:mana_gain=15.0, spell:6075=14.0, spell:2054=1.9, spell:1277324=1.0 | {SpellID: 25316} |
 | 30 | 000000000000000000-03505003030110000-000000000000000000 | main_hand:249392 | 32.9 | 6 | other:mana_gain=41.6, spell:9472=23.2, spell:6076=13.9, spell:6063=2.0, spell:1277325=1.0 | {SpellID: 25316} |
-| 38 | 000000000000000000-03505003030121420-000000000000000000 | main_hand:7757 | 51.1 | 6 | other:mana_gain=39.5, spell:9474=20.9, spell:6078=12.9, spell:6064=2.2, spell:1277325=1.0 | {SpellID: 25316} |
-| 40 | 000000000000000000-03505003030121431-000000000000000000 | main_hand:7757 | 35.9 | 8 | other:mana_gain=27.8, spell:401859=25.1, spell:9474=9.1, spell:6078=3.0, spell:6064=2.9 | {SpellID: 25316} |
+| 38 | 000000000000000000-03505003030121420-000000000000000000 | main_hand:873 | 51.5 | 6 | other:mana_gain=39.7, spell:9474=20.8, spell:6078=13.0, spell:6064=2.2, spell:1277325=1.0 | {SpellID: 25316} |
+| 40 | 000000000000000000-03505003030121431-000000000000000000 | main_hand:873 | 34.9 | 8 | other:mana_gain=27.7, spell:401859=26.5, spell:9474=8.5, spell:6078=3.0, spell:6064=2.9 | {SpellID: 25316} |
 | 50 | 025003000000000000-03505003030121431-000000000000000000 | main_hand:812 | 52.3 | 8 | other:mana_gain=28.4, spell:1240826=22.2, spell:10916=7.8, spell:6064=4.1, spell:10928=3.0 | {SpellID: 25316} |
 | 60 | 025003031303000000-03505003030121431-000000000000000000 | main_hand:19355 | 140.4 | 9 | other:mana_gain=67.3, spell:6075=20.0, spell:6064=15.9, spell:10917=13.1, spell:1240827=12.0 | - |
 
@@ -188,7 +188,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - priest-holy level=20 kind=unresolved_id action={SpellID: 25316}
 - priest-holy level=30 kind=unresolved_id action={SpellID: 25316}
 - priest-holy level=38 kind=unresolved_id action={SpellID: 25316}
-- priest-holy level=40 kind=dps_regression dps=35.9 prev_dps=51.1
+- priest-holy level=40 kind=dps_regression dps=34.9 prev_dps=51.5
 - priest-holy level=40 kind=unresolved_id action={SpellID: 25316}
 - priest-holy level=50 kind=unresolved_id action={SpellID: 25316}
 - priest-holy level=60 kind=zero_casts id=25316 authored=25316 (untracked ability; not in spellranks.json's rank chains)
