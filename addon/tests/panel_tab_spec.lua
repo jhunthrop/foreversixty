@@ -483,6 +483,7 @@ describe("PanelTab", function()
 			PanelTab.refresh(DATA)
 			local button = _G[PanelTab.BUTTON_NAME]
 			assert.are.same({ "TOPRIGHT", pane, "BOTTOMRIGHT", 0, 0 }, button.points[#button.points])
+			assert.are.same({}, state.clientWrites)
 		end)
 
 		it("turns itself off on a failure, hides what it drew and says so once in /fs diag", function()
@@ -507,6 +508,7 @@ describe("PanelTab", function()
 				PanelTab.refresh(DATA)
 			end)
 			assert.is_nil(_G[PanelTab.BUTTON_NAME])
+			assert.are.same({}, state.clientWrites)
 		end)
 
 		it("opens the flyout at the pane's top right on a click, and closes it on the next", function()
@@ -578,6 +580,7 @@ describe("PanelTab", function()
 			click(build.useOther)
 			click(build.copy)
 			assert.are.same({ "paste", "copy" }, opened)
+			assert.are.same({}, state.clientWrites)
 		end)
 
 		it("queues a sim from Sim me through the outbox, then reads that it is queued", function()
@@ -667,6 +670,489 @@ describe("PanelTab", function()
 				'"OnShow"', '"OnHide"' }) do
 				assert.is_nil(source:find(call, 1, true), call)
 			end
+		end)
+	end)
+
+	-- Fix round 1 (the code review and the live client's hunter-23 captures).
+	describe("fix round 1", function()
+		--- A measure of 6 units a visible byte, for the fits.
+		local function sixPerByte(text)
+			return #ItemTooltip.stripEscapes(text) * 6
+		end
+
+		local function open(worn, options)
+			local pane = start(worn, options)
+			PanelTab.refresh(DATA)
+			click(_G[PanelTab.BUTTON_NAME])
+			return pane, _G[PanelTab.FLYOUT_NAME]
+		end
+
+		local function regionOf(model, kind)
+			for _, region in ipairs(model.regions) do
+				if region.kind == kind then
+					return region
+				end
+			end
+			return nil
+		end
+
+		local function hasPoint(region, point)
+			for _, candidate in ipairs(region.points) do
+				local same = #candidate == #point
+				for index = 1, #point do
+					same = same and candidate[index] == point[index]
+				end
+				if same then
+					return true
+				end
+			end
+			return false
+		end
+
+		local function rgb(key, alpha)
+			return { Theme.rgb(Theme.HEX[key], alpha) }
+		end
+
+		local function colorOf(region, method)
+			local call = mock.lastCall(region, method or "SetTextColor")
+			return { call[1], call[2], call[3], call[4] }
+		end
+
+		--- The shown texts of a region's pooled lines, top to bottom.
+		local function shownTexts(region)
+			local list = {}
+			for _, text in ipairs(region.texts or {}) do
+				if text:IsShown() then
+					list[#list + 1] = text:GetText()
+				end
+			end
+			return list
+		end
+
+		-- Item 1: the icons drew ~40 px over ~14 px rows on the live client.
+		describe("row icons and row heights", function()
+			it("sizes every row icon 16 x 16 at its row's top left, the text anchored right of it", function()
+				open({ chest = WORN_CHEST, legs = THIN_LEGS })
+				local S = Theme.SIZES
+				assert.are.equal(16, S.rowIcon)
+				local rows = { PanelTab.targetRows[1], PanelTab.targetRows[2] }
+				for index = 1, 3 do
+					rows[#rows + 1] = PanelTab.rotationWidgets[index]
+				end
+				for _, row in ipairs(rows) do
+					local size = mock.lastCall(row.icon, "SetSize")
+					assert.are.same({ S.rowIcon, S.rowIcon }, { size[1], size[2] })
+					assert.is_true(hasPoint(row.icon, { "TOPLEFT", row.frame, "TOPLEFT", 0, 0 }))
+					assert.is_true(hasPoint(row.icon, { "BOTTOMRIGHT", row.frame, "TOPLEFT", S.rowIcon, -S.rowIcon }))
+					assert.are.same({ "TOPLEFT", row.icon, "TOPRIGHT", S.gap, 0 }, row.name.points[#row.name.points])
+				end
+			end)
+
+			it("gives every row a fixed height from its lines, the region title on its own row above", function()
+				open({ chest = WORN_CHEST, legs = THIN_LEGS })
+				local S = Theme.SIZES
+				assert.are.equal(math.max(S.rowIcon, 2 * S.panelLine), PanelTab.targetRowHeight())
+				assert.are.equal(math.max(S.rowIcon, 2 * S.panelLine), PanelTab.rotationRowHeight({ condition = "x." }))
+				assert.are.equal(math.max(S.rowIcon, 3 * S.panelLine),
+					PanelTab.rotationRowHeight({ condition = "x.", conditionLines = 2 }))
+				assert.are.equal(S.rowIcon, PanelTab.rotationRowHeight({}))
+				local y = S.panelTitle
+				for index = 1, 2 do
+					local row = PanelTab.targetRows[index]
+					assert.are.equal(PanelTab.targetRowHeight(), row.frame:GetHeight())
+					assert.are.same({ "TOPLEFT", PanelTab.regionFrames.targets, "TOPLEFT", 0, -y },
+						row.frame.points[#row.frame.points])
+					y = y + PanelTab.targetRowHeight() + S.panelRowGap
+				end
+				local rotation = regionOf(PanelTab.last, "rotation")
+				y = S.panelTitle
+				for index, entry in ipairs(rotation.rows) do
+					local widget = PanelTab.rotationWidgets[index]
+					assert.are.equal(PanelTab.rotationRowHeight(entry), widget.frame:GetHeight())
+					assert.are.same({ "TOPLEFT", PanelTab.regionFrames.rotation, "TOPLEFT", 0, -y },
+						widget.frame.points[#widget.frame.points])
+					y = y + PanelTab.rotationRowHeight(entry) + S.panelRowGap
+				end
+				for _, kind in ipairs({ "targets", "rotation", "build" }) do
+					local title = PanelTab.regionFrames[kind].title
+					assert.are.same({ "TOPLEFT", PanelTab.regionFrames[kind], "TOPLEFT", 0, 0 }, title.points[#title.points])
+					assert.are.equal(PanelTab.regionHeight(regionOf(PanelTab.last, kind)),
+						PanelTab.regionFrames[kind]:GetHeight())
+				end
+			end)
+		end)
+
+		-- Item 2: the flyout was ~220 px and the source line wrapped into the next row.
+		describe("width and fitting", function()
+			it("is flyoutWidth wide and fits every single-line text to its room by measure", function()
+				local _, flyout = open({ chest = WORN_CHEST, legs = THIN_LEGS })
+				local S = Theme.SIZES
+				assert.are.equal(320, S.flyoutWidth)
+				assert.are.equal(S.flyoutWidth, flyout:GetWidth())
+				PanelTab.measure = sixPerByte
+				PanelTab.refresh(DATA)
+				for index = 1, 2 do
+					local row = PanelTab.targetRows[index]
+					assert.is_true(sixPerByte(row.name:GetText()) <= PanelTab.nameRoom(), row.name:GetText())
+					assert.is_true(sixPerByte(row.detail:GetText()) <= PanelTab.textRoom(), row.detail:GetText())
+				end
+				-- The chest's source line no longer fits whole: the chance goes, then the place
+				-- shortens; the boss is never cut (the tooltip's own rule).
+				local chest = PanelTab.targetRows[2].detail:GetText()
+				assert.is_truthy(chest:find("Mutanus the Devourer", 1, true))
+				assert.is_nil(chest:find("33%", 1, true))
+				for index = 1, 3 do
+					local widget = PanelTab.rotationWidgets[index]
+					assert.is_true(sixPerByte(widget.name:GetText()) <= PanelTab.textRoom())
+				end
+				for _, text in ipairs(PanelTab.regionFrames.build.texts) do
+					assert.is_true(sixPerByte(text:GetText()) <= PanelTab.innerWidth())
+				end
+			end)
+
+			it("keeps the target's source on one line, shortened the way the tooltip's source line is", function()
+				start()
+				local pick = { source = "The Deadmines: Captain Greenskin", kind = "D", chance = 0.3 }
+				local entry = { slot = "waist", source = ItemTooltip.sourceLine(pick), pick = pick }
+				assert.are.equal("Waist · The Deadmines · Captain Greenskin · 30% drop", PanelTab.detailText(entry, "Waist"))
+				local room = sixPerByte("Waist · The Deadmines · Captain Greenskin")
+				assert.are.equal("Waist · The Deadmines · Captain Greenskin",
+					PanelTab.detailText(entry, "Waist", sixPerByte, room))
+				local narrow = PanelTab.detailText(entry, "Waist", sixPerByte, room - 30)
+				assert.is_truthy(narrow:find("Captain Greenskin", 1, true))
+				assert.is_truthy(narrow:find(L.tooltipNamePending, 1, true))
+				assert.is_true(sixPerByte(narrow) <= room - 30)
+				-- Narrower than the boss alone: still one line, cut with the ellipsis.
+				local tiny = PanelTab.detailText(entry, "Waist", sixPerByte, 90)
+				assert.is_true(sixPerByte(tiny) <= 90)
+				assert.is_truthy(tiny:find(L.tooltipNamePending, 1, true))
+			end)
+		end)
+
+		-- Item 3: no scrolling; caps, and never taller than the pane.
+		describe("height", function()
+			local function rows(count)
+				local list = {}
+				for index = 1, count do
+					list[index] = { name = "Row " .. index, condition = "Do it.", conditionLines = 1 }
+				end
+				return list
+			end
+
+			local function bosses(count)
+				local list = {}
+				for index = 1, count do
+					list[index] = { title = "Boss " .. index, detail = "0 deaths" }
+				end
+				return list
+			end
+
+			it("shows at most eight rotation rows and six raid bosses, each with a muted N more", function()
+				start()
+				local model = PanelTab.model({ targets = {}, rotation = rows(11),
+					raid = { kind = "raid", title = L.panelLastRaid, bosses = bosses(9) } })
+				local rotation, raid = regionOf(model, "rotation"), regionOf(model, "raid")
+				assert.are.equal(PanelTab.MAX_ROTATION, #rotation.rows)
+				assert.are.equal(8, PanelTab.MAX_ROTATION)
+				assert.are.equal(3, rotation.more)
+				assert.are.equal(PanelTab.MAX_BOSSES, #raid.bosses)
+				assert.are.equal(6, PanelTab.MAX_BOSSES)
+				assert.are.equal(3, raid.more)
+				assert.are.equal(11, model.rotation)
+				local small = PanelTab.model({ targets = {}, rotation = rows(2) })
+				assert.are.equal(0, regionOf(small, "rotation").more)
+			end)
+
+			it("fits under a height: the last raid's bosses go first, then rotation rows", function()
+				start()
+				local targets = {}
+				for index = 1, 5 do
+					targets[index] = { slot = "chest", itemId = index, name = "T" .. index, gain = 1, unit = "dps" }
+				end
+				local function model()
+					return PanelTab.model({ targets = targets, rotation = rows(8),
+						raid = { kind = "raid", title = L.panelLastRaid, bosses = bosses(6) } })
+				end
+				local full = PanelTab.flyoutHeight(model())
+				local trimmed = PanelTab.fitHeight(model(), full - 1)
+				assert.is_true(PanelTab.flyoutHeight(trimmed) <= full - 1)
+				assert.are.equal(5, #regionOf(trimmed, "raid").bosses)
+				assert.are.equal(1, regionOf(trimmed, "raid").more)
+				assert.are.equal(8, #regionOf(trimmed, "rotation").rows)
+				-- Lower than the flyout without its last raid: that region goes whole, then rotation rows.
+				local noRaid = model()
+				table.remove(noRaid.regions)
+				local limit = PanelTab.flyoutHeight(noRaid) - 1
+				local tighter = PanelTab.fitHeight(model(), limit)
+				assert.is_nil(regionOf(tighter, "raid"))
+				assert.are.equal(7, #regionOf(tighter, "rotation").rows)
+				assert.are.equal(1, regionOf(tighter, "rotation").more)
+				assert.are.equal(5, #regionOf(tighter, "targets").rows)
+				assert.is_true(PanelTab.flyoutHeight(tighter) <= limit)
+				-- No height to fit under (a client that cannot say): nothing trimmed.
+				assert.are.equal(full, PanelTab.flyoutHeight(PanelTab.fitHeight(model(), nil)))
+			end)
+
+			it("draws no taller than the character pane, dropping the last raid's bosses first", function()
+				local raid = { type = "last_raid", character = "US/Ashbringer/Bob", date = "2026-12-09", bosses = {} }
+				for index = 1, 9 do
+					raid.bosses[index] = { name = "Boss " .. index, percentile = 50, deaths = 0 }
+				end
+				local pane, flyout = open({ chest = WORN_CHEST, legs = THIN_LEGS }, { level = 60,
+					inbox = { messages = { raid } } })
+				local full = flyout:GetHeight()
+				assert.are.equal(PanelTab.flyoutHeight(PanelTab.last), full)
+				pane:SetHeight(full - 20)
+				PanelTab.refresh(DATA)
+				assert.is_true(flyout:GetHeight() <= full - 20)
+				assert.are.equal(PanelTab.flyoutHeight(PanelTab.last), flyout:GetHeight())
+				local drawn = regionOf(PanelTab.last, "raid")
+				assert.is_true(#drawn.bosses < PanelTab.MAX_BOSSES)
+				assert.are.equal(3, #regionOf(PanelTab.last, "rotation").rows)
+				assert.are.equal(string.format(L.panelMore, 9 - #drawn.bosses), PanelTab.regionFrames.raid.more:GetText())
+				assert.is_true(PanelTab.regionFrames.raid.more:IsShown())
+				assert.are.same({}, state.clientWrites)
+			end)
+		end)
+
+		-- Item 4: "at level N" from the next band (review D2).
+		describe("the next band", function()
+			it("adds the 30 band's Rapid Fire at level 26 for the level 24 beast mastery hunter (shipped data)", function()
+				start()
+				local data = require("Data")
+				local build = { classSlug = "hunter", order = {}, gear = {} }
+				local rows = PanelTab.rotationRows(data, build, { [1] = { ["1:1"] = 5 } }, 24)
+				local names = {}
+				for index, row in ipairs(rows) do
+					names[index] = row.name
+				end
+				assert.are.same({ "Aimed Shot", "Multi-Shot", "Serpent Sting", "Arcane Shot", "Rapid Fire" }, names)
+				assert.are.same({ 1, 2, 3, 4 }, { rows[1].number, rows[2].number, rows[3].number, rows[4].number })
+				assert.is_nil(rows[5].number)
+				assert.is_true(rows[5].muted)
+				assert.are.equal(string.format(L.panelRotationAt, 26), rows[5].at)
+				assert.are.equal(3045, rows[5].spellId)
+			end)
+
+			it("adds at most two, none already in the band, none learned", function()
+				start()
+				local data = { classes = DATA.classes, rotations = { ["warrior-arms"] = {
+					{ level = 20, lines = { line(772, "Rend", "Rend kept up.") } },
+					{ level = 30, lines = {
+						line(773, "Rend", "Rend kept up."), line(845, "Cleave", "Cleave on two."),
+						line(1464, "Slam", "Slam."), line(1680, "Whirlwind", "Whirlwind."), line(12294, "Mortal Strike", "MS."),
+					} },
+				} }, abilityLevels = { [772] = 4, [773] = 4, [845] = 20, [1464] = 30, [1680] = 36, [12294] = 40 } }
+				local ranks = { [1] = { ["1:1"] = 3 } }
+				local rows = PanelTab.rotationRows(data, BUILD, ranks, 21)
+				local names = {}
+				for index, row in ipairs(rows) do
+					names[index] = row.name
+				end
+				assert.are.same({ "Rend", "Slam", "Whirlwind" }, names)
+				assert.are.equal(string.format(L.panelRotationAt, 30), rows[2].at)
+				assert.are.equal(string.format(L.panelRotationAt, 36), rows[3].at)
+				-- At the top rung there is no next band: its own five lines, all learned.
+				assert.are.equal(5, #PanelTab.rotationRows(data, BUILD, ranks, 60))
+			end)
+		end)
+
+		-- Item 5: the button read as plain text (review D3, confirmed live).
+		describe("the button", function()
+			it("is 112 x 24 with the addon's 1 px gold edge over the panel fill and the chip's gold font", function()
+				start({}, { tabs = 0 })
+				PanelTab.refresh(DATA)
+				local S = Theme.SIZES
+				local button = _G[PanelTab.BUTTON_NAME]
+				assert.are.same({ 112, 24 }, { button:GetWidth(), button:GetHeight() })
+				assert.are.same({ S.panelTabWidth, S.panelTabHeight }, { button:GetWidth(), button:GetHeight() })
+				assert.are.equal(4, #button.foreverSixtyEdges)
+				assert.are.equal(1, S.border)
+				for _, edge in ipairs(button.foreverSixtyEdges) do
+					assert.are.same(rgb("gold"), colorOf(edge, "SetColorTexture"))
+					local thickness = mock.lastCall(edge, "SetHeight") or mock.lastCall(edge, "SetWidth")
+					assert.are.equal(S.border, thickness[1])
+				end
+				assert.are.same(rgb("background", Theme.ALPHA.window), colorOf(button.foreverSixtyGround, "SetColorTexture"))
+				local label = button.foreverSixtyLabel
+				assert.are.equal(L.panelTabLabel, label:GetText())
+				assert.are.same(rgb("gold"), colorOf(label))
+				assert.are.equal(S.chipText, mock.lastCall(label, "SetFont")[2])
+				-- Under the cursor it brightens; it goes back when the cursor leaves.
+				button:GetScript("OnEnter")(button)
+				assert.are.same(rgb("goldHover"), colorOf(label))
+				assert.are.same(rgb("hover"), colorOf(button.foreverSixtyGround, "SetColorTexture"))
+				button:GetScript("OnLeave")(button)
+				assert.are.same(rgb("gold"), colorOf(label))
+				assert.are.same(rgb("background", Theme.ALPHA.window), colorOf(button.foreverSixtyGround, "SetColorTexture"))
+				assert.are.same({}, state.clientWrites)
+			end)
+
+			it("sits right of the client's own tabs: TabSystem, then CharacterFrameTab<n>, then the sidebar tabs", function()
+				local pane = start({}, { tabs = 0 })
+				local S = Theme.SIZES
+				local sidebar = {}
+				for index = 1, 3 do
+					sidebar[index] = _G.CreateFrame("Button", "PaperDollSidebarTab" .. index, pane)
+				end
+				PanelTab.refresh(DATA)
+				local button = _G[PanelTab.BUTTON_NAME]
+				assert.are.same({ "LEFT", sidebar[3], "RIGHT", S.panelTabGap, 0 }, button.points[#button.points])
+				local tab = _G.CreateFrame("Button", "CharacterFrameTab1", pane)
+				PanelTab.refresh(DATA)
+				assert.are.equal(tab, button.points[#button.points][2])
+				local system = _G.CreateFrame("Frame", nil, pane)
+				pane.TabSystem = system
+				PanelTab.refresh(DATA)
+				assert.are.same({ "LEFT", system, "RIGHT", S.panelTabGap, 0 }, button.points[#button.points])
+				assert.are.same({}, state.clientWrites)
+			end)
+
+			it("anchors to the paper doll's sidebar tab holder when only it resolves", function()
+				local pane = start({}, { tabs = 0 })
+				local holder = _G.CreateFrame("Frame", "PaperDollSidebarTabs", pane)
+				PanelTab.refresh(DATA)
+				local button = _G[PanelTab.BUTTON_NAME]
+				assert.are.equal(holder, button.points[#button.points][2])
+				assert.are.same({}, state.clientWrites)
+			end)
+		end)
+
+		-- Item 6: frame-level specs for the rotation, last raid and build drawers (review D4).
+		describe("the drawers", function()
+			it("draws the rotation: number, name and rank, the condition under it, a later one muted", function()
+				open({ chest = WORN_CHEST })
+				local first, later = PanelTab.rotationWidgets[1], PanelTab.rotationWidgets[2]
+				assert.are.equal("spell-772", mock.lastCall(first.icon, "SetTexture")[1])
+				assert.are.equal("1. Rend Rank 2", ItemTooltip.stripEscapes(first.name:GetText()))
+				assert.are.equal("Rend kept up.", first.condition:GetText())
+				assert.are.same(rgb("body"), colorOf(first.name))
+				assert.is_false(mock.lastCall(first.icon, "SetDesaturated")[1])
+				assert.are.equal("Execute " .. string.format(L.panelRotationAt, 24),
+					ItemTooltip.stripEscapes(later.name:GetText()))
+				assert.are.same(rgb("muted"), colorOf(later.name))
+				assert.is_true(mock.lastCall(later.icon, "SetDesaturated")[1])
+				assert.is_false(PanelTab.regionFrames.rotation.more:IsShown())
+				assert.are.same({}, state.clientWrites)
+			end)
+
+			it("draws the last raid: the dated title, each boss with its muted detail, N more past six", function()
+				local raid = { type = "last_raid", character = "US/Ashbringer/Bob", date = "2026-12-09", bosses = {
+					{ name = "Lucifron", percentile = 71, deaths = 0, consumables_missed = { "flask" } },
+				} }
+				for index = 2, 8 do
+					raid.bosses[index] = { name = "Boss " .. index }
+				end
+				open({ chest = WORN_CHEST }, { level = 60, inbox = { messages = { raid } } })
+				local region = PanelTab.regionFrames.raid
+				assert.is_true(region:IsShown())
+				assert.are.equal(string.format(L.panelLastRaidAsOf, "9 Dec"), region.title:GetText())
+				assert.are.same({
+					string.format(L.panelRaidBoss, "Lucifron", "71st"),
+					string.format(L.panelRaidDeaths, 0) .. L.panelRaidJoin .. string.format(L.panelRaidMissed, "flask"),
+					"Boss 2", "Boss 3", "Boss 4", "Boss 5", "Boss 6",
+				}, shownTexts(region))
+				assert.are.same(rgb("muted"), colorOf(region.texts[2]))
+				assert.is_true(region.more:IsShown())
+				assert.are.equal(string.format(L.panelMore, 2), region.more:GetText())
+				assert.are.same(rgb("muted"), colorOf(region.more))
+				assert.are.equal(PanelTab.regionHeight(regionOf(PanelTab.last, "raid")), region:GetHeight())
+				assert.are.same({}, state.clientWrites)
+			end)
+
+			it("draws the build: split, progress, off plan in the warning colour, then the two buttons under them", function()
+				open({ chest = WORN_CHEST })
+				local S = Theme.SIZES
+				local region = PanelTab.regionFrames.build
+				local entry = regionOf(PanelTab.last, "build")
+				assert.are.same({ entry.split, entry.progress, entry.offPlan }, shownTexts(region))
+				assert.are.same(rgb("body"), colorOf(region.texts[1]))
+				assert.are.same(rgb("muted"), colorOf(region.texts[2]))
+				assert.are.same(rgb("warning"), colorOf(region.texts[3]))
+				local y = S.panelTitle + 3 * S.panelLine + S.panelRowGap
+				assert.are.same({ "TOPLEFT", region, "TOPLEFT", 0, -y }, region.useOther.points[#region.useOther.points])
+				assert.are.same({ "TOPRIGHT", region, "TOPRIGHT", 0, -y }, region.copy.points[#region.copy.points])
+				assert.are.equal(PanelTab.regionHeight(entry), region:GetHeight())
+				assert.are.equal(y + S.panelButtonHeight, region:GetHeight())
+				assert.are.same({}, state.clientWrites)
+			end)
+		end)
+
+		-- Item 7: no draw while hidden (review D5), and the conditions measured once.
+		describe("drawing only what shows", function()
+			it("skips the draw while the pane is closed, and never shows the flyout stale when it opens again", function()
+				local pane, flyout = open({ chest = WORN_CHEST })
+				local draws = PanelTab.draws
+				pane:Hide()
+				PanelTab.refresh(DATA)
+				assert.are.equal(draws, PanelTab.draws)
+				assert.is_false(flyout:IsShown())
+				pane:Show()
+				assert.is_false(flyout:IsVisible())
+				click(_G[PanelTab.BUTTON_NAME])
+				assert.are.equal(draws + 1, PanelTab.draws)
+				assert.is_true(flyout:IsVisible())
+				assert.are.same({}, state.clientWrites)
+			end)
+
+			it("measures a condition once for each width", function()
+				start()
+				local calls = 0
+				local function measure(text)
+					calls = calls + 1
+					return #text * 6
+				end
+				local ranks = { [1] = { ["1:1"] = 3 } }
+				PanelTab.rotationRows(DATA, BUILD, ranks, 21, measure, 120)
+				local first = calls
+				assert.is_true(first > 0)
+				local again = PanelTab.rotationRows(DATA, BUILD, ranks, 21, measure, 120)
+				assert.are.equal(first, calls)
+				assert.are.equal("Rend kept up.", again[1].condition)
+				PanelTab.rotationRows(DATA, BUILD, ranks, 21, measure, 100)
+				assert.is_true(calls > first)
+			end)
+		end)
+
+		-- Item 8: a slot with the bag arrow (review D6).
+		describe("the bag arrow", function()
+			it("lists the slot's bag item as its hover leads with it, never the next pick", function()
+				local BAG_CHEST = link(250, "Bag Chest")
+				start({ chest = WORN_CHEST, legs = THIN_LEGS })
+				ItemTooltip.bagUpgradeFor = function(slot)
+					if slot == "chest" then
+						return { link = BAG_CHEST, itemId = 250, delta = 2.0, unit = "dps", slot = "chest" }
+					end
+					return nil
+				end
+				local chest
+				for _, row in ipairs(PanelTab.inputs(DATA).targets) do
+					if row.slot == "chest" then
+						chest = row
+					end
+				end
+				assert.is_true(chest.bag)
+				assert.are.equal(250, chest.itemId)
+				assert.are.equal("Bag Chest", chest.name)
+				assert.are.equal(L.tooltipRightClickEquip, chest.source)
+				local lead = ItemTooltip.bagLead("chest", {})
+				assert.are.equal(lead.lines[2].upgrade.gain, chest.gain)
+				assert.are.equal(lead.target.itemId, chest.itemId)
+				PanelTab.refresh(DATA)
+				click(_G[PanelTab.BUTTON_NAME])
+				local drawn
+				for index = 1, 2 do
+					local row = PanelTab.targetRows[index]
+					if row.itemId == 250 then
+						drawn = row
+					end
+				end
+				assert.are.equal(L.panelInYourBags .. " Bag Chest", ItemTooltip.stripEscapes(drawn.name:GetText()))
+				assert.are.equal(string.format(L.panelTargetDetail, L.gearSlotLabels.chest, L.tooltipRightClickEquip),
+					drawn.detail:GetText())
+				assert.are.equal(ItemTooltip.figureText(chest.gain, chest.unit), drawn.gain:GetText())
+				assert.are.same({}, state.clientWrites)
+			end)
 		end)
 	end)
 end)

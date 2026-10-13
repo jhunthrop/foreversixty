@@ -7,7 +7,7 @@
 -- (top four lines) or advanced (every line) display. Rotation.newAbilities
 -- fed the level-up rotation toast, which went with the chip (L3.1). The
 -- character-panel tab's rotation region (L4.3) reads Rotation.model with
--- Rotation.plainCondition and Rotation.learnedAt.
+-- Rotation.plainCondition, Rotation.learnedAt and Rotation.upcoming.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -147,6 +147,45 @@ function Rotation.learnedAt(spellId, data)
 		return nil
 	end
 	return tonumber(levels[spellId])
+end
+
+--- The next band's lines whose ability the character has not learned yet (fix round 1, item
+--- 4: the band already holds only learned abilities, so "at level N" never fired on the shipped
+--- data): the rung after the one `level` reads, its lines in order whose Rotation.learnedAt is
+--- above `level` and whose ability the band read now does not already hold (by name, as
+--- Rotation.newAbilities compares), at most `limit`. Each { line, at }. Empty at the top rung,
+--- with no build, or with no rotation for the spec.
+function Rotation.upcoming(data, build, ranks, level, limit)
+	local bands = specBands(data, build, ranks)
+	local band = bandFor(bands, level)
+	if band == nil or type(level) ~= "number" then
+		return {}
+	end
+	local nextBand
+	for _, candidate in ipairs(bands) do
+		if candidate.level > band.level and (nextBand == nil or candidate.level < nextBand.level) then
+			nextBand = candidate
+		end
+	end
+	if nextBand == nil then
+		return {}
+	end
+	local held = {}
+	for _, line in ipairs(band.lines) do
+		held[line.name] = true
+	end
+	local found = {}
+	for _, line in ipairs(nextBand.lines) do
+		if limit ~= nil and #found >= limit then
+			break
+		end
+		local at = Rotation.learnedAt(line.spellId, data)
+		if not held[line.name] and at ~= nil and at > level then
+			held[line.name] = true
+			found[#found + 1] = { line = line, at = at }
+		end
+	end
+	return found
 end
 
 --- The ellipsis a cut condition ends with (the tooltip's own).

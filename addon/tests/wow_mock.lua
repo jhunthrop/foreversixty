@@ -358,6 +358,17 @@ function mock.install(state)
 		function frame:IsShown()
 			return self.shown
 		end
+		--- Shown, and every parent up the chain shown: what the client's IsVisible answers.
+		function frame:IsVisible()
+			if not self.shown then
+				return false
+			end
+			local holder = self.parent
+			if type(holder) == "table" and type(holder.IsVisible) == "function" then
+				return holder:IsVisible() == true
+			end
+			return true
+		end
 		function frame:Enable()
 			record(self, "Enable")
 			self.enabled = true

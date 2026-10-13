@@ -267,23 +267,25 @@ Theme.SIZES = {
 	--- How far inside the canvas the page's own opaque backdrop sits (fix round 1, item 9).
 	settingsInset = 8,
 	--- The character-panel tab (spec section 4.5, L4.3): the "Forever Sixty" button beside the
-	--- client's last tab (its size, its gap from that tab) and the flyout at the pane's top
-	--- right (its width, where it sits from the pane's corner, its padding, the gap between
-	--- rows and between regions, a line of its small text, a region's title line, the
-	--- header line, the icons on its rows, its buttons' height).
+	--- client's tabs (its size, its gap from them) and the flyout at the pane's top right (its
+	--- width, where it sits from the pane's corner, its padding, the gap between rows and
+	--- between regions, a line of its small text, a region's title row, the header line, its
+	--- buttons' height). Every row is a fixed height from its lines (fix round 1, item 1: the
+	--- live client drew the icons ~40 px over 14 px rows): `rowIcon` square at the row's top
+	--- left, the text `gap` right of it; a text line is `panelLine` high.
 	panelTabWidth = 112,
 	panelTabHeight = 24,
 	panelTabGap = 0,
-	panelWidth = 300,
+	flyoutWidth = 320,
 	panelOffsetX = 0,
 	panelOffsetY = 0,
 	panelPadding = 10,
 	panelRowGap = 4,
 	panelRegionGap = 10,
-	panelLine = 13,
+	panelLine = 12,
 	panelTitle = 16,
 	panelHeader = 18,
-	panelIcon = 16,
+	rowIcon = 16,
 	panelButtonHeight = 22,
 	--- The room a target row keeps at its right for the gain ("+12.3 DPS") beside the name.
 	panelGainWidth = 64,

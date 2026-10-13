@@ -97,6 +97,59 @@ function Widgets.button(parent, text, onClick, name)
 	return button
 end
 
+--- A button that must read as the addon's own on the client's art (the character panel's
+--- "Forever Sixty" tab, L4.3 fix round 1, item 5): the panel fill under a 1 px gold edge, its
+--- label in the chip's gold font (the client's own font at Theme.SIZES.chipText), `width` x
+--- `height`; under the cursor the fill lifts to the hover ground and the edge and label to
+--- the brighter gold. `name` (optional) names the frame for a /run probe.
+function Widgets.edgedButton(parent, text, onClick, name, width, height)
+	local S = Theme.SIZES
+	local button = Theme.createFrame("Button", name, parent)
+	button:SetSize(width or S.buttonWidth, height or S.buttonHeight)
+	local ground = Theme.texture(button, "BACKGROUND", "background", Theme.ALPHA.window)
+	ground:SetAllPoints(button)
+	button.foreverSixtyGround = ground
+	button.foreverSixtyEdges = Theme.outline(button, S.border, "gold")
+	local label = Theme.fontString(button, "OVERLAY", "normal")
+	local fontPath, _, fontFlags = label:GetFont()
+	label:SetFont(fontPath or Theme.FALLBACK_FONT.path, S.chipText, fontFlags)
+	label:SetTextColor(Theme.rgb(Theme.HEX.gold))
+	label:SetPoint("CENTER", button, "CENTER", 0, 0)
+	button.foreverSixtyLabel = label
+	button.SetText = function(self, value)
+		self.foreverSixtyLabel:SetText(value or "")
+	end
+	button.GetText = function(self)
+		return self.foreverSixtyLabel:GetText()
+	end
+	--- Rest or lit: the fill, the edge and the label together.
+	local function look(lit)
+		Theme.paint(ground, lit and "hover" or "background", not lit and Theme.ALPHA.window or nil)
+		for _, edge in ipairs(button.foreverSixtyEdges) do
+			Theme.paint(edge, lit and "goldHover" or "gold")
+		end
+		label:SetTextColor(Theme.rgb(Theme.HEX[lit and "goldHover" or "gold"]))
+	end
+	button:SetScript("OnEnter", function()
+		look(true)
+	end)
+	button:SetScript("OnLeave", function()
+		look(false)
+	end)
+	Theme.pressable(button, label, function()
+		Theme.paint(ground, "inset")
+	end, function(_, over)
+		look(over)
+	end)
+	button:SetScript("OnClick", function(self, ...)
+		if self:IsEnabled() then
+			onClick(self, ...)
+		end
+	end)
+	button:SetText(text)
+	return button
+end
+
 --- A label the player can click, with no border or background of its own
 --- -- a "+N more" or "Show fewer" affordance sitting inside a card,
 --- muted at rest and gold under the cursor like a plain text link. Sizes

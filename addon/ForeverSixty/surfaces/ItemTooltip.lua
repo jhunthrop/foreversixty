@@ -1866,6 +1866,10 @@ local function bagLead(slot, head)
 	return ItemTooltip.bagSection(found, head, ItemTooltip.unitOf(ItemTooltip.current))
 end
 
+--- The hover's own bag lead, for the character panel's targets (L4.3 fix round 1, item 8): a
+--- slot with the arrow lists the very bag item its hover leads with.
+ItemTooltip.bagLead = bagLead
+
 local function addLines(tooltip, itemLink)
 	-- A hover from before (another item) must not be redrawn onto this one.
 	ItemTooltip.activeHover = nil

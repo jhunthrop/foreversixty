@@ -940,8 +940,16 @@ L.panelLastRaidAsOf = "Last raid · as of %s"
 -- A target's second line: the slot in the client's own word, then the item tooltip's own
 -- source line ("Chest · Wailing Caverns · Mutanus the Devourer · 33% drop").
 L.panelTargetDetail = "%s · %s"
--- An ability the character has not learned yet, muted and listed last.
+-- A learned rotation line's number, before its name ("1. Aimed Shot Rank 1").
+L.panelRotationNumber = "%d."
+-- An ability the character has not learned yet, muted and listed last; the next band's
+-- abilities not learned yet come after them (fix round 1, item 4).
 L.panelRotationAt = "at level %d"
+-- A slot the bag arrow marks: its row is the bag item, as its hover leads with it ("In your
+-- bags: Bag Chest +2.0 DPS", then "Chest · Right-click it in your bags to equip.").
+L.panelInYourBags = L.tooltipInYourBags .. ":"
+-- Under a region cut short (at most 8 rotation rows, 6 raid bosses; fix round 1, item 3).
+L.panelMore = "%d more"
 -- The build: its split in the dialog's words ("Arms 31 / Fury 20"), then these two.
 L.panelProgress = "%d of %d points on plan"
 L.panelOffPlan = "%d off plan"

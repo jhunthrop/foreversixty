@@ -242,4 +242,33 @@ describe("Rotation", function()
 			assert.are.equal(24, Rotation.learnedAt(20662, data))
 		end)
 	end)
+
+	-- L4.3 fix round 1, item 4: the next band's abilities the character has not learned yet.
+	describe("upcoming", function()
+		local data = {
+			classes = DATA.classes, rotations = DATA.rotations,
+			abilityLevels = { [2687] = 10, [12328] = 30, [23881] = 40, [1680] = 36, [1608] = 8 },
+		}
+
+		local function names(found)
+			local list = {}
+			for index, entry in ipairs(found) do
+				list[index] = entry.line.name .. "@" .. entry.at
+			end
+			return list
+		end
+
+		it("lists the next rung's lines not learned yet and not in the band read now, in order, at most the limit", function()
+			assert.are.same({ "Death Wish@30", "Bloodthirst@40" }, names(Rotation.upcoming(data, BUILD, RANKS, 25, 2)))
+			assert.are.same({ "Death Wish@30" }, names(Rotation.upcoming(data, BUILD, RANKS, 25, 1)))
+			-- Death Wish learned by 32: it is the trainer's news, not this list's.
+			assert.are.same({ "Bloodthirst@40", "Whirlwind@36" }, names(Rotation.upcoming(data, BUILD, RANKS, 32, 2)))
+		end)
+
+		it("is empty at the top rung, with no build, and with no level", function()
+			assert.are.same({}, Rotation.upcoming(data, BUILD, RANKS, 40, 2))
+			assert.are.same({}, Rotation.upcoming(data, nil, RANKS, 25, 2))
+			assert.are.same({}, Rotation.upcoming(data, BUILD, RANKS, nil, 2))
+		end)
+	end)
 end)

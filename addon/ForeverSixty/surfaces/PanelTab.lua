@@ -6,18 +6,24 @@
 -- CreateTexture, PanelTemplates_SetNumTabs or field write into CharacterFrame/PaperDollFrame
 -- (L4.1). So the "tab" is an addon-owned button and an addon-owned flyout, both made by the
 -- addon, parented to CharacterFrame (as L4.1's overlays are parented to the slot buttons) and
--- anchored to it: the button at the pane's bottom edge right of the client's last tab, the
--- flyout TOPLEFT at the pane's TOPRIGHT. Scripts sit only on the addon's own frames (the
--- flyout itself has none); the flyout hides with the pane because it is its child. Nothing
--- polls: the flyout redraws on the chip's events (Options), on an item it waits on, and on
--- each open.
+-- anchored to it: the button right of the client's own tabs (else under the pane's bottom
+-- right), the flyout TOPLEFT at the pane's TOPRIGHT. Client frames are only ever read. Scripts
+-- sit only on the addon's own frames (the flyout itself has none); the flyout hides with the
+-- pane because it is its child. Nothing polls: the flyout redraws on the chip's events
+-- (Options), on an item it waits on, and on each open, and only while it shows.
 --
 -- Pure model, thin frames: PanelTab.targets, rotationRows, buildRegion, simRegion,
--- raidRegion and model are plain tables in, plain tables out. Every number comes from the
--- function that owns it (spec section 2.1): a target is the very Next line the worn item's
--- own tooltip prints (ItemTooltip.sectionFor), the split is the build dialog's, the progress
--- Progress.build's, the weights Gear.currentWeights'. The button is made at the first refresh
--- after login (one small frame); the flyout and its regions on the first click.
+-- raidRegion, model, regionHeight, flyoutHeight and fitHeight are plain tables in, plain
+-- tables out. Every number comes from the function that owns it (spec section 2.1): a target
+-- is the very Next line the worn item's own tooltip prints (ItemTooltip.sectionFor), or the bag
+-- item its hover leads with; the split is the build dialog's, the progress Progress.build's,
+-- the weights Gear.currentWeights'. The button is made at the first refresh after login (one
+-- small frame); the flyout and its regions on the first click.
+--
+-- Fix round 1 (the live client): every row is a fixed height with its icon `rowIcon` square
+-- at its top left and its text right of it; every single-line text is fitted to its room by
+-- measure with an ellipsis (ItemTooltip's fit helpers); the flyout is `flyoutWidth` wide and
+-- never taller than the pane (no scrolling: caps, then the last raid's bosses go first).
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -35,14 +41,26 @@ local BuildDialog = ns.BuildDialog or require("BuildDialog")
 
 local PanelTab = {}
 
+local S = Theme.SIZES
+
 --- The two frames' names, for the /run probes (README rows 45-47).
 PanelTab.BUTTON_NAME = "ForeverSixtyPanelTab"
 PanelTab.FLYOUT_NAME = "ForeverSixtyPanelFlyout"
 --- The most targets the region lists (spec section 4.5), and the most sim weights.
 PanelTab.MAX_TARGETS = 5
 PanelTab.WEIGHTS_SHOWN = 3
---- How many of the client's CharacterFrameTab<n> the button looks along for the last one.
+--- The most rotation rows and last-raid bosses shown, a muted "N more" under the rest, and the
+--- most abilities of the next band listed "at level N" (fix round 1, items 3 and 4).
+PanelTab.MAX_ROTATION = 8
+PanelTab.MAX_BOSSES = 6
+PanelTab.MAX_UPCOMING = 2
+--- How many of the client's numbered tabs the button looks along for the last one shown.
 PanelTab.MAX_TABS = 10
+--- The client's own tabs the button sits right of, in this order after the pane's TabSystem
+--- (fix round 1, item 5): its bottom tabs, then the paper doll's sidebar tabs, then the
+--- sidebar's holder. Read, never written.
+PanelTab.TAB_PREFIXES = { "CharacterFrameTab", "PaperDollSidebarTab" }
+PanelTab.SIDEBAR_TABS = "PaperDollSidebarTabs"
 --- The regions, top to bottom.
 PanelTab.ORDER = { "targets", "rotation", "build", "sim", "raid" }
 
@@ -62,19 +80,46 @@ PanelTab.regionFrames = {}
 PanelTab.targetRows = {}
 PanelTab.rotationWidgets = {}
 PanelTab.emptyLine = nil
+--- The measure every line is fitted with (text -> width, the flyout's small font), set when
+--- the flyout is made; nil before, which every fit reads as "fits".
+PanelTab.measure = nil
+--- Rotation.plainCondition's answers by measure, then by width and text (fix round 1, item 7):
+--- a condition is measured word by word, so each is measured once.
+PanelTab.conditionCache = setmetatable({}, { __mode = "k" })
 
 -- The pure model ---------------------------------------------------------------------------
 
+--- A slot the bag arrow marks (fix round 1, item 8): the bag item its hover leads with
+--- (`lead`, ItemTooltip.bagLead's section), "Right-click it in your bags to equip." for its
+--- source. nil when the lead names no gain.
+function PanelTab.bagRow(slot, lead)
+	if type(lead) ~= "table" or type(lead.target) ~= "table" then
+		return nil
+	end
+	for _, line in ipairs(lead.lines or {}) do
+		local upgrade = line.upgrade
+		if line.kind == "bag" and type(upgrade) == "table" and type(upgrade.gain) == "number" then
+			return {
+				slot = slot, itemId = lead.target.itemId, name = upgrade.name, hex = upgrade.hex,
+				gain = upgrade.gain, unit = upgrade.unit, source = L.tooltipRightClickEquip, bag = true,
+			}
+		end
+	end
+	return nil
+end
+
 --- The next targets (ruling 2): per worn slot, the Next line its own tooltip prints
 --- (`sectionOf(link)`: ItemTooltip.sectionFor, { lines, pending }), with the section's source
---- line, as { slot, itemId, name, hex, gain, unit, source, pick, boe, pending }. A pick two
---- slots name (a ring pair) is listed once, at its bigger gain. Biggest gain first, at most
---- PanelTab.MAX_TARGETS; an equal gain goes by Progress.slotOrder (a melee spec's weapons before
---- its armour, spec section 4.5). `ctx` is ItemTooltip.baseContext's ({ spec, equipped,
---- isCached? }). A worn item the client has not sent is waited on, never read: its section
---- scores it as nothing and could print a Next line it does not mean (as SlotMarks.targets).
---- The second answer is the set of item ids the rows wait on.
-function PanelTab.targets(ctx, sectionOf)
+--- line, as { slot, itemId, name, hex, gain, unit, source, pick, boe, pending }; a slot the bag
+--- arrow marks lists the bag item instead, as its hover leads with it (`bagOf(slot)`, optional:
+--- ItemTooltip.bagLead; PanelTab.bagRow). A pick two slots name (a ring pair) is listed once,
+--- at its bigger gain. Biggest gain first, at most PanelTab.MAX_TARGETS; an equal gain goes by
+--- Progress.slotOrder (a melee spec's weapons before its armour, spec section 4.5). `ctx` is
+--- ItemTooltip.baseContext's ({ spec, equipped, isCached? }). A worn item the client has not
+--- sent is waited on, never read: its section scores it as nothing and could print a Next
+--- line it does not mean (as SlotMarks.targets). The second answer is the set of item ids the
+--- rows wait on.
+function PanelTab.targets(ctx, sectionOf, bagOf)
 	local waiting, found, byItem = {}, {}, {}
 	local equipped = ctx.equipped or {}
 	local isCached = ctx.isCached or Compat.isItemCached
@@ -84,28 +129,33 @@ function PanelTab.targets(ctx, sectionOf)
 			if worn.itemId ~= nil and not isCached(worn.itemId) then
 				waiting[worn.itemId] = true
 			else
-				local section = sectionOf(worn.link) or {}
-				local pending = section.pending or {}
-				for itemId in pairs(pending) do
-					waiting[itemId] = true
-				end
-				local nextLine, source
-				for _, line in ipairs(section.lines or {}) do
-					if line.kind == "next" and nextLine == nil then
-						nextLine = line
-					elseif line.kind == "source" and source == nil then
-						source = line
+				local row = bagOf ~= nil and PanelTab.bagRow(entry.slot, bagOf(entry.slot)) or nil
+				if row == nil then
+					local section = sectionOf(worn.link) or {}
+					local pending = section.pending or {}
+					for itemId in pairs(pending) do
+						waiting[itemId] = true
+					end
+					local nextLine, source
+					for _, line in ipairs(section.lines or {}) do
+						if line.kind == "next" and nextLine == nil then
+							nextLine = line
+						elseif line.kind == "source" and source == nil then
+							source = line
+						end
+					end
+					local upgrade = nextLine ~= nil and nextLine.upgrade or nil
+					if upgrade ~= nil and type(upgrade.gain) == "number" and nextLine.itemId ~= nil then
+						row = {
+							slot = entry.slot, itemId = nextLine.itemId, name = upgrade.name, hex = upgrade.hex,
+							gain = upgrade.gain, unit = upgrade.unit,
+							source = source ~= nil and source.text or nil,
+							pick = source ~= nil and source.pick or nil, boe = source ~= nil and source.boe or nil,
+							pending = pending[nextLine.itemId] == true,
+						}
 					end
 				end
-				local upgrade = nextLine ~= nil and nextLine.upgrade or nil
-				if upgrade ~= nil and type(upgrade.gain) == "number" and nextLine.itemId ~= nil then
-					local row = {
-						slot = entry.slot, itemId = nextLine.itemId, name = upgrade.name, hex = upgrade.hex,
-						gain = upgrade.gain, unit = upgrade.unit,
-						source = source ~= nil and source.text or nil,
-						pick = source ~= nil and source.pick or nil, boe = source ~= nil and source.boe or nil,
-						pending = pending[nextLine.itemId] == true,
-					}
+				if row ~= nil then
 					local seen = byItem[row.itemId]
 					if seen == nil then
 						found[#found + 1] = row
@@ -134,19 +184,45 @@ function PanelTab.targets(ctx, sectionOf)
 	return rows, waiting
 end
 
+--- Rotation.plainCondition, its answer kept by `measure`, then by `width` and `text`: the
+--- same condition at the same width is measured once (fix round 1, item 7).
+local function plainCondition(text, measure, width)
+	if type(text) ~= "string" or type(measure) ~= "function" or type(width) ~= "number" then
+		return Rotation.plainCondition(text, measure, width)
+	end
+	local byMeasure = PanelTab.conditionCache[measure]
+	if byMeasure == nil then
+		byMeasure = {}
+		PanelTab.conditionCache[measure] = byMeasure
+	end
+	local key = width .. "\n" .. text
+	local kept = byMeasure[key]
+	if kept == nil then
+		local plain, lines = Rotation.plainCondition(text, measure, width)
+		kept = { plain = plain, lines = lines }
+		byMeasure[key] = kept
+	end
+	return kept.plain, kept.lines
+end
+
 --- The rotation (ruling 3): the band's whole priority list (Rotation.model, advanced), each
 --- { spellId, name, condition, conditionLines, number, muted, at }: the condition in plain
 --- words (Rotation.plainCondition at `width` as `measure` reads it, both optional), the
 --- learned lines numbered in priority order, then each line the character has not learned
---- yet (Rotation.learnedAt above `level`), muted, unnumbered, "at level N", in its own order.
---- Empty with no build or no rotation for the spec.
+--- yet (Rotation.learnedAt above `level`), muted, unnumbered, "at level N", in its own order;
+--- then the next band's abilities not learned yet (Rotation.upcoming, at most
+--- PanelTab.MAX_UPCOMING; fix round 1, item 4), the same way. Empty with no build or no
+--- rotation for the spec.
 function PanelTab.rotationRows(data, build, ranks, level, measure, width)
 	local model = Rotation.model(data, build, ranks or {}, level, true)
 	local rows, later = {}, {}
-	for _, line in ipairs(model.lines or {}) do
-		local condition, lines = Rotation.plainCondition(line.condition, measure, width)
-		local row = { spellId = line.spellId, name = line.name, condition = condition, conditionLines = lines,
+	local function rowOf(line)
+		local condition, lines = plainCondition(line.condition, measure, width)
+		return { spellId = line.spellId, name = line.name, condition = condition, conditionLines = lines,
 			muted = false }
+	end
+	for _, line in ipairs(model.lines or {}) do
+		local row = rowOf(line)
 		local at = Rotation.learnedAt(line.spellId, data)
 		if at ~= nil and type(level) == "number" and at > level then
 			row.muted = true
@@ -158,6 +234,13 @@ function PanelTab.rotationRows(data, build, ranks, level, measure, width)
 		end
 	end
 	for _, row in ipairs(later) do
+		rows[#rows + 1] = row
+	end
+	for _, found in ipairs(Rotation.upcoming(data, build, ranks or {}, level, PanelTab.MAX_UPCOMING)) do
+		local row = rowOf(found.line)
+		row.muted = true
+		row.at = string.format(L.panelRotationAt, found.at)
+		row.upcoming = true
 		rows[#rows + 1] = row
 	end
 	return rows
@@ -268,23 +351,252 @@ function PanelTab.raidRegion(message, level)
 		bosses = bosses }
 end
 
+--- The first `most` of `list`, and how many are left over.
+local function capped(list, most)
+	local kept = {}
+	for index = 1, math.min(most, #list) do
+		kept[index] = list[index]
+	end
+	return kept, math.max(0, #list - most)
+end
+
 --- The flyout's model: the regions with something to show, in PanelTab.ORDER (ruling 6: a
---- region with nothing to show is absent), and the counts /fs diag prints.
+--- region with nothing to show is absent), each list capped with the count left over in
+--- `more` (fix round 1, item 3: at most PanelTab.MAX_ROTATION rotation rows and
+--- PanelTab.MAX_BOSSES bosses), and the counts /fs diag prints (the whole lists').
 function PanelTab.model(input)
 	local regions = {}
 	local targets, rotation = input.targets or {}, input.rotation or {}
 	if #targets > 0 then
-		regions[#regions + 1] = { kind = "targets", rows = targets }
+		local rows, more = capped(targets, PanelTab.MAX_TARGETS)
+		regions[#regions + 1] = { kind = "targets", rows = rows, more = more }
 	end
 	if #rotation > 0 then
-		regions[#regions + 1] = { kind = "rotation", rows = rotation }
+		local rows, more = capped(rotation, PanelTab.MAX_ROTATION)
+		regions[#regions + 1] = { kind = "rotation", rows = rows, more = more }
 	end
-	for _, key in ipairs({ "build", "sim", "raid" }) do
+	for _, key in ipairs({ "build", "sim" }) do
 		if input[key] ~= nil then
 			regions[#regions + 1] = input[key]
 		end
 	end
+	local raid = input.raid
+	if raid ~= nil then
+		local bosses, more = capped(raid.bosses or {}, PanelTab.MAX_BOSSES)
+		regions[#regions + 1] = { kind = "raid", title = raid.title, bosses = bosses, more = more }
+	end
 	return { regions = regions, targets = #targets, rotation = #rotation }
+end
+
+-- The heights, pure (fix round 1, items 1 and 3) ------------------------------------------
+
+--- A target row: its name line and its slot and source line, never under the icon.
+function PanelTab.targetRowHeight()
+	return math.max(S.rowIcon, 2 * S.panelLine)
+end
+
+--- A rotation row: its name line and its condition's lines (two at most, as measured; one
+--- where nothing measured), never under the icon.
+function PanelTab.rotationRowHeight(entry)
+	local lines = 0
+	if entry.condition ~= nil then
+		lines = math.max(1, math.min(2, entry.conditionLines or 1))
+	end
+	return math.max(S.rowIcon, S.panelLine * (1 + lines))
+end
+
+--- Rows of `heights` with the row gap between them, then the "N more" line when `more` > 0.
+local function stacked(heights, more)
+	local total = 0
+	for index, height in ipairs(heights) do
+		total = total + height + (index > 1 and S.panelRowGap or 0)
+	end
+	if (more or 0) > 0 then
+		total = total + (#heights > 0 and S.panelRowGap or 0) + S.panelLine
+	end
+	return total
+end
+
+--- The build region's text lines ({ text, color }), in order.
+local function buildLines(entry)
+	local lines = {}
+	if entry.split ~= nil then
+		lines[#lines + 1] = { text = entry.split, color = "body" }
+	end
+	lines[#lines + 1] = { text = entry.progress, color = "muted" }
+	if entry.offPlan ~= nil then
+		lines[#lines + 1] = { text = entry.offPlan, color = "warning" }
+	end
+	return lines
+end
+
+--- The sim region's text lines: the DPS, then the weights muted.
+local function simLines(entry)
+	local lines = {}
+	if entry.dps ~= nil then
+		lines[#lines + 1] = { text = entry.dps, color = "body" }
+	end
+	for _, text in ipairs(entry.weights or {}) do
+		lines[#lines + 1] = { text = text, color = "muted" }
+	end
+	return lines
+end
+
+--- The last raid's text lines: each boss, its detail muted under it, a row gap between bosses.
+local function raidLines(entry)
+	local lines = {}
+	for index, boss in ipairs(entry.bosses) do
+		lines[#lines + 1] = { text = boss.title, color = "body", gap = index > 1 and S.panelRowGap or 0 }
+		if boss.detail ~= nil then
+			lines[#lines + 1] = { text = boss.detail, color = "muted" }
+		end
+	end
+	return lines
+end
+
+--- Text lines' height: one panel line each, with any gap before a line.
+local function linesHeight(lines)
+	local total = 0
+	for _, line in ipairs(lines) do
+		total = total + (line.gap or 0) + S.panelLine
+	end
+	return total
+end
+
+--- A region's height as drawn: its title row, then its body.
+function PanelTab.regionHeight(entry)
+	local body = 0
+	if entry.kind == "targets" then
+		local heights = {}
+		for index = 1, #entry.rows do
+			heights[index] = PanelTab.targetRowHeight()
+		end
+		body = stacked(heights, entry.more)
+	elseif entry.kind == "rotation" then
+		local heights = {}
+		for index, row in ipairs(entry.rows) do
+			heights[index] = PanelTab.rotationRowHeight(row)
+		end
+		body = stacked(heights, entry.more)
+	elseif entry.kind == "build" then
+		body = linesHeight(buildLines(entry)) + S.panelRowGap + S.panelButtonHeight
+	elseif entry.kind == "sim" then
+		body = linesHeight(simLines(entry)) + S.panelRowGap + S.panelButtonHeight
+	elseif entry.kind == "raid" then
+		local lines = raidLines(entry)
+		body = linesHeight(lines)
+		if (entry.more or 0) > 0 then
+			body = body + (#lines > 0 and S.panelRowGap or 0) + S.panelLine
+		end
+	end
+	return S.panelTitle + body
+end
+
+--- The flyout's height for `model`: the padding, the header, each region after the region gap
+--- (or the empty line when there is none), the padding.
+function PanelTab.flyoutHeight(model)
+	local height = S.panelPadding + S.panelHeader
+	if #model.regions == 0 then
+		height = height + S.panelRegionGap + S.panelLine
+	end
+	for _, region in ipairs(model.regions) do
+		height = height + S.panelRegionGap + PanelTab.regionHeight(region)
+	end
+	return height + S.panelPadding
+end
+
+local function regionOf(model, kind)
+	for index, region in ipairs(model.regions) do
+		if region.kind == kind then
+			return region, index
+		end
+	end
+	return nil
+end
+
+--- `model` trimmed until its flyout is no taller than `limit` (fix round 1, item 3: no
+--- scrolling; the flyout never runs past the pane): the last raid's bosses go first, last
+--- first, and the region with its last boss; then rotation rows, then targets, down to one
+--- each, every cut row counted in its region's "N more". Nothing trimmed without a limit (a
+--- client that cannot say). Answers `model`.
+function PanelTab.fitHeight(model, limit)
+	if type(limit) ~= "number" or limit <= 0 then
+		return model
+	end
+	while PanelTab.flyoutHeight(model) > limit do
+		local raid, at = regionOf(model, "raid")
+		local rotation = regionOf(model, "rotation")
+		local targets = regionOf(model, "targets")
+		if raid ~= nil then
+			if #raid.bosses > 1 then
+				table.remove(raid.bosses)
+				raid.more = (raid.more or 0) + 1
+			else
+				table.remove(model.regions, at)
+			end
+		elseif rotation ~= nil and #rotation.rows > 1 then
+			table.remove(rotation.rows)
+			rotation.more = (rotation.more or 0) + 1
+		elseif targets ~= nil and #targets.rows > 1 then
+			table.remove(targets.rows)
+			targets.more = (targets.more or 0) + 1
+		else
+			break
+		end
+	end
+	return model
+end
+
+-- The widths and the fits (fix round 1, item 2) -------------------------------------------
+
+--- The flyout's inner width.
+function PanelTab.innerWidth()
+	return S.flyoutWidth - S.panelPadding * 2
+end
+
+--- A row's text block: right of the icon and the gap.
+function PanelTab.textRoom()
+	return PanelTab.innerWidth() - S.rowIcon - S.gap
+end
+
+--- A target's name: the text block less the gain's room at its right.
+function PanelTab.nameRoom()
+	return PanelTab.textRoom() - S.gap - S.panelGainWidth
+end
+
+--- A target's second line, one line within `room` as `measure` reads it: "<slot> · <the
+--- tooltip's own source line>", shortened as the tooltip shortens its source line
+--- (ItemTooltip.fitSource: the chance goes, then the place, never the boss); where even that
+--- would need a second row, cut by width with an ellipsis. Whole with nothing to measure with.
+function PanelTab.detailText(entry, slotWord, measure, room)
+	if entry.source == nil then
+		return ItemTooltip.fitPlain(slotWord, measure, room)
+	end
+	if entry.pick ~= nil and not entry.bag then
+		local prefix = string.format(L.panelTargetDetail, (slotWord:gsub("%%", "%%%%")), "%s")
+		local rows = ItemTooltip.fitSource(entry.pick, measure, room, entry.boe, prefix)
+		if #rows == 1 then
+			return rows[1]
+		end
+	end
+	return ItemTooltip.fitPlain(string.format(L.panelTargetDetail, slotWord, entry.source), measure, room)
+end
+
+--- A rotation row's first line: "1." muted, the name, the rank (or "at level N") muted.
+function PanelTab.rotationName(entry)
+	local function muted(text)
+		return "|cff" .. Theme.HEX.muted .. text .. "|r"
+	end
+	local parts = {}
+	if entry.number ~= nil then
+		parts[#parts + 1] = muted(string.format(L.panelRotationNumber, entry.number))
+	end
+	parts[#parts + 1] = entry.name or ""
+	local rank = entry.at or Compat.spellSubtext(entry.spellId)
+	if type(rank) == "string" and rank ~= "" then
+		parts[#parts + 1] = muted(rank)
+	end
+	return table.concat(parts, " ")
 end
 
 --- The newest inbox message of `kind` for this character (Follow.messages, the chip's own
@@ -298,9 +610,9 @@ local function newestMessage(kind, keep)
 	return nil
 end
 
---- The model's inputs, read from the live modules and the client: the tooltip's own context
---- and sections, the level the chip reads, the build, the inbox. `measure` and `width` fit
---- the rotation's conditions (optional).
+--- The model's inputs, read from the live modules and the client: the tooltip's own context,
+--- sections and bag lead, the level the chip reads, the build, the inbox. `measure` and
+--- `width` fit the rotation's conditions (optional).
 function PanelTab.inputs(data, measure, width)
 	data = data or PanelTab.data or ns.Data
 	local base = ItemTooltip.baseContext(data)
@@ -309,6 +621,8 @@ function PanelTab.inputs(data, measure, width)
 	local build = Follow.build
 	local targets, waiting = PanelTab.targets(base, function(link)
 		return ItemTooltip.sectionFor(link, base)
+	end, function(slot)
+		return ItemTooltip.bagLead(slot)
 	end)
 	local current = base.current
 	local simResult = current ~= nil and newestMessage("sim_result", function(message)
@@ -365,27 +679,44 @@ end
 
 -- The frames ------------------------------------------------------------------------------------
 
-local S = Theme.SIZES
-
 --- The client's character pane, or nil on a client without one.
 local function pane()
 	return Compat.clientGlobal("CharacterFrame", "table")
 end
 
---- Whether a frame shows, asked, never written (a client frame is only ever read).
-local function isShown(frame)
-	if type(frame) ~= "table" or type(frame.IsShown) ~= "function" then
+--- Whether a frame shows (its own flag) or is visible (it and every parent), asked, never
+--- written (a client frame is only ever read).
+local function ask(frame, method)
+	if type(frame) ~= "table" or type(frame[method]) ~= "function" then
 		return false
 	end
-	local ok, shown = pcall(frame.IsShown, frame)
-	return ok and shown == true
+	local ok, answer = pcall(frame[method], frame)
+	return ok and answer == true
 end
 
---- The client's last tab that shows (CharacterFrameTab<n>, the highest n), or nil.
-local function lastTab()
+local function isShown(frame)
+	return ask(frame, "IsShown")
+end
+
+local function isVisible(frame)
+	return ask(frame, "IsVisible")
+end
+
+--- The pane's height, read, or nil where the client cannot say.
+local function paneHeight()
+	local frame = pane()
+	if frame == nil or type(frame.GetHeight) ~= "function" then
+		return nil
+	end
+	local ok, height = pcall(frame.GetHeight, frame)
+	return ok and type(height) == "number" and height or nil
+end
+
+--- The highest of `<prefix>1..PanelTab.MAX_TABS` that shows, or nil.
+local function lastShown(prefix)
 	local found
 	for index = 1, PanelTab.MAX_TABS do
-		local tab = Compat.clientGlobal("CharacterFrameTab" .. index, "table")
+		local tab = Compat.clientGlobal(prefix .. index, "table")
 		if tab ~= nil and isShown(tab) then
 			found = tab
 		end
@@ -393,10 +724,33 @@ local function lastTab()
 	return found
 end
 
---- The button right of the client's last tab, else at the pane's bottom right; anchored again
---- only when that tab changes (a pet tab that came or went).
+--- The client's own tabs the button sits right of (fix round 1, item 5), each only read: the
+--- pane's TabSystem, else its last shown CharacterFrameTab<n>, else the paper doll's last
+--- shown sidebar tab, else the sidebar's tab holder; nil when none resolves.
+local function tabAnchor(frame)
+	local ok, system = pcall(function()
+		return frame.TabSystem
+	end)
+	if ok and type(system) == "table" and isShown(system) then
+		return system
+	end
+	for _, prefix in ipairs(PanelTab.TAB_PREFIXES) do
+		local tab = lastShown(prefix)
+		if tab ~= nil then
+			return tab
+		end
+	end
+	local holder = Compat.clientGlobal(PanelTab.SIDEBAR_TABS, "table")
+	if holder ~= nil and isShown(holder) then
+		return holder
+	end
+	return nil
+end
+
+--- The button right of the client's own tabs, else under the pane's bottom right; anchored
+--- again only when what it sits beside changes (a pet tab that came or went).
 local function placeButton(button, frame)
-	local tab = lastTab()
+	local tab = tabAnchor(frame)
 	local anchor = tab or frame
 	if PanelTab.anchor == anchor then
 		return
@@ -431,8 +785,10 @@ local function guarded(action, ...)
 	return result
 end
 
---- The "Forever Sixty" button, made the first time a refresh finds the pane (never in combat:
---- it waits for its end), placed on every refresh. nil without a pane.
+--- The "Forever Sixty" button (fix round 1, item 5: it read as plain text over the world): the
+--- addon's gold edge over the panel fill, the chip's gold font, 112 x 24, brighter under the
+--- cursor (Widgets.edgedButton). Made the first time a refresh finds the pane (never in
+--- combat: it waits for its end), placed on every refresh. nil without a pane.
 function PanelTab.ensureButton()
 	local frame = pane()
 	if frame == nil then
@@ -448,32 +804,35 @@ function PanelTab.ensureButton()
 			PanelTab.deferred = true
 			return nil
 		end
-		button = Widgets.button(frame, L.panelTabLabel, function()
+		button = Widgets.edgedButton(frame, L.panelTabLabel, function()
 			PanelTab.toggle()
-		end, PanelTab.BUTTON_NAME)
-		button:SetSize(S.panelTabWidth, S.panelTabHeight)
+		end, PanelTab.BUTTON_NAME, S.panelTabWidth, S.panelTabHeight)
 		PanelTab.button = button
 	end
 	placeButton(button, frame)
 	return button
 end
 
---- The flyout's inner width, and its rotation conditions' (Widgets.rotationRow's own).
-local function innerWidth()
-	return S.panelWidth - S.panelPadding * 2
+--- `text` fitted to `room` by the flyout's measure, with an ellipsis (its colours kept).
+local function fitted(text, room)
+	return ItemTooltip.fitPlain(text, PanelTab.measure, room)
 end
 
-local function conditionWidth()
-	return math.max(1, innerWidth() - S.iconSize - S.gap * 7)
-end
-
---- A font string's height as the client measured it, else `lines` lines of the panel's text.
-local function textHeight(region, lines)
-	local height = type(region.GetStringHeight) == "function" and region:GetStringHeight() or nil
-	if type(height) == "number" and height > 0 then
-		return height
+--- A font string `lines` panel lines high and `width` wide, wrapping only past one line, top
+--- aligned: the client never grows it into the next row.
+local function sized(region, width, lines)
+	lines = lines or 1
+	region:SetSize(width, S.panelLine * lines)
+	if type(region.SetWordWrap) == "function" then
+		region:SetWordWrap(lines > 1)
 	end
-	return (lines or 1) * S.panelLine
+	if type(region.SetMaxLines) == "function" then
+		region:SetMaxLines(lines)
+	end
+	if type(region.SetJustifyV) == "function" then
+		region:SetJustifyV("TOP")
+	end
+	return region
 end
 
 --- `name` in its quality colour (`hex`), else the body colour.
@@ -484,71 +843,97 @@ local function colored(name, hex)
 	return "|cff" .. hex .. (name or "") .. "|r"
 end
 
---- The `index`th pooled plain text line of a region, made on first need.
+--- The row icon's texture, and its size set again with it (fix round 1, item 1).
+local function setIcon(icon, path)
+	icon:SetTexture(path or Theme.UNKNOWN_ICON)
+	icon:SetSize(S.rowIcon, S.rowIcon)
+end
+
+--- One icon row, pooled (fix round 1, item 1): a frame of a fixed height; the icon `rowIcon`
+--- square at its top left, sized and held by both corners so no client art grows it; the
+--- first line `gap` right of the icon, the second under it; with `withGain`, the gain at the
+--- right of the first line.
+local function iconRow(region, withGain)
+	local frame = CreateFrame("Button", nil, region)
+	frame:SetWidth(PanelTab.innerWidth())
+	frame:EnableMouse(true)
+	local icon = Theme.icon(frame, "ARTWORK", nil, S.rowIcon)
+	icon:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
+	icon:SetPoint("BOTTOMRIGHT", frame, "TOPLEFT", S.rowIcon, -S.rowIcon)
+	local name = Widgets.label(frame, "", "body", "small")
+	name:SetPoint("TOPLEFT", icon, "TOPRIGHT", S.gap, 0)
+	sized(name, withGain and PanelTab.nameRoom() or PanelTab.textRoom())
+	local second = Widgets.label(frame, "", "muted", "small")
+	second:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, 0)
+	sized(second, PanelTab.textRoom())
+	local row = { frame = frame, icon = icon, name = name, second = second }
+	if withGain then
+		local gain = Widgets.label(frame, "", "success", "small")
+		gain:SetJustifyH("RIGHT")
+		gain:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0)
+		sized(gain, S.panelGainWidth)
+		row.gain = gain
+	end
+	return row
+end
+
+--- The muted "N more" under a region cut short, at `y`; hidden at none. Answers the y below.
+local function moreLine(region, more, y, hasRows)
+	local line = region.more
+	if (more or 0) <= 0 then
+		line:Hide()
+		return y
+	end
+	if hasRows then
+		y = y + S.panelRowGap
+	end
+	line:ClearAllPoints()
+	line:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -y)
+	line:SetText(string.format(L.panelMore, more))
+	line:Show()
+	return y + S.panelLine
+end
+
+--- The `index`th pooled text line of a region, made on first need: one panel line, the
+--- region's width.
 local function textLine(region, index)
 	region.texts = region.texts or {}
 	local text = region.texts[index]
 	if text == nil then
-		text = Widgets.label(region, "", "body", "small")
-		text:SetWidth(innerWidth())
-		if type(text.SetWordWrap) == "function" then
-			text:SetWordWrap(true)
-		end
+		text = sized(Widgets.label(region, "", "body", "small"), PanelTab.innerWidth())
 		region.texts[index] = text
 	end
 	return text
 end
 
---- Stacks `lines` ({ text, color }) under the region's title from `y`; hides the rest of the
---- pool from `first`. Answers the y below them.
-local function drawTexts(region, lines, y, first)
-	local index = first or 1
-	for _, line in ipairs(lines) do
+--- Stacks `lines` ({ text, color, gap }) from `y`, each one panel line, fitted to the
+--- region's width; hides the rest of the pool. Answers the y below them.
+local function drawTexts(region, lines, y)
+	for index, line in ipairs(lines) do
 		local text = textLine(region, index)
+		y = y + (line.gap or 0)
 		text:ClearAllPoints()
 		text:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -y)
-		text:SetText(line.text)
+		text:SetText(fitted(line.text, PanelTab.innerWidth()))
 		text:SetTextColor(Theme.rgb(Theme.HEX[line.color or "body"]))
 		text:Show()
-		y = y + textHeight(text, 1) + S.panelRowGap
-		index = index + 1
+		y = y + S.panelLine
 	end
-	for rest = index, #(region.texts or {}) do
+	for rest = #lines + 1, #(region.texts or {}) do
 		region.texts[rest]:Hide()
 	end
 	return y
 end
 
---- One target row, pooled: a frame (hover shows the item's own tooltip), the icon, the name
---- (one line, cut by the client at its width), the gain at the right, the slot and source under.
+--- One target row, pooled: hovering shows the item's own tooltip.
 local function targetRow(region, index)
 	local row = PanelTab.targetRows[index]
 	if row ~= nil then
 		return row
 	end
-	local width = innerWidth()
-	local frame = CreateFrame("Button", nil, region)
-	frame:SetWidth(width)
-	frame:EnableMouse(true)
-	local icon = Theme.icon(frame, "ARTWORK", nil, S.panelIcon)
-	icon:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
-	local gain = Widgets.label(frame, "", "success", "small")
-	gain:SetJustifyH("RIGHT")
-	gain:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, -1)
-	local name = Widgets.label(frame, "", "body", "small")
-	name:SetPoint("TOPLEFT", icon, "TOPRIGHT", S.gap, -1)
-	name:SetWidth(math.max(1, width - S.panelIcon - S.gap * 2 - S.panelGainWidth))
-	if type(name.SetWordWrap) == "function" then
-		name:SetWordWrap(false)
-	end
-	local detail = Widgets.label(frame, "", "muted", "small")
-	detail:SetPoint("TOPLEFT", icon, "BOTTOMLEFT", S.panelIcon + S.gap, -S.gap / 2)
-	detail:SetWidth(math.max(1, width - S.panelIcon - S.gap))
-	if type(detail.SetWordWrap) == "function" then
-		detail:SetWordWrap(true)
-	end
-	row = { frame = frame, icon = icon, name = name, gain = gain, detail = detail }
-	Widgets.attachTooltip(frame, function()
+	row = iconRow(region, true)
+	row.detail = row.second
+	Widgets.attachTooltip(row.frame, function()
 		if row.itemId == nil then
 			return nil
 		end
@@ -560,35 +945,39 @@ end
 
 local function drawTargets(region, model)
 	local y = S.panelTitle
+	local room = PanelTab.textRoom()
 	for index, entry in ipairs(model.rows) do
 		local row = targetRow(region, index)
+		if index > 1 then
+			y = y + S.panelRowGap
+		end
 		row.itemId = entry.itemId
 		row.frame:ClearAllPoints()
 		row.frame:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -y)
-		row.icon:SetTexture(Compat.itemIcon(entry.itemId) or Theme.UNKNOWN_ICON)
-		row.name:SetText(colored(entry.name, entry.hex))
+		row.frame:SetHeight(PanelTab.targetRowHeight())
+		setIcon(row.icon, Compat.itemIcon(entry.itemId))
+		local name = colored(entry.name, entry.hex)
+		if entry.bag then
+			name = "|cff" .. Theme.HEX.muted .. L.panelInYourBags .. "|r " .. name
+		end
+		row.name:SetText(fitted(name, PanelTab.nameRoom()))
 		row.gain:SetText(ItemTooltip.figureText(entry.gain, entry.unit))
-		local slotWord = BuildDialog.slotWord(entry.slot, _G)
-		row.detail:SetText(entry.source ~= nil and string.format(L.panelTargetDetail, slotWord, entry.source) or slotWord)
-		local height = S.panelIcon + S.gap / 2 + textHeight(row.detail, 1)
-		row.frame:SetHeight(height)
+		row.detail:SetText(PanelTab.detailText(entry, BuildDialog.slotWord(entry.slot, _G), PanelTab.measure, room))
 		row.frame:Show()
-		y = y + height + S.panelRowGap
+		y = y + PanelTab.targetRowHeight()
 	end
 	for index = #model.rows + 1, #PanelTab.targetRows do
 		PanelTab.targetRows[index].frame:Hide()
 		PanelTab.targetRows[index].itemId = nil
 	end
-	return y - S.panelRowGap
+	return moreLine(region, model.more, y, #model.rows > 0)
 end
 
 local function rotationWidget(region, index)
 	local widget = PanelTab.rotationWidgets[index]
 	if widget == nil then
-		widget = Widgets.rotationRow(region, innerWidth())
-		if type(widget.condition.SetMaxLines) == "function" then
-			widget.condition:SetMaxLines(2)
-		end
+		widget = iconRow(region, false)
+		widget.condition = widget.second
 		PanelTab.rotationWidgets[index] = widget
 	end
 	return widget
@@ -596,41 +985,35 @@ end
 
 local function drawRotation(region, model)
 	local y = S.panelTitle
+	local room = PanelTab.textRoom()
 	for index, entry in ipairs(model.rows) do
 		local widget = rotationWidget(region, index)
+		if index > 1 then
+			y = y + S.panelRowGap
+		end
+		local height = PanelTab.rotationRowHeight(entry)
 		widget.frame:ClearAllPoints()
 		widget.frame:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -y)
-		widget.number:SetText(entry.number ~= nil and tostring(entry.number) or "")
-		widget.icon:SetTexture(Compat.spellTexture(entry.spellId) or Theme.UNKNOWN_ICON)
-		Theme.desaturate(widget.icon, entry.muted)
-		widget.name:SetText(entry.name or "")
-		widget.name:SetTextColor(Theme.rgb(Theme.HEX[entry.muted and "muted" or "body"]))
-		widget.rank:SetText(entry.at or Compat.spellSubtext(entry.spellId) or "")
-		widget.condition:SetText(entry.condition or "")
-		local height = S.iconSize
-		if entry.condition ~= nil then
-			height = height + S.gap + textHeight(widget.condition, entry.conditionLines or 1)
-		end
 		widget.frame:SetHeight(height)
+		setIcon(widget.icon, Compat.spellTexture(entry.spellId))
+		Theme.desaturate(widget.icon, entry.muted == true)
+		widget.name:SetTextColor(Theme.rgb(Theme.HEX[entry.muted and "muted" or "body"]))
+		widget.name:SetText(fitted(PanelTab.rotationName(entry), room))
+		-- Two lines at most, as Rotation.plainCondition measured them.
+		local lines = entry.condition ~= nil and math.max(1, math.min(2, entry.conditionLines or 1)) or 1
+		sized(widget.condition, room, lines)
+		widget.condition:SetText(entry.condition or "")
 		widget.frame:Show()
-		y = y + height + S.panelRowGap
+		y = y + height
 	end
 	for index = #model.rows + 1, #PanelTab.rotationWidgets do
 		PanelTab.rotationWidgets[index].frame:Hide()
 	end
-	return y - S.panelRowGap
+	return moreLine(region, model.more, y, #model.rows > 0)
 end
 
 local function drawBuild(region, model)
-	local lines = {}
-	if model.split ~= nil then
-		lines[#lines + 1] = { text = model.split, color = "body" }
-	end
-	lines[#lines + 1] = { text = model.progress, color = "muted" }
-	if model.offPlan ~= nil then
-		lines[#lines + 1] = { text = model.offPlan, color = "warning" }
-	end
-	local y = drawTexts(region, lines, S.panelTitle)
+	local y = drawTexts(region, buildLines(model), S.panelTitle) + S.panelRowGap
 	region.useOther:ClearAllPoints()
 	region.useOther:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -y)
 	region.copy:ClearAllPoints()
@@ -639,19 +1022,12 @@ local function drawBuild(region, model)
 end
 
 local function drawSim(region, model)
-	local lines = {}
-	if model.dps ~= nil then
-		lines[#lines + 1] = { text = model.dps, color = "body" }
-	end
-	for _, text in ipairs(model.weights) do
-		lines[#lines + 1] = { text = text, color = "muted" }
-	end
-	local y = drawTexts(region, lines, S.panelTitle)
+	local y = drawTexts(region, simLines(model), S.panelTitle) + S.panelRowGap
 	local button = region.button
 	PanelTab.simSpec = model.spec
 	if model.queued then
 		button:SetText(L.panelSimQueued)
-		button:SetWidth(innerWidth())
+		button:SetWidth(PanelTab.innerWidth())
 		Widgets.setButtonLook(button, false, "muted", "border")
 	else
 		button:SetText(L.panelSimMe)
@@ -664,15 +1040,10 @@ local function drawSim(region, model)
 end
 
 local function drawRaid(region, model)
-	region.title:SetText(model.title)
-	local lines = {}
-	for _, boss in ipairs(model.bosses) do
-		lines[#lines + 1] = { text = boss.title, color = "body" }
-		if boss.detail ~= nil then
-			lines[#lines + 1] = { text = boss.detail, color = "muted" }
-		end
-	end
-	return drawTexts(region, lines, S.panelTitle) - S.panelRowGap
+	region.title:SetText(fitted(model.title, PanelTab.innerWidth()))
+	local lines = raidLines(model)
+	local y = drawTexts(region, lines, S.panelTitle)
+	return moreLine(region, model.more, y, #lines > 0)
 end
 
 local DRAWERS = { targets = drawTargets, rotation = drawRotation, build = drawBuild, sim = drawSim, raid = drawRaid }
@@ -680,14 +1051,17 @@ local DRAWERS = { targets = drawTargets, rotation = drawRotation, build = drawBu
 local TITLES = { targets = L.panelTargets, rotation = L.panelRotation, build = L.panelBuild, sim = L.panelSim,
 	raid = L.panelLastRaid }
 
---- One region's frame: its title in gold, its own buttons where it has any. No script of its own.
+--- One region's frame: its title in gold on its own row, its "N more" line, its own buttons
+--- where it has any. No script of its own.
 local function regionFrame(flyout, kind)
 	local region = CreateFrame("Frame", nil, flyout)
-	region:SetWidth(innerWidth())
-	region.title = Widgets.label(region, TITLES[kind], "gold", "small")
+	region:SetWidth(PanelTab.innerWidth())
+	region.title = sized(Widgets.label(region, TITLES[kind], "gold", "small"), PanelTab.innerWidth())
 	region.title:SetPoint("TOPLEFT", region, "TOPLEFT", 0, 0)
+	region.more = sized(Widgets.label(region, "", "muted", "small"), PanelTab.innerWidth())
+	region.more:Hide()
 	if kind == "build" then
-		local half = math.floor((innerWidth() - S.gap) / 2)
+		local half = math.floor((PanelTab.innerWidth() - S.gap) / 2)
 		region.useOther = Widgets.button(region, L.panelUseOther, PanelTab.useOther)
 		region.useOther:SetSize(half, S.panelButtonHeight)
 		region.copy = Widgets.button(region, L.panelCopy, PanelTab.copy)
@@ -717,9 +1091,9 @@ local function regionFrame(flyout, kind)
 	return region
 end
 
---- The flyout, made on the first click: an addon panel parented to the pane, TOPLEFT at the
---- pane's TOPRIGHT (where the client's compare tooltip would sit), hidden until shown. It
---- carries no script; its close button, rows and buttons carry their own.
+--- The flyout, made on the first click: an addon panel `flyoutWidth` wide parented to the
+--- pane, TOPLEFT at the pane's TOPRIGHT (where the client's compare tooltip would sit), hidden
+--- until shown. It carries no script; its close button, rows and buttons carry their own.
 function PanelTab.ensureFlyout()
 	if PanelTab.flyout ~= nil then
 		return PanelTab.flyout
@@ -728,7 +1102,7 @@ function PanelTab.ensureFlyout()
 	if frame == nil then
 		return nil
 	end
-	local flyout = Widgets.panel(frame, S.panelWidth, S.panelPadding * 2, PanelTab.FLYOUT_NAME)
+	local flyout = Widgets.panel(frame, S.flyoutWidth, S.panelPadding * 2, PanelTab.FLYOUT_NAME)
 	flyout:SetPoint("TOPLEFT", frame, "TOPRIGHT", S.panelOffsetX, S.panelOffsetY)
 	flyout:EnableMouse(true)
 	flyout:Hide()
@@ -738,24 +1112,25 @@ function PanelTab.ensureFlyout()
 		flyout:Hide()
 	end)
 	close:SetPoint("TOPRIGHT", flyout, "TOPRIGHT", -S.gap, -S.gap)
-	-- The measure helper's own string, never shown: the rotation's conditions are fitted on it.
+	-- The measure helper's own string, never shown: every line is fitted on it.
 	local probe = Widgets.label(flyout, "", "muted", "small")
 	probe:Hide()
-	PanelTab.measure = Theme.measurer(probe)
+	PanelTab.probe = probe
+	PanelTab.measure = ItemTooltip.visibleMeasure(Theme.measurer(probe))
 	for _, kind in ipairs(PanelTab.ORDER) do
 		PanelTab.regionFrames[kind] = regionFrame(flyout, kind)
 	end
-	local empty = Widgets.label(flyout, L.panelEmpty, "muted", "small")
-	empty:SetWidth(innerWidth())
+	local empty = sized(Widgets.label(flyout, L.panelEmpty, "muted", "small"), PanelTab.innerWidth())
 	empty:Hide()
 	PanelTab.emptyLine = empty
 	PanelTab.flyout = flyout
 	return flyout
 end
 
---- Lays the model's regions out top to bottom and sizes the flyout to them (ruling 6).
+--- Lays the model's regions out top to bottom and sizes the flyout to them (ruling 6); the
+--- heights are PanelTab.regionHeight's and PanelTab.flyoutHeight's.
 local function layout(flyout, model)
-	local y = S.panelPadding + S.panelHeader + S.panelRegionGap
+	local y = S.panelPadding + S.panelHeader
 	local byKind = {}
 	for _, region in ipairs(model.regions) do
 		byKind[region.kind] = region
@@ -764,37 +1139,40 @@ local function layout(flyout, model)
 		local region = PanelTab.regionFrames[kind]
 		local entry = byKind[kind]
 		if entry ~= nil then
+			y = y + S.panelRegionGap
 			region:ClearAllPoints()
 			region:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding, -y)
 			local height = DRAWERS[kind](region, entry)
 			region:SetHeight(height)
 			region:Show()
-			y = y + height + S.panelRegionGap
+			y = y + height
 		else
 			region:Hide()
 		end
 	end
 	local empty = PanelTab.emptyLine
 	if #model.regions == 0 then
+		y = y + S.panelRegionGap
 		empty:ClearAllPoints()
 		empty:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding, -y)
+		empty:SetText(fitted(L.panelEmpty, PanelTab.innerWidth()))
 		empty:Show()
-		y = y + textHeight(empty, 1) + S.panelRegionGap
+		y = y + S.panelLine
 	else
 		empty:Hide()
 	end
-	flyout:SetHeight(y - S.panelRegionGap + S.panelPadding)
+	flyout:SetHeight(y + S.panelPadding)
 end
 
---- Draws the flyout from the live model.
+--- Draws the flyout from the live model, trimmed to the pane's height (fix round 1, item 3).
 function PanelTab.draw()
 	local flyout = PanelTab.flyout
 	if flyout == nil then
 		return nil
 	end
-	local input = PanelTab.inputs(PanelTab.data or ns.Data, PanelTab.measure, conditionWidth())
+	local input = PanelTab.inputs(PanelTab.data or ns.Data, PanelTab.measure, PanelTab.textRoom())
 	PanelTab.waiting = input.waiting or {}
-	local model = PanelTab.model(input)
+	local model = PanelTab.fitHeight(PanelTab.model(input), paneHeight())
 	PanelTab.last = model
 	layout(flyout, model)
 	PanelTab.draws = PanelTab.draws + 1
@@ -836,8 +1214,10 @@ function PanelTab.toggle()
 	end)
 end
 
---- The chip's events (Options): the button is made and placed, and an open flyout redraws.
---- A closed one is not drawn (it draws on its next open).
+--- The chip's events (Options): the button is made and placed, and an open flyout redraws
+--- while it is on screen. A closed one is not drawn (it draws on its next open). One the
+--- closed pane hides is not drawn either (fix round 1, item 7) and is closed, so the pane
+--- never opens again on what this event made stale: the button opens it fresh.
 function PanelTab.refresh(data)
 	if data ~= nil then
 		PanelTab.data = data
@@ -845,8 +1225,13 @@ function PanelTab.refresh(data)
 	guarded(function()
 		PanelTab.ensureButton()
 		local flyout = PanelTab.flyout
-		if flyout ~= nil and flyout:IsShown() then
+		if flyout == nil or not flyout:IsShown() then
+			return
+		end
+		if isVisible(flyout) then
 			PanelTab.draw()
+		else
+			flyout:Hide()
 		end
 	end)
 end
