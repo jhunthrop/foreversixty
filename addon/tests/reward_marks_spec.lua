@@ -788,7 +788,7 @@ describe("the dungeon line", function()
 		local Data = enter("HUNTER", "Hunter", 24, "The Deadmines", "party")
 		local model = Chip.model(Chip.inputs(Data))
 		assert.are.equal("here", model.chosen.kind)
-		assert.are.equal("Here for you: Blackened Defias Belt (Captain Greenskin)", model.chosen.text)
+		assert.are.equal("Here for you: Blackened Defias Belt (Captain Greenskin), 1 more", model.chosen.text)
 	end)
 
 	it("takes the client's own name once it has it", function()
