@@ -102,10 +102,7 @@ func TestVerifyByLogsRequiresTwoDistinctNightsWithinThirtyDays(t *testing.T) {
 			 values ($1, $2, $3, 'guild', 'complete', $4)`, id, uploader, gid, createdAt); err != nil {
 			t.Fatal(err)
 		}
-		if _, err := pool.Exec(ctx,
-			`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`, id, players); err != nil {
-			t.Fatal(err)
-		}
+		seedL68Fight(t, pool, id, true, players)
 	}
 	seedReportWithFight("r1spoofnight1", time.Now().Add(-20*24*time.Hour), []string{"us/hardcore/logger"})
 
@@ -150,11 +147,7 @@ func TestVerifyByLogsRefusesTwoAppearancesMoreThanThirtyDaysApart(t *testing.T) 
 			id, uploader, gid, days); err != nil {
 			t.Fatal(err)
 		}
-		if _, err := pool.Exec(ctx,
-			`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`,
-			id, []string{"us/hardcore/staleoverlap"}); err != nil {
-			t.Fatal(err)
-		}
+		seedL68Fight(t, pool, id, true, []string{"us/hardcore/staleoverlap"})
 	}
 	if err := s.VerifyByLogs(ctx); err != nil {
 		t.Fatal(err)
@@ -206,11 +199,7 @@ func TestVerifyByLogsRecordsVerifiedByLogs(t *testing.T) {
 			id, uploader, gid, first.Add(time.Duration(20-days)*24*time.Hour)); err != nil {
 			t.Fatal(err)
 		}
-		if _, err := pool.Exec(ctx,
-			`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`,
-			id, []string{"us/hardcore/logssource"}); err != nil {
-			t.Fatal(err)
-		}
+		seedL68Fight(t, pool, id, true, []string{"us/hardcore/logssource"})
 	}
 	if err := s.VerifyByLogs(ctx); err != nil {
 		t.Fatal(err)
@@ -249,11 +238,7 @@ func TestVerifyByLogsVerifiesNobodyInAContestedGuild(t *testing.T) {
 			id, uploader, gid, first.Add(offset)); err != nil {
 			t.Fatal(err)
 		}
-		if _, err := pool.Exec(ctx,
-			`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`,
-			id, []string{"us/hardcore/contestedlogger"}); err != nil {
-			t.Fatal(err)
-		}
+		seedL68Fight(t, pool, id, true, []string{"us/hardcore/contestedlogger"})
 	}
 	if _, err := pool.Exec(ctx, `update guilds set claim_contested_at = now() where id = $1`, gid); err != nil {
 		t.Fatal(err)
@@ -293,11 +278,7 @@ func TestVerifyByLogsExcludesTheCharactersOwnAccount(t *testing.T) {
 			id, uid, gid, first.Add(offset)); err != nil {
 			t.Fatal(err)
 		}
-		if _, err := pool.Exec(ctx,
-			`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`,
-			id, []string{"us/hardcore/selfowned"}); err != nil {
-			t.Fatal(err)
-		}
+		seedL68Fight(t, pool, id, true, []string{"us/hardcore/selfowned"})
 	}
 	if err := s.VerifyByLogs(ctx); err != nil {
 		t.Fatal(err)
@@ -335,11 +316,7 @@ func TestVerifyByLogsCountsANullOwnerReport(t *testing.T) {
 			id, gid, first.Add(offset)); err != nil {
 			t.Fatal(err)
 		}
-		if _, err := pool.Exec(ctx,
-			`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`,
-			id, []string{"us/hardcore/nullownercharacter"}); err != nil {
-			t.Fatal(err)
-		}
+		seedL68Fight(t, pool, id, true, []string{"us/hardcore/nullownercharacter"})
 	}
 	if err := s.VerifyByLogs(ctx); err != nil {
 		t.Fatal(err)

@@ -394,6 +394,11 @@ func TestGuildCentreFactionNullsWithNoExports(t *testing.T) {
 	}); err != nil {
 		t.Fatal(err)
 	}
+	// Home opens to a verified row only (task L6.12): an officer has approved this one.
+	if _, err := tx.Exec(ctx, `update guild_characters set verified_at = now(), verified_by = 'officer'
+		where guild_id = $1 and character_key = 'us/pvp/no-export'`, guildID); err != nil {
+		t.Fatal(err)
+	}
 	if err := guilds.AfterGuildChange(ctx, tx, guildID, userID); err != nil {
 		t.Fatal(err)
 	}

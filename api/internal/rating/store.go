@@ -13,6 +13,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
@@ -39,6 +40,10 @@ type RatedFight struct {
 type Store struct {
 	Pool *pgxpool.Pool
 	Log  *slog.Logger
+
+	// levels is where RateFight reads the roster's levels for the adherence band; nil reads
+	// through Pool. Tests point it at a closed pool to see a failed read.
+	levels character.Querier
 }
 
 func (s *Store) logger() *slog.Logger {
@@ -60,6 +65,9 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 	if err := db.EnsureRatingsPartition(ctx, s.Pool, f.FoughtAt); err != nil {
 		return err
 	}
+	// The roster's levels, for the adherence band, read before the transaction so a failed
+	// read can never fail the rating (adherence.go).
+	levels, levelsKnown := s.rosterLevels(ctx, f)
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("rating: begin: %w", err)
@@ -106,6 +114,10 @@ func (s *Store) RateFight(ctx context.Context, f RatedFight) error {
 		card := ratingengine.Score(f.Summary, row.GUID, tables, adapter, nil, modelInfo)
 		cr := newCardRow(meta, row, card)
 		cr.PlayerKey = character.KeyFromUnit(f.Region, f.Ruleset, row.Name)
+		cr.Discipline = fightDiscipline(f.Summary, row)
+		cr.LastRaid = lastRaidFacts(f.Summary, row, card,
+			ratingengine.ActivityIdleMS(f.Summary, row.GUID, tables.Mechanics, nil))
+		cr.LastRaid.Adherence = adherence(f.Summary, row, levels[cr.PlayerKey], levelsKnown)
 		if err := insertCardRow(ctx, tx, cr); err != nil {
 			return err
 		}
@@ -121,20 +133,24 @@ func insertCardRow(ctx context.Context, tx pgx.Tx, cr CardRow) error {
 	_, err := tx.Exec(ctx,
 		`insert into rating_scores (report_id, fight_index, player_key, player_name, class, spec, role,
 		   encounter_id, difficulty, size, duration_ms, kill, kill_time_band, overall, overall_uncapped,
-		   overall_capped, components, model_version, fought_at, coverage, insufficient, insufficient_reason)
+		   overall_capped, components, model_version, fought_at, coverage, insufficient, insufficient_reason,
+		   discipline, deaths, biggest_loss, loss_seconds, consumables_missed, adherence)
 		 values ($1, $2, $3, $4, nullif($5, ''), nullif($6, ''), nullif($7, ''), $8, $9, $10, $11, $12, $13,
-		   $14, $15, $16, $17, $18, $19, $20, $21, nullif($22, ''))
+		   $14, $15, $16, $17, $18, $19, $20, $21, nullif($22, ''), $23, $24, nullif($25, ''), $26, $27, $28)
 		 on conflict (report_id, fight_index, player_key, fought_at) do update set
 		   player_name = excluded.player_name, class = excluded.class, spec = excluded.spec,
 		   role = excluded.role, overall = excluded.overall, overall_uncapped = excluded.overall_uncapped,
 		   overall_capped = excluded.overall_capped, components = excluded.components,
 		   model_version = excluded.model_version, coverage = excluded.coverage,
 		   insufficient = excluded.insufficient, insufficient_reason = excluded.insufficient_reason,
-		   computed_at = now()`,
+		   discipline = excluded.discipline, deaths = excluded.deaths,
+		   biggest_loss = excluded.biggest_loss, loss_seconds = excluded.loss_seconds,
+		   consumables_missed = excluded.consumables_missed, adherence = excluded.adherence, computed_at = now()`,
 		cr.ReportID, cr.FightIndex, cr.PlayerKey, cr.PlayerName, cr.Class, cr.Spec, cr.Role,
 		cr.EncounterID, cr.Difficulty, cr.Size, cr.DurationMS, cr.Kill, cr.KillTimeBand,
 		cr.Overall, cr.OverallUncapped, cr.OverallCapped, cr.Components, cr.ModelVersion, cr.FoughtAt,
-		cr.Coverage, cr.Insufficient, cr.InsufficientReason)
+		cr.Coverage, cr.Insufficient, cr.InsufficientReason, cr.Discipline, cr.LastRaid.Deaths, cr.LastRaid.BiggestLoss,
+		cr.LastRaid.LossSeconds, consumablesOrEmpty(cr.LastRaid.ConsumablesMissed), cr.LastRaid.Adherence)
 	if err != nil {
 		return fmt.Errorf("rating: write row %s/%d/%s: %w", cr.ReportID, cr.FightIndex, cr.PlayerKey, err)
 	}
@@ -162,9 +178,10 @@ type staleFight struct {
 // at the engine's current DefaultModelVersion, one representative player_key and fought_at
 // per fight (every player of one fight shares both).
 // staleFights lists fights the backfill should rate, oldest report first, up to limit:
-// those never rated at all (a complete, non-private report's fight with no rating_scores
-// row: the first production run found only these and rated nothing), then those rated by
-// an older model. For a never-rated fight, region and ruleset come from the report's
+// those never rated at all (a fight with no rating_scores row in a complete report that is
+// evidence, presence.EvidenceReport, so a flagged report's unrated fights are never rated; the
+// first production run found only these and rated nothing), then those rated by an older
+// model. For a never-rated fight, region and ruleset come from the report's
 // logging character and fought-at from the fight's start, exactly as ingest derives them
 // (reports.ReportRealm, i.rate); for a stale one they are read back off its own row.
 func (s *Store) staleFights(ctx context.Context, limit int) ([]staleFight, error) {
@@ -175,7 +192,7 @@ func (s *Store) staleFights(ctx context.Context, limit int) ([]staleFight, error
 		         to_timestamp(f.start_ms / 1000.0) as fought_at
 		    from fights f
 		    join reports r on r.id = f.report_id
-		   where r.status = 'complete' and r.visibility <> 'private'
+		   where r.status = 'complete' and `+presence.EvidenceReport("r")+`
 		     and f.encounter_id is not null and f.encounter_id <> 0
 		     and not exists (select 1 from rating_scores rs
 		                      where rs.report_id = f.report_id and rs.fight_index = f.fight_index)
@@ -257,22 +274,28 @@ func (s *Store) anonymized(ctx context.Context, playerKey string) (bool, error) 
 	return anon, nil
 }
 
+// Anonymized is anonymized for a reader outside this package: the nightly data addon leaves
+// out exactly the characters ForeverScore answers no score for.
+func (s *Store) Anonymized(ctx context.Context, playerKey string) (bool, error) {
+	return s.anonymized(ctx, playerKey)
+}
+
 // characterTrendPageSize bounds one page of the character endpoint's trend[]; a career's
 // worth of rated fights is unbounded, so this list is paginated like every other list read
 // in this API (reports/recent.go's own convention).
 const characterTrendPageSize = 20
 
 // ReadCharacterRating reads up to limit rows of playerKey's rating history, newest first,
-// from public reports only (spec §5.1's ruling: "public at time of query", enforced here
-// by joining the live reports.visibility column rather than trusting anything cached on
-// the row at write time), starting after before when it is non-nil. hasMore is true when
-// a further page exists. Insufficient cards (spec §1.5's coverage ruling, dated
-// 2026-09-21) are excluded outright, at the SQL level: they are real per-component data
-// worth showing on a fight's own report card, but their Overall is zero-valued and does
-// not belong in any character-level mean or count this endpoint's trend/sample_size/
-// latest/best-worst-component all are. A NULL insufficient (a row written before this
-// column existed) reads as sufficient until the backfill re-rates it under the bumped
-// DefaultModelVersion, the same way every other stale-row gap already resolves itself.
+// from public, unflagged reports only (spec §5.1's ruling: "public at time of query",
+// enforced here by joining the live reports.visibility column, beside presence.EvidenceReport,
+// rather than trusting anything cached on the row at write time), starting after before when
+// it is non-nil. hasMore is true when a further page exists. Insufficient cards (spec §1.5's
+// coverage ruling, dated 2026-09-21) are excluded outright, at the SQL level: they are real
+// per-component data worth showing on a fight's own report card, but their Overall is
+// zero-valued and does not belong in any character-level mean or count this endpoint's
+// trend/sample_size/latest/best-worst-component all are. A NULL insufficient (a row written
+// before this column existed) reads as sufficient until the backfill re-rates it under the
+// bumped DefaultModelVersion, the same way every other stale-row gap already resolves itself.
 func (s *Store) ReadCharacterRating(ctx context.Context, playerKey string, limit int, before *cursorPos) ([]CardRow, bool, error) {
 	if limit <= 0 || limit > characterTrendPageSize {
 		limit = characterTrendPageSize
@@ -284,7 +307,7 @@ func (s *Store) ReadCharacterRating(ctx context.Context, playerKey string, limit
 	    coalesce(rs.coverage, 0), coalesce(rs.insufficient, false), coalesce(rs.insufficient_reason, '')
 	 from rating_scores rs
 	 join reports r on r.id = rs.report_id
-	 where rs.player_key = $1 and r.visibility = 'public' and not coalesce(rs.insufficient, false)`
+	 where rs.player_key = $1 and r.visibility = 'public' and ` + presence.EvidenceReport("r") + ` and not coalesce(rs.insufficient, false)`
 	args := []any{playerKey}
 	if before != nil {
 		query += ` and (rs.fought_at, rs.report_id, rs.fight_index) < ($2, $3, $4)`
@@ -318,4 +341,88 @@ func (s *Store) ReadCharacterRating(ctx context.Context, playerKey string, limit
 		out = out[:limit]
 	}
 	return out, hasMore, nil
+}
+
+// consumablesOrEmpty stores an unset list as an empty one, never NULL: a row rated now
+// always says what was missed, even nothing.
+func consumablesOrEmpty(missed []string) []string {
+	if missed == nil {
+		return []string{}
+	}
+	return missed
+}
+
+// reratePick is one character RerateFlagged re-rates: its group and its newest rated fight
+// in a public report that is evidence (ReportID "" for a character with no such fight).
+type reratePick struct {
+	staleFight
+	group rerateGroup
+	// key is the character's key.
+	key string
+}
+
+// flaggedRerates lists every character whose Forever Score a flagged report moved, by group
+// (rerateGroup, a character in the first group it fits), each with its newest rated fight in
+// a public report that is evidence (presence.EvidenceReport): the fight RerateFlagged
+// re-rates; ReportID is "" for a character with no such fight. The groups are the characters
+// with a rated row in a flagged report; the guild-mates of a guild with a flagged report (its
+// verified members, the membership guildNights counts nights for, and anyone with a rated
+// fight fought since since, the attendance window, in its reports); and the characters linked
+// to the account of a character of the first group. The region and ruleset are the character
+// key's own, the pair its rows were keyed under.
+func (s *Store) flaggedRerates(ctx context.Context, since time.Time) ([]reratePick, error) {
+	rows, err := s.Pool.Query(ctx,
+		`with in_flagged as (
+		   select distinct rs.player_key from rating_scores rs join reports r on r.id = rs.report_id
+		    where r.flagged is not null
+		 ), flagged_guilds as (
+		   select distinct guild_id from reports where flagged is not null and guild_id is not null
+		 ), guildmates as (
+		   select player_key from (
+		     select rs.player_key from rating_scores rs join reports r on r.id = rs.report_id
+		      where r.guild_id in (select guild_id from flagged_guilds) and rs.fought_at >= $1
+		     union
+		     select gc.character_key from guild_characters gc
+		      where gc.guild_id in (select guild_id from flagged_guilds) and gc.verified_at is not null
+		        and gc.character_key not like 'account:%'
+		   ) mates
+		    where player_key not in (select player_key from in_flagged)
+		 ), linked as (
+		   select c.key as player_key from characters c
+		    where c.user_id in (select o.user_id from characters o
+		                         where o.key in (select player_key from in_flagged) and o.user_id is not null)
+		      and c.key not in (select player_key from in_flagged)
+		      and c.key not in (select player_key from guildmates)
+		 ), affected as (
+		   select player_key, 0 as grp from in_flagged
+		   union all select player_key, 1 from guildmates
+		   union all select player_key, 2 from linked
+		 )
+		 select a.grp, a.player_key, split_part(a.player_key, '/', 1), split_part(a.player_key, '/', 2),
+		        coalesce(n.report_id, ''), coalesce(n.fight_index, 0), coalesce(n.fought_at, 'epoch')
+		   from affected a
+		   left join lateral (
+		     select rs.report_id, rs.fight_index, rs.fought_at
+		       from rating_scores rs join reports r on r.id = rs.report_id
+		      where rs.player_key = a.player_key and r.visibility = 'public' and `+presence.EvidenceReport("r")+`
+		      order by rs.fought_at desc, rs.report_id desc, rs.fight_index desc limit 1
+		   ) n on true
+		  order by a.grp, a.player_key`, since)
+	if err != nil {
+		return nil, fmt.Errorf("rating: characters a flagged report moved: %w", err)
+	}
+	defer rows.Close()
+	var out []reratePick
+	for rows.Next() {
+		var (
+			p   reratePick
+			grp int
+		)
+		if err := rows.Scan(&grp, &p.key, &p.Region, &p.Ruleset, &p.ReportID, &p.FightIndex, &p.FoughtAt); err != nil {
+			return nil, fmt.Errorf("rating: characters a flagged report moved: %w", err)
+		}
+		p.group = rerateGroup(grp)
+		out = append(out, p)
+	}
+	return out, rows.Err()
 }

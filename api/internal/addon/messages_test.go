@@ -6,6 +6,7 @@ import (
 	"io"
 	"log/slog"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
@@ -165,7 +166,7 @@ func TestWeightsMessageCarriesCapsAndSpec(t *testing.T) {
 			},
 		},
 	}}}
-	got := s.weightsMessage(context.Background(), 1, map[string]string{"bow-jackzon": "us/pvp/bow-jackzon"})
+	got := s.weightsMessage(context.Background(), 1, map[string]string{"bow-jackzon": "us/pvp/bow-jackzon"}, nil)
 	if got == nil {
 		t.Fatal("expected a weights message")
 	}
@@ -209,7 +210,7 @@ func TestMessagesDegradesGracefullyWithNeitherProducerWired(t *testing.T) {
 		t.Fatal(err)
 	}
 	s := &Service{Store: h.store, Log: quietLog()}
-	if out := s.messages(context.Background(), h.owner); len(out) != 0 {
+	if out := s.messages(context.Background(), h.owner, time.Now()); len(out) != 0 {
 		t.Fatalf("messages = %+v, want none with Guilds and Sims both nil", out)
 	}
 }
@@ -241,7 +242,7 @@ func TestMessagesCombinesGuildUpgradeAndWeights(t *testing.T) {
 			},
 		}},
 	}
-	out := s.messages(context.Background(), h.owner)
+	out := s.messages(context.Background(), h.owner, time.Now())
 	kinds := map[string]bool{}
 	for _, m := range out {
 		kinds[m.Type] = true

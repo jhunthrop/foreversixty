@@ -6,29 +6,23 @@ import (
 	"bytes"
 	"fmt"
 	"sort"
-	"strings"
 )
 
-// renderSplit is Render's fallback for a combined file over
-// maxSingleFileBytes: "Data.lua" becomes a small header/init file (format,
-// generated, build, and two empty tables), and one "Data-<region>.lua" per
-// region that has any character or guild row merges its own rows into the
-// shared global. The TOC must list Data.lua before every Data-<region>.lua
-// (addon/ForeverSixtyData/README.md documents the ordering requirement);
-// addon-data-release.yml is the one place that ever needs to change the
-// TOC's file list to match, since the checked-in TOC only ever lists
-// Data.lua (see the plan's Task 12).
+// renderSplit is Render's fallback for a combined file over maxSingleFileBytes:
+// "Data.lua" becomes a small header/init file (format, generated, and two empty tables),
+// and one "Data-<region>.lua" per region that has any character or guild record merges its
+// own records into the shared global. A record is never cut: each region file carries
+// whole records, written exactly as the single file writes them. The TOC must list
+// Data.lua before every Data-<region>.lua (addon/ForeverSixtyData/README.md documents the
+// ordering requirement); addon-data-release.yml is the one place that ever needs to change
+// the TOC's file list to match, since the checked-in TOC only ever lists Data.lua.
 func renderSplit(d Data) (map[string][]byte, error) {
 	out := map[string][]byte{}
 
 	var header bytes.Buffer
 	hw := bufio.NewWriter(&header)
-	writeHeader(hw, d)
 	fmt.Fprintln(hw, "-- The combined file exceeded 4 MiB, so this build is split by region; see Data-<region>.lua.")
-	fmt.Fprintln(hw, "ForeverSixtyData = {")
-	fmt.Fprintln(hw, "\tformat = 1,")
-	fmt.Fprintf(hw, "\tgenerated = %q,\n", d.Generated.UTC().Format(isoFormat))
-	fmt.Fprintf(hw, "\tbuild = %q,\n", d.Build)
+	writeOpening(hw, d)
 	fmt.Fprintln(hw, "\tcharacters = {},")
 	fmt.Fprintln(hw, "\tguilds = {},")
 	fmt.Fprintln(hw, "}")
@@ -44,18 +38,16 @@ func renderSplit(d Data) (map[string][]byte, error) {
 		fmt.Fprintln(bw, "-- One region's share of the nightly data-addon job's output; see Data.lua.")
 		fmt.Fprintln(bw, "for key, row in pairs({")
 		for _, key := range sortedKeys(d.Characters) {
-			if !strings.HasPrefix(key, region+":") {
-				continue
+			if d.Characters[key].Region == region {
+				writeCharacter(bw, key, d.Characters[key])
 			}
-			writeCharacterRow(bw, key, d.Characters[key])
 		}
 		fmt.Fprintln(bw, "}) do ForeverSixtyData.characters[key] = row end")
 		fmt.Fprintln(bw, "for key, row in pairs({")
 		for _, key := range sortedKeys(d.Guilds) {
-			if !strings.HasPrefix(key, region+":") {
-				continue
+			if d.Guilds[key].Region == region {
+				writeGuild(bw, key, d.Guilds[key])
 			}
-			writeGuildRow(bw, key, d.Guilds[key])
 		}
 		fmt.Fprintln(bw, "}) do ForeverSixtyData.guilds[key] = row end")
 		if err := bw.Flush(); err != nil {
@@ -66,16 +58,14 @@ func renderSplit(d Data) (map[string][]byte, error) {
 	return out, nil
 }
 
-// regionsOf lists every region any character or guild key names, sorted --
-// the leading segment before the first ":" of an addon key built by
-// characterKey/guildKey.
+// regionsOf lists every region any character or guild record belongs to, sorted.
 func regionsOf(d Data) []string {
 	set := map[string]bool{}
-	for key := range d.Characters {
-		set[strings.SplitN(key, ":", 2)[0]] = true
+	for _, rec := range d.Characters {
+		set[rec.Region] = true
 	}
-	for key := range d.Guilds {
-		set[strings.SplitN(key, ":", 2)[0]] = true
+	for _, rec := range d.Guilds {
+		set[rec.Region] = true
 	}
 	out := make([]string, 0, len(set))
 	for r := range set {

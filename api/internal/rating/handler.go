@@ -14,6 +14,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 )
 
@@ -71,6 +72,15 @@ func (s *Service) fightRatings(w http.ResponseWriter, r *http.Request) {
 		// The same 404, whether the report does not exist or the caller may not see it -
 		// spec's own "no endpoint leaks the existence of a non-public report" rule.
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such report", nil)
+		return
+	}
+	if rep.Flagged != nil {
+		// A flagged report (tampered or unverified) is evidence of nothing, so its fight cards
+		// are not shown either (presence.EvidenceReport's rule). Its rows stay stored until
+		// moderation withdraws them. Asked only once the caller may see the report at all, so
+		// it says nothing about a report the caller could not open.
+		httpx.WriteError(w, r, http.StatusNotFound, "flagged",
+			"that report is flagged, so its fights have no ratings to show", nil)
 		return
 	}
 	rows, ok, err := s.Store.ReadFightRatings(r.Context(), rep.ID, n)
@@ -145,6 +155,29 @@ func (s *Service) characterRating(w http.ResponseWriter, r *http.Request) {
 	}
 	httpx.CachePublic(w, cacheSeconds*time.Second, liveBoardStale)
 	httpx.WriteOK(w, r, http.StatusOK, buildCharacterRatingDTO(playerKey, rows, hasMore))
+}
+
+var _ rankings.Scorer = (*Service)(nil)
+
+// ForeverScore is the character page's Forever Score (rankings.Scorer). A character with
+// no logs (ErrNoLogs) and one whose account asked to be anonymous both read as no score -
+// every field null - never as a zero, matching the rating endpoints' own anonymize rule.
+func (s *Service) ForeverScore(ctx context.Context, key string) (rankings.ForeverScore, error) {
+	anon, err := s.Store.anonymized(ctx, key)
+	if err != nil {
+		return rankings.ForeverScore{}, err
+	}
+	if anon {
+		return rankings.ForeverScore{}, nil
+	}
+	sc, err := s.Store.ScoreV2(ctx, key)
+	if errors.Is(err, ErrNoLogs) {
+		return rankings.ForeverScore{}, nil
+	}
+	if err != nil {
+		return rankings.ForeverScore{}, err
+	}
+	return toForeverScoreDTO(sc), nil
 }
 
 func parseTrendQuery(r *http.Request) (limit int, before *cursorPos) {

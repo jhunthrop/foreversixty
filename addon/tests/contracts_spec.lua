@@ -58,6 +58,12 @@ local function isNameRealm(value)
 	return tostring(value):match("^[^%-]+%-[^%-]+$") ~= nil
 end
 
+-- A character key, region/ruleset/name-slug: what contract 3 addresses inbox messages to
+-- (Codec.lua's sameCharacter matches it segment by segment).
+local function isCharacterKey(value)
+	return tostring(value):match("^[^/]+/[^/]+/[^/]+$") ~= nil
+end
+
 describe("the v2 wire contracts, addon side", function()
 	describe("the nightly data addon fixture (contract 5)", function()
 		local data, path
@@ -77,17 +83,27 @@ describe("the v2 wire contracts, addon side", function()
 			assert.is_true(isDate(data.generated))
 		end)
 
-		it("gives every character a score, a tier and an as_of date", function()
+		it("gives every scored character a tier and an as_of date, and every character its profile", function()
 			local tiers = set({ "common", "uncommon", "rare", "epic", "legendary" })
-			local count = 0
+			local scored, noLogs = 0, 0
 			for key, character in pairs(data.characters) do
-				count = count + 1
 				assert.is_true(isNameRealm(key), "Name-Realm key: " .. key)
-				assert.is_number(character.score, key)
-				assert.is_true(tiers[character.tier] == true, key .. " tier " .. tostring(character.tier))
-				assert.is_true(isDate(character.as_of), key)
+				assert.is_string(character.profile, key)
+				if character.score == nil then
+					-- A verified guild member with no logs yet: score = nil, no tier, no
+					-- components, so the addon says "no logs yet" and never shows a zero.
+					noLogs = noLogs + 1
+					assert.is_nil(character.tier, key)
+					assert.is_nil(character.components, key)
+				else
+					scored = scored + 1
+					assert.is_number(character.score, key)
+					assert.is_true(tiers[character.tier] == true, key .. " tier " .. tostring(character.tier))
+					assert.is_true(isDate(character.as_of), key)
+				end
 			end
-			assert.is_true(count >= 1)
+			assert.is_true(scored >= 1)
+			assert.is_true(noLogs >= 1, "the fixture carries a no-logs record")
 		end)
 
 		it("keeps the components summing to the score and the tier matching the score", function()
@@ -99,12 +115,14 @@ describe("the v2 wire contracts, addon side", function()
 				return "legendary"
 			end
 			for key, character in pairs(data.characters) do
-				local sum = 0
-				for _, value in pairs(character.components) do
-					sum = sum + value
+				if character.score ~= nil then
+					local sum = 0
+					for _, value in pairs(character.components) do
+						sum = sum + value
+					end
+					assert.are.equal(character.score, sum, key)
+					assert.are.equal(tierOf(character.score), character.tier, key)
 				end
-				assert.are.equal(character.score, sum, key)
-				assert.are.equal(tierOf(character.score), character.tier, key)
 			end
 		end)
 
@@ -137,9 +155,14 @@ describe("the v2 wire contracts, addon side", function()
 			assert.are.same(sortedKeys(known), sortedKeys(seen))
 		end)
 
-		it("addresses every message to a Name-Realm character", function()
+		it("is format 2 with an RFC 3339 UTC generated_at", function()
+			assert.are.equal(2, inbox.format)
+			assert.is_truthy(tostring(inbox.generated_at):match("^%d%d%d%d%-%d%d%-%d%dT%d%d:%d%d:%d%dZ$"))
+		end)
+
+		it("addresses every message to a character key", function()
 			for _, message in ipairs(inbox.messages) do
-				assert.is_true(isNameRealm(message.character), message.type)
+				assert.is_true(isCharacterKey(message.character), message.type)
 			end
 		end)
 
@@ -148,12 +171,12 @@ describe("the v2 wire contracts, addon side", function()
 		local KEYS = {
 			build = { "character", "code", "name", "type" },
 			upgrade = { "character", "delta", "item_id", "item_name", "slot", "source", "type", "unit" },
-			weights = { "caps", "character", "dps_per_point", "spec", "type", "weights" },
+			weights = { "caps", "character", "dps_per_point", "export_seen_at", "generated_at", "spec", "type", "weights" },
 			sim_result = { "character", "dps", "error", "generated_at", "slots", "spec", "type" },
 			last_raid = { "bosses", "character", "date", "report_id", "type" },
 			loot_values = { "character", "items", "raid", "type" },
 			guild = { "character", "claim_state", "guild_name", "pending_approvals", "rank", "type" },
-			ack = { "character", "export_seen_at", "type" },
+			ack = { "character", "export_seen_at", "requested_at", "sim_request_state", "type" },
 		}
 		local NESTED = {
 			weights = { list = "weights", keys = { "stat", "weight" } },
@@ -188,6 +211,11 @@ describe("the v2 wire contracts, addon side", function()
 					assert.are.same(nested.keys, sortedKeys(row), typ .. "." .. nested.list)
 				end
 			end
+		end)
+
+		it("names the ack's sim request state from contract 3's list", function()
+			local states = set({ "queued", "needs_premium", "duplicate", "invalid", "done", "failed" })
+			assert.is_true(states[messageOf("ack").sim_request_state] == true)
 		end)
 
 		it("pins the keys of the loot_values items", function()

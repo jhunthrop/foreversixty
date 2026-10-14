@@ -122,10 +122,27 @@ func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {
 	return g, nil
 }
 
+// IsVerifiedMember reports whether this account has a verified
+// guild_characters row in this guild — the gate for GET
+// /v1/guilds/{id}/home and /loot, which show the guild's own counts
+// (its private nights included). An unverified row (a bare export,
+// possibly forged) never opens them.
+func (s *Store) IsVerifiedMember(ctx context.Context, guildID, userID int64) (bool, error) {
+	var exists bool
+	if err := s.Pool.QueryRow(ctx,
+		`select exists(select 1 from guild_characters
+		  where guild_id = $1 and user_id = $2 and verified_at is not null)`,
+		guildID, userID).Scan(&exists); err != nil {
+		return false, fmt.Errorf("guilds: is verified member: %w", err)
+	}
+	return exists, nil
+}
+
 // IsMember reports whether this account has any guild_characters row in
-// this guild, verified or not — the gate for GET /v1/guilds/{id}/home,
-// never for report visibility or edit rights (those stay on
-// auth.Store.GuildRank, which is verified-only).
+// this guild, verified or not — the gate for leaving the guild and for
+// the Readiness tab, never for report visibility or edit rights (those
+// stay on auth.Store.GuildRank, which is verified-only) nor for Home or
+// Loot (IsVerifiedMember).
 func (s *Store) IsMember(ctx context.Context, guildID, userID int64) (bool, error) {
 	var exists bool
 	if err := s.Pool.QueryRow(ctx,

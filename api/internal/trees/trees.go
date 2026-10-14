@@ -73,6 +73,10 @@ type Item struct {
 	// the slot field, so the validator reads this flag rather than the
 	// slot string to decide.
 	TwoHand bool `json:"two_hand"`
+	// ClientUnconfirmed marks an item whose stats the client has not confirmed (the id may
+	// never resolve in game): items.json's client_unconfirmed, which every per-class file
+	// carries identically. Such an item is never a band pick (task L1.4's rule).
+	ClientUnconfirmed bool `json:"client_unconfirmed"`
 }
 
 type classItems struct {

@@ -10,7 +10,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 )
 
@@ -478,11 +481,7 @@ func TestAnUnverifiedGuildCharacterCannotSeeOrEditAGuildReport(t *testing.T) {
 		 values ('spoofnight1x', $1, $2, 'guild', 'complete', $3)`, uploader, guildID, first); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := h.store.Pool.Exec(t.Context(),
-		`insert into fights (report_id, fight_index, players) values ('spoofnight1x', 0, $1)`,
-		[]string{"us/hardcore/spoofer"}); err != nil {
-		t.Fatal(err)
-	}
+	seedKeyedBossFight(t, h.store.Pool, "spoofnight1x", "us/hardcore/spoofer")
 	if err := guildStore.VerifyByLogs(t.Context()); err != nil {
 		t.Fatal(err)
 	}
@@ -503,11 +502,7 @@ func TestAnUnverifiedGuildCharacterCannotSeeOrEditAGuildReport(t *testing.T) {
 		 values ('spoofnight2late', $1, $2, 'guild', 'complete', $3)`, uploader, guildID, tooLate); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := h.store.Pool.Exec(t.Context(),
-		`insert into fights (report_id, fight_index, players) values ('spoofnight2late', 0, $1)`,
-		[]string{"us/hardcore/spoofer"}); err != nil {
-		t.Fatal(err)
-	}
+	seedKeyedBossFight(t, h.store.Pool, "spoofnight2late", "us/hardcore/spoofer")
 	if err := guildStore.VerifyByLogs(t.Context()); err != nil {
 		t.Fatal(err)
 	}
@@ -524,11 +519,7 @@ func TestAnUnverifiedGuildCharacterCannotSeeOrEditAGuildReport(t *testing.T) {
 		uploader, guildID, first.Add(5*24*time.Hour)); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := h.store.Pool.Exec(t.Context(),
-		`insert into fights (report_id, fight_index, players) values ('spoofnight2ok', 0, $1)`,
-		[]string{"us/hardcore/spoofer"}); err != nil {
-		t.Fatal(err)
-	}
+	seedKeyedBossFight(t, h.store.Pool, "spoofnight2ok", "us/hardcore/spoofer")
 	if err := guildStore.VerifyByLogs(t.Context()); err != nil {
 		t.Fatal(err)
 	}
@@ -934,5 +925,31 @@ func TestTheCardOfAGatedReportIsNotSharedCacheable(t *testing.T) {
 				t.Fatalf("vary = %q, want Cookie", got)
 			}
 		})
+	}
+}
+
+// seedKeyedBossFight adds fight 0 to reportID as the ingest writes a ranked boss fight:
+// fights.players holds only the log's GUID (engine.go) and the character is a fight_metrics
+// row under its key, fought at the report's created_at. Log verification reads that key
+// (task L6.8), never fights.players.
+func seedKeyedBossFight(t *testing.T, pool *pgxpool.Pool, reportID, key string) {
+	t.Helper()
+	ctx := context.Background()
+	var at time.Time
+	if err := pool.QueryRow(ctx, `select created_at from reports where id = $1`, reportID).Scan(&at); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx,
+		`insert into fights (report_id, fight_index, name, encounter_id, kill, start_ms, players)
+		 values ($1, 0, 'Onyxia', 1084, true, $2, $3)`, reportID, at.UnixMilli(), []string{"Player-4395-0A1B2C3D"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.EnsureMetricsPartition(ctx, pool, at); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx,
+		`insert into fight_metrics (report_id, fight_index, player_key, fought_at) values ($1, 0, $2, $3)`,
+		reportID, key, at); err != nil {
+		t.Fatal(err)
 	}
 }

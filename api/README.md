@@ -103,7 +103,12 @@ Every `GET` route sets its `Cache-Control` through one of two `httpx` helpers
 
 A route whose answer depends on who is asking — a report that is public for one viewer and
 private for another — branches between the two at request time rather than picking one
-statically; see `reports.Service.get` or `sims.Service.simInput` for the pattern.
+statically; see `reports.Service.get` or `sims.Service.simInput` for the pattern. The guild
+centre's Progression tab (`GET /v1/guilds/{id}/progression`) is public, and its counts depend
+on the viewer: a verified member of the guild reads the guild's own numbers, which count its
+private nights (never a flagged report), in a private answer; anyone else reads the public
+numbers the public guild page prints, in a public answer. Both carry `Vary: Cookie,
+Authorization`.
 
 Every successful (2xx) `GET` also carries `ETag: W/"<16 hex chars>"`, a weak tag computed over
 the envelope's `data` field alone. A matching `If-None-Match` (weak or strong, comma-separated)
@@ -263,6 +268,32 @@ version:
       --set-env-vars "$(tr '\n' ',' < .env.job)"
 
     gcloud run jobs execute rating-backfill --region us-east1 --wait
+
+`rating-rerate-flagged` brings the stored Forever Score back into line once reports are
+flagged (tampered or unverified). The score never reads a flagged report, but the snapshot
+the rater rolled onto a character's fights may have counted it. The job finds every character
+whose score a flagged report moved, in three groups, each character in the first it fits:
+
+- the characters with a rated row in a flagged report (its fights, discipline and parses);
+- the guild-mates of the flagged night, whose attendance counted it among the guild's nights,
+  there or not: the guild's verified members (the membership the score's attendance counts
+  nights for), and every character with a rated fight in the last 90 days (the attendance
+  window) in a report of that guild;
+- the characters linked to the same account as a character in the flagged report, whose
+  experience counted its kills.
+
+For each it re-rates the character's newest clean fight through the backfill's own path and
+rolls the score up onto it again. It logs, per group, how many characters and fights it found,
+re-rated and failed, and exits non-zero when any fight failed (every fight is still tried), so
+the job's failure alert fires. It is idempotent, so run it after the deploy that carries it and
+again whenever reports are flagged (or schedule it):
+
+    gcloud run jobs create rating-rerate-flagged \
+      --image <the API image> --region us-east1 --args rating-rerate-flagged \
+      --cpu 2 --memory 2Gi --task-timeout 60m \
+      --set-env-vars "$(tr '\n' ',' < .env.job)"
+
+    gcloud run jobs execute rating-rerate-flagged --region us-east1 --wait
 
 ### The data-addon job
 

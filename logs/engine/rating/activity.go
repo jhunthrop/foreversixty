@@ -39,6 +39,28 @@ func scoreActivity(fight summary.Summary, player string, bracket Bracket, table 
 	return placeBoundedOrSelf(c, src, bracket, share)
 }
 
+// ActivityIdleMS is the time the Activity component counts against player, in its own
+// measure: the time alive outside the curated downtime windows and the player's assignment
+// windows, less the seconds in it the player did damage or healing (activeExcludingDowntime).
+// With no window at all it is the time alive less the roster's ActiveMS, the whole-fight
+// figure scoreActivity falls back to. Never negative; 0 for a player not on the roster.
+func ActivityIdleMS(fight summary.Summary, player string, table *mechanics.Table, assignments []Assignment) int64 {
+	row, ok := rosterRow(fight, player)
+	if !ok {
+		return 0
+	}
+	aliveMS := timeAliveMS(fight, player)
+	windows := downtimeWindows(fight, table, aliveMS)
+	windows = append(windows, assignmentWindows(assignments, player, aliveMS)...)
+	idle := aliveMS - row.ActiveMS
+	if len(windows) > 0 {
+		if activeMS, denomMS := activeExcludingDowntime(fight, player, aliveMS, windows); denomMS > 0 {
+			idle = denomMS - activeMS
+		}
+	}
+	return max(idle, 0)
+}
+
 // downtimeWindows expands the encounter's curated Downtime entries into
 // concrete [from, to) spans, clipped to [0, aliveMS).
 func downtimeWindows(fight summary.Summary, table *mechanics.Table, aliveMS int64) []window {

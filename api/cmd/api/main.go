@@ -89,6 +89,12 @@ func main() {
 				os.Exit(1)
 			}
 			return
+		case rating.RerateFlaggedJobCommand:
+			if err := runRerateFlagged(context.Background(), log); err != nil {
+				log.Error(rating.RerateFlaggedJobCommand, "err", err)
+				os.Exit(1)
+			}
+			return
 		case dataaddon.JobCommand:
 			if err := runDataAddon(context.Background(), log); err != nil {
 				log.Error(dataaddon.JobCommand, "err", err)
@@ -285,6 +291,47 @@ func runRatingBackfill(ctx context.Context, log *slog.Logger) error {
 	return nil
 }
 
+// runRerateFlagged is the on-demand Cloud Run job that brings the stored Forever Score back
+// into line once reports are flagged (rating.RerateFlagged): every character whose score a
+// flagged report moved (in it, a guild-mate of its night, or an alt on the same account) has
+// its newest clean fight re-rated and its score rolled up again. Idempotent, so it is safe to
+// run again or on a schedule.
+func runRerateFlagged(ctx context.Context, log *slog.Logger) error {
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	client := objects(cfg, log)
+	if client == nil {
+		return fmt.Errorf("%s needs R2 credentials", rating.RerateFlaggedJobCommand)
+	}
+	return rerateFlagged(ctx, rating.BackfillDeps{
+		Store: &rating.Store{Pool: pool, Log: log}, Summaries: client, Log: log,
+	}, log)
+}
+
+// rerateFlagged is the job's run once its dependencies are wired: it logs the counts of each
+// group, then fails when any fight could not be re-rated (every fight is still tried first),
+// so the job exits non-zero and its failure alert fires.
+func rerateFlagged(ctx context.Context, d rating.BackfillDeps, log *slog.Logger) error {
+	c, err := rating.RerateFlagged(ctx, d)
+	if err != nil {
+		return err
+	}
+	for _, g := range []struct {
+		name   string
+		counts rating.RerateGroup
+	}{{"flagged", c.Flagged}, {"guildmates", c.Guildmates}, {"linked", c.Linked}} {
+		log.Info(rating.RerateFlaggedJobCommand, "group", g.name, "characters", g.counts.Characters,
+			"fights", g.counts.Fights, "rerated", g.counts.Rerated, "failed", g.counts.Failed)
+	}
+	if failed := c.Failed(); failed > 0 {
+		return fmt.Errorf("%d of %d fights could not be re-rated (each logged above)", failed, c.Fights())
+	}
+	return nil
+}
+
 // runDataAddon is the nightly Cloud Run job: aggregate every public rated
 // character and guild into the Forever Sixty Data addon's Data.lua (or its
 // region-split form) and publish it to DATA_ADDON_BUCKET for
@@ -310,8 +357,11 @@ func runDataAddon(ctx context.Context, log *slog.Logger) error {
 		build = latest.Version
 	} else {
 		log.Warn(dataaddon.JobCommand, "err", "no client build available",
-			"effect", "Data.lua's build field reads \"unknown\"")
+			"effect", "every gear component reads 0 and no no-logs record names a spec")
 	}
+	// The scores' gear component (rating.ScoreV2 through sims.GearScore) reads the item
+	// tables and per-build weights, exactly as the API server wires them.
+	sims.SetGearData(treeData, cfg.TreeDataDir)
 
 	bucket := os.Getenv("DATA_ADDON_BUCKET")
 	var uploader dataaddon.Uploader
@@ -327,7 +377,7 @@ func runDataAddon(ctx context.Context, log *slog.Logger) error {
 	}
 
 	result, err := dataaddon.Run(ctx, dataaddon.Deps{
-		Store: &dataaddon.Store{Pool: pool}, Upload: uploader, Bucket: bucket,
+		Store: &dataaddon.Store{Pool: pool}, Trees: treeData, Upload: uploader, Bucket: bucket,
 		Build: build, Now: time.Now().UTC(), Log: log,
 	})
 	if err != nil {
@@ -545,7 +595,7 @@ func serve(log *slog.Logger) error {
 	}
 
 	reportStore := &reports.Store{Pool: pool}
-	rankStore := &rankings.Store{Pool: pool, Specs: inferrer(treeData), APIBaseURL: cfg.APIBaseURL}
+	rankStore := &rankings.Store{Pool: pool, Specs: inferrer(treeData), APIBaseURL: cfg.APIBaseURL, Trees: treeData}
 	ratingStore := &rating.Store{Pool: pool, Log: log}
 	client := objects(cfg, log)
 
@@ -564,10 +614,20 @@ func serve(log *slog.Logger) error {
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}
 
+	// The character page carries the Forever Score and the gear panel, which live in the rating
+	// lane and share one read of the character.
+	deps.Rankings.Scores = deps.Rating
+	deps.Rankings.ScoreGear = deps.Rating
+
 	deps.Sims = &sims.Service{
 		Store: simStore, Accounts: entStore, Planner: simEngine(log),
 		EngineVersion: enginever.Version, Log: log,
 	}
+	// The addon outbox's sim requests start the same server runs; the
+	// job runner is attached to deps.Sims below, when the job is reachable.
+	deps.Addon.SimRequests = deps.Sims
+	// sims.GearScore reads the item tables and the per-build weights.
+	sims.SetGearData(treeData, cfg.TreeDataDir)
 
 	var gateway billing.Gateway
 	if cfg.StripeConfigured() {
