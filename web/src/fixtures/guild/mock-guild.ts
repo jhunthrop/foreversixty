@@ -14,7 +14,9 @@
 // `page.route`'s response built with this fixture).
 import { createHash } from 'node:crypto';
 import type {
+  GuildAddonSnapshot,
   GuildHome,
+  GuildRosterAddon,
   GuildLootPage,
   GuildProgressionPage,
   GuildReadinessPage,
@@ -313,8 +315,50 @@ function toRosterRow(name: string): GuildRosterRow {
   };
 }
 
-export function buildMockRoster(): GuildRosterRow[] {
-  return ROSTER_SEED.map((r) => toRosterRow(r[0]));
+// Task L8.3 (Task L6.14's addendum): the guild's newest addon roster snapshot, sent by the
+// member viewer's own export. Four member lines: three match roster rows by name, one
+// (ADDON_UNMATCHED_MEMBER) matches none and so counts only in `members`, never as a row.
+// Zulmara's addon says Survival where the site says Marksmanship; Kraggor's agrees with the
+// site; Duskstrider shares no gear (level, spec, gap and build all null).
+export const ADDON_SNAPSHOT: GuildAddonSnapshot = {
+  received_at: '2026-12-22T21:43:00Z',
+  by_character: 'us/pvp/zulmara',
+  members: 4,
+};
+export const ADDON_UNMATCHED_MEMBER = 'Brightwick';
+const ADDON_LINES: Record<string, Omit<GuildRosterAddon, 'snapshot_at'>> = {
+  Zulmara: {
+    level: 60,
+    spec: 'hunter-survival',
+    gear_gap: 12,
+    build: 'Survival raid',
+    seen_at: '2026-12-22 21:40',
+  },
+  Kraggor: {
+    level: 60,
+    spec: 'warrior-protection',
+    gear_gap: 4,
+    build: 'Protection raid',
+    seen_at: '2026-12-22 21:38',
+  },
+  // The consent-withheld row: a member who has not agreed to share gear, so the snapshot
+  // carries the time it saw them and nothing else.
+  Duskstrider: {
+    level: null,
+    spec: null,
+    gear_gap: null,
+    build: null,
+    seen_at: '2026-12-21 23:12',
+  },
+};
+
+function addonFor(name: string, withSnapshot: boolean): GuildRosterAddon | null {
+  const line = withSnapshot ? ADDON_LINES[name] : undefined;
+  return line === undefined ? null : { ...line, snapshot_at: ADDON_SNAPSHOT.received_at };
+}
+
+export function buildMockRoster(withAddonSnapshot = true): GuildRosterRow[] {
+  return ROSTER_SEED.map((r) => ({ ...toRosterRow(r[0]), addon: addonFor(r[0], withAddonSnapshot) }));
 }
 
 export function buildMockHome(
@@ -324,8 +368,11 @@ export function buildMockHome(
   // (no crest), matching a guild that has never uploaded one -- the e2e suite overrides it
   // to exercise the uploaded-crest and crest-removed states without a second fixture.
   crestUrl: string | null = null,
+  // Task L8.3: `false` builds the home a guild with no addon snapshot gets (every row's
+  // `addon` null, `addon_snapshot` null) for the Roster tab's null state.
+  withAddonSnapshot = true,
 ): GuildHome {
-  const roster = buildMockRoster();
+  const roster = buildMockRoster(withAddonSnapshot);
   const pending = roster.filter((r) => !r.verified);
   const belowFloor = roster.filter((r) => (r.rating?.overall ?? 100) < 55).length;
   const viewerRow = viewerName === null ? null : (roster.find((r) => r.name === viewerName) ?? null);
@@ -385,6 +432,7 @@ export function buildMockHome(
       })),
     roster,
     pending,
+    addon_snapshot: withAddonSnapshot ? ADDON_SNAPSHOT : null,
   };
 }
 

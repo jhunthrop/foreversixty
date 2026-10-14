@@ -156,3 +156,23 @@ export const guildConsentCopy = {
   leave: 'Leave',
   left: 'Left.',
 } as const;
+
+/** Task L8.3: the Roster tab's "In game" column and the line above the table, from the
+ *  guild's newest addon roster snapshot (Task L6.14). The gap is read as DPS: the addon's
+ *  hello carries no unit, so the column's hover says it is the addon's own figure. */
+export const guildRosterAddonCopy = {
+  column: 'In game',
+  columnHover: 'Gear gap in DPS, as the addon reports it',
+  /** Read before each row's cell, for a screen reader: the rows have no table headers. */
+  srLabel: 'In game:',
+  notSeen: '—',
+  notSeenHover: 'Not seen by the addon in the last snapshot',
+  level: (level: number): string => `Level ${level}`,
+  addonTag: '(addon)',
+  gap: (gap: number): string => `${gap} DPS`,
+  seen: (clock: string): string => `seen ${clock}`,
+  separator: '·',
+  snapshotLine: (when: string, by: string, members: number): string =>
+    `Roster from the addon · received ${when} by ${by} · ${members} member${members === 1 ? '' : 's'}`,
+  noSnapshot: 'No addon snapshot yet — a guild member with the addon and the companion sends one on logout.',
+} as const;

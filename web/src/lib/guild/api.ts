@@ -206,6 +206,40 @@ export interface GuildRosterRow {
    * only controls what renders, never what the API accepts.
    */
   may_remove: boolean;
+  /** Task L6.14's addendum (openapi `GuildRosterAddon`): this character's line in the guild's
+   *  newest addon roster snapshot, `null` when the snapshot does not carry it. The API sends
+   *  it on every row; optional here so a home from before the addendum still reads. */
+  addon?: GuildRosterAddon | null;
+}
+
+/** One member's line in the addon's roster snapshot (addon-v2 contract 4), matched to a
+ *  roster row by name. `gear_gap` is the integer the member's addon announced in its hello:
+ *  the hello carries no unit, and the Roster tab reads it as DPS. */
+export interface GuildRosterAddon {
+  /** `level`, `spec`, `gear_gap` and `build` are null when the member has not consented to
+   *  share gear; `seen_at` and `snapshot_at` are always present when the object is. */
+  level: number | null;
+  /** A spec slug, e.g. `warrior-arms`. */
+  spec: string | null;
+  /** May be negative. */
+  gear_gap: number | null;
+  /** The build name the member's addon announced; null when it announced none or without consent. */
+  build: string | null;
+  /** The sender's local time, `YYYY-MM-DD HH:MM`, as stored. */
+  seen_at: string;
+  /** `addon_snapshot.received_at`, RFC 3339 UTC. */
+  snapshot_at: string;
+}
+
+/** The home's `addon_snapshot` (openapi `GuildAddonSnapshot`): the guild's newest addon
+ *  roster snapshot. */
+export interface GuildAddonSnapshot {
+  /** RFC 3339 UTC. */
+  received_at: string;
+  /** The character KEY whose export carried the snapshot (`us/pvp/thorgrim`), not a name. */
+  by_character: string;
+  /** Every member line the snapshot listed, those matching no roster row included. */
+  members: number;
 }
 
 export interface GuildHome {
@@ -222,6 +256,9 @@ export interface GuildHome {
   roster: GuildRosterRow[];
   /** Officer: every unverified member; member/public: `[]`. */
   pending?: GuildRosterRow[];
+  /** Task L6.14: the guild's newest addon roster snapshot, `null` when it has none. Optional
+   *  so a home from before the addendum still reads (the Roster tab treats absent as null). */
+  addon_snapshot?: GuildAddonSnapshot | null;
 }
 
 export interface GuildSettingsData {

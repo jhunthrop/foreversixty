@@ -20,7 +20,10 @@ import {
   rotateInvite,
   updateConsent,
   updateGuildSettings,
+  type GuildAddonSnapshot,
   type GuildHome,
+  type GuildRosterAddon,
+  type GuildRosterRow,
   type GuildSettingsData,
 } from './api';
 
@@ -105,6 +108,67 @@ describe('fetchGuildHome', () => {
     vi.stubGlobal('fetch', upstream);
     await fetchGuildHome(42, 'abc123', API);
     expect((upstream.mock.calls[0][0] as Request).url).toBe(`${API}/v1/guilds/42/home?cursor=abc123`);
+  });
+
+  // Task L8.3 against Task L6.14's addendum: every roster row gains `addon` (the member's
+  // entry in the latest addon roster snapshot, or null) and the home gains `addon_snapshot`.
+  // Both are optional in the type, so a home from before the addendum still reads.
+  it('carries the addon roster snapshot fields through when the API sends them', async () => {
+    const addon: GuildRosterAddon = {
+      level: 52,
+      spec: 'hunter-marksmanship',
+      gear_gap: 31,
+      build: null,
+      seen_at: '2026-12-21 23:12',
+      snapshot_at: '2026-12-22T21:43:00Z',
+    };
+    const snapshot: GuildAddonSnapshot = {
+      received_at: '2026-12-22T21:43:00Z',
+      by_character: 'us/hardcore/thorgrim',
+      members: 2,
+    };
+    const rosterRow = (name: string, rowAddon: GuildRosterAddon | null): GuildRosterRow => ({
+      character_key: `us/hardcore/${name.toLowerCase()}`,
+      region: 'us',
+      ruleset: 'hardcore',
+      name,
+      rank: 'member',
+      verified: true,
+      logged_recently: false,
+      consent: 'gear',
+      may_remove: false,
+      addon: rowAddon,
+    });
+    const home: GuildHome = {
+      ...guildHomeFixture(),
+      guild: { id: 43, region: 'us', ruleset: 'hardcore', name: 'Fixture Guild' },
+      roster: [rosterRow('Thorgrim', addon), rosterRow('Quietfern', null)],
+      addon_snapshot: snapshot,
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(home)),
+    );
+    const result = await fetchGuildHome(43, undefined, API);
+    expect(result.addon_snapshot).toEqual(snapshot);
+    expect(result.roster[0].addon).toEqual(addon);
+    expect(result.roster[1].addon).toBeNull();
+  });
+
+  it('reads a home without the addon fields (before the addendum) and a null snapshot alike', async () => {
+    const before: GuildHome = guildHomeFixture();
+    expect('addon_snapshot' in before).toBe(false);
+    const none: GuildHome = {
+      ...guildHomeFixture(),
+      guild: { ...guildHomeFixture().guild, id: 44 },
+      addon_snapshot: null,
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(none)),
+    );
+    const result = await fetchGuildHome(44, undefined, API);
+    expect(result.addon_snapshot).toBeNull();
   });
 });
 

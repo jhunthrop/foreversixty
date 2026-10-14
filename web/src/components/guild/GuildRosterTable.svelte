@@ -1,15 +1,26 @@
 <!-- web/src/components/guild/GuildRosterTable.svelte -->
 <!-- Guild control-centre spec §4.B: the Roster tab -- filter bar, five-column sort header,
      rating/attendance/parses/professions/main-alt columns, the viewer's own row pinned
-     first. Member/officer only (unchanged visibility from v1). -->
+     first. Member/officer only (unchanged visibility from v1). Task L8.3 adds the "In game"
+     column (the addon's level/spec where they differ, gear gap in DPS, build, seen time) from
+     the guild's newest addon roster snapshot, and the line above the table naming it. -->
 <script lang="ts">
   import ClassCrestRing from '../character/ClassCrestRing.svelte';
   import GuildRosterHandoff from '../GuildRosterHandoff.svelte';
   import { classColorVar } from '../../lib/report/format';
   import type { CharacterPath } from '../../lib/characters';
-  import type { GuildRosterRow } from '../../lib/guild/api';
+  import type { GuildAddonSnapshot, GuildRosterRow } from '../../lib/guild/api';
+  import { guildRosterAddonCopy } from '../../lib/guild/copy';
+  import {
+    addonGapLabel,
+    addonIdentity,
+    addonLevelSpec,
+    addonSeenClock,
+    addonSnapshotLine,
+  } from '../../lib/guild/roster-addon';
   import {
     DEFAULT_ROSTER_FILTERS,
+    DEFAULT_ROSTER_SORT,
     altOfMainName,
     applyRosterFilters,
     pinOwnRowFirst,
@@ -36,6 +47,8 @@
     onRemove,
     onApproveAll,
     rowPath,
+    addonSnapshot = null,
+    now = new Date(),
   }: {
     roster: GuildRosterRow[];
     pending: GuildRosterRow[];
@@ -51,10 +64,14 @@
     onRemove: (row: GuildRosterRow) => void;
     onApproveAll: () => void;
     rowPath: (row: GuildRosterRow) => CharacterPath;
+    /** The home's `addon_snapshot` (Task L6.14); absent on a home from before it, read as null. */
+    addonSnapshot?: GuildAddonSnapshot | null;
+    /** The clock the snapshot's "received … ago" reads against; a test pins it. */
+    now?: Date;
   } = $props();
 
   let filters = $state<RosterFilters>({ ...DEFAULT_ROSTER_FILTERS });
-  let sortKey = $state<RosterSortKey>('ilvl');
+  let sortKey = $state<RosterSortKey>(DEFAULT_ROSTER_SORT);
 
   const floor = $derived(ratingFloor(roster));
   // Verified rows only -- `pending`'s own explicit unverified block above already covers
@@ -78,6 +95,7 @@
     [...new Set(roster.map((r) => r.class).filter((c): c is string => c !== undefined))].sort(),
   );
   const altOf = $derived(altOfMainName(roster));
+  const snapshotLine = $derived(addonSnapshotLine(addonSnapshot, [...roster, ...pending], now));
 
   function toggle(key: 'verifiedOnly' | 'belowFloorOnly'): void {
     filters = { ...filters, [key]: !filters[key] };
@@ -93,12 +111,13 @@
     filters = { ...filters, classFilter: next };
   }
 
-  const SORT_COLUMNS: { key: RosterSortKey; label: string }[] = [
+  const SORT_COLUMNS: { key: RosterSortKey; label: string; hover?: string }[] = [
     { key: 'rank', label: 'Rank' },
     { key: 'ilvl', label: 'Item level' },
     { key: 'rating', label: 'Rating' },
     { key: 'attendance', label: 'Attendance' },
     { key: 'seen', label: 'Last seen' },
+    { key: 'addon_gap', label: guildRosterAddonCopy.column, hover: guildRosterAddonCopy.columnHover },
   ];
 
   function ratingTooltip(row: GuildRosterRow): string {
@@ -118,6 +137,43 @@
   const SORT_HEADER_ACTIVE = 'text-gold';
   const ROW = 'guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-b py-2.5';
 </script>
+
+{#snippet inGame(row: GuildRosterRow)}
+  {@const identity = addonIdentity(row)}
+  <span class="text-[12px]">
+    <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
+    {#if identity === null || row.addon === undefined || row.addon === null}
+      <span
+        class="text-muted"
+        style="cursor:help"
+        title={guildRosterAddonCopy.notSeenHover}
+        data-testid="guild-roster-ingame-none">{guildRosterAddonCopy.notSeen}</span
+      >
+    {:else}
+      {@const clock = addonSeenClock(row.addon.seen_at)}
+      {@const gapLabel = addonGapLabel(row.addon.gear_gap)}
+      <span data-testid="guild-roster-ingame"
+        >{#if identity.level !== null}{addonLevelSpec(identity.level, identity.spec)}
+          <span class="text-muted">{guildRosterAddonCopy.addonTag}</span>
+        {/if}
+        {#if gapLabel !== null}
+          {#if identity.level !== null}<span class="text-muted">{guildRosterAddonCopy.separator}</span>{/if}
+          <span class="tabular font-mono" data-testid="guild-roster-ingame-gap">{gapLabel}</span>
+        {/if}
+        {#if row.addon.build !== null && row.addon.build !== ''}
+          <span class="text-muted">{guildRosterAddonCopy.separator}</span>
+          {row.addon.build}
+        {/if}
+        {#if clock !== null}
+          {#if identity.level !== null || gapLabel !== null || (row.addon.build !== null && row.addon.build !== '')}<span
+              class="text-muted">{guildRosterAddonCopy.separator}</span
+            >{/if}
+          <span class="text-muted">{guildRosterAddonCopy.seen(clock)}</span>
+        {/if}</span
+      >
+    {/if}
+  </span>
+{/snippet}
 
 <section class="flex flex-col gap-4" data-testid="guild-roster-tab">
   <div class="flex flex-wrap items-center gap-2" data-testid="guild-roster-filters">
@@ -189,10 +245,13 @@
     </div>
   {/if}
 
+  <p class="text-muted text-[13px]" data-testid="guild-roster-addon-snapshot">{snapshotLine}</p>
+
   <div class="flex flex-wrap gap-6 px-1" data-testid="guild-roster-sort-header">
     {#each SORT_COLUMNS as col (col.key)}
       <button
         class={`${SORT_HEADER} ${sortKey === col.key ? SORT_HEADER_ACTIVE : ''}`}
+        title={col.hover}
         onclick={() => (sortKey = col.key)}
         data-testid={`guild-roster-sort-${col.key}`}
       >
@@ -213,6 +272,7 @@
             <span
               class="font-display text-[14px] font-bold"
               style={`color:${classColorVar(row.class ?? '')}`}
+              data-testid="guild-roster-name"
             >
               {row.name}{pinned ? ' (you)' : ''}
             </span>
@@ -254,6 +314,7 @@
               {row.rating.overall} <span class="text-muted text-[11px]">rating</span>
             </span>
           {/if}
+          {@render inGame(row)}
           <div class="ml-auto flex items-center gap-3">
             {#if row.consent !== 'roster'}
               <GuildRosterHandoff path={rowPath(row)} />
