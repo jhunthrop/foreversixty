@@ -322,6 +322,14 @@ Theme.SIZES = {
 	guildSideClear = 4,
 	guildScrollbar = 8,
 	guildToggleRoom = 88,
+	--- The group panel (spec section 4.8, L5.2): its flyout's width (its button is the panel
+	--- tab's; its headers, columns and scroll track are the guild tab's), the most member rows
+	--- shown at once (each a cell line and the muted weakest-slot line under it), the ready
+	--- check's missing lines before "and N more", and the enchant cell's tick.
+	groupFlyoutWidth = 480,
+	groupVisibleRows = 10,
+	groupMissingLines = 6,
+	groupTick = 12,
 }
 
 --- The client's own font objects, and what to use when one is missing.

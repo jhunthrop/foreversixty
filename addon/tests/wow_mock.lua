@@ -20,13 +20,15 @@ local realPrint = _G.print
 --- QuestRewardItem<n>, QuestInfoFrame) and the group loot roll frames (GroupLootFrame<n>,
 --- GroupLootContainer): the reward and roll marks draw on addon overlays there too.
 --- L5.1 adds the guild frame (CommunitiesFrame) and every Communities* frame: the guild tab's
---- button and flyout are addon frames parented to it.
+--- button and flyout are addon frames parented to it. L5.2 adds the compact raid frames
+--- (CompactRaidFrame*): the group panel never touches them.
 mock.CLIENT_PREFIXES = { "Character", "PaperDoll", "ContainerFrame", "QuestInfo", "QuestReward", "GroupLoot",
-	"Communities" }
+	"Communities", "CompactRaidFrame" }
 --- Client frames named one by one, whatever the prefixes cover (L4.3 fix round 2): the pane's
 --- CharacterFrameModeTabs column, which the panel flyout anchors beside and must never write
---- into; the guild frame itself (L5.1).
-mock.CLIENT_NAMES = { "CharacterFrameModeTabs", "CommunitiesFrame" }
+--- into; the guild frame itself (L5.1); the raid frame the group panel's button and flyout are
+--- parented to, the social window holding it, and the party frame (L5.2).
+mock.CLIENT_NAMES = { "CharacterFrameModeTabs", "CommunitiesFrame", "RaidFrame", "FriendsFrame", "PartyFrame" }
 
 function mock.isClientName(name)
 	if type(name) ~= "string" then

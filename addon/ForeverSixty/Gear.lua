@@ -225,6 +225,20 @@ function Gear.readEquipped()
 	return equipped
 end
 
+--- Another player's equipment, as Gear.readEquipped shapes the player's own, from the links an
+--- inspect read (`items`: slot -> link; the group panel, L5.2). The worn enchant is not netted
+--- in: its tooltip rows can be read only for the player's own items.
+function Gear.equippedFrom(items)
+	local equipped = {}
+	for slot, link in pairs(type(items) == "table" and items or {}) do
+		if type(link) == "string" then
+			local id, _, _, equipLoc = Compat.itemInfoInstant(link)
+			equipped[slot] = { itemId = tonumber(id), link = link, equipLoc = equipLoc, stats = Gear.statsOf(link) }
+		end
+	end
+	return equipped
+end
+
 --- The weighted sum of an item's stats. A weapon's own DPS (`weapon_dps`) is never
 --- summed here, whatever the weights carry: Progress.itemScore alone counts it, at
 --- the band's measured weapon term (Gear.weaponTerm) and only on the slot it was

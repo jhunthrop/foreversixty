@@ -1108,6 +1108,98 @@ L.diagGuildTabYes = "yes"
 L.diagGuildTabNo = "no"
 L.diagGuildTabFailed = "The guild tab failed and is off until /reload: %s"
 
+-- The group panel (spec section 4.8, L5.2): the "Forever Sixty" button under the client's raid
+-- frame and its flyout: one row per member, and after a ready check who lacks what and who
+-- covers each of the encounter's needs.
+L.groupPanelLabel = L.addonName
+L.groupPanelHeader = L.addonName .. " · Group"
+-- The button's hover, muted under "Forever Sixty" in gold (as the guild tab's).
+L.groupPanelHint = {
+	"Your group's specs, gear, scores and buffs.",
+	"Click to open or close.",
+}
+-- Out of a group, the flyout's one line and nothing else (ruling 1).
+L.groupNotInGroup = "Not in a group."
+-- Under the header, muted: "5 members · 3 inspected · 2 live".
+L.groupCounts = "%d members · %d inspected · %d live"
+-- /fs group with the Raid tab closed: the flyout lives on that tab.
+L.groupOpensOnRaidTab = "The group panel shows on the Raid tab of the Social window (O)."
+-- The column headers; a click sorts by one, a second click turns it round.
+L.groupColumns = {
+	name = "Name", spec = "Spec", level = "Level", ilvl = "iLvl", gap = "Gap", score = "Score",
+	enchants = "Enchants", addon = "Addon",
+}
+-- The headers' hover, a line each: the first as text, the rest muted.
+L.groupHeaderHints = {
+	ilvl = { "Average item level of what they wear, from an inspect." },
+	gap = { "Gear gap: the biggest slot behind their spec's best in slot.",
+		"From their own addon when they run Forever Sixty, else from an inspect; 0 means on plan." },
+	enchants = { "Enchantable slots worn without an enchant, from an inspect." },
+	addon = { "Live: they run Forever Sixty and shared their build." },
+}
+-- Cells: a gap in its unit, a member a readable record has no logs for, enchants missing or a
+-- tick (the client's ready-check art), the addon present.
+L.groupGapDps = "%d DPS"
+L.groupGapPts = "%d pts"
+L.groupNoLogs = "no logs"
+L.groupEnchantsMissing = "%d missing"
+L.groupAddonLive = "live"
+-- The muted line under a row: "below 1200" under the floor, then the weakest slot ("Chest:
+-- Worn Robe → Robes of Arcana +12.0 DPS", the gain as the item tooltip's Next line prints it),
+-- or "inspect paused" while combat holds the inspect queue.
+L.groupBelow = "below %d"
+L.groupSubJoin = " · "
+L.groupWeakest = "%s: %s → %s %s"
+L.groupWeakestEmpty = "%s: empty → %s %s"
+L.groupInspectPaused = "inspect paused"
+-- A row's hover: the best parse ("71st percentile on Lucifron"), the build, the bare slots, offline.
+L.groupBestParse = "Best parse: %s percentile on %s"
+L.groupBuild = "Build: %s"
+L.groupBareSlots = "No enchant: %s"
+L.groupOffline = "Offline"
+-- The ready check (ruling 3): its title with the time it ran, "Name: flask, imbue" per member
+-- lacking anything, and each need of the bosses with who covers it.
+L.groupCheckTitle = "Ready check · %s"
+L.groupMissing = "%s: %s"
+L.groupMissingJoin = ", "
+L.groupMissingMore = "and %d more"
+L.groupAllSet = "Nobody is missing anything."
+L.groupCoverageTitle = "Coverage"
+L.groupCoverage = "%s: covered by %s"
+L.groupCoverageNobody = "%s: nobody"
+L.groupCoverageJoin = ", "
+L.groupNeedFlask = "flask"
+L.groupNeedFood = "food"
+L.groupNeedImbue = "imbue"
+-- The food buff's own name, matched where the client cannot name its spell.
+L.groupWellFed = "Well Fed"
+-- A boss the raid stacks resistance for: "Fire resistance".
+L.groupResist = "%s resistance"
+L.groupSchools = { fire = "Fire", frost = "Frost", nature = "Nature", shadow = "Shadow", arcane = "Arcane" }
+-- The needs' names where the client cannot name the spell (contract 1: names come from the
+-- client; an id is never printed, so these stand in rather than leave a need unnamed).
+L.groupSpellNames = {
+	[11551] = "Battle Shout", [9885] = "Mark of the Wild", [10157] = "Arcane Intellect",
+	[10938] = "Power Word: Fortitude", [20217] = "Blessing of Kings", [11597] = "Sunder Armor",
+	[11717] = "Curse of Recklessness", [1311680] = "Curse of the Elements", [9907] = "Faerie Fire",
+}
+-- The chip's line through its ready-check hook: "Ready check: 2 missing (Name, Name)".
+L.groupChipSummary = "Ready check: %d missing (%s)"
+L.groupChipJoin = ", "
+-- /fs ready: a dry run, in chat.
+L.groupReadyDry = "Ready check (only you see this):"
+L.groupReadyNone = "Nobody is missing anything."
+-- /fs floor (ruling 4): the panel flags, it never declines or whispers.
+L.groupFloorSet = "Score floor %d: members scored under it are tagged. Nobody is declined or whispered."
+L.groupFloorCleared = "Score floor cleared."
+L.groupFloorLeader = "Only the group's leader sets a score floor."
+L.groupFloorUsage = "Type /fs floor 1200 to tag members scored under 1200, or /fs floor to clear it."
+-- /fs diag: "Group panel: closed, 5 members (3 inspected, 2 live), ready check 21:04: 2 missing".
+L.diagGroupPanel = "Group panel: %s, %d members (%d inspected, %d live), ready check %s"
+L.diagGroupNone = "none"
+L.diagGroupCheck = "%s: %d missing"
+L.diagGroupPanelFailed = "The group panel failed and is off until /reload: %s"
+
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel
 

@@ -51,6 +51,8 @@ describe("Options", function()
 		helper.load("RewardMarks")
 		helper.load("PanelTab")
 		helper.load("GuildTab")
+		helper.load("Inspect")
+		helper.load("GroupPanel")
 		Options = helper.load("Options")
 		Options.data = DATA
 	end)
@@ -862,6 +864,72 @@ describe("Options", function()
 		assert.is_true(found)
 		Options.register()
 		assert.are.equal(Options.data, GuildTab.data)
+	end)
+
+	-- L5.2: the group panel reads the roster, the inspects, the auras and the ready check; /fs
+	-- group, /fs ready and /fs floor reach it; /fs diag prints its line.
+	it("routes the group events and commands to the group panel", function()
+		local GroupPanel, Chip = require("GroupPanel"), require("Chip")
+		local calls = {}
+		local function count(name)
+			return function(...)
+				calls[name] = (calls[name] or 0) + 1
+				return name == "onReadyCheck" and {} or { name, ... }
+			end
+		end
+		for _, name in ipairs({ "onRosterUpdate", "onInspectReady", "onAura", "onReadyCheck", "onReadyCheckFinished",
+			"onCombat", "command", "handleReady", "handleFloor" }) do
+			GroupPanel[name] = count(name)
+		end
+		local chip = 0
+		Chip.refresh = function()
+			chip = chip + 1
+		end
+		local listed = {}
+		for _, event in ipairs(Options.EVENTS) do
+			listed[event] = true
+		end
+		for _, event in ipairs({ "GROUP_ROSTER_UPDATE", "INSPECT_READY", "UNIT_AURA", "READY_CHECK",
+			"READY_CHECK_FINISHED", "PLAYER_REGEN_DISABLED" }) do
+			assert.is_true(listed[event], event)
+		end
+		Options.onEvent(Options.frame, "GROUP_ROSTER_UPDATE")
+		Options.onEvent(Options.frame, "INSPECT_READY", "Player-1")
+		Options.onEvent(Options.frame, "UNIT_AURA", "party1")
+		Options.onEvent(Options.frame, "READY_CHECK", "Leader", 35)
+		Options.onEvent(Options.frame, "READY_CHECK_FINISHED")
+		Options.onEvent(Options.frame, "PLAYER_REGEN_DISABLED")
+		assert.are.same({ onRosterUpdate = 1, onInspectReady = 1, onAura = 1, onReadyCheck = 1,
+			onReadyCheckFinished = 1, onCombat = 1 }, calls)
+		-- UNIT_AURA redraws nothing else; the combat event still redraws the chip.
+		assert.are.equal(1, chip)
+		assert.are.same({ "command" }, Options.handle("group"))
+		assert.are.same({ "handleReady" }, Options.handle("ready"))
+		assert.are.same({ "handleFloor", "1200" }, Options.handle("floor 1200"))
+		GroupPanel.diagLine = function()
+			return "the group line"
+		end
+		local found = false
+		for _, line in ipairs(Options.handle("diag")) do
+			found = found or line == "the group line"
+		end
+		assert.is_true(found)
+		Options.register()
+		assert.are.equal(Options.data, GroupPanel.data)
+	end)
+
+	it("redraws the chip once on a ready check, through the group panel's hook", function()
+		local Chip = require("Chip")
+		local calls = 0
+		Chip.refresh = function()
+			calls = calls + 1
+		end
+		Options.onEvent(Options.frame, "READY_CHECK", "Leader", 35)
+		assert.are.equal(1, calls)
+		-- A panel that turned itself off: the chip still redraws.
+		require("GroupPanel").disabled = true
+		Options.onEvent(Options.frame, "READY_CHECK", "Leader", 35)
+		assert.are.equal(2, calls)
 	end)
 
 	-- L4.2 ruling 4: the chip's here line follows the instance entered.

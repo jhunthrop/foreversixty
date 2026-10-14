@@ -845,6 +845,41 @@ function Progress.slotTargets(data, spec, band, faction, equipped, current, stat
 	return rows
 end
 
+--- A character's gear plan in `spec` (L5.2): every slot's one target (Progress.slotTargets, in the
+--- band for `level` and `faction`) over `equipped` (Gear.readEquipped's for the player,
+--- Gear.equippedFrom's for an inspected member), scored with `current` (Gear.currentWeights').
+--- Answers { gap, unit, weakest, rows }: the biggest slot gain rounded half-up to a whole number
+--- (a gain between 0 and 0.5 is 1: never "on plan" while behind; 0 when every scored slot is on
+--- plan or ahead), its unit ("dps" with a DPS per point, else "pts"), the slot row it is in
+--- (nil at 0), and every row. nil when nothing could be scored: no data or spec, no weights, or
+--- every target unscored. The one gap rule Comms.gearGap (the guild row, the hello) and the
+--- group panel's rows share.
+function Progress.gearPlan(data, spec, level, faction, equipped, current, isMissing)
+	if type(data) ~= "table" or spec == nil or type(current) ~= "table" or type(current.weights) ~= "table" then
+		return nil
+	end
+	local specBis = type(data.bis) == "table" and data.bis[spec] or nil
+	local band = faction and Gear.bandFor(specBis, level) or nil
+	local rows = Progress.slotTargets(data, spec, band, faction, equipped or {}, current, nil, isMissing)
+	local scored, best, weakest = false, 0, nil
+	for _, row in ipairs(rows) do
+		if row.gain ~= nil then
+			scored = true
+			if row.gain > best then
+				best, weakest = row.gain, row
+			end
+		end
+	end
+	if not scored then
+		return nil
+	end
+	local unit = current.dpsPerPoint ~= nil and "dps" or "pts"
+	if best <= 0 then
+		return { gap = 0, unit = unit, rows = rows }
+	end
+	return { gap = best < 0.5 and 1 or math.floor(best + 0.5), unit = unit, weakest = weakest, rows = rows }
+end
+
 --- Talent points the character has to spend at `level`: Classic grants one
 --- a level from 10, so it is the points earned less the points in `ranks`
 --- (a respec changes the ranks, not the rule), and never below none. Pure:

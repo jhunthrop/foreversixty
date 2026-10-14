@@ -30,6 +30,9 @@ describe("the TOC", function()
 		"surfaces/PanelTab.lua",
 		-- The guild tab (L5.1): reads Score, Comms.seen and the inbox; Options refreshes it.
 		"surfaces/GuildTab.lua",
+		-- The group panel (L5.2): reads Inspect, Score, Comms.seen and the chip's ready-check
+		-- hook; Options refreshes it.
+		"surfaces/GroupPanel.lua",
 		-- The measurement recorder: Options routes /fs record to it.
 		"RecorderBuffer.lua", "Recorder.lua", "Options.lua",
 	}

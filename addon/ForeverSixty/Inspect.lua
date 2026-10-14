@@ -236,6 +236,18 @@ local function read(unit, key, guid)
 	}
 end
 
+--- The player's own record, read now from what they wear (no NotifyInspect: the client always
+--- answers for the player): the group panel's own row (L5.2) takes its item level and enchants
+--- from it. Its `spec` is not the player's (that is Comms.ownSpec's); nil without a name.
+function Inspect.readSelf()
+	local key = Inspect.keyOf("player")
+	if key == nil then
+		return nil
+	end
+	local ok, record = pcall(read, "player", key, try(client("UnitGUID"), "player"))
+	return ok and record or nil
+end
+
 --- Whether the client's inspect window is open: the player's own inspection is never to be
 --- clobbered by a queued one.
 local function inspectWindowShown()

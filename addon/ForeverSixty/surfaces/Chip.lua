@@ -35,8 +35,12 @@ Chip.CARD_NAME = "ForeverSixtyChipPath"
 
 --- Seconds the point ring pulses before it holds still (spec section 4.1).
 Chip.STATIC_AFTER = 10
---- Seconds a ready check's "Missing: ..." line stays without a new check.
+--- Seconds a ready check's "Missing: ..." line stays without a new check (a dry run, /fs ready).
 Chip.RAID_CHECK_SECONDS = 60
+--- L5.2 ruling 3: a leader's ready check stands while it runs (at most RAID_CHECK_OPEN seconds,
+--- should READY_CHECK_FINISHED never come) and RAID_CHECK_AFTER seconds after it finishes.
+Chip.RAID_CHECK_OPEN = 120
+Chip.RAID_CHECK_AFTER = 30
 --- Days a logged raid stays worth a "last night" line.
 Chip.LAST_RAID_DAYS = 14
 --- The idle chip's icon alpha (the chip itself stays opaque), and the
@@ -73,10 +77,19 @@ function Chip.isComplete(build, progress)
 	return build ~= nil and progress ~= nil and #build.order > 0 and progress.matched == #build.order
 end
 
---- Whether a ready check's findings still stand at `now`: the one expiry rule.
+--- Whether a ready check's findings still stand at `now`: the one expiry rule. A finished check
+--- (`untilAt`, L5.2) stands until then; a running one (`open`) up to RAID_CHECK_OPEN; any other
+--- RAID_CHECK_SECONDS after it was made.
 function Chip.raidCheckLive(check, now)
-	return type(check) == "table" and type(check.missing) == "table" and #check.missing > 0
-		and (now or 0) - (check.at or 0) <= Chip.RAID_CHECK_SECONDS
+	if type(check) ~= "table" or type(check.missing) ~= "table" or #check.missing == 0 then
+		return false
+	end
+	now = now or 0
+	if type(check.untilAt) == "number" then
+		return now <= check.untilAt
+	end
+	local lasts = check.open and Chip.RAID_CHECK_OPEN or Chip.RAID_CHECK_SECONDS
+	return now - (check.at or 0) <= lasts
 end
 
 --- Whether a last_raid message is dated, and its date no more than
@@ -320,10 +333,15 @@ local function raidCheckState(input)
 	if not Chip.raidCheckLive(input.raidCheck, input.now) then
 		return nil
 	end
+	-- The group panel's ready check (L5.2) gives its own one-line summary.
+	local text = input.raidCheck.text
+	if type(text) ~= "string" or text == "" then
+		text = string.format(L.chipRaidCheck, table.concat(input.raidCheck.missing, L.chipListSeparator))
+	end
 	return {
 		kind = "raidcheck",
 		icon = Theme.MEDIA.gearCross,
-		text = string.format(L.chipRaidCheck, table.concat(input.raidCheck.missing, L.chipListSeparator)),
+		text = text,
 		action = "raidlist",
 		hint = L.chipHintList,
 	}
@@ -888,10 +906,12 @@ function Chip.printHere()
 	end
 end
 
---- The ready check's findings in chat, one per line.
+--- The ready check's findings in chat, one per line: the group panel's lines as they are
+--- ("Thorgrim: flask, imbue", L5.2), else "Missing: <phrase>".
 function Chip.printRaidCheck()
-	for _, phrase in ipairs(Chip.raidCheck ~= nil and Chip.raidCheck.missing or {}) do
-		Theme.say(string.format(L.chipRaidCheck, phrase))
+	local check = Chip.raidCheck
+	for _, phrase in ipairs(check ~= nil and check.missing or {}) do
+		Theme.say(check.text ~= nil and phrase or string.format(L.chipRaidCheck, phrase))
 	end
 end
 
@@ -982,18 +1002,51 @@ function Chip.setCombat(inCombat)
 	end
 end
 
---- The ready check's findings, a list of plain phrases ("weapon imbue");
---- nil or empty clears them. Lane L5.2 calls this on READY_CHECK.
-function Chip.setRaidCheck(missing)
+local function copyList(list)
+	local copy = {}
+	for index, phrase in ipairs(list) do
+		copy[index] = phrase
+	end
+	return copy
+end
+
+--- The ready check's findings, a list of plain phrases ("weapon imbue", or the group panel's
+--- "Thorgrim: flask" lines); nil or empty clears them. The group panel (L5.2) calls this on
+--- READY_CHECK and /fs ready with its one-line summary as `text` ("Ready check: 2 missing (Name,
+--- Name)"), and `open` true for a leader's check, which stands until Chip.finishRaidCheck.
+function Chip.setRaidCheck(missing, text, open)
 	if type(missing) ~= "table" or #missing == 0 then
 		Chip.raidCheck = nil
 	else
-		local copy = {}
-		for index, phrase in ipairs(missing) do
-			copy[index] = phrase
-		end
-		Chip.raidCheck = { missing = copy, at = Theme.now() }
+		Chip.raidCheck = { missing = copyList(missing), at = Theme.now(), text = text, open = open == true or nil }
 	end
+	Chip.refresh()
+end
+
+--- The same check's findings read again (an aura changed while it stands, L5.2): its time and
+--- whether it still runs are kept; empty findings leave nothing to show. Nothing without a check.
+function Chip.updateRaidCheck(missing, text)
+	local check = Chip.raidCheck
+	if check == nil then
+		return
+	end
+	check.missing = type(missing) == "table" and copyList(missing) or {}
+	check.text = text
+	Chip.refresh()
+end
+
+--- READY_CHECK_FINISHED (L5.2 ruling 3): the check's line stays RAID_CHECK_AFTER seconds more,
+--- then a refresh takes it away.
+function Chip.finishRaidCheck()
+	local check = Chip.raidCheck
+	if check == nil then
+		return
+	end
+	check.open = nil
+	check.untilAt = Theme.now() + Chip.RAID_CHECK_AFTER
+	Theme.after(Chip.RAID_CHECK_AFTER, function()
+		Chip.refresh()
+	end)
 	Chip.refresh()
 end
 

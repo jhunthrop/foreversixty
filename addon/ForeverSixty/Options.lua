@@ -36,6 +36,7 @@ local BuildDialog = ns.BuildDialog or require("BuildDialog")
 local SettingsPage = ns.SettingsPage or require("Settings")
 local PanelTab = ns.PanelTab or require("PanelTab")
 local GuildTab = ns.GuildTab or require("GuildTab")
+local GroupPanel = ns.GroupPanel or require("GroupPanel")
 
 local Options = {}
 Options.data = Data
@@ -170,6 +171,17 @@ function Options.handle(input)
 		return Options.inspectLines()
 	elseif command == "link" then
 		return Options.link(rest)
+	elseif command == "group" then
+		-- The group panel (L5.2 ruling 1): toggled from anywhere.
+		GroupPanel.data = Options.data
+		return GroupPanel.command()
+	elseif command == "ready" then
+		-- A dry run of the ready check (L5.2 ruling 3), in chat and on the chip.
+		GroupPanel.data = Options.data
+		return GroupPanel.handleReady()
+	elseif command == "floor" then
+		-- The group panel's score floor (L5.2 ruling 4): it tags, it never declines.
+		return GroupPanel.handleFloor(rest)
 	elseif command == "diag" then
 		-- Ask the data addon now, so a fresh session reports a missing or old
 		-- one without a tooltip having read it first (Score notes it once).
@@ -192,6 +204,8 @@ function Options.handle(input)
 		surfaces[#surfaces + 1] = PanelTab.diagLine()
 		-- The guild tab (L5.1 ruling 6): open or closed, its rows and live rows, officer or not.
 		surfaces[#surfaces + 1] = GuildTab.diagLine()
+		-- The group panel (L5.2 ruling 5): open or closed, its members, inspected and live, the check.
+		surfaces[#surfaces + 1] = GroupPanel.diagLine()
 		local info = copy(Theme.infoNotes())
 		if rest == "verbose" then
 			for _, note in ipairs(Theme.verboseNotes()) do
@@ -327,6 +341,8 @@ function Options.refreshSurfaces(data, event)
 	PanelTab.refresh(data, event)
 	-- The guild tab (L5.1): its button made once the guild frame exists, an open flyout redrawn.
 	GuildTab.refresh(data)
+	-- The group panel (L5.2): its button made on the raid frame, an open flyout redrawn.
+	GroupPanel.refresh(data)
 	-- The chat badges' switch, read once here rather than on every chat line (L4.4).
 	ChatBadges.refresh()
 end
@@ -339,7 +355,7 @@ Options.EVENTS = {
 	"PLAYER_REGEN_ENABLED", "ADDON_LOADED", "GET_ITEM_INFO_RECEIVED",
 	"CHAT_MSG_ADDON", "INSPECT_READY", "GROUP_ROSTER_UPDATE", "PLAYER_REGEN_DISABLED",
 	-- The chip (L3.1): bags for its upgrade line, the zone for "here for you", the
-	-- ready check for its raid check (L5.2 fills that in; until then it only redraws).
+	-- ready check for its raid check (L5.2: the group panel reads it and tells the chip).
 	"BAG_UPDATE_DELAYED", "ZONE_CHANGED_NEW_AREA", "READY_CHECK", "READY_CHECK_FINISHED",
 	-- The item tooltip (L3.3): its verdict is against what is worn; only its cache clears,
 	-- and the paper-doll and bag marks (L4.1) redraw.
@@ -348,6 +364,9 @@ Options.EVENTS = {
 	"QUEST_COMPLETE", "QUEST_FINISHED", "START_LOOT_ROLL",
 	-- The guild tab (L5.1): the roster the flyout asked for has arrived.
 	"GUILD_ROSTER_UPDATE",
+	-- The group panel (L5.2): a member's auras changed while a ready check stands (it also reads
+	-- GROUP_ROSTER_UPDATE, INSPECT_READY, READY_CHECK and the combat events above).
+	"UNIT_AURA",
 }
 
 --- The talent window's own clicks, which only the talent marks follow:
@@ -387,6 +406,21 @@ function Options.onEvent(_, event, ...)
 			Options.inspecting[record.key] = nil
 			Theme.say(Inspect.line(record))
 		end
+		-- The group panel's row for the member fills in (L5.2).
+		GroupPanel.onInspectReady(record)
+		return
+	end
+	if event == "UNIT_AURA" then
+		-- Only a standing ready check reads auras (L5.2), throttled there; nothing else redraws.
+		GroupPanel.onAura((...))
+		return
+	end
+	if event == "READY_CHECK" then
+		-- The group panel reads every unit's auras and gives the chip its line (Chip.setRaidCheck
+		-- redraws it); should the panel have turned itself off, the chip redraws all the same.
+		if GroupPanel.onReadyCheck() == nil then
+			Chip.refresh(Options.data)
+		end
 		return
 	end
 	if event == "GUILD_ROSTER_UPDATE" then
@@ -396,6 +430,8 @@ function Options.onEvent(_, event, ...)
 	end
 	if event == "GROUP_ROSTER_UPDATE" then
 		Inspect.onEvent(event, ...)
+		-- A member who joined is inspected on arrival; an open group panel redraws (L5.2).
+		GroupPanel.onRosterUpdate()
 		return
 	end
 	if event == "PLAYER_REGEN_DISABLED" or event == "PLAYER_REGEN_ENABLED" then
@@ -410,6 +446,9 @@ function Options.onEvent(_, event, ...)
 			-- The guild tab's button, held back in combat, is made now.
 			GuildTab.onCombatEnd()
 		end
+		-- The group panel's inspects pause in combat and its rows say so (L5.2); its button, held
+		-- back in combat, is made after.
+		GroupPanel.onCombat(event == "PLAYER_REGEN_DISABLED")
 		Chip.refresh(Options.data)
 		return
 	end
@@ -418,11 +457,12 @@ function Options.onEvent(_, event, ...)
 		TalentGlow.watch(Options.data)
 		-- So does the guild frame (Blizzard_Communities): the guild tab's button is made on it.
 		GuildTab.refresh(Options.data)
+		GroupPanel.refresh(Options.data)
 		return
 	end
 	if event == "READY_CHECK_FINISHED" then
-		-- The ready check's "Missing: ..." line goes with the check (setRaidCheck redraws).
-		Chip.setRaidCheck(nil)
+		-- The ready check's line stays 30 s more, then goes (L5.2 ruling 3; Chip.finishRaidCheck).
+		GroupPanel.onReadyCheckFinished()
 		return
 	end
 	if event == "GET_ITEM_INFO_RECEIVED" then
@@ -552,6 +592,10 @@ function Options.register()
 	-- click; it listens for the guild's snapshot! answers. Nothing on the guild frame is hooked.
 	GuildTab.data = Options.data
 	GuildTab.register()
+	-- The group panel (L5.2): its button on the raid frame, its flyout on the first open; it
+	-- listens for the members' hellos and snapshot! answers. Nothing on the raid frame is hooked.
+	GroupPanel.data = Options.data
+	GroupPanel.register()
 	-- The minimap button and the compartment entry: left-click opens the build dialog on its
 	-- paste tab, right-click the Settings page (the command list where it cannot open).
 	MinimapButton.open = function()

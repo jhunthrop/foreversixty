@@ -41,6 +41,7 @@ surfaces\BuildDialog.lua
 surfaces\Settings.lua
 surfaces\PanelTab.lua
 surfaces\GuildTab.lua
+surfaces\GroupPanel.lua
 RecorderBuffer.lua
 Recorder.lua
 Options.lua

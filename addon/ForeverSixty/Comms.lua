@@ -399,6 +399,19 @@ end
 --- (Compat.playerFaction's) may be given. Neither `build` nor `ranks` is read any more (the spec
 --- carries the tree; the targets read no build); the callers' argument order is kept.
 function Comms.gearGap(data, build, spec, ranks, equipped, level, faction) -- luacheck: ignore 212/build 212/ranks
+	local plan = Comms.ownPlan(data, spec, equipped, level, faction)
+	if plan == nil then
+		return nil
+	end
+	return plan.gap, plan.unit
+end
+
+--- The player's own gear plan in `spec` (Progress.gearPlan: the gap, its unit, the weakest slot),
+--- read on this client: the equipment worn (Gear.readEquipped, enchants netted), the weights the
+--- companion's sim sent this character else the shipped ones (Gear.currentWeights) at the
+--- character's level, the faction's band. Comms.gearGap's figure, and the group panel's own row
+--- (L5.2), which also names the weakest slot. nil when nothing can be scored.
+function Comms.ownPlan(data, spec, equipped, level, faction)
 	if type(data) ~= "table" or spec == nil then
 		return nil
 	end
@@ -407,30 +420,16 @@ function Comms.gearGap(data, build, spec, ranks, equipped, level, faction) -- lu
 	if type(current) ~= "table" or type(current.weights) ~= "table" then
 		return nil
 	end
-	faction = faction or Compat.playerFaction()
-	local specBis = type(data.bis) == "table" and data.bis[spec] or nil
-	local band = faction and Gear.bandFor(specBis, level) or nil
 	-- The item tooltip reads the same targets (Progress.targetFor) in the talents' spec (Gear.specOf,
 	-- as Chip.scoredUpgrades does); the gap is in Comms.ownSpec's, the build's own, the spec the
 	-- guild row shows and the hello names. The two agree whenever the talents lead in the build's tree.
 	local tooltip = ns.ItemTooltip
-	local rows = Progress.slotTargets(data, spec, band, faction, equipped or Gear.readEquipped(), current, nil,
-		tooltip ~= nil and tooltip.isMissing or nil)
-	local scored, best = false, 0
-	for _, row in ipairs(rows) do
-		if row.gain ~= nil then
-			scored = true
-			best = math.max(best, row.gain)
-		end
+	local plan = Progress.gearPlan(data, spec, level, faction or Compat.playerFaction(),
+		equipped or Gear.readEquipped(), current, tooltip ~= nil and tooltip.isMissing or nil)
+	if plan ~= nil then
+		plan.current = current
 	end
-	if not scored then
-		return nil
-	end
-	local unit = current.dpsPerPoint ~= nil and "dps" or "pts"
-	if best <= 0 then
-		return 0, unit
-	end
-	return best < 0.5 and 1 or math.floor(best + 0.5), unit
+	return plan
 end
 
 --- The unit a guildmate's gear gap is in, read from their spec and level the way their own
