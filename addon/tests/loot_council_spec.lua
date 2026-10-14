@@ -352,24 +352,49 @@ describe("LootCouncil", function()
 			assert.are.equal(2, #sentOf("loot?"))
 		end)
 
-		it("asks epics whatever the threshold, and rares only at a rare threshold", function()
-			start({ threshold = 5, slots = window({ 100, "Robes of Might" }, { 101, "Lesser Robe", 3 }) })
+		-- L3.7 item 49: "Ask the group about rare drops too" (default off) is the whole rule; the loot
+		-- threshold no longer matters.
+		it("asks epics only by default, whatever the threshold", function()
+			for _, threshold in ipairs({ 2, 3, 4, 5 }) do
+				start({ threshold = threshold, slots = window({ 100, "Robes of Might" }, { 101, "Lesser Robe", 3 }) })
+				LootCouncil.onLootOpened()
+				assert.are.equal(1, #sentOf("loot?"), threshold)
+				assert.are.equal("1|loot?|100|100-1000", sentOf("loot?")[1].text)
+			end
+		end)
+
+		it("asks rares as well with the switch on, whatever the threshold", function()
+			for _, threshold in ipairs({ 2, 4 }) do
+				start({ threshold = threshold, slots = window({ 100, "Robes of Might" }, { 101, "Lesser Robe", 3 }) })
+				require("Prefs").setFlag("lootRares", true)
+				LootCouncil.onLootOpened()
+				assert.are.equal(2, #sentOf("loot?"), threshold)
+			end
+			assert.is_false(require("Prefs").DEFAULTS.lootRares)
+		end)
+
+		-- L3.7 item 49: an item no one in the group could wear is not asked about.
+		it("skips an item no member could wear: plate in a group of a hunter, a hunter and a mage", function()
+			start({ slots = window({ 102, "Plate of Giants" }, { 100, "Robes of Might" }) })
 			LootCouncil.onLootOpened()
 			assert.are.equal(1, #sentOf("loot?"))
 			assert.are.equal("1|loot?|100|100-1000", sentOf("loot?")[1].text)
-			start({ threshold = 4, slots = window({ 100, "Robes of Might" }, { 101, "Lesser Robe", 3 }) })
+			assert.is_true(LootCouncil.unwearable(102))
+			assert.is_false(LootCouncil.unwearable(100))
+			-- A warrior in the group can: asked.
+			start({ members = { PARTY[1], { unit = "party1", name = "Brann", class = "WARRIOR", className = "Warrior",
+				level = 60 } }, slots = window({ 102, "Plate of Giants" }) })
 			LootCouncil.onLootOpened()
 			assert.are.equal(1, #sentOf("loot?"))
+			-- Not equipment, and not loaded: never skipped.
+			start({ slots = window({ 105, "Black Lotus" }, { 103, "Late Robe" }) })
+			assert.is_false(LootCouncil.unwearable(105))
+			assert.is_false(LootCouncil.unwearable(103))
+			assert.is_false(LootCouncil.unwearable(nil))
 		end)
 
-		it("asks at or above a threshold of rare or higher, and at epic otherwise", function()
-			start({ threshold = 3, slots = window({ 101, "Lesser Robe", 3 }, { 100, "Robes of Might", 2 }) })
-			LootCouncil.onLootOpened()
-			assert.are.equal(1, #sentOf("loot?"))
-			assert.are.equal("1|loot?|101|101-1000", sentOf("loot?")[1].text)
-			start({ threshold = 2, slots = window({ 101, "Lesser Robe", 3 }) })
-			LootCouncil.onLootOpened()
-			assert.are.equal(0, #sentOf("loot?"))
+		it("keeps the settings switch's words in Locale", function()
+			assert.are.equal("Ask the group about rare drops too", L.settingsLootRares)
 		end)
 
 		it("asks nothing unless the player is the master looter, in a group", function()
@@ -520,7 +545,17 @@ describe("LootCouncil", function()
 			fromMember("1|loot!|100-1000|8.5|dps|60|0")
 			GroupPanel.command()
 			local lines = drawn()
-			assert.are.equal(string.format(L.lootDrop, "|cffa335eeRobes of Might|r"), lines[1])
+			-- L3.7 item 50: the title counts the answer window down from 10 s.
+			assert.are.equal(string.format(L.lootCountdown, string.format(L.lootDrop, "|cffa335eeRobes of Might|r"), 10),
+				lines[1])
+			clock = 1003
+			GroupPanel.redraw()
+			assert.are.equal("Drop: |cffa335eeRobes of Might|r · 7 s", drawn()[1])
+			clock = 1010
+			GroupPanel.redraw()
+			assert.are.equal("Drop: |cffa335eeRobes of Might|r", drawn()[1])
+			clock = 1000
+			GroupPanel.redraw()
 			-- The player's own value is computed here; Thorgrim's is his answer; Elwen has not answered.
 			assert.are.same({ "Tester", "+12.0 DPS", "Worn Robe", "on their list" }, lines[2])
 			assert.are.same({ "Thorgrim", "+8.5 DPS", "Old Cloak", "" }, lines[3])
@@ -529,19 +564,29 @@ describe("LootCouncil", function()
 			assert.are.equal(Theme.panelClassHex("HUNTER"), Theme.hexOf(cell[1], cell[2], cell[3]))
 		end)
 
-		it("scores a silent member from their inspect after 5 s, tagged (inspect), else says no data, last", function()
+		it("scores a silent member from their inspect after 10 s, tagged (inspect), else says no data, last", function()
 			askAboutChest()
 			inspectThorgrim()
 			GroupPanel.command()
-			-- Within the 5 s nobody is scored for.
+			-- Within the 10 s nobody is scored for.
 			assert.are.same({ "Elwen", L.lootWaiting, "", "" }, drawn()[3])
 			assert.are.same({ "Thorgrim", L.lootWaiting, "", "" }, drawn()[4])
-			clock = 1005
+			clock = 1010
 			Inspect.cache["Thorgrim"].at = clock
 			mock.runTimers(state)
 			local lines = drawn()
 			assert.are.same({ "Tester", "+12.0 DPS", "Worn Robe", "on their list" }, lines[2])
-			assert.are.same({ "Thorgrim", "+12.0 DPS " .. L.lootInspect, "Worn Robe", "on their list" }, lines[3])
+			-- L3.7 item 51: the inspect's age rides on the tag.
+			assert.are.same({ "Thorgrim", "+12.0 DPS (inspect, just now)", "Worn Robe", "on their list" }, lines[3])
+			-- Older inspects read in minutes and hours (the cell, pure).
+			local row = { short = "Thorgrim", kind = "inspect", value = 12, unit = "dps", inspectAt = 1000 }
+			local function aged(seconds)
+				return GroupPanel.lootCell(row, function() end, 1000 + seconds).value
+			end
+			assert.are.equal("+12.0 DPS (inspect, 12 min ago)", aged(12 * 60 + 5))
+			assert.are.equal("+12.0 DPS (inspect, 3 h ago)", aged(3 * 3600 + 5))
+			assert.are.equal("+12.0 DPS (inspect, just now)", aged(59))
+			assert.are.equal("+12.0 DPS " .. L.lootInspect, GroupPanel.lootCell(row, function() end).value)
 			assert.are.same({ "Elwen", "no addon", "", "" }, lines[4])
 			local cell = mock.lastCall(GroupPanel.lootPool[4].value, "SetTextColor")
 			assert.are.equal(Theme.HEX.muted, Theme.hexOf(cell[1], cell[2], cell[3]))
@@ -562,7 +607,7 @@ describe("LootCouncil", function()
 		-- Fix round 2 (7): "no addon" (nothing seen from the member this session) against "can't score".
 		it("calls a silent member 'no addon' until a hello is seen, then 'can't score', with a hover for each", function()
 			askAboutChest()
-			clock = 1005
+			clock = 1010
 			mock.runTimers(state)
 			local entries = GroupPanel.lootNow()
 			assert.are.equal(L.lootNoAddon, entries[3].value)
@@ -599,8 +644,9 @@ describe("LootCouncil", function()
 			assert.are.equal("Thorgrim", lines[4][1])
 		end)
 
-		it("shows a score as +N pts and a loss with the minus sign", function()
-			assert.are.equal("+12 pts", LootCouncil.valueText(12, "score"))
+		-- L3.7 item 52: a score reads "+12 score" (a healer's value), not "+12 pts".
+		it("shows a score as +N score and a loss with the minus sign", function()
+			assert.are.equal("+12 score", LootCouncil.valueText(12, "score"))
 			assert.are.equal("+6.3 DPS", LootCouncil.valueText(6.3, "dps"))
 			assert.are.equal("−2.1 DPS", LootCouncil.valueText(-2.1, "dps"))
 			assert.are.equal("+6.3 HPS", LootCouncil.valueText(6.3, "dps", true))
@@ -608,11 +654,11 @@ describe("LootCouncil", function()
 
 		it("stacks a second Drop block, at most three, the oldest going", function()
 			start({ slots = window({ 100, "Robes of Might" }, { 101, "Lesser Robe" }, { 104, "Charm of Luck" },
-				{ 102, "Plate of Giants" }) })
+				{ 106, "Ranger Mail" }) })
 			LootCouncil.onLootOpened()
 			assert.are.equal(3, #LootCouncil.drops)
 			assert.are.equal(101, LootCouncil.drops[1].itemId)
-			assert.are.equal(102, LootCouncil.drops[3].itemId)
+			assert.are.equal(106, LootCouncil.drops[3].itemId)
 			GroupPanel.command()
 			local titles = 0
 			for _, line in ipairs(drawn()) do
@@ -927,7 +973,7 @@ describe("LootCouncil", function()
 			assert.are.equal("|cffa335eeRobes of Might|r (Chest): +6.3 DPS " .. L.lootSite
 				.. " over Worn Robe, on your list", lines[1])
 			lines = LootCouncil.command(link(101, "Lesser Robe"))
-			assert.are.equal("|cffa335eeLesser Robe|r (Chest): +20 pts " .. L.lootSite
+			assert.are.equal("|cffa335eeLesser Robe|r (Chest): +20 score " .. L.lootSite
 				.. " over Worn Robe, not on your list", lines[1])
 			assert.are.equal("(from the site)", L.lootSite)
 			-- No such item in the message: can't score.

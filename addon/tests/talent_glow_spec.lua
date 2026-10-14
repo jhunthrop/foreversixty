@@ -256,7 +256,7 @@ describe("TalentGlow", function()
 		local node = _G.CreateFrame("Button", nil, frame)
 		node.nodeID = 105001
 		assert.are.equal("trait", TalentGlow.refresh(DATA))
-		assert.is_not_nil(node.foreverSixtyGlow)
+		assert.is_not_nil(Theme.glowOf(node).gold)
 	end)
 
 	it("takes the glow off the old button before putting it on the new one", function()
@@ -269,7 +269,7 @@ describe("TalentGlow", function()
 		assert.are.equal(first, TalentGlow.glowing)
 		TalentGlow.clear()
 		assert.is_nil(TalentGlow.glowing)
-		for _, edge in ipairs(first.foreverSixtyGlow) do
+		for _, edge in ipairs(Theme.glowOf(first).gold) do
 			assert.is_false(edge.shown)
 		end
 	end)
@@ -309,12 +309,12 @@ describe("TalentGlow", function()
 		local node = _G.CreateFrame("Button", nil, frame)
 		node.nodeID = 105001
 		assert.are.equal("trait", TalentGlow.refresh(DATA))
-		local generation = node.foreverSixtyGlowGeneration
+		local generation = Theme.glowOf(node).generation
 		assert.is_not_nil(generation)
 		assert.are.equal("trait", TalentGlow.refresh(DATA))
-		assert.are.equal(generation, node.foreverSixtyGlowGeneration)
+		assert.are.equal(generation, Theme.glowOf(node).generation)
 		assert.are.equal(node, TalentGlow.glowing)
-		for _, edge in ipairs(node.foreverSixtyGlow) do
+		for _, edge in ipairs(Theme.glowOf(node).gold) do
 			assert.is_true(edge.shown)
 		end
 	end)

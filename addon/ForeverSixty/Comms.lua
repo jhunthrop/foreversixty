@@ -328,7 +328,7 @@ function Comms.helloFields()
 	local classSlug = Talents.playerClassSlug()
 	local ranks = data ~= nil and Talents.readRanks(data) or {}
 	local spec = data ~= nil and Comms.ownSpec(data, build, classSlug, ranks) or nil
-	local gap = Comms.gearGap(data, build, spec, ranks) or 0
+	local gap = Comms.gearGap(data, spec) or 0
 	local record = Score.forCharacter(Compat.playerName() or "")
 	local asOf = record ~= nil and type(record.as_of) == "string" and record.as_of or "-"
 	local fields = { Compat.playerLevel() or 0, spec or "-", gap, build ~= nil and build.name or "", asOf }
@@ -396,9 +396,9 @@ end
 --- per point, else "pts"; 0 when every scored slot is on plan or ahead. nil when no slot could be
 --- scored: no data or spec, no weights for `spec`, or every target unscored (a pick the client
 --- has not cached). `equipped` (Gear.readEquipped's), `level` (the client's) and `faction`
---- (Compat.playerFaction's) may be given. Neither `build` nor `ranks` is read any more (the spec
---- carries the tree; the targets read no build); the callers' argument order is kept.
-function Comms.gearGap(data, build, spec, ranks, equipped, level, faction) -- luacheck: ignore 212/build 212/ranks
+--- (Compat.playerFaction's) may be given. (L3.7 item 43: the two parameters nothing read, `build`
+--- and `ranks`, are gone; the spec carries the tree and the targets read no build.)
+function Comms.gearGap(data, spec, equipped, level, faction)
 	local plan = Comms.ownPlan(data, spec, equipped, level, faction)
 	if plan == nil then
 		return nil
@@ -432,11 +432,17 @@ function Comms.ownPlan(data, spec, equipped, level, faction)
 	return plan
 end
 
---- The unit a guildmate's gear gap is in, read from their spec and level the way their own
---- addon chose it (Comms.gearGap): "dps" where the data has a DPS per point, else "pts".
-function Comms.gapUnit(data, spec, level)
-	local perPoint = data ~= nil and spec ~= nil and spec ~= "-" and Gear.dpsFigure(data, spec, level) or nil
-	return perPoint ~= nil and perPoint.dps ~= nil and "dps" or "pts"
+--- The unit a guildmate's gear gap is in (L3.7 item 45: no protocol bump, the hello sends the
+--- integer alone): inferred from the sender's spec role in the data's spec table
+--- (Data.dpsPerPoint): a healer spec (`healing`) reads "pts", every other spec the data knows
+--- "dps"; a spec with no row, or none ("-"), reads "pts". `level` is no longer read.
+function Comms.gapUnit(data, spec, level) -- luacheck: ignore 212/level
+	local row = type(data) == "table" and type(data.dpsPerPoint) == "table" and spec ~= nil and spec ~= "-"
+		and data.dpsPerPoint[spec] or nil
+	if type(row) ~= "table" or row.healing == true then
+		return "pts"
+	end
+	return "dps"
 end
 
 --- Whether a guild rank index may push a build (0 is the guild master): the one rule the

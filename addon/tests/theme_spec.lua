@@ -296,15 +296,15 @@ describe("Theme", function()
 		start()
 		local button = _G.CreateFrame("Button")
 		assert.are.equal("texture", Theme.showGlow(button))
-		assert.are.equal(#Theme.EDGES, #button.foreverSixtyGlow)
-		for _, edge in ipairs(button.foreverSixtyGlow) do
+		assert.are.equal(#Theme.EDGES, #Theme.glowOf(button).gold)
+		for _, edge in ipairs(Theme.glowOf(button).gold) do
 			-- A texture is already shown at creation, so asserting
 			-- edge.shown alone would pass even if setShown(edges, true)
 			-- were never called; assert the recorded call instead.
 			assert.is_true(mock.countCalls(edge, "Show") > 0)
 		end
 		assert.are.equal("texture", Theme.hideGlow(button))
-		for _, edge in ipairs(button.foreverSixtyGlow) do
+		for _, edge in ipairs(Theme.glowOf(button).gold) do
 			assert.is_false(edge.shown)
 		end
 		-- Neither half present is the ordinary case, not a half-pair, so

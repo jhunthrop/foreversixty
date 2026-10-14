@@ -25,6 +25,10 @@ Score.FORMAT = 2
 --- A file older than this is shown, but marked stale.
 Score.STALE_AFTER_SECONDS = 3 * 24 * 60 * 60
 
+--- Below this level "no logs yet" is not said (L3.7 item 34): no logs is the ordinary state of a
+--- new character, and nothing is a better line than a reproach.
+Score.LEVEL_FLOOR = 10
+
 --- The record's components in the order a tooltip lists them, with their labels.
 Score.COMPONENTS = {
 	{ key = "gear", label = "scoreGear" },
@@ -119,11 +123,11 @@ function Score.status()
 		status.broken = true
 		return status
 	end
-	-- The data's own build, when it carries one: the Settings foot dates "too old" by its patch.
-	local build = type(data.build) == "string" and data.build ~= "" and data.build or nil
+	-- When the record was made, when it says: the Settings foot dates "too old" by it.
+	local generated = type(data.generated) == "string" and data.generated ~= "" and data.generated or nil
 	if not wellFormed(data) then
 		local status = unavailable(L.ratingsUnreadable, L.diagDataAddonOld)
-		status.build = build
+		status.generated = generated
 		return status
 	end
 	if data.format > Score.FORMAT then
@@ -133,12 +137,12 @@ function Score.status()
 		-- An older data addon keys its characters differently; reading it as this
 		-- format would only find nobody.
 		local status = unavailable(L.ratingsUnreadable, L.diagDataAddonOld)
-		status.build = build
+		status.generated = generated
 		return status
 	end
 	local written = Score.dateSeconds(data.generated)
 	local stale = written == nil or clockTime() - written > Score.STALE_AFTER_SECONDS
-	return { available = true, generated = data.generated, stale = stale, build = build }
+	return { available = true, generated = data.generated, stale = stale }
 end
 
 --- The record's state in one word, for the lines that say it (Settings' foot, the guild
@@ -220,6 +224,9 @@ function Score.forCharacter(name, realm)
 		return nil
 	end
 	local record = copy(row)
+	-- Older than the window (L3.7 item 34): the badge shows muted. The row's own date, else the file's.
+	local dated = Score.dateSeconds(row.as_of) or Score.dateSeconds(data.generated)
+	record.stale = dated ~= nil and clockTime() - dated > Score.STALE_AFTER_SECONDS
 	local shortDate = Compat.shortDate(row.as_of) or Compat.shortDate(data.generated)
 	record.asOfText = shortDate and string.format(L.scoreAsOf, shortDate) or nil
 	local r, g, b, a = Score.tierColor(row.tier)

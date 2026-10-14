@@ -130,6 +130,41 @@ function Options.helpLines()
 	return copy(L.settingsCommands)
 end
 
+--- /fs build <slot>: the build a slot holds becomes the one followed; an empty slot changes nothing.
+function Options.buildCommand(rest)
+	local wanted = tostring(rest or ""):lower():match("^(%S+)")
+	for _, slot in ipairs(Follow.slotsFor()) do
+		if slot.id == wanted then
+			if not slot.hasBuild then
+				return { string.format(L.buildSlotEmpty, slot.name) }
+			end
+			local build = Follow.setActiveSlot(Options.data, slot.id)
+			Options.refreshSurfaces(Options.data)
+			return { string.format(L.buildSwitched, build ~= nil and Follow.buildName(Options.data, build)
+				or slot.name, slot.name) }
+		end
+	end
+	return { L.buildUsage }
+end
+
+--- An officer's (or the group leader's) `push` that Comms let through: the build is queued for the
+--- build dialog to list, only when this character can load it (L3.7 item 44), and one chat line
+--- says it arrived. Nothing is followed, loaded or changed until the player chooses it.
+function Options.onPush(named, sender)
+	local code = named.buildCode
+	local verdict = BuildDialog.evaluate(code, Options.data, BuildDialog.player())
+	if not verdict.ok then
+		return false
+	end
+	local name = type(named.buildName) == "string" and named.buildName ~= "" and named.buildName or nil
+	local from = tostring(sender):match("^(.-)%-") or tostring(sender)
+	Follow.addPushed(code, name, from)
+	BuildDialog.data = Options.data
+	BuildDialog.refreshRows()
+	Theme.say(string.format(L.pushArrived, from, name or Follow.buildName(Options.data, verdict.build)))
+	return true
+end
+
 function Options.handle(input)
 	local command, rest = (input or ""):match("^(%S*)%s*(.*)$")
 	if command == "" or command == "copy" then
@@ -144,6 +179,9 @@ function Options.handle(input)
 			return { message or L.inboxEmpty }
 		end
 		return { string.format(L.inboxCount, count) }
+	elseif command == "build" then
+		-- Switch the active build slot (L3.7 item 32): a paste leaves the raid build in its slot.
+		return Options.buildCommand(rest)
 	elseif command == "record" then
 		return Recorder.command(rest)
 	elseif command == "help" then
@@ -616,6 +654,10 @@ function Options.register()
 	-- click; it listens for the guild's snapshot! answers. Nothing on the guild frame is hooked.
 	GuildTab.data = Options.data
 	GuildTab.register()
+	-- A build an officer pushes (L3.7 item 44): queued for the build dialog, never applied.
+	Comms.on("push", function(named, sender)
+		Options.onPush(named, sender)
+	end)
 	-- The group panel (L5.2): its button on the Social window, its flyout on the first open; it
 	-- listens for the members' hellos and snapshot! answers. No client frame is hooked.
 	GroupPanel.data = Options.data

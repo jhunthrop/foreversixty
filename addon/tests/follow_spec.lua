@@ -349,6 +349,37 @@ describe("Follow, named build slots", function()
 		assert.is_nil(Follow.build)
 	end)
 
+	-- L3.7 item 44: an officer's push is queued for the character as a build to choose from.
+	it("queues a pushed build once per code, newest first, at most five, among the inbox builds", function()
+		Follow.addPushed("CODE-A", "Raid A", "Boss")
+		Follow.addPushed("CODE-B", nil, "Boss")
+		Follow.addPushed("CODE-A", "Raid A again", "Officer")
+		local key = require("Export").characterKey()
+		local pushed = Follow.pushedBuilds(key)
+		assert.are.same({ "CODE-A", "CODE-B" }, { pushed[1].code, pushed[2].code })
+		assert.are.same({ "Raid A again", "Officer" }, { pushed[1].name, pushed[1].from })
+		for index = 1, 7 do
+			Follow.addPushed("MORE-" .. index, "m", "Boss")
+		end
+		assert.are.equal(5, #Follow.pushedBuilds(key))
+		assert.are.equal("MORE-7", Follow.pushedBuilds(key)[1].code)
+		local builds = Follow.inboxBuilds(nil, key)
+		assert.are.equal("MORE-7", builds[1].code)
+		assert.are.equal("Boss", builds[1].from)
+		assert.are.equal("MORE-7", builds[1].id)
+	end)
+
+	-- L3.7 item 32: a paste never overwrites a build restored in the raid slot.
+	it("sends a paste to the leveling slot while the active raid slot holds a build, else to the active one", function()
+		assert.are.same({ "raid", nil }, { Follow.pasteSlot() })
+		Follow.load(CODE, DATA, "Raid build", "raid")
+		assert.are.same({ "leveling", "raid" }, { Follow.pasteSlot() })
+		Follow.load(CODE, DATA, "Pasted", "leveling")
+		assert.are.same({ "leveling", nil }, { Follow.pasteSlot() })
+		-- The raid build is where it was.
+		assert.are.equal("Raid build", _G.ForeverSixtyDB.follows[require("Export").characterKey()].slots.raid.name)
+	end)
+
 	it("forgetting one slot leaves the others alone", function()
 		Follow.load(CODE, DATA, "Raid build", "raid")
 		Follow.load(CODE, DATA, "Leveling build", "leveling")

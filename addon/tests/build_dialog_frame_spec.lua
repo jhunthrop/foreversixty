@@ -159,6 +159,16 @@ describe("BuildDialog, the Ctrl+C claim in copy mode", function()
 		assert.are.same({}, state.clientWrites)
 	end)
 
+	-- L3.7 item 29: the tab says whose link the box holds.
+	it("labels the Copy tab for a /fs link while the box holds one, and for the character again after", function()
+		local label = BuildDialog.tabs.copy.foreverSixtyLabel
+		assert.are.equal(L.dialogCopy, label:GetText())
+		BuildDialog.openLink("foreversixty.gg/character/us/normal/smoke-gouda", "Smoke Gouda")
+		assert.are.equal(string.format(L.dialogCopyLink, "Smoke Gouda"), label:GetText())
+		BuildDialog.tabs.copy:GetScript("OnClick")(BuildDialog.tabs.copy)
+		assert.are.equal(L.dialogCopy, label:GetText())
+	end)
+
 	it("holds the export byte for byte in the box Ctrl+C copies from (fix 3, 3)", function()
 		local ok, export = pcall(require("Export").string, DATA)
 		assert.is_true(ok)
@@ -240,6 +250,52 @@ describe("BuildDialog, a second paste replaces the first (fix 3, 13)", function(
 		paste("FSB1:1.60.1.70291:warrior:111:")
 		assert.is_true(BuildDialog.verdict.ok)
 		assert.is_true(highlighted())
+	end)
+end)
+
+-- L3.7 item 31: the preview's gear rows carry their source, to the right of the name.
+describe("BuildDialog, the preview's gear rows carry a source", function()
+	local state, BuildDialog
+
+	before_each(function()
+		state = mock.install({
+			class = { name = "Warrior", token = "WARRIOR" }, race = { name = "Human", token = "Human" },
+			realm = "Ashbringer", region = 1, playerName = "Bob",
+			talents = { { name = "Arms", talents = {} }, { name = "Fury", talents = {} },
+				{ name = "Protection", talents = {} } },
+		})
+		require("Theme").reset()
+		_G.ForeverSixtyDB = {}
+		_G.ForeverSixtyInbox = nil
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Export")
+		helper.load("Follow")
+		helper.load("Chip")
+		BuildDialog = helper.load("BuildDialog")
+		BuildDialog.data = {
+			build = DATA.build, weights = {}, classes = { warrior = DATA.classes.warrior },
+			bis = { ["warrior-arms"] = { [60] = { alliance = { head = "12640|D|Blackrock Depths: Lord Roccor|0.12" } } } },
+		}
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("shows the item tooltip's source text on the row, and nothing for an item no pick names", function()
+		local code = require("Codec").encodeFSB1({ dataBuild = DATA.build, classSlug = "warrior", order = {},
+			gear = { { slot = "head", itemId = 12640, stats = {} }, { slot = "neck", itemId = 15411, stats = {} } } })
+		BuildDialog.paste.box:SetText(code)
+		BuildDialog.paste.box:GetScript("OnTextChanged")(BuildDialog.paste.box, true)
+		assert.is_true(BuildDialog.verdict.ok)
+		local rows = BuildDialog.paste.preview.picks
+		assert.are.equal("Blackrock Depths \194\183 Lord Roccor \194\183 12% drop", rows[1].source:GetText())
+		assert.is_true(rows[1].source:IsShown())
+		assert.are.equal("", rows[2].source:GetText())
+		assert.is_false(rows[2].source:IsShown())
 	end)
 end)
 
@@ -641,6 +697,13 @@ describe("BuildDialog, round 6 frame checks", function()
 		end
 	end)
 
+	-- L3.7 item 30: the inbox's newest sim result carries `failed`.
+	it("shows 'Sim failed' on the copy tab when the inbox's sim result failed", function()
+		_G.ForeverSixtyInbox.messages[#_G.ForeverSixtyInbox.messages + 1] = { type = "sim_result", failed = true }
+		BuildDialog.open("copy")
+		assert.are.equal(L.dialogSimFailed, BuildDialog.copyTab.sim:GetText())
+	end)
+
 	it("wires the sim's answer and the chip's next step into the copy tab (fix 6, 10)", function()
 		require("ItemTooltip").current = { tag = "sim" }
 		require("Chip").current = { chosen = { text = "Take Deflection (1 of 2)" } }
@@ -661,6 +724,27 @@ describe("BuildDialog, round 6 frame checks", function()
 		assert.is_true(utf8.len(row.label:GetText()) * 5 <= 388, row.label:GetText())
 		assert.is_truthy(row.label:GetText():find(L.ellipsis, 1, true))
 	end)
+
+	-- L3.7 item 28: the empty space under the empty paste box holds the Tab hint and a companion line.
+	it("puts the Tab hint and a companion line under the empty paste box, and the hint back at the corner otherwise",
+		function()
+			BuildDialog.open("paste")
+			local paste = BuildDialog.paste
+			assert.are.equal(L.dialogPasteCompanion, paste.companion:GetText())
+			assert.is_true(paste.companion:IsShown())
+			local point = lastCall(BuildDialog.tabHint, "SetPoint")
+			assert.are.equal(paste.content, point[2])
+			-- A verdict (here a refusal) fills the space: the hint is at the panel's corner again.
+			BuildDialog.onPaste("not a build code")
+			assert.is_false(paste.companion:IsShown())
+			point = lastCall(BuildDialog.tabHint, "SetPoint")
+			assert.are.equal(BuildDialog.frame, point[2])
+			assert.are.equal(BuildDialog.HINT_POINT, point[1])
+			-- And on the copy tab.
+			BuildDialog.clearPaste()
+			BuildDialog.setMode("copy")
+			assert.are.equal(BuildDialog.frame, lastCall(BuildDialog.tabHint, "SetPoint")[2])
+		end)
 
 	it("paints the corner hints in the hint colour (fix 6, 10)", function()
 		BuildDialog.open("paste")

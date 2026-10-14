@@ -41,6 +41,7 @@ SettingsPage.SWITCHES = {
 	{ key = "badges", label = L.settingsBadges, hint = L.settingsBadgesHint },
 	{ key = "broadcast", label = L.settingsBroadcast, hint = L.settingsBroadcastHint },
 	{ key = "autoSave", label = L.settingsAutoSave, hint = L.settingsAutoSaveHint },
+	{ key = "lootRares", label = L.settingsLootRares, hint = L.settingsLootRaresHint },
 }
 
 --- Injection points Options fills: the data the foot line reads (its `build`), and what
@@ -165,26 +166,14 @@ end
 --- The state is Score.ratingsState's, which the guild tab's notice shares (L5.1 fix round 1).
 local RATINGS_TONE = { Missing = "muted", Current = "muted", Newer = "warning", Old = "warning", Broken = "warning" }
 
---- The patch ("1.60.1", the first three fields) of a build string, or nil (L3.7 item 38).
-local function patchOf(build)
-	if type(build) ~= "string" then
-		return nil
-	end
-	local fields = {}
-	for field in build:gmatch("[^.]+") do
-		if #fields < 3 then
-			fields[#fields + 1] = field
-		end
-	end
-	return #fields > 0 and table.concat(fields, ".") or nil
-end
-
 function SettingsPage.ratingsLine(status)
 	local state = Score.ratingsState(type(status) == "table" and status or false)
 	local text = L["settingsRatings" .. state]
-	local patch = state == "Old" and type(status) == "table" and patchOf(status.build) or nil
-	if patch ~= nil then
-		text = string.format(L.settingsRatingsOldDated, patch)
+	-- "Old" is age-based, so it is dated by when the record was made ("made 9 Oct"), in the
+	-- chip's own short date; undated when the record does not say.
+	local made = state == "Old" and type(status) == "table" and Compat.shortDate(status.generated) or nil
+	if made ~= nil then
+		text = string.format(L.settingsRatingsOldDated, made)
 	end
 	local line = dataLine(text, RATINGS_TONE[state])
 	line.state = state

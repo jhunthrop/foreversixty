@@ -273,6 +273,9 @@ function Rotation.cutCount(words, following, measure, width)
 		if latest ~= nil then
 			return latest
 		end
+		if count == 1 then
+			return 1
+		end
 		-- No clause boundary to go back to (Tranquility, "... every 2 seconds for 10..."): back up
 		-- past the figure and the words that lead into it (L3.7 item 27).
 		count = count - 1

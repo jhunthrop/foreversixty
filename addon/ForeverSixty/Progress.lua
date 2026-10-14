@@ -475,49 +475,6 @@ local function weightsFor(data, build, ranks)
 	return spec, weights
 end
 
---- A slotVerdict for every slot the plan or the paper doll names, in
---- paper-doll order (weapons first for a melee spec). With no build,
---- every worn item reads "noplan". `current` (Gear.currentWeights' answer,
---- optional): its spec, weights and weapon term, so a weapon's own DPS counts
---- as the chip and the tooltip count it (L5.1 fix round 2); without it, the
---- talents' spec and its shipped weights, and no weapon term.
-function Progress.slots(data, build, ranks, equipped, dpsPerPoint, current)
-	equipped = equipped or {}
-	local spec, weights = weightsFor(data, build, ranks)
-	local weapon
-	if type(current) == "table" and type(current.weights) == "table" then
-		spec, weights, weapon = current.spec or spec, current.weights, current.weapon
-	end
-	local planned = {}
-	for _, entry in ipairs(build ~= nil and build.gear or {}) do
-		planned[entry.slot] = entry
-	end
-	local rows = {}
-	for _, slot in ipairs(slotOrder(spec)) do
-		local verdict = Progress.slotVerdict(slot, planned[slot], equipped[slot], weights, dpsPerPoint, weapon)
-		if verdict ~= nil then
-			rows[#rows + 1] = verdict
-		end
-	end
-	return rows
-end
-
---- The slot furthest behind the plan: the lowest delta below zero among
---- `slots` (Progress.slots' rows), first in order on a tie. `item` is the
---- planned item to go and get. nil when nothing is behind.
-function Progress.biggestGap(slots)
-	local worst
-	for _, row in ipairs(slots or {}) do
-		if row.delta ~= nil and row.delta < 0 and (worst == nil or row.delta < worst.delta) then
-			worst = row
-		end
-	end
-	if worst == nil then
-		return nil
-	end
-	return { slot = worst.slot, delta = worst.delta, item = worst.plannedItemId }
-end
-
 --- A bag item as { link, itemId, equipLocation, itemClass, itemSubClass,
 --- stats }: a plain table is taken as it is, a link string is read from the
 --- client (the class and subclass ids where it gives them, else its English
@@ -632,10 +589,18 @@ function Progress.pairPartner(hovered, wornMain, bagLinks, weights, dpsPerPoint,
 		return nil
 	end
 	local best, bestScore
+	-- Only the hovered copy itself is left out (its link, the first match): a second copy of the
+	-- same one-hander in the bags can be the partner.
+	local skipped = false
 	for _, raw in ipairs(bagLinks or {}) do
 		local item = describe(raw)
 		local oneHand = item.equipLocation == "INVTYPE_WEAPON" or item.equipLocation == "INVTYPE_WEAPONOFFHAND"
-		if oneHand and item.itemId ~= hovered.itemId and hasAnyStat(item.stats)
+		local itself = false
+		if not skipped and (item.link ~= nil and item.link == hovered.link
+			or (hovered.link == nil and item.itemId == hovered.itemId)) then
+			skipped, itself = true, true
+		end
+		if oneHand and not itself and hasAnyStat(item.stats)
 			and (canOffHand == nil or canOffHand(item)) then
 			local value = Progress.itemScore(item.stats, weights, "off_hand", weapon)
 			if best == nil or value > bestScore then
@@ -669,7 +634,7 @@ end
 --- The band's BiS pick (Gear.pick's decoded table) still to get for each slot,
 --- under the pair rule: a pick worn in any slot is left out (a ring or trinket
 --- has two), and an item two slots share is offered once, on the first slot in
---- Progress.slots' order. `keep(pick)` (optional) narrows the picks counted (the
+--- the slot order's. `keep(pick)` (optional) narrows the picks counted (the
 --- instance's, for picksHere). { [slot] = pick }, empty with no spec, band or faction.
 --- The empty paper-doll slot's hover (ItemTooltip.emptySlotSection) and picksHere
 --- read this one rule.
@@ -697,7 +662,7 @@ function Progress.slotPicks(data, spec, band, faction, equipped, keep)
 end
 
 --- The band's BiS picks (Gear.pick) that drop in the instance the player is
---- standing in, each { slot, itemId, source, chance }, in Progress.slots' order
+--- standing in, each { slot, itemId, source, chance }, in slot order
 --- (weapons first for a melee spec), under Progress.slotPicks' pair rule. The
 --- chip's "here for you" line and the panel's targets region read this.
 --- Empty with no band, faction or instance, or nothing that drops here.
@@ -833,7 +798,7 @@ end
 
 --- Every slot's one target and its gain over what is worn there, as the item tooltip's Next
 --- line prints it on the item worn (Progress.targetFor, Progress.pickStats, Progress.pickGain),
---- in Progress.slots' order: { slot, itemId, gain, verdict, holds }.
+--- in slot order: { slot, itemId, gain, verdict, holds }.
 ---
 --- - a worn item that is a target of its slots, or whose slot's target is worn in one of them,
 ---   holds: gain 0 (the tooltip's "Best until level N");
@@ -875,9 +840,14 @@ function Progress.slotTargets(data, spec, band, faction, equipped, current, stat
 		if pick ~= nil and worn ~= nil and (target.isPick or target.worn) then
 			rows[#rows + 1] = { slot = slot, itemId = pick.item_id, gain = 0, holds = true }
 		elseif pick ~= nil and (worn ~= nil or not wornIds[pick.item_id]) then
-			local stats = scoring and Progress.pickStats(data, statsOf, pick.item_id) or nil
+			local stats, cold
+			if scoring then
+				stats, cold = Progress.pickStats(data, statsOf, pick.item_id)
+			end
 			local gain, verdict = Progress.pickGain(slot, pick.item_id, stats, equipped, current)
-			rows[#rows + 1] = { slot = slot, itemId = pick.item_id, gain = gain, verdict = verdict }
+			-- `cold`: priced from the data's weapon DPS alone, so the gain is a lower bound.
+			rows[#rows + 1] = { slot = slot, itemId = pick.item_id, gain = gain, verdict = verdict,
+				cold = cold == true or nil }
 		end
 	end
 	return rows
@@ -886,7 +856,7 @@ end
 --- A character's gear plan in `spec` (L5.2): every slot's one target (Progress.slotTargets, in the
 --- band for `level` and `faction`) over `equipped` (Gear.readEquipped's for the player,
 --- Gear.equippedFrom's for an inspected member), scored with `current` (Gear.currentWeights').
---- Answers { gap, unit, weakest, rows }: the biggest slot gain rounded half-up to a whole number
+--- Answers { gap, unit, weakest, rows, cold }: the biggest slot gain rounded half-up to a whole number
 --- (a gain between 0 and 0.5 is 1: never "on plan" while behind; 0 when every scored slot is on
 --- plan or ahead), its unit ("dps" with a DPS per point, else "pts"), the slot row it is in
 --- (nil at 0), and every row. nil when nothing could be scored: no data or spec, no weights, or
@@ -913,9 +883,12 @@ function Progress.gearPlan(data, spec, level, faction, equipped, current, isMiss
 	end
 	local unit = current.dpsPerPoint ~= nil and "dps" or "pts"
 	if best <= 0 then
-		return { gap = 0, unit = unit, rows = rows }
+		return { gap = 0, unit = unit, rows = rows, exact = 0 }
 	end
-	return { gap = best < 0.5 and 1 or math.floor(best + 0.5), unit = unit, weakest = weakest, rows = rows }
+	-- `cold`: the biggest gain comes from a weapon priced from Data.bisDps, a lower bound.
+	-- `exact`: the biggest gain as shown (one decimal in DPS), for the player's own row.
+	return { gap = best < 0.5 and 1 or math.floor(best + 0.5), unit = unit, weakest = weakest, rows = rows,
+		cold = weakest.cold, exact = best }
 end
 
 --- Talent points the character has to spend at `level`: Classic grants one

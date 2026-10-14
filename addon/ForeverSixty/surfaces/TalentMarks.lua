@@ -403,23 +403,35 @@ local function textWidth(text)
 	return ask(text, "GetUnboundedStringWidth") or ask(text, "GetStringWidth")
 end
 
---- A planned node's tooltip gains its line after the client draws it. The
---- cell is the one the node's badge was last placed for; hideBadges forgets
---- it, so a node the client reuses for another talent says nothing.
-local function onNodeEnter(button)
-	local cell = button.foreverSixtyCell
+--- A planned node's tooltip gains its line after the client draws it. L3.7 item 5 (the
+--- 1.60 taint rules): the node button is never hooked or written to. The cell is kept
+--- here, by button, as the one the node's badge was last placed for (hideBadges forgets
+--- them, so a node the client reuses for another talent says nothing), and GameTooltip's
+--- own OnShow (hooked once, on the tooltip) adds the line when the tooltip's owner is one.
+local nodeCells = setmetatable({}, { __mode = "k" })
+local tooltipHooked = false
+local appending = false
+
+local function onTooltipShow(tooltip)
+	if appending or type(tooltip.GetOwner) ~= "function" then
+		return
+	end
+	local owner = tooltip:GetOwner()
+	local cell = owner ~= nil and nodeCells[owner] or nil
 	if cell ~= nil then
-		Theme.addTooltipLine(button, TalentMarks.nodeLine(cell), "body", true)
+		appending = true
+		pcall(Theme.addTooltipLine, owner, TalentMarks.nodeLine(cell), "body", true)
+		appending = false
 	end
 end
 
---- Give a node button `cell` for its tooltip line, hooking it the first
---- time; TalentMarks.tipButtons remembers it so a hide forgets the cell.
+--- Give a node button `cell` for its tooltip line; TalentMarks.tipButtons remembers it
+--- so a hide forgets the cell.
 local function tipOn(button, cell)
-	button.foreverSixtyCell = cell
+	nodeCells[button] = cell
 	TalentMarks.tipButtons[#TalentMarks.tipButtons + 1] = button
-	if not button.foreverSixtyTipHooked then
-		button.foreverSixtyTipHooked = Theme.hookScript(button, "OnEnter", onNodeEnter)
+	if not tooltipHooked and type(GameTooltip) == "table" then
+		tooltipHooked = Theme.hookScript(GameTooltip, "OnShow", onTooltipShow)
 	end
 end
 
@@ -442,7 +454,7 @@ end
 
 local function hideBadges()
 	for _, button in ipairs(TalentMarks.tipButtons) do
-		button.foreverSixtyCell = nil
+		nodeCells[button] = nil
 	end
 	TalentMarks.tipButtons = {}
 	for _, badge in ipairs(TalentMarks.badges) do

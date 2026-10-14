@@ -669,6 +669,9 @@ describe("GroupPanel", function()
 				-- A spec with no DPS per point reads in points; 0 muted.
 				local points = GroupPanel.cells({ short = "Fenna", gap = 9, unit = "pts", live = true })
 				assert.are.equal(string.format(L.groupGapPts, 9), points.gap.text)
+				local atLeast = GroupPanel.cells({ short = "Fenna", gap = 4, unit = "dps", live = true, cold = true })
+				assert.are.equal(string.format(L.gapAtLeast, "4 DPS"), atLeast.gap.text)
+				assert.are.equal("0 DPS", GroupPanel.cells({ short = "Fenna", gap = 0, unit = "dps", cold = true }).gap.text)
 				local even = GroupPanel.cells({ short = "Fenna", gap = 0, unit = "dps", live = true })
 				assert.are.equal(Theme.HEX.muted, even.gap.hex)
 				-- Not inspected: no enchant verdict at all.
@@ -1614,8 +1617,117 @@ describe("GroupPanel", function()
 			-- The player alone at 24 with nothing on: nothing missing, in chat and on the chip.
 			start({ solo = true, members = { { unit = "player", name = "Tester", class = "HUNTER", className = "Hunter",
 				level = 24 } }, auras = { Tester = {} } })
-			assert.are.same({ "Ready check (only you see this): nothing missing." }, GroupPanel.handleReady())
-			assert.are.equal("Ready check: nothing missing", Chip.raidCheck.text)
+			assert.are.same({ "Ready check (only you see this): nothing missing at your level." }, GroupPanel.handleReady())
+			assert.are.equal("Ready check (test): nothing missing at your level", Chip.raidCheck.text)
+		end)
+
+		-- L3.7 item 46: the columns lead as the guild tab's do (Name, Level, Spec).
+		it("orders its first columns as the guild tab does: Name, Level, Spec", function()
+			local keys = {}
+			for index, column in ipairs(GroupPanel.COLUMNS) do
+				keys[index] = column.key
+			end
+			assert.are.same({ "name", "level", "spec" }, { keys[1], keys[2], keys[3] })
+			assert.are.same({ "name", "level", "spec" }, { require("GuildTab").COLUMNS[1].key,
+				require("GuildTab").COLUMNS[2].key, require("GuildTab").COLUMNS[3].key })
+		end)
+
+		-- L3.7 item 47: enchants are checked from level 40; below it the cell is blank, the hover says why.
+		it("reads the Enchants cell blank below level 40, and says why on the hover", function()
+			local low = { short = "Fenna", name = "Fenna", classToken = "DRUID", level = 30, enchants = 3, connected = true,
+				bareSlots = { "chest" } }
+			assert.are.equal("", GroupPanel.cells(low).enchants.text)
+			assert.is_nil(GroupPanel.cells(low).enchants.icon)
+			local lines = GroupPanel.rowHint(low)
+			assert.are.equal(Theme.inlineColor("tooltipMuted", L.groupEnchantsFrom), lines[#lines])
+			assert.are.equal("Enchants are checked from level 40.", L.groupEnchantsFrom)
+			local high = { short = "Fenna", name = "Fenna", classToken = "DRUID", level = 40, enchants = 3, connected = true,
+				bareSlots = { "chest" } }
+			assert.are.equal("3 missing", GroupPanel.cells(high).enchants.text)
+			assert.is_nil(table.concat(GroupPanel.rowHint(high), "|"):find(L.groupEnchantsFrom, 1, true))
+			-- A level the client cannot say claims nothing either way.
+			local unknown = { short = "Fenna", name = "Fenna", enchants = 0, connected = true }
+			assert.is_true(GroupPanel.cells(unknown).enchants.icon)
+		end)
+
+		-- L3.7 item 46: a dry run is a test, and the chip says so.
+		it("words a dry run's chip line as a test and a real check's as it was", function()
+			local missing = { { name = "Thorgrim", what = { "flask" } } }
+			assert.are.equal("Ready check (test): 1 missing (Thorgrim)", GroupPanel.summary({ missing = missing, dry = true }))
+			assert.are.equal("Ready check: 1 missing (Thorgrim)", GroupPanel.summary({ missing = missing }))
+			assert.are.equal("Ready check (test): missing flask", GroupPanel.summary({ missing = missing, alone = true,
+				dry = true }))
+			assert.are.equal("Ready check: missing flask", GroupPanel.summary({ missing = missing, alone = true }))
+			assert.are.equal("Ready check (test): nothing missing", GroupPanel.summary({ missing = {}, alone = true,
+				dry = true }))
+			assert.are.equal("Ready check (test): nothing missing at your level", GroupPanel.summary({ missing = {},
+				alone = true, dry = true, levelGated = true }))
+		end)
+
+		-- L3.7 item 48: nothing was asked of the player (every need gated by level): said so.
+		it("marks a check where no need applied at the player's level", function()
+			start()
+			local needs = { buffs = {}, debuffs = {}, generic = true }
+			local low = GroupPanel.check({ { short = "Tester", classToken = "HUNTER", level = 24, own = true,
+				spec = "hunter-marksmanship", auras = { ids = {}, names = {} } } }, needs, GroupPanel.spellName)
+			assert.is_true(low.levelGated)
+			local at35 = GroupPanel.check({ { short = "Tester", classToken = "HUNTER", level = 35, own = true,
+				spec = "hunter-marksmanship", auras = { ids = { [19705] = true }, names = {} } } }, needs, GroupPanel.spellName)
+			assert.is_falsy(at35.levelGated)
+			assert.are.same({}, at35.missing)
+			assert.are.equal("Ready check (only you see this): nothing missing at your level.", L.groupReadyYouNoneLevel)
+		end)
+
+		-- L3.7 item 48: a rogue with one poisoned hand is missing the other's.
+		it("names the off hand when only it lacks a weapon buff", function()
+			start()
+			local needs = { buffs = {}, debuffs = {}, generic = true }
+			local function lack(main, off)
+				local result = GroupPanel.check({ { short = "Tester", classToken = "ROGUE", level = 60, own = true,
+					spec = "rogue-combat", imbue = main, imbueOff = off,
+					auras = { ids = { [17626] = true, [19705] = true }, names = {} } } }, needs, GroupPanel.spellName)
+				return result.missing[1] and table.concat(result.missing[1].what, ", ") or "none"
+			end
+			assert.are.equal("weapon buff (off hand)", lack(true, false))
+			assert.are.equal("weapon buff", lack(false, false))
+			assert.are.equal("weapon buff", lack(false, true))
+			assert.are.equal("none", lack(true, true))
+			assert.are.equal("none", lack(true, nil))
+			assert.are.equal("weapon buff (off hand)", L.groupNeedImbueOff)
+		end)
+
+		-- L3.7 item 48: the off-hand fields of GetWeaponEnchantInfo, read only with a weapon in the off hand.
+		it("reads the off hand's buff from GetWeaponEnchantInfo's fifth value, when a weapon is worn there", function()
+			start()
+			local saved = {}
+			for _, name in ipairs({ "GetWeaponEnchantInfo", "GetInventoryItemLink", "GetItemInfoInstant" }) do
+				saved[name] = _G[name]
+			end
+			_G.GetWeaponEnchantInfo = function()
+				return true, 100, 0, 1, false, 0, 0, 0
+			end
+			_G.GetInventoryItemLink = function(_, slot)
+				return slot == 17 and "item:80:0" or (slot == 16 and "item:81:0" or nil)
+			end
+			_G.GetItemInfoInstant = function(link)
+				if link == "item:80:0" then
+					return 80, "Weapon", "One-Handed Axes", "INVTYPE_WEAPONOFFHAND"
+				end
+				return 81, "Weapon", "Daggers", "INVTYPE_WEAPONMAINHAND"
+			end
+			assert.is_false(GroupPanel.ownOffImbue())
+			_G.GetWeaponEnchantInfo = function()
+				return true, 100, 0, 1, true, 100, 0, 2
+			end
+			assert.is_true(GroupPanel.ownOffImbue())
+			-- A shield in the off hand has no weapon buff to ask.
+			_G.GetItemInfoInstant = function()
+				return 80, "Armor", "Shields", "INVTYPE_SHIELD"
+			end
+			assert.is_nil(GroupPanel.ownOffImbue())
+			for name, value in pairs(saved) do
+				_G[name] = value
+			end
 		end)
 
 		-- Fix round 4, A: an imbue is asked only of a spec that uses one; the spec is the one shown.
@@ -1684,6 +1796,19 @@ describe("GroupPanel", function()
 				Elwen = { aura(17627), aura(19705), aura(10157) } } })
 			gear.Tester = { [16] = "item:80:0" }
 			assert.are.same({ "Tester: missing weapon buff" }, GroupPanel.missingLines(GroupPanel.onReadyCheck()))
+		end)
+
+		-- L3.7 item 46: the lines the chip prints for a ready check name the members in their class colour.
+		it("gives the chip's missing lines the members' class colours", function()
+			local warrior = { { unit = "player", name = "Tester", class = "WARRIOR", className = "Warrior", level = 60 },
+				PARTY[3] }
+			start({ members = warrior, auras = { Tester = { aura(17626), aura(19705), aura(11551) },
+				Elwen = { aura(17627), aura(19705), aura(10157) } } })
+			gear.Tester = { [16] = "item:80:0" }
+			GroupPanel.onReadyCheck()
+			local line = require("Chip").raidCheck.missing[1]
+			assert.are.equal(string.format(L.groupMissing, "|cff" .. Theme.panelClassHex("WARRIOR") .. "Tester|r",
+				"weapon buff"), line)
 		end)
 
 		-- Fix round 4, A: Forever's Natural flasks (the items' use spells). Fix round 5, D4: the
@@ -1963,14 +2088,14 @@ describe("GroupPanel", function()
 			assert.are.same({ "Ready check (only you see this): you are missing flask." }, lines)
 			-- Fix round 2: the player alone, the chip names what they lack, not "1 missing (Tester)".
 			-- Fix round 3, C3: the chip's own short form, "missing ..." (no "you are").
-			assert.are.equal(string.format(L.groupChipSummaryYou, "flask"), Chip.raidCheck.text)
-			assert.are.equal("Ready check: missing flask", Chip.raidCheck.text)
+			assert.are.equal(string.format(L.groupChipSummaryYouTest, "flask"), Chip.raidCheck.text)
+			assert.are.equal("Ready check (test): missing flask", Chip.raidCheck.text)
 			assert.is_nil(Chip.raidCheck.open)
 			start({ solo = true, auras = { Tester = { aura(19705), aura(17627), aura(10938) } } })
 			assert.are.same({ "Ready check (only you see this): nothing missing." }, GroupPanel.handleReady())
 			-- Fix round 4 (E): the chip says so for the dry run's 60 s, then goes.
 			assert.are.same({}, Chip.raidCheck.missing)
-			assert.are.equal("Ready check: nothing missing", Chip.raidCheck.text)
+			assert.are.equal("Ready check (test): nothing missing", Chip.raidCheck.text)
 			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock))
 			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock + Chip.RAID_CHECK_SECONDS))
 			assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock + Chip.RAID_CHECK_SECONDS + 1))
@@ -1978,7 +2103,7 @@ describe("GroupPanel", function()
 				progress = { matched = 3, total = 3 }, unspent = 0, now = clock, shown = true, combatHide = true,
 				raidCheck = Chip.raidCheck })
 			assert.are.equal("raidcheck", model.chosen.kind)
-			assert.are.equal("Ready check: nothing missing", model.chosen.text)
+			assert.are.equal("Ready check (test): nothing missing", model.chosen.text)
 			-- A click on the chip prints that line.
 			local said, say = {}, Theme.say
 			Theme.say = function(text)
@@ -1986,7 +2111,7 @@ describe("GroupPanel", function()
 			end
 			pcall(Chip.printRaidCheck)
 			Theme.say = say
-			assert.are.same({ "Ready check: nothing missing" }, said)
+			assert.are.same({ "Ready check (test): nothing missing" }, said)
 		end)
 
 		-- Fix round 5, D2: the chip's glyph says what the check found: the green tick on a clean dry
@@ -2004,7 +2129,7 @@ describe("GroupPanel", function()
 			start({ solo = true, auras = { Tester = { aura(19705), aura(17627), aura(10938) } } })
 			GroupPanel.handleReady()
 			assert.are.equal("raidcheck", chosen().kind)
-			assert.are.equal("Ready check: nothing missing", chosen().text)
+			assert.are.equal("Ready check (test): nothing missing", chosen().text)
 			assert.are.equal(Theme.MEDIA.gearTick, chosen().icon)
 			-- The flask runs out while the dry run stands: the list refills and the cross returns.
 			table.remove(auras.Tester, 2)
@@ -2012,7 +2137,7 @@ describe("GroupPanel", function()
 			GroupPanel.onAura("player")
 			mock.runTimers(state)
 			assert.are.equal("raidcheck", chosen().kind)
-			assert.are.equal("Ready check: missing flask", chosen().text)
+			assert.are.equal("Ready check (test): missing flask", chosen().text)
 			assert.are.equal(Theme.MEDIA.gearCross, chosen().icon)
 		end)
 
@@ -2198,7 +2323,7 @@ describe("GroupPanel", function()
 			assert.are.equal("Group panel: open, not in a group, ready check 12:00: you are missing flask, food",
 				GroupPanel.diagLine())
 			-- Fix round 3, C3: the chip says "missing flask, food"; the diag keeps "you are missing".
-			assert.are.equal("Ready check: missing flask, food", Chip.raidCheck.text)
+			assert.are.equal("Ready check (test): missing flask, food", Chip.raidCheck.text)
 			start({ solo = true, auras = { Tester = { aura(10938), aura(19705), aura(17627) } } })
 			GroupPanel.handleReady()
 			assert.are.equal(string.format(L.diagGroupPanelYou, L.diagPanelClosed,

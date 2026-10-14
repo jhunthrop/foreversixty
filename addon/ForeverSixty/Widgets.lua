@@ -509,7 +509,7 @@ end
 --- is (0 to 1). `width` (default Theme.SIZES.scrollbar) and `trackKey` (a Theme.HEX key,
 --- default "border") are for a list that needs a wider thumb on a lighter track (the guild
 --- tab, L5.1 fix round 1, item 7).
-function Widgets.scrollbar(parent, region, inset, width, trackKey)
+function Widgets.scrollbar(parent, region, inset, width, trackKey, thumbWidth)
 	local S = Theme.SIZES
 	inset = inset or -S.gap * 2
 	width = width or S.scrollbar
@@ -518,7 +518,7 @@ function Widgets.scrollbar(parent, region, inset, width, trackKey)
 	track:SetPoint("TOPLEFT", region, "TOPRIGHT", inset, 0)
 	track:SetPoint("BOTTOMLEFT", region, "BOTTOMRIGHT", inset, 0)
 	local thumb = Theme.texture(parent, "OVERLAY", "muted")
-	thumb:SetWidth(width)
+	thumb:SetWidth(thumbWidth or width)
 	thumb:SetPoint("TOP", track, "TOP", 0, 0)
 	local bar = { track = track, thumb = thumb, region = region }
 	function bar:Update(shown, position)

@@ -94,7 +94,10 @@ chip stays beside the minimap with the window open.
 ### 4.2 Talent marks
 
 In the client's talent window (`PlayerSpellsFrame` on this client, found by the existing
-`TalentGlow.watch` hook): a 3 px gold ring, 3 px outside the node's own border, pulsing as the
+`TalentGlow.watch`, L3.7: an addon-owned sentinel frame parented to the window whose own OnShow and
+OnHide stand in for the hooks the first version put on the window; the marks are frames and textures
+the addon owns, positioned over each node, and nothing is written to the window or its node buttons,
+the 1.60 taint rule; a node's plan line is added from GameTooltip's own OnShow): a 3 px gold ring, 3 px outside the node's own border, pulsing as the
 chip does, on the next node; a small order number on every node the plan touches (amended in L3.2
 fix round 4: a multi-rank cell shows the plan's point range, "7–11", a one-point cell its number; amended
 in the L3.2 runs fix: a cell whose points are not consecutive shows its next run, "8–11" then "36", and
@@ -121,7 +124,7 @@ covers gets a line (an item that fills an empty slot reads "Fills an empty slot"
 shows, and is an upgrade at that gain, L4.1 fix round 3): the verdict
 ("Upgrade +4.2 DPS over Chausses of Westfall", "Sidegrade (+0.3 DPS)", "Downgrade −4.2 DPS over
 Smite's Mighty Hammer", the compared name shortened before the tooltip widens; a one-hander
-hovered under a worn two-hander by a class that can dual wield adds "With Goblin Hammer: Upgrade
+hovered under a worn two-hander by a class that can dual wield adds "As a pair with Goblin Hammer: Upgrade
 +14.0 DPS over Smite's Mighty Hammer", the best one-hander the bags carry for the other hand),
 "Best until level 30",
 or the reason it is not one ("Not for you until 40: plate armor", "Not with your two-hander",
@@ -207,7 +210,7 @@ Three stacked regions whose content follows level; a region with nothing to show
   talent window's staged clicks, with a muted "(staged)" while they differ from the committed
   ones; absent below level 10, where no point is allowed yet), off-plan count (its hover lists
   each talent leading with the points it accounts for, so they sum to the count, then "Not in your
-  plan. A respec moves them." and, when known, "Next point at level N: <talent>"; anchored beside
+  plan. Respec to fix this." and, when known, "Next point at level N: <talent>"; anchored beside
   the flyout, never over the Build lines), "Use a different build" (opens the dialog), "Copy my
   character".
 - **At 60**, two more: **Sim** (your DPS, the top three stat weights in DPS per point, "Sim me
@@ -228,7 +231,8 @@ character records rather than keys:
 - discipline: consumables and enchants in logged fights.
 
 The formula lives on the site; the addon shows what the nightly data addon carries, dated
-("as of 4 Nov"). A character with no logs shows "no logs yet", never a zero. The character's site link, where the live number and the full profile are, is copied with
+("as of 4 Nov"). A character with no logs shows "no logs yet", never a zero, and nothing at all under level 10 (L3.7).
+A chat badge for a record older than three days is drawn muted instead of in its tier colour (L3.7). The character's site link, where the live number and the full profile are, is copied with
 `/fs link` (below). Players with
 the addon also broadcast a live snapshot (level, spec, gear gap, build name), so their line is
 current before any log exists.
@@ -248,7 +252,11 @@ shows no score line at all rather than "no logs yet" for everyone.
 On the guild frame: roster with level, spec, gear score, Forever Score, attendance and gear gap,
 sortable; an officer region with the site's approval queue (via the companion) and "Push the
 raid build to guild"; the loot council helper (4.9). Members without the addon show the nightly
-record; members with it show the live snapshot.
+record; members with it show the live snapshot. L3.7: a dim dash where the readable record has nothing
+for the member, the player's own gap with a decimal under 10 DPS (the wire stays an integer), a
+leading "≥" while the biggest gain is a weapon priced from the data alone, "Online only" kept per
+character, the record's date ending the count line when it fits, and the unit of another member's
+gap inferred from their spec's role (healer specs read in points, others in DPS).
 
 ### 4.8 Group panel
 
@@ -259,7 +267,9 @@ On the raid frame, for a party or a raid, before the first pull:
   enchants, addon present or not, and the one weakest slot named in a line;
 - ready check: on the leader's ready check, every unit's auras are read and the panel lists
   who lacks flask, food, weapon imbue or a class buff, plus buff and debuff coverage against
-  the encounter's needs (Sunder, curses, Faerie Fire, resist auras);
+  the encounter's needs (Sunder, curses, Faerie Fire, resist auras); L3.7: Name, Level, Spec lead as
+  the guild tab's do, a dry run is "Ready check (test)", a clean one says "at your level" when no need
+  applied, the off-hand weapon buff is read, and Enchants are checked from level 40;
 - applicants: hovering a name in LFG chat or a whisper shows the score and spec; an invited
   player is inspected on arrival and joins the panel. A leader may set a floor for a listing;
   the panel flags, it never declines.
@@ -284,16 +294,25 @@ build with my guild" is off. Type /fs options to turn it on.").
 
 The loot council helper ranks `loot!` answers for the master looter in seconds; members
 without the addon are scored from their last inspect where one exists, else "no data". No
-message ever triggers an action on the recipient's behalf.
+message ever triggers an action on the recipient's behalf. L3.7: the master looter asks about
+epics only unless "Ask the group about rare drops too" is on (then rares as well, whatever the loot
+threshold), and skips an item no member's class could wear; the Loot region's title counts the answer
+window down ("Drop: <item> · 7 s") to the 10 s mark, when the list settles (the wire window stays 30 s);
+an inspect-scored row carries the inspect's age ("(inspect, 12 min ago)"); a score reads "+12 score".
+A `push` that Comms lets through (an officer's, or the group leader's) is queued for the character and
+listed in the build dialog as "pushed by <officer>", with one chat line; nothing is followed until the
+player chooses it.
 
 ### 4.10 Build dialog
 
 The one frame of our own: 420×300, opened by `/fs` (paste) or `/fs copy`, the compartment entry
 or the minimap button; two tabs, "Paste a build" and "Copy my character", Tab switches, Escape
-closes, and "Tab to switch" sits dim at the bottom left.
+closes, and "Tab to switch" sits dim at the bottom left (L3.7: on the empty paste tab it sits under the
+box, below a muted line saying builds picked on the site arrive here through the companion app).
 
 **Paste a build.** Empty, it says what is followed ("Following: Arms raid · Warrior · 51 points")
-and the next talent ("Next talent: Take Deflection (Arms, 1 of 2)") above a two-line box, "Paste a
+and the next talent ("Next talent: Take Deflection (Arms, 1 of 2)") (L3.7: when the line does not fit, the class word goes first, then
+the build name shortens by whole words; the points are never cut) above a two-line box, "Paste a
 build code from foreversixty.gg (Ctrl+V)", with builds the site sent listed as rows ("Arms raid (old
 patch) · 33/16/2 · from the site"; a long name shortens, never the points), the row that feeds the
 preview marked by a gold left edge. A paste validates at once and nothing is applied until Use.
@@ -343,18 +362,19 @@ title, while either data state at the foot is in the warning colour, one line re
 such state's whole sentence in the warning colour (the addon data before the player ratings; with both
 out of date it ends "(and the player ratings are too old as well)"); the page moves down by the line's
 measured height, so a longer locale's wrapped sentence never overlaps the first switch. "Not installed" stays at the foot, muted: the data addon is
-optional. Eight switches, each with one muted hint saying what it does; each row is measured from
+optional. Nine switches (L3.7 adds "Ask the group about rare drops too", last, off by default), each with one muted hint saying what it does; each row is measured from
 its label and its wrapped hint (`GetStringHeight` plus the one-line rows' bottom pad, never less
 than the one-line 44 px row), so a two-line hint pushes the next row down by a line: "Show the
 chip" (reads off while a right-click hides the chip; either way it clears that hide), "Hide the
 chip in combat" (off: faded to 25 %), "Marks on the talent window" (the ring, the badges and the
 strip, all or none), "Show the minimap button" (live; off, /fs options or Options > AddOns reach
-the page), "Gear tips on item tooltips" (hint: "Adds a line to item tooltips: in your build, and better than what
+the page), "Gear tips on item tooltips" (hint: "Adds a line when an item is in your build or beats what
 you wear. Off: hides player scores too."; off also hides the paper-doll, bag, quest reward and roll marks, section 4.4), "Share my build with my guild" ("Guildmates with Forever
 Sixty see your level, spec, build and gear gap. Off: they see nothing."; off silences the hello
 and every snapshot answer on every channel) and "Save my character for the companion app"
 ("Written at logout for the companion app on your PC, so the site can read your gear and
-talents."; no upload is claimed). Then Reset positions (the chip, the minimap button and the
+talents."; no upload is claimed) and "Ask the group about rare drops too" ("As the master looter you ask
+the group about epics. On: rares too, whatever the loot threshold."). Then Reset positions (the chip, the minimap button and the
 build dialog move at once through `Prefs.onReset`; for 2 s the button reads "Positions reset",
 disabled, its label and 1 px border in the muted-text grey at full alpha); the commands under a
 gold heading and a divider, each `/fs` token in body (`L.settingsCommands`, which `/fs help`
@@ -363,7 +383,7 @@ inbox, /fs hello, /fs seen, /fs record"); and at the foot two lines, one sentenc
 subject muted, the state muted or in the warning colour): "Addon data: current for this patch"
 or "Addon data: for an older patch. Update Forever Sixty at foreversixty.gg.", and "Player ratings (on
 player tooltips): current", "…: too old. Get the new Forever Sixty Data at foreversixty.gg." (dated
-"too old (patch 1.60.1)" when the data carries its build),
+"too old (made 9 Oct)", the day the record was made, when it says; the state is age-based, so no patch),
 "…: not installed. Get Forever Sixty Data at foreversixty.gg.", "…: broken or missing. Get Forever
 Sixty Data at foreversixty.gg." (the global is not a table at all) or "…: made for a newer addon.
 Update Forever Sixty at foreversixty.gg." (`/fs diag` keeps its own wording, and adds its

@@ -766,6 +766,10 @@ function PanelTab.rotationName(entry)
 	parts[#parts + 1] = entry.name or ""
 	-- A rank on every row that has one, the ones not learned yet too (L3.7 item 25).
 	local rank = Compat.spellSubtext(entry.spellId)
+	if type(rank) ~= "string" or rank == "" then
+		-- The client's subtext gave none for a learned ranked spell: the spellbook's highest rank.
+		rank = Compat.spellbookRank(entry.name)
+	end
 	if type(rank) == "string" and rank ~= "" then
 		parts[#parts + 1] = muted(rank)
 	end
@@ -836,7 +840,11 @@ function PanelTab.inputs(data, measure, width)
 	local ranks = Talents.readRanks(data)
 	-- The build region counts the talent window's staged clicks, as the chip and the marks do
 	-- (L3.7 item 21): "N of M on plan" follows what the player is about to commit.
-	local stagedRanks, staged = Talents.readStagedRanks(data)
+	-- Guarded as the build dialog guards it: a client that raises falls back to the committed ranks.
+	local readOk, stagedRanks, staged = pcall(Talents.readStagedRanks, data)
+	if not readOk then
+		stagedRanks, staged = ranks, false
+	end
 	local build = Follow.build
 	local targets, waiting = PanelTab.targets(base, function(link)
 		return ItemTooltip.sectionFor(link, base)
@@ -1228,12 +1236,12 @@ local function drawRotation(region, model)
 		widget.condition:SetText(entry.condition or "")
 		-- A row not learned yet is dimmed whole: icon, name and condition (fix round 3, item 5).
 		local alpha = entry.muted and Theme.ALPHA.dim or 1
-		for _, part in ipairs({ widget.icon, widget.condition }) do
-			part:SetAlpha(alpha)
-		end
-		-- The name is lifted to the muted token at full alpha: dimmed as well it was unreadable
-		-- (L3.7 item 24).
+		widget.icon:SetAlpha(alpha)
+		-- The name and the condition line are lifted to the muted token at full alpha: dimmed as
+		-- well they were unreadable (L3.7 item 24, and the designer's capture review of round A).
 		widget.name:SetAlpha(1)
+		widget.condition:SetAlpha(1)
+		widget.condition:SetTextColor(Theme.rgb(Theme.HEX.muted))
 		widget.frame:Show()
 		y = y + height
 	end

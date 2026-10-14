@@ -92,8 +92,8 @@ GroupPanel.LINE_SAMPLE = "Agjy"
 --- less half the scroll track; Spec keeps room for "Marksmanship".
 GroupPanel.COLUMNS = {
 	{ key = "name", width = 76 },
-	{ key = "spec", width = 82 },
 	{ key = "level", width = 40, numeric = true, right = true },
+	{ key = "spec", width = 82 },
 	{ key = "ilvl", width = 36, numeric = true, right = true },
 	{ key = "gap", width = 50, numeric = true, right = true },
 	{ key = "score", width = 46, numeric = true, right = true },
@@ -167,6 +167,8 @@ GroupPanel.IMBUE_SPECS = {
 }
 --- The main hand's inventory slot, for the player's own weapon imbue.
 GroupPanel.MAIN_HAND = 16
+--- The off hand's slot, for the player's own off-hand weapon buff (L3.7 item 48).
+GroupPanel.OFF_HAND = 17
 
 --- The generated data table, set by Options.register().
 GroupPanel.data = nil
@@ -346,6 +348,26 @@ function GroupPanel.ownImbue()
 	return try(enchantInfo) == true
 end
 
+--- Whether the player's off hand carries a temporary buff (GetWeaponEnchantInfo's off-hand fields):
+--- true or false with a WEAPON worn in the off hand (a shield or a held item has none to ask), nil
+--- where the client cannot say or no weapon is worn there (L3.7 item 48).
+function GroupPanel.ownOffImbue()
+	local enchantInfo = client("GetWeaponEnchantInfo")
+	local link = try(client("GetInventoryItemLink"), "player", GroupPanel.OFF_HAND)
+	if enchantInfo == nil or link == nil then
+		return nil
+	end
+	local _, _, _, equipLoc = Compat.itemInfoInstant(link)
+	if equipLoc ~= "INVTYPE_WEAPON" and equipLoc ~= "INVTYPE_WEAPONOFFHAND" and equipLoc ~= "INVTYPE_WEAPONMAINHAND" then
+		return nil
+	end
+	local info = { try(enchantInfo) }
+	if info[1] == nil and info[5] == nil then
+		return nil
+	end
+	return info[5] == true
+end
+
 --- The instance's key in GroupPanel.BOSSES from GetInstanceInfo's name, type and id (read from
 --- the client when none is given); nil outdoors or in an instance the data has no bosses for.
 function GroupPanel.instanceKey(name, instanceType, instanceId)
@@ -472,25 +494,46 @@ function GroupPanel.check(members, needs, nameOf)
 		local auras = member.auras
 		if member.connected ~= false and auras ~= nil then
 			local what = {}
+			-- How many needs applied to this member at all (L3.7 item 48): none, and a clean result
+			-- reads "nothing missing at your level".
+			local asked = 0
 			-- L5.3 pre-item: level 60, or inside a raid the data knows (any level the client says).
 			local flaskLevel = needs.instance ~= nil and 1 or levels.flask
-			if reaches(member.level, flaskLevel) and not wearsAny(auras, GroupPanel.FLASKS, nameOf) then
-				what[#what + 1] = L.groupNeedFlask
+			if reaches(member.level, flaskLevel) then
+				asked = asked + 1
+				if not wearsAny(auras, GroupPanel.FLASKS, nameOf) then
+					what[#what + 1] = L.groupNeedFlask
+				end
 			end
-			if reaches(member.level, levels.food) and not wears(auras, GroupPanel.WELL_FED, nameOf(GroupPanel.WELL_FED))
-				and not auras.names[L.groupWellFed] then
-				what[#what + 1] = L.groupNeedFood
+			if reaches(member.level, levels.food) then
+				asked = asked + 1
+				if not wears(auras, GroupPanel.WELL_FED, nameOf(GroupPanel.WELL_FED)) and not auras.names[L.groupWellFed] then
+					what[#what + 1] = L.groupNeedFood
+				end
+			end
+			if member.imbue ~= nil and GroupPanel.usesImbue(member.spec) then
+				asked = asked + 1
 			end
 			if member.imbue == false and GroupPanel.usesImbue(member.spec) then
 				what[#what + 1] = L.groupNeedImbue
+			elseif member.imbueOff == false and GroupPanel.usesImbue(member.spec) then
+				-- The main hand is buffed, the off hand (a second weapon) is not (L3.7 item 48).
+				what[#what + 1] = L.groupNeedImbueOff
 			end
 			for _, id in ipairs(needs.buffs or {}) do
 				local name = nameOf(id)
 				local forClass = GroupPanel.BUFF_FOR[id]
-				if name ~= nil and (forClass == nil or forClass[member.classToken]) and #providers(GroupPanel.PROVIDERS[id]) > 0
-					and not wearsNeed(auras, id, name, nameOf) then
-					what[#what + 1] = name
+				if name ~= nil and (forClass == nil or forClass[member.classToken])
+					and #providers(GroupPanel.PROVIDERS[id]) > 0 then
+					asked = asked + 1
+					if not wearsNeed(auras, id, name, nameOf) then
+						what[#what + 1] = name
+					end
 				end
+			end
+			if member.own == true then
+				result.asked = (result.asked or 0) + asked
+				result.ownRead = true
 			end
 			if #what > 0 then
 				result.missing[#result.missing + 1] = { name = member.short, classToken = member.classToken,
@@ -498,6 +541,8 @@ function GroupPanel.check(members, needs, nameOf)
 			end
 		end
 	end
+	-- Nothing applied to the player (every need gated by their level): a clean result says "at your level".
+	result.levelGated = result.ownRead == true and (result.asked or 0) == 0 and #result.missing == 0 or nil
 	if needs.generic then
 		return result
 	end
@@ -605,12 +650,16 @@ function GroupPanel.summary(result)
 		return nil
 	end
 	local missing = type(result.missing) == "table" and result.missing or {}
+	local dry = result.dry == true
 	if #missing == 0 then
-		return (result.alone and result.dry) and L.groupChipSummaryYouNone or nil
+		if not (result.alone and dry) then
+			return nil
+		end
+		return result.levelGated and L.groupChipSummaryYouNoneLevelTest or L.groupChipSummaryYouNoneTest
 	end
 	local lack = GroupPanel.ownLack(result)
 	if lack ~= nil then
-		return string.format(L.groupChipSummaryYou, lack)
+		return string.format(dry and L.groupChipSummaryYouTest or L.groupChipSummaryYou, lack)
 	end
 	local names = {}
 	for _, entry in ipairs(missing) do
@@ -624,7 +673,8 @@ function GroupPanel.summary(result)
 	if #names > 2 then
 		shown[3] = string.format(L.groupChipMore, #names - 2)
 	end
-	return string.format(L.groupChipSummary, #missing, table.concat(shown, L.groupChipJoin))
+	return string.format(dry and L.groupChipSummaryTest or L.groupChipSummary, #missing,
+		table.concat(shown, L.groupChipJoin))
 end
 
 -- The rows, pure ---------------------------------------------------------------------------
@@ -674,6 +724,8 @@ local function rowOf(member, context)
 	end
 	if live ~= nil and tonumber(live.gearGap) ~= nil then
 		row.gap = tonumber(live.gearGap)
+		row.cold = live.cold == true or nil
+		row.gapExact = tonumber(live.gapExact)
 		row.unit = live.unit or Comms.gapUnit(context.data or GroupPanel.data or ns.Data, row.spec, row.level)
 		-- The weakest line is the inspect's: tagged where it measures another gap than the addon's.
 		if gear ~= nil and gear.weakest ~= nil and (gear.unit ~= row.unit or type(gear.gap) ~= "number"
@@ -681,7 +733,7 @@ local function rowOf(member, context)
 			row.weakestInspect = true
 		end
 	elseif gear ~= nil then
-		row.gap, row.unit = gear.gap, gear.unit
+		row.gap, row.unit, row.cold = gear.gap, gear.unit, gear.cold
 	end
 	if live ~= nil and type(live.buildName) == "string" and live.buildName ~= "" then
 		row.buildName = live.buildName
@@ -692,6 +744,7 @@ local function rowOf(member, context)
 		row.bestParse = bestParse(record)
 	end
 	row.noLogs = row.score == nil and context.ratings == true
+		and not (type(row.level) == "number" and row.level < Score.LEVEL_FLOOR)
 	local floor = tonumber(context.floor) or 0
 	row.below = floor > 0 and row.score ~= nil and row.score < floor or false
 	row.floor = floor
@@ -840,6 +893,12 @@ function GroupPanel.cells(row)
 	if type(row.gap) == "number" then
 		local rounded = math.floor(row.gap + 0.5)
 		local text = string.format(row.unit == "dps" and L.groupGapDps or L.groupGapPts, rounded)
+		if row.unit == "dps" and type(row.gapExact) == "number" and row.gapExact > 0 and row.gapExact < 10 then
+			text = string.format(L.groupGapDpsDecimal, row.gapExact)
+		end
+		if row.cold and rounded > 0 then
+			text = string.format(L.gapAtLeast, text)
+		end
 		gap = rounded == 0 and muted(text) or plain(text)
 	end
 	local cells = {
@@ -851,7 +910,7 @@ function GroupPanel.cells(row)
 		addon = row.live and plain(L.groupAddonLive) or blank(),
 		enchants = blank(),
 	}
-	if type(row.enchants) == "number" then
+	if type(row.enchants) == "number" and not GroupPanel.belowEnchantLevel(row.level) then
 		cells.enchants = row.enchants > 0 and muted(string.format(L.groupEnchantsMissing, row.enchants))
 			or plain(Theme.inlineIcon(Theme.MEDIA.gearTick, S.groupTick))
 		cells.enchants.icon = row.enchants == 0
@@ -866,6 +925,13 @@ function GroupPanel.cells(row)
 		cells.score = blank()
 	end
 	return cells
+end
+
+--- The level from which enchants are checked (L3.7 item 47), and whether `level` is below it.
+GroupPanel.ENCHANT_LEVEL = 40
+
+function GroupPanel.belowEnchantLevel(level)
+	return type(level) == "number" and level > 0 and level < GroupPanel.ENCHANT_LEVEL
 end
 
 --- A row's hover: the full name in its class colour, the score line, the best parse, the
@@ -886,7 +952,7 @@ function GroupPanel.rowHint(row)
 	if row.buildName ~= nil then
 		lines[#lines + 1] = Theme.inlineColor("tooltipText", string.format(L.groupBuild, row.buildName))
 	end
-	if type(row.bareSlots) == "table" and #row.bareSlots > 0 then
+	if type(row.bareSlots) == "table" and #row.bareSlots > 0 and not GroupPanel.belowEnchantLevel(row.level) then
 		local words = {}
 		for index, slot in ipairs(row.bareSlots) do
 			words[index] = L.gearSlotLabels[slot] or slot
@@ -896,6 +962,9 @@ function GroupPanel.rowHint(row)
 	end
 	if not row.connected then
 		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", L.groupOffline)
+	end
+	if GroupPanel.belowEnchantLevel(row.level) then
+		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", L.groupEnchantsFrom)
 	end
 	return lines
 end
@@ -970,7 +1039,7 @@ function GroupPanel.memberGear(data, spec, level, faction, items)
 		return nil
 	end
 	plan.current = current
-	return { gap = plan.gap, unit = plan.unit, weakest = weakestOf(plan, equipped, data) }
+	return { gap = plan.gap, unit = plan.unit, cold = plan.cold, weakest = weakestOf(plan, equipped, data) }
 end
 
 --- The player's spec as their own row shows it (Comms.ownSpec: the build's, else the talents'
@@ -998,9 +1067,11 @@ local function ownFields(data)
 	local equipped = Gear.readEquipped()
 	local ok, plan = pcall(Comms.ownPlan, data, spec, equipped)
 	plan = ok and plan or nil
-	local gear = plan ~= nil and { gap = plan.gap, unit = plan.unit, weakest = weakestOf(plan, equipped, data) } or nil
+	local gear = plan ~= nil and { gap = plan.gap, unit = plan.unit, cold = plan.cold,
+		weakest = weakestOf(plan, equipped, data) } or nil
 	local live = {
 		spec = spec, gearGap = plan ~= nil and plan.gap or nil, unit = plan ~= nil and plan.unit or nil,
+		cold = plan ~= nil and plan.cold or nil, gapExact = plan ~= nil and plan.exact or nil,
 		buildName = build ~= nil and type(data) == "table" and Follow.buildName(data, build) or nil,
 	}
 	return live, Inspect.readSelf(), gear
@@ -1102,6 +1173,7 @@ local function runCheck(dry, again)
 			if isPlayer(unit) then
 				member.own = true
 				member.imbue = GroupPanel.ownImbue()
+				member.imbueOff = GroupPanel.ownOffImbue()
 				local ok, spec = pcall(ownSpec, data)
 				member.spec = ok and validSpec(spec) or nil
 			else
@@ -1122,11 +1194,11 @@ local function runCheck(dry, again)
 		result.at, result.clock, result.open, result.untilAt, result.dry = previous.at, previous.clock, previous.open,
 			previous.untilAt, previous.dry
 		GroupPanel.result = result
-		Chip.updateRaidCheck(GroupPanel.missingLines(result), GroupPanel.summary(result), cleanAlone(result))
+		Chip.updateRaidCheck(GroupPanel.missingLines(result, true), GroupPanel.summary(result), cleanAlone(result))
 	else
 		result.at, result.clock, result.open, result.dry = Theme.now(), date("%H:%M"), not dry or nil, dry or nil
 		GroupPanel.result = result
-		Chip.setRaidCheck(GroupPanel.missingLines(result), GroupPanel.summary(result), not dry, cleanAlone(result))
+		Chip.setRaidCheck(GroupPanel.missingLines(result, true), GroupPanel.summary(result), not dry, cleanAlone(result))
 	end
 	return result
 end
@@ -1138,7 +1210,7 @@ end
 --- addon" / "can't score" / "waiting" muted, the first two with a `hint` for the hover), the worn item
 --- muted ("empty" for a bare slot) and a gold "on their list" tag; `plain` is the same as one chat line.
 --- `nameOf` names an item (Compat.itemName). Pure.
-function GroupPanel.lootCell(row, nameOf)
+function GroupPanel.lootCell(row, nameOf, now)
 	local cell = { kind = "row", name = row.short,
 		nameHex = row.classToken ~= nil and Theme.panelClassHex(row.classToken) or Theme.HEX.body,
 		value = "", valueHex = Theme.HEX.muted, worn = "", planned = row.planned == true }
@@ -1155,7 +1227,14 @@ function GroupPanel.lootCell(row, nameOf)
 	else
 		cell.value = LootCouncil.valueText(row.value, row.unit, row.healing)
 		if row.kind == "inspect" then
-			cell.value = cell.value .. " " .. L.lootInspect
+			-- With the inspect's age where it is known (L3.7 item 51): "(inspect, 12 min ago)".
+			local age = type(now) == "number" and type(row.inspectAt) == "number" and math.max(0, now - row.inspectAt) or nil
+			local words
+			if age ~= nil then
+				words = age < 60 and L.lootAgeNow or (age < 3600 and string.format(L.lootAgeMin, math.floor(age / 60))
+					or string.format(L.lootAgeHour, math.floor(age / 3600)))
+			end
+			cell.value = cell.value .. " " .. (words ~= nil and string.format(L.lootInspectAge, words) or L.lootInspect)
 		elseif row.site then
 			cell.value = cell.value .. " " .. L.lootSite
 		end
@@ -1192,7 +1271,13 @@ function GroupPanel.lootEntries(drops, members, now, resolvers, nameOf)
 		if hex ~= nil and name ~= nil then
 			shown = string.format("|cff%s%s|r", hex, name)
 		end
-		entries[#entries + 1] = { kind = "title", text = string.format(L.lootDrop, shown), gap = index > 1 or nil }
+		local title = string.format(L.lootDrop, shown)
+		local left = LootCouncil.countdown(drop, now)
+		if left ~= nil then
+			title = string.format(L.lootCountdown, title, left)
+		end
+		entries[#entries + 1] = { kind = "title", text = title, plain = string.format(L.lootDrop, shown),
+			gap = index > 1 or nil }
 		local rows = LootCouncil.rows(drop, members, now, resolvers)
 		for position, row in ipairs(rows) do
 			if position > S.lootMaxRows then
@@ -1200,7 +1285,7 @@ function GroupPanel.lootEntries(drops, members, now, resolvers, nameOf)
 					text = string.format(L.lootMore, #rows - S.lootMaxRows) }
 				break
 			end
-			entries[#entries + 1] = GroupPanel.lootCell(row, nameOf)
+			entries[#entries + 1] = GroupPanel.lootCell(row, nameOf, now)
 		end
 	end
 	return entries
@@ -2073,6 +2158,9 @@ function GroupPanel.lootNow()
 				current = Gear.currentWeights(data, spec, nil, nil, member.level), isMissing = ItemTooltip.isMissing,
 			})
 			result = ok and result or nil
+			if result ~= nil then
+				result.at = member.inspect.at
+			end
 			drop.inspected[member.name] = { at = member.inspect.at, result = result }
 			return result
 		end,
@@ -2084,7 +2172,7 @@ end
 function GroupPanel.lootChatLines()
 	local lines = {}
 	for _, entry in ipairs(GroupPanel.lootNow()) do
-		lines[#lines + 1] = entry.kind == "title" and entry.text or entry.plain
+		lines[#lines + 1] = entry.kind == "title" and entry.plain or entry.plain
 	end
 	return lines
 end
@@ -2390,7 +2478,8 @@ function GroupPanel.handleReady()
 	end
 	if result.alone then
 		local lack = GroupPanel.ownLack(result)
-		return { lack ~= nil and string.format(L.groupReadyYou, lack) or L.groupReadyYouNone }
+		return { lack ~= nil and string.format(L.groupReadyYou, lack)
+			or (result.levelGated and L.groupReadyYouNoneLevel or L.groupReadyYouNone) }
 	end
 	local lines = { string.format(L.groupReadyDry, result.where or L.groupCheckStandard) }
 	local missing = GroupPanel.missingLines(result)

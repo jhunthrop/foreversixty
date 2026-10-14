@@ -108,6 +108,21 @@ function Follow.load(code, data, name, slot, player)
 	return build
 end
 
+--- Where a pasted build goes (L3.7 item 32): the slot a paste is adopted into, and the slot it
+--- leaves alone. A paste never overwrites a build restored in the raid slot: while the active
+--- slot is the raid one and holds a build, the paste goes to the leveling slot (and becomes the
+--- active one); the second answer is then "raid", the slot `/fs build raid` switches back to.
+--- Otherwise the paste replaces the active slot's build, as before (the second answer is nil).
+Follow.PASTE_SLOT = "leveling"
+function Follow.pasteSlot()
+	local entry = currentEntry()
+	local active = entry.active or Follow.DEFAULT_SLOT
+	if active == Follow.DEFAULT_SLOT and hasCode(entry.slots[active]) then
+		return Follow.PASTE_SLOT, active
+	end
+	return active, nil
+end
+
 --- The build the player had loaded last session, if it still decodes.
 --- A code that no longer decodes (the addon's data moved on) is dropped
 --- rather than reported: nothing asked for it this session.
@@ -401,6 +416,44 @@ function Follow.inbox(inbox, key)
 	return usable
 end
 
+--- Builds an officer pushed to this character (L3.7 item 44), newest first, at most
+--- Follow.MAX_PUSHED, one per code: each { code, name, from }, in ForeverSixtyDB.pushed[key].
+--- Nothing is followed from here; the build dialog lists them as builds to choose from.
+Follow.MAX_PUSHED = 5
+
+function Follow.pushedBuilds(key)
+	local pushed = type(ForeverSixtyDB) == "table" and type(ForeverSixtyDB.pushed) == "table"
+		and ForeverSixtyDB.pushed[key] or nil
+	return type(pushed) == "table" and pushed or {}
+end
+
+--- Queue a pushed build for the current character; the newest first, a repeated code moved up.
+function Follow.addPushed(code, name, from)
+	if type(code) ~= "string" or code == "" then
+		return nil
+	end
+	ForeverSixtyDB = ForeverSixtyDB or {}
+	if type(ForeverSixtyDB.pushed) ~= "table" then
+		ForeverSixtyDB.pushed = {}
+	end
+	local key = Export.characterKey()
+	local list = ForeverSixtyDB.pushed[key]
+	if type(list) ~= "table" then
+		list = {}
+		ForeverSixtyDB.pushed[key] = list
+	end
+	for index = #list, 1, -1 do
+		if list[index].code == code then
+			table.remove(list, index)
+		end
+	end
+	table.insert(list, 1, { code = code, name = name, from = from })
+	while #list > Follow.MAX_PUSHED do
+		table.remove(list)
+	end
+	return list[1]
+end
+
 --- Every build the site sent the character at `key`, once per code: contract 3's `build`
 --- messages first (newest first, Follow.messages), then the older top-level `builds` list
 --- the companion still writes beside them (Follow.inbox). Each is { id, name, code }; the id
@@ -415,12 +468,16 @@ function Follow.inboxBuilds(inbox, key)
 		end
 	end
 	local builds, seen = {}, {}
-	local function add(code, name)
+	local function add(code, name, from)
 		if type(code) ~= "string" or code == "" or seen[code] then
 			return
 		end
 		seen[code] = true
-		builds[#builds + 1] = { id = legacyId[code] or code, name = name, code = code }
+		builds[#builds + 1] = { id = legacyId[code] or code, name = name, code = code, from = from }
+	end
+	-- An officer's push (L3.7 item 44) leads: the newest news.
+	for _, pushed in ipairs(Follow.pushedBuilds(key)) do
+		add(pushed.code, pushed.name, pushed.from)
 	end
 	for _, message in ipairs(Follow.messages(inbox, key, "build")) do
 		add(message.code, message.name)

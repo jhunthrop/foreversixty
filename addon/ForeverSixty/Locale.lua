@@ -19,6 +19,7 @@ local L = {
 	settingsCommands = {
 		"/fs: paste or copy a build",
 		"/fs copy: copy my character for the site",
+		"/fs build: switch between saved builds",
 		"/fs chip: show or hide the chip",
 		"/fs inspect: gear and talents of your target",
 		"/fs link: copy a player's site page",
@@ -307,10 +308,14 @@ local L = {
 		.. "Off: type /fs options or use Options > AddOns.",
 	settingsTooltip = "Gear tips on item tooltips",
 	-- L4.4 fix round 2, item 2: the switch also governs the player tooltip's score.
-	settingsTooltipHint = "Adds a line to item tooltips: in your build, and better than what you wear. "
+	settingsTooltipHint = "Adds a line when an item is in your build or beats what you wear. "
 		.. "Off: hides player scores too.",
 	-- L4.4: the eighth switch (spec section 4.11). The badge leads the message, after the
 	-- name: a chat filter cannot touch the name without breaking its link and the reply.
+	-- L3.7 item 49: the loot council's quality rule: epics only unless this is on.
+	settingsLootRares = "Ask the group about rare drops too",
+	settingsLootRaresHint = "As the master looter you ask the group about epics. On: rares too, "
+		.. "whatever the loot threshold.",
 	settingsBadges = "Score badges in chat",
 	settingsBadgesHint = "Shows a player's Forever Score before their message in LFG, Trade, guild chat and "
 		.. "whispers.",
@@ -337,9 +342,9 @@ local L = {
 	settingsAddonDataOlder = "Addon data: for an older patch. Update Forever Sixty at " .. SITE .. ".",
 	settingsRatingsCurrent = "Player ratings (on player tooltips): current",
 	settingsRatingsOld = "Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at " .. SITE .. ".",
-	-- L3.7 item 38: the dated form, "%s" the data's patch ("1.60.1"); item 2: a global that is not
-	-- a table at all.
-	settingsRatingsOldDated = "Player ratings (on player tooltips): too old (patch %s). Get the new Forever Sixty "
+	-- L3.7 item 38: the dated form, "%s" the day the record was made ("9 Oct"); item 2: a global that
+	-- is not a table at all.
+	settingsRatingsOldDated = "Player ratings (on player tooltips): too old (made %s). Get the new Forever Sixty "
 		.. "Data at " .. SITE .. ".",
 	settingsRatingsBroken = "Player ratings (on player tooltips): broken or missing. Get Forever Sixty Data at "
 		.. SITE .. ".",
@@ -576,7 +581,7 @@ local L = {
 	tooltipTwoHander = "Not with your two-hander",
 	-- L3.7 item 11: a one-hander under a worn two-hander, with the best one carried for the other
 	-- hand: "With Goblin Hammer: Upgrade +14.0 DPS over Smite's Mighty Hammer".
-	tooltipPairWith = "With %s: %s",
+	tooltipPairWith = "As a pair with %s: %s",
 	-- The item worn is the band's own pick (or the pick is worn beside it, or
 	-- the next pick gains under the floor): it holds until the ladder's next
 	-- rung, "Best until level 30"; in the top band, "Best for now".
@@ -881,6 +886,12 @@ L.dialogTabPaste = "Paste a build"
 L.dialogWaitingCount = "%d waiting"
 -- The site's own words (L8.2): the copy tab is named this (copy mode has no button).
 L.dialogCopy = "Copy my character"
+-- L3.7 item 29: the copy tab's label while the box holds a /fs link ("%s" the linked player).
+L.dialogCopyLink = "Copy %s's link"
+-- L3.7 item 28: under the empty paste box, a muted line on where builds come from.
+L.dialogPasteCompanion = "Builds you pick on " .. SITE .. " arrive here through the companion app."
+-- L3.7 item 30: the newest sim result says it failed.
+L.dialogSimFailed = "Sim failed \194\183 ask again"
 -- At the panel's bottom left, a step dimmer than an inactive tab.
 L.dialogTabHint = "Tab to switch"
 -- Paste mode: the box's placeholder, and the one gold button once a code loads.
@@ -921,6 +932,12 @@ L.dialogReplacesDiffers = "Replaces %s · first differs at point %d: %s"
 L.dialogNextWould = "Next talent would be: %s"
 -- A refusal's last line, muted.
 L.dialogStillFollowing = "You are still following %s."
+-- L3.7 item 32: after a paste was adopted beside a raid build ("%s" the raid slot's id).
+L.dialogUsingPaste = "Using your paste. /fs build %s switches back."
+-- /fs build: "Now following Raid build (Raid slot)." and its refusals.
+L.buildSwitched = "Now following %s (%s slot)."
+L.buildSlotEmpty = "Nothing is saved in the %s slot."
+L.buildUsage = "/fs build raid, leveling or pvp switches between your saved builds."
 -- One chat line after a build is used: "Now following Arms raid. Next: Deflection (1 of 2)."
 L.dialogNowFollowing = "Now following %s."
 L.dialogNowFollowingNext = "Now following %s. Next: %s."
@@ -929,6 +946,10 @@ L.dialogNowFollowingNext = "Now following %s. Next: %s."
 L.dialogInboxRow = "%s · %s · %s"
 L.dialogInboxRowBare = "%s · %s"
 L.dialogFromSite = "from the site"
+-- A build an officer pushed to the guild or group (L3.7 item 44; "%s" the officer), and the
+-- one chat line when it arrives.
+L.dialogFromPush = "pushed by %s"
+L.pushArrived = "%s pushed the build %s. Open /fs to look at it."
 L.dialogInboxMore = "and %d more"
 -- Copy mode. The lead line under the tabs until a real Ctrl+C, then the copy claim.
 L.dialogSelectedLead = "Selected. Press Ctrl+C, then paste it on " .. SITE .. "."
@@ -1025,7 +1046,7 @@ L.panelOffPlanTalent = "%s · %s · %d off plan (Rank %d/%d)"
 L.panelOverPlanTalent = "%s · %s · %d off plan (Rank %d/%d, plan %d)"
 -- L3.7 item 23: under the off-plan talents on that hover, what to do about them and when the
 -- next planned point arrives.
-L.panelOffPlanAction = "Not in your plan. A respec moves them."
+L.panelOffPlanAction = "Not in your plan. Respec to fix this."
 L.panelOffPlanNext = "Next point at level %d: %s"
 L.panelUseOther = "Use a different build"
 L.panelCopy = L.dialogCopy
@@ -1107,12 +1128,21 @@ L.guildTabNoLogs = "no logs"
 L.guildTabPercent = "%d%%"
 L.guildTabGapDps = "%d DPS"
 L.guildTabGapPts = "%d pts"
+-- A record cell for a member the readable record has nothing for (L3.7 item 40), dim.
+L.guildTabDash = "\226\128\148"
+-- The player's own gap under 10 DPS shows one decimal (the wire stays an integer): "3.5 DPS".
+L.guildTabGapDpsDecimal = "%.1f DPS"
+-- A gap whose biggest gain is a weapon priced from the data alone (the client's stats not here yet)
+-- is a lower bound: "≥ 4 DPS" (the guild tab's Gap cell and the group panel's row).
+L.gapAtLeast = "\226\137\165 %s"
 -- The Gear and Gap headers' hover (fix round 1, item 3), a line each: the first as text, the
 -- rest muted (fix round 2: Gap says what it measures and what 0 means).
 L.guildTabHeaderHints = {
-	gear = { "Gear score from the nightly record" },
+	gear = { "Gear score from the nightly record, in points" },
+	score = { "Forever Score from the nightly record, in points" },
 	gap = { "Gear gap reported live by the member's addon.",
-		"Biggest slot behind their build, in DPS or points; 0 means on plan." },
+		"Biggest slot behind their build, in DPS or points; 0 means on plan.",
+		"A leading \226\137\165 means at least: a weapon's stats are still on their way." },
 }
 -- A row's hover: the member's build as their addon announced it, and offline.
 L.guildTabBuild = "Build: %s"
@@ -1187,8 +1217,11 @@ L.groupHeaderHints = {
 -- tick (the client's ready-check art), the addon present.
 L.groupGapDps = "%d DPS"
 L.groupGapPts = "%d pts"
+L.groupGapDpsDecimal = "%.1f DPS"
 L.groupNoLogs = "no logs"
 L.groupEnchantsMissing = "%d missing"
+-- L3.7 item 47: below this level the Enchants cell is blank and its hover says why.
+L.groupEnchantsFrom = "Enchants are checked from level 40."
 L.groupAddonLive = "live"
 -- The muted line under a row: "below 1200" under the floor, then the weakest slot ("Chest:
 -- Worn Robe · next Robes of Arcana +12.0 DPS", the gain as the item tooltip's Next line prints
@@ -1235,6 +1268,7 @@ L.groupClassWords = {
 L.groupNeedFlask = "flask"
 L.groupNeedFood = "food"
 L.groupNeedImbue = "weapon buff"
+L.groupNeedImbueOff = "weapon buff (off hand)"
 -- The food buff's own name, matched where the client cannot name its spell.
 L.groupWellFed = "Well Fed"
 -- A boss the raid stacks resistance for: "Fire resistance".
@@ -1264,6 +1298,12 @@ L.groupChipMore = "+%d"
 L.groupChipSummaryYou = "Ready check: missing %s"
 -- Fix round 4 (E): a clean dry run alone says so on the chip for its 60 s.
 L.groupChipSummaryYouNone = "Ready check: nothing missing"
+-- L3.7 item 46: a dry run (/fs ready) is a test; the chip says so. Item 48: "at your level" when
+-- every need was gated by it.
+L.groupChipSummaryTest = "Ready check (test): %d missing (%s)"
+L.groupChipSummaryYouTest = "Ready check (test): missing %s"
+L.groupChipSummaryYouNoneTest = "Ready check (test): nothing missing"
+L.groupChipSummaryYouNoneLevelTest = "Ready check (test): nothing missing at your level"
 -- /fs ready: a dry run, in chat. Fix round 4 (E, B): alone, one line ("... you are missing flask,
 -- food." or "... nothing missing."); in a group a header naming the list it read, then a line a
 -- member or "Nobody is missing anything.".
@@ -1271,6 +1311,7 @@ L.groupReadyDry = "Ready check (only you see this), %s:"
 L.groupReadyNone = "Nobody is missing anything."
 L.groupReadyYou = "Ready check (only you see this): you are missing %s."
 L.groupReadyYouNone = "Ready check (only you see this): nothing missing."
+L.groupReadyYouNoneLevel = "Ready check (only you see this): nothing missing at your level."
 -- /fs ready when the panel has turned itself off: no check ran, so none is claimed clean.
 L.groupPanelOff = "Group panel is off."
 -- /fs floor (ruling 4): the panel flags, it never declines or whispers.
@@ -1295,11 +1336,18 @@ L.diagGroupPanelFailed = "The group panel failed and is off until /reload: %s"
 -- them this session) or "can't score" (their addon answered nothing: no weights or spec, an item the client
 -- has not loaded, an item they cannot wear).
 L.lootDrop = "Drop: %s"
+-- L3.7 item 50: the answer countdown after the title ("Drop: Sulfuras · 7 s") until the 10 s mark.
+L.lootCountdown = "%s · %d s"
+-- L3.7 item 51: an inspect-scored row's age: "(inspect, 12 min ago)".
+L.lootInspectAge = "(inspect, %s)"
+L.lootAgeNow = "just now"
+L.lootAgeMin = "%d min ago"
+L.lootAgeHour = "%d h ago"
 -- A value in its unit, "+6.3 DPS" / "−2.1 DPS" / "+12 pts" ("HPS" for a healer's own figure); the sign
 -- is "+" or the tooltip's minus.
 L.lootValueDps = "%s%.1f DPS"
 L.lootValueHps = "%s%.1f HPS"
-L.lootValueScore = "%s%d pts"
+L.lootValueScore = "%s%d score"
 -- A row: the worn item's name or "empty", a gold "on their list" tag where the item is the band's pick
 -- for the member, the "(inspect)" tag where the list scored the member from an inspect, "(from the
 -- site)" where the figure is the companion's, and "no addon", "can't score" or "waiting" where there is

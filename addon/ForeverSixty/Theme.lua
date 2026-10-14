@@ -321,6 +321,9 @@ Theme.SIZES = {
 	guildSortReserve = 10,
 	guildSideClear = 4,
 	guildScrollbar = 8,
+	--- The guild tab's scroll thumb (L3.7 item 41): wider than its track, centred on it, so it
+	--- reads as something to grab; the track (and the columns' room) stay as they were.
+	guildScrollThumb = 10,
 	guildToggleRoom = 88,
 	--- The group panel (spec section 4.8, L5.2): its flyout's width (its button is the panel
 	--- tab's; its headers, columns and scroll track are the guild tab's), the most member rows
@@ -1476,6 +1479,26 @@ local function stopPulse(edges)
 	end
 end
 
+--- L3.7 item 5 (the 1.60 taint rules): a button the glow is put on may be a client
+--- frame (the talent window's nodes), and the addon never writes a field into one. The
+--- ring's parts and its pending-stop generation are kept here, by button, instead.
+local glowStates = setmetatable({}, { __mode = "k" })
+
+--- The addon-side state of `button`'s outline glow: { gold = edges, edge = edges or nil,
+--- frame = the ring's frame, generation = n }, or nil before the first glow.
+function Theme.glowOf(button)
+	return glowStates[button]
+end
+
+local function glowState(button)
+	local state = glowStates[button]
+	if state == nil then
+		state = { generation = 0 }
+		glowStates[button] = state
+	end
+	return state
+end
+
 --- `outline` asks for the addon's own gold outline even on a client
 --- with the overlay glow: the trait talent window's buttons showed
 --- nothing under ActionButton_ShowOverlayGlow (seen in game), and an
@@ -1494,7 +1517,8 @@ function Theme.showGlow(button, outline, staticAfter, ring)
 		ActionButton_ShowOverlayGlow(button)
 		return "overlay"
 	end
-	if button.foreverSixtyGlow == nil then
+	local state = glowState(button)
+	if state.gold == nil then
 		-- Its own frame, a few levels above the button and a little wider
 		-- than it: the trait window's buttons draw their rank border on
 		-- child frames, which sit above any texture on the button itself
@@ -1508,27 +1532,27 @@ function Theme.showGlow(button, outline, staticAfter, ring)
 		if type(button.GetFrameLevel) == "function" and type(frame.SetFrameLevel) == "function" then
 			frame:SetFrameLevel((button:GetFrameLevel() or 0) + 10)
 		end
-		button.foreverSixtyGlowFrame = frame
-		button.foreverSixtyGlow = Theme.outline(frame, thickness, "gold")
+		state.frame = frame
+		state.gold = Theme.outline(frame, thickness, "gold")
 		local edge = ring ~= nil and ring.edge or nil
 		if type(edge) == "number" and edge > 0 then
 			local outer = CreateFrame("Frame", nil, frame)
 			outer:SetPoint("TOPLEFT", frame, "TOPLEFT", -edge, edge)
 			outer:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", edge, -edge)
-			button.foreverSixtyGlowEdge = Theme.outline(outer, edge, "shadow")
-			for _, texture in ipairs(button.foreverSixtyGlowEdge) do
+			state.edge = Theme.outline(outer, edge, "shadow")
+			for _, texture in ipairs(state.edge) do
 				Theme.paint(texture, "shadow", Theme.ALPHA.ringEdge)
 			end
 		end
 	end
-	if button.foreverSixtyGlowEdge ~= nil then
-		Theme.setShown(button.foreverSixtyGlowEdge, true)
+	if state.edge ~= nil then
+		Theme.setShown(state.edge, true)
 	end
-	Theme.setShown(button.foreverSixtyGlow, true)
-	pulse(button.foreverSixtyGlow)
+	Theme.setShown(state.gold, true)
+	pulse(state.gold)
 	if type(staticAfter) == "number" then
 		Theme.scheduleStatic(button, staticAfter, function()
-			stopPulse(button.foreverSixtyGlow)
+			stopPulse(state.gold)
 		end)
 	else
 		Theme.cancelStatic(button)
@@ -1542,7 +1566,7 @@ end
 function Theme.scheduleStatic(button, seconds, stop)
 	local generation = Theme.cancelStatic(button)
 	return Theme.after(seconds, function()
-		if button.foreverSixtyGlowGeneration == generation then
+		if glowState(button).generation == generation then
 			stop()
 		end
 	end)
@@ -1550,21 +1574,22 @@ end
 
 --- Cancel a pending Theme.scheduleStatic stop; the button's new generation.
 function Theme.cancelStatic(button)
-	local generation = (button.foreverSixtyGlowGeneration or 0) + 1
-	button.foreverSixtyGlowGeneration = generation
-	return generation
+	local state = glowState(button)
+	state.generation = state.generation + 1
+	return state.generation
 end
 
 function Theme.hideGlow(button)
 	Theme.cancelStatic(button)
-	if button.foreverSixtyGlow ~= nil then
-		stopPulse(button.foreverSixtyGlow)
-		Theme.setShown(button.foreverSixtyGlow, false)
+	local state = glowState(button)
+	if state.gold ~= nil then
+		stopPulse(state.gold)
+		Theme.setShown(state.gold, false)
 	end
-	if button.foreverSixtyGlowEdge ~= nil then
-		Theme.setShown(button.foreverSixtyGlowEdge, false)
+	if state.edge ~= nil then
+		Theme.setShown(state.edge, false)
 	end
-	if hasOverlayGlow() and button.foreverSixtyGlow == nil then
+	if hasOverlayGlow() and state.gold == nil then
 		ActionButton_HideOverlayGlow(button)
 		return "overlay"
 	end

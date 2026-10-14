@@ -240,6 +240,53 @@ describe("GuildTab", function()
 			assert.is_false(smoke.live)
 		end)
 
+		-- L3.7 item 40: a member the readable record has nothing for shows a dim dash in the record's
+		-- cells, not a bare blank; a member with no live addon still has a blank Gap.
+		it("draws a dim dash in the Gear and Attendance cells of a member with no logs", function()
+			local cells = GuildTab.cells({ short = "A", name = "A", online = true, noLogs = true })
+			assert.are.equal("\226\128\148", cells.gear.text)
+			assert.are.equal("\226\128\148", cells.attendance.text)
+			assert.are.equal(Theme.HEX.muted, cells.gear.hex)
+			assert.are.equal("", cells.gap.text)
+			cells = GuildTab.cells({ short = "A", name = "A", online = false, noLogs = true })
+			assert.are.equal(Theme.HEX.mutedDimmed, cells.gear.hex)
+			-- A row with no readable record (the data addon missing) stays blank.
+			cells = GuildTab.cells({ short = "A", name = "A", online = true })
+			assert.are.equal("", cells.gear.text)
+		end)
+
+		-- L3.7 item 40: every text colour an offline row draws reads at least 3:1 at the row's alpha.
+		it("keeps every text colour of an offline row at 3:1 or better on the panel", function()
+			local ground = Theme.HEX.background
+			local function reads(hex)
+				return Theme.contrast(Theme.overGround(hex, Theme.ALPHA.dim), ground) >= 3
+			end
+			for _, token in ipairs({ "WARRIOR", "PALADIN", "HUNTER", "ROGUE", "PRIEST", "SHAMAN", "MAGE", "WARLOCK",
+				"DRUID" }) do
+				assert.is_true(reads(Theme.panelClassHex(token)), token)
+			end
+			for _, tier in ipairs({ "common", "uncommon", "rare", "epic", "legendary" }) do
+				local r, g, b = require("Score").tierColor(tier)
+				local hex = Theme.panelTierHex(tier, r ~= nil and Theme.hexOf(r, g, b) or nil)
+				assert.is_true(hex == nil or reads(hex), tier)
+			end
+			assert.is_true(reads(Theme.HEX.mutedDimmed))
+			assert.is_true(reads(Theme.HEX.body))
+		end)
+
+		-- L3.7 item 34: no "no logs" below level 10.
+		it("says no logs for a member under level 10 of nobody", function()
+			local Score = require("Score")
+			local rows = GuildTab.rows({ member("Kid Alpha-ClassicBetaPvP", 9, "MAGE", true),
+				member("Kid Beta-ClassicBetaPvP", 10, "MAGE", true) }, Score.forCharacter, {})
+			local byName = {}
+			for _, row in ipairs(rows) do
+				byName[row.short] = row
+			end
+			assert.is_false(byName["Kid Alpha"].noLogs)
+			assert.is_true(byName["Kid Beta"].noLogs)
+		end)
+
 		it("reads a character with no logs as no score, never a zero, through Score.forCharacter", function()
 			local Score = require("Score")
 			local rows = GuildTab.rows(ROSTER, Score.forCharacter, {})
@@ -327,16 +374,20 @@ describe("GuildTab", function()
 			assert.are.equal(string.format(L.guildTabGapPts, 14), cells.gap.text)
 		end)
 
-		it("reads no logs muted in Score alone and leaves every other missing value blank", function()
+		it("reads no logs muted in Score, a dim dash in Gear and Attendance, and leaves every other missing value blank",
+			function()
 			local rows = GuildTab.rows({ member("Facep Alm-ClassicBetaPvP", 12, "MAGE", true) },
 				require("Score").forCharacter, {})
 			local cells = GuildTab.cells(rows[1])
 			assert.are.equal(L.guildTabNoLogs, cells.score.text)
 			assert.are.equal(Theme.HEX.muted, cells.score.hex)
-			for _, key in ipairs({ "spec", "gear", "attendance", "gap" }) do
+			for _, key in ipairs({ "spec", "gap" }) do
 				assert.are.equal("", cells[key].text, key)
 			end
-			assert.is_nil(L.guildTabDash)
+			-- L3.7 item 40 (it was a bare blank before): the record has nothing for this member.
+			for _, key in ipairs({ "gear", "attendance" }) do
+				assert.are.equal(L.guildTabDash, cells[key].text, key)
+			end
 		end)
 
 		it("writes the live gap in the sender's unit: DPS where the data has a DPS per point for the spec", function()
@@ -545,6 +596,35 @@ describe("GuildTab", function()
 			assert.is_true(GuildTab.onlineToggle.checked)
 			click(GuildTab.onlineToggle.frame)
 			assert.are.equal(20, #drawnNames())
+		end)
+
+		-- L3.7 item 42: the choice is kept per character; another character starts from the default.
+		it("keeps the Online only choice for the character, in the next session too", function()
+			start()
+			open()
+			assert.is_false(GuildTab.onlineToggle.checked)
+			click(GuildTab.onlineToggle.frame)
+			assert.is_true(GuildTab.onlineToggle.checked)
+			-- A new session: nothing chosen yet in memory, the saved choice read back.
+			GuildTab.onlineOnly = nil
+			assert.is_true(select(3, GuildTab.model()))
+			-- Another character on the account has its own: the default.
+			local Export = require("Export")
+			local real = Export.characterKey
+			Export.characterKey = function()
+				return "US/Ashbringer/Alt"
+			end
+			GuildTab.onlineOnly = nil
+			assert.is_false(select(3, GuildTab.model()))
+			Export.characterKey = real
+		end)
+
+		it("draws the record's date at the end of the count line", function()
+			start()
+			open()
+			local today = require("Compat").shortDate(os.date("!%Y-%m-%d"))
+			local text = GuildTab.countsLine:GetText()
+			assert.are.equal(string.format(L.scoreAsOf, today), text:sub(-#string.format(L.scoreAsOf, today)), text)
 		end)
 
 		it("leaves Online only off at 40 or fewer", function()
@@ -892,8 +972,8 @@ describe("GuildTab", function()
 				Follow.build = { classSlug = "hunter", dataBuild = "1.60.1.69893", name = "MM leveling",
 					order = { { tab = 2, tier = 1, column = 1 }, { tab = 2, tier = 1, column = 2 }, { tab = 1, tier = 1,
 						column = 1 } } }
-				Comms.gearGap = function()
-					return 14, "dps"
+				Comms.ownPlan = function()
+					return { gap = 14, unit = "dps" }
 				end
 				open()
 				local own
@@ -993,9 +1073,8 @@ describe("GuildTab", function()
 				start()
 				open()
 				-- Fix round 2 (persona item 1): Gap says what it measures and what 0 means.
-				for key, text in pairs({ gear = { "Gear score from the nightly record" },
-					gap = { "Gear gap reported live by the member's addon.",
-						"Biggest slot behind their build, in DPS or points; 0 means on plan." } }) do
+				for key, text in pairs({ gear = L.guildTabHeaderHints.gear, score = L.guildTabHeaderHints.score,
+					gap = L.guildTabHeaderHints.gap }) do
 					local button = GuildTab.headers[key].button
 					local before = mock.countCalls(_G.GameTooltip, "AddLine")
 					button:GetScript("OnEnter")(button)
@@ -1022,8 +1101,11 @@ describe("GuildTab", function()
 				open()
 				local facep = drawnRow("Facep Alm")
 				assert.are.equal(L.guildTabNoLogs, facep.cells.score:GetText())
-				for _, key in ipairs({ "spec", "gear", "attendance", "gap" }) do
+				for _, key in ipairs({ "spec", "gap" }) do
 					assert.are.equal("", facep.cells[key]:GetText(), key)
+				end
+				for _, key in ipairs({ "gear", "attendance" }) do
+					assert.are.equal(L.guildTabDash, facep.cells[key]:GetText(), key)
 				end
 			end)
 		end)
@@ -1188,10 +1270,11 @@ describe("GuildTab", function()
 
 		-- Item 7: the geometry the mock can see.
 		describe("the geometry", function()
-			it("draws an 8-unit scroll thumb on a track one step lighter than the border", function()
+			-- L3.7 item 41: the thumb is wider than its 8-unit track (10 units), centred on it.
+			it("draws a 10-unit scroll thumb on an 8-unit track one step lighter than the border", function()
 				start()
 				open()
-				assert.are.equal(8, GuildTab.bar.thumb:GetWidth())
+				assert.are.equal(10, GuildTab.bar.thumb:GetWidth())
 				assert.are.equal(8, GuildTab.bar.track:GetWidth())
 				assert.are.equal(Theme.HEX.scrollTrack, paintOf(GuildTab.bar.track))
 				assert.is_true(Theme.luminance(Theme.HEX.scrollTrack) > Theme.luminance(Theme.HEX.border))
@@ -1350,18 +1433,18 @@ describe("GuildTab", function()
 					open()
 					local own = drawnRow("Bow Jackzon")
 					assert.are.equal("Marksmanship", own.cells.spec:GetText())
-					assert.are.equal("4 DPS", own.cells.gap:GetText())
+					assert.are.equal("≥ 3.5 DPS", own.cells.gap:GetText())
 					assert.are.equal(Theme.HEX.body, colorOf(own.cells.gap))
 					local fields = Comms.helloFields()
 					assert.are.equal("hunter-marksmanship", fields[2])
 					assert.are.equal(4, fields[3])
-					assert.are.same({ 4, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+					assert.are.same({ 4, "dps" }, { Comms.gearGap(data, "hunter-marksmanship") })
 				end)
 
 			it("takes its unit from the spec the row shows, not the talents' leading tree", function()
 				local data = hunter({ weapon_dps = 7.5 })
 				-- Beast Mastery (the talents' tree here) has no weights: nothing to score in it.
-				assert.is_nil(Comms.gearGap(data, Follow.build, "hunter-beast-mastery", {}))
+				assert.is_nil(Comms.gearGap(data, "hunter-beast-mastery"))
 				local own = GuildTab.ownLive(data)
 				assert.are.equal("hunter-marksmanship", own.spec)
 				assert.are.equal("dps", own.unit)
@@ -1371,7 +1454,7 @@ describe("GuildTab", function()
 			it("is nil when nothing can be scored, so the cell is blank; the hello still sends the contract's integer",
 				function()
 					local data = hunter(nil)
-					assert.is_nil(Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}))
+					assert.is_nil(Comms.gearGap(data, "hunter-marksmanship"))
 					open()
 					assert.are.equal("", drawnRow("Bow Jackzon").cells.gap:GetText())
 					assert.is_true(drawnRow("Bow Jackzon").entry.live)
@@ -1381,15 +1464,15 @@ describe("GuildTab", function()
 					assert.is_truthy(hint:find("Level 26 Marksmanship (live)", 1, true))
 					-- Contract 2: gearGap is an integer on the wire; a v1 receiver drops a hello without one.
 					assert.are.equal(0, Comms.helloFields()[3])
-					assert.is_nil(Comms.gearGap(data, nil, "hunter-marksmanship", {}))
-					assert.is_nil(Comms.gearGap(data, Follow.build, nil, {}))
+					assert.is_nil(Comms.gearGap(data, "hunter-marksmanship"))
+					assert.is_nil(Comms.gearGap(data, nil))
 				end)
 
 			it("reads 0 when the plan is met, drawn muted so the eye goes to rows that need gear", function()
 				local data = hunter({ weapon_dps = 7.5 })
 				equipped.ranged = { itemId = RANGER_BOW, link = "item:" .. RANGER_BOW, equipLoc = "INVTYPE_RANGED",
 					stats = { weapon_dps = 7.5 } }
-				assert.are.same({ 0, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+				assert.are.same({ 0, "dps" }, { Comms.gearGap(data, "hunter-marksmanship") })
 				open()
 				local cell = drawnRow("Bow Jackzon").cells.gap
 				assert.are.equal("0 DPS", cell:GetText())
@@ -1398,6 +1481,24 @@ describe("GuildTab", function()
 				assert.are.same({ text = "0 pts", hex = Theme.HEX.muted }, cells.gap)
 				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 9, unit = "pts" })
 				assert.are.same({ text = "9 pts", hex = Theme.HEX.body }, cells.gap)
+				-- L3.7 item 40: the player's own gap under 10 shows one decimal (the wire stays an integer);
+				-- others' (the integer they sent) and gaps from 10 up show whole.
+				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 4, gapExact = 3.5, unit = "dps" })
+				assert.are.equal("3.5 DPS", cells.gap.text)
+				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 12, gapExact = 12.3, unit = "dps" })
+				assert.are.equal("12 DPS", cells.gap.text)
+				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 4, gapExact = 3.5, unit = "pts" })
+				assert.are.equal("4 pts", cells.gap.text)
+				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 4, gapExact = 3.5, unit = "dps",
+					cold = true })
+				assert.are.equal(string.format(L.gapAtLeast, "3.5 DPS"), cells.gap.text)
+				-- The designer's pre-item: a gap from a cold weapon is a lower bound, "≥ 4 DPS"; a gap
+				-- that shows as nothing takes no prefix.
+				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 4, unit = "dps", cold = true })
+				assert.are.equal("\226\137\165 4 DPS", cells.gap.text)
+				assert.are.equal(string.format(L.gapAtLeast, "4 DPS"), cells.gap.text)
+				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 0, unit = "dps", cold = true })
+				assert.are.equal("0 DPS", cells.gap.text)
 			end)
 		end)
 
@@ -1419,6 +1520,21 @@ describe("GuildTab", function()
 				-- No range at the top, nor with no rows.
 				assert.are.equal("0 of 97 shown · 0 live of 0 online",
 					GuildTab.countsText({ shown = 0, total = 97, live = 0, online = 0 }, true, nil, nil, 0))
+			end)
+
+			-- L3.7 item 42: the record's age, "as of 12 Oct", ends the line when it fits in the 62.
+			it("ends with the record's date when it fits, and leaves it out when it does not", function()
+				start()
+				assert.are.equal("97 of 97 shown · 2 live of 4 online · as of 12 Oct",
+					GuildTab.countsText(COUNTS, true, 1, 20, 97, "12 Oct"))
+				assert.are.equal("97 of 97 shown · sharing off · as of 12 Oct",
+					GuildTab.countsText(COUNTS, false, 1, 20, 97, "12 Oct"))
+				local big = { shown = 1000, total = 1000, live = 1000, online = 1000 }
+				local long = string.rep("x", 20)
+				assert.are.equal(GuildTab.countsText(big, true, 981, 1000, 1000),
+					GuildTab.countsText(big, true, 981, 1000, 1000, long))
+				assert.is_true(width(GuildTab.countsText(big, true, 1, 20, 1000, "12 Oct")) <= 62)
+				assert.are.equal(string.format(L.scoreAsOf, "12 Oct"), "as of 12 Oct")
 			end)
 
 			it("fits its longest form in 62 characters, the room at 6 units a character", function()
@@ -1670,10 +1786,10 @@ describe("GuildTab", function()
 				local data = hunter(nil)
 				assertBandPickHover(data)
 				assert.are.same({ RANGER_BOW, 3.5 }, { rangedTarget(data).itemId, rangedTarget(data).gain })
-				assert.are.same({ 4, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+				assert.are.same({ 4, "dps" }, { Comms.gearGap(data, "hunter-marksmanship") })
 				open()
 				assert.are.equal("Marksmanship", ownRow().cells.spec:GetText())
-				assert.are.equal("4 DPS", ownRow().cells.gap:GetText())
+				assert.are.equal("≥ 3.5 DPS", ownRow().cells.gap:GetText())
 				local fields = Comms.helloFields()
 				assert.are.equal("hunter-marksmanship", fields[2])
 				assert.are.equal(4, fields[3])
@@ -1687,9 +1803,9 @@ describe("GuildTab", function()
 			local data = hunter({ { slot = "ranged", itemId = HEAVY_BOW, stats = { weapon_dps = 5.2 } } })
 			assertBandPickHover(data)
 			assert.are.same({ RANGER_BOW, 3.5 }, { rangedTarget(data).itemId, rangedTarget(data).gain })
-			assert.are.same({ 4, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+			assert.are.same({ 4, "dps" }, { Comms.gearGap(data, "hunter-marksmanship") })
 			open()
-			assert.are.equal("4 DPS", ownRow().cells.gap:GetText())
+			assert.are.equal("≥ 3.5 DPS", ownRow().cells.gap:GetText())
 			assert.are.equal(4, Comms.helloFields()[3])
 		end)
 
@@ -1701,9 +1817,9 @@ describe("GuildTab", function()
 			assertBandPickHover(data)
 			assert.are.same({ RANGER_BOW, 3.5 }, { rangedTarget(data).itemId, rangedTarget(data).gain })
 			assert.is_nil(rangedTarget(data).holds)
-			assert.are.same({ 4, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+			assert.are.same({ 4, "dps" }, { Comms.gearGap(data, "hunter-marksmanship") })
 			open()
-			assert.are.equal("4 DPS", ownRow().cells.gap:GetText())
+			assert.are.equal("≥ 3.5 DPS", ownRow().cells.gap:GetText())
 			assert.are.equal(4, Comms.helloFields()[3])
 			local button = _G[GuildTab.BUTTON_NAME]
 			assert.are.same({ 4, 4 }, { button.ownLive().gearGap, button.helloFields()[3] })
@@ -1715,7 +1831,7 @@ describe("GuildTab", function()
 				assert.is_nil(wornBowNext(data))
 				assert.are.equal(RANGER_BOW, rangedTarget(data).itemId)
 				assert.is_nil(rangedTarget(data).gain)
-				assert.is_nil(Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}))
+				assert.is_nil(Comms.gearGap(data, "hunter-marksmanship"))
 				open()
 				assert.are.equal("", ownRow().cells.gap:GetText())
 				assert.are.equal(0, Comms.helloFields()[3])
@@ -1730,7 +1846,7 @@ describe("GuildTab", function()
 				-- spec-level figure, which would send 6.
 				local data = hunter(nil, { [RANGER_BOW] = 9 })
 				assert.are.equal(5, rangedTarget(data).gain)
-				assert.are.same({ 5, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+				assert.are.same({ 5, "dps" }, { Comms.gearGap(data, "hunter-marksmanship") })
 				assert.are.equal(5, Comms.helloFields()[3])
 				-- The unit follows the same figure.
 				assert.are.equal("dps", Comms.gapUnit(data, "hunter-marksmanship", 26))
@@ -1744,9 +1860,9 @@ describe("GuildTab", function()
 			local data = hunter(nil, { [RANGER_BOW] = 4.3 })
 			assert.is_true(wornBowNext(data).upgrade.statsPending)
 			assert.are.equal(0.3, rangedTarget(data).gain)
-			assert.are.same({ 1, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+			assert.are.same({ 1, "dps" }, { Comms.gearGap(data, "hunter-marksmanship") })
 			open()
-			assert.are.equal("1 DPS", ownRow().cells.gap:GetText())
+			assert.are.equal("≥ 0.3 DPS", ownRow().cells.gap:GetText())
 			assert.are.equal(1, Comms.helloFields()[3])
 		end)
 	end)

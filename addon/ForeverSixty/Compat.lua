@@ -349,6 +349,51 @@ function Compat.spellSubtext(spellId)
 	return callSpell("GetSpellSubtext", spellId)
 end
 
+--- The highest rank ("Rank 3") the spellbook holds under `name`, or nil: for a learned ranked
+--- spell whose own subtext came back empty (Multi-Shot showed none beside its neighbours'
+--- ranks). Every call is guarded; a client with no spellbook API, or one that raises, answers
+--- nil, and a spell with no ranked entry in the book is unranked and shows none.
+function Compat.spellbookRank(name)
+	if type(name) ~= "string" or name == "" then
+		return nil
+	end
+	local best, bestText
+	local function consider(itemName, subtext)
+		if itemName == name and type(subtext) == "string" then
+			local rank = tonumber(subtext:match("(%d+)"))
+			if rank ~= nil and (best == nil or rank > best) then
+				best, bestText = rank, subtext
+			end
+		end
+	end
+	pcall(function()
+		local book = _G.C_SpellBook
+		if type(_G.GetNumSpellTabs) == "function" and type(_G.GetSpellTabInfo) == "function"
+			and type(_G.GetSpellBookItemName) == "function" then
+			for tab = 1, _G.GetNumSpellTabs() or 0 do
+				local _, _, offset, count = _G.GetSpellTabInfo(tab)
+				for index = (offset or 0) + 1, (offset or 0) + (count or 0) do
+					consider(_G.GetSpellBookItemName(index, "spell"))
+				end
+			end
+		elseif type(book) == "table" and type(book.GetNumSpellBookSkillLines) == "function"
+			and type(book.GetSpellBookSkillLineInfo) == "function" and type(book.GetSpellBookItemName) == "function" then
+			local bank = type(_G.Enum) == "table" and type(Enum.SpellBookSpellBank) == "table"
+				and Enum.SpellBookSpellBank.Player or 0
+			for line = 1, book.GetNumSpellBookSkillLines() or 0 do
+				local info = book.GetSpellBookSkillLineInfo(line)
+				if type(info) == "table" then
+					local offset, count = info.itemIndexOffset or 0, info.numSpellBookItems or 0
+					for index = offset + 1, offset + count do
+						consider(book.GetSpellBookItemName(index, bank))
+					end
+				end
+			end
+		end
+	end)
+	return bestText
+end
+
 --- The spell's base cooldown in whole seconds, or nil for one with none
 --- worth naming (an instant with no cooldown reads as 0 or nil depending
 --- on the client, and neither is worth a "0s CD" line).

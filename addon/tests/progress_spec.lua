@@ -193,7 +193,40 @@ local function slotsOf(rows)
 	return names
 end
 
-describe("Progress.slots", function()
+-- L3.7 item 43: Progress.slots and Progress.biggestGap were read by nothing but this spec; the
+-- reference versions live here now, over Progress.slotOrder and Progress.slotVerdict.
+local function slotRows(data, build, ranks, equipped, dpsPerPoint)
+	local Gear = require("Gear")
+	local spec = build ~= nil and Gear.specOf(data, build.classSlug, ranks) or nil
+	local weights = spec ~= nil and data.weights ~= nil and data.weights[spec] or nil
+	local planned = {}
+	for _, entry in ipairs(build ~= nil and build.gear or {}) do
+		planned[entry.slot] = entry
+	end
+	local rows = {}
+	for _, slot in ipairs(Progress.slotOrder(spec)) do
+		local verdict = Progress.slotVerdict(slot, planned[slot], equipped[slot], weights, dpsPerPoint)
+		if verdict ~= nil then
+			rows[#rows + 1] = verdict
+		end
+	end
+	return rows
+end
+
+local function biggestGapOf(rows)
+	local worst
+	for _, row in ipairs(rows or {}) do
+		if row.delta ~= nil and row.delta < 0 and (worst == nil or row.delta < worst.delta) then
+			worst = row
+		end
+	end
+	if worst == nil then
+		return nil
+	end
+	return { slot = worst.slot, delta = worst.delta, item = worst.plannedItemId }
+end
+
+describe("Progress.slotVerdict over the slot order (the reference rows)", function()
 	local gear = {
 		{ slot = "head", itemId = 1, stats = { strength = 4 } },
 		{ slot = "main_hand", itemId = 2, stats = { strength = 8 } },
@@ -206,7 +239,7 @@ describe("Progress.slots", function()
 	}
 
 	it("puts the weapons first for a melee spec, then the paper doll", function()
-		local rows = Progress.slots(DATA, { classSlug = "warrior", gear = gear }, ARMS_RANKS, equipped)
+		local rows = slotRows(DATA, { classSlug = "warrior", gear = gear }, ARMS_RANKS, equipped)
 		assert.are.same({ "main_hand", "head", "chest", "finger1" }, slotsOf(rows))
 		assert.are.equal("behind", rows[1].state)
 		assert.are.equal(-10, rows[1].delta)
@@ -216,12 +249,12 @@ describe("Progress.slots", function()
 	end)
 
 	it("keeps the paper-doll order for a caster", function()
-		local rows = Progress.slots(DATA, { classSlug = "mage", gear = gear }, ARMS_RANKS, equipped)
+		local rows = slotRows(DATA, { classSlug = "mage", gear = gear }, ARMS_RANKS, equipped)
 		assert.are.same({ "head", "chest", "finger1", "main_hand" }, slotsOf(rows))
 	end)
 
 	it("reads every delta in DPS when a DPS per point is given", function()
-		local rows = Progress.slots(DATA, { classSlug = "warrior", gear = gear }, ARMS_RANKS, equipped, 2)
+		local rows = slotRows(DATA, { classSlug = "warrior", gear = gear }, ARMS_RANKS, equipped, 2)
 		for _, row in ipairs(rows) do
 			assert.are.equal("dps", row.unit)
 		end
@@ -229,19 +262,19 @@ describe("Progress.slots", function()
 	end)
 
 	it("lists what is worn as noplan without a build", function()
-		local rows = Progress.slots(DATA, nil, ARMS_RANKS, equipped)
+		local rows = slotRows(DATA, nil, ARMS_RANKS, equipped)
 		assert.are.same({ "head", "chest", "main_hand" }, slotsOf(rows))
 		assert.are.equal("noplan", rows[1].state)
 	end)
 end)
 
-describe("Progress.biggestGap", function()
+describe("the biggest gap over the slot rows", function()
 	it("names the empty ring over a behind chest when the ring is further behind", function()
 		local rows = {
 			Progress.slotVerdict("chest", PLAN, { itemId = 201, stats = { strength = 5 } }, WEIGHTS),
 			Progress.slotVerdict("finger1", { itemId = 400, stats = { strength = 10 } }, nil, WEIGHTS),
 		}
-		assert.are.same({ slot = "finger1", delta = -20, item = 400 }, Progress.biggestGap(rows))
+		assert.are.same({ slot = "finger1", delta = -20, item = 400 }, biggestGapOf(rows))
 	end)
 
 	it("names the chest when the chest is further behind", function()
@@ -249,7 +282,7 @@ describe("Progress.biggestGap", function()
 			Progress.slotVerdict("chest", PLAN, { itemId = 201, stats = {} }, WEIGHTS),
 			Progress.slotVerdict("finger1", { itemId = 400, stats = { strength = 5 } }, nil, WEIGHTS),
 		}
-		assert.are.equal("chest", Progress.biggestGap(rows).slot)
+		assert.are.equal("chest", biggestGapOf(rows).slot)
 	end)
 
 	it("is nil when nothing is behind the plan", function()
@@ -257,7 +290,7 @@ describe("Progress.biggestGap", function()
 			Progress.slotVerdict("head", PLAN, { itemId = 100, stats = {} }, WEIGHTS),
 			Progress.slotVerdict("chest", PLAN, { itemId = 200, stats = { strength = 15 } }, WEIGHTS),
 		}
-		assert.is_nil(Progress.biggestGap(rows))
+		assert.is_nil(biggestGapOf(rows))
 	end)
 end)
 
@@ -873,5 +906,62 @@ describe("Progress.slotTargets", function()
 		assert.is_nil(Progress.pickStats({}, function()
 			return nil
 		end, 9001, standIn))
+	end)
+end)
+
+-- L3.7 pre-item (round A review): only the hovered copy is left out of the partner search, so
+-- a second copy of the same one-hander in the bags can be the off-hand partner.
+describe("Progress.pairPartner", function()
+	local weights = { strength = 1 }
+	local function sword(link)
+		return { link = link, itemId = 7, equipLocation = "INVTYPE_WEAPON", stats = { strength = 5 } }
+	end
+	local wornMain = { itemId = 9, equipLoc = "INVTYPE_2HWEAPON", stats = { strength = 20 } }
+
+	it("leaves out the hovered item's own link only", function()
+		local hovered = sword("item:7:a")
+		assert.is_nil(Progress.pairPartner(hovered, wornMain, { "item:7:a" }, weights))
+		local partner = Progress.pairPartner(hovered, wornMain, { sword("item:7:a"), sword("item:7:b") }, weights)
+		assert.is_not_nil(partner)
+		assert.are.equal("item:7:b", partner.item.link)
+	end)
+end)
+
+-- The designer's pre-item (round A review): a gap whose biggest gain comes from a weapon priced from
+-- Data.bisDps (the client's stats not here yet) is a lower bound, and says so (plan.cold).
+describe("Progress.gearPlan, a cold weapon", function()
+	local DATA_COLD = {
+		bis = { ["warrior-arms"] = { [20] = { alliance = {
+			main_hand = "500|V|A weapon vendor",
+			chest = "100|D|The Deadmines: Defias Overseer",
+		} } } },
+		bisDps = { [500] = 10 },
+	}
+	local CURRENT = { weights = { strength = 1 }, spec = "warrior-arms", weapon = { slot = "main_hand", weight = 1 } }
+	local function never()
+		return false
+	end
+	local function plan(chestStats, weaponStats)
+		local equipped = {
+			main_hand = { itemId = 60, link = "item:60", equipLoc = "INVTYPE_WEAPON", stats = { weapon_dps = 4 } },
+			chest = { itemId = 50, link = "item:50", equipLoc = "INVTYPE_CHEST", stats = { strength = 4 } },
+		}
+		local stats = { [100] = chestStats, [500] = weaponStats }
+		local rows = Progress.slotTargets(DATA_COLD, "warrior-arms", 20, "alliance", equipped, CURRENT,
+			function(itemId)
+				return stats[itemId]
+			end, never)
+		return Progress.gearPlan(DATA_COLD, "warrior-arms", 20, "alliance", equipped, CURRENT, never), rows
+	end
+
+	it("marks the row priced from bisDps as cold, and a plan whose biggest gain is that row", function()
+		local gap, rows = plan({ strength = 6 }, nil)
+		assert.is_true(gap.cold)
+		local bySlot = {}
+		for _, row in ipairs(rows) do
+			bySlot[row.slot] = row
+		end
+		assert.is_true(bySlot.main_hand.cold)
+		assert.is_nil(bySlot.chest.cold)
 	end)
 end)

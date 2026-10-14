@@ -104,6 +104,15 @@ describe("Export.siteLink", function()
 		assert.are.equal("bow-jackzon", Export.characterSlug("Bow Jackzon"))
 		assert.are.equal("smoke-gouda", Export.characterSlug("  Smoke   Gouda "))
 		assert.are.equal("jean-luc", Export.characterSlug("Jean-Luc"))
+		-- L3.7 item 33: the common accented capitals lower as the site's slug does (U+00C0 to U+00DE,
+		-- except the multiplication sign U+00D7), through a UTF-8 map; the lower case is untouched.
+		assert.are.equal("\195\166lfric", Export.characterSlug("\195\134lfric"))
+		assert.are.equal("\195\169l\195\168ne", Export.characterSlug("\195\137L\195\136ne"))
+		assert.are.equal("\195\176orin", Export.characterSlug("\195\144orin"))
+		assert.are.equal("\195\190or", Export.characterSlug("\195\158or"))
+		assert.are.equal("\195\160", Export.characterSlug("\195\128"))
+		assert.are.equal("a\195\151b", Export.characterSlug("A\195\151B"))
+		assert.are.equal("\195\159", Export.characterSlug("\195\159"))
 	end)
 
 	it("is SITE/character/<region>/<ruleset>/<slug>, with no realm in the slug", function()

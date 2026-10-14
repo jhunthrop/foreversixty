@@ -26,13 +26,14 @@ describe("SettingsPage, the switches", function()
 	end)
 
 	-- L4.4: the eighth, "Score badges in chat", after the tooltips (spec section 4.11).
-	it("lists eight switches in page order", function()
+	-- L3.7 item 49: the ninth, "Ask the group about rare drops too", last.
+	it("lists nine switches in page order", function()
 		local keys = {}
 		for index, switch in ipairs(SettingsPage.switches()) do
 			keys[index] = switch.key
 		end
 		assert.are.same({ "chip.shown", "chip.combatHide", "talentMarks", "minimap.shown", "tooltip", "badges",
-			"broadcast", "autoSave" }, keys)
+			"broadcast", "autoSave", "lootRares" }, keys)
 	end)
 
 	it("gives every switch a label, a hint and its default from Prefs.DEFAULTS", function()
@@ -61,7 +62,7 @@ describe("SettingsPage, the switches", function()
 			{ "Show the minimap button", "Left-click pastes or copies a build; right-click opens this page. "
 				.. "Off: type /fs options or use Options > AddOns." },
 			{ "Gear tips on item tooltips",
-				"Adds a line to item tooltips: in your build, and better than what you wear. "
+				"Adds a line when an item is in your build or beats what you wear. "
 				.. "Off: hides player scores too." },
 			{ "Score badges in chat",
 				"Shows a player's Forever Score before their message in LFG, Trade, guild chat and whispers." },
@@ -69,6 +70,8 @@ describe("SettingsPage, the switches", function()
 				"Guildmates with Forever Sixty see your level, spec, build and gear gap. Off: they see nothing." },
 			{ "Save my character for the companion app",
 				"Written at logout for the companion app on your PC, so the site can read your gear and talents." },
+			{ "Ask the group about rare drops too",
+				"As the master looter you ask the group about epics. On: rares too, whatever the loot threshold." },
 		}, words)
 	end)
 
@@ -228,8 +231,8 @@ describe("SettingsPage, the command list", function()
 		SettingsPage = helper.load("Settings")
 	end)
 
-	it("is the eleven player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
-		assert.are.equal(12, #L.settingsCommands)
+	it("is the thirteen player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
+		assert.are.equal(13, #L.settingsCommands)
 		local options = 0
 		for _, line in ipairs(L.settingsCommands) do
 			assert.is_truthy(line:find("^/fs[%a ]*: "), line)
@@ -240,15 +243,17 @@ describe("SettingsPage, the command list", function()
 		assert.are.equal(1, options)
 		assert.is_truthy(L.settingsCommands[1]:find("^/fs: "))
 		assert.is_truthy(L.settingsCommands[2]:find("^/fs copy: "))
-		assert.is_truthy(L.settingsCommands[12]:find("^/fs help: "))
+		assert.is_truthy(L.settingsCommands[13]:find("^/fs help: "))
 	end)
 
 	-- Fix round 2, item 10: the list word for word. L4.4 adds /fs link; L5.2 fix round 1 adds the
 	-- group panel's /fs group, /fs ready and /fs floor.  L5.3 adds /fs loot.
-	it("words the twelve player commands as ruled", function()
+	-- L3.7 item 32 adds /fs build.
+	it("words the thirteen player commands as ruled", function()
 		assert.are.same({
 			"/fs: paste or copy a build",
 			"/fs copy: copy my character for the site",
+			"/fs build: switch between saved builds",
 			"/fs chip: show or hide the chip",
 			"/fs inspect: gear and talents of your target",
 			"/fs link: copy a player's site page",
@@ -361,17 +366,20 @@ describe("SettingsPage, the data lines", function()
 		_G.ForeverSixtyData = nil
 	end)
 
-	-- L3.7 item 38: too old carries its patch when the data carries its build.
-	it("dates too-old ratings by the patch of the data's build, when it has one", function()
-		local dated = { available = true, stale = true, build = "1.60.1.69893" }
-		assert.are.equal("Player ratings (on player tooltips): too old (patch 1.60.1). Get the new Forever Sixty "
+	-- L3.7 item 38 and the designer's pre-item: the Old state is age-based, so it is dated by the
+	-- record's `generated` ("made 9 Oct", like the chip's "as of 12 Oct"), never by a patch.
+	it("dates too-old ratings by the date they were made, when it is known", function()
+		local dated = { available = true, stale = true, generated = "2026-10-09" }
+		assert.are.equal("Player ratings (on player tooltips): too old (made 9 Oct). Get the new Forever Sixty "
 			.. "Data at foreversixty.gg.", words(SettingsPage.ratingsLine(dated)))
-		dated = { available = false, reason = L.ratingsUnreadable, build = "1.59.0.100" }
-		assert.are.equal(string.format(L.settingsRatingsOldDated, "1.59.0"), words(SettingsPage.ratingsLine(dated)))
-		for _, build in ipairs({ "", 5 }) do
+		dated = { available = false, reason = L.ratingsUnreadable, generated = "2026-09-01" }
+		assert.are.equal(string.format(L.settingsRatingsOldDated, "1 Sep"), words(SettingsPage.ratingsLine(dated)))
+		for _, generated in ipairs({ "", 5, "not a date" }) do
 			assert.are.equal(L.settingsRatingsOld,
-				words(SettingsPage.ratingsLine({ available = true, stale = true, build = build })))
+				words(SettingsPage.ratingsLine({ available = true, stale = true, generated = generated })))
 		end
+		assert.is_nil(L.settingsRatingsOld:find("patch", 1, true))
+		assert.is_nil(L.settingsRatingsOldDated:find("patch", 1, true))
 		assert.are.equal(L.settingsRatingsOld, words(SettingsPage.ratingsLine({ available = true, stale = true })))
 	end)
 

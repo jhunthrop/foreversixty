@@ -64,7 +64,10 @@ end
 function ChatBadges.badgeText(record)
 	local text = string.format(L.badge, record.score)
 	local color = record.tierColor
-	if color ~= nil then
+	if record.stale then
+		-- A record older than its window (L3.7 item 34) is muted, not shouted in a tier colour.
+		text = "|cff" .. Theme.HEX.muted .. text .. "|r"
+	elseif color ~= nil then
 		text = "|cff" .. Theme.hexOf(color.r, color.g, color.b) .. text .. "|r"
 	end
 	return text .. " |cff" .. Theme.HEX.muted .. L.badgeMark .. "|r"

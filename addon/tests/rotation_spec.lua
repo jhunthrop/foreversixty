@@ -302,3 +302,17 @@ describe("Rotation", function()
 		end)
 	end)
 end)
+
+-- L3.7 pre-item (round A review): a second line whose only word that fits is a figure keeps that
+-- one word rather than cutting down to none.
+describe("Rotation.cutCount with a figure first", function()
+	local Rotation = require("Rotation")
+
+	it("keeps one word when the only word that fits is a figure at index 1", function()
+		local measure = function(text)
+			return #text
+		end
+		-- "25%" fits, "25% reserve" does not.
+		assert.are.equal(1, Rotation.cutCount({ "25%", "reserve", "is", "kept" }, "x", measure, 5))
+	end)
+end)

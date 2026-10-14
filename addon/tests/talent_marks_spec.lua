@@ -594,19 +594,19 @@ describe("Theme.showGlow's dark edge", function()
 			return 5
 		end
 		Theme.showGlow(button, true, 10, { inset = 6, thickness = 3, edge = 1 })
-		assert.are.equal(4, #button.foreverSixtyGlowEdge)
-		for _, edge in ipairs(button.foreverSixtyGlowEdge) do
+		assert.are.equal(4, #Theme.glowOf(button).edge)
+		for _, edge in ipairs(Theme.glowOf(button).edge) do
 			assert.are.equal(0.6, edge.colorAlpha)
 			assert.is_nil(edge.animated)
 			assert.are.same({}, edge.alphaCalls)
 			assert.is_true(edge.shown)
 		end
-		for _, gold in ipairs(button.foreverSixtyGlow) do
+		for _, gold in ipairs(Theme.glowOf(button).gold) do
 			assert.is_true(gold.animated)
 			assert.are.equal(1, gold.alphaCalls[#gold.alphaCalls])
 		end
 		Theme.hideGlow(button)
-		for _, edge in ipairs(button.foreverSixtyGlowEdge) do
+		for _, edge in ipairs(Theme.glowOf(button).edge) do
 			assert.is_false(edge.shown)
 			assert.are.same({}, edge.alphaCalls)
 		end

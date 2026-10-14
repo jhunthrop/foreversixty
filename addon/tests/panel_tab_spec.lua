@@ -1053,6 +1053,30 @@ describe("PanelTab", function()
 				assert.are.equal("Kill Command at level 30", rankless)
 			end)
 
+			-- The player's capture review: Multi-Shot showed no rank beside neighbours at Rank 1/3; its
+			-- own subtext was empty, so the spellbook's highest learned rank stands in.
+			it("derives a rank from the spellbook when the spell's own subtext is empty", function()
+				start()
+				local savedGet = _G.GetSpellSubtext
+				_G.GetSpellSubtext = function()
+					return nil
+				end
+				_G.GetNumSpellTabs = function()
+					return 1
+				end
+				_G.GetSpellTabInfo = function()
+					return "Class", "icon", 0, 3
+				end
+				_G.GetSpellBookItemName = function(index)
+					return index <= 2 and "Multi-Shot" or "Kill Command", index == 1 and "Rank 1" or (index == 2 and "Rank 2" or "")
+				end
+				local derived = ItemTooltip.stripEscapes(PanelTab.rotationName({ name = "Multi-Shot", spellId = 9 }))
+				local unranked = ItemTooltip.stripEscapes(PanelTab.rotationName({ name = "Kill Command", spellId = 10 }))
+				_G.GetSpellSubtext, _G.GetNumSpellTabs, _G.GetSpellTabInfo, _G.GetSpellBookItemName = savedGet, nil, nil, nil
+				assert.are.equal("Multi-Shot Rank 2", derived)
+				assert.are.equal("Kill Command", unranked)
+			end)
+
 			it("draws the rotation: number, name and rank, the condition under it, a later one muted", function()
 				open({ chest = WORN_CHEST })
 				local first, later = PanelTab.rotationWidgets[1], PanelTab.rotationWidgets[2]
@@ -1544,6 +1568,23 @@ describe("PanelTab", function()
 				assert.is_nil(PanelTab.inputs(DATA).build.staged)
 			end)
 
+			-- L3.7 pre-item (round A review): a client that raises reading the staged ranks falls back
+			-- to the committed ones, as the build dialog does.
+			it("falls back to the committed ranks when reading the staged ones raises", function()
+				start()
+				local Talents = require("Talents")
+				local real = Talents.readStagedRanks
+				Talents.readStagedRanks = function()
+					error("no staged read")
+				end
+				local ok, region = pcall(function()
+					return PanelTab.inputs(DATA).build
+				end)
+				Talents.readStagedRanks = real
+				assert.is_true(ok, tostring(region))
+				assert.is_nil(region.staged)
+			end)
+
 			it("caps the points allowed at the plan's own total: 51 at 60", function()
 				start()
 				assert.are.equal("12 of 51 points on plan", PanelTab.buildRegion(PLAN, DATA, RANKS, 60).progress)
@@ -1590,7 +1631,7 @@ describe("PanelTab", function()
 				-- L3.7 item 23: what to do about it, then when the next planned point arrives.
 				local after = 1 + #entry.offPlanTalents
 				assert.are.equal(Theme.inlineColor("tooltipMuted", L.panelOffPlanAction), lines[after + 1])
-				assert.are.equal("Not in your plan. A respec moves them.", L.panelOffPlanAction)
+				assert.are.equal("Not in your plan. Respec to fix this.", L.panelOffPlanAction)
 				if entry.nextPoint ~= nil then
 					assert.are.equal(Theme.inlineColor("tooltipText", string.format(L.panelOffPlanNext,
 						entry.nextPoint.level, entry.nextPoint.name)), lines[after + 2])
@@ -1826,13 +1867,14 @@ describe("PanelTab", function()
 			it("draws the at-level rows at the dim alpha, icon, name and condition, still last and unnumbered", function()
 				open({ chest = WORN_CHEST })
 				local learned, later = PanelTab.rotationWidgets[1], PanelTab.rotationWidgets[2]
-				for _, key in ipairs({ "icon", "condition" }) do
-					assert.are.equal(Theme.ALPHA.dim, mock.lastCall(later[key], "SetAlpha")[1], key)
-				end
-				-- L3.7 item 24: the name is lifted to the muted token at full alpha (dimmed again it
-				-- was too dark to read); only the icon and the condition stay dim.
+				assert.are.equal(Theme.ALPHA.dim, mock.lastCall(later.icon, "SetAlpha")[1])
+				-- L3.7 item 24 and the designer's pre-item: the name and the condition line are lifted
+				-- to the muted token at full alpha (dimmed again they were too dark to read); only the
+				-- icon stays dim.
 				assert.are.equal(1, mock.lastCall(later.name, "SetAlpha")[1])
+				assert.are.equal(1, mock.lastCall(later.condition, "SetAlpha")[1])
 				assert.are.same(rgb("muted"), colorOf(later.name))
+				assert.are.same(rgb("muted"), colorOf(later.condition))
 				for _, key in ipairs({ "icon", "name", "condition" }) do
 					assert.are.equal(1, mock.lastCall(learned[key], "SetAlpha")[1], key)
 				end

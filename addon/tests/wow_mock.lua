@@ -33,7 +33,7 @@ mock.CLIENT_PREFIXES = { "Character", "PaperDoll", "ContainerFrame", "QuestInfo"
 --- group panel's button and flyout are parented to it. Fix round 3 adds the legacy raid frame's
 --- holder (RaidParentFrame): on 1.60 the global RaidFrame sits in it, hidden on every tab.
 mock.CLIENT_NAMES = { "CharacterFrameModeTabs", "CommunitiesFrame", "RaidFrame", "FriendsFrame", "PartyFrame",
-	"SocialUIFrame", "RaidParentFrame" }
+	"SocialUIFrame", "RaidParentFrame", "PlayerSpellsFrame", "ClassTalentFrame", "PlayerTalentFrame", "TalentFrame" }
 
 function mock.isClientName(name)
 	if type(name) ~= "string" then

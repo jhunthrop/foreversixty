@@ -24,6 +24,7 @@ local Talents = ns.Talents or require("Talents")
 local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Progress = ns.Progress or require("Progress")
+local Gear = ns.Gear or require("Gear")
 local Chip = ns.Chip or require("Chip")
 
 local BuildDialog = {}
@@ -206,6 +207,50 @@ function BuildDialog.slotWord(slot, words)
 	return L.gearSlotLabels[slot] or slot
 end
 
+--- The BiS pick (or one of its alternatives) in `data` that names `itemId` for any spec of
+--- `classSlug`, in a fixed order (spec, band, faction, slot), or nil (L3.7 item 31: a build's
+--- gear rows carry the source the item tooltip prints). The pick is Gear.decodePick's.
+function BuildDialog.pickFor(data, classSlug, itemId)
+	local bis = type(data) == "table" and type(data.bis) == "table" and data.bis or nil
+	if bis == nil or classSlug == nil or itemId == nil then
+		return nil
+	end
+	local function sorted(map)
+		local keys = {}
+		for key in pairs(map) do
+			keys[#keys + 1] = key
+		end
+		table.sort(keys, function(left, right)
+			return tostring(left) < tostring(right)
+		end)
+		return keys
+	end
+	local prefix = classSlug .. "-"
+	for _, spec in ipairs(sorted(bis)) do
+		if type(spec) == "string" and spec:sub(1, #prefix) == prefix and type(bis[spec]) == "table" then
+			for _, band in ipairs(sorted(bis[spec])) do
+				for _, faction in ipairs(sorted(bis[spec][band])) do
+					local bySlot = bis[spec][band][faction]
+					for _, slot in ipairs(sorted(bySlot)) do
+						local pick = Gear.decodePick(bySlot[slot])
+						if pick ~= nil then
+							if pick.item_id == itemId then
+								return pick
+							end
+							for _, alternative in ipairs(pick.alternatives) do
+								if alternative.item_id == itemId then
+									return alternative
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	return nil
+end
+
 --- A site-sent name as a font string may show it: pipes doubled, so it cannot render as markup.
 local function escaped(name)
 	return (tostring(name or ""):gsub("|", "||"))
@@ -235,7 +280,10 @@ function BuildDialog.preview(build, data, context)
 			break
 		end
 		if type(entry.itemId) == "number" then
-			picks[#picks + 1] = { itemId = entry.itemId, slot = entry.slot, slotWord = wordOf(entry.slot) }
+			local pick = BuildDialog.pickFor(data, build.classSlug, entry.itemId)
+			local tooltip = pick ~= nil and (ns.ItemTooltip or require("ItemTooltip")) or nil
+			picks[#picks + 1] = { itemId = entry.itemId, slot = entry.slot, slotWord = wordOf(entry.slot),
+				pick = pick, source = tooltip ~= nil and tooltip.sourceLine(pick) or nil }
 		end
 	end
 	local heading
@@ -514,14 +562,55 @@ function BuildDialog.nextTalentLine(label)
 	return string.format(L.dialogNextTalent, string.format(L.chipTake, label))
 end
 
---- "Following: Arms raid · Warrior · 51 points", nil with nothing followed.
-function BuildDialog.followingLine(build, data)
+--- "Following: Arms raid · Warrior · 51 points", nil with nothing followed. With `measure` and
+--- `width` (L3.7 item 28: the line was cut at "· 51 po…"), the line that fits: the class word is
+--- dropped first, then the build name is shortened by whole words (never mid-word) with an
+--- ellipsis; the points are never cut.
+function BuildDialog.followingLine(build, data, measure, width)
 	if build == nil then
 		return nil
 	end
-	return string.format(L.dialogFollowingLine, joined(
-		escaped(Follow.buildName(data, build)), Talents.titleCase(build.classSlug), pointsWord(#build.order)
-	))
+	local name = escaped(Follow.buildName(data, build))
+	local class = Talents.titleCase(build.classSlug)
+	local points = pointsWord(#build.order)
+	local function line(shown, withClass)
+		return string.format(L.dialogFollowingLine, joined(shown, withClass and class or nil, points))
+	end
+	local full = line(name, true)
+	if type(measure) ~= "function" or type(width) ~= "number" then
+		return full
+	end
+	local function fits(text)
+		local size = measure(text)
+		return type(size) ~= "number" or size <= width
+	end
+	if fits(full) then
+		return full
+	end
+	local bare = line(name, false)
+	if fits(bare) then
+		return bare
+	end
+	local words = {}
+	for word in name:gmatch("%S+") do
+		words[#words + 1] = word
+	end
+	for count = #words - 1, 1, -1 do
+		local shortened = line(table.concat(words, " ", 1, count) .. L.ellipsis, false)
+		if fits(shortened) then
+			return shortened
+		end
+	end
+	return line(#words > 1 and (words[1] .. L.ellipsis) or name, false)
+end
+
+--- The copy tab's label (L3.7 item 29): "Copy <player>'s link" while the box holds a /fs link,
+--- else "Copy my character".
+function BuildDialog.copyTabLabel(link)
+	if type(link) == "table" and type(link.name) == "string" and link.name ~= "" then
+		return string.format(L.dialogCopyLink, escaped(link.name))
+	end
+	return L.dialogCopy
 end
 
 --- The chat line after Use: "Now following Arms raid. Next: Deflection (1 of 2).", the
@@ -745,7 +834,7 @@ end
 --- ack's lines, and the companion's explanation when no ack was ever seen. No button: the
 --- box itself is what the player copies from (fix round 2, item 4).
 --- `input` = { code, reason, copiedAt, ack, savedAt, clock, simInUse, simGeneratedAt, nextStep,
---- link }. With `link` ({ url, name }, /fs link, L4.4) the box holds that character's site
+--- link, simFailed }. With `link` ({ url, name }, /fs link, L4.4) the box holds that character's site
 --- page instead of the export, under its own two leads, and nothing about the export follows.
 function BuildDialog.copyModel(input)
 	local clock = input.clock
@@ -770,7 +859,9 @@ function BuildDialog.copyModel(input)
 	-- ack's export time; "an earlier copy" while a newer request is queued), and the chip's own
 	-- line as the next step (`nextStep`); else the request's state.
 	local sim, simNext
-	if link == nil and input.simInUse then
+	if link == nil and input.simFailed then
+		sim = L.dialogSimFailed
+	elseif link == nil and input.simInUse then
 		sim = simDoneLine(input.simGeneratedAt, ack, clock)
 		if type(input.nextStep) == "string" and input.nextStep ~= "" then
 			simNext = string.format(L.dialogNextStep, input.nextStep)
@@ -847,7 +938,8 @@ function BuildDialog.inboxRows(builds, dismissed, data, player)
 					name = name,
 					code = entry.code,
 					split = split,
-					label = BuildDialog.rowLabel(name, split),
+					from = entry.from,
+					label = BuildDialog.rowLabel(name, split, nil, nil, entry.from),
 				}
 			elseif refusal == nil and not otherClass then
 				refusal = verdict.reason
@@ -878,13 +970,18 @@ end
 --- A row's label: "Arms raid (old patch) · 33/16/2 · from the site", fitted to `width` as
 --- `measure` measures it by shortening the name with an ellipsis, never the split; the bare
 --- "Arms raid · from the site" with no split. Without a measure, the whole label.
-function BuildDialog.rowLabel(name, split, measure, width)
+function BuildDialog.rowLabel(name, split, measure, width, from)
 	local raw = tostring(name or "")
+	-- "from the site", or "pushed by <officer>" for a build an officer pushed (L3.7 item 44).
+	local source = BuildDialog.ROW_SOURCE
+	if type(from) == "string" and from ~= "" then
+		source = Theme.inlineColor("muted", string.format(L.dialogFromPush, escaped(from)))
+	end
 	local function line(bytes)
 		if split == nil or split == "" then
-			return string.format(L.dialogInboxRowBare, cutName(raw, bytes), BuildDialog.ROW_SOURCE)
+			return string.format(L.dialogInboxRowBare, cutName(raw, bytes), source)
 		end
-		return string.format(L.dialogInboxRow, cutName(raw, bytes), split, BuildDialog.ROW_SOURCE)
+		return string.format(L.dialogInboxRow, cutName(raw, bytes), split, source)
 	end
 	local bytes = #raw
 	while bytes > 1 and not fitsWidth(line(bytes), measure, width) do
@@ -1072,6 +1169,14 @@ local function simWeightsInUse()
 	return false
 end
 
+--- Whether the newest sim result for this character says it failed (L3.7 item 30: the API sends
+--- `failed`), so the copy tab can say to ask again.
+local function simFailed()
+	local ok, found = pcall(Follow.messages, ForeverSixtyInbox, Export.characterKey(), "sim_result")
+	local newest = ok and type(found) == "table" and found[1] or nil
+	return type(newest) == "table" and newest.failed ~= nil and newest.failed ~= false
+end
+
 --- The chip's own line now, whatever it says (a talent, an item, or its idle line), or nil.
 local function chipLine()
 	local current = Chip.current
@@ -1102,7 +1207,13 @@ local SLOT_WORDS = setmetatable({}, {
 --- in one chat line with the next talent.
 function BuildDialog.use(code, name, inboxId)
 	local data = dataOf()
-	local build = Follow.load(code, data, name, nil, BuildDialog.player())
+	-- A paste is adopted into its own slot, never over a restored raid build (L3.7 item 32); a build
+	-- the site sent keeps the active slot.
+	local slot, from
+	if inboxId == nil then
+		slot, from = Follow.pasteSlot()
+	end
+	local build = Follow.load(code, data, name, slot, BuildDialog.player())
 	if build == nil then
 		return nil
 	end
@@ -1115,10 +1226,10 @@ function BuildDialog.use(code, name, inboxId)
 	end
 	BuildDialog.close()
 	local line = BuildDialog.chatLine(Follow.buildName(data, build), liveNext(build))
-	if BuildDialog.say ~= nil then
-		BuildDialog.say(line)
-	else
-		Theme.say(line)
+	local say = BuildDialog.say or Theme.say
+	say(line)
+	if from ~= nil then
+		say(string.format(L.dialogUsingPaste, from))
 	end
 	return build
 end
@@ -1405,7 +1516,15 @@ local function buildPickRow(parent, width)
 	if type(name.SetWordWrap) == "function" then
 		name:SetWordWrap(false)
 	end
-	local pick = { frame = row, icon = icon, name = name, slot = slot }
+	-- The pick's source (L3.7 item 31), muted, right-aligned in what the name leaves.
+	local source = text(row, "muted", 0)
+	source:SetJustifyH("RIGHT")
+	source:SetPoint("RIGHT", row, "RIGHT", 0, 0)
+	if type(source.SetWordWrap) == "function" then
+		source:SetWordWrap(false)
+	end
+	source:Hide()
+	local pick = { frame = row, icon = icon, name = name, slot = slot, source = source, nameRoom = layout.nameWidth }
 	Widgets.attachTooltip(row, function()
 		return pick.itemId, nil
 	end)
@@ -1507,6 +1626,10 @@ local function buildPaste(frame, top, bottom)
 		paste.rows[index] = buildRow(content)
 	end
 	paste.more = text(content, "muted", width)
+	-- Under the empty box (L3.7 item 28): where builds come from, muted.
+	paste.companion = text(content, "muted", width)
+	paste.companion:SetText(L.dialogPasteCompanion)
+	paste.companion:Hide()
 	local box, field, clip = boxInField(content, false)
 	-- Ctrl+C here is not a copy out of the dialog; the box keeps the keyboard until Escape.
 	box:SetScript("OnKeyDown", nil)
@@ -1787,6 +1910,31 @@ local function widthOf(region)
 	end
 end
 
+--- The row's source beside its name (L3.7 item 31): the item tooltip's own text fitted to what the
+--- name leaves (at most 60% of the row is the name's), the boss never cut (ItemTooltip.fitSource);
+--- hidden where no pick names the item or nothing fits.
+function BuildDialog.fitSource(pick, entry)
+	local S = Theme.SIZES
+	local room = pick.nameRoom
+	pick.name:SetWidth(room)
+	pick.source:SetText("")
+	pick.source:Hide()
+	if entry.pick == nil then
+		return
+	end
+	local tooltip = ns.ItemTooltip or require("ItemTooltip")
+	local nameWidth = type(pick.name.GetStringWidth) == "function" and pick.name:GetStringWidth() or 0
+	local sourceRoom = room - math.min(nameWidth, math.floor(room * 0.6)) - S.gap * 2
+	local lines = tooltip.fitSource(entry.pick, widthOf(pick.source), sourceRoom)
+	if #lines ~= 1 then
+		return
+	end
+	pick.source:SetText(lines[1])
+	pick.source:SetWidth(sourceRoom)
+	pick.name:SetWidth(room - sourceRoom - S.gap * 2)
+	pick.source:Show()
+end
+
 local function drawPreview(verdict, y)
 	local S = Theme.SIZES
 	local paste = BuildDialog.paste
@@ -1841,6 +1989,7 @@ local function drawPreview(verdict, y)
 			end
 			pick.name:SetText(name or "")
 			pick.name:SetTextColor(Theme.qualityColor(Compat.itemQuality(entry.itemId)))
+			BuildDialog.fitSource(pick, entry)
 			pick.frame:ClearAllPoints()
 			pick.frame:SetPoint("TOPLEFT", preview.frame, "TOPLEFT", 0, -headY)
 			pick.frame:Show()
@@ -1881,7 +2030,7 @@ function BuildDialog.drawPaste()
 	local view = BuildDialog.pasteView(verdict, BuildDialog.editing == true, BuildDialog.focused == true)
 	local content = paste.content
 	for _, region in ipairs({ paste.following, paste.next, paste.more, paste.lead, paste.body, paste.still,
-		paste.replaces, paste.nextWould }) do
+		paste.replaces, paste.nextWould, paste.companion }) do
 		region:Hide()
 	end
 	paste.preview.frame:Hide()
@@ -1889,7 +2038,7 @@ function BuildDialog.drawPaste()
 	BuildDialog.enterHint:Hide()
 	local y = 0
 	if verdict == nil then
-		local line = BuildDialog.followingLine(Follow.build, data)
+		local line = BuildDialog.followingLine(Follow.build, data, widthOf(paste.following), contentWidth())
 		if line ~= nil then
 			paste.following:SetText(line)
 			y = stack(paste.following, content, y, textHeight(paste.following) + S.gap / 2)
@@ -1914,7 +2063,7 @@ function BuildDialog.drawPaste()
 			row.frame:Hide()
 		else
 			row.label:SetText(BuildDialog.rowLabel(entry.name, entry.split, widthOf(row.label),
-				contentWidth() - S.gap * 2))
+				contentWidth() - S.gap * 2, entry.from))
 			row.selected = verdict ~= nil and verdict.inboxId == entry.id
 			if rows.active ~= nil and rows.active == entry.id then
 				row.edge:Show()
@@ -1995,7 +2144,36 @@ function BuildDialog.drawPaste()
 			BuildDialog.enterHint:Show()
 		end
 	end
+	BuildDialog.placeHint(verdict == nil and not view.collapsed and y or nil)
 	return verdict
+end
+
+--- Where the "Tab to switch" hint sits (L3.7 item 28): at the panel's corner, except on the empty
+--- paste tab, where the empty space under the box holds a muted companion line and then the hint
+--- (`y`, the content's y under the box); the corner again when that space is not there for both.
+function BuildDialog.placeHint(y)
+	local hint, paste = BuildDialog.tabHint, BuildDialog.paste
+	if hint == nil then
+		return
+	end
+	local S, G = Theme.SIZES, BuildDialog.LAYOUT
+	hint:ClearAllPoints()
+	if y ~= nil and paste ~= nil and BuildDialog.mode == "paste" then
+		local companion = paste.companion
+		local height = textHeight(companion)
+		local needed = y + height + S.gap + textHeight(hint)
+		if needed <= (BuildDialog.contentHeight or S.dialogHeight) then
+			companion:ClearAllPoints()
+			companion:SetPoint("TOPLEFT", paste.content, "TOPLEFT", 0, -y)
+			companion:Show()
+			hint:SetPoint("TOPLEFT", paste.content, "TOPLEFT", 0, -(y + height + S.gap))
+			return
+		end
+	end
+	if paste ~= nil then
+		paste.companion:Hide()
+	end
+	hint:SetPoint(BuildDialog.HINT_POINT, BuildDialog.frame, BuildDialog.HINT_POINT, S.padding, G.hintMargin)
 end
 
 --- Back to the empty paste tab: no verdict, an empty box with the keyboard.
@@ -2068,6 +2246,7 @@ function BuildDialog.drawCopy(select)
 			simInUse = simInUse,
 			simGeneratedAt = simGeneratedAt,
 			nextStep = chipLine(),
+			simFailed = simFailed(),
 		})
 	end
 	local content = copy.content
@@ -2183,6 +2362,12 @@ local function refreshTabs()
 	end
 	-- The same in both modes: the copy tab, anchored to this one's right edge, never moves.
 	tab:SetWidth(BuildDialog.pasteTabWidth(tab.labelWidth or 0, badgeWidth or 0, badge ~= nil))
+	-- The copy tab says whose link it holds (L3.7 item 29), and is as wide as its label.
+	local copyTab = BuildDialog.tabs.copy
+	local label = copyTab.foreverSixtyLabel
+	label:SetText(BuildDialog.copyTabLabel(BuildDialog.link))
+	local width = type(label.GetStringWidth) == "function" and label:GetStringWidth() or 0
+	copyTab:SetWidth(math.max(Theme.SIZES.tabWidth, width + Theme.SIZES.padding * 2))
 end
 
 --- Show one tab: the paste box takes the keyboard in paste mode; in copy mode the export
@@ -2208,6 +2393,7 @@ function BuildDialog.setMode(mode)
 		paste.content:Hide()
 		copy.content:Show()
 		BuildDialog.enterHint:Hide()
+		BuildDialog.placeHint(nil)
 		-- A copy claim stays until the dialog closes (OnHide clears it), across tab switches.
 		BuildDialog.drawCopy(true)
 	end
@@ -2257,6 +2443,18 @@ end
 --- False when the dialog cannot show itself (the caller prints the address instead).
 function BuildDialog.openLink(url, name)
 	return BuildDialog.open("copy", { url = url, name = name })
+end
+
+--- The "from the site" rows read again, and paste mode redraws when it is the tab showing
+--- (L3.7 item 44: an officer's push just arrived).
+function BuildDialog.refreshRows()
+	BuildDialog.rows = currentRows()
+	if BuildDialog.frame ~= nil and BuildDialog.frame:IsShown() and BuildDialog.mode == "paste" then
+		BuildDialog.drawPaste()
+	end
+	if BuildDialog.frame ~= nil and BuildDialog.tabs ~= nil then
+		refreshTabs()
+	end
 end
 
 --- Hide the dialog and give the keyboard back (OnHide does it too, for the Escape the

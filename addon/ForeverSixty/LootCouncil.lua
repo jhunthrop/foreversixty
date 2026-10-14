@@ -31,6 +31,7 @@ local Progress = ns.Progress or require("Progress")
 local Rules = ns.Rules or require("Rules")
 local Talents = ns.Talents or require("Talents")
 local Comms = ns.Comms or require("Comms")
+local Prefs = ns.Prefs or require("Prefs")
 
 local LootCouncil = {}
 
@@ -38,7 +39,10 @@ local LootCouncil = {}
 LootCouncil.MAX_DROPS = 3
 --- Seconds a member has to answer before the master looter's list scores them from an inspect
 --- (or says "no data").
-LootCouncil.WAIT = 5
+LootCouncil.WAIT = 10
+--- Seconds the Loot region's title counts down (L3.7 item 50): the answer window a person sees; the
+--- list settles at this mark (WAIT) and the 30 s wire window stays.
+LootCouncil.COUNTDOWN = 10
 --- Seconds the region stays after the loot window closes.
 LootCouncil.LINGER = 60
 --- The least item quality asked about: epic. A rare threshold adds rares; no threshold takes epics away.
@@ -158,14 +162,58 @@ function LootCouncil.isMasterLooter()
 	return method ~= nil and method == master and try(client("IsMasterLooter")) == true
 end
 
---- The least quality the loot window asks about: epics are always asked; a group threshold of exactly
---- rare adds the rares.
+--- The least quality the loot window asks about (L3.7 item 49): epics; with "Ask the group about rare
+--- drops too" on, rares as well, whatever the group's loot threshold.
 function LootCouncil.minQuality()
-	local threshold = try(client("GetLootThreshold"))
-	if threshold == 3 then
+	if Prefs.flag("lootRares") == true then
 		return 3
 	end
 	return LootCouncil.MIN_QUALITY
+end
+
+--- The class tokens of the player and the group, from the client's units.
+function LootCouncil.groupClasses()
+	local classes = {}
+	local function add(unit)
+		local _, token = try(client("UnitClass"), unit)
+		if type(token) == "string" then
+			classes[token] = true
+		end
+	end
+	add("player")
+	local count = tonumber(try(client("GetNumGroupMembers"))) or 0
+	local prefix = try(client("IsInRaid")) == true and "raid" or "party"
+	for index = 1, count do
+		add(prefix .. index)
+	end
+	return classes
+end
+
+--- Whether no one in the group could wear `itemId`, now or at a later level (L3.7 item 49): its
+--- equip location is known and Rules.canEquip says "never" for every class present in every slot it
+--- fits. An item the client has not loaded, a non-equipment item and a group the client cannot name
+--- are never skipped.
+function LootCouncil.unwearable(itemId)
+	local _, _, _, equipLoc, _, itemClass, itemSubClass = Compat.itemInfoInstant(itemId)
+	if equipLoc == nil then
+		return false
+	end
+	local slots = Gear.slotsFor(equipLoc)
+	if #slots == 0 then
+		return false
+	end
+	local classes = LootCouncil.groupClasses()
+	if next(classes) == nil then
+		return false
+	end
+	for token in pairs(classes) do
+		for _, slot in ipairs(slots) do
+			if Rules.canEquip(token, Progress.MAX_LEVEL, itemClass, itemSubClass, equipLoc, slot) ~= "never" then
+				return false
+			end
+		end
+	end
+	return true
 end
 
 -- The one scoring path -----------------------------------------------------------------------------
@@ -477,6 +525,16 @@ function LootCouncil.active()
 	return LootCouncil.closedAt ~= nil and Theme.now() - LootCouncil.closedAt <= LootCouncil.LINGER
 end
 
+--- The whole seconds left on a drop's answer countdown at `now`, or nil once COUNTDOWN has passed
+--- (L3.7 item 50).
+function LootCouncil.countdown(drop, now)
+	local left = math.ceil(LootCouncil.COUNTDOWN - (now - drop.at))
+	if left <= 0 then
+		return nil
+	end
+	return math.min(left, LootCouncil.COUNTDOWN)
+end
+
 --- Drops, oldest first, only while the region shows.
 function LootCouncil.shown()
 	return LootCouncil.active() and LootCouncil.drops or {}
@@ -526,7 +584,13 @@ local function addDrop(itemId, link, lootId, asked)
 		table.remove(LootCouncil.drops, 1)
 	end
 	LootCouncil.lastDrop = drop
-	Theme.after(LootCouncil.WAIT, changed)
+	-- The title counts down second by second (L3.7 item 50), and the list settles at WAIT.
+	for second = 1, LootCouncil.COUNTDOWN do
+		Theme.after(second, changed)
+	end
+	if LootCouncil.WAIT > LootCouncil.COUNTDOWN then
+		Theme.after(LootCouncil.WAIT, changed)
+	end
 	return drop
 end
 
@@ -573,7 +637,8 @@ function LootCouncil.onLootOpened()
 			end
 			if type(quality) == "number" and quality >= least then
 				LootCouncil.window[itemId] = true
-				if LootCouncil.ask(itemId, link) ~= nil then
+				-- Nothing in the group could wear it (L3.7 item 49): not worth asking.
+				if not LootCouncil.unwearable(itemId) and LootCouncil.ask(itemId, link) ~= nil then
 					asked = true
 				end
 			end
@@ -695,6 +760,7 @@ function LootCouncil.rows(drop, members, now, resolvers)
 			local scored = resolvers.inspect ~= nil and resolvers.inspect(member, drop) or nil
 			if scored ~= nil then
 				row.kind, row.value, row.unit, row.healing = "inspect", scored.value, scored.unit, scored.healing
+				row.inspectAt = scored.at
 				row.currentItemId, row.planned = scored.currentItemId, scored.planned
 				row.alreadyWorn = worn(scored)
 			else

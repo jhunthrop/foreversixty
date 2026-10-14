@@ -148,6 +148,84 @@ describe("Options", function()
 		end)
 	end)
 
+	-- L3.7 item 44 [verify]: the officer confirm copy promises the guild gets a pushed build "they can
+	-- choose to use". The receiver existed only as a verification (Comms.mayPush) with no listener:
+	-- a push heard now queues the build, which the dialog lists, and a chat line says so once.
+	describe("a build pushed by an officer", function()
+		local CODE = "FSB1:1.60.1.69893:paladin:111:"
+		local Comms, BuildDialog
+
+		before_each(function()
+			Comms = require("Comms")
+			BuildDialog = require("BuildDialog")
+			Options.register()
+			Comms.mayPush = function()
+				return true
+			end
+		end)
+
+		local function hear(code, name, sender)
+			return Comms.onEvent("FS1", Comms.encode("push", { code, name }), "GUILD", sender or "Boss-Ashbringer")
+		end
+
+		it("appears in the paste dialog's rows once heard, and changes nothing else", function()
+			assert.is_true(hear(CODE, "BM raid"))
+			assert.is_nil(require("Follow").build)
+			BuildDialog.data = DATA
+			BuildDialog.open("paste")
+			local rows = BuildDialog.rows
+			assert.are.equal(1, #rows)
+			assert.are.equal("BM raid", rows[1].name)
+			assert.is_truthy(rows[1].label:find("pushed by Boss", 1, true))
+			assert.is_truthy(state.printed[#state.printed]:find("Boss", 1, true))
+		end)
+
+		it("refreshes an open dialog, and ignores a code this character cannot load", function()
+			BuildDialog.data = DATA
+			BuildDialog.open("paste")
+			assert.are.equal(0, #BuildDialog.rows)
+			hear("FSB1:1.60.1.69893:warrior:111:", "Wrong class")
+			hear("garbage", "Bad")
+			assert.are.equal(0, #BuildDialog.rows)
+			hear(CODE, "BM raid")
+			assert.are.equal(1, #BuildDialog.rows)
+		end)
+
+		it("is not heard from someone who may not push", function()
+			Comms.mayPush = function()
+				return false
+			end
+			hear(CODE, "BM raid")
+			assert.are.equal(0, #require("Follow").pushedBuilds(require("Export").characterKey()))
+		end)
+	end)
+
+	-- L3.7 item 32: /fs build <slot> switches between the saved builds.
+	describe("/fs build", function()
+		local Follow, CODE
+		before_each(function()
+			Follow = require("Follow")
+			CODE = "FSB1:1.60.1.69893:paladin:111:"
+			Follow.load(CODE, DATA, "Raid build", "raid")
+			Follow.load(CODE, DATA, "Pasted", "leveling")
+		end)
+
+		it("switches back to the raid slot's build and says so", function()
+			local lines = Options.handle("build raid")
+			assert.are.same({ string.format(require("Locale").buildSwitched, "Raid build", "Raid") }, lines)
+			assert.are.equal("Raid build", Follow.build.name)
+			assert.is_true(Follow.slotsFor()[1].active)
+		end)
+
+		it("keeps the build in force and says so for an empty slot, and gives the usage for no slot", function()
+			local L = require("Locale")
+			assert.are.same({ string.format(L.buildSlotEmpty, "PvP") }, Options.handle("build pvp"))
+			assert.are.equal("Pasted", Follow.build.name)
+			assert.are.same({ L.buildUsage }, Options.handle("build"))
+			assert.are.same({ L.buildUsage }, Options.handle("build nonsense"))
+		end)
+	end)
+
 	it("has dropped the window's tab subcommands", function()
 		for _, command in ipairs({ "export", "follow FSB1:1.60.1.69893:paladin:111:", "gear", "settings" }) do
 			assert.are.same(Options.helpLines(), Options.handle(command), command)
@@ -592,54 +670,38 @@ describe("Options", function()
 	-- when the window's load-on-demand addon arrives (ADDON_LOADED); the hook runs
 	-- TalentMarks.onShow, which redraws the chip, and Chip.inputs reads TalentGlow.openFrame().
 	describe("the talent window opened by the client itself (the N keybind)", function()
-		local hooks, window
+		local window
 
-		--- The client's HookScript: every handler runs, in order, after the frame's own.
-		local function hookable(frame)
-			hooks[frame] = {}
-			frame.HookScript = function(self, script, handler)
-				hooks[self][script] = hooks[self][script] or {}
-				table.insert(hooks[self][script], handler)
-			end
-			return frame
-		end
-
-		local function fire(frame, script)
-			for _, handler in ipairs(hooks[frame][script] or {}) do
-				handler(frame)
-			end
-		end
 
 		--- What the binding does: the window shows (its talents tab with it), and the client
 		--- runs the window's OnShow scripts, ours among them. No addon code is called first.
 		local function pressN()
 			window:Show()
 			window.TalentsFrame:Show()
-			fire(window, "OnShow")
 		end
 
 		local function closeWindow()
 			window:Hide()
-			fire(window, "OnHide")
 		end
 
 		before_each(function()
-			hooks = {}
 			Options.register()
 			local Chip = require("Chip")
 			Chip.refresh(DATA)
 			assert.is_true(Chip.current.visible)
 			-- The window's addon loads after login: the frame and its talents child appear,
 			-- hidden, and ADDON_LOADED fires.
-			window = hookable(CreateFrame("Frame", "PlayerSpellsFrame", UIParent))
-			window.TalentsFrame = hookable(CreateFrame("Frame", nil, window))
+			window = CreateFrame("Frame", "PlayerSpellsFrame", UIParent)
+			window.TalentsFrame = CreateFrame("Frame", nil, window)
 			window:Hide()
 			Options.onEvent(Options.frame, "ADDON_LOADED", "Blizzard_PlayerSpells")
 		end)
 
-		it("hooks the window's own show and hide when its addon loads", function()
-			assert.are.equal(1, #hooks[window].OnShow)
-			assert.are.equal(1, #hooks[window].OnHide)
+		it("watches the window with an addon sentinel (no hook on the client's frame) when its addon loads", function()
+			local sentinel = require("TalentGlow").sentinels.PlayerSpellsFrame
+			assert.is_function(sentinel:GetScript("OnShow"))
+			assert.is_function(sentinel:GetScript("OnHide"))
+			assert.is_nil(window.scripts)
 		end)
 
 		it("hides the chip while the marks are on, and brings it back on close", function()

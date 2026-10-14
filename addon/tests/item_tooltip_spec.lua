@@ -841,7 +841,7 @@ describe("ItemTooltip.section", function()
 
 		-- L3.7 item 11 [verify: not built]: a spec that can dual wield takes the one-hander and a
 		-- second one for the other hand in place of the two-hander, as the client's compare shows
-		-- the swap: the pair verdict "With <the other hand>", from what the bags carry.
+		-- the swap: the pair verdict "As a pair with <the other hand>", from what the bags carry.
 		describe("the pair verdict for a dual-wielding class", function()
 			local ONE_HANDER = { itemId = 81, link = "item:81", equipLocation = "INVTYPE_WEAPON", itemClass = 2,
 				itemSubClass = 4, stats = { strength = 4 } }
@@ -863,6 +863,10 @@ describe("ItemTooltip.section", function()
 				return ItemTooltip.section(ctx(base))
 			end
 
+			it("words the pair line as a pair, not as a bare 'With'", function()
+				assert.are.equal("As a pair with %s: %s", L.tooltipPairWith)
+			end)
+
 			it("names the best one-hander carried for the other hand and the pair's gain over the two-hander", function()
 				-- Smite 20 against the hovered 4 and the Goblin Hammer 30 together: +14.0 DPS.
 				local lines = pair()
@@ -873,7 +877,7 @@ describe("ItemTooltip.section", function()
 				}, texts(lines))
 				assert.are.equal("pair", lines[#lines].kind)
 				assert.are.equal("success", lines[#lines].color)
-				assert.are.equal("With Goblin Hammer: Upgrade +14.0 DPS over Smite's Mighty Hammer",
+				assert.are.equal("As a pair with Goblin Hammer: Upgrade +14.0 DPS over Smite's Mighty Hammer",
 					texts(lines)[2])
 			end)
 

@@ -195,6 +195,26 @@ describe("Score", function()
 			assert.are.equal("/character/us/forever/obnoxious-yell", record.profile)
 		end)
 
+		-- L3.7 item 34: a record older than the data's window is stale (its badge shows muted).
+		it("marks a record stale when its date is older than the window, and not otherwise", function()
+			start(fixture(function(data)
+				data.generated = os.date("!%Y-%m-%d")
+				data.characters["Obnoxious-Yell"].as_of = "2020-01-01"
+			end))
+			assert.is_true(Score.forCharacter("Obnoxious", "Yell").stale)
+			start(fixture(function(data)
+				data.generated = os.date("!%Y-%m-%d")
+				data.characters["Obnoxious-Yell"].as_of = os.date("!%Y-%m-%d")
+			end))
+			assert.is_false(Score.forCharacter("Obnoxious", "Yell").stale)
+			-- No as_of: the file's own date.
+			start(fixture(function(data)
+				data.generated = "2020-01-01"
+				data.characters["Obnoxious-Yell"].as_of = nil
+			end))
+			assert.is_true(Score.forCharacter("Obnoxious", "Yell").stale)
+		end)
+
 		it("takes a Name-Realm unit name without a separate realm", function()
 			start(fixture())
 			assert.are.equal(1830, Score.forCharacter("Obnoxious-Yell").score)

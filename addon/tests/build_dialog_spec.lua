@@ -144,10 +144,45 @@ describe("BuildDialog, a good paste is never applied until Use", function()
 		assert.are.equal(ARMS, calls[1].code)
 	end)
 
+	-- L3.7 item 32: Use on a paste adopts into the paste slot and says how to switch back; a build
+	-- from the site keeps the active slot.
+	it("loads a paste into the slot Follow names, and says how to switch back to the raid build", function()
+		local said = {}
+		BuildDialog.say = function(line)
+			said[#said + 1] = line
+		end
+		local realSlot = Follow.pasteSlot
+		Follow.pasteSlot = function()
+			return "leveling", "raid"
+		end
+		BuildDialog.onPaste(ARMS)
+		BuildDialog.useCurrent()
+		assert.are.equal("leveling", calls[1].slot)
+		assert.are.equal(2, #said)
+		assert.are.equal("Using your paste. /fs build raid switches back.", said[2])
+		assert.are.equal(string.format(L.dialogUsingPaste, "raid"), said[2])
+		-- A build the site sent goes where it did, and says nothing more.
+		said, calls = {}, {}
+		BuildDialog.choose({ id = "a", name = "Arms raid", code = ARMS })
+		BuildDialog.useCurrent()
+		assert.is_nil(calls[1].slot)
+		assert.are.equal(1, #said)
+		Follow.pasteSlot = realSlot
+	end)
+
 	it("does nothing on Use without a good verdict", function()
 		BuildDialog.onPaste("not a code")
 		assert.is_nil(BuildDialog.useCurrent())
 		assert.are.equal(0, #calls)
+	end)
+
+	it("says who pushed a pushed build, in place of 'from the site'", function()
+		local rows = BuildDialog.inboxRows({ { id = "x", name = "BM raid", code = ARMS, from = "Boss" },
+			{ id = "y", name = "Site build", code = ARMS .. "" } }, {}, DATA)
+		assert.is_truthy(rows[1].label:find(string.format(L.dialogFromPush, "Boss"), 1, true))
+		assert.is_nil(rows[1].label:find(L.dialogFromSite, 1, true))
+		assert.is_truthy(rows[2].label:find(L.dialogFromSite, 1, true))
+		assert.are.equal("pushed by Boss", string.format(L.dialogFromPush, "Boss"))
 	end)
 
 	it("marks a build from the site used by its id and its code", function()
@@ -422,6 +457,29 @@ describe("BuildDialog, paste mode's model", function()
 		assert.is_nil(BuildDialog.preview(build(code(3, 0)), DATA, { level = 21 }).heading)
 	end)
 
+	-- L3.7 item 31: each gear row carries its source, the item tooltip's own source text, found in
+	-- the data's BiS picks (a pick, or an alternative of one) of the build's class.
+	it("gives each gear row the source text the item tooltip prints, from the class's BiS picks", function()
+		local withBis = {}
+		for key, value in pairs(DATA) do
+			withBis[key] = value
+		end
+		withBis.bis = {
+			["warrior-arms"] = { [60] = { alliance = {
+				head = "12640|D|Blackrock Depths: Lord Roccor|0.12",
+				neck = "9999|V|Somewhere|0|15411|Q|A neck quest",
+			} } },
+			["mage-fire"] = { [60] = { alliance = { shoulder = "12927|V|A mage vendor" } } },
+		}
+		local preview = BuildDialog.preview(build(ARMS), withBis, { level = 21 })
+		assert.are.equal("Blackrock Depths \194\183 Lord Roccor \194\183 12% drop", preview.picks[1].source)
+		assert.are.equal(require("ItemTooltip").sourceLine(preview.picks[1].pick), preview.picks[1].source)
+		assert.are.equal("A neck quest \194\183 Quest", preview.picks[2].source)
+		-- Another class's pick never names a warrior's item; and no BiS data, no source.
+		assert.is_nil(preview.picks[3].source)
+		assert.is_nil(BuildDialog.preview(build(ARMS), DATA, { level = 21 }).picks[1].source)
+	end)
+
 	it("keeps a build's own name", function()
 		local loaded = build(ARMS)
 		loaded.name = "Arms raid"
@@ -445,6 +503,35 @@ describe("BuildDialog, paste mode's model", function()
 		assert.are.equal(string.format(L.dialogFollowingLine, "Arms raid · Warrior · 51 points"),
 			BuildDialog.followingLine(loaded, DATA))
 		assert.is_nil(BuildDialog.followingLine(nil, DATA))
+	end)
+
+	-- L3.7 item 28: "... · 51 po..." was cut in the capture. Measured, the line keeps the name and the
+	-- points and drops the class word first; a name shortens by whole words, never mid-word, and the
+	-- points are never cut.
+	it("fits the Following line: drops the class word first, then shortens the name by whole words", function()
+		local loaded = build(ARMS)
+		loaded.name = "Arms raid for the Molten Core clear"
+		local function measure(text)
+			return #text
+		end
+		local full = string.format(L.dialogFollowingLine, "Arms raid for the Molten Core clear · Warrior · 51 points")
+		assert.are.equal(full, BuildDialog.followingLine(loaded, DATA, measure, #full))
+		assert.are.equal(string.format(L.dialogFollowingLine, "Arms raid for the Molten Core clear · 51 points"),
+			BuildDialog.followingLine(loaded, DATA, measure, #full - 1))
+		local noClass = string.format(L.dialogFollowingLine, "Arms raid for the Molten Core clear · 51 points")
+		local shortened = BuildDialog.followingLine(loaded, DATA, measure, #noClass - 1)
+		assert.are.equal(string.format(L.dialogFollowingLine, "Arms raid for the Molten Core" .. L.ellipsis
+			.. " · 51 points"), shortened)
+		for width = 20, #full do
+			local line = BuildDialog.followingLine(loaded, DATA, measure, width)
+			assert.is_truthy(line:find("· 51 points", 1, true), line)
+			-- What is kept of the name is whole words of it: the next character of the full name is a
+			-- space (or the name is whole).
+			local kept = line:match("^Following: (.-)" .. L.ellipsis .. " · ") or line:match("^Following: (.-) · ")
+			local nameFull = "Arms raid for the Molten Core clear"
+			assert.are.equal(kept, nameFull:sub(1, #kept), line)
+			assert.is_truthy(#kept == #nameFull or nameFull:sub(#kept + 1, #kept + 1) == " ", line)
+		end
 	end)
 
 	it("says what the player now follows and the next talent in one chat line, pipes escaped", function()
@@ -550,6 +637,24 @@ describe("BuildDialog, copy mode's model", function()
 		end
 		return BuildDialog.copyModel(input)
 	end
+
+	-- L3.7 item 30: the API now sends `failed` on a sim_result.
+	it("says a sim failed, in place of the request's state, when the newest result carries failed", function()
+		local failed = model({ ack = ACK, simFailed = true })
+		assert.are.equal(L.dialogSimFailed, failed.sim)
+		assert.are.equal("Sim failed \194\183 ask again", L.dialogSimFailed)
+		assert.are.equal(L.dialogSimQueued ~= nil and model({ ack = ACK }).sim, model({ ack = ACK }).sim)
+		assert.are_not.equal(L.dialogSimFailed, model({ ack = ACK, simFailed = false }).sim)
+		-- Nothing about it beside a /fs link page.
+		assert.is_nil(model({ simFailed = true, link = { url = "x.gg/c", name = "Bob" } }).sim)
+	end)
+
+	-- L3.7 item 29: the Copy tab's label follows what the box holds.
+	it("labels the copy tab for the link it holds, else for the character", function()
+		assert.are.equal("Copy Smoke Gouda's link", BuildDialog.copyTabLabel({ url = "u", name = "Smoke Gouda" }))
+		assert.are.equal(L.dialogCopy, BuildDialog.copyTabLabel(nil))
+		assert.are.equal("Copy my character", L.dialogCopy)
+	end)
 
 	it("shows the whole export selected under the lead line, and no button (fix 2, 4)", function()
 		local copy = model()

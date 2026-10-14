@@ -53,6 +53,9 @@ GuildTab.VISIBLE_ROWS = 20
 GuildTab.WHEEL_STEP = 3
 --- "Online only" starts on above this many members.
 GuildTab.ONLINE_ONLY_ABOVE = 40
+
+--- The count line's room, in characters at the small font's 6 units (the room right of the switch).
+GuildTab.COUNTS_CHARS = 62
 --- The least time, in seconds, between two roster requests and between two snapshot? asks.
 GuildTab.ASK_EVERY = 60
 --- The text a line is measured on: a capital, an ascender and descenders.
@@ -197,6 +200,8 @@ local function rowOf(entry, record, seen, context)
 			row.level = tonumber(live.level)
 		end
 		row.gap = tonumber(live.gearGap)
+		row.cold = row.gap ~= nil and live.cold == true or nil
+		row.gapExact = row.gap ~= nil and tonumber(live.gapExact) or nil
 		if type(live.spec) == "string" and live.spec ~= "" and live.spec ~= "-" then
 			row.spec = live.spec
 		end
@@ -218,6 +223,7 @@ local function rowOf(entry, record, seen, context)
 		end
 	end
 	row.noLogs = found == nil and context.ratings ~= false
+		and not (type(row.level) == "number" and row.level < Score.LEVEL_FLOOR)
 	return row
 end
 
@@ -308,6 +314,14 @@ function GuildTab.nextSort(sort, key)
 	return { key = key, descending = NUMERIC[key] == true }
 end
 
+--- The "Online only" choice this character made before (L3.7 item 42), or nil: kept per
+--- character key in the account's preferences.
+function GuildTab.savedOnlineOnly()
+	local prefs = ns.Prefs or require("Prefs")
+	local entry = prefs.current().guildTab.byCharacter[Export.characterKey()]
+	return type(entry) == "table" and type(entry.onlineOnly) == "boolean" and entry.onlineOnly or nil
+end
+
 --- Whether "Online only" starts on: above GuildTab.ONLINE_ONLY_ABOVE members.
 function GuildTab.defaultOnlineOnly(total)
 	return (tonumber(total) or 0) > GuildTab.ONLINE_ONLY_ABOVE
@@ -332,6 +346,15 @@ local function blank()
 	return plain("")
 end
 
+--- A record cell for a member the readable record has nothing for (L3.7 item 40): a dim dash,
+--- not a bare blank; blank where the record cannot be read at all.
+local function noRecord(row)
+	if row.noLogs then
+		return muted(L.guildTabDash, row.online)
+	end
+	return blank()
+end
+
 --- A row's cells, each { text, hex }: the name in its class colour lifted for the panel
 --- (Theme.panelClassHex), the score in its tier's panel colour (Theme.panelTierHex; "no logs"
 --- muted only where a readable record has nothing for the member), attendance as "80%", the
@@ -344,15 +367,22 @@ function GuildTab.cells(row)
 	if type(row.gap) == "number" then
 		local rounded = math.floor(row.gap + 0.5)
 		local text = string.format(gapText, rounded)
+		-- The player's own gap in DPS under 10 shows its decimal (L3.7 item 40).
+		if row.unit == "dps" and type(row.gapExact) == "number" and row.gapExact > 0 and row.gapExact < 10 then
+			text = string.format(L.guildTabGapDpsDecimal, row.gapExact)
+		end
+		if row.cold and rounded > 0 then
+			text = string.format(L.gapAtLeast, text)
+		end
 		gap = rounded == 0 and muted(text, row.online) or plain(text)
 	end
 	local cells = {
 		name = { text = row.short, hex = row.classToken ~= nil and Theme.panelClassHex(row.classToken) or Theme.HEX.body },
 		level = type(row.level) == "number" and plain(whole(row.level)) or blank(),
 		spec = row.spec ~= nil and plain(Follow.specName(row.spec)) or blank(),
-		gear = type(row.gearScore) == "number" and plain(whole(row.gearScore)) or blank(),
+		gear = type(row.gearScore) == "number" and plain(whole(row.gearScore)) or noRecord(row),
 		attendance = type(row.attendance) == "number" and plain(string.format(L.guildTabPercent, row.attendance))
-			or blank(),
+			or noRecord(row),
 		gap = gap or blank(),
 	}
 	if type(row.score) == "number" then
@@ -399,7 +429,7 @@ end
 --- the top (`first` above 1) the rows in view, "4–23 of 97" (`first` to `last` of `total`);
 --- then "2 live of 4 online", or "sharing off" while the share switch is off (`sharing`
 --- false). 62 characters at most, the room right of the switch. Pure.
-function GuildTab.countsText(counts, sharing, first, last, total)
+function GuildTab.countsText(counts, sharing, first, last, total, asOf)
 	local head
 	if type(first) == "number" and first > 1 and type(last) == "number" and type(total) == "number" then
 		head = string.format(L.guildTabRange, first, last, total)
@@ -408,7 +438,15 @@ function GuildTab.countsText(counts, sharing, first, last, total)
 	end
 	local tail = sharing == false and L.guildTabSharingOff
 		or string.format(L.guildTabLiveOf, counts.live or 0, counts.online or 0)
-	return head .. L.guildTabCountsJoin .. tail
+	local line = head .. L.guildTabCountsJoin .. tail
+	-- The record's age (L3.7 item 42), "as of 12 Oct", when the line still fits its room.
+	if type(asOf) == "string" and asOf ~= "" then
+		local dated = line .. L.guildTabCountsJoin .. string.format(L.scoreAsOf, asOf)
+		if #(dated:gsub("[\128-\191]", "")) <= GuildTab.COUNTS_CHARS then
+			return dated
+		end
+	end
+	return line
 end
 
 --- The one line said for the whole list while the ratings cannot be read or are old (fix
@@ -604,10 +642,12 @@ function GuildTab.ownLive(data)
 	local build = Follow.build
 	local ranks = Talents.readRanks(data) or {}
 	local spec = Comms.ownSpec(data, build, Talents.playerClassSlug(), ranks)
-	local gap, unit = Comms.gearGap(data, build, spec, ranks)
+	local plan = Comms.ownPlan(data, spec)
 	return {
 		name = name, realm = realm, level = Compat.playerLevel(), spec = spec,
-		gearGap = gap, unit = unit, buildName = build ~= nil and Follow.buildName(data, build) or nil,
+		gearGap = plan ~= nil and plan.gap or nil, unit = plan ~= nil and plan.unit or nil,
+		cold = plan ~= nil and plan.cold or nil, gapExact = plan ~= nil and plan.exact or nil,
+		buildName = build ~= nil and Follow.buildName(data, build) or nil,
 	}
 end
 
@@ -617,6 +657,9 @@ end
 function GuildTab.model()
 	local roster = Theme.guildRoster()
 	local onlineOnly = GuildTab.onlineOnly
+	if onlineOnly == nil then
+		onlineOnly = GuildTab.savedOnlineOnly()
+	end
 	if onlineOnly == nil then
 		onlineOnly = GuildTab.defaultOnlineOnly(#roster)
 	end
@@ -994,7 +1037,8 @@ function GuildTab.ensureFlyout()
 	GuildTab.holder, GuildTab.content = holder, content
 	-- An 8-unit thumb on a track a step lighter than the border, straddling the rows' right
 	-- edge (item 7).
-	GuildTab.bar = Widgets.scrollbar(holder, holder, -S.guildScrollbar / 2, S.guildScrollbar, "scrollTrack")
+	GuildTab.bar = Widgets.scrollbar(holder, holder, -S.guildScrollbar / 2, S.guildScrollbar, "scrollTrack",
+		S.guildScrollThumb)
 	-- A 1 px rule in the last online row's bottom pixel when offline rows follow (item 7).
 	local rule = Theme.texture(content, "ARTWORK", "border")
 	rule:SetSize(GuildTab.innerWidth(), S.border)
@@ -1085,7 +1129,7 @@ function GuildTab.renderRows()
 	local range = math.max(0, #rows - visible)
 	GuildTab.bar:Update(#rows > 0 and math.min(1, visible / #rows) or 1, range > 0 and offset / range or 0)
 	GuildTab.countsLine:SetText(fitted(GuildTab.countsText(model.counts, model.sharing, #rows > 0 and first or nil,
-		#rows > 0 and last or nil, #rows), GuildTab.innerWidth() - S.guildToggleRoom))
+		#rows > 0 and last or nil, #rows, model.asOf), GuildTab.innerWidth() - S.guildToggleRoom))
 	local empty = GuildTab.emptyLine
 	if #rows == 0 then
 		empty:SetText(fitted(model.counts.total == 0 and L.guildTabNoRoster or L.guildTabNobodyOnline,
@@ -1164,7 +1208,8 @@ function GuildTab.draw()
 	local hasNotice = notice ~= nil
 	local visible = GuildTab.fitRows(Widgets.frameHeight(pane()), officer, hasNotice)
 	GuildTab.last = { rows = rows, counts = counts, officer = officer, visible = visible, notice = notice,
-		sharing = Comms.sharing() }
+		sharing = Comms.sharing(),
+		asOf = type(status) == "table" and status.available and Compat.shortDate(status.generated) or nil }
 	GuildTab.onlineToggle:SetChecked(onlineOnly)
 	if hasNotice then
 		GuildTab.noticeLine:SetText(fitted(notice, GuildTab.innerWidth()))
@@ -1263,6 +1308,8 @@ end
 function GuildTab.setOnlineOnly(value)
 	guarded(function()
 		GuildTab.onlineOnly = value == true
+		local prefs = ns.Prefs or require("Prefs")
+		prefs.current().guildTab.byCharacter[Export.characterKey()] = { onlineOnly = GuildTab.onlineOnly }
 		GuildTab.offset = 0
 		redraw()
 	end)

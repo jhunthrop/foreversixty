@@ -486,7 +486,15 @@ end
 --- one hyphen. Pure.
 function Export.characterSlug(name)
 	local trimmed = (name or ""):match("^%s*(.-)%s*$")
-	return (trimmed:lower():gsub("%s+", "-"))
+	-- The common accented capitals (L3.7 item 33): U+00C0 to U+00DE except the multiplication sign
+	-- U+00D7, two bytes C3 80..9E, lower by the 0x20 the site's lower-casing adds.
+	local lowered = trimmed:lower():gsub("\195([\128-\158])", function(second)
+		if second == "\151" then
+			return nil
+		end
+		return "\195" .. string.char(second:byte() + 32)
+	end)
+	return (lowered:gsub("%s+", "-"))
 end
 
 --- A character's page on the site: SITE/character/<region>/<ruleset>/<slug>, the one form the

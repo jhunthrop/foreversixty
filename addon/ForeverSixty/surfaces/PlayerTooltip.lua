@@ -58,9 +58,14 @@ end
 --- Comms.seen entry or nil, `shift` whether Shift is held. While Shift is held the
 --- components are a secondary block: the label muted on the left, the value right-aligned
 --- in the text colour, then a muted right-aligned total ("= 1240", the record's score).
---- Otherwise one muted hint naming the step to the site page. Pure.
-function PlayerTooltip.section(record, available, live, shift)
+--- Otherwise one muted hint naming the step to the site page. `level` (optional) is the player's:
+--- under Score.LEVEL_FLOOR a character the record does not have gets no "no logs" or link line. Pure.
+function PlayerTooltip.section(record, available, live, shift, level)
 	local out = {}
+	-- Under level 10 nothing is said about logs (L3.7 item 34).
+	if type(level) == "number" and level < Score.LEVEL_FLOOR then
+		available = false
+	end
 	local lines = Score.lines(record)
 	if #lines > 0 then
 		local color = record.tierColor
@@ -173,7 +178,8 @@ local function addLines(tooltip, unit)
 	local record = Score.forCharacter(name, realm)
 	local available = record ~= nil or Score.status().available
 	local live = PlayerTooltip.liveEntry(Comms.seen, name, firstName, realm, ownRealm(), Theme.now())
-	local lines = PlayerTooltip.section(record, available, live, Theme.shiftDown())
+	local level = type(UnitLevel) == "function" and tonumber(UnitLevel(unit)) or nil
+	local lines = PlayerTooltip.section(record, available, live, Theme.shiftDown(), level)
 	if #lines == 0 then
 		return
 	end

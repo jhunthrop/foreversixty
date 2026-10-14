@@ -200,6 +200,15 @@ describe("PlayerTooltip", function()
 			assert.are.equal(2, #hover())
 		end)
 
+		-- L3.7 item 34: below level 10 nothing is said (no logs is the ordinary state of a new character).
+		it("says nothing at all for a character under level 10 the record does not have", function()
+			assert.are.same({}, PlayerTooltip.section(nil, true, nil, false, 9))
+			assert.are.equal(2, #PlayerTooltip.section(nil, true, nil, false, 10))
+			assert.are.equal(2, #PlayerTooltip.section(nil, true, nil, false, nil))
+			-- A live line still shows.
+			assert.are.equal(1, #PlayerTooltip.section(nil, true, { level = 5, spec = "-", gearGap = 0 }, false, 5))
+		end)
+
 		it("never shows a zero for a character with no logs", function()
 			start(record())
 			names.mouseover = { "Facep Alm", "" }

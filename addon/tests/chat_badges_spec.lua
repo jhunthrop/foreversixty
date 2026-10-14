@@ -221,6 +221,18 @@ describe("ChatBadges", function()
 		end)
 	end)
 
+	-- L3.7 item 34: a badge older than the record's window shows muted, not in its tier's colour.
+	describe("a stale record", function()
+		it("draws the badge in the muted colour instead of the tier's", function()
+			start(record())
+			local fresh = ChatBadges.badgeText({ score = 1240, tierColor = { r = 0, g = 0.44, b = 0.87, a = 1 } })
+			local stale = ChatBadges.badgeText({ score = 1240, stale = true,
+				tierColor = { r = 0, g = 0.44, b = 0.87, a = 1 } })
+			assert.are.equal(RARE, fresh)
+			assert.are.equal("|cff9a9484FS 1240|r " .. MUTED_DOT, stale)
+		end)
+	end)
+
 	describe("the message", function()
 		it("keeps the message text itself, byte for byte, after the badge", function()
 			start(record())
