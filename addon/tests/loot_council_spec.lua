@@ -196,6 +196,7 @@ describe("LootCouncil", function()
 	end
 
 	after_each(function()
+		_G.C_Item, _G.Item = nil, nil
 		if state ~= nil then
 			assert.are.same({}, state.clientWrites)
 		end
@@ -226,6 +227,31 @@ describe("LootCouncil", function()
 
 	local function fromMember(text, name)
 		return Comms.onEvent("FS1", text, "PARTY", (name or "Thorgrim") .. "-ClassicBetaPvP")
+	end
+
+	--- The client's item functions for an uncached item: the load requests, whether the id exists, and the
+	--- Item mixin's continuations (id -> function).
+	local function itemClient()
+		local client = { requests = {}, continuations = {}, exists = true }
+		_G.C_Item = {
+			RequestLoadItemDataByID = function(id)
+				client.requests[#client.requests + 1] = id
+			end,
+			DoesItemExistByID = function()
+				return client.exists
+			end,
+		}
+		_G.Item = { CreateFromItemID = function(_, id)
+			return { ContinueOnItemLoad = function(_, fn)
+				client.continuations[id] = fn
+			end }
+		end }
+		return client
+	end
+
+	local function loadItem103()
+		state.itemStats[103] = { __itemId = 103, __slot = "INVTYPE_CHEST", __name = "Late Robe", __class = 4,
+			__subclass = 2, ITEM_MOD_AGILITY_SHORT = 14 }
 	end
 
 	-- Ruling 2: the one scoring path.
@@ -305,7 +331,22 @@ describe("LootCouncil", function()
 			assert.are.equal("1|loot?|100|100-1000", asked[1].text)
 			-- The same window read again (a refresh of the loot frame) asks nothing more.
 			LootCouncil.onLootOpened()
+			assert.are.equal(1, #sentOf("loot?"))
+			assert.are.equal(1, #LootCouncil.drops)
+			-- A window that closed and opened again is a new one: asked afresh.
+			LootCouncil.onLootClosed()
+			LootCouncil.onLootOpened()
 			assert.are.equal(2, #sentOf("loot?"))
+		end)
+
+		it("asks epics whatever the threshold, and rares only at a rare threshold", function()
+			start({ threshold = 5, slots = window({ 100, "Robes of Might" }, { 101, "Lesser Robe", 3 }) })
+			LootCouncil.onLootOpened()
+			assert.are.equal(1, #sentOf("loot?"))
+			assert.are.equal("1|loot?|100|100-1000", sentOf("loot?")[1].text)
+			start({ threshold = 4, slots = window({ 100, "Robes of Might" }, { 101, "Lesser Robe", 3 }) })
+			LootCouncil.onLootOpened()
+			assert.are.equal(1, #sentOf("loot?"))
 		end)
 
 		it("asks at or above a threshold of rare or higher, and at epic otherwise", function()
@@ -635,13 +676,108 @@ describe("LootCouncil", function()
 			assert.is_truthy(lines[1]:find("+5.0 DPS over " .. L.lootEmpty .. ", not planned", 1, true))
 		end)
 
-		it("says can't score and why, and asks the client to load an uncached item", function()
+		it("says can't score and why, and the usage with no item", function()
 			start({ solo = true })
-			local lines = LootCouncil.command("103")
-			assert.is_truthy(lines[1]:find("can't score: " .. L.lootWhy.uncached, 1, true))
-			assert.is_true(require("Compat").requestedItems[103])
+			assert.is_truthy(LootCouncil.command("105")[1]:find("can't score: " .. L.lootWhy.notgear, 1, true))
 			assert.are.equal("Type /fs loot and an item link or id to see what it is worth to you.", LootCouncil.command("")[1])
 			assert.is_truthy(LootCouncil.command("102")[1]:find(L.lootWhy.cantuse, 1, true))
+		end)
+
+		local LATE = "Late Robe: +5.0 DPS over Worn Robe, not planned"
+
+		it("waits on an uncached item and prints the real line when the client has it", function()
+			start({ solo = true })
+			local client = itemClient()
+			local lines = LootCouncil.command("103")
+			assert.are.equal(string.format(L.lootCmdLoading, 103), lines[1])
+			assert.are.same({ 103 }, client.requests)
+			assert.is_function(LootCouncil.waiting[103])
+			-- An event with the item still uncached prints nothing.
+			LootCouncil.onItemInfo(103)
+			assert.are.equal(0, #state.printed)
+			loadItem103()
+			LootCouncil.onItemInfo(103)
+			assert.are.equal(1, #state.printed)
+			assert.are.equal(Theme.chatLine(LATE), state.printed[1])
+			assert.is_nil(LootCouncil.waiting[103])
+			LootCouncil.onItemInfo(103)
+			assert.are.equal(1, #state.printed)
+		end)
+
+		it("also prints when the Item mixin's ContinueOnItemLoad fires, once whichever comes first", function()
+			start({ solo = true })
+			local client = itemClient()
+			LootCouncil.command("103")
+			assert.is_function(client.continuations[103])
+			loadItem103()
+			client.continuations[103]()
+			assert.are.equal(Theme.chatLine(LATE), state.printed[1])
+			LootCouncil.onItemInfo(103)
+			client.continuations[103]()
+			assert.are.equal(1, #state.printed)
+		end)
+
+		it("works on a client with no Item mixin", function()
+			start({ solo = true })
+			itemClient()
+			_G.Item = nil
+			assert.are.equal(string.format(L.lootCmdLoading, 103), LootCouncil.command("103")[1])
+		end)
+
+		it("gives up after 5 s: the item exists and the server did not answer, or the id is unknown", function()
+			start({ solo = true })
+			local client = itemClient()
+			LootCouncil.command("103")
+			assert.is_true(require("Compat").requestedItems[103])
+			mock.runTimers(state)
+			assert.are.equal(Theme.chatLine(string.format(L.lootCmdTimeout, 103)), state.printed[1])
+			assert.is_nil(LootCouncil.waiting[103])
+			assert.is_nil(require("Compat").requestedItems[103])
+			-- The next try asks the client again.
+			LootCouncil.command("103")
+			assert.are.same({ 103, 103 }, client.requests)
+			client.exists = false
+			mock.runTimers(state)
+			assert.are.equal(Theme.chatLine(string.format(L.lootCmdUnknown, 103)), state.printed[2])
+			-- Where the client cannot say whether the id exists, the first form.
+			_G.C_Item.DoesItemExistByID = nil
+			LootCouncil.command("103")
+			mock.runTimers(state)
+			assert.are.equal(Theme.chatLine(string.format(L.lootCmdTimeout, 103)), state.printed[3])
+		end)
+
+		it("prints nothing at the timeout once the line has been printed", function()
+			start({ solo = true })
+			itemClient()
+			LootCouncil.command("103")
+			loadItem103()
+			LootCouncil.onItemInfo(103)
+			mock.runTimers(state)
+			assert.are.equal(1, #state.printed)
+		end)
+
+		it("drops a loot? waiting for an unloadable item at 5 s and lets the next ask the client again", function()
+			start()
+			local client = itemClient()
+			fromMember("1|loot?|103|103-1000")
+			assert.is_not_nil(LootCouncil.pending["103-1000"])
+			assert.are.same({ 103 }, client.requests)
+			mock.runTimers(state)
+			assert.is_nil(LootCouncil.pending["103-1000"])
+			assert.is_nil(require("Compat").requestedItems[103])
+			fromMember("1|loot?|103|103-1001")
+			assert.are.same({ 103, 103 }, client.requests)
+			-- An answered request is not touched by its timer.
+			loadItem103()
+			LootCouncil.onItemInfo(103)
+			assert.are.equal(1, #sentOf("loot!"))
+			mock.runTimers(state)
+			assert.are.equal(1, #sentOf("loot!"))
+		end)
+
+		it("says an item is already worn instead of a gain of nothing", function()
+			start({ solo = true })
+			assert.are.equal("Worn Robe: already worn", LootCouncil.command("50")[1])
 		end)
 
 		it("sends the real loot? as the master looter in a group, and only a dry run otherwise", function()
@@ -708,9 +844,44 @@ describe("LootCouncil", function()
 			assert.are.equal(0, #sentOf("loot!"))
 		end)
 
+		it("fills in where the item is uncached or has no stats, at once and without waiting", function()
+			local withSite = inbox()
+			withSite.messages[1].items[103] = { value = 4.2, unit = "dps", planned = true }
+			start({ solo = true, inbox = withSite })
+			itemClient()
+			local expected = "+4.2 DPS " .. L.lootSite .. " over Worn Robe, planned"
+			assert.is_truthy(LootCouncil.command("103")[1]:find(expected, 1, true))
+			assert.is_nil(LootCouncil.waiting[103])
+			-- Cached but listing no stats: the same fallback.
+			state.itemStats[103].__name = "Bare Robe"
+			assert.are.equal("Bare Robe: +4.2 DPS " .. L.lootSite .. " over Worn Robe, planned", LootCouncil.command("103")[1])
+		end)
+
+		it("is the own row's value for an uncached drop too", function()
+			local withSite = inbox()
+			withSite.messages[1].items[103] = { value = 4.2, unit = "dps", planned = true }
+			start({ inbox = withSite, slots = window({ 103, "Late Robe" }) })
+			LootCouncil.onLootOpened()
+			GroupPanel.command()
+			local rows = GroupPanel.lootNow()
+			assert.are.equal("+4.2 DPS " .. L.lootSite, rows[2].value)
+		end)
+
 		it("ignores the site's figure when the live scoring works", function()
 			start({ solo = true, inbox = inbox() })
 			assert.is_truthy(LootCouncil.command("100")[1]:find("+12.0 DPS over", 1, true))
+		end)
+	end)
+
+	describe("an item already worn", function()
+		it("reads 'already worn' in the Loot region in place of a value", function()
+			start({ slots = window({ 50, "Worn Robe" }) })
+			LootCouncil.onLootOpened()
+			GroupPanel.command()
+			local rows = GroupPanel.lootNow()
+			assert.are.equal(L.lootAlreadyWorn, rows[2].value)
+			assert.are.equal("", rows[2].worn)
+			assert.is_false(rows[2].planned)
 		end)
 	end)
 

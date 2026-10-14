@@ -68,8 +68,32 @@ function Compat.requestItemLoad(itemId)
 	if Compat.requestedItems[itemId] then
 		return
 	end
+	-- Marked only when the client was asked: with no request function nothing was asked.
+	if itemFunction("RequestLoadItemDataByID") == nil then
+		return
+	end
 	Compat.requestedItems[itemId] = true
 	call("RequestLoadItemDataByID", itemId)
+end
+
+--- Forgets that the item was asked for, so the next requestItemLoad asks the client again (an
+--- item the server never answered for).
+function Compat.forgetItemLoad(itemId)
+	Compat.requestedItems[itemId] = nil
+end
+
+--- Runs `action` once the client holds the item (the Item mixin's ContinueOnItemLoad), where the
+--- client has the mixin; true when it was registered. A second trigger beside GET_ITEM_INFO_RECEIVED.
+function Compat.whenItemLoaded(itemId, action)
+	local mixin = _G.Item
+	if type(mixin) ~= "table" or type(mixin.CreateFromItemID) ~= "function" then
+		return false
+	end
+	local ok = pcall(function()
+		local item = mixin:CreateFromItemID(itemId)
+		item:ContinueOnItemLoad(action)
+	end)
+	return ok
 end
 
 --- The item's link once GetItemInfo knows it (it carries the quality

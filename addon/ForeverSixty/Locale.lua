@@ -1293,6 +1293,12 @@ L.lootCmdNotPlanned = "not planned"
 L.lootCmdCant = "%s: can't score: %s"
 L.lootCmdAsked = "Asked the group about %s."
 L.lootCmdNotAsked = "Did not ask the group: %s"
+L.lootCmdLoading = "Item %d: loading…"
+L.lootCmdTimeout = "Item %d: the client could not load the item (it exists but the server did not answer). "
+	.. "Try again after you have seen it drop or linked it."
+L.lootCmdUnknown = "unknown item %d"
+L.lootCmdWorn = "%s: already worn"
+L.lootAlreadyWorn = "already worn"
 L.lootCmdDry = "Only you see this: nothing was sent (only the master looter asks the group)."
 -- Why an item could not be scored.
 L.lootWhy = {

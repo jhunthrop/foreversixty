@@ -40,8 +40,10 @@ LootCouncil.MAX_DROPS = 3
 LootCouncil.WAIT = 5
 --- Seconds the region stays after the loot window closes.
 LootCouncil.LINGER = 60
---- The least item quality asked about when the group's loot threshold is below rare: epic.
+--- The least item quality asked about: epic. A rare threshold adds rares; no threshold takes epics away.
 LootCouncil.MIN_QUALITY = 4
+--- Seconds /fs loot and a loot? wait for the client to load an uncached item before giving up.
+LootCouncil.LOAD_WAIT = 5
 --- The master-looter loot method where the client has no Enum.
 LootCouncil.MASTER_LOOTER = 2
 
@@ -54,6 +56,8 @@ LootCouncil.open = false
 LootCouncil.closedAt = nil
 --- The last drop asked about, kept after the region clears, for /fs diag.
 LootCouncil.lastDrop = nil
+--- /fs loot lines waiting on an uncached item: itemId -> the function that prints the real line.
+LootCouncil.waiting = {}
 --- Loot requests from the master looter this client has still to answer: lootId -> { itemId, channel, at }.
 LootCouncil.pending = {}
 --- Injection point: called after anything the region shows changed (GroupPanel sets it).
@@ -151,12 +155,12 @@ function LootCouncil.isMasterLooter()
 	return method ~= nil and method == master and try(client("IsMasterLooter")) == true
 end
 
---- The least quality the loot window asks about: epic, or the group's threshold where that is rare
---- or higher.
+--- The least quality the loot window asks about: epics are always asked; a group threshold of exactly
+--- rare adds the rares.
 function LootCouncil.minQuality()
 	local threshold = try(client("GetLootThreshold"))
-	if type(threshold) == "number" and threshold >= 3 then
-		return threshold
+	if threshold == 3 then
+		return 3
 	end
 	return LootCouncil.MIN_QUALITY
 end
@@ -277,12 +281,16 @@ function LootCouncil.siteValue(itemId)
 	return nil
 end
 
+--- The reasons the live scoring can fail where the companion's figure for the item still stands in.
+local SITE_REASONS = { noweights = true, nospec = true, uncached = true, nostats = true, nofigure = true }
+
 --- The player's own value for an item: the live scoring, else (`site`, for the player's own row and
---- /fs loot) the companion's loot_values where the live scoring has no weights or spec to go on.
---- Answers the result, or nil and why.
+--- /fs loot) the companion's loot_values where the live scoring cannot make a figure (no weights, no
+--- spec, an item not loaded or listing no stats, no figure for its slot) and the inbox has one for the
+--- item. Answers the result, or nil and why.
 function LootCouncil.ownValue(data, itemId, site)
 	local result, reason = LootCouncil.valueFor(data, itemId, LootCouncil.ownWho(data))
-	if result == nil and site and (reason == "noweights" or reason == "nospec") then
+	if result == nil and site and SITE_REASONS[reason] then
 		local fromSite = LootCouncil.siteValue(itemId)
 		if fromSite ~= nil then
 			return fromSite
@@ -367,8 +375,18 @@ function LootCouncil.onRequest(named, _, channel)
 			LootCouncil.pending[id] = nil
 		end
 	end
-	LootCouncil.pending[lootId] = { itemId = itemId, channel = channel, at = now }
+	local request = { itemId = itemId, channel = channel, at = now }
+	LootCouncil.pending[lootId] = request
 	LootCouncil.tryAnswer(lootId)
+	if LootCouncil.pending[lootId] == request then
+		-- Still waiting on the item: given up at LOAD_WAIT seconds, so a later request asks the client again.
+		Theme.after(LootCouncil.LOAD_WAIT, function()
+			if LootCouncil.pending[lootId] == request then
+				LootCouncil.pending[lootId] = nil
+				Compat.forgetItemLoad(itemId)
+			end
+		end)
+	end
 end
 
 --- GET_ITEM_INFO_RECEIVED: a request waiting on this item is scored now.
@@ -384,6 +402,10 @@ function LootCouncil.onItemInfo(itemId)
 		if request.itemId == itemId then
 			LootCouncil.tryAnswer(lootId)
 		end
+	end
+	local printer = LootCouncil.waiting[itemId]
+	if printer ~= nil then
+		printer()
 	end
 end
 
@@ -475,8 +497,11 @@ end
 
 --- LOOT_OPENED: the master looter asks about each epic (or threshold) item, once per item per window.
 function LootCouncil.onLootOpened()
+	-- A refresh of a window already open keeps what was asked; a window opened afresh starts over.
+	if not LootCouncil.open or LootCouncil.window == nil then
+		LootCouncil.window = {}
+	end
 	LootCouncil.open, LootCouncil.closedAt = true, nil
-	LootCouncil.window = {}
 	if not LootCouncil.isMasterLooter() or LootCouncil.channel() == nil then
 		return
 	end
@@ -574,18 +599,23 @@ function LootCouncil.rows(drop, members, now, resolvers)
 	local waited = now - drop.at >= LootCouncil.WAIT
 	for _, member in ipairs(members) do
 		local row = { short = member.short, classToken = member.classToken }
+		local function worn(entry)
+			return entry.currentItemId ~= nil and entry.currentItemId ~= 0 and entry.currentItemId == drop.itemId or nil
+		end
 		local answer = LootCouncil.answerFor(drop, member)
 		local own = member.own and resolvers.own ~= nil and resolvers.own(drop) or nil
 		if member.own then
 			if own ~= nil then
 				row.kind, row.value, row.unit, row.healing = "own", own.value, own.unit, own.healing
 				row.currentItemId, row.planned, row.site = own.currentItemId, own.planned, own.site
+				row.alreadyWorn = worn(own)
 			else
 				row.kind = "nodata"
 			end
 		elseif answer ~= nil and answer.value ~= nil then
 			row.kind, row.value, row.unit = "answer", answer.value, answer.unit
 			row.currentItemId, row.planned = answer.currentItemId, answer.planned
+			row.alreadyWorn = worn(answer)
 		elseif not waited then
 			row.kind = "waiting"
 		else
@@ -593,6 +623,7 @@ function LootCouncil.rows(drop, members, now, resolvers)
 			if scored ~= nil then
 				row.kind, row.value, row.unit, row.healing = "inspect", scored.value, scored.unit, scored.healing
 				row.currentItemId, row.planned = scored.currentItemId, scored.planned
+				row.alreadyWorn = worn(scored)
 			else
 				row.kind = "nodata"
 			end
@@ -619,9 +650,72 @@ end
 
 -- /fs loot -----------------------------------------------------------------------------------------
 
+--- The item's name for a line, in its quality colour where the link or the client says; an unnamed
+--- item reads as the tooltip's pending name.
+local function shownName(itemId, link)
+	local name, hex = LootCouncil.display(itemId, link)
+	local shown = name or L.tooltipNamePending
+	if hex ~= nil and name ~= nil then
+		shown = string.format("|cff%s%s|r", hex, name)
+	end
+	return shown
+end
+
+--- The player's own line for an item: the line, and why when the item could not be scored.
+local function ownLine(data, itemId, shown)
+	local ok, result, reason = pcall(LootCouncil.ownValue, data, itemId, true)
+	if not ok then
+		result, reason = nil, "nodata"
+	end
+	if result == nil then
+		return string.format(L.lootCmdCant, shown, LootCouncil.reasonText(reason)), reason
+	end
+	if result.currentItemId == itemId then
+		return string.format(L.lootCmdWorn, shown)
+	end
+	local worn = L.lootEmpty
+	if result.currentItemId ~= nil and result.currentItemId ~= 0 then
+		worn = Compat.itemName(result.currentItemId) or L.tooltipNamePending
+	end
+	local text = LootCouncil.valueText(result.value, result.unit, result.healing)
+	if result.site then
+		text = text .. " " .. L.lootSite
+	end
+	return string.format(L.lootCmdLine, shown, text, worn, result.planned and L.lootCmdPlanned or L.lootCmdNotPlanned)
+end
+
+--- Waits for an uncached item: the real line prints when the client has it (GET_ITEM_INFO_RECEIVED, or
+--- the Item mixin's continuation: the first wins), and at LOAD_WAIT seconds the command gives up and
+--- says why, forgetting the request so the next try asks the client again.
+local function await(itemId, link, data)
+	local printer
+	printer = function()
+		if LootCouncil.waiting[itemId] ~= printer then
+			return
+		end
+		local line, reason = ownLine(data, itemId, shownName(itemId, link))
+		if reason == "uncached" then
+			return
+		end
+		LootCouncil.waiting[itemId] = nil
+		Theme.say(line)
+	end
+	LootCouncil.waiting[itemId] = printer
+	Compat.whenItemLoaded(itemId, printer)
+	Theme.after(LootCouncil.LOAD_WAIT, function()
+		if LootCouncil.waiting[itemId] ~= printer then
+			return
+		end
+		LootCouncil.waiting[itemId] = nil
+		Compat.forgetItemLoad(itemId)
+		Theme.say(string.format(Compat.itemExists(itemId) == false and L.lootCmdUnknown or L.lootCmdTimeout, itemId))
+	end)
+end
+
 --- /fs loot <item link or id>: the player's own `loot!` line for the item, to the player only; in a
 --- group as the master looter the real `loot?` goes out too (a dry run otherwise: it prints only, and
---- says so). The lines to print.
+--- says so). The lines to print; an item the client has not loaded prints a "loading" line now and the
+--- real one (or why it could not load) when the client answers.
 function LootCouncil.command(rest)
 	local itemId = LootCouncil.itemIdOf(rest)
 	if itemId == nil then
@@ -629,32 +723,15 @@ function LootCouncil.command(rest)
 	end
 	local data = LootCouncil.data or ns.Data
 	local link = type(rest) == "string" and rest:match("|c%x%x%x%x%x%x%x%x|Hitem:.-|h%[.-%]|h|r") or nil
-	local name, hex = LootCouncil.display(itemId, link)
-	local shown = name or L.tooltipNamePending
-	if hex ~= nil and name ~= nil then
-		shown = string.format("|cff%s%s|r", hex, name)
-	end
-	local ok, result, reason = pcall(LootCouncil.ownValue, data, itemId, true)
-	if not ok then
-		result, reason = nil, "nodata"
-	end
+	local shown = shownName(itemId, link)
 	local lines = {}
-	if result == nil then
-		if reason == "uncached" then
-			Compat.requestItemLoad(itemId)
-		end
-		lines[1] = string.format(L.lootCmdCant, shown, LootCouncil.reasonText(reason))
+	local line, reason = ownLine(data, itemId, shown)
+	if reason == "uncached" then
+		Compat.requestItemLoad(itemId)
+		lines[1] = string.format(L.lootCmdLoading, itemId)
+		await(itemId, link, data)
 	else
-		local worn = L.lootEmpty
-		if result.currentItemId ~= nil and result.currentItemId ~= 0 then
-			worn = Compat.itemName(result.currentItemId) or L.tooltipNamePending
-		end
-		local text = LootCouncil.valueText(result.value, result.unit, result.healing)
-		if result.site then
-			text = text .. " " .. L.lootSite
-		end
-		lines[1] = string.format(L.lootCmdLine, shown, text, worn,
-			result.planned and L.lootCmdPlanned or L.lootCmdNotPlanned)
+		lines[1] = line
 	end
 	if LootCouncil.channel() ~= nil and LootCouncil.isMasterLooter() then
 		local drop, why = LootCouncil.ask(itemId, link or Compat.displayLink(itemId))

@@ -1145,6 +1145,10 @@ function GroupPanel.lootCell(row, nameOf)
 		cell.value = L.lootNoData
 	elseif row.kind == "waiting" then
 		cell.value = L.lootWaiting
+	elseif row.alreadyWorn then
+		cell.value = L.lootAlreadyWorn
+		cell.valueHex = Theme.HEX.body
+		cell.planned = false
 	else
 		cell.value = LootCouncil.valueText(row.value, row.unit, row.healing)
 		if row.kind == "inspect" then
