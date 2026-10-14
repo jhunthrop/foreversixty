@@ -450,7 +450,9 @@ local L = {
 	scoreExperience = "Experience",
 	scoreParses = "Parses",
 	scoreAttendance = "Attendance",
-	scoreDiscipline = "Discipline",
+	-- The fifth part: flask, food and enchants. Not "Discipline", which is a Priest tree; the
+	-- key and the record field `discipline` stay.
+	scoreDiscipline = "Preparation",
 	overviewRating = "Your rating on the site: %d, over %d fights",
 	-- The Overview's personal rating card (design section 3): always
 	-- shown, its detail widened by the advanced-detail toggle.

@@ -9,9 +9,16 @@
      `encodeFS1(...)` over `gearFromSlots(winner)` would silently drop both -- `gearFromSlots`
      returns a bare slot->item_id map with no room for either. -->
 <script lang="ts">
+  import { buildCodeFor } from '../../../lib/addon/build-code';
+  import { indexTalents } from '../../../lib/planner/rules';
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
-  import { SLOT_LABELS, type Item, type ItemSet, type Slot } from '../../../lib/planner/types';
-  import { addonStringFor } from '../../../lib/sim/addon-export';
+  import {
+    SLOT_LABELS,
+    type Item,
+    type ItemSet,
+    type Slot,
+    type TalentFile,
+  } from '../../../lib/planner/types';
   import type { BulkResult } from '../../../lib/sim/bulk-types';
   import { codeForCharacterSpec } from '../../../lib/sim/character';
   import { confidenceBand, formatMargin } from '../../../lib/sim/estimate';
@@ -30,10 +37,12 @@
     signedGainLabel,
     slotSummary,
     winningGear,
+    winningTalents,
   } from '../../../lib/sim/combos';
   import { bulkCopy, toolFixCopy } from '../../../lib/sim/copy';
   import { handoffCopy } from '../../../lib/sim/handoff-copy';
   import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
+  import CopyForGame from '../../CopyForGame.svelte';
   import SaveSimForm from './SaveSimForm.svelte';
   import SubstitutionChips from './SubstitutionChips.svelte';
 
@@ -44,6 +53,7 @@
     treeVersion,
     partial,
     onsave,
+    talents = null,
   }: {
     result: BulkResult;
     items: ReadonlyMap<number, Item>;
@@ -53,11 +63,14 @@
     /** `store.save`, kept a callback rather than a `store` prop -- this component only
      *  ever needs the one method. */
     onsave: (title: string) => Promise<string | null>;
+    /** The class's talent file, already loaded by the bulk store: the layout the game
+     *  code's talent cells are read from. Null (not loaded, or failed) leaves "Copy for the
+     *  game" disabled rather than copying a build with no talents in it. */
+    talents?: TalentFile | null;
   } = $props();
 
   const FOUR_PIECE = 4;
   let keepSet = $state(false);
-  let addonCopied = $state(false);
 
   const rows = $derived(
     comboRows(result).filter((row) => !keepSet || keepsSetBonus(row.combo, result, items, sets, FOUR_PIECE)),
@@ -129,22 +142,27 @@
   /** A stopped run has nothing finished worth naming and saving. */
   const canSave = $derived(!partial);
 
-  async function copyAddon(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(
-        addonStringFor({
+  /**
+   * Task L8.1: the winning set as the FSB1 build code the addon's build dialog reads -- the
+   * leader's gear (`winner`) with each item's own stats, and the leader's talents
+   * (`winningTalents`, so a talents run copies the build that won). The old "Copy to addon"
+   * copied an FS1 character export here, which the build dialog refuses by design; the
+   * sim's own numbers reach the addon through the companion, never inside a build code.
+   */
+  const talentIndex = $derived(talents === null ? null : indexTalents(talents));
+  const gameCode = $derived(
+    talentIndex === null
+      ? ''
+      : buildCodeFor({
+          kind: 'sim',
           dataBuild: treeVersion,
           classSlug: result.request.character.class,
-          raceSlug: result.request.character.race,
-          talents: result.request.character.talents,
+          talents: winningTalents(result),
           gear: winner,
+          talentIndex,
+          items,
         }),
-      );
-      addonCopied = true;
-    } catch {
-      addonCopied = false;
-    }
-  }
+  );
 </script>
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-combos">
@@ -323,14 +341,7 @@
       href={plannerHref}
       data-testid="sim-open-in-planner">{bulkCopy.openInPlanner}</a
     >
-    <button
-      type="button"
-      class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
-      data-testid="sim-copy-addon"
-      onclick={() => void copyAddon()}
-    >
-      {addonCopied ? bulkCopy.copiedToAddon : bulkCopy.copyToAddon}
-    </button>
+    <CopyForGame code={gameCode} testid="sim-copy-addon" />
   </div>
 
   <!-- The controller's own ruling on this task: the bulk store's `save()` gained a state

@@ -90,7 +90,6 @@ const flows = [
 
     <Panel title={addonCopy.setupStep2Title}>
       <div class="flex flex-col gap-4 p-[18px]">
-        <p class="text-muted text-[13px]">{addonCopy.pageNoNetwork}</p>
         <p class="text-muted text-[13px]">{addonCopy.currentDataBuild(activeBuild.build)}</p>
         <ul class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-6">
           {links.map((link) => (
@@ -110,6 +109,65 @@ const flows = [
         </p>
         <AddonPasteBox client:idle />
         <CurrentCharacterBar client:idle hasOwnPasteBox />
+        <!-- Task L8.3: what the addon does in the game, one row per surface of the addon-v2
+             spec's §4 in its order, with crops of real client captures (lazy, each in a box
+             of its own aspect so nothing below moves as they load); then the /fs commands
+             and the companion handshake. A surface with no capture shows no image. -->
+        <section
+          class="flex flex-col gap-5 pt-2"
+          data-testid="setup-surfaces"
+          aria-labelledby="setup-surfaces-title"
+        >
+          <h3 id="setup-surfaces-title" class="label text-muted">
+            {addonCopy.surfacesTitle}
+          </h3>
+          <ol class="flex flex-col gap-6">
+            {addonCopy.surfaces.map((surface) => (
+              <li class="flex flex-col gap-2" data-surface={surface.section}>
+                <h4 class="text-[15px] font-semibold">{surface.title}</h4>
+                <p class="text-muted text-[14px] leading-relaxed">{surface.body}</p>
+                {surface.images.map((image) => (
+                  <div
+                    class={`border-line-soft rounded-control bg-raised w-full overflow-hidden border ${image.tall ? 'max-h-[900px]' : 'max-h-[420px]'}`}
+                    style={`max-width: ${image.width}px; aspect-ratio: ${image.width} / ${image.height}`}
+                  >
+                    <a class="block h-full w-full" href={image.src}>
+                      <img
+                        class="block h-full w-full object-contain"
+                        src={image.src}
+                        width={image.width}
+                        height={image.height}
+                        alt={image.alt}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </a>
+                  </div>
+                ))}
+              </li>
+            ))}
+          </ol>
+          <div class="flex flex-col gap-2" data-testid="setup-commands">
+            <h3 class="label text-muted">{addonCopy.commandsTitle}</h3>
+            <ul class="flex flex-col gap-1 text-[14px]">
+              {addonCopy.commands.map(({ command, description }) => (
+                <li>
+                  <code class="font-mono text-[13px] font-bold">{command}</code>
+                  <span class="text-muted">: {description}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="flex flex-col gap-1 pt-1">
+              <h4 class="label text-muted text-[11px]">{addonCopy.commandsTestersLabel}</h4>
+              <p class="text-muted font-mono text-[12px]">{addonCopy.commandsTestersLine}</p>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2" data-testid="setup-handshake">
+            <h3 class="label text-muted">{addonCopy.handshakeTitle}</h3>
+            <p class="text-muted text-[14px] leading-relaxed">{addonCopy.handshake.join(' ')}</p>
+            <p class="text-muted text-[14px] leading-relaxed">{addonCopy.pageNoNetwork}</p>
+          </div>
+        </section>
         <details class="border-line rounded-control border">
           <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 select-none">
             {addonCopy.setupHowItWorks}

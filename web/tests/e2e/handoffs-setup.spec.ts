@@ -28,13 +28,70 @@ test('a code from another format is refused by name, not silently dropped', asyn
   await expect(page.getByTestId('addon-paste-planner')).toHaveCount(0);
 });
 
-test('the page says the in-game UI is in beta testing and ships no screenshot of it', async ({ page }) => {
+// Task L8.3 replaced "ships no screenshot of it": the page now shows real client captures,
+// one section per surface, every one lazy, sized and described.
+test('the page says the in-game UI is in beta testing and points at the surfaces section', async ({
+  page,
+}) => {
   await page.goto('/setup');
   // The three how-it-works cards sit behind one closed disclosure (design loop, setup round).
   await page.getByText('How the addon works').click();
   await expect(page.getByText('in beta testing in game')).toBeVisible();
-  const images = await page.locator('main img').count();
-  expect(images).toBe(0);
+  await expect(page.getByText('no screenshot', { exact: false })).toHaveCount(0);
+});
+
+test.describe('What it does in the game (L8.3)', () => {
+  for (const width of [1280, 360]) {
+    test(`at ${width}px: eleven surfaces in order, every capture lazy, sized, described and loaded once scrolled to`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/setup');
+      const surfaces = page.getByTestId('setup-surfaces').locator('[data-surface]');
+      await expect(surfaces).toHaveCount(11);
+      expect(await surfaces.evaluateAll((els) => els.map((el) => el.getAttribute('data-surface')))).toEqual([
+        '4.1',
+        '4.2',
+        '4.3',
+        '4.4',
+        '4.5',
+        '4.6',
+        '4.7',
+        '4.8',
+        '4.9',
+        '4.10',
+        '4.11',
+      ]);
+      const images = page.getByTestId('setup-surfaces').locator('img');
+      const count = await images.count();
+      expect(count).toBe(12);
+      for (let i = 0; i < count; i++) {
+        const image = images.nth(i);
+        await expect(image).toHaveAttribute('loading', 'lazy');
+        expect(((await image.getAttribute('alt')) ?? '').length).toBeGreaterThan(20);
+        // The box holds the image's own shape before it loads, so nothing below moves.
+        const before = await image.boundingBox();
+        await image.scrollIntoViewIfNeeded();
+        await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
+        const after = await image.boundingBox();
+        expect(Math.abs((after?.height ?? 0) - (before?.height ?? -1))).toBeLessThan(1);
+        expect(after?.width ?? 0).toBeLessThanOrEqual(width);
+      }
+      // Messaging (4.9) has no capture yet: no image, no placeholder.
+      await expect(surfaces.nth(8).locator('img')).toHaveCount(0);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow).toBeLessThanOrEqual(0);
+    });
+  }
+
+  test('the commands and the companion handshake follow the surfaces', async ({ page }) => {
+    await page.goto('/setup');
+    const commands = page.getByTestId('setup-commands').locator('li');
+    await expect(commands).toHaveCount(12);
+    await expect(commands.first()).toHaveText('/fs: paste or copy a build');
+    await expect(commands.last()).toHaveText('/fs help: every command');
+    await expect(page.getByTestId('setup-handshake')).toContainText('Seen by the site');
+  });
 });
 
 // The point of the whole round: a character given to the site once is the site's current

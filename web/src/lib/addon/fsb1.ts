@@ -153,7 +153,7 @@ function parseStats(field: string): Parsed<Record<string, number>> {
     // The sign is part of the grammar because real items carry negative stats -- 43 values
     // across data/builds/<build>/items/*.json, Ring of Scorn's spirit -3 among them. The
     // encoder copies an item's stats through verbatim, so a decoder that refused a minus
-    // sign would refuse this site's own "Copy addon code" output; and dropping the penalty
+    // sign would refuse this site's own "Copy for the game" output; and dropping the penalty
     // instead would make the addon score a cursed item as though it had none.
     //
     // Canonical, so one build is still one string: "-0", "+3", "007" and "--3" are all

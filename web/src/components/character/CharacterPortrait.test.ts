@@ -20,13 +20,15 @@ describe('CharacterPortrait', () => {
     expect(body).not.toContain('data-testid="t-avatar-fallback"');
   });
 
-  it('shows a neutral ringed disc for a character with no class on file', () => {
+  it('shows a neutral disc holding a class-less silhouette for a character with no class on file', () => {
     const { body } = render(CharacterPortrait, {
       props: { character: {}, size: 'md', testid: 't' },
     });
     expect(body).toContain('data-testid="t-avatar-fallback"');
     expect(body).toContain('rounded-full');
     expect(body).not.toContain('data-testid="t-avatar"');
+    // Forever Score fix round 2 item 4: a person, not an empty hole.
+    expect(body).toContain('data-testid="t-avatar-silhouette"');
   });
 
   it('sizes the crest 28 / 36 / 44px for sm, md and lg and responsively for xl', () => {

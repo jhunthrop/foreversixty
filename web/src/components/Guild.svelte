@@ -741,6 +741,7 @@
           onRemove={(row) => void onRemove(row)}
           onApproveAll={() => void onApproveAll()}
           {rowPath}
+          addonSnapshot={home.addon_snapshot ?? null}
         />
       {:else}
         <Skeleton lines={6} minHeight="min-h-[320px]" testid="guild-roster-skeleton" />

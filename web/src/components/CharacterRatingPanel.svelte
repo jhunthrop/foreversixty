@@ -1,30 +1,67 @@
 <!-- web/src/components/CharacterRatingPanel.svelte -->
-<!-- The character page's rating panel: overall score, six-segment bar, a trend
-     sparkline once there are enough fights, and the best/worst component -- spec §6.2.
-     Fetches independently, the same self-contained pattern Character.svelte's own
-     $effect already uses for fetchCharacter. -->
+<!-- The character page's rating panel. At the top, the Forever Score card
+     (ForeverScoreCard.svelte, spec 2026-10-11 §4.6): plain data from the caller
+     (Character.svelte already holds the GET /v1/characters/... answer that carries it).
+     Beneath it the execution rating in the same card shell (RatingCard.svelte, fix round 2
+     item 6): "65 of 100", the six-segment bar when any segment has a score, the line with the
+     latest fight's rating and the count, the trend sparkline once there are enough fights, and
+     the weakest part of a fight, linked to its row in "Every ranked fight" (L8.5 ruling 1) --
+     spec §6.2. That part fetches independently, the same self-contained pattern
+     Character.svelte's own $effect already uses for fetchCharacter. -->
 <script lang="ts">
-  import { fetchCharacterRating, RankingsError } from '../lib/rankings/api';
-  import { ratingCopy, componentLabel, MIN_TREND_SAMPLES } from '../lib/rating/copy';
-  import { RATING_COMPONENT_ORDER } from '../lib/rating/types';
+  import { latestRatedFight, weakestFightHref } from '../lib/character-profile';
+  import { fetchCharacterRating, RankingsError, type CharacterFight } from '../lib/rankings/api';
+  import { ratingCopy } from '../lib/rating/copy';
+  import type { ForeverScore, ScorePoint } from '../lib/score/score';
   import type { CharacterPath } from '../lib/characters';
   import type { CharacterRating } from '../lib/rating/types';
-  import RatingTrend from './RatingTrend.svelte';
+  import ForeverScoreCard from './ForeverScoreCard.svelte';
+  import RatingCard from './RatingCard.svelte';
   import EmptyState from './ui/EmptyState.svelte';
 
   let {
     path,
     apiBase = undefined,
     heading = true,
+    forever = undefined,
+    scoreHistory = null,
+    bisHref = null,
+    gearHref = null,
+    owned = false,
+    name = '',
+    fights = [],
+    onrated = undefined,
   }: {
     path: CharacterPath;
     apiBase?: string;
     /** False when the mounting panel already titles it (the account page's "Your ratings"). */
     heading?: boolean;
+    /** The character's Forever Score; null (or a null score) for a character the site has no
+     *  logs of. Left out, the panel draws no score card at all (the account page). */
+    forever?: ForeverScore | null;
+    /** The character's score_history, for the score card's sparkline. */
+    scoreHistory?: readonly ScorePoint[] | null;
+    /** The spec's best-in-slot page, when known (the score card's "Most to gain: Gear"). */
+    bisHref?: string | null;
+    /** The profile's Gear section's anchor, when the page has one (L8.6 ruling 2): the score
+     *  card's "Most to gain: Gear" lands there instead of the BiS page. */
+    gearHref?: string | null;
+    /** The viewer's own character: the captions say "Your" only then (fix round 2 item 1). */
+    owned?: boolean;
+    /** The character's name, for the no-logs card's "Look up another character". */
+    name?: string;
+    /** "Every ranked fight"'s rows, which the rating card's weakest part links into (L8.5
+     *  ruling 1); none, no link. */
+    fights?: readonly CharacterFight[];
+    /** Told the latest rated fight and its rating once the rating loads (null when there is
+     *  none), so "Every ranked fight" can mark that row "rated 65" (L8.5 fix round 2 item 3). */
+    onrated?: (rated: { report_id: string; fight_index: number; overall: number } | null) => void;
   } = $props();
 
   let data = $state<CharacterRating | null>(null);
   let status = $state<'loading' | 'ready' | 'hidden'>('loading');
+  /** The latest rated fight, named in the rating card's line (L8.5 fix round 2 item 1). */
+  const latest = $derived(data === null ? null : latestRatedFight(data.trend, fights));
 
   $effect(() => {
     const requested = path;
@@ -34,6 +71,16 @@
         if (path !== requested) return;
         data = result;
         status = 'ready';
+        const newest = latestRatedFight(result.trend, []);
+        onrated?.(
+          newest === null || result.latest === null
+            ? null
+            : {
+                report_id: newest.report_id,
+                fight_index: newest.fight_index,
+                overall: result.latest.overall,
+              },
+        );
       })
       .catch((thrown: unknown) => {
         if (path !== requested) return;
@@ -47,9 +94,23 @@
         }
         data = null;
         status = 'hidden';
+        onrated?.(null);
       });
   });
 </script>
+
+{#if forever !== undefined}
+  <ForeverScoreCard
+    {forever}
+    history={scoreHistory}
+    {bisHref}
+    {gearHref}
+    {owned}
+    {name}
+    region={path.region}
+    ruleset={path.ruleset}
+  />
+{/if}
 
 {#if status === 'loading'}
   <!-- Reserves height for the common loading -> ready path so the panel's own container
@@ -65,7 +126,12 @@
   </section>
 {:else if status === 'ready' && data !== null}
   <section class="flex flex-col gap-2" data-testid="character-rating">
-    {#if heading}<h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>{/if}
+    {#if heading}
+      <h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>
+      <p class="text-muted text-[13px]" data-testid="character-rating-caption">
+        {ratingCopy.panelCaption(owned)}
+      </p>
+    {/if}
     {#if data.sample_size === 0}
       <EmptyState
         message={ratingCopy.characterEmpty}
@@ -73,41 +139,15 @@
         testid="character-rating-empty"
       />
     {:else}
-      {#if data.latest !== null}
-        <div class="flex items-center gap-4">
-          <span class="text-gold tabular text-[32px] font-bold" data-testid="character-rating-overall">
-            {Math.round(data.latest.overall)}
-          </span>
-          <span class="flex w-32 shrink-0 gap-[2px]" aria-hidden="true">
-            {#each RATING_COMPONENT_ORDER as name (name)}
-              {@const part = data.latest.components.find((c) => c.name === name)}
-              <span class="bg-line-soft h-2 flex-1" title={componentLabel(name)}
-                ><span
-                  class="bg-gold block h-full"
-                  style={`width: ${part && !part.excluded && part.score !== null ? part.score : 0}%`}
-                ></span></span
-              >
-            {/each}
-          </span>
-        </div>
-      {/if}
-      {#if data.sample_size < MIN_TREND_SAMPLES}
-        <p class="text-muted text-[13px]" data-testid="character-rating-too-few">
-          {ratingCopy.trendTooFew(data.sample_size)}
-        </p>
-      {:else}
-        <RatingTrend points={data.trend} />
-      {/if}
-      {#if data.best_component !== '' || data.worst_component !== ''}
-        <p class="text-muted text-[13px]">
-          {#if data.best_component !== ''}Best: {componentLabel(data.best_component)}.{/if}
-          {#if data.worst_component !== ''}Needs work: {componentLabel(data.worst_component)}.{/if}
-        </p>
-      {/if}
+      <RatingCard
+        overall={data.latest === null ? null : data.latest.overall}
+        components={data.latest?.components ?? []}
+        trend={data.trend}
+        sampleSize={data.sample_size}
+        worst={data.worst_component}
+        weakestHref={weakestFightHref(data.trend, fights)}
+        latestFight={latest === null ? null : { encounter: latest.encounter, date: latest.date }}
+      />
     {/if}
-    <a
-      class="text-gold inline-flex min-h-11 items-center text-[12px] underline-offset-2 hover:underline md:min-h-0"
-      href="/ratings">{ratingCopy.explainLink}</a
-    >
   </section>
 {/if}

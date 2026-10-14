@@ -19,6 +19,8 @@ import { API_BASE_URL } from '../planner/config';
 import type { CharacterPath } from '../characters';
 import { normaliseReportRatings } from '../rating/normalise';
 import type { CharacterRating, ReportRatings } from '../rating/types';
+import type { CharacterGear } from '../gear/types';
+import type { ForeverScore, ScorePoint } from '../score/score';
 
 export const RANKINGS_FAILED = 'Rankings did not load';
 
@@ -26,6 +28,9 @@ export class RankingsError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** The API's own `error.code`, when it sent one: GET .../ratings answers 404 "flagged" for a
+     *  flagged report and "not_found" for one the caller cannot open (L8.6 fix round 6 item 5). */
+    readonly code: string | null = null,
   ) {
     super(message);
     this.name = 'RankingsError';
@@ -113,7 +118,16 @@ export interface BuildSeen {
   first_seen: string;
 }
 
-export interface CharacterPage {
+/** A character's verified guild membership (api/openapi.yaml `CharacterIdentity.guild`): the
+ *  name and rank only, never an id. */
+export interface CharacterGuild {
+  name: string;
+  rank: 'member' | 'officer' | 'leader';
+}
+
+/** The Forever Score fields ride on the same answer (api/openapi.yaml `ForeverScore`); optional
+ *  because an API that predates them sends none, which reads as no score. */
+export interface CharacterPage extends Partial<ForeverScore> {
   character: {
     name: string;
     region: string;
@@ -123,10 +137,28 @@ export interface CharacterPage {
      *  Battle.net import has not captured them. */
     avatar_url?: string;
     render_url?: string;
+    /** Who the character is in game (api/openapi.yaml `CharacterIdentity`). The API always
+     *  sends all four, null when no source knows one; optional here too, because an API that
+     *  predates them sends none, which reads as unknown. */
+    guild?: CharacterGuild | null;
+    level?: number | null;
+    /** The race's display name, "Night Elf". */
+    race?: string | null;
+    /** The realm as the client names it ("Classic Beta PvP"), or the logged unit's realm half
+     *  ("ClassicBetaPvP") when that is the only source. */
+    realm?: string | null;
   };
   best: CharacterFight[];
   history: CharacterFight[];
   builds_seen: BuildSeen[];
+  /** The Forever Score over time (api/openapi.yaml `ScorePoint`): one point per UTC date, the
+   *  newest 30, oldest first, `[]` when there is none. Optional for an API that predates it. */
+  score_history?: ScorePoint[];
+  /** The gear panel (api/openapi.yaml `CharacterGear`, Task L6.7): the 17 slots of the newest
+   *  addon export, `[]` with none. Optional for an API that predates it, which draws no Gear
+   *  section at all. */
+  gear?: CharacterGear['gear'];
+  gear_gap_total?: CharacterGear['gear_gap_total'];
 }
 
 export interface GuildProgressionRow {
@@ -256,7 +288,7 @@ async function get<T>(path: string, apiBase: string): Promise<T> {
       failureMessage: RANKINGS_FAILED,
     });
   } catch (error) {
-    if (error instanceof AccountError) throw new RankingsError(error.message, error.status);
+    if (error instanceof AccountError) throw new RankingsError(error.message, error.status, error.code);
     throw new RankingsError(RANKINGS_FAILED, 0);
   }
   if (result.data === null) throw new RankingsError(result.message ?? RANKINGS_FAILED, result.status);

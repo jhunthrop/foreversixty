@@ -4,6 +4,7 @@
 // reach without a Worker. A real build prerenders none.
 import Base from '../../layouts/Base.astro';
 import Character from '../../components/Character.svelte';
+import CharacterNoScript from '../../components/character/CharacterNoScript.astro';
 import { fixtureCharacterPaths } from '../../lib/report/shell-paths';
 
 export function getStaticPaths() {
@@ -24,5 +25,6 @@ const { path } = Astro.params;
     class="flex flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-0 md:pt-7"
   >
     <Character client:load />
+    <CharacterNoScript />
   </main>
 </Base>

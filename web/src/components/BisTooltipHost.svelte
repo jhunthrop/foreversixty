@@ -33,8 +33,19 @@
   import type { ItemTooltipModel } from '../lib/items/tooltip';
   import { positionTooltipPanel } from '../lib/items/tooltip-position';
 
-  let { build, modelsElementId = 'bis-tooltip-models' }: { build: string; modelsElementId?: string } =
-    $props();
+  let {
+    build,
+    modelsElementId = 'bis-tooltip-models',
+    resolve = undefined,
+  }: {
+    build: string;
+    modelsElementId?: string;
+    /** A page with no build-time models (the character profile's Gear section, L8.6 fix round
+     *  1): the model for an id the map lacks, fetched at runtime (lib/items/lookup.ts's
+     *  fetchItemTooltipModel) and kept; null when the build does not carry the id. /bis passes
+     *  none and keeps its build-time-only rule. */
+    resolve?: (itemId: number) => Promise<ItemTooltipModel | null>;
+  } = $props();
 
   // Fixed rather than per-row: exactly one panel is ever mounted, so every row's
   // aria-describedby (when it is the open one) can point at the same id.
@@ -54,6 +65,26 @@
   // two "open" calls racing the same promise, and both would otherwise mount their own
   // panel instance into the row.
   let openToken = 0;
+  /** When a pointer was last pressed: the focus that press gives a host is the pointer's, not
+   *  the keyboard's, so it opens nothing (the click decides; L8.6 fix round 2 ruling 2). */
+  let pressedAt = -Infinity;
+  /** Where the mouse last really moved to. A page scroll or an anchor landing slides a row under
+   *  a parked pointer, and the browser's fake pointerenter for it carries these same
+   *  coordinates -- in Chrome sometimes before the scroll event itself -- so only a pointer event
+   *  at new coordinates, a real move, may open a tooltip (L8.6 fix round 3 item 1). */
+  let lastX = NaN;
+  let lastY = NaN;
+
+  /** The name whose tooltip was just closed by Escape or a click: it stays shut, however the
+   *  pointer moves on it, until the pointer leaves it (L8.6 fix round 4 item 6), or until the
+   *  mouse enters it from outside -- after an Escape on a name that keyboard focus opened, the
+   *  mouse elsewhere, its first hover opens it (fix round 5 item 3). */
+  let dismissed: HTMLElement | null = null;
+
+  /** A real move: the mouse is at coordinates it has not been at (and its last place is known). */
+  function moved(event: PointerEvent): boolean {
+    return !Number.isNaN(lastX) && (event.clientX !== lastX || event.clientY !== lastY);
+  }
 
   function loadModels(): void {
     const script = document.getElementById(modelsElementId);
@@ -102,16 +133,21 @@
 
   function openHost(host: HTMLElement): void {
     const itemId = Number(host.dataset.bisItem);
-    const model = models.get(itemId);
-    if (model === undefined) return; // no build-time model for this id -- nothing to show
+    const known = models.get(itemId);
+    if (known === undefined && resolve === undefined) return; // no build-time model for this id -- nothing to show
     if (activeHost === host) return; // already open, or already opening, this exact host
     unmountPanel();
     activeHost = host;
     host.setAttribute('aria-describedby', TOOLTIP_ID);
     const token = ++openToken;
-    void ensurePanelLoaded().then((component) => {
+    const model: Promise<ItemTooltipModel | null> =
+      known !== undefined
+        ? Promise.resolve(known)
+        : (resolve as (itemId: number) => Promise<ItemTooltipModel | null>)(itemId).catch(() => null);
+    void Promise.all([ensurePanelLoaded(), model]).then(([component, resolved]) => {
       if (token !== openToken) return; // superseded (a close, or a later open) before this resolved
-      mountedInstance = mount(component, { target: host, props: { model, build, id: TOOLTIP_ID } });
+      if (resolved === null) return; // the build does not carry the id: no tooltip
+      mountedInstance = mount(component, { target: host, props: { model: resolved, build, id: TOOLTIP_ID } });
       positionTooltipPanel(host);
     });
   }
@@ -121,20 +157,56 @@
     unmountPanel();
   }
 
+  /** Hover opens for a mouse only (L8.6 fix round 2 ruling 2): a touch or pen opens on its tap.
+   *  And only on a real move (fix round 3 item 1): a pointerenter at the pointer's last
+   *  coordinates is a row sliding under a parked pointer, and opens nothing.
+   *
+   *  The mouse entering a dismissed name itself (the event's target is the name, not a part of
+   *  it, so the pointer came from outside) ends the dismissal (fix round 5 item 3): a dismissal
+   *  made while the pointer rests on the name sees no such entry before a pointerleave, so it
+   *  still holds against every move on the name; one made with the mouse elsewhere (an Escape
+   *  after keyboard focus) no longer swallows the first hover. A row sliding under a parked
+   *  pointer ends it too, opening nothing until the next real move. */
   function onPointerEnter(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') return;
+    if (dismissed !== null && event.target === dismissed) dismissed = null;
+    if (!moved(event)) return;
     const host = hostFor(event.target);
-    if (host !== null) openHost(host);
+    if (host !== null && host !== dismissed) openHost(host);
+  }
+
+  /** A real move records where the mouse is and opens what it now rests on: the 2px nudge after
+   *  a scroll, or the first move on a page whose pointer was never seen. A move at the same
+   *  coordinates (the browser's fake one after a scroll) does nothing. */
+  function onPointerMove(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') return;
+    if (event.clientX === lastX && event.clientY === lastY) return;
+    lastX = event.clientX;
+    lastY = event.clientY;
+    const host = hostFor(event.target);
+    if (host !== null && host !== dismissed) openHost(host);
+  }
+
+  function onPointerDown(): void {
+    pressedAt = performance.now();
   }
 
   function onPointerLeave(event: PointerEvent): void {
+    if (event.pointerType !== 'mouse') return;
     const host = hostFor(event.target);
     if (host === null || host === relatedHostFor(event)) return; // still inside the same host
+    if (dismissed === host) dismissed = null; // left: the next entry opens it again
     closeHost(host);
   }
 
+  /** Keyboard focus opens; the focus a pointer press gives (a tap, a click) leaves it to the
+   *  click. */
   function onFocusIn(event: FocusEvent): void {
+    if (performance.now() - pressedAt < 1000) return;
     const host = hostFor(event.target);
-    if (host !== null) openHost(host);
+    if (host === null) return;
+    dismissed = null;
+    openHost(host);
   }
 
   function onFocusOut(event: FocusEvent): void {
@@ -143,20 +215,30 @@
     closeHost(host);
   }
 
-  /** Touch has no hover: a tap toggles instead, the same rule ItemHover.svelte's own
-   *  `toggle` follows. `preventDefault` keeps a tap from also activating anything the row
-   *  happens to sit inside. */
+  /** Touch has no hover: a tap toggles instead (a second tap on the same name closes it), the
+   *  same rule ItemHover.svelte's own `toggle` follows; a tap or click anywhere else closes the
+   *  open one. `preventDefault` keeps a tap from also activating anything the row happens to
+   *  sit inside. */
   function onClick(event: MouseEvent): void {
     const host = hostFor(event.target);
-    if (host === null) return;
+    if (host === null) {
+      if (activeHost !== null) closeHost(activeHost);
+      return;
+    }
     event.preventDefault();
-    if (activeHost === host) closeHost(host);
-    else openHost(host);
+    if (activeHost === host) {
+      closeHost(host);
+      dismissed = host;
+    } else {
+      dismissed = null;
+      openHost(host);
+    }
   }
 
   function onKeyDown(event: KeyboardEvent): void {
     if (event.key !== 'Escape' || activeHost === null) return;
     event.stopPropagation();
+    dismissed = activeHost;
     closeHost(activeHost);
   }
 
@@ -168,6 +250,8 @@
     // event's own bubbles flag.
     document.addEventListener('pointerenter', onPointerEnter, true);
     document.addEventListener('pointerleave', onPointerLeave, true);
+    document.addEventListener('pointermove', onPointerMove, true);
+    document.addEventListener('pointerdown', onPointerDown, true);
     document.addEventListener('focusin', onFocusIn);
     document.addEventListener('focusout', onFocusOut);
     document.addEventListener('click', onClick);
@@ -183,6 +267,8 @@
       delete document.documentElement.dataset.tooltipHost;
       document.removeEventListener('pointerenter', onPointerEnter, true);
       document.removeEventListener('pointerleave', onPointerLeave, true);
+      document.removeEventListener('pointermove', onPointerMove, true);
+      document.removeEventListener('pointerdown', onPointerDown, true);
       document.removeEventListener('focusin', onFocusIn);
       document.removeEventListener('focusout', onFocusOut);
       document.removeEventListener('click', onClick);

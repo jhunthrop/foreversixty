@@ -1,0 +1,19 @@
+{
+  "line": "Forever Score %d",
+  "components": [
+    { "key": "gear", "label": "Gear" },
+    { "key": "experience", "label": "Experience" },
+    { "key": "parses", "label": "Parses" },
+    { "key": "attendance", "label": "Attendance" },
+    { "key": "discipline", "label": "Preparation" }
+  ],
+  "tiers": {
+    "common": { "label": "Common", "color": "#ffffff" },
+    "uncommon": { "label": "Uncommon", "color": "#1eff00" },
+    "rare": { "label": "Rare", "color": "#0070dd" },
+    "epic": { "label": "Epic", "color": "#a335ee" },
+    "legendary": { "label": "Legendary", "color": "#ff8000" }
+  },
+  "noLogs": "No Forever Score yet: this character has no logs on the site.",
+  "asOf": "as of %s"
+}

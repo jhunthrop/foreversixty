@@ -1,0 +1,160 @@
+---
+// web/src/components/HeaderSearch.astro
+// The compact character lookup in the site header, on every page (Task L8.2 fix round 2 item
+// 7). From 1024px: a 44px magnifier button in the bar (the "/" hint beside it from 1280px)
+// that opens a small panel under the bar holding the design system's Search at its small size.
+// Below 1024: the same small Search as the first row of the Menu. A name, or Name-Realm as the
+// game writes it, opens the profile at the site's default region and ruleset
+// (lib/character-search.ts); the home page's full box is the one with the region and ruleset
+// pickers. "/" outside a text field focuses the home box where there is one, else opens this.
+// Each form's status line is a live region, so it stays in the page while empty (fix round 4
+// item 2: `empty:mt-0` closes the gap without hiding it from assistive tech).
+import { homeCharacterSearchCopy as copy } from '../lib/home-landing-copy';
+import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+
+interface Props {
+  /** `bar` is the desktop button and its panel; `menu` is the Menu's own row. */
+  place: 'bar' | 'menu';
+}
+
+const { place } = Astro.props;
+const id = `site-search-${place}`;
+const FIELD =
+  'border-line-warm-strong bg-raised rounded-control text-text placeholder:text-muted h-11 w-full min-w-0 border pr-3 pl-10 text-[15px]';
+---
+
+{place === 'bar' ? (
+  <div class="site-search" data-header-search>
+    <button
+      type="button"
+      class="site-search-button"
+      aria-expanded="false"
+      aria-controls={`${id}-panel`}
+      aria-label={copy.heading}
+      aria-keyshortcuts="/"
+      title={copy.slashHint}
+      data-header-search-toggle
+      data-testid="site-search-toggle"
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </svg>
+      <kbd class="site-search-kbd" aria-hidden="true">
+        {copy.slashKey}
+      </kbd>
+    </button>
+    <div id={`${id}-panel`} class="site-search-panel" hidden data-header-search-panel>
+      <form
+        class="flex gap-2"
+        role="search"
+        data-character-search
+        data-header-search-form
+        data-status-id={`${id}-status`}
+        data-empty={copy.empty}
+        data-invalid={copy.invalid}
+        novalidate
+      >
+        <label class="sr-only" for={`${id}-name`}>
+          {copy.nameLabel}
+        </label>
+        <span class="relative min-w-0 flex-1">
+          <svg
+            class="text-gold pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+          <input
+            id={`${id}-name`}
+            name="name"
+            type="search"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder={copy.namePlaceholder}
+            aria-describedby={`${id}-status`}
+            class={FIELD}
+            data-testid="site-search-input"
+          />
+        </span>
+        <button
+          type="submit"
+          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong shrink-0 px-3`}
+        >
+          {copy.submit}
+        </button>
+      </form>
+      <p id={`${id}-status`} class="text-strong mt-1 text-[13px] empty:mt-0" role="status" />
+    </div>
+  </div>
+) : (
+  <div class="site-menu-search" data-header-search-menu>
+    <form
+      class="flex gap-2"
+      role="search"
+      data-character-search
+      data-status-id={`${id}-status`}
+      data-empty={copy.empty}
+      data-invalid={copy.invalid}
+      novalidate
+    >
+      <label class="sr-only" for={`${id}-name`}>
+        {copy.nameLabel}
+      </label>
+      <span class="relative min-w-0 flex-1">
+        <svg
+          class="text-gold pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input
+          id={`${id}-name`}
+          name="name"
+          type="search"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder={copy.namePlaceholder}
+          aria-describedby={`${id}-status`}
+          class={FIELD}
+          data-testid="site-menu-search-input"
+        />
+      </span>
+      <button
+        type="submit"
+        class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong shrink-0 px-3`}
+      >
+        {copy.submit}
+      </button>
+    </form>
+    <p id={`${id}-status`} class="text-strong mt-1 text-[13px] empty:mt-0" role="status" />
+  </div>
+)}

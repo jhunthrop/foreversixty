@@ -1035,8 +1035,6 @@ export const bulkCopy = {
   slotSummary: 'By slot',
   slotSummaryNote: 'What the winning set uses in each slot, and what that slot contributed.',
   openInPlanner: 'Open in planner',
-  copyToAddon: 'Copy to addon',
-  copiedToAddon: 'Copied',
   keepFourPiece: 'Only combinations keeping a 4-piece set bonus',
   ranAtStages: (stages: { iterations: number; combos: number }[]): string =>
     stages

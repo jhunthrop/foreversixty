@@ -12,6 +12,45 @@ export const ratingCopy = {
   headingFor: (playerName: string): string => `${playerName}’s rating`,
   explainLink: 'How is this calculated?',
   panelHeading: 'Performance rating',
+  /** Under the profile's heading: the rating reads recent fights, the Forever Score the whole
+   *  record. "Your" only for the viewer's own character (fix round 2 item 1). */
+  panelCaption: (owned: boolean): string => (owned ? 'Your latest logged fights.' : 'Latest logged fights.'),
+  /** The profile's rating card (fix round 2 item 6): "65 of 100" and the one line naming the
+   *  weakest part of a fight. The verdict below carries the count the sparkline's "Last 6
+   *  fights" label did (L8.5 ruling 1). */
+  outOf100: 'of 100',
+  weakestPart: (label: string): string => `Weakest part of a fight: ${label}.`,
+  /** "Weakest part of a fight: Activity." split around the part's name, which links to its
+   *  fight's row (L8.5 ruling 1). */
+  weakestPartLead: 'Weakest part of a fight:',
+  weakestPartEnd: '.',
+  /** The card's one line (L8.5 ruling 1, fix round 1 items 1 and 2, fix round 2 item 1): the
+   *  number is the latest fight's rating, never an average, named by its encounter and its
+   *  day-month date when known, and the count is how many fights are rated. It names nothing of
+   *  the Forever Score: its Parses part comes from parse percentiles, not from this rating.
+   *  "Latest fight (Warden Kelthas, 9 Dec) rated 65 of 100 · 6 fights rated". The card draws
+   *  the three pieces as spans so a phone can break between them (fix round 2 item 7). */
+  verdictLead: (fight: { encounter: string | null; date: string | null } | null): string => {
+    const named = [fight?.encounter ?? null, fight?.date ?? null].filter((part) => part !== null);
+    return named.length === 0 ? 'Latest fight' : `Latest fight (${named.join(', ')})`;
+  },
+  verdictRated: (overall: number): string => `rated ${overall} of 100`,
+  verdictCount: (count: number): string => `${count} ${count === 1 ? 'fight' : 'fights'} rated`,
+  verdictSeparator: ' · ',
+  verdict: (
+    overall: number,
+    count: number,
+    fight: { encounter: string | null; date: string | null } | null = null,
+  ): string =>
+    `${ratingCopy.verdictLead(fight)} ${ratingCopy.verdictRated(overall)}${ratingCopy.verdictSeparator}${ratingCopy.verdictCount(count)}`,
+  /** Under that line (fix round 2 item 2), so a parse and the rating are not read as one. */
+  parseVsRating: 'A parse is your rank against other players; the rating is how well the fight was played.',
+  /** The trend sparkline's accessible name and its table (L8.5 ruling 1). */
+  trendLabel: (count: number, first: number, firstDate: string, last: number, lastDate: string): string =>
+    `Performance Rating, last ${count} fights: ${first} on ${firstDate}, ${last} on ${lastDate}`,
+  trendTableCaption: 'Performance Rating by fight, oldest first',
+  trendTableDate: 'Date',
+  trendTableRating: 'Rating',
   panelMore: 'Rating tab',
   panelEmpty: 'No ratings for this fight yet.',
   /** Under half the role's weight was measurable, so there is no overall. */
@@ -21,6 +60,9 @@ export const ratingCopy = {
   tabEmpty:
     'No ratings for this fight yet. Ratings are computed after a report finishes processing, and some encounters do not have a curated table yet.',
   fetchFailed: 'Ratings did not load.',
+  /** GET .../ratings answered 404 "flagged": a flagged report is evidence of nothing, so it has
+   *  no ratings to show (L8.6 fix round 6 item 5). A plain "not_found" is still `fetchFailed`. */
+  flagged: 'This report is flagged and not rated.',
   nightNotOnePull: 'Ratings are one pull’s. Pick a boss pull from the list to see one.',
   enemiesHaveNone: 'Ratings are for your raid, not the enemy.',
   noMatchingRow: 'This player has no rating for this fight.',
@@ -58,6 +100,8 @@ export const ratingCopy = {
   /** Spec §6's one-action rule: a ranked fight comes from an uploaded report, same as
    *  MyReports.svelte's own reports-empty action. */
   characterEmptyAction: 'Upload a log',
+  /** "Activity: the share of the fight ..." for a part, or null for one the site has no words for. */
+  componentDefinition: (name: string): string | null => COMPONENT_DEFINITIONS[name] ?? null,
 } as const;
 
 const COMPONENT_LABELS: Record<string, string> = {
@@ -72,6 +116,23 @@ const COMPONENT_LABELS: Record<string, string> = {
 export function componentLabel(name: string): string {
   return COMPONENT_LABELS[name] ?? name;
 }
+
+/** Each part of a rating in one line (L8.4 fix round 4 item 3), shortened from /ratings's "What
+ *  each component measures": shown under the profile card's "Weakest part of a fight", the
+ *  way the fight tables define Execution. */
+const COMPONENT_DEFINITIONS: Record<string, string> = {
+  output:
+    'Output: damage or healing done, judged against what your gear could do where the simulator models the spec.',
+  survival: 'Survival: whether you died, and how much avoidable damage you took.',
+  mechanics:
+    'Mechanics: the interrupts and dispels you made, and how long you carried a debuff that should have been dispelled.',
+  utility:
+    'Utility: the average uptime of the buffs, debuffs and cooldowns your spec keeps running for the raid.',
+  preparation:
+    'Preparation: the flask, food, weapon oil or stone and world buffs at the pull, and potions in the fight.',
+  activity:
+    'Activity: the share of the fight you spent doing something rather than idle, leaving out the times the fight expects you to wait.',
+};
 
 /** "Fury" + "Warrior" -> "Fury Warriors"; every vanilla class name pluralises with a bare
  *  "s", so no irregular table is needed. `role` is unused today (the bracket key includes

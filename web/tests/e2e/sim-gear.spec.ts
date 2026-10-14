@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
+import { addonCopy } from '../../src/lib/addon/copy';
 import { bulkCopy } from '../../src/lib/sim/copy';
 
 const activeBuild = JSON.parse(
@@ -302,7 +303,7 @@ test('the results show the equipped baseline, a ranked table and a per-slot summ
   await expect(page.getByTestId('sim-slot-summary')).toBeVisible();
 });
 
-test('the winner opens in the planner and copies to the addon', async ({ page, context }) => {
+test('the winner opens in the planner and copies for the game', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await loadGear(page);
   await page.getByTestId('sim-search-add-16963').click();
@@ -312,9 +313,12 @@ test('the winner opens in the planner and copies to the addon', async ({ page, c
   await expect(page.getByTestId('sim-open-in-planner')).toHaveAttribute('href', /\/planner\?/);
 
   await page.getByTestId('sim-copy-addon').click();
-  await expect(page.getByTestId('sim-copy-addon')).toHaveText(bulkCopy.copiedToAddon);
+  await expect(page.getByTestId('sim-copy-addon')).toHaveText(addonCopy.copiedForGame);
+  // Task L8.1: the addon's build dialog reads FSB1 build codes only; the old FS1 character
+  // export this button used to copy is refused there by design.
   const copied = await page.evaluate(() => navigator.clipboard.readText());
-  expect(copied.startsWith('FS1:')).toBe(true);
+  expect(copied.startsWith('FSB1:')).toBe(true);
+  expect(copied).toContain(':warrior:');
 });
 
 // dps D24: "Only combinations keeping a 4-piece set bonus" and its checkbox used to print

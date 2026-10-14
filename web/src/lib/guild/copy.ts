@@ -156,3 +156,32 @@ export const guildConsentCopy = {
   leave: 'Leave',
   left: 'Left.',
 } as const;
+
+/** Task L8.3: the Roster tab's "In game" column and the line above the table, from the
+ *  guild's newest addon roster snapshot (Task L6.14). The gap is read as DPS: the addon's
+ *  hello carries no unit, so the column's hover says it is the addon's own figure. */
+export const guildRosterAddonCopy = {
+  column: 'In game',
+  columnHover: 'Gear gap in DPS, as the addon reports it',
+  /** Read before each row's cell, for a screen reader: the rows have no table headers. */
+  srLabel: 'In game:',
+  notSeen: '—',
+  notSeenHover: 'Not seen by the addon in the last snapshot',
+  level: (level: number): string => `Level ${level}`,
+  /** Shown after the addon's spec, only when it differs from the site's or the site has none. */
+  addonTag: 'per addon',
+  gap: (gap: number): string => `gap ${gap} DPS`,
+  seen: (clock: string): string => `seen ${clock}`,
+  /** "seen Mon 21:40": the day is named when `seen_at` is not today in the viewer's date. */
+  seenOnDay: (day: string, clock: string): string => `seen ${day} ${clock}`,
+  seenHover: (clock: string): string => `Seen at ${clock} on the member's clock`,
+  /** The hover on a row whose member shares nothing but the time the addon saw them. */
+  withheldHover: 'Details withheld by the member',
+  separator: '·',
+  /** The build name in the In game slot, so it does not read as a stray word. */
+  build: (name: string): string => `build: ${name}`,
+  /** `seen` counts the roster rows the snapshot matched; `total` is every roster row. */
+  snapshotLine: (by: string, when: string, seen: number, total: number): string =>
+    `Roster from the addon · sent by ${by} ${when} · ${seen} of ${total} members seen`,
+  noSnapshot: 'No addon snapshot yet — a guild member with the addon and the companion sends one on logout.',
+} as const;

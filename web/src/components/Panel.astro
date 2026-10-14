@@ -3,8 +3,11 @@ interface Props {
   title?: string;
   sample?: boolean;
   class?: string;
+  /** The title heading level: 2 by default; 3 inside a page section that has its own h2. */
+  level?: 2 | 3;
 }
-const { title, sample = false, class: cls = '' } = Astro.props;
+const { title, sample = false, class: cls = '', level = 2 } = Astro.props;
+const Heading = level === 3 ? 'h3' : 'h2';
 const hasAside = Astro.slots.has('aside');
 const showHeader = Boolean(title) || sample || hasAside;
 ---
@@ -12,7 +15,9 @@ const showHeader = Boolean(title) || sample || hasAside;
 <section class={`flex flex-col gap-4 ${cls}`}>
   {showHeader && (
     <div class="flex items-baseline justify-between">
-      {title && <h2 class="section-title">{title}</h2>}
+      {title && (
+        <Heading class={level === 3 ? 'section-title text-[15px]' : 'section-title'}>{title}</Heading>
+      )}
       <div class="flex items-center gap-3 ml-auto">
         {sample && <span class="pill pill-sample">Sample</span>}
         <slot name="aside" />

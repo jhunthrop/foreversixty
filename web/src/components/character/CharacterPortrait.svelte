@@ -5,7 +5,8 @@
      current-character bar, 2026-10-04), so the square paths and the Blizzard avatar thumbnail
      are gone. Fixed sizes delegate to ClassCrestRing.svelte; `xl` (the home hero alone) keeps
      its own responsive 64px -> 84px recipe since the ring component takes one pixel size.
-     A character with no class on file yet shows a neutral ringed disc of the same size. -->
+     A character with no class on file yet shows a neutral disc of the same size holding a plain
+     class-less silhouette (Forever Score fix round 2 item 4), so it reads as a person, not a hole. -->
 <script lang="ts">
   import { classColorVar } from '../../lib/report/format';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
@@ -29,11 +30,18 @@
 
 {#if character.class === undefined}
   <span
-    class={`${size === 'xl' ? XL_BOX : ''} bg-raised border-line inline-block shrink-0 rounded-full border`}
+    class={`${size === 'xl' ? XL_BOX : ''} bg-raised border-line text-muted inline-flex shrink-0 items-end justify-center overflow-hidden rounded-full border`}
     style={size === 'xl' ? '' : `width: ${SIZE_PX[size]}px; height: ${SIZE_PX[size]}px;`}
     aria-hidden="true"
     data-testid={`${testid}-avatar-fallback`}
-  ></span>
+    ><svg
+      class="h-[78%] w-[78%]"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      data-testid={`${testid}-avatar-silhouette`}
+      ><circle cx="12" cy="9" r="4.5" /><path d="M3.5 24c0-5.2 3.8-8.5 8.5-8.5s8.5 3.3 8.5 8.5z" /></svg
+    ></span
+  >
 {:else if size === 'xl'}
   <img
     src={classCrestSrc(classSlugFromName(character.class))}

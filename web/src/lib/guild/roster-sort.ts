@@ -4,7 +4,10 @@
 // never duplicates a comparator inline.
 import type { GuildRosterRow } from './api';
 
-export type RosterSortKey = 'rank' | 'ilvl' | 'rating' | 'attendance' | 'seen';
+export type RosterSortKey = 'rank' | 'ilvl' | 'rating' | 'attendance' | 'seen' | 'addon_gap';
+
+/** The Roster tab opens on item level (unchanged by L8.3's "In game" column). */
+export const DEFAULT_ROSTER_SORT: RosterSortKey = 'ilvl';
 export type RosterRoleFilter = 'all' | 'tank' | 'healer' | 'dps';
 
 export interface RosterFilters {
@@ -67,6 +70,17 @@ function attendanceRatio(row: GuildRosterRow): number {
   return attendance.present / attendance.nights;
 }
 
+/** L8.3: the addon's gear gap, numeric; a row the snapshot did not carry sorts after every
+ *  row it did, whatever their gaps (the gap may be negative, so no sentinel number). */
+function compareAddonGap(a: GuildRosterRow, b: GuildRosterRow): number {
+  const gapA = a.addon?.gear_gap ?? undefined;
+  const gapB = b.addon?.gear_gap ?? undefined;
+  if (gapA === undefined && gapB === undefined) return 0;
+  if (gapA === undefined) return 1;
+  if (gapB === undefined) return -1;
+  return gapB - gapA;
+}
+
 function loggedAtMs(row: GuildRosterRow): number {
   if (row.logged_at === undefined) return row.logged_recently ? 1 : 0;
   const parsed = Date.parse(row.logged_at);
@@ -74,7 +88,7 @@ function loggedAtMs(row: GuildRosterRow): number {
 }
 
 /** One comparator per sort-header column (spec §4.B): Rank, Item level, Rating,
- *  Attendance, Last seen -- descending in every case (rank-highest, highest ilvl, etc.
+ *  Attendance, Last seen, and L8.3's In game gap -- descending in every case (rank-highest, highest ilvl, etc.
  *  first), never mutates `rows`. */
 export function sortRoster(rows: readonly GuildRosterRow[], key: RosterSortKey): GuildRosterRow[] {
   const sorted = [...rows];
@@ -90,6 +104,8 @@ export function sortRoster(rows: readonly GuildRosterRow[], key: RosterSortKey):
         return attendanceRatio(b) - attendanceRatio(a);
       case 'seen':
         return loggedAtMs(b) - loggedAtMs(a);
+      case 'addon_gap':
+        return compareAddonGap(a, b);
       default:
         return 0;
     }

@@ -317,6 +317,87 @@ test.describe('roster: pin, sort, officer controls', () => {
   });
 });
 
+// Task L8.3: the Roster tab's "In game" column, from the guild's newest addon roster
+// snapshot (Task L6.14). The fixture's snapshot came from Zulmara at 21:43 UTC on 22 Dec; the
+// page's clock is pinned 3 minutes later so the line reads the same on every run.
+test.describe('roster: the In game column from the addon snapshot (L8.3)', () => {
+  // The fixture's "seen" times are dated 22 Dec; "today" is the viewer's local date.
+  test.use({ timezoneId: 'UTC' });
+
+  async function openRoster(page: Page, withSnapshot: boolean): Promise<void> {
+    await page.clock.setFixedTime(new Date('2026-12-22T21:46:00Z'));
+    await stubCore(page, VIEWER_MEMBER, 'member');
+    await page.route(`**/v1/guilds/${GUILD_ID}/home`, (route) =>
+      route.fulfill(envelope(buildMockHome(VIEWER_MEMBER, undefined, null, withSnapshot))),
+    );
+    await page.goto(`${GUILD_URL}#roster`);
+    await expect(page.getByTestId('guild-roster-rows')).toBeVisible();
+  }
+
+  function rowNamed(page: Page, name: string) {
+    return page
+      .getByTestId('guild-roster-rows')
+      .locator('.guild-roster-row')
+      .filter({ has: page.getByTestId('guild-roster-name').getByText(name, { exact: false }) });
+  }
+
+  test('the line above the table names the snapshot; matched rows read level, spec, gap, build and seen time', async ({
+    page,
+  }) => {
+    await openRoster(page, true);
+    const fixtureRows = buildMockHome(VIEWER_MEMBER).roster.length;
+    await expect(page.getByTestId('guild-roster-addon-snapshot')).toHaveText(
+      new RegExp(`^Roster from the addon · sent by Zulmara 3 minutes ago · 3 of ${fixtureRows} members seen$`),
+    );
+    await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-ingame')).toHaveText(
+      /^Level 60 Survival\s+per addon\s+·\s+gap 12 DPS\s+·\s+build: Survival raid\s+·\s+seen 21:40$/,
+    );
+    await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-ingame')).toHaveText(
+      /^Level 60\s+·\s+gap 4 DPS\s+·\s+build: Protection raid\s+·\s+seen 21:38$/,
+    );
+    const none = rowNamed(page, 'Windtalon').getByTestId('guild-roster-ingame-none');
+    await expect(none).toHaveText('—');
+    await expect(none).toHaveAttribute('title', 'Not seen by the addon in the last snapshot');
+    await expect(page.getByTestId('guild-roster-sort-addon_gap')).toHaveAttribute(
+      'title',
+      'Gear gap in DPS, as the addon reports it',
+    );
+  });
+
+  test('sorting by In game orders the gaps numerically, largest first, with "—" last', async ({ page }) => {
+    await openRoster(page, true);
+    // Default sort unchanged: item level, the viewer pinned first.
+    await expect(page.getByTestId('guild-roster-sort-ilvl')).toContainText('▾');
+    await page.getByTestId('guild-roster-sort-addon_gap').click();
+    await expect(page.getByTestId('guild-roster-sort-addon_gap')).toContainText('▾');
+    const names = await page
+      .getByTestId('guild-roster-rows')
+      .getByTestId('guild-roster-name')
+      .allTextContents();
+    const cleaned = names.map((n) => n.replace(' (you)', '').trim());
+    // Zulmara is the viewer, pinned first (unchanged rule); then Kraggor 4; Duskstrider's gap
+    // is null (no gear consent) and sorts after every row that has one.
+    expect(cleaned.slice(0, 2)).toEqual(['Zulmara', 'Kraggor']);
+    const gaps = await page.getByTestId('guild-roster-ingame-gap').allTextContents();
+    expect(gaps).toEqual(['gap 12 DPS', 'gap 4 DPS']);
+    const cells = page.getByTestId('guild-roster-rows').locator('.guild-roster-row');
+    const count = await cells.count();
+    for (let i = 2; i < count; i++) {
+      await expect(cells.nth(i).getByTestId('guild-roster-ingame-gap')).toHaveCount(0);
+    }
+  });
+
+  test('with no snapshot: the null line, and every row "—"', async ({ page }) => {
+    await openRoster(page, false);
+    await expect(page.getByTestId('guild-roster-addon-snapshot')).toHaveText(
+      'No addon snapshot yet — a guild member with the addon and the companion sends one on logout.',
+    );
+    await expect(page.getByTestId('guild-roster-ingame')).toHaveCount(0);
+    const rows = await page.getByTestId('guild-roster-rows').locator('.guild-roster-row').count();
+    await expect(page.getByTestId('guild-roster-ingame-none')).toHaveCount(rows);
+  });
+});
+
 test.describe('readiness: worst-first sort and officer Nudge', () => {
   test('readiness rows sort worst-first by failing checks', async ({ page }) => {
     await stubCore(page, VIEWER_OFFICER, 'leader');

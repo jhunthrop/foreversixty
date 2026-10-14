@@ -75,4 +75,27 @@ describe('Header', () => {
     expect(html).not.toContain('overflow-x-auto');
     expect(html).not.toContain('nav-scroll-fade');
   });
+
+  it('carries a compact character lookup on every page: a bar button keyed to "/" and a Menu row (Forever Score fix round 2 item 7)', async () => {
+    const html = await renderHeader('/ratings');
+    expect(html).toMatch(/<button[^>]*class="site-search-button"[^>]*aria-keyshortcuts="\/"/);
+    expect(html).toMatch(/class="site-search-panel" hidden/);
+    expect(html).toContain('data-testid="site-search-input"');
+    expect(html).toContain('data-testid="site-menu-search-input"');
+    expect(html.match(/placeholder="Character name"/g)).toHaveLength(2);
+    // The Menu's lookup comes before the doors.
+    expect(html.indexOf('site-menu-search')).toBeLessThan(html.indexOf('id="primary-nav"'));
+  });
+
+  it('keeps each lookup status live region present while empty, closing its gap without hiding it (fix round 4 item 2)', async () => {
+    const html = await renderHeader('/ratings');
+    const regions = [
+      ...html.matchAll(/<p id="site-search-(bar|menu)-status" class="([^"]*)" role="status"><\/p>/g),
+    ];
+    expect(regions).toHaveLength(2);
+    for (const [, , cls] of regions) {
+      expect(cls.split(' ')).toContain('empty:mt-0');
+      expect(cls).not.toMatch(/hidden|sr-only|display/);
+    }
+  });
 });

@@ -59,6 +59,34 @@ describe('createReportRatingsFetch', () => {
     expect(hook.error).not.toBe('');
   });
 
+  it('a 404 "flagged" is its own status, not a failure; a 404 "not_found" still fails (L8.6 fix 6 item 5)', async () => {
+    const answer = (code: string): Response =>
+      new Response(
+        JSON.stringify({ ok: false, data: null, error: { code, message: 'from the API' }, request_id: 'r' }),
+        { status: 404, headers: { 'content-type': 'application/json' } },
+      );
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => answer('flagged')),
+    );
+    const flagged = createReportRatingsFetch(API);
+    flagged.load('flaggedfight', 2);
+    await flush();
+    expect(flagged.status).toBe('flagged');
+    expect(flagged.data).toBeNull();
+    expect(flagged.error).toBe('');
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => answer('not_found')),
+    );
+    const missing = createReportRatingsFetch(API);
+    missing.load('missingfight', 2);
+    await flush();
+    expect(missing.status).toBe('failed');
+    expect(missing.error).toBe('from the API');
+  });
+
   it('switching fight while a request is in flight drops the stale response', async () => {
     let resolveFirst: ((r: Response) => void) | undefined;
     const upstream = vi.fn<GlobalFetch>(

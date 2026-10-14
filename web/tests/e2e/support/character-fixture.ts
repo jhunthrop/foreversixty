@@ -4,14 +4,69 @@
 // character-retry.spec.ts drives its failed state, and a fixture that drifted between the
 // two would let one of them pass against a shape the other no longer sees.
 import type { Page } from '@playwright/test';
+import { readFileSync, existsSync } from 'node:fs';
+import {
+  GEAR_FIXTURE_ITEMS,
+  GEAR_FIXTURE_LONG_NAME,
+  GEAR_PANEL_FIXTURE,
+} from '../../../src/fixtures/character-gear';
+
+/** The gear panel (api/openapi.yaml `CharacterGear`, Task L8.6): every row state, from
+ *  src/fixtures/character-gear.ts. The shared CHARACTER below leaves it out, as an API that
+ *  predates it does; character-gear.spec.ts adds it. */
+export const GEAR = GEAR_PANEL_FIXTURE;
+
+/** The same with Shoulder worn as "Mantle of the Unforgiving Majesty", a long name whose note
+ *  cannot share its line on a phone (fix round 5 item 1). */
+export const GEAR_LONG_NAME = { ...GEAR_PANEL_FIXTURE, gear: GEAR_FIXTURE_LONG_NAME };
+
+/** The build's items/priest.json for the fixture's ids: the real rows (quality, icon,
+ *  two-handed, stats), so the names take their colours and icons and the tooltip has a row. */
+export const GEAR_ITEMS = { build: 'fixture', class_slug: 'priest', items: GEAR_FIXTURE_ITEMS };
+
+const ICONS = new URL('../../../../data/builds/1.60.1.70291/icons/', import.meta.url);
+
+/** Serves an item icon from the repository's real build, which the fixture build does not
+ *  carry; 404 for one it lacks, and for each name in `missing`. */
+export async function routeGearIcons(page: Page, missing: readonly string[] = []): Promise<void> {
+  await page.route('**/data/*/icons/*.webp', (route) => {
+    const name = new URL(route.request().url()).pathname.split('/').pop() ?? '';
+    const file = new URL(name, ICONS);
+    return existsSync(file) && !missing.includes(name)
+      ? route.fulfill({ status: 200, contentType: 'image/webp', body: readFileSync(file) })
+      : route.fulfill({ status: 404, body: '' });
+  });
+}
 
 export const CHARACTER_URL = '**/v1/characters/us/hardcore/elyra-duskvale';
 export const CHARACTER_PATH = '/character/us/hardcore/elyra-duskvale';
 
+/** Five dates of Forever Score, oldest first, rising from rare into epic. */
+export const SCORE_HISTORY = [
+  { date: '2026-10-12', score: 1240, tier: 'rare' },
+  { date: '2026-10-19', score: 1380, tier: 'rare' },
+  { date: '2026-10-26', score: 1520, tier: 'epic' },
+  { date: '2026-11-01', score: 1690, tier: 'epic' },
+  { date: '2026-11-04', score: 1830, tier: 'epic' },
+];
+
+/** Every best and history row carries `execution_score` (fix round 1 item 3), as the API
+ *  always sends it (a number, or null for an unscored fight): a row without one read "NaN%". */
 export const CHARACTER = {
   ok: true,
   data: {
-    character: { name: 'Elyra Duskvale', region: 'us', ruleset: 'hardcore', class: 'Priest' },
+    // Who the character is (api/openapi.yaml `CharacterIdentity`, Task L8.4): each field is
+    // always sent, null when unknown -- a spec that needs a null overrides it.
+    character: {
+      name: 'Elyra Duskvale',
+      region: 'us',
+      ruleset: 'hardcore',
+      class: 'Priest',
+      guild: { name: 'Cx66 Olympus', rank: 'officer' },
+      level: 60,
+      race: 'Night Elf',
+      realm: 'Classic Beta PvP',
+    },
     best: [
       {
         encounter: 'Warden Kelthas',
@@ -24,6 +79,7 @@ export const CHARACTER = {
         fought_at: '2026-12-09T22:10:00Z',
         report_id: 'fixture2abcd',
         fight_index: 3,
+        execution_score: 0.94,
       },
       {
         encounter: 'Deep Warden',
@@ -36,6 +92,7 @@ export const CHARACTER = {
         fought_at: '2026-12-08T20:00:00Z',
         report_id: 'otherreport1',
         fight_index: 1,
+        execution_score: 0.81,
       },
     ],
     history: [
@@ -50,6 +107,7 @@ export const CHARACTER = {
         fought_at: '2026-12-09T22:10:00Z',
         report_id: 'fixture2abcd',
         fight_index: 3,
+        execution_score: 0.94,
       },
       {
         encounter: 'Deep Warden',
@@ -62,9 +120,14 @@ export const CHARACTER = {
         fought_at: '2026-12-08T20:00:00Z',
         report_id: 'otherreport1',
         fight_index: 1,
+        execution_score: 0.81,
       },
     ],
     builds_seen: [{ talent_split: '31/20/0', spec: 'Discipline', first_seen: '2026-12-09T22:10:00Z' }],
+    // The score over time (api/openapi.yaml `ScorePoint`): one point per UTC date, oldest first.
+    // The page draws it only beside a score, which this fixture leaves out; character-score
+    // supplies one.
+    score_history: SCORE_HISTORY,
   },
   error: null,
   request_id: 'r',

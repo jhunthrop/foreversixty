@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { GuildRosterRow } from './api';
 import {
   DEFAULT_ROSTER_FILTERS,
+  DEFAULT_ROSTER_SORT,
   altOfMainName,
   applyRosterFilters,
   isBelowRatingFloor,
@@ -106,6 +107,40 @@ describe('applyRosterFilters', () => {
 });
 
 describe('sortRoster', () => {
+  it('sorts by the addon’s gear gap numerically, largest first, rows the addon did not see, or saw without gear consent, last (L8.3)', () => {
+    const addon = (gear_gap: number | null) => ({
+      level: 60,
+      spec: 'warrior-protection',
+      gear_gap,
+      build: null,
+      seen_at: '2026-12-22 21:40',
+      snapshot_at: '2026-12-22T21:43:00Z',
+    });
+    const rows = [
+      row({ character_key: 'none-a', addon: null }),
+      row({ character_key: 'gap-9', addon: addon(9) }),
+      row({ character_key: 'none-b' }),
+      row({ character_key: 'gap-31', addon: addon(31) }),
+      row({ character_key: 'gap-0', addon: addon(0) }),
+      row({ character_key: 'null-gap', addon: addon(null) }),
+      row({ character_key: 'gap-100', addon: addon(100) }),
+    ];
+    // 100 before 31 before 9: numeric, never "100" < "31" < "9" as strings.
+    expect(sortRoster(rows, 'addon_gap').map((r) => r.character_key)).toEqual([
+      'gap-100',
+      'gap-31',
+      'gap-9',
+      'gap-0',
+      'none-a',
+      'none-b',
+      'null-gap',
+    ]);
+  });
+
+  it('keeps item level as the default sort (L8.3: default sort unchanged)', () => {
+    expect(DEFAULT_ROSTER_SORT).toBe('ilvl');
+  });
+
   it('sorts by item level descending', () => {
     const rows = [row({ character_key: 'a', item_level: 55 }), row({ character_key: 'b', item_level: 70 })];
     expect(sortRoster(rows, 'ilvl').map((r) => r.character_key)).toEqual(['b', 'a']);

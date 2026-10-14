@@ -309,7 +309,7 @@ describe("Score", function()
 			assert.are.equal("Forever Score 1830 " .. DOT .. " Epic " .. DOT .. " as of 4 Nov", lines[1])
 			assert.are.equal(6, #lines)
 			assert.are.equal("Gear 412", lines[2])
-			assert.are.equal("Discipline 78", lines[6])
+			assert.are.equal("Preparation 78", lines[6])
 		end)
 
 		it("drops the tier when the record has none, and is empty for no record", function()

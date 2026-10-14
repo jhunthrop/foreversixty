@@ -33,6 +33,7 @@
     descriptorTestid,
     testid = 'character',
     below,
+    align = 'center',
   }: {
     character: MeCharacter;
     size: 'sm' | 'md' | 'lg' | 'xl';
@@ -51,6 +52,10 @@
      *  through it, so they sit under the name rather than under the whole portrait+name
      *  block. Every other caller renders nothing extra here, unchanged. */
     below?: Snippet;
+    /** The portrait against the text column: centred (every list and chip), or topped against
+     *  the name ('start', the character profile: L8.4 fix round 4 item 8), so a taller text
+     *  column -- the owner's sync line -- does not move it. */
+    align?: 'center' | 'start';
   } = $props();
 
   const line = $derived(
@@ -68,7 +73,7 @@
   const headingClass = $derived(`m-0 p-0 font-normal${size === 'xl' ? ` ${XL_NAME_BOX}` : ''}`);
 </script>
 
-<div class="flex min-w-0 items-center gap-3">
+<div class={`flex min-w-0 gap-3 ${align === 'start' ? 'items-start' : 'items-center'}`}>
   <CharacterPortrait {character} {size} {testid} />
   <div class="flex min-w-0 flex-col gap-0.5">
     {#if heading}

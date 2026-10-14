@@ -58,3 +58,13 @@ export function relativeDay(d: Date, now: Date = new Date()): string {
   if (days < RELATIVE_DAY_CEILING_DAYS) return `${days} day${days === 1 ? '' : 's'} ago`;
   return `${SHORT_MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
 }
+
+/**
+ * "9 Dec 2026", in UTC: the Forever Score pages' table date (fix round 2 item 6). Day first,
+ * the same month names the addon's "as of 4 Nov" uses, so a table and the card read alike.
+ * An unreadable date renders as nothing.
+ */
+export function formatDayMonthYear(d: Date): string {
+  if (Number.isNaN(d.getTime())) return '';
+  return `${d.getUTCDate()} ${SHORT_MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+}
