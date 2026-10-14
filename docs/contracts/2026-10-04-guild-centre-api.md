@@ -67,7 +67,7 @@ the home, only a verified member reads it.
   "last_report_at": "...",            // newest report this character's account uploaded, null if none
   "may_remove": false, "may_approve": false,
   "addon": {                           // this character's line in addon_snapshot; null when not in it
-    "level": 58, "spec": "hunter-marksmanship", "gear_gap": 6, "build": "MM raid",   // build null when none announced
+    "level": 58, "spec": "hunter-marksmanship", "gear_gap": 6, "build": "MM raid",   // all four null without gear consent; build also null when none announced
     "seen_at": "2026-11-04 14:01",     // the sender's local YYYY-MM-DD HH:MM, as stored
     "snapshot_at": "2026-11-04T20:58:00Z"   // addon_snapshot.received_at
   }
@@ -81,7 +81,9 @@ its realm half), so the guild's realm is the row's. The first line of a name win
 matches no row is never added as one; it counts only in `addon_snapshot.members`. `level`,
 `spec` (a spec slug), `gear_gap` and `build` are as that member's addon announced them
 (contract 2's `hello`); the snapshot carries only the members its sender's guild tab had live
-data for, so a member that addon had no data for reads `null`.
+data for, so a member that addon had no data for reads `null`. Those four fields are also `null`
+when the row's member did not give `gear` (or `gear_bags`) consent, the same rule that withholds
+the row's class, spec and item level; `seen_at` and `snapshot_at` stay and `addon` stays non-null.
 
 A character is present in a report when it has a ranked or rated row there (`fight_metrics`
 not removed, or `rating_scores`), read by character key, never the log's GUIDs in

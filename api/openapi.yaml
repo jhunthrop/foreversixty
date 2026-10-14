@@ -990,13 +990,15 @@ components:
         Always present, null when the guild has no snapshot or the newest one does not carry
         the character. A snapshot line is matched to a row by character name, any case: the
         snapshot's names carry no realm (a Name-Realm line drops its realm half), so the
-        guild's realm is the row's; the first line of a name wins.
+        guild's realm is the row's; the first line of a name wins. level, spec, gear_gap and build
+        are null unless the row's member gave gear consent (the home withholds spec and gear for
+        a roster-consent member); seen_at and snapshot_at stay.
       required: [level, spec, gear_gap, build, seen_at, snapshot_at]
       properties:
-        level: { type: integer, description: "The level the member's addon announced" }
-        spec: { type: string, description: "A spec slug, e.g. warrior-arms" }
-        gear_gap: { type: integer, description: "The gear gap the member's addon announced (contract 2's hello); may be negative" }
-        build: { type: string, nullable: true, description: "The build name the member's addon announced; null when it announced none" }
+        level: { type: integer, nullable: true, description: "The level the member's addon announced; null without gear consent" }
+        spec: { type: string, nullable: true, description: "A spec slug, e.g. warrior-arms; null without gear consent" }
+        gear_gap: { type: integer, nullable: true, description: "The gear gap the member's addon announced (contract 2's hello); may be negative; null without gear consent" }
+        build: { type: string, nullable: true, description: "The build name the member's addon announced; null when it announced none or without gear consent" }
         seen_at: { type: string, description: "The sender's local time, YYYY-MM-DD HH:MM, as stored" }
         snapshot_at: { type: string, format: date-time, description: "When the site received the snapshot (addon_snapshot.received_at), RFC 3339 UTC" }
     GuildAddonSnapshot:

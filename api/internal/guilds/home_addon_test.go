@@ -135,13 +135,13 @@ func TestHomeRosterCarriesTheNewestAddonSnapshot(t *testing.T) {
 		t.Fatalf("roster = %d rows, want 3 (an unmatched snapshot member is never a row)", len(byName))
 	}
 	thorgrim := byName["Thorgrim"].Addon
-	if thorgrim == nil || thorgrim.Level != 52 || thorgrim.Spec != "warrior-arms" || thorgrim.GearGap != 3 ||
+	if thorgrim == nil || thorgrim.Level == nil || *thorgrim.Level != 52 || thorgrim.Spec == nil || *thorgrim.Spec != "warrior-arms" || thorgrim.GearGap == nil || *thorgrim.GearGap != 3 ||
 		thorgrim.Build == nil || *thorgrim.Build != "Arms raid" || thorgrim.SeenAt != "2026-11-04 14:01" ||
 		!thorgrim.SnapshotAt.Equal(newer) {
 		t.Fatalf("Thorgrim's addon = %+v, want the newer snapshot's line", thorgrim)
 	}
 	healbot := byName["Healbot"].Addon
-	if healbot == nil || healbot.Level != 40 || healbot.GearGap != -2 || healbot.Build != nil || healbot.SeenAt != "2026-11-04 13:55" {
+	if healbot == nil || healbot.Level == nil || *healbot.Level != 40 || healbot.GearGap == nil || *healbot.GearGap != -2 || healbot.Build != nil || healbot.SeenAt != "2026-11-04 13:55" {
 		t.Fatalf("Healbot's addon = %+v, want level 40, gear gap -2 and a null build (matched by name, any case)", healbot)
 	}
 	if loner := byName["Loner"].Addon; loner != nil {
@@ -223,4 +223,114 @@ func TestHomeWithAnEmptyAddonSnapshotCountsZeroMembers(t *testing.T) {
 			t.Errorf("%s's addon = %s, want null: the newest snapshot carries nobody", name, raw)
 		}
 	}
+}
+
+// setConsent sets a member's derived guild_members consent.
+func setConsent(t *testing.T, pool *pgxpool.Pool, gid, user int64, consent string) {
+	t.Helper()
+	if _, err := pool.Exec(context.Background(),
+		`update guild_members set consent = $3 where guild_id = $1 and user_id = $2`, gid, user, consent); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestHomeAddonFieldsAreNullWithoutGearConsent(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid, reader := addonGuild(t, h)
+	var healbotUser int64
+	if err := h.pool.QueryRow(context.Background(),
+		`select user_id from guild_characters where character_key = 'us/hardcore/Healbot'`).Scan(&healbotUser); err != nil {
+		t.Fatal(err)
+	}
+	setConsent(t, h.pool, gid, healbotUser, "roster")
+	seedRosterSnapshot(t, h.pool, gid, "us/hardcore/Thorgrim", `[
+	  {"name":"Thorgrim-Yell","level":52,"spec":"warrior-arms","gear_gap":3,"build":"Arms raid","seen_at":"2026-11-04 14:01"},
+	  {"name":"Healbot-Yell","level":40,"spec":"priest-holy","gear_gap":-2,"build":"Heals","seen_at":"2026-11-04 13:55"}]`, time.Now())
+
+	_, top := readHomeRaw(t, h, gid, reader)
+
+	hb := byNameRaw(t, top, "Healbot")
+	for _, key := range []string{"level", "spec", "gear_gap", "build"} {
+		if got, ok := hb[key]; !ok || string(got) != "null" {
+			t.Errorf("roster-consent Healbot addon.%s = %s (present %v), want an explicit null", key, got, ok)
+		}
+	}
+	if string(hb["seen_at"]) != `"2026-11-04 13:55"` || len(hb["snapshot_at"]) == 0 {
+		t.Errorf("Healbot's addon seen_at/snapshot_at = %s / %s, want both kept", hb["seen_at"], hb["snapshot_at"])
+	}
+	th := byNameRaw(t, top, "Thorgrim")
+	if string(th["level"]) != "52" || string(th["spec"]) != `"warrior-arms"` {
+		t.Errorf("gear-consent Thorgrim addon = %v, want the fields", th)
+	}
+}
+
+func TestHomePendingRowCarriesTheAddonLine(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid := seedGuild(t, h.pool, "Forever")
+	boss := seedUser(t, h.pool, "pending-boss@example.com")
+	seedCharacter(t, h.pool, gid, boss, "us/hardcore/Boss", "officer", true)
+	seedExport(t, h.pool, boss, "us/hardcore/Boss", "us", "hardcore", "Boss")
+	newbie := seedUser(t, h.pool, "pending-newbie@example.com")
+	seedCharacter(t, h.pool, gid, newbie, "us/hardcore/Newbie", "member", false)
+	seedExport(t, h.pool, newbie, "us/hardcore/Newbie", "us", "hardcore", "Newbie")
+	recomputeMembership(t, h.pool, gid, boss)
+	recomputeMembership(t, h.pool, gid, newbie)
+	setConsent(t, h.pool, gid, newbie, "roster")
+	seedRosterSnapshot(t, h.pool, gid, "us/hardcore/Boss", `[
+	  {"name":"Newbie-Yell","level":20,"spec":"mage-fire","gear_gap":4,"build":"","seen_at":"2026-11-04 10:00"}]`, time.Now())
+
+	view, _ := readHomeRaw(t, h, gid, boss)
+
+	if len(view.Pending) != 1 || view.Pending[0].Name != "Newbie" {
+		t.Fatalf("pending = %+v, want Newbie alone", view.Pending)
+	}
+	a := view.Pending[0].Addon
+	if a == nil || a.SeenAt != "2026-11-04 10:00" {
+		t.Fatalf("pending Newbie addon = %+v, want the snapshot line", a)
+	}
+	if a.Level != nil || a.Spec != nil || a.GearGap != nil || a.Build != nil {
+		t.Fatalf("pending Newbie (roster consent) addon = %+v, want the four gated fields null", a)
+	}
+}
+
+func TestHomeAddonMatchesAHyphenatedRealm(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid, reader := addonGuild(t, h)
+	seedRosterSnapshot(t, h.pool, gid, "us/hardcore/Thorgrim", `[
+	  {"name":"Thorgrim-Azjol-Nerub","level":33,"spec":"warrior-arms","gear_gap":1,"build":"","seen_at":"2026-11-04 09:00"}]`, time.Now())
+
+	view, _ := readHomeRaw(t, h, gid, reader)
+
+	for _, row := range view.Roster {
+		if row.Name == "Thorgrim" {
+			if row.Addon == nil || row.Addon.Level == nil || *row.Addon.Level != 33 {
+				t.Fatalf("Thorgrim's addon = %+v, want the Azjol-Nerub line (level 33)", row.Addon)
+			}
+			return
+		}
+	}
+	t.Fatal("Thorgrim not on the roster")
+}
+
+func TestHomeAddonDuplicateNameFirstLineWins(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid, reader := addonGuild(t, h)
+	seedRosterSnapshot(t, h.pool, gid, "us/hardcore/Thorgrim", `[
+	  {"name":"Thorgrim-Yell","level":41,"spec":"warrior-fury","gear_gap":1,"build":"","seen_at":"2026-11-04 09:00"},
+	  {"name":"Thorgrim-Other","level":59,"spec":"warrior-arms","gear_gap":2,"build":"","seen_at":"2026-11-04 09:01"}]`, time.Now())
+
+	view, _ := readHomeRaw(t, h, gid, reader)
+
+	if view.AddonSnapshot == nil || view.AddonSnapshot.Members != 2 {
+		t.Fatalf("addon_snapshot = %+v, want 2 members counted", view.AddonSnapshot)
+	}
+	for _, row := range view.Roster {
+		if row.Name == "Thorgrim" {
+			if row.Addon == nil || row.Addon.Level == nil || *row.Addon.Level != 41 {
+				t.Fatalf("Thorgrim's addon = %+v, want the first line (level 41)", row.Addon)
+			}
+			return
+		}
+	}
+	t.Fatal("Thorgrim not on the roster")
 }

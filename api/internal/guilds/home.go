@@ -187,13 +187,15 @@ type RosterRow struct {
 // AddonMemberView is one roster row's member line from the guild's newest roster
 // snapshot (guild_roster_snapshots, written by POST /v1/addon/exports' outbox, contract 4 of
 // docs/contracts/addon-v2.md): what a guildmate's addon saw of this character on its guild
-// tab. Level, Spec (a slug), GearGap and Build are as the member's addon announced them;
+// tab. Level, Spec (a slug), GearGap and Build are as the member's addon announced them, and
+// all four are null unless the row's member gave gear consent (the home withholds spec and
+// gear for a roster-consent member, and the addon's copy follows);
 // Build is null when it announced none. SeenAt is the sender's local "YYYY-MM-DD HH:MM" as
 // stored; SnapshotAt is when the site received the snapshot, RFC 3339 UTC.
 type AddonMemberView struct {
-	Level      int       `json:"level"`
-	Spec       string    `json:"spec"`
-	GearGap    int       `json:"gear_gap"`
+	Level      *int      `json:"level"`
+	Spec       *string   `json:"spec"`
+	GearGap    *int      `json:"gear_gap"`
 	Build      *string   `json:"build"`
 	SeenAt     string    `json:"seen_at"`
 	SnapshotAt time.Time `json:"snapshot_at"`
@@ -448,12 +450,14 @@ func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []R
 		if !ok {
 			continue
 		}
-		line := &AddonMemberView{
-			Level: m.Level, Spec: m.Spec, GearGap: m.GearGap, SeenAt: m.SeenAt, SnapshotAt: snap.ReceivedAt,
-		}
-		if m.Build != "" {
-			build := m.Build
-			line.Build = &build
+		line := &AddonMemberView{SeenAt: m.SeenAt, SnapshotAt: snap.ReceivedAt}
+		if hasGearConsent(roster[i].Consent) {
+			level, spec, gap := m.Level, m.Spec, m.GearGap
+			line.Level, line.Spec, line.GearGap = &level, &spec, &gap
+			if m.Build != "" {
+				build := m.Build
+				line.Build = &build
+			}
 		}
 		roster[i].Addon = line
 	}
