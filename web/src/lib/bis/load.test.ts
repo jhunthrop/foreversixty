@@ -87,23 +87,23 @@ describe('fixtureSpecs', () => {
 
 describe('loadBisFile', () => {
   it('falls back to the committed fixture when the real build has no bis/ directory yet', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338');
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374');
     expect(file).not.toBeNull();
     expect(file?.spec).toBe('hunter-marksmanship');
     expect(file?.bands.length).toBeGreaterThan(0);
   });
 
   it('returns null for a spec with neither a real file nor a fixture', () => {
-    expect(loadBisFile('nosuch-spec', '1.60.1.70338')).toBeNull();
+    expect(loadBisFile('nosuch-spec', '1.60.1.70374')).toBeNull();
   });
 
   it('reads an empty "new at this band" list as an array, never null', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338')!;
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374')!;
     for (const band of file.bands) expect(Array.isArray(band.new_at_band)).toBe(true);
   });
 
   it('reads coverage as an object on every band, never undefined', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338')!;
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374')!;
     for (const band of file.bands) expect(typeof band.coverage).toBe('object');
   });
 });
@@ -469,7 +469,7 @@ describe('bandLevels', () => {
   it('lists every band once, ascending, deduplicated across factions', () => {
     const file: BisFile = {
       spec: 'hunter-marksmanship',
-      build: '1.60.1.70338',
+      build: '1.60.1.70374',
       engine_version: 'e1',
       generated_at: 'test',
       bands: [
@@ -485,7 +485,7 @@ describe('bandLevels', () => {
 
 describe('bandEntry', () => {
   it('finds the band+faction pair the contract keys bands by', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338')!;
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374')!;
     const band30Horde = bandEntry(file, 30, 'horde');
     expect(band30Horde?.band).toBe(30);
     expect(band30Horde?.faction).toBe('horde');
@@ -503,14 +503,14 @@ describe('bandEntry', () => {
 
 describe('filledSlots', () => {
   it('returns all 17 planner slots, in the planner’s own order', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338')!;
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374')!;
     const band = bandEntry(file, 20, 'alliance')!;
     const rows = filledSlots(band);
     expect(rows.map((row) => row.slot)).toEqual([...SLOTS]);
   });
 
   it('marks a slot the band has no pick for as missing, rather than dropping the row', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338')!;
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374')!;
     const band = bandEntry(file, 20, 'alliance')!;
     const thin = { ...band, slots: band.slots.filter((slot) => slot.slot !== 'ranged') };
     const rows = filledSlots(thin);
@@ -521,12 +521,12 @@ describe('filledSlots', () => {
 
 describe('itemQualities', () => {
   it('maps the real build’s own hunter items by id to quality', () => {
-    const qualities = itemQualities('1.60.1.70338', 'hunter');
+    const qualities = itemQualities('1.60.1.70374', 'hunter');
     expect(qualities.size).toBeGreaterThan(0);
   });
 
   it('returns an empty map for a class the build has no item file for', () => {
-    expect(itemQualities('1.60.1.70338', 'not-a-class').size).toBe(0);
+    expect(itemQualities('1.60.1.70374', 'not-a-class').size).toBe(0);
   });
 
   it('returns an empty map for a build that does not exist, rather than throwing', () => {
@@ -589,7 +589,7 @@ describe('isEmptySlotRow', () => {
 
 describe('itemDetails', () => {
   it('reads name, quality, item level, required level and icon off the real build’s item file', () => {
-    const details = itemDetails('1.60.1.70338', 'hunter');
+    const details = itemDetails('1.60.1.70374', 'hunter');
     expect(details.size).toBeGreaterThan(0);
     const [, detail] = [...details][0];
     expect(typeof detail.name).toBe('string');
@@ -606,7 +606,7 @@ describe('itemDetails', () => {
 
 describe('itemHoverModel', () => {
   it('takes the name from the BiS row (the caller’s own itemName), everything else from itemDetails', () => {
-    const details = itemDetails('1.60.1.70338', 'hunter');
+    const details = itemDetails('1.60.1.70374', 'hunter');
     const [id, detail] = [...details][0];
     const model = itemHoverModel(id, 'The BiS file’s own item name', details);
     expect(model).toEqual({
@@ -627,7 +627,7 @@ describe('itemHoverModel', () => {
 
 describe('loadLootFile', () => {
   it('reads the real build’s sources and quest map', () => {
-    const loot = loadLootFile('1.60.1.70338');
+    const loot = loadLootFile('1.60.1.70374');
     expect(loot.sources.length).toBeGreaterThan(0);
     expect(Object.keys(loot.quests).length).toBeGreaterThan(0);
   });
@@ -640,29 +640,29 @@ describe('loadLootFile', () => {
 
 describe('previousBandLevel', () => {
   it('is undefined at the file’s first band', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338')!;
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374')!;
     expect(previousBandLevel(file, 20)).toBeUndefined();
   });
 
   it('is the band immediately before, per bandLevels', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338')!;
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374')!;
     expect(previousBandLevel(file, 30)).toBe(20);
   });
 
   it('is undefined for a band the file does not carry', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338')!;
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374')!;
     expect(previousBandLevel(file, 999)).toBeUndefined();
   });
 });
 
 describe('changedSinceBand', () => {
   it('is undefined at the file’s first band', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338')!;
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374')!;
     expect(changedSinceBand(file, 20, 'alliance')).toBeUndefined();
   });
 
   it('lists only the slots whose item id changed from the previous band, faction held constant', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338')!;
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374')!;
     const changed = changedSinceBand(file, 30, 'horde')!;
     expect(changed.length).toBeGreaterThan(0);
     for (const entry of changed) {
@@ -671,7 +671,7 @@ describe('changedSinceBand', () => {
   });
 
   it('does not list a slot whose pick is unchanged between bands', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70338')!;
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70374')!;
     const changed = changedSinceBand(file, 30, 'horde')!;
     const trinket1Before = bandEntry(file, 20, 'horde')?.slots.find((s) => s.slot === 'trinket1');
     const trinket1After = bandEntry(file, 30, 'horde')?.slots.find((s) => s.slot === 'trinket1');
