@@ -15,8 +15,9 @@
     addonGapLabel,
     addonIdentity,
     addonLevelSpec,
-    addonSeenClock,
+    addonSeen,
     addonSnapshotLine,
+    localDateKey,
   } from '../../lib/guild/roster-addon';
   import {
     DEFAULT_ROSTER_FILTERS,
@@ -95,7 +96,11 @@
     [...new Set(roster.map((r) => r.class).filter((c): c is string => c !== undefined))].sort(),
   );
   const altOf = $derived(altOfMainName(roster));
-  const snapshotLine = $derived(addonSnapshotLine(addonSnapshot, [...roster, ...pending], now));
+  // Every roster row once (a pending row may also be in `roster`): the sender's name lookup,
+  // the "members seen" count and its total all read this.
+  const allRows = $derived([...new Map([...roster, ...pending].map((r) => [r.character_key, r])).values()]);
+  const snapshotLine = $derived(addonSnapshotLine(addonSnapshot, allRows, now));
+  const today = $derived(localDateKey(now));
 
   function toggle(key: 'verifiedOnly' | 'belowFloorOnly'): void {
     filters = { ...filters, [key]: !filters[key] };
@@ -135,12 +140,20 @@
   const SORT_HEADER =
     'h-9 bg-none border-none p-0 text-[11px] font-bold tracking-[0.1em] uppercase text-muted';
   const SORT_HEADER_ACTIVE = 'text-gold';
-  const ROW = 'guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-b py-2.5';
+  const ROW =
+    'guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-b py-2.5 xl:flex-nowrap';
 </script>
 
 {#snippet inGame(row: GuildRosterRow)}
   {@const identity = addonIdentity(row)}
-  <span class="text-[12px]">
+  {@const none = identity === null || row.addon === undefined || row.addon === null}
+  <!-- The slot is the same width on every row, so the row's height never depends on how much
+       the addon knew: its text wraps inside it. Below xl it has a line of its own, and a row
+       the snapshot did not carry has none there at all (no lone "—"). -->
+  <div
+    class={`min-w-0 basis-full text-[12px] break-words xl:shrink-0 xl:basis-[280px] ${none ? 'hidden xl:block' : ''}`}
+    data-testid="guild-roster-ingame-slot"
+  >
     <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
     {#if identity === null || row.addon === undefined || row.addon === null}
       <span
@@ -150,29 +163,26 @@
         data-testid="guild-roster-ingame-none">{guildRosterAddonCopy.notSeen}</span
       >
     {:else}
-      {@const clock = addonSeenClock(row.addon.seen_at)}
+      {@const withheld =
+        row.addon.level === null && row.addon.spec === null && row.addon.gear_gap === null && row.addon.build === null}
+      {@const seen = addonSeen(row.addon.seen_at, today, withheld)}
       {@const gapLabel = addonGapLabel(row.addon.gear_gap)}
+      {@const build = row.addon.build !== null && row.addon.build !== '' ? row.addon.build : null}
       <span data-testid="guild-roster-ingame"
-        >{#if identity.level !== null}{addonLevelSpec(identity.level, identity.spec)}
-          <span class="text-muted">{guildRosterAddonCopy.addonTag}</span>
-        {/if}
-        {#if gapLabel !== null}
-          {#if identity.level !== null}<span class="text-muted">{guildRosterAddonCopy.separator}</span>{/if}
-          <span class="tabular font-mono" data-testid="guild-roster-ingame-gap">{gapLabel}</span>
-        {/if}
-        {#if row.addon.build !== null && row.addon.build !== ''}
-          <span class="text-muted">{guildRosterAddonCopy.separator}</span>
-          {row.addon.build}
-        {/if}
-        {#if clock !== null}
-          {#if identity.level !== null || gapLabel !== null || (row.addon.build !== null && row.addon.build !== '')}<span
-              class="text-muted">{guildRosterAddonCopy.separator}</span
-            >{/if}
-          <span class="text-muted">{guildRosterAddonCopy.seen(clock)}</span>
-        {/if}</span
+        >{#if identity.level !== null}{addonLevelSpec(identity.level, identity.spec)}{#if identity.spec !== null}
+            &#32;<span class="text-muted">{guildRosterAddonCopy.addonTag}</span>{/if}{/if}{#if gapLabel !== null}{#if identity.level !== null}
+            &#32;<span class="text-muted">{guildRosterAddonCopy.separator}</span>
+          {/if}
+          <span class="tabular font-mono" data-testid="guild-roster-ingame-gap">{gapLabel}</span>{/if}{#if build !== null}{#if identity.level !== null || gapLabel !== null}
+            &#32;<span class="text-muted">{guildRosterAddonCopy.separator}</span>
+          {/if}
+          {build}{/if}{#if seen !== null}{#if identity.level !== null || gapLabel !== null || build !== null}
+            &#32;<span class="text-muted">{guildRosterAddonCopy.separator}</span>
+          {/if}
+          <span class="text-muted" style="cursor:help" title={seen.hover}>{seen.label}</span>{/if}</span
       >
     {/if}
-  </span>
+  </div>
 {/snippet}
 
 <section class="flex flex-col gap-4" data-testid="guild-roster-tab">
@@ -247,10 +257,10 @@
 
   <p class="text-muted text-[13px]" data-testid="guild-roster-addon-snapshot">{snapshotLine}</p>
 
-  <div class="flex flex-wrap gap-6 px-1" data-testid="guild-roster-sort-header">
+  <div class="flex flex-wrap gap-6 pl-1 xl:gap-3 xl:pr-0" data-testid="guild-roster-sort-header">
     {#each SORT_COLUMNS as col (col.key)}
       <button
-        class={`${SORT_HEADER} ${sortKey === col.key ? SORT_HEADER_ACTIVE : ''}`}
+        class={`${SORT_HEADER} ${col.key === 'addon_gap' ? 'min-w-0 text-left xl:ml-auto xl:w-[280px] xl:shrink-0' : ''} ${sortKey === col.key ? SORT_HEADER_ACTIVE : ''}`}
         title={col.hover}
         onclick={() => (sortKey = col.key)}
         data-testid={`guild-roster-sort-${col.key}`}
@@ -258,6 +268,8 @@
         {col.label}{sortKey === col.key ? ' ▾' : ''}
       </button>
     {/each}
+    <!-- Where each row's actions group sits, so the In game heading stays over its slot. -->
+    <span class="hidden xl:block xl:w-[220px] xl:shrink-0" aria-hidden="true"></span>
   </div>
 
   {#if ordered.length === 0}
@@ -276,48 +288,55 @@
             >
               {row.name}{pinned ? ' (you)' : ''}
             </span>
-            <span class="text-muted text-[12px]">
-              {row.spec ?? ''}{#if altOf.has(row.character_key)}
-                <span class="text-muted text-[11px]">alt of {altOf.get(row.character_key)}</span>
-              {/if}
-            </span>
+            <span class="text-muted text-[12px]" data-testid="guild-roster-spec"
+              >{row.spec ?? ''}{#if altOf.has(row.character_key)}{row.spec ? ' · ' : ''}<span
+                  class="text-muted text-[11px]">alt of {altOf.get(row.character_key)}</span
+                >{/if}</span
+            >
           </div>
-          {#if row.rank === 'officer' || row.rank === 'leader'}
-            <span class="pill pill-site">{row.rank === 'leader' ? 'Leader' : 'Officer'}</span>
-          {/if}
-          {#if row.logged_recently}
-            <span
-              class="pill"
-              style="color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)"
-            >
-              Logged in the last day
-            </span>
-          {/if}
-          {#if row.item_level !== undefined}
-            <span class="tabular font-mono text-[13px]">ilvl {row.item_level}</span>
-          {/if}
-          {#if row.attendance !== undefined}
-            <span class="text-muted tabular font-mono text-[12px]"
-              >{row.attendance.present}/{row.attendance.nights} nights</span
-            >
-          {/if}
-          {#if row.best_parse !== undefined && row.best_parse !== null}
-            <span class="text-muted tabular font-mono text-[12px]">
-              {Math.round(row.best_parse.value)} best {row.best_parse.metric.toUpperCase()}
-            </span>
-          {/if}
-          {#if row.professions !== undefined && row.professions.length > 0}
-            <span class="text-muted text-[11px]">{row.professions.join(' / ')}</span>
-          {/if}
-          {#if row.rating !== undefined && row.rating !== null}
-            <span class="tabular font-mono text-[13px]" style="cursor:help" title={ratingTooltip(row)}>
-              {row.rating.overall} <span class="text-muted text-[11px]">rating</span>
-            </span>
-          {/if}
+          <!-- Below xl the facts flow with the rest of the row; at xl they wrap inside their own
+               group, so the In game slot and the actions keep their place at the row's end. -->
+          <div class="contents xl:flex xl:min-w-0 xl:flex-1 xl:flex-wrap xl:items-center xl:gap-x-3 xl:gap-y-1">
+            {#if row.rank === 'officer' || row.rank === 'leader'}
+              <span class="pill pill-site">{row.rank === 'leader' ? 'Leader' : 'Officer'}</span>
+            {/if}
+            {#if row.logged_recently}
+              <span
+                class="pill"
+                style="color:#7bff5c;background:rgba(30,255,0,.10);border-color:rgba(30,255,0,.25)"
+              >
+                Logged in the last day
+              </span>
+            {/if}
+            {#if row.item_level !== undefined}
+              <span class="tabular font-mono text-[13px]">ilvl {row.item_level}</span>
+            {/if}
+            {#if row.attendance !== undefined}
+              <span class="text-muted tabular font-mono text-[12px]"
+                >{row.attendance.present}/{row.attendance.nights} nights</span
+              >
+            {/if}
+            {#if row.best_parse !== undefined && row.best_parse !== null}
+              <span class="text-muted tabular font-mono text-[12px]">
+                {Math.round(row.best_parse.value)} best {row.best_parse.metric.toUpperCase()}
+              </span>
+            {/if}
+            {#if row.professions !== undefined && row.professions.length > 0}
+              <span class="text-muted text-[11px]">{row.professions.join(' / ')}</span>
+            {/if}
+            {#if row.rating !== undefined && row.rating !== null}
+              <span class="tabular font-mono text-[13px]" style="cursor:help" title={ratingTooltip(row)}>
+                {row.rating.overall} <span class="text-muted text-[11px]">rating</span>
+              </span>
+            {/if}
+          </div>
           {@render inGame(row)}
-          <div class="ml-auto flex items-center gap-3">
+          <div
+            class="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-3 xl:w-[220px]"
+            data-testid="guild-roster-actions"
+          >
             {#if row.consent !== 'roster'}
-              <GuildRosterHandoff path={rowPath(row)} />
+              <GuildRosterHandoff path={rowPath(row)} stacked />
             {/if}
             {#if officer && row.rank !== 'leader'}
               <button

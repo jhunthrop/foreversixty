@@ -87,7 +87,7 @@ test.describe('What it does in the game (L8.3)', () => {
   test('the commands and the companion handshake follow the surfaces', async ({ page }) => {
     await page.goto('/setup');
     const commands = page.getByTestId('setup-commands').locator('li');
-    await expect(commands).toHaveCount(11);
+    await expect(commands).toHaveCount(12);
     await expect(commands.first()).toHaveText('/fs: paste or copy a build');
     await expect(commands.last()).toHaveText('/fs help: every command');
     await expect(page.getByTestId('setup-handshake')).toContainText('Seen by the site');

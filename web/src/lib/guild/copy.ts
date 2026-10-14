@@ -168,11 +168,18 @@ export const guildRosterAddonCopy = {
   notSeen: '—',
   notSeenHover: 'Not seen by the addon in the last snapshot',
   level: (level: number): string => `Level ${level}`,
-  addonTag: '(addon)',
-  gap: (gap: number): string => `${gap} DPS`,
+  /** Shown after the addon's spec, only when it differs from the site's or the site has none. */
+  addonTag: 'per addon',
+  gap: (gap: number): string => `gap ${gap} DPS`,
   seen: (clock: string): string => `seen ${clock}`,
+  /** "seen Mon 21:40": the day is named when `seen_at` is not today in the viewer's date. */
+  seenOnDay: (day: string, clock: string): string => `seen ${day} ${clock}`,
+  seenHover: (clock: string): string => `Seen at ${clock} on the member's clock`,
+  /** The hover on a row whose member shares nothing but the time the addon saw them. */
+  withheldHover: 'Details withheld by the member',
   separator: '·',
-  snapshotLine: (when: string, by: string, members: number): string =>
-    `Roster from the addon · received ${when} by ${by} · ${members} member${members === 1 ? '' : 's'}`,
+  /** `seen` counts the roster rows the snapshot matched; `total` is every roster row. */
+  snapshotLine: (by: string, when: string, seen: number, total: number): string =>
+    `Roster from the addon · sent by ${by} ${when} · ${seen} of ${total} members seen`,
   noSnapshot: 'No addon snapshot yet — a guild member with the addon and the companion sends one on logout.',
 } as const;

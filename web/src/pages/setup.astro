@@ -90,7 +90,6 @@ const flows = [
 
     <Panel title={addonCopy.setupStep2Title}>
       <div class="flex flex-col gap-4 p-[18px]">
-        <p class="text-muted text-[13px]">{addonCopy.pageNoNetwork}</p>
         <p class="text-muted text-[13px]">{addonCopy.currentDataBuild(activeBuild.build)}</p>
         <ul class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-6">
           {links.map((link) => (
@@ -129,11 +128,11 @@ const flows = [
                 <p class="text-muted text-[14px] leading-relaxed">{surface.body}</p>
                 {surface.images.map((image) => (
                   <div
-                    class="border-line-soft rounded-control w-full overflow-hidden border bg-[#0b0d12]"
+                    class="border-line-soft rounded-control bg-raised max-h-[420px] w-full overflow-hidden border"
                     style={`max-width: ${image.width}px; aspect-ratio: ${image.width} / ${image.height}`}
                   >
                     <img
-                      class="block h-full w-full"
+                      class="block h-full w-full object-contain"
                       src={image.src}
                       width={image.width}
                       height={image.height}
@@ -151,18 +150,20 @@ const flows = [
             <ul class="flex flex-col gap-1 text-[14px]">
               {addonCopy.commands.map(({ command, description }) => (
                 <li>
-                  <code class="font-mono text-[13px]">{command}:</code>{' '}
-                  <span class="text-muted">{description}</span>
+                  <code class="font-mono text-[13px] font-bold">{command}</code>
+                  <span class="text-muted">: {description}</span>
                 </li>
               ))}
             </ul>
-            {addonCopy.commandsTesters.map((line) => (
-              <p class="text-muted text-[13px]">{line}</p>
-            ))}
+            <div class="flex flex-col gap-1 pt-1">
+              <h4 class="label text-muted text-[11px]">{addonCopy.commandsTestersLabel}</h4>
+              <p class="text-muted font-mono text-[12px]">{addonCopy.commandsTestersLine}</p>
+            </div>
           </div>
           <div class="flex flex-col gap-2" data-testid="setup-handshake">
             <h3 class="label text-muted">{addonCopy.handshakeTitle}</h3>
             <p class="text-muted text-[14px] leading-relaxed">{addonCopy.handshake.join(' ')}</p>
+            <p class="text-muted text-[14px] leading-relaxed">{addonCopy.pageNoNetwork}</p>
           </div>
         </section>
         <details class="border-line rounded-control border">

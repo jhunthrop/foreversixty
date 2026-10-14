@@ -9,7 +9,10 @@ import type { GuildHome } from '../../lib/guild/api';
 import { guildRosterAddonCopy } from '../../lib/guild/copy';
 import GuildRosterTable from './GuildRosterTable.svelte';
 
-const NOW = new Date('2026-12-22T21:46:00Z');
+// A local-time instant, so "today in the viewer's date" is 2026-12-22 in any time zone; the
+// snapshot's own received_at is derived from it (three minutes earlier).
+const NOW = new Date(2026, 11, 22, 21, 46);
+const RECEIVED = new Date(NOW.getTime() - 3 * 60_000).toISOString();
 
 function props(home: GuildHome) {
   return {
@@ -24,7 +27,7 @@ function props(home: GuildHome) {
     onRemove: () => {},
     onApproveAll: () => {},
     rowPath: () => ({ region: 'us' as const, ruleset: 'pvp' as const, slug: 'x' }),
-    addonSnapshot: home.addon_snapshot,
+    addonSnapshot: home.addon_snapshot ? { ...home.addon_snapshot, received_at: RECEIVED } : null,
     now: NOW,
   };
 }
@@ -78,40 +81,90 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(names.slice(0, 3)).toEqual(['Zulmara', 'Windtalon', 'Pyrewisp']);
   });
 
-  it('a matched row shows the level (and the spec where it differs) tagged "(addon)", the gap in DPS, the build and the seen time', () => {
+  it('a matched row shows the level, the spec tagged "per addon" only where it differs, "gap N DPS", the build and the seen time', () => {
     const byName = rows(withSnapshot);
     // Zulmara: the site says Marksmanship, the addon says Survival.
     const zulmara = byName.get('Zulmara') ?? '';
     expect(zulmara).toContain('data-testid="guild-roster-ingame"');
-    expect(text(zulmara)).toContain('Level 60 Survival (addon) · 12 DPS · Survival raid · seen 21:40');
-    expect(zulmara).toMatch(/class="[^"]*text-muted[^"]*"[^>]*>\(addon\)</);
-    // Kraggor: the addon agrees with the site's Protection, so only the level shows.
-    expect(text(byName.get('Kraggor') ?? '')).toContain(
-      'Level 60 (addon) · 4 DPS · Protection raid · seen 21:38',
-    );
+    expect(text(zulmara)).toContain('Level 60 Survival per addon · gap 12 DPS · Survival raid · seen 21:40');
+    expect(zulmara).toMatch(/class="[^"]*text-muted[^"]*"[^>]*>per addon</);
+    // Kraggor: the addon agrees with the site's Protection, so the level shows with no tag.
+    const kraggor = text(byName.get('Kraggor') ?? '');
+    expect(kraggor).toContain('Level 60 · gap 4 DPS · Protection raid · seen 21:38');
+    expect(kraggor).not.toContain('per addon');
+    expect(kraggor).not.toContain('(addon)');
+    expect(withSnapshot).not.toContain('(addon)');
   });
 
-  it('a consent-withheld row (level, spec, gap, build all null) shows only "seen HH:MM"', () => {
+  it("the seen time hovers \"Seen at HH:MM on the member's clock\"", () => {
+    const zulmara = rows(withSnapshot).get('Zulmara') ?? '';
+    expect(zulmara).toContain(`title="${guildRosterAddonCopy.seenHover('21:40')}"`);
+    expect(guildRosterAddonCopy.seenHover('21:40')).toBe("Seen at 21:40 on the member's clock");
+  });
+
+  it('a seen time that is not today names its day', () => {
+    expect(text(rows(withSnapshot).get('Duskstrider') ?? '')).toContain('seen Mon 23:12');
+  });
+
+  it('a consent-withheld row (level, spec, gap, build all null) shows only the seen time, hovering "Details withheld by the member"', () => {
     const dusk = rows(withSnapshot).get('Duskstrider') ?? '';
     expect(dusk).toContain('data-testid="guild-roster-ingame"');
     expect(dusk).not.toContain('guild-roster-ingame-gap');
-    expect(dusk).not.toContain('(addon)');
+    expect(dusk).not.toContain('per addon');
     const cell = dusk.slice(
       dusk.indexOf('data-testid="guild-roster-ingame"'),
       dusk.indexOf('guild-roster-handoff'),
     );
     expect(cell).not.toContain('DPS');
-    expect(text(dusk)).toContain('seen 23:12');
+    expect(cell).toContain('title="Details withheld by the member"');
     expect(text(dusk)).not.toContain('· seen');
   });
 
-  it('a row the snapshot did not carry shows "—", hovering "Not seen by the addon in the last snapshot"', () => {
+  it('a row the snapshot did not carry shows "—", hovering "Not seen by the addon in the last snapshot", on desktop only', () => {
     const windtalon = rows(withSnapshot).get('Windtalon') ?? '';
     const cell = /<span[^>]*data-testid="guild-roster-ingame-none"[^>]*>[^<]*</.exec(windtalon)?.[0] ?? '';
     expect(cell).toContain(`title="${guildRosterAddonCopy.notSeenHover}"`);
     expect(guildRosterAddonCopy.notSeenHover).toBe('Not seen by the addon in the last snapshot');
     expect(cell).toContain('>—<');
     expect(windtalon).not.toContain('data-testid="guild-roster-ingame"');
+    // A phone shows no lone "—": the whole slot is hidden below md.
+    const slot = /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(windtalon)?.[0] ?? '';
+    expect(slot).toMatch(/class="[^"]*\bhidden\b[^"]*xl:block/);
+    // A matched row's slot is shown on phones.
+    const matched = /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(rows(withSnapshot).get('Zulmara') ?? '')?.[0] ?? '';
+    expect(matched).not.toMatch(/\bhidden\b/);
+  });
+
+  it('gives the In game text a fixed slot at the end of the row, before an actions group that never wraps', () => {
+    for (const [name, part] of rows(withSnapshot)) {
+      const slotAt = part.indexOf('data-testid="guild-roster-ingame-slot"');
+      const actionsAt = part.indexOf('data-testid="guild-roster-actions"');
+      expect(slotAt, name).toBeGreaterThan(-1);
+      expect(actionsAt, `${name} actions`).toBeGreaterThan(slotAt);
+      const slot = /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(part)?.[0] ?? '';
+      expect(slot).toContain('xl:basis-[280px]');
+      expect(slot).toContain('xl:shrink-0');
+      expect(slot).toContain('min-w-0');
+      const actions = /<div[^>]*data-testid="guild-roster-actions"[^>]*>/.exec(part)?.[0] ?? '';
+      expect(actions).toContain('flex-nowrap');
+      expect(actions).toContain('shrink-0');
+      // Nothing of the row sits between the slot and the actions but the slot's own content.
+      expect(part.slice(actionsAt)).not.toContain('data-testid="guild-roster-ingame-slot"');
+    }
+  });
+
+  it('the In game header sits over the same slot', () => {
+    const header = /<button[^>]*data-testid="guild-roster-sort-addon_gap"[^>]*>/.exec(withSnapshot)?.[0] ?? '';
+    expect(header).toContain('xl:w-[280px]');
+  });
+
+  it('puts a dot between the spec and "alt of {main}" rather than running them together', () => {
+    const alt = [...rows(withSnapshot).values()].find((part) => part.includes('alt of '));
+    expect(alt, 'the fixture has an alt row').toBeDefined();
+    expect(text(alt ?? '')).toMatch(/[A-Za-z] · alt of [A-Z]/);
+    expect(text(alt ?? '')).not.toMatch(/[a-z]alt of/);
+    const spec = /guild-roster-spec[^>]*>/.exec(alt ?? '');
+    expect(spec).not.toBeNull();
   });
 
   it('names the column for a screen reader on every row', () => {
@@ -120,9 +173,11 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     }
   });
 
-  it('puts the snapshot line above the table: when, by whom, how many', () => {
+  it('puts the snapshot line above the table: who sent it, when, and how many members were seen', () => {
+    const home = buildMockHome(VIEWER_MEMBER);
+    const seen = home.roster.filter((r) => r.addon !== null).length;
     const line = /data-testid="guild-roster-addon-snapshot"[^>]*>([^<]*)</.exec(withSnapshot)?.[1].trim();
-    expect(line).toBe('Roster from the addon · received 3 minutes ago by Zulmara · 4 members');
+    expect(line).toBe(`Roster from the addon · sent by Zulmara 3 minutes ago · ${seen} of ${home.roster.length} members seen`);
     expect(withSnapshot.indexOf('guild-roster-addon-snapshot')).toBeLessThan(
       withSnapshot.indexOf('data-testid="guild-roster-rows"'),
     );

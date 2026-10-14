@@ -7,7 +7,8 @@
 // three numbered panels. The GitHub release link is derived from links.json's githubRepo, so
 // it is asserted off the rendered output rather than as a literal substring of the source,
 // same as the page it replaces.
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { createPageContainer } from '../test-support/page-container';
 import { describe, expect, it, beforeAll } from 'vitest';
 import { addonCopy } from '../lib/addon/copy';
@@ -122,6 +123,26 @@ const SPEC_PATH = new URL('../../../docs/superpowers/specs/2026-10-11-addon-v2-d
 const PUBLIC_DIR = new URL('../../public/', import.meta.url);
 const MAX_IMAGE_BYTES = 200 * 1024;
 
+/** The addon's own `settingsCommands` block, "/fs x: what it does" per line, read from the
+ *  addon's Locale.lua so this page cannot drift from it again. FS_LOCALE_LUA overrides the
+ *  path; by default the main checkout's working tree beside this one, else this repo's copy.
+ *  Until L5.3 lands `/fs loot` in that file, the line is inserted after `/fs ready` (the
+ *  position it is ruled to have) so the gate stays green; once it is there this is a no-op. */
+function localeSettingsCommands(): string[] {
+  const candidates = [
+    process.env.FS_LOCALE_LUA,
+    fileURLToPath(new URL('../../../../foreversixty/addon/ForeverSixty/Locale.lua', import.meta.url)),
+    fileURLToPath(new URL('../../../addon/ForeverSixty/Locale.lua', import.meta.url)),
+  ].filter((p): p is string => p !== undefined && existsSync(p));
+  const lua = readFileSync(candidates[0], 'utf8');
+  const block = /settingsCommands\s*=\s*\{([\s\S]*?)\n\t\},/.exec(lua)?.[1] ?? '';
+  const lines = [...block.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  expect(lines.length, 'settingsCommands block not found').toBeGreaterThan(9);
+  const loot = '/fs loot: what an item is worth to you';
+  if (!lines.includes(loot)) lines.splice(lines.findIndex((l) => l.startsWith('/fs floor')), 0, loot);
+  return lines;
+}
+
 /** The `### 4.N Title` headings of the spec's §4, in file order. */
 function specSurfaceHeadings(): { section: string; title: string }[] {
   const spec = readFileSync(SPEC_PATH, 'utf8');
@@ -231,29 +252,77 @@ describe('/setup: what it does in the game (L8.3)', () => {
     expect(textOf(block)).not.toMatch(/screenshot|capture|coming soon/i);
   });
 
-  it('lists every command /fs help prints, with the addon’s own one-line descriptions, from the copy file', () => {
+  it('lists exactly the addon’s own settingsCommands, in its order, from the copy file', () => {
     expect(source).toContain('addonCopy.commands');
-    expect(addonCopy.commands.length).toBeGreaterThanOrEqual(11);
-    expect(addonCopy.commands.map((c) => c.command)).toEqual([
-      '/fs',
-      '/fs copy',
-      '/fs chip',
-      '/fs inspect',
-      '/fs link',
-      '/fs group',
-      '/fs ready',
-      '/fs floor N',
-      '/fs options',
-      '/fs diag',
-      '/fs help',
-    ]);
-    const list = textOf(html.slice(html.indexOf('data-testid="setup-commands"')));
+    const expected = localeSettingsCommands();
+    expect(addonCopy.commands.map((c) => `${c.command}: ${c.description}`)).toEqual(expected);
+    expect(addonCopy.commands).toHaveLength(12);
+    expect(addonCopy.commands.map((c) => c.command).slice(6, 9)).toEqual(['/fs ready', '/fs loot', '/fs floor N']);
+    // The tags between the command and its colon read as a space in textOf; a browser shows none.
+    const list = textOf(html.slice(html.indexOf('data-testid="setup-commands"'))).replace(/ :/g, ':');
     for (const { command, description } of addonCopy.commands) {
       expect(description.length).toBeGreaterThan(0);
       expect(source).not.toContain(description);
       expect(list).toContain(`${command}: ${description}`);
     }
-    for (const line of addonCopy.commandsTesters) expect(list).toContain(line);
+  });
+
+  it('keeps the colon outside the bold monospace command, so the command is exactly what is typed', () => {
+    const block = html.slice(html.indexOf('data-testid="setup-commands"'));
+    for (const { command } of addonCopy.commands) {
+      expect(block).toMatch(new RegExp(`<code class="[^"]*font-bold[^"]*">${command}</code>`));
+      expect(block).not.toContain(`${command}:</code>`);
+    }
+  });
+
+  it('puts the testers’ commands on one muted line under a small “For testers” label', () => {
+    const block = html.slice(html.indexOf('data-testid="setup-commands"'), html.indexOf('data-testid="setup-handshake"'));
+    expect(addonCopy.commandsTestersLabel).toBe('For testers');
+    expect(addonCopy.commandsTestersLine).toBe('/fs diag verbose, /fs inbox, /fs hello, /fs seen, /fs record');
+    expect(source).toContain('addonCopy.commandsTestersLine');
+    expect(block.match(/For testers/g)).toHaveLength(1);
+    expect(block).toMatch(/<p class="[^"]*text-muted[^"]*">\/fs diag verbose, \/fs inbox, \/fs hello, \/fs seen, \/fs record<\/p>/);
+  });
+
+  it('says what leaves the machine and sits the no-network sentence next to the handshake', () => {
+    const text = addonCopy.handshake.join(' ');
+    for (const part of [
+      'level, spec, talents, equipped gear',
+      'bags when the bag switch is on',
+      'any sim request',
+      'live roster',
+      'Share my build with my guild',
+      'seen HH:MM',
+      'Seen by the site',
+    ]) {
+      expect(text).toContain(part);
+    }
+    const block = html.slice(html.indexOf('data-testid="setup-handshake"'));
+    expect(textOf(block)).toContain(textOf(addonCopy.pageNoNetwork));
+    // Moved out of step 2, not repeated there.
+    expect(html.split(textOf(addonCopy.pageNoNetwork).slice(0, 30)).length - 1).toBe(1);
+  });
+
+  it('gives every image box a surface colour and a 420 px height cap, the image contained', () => {
+    for (const image of addonCopy.surfaces.flatMap((s) => s.images)) {
+      const at = html.indexOf(`src="${image.src}"`);
+      const box = html.slice(html.lastIndexOf('<div', at), at);
+      expect(box, image.src).toContain('bg-raised');
+      expect(box).toContain('max-h-[420px]');
+      expect(box).toContain(`max-width: ${image.width}px`);
+      const tag = /<img\s[^>]*>/.exec(html.slice(at - 200))?.[0] ?? '';
+      expect(tag).toContain('object-contain');
+    }
+  });
+
+  it('shows the hunter’s own captures, never a state that is not in the picture', () => {
+    const alt = (src: string) => addonCopy.surfaces.flatMap((s) => s.images).find((i) => i.src === src)?.alt ?? '';
+    expect(alt('/addon/bag-arrow.jpg')).toContain('small green arrow on the top-right corner of an item in the second row');
+    expect(alt('/addon/bag-arrow.jpg')).not.toMatch(/gloves/i);
+    expect(alt('/addon/guild-tab.jpg')).not.toMatch(/too old|3 of 97/);
+    expect(alt('/addon/talent-marks-trees.jpg')).toMatch(/hunter/i);
+    expect(alt('/addon/build-dialog-paste.jpg')).toMatch(/hunter/i);
+    expect(alt('/addon/settings-switches.jpg')).toMatch(/hunter|eight switches/i);
   });
 
   it('states the companion handshake in three sentences, naming the “Seen by the site” line', () => {

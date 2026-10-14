@@ -321,6 +321,9 @@ test.describe('roster: pin, sort, officer controls', () => {
 // snapshot (Task L6.14). The fixture's snapshot came from Zulmara at 21:43 UTC on 22 Dec; the
 // page's clock is pinned 3 minutes later so the line reads the same on every run.
 test.describe('roster: the In game column from the addon snapshot (L8.3)', () => {
+  // The fixture's "seen" times are dated 22 Dec; "today" is the viewer's local date.
+  test.use({ timezoneId: 'UTC' });
+
   async function openRoster(page: Page, withSnapshot: boolean): Promise<void> {
     await page.clock.setFixedTime(new Date('2026-12-22T21:46:00Z'));
     await stubCore(page, VIEWER_MEMBER, 'member');
@@ -342,14 +345,15 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
     page,
   }) => {
     await openRoster(page, true);
+    const fixtureRows = buildMockHome(VIEWER_MEMBER).roster.length;
     await expect(page.getByTestId('guild-roster-addon-snapshot')).toHaveText(
-      'Roster from the addon · received 3 minutes ago by Zulmara · 4 members',
+      new RegExp(`^Roster from the addon · sent by Zulmara 3 minutes ago · 3 of ${fixtureRows} members seen$`),
     );
     await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-ingame')).toHaveText(
-      /^Level 60 Survival\s+\(addon\)\s+·\s+12 DPS\s+·\s+Survival raid\s+·\s+seen 21:40$/,
+      /^Level 60 Survival\s+per addon\s+·\s+gap 12 DPS\s+·\s+Survival raid\s+·\s+seen 21:40$/,
     );
     await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-ingame')).toHaveText(
-      /^Level 60\s+\(addon\)\s+·\s+4 DPS\s+·\s+Protection raid\s+·\s+seen 21:38$/,
+      /^Level 60\s+·\s+gap 4 DPS\s+·\s+Protection raid\s+·\s+seen 21:38$/,
     );
     const none = rowNamed(page, 'Windtalon').getByTestId('guild-roster-ingame-none');
     await expect(none).toHaveText('—');
@@ -375,7 +379,7 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
     // is null (no gear consent) and sorts after every row that has one.
     expect(cleaned.slice(0, 2)).toEqual(['Zulmara', 'Kraggor']);
     const gaps = await page.getByTestId('guild-roster-ingame-gap').allTextContents();
-    expect(gaps).toEqual(['12 DPS', '4 DPS']);
+    expect(gaps).toEqual(['gap 12 DPS', 'gap 4 DPS']);
     const cells = page.getByTestId('guild-roster-rows').locator('.guild-roster-row');
     const count = await cells.count();
     for (let i = 2; i < count; i++) {
