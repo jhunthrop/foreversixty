@@ -12,8 +12,8 @@ const lootBuild = "1.60.1.70291"
 
 func TestDPSPerPointReadsTheBuildsFile(t *testing.T) {
 	useRepoGearData(t)
-	if got, ok := DPSPerPoint(lootBuild, "warrior-arms"); !ok || got != (DPSPoint{Reference: "attack_power", DPS: 0.2342}) {
-		t.Fatalf("warrior-arms = %v, %v; want 0.2342", got, ok)
+	if got, ok := DPSPerPoint(lootBuild, "warrior-arms"); !ok || got != (DPSPoint{Reference: "attack_power", DPS: 0.2222}) {
+		t.Fatalf("warrior-arms = %v, %v; want 0.2222", got, ok)
 	}
 	// The newest loaded build answers for a run that names no build.
 	if got, ok := DPSPerPoint("", "mage-fire"); !ok || got.DPS <= 0 || got.Reference != "spell_power" {

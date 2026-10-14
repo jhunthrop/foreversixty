@@ -60,7 +60,7 @@ func useRepoData(t *testing.T) *trees.Data {
 // band-20 alliance best-in-slot set), with a level= section: a level-24 warrior is
 // measured against its own band-20 set.
 const goldenGear = "FS1:1.60.1.70291:warrior:human:371000000/0/0:back=4706,chest=6627,feet=10402," +
-	"finger1=20439,finger2=12054,hands=10401,head=250528,legs=10400,main_hand=23171,neck=20444," +
+	"finger1=20439,finger2=12054,hands=10401,head=250528,legs=10400,main_hand=7230,neck=20444," +
 	"ranged=285279,shoulder=3480,waist=10403,wrist=2868|level=24"
 
 // goldenEncounter is the first of this file's own encounter ids (990701..990704).

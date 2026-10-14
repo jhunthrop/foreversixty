@@ -28,11 +28,14 @@ func TestBandPicksAreTheBareEntryThroughTheUnconfirmedWalk(t *testing.T) {
 	if head.ItemID != 12640 || head.Name != "Lionheart Helm" || head.Source != "Blacksmithing" || head.Chance != nil || head.Promoted {
 		t.Errorf("head = %+v, want Lionheart Helm (12640) from Blacksmithing, no chance, not promoted", head)
 	}
-	// Hand of Justice (11815) and the first runner-up, Blackhand's Breadth (13965), are both
-	// client-unconfirmed: the second runner-up takes the slot, with no chance.
+	// leveling-bis drops client-unconfirmed items before ranking (ruling 2), so the file's
+	// own pick stands: Darkmoon Card: Heroism, a quest reward with no drop chance, not
+	// promoted. (Before the ranker change the own pick, Hand of Justice, was unconfirmed and
+	// the walk promoted Frozen Heart of the Mountain; the walk's rules are pinned on
+	// hand-built rows below.)
 	tr := picks["trinket2"]
-	if tr.ItemID != 249469 || tr.Name != "Frozen Heart of the Mountain" || tr.Source != "Enchanting" || tr.Chance != nil || !tr.Promoted {
-		t.Errorf("trinket2 = %+v, want Frozen Heart of the Mountain (249469), promoted, no chance", tr)
+	if tr.ItemID != 19287 || tr.Name != "Darkmoon Card: Heroism" || tr.Source != "Darkmoon Warlords Deck" || tr.Chance != nil || tr.Promoted {
+		t.Errorf("trinket2 = %+v, want Darkmoon Card: Heroism (19287), not promoted, no chance", tr)
 	}
 	if p, ok := picks["off_hand"]; ok {
 		t.Errorf("off_hand = %+v, want no pick (the file's row has no item_id)", p)
@@ -41,9 +44,9 @@ func TestBandPicksAreTheBareEntryThroughTheUnconfirmedWalk(t *testing.T) {
 		t.Errorf("%d picks, want 16 (every slot but the off-hand)", len(picks))
 	}
 
-	// Band 20: the original pick keeps its drop chance; the unconfirmed two-hander gives way
-	// to Living Root, which carries its own drop chance at its own source (loot.json's
-	// "Wailing Caverns: Verdan the Everliving", 40%), as L1.4's _drop_chances reads it.
+	// Band 20: the original pick keeps its drop chance, and so does the main hand: the ranker's
+	// rare-spawn rule dropped the former pick (a rare spawn's drop, id 23171) and Smite's
+	// Mighty Hammer, a Deadmines boss drop at 20%, stands in the file, not promoted.
 	low, err := BandPicks(t.Context(), picksBuild, "warrior-arms", 20, "alliance")
 	if err != nil {
 		t.Fatal(err)
@@ -53,9 +56,9 @@ func TestBandPicksAreTheBareEntryThroughTheUnconfirmedWalk(t *testing.T) {
 		t.Errorf("band 20 chest = %+v, want 6627 from Mutanus with chance 0.333333", chest)
 	}
 	mh := low["main_hand"]
-	if mh.ItemID != 6631 || mh.Name != "Living Root" || mh.Source != "Wailing Caverns: Verdan the Everliving" ||
-		mh.Chance == nil || *mh.Chance != 0.4 || !mh.Promoted {
-		t.Errorf("band 20 main_hand = %+v, want Living Root (6631), promoted, chance 0.4", mh)
+	if mh.ItemID != 7230 || mh.Name != "Smite's Mighty Hammer" || mh.Source != "The Deadmines: Mr. Smite" ||
+		mh.Chance == nil || *mh.Chance != 0.2 || mh.Promoted {
+		t.Errorf("band 20 main_hand = %+v, want Smite's Mighty Hammer (7230), not promoted, chance 0.2", mh)
 	}
 }
 
@@ -63,25 +66,23 @@ func TestBandPicksAreTheBareEntryThroughTheUnconfirmedWalk(t *testing.T) {
 // and the band's own confirmed picks are fixed before any promotion is checked against them.
 func TestBandPicksNeverRepeatThePairMatesItem(t *testing.T) {
 	useRepoGearData(t)
-	// mage-fire 60 alliance: trinket1's own pick (Briarwood Reed) is unconfirmed and gives
-	// way to Weakness Analyzer; trinket2's own pick (Draconic Infused Emblem) is unconfirmed,
-	// and its next confirmed candidate is the same Weakness Analyzer (not unique), so it
-	// takes Darkmoon Card: Blue Dragon.
+	// mage-fire 60 alliance: the ranker ranks confirmed items only, so both own picks stand
+	// (Talisman of Ascendance, Serenity Field) and the pair never repeats an item.
 	fire, err := BandPicks(t.Context(), picksBuild, "mage-fire", 60, "alliance")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if fire["trinket1"].ItemID != 272438 || fire["trinket2"].ItemID != 19288 {
-		t.Errorf("mage-fire 60 alliance trinkets = %d, %d; want 272438, 19288", fire["trinket1"].ItemID, fire["trinket2"].ItemID)
+	if fire["trinket1"].ItemID != 22678 || fire["trinket2"].ItemID != 272439 {
+		t.Errorf("mage-fire 60 alliance trinkets = %d, %d; want 22678, 272439", fire["trinket1"].ItemID, fire["trinket2"].ItemID)
 	}
-	// priest-holy 50 horde: both rings' own picks and their next two candidates are
-	// unconfirmed; Snake Hoop goes to finger1 and finger2 has nothing else.
+	// priest-holy 50 horde: Snake Hoop is finger1's own pick and Voodoo Band finger2's, each
+	// kept as the file has it (before the ranker change finger2 had no confirmed candidate).
 	holy, err := BandPicks(t.Context(), picksBuild, "priest-holy", 50, "horde")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if p, ok := holy["finger2"]; holy["finger1"].ItemID != 6750 || ok {
-		t.Errorf("priest-holy 50 horde rings = %d, %+v; want 6750 and no finger2 pick", holy["finger1"].ItemID, p)
+	if p, ok := holy["finger2"]; holy["finger1"].ItemID != 6750 || !ok || p.ItemID != 1996 || p.Promoted {
+		t.Errorf("priest-holy 50 horde rings = %d, %+v; want 6750 and Voodoo Band (1996), not promoted", holy["finger1"].ItemID, p)
 	}
 }
 

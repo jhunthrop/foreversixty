@@ -397,8 +397,8 @@ func TestWeightsCarryTheSpecsDPSPerPoint(t *testing.T) {
 
 	save("l63-weights-arms", "warrior-arms")
 	got := messagesOf(s.messages(context.Background(), h.owner, time.Now()), messageWeights)
-	if len(got) != 1 || got[0].Character != l63Key || got[0].DPSPerPoint == nil || *got[0].DPSPerPoint != 0.2342 {
-		t.Fatalf("weights = %+v, want warrior-arms' 0.2342 DPS per attack power", got)
+	if len(got) != 1 || got[0].Character != l63Key || got[0].DPSPerPoint == nil || *got[0].DPSPerPoint != 0.2222 {
+		t.Fatalf("weights = %+v, want warrior-arms' 0.2222 DPS per attack power", got)
 	}
 
 	// A tank spec has no entry in dps-per-point.json: the field is absent.

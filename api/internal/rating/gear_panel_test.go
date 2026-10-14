@@ -27,14 +27,13 @@ import (
 
 const gp67Build = "1.60.1.70291"
 
-// gp67Picks are warrior-arms' band-60 alliance bare picks through L1.4's walk: Hand of
-// Justice and Blackhand's Breadth are client-unconfirmed, so Frozen Heart of the Mountain
-// holds trinket2; the band has no off-hand pick.
+// gp67Picks are warrior-arms' band-60 alliance bare picks through L1.4's walk (the ranker now
+// ranks confirmed items only, so the walk promotes nothing here); the band has no off-hand pick.
 var gp67Picks = map[string]int{
-	"head": 12640, "neck": 22150, "shoulder": 20057, "back": 272414, "chest": 252483,
-	"wrist": 19578, "hands": 15063, "waist": 20041, "legs": 15062, "feet": 20048,
-	"finger1": 234034, "finger2": 19325, "trinket1": 19289, "trinket2": 249469,
-	"main_hand": 19323, "ranged": 16004,
+	"head": 12640, "neck": 22150, "shoulder": 272105, "back": 272414, "chest": 252484,
+	"wrist": 19578, "hands": 272095, "waist": 227814, "legs": 22385, "feet": 21995,
+	"finger1": 234034, "finger2": 19325, "trinket1": 19289, "trinket2": 19287,
+	"main_hand": 19323, "ranged": 22656,
 }
 
 type gearPanelFixture struct {
@@ -230,7 +229,7 @@ func TestTheGearPanelListsTheSeventeenSlotsWithPicksAndGaps(t *testing.T) {
 	fx := newGearPanelFixture(t)
 	fx.seed(t, "Gp67mixed", map[string]int{
 		"head":     12640,  // Lionheart Helm, the band's pick
-		"chest":    252484, // Timbermaw Tunic; the pick is Dawn Armor (252483)
+		"chest":    6627,   // a strength-10 chest piece (20); the pick is Timbermaw Tunic (252484)
 		"off_hand": 271798, // Desperate Barrier; the band has no off-hand pick
 	})
 	body := fx.read(t, "gp67mixed")
@@ -257,24 +256,25 @@ func TestTheGearPanelListsTheSeventeenSlotsWithPicksAndGaps(t *testing.T) {
 		t.Errorf("head = worn %+v pick %+v gap %s; want Lionheart Helm worn and picked, gap 0", head.Worn, head.Pick, fmtGap(head.Gap))
 	}
 
-	// Dawn Armor scores 506.2 and Timbermaw Tunic 300.8 under the arms weights; the band-60
-	// mark is 4766.6, so the pick adds 500 * 205.4 / 4766.6 = 21.5457... points.
+	// Timbermaw Tunic scores 300.8 and the worn 6627 (strength 10) 20 under the arms weights;
+	// the band-60 mark is 5344.4 (the horde bare set), so the pick adds
+	// 500 * 280.8 / 5344.4 = 26.271... points.
 	chest := gp67Slot(t, body, "chest")
-	if chest.Worn == nil || chest.Worn.ID != 252484 || chest.Pick == nil || chest.Pick.ID != 252483 ||
-		chest.Pick.Name != "Dawn Armor" || chest.Pick.Source != "Leatherworking" || chest.Gap == nil || *chest.Gap != 21.5 {
-		t.Errorf("chest = worn %+v pick %+v gap %s; want Timbermaw Tunic under Dawn Armor, gap 21.5", chest.Worn, chest.Pick, fmtGap(chest.Gap))
+	if chest.Worn == nil || chest.Worn.ID != 6627 || chest.Pick == nil || chest.Pick.ID != 252484 ||
+		chest.Pick.Name != "Timbermaw Tunic" || chest.Pick.Source != "Leatherworking" || chest.Gap == nil || *chest.Gap != 26.3 {
+		t.Errorf("chest = worn %+v pick %+v gap %s; want 6627 under Timbermaw Tunic, gap 26.3", chest.Worn, chest.Pick, fmtGap(chest.Gap))
 	}
 
-	// Nothing worn at the neck: the pick (Beads of Ogre Might, 284) adds 500 * 284 / 4766.6.
+	// Nothing worn at the neck: the pick (Beads of Ogre Might, 284) adds 500 * 284 / 5344.4.
 	neck := gp67Slot(t, body, "neck")
-	if neck.Worn != nil || neck.Pick == nil || neck.Pick.ID != 22150 || neck.Gap == nil || *neck.Gap != 29.8 {
-		t.Errorf("neck = worn %+v pick %+v gap %s; want nothing worn, Beads of Ogre Might, gap 29.8", neck.Worn, neck.Pick, fmtGap(neck.Gap))
+	if neck.Worn != nil || neck.Pick == nil || neck.Pick.ID != 22150 || neck.Gap == nil || *neck.Gap != 26.6 {
+		t.Errorf("neck = worn %+v pick %+v gap %s; want nothing worn, Beads of Ogre Might, gap 26.6", neck.Worn, neck.Pick, fmtGap(neck.Gap))
 	}
 
-	// trinket2's own pick and first runner-up are client-unconfirmed: the promoted pick has no chance.
+	// trinket2's pick is a quest reward: no drop chance.
 	tr := gp67Slot(t, body, "trinket2")
-	if tr.Pick == nil || tr.Pick.ID != 249469 || tr.Pick.Chance != nil {
-		t.Errorf("trinket2 pick = %+v, want Frozen Heart of the Mountain (249469) with no chance", tr.Pick)
+	if tr.Pick == nil || tr.Pick.ID != 19287 || tr.Pick.Chance != nil {
+		t.Errorf("trinket2 pick = %+v, want Darkmoon Card: Heroism (19287) with no chance", tr.Pick)
 	}
 
 	// Null rules are serialised as null, never omitted.
@@ -322,9 +322,9 @@ func TestGearGapTotalIsTheSumOfTheGaps(t *testing.T) {
 
 // Ruling 2 (as re-ruled): a character wearing every pick of its own faction's bare set has
 // every gap 0 and a gear_gap_total of 0, while its Gear component still sits below 500: the
-// mark is the band's best set across presets and factions (warrior-arms band 60: horde raid,
-// 4766.6), and the alliance bare picks through the walk score 4514.4, so Gear is
-// round(500 * 4514.4 / 4766.6) = 474, 26 below its top.
+// mark is the band's best set across presets and factions (warrior-arms band 60: horde bare,
+// 5344.4), and the alliance bare picks through the walk score 5120.4, so Gear is
+// round(500 * 5120.4 / 5344.4) = 479, 21 below its top.
 func TestWearingEveryPickZeroesTheGapsButNotTheGearComponentsDistance(t *testing.T) {
 	fx := newGearPanelFixture(t)
 	fx.seed(t, "Gp67picks", gp67Picks)
@@ -343,8 +343,8 @@ func TestWearingEveryPickZeroesTheGapsButNotTheGearComponentsDistance(t *testing
 	if body.GearGapTotal == nil || *body.GearGapTotal != 0 {
 		t.Errorf("gear_gap_total = %s, want 0", fmtGap(body.GearGapTotal))
 	}
-	if body.Components == nil || body.Components.Gear != 474 {
-		t.Errorf("components.gear = %+v, want 474 (26 below its top of %d)", body.Components, GearMax)
+	if body.Components == nil || body.Components.Gear != 479 {
+		t.Errorf("components.gear = %+v, want 479 (21 below its top of %d)", body.Components, GearMax)
 	}
 }
 
@@ -378,11 +378,11 @@ func TestASwappedPairOfRingsHasNoGap(t *testing.T) {
 	}
 }
 
-// The same matching for the trinkets: trinket1's pick is 19289 and trinket2's Frozen Heart of
-// the Mountain (249469); this character wears them the other way round.
+// The same matching for the trinkets: trinket1's pick is 19289 and trinket2's Darkmoon Card:
+// Heroism (19287); this character wears them the other way round.
 func TestASwappedPairOfTrinketsHasNoGap(t *testing.T) {
 	fx := newGearPanelFixture(t)
-	fx.seed(t, "Gp67trswap", map[string]int{"trinket1": 249469, "trinket2": 19289})
+	fx.seed(t, "Gp67trswap", map[string]int{"trinket1": 19287, "trinket2": 19289})
 	body := fx.read(t, "gp67trswap")
 	for _, slot := range []string{"trinket1", "trinket2"} {
 		row := gp67Slot(t, body, slot)
@@ -391,15 +391,15 @@ func TestASwappedPairOfTrinketsHasNoGap(t *testing.T) {
 				slot, row.Worn, row.Pick, fmtGap(row.Gap))
 		}
 	}
-	if w := gp67Slot(t, body, "trinket1").Worn; w == nil || w.ID != 249469 {
-		t.Errorf("trinket1 worn = %+v, want what the export says (249469)", w)
+	if w := gp67Slot(t, body, "trinket1").Worn; w == nil || w.ID != 19287 {
+		t.Errorf("trinket1 worn = %+v, want what the export says (19287)", w)
 	}
 }
 
 // Fix round 1, item 3, a picked two-hander: the arms band-60 pick is The Unstoppable Force
 // (19323, two-handed, 486) with no off-hand pick. Worn Persuader (484) and a Grand Marshal's
 // Left Hand Blade (252) score 736 together, more than the two-hander, so the main hand's gap is
-// 0 (on its own slot it would read 500 x 2 / 4766.6 = 0.2) and the off-hand's is null.
+// 0 (on its own slot it would read 500 x 2 / 5344.4 = 0.2) and the off-hand's is null.
 func TestAPickedTwoHanderIsWeighedAgainstBothWornHands(t *testing.T) {
 	fx := newGearPanelFixture(t)
 	fx.seed(t, "Gp67twohandpick", map[string]int{"main_hand": 22384, "off_hand": 18847})
@@ -413,21 +413,21 @@ func TestAPickedTwoHanderIsWeighedAgainstBothWornHands(t *testing.T) {
 	}
 }
 
-// Fix round 1, item 3, a worn two-hander: the fury band-60 picks are Shadowsong's Sorrow
-// (21522, 26.2) and Ravencrest's Legacy (21520, 31.0), both one-handed; the character wears
-// a Centaur Spear (271794, two-handed, 20.9) and nothing in the off-hand. The main hand
-// carries the pair's whole gap, 500 x (57.2 - 20.9) / 5522.8 = 3.2864 -> 3.3, and the
-// off-hand 0 (on their own slots they would read 0.5 and 2.8).
+// Fix round 1, item 3, a worn two-hander: the fury band-60 picks are Ravencrest's Legacy
+// (21520, 31.0) in the main hand and Shadowsong's Sorrow (21522, 26.2) in the off-hand, both
+// one-handed; the character wears a Centaur Spear (271794, two-handed, 20.9) and nothing in
+// the off-hand. The main hand carries the pair's whole gap, 500 x (57.2 - 20.9) / 6047.1 =
+// 3.0016 -> 3, and the off-hand 0.
 func TestAWornTwoHanderIsWeighedAgainstBothPickedHands(t *testing.T) {
 	fx := newGearPanelFixture(t)
 	fx.seedWith(t, "Gp67twohandworn", map[string]int{"main_hand": 271794}, seedOpts{spec: "Fury"})
 	body := fx.read(t, "gp67twohandworn")
 	mh, oh := gp67Slot(t, body, "main_hand"), gp67Slot(t, body, "off_hand")
-	if mh.Pick == nil || mh.Pick.ID != 21522 || mh.Gap == nil || *mh.Gap != 3.3 {
-		t.Errorf("main_hand pick %+v gap %s, want Shadowsong's Sorrow and 3.3", mh.Pick, fmtGap(mh.Gap))
+	if mh.Pick == nil || mh.Pick.ID != 21520 || mh.Gap == nil || *mh.Gap != 3 {
+		t.Errorf("main_hand pick %+v gap %s, want Ravencrest's Legacy and 3", mh.Pick, fmtGap(mh.Gap))
 	}
-	if oh.Pick == nil || oh.Pick.ID != 21520 || oh.Gap == nil || *oh.Gap != 0 {
-		t.Errorf("off_hand pick %+v gap %s, want Ravencrest's Legacy and 0", oh.Pick, fmtGap(oh.Gap))
+	if oh.Pick == nil || oh.Pick.ID != 21522 || oh.Gap == nil || *oh.Gap != 0 {
+		t.Errorf("off_hand pick %+v gap %s, want Shadowsong's Sorrow and 0", oh.Pick, fmtGap(oh.Gap))
 	}
 }
 
