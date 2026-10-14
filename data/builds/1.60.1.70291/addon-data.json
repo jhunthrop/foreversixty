@@ -41104,9 +41104,9 @@
                   "source": "PvP rank 16 · General · Horde"
                 },
                 {
-                  "item_id": 22066,
-                  "source_kind": "quest",
-                  "source": "Just Compensation"
+                  "item_id": 231599,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 16 · General · Horde"
                 }
               ]
             },
@@ -41122,9 +41122,9 @@
                   "source": "Pix Xizzix"
                 },
                 {
-                  "item_id": 19090,
-                  "source_kind": "rep",
-                  "source": "Frostwolf Clan"
+                  "item_id": 18405,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -47952,9 +47952,9 @@
               "chance": 0.3,
               "alternatives": [
                 {
-                  "item_id": 20090,
-                  "source_kind": "rep",
-                  "source": "The League of Arathor"
+                  "item_id": 9405,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 252459,
@@ -48193,9 +48193,9 @@
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 20152,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
+                  "item_id": 9405,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -48707,7 +48707,7 @@
                   "source": "Blacksmithing"
                 },
                 {
-                  "item_id": 20206,
+                  "item_id": 20192,
                   "source_kind": "rep",
                   "source": "The Defilers"
                 }
@@ -75060,13 +75060,13 @@
               ]
             },
             "wrist": {
-              "item_id": 252573,
+              "item_id": 252543,
               "source_kind": "crafted",
               "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252543,
+                  "item_id": 252573,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
@@ -75350,13 +75350,13 @@
               ]
             },
             "wrist": {
-              "item_id": 252573,
+              "item_id": 252543,
               "source_kind": "crafted",
               "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252543,
+                  "item_id": 252573,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
@@ -75556,7 +75556,7 @@
             15067,
             272076,
             14141,
-            252573,
+            252543,
             227014,
             14803,
             10807,
@@ -75574,7 +75574,7 @@
             15067,
             272076,
             14141,
-            252573,
+            252543,
             227014,
             14803,
             10807,
@@ -85105,9 +85105,9 @@
               ]
             },
             "ranged": {
-              "item_id": 11304,
-              "source_kind": "vendor",
-              "source": "Naela Trance",
+              "item_id": 285279,
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
               "chance": null,
               "alternatives": [
                 {
@@ -85116,9 +85116,9 @@
                   "source": "Murloc Poachers"
                 },
                 {
-                  "item_id": 285279,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
+                  "item_id": 11304,
+                  "source_kind": "vendor",
+                  "source": "Naela Trance"
                 }
               ]
             }
@@ -85354,15 +85354,15 @@
               ]
             },
             "ranged": {
-              "item_id": 11304,
-              "source_kind": "vendor",
-              "source": "Naela Trance",
+              "item_id": 285279,
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 285279,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
+                  "item_id": 11304,
+                  "source_kind": "vendor",
+                  "source": "Naela Trance"
                 },
                 {
                   "item_id": 13136,
@@ -85388,7 +85388,7 @@
             20439,
             12054,
             7230,
-            11304
+            285279
           ],
           "horde": [
             250528,
@@ -85404,7 +85404,7 @@
             20429,
             12054,
             270018,
-            11304
+            285279
           ]
         },
         "weights": {
@@ -88009,14 +88009,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11304,
-                  "source_kind": "vendor",
-                  "source": "Naela Trance"
-                },
-                {
                   "item_id": 3567,
                   "source_kind": "quest",
                   "source": "Murloc Poachers"
+                },
+                {
+                  "item_id": 11304,
+                  "source_kind": "vendor",
+                  "source": "Naela Trance"
                 }
               ]
             }
@@ -89936,7 +89936,7 @@
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 20205,
+                  "item_id": 20151,
                   "source_kind": "rep",
                   "source": "The Defilers"
                 }

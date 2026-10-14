@@ -394,8 +394,9 @@ type bandPool struct {
 	Coverage map[string]coverageRow
 	// RareSpawnSkipped counts the candidates withoutRareSpawnDrops took
 	// out of every slot, and so out of Scored (task L1.7; bandSlotPools
-	// sets it): every slot they fit is covered. Coverage[slot].RareSpawnSkipped counts them per slot,
-	// including a rare item kept for its pair's second slot.
+	// sets it): every slot they fit is covered.
+	// Coverage[slot].RareSpawnSkipped counts them per slot, including a
+	// rare item kept for its pair's second slot.
 	RareSpawnSkipped int
 }
 
@@ -556,7 +557,7 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 		}
 		out.Scored = append(out.Scored, scored{
 			candidate:     c,
-			Score:         score(c, c.Slots[0], weights, referenceDPSPerPoint, castsShoot),
+			Score:         roundScore(score(c, c.Slots[0], weights, referenceDPSPerPoint, castsShoot)),
 			Source:        src,
 			HasSource:     true,
 			DeadStatCount: deadStatCount(c, weights),

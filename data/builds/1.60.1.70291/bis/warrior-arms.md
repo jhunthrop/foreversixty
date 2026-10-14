@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 03323000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 26.6. Weights run: 1.2s. Verify run: 3.4s. 284 eligible items had no known source.
+Set DPS (verified): 26.6. Weights run: 1.3s. Verify run: 4.2s. 284 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.698 ± 0.037, crit=0.296 ± 0.026 per rating point (14 rating = 1%, 4.149 per %), hit=1.154 ± 0.105 per rating point (10 rating = 1%, 11.538 per %), melee_haste=8.649 ± 0.944
 
@@ -30,15 +30,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | - | - |  |  |  |
 | main_hand | Smite's Mighty Hammer (7230) | The Deadmines: Mr. Smite [dungeon] | 300.7 attack_power points (10.68 DPS) | yes | Duskbringer (2205, -0.22 DPS) [dungeon]; Night Reaver (1318, -0.43 DPS) [dungeon]; Living Root (6631, -0.66 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
-| ranged | Fine Longbow (11304) | Naela Trance [vendor] | 4.0 attack_power points (0.14 DPS) | yes | Dwarven Fishing Pole (3567, -0.00 DPS) [quest]; Cracked Blacksmith Hammer (285279, -0.00 DPS) [crafted]; Lil Timmy's Peashooter (13136, -0.04 DPS) [world_drop] |
+| ranged | Cracked Blacksmith Hammer (285279) (or Dwarven Fishing Pole (3567), Fine Longbow (11304)) | Blacksmithing [crafted] | 4.0 attack_power points (0.14 DPS) | yes | Dwarven Fishing Pole (3567, +0.00 DPS) [quest]; Fine Longbow (11304, +0.00 DPS) [vendor]; Lil Timmy's Peashooter (13136, -0.04 DPS) [world_drop] |
 
-**New at 20:** head: Veteran's Silvered Chain Helm; neck: Sentinel's Medallion; shoulder: Rough Bronze Shoulders; back: Lambent Scale Cloak; chest: Mutant Scale Breastplate; wrist: Patterned Bronze Bracers; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Blackened Defias Boots; finger1: Protector's Band; finger2: Demon Band; main_hand: Smite's Mighty Hammer; ranged: Fine Longbow
+**New at 20:** head: Veteran's Silvered Chain Helm; neck: Sentinel's Medallion; shoulder: Rough Bronze Shoulders; back: Lambent Scale Cloak; chest: Mutant Scale Breastplate; wrist: Patterned Bronze Bracers; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Blackened Defias Boots; finger1: Protector's Band; finger2: Demon Band; main_hand: Smite's Mighty Hammer; ranged: Cracked Blacksmith Hammer
 
 No-known-source sample (15 of 284, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk; 4964 Goblin Smasher
 
 ### Band 30 (human, 03325213020000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 76.7. Weights run: 1.2s. Verify run: 2.0s. 499 eligible items had no known source.
+Set DPS (verified): 76.7. Weights run: 1.5s. Verify run: 2.5s. 499 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.000 ± 0.006, agility=1.001 ± 0.062, crit=0.518 ± 0.047 per rating point (14 rating = 1%, 7.259 per %), hit=1.498 ± 0.244 per rating point (10 rating = 1%, 14.978 per %), melee_haste=9.585 ± 1.907
 
@@ -51,7 +51,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | chest | Avenger's Armor (1488) | Razorfen Kraul [dungeon] | 30.0 attack_power points (1.19 DPS) | yes | Shining Silver Breastplate (2870, -0.08 DPS) [crafted]; Veteran's Silvered Chain Shirt (250518, -0.16 DPS) [crafted]; Barbaric Iron Breastplate (7914, -0.24 DPS) [crafted] |
 | wrist | Pugilist Bracers (4438) | Razorfen Kraul [dungeon] | 16.0 attack_power points (0.64 DPS) | yes | Yorgen Bracers (13012, -0.04 DPS) [world_drop]; Hawkeye's Bracers (14590, -0.08 DPS) [world_drop]; Barbaric Bracers (18948, -0.16 DPS) [crafted] |
 | hands | Gauntlets of Ogre Strength (3341) | Boulderfist Enforcer [world] | 22.0 attack_power points (0.87 DPS) | yes | Insignia Gloves (6408, -0.08 DPS) [world_drop]; Mail Combat Gauntlets (4075, -0.08 DPS) [world_drop]; Toughened Leather Gloves (4253, -0.16 DPS) [crafted] |
-| waist | Officer's Belt (250556) | Blacksmithing [crafted] | 26.0 attack_power points (1.03 DPS) | yes | Prowler's Leather Belt (252459, -0.08 DPS) [crafted]; Girdle of Golem Strength (9405, -0.08 DPS) [world_drop]; Highlander's Plate Girdle (20126, -0.08 DPS) [rep] |
+| waist | Officer's Belt (250556) | Blacksmithing [crafted] | 26.0 attack_power points (1.03 DPS) | yes | Prowler's Leather Belt (252459, -0.08 DPS) [crafted]; Girdle of Golem Strength (9405, -0.08 DPS) [world_drop]; Highlander's Chain Girdle (20090, -0.08 DPS) [rep] |
 | legs | Veteran's Silvered Chain Leggings (250523) | Blacksmithing [crafted] | 29.0 attack_power points (1.15 DPS) | yes | Brawler's Leather Legguards (252516, -0.24 DPS) [crafted]; Glimmering Mail Legguards (6386, -0.24 DPS) [world_drop]; Ferine Leggings (6690, -0.43 DPS, sim-verified) [dungeon] |
 | feet | Alacritous Treads (277234) (or Brawler's Leather Boots (252439)) | WANTED: Incinerator Gar'im [quest] | 15.0 attack_power points (0.60 DPS) | yes | Brawler's Leather Boots (252439, +0.00 DPS) [crafted]; Feet of the Lynx (1121, -0.04 DPS) [world_drop]; Veteran's Boots (250503, -0.04 DPS) [crafted] |
 | finger1 | Thunderbrow Ring (13097) | World drop [world_drop] | 19.0 attack_power points (0.76 DPS) | yes | Tiger Band (6749, -0.20 DPS) [quest]; Silverlaine's Family Seal (6321, -0.36 DPS) [dungeon]; Seal of Wrynn (2933, -0.40 DPS) [quest] |
@@ -68,7 +68,7 @@ No-known-source sample (15 of 499, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (human, 03325213032511000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 120.1. Weights run: 1.2s. Verify run: 2.5s. 682 eligible items had no known source.
+Set DPS (verified): 120.1. Weights run: 1.6s. Verify run: 3.2s. 682 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.000 ± 0.007, agility=1.152 ± 0.055, crit=1.194 ± 0.063 per rating point (14 rating = 1%, 16.714 per %), hit=1.723 ± 0.229 per rating point (10 rating = 1%, 17.229 per %), melee_haste=12.704 ± 1.950
 
@@ -81,7 +81,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | chest | Kolkar Marauder Chain (6773) | Khan Hratha [quest] | 36.1 attack_power points (2.03 DPS) | yes | Avenger's Armor (1488, -0.34 DPS) [dungeon]; Jouster's Chestplate (8157, -0.34 DPS) [dungeon]; Carapace of Tuten'kash (10775, -0.39 DPS) [dungeon] |
 | wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 attack_power points (1.12 DPS) | yes | Ravager's Armguards (14770, -0.08 DPS) [world_drop]; Pugilist Bracers (4438, -0.22 DPS) [dungeon]; Yorgen Bracers (13012, -0.26 DPS) [world_drop] |
 | hands | Gloves of Holy Might (867) | World drop [world_drop] | 36.7 attack_power points (2.07 DPS) | yes | Scarlet Gauntlets (10331, -0.07 DPS) [dungeon]; Gauntlets of Divinity (7724, -0.27 DPS) [dungeon]; Truesilver Gauntlets (7938, -0.27 DPS) [crafted] |
-| waist | Highlander's Leather Girdle (20116) | The League of Arathor [rep] | 30.0 attack_power points (1.69 DPS) | yes | Highlander's Plate Girdle (20125, -0.00 DPS) [rep]; Ogron's Sash (13117, -0.09 DPS) [world_drop]; Officer's Belt (250556, -0.17 DPS) [crafted] |
+| waist | Highlander's Leather Girdle (20116) (or Highlander's Plate Girdle (20125)) | The League of Arathor [rep] | 30.0 attack_power points (1.69 DPS) | yes | Highlander's Plate Girdle (20125, +0.00 DPS) [rep]; Ogron's Sash (13117, -0.09 DPS) [world_drop]; Officer's Belt (250556, -0.17 DPS) [crafted] |
 | legs | Scarlet Leggings (10330) | Scarlet Monastery: Herod [dungeon] | 42.0 attack_power points (2.36 DPS) | yes | Firemane Leggings (13129, -0.22 DPS) [world_drop]; Symbolic Legplates (14829, -0.29 DPS) [world_drop]; Orcish War Leggings (7929, -0.45 DPS) [crafted] |
 | feet | Officer's Boots (250546) | Blacksmithing [crafted] | 34.1 attack_power points (1.92 DPS) | yes | Prowler's Leather Shoes (252465, -0.22 DPS) [crafted]; Blackforge Greaves (6423, -0.26 DPS) [dungeon]; Obsidian Greaves (13068, -0.40 DPS) [world_drop] |
 | finger1 | Protector's Band (19515) | Silverwing Sentinels [rep] | 25.2 attack_power points (1.42 DPS) | yes | Assault Band (13095, -0.29 DPS) [world_drop]; Thunderbrow Ring (13097, -0.32 DPS) [world_drop]; Falcon's Hook (7552, -0.50 DPS) [dungeon] |
@@ -98,7 +98,7 @@ No-known-source sample (15 of 682, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (human, 03325213032515001-05000000000000000-000000000000000000)
 
-Set DPS (verified): 174.1. Weights run: 1.2s. Verify run: 3.2s. 861 eligible items had no known source.
+Set DPS (verified): 174.1. Weights run: 1.6s. Verify run: 4.0s. 861 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.000 ± 0.005, agility=1.270 ± 0.067, crit=1.462 ± 0.088 per rating point (14 rating = 1%, 20.469 per %), hit=2.165 ± 0.236 per rating point (10 rating = 1%, 21.652 per %), melee_haste=12.576 ± 1.719
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 861, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 03325213032515001-05050000000000000-005000000000000000)
 
-Set DPS (verified): 268.5. Weights run: 1.2s. Verify run: 11.4s. 1585 eligible items had no known source.
+Set DPS (verified): 268.5. Weights run: 1.6s. Verify run: 13.6s. 1585 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.000 ± 0.005, agility=1.440 ± 0.091, crit=2.058 ± 0.130 per rating point (14 rating = 1%, 28.807 per %), hit=3.989 ± 0.345 per rating point (10 rating = 1%, 39.886 per %), melee_haste=16.659 ± 2.849
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1585, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (human, 02305213032515001-55050000001000000-200000000000000000)
 
-Set DPS (verified): 788.8. Weights run: 1.2s. Verify run: 12.6s. 1585 eligible items had no known source.
+Set DPS (verified): 788.8. Weights run: 1.4s. Verify run: 14.1s. 1585 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.200 ± 0.006, agility=1.769 ± 0.133, crit=2.373 ± 0.179 per rating point (14 rating = 1%, 33.216 per %), hit=4.041 ± 0.527 per rating point (10 rating = 1%, 40.414 per %), melee_haste=18.525 ± 4.164
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1585, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (orc, 03323000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 27.1. Weights run: 1.2s. Verify run: 3.4s. 254 eligible items had no known source.
+Set DPS (verified): 27.1. Weights run: 1.3s. Verify run: 4.4s. 254 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.698 ± 0.037, crit=0.296 ± 0.026 per rating point (14 rating = 1%, 4.149 per %), hit=1.154 ± 0.105 per rating point (10 rating = 1%, 11.538 per %), melee_haste=8.649 ± 0.944
 
@@ -199,7 +199,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | head | Veteran's Silvered Chain Helm (250528) | Blacksmithing [crafted] | 20.0 attack_power points (0.71 DPS) | yes | Defender's Leather Hood (252447, -0.15 DPS, sim-verified) [crafted]; Guard's Silvered Chain Helm (250529, -0.46 DPS) [crafted]; Brawler's Leather Hood (252504, -0.51 DPS) [crafted] |
 | neck | Scout's Medallion (20442) | Warsong Outriders [rep] | 4.2 attack_power points (0.15 DPS) | yes | Erudite's Amulet (277204, -0.14 DPS, sim-verified) [quest] |
 | shoulder | Rough Bronze Shoulders (3480) (or Silvered Bronze Shoulders (3481)) | Blacksmithing [crafted] | 6.0 attack_power points (0.21 DPS) | yes | Silvered Bronze Shoulders (3481, +0.00 DPS) [crafted]; Serpent's Shoulders (5404, -0.09 DPS) [dungeon] |
-| back | Lambent Scale Cloak (4706) | World drop [world_drop] | 8.0 attack_power points (0.28 DPS) | yes | Grave Shroud (279865, -0.02 DPS) [quest]; Dark Leather Cloak (2316, -0.07 DPS) [crafted]; Catacomb Cloak (279899, -0.07 DPS) [quest] |
+| back | Lambent Scale Cloak (4706) | World drop [world_drop] | 8.0 attack_power points (0.28 DPS) | yes | Grave Shroud (279865, -0.02 DPS) [quest]; Dark Leather Cloak (2316, -0.07 DPS) [crafted]; Subterranean Cape (14149, -0.07 DPS) [dungeon] |
 | chest | Mutant Scale Breastplate (6627) | Wailing Caverns: Mutanus the Devourer [dungeon] | 20.0 attack_power points (0.71 DPS) | yes | Veteran's Chain Shirt (250488, -0.11 DPS) [crafted]; Defender's Leather Armor (252434, -0.14 DPS) [crafted]; Brawler's Leather Armor (252490, -0.18 DPS) [crafted] |
 | wrist | Patterned Bronze Bracers (2868) (or Death Bindings (286981)) | Blacksmithing [crafted] | 10.0 attack_power points (0.35 DPS) | yes | Death Bindings (286981, +0.00 DPS) [dungeon]; Bristlebark Bindings (14569, -0.14 DPS) [world_drop]; Raptorcrest Bracers (270010, -0.14 DPS) [quest] |
 | hands | Blackened Defias Gloves (10401) | The Deadmines: Defias Overseer [dungeon] | sim-verified (27.1 DPS) | yes | Gold-flecked Gloves (5195, +0.00 DPS) [dungeon]; Gloves of the Fang (10413, +0.00 DPS) [dungeon]; Thorbia's Gauntlets (12994, -1.20 DPS, sim-verified) [world_drop] |
@@ -212,15 +212,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | trinket2 | - | - |  |  |  |
 | main_hand | Hammerbone (270018) | Leaders of the Fang [quest] | 306.2 attack_power points (10.87 DPS) | yes | Forsaken Greataxe (251533, -0.11 DPS) [quest]; Smite's Mighty Hammer (7230, -0.19 DPS) [dungeon]; Living Root (6631, -0.33 DPS) [dungeon] |
 | off_hand | - | - |  |  |  |
-| ranged | Fine Longbow (11304) | Naela Trance [vendor] | 4.0 attack_power points (0.14 DPS) | yes | Cracked Blacksmith Hammer (285279, -0.00 DPS) [crafted]; Lil Timmy's Peashooter (13136, -0.04 DPS) [world_drop]; Heavy Shortbow (3036, -0.07 DPS) [world_drop] |
+| ranged | Cracked Blacksmith Hammer (285279) (or Fine Longbow (11304)) | Blacksmithing [crafted] | 4.0 attack_power points (0.14 DPS) | yes | Fine Longbow (11304, +0.00 DPS) [vendor]; Lil Timmy's Peashooter (13136, -0.04 DPS) [world_drop]; Heavy Shortbow (3036, -0.07 DPS) [world_drop] |
 
-**New at 20:** head: Veteran's Silvered Chain Helm; neck: Scout's Medallion; shoulder: Rough Bronze Shoulders; back: Lambent Scale Cloak; chest: Mutant Scale Breastplate; wrist: Patterned Bronze Bracers; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Blackened Defias Boots; finger1: Legionnaire's Band; finger2: Demon Band; main_hand: Hammerbone; ranged: Fine Longbow
+**New at 20:** head: Veteran's Silvered Chain Helm; neck: Scout's Medallion; shoulder: Rough Bronze Shoulders; back: Lambent Scale Cloak; chest: Mutant Scale Breastplate; wrist: Patterned Bronze Bracers; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Blackened Defias Boots; finger1: Legionnaire's Band; finger2: Demon Band; main_hand: Hammerbone; ranged: Cracked Blacksmith Hammer
 
 No-known-source sample (15 of 254, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9602 Brushwood Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 15402 Noosegrip Gauntlets; 18854 Insignia of the Alliance; 209616 Insignia of the Alliance; 241089 Scarlet Dagger
 
 ### Band 30 (orc, 03325213020000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 77.0. Weights run: 1.2s. Verify run: 2.0s. 463 eligible items had no known source.
+Set DPS (verified): 77.0. Weights run: 1.5s. Verify run: 2.6s. 463 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.000 ± 0.006, agility=1.001 ± 0.062, crit=0.518 ± 0.047 per rating point (14 rating = 1%, 7.259 per %), hit=1.498 ± 0.244 per rating point (10 rating = 1%, 14.978 per %), melee_haste=9.585 ± 1.907
 
@@ -233,7 +233,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | chest | Avenger's Armor (1488) | Razorfen Kraul [dungeon] | 30.0 attack_power points (1.19 DPS) | yes | Shining Silver Breastplate (2870, -0.08 DPS) [crafted]; Veteran's Silvered Chain Shirt (250518, -0.16 DPS) [crafted]; Barbaric Iron Breastplate (7914, -0.24 DPS) [crafted] |
 | wrist | Pugilist Bracers (4438) | Razorfen Kraul [dungeon] | 16.0 attack_power points (0.64 DPS) | yes | Yorgen Bracers (13012, -0.04 DPS) [world_drop]; Hawkeye's Bracers (14590, -0.08 DPS) [world_drop]; Undead Knight's Bracers (251965, -0.16 DPS) [quest] |
 | hands | Gauntlets of Ogre Strength (3341) | Boulderfist Enforcer [world] | 22.0 attack_power points (0.87 DPS) | yes | Insignia Gloves (6408, -0.08 DPS) [world_drop]; Mail Combat Gauntlets (4075, -0.08 DPS) [world_drop]; Warsong Gauntlets (16978, -0.08 DPS) [quest] |
-| waist | Officer's Belt (250556) | Blacksmithing [crafted] | 26.0 attack_power points (1.03 DPS) | yes | Prowler's Leather Belt (252459, -0.08 DPS) [crafted]; Girdle of Golem Strength (9405, -0.08 DPS) [world_drop]; Defiler's Plate Girdle (20207, -0.08 DPS) [rep] |
+| waist | Officer's Belt (250556) | Blacksmithing [crafted] | 26.0 attack_power points (1.03 DPS) | yes | Prowler's Leather Belt (252459, -0.08 DPS) [crafted]; Girdle of Golem Strength (9405, -0.08 DPS) [world_drop]; Defiler's Chain Girdle (20152, -0.08 DPS) [rep] |
 | legs | Veteran's Silvered Chain Leggings (250523) | Blacksmithing [crafted] | 29.0 attack_power points (1.15 DPS) | yes | Brawler's Leather Legguards (252516, -0.24 DPS) [crafted]; Glimmering Mail Legguards (6386, -0.24 DPS) [world_drop]; Ferine Leggings (6690, -0.52 DPS, sim-verified) [dungeon] |
 | feet | Brawler's Leather Boots (252439) | Leatherworking [crafted] | 15.0 attack_power points (0.60 DPS) | yes | Feet of the Lynx (1121, -0.04 DPS) [world_drop]; Veteran's Boots (250503, -0.04 DPS) [crafted]; Hard Gold Boots (250534, -0.04 DPS) [crafted] |
 | finger1 | Thunderbrow Ring (13097) | World drop [world_drop] | 19.0 attack_power points (0.76 DPS) | yes | Tiger Band (6749, -0.20 DPS) [quest]; Band of the Fist (17694, -0.28 DPS) [quest]; Silverlaine's Family Seal (6321, -0.36 DPS) [dungeon] |
@@ -250,7 +250,7 @@ No-known-source sample (15 of 463, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 03325213032511000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 120.1. Weights run: 1.2s. Verify run: 2.5s. 635 eligible items had no known source.
+Set DPS (verified): 120.1. Weights run: 1.6s. Verify run: 3.2s. 635 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.000 ± 0.007, agility=1.152 ± 0.055, crit=1.194 ± 0.063 per rating point (14 rating = 1%, 16.714 per %), hit=1.723 ± 0.229 per rating point (10 rating = 1%, 17.229 per %), melee_haste=12.704 ± 1.950
 
@@ -263,7 +263,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | chest | Kolkar Marauder Chain (6773) | Khan Hratha [quest] | 36.1 attack_power points (2.03 DPS) | yes | Avenger's Armor (1488, -0.34 DPS) [dungeon]; Carapace of Tuten'kash (10775, -0.39 DPS) [dungeon]; Jouster's Chestplate (8157, -0.72 DPS, sim-verified) [dungeon] |
 | wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 attack_power points (1.12 DPS) | yes | Ravager's Armguards (14770, +0.00 DPS) [world_drop]; Berserker Bracers (19581, +0.00 DPS) [pvp]; Forest Stalker's Bracers (19590, +0.00 DPS) [pvp] |
 | hands | Gloves of Holy Might (867) | World drop [world_drop] | 36.7 attack_power points (2.07 DPS) | yes | Scarlet Gauntlets (10331, -0.07 DPS) [dungeon]; Gauntlets of Divinity (7724, -0.27 DPS) [dungeon]; Truesilver Gauntlets (7938, -0.27 DPS) [crafted] |
-| waist | Defiler's Leather Girdle (20192) | The Defilers [rep] | 30.0 attack_power points (1.69 DPS) | yes | Defiler's Plate Girdle (20206, -0.00 DPS) [rep]; Ogron's Sash (13117, -0.09 DPS) [world_drop]; Officer's Belt (250556, -0.17 DPS) [crafted] |
+| waist | Defiler's Leather Girdle (20192) (or Defiler's Plate Girdle (20206)) | The Defilers [rep] | 30.0 attack_power points (1.69 DPS) | yes | Defiler's Plate Girdle (20206, +0.00 DPS) [rep]; Ogron's Sash (13117, -0.09 DPS) [world_drop]; Officer's Belt (250556, -0.17 DPS) [crafted] |
 | legs | Scarlet Leggings (10330) | Scarlet Monastery: Herod [dungeon] | 42.0 attack_power points (2.36 DPS) | yes | Firemane Leggings (13129, -0.22 DPS) [world_drop]; Symbolic Legplates (14829, -0.29 DPS) [world_drop]; Orcish War Leggings (7929, -0.45 DPS) [crafted] |
 | feet | Officer's Boots (250546) | Blacksmithing [crafted] | 34.1 attack_power points (1.92 DPS) | yes | Prowler's Leather Shoes (252465, -0.22 DPS) [crafted]; Blackforge Greaves (6423, -0.26 DPS) [dungeon]; Obsidian Greaves (13068, -0.40 DPS) [world_drop] |
 | finger1 | Legionnaire's Band (19512) | Warsong Outriders [rep] | 25.2 attack_power points (1.42 DPS) | yes | Assault Band (13095, -0.29 DPS) [world_drop]; Thunderbrow Ring (13097, -0.32 DPS) [world_drop]; Falcon's Hook (7552, -0.50 DPS) [dungeon] |
@@ -280,7 +280,7 @@ No-known-source sample (15 of 635, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 03325213032515001-05000000000000000-000000000000000000)
 
-Set DPS (verified): 175.0. Weights run: 1.2s. Verify run: 3.3s. 805 eligible items had no known source.
+Set DPS (verified): 175.0. Weights run: 1.6s. Verify run: 4.0s. 805 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.000 ± 0.005, agility=1.270 ± 0.067, crit=1.462 ± 0.088 per rating point (14 rating = 1%, 20.469 per %), hit=2.165 ± 0.236 per rating point (10 rating = 1%, 21.652 per %), melee_haste=12.576 ± 1.719
 
@@ -293,7 +293,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | chest | Stone Guard's Plate Armor (220801) | Lady Palanseer [vendor] | 50.5 attack_power points (4.21 DPS) | yes | Warforged Chestplate (11195, -0.21 DPS) [quest]; Warbear Harness (15064, -0.47 DPS) [crafted]; Valorous Chestguard (8274, -0.87 DPS) [world_drop] |
 | wrist | Officer's Wristguards (250581) | Blacksmithing [crafted] | 29.6 attack_power points (2.47 DPS) | yes | Arena Bands (18711, +0.00 DPS) [world]; Berserker Bracers (19580, +0.00 DPS) [pvp]; Forest Stalker's Bracers (19589, +0.00 DPS) [pvp] |
 | hands | Raider Gauntlets (272096) | Creeg Bothunk [vendor] | 56.7 attack_power points (4.73 DPS) | yes | Raider Gloves (272100, -0.73 DPS) [vendor]; Officer's Gloves (250551, -1.11 DPS) [crafted]; Gloves of Holy Might (867, -1.35 DPS) [world_drop] |
-| waist | Prowler's Leather Waistguard (252473) | Leatherworking [crafted] | 43.2 attack_power points (3.61 DPS) | yes | Skulker's Leather Waistguard (252474, -0.12 DPS) [crafted]; Officer's Waistguard (250571, -0.21 DPS) [crafted]; Defiler's Plate Girdle (20205, -0.23 DPS) [rep] |
+| waist | Prowler's Leather Waistguard (252473) | Leatherworking [crafted] | 43.2 attack_power points (3.61 DPS) | yes | Skulker's Leather Waistguard (252474, -0.12 DPS) [crafted]; Officer's Waistguard (250571, -0.21 DPS) [crafted]; Defiler's Chain Girdle (20151, -0.23 DPS) [rep] |
 | legs | Stone Guard's Plate Leggings (220798) | Lady Palanseer [vendor] | 57.2 attack_power points (4.77 DPS) | yes | Golem Shard Leggings (13074, -1.10 DPS) [world_drop]; Scarlet Leggings (10330, -1.26 DPS) [dungeon]; Serpentskin Leggings (8262, -1.47 DPS, sim-verified) [world_drop] |
 | feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 40.0 attack_power points (3.33 DPS) | yes | Skulker's Leather Boots (252469, -0.12 DPS) [crafted]; Officer's Sabatons (250561, -0.21 DPS) [crafted]; Officer's Boots (250546, -0.42 DPS) [crafted] |
 | finger1 | Legionnaire's Band (19511) | Warsong Outriders [rep] | 31.4 attack_power points (2.62 DPS) | yes | Mark of Kern (2262, -0.95 DPS) [dungeon]; Assault Band (13095, -0.95 DPS) [world_drop]; Blackstone Ring (17713, -0.95 DPS) [dungeon] |
@@ -310,7 +310,7 @@ No-known-source sample (15 of 805, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (orc, 03325213032515001-05050000000000000-005000000000000000)
 
-Set DPS (verified): 274.0. Weights run: 1.2s. Verify run: 11.3s. 1556 eligible items had no known source.
+Set DPS (verified): 274.0. Weights run: 1.6s. Verify run: 13.4s. 1556 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.000 ± 0.005, agility=1.440 ± 0.091, crit=2.058 ± 0.130 per rating point (14 rating = 1%, 28.807 per %), hit=3.989 ± 0.345 per rating point (10 rating = 1%, 39.886 per %), melee_haste=16.659 ± 2.849
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1556, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (orc, 02305213032515001-55050000001000000-200000000000000000)
 
-Set DPS (verified): 795.1. Weights run: 1.2s. Verify run: 14.4s. 1556 eligible items had no known source.
+Set DPS (verified): 795.1. Weights run: 1.4s. Verify run: 15.9s. 1556 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.003, strength=2.200 ± 0.006, agility=1.769 ± 0.133, crit=2.373 ± 0.179 per rating point (14 rating = 1%, 33.216 per %), hit=4.041 ± 0.527 per rating point (10 rating = 1%, 40.414 per %), melee_haste=18.525 ± 4.164
 
