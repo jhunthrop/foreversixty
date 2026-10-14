@@ -11,6 +11,9 @@ export interface AddonSurfaceImage {
   width: number;
   height: number;
   alt: string;
+  /** A portrait-style capture (settings, character panel, guild tab, build dialogs): shown at
+   *  native width under a 900 px cap instead of the 420 px landscape cap. */
+  tall?: boolean;
 }
 export interface AddonSurface {
   section: string;
@@ -215,6 +218,7 @@ export const addonCopy = {
       images: [
         {
           src: '/addon/character-panel-tab.jpg',
+          tall: true,
           width: 580,
           height: 796,
           alt: 'The Forever Sixty tab for a level 24 hunter: Next targets lists Ranger Bow +3.5 DPS (Ranged, World drop) and Blackened Defias Belt +1.1 DPS (Waist, The Deadmines, Captain Greenskin, 30% drop); Rotation lists Aimed Shot, Multi-Shot, Serpent Sting and Arcane Shot with their conditions, and Rapid Fire dimmed at level 26; Build reads “Plan: Beast Mastery 31 / Marksmanship 20”, “12 of 15 points on plan” and “3 off plan” in red, over the buttons Use a different build and Copy my character.',
@@ -247,6 +251,7 @@ export const addonCopy = {
       images: [
         {
           src: '/addon/guild-tab.jpg',
+          tall: true,
           width: 728,
           height: 612,
           alt:
@@ -280,16 +285,18 @@ export const addonCopy = {
       images: [
         {
           src: '/addon/build-dialog-paste.jpg',
+          tall: true,
           width: 770,
-          height: 567,
+          height: 553,
           alt:
             'The build dialog for a hunter on Paste a build: “Following: Beast Mastery / Marksmanship build · Hunter · 51 po…”, “Next talent: Take Lethal Attacks (Marksmanship, 1 of 5)”, and the empty box “Paste a build code from foreversixty.gg (Ctrl+V)”, with “Tab to switch” at the bottom.',
         },
         {
           src: '/addon/build-dialog-copy.jpg',
-          width: 633,
-          height: 464,
-          alt: 'The build dialog on Copy my character: “Selected. Press Ctrl+C, then paste it on foreversixty.gg.” over the selected export, then “The site has your character from 10 Oct 20:00. Yours is newer.”, “Sim done from an earlier copy · a new sim is queued” and “Your next step: Take Deflection (1 of 2)”.',
+          tall: true,
+          width: 770,
+          height: 550,
+          alt: 'The build dialog on Copy my character with the hunter’s export string selected (FS1:1.60.1.70291:hunter:…), then “No companion found.”, “The companion is a small app on your computer that sends this when you log out.” and “Or paste it on the site at foreversixty.gg.”',
         },
       ],
     },
@@ -300,10 +307,11 @@ export const addonCopy = {
       images: [
         {
           src: '/addon/settings-switches.jpg',
+          tall: true,
           width: 1166,
-          height: 1036,
+          height: 790,
           alt:
-            'The Forever Sixty settings page with its eight switches ticked, each with its hint: Show the chip, Hide the chip in combat, Marks on the talent window, Show the minimap button, Gear tips on item tooltips, Score badges in chat, Share my build with my guild and Save my character for the companion app, then the Reset positions button and the start of the Commands list.',
+            'The Forever Sixty settings page with its eight switches ticked, each with its hint: Show the chip, Hide the chip in combat, Marks on the talent window, Show the minimap button, Gear tips on item tooltips, Score badges in chat, Share my build with my guild and Save my character for the companion app, then the Reset positions button.',
         },
       ],
     },

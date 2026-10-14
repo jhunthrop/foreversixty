@@ -128,18 +128,20 @@ const flows = [
                 <p class="text-muted text-[14px] leading-relaxed">{surface.body}</p>
                 {surface.images.map((image) => (
                   <div
-                    class="border-line-soft rounded-control bg-raised max-h-[420px] w-full overflow-hidden border"
+                    class={`border-line-soft rounded-control bg-raised w-full overflow-hidden border ${image.tall ? 'max-h-[900px]' : 'max-h-[420px]'}`}
                     style={`max-width: ${image.width}px; aspect-ratio: ${image.width} / ${image.height}`}
                   >
-                    <img
-                      class="block h-full w-full object-contain"
-                      src={image.src}
-                      width={image.width}
-                      height={image.height}
-                      alt={image.alt}
-                      loading="lazy"
-                      decoding="async"
-                    />
+                    <a class="block h-full w-full" href={image.src}>
+                      <img
+                        class="block h-full w-full object-contain"
+                        src={image.src}
+                        width={image.width}
+                        height={image.height}
+                        alt={image.alt}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </a>
                   </div>
                 ))}
               </li>

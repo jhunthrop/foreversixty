@@ -126,8 +126,7 @@ const MAX_IMAGE_BYTES = 200 * 1024;
 /** The addon's own `settingsCommands` block, "/fs x: what it does" per line, read from the
  *  addon's Locale.lua so this page cannot drift from it again. FS_LOCALE_LUA overrides the
  *  path; by default the main checkout's working tree beside this one, else this repo's copy.
- *  Until L5.3 lands `/fs loot` in that file, the line is inserted after `/fs ready` (the
- *  position it is ruled to have) so the gate stays green; once it is there this is a no-op. */
+ */
 function localeSettingsCommands(): string[] {
   const candidates = [
     process.env.FS_LOCALE_LUA,
@@ -138,8 +137,7 @@ function localeSettingsCommands(): string[] {
   const block = /settingsCommands\s*=\s*\{([\s\S]*?)\n\t\},/.exec(lua)?.[1] ?? '';
   const lines = [...block.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
   expect(lines.length, 'settingsCommands block not found').toBeGreaterThan(9);
-  const loot = '/fs loot: what an item is worth to you';
-  if (!lines.includes(loot)) lines.splice(lines.findIndex((l) => l.startsWith('/fs floor')), 0, loot);
+  expect(lines, 'the file lists /fs loot').toContain('/fs loot: what an item is worth to you');
   return lines;
 }
 
@@ -303,16 +301,44 @@ describe('/setup: what it does in the game (L8.3)', () => {
     expect(html.split(textOf(addonCopy.pageNoNetwork).slice(0, 30)).length - 1).toBe(1);
   });
 
-  it('gives every image box a surface colour and a 420 px height cap, the image contained', () => {
-    for (const image of addonCopy.surfaces.flatMap((s) => s.images)) {
+  it('gives every image box a surface colour, a per-image height cap (900 px portrait, 420 px landscape) and a link to the full-size file', () => {
+    const images = addonCopy.surfaces.flatMap((s) => s.images);
+    expect(images.filter((i) => i.tall).map((i) => i.src).sort()).toEqual([
+      '/addon/build-dialog-copy.jpg',
+      '/addon/build-dialog-paste.jpg',
+      '/addon/character-panel-tab.jpg',
+      '/addon/guild-tab.jpg',
+      '/addon/settings-switches.jpg',
+    ]);
+    for (const image of images) {
       const at = html.indexOf(`src="${image.src}"`);
       const box = html.slice(html.lastIndexOf('<div', at), at);
       expect(box, image.src).toContain('bg-raised');
-      expect(box).toContain('max-h-[420px]');
+      expect(box).toContain(image.tall ? 'max-h-[900px]' : 'max-h-[420px]');
+      expect(box).not.toContain(image.tall ? 'max-h-[420px]' : 'max-h-[900px]');
       expect(box).toContain(`max-width: ${image.width}px`);
       const tag = /<img\s[^>]*>/.exec(html.slice(at - 200))?.[0] ?? '';
       expect(tag).toContain('object-contain');
+      // The <img> sits inside <a href="its file"> opening in the same tab.
+      const link = html.slice(html.lastIndexOf('<a ', at), at);
+      expect(link, image.src).toContain(`href="${image.src}"`);
+      expect(link).not.toContain('target=');
+      expect(html.slice(at, html.indexOf('</a>', at))).not.toContain('<a ');
     }
+  });
+
+  it('shows the hunter’s copy dialog with the export selected and the no-companion lines', () => {
+    const copy = addonCopy.surfaces.flatMap((s) => s.images).find((i) => i.src === '/addon/build-dialog-copy.jpg');
+    expect(copy?.alt).toMatch(/hunter/i);
+    expect(copy?.alt).toContain('No companion found.');
+    expect(copy?.alt).toContain('Or paste it on the site');
+    expect(copy?.alt).not.toMatch(/warrior|Deflection/i);
+  });
+
+  it('crops the settings capture to the switch list, the Commands list out', () => {
+    const settings = addonCopy.surfaces.flatMap((s) => s.images).find((i) => i.src === '/addon/settings-switches.jpg');
+    expect(settings?.height).toBeLessThanOrEqual(800);
+    expect(settings?.alt).not.toMatch(/Commands list/);
   });
 
   it('shows the hunter’s own captures, never a state that is not in the picture', () => {

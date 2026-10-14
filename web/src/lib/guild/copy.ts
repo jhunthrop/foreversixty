@@ -178,6 +178,8 @@ export const guildRosterAddonCopy = {
   /** The hover on a row whose member shares nothing but the time the addon saw them. */
   withheldHover: 'Details withheld by the member',
   separator: '·',
+  /** The build name in the In game slot, so it does not read as a stray word. */
+  build: (name: string): string => `build: ${name}`,
   /** `seen` counts the roster rows the snapshot matched; `total` is every roster row. */
   snapshotLine: (by: string, when: string, seen: number, total: number): string =>
     `Roster from the addon · sent by ${by} ${when} · ${seen} of ${total} members seen`,

@@ -350,10 +350,10 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
       new RegExp(`^Roster from the addon · sent by Zulmara 3 minutes ago · 3 of ${fixtureRows} members seen$`),
     );
     await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-ingame')).toHaveText(
-      /^Level 60 Survival\s+per addon\s+·\s+gap 12 DPS\s+·\s+Survival raid\s+·\s+seen 21:40$/,
+      /^Level 60 Survival\s+per addon\s+·\s+gap 12 DPS\s+·\s+build: Survival raid\s+·\s+seen 21:40$/,
     );
     await expect(rowNamed(page, 'Kraggor').getByTestId('guild-roster-ingame')).toHaveText(
-      /^Level 60\s+·\s+gap 4 DPS\s+·\s+Protection raid\s+·\s+seen 21:38$/,
+      /^Level 60\s+·\s+gap 4 DPS\s+·\s+build: Protection raid\s+·\s+seen 21:38$/,
     );
     const none = rowNamed(page, 'Windtalon').getByTestId('guild-roster-ingame-none');
     await expect(none).toHaveText('—');

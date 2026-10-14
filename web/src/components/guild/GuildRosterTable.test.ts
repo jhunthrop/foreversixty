@@ -86,11 +86,11 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     // Zulmara: the site says Marksmanship, the addon says Survival.
     const zulmara = byName.get('Zulmara') ?? '';
     expect(zulmara).toContain('data-testid="guild-roster-ingame"');
-    expect(text(zulmara)).toContain('Level 60 Survival per addon · gap 12 DPS · Survival raid · seen 21:40');
+    expect(text(zulmara)).toContain('Level 60 Survival per addon · gap 12 DPS · build: Survival raid · seen 21:40');
     expect(zulmara).toMatch(/class="[^"]*text-muted[^"]*"[^>]*>per addon</);
     // Kraggor: the addon agrees with the site's Protection, so the level shows with no tag.
     const kraggor = text(byName.get('Kraggor') ?? '');
-    expect(kraggor).toContain('Level 60 · gap 4 DPS · Protection raid · seen 21:38');
+    expect(kraggor).toContain('Level 60 · gap 4 DPS · build: Protection raid · seen 21:38');
     expect(kraggor).not.toContain('per addon');
     expect(kraggor).not.toContain('(addon)');
     expect(withSnapshot).not.toContain('(addon)');
@@ -129,7 +129,7 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(windtalon).not.toContain('data-testid="guild-roster-ingame"');
     // A phone shows no lone "—": the whole slot is hidden below md.
     const slot = /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(windtalon)?.[0] ?? '';
-    expect(slot).toMatch(/class="[^"]*\bhidden\b[^"]*xl:block/);
+    expect(slot).toMatch(/class="[^"]*\bhidden\b[^"]*lg:block/);
     // A matched row's slot is shown on phones.
     const matched = /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(rows(withSnapshot).get('Zulmara') ?? '')?.[0] ?? '';
     expect(matched).not.toMatch(/\bhidden\b/);
@@ -142,20 +142,30 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
       expect(slotAt, name).toBeGreaterThan(-1);
       expect(actionsAt, `${name} actions`).toBeGreaterThan(slotAt);
       const slot = /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(part)?.[0] ?? '';
-      expect(slot).toContain('xl:basis-[280px]');
-      expect(slot).toContain('xl:shrink-0');
+      expect(slot).toContain('lg:basis-[260px]');
+      expect(slot).toContain('lg:shrink-0');
       expect(slot).toContain('min-w-0');
       const actions = /<div[^>]*data-testid="guild-roster-actions"[^>]*>/.exec(part)?.[0] ?? '';
       expect(actions).toContain('flex-nowrap');
       expect(actions).toContain('shrink-0');
+      expect(actions).toContain('lg:w-[190px]');
+      expect(actions).not.toMatch(/\bxl:/);
+      expect(slot).not.toMatch(/\bxl:/);
       // Nothing of the row sits between the slot and the actions but the slot's own content.
       expect(part.slice(actionsAt)).not.toContain('data-testid="guild-roster-ingame-slot"');
     }
   });
 
+  it('labels the build name in the In game slot from the copy file', () => {
+    expect(guildRosterAddonCopy.build('Survival raid')).toBe('build: Survival raid');
+    const zulmara = rows(withSnapshot).get('Zulmara') ?? '';
+    expect(text(zulmara)).toContain('build: Survival raid');
+    expect(text(zulmara)).not.toMatch(/gap 12 DPS · Survival raid/);
+  });
+
   it('the In game header sits over the same slot', () => {
     const header = /<button[^>]*data-testid="guild-roster-sort-addon_gap"[^>]*>/.exec(withSnapshot)?.[0] ?? '';
-    expect(header).toContain('xl:w-[280px]');
+    expect(header).toContain('lg:w-[260px]');
   });
 
   it('puts a dot between the spec and "alt of {main}" rather than running them together', () => {

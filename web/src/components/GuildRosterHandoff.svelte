@@ -34,7 +34,7 @@
 <!-- `stacked` (the Roster tab's fixed actions slot): the two links sit one above the other from
      lg up, so the group is narrow enough never to wrap or push the Remove button. -->
 <div
-  class={`flex min-h-11 flex-wrap items-center gap-3 md:min-h-0 ${stacked ? 'xl:flex-col xl:flex-nowrap xl:items-end xl:gap-1' : ''}`}
+  class={`flex min-h-11 flex-wrap items-center gap-3 md:min-h-0 ${stacked ? 'lg:flex-col lg:flex-nowrap lg:items-end lg:gap-1' : ''}`}
   data-testid="guild-roster-handoff"
 >
   {#if status === 'loading'}

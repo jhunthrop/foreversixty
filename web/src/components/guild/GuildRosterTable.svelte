@@ -141,17 +141,17 @@
     'h-9 bg-none border-none p-0 text-[11px] font-bold tracking-[0.1em] uppercase text-muted';
   const SORT_HEADER_ACTIVE = 'text-gold';
   const ROW =
-    'guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-b py-2.5 xl:flex-nowrap';
+    'guild-roster-row flex flex-wrap items-center gap-3 border-line-soft border-b py-2.5 lg:flex-nowrap';
 </script>
 
 {#snippet inGame(row: GuildRosterRow)}
   {@const identity = addonIdentity(row)}
   {@const none = identity === null || row.addon === undefined || row.addon === null}
   <!-- The slot is the same width on every row, so the row's height never depends on how much
-       the addon knew: its text wraps inside it. Below xl it has a line of its own, and a row
+       the addon knew: its text wraps inside it. Below lg it has a line of its own, and a row
        the snapshot did not carry has none there at all (no lone "—"). -->
   <div
-    class={`min-w-0 basis-full text-[12px] break-words xl:shrink-0 xl:basis-[280px] ${none ? 'hidden xl:block' : ''}`}
+    class={`min-w-0 basis-full text-[12px] break-words lg:shrink-0 lg:basis-[260px] ${none ? 'hidden lg:block' : ''}`}
     data-testid="guild-roster-ingame-slot"
   >
     <span class="sr-only">{guildRosterAddonCopy.srLabel}</span>
@@ -168,19 +168,22 @@
       {@const seen = addonSeen(row.addon.seen_at, today, withheld)}
       {@const gapLabel = addonGapLabel(row.addon.gear_gap)}
       {@const build = row.addon.build !== null && row.addon.build !== '' ? row.addon.build : null}
+      <!-- The spaces are mustaches because Svelte drops a bare space at the start of an {#if}. -->
+      <!-- eslint-disable svelte/no-useless-mustaches -->
       <span data-testid="guild-roster-ingame"
         >{#if identity.level !== null}{addonLevelSpec(identity.level, identity.spec)}{#if identity.spec !== null}
-            &#32;<span class="text-muted">{guildRosterAddonCopy.addonTag}</span>{/if}{/if}{#if gapLabel !== null}{#if identity.level !== null}
-            &#32;<span class="text-muted">{guildRosterAddonCopy.separator}</span>
+            {' '}<span class="text-muted">{guildRosterAddonCopy.addonTag}</span>{/if}{/if}{#if gapLabel !== null}{#if identity.level !== null}
+            {' '}<span class="text-muted">{guildRosterAddonCopy.separator}</span>
           {/if}
           <span class="tabular font-mono" data-testid="guild-roster-ingame-gap">{gapLabel}</span>{/if}{#if build !== null}{#if identity.level !== null || gapLabel !== null}
-            &#32;<span class="text-muted">{guildRosterAddonCopy.separator}</span>
+            {' '}<span class="text-muted">{guildRosterAddonCopy.separator}</span>
           {/if}
-          {build}{/if}{#if seen !== null}{#if identity.level !== null || gapLabel !== null || build !== null}
-            &#32;<span class="text-muted">{guildRosterAddonCopy.separator}</span>
+          {guildRosterAddonCopy.build(build)}{/if}{#if seen !== null}{#if identity.level !== null || gapLabel !== null || build !== null}
+            {' '}<span class="text-muted">{guildRosterAddonCopy.separator}</span>
           {/if}
           <span class="text-muted" style="cursor:help" title={seen.hover}>{seen.label}</span>{/if}</span
       >
+      <!-- eslint-enable svelte/no-useless-mustaches -->
     {/if}
   </div>
 {/snippet}
@@ -257,10 +260,10 @@
 
   <p class="text-muted text-[13px]" data-testid="guild-roster-addon-snapshot">{snapshotLine}</p>
 
-  <div class="flex flex-wrap gap-6 pl-1 xl:gap-3 xl:pr-0" data-testid="guild-roster-sort-header">
+  <div class="flex flex-wrap gap-6 pl-1 lg:gap-3 lg:pr-0" data-testid="guild-roster-sort-header">
     {#each SORT_COLUMNS as col (col.key)}
       <button
-        class={`${SORT_HEADER} ${col.key === 'addon_gap' ? 'min-w-0 text-left xl:ml-auto xl:w-[280px] xl:shrink-0' : ''} ${sortKey === col.key ? SORT_HEADER_ACTIVE : ''}`}
+        class={`${SORT_HEADER} ${col.key === 'addon_gap' ? 'min-w-0 text-left lg:ml-auto lg:w-[260px] lg:shrink-0' : ''} ${sortKey === col.key ? SORT_HEADER_ACTIVE : ''}`}
         title={col.hover}
         onclick={() => (sortKey = col.key)}
         data-testid={`guild-roster-sort-${col.key}`}
@@ -269,7 +272,7 @@
       </button>
     {/each}
     <!-- Where each row's actions group sits, so the In game heading stays over its slot. -->
-    <span class="hidden xl:block xl:w-[220px] xl:shrink-0" aria-hidden="true"></span>
+    <span class="hidden lg:block lg:w-[190px] lg:shrink-0" aria-hidden="true"></span>
   </div>
 
   {#if ordered.length === 0}
@@ -294,9 +297,9 @@
                 >{/if}</span
             >
           </div>
-          <!-- Below xl the facts flow with the rest of the row; at xl they wrap inside their own
+          <!-- Below lg the facts flow with the rest of the row; at lg they wrap inside their own
                group, so the In game slot and the actions keep their place at the row's end. -->
-          <div class="contents xl:flex xl:min-w-0 xl:flex-1 xl:flex-wrap xl:items-center xl:gap-x-3 xl:gap-y-1">
+          <div class="contents lg:flex lg:min-w-0 lg:flex-1 lg:flex-wrap lg:items-center lg:gap-x-3 lg:gap-y-1">
             {#if row.rank === 'officer' || row.rank === 'leader'}
               <span class="pill pill-site">{row.rank === 'leader' ? 'Leader' : 'Officer'}</span>
             {/if}
@@ -332,7 +335,7 @@
           </div>
           {@render inGame(row)}
           <div
-            class="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-3 xl:w-[220px]"
+            class="ml-auto flex shrink-0 flex-nowrap items-center justify-end gap-3 lg:w-[190px]"
             data-testid="guild-roster-actions"
           >
             {#if row.consent !== 'roster'}
