@@ -325,11 +325,14 @@ Theme.SIZES = {
 	--- The group panel (spec section 4.8, L5.2): its flyout's width (its button is the panel
 	--- tab's; its headers, columns and scroll track are the guild tab's), the most member rows
 	--- shown at once (each a cell line and the muted weakest-slot line under it), the ready
-	--- check's missing lines before "and N more", and the enchant cell's tick.
+	--- check's missing lines before "and N more" (fix round 4, C: the coverage lines' too), and the
+	--- enchant cell's tick. Fix round 4 (D): where the Social window's side tabs cannot be read, the
+	--- flyout sits `groupSideFallback` right of the window's edge (past them).
 	groupFlyoutWidth = 480,
 	groupVisibleRows = 10,
 	groupMissingLines = 6,
 	groupTick = 12,
+	groupSideFallback = 55,
 }
 
 --- The client's own font objects, and what to use when one is missing.

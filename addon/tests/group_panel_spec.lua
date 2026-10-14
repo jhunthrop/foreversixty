@@ -155,7 +155,27 @@ describe("GroupPanel", function()
 		social.FriendsList = state.clientChild(social, "SocialUIFrame.FriendsList")
 		social.FriendsList:Hide()
 		social.activeContentFrame = social.RaidFrame
+		-- Fix round 4 (D): the window's side tabs, unnamed children with a rect past its right edge
+		-- (500): 32 and 40 wide from x 500, so the rightmost ends at 540.
+		social.sideTabs = {}
+		for index, width in ipairs({ 32, 40 }) do
+			local tab = state.clientChild(social, "SocialUIFrame side tab " .. index)
+			tab:SetSize(width, 64)
+			tab.GetLeft = function()
+				return 500
+			end
+			tab.GetRight = function()
+				return 500 + width
+			end
+			social.sideTabs[index] = tab
+		end
 		return social
+	end
+
+	--- The flyout's x beside the Social window (fix round 4, D): past the rightmost side tab (540)
+	--- from the window's right edge (500), clear of it by guildSideClear.
+	local function sideX()
+		return Theme.SIZES.panelOffsetX + 40 + Theme.SIZES.guildSideClear
 	end
 
 	--- A click on one of the Social window's tabs, as the client runs it (the scripts fire): "raid"
@@ -188,7 +208,7 @@ describe("GroupPanel", function()
 		end
 		clock, sent, notified, combat = 1000, {}, {}, false
 		groupList = {}
-		for _, entry in ipairs(options.solo and { PARTY[1] } or options.members or PARTY) do
+		for _, entry in ipairs(options.solo and (options.members or { PARTY[1] }) or options.members or PARTY) do
 			groupList[#groupList + 1] = entry
 		end
 		units = {}
@@ -693,7 +713,7 @@ describe("GroupPanel", function()
 				local flyout = open()
 				assert.are.equal(social, flyout.parent)
 				assert.are.equal(480, flyout:GetWidth())
-				assertPoint({ "TOPLEFT", social, "TOPRIGHT", Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
+				assertPoint({ "TOPLEFT", social, "TOPRIGHT", sideX(), Theme.SIZES.panelOffsetY },
 					flyout.points[#flyout.points])
 				assert.is_true(flyout:IsShown())
 				assert.is_true(flyout:IsVisible())
@@ -735,6 +755,53 @@ describe("GroupPanel", function()
 			assert.are.equal(frames.raid, _G[GroupPanel.FLYOUT_NAME].parent)
 		end)
 
+		-- Fix round 4, D (designer 1): the Social window's side tabs are unnamed children past its right
+		-- edge; the flyout clears them as the guild tab's does (read only: GetChildren and the rects).
+		it("clears the Social window's side tabs: past the rightmost child beyond its right edge, else 55 across",
+			function()
+				local frames = start()
+				local social = frames.social
+				-- A child with a rect inside the window is no side tab.
+				local inside = state.clientChild(social, "SocialUIFrame inner")
+				inside.GetLeft = function()
+					return 120
+				end
+				inside.GetRight = function()
+					return 480
+				end
+				local flyout = open()
+				assertPoint({ "TOPLEFT", social, "TOPRIGHT", sideX(), Theme.SIZES.panelOffsetY },
+					flyout.points[#flyout.points])
+				assert.are.equal(Theme.SIZES.panelOffsetX + 44, sideX())
+				-- The flyout's own rect past the edge is never taken for a side tab.
+				flyout.GetLeft = function()
+					return 544
+				end
+				flyout.GetRight = function()
+					return 1024
+				end
+				GroupPanel.placeFlyout(flyout)
+				assertPoint({ "TOPLEFT", social, "TOPRIGHT", sideX(), Theme.SIZES.panelOffsetY },
+					flyout.points[#flyout.points])
+				-- No side tab with a rect: 55 across.
+				for _, tab in ipairs(social.sideTabs) do
+					tab.GetLeft = function()
+						return nil
+					end
+				end
+				GroupPanel.placeFlyout(flyout)
+				assertPoint({ "TOPLEFT", social, "TOPRIGHT", Theme.SIZES.panelOffsetX + 55, Theme.SIZES.panelOffsetY },
+					flyout.points[#flyout.points])
+				-- A window that will not list its children: 55 across, and no error.
+				social.GetChildren = function()
+					error("no children")
+				end
+				GroupPanel.placeFlyout(flyout)
+				assertPoint({ "TOPLEFT", social, "TOPRIGHT", Theme.SIZES.panelOffsetX + 55, Theme.SIZES.panelOffsetY },
+					flyout.points[#flyout.points])
+				assert.is_nil(GroupPanel.disabled)
+			end)
+
 		it("makes no button without a social frame; /fs group opens the flyout on UIParent at the chip's side",
 			function()
 				start({ noFrame = true })
@@ -770,7 +837,7 @@ describe("GroupPanel", function()
 			local draws = GroupPanel.draws
 			frames.social:Show()
 			assert.is_true(GroupPanel.draws > draws)
-			assertPoint({ "TOPLEFT", frames.social, "TOPRIGHT", Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
+			assertPoint({ "TOPLEFT", frames.social, "TOPRIGHT", sideX(), Theme.SIZES.panelOffsetY },
 				flyout.points[#flyout.points])
 			assert.are.same({}, GroupPanel.command())
 			assert.is_false(flyout:IsShown())
@@ -782,11 +849,41 @@ describe("GroupPanel", function()
 			GroupPanel.refresh()
 			assert.is_false(GroupPanel.tabOpen())
 			assert.are.same({ L.groupOpensOnRaidTab }, GroupPanel.command())
-			GroupPanel.command()
+			-- Fix round 4 (F): the window drawn on another tab: what /fs group opened is closed again.
+			assert.is_false(_G[GroupPanel.FLYOUT_NAME]:IsShown())
+			assert.are.same({ L.groupOpensOnRaidTab }, GroupPanel.command())
+			assert.is_false(_G[GroupPanel.FLYOUT_NAME]:IsShown())
 			clickTab(frames.social, "raid")
 			assert.is_true(GroupPanel.tabOpen())
 			assert.are.same({}, GroupPanel.command())
+			assert.is_true(_G[GroupPanel.FLYOUT_NAME]:IsVisible())
 		end)
+
+		-- Fix round 4, F (re-review): /fs group with the window drawn on another tab closes the flyout
+		-- it opened; with the window closed it still opens when the window next shows on the Raid tab,
+		-- and a window that next shows on another tab closes it (the show script's re-read).
+		it("closes a flyout /fs group opens on another Social tab; with the window closed it opens on its next show",
+			function()
+				local frames = start()
+				clickTab(frames.social, "friends")
+				GroupPanel.refresh()
+				assert.are.same({ L.groupOpensOnRaidTab }, GroupPanel.command())
+				local flyout = _G[GroupPanel.FLYOUT_NAME]
+				assert.is_false(flyout:IsShown())
+				-- The window closed on Friends: /fs group opens it to show with the window...
+				frames.social:Hide()
+				assert.are.same({ L.groupOpensOnRaidTab }, GroupPanel.command())
+				assert.is_true(flyout:IsShown())
+				-- ...and the window shown again on Friends closes it.
+				frames.social:Show()
+				assert.is_false(flyout:IsShown())
+				-- Closed again, /fs group, and the window reopens on the Raid tab: it shows there.
+				frames.social:Hide()
+				assert.are.same({ L.groupOpensOnRaidTab }, GroupPanel.command())
+				clickTab(frames.social, "raid")
+				frames.social:Show()
+				assert.is_true(flyout:IsVisible())
+			end)
 
 		-- Fix round 3, C1 (hunter-36): on 1.60 the global RaidFrame is the legacy raid frame, shown on
 		-- every tab inside a RaidParentFrame hidden on every tab; the Raid tab's content is the
@@ -842,6 +939,11 @@ describe("GroupPanel", function()
 			social.RaidFrame = "not a frame"
 			assert.are.equal(frames.raid, GroupPanel.raidTab())
 			social.RaidFrame = {}
+			assert.are.equal(frames.raid, GroupPanel.raidTab())
+			-- Fix round 4 (F): a table with IsShown but no GetObjectType is no frame either.
+			social.RaidFrame = { IsShown = function()
+				return true
+			end }
 			assert.are.equal(frames.raid, GroupPanel.raidTab())
 			-- The window's own Raid tab frame, hidden or shown, before anything else.
 			social.RaidFrame = state.clientChild(social, "SocialUIFrame.RaidFrame")
@@ -992,7 +1094,7 @@ describe("GroupPanel", function()
 				assert.are.equal(social, button.parent)
 				assertPoint({ "TOPRIGHT", social, "BOTTOMRIGHT", 0, 0 }, button.points[#button.points])
 				assert.are.equal(social, flyout.parent)
-				assertPoint({ "TOPLEFT", social, "TOPRIGHT", Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
+				assertPoint({ "TOPLEFT", social, "TOPRIGHT", sideX(), Theme.SIZES.panelOffsetY },
 					flyout.points[#flyout.points])
 				assert.is_true(GroupPanel.draws > draws)
 				assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
@@ -1107,18 +1209,44 @@ describe("GroupPanel", function()
 
 		it("fits the rows to the Social window's height, not the rectless raid frame's", function()
 			local frames = start()
-			frames.social:SetHeight(130)
+			frames.social:SetHeight(140)
 			open()
-			-- 130 less the header, the counts, the headers and the padding leaves room for two rows.
-			assert.are.equal(GroupPanel.fitRows(130, 0), GroupPanel.last.visible)
+			-- 140 less the header, the counts, the headers and the padding (74) leaves room for two rows
+			-- of 28 with the row gap between them (fix round 4, G): 2 x 28 + 4 = 60.
+			assert.are.equal(GroupPanel.fitRows(140, 0), GroupPanel.last.visible)
 			assert.are.equal(2, GroupPanel.last.visible)
+			assert.are.equal(1, GroupPanel.fitRows(130, 0))
 		end)
 
-		it("shows one muted line, Not in a group., and nothing else out of a group", function()
+		-- Fix round 4, G: the row gap between member rows; the muted line stays tight under its row.
+		it("keeps panelRowGap between member rows and the muted line tight under its row", function()
+			start()
+			open()
+			local height, gap = GroupPanel.rowHeight(), Theme.SIZES.panelRowGap
+			local tops = {}
+			for index, row in ipairs(GroupPanel.rowFrames) do
+				if row.frame:IsShown() then
+					tops[index] = row.frame.points[#row.frame.points][5]
+				end
+			end
+			assert.are.same({ 0, -(height + gap), -2 * (height + gap) }, tops)
+			assert.are.equal(3 * height + 2 * gap, GroupPanel.holder:GetHeight())
+			local row = GroupPanel.rowFrames[1]
+			assert.are.equal(-math.max(Theme.SIZES.guildRow, GroupPanel.lineHeight()), row.sub.points[#row.sub.points][5])
+		end)
+
+		it("shows Not in a group. and the muted line on what a group shows, and nothing else out of a group", function()
 			start({ solo = true })
 			local flyout = open()
 			assert.are.equal(L.groupNotInGroup, GroupPanel.countsLine:GetText())
 			assert.are.equal(Theme.HEX.muted, colorOf(GroupPanel.countsLine))
+			-- Fix round 4 (E): a second muted line says what a group shows and that /fs ready tries it.
+			assert.are.equal("A party or raid shows each member's spec, gear gap, score and buffs. "
+				.. "/fs ready tries the check on you.", GroupPanel.soloLines[1]:GetText())
+			assert.are.equal(Theme.HEX.muted, colorOf(GroupPanel.soloLines[1]))
+			assert.is_true(GroupPanel.soloLines[1]:IsShown())
+			assert.are.equal(GroupPanel.countsTop() + 2 * GroupPanel.lineHeight() + Theme.SIZES.panelPadding,
+				GroupPanel.soloHeight())
 			for _, header in pairs(GroupPanel.headers) do
 				assert.is_false(header.button:IsShown())
 			end
@@ -1132,6 +1260,21 @@ describe("GroupPanel", function()
 			GroupPanel.handleReady()
 			assert.is_false(GroupPanel.checkFrame:IsShown())
 			assert.are.equal(L.groupNotInGroup, GroupPanel.countsLine:GetText())
+		end)
+
+		-- Fix round 4 (E): the solo line is one line where it fits the flyout; where the client's font
+		-- is too wide for it, its two sentences take a line each rather than lose "/fs ready".
+		it("keeps the solo line whole on one line where it fits, else a sentence a line", function()
+			start()
+			local whole = table.concat(L.groupSoloHint, " ")
+			assert.are.same({ whole }, GroupPanel.soloHint(nil, 460))
+			local function width(text)
+				return #text * 5
+			end
+			assert.are.same({ whole }, GroupPanel.soloHint(width, #whole * 5))
+			assert.are.same({ L.groupSoloHint[1], L.groupSoloHint[2] }, GroupPanel.soloHint(width, 460))
+			assert.are.equal(GroupPanel.countsTop() + 3 * GroupPanel.lineHeight() + Theme.SIZES.panelPadding,
+				GroupPanel.soloHeight(2))
 		end)
 
 		it("draws a row per unit, the player included, Gap high to low, the weakest slot under each", function()
@@ -1158,6 +1301,10 @@ describe("GroupPanel", function()
 			assert.are.same({ "Thorgrim", "Elwen", "Tester" }, order)
 			for key, header in pairs(GroupPanel.headers) do
 				assert.is_true(header.button:IsShown(), key)
+			end
+			-- The solo line is the solo state's alone.
+			for _, line in ipairs(GroupPanel.soloLines) do
+				assert.is_false(line:IsShown())
 			end
 			-- A header click sorts and the next turns it round.
 			click(GroupPanel.headers.name.button)
@@ -1242,7 +1389,11 @@ describe("GroupPanel", function()
 			itemCache()
 			inspectElwen()
 			GroupPanel.register()
-			open()
+			local flyout = open()
+			-- Fix round 4 (D): the side-tab scan read the window's children (GetChildren, the rects) and
+			-- placed the flyout past them; nothing was written.
+			assertPoint({ "TOPLEFT", frames.social, "TOPRIGHT", sideX(), Theme.SIZES.panelOffsetY },
+				flyout.points[#flyout.points])
 			GroupPanel.onRosterUpdate()
 			GroupPanel.onReadyCheck()
 			GroupPanel.onAura("party1")
@@ -1330,25 +1481,159 @@ describe("GroupPanel", function()
 				start({ auras = buffed(), instance = { "Molten Core", "raid", 409 } })
 				gear.Tester = { [16] = "item:80:0" }
 				local result = GroupPanel.onReadyCheck()
+				-- Fix round 4 (E): "<Name>: missing ..."; (A) the player is a priest, who uses no imbue.
 				assert.are.same({
-					string.format(L.groupMissing, "Tester", "flask, imbue"),
-					string.format(L.groupMissing, "Thorgrim", "flask"),
-					string.format(L.groupMissing, "Elwen", "Power Word: Fortitude"),
+					"Tester: missing flask",
+					"Thorgrim: missing flask",
+					"Elwen: missing Power Word: Fortitude",
 				}, GroupPanel.missingLines(result))
 			end)
 
-		it("lists each need of the bosses with who covers it, nobody where nobody does, and the resist", function()
+		-- Fix round 4, A: a flask from level 50 and food from 35 (GroupPanel.CONSUMABLE_LEVELS); a member
+		-- below is never flagged for it, the player's own dry run included.
+		it("gates the flask at level 50 and food at 35: a member below is never flagged for them", function()
+			start()
+			assert.are.same({ flask = 50, food = 35 }, GroupPanel.CONSUMABLE_LEVELS)
+			local needs = { buffs = {}, debuffs = {}, generic = true }
+			local function lacking(level)
+				local result = GroupPanel.check({ { short = "Fenna", classToken = "PRIEST", level = level,
+					auras = { ids = {}, names = {} } } }, needs, GroupPanel.spellName)
+				return result.missing[1] ~= nil and table.concat(result.missing[1].what, ", ") or "none"
+			end
+			assert.are.equal("none", lacking(24))
+			assert.are.equal("none", lacking(34))
+			assert.are.equal("food", lacking(35))
+			assert.are.equal("food", lacking(49))
+			assert.are.equal("flask, food", lacking(50))
+			assert.are.equal("flask, food", lacking(60))
+			-- A level the client cannot say claims nothing.
+			assert.are.equal("none", lacking(nil))
+			-- The player alone at 24 with nothing on: nothing missing, in chat and on the chip.
+			start({ solo = true, members = { { unit = "player", name = "Tester", class = "HUNTER", className = "Hunter",
+				level = 24 } }, auras = { Tester = {} } })
+			assert.are.same({ "Ready check (only you see this): nothing missing." }, GroupPanel.handleReady())
+			assert.are.equal("Ready check: nothing missing", Chip.raidCheck.text)
+		end)
+
+		-- Fix round 4, A: an imbue is asked only of a spec that uses one; the spec is the one shown.
+		it("asks an imbue of warriors, rogues, retribution, enhancement and feral only; never of an unknown spec",
+			function()
+				start()
+				local needs = { buffs = {}, debuffs = {}, generic = true }
+				local function asked(spec)
+					local result = GroupPanel.check({ { short = "Fenna", classToken = "WARRIOR", level = 60, spec = spec,
+						imbue = false, auras = { ids = { [17626] = true, [19705] = true }, names = {} } } }, needs,
+						GroupPanel.spellName)
+					return result.missing[1] ~= nil
+				end
+				for _, spec in ipairs({ "warrior-arms", "warrior-fury", "warrior-protection", "rogue-combat",
+					"rogue-assassination", "paladin-retribution", "shaman-enhancement", "druid-feral",
+					"druid-feral-combat" }) do
+					assert.is_true(asked(spec), spec)
+				end
+				for _, spec in ipairs({ "hunter-marksmanship", "hunter-beast-mastery", "mage-arcane", "priest-holy",
+					"paladin-holy", "paladin-protection", "shaman-elemental", "shaman-restoration", "druid-balance",
+					"druid-restoration", "warlock-affliction" }) do
+					assert.is_false(asked(spec), spec)
+				end
+				assert.is_false(asked(nil))
+			end)
+
+		-- Fix round 4, A: the player's own imbue, in the spec their row shows (a warrior here).
+		it("asks the player's own imbue in the spec their row shows", function()
+			local warrior = { { unit = "player", name = "Tester", class = "WARRIOR", className = "Warrior", level = 60 },
+				PARTY[3] }
+			start({ members = warrior, auras = { Tester = { aura(17626), aura(19705), aura(11551) },
+				Elwen = { aura(17627), aura(19705), aura(10157) } } })
+			gear.Tester = { [16] = "item:80:0" }
+			assert.are.same({ "Tester: missing imbue" }, GroupPanel.missingLines(GroupPanel.onReadyCheck()))
+		end)
+
+		-- Fix round 4, A: Forever's Natural flasks (the items' use spells; the recipes are no aura).
+		it("counts Forever's Natural flasks as a flask, by their aura ids", function()
+			start()
+			for _, id in ipairs({ 1293740, 1293741, 1293742, 1293743 }) do
+				local result = GroupPanel.check({ { short = "Fenna", classToken = "PRIEST", level = 60,
+					auras = { ids = { [id] = true, [19705] = true }, names = {} } } },
+					{ buffs = {}, debuffs = {}, generic = true }, GroupPanel.spellName)
+				assert.are.same({}, result.missing, id)
+			end
+			for _, recipe in ipairs({ 1293559, 1293560, 1293561, 1293562 }) do
+				for _, id in ipairs(GroupPanel.FLASKS) do
+					assert.are_not.equal(recipe, id)
+				end
+			end
+		end)
+
+		-- Fix round 4, A: the disclosure, once under Missing, where another member uses an imbue.
+		it("says once under Missing that imbues are read on yourself only, where another melee member is listed",
+			function()
+				-- No nightly record (it names Thorgrim Arms), so his spec is unknown: nothing said.
+				start({ auras = buffed(), instance = { "Molten Core", "raid", 409 }, data = false })
+				local result = GroupPanel.onReadyCheck()
+				assert.is_falsy(result.imbueOthers)
+				local function said(lines)
+					local count = 0
+					for _, line in ipairs(lines) do
+						if line.text == "Weapon imbues can only be read on yourself." then
+							count = count + 1
+							assert.are.equal("muted", line.color)
+						end
+					end
+					return count
+				end
+				assert.are.equal(0, said(GroupPanel.checkText(result)))
+				-- His addon names him Arms: said once, after the missing lines, before Coverage.
+				thorgrimHello()
+				result = GroupPanel.onReadyCheck()
+				assert.is_true(result.imbueOthers)
+				local lines = GroupPanel.checkText(result)
+				assert.are.equal(1, said(lines))
+				assert.are.equal("Weapon imbues can only be read on yourself.", lines[5].text)
+				assert.are.equal(L.groupCoverageTitle, lines[6].text)
+				-- Never solo, whatever the player is.
+				start({ solo = true, members = { { unit = "player", name = "Tester", class = "WARRIOR",
+					className = "Warrior", level = 60 } }, auras = { Tester = {} } })
+				result = GroupPanel.onReadyCheck()
+				assert.is_falsy(result.imbueOthers)
+				assert.are.equal(0, said(GroupPanel.checkText(result)))
+			end)
+
+		-- Fix round 4, C: coverage is class presence: "no <class>" first in the body colour, then the
+		-- members of the class, muted, their names class-coloured in the flyout.
+		it("lists each need as class presence: no <class> first, then <class> <Name>, and the resist", function()
 			start({ auras = buffed(), instance = { "Molten Core", "raid", 409 } })
 			local result = GroupPanel.onReadyCheck()
 			assert.are.same({
-				string.format(L.groupCoverage, "Arcane Intellect", "Elwen"),
-				string.format(L.groupCoverage, "Power Word: Fortitude", "Tester"),
-				string.format(L.groupCoverageNobody, "Mark of the Wild"),
-				string.format(L.groupCoverage, "Battle Shout", "Thorgrim"),
-				string.format(L.groupCoverage, "Sunder Armor", "Thorgrim"),
-				string.format(L.groupCoverageNobody, "Faerie Fire"),
-				string.format(L.groupCoverageNobody, string.format(L.groupResist, L.groupSchools.fire)),
+				"Mark of the Wild: no druid",
+				"Faerie Fire: no druid",
+				"Fire resistance: no paladin or shaman",
+				"Arcane Intellect: mage Elwen",
+				"Power Word: Fortitude: priest Tester",
+				"Battle Shout: warrior Thorgrim",
+				"Sunder Armor: warrior Thorgrim",
 			}, GroupPanel.coverageLines(result))
+		end)
+
+		-- Fix round 4, B: outside Molten Core, Onyxia's Lair and Blackwing Lair the check reads the
+		-- class buffs and consumables only, and its title names the list.
+		it("checks buffs and consumables only outside a known raid: no coverage, titled standard buffs", function()
+			start({ auras = buffed() })
+			open()
+			local result = GroupPanel.onReadyCheck()
+			assert.are.same({}, result.coverage)
+			assert.are.same({}, GroupPanel.coverageLines(result))
+			assert.are.same({ "Tester: missing flask", "Thorgrim: missing flask", "Elwen: missing Power Word: Fortitude" },
+				GroupPanel.missingLines(result))
+			local texts = {}
+			for _, line in ipairs(GroupPanel.checkText(result)) do
+				texts[#texts + 1] = line.text
+				assert.are_not.equal(L.groupCoverageTitle, line.text)
+			end
+			assert.are.equal("Ready check · standard buffs · 12:00", texts[1])
+			-- Inside one, the instance by name.
+			start({ auras = buffed(), instance = { "Molten Core", "raid", 409 } })
+			assert.are.equal("Ready check · Molten Core · 12:00", GroupPanel.checkText(GroupPanel.onReadyCheck())[1].text)
 		end)
 
 		it("takes the generic lists outside an instance, the bosses' own inside one", function()
@@ -1373,16 +1658,16 @@ describe("GroupPanel", function()
 		end)
 
 		it("names a need from the addon's own words where the client cannot name the spell, never by id", function()
-			start({ auras = buffed(), noSpellNames = true })
+			start({ auras = buffed(), noSpellNames = true, instance = { "Molten Core", "raid", 409 } })
 			local lines = GroupPanel.coverageLines(GroupPanel.onReadyCheck())
-			assert.are.equal(string.format(L.groupCoverage, "Arcane Intellect", "Elwen"), lines[1])
+			assert.are.equal("Arcane Intellect: mage Elwen", lines[4])
 			for _, line in ipairs(lines) do
 				assert.is_nil(line:find("%d%d%d%d"), line)
 			end
 		end)
 
 		it("claims nothing missing where the client cannot read auras", function()
-			start({ noAuraApi = true })
+			start({ noAuraApi = true, instance = { "Molten Core", "raid", 409 } })
 			local result = GroupPanel.onReadyCheck()
 			assert.are.same({}, GroupPanel.missingLines(result))
 			assert.is_true(#GroupPanel.coverageLines(result) > 0)
@@ -1396,7 +1681,8 @@ describe("GroupPanel", function()
 			end
 			GroupPanel.onReadyCheck()
 			assert.are.equal(1, refreshes)
-			local summary = string.format(L.groupChipSummary, 3, "Tester, Thorgrim, Elwen")
+			-- Fix round 4 (E): the player first as "you", at most two names, then "+N".
+			local summary = "Ready check: 3 missing (you, Thorgrim, +1)"
 			local model = Chip.model({ level = 30, build = { name = "Arms leveling", order = { {}, {}, {} } },
 				progress = { matched = 3, total = 3 }, unspent = 0, now = clock, shown = true, combatHide = true,
 				raidCheck = Chip.raidCheck })
@@ -1425,10 +1711,10 @@ describe("GroupPanel", function()
 				assert.are.equal(1, #state.timers)
 				mock.runTimers(state)
 				assert.are.same({
-					string.format(L.groupMissing, "Tester", "flask, imbue"),
-					string.format(L.groupMissing, "Elwen", "Power Word: Fortitude"),
+					"Tester: missing flask",
+					"Elwen: missing Power Word: Fortitude",
 				}, GroupPanel.missingLines(GroupPanel.result))
-				assert.are.equal(string.format(L.groupChipSummary, 2, "Tester, Elwen"), Chip.raidCheck.text)
+				assert.are.equal("Ready check: 2 missing (you, Elwen)", Chip.raidCheck.text)
 				-- No check standing: an aura change does nothing.
 				clock = clock + 35
 				GroupPanel.onReadyCheckFinished()
@@ -1504,28 +1790,112 @@ describe("GroupPanel", function()
 					texts[#texts + 1] = line:GetText()
 				end
 			end
-			assert.are.equal(string.format(L.groupCheckTitle, "12:00"), texts[1])
-			assert.are.equal(string.format(L.groupMissing, "Tester", "flask"), texts[2])
+			assert.are.equal("Ready check · Molten Core · 12:00", texts[1])
+			-- Fix round 4 (E): the name in its class colour, then "missing ...".
+			assert.are.equal("|cff" .. Theme.panelClassHex("PRIEST") .. "Tester|r: missing flask", texts[2])
 			assert.is_truthy(table.concat(texts, "\n"):find(L.groupCoverageTitle, 1, true))
-			assert.is_truthy(table.concat(texts, "\n"):find(string.format(L.groupCoverage, "Sunder Armor", "Thorgrim"),
-				1, true))
+			-- Fix round 4 (C): the coverage lines, "no <class>" first in the body colour, then the members
+			-- muted with their names class-coloured; six at most, the last "and N more".
+			local warrior = "|cff" .. Theme.panelClassHex("WARRIOR") .. "Thorgrim|r"
+			local coverage, colors = {}, {}
+			local after = false
+			for _, line in ipairs(GroupPanel.checkLines) do
+				if line:IsShown() then
+					if after then
+						coverage[#coverage + 1] = line:GetText()
+						colors[#colors + 1] = colorOf(line)
+					end
+					after = after or line:GetText() == L.groupCoverageTitle
+				end
+			end
+			assert.are.same({
+				"Mark of the Wild: no druid",
+				"Faerie Fire: no druid",
+				"Fire resistance: no paladin or shaman",
+				"Arcane Intellect: mage |cff" .. Theme.panelClassHex("MAGE") .. "Elwen|r",
+				"Power Word: Fortitude: priest |cff" .. Theme.panelClassHex("PRIEST") .. "Tester|r",
+				"and 2 more",
+			}, coverage)
+			assert.are.same({ Theme.HEX.body, Theme.HEX.body, Theme.HEX.body, Theme.HEX.muted, Theme.HEX.muted,
+				Theme.HEX.muted }, colors)
+			assert.is_nil(table.concat(coverage, "\n"):find(warrior, 1, true))
 		end)
 
 		it("dry-runs on /fs ready outside a group: the player alone, the lines in chat and the chip", function()
 			-- The player is a priest: Fortitude is a buff they can give, so they are asked for it too.
 			start({ solo = true, auras = { Tester = { aura(19705), aura(10938) } } })
 			local lines = GroupPanel.handleReady()
-			assert.are.same({ L.groupReadyDry, string.format(L.groupMissing, "Tester", "flask") }, lines)
+			-- Fix round 4 (E): alone, one line in chat.
+			assert.are.same({ "Ready check (only you see this): you are missing flask." }, lines)
 			-- Fix round 2: the player alone, the chip names what they lack, not "1 missing (Tester)".
 			-- Fix round 3, C3: the chip's own short form, "missing ..." (no "you are").
 			assert.are.equal(string.format(L.groupChipSummaryYou, "flask"), Chip.raidCheck.text)
 			assert.are.equal("Ready check: missing flask", Chip.raidCheck.text)
 			assert.is_nil(Chip.raidCheck.open)
 			start({ solo = true, auras = { Tester = { aura(19705), aura(17627), aura(10938) } } })
-			assert.are.same({ L.groupReadyDry, L.groupReadyNone }, GroupPanel.handleReady())
-			-- The chip holds the check (fix round 1) but has nothing to show.
+			assert.are.same({ "Ready check (only you see this): nothing missing." }, GroupPanel.handleReady())
+			-- Fix round 4 (E): the chip says so for the dry run's 60 s, then goes.
 			assert.are.same({}, Chip.raidCheck.missing)
-			assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock))
+			assert.are.equal("Ready check: nothing missing", Chip.raidCheck.text)
+			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock))
+			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock + Chip.RAID_CHECK_SECONDS))
+			assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock + Chip.RAID_CHECK_SECONDS + 1))
+			local model = Chip.model({ level = 30, build = { name = "Arms leveling", order = { {}, {}, {} } },
+				progress = { matched = 3, total = 3 }, unspent = 0, now = clock, shown = true, combatHide = true,
+				raidCheck = Chip.raidCheck })
+			assert.are.equal("raidcheck", model.chosen.kind)
+			assert.are.equal("Ready check: nothing missing", model.chosen.text)
+			-- A click on the chip prints that line.
+			local said, say = {}, Theme.say
+			Theme.say = function(text)
+				said[#said + 1] = text
+			end
+			pcall(Chip.printRaidCheck)
+			Theme.say = say
+			assert.are.same({ "Ready check: nothing missing" }, said)
+		end)
+
+		-- Fix round 4 (E, B): in a group the dry run's chat names the list it read, then a line a member
+		-- ("Nobody is missing anything." when clean); a clean check in a group puts nothing on the chip.
+		it("dry-runs on /fs ready in a group: the header names the list, a line a member, nothing on a clean chip",
+			function()
+				start({ auras = buffed() })
+				assert.are.same({ "Ready check (only you see this), standard buffs:", "Tester: missing flask",
+					"Thorgrim: missing flask", "Elwen: missing Power Word: Fortitude" }, GroupPanel.handleReady())
+				start({ auras = buffed(), instance = { "Molten Core", "raid", 409 } })
+				assert.are.equal("Ready check (only you see this), Molten Core:", GroupPanel.handleReady()[1])
+				start({ auras = {
+					Tester = { aura(10938), aura(19705), aura(17627), aura(10157) },
+					Thorgrim = { aura(10938), aura(11551), aura(19705), aura(17626) },
+					Elwen = { aura(17627), aura(19705), aura(10157), aura(10938) },
+				} })
+				assert.are.same({ "Ready check (only you see this), standard buffs:", "Nobody is missing anything." },
+					GroupPanel.handleReady())
+				assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock))
+				-- A real check's clean result shows nothing either.
+				GroupPanel.onReadyCheck()
+				assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock))
+			end)
+
+		-- Fix round 4 (E): the chip's group line: the player first as "you", two names, then "+N".
+		it("names the player first as you on the chip, at most two names, then +N", function()
+			start()
+			local function result(list, own)
+				local missing = {}
+				for index, name in ipairs(list) do
+					missing[index] = { name = name, what = { "flask" }, own = name == own or nil }
+				end
+				return { missing = missing }
+			end
+			assert.are.equal("Ready check: 5 missing (you, Thorgrim, +3)",
+				GroupPanel.summary(result({ "Thorgrim", "Elwen", "Tester", "Fenna", "Brannoc" }, "Tester")))
+			assert.are.equal("Ready check: 4 missing (Thorgrim, Elwen, +2)",
+				GroupPanel.summary(result({ "Thorgrim", "Elwen", "Fenna", "Brannoc" })))
+			assert.are.equal("Ready check: 2 missing (Thorgrim, Elwen)", GroupPanel.summary(result({ "Thorgrim", "Elwen" })))
+			assert.are.equal("Ready check: 2 missing (you, Elwen)",
+				GroupPanel.summary(result({ "Tester", "Elwen" }, "Tester")))
+			assert.are.equal("Ready check: 1 missing (Thorgrim)", GroupPanel.summary(result({ "Thorgrim" })))
+			assert.is_nil(GroupPanel.summary(result({})))
 		end)
 
 		-- Fix round 1, D3: a panel that turned itself off never claims a clean check.
@@ -1652,7 +2022,8 @@ describe("GroupPanel", function()
 			start({ solo = true, noFrame = true })
 			assert.are.equal(string.format(L.diagGroupPanelYou, L.diagPanelClosed, L.diagGroupNone),
 				GroupPanel.diagLine())
-			assert.are.equal("Group panel: closed, 1 member (you), ready check none", GroupPanel.diagLine())
+			-- Fix round 4 (E): "not in a group" replaces "1 member (you)".
+			assert.are.equal("Group panel: closed, not in a group, ready check none", GroupPanel.diagLine())
 		end)
 
 		-- Fix round 2: a dry run alone names what the player lacks, not "1 missing".
@@ -1663,7 +2034,7 @@ describe("GroupPanel", function()
 			GroupPanel.handleReady()
 			assert.are.equal(string.format(L.diagGroupPanelYou, L.diagPanelOpen,
 				string.format(L.diagGroupCheckYou, "12:00", "flask, food")), GroupPanel.diagLine())
-			assert.are.equal("Group panel: open, 1 member (you), ready check 12:00: you are missing flask, food",
+			assert.are.equal("Group panel: open, not in a group, ready check 12:00: you are missing flask, food",
 				GroupPanel.diagLine())
 			-- Fix round 3, C3: the chip says "missing flask, food"; the diag keeps "you are missing".
 			assert.are.equal("Ready check: missing flask, food", Chip.raidCheck.text)
@@ -1672,8 +2043,19 @@ describe("GroupPanel", function()
 			assert.are.equal(string.format(L.diagGroupPanelYou, L.diagPanelClosed,
 				string.format(L.diagGroupCheckYouNone, "12:00")), GroupPanel.diagLine())
 			-- Fix round 3, C3: the solo clean line is "nothing missing".
-			assert.are.equal("Group panel: closed, 1 member (you), ready check 12:00: nothing missing",
+			assert.are.equal("Group panel: closed, not in a group, ready check 12:00: nothing missing",
 				GroupPanel.diagLine())
+		end)
+
+		-- Fix round 4 (F): a group's check read once the player is alone is stale: "none".
+		it("calls a group's check stale once the player is out of the group", function()
+			start({ auras = { Tester = { aura(10938) } } })
+			GroupPanel.onReadyCheck()
+			local group = GroupPanel.result
+			assert.is_nil(group.alone)
+			start({ solo = true })
+			GroupPanel.result = group
+			assert.are.equal("Group panel: closed, not in a group, ready check none", GroupPanel.diagLine())
 		end)
 
 		-- Fix round 3 (low): a dry run alone read once the player is in a group is stale: never the

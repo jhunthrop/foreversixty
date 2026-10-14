@@ -35,6 +35,10 @@
 -- client (Comms.ownPlan). Ruling 3: the ready check reads every unit's auras against the
 -- shipped encounter needs (Data.encounterNeeds) of the instance's bosses. Ruling 4: a score floor
 -- only tags rows. Ruling 5: no switch of its own; a /fs diag line; frames built on first open.
+-- Fix round 4: the check claims only what it can (a flask from level 50, food from 35, an imbue
+-- of a spec that fights with one, read on the player alone), reads class buffs and consumables
+-- only outside a raid the data knows, says coverage as class presence, and the flyout clears the
+-- Social window's side tabs (read from its children, never written).
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -137,9 +141,19 @@ GroupPanel.BUFF_FOR = {
 	[11551] = { WARRIOR = true, PALADIN = true, HUNTER = true, ROGUE = true, SHAMAN = true, DRUID = true },
 }
 --- The flasks' spell ids (Petrification, the Titans, Distilled Wisdom, Supreme Power, Chromatic
---- Resistance), matched by id or by the client's name for them; and the food buff's.
-GroupPanel.FLASKS = { 17624, 17626, 17627, 17628, 17629 }
+--- Resistance), matched by id or by the client's name for them; and the food buff's. Fix round 4
+--- (A): Forever's four Natural flasks (Accuracy, Aggression, Precision, Swiftness), the use spells
+--- of items 274273-274276 (data/builds/1.60.1.70291/simconsumes.json), as the Titans' 17626 is
+--- item 13510's. 1293559-1293562 share their names but are the Alchemy recipes
+--- (SkillLineAbility, skill line 171): no aura, left out.
+GroupPanel.FLASKS = { 17624, 17626, 17627, 17628, 17629, 1293740, 1293741, 1293742, 1293743 }
 GroupPanel.WELL_FED = 19705
+--- Fix round 4 (A): the level each consumable needs; a member below it is never asked for it.
+GroupPanel.CONSUMABLE_LEVELS = { flask = 50, food = 35 }
+--- Fix round 4 (A): the specs that fight with a weapon imbue: every warrior and rogue spec,
+--- Retribution, Enhancement and Feral (a spec matches an entry, or starts with it and a hyphen:
+--- "druid-feral-combat"). Never a hunter, a caster or a healer; never an unknown spec.
+GroupPanel.IMBUE_SPECS = { "warrior", "rogue", "paladin-retribution", "shaman-enhancement", "druid-feral" }
 --- The main hand's inventory slot, for the player's own weapon imbue.
 GroupPanel.MAIN_HAND = 16
 
@@ -394,14 +408,38 @@ local function wearsNeed(auras, id, name, nameOf)
 	return wears(auras, id, name) or wearsAny(auras, GroupPanel.VARIANTS[id] or {}, nameOf)
 end
 
---- The ready check (ruling 3) over `members` ({ short, classToken, connected, auras (aurasOf's;
---- nil: unread), imbue (the player's: GroupPanel.ownImbue's) }) against `needs`
---- (GroupPanel.needsFor's), naming spells through `nameOf` (GroupPanel.spellName); a group version
---- of a buff (GroupPanel.VARIANTS) counts as the buff. Answers
---- { missing = { { name, what = { "flask", "Arcane Intellect", ... } } }, coverage = { { need,
---- by = { names } } } }: a member lacks a flask, the food buff, the player's own imbue, or a
---- class buff the group can give (a member of its class is here) and does them some good; a
---- member offline or whose auras cannot be read is never said to lack anything. Pure.
+--- Whether `spec` fights with a weapon imbue (GroupPanel.IMBUE_SPECS); false for nil. Pure.
+function GroupPanel.usesImbue(spec)
+	if type(spec) ~= "string" then
+		return false
+	end
+	for _, entry in ipairs(GroupPanel.IMBUE_SPECS) do
+		if spec == entry or spec:sub(1, #entry + 1) == entry .. "-" then
+			return true
+		end
+	end
+	return false
+end
+
+--- Whether a unit at `level` is old enough for a consumable of `need` levels: a level the client
+--- cannot say (nil, 0) is not; a unit too high to show (-1) is.
+local function reaches(level, need)
+	level = tonumber(level)
+	return level ~= nil and level ~= 0 and (level < 0 or level >= need)
+end
+
+--- The ready check (ruling 3) over `members` ({ short, classToken, level, spec (the one their row
+--- shows), own (the player), connected, auras (aurasOf's; nil: unread), imbue (the player's:
+--- GroupPanel.ownImbue's) }) against `needs` (GroupPanel.needsFor's), naming spells through `nameOf`
+--- (GroupPanel.spellName); a group version of a buff (GroupPanel.VARIANTS) counts as the buff.
+--- Answers { missing = { { name, classToken, own, what = { "flask", "Arcane Intellect", ... } } },
+--- coverage = { { need, classes, by = { { name, classToken } } } }, generic, imbueOthers }: a member
+--- lacks a flask (from level 50) or the food buff (from 35) (fix round 4, A:
+--- GroupPanel.CONSUMABLE_LEVELS), the player's own imbue where their spec uses one, or a class buff
+--- the group can give (a member of its class is here) and does them some good; a member offline
+--- or whose auras cannot be read is never said to lack anything. Fix round 4 (B): with the generic
+--- lists (no raid the data knows) there is no coverage. `imbueOthers`: a member other than the
+--- player uses an imbue (the flyout says only the player's can be read). Pure.
 function GroupPanel.check(members, needs, nameOf)
 	local present = {}
 	for _, member in ipairs(members) do
@@ -411,26 +449,31 @@ function GroupPanel.check(members, needs, nameOf)
 		end
 	end
 	local function providers(classes)
-		local names = {}
+		local found = {}
 		for _, token in ipairs(classes or {}) do
 			for _, name in ipairs(present[token] or {}) do
-				names[#names + 1] = name
+				found[#found + 1] = { name = name, classToken = token }
 			end
 		end
-		return names
+		return found
 	end
-	local result = { missing = {}, coverage = {} }
+	local result = { missing = {}, coverage = {}, generic = needs.generic == true or nil }
+	local levels = GroupPanel.CONSUMABLE_LEVELS
 	for _, member in ipairs(members) do
+		if member.own ~= true and GroupPanel.usesImbue(member.spec) then
+			result.imbueOthers = true
+		end
 		local auras = member.auras
 		if member.connected ~= false and auras ~= nil then
 			local what = {}
-			if not wearsAny(auras, GroupPanel.FLASKS, nameOf) then
+			if reaches(member.level, levels.flask) and not wearsAny(auras, GroupPanel.FLASKS, nameOf) then
 				what[#what + 1] = L.groupNeedFlask
 			end
-			if not wears(auras, GroupPanel.WELL_FED, nameOf(GroupPanel.WELL_FED)) and not auras.names[L.groupWellFed] then
+			if reaches(member.level, levels.food) and not wears(auras, GroupPanel.WELL_FED, nameOf(GroupPanel.WELL_FED))
+				and not auras.names[L.groupWellFed] then
 				what[#what + 1] = L.groupNeedFood
 			end
-			if member.imbue == false then
+			if member.imbue == false and GroupPanel.usesImbue(member.spec) then
 				what[#what + 1] = L.groupNeedImbue
 			end
 			for _, id in ipairs(needs.buffs or {}) do
@@ -442,45 +485,91 @@ function GroupPanel.check(members, needs, nameOf)
 				end
 			end
 			if #what > 0 then
-				result.missing[#result.missing + 1] = { name = member.short, what = what }
+				result.missing[#result.missing + 1] = { name = member.short, classToken = member.classToken,
+					own = member.own == true or nil, what = what }
 			end
+		end
+	end
+	if needs.generic then
+		return result
+	end
+	-- A need is listed with the classes that give it; one no class is known to give says nothing.
+	local function cover(need, classes)
+		if need ~= nil and type(classes) == "table" and #classes > 0 then
+			result.coverage[#result.coverage + 1] = { need = need, classes = classes, by = providers(classes) }
 		end
 	end
 	for _, kind in ipairs({ "buffs", "debuffs" }) do
 		for _, id in ipairs(needs[kind] or {}) do
-			local name = nameOf(id)
-			if name ~= nil then
-				result.coverage[#result.coverage + 1] = { need = name, by = providers(GroupPanel.PROVIDERS[id]) }
-			end
+			cover(nameOf(id), GroupPanel.PROVIDERS[id])
 		end
 	end
 	if needs.resist ~= nil then
-		result.coverage[#result.coverage + 1] = {
-			need = string.format(L.groupResist, L.groupSchools[needs.resist] or needs.resist),
-			by = providers(GroupPanel.RESIST_PROVIDERS[needs.resist]),
-		}
+		cover(string.format(L.groupResist, L.groupSchools[needs.resist] or needs.resist),
+			GroupPanel.RESIST_PROVIDERS[needs.resist])
 	end
 	return result
 end
 
---- "Thorgrim: flask, imbue", one per member lacking anything. Pure.
-function GroupPanel.missingLines(result)
+--- A member's name, in their class colour lifted for the panel where `coloured` (the flyout).
+local function nameText(name, classToken, coloured)
+	if coloured and type(classToken) == "string" then
+		return "|cff" .. Theme.panelClassHex(classToken) .. name .. "|r"
+	end
+	return name
+end
+
+--- A class's word ("druid"), by token.
+local function classWord(token)
+	return L.groupClassWords[token] or tostring(token):lower()
+end
+
+--- "Thorgrim: missing flask, imbue", one per member lacking anything (fix round 4, E); the names
+--- class-coloured where `coloured` (the flyout). Pure.
+function GroupPanel.missingLines(result, coloured)
 	local lines = {}
 	for _, entry in ipairs(type(result) == "table" and result.missing or {}) do
-		lines[#lines + 1] = string.format(L.groupMissing, entry.name, table.concat(entry.what, L.groupMissingJoin))
+		lines[#lines + 1] = string.format(L.groupMissing, nameText(entry.name, entry.classToken, coloured),
+			table.concat(entry.what, L.groupMissingJoin))
 	end
 	return lines
 end
 
---- "Sunder Armor: covered by Thorgrim", "Faerie Fire: nobody", one per need. Pure.
+--- The coverage lines as class presence (fix round 4, C): each need nobody of its classes covers,
+--- "Faerie Fire: no druid" ("Fire resistance: no paladin or shaman"), first; then each covered
+--- need, "Sunder Armor: warrior Thorgrim", the members' names class-coloured where `coloured`.
+--- Each { text, covered }. Pure.
+function GroupPanel.coverageEntries(result, coloured)
+	local absent, covered = {}, {}
+	for _, entry in ipairs(type(result) == "table" and result.coverage or {}) do
+		if #entry.by == 0 then
+			local words = {}
+			for index, token in ipairs(entry.classes or {}) do
+				words[index] = classWord(token)
+			end
+			absent[#absent + 1] = { text = string.format(L.groupCoverageNo, entry.need,
+				table.concat(words, L.groupCoverageOr)), covered = false }
+		else
+			local names = {}
+			for index, by in ipairs(entry.by) do
+				names[index] = string.format(L.groupCoverageMember, classWord(by.classToken),
+					nameText(by.name, by.classToken, coloured))
+			end
+			covered[#covered + 1] = { text = string.format(L.groupCoverageBy, entry.need,
+				table.concat(names, L.groupCoverageJoin)), covered = true }
+		end
+	end
+	for _, entry in ipairs(covered) do
+		absent[#absent + 1] = entry
+	end
+	return absent
+end
+
+--- The coverage lines' plain text, in GroupPanel.coverageEntries' order. Pure.
 function GroupPanel.coverageLines(result)
 	local lines = {}
-	for _, entry in ipairs(type(result) == "table" and result.coverage or {}) do
-		if #entry.by > 0 then
-			lines[#lines + 1] = string.format(L.groupCoverage, entry.need, table.concat(entry.by, L.groupCoverageJoin))
-		else
-			lines[#lines + 1] = string.format(L.groupCoverageNobody, entry.need)
-		end
+	for index, entry in ipairs(GroupPanel.coverageEntries(result, false)) do
+		lines[index] = entry.text
 	end
 	return lines
 end
@@ -498,23 +587,36 @@ function GroupPanel.ownLack(result)
 	return table.concat(entry.what, L.groupMissingJoin)
 end
 
---- The chip's one line: "Ready check: 2 missing (Name, Name)"; for the player alone (fix round 2;
---- fix round 3, C3: the chip's short form) "Ready check: missing flask, food"; nil with nobody
---- missing. Pure.
+--- The chip's one line: "Ready check: 5 missing (you, Thorgrim, +3)" (fix round 4, E: the player
+--- first as "you" when among them, at most two names, then "+N"); for the player alone (fix round
+--- 2; fix round 3, C3: the chip's short form) "Ready check: missing flask, food", and after a clean
+--- dry run alone "Ready check: nothing missing" (fix round 4); nil with nobody missing otherwise.
+--- Pure.
 function GroupPanel.summary(result)
-	local missing = type(result) == "table" and result.missing or {}
-	if #missing == 0 then
+	if type(result) ~= "table" then
 		return nil
+	end
+	local missing = type(result.missing) == "table" and result.missing or {}
+	if #missing == 0 then
+		return (result.alone and result.dry) and L.groupChipSummaryYouNone or nil
 	end
 	local lack = GroupPanel.ownLack(result)
 	if lack ~= nil then
 		return string.format(L.groupChipSummaryYou, lack)
 	end
 	local names = {}
-	for index, entry in ipairs(missing) do
-		names[index] = entry.name
+	for _, entry in ipairs(missing) do
+		if entry.own then
+			table.insert(names, 1, L.groupChipYou)
+		else
+			names[#names + 1] = entry.name
+		end
 	end
-	return string.format(L.groupChipSummary, #missing, table.concat(names, L.groupChipJoin))
+	local shown = { names[1], names[2] }
+	if #names > 2 then
+		shown[3] = string.format(L.groupChipMore, #names - 2)
+	end
+	return string.format(L.groupChipSummary, #missing, table.concat(shown, L.groupChipJoin))
 end
 
 -- The rows, pure ---------------------------------------------------------------------------
@@ -854,12 +956,28 @@ function GroupPanel.memberGear(data, spec, level, faction, items)
 	return { gap = plan.gap, unit = plan.unit, weakest = weakestOf(plan, equipped, data) }
 end
 
+--- The player's spec as their own row shows it (Comms.ownSpec: the build's, else the talents'
+--- leading tree, Gear.specOf); the ready check asks the imbue in it too (fix round 4, A).
+local function ownSpec(data)
+	local ranks = type(data) == "table" and type(data.classes) == "table" and Talents.readRanks(data) or {}
+	return Comms.ownSpec(data, Follow.build, Talents.playerClassSlug(), ranks)
+end
+
+--- Another member's spec as their row shows it (GroupPanel.rows: their addon's, else the
+--- inspect's, else the record's); nil where none says (fix round 4, A: no imbue claimed then).
+local function shownSpec(unit, name, realm, ownRealm, now)
+	local live = PlayerTooltip.liveEntry(Comms.seen, name, (try(client("UnitName"), unit)), realm, ownRealm, now)
+	local inspect = Inspect.get(Inspect.keyOf(unit) or name)
+	local record = Score.forCharacter(name, realm)
+	return validSpec(live ~= nil and live.spec or nil) or validSpec(inspect ~= nil and inspect.spec or nil)
+		or validSpec(type(record) == "table" and record.spec or nil)
+end
+
 --- The player's own row's fields, read on this client (the chip's and the guild row's path:
 --- Comms.ownSpec, Comms.ownPlan over what is worn, Follow.buildName): { live, inspect, gear }.
 local function ownFields(data)
 	local build = Follow.build
-	local ranks = type(data) == "table" and type(data.classes) == "table" and Talents.readRanks(data) or {}
-	local spec = Comms.ownSpec(data, build, Talents.playerClassSlug(), ranks)
+	local spec = ownSpec(data)
 	local equipped = Gear.readEquipped()
 	local ok, plan = pcall(Comms.ownPlan, data, spec, equipped)
 	plan = ok and plan or nil
@@ -936,44 +1054,62 @@ local function checkStands(now)
 	return now <= (result.untilAt or result.at + Chip.RAID_CHECK_SECONDS)
 end
 
+--- Whether a check found nothing on a dry run of the player alone: the chip then says so (fix
+--- round 4, E); a real check's clean result shows nothing.
+local function cleanAlone(result)
+	return result.alone == true and result.dry == true and #result.missing == 0
+end
+
 --- Reads every unit's auras (the player alone out of a group) and checks them against the
 --- instance's needs; the chip gets the summary and the open flyout redraws. `again`: the same
---- check read anew (its time kept). Answers the result.
+--- check read anew (its time kept). Fix round 4 (A): each member's level and shown spec go in;
+--- (B) `where` names the raid whose needs were read (nil: the generic lists). Answers the result.
 local function runCheck(dry, again)
 	local units = GroupPanel.groupUnits()
 	local alone = #units == 0
 	if alone then
 		units = { "player" }
 	end
+	local data = GroupPanel.data or ns.Data
+	local _, ownRealm = Theme.playerNameRealm()
+	local now = Theme.now()
 	local members = {}
 	for _, unit in ipairs(units) do
-		local name = PlayerTooltip.nameOf(unit)
+		local name, realm = PlayerTooltip.nameOf(unit)
 		if type(name) == "string" and name ~= "" then
 			local _, classToken = try(client("UnitClass"), unit)
 			local member = {
 				short = name, classToken = classToken, connected = try(client("UnitIsConnected"), unit) ~= false,
-				auras = GroupPanel.aurasOf(unit),
+				auras = GroupPanel.aurasOf(unit), level = tonumber((try(client("UnitLevel"), unit))),
 			}
 			if isPlayer(unit) then
+				member.own = true
 				member.imbue = GroupPanel.ownImbue()
+				local ok, spec = pcall(ownSpec, data)
+				member.spec = ok and validSpec(spec) or nil
+			else
+				local ok, spec = pcall(shownSpec, unit, name, realm, ownRealm, now)
+				member.spec = ok and spec or nil
 			end
 			members[#members + 1] = member
 		end
 	end
-	local needs = GroupPanel.needsFor(GroupPanel.data or ns.Data, GroupPanel.instanceKey())
+	local key = GroupPanel.instanceKey()
+	local needs = GroupPanel.needsFor(data, key)
 	local result = GroupPanel.check(members, needs, GroupPanel.spellName)
 	-- Fix round 2: the player alone, so the summaries say what they lack (GroupPanel.summary).
 	result.alone = alone or nil
+	result.where = not needs.generic and key or nil
 	local previous = GroupPanel.result
 	if again and previous ~= nil then
 		result.at, result.clock, result.open, result.untilAt, result.dry = previous.at, previous.clock, previous.open,
 			previous.untilAt, previous.dry
 		GroupPanel.result = result
-		Chip.updateRaidCheck(GroupPanel.missingLines(result), GroupPanel.summary(result))
+		Chip.updateRaidCheck(GroupPanel.missingLines(result), GroupPanel.summary(result), cleanAlone(result))
 	else
 		result.at, result.clock, result.open, result.dry = Theme.now(), date("%H:%M"), not dry or nil, dry or nil
 		GroupPanel.result = result
-		Chip.setRaidCheck(GroupPanel.missingLines(result), GroupPanel.summary(result), not dry)
+		Chip.setRaidCheck(GroupPanel.missingLines(result), GroupPanel.summary(result), not dry, cleanAlone(result))
 	end
 	return result
 end
@@ -990,14 +1126,41 @@ function GroupPanel.rowHeight()
 	return math.max(S.guildRow, GroupPanel.lineHeight()) + GroupPanel.lineHeight()
 end
 
+--- From one member row's top to the next's (fix round 4, G): the row and `panelRowGap`.
+function GroupPanel.rowStep()
+	return GroupPanel.rowHeight() + S.panelRowGap
+end
+
+--- `count` member rows with the gap between them.
+function GroupPanel.rowsHeight(count)
+	return count * GroupPanel.rowHeight() + math.max(0, count - 1) * S.panelRowGap
+end
+
 --- Where the count line (or "Not in a group.") sits, from the flyout's top.
 function GroupPanel.countsTop()
 	return S.panelPadding + S.panelHeader + S.panelRowGap
 end
 
---- Out of a group: the header and the one line.
-function GroupPanel.soloHeight()
-	return GroupPanel.countsTop() + GroupPanel.lineHeight() + S.panelPadding
+--- The solo line under "Not in a group." (fix round 4, E): L.groupSoloHint's two sentences on one
+--- line where `measure` (GroupPanel.measure) finds it within `room`, else a sentence a line, so
+--- "/fs ready tries the check on you." is never cut. Pure.
+function GroupPanel.soloHint(measure, room)
+	local oneLine = table.concat(L.groupSoloHint, " ")
+	if ItemTooltip.fitPlain(oneLine, measure, room) == oneLine then
+		return { oneLine }
+	end
+	local lines = {}
+	for index, text in ipairs(L.groupSoloHint) do
+		lines[index] = text
+	end
+	return lines
+end
+
+--- Out of a group: the header, "Not in a group." and the solo line (`hintLines` lines; as many as
+--- GroupPanel.soloHint gives now when not said).
+function GroupPanel.soloHeight(hintLines)
+	hintLines = hintLines or #GroupPanel.soloHint(GroupPanel.measure, GroupPanel.innerWidth())
+	return GroupPanel.countsTop() + GroupPanel.lineHeight() * (1 + hintLines) + S.panelPadding
 end
 
 --- Where the column headers sit, and the rows under them.
@@ -1009,32 +1172,50 @@ function GroupPanel.rowsTop()
 	return GroupPanel.headerTop() + S.guildHeaderRow
 end
 
---- The ready check's lines as drawn under the rows: its title, the missing lines (at most
---- `groupMissingLines`, the last saying "and N more") or "Nobody is missing anything.", the
---- coverage title and lines; each { text, color }. Empty before a check. Pure.
+--- `entries` ({ text, color }) onto `lines`, at most `groupMissingLines`, the last then saying
+--- "and N more".
+local function capped(lines, entries)
+	local room = S.groupMissingLines
+	for index, entry in ipairs(entries) do
+		if index < room or #entries == room then
+			lines[#lines + 1] = entry
+		elseif index == room then
+			lines[#lines + 1] = { text = string.format(L.groupMissingMore, #entries - room + 1), color = "muted" }
+		end
+	end
+end
+
+--- The ready check's lines as drawn under the rows: its title naming the list it read (fix round
+--- 4, B: "Ready check · Molten Core · 21:04", "Ready check · standard buffs · 21:04"), the missing
+--- lines, names class-coloured (at most `groupMissingLines`, the last saying "and N more") or
+--- "Nobody is missing anything.", once (fix round 4, A) where another member fights with an imbue
+--- "Weapon imbues can only be read on yourself." muted, then the coverage title and lines (fix
+--- round 4, C: "no <class>" in the body colour first, the covered muted; capped the same); each
+--- { text, color }. Empty before a check. Pure.
 function GroupPanel.checkText(result)
 	if type(result) ~= "table" then
 		return {}
 	end
-	local lines = { { text = string.format(L.groupCheckTitle, result.clock or ""), color = "gold" } }
-	local missing = GroupPanel.missingLines(result)
+	local where = result.where or L.groupCheckStandard
+	local lines = { { text = string.format(L.groupCheckTitle, where, result.clock or ""), color = "gold" } }
+	local missing = {}
+	for index, line in ipairs(GroupPanel.missingLines(result, true)) do
+		missing[index] = { text = line, color = "body" }
+	end
 	if #missing == 0 then
 		lines[#lines + 1] = { text = L.groupAllSet, color = "muted" }
 	end
-	local room = S.groupMissingLines
-	for index, line in ipairs(missing) do
-		if index < room or #missing == room then
-			lines[#lines + 1] = { text = line, color = "body" }
-		elseif index == room then
-			lines[#lines + 1] = { text = string.format(L.groupMissingMore, #missing - room + 1), color = "muted" }
-		end
+	capped(lines, missing)
+	if result.imbueOthers and not result.alone then
+		lines[#lines + 1] = { text = L.groupImbueSelfOnly, color = "muted" }
 	end
-	local coverage = GroupPanel.coverageLines(result)
+	local coverage = {}
+	for index, entry in ipairs(GroupPanel.coverageEntries(result, true)) do
+		coverage[index] = { text = entry.text, color = entry.covered and "muted" or "body" }
+	end
 	if #coverage > 0 then
 		lines[#lines + 1] = { text = L.groupCoverageTitle, color = "gold", gap = true }
-		for index, line in ipairs(coverage) do
-			lines[#lines + 1] = { text = line, color = #result.coverage[index].by > 0 and "body" or "muted" }
-		end
+		capped(lines, coverage)
 	end
 	return lines
 end
@@ -1060,7 +1241,8 @@ function GroupPanel.fitRows(limit, extra)
 		return S.groupVisibleRows
 	end
 	local fixed = GroupPanel.rowsTop() + (extra or 0) + S.panelPadding
-	local room = math.floor((limit - fixed) / GroupPanel.rowHeight())
+	-- Fix round 4 (G): n rows take n steps less the last gap.
+	local room = math.floor((limit - fixed + S.panelRowGap) / GroupPanel.rowStep())
 	return math.max(1, math.min(S.groupVisibleRows, room))
 end
 
@@ -1072,7 +1254,8 @@ local function pane()
 end
 
 --- The Social window's own Raid tab frame (SocialUIFrame.RaidFrame, unnamed), read through a
---- guarded key lookup: a table with an IsShown method, else nil. Read only, never written.
+--- guarded key lookup: a table with IsShown and GetObjectType methods (fix round 4: a frame), else
+--- nil. Read only, never written.
 local function socialRaidTab()
 	local social = Widgets.clientFrame(GroupPanel.SOCIAL)
 	if social == nil then
@@ -1081,7 +1264,8 @@ local function socialRaidTab()
 	local ok, frame = pcall(function()
 		return social[GroupPanel.SOCIAL_RAID_KEY]
 	end)
-	if ok and type(frame) == "table" and type(frame.IsShown) == "function" then
+	if ok and type(frame) == "table" and type(frame.IsShown) == "function"
+		and type(frame.GetObjectType) == "function" then
 		return frame
 	end
 	return nil
@@ -1151,14 +1335,49 @@ local function guarded(action, ...)
 	return Widgets.guarded(GroupPanel, L.diagGroupPanelFailed, action, ...)
 end
 
+--- How far the Social window's side tabs reach past its right edge (fix round 4, D): the tab
+--- buttons are unnamed children of SocialUIFrame, so the farthest GetRight of its children
+--- (GetChildren, a read) that have a rect and end past the window's own right edge, the panel's
+--- own button and flyout aside; nil where none does or the client cannot say. Read only, guarded.
+local function sideTabsPast(frame)
+	local own = Widgets.frameEdge(frame, "GetRight")
+	if own == nil then
+		return nil
+	end
+	local ok, children = pcall(function()
+		return { frame:GetChildren() }
+	end)
+	if not ok or type(children) ~= "table" then
+		return nil
+	end
+	local farthest
+	for _, child in ipairs(children) do
+		if type(child) == "table" and not rawequal(child, GroupPanel.flyout) and not rawequal(child, GroupPanel.button)
+			and Widgets.hasRect(child) then
+			local right = Widgets.frameEdge(child, "GetRight")
+			if right ~= nil and right > own and (farthest == nil or right > farthest) then
+				farthest = right
+			end
+		end
+	end
+	return farthest ~= nil and farthest - own or nil
+end
+
 --- The flyout on its home (GroupPanel.home: the anchor, else the closed window), TOPLEFT at its
---- TOPRIGHT (Widgets.placeFlyout); with no social frame at all, on UIParent: its TOPRIGHT at the
---- chip's TOPLEFT, else at the screen's top right.
-local function placeFlyout(flyout)
+--- TOPRIGHT (Widgets.placeFlyout); on the Social window (fix round 4, D) moved right past its side
+--- tabs and clear of them by `guildSideClear`, as the guild tab's flyout is (GuildTab's
+--- placeFlyout), or `groupSideFallback` across where they cannot be read; with no social frame
+--- at all, on UIParent: its TOPRIGHT at the chip's TOPLEFT, else at the screen's top right.
+function GroupPanel.placeFlyout(flyout)
 	local frame = GroupPanel.home()
 	if frame ~= nil then
 		attach(flyout, frame, "flyoutHome")
-		Widgets.placeFlyout(flyout, frame, nil, S.panelOffsetX, S.panelOffsetY)
+		local x = S.panelOffsetX
+		if rawequal(frame, Widgets.clientFrame(GroupPanel.SOCIAL)) then
+			local past = sideTabsPast(frame)
+			x = x + (past ~= nil and past + S.guildSideClear or S.groupSideFallback)
+		end
+		Widgets.placeFlyout(flyout, frame, nil, x, S.panelOffsetY)
 		return
 	end
 	attach(flyout, UIParent, "flyoutHome")
@@ -1437,6 +1656,15 @@ function GroupPanel.ensureFlyout()
 	local counts = sized(Widgets.label(flyout, "", "muted", "small"), GroupPanel.innerWidth())
 	counts:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding, -GroupPanel.countsTop())
 	GroupPanel.countsLine = counts
+	-- Fix round 4 (E): the solo line under "Not in a group.", a label for each line it may take.
+	GroupPanel.soloLines = {}
+	for index = 1, #L.groupSoloHint do
+		local line = sized(Widgets.label(flyout, "", "muted", "small"), GroupPanel.innerWidth())
+		line:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding,
+			-(GroupPanel.countsTop() + index * GroupPanel.lineHeight()))
+		line:Hide()
+		GroupPanel.soloLines[index] = line
+	end
 	makeHeaders(flyout)
 	-- The rows: an addon-owned ScrollFrame clipping a content frame of pooled rows; the wheel
 	-- moves the first row shown, three a notch.
@@ -1496,7 +1724,8 @@ function GroupPanel.renderRows()
 	local rows, visible = model.rows, model.visible
 	local first, last, offset = Widgets.visibleRange(#rows, visible, GroupPanel.offset)
 	GroupPanel.offset = offset
-	local height = GroupPanel.rowHeight()
+	-- Fix round 4 (G): `panelRowGap` between rows; the muted line stays tight under its row.
+	local height = GroupPanel.rowStep()
 	local drawn = 0
 	for index = first, last do
 		drawn = drawn + 1
@@ -1569,8 +1798,24 @@ local function drawCheck(flyout, lines, y)
 	return y + inner
 end
 
---- Draws the flyout: out of a group "Not in a group." alone; in one the count line, the headers,
---- the rows (as many as fit under the anchor's height) and the last ready check; sized to them.
+--- The solo line (fix round 4, E): `lines` (GroupPanel.soloHint's) drawn muted, the rest hidden;
+--- none in a group.
+local function drawSolo(lines)
+	for index, label in ipairs(GroupPanel.soloLines) do
+		local text = lines[index]
+		if text ~= nil then
+			label:SetText(fitted(text, GroupPanel.innerWidth()))
+			label:SetTextColor(Theme.rgb(Theme.HEX.muted))
+			label:Show()
+		else
+			label:Hide()
+		end
+	end
+end
+
+--- Draws the flyout: out of a group "Not in a group." and the muted solo line (fix round 4, E); in
+--- one the count line, the headers, the rows (as many as fit under the anchor's height) and the
+--- last ready check; sized to them.
 function GroupPanel.draw()
 	local flyout = GroupPanel.flyout
 	if flyout == nil then
@@ -1582,6 +1827,8 @@ function GroupPanel.draw()
 		GroupPanel.last = { rows = {}, counts = { members = 0, inspected = 0, live = 0 }, visible = 0, solo = true }
 		GroupPanel.countsLine:SetText(fitted(L.groupNotInGroup, GroupPanel.innerWidth()))
 		GroupPanel.countsLine:SetTextColor(Theme.rgb(Theme.HEX.muted))
+		local hint = GroupPanel.soloHint(GroupPanel.measure, GroupPanel.innerWidth())
+		drawSolo(hint)
 		drawHeaders(false)
 		GroupPanel.holder:Hide()
 		for _, row in ipairs(GroupPanel.rowFrames) do
@@ -1589,9 +1836,10 @@ function GroupPanel.draw()
 			row.frame:Hide()
 		end
 		drawCheck(flyout, {}, 0)
-		flyout:SetHeight(GroupPanel.soloHeight())
+		flyout:SetHeight(GroupPanel.soloHeight(#hint))
 		return GroupPanel.last
 	end
+	drawSolo({})
 	local rows, counts = GroupPanel.model()
 	local lines = GroupPanel.checkText(GroupPanel.result)
 	local visible = GroupPanel.fitRows(Widgets.frameHeight(GroupPanel.anchor()), GroupPanel.checkHeight(lines))
@@ -1602,11 +1850,11 @@ function GroupPanel.draw()
 	drawHeaders(true)
 	local shownRows = math.max(1, math.min(visible, #rows))
 	local holder = GroupPanel.holder
-	holder:SetHeight(shownRows * GroupPanel.rowHeight())
-	GroupPanel.content:SetHeight(shownRows * GroupPanel.rowHeight())
+	holder:SetHeight(GroupPanel.rowsHeight(shownRows))
+	GroupPanel.content:SetHeight(GroupPanel.rowsHeight(shownRows))
 	holder:Show()
 	GroupPanel.renderRows()
-	local y = drawCheck(flyout, lines, GroupPanel.rowsTop() + shownRows * GroupPanel.rowHeight())
+	local y = drawCheck(flyout, lines, GroupPanel.rowsTop() + GroupPanel.rowsHeight(shownRows))
 	flyout:SetHeight(y + S.panelPadding)
 	return GroupPanel.last
 end
@@ -1667,7 +1915,7 @@ end
 --- (or drawn when the window next shows).
 local function openFlyout(flyout)
 	syncTab()
-	placeFlyout(flyout)
+	GroupPanel.placeFlyout(flyout)
 	flyout:Show()
 	GroupPanel.syncButton()
 	GroupPanel.askLive()
@@ -1694,7 +1942,9 @@ end
 --- /fs group (ruling 1): the same toggle from anywhere. With the Raid tab not open (the window
 --- closed, or another tab) the flyout opens on the window and a line says where the panel shows
 --- (nothing here opens a client window); never with the Raid tab open, nor on a client with no
---- social frame (the flyout is then at the chip's side). The lines to print.
+--- social frame (the flyout is then at the chip's side). Fix round 4 (F): with the window drawn on
+--- another tab the flyout it opened is closed again (the line says where the panel shows); with
+--- the window closed it stays open to show when the window does. The lines to print.
 function GroupPanel.command()
 	local lines = guarded(function()
 		local flyout = GroupPanel.ensureFlyout()
@@ -1704,6 +1954,9 @@ function GroupPanel.command()
 		end
 		openFlyout(flyout)
 		if GroupPanel.home() ~= nil and not GroupPanel.tabOpen() then
+			if GroupPanel.anchor() ~= nil then
+				closeFlyout()
+			end
 			return { L.groupOpensOnRaidTab }
 		end
 		return {}
@@ -1832,7 +2085,10 @@ end
 
 --- /fs ready: a dry run of the check (the player alone out of a group), told in chat; the chip
 --- shows its line for Chip.RAID_CHECK_SECONDS. A panel that has turned itself off says so and
---- claims no clean check (fix round 1, D3). The lines to print.
+--- claims no clean check (fix round 1, D3). Fix round 4 (E, B): alone, one line ("Ready check
+--- (only you see this): you are missing flask, food." or "...: nothing missing."); in a group a
+--- header naming the list read ("Ready check (only you see this), Molten Core:", "..., standard
+--- buffs:"), then a line a member or "Nobody is missing anything.". The lines to print.
 function GroupPanel.handleReady()
 	local result = guarded(function()
 		local result = runCheck(true)
@@ -1842,7 +2098,11 @@ function GroupPanel.handleReady()
 	if result == nil then
 		return { L.groupPanelOff }
 	end
-	local lines = { L.groupReadyDry }
+	if result.alone then
+		local lack = GroupPanel.ownLack(result)
+		return { lack ~= nil and string.format(L.groupReadyYou, lack) or L.groupReadyYouNone }
+	end
+	local lines = { string.format(L.groupReadyDry, result.where or L.groupCheckStandard) }
 	local missing = GroupPanel.missingLines(result)
 	if #missing == 0 then
 		lines[2] = L.groupReadyNone
@@ -1880,14 +2140,19 @@ end
 
 --- The Raid tab read, the button and an open flyout moved to the anchor (a SocialUIFrame the
 --- client made after login among them, N3), and the flyout redrawn once when it went stale while
---- the window was closed.
+--- the window was closed. Fix round 4 (F): an open flyout found on a window drawn on another tab
+--- (/fs group with the window closed, which then opened on Friends) is closed.
 local function reread()
 	syncTab()
 	local flyout = GroupPanel.flyout
 	if flyout == nil or not flyout:IsShown() then
 		return
 	end
-	placeFlyout(flyout)
+	GroupPanel.placeFlyout(flyout)
+	if GroupPanel.anchor() ~= nil and not GroupPanel.tabOpen() then
+		closeFlyout()
+		return
+	end
 	if GroupPanel.stale and Widgets.isVisible(flyout) then
 		GroupPanel.draw()
 	end
@@ -1934,10 +2199,11 @@ end
 
 --- /fs diag's line (ruling 5): "Group panel: open, 5 members (3 inspected, 2 live), ready check
 --- 21:04: 2 missing" (open: the flyout shows and is visible), counted now as the flyout counts.
---- Fix round 2: the count always includes the player, so out of a group it reads "1 member
---- (you)", and a check that read the player alone says what they lack: "ready check 19:43: you
---- are missing flask, food" (fix round 3: "nothing missing" when clean). Fix round 3: a check that
---- read the player alone is stale once they are in a group, and reads "none".
+--- Fix round 2: out of a group a check that read the player alone says what they lack: "ready
+--- check 19:43: you are missing flask, food" (fix round 3: "nothing missing" when clean); fix
+--- round 4 (E): out of a group the line reads "not in a group". Fix round 3: a check that read the
+--- player alone is stale once they are in a group, and reads "none"; fix round 4 (F): so is a
+--- group's check once the player is alone.
 function GroupPanel.diagLine()
 	local open = Widgets.isShown(GroupPanel.flyout) and Widgets.isVisible(GroupPanel.flyout)
 	local state = open and L.diagPanelOpen or L.diagPanelClosed
@@ -1950,7 +2216,7 @@ function GroupPanel.diagLine()
 			check = lack ~= nil and string.format(L.diagGroupCheckYou, result.clock or "", lack)
 				or string.format(L.diagGroupCheckYouNone, result.clock or "")
 		end
-	elseif result ~= nil then
+	elseif result ~= nil and inGroup then
 		check = string.format(L.diagGroupCheck, result.clock or "", #result.missing)
 	end
 	if not inGroup then

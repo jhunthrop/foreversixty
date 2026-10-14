@@ -79,9 +79,13 @@ end
 
 --- Whether a ready check's findings still stand at `now`: the one expiry rule. A finished check
 --- (`untilAt`, L5.2) stands until then; a running one (`open`) up to RAID_CHECK_OPEN; any other
---- RAID_CHECK_SECONDS after it was made.
+--- RAID_CHECK_SECONDS after it was made. A check that found nothing shows only when it says so
+--- (`clean`, L5.2 fix round 4: the player's own dry run alone, "Ready check: nothing missing").
 function Chip.raidCheckLive(check, now)
-	if type(check) ~= "table" or type(check.missing) ~= "table" or #check.missing == 0 then
+	if type(check) ~= "table" or type(check.missing) ~= "table" then
+		return false
+	end
+	if #check.missing == 0 and not (check.clean and type(check.text) == "string" and check.text ~= "") then
 		return false
 	end
 	return Chip.raidCheckStands(check, now)
@@ -919,6 +923,11 @@ end
 --- ("Thorgrim: flask, imbue", L5.2), else "Missing: <phrase>".
 function Chip.printRaidCheck()
 	local check = Chip.raidCheck
+	if check ~= nil and check.clean and #check.missing == 0 and check.text ~= nil then
+		-- A clean dry run (L5.2 fix round 4): its own line.
+		Theme.say(check.text)
+		return
+	end
 	for _, phrase in ipairs(check ~= nil and check.missing or {}) do
 		Theme.say(check.text ~= nil and phrase or string.format(L.chipRaidCheck, phrase))
 	end
@@ -1024,25 +1033,28 @@ end
 --- /fs ready with its one-line summary as `text` ("Ready check: 2 missing (Name, Name)"), and
 --- `open` true for a leader's check, which stands until Chip.finishRaidCheck. Fix round 1: every
 --- check is held, an empty one too (it shows nothing), so an aura lost later while it stands
---- (Chip.updateRaidCheck) puts the line up.
-function Chip.setRaidCheck(missing, text, open)
+--- (Chip.updateRaidCheck) puts the line up. L5.2 fix round 4: `clean` true shows `text` though
+--- nothing is missing (the player's own dry run alone: "Ready check: nothing missing").
+function Chip.setRaidCheck(missing, text, open, clean)
 	if type(missing) ~= "table" then
 		Chip.raidCheck = nil
 	else
-		Chip.raidCheck = { missing = copyList(missing), at = Theme.now(), text = text, open = open == true or nil }
+		Chip.raidCheck = { missing = copyList(missing), at = Theme.now(), text = text, open = open == true or nil,
+			clean = clean == true or nil }
 	end
 	Chip.refresh()
 end
 
 --- The same check's findings read again (an aura changed while it stands, L5.2): its time and
 --- whether it still runs are kept; empty findings leave nothing to show. Nothing without a check.
-function Chip.updateRaidCheck(missing, text)
+function Chip.updateRaidCheck(missing, text, clean)
 	local check = Chip.raidCheck
 	if check == nil then
 		return
 	end
 	check.missing = type(missing) == "table" and copyList(missing) or {}
 	check.text = text
+	check.clean = clean == true or nil
 	Chip.refresh()
 end
 

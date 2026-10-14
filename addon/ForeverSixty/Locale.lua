@@ -1121,8 +1121,14 @@ L.groupPanelHint = {
 	"Your group's specs, gear, scores and buffs.",
 	"Click to open or close.",
 }
--- Out of a group, the flyout's one line and nothing else (ruling 1).
+-- Out of a group, the flyout's one line and nothing else (ruling 1). Fix round 4 (E): a second
+-- muted line under it says what a group shows and that /fs ready tries the check alone: one line
+-- where it fits the flyout, else a sentence a line (GroupPanel.soloHint).
 L.groupNotInGroup = "Not in a group."
+L.groupSoloHint = {
+	"A party or raid shows each member's spec, gear gap, score and buffs.",
+	"/fs ready tries the check on you.",
+}
 -- Under the header, muted: "5 members · 3 inspected · 2 live".
 L.groupCounts = "%d members · %d inspected · %d live"
 -- /fs group with the Raid tab not open (the Social window closed, or another tab): the panel
@@ -1164,17 +1170,32 @@ L.groupBestParse = "Best parse: %s percentile on %s"
 L.groupBuild = "Build: %s"
 L.groupBareSlots = "No enchant: %s"
 L.groupOffline = "Offline"
--- The ready check (ruling 3): its title with the time it ran, "Name: flask, imbue" per member
--- lacking anything, and each need of the bosses with who covers it.
-L.groupCheckTitle = "Ready check · %s"
-L.groupMissing = "%s: %s"
+-- The ready check (ruling 3): its title with the list it read and the time it ran (fix round 4,
+-- B: "Ready check · Molten Core · 21:04" inside a raid the data knows, "Ready check · standard
+-- buffs · 21:04" elsewhere), "Thorgrim: missing flask, imbue" per member lacking anything (fix
+-- round 4, E), and each need of the bosses as class presence (fix round 4, C).
+L.groupCheckTitle = "Ready check · %s · %s"
+L.groupCheckStandard = "standard buffs"
+L.groupMissing = "%s: missing %s"
 L.groupMissingJoin = ", "
 L.groupMissingMore = "and %d more"
 L.groupAllSet = "Nobody is missing anything."
+-- Fix round 4 (A): only the player's own weapon imbue can be read; said once, muted, under the
+-- missing lines when another member of the group fights with a weapon imbue.
+L.groupImbueSelfOnly = "Weapon imbues can only be read on yourself."
+-- Coverage is class presence (fix round 4, C): "Faerie Fire: no druid", "Fire resistance: no
+-- paladin or shaman", and "Sunder Armor: warrior Thorgrim" for each member of the class.
 L.groupCoverageTitle = "Coverage"
-L.groupCoverage = "%s: covered by %s"
-L.groupCoverageNobody = "%s: nobody"
+L.groupCoverageNo = "%s: no %s"
+L.groupCoverageOr = " or "
+L.groupCoverageBy = "%s: %s"
+L.groupCoverageMember = "%s %s"
 L.groupCoverageJoin = ", "
+-- The class words coverage names, by class token.
+L.groupClassWords = {
+	WARRIOR = "warrior", PALADIN = "paladin", HUNTER = "hunter", ROGUE = "rogue", PRIEST = "priest",
+	SHAMAN = "shaman", MAGE = "mage", WARLOCK = "warlock", DRUID = "druid",
+}
 L.groupNeedFlask = "flask"
 L.groupNeedFood = "food"
 L.groupNeedImbue = "imbue"
@@ -1194,16 +1215,26 @@ L.groupSpellNames = {
 	[21564] = "Prayer of Fortitude", [450086] = "Prayer of Fortitude", [23028] = "Arcane Brilliance",
 	[25898] = "Greater Blessing of Kings",
 }
--- The chip's line through its ready-check hook: "Ready check: 2 missing (Name, Name)".
+-- The chip's line through its ready-check hook: "Ready check: 2 missing (Name, Name)". Fix round 4
+-- (E): the player first as "you", at most two names, then "+N": "Ready check: 5 missing (you,
+-- Thorgrim, +3)".
 L.groupChipSummary = "Ready check: %d missing (%s)"
 L.groupChipJoin = ", "
+L.groupChipYou = "you"
+L.groupChipMore = "+%d"
 -- Fix round 2: a check that read the player alone (/fs ready out of a group) says what they lack.
 -- Fix round 3 (C3): the chip's short form, "Ready check: missing flask, food, imbue" (the diag
 -- keeps "you are missing").
 L.groupChipSummaryYou = "Ready check: missing %s"
--- /fs ready: a dry run, in chat.
-L.groupReadyDry = "Ready check (only you see this):"
+-- Fix round 4 (E): a clean dry run alone says so on the chip for its 60 s.
+L.groupChipSummaryYouNone = "Ready check: nothing missing"
+-- /fs ready: a dry run, in chat. Fix round 4 (E, B): alone, one line ("... you are missing flask,
+-- food." or "... nothing missing."); in a group a header naming the list it read, then a line a
+-- member or "Nobody is missing anything.".
+L.groupReadyDry = "Ready check (only you see this), %s:"
 L.groupReadyNone = "Nobody is missing anything."
+L.groupReadyYou = "Ready check (only you see this): you are missing %s."
+L.groupReadyYouNone = "Ready check (only you see this): nothing missing."
 -- /fs ready when the panel has turned itself off: no check ran, so none is claimed clean.
 L.groupPanelOff = "Group panel is off."
 -- /fs floor (ruling 4): the panel flags, it never declines or whispers.
@@ -1215,9 +1246,9 @@ L.groupFloorUsage = "Type /fs floor 1200 to tag members scored under 1200, or /f
 L.diagGroupPanel = "Group panel: %s, %d members (%d inspected, %d live), ready check %s"
 L.diagGroupNone = "none"
 L.diagGroupCheck = "%s: %d missing"
--- Fix round 2: out of a group the count is the player, as the dry run counts them: "Group panel:
--- open, 1 member (you), ready check 19:43: you are missing flask, food".
-L.diagGroupPanelYou = "Group panel: %s, 1 member (you), ready check %s"
+-- Fix round 2: out of a group the line speaks of the player alone; fix round 4 (E): "Group panel:
+-- open, not in a group, ready check 19:43: you are missing flask, food".
+L.diagGroupPanelYou = "Group panel: %s, not in a group, ready check %s"
 L.diagGroupCheckYou = "%s: you are missing %s"
 -- Fix round 3 (C3): the solo clean line.
 L.diagGroupCheckYouNone = "%s: nothing missing"
