@@ -10,7 +10,7 @@ from pipeline.audit.context import AuditContext
 
 
 def test_real_curated_specs_pass_and_have_apl_files():
-    ctx = AuditContext("1.60.1.70338")
+    ctx = AuditContext("1.60.1.70374")
     result = check_curated.check(ctx)
     assert result.checked > 1
     blockers = [f for f in result.findings if f.severity == "blocker"]

@@ -56,7 +56,7 @@ this test, 2026-09-30).
 import json
 from pathlib import Path
 
-BUILD = "1.60.1.70338"
+BUILD = "1.60.1.70374"
 BUILD_DIR = Path("builds") / BUILD
 CLASSICDB_CACHE = BUILD_DIR / "raw" / "classicdb" / "sources.json"
 

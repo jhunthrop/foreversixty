@@ -9,7 +9,7 @@ from pipeline.addonbis import (
     build_bis,
 )
 
-BUILD = "1.60.1.70338"
+BUILD = "1.60.1.70374"
 
 
 def _write_bis(root: Path, build: str, spec: str, bands: list[dict]) -> None:
