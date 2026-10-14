@@ -27,8 +27,11 @@ mock.CLIENT_PREFIXES = { "Character", "PaperDoll", "ContainerFrame", "QuestInfo"
 --- Client frames named one by one, whatever the prefixes cover (L4.3 fix round 2): the pane's
 --- CharacterFrameModeTabs column, which the panel flyout anchors beside and must never write
 --- into; the guild frame itself (L5.1); the raid frame the group panel's button and flyout are
---- parented to, the social window holding it, and the party frame (L5.2).
-mock.CLIENT_NAMES = { "CharacterFrameModeTabs", "CommunitiesFrame", "RaidFrame", "FriendsFrame", "PartyFrame" }
+--- parented to, the social window holding it, and the party frame (L5.2). L5.2 fix round 1 adds
+--- the drawn Social window (SocialUIFrame): on 1.60 FriendsFrame and RaidFrame have no rect, so the
+--- group panel's button and flyout are parented to it.
+mock.CLIENT_NAMES = { "CharacterFrameModeTabs", "CommunitiesFrame", "RaidFrame", "FriendsFrame", "PartyFrame",
+	"SocialUIFrame" }
 
 function mock.isClientName(name)
 	if type(name) ~= "string" then
@@ -432,6 +435,15 @@ function mock.install(state)
 		end
 		function frame:GetHeight()
 			return self.height or 0
+		end
+		--- A real parent change (L5.2 fix round 1: the group panel moves its own frames to the
+		--- Social window that is drawn), so IsVisible walks the new chain.
+		function frame:SetParent(holder)
+			record(self, "SetParent", holder)
+			self.parent = holder
+			if type(holder) == "table" and type(holder.children) == "table" then
+				holder.children[#holder.children + 1] = self
+			end
 		end
 		function frame:SetPoint(...)
 			record(self, "SetPoint", ...)

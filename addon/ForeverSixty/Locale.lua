@@ -22,6 +22,9 @@ local L = {
 		"/fs chip: show or hide the chip",
 		"/fs inspect: gear and talents of your target",
 		"/fs link: copy a player's site page",
+		"/fs group: your group's specs, gear and buffs",
+		"/fs ready: check flasks, food and buffs now",
+		"/fs floor N: tag members scored under N",
 		"/fs options: open the settings page",
 		"/fs diag: what is not working",
 		"/fs help: every command",
@@ -1122,7 +1125,8 @@ L.groupPanelHint = {
 L.groupNotInGroup = "Not in a group."
 -- Under the header, muted: "5 members · 3 inspected · 2 live".
 L.groupCounts = "%d members · %d inspected · %d live"
--- /fs group with the Raid tab closed: the flyout lives on that tab.
+-- /fs group with the Raid tab not open (the Social window closed, or another tab): the panel
+-- lives on that tab.
 L.groupOpensOnRaidTab = "The group panel shows on the Raid tab of the Social window (O)."
 -- The column headers; a click sorts by one, a second click turns it round.
 L.groupColumns = {
@@ -1145,12 +1149,15 @@ L.groupNoLogs = "no logs"
 L.groupEnchantsMissing = "%d missing"
 L.groupAddonLive = "live"
 -- The muted line under a row: "below 1200" under the floor, then the weakest slot ("Chest:
--- Worn Robe → Robes of Arcana +12.0 DPS", the gain as the item tooltip's Next line prints it),
--- or "inspect paused" while combat holds the inspect queue.
+-- Worn Robe · next Robes of Arcana +12.0 DPS", the gain as the item tooltip's Next line prints
+-- it; fix round 1: the addon's " · " separator, not an arrow glyph the client font may lack),
+-- "(inspect)" after it where the member's addon reports another gap, or "inspect paused" while
+-- combat holds the inspect queue.
 L.groupBelow = "below %d"
 L.groupSubJoin = " · "
-L.groupWeakest = "%s: %s → %s %s"
-L.groupWeakestEmpty = "%s: empty → %s %s"
+L.groupWeakest = "%s: %s · next %s %s"
+L.groupWeakestEmpty = "%s: empty · next %s %s"
+L.groupWeakestInspect = "(inspect)"
 L.groupInspectPaused = "inspect paused"
 -- A row's hover: the best parse ("71st percentile on Lucifron"), the build, the bare slots, offline.
 L.groupBestParse = "Best parse: %s percentile on %s"
@@ -1182,6 +1189,10 @@ L.groupSpellNames = {
 	[11551] = "Battle Shout", [9885] = "Mark of the Wild", [10157] = "Arcane Intellect",
 	[10938] = "Power Word: Fortitude", [20217] = "Blessing of Kings", [11597] = "Sunder Armor",
 	[11717] = "Curse of Recklessness", [1311680] = "Curse of the Elements", [9907] = "Faerie Fire",
+	-- The group versions a need is matched by too (fix round 1, D2).
+	[21849] = "Gift of the Wild", [21850] = "Gift of the Wild", [21562] = "Prayer of Fortitude",
+	[21564] = "Prayer of Fortitude", [450086] = "Prayer of Fortitude", [23028] = "Arcane Brilliance",
+	[25898] = "Greater Blessing of Kings",
 }
 -- The chip's line through its ready-check hook: "Ready check: 2 missing (Name, Name)".
 L.groupChipSummary = "Ready check: %d missing (%s)"
@@ -1189,6 +1200,8 @@ L.groupChipJoin = ", "
 -- /fs ready: a dry run, in chat.
 L.groupReadyDry = "Ready check (only you see this):"
 L.groupReadyNone = "Nobody is missing anything."
+-- /fs ready when the panel has turned itself off: no check ran, so none is claimed clean.
+L.groupPanelOff = "Group panel is off."
 -- /fs floor (ruling 4): the panel flags, it never declines or whispers.
 L.groupFloorSet = "Score floor %d: members scored under it are tagged. Nobody is declined or whispered."
 L.groupFloorCleared = "Score floor cleared."

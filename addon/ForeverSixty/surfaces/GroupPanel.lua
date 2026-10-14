@@ -6,14 +6,19 @@
 -- the encounter.
 --
 -- Ruling 1 (taint): as the guild tab (L5.1), the surface is an addon-owned "Forever Sixty"
--- button and an addon-owned flyout, both parented to the client's RaidFrame (the child the
--- social window, FriendsFrame, shows on its Raid tab; looked up each time, guarded), so they
--- show with that tab: the button under the raid frame's bottom right, the flyout TOPLEFT at its
--- TOPRIGHT (Widgets' shared placement and measure helpers). The client frames are only ever
--- read; scripts sit only on the addon's own frames; nothing polls. /fs group toggles the flyout
--- from anywhere: still on the raid frame (it then says the panel shows on the Raid tab), or on
--- UIParent at the chip's side on a client with no raid frame. Nothing here opens a client window
--- or starts a ready check: the panel reads, it never acts for the player.
+-- button and an addon-owned flyout. Fix round 1 (D1): on 1.60 RaidFrame and FriendsFrame show
+-- but have no rect (logical frames); the drawn Social window is SocialUIFrame. So both are
+-- parented to the anchor, the first of SocialUIFrame, FriendsFrame and RaidFrame that shows with
+-- a rect (looked up each time, guarded), and hide with the window: the button under its bottom
+-- right, the flyout TOPLEFT at its TOPRIGHT (Widgets' shared placement and measure helpers).
+-- "The Raid tab is open" is RaidFrame:IsShown() with the anchor placed (GroupPanel.tabOpen), read
+-- at every refresh point (open, the group, inspect and aura events, PLAYER_ENTERING_WORLD, the
+-- button's own OnShow): a tab switch inside the window is not observable without hooks, so the
+-- button may stay up on another Social tab until the next refresh (accepted). The client frames
+-- are only ever read; scripts sit only on the addon's own frames; nothing polls. /fs group
+-- toggles the flyout from anywhere: on the Social window (saying the panel shows on the Raid tab
+-- when that tab is not open), or on UIParent at the chip's side on a client with no social frame.
+-- Nothing here opens a client window or starts a ready check: the panel reads, it never acts.
 --
 -- Ruling 2: the rows are a pure join (GroupPanel.rows) of what the client says of each unit,
 -- the inspect queue's record (Inspect, L2.5: spec by talents, the gear, enchants, item level),
@@ -49,7 +54,12 @@ local S = Theme.SIZES
 GroupPanel.BUTTON_NAME = "ForeverSixtyGroupButton"
 GroupPanel.FLYOUT_NAME = "ForeverSixtyGroupFlyout"
 --- The client's raid frame: the child FriendsFrame shows on its Raid tab (1.60: no RaidFrameTab).
+--- On 1.60 it shows without a rect; it says only whether the Raid tab is the one open.
 GroupPanel.FRAME = "RaidFrame"
+--- The frames the button and flyout may anchor to, in order (fix round 1, D1): the drawn Social
+--- window (1.60), the classic social window, the raid frame itself. The first that shows with a
+--- rect is the anchor.
+GroupPanel.ANCHORS = { "SocialUIFrame", "FriendsFrame", "RaidFrame" }
 --- How many rows a wheel notch moves.
 GroupPanel.WHEEL_STEP = 3
 --- The least time, in seconds, between two snapshot? asks on the group's channel.
@@ -90,6 +100,17 @@ GroupPanel.PROVIDERS = {
 	[11551] = { "WARRIOR" }, [9885] = { "DRUID" }, [10157] = { "MAGE" }, [10938] = { "PRIEST" },
 	[20217] = { "PALADIN" }, [11597] = { "WARRIOR" }, [11717] = { "WARLOCK" }, [1311680] = { "WARLOCK" },
 	[9907] = { "DRUID" },
+}
+--- The group versions of a need (fix round 1, D2), keyed by the need's spell id: a member wearing
+--- one has the need, matched by id or by the client's name for it. The ids are this build's
+--- (data/builds/<build>/spellranks.json): Gift of the Wild 21849/21850, Prayer of Fortitude
+--- 21562/21564/450086, Arcane Brilliance 23028, Greater Blessing of Kings 25898. Battle Shout has
+--- none. A data carry: encounterNeeds should carry these (lane L1).
+GroupPanel.VARIANTS = {
+	[9885] = { 21849, 21850 },
+	[10938] = { 21562, 21564, 450086 },
+	[10157] = { 23028 },
+	[20217] = { 25898 },
 }
 --- Who puts up a resistance aura or totem, per school.
 GroupPanel.RESIST_PROVIDERS = {
@@ -173,13 +194,22 @@ function GroupPanel.units(inRaid, count)
 	return units
 end
 
---- The group's unit tokens as this client sees them now (GetNumGroupMembers, IsInRaid).
+--- The group's unit tokens as this client sees them now (GetNumGroupMembers, IsInRaid). Fix
+--- round 1: IsInGroup first, so a player alone is never a group of one (a client may answer
+--- GetNumGroupMembers 1 solo); without IsInGroup a party of one is no party either.
 function GroupPanel.groupUnits()
+	local inGroup = client("IsInGroup")
+	if inGroup ~= nil and try(inGroup) ~= true then
+		return {}
+	end
 	local inRaid = try(client("IsInRaid")) == true
 	local count = try(client("GetNumGroupMembers"))
 	if count == nil and not inRaid then
 		local others = try(client("GetNumSubgroupMembers"))
 		count = type(others) == "number" and others > 0 and others + 1 or 0
+	end
+	if not inRaid and (tonumber(count) or 0) <= 1 then
+		return {}
 	end
 	return GroupPanel.units(inRaid, count)
 end
@@ -343,9 +373,15 @@ local function wearsAny(auras, ids, nameOf)
 	return false
 end
 
+--- A need worn: its own spell (any rank, by name) or one of its group versions (D2).
+local function wearsNeed(auras, id, name, nameOf)
+	return wears(auras, id, name) or wearsAny(auras, GroupPanel.VARIANTS[id] or {}, nameOf)
+end
+
 --- The ready check (ruling 3) over `members` ({ short, classToken, connected, auras (aurasOf's;
 --- nil: unread), imbue (the player's: GroupPanel.ownImbue's) }) against `needs`
---- (GroupPanel.needsFor's), naming spells through `nameOf` (GroupPanel.spellName). Answers
+--- (GroupPanel.needsFor's), naming spells through `nameOf` (GroupPanel.spellName); a group version
+--- of a buff (GroupPanel.VARIANTS) counts as the buff. Answers
 --- { missing = { { name, what = { "flask", "Arcane Intellect", ... } } }, coverage = { { need,
 --- by = { names } } } }: a member lacks a flask, the food buff, the player's own imbue, or a
 --- class buff the group can give (a member of its class is here) and does them some good; a
@@ -385,7 +421,7 @@ function GroupPanel.check(members, needs, nameOf)
 				local name = nameOf(id)
 				local forClass = GroupPanel.BUFF_FOR[id]
 				if name ~= nil and (forClass == nil or forClass[member.classToken]) and #providers(GroupPanel.PROVIDERS[id]) > 0
-					and not wears(auras, id, name) then
+					and not wearsNeed(auras, id, name, nameOf) then
 					what[#what + 1] = name
 				end
 			end
@@ -486,7 +522,7 @@ local function rowOf(member, context)
 	}
 	row.spec = validSpec(live ~= nil and live.spec or nil) or validSpec(inspect ~= nil and inspect.spec or nil)
 		or validSpec(record ~= nil and record.spec or nil)
-	if inspect ~= nil then
+	if GroupPanel.hasGear(inspect) then
 		row.ilvl = tonumber(inspect.itemLevel)
 		row.enchants = #Inspect.missingEnchants(inspect)
 		row.bareSlots = Inspect.missingEnchants(inspect)
@@ -494,6 +530,11 @@ local function rowOf(member, context)
 	if live ~= nil and tonumber(live.gearGap) ~= nil then
 		row.gap = tonumber(live.gearGap)
 		row.unit = live.unit or Comms.gapUnit(context.data or GroupPanel.data or ns.Data, row.spec, row.level)
+		-- The weakest line is the inspect's: tagged where it measures another gap than the addon's.
+		if gear ~= nil and gear.weakest ~= nil and (gear.unit ~= row.unit or type(gear.gap) ~= "number"
+			or math.floor(gear.gap + 0.5) ~= math.floor(row.gap + 0.5)) then
+			row.weakestInspect = true
+		end
 	elseif gear ~= nil then
 		row.gap, row.unit = gear.gap, gear.unit
 	end
@@ -593,9 +634,9 @@ local function gainText(weakest)
 	return string.format(L.tooltipNextGain, weakest.gain, weakest.healing and L.tooltipUnitHps or L.tooltipUnitDps)
 end
 
---- The weakest slot in words: "Chest: Worn Robe → Robes of Arcana +12.0 DPS" (the gain as the
---- item tooltip's Next line prints it), or "Chest: empty → ..." for a slot worn bare; nil
---- without one. Pure.
+--- The weakest slot in words: "Chest: Worn Robe · next Robes of Arcana +12.0 DPS" (the gain as
+--- the item tooltip's Next line prints it; the addon's " · " separator, no arrow glyph the client
+--- font may lack), or "Chest: empty · next ..." for a slot worn bare; nil without one. Pure.
 function GroupPanel.weakestText(weakest)
 	if type(weakest) ~= "table" or type(weakest.gain) ~= "number" then
 		return nil
@@ -608,9 +649,9 @@ function GroupPanel.weakestText(weakest)
 	return string.format(L.groupWeakest, slot, weakest.wornName, target, gainText(weakest))
 end
 
---- The muted line under a row: "below 1200" under the floor, then the weakest slot, or
---- "inspect paused" for a member not yet inspected while combat holds the queue; "" for
---- nothing. Pure.
+--- The muted line under a row: "below 1200" under the floor, then the weakest slot (from the
+--- inspect; "(inspect)" after it where the member's addon reports another gap), or "inspect
+--- paused" for a member not yet inspected while combat holds the queue; "" for nothing. Pure.
 function GroupPanel.subLine(row)
 	local parts = {}
 	if row.below then
@@ -618,6 +659,9 @@ function GroupPanel.subLine(row)
 	end
 	local weakest = GroupPanel.weakestText(row.weakest)
 	if weakest ~= nil then
+		if row.weakestInspect then
+			weakest = weakest .. " " .. L.groupWeakestInspect
+		end
 		parts[#parts + 1] = weakest
 	elseif row.paused then
 		parts[#parts + 1] = L.groupInspectPaused
@@ -751,11 +795,18 @@ local function weakestOf(plan, equipped, data)
 	}
 end
 
+--- Whether an inspect record carries gear to read (fix round 1): item links and an item level. A
+--- record that came back with no links (itemLevel nil) is no gear: nothing is scored on it.
+function GroupPanel.hasGear(inspect)
+	return type(inspect) == "table" and type(inspect.items) == "table" and next(inspect.items) ~= nil
+		and inspect.itemLevel ~= nil
+end
+
 --- An inspected member's gear plan in their spec (Progress.gearPlan over the inspected links,
 --- the shipped weights at their level; the player's band and faction rule): { gap, unit,
 --- weakest }; nil when nothing can be scored.
 function GroupPanel.memberGear(data, spec, level, faction, items)
-	if spec == nil or type(items) ~= "table" then
+	if spec == nil or type(items) ~= "table" or next(items) == nil then
 		return nil
 	end
 	local equipped = Gear.equippedFrom(items)
@@ -813,7 +864,7 @@ function GroupPanel.members(data)
 				member.inspect = Inspect.get(Inspect.keyOf(unit) or name)
 				member.live = PlayerTooltip.liveEntry(Comms.seen, name, (try(client("UnitName"), unit)), realm, ownRealm,
 					now)
-				if member.inspect ~= nil then
+				if GroupPanel.hasGear(member.inspect) then
 					local spec = validSpec(member.inspect.spec) or validSpec(member.live ~= nil and member.live.spec or nil)
 					local ok, gear = pcall(GroupPanel.memberGear, data, spec, member.level, faction, member.inspect.items)
 					member.gear = ok and gear or nil
@@ -963,9 +1014,9 @@ function GroupPanel.checkHeight(lines)
 	return height
 end
 
---- How many member rows show at once under `limit` (the raid frame's height; the flyout is never
---- taller) with `extra` (the check region) below them: `groupVisibleRows` at most, one at least;
---- all of them where the client cannot say.
+--- How many member rows show at once under `limit` (the anchor's height: the Social window's on
+--- 1.60; the flyout is never taller) with `extra` (the check region) below them:
+--- `groupVisibleRows` at most, one at least; all of them where the client cannot say.
 function GroupPanel.fitRows(limit, extra)
 	if type(limit) ~= "number" or limit <= 0 then
 		return S.groupVisibleRows
@@ -982,18 +1033,63 @@ local function pane()
 	return Widgets.clientFrame(GroupPanel.FRAME)
 end
 
+--- The anchor (fix round 1, D1): the first of GroupPanel.ANCHORS that shows with a rect
+--- (Widgets.placed), looked up each time, guarded; nil while the window is closed.
+function GroupPanel.anchor()
+	for _, name in ipairs(GroupPanel.ANCHORS) do
+		local frame = Widgets.clientFrame(name)
+		if frame ~= nil and Widgets.placed(frame) then
+			return frame
+		end
+	end
+	return nil
+end
+
+--- Where the button and flyout live: the anchor, else (the window closed) the first of
+--- GroupPanel.ANCHORS this client has, so they show when the window does; nil with none.
+function GroupPanel.home()
+	local anchor = GroupPanel.anchor()
+	if anchor ~= nil then
+		return anchor
+	end
+	for _, name in ipairs(GroupPanel.ANCHORS) do
+		local frame = Widgets.clientFrame(name)
+		if frame ~= nil then
+			return frame
+		end
+	end
+	return nil
+end
+
+--- Whether the Raid tab is the one open: the anchor placed and RaidFrame shown.
+function GroupPanel.tabOpen()
+	return GroupPanel.anchor() ~= nil and Widgets.isShown(pane())
+end
+
+--- One of the addon's own frames moved to `holder` when it lives elsewhere (SetParent on the
+--- addon's frame only); `key` names where it was put.
+local function attach(frame, holder, key)
+	if GroupPanel[key] ~= holder then
+		frame:SetParent(holder)
+		GroupPanel[key] = holder
+	end
+end
+
 local function guarded(action, ...)
 	return Widgets.guarded(GroupPanel, L.diagGroupPanelFailed, action, ...)
 end
 
---- The flyout TOPLEFT at the raid frame's TOPRIGHT (Widgets.placeFlyout); with no raid frame, on
---- UIParent: its TOPRIGHT at the chip's TOPLEFT, else at the screen's top right.
+--- The flyout on its home (GroupPanel.home: the anchor, else the closed window), TOPLEFT at its
+--- TOPRIGHT (Widgets.placeFlyout); with no social frame at all, on UIParent: its TOPRIGHT at the
+--- chip's TOPLEFT, else at the screen's top right.
 local function placeFlyout(flyout)
-	local frame = pane()
+	local frame = GroupPanel.home()
 	if frame ~= nil then
+		attach(flyout, frame, "flyoutHome")
 		Widgets.placeFlyout(flyout, frame, nil, S.panelOffsetX, S.panelOffsetY)
 		return
 	end
+	attach(flyout, UIParent, "flyoutHome")
 	flyout:ClearAllPoints()
 	if Chip.frame ~= nil then
 		flyout:SetPoint("TOPRIGHT", Chip.frame, "TOPLEFT", -S.gap, 0)
@@ -1002,11 +1098,12 @@ local function placeFlyout(flyout)
 	end
 end
 
---- The "Forever Sixty" button under the raid frame's bottom right, the panel tab's look
---- (Widgets.edgedButton) and hover hint. Made the first time a refresh finds the raid frame
---- (never in combat: it waits for its end). nil without one.
+--- The "Forever Sixty" button under its home's bottom right (the Social window's on 1.60), the
+--- panel tab's look (Widgets.edgedButton) and hover hint. Made the first time a refresh finds a
+--- social frame (never in combat: it waits for its end); moved to the anchor when the window
+--- shows on another. nil without one.
 function GroupPanel.ensureButton()
-	local frame = pane()
+	local frame = GroupPanel.home()
 	if frame == nil then
 		return nil
 	end
@@ -1019,7 +1116,8 @@ function GroupPanel.ensureButton()
 		button = Widgets.edgedButton(frame, L.groupPanelLabel, function()
 			GroupPanel.toggle()
 		end, GroupPanel.BUTTON_NAME, S.panelTabWidth, S.panelTabHeight)
-		-- The addon's own button, a child of the raid frame: it shows each time the Raid tab does.
+		GroupPanel.buttonHome = frame
+		-- The addon's own button, a child of the window: it shows each time the window does.
 		button:SetScript("OnShow", function(self)
 			GroupPanel.onButtonShow(self)
 		end)
@@ -1031,8 +1129,26 @@ function GroupPanel.ensureButton()
 			return GroupPanel.model()
 		end
 		GroupPanel.button = button
+	elseif GroupPanel.buttonHome ~= frame then
+		attach(button, frame, "buttonHome")
+		button:ClearAllPoints()
+		button:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, 0)
 	end
 	return button
+end
+
+--- The Raid tab read again (fix round 1, D1), at every refresh point: with the window open, the
+--- button is up on the Raid tab and rests on another (no alpha, no mouse; its own shown flag
+--- kept, so its show script still runs when the window next opens); with the window closed it is
+--- left as it is (it hides with the window). The button made first where it can be.
+local function syncTab()
+	local button = GroupPanel.ensureButton()
+	if button == nil or GroupPanel.anchor() == nil then
+		return
+	end
+	local open = GroupPanel.tabOpen()
+	button:SetAlpha(open and 1 or 0)
+	button:EnableMouse(open)
 end
 
 --- The inner width: the flyout less its padding.
@@ -1180,14 +1296,16 @@ local function closeFlyout()
 	GroupPanel.syncButton()
 end
 
---- The flyout, made on the first open: an addon panel `groupFlyoutWidth` wide parented to the raid
---- frame (to UIParent on a client with none), hidden until shown. It carries no script; its
+--- The flyout, made on the first open: an addon panel `groupFlyoutWidth` wide parented to its home
+--- (GroupPanel.home; UIParent on a client with no social frame), hidden until shown. It carries no script; its
 --- close button, headers, rows and wheel carry their own.
 function GroupPanel.ensureFlyout()
 	if GroupPanel.flyout ~= nil then
 		return GroupPanel.flyout
 	end
-	local flyout = Widgets.panel(pane() or UIParent, S.groupFlyoutWidth, S.panelPadding * 2, GroupPanel.FLYOUT_NAME)
+	local home = GroupPanel.home() or UIParent
+	local flyout = Widgets.panel(home, S.groupFlyoutWidth, S.panelPadding * 2, GroupPanel.FLYOUT_NAME)
+	GroupPanel.flyoutHome = home
 	flyout:EnableMouse(true)
 	flyout:Hide()
 	GroupPanel.flyout = flyout
@@ -1338,7 +1456,7 @@ local function drawCheck(flyout, lines, y)
 end
 
 --- Draws the flyout: out of a group "Not in a group." alone; in one the count line, the headers,
---- the rows (as many as fit under the raid frame's height) and the last ready check; sized to them.
+--- the rows (as many as fit under the anchor's height) and the last ready check; sized to them.
 function GroupPanel.draw()
 	local flyout = GroupPanel.flyout
 	if flyout == nil then
@@ -1362,7 +1480,7 @@ function GroupPanel.draw()
 	end
 	local rows, counts = GroupPanel.model()
 	local lines = GroupPanel.checkText(GroupPanel.result)
-	local visible = GroupPanel.fitRows(Widgets.frameHeight(pane()), GroupPanel.checkHeight(lines))
+	local visible = GroupPanel.fitRows(Widgets.frameHeight(GroupPanel.anchor()), GroupPanel.checkHeight(lines))
 	GroupPanel.last = { rows = rows, counts = counts, visible = visible }
 	GroupPanel.countsLine:SetText(fitted(string.format(L.groupCounts, counts.members, counts.inspected, counts.live),
 		GroupPanel.innerWidth()))
@@ -1379,8 +1497,8 @@ function GroupPanel.draw()
 	return GroupPanel.last
 end
 
---- Redraws an open flyout while it is on screen; one the closed Raid tab hides is marked stale
---- and redrawn when the tab shows again (the button's show script).
+--- Redraws an open flyout while it is on screen; one the closed window hides is marked stale and
+--- redrawn when the window shows again (the button's show script).
 local function redraw()
 	local flyout = GroupPanel.flyout
 	if flyout == nil or not flyout:IsShown() then
@@ -1431,9 +1549,10 @@ function GroupPanel.syncButton()
 	end
 end
 
---- Opens the flyout: placed, shown, the inspects and snapshots asked for, drawn (or drawn when
---- the Raid tab next shows).
+--- Opens the flyout: the Raid tab read, placed, shown, the inspects and snapshots asked for, drawn
+--- (or drawn when the window next shows).
 local function openFlyout(flyout)
+	syncTab()
 	placeFlyout(flyout)
 	flyout:Show()
 	GroupPanel.syncButton()
@@ -1458,8 +1577,10 @@ function GroupPanel.toggle()
 	end)
 end
 
---- /fs group (ruling 1): the same toggle from anywhere. With the Raid tab closed the flyout opens
---- there and a line says where it shows (nothing here opens a client window). The lines to print.
+--- /fs group (ruling 1): the same toggle from anywhere. With the Raid tab not open (the window
+--- closed, or another tab) the flyout opens on the window and a line says where the panel shows
+--- (nothing here opens a client window); never with the Raid tab open, nor on a client with no
+--- social frame (the flyout is then at the chip's side). The lines to print.
 function GroupPanel.command()
 	local lines = guarded(function()
 		local flyout = GroupPanel.ensureFlyout()
@@ -1468,7 +1589,7 @@ function GroupPanel.command()
 			return {}
 		end
 		openFlyout(flyout)
-		if not Widgets.isVisible(flyout) then
+		if GroupPanel.home() ~= nil and not GroupPanel.tabOpen() then
 			return { L.groupOpensOnRaidTab }
 		end
 		return {}
@@ -1493,30 +1614,35 @@ function GroupPanel.scroll(delta)
 	end)
 end
 
---- Every surface's refresh (Options): the button made when the raid frame exists, an open
---- flyout redrawn.
+--- Every surface's refresh (Options; PLAYER_ENTERING_WORLD among them): the button made when a
+--- social frame exists, the Raid tab read, an open flyout redrawn.
 function GroupPanel.refresh(data)
 	if data ~= nil then
 		GroupPanel.data = data
 	end
 	guarded(function()
-		GroupPanel.ensureButton()
+		syncTab()
 		redraw()
 	end)
 end
 
---- GROUP_ROSTER_UPDATE: an invited member is inspected on arrival (ruling 4); an open flyout redraws.
+--- GROUP_ROSTER_UPDATE: an invited member is inspected on arrival (ruling 4); the Raid tab read;
+--- an open flyout redraws.
 function GroupPanel.onRosterUpdate()
 	guarded(function()
 		inspectGroup()
+		syncTab()
 		redraw()
 	end)
 end
 
---- INSPECT_READY brought a record: an open flyout redraws.
+--- INSPECT_READY brought a record: the Raid tab read; an open flyout redraws.
 function GroupPanel.onInspectReady(record)
 	if record ~= nil then
-		guarded(redraw)
+		guarded(function()
+			syncTab()
+			redraw()
+		end)
 	end
 end
 
@@ -1560,12 +1686,13 @@ function GroupPanel.onReadyCheckFinished()
 	end)
 end
 
---- UNIT_AURA (throttled): while a check stands, a group unit's aura change has its auras read
---- again GroupPanel.AURA_DELAY later, once for every change in between.
+--- UNIT_AURA (throttled): a group unit's aura change reads the Raid tab; while a check stands,
+--- its auras are read again GroupPanel.AURA_DELAY later, once for every change in between.
 function GroupPanel.onAura(unit)
 	if type(unit) ~= "string" or not (unit == "player" or unit:match("^party%d+$") or unit:match("^raid%d+$")) then
 		return
 	end
+	guarded(syncTab)
 	if GroupPanel.auraPending or not checkStands(Theme.now()) then
 		return
 	end
@@ -1585,13 +1712,17 @@ function GroupPanel.onAura(unit)
 end
 
 --- /fs ready: a dry run of the check (the player alone out of a group), told in chat; the chip
---- shows its line for Chip.RAID_CHECK_SECONDS. The lines to print.
+--- shows its line for Chip.RAID_CHECK_SECONDS. A panel that has turned itself off says so and
+--- claims no clean check (fix round 1, D3). The lines to print.
 function GroupPanel.handleReady()
 	local result = guarded(function()
 		local result = runCheck(true)
 		redraw()
 		return result
 	end)
+	if result == nil then
+		return { L.groupPanelOff }
+	end
 	local lines = { L.groupReadyDry }
 	local missing = GroupPanel.missingLines(result)
 	if #missing == 0 then
@@ -1604,11 +1735,14 @@ function GroupPanel.handleReady()
 end
 
 --- /fs floor N (ruling 4): the group's leader (or a player not yet in a group, setting it for the
---- listing) sets the score floor (Prefs.groupFloor); /fs floor alone clears it. The panel only
---- tags; it never declines or whispers. The lines to print.
+--- listing) sets the score floor (Prefs.groupFloor); /fs floor alone clears it. On a client with
+--- no UnitIsGroupLeader, the player is the leader only out of a group (fix round 1). The panel
+--- only tags; it never declines or whispers. The lines to print.
 function GroupPanel.handleFloor(rest)
 	local typed = tostring(rest or ""):match("^%s*(.-)%s*$")
-	if GroupPanel.inGroup() and not Theme.isGroupLeader("player") then
+	local leader = not GroupPanel.inGroup()
+		or (client("UnitIsGroupLeader") ~= nil and Theme.isGroupLeader("player"))
+	if not leader then
 		return { L.groupFloorLeader }
 	end
 	if typed == "" then
@@ -1625,10 +1759,11 @@ function GroupPanel.handleFloor(rest)
 	return { string.format(L.groupFloorSet, floor) }
 end
 
---- The button's show script (it shows with the Raid tab): an open flyout placed again and redrawn
---- once when it went stale while the tab was closed.
+--- The button's show script (it shows with the window): the Raid tab read; an open flyout placed
+--- again and redrawn once when it went stale while the window was closed.
 function GroupPanel.onButtonShow()
 	guarded(function()
+		syncTab()
 		local flyout = GroupPanel.flyout
 		if flyout == nil or not flyout:IsShown() then
 			return

@@ -84,6 +84,15 @@ function Chip.raidCheckLive(check, now)
 	if type(check) ~= "table" or type(check.missing) ~= "table" or #check.missing == 0 then
 		return false
 	end
+	return Chip.raidCheckStands(check, now)
+end
+
+--- Whether a ready check is still within its time at `now`, whatever it found (L5.2 fix round 1:
+--- a check that found nobody is held while it stands, so a later aura loss can still show).
+function Chip.raidCheckStands(check, now)
+	if type(check) ~= "table" then
+		return false
+	end
 	now = now or 0
 	if type(check.untilAt) == "number" then
 		return now <= check.untilAt
@@ -856,7 +865,7 @@ end
 --- the session's memory of when the build was first seen complete.
 function Chip.state(data)
 	data = data or Chip.data or ns.Data
-	if Chip.raidCheck ~= nil and not Chip.raidCheckLive(Chip.raidCheck, Theme.now()) then
+	if Chip.raidCheck ~= nil and not Chip.raidCheckStands(Chip.raidCheck, Theme.now()) then
 		Chip.raidCheck = nil
 	end
 	local input = Chip.inputs(data)
@@ -1011,11 +1020,13 @@ local function copyList(list)
 end
 
 --- The ready check's findings, a list of plain phrases ("weapon imbue", or the group panel's
---- "Thorgrim: flask" lines); nil or empty clears them. The group panel (L5.2) calls this on
---- READY_CHECK and /fs ready with its one-line summary as `text` ("Ready check: 2 missing (Name,
---- Name)"), and `open` true for a leader's check, which stands until Chip.finishRaidCheck.
+--- "Thorgrim: flask" lines); nil clears them. The group panel (L5.2) calls this on READY_CHECK and
+--- /fs ready with its one-line summary as `text` ("Ready check: 2 missing (Name, Name)"), and
+--- `open` true for a leader's check, which stands until Chip.finishRaidCheck. Fix round 1: every
+--- check is held, an empty one too (it shows nothing), so an aura lost later while it stands
+--- (Chip.updateRaidCheck) puts the line up.
 function Chip.setRaidCheck(missing, text, open)
-	if type(missing) ~= "table" or #missing == 0 then
+	if type(missing) ~= "table" then
 		Chip.raidCheck = nil
 	else
 		Chip.raidCheck = { missing = copyList(missing), at = Theme.now(), text = text, open = open == true or nil }

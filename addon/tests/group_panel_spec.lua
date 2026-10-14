@@ -27,6 +27,10 @@ local SPELLS = {
 	[11717] = "Curse of Recklessness", [9907] = "Faerie Fire",
 	[17626] = "Flask of the Titans", [17627] = "Distilled Wisdom", [17628] = "Supreme Power",
 	[17629] = "Chromatic Resistance", [17624] = "Petrification", [19705] = "Well Fed",
+	-- The group variants (fix round 1, D2).
+	[21849] = "Gift of the Wild", [21850] = "Gift of the Wild", [21562] = "Prayer of Fortitude",
+	[21564] = "Prayer of Fortitude", [450086] = "Prayer of Fortitude", [23028] = "Arcane Brilliance",
+	[25898] = "Greater Blessing of Kings",
 }
 
 --- An aura as UnitAura answers it: the name and the spell id.
@@ -98,9 +102,24 @@ describe("GroupPanel", function()
 		end
 	end
 
-	--- The group the client answers. `options`: { members, raid, solo, auras, instance, leader,
-	--- weaponEnchant, noAuraApi, auraUtil, noFrame, noSpellNames, data, sharingOff }. Answers the
-	--- raid frame.
+	--- A client frame given a rect: GetLeft answers a number (L4.3 fix round 2). Set from the spec,
+	--- so the recorder does not count it.
+	local function withRect(frame)
+		frame.GetLeft = function()
+			return 100
+		end
+		frame.GetRight = function()
+			return 100 + frame:GetWidth()
+		end
+		return frame
+	end
+
+	--- The group the client answers. `options`: { members, raid, solo, count, auras, instance,
+	--- leader, noLeaderApi, weaponEnchant, noAuraApi, auraUtil, frames, noFrame, noSpellNames, data,
+	--- sharingOff }. `frames` (fix round 1, D1): "live" (the default, the 1.60 client: a drawn
+	--- SocialUIFrame with a rect holding the rectless logical FriendsFrame and RaidFrame),
+	--- "friends" (no SocialUIFrame; FriendsFrame with a rect), "raid" (only RaidFrame with a rect).
+	--- Answers { social, friends, raid, anchor } (the frame the panel should anchor to).
 	local function start(options)
 		options = options or {}
 		-- A second start in one example: the first client is checked and taken down first.
@@ -126,8 +145,11 @@ describe("GroupPanel", function()
 			IsInRaid = function()
 				return options.raid == true
 			end,
+			IsInGroup = function()
+				return not options.solo
+			end,
 			GetNumGroupMembers = function()
-				return options.solo and 0 or #groupList
+				return options.count or (options.solo and 0 or #groupList)
 			end,
 			GetNumSubgroupMembers = function()
 				return options.solo and 0 or #groupList - 1
@@ -208,6 +230,9 @@ describe("GroupPanel", function()
 				return "Alliance"
 			end,
 		}
+		if options.noLeaderApi then
+			globals.UnitIsGroupLeader = nil
+		end
 		if not options.noSpellNames then
 			globals.C_Spell = { GetSpellName = function(id)
 				return SPELLS[id]
@@ -270,14 +295,26 @@ describe("GroupPanel", function()
 		end
 		GroupPanel.data = groupData()
 		Comms.data = GroupPanel.data
-		local frame
+		local frames = {}
 		if not options.noFrame then
-			local window = _G.CreateFrame("Frame", "FriendsFrame", _G.UIParent)
-			window:SetSize(384, 512)
-			frame = _G.CreateFrame("Frame", "RaidFrame", window)
-			frame:SetSize(338, 424)
+			local kind = options.frames or "live"
+			local holder = _G.UIParent
+			if kind == "live" then
+				-- 1.60: the drawn window; FriendsFrame and RaidFrame show but have no rect (width 0).
+				frames.social = withRect(_G.CreateFrame("Frame", "SocialUIFrame", _G.UIParent))
+				frames.social:SetSize(400, 512)
+				holder = frames.social
+			end
+			frames.friends = _G.CreateFrame("Frame", "FriendsFrame", holder)
+			frames.raid = _G.CreateFrame("Frame", "RaidFrame", frames.friends)
+			if kind == "friends" then
+				withRect(frames.friends):SetSize(384, 512)
+			elseif kind == "raid" then
+				withRect(frames.raid):SetSize(338, 424)
+			end
+			frames.anchor = frames.social or kind == "friends" and frames.friends or frames.raid
 		end
-		return frame
+		return frames
 	end
 
 	after_each(function()
@@ -406,13 +443,59 @@ describe("GroupPanel", function()
 			-- Worn Robe 4 Int against the band's Robes of Arcana 28 Int at 0.5 DPS a point: +12 DPS.
 			assert.are.equal(12, elwen.gap)
 			assert.are.equal("dps", elwen.unit)
-			assert.are.equal("Chest: Worn Robe → Robes of Arcana +12.0 DPS", GroupPanel.subLine(elwen))
+			assert.are.equal("Chest: Worn Robe · next Robes of Arcana +12.0 DPS", GroupPanel.subLine(elwen))
 			-- The same one target and scoring as the item tooltip and the hello (Progress.gearPlan).
 			local Progress, Gear = require("Progress"), require("Gear")
 			local current = Gear.currentWeights(GroupPanel.data, "mage-arcane", nil, nil, 58)
 			local plan = Progress.gearPlan(GroupPanel.data, "mage-arcane", 58, "alliance",
 				Gear.equippedFrom(Inspect.cache["Elwen"].items), current)
 			assert.are.same({ 12, "dps", "chest", 100 }, { plan.gap, plan.unit, plan.weakest.slot, plan.weakest.itemId })
+		end)
+
+		-- Fix round 1: a client answering GetNumGroupMembers 1 for a player alone is not a group.
+		it("counts nobody out of a group, even where the client answers one member", function()
+			start({ solo = true, count = 1 })
+			assert.are.same({}, GroupPanel.groupUnits())
+			assert.is_false(GroupPanel.inGroup())
+			assert.are.same({}, GroupPanel.members(GroupPanel.data))
+		end)
+
+		-- Fix round 1: the Gap of a live member is their addon's; the weakest line is the inspect's,
+		-- tagged "(inspect)" where the two disagree, and absent without an inspect.
+		it("tags the weakest line (inspect) where a live gap and the inspected one differ, none without an inspect",
+			function()
+				start()
+				itemCache()
+				inspectElwen()
+				Comms.seen["Elwen-ClassicBetaPvP"] = { level = 58, spec = "mage-arcane", gearGap = 3, time = clock }
+				local elwen = rowFor(GroupPanel.rows(GroupPanel.members(GroupPanel.data)), "Elwen")
+				assert.are.equal(3, elwen.gap)
+				assert.are.equal("Chest: Worn Robe · next Robes of Arcana +12.0 DPS " .. L.groupWeakestInspect,
+					GroupPanel.subLine(elwen))
+				-- The same gap both ways: no tag.
+				Comms.seen["Elwen-ClassicBetaPvP"].gearGap = 12
+				elwen = rowFor(GroupPanel.rows(GroupPanel.members(GroupPanel.data)), "Elwen")
+				assert.are.equal("Chest: Worn Robe · next Robes of Arcana +12.0 DPS", GroupPanel.subLine(elwen))
+				-- Live without an inspect: the gap, and no weakest line.
+				thorgrimHello()
+				local thorgrim = rowFor(GroupPanel.rows(GroupPanel.members(GroupPanel.data)), "Thorgrim")
+				assert.are.equal(14, thorgrim.gap)
+				assert.are.equal("", GroupPanel.subLine(thorgrim))
+			end)
+
+		-- Fix round 1: an inspect that came back with no item links is no gear to score.
+		it("ignores a cached inspect with no item links rather than scoring an empty set", function()
+			start()
+			itemCache()
+			Inspect.cache["Elwen"] = { key = "Elwen", name = "Elwen", guid = "Player-Elwen", class = "mage",
+				spec = "mage-arcane", level = 58, itemLevel = nil, at = clock, items = {}, enchants = {} }
+			local members = GroupPanel.members(GroupPanel.data)
+			local elwen = rowFor(GroupPanel.rows(members), "Elwen")
+			assert.is_nil(elwen.gap)
+			assert.is_nil(elwen.weakest)
+			assert.is_nil(elwen.enchants)
+			assert.are.equal("", GroupPanel.subLine(elwen))
+			assert.are.equal("", GroupPanel.cells(elwen).enchants.text)
 		end)
 
 		it("takes a member's addon over the inspect for the spec and the gap", function()
@@ -469,7 +552,7 @@ describe("GroupPanel", function()
 			-- No score is no verdict.
 			assert.is_false(rowFor(rows, "Tester").below)
 			assert.are.equal(string.format(L.groupBelow, 1200) .. L.groupSubJoin
-				.. "Chest: Worn Robe → Robes of Arcana +12.0 DPS", GroupPanel.subLine(rowFor(rows, "Elwen")))
+				.. "Chest: Worn Robe · next Robes of Arcana +12.0 DPS", GroupPanel.subLine(rowFor(rows, "Elwen")))
 			assert.are.equal(3, #rows)
 		end)
 	end)
@@ -524,30 +607,70 @@ describe("GroupPanel", function()
 	end)
 
 	describe("the frames", function()
-		it("puts the button under the raid frame's bottom right and the flyout at its top right, 480 wide",
+		-- Fix round 1, D1: on 1.60 RaidFrame and FriendsFrame show but have no rect; the drawn
+		-- Social window is SocialUIFrame. The panel anchors to the first of SocialUIFrame,
+		-- FriendsFrame and RaidFrame that shows with a rect, parented to it.
+		it("puts the button under the Social window's bottom right and the flyout at its top right, 480 wide",
 			function()
-				local frame = start()
+				local frames = start()
+				local social = frames.social
 				GroupPanel.refresh()
 				local button = _G[GroupPanel.BUTTON_NAME]
-				assert.are.equal(frame, button.parent)
-				assertPoint({ "TOPRIGHT", frame, "BOTTOMRIGHT", 0, 0 }, button.points[#button.points])
+				assert.are.equal(social, button.parent)
+				assertPoint({ "TOPRIGHT", social, "BOTTOMRIGHT", 0, 0 }, button.points[#button.points])
 				assert.are.equal(L.groupPanelLabel, button:GetText())
 				assert.are.same({ Theme.SIZES.panelTabWidth, Theme.SIZES.panelTabHeight },
 					{ button:GetWidth(), button:GetHeight() })
+				assert.are.equal(social, GroupPanel.anchor())
+				assert.is_true(GroupPanel.tabOpen())
 				-- The flyout waits for the first click.
 				assert.is_nil(_G[GroupPanel.FLYOUT_NAME])
 				local flyout = open()
-				assert.are.equal(frame, flyout.parent)
+				assert.are.equal(social, flyout.parent)
 				assert.are.equal(480, flyout:GetWidth())
-				assertPoint({ "TOPLEFT", frame, "TOPRIGHT", Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
+				assertPoint({ "TOPLEFT", social, "TOPRIGHT", Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
 					flyout.points[#flyout.points])
 				assert.is_true(flyout:IsShown())
+				assert.is_true(flyout:IsVisible())
 				click(button)
 				assert.is_false(flyout:IsShown())
 				assert.are.equal(0, mock.countCalls(flyout, "SetScript"))
 			end)
 
-		it("makes no button without a raid frame; /fs group opens the flyout on UIParent at the chip's side",
+		it("answers /fs group with the Raid tab open by showing the flyout and no hint (the 1.60 shape)", function()
+			start()
+			GroupPanel.refresh()
+			assert.are.same({}, GroupPanel.command())
+			local flyout = _G[GroupPanel.FLYOUT_NAME]
+			assert.is_true(flyout:IsVisible())
+			assert.is_truthy(GroupPanel.diagLine():find(L.diagPanelOpen, 1, true))
+		end)
+
+		it("anchors to FriendsFrame where it has a rect and there is no SocialUIFrame", function()
+			local frames = start({ frames = "friends" })
+			assert.is_nil(_G.SocialUIFrame)
+			GroupPanel.refresh()
+			local button = _G[GroupPanel.BUTTON_NAME]
+			assert.are.equal(frames.friends, button.parent)
+			assertPoint({ "TOPRIGHT", frames.friends, "BOTTOMRIGHT", 0, 0 }, button.points[#button.points])
+			assert.are.same({}, GroupPanel.command())
+			local flyout = _G[GroupPanel.FLYOUT_NAME]
+			assert.are.equal(frames.friends, flyout.parent)
+			assertPoint({ "TOPLEFT", frames.friends, "TOPRIGHT", Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
+				flyout.points[#flyout.points])
+		end)
+
+		it("anchors to RaidFrame where only it has a rect", function()
+			local frames = start({ frames = "raid" })
+			GroupPanel.refresh()
+			local button = _G[GroupPanel.BUTTON_NAME]
+			assert.are.equal(frames.raid, button.parent)
+			assertPoint({ "TOPRIGHT", frames.raid, "BOTTOMRIGHT", 0, 0 }, button.points[#button.points])
+			assert.are.same({}, GroupPanel.command())
+			assert.are.equal(frames.raid, _G[GroupPanel.FLYOUT_NAME].parent)
+		end)
+
+		it("makes no button without a social frame; /fs group opens the flyout on UIParent at the chip's side",
 			function()
 				start({ noFrame = true })
 				assert.has_no.errors(function()
@@ -565,22 +688,87 @@ describe("GroupPanel", function()
 				assert.is_false(flyout:IsShown())
 			end)
 
-		it("says where it shows when /fs group runs with the raid tab closed, and shows there", function()
-			local frame = start()
-			frame:Hide()
+		it("says where it shows when /fs group runs with the Social window closed, and shows there", function()
+			local frames = start()
+			frames.social:Hide()
 			GroupPanel.refresh()
+			assert.is_nil(GroupPanel.anchor())
+			assert.is_false(GroupPanel.tabOpen())
 			assert.are.same({ L.groupOpensOnRaidTab }, GroupPanel.command())
 			local flyout = _G[GroupPanel.FLYOUT_NAME]
-			assert.are.equal(frame, flyout.parent)
+			-- Parented to the window, so it shows with it.
+			assert.are.equal(frames.social, flyout.parent)
 			assert.is_true(flyout:IsShown())
-			-- The tab opens: the button's own show script places and draws the flyout.
+			assert.is_false(flyout:IsVisible())
+			-- The window opens on the Raid tab: the button's own show script places and draws the flyout.
 			local draws = GroupPanel.draws
-			frame:Show()
+			frames.social:Show()
 			local button = _G[GroupPanel.BUTTON_NAME]
 			button:GetScript("OnShow")(button)
 			assert.is_true(GroupPanel.draws > draws)
+			assertPoint({ "TOPLEFT", frames.social, "TOPRIGHT", Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
+				flyout.points[#flyout.points])
 			assert.are.same({}, GroupPanel.command())
 			assert.is_false(flyout:IsShown())
+		end)
+
+		it("prints the hint on another Social tab (RaidFrame hidden), never on the Raid tab", function()
+			local frames = start()
+			frames.raid:Hide()
+			GroupPanel.refresh()
+			assert.is_false(GroupPanel.tabOpen())
+			assert.are.same({ L.groupOpensOnRaidTab }, GroupPanel.command())
+			GroupPanel.command()
+			frames.raid:Show()
+			assert.is_true(GroupPanel.tabOpen())
+			assert.are.same({}, GroupPanel.command())
+		end)
+
+		it("reads the Raid tab at every refresh point: the button rests on another tab, wakes on the Raid tab",
+			function()
+				local frames = start()
+				GroupPanel.refresh()
+				local button = _G[GroupPanel.BUTTON_NAME]
+				assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
+				-- Another Social tab: the button rests (no alpha, no mouse) but keeps its own shown flag, so
+				-- its show script still runs the next time the window opens.
+				frames.raid:Hide()
+				GroupPanel.onRosterUpdate()
+				assert.are.equal(0, mock.lastCall(button, "SetAlpha")[1])
+				assert.is_false(mock.lastCall(button, "EnableMouse")[1])
+				assert.is_true(button:IsShown())
+				-- Back on the Raid tab: an inspect arriving wakes it.
+				frames.raid:Show()
+				GroupPanel.onInspectReady({ key = "Elwen" })
+				assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
+				assert.is_true(mock.lastCall(button, "EnableMouse")[1])
+				-- An aura change and PLAYER_ENTERING_WORLD (Options' refresh) read it too.
+				frames.raid:Hide()
+				GroupPanel.onAura("party1")
+				assert.are.equal(0, mock.lastCall(button, "SetAlpha")[1])
+				frames.raid:Show()
+				GroupPanel.refresh()
+				assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
+				-- The window opens on another tab: the button's own show script rests it.
+				frames.raid:Hide()
+				button:GetScript("OnShow")(button)
+				assert.are.equal(0, mock.lastCall(button, "SetAlpha")[1])
+				-- The window closed: nothing to read, the button is left as it was (it hides with the window).
+				local alphas = mock.countCalls(button, "SetAlpha")
+				frames.social:Hide()
+				frames.raid:Show()
+				GroupPanel.refresh()
+				assert.are.equal(alphas, mock.countCalls(button, "SetAlpha"))
+				assert.is_true(button:IsShown())
+			end)
+
+		it("fits the rows to the Social window's height, not the rectless raid frame's", function()
+			local frames = start()
+			frames.social:SetHeight(130)
+			open()
+			-- 130 less the header, the counts, the headers and the padding leaves room for two rows.
+			assert.are.equal(GroupPanel.fitRows(130, 0), GroupPanel.last.visible)
+			assert.are.equal(2, GroupPanel.last.visible)
 		end)
 
 		it("shows one muted line, Not in a group., and nothing else out of a group", function()
@@ -615,7 +803,7 @@ describe("GroupPanel", function()
 			assert.is_not_nil(own)
 			assert.are.equal("Arms", thorgrim.cells.spec:GetText())
 			assert.are.equal("12 DPS", elwen.cells.gap:GetText())
-			assert.are.equal("Chest: Worn Robe → Robes of Arcana +12.0 DPS", elwen.sub:GetText())
+			assert.are.equal("Chest: Worn Robe · next Robes of Arcana +12.0 DPS", elwen.sub:GetText())
 			assert.are.equal(Theme.HEX.muted, colorOf(elwen.sub))
 			-- Rows top to bottom: the biggest gap first.
 			local order = {}
@@ -907,7 +1095,83 @@ describe("GroupPanel", function()
 			assert.is_nil(Chip.raidCheck.open)
 			start({ solo = true, auras = { Tester = { aura(19705), aura(17627), aura(10938) } } })
 			assert.are.same({ L.groupReadyDry, L.groupReadyNone }, GroupPanel.handleReady())
-			assert.is_nil(Chip.raidCheck)
+			-- The chip holds the check (fix round 1) but has nothing to show.
+			assert.are.same({}, Chip.raidCheck.missing)
+			assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock))
+		end)
+
+		-- Fix round 1, D3: a panel that turned itself off never claims a clean check.
+		it("says the group panel is off on /fs ready when it has turned itself off, and claims nothing", function()
+			start({ solo = true, auras = { Tester = { aura(19705) } } })
+			GroupPanel.disabled = true
+			assert.are.same({ L.groupPanelOff }, GroupPanel.handleReady())
+		end)
+
+		-- Fix round 1, D2: a group buff is the single-target need it stands for.
+		it("counts Gift of the Wild, Prayer of Fortitude, Arcane Brilliance and Greater Blessing of Kings as their needs",
+			function()
+				local raid = {
+					{ unit = "player", name = "Tester", class = "PRIEST", className = "Priest", level = 60 },
+					{ unit = "party1", name = "Thorgrim", class = "WARRIOR", className = "Warrior", level = 60 },
+					{ unit = "party2", name = "Elwen", class = "MAGE", className = "Mage", level = 60 },
+					{ unit = "party3", name = "Fenna", class = "DRUID", className = "Druid", level = 60 },
+					{ unit = "party4", name = "Brannoc", class = "PALADIN", className = "Paladin", level = 60 },
+				}
+				local function groupBuffed(extra)
+					local list = { aura(17627), aura(19705), aura(11551), aura(21850), aura(450086), aura(23028),
+						aura(25898) }
+					list[#list + 1] = extra
+					return list
+				end
+				local everyone = {}
+				for _, entry in ipairs(raid) do
+					everyone[entry.name] = groupBuffed()
+				end
+				-- One member's group buffs are read by name only (another rank's id).
+				everyone.Fenna = { aura(17627), aura(19705), aura(11551), aura(21849, "Gift of the Wild"),
+					aura(21562, "Prayer of Fortitude"), aura(99999, "Arcane Brilliance"),
+					aura(99998, "Greater Blessing of Kings") }
+				local data = groupData()
+				data.encounterNeeds[12118].buffs = { 10157, 10938, 9885, 11551, 20217 }
+				start({ members = raid, auras = everyone, instance = { "Molten Core", "raid", 409 }, data = nil })
+				GroupPanel.data = data
+				local result = GroupPanel.onReadyCheck()
+				assert.are.same({}, GroupPanel.missingLines(result))
+				-- The variants by id, as the table carries them.
+				assert.are.same({ 21849, 21850 }, GroupPanel.VARIANTS[9885])
+				assert.are.same({ 21562, 21564, 450086 }, GroupPanel.VARIANTS[10938])
+				assert.are.same({ 23028 }, GroupPanel.VARIANTS[10157])
+				assert.are.same({ 25898 }, GroupPanel.VARIANTS[20217])
+				-- Without the group buff, the single-target need is still asked for.
+				everyone.Elwen = { aura(17627), aura(19705), aura(11551), aura(21850), aura(23028), aura(25898) }
+				result = GroupPanel.onReadyCheck()
+				assert.are.same({ string.format(L.groupMissing, "Elwen", "Power Word: Fortitude") },
+					GroupPanel.missingLines(result))
+			end)
+
+		-- Fix round 1: a check that first found nobody missing still shows when an aura goes.
+		it("puts the chip line up when a later aura loss adds someone to a check that found nobody", function()
+			local full = {
+				Tester = { aura(10938), aura(19705), aura(17627), aura(10157) },
+				Thorgrim = { aura(10938), aura(11551), aura(19705), aura(17626) },
+				Elwen = { aura(17627), aura(19705), aura(10157), aura(10938) },
+			}
+			start({ auras = full, instance = { "Molten Core", "raid", 409 } })
+			GroupPanel.onReadyCheck()
+			assert.are.same({}, GroupPanel.missingLines(GroupPanel.result))
+			assert.is_not_nil(Chip.raidCheck)
+			assert.is_false(Chip.raidCheckLive(Chip.raidCheck, clock))
+			-- Thorgrim's flask runs out while the check stands.
+			table.remove(auras.Thorgrim, 4)
+			state.timers = {}
+			GroupPanel.onAura("party1")
+			mock.runTimers(state)
+			assert.are.equal(string.format(L.groupChipSummary, 1, "Thorgrim"), Chip.raidCheck.text)
+			assert.is_true(Chip.raidCheckLive(Chip.raidCheck, clock))
+			local model = Chip.model({ level = 30, build = { name = "Arms leveling", order = { {}, {}, {} } },
+				progress = { matched = 3, total = 3 }, unspent = 0, now = clock, shown = true, combatHide = true,
+				raidCheck = Chip.raidCheck })
+			assert.are.equal("raidcheck", model.chosen.kind)
 		end)
 	end)
 
@@ -926,6 +1190,19 @@ describe("GroupPanel", function()
 			-- Before the group forms, the player sets the floor for the listing.
 			start({ solo = true })
 			assert.are.same({ string.format(L.groupFloorSet, 900) }, GroupPanel.handleFloor("900"))
+		end)
+
+		-- Fix round 1: a client with no UnitIsGroupLeader: a leader only out of a group.
+		it("takes the player as leader only out of a group where the client has no UnitIsGroupLeader", function()
+			start({ noLeaderApi = true })
+			assert.is_nil(_G.UnitIsGroupLeader)
+			assert.are.same({ L.groupFloorLeader }, GroupPanel.handleFloor("1200"))
+			assert.are.equal(0, Prefs.get("groupFloor"))
+			start({ noLeaderApi = true, solo = true })
+			assert.are.same({ string.format(L.groupFloorSet, 1200) }, GroupPanel.handleFloor("1200"))
+			-- A client that answers one member for a player alone is still solo (IsInGroup).
+			start({ noLeaderApi = true, solo = true, count = 1 })
+			assert.are.same({ string.format(L.groupFloorSet, 1200) }, GroupPanel.handleFloor("1200"))
 		end)
 
 		it("tags rows under the saved floor in the flyout", function()

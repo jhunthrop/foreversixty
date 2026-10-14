@@ -341,7 +341,8 @@ function Options.refreshSurfaces(data, event)
 	PanelTab.refresh(data, event)
 	-- The guild tab (L5.1): its button made once the guild frame exists, an open flyout redrawn.
 	GuildTab.refresh(data)
-	-- The group panel (L5.2): its button made on the raid frame, an open flyout redrawn.
+	-- The group panel (L5.2): its button made on the Social window, the Raid tab read, an open
+	-- flyout redrawn (fix round 1: also on PLAYER_ENTERING_WORLD, which comes through here).
 	GroupPanel.refresh(data)
 	-- The chat badges' switch, read once here rather than on every chat line (L4.4).
 	ChatBadges.refresh()
@@ -592,8 +593,8 @@ function Options.register()
 	-- click; it listens for the guild's snapshot! answers. Nothing on the guild frame is hooked.
 	GuildTab.data = Options.data
 	GuildTab.register()
-	-- The group panel (L5.2): its button on the raid frame, its flyout on the first open; it
-	-- listens for the members' hellos and snapshot! answers. Nothing on the raid frame is hooked.
+	-- The group panel (L5.2): its button on the Social window, its flyout on the first open; it
+	-- listens for the members' hellos and snapshot! answers. No client frame is hooked.
 	GroupPanel.data = Options.data
 	GroupPanel.register()
 	-- The minimap button and the compartment entry: left-click opens the build dialog on its

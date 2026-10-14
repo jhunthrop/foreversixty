@@ -228,8 +228,8 @@ describe("SettingsPage, the command list", function()
 		SettingsPage = helper.load("Settings")
 	end)
 
-	it("is the eight player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
-		assert.are.equal(8, #L.settingsCommands)
+	it("is the eleven player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
+		assert.are.equal(11, #L.settingsCommands)
 		local options = 0
 		for _, line in ipairs(L.settingsCommands) do
 			assert.is_truthy(line:find("^/fs[%a ]*: "), line)
@@ -240,17 +240,21 @@ describe("SettingsPage, the command list", function()
 		assert.are.equal(1, options)
 		assert.is_truthy(L.settingsCommands[1]:find("^/fs: "))
 		assert.is_truthy(L.settingsCommands[2]:find("^/fs copy: "))
-		assert.is_truthy(L.settingsCommands[8]:find("^/fs help: "))
+		assert.is_truthy(L.settingsCommands[11]:find("^/fs help: "))
 	end)
 
-	-- Fix round 2, item 10: the list word for word. L4.4 adds /fs link.
-	it("words the eight player commands as ruled", function()
+	-- Fix round 2, item 10: the list word for word. L4.4 adds /fs link; L5.2 fix round 1 adds the
+	-- group panel's /fs group, /fs ready and /fs floor.
+	it("words the eleven player commands as ruled", function()
 		assert.are.same({
 			"/fs: paste or copy a build",
 			"/fs copy: copy my character for the site",
 			"/fs chip: show or hide the chip",
 			"/fs inspect: gear and talents of your target",
 			"/fs link: copy a player's site page",
+			"/fs group: your group's specs, gear and buffs",
+			"/fs ready: check flasks, food and buffs now",
+			"/fs floor N: tag members scored under N",
 			"/fs options: open the settings page",
 			"/fs diag: what is not working",
 			"/fs help: every command",
