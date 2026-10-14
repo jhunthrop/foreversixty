@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T14:28:59Z",
+  "generated_at": "2026-10-14T12:10:43Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -556,8 +556,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.887689605,
-      "verify_run_seconds": 1.078707631,
+      "weights_run_seconds": 1.862948058,
+      "verify_run_seconds": 1.123367712,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1193,8 +1193,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.887689605,
-      "verify_run_seconds": 1.127530797,
+      "weights_run_seconds": 1.862948058,
+      "verify_run_seconds": 1.123339147,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1861,8 +1861,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 2.303841313,
-      "verify_run_seconds": 1.226562754,
+      "weights_run_seconds": 2.123779951,
+      "verify_run_seconds": 1.207306762,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2538,8 +2538,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 2.303841313,
-      "verify_run_seconds": 1.237793432,
+      "weights_run_seconds": 2.123779951,
+      "verify_run_seconds": 1.355304592,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3239,8 +3239,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 2.32140175,
-      "verify_run_seconds": 1.469780381,
+      "weights_run_seconds": 2.286814429,
+      "verify_run_seconds": 1.470115126,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3939,8 +3939,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 2.32140175,
-      "verify_run_seconds": 1.502442457,
+      "weights_run_seconds": 2.286814429,
+      "verify_run_seconds": 1.48363588,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4613,8 +4613,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 2.515128551,
-      "verify_run_seconds": 1.902784033,
+      "weights_run_seconds": 2.477163534,
+      "verify_run_seconds": 1.866849411,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5281,8 +5281,8 @@
         "trinket1: Uther's Strength",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 2.515128551,
-      "verify_run_seconds": 1.7890461530000001,
+      "weights_run_seconds": 2.477163534,
+      "verify_run_seconds": 1.71806788,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6008,8 +6008,8 @@
         "trinket2: Second Wind",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.408277882,
-      "verify_run_seconds": 5.606438932,
+      "weights_run_seconds": 2.446326581,
+      "verify_run_seconds": 5.56230811,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6738,8 +6738,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 2.408277882,
-      "verify_run_seconds": 4.613145038,
+      "weights_run_seconds": 2.446326581,
+      "verify_run_seconds": 4.528143737,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7481,8 +7481,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.432528655,
-      "verify_run_seconds": 5.303264982,
+      "weights_run_seconds": 1.418798641,
+      "verify_run_seconds": 5.30473277,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8007,14 +8007,14 @@
               "item_name": "Rune Band of Wizardry",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Lord Valthalak",
-              "dps_delta": -6.5722387798361686
+              "dps_delta": -6.572238779836165
             },
             {
               "item_id": 13001,
               "item_name": "Maiden's Circle",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -7.6692358653987895
+              "dps_delta": -7.669235865398786
             },
             {
               "item_id": 11669,
@@ -8212,8 +8212,8 @@
         "trinket1: Talisman of Ascendance",
         "trinket2: Briarwood Reed"
       ],
-      "weights_run_seconds": 1.432528655,
-      "verify_run_seconds": 4.198537257,
+      "weights_run_seconds": 1.418798641,
+      "verify_run_seconds": 4.212301928,
       "coverage": {
         "back": {
           "eligible": 457,

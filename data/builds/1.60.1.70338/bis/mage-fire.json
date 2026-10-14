@@ -2,7 +2,7 @@
   "spec": "mage-fire",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T14:55:10Z",
+  "generated_at": "2026-10-14T12:36:42Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -556,8 +556,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.031685907,
-      "verify_run_seconds": 0.818273847,
+      "weights_run_seconds": 1.047490653,
+      "verify_run_seconds": 0.841991577,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1195,8 +1195,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.031685907,
-      "verify_run_seconds": 0.835677009,
+      "weights_run_seconds": 1.047490653,
+      "verify_run_seconds": 0.817067684,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1881,8 +1881,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.174388301,
-      "verify_run_seconds": 0.89798566,
+      "weights_run_seconds": 1.171346858,
+      "verify_run_seconds": 0.876911035,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2570,8 +2570,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.174388301,
-      "verify_run_seconds": 0.918899718,
+      "weights_run_seconds": 1.171346858,
+      "verify_run_seconds": 0.872983194,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3272,8 +3272,8 @@
         "off_hand: Celestial Orb",
         "ranged: Ragefire Wand"
       ],
-      "weights_run_seconds": 1.303111911,
-      "verify_run_seconds": 1.162075021,
+      "weights_run_seconds": 1.319583969,
+      "verify_run_seconds": 1.117499371,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3958,8 +3958,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.303111911,
-      "verify_run_seconds": 1.076439837,
+      "weights_run_seconds": 1.319583969,
+      "verify_run_seconds": 1.063405723,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4281,7 +4281,7 @@
               "item_name": "Knight's Dreadweave Vest",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.5538856968644326
+              "dps_delta": -1.5538856968644321
             }
           ]
         },
@@ -4652,8 +4652,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.2679248140000001,
-      "verify_run_seconds": 1.459678898,
+      "weights_run_seconds": 1.269070254,
+      "verify_run_seconds": 1.426019078,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4971,7 +4971,7 @@
               "item_name": "Stone Guard's Dreadweave Vest",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.5538856968644326
+              "dps_delta": -1.5538856968644321
             },
             {
               "item_id": 1716,
@@ -5356,8 +5356,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.2679248140000001,
-      "verify_run_seconds": 1.387508572,
+      "weights_run_seconds": 1.269070254,
+      "verify_run_seconds": 1.33608024,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5530,7 +5530,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 54.132515742356745,
+          "score": 54.13251574235674,
           "verified": true,
           "alternatives": [
             {
@@ -5545,7 +5545,7 @@
               "item_name": "Lieutenant Commander's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -1.7399992022161201
+              "dps_delta": -1.7399992022161181
             },
             {
               "item_id": 16686,
@@ -5661,7 +5661,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 61.137623793295404,
+          "score": 61.13762379329541,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5670,14 +5670,14 @@
               "item_name": "Field Marshal's Silk Vestments",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -0.6429452937222396
+              "dps_delta": -0.6429452937222415
             },
             {
               "item_id": 227108,
               "item_name": "Knight-Captain's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Knight-Captain · Alliance",
-              "dps_delta": -3.875748493837247
+              "dps_delta": -3.8757484938372486
             },
             {
               "item_id": 279266,
@@ -6103,8 +6103,8 @@
         "trinket2: Draconic Infused Emblem",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.341918559,
-      "verify_run_seconds": 4.241954708,
+      "weights_run_seconds": 1.345501444,
+      "verify_run_seconds": 4.126236507,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6285,7 +6285,7 @@
           "item_name": "Sorcerer's Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 54.13251574235674,
+          "score": 54.132515742356745,
           "verified": true,
           "alternatives": [
             {
@@ -6300,7 +6300,7 @@
               "item_name": "Champion's Silk Cowl",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -1.7399992022161181
+              "dps_delta": -1.7399992022161201
             },
             {
               "item_id": 16686,
@@ -6349,7 +6349,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 50.905675781540324,
+          "score": 50.90567578154033,
           "verified": true,
           "alternatives": [
             {
@@ -6357,21 +6357,21 @@
               "item_name": "Mantle of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.1911452959671096
+              "dps_delta": -3.1911452959671114
             },
             {
               "item_id": 231594,
               "item_name": "Warlord's Silk Amice",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.2504262449409103
+              "dps_delta": -3.250426244940912
             },
             {
               "item_id": 272103,
               "item_name": "Darkspear Shoulderpads",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.7697739365045373
+              "dps_delta": -3.769773936504539
             }
           ]
         },
@@ -6413,7 +6413,7 @@
           "item_name": "Robe of the Archmage",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 61.137623793295404,
+          "score": 61.13762379329541,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6422,14 +6422,14 @@
               "item_name": "Warlord's Silk Raiment",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.6429452937222396
+              "dps_delta": -0.6429452937222415
             },
             {
               "item_id": 227106,
               "item_name": "Legionnaire's Silk Tunic",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Legionnaire · Horde",
-              "dps_delta": -3.875748493837247
+              "dps_delta": -3.8757484938372486
             },
             {
               "item_id": 279266,
@@ -6843,8 +6843,8 @@
         "trinket2: Serenity Field",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.341918559,
-      "verify_run_seconds": 4.268800926,
+      "weights_run_seconds": 1.345501444,
+      "verify_run_seconds": 4.272169053,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7596,8 +7596,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.522685815,
-      "verify_run_seconds": 3.367777031,
+      "weights_run_seconds": 1.503110404,
+      "verify_run_seconds": 3.3818898600000002,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8344,8 +8344,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.522685815,
-      "verify_run_seconds": 3.25619807,
+      "weights_run_seconds": 1.503110404,
+      "verify_run_seconds": 3.347679951,
       "coverage": {
         "back": {
           "eligible": 456,

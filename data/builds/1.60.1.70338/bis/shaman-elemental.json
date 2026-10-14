@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T15:49:11Z",
+  "generated_at": "2026-10-14T13:30:24Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -541,8 +541,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.480079099,
-      "verify_run_seconds": 1.471684732,
+      "weights_run_seconds": 2.471894129,
+      "verify_run_seconds": 1.490775282,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1169,8 +1169,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 2.480079099,
-      "verify_run_seconds": 1.4548328640000001,
+      "weights_run_seconds": 2.471894129,
+      "verify_run_seconds": 1.458693966,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1824,8 +1824,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 2.822589445,
-      "verify_run_seconds": 1.5144494929999999,
+      "weights_run_seconds": 2.820829463,
+      "verify_run_seconds": 1.504666606,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2480,8 +2480,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spine of the Devourer"
       ],
-      "weights_run_seconds": 2.822589445,
-      "verify_run_seconds": 1.433575287,
+      "weights_run_seconds": 2.820829463,
+      "verify_run_seconds": 1.510671866,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3158,8 +3158,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 3.119498939,
-      "verify_run_seconds": 2.157333372,
+      "weights_run_seconds": 3.010364334,
+      "verify_run_seconds": 2.125484976,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3828,8 +3828,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Orb of the Forgotten Seer"
       ],
-      "weights_run_seconds": 3.119498939,
-      "verify_run_seconds": 2.1297152759999998,
+      "weights_run_seconds": 3.010364334,
+      "verify_run_seconds": 2.061016098,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4501,8 +4501,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 3.159750845,
-      "verify_run_seconds": 2.568138829,
+      "weights_run_seconds": 3.102171082,
+      "verify_run_seconds": 2.569941396,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5175,8 +5175,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 3.159750845,
-      "verify_run_seconds": 2.390311395,
+      "weights_run_seconds": 3.102171082,
+      "verify_run_seconds": 2.415555468,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5582,7 +5582,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 50.125468509355066,
+          "score": 50.12546850935506,
           "verified": true,
           "alternatives": [
             {
@@ -5590,14 +5590,14 @@
               "item_name": "Stormseeker's Girdle",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -1.3928850563492605
+              "dps_delta": -1.3928850563492596
             },
             {
               "item_id": 18504,
               "item_name": "Girdle of Insight",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.611686196901893
+              "dps_delta": -1.6116861969018923
             },
             {
               "item_id": 18405,
@@ -5899,8 +5899,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.017441036,
-      "verify_run_seconds": 7.808450747,
+      "weights_run_seconds": 3.08433242,
+      "verify_run_seconds": 7.777514676,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6307,7 +6307,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 50.125468509355066,
+          "score": 50.12546850935506,
           "verified": true,
           "alternatives": [
             {
@@ -6315,14 +6315,14 @@
               "item_name": "Stormseeker's Girdle",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -1.3928850563492605
+              "dps_delta": -1.3928850563492596
             },
             {
               "item_id": 18504,
               "item_name": "Girdle of Insight",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.611686196901893
+              "dps_delta": -1.6116861969018923
             },
             {
               "item_id": 18405,
@@ -6351,15 +6351,15 @@
               "dps_delta": -0.5160953849163874
             },
             {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
+              "item_id": 237817,
+              "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -1.011339486183245
             },
             {
-              "item_id": 237817,
-              "item_name": "Sentinel's Lizardhide Pants",
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -1.5205967305900288,
@@ -6624,8 +6624,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.017441036,
-      "verify_run_seconds": 7.980070397,
+      "weights_run_seconds": 3.08433242,
+      "verify_run_seconds": 7.921878414,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -7065,18 +7065,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 237815,
-              "item_name": "Sentinel's Silk Leggings",
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -1.6806945440605439
-            },
-            {
               "item_id": 237817,
               "item_name": "Sentinel's Lizardhide Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
               "dps_delta": -1.6806945440605439
+            },
+            {
+              "item_id": 237815,
+              "item_name": "Sentinel's Silk Leggings",
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
+              "dps_delta": -1.6806945440605465
             },
             {
               "item_id": 252606,
@@ -7345,8 +7345,8 @@
         "main_hand: Kindling Stave",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.7907739459999998,
-      "verify_run_seconds": 5.617662502,
+      "weights_run_seconds": 1.817338391,
+      "verify_run_seconds": 5.579371087,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7580,7 +7580,7 @@
               "item_name": "Diana's Pearl Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Cannon Master Willey",
-              "dps_delta": -1.436272023898473
+              "dps_delta": -1.4362720238984745
             }
           ]
         },
@@ -8068,8 +8068,8 @@
         "main_hand: Kindling Stave",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 1.7907739459999998,
-      "verify_run_seconds": 5.708962206,
+      "weights_run_seconds": 1.817338391,
+      "verify_run_seconds": 5.720039513,
       "coverage": {
         "back": {
           "eligible": 457,

@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T16:07:13Z",
+  "generated_at": "2026-10-14T13:48:25Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -893,8 +893,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.089115594,
-      "verify_run_seconds": 1.402646358,
+      "weights_run_seconds": 2.092208289,
+      "verify_run_seconds": 1.375139875,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1945,8 +1945,8 @@
         "off_hand: Defective Samophlange",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.089115594,
-      "verify_run_seconds": 1.362071263,
+      "weights_run_seconds": 2.092208289,
+      "verify_run_seconds": 1.382444548,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2643,8 +2643,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.11485858,
-      "verify_run_seconds": 1.3002494,
+      "weights_run_seconds": 2.11325326,
+      "verify_run_seconds": 1.2668950909999999,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3334,8 +3334,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 2.11485858,
-      "verify_run_seconds": 1.308477318,
+      "weights_run_seconds": 2.11325326,
+      "verify_run_seconds": 1.288548691,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4056,8 +4056,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.054232047,
-      "verify_run_seconds": 1.6482634,
+      "weights_run_seconds": 2.058757869,
+      "verify_run_seconds": 1.630435312,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4758,8 +4758,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.054232047,
-      "verify_run_seconds": 1.643290782,
+      "weights_run_seconds": 2.058757869,
+      "verify_run_seconds": 1.623915964,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -5215,7 +5215,7 @@
               "item_name": "Knight's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -3.5489191252861563
+              "dps_delta": -3.5489191252861554
             },
             {
               "item_id": 14132,
@@ -5469,8 +5469,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.443297364,
-      "verify_run_seconds": 2.034489201,
+      "weights_run_seconds": 5.380685165,
+      "verify_run_seconds": 1.973163697,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5915,7 +5915,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -3.5489191252861563
+              "dps_delta": -3.5489191252861554
             },
             {
               "item_id": 14132,
@@ -6183,8 +6183,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 5.443297364,
-      "verify_run_seconds": 1.990751561,
+      "weights_run_seconds": 5.380685165,
+      "verify_run_seconds": 1.94288537,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6429,7 +6429,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 29.19415290211623,
+          "score": 29.194152902116233,
           "verified": true,
           "alternatives": [
             {
@@ -6437,14 +6437,14 @@
               "item_name": "Field Marshal's Dreadweave Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -1.1975395147034869
+              "dps_delta": -1.1975395147034882
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -3.3536780591952846
+              "dps_delta": -3.3536780591952864
             },
             {
               "item_id": 19059,
@@ -6925,8 +6925,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.829953681,
-      "verify_run_seconds": 4.035448862,
+      "weights_run_seconds": 5.787960967,
+      "verify_run_seconds": 4.018351507,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7165,7 +7165,7 @@
           "item_name": "Rugged Mantle of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 29.194152902116233,
+          "score": 29.19415290211623,
           "verified": true,
           "alternatives": [
             {
@@ -7173,14 +7173,14 @@
               "item_name": "Warlord's Dreadweave Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -1.1975395147034882
+              "dps_delta": -1.1975395147034869
             },
             {
               "item_id": 18681,
               "item_name": "Burial Shawl",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -3.3536780591952864
+              "dps_delta": -3.3536780591952846
             },
             {
               "item_id": 19059,
@@ -7660,8 +7660,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 5.829953681,
-      "verify_run_seconds": 3.967510798,
+      "weights_run_seconds": 5.787960967,
+      "verify_run_seconds": 3.856908039,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -8398,8 +8398,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 7.008559934,
-      "verify_run_seconds": 4.388587241,
+      "weights_run_seconds": 6.8612374769999995,
+      "verify_run_seconds": 4.273355204,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -9139,8 +9139,8 @@
         "trinket2: Talisman of Ascendance",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 7.008559934,
-      "verify_run_seconds": 4.438745741,
+      "weights_run_seconds": 6.8612374769999995,
+      "verify_run_seconds": 4.376676763,
       "coverage": {
         "back": {
           "eligible": 456,

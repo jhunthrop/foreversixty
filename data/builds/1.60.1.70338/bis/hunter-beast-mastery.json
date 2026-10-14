@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T14:49:16Z",
+  "generated_at": "2026-10-14T12:30:51Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -533,8 +533,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.802112097,
-      "verify_run_seconds": 2.477811101,
+      "weights_run_seconds": 2.729892151,
+      "verify_run_seconds": 2.424618972,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1171,8 +1171,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.802112097,
-      "verify_run_seconds": 2.331781358,
+      "weights_run_seconds": 2.729892151,
+      "verify_run_seconds": 2.277866364,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1917,8 +1917,8 @@
         "off_hand: Vendetta",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.97626448,
-      "verify_run_seconds": 2.626940165,
+      "weights_run_seconds": 2.974868075,
+      "verify_run_seconds": 2.6120617250000002,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2664,8 +2664,8 @@
         "off_hand: Vendetta",
         "ranged: Glass Shooter"
       ],
-      "weights_run_seconds": 2.97626448,
-      "verify_run_seconds": 2.57748323,
+      "weights_run_seconds": 2.974868075,
+      "verify_run_seconds": 2.506545824,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3376,8 +3376,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.254574406,
-      "verify_run_seconds": 3.489938508,
+      "weights_run_seconds": 3.221036538,
+      "verify_run_seconds": 3.422843029,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4089,8 +4089,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 3.254574406,
-      "verify_run_seconds": 3.437543353,
+      "weights_run_seconds": 3.221036538,
+      "verify_run_seconds": 3.392702716,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4756,8 +4756,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.269347047,
-      "verify_run_seconds": 4.394282356,
+      "weights_run_seconds": 3.260909982,
+      "verify_run_seconds": 4.326330041,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5432,8 +5432,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 3.269347047,
-      "verify_run_seconds": 4.129923683,
+      "weights_run_seconds": 3.260909982,
+      "verify_run_seconds": 4.076695146,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5867,7 +5867,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 179.57892078730816,
+          "score": 179.5789207873082,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +1.8 DPS over it",
           "dps_delta": 1.8414765808457219,
@@ -5877,21 +5877,21 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.508960462233703
+              "dps_delta": -3.508960462233705
             },
             {
               "item_id": 231577,
               "item_name": "Marshal's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -3.7346143625620765
+              "dps_delta": -3.7346143625620782
             },
             {
               "item_id": 18736,
               "item_name": "Plaguehound Leggings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -4.3025383103315
+              "dps_delta": -4.302538310331502
             }
           ]
         },
@@ -6168,8 +6168,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.235089225,
-      "verify_run_seconds": 13.27956661,
+      "weights_run_seconds": 3.214400803,
+      "verify_run_seconds": 12.96429165,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6904,8 +6904,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.235089225,
-      "verify_run_seconds": 12.571444656,
+      "weights_run_seconds": 3.214400803,
+      "verify_run_seconds": 12.38839628,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7339,7 +7339,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 192.56852341553832,
+          "score": 192.56852341553835,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Chain Leggings (ilvl 65) (id 22748): kept the pick, +3.6 DPS over it",
           "dps_delta": 3.550884357250311,
@@ -7349,21 +7349,21 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -8.912702316277235
+              "dps_delta": -8.91270231627724
             },
             {
               "item_id": 18736,
               "item_name": "Plaguehound Leggings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -9.155614423145307
+              "dps_delta": -9.155614423145312
             },
             {
               "item_id": 231577,
               "item_name": "Marshal's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -9.481558654733718
+              "dps_delta": -9.481558654733721
             }
           ]
         },
@@ -7640,8 +7640,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.267162847,
-      "verify_run_seconds": 13.454403994,
+      "weights_run_seconds": 3.264866195,
+      "verify_run_seconds": 13.26047404,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8075,7 +8075,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 192.56852341553832,
+          "score": 192.56852341553835,
           "verified": true,
           "alternatives": [
             {
@@ -8091,14 +8091,14 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -8.912702316277235
+              "dps_delta": -8.91270231627724
             },
             {
               "item_id": 18736,
               "item_name": "Plaguehound Leggings",
               "source_kind": "dungeon",
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -9.155614423145307
+              "dps_delta": -9.155614423145312
             }
           ]
         },
@@ -8375,8 +8375,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 3.267162847,
-      "verify_run_seconds": 13.196320452,
+      "weights_run_seconds": 3.264866195,
+      "verify_run_seconds": 12.996795032,
       "coverage": {
         "back": {
           "eligible": 456,

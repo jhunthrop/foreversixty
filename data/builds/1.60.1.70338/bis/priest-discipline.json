@@ -2,7 +2,7 @@
   "spec": "priest-discipline",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T15:27:10Z",
+  "generated_at": "2026-10-14T13:08:30Z",
   "bands": [
     {
       "spec": "priest-discipline",
@@ -187,7 +187,7 @@
           "item_name": "Filigreed Pristine Gown",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 28.894822023286466,
+          "score": 28.894822023286462,
           "verified": true,
           "alternatives": [
             {
@@ -195,14 +195,14 @@
               "item_name": "Corsair's Overshirt",
               "source_kind": "dungeon",
               "source": "The Deadmines: Edwin VanCleef",
-              "dps_delta": -0.32259428173780713
+              "dps_delta": -0.32259428173780696
             },
             {
               "item_id": 2981,
               "item_name": "Seer's Robe",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.49734879522241243
+              "dps_delta": -0.49734879522241227
             },
             {
               "item_id": 6465,
@@ -568,8 +568,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 10.423197242,
-      "verify_run_seconds": 30.033200276,
+      "weights_run_seconds": 10.41545145,
+      "verify_run_seconds": 30.175486751,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -838,7 +838,7 @@
           "item_name": "Filigreed Pristine Gown",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 28.894822023286466,
+          "score": 28.894822023286462,
           "verified": true,
           "alternatives": [
             {
@@ -846,14 +846,14 @@
               "item_name": "Corsair's Overshirt",
               "source_kind": "dungeon",
               "source": "The Deadmines: Edwin VanCleef",
-              "dps_delta": -0.32259428173780713
+              "dps_delta": -0.32259428173780696
             },
             {
               "item_id": 2981,
               "item_name": "Seer's Robe",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.49734879522241243
+              "dps_delta": -0.49734879522241227
             },
             {
               "item_id": 6465,
@@ -969,7 +969,7 @@
           "item_name": "Filigreed Pristine Leggings",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 37.62328610716346,
+          "score": 37.62328610716345,
           "verified": true,
           "alternatives": [
             {
@@ -977,14 +977,14 @@
               "item_name": "Filigreed Silky Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.8409618171790522
+              "dps_delta": -0.8409618171790518
             },
             {
               "item_id": 253943,
               "item_name": "Filigreed Shadow Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.8409618171790522
+              "dps_delta": -0.8409618171790518
             },
             {
               "item_id": 12987,
@@ -1217,8 +1217,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 10.423197242,
-      "verify_run_seconds": 29.923397211,
+      "weights_run_seconds": 10.41545145,
+      "verify_run_seconds": 29.871703018,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1893,8 +1893,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 10.695870191000001,
-      "verify_run_seconds": 28.217199503,
+      "weights_run_seconds": 10.538832224,
+      "verify_run_seconds": 28.117053529,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2356,7 +2356,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 42.319550393153435,
+          "score": 42.31955039315344,
           "verified": true,
           "alternatives": [
             {
@@ -2364,14 +2364,14 @@
               "item_name": "Soggy Boots",
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear",
-              "dps_delta": -1.3418783552664448
+              "dps_delta": -1.3418783552664453
             },
             {
               "item_id": 254003,
               "item_name": "Frothing Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.3671857419040276
+              "dps_delta": -1.367185741904028
             },
             {
               "item_id": 9454,
@@ -2571,8 +2571,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 10.695870191000001,
-      "verify_run_seconds": 28.44401507,
+      "weights_run_seconds": 10.538832224,
+      "verify_run_seconds": 28.41730832,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3037,7 +3037,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 37.888921259345715,
+          "score": 37.88892125934572,
           "verified": true,
           "alternatives": [
             {
@@ -3045,14 +3045,14 @@
               "item_name": "Acidic Walkers",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -1.3169204588524455
+              "dps_delta": -1.3169204588524461
             },
             {
               "item_id": 13100,
               "item_name": "Furen's Boots",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.3968559547100532
+              "dps_delta": -1.3968559547100536
             },
             {
               "item_id": 15697,
@@ -3291,8 +3291,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 12.255948465,
-      "verify_run_seconds": 85.480667042,
+      "weights_run_seconds": 12.191259419,
+      "verify_run_seconds": 85.172702516,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3756,7 +3756,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 37.88892125934572,
+          "score": 37.888921259345715,
           "verified": true,
           "alternatives": [
             {
@@ -3772,14 +3772,14 @@
               "item_name": "Kodo Rustler Boots",
               "source_kind": "quest",
               "source": "Kodo Roundup",
-              "dps_delta": -1.3079921066743383
+              "dps_delta": -1.3079921066743379
             },
             {
               "item_id": 9454,
               "item_name": "Acidic Walkers",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -1.3169204588524461
+              "dps_delta": -1.3169204588524455
             }
           ]
         },
@@ -4009,8 +4009,8 @@
         "off_hand: Witch's Finger",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 12.255948465,
-      "verify_run_seconds": 88.07631255,
+      "weights_run_seconds": 12.191259419,
+      "verify_run_seconds": 87.888541611,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4249,7 +4249,7 @@
               "item_name": "Nethergeld Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.573059041030246
+              "dps_delta": -0.5730590410302454
             },
             {
               "item_id": 19507,
@@ -4764,8 +4764,8 @@
         "main_hand: Charstone Dirk",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 12.199862768,
-      "verify_run_seconds": 50.019412655,
+      "weights_run_seconds": 12.245907121,
+      "verify_run_seconds": 49.894329657,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4938,7 +4938,7 @@
               "item_name": "Blood Guard's Satin Cover",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.005525695046631827
+              "dps_delta": -0.0055256950466329785
             },
             {
               "item_id": 10630,
@@ -5018,7 +5018,7 @@
               "item_name": "Inquisitor's Shawl",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Fairbanks",
-              "dps_delta": -0.694973869652091
+              "dps_delta": -0.6949738696520915
             }
           ]
         },
@@ -5406,14 +5406,14 @@
               "item_name": "Spellshifter Rod",
               "source_kind": "quest",
               "source": "Tiara of the Deep",
-              "dps_delta": -3.246752376652303
+              "dps_delta": -3.2467523766523008
             },
             {
               "item_id": 7721,
               "item_name": "Hand of Righteousness",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Whitemane",
-              "dps_delta": -3.5788580750843555
+              "dps_delta": -3.5788580750843533
             }
           ]
         },
@@ -5521,8 +5521,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 12.199862768,
-      "verify_run_seconds": 53.46824777,
+      "weights_run_seconds": 12.245907121,
+      "verify_run_seconds": 53.159919721,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6251,8 +6251,8 @@
         "main_hand: Dancing Sliver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 11.956668944,
-      "verify_run_seconds": 67.41955084,
+      "weights_run_seconds": 11.914994693,
+      "verify_run_seconds": 67.190326218,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6691,7 +6691,7 @@
               "item_name": "Virtuous Skirt",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -1.662271295652511
+              "dps_delta": -1.6622712956525085
             },
             {
               "item_id": 13389,
@@ -6977,8 +6977,8 @@
         "main_hand: Dancing Sliver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 11.956668944,
-      "verify_run_seconds": 68.780586552,
+      "weights_run_seconds": 11.914994693,
+      "verify_run_seconds": 68.183926944,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7728,8 +7728,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 7.967539777,
-      "verify_run_seconds": 38.754984056,
+      "weights_run_seconds": 7.828294509,
+      "verify_run_seconds": 38.517486357,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7894,7 +7894,7 @@
           "item_name": "Virtuous Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 138.7624071330322,
+          "score": 138.76240713303218,
           "verified": true,
           "alternatives": [
             {
@@ -7909,7 +7909,7 @@
               "item_name": "Champion's Satin Hood",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.9864334350071353
+              "dps_delta": -0.986433435007132
             },
             {
               "item_id": 16693,
@@ -8479,8 +8479,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 7.967539777,
-      "verify_run_seconds": 37.431704163,
+      "weights_run_seconds": 7.828294509,
+      "verify_run_seconds": 37.23183443,
       "coverage": {
         "back": {
           "eligible": 456,

@@ -2,7 +2,7 @@
   "spec": "priest-holy",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T15:41:12Z",
+  "generated_at": "2026-10-14T13:22:27Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -567,8 +567,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Flaring Baton"
       ],
-      "weights_run_seconds": 10.114427638,
-      "verify_run_seconds": 29.011790639,
+      "weights_run_seconds": 10.017772067,
+      "verify_run_seconds": 29.084808243,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -969,7 +969,7 @@
           "item_name": "Filigreed Pristine Leggings",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 28.425690437001506,
+          "score": 28.42569043700151,
           "verified": true,
           "alternatives": [
             {
@@ -984,7 +984,7 @@
               "item_name": "Filigreed Silky Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.6315811807619904
+              "dps_delta": -1.6315811807619909
             },
             {
               "item_id": 12987,
@@ -1134,7 +1134,7 @@
               "item_name": "Staff of Orgrimmar",
               "source_kind": "quest",
               "source": "Hidden Enemies",
-              "dps_delta": -0.16955599368625937
+              "dps_delta": -0.1695559936862592
             },
             {
               "item_id": 4437,
@@ -1217,8 +1217,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Wand of Decay"
       ],
-      "weights_run_seconds": 10.114427638,
-      "verify_run_seconds": 29.222564023,
+      "weights_run_seconds": 10.017772067,
+      "verify_run_seconds": 29.120701992,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1894,8 +1894,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 10.110263959,
-      "verify_run_seconds": 28.46142599,
+      "weights_run_seconds": 9.97971712,
+      "verify_run_seconds": 28.336501192,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2572,8 +2572,8 @@
         "main_hand: Wind Spirit Staff",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 10.110263959,
-      "verify_run_seconds": 30.79316119,
+      "weights_run_seconds": 9.97971712,
+      "verify_run_seconds": 30.631302872,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3015,7 +3015,7 @@
               "item_name": "Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.003776879374406269
+              "dps_delta": -0.0037768793744066094
             },
             {
               "item_id": 10010,
@@ -3289,8 +3289,8 @@
         "off_hand: Aurora Sphere",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 10.295377354,
-      "verify_run_seconds": 73.931205834,
+      "weights_run_seconds": 10.229711889,
+      "verify_run_seconds": 73.484831115,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3907,7 +3907,7 @@
               "item_name": "Hypnotic Blade",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Arcanist Doan",
-              "dps_delta": -0.8761937694644804
+              "dps_delta": -0.8761937694644797
             }
           ]
         },
@@ -4015,8 +4015,8 @@
         "off_hand: Witch's Finger",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 10.295377354,
-      "verify_run_seconds": 76.913717128,
+      "weights_run_seconds": 10.229711889,
+      "verify_run_seconds": 76.457117968,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4463,14 +4463,14 @@
               "item_name": "Venomshroud Leggings",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.7497891507561779
+              "dps_delta": -0.7497891507561772
             },
             {
               "item_id": 8251,
               "item_name": "Imperial Red Pants",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.8658821321896146
+              "dps_delta": -0.865882132189614
             }
           ],
           "set_bonus": {
@@ -4776,8 +4776,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 10.605902812,
-      "verify_run_seconds": 88.981145813,
+      "weights_run_seconds": 10.560025311,
+      "verify_run_seconds": 88.647197008,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5156,7 +5156,7 @@
               "item_name": "Gilded Gloves",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.2879049673932124
+              "dps_delta": -2.2879049673932133
             },
             {
               "item_id": 19116,
@@ -5534,8 +5534,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Enthralled Sphere"
       ],
-      "weights_run_seconds": 10.605902812,
-      "verify_run_seconds": 53.632359653,
+      "weights_run_seconds": 10.560025311,
+      "verify_run_seconds": 53.367121618,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5855,7 +5855,7 @@
               "item_name": "Virtuous Robe",
               "source_kind": "quest",
               "source": "Saving the Best for Last",
-              "dps_delta": -2.3266449528700233
+              "dps_delta": -2.326644952870026
             }
           ]
         },
@@ -6009,7 +6009,7 @@
           "item_name": "Incandescent Mooncloth Boots",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 75.3360917655783,
+          "score": 75.33609176557832,
           "verified": true,
           "alternatives": [
             {
@@ -6017,14 +6017,14 @@
               "item_name": "Mooncloth Boots",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.589350967034997
+              "dps_delta": -3.5893509670349992
             },
             {
               "item_id": 22247,
               "item_name": "Faith Healer's Boots",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.8526224459760323
+              "dps_delta": -3.8526224459760345
             },
             {
               "item_id": 226952,
@@ -6300,8 +6300,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.366540624,
-      "verify_run_seconds": 78.595393963,
+      "weights_run_seconds": 9.311566049,
+      "verify_run_seconds": 78.298066912,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6674,21 +6674,21 @@
               "item_name": "Hands of the Exalted Herald",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Princess Moira Bronzebeard ",
-              "dps_delta": -0.1772842870995769
+              "dps_delta": -0.17728428709957567
             },
             {
               "item_id": 272097,
               "item_name": "Raider Handwraps",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.5407252363493581
+              "dps_delta": -0.5407252363493569
             },
             {
               "item_id": 226950,
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.1974116924995688
+              "dps_delta": -1.1974116924995677
             }
           ]
         },
@@ -7058,8 +7058,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 9.366540624,
-      "verify_run_seconds": 81.450292785,
+      "weights_run_seconds": 9.311566049,
+      "verify_run_seconds": 80.618307321,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7451,7 +7451,7 @@
               "item_name": "Virtuous Mitts",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.099787363682609
+              "dps_delta": -1.099787363682607
             }
           ]
         },
@@ -7468,7 +7468,7 @@
               "item_name": "Whipvine Cord",
               "source_kind": "dungeon",
               "source": "Dire Maul: Alzzin the Wildshaper",
-              "dps_delta": -0.09119302550749539
+              "dps_delta": -0.09119302550749354
             },
             {
               "item_id": 17609,
@@ -7824,8 +7824,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.216813408,
-      "verify_run_seconds": 29.018623306,
+      "weights_run_seconds": 6.08892998,
+      "verify_run_seconds": 28.720147957000002,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7990,7 +7990,7 @@
           "item_name": "Virtuous Crown",
           "source": "Saving the Best for Last",
           "source_kind": "quest",
-          "score": 85.85630541791764,
+          "score": 85.85630541791762,
           "verified": true,
           "alternatives": [
             {
@@ -8005,7 +8005,7 @@
               "item_name": "Champion's Satin Hood",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.11915713058022852
+              "dps_delta": -0.1191571305802248
             },
             {
               "item_id": 16693,
@@ -8589,8 +8589,8 @@
         "off_hand: Lei of the Lifegiver",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 6.216813408,
-      "verify_run_seconds": 30.562505377,
+      "weights_run_seconds": 6.08892998,
+      "verify_run_seconds": 30.163674271,
       "coverage": {
         "back": {
           "eligible": 456,

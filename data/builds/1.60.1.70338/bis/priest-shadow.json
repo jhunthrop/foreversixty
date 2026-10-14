@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T15:41:52Z",
+  "generated_at": "2026-10-14T13:23:07Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -550,8 +550,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.99868504,
-      "verify_run_seconds": 0.832119556,
+      "weights_run_seconds": 0.963967672,
+      "verify_run_seconds": 0.795460033,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1194,8 +1194,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.99868504,
-      "verify_run_seconds": 0.840610945,
+      "weights_run_seconds": 0.963967672,
+      "verify_run_seconds": 0.859236538,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1887,8 +1887,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.990590389,
-      "verify_run_seconds": 0.794656387,
+      "weights_run_seconds": 1.011152002,
+      "verify_run_seconds": 0.779278458,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2583,8 +2583,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.990590389,
-      "verify_run_seconds": 0.823450324,
+      "weights_run_seconds": 1.011152002,
+      "verify_run_seconds": 0.801632648,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3289,8 +3289,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.022662306,
-      "verify_run_seconds": 0.98308994,
+      "weights_run_seconds": 1.046148715,
+      "verify_run_seconds": 0.937293618,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4001,8 +4001,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.022662306,
-      "verify_run_seconds": 1.034237799,
+      "weights_run_seconds": 1.046148715,
+      "verify_run_seconds": 1.0581934689999999,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4704,8 +4704,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.014808412,
-      "verify_run_seconds": 1.407814587,
+      "weights_run_seconds": 1.090229303,
+      "verify_run_seconds": 1.422865893,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5145,7 +5145,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.3554856966212847
+              "dps_delta": -1.3554856966212843
             },
             {
               "item_id": 10807,
@@ -5404,8 +5404,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.014808412,
-      "verify_run_seconds": 1.337352829,
+      "weights_run_seconds": 1.090229303,
+      "verify_run_seconds": 1.3226549539999999,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6146,8 +6146,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.133895072,
-      "verify_run_seconds": 2.949041851,
+      "weights_run_seconds": 1.101287772,
+      "verify_run_seconds": 2.911901652,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6891,8 +6891,8 @@
         "trinket2: Serenity Field",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.133895072,
-      "verify_run_seconds": 2.805304078,
+      "weights_run_seconds": 1.101287772,
+      "verify_run_seconds": 2.802260936,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7347,14 +7347,14 @@
               "item_name": "Marshal's Satin Pants",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.6316225415524827
+              "dps_delta": -0.6316225415524853
             },
             {
               "item_id": 231619,
               "item_name": "Marshal's Satin Leggings",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -0.6316225415524827
+              "dps_delta": -0.6316225415524853
             }
           ]
         },
@@ -7631,8 +7631,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.318629433,
-      "verify_run_seconds": 3.372993499,
+      "weights_run_seconds": 1.252423965,
+      "verify_run_seconds": 3.341385334,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8087,14 +8087,14 @@
               "item_name": "General's Satin Leggings",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -0.6316225415524827
+              "dps_delta": -0.6316225415524853
             },
             {
               "item_id": 22747,
               "item_name": "Outrider's Silk Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -2.11268642304151
+              "dps_delta": -2.1126864230415126
             }
           ]
         },
@@ -8371,8 +8371,8 @@
         "main_hand: Spire of Hakkar",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.318629433,
-      "verify_run_seconds": 3.287377798,
+      "weights_run_seconds": 1.252423965,
+      "verify_run_seconds": 3.203012752,
       "coverage": {
         "back": {
           "eligible": 456,

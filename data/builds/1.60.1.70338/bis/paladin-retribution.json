@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T15:12:55Z",
+  "generated_at": "2026-10-14T12:54:19Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -561,8 +561,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.96913943,
-      "verify_run_seconds": 3.171786741,
+      "weights_run_seconds": 1.952450314,
+      "verify_run_seconds": 3.199439081,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1205,8 +1205,8 @@
         "finger2: Signet of the Zhevra",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.96913943,
-      "verify_run_seconds": 3.276763816,
+      "weights_run_seconds": 1.952450314,
+      "verify_run_seconds": 3.231664378,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1864,8 +1864,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.013399027,
-      "verify_run_seconds": 3.7031884809999998,
+      "weights_run_seconds": 1.986127551,
+      "verify_run_seconds": 3.635180975,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2502,8 +2502,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.013399027,
-      "verify_run_seconds": 2.194945681,
+      "weights_run_seconds": 1.986127551,
+      "verify_run_seconds": 2.181454474,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3151,8 +3151,8 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.021523871,
-      "verify_run_seconds": 4.064093445,
+      "weights_run_seconds": 1.994004646,
+      "verify_run_seconds": 4.067314823,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3803,8 +3803,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 2.021523871,
-      "verify_run_seconds": 4.230125889,
+      "weights_run_seconds": 1.994004646,
+      "verify_run_seconds": 4.149786524,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4482,8 +4482,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.132452144,
-      "verify_run_seconds": 5.20701112,
+      "weights_run_seconds": 2.079575013,
+      "verify_run_seconds": 5.229952726,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5160,8 +5160,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 2.132452144,
-      "verify_run_seconds": 4.805093272,
+      "weights_run_seconds": 2.079575013,
+      "verify_run_seconds": 4.727659719,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5881,8 +5881,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.087847357,
-      "verify_run_seconds": 12.080279452,
+      "weights_run_seconds": 2.086395452,
+      "verify_run_seconds": 12.043667837,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6617,8 +6617,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.087847357,
-      "verify_run_seconds": 11.431619893,
+      "weights_run_seconds": 2.086395452,
+      "verify_run_seconds": 11.239156118,
       "coverage": {
         "back": {
           "eligible": 455,
@@ -7074,14 +7074,14 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.6481937463979022
+              "dps_delta": -1.6481937463978988
             },
             {
               "item_id": 237825,
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.552385521845672
+              "dps_delta": -2.552385521845669
             },
             {
               "item_id": 14554,
@@ -7355,8 +7355,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.528588894,
-      "verify_run_seconds": 13.111693604,
+      "weights_run_seconds": 2.419962606,
+      "verify_run_seconds": 12.870185977,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7756,7 +7756,7 @@
           "item_name": "Belt of Preserved Heads",
           "source": "A Collection of Heads",
           "source_kind": "quest",
-          "score": 118.53578362263617,
+          "score": 118.53578362263619,
           "verified": true,
           "alternatives": [
             {
@@ -7764,21 +7764,21 @@
               "item_name": "Radiant Girdle of the Dawn",
               "source_kind": "vendor",
               "source": "Argent Quartermaster Hasana",
-              "dps_delta": -1.733529525749982
+              "dps_delta": -1.7335295257499836
             },
             {
               "item_id": 227805,
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -2.24876587797811
+              "dps_delta": -2.2487658779781112
             },
             {
               "item_id": 22232,
               "item_name": "Marksman's Girdle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -2.3978234136802
+              "dps_delta": -2.3978234136802015
             }
           ]
         },
@@ -7795,14 +7795,14 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.6481937463979022
+              "dps_delta": -1.6481937463978988
             },
             {
               "item_id": 237825,
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.552385521845672
+              "dps_delta": -2.552385521845669
             },
             {
               "item_id": 14554,
@@ -8067,8 +8067,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 2.528588894,
-      "verify_run_seconds": 12.526370071,
+      "weights_run_seconds": 2.419962606,
+      "verify_run_seconds": 12.23647131,
       "coverage": {
         "back": {
           "eligible": 455,

@@ -2,7 +2,7 @@
   "spec": "druid-restoration",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T14:47:10Z",
+  "generated_at": "2026-10-14T12:28:46Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -550,8 +550,8 @@
         "finger2: Band of Purification",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 5.530552244,
-      "verify_run_seconds": 18.808376066,
+      "weights_run_seconds": 5.541197509,
+      "verify_run_seconds": 18.767744042,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1192,8 +1192,8 @@
         "finger2: Band of Purification",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 5.530552244,
-      "verify_run_seconds": 35.527026574,
+      "weights_run_seconds": 5.541197509,
+      "verify_run_seconds": 35.395651395,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1495,7 +1495,7 @@
           "item_name": "Wisdom's Leather Tunic",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 44.22294116274862,
+          "score": 44.22294116274861,
           "verified": true,
           "alternatives": [
             {
@@ -1511,14 +1511,14 @@
               "item_name": "Beguiler Robes",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Houndmaster Loksey",
-              "dps_delta": -0.35067207339971507
+              "dps_delta": -0.35067207339971435
             },
             {
               "item_id": 1997,
               "item_name": "Pressed Felt Robe",
               "source_kind": "world",
               "source": "Bloodscalp Mystic",
-              "dps_delta": -0.49496902668047527
+              "dps_delta": -0.49496902668047454
             }
           ]
         },
@@ -1594,7 +1594,7 @@
           "item_name": "Mender's Leather Belt",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 45.22294116274862,
+          "score": 45.22294116274861,
           "verified": true,
           "alternatives": [
             {
@@ -1602,14 +1602,14 @@
               "item_name": "Dokebi Cord",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.230706781331798
+              "dps_delta": -2.230706781331797
             },
             {
               "item_id": 14406,
               "item_name": "Resilient Cord",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.5286302126059086
+              "dps_delta": -2.5286302126059077
             },
             {
               "item_id": 13011,
@@ -1635,7 +1635,7 @@
               "item_name": "Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.49215731260569245
+              "dps_delta": -0.49215731260569173
             },
             {
               "item_id": 252518,
@@ -1848,8 +1848,8 @@
         "finger2: Runemender's Seal",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 7.884560221,
-      "verify_run_seconds": 25.535190197,
+      "weights_run_seconds": 7.792285444,
+      "verify_run_seconds": 25.392328077,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2293,7 +2293,7 @@
               "item_name": "Pristine Leggings",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.49215731260569245
+              "dps_delta": -0.49215731260569173
             },
             {
               "item_id": 252518,
@@ -2506,8 +2506,8 @@
         "finger2: Runemender's Seal",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 7.884560221,
-      "verify_run_seconds": 27.227086012,
+      "weights_run_seconds": 7.792285444,
+      "verify_run_seconds": 26.988070147,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2983,7 +2983,7 @@
               "item_name": "Gilded Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.1839465838506555
+              "dps_delta": -1.1839465838506547
             },
             {
               "item_id": 13100,
@@ -3190,8 +3190,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 8.642172923,
-      "verify_run_seconds": 34.812480486,
+      "weights_run_seconds": 8.734967227,
+      "verify_run_seconds": 34.662714306,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3586,7 +3586,7 @@
           "item_name": "Gilded Cord",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 47.829894185175064,
+          "score": 47.82989418517507,
           "verified": true,
           "alternatives": [
             {
@@ -3602,14 +3602,14 @@
               "item_name": "Windchaser Cinch",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.4863592578159646
+              "dps_delta": -1.4863592578159652
             },
             {
               "item_id": 13105,
               "item_name": "Sutarn's Ring",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.9828458880890378
+              "dps_delta": -1.9828458880890385
             }
           ]
         },
@@ -3667,7 +3667,7 @@
               "item_name": "Gilded Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.1839465838506547
+              "dps_delta": -1.1839465838506555
             },
             {
               "item_id": 13100,
@@ -3874,8 +3874,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 8.642172923,
-      "verify_run_seconds": 37.410659244,
+      "weights_run_seconds": 8.734967227,
+      "verify_run_seconds": 37.043980213,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4189,7 +4189,7 @@
               "item_name": "Forest's Embrace",
               "source_kind": "quest",
               "source": "A Better Ingredient",
-              "dps_delta": -0.37185074519409916
+              "dps_delta": -0.3718507451940978
             }
           ]
         },
@@ -4594,8 +4594,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Twisting Essence Jar"
       ],
-      "weights_run_seconds": 8.96133773,
-      "verify_run_seconds": 42.306389366,
+      "weights_run_seconds": 8.770427865,
+      "verify_run_seconds": 41.608725266,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4838,7 +4838,7 @@
               "item_name": "Nethergeld Shoulders",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.1944552466165212
+              "dps_delta": -1.1944552466165221
             },
             {
               "item_id": 252538,
@@ -5313,8 +5313,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Twisting Essence Jar"
       ],
-      "weights_run_seconds": 8.96133773,
-      "verify_run_seconds": 40.646229386,
+      "weights_run_seconds": 8.770427865,
+      "verify_run_seconds": 40.171599772,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5512,7 +5512,7 @@
           "item_name": "Wavefront Necklace",
           "source": "Lord Skwol",
           "source_kind": "world",
-          "score": 92.32357055160729,
+          "score": 92.32357055160728,
           "verified": true,
           "alternatives": [
             {
@@ -5520,14 +5520,14 @@
               "item_name": "Jeweled Amulet of Cainwyn",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.9433474116183894
+              "dps_delta": -0.943347411618388
             },
             {
               "item_id": 13960,
               "item_name": "Heart of the Fiend",
               "source_kind": "dungeon",
               "source": "Scholomance: Kirtonos the Herald",
-              "dps_delta": -1.7159806313825754
+              "dps_delta": -1.715980631382574
             },
             {
               "item_id": 14558,
@@ -5717,14 +5717,14 @@
               "item_name": "Elderwild Waistcord",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.7175379221355894
+              "dps_delta": -0.717537922135588
             },
             {
               "item_id": 19047,
               "item_name": "Wisdom of the Timbermaw",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.3441863568265233
+              "dps_delta": -1.344186356826522
             },
             {
               "item_id": 272398,
@@ -6043,8 +6043,8 @@
         "finger2: Band of Piety",
         "off_hand: Lapidis Tankard of Tidesippe"
       ],
-      "weights_run_seconds": 9.173252398,
-      "verify_run_seconds": 109.335674438,
+      "weights_run_seconds": 9.033184935,
+      "verify_run_seconds": 108.285157156,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6242,7 +6242,7 @@
           "item_name": "Wavefront Necklace",
           "source": "Lord Skwol",
           "source_kind": "world",
-          "score": 92.32357055160729,
+          "score": 92.32357055160728,
           "verified": true,
           "alternatives": [
             {
@@ -6250,14 +6250,14 @@
               "item_name": "Jeweled Amulet of Cainwyn",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.9433474116183894
+              "dps_delta": -0.943347411618388
             },
             {
               "item_id": 13960,
               "item_name": "Heart of the Fiend",
               "source_kind": "dungeon",
               "source": "Scholomance: Kirtonos the Herald",
-              "dps_delta": -1.7159806313825754
+              "dps_delta": -1.715980631382574
             },
             {
               "item_id": 14558,
@@ -6353,14 +6353,14 @@
               "item_name": "Alanna's Embrace",
               "source_kind": "dungeon",
               "source": "Scholomance: Ras Frostwhisper",
-              "dps_delta": -0.17388812050780825
+              "dps_delta": -0.1738881205078111
             },
             {
               "item_id": 15066,
               "item_name": "Ironfeather Breastplate",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.5432035506030478
+              "dps_delta": -0.5432035506030507
             }
           ]
         },
@@ -6776,8 +6776,8 @@
         "trinket2: Serenity Field",
         "off_hand: Lapidis Tankard of Tidesippe"
       ],
-      "weights_run_seconds": 9.173252398,
-      "verify_run_seconds": 106.39385109,
+      "weights_run_seconds": 9.033184935,
+      "verify_run_seconds": 106.671041766,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6942,7 +6942,7 @@
           "item_name": "Living Crown",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 149.0454638599238,
+          "score": 149.04546385992379,
           "verified": true,
           "alternatives": [
             {
@@ -6950,14 +6950,14 @@
               "item_name": "Lieutenant Commander's Dragonhide Headdress",
               "source_kind": "vendor",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -4.673446846791355
+              "dps_delta": -4.67344684679135
             },
             {
               "item_id": 22689,
               "item_name": "Sanctified Leather Helm",
               "source_kind": "quest",
               "source": "Superior Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -5.804827823349575
+              "dps_delta": -5.80482782334957
             },
             {
               "item_id": 226786,
@@ -6996,7 +6996,7 @@
               "item_name": "Drake Tooth Necklace",
               "source_kind": "quest",
               "source": "The Nightmare Manifests",
-              "dps_delta": -1.6507168741397158
+              "dps_delta": -1.6507168741397182
             }
           ]
         },
@@ -7079,14 +7079,14 @@
               "item_name": "Alanna's Embrace",
               "source_kind": "dungeon",
               "source": "Scholomance: Ras Frostwhisper",
-              "dps_delta": -0.6148197355996722
+              "dps_delta": -0.6148197355996698
             },
             {
               "item_id": 16690,
               "item_name": "Devout Robe",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.8799220411533581
+              "dps_delta": -0.8799220411533558
             },
             {
               "item_id": 23089,
@@ -7287,7 +7287,7 @@
               "item_name": "Emerald Flame Ring",
               "source_kind": "dungeon",
               "source": "Dire Maul: Prince Tortheldrin",
-              "dps_delta": -1.8316766426397082
+              "dps_delta": -1.8316766426397095
             },
             {
               "item_id": 22334,
@@ -7515,8 +7515,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 6.512672772,
-      "verify_run_seconds": 72.344002184,
+      "weights_run_seconds": 6.512157451,
+      "verify_run_seconds": 71.864329499,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -8255,8 +8255,8 @@
         "trinket2: Darkspear Voodoo Seal",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 6.512672772,
-      "verify_run_seconds": 70.513144757,
+      "weights_run_seconds": 6.512157451,
+      "verify_run_seconds": 70.32945374,
       "coverage": {
         "back": {
           "eligible": 457,

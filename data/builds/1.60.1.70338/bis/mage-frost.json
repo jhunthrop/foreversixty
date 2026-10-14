@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T14:55:53Z",
+  "generated_at": "2026-10-14T12:37:25Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -553,8 +553,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.925213178,
-      "verify_run_seconds": 0.733031334,
+      "weights_run_seconds": 0.943519641,
+      "verify_run_seconds": 0.739580905,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1198,8 +1198,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.925213178,
-      "verify_run_seconds": 0.761711372,
+      "weights_run_seconds": 0.943519641,
+      "verify_run_seconds": 0.75401601,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1902,8 +1902,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.105548453,
-      "verify_run_seconds": 0.865182791,
+      "weights_run_seconds": 1.125811983,
+      "verify_run_seconds": 0.85854693,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2601,8 +2601,8 @@
         "main_hand: Spine of the Devourer",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.105548453,
-      "verify_run_seconds": 0.878569601,
+      "weights_run_seconds": 1.125811983,
+      "verify_run_seconds": 0.852985737,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3311,8 +3311,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.064849134,
-      "verify_run_seconds": 0.976719169,
+      "weights_run_seconds": 1.088350224,
+      "verify_run_seconds": 0.972726428,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -4022,8 +4022,8 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.064849134,
-      "verify_run_seconds": 0.98097357,
+      "weights_run_seconds": 1.088350224,
+      "verify_run_seconds": 0.983423955,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4722,8 +4722,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.99042833,
-      "verify_run_seconds": 1.318134226,
+      "weights_run_seconds": 0.983436426,
+      "verify_run_seconds": 1.277859088,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -4919,7 +4919,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -1.8763172519890539
+              "dps_delta": -1.8763172519890532
             },
             {
               "item_id": 15999,
@@ -5170,14 +5170,14 @@
               "item_name": "Red Mageweave Pants",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.36558805895637775
+              "dps_delta": -0.36558805895637697
             },
             {
               "item_id": 7062,
               "item_name": "Crimson Silk Pantaloons",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -1.398049480560513
+              "dps_delta": -1.3980494805605124
             }
           ]
         },
@@ -5430,8 +5430,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.99042833,
-      "verify_run_seconds": 1.235400044,
+      "weights_run_seconds": 0.983436426,
+      "verify_run_seconds": 1.2527953680000001,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -6175,8 +6175,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.062230988,
-      "verify_run_seconds": 3.670098752,
+      "weights_run_seconds": 1.028242567,
+      "verify_run_seconds": 3.5553843389999997,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6926,8 +6926,8 @@
         "trinket2: Briarwood Reed",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.062230988,
-      "verify_run_seconds": 3.578065076,
+      "weights_run_seconds": 1.028242567,
+      "verify_run_seconds": 3.486165564,
       "coverage": {
         "back": {
           "eligible": 456,
@@ -7337,7 +7337,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 41.93764398630435,
+          "score": 41.93764398630436,
           "verified": true,
           "alternatives": [
             {
@@ -7353,14 +7353,14 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -6.7829113623296236
+              "dps_delta": -6.782911362329626
             },
             {
               "item_id": 272393,
               "item_name": "Magician's Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -7.128362318122441
+              "dps_delta": -7.128362318122445
             }
           ]
         },
@@ -7673,8 +7673,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.134867876,
-      "verify_run_seconds": 2.87046826,
+      "weights_run_seconds": 1.111010109,
+      "verify_run_seconds": 2.875205918,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -8084,7 +8084,7 @@
           "item_name": "Knowledge of the Timbermaw",
           "source": "Meilosh",
           "source_kind": "vendor",
-          "score": 41.93764398630435,
+          "score": 41.93764398630436,
           "verified": true,
           "alternatives": [
             {
@@ -8100,14 +8100,14 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -6.7829113623296236
+              "dps_delta": -6.782911362329625
             },
             {
               "item_id": 272393,
               "item_name": "Magician's Cord",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -7.128362318122441
+              "dps_delta": -7.128362318122445
             }
           ]
         },
@@ -8419,8 +8419,8 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.134867876,
-      "verify_run_seconds": 2.7840193600000003,
+      "weights_run_seconds": 1.111010109,
+      "verify_run_seconds": 2.786108463,
       "coverage": {
         "back": {
           "eligible": 456,

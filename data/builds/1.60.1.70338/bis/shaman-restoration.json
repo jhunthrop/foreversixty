@@ -2,7 +2,7 @@
   "spec": "shaman-restoration",
   "build": "1.60.1.70338",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-13T16:06:04Z",
+  "generated_at": "2026-10-14T13:47:16Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -550,8 +550,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 4.70662498,
-      "verify_run_seconds": 17.043856138,
+      "weights_run_seconds": 4.704716803,
+      "verify_run_seconds": 16.951466054,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1182,8 +1182,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 4.70662498,
-      "verify_run_seconds": 15.909405759,
+      "weights_run_seconds": 4.704716803,
+      "verify_run_seconds": 16.003851119,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1645,7 +1645,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 43.82295068480371,
+          "score": 43.8229506848037,
           "verified": true,
           "alternatives": [
             {
@@ -1653,14 +1653,14 @@
               "item_name": "Acidic Walkers",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -0.7452164086202969
+              "dps_delta": -0.7452164086202967
             },
             {
               "item_id": 254003,
               "item_name": "Frothing Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.8276840000000092
+              "dps_delta": -0.827684000000009
             },
             {
               "item_id": 274747,
@@ -1827,8 +1827,8 @@
         "finger2: The Queen's Jewel",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 4.815822997,
-      "verify_run_seconds": 16.874541978,
+      "weights_run_seconds": 4.774298824,
+      "verify_run_seconds": 16.856669658,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2290,7 +2290,7 @@
           "item_name": "Gilded Slippers",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 43.8229506848037,
+          "score": 43.82295068480371,
           "verified": true,
           "alternatives": [
             {
@@ -2298,14 +2298,14 @@
               "item_name": "Acidic Walkers",
               "source_kind": "dungeon",
               "source": "Gnomeregan: Viscous Fallout",
-              "dps_delta": -0.7452164086202967
+              "dps_delta": -0.7452164086202969
             },
             {
               "item_id": 254003,
               "item_name": "Frothing Slippers",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -0.827684000000009
+              "dps_delta": -0.8276840000000092
             },
             {
               "item_id": 274747,
@@ -2472,8 +2472,8 @@
         "finger2: The Queen's Jewel",
         "main_hand: Wind Spirit Staff"
       ],
-      "weights_run_seconds": 4.815822997,
-      "verify_run_seconds": 15.946964808,
+      "weights_run_seconds": 4.774298824,
+      "verify_run_seconds": 15.873578138,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -2924,7 +2924,7 @@
               "item_name": "Wisdom's Leather Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.48359414357823843
+              "dps_delta": -0.48359414357823877
             }
           ]
         },
@@ -3158,8 +3158,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Battered Viking Shield"
       ],
-      "weights_run_seconds": 5.75604265,
-      "verify_run_seconds": 27.395217514,
+      "weights_run_seconds": 5.681991175,
+      "verify_run_seconds": 27.319385054,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -3843,8 +3843,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Battered Viking Shield"
       ],
-      "weights_run_seconds": 5.75604265,
-      "verify_run_seconds": 26.04787983,
+      "weights_run_seconds": 5.681991175,
+      "verify_run_seconds": 25.946757537,
       "coverage": {
         "back": {
           "eligible": 247,
@@ -4571,8 +4571,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Mountainside Buckler"
       ],
-      "weights_run_seconds": 9.648955775,
-      "verify_run_seconds": 52.288407707,
+      "weights_run_seconds": 9.578861395,
+      "verify_run_seconds": 52.716654109,
       "coverage": {
         "back": {
           "eligible": 318,
@@ -5298,8 +5298,8 @@
         "main_hand: Charstone Dirk",
         "off_hand: Mountainside Buckler"
       ],
-      "weights_run_seconds": 9.648955775,
-      "verify_run_seconds": 50.973460265,
+      "weights_run_seconds": 9.578861395,
+      "verify_run_seconds": 51.22132185,
       "coverage": {
         "back": {
           "eligible": 323,
@@ -5929,7 +5929,7 @@
               "item_name": "Quel'dorai Channeling Rod",
               "source_kind": "dungeon",
               "source": "Dire Maul: Lethtendris",
-              "dps_delta": -0.17966767222967997
+              "dps_delta": -0.17966767222968136
             },
             {
               "item_id": 17710,
@@ -6003,8 +6003,8 @@
         "trinket2: Serenity Field",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 11.002277447,
-      "verify_run_seconds": 148.604608766,
+      "weights_run_seconds": 10.874531688,
+      "verify_run_seconds": 149.15401225,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -6718,8 +6718,8 @@
         "trinket2: Serenity Field",
         "main_hand: Staff of Hale Magefire"
       ],
-      "weights_run_seconds": 11.002277447,
-      "verify_run_seconds": 143.461865622,
+      "weights_run_seconds": 10.874531688,
+      "verify_run_seconds": 143.547527785,
       "coverage": {
         "back": {
           "eligible": 457,
@@ -6917,7 +6917,7 @@
           "item_name": "Wavefront Necklace",
           "source": "Lord Skwol",
           "source_kind": "world",
-          "score": 48.701754614888415,
+          "score": 48.70175461488841,
           "verified": true,
           "alternatives": [
             {
@@ -6925,7 +6925,7 @@
               "item_name": "Animated Chain Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Ramstein the Gorger",
-              "dps_delta": -3.01210421456578
+              "dps_delta": -3.0121042145657784
             },
             {
               "item_id": 21531,
@@ -6940,7 +6940,7 @@
               "item_name": "Amulet of the Redeemed",
               "source_kind": "dungeon",
               "source": "Stratholme: Sothos and Jarien's Heirlooms",
-              "dps_delta": -4.591494275201206
+              "dps_delta": -4.591494275201204
             }
           ]
         },
@@ -7023,14 +7023,14 @@
               "item_name": "Mooncloth Vest",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -2.975334130702652
+              "dps_delta": -2.9753341307026484
             },
             {
               "item_id": 10020,
               "item_name": "Stormcloth Vest",
               "source_kind": "crafted",
               "source": "Tailoring",
-              "dps_delta": -3.132812133903538
+              "dps_delta": -3.1328121339035344
             },
             {
               "item_id": 13346,
@@ -7460,8 +7460,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 7.993947346,
-      "verify_run_seconds": 86.388850673,
+      "weights_run_seconds": 8.083055604,
+      "verify_run_seconds": 86.030221306,
       "coverage": {
         "back": {
           "eligible": 450,
@@ -7659,7 +7659,7 @@
           "item_name": "Wavefront Necklace",
           "source": "Lord Skwol",
           "source_kind": "world",
-          "score": 48.70175461488841,
+          "score": 48.701754614888415,
           "verified": true,
           "alternatives": [
             {
@@ -7667,7 +7667,7 @@
               "item_name": "Animated Chain Necklace",
               "source_kind": "dungeon",
               "source": "Stratholme: Ramstein the Gorger",
-              "dps_delta": -3.0121042145657784
+              "dps_delta": -3.01210421456578
             },
             {
               "item_id": 21531,
@@ -7682,7 +7682,7 @@
               "item_name": "Amulet of the Redeemed",
               "source_kind": "dungeon",
               "source": "Stratholme: Sothos and Jarien's Heirlooms",
-              "dps_delta": -4.591494275201204
+              "dps_delta": -4.591494275201206
             }
           ]
         },
@@ -8018,7 +8018,7 @@
               "item_name": "Rosewine Circle",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -0.7402468576431014
+              "dps_delta": -0.7402468576431034
             }
           ]
         },
@@ -8202,8 +8202,8 @@
         "trinket2: Serenity Field",
         "off_hand: Skullflame Shield"
       ],
-      "weights_run_seconds": 7.993947346,
-      "verify_run_seconds": 84.118618427,
+      "weights_run_seconds": 8.083055604,
+      "verify_run_seconds": 83.832336028,
       "coverage": {
         "back": {
           "eligible": 457,

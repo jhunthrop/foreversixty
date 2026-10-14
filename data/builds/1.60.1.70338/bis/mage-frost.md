@@ -130,7 +130,7 @@ No-known-source sample (15 of 451, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 203005000000000000-11302300000000000-2535101301000300250)
 
-Set DPS (verified): 356.8. Weights run: 1.1s. Verify run: 3.7s. 1081 eligible items had no known source.
+Set DPS (verified): 356.8. Weights run: 1.0s. Verify run: 3.6s. 1081 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -286,7 +286,7 @@ No-known-source sample (15 of 327, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (troll, 203005000000000000-00000000000000000-2535101301000300250)
 
-Set DPS (verified): 225.7. Weights run: 1.0s. Verify run: 1.2s. 423 eligible items had no known source.
+Set DPS (verified): 225.7. Weights run: 1.0s. Verify run: 1.3s. 423 eligible items had no known source.
 
 2 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
@@ -318,7 +318,7 @@ No-known-source sample (15 of 423, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 203005000000000000-11302300000000000-2535101301000300250)
 
-Set DPS (verified): 347.7. Weights run: 1.1s. Verify run: 3.6s. 1068 eligible items had no known source.
+Set DPS (verified): 347.7. Weights run: 1.0s. Verify run: 3.5s. 1068 eligible items had no known source.
 
 1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
