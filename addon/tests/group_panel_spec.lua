@@ -156,26 +156,26 @@ describe("GroupPanel", function()
 		social.FriendsList:Hide()
 		social.activeContentFrame = social.RaidFrame
 		-- Fix round 4 (D): the window's side tabs, unnamed children with a rect past its right edge
-		-- (500): 32 and 40 wide from x 500, so the rightmost ends at 540.
+		-- (500). Fix round 5 (D1): as the client has them, four, shown, 55 wide from x 500.
 		social.sideTabs = {}
-		for index, width in ipairs({ 32, 40 }) do
+		for index = 1, 4 do
 			local tab = state.clientChild(social, "SocialUIFrame side tab " .. index)
-			tab:SetSize(width, 64)
+			tab:SetSize(55, 64)
 			tab.GetLeft = function()
 				return 500
 			end
 			tab.GetRight = function()
-				return 500 + width
+				return 500 + 55
 			end
 			social.sideTabs[index] = tab
 		end
 		return social
 	end
 
-	--- The flyout's x beside the Social window (fix round 4, D): past the rightmost side tab (540)
-	--- from the window's right edge (500), clear of it by guildSideClear.
+	--- The flyout's x beside the Social window (fix round 4, D): past the side tabs (they end at
+	--- 555) from the window's right edge (500), clear of them by guildSideClear.
 	local function sideX()
-		return Theme.SIZES.panelOffsetX + 40 + Theme.SIZES.guildSideClear
+		return Theme.SIZES.panelOffsetX + 55 + Theme.SIZES.guildSideClear
 	end
 
 	--- A click on one of the Social window's tabs, as the client runs it (the scripts fire): "raid"
@@ -757,6 +757,9 @@ describe("GroupPanel", function()
 
 		-- Fix round 4, D (designer 1): the Social window's side tabs are unnamed children past its right
 		-- edge; the flyout clears them as the guild tab's does (read only: GetChildren and the rects).
+		-- Fix round 5, D1 (the client's probe): a side tab is a shown child starting at the edge (less 1)
+		-- and at most groupSideTabMaxWidth wide; the window's art (shown, full width, 1 past the edge) and
+		-- hidden children ending far past it are not, and the reach is clamped to that width.
 		it("clears the Social window's side tabs: past the rightmost child beyond its right edge, else 55 across",
 			function()
 				local frames = start()
@@ -769,10 +772,44 @@ describe("GroupPanel", function()
 				inside.GetRight = function()
 					return 480
 				end
+				-- The window's art: shown, its full width, 1 unit past the edge (500).
+				local art = state.clientChild(social, "SocialUIFrame art")
+				art.GetLeft = function()
+					return 500 - 412
+				end
+				art.GetRight = function()
+					return 500 + 1
+				end
+				-- A hidden child past the edge, as the client's that ends 407 past it.
+				local closed = state.clientChild(social, "SocialUIFrame hidden child")
+				unheard(closed, false)
+				closed.GetLeft = function()
+					return 500 + 62
+				end
+				closed.GetRight = function()
+					return 500 + 407
+				end
 				local flyout = open()
+				assertPoint({ "TOPLEFT", social, "TOPRIGHT", Theme.SIZES.panelOffsetX + 59, Theme.SIZES.panelOffsetY },
+					flyout.points[#flyout.points])
+				assert.are.equal(Theme.SIZES.panelOffsetX + 55 + 4, sideX())
+				-- A shown narrow child far past the edge: its reach is clamped to groupSideTabMaxWidth.
+				local far = state.clientChild(social, "SocialUIFrame far child")
+				far.GetLeft = function()
+					return 500 + 200
+				end
+				far.GetRight = function()
+					return 500 + 250
+				end
+				GroupPanel.placeFlyout(flyout)
+				assertPoint({ "TOPLEFT", social, "TOPRIGHT",
+					Theme.SIZES.panelOffsetX + Theme.SIZES.groupSideTabMaxWidth + Theme.SIZES.guildSideClear,
+					Theme.SIZES.panelOffsetY }, flyout.points[#flyout.points])
+				assert.are.equal(100, Theme.SIZES.groupSideTabMaxWidth)
+				unheard(far, false)
+				GroupPanel.placeFlyout(flyout)
 				assertPoint({ "TOPLEFT", social, "TOPRIGHT", sideX(), Theme.SIZES.panelOffsetY },
 					flyout.points[#flyout.points])
-				assert.are.equal(Theme.SIZES.panelOffsetX + 44, sideX())
 				-- The flyout's own rect past the edge is never taken for a side tab.
 				flyout.GetLeft = function()
 					return 544
@@ -801,6 +838,55 @@ describe("GroupPanel", function()
 					flyout.points[#flyout.points])
 				assert.is_nil(GroupPanel.disabled)
 			end)
+
+		-- Fix round 5, D1: no child qualifies (hidden, too wide, or starting short of the edge): 55 across.
+		it("falls back to 55 across where no shown narrow child starts at the window's right edge", function()
+			local frames = start()
+			local social = frames.social
+			local flyout = open()
+			local function placedX()
+				GroupPanel.placeFlyout(flyout)
+				local point = flyout.points[#flyout.points]
+				assert.are.equal(social, point[2])
+				return point[4]
+			end
+			assert.are.equal(sideX(), placedX())
+			local fallback = Theme.SIZES.panelOffsetX + 55
+			-- Hidden side tabs.
+			for _, tab in ipairs(social.sideTabs) do
+				unheard(tab, false)
+			end
+			assert.are.equal(fallback, placedX())
+			-- Shown, but wider than groupSideTabMaxWidth.
+			for _, tab in ipairs(social.sideTabs) do
+				unheard(tab, true)
+				tab.GetRight = function()
+					return 500 + 101
+				end
+			end
+			assert.are.equal(fallback, placedX())
+			-- 55 wide, but starting 2 short of the edge.
+			for _, tab in ipairs(social.sideTabs) do
+				tab.GetLeft = function()
+					return 498
+				end
+				tab.GetRight = function()
+					return 498 + 55
+				end
+			end
+			assert.are.equal(fallback, placedX())
+			-- 1 short of the edge still counts: 54 past it.
+			for _, tab in ipairs(social.sideTabs) do
+				tab.GetLeft = function()
+					return 499
+				end
+				tab.GetRight = function()
+					return 499 + 55
+				end
+			end
+			assert.are.equal(Theme.SIZES.panelOffsetX + 54 + Theme.SIZES.guildSideClear, placedX())
+			assert.is_nil(GroupPanel.disabled)
+		end)
 
 		it("makes no button without a social frame; /fs group opens the flyout on UIParent at the chip's side",
 			function()
@@ -1526,18 +1612,43 @@ describe("GroupPanel", function()
 						GroupPanel.spellName)
 					return result.missing[1] ~= nil
 				end
-				for _, spec in ipairs({ "warrior-arms", "warrior-fury", "warrior-protection", "rogue-combat",
-					"rogue-assassination", "paladin-retribution", "shaman-enhancement", "druid-feral",
-					"druid-feral-combat" }) do
+				-- Fix round 5, D3: the data's specs, matched exactly (no prefix rule).
+				for _, spec in ipairs({ "warrior-arms", "warrior-fury", "warrior-protection", "rogue-assassination",
+					"rogue-combat", "rogue-subtlety", "paladin-retribution", "shaman-enhancement", "druid-feral" }) do
 					assert.is_true(asked(spec), spec)
 				end
 				for _, spec in ipairs({ "hunter-marksmanship", "hunter-beast-mastery", "mage-arcane", "priest-holy",
 					"paladin-holy", "paladin-protection", "shaman-elemental", "shaman-restoration", "druid-balance",
-					"druid-restoration", "warlock-affliction" }) do
+					"druid-restoration", "warlock-affliction", "druid-feral-bear", "druid-feral-combat", "warrior",
+					"rogue", "warrior-", "rogue-x" }) do
 					assert.is_false(asked(spec), spec)
 				end
 				assert.is_false(asked(nil))
 			end)
+
+		-- Fix round 5, D3: a bear is never asked for an imbue, nor named in the disclosure.
+		it("never asks druid-feral-bear for an imbue and says no disclosure for one", function()
+			start()
+			local needs = { buffs = {}, debuffs = {}, generic = true }
+			local result = GroupPanel.check({
+				{ short = "Tester", classToken = "PRIEST", level = 60, own = true,
+					auras = { ids = { [17627] = true, [19705] = true }, names = {} } },
+				{ short = "Brannoc", classToken = "DRUID", level = 60, spec = "druid-feral-bear", imbue = false,
+					auras = { ids = { [17626] = true, [19705] = true }, names = {} } },
+			}, needs, GroupPanel.spellName)
+			assert.are.same({}, result.missing)
+			assert.is_falsy(result.imbueOthers)
+			for _, line in ipairs(GroupPanel.checkText(result)) do
+				assert.are_not.equal("Weapon imbues can only be read on yourself.", line.text)
+			end
+			-- A cat is asked, and named in the disclosure.
+			result = GroupPanel.check({
+				{ short = "Brannoc", classToken = "DRUID", level = 60, spec = "druid-feral", imbue = false,
+					auras = { ids = { [17626] = true, [19705] = true }, names = {} } },
+			}, needs, GroupPanel.spellName)
+			assert.is_true(result.imbueOthers)
+			assert.are.same({ "Brannoc: missing imbue" }, GroupPanel.missingLines(result))
+		end)
 
 		-- Fix round 4, A: the player's own imbue, in the spec their row shows (a warrior here).
 		it("asks the player's own imbue in the spec their row shows", function()
@@ -1549,19 +1660,16 @@ describe("GroupPanel", function()
 			assert.are.same({ "Tester: missing imbue" }, GroupPanel.missingLines(GroupPanel.onReadyCheck()))
 		end)
 
-		-- Fix round 4, A: Forever's Natural flasks (the items' use spells; the recipes are no aura).
-		it("counts Forever's Natural flasks as a flask, by their aura ids", function()
+		-- Fix round 4, A: Forever's Natural flasks (the items' use spells). Fix round 5, D4: the
+		-- same-named 1293559-1293562 are counted too, a hedge until a client capture shows which id the
+		-- worn aura has.
+		it("counts Forever's Natural flasks as a flask, by both sets of their ids", function()
 			start()
-			for _, id in ipairs({ 1293740, 1293741, 1293742, 1293743 }) do
+			for _, id in ipairs({ 1293559, 1293560, 1293561, 1293562, 1293740, 1293741, 1293742, 1293743 }) do
 				local result = GroupPanel.check({ { short = "Fenna", classToken = "PRIEST", level = 60,
 					auras = { ids = { [id] = true, [19705] = true }, names = {} } } },
 					{ buffs = {}, debuffs = {}, generic = true }, GroupPanel.spellName)
 				assert.are.same({}, result.missing, id)
-			end
-			for _, recipe in ipairs({ 1293559, 1293560, 1293561, 1293562 }) do
-				for _, id in ipairs(GroupPanel.FLASKS) do
-					assert.are_not.equal(recipe, id)
-				end
 			end
 		end)
 
@@ -1853,6 +1961,33 @@ describe("GroupPanel", function()
 			pcall(Chip.printRaidCheck)
 			Theme.say = say
 			assert.are.same({ "Ready check: nothing missing" }, said)
+		end)
+
+		-- Fix round 5, D2: the chip's glyph says what the check found: the green tick on a clean dry
+		-- run, the red cross where a need is missing (and back to it when a later aura loss refills the list).
+		it("draws the tick on the chip for a clean dry run and the cross where a need is missing", function()
+			local function chosen()
+				return Chip.model({ level = 30, build = { name = "Arms leveling", order = { {}, {}, {} } },
+					progress = { matched = 3, total = 3 }, unspent = 0, now = clock, shown = true, combatHide = true,
+					raidCheck = Chip.raidCheck }).chosen
+			end
+			start({ solo = true, auras = { Tester = { aura(19705), aura(10938) } } })
+			GroupPanel.handleReady()
+			assert.are.equal("raidcheck", chosen().kind)
+			assert.are.equal(Theme.MEDIA.gearCross, chosen().icon)
+			start({ solo = true, auras = { Tester = { aura(19705), aura(17627), aura(10938) } } })
+			GroupPanel.handleReady()
+			assert.are.equal("raidcheck", chosen().kind)
+			assert.are.equal("Ready check: nothing missing", chosen().text)
+			assert.are.equal(Theme.MEDIA.gearTick, chosen().icon)
+			-- The flask runs out while the dry run stands: the list refills and the cross returns.
+			table.remove(auras.Tester, 2)
+			state.timers = {}
+			GroupPanel.onAura("player")
+			mock.runTimers(state)
+			assert.are.equal("raidcheck", chosen().kind)
+			assert.are.equal("Ready check: missing flask", chosen().text)
+			assert.are.equal(Theme.MEDIA.gearCross, chosen().icon)
 		end)
 
 		-- Fix round 4 (E, B): in a group the dry run's chat names the list it read, then a line a member

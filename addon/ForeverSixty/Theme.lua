@@ -327,12 +327,15 @@ Theme.SIZES = {
 	--- shown at once (each a cell line and the muted weakest-slot line under it), the ready
 	--- check's missing lines before "and N more" (fix round 4, C: the coverage lines' too), and the
 	--- enchant cell's tick. Fix round 4 (D): where the Social window's side tabs cannot be read, the
-	--- flyout sits `groupSideFallback` right of the window's edge (past them).
+	--- flyout sits `groupSideFallback` right of the window's edge (past them). Fix round 5 (D1): a
+	--- child of the window wider than `groupSideTabMaxWidth` is no side tab (the client's are 55),
+	--- and the side tabs' reach is clamped to it.
 	groupFlyoutWidth = 480,
 	groupVisibleRows = 10,
 	groupMissingLines = 6,
 	groupTick = 12,
 	groupSideFallback = 55,
+	groupSideTabMaxWidth = 100,
 }
 
 --- The client's own font objects, and what to use when one is missing.

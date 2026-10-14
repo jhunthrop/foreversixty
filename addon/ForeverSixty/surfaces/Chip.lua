@@ -341,7 +341,9 @@ local function hereState(input)
 	}
 end
 
---- "Missing: weapon imbue", for RAID_CHECK_SECONDS after the check.
+--- "Missing: weapon imbue", for RAID_CHECK_SECONDS after the check. L5.2 fix round 5 (D2): the
+--- red cross while anything is missing, the green tick on a clean result (the group panel's clean
+--- dry run); a later aura loss refills the list and the cross returns by itself.
 local function raidCheckState(input)
 	if not Chip.raidCheckLive(input.raidCheck, input.now) then
 		return nil
@@ -353,7 +355,7 @@ local function raidCheckState(input)
 	end
 	return {
 		kind = "raidcheck",
-		icon = Theme.MEDIA.gearCross,
+		icon = (#input.raidCheck.missing == 0) and Theme.MEDIA.gearTick or Theme.MEDIA.gearCross,
 		text = text,
 		action = "raidlist",
 		hint = L.chipHintList,

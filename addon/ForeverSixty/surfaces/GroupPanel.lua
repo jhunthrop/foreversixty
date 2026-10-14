@@ -144,16 +144,23 @@ GroupPanel.BUFF_FOR = {
 --- Resistance), matched by id or by the client's name for them; and the food buff's. Fix round 4
 --- (A): Forever's four Natural flasks (Accuracy, Aggression, Precision, Swiftness), the use spells
 --- of items 274273-274276 (data/builds/1.60.1.70291/simconsumes.json), as the Titans' 17626 is
---- item 13510's. 1293559-1293562 share their names but are the Alchemy recipes
---- (SkillLineAbility, skill line 171): no aura, left out.
-GroupPanel.FLASKS = { 17624, 17626, 17627, 17628, 17629, 1293740, 1293741, 1293742, 1293743 }
+--- item 13510's. Fix round 5 (D4): 1293559-1293562, the same-named Alchemy recipes (SkillLineAbility,
+--- skill line 171), are kept too as a hedge: the repo has no SpellEffect data to prove which id the
+--- worn aura has, and an id no aura has is harmless (the names match by `wears` either way).
+GroupPanel.FLASKS = { 17624, 17626, 17627, 17628, 17629, 1293559, 1293560, 1293561, 1293562, 1293740, 1293741,
+	1293742, 1293743 }
 GroupPanel.WELL_FED = 19705
 --- Fix round 4 (A): the level each consumable needs; a member below it is never asked for it.
 GroupPanel.CONSUMABLE_LEVELS = { flask = 50, food = 35 }
 --- Fix round 4 (A): the specs that fight with a weapon imbue: every warrior and rogue spec,
---- Retribution, Enhancement and Feral (a spec matches an entry, or starts with it and a hyphen:
---- "druid-feral-combat"). Never a hunter, a caster or a healer; never an unknown spec.
-GroupPanel.IMBUE_SPECS = { "warrior", "rogue", "paladin-retribution", "shaman-enhancement", "druid-feral" }
+--- Retribution, Enhancement and Feral. Fix round 5 (D3): the data's spec slugs, matched exactly
+--- (no prefix rule: "druid-feral-bear" tanks and is never asked). Never a hunter, a caster or a
+--- healer; never an unknown spec.
+GroupPanel.IMBUE_SPECS = {
+	["warrior-arms"] = true, ["warrior-fury"] = true, ["warrior-protection"] = true,
+	["rogue-assassination"] = true, ["rogue-combat"] = true, ["rogue-subtlety"] = true,
+	["paladin-retribution"] = true, ["shaman-enhancement"] = true, ["druid-feral"] = true,
+}
 --- The main hand's inventory slot, for the player's own weapon imbue.
 GroupPanel.MAIN_HAND = 16
 
@@ -408,17 +415,9 @@ local function wearsNeed(auras, id, name, nameOf)
 	return wears(auras, id, name) or wearsAny(auras, GroupPanel.VARIANTS[id] or {}, nameOf)
 end
 
---- Whether `spec` fights with a weapon imbue (GroupPanel.IMBUE_SPECS); false for nil. Pure.
+--- Whether `spec` fights with a weapon imbue (GroupPanel.IMBUE_SPECS, exactly); false for nil. Pure.
 function GroupPanel.usesImbue(spec)
-	if type(spec) ~= "string" then
-		return false
-	end
-	for _, entry in ipairs(GroupPanel.IMBUE_SPECS) do
-		if spec == entry or spec:sub(1, #entry + 1) == entry .. "-" then
-			return true
-		end
-	end
-	return false
+	return type(spec) == "string" and GroupPanel.IMBUE_SPECS[spec] == true
 end
 
 --- Whether a unit at `level` is old enough for a consumable of `need` levels: a level the client
@@ -1339,6 +1338,9 @@ end
 --- buttons are unnamed children of SocialUIFrame, so the farthest GetRight of its children
 --- (GetChildren, a read) that have a rect and end past the window's own right edge, the panel's
 --- own button and flyout aside; nil where none does or the client cannot say. Read only, guarded.
+--- Fix round 5 (D1): only a shown child whose left edge is at the window's right edge (less 1)
+--- and at most `groupSideTabMaxWidth` wide is a side tab (the client's window art ends 1 past the
+--- edge; a hidden child ends 407 past it), and the reach is clamped to that width.
 local function sideTabsPast(frame)
 	local own = Widgets.frameEdge(frame, "GetRight")
 	if own == nil then
@@ -1350,17 +1352,20 @@ local function sideTabsPast(frame)
 	if not ok or type(children) ~= "table" then
 		return nil
 	end
+	local most = S.groupSideTabMaxWidth
 	local farthest
 	for _, child in ipairs(children) do
 		if type(child) == "table" and not rawequal(child, GroupPanel.flyout) and not rawequal(child, GroupPanel.button)
-			and Widgets.hasRect(child) then
+			and Widgets.isShown(child) and Widgets.hasRect(child) then
+			local left = Widgets.frameEdge(child, "GetLeft")
 			local right = Widgets.frameEdge(child, "GetRight")
-			if right ~= nil and right > own and (farthest == nil or right > farthest) then
+			if left ~= nil and right ~= nil and left >= own - 1 and right - left <= most and right > own
+				and (farthest == nil or right > farthest) then
 				farthest = right
 			end
 		end
 	end
-	return farthest ~= nil and farthest - own or nil
+	return farthest ~= nil and math.min(farthest - own, most) or nil
 end
 
 --- The flyout on its home (GroupPanel.home: the anchor, else the closed window), TOPLEFT at its
