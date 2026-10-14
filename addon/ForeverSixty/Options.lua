@@ -37,6 +37,7 @@ local SettingsPage = ns.SettingsPage or require("Settings")
 local PanelTab = ns.PanelTab or require("PanelTab")
 local GuildTab = ns.GuildTab or require("GuildTab")
 local GroupPanel = ns.GroupPanel or require("GroupPanel")
+local LootCouncil = ns.LootCouncil or require("LootCouncil")
 
 local Options = {}
 Options.data = Data
@@ -179,6 +180,10 @@ function Options.handle(input)
 		-- A dry run of the ready check (L5.2 ruling 3), in chat and on the chip.
 		GroupPanel.data = Options.data
 		return GroupPanel.handleReady()
+	elseif command == "loot" then
+		-- What an item is worth to the player; the master looter's group is asked too (L5.3).
+		LootCouncil.data = Options.data
+		return LootCouncil.command(rest)
 	elseif command == "floor" then
 		-- The group panel's score floor (L5.2 ruling 4): it tags, it never declines.
 		return GroupPanel.handleFloor(rest)
@@ -206,6 +211,8 @@ function Options.handle(input)
 		surfaces[#surfaces + 1] = GuildTab.diagLine()
 		-- The group panel (L5.2 ruling 5): open or closed, its members, inspected and live, the check.
 		surfaces[#surfaces + 1] = GroupPanel.diagLine()
+		-- The loot council helper (L5.3 ruling 7): the last drop asked about and how many answered.
+		surfaces[#surfaces + 1] = LootCouncil.diagLine()
 		local info = copy(Theme.infoNotes())
 		if rest == "verbose" then
 			for _, note in ipairs(Theme.verboseNotes()) do
@@ -368,6 +375,9 @@ Options.EVENTS = {
 	-- The group panel (L5.2): a member's auras changed while a ready check stands (it also reads
 	-- GROUP_ROSTER_UPDATE, INSPECT_READY, READY_CHECK and the combat events above).
 	"UNIT_AURA",
+	-- The loot council helper (L5.3): the master looter asks when a loot window opens; the region
+	-- lingers 60 s after it closes.
+	"LOOT_OPENED", "LOOT_CLOSED",
 }
 
 --- The talent window's own clicks, which only the talent marks follow:
@@ -409,6 +419,16 @@ function Options.onEvent(_, event, ...)
 		end
 		-- The group panel's row for the member fills in (L5.2).
 		GroupPanel.onInspectReady(record)
+		return
+	end
+	if event == "LOOT_OPENED" then
+		-- The master looter's addon asks the group about each epic drop (L5.3); nobody else does anything.
+		LootCouncil.data = Options.data
+		LootCouncil.onLootOpened()
+		return
+	end
+	if event == "LOOT_CLOSED" then
+		LootCouncil.onLootClosed()
 		return
 	end
 	if event == "UNIT_AURA" then
@@ -467,6 +487,8 @@ function Options.onEvent(_, event, ...)
 		return
 	end
 	if event == "GET_ITEM_INFO_RECEIVED" then
+		-- A loot? waiting on this item is scored now (L5.3); no work otherwise.
+		LootCouncil.onItemInfo((...))
 		-- The chip redraws once an item name it was waiting for arrives.
 		if Chip.isPending((...)) then
 			Chip.refresh(Options.data)
@@ -597,6 +619,9 @@ function Options.register()
 	-- listens for the members' hellos and snapshot! answers. No client frame is hooked.
 	GroupPanel.data = Options.data
 	GroupPanel.register()
+	-- The loot council helper (L5.3): it answers the master looter's loot? and lists the loot! answers.
+	LootCouncil.data = Options.data
+	LootCouncil.register()
 	-- The minimap button and the compartment entry: left-click opens the build dialog on its
 	-- paste tab, right-click the Settings page (the command list where it cannot open).
 	MinimapButton.open = function()

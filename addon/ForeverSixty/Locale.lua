@@ -24,6 +24,7 @@ local L = {
 		"/fs link: copy a player's site page",
 		"/fs group: your group's specs, gear and buffs",
 		"/fs ready: check flasks, food and buffs now",
+		"/fs loot: what an item is worth to you",
 		"/fs floor N: tag members scored under N",
 		"/fs options: open the settings page",
 		"/fs diag: what is not working",
@@ -1182,7 +1183,7 @@ L.groupMissingMore = "and %d more"
 L.groupAllSet = "Nobody is missing anything."
 -- Fix round 4 (A): only the player's own weapon imbue can be read; said once, muted, under the
 -- missing lines when another member of the group fights with a weapon imbue.
-L.groupImbueSelfOnly = "Weapon imbues can only be read on yourself."
+L.groupImbueSelfOnly = "Weapon buffs can only be read on yourself."
 -- Coverage is class presence (fix round 4, C): "Faerie Fire: no druid", "Fire resistance: no
 -- paladin or shaman", and "Sunder Armor: warrior Thorgrim" for each member of the class.
 L.groupCoverageTitle = "Coverage"
@@ -1198,7 +1199,7 @@ L.groupClassWords = {
 }
 L.groupNeedFlask = "flask"
 L.groupNeedFood = "food"
-L.groupNeedImbue = "imbue"
+L.groupNeedImbue = "weapon buff"
 -- The food buff's own name, matched where the client cannot name its spell.
 L.groupWellFed = "Well Fed"
 -- A boss the raid stacks resistance for: "Fire resistance".
@@ -1253,6 +1254,61 @@ L.diagGroupCheckYou = "%s: you are missing %s"
 -- Fix round 3 (C3): the solo clean line.
 L.diagGroupCheckYouNone = "%s: nothing missing"
 L.diagGroupPanelFailed = "The group panel failed and is off until /reload: %s"
+
+-- The loot council helper (spec section 4.9, L5.3): the master looter's list in the group panel's
+-- Loot region, the chip's line, /fs loot and /fs diag. "no data" covers a member with no addon and a
+-- member whose addon cannot score the item (no weights or spec, an item the client has not loaded, an
+-- item they cannot wear) alike.
+L.lootDrop = "Drop: %s"
+-- A value in its unit, "+6.3 DPS" / "−2.1 DPS" / "+12 pts" ("HPS" for a healer's own figure); the sign
+-- is "+" or the tooltip's minus.
+L.lootValueDps = "%s%.1f DPS"
+L.lootValueHps = "%s%.1f HPS"
+L.lootValueScore = "%s%d pts"
+-- A row: the worn item's name or "empty", a muted "planned" tag where the item is the band's pick, the
+-- "(inspect)" tag where the list scored the member from an inspect, "(site)" where the figure is the
+-- companion's, and "no data" or "waiting" where there is no figure yet.
+L.lootEmpty = "empty"
+L.lootPlanned = "planned"
+L.lootInspect = "(inspect)"
+L.lootSite = "(site)"
+L.lootNoData = "no data"
+L.lootWaiting = "waiting"
+L.lootMore = "and %d more"
+-- The row's hover: why a member shows "no data".
+L.lootNoDataHint = "No answer: no Forever Sixty addon, or it could not score this item."
+-- The chip's line, "Loot: Sulfuras, Hand of Ragnaros · 3 answers", and its hover.
+L.lootChip = "Loot: %s · %s"
+L.lootAnswerOne = "%d answer"
+L.lootAnswerMany = "%d answers"
+L.chipHintLoot = "Click: Show the list"
+-- The group button's hover names the drop.
+L.lootButtonHint = "Drop: %s"
+-- /fs loot <item link or id>.
+L.lootUsage = "Type /fs loot and an item link or id to see what it is worth to you."
+L.lootNotInGroup = "You are not in a group."
+L.lootCmdLine = "%s: %s over %s, %s"
+L.lootCmdPlanned = "planned"
+L.lootCmdNotPlanned = "not planned"
+L.lootCmdCant = "%s: can't score: %s"
+L.lootCmdAsked = "Asked the group about %s."
+L.lootCmdNotAsked = "Did not ask the group: %s"
+L.lootCmdDry = "Only you see this: nothing was sent (only the master looter asks the group)."
+-- Why an item could not be scored.
+L.lootWhy = {
+	nodata = "there is nothing to score it with.",
+	uncached = "the client has not loaded the item yet; try again in a moment.",
+	notgear = "it is not a piece of gear.",
+	nospec = "your spec is not known yet.",
+	noweights = "there are no stat weights for your spec.",
+	nostats = "the client lists no stats for it.",
+	cantuse = "you cannot use it yet.",
+	nofigure = "no figure for its slot (a hand your two-hander holds).",
+}
+-- /fs diag: "Loot: none" or "Loot: 21:04 Sulfuras, Hand of Ragnaros, 3 of 9 answered".
+L.diagLoot = "Loot: %s"
+L.diagLootNone = "none"
+L.diagLootDrop = "%s %s, %d of %d answered"
 
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel

@@ -336,6 +336,14 @@ Theme.SIZES = {
 	groupTick = 12,
 	groupSideFallback = 55,
 	groupSideTabMaxWidth = 100,
+	--- The loot council helper's Loot region in that flyout (L5.3): the columns of a member's row (the
+	--- name, the value with its tag, the worn item, the muted "planned" tag; `lootColumnGap` between)
+	--- and the most rows a drop lists before "and N more".
+	lootNameWidth = 84,
+	lootValueWidth = 130,
+	lootPlannedWidth = 56,
+	lootColumnGap = 6,
+	lootMaxRows = 8,
 }
 
 --- The client's own font objects, and what to use when one is missing.

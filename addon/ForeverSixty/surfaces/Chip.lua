@@ -362,6 +362,15 @@ local function raidCheckState(input)
 	}
 end
 
+--- "Loot: Sulfuras, Hand of Ragnaros · 3 answers" (L5.3): the loot council helper's line while the
+--- master looter's Loot region shows (LootCouncil sets it through the group panel; Chip.setLoot).
+local function lootState(input)
+	if type(input.loot) ~= "string" or input.loot == "" then
+		return nil
+	end
+	return { kind = "loot", icon = input.classIcon, text = input.loot, action = "loot", hint = L.chipHintLoot }
+end
+
 --- "Lucifron: 71st percentile, biggest loss downtime", once per login, for
 --- a raid logged in the last LAST_RAID_DAYS.
 local function lastNightState(input)
@@ -396,7 +405,8 @@ end
 --- Every state, highest first (spec section 4.1, with "pick a path" and the
 --- below-10 next talent above the point, spec section 5.1).
 Chip.STATES = {
-	pathState, nextState, pointState, upgradeState, hereState, raidCheckState, lastNightState, completeState,
+	pathState, nextState, pointState, lootState, upgradeState, hereState, raidCheckState, lastNightState,
+	completeState,
 }
 
 --- The hover's muted "Next talent at 22: Improved Tactical Mastery": a
@@ -412,7 +422,7 @@ end
 
 --- The chip, from a plain table:
 --- { level, build, progress, pointName, pointIcon, unspent, upgrades, healing,
----   here, raidCheck, lastRaid, lastNightDone, completedAt, now, clock,
+---   here, raidCheck, loot, lastRaid, lastNightDone, completedAt, now, clock,
 ---   classIcon, inCombat, combatHide, shown, hiddenUntilLevel, pathChosen,
 ---   pointRank, talentsOpen, buildName }.
 --- Answers { states, chosen, buildName, waiting, nextLine, visible, hiddenBy, alpha,
@@ -839,6 +849,7 @@ function Chip.inputs(data)
 		hiddenUntilLevel = hiddenUntil(),
 		pathChosen = chosenPath(classSlug),
 		raidCheck = Chip.raidCheck,
+		loot = Chip.loot,
 		lastRaid = lastRaid(),
 		lastNightDone = Chip.lastNight == "done",
 		completedAt = Chip.completedAt,
@@ -935,6 +946,17 @@ function Chip.printRaidCheck()
 	end
 end
 
+--- The loot line's click (L5.3): the master looter's list in chat, the lines the group panel's Loot
+--- region draws (Chip.lootLines, the group panel's injection).
+function Chip.printLoot()
+	for _, line in ipairs(Chip.lootLines ~= nil and Chip.lootLines() or {}) do
+		Theme.say(line)
+	end
+end
+
+--- Injection point: the loot list as plain chat lines (the group panel sets it).
+Chip.lootLines = nil
+
 --- Until the tab's last-raid region lands (L4.3), the line in chat; then it is seen.
 function Chip.printLastNight(state)
 	Theme.say(state.text)
@@ -956,6 +978,8 @@ function Chip.handlerFor(chosen)
 		return Chip.printHere
 	elseif action == "raidlist" then
 		return Chip.printRaidCheck
+	elseif action == "loot" then
+		return Chip.printLoot
 	elseif action == "lastraid" then
 		return function()
 			Chip.printLastNight(chosen)
@@ -1057,6 +1081,17 @@ function Chip.updateRaidCheck(missing, text, clean)
 	check.missing = type(missing) == "table" and copyList(missing) or {}
 	check.text = text
 	check.clean = clean == true or nil
+	Chip.refresh()
+end
+
+--- The loot council helper's line (L5.3): "Loot: <item> · N answers" while the master looter's Loot
+--- region shows; nil takes it away. The chip redraws.
+function Chip.setLoot(text)
+	local wanted = type(text) == "string" and text ~= "" and text or nil
+	if Chip.loot == wanted then
+		return
+	end
+	Chip.loot = wanted
 	Chip.refresh()
 end
 

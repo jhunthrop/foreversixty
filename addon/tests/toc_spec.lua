@@ -10,7 +10,9 @@ describe("the TOC", function()
 		"Theme.lua", "Widgets.lua", "Cards.lua", "Export.lua", "Follow.lua", "Gear.lua",
 		"Progress.lua", "Rotation.lua",
 		-- Comms reads Progress, Score, Gear and Theme, so it loads after Score.
-		"Score.lua", "Comms.lua", "Inspect.lua", "surfaces/ItemTooltip.lua",
+		"Score.lua", "Comms.lua", "Inspect.lua",
+		-- The loot council helper (L5.3): reads Comms, Gear, Progress and the inbox; the group panel shows it.
+		"LootCouncil.lua", "surfaces/ItemTooltip.lua",
 		-- The player tooltip and the chat badges (L4.4): read Score and Comms.seen.
 		"surfaces/PlayerTooltip.lua", "surfaces/ChatBadges.lua",
 		"TalentGlow.lua", "Minimap.lua",

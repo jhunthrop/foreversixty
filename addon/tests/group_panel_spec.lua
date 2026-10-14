@@ -1325,7 +1325,7 @@ describe("GroupPanel", function()
 			start({ solo = true })
 			local flyout = open()
 			assert.are.equal(L.groupNotInGroup, GroupPanel.countsLine:GetText())
-			assert.are.equal(Theme.HEX.muted, colorOf(GroupPanel.countsLine))
+			assert.are.equal(Theme.HEX.body, colorOf(GroupPanel.countsLine))
 			-- Fix round 4 (E): a second muted line says what a group shows and that /fs ready tries it.
 			assert.are.equal("A party or raid shows each member's spec, gear gap, score and buffs. "
 				.. "/fs ready tries the check on you.", GroupPanel.soloLines[1]:GetText())
@@ -1575,25 +1575,42 @@ describe("GroupPanel", function()
 				}, GroupPanel.missingLines(result))
 			end)
 
-		-- Fix round 4, A: a flask from level 50 and food from 35 (GroupPanel.CONSUMABLE_LEVELS); a member
-		-- below is never flagged for it, the player's own dry run included.
-		it("gates the flask at level 50 and food at 35: a member below is never flagged for them", function()
+		-- Fix round 4, A: food from 35 (GroupPanel.CONSUMABLE_LEVELS); a member below is never flagged
+		-- for it, the player's own dry run included. L5.3 pre-item: the flask at level 60, or inside a
+		-- raid the data knows (59 outside is not asked, 59 inside Molten Core is, 60 outside is; a 52
+		-- in Scholomance, an instance the data has no bosses for, never).
+		it("gates the flask at level 60 or a known raid and food at 35: a member below is never flagged", function()
 			start()
-			assert.are.same({ flask = 50, food = 35 }, GroupPanel.CONSUMABLE_LEVELS)
+			assert.are.same({ flask = 60, food = 35 }, GroupPanel.CONSUMABLE_LEVELS)
 			local needs = { buffs = {}, debuffs = {}, generic = true }
-			local function lacking(level)
+			local function lacking(level, where)
 				local result = GroupPanel.check({ { short = "Fenna", classToken = "PRIEST", level = level,
-					auras = { ids = {}, names = {} } } }, needs, GroupPanel.spellName)
+					auras = { ids = {}, names = {} } } }, where or needs, GroupPanel.spellName)
 				return result.missing[1] ~= nil and table.concat(result.missing[1].what, ", ") or "none"
 			end
 			assert.are.equal("none", lacking(24))
 			assert.are.equal("none", lacking(34))
 			assert.are.equal("food", lacking(35))
 			assert.are.equal("food", lacking(49))
-			assert.are.equal("flask, food", lacking(50))
+			assert.are.equal("food", lacking(50))
+			assert.are.equal("food", lacking(59))
 			assert.are.equal("flask, food", lacking(60))
+			assert.are.equal("Molten Core", GroupPanel.needsFor(GroupPanel.data, "Molten Core").instance)
+			local raid = { buffs = {}, debuffs = {}, generic = false, instance = "Molten Core" }
+			assert.are.equal("flask, food", lacking(59, raid))
+			assert.are.equal("food", lacking(52, { buffs = {}, debuffs = {}, generic = true }))
+			assert.is_nil(GroupPanel.needsFor(GroupPanel.data, "Scholomance").instance)
+			-- A level the client cannot say is never asked inside a raid either.
+			assert.are.equal("none", lacking(nil, raid))
 			-- A level the client cannot say claims nothing.
 			assert.are.equal("none", lacking(nil))
+			-- Through the live read: a 59 in Molten Core is asked for a flask, a 59 outside is not.
+			start({ members = { { unit = "player", name = "Tester", class = "HUNTER", className = "Hunter", level = 59 } },
+				solo = true, auras = { Tester = { aura(19705) } }, instance = { "Molten Core", "raid", 409 } })
+			assert.are.same({ "Ready check (only you see this): you are missing flask." }, GroupPanel.handleReady())
+			start({ members = { { unit = "player", name = "Tester", class = "HUNTER", className = "Hunter", level = 59 } },
+				solo = true, auras = { Tester = { aura(19705) } } })
+			assert.are.same({ "Ready check (only you see this): nothing missing." }, GroupPanel.handleReady())
 			-- The player alone at 24 with nothing on: nothing missing, in chat and on the chip.
 			start({ solo = true, members = { { unit = "player", name = "Tester", class = "HUNTER", className = "Hunter",
 				level = 24 } }, auras = { Tester = {} } })
@@ -1602,7 +1619,7 @@ describe("GroupPanel", function()
 		end)
 
 		-- Fix round 4, A: an imbue is asked only of a spec that uses one; the spec is the one shown.
-		it("asks an imbue of warriors, rogues, retribution, enhancement and feral only; never of an unknown spec",
+		it("asks a weapon buff of warriors, rogues, retribution and enhancement only; never of feral or an unknown spec",
 			function()
 				start()
 				local needs = { buffs = {}, debuffs = {}, generic = true }
@@ -1614,12 +1631,12 @@ describe("GroupPanel", function()
 				end
 				-- Fix round 5, D3: the data's specs, matched exactly (no prefix rule).
 				for _, spec in ipairs({ "warrior-arms", "warrior-fury", "warrior-protection", "rogue-assassination",
-					"rogue-combat", "rogue-subtlety", "paladin-retribution", "shaman-enhancement", "druid-feral" }) do
+					"rogue-combat", "rogue-subtlety", "paladin-retribution", "shaman-enhancement" }) do
 					assert.is_true(asked(spec), spec)
 				end
 				for _, spec in ipairs({ "hunter-marksmanship", "hunter-beast-mastery", "mage-arcane", "priest-holy",
 					"paladin-holy", "paladin-protection", "shaman-elemental", "shaman-restoration", "druid-balance",
-					"druid-restoration", "warlock-affliction", "druid-feral-bear", "druid-feral-combat", "warrior",
+					"druid-restoration", "warlock-affliction", "druid-feral", "druid-feral-bear", "druid-feral-combat", "warrior",
 					"rogue", "warrior-", "rogue-x" }) do
 					assert.is_false(asked(spec), spec)
 				end
@@ -1627,7 +1644,7 @@ describe("GroupPanel", function()
 			end)
 
 		-- Fix round 5, D3: a bear is never asked for an imbue, nor named in the disclosure.
-		it("never asks druid-feral-bear for an imbue and says no disclosure for one", function()
+		it("never asks a druid for a weapon buff and says no disclosure for one", function()
 			start()
 			local needs = { buffs = {}, debuffs = {}, generic = true }
 			local result = GroupPanel.check({
@@ -1639,15 +1656,24 @@ describe("GroupPanel", function()
 			assert.are.same({}, result.missing)
 			assert.is_falsy(result.imbueOthers)
 			for _, line in ipairs(GroupPanel.checkText(result)) do
-				assert.are_not.equal("Weapon imbues can only be read on yourself.", line.text)
+				assert.are_not.equal("Weapon buffs can only be read on yourself.", line.text)
 			end
-			-- A cat is asked, and named in the disclosure.
+			-- L5.3 pre-item: a cat has no weapon buff either: not asked, not named in the disclosure.
 			result = GroupPanel.check({
 				{ short = "Brannoc", classToken = "DRUID", level = 60, spec = "druid-feral", imbue = false,
 					auras = { ids = { [17626] = true, [19705] = true }, names = {} } },
 			}, needs, GroupPanel.spellName)
+			assert.are.same({}, result.missing)
+			assert.is_falsy(result.imbueOthers)
+			-- A retribution paladin is, and is named.
+			result = GroupPanel.check({
+				{ short = "Brannoc", classToken = "PALADIN", level = 60, spec = "paladin-retribution", imbue = false,
+					auras = { ids = { [17626] = true, [19705] = true }, names = {} } },
+			}, needs, GroupPanel.spellName)
 			assert.is_true(result.imbueOthers)
-			assert.are.same({ "Brannoc: missing imbue" }, GroupPanel.missingLines(result))
+			assert.are.same({ "Brannoc: missing weapon buff" }, GroupPanel.missingLines(result))
+			assert.are.equal("Weapon buffs can only be read on yourself.", L.groupImbueSelfOnly)
+			assert.are.equal("weapon buff", L.groupNeedImbue)
 		end)
 
 		-- Fix round 4, A: the player's own imbue, in the spec their row shows (a warrior here).
@@ -1657,7 +1683,7 @@ describe("GroupPanel", function()
 			start({ members = warrior, auras = { Tester = { aura(17626), aura(19705), aura(11551) },
 				Elwen = { aura(17627), aura(19705), aura(10157) } } })
 			gear.Tester = { [16] = "item:80:0" }
-			assert.are.same({ "Tester: missing imbue" }, GroupPanel.missingLines(GroupPanel.onReadyCheck()))
+			assert.are.same({ "Tester: missing weapon buff" }, GroupPanel.missingLines(GroupPanel.onReadyCheck()))
 		end)
 
 		-- Fix round 4, A: Forever's Natural flasks (the items' use spells). Fix round 5, D4: the
@@ -1683,7 +1709,7 @@ describe("GroupPanel", function()
 				local function said(lines)
 					local count = 0
 					for _, line in ipairs(lines) do
-						if line.text == "Weapon imbues can only be read on yourself." then
+						if line.text == "Weapon buffs can only be read on yourself." then
 							count = count + 1
 							assert.are.equal("muted", line.color)
 						end
@@ -1697,7 +1723,7 @@ describe("GroupPanel", function()
 				assert.is_true(result.imbueOthers)
 				local lines = GroupPanel.checkText(result)
 				assert.are.equal(1, said(lines))
-				assert.are.equal("Weapon imbues can only be read on yourself.", lines[5].text)
+				assert.are.equal("Weapon buffs can only be read on yourself.", lines[5].text)
 				assert.are.equal(L.groupCoverageTitle, lines[6].text)
 				-- Never solo, whatever the player is.
 				start({ solo = true, members = { { unit = "player", name = "Tester", class = "WARRIOR",
@@ -1751,7 +1777,7 @@ describe("GroupPanel", function()
 			assert.are.same({ 10157, 10938, 9885, 11551 }, outside.buffs)
 			assert.are.same({ 11717, 11597, 9907 }, outside.debuffs)
 			assert.is_nil(outside.resist)
-			assert.are.same({ buffs = { 10157, 10938 }, debuffs = { 11717 }, generic = false },
+			assert.are.same({ buffs = { 10157, 10938 }, debuffs = { 11717 }, generic = false, instance = "Onyxia's Lair" },
 				GroupPanel.needsFor(data, "Onyxia's Lair"))
 			assert.are.equal("Molten Core", GroupPanel.instanceKey("Molten Core", "raid", 409))
 			assert.are.equal("Molten Core", GroupPanel.instanceKey("Geschmolzener Kern", "raid", 409))

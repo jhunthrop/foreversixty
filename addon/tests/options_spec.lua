@@ -918,6 +918,47 @@ describe("Options", function()
 		assert.are.equal(Options.data, GroupPanel.data)
 	end)
 
+	-- L5.3: the loot window's events reach the loot council helper; the item cache feeds a request
+	-- waiting on an item; /fs loot and /fs diag reach it; the helper listens once Options registers.
+	it("routes the loot events, /fs loot and /fs diag to the loot council helper", function()
+		local LootCouncil = require("LootCouncil")
+		local calls = {}
+		for _, name in ipairs({ "onLootOpened", "onLootClosed", "onItemInfo" }) do
+			LootCouncil[name] = function(...)
+				calls[name] = (calls[name] or 0) + 1
+				calls[name .. "Args"] = { ... }
+			end
+		end
+		local listed = {}
+		for _, event in ipairs(Options.EVENTS) do
+			listed[event] = true
+		end
+		assert.is_true(listed.LOOT_OPENED)
+		assert.is_true(listed.LOOT_CLOSED)
+		Options.onEvent(Options.frame, "LOOT_OPENED", false)
+		Options.onEvent(Options.frame, "LOOT_CLOSED")
+		Options.onEvent(Options.frame, "GET_ITEM_INFO_RECEIVED", 17076, true)
+		assert.are.same({ onLootOpened = 1, onLootClosed = 1, onItemInfo = 1 }, { onLootOpened = calls.onLootOpened,
+			onLootClosed = calls.onLootClosed, onItemInfo = calls.onItemInfo })
+		assert.are.same({ 17076 }, calls.onItemInfoArgs)
+		LootCouncil.command = function(rest)
+			return { "loot:" .. rest }
+		end
+		assert.are.same({ "loot:17076" }, Options.handle("loot 17076"))
+		LootCouncil.diagLine = function()
+			return "the loot line"
+		end
+		local found = false
+		for _, line in ipairs(Options.handle("diag")) do
+			found = found or line == "the loot line"
+		end
+		assert.is_true(found)
+		LootCouncil.registered = nil
+		Options.register()
+		assert.are.equal(Options.data, LootCouncil.data)
+		assert.is_true(LootCouncil.registered)
+	end)
+
 	it("redraws the chip once on a ready check, through the group panel's hook", function()
 		local Chip = require("Chip")
 		local calls = 0

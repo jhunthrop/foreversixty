@@ -839,7 +839,9 @@ end
 --- `last_raid` (contract 3) is read by the chip's last-night line and the character-panel
 --- tab's last-raid region; `build` and `ack` by the build dialog (its "from the site" rows and
 --- its "Seen by the site" line); `sim_result` by the panel tab's sim region (its DPS, L4.3).
+--- `loot_values` (L5.3) by the loot council helper: the player's own row and /fs loot, "(site)".
 Codec.MESSAGE_TYPES = { upgrade = true, weights = true, guild = true, last_raid = true, build = true, ack = true,
+	loot_values = true,
 	sim_result = true }
 
 --- Messages of `kind` from `inbox.messages`, addressed to `key` or to no

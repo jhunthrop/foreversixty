@@ -22,8 +22,9 @@ local realPrint = _G.print
 --- L5.1 adds the guild frame (CommunitiesFrame) and every Communities* frame: the guild tab's
 --- button and flyout are addon frames parented to it. L5.2 adds the compact raid frames
 --- (CompactRaidFrame*): the group panel never touches them.
+--- L5.3 adds the loot window (LootFrame, LootFrameItem<n>): the loot council helper only reads it.
 mock.CLIENT_PREFIXES = { "Character", "PaperDoll", "ContainerFrame", "QuestInfo", "QuestReward", "GroupLoot",
-	"Communities", "CompactRaidFrame" }
+	"Communities", "CompactRaidFrame", "LootFrame" }
 --- Client frames named one by one, whatever the prefixes cover (L4.3 fix round 2): the pane's
 --- CharacterFrameModeTabs column, which the panel flyout anchors beside and must never write
 --- into; the guild frame itself (L5.1); the raid frame the group panel's button and flyout are

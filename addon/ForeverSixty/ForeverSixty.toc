@@ -28,6 +28,7 @@ Rotation.lua
 Score.lua
 Comms.lua
 Inspect.lua
+LootCouncil.lua
 surfaces\ItemTooltip.lua
 surfaces\PlayerTooltip.lua
 surfaces\ChatBadges.lua

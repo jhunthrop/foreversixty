@@ -56,6 +56,7 @@ local Prefs = ns.Prefs or require("Prefs")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 local PlayerTooltip = ns.PlayerTooltip or require("PlayerTooltip")
 local Chip = ns.Chip or require("Chip")
+local LootCouncil = ns.LootCouncil or require("LootCouncil")
 
 local GroupPanel = {}
 
@@ -151,15 +152,18 @@ GroupPanel.FLASKS = { 17624, 17626, 17627, 17628, 17629, 1293559, 1293560, 12935
 	1293742, 1293743 }
 GroupPanel.WELL_FED = 19705
 --- Fix round 4 (A): the level each consumable needs; a member below it is never asked for it.
-GroupPanel.CONSUMABLE_LEVELS = { flask = 50, food = 35 }
---- Fix round 4 (A): the specs that fight with a weapon imbue: every warrior and rogue spec,
---- Retribution, Enhancement and Feral. Fix round 5 (D3): the data's spec slugs, matched exactly
---- (no prefix rule: "druid-feral-bear" tanks and is never asked). Never a hunter, a caster or a
---- healer; never an unknown spec.
+--- L5.3 pre-item: the flask is asked at level 60, or inside a raid instance the data knows
+--- (GroupPanel.INSTANCE_IDS: Molten Core, Onyxia's Lair, Blackwing Lair) at any level the client
+--- can say, so a 52 in Scholomance is never flagged.
+GroupPanel.CONSUMABLE_LEVELS = { flask = 60, food = 35 }
+--- Fix round 4 (A): the specs that fight with a weapon buff (a temporary imbue): every warrior and
+--- rogue spec, Retribution and Enhancement. Fix round 5 (D3): the data's spec slugs, matched
+--- exactly (no prefix rule). L5.3 pre-item: no Feral (cat form has no weapon buff). Never a
+--- hunter, a caster or a healer; never an unknown spec.
 GroupPanel.IMBUE_SPECS = {
 	["warrior-arms"] = true, ["warrior-fury"] = true, ["warrior-protection"] = true,
 	["rogue-assassination"] = true, ["rogue-combat"] = true, ["rogue-subtlety"] = true,
-	["paladin-retribution"] = true, ["shaman-enhancement"] = true, ["druid-feral"] = true,
+	["paladin-retribution"] = true, ["shaman-enhancement"] = true,
 }
 --- The main hand's inventory slot, for the player's own weapon imbue.
 GroupPanel.MAIN_HAND = 16
@@ -176,6 +180,8 @@ GroupPanel.tabWasOpen = nil
 GroupPanel.rowFrames = {}
 GroupPanel.headers = {}
 GroupPanel.checkLines = {}
+--- The Loot region's pooled lines (L5.3), and its frame.
+GroupPanel.lootPool = {}
 --- The sort a header click chose (nil: Gap high to low), and the first row shown.
 GroupPanel.sort = nil
 GroupPanel.offset = 0
@@ -378,7 +384,8 @@ function GroupPanel.needsFor(data, key)
 		end
 		table.sort(npcs)
 	end
-	local needs = { buffs = {}, debuffs = {}, generic = generic }
+	local needs = { buffs = {}, debuffs = {}, generic = generic,
+		instance = key ~= nil and GroupPanel.BOSSES[key] ~= nil and key or nil }
 	local taken = {}
 	for _, npc in ipairs(npcs) do
 		local entry = all[npc]
@@ -465,7 +472,9 @@ function GroupPanel.check(members, needs, nameOf)
 		local auras = member.auras
 		if member.connected ~= false and auras ~= nil then
 			local what = {}
-			if reaches(member.level, levels.flask) and not wearsAny(auras, GroupPanel.FLASKS, nameOf) then
+			-- L5.3 pre-item: level 60, or inside a raid the data knows (any level the client says).
+			local flaskLevel = needs.instance ~= nil and 1 or levels.flask
+			if reaches(member.level, flaskLevel) and not wearsAny(auras, GroupPanel.FLASKS, nameOf) then
 				what[#what + 1] = L.groupNeedFlask
 			end
 			if reaches(member.level, levels.food) and not wears(auras, GroupPanel.WELL_FED, nameOf(GroupPanel.WELL_FED))
@@ -897,6 +906,15 @@ function GroupPanel.buttonHint()
 	for _, text in ipairs(L.groupPanelHint) do
 		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", text)
 	end
+	-- L5.3: while the master looter's Loot region shows, the drop is named (the latest, coloured).
+	local drops = LootCouncil.shown()
+	local drop = drops[#drops]
+	if drop ~= nil then
+		local name, hex = LootCouncil.display(drop.itemId, drop.link)
+		local named = name or L.tooltipNamePending
+		lines[#lines + 1] = string.format(L.lootButtonHint, hex ~= nil and name ~= nil
+			and string.format("|cff%s%s|r", hex, named) or Theme.inlineColor("tooltipText", named))
+	end
 	return lines
 end
 
@@ -1113,6 +1131,74 @@ local function runCheck(dry, again)
 	return result
 end
 
+-- The Loot region, pure ------------------------------------------------------------------------------
+
+--- One row of the master looter's list as drawn (L5.3): `row` is LootCouncil.rows'. The name in the
+--- member's class colour, the value ("+6.3 DPS", with "(inspect)" or "(site)" after it, or "no data" /
+--- "waiting" muted), the worn item muted ("empty" for a bare slot) and a "planned" tag; `plain` is the
+--- same as one chat line. `nameOf` names an item (Compat.itemName). Pure.
+function GroupPanel.lootCell(row, nameOf)
+	local cell = { kind = "row", name = row.short,
+		nameHex = row.classToken ~= nil and Theme.panelClassHex(row.classToken) or Theme.HEX.body,
+		value = "", valueHex = Theme.HEX.muted, worn = "", planned = row.planned == true }
+	if row.kind == "nodata" then
+		cell.value = L.lootNoData
+	elseif row.kind == "waiting" then
+		cell.value = L.lootWaiting
+	else
+		cell.value = LootCouncil.valueText(row.value, row.unit, row.healing)
+		if row.kind == "inspect" then
+			cell.value = cell.value .. " " .. L.lootInspect
+		elseif row.site then
+			cell.value = cell.value .. " " .. L.lootSite
+		end
+		cell.valueHex = Theme.HEX.body
+		if row.currentItemId == 0 then
+			cell.worn = L.lootEmpty
+		elseif row.currentItemId ~= nil then
+			cell.worn = nameOf(row.currentItemId) or L.tooltipNamePending
+		end
+	end
+	local parts = { cell.name, cell.value }
+	if cell.worn ~= "" then
+		parts[#parts + 1] = cell.worn
+	end
+	if cell.planned then
+		parts[#parts + 1] = L.lootPlanned
+	end
+	cell.plain = table.concat(parts, L.groupSubJoin)
+	return cell
+end
+
+--- The Loot region's entries (L5.3) for `drops` (LootCouncil.shown's): per drop a title ("Drop: <item>"
+--- in the item's colour), then its rows (LootCouncil.rows over `members`, GroupPanel.members' shape),
+--- at most `lootMaxRows` and then a muted "and N more". `resolvers` as LootCouncil.rows takes them;
+--- `nameOf` names an item. Pure.
+function GroupPanel.lootEntries(drops, members, now, resolvers, nameOf)
+	local entries = {}
+	for index, drop in ipairs(drops) do
+		local name, hex = LootCouncil.display(drop.itemId, drop.link)
+		if name ~= nil then
+			drop.name, drop.hex = name, hex
+		end
+		local shown = name or L.tooltipNamePending
+		if hex ~= nil and name ~= nil then
+			shown = string.format("|cff%s%s|r", hex, name)
+		end
+		entries[#entries + 1] = { kind = "title", text = string.format(L.lootDrop, shown), gap = index > 1 or nil }
+		local rows = LootCouncil.rows(drop, members, now, resolvers)
+		for position, row in ipairs(rows) do
+			if position > S.lootMaxRows then
+				entries[#entries + 1] = { kind = "more", plain = string.format(L.lootMore, #rows - S.lootMaxRows),
+					text = string.format(L.lootMore, #rows - S.lootMaxRows) }
+				break
+			end
+			entries[#entries + 1] = GroupPanel.lootCell(row, nameOf)
+		end
+	end
+	return entries
+end
+
 -- The heights, pure ----------------------------------------------------------------------------
 
 --- A text line's height: the measured one, else `panelLine`.
@@ -1228,6 +1314,18 @@ function GroupPanel.checkHeight(lines)
 	local height = S.panelRegionGap
 	for _, line in ipairs(lines) do
 		height = height + GroupPanel.lineHeight() + (line.gap and S.panelRowGap or 0)
+	end
+	return height
+end
+
+--- The Loot region's height for `entries` (GroupPanel.lootEntries'), its gap above included; 0 for none.
+function GroupPanel.lootHeight(entries)
+	if #entries == 0 then
+		return 0
+	end
+	local height = S.panelRegionGap
+	for _, entry in ipairs(entries) do
+		height = height + GroupPanel.lineHeight() + (entry.gap and S.panelRowGap or 0)
 	end
 	return height
 end
@@ -1695,6 +1793,14 @@ function GroupPanel.ensureFlyout()
 	rule:SetPoint("TOPLEFT", check, "TOPLEFT", 0, S.panelRegionGap / 2)
 	check:Hide()
 	GroupPanel.checkFrame = check
+	-- The loot council helper's Loot region under it (L5.3): a rule, then pooled lines.
+	local loot = CreateFrame("Frame", nil, flyout)
+	loot:SetWidth(GroupPanel.innerWidth())
+	local lootRule = Theme.texture(loot, "ARTWORK", "border")
+	lootRule:SetSize(GroupPanel.innerWidth(), S.border)
+	lootRule:SetPoint("TOPLEFT", loot, "TOPLEFT", 0, S.panelRegionGap / 2)
+	loot:Hide()
+	GroupPanel.lootFrame = loot
 	return flyout
 end
 
@@ -1803,6 +1909,87 @@ local function drawCheck(flyout, lines, y)
 	return y + inner
 end
 
+--- One pooled line of the Loot region: a title label and the four cells of a member's row.
+local function lootLine(index)
+	local line = GroupPanel.lootPool[index]
+	if line ~= nil then
+		return line
+	end
+	local parent, width = GroupPanel.lootFrame, GroupPanel.innerWidth()
+	local gap = S.lootColumnGap
+	local wornX = S.lootNameWidth + S.lootValueWidth + gap * 2
+	local wornWidth = width - wornX - S.lootPlannedWidth - gap
+	line = {
+		title = sized(Widgets.label(parent, "", "body", "small"), width),
+		name = sized(Widgets.label(parent, "", "body", "small"), S.lootNameWidth),
+		value = sized(Widgets.label(parent, "", "body", "small"), S.lootValueWidth),
+		worn = sized(Widgets.label(parent, "", "muted", "small"), wornWidth),
+		planned = sized(Widgets.label(parent, "", "muted", "small"), S.lootPlannedWidth),
+		x = { 0, S.lootNameWidth + gap, wornX, width - S.lootPlannedWidth },
+		wornWidth = wornWidth,
+	}
+	GroupPanel.lootPool[index] = line
+	return line
+end
+
+local LOOT_KEYS = { "title", "name", "value", "worn", "planned" }
+
+--- Lays the Loot region out under the check at `y` from `entries`; answers the y below it.
+local function drawLoot(flyout, entries, y)
+	local region = GroupPanel.lootFrame
+	if #entries == 0 then
+		region:Hide()
+		for _, line in ipairs(GroupPanel.lootPool) do
+			for _, key in ipairs(LOOT_KEYS) do
+				line[key]:Hide()
+			end
+		end
+		return y
+	end
+	y = y + S.panelRegionGap
+	region:ClearAllPoints()
+	region:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding, -y)
+	local inner = 0
+	local function put(label, text, hex, x, room)
+		label:ClearAllPoints()
+		label:SetPoint("TOPLEFT", region, "TOPLEFT", x, -inner)
+		label:SetText(fitted(text, room))
+		label:SetTextColor(Theme.rgb(hex))
+		label:Show()
+	end
+	for index, entry in ipairs(entries) do
+		if entry.gap then
+			inner = inner + S.panelRowGap
+		end
+		local line = lootLine(index)
+		for _, key in ipairs(LOOT_KEYS) do
+			line[key]:Hide()
+		end
+		if entry.kind == "row" then
+			put(line.name, entry.name, entry.nameHex, line.x[1], S.lootNameWidth)
+			put(line.value, entry.value, entry.valueHex, line.x[2], S.lootValueWidth)
+			if entry.worn ~= "" then
+				put(line.worn, entry.worn, Theme.HEX.muted, line.x[3], line.wornWidth)
+			end
+			if entry.planned then
+				put(line.planned, L.lootPlanned, Theme.HEX.muted, line.x[4], S.lootPlannedWidth)
+			end
+		else
+			put(line.title, entry.text, entry.kind == "more" and Theme.HEX.muted or Theme.HEX.body, 0,
+				GroupPanel.innerWidth())
+		end
+		inner = inner + GroupPanel.lineHeight()
+	end
+	for index = #entries + 1, #GroupPanel.lootPool do
+		for _, key in ipairs(LOOT_KEYS) do
+			GroupPanel.lootPool[index][key]:Hide()
+		end
+	end
+	region:SetHeight(inner)
+	region:Show()
+	return y + inner
+end
+
 --- The solo line (fix round 4, E): `lines` (GroupPanel.soloHint's) drawn muted, the rest hidden;
 --- none in a group.
 local function drawSolo(lines)
@@ -1818,6 +2005,68 @@ local function drawSolo(lines)
 	end
 end
 
+--- The Loot region's entries now (L5.3): the drops the master looter asked about (LootCouncil.shown), each
+--- member's answer, the player's own value computed here, and a silent member scored from their inspect
+--- once LootCouncil.WAIT seconds passed. Empty while no drop shows.
+function GroupPanel.lootNow()
+	local drops = LootCouncil.shown()
+	if #drops == 0 then
+		return {}
+	end
+	local data = GroupPanel.data or ns.Data
+	local faction = Compat.playerFaction()
+	local resolvers = {
+		own = function(drop)
+			if drop.ownResult == nil then
+				local ok, result = pcall(LootCouncil.ownValue, data, drop.itemId, true)
+				drop.ownResult = ok and result or nil
+			end
+			return drop.ownResult
+		end,
+		inspect = function(member, drop)
+			if not GroupPanel.hasGear(member.inspect) then
+				return nil
+			end
+			local spec = validSpec(member.inspect.spec) or validSpec(member.live ~= nil and member.live.spec or nil)
+			if spec == nil then
+				return nil
+			end
+			drop.inspected = drop.inspected or {}
+			local kept = drop.inspected[member.name]
+			if kept ~= nil and kept.at == member.inspect.at then
+				return kept.result
+			end
+			local ok, result = pcall(LootCouncil.valueFor, data, drop.itemId, {
+				spec = spec, level = member.level, classToken = member.classToken, faction = faction,
+				equipped = Gear.equippedFrom(member.inspect.items),
+				current = Gear.currentWeights(data, spec, nil, nil, member.level), isMissing = ItemTooltip.isMissing,
+			})
+			result = ok and result or nil
+			drop.inspected[member.name] = { at = member.inspect.at, result = result }
+			return result
+		end,
+	}
+	return GroupPanel.lootEntries(drops, GroupPanel.members(data), Theme.now(), resolvers, Compat.itemName)
+end
+
+--- The Loot region as chat lines (the chip's click).
+function GroupPanel.lootChatLines()
+	local lines = {}
+	for _, entry in ipairs(GroupPanel.lootNow()) do
+		lines[#lines + 1] = entry.kind == "title" and entry.text or entry.plain
+	end
+	return lines
+end
+
+--- Anything the Loot region shows changed (LootCouncil.onChange): the chip's line follows and an open
+--- flyout redraws. The flyout is never opened here: nothing acts on the player's behalf.
+function GroupPanel.onLoot()
+	guarded(function()
+		Chip.setLoot(LootCouncil.chipText())
+	end)
+	GroupPanel.redraw()
+end
+
 --- Draws the flyout: out of a group "Not in a group." and the muted solo line (fix round 4, E); in
 --- one the count line, the headers, the rows (as many as fit under the anchor's height) and the
 --- last ready check; sized to them.
@@ -1831,7 +2080,8 @@ function GroupPanel.draw()
 	if not GroupPanel.inGroup() then
 		GroupPanel.last = { rows = {}, counts = { members = 0, inspected = 0, live = 0 }, visible = 0, solo = true }
 		GroupPanel.countsLine:SetText(fitted(L.groupNotInGroup, GroupPanel.innerWidth()))
-		GroupPanel.countsLine:SetTextColor(Theme.rgb(Theme.HEX.muted))
+		-- L5.3 pre-item: the line itself in the body colour; the hint lines stay muted.
+		GroupPanel.countsLine:SetTextColor(Theme.rgb(Theme.HEX.body))
 		local hint = GroupPanel.soloHint(GroupPanel.measure, GroupPanel.innerWidth())
 		drawSolo(hint)
 		drawHeaders(false)
@@ -1841,13 +2091,16 @@ function GroupPanel.draw()
 			row.frame:Hide()
 		end
 		drawCheck(flyout, {}, 0)
+		drawLoot(flyout, {}, 0)
 		flyout:SetHeight(GroupPanel.soloHeight(#hint))
 		return GroupPanel.last
 	end
 	drawSolo({})
 	local rows, counts = GroupPanel.model()
 	local lines = GroupPanel.checkText(GroupPanel.result)
-	local visible = GroupPanel.fitRows(Widgets.frameHeight(GroupPanel.anchor()), GroupPanel.checkHeight(lines))
+	local loot = GroupPanel.lootNow()
+	local visible = GroupPanel.fitRows(Widgets.frameHeight(GroupPanel.anchor()),
+		GroupPanel.checkHeight(lines) + GroupPanel.lootHeight(loot))
 	GroupPanel.last = { rows = rows, counts = counts, visible = visible }
 	GroupPanel.countsLine:SetText(fitted(string.format(L.groupCounts, counts.members, counts.inspected, counts.live),
 		GroupPanel.innerWidth()))
@@ -1860,6 +2113,7 @@ function GroupPanel.draw()
 	holder:Show()
 	GroupPanel.renderRows()
 	local y = drawCheck(flyout, lines, GroupPanel.rowsTop() + GroupPanel.rowsHeight(shownRows))
+	y = drawLoot(flyout, loot, y)
 	flyout:SetHeight(y + S.panelPadding)
 	return GroupPanel.last
 end
@@ -2194,6 +2448,8 @@ function GroupPanel.register()
 		return
 	end
 	GroupPanel.registered = true
+	LootCouncil.onChange = GroupPanel.onLoot
+	Chip.lootLines = GroupPanel.lootChatLines
 	Comms.on("hello", function()
 		GroupPanel.onLive()
 	end)
