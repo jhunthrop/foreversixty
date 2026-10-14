@@ -879,8 +879,9 @@ describe("SlotMarks", function()
 	end)
 
 	-- Fix round 4, ruling 1 (hunter-12): the hunter's worn Gloves of the Fang are the band's
-	-- pick, so the hover reads "Best until level 30 / At level 30: Pilferer's Gloves ·
-	-- Crafted / Planned for Beast Mastery at 20". Through the real section path with the
+	-- pick, so the hover reads "Best until level 30 / At level 30: Cartilage Shapers ·
+	-- Lyn the Ignored · World / Planned for Beast Mastery at 20" (Pilferer's Gloves, crafted,
+	-- until the 1.60.1.70374 ranker run). Through the real section path with the
 	-- real Data: no Next line, so no corner; the At line's later pick never becomes a target.
 	describe("fix round 4: the hunter's Best until slot, from the real data", function()
 		local GLOVES = "|cff1eff00|Hitem:10413::::::::24:::::|h[Gloves of the Fang]|h|r"
@@ -946,7 +947,7 @@ describe("SlotMarks", function()
 			end
 			assert.are.equal(string.format(L.tooltipBestUntil, 30), texts[1])
 			assert.are.equal("at", lines[2].kind)
-			assert.is_truthy(texts[2]:find("Pilferer's Gloves", 1, true))
+			assert.is_truthy(texts[2]:find("Cartilage Shapers", 1, true))
 			assert.are.equal(string.format(L.tooltipPlanned, "Beast Mastery", 20), texts[3])
 			assert.is_nil(SlotMarks.nextOf(lines))
 			assert.is_nil(SlotMarks.compute(Data).targets.hands)
