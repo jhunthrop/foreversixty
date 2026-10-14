@@ -10,7 +10,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jackc/pgx/v5"
+
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/fs1"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
@@ -157,6 +160,10 @@ type RosterRow struct {
 	// row is not already verified - the Roster tab's own Approve control (contract's
 	// own field, mirroring MayRemove's convention).
 	MayApprove bool `json:"may_approve"`
+	// Addon is this character's line in the guild's newest addon roster snapshot
+	// (AddonMemberView), matched by name; null when the guild has no snapshot or the
+	// snapshot does not carry this character. Never omitted.
+	Addon *AddonMemberView `json:"addon"`
 	// ownerUserID is gc.user_id: read to compute MayRemove/MayApprove/AccountKey against
 	// the viewing actor, never marshaled into the response itself.
 	ownerUserID int64
@@ -175,6 +182,30 @@ type RosterRow struct {
 	// never a level-60 assumption, when the export carries one.
 	level    int
 	hasLevel bool
+}
+
+// AddonMemberView is one roster row's member line from the guild's newest roster
+// snapshot (guild_roster_snapshots, written by POST /v1/addon/exports' outbox, contract 4 of
+// docs/contracts/addon-v2.md): what a guildmate's addon saw of this character on its guild
+// tab. Level, Spec (a slug), GearGap and Build are as the member's addon announced them;
+// Build is null when it announced none. SeenAt is the sender's local "YYYY-MM-DD HH:MM" as
+// stored; SnapshotAt is when the site received the snapshot, RFC 3339 UTC.
+type AddonMemberView struct {
+	Level      int       `json:"level"`
+	Spec       string    `json:"spec"`
+	GearGap    int       `json:"gear_gap"`
+	Build      *string   `json:"build"`
+	SeenAt     string    `json:"seen_at"`
+	SnapshotAt time.Time `json:"snapshot_at"`
+}
+
+// AddonSnapshotView is the home's top-level account of the guild's newest roster snapshot:
+// when it was received (RFC 3339 UTC), the character key whose export carried it, and how
+// many members it listed (unmatched ones included; they never become roster rows).
+type AddonSnapshotView struct {
+	ReceivedAt  time.Time `json:"received_at"`
+	ByCharacter string    `json:"by_character"`
+	Members     int       `json:"members"`
 }
 
 // ViewerView is the home endpoint's own "who is asking" object.
@@ -218,6 +249,8 @@ type HomeView struct {
 	// Pending is every unverified roster row, officer view only - empty, never omitted,
 	// for everyone else (contract: "others: []").
 	Pending []RosterRow `json:"pending"`
+	// AddonSnapshot is the guild's newest addon roster snapshot, null when it has none.
+	AddonSnapshot *AddonSnapshotView `json:"addon_snapshot"`
 }
 
 // HomeReports lists this guild's reports from the trailing week, newest
@@ -369,6 +402,64 @@ func (s *Store) HomeRoster(ctx context.Context, guildID int64, g Guild, actorID 
 	return out, nil
 }
 
+// snapshotMember is one stored member line of guild_roster_snapshots.members, as
+// addon.RosterMember writes it (that package imports this one, so the shape is restated).
+type snapshotMember struct {
+	Name    string `json:"name"`
+	Level   int    `json:"level"`
+	Spec    string `json:"spec"`
+	GearGap int    `json:"gear_gap"`
+	Build   string `json:"build"`
+	SeenAt  string `json:"seen_at"`
+}
+
+// homeAddonSnapshot reads the guild's newest roster snapshot in one query and sets each
+// roster row's Addon from it. The snapshot's names carry no realm, or the sender's
+// Name-Realm form: the realm half is dropped and the name matched to a row's name, any
+// case, the guild's realm being the row's. The first line of a name wins; a line that
+// matches no row is counted in Members and nothing else. The newest snapshot wins even when
+// it lists nobody (an empty roster is a fact), so every row then reads null. Nil, with every
+// row's Addon nil, when the guild has no snapshot.
+func (s *Store) homeAddonSnapshot(ctx context.Context, guildID int64, roster []RosterRow) (*AddonSnapshotView, error) {
+	var snap AddonSnapshotView
+	var members []snapshotMember
+	err := s.Pool.QueryRow(ctx, `
+		select character_key, members, received_at from guild_roster_snapshots
+		where guild_id = $1 order by received_at desc limit 1`, guildID).
+		Scan(&snap.ByCharacter, &members, &snap.ReceivedAt)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("guilds: home addon snapshot: %w", err)
+	}
+	snap.ReceivedAt = snap.ReceivedAt.UTC()
+	snap.Members = len(members)
+	byName := make(map[string]snapshotMember, len(members))
+	for _, m := range members {
+		name, _ := character.SplitUnit(m.Name)
+		key := strings.ToLower(name)
+		if _, seen := byName[key]; !seen && key != "" {
+			byName[key] = m
+		}
+	}
+	for i := range roster {
+		m, ok := byName[strings.ToLower(roster[i].Name)]
+		if !ok {
+			continue
+		}
+		line := &AddonMemberView{
+			Level: m.Level, Spec: m.Spec, GearGap: m.GearGap, SeenAt: m.SeenAt, SnapshotAt: snap.ReceivedAt,
+		}
+		if m.Build != "" {
+			build := m.Build
+			line.Build = &build
+		}
+		roster[i].Addon = line
+	}
+	return &snap, nil
+}
+
 // accountKeyFor is the contract's own "same value for a main and its alts" grouping key.
 func accountKeyFor(userID int64) string { return fmt.Sprintf("u:%d", userID) }
 
@@ -403,6 +494,11 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		return HomeView{}, err
 	}
 	roster, err := s.HomeRoster(ctx, guildID, g, userID, moderator, verifiedOfficer)
+	if err != nil {
+		return HomeView{}, err
+	}
+	// Before pending is copied out of roster, so a pending row carries its line too.
+	addonSnapshot, err := s.homeAddonSnapshot(ctx, guildID, roster)
 	if err != nil {
 		return HomeView{}, err
 	}
@@ -456,6 +552,7 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moder
 		Summary:  summary,
 		Standing: standingFor(s, roster, userID),
 		Reports:  reports, Roster: roster, Pending: pending,
+		AddonSnapshot: addonSnapshot,
 	}
 	if len(reports) == HomeReportsPerPage {
 		last := reports[len(reports)-1]

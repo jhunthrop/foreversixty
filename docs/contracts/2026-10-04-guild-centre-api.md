@@ -33,9 +33,21 @@ pre-migration guild within one `MembershipJob` sweep tick (5 minutes).
   },
   "reports": [ ...ReportSummary (last 7 days, existing shape plus "zone" and "duration_ms") ],
   "roster": [ ...RosterRow ],
-  "pending": [ ...RosterRow ]          // officer: unverified members; others: []
+  "pending": [ ...RosterRow ],         // officer: unverified members; others: []
+  "addon_snapshot": {                  // the guild's newest addon roster snapshot; null when it has none
+    "received_at": "2026-11-04T20:58:00Z", "by_character": "us/pvp/thorgrim", "members": 14
+  }
 }
 ```
+
+`addon_snapshot` is the newest roster snapshot a member's addon sent for this guild
+(`POST /v1/addon/exports`' outbox, `docs/contracts/addon-v2.md` §4, stored in
+`guild_roster_snapshots`): `received_at` is when the site received it (RFC 3339 UTC),
+`by_character` the character key whose export carried it, and `members` how many member lines
+it listed, the ones that match no roster row included. It lets the page say "Roster from the
+addon, 3 minutes ago, by Thorgrim". The newest snapshot wins even when it lists nobody (an
+empty roster is a fact): `members` is then 0 and every row's `addon` is null. Like the rest of
+the home, only a verified member reads it.
 
 ### RosterRow
 
@@ -53,9 +65,23 @@ pre-migration guild within one `MembershipJob` sweep tick (5 minutes).
   "professions": ["Leatherworking", "Skinning"],
   "account_key": "u:8812",             // same value for a main and its alts
   "last_report_at": "...",            // newest report this character's account uploaded, null if none
-  "may_remove": false, "may_approve": false
+  "may_remove": false, "may_approve": false,
+  "addon": {                           // this character's line in addon_snapshot; null when not in it
+    "level": 58, "spec": "hunter-marksmanship", "gear_gap": 6, "build": "MM raid",   // build null when none announced
+    "seen_at": "2026-11-04 14:01",     // the sender's local YYYY-MM-DD HH:MM, as stored
+    "snapshot_at": "2026-11-04T20:58:00Z"   // addon_snapshot.received_at
+  }
 }
 ```
+
+`addon` is present on every row (in `pending` too) and is `null` when the guild has no
+snapshot or the newest one does not carry this character. A snapshot line is matched to a row
+by character name, any case: the snapshot's names carry no realm (a `Name-Realm` line drops
+its realm half), so the guild's realm is the row's. The first line of a name wins. A line that
+matches no row is never added as one; it counts only in `addon_snapshot.members`. `level`,
+`spec` (a spec slug), `gear_gap` and `build` are as that member's addon announced them
+(contract 2's `hello`); the snapshot carries only the members its sender's guild tab had live
+data for, so a member that addon had no data for reads `null`.
 
 A character is present in a report when it has a ranked or rated row there (`fight_metrics`
 not removed, or `rating_scores`), read by character key, never the log's GUIDs in
