@@ -1,73 +1,31 @@
 // companion/internal/addon/contracts_test.go
-// The companion's side of the v2 golden contract test (docs/contracts/addon-v2.md,
-// contract 3). It decodes the shared fixture docs/contracts/fixtures/inbox-v2.json with this
-// package's Message and Build, renders it through RenderInbox, and checks the rendered chunk
-// loads under Lua 5.1, the interpreter the game runs. The addon
+// The companion's side of the v2 golden contract tests (docs/contracts/addon-v2.md, contracts 3
+// and 4). It decodes the shared fixture docs/contracts/fixtures/inbox-v2.json with this
+// package's Message and Build, strictly and byte for byte, renders it through RenderInbox, and
+// loads the rendered chunk under Lua 5.1, the interpreter the game runs, asserting on the table
+// it builds. It reads docs/contracts/fixtures/outbox-v1.json back through ScanOutbox from a
+// saved-variables file written the way the game writes one. The addon
 // (addon/tests/contracts_spec.lua) and the API (api/internal/addon/contracts_test.go) pin the
-// same file from their side, so a change to it fails all three until each is updated.
+// same files from their side, so a change to either fails all three until each is updated.
 package addon
 
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"reflect"
+	"slices"
+	"sort"
 	"strings"
 	"testing"
 )
 
-// contractMessageV2 is Message plus the fields contract 3 adds to messages the struct
-// already carries: "unit" on upgrade, and "dps_per_point", "generated_at" and
-// "export_seen_at" on weights (task L6.11). Lane L7 moves them into Message itself (and
-// renders them) and deletes this shim.
-type contractMessageV2 struct {
-	Message
-	Unit         string  `json:"unit,omitempty"`
-	DPSPerPoint  float64 `json:"dps_per_point,omitempty"`
-	GeneratedAt  string  `json:"generated_at,omitempty"`
-	ExportSeenAt string  `json:"export_seen_at,omitempty"`
-}
-
-// contractSupported are the message types Message can decode today; contractPending are the
-// rest of contract 3's eight types, which Message has none of the fields for. Lane L7 moves
-// them across.
-var (
-	contractSupported = []string{MessageUpgrade, MessageWeights, MessageGuild}
-	contractPending   = []string{"build", "sim_result", "last_raid", "loot_values", "ack"}
-)
-
-// contractCarried are the keys the struct already has for the supported types; the pending
-// types share them, so they say nothing about whether a pending type has been migrated.
-var contractCarried = map[string]bool{
-	"type": true, "character": true, "spec": true, "source": true,
-	"delta": true, "slot": true, "item_id": true, "item_name": true,
-}
-
-// contractHasJSONKey reports whether the struct type typ, or any struct embedded in it
-// (however deep), has a field whose JSON name is key.
-func contractHasJSONKey(typ reflect.Type, key string) bool {
-	for typ.Kind() == reflect.Pointer {
-		typ = typ.Elem()
-	}
-	if typ.Kind() != reflect.Struct {
-		return false
-	}
-	for i := 0; i < typ.NumField(); i++ {
-		f := typ.Field(i)
-		name, _, _ := strings.Cut(f.Tag.Get("json"), ",")
-		if name == "-" {
-			continue
-		}
-		if name == "" && f.Anonymous && contractHasJSONKey(f.Type, key) {
-			return true
-		}
-		if name == key {
-			return true
-		}
-	}
-	return false
+// contractTypes are contract 3's eight message types, in the fixture's order.
+var contractTypes = []string{
+	MessageBuild, MessageUpgrade, MessageWeights, MessageSimResult,
+	MessageLastRaid, MessageLootValues, MessageGuild, MessageAck,
 }
 
 func contractFixture(t *testing.T, name string) []byte {
@@ -103,197 +61,79 @@ func contractRoundTrip(t *testing.T, raw []byte, v any) {
 	}
 }
 
-func contractContains(list []string, s string) bool {
-	for _, v := range list {
-		if v == s {
-			return true
-		}
-	}
-	return false
-}
-
-// contractLua51 checks that body loads (parses, does not run) under a Lua 5.1 interpreter. It
-// tries lua5.1 on PATH, then lua5.1 inside WSL for a Windows developer, and reports which ran;
-// with neither it reports false and the caller relies on the package's own pure-Go reader.
-func contractLua51(t *testing.T, body []byte) (ran string, ok bool) {
-	t.Helper()
-	const script = "assert(loadstring(io.read('*a')))"
-	candidates := [][]string{{"lua5.1"}, {"wsl", "-e", "lua5.1"}}
-	for _, argv := range candidates {
-		if _, err := exec.LookPath(argv[0]); err != nil {
-			continue
-		}
-		probe := exec.Command(argv[0], append(append([]string{}, argv[1:]...), "-v")...)
-		if err := probe.Run(); err != nil {
-			continue // wsl without a distro or without lua5.1: try the next route
-		}
-		cmd := exec.Command(argv[0], append(append([]string{}, argv[1:]...), "-e", script)...)
-		cmd.Stdin = bytes.NewReader(body)
-		out, err := cmd.CombinedOutput()
-		if err != nil {
-			t.Fatalf("the rendered inbox does not load under Lua 5.1 (%s): %v\n%s\n%s",
-				strings.Join(argv, " "), err, out, body)
-		}
-		return strings.Join(argv, " "), true
-	}
-	return "", false
-}
-
 // contractCharacter is the fixture's character key.
 const contractCharacter = "us/normal/obnoxious"
 
 func TestInboxV2FixtureGolden(t *testing.T) {
+	raw := contractFixture(t, "inbox-v2.json")
 	var inbox struct {
 		Format      int               `json:"format"`
 		GeneratedAt string            `json:"generated_at"`
 		Builds      []json.RawMessage `json:"builds"`
 		Messages    []json.RawMessage `json:"messages"`
 	}
-	contractStrict(t, contractFixture(t, "inbox-v2.json"), &inbox)
+	contractStrict(t, raw, &inbox)
 	// The body GET /v1/addon/inbox answers: contract 3's envelope, every message addressed by
 	// character key (region/ruleset/name-slug), the form Build.Character has always carried.
 	if inbox.Format != 2 || inbox.GeneratedAt != "2026-11-04T21:03:00Z" {
 		t.Fatalf("envelope = format %d, generated_at %q", inbox.Format, inbox.GeneratedAt)
 	}
 
-	// The type of every message, found before any subtest runs so each can run alone.
-	seen := map[string]int{}
-	types := make([]string, len(inbox.Messages))
-	for i, raw := range inbox.Messages {
-		var head struct {
-			Type string `json:"type"`
-		}
-		if err := json.Unmarshal(raw, &head); err != nil {
-			t.Fatalf("message %s: %v", raw, err)
-		}
-		types[i] = head.Type
-		seen[head.Type]++
+	// strict is the fixture decoded field by field: every key of every message must have a
+	// home in Message, or DisallowUnknownFields fails the decode.
+	var strict Inbox
+	strict.Format, strict.GeneratedAt = inbox.Format, inbox.GeneratedAt
+	for _, raw := range inbox.Builds {
+		var b Build
+		contractStrict(t, raw, &b)
+		strict.Builds = append(strict.Builds, b)
 	}
-
-	// decodeAll is what the sync would hold after fetching the fixture: Builds, and a Message for
-	// every entry. A type Message cannot carry yet keeps only its type and character, which is
-	// what RenderInbox writes for a kind it does not know (renderMessage).
-	decodeAll := func(t *testing.T) Inbox {
-		t.Helper()
-		var in Inbox
-		for _, raw := range inbox.Builds {
-			var b Build
-			contractStrict(t, raw, &b)
-			in.Builds = append(in.Builds, b)
-		}
-		for i, raw := range inbox.Messages {
-			if contractContains(contractSupported, types[i]) {
-				var m contractMessageV2
-				contractStrict(t, raw, &m)
-				in.Messages = append(in.Messages, m.Message)
-				continue
-			}
-			var head struct {
-				Character string `json:"character"`
-			}
-			if err := json.Unmarshal(raw, &head); err != nil {
-				t.Fatalf("message %s: %v", raw, err)
-			}
-			in.Messages = append(in.Messages, Message{Type: types[i], Character: head.Character})
-		}
-		return in
+	for _, raw := range inbox.Messages {
+		var m Message
+		contractStrict(t, raw, &m)
+		strict.Messages = append(strict.Messages, m)
 	}
 
 	t.Run("builds round trip through Build", func(t *testing.T) {
 		if len(inbox.Builds) != 1 {
 			t.Fatalf("builds = %d, want 1", len(inbox.Builds))
 		}
-		for _, raw := range inbox.Builds {
-			var b Build
-			contractStrict(t, raw, &b)
-			contractRoundTrip(t, raw, b)
-		}
+		contractRoundTrip(t, inbox.Builds[0], strict.Builds[0])
 	})
 
-	t.Run("supported messages round trip through Message", func(t *testing.T) {
+	t.Run("every message type round trips through Message", func(t *testing.T) {
+		var types []string
 		for i, raw := range inbox.Messages {
-			if !contractContains(contractSupported, types[i]) {
-				continue
-			}
-			var m contractMessageV2
-			contractStrict(t, raw, &m)
+			m := strict.Messages[i]
 			contractRoundTrip(t, raw, m)
-			if m.Type != types[i] || m.Character != contractCharacter {
-				t.Errorf("%s decoded as type %q for %q", types[i], m.Type, m.Character)
+			if m.Character != contractCharacter {
+				t.Errorf("%s is addressed to %q", m.Type, m.Character)
 			}
+			types = append(types, m.Type)
 		}
-		for _, typ := range contractSupported {
-			if seen[typ] != 1 {
-				t.Errorf("fixture has %d %q messages, want 1", seen[typ], typ)
-			}
-		}
-	})
-
-	t.Run("v2 fields on supported types pending L7", func(t *testing.T) {
-		for i, raw := range inbox.Messages {
-			var m contractMessageV2
-			switch types[i] {
-			case MessageUpgrade:
-				contractStrict(t, raw, &m)
-				if m.Unit != "dps" {
-					t.Errorf("upgrade unit = %q, want dps", m.Unit)
-				}
-			case MessageWeights:
-				contractStrict(t, raw, &m)
-				if m.DPSPerPoint != 0.42 {
-					t.Errorf("weights dps_per_point = %v, want 0.42", m.DPSPerPoint)
-				}
-				if m.GeneratedAt != "2026-11-04T14:11:00Z" || m.ExportSeenAt != "2026-11-04T14:03:00Z" {
-					t.Errorf("weights generated_at %q, export_seen_at %q", m.GeneratedAt, m.ExportSeenAt)
-				}
-			}
+		if !slices.Equal(types, contractTypes) {
+			t.Errorf("fixture types = %v, want contract 3's %v", types, contractTypes)
 		}
 	})
 
-	t.Run("v2 types pending L7", func(t *testing.T) {
-		// Every key of each pending message, read from the fixture itself, must still be absent
-		// from Message: a field added for any one of them means the type has begun to migrate.
-		for i, raw := range inbox.Messages {
-			if !contractContains(contractPending, types[i]) {
-				continue
-			}
-			var keys map[string]json.RawMessage
-			if err := json.Unmarshal(raw, &keys); err != nil {
-				t.Fatalf("message %s: %v", raw, err)
-			}
-			for key := range keys {
-				if !contractCarried[key] && contractHasJSONKey(reflect.TypeOf(Message{}), key) {
-					t.Errorf("Message now has the %q field, so %q is no longer pending: move it from "+
-						"contractPending to a strict decode and byte-equal round trip in this file (%s)",
-						key, types[i], "Lane L7.1")
-				}
-			}
+	t.Run("the sync's decode reads the same as the strict one", func(t *testing.T) {
+		var got Inbox
+		if err := json.Unmarshal(raw, &got); err != nil {
+			t.Fatal(err)
 		}
-		pending := 0
-		for _, typ := range contractPending {
-			if seen[typ] != 1 {
-				t.Errorf("fixture has %d %q messages, want 1", seen[typ], typ)
-			}
-			pending += seen[typ]
+		if len(got.Skipped) != 0 {
+			t.Errorf("the sync skipped fixture messages: %+v", got.Skipped)
 		}
-		t.Logf("%d v2-only message types are in the fixture and not yet decodable by Message: %v",
-			pending, contractPending)
-		if got := len(contractSupported) + len(contractPending); got != len(inbox.Messages) {
-			t.Errorf("the fixture has %d messages and the type lists name %d", len(inbox.Messages), got)
+		if !reflect.DeepEqual(got, strict) {
+			t.Errorf("the sync's decode differs from the strict one\n got: %+v\nwant: %+v", got, strict)
 		}
 	})
 
 	t.Run("renders Lua the package reads back", func(t *testing.T) {
-		body := RenderInbox(decodeAll(t), t0)
-		top, err := ParseLua(string(body))
-		if err != nil {
-			t.Fatalf("the rendered inbox does not parse: %v\n%s", err, body)
+		root := parseInbox(t, string(RenderInbox(strict, t0)))
+		if keyOf(root.Fields["format"]) != "2" || root.Get("generated_at") != "2026-12-09T20:00:00Z" {
+			t.Errorf("envelope = %+v", root.Fields)
 		}
-		root, ok := top[InboxGlobal].(*Table)
-		if !ok {
-			t.Fatalf("the inbox does not assign %s:\n%s", InboxGlobal, body)
-		}
-
 		builds := root.Fields["builds"].(*Table)
 		if len(builds.Items) != 1 {
 			t.Fatalf("builds = %+v", builds)
@@ -303,66 +143,186 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 			!strings.HasPrefix(build.Get("code"), "FSB1:") {
 			t.Errorf("build = %+v", build.Fields)
 		}
-
 		messages := root.Fields["messages"].(*Table)
-		if len(messages.Items) != len(types) {
-			t.Fatalf("rendered %d messages, fixture has %d", len(messages.Items), len(types))
-		}
-		for i, item := range messages.Items {
-			m := item.(*Table)
-			if m.Get("type") != types[i] || m.Get("character") != contractCharacter {
-				t.Errorf("message %d = %+v, want type %s", i, m.Fields, types[i])
-			}
+		// Exactly the API's messages: the companion synthesises no build message of its own
+		// from the builds list.
+		if len(messages.Items) != len(contractTypes) {
+			t.Fatalf("rendered %d messages, fixture has %d", len(messages.Items), len(contractTypes))
 		}
 		byType := map[string]*Table{}
-		for _, item := range messages.Items {
+		for i, item := range messages.Items {
 			m := item.(*Table)
+			if m.Get("type") != contractTypes[i] || m.Get("character") != contractCharacter {
+				t.Errorf("message %d = %+v, want type %s", i, m.Fields, contractTypes[i])
+			}
 			byType[m.Get("type")] = m
+		}
+		if b := byType[MessageBuild]; b.Get("name") != "Arms raid" || !strings.HasPrefix(b.Get("code"), "FSB1:") {
+			t.Errorf("build message = %+v", b.Fields)
 		}
 		upgrade := byType[MessageUpgrade]
 		if upgrade.Get("slot") != "chest" || keyOf(upgrade.Fields["item_id"]) != "6627" ||
 			upgrade.Get("item_name") != "Mutant Scale Breastplate" ||
-			upgrade.Get("source") != "Blackrock Depths" || keyOf(upgrade.Fields["delta"]) != "4.2" {
+			upgrade.Get("source") != "Blackrock Depths" || keyOf(upgrade.Fields["delta"]) != "4.2" ||
+			upgrade.Get("unit") != "dps" {
 			t.Errorf("upgrade = %+v", upgrade.Fields)
 		}
 		weights := byType[MessageWeights]
 		if weights.Get("spec") != "warrior-arms" || len(weights.Fields["weights"].(*Table).Items) != 3 ||
-			keyOf(weights.Fields["caps"].(*Table).Items[0]) != "hit" {
+			keyOf(weights.Fields["caps"].(*Table).Items[0]) != "hit" ||
+			keyOf(weights.Fields["dps_per_point"]) != "0.42" {
 			t.Errorf("weights = %+v", weights.Fields)
+		}
+		sim := byType[MessageSimResult]
+		slot := sim.Fields["slots"].(*Table).Items[0].(*Table)
+		if keyOf(sim.Fields["dps"]) != "412.6" || keyOf(sim.Fields["error"]) != "3.1" ||
+			sim.Get("generated_at") != "2026-11-04T20:55:00Z" || slot.Get("slot") != "chest" ||
+			keyOf(slot.Fields["item_id"]) != "6627" || keyOf(slot.Fields["delta"]) != "4.2" {
+			t.Errorf("sim_result = %+v, slot %+v", sim.Fields, slot.Fields)
+		}
+		raid := byType[MessageLastRaid]
+		boss := raid.Fields["bosses"].(*Table).Items[0].(*Table)
+		if raid.Get("report_id") != "r_8f2a1c" || raid.Get("date") != "2026-12-09" ||
+			boss.Get("name") != "Lucifron" || keyOf(boss.Fields["percentile"]) != "71" ||
+			boss.Get("biggest_loss") != "downtime" || keyOf(boss.Fields["loss_seconds"]) != "18" ||
+			keyOf(boss.Fields["deaths"]) != "0" || keyOf(boss.Fields["adherence"]) != "0.82" ||
+			keyOf(boss.Fields["consumables_missed"].(*Table).Items[0]) != "flask" {
+			t.Errorf("last_raid = %+v, boss %+v", raid.Fields, boss.Fields)
+		}
+		loot := byType[MessageLootValues]
+		item := loot.Fields["items"].(*Table).Fields["17076"].(*Table)
+		if loot.Get("raid") != "Molten Core" || keyOf(item.Fields["value"]) != "6.3" ||
+			item.Get("unit") != "dps" || item.Fields["planned"] != true {
+			t.Errorf("loot_values = %+v, item %+v", loot.Fields, item.Fields)
 		}
 		guild := byType[MessageGuild]
 		if guild.Get("guild_name") != "OLYMPUS XXVII" || guild.Get("claim_state") != "claimed" ||
 			keyOf(guild.Fields["pending_approvals"]) != "2" || guild.Get("rank") != "officer" {
 			t.Errorf("guild = %+v", guild.Fields)
 		}
-		// A v2-only type renders as its envelope alone until Message carries its fields.
-		if len(byType["sim_result"].Fields) != 2 {
-			t.Errorf("sim_result = %+v, want type and character only", byType["sim_result"].Fields)
+		ack := byType[MessageAck]
+		if ack.Get("export_seen_at") != "2026-11-04T14:03:00Z" || ack.Get("sim_request_state") != "queued" {
+			t.Errorf("ack = %+v", ack.Fields)
 		}
 	})
 
-	t.Run("rendered chunk loads under Lua 5.1", func(t *testing.T) {
-		body := RenderInbox(decodeAll(t), t0)
-		// The package's own reader is the check that always runs.
-		if _, err := ParseLua(string(body)); err != nil {
-			t.Fatalf("the rendered inbox does not parse: %v", err)
-		}
-		if ran, ok := contractLua51(t, body); ok {
-			t.Logf("Lua 5.1 load check ran through %q", ran)
+	t.Run("loads under Lua 5.1 with every nested shape", func(t *testing.T) {
+		body := RenderInbox(strict, t0)
+		ran, ok := runLua51(t, body, `
+local I = assert(ForeverSixtyInbox, "no ForeverSixtyInbox")
+assert(I.format == 2, "format")
+assert(I.generated_at == "2026-12-09T20:00:00Z", "generated_at")
+assert(#I.builds == 1 and I.builds[1].name == "Arms raid", "builds")
+local want = { "build", "upgrade", "weights", "sim_result", "last_raid", "loot_values", "guild", "ack" }
+assert(#I.messages == #want, "#messages = " .. #I.messages)
+for i, t in ipairs(want) do
+	assert(I.messages[i].type == t, "messages[" .. i .. "].type = " .. tostring(I.messages[i].type))
+	assert(I.messages[i].character == "us/normal/obnoxious", "character " .. i)
+end
+local m = I.messages
+assert(m[1].name == "Arms raid" and m[1].code:sub(1, 5) == "FSB1:", "build")
+assert(m[2].item_id == 6627 and m[2].delta == 4.2 and m[2].unit == "dps", "upgrade")
+assert(#m[3].weights == 3 and m[3].weights[2].stat == "strength" and m[3].weights[2].weight == 2.2, "weights")
+assert(m[3].caps[1] == "hit" and m[3].dps_per_point == 0.42, "caps, dps_per_point")
+assert(m[4].dps == 412.6 and m[4].error == 3.1 and m[4].generated_at == "2026-11-04T20:55:00Z", "sim_result")
+assert(#m[4].slots == 1 and m[4].slots[1].slot == "chest" and m[4].slots[1].item_id == 6627 and m[4].slots[1].delta == 4.2, "slots")
+local boss = m[5].bosses[1]
+assert(m[5].report_id == "r_8f2a1c" and m[5].date == "2026-12-09" and #m[5].bosses == 1, "last_raid")
+assert(boss.name == "Lucifron" and boss.percentile == 71 and boss.biggest_loss == "downtime", "boss")
+assert(boss.loss_seconds == 18 and boss.deaths == 0 and boss.adherence == 0.82, "boss numbers")
+assert(type(boss.consumables_missed) == "table" and boss.consumables_missed[1] == "flask", "consumables_missed")
+assert(m[6].raid == "Molten Core", "raid")
+assert(type(m[6].items[17076].value) == "number" and m[6].items[17076].value == 6.3, "loot value")
+assert(m[6].items[17076].unit == "dps" and m[6].items[17076].planned == true, "loot unit, planned")
+assert(m[7].guild_name == "OLYMPUS XXVII" and m[7].pending_approvals == 2 and m[7].rank == "officer", "guild")
+assert(m[8].export_seen_at == "2026-11-04T14:03:00Z" and m[8].sim_request_state == "queued", "ack")
+`)
+		if ok {
+			t.Logf("Lua 5.1 check ran through %q", ran)
 		} else {
-			if os.Getenv("CI") != "" {
-				t.Fatal("CI is set and no Lua 5.1 interpreter was found on PATH or in WSL: " +
-					"the workflow must install lua5.1 so the rendered inbox is checked against the client's Lua")
-			}
 			t.Log("no Lua 5.1 interpreter on PATH or in WSL: only the pure-Go ParseLua check ran")
+		}
+	})
+
+	t.Run("optional fields stay absent when the API leaves them out", func(t *testing.T) {
+		var bare []Message
+		for _, m := range strict.Messages {
+			switch m.Type {
+			case MessageLastRaid:
+				boss := m.Bosses[0]
+				boss.Adherence, boss.BiggestLoss, boss.ConsumablesMissed = nil, "", []string{}
+				m.Bosses = []LastRaidBoss{boss}
+			case MessageAck:
+				m.SimRequestState = ""
+			case MessageWeights:
+				m.DPSPerPoint = nil
+			case MessageSimResult:
+				m.Slots = &[]SimSlot{}
+			case MessageUpgrade:
+				m.Unit = ""
+			}
+			bare = append(bare, m)
+		}
+		body := RenderInbox(Inbox{Messages: bare}, t0)
+		for _, absent := range []string{`["adherence"]`, `["biggest_loss"]`, `["sim_request_state"]`, `["dps_per_point"]`} {
+			if strings.Contains(string(body), absent) {
+				t.Errorf("the render carries %s for a message without it:\n%s", absent, body)
+			}
+		}
+		if _, ok := runLua51(t, body, `
+local m = ForeverSixtyInbox.messages
+assert(m[5].bosses[1].adherence == nil and m[5].bosses[1].biggest_loss == nil, "optional boss fields")
+assert(type(m[5].bosses[1].consumables_missed) == "table" and #m[5].bosses[1].consumables_missed == 0, "empty list")
+assert(type(m[4].slots) == "table" and #m[4].slots == 0, "empty slots")
+assert(m[8].sim_request_state == nil and m[3].dps_per_point == nil and m[2].unit == nil, "absent fields")
+`); !ok {
+			t.Log("no Lua 5.1 interpreter: the absent-field check ran through the render text only")
 		}
 	})
 }
 
-// TestOutboxV1FixtureGolden pins contract 4's shape from the reading side. The companion has
-// no outbox type yet (Lane L7 adds one and reads it from ForeverSixty.lua), so the structs
-// here are local, strict, and the fields L7 must read.
+// contractLuaValue writes a decoded JSON value as the game writes a saved-variables value:
+// bracketed string keys, positional list entries.
+func contractLuaValue(b *strings.Builder, v any, indent string) {
+	switch x := v.(type) {
+	case map[string]any:
+		keys := make([]string, 0, len(x))
+		for k := range x {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		b.WriteString("{\n")
+		for _, k := range keys {
+			if x[k] == nil {
+				continue
+			}
+			fmt.Fprintf(b, "%s\t[%s] = ", indent, quote(k))
+			contractLuaValue(b, x[k], indent+"\t")
+			b.WriteString(",\n")
+		}
+		b.WriteString(indent + "}")
+	case []any:
+		b.WriteString("{\n")
+		for i, e := range x {
+			b.WriteString(indent + "\t")
+			contractLuaValue(b, e, indent+"\t")
+			fmt.Fprintf(b, ", -- [%d]\n", i+1)
+		}
+		b.WriteString(indent + "}")
+	case string:
+		b.WriteString(quote(x))
+	case json.Number:
+		b.WriteString(x.String())
+	case bool:
+		fmt.Fprint(b, x)
+	}
+}
+
+// TestOutboxV1FixtureGolden pins contract 4's shape from the reading side: the fixture strictly
+// decodes into the fields the companion reads, and written into ForeverSixtyDB.outbox the way
+// the game writes saved variables, ScanOutbox reads back the whole of it unchanged.
 func TestOutboxV1FixtureGolden(t *testing.T) {
+	raw := contractFixture(t, "outbox-v1.json")
 	var outbox struct {
 		Format int `json:"format"`
 		Export struct {
@@ -388,10 +348,10 @@ func TestOutboxV1FixtureGolden(t *testing.T) {
 			} `json:"members"`
 		} `json:"roster_snapshot"`
 	}
-	contractStrict(t, contractFixture(t, "outbox-v1.json"), &outbox)
+	contractStrict(t, raw, &outbox)
 
-	if outbox.Format != 1 {
-		t.Errorf("format = %d, want 1", outbox.Format)
+	if outbox.Format != OutboxFormat {
+		t.Errorf("format = %d, want %d", outbox.Format, OutboxFormat)
 	}
 	if outbox.Export.Character != "Obnoxious-Yell" || !strings.HasPrefix(outbox.Export.Code, "FS1:") ||
 		outbox.Export.SavedAt != "2026-11-04 14:02" {
@@ -405,4 +365,38 @@ func TestOutboxV1FixtureGolden(t *testing.T) {
 		len(outbox.RosterSnapshot.Members) != 1 || outbox.RosterSnapshot.Members[0].GearGap != 14 {
 		t.Errorf("roster_snapshot = %+v", outbox.RosterSnapshot)
 	}
+
+	t.Run("ScanOutbox reads the whole outbox back from the saved variables", func(t *testing.T) {
+		dec := json.NewDecoder(bytes.NewReader(raw))
+		dec.UseNumber()
+		var value any
+		if err := dec.Decode(&value); err != nil {
+			t.Fatal(err)
+		}
+		var lua strings.Builder
+		lua.WriteString("ForeverSixtyDB = {\n\t[\"outbox\"] = ")
+		contractLuaValue(&lua, value, "\t")
+		lua.WriteString(",\n}\n")
+		path := filepath.Join(t.TempDir(), SavedVariablesName+".lua")
+		if err := os.WriteFile(path, []byte(lua.String()), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		ob, err := ScanOutbox(path)
+		if err != nil || ob == nil {
+			t.Fatalf("ScanOutbox = %v, %v\n%s", ob, err, lua.String())
+		}
+		var got, want any
+		if err := json.Unmarshal(ob.Body, &got); err != nil {
+			t.Fatal(err)
+		}
+		if err := json.Unmarshal(raw, &want); err != nil {
+			t.Fatal(err)
+		}
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("the outbox changed on the way through\n got: %s\nwant: %s", ob.Body, raw)
+		}
+		if ob.SavedAt != outbox.Export.SavedAt || ob.RequestedAt != outbox.SimRequest.RequestedAt {
+			t.Errorf("stamps = %q, %q", ob.SavedAt, ob.RequestedAt)
+		}
+	})
 }

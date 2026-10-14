@@ -84,6 +84,7 @@ nav button[aria-current='page'] { color: var(--gold); border-color: var(--line-w
 
 main { padding: 18px; max-width: 720px; }
 section[hidden] { display: none; }
+.row[hidden] { display: none; }
 
 h2 {
   margin: 0 0 12px;
