@@ -29,9 +29,10 @@ mock.CLIENT_PREFIXES = { "Character", "PaperDoll", "ContainerFrame", "QuestInfo"
 --- into; the guild frame itself (L5.1); the raid frame the group panel's button and flyout are
 --- parented to, the social window holding it, and the party frame (L5.2). L5.2 fix round 1 adds
 --- the drawn Social window (SocialUIFrame): on 1.60 FriendsFrame and RaidFrame have no rect, so the
---- group panel's button and flyout are parented to it.
+--- group panel's button and flyout are parented to it. Fix round 3 adds the legacy raid frame's
+--- holder (RaidParentFrame): on 1.60 the global RaidFrame sits in it, hidden on every tab.
 mock.CLIENT_NAMES = { "CharacterFrameModeTabs", "CommunitiesFrame", "RaidFrame", "FriendsFrame", "PartyFrame",
-	"SocialUIFrame" }
+	"SocialUIFrame", "RaidParentFrame" }
 
 function mock.isClientName(name)
 	if type(name) ~= "string" then
@@ -78,9 +79,11 @@ local WRITING_METHODS = { CreateTexture = true, CreateFontString = true, HookScr
 --- `frame` behind a proxy that records, in `state.clientWrites`, every write the addon's
 --- own code makes into it: a field set on its table, and CreateTexture, CreateFontString,
 --- HookScript and SetScript called on it ({ frame, kind, key, source }). The mock's own
---- writes and a spec's set-up writes are not the addon's and are not recorded.
-function mock.watchClientFrame(state, frame)
-	local name = frame.name
+--- writes and a spec's set-up writes are not the addon's and are not recorded. `label` names an
+--- unnamed client frame in the records (L5.2 fix round 3: the Social window's Raid tab content,
+--- SocialUIFrame.RaidFrame, has no name).
+function mock.watchClientFrame(state, frame, label)
+	local name = label or frame.name
 	return setmetatable({}, {
 		__index = function(_, key)
 			local value = frame[key]
@@ -342,7 +345,9 @@ function mock.install(state)
 	---   GameTooltip, font strings and textures are deliberately not
 	---   tracked: a spec counting the frames a view built must not count
 	---   the furniture the mock itself put there).
-	newFrame = function(kind, name, parent, template, track)
+	---   `watchAs` (L5.2 fix round 3): watch the frame as a client frame under that label though it
+	---   has no client name (an unnamed client frame keyed on its parent, as SocialUIFrame.RaidFrame).
+	newFrame = function(kind, name, parent, template, track, watchAs)
 		if template ~= nil and not state.templates[template] then
 			error("Unknown frame template '" .. tostring(template) .. "'", 2)
 		end
@@ -545,8 +550,8 @@ function mock.install(state)
 			return region
 		end
 		setmetatable(frame, { __index = methodFactory(state.missingMethods) })
-		if mock.isClientName(name) then
-			frame = mock.watchClientFrame(state, frame)
+		if mock.isClientName(name) or watchAs ~= nil then
+			frame = mock.watchClientFrame(state, frame, watchAs)
 		end
 		if track then
 			state.frames[#state.frames + 1] = frame
@@ -567,6 +572,11 @@ function mock.install(state)
 	end
 
 	state.newFrame = newFrame
+	--- An unnamed client frame under `parent`, watched as a client frame under `label` (L5.2 fix
+	--- round 3: the 1.60 Social window keys its tab content frames on itself, unnamed).
+	state.clientChild = function(parent, label)
+		return newFrame("Frame", nil, parent, nil, true, label)
+	end
 	_G.UIParent = newFrame("Frame", "UIParent", nil, nil, false)
 	_G.CreateFrame = function(kind, name, parent, template)
 		return newFrame(kind, name, parent, template, true)

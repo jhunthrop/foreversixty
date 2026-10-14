@@ -11,12 +11,17 @@
 -- parented to the anchor, the first of SocialUIFrame, FriendsFrame and RaidFrame that shows with
 -- a rect (looked up each time, guarded), and hide with the window: the button under its bottom
 -- right, the flyout TOPLEFT at its TOPRIGHT (Widgets' shared placement and measure helpers).
--- "The Raid tab is open" is RaidFrame:IsShown() with the anchor placed (GroupPanel.tabOpen), read
--- at every refresh point (open, the group and inspect events, PLAYER_ENTERING_WORLD, the
--- button's own show script) and, fix round 2 (N1), on every tab switch: a tiny addon-owned
--- sentinel frame parented to RaidFrame shows and hides with the Raid tab, and its own show and
--- hide scripts read the tab again (no hook). The button rests on another tab and wakes on the
--- Raid tab. The client frames are only ever read (the addon's frames are made as their children);
+-- "The Raid tab is open" is the Raid tab's own frame shown with the anchor placed
+-- (GroupPanel.tabOpen). Fix round 3 (C1, hunter-36): on 1.60 the global RaidFrame is the legacy
+-- raid frame, shown on every tab inside a RaidParentFrame hidden on every tab, so it says nothing;
+-- the Raid tab's content is SocialUIFrame.RaidFrame, an unnamed frame keyed on the window (read,
+-- never written). GroupPanel.raidTab finds it, else a visible RaidFrame on a client without one.
+-- The tab is read at every refresh point (open, the group and inspect events,
+-- PLAYER_ENTERING_WORLD, the button's own show script) and, fix round 2 (N1), on every tab switch:
+-- a tiny addon-owned sentinel frame parented to the Raid tab's frame shows and hides with it, and
+-- its own show and hide scripts read the tab again (no hook). The button rests on another tab and
+-- wakes on the Raid tab; leaving the Raid tab closes the flyout (fix round 3, C2). The client
+-- frames are only ever read (the addon's frames are made as their children);
 -- scripts sit only on the addon's own frames; nothing polls. /fs group
 -- toggles the flyout from anywhere: on the Social window (saying the panel shows on the Raid tab
 -- when that tab is not open), or on UIParent at the chip's side on a client with no social frame.
@@ -55,9 +60,14 @@ local S = Theme.SIZES
 --- The frames' names, for the /run probes (README rows 63-69).
 GroupPanel.BUTTON_NAME = "ForeverSixtyGroupButton"
 GroupPanel.FLYOUT_NAME = "ForeverSixtyGroupFlyout"
---- The client's raid frame: the child FriendsFrame shows on its Raid tab (1.60: no RaidFrameTab).
---- On 1.60 it shows without a rect; it says only whether the Raid tab is the one open.
+--- The client's raid frame. Fix round 3 (C1): on 1.60 the global RaidFrame is the legacy raid
+--- frame (in RaidParentFrame, hidden on every tab) and shows on every tab, so it is read only on a
+--- client without the Social window's own Raid tab frame, and only while it is visible.
 GroupPanel.FRAME = "RaidFrame"
+--- The 1.60 Social window and the key its Raid tab content frame sits under (unnamed, so a key
+--- read is the only stable way in): SocialUIFrame.RaidFrame, shown only on the Raid tab.
+GroupPanel.SOCIAL = "SocialUIFrame"
+GroupPanel.SOCIAL_RAID_KEY = "RaidFrame"
 --- The frames the button and flyout may anchor to, in order (fix round 1, D1): the drawn Social
 --- window (1.60), the classic social window, the raid frame itself. The first that shows with a
 --- rect is the anchor.
@@ -138,7 +148,8 @@ GroupPanel.data = nil
 --- The frames, once made, and the pooled member rows.
 GroupPanel.button = nil
 GroupPanel.flyout = nil
---- The sentinel on RaidFrame (fix round 2, N1), and the Raid tab as last read (N2: nil before).
+--- The sentinel on the Raid tab's frame (fix round 2, N1; fix round 3: GroupPanel.raidTab), and
+--- the Raid tab as last read (N2: nil before).
 GroupPanel.sentinel = nil
 GroupPanel.tabWasOpen = nil
 GroupPanel.rowFrames = {}
@@ -487,8 +498,9 @@ function GroupPanel.ownLack(result)
 	return table.concat(entry.what, L.groupMissingJoin)
 end
 
---- The chip's one line: "Ready check: 2 missing (Name, Name)"; for the player alone (fix round 2)
---- "Ready check: you are missing flask, food"; nil with nobody missing. Pure.
+--- The chip's one line: "Ready check: 2 missing (Name, Name)"; for the player alone (fix round 2;
+--- fix round 3, C3: the chip's short form) "Ready check: missing flask, food"; nil with nobody
+--- missing. Pure.
 function GroupPanel.summary(result)
 	local missing = type(result) == "table" and result.missing or {}
 	if #missing == 0 then
@@ -1054,9 +1066,40 @@ end
 
 -- The frames -------------------------------------------------------------------------------------
 
---- The client's raid frame, or nil (looked up each time, guarded).
+--- The client's global (legacy, on 1.60) raid frame, or nil (looked up each time, guarded).
 local function pane()
 	return Widgets.clientFrame(GroupPanel.FRAME)
+end
+
+--- The Social window's own Raid tab frame (SocialUIFrame.RaidFrame, unnamed), read through a
+--- guarded key lookup: a table with an IsShown method, else nil. Read only, never written.
+local function socialRaidTab()
+	local social = Widgets.clientFrame(GroupPanel.SOCIAL)
+	if social == nil then
+		return nil
+	end
+	local ok, frame = pcall(function()
+		return social[GroupPanel.SOCIAL_RAID_KEY]
+	end)
+	if ok and type(frame) == "table" and type(frame.IsShown) == "function" then
+		return frame
+	end
+	return nil
+end
+
+--- The frame that shows with the Raid tab (fix round 3, C1): SocialUIFrame.RaidFrame where the
+--- client has it (1.60), else the global RaidFrame only while it is visible (a client without the
+--- Social window's own frame), else nil. Looked up each time.
+function GroupPanel.raidTab()
+	local frame = socialRaidTab()
+	if frame ~= nil then
+		return frame
+	end
+	local raid = pane()
+	if raid ~= nil and Widgets.isVisible(raid) then
+		return raid
+	end
+	return nil
 end
 
 --- The anchor (fix round 1, D1): the first of GroupPanel.ANCHORS that shows with a rect
@@ -1087,9 +1130,10 @@ function GroupPanel.home()
 	return nil
 end
 
---- Whether the Raid tab is the one open: the anchor placed and RaidFrame shown.
+--- Whether the Raid tab is the one open: the anchor placed and the Raid tab's frame
+--- (GroupPanel.raidTab) shown.
 function GroupPanel.tabOpen()
-	return GroupPanel.anchor() ~= nil and Widgets.isShown(pane())
+	return GroupPanel.anchor() ~= nil and Widgets.isShown(GroupPanel.raidTab())
 end
 
 --- One of the addon's own frames moved to `holder` when it lives elsewhere (SetParent on the
@@ -1165,16 +1209,18 @@ function GroupPanel.ensureButton()
 	return button
 end
 
---- The sentinel (fix round 2, N1): a tiny addon-owned frame parented to RaidFrame. RaidFrame has
---- no rect on 1.60 but still shows and hides with the Raid tab, and so does its child, so the
---- sentinel's own show and hide scripts (GroupPanel.onTab) hear every tab switch inside the open
---- Social window, which nothing else does. Scripts on the addon's own frame only, no hook. Made
---- the first time a refresh finds RaidFrame (never in combat: it waits for its end, as the button
---- does); moved if the client's RaidFrame is ever another frame. nil without one.
+--- The sentinel (fix round 2, N1): a tiny addon-owned frame parented to the Raid tab's frame
+--- (GroupPanel.raidTab; fix round 3: SocialUIFrame.RaidFrame on 1.60). That frame shows and hides
+--- with the Raid tab, and so does its child, so the sentinel's own show and hide scripts
+--- (GroupPanel.onTab, GroupPanel.onTabLeft) hear every tab switch inside the open Social window,
+--- which nothing else does. Scripts on the addon's own frame only, no hook. Made the first time a
+--- refresh finds a Raid tab frame (never in combat: it waits for its end, as the button does);
+--- moved when that frame changes (a SocialUIFrame made late, or the legacy RaidFrame giving way to
+--- the window's own). Kept where it is while there is none; nil before the first.
 function GroupPanel.ensureSentinel()
-	local raid = pane()
+	local raid = GroupPanel.raidTab()
 	if raid == nil then
-		return nil
+		return GroupPanel.sentinel
 	end
 	local sentinel = GroupPanel.sentinel
 	if sentinel == nil then
@@ -1189,7 +1235,7 @@ function GroupPanel.ensureSentinel()
 			GroupPanel.onTab()
 		end)
 		sentinel:SetScript("OnHide", function()
-			GroupPanel.onTab()
+			GroupPanel.onTabLeft()
 		end)
 		GroupPanel.sentinel = sentinel
 	elseif GroupPanel.sentinelHome ~= raid then
@@ -1769,7 +1815,8 @@ function GroupPanel.onAura(unit)
 	local function again()
 		GroupPanel.auraPending = nil
 		guarded(function()
-			if GroupPanel.tabOpen() ~= GroupPanel.tabWasOpen then
+			-- Fix round 3: a tab never read (nil) and one read closed (false) are the same.
+			if (GroupPanel.tabOpen() or false) ~= (GroupPanel.tabWasOpen or false) then
 				syncTab()
 			end
 			if checkStands(Theme.now()) then
@@ -1851,10 +1898,24 @@ function GroupPanel.onButtonShow()
 	guarded(reread)
 end
 
---- The sentinel's show and hide scripts (fix round 2, N1: RaidFrame shown or hidden, the Raid tab
---- opened or left, the window opened or closed): the Raid tab and the window read again.
+--- The sentinel's show script (fix round 2, N1: the Raid tab's frame shown, the Raid tab opened or
+--- the window opened on it): the Raid tab and the window read again.
 function GroupPanel.onTab()
 	guarded(reread)
+end
+
+--- The sentinel's hide script (the Raid tab left, or the window closed): the Raid tab and the
+--- window read again; fix round 3 (C2): an open flyout closes when the window is still drawn on
+--- another tab (never when the window closed: it shows with the window again, as /fs group with
+--- the window closed has it). It is not opened again on the way back.
+function GroupPanel.onTabLeft()
+	guarded(function()
+		reread()
+		local flyout = GroupPanel.flyout
+		if flyout and flyout:IsShown() and GroupPanel.anchor() ~= nil and not GroupPanel.tabOpen() then
+			closeFlyout()
+		end
+	end)
 end
 
 --- Listens for the members' hellos and snapshot! answers, once (Options.register).
@@ -1875,20 +1936,24 @@ end
 --- 21:04: 2 missing" (open: the flyout shows and is visible), counted now as the flyout counts.
 --- Fix round 2: the count always includes the player, so out of a group it reads "1 member
 --- (you)", and a check that read the player alone says what they lack: "ready check 19:43: you
---- are missing flask, food" (or "you are missing nothing").
+--- are missing flask, food" (fix round 3: "nothing missing" when clean). Fix round 3: a check that
+--- read the player alone is stale once they are in a group, and reads "none".
 function GroupPanel.diagLine()
 	local open = Widgets.isShown(GroupPanel.flyout) and Widgets.isVisible(GroupPanel.flyout)
 	local state = open and L.diagPanelOpen or L.diagPanelClosed
 	local result = GroupPanel.result
+	local inGroup = GroupPanel.inGroup()
 	local check = L.diagGroupNone
 	if result ~= nil and result.alone then
-		local lack = GroupPanel.ownLack(result)
-		check = lack ~= nil and string.format(L.diagGroupCheckYou, result.clock or "", lack)
-			or string.format(L.diagGroupCheckYouNone, result.clock or "")
+		if not inGroup then
+			local lack = GroupPanel.ownLack(result)
+			check = lack ~= nil and string.format(L.diagGroupCheckYou, result.clock or "", lack)
+				or string.format(L.diagGroupCheckYouNone, result.clock or "")
+		end
 	elseif result ~= nil then
 		check = string.format(L.diagGroupCheck, result.clock or "", #result.missing)
 	end
-	if not GroupPanel.inGroup() then
+	if not inGroup then
 		return string.format(L.diagGroupPanelYou, state, check)
 	end
 	local counts = { members = 0, inspected = 0, live = 0 }
