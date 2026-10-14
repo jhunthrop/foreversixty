@@ -177,7 +177,13 @@ end
 --- (Follow.sameCharacter) lets a key saved before the client said its region still count;
 --- `create` makes the entry under `key` when none matches.
 function Prefs.chipCharacter(key, same, create)
-	local byCharacter = Prefs.current().chip.byCharacter
+	return Prefs.characterEntry(Prefs.current().chip.byCharacter, key, same, create)
+end
+
+--- The entry for `key` in a per-character table (`byCharacter`: the chip's, the guild tab's), the
+--- one rule both read through: an exact key, else a key `same` (Follow.sameCharacter) matches, else
+--- a new entry under `key` when `create`, else nil.
+function Prefs.characterEntry(byCharacter, key, same, create)
 	if type(key) ~= "string" or key == "" then
 		return nil
 	end

@@ -925,6 +925,18 @@ describe("Progress.pairPartner", function()
 		assert.is_not_nil(partner)
 		assert.are.equal("item:7:b", partner.item.link)
 	end)
+
+	-- Polish round B fix 1, item 4: by link when both have one, else by item id.
+	it("leaves out the hovered copy by item id when the bag entry carries no link", function()
+		local hovered = sword("item:7:a")
+		local bare = { itemId = 7, equipLocation = "INVTYPE_WEAPON", stats = { strength = 5 } }
+		assert.is_nil(Progress.pairPartner(hovered, wornMain, { bare }, weights))
+		-- Two links that differ are two copies even with one item id; a hovered item with no link
+		-- still goes by id.
+		assert.is_not_nil(Progress.pairPartner(hovered, wornMain, { sword("item:7:b") }, weights))
+		local unlinked = { itemId = 7, equipLocation = "INVTYPE_WEAPON", stats = { strength = 5 } }
+		assert.is_nil(Progress.pairPartner(unlinked, wornMain, { sword("item:7:a") }, weights))
+	end)
 end)
 
 -- The designer's pre-item (round A review): a gap whose biggest gain comes from a weapon priced from

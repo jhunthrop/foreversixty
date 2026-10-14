@@ -763,16 +763,21 @@ local function valueOf(row, key)
 	return row[key]
 end
 
+--- A gap per second (DPS, or a healer's HPS) as against points.
+local function perSecond(unit)
+	return unit == "dps" or unit == "hps"
+end
+
 --- The order for `sort` ({ key, descending }; nil: Gap high to low): the column's values, a
---- blank last both ways; Gap puts gaps in DPS before those in points, each by number. Equal
+--- blank last both ways; Gap puts gaps per second (DPS or HPS) before those in points, each by number. Equal
 --- values go by name, A to Z.
 local function comparator(sort)
 	local key = sort ~= nil and sort.key or "gap"
 	local descending = sort == nil or sort.descending == true
 	return function(left, right)
 		local a, b = valueOf(left, key), valueOf(right, key)
-		if key == "gap" and a ~= nil and b ~= nil and (left.unit == "dps") ~= (right.unit == "dps") then
-			return left.unit == "dps"
+		if key == "gap" and a ~= nil and b ~= nil and perSecond(left.unit) ~= perSecond(right.unit) then
+			return perSecond(left.unit)
 		end
 		if a ~= b then
 			if a == nil then
@@ -892,9 +897,18 @@ function GroupPanel.cells(row)
 	local gap = blank()
 	if type(row.gap) == "number" then
 		local rounded = math.floor(row.gap + 0.5)
-		local text = string.format(row.unit == "dps" and L.groupGapDps or L.groupGapPts, rounded)
-		if row.unit == "dps" and type(row.gapExact) == "number" and row.gapExact > 0 and row.gapExact < 10 then
-			text = string.format(L.groupGapDpsDecimal, row.gapExact)
+		local healer = row.unit == "hps"
+		local format = healer and L.groupGapHps or row.unit == "dps" and L.groupGapDps or L.groupGapPts
+		local text = string.format(format, rounded)
+		-- Under 10 per second the player's own gap shows its decimal, rounded up so it never
+		-- contradicts the integer (polish round B fix 1, item 5).
+		local shown, decimal = Progress.shownGap(row.gapExact)
+		if perSecond(row.unit) and shown ~= nil then
+			if decimal then
+				text = string.format(healer and L.groupGapHpsDecimal or L.groupGapDpsDecimal, shown)
+			else
+				text = string.format(format, shown)
+			end
 		end
 		if row.cold and rounded > 0 then
 			text = string.format(L.gapAtLeast, text)
@@ -932,6 +946,27 @@ GroupPanel.ENCHANT_LEVEL = 40
 
 function GroupPanel.belowEnchantLevel(level)
 	return type(level) == "number" and level > 0 and level < GroupPanel.ENCHANT_LEVEL
+end
+
+--- A column header's hover lines (L.groupHeaderHints), or nil for a column with none. The Enchants
+--- header adds "Enchants are checked from level 40." when every member in `rows` is under 40 (the
+--- column is blank then, and this says why).
+function GroupPanel.headerHint(key, rows)
+	local hint = L.groupHeaderHints[key]
+	if hint == nil or key ~= "enchants" or type(rows) ~= "table" or #rows == 0 then
+		return hint
+	end
+	for _, row in ipairs(rows) do
+		if not GroupPanel.belowEnchantLevel(row.level) then
+			return hint
+		end
+	end
+	local lines = {}
+	for index, line in ipairs(hint) do
+		lines[index] = line
+	end
+	lines[#lines + 1] = L.groupEnchantsFrom
+	return lines
 end
 
 --- A row's hover: the full name in its class colour, the score line, the best parse, the
@@ -1012,7 +1047,8 @@ local function weakestOf(plan, equipped, data)
 	local worn = equipped[row.slot]
 	local current = plan.current or {}
 	return {
-		slot = row.slot, gain = row.gain, unit = plan.unit == "dps" and "dps" or "score", healing = current.healing,
+		slot = row.slot, gain = row.gain, unit = plan.unit ~= "pts" and "dps" or "score",
+		healing = current.healing or plan.unit == "hps",
 		wornName = worn ~= nil and itemName(worn.link, worn.itemId, data) or nil,
 		targetName = itemName(nil, row.itemId, data),
 	}
@@ -1789,9 +1825,11 @@ local function makeHeaders(flyout)
 		button:SetScript("OnEnter", function(self)
 			header.over = true
 			paintHeader(key)
-			if hint ~= nil then
+			-- Read as the pointer enters, from the rows drawn last (the Enchants hint depends on them).
+			local shown = GroupPanel.headerHint(key, GroupPanel.last ~= nil and GroupPanel.last.rows or nil)
+			if shown ~= nil then
 				local lines = {}
-				for line, text in ipairs(hint) do
+				for line, text in ipairs(shown) do
 					lines[line] = Theme.inlineColor(line == 1 and "tooltipText" or "tooltipMuted", text)
 				end
 				Theme.showLines(self, lines, "ANCHOR_TOP")
@@ -2132,6 +2170,12 @@ function GroupPanel.lootNow()
 	local data = GroupPanel.data or ns.Data
 	local faction = Compat.playerFaction()
 	local resolvers = {
+		-- A healer's answer reads in HPS: their spec, from the hello or the inspect, in the data's table.
+		healing = function(member)
+			local spec = validSpec(member.live ~= nil and member.live.spec or nil)
+				or validSpec(member.inspect ~= nil and member.inspect.spec or nil)
+			return spec ~= nil and Comms.gapUnit(data, spec) == "hps" or nil
+		end,
 		own = function(drop)
 			if drop.ownResult == nil then
 				local ok, result = pcall(LootCouncil.ownValue, data, drop.itemId, true)
@@ -2172,7 +2216,7 @@ end
 function GroupPanel.lootChatLines()
 	local lines = {}
 	for _, entry in ipairs(GroupPanel.lootNow()) do
-		lines[#lines + 1] = entry.kind == "title" and entry.plain or entry.plain
+		lines[#lines + 1] = entry.plain
 	end
 	return lines
 end

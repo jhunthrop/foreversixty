@@ -1229,7 +1229,7 @@ function BuildDialog.use(code, name, inboxId)
 	local say = BuildDialog.say or Theme.say
 	say(line)
 	if from ~= nil then
-		say(string.format(L.dialogUsingPaste, from))
+		say(string.format(L.dialogUsingPaste, from, from))
 	end
 	return build
 end
@@ -1999,7 +1999,16 @@ local function drawPreview(verdict, y)
 	preview.frame:SetHeight(headY)
 	stack(preview.frame, paste.content, y, headY)
 	-- What Use replaces and how the orders compare, and the next talent the candidate gives.
-	local ok, context = pcall(BuildDialog.previewContext, Follow.build, verdict.build, ranks, data, liveLevel(),
+	-- A paste goes to the leveling slot while the raid slot is active, so it replaces that slot's
+	-- build (or nothing), never the raid build Follow.build holds.
+	local followed = Follow.build
+	if verdict.inboxId == nil then
+		local slot, from = Follow.pasteSlot()
+		if from ~= nil then
+			followed = Follow.slotBuild(data, slot)
+		end
+	end
+	local ok, context = pcall(BuildDialog.previewContext, followed, verdict.build, ranks, data, liveLevel(),
 		widthOf(paste.replaces), contentWidth())
 	if not ok then
 		context = {}
@@ -2361,13 +2370,21 @@ local function refreshTabs()
 		tab.badge:Hide()
 	end
 	-- The same in both modes: the copy tab, anchored to this one's right edge, never moves.
-	tab:SetWidth(BuildDialog.pasteTabWidth(tab.labelWidth or 0, badgeWidth or 0, badge ~= nil))
-	-- The copy tab says whose link it holds (L3.7 item 29), and is as wide as its label.
+	local pasteWidth = BuildDialog.pasteTabWidth(tab.labelWidth or 0, badgeWidth or 0, badge ~= nil)
+	tab:SetWidth(pasteWidth)
+	-- The copy tab says whose link it holds (L3.7 item 29), and is as wide as its label, never wider
+	-- than the content width leaves beside the paste tab: past that the label reads "Copy link".
+	local S = Theme.SIZES
 	local copyTab = BuildDialog.tabs.copy
 	local label = copyTab.foreverSixtyLabel
+	local available = contentWidth() - pasteWidth - S.gap * 2
 	label:SetText(BuildDialog.copyTabLabel(BuildDialog.link))
 	local width = type(label.GetStringWidth) == "function" and label:GetStringWidth() or 0
-	copyTab:SetWidth(math.max(Theme.SIZES.tabWidth, width + Theme.SIZES.padding * 2))
+	if width + S.padding * 2 > available and BuildDialog.link ~= nil then
+		label:SetText(L.dialogCopyLinkShort)
+		width = type(label.GetStringWidth) == "function" and label:GetStringWidth() or 0
+	end
+	copyTab:SetWidth(math.min(available, math.max(S.tabWidth, width + S.padding * 2)))
 end
 
 --- Show one tab: the paste box takes the keyboard in paste mode; in copy mode the export

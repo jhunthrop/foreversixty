@@ -297,11 +297,7 @@ end
 --- (level - 9, Progress.unspentPoints' rule), never more than the plan holds; the plan's
 --- whole length where the level is not known.
 function PanelTab.pointsAllowed(build, level)
-	local total = build ~= nil and #build.order or 0
-	if type(level) ~= "number" then
-		return total
-	end
-	return math.min(total, math.max(0, level - 9))
+	return Progress.pointsAllowed(build, level)
 end
 
 --- The off-plan talents, one line each (fix round 3, item 1), from what the talent marks

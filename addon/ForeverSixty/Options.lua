@@ -135,7 +135,9 @@ function Options.buildCommand(rest)
 	local wanted = tostring(rest or ""):lower():match("^(%S+)")
 	for _, slot in ipairs(Follow.slotsFor()) do
 		if slot.id == wanted then
-			if not slot.hasBuild then
+			-- A slot whose saved code no longer decodes is as good as empty: nothing is switched to,
+			-- so the build in force stays in force and the reply never says "Now following".
+			if not slot.hasBuild or Follow.slotBuild(Options.data, slot.id) == nil then
 				return { string.format(L.buildSlotEmpty, slot.name) }
 			end
 			local build = Follow.setActiveSlot(Options.data, slot.id)
@@ -688,7 +690,7 @@ function Options.register()
 	Chip.afterChoice = function()
 		Options.refreshSurfaces(Options.data)
 	end
-	-- The talent window's own show and hide (TalentGlow.watch's hooks) draw
+	-- The talent window's own show and hide (TalentGlow.watch's sentinel frame) draw
 	-- and clear every talent mark, the ring included.
 	TalentGlow.onShow = TalentMarks.onShow
 	TalentGlow.onHide = TalentMarks.clear

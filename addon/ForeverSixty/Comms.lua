@@ -65,7 +65,9 @@ Comms.CHANNELS = {
 --- Seconds between two sends of a kind on one channel. hello's limit is also the least time
 --- between two hellos taken from one sender. snapshot! is sent automatically in answer to
 --- anyone's snapshot?, so it is held to a pace too, or a question could make it flood.
-Comms.LIMITS = { ["hello"] = 60, ["snapshot!"] = 10 }
+--- push's is a receive-side limit only: one chat line per sender per code in that many seconds (an
+--- officer pushing several builds in a row is not held to it on the way out).
+Comms.LIMITS = { ["hello"] = 60, ["snapshot!"] = 10, ["push"] = 60 }
 --- How long a loot? stays open for a loot! reply.
 Comms.LOOT_WINDOW = 30
 --- How long a sender stays in Comms.seen after their last hello or snapshot!.
@@ -239,18 +241,20 @@ end
 
 local lastSent = {}
 local lastHelloFrom = {}
+local lastPushFrom = {}
 local openLoot = {}
 local handlers = {}
 
 --- Forget every timer, listener and sender. Specs only.
 function Comms.reset()
-	lastSent, lastHelloFrom, openLoot, handlers = {}, {}, {}, {}
+	lastSent, lastHelloFrom, lastPushFrom, openLoot, handlers = {}, {}, {}, {}, {}
 	Comms.seen, Comms.dropped, Comms.failed, Comms.failureNoted = {}, 0, 0, nil
 end
 
 --- Seconds left before `kind` may go out on `channel` again, or nil when it may go now.
 local function waitFor(kind, channel, now)
-	local limit = Comms.LIMITS[kind]
+	-- push's limit is the receiver's (onEvent): sending several builds in a row is the officer's right.
+	local limit = kind ~= "push" and Comms.LIMITS[kind] or nil
 	local last = lastSent[kind .. "@" .. channel]
 	if limit ~= nil and last ~= nil and now - last < limit then
 		return math.ceil(limit - (now - last))
@@ -393,7 +397,8 @@ end
 --- level with its weapon term; Progress.roundedGain).
 --- Answers the biggest slot gain rounded half-up to a whole number for the wire, except that a
 --- gain between 0 and 0.5 is 1 (never "on plan" while behind), and its unit: "dps" with a DPS
---- per point, else "pts"; 0 when every scored slot is on plan or ahead. nil when no slot could be
+--- per point ("hps" for a healer's), else "pts"; 0 when every scored slot is on plan or ahead. nil when no
+--- slot could be
 --- scored: no data or spec, no weights for `spec`, or every target unscored (a pick the client
 --- has not cached). `equipped` (Gear.readEquipped's), `level` (the client's) and `faction`
 --- (Compat.playerFaction's) may be given. (L3.7 item 43: the two parameters nothing read, `build`
@@ -434,15 +439,16 @@ end
 
 --- The unit a guildmate's gear gap is in (L3.7 item 45: no protocol bump, the hello sends the
 --- integer alone): inferred from the sender's spec role in the data's spec table
---- (Data.dpsPerPoint): a healer spec (`healing`) reads "pts", every other spec the data knows
---- "dps"; a spec with no row, or none ("-"), reads "pts". `level` is no longer read.
+--- (Data.dpsPerPoint): a healer spec (`healing`) reads "hps" (contract 3: a healer's "dps" is
+--- healing per second, as Progress.gearPlan says it for the sender), every other spec the data
+--- knows "dps"; a spec with no row, or none ("-"), reads "pts". `level` is no longer read.
 function Comms.gapUnit(data, spec, level) -- luacheck: ignore 212/level
 	local row = type(data) == "table" and type(data.dpsPerPoint) == "table" and spec ~= nil and spec ~= "-"
 		and data.dpsPerPoint[spec] or nil
-	if type(row) ~= "table" or row.healing == true then
+	if type(row) ~= "table" then
 		return "pts"
 	end
-	return "dps"
+	return row.healing == true and "hps" or "dps"
 end
 
 --- Whether a guild rank index may push a build (0 is the guild master): the one rule the
@@ -578,6 +584,14 @@ function Comms.onEvent(prefix, text, channel, sender)
 			drop()
 			return false
 		end
+		-- One chat line per sender per code: the same push again inside the limit is not heard.
+		local pushKey = sender .. "|" .. tostring(named.buildCode)
+		local lastPush = lastPushFrom[pushKey]
+		if lastPush ~= nil and now - lastPush < Comms.LIMITS.push then
+			drop()
+			return false
+		end
+		lastPushFrom[pushKey] = now
 	elseif kind == "loot?" then
 		openLoot[named.lootId] = now
 	elseif kind == "loot!" then

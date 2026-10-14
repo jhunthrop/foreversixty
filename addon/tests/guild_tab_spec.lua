@@ -619,6 +619,30 @@ describe("GuildTab", function()
 			Export.characterKey = real
 		end)
 
+		-- Polish round B fix 1, item 6: the choice matches the character as the chip's does
+		-- (Follow.sameCharacter), so a key saved with an empty region still counts.
+		it("finds the Online only choice saved under a key with an empty region", function()
+			start()
+			open()
+			local Export = require("Export")
+			local real = Export.characterKey
+			local byCharacter = require("Prefs").current().guildTab.byCharacter
+			Export.characterKey = function()
+				return "/Ashbringer/Bob"
+			end
+			byCharacter["/Ashbringer/Bob"] = { onlineOnly = true }
+			Export.characterKey = function()
+				return "US/Ashbringer/Bob"
+			end
+			GuildTab.onlineOnly = nil
+			assert.is_true(GuildTab.savedOnlineOnly())
+			-- Flipping it writes back to the entry that matched, not a second one.
+			GuildTab.setOnlineOnly(false)
+			assert.is_false(byCharacter["/Ashbringer/Bob"].onlineOnly)
+			assert.is_nil(byCharacter["US/Ashbringer/Bob"])
+			Export.characterKey = real
+		end)
+
 		it("draws the record's date at the end of the count line", function()
 			start()
 			open()
@@ -1499,6 +1523,26 @@ describe("GuildTab", function()
 				assert.are.equal(string.format(L.gapAtLeast, "4 DPS"), cells.gap.text)
 				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 0, unit = "dps", cold = true })
 				assert.are.equal("0 DPS", cells.gap.text)
+			end)
+
+			-- Polish round B fix 1, item 2: a healer's figures read HPS, on both sides of the wire.
+			it("reads a healer's gap as HPS, whole or with its decimal", function()
+				local cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 14, unit = "hps" })
+				assert.are.equal("14 HPS", cells.gap.text)
+				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 4, gapExact = 3.5, unit = "hps" })
+				assert.are.equal("3.5 HPS", cells.gap.text)
+			end)
+
+			-- Item 5: the decimal rounds up under 10 (never below 0.1) and the integer shows from 10, so the
+			-- decimal never contradicts the integer the wire carries.
+			it("never lets the decimal gap contradict the integer", function()
+				local cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 1, gapExact = 0.04,
+					unit = "dps" })
+				assert.are.equal("0.1 DPS", cells.gap.text)
+				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 10, gapExact = 9.96, unit = "dps" })
+				assert.are.equal("10 DPS", cells.gap.text)
+				cells = GuildTab.cells({ short = "A", name = "A", online = true, gap = 1, gapExact = 0.3, unit = "dps" })
+				assert.are.equal("0.3 DPS", cells.gap.text)
 			end)
 		end)
 

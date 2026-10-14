@@ -191,6 +191,26 @@ describe("Options", function()
 			assert.are.equal(1, #BuildDialog.rows)
 		end)
 
+		-- Polish round B fix 1, item 7: one chat line per sender per code within the push limit.
+		it("says so once per sender and code, and hears the same code again after the limit", function()
+			local Theme = require("Theme")
+			local realNow = Theme.now
+			local clock = 1000
+			Theme.now = function()
+				return clock
+			end
+			assert.is_true(hear(CODE, "BM raid"))
+			local lines = #state.printed
+			assert.is_false(hear(CODE, "BM raid"))
+			assert.are.equal(lines, #state.printed)
+			-- Another sender, or another code from the same sender, is its own message.
+			assert.is_true(hear(CODE, "BM raid", "Other-Ashbringer"))
+			assert.is_true(hear("FSB1:1.60.1.69893:paladin:112:", "BM leveling"))
+			clock = clock + Comms.LIMITS.push
+			assert.is_true(hear(CODE, "BM raid"))
+			Theme.now = realNow
+		end)
+
 		it("is not heard from someone who may not push", function()
 			Comms.mayPush = function()
 				return false
@@ -223,6 +243,20 @@ describe("Options", function()
 			assert.are.equal("Pasted", Follow.build.name)
 			assert.are.same({ L.buildUsage }, Options.handle("build"))
 			assert.are.same({ L.buildUsage }, Options.handle("build nonsense"))
+		end)
+	end)
+
+	-- Polish round B fix 1, item 3: a slot whose saved code no longer decodes is not switched to.
+	describe("/fs build with a stale code", function()
+		it("says the slot is empty rather than 'Now following', and keeps the build in force", function()
+			local Follow = require("Follow")
+			local L = require("Locale")
+			Follow.load("FSB1:1.60.1.69893:paladin:111:", DATA, "Pasted", "leveling")
+			ForeverSixtyDB.follows[require("Export").characterKey()].slots.raid =
+				{ code = "FSB1:not-a-build", name = "Old raid" }
+			assert.are.same({ string.format(L.buildSlotEmpty, "Raid") }, Options.handle("build raid"))
+			assert.are.equal("Pasted", Follow.build.name)
+			assert.is_true(Follow.slotsFor()[2].active)
 		end)
 	end)
 

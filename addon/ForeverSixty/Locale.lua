@@ -292,7 +292,7 @@ local L = {
 	minimapRightClick = "Right-click: settings",
 	minimapNoBuild = "No build loaded",
 
-	-- The Settings page (spec section 4.11, L3.5 and fix rounds 1 and 2): eight switches, each
+	-- The Settings page (spec section 4.11, L3.5 and fix rounds 1 and 2): nine switches, each
 	-- hint saying what the switch does; Reset positions; the command list; the addon data and
 	-- the player ratings lines at the foot, which never print a build number (the first that
 	-- is not current repeated under the title). ASCII ">" only: this client's font has no
@@ -312,13 +312,13 @@ local L = {
 		.. "Off: hides player scores too.",
 	-- L4.4: the eighth switch (spec section 4.11). The badge leads the message, after the
 	-- name: a chat filter cannot touch the name without breaking its link and the reply.
-	-- L3.7 item 49: the loot council's quality rule: epics only unless this is on.
-	settingsLootRares = "Ask the group about rare drops too",
-	settingsLootRaresHint = "As the master looter you ask the group about epics. On: rares too, "
-		.. "whatever the loot threshold.",
 	settingsBadges = "Score badges in chat",
 	settingsBadgesHint = "Shows a player's Forever Score before their message in LFG, Trade, guild chat and "
 		.. "whispers.",
+	-- L3.7 item 49: the ninth switch, the loot council's quality rule: epics only unless this is on.
+	settingsLootRares = "Ask the group about rare drops too",
+	settingsLootRaresHint = "As the master looter you ask the group about epics. On: rares too, "
+		.. "whatever the loot threshold.",
 	settingsBroadcast = "Share my build with my guild",
 	-- One line in player words; the ticked box shows the default (fix round 2, item 2).
 	settingsBroadcastHint = "Guildmates with Forever Sixty see your level, spec, build and gear gap. "
@@ -888,8 +888,10 @@ L.dialogWaitingCount = "%d waiting"
 L.dialogCopy = "Copy my character"
 -- L3.7 item 29: the copy tab's label while the box holds a /fs link ("%s" the linked player).
 L.dialogCopyLink = "Copy %s's link"
+-- Fix round 1, item 12: the same label when the name would not fit beside the Paste tab.
+L.dialogCopyLinkShort = "Copy link"
 -- L3.7 item 28: under the empty paste box, a muted line on where builds come from.
-L.dialogPasteCompanion = "Builds you pick on " .. SITE .. " arrive here through the companion app."
+L.dialogPasteCompanion = "Builds you pick on " .. SITE .. " arrive here through the companion app. Run it on your PC."
 -- L3.7 item 30: the newest sim result says it failed.
 L.dialogSimFailed = "Sim failed \194\183 ask again"
 -- At the panel's bottom left, a step dimmer than an inactive tab.
@@ -932,8 +934,9 @@ L.dialogReplacesDiffers = "Replaces %s · first differs at point %d: %s"
 L.dialogNextWould = "Next talent would be: %s"
 -- A refusal's last line, muted.
 L.dialogStillFollowing = "You are still following %s."
--- L3.7 item 32: after a paste was adopted beside a raid build ("%s" the raid slot's id).
-L.dialogUsingPaste = "Using your paste. /fs build %s switches back."
+-- L3.7 item 32: after a paste was adopted beside a raid build (both "%s" the raid slot's id; fix round 1,
+-- item 11: it says the raid build is kept).
+L.dialogUsingPaste = "Using your paste. Your %s build is kept; /fs build %s switches back."
 -- /fs build: "Now following Raid build (Raid slot)." and its refusals.
 L.buildSwitched = "Now following %s (%s slot)."
 L.buildSlotEmpty = "Nothing is saved in the %s slot."
@@ -1127,11 +1130,13 @@ L.guildTabColumns = {
 L.guildTabNoLogs = "no logs"
 L.guildTabPercent = "%d%%"
 L.guildTabGapDps = "%d DPS"
+L.guildTabGapHps = "%d HPS"
 L.guildTabGapPts = "%d pts"
 -- A record cell for a member the readable record has nothing for (L3.7 item 40), dim.
 L.guildTabDash = "\226\128\148"
 -- The player's own gap under 10 DPS shows one decimal (the wire stays an integer): "3.5 DPS".
 L.guildTabGapDpsDecimal = "%.1f DPS"
+L.guildTabGapHpsDecimal = "%.1f HPS"
 -- A gap whose biggest gain is a weapon priced from the data alone (the client's stats not here yet)
 -- is a lower bound: "≥ 4 DPS" (the guild tab's Gap cell and the group panel's row).
 L.gapAtLeast = "\226\137\165 %s"
@@ -1216,8 +1221,10 @@ L.groupHeaderHints = {
 -- Cells: a gap in its unit, a member a readable record has no logs for, enchants missing or a
 -- tick (the client's ready-check art), the addon present.
 L.groupGapDps = "%d DPS"
+L.groupGapHps = "%d HPS"
 L.groupGapPts = "%d pts"
 L.groupGapDpsDecimal = "%.1f DPS"
+L.groupGapHpsDecimal = "%.1f HPS"
 L.groupNoLogs = "no logs"
 L.groupEnchantsMissing = "%d missing"
 -- L3.7 item 47: below this level the Enchants cell is blank and its hover says why.

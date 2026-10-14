@@ -86,6 +86,21 @@ describe("the strip's line (TalentMarks.stripSegments)", function()
 		assert.are.equal("Arms leveling · 12 of 51 points · next point at level 21 · " .. MUTED .. "0 off plan|r", text)
 	end)
 
+	-- Polish round B fix 1, item 10: the count reads the level's points like the flyout ("12 of 15
+	-- points" at level 24), not the build's whole 51; a point over the allowance is not counted.
+	it("counts against the points the level allows when it is given", function()
+		local text = stripLine("Arms leveling", progress(12, 51, 25, 3), { unspent = 0, allowed = 15 })
+		assert.are.equal("Arms leveling · 12 of 15 points · next point at level 25 · " .. WARN .. "3 off plan|r", text)
+		text = stripLine("Arms leveling", progress(20, 51, 25, 0), { unspent = 0, allowed = 15 })
+		assert.are.equal("Arms leveling · 15 of 15 points · next point at level 25 · " .. MUTED .. "0 off plan|r", text)
+		-- Below level 10 nothing is allowed yet: the build's own length, never "0 of 0".
+		text = stripLine("Arms leveling", progress(0, 51, 10, 0), { unspent = 0, allowed = 0 })
+		assert.are.equal("Arms leveling · 0 of 51 points · next point at level 10 · " .. MUTED .. "0 off plan|r", text)
+		local led = stripLine("Arms leveling", progress(12, 51, 25, 3),
+			{ unspent = 0, allowed = 15, next = "Lethal Attacks (1 of 5)" })
+		assert.is_truthy(led:find("Next: Lethal Attacks (1 of 5) · Arms leveling · 12 of 15 points", 1, true))
+	end)
+
 	it("has nothing to say without a build", function()
 		assert.is_nil(stripLine(nil, progress(0, 0, nil, 0), {}))
 	end)

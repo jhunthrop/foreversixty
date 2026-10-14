@@ -249,9 +249,9 @@ describe("Comms, the FS1 protocol", function()
 		-- L3.7 items 8 and 9: the unit is the band's. A leveler whose spec has only the spec-level
 		-- figure (no band to read) has none, so a guildmate's gap reads in points.
 		-- L3.7 item 45 (ruling, no protocol bump): the receiver infers the unit from the sender's spec
-		-- role in the data's spec table: a healer spec reads "pts", every other spec "DPS" at any level;
+		-- role in the data's spec table: a healer spec reads "HPS" (round B fix 1), every other spec "DPS" at any level;
 		-- a spec the data has no row for, or none, reads "pts". The hello keeps sending the integer.
-		it("reads a guildmate's gap in points for a healer spec, DPS for any other the data knows", function()
+		it("reads a guildmate's gap in HPS for a healer spec, DPS for any other the data knows", function()
 			local banded = { dpsPerPoint = DATA.dpsPerPoint }
 			assert.are.equal("dps", Comms.gapUnit(banded, "hunter-marksmanship", 26))
 			assert.are.equal("dps", Comms.gapUnit(banded, "hunter-marksmanship", 60))
@@ -261,12 +261,33 @@ describe("Comms, the FS1 protocol", function()
 				["priest-holy"] = { dps = 0.28, healing = true },
 				["warrior-protection"] = { dps = 0.1, healing = false },
 			} }
-			assert.are.equal("pts", Comms.gapUnit(roles, "priest-holy", 60))
-			assert.are.equal("pts", Comms.gapUnit(roles, "priest-holy", 20))
+			assert.are.equal("hps", Comms.gapUnit(roles, "priest-holy", 60))
+			assert.are.equal("hps", Comms.gapUnit(roles, "priest-holy", 20))
 			assert.are.equal("dps", Comms.gapUnit(roles, "warrior-protection", 20))
 			assert.are.equal("pts", Comms.gapUnit(roles, "mage-fire", 60))
 			assert.are.equal("pts", Comms.gapUnit(banded, "-", 26))
 			assert.are.equal("pts", Comms.gapUnit(nil, "priest-holy", 60))
+		end)
+
+		-- Polish round B fix 1, item 2 (contract 3: a healer's "dps" is healing per second): a healer's gap
+		-- reads in HPS on both sides. The receiver's unit for each healer slug is the unit the sender's
+		-- own Comms.gearGap answers in.
+		it("reads a healer's gap in HPS on the receiver as the sender's own gap does, for all five healer slugs", function()
+			local slugs = { "priest-holy", "priest-discipline", "paladin-holy", "druid-restoration",
+				"shaman-restoration" }
+			local data = { weights = {}, dpsPerPoint = {}, bis = {}, bisDps = { [9001] = 7.5 } }
+			for _, slug in ipairs(slugs) do
+				data.weights[slug] = { spell_power = 1 }
+				data.dpsPerPoint[slug] = { reference = "spell_power", dps = 0.28, weaponDps = 1.1, healing = true,
+					[20] = { reference = "spell_power", dps = 0.3, weaponDps = 1 } }
+				data.bis[slug] = { [20] = { alliance = { main_hand = "9001|V|Wenna Silkbeard" } } }
+			end
+			for _, slug in ipairs(slugs) do
+				local gap, unit = Comms.gearGap(data, slug, { main_hand = WORN.ranged }, 26, "alliance")
+				assert.are.equal(4, gap, slug)
+				assert.are.equal("hps", unit, slug)
+				assert.are.equal(unit, Comms.gapUnit(data, slug, 26), slug)
+			end
 		end)
 
 		it("is nil when no pick could be scored (the client has none cached, the data prices none)", function()

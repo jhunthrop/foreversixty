@@ -758,3 +758,81 @@ describe("BuildDialog, round 6 frame checks", function()
 	end)
 end)
 
+
+describe("BuildDialog, polish round B fix round 1", function()
+	local BuildDialog, Theme, L, Follow
+
+	local RAID = "FSB1:1.60.1.70291:warrior:111:"
+	local LEVELING = "FSB1:1.60.1.70291:warrior:112:"
+
+	before_each(function()
+		mock.install({
+			class = { name = "Warrior", token = "WARRIOR" }, race = { name = "Human", token = "Human" },
+			realm = "Ashbringer", region = 1, playerName = "Bob",
+			talents = { { name = "Arms", talents = {} }, { name = "Fury", talents = {} },
+				{ name = "Protection", talents = {} } },
+		})
+		Theme = require("Theme")
+		Theme.reset()
+		L = require("Locale")
+		_G.ForeverSixtyDB = {}
+		_G.ForeverSixtyInbox = nil
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Cards")
+		helper.load("Export")
+		Follow = helper.load("Follow")
+		helper.load("Chip")
+		helper.load("ItemTooltip")
+		BuildDialog = helper.load("BuildDialog")
+		BuildDialog.data = DATA
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	local function paste(text)
+		local box = BuildDialog.paste.box
+		box:SetText(text)
+		box:GetScript("OnTextChanged")(box, true)
+	end
+
+	it("previews a paste against the leveling slot, not the active raid build (item 1)", function()
+		Follow.load(RAID, DATA, "Arms raid", "raid")
+		BuildDialog.open("paste")
+		paste(LEVELING)
+		-- The paste goes to the empty leveling slot: nothing is replaced, so no Replaces line.
+		assert.are.equal("", BuildDialog.paste.replaces:GetText())
+		assert.is_false(BuildDialog.paste.replaces:IsShown())
+		-- With a leveling build saved, the line names that build.
+		Follow.load(LEVELING, DATA, "Arms leveling", "leveling")
+		Follow.setActiveSlot(DATA, "raid")
+		BuildDialog.clearPaste()
+		paste(RAID)
+		local text = BuildDialog.paste.replaces:GetText()
+		assert.is_truthy(text:find("Arms leveling", 1, true), text)
+		assert.is_nil(text:find("Arms raid", 1, true), text)
+	end)
+
+	-- Item 12: the Copy tab never grows past what the dialog's content width leaves beside the Paste
+	-- tab; past it the label reads "Copy link".
+	it("caps the Copy tab's width and falls back to 'Copy link' past it", function()
+		BuildDialog.open("paste")
+		local copy = BuildDialog.tabs.copy
+		local label = copy.foreverSixtyLabel
+		label.GetStringWidth = function(region)
+			return utf8.len(region:GetText() or "") * 7
+		end
+		local S = Theme.SIZES
+		local available = S.dialogWidth - S.padding * 2 - mock.lastCall(BuildDialog.tabs.paste, "SetWidth")[1] - S.gap * 2
+		BuildDialog.openLink("foreversixty.gg/character/us/normal/bob", "Bob")
+		assert.are.equal(string.format(L.dialogCopyLink, "Bob"), label:GetText())
+		assert.is_true(mock.lastCall(copy, "SetWidth")[1] <= available)
+		local long = string.rep("W", 40)
+		BuildDialog.openLink("foreversixty.gg/character/us/normal/long", long)
+		assert.are.equal(L.dialogCopyLinkShort, label:GetText())
+		assert.are.equal("Copy link", label:GetText())
+		assert.is_true(mock.lastCall(copy, "SetWidth")[1] <= available)
+	end)
+end)

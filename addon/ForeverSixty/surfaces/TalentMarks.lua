@@ -71,7 +71,8 @@ TalentMarks.settled = true
 
 --- The strip's segments and whether its off-plan count is in the warning
 --- colour. `name` is Follow.buildName's, `progress` Progress.build's, and
---- `state` { unspent, next }: the points waiting to be spent, and the
+--- `state` { unspent, next, allowed }: the points waiting to be spent, `allowed` the plan's points
+--- the level allows (Progress.pointsAllowed: the count reads "12 of 15 points", not the plan's 51), and the
 --- chip's label for the next talent while the open window hides the chip
 --- (Chip.pointLabel). Each segment is { kind, text }: "next", leading,
 --- "Next: Improved Heroic Strike (1 of 3)" when `next` is given; "name";
@@ -91,8 +92,13 @@ function TalentMarks.stripSegments(name, progress, state)
 		segments[1] = { kind = "next", text = string.format(L.talentStripNextTalent, state.next) }
 	end
 	segments[#segments + 1] = { kind = "name", text = name }
-	segments[#segments + 1] = { kind = "count",
-		text = string.format(L.talentStripCount, progress.matched, progress.total) }
+	-- The points the level allows when the caller knows them (like the flyout: "12 of 15 points" at
+	-- level 24), else, and below level 10 where none is allowed yet, the build's whole length.
+	local matched, total = progress.matched, progress.total
+	if type(state.allowed) == "number" and state.allowed > 0 then
+		matched, total = math.min(matched, state.allowed), math.min(total, state.allowed)
+	end
+	segments[#segments + 1] = { kind = "count", text = string.format(L.talentStripCount, matched, total) }
 	local action
 	if progress.point == nil then
 		action = L.talentStripDone
@@ -781,7 +787,8 @@ function TalentMarks.refresh(data, pass)
 	end
 	local _, decision = TalentMarks.selfCheck()
 	local segments = TalentMarks.stripSegments(Follow.buildName(data, build), Progress.build(build, ranks, level),
-		{ unspent = Progress.unspentPoints(level, ranks), next = nextLabel(data, build, cells) })
+		{ unspent = Progress.unspentPoints(level, ranks), next = nextLabel(data, build, cells),
+			allowed = Progress.pointsAllowed(build, level) })
 	local strip, host, text = drawStrip(frame, segments)
 	if pass ~= 0 then
 		-- After the show's own pass, when the client has laid the strip out.

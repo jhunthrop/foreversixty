@@ -752,6 +752,8 @@ function LootCouncil.rows(drop, members, now, resolvers)
 			end
 		elseif answer ~= nil and answer.value ~= nil then
 			row.kind, row.value, row.unit = "answer", answer.value, answer.unit
+			-- The wire carries "dps" for a healer too; the resolver knows the sender's role from their spec.
+			row.healing = resolvers.healing ~= nil and resolvers.healing(member) or nil
 			row.currentItemId, row.planned = answer.currentItemId, answer.planned
 			row.alreadyWorn = worn(answer)
 		elseif not waited then

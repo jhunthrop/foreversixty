@@ -652,6 +652,23 @@ describe("LootCouncil", function()
 			assert.are.equal("+6.3 HPS", LootCouncil.valueText(6.3, "dps", true))
 		end)
 
+		-- Polish round B fix 1, item 2: an answer from a healer reads HPS, the receiver inferring the
+		-- sender's role from their spec (the wire carries "dps" for both).
+		it("marks an answer row a healer's when the resolver says the sender is one", function()
+			start()
+			local drop = { itemId = 100, at = 1000, answers = {
+				["Thorgrim-ClassicBetaPvP"] = { name = "Thorgrim", value = 6.3, unit = "dps", currentItemId = 0, planned = false },
+			} }
+			local members = { { short = "Thorgrim", classToken = "PRIEST" } }
+			local rows = LootCouncil.rows(drop, members, 1001, { healing = function()
+				return true
+			end })
+			assert.is_true(rows[1].healing)
+			assert.are.equal("+6.3 HPS", LootCouncil.valueText(rows[1].value, rows[1].unit, rows[1].healing))
+			rows = LootCouncil.rows(drop, members, 1001, {})
+			assert.is_nil(rows[1].healing)
+		end)
+
 		it("stacks a second Drop block, at most three, the oldest going", function()
 			start({ slots = window({ 100, "Robes of Might" }, { 101, "Lesser Robe" }, { 104, "Charm of Luck" },
 				{ 106, "Ranger Mail" }) })

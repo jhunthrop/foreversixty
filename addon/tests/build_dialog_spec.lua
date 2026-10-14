@@ -159,8 +159,8 @@ describe("BuildDialog, a good paste is never applied until Use", function()
 		BuildDialog.useCurrent()
 		assert.are.equal("leveling", calls[1].slot)
 		assert.are.equal(2, #said)
-		assert.are.equal("Using your paste. /fs build raid switches back.", said[2])
-		assert.are.equal(string.format(L.dialogUsingPaste, "raid"), said[2])
+		assert.are.equal("Using your paste. Your raid build is kept; /fs build raid switches back.", said[2])
+		assert.are.equal(string.format(L.dialogUsingPaste, "raid", "raid"), said[2])
 		-- A build the site sent goes where it did, and says nothing more.
 		said, calls = {}, {}
 		BuildDialog.choose({ id = "a", name = "Arms raid", code = ARMS })

@@ -672,6 +672,11 @@ describe("GroupPanel", function()
 				local atLeast = GroupPanel.cells({ short = "Fenna", gap = 4, unit = "dps", live = true, cold = true })
 				assert.are.equal(string.format(L.gapAtLeast, "4 DPS"), atLeast.gap.text)
 				assert.are.equal("0 DPS", GroupPanel.cells({ short = "Fenna", gap = 0, unit = "dps", cold = true }).gap.text)
+				-- Polish round B fix 1: a healer's figure reads HPS; the decimal never contradicts the integer.
+				assert.are.equal("14 HPS", GroupPanel.cells({ short = "Fenna", gap = 14, unit = "hps" }).gap.text)
+				assert.are.equal("3.5 HPS", GroupPanel.cells({ short = "Fenna", gap = 4, gapExact = 3.5, unit = "hps" }).gap.text)
+				assert.are.equal("0.1 DPS", GroupPanel.cells({ short = "Fenna", gap = 1, gapExact = 0.04, unit = "dps" }).gap.text)
+				assert.are.equal("10 DPS", GroupPanel.cells({ short = "Fenna", gap = 10, gapExact = 9.96, unit = "dps" }).gap.text)
 				local even = GroupPanel.cells({ short = "Fenna", gap = 0, unit = "dps", live = true })
 				assert.are.equal(Theme.HEX.muted, even.gap.hex)
 				-- Not inspected: no enchant verdict at all.
@@ -1648,6 +1653,21 @@ describe("GroupPanel", function()
 			-- A level the client cannot say claims nothing either way.
 			local unknown = { short = "Fenna", name = "Fenna", enchants = 0, connected = true }
 			assert.is_true(GroupPanel.cells(unknown).enchants.icon)
+		end)
+
+		-- Polish round B fix 1, item 14: with every member under 40 the Enchants header's hover says why
+		-- the column is blank.
+		it("adds 'checked from level 40' to the Enchants header hover when every member is under 40", function()
+			local base = L.groupHeaderHints.enchants
+			local low = GroupPanel.headerHint("enchants", { { level = 25 }, { level = 39 } })
+			assert.are.same({ base[1], L.groupEnchantsFrom }, low)
+			assert.are.equal("Enchants are checked from level 40.", low[2])
+			assert.are.same(base, GroupPanel.headerHint("enchants", { { level = 25 }, { level = 40 } }))
+			assert.are.same(base, GroupPanel.headerHint("enchants", { { level = 25 }, {} }))
+			assert.are.same(base, GroupPanel.headerHint("enchants", {}))
+			assert.are.same(base, GroupPanel.headerHint("enchants", nil))
+			assert.are.same(L.groupHeaderHints.gap, GroupPanel.headerHint("gap", { { level = 25 } }))
+			assert.is_nil(GroupPanel.headerHint("name", { { level = 25 } }))
 		end)
 
 		-- L3.7 item 46: a dry run is a test, and the chip says so.

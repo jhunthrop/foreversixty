@@ -30,6 +30,7 @@ local Codec = ns.Codec or require("Codec")
 local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Score = ns.Score or require("Score")
+local Progress = ns.Progress or require("Progress")
 local Comms = ns.Comms or require("Comms")
 local Compat = ns.Compat or require("Compat")
 local Talents = ns.Talents or require("Talents")
@@ -239,6 +240,11 @@ local function valueOf(row, key)
 	return row[key]
 end
 
+--- A gap per second (DPS, or a healer's HPS) as against points.
+local function perSecond(unit)
+	return unit == "dps" or unit == "hps"
+end
+
 --- The order for `sort` ({ key, descending }; nil: Score high to low): online rows above
 --- offline ones in every sort, as the client's roster keeps them (fix round 2, persona item 4),
 --- then the column's values, a blank last both ways. Gap puts the gaps in DPS before those in
@@ -251,8 +257,8 @@ local function comparator(sort)
 			return left.online
 		end
 		local a, b = valueOf(left, key), valueOf(right, key)
-		if key == "gap" and a ~= nil and b ~= nil and (left.unit == "dps") ~= (right.unit == "dps") then
-			return left.unit == "dps"
+		if key == "gap" and a ~= nil and b ~= nil and perSecond(left.unit) ~= perSecond(right.unit) then
+			return perSecond(left.unit)
 		end
 		if a ~= b then
 			if a == nil then
@@ -318,7 +324,8 @@ end
 --- character key in the account's preferences.
 function GuildTab.savedOnlineOnly()
 	local prefs = ns.Prefs or require("Prefs")
-	local entry = prefs.current().guildTab.byCharacter[Export.characterKey()]
+	local entry = prefs.characterEntry(prefs.current().guildTab.byCharacter, Export.characterKey(),
+		Follow.sameCharacter)
 	return type(entry) == "table" and type(entry.onlineOnly) == "boolean" and entry.onlineOnly or nil
 end
 
@@ -362,14 +369,21 @@ end
 --- that need gear (fix round 2, persona item 2); blank where there is no value. An offline row
 --- is dimmed once, as a whole, where it is drawn; its muted text is the brighter token.
 function GuildTab.cells(row)
-	local gapText = row.unit == "dps" and L.guildTabGapDps or L.guildTabGapPts
+	local healer = row.unit == "hps"
+	local gapText = healer and L.guildTabGapHps or row.unit == "dps" and L.guildTabGapDps or L.guildTabGapPts
 	local gap
 	if type(row.gap) == "number" then
 		local rounded = math.floor(row.gap + 0.5)
 		local text = string.format(gapText, rounded)
-		-- The player's own gap in DPS under 10 shows its decimal (L3.7 item 40).
-		if row.unit == "dps" and type(row.gapExact) == "number" and row.gapExact > 0 and row.gapExact < 10 then
-			text = string.format(L.guildTabGapDpsDecimal, row.gapExact)
+		-- The player's own gap per second under 10 shows its decimal (L3.7 item 40), rounded up so it
+		-- never contradicts the integer (polish round B fix 1, item 5).
+		local shown, decimal = Progress.shownGap(row.gapExact)
+		if perSecond(row.unit) and shown ~= nil then
+			if decimal then
+				text = string.format(healer and L.guildTabGapHpsDecimal or L.guildTabGapDpsDecimal, shown)
+			else
+				text = string.format(gapText, shown)
+			end
 		end
 		if row.cold and rounded > 0 then
 			text = string.format(L.gapAtLeast, text)
@@ -1309,7 +1323,11 @@ function GuildTab.setOnlineOnly(value)
 	guarded(function()
 		GuildTab.onlineOnly = value == true
 		local prefs = ns.Prefs or require("Prefs")
-		prefs.current().guildTab.byCharacter[Export.characterKey()] = { onlineOnly = GuildTab.onlineOnly }
+		local entry = prefs.characterEntry(prefs.current().guildTab.byCharacter, Export.characterKey(),
+			Follow.sameCharacter, true)
+		if entry ~= nil then
+			entry.onlineOnly = GuildTab.onlineOnly
+		end
 		GuildTab.offset = 0
 		redraw()
 	end)

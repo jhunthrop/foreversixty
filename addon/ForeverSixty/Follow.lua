@@ -123,6 +123,20 @@ function Follow.pasteSlot()
 	return active, nil
 end
 
+--- The build saved in `slot` for the current character, decoded and named, without making it the
+--- active one or touching Follow.build; nil for an empty slot or a code that no longer decodes.
+function Follow.slotBuild(data, slot)
+	local saved = currentEntry().slots[slot]
+	if not hasCode(saved) then
+		return nil
+	end
+	local build = Codec.loadBuild(saved.code, data)
+	if build ~= nil then
+		build.name = saved.name
+	end
+	return build
+end
+
 --- The build the player had loaded last session, if it still decodes.
 --- A code that no longer decodes (the addon's data moved on) is dropped
 --- rather than reported: nothing asked for it this session.

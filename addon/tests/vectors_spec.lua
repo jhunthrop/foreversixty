@@ -3,7 +3,9 @@ describe("the shared codec fixture vectors", function()
 		local file = assert(io.open(path, "r"), path .. " is missing")
 		local text = file:read("a")
 		file:close()
-		return text
+		-- The json is CRLF on an autocrlf checkout (.gitattributes pins both copies to LF for a fresh
+		-- one); the two copies are compared on their content, not their line endings.
+		return (text:gsub("\r\n", "\n"))
 	end
 
 	it("are byte-identical in both lanes", function()

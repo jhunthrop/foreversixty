@@ -245,6 +245,21 @@ function Progress.roundedGain(value, unit)
 	return value < 0 and -rounded or rounded
 end
 
+--- The player's own gap as a row shows it under 10 per second: rounded UP to one decimal (never below
+--- 0.1, so it cannot contradict the integer the wire carries, which is never 0 while behind), or the
+--- whole number once that rounds to 10 or more. Answers the number and whether it is a decimal; nil
+--- for anything that is not a positive number under 10. Pure.
+function Progress.shownGap(exact)
+	if type(exact) ~= "number" or exact <= 0 or exact >= 10 then
+		return nil
+	end
+	local shown = math.max(0.1, math.ceil(exact * 10 - 1e-9) / 10)
+	if shown >= 10 then
+		return 10, false
+	end
+	return shown, true
+end
+
 --- A stat's weight in `slot`: its own weight, or for a weapon's DPS
 --- (`weapon_dps`) the measured weapon term on its own slot (Progress.itemScore's
 --- own rule).
@@ -596,9 +611,17 @@ function Progress.pairPartner(hovered, wornMain, bagLinks, weights, dpsPerPoint,
 		local item = describe(raw)
 		local oneHand = item.equipLocation == "INVTYPE_WEAPON" or item.equipLocation == "INVTYPE_WEAPONOFFHAND"
 		local itself = false
-		if not skipped and (item.link ~= nil and item.link == hovered.link
-			or (hovered.link == nil and item.itemId == hovered.itemId)) then
-			skipped, itself = true, true
+		if not skipped then
+			-- By link when both carry one (two copies of an item differ in the link), else by item id.
+			local same
+			if item.link ~= nil and hovered.link ~= nil then
+				same = item.link == hovered.link
+			else
+				same = item.itemId ~= nil and item.itemId == hovered.itemId
+			end
+			if same then
+				skipped, itself = true, true
+			end
 		end
 		if oneHand and not itself and hasAnyStat(item.stats)
 			and (canOffHand == nil or canOffHand(item)) then
@@ -858,7 +881,7 @@ end
 --- Gear.equippedFrom's for an inspected member), scored with `current` (Gear.currentWeights').
 --- Answers { gap, unit, weakest, rows, cold }: the biggest slot gain rounded half-up to a whole number
 --- (a gain between 0 and 0.5 is 1: never "on plan" while behind; 0 when every scored slot is on
---- plan or ahead), its unit ("dps" with a DPS per point, else "pts"), the slot row it is in
+--- plan or ahead), its unit ("dps" with a DPS per point, "hps" for a healer's, else "pts"), the slot row it is in
 --- (nil at 0), and every row. nil when nothing could be scored: no data or spec, no weights, or
 --- every target unscored. The one gap rule Comms.gearGap (the guild row, the hello) and the
 --- group panel's rows share.
@@ -881,7 +904,8 @@ function Progress.gearPlan(data, spec, level, faction, equipped, current, isMiss
 	if not scored then
 		return nil
 	end
-	local unit = current.dpsPerPoint ~= nil and "dps" or "pts"
+	-- A healer's "dps" is healing per second (contract 3): "hps", the unit Comms.gapUnit infers too.
+	local unit = current.dpsPerPoint ~= nil and (current.healing == true and "hps" or "dps") or "pts"
 	if best <= 0 then
 		return { gap = 0, unit = unit, rows = rows, exact = 0 }
 	end
@@ -901,6 +925,18 @@ function Progress.unspentPoints(level, ranks)
 		return 0
 	end
 	return math.max(0, (level - 9) - Progress.pointsSpent(ranks))
+end
+
+--- The plan's points the character's level allows (fix round 3, item 1): one a level from 10
+--- (level - 9, Progress.unspentPoints' rule), never more than the plan holds; the plan's
+--- whole length where the level is not known. The panel's progress line and the talent strip's
+--- count read it alike.
+function Progress.pointsAllowed(build, level)
+	local total = build ~= nil and #build.order or 0
+	if type(level) ~= "number" then
+		return total
+	end
+	return math.min(total, math.max(0, level - 9))
 end
 
 --- The plan's points the character can reach now: those spent plus those
