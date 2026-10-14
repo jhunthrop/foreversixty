@@ -1197,6 +1197,9 @@ L.groupSpellNames = {
 -- The chip's line through its ready-check hook: "Ready check: 2 missing (Name, Name)".
 L.groupChipSummary = "Ready check: %d missing (%s)"
 L.groupChipJoin = ", "
+-- Fix round 2: a check that read the player alone (/fs ready out of a group) says what they lack:
+-- "Ready check: you are missing flask, food".
+L.groupChipSummaryYou = "Ready check: you are missing %s"
 -- /fs ready: a dry run, in chat.
 L.groupReadyDry = "Ready check (only you see this):"
 L.groupReadyNone = "Nobody is missing anything."
@@ -1211,6 +1214,11 @@ L.groupFloorUsage = "Type /fs floor 1200 to tag members scored under 1200, or /f
 L.diagGroupPanel = "Group panel: %s, %d members (%d inspected, %d live), ready check %s"
 L.diagGroupNone = "none"
 L.diagGroupCheck = "%s: %d missing"
+-- Fix round 2: out of a group the count is the player, as the dry run counts them: "Group panel:
+-- open, 1 member (you), ready check 19:43: you are missing flask, food".
+L.diagGroupPanelYou = "Group panel: %s, 1 member (you), ready check %s"
+L.diagGroupCheckYou = "%s: you are missing %s"
+L.diagGroupCheckYouNone = "%s: you are missing nothing"
 L.diagGroupPanelFailed = "The group panel failed and is off until /reload: %s"
 
 -- The item tooltip's refusal reads exactly as the rules engine's own.

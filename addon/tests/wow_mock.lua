@@ -106,6 +106,26 @@ function mock.watchClientFrame(state, frame)
 	})
 end
 
+--- Runs `script` ("OnShow" or "OnHide") on `frame`, then on each of its shown descendants,
+--- parents before children, as the client does when a frame's visibility changes (L5.2 fix round
+--- 2: the group panel's sentinel learns of a Social tab switch from its parent RaidFrame's Show and
+--- Hide). The children are copied first, so a script that moves a frame does not upset the walk.
+function mock.runVisibility(frame, script)
+	local handler = type(frame.scripts) == "table" and frame.scripts[script] or nil
+	if type(handler) == "function" then
+		handler(frame)
+	end
+	local children = {}
+	for index, child in ipairs(type(frame.children) == "table" and frame.children or {}) do
+		children[index] = child
+	end
+	for _, child in ipairs(children) do
+		if child.shown and rawequal(child.parent, frame) then
+			mock.runVisibility(child, script)
+		end
+	end
+end
+
 --- Install a fresh mock into _G and return its state table.
 -- @param state table with any of: talents, traits, equipped, bags, itemStats,
 --   class, race, realm, region, professions, build, guild
@@ -361,16 +381,28 @@ function mock.install(state)
 		function frame:GetFont()
 			return self.font
 		end
+		--- Show and Hide run the visibility scripts the client runs (L5.2 fix round 2): a frame
+		--- that becomes visible runs its OnShow, then every shown descendant's; one that stops
+		--- being visible runs its OnHide, then its shown descendants'. A Show under a hidden
+		--- parent only sets the flag; a Show on a visible frame runs nothing.
 		function frame:Show()
 			record(self, "Show")
+			local was = self:IsVisible()
 			self.shown = true
 			if self.kind == "EditBox" and self.autoFocus then
 				self.focused = true
 			end
+			if not was and self:IsVisible() then
+				mock.runVisibility(self, "OnShow")
+			end
 		end
 		function frame:Hide()
 			record(self, "Hide")
+			local was = self:IsVisible()
 			self.shown = false
+			if was then
+				mock.runVisibility(self, "OnHide")
+			end
 		end
 		function frame:IsShown()
 			return self.shown
@@ -437,12 +469,29 @@ function mock.install(state)
 			return self.height or 0
 		end
 		--- A real parent change (L5.2 fix round 1: the group panel moves its own frames to the
-		--- Social window that is drawn), so IsVisible walks the new chain.
+		--- Social window that is drawn), so IsVisible walks the new chain. Fix round 2: the old
+		--- parent lets the frame go (its Show and Hide no longer reach it), and a move that changes
+		--- whether the frame is visible runs its OnShow or OnHide, as the client does.
 		function frame:SetParent(holder)
 			record(self, "SetParent", holder)
+			local was = self:IsVisible()
+			local old = self.parent
+			if type(old) == "table" and type(old.children) == "table" then
+				for index = #old.children, 1, -1 do
+					if rawequal(old.children[index], self) then
+						table.remove(old.children, index)
+					end
+				end
+			end
 			self.parent = holder
 			if type(holder) == "table" and type(holder.children) == "table" then
 				holder.children[#holder.children + 1] = self
+			end
+			local now = self:IsVisible()
+			if now and not was then
+				mock.runVisibility(self, "OnShow")
+			elseif was and not now then
+				mock.runVisibility(self, "OnHide")
 			end
 		end
 		function frame:SetPoint(...)

@@ -24,7 +24,8 @@ describe("/fs diag on a fresh session", function()
 		NO_BUILD = string.format(L.diagBuildNone, L.diagBuildNotYet)
 		PANEL = string.format(L.diagPanel, L.diagPanelClosed, 0, 0)
 		GUILD = string.format(L.diagGuildTab, L.diagPanelClosed, 0, 0, L.diagGuildTabNo)
-		GROUP = string.format(L.diagGroupPanel, L.diagPanelClosed, 0, 0, 0, L.diagGroupNone)
+		-- L5.2 fix round 2: out of a group the count is the player alone.
+		GROUP = string.format(L.diagGroupPanelYou, L.diagPanelClosed, L.diagGroupNone)
 	end
 
 	before_each(function()

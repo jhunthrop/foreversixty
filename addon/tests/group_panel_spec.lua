@@ -114,6 +114,28 @@ describe("GroupPanel", function()
 		return frame
 	end
 
+	--- A client frame's shown flag changed with no script run (fix round 2): a state the panel was
+	--- not told of, which a refresh point must read for itself. Set from the spec, not recorded.
+	local function unheard(frame, shown)
+		frame.shown = shown
+	end
+
+	--- The client before its drawn window exists (fix round 2, N3/N4): FriendsFrame on UIParent,
+	--- hidden, RaidFrame in it, no SocialUIFrame yet. Answers { friends, raid }.
+	local function beforeSocialWindow()
+		local friends = _G.CreateFrame("Frame", "FriendsFrame", _G.UIParent)
+		local raid = _G.CreateFrame("Frame", "RaidFrame", friends)
+		friends:Hide()
+		return { friends = friends, raid = raid }
+	end
+
+	--- The client's drawn Social window, made now (shown, with a rect).
+	local function socialWindow()
+		local social = withRect(_G.CreateFrame("Frame", "SocialUIFrame", _G.UIParent))
+		social:SetSize(400, 512)
+		return social
+	end
+
 	--- The group the client answers. `options`: { members, raid, solo, count, auras, instance,
 	--- leader, noLeaderApi, weaponEnchant, noAuraApi, auraUtil, frames, noFrame, noSpellNames, data,
 	--- sharingOff }. `frames` (fix round 1, D1): "live" (the default, the 1.60 client: a drawn
@@ -700,11 +722,10 @@ describe("GroupPanel", function()
 			assert.are.equal(frames.social, flyout.parent)
 			assert.is_true(flyout:IsShown())
 			assert.is_false(flyout:IsVisible())
-			-- The window opens on the Raid tab: the button's own show script places and draws the flyout.
+			-- The window opens on the Raid tab: the show scripts (the button's, the sentinel's) place and
+			-- draw the flyout (the mock runs them down from the window, fix round 2).
 			local draws = GroupPanel.draws
 			frames.social:Show()
-			local button = _G[GroupPanel.BUTTON_NAME]
-			button:GetScript("OnShow")(button)
 			assert.is_true(GroupPanel.draws > draws)
 			assertPoint({ "TOPLEFT", frames.social, "TOPRIGHT", Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
 				flyout.points[#flyout.points])
@@ -730,37 +751,173 @@ describe("GroupPanel", function()
 				GroupPanel.refresh()
 				local button = _G[GroupPanel.BUTTON_NAME]
 				assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
-				-- Another Social tab: the button rests (no alpha, no mouse) but keeps its own shown flag, so
-				-- its show script still runs the next time the window opens.
-				frames.raid:Hide()
+				-- Another Social tab the panel was not told of: the button rests (no alpha, no mouse) but
+				-- keeps its own shown flag, so its show script still runs the next time the window opens.
+				unheard(frames.raid, false)
 				GroupPanel.onRosterUpdate()
 				assert.are.equal(0, mock.lastCall(button, "SetAlpha")[1])
 				assert.is_false(mock.lastCall(button, "EnableMouse")[1])
 				assert.is_true(button:IsShown())
 				-- Back on the Raid tab: an inspect arriving wakes it.
-				frames.raid:Show()
+				unheard(frames.raid, true)
 				GroupPanel.onInspectReady({ key = "Elwen" })
 				assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
 				assert.is_true(mock.lastCall(button, "EnableMouse")[1])
-				-- An aura change and PLAYER_ENTERING_WORLD (Options' refresh) read it too.
-				frames.raid:Hide()
-				GroupPanel.onAura("party1")
-				assert.are.equal(0, mock.lastCall(button, "SetAlpha")[1])
-				frames.raid:Show()
+				-- PLAYER_ENTERING_WORLD (Options' refresh) reads it too.
+				unheard(frames.raid, false)
 				GroupPanel.refresh()
-				assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
-				-- The window opens on another tab: the button's own show script rests it.
-				frames.raid:Hide()
-				button:GetScript("OnShow")(button)
 				assert.are.equal(0, mock.lastCall(button, "SetAlpha")[1])
+				-- And the button's own show script.
+				unheard(frames.raid, true)
+				button:GetScript("OnShow")(button)
+				assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
 				-- The window closed: nothing to read, the button is left as it was (it hides with the window).
-				local alphas = mock.countCalls(button, "SetAlpha")
 				frames.social:Hide()
-				frames.raid:Show()
+				local alphas = mock.countCalls(button, "SetAlpha")
+				unheard(frames.raid, false)
 				GroupPanel.refresh()
 				assert.are.equal(alphas, mock.countCalls(button, "SetAlpha"))
 				assert.is_true(button:IsShown())
 			end)
+
+		it("runs a parent's Show and Hide down to its shown children's OnShow and OnHide (the mock)", function()
+			start()
+			local parent = _G.CreateFrame("Frame", nil, _G.UIParent)
+			local child = _G.CreateFrame("Frame", nil, parent)
+			local hidden = _G.CreateFrame("Frame", nil, parent)
+			hidden:Hide()
+			local seen = {}
+			child:SetScript("OnShow", function()
+				seen[#seen + 1] = "show"
+			end)
+			child:SetScript("OnHide", function()
+				seen[#seen + 1] = "hide"
+			end)
+			hidden:SetScript("OnShow", function()
+				seen[#seen + 1] = "hidden shown"
+			end)
+			parent:Hide()
+			parent:Show()
+			-- Already visible: nothing runs.
+			parent:Show()
+			assert.are.same({ "hide", "show" }, seen)
+			-- A move under a hidden frame hides it; the old parent lets it go.
+			local other = _G.CreateFrame("Frame", nil, _G.UIParent)
+			other:Hide()
+			child:SetParent(other)
+			assert.are.same({ "hide", "show", "hide" }, seen)
+			parent:Hide()
+			parent:Show()
+			assert.are.same({ "hide", "show", "hide" }, seen)
+			for _, kid in ipairs(parent.children) do
+				assert.is_false(rawequal(kid, child))
+			end
+			other:Show()
+			assert.are.same({ "hide", "show", "hide", "show" }, seen)
+		end)
+
+		-- Fix round 2, N1: the addon's own sentinel frame, parented to RaidFrame, shows and hides with
+		-- the Raid tab (RaidFrame has no rect, but its children still show with it); its own scripts
+		-- read the tab again. No hook on a client frame.
+		it("sees a tab switch in the open Social window: Friends to Raid wakes the button, Raid to Friends rests it",
+			function()
+				local frames = start()
+				-- Login with the window closed: the button and the sentinel are made.
+				frames.social:Hide()
+				GroupPanel.refresh()
+				local button = _G[GroupPanel.BUTTON_NAME]
+				local sentinel = GroupPanel.sentinel
+				assert.is_not_nil(sentinel)
+				assert.are.equal(frames.raid, sentinel.parent)
+				assert.is_function(sentinel:GetScript("OnShow"))
+				assert.is_function(sentinel:GetScript("OnHide"))
+				-- The window opens on the Friends tab: the button rests.
+				frames.raid:Hide()
+				frames.social:Show()
+				assert.are.equal(0, mock.lastCall(button, "SetAlpha")[1])
+				assert.is_false(mock.lastCall(button, "EnableMouse")[1])
+				-- The Raid tab clicked: it wakes.
+				frames.raid:Show()
+				assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
+				assert.is_true(mock.lastCall(button, "EnableMouse")[1])
+				-- Back to Friends: it rests again, its shown flag kept.
+				frames.raid:Hide()
+				assert.are.equal(0, mock.lastCall(button, "SetAlpha")[1])
+				assert.is_false(mock.lastCall(button, "EnableMouse")[1])
+				assert.is_true(button:IsShown())
+				-- Raid once more.
+				frames.raid:Show()
+				assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
+				-- The window closes from the Raid tab: nothing is read, the button hides with it.
+				local alphas = mock.countCalls(button, "SetAlpha")
+				frames.social:Hide()
+				assert.are.equal(alphas, mock.countCalls(button, "SetAlpha"))
+				assert.is_false(button:IsVisible())
+			end)
+
+		-- Fix round 2, N3: the drawn window made only after login.
+		it("moves to a SocialUIFrame made after login: when the window first shows, and on a refresh", function()
+			start({ noFrame = true })
+			local frames = beforeSocialWindow()
+			GroupPanel.refresh()
+			local button = _G[GroupPanel.BUTTON_NAME]
+			assert.are.equal(frames.friends, button.parent)
+			assert.are.equal(frames.raid, GroupPanel.sentinel.parent)
+			-- /fs group with nothing shown: the flyout waits on FriendsFrame.
+			assert.are.same({ L.groupOpensOnRaidTab }, GroupPanel.command())
+			local flyout = _G[GroupPanel.FLYOUT_NAME]
+			assert.are.equal(frames.friends, flyout.parent)
+			-- The client makes its window, puts FriendsFrame in it and opens it on the Raid tab.
+			local social = socialWindow()
+			frames.friends:SetParent(social)
+			frames.friends:Show()
+			assert.are.equal(social, button.parent)
+			assertPoint({ "TOPRIGHT", social, "BOTTOMRIGHT", 0, 0 }, button.points[#button.points])
+			assert.are.equal(social, flyout.parent)
+			assertPoint({ "TOPLEFT", social, "TOPRIGHT", Theme.SIZES.panelOffsetX, Theme.SIZES.panelOffsetY },
+				flyout.points[#flyout.points])
+			assert.are.equal(1, mock.lastCall(button, "SetAlpha")[1])
+			assert.is_true(flyout:IsVisible())
+			-- The same window found by a refresh alone (no script told the panel of it).
+			start({ noFrame = true })
+			frames = beforeSocialWindow()
+			GroupPanel.refresh()
+			button = _G[GroupPanel.BUTTON_NAME]
+			social = socialWindow()
+			frames.friends:SetParent(social)
+			unheard(frames.friends, true)
+			assert.are.equal(frames.friends, button.parent)
+			GroupPanel.refresh()
+			assert.are.equal(social, button.parent)
+			assertPoint({ "TOPRIGHT", social, "BOTTOMRIGHT", 0, 0 }, button.points[#button.points])
+		end)
+
+		-- Fix round 2, N4: attach records the new home before SetParent, so a show script the move
+		-- itself runs (the client runs it inside SetParent) finds the move made and moves nothing.
+		it("moves the button once when the move itself shows it, and the old parent lets it go", function()
+			start({ noFrame = true })
+			local frames = beforeSocialWindow()
+			GroupPanel.refresh()
+			local button = _G[GroupPanel.BUTTON_NAME]
+			assert.are.equal(frames.friends, button.parent)
+			assert.is_false(button:IsVisible())
+			-- The drawn window shows while FriendsFrame stays hidden: the move shows the button.
+			local social = socialWindow()
+			GroupPanel.refresh()
+			assert.are.equal(social, button.parent)
+			assert.is_true(button:IsVisible())
+			assert.are.equal(1, mock.countCalls(button, "SetParent"))
+			local held = 0
+			for _, kid in ipairs(social.children) do
+				if rawequal(kid, button) then
+					held = held + 1
+				end
+			end
+			assert.are.equal(1, held)
+			for _, kid in ipairs(frames.friends.children) do
+				assert.is_false(rawequal(kid, button))
+			end
+		end)
 
 		it("fits the rows to the Social window's height, not the rectless raid frame's", function()
 			local frames = start()
@@ -895,7 +1052,7 @@ describe("GroupPanel", function()
 		end)
 
 		it("never writes into a client frame through any path, and never polls or hooks", function()
-			start({ leader = true })
+			local frames = start({ leader = true })
 			itemCache()
 			inspectElwen()
 			GroupPanel.register()
@@ -903,9 +1060,15 @@ describe("GroupPanel", function()
 			GroupPanel.onRosterUpdate()
 			GroupPanel.onReadyCheck()
 			GroupPanel.onAura("party1")
+			mock.runTimers(state)
 			GroupPanel.onReadyCheckFinished()
 			click(GroupPanel.headers.score.button)
 			GroupPanel.handleFloor("1200")
+			-- Tab switches and the window closing and opening (the sentinel's scripts, fix round 2).
+			frames.raid:Hide()
+			frames.raid:Show()
+			frames.social:Hide()
+			frames.social:Show()
 			click(_G[GroupPanel.BUTTON_NAME])
 			assert.are.same({}, state.clientWrites)
 			local file = assert(io.open("ForeverSixty/surfaces/GroupPanel.lua", "r"))
@@ -915,9 +1078,15 @@ describe("GroupPanel", function()
 				"ToggleFriendsFrame", "ToggleRaidFrame", "DoReadyCheck", "ShowUIPanel" }) do
 				assert.is_nil(source:find(call, 1, true), call)
 			end
+			-- The scripts are on the addon's own frames only: the button's show script and the
+			-- sentinel's show and hide scripts (fix round 2, N1).
 			local _, onShows = source:gsub('"OnShow"', "")
-			assert.are.equal(1, onShows)
+			assert.are.equal(2, onShows)
+			local _, onHides = source:gsub('"OnHide"', "")
+			assert.are.equal(1, onHides)
 			assert.is_truthy(source:find('button:SetScript("OnShow"', 1, true))
+			assert.is_truthy(source:find('sentinel:SetScript("OnShow"', 1, true))
+			assert.is_truthy(source:find('sentinel:SetScript("OnHide"', 1, true))
 		end)
 
 		it("watches RaidFrame, FriendsFrame, PartyFrame and every CompactRaidFrame frame as client frames", function()
@@ -1068,6 +1237,43 @@ describe("GroupPanel", function()
 				assert.are.equal(0, #state.timers)
 			end)
 
+		-- Fix round 2, N2: UNIT_AURA reads the Raid tab only at the throttled re-read, and only when it
+		-- changed since the last read (the sentinel hears the tab switches themselves).
+		it("reads the Raid tab on UNIT_AURA only after the throttle, and only when it changed", function()
+			local frames = start({ auras = buffed(), instance = { "Molten Core", "raid", 409 } })
+			GroupPanel.refresh()
+			local button = _G[GroupPanel.BUTTON_NAME]
+			GroupPanel.onReadyCheck()
+			local alphas = mock.countCalls(button, "SetAlpha")
+			state.timers = {}
+			GroupPanel.onAura("party1")
+			GroupPanel.onAura("party2")
+			GroupPanel.onAura("player")
+			assert.are.equal(alphas, mock.countCalls(button, "SetAlpha"))
+			mock.runTimers(state)
+			-- The tab is as last read: nothing to do.
+			assert.are.equal(alphas, mock.countCalls(button, "SetAlpha"))
+			-- Another tab the panel was not told of: the next throttled read rests the button, once.
+			unheard(frames.raid, false)
+			GroupPanel.onAura("party1")
+			assert.are.equal(alphas, mock.countCalls(button, "SetAlpha"))
+			mock.runTimers(state)
+			assert.are.equal(alphas + 1, mock.countCalls(button, "SetAlpha"))
+			assert.are.equal(0, mock.lastCall(button, "SetAlpha")[1])
+			GroupPanel.onAura("party1")
+			mock.runTimers(state)
+			assert.are.equal(alphas + 1, mock.countCalls(button, "SetAlpha"))
+			-- No check standing: an aura change reads nothing.
+			unheard(frames.raid, true)
+			clock = clock + 35
+			GroupPanel.onReadyCheckFinished()
+			clock = clock + 31
+			state.timers = {}
+			GroupPanel.onAura("party1")
+			mock.runTimers(state)
+			assert.are.equal(alphas + 1, mock.countCalls(button, "SetAlpha"))
+		end)
+
 		it("draws the check under the rows: the missing list and the coverage list", function()
 			start({ auras = buffed(), instance = { "Molten Core", "raid", 409 } })
 			open()
@@ -1091,7 +1297,9 @@ describe("GroupPanel", function()
 			start({ solo = true, auras = { Tester = { aura(19705), aura(10938) } } })
 			local lines = GroupPanel.handleReady()
 			assert.are.same({ L.groupReadyDry, string.format(L.groupMissing, "Tester", "flask") }, lines)
-			assert.are.equal(string.format(L.groupChipSummary, 1, "Tester"), Chip.raidCheck.text)
+			-- Fix round 2: the player alone, the chip names what they lack, not "1 missing (Tester)".
+			assert.are.equal(string.format(L.groupChipSummaryYou, "flask"), Chip.raidCheck.text)
+			assert.are.equal("Ready check: you are missing flask", Chip.raidCheck.text)
 			assert.is_nil(Chip.raidCheck.open)
 			start({ solo = true, auras = { Tester = { aura(19705), aura(17627), aura(10938) } } })
 			assert.are.same({ L.groupReadyDry, L.groupReadyNone }, GroupPanel.handleReady())
@@ -1219,10 +1427,29 @@ describe("GroupPanel", function()
 
 	-- Ruling 5: /fs diag.
 	describe("/fs diag", function()
-		it("prints a closed line with nobody counted and no check outside a group", function()
+		-- Fix round 2: out of a group the count is the player ("1 member (you)"), as the dry run counts.
+		it("prints a closed line with the player alone counted and no check outside a group", function()
 			start({ solo = true, noFrame = true })
-			assert.are.equal(string.format(L.diagGroupPanel, L.diagPanelClosed, 0, 0, 0, L.diagGroupNone),
+			assert.are.equal(string.format(L.diagGroupPanelYou, L.diagPanelClosed, L.diagGroupNone),
 				GroupPanel.diagLine())
+			assert.are.equal("Group panel: closed, 1 member (you), ready check none", GroupPanel.diagLine())
+		end)
+
+		-- Fix round 2: a dry run alone names what the player lacks, not "1 missing".
+		it("says what the player lacks after a dry run alone, and that they lack nothing", function()
+			-- A priest with Fortitude on: no flask, no food.
+			start({ solo = true, auras = { Tester = { aura(10938) } } })
+			open()
+			GroupPanel.handleReady()
+			assert.are.equal(string.format(L.diagGroupPanelYou, L.diagPanelOpen,
+				string.format(L.diagGroupCheckYou, "12:00", "flask, food")), GroupPanel.diagLine())
+			assert.are.equal("Group panel: open, 1 member (you), ready check 12:00: you are missing flask, food",
+				GroupPanel.diagLine())
+			assert.are.equal("Ready check: you are missing flask, food", Chip.raidCheck.text)
+			start({ solo = true, auras = { Tester = { aura(10938), aura(19705), aura(17627) } } })
+			GroupPanel.handleReady()
+			assert.are.equal(string.format(L.diagGroupPanelYou, L.diagPanelClosed,
+				string.format(L.diagGroupCheckYouNone, "12:00")), GroupPanel.diagLine())
 		end)
 
 		it("counts the members, the inspected and the live, and the last check's time and missing", function()
