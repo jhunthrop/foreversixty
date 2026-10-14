@@ -134,7 +134,7 @@ describe("PlayerTooltip", function()
 				assert.are.equal(7, #lines)
 				local expected = {
 					{ "Gear", "380" }, { "Experience", "410" }, { "Parses", "300" }, { "Attendance", "100" },
-					{ "Discipline", "50" },
+					{ "Preparation", "50" },
 				}
 				for index, pair in ipairs(expected) do
 					local entry = lines[index + 1]
