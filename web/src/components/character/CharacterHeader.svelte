@@ -159,18 +159,22 @@
 
   const PLACEHOLDER_SYNC: SyncView = { source: 'Addon', age: '12 minutes ago', staleTail: null };
   const PLACEHOLDER_ACTION: HeaderAction = { label: ' ', href: '#' };
-  const placeholderView = $derived<AnswerView | null>(
-    answer === undefined
-      ? null
-      : {
-          kind: 'figures',
-          answer: placeholderAnswer(answer.placeholderBar === true),
-          label: 'Placeholder',
-        },
-  );
+  const placeholderView = $derived.by((): AnswerView | null => {
+    if (answer === undefined) return null;
+    const ghostAnswer = placeholderAnswer(answer.placeholderBar === true);
+    return { kind: 'figures', answer: ghostAnswer, label: ghostAnswer.label };
+  });
 </script>
 
-{#snippet identity(c: MeCharacter, href: string, syncLine: SyncView | null)}
+<!-- The loading state draws the ready box once, hidden, to reserve its height. Ghost text is
+     painted from `data-ghost` by a pseudo-element (.ch-ghost::before), so the reserved box keeps
+     the ready line boxes exactly while the served HTML carries no text a crawler or screen
+     reader could read. -->
+{#snippet txt(value: string, ghost: boolean)}
+  {#if ghost}<span class="ch-ghost" data-ghost={value}></span>{:else}{value}{/if}
+{/snippet}
+
+{#snippet identity(c: MeCharacter, href: string, syncLine: SyncView | null, ghost: boolean)}
   {@const lines = descriptorLines(c)}
   {@const slug = classSlugFromName(c.class ?? '')}
   {@const color = classColorVar(c.class)}
@@ -188,34 +192,34 @@
         />
       {/if}
       <span class="ch-ident">
-        <span class="label ch-label">{characterHeaderCopy.label}</span>
+        <span class="label ch-label">{@render txt(characterHeaderCopy.label, ghost)}</span>
         <span class="ch-name-box">
           <svelte:element
-            this={nameHeading ? 'h1' : 'span'}
+            this={nameHeading && !ghost ? 'h1' : 'span'}
             class="ch-name"
-            title={c.name}
+            title={ghost ? undefined : c.name}
             style:color
-            data-testid="character-header-name">{c.name}</svelte:element
+            data-testid="character-header-name">{@render txt(c.name, ghost)}</svelte:element
           >
         </span>
       </span>
     </a>
     <div class="ch-meta">
       <span class="ch-desc" data-testid="character-header-descriptor">
-        {#if lines.identity !== ''}<span class="ch-d1">{lines.identity}</span>{/if}
+        {#if lines.identity !== ''}<span class="ch-d1">{@render txt(lines.identity, ghost)}</span>{/if}
         {#if lines.identity !== '' && (lines.level !== null || lines.faction !== null)}
           <span class="ch-dot ch-dot-wide" aria-hidden="true">&middot;</span>
         {/if}
         {#if lines.level !== null || lines.faction !== null}
           <span class="ch-d2">
-            {#if lines.level !== null}<span>{lines.level}</span>{/if}
+            {#if lines.level !== null}<span>{@render txt(lines.level, ghost)}</span>{/if}
             {#if lines.level !== null && lines.faction !== null}
               <span class="ch-dot" aria-hidden="true">&middot;</span>
             {/if}
             {#if lines.faction !== null}
               <span class="ch-faction">
                 <img src={factionLogoSrc(lines.faction)} alt="" width="16" height="16" />
-                {factionName(lines.faction)}
+                {@render txt(factionName(lines.faction), ghost)}
               </span>
             {/if}
           </span>
@@ -223,7 +227,7 @@
       </span>
       {#if syncLine !== null}
         <span class="ch-sync" data-testid="character-header-sync"
-          >{syncText(syncLine)}{#if syncLine.staleTail !== null}{STALE_SEPARATOR}<span
+          >{@render txt(syncText(syncLine), ghost)}{#if syncLine.staleTail !== null}{STALE_SEPARATOR}<span
               class="ch-stale"
               data-testid="character-header-stale">{syncLine.staleTail}</span
             >{/if}</span
@@ -233,7 +237,7 @@
   </div>
 {/snippet}
 
-{#snippet answerSlot(current: AnswerView)}
+{#snippet answerSlot(current: AnswerView, ghost: boolean)}
   <div class="ch-answer" data-testid="character-header-answer" data-answer={current.kind}>
     {#if current.kind === 'loading'}
       <span class="ch-ask" data-testid="character-header-answer-loading" aria-hidden="true">
@@ -242,14 +246,17 @@
         <span class="skeleton-block ch-sk-note"></span>
       </span>
     {:else if current.kind === 'figures'}
-      <span class="label ch-answer-label" data-testid="character-header-answer-label">{current.label}</span>
+      <span class="label ch-answer-label" data-testid="character-header-answer-label"
+        >{@render txt(current.label, ghost)}</span
+      >
       <span class="ch-figures">
         {#each current.answer.figures as figure, index (index)}
           <span
             class="ch-figure"
             data-testid={`character-header-figure-${index + 1}`}
             style:color={figure.color}
-            >{figure.value}{#if figure.unit !== undefined}<span class="ch-unit">{` ${figure.unit}`}</span
+            >{@render txt(figure.value, ghost)}{#if figure.unit !== undefined}<span class="ch-unit"
+                >{` ${figure.unit}`}</span
               >{/if}</span
           >
         {/each}
@@ -261,7 +268,7 @@
       {/if}
       {#if current.answer.note !== undefined}
         <span class="ch-note" data-testid="character-header-note"
-          >{current.answer.note.text}{#if current.answer.note.link !== undefined}
+          >{@render txt(current.answer.note.text, ghost)}{#if current.answer.note.link !== undefined}
             &nbsp;&middot;
             <a class="ch-inline-link" href={current.answer.note.link.href}
               >{current.answer.note.link.label}&nbsp;→</a
@@ -296,20 +303,27 @@
   </div>
 {/snippet}
 
-{#snippet button(act: HeaderAction)}
+{#snippet button(act: HeaderAction, ghost: boolean)}
   {#if act.kind === 'picker'}
     <button type="button" class="ch-cta" onclick={() => onPick?.()} data-testid="character-header-action"
-      >{act.label}</button
+      >{@render txt(act.label, ghost)}</button
     >
   {:else}
-    <a class="ch-cta" href={act.href} data-testid="character-header-action">{act.label}</a>
+    <a class="ch-cta" href={act.href} data-testid="character-header-action">{@render txt(act.label, ghost)}</a
+    >
   {/if}
 {/snippet}
 
-{#snippet panel(c: MeCharacter, current: AnswerView | null, act: HeaderAction, syncLine: SyncView | null)}
-  {@render identity(c, act.href, syncLine)}
-  {#if current !== null}{@render answerSlot(current)}{/if}
-  {@render button(act)}
+{#snippet panel(
+  c: MeCharacter,
+  current: AnswerView | null,
+  act: HeaderAction,
+  syncLine: SyncView | null,
+  ghost: boolean,
+)}
+  {@render identity(c, act.href, syncLine, ghost)}
+  {#if current !== null}{@render answerSlot(current, ghost)}{/if}
+  {@render button(act, ghost)}
 {/snippet}
 
 {#if view === 'ready' && character !== null && resolvedAction !== null}
@@ -322,7 +336,7 @@
     data-emphasis={emphasis}
     data-stale={stale}
   >
-    {@render panel(character, answerView, resolvedAction, sync)}
+    {@render panel(character, answerView, resolvedAction, sync, false)}
   </section>
 {:else if view === 'signed-out'}
   {#if whenSignedOut === 'band'}<CharacterHeaderSignedOut />{/if}
@@ -337,7 +351,7 @@
     data-layout={layout}
   >
     <div class="ch-hidden" aria-hidden="true" style="display: contents; visibility: hidden">
-      {@render panel(PLACEHOLDER_CHARACTER, placeholderView, PLACEHOLDER_ACTION, PLACEHOLDER_SYNC)}
+      {@render panel(PLACEHOLDER_CHARACTER, placeholderView, PLACEHOLDER_ACTION, PLACEHOLDER_SYNC, true)}
     </div>
     <div class="ch-overlay" aria-hidden="true">
       <span class="ch-sk-identity">
@@ -448,6 +462,9 @@
   }
   .ch-label {
     color: var(--color-gold);
+  }
+  .ch-ghost::before {
+    content: attr(data-ghost);
   }
   /* A stacked header reserves two name lines so a header switch moves nothing. */
   .ch-name-box {

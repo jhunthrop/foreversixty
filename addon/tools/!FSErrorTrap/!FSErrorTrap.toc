@@ -1,0 +1,6 @@
+## Interface: 16001
+## Title: Forever Sixty error trap
+## Notes: Developer tool. Records every Lua error the client raises, from the first addon file onward, into its SavedVariables so the error text can be read off disk.
+## SavedVariables: FSErrorTrapDB
+
+ErrorTrap.lua

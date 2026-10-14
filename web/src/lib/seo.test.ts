@@ -6,6 +6,7 @@ describe('structured data', () => {
     const ld = websiteLd();
     expect(ld['@type']).toBe('WebSite');
     expect(ld.name).toBe('Forever Sixty');
+    expect(ld.alternateName).toBe('foreversixty.gg');
     expect(ld.url).toBe('https://foreversixty.gg');
     expect(ld).not.toHaveProperty('potentialAction');
   });

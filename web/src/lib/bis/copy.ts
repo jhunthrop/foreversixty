@@ -151,9 +151,7 @@ export const bisCopy = {
    *  `=== 0` check missed every practical tie; 0.05 is below the 0.1 the line itself
    *  rounds to, so nothing that would still show as a non-zero number reads as a tie). */
   alternativeGapLabel: (dpsDelta: number, unit: RateUnit = 'DPS'): string =>
-    Math.abs(dpsDelta) < 0.05
-      ? `same ${unit}`
-      : `${dpsDelta > 0 ? '+' : '−'}${Math.abs(dpsDelta).toFixed(1)} ${unit}`,
+    Math.abs(dpsDelta) < 0.05 ? `same ${unit}` : signedFigure(dpsDelta, unit),
   /** An alternative's item level, and its required level only when that is above the
    *  band it's shown at (fix round 1, wow-player review): a requirement at or under the
    *  band's own level is already implied by the row being shown here at all, so naming it
@@ -255,7 +253,7 @@ export const bisCopy = {
    *  `evidenceLine` above whenever `dps_delta` is present, so the row never shows two
    *  absolute numbers that can silently disagree with the band's own header `set_dps`. */
   evidenceLineDelta: (itemName: string, delta: number, unit: RateUnit = 'DPS'): string =>
-    `Sim-checked against ${itemName}: +${delta.toFixed(1)} ${unit}`,
+    `Sim-checked against ${itemName}: ${signedFigure(delta, unit)}`,
   /** The verified glyph's own title when a pick carries `sim_dps` but no `swap_note` --
    *  still a real sim result (a trinket/proc/weapon-pair tournament winner), just not one
    *  phrased as a swap against a named runner-up. */
@@ -461,6 +459,14 @@ export const bisCopy = {
 /** `dwarf` -> `Dwarf`: the pipeline's own race strings are not reliably capitalised (owner
  *  screenshot finding, 2026-09-29), and this is the one place every `/bis` race line reads
  *  one, so every caller gets the fix for free rather than re-capitalising it themselves. */
+/** A delta with its own sign in front -- "+2.8 HPS" or "−2.8 HPS" -- so a negative number
+ *  never prints as "+-2.8" (the same bug the ranker's own `dpsComparisonPhrase` fixed with
+ *  Go's `%+.1f`: a kept pick's `dps_delta` is negative whenever the runner-up scored higher
+ *  but not significantly enough to promote, holy priest trinket2 at band 60 on 1.60.1.70338). */
+function signedFigure(delta: number, unit: string): string {
+  return `${delta < 0 ? '−' : '+'}${Math.abs(delta).toFixed(1)} ${unit}`;
+}
+
 function capitalise(word: string): string {
   return word.length === 0 ? word : word[0]!.toUpperCase() + word.slice(1);
 }
@@ -501,11 +507,9 @@ export const tankCopy = {
     `Against the boss profile, level ${characterLevel} ${capitalise(race)}, ${talentPoints} talent point${talentPoints === 1 ? '' : 's'}`,
   /** The runner-up row's gap-from-the-pick line, in score points. */
   alternativeGapLabel: (scoreDelta: number): string =>
-    Math.abs(scoreDelta) < 0.05
-      ? 'same score'
-      : `${scoreDelta > 0 ? '+' : '−'}${Math.abs(scoreDelta).toFixed(1)} score`,
+    Math.abs(scoreDelta) < 0.05 ? 'same score' : signedFigure(scoreDelta, 'score'),
   evidenceLineDelta: (itemName: string, delta: number): string =>
-    `Sim-checked against ${itemName}: +${delta.toFixed(1)} score`,
+    `Sim-checked against ${itemName}: ${signedFigure(delta, 'score')}`,
   simScoreVerifiedTitle: (score: number): string =>
     `Confirmed by a full sim: ${score.toFixed(1)} score with this item`,
   weightsScaleNote: (topLabel: string): string =>

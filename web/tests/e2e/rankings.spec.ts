@@ -8,6 +8,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { gotoHydrated } from './support/hydrated';
 import { heldRoute } from './support/held-route';
+import { openFilters } from './support/rankings-filters';
 import { FROST_KEY, OWN_KEY, stubRankingsApi, type BoardOptions } from './support/rankings-fixture';
 import { OBNOXIOUS, armoryPointer, keyOf, signInWith, signedOut, storePointer } from './support/selector';
 import type { FixtureCharacter } from './support/selector';
@@ -23,11 +24,6 @@ const FROSTBYTE: FixtureCharacter = {
   buildDaysAgo: 1,
 };
 
-/** On a phone the filters sit behind the summary line's button; elsewhere they are always open. */
-async function openFilters(page: Page) {
-  const toggle = page.getByTestId('rankings-filters-toggle');
-  if (await toggle.isVisible()) await toggle.click();
-}
 const selector = (page: Page) => page.getByTestId('character-selector');
 
 async function openSignedIn(page: Page, options: BoardOptions = {}) {

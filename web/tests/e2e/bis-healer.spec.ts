@@ -93,9 +93,10 @@ test('the healer weights and runners-up read in HPS', async ({ page }) => {
   await expect(weights.getByTestId('bis-weight-row-healing_power')).toContainText(/\d\.\d{3} HPS/);
   await expect(raidView(page).locator('.the-list-header')).toContainText('Runners-up · HPS vs the pick');
   // Which rows carry a sim-checked runner-up is the nightly's call (possibly none at this
-  // band); every one that does reads in HPS.
+  // band); every one that does reads in HPS, signed either way (a kept pick's delta is
+  // negative when the runner-up scored higher but not enough to promote).
   for (const evidence of await raidView(page).getByTestId('bis-row-evidence').all()) {
-    await expect(evidence).toContainText(/\+\d+\.\d HPS/);
+    await expect(evidence).toContainText(/[+−]\d+\.\d HPS/);
   }
 });
 

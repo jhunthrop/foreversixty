@@ -1094,6 +1094,17 @@ describe('bandInfosFor: healer hook and unit threading', () => {
     expect(info!.rows[0]!.evidenceLine).toBe('Sim-checked against Old Helm: +10.0 DPS');
   });
 
+  it('signs a kept pick whose runner-up scored higher in the sim, never "+-"', () => {
+    const kept = slot({
+      swap_note: 'confirmed by the sim against Serenity Field (id 272439): kept the pick, -2.8 DPS over it',
+      dps_delta: -2.8453,
+      alternatives: [],
+    });
+    const file = fileWith([band({ ...healerFields, slots: [kept] })]);
+    const [info] = bandInfosFor(file, [20], 'alliance', depsWith({ spec: 'priest-holy' }));
+    expect(info!.rows[0]!.evidenceLine).toBe('Sim-checked against Serenity Field: −2.8 HPS');
+  });
+
   it('builds the healer view from the band and the file profile, and words every figure in HPS', () => {
     const profile: BisHealProfile = {
       id: 'onyxia-sized',

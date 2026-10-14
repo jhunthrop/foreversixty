@@ -1,15 +1,19 @@
 // web/src/lib/character-header/placeholder.ts
 // The character the loading state draws, hidden, to give the panel exactly the height of a ready
 // one (spec 2026-10-11 section 3: "the ready box rendered hidden, with skeletons drawn over it").
-// It is never shown and never read aloud; only its box matters.
+// It is never shown and never read aloud; only its box matters. The component paints these
+// strings from `data-ghost` through CSS, so the served HTML carries no text from them.
 import type { MeCharacter } from '../account/api';
 import type { FiguresAnswer } from './types';
+
+/** Eleven characters wide, like the longest name the box is sized for; never rendered as text. */
+const GHOST_TEXT = 'Sizingtext1';
 
 export const PLACEHOLDER_CHARACTER: MeCharacter = {
   key: 'placeholder',
   region: 'us',
   ruleset: 'normal',
-  name: 'Placeholder',
+  name: GHOST_TEXT,
   class: 'warrior',
   spec: 'Fury',
   level: 60,
@@ -21,9 +25,9 @@ export const PLACEHOLDER_CHARACTER: MeCharacter = {
 export function placeholderAnswer(bar: boolean): FiguresAnswer {
   return {
     kind: 'figures',
-    label: 'Placeholder',
+    label: GHOST_TEXT,
     figures: [{ value: '0' }],
-    note: { text: 'Placeholder' },
+    note: { text: GHOST_TEXT },
     ...(bar ? { bar: 0 } : {}),
   };
 }

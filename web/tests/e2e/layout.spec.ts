@@ -3,6 +3,19 @@ import { signedOut } from './support/selector';
 
 // design/DESIGN-SYSTEM.md: "Second screen first ... 44px minimum hit targets",
 // "Page gutter 48px desktop, 18px phone". 360x800 is the narrowest phone we design for.
+// Crawlers read the served HTML, not the hydrated page: the character header's reserved box must
+// not leak text ("Placeholder") or a second h1 into it.
+test.describe('served HTML of the pages that mount the character header', () => {
+  for (const path of ['/', '/bis', '/rankings', '/logs', '/planner', '/bis/warrior/fury']) {
+    test(`${path} has no reserved-box text and exactly one h1`, async ({ request }) => {
+      const html = await (await request.get(path)).text();
+      // Case-sensitive: the word survives lowercase in CSS ::placeholder and input attributes.
+      expect(html).not.toContain('Placeholder');
+      expect(html.match(/<h1[\s>]/g) ?? []).toHaveLength(1);
+    });
+  }
+});
+
 test.describe('phone layout', () => {
   test.use({ viewport: { width: 360, height: 800 } });
 
