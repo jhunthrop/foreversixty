@@ -177,9 +177,12 @@ type Message struct {
 	Rank             string `json:"rank,omitempty"`
 
 	// MessageAck: when the site last saw the character's export (RFC
-	// 3339, UTC), and what became of its newest in-game sim request.
+	// 3339, UTC), what became of its newest in-game sim request, and when
+	// the site received that request (RFC 3339, UTC; the addon shows "your
+	// sim is queued" when it is later than the newest sim it holds).
 	ExportSeenAt    string `json:"export_seen_at,omitempty"`
 	SimRequestState string `json:"sim_request_state,omitempty"`
+	RequestedAt     string `json:"requested_at,omitempty"`
 
 	// Extra is every field of a message whose Type this build does not
 	// know, carried through to the file as-is: each value a string or
@@ -511,6 +514,9 @@ func renderMessage(b *strings.Builder, m Message) {
 		field(b, in, "export_seen_at", quote(m.ExportSeenAt))
 		if m.SimRequestState != "" {
 			field(b, in, "sim_request_state", quote(m.SimRequestState))
+		}
+		if m.RequestedAt != "" {
+			field(b, in, "requested_at", quote(m.RequestedAt))
 		}
 	default:
 		keys := make([]string, 0, len(m.Extra))

@@ -201,7 +201,8 @@ func TestInboxV2FixtureGolden(t *testing.T) {
 			t.Errorf("guild = %+v", guild.Fields)
 		}
 		ack := byType[MessageAck]
-		if ack.Get("export_seen_at") != "2026-11-04T14:03:00Z" || ack.Get("sim_request_state") != "queued" {
+		if ack.Get("export_seen_at") != "2026-11-04T14:03:00Z" || ack.Get("sim_request_state") != "done" ||
+			ack.Get("requested_at") != "2026-11-04T14:11:00Z" {
 			t.Errorf("ack = %+v", ack.Fields)
 		}
 	})
@@ -235,7 +236,7 @@ assert(m[6].raid == "Molten Core", "raid")
 assert(type(m[6].items[17076].value) == "number" and m[6].items[17076].value == 6.3, "loot value")
 assert(m[6].items[17076].unit == "dps" and m[6].items[17076].planned == true, "loot unit, planned")
 assert(m[7].guild_name == "OLYMPUS XXVII" and m[7].pending_approvals == 2 and m[7].rank == "officer", "guild")
-assert(m[8].export_seen_at == "2026-11-04T14:03:00Z" and m[8].sim_request_state == "queued", "ack")
+assert(m[8].export_seen_at == "2026-11-04T14:03:00Z" and m[8].sim_request_state == "done" and m[8].requested_at == "2026-11-04T14:11:00Z", "ack")
 `)
 		if ok {
 			t.Logf("Lua 5.1 check ran through %q", ran)
@@ -253,7 +254,7 @@ assert(m[8].export_seen_at == "2026-11-04T14:03:00Z" and m[8].sim_request_state 
 				boss.Adherence, boss.BiggestLoss, boss.ConsumablesMissed = nil, "", []string{}
 				m.Bosses = []LastRaidBoss{boss}
 			case MessageAck:
-				m.SimRequestState = ""
+				m.SimRequestState, m.RequestedAt = "", ""
 			case MessageWeights:
 				m.DPSPerPoint = nil
 			case MessageSimResult:
@@ -264,7 +265,7 @@ assert(m[8].export_seen_at == "2026-11-04T14:03:00Z" and m[8].sim_request_state 
 			bare = append(bare, m)
 		}
 		body := RenderInbox(Inbox{Messages: bare}, t0)
-		for _, absent := range []string{`["adherence"]`, `["biggest_loss"]`, `["sim_request_state"]`, `["dps_per_point"]`} {
+		for _, absent := range []string{`["adherence"]`, `["biggest_loss"]`, `["sim_request_state"]`, `["requested_at"]`, `["dps_per_point"]`} {
 			if strings.Contains(string(body), absent) {
 				t.Errorf("the render carries %s for a message without it:\n%s", absent, body)
 			}
@@ -274,7 +275,7 @@ local m = ForeverSixtyInbox.messages
 assert(m[5].bosses[1].adherence == nil and m[5].bosses[1].biggest_loss == nil, "optional boss fields")
 assert(type(m[5].bosses[1].consumables_missed) == "table" and #m[5].bosses[1].consumables_missed == 0, "empty list")
 assert(type(m[4].slots) == "table" and #m[4].slots == 0, "empty slots")
-assert(m[8].sim_request_state == nil and m[3].dps_per_point == nil and m[2].unit == nil, "absent fields")
+assert(m[8].sim_request_state == nil and m[8].requested_at == nil and m[3].dps_per_point == nil and m[2].unit == nil, "absent fields")
 `); !ok {
 			t.Log("no Lua 5.1 interpreter: the absent-field check ran through the render text only")
 		}

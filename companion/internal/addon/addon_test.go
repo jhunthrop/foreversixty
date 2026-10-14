@@ -600,7 +600,7 @@ func TestNumbersRenderWithNoExponentAndAtMostThreeDecimals(t *testing.T) {
 func TestTheInboxDecodesEveryV2TypeAndCarriesOnlyFlatUnknownOnes(t *testing.T) {
 	var in Inbox
 	err := json.Unmarshal([]byte(`{"format":2,"generated_at":"2026-11-04T21:03:00Z","builds":[],"messages":[
-		{"type":"ack","character":"us/normal/obnoxious","export_seen_at":"2026-11-04T14:03:00Z","sim_request_state":"queued"},
+		{"type":"ack","character":"us/normal/obnoxious","export_seen_at":"2026-11-04T14:03:00Z","sim_request_state":"queued","requested_at":"2026-11-04T14:11:00Z"},
 		{"type":"future_flat","character":"us/normal/obnoxious","label":"plain","count":3,"ratio":0.25},
 		{"type":"future_nested","character":"us/normal/obnoxious","rows":[1,2]},
 		{"type":"sim_result","character":"us/normal/obnoxious","spec":"warrior-arms","dps":"not a number"},
@@ -616,7 +616,8 @@ func TestTheInboxDecodesEveryV2TypeAndCarriesOnlyFlatUnknownOnes(t *testing.T) {
 		t.Fatalf("messages = %+v", in.Messages)
 	}
 	if in.Messages[0].Type != MessageAck || in.Messages[0].ExportSeenAt != "2026-11-04T14:03:00Z" ||
-		in.Messages[0].SimRequestState != "queued" {
+		in.Messages[0].SimRequestState != "queued" ||
+		in.Messages[0].RequestedAt != "2026-11-04T14:11:00Z" {
 		t.Errorf("ack = %+v", in.Messages[0])
 	}
 	flat := in.Messages[1]
@@ -675,7 +676,7 @@ func TestHostileStringsInEveryFieldLoadUnderLua51(t *testing.T) {
 				Name: h, Percentile: 1, BiggestLoss: h, ConsumablesMissed: []string{h, h}, Adherence: &one}}},
 			{Type: MessageLootValues, Character: h, Raid: h, Items: map[int]LootItemValue{17076: {Value: 1, Unit: h}}},
 			{Type: MessageGuild, Character: h, GuildName: h, ClaimState: h, Rank: h},
-			{Type: MessageAck, Character: h, ExportSeenAt: h, SimRequestState: h},
+			{Type: MessageAck, Character: h, ExportSeenAt: h, SimRequestState: h, RequestedAt: h},
 			{Type: h, Character: h, Extra: map[string]any{h: h}},
 		},
 	}
@@ -711,7 +712,7 @@ eq(boss.name, "boss.name"); eq(boss.biggest_loss, "boss.biggest_loss")
 eq(boss.consumables_missed[1], "consumables_missed[1]"); eq(boss.consumables_missed[2], "consumables_missed[2]")
 eq(m[6].raid, "loot_values.raid"); eq(m[6].items[17076].unit, "items.unit")
 eq(m[7].guild_name, "guild_name"); eq(m[7].claim_state, "claim_state"); eq(m[7].rank, "rank")
-eq(m[8].export_seen_at, "export_seen_at"); eq(m[8].sim_request_state, "sim_request_state")
+eq(m[8].export_seen_at, "export_seen_at"); eq(m[8].sim_request_state, "sim_request_state"); eq(m[8].requested_at, "requested_at")
 eq(m[9].type, "unknown type"); eq(m[9][H], "unknown field")
 `)
 	if ok {
