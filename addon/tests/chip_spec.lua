@@ -343,18 +343,51 @@ describe("Chip.model", function()
 		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile for Arms|r", lines[2])
 	end)
 
-	-- L5.3 fix round 3 (1): a saved build has no `.spec`; the hover names the tree its order weights.
-	it("names the spec of a saved build from its order, and keeps an explicit spec", function()
+	-- L5.3 fix rounds 3-4: a saved build has no `.spec`; Chip.inputs names the tree its order
+	-- weights (Comms.buildSpec), and the hover carries it.
+	describe("the build's spec through Chip.inputs", function()
+		local Follow = require("Follow")
+		local Talents = require("Talents")
+		local Progress = require("Progress")
 		local tabs = { { name = "Beast Mastery" }, { name = "Marksmanship" }, { name = "Survival" } }
-		local data = { classes = { hunter = { tabs = tabs } } }
-		local saved = { name = "Mine", classSlug = "hunter", order = { { tab = 1 }, { tab = 1 }, { tab = 2 } } }
-		assert.are.equal("hunter-beast-mastery", Chip.buildSpec(data, saved))
-		assert.are.equal("hunter-survival", Chip.buildSpec(data, { spec = "hunter-survival", order = { { tab = 1 } } }))
-		assert.is_nil(Chip.buildSpec(data, nil))
-		local lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = LAST_RAID, build = saved,
-			buildSpec = Chip.buildSpec(data, saved) })))
-		local line = "Lucifron: 71st percentile for Beast Mastery, biggest loss: downtime"
-		assert.are.equal("|cff" .. Theme.HEX.body .. line .. "|r", lines[2])
+		local data = { classes = { hunter = { tabs = tabs } }, dpsPerPoint = {} }
+		local saved = {}
+
+		before_each(function()
+			saved.build, saved.slug, saved.ranks, saved.progress =
+				Follow.build, Talents.playerClassSlug, Talents.readRanks, Progress.build
+			Progress.build = function() return { matched = 0, total = 0 } end
+			Talents.playerClassSlug = function() return nil end
+			Talents.readRanks = function() return {} end
+		end)
+		after_each(function()
+			Follow.build, Talents.playerClassSlug, Talents.readRanks, Progress.build =
+				saved.build, saved.slug, saved.ranks, saved.progress
+		end)
+
+		local function hover(build)
+			Follow.build = build
+			local given = Chip.inputs(data)
+			given.lastRaid = LAST_RAID
+			return Chip.tooltipLines(Chip.model(given))[2], given
+		end
+
+		it("names the tree a saved build's order weights, and keeps an explicit spec", function()
+			local line = hover({ name = "Mine", classSlug = "hunter", order = { { tab = 1 }, { tab = 1 }, { tab = 2 } } })
+			assert.are.equal("|cff" .. Theme.HEX.body
+				.. "Lucifron: 71st percentile for Beast Mastery, biggest loss: downtime|r", line)
+			local _, given = hover({ spec = "hunter-survival", classSlug = "hunter", order = { { tab = 1 } } })
+			assert.are.equal("hunter-survival", given.buildSpec)
+		end)
+
+		it("skips a malformed order entry, and gives no spec word for an empty order", function()
+			local noSpec = "|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile, biggest loss: downtime|r"
+			local line = hover({ name = "Mine", classSlug = "hunter", order = { "x", {}, { tab = "1" }, { tab = 3 } } })
+			assert.are.equal("|cff" .. Theme.HEX.body
+				.. "Lucifron: 71st percentile for Survival, biggest loss: downtime|r", line)
+			assert.are.equal(noSpec, (hover({ name = "Mine", classSlug = "hunter", order = {} })))
+			assert.are.equal(noSpec, (hover({ name = "Mine", classSlug = "hunter", order = { "x", {} } })))
+		end)
 	end)
 
 	it("never tells a raid more than 14 days old, or one with no date", function()
