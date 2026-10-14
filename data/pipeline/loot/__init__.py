@@ -38,7 +38,7 @@ import json
 import logging
 from pathlib import Path
 
-from pipeline.classic_sources import load_classic_sources
+from pipeline.classic_sources import load_classic_sources, load_npc_ranks, load_rare_spawns
 from pipeline.classicdb_crafted import load_extract as load_classic_crafted_recipes
 from pipeline.classicdb_items import classic_honor_ranks, honor_ranks_by_title_for_untitled_items
 from pipeline.classicdb_items import load_extract as load_classic_item_template
@@ -64,6 +64,7 @@ from pipeline.loot.gear import (
     faction_restrictions,
     suffix_options,
 )
+from pipeline.loot.npc_rank import apply_npc_ranks, rare_spawn_names
 from pipeline.loot.overlay import apply_overlays, load_overlays
 from pipeline.loot.pvp_faction import split_pvp_sources_by_faction
 from pipeline.loot.quest_class_gate import apply_quest_class_gate_to_class_items
@@ -268,6 +269,14 @@ def write_loot_files(
     item_qualities = {int(row["id"]): int(row.get("quality") or 0) for row in item_rows}
     document, vendor_cost_gated = apply_vendor_cost_gate(
         document, item_sources, build_items, item_levels, item_qualities
+    )
+    # Task L1.7: every boss row's creature rank, once the rows are final.
+    rare_spawns = load_rare_spawns(build_dir)
+    document = apply_npc_ranks(
+        document,
+        load_npc_ranks(build_dir),
+        rare_spawns,
+        rare_spawn_names(classic_sources, rare_spawns),
     )
     superseded_marked = mark_superseded_items(build_dir, superseded)
     # Day3 data-followups-7 lane, 2026-09-30: AFTER every document mutation
@@ -537,6 +546,14 @@ def merge_loot_files(
     item_qualities = {int(row["id"]): int(row.get("quality") or 0) for row in item_rows}
     document, vendor_cost_gated = apply_vendor_cost_gate(
         document, item_sources, build_items, item_levels, item_qualities
+    )
+    # Task L1.7: same placement as `write_loot_files`' own call.
+    rare_spawns = load_rare_spawns(build_dir)
+    document = apply_npc_ranks(
+        document,
+        load_npc_ranks(build_dir),
+        rare_spawns,
+        rare_spawn_names(classic_sources, rare_spawns),
     )
     write_document(document, build_dir / LOOT)
     # An engine buff id IDS.md gained since the last full rebuild (a raid

@@ -196,13 +196,37 @@ def _go_round_half_away(value: float) -> float:
     return math.floor(value + 0.5)
 
 
+#: sim/cmd/leveling-bis/data.go's rareLabelSuffix (task L1.7): the end of a
+#: rare spawn's source label.
+RARE_LABEL_SUFFIX = " (rare)"
+
+
+def _shared_trash(source: dict) -> set[int]:
+    """sim/cmd/leveling-bis/data.go's sharedTrashDrops (task L1.7): the
+    source's own `trash` items more than one of its creatures drops, none
+    at a stated rate -- named by the instance alone, with no chance."""
+    trash = set(source.get("trash") or [])
+    creatures: dict[int, int] = {}
+    rated: set[int] = set()
+    for boss in source.get("bosses") or []:
+        for item_id in boss.get("items") or []:
+            if item_id not in trash:
+                continue
+            creatures[item_id] = creatures.get(item_id, 0) + 1
+            if (boss.get("item_chances") or {}).get(str(item_id), 0) > 0:
+                rated.add(item_id)
+    return {item_id for item_id, n in creatures.items() if n > 1 and item_id not in rated}
+
+
 def _drop_chances(root: Path, build: str) -> dict[tuple[int, str], float]:
     """(item id, source label) -> drop chance, built the way leveling-bis
     builds its loot index (sim/cmd/leveling-bis/data.go's loadLootIndex: a
     source's own `items` under its `name`, a boss's under "<name>: <boss>",
     each with its `item_chances` percent; the flat `quest` source is
-    skipped) and converted the way its dropChance does (report.go: percent
-    to a fraction, math.Round(chance*1e4)/1e6; a chance of 0 is none)."""
+    skipped; a rare spawn's label ends RARE_LABEL_SUFFIX and a shared trash
+    drop has no creature label at all, task L1.7) and converted the way its
+    dropChance does (report.go: percent to a fraction,
+    math.Round(chance*1e4)/1e6; a chance of 0 is none)."""
     path = root / build / "loot.json"
     if not path.exists():
         return {}
@@ -221,12 +245,18 @@ def _drop_chances(root: Path, build: str) -> dict[tuple[int, str], float]:
             continue
         name = source.get("name", "")
         item_chances = source.get("item_chances") or {}
+        flat_label = name + RARE_LABEL_SUFFIX if source.get("rare_spawn") else name
         for item_id in source.get("items") or []:
-            add(item_id, name, item_chances.get(str(item_id)))
+            add(item_id, flat_label, item_chances.get(str(item_id)))
+        shared = _shared_trash(source)
         for boss in source.get("bosses") or []:
             label = f"{name}: {boss['name']}" if boss.get("name") else name
+            if boss.get("rare_spawn"):
+                label += RARE_LABEL_SUFFIX
             boss_chances = boss.get("item_chances") or {}
             for item_id in boss.get("items") or []:
+                if item_id in shared:
+                    continue
                 add(item_id, label, boss_chances.get(str(item_id)))
     return chances
 

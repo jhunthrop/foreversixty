@@ -79,6 +79,19 @@ logger = logging.getLogger(__name__)
 
 FILE_NAME = "sources.json"
 
+#: cmangos' own `creature_template.Rank` values for a rare: 2 is "rare elite"
+#: and 4 is "rare" (0 normal, 1 elite, 3 boss). Task L1.7: the BiS ranker never
+#: makes a rare spawn's drop a pick when the slot has a source that is not a
+#: rare spawn at the band, and names one it keeps as "(rare)". The rank alone
+#: does not make a rare SPAWN -- see `parse_rare_spawns`.
+RARE_NPC_RANKS = frozenset({2, 4})
+
+#: The two open-world continents' map ids (Eastern Kingdoms 0, Kalimdor 1):
+#: a rare-ranked creature spawned on either is a rare spawn
+#: (`parse_rare_spawns`).
+OPEN_WORLD_MAPS = frozenset({0, 1})
+
+
 #: cmangos' own `CONDITION_REPUTATION_RANK` type id (see the dump's
 #: `conditions` table: row `(71,5,749,6,...)` reads "Has Minimum Rank
 #: Revered With Faction ID: 749" -- value1 is the faction id, value2 the
@@ -1266,6 +1279,57 @@ def parse_classic_db_sources(sql_text: str) -> dict[int, list[ClassicDbSourceRec
     return dict(into)
 
 
+def parse_npc_ranks(sql_text: str) -> dict[int, int]:
+    """npc id -> its own `creature_template.Rank` (task L1.7), for every
+    creature the pinned dump ranks above normal (0, left out to keep the
+    committed cache small). Empty for a dump or fixture whose
+    `creature_template` declares no `Rank` column -- never guessed."""
+    ranks: dict[int, int] = {}
+    for row in iter_table_records(sql_text, "creature_template"):
+        rank = row.get("Rank")
+        if rank is None or not int(rank):
+            continue
+        ranks[int(row["Entry"])] = int(rank)
+    return ranks
+
+
+def parse_rare_spawns(sql_text: str) -> set[int]:
+    """The npc ids that are rare SPAWNS (task L1.7): ranked rare or rare
+    elite (`RARE_NPC_RANKS`) AND either
+    - with a spawn in a spawn pool: a `pool_creature` guid that spawns the
+      npc itself or picks it at random through `creature_spawn_entry`
+      (Scarlet Monastery's graveyard spawn point picks one of Ironspine,
+      Azshir the Sleepless and the Fallen Champion), or a
+      `pool_creature_template` row for the npc; or
+    - with a spawn in the open world (`OPEN_WORLD_MAPS`), where a rare is a
+      single long-respawn spawn and no pool (Swiftmane in the Barrens).
+    The rank alone is not enough: the pinned dump also ranks fixed single
+    spawns inside instances rare elite (Edwin VanCleef, Lord Roccor,
+    Pyromancer Loregrain, Quartermaster Zigris), which are there on every
+    run and not rare spawns at all. A rare-ranked npc with no spawn row at
+    all is a scripted summon (Timmy the Cruel, Urok Doomhowl) and is not
+    one either. Empty for a dump or fixture with no rank column."""
+    rare = {npc_id for npc_id, rank in parse_npc_ranks(sql_text).items() if rank in RARE_NPC_RANKS}
+    if not rare:
+        return set()
+    pooled_guids = {int(row["guid"]) for row in iter_table_records(sql_text, "pool_creature")}
+    counted: set[int] = {
+        int(row["id"]) for row in iter_table_records(sql_text, "pool_creature_template")
+    }
+    # A spawn point counts when it is pooled or in the open world; a guid
+    # whose `creature.id` is 0 picks its creature from `creature_spawn_entry`.
+    counted_guids = set(pooled_guids)
+    for row in iter_table_records(sql_text, "creature"):
+        if int(row["map"]) in OPEN_WORLD_MAPS:
+            counted_guids.add(int(row["guid"]))
+        if int(row["guid"]) in counted_guids:
+            counted.add(int(row["id"]))
+    for row in iter_table_records(sql_text, "creature_spawn_entry"):
+        if int(row["guid"]) in counted_guids:
+            counted.add(int(row["entry"]))
+    return rare & counted
+
+
 def _download_dump(client: httpx.Client, url: str) -> str:
     """The pinned mysqldump's own decompressed text. Split out from
     `fetch_classic_db_sources` (catalogue-universe lane, 2026-09-30) so
@@ -1303,7 +1367,15 @@ def raw_path(build_dir: Path) -> Path:
     return build_dir / "raw" / "classicdb" / FILE_NAME
 
 
-def write_classic_sources(build_dir: Path, items: dict[int, list[ClassicDbSourceRecord]]) -> Path:
+def write_classic_sources(
+    build_dir: Path,
+    items: dict[int, list[ClassicDbSourceRecord]],
+    npc_ranks: dict[int, int] | None = None,
+    rare_spawns: set[int] | None = None,
+) -> Path:
+    """The committed cache: every item's records, plus (task L1.7) the
+    `npc_ranks` map and the `rare_spawns` list `parse_npc_ranks` and
+    `parse_rare_spawns` read off the same dump, when given."""
     path = raw_path(build_dir)
     path.parent.mkdir(parents=True, exist_ok=True)
     document = {
@@ -1323,6 +1395,10 @@ def write_classic_sources(build_dir: Path, items: dict[int, list[ClassicDbSource
             for item_id, records in sorted(items.items())
         },
     }
+    if npc_ranks:
+        document["npc_ranks"] = {str(npc_id): rank for npc_id, rank in sorted(npc_ranks.items())}
+    if rare_spawns:
+        document["rare_spawns"] = sorted(rare_spawns)
     path.write_text(json.dumps(document, indent=1) + "\n", encoding="utf-8")
     return path
 
@@ -1345,6 +1421,27 @@ def load_classic_sources(build_dir: Path) -> dict[int, list[ClassicDbSourceRecor
         int(item_id): [ClassicDbSourceRecord(**record) for record in records]
         for item_id, records in document["items"].items()
     }
+
+
+def load_npc_ranks(build_dir: Path) -> dict[int, int]:
+    """The committed cache's `npc_ranks` (task L1.7): npc id -> classic-db's
+    `creature_template.Rank`, for every npc ranked above normal. Empty when
+    the cache is missing or was written before the map existed."""
+    path = raw_path(build_dir)
+    if not path.exists():
+        return {}
+    document = json.loads(path.read_text(encoding="utf-8"))
+    return {int(npc_id): int(rank) for npc_id, rank in (document.get("npc_ranks") or {}).items()}
+
+
+def load_rare_spawns(build_dir: Path) -> set[int]:
+    """The committed cache's `rare_spawns` (task L1.7, `parse_rare_spawns`).
+    Empty when the cache is missing or was written before the list existed."""
+    path = raw_path(build_dir)
+    if not path.exists():
+        return set()
+    document = json.loads(path.read_text(encoding="utf-8"))
+    return {int(npc_id) for npc_id in document.get("rare_spawns") or []}
 
 
 def _source_commit() -> str:
@@ -1383,11 +1480,16 @@ def fetch_and_write_classic_sources(
         if own:
             client.close()
     items = parse_classic_db_sources(sql_text)
+    npc_ranks = parse_npc_ranks(sql_text)
+    rare_spawns = parse_rare_spawns(sql_text)
     build_dir = root / build
-    path = write_classic_sources(build_dir, items)
+    path = write_classic_sources(build_dir, items, npc_ranks, rare_spawns)
     logger.info(
-        "classic-sources: parsed %d item ids with at least one classic-db source; wrote %s",
+        "classic-sources: parsed %d item ids with at least one classic-db source, %d "
+        "ranked npcs and %d rare spawns; wrote %s",
         len(items),
+        len(npc_ranks),
+        len(rare_spawns),
         path,
     )
     item_template_records, referenced_spells = extract_records(sql_text)

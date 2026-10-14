@@ -257,8 +257,8 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 		if !ok {
 			t.Errorf("%s: item %d (%s) has no source obtainable by a %s character at level %d (sourceFor), but was published as a pick", slotLabel(row.Slot), row.ItemID, row.ItemName, band.Faction, band.Band)
 		} else {
-			if row.Source != src.Label {
-				t.Errorf("%s: item %d (%s) published source %q, sourceFor says %q", slotLabel(row.Slot), row.ItemID, row.ItemName, row.Source, src.Label)
+			if msg := sourceLabelError("item", row.ItemID, row.ItemName, row.Source, src, active); msg != "" {
+				t.Errorf("%s: %s", slotLabel(row.Slot), msg)
 			}
 			if row.SourceKind != src.Kind {
 				t.Errorf("%s: item %d (%s) published source_kind %q, sourceFor says %q", slotLabel(row.Slot), row.ItemID, row.ItemName, row.SourceKind, src.Kind)
@@ -310,7 +310,7 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 	// says it has), distinct from the pick and from every other
 	// alternative, never the slot's own pair-mate, and bounded at
 	// alternativesLimit.
-	checkAlternatives(t, slotLabel, spec.ClassSlug, byID, lootIdx, band, bySlot)
+	checkAlternatives(t, slotLabel, spec.ClassSlug, byID, lootIdx, band, bySlot, active)
 }
 
 // checkAlternatives applies check (9) to every filled slot's
@@ -319,7 +319,7 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 // of the pick itself), never the pick, never listed twice, never the
 // slot's own pair-mate (pairSlot, verify.go), and the list never
 // exceeds alternativesLimit (report.go).
-func checkAlternatives(t *testing.T, slotLabel func(string) string, classSlug string, byID map[int]candidate, lootIdx lootIndex, band bandReport, bySlot map[string]slotRow) {
+func checkAlternatives(t *testing.T, slotLabel func(string) string, classSlug string, byID map[int]candidate, lootIdx lootIndex, band bandReport, bySlot map[string]slotRow, active bool) {
 	t.Helper()
 	for _, row := range bySlot {
 		if row.ItemID == 0 || len(row.Alternatives) == 0 {
@@ -354,8 +354,10 @@ func checkAlternatives(t *testing.T, slotLabel func(string) string, classSlug st
 			src, ok := sourceFor(alt.ItemID, band.Band, band.Faction, c.FactionRestriction, lootIdx)
 			if !ok {
 				t.Errorf("%s: alternative %d (%s) has no source obtainable by a %s character at level %d (sourceFor), but was published as an alternative", slotLabel(row.Slot), alt.ItemID, alt.ItemName, band.Faction, band.Band)
-			} else if alt.Source != src.Label || alt.SourceKind != src.Kind {
+			} else if alt.SourceKind != src.Kind {
 				t.Errorf("%s: alternative %d (%s) published source %q/%q, sourceFor says %q/%q", slotLabel(row.Slot), alt.ItemID, alt.ItemName, alt.Source, alt.SourceKind, src.Label, src.Kind)
+			} else if msg := sourceLabelError("alternative", alt.ItemID, alt.ItemName, alt.Source, src, active); msg != "" {
+				t.Errorf("%s: %s", slotLabel(row.Slot), msg)
 			}
 
 			if hasMate && mateRow.ItemID != 0 && (alt.ItemID == mateRow.ItemID || (alt.ItemName != "" && alt.ItemName == mateRow.ItemName)) {
@@ -544,6 +546,27 @@ func publishedCandidates(items []candidate, build, activeBuild string) map[int]c
 		byID[c.ID] = c
 	}
 	return byID
+}
+
+// sourceLabelError is check (3)'s source-label half ("" when the label is
+// right): a published source must be sourceFor's own label (want). The
+// active build's files must match it exactly. An older build's were ranked
+// before task L1.7 and are never re-ranked; there the check accepts the one
+// relabel L1.7 made, and only where it applies: want is a shared trash
+// drop named by its instance alone, and the published label is that
+// instance plus one of the creatures loot.json lists for the item.
+func sourceLabelError(what string, id int, name, published string, want itemSource, active bool) string {
+	if published == want.Label {
+		return ""
+	}
+	if !active {
+		for _, creature := range want.SharedTrashCreatures {
+			if published == want.Label+": "+creature {
+				return ""
+			}
+		}
+	}
+	return fmt.Sprintf("%s %d (%s) published source %q, sourceFor says %q", what, id, name, published, want.Label)
 }
 
 // unconfirmedError is the refusal for a published client_unconfirmed

@@ -709,7 +709,9 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		// as a real, measured "beats the pick" claim - capped at 0. A
 		// negative delta is left alone; only the positive/untested
 		// direction is the tenet-8 problem this cap exists for.
-		dpsDelta := scoreDelta * referenceDPSPerPoint
+		// Rounded like a stored score (roundScore), so equal deltas tie in
+		// betterAlternative and the final sort and fall to the item id.
+		dpsDelta := roundScore(scoreDelta * referenceDPSPerPoint)
 		if dpsDelta > 0 {
 			dpsDelta = 0
 		}
@@ -831,7 +833,7 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		// at-0 estimate, Verified false) rather than overwriting a
 		// noise-sized number with false confidence.
 		if sw.Significant() {
-			measured := swapMeasuredDelta(*sw)
+			measured := roundScore(swapMeasuredDelta(*sw))
 			for i := range out {
 				if out[i].ItemID == pk.RunnerUp.ID {
 					out[i].DPSDelta = measured

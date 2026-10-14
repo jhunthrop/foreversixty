@@ -1,5 +1,10 @@
 package main
 
+import (
+	"math"
+	"sort"
+)
+
 // attackPowerPerDPS is the engine's DefaultAttackPowerPerDPS
 // (wowsims-forever's sim/core/constants.go, pinned at 14.0): a
 // weapon's damage-per-second converts to the attack-power stat it is
@@ -157,9 +162,17 @@ func deadStatCount(c candidate, weights map[string]float64) int {
 }
 
 func score(c candidate, slot string, weights map[string]float64, referenceDPSPerPoint float64, castsShoot bool) float64 {
+	// Summed in sorted stat order (task L1.7 fix round 3): a Go map ranges
+	// in a random order, and a float sum taken in another order can differ
+	// by an ulp, so two items with the same stats did not always tie.
+	stats := make([]string, 0, len(c.Stats))
+	for stat := range c.Stats {
+		stats = append(stats, stat)
+	}
+	sort.Strings(stats)
 	total := 0.0
-	for stat, amount := range c.Stats {
-		total += amount * statWeight(stat, weights)
+	for _, stat := range stats {
+		total += c.Stats[stat] * statWeight(stat, weights)
 	}
 	// Armor is an item property, not a stat line; only a tank's weights
 	// carry an "armor" entry, so this adds nothing for any other spec.
@@ -174,4 +187,22 @@ func score(c candidate, slot string, weights map[string]float64, referenceDPSPer
 		}
 	}
 	return total
+}
+
+// scorePrecision is the grid a stored score and a published dps delta are
+// rounded to (task L1.7 fix round 3): a billionth of a point, far below any
+// difference a stat point makes and far above float summation noise.
+const scorePrecision = 1e9
+
+// roundScore rounds x to scorePrecision, so sums that are equal in exact
+// arithmetic but built from different stat sets (0.1+0.2 against 0.3) are
+// one value, and the exact comparisons in sortCandidates, pick's Ties loop,
+// mergeByScore and the alternatives' sort fall to their tie-breaks. A
+// negative zero comes back as 0, so the JSON never prints "-0".
+func roundScore(x float64) float64 {
+	r := math.Round(x*scorePrecision) / scorePrecision
+	if r == 0 {
+		return 0
+	}
+	return r
 }

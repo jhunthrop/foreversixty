@@ -386,6 +386,16 @@ class LootBoss(BaseModel):
     #: for every item classic-db itself attributed (its own record IS the
     #: corroboration).
     item_source_origin: dict[str, str] | None = None
+    #: The creature's own cmangos/classic-db `creature_template.Rank` (task
+    #: L1.7, `pipeline.loot.npc_rank`): 1 elite, 2 rare elite, 3 boss, 4 rare
+    #: (`pipeline.classic_sources.RARE_NPC_RANKS`). Unset for a normal
+    #: creature (rank 0) and for an npc the dump does not rank.
+    rank: int | None = None
+    #: True for a rare SPAWN (task L1.7, `pipeline.classic_sources.
+    #: parse_rare_spawns`): a rare or rare-elite creature with a pooled
+    #: spawn, so it is not there on every run. Unset otherwise -- including
+    #: a fixed boss the dump ranks rare elite (Edwin VanCleef).
+    rare_spawn: bool | None = None
 
 
 class LootSource(BaseModel):
@@ -409,6 +419,9 @@ class LootSource(BaseModel):
     faction_id: int | None = None
     standing: str | None = None
     rank: int | None = None
+    #: True for a `world` source whose creature is a rare spawn (task L1.7,
+    #: `pipeline.loot.npc_rank`): Swiftmane, Lupos. Unset otherwise.
+    rare_spawn: bool | None = None
     #: The vendor kind's own npc, so the page can link it the way a boss's
     #: `npc_id` already does.
     npc_id: int | None = None

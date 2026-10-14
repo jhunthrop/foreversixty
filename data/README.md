@@ -352,6 +352,12 @@ older-schema build works if one is ever fetched again.
 10. Commit `builds/<build>/` and bump `web/src/data/active-build.json`.
 
 ## Known gaps
+- **`builds/1.60.1.70291/dps-per-point.json` is stale (noted 2026-10-13).** Task L1.5
+  measured each band on that band's alliance bare BiS set (commit `a4e9ae4f`). Task L1.7's
+  rare-spawn rule (`98c9cd2c`) then changed an item in 66 of those 140 alliance (spec, band)
+  sets, and its fix round 1 leaves 65 changed. The figures were not re-measured: one ring or
+  cloak swap barely moves a per-point weight. The L1.5 re-measure is scheduled in task L9.1
+  (the weekly capture loop); until then read the file as measured on the older sets.
 - The Classic Era client has no `JournalInstance` table, so `dungeons.json` is empty for
   `wow_classic_era` builds. `JournalInstance` is one of several entries in
   `OPTIONAL_TABLES` in `pipeline/wago.py` (the curve tables and `ItemXItemEffect` are

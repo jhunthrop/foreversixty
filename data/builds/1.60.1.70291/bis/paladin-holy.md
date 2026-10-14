@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 05320001000000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 27.3. Weights run: 1.4s. Verify run: 4.2s. 225 eligible items had no known source.
+Set DPS (verified): 27.3. Weights run: 2.0s. Verify run: 5.6s. 225 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.901 ± 0.003, spirit=0.222 ± 0.001, mp5=1.699 ± 0.033, crit=0.037 ± 0.002 per rating point (14 rating = 1%, 0.512 per %), spell_haste=0.104 ± 0.016
 
@@ -19,13 +19,13 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | shoulder | Magician's Mantle (12998) | World drop [world_drop] | 8.1 healing_power points (0.68 DPS) | yes | Reinforced Woolen Shoulders (4315, -0.38 DPS) [crafted]; Slime-encrusted Pads (6461, -0.40 DPS, sim-verified) [dungeon]; Forest Leather Mantle (4709, -0.61 DPS) [world_drop] |
 | back | Caretaker's Cape (20428) | Silverwing Sentinels [rep] | 9.4 healing_power points (0.79 DPS) | yes | Pearl-clasped Cloak (5542, -0.56 DPS) [crafted]; Seer's Cape (6378, -0.60 DPS) [dungeon]; Sanguine Cape (14376, -0.83 DPS, sim-verified) [world_drop] |
 | chest | Acolyte's Chain Shirt (250491) | Blacksmithing [crafted] | 20.5 healing_power points (1.72 DPS) | yes | Wisdom's Leather Armor (252493, -0.13 DPS, sim-verified) [crafted]; Filigreed Pristine Gown (253901, -0.20 DPS) [crafted]; Bloody Apron (6226, -0.63 DPS) [dungeon] |
-| wrist | Mindthrust Bracers (1974) | Shadowfang Keep: Son of Arugal [dungeon] | 9.6 healing_power points (0.80 DPS) | yes | Bright Bracers (3647, -0.50 DPS) [world_drop]; Ratchet Wristwraps (274742, -0.50 DPS) [vendor]; Owl Bracers (4796, -1.05 DPS, sim-verified) [vendor] |
+| wrist | Mindthrust Bracers (1974) | Shadowfang Keep [dungeon] | 9.6 healing_power points (0.80 DPS) | yes | Bright Bracers (3647, -0.50 DPS) [world_drop]; Ratchet Wristwraps (274742, -0.50 DPS) [vendor]; Owl Bracers (4796, -1.05 DPS, sim-verified) [vendor] |
 | hands | Acolyte's Gloves (250511) | Blacksmithing [crafted] | 14.5 healing_power points (1.22 DPS) | yes | Wisdom's Leather Gloves (252499, -0.08 DPS) [crafted]; Pristine Gloves (253913, -0.23 DPS, sim-verified) [crafted]; Tomb Robber's Gloves (280096, -0.76 DPS) [quest] |
 | waist | Pristine Sash (253925) | Tailoring [crafted] | 14.6 healing_power points (1.22 DPS) | yes | Wisdom's Leather Belt (252433, -0.25 DPS) [crafted]; Acolyte's Chain Belt (250516, -0.26 DPS, sim-verified) [crafted]; Novice Ardent's Sash (253887, -0.44 DPS) [crafted] |
 | legs | Acolyte's Chain Leggings (250496) | Blacksmithing [crafted] | 27.3 healing_power points (2.29 DPS) | yes | Filigreed Pristine Leggings (253937, -0.25 DPS) [crafted]; Wisdom's Leather Pants (252503, -0.44 DPS, sim-verified) [crafted]; Dreamer's Leggings (270016, -1.46 DPS) [quest] |
 | feet | Acolyte's Boots (250506) (or Wisdom's Leather Boots (252444)) | Blacksmithing [crafted] | 15.5 healing_power points (1.30 DPS) | yes | Wisdom's Leather Boots (252444, +0.00 DPS) [crafted]; Glowing Copper Boots (250482, -0.24 DPS) [crafted]; Black Whelp Slippers (252424, -0.24 DPS) [crafted] |
-| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 5.4 healing_power points (0.45 DPS) | yes | Black Pearl Ring (6332, -0.19 DPS) [world]; Volcanic Rock Ring (12053, -0.23 DPS) [world_drop]; Minor Channeling Ring (1449, -0.30 DPS) [quest] |
-| finger2 | Lorekeeper's Ring (20431) | Silverwing Sentinels [rep] | 3.4 healing_power points (0.28 DPS) | yes | Volcanic Rock Ring (12053, -0.06 DPS) [world_drop]; Minor Channeling Ring (1449, -0.13 DPS) [quest]; Black Pearl Ring (6332, -0.34 DPS, sim-verified) [world] |
+| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 5.4 healing_power points (0.45 DPS) | yes | Volcanic Rock Ring (12053, -0.23 DPS) [world_drop]; Minor Channeling Ring (1449, -0.30 DPS) [quest]; Band of Purification (12996, -0.34 DPS) [world_drop] |
+| finger2 | Lorekeeper's Ring (20431) | Silverwing Sentinels [rep] | 3.4 healing_power points (0.28 DPS) | yes | Minor Channeling Ring (1449, -0.13 DPS) [quest]; Band of Purification (12996, -0.17 DPS) [world_drop]; Volcanic Rock Ring (12053, -0.32 DPS, sim-verified) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Sword of the Fallen (286977) | Ruins of Lordaeron: Ragged Ghoul [dungeon] | 8.1 healing_power points (0.68 DPS) | yes | Impaling Harpoon (5200, -0.30 DPS) [dungeon]; Verigan's Fist (6953, -0.33 DPS, sim-verified) [quest]; Monastic Hammer (270005, -0.53 DPS) [quest] |
@@ -38,44 +38,44 @@ No-known-source sample (15 of 225, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 05320003224000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 50.1. Weights run: 1.3s. Verify run: 4.2s. 409 eligible items had no known source.
+Set DPS (verified): 49.0. Weights run: 1.6s. Verify run: 5.2s. 409 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.985 ± 0.005, spirit=0.496 ± 0.004, mp5=2.104 ± 0.011, crit=0.092 ± 0.005 per rating point (14 rating = 1%, 1.288 per %), spell_haste=not significant (0.037 ± 0.013)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Holy Shroud (2721) | World drop [world_drop] | 36.0 healing_power points (3.37 DPS) | yes | Filigreed Pristine Circlet (253975, -1.31 DPS) [crafted]; Embalmed Shroud (7691, -1.32 DPS) [dungeon]; Acolyte's Chain Helm (250501, -2.20 DPS, sim-verified) [crafted] |
-| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 5.9 healing_power points (0.56 DPS) | yes | Crystal Starfire Medallion (5003, -0.05 DPS) [world_drop]; Darkspear Warding Pendant (272075, -0.09 DPS) [vendor]; Scorn's Icy Choker (23169, -0.76 DPS, sim-verified) [dungeon] |
-| shoulder | Batwing Mantle (6697) | Razorfen Kraul: Blind Hunter [dungeon] | 13.3 healing_power points (1.25 DPS) | yes | Mantle of Honor (3560, -0.28 DPS) [quest]; Nightsky Mantle (4718, -0.28 DPS) [world_drop]; Death Speaker Mantle (6685, -1.14 DPS, sim-verified) [dungeon] |
-| back | Caretaker's Cape (19533) | Silverwing Sentinels [rep] | 15.0 healing_power points (1.41 DPS) | yes | Repairman's Cape (9605, -0.15 DPS) [quest]; Glowing Thresher Cape (6901, -0.38 DPS) [dungeon]; Prelacy Cape (7004, -0.39 DPS, sim-verified) [quest] |
-| chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | 30.8 healing_power points (2.89 DPS) | yes | Pristine Gown (253961, -0.18 DPS) [crafted]; Wisdom's Leather Tunic (252511, -0.37 DPS) [crafted]; Acolyte's Silvered Chain Shirt (250521, -0.52 DPS, sim-verified) [crafted] |
-| wrist | Mindthrust Bracers (1974) | Shadowfang Keep: Son of Arugal [dungeon] | 11.2 healing_power points (1.05 DPS) | yes | Nightsky Wristbands (6407, -0.36 DPS) [world_drop]; Spidertank Oilrag (9448, -0.46 DPS) [dungeon]; Glowing Magical Bracelets (13106, -1.39 DPS, sim-verified) [world_drop] |
-| hands | Truefaith Gloves (7049) | Tailoring [crafted] | 18.0 healing_power points (1.68 DPS) | yes | Acolyte's Gloves (250511, -0.28 DPS) [crafted]; Silvered Gauntlets (270025, -0.37 DPS) [quest]; Naga Battle Gloves (888, -0.44 DPS, sim-verified) [dungeon] |
-| waist | Prefect's Belt (250559) | Blacksmithing [crafted] | 28.9 healing_power points (2.71 DPS) | yes | Mender's Leather Belt (252523, -0.92 DPS, sim-verified) [crafted]; Pristine Sash (253925, -1.31 DPS) [crafted]; Acolyte's Chain Belt (250516, -1.50 DPS) [crafted] |
-| legs | Acolyte's Silvered Chain Leggings (250526) | Blacksmithing [crafted] | 32.9 healing_power points (3.08 DPS) | yes | Wisdom's Leather Leggings (252519, -0.14 DPS) [crafted]; Acolyte's Chain Leggings (250496, -0.47 DPS) [crafted]; Pristine Leggings (253987, -0.98 DPS, sim-verified) [crafted] |
-| feet | Gilded Slippers (254001) | Tailoring [crafted] | 28.9 healing_power points (2.71 DPS) | yes | Acolyte's Boots (250506, -1.21 DPS) [crafted]; Wisdom's Leather Boots (252444, -1.21 DPS) [crafted]; Nimbus Boots (6998, -2.59 DPS, sim-verified) [quest] |
-| finger1 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | 18.0 healing_power points (1.69 DPS) | yes | Electrocutioner Lagnut (9447, -0.80 DPS) [dungeon]; Darkspear Signet (272071, -0.90 DPS) [vendor]; Black Widow Band (6199, -1.04 DPS) [world] |
-| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 10.4 healing_power points (0.97 DPS) | yes | Darkspear Signet (272071, -0.18 DPS) [vendor]; Black Widow Band (6199, -0.33 DPS) [world]; Electrocutioner Lagnut (9447, -0.54 DPS, sim-verified) [dungeon] |
+| head | Holy Shroud (2721) | World drop [world_drop] | 36.0 healing_power points (3.37 DPS) | yes | Filigreed Pristine Circlet (253975, -1.31 DPS) [crafted]; Wisdom's Leather Helm (252515, -1.40 DPS) [crafted]; Acolyte's Chain Helm (250501, -1.79 DPS, sim-verified) [crafted] |
+| neck | Kaleidoscope Chain (13084) | World drop [world_drop] | 5.9 healing_power points (0.56 DPS) | yes | Crystal Starfire Medallion (5003, -0.05 DPS) [world_drop]; Darkspear Warding Pendant (272075, -0.09 DPS) [vendor]; Scorn's Icy Choker (23169, -0.24 DPS, sim-verified) [dungeon] |
+| shoulder | Death Speaker Mantle (6685) | Razorfen Kraul: Death Speaker Jargba [dungeon] | 10.8 healing_power points (1.02 DPS) | yes | Mantle of Honor (3560, +0.00 DPS, sim-verified) [quest]; Nightsky Mantle (4718, -0.04 DPS) [world_drop]; Talbar Mantle (10657, -0.07 DPS) [quest] |
+| back | Caretaker's Cape (19533) | Silverwing Sentinels [rep] | 15.0 healing_power points (1.41 DPS) | yes | Prelacy Cape (7004, +0.00 DPS, sim-verified) [quest]; Repairman's Cape (9605, -0.15 DPS) [quest]; Glowing Thresher Cape (6901, -0.38 DPS) [dungeon] |
+| chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | 30.8 healing_power points (2.89 DPS) | yes | Pristine Gown (253961, -0.18 DPS) [crafted]; Wisdom's Leather Tunic (252511, -0.37 DPS) [crafted]; Acolyte's Silvered Chain Shirt (250521, -0.49 DPS, sim-verified) [crafted] |
+| wrist | Mindthrust Bracers (1974) | Shadowfang Keep [dungeon] | 11.2 healing_power points (1.05 DPS) | yes | Nightsky Wristbands (6407, -0.36 DPS) [world_drop]; Spidertank Oilrag (9448, -0.46 DPS) [dungeon]; Glowing Magical Bracelets (13106, -0.81 DPS, sim-verified) [world_drop] |
+| hands | Truefaith Gloves (7049) | Tailoring [crafted] | 18.0 healing_power points (1.68 DPS) | yes | Acolyte's Gloves (250511, -0.28 DPS) [crafted]; Silvered Gauntlets (270025, -0.37 DPS) [quest]; Naga Battle Gloves (888, -0.59 DPS, sim-verified) [dungeon] |
+| waist | Prefect's Belt (250559) | Blacksmithing [crafted] | 28.9 healing_power points (2.71 DPS) | yes | Mender's Leather Belt (252523, +0.00 DPS, sim-verified) [crafted]; Pristine Sash (253925, -1.31 DPS) [crafted]; Acolyte's Chain Belt (250516, -1.50 DPS) [crafted] |
+| legs | Acolyte's Silvered Chain Leggings (250526) | Blacksmithing [crafted] | 32.9 healing_power points (3.08 DPS) | yes | Pristine Leggings (253987, +0.00 DPS, sim-verified) [crafted]; Wisdom's Leather Leggings (252519, -0.14 DPS) [crafted]; Acolyte's Chain Leggings (250496, -0.47 DPS) [crafted] |
+| feet | Gilded Slippers (254001) | Tailoring [crafted] | 28.9 healing_power points (2.71 DPS) | yes | Acolyte's Boots (250506, -1.21 DPS) [crafted]; Wisdom's Leather Boots (252444, -1.21 DPS) [crafted]; Nimbus Boots (6998, -2.03 DPS, sim-verified) [quest] |
+| finger1 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | 18.0 healing_power points (1.69 DPS) | yes | Electrocutioner Lagnut (9447, -0.80 DPS) [dungeon]; Darkspear Signet (272071, -0.90 DPS) [vendor]; The Queen's Jewel (13094, -1.13 DPS) [world_drop] |
+| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 10.4 healing_power points (0.97 DPS) | yes | Darkspear Signet (272071, -0.18 DPS) [vendor]; The Queen's Jewel (13094, -0.42 DPS) [world_drop]; Electrocutioner Lagnut (9447, -0.60 DPS, sim-verified) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Royal Diplomatic Scepter (9457) | Gnomeregan: Dark Iron Ambassador [dungeon] | sim-verified (50.1 DPS) | yes | Death Speaker Scepter (2816, -0.98 DPS) [dungeon]; Manual Crowd Pummeler (9449, -2.71 DPS, sim-verified) [dungeon]; Haunting Blade (6641, -4.26 DPS) [dungeon] |
-| off_hand | Orb of Souls (249395) | Enchanting [crafted] | 16.0 healing_power points (1.50 DPS) | yes | Alliance Outrunner Healing Rod (285348, -0.37 DPS) [world]; Orb of Mistmantle (13031, -0.47 DPS) [world_drop]; Eye of Paleth (2943, -1.06 DPS, sim-verified) [quest] |
+| main_hand | Death Speaker Scepter (2816) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-verified (49.0 DPS) | yes | Manual Crowd Pummeler (9449, -2.31 DPS, sim-verified) [dungeon]; Pysan's Old Greatsword (1975, -4.59 DPS) [dungeon]; Verigan's Fist (6953, -5.36 DPS) [quest] |
+| off_hand | Orb of Souls (249395) | Enchanting [crafted] | 16.0 healing_power points (1.50 DPS) | yes | Orb of Mistmantle (13031, -0.47 DPS) [world_drop]; Heart of Agamaggan (6694, -0.56 DPS) [dungeon]; Eye of Paleth (2943, -0.67 DPS, sim-verified) [quest] |
 | ranged | - | - |  |  |  |
 
-**New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Batwing Mantle; back: Caretaker's Cape; chest: Death Speaker Robes; hands: Truefaith Gloves; waist: Prefect's Belt; legs: Acolyte's Silvered Chain Leggings; feet: Gilded Slippers; finger1: Sea Giant's Toe Ring; finger2: Snake Hoop; main_hand: Royal Diplomatic Scepter; off_hand: Orb of Souls
+**New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Death Speaker Mantle; back: Caretaker's Cape; chest: Death Speaker Robes; hands: Truefaith Gloves; waist: Prefect's Belt; legs: Acolyte's Silvered Chain Leggings; feet: Gilded Slippers; finger1: Sea Giant's Toe Ring; finger2: Snake Hoop; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
 
 No-known-source sample (15 of 409, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk; 4833 Glorious Shoulders
 
 ### Band 40 (human, 05320003225111051-0000000000000000-00000000000000000)
 
-Set DPS (verified): 77.0. Weights run: 1.6s. Verify run: 6.4s. 560 eligible items had no known source.
+Set DPS (verified): 77.0. Weights run: 1.9s. Verify run: 8.0s. 560 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.164 ± 0.009, spirit=0.728 ± 0.008, mp5=2.684 ± 0.012, crit=0.162 ± 0.009 per rating point (14 rating = 1%, 2.271 per %), spell_haste=not significant (0.080 ± 0.025)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Holy Shroud (2721) | World drop [world_drop] | 37.4 healing_power points (3.40 DPS) | yes | Acolyte's Chain Helm (250501, -1.13 DPS) [crafted]; Embalmed Shroud (7691, -1.15 DPS) [dungeon]; Earthen Silk Hood (254015, -1.33 DPS, sim-verified) [crafted] |
-| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 22.3 healing_power points (2.03 DPS) | yes | Darkspear Warding Pendant (272074, -1.29 DPS) [vendor]; Necklace of Harmony (5180, -1.34 DPS) [world]; Necklace of Calisea (1714, -1.58 DPS, sim-verified) [dungeon] |
+| head | Holy Shroud (2721) | World drop [world_drop] | 37.4 healing_power points (3.40 DPS) | yes | Acolyte's Chain Helm (250501, -1.13 DPS) [crafted]; Enduring Cap (3020, -1.24 DPS) [world_drop]; Earthen Silk Hood (254015, -1.33 DPS, sim-verified) [crafted] |
+| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 22.3 healing_power points (2.03 DPS) | yes | Darkspear Warding Pendant (272074, -1.29 DPS) [vendor]; Kaleidoscope Chain (13084, -1.34 DPS) [world_drop]; Necklace of Calisea (1714, -1.58 DPS, sim-verified) [dungeon] |
 | shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 30.1 healing_power points (2.74 DPS) | yes | Sheepshear Mantle (13115, -0.65 DPS) [world_drop]; Mistscape Mantle (4734, -1.25 DPS) [dungeon]; Earthen Silk Shoulders (254033, -1.78 DPS, sim-verified) [crafted] |
 | back | Caretaker's Cape (19532) | Silverwing Sentinels [rep] | 21.6 healing_power points (1.97 DPS) | yes | Repairman's Cape (9605, -0.54 DPS) [quest]; Darkspear Raider's Cloak (272077, -0.54 DPS) [vendor]; Prelacy Cape (7004, -0.57 DPS) [quest] |
 | chest | Stormcloth Vest (10020) | Tailoring [crafted] | 63.8 healing_power points (5.81 DPS) | yes | Death Speaker Robes (6682, -2.83 DPS) [dungeon]; Doomsayer's Robe (4746, -2.88 DPS) [quest]; Deathchill Armor (10764, -4.29 DPS, sim-verified) [dungeon] |
@@ -88,7 +88,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | finger2 | Darkspear Signet (272070) | Creeg Bothunk [vendor] | 16.1 healing_power points (1.47 DPS) | yes | Electrocutioner Lagnut (9447, -0.46 DPS) [dungeon]; Welken Ring (5011, -0.47 DPS) [world_drop]; Snake Hoop (6750, -1.25 DPS, sim-verified) [quest] |
 | trinket1 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | sim-verified (77.0 DPS) | yes | - |
 | trinket2 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-verified (77.0 DPS) | yes | Royal Diplomatic Scepter (9457, -1.80 DPS) [dungeon]; Death Speaker Scepter (2816, -2.90 DPS) [dungeon]; Frost Tiger Blade (3854, -3.40 DPS, sim-verified) [crafted] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-verified (77.0 DPS) | yes | Death Speaker Scepter (2816, -2.90 DPS) [dungeon]; Frost Tiger Blade (3854, -3.40 DPS, sim-verified) [crafted]; Pysan's Old Greatsword (1975, -7.36 DPS) [dungeon] |
 | off_hand | Orb of Lorica (11262) | In the Name of the Light [quest] | 23.6 healing_power points (2.15 DPS) | yes | Beacon of Hope (9393, -0.61 DPS) [dungeon]; Eye of Paleth (2943, -0.97 DPS) [quest]; Orb of Souls (249395, -1.84 DPS, sim-verified) [crafted] |
 | ranged | - | - |  |  |  |
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 560, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (human, 05320003225111051-5500000000000000-00000000000000000)
 
-Set DPS (verified): 109.5. Weights run: 1.6s. Verify run: 9.1s. 715 eligible items had no known source.
+Set DPS (verified): 109.5. Weights run: 2.0s. Verify run: 11.1s. 715 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.002, intellect=1.851 ± 0.018, spirit=1.397 ± 0.016, mp5=4.657 ± 0.021, crit=0.325 ± 0.021 per rating point (14 rating = 1%, 4.550 per %), spell_haste=not significant (0.062 ± 0.067)
 
@@ -118,7 +118,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | finger2 | Eye of Adaegus (5266) | World drop [world_drop] | 27.9 healing_power points (2.00 DPS) | yes | Snake Hoop (6750, -0.25 DPS, sim-verified) [quest]; Welken Ring (5011, -0.64 DPS) [world_drop]; Lorekeeper's Ring (19523, -0.66 DPS) [rep] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (109.5 DPS) | yes | Ankh of Life (1713, -3.82 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -4.02 DPS) [quest]; Thunderbrew's Boot Flask (744, -4.22 DPS) [quest] |
 | trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-verified (109.5 DPS) | yes | Ankh of Life (1713, -0.09 DPS) [world_drop]; Thunderbrew's Boot Flask (744, -0.49 DPS) [quest]; Evonice's Landin' Pilla (18951, -1.58 DPS, sim-verified) [quest] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-verified (109.5 DPS) | yes | Hanzo Sword (8190, +0.00 DPS) [world_drop]; Royal Diplomatic Scepter (9457, -1.47 DPS) [dungeon]; Death Speaker Scepter (2816, -2.67 DPS) [dungeon] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-verified (109.5 DPS) | yes | Hanzo Sword (8190, +0.00 DPS) [world_drop]; Death Speaker Scepter (2816, -2.67 DPS) [dungeon]; Inventor's Focal Sword (17719, -3.25 DPS) [dungeon] |
 | off_hand | Orb of Lorica (11262) | In the Name of the Light [quest] | 30.5 healing_power points (2.19 DPS) | yes | Mountainside Buckler (13082, -0.32 DPS) [world_drop]; Protector Buckler (14790, -0.36 DPS) [world_drop]; Twisting Essence Jar (249456, -0.45 DPS, sim-verified) [crafted] |
 | ranged | - | - |  |  |  |
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 715, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 204.2. Weights run: 1.8s. Verify run: 36.4s. 1367 eligible items had no known source.
+Set DPS (verified): 204.2. Weights run: 2.5s. Verify run: 46.7s. 1367 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.136, intellect=4.683 ± 0.078, spirit=1.589 ± 0.017, mp5=6.636 ± 0.062, crit=0.464 ± 0.044 per rating point (14 rating = 1%, 6.491 per %), spell_haste=not significant (0.057 ± 0.055)
 
@@ -148,7 +148,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 95.4 healing_power points (6.15 DPS) | yes | Band of the Hierophant (13096, -2.00 DPS) [world_drop]; Darkspear Signet (272068, -2.30 DPS) [vendor]; Channeler's Ring (272406, -5.79 DPS, sim-verified) [vendor] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (204.2 DPS) | yes | Ankh of Life (1713, -5.19 DPS) [world_drop]; Uther's Strength (11302, -5.25 DPS) [world_drop]; Serenity Field (272439, -8.16 DPS, sim-verified) [vendor] |
 | trinket2 | Shard of the Splithooves (10659) | Heroes of Old [quest] | sim-verified (204.2 DPS) | yes | Serenity Field (272439, +0.00 DPS, sim-verified) [vendor]; Ankh of Life (1713, -1.34 DPS) [world_drop]; Uther's Strength (11302, -1.41 DPS) [world_drop] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-verified (204.2 DPS) | yes | Hand of Edward the Odd (2243, +0.00 DPS) [world_drop]; Grand Marshal's Demolisher (234568, -0.42 DPS) [pvp]; Royal Diplomatic Scepter (9457, -1.33 DPS) [dungeon] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-verified (204.2 DPS) | yes | Grand Marshal's Demolisher (234568, -0.42 DPS) [pvp]; Grand Marshal's Warhammer (23454, -1.90 DPS) [vendor]; Hand of Edward the Odd (2243, -1.93 DPS) [world_drop] |
 | off_hand | Lei of the Lifegiver (19312) | Stormpike Guard [rep] | 73.2 healing_power points (4.72 DPS) | yes | Grand Marshal's Tome of Restoration (234590, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, -0.41 DPS) [vendor]; Elunarian Sphere (15968, -8.58 DPS, sim-verified) [world_drop] |
 | ranged | - | - |  |  |  |
 
@@ -158,7 +158,7 @@ No-known-source sample (15 of 1367, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (human, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 575.2. Weights run: 1.9s. Verify run: 19.5s. 1367 eligible items had no known source.
+Set DPS (verified): 575.2. Weights run: 2.0s. Verify run: 24.7s. 1367 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.852, intellect=1.784 ± 0.122, spirit=0.691 ± 0.118, mp5=4.105 ± 0.149, crit=0.893 ± 0.140 per rating point (14 rating = 1%, 12.506 per %), spell_haste=not significant (-2.578 ± 1.753)
 
@@ -178,7 +178,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 56.3 healing_power points (9.45 DPS) | yes | Blessed Band of Light (272407, -3.32 DPS) [vendor]; Channeler's Ring (272406, -4.33 DPS) [vendor]; Darkspear Signet (272068, -7.97 DPS, sim-verified) [vendor] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (+10.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Shard of the Splithooves (10659, -6.21 DPS) [quest]; Uther's Strength (11302, -7.32 DPS) [world_drop]; Ankh of Life (1713, -8.95 DPS) [world_drop] |
 | trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shard of the Splithooves (10659, -2.92 DPS) [quest]; Ankh of Life (1713, -5.66 DPS) [world_drop]; Uther's Strength (11302, -7.51 DPS, sim-verified) [world_drop] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Edward the Odd (2243, +0.00 DPS) [world_drop]; Royal Diplomatic Scepter (9457, -3.31 DPS) [dungeon]; Death Speaker Scepter (2816, -5.30 DPS) [dungeon] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Edward the Odd (2243, +0.00 DPS) [world_drop]; Death Speaker Scepter (2816, -5.30 DPS) [dungeon]; Inventor's Focal Sword (17719, -6.64 DPS) [dungeon] |
 | off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | sim-verified (+25.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Grand Marshal's Tome of Restoration (234590, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, +0.00 DPS) [vendor]; Lei of the Lifegiver (19312, -25.94 DPS, sim-verified) [rep] |
 | ranged | - | - |  |  |  |
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 1367, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 05320001000000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 26.9. Weights run: 1.4s. Verify run: 4.3s. 205 eligible items had no known source.
+Set DPS (verified): 26.9. Weights run: 2.0s. Verify run: 5.0s. 205 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.901 ± 0.003, spirit=0.222 ± 0.001, mp5=1.699 ± 0.033, crit=0.037 ± 0.002 per rating point (14 rating = 1%, 0.512 per %), spell_haste=0.104 ± 0.016
 
@@ -201,13 +201,13 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | shoulder | Magician's Mantle (12998) | World drop [world_drop] | 8.1 healing_power points (0.68 DPS) | yes | Reinforced Woolen Shoulders (4315, -0.38 DPS) [crafted]; Slime-encrusted Pads (6461, -0.41 DPS, sim-verified) [dungeon]; Forest Leather Mantle (4709, -0.61 DPS) [world_drop] |
 | back | Battle Healer's Cloak (20427) | Warsong Outriders [rep] | 9.4 healing_power points (0.79 DPS) | yes | Sanguine Cape (14376, -0.49 DPS, sim-verified) [world_drop]; Pearl-clasped Cloak (5542, -0.56 DPS) [crafted]; Seer's Cape (6378, -0.60 DPS) [dungeon] |
 | chest | Acolyte's Chain Shirt (250491) | Blacksmithing [crafted] | 20.5 healing_power points (1.72 DPS) | yes | Wisdom's Leather Armor (252493, +0.00 DPS, sim-verified) [crafted]; Filigreed Pristine Gown (253901, -0.20 DPS) [crafted]; Bloody Apron (6226, -0.63 DPS) [dungeon] |
-| wrist | Mindthrust Bracers (1974) | Shadowfang Keep: Son of Arugal [dungeon] | 9.6 healing_power points (0.80 DPS) | yes | Owl Bracers (4796, -0.43 DPS) [vendor]; Featherbead Bracers (15452, -0.43 DPS) [quest]; Garrison Cuffs (270003, -0.93 DPS, sim-verified) [quest] |
+| wrist | Mindthrust Bracers (1974) | Shadowfang Keep [dungeon] | 9.6 healing_power points (0.80 DPS) | yes | Owl Bracers (4796, -0.43 DPS) [vendor]; Featherbead Bracers (15452, -0.43 DPS) [quest]; Garrison Cuffs (270003, -0.93 DPS, sim-verified) [quest] |
 | hands | Acolyte's Gloves (250511) | Blacksmithing [crafted] | 14.5 healing_power points (1.22 DPS) | yes | Wisdom's Leather Gloves (252499, -0.08 DPS) [crafted]; Pristine Gloves (253913, -0.19 DPS, sim-verified) [crafted]; Blight Gloves (279877, -0.59 DPS) [quest] |
 | waist | Pristine Sash (253925) | Tailoring [crafted] | 14.6 healing_power points (1.22 DPS) | yes | Wisdom's Leather Belt (252433, -0.25 DPS) [crafted]; Acolyte's Chain Belt (250516, -0.26 DPS, sim-verified) [crafted]; Novice Ardent's Sash (253887, -0.44 DPS) [crafted] |
 | legs | Acolyte's Chain Leggings (250496) | Blacksmithing [crafted] | 27.3 healing_power points (2.29 DPS) | yes | Wisdom's Leather Pants (252503, -0.14 DPS, sim-verified) [crafted]; Filigreed Pristine Leggings (253937, -0.25 DPS) [crafted]; Ghastly Trousers (15449, -1.63 DPS) [quest] |
 | feet | Acolyte's Boots (250506) (or Wisdom's Leather Boots (252444)) | Blacksmithing [crafted] | 15.5 healing_power points (1.30 DPS) | yes | Wisdom's Leather Boots (252444, +0.00 DPS) [crafted]; Glowing Copper Boots (250482, -0.24 DPS) [crafted]; Black Whelp Slippers (252424, -0.24 DPS) [crafted] |
-| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 5.4 healing_power points (0.45 DPS) | yes | Advisor's Ring (20426, -0.17 DPS) [rep]; Black Pearl Ring (6332, -0.19 DPS) [world]; Volcanic Rock Ring (12053, -0.23 DPS) [world_drop] |
-| finger2 | Loop of Sacrifice (281673) | The Offering of Blood [quest] | 4.5 healing_power points (0.38 DPS) | yes | Advisor's Ring (20426, +0.00 DPS, sim-verified) [rep]; Black Pearl Ring (6332, -0.11 DPS) [world]; Volcanic Rock Ring (12053, -0.15 DPS) [world_drop] |
+| finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 5.4 healing_power points (0.45 DPS) | yes | Advisor's Ring (20426, -0.17 DPS) [rep]; Volcanic Rock Ring (12053, -0.23 DPS) [world_drop]; Band of Purification (12996, -0.34 DPS) [world_drop] |
+| finger2 | Loop of Sacrifice (281673) | The Offering of Blood [quest] | 4.5 healing_power points (0.38 DPS) | yes | Advisor's Ring (20426, +0.00 DPS, sim-verified) [rep]; Volcanic Rock Ring (12053, -0.15 DPS) [world_drop]; Band of Purification (12996, -0.27 DPS) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Sword of the Fallen (286977) | Ruins of Lordaeron: Ragged Ghoul [dungeon] | 8.1 healing_power points (0.68 DPS) | yes | Impaling Harpoon (5200, -0.54 DPS, sim-verified) [dungeon]; Samophlange Screwdriver (11854, -0.57 DPS) [quest]; Mug of Muddled Memories (277247, -0.59 DPS) [quest] |
@@ -220,44 +220,44 @@ No-known-source sample (15 of 205, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 05320003224000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 49.3. Weights run: 1.3s. Verify run: 4.5s. 387 eligible items had no known source.
+Set DPS (verified): 48.6. Weights run: 1.6s. Verify run: 5.2s. 387 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.985 ± 0.005, spirit=0.496 ± 0.004, mp5=2.104 ± 0.011, crit=0.092 ± 0.005 per rating point (14 rating = 1%, 1.288 per %), spell_haste=not significant (0.037 ± 0.013)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Holy Shroud (2721) | World drop [world_drop] | 36.0 healing_power points (3.37 DPS) | yes | Acolyte's Chain Helm (250501, -1.07 DPS, sim-verified) [crafted]; Filigreed Pristine Circlet (253975, -1.31 DPS) [crafted]; Embalmed Shroud (7691, -1.32 DPS) [dungeon] |
+| head | Holy Shroud (2721) | World drop [world_drop] | 36.0 healing_power points (3.37 DPS) | yes | Acolyte's Chain Helm (250501, -1.07 DPS, sim-verified) [crafted]; Filigreed Pristine Circlet (253975, -1.31 DPS) [crafted]; Wisdom's Leather Helm (252515, -1.40 DPS) [crafted] |
 | neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | sim-verified (+0.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Crystal Starfire Medallion (5003, -0.05 DPS) [world_drop]; Darkspear Warding Pendant (272075, -0.09 DPS) [vendor]; Kaleidoscope Chain (13084, -0.50 DPS, sim-verified) [world_drop] |
-| shoulder | Batwing Mantle (6697) | Razorfen Kraul: Blind Hunter [dungeon] | sim-verified (+1.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Mantle of Woe (7750, -0.14 DPS) [quest]; Death Speaker Mantle (6685, -0.23 DPS) [dungeon]; Ghostly Mantle (3324, -1.32 DPS, sim-verified) [quest] |
-| back | Battle Healer's Cloak (19529) | Warsong Outriders [rep] | 15.0 healing_power points (1.41 DPS) | yes | Glowing Thresher Cape (6901, -0.46 DPS, sim-verified) [dungeon]; Darkspear Raider's Cloak (272078, -0.53 DPS) [vendor]; Cloak of Rot (4462, -0.67 DPS) [world] |
+| shoulder | Mantle of Woe (7750) | Vorrel's Revenge [quest] | sim-verified (+0.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Death Speaker Mantle (6685, -0.09 DPS) [dungeon]; Nightsky Mantle (4718, -0.14 DPS) [world_drop]; Ghostly Mantle (3324, -0.55 DPS, sim-verified) [quest] |
+| back | Battle Healer's Cloak (19529) | Warsong Outriders [rep] | 15.0 healing_power points (1.41 DPS) | yes | Glowing Thresher Cape (6901, -0.46 DPS, sim-verified) [dungeon]; Darkspear Raider's Cloak (272078, -0.53 DPS) [vendor]; Resilient Cape (14400, -0.85 DPS) [world_drop] |
 | chest | Death Speaker Robes (6682) | Razorfen Kraul: Death Speaker Jargba [dungeon] | 30.8 healing_power points (2.89 DPS) | yes | Pristine Gown (253961, -0.18 DPS) [crafted]; Wisdom's Leather Tunic (252511, -0.37 DPS) [crafted]; Acolyte's Silvered Chain Shirt (250521, -0.51 DPS, sim-verified) [crafted] |
-| wrist | Mindthrust Bracers (1974) | Shadowfang Keep: Son of Arugal [dungeon] | 11.2 healing_power points (1.05 DPS) | yes | Nightsky Wristbands (6407, -0.36 DPS) [world_drop]; Spidertank Oilrag (9448, -0.46 DPS) [dungeon]; Glowing Magical Bracelets (13106, -0.60 DPS, sim-verified) [world_drop] |
+| wrist | Mindthrust Bracers (1974) | Shadowfang Keep [dungeon] | 11.2 healing_power points (1.05 DPS) | yes | Nightsky Wristbands (6407, -0.36 DPS) [world_drop]; Spidertank Oilrag (9448, -0.46 DPS) [dungeon]; Glowing Magical Bracelets (13106, -0.60 DPS, sim-verified) [world_drop] |
 | hands | Truefaith Gloves (7049) | Tailoring [crafted] | 18.0 healing_power points (1.68 DPS) | yes | Acolyte's Gloves (250511, -0.28 DPS) [crafted]; Pristine Gloves (253913, -0.38 DPS) [crafted]; Naga Battle Gloves (888, -0.65 DPS, sim-verified) [dungeon] |
 | waist | Prefect's Belt (250559) | Blacksmithing [crafted] | 28.9 healing_power points (2.71 DPS) | yes | Mender's Leather Belt (252523, +0.00 DPS, sim-verified) [crafted]; Pristine Sash (253925, -1.31 DPS) [crafted]; Acolyte's Chain Belt (250516, -1.50 DPS) [crafted] |
 | legs | Acolyte's Silvered Chain Leggings (250526) | Blacksmithing [crafted] | 32.9 healing_power points (3.08 DPS) | yes | Pristine Leggings (253987, -0.08 DPS, sim-verified) [crafted]; Wisdom's Leather Leggings (252519, -0.14 DPS) [crafted]; Acolyte's Chain Leggings (250496, -0.47 DPS) [crafted] |
 | feet | Gilded Slippers (254001) | Tailoring [crafted] | 28.9 healing_power points (2.71 DPS) | yes | Wisdom's Leather Boots (252444, -1.21 DPS) [crafted]; Glowing Copper Boots (250482, -1.49 DPS) [crafted]; Acolyte's Boots (250506, -1.50 DPS, sim-verified) [crafted] |
-| finger1 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | 18.0 healing_power points (1.69 DPS) | yes | Electrocutioner Lagnut (9447, -0.80 DPS) [dungeon]; Darkspear Signet (272071, -0.90 DPS) [vendor]; Black Widow Band (6199, -1.04 DPS) [world] |
-| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 10.4 healing_power points (0.97 DPS) | yes | Darkspear Signet (272071, -0.18 DPS) [vendor]; Black Widow Band (6199, -0.33 DPS) [world]; Electrocutioner Lagnut (9447, -0.61 DPS, sim-verified) [dungeon] |
+| finger1 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | 18.0 healing_power points (1.69 DPS) | yes | Electrocutioner Lagnut (9447, -0.80 DPS) [dungeon]; Darkspear Signet (272071, -0.90 DPS) [vendor]; The Queen's Jewel (13094, -1.13 DPS) [world_drop] |
+| finger2 | Snake Hoop (6750) | Willix the Importer [quest] | 10.4 healing_power points (0.97 DPS) | yes | Darkspear Signet (272071, -0.18 DPS) [vendor]; The Queen's Jewel (13094, -0.42 DPS) [world_drop]; Electrocutioner Lagnut (9447, -0.61 DPS, sim-verified) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Royal Diplomatic Scepter (9457) | Gnomeregan: Dark Iron Ambassador [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Death Speaker Scepter (2816, -0.98 DPS) [dungeon]; Manual Crowd Pummeler (9449, -1.54 DPS, sim-verified) [dungeon]; Haunting Blade (6641, -4.26 DPS) [dungeon] |
-| off_hand | Orb of Souls (249395) | Enchanting [crafted] | 16.0 healing_power points (1.50 DPS) | yes | Alliance Outrunner Healing Rod (285348, -0.11 DPS, sim-verified) [world]; Orb of Mistmantle (13031, -0.47 DPS) [world_drop]; Heart of Agamaggan (6694, -0.56 DPS) [dungeon] |
+| main_hand | Death Speaker Scepter (2816) | Razorfen Kraul: Death Speaker Jargba [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Manual Crowd Pummeler (9449, -1.54 DPS, sim-verified) [dungeon]; Pysan's Old Greatsword (1975, -4.59 DPS) [dungeon]; Wolfsbane (267369, -5.45 DPS) [quest] |
+| off_hand | Orb of Souls (249395) | Enchanting [crafted] | 16.0 healing_power points (1.50 DPS) | yes | Orb of Mistmantle (13031, -0.50 DPS, sim-verified) [world_drop]; Heart of Agamaggan (6694, -0.56 DPS) [dungeon]; Witch's Finger (16887, -0.76 DPS) [quest] |
 | ranged | - | - |  |  |  |
 
-**New at 30:** head: Holy Shroud; neck: Scorn's Icy Choker; shoulder: Batwing Mantle; back: Battle Healer's Cloak; chest: Death Speaker Robes; hands: Truefaith Gloves; waist: Prefect's Belt; legs: Acolyte's Silvered Chain Leggings; feet: Gilded Slippers; finger1: Sea Giant's Toe Ring; finger2: Snake Hoop; main_hand: Royal Diplomatic Scepter; off_hand: Orb of Souls
+**New at 30:** head: Holy Shroud; neck: Scorn's Icy Choker; shoulder: Mantle of Woe; back: Battle Healer's Cloak; chest: Death Speaker Robes; hands: Truefaith Gloves; waist: Prefect's Belt; legs: Acolyte's Silvered Chain Leggings; feet: Gilded Slippers; finger1: Sea Giant's Toe Ring; finger2: Snake Hoop; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
 
 No-known-source sample (15 of 387, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4196 Feathered Mantle; 5000 Coral Band; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9602 Brushwood Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 15402 Noosegrip Gauntlets
 
 ### Band 40 (undead, 05320003225111051-0000000000000000-00000000000000000)
 
-Set DPS (verified): 90.0. Weights run: 1.6s. Verify run: 7.1s. 530 eligible items had no known source.
+Set DPS (verified): 90.0. Weights run: 1.9s. Verify run: 8.7s. 530 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=1.164 ± 0.009, spirit=0.728 ± 0.008, mp5=2.684 ± 0.012, crit=0.162 ± 0.009 per rating point (14 rating = 1%, 2.271 per %), spell_haste=not significant (0.080 ± 0.025)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Holy Shroud (2721) | World drop [world_drop] | 37.4 healing_power points (3.40 DPS) | yes | Earthen Silk Hood (254015, -0.71 DPS, sim-verified) [crafted]; Acolyte's Chain Helm (250501, -1.13 DPS) [crafted]; Embalmed Shroud (7691, -1.15 DPS) [dungeon] |
-| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 22.3 healing_power points (2.03 DPS) | yes | Necklace of Calisea (1714, -0.73 DPS, sim-verified) [dungeon]; Darkspear Warding Pendant (272074, -1.29 DPS) [vendor]; Necklace of Harmony (5180, -1.34 DPS) [world] |
+| head | Holy Shroud (2721) | World drop [world_drop] | 37.4 healing_power points (3.40 DPS) | yes | Earthen Silk Hood (254015, -0.71 DPS, sim-verified) [crafted]; Acolyte's Chain Helm (250501, -1.13 DPS) [crafted]; Enduring Cap (3020, -1.24 DPS) [world_drop] |
+| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 22.3 healing_power points (2.03 DPS) | yes | Necklace of Calisea (1714, -0.73 DPS, sim-verified) [dungeon]; Darkspear Warding Pendant (272074, -1.29 DPS) [vendor]; Kaleidoscope Chain (13084, -1.34 DPS) [world_drop] |
 | shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 30.1 healing_power points (2.74 DPS) | yes | Sheepshear Mantle (13115, -0.65 DPS) [world_drop]; Mistscape Mantle (4734, -1.25 DPS) [dungeon]; Earthen Silk Shoulders (254033, -1.33 DPS, sim-verified) [crafted] |
 | back | Battle Healer's Cloak (19528) | Warsong Outriders [rep] | 21.6 healing_power points (1.97 DPS) | yes | Darkspear Raider's Cloak (272077, -0.54 DPS) [vendor]; Glowing Thresher Cape (6901, -0.80 DPS) [dungeon]; Blackforge Cape (6424, -0.86 DPS) [dungeon] |
 | chest | Stormcloth Vest (10020) | Tailoring [crafted] | 63.8 healing_power points (5.81 DPS) | yes | Death Speaker Robes (6682, -2.83 DPS) [dungeon]; Doomsayer's Robe (4746, -2.88 DPS) [quest]; Deathchill Armor (10764, -2.95 DPS, sim-verified) [dungeon] |
@@ -270,7 +270,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | finger2 | Darkspear Signet (272070) | Creeg Bothunk [vendor] | 16.1 healing_power points (1.47 DPS) | yes | Electrocutioner Lagnut (9447, -0.46 DPS) [dungeon]; Welken Ring (5011, -0.47 DPS) [world_drop]; Snake Hoop (6750, -1.70 DPS, sim-verified) [quest] |
 | trinket1 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | sim-verified (90.0 DPS) | yes | - |
 | trinket2 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-verified (90.0 DPS) | yes | Royal Diplomatic Scepter (9457, -1.80 DPS) [dungeon]; Death Speaker Scepter (2816, -2.90 DPS) [dungeon]; Frost Tiger Blade (3854, -16.76 DPS, sim-verified) [crafted] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-verified (90.0 DPS) | yes | Death Speaker Scepter (2816, -2.90 DPS) [dungeon]; Skullbreaker (17039, -4.53 DPS) [quest]; Frost Tiger Blade (3854, -16.76 DPS, sim-verified) [crafted] |
 | off_hand | Forcestone Buckler (17508) | Compendium of the Fallen [quest] | 17.8 healing_power points (1.62 DPS) | yes | Beacon of Hope (9393, -0.08 DPS) [dungeon]; Ravager's Shield (14777, -0.48 DPS) [world_drop]; Orb of Souls (249395, -15.22 DPS, sim-verified) [crafted] |
 | ranged | - | - |  |  |  |
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 530, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 05320003225111051-5500000000000000-00000000000000000)
 
-Set DPS (verified): 113.8. Weights run: 1.6s. Verify run: 8.3s. 693 eligible items had no known source.
+Set DPS (verified): 113.8. Weights run: 2.0s. Verify run: 10.8s. 693 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.002, intellect=1.851 ± 0.018, spirit=1.397 ± 0.016, mp5=4.657 ± 0.021, crit=0.325 ± 0.021 per rating point (14 rating = 1%, 4.550 per %), spell_haste=not significant (0.062 ± 0.067)
 
@@ -300,7 +300,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | finger2 | Eye of Adaegus (5266) | World drop [world_drop] | 27.9 healing_power points (2.00 DPS) | yes | Snake Hoop (6750, -0.28 DPS, sim-verified) [quest]; Welken Ring (5011, -0.64 DPS) [world_drop]; Ring of Subtlety (19038, -0.66 DPS) [quest] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (+3.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Ankh of Life (1713, -3.82 DPS) [world_drop]; Evonice's Landin' Pilla (18951, -4.02 DPS) [quest]; Alchemist's Stone (13503, -4.62 DPS) [crafted] |
 | trinket2 | Uther's Strength (11302) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Evonice's Landin' Pilla (18951, -0.29 DPS) [quest]; Alchemist's Stone (13503, -0.89 DPS) [crafted]; Ankh of Life (1713, -1.23 DPS, sim-verified) [world_drop] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hanzo Sword (8190, +0.00 DPS) [world_drop]; Royal Diplomatic Scepter (9457, -1.47 DPS) [dungeon]; Death Speaker Scepter (2816, -2.67 DPS) [dungeon] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hanzo Sword (8190, +0.00 DPS) [world_drop]; Death Speaker Scepter (2816, -2.67 DPS) [dungeon]; Inventor's Focal Sword (17719, -3.25 DPS) [dungeon] |
 | off_hand | Mountainside Buckler (13082) | World drop [world_drop] | sim-verified (113.8 DPS) | yes | Protector Buckler (14790, -0.04 DPS) [world_drop]; Forcestone Buckler (17508, -0.20 DPS) [quest]; Twisting Essence Jar (249456, -12.33 DPS, sim-verified) [crafted] |
 | ranged | - | - |  |  |  |
 
@@ -310,7 +310,7 @@ No-known-source sample (15 of 693, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 194.7. Weights run: 1.8s. Verify run: 35.4s. 1391 eligible items had no known source.
+Set DPS (verified): 194.7. Weights run: 2.5s. Verify run: 45.4s. 1391 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.136, intellect=4.683 ± 0.078, spirit=1.589 ± 0.017, mp5=6.636 ± 0.062, crit=0.464 ± 0.044 per rating point (14 rating = 1%, 6.491 per %), spell_haste=not significant (0.057 ± 0.055)
 
@@ -325,12 +325,12 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | hands | Raider Handwraps (272097) | Creeg Bothunk [vendor] | 150.4 healing_power points (9.70 DPS) | yes | Mooncloth Gloves (18409, -2.74 DPS) [crafted]; Soulforge Fists (226982, -2.98 DPS) [vendor]; Raider Handguards (272101, -3.36 DPS) [vendor] |
 | waist | Belt of Tiny Heads (20217) | A Collection of Heads [quest] | 126.1 healing_power points (8.12 DPS) | yes | Wisdom of the Timbermaw (19047, -0.98 DPS) [crafted]; Elunarian Belt (14465, -1.06 DPS) [world_drop]; Devout Belt (16696, -2.83 DPS, sim-verified) [dungeon] |
 | legs | Martyr's Legplates (250600) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Outrider's Mail Leggings (22676, -1.15 DPS) [rep]; Sentinel's Lamellar Legguards (237814, -1.79 DPS) [vendor]; Red Dragonscale Leggings (252603, -7.61 DPS, sim-verified) [crafted] |
-| feet | Soulforge Treads (226983) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Incandescent Mooncloth Boots (227862, +0.00 DPS, sim-verified) [vendor]; Mooncloth Boots (15802, -1.01 DPS) [crafted]; Magister's Boots (16682, -2.46 DPS) [dungeon] |
+| feet | Soulforge Treads (226983) | Mokvar [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Incandescent Mooncloth Boots (227862, +0.00 DPS, sim-verified) [vendor]; Mooncloth Boots (15802, -1.01 DPS) [crafted]; Devout Sandals (16691, -2.65 DPS) [dungeon] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234033) | Anachronos [vendor] | 110.3 healing_power points (7.11 DPS) | yes | Channeler's Ring (272406, -2.07 DPS) [vendor]; Band of the Hierophant (13096, -2.97 DPS) [world_drop]; Darkspear Signet (272068, -3.26 DPS) [vendor] |
 | finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 95.4 healing_power points (6.15 DPS) | yes | Band of the Hierophant (13096, -2.00 DPS) [world_drop]; Darkspear Signet (272068, -2.30 DPS) [vendor]; Channeler's Ring (272406, -5.78 DPS, sim-verified) [vendor] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ankh of Life (1713, -5.19 DPS) [world_drop]; Uther's Strength (11302, -5.25 DPS) [world_drop]; Serenity Field (272439, -8.06 DPS, sim-verified) [vendor] |
 | trinket2 | Shard of the Splithooves (10659) | Heroes of Old [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Serenity Field (272439, +0.00 DPS, sim-verified) [vendor]; Ankh of Life (1713, -1.34 DPS) [world_drop]; Uther's Strength (11302, -1.41 DPS) [world_drop] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Edward the Odd (2243, +0.00 DPS) [world_drop]; High Warlord's Destroyer (234546, -0.42 DPS) [pvp]; Royal Diplomatic Scepter (9457, -1.33 DPS) [dungeon] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Destroyer (234546, -0.42 DPS) [pvp]; High Warlord's Battle Mace (23464, -1.90 DPS) [vendor]; Hand of Edward the Odd (2243, -1.93 DPS) [world_drop] |
 | off_hand | Lei of the Lifegiver (19312) | Frostwolf Clan [rep] | 73.2 healing_power points (4.72 DPS) | yes | High Warlord's Tome of Mending (234564, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, -0.41 DPS) [vendor]; Elunarian Sphere (15968, -8.11 DPS, sim-verified) [world_drop] |
 | ranged | - | - |  |  |  |
 
@@ -340,7 +340,7 @@ No-known-source sample (15 of 1391, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 565.2. Weights run: 1.9s. Verify run: 17.9s. 1391 eligible items had no known source.
+Set DPS (verified): 565.2. Weights run: 2.0s. Verify run: 25.1s. 1391 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.852, intellect=1.784 ± 0.122, spirit=0.691 ± 0.118, mp5=4.105 ± 0.149, crit=0.893 ± 0.140 per rating point (14 rating = 1%, 12.506 per %), spell_haste=not significant (-2.578 ± 1.753)
 
@@ -360,7 +360,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 56.3 healing_power points (9.45 DPS) | yes | Blessed Band of Light (272407, -3.32 DPS) [vendor]; Channeler's Ring (272406, -4.33 DPS) [vendor]; Darkspear Signet (272068, -8.29 DPS, sim-verified) [vendor] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (+11.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Shard of the Splithooves (10659, -6.21 DPS) [quest]; Uther's Strength (11302, -7.32 DPS) [world_drop]; Ankh of Life (1713, -8.95 DPS) [world_drop] |
 | trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shard of the Splithooves (10659, -2.92 DPS) [quest]; Ankh of Life (1713, -5.66 DPS) [world_drop]; Uther's Strength (11302, -6.91 DPS, sim-verified) [world_drop] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Edward the Odd (2243, +0.00 DPS) [world_drop]; Royal Diplomatic Scepter (9457, -3.31 DPS) [dungeon]; Death Speaker Scepter (2816, -5.30 DPS) [dungeon] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Edward the Odd (2243, +0.00 DPS) [world_drop]; Death Speaker Scepter (2816, -5.30 DPS) [dungeon]; Inventor's Focal Sword (17719, -6.64 DPS) [dungeon] |
 | off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | sim-verified (565.1 DPS) | yes | High Warlord's Tome of Mending (234564, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, +0.00 DPS) [vendor]; Lei of the Lifegiver (19312, -24.76 DPS, sim-verified) [rep] |
 | ranged | - | - |  |  |  |
 

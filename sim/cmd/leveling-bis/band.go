@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
 // sourceFor answers loot.json's own question for one item at one
@@ -185,6 +187,7 @@ func sourceFor(id, level int, faction, itemFactionRestriction string, idx lootIn
 		}
 		obtainable = append(obtainable, s)
 	}
+	obtainable = withoutRareSpawnsWhenAnyOther(obtainable)
 	if quest, ok := bestOfKind(obtainable, "quest"); ok {
 		return quest, true
 	}
@@ -197,6 +200,44 @@ func sourceFor(id, level int, faction, itemFactionRestriction string, idx lootIn
 		}
 	}
 	return itemSource{}, false
+}
+
+// withoutRareSpawnsWhenAnyOther is task L1.7's rule at the source level:
+// a rare spawn's drop is never the source named for an item that any
+// other obtainable source also gives - the player is sent to a place the
+// item is there every time. An item only rare spawns drop keeps them.
+// Only a source sourceFor can pick counts as that other source (fix round
+// 1, D1): a `zone` source is in neither sourceKindPriority nor bossKinds,
+// so a rare drop whose only other source is a zone (Signet of the Zhevra:
+// Swiftmane plus zone:17) keeps its rare source, labelled "(rare)",
+// rather than being left with no source at all.
+func withoutRareSpawnsWhenAnyOther(obtainable []itemSource) []itemSource {
+	others := make([]itemSource, 0, len(obtainable))
+	pickableOther := false
+	for _, s := range obtainable {
+		if !s.RareSpawn {
+			others = append(others, s)
+			pickableOther = pickableOther || pickableKind(s.Kind)
+		}
+	}
+	if !pickableOther {
+		return obtainable
+	}
+	return others
+}
+
+// pickableKind reports whether sourceFor ever names a source of this kind:
+// a boss kind (bestBoss) or one of sourceKindPriority's.
+func pickableKind(kind string) bool {
+	if kind == bossKinds[0] || kind == bossKinds[1] {
+		return true
+	}
+	for _, k := range sourceKindPriority {
+		if k == kind {
+			return true
+		}
+	}
+	return false
 }
 
 // bestOfKind is the highest-Chance obtainable source of exactly this
@@ -351,6 +392,12 @@ type bandPool struct {
 	// to any slot and is not counted here either, matching NoSource's
 	// own silent drop for the same case.
 	Coverage map[string]coverageRow
+	// RareSpawnSkipped counts the candidates withoutRareSpawnDrops took
+	// out of every slot, and so out of Scored (task L1.7; bandSlotPools
+	// sets it): every slot they fit is covered.
+	// Coverage[slot].RareSpawnSkipped counts them per slot, including a
+	// rare item kept for its pair's second slot.
+	RareSpawnSkipped int
 }
 
 // weaponSlots is which planner slots score.go's weaponAPStat also
@@ -456,8 +503,9 @@ func crossClassSetItem(c candidate, classSlug string) bool {
 
 // buildBandPool applies eligible(), the source rule, and score(), in
 // that order, to the full candidate list for one band and faction. It
-// does not pick: candidatesBySlot/pick (pick.go) do that from
-// Scored.
+// does not pick: bandSlotPools turns Scored into the per-slot pools
+// (the weapon limits, then the rare-spawn rule) and pick (pick.go)
+// reads those.
 func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int, faction string, weights map[string]float64, referenceDPSPerPoint float64, castsShoot bool) bandPool {
 	var out bandPool
 	out.Coverage = make(map[string]coverageRow)
@@ -509,7 +557,7 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 		}
 		out.Scored = append(out.Scored, scored{
 			candidate:     c,
-			Score:         score(c, c.Slots[0], weights, referenceDPSPerPoint, castsShoot),
+			Score:         roundScore(score(c, c.Slots[0], weights, referenceDPSPerPoint, castsShoot)),
 			Source:        src,
 			HasSource:     true,
 			DeadStatCount: deadStatCount(c, weights),
@@ -519,6 +567,246 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 	return out
 }
 
+// bandSlotPools is one band's per-slot candidate pools as every later pass
+// reads them (pick, the trinket and effect passes, set completion, verify
+// and the report): candidatesBySlot over the pool, the weapon limits, then
+// the rare-spawn rule over what those limits leave (fix round 2 of task
+// L1.7: a rival a weapon limit removes must not cover a slot, or a rare
+// drop gives way to nothing). The rule's counts land in pool:
+// RareSpawnSkipped, Coverage[slot].RareSpawnSkipped, and Scored loses the
+// rare candidates no slot kept.
+func bandSlotPools(pool *bandPool, spec specInfo, weaponSubclasses map[int]bool, requiresDagger bool) map[string][]scored {
+	bySlot := candidatesBySlot(pool.Scored)
+	// This lane's brief (bis-ranker-integrity-10), item 3: applied before
+	// the dagger/ranged-type restrictions below (a narrower, spec- or
+	// ranged-specific gate), to every weapon slot this class actually
+	// equips a weapon in - the general class-legality gate eligible.go's
+	// own doc says is otherwise "NOT checked here" at all.
+	bySlot["main_hand"] = restrictToProficientWeapons(bySlot["main_hand"], weaponSubclasses)
+	bySlot["off_hand"] = restrictToProficientWeapons(bySlot["off_hand"], weaponSubclasses)
+	// One off-hand shape per spec for every pass and the report alike
+	// (pick.go's offHandPool).
+	bySlot["off_hand"] = offHandPool(spec.Spec, bySlot["off_hand"])
+	bySlot["main_hand"] = restrictTankMainHand(spec, bySlot["main_hand"])
+	bySlot["ranged"] = restrictToProficientWeapons(bySlot["ranged"], weaponSubclasses)
+	if requiresDagger {
+		// weapon_requirements.go's own doc: a mace or sword is a real,
+		// legally-equippable item this class file already passed
+		// (eligible.go delegates weapon proficiency to the per-class file
+		// entirely), but this spec's own rotation cannot cast its
+		// dagger-only opener/builder without one - restricted here, before
+		// pick() or any later pass ever sees either weapon slot, so a
+		// dual-wielder's off_hand (pick()'s own case, which merges
+		// main_hand's one-handers in) inherits the restriction for free.
+		bySlot["main_hand"] = restrictToDaggers(bySlot["main_hand"])
+		bySlot["off_hand"] = restrictToDaggers(bySlot["off_hand"])
+	}
+	// This lane's brief (bis-ranker-integrity-6), item 9:
+	// restrictRangedByProficiency's own doc (weapon_requirements.go) - a
+	// caster's ranged slot is only ever a real wand, never a thrown weapon
+	// or bow score()'s own Shoot fallback cannot tell apart from one
+	// today. Applied unconditionally (every classSlug, not gated behind a
+	// spec flag the way the dagger restriction is) since every spec of a
+	// given class shares the identical ranged-weapon proficiency.
+	bySlot["ranged"] = restrictRangedByProficiency(bySlot["ranged"], spec.ClassSlug)
+
+	gone, perSlot := withoutRareSpawnDrops(bySlot, leveling.DualWieldSpecs[spec.Spec])
+	pool.RareSpawnSkipped = len(gone)
+	for slot, n := range perSlot {
+		row := pool.Coverage[slot]
+		row.RareSpawnSkipped = n
+		pool.Coverage[slot] = row
+	}
+	if len(gone) > 0 {
+		kept := make([]scored, 0, len(pool.Scored))
+		for _, s := range pool.Scored {
+			if !(gone[s.ID] && isRareSpawnDrop(s)) {
+				kept = append(kept, s)
+			}
+		}
+		pool.Scored = kept
+	}
+	return bySlot
+}
+
+// withoutRareSpawnDrops is task L1.7's rule at the slot level ("a
+// rare-spawn drop is never a pick when a non-rare source exists at the
+// band; otherwise it is allowed with 'rare' in its source"), in the
+// contract's words: a rare item is excluded from every slot something else
+// covers, slot by slot. It runs over bySlot after the weapon limits
+// (bandSlotPools), so only a rival those limits leave covers a slot. A
+// candidate whose source is a rare spawn leaves each slot rareRuleCoverage
+// says is covered, so it is never the pick, a runner-up, an alternative, a
+// verify swap or a set completion there; it stays in the slots nothing else
+// fills (finger2 when one other ring fills finger1), its label already
+// ending rareLabelSuffix. A dual-wielder's rare one-hander whose main hand
+// is covered moves to the off hand when that is not (pick merges
+// main_hand's one-handers into the off hand; this does it for the rare one
+// alone, which has passed the main hand's limits, the same ones the off
+// hand applies to a weapon).
+//
+// It edits bySlot in place and returns the ids of the rare candidates no
+// slot kept, and per slot how many rare candidates that slot kept out (the
+// coverage block's rare_spawn_skipped).
+func withoutRareSpawnDrops(bySlot map[string][]scored, dualWield bool) (map[int]bool, map[string]int) {
+	covered := rareRuleCoverage(bySlot, dualWield)
+	before := make(map[int]bool)
+	perSlot := make(map[string]int)
+	var toOffHand []scored
+	for slot, list := range bySlot {
+		kept := make([]scored, 0, len(list))
+		for _, s := range list {
+			if !isRareSpawnDrop(s) {
+				kept = append(kept, s)
+				continue
+			}
+			before[s.ID] = true
+			if !covered[slot] {
+				kept = append(kept, s)
+				continue
+			}
+			perSlot[slot]++
+			if slot == "main_hand" && dualWield && oneHandedWeapon(s.candidate) {
+				toOffHand = append(toOffHand, s)
+			}
+		}
+		bySlot[slot] = kept
+	}
+	for _, s := range toOffHand {
+		switch {
+		case idsInList(bySlot["off_hand"])[s.ID]:
+		case covered["off_hand"]:
+			perSlot["off_hand"]++
+		default:
+			bySlot["off_hand"] = append(bySlot["off_hand"], s)
+			sortCandidates(bySlot["off_hand"])
+		}
+	}
+	after := make(map[int]bool)
+	for _, list := range bySlot {
+		for _, s := range list {
+			if isRareSpawnDrop(s) {
+				after[s.ID] = true
+			}
+		}
+	}
+	gone := make(map[int]bool)
+	for id := range before {
+		if !after[id] {
+			gone[id] = true
+		}
+	}
+	return gone, perSlot
+}
+
+func isRareSpawnDrop(s scored) bool {
+	return s.HasSource && s.Source.RareSpawn
+}
+
+func idsInList(list []scored) map[int]bool {
+	out := make(map[int]bool, len(list))
+	for _, s := range list {
+		out[s.ID] = true
+	}
+	return out
+}
+
+// rarePairs are the paired slots: a pair's second slot is covered only
+// when two different candidates (by id and by name, pick's excludePaired)
+// can fill the pair, since its pair-mate takes the first.
+var rarePairs = map[string][2]string{
+	"finger1": {"finger1", "finger2"}, "finger2": {"finger1", "finger2"},
+	"trinket1": {"trinket1", "trinket2"}, "trinket2": {"trinket1", "trinket2"},
+}
+
+// rareRuleCoverage is which slots withoutRareSpawnDrops treats as covered,
+// read from the pools the weapon limits leave (bySlot): a slot is covered
+// by a rival (isRareRival), a pair's second slot by two of them. The
+// weapon hands follow pick's own shape: one weapon hand for a spec that
+// does not dual-wield (its off hand covered by whatever offHandPool left
+// there, a shield or held item); for a dual-wielder (dualWield) the main
+// hand is covered by any rival and the off hand by two different weapons
+// among the main hand's one-handers and the off hand's own pool.
+func rareRuleCoverage(bySlot map[string][]scored, dualWield bool) map[string]bool {
+	covered := make(map[string]bool)
+	handRivals := make(map[string]bool) // a dual-wielder's weapon rivals, by name
+	for slot, list := range bySlot {
+		if _, paired := rarePairs[slot]; paired {
+			continue
+		}
+		for _, s := range list {
+			if !isRareRival(s, slot) {
+				continue
+			}
+			switch {
+			case slot == "main_hand":
+				covered[slot] = true
+				if dualWield && oneHandedWeapon(s.candidate) {
+					handRivals[rivalKey(s.candidate)] = true
+				}
+			case slot == "off_hand" && dualWield:
+				handRivals[rivalKey(s.candidate)] = true
+			default:
+				covered[slot] = true
+			}
+		}
+	}
+	for _, first := range []string{"finger1", "trinket1"} {
+		pair := rarePairs[first]
+		rivals := make(map[string]bool)
+		for _, slot := range pair {
+			for _, s := range bySlot[slot] {
+				if isRareRival(s, slot) {
+					rivals[rivalKey(s.candidate)] = true
+				}
+			}
+		}
+		covered[pair[0]] = len(rivals) >= 1
+		covered[pair[1]] = len(rivals) >= 2
+	}
+	if dualWield && len(handRivals) >= 2 {
+		covered["off_hand"] = true
+	}
+	return covered
+}
+
+// isRareRival reports whether s can stand in a slot instead of a rare
+// spawn's drop: its source is not a rare spawn, it is no PvP reward above
+// the rank cap (excludeAbovePvpRankCap keeps those from every default
+// pick, so they cover nothing), and it fills the slot (fillsSlot).
+func isRareRival(s scored, slot string) bool {
+	return s.HasSource && !s.Source.RareSpawn && !pvpRankExceedsCap(s.Source) && fillsSlot(s, slot)
+}
+
+// fillsSlot reports whether a candidate is a real rival in this slot: it
+// scores above zero, or, in a trinket slot, it carries an effect the
+// trinket tournament sims whatever its score (trinketShortlist: an
+// engine-implemented effect or an on-use one). Outside the trinket slots a
+// candidate that scores 0 covers nothing, effect or not: the effect pass
+// (rankSlotWithEffects) only re-ranks a slot that already has a pick, and
+// a 0-score pick is published empty (report.go's no_dps_value), so
+// counting it would leave the slot empty with the rare drop gone (fix
+// round 2 of task L1.7).
+func fillsSlot(s scored, slot string) bool {
+	if s.Score > 0 {
+		return true
+	}
+	return (slot == "trinket1" || slot == "trinket2") && (hasImplementedEffect(s.candidate) || hasUseEffect(s.candidate))
+}
+
+// rivalKey is the identity two rivals of a pair must not share: pick's
+// excludePaired refuses the same id or the same name in both slots.
+func rivalKey(c candidate) string {
+	if c.Name != "" {
+		return c.Name
+	}
+	return fmt.Sprintf("#%d", c.ID)
+}
+
+func oneHandedWeapon(c candidate) bool {
+	return c.ClassID == itemClassWeapon && !c.TwoHand
+}
+
 // coverageRow is one slot's answer to "how many eligible items exist,
 // and how many of those had a source" - report.go's bandReport.Coverage
 // publishes exactly this shape (json tags live there, next to the
@@ -526,6 +814,26 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 type coverageRow struct {
 	Eligible int `json:"eligible"`
 	Sourced  int `json:"sourced"`
+	// RareSpawnSkipped is how many rare-spawn candidates the slot rule
+	// (withoutRareSpawnDrops, task L1.7) kept out of this slot because
+	// something else covers it. Absent means none.
+	RareSpawnSkipped int `json:"rare_spawn_skipped,omitempty"`
+}
+
+// rareSpawnSlotSummary is the ranker's per-band log clause for the
+// rare-spawn rule: each slot that kept a rare drop out and how many, in
+// slot order ("back 1, finger1 2"), or "no slot".
+func rareSpawnSlotSummary(coverage map[string]coverageRow) string {
+	var parts []string
+	for _, slot := range slotOrder {
+		if n := coverage[slot].RareSpawnSkipped; n > 0 {
+			parts = append(parts, fmt.Sprintf("%s %d", slot, n))
+		}
+	}
+	if len(parts) == 0 {
+		return "no slot"
+	}
+	return strings.Join(parts, ", ")
 }
 
 // addCoverage fans one already-eligible candidate's coverage out to
