@@ -1,6 +1,126 @@
 # Forever Sixty
 
-## Unreleased
+## 2.0.0
+
+Forever Sixty 2.0.0 replaces the six-page window with surfaces on the client's own frames,
+so the answer to "what makes my character better right now?" is where you would act on it.
+Nothing needs setting up: a character with no saved build follows the default build for its
+spec, and every surface with nothing to say stays out of the way.
+
+### What changed for you
+
+- **`/fs` opens one small build dialog, not a window.** Paste a build in or copy your
+  character out for the site; the old six pages (Overview, Talents, Gear, Guild, Export,
+  Settings) are gone, and their content lives on the surfaces below and in the client's
+  Settings page. The dialog shows "Following: <build> · 51 points", previews what a pasted
+  code would replace, and never overwrites a raid build you restored by pasting a leveling
+  one. `/fs build <slot>` switches between your saved builds (Raid, Leveling).
+- **Zero setup.** A character with no saved build follows the default leveling build for its
+  spec (the raid build from 60), taken from the simulator's guide builds. At level 1 to 9
+  with no spec yet, the chip offers a path to pick. The followed build, the chip's hide and
+  the chosen path are kept per character: an alt never sees the main's.
+- **The chip.** One small icon and line beside the minimap says the single next thing: a
+  talent point to spend, an upgrade waiting in your bags (click to equip), loot in the
+  dungeon you just entered, what a ready check is missing, last raid night's biggest loss,
+  or nothing at all. It fades in combat, hides with the UI, and right-click hides it until
+  your next level.
+- **Marks on the talent window.** Your build's talents are numbered in order, the next one
+  is ringed, and a strip counts the points your level allows ("12 of 15 points · 3 off plan").
+  Hover a planned node for its place in the plan; hover "off plan" for the talents you
+  spent outside it and the next point to take. The marks sit on frames of the addon's own,
+  never on the client's talent buttons.
+- **Item tooltips say whether it is better.** "Upgrade +4.2 DPS over <worn item>" (healers
+  read HPS), the next upgrade for the slot and the
+  level it lasts until, where it drops with the boss and its chance, "Also good:" runners-up,
+  a thrown weapon tagged "(thrown)" and ammunition users "(needs bullets)", and a pair
+  verdict for two one-handers against a worn two-hander. An item the client has not cached
+  yet shows "stats pending" and redraws the moment it arrives.
+- **Paper doll and bag marks.** A green arrow on a character slot and on the bag item that
+  beats it (or fills an empty slot), a gold corner on a slot whose next upgrade is worth
+  chasing, and a hover on the slot that names the pick for your spec, faction and level. The
+  chip's hover carries the legend. Another bag addon's bags are left alone, and `/fs diag`
+  says so.
+- **Quest rewards and group rolls.** "Best for <Spec>" in gold on the reward that is an
+  upgrade (or "Vendor" on each when none is), and a one-line verdict beside the roll frame
+  that matches the item's tooltip.
+- **A "Forever Sixty" tab on the character panel.** A button opens a flyout with your next
+  targets (up to five, with the source and drop chance of each and the worn item each
+  replaces), your rotation at your level (the rank to use, and "Rank N at level M" for what
+  you have not learned yet), and your build (the split, "12 of 15 points on plan", the
+  off-plan count, a way to use a different build, "Copy my character"). At 60 it adds your
+  simulation (DPS, your top stat weights in DPS per point, "Sim me again") and your last
+  raid (each boss's parse percentile, biggest loss, deaths, consumables missed and rotation
+  adherence).
+- **Player tooltips show the Forever Score.** "Forever Score 1240 · Rare · as of 13 Oct" in
+  the tier colour, a Shift breakdown of the five parts (Gear, Experience, Parses,
+  Attendance, Preparation) and their total, or "Forever Score: no logs yet" and never a
+  zero. Guildmates running the addon also show their level, spec and gear gap live. `/fs
+  link` copies a player's site page.
+- **Score badges in chat.** "FS 1240 ·" before a player's message in LFG, Trade, guild chat
+  and whispers, in the tier colour (muted when the record is more than three days old).
+  Switch it off in Settings.
+- **A "Forever Sixty" tab on the guild frame.** Your guild's roster with level, spec, gear
+  score, Forever Score, attendance and gear gap, sortable, with an "Online only" filter and
+  the "as of" date of the records; members without the addon show the nightly record, members
+  with it show their live snapshot. For officers: the approvals waiting on the site, and "Push the raid build to guild" behind a
+  confirmation. A pushed build is announced once in chat and listed in `/fs` as "pushed by
+  <officer>"; nobody is made to use it.
+- **A "Forever Sixty" tab on the Social window's Raid tab.** Each member's spec, item level,
+  gear gap, score and buffs for a party or raid; members without the addon are read from
+  inspect, one inspect every two seconds, never in combat. `/fs group` opens it, `/fs ready`
+  runs the ready check on demand (missing flask, food, weapon imbue and, inside Molten Core,
+  Onyxia's Lair or Blackwing Lair, class coverage for the bosses), and `/fs floor N` tags
+  members scored under N. It informs; it never kicks, whispers or announces for you.
+- **Loot you can ask the group about.** `/fs loot <item link>` says what an item is worth to
+  you ("+6.3 DPS over <worn item>, on your list"). As master looter, an epic drop asks the
+  group which of them gain from it and by how much, with a 10 second countdown in the title
+  and nothing asked about an item no member's class can wear; a ninth setting, "Ask the group
+  about rare drops too", adds rares.
+- **Settings are the client's own page.** Nine switches (the chip, hide in combat, marks on
+  the talent window, minimap button, gear tips on item tooltips, score badges in chat, ask
+  the group about rare drops, share my build with my guild, save my character for the
+  companion app), the thirteen commands, and plain lines for the data: "Player ratings (on
+  player tooltips): too old (made 9 Oct)", "broken or missing", "not installed". Reset
+  positions puts the chip, the minimap button and the build dialog back.
+- **Thirteen slash commands**, all listed by `/fs help`: `/fs`, `/fs copy`, `/fs build`,
+  `/fs chip`, `/fs inspect`, `/fs link`, `/fs group`, `/fs ready`, `/fs loot`, `/fs floor`,
+  `/fs options`, `/fs diag` and `/fs help`. `/fs diag` states what is not working, and
+  `/fs diag verbose` is for testers.
+
+### Companion, data and the site
+
+- **The companion app** sends what the addon leaves for the site at logout (your character,
+  a "Sim me" request, your guild tab's roster, once each) and writes back, through the small
+  `ForeverSixtyInbox` addon that ships in the same download, the builds you chose on the
+  site, your newest sim with its upgrades, your last raid and what the site last saw. Both
+  folders go into `Interface/AddOns`.
+- **The nightly `ForeverSixtyData` addon** carries each rated character's Forever Score, its
+  five parts, tier and date, and each guild's standing, so tooltips, chat badges and the guild
+  tab work with no companion.
+- **Best-in-slot data is for client build 1.60.1.70374.** Leveling picks come from the
+  simulator once per spec and band, deterministically (the same input always gives the same
+  picks), with a rare spawn's drop kept out of a slot something else can fill and items the
+  client has not confirmed never ranked. Default builds, DPS per point, the rotation lists
+  and each raid's needs ship in the same data.
+- The site's /setup page now has a "What it does in the game" section for these surfaces and
+  lists the same thirteen commands, and the Forever Score pages call the fifth part
+  "Preparation", the word the tooltip uses.
+
+### Under the hood
+
+- Every number is computed once and read by every surface that shows it, so the chip, the
+  tooltip, the marks, the panel and the guild tab cannot disagree. Surfaces measure what they
+  draw and turn themselves off, with the reason in `/fs diag`, if they cannot fit or find
+  their anchor.
+- The addon writes nothing to the client's frames: marks live on frames the addon owns,
+  parented to the client's, with no scripts hooked onto the client's buttons.
+- Wire formats are pinned by shared golden fixtures (`docs/contracts`) checked by the addon,
+  the companion and the API.
+
+## Before 2.0.0
+
+These notes were kept while the six-page window existed; 2.0.0 replaces that window with the
+surfaces above, so some of what they describe (the Overview, Talents, Gear and Export pages) is gone.
 
 - Added `/fs record on|off|status|clear`, a measurement recorder for the simulator: energy
   ticks, white-swing outcomes, Eviscerate and other yellow hits with their combo points,
