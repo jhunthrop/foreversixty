@@ -211,6 +211,11 @@ local function wrap(text, measure, width)
 	return lines
 end
 
+--- Words that lead into an object ("for 10", "to the", "of a"): a cut never ends on one.
+Rotation.LEADS = { ["for"] = true, ["to"] = true, ["of"] = true, ["at"] = true, ["by"] = true, ["with"] = true,
+	["than"] = true, ["over"] = true, ["under"] = true, ["above"] = true, ["below"] = true, ["every"] = true,
+	["per"] = true, ["a"] = true, ["an"] = true, ["the"] = true }
+
 --- The words a clause boundary falls before (L4.3 fix round 3, item 2), besides a word ending
 --- in ",", ";" or ":".
 Rotation.CONNECTORS = { ["and"] = true, ["or"] = true, ["when"] = true, ["unless"] = true }
@@ -232,7 +237,8 @@ end
 --- item 2): the last clause boundary (after a word ending in ",", ";" or ":", or before
 --- "and", "or", "when", "unless") lying in the last 40% of the line; else a cut on a word,
 --- never left on a connector, and never just after a figure ("a 25%" cut from "reserve"):
---- there the last clause boundary anywhere in the line, when it has one.
+--- there the last clause boundary anywhere in the line, when it has one, else the words
+--- before the figure and what leads into it.
 function Rotation.cutCount(words, following, measure, width)
 	local function fits(count)
 		local size = measure(kept(words, count) .. ELLIPSIS)
@@ -243,7 +249,9 @@ function Rotation.cutCount(words, following, measure, width)
 	for count = #words, 1, -1 do
 		local word = words[count]
 		local after = words[count + 1] or following
-		if not isConnector(word) and (word:find("[,;:]$") ~= nil or isConnector(after)) and fits(count) then
+		-- A boundary right after a figure or a leading word ("for 10 and ...") is no place to cut.
+		local bare = not word:find("%d") and Rotation.LEADS[word:lower()] ~= true
+		if not isConnector(word) and bare and (word:find("[,;:]$") ~= nil or isConnector(after)) and fits(count) then
 			local size = measure(kept(words, count))
 			if type(line) == "number" and type(size) == "number" and size >= Rotation.CLAUSE_FROM * line then
 				return count
@@ -261,8 +269,16 @@ function Rotation.cutCount(words, following, measure, width)
 	if count > 1 and isConnector(words[count]) then
 		count = count - 1
 	end
-	if latest ~= nil and words[count]:find("%d") ~= nil then
-		return latest
+	if words[count]:find("%d") ~= nil then
+		if latest ~= nil then
+			return latest
+		end
+		-- No clause boundary to go back to (Tranquility, "... every 2 seconds for 10..."): back up
+		-- past the figure and the words that lead into it (L3.7 item 27).
+		count = count - 1
+		while count > 1 and (isConnector(words[count]) or Rotation.LEADS[words[count]:lower()] == true) do
+			count = count - 1
+		end
 	end
 	return count
 end

@@ -178,6 +178,22 @@ describe("PLAYER_LOGIN adopts the default build for a character with no saved bu
 	end
 end)
 
+-- L3.7 item 3: the druid's Feral Combat tree is two specs in the data (cat and bear); the tab's
+-- own slug names neither, so this character used to get no build at all.
+describe("PLAYER_LOGIN for a feral druid", function()
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("adopts a feral default (cat or bear, by the points) with the Feral Combat tree dominant", function()
+		login("druid", { configID = 7, ranks = traitRanks("druid", { [2] = 14, [1] = 1 }) })
+		local build = require("Follow").build
+		assert.is_not_nil(build)
+		assert.is_true(build.default)
+		assert.is_truthy(build.spec == "druid-feral" or build.spec == "druid-feral-bear")
+	end)
+end)
+
 describe("PLAYER_LOGIN with a saved build outside the active slot (the live hunter)", function()
 	after_each(function()
 		mock.uninstall()
@@ -366,6 +382,21 @@ describe("one definition of a saved build", function()
 		assert.are.equal(MINE, _G.ForeverSixtyDB.follows[other].slots.raid.code)
 	end)
 
+	-- L3.7 item 4 (L3.8 leftover): only the three named slots are builds; a slot name this addon
+	-- never wrote under the character's key is neither followed, nor deleted, nor a reason to keep
+	-- the default out.
+	it("ignores a slot name that is not one of the three, keeps it, and adopts the default", function()
+		login("hunter", { configID = 7, ranks = {} }, { follows = { active = "raid", slots = {
+			extra = { code = MINE, name = "Odd" },
+		} } })
+		local Follow = require("Follow")
+		assert.is_true(Follow.build.default)
+		assert.are.equal("Beast Mastery leveling", Follow.build.name)
+		local entry = _G.ForeverSixtyDB.follows[require("Export").characterKey()]
+		assert.are.equal(MINE, entry.slots.extra.code)
+		assert.is_nil(entry.slots.raid)
+	end)
+
 	it("goes past a saved code that does not load to the next one that does", function()
 		login("hunter", { configID = 7, ranks = {} }, { follows = { active = "raid", slots = {
 			raid = { code = STALE, name = "Stale" }, pvp = { code = MINE, name = "Mine" },
@@ -441,6 +472,25 @@ describe("the default build's reasons and kinds", function()
 		end
 		assert.is_nil(Follow.ensureDefault({ build = Data.build, classes = Data.classes, defaultBuilds = builds }))
 		assert.are.equal(string.format(L.diagBuildNone, string.format(L.diagBuildNoSpec, "Beast Mastery")),
+			buildLine(Options.handle("diag")))
+	end)
+
+	-- L3.7 item 4: a default whose order encodes but which Codec.loadBuild refuses (a code past
+	-- Codec.MAX_CODE_LENGTH) says the same thing as one that does not encode.
+	it("says the default does not load when the Codec refuses it", function()
+		local L = require("Locale")
+		local order = {}
+		for index = 1, require("Codec").MAX_CODE_LENGTH do
+			order[index] = { 1, 1, 1 }
+		end
+		local Options = login("hunter", { configID = nil, ranks = {} })
+		local Follow = require("Follow")
+		Follow.build = nil
+		assert.is_nil(Follow.ensureDefault({ build = Data.build, classes = Data.classes, defaultBuilds = {
+			["hunter-beast-mastery"] = { leveling = { name = "Refused", order = order } },
+		} }))
+		assert.is_nil(Follow.build)
+		assert.are.equal(string.format(L.diagBuildNone, string.format(L.diagBuildRefused, "Beast Mastery")),
 			buildLine(Options.handle("diag")))
 	end)
 

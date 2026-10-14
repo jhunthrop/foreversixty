@@ -228,6 +228,15 @@ describe("Rotation", function()
 			assert.are.equal("Slam when the swing timer resets" .. L.tooltipNamePending, text)
 		end)
 
+		-- L3.7 item 27 (Tranquility "...for 10..."): with no clause boundary anywhere to go back
+		-- to, a cut never lands just after a figure, nor on the word that leads into it.
+		it("does not end on a figure or the word before it when the line has no clause boundary", function()
+			local text = Rotation.plainCondition("Use it when the party is hurt and the heal lands for 10 and sits on "
+				.. "a long cooldown after that.", measure, 30)
+			assert.are.equal("Use it when the party is hurt and the heal lands" .. L.tooltipNamePending, text)
+			assert.is_nil(text:find("for 10", 1, true))
+		end)
+
 		it("answers the plain words whole, with no line count, when there is nothing to measure with", function()
 			local text, lines = Rotation.plainCondition("Aimed Shot on cooldown (when it is up).")
 			assert.are.equal("Aimed Shot on cooldown.", text)

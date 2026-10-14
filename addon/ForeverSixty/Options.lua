@@ -398,6 +398,7 @@ function Options.onEvent(_, event, ...)
 	if event == "TRAIT_NODE_CHANGED" or event == "TRAIT_TREE_CURRENCY_INFO_UPDATED" then
 		-- A staged click before Apply Changes: the marks follow it, once per frame.
 		TalentMarks.requestRefresh(Options.data)
+		PanelTab.requestRefresh(Options.data)
 		return
 	end
 	if event == "CHAT_MSG_ADDON" then

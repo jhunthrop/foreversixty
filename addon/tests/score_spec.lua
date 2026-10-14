@@ -103,8 +103,20 @@ describe("Score", function()
 			assert.are.equal(L.ratingsUnreadable, Score.status().reason)
 			start({})
 			assert.are.equal(L.ratingsUnreadable, Score.status().reason)
-			start("a string")
-			assert.are.equal(L.ratingsUnreadable, Score.status().reason)
+		end)
+
+		-- L3.7 item 2: a global that is not a table at all is broken or missing, not "too old".
+		it("reads a global that is not a table as broken or missing, not too old", function()
+			for _, value in ipairs({ "a string", 7, true }) do
+				start(value)
+				local status = Score.status()
+				assert.is_false(status.available)
+				assert.is_true(status.broken)
+				assert.are.equal(L.ratingsBroken, status.reason)
+				assert.are.equal("Broken", Score.ratingsState(status))
+			end
+			start({})
+			assert.is_nil(Score.status().broken)
 		end)
 
 		it("is available and fresh for a file generated today", function()

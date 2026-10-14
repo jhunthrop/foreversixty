@@ -591,6 +591,35 @@ describe("SettingsPage, the canvas", function()
 			SettingsPage.dataLabels[2]:GetText())
 	end)
 
+	-- L3.7 item 39: a warning sentence that wraps (a longer locale) pushes the page down by what
+	-- it measured, and the scroll's height follows.
+	it("lays the title's warning line out at its measured height, so a wrapped one pushes the page down", function()
+		measure = function(region)
+			if region == SettingsPage.warningLabel then
+				return 30
+			end
+			return region.inherits == "GameFontNormalSmall" and 10 or 12
+		end
+		start(nil, "1.61.0")
+		ratingsCurrent()
+		SettingsPage.register()
+		show()
+		local layout = SettingsPage.layout(600 - Theme.SIZES.settingsInset * 2, nil, 30)
+		assert.are.equal(layout.rows[1], rowY(SettingsPage.toggles[1]))
+		assert.is_true(layout.rows[1] < SettingsPage.layout(600 - Theme.SIZES.settingsInset * 2, nil, true).rows[1])
+	end)
+
+	-- L3.7 item 38: both out of date, the title says so of the ratings too; the foot dates them.
+	it("adds that the player ratings are too old as well when both states are stale, and dates the foot", function()
+		start(nil, "1.61.0")
+		ratingsStatus({ available = true, stale = true, build = "1.60.1.69893" })
+		SettingsPage.register()
+		show()
+		assert.are.equal(L.settingsAddonDataOlder .. L.settingsAlsoOld, SettingsPage.warningLabel:GetText())
+		assert.are.equal(" (and the player ratings are too old as well)", L.settingsAlsoOld)
+		assert.is_truthy(SettingsPage.dataLabels[2]:GetText():find("too old (patch 1.60.1)", 1, true))
+	end)
+
 	it("names too-old player ratings under the title when the addon data is current", function()
 		start()
 		ratingsStale()

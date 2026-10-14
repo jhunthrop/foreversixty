@@ -180,6 +180,7 @@ describe("Prefs, the v2 keys", function()
 		assert.are.same({
 			shown = true, combatHide = true, point = "", x = 0, y = 0,
 			hiddenUntilLevel = 0, hiddenFor = "", pathChosen = "", pathFor = "",
+			byCharacter = {},
 		}, ui.chip)
 	end)
 

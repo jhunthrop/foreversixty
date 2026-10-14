@@ -239,16 +239,21 @@ describe("ItemTooltip.fitAlternatives", function()
 		local timmy = "|cff1eff00Lil Timmy's Peashooter|r |cffb8b8b8+2.2|r"
 		local hammer = "|cffffffffCracked Blacksmith Hammer|r |cffb8b8b8+0.8|r"
 
-		it("keeps both whole at the real 41-character width, the tag on a muted row under its name", function()
+		-- L3.7 item 13 (designer, L4.1 round 3): the tag sat 6-8 px below its name as a row of its
+		-- own; it is now the second line of the name's own row (one string, a newline between), so
+		-- the two are one block with no tooltip row gap between them.
+		it("keeps both whole at the real 41-character width, the tag on a muted line under its name", function()
 			local lines = ItemTooltip.fitAlternatives(HUNTER, measure, 41)
 			assert.are.same({
 				L.tooltipAlternativesLabel,
-				string.format(L.tooltipAlternativesRow, timmy),
-				string.format(L.tooltipAlternativesRow, tag),
+				string.format(L.tooltipAlternativesRow, timmy) .. "\n" .. string.format(L.tooltipAlternativesRow, tag),
 				string.format(L.tooltipAlternativesRow, hammer),
 			}, lines)
+			assert.are.equal(3, #lines)
 			for _, text in ipairs(lines) do
-				assert.is_true(measure(text) <= 41)
+				for part in text:gmatch("[^\n]+") do
+					assert.is_true(measure(part) <= 41)
+				end
 				assert.is_nil(text:find(L.tooltipNamePending, 1, true))
 				assert.is_nil(text:find(",%s*$"))
 			end
@@ -265,18 +270,19 @@ describe("ItemTooltip.fitAlternatives", function()
 		it("drops the tag to its own row before the name is ever cut", function()
 			-- 31 is exactly "    Lil Timmy's Peashooter +2.2": whole, the tag under it.
 			local lines = ItemTooltip.fitAlternatives({ HUNTER[1] }, measure, 31)
-			assert.are.same({ L.tooltipAlternativesLabel, string.format(L.tooltipAlternativesRow, timmy),
-				string.format(L.tooltipAlternativesRow, tag) }, lines)
+			assert.are.same({ L.tooltipAlternativesLabel, string.format(L.tooltipAlternativesRow, timmy)
+				.. "\n" .. string.format(L.tooltipAlternativesRow, tag) }, lines)
 		end)
 
 		it("cuts the name only when the bare name and gain are wider than the room", function()
 			local lines = ItemTooltip.fitAlternatives({ HUNTER[1] }, measure, 25)
-			assert.are.equal(3, #lines)
-			assert.is_true(measure(lines[2]) <= 25)
-			assert.is_truthy(lines[2]:find(L.tooltipNamePending, 1, true))
-			assert.is_truthy(lines[2]:find("|cffb8b8b8+2.2|r", 1, true))
-			assert.is_nil(lines[2]:find(L.tooltipNeedsBullets, 1, true))
-			assert.are.equal(string.format(L.tooltipAlternativesRow, tag), lines[3])
+			assert.are.equal(2, #lines)
+			local name, below = lines[2]:match("^([^\n]+)\n([^\n]+)$")
+			assert.is_true(measure(name) <= 25)
+			assert.is_truthy(name:find(L.tooltipNamePending, 1, true))
+			assert.is_truthy(name:find("|cffb8b8b8+2.2|r", 1, true))
+			assert.is_nil(name:find(L.tooltipNeedsBullets, 1, true))
+			assert.are.equal(string.format(L.tooltipAlternativesRow, tag), below)
 		end)
 	end)
 
@@ -427,11 +433,22 @@ describe("the band's DPS figures", function()
 		end
 	end)
 
-	it("falls back to the spec-level figure only when no band entry is there", function()
-		assert.are.equal(0.25, Gear.dpsFigure(BANDED, "warrior-fury", 25).dps)
+	-- L3.7 item 8: the spec-level figure is the level-60 raid character's; a leveler whose
+	-- bands do not reach down to it has no figure, never that one.
+	it("answers nil for a leveler with no band, never the spec-level figure", function()
+		assert.is_nil(Gear.dpsFigure(BANDED, "warrior-fury", 25))
 		assert.are.equal(0.07, Gear.dpsFigure(BANDED, "warrior-fury", 35).dps)
-		assert.are.equal(0.42, Gear.dpsFigure(WEIGHTS_DATA, "warrior-arms", 25).dps)
+		assert.is_nil(Gear.dpsFigure(WEIGHTS_DATA, "warrior-arms", 25))
+		assert.is_nil(Gear.dpsFigure(WEIGHTS_DATA, "warrior-arms", 59))
 		assert.is_nil(Gear.dpsFigure(BANDED, "warrior-protection", 25))
+		local current = Gear.currentWeights(BANDED, "warrior-fury", nil, KEY, 25)
+		assert.is_nil(current.dpsPerPoint)
+		assert.is_nil(current.weapon)
+	end)
+
+	it("keeps the spec-level figure at the cap, and with no level to judge by", function()
+		assert.are.equal(0.42, Gear.dpsFigure(WEIGHTS_DATA, "warrior-arms", 60).dps)
+		assert.are.equal(0.42, Gear.dpsFigure(WEIGHTS_DATA, "warrior-arms", nil).dps)
 	end)
 
 	it("hands the tooltip the band's DPS per point and its measured weapon term", function()
@@ -822,6 +839,89 @@ describe("ItemTooltip.section", function()
 					itemSubClass = 4, stats = { strength = 4 } }))
 		end)
 
+		-- L3.7 item 11 [verify: not built]: a spec that can dual wield takes the one-hander and a
+		-- second one for the other hand in place of the two-hander, as the client's compare shows
+		-- the swap: the pair verdict "With <the other hand>", from what the bags carry.
+		describe("the pair verdict for a dual-wielding class", function()
+			local ONE_HANDER = { itemId = 81, link = "item:81", equipLocation = "INVTYPE_WEAPON", itemClass = 2,
+				itemSubClass = 4, stats = { strength = 4 } }
+			local GOBLIN = { itemId = 90, link = "item:90", equipLocation = "INVTYPE_WEAPON", itemClass = 2,
+				itemSubClass = 4, stats = { strength = 30 } }
+			local WEAK = { itemId = 91, link = "item:91", equipLocation = "INVTYPE_WEAPON", itemClass = 2,
+				itemSubClass = 4, stats = { strength = 6 } }
+			local SHIELD = { itemId = 92, link = "item:92", equipLocation = "INVTYPE_SHIELD", itemClass = 4,
+				itemSubClass = 6, stats = { strength = 40 } }
+			local function pair(overrides)
+				local base = { faction = false, equipped = { main_hand = SMITE }, item = ONE_HANDER,
+					bags = { WEAK, GOBLIN, SHIELD },
+					nameOf = function(id)
+						return ({ [90] = "Goblin Hammer", [91] = "Weak Mace", [70] = "Smite's Mighty Hammer" })[id]
+					end }
+				for key, value in pairs(overrides or {}) do
+					base[key] = value
+				end
+				return ItemTooltip.section(ctx(base))
+			end
+
+			it("names the best one-hander carried for the other hand and the pair's gain over the two-hander", function()
+				-- Smite 20 against the hovered 4 and the Goblin Hammer 30 together: +14.0 DPS.
+				local lines = pair()
+				assert.are.same({
+					string.format(L.tooltipDown, 16, L.tooltipUnitDps, "Smite's Mighty Hammer"),
+					string.format(L.tooltipPairWith, "Goblin Hammer",
+						string.format(L.tooltipVerdictDps, 14, "Smite's Mighty Hammer")),
+				}, texts(lines))
+				assert.are.equal("pair", lines[#lines].kind)
+				assert.are.equal("success", lines[#lines].color)
+				assert.are.equal("With Goblin Hammer: Upgrade +14.0 DPS over Smite's Mighty Hammer",
+					texts(lines)[2])
+			end)
+
+			it("reads the bags through a function too, only when it needs them", function()
+				local asked = 0
+				local lines = pair({ bags = function()
+					asked = asked + 1
+					return { GOBLIN }
+				end })
+				assert.are.equal(2, #texts(lines))
+				assert.are.equal(1, asked)
+				-- A hover that is no one-hander under a two-hander never reads them.
+				asked = 0
+				ItemTooltip.section(ctx({ faction = false, bags = function()
+					asked = asked + 1
+					return {}
+				end }))
+				assert.are.equal(0, asked)
+			end)
+
+			it("says a pair that loses to the two-hander is a downgrade", function()
+				local lines = pair({ bags = { WEAK } })
+				assert.are.equal(string.format(L.tooltipPairWith, "Weak Mace",
+					string.format(L.tooltipDown, 10, L.tooltipUnitDps, "Smite's Mighty Hammer")), texts(lines)[2])
+				assert.are.equal("warning", lines[#lines].color)
+			end)
+
+			it("adds nothing without a carried one-hander, for a shield, or when no two-hander is worn", function()
+				assert.are.equal(1, #texts(pair({ bags = {} })))
+				assert.are.equal(1, #texts(pair({ bags = { SHIELD } })))
+				assert.are.equal(1, #texts(pair({ bags = false })))
+				local free = ItemTooltip.section(ctx({ faction = false, item = ONE_HANDER, bags = { GOBLIN },
+					equipped = { main_hand = { itemId = 71, link = "item:71", equipLoc = "INVTYPE_WEAPON",
+						stats = { strength = 5 } } } }))
+				for _, line in ipairs(free) do
+					assert.is_not.equal("pair", line.kind)
+				end
+			end)
+
+			it("adds nothing for a class that cannot dual wield, and waits for a partner the client has not named",
+				function()
+					assert.are.equal(1, #texts(pair({ classToken = "PALADIN" })))
+					local lines, _, pending = pair({ nameOf = function(id) return id == 70 and "Smite's Mighty Hammer" or nil end })
+					assert.are.equal(1, #texts(lines))
+					assert.is_true(pending[90])
+				end)
+		end)
+
 		it("scores a better two-hander as an upgrade", function()
 			assert.are.same({ string.format(L.tooltipVerdictDps, 10, "Smite's Mighty Hammer") },
 				hands({ itemId = 82, link = "item:82", equipLocation = "INVTYPE_2HWEAPON", itemClass = 2,
@@ -1019,17 +1119,20 @@ describe("ItemTooltip.section", function()
 			return ctx(base)
 		end
 
-		-- Worn: 20 Str x 2 + 10 weapon DPS x 4 = 80. Arugal's Axe: 30 x 4 = 120.
-		-- (120 - 80) x 0.5 = +20.0 DPS; Quest Blade: (100 - 80) x 0.5 = +10.0.
-		it("names its Next line from the data and prices the weapon from its DPS", function()
+		-- L3.7 item 6: the data's DPS is only the weapon's own term, so a gain from it alone is a
+		-- lower bound; it is withheld ("stats pending") until the client's stats arrive. (With the
+		-- stats: 20 Str x 2 + 10 weapon DPS x 4 = 80 worn against Arugal's Axe 30 x 4 = 120.)
+		it("names its Next line from the data and withholds the gain: stats pending", function()
 			local worn = { itemId = 70, link = "item:70", equipLoc = "INVTYPE_2HWEAPON",
 				stats = { strength = 20, weapon_dps = 10 } }
 			local lines, target, pending = ItemTooltip.section(cold(worn))
 			local shown = texts(lines)
-			assert.are.equal(ItemTooltip.nextLine("Arugal's Axe", 20, "dps"), shown[1])
+			assert.are.equal(ItemTooltip.nextLine("Arugal's Axe", nil, "dps", false, true), shown[1])
+			assert.are.equal("Next upgrade: Arugal's Axe \194\183 stats pending", ItemTooltip.stripEscapes(shown[1]))
+			assert.is_nil(lines[1].upgrade.gain)
+			assert.is_true(lines[1].upgrade.statsPending)
 			assert.are.equal(string.format(L.tooltipSourceDrop, "Shadowfang Keep", "Arugal", 10), shown[2])
-			assert.are.equal(ItemTooltip.fitAlternatives({ { name = "Quest Blade", gain = 10, unit = "dps" } })[1],
-				shown[3])
+			assert.are.equal(ItemTooltip.fitAlternatives({ { name = "Quest Blade", unit = "dps" } })[1], shown[3])
 			for _, text in ipairs(shown) do
 				assert.is_nil(text:find(L.tooltipNamePending, 1, true), text)
 			end
@@ -1050,18 +1153,44 @@ describe("ItemTooltip.section", function()
 			assert.is_nil(pending[600])
 		end)
 
-		-- Worn: Arugal's Axe itself (30 weapon DPS: 120). At 30, Herod's Axe:
-		-- 40 x 4 = 160, (160 - 120) x 0.5 = +20.0 DPS.
-		it("names its At line from the data and prices the weapon from its DPS", function()
+		-- Worn: Arugal's Axe itself. At 30, Herod's Axe is a cold weapon too: no gain until its
+		-- stats arrive.
+		it("names its At line from the data with no gain while the weapon's stats are pending", function()
 			local worn = { itemId = 600, link = "item:600", equipLoc = "INVTYPE_2HWEAPON", stats = { weapon_dps = 30 } }
 			local lines, _, pending = ItemTooltip.section(cold(worn))
 			assert.are.same({
 				string.format(L.tooltipBestUntil, 30),
-				ItemTooltip.atText({ band = 30, name = "Herod's Axe", gain = 20, unit = "dps",
-					source = "Scarlet Monastery · Herod · 20% drop" }),
+				ItemTooltip.atText({ band = 30, name = "Herod's Axe", source = "Scarlet Monastery · Herod · 20% drop" }),
 				string.format(L.tooltipPlanned, "Arms", 20),
 			}, texts(lines))
 			assert.is_true(pending[610])
+		end)
+
+		-- L3.7 item 7 [verify: it did print "Best until N"]: a pick the client has not sent, named
+		-- from the data and with no DPS to price it from, waits for its stats like the paper-doll
+		-- corner does; "Best until" is for a pick whose stats are known not to gain.
+		it("waits for a cold armour pick instead of saying Best until N", function()
+			local armour = { classes = DATA.classes, weights = DATA.weights, dpsPerPoint = DATA.dpsPerPoint,
+				bis = DATA.bis, bisNames = { [100] = "Defias Overseer Chest", [200] = "Herod's Chest" } }
+			local worn = { itemId = 50, link = WORN_LINK, equipLoc = "INVTYPE_CHEST", stats = { strength = 4 } }
+			local lines, _, pending = ItemTooltip.section(ctx({
+				data = armour, equipped = { chest = worn },
+				nameOf = function() return nil end, statsOf = function() return nil end,
+				isCached = function() return false end,
+				item = { itemId = 50, link = WORN_LINK, equipLocation = "INVTYPE_CHEST", itemClass = 4,
+					itemSubClass = 3, stats = { strength = 4 } },
+			}))
+			assert.are.same({}, texts(lines))
+			assert.is_true(pending[100])
+			-- Cached with no stats at all (a statless item), it is a known non-gain: Best until holds.
+			local cached = ItemTooltip.section(ctx({
+				data = armour, equipped = { chest = worn },
+				nameOf = function(id) return armour.bisNames[id] end, statsOf = function() return nil end,
+				isCached = function() return true end,
+				item = { itemId = 50, link = WORN_LINK, equipLocation = "INVTYPE_CHEST", itemClass = 4,
+					itemSubClass = 3, stats = { strength = 4 } },
+			}))
+			assert.is_truthy(texts(cached)[1]:find("Best until", 1, true))
 		end)
 
 		it("names a cold armour pick from the data with no figure until its stats arrive", function()
@@ -1231,6 +1360,36 @@ describe("ItemTooltip.section", function()
 			assert.are.equal(L.tooltipNeedsBullets, alternatives.entries[1].flag)
 			assert.is_nil(alternatives.entries[2].flag)
 			assert.is_truthy(ItemTooltip.fitAlternatives(alternatives.entries)[1]:find(L.tooltipNeedsBullets, 1, true))
+		end)
+
+		-- L3.7 item 14 (hammer under a bow): a thrown weapon in the ranged slot says so, on the
+		-- Next line and as an alternative's tag, so a list of bows is not read as all bows.
+		it("names a thrown pick on the Next line and tags a thrown alternative", function()
+			local thrown = { [600] = 16, [601] = 16 }
+			local lines = ItemTooltip.section(wornBow({
+				subClassOf = function(item) return thrown[item] or SUB[item] end }))
+			assert.are.equal(ItemTooltip.nextLine("Ranger Bow", lines[1].upgrade.gain, "dps", false, false,
+				L.tooltipThrown), lines[1].text)
+			assert.is_truthy(lines[1].text:find(L.tooltipThrown, 1, true))
+			assert.are.equal("(thrown)", L.tooltipThrown)
+			local alternatives
+			for _, line in ipairs(lines) do
+				if line.kind == "alternatives" then
+					alternatives = line
+				end
+			end
+			assert.are.equal(L.tooltipThrown, alternatives.entries[1].flag)
+			assert.is_truthy(ItemTooltip.fitAlternatives(alternatives.entries)[1]:find(L.tooltipThrown, 1, true))
+			-- A bow is not tagged.
+			local bows = ItemTooltip.section(wornBow())
+			assert.is_nil(bows[1].text:find(L.tooltipThrown, 1, true))
+		end)
+
+		it("keeps the thrown tag on the Next line when the name is cut to fit", function()
+			local lines = ItemTooltip.section(wornBow({
+				subClassOf = function(item) return item == 600 and 16 or SUB[item] end }))
+			local fitted = ItemTooltip.fitLine(lines[1], function(text) return #ItemTooltip.stripEscapes(text) end, 30)
+			assert.is_truthy(fitted[1]:find(L.tooltipThrown, 1, true) or (fitted[2] or ""):find(L.tooltipThrown, 1, true))
 		end)
 
 		it("reads World drop · check the AH for a pick that binds when equipped", function()
@@ -1416,8 +1575,9 @@ describe("the weapon figure under the shipped Arms band-20 figures", function()
 
 	-- The pair as worn in game, Smite's "Weapon Damage +4" at 3.50 netted (tip4):
 	-- 24.4 x 0.0385 + (5.8 + 4 / 3.5) x 0.5432 = 0.94 + 3.77 = 4.7 DPS, the
-	-- "about -4.8" the brief and L1.5 expected (L1.5: 125.6 AP x 0.0385).
-	it("prices the enchanted pair at about -4.8: Downgrade 4.7 DPS", function()
+	-- the -4.8 L1.5 expected was its 14-AP-per-weapon-DPS figure (125.6 AP x 0.0385); the
+	-- measured weapon term (0.5432 a point) gives 4.7.
+	it("prices the enchanted pair as Downgrade 4.7 DPS", function()
 		local smite = Gear.netEnchant(hammer, { stats = { weapon_dps = 4 / 3.5 }, unparsed = false })
 		local verdict = Progress.itemVerdict("main_hand", tenderizer, { main_hand = smite }, weights, perPoint, weapon)
 		assert.is_true(math.abs(verdict.delta - (24.4 * 0.0385 + (5.8 + 4 / 3.5) * 0.5432)) < 1e-9)
@@ -1889,8 +2049,8 @@ describe("the worn-item invariant over the real Arms band 20", function()
 		end
 
 		-- L3.6 ruling 2: with nothing in the client's cache yet, every pick names
-		-- itself from Data.bisNames (never "…"), the main-hand weapon is priced
-		-- from Data.bisDps, and each worn item still ends with one primary line.
+		-- itself from Data.bisNames (never "…"); a weapon is named on a "stats pending" Next line
+		-- (L3.7 item 6) and each other pick waits (L3.7 item 7), never saying "Best until N".
 		it(faction .. ", every pick cold", function()
 			local band = Data.bis["warrior-arms"][20][faction]
 			local current = Gear.currentWeights(Data, "warrior-arms", nil, KEY, 20)
@@ -1900,7 +2060,7 @@ describe("the worn-item invariant over the real Arms band 20", function()
 				local class = CLASS[slot] or { 4, 3 }
 				local wornLink = "item:999" .. #slot .. ":0"
 				local worn = { itemId = 9990 + #slot, link = wornLink, equipLoc = LOCATION[slot], stats = { strength = 1 } }
-				local lines = ItemTooltip.section({
+				local lines, _, pending = ItemTooltip.section({
 					data = Data, spec = "warrior-arms", classToken = "WARRIOR", level = 20, faction = faction,
 					current = current, equipped = { [slot] = worn },
 					nameOf = function() return nil end, statsOf = function() return nil end,
@@ -1916,7 +2076,13 @@ describe("the worn-item invariant over the real Arms band 20", function()
 						primaries = primaries + 1
 					end
 				end
-				assert.are.equal(1, primaries, slot .. " " .. pick.item_id)
+				if Data.bisDps[pick.item_id] ~= nil then
+					assert.are.equal(1, primaries, slot .. " " .. pick.item_id)
+				else
+					-- L3.7 item 7: a cold armour pick waits (no "Best until"), the hover redrawing on its stats.
+					assert.are.equal(0, primaries, slot .. " " .. pick.item_id)
+					assert.is_true(pending[pick.item_id], slot .. " " .. pick.item_id)
+				end
 				if slot == "main_hand" then
 					-- The band's main hand outprices a +1 Strength stand-in on its DPS alone.
 					assert.is_number(Data.bisDps[pick.item_id])
@@ -2024,8 +2190,10 @@ describe("the hook's width contract and enchant wiring", function()
 		"ITEM_MOD_STRENGTH_SHORT", "RESISTANCE0_NAME", "ENCHANTED_TOOLTIP_LINE", "SPEED" }
 
 	--- A tooltip whose rows the client drew (`client`), growing as lines are
-	--- added, its TextLeft/TextRight font strings readable by name.
-	local function specTip(client)
+	--- added, its TextLeft/TextRight font strings readable by name. With `geometry` ({ bottom,
+	--- screenTop }) it also answers where it stands (14 a row up from `bottom`) against a
+	--- UIParent whose top is `screenTop`, and rebuilds itself on SetHyperlink as the client does.
+	local function specTip(client, geometry)
 		local rows = {}
 		for index, row in ipairs(client) do
 			rows[index] = { left = row.left, right = row.right }
@@ -2044,6 +2212,20 @@ describe("the hook's width contract and enchant wiring", function()
 			AddDoubleLine = function(_, left, right) rows[#rows + 1] = { left = left, right = right } end,
 			Show = function() end,
 		}
+		if geometry ~= nil then
+			_G.UIParent = { GetTop = function() return geometry.screenTop end, GetEffectiveScale = function() return 1 end }
+			tip.GetTop = function() return geometry.bottom + 14 * #rows end
+			tip.GetBottom = function() return geometry.bottom end
+			tip.GetHeight = function() return 14 * #rows end
+			tip.GetEffectiveScale = function() return 1 end
+			tip.IsShown = function() return true end
+			tip.SetHyperlink = function(self, link)
+				for index = #rows, #client + 1, -1 do
+					rows[index] = nil
+				end
+				ItemTooltip.onTooltip(self, link)
+			end
+		end
 		return tip, rows
 	end
 
@@ -2072,6 +2254,87 @@ describe("the hook's width contract and enchant wiring", function()
 		end
 		ItemTooltip.activeHover = nil
 		Gear.enchantCache = {}
+	end)
+
+	-- L3.7 item 12 (the Waist hover clipped at the top of the screen): when the tooltip would pass
+	-- the top of the screen, "Also good:" goes first, then the source line.
+	describe("capping the rows against the screen", function()
+		local client = { { left = "Abomination Bones" }, { left = "Chest", right = "Mail" } }
+		local function hookData()
+			ItemTooltip.data = { classes = { warrior = { tabs = { { name = "Arms" } } } },
+				weights = { ["warrior-arms"] = { strength = 2 } },
+				dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.5 } },
+				bis = { ["warrior-arms"] = { [20] = { alliance = {
+					chest = "100|D|The Deadmines: Defias Overseer|0.14|101|Q|A Quest|102|V|Some Vendor" } } } } }
+			ItemTooltip.contextFor = function(data)
+				return {
+					data = data, spec = "warrior-arms", classToken = "WARRIOR", level = 20, faction = "alliance",
+					current = Gear.currentWeights(data, "warrior-arms", nil, KEY),
+					equipped = { chest = { itemId = 50, link = "item:50", stats = { strength = 4 } } },
+					nameOf = function(id) return ({ [100] = "Mutant Chest", [101] = "Quest Chest", [102] = "Vendor Chest" })[id] end,
+					statsOf = function(id) return id == 100 and { strength = 20 } or { strength = 6 } end,
+					isCached = function() return false end, qualityHex = function() return nil end,
+					isMissing = function() return false end,
+					item = { itemId = 50, link = "item:50", equipLocation = "INVTYPE_CHEST", itemClass = 4,
+						itemSubClass = 3, stats = { strength = 4 } },
+				}
+			end
+		end
+		local function drawn(screenTop)
+			local tip, rows = specTip(client, { bottom = 100, screenTop = screenTop })
+			ItemTooltip.onTooltip(tip, "item:50")
+			local text = {}
+			for index = #client + 1, #rows do
+				text[#text + 1] = ItemTooltip.stripEscapes(rows[index].left)
+			end
+			return text
+		end
+		local function index(rows, needle)
+			for position, row in ipairs(rows) do
+				if row:find(needle, 1, true) then
+					return position
+				end
+			end
+		end
+		local savedUIParent
+		before_each(function()
+			savedUIParent = _G.UIParent
+			hookData()
+		end)
+		after_each(function()
+			_G.UIParent = savedUIParent
+		end)
+
+		it("leaves the section whole when it fits under the top of the screen", function()
+			local rows = drawn(10000)
+			assert.is_not_nil(index(rows, "Also good"))
+			assert.is_not_nil(index(rows, "Defias"))
+		end)
+
+		it("drops Also good: first", function()
+			local whole = drawn(10000)
+			local kept = index(whole, "Also good") - 1
+			local rows = drawn(100 + 14 * (#client + kept) + 14)
+			assert.is_nil(index(rows, "Also good"))
+			assert.is_nil(index(rows, "Quest Chest"))
+			assert.is_not_nil(index(rows, "Defias"))
+			assert.are.equal(kept, #rows)
+		end)
+
+		it("then the source line, keeping the Next line", function()
+			local whole = drawn(10000)
+			local kept = index(whole, "Also good") - 2
+			local rows = drawn(100 + 14 * (#client + kept) + 14)
+			assert.is_nil(index(rows, "Also good"))
+			assert.is_nil(index(rows, "Defias"))
+			assert.is_not_nil(index(rows, "Mutant Chest"))
+		end)
+
+		it("rebuilds only for the hover that is too tall: the next hover starts whole again", function()
+			local whole = drawn(10000)
+			drawn(100 + 14 * (#client + #whole - 3))
+			assert.are.same(whole, drawn(10000))
+		end)
 	end)
 
 	-- (a) The client's widest row is 22 wide; a Next line far wider wraps, and
@@ -2247,7 +2510,8 @@ describe("the hook's width contract and enchant wiring", function()
 		local F6 = "Press F6 to submit an issue for this Item"
 		local DATA7 = { classes = { warrior = { tabs = { { name = "Arms" } } } },
 			weights = { ["warrior-arms"] = { strength = 2, attack_power = 1 } },
-			dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.55 } },
+			dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.55,
+				[20] = { reference = "attack_power", dps = 0.55 } } },
 			bis = { ["warrior-arms"] = { [20] = { alliance = {
 				waist = "300|D|The Deadmines: Captain Greenskin|0.3",
 				ranged = "400|B|World drop",

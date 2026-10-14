@@ -538,6 +538,13 @@ function mock.install(state)
 		function frame:CreateFontString(fontName, layer, inherits)
 			local region = newFrame("FontString", fontName, self, nil, false)
 			region.layer, region.inherits = layer, inherits
+			-- `state.stringWidth(text, region)`, when a spec gives one, is the client's text measure:
+			-- GetStringWidth answers it for the text the region holds (L3.7 item 20).
+			if type(state.stringWidth) == "function" then
+				region.GetStringWidth = function(own)
+					return state.stringWidth(own.text or "", own)
+				end
+			end
 			if inherits ~= nil and state.fonts[inherits] then
 				region:SetFontObject(inherits)
 			end

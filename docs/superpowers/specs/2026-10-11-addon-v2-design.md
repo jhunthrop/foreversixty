@@ -82,7 +82,8 @@ never wrapped. One state at a time, highest first; a "+N" badge when more wait.
    carries the muted next-talent line; from 10 the idle chip has no text.
 
 Out of the way: fades to 25 % in combat and ignores the mouse; hides with the UI and in
-cinematics; right-click "Hide until next level"; shift-drag moves it; hover shows a client
+cinematics; right-click "Hide until next level" (kept per character: an alt's hide, and the spec it
+picked on the path card, never reach the main's); shift-drag moves it; hover shows a client
 tooltip with every waiting state, headed by the build in force ("Forever Sixty · Marksmanship
 leveling", so even the idle chip says one is followed). While the talent window is open
 (however it was opened: the chip's click, the N keybind, the micro menu) and its marks are
@@ -119,7 +120,10 @@ wider does the spec word drop, before the tag; the tag is never cut. Every equip
 covers gets a line (an item that fills an empty slot reads "Fills an empty slot" at any gain that
 shows, and is an upgrade at that gain, L4.1 fix round 3): the verdict
 ("Upgrade +4.2 DPS over Chausses of Westfall", "Sidegrade (+0.3 DPS)", "Downgrade −4.2 DPS over
-Smite's Mighty Hammer", the compared name shortened before the tooltip widens), "Best until level 30",
+Smite's Mighty Hammer", the compared name shortened before the tooltip widens; a one-hander
+hovered under a worn two-hander by a class that can dual wield adds "With Goblin Hammer: Upgrade
++14.0 DPS over Smite's Mighty Hammer", the best one-hander the bags carry for the other hand),
+"Best until level 30",
 or the reason it is not one ("Not for you until 40: plate armor", "Not with your two-hander",
 alone, "Not for your plan"); only non-gear stays blank. The chip and the tooltip read one gain,
 rounded once to the figure shown (one decimal of DPS, whole points of score), and call it an
@@ -137,9 +141,19 @@ no stats to price it, and dropped before the name is ever cut) (the instance, "V
 own muted line "· <source>" rather than widen the tooltip, and the name is cut only when even the
 bare name is wider than the tooltip; the At line carries no alternatives) ("Best for now", alone, in the top band); when the client can
 show neither the pick nor any of its alternatives, "Best known for now". A pick the client cannot
-show at all gives way to the first of its alternatives it can. The gain compares the items' own
+show at all gives way to the first of its alternatives it can. A pick the client has not sent yet is
+named from the data; a weapon among them reads "Next upgrade: <name> · stats pending", with no gain
+(the data's weapon DPS alone would be a lower bound), until the client's stats arrive and the hover
+redraws with the figure, and any other such pick waits rather than reading "Best until level N".
+A thrown weapon in the ranged slot says so ("Cracked Blacksmith Hammer (thrown)") on the Next line
+and as an alternative's tag, so a hunter's ranged list is not read as a list of bows. When the
+tooltip would pass the top of the screen it drops "Also good:" first, then the source line, and
+is built again. The gain compares the items' own
 stats at the DPS per point of the character's band (contract 1's `dpsPerPoint[spec][band]`, band 20
-below level 20) and, on the slot the band's weapon term was measured on (the main hand, or the
+below level 20; a band the data lacks reads the next measured one down, and a leveler with no band at
+or below its level has no DPS figure and reads in score, never the level-60 raid character's; a
+sim's own `dps_per_point` from the companion's weights message for the spec wins over the band's,
+the weapon term staying the band's measured one) and, on the slot the band's weapon term was measured on (the main hand, or the
 ranged slot for a ranged-attack-power spec), the weapon's own DPS at the band's measured
 `weaponDps`, never through attack power; the off hand, a hunter's melee weapon and a feral
 druid's, a caster's or a healer's weapon DPS count nothing. The worn item's enchant is read from its own tooltip (the
@@ -156,7 +170,8 @@ Next line puts its gain on a second line, the verdict puts the compared name on 
 (shortened only below that, on its second word at the soonest), the source line shortens the
 boss's name, the alternatives split when the pair is too wide ("Also good:" alone on its row, then each
 alternative on its own indented row with its whole name and gain; a tag such as "(needs bullets)"
-drops to a muted row under the name before the name is ever shortened; no trailing commas; L4.1 fix
+drops to a muted second line of that same row (no row gap between them) before the name is ever
+shortened; no trailing commas; L4.1 fix
 round 7), and every other line (the header, a refusal,
 the plan, a capped stat, "Best until level 30") is cut with an ellipsis by measured width. The unit is DPS (or HPS)
 when a sim result or DPS-per-point weights exist for the spec, else score. Hovering an item with a
@@ -179,12 +194,22 @@ tooltip's verdict line beside the item. All read the same `Gear` functions the t
 Three stacked regions whose content follows level; a region with nothing to show is absent.
 
 - **Next targets**: up to five rows, icon, quality-coloured name, slot, source and drop chance,
-  delta in the current unit; "weapons first" for melee specs.
+  delta in the current unit; "weapons first" for melee specs. The worn item a row replaces is a
+  muted "· over <worn>" in the name line's empty gap (its worn name ellipsised first, the target's
+  own name never cut for it). Under fewer than five rows, "Nothing better for your level in other
+  slots."
 - **Rotation**: the shipped priority list for the level band, icon, rank, condition in plain
-  words (parentheticals stripped, two lines max), abilities the character does not have yet
-  marked "at level N" and listed last.
-- **Build**: spec split ("Arms 31 / Fury 20"), progress, off-plan count, "Use a different
-  build" (opens the dialog), "Copy my character".
+  words (parentheticals stripped, two lines max; a cut never ends on a figure or the word that
+  leads into it), abilities the character does not have yet marked "at level N" and listed last,
+  their icon and condition dimmed and their name in the muted token (legible). A rank ("Rank 2",
+  muted) shows on every row the client has one for, the unlearned rows too.
+- **Build**: spec split ("Arms 31 / Fury 20"), progress ("N of M points on plan", counting the
+  talent window's staged clicks, with a muted "(staged)" while they differ from the committed
+  ones; absent below level 10, where no point is allowed yet), off-plan count (its hover lists
+  each talent leading with the points it accounts for, so they sum to the count, then "Not in your
+  plan. A respec moves them." and, when known, "Next point at level N: <talent>"; anchored beside
+  the flyout, never over the Build lines), "Use a different build" (opens the dialog), "Copy my
+  character".
 - **At 60**, two more: **Sim** (your DPS, the top three stat weights in DPS per point, "Sim me
   again" which queues a request) and **Last raid** (per boss: parse percentile, biggest loss,
   deaths, consumables missed, rotation adherence against the sim's cast order).
@@ -315,15 +340,17 @@ the canvas and anchored to it at both corners (the backdrop is the scroll's clip
 than what shows), scrolling when the canvas is shorter (the wheel moves it a notch at a time and
 its end shows the foot's last line and its pad; every show opens it at the top). Under the gold
 title, while either data state at the foot is in the warning colour, one line repeats the first
-such state's whole sentence in the warning colour (the addon data before the player ratings); the
-page moves down a line to make room. "Not installed" stays at the foot, muted: the data addon is
+such state's whole sentence in the warning colour (the addon data before the player ratings; with both
+out of date it ends "(and the player ratings are too old as well)"); the page moves down by the line's
+measured height, so a longer locale's wrapped sentence never overlaps the first switch. "Not installed" stays at the foot, muted: the data addon is
 optional. Eight switches, each with one muted hint saying what it does; each row is measured from
 its label and its wrapped hint (`GetStringHeight` plus the one-line rows' bottom pad, never less
 than the one-line 44 px row), so a two-line hint pushes the next row down by a line: "Show the
 chip" (reads off while a right-click hides the chip; either way it clears that hide), "Hide the
 chip in combat" (off: faded to 25 %), "Marks on the talent window" (the ring, the badges and the
 strip, all or none), "Show the minimap button" (live; off, /fs options or Options > AddOns reach
-the page), "Gear tips on item tooltips" (off also hides the paper-doll, bag, quest reward and roll marks, section 4.4), "Share my build with my guild" ("Guildmates with Forever
+the page), "Gear tips on item tooltips" (hint: "Adds a line to item tooltips: in your build, and better than what
+you wear. Off: hides player scores too."; off also hides the paper-doll, bag, quest reward and roll marks, section 4.4), "Share my build with my guild" ("Guildmates with Forever
 Sixty see your level, spec, build and gear gap. Off: they see nothing."; off silences the hello
 and every snapshot answer on every channel) and "Save my character for the companion app"
 ("Written at logout for the companion app on your PC, so the site can read your gear and
@@ -335,10 +362,12 @@ prints too, followed there by two muted lines, "For testers: /fs diag verbose" a
 inbox, /fs hello, /fs seen, /fs record"); and at the foot two lines, one sentence per state (the
 subject muted, the state muted or in the warning colour): "Addon data: current for this patch"
 or "Addon data: for an older patch. Update Forever Sixty at foreversixty.gg.", and "Player ratings (on
-player tooltips): current", "…: too old. Get the new Forever Sixty Data at foreversixty.gg.",
-"…: not installed. Get Forever Sixty Data at foreversixty.gg." or "…: made for a newer addon.
+player tooltips): current", "…: too old. Get the new Forever Sixty Data at foreversixty.gg." (dated
+"too old (patch 1.60.1)" when the data carries its build),
+"…: not installed. Get Forever Sixty Data at foreversixty.gg.", "…: broken or missing. Get Forever
+Sixty Data at foreversixty.gg." (the global is not a table at all) or "…: made for a newer addon.
 Update Forever Sixty at foreversixty.gg." (`/fs diag` keeps its own wording, and adds its
-"Build:" line for the build in force, section 5.1), no build numbers,
+"Build:" line for the build in force, section 5.1), no build numbers beyond that patch,
 then 12 px of padding so a cut never lands on text. The eighth switch, "Score badges in chat" (L4.4: "Shows a player's Forever Score before their
 message in LFG, Trade, guild chat and whispers."); no "advanced detail" mode. The minimap button and the addon compartment entry
 open the build dialog on a left click and this page on a right click; `/fs options` opens it too
@@ -354,8 +383,9 @@ the talent marks, the tooltip and the quest-reward mark do the work; a dungeon e
 the "here for you" line; the targets region ticks itself off from bags and gear. No site visit
 is needed at any level; pasting a build from the planner replaces the default.
 
-The default is the one for the tree with the most points (the first tree with none), leveling
-below 60 and raid at 60; it is never saved, so it is worked out again at each login, and read
+The default is the one for the tree with the most points (a tie, or no points spent yet, goes to the
+first tree; a tree the data splits into two specs, the feral druid's cat and bear, answers the one
+the points fit, the cat on a tie), leveling below 60 and raid at 60; it is never saved, so it is worked out again at each login, and read
 again when the talent ranks arrive after login (until the first that reads a rank, or the first
 trait-config update), never swapped by a respec later in the session. A build saved in any slot
 wins over it: when the active slot is empty, or its code no longer loads, the first saved build

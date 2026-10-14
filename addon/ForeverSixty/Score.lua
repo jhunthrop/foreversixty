@@ -113,8 +113,18 @@ function Score.status()
 		end
 		return { available = false, absent = true, reason = L.ratingsNotInstalled }
 	end
+	if type(data) ~= "table" then
+		-- Not a table at all (a hand edit, a half-written file): broken or missing, not "too old".
+		local status = unavailable(L.ratingsBroken, L.diagDataAddonBroken)
+		status.broken = true
+		return status
+	end
+	-- The data's own build, when it carries one: the Settings foot dates "too old" by its patch.
+	local build = type(data.build) == "string" and data.build ~= "" and data.build or nil
 	if not wellFormed(data) then
-		return unavailable(L.ratingsUnreadable, L.diagDataAddonOld)
+		local status = unavailable(L.ratingsUnreadable, L.diagDataAddonOld)
+		status.build = build
+		return status
 	end
 	if data.format > Score.FORMAT then
 		return unavailable(L.ratingsUpdateAddon, L.ratingsUpdateAddon)
@@ -122,16 +132,19 @@ function Score.status()
 	if data.format < Score.FORMAT then
 		-- An older data addon keys its characters differently; reading it as this
 		-- format would only find nobody.
-		return unavailable(L.ratingsUnreadable, L.diagDataAddonOld)
+		local status = unavailable(L.ratingsUnreadable, L.diagDataAddonOld)
+		status.build = build
+		return status
 	end
 	local written = Score.dateSeconds(data.generated)
 	local stale = written == nil or clockTime() - written > Score.STALE_AFTER_SECONDS
-	return { available = true, generated = data.generated, stale = stale }
+	return { available = true, generated = data.generated, stale = stale, build = build }
 end
 
 --- The record's state in one word, for the lines that say it (Settings' foot, the guild
 --- tab's notice; L5.1 fix round 1, item 1): "Missing" (not installed), "Current", "Newer"
---- (made for a newer addon) or "Old" (stale, unreadable or an older format). `status` is
+--- (made for a newer addon), "Broken" (the global is not a table) or "Old" (stale, unreadable
+--- or an older format). `status` is
 --- Score.status()'s; Score.status() is asked when it is nil. Pure over a given status.
 function Score.ratingsState(status)
 	if status == nil then
@@ -139,6 +152,8 @@ function Score.ratingsState(status)
 	end
 	if type(status) ~= "table" or status.absent then
 		return "Missing"
+	elseif status.broken then
+		return "Broken"
 	elseif status.available and not status.stale then
 		return "Current"
 	elseif not status.available and status.reason == L.ratingsUpdateAddon then

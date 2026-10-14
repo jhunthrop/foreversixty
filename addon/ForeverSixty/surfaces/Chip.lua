@@ -704,11 +704,18 @@ local function characterKey()
 	return Export.characterKey()
 end
 
+--- This character's saved chip choices (Prefs.chipCharacter: a key saved under the old empty
+--- region still counts), or nil; `create` makes it.
+local function characterPrefs(create)
+	return Prefs.chipCharacter(characterKey(), Follow.sameCharacter, create)
+end
+
 --- The spec this character chose on the "pick a path" card, or nil: the pref
 --- is account-wide, so it counts only for the character that chose it.
 local function chosenPath(classSlug)
-	local slug = Prefs.get("chip", "pathChosen")
-	if type(slug) ~= "string" or slug == "" or not Follow.sameCharacter(Prefs.get("chip", "pathFor"), characterKey()) then
+	local mine = characterPrefs(false)
+	local slug = mine ~= nil and mine.pathChosen or nil
+	if type(slug) ~= "string" or slug == "" then
 		return nil
 	end
 	if classSlug ~= nil and slug:sub(1, #classSlug + 1) ~= classSlug .. "-" then
@@ -727,11 +734,11 @@ end
 --- The level the chip is hidden until for this character (math.huge for
 --- "until /fs chip"), or nil when it is not hidden.
 local function hiddenUntil()
-	-- Follow.sameCharacter: a pref saved under the old empty-region key still counts.
-	if not Follow.sameCharacter(Prefs.get("chip", "hiddenFor"), characterKey()) then
+	local mine = characterPrefs(false)
+	if mine == nil or not mine.hidden then
 		return nil
 	end
-	local level = Prefs.get("chip", "hiddenUntilLevel")
+	local level = mine.hiddenUntilLevel
 	if type(level) ~= "number" or level <= 0 then
 		return math.huge
 	end
@@ -1031,8 +1038,10 @@ end
 --- until it levels, or at the cap until /fs chip. The line to tell the player.
 function Chip.hideUntilNextLevel()
 	local untilLevel, line = Chip.hideFor(Chip.level())
-	Prefs.set("chip", "hiddenUntilLevel", untilLevel)
-	Prefs.set("chip", "hiddenFor", characterKey())
+	local mine = characterPrefs(true)
+	if mine ~= nil then
+		mine.hidden, mine.hiddenUntilLevel = true, untilLevel
+	end
 	Chip.refresh()
 	return line
 end
@@ -1044,8 +1053,7 @@ function Chip.toggle()
 		return Chip.hideUntilNextLevel()
 	end
 	Prefs.set("chip", "shown", true)
-	Prefs.set("chip", "hiddenUntilLevel", 0)
-	Prefs.set("chip", "hiddenFor", "")
+	Chip.clearHidden()
 	Chip.refresh()
 	return L.chipShownLine
 end
@@ -1055,10 +1063,18 @@ function Chip.onLevelUp(level)
 	if type(level) == "number" then
 		Chip.eventLevel = level
 	end
-	local hidden = Prefs.get("chip", "hiddenUntilLevel")
+	local mine = characterPrefs(false)
+	local hidden = mine ~= nil and mine.hidden and mine.hiddenUntilLevel or nil
 	if type(hidden) == "number" and hidden > 0 and Chip.level() >= hidden then
-		Prefs.set("chip", "hiddenUntilLevel", 0)
-		Prefs.set("chip", "hiddenFor", "")
+		mine.hidden, mine.hiddenUntilLevel = nil, nil
+	end
+end
+
+--- Bring this character's right-click hide back (the other characters keep theirs).
+function Chip.clearHidden()
+	local mine = characterPrefs(false)
+	if mine ~= nil then
+		mine.hidden, mine.hiddenUntilLevel = nil, nil
 	end
 end
 
@@ -1493,8 +1509,10 @@ end
 --- character, and close the card. Never replaces a build the player saved.
 function Chip.choosePath(slug)
 	Follow.ensureDefault(Chip.data or ns.Data, { spec = slug })
-	Prefs.set("chip", "pathChosen", slug)
-	Prefs.set("chip", "pathFor", characterKey())
+	local mine = characterPrefs(true)
+	if mine ~= nil then
+		mine.pathChosen = slug
+	end
 	Chip.closePath()
 	if Chip.afterChoice ~= nil then
 		Chip.afterChoice()

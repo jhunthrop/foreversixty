@@ -307,8 +307,8 @@ local L = {
 		.. "Off: type /fs options or use Options > AddOns.",
 	settingsTooltip = "Gear tips on item tooltips",
 	-- L4.4 fix round 2, item 2: the switch also governs the player tooltip's score.
-	settingsTooltipHint = "Adds a line to item tooltips: is it in your build, and does it beat what you wear. "
-		.. "Off: also hides the score on player tooltips.",
+	settingsTooltipHint = "Adds a line to item tooltips: in your build, and better than what you wear. "
+		.. "Off: hides player scores too.",
 	-- L4.4: the eighth switch (spec section 4.11). The badge leads the message, after the
 	-- name: a chat filter cannot touch the name without breaking its link and the reply.
 	settingsBadges = "Score badges in chat",
@@ -337,6 +337,14 @@ local L = {
 	settingsAddonDataOlder = "Addon data: for an older patch. Update Forever Sixty at " .. SITE .. ".",
 	settingsRatingsCurrent = "Player ratings (on player tooltips): current",
 	settingsRatingsOld = "Player ratings (on player tooltips): too old. Get the new Forever Sixty Data at " .. SITE .. ".",
+	-- L3.7 item 38: the dated form, "%s" the data's patch ("1.60.1"); item 2: a global that is not
+	-- a table at all.
+	settingsRatingsOldDated = "Player ratings (on player tooltips): too old (patch %s). Get the new Forever Sixty "
+		.. "Data at " .. SITE .. ".",
+	settingsRatingsBroken = "Player ratings (on player tooltips): broken or missing. Get Forever Sixty Data at "
+		.. SITE .. ".",
+	-- Added to the title's warning line when the addon data and the ratings are both out of date.
+	settingsAlsoOld = " (and the player ratings are too old as well)",
 	settingsRatingsNewer = "Player ratings (on player tooltips): made for a newer addon. Update Forever Sixty at "
 		.. SITE .. ".",
 	settingsRatingsMissing = "Player ratings (on player tooltips): not installed. Get Forever Sixty Data at " .. SITE
@@ -403,6 +411,7 @@ local L = {
 	ratingsNotInstalled = "Install the Forever Sixty Data addon to see ratings and guild standings in game. "
 		.. "It updates every night.",
 	ratingsUnreadable = "The Forever Sixty Data addon could not be read. Update both addons.",
+	ratingsBroken = "The Forever Sixty Data addon's data is broken or missing. Reinstall it from the site.",
 	ratingsUpdateAddon = "Your Forever Sixty Data is newer than this addon understands. Update Forever Sixty.",
 	-- The Forever Score, read from the nightly record (Score.lua).
 	scoreAsOf = "as of %s",
@@ -565,6 +574,9 @@ local L = {
 	statAbbrev = { strength = "Str", agility = "Agi", stamina = "Sta", intellect = "Int", spirit = "Spi" },
 	-- An off hand, a shield or a held item while a two-hander is worn.
 	tooltipTwoHander = "Not with your two-hander",
+	-- L3.7 item 11: a one-hander under a worn two-hander, with the best one carried for the other
+	-- hand: "With Goblin Hammer: Upgrade +14.0 DPS over Smite's Mighty Hammer".
+	tooltipPairWith = "With %s: %s",
 	-- The item worn is the band's own pick (or the pick is worn beside it, or
 	-- the next pick gains under the floor): it holds until the ladder's next
 	-- rung, "Best until level 30"; in the top band, "Best for now".
@@ -585,6 +597,8 @@ local L = {
 	tooltipCheckAH = "check the AH",
 	tooltipNeedsBullets = "(needs bullets)",
 	tooltipNeedsArrows = "(needs arrows)",
+	-- L3.7 item 14: a thrown weapon in the ranged slot (a hammer among bows).
+	tooltipThrown = "(thrown)",
 	-- Muted under "Best until level 30": the next rung's pick and, in a word or two, where
 	-- it comes from (the instance, "Vendor", "Quest" or the kind's word; no boss, no chance).
 	tooltipAtBand = "At level %d: %s · %s",
@@ -601,6 +615,8 @@ local L = {
 	-- +6.1 DPS" (the label muted, the name in its quality colour, the gain in
 	-- the upgrade green), its source on the next line. Never without its gain.
 	tooltipNextLabel = "Next upgrade:",
+	-- L3.7 item 6: a weapon pick the client has not sent stats for (its gain would be a lower bound).
+	tooltipStatsPending = "\194\183 stats pending",
 	tooltipNextGain = "+%.1f %s",
 	tooltipNextGainScore = "+%d score",
 	-- Muted at the end of the gain when the worn item's enchant could not be read (a
@@ -782,6 +798,7 @@ local L = {
 	diagChipTalents = "Chip: hidden while the talent window is open",
 	diagChipCinematic = "Chip: hidden during a cinematic",
 	diagDataAddonOld = "The Forever Sixty Data addon is too old. Update it from the site.",
+	diagDataAddonBroken = "The Forever Sixty Data addon's data is broken or missing. Reinstall it from the site.",
 	-- L3.8: /fs diag's one line for the build in force (Follow.diagLine), and why there is none.
 	diagBuildDefault = "Build: %s (default for %s)",
 	diagBuildSaved = "Build: %s (saved)",
@@ -972,7 +989,7 @@ L.panelTargetDetail = "%s · %s"
 -- fits ("Waist · The Deadmines · Captain Greenskin · 30% drop · over Cord of the Wild").
 L.panelTargetOver = " · over %s"
 -- Fix round 3, item 6: under fewer than five targets.
-L.panelTargetsRest = "Other slots are best for your level."
+L.panelTargetsRest = "Nothing better for your level in other slots."
 -- A learned rotation line's number, before its name ("1. Aimed Shot Rank 1").
 L.panelRotationNumber = "%d."
 -- An ability the character has not learned yet, muted and listed last; the next band's
@@ -996,12 +1013,20 @@ L.panelMore = "%d more"
 -- and the progress counts against the points the level allows (level - 9, at most the plan's).
 L.panelPlanSplit = "Plan: %s"
 L.panelProgress = "%d of %d points on plan"
+-- L3.7 item 21: a muted tag on that line while the talent window holds clicks not yet applied.
+L.panelStaged = "(staged)"
 L.panelOffPlan = "%d off plan"
 -- The off-plan count's hover, one talent a line: a node the plan never touches ("Improved
 -- Wrath · Balance · Rank 2/5"), and a planned node holding more than the plan asks
 -- ("Improved Wrath · Balance · Rank 4/5 (plan 3)").
-L.panelOffPlanTalent = "%s · %s · Rank %d/%d"
-L.panelOverPlanTalent = "%s · %s · Rank %d/%d (plan %d)"
+-- L3.7 item 27: each line leads with the points it accounts for, so they sum to the count above
+-- ("B · Arms · 1 off plan (Rank 1/1)", "C · Fury · 2 off plan (Rank 3/5, plan 1)").
+L.panelOffPlanTalent = "%s · %s · %d off plan (Rank %d/%d)"
+L.panelOverPlanTalent = "%s · %s · %d off plan (Rank %d/%d, plan %d)"
+-- L3.7 item 23: under the off-plan talents on that hover, what to do about them and when the
+-- next planned point arrives.
+L.panelOffPlanAction = "Not in your plan. A respec moves them."
+L.panelOffPlanNext = "Next point at level %d: %s"
 L.panelUseOther = "Use a different build"
 L.panelCopy = L.dialogCopy
 -- At 60: the sim. "Your sim: 412.6 DPS", then the top three weights: "Strength: 0.92 DPS

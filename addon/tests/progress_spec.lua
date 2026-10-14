@@ -854,14 +854,20 @@ describe("Progress.slotTargets", function()
 		local function standIn(itemId)
 			told = itemId
 		end
-		assert.are.same({ weapon_dps = 7.5 }, Progress.pickStats({ bisDps = { [9001] = 7.5 } }, function()
+		local stats, cold = Progress.pickStats({ bisDps = { [9001] = 7.5 } }, function()
 			return {}
-		end, 9001, standIn))
+		end, 9001, standIn)
+		assert.are.same({ weapon_dps = 7.5 }, stats)
+		-- L3.7 item 6: the second answer says the stats are the data's stand-in (a lower bound),
+		-- so a surface that prints a gain withholds it.
+		assert.is_true(cold)
 		assert.are.equal(9001, told)
 		told = nil
-		assert.are.same({ agility = 3 }, Progress.pickStats({ bisDps = { [9001] = 7.5 } }, function()
+		local own, ownCold = Progress.pickStats({ bisDps = { [9001] = 7.5 } }, function()
 			return { agility = 3 }
-		end, 9001, standIn))
+		end, 9001, standIn)
+		assert.are.same({ agility = 3 }, own)
+		assert.is_falsy(ownCold)
 		assert.is_nil(told)
 		-- Fix round 4: no build entry's own stats to fall back on: the client's, else the data's DPS.
 		assert.is_nil(Progress.pickStats({}, function()

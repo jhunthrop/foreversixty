@@ -340,7 +340,7 @@ describe("GuildTab", function()
 		end)
 
 		it("writes the live gap in the sender's unit: DPS where the data has a DPS per point for the spec", function()
-			local data = { dpsPerPoint = { ["warrior-arms"] = { dps = 0.4 } } }
+			local data = { dpsPerPoint = { ["warrior-arms"] = { dps = 0.4, [20] = { dps = 0.4 } } } }
 			local seen = { ["Facep Alm-ClassicBetaPvP"] = { level = 12, spec = "warrior-arms", gearGap = 14, time = 990 },
 				["Bow Jackzon-ClassicBetaPvP"] = { level = 26, spec = "-", gearGap = 9, time = 990 } }
 			local rows = GuildTab.rows(ROSTER, {}, seen, nil, nil, { data = data })
@@ -1632,7 +1632,11 @@ describe("GuildTab", function()
 		local function assertBandPickHover(data)
 			local nextLine, byKind = wornBowNext(data)
 			assert.are.equal(RANGER_BOW, nextLine.itemId)
-			assert.are.equal(3.5, nextLine.upgrade.gain)
+			-- L3.7 item 6: the bow is cold (priced from the data's DPS alone), so the hover names it
+			-- with "stats pending" and no figure; the row's +3.5 is the same lower bound, kept there
+			-- because nothing on the gap's path asks the client for the item.
+			assert.is_nil(nextLine.upgrade.gain)
+			assert.is_true(nextLine.upgrade.statsPending)
 			assert.are.equal(RANGER_BOW, byKind.source.pick.item_id)
 			assert.is_truthy(byKind.source.text:find("Wenna Silkbeard", 1, true))
 			assert.is_truthy(byKind.alternatives.text:find("Hunting Longbow", 1, true))
@@ -1717,11 +1721,28 @@ describe("GuildTab", function()
 				assert.are.equal(0, Comms.helloFields()[3])
 			end)
 
+		-- L3.7 item 9: the hello's gap is in the character's band (Gear.dpsFigure at its level), the
+		-- same figure the tooltip and the chip read, not the spec-level one (the level-60 raid
+		-- character's: 0.07 a point and 1.1 a weapon DPS here against the band's 0.1 and 1).
+		it("sends the hello's gap in the band's figures at the character's level, not the spec-level ones",
+			function()
+				-- A bow of 9 weapon DPS over the worn 4: 5.0 DPS in the band (1 a weapon DPS), 5.5 in the
+				-- spec-level figure, which would send 6.
+				local data = hunter(nil, { [RANGER_BOW] = 9 })
+				assert.are.equal(5, rangedTarget(data).gain)
+				assert.are.same({ 5, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
+				assert.are.equal(5, Comms.helloFields()[3])
+				-- The unit follows the same figure.
+				assert.are.equal("dps", Comms.gapUnit(data, "hunter-marksmanship", 26))
+				assert.are.equal("pts", Comms.gapUnit(data, "hunter-beast-mastery", 26))
+			end)
+
 		it("shows and sends a gain between 0 and 0.5 as 1, never on plan while behind", function()
-			-- 4.3 weapon DPS over 4, at the band's 1 DPS a weapon DPS: +0.3 DPS, under the tooltip's
-			-- floor (no Next line), still behind.
+			-- 4.3 weapon DPS over 4, at the band's 1 DPS a weapon DPS: +0.3 DPS, under the 1.0 floor
+			-- the hover will apply once the bow's stats arrive (until then it says "stats pending"),
+			-- still behind.
 			local data = hunter(nil, { [RANGER_BOW] = 4.3 })
-			assert.is_nil(wornBowNext(data))
+			assert.is_true(wornBowNext(data).upgrade.statsPending)
 			assert.are.equal(0.3, rangedTarget(data).gain)
 			assert.are.same({ 1, "dps" }, { Comms.gearGap(data, Follow.build, "hunter-marksmanship", {}) })
 			open()

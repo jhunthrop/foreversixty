@@ -139,7 +139,7 @@ describe("RewardMarks", function()
 	local state
 
 	--- `worn` is { [slot] = link }; `extra` more client globals.
-	local function start(worn, extra, level)
+	local function start(worn, extra, level, mockOptions)
 		local equipped = {}
 		for slot, itemLink in pairs(worn or {}) do
 			equipped[SLOT_IDS[slot]] = itemLink
@@ -176,6 +176,7 @@ describe("RewardMarks", function()
 			equipped = equipped,
 			itemStats = itemStats,
 			globals = globals,
+			stringWidth = mockOptions ~= nil and mockOptions.stringWidth or nil,
 		})
 		require("Theme").reset()
 		helper.load("Compat")
@@ -588,11 +589,12 @@ describe("RewardMarks", function()
 			HIDDEN[205] = nil
 			RewardMarks.onItemInfo(205)
 			assert.are.equal(string.format(L.tooltipVerdictDps, 2, "Old Chest"), lineText(frame))
+			-- L3.7 item 20: the name-arrival redraw wrote nothing into the client's frame either.
+			assert.are.same({}, state.clientWrites)
 		end)
 
 		-- Item 3: the 240 px fit, measured on the line's own font string.
 		it("fits a long worn name within the 240 px line: the name on its own line, ellipsised", function()
-			start({ chest = LONG_CHEST })
 			local function widest(text)
 				local most = 0
 				for part in (text or ""):gmatch("[^\n]+") do
@@ -600,19 +602,9 @@ describe("RewardMarks", function()
 				end
 				return most
 			end
-			local create = _G.CreateFrame
-			_G.CreateFrame = function(...)
-				local made = create(...)
-				local makeString = made.CreateFontString
-				made.CreateFontString = function(self, ...)
-					local region = makeString(self, ...)
-					region.GetStringWidth = function(own)
-						return widest(own.text)
-					end
-					return region
-				end
-				return made
-			end
+			-- L3.7 item 20: the text measure is the mock's own (state.stringWidth), not a wrapped
+			-- CreateFrame, so every font string the addon makes answers it.
+			start({ chest = LONG_CHEST }, nil, nil, { stringWidth = widest })
 			local frame = rollFrame(3, BAG_CHEST)
 			RewardMarks.onEvent("START_LOOT_ROLL", 3, 60)
 			local text = lineText(frame)
@@ -634,6 +626,7 @@ describe("RewardMarks", function()
 			RewardMarks.onEvent("START_LOOT_ROLL", 5, 60)
 			mock.runTimers(state)
 			assert.is_nil(lineText(frame))
+			assert.are.same({}, state.clientWrites)
 		end)
 
 		it("clears a reused frame's old line when its new roll has no item link", function()
@@ -643,6 +636,7 @@ describe("RewardMarks", function()
 			raw("GroupLootFrame1").rollID = 5
 			RewardMarks.onEvent("START_LOOT_ROLL", 5, 60)
 			assert.is_nil(lineText(frame))
+			assert.are.same({}, state.clientWrites)
 		end)
 	end)
 

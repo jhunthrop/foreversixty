@@ -178,6 +178,101 @@ describe("Options", function()
 		assert.are.equal("", require("Prefs").get("chip", "hiddenFor"))
 	end)
 
+	-- L3.7 item 21: a click staged in the talent window redraws an open panel too, once per frame.
+	it("redraws the character panel once for a burst of staged talent clicks", function()
+		local PanelTab = require("PanelTab")
+		local real = PanelTab.refresh
+		local calls = 0
+		PanelTab.refresh = function()
+			calls = calls + 1
+		end
+		for _ = 1, 3 do
+			Options.onEvent(nil, "TRAIT_NODE_CHANGED")
+		end
+		Options.onEvent(nil, "TRAIT_TREE_CURRENCY_INFO_UPDATED")
+		assert.are.equal(0, calls)
+		mock.runTimers(state)
+		assert.are.equal(1, calls)
+		Options.onEvent(nil, "TRAIT_NODE_CHANGED")
+		mock.runTimers(state)
+		PanelTab.refresh = real
+		assert.are.equal(2, calls)
+	end)
+
+	-- L3.7 item 1: the hide and the chosen path belong to the character that made them.
+	describe("the chip's per-character hide and path (L3.7)", function()
+		local Export, Chip, Prefs, real
+
+		local function becomes(key)
+			Export.characterKey = function()
+				return key
+			end
+		end
+
+		before_each(function()
+			Export, Chip, Prefs = require("Export"), require("Chip"), require("Prefs")
+			real = Export.characterKey
+		end)
+
+		after_each(function()
+			Export.characterKey = real
+		end)
+
+		it("hides one character's chip without hiding another's, and keeps both hides", function()
+			becomes("us/Ashbringer/Main")
+			Options.handle("chip")
+			assert.is_true(Chip.isHidden())
+			becomes("us/Ashbringer/Alt")
+			assert.is_false(Chip.isHidden())
+			Options.handle("chip")
+			assert.is_true(Chip.isHidden())
+			becomes("us/Ashbringer/Main")
+			assert.is_true(Chip.isHidden())
+			Options.handle("chip")
+			assert.is_false(Chip.isHidden())
+			becomes("us/Ashbringer/Alt")
+			assert.is_true(Chip.isHidden())
+		end)
+
+		it("keeps one character's chosen path away from another's", function()
+			becomes("us/Ashbringer/Main")
+			Chip.choosePath("paladin-holy")
+			assert.are.same({ spec = "paladin-holy" }, Chip.chosenPath())
+			becomes("us/Ashbringer/Alt")
+			assert.is_nil(Chip.chosenPath())
+			Chip.choosePath("paladin-retribution")
+			becomes("us/Ashbringer/Main")
+			assert.are.same({ spec = "paladin-holy" }, Chip.chosenPath())
+		end)
+
+		it("moves the old shared slot into its character's entry, once", function()
+			Prefs.set("chip", "hiddenUntilLevel", 70)
+			Prefs.set("chip", "hiddenFor", "us/Ashbringer/Main")
+			Prefs.set("chip", "pathChosen", "paladin-holy")
+			Prefs.set("chip", "pathFor", "us/Ashbringer/Main")
+			becomes("us/Ashbringer/Alt")
+			assert.is_false(Chip.isHidden())
+			assert.is_nil(Chip.chosenPath())
+			becomes("us/Ashbringer/Main")
+			assert.is_true(Chip.isHidden())
+			assert.are.same({ spec = "paladin-holy" }, Chip.chosenPath())
+			assert.are.equal("", Prefs.get("chip", "hiddenFor"))
+			assert.are.equal("", Prefs.get("chip", "pathFor"))
+			assert.are.equal(70, Prefs.get("chip", "byCharacter")["us/Ashbringer/Main"].hiddenUntilLevel)
+		end)
+
+		it("lets the Settings switch bring back this character's chip only", function()
+			becomes("us/Ashbringer/Main")
+			Options.handle("chip")
+			becomes("us/Ashbringer/Alt")
+			Options.handle("chip")
+			require("Settings").apply("chip.shown", true)
+			assert.is_false(Chip.isHidden())
+			becomes("us/Ashbringer/Main")
+			assert.is_true(Chip.isHidden())
+		end)
+	end)
+
 	it("colours text with the client's own gold escape codes", function()
 		local Theme = require("Theme")
 		assert.are.equal("|cff" .. Theme.HEX.gold .. "hello|r", Options.colorGold("hello"))

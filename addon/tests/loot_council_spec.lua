@@ -20,6 +20,7 @@ local function lootData()
 		},
 		weights = { ["hunter-marksmanship"] = { agility = 1 } },
 		dpsPerPoint = { ["hunter-marksmanship"] = { reference = "agility", dps = 0.5, weaponDps = 0, healing = false,
+			[20] = { reference = "agility", dps = 0.5, weaponDps = 0 },
 			[60] = { reference = "agility", dps = 0.5, weaponDps = 0 } } },
 		bis = { ["hunter-marksmanship"] = { [60] = { alliance = { chest = "100|D|Lucifron" } } } },
 		bisNames = { [100] = "Robes of Might" },

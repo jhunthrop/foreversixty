@@ -582,10 +582,12 @@ describe("PanelTab", function()
 			assert.is_truthy(row.name:GetText():find("Mutant Scale Breastplate", 1, true))
 			assert.is_truthy(row.name:GetText():find("|cff", 1, true))
 			assert.are.equal(ItemTooltip.figureText(1.0, "dps"), row.gain:GetText())
-			-- Fix round 3, item 4: the line ends with a muted "· over <worn item>" when it fits.
+			-- L3.7 item 22: "· over <worn item>" is muted in the name line's empty gap (it was the end of
+			-- the source line, where it rarely fitted); the source line is the tooltip's own.
 			assert.are.equal(string.format(L.panelTargetDetail, L.gearSlotLabels.chest,
-				"Wailing Caverns · Mutanus the Devourer · 33% drop") .. "|cff" .. Theme.HEX.muted
-				.. string.format(L.panelTargetOver, "Worn Chest") .. "|r", row.detail:GetText())
+				"Wailing Caverns · Mutanus the Devourer · 33% drop"), row.detail:GetText())
+			assert.is_truthy(row.name:GetText():find("|cff" .. Theme.HEX.muted
+				.. string.format(L.panelTargetOver, "Worn Chest") .. "|r", 1, true))
 		end)
 
 		it("opens the build dialog and the copy from the build region's two buttons", function()
@@ -1032,6 +1034,25 @@ describe("PanelTab", function()
 
 		-- Item 6: frame-level specs for the rotation, last raid and build drawers (review D4).
 		describe("the drawers", function()
+			it("shows a rank on every rotation row that has one, learned or not", function()
+				start()
+				local function subtext(spellId)
+					return spellId == 1 and "Rank 3" or nil
+				end
+				local saved = _G.GetSpellSubtext
+				_G.GetSpellSubtext = subtext
+				local learned = ItemTooltip.stripEscapes(PanelTab.rotationName({ number = 1, name = "Arcane Shot",
+					spellId = 1 }))
+				local later = ItemTooltip.stripEscapes(PanelTab.rotationName({ name = "Multi-Shot", spellId = 1,
+					at = string.format(L.panelRotationAt, 20) }))
+				local rankless = ItemTooltip.stripEscapes(PanelTab.rotationName({ name = "Kill Command", spellId = 2,
+					at = string.format(L.panelRotationAt, 30) }))
+				_G.GetSpellSubtext = saved
+				assert.are.equal("1. Arcane Shot Rank 3", learned)
+				assert.are.equal("Multi-Shot Rank 3 at level 20", later)
+				assert.are.equal("Kill Command at level 30", rankless)
+			end)
+
 			it("draws the rotation: number, name and rank, the condition under it, a later one muted", function()
 				open({ chest = WORN_CHEST })
 				local first, later = PanelTab.rotationWidgets[1], PanelTab.rotationWidgets[2]
@@ -1040,7 +1061,9 @@ describe("PanelTab", function()
 				assert.are.equal("Rend kept up.", first.condition:GetText())
 				assert.are.same(rgb("body"), colorOf(first.name))
 				assert.is_false(mock.lastCall(first.icon, "SetDesaturated")[1])
-				assert.are.equal("Execute " .. string.format(L.panelRotationAt, 24),
+				-- L3.7 item 25: a row not learned yet keeps its rank beside "at level N" (Multi-Shot
+				-- showed none), so every row that has one shows it.
+				assert.are.equal("Execute Rank 2 " .. string.format(L.panelRotationAt, 24),
 					ItemTooltip.stripEscapes(later.name:GetText()))
 				assert.are.same(rgb("muted"), colorOf(later.name))
 				assert.is_true(mock.lastCall(later.icon, "SetDesaturated")[1])
@@ -1465,6 +1488,62 @@ describe("PanelTab", function()
 				assert.are.equal(15, PanelTab.pointsAllowed(PLAN, 24))
 			end)
 
+			-- L3.7 item 27: below level 10 no point is allowed yet, and "0 of 0 points on plan" is no
+			-- line at all.
+			it("names the next planned point and its level for the off-plan hover", function()
+				start()
+				local region = PanelTab.buildRegion(BUILD, DATA, { [1] = { ["1:1"] = 2, ["1:2"] = 1 } }, 24)
+				assert.is_not_nil(region.nextPoint)
+				assert.are.equal("C", region.nextPoint.name)
+				assert.is_number(region.nextPoint.level)
+				assert.are.same({ Theme.inlineColor("warning", region.offPlan),
+					Theme.inlineColor("tooltipText", region.offPlanTalents[1]),
+					Theme.inlineColor("tooltipMuted", L.panelOffPlanAction),
+					Theme.inlineColor("tooltipText", string.format(L.panelOffPlanNext, region.nextPoint.level, "C")) },
+					PanelTab.offPlanHint(region))
+				-- Nothing to take next: the action line alone.
+				local done = PanelTab.buildRegion(BUILD, DATA, { [1] = { ["1:1"] = 3, ["1:2"] = 1 }, [2] = { ["1:1"] = 1 } }, 24)
+				assert.is_nil(done.nextPoint)
+			end)
+
+			it("has no progress line below level 10, where no point is allowed", function()
+				start()
+				local region = PanelTab.buildRegion(PLAN, DATA, RANKS, 8)
+				assert.is_nil(region.progress)
+				assert.are.equal(string.format(L.panelPlanSplit, "Arms 30 / Fury 21"), region.split)
+				-- One line shorter than the same plan at 24 (both carry the off-plan line).
+				assert.are.equal(PanelTab.regionHeight(PanelTab.buildRegion(PLAN, DATA, RANKS, 24)) - PanelTab.lineHeight(),
+					PanelTab.regionHeight(region))
+			end)
+
+			-- L3.7 item 21: the panel counts the talent window's staged clicks, so "N of M on plan"
+			-- follows what the player is about to commit, with a muted "(staged)" while they differ.
+			it("counts the staged clicks and says (staged) while they differ from the committed", function()
+				start()
+				local committed = PanelTab.buildRegion(PLAN, DATA, RANKS, 24, false)
+				local staged = PanelTab.buildRegion(PLAN, DATA, { [1] = { ["1:1"] = 13 }, [2] = { ["1:1"] = 2 } }, 24, true)
+				assert.are.equal("12 of 15 points on plan", committed.progress)
+				assert.is_nil(committed.staged)
+				assert.are.equal("15 of 15 points on plan (staged)", staged.progress)
+				assert.are.equal(L.panelStaged, "(staged)")
+				assert.is_true(staged.staged)
+			end)
+
+			it("reads the staged ranks for the build region through the chip's own reader", function()
+				start()
+				local Talents = require("Talents")
+				local real = Talents.readStagedRanks
+				Talents.readStagedRanks = function()
+					return { [1] = { ["1:1"] = 5, ["1:2"] = 1 }, [2] = { ["1:1"] = 1 } }, true
+				end
+				local region = PanelTab.inputs(DATA).build
+				Talents.readStagedRanks = real
+				assert.is_truthy(region.progress:find(L.panelStaged, 1, true))
+				assert.is_true(region.staged)
+				-- Committed otherwise: the ranks the talents mock holds, nothing staged.
+				assert.is_nil(PanelTab.inputs(DATA).build.staged)
+			end)
+
 			it("caps the points allowed at the plan's own total: 51 at 60", function()
 				start()
 				assert.are.equal("12 of 51 points on plan", PanelTab.buildRegion(PLAN, DATA, RANKS, 60).progress)
@@ -1482,10 +1561,13 @@ describe("PanelTab", function()
 				local region = PanelTab.buildRegion(BUILD, DATA, ranks, 24)
 				assert.are.equal(string.format(L.panelOffPlan, 3), region.offPlan)
 				assert.are.same({
-					string.format(L.panelOffPlanTalent, "B", "Arms", 1, 1),
-					string.format(L.panelOverPlanTalent, "C", "Fury", 3, 5, 1),
+					string.format(L.panelOffPlanTalent, "B", "Arms", 1, 1, 1),
+					string.format(L.panelOverPlanTalent, "C", "Fury", 2, 3, 5, 1),
 				}, region.offPlanTalents)
-				assert.are.same({ "B · Arms · Rank 1/1", "C · Fury · Rank 3/5 (plan 1)" }, region.offPlanTalents)
+				-- L3.7 item 27: the numbers a line leads with sum to the count (1 + 2 = 3 off plan): the
+				-- over-plan line counts the points over the plan, not the rank held.
+				assert.are.same({ "B · Arms · 1 off plan (Rank 1/1)", "C · Fury · 2 off plan (Rank 3/5, plan 1)" },
+					region.offPlanTalents)
 				assert.is_nil(PanelTab.buildRegion(BUILD, DATA, { [1] = { ["1:1"] = 3 }, [2] = { ["1:1"] = 1 } },
 					24).offPlanTalents)
 			end)
@@ -1502,10 +1584,24 @@ describe("PanelTab", function()
 				hover:GetScript("OnEnter")(hover)
 				local lines = tooltip()
 				assert.are.equal(Theme.inlineColor("warning", entry.offPlan), lines[1])
-				assert.are.equal(1 + #entry.offPlanTalents, #lines)
 				for index, text in ipairs(entry.offPlanTalents) do
 					assert.are.equal(Theme.inlineColor("tooltipText", text), lines[index + 1])
 				end
+				-- L3.7 item 23: what to do about it, then when the next planned point arrives.
+				local after = 1 + #entry.offPlanTalents
+				assert.are.equal(Theme.inlineColor("tooltipMuted", L.panelOffPlanAction), lines[after + 1])
+				assert.are.equal("Not in your plan. A respec moves them.", L.panelOffPlanAction)
+				if entry.nextPoint ~= nil then
+					assert.are.equal(Theme.inlineColor("tooltipText", string.format(L.panelOffPlanNext,
+						entry.nextPoint.level, entry.nextPoint.name)), lines[after + 2])
+					assert.are.equal(after + 2, #lines)
+				else
+					assert.are.equal(after + 1, #lines)
+				end
+				-- Beside the flyout, never over the Build lines the cursor is on.
+				local owner = mock.lastCall(_G.GameTooltip, "SetOwner")
+				assert.are.equal(PanelTab.flyout, owner[1])
+				assert.are.equal("ANCHOR_RIGHT", owner[2])
 				hover:GetScript("OnLeave")(hover)
 				assert.is_false(_G.GameTooltip:IsShown())
 				-- None off plan: no line and no hover.
@@ -1651,33 +1747,38 @@ describe("PanelTab", function()
 				assert.is_false(row.ground:IsShown())
 			end)
 
-			it("ends the source line with a muted over <worn item> when it fits, dropped first when not", function()
+			-- L3.7 item 22: the name line's empty gap carries "· over <worn item>" in the muted
+			-- token; short of room its worn name is cut with an ellipsis first, and the target's
+			-- own name is never cut for it.
+			it("puts a muted over <worn item> in the name line's gap, its worn name ellipsised first", function()
 				start()
-				local pick = { source = "The Deadmines: Captain Greenskin", kind = "D", chance = 0.3 }
-				local entry = { slot = "waist", source = ItemTooltip.sourceLine(pick), pick = pick, worn = "Short Ash Bow" }
-				local over = "|cff" .. Theme.HEX.muted .. string.format(L.panelTargetOver, "Short Ash Bow") .. "|r"
-				local whole = "Waist · The Deadmines · Captain Greenskin · 30% drop"
-				assert.are.equal(" · over Short Ash Bow", string.format(L.panelTargetOver, "Short Ash Bow"))
-				assert.are.equal(whole .. over, PanelTab.detailText(entry, "Waist"))
+				local entry = { name = "Cord of the Wild", hex = "1eff00", worn = "Short Ash Bow", slot = "waist" }
 				local function sixPerByte(text)
 					return #ItemTooltip.stripEscapes(text) * 6
 				end
-				local room = sixPerByte(whole .. over)
-				assert.are.equal(whole .. over, PanelTab.detailText(entry, "Waist", sixPerByte, room))
-				-- One unit short: the "over" goes first, the chance stays.
-				assert.are.equal(whole, PanelTab.detailText(entry, "Waist", sixPerByte, room - 1))
-				-- Narrower: the tooltip's own shortening, never wider than the room.
-				local narrow = PanelTab.detailText(entry, "Waist", sixPerByte, sixPerByte(whole) - 6)
-				assert.is_nil(narrow:find("over", 1, true))
-				assert.is_true(sixPerByte(narrow) <= sixPerByte(whole) - 6)
+				local name = "|cff1eff00Cord of the Wild|r"
+				local over = "|cff" .. Theme.HEX.muted .. string.format(L.panelTargetOver, "Short Ash Bow") .. "|r"
+				assert.are.equal(" · over Short Ash Bow", string.format(L.panelTargetOver, "Short Ash Bow"))
+				assert.are.equal(name .. over, PanelTab.nameLine(entry))
+				local room = sixPerByte(name .. over)
+				assert.are.equal(name .. over, PanelTab.nameLine(entry, sixPerByte, room))
+				-- One character short: the worn name takes an ellipsis, the target's name stays whole.
+				local cut = PanelTab.nameLine(entry, sixPerByte, room - 6)
+				assert.is_truthy(cut:find("Cord of the Wild", 1, true))
+				assert.is_truthy(cut:find(L.tooltipNamePending, 1, true))
+				assert.is_truthy(cut:find("Short Ash", 1, true))
+				assert.is_true(sixPerByte(cut) <= room - 6)
+				-- Not enough room for even a few letters of it: the name alone.
+				assert.are.equal(name, PanelTab.nameLine(entry, sixPerByte, sixPerByte(name) + 6 * 14))
+				-- A bag row (its own lead) names no worn item.
+				assert.is_nil(PanelTab.nameLine({ name = "Bag Chest", worn = "X", bag = true }):find("over", 1, true))
 			end)
 
-			it("draws the worn item's name at the end of a target row's source line", function()
-				open({ chest = WORN_CHEST })
-				local row = PanelTab.targetRows[1]
-				assert.are.equal(string.format(L.panelTargetDetail, L.gearSlotLabels.chest,
-					"Wailing Caverns · Mutanus the Devourer · 33% drop") .. "|cff" .. Theme.HEX.muted
-					.. string.format(L.panelTargetOver, "Worn Chest") .. "|r", row.detail:GetText())
+			it("leaves the source line to the tooltip's own words, with no over", function()
+				start()
+				local pick = { source = "The Deadmines: Captain Greenskin", kind = "D", chance = 0.3 }
+				local entry = { slot = "waist", source = ItemTooltip.sourceLine(pick), pick = pick, worn = "Short Ash Bow" }
+				assert.are.equal("Waist · The Deadmines · Captain Greenskin · 30% drop", PanelTab.detailText(entry, "Waist"))
 			end)
 
 			it("lights a rotation row's hover ground the same way", function()
@@ -1725,8 +1826,14 @@ describe("PanelTab", function()
 			it("draws the at-level rows at the dim alpha, icon, name and condition, still last and unnumbered", function()
 				open({ chest = WORN_CHEST })
 				local learned, later = PanelTab.rotationWidgets[1], PanelTab.rotationWidgets[2]
-				for _, key in ipairs({ "icon", "name", "condition" }) do
+				for _, key in ipairs({ "icon", "condition" }) do
 					assert.are.equal(Theme.ALPHA.dim, mock.lastCall(later[key], "SetAlpha")[1], key)
+				end
+				-- L3.7 item 24: the name is lifted to the muted token at full alpha (dimmed again it
+				-- was too dark to read); only the icon and the condition stay dim.
+				assert.are.equal(1, mock.lastCall(later.name, "SetAlpha")[1])
+				assert.are.same(rgb("muted"), colorOf(later.name))
+				for _, key in ipairs({ "icon", "name", "condition" }) do
 					assert.are.equal(1, mock.lastCall(learned[key], "SetAlpha")[1], key)
 				end
 				local rows = regionOf(PanelTab.last, "rotation").rows
@@ -1743,7 +1850,7 @@ describe("PanelTab", function()
 				open({ chest = WORN_CHEST, legs = THIN_LEGS })
 				local S = Theme.SIZES
 				local region = PanelTab.regionFrames.targets
-				assert.are.equal("Other slots are best for your level.", L.panelTargetsRest)
+				assert.are.equal("Nothing better for your level in other slots.", L.panelTargetsRest)
 				assert.is_true(region.rest:IsShown())
 				assert.are.equal(L.panelTargetsRest, region.rest:GetText())
 				assert.are.same(rgb("muted"), colorOf(region.rest))

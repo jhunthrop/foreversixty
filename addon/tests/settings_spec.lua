@@ -61,8 +61,8 @@ describe("SettingsPage, the switches", function()
 			{ "Show the minimap button", "Left-click pastes or copies a build; right-click opens this page. "
 				.. "Off: type /fs options or use Options > AddOns." },
 			{ "Gear tips on item tooltips",
-				"Adds a line to item tooltips: is it in your build, and does it beat what you wear. "
-				.. "Off: also hides the score on player tooltips." },
+				"Adds a line to item tooltips: in your build, and better than what you wear. "
+				.. "Off: hides player scores too." },
 			{ "Score badges in chat",
 				"Shows a player's Forever Score before their message in LFG, Trade, guild chat and whispers." },
 			{ "Share my build with my guild",
@@ -349,6 +349,32 @@ describe("SettingsPage, the data lines", function()
 		end
 	end)
 
+	-- L3.7 item 2: a global that is not a table is broken or missing, not "too old".
+	it("says broken or missing for a data global that is not a table", function()
+		local text, tone = words(SettingsPage.ratingsLine({ available = false, broken = true,
+			reason = L.ratingsBroken }))
+		assert.are.equal("Player ratings (on player tooltips): broken or missing. Get Forever Sixty Data at "
+			.. "foreversixty.gg.", text)
+		assert.are.equal("warning", tone)
+		_G.ForeverSixtyData = "garbage"
+		assert.are.equal(L.settingsRatingsBroken, words(SettingsPage.ratingsLine(require("Score").status())))
+		_G.ForeverSixtyData = nil
+	end)
+
+	-- L3.7 item 38: too old carries its patch when the data carries its build.
+	it("dates too-old ratings by the patch of the data's build, when it has one", function()
+		local dated = { available = true, stale = true, build = "1.60.1.69893" }
+		assert.are.equal("Player ratings (on player tooltips): too old (patch 1.60.1). Get the new Forever Sixty "
+			.. "Data at foreversixty.gg.", words(SettingsPage.ratingsLine(dated)))
+		dated = { available = false, reason = L.ratingsUnreadable, build = "1.59.0.100" }
+		assert.are.equal(string.format(L.settingsRatingsOldDated, "1.59.0"), words(SettingsPage.ratingsLine(dated)))
+		for _, build in ipairs({ "", 5 }) do
+			assert.are.equal(L.settingsRatingsOld,
+				words(SettingsPage.ratingsLine({ available = true, stale = true, build = build })))
+		end
+		assert.are.equal(L.settingsRatingsOld, words(SettingsPage.ratingsLine({ available = true, stale = true })))
+	end)
+
 	it("keeps each data sentence in one Locale string", function()
 		assert.are.same({
 			"Addon data: current for this patch",
@@ -383,8 +409,10 @@ describe("SettingsPage, the data lines", function()
 		assert.is_nil(SettingsPage.warningLine(nil, fresh))
 		assert.is_nil(SettingsPage.warningLine(current, absent))
 		assert.is_nil(SettingsPage.warningLine(nil, absent))
-		assert.are.equal(L.settingsAddonDataOlder, SettingsPage.warningLine(older, stale))
+		assert.are.equal(L.settingsAddonDataOlder .. L.settingsAlsoOld, SettingsPage.warningLine(older, stale))
 		assert.are.equal(L.settingsAddonDataOlder, SettingsPage.warningLine(older, absent))
+		assert.are.equal(L.settingsAddonDataOlder, SettingsPage.warningLine(older, fresh))
+		assert.are.equal(L.settingsAddonDataOlder, SettingsPage.warningLine(older, newer))
 		assert.are.equal(L.settingsRatingsOld, SettingsPage.warningLine(current, stale))
 		assert.are.equal(L.settingsRatingsNewer, SettingsPage.warningLine(nil, newer))
 	end)
@@ -401,9 +429,9 @@ describe("SettingsPage, the data lines", function()
 			SettingsPage.lineText(ratings))
 	end)
 
-	it("prints no build number on any line", function()
+	it("prints no build number on any line without a dated build behind it", function()
 		for _, line in ipairs({ L.settingsAddonDataCurrent, L.settingsAddonDataOlder, L.settingsRatingsCurrent,
-			L.settingsRatingsOld, L.settingsRatingsNewer, L.settingsRatingsMissing }) do
+			L.settingsRatingsOld, L.settingsRatingsNewer, L.settingsRatingsMissing, L.settingsRatingsBroken }) do
 			assert.is_nil(line:find("%d"), line)
 		end
 	end)
@@ -458,6 +486,37 @@ describe("SettingsPage, the layout", function()
 		assert.is_true(warned.rows[1] < warned.warning)
 		assert.are.equal(plain.rows[1] - S.settingsLine, warned.rows[1])
 		assert.are.equal(plain.height + S.settingsLine, warned.height)
+	end)
+
+	-- L3.7 item 39: the warning line takes the height it was measured at, never a fixed 18 px.
+	it("gives the warning line its measured height, never less than one line", function()
+		local S = Theme.SIZES
+		local plain, two = SettingsPage.layout(600, nil, true), SettingsPage.layout(600, nil, 2 * S.settingsLine)
+		assert.are.equal(plain.rows[1] - S.settingsLine, two.rows[1])
+		assert.are.equal(plain.height + S.settingsLine, two.height)
+		assert.are.same(plain, SettingsPage.layout(600, nil, 4))
+		assert.is_nil(SettingsPage.layout(600, nil, false).warning)
+	end)
+
+	-- L3.7 item 37: "tooltips." must not end a wrapped hint on its own line at the page's width.
+	it("trims the Gear-tips hint so no line of it is one orphaned word at the settings width", function()
+		local S = Theme.SIZES
+		local width = S.settingsWidth - S.settingsHintInset - S.padding
+		-- The 10 px small font averages 4.3 to 5 px a character; the greedy wrap of the client's.
+		for _, perCharacter in ipairs({ 4.3, 4.5, 4.7, 5 }) do
+			local lines, current = {}, ""
+			for word in require("Locale").settingsTooltipHint:gmatch("%S+") do
+				local try = current == "" and word or (current .. " " .. word)
+				if #try * perCharacter > width and current ~= "" then
+					lines[#lines + 1] = current
+					current = word
+				else
+					current = try
+				end
+			end
+			lines[#lines + 1] = current
+			assert.is_falsy(#lines > 1 and lines[#lines]:match("^%S+$"), perCharacter)
+		end
 	end)
 
 	-- Fix round 2, item 5b: a cut at the foot never lands on text.

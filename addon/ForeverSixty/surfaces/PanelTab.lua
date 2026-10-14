@@ -339,9 +339,10 @@ function PanelTab.offPlanTalents(build, ranks, data)
 		if talent ~= nil and tree ~= nil then
 			local most = tonumber(talent.maxRank) or cell.have
 			if cell.want ~= nil then
-				lines[#lines + 1] = string.format(L.panelOverPlanTalent, talent.name, tree, cell.have, most, cell.want)
+				lines[#lines + 1] = string.format(L.panelOverPlanTalent, talent.name, tree, cell.have - cell.want,
+					cell.have, most, cell.want)
 			else
-				lines[#lines + 1] = string.format(L.panelOffPlanTalent, talent.name, tree, cell.have, most)
+				lines[#lines + 1] = string.format(L.panelOffPlanTalent, talent.name, tree, cell.have, cell.have, most)
 			end
 		end
 	end
@@ -353,7 +354,7 @@ end
 --- (PanelTab.pointsAllowed: "12 of 15" at 24, "N of 51" at 60) and "K off plan" (absent at
 --- none), both from Progress.build, with the off-plan talents for its hover
 --- (PanelTab.offPlanTalents). nil with no build.
-function PanelTab.buildRegion(build, data, ranks, level)
+function PanelTab.buildRegion(build, data, ranks, level, staged)
 	if build == nil then
 		return nil
 	end
@@ -362,12 +363,31 @@ function PanelTab.buildRegion(build, data, ranks, level)
 	local split = BuildDialog.split(build, data)
 	local allowed = PanelTab.pointsAllowed(build, level)
 	local offPlan = progress.offPlan > 0
+	-- No progress line while no point is allowed yet (below level 10: not "0 of 0", L3.7 item 27).
+	local line
+	if allowed > 0 then
+		line = string.format(L.panelProgress, math.min(progress.matched, allowed), allowed)
+		if staged then
+			line = line .. " " .. L.panelStaged
+		end
+	end
+	-- The plan's next point and the level it arrives at, for the off-plan hover (L3.7 item 23).
+	local nextPoint
+	if offPlan and progress.point ~= nil and progress.nextLevel ~= nil then
+		local talent = Talents.cellOf(data, build.classSlug, progress.point.tab, progress.point.tier,
+			progress.point.column)
+		if talent ~= nil and talent.name ~= nil then
+			nextPoint = { level = progress.nextLevel, name = talent.name }
+		end
+	end
 	return {
 		kind = "build",
 		split = split ~= "" and string.format(L.panelPlanSplit, split) or nil,
-		progress = string.format(L.panelProgress, math.min(progress.matched, allowed), allowed),
+		progress = line,
+		staged = staged and true or nil,
 		offPlan = offPlan and string.format(L.panelOffPlan, progress.offPlan) or nil,
 		offPlanTalents = offPlan and PanelTab.offPlanTalents(build, ranks, data) or nil,
+		nextPoint = nextPoint,
 	}
 end
 
@@ -533,7 +553,9 @@ local function buildLines(entry)
 	if entry.split ~= nil then
 		lines[#lines + 1] = { text = entry.split, color = "body" }
 	end
-	lines[#lines + 1] = { text = entry.progress, color = "muted" }
+	if entry.progress ~= nil then
+		lines[#lines + 1] = { text = entry.progress, color = "muted" }
+	end
 	if entry.offPlan ~= nil then
 		lines[#lines + 1] = { text = entry.offPlan, color = "warning" }
 	end
@@ -681,16 +703,9 @@ end
 --- tooltip's own source line>", shortened as the tooltip shortens its source line
 --- (ItemTooltip.fitSource: the chance goes, then the place, never the boss); where even that
 --- would need a second row, cut by width with an ellipsis. Whole with nothing to measure with.
---- Fix round 3, item 4: a pick's line ends with a muted " · over <worn item>" when the whole
---- line fits; it is the first thing dropped, before the chance, and never cut or widened.
+--- The worn item it replaces is no longer on this line: it sits in the name line's gap
+--- (PanelTab.nameLine, L3.7 item 22).
 function PanelTab.detailText(entry, slotWord, measure, room)
-	if entry.source ~= nil and entry.worn ~= nil and not entry.bag then
-		local whole = string.format(L.panelTargetDetail, slotWord, entry.source) .. "|cff" .. Theme.HEX.muted
-			.. string.format(L.panelTargetOver, entry.worn) .. "|r"
-		if ItemTooltip.fitPlain(whole, measure, room) == whole then
-			return whole
-		end
-	end
 	if entry.source == nil then
 		return ItemTooltip.fitPlain(slotWord, measure, room)
 	end
@@ -704,7 +719,42 @@ function PanelTab.detailText(entry, slotWord, measure, room)
 	return ItemTooltip.fitPlain(string.format(L.panelTargetDetail, slotWord, entry.source), measure, room)
 end
 
---- A rotation row's first line: "1." muted, the name, the rank (or "at level N") muted.
+--- A target's name line: the name in its quality colour (a bag row's lead before it) and, in
+--- the gap before the gain, a muted " · over <worn item>" (L3.7 item 22). Short of room the worn
+--- name is cut with an ellipsis first, down to a few letters; short of that, or when the target's
+--- own name alone fills the room, it is the name alone (cut by measured width as before), never
+--- widened. Whole with nothing to measure with.
+function PanelTab.nameLine(entry, measure, room)
+	local name = (entry.hex == nil) and (entry.name or "") or ("|cff" .. entry.hex .. (entry.name or "") .. "|r")
+	if entry.bag then
+		name = "|cff" .. Theme.HEX.muted .. L.panelInYourBags .. "|r " .. name
+	end
+	if entry.worn == nil or entry.bag then
+		return ItemTooltip.fitPlain(name, measure, room)
+	end
+	local function over(worn)
+		return name .. "|cff" .. Theme.HEX.muted .. string.format(L.panelTargetOver, worn) .. "|r"
+	end
+	if type(measure) ~= "function" or type(room) ~= "number" then
+		return over(entry.worn)
+	end
+	local function fits(text)
+		local width = measure(text)
+		return type(width) ~= "number" or width <= room
+	end
+	if fits(name) then
+		local text = ItemTooltip.shorten(over, entry.worn, fits, PanelTab.MIN_OVER_LETTERS)
+		if fits(text) then
+			return text
+		end
+	end
+	return ItemTooltip.fitPlain(name, measure, room)
+end
+
+--- The fewest letters of the worn item's name an "over" keeps before it is dropped.
+PanelTab.MIN_OVER_LETTERS = 4
+
+--- A rotation row's first line: "1." muted, the name, the rank and "at level N" muted.
 function PanelTab.rotationName(entry)
 	local function muted(text)
 		return "|cff" .. Theme.HEX.muted .. text .. "|r"
@@ -714,9 +764,13 @@ function PanelTab.rotationName(entry)
 		parts[#parts + 1] = muted(string.format(L.panelRotationNumber, entry.number))
 	end
 	parts[#parts + 1] = entry.name or ""
-	local rank = entry.at or Compat.spellSubtext(entry.spellId)
+	-- A rank on every row that has one, the ones not learned yet too (L3.7 item 25).
+	local rank = Compat.spellSubtext(entry.spellId)
 	if type(rank) == "string" and rank ~= "" then
 		parts[#parts + 1] = muted(rank)
+	end
+	if entry.at ~= nil then
+		parts[#parts + 1] = muted(entry.at)
 	end
 	return table.concat(parts, " ")
 end
@@ -745,11 +799,18 @@ function PanelTab.buttonHint()
 end
 
 --- The off-plan count's hover (fix round 3, item 1): the count in the warning colour, then
---- each off-plan talent (PanelTab.offPlanTalents), one a line.
+--- each off-plan talent (PanelTab.offPlanTalents), one a line, then the action line and the
+--- plan's next point (L3.7 item 23).
 function PanelTab.offPlanHint(entry)
 	local lines = { Theme.inlineColor("warning", entry.offPlan or "") }
 	for _, text in ipairs(entry.offPlanTalents or {}) do
 		lines[#lines + 1] = Theme.inlineColor("tooltipText", text)
+	end
+	-- What to do about them, and when the plan's next point arrives (L3.7 item 23).
+	lines[#lines + 1] = Theme.inlineColor("tooltipMuted", L.panelOffPlanAction)
+	if entry.nextPoint ~= nil then
+		lines[#lines + 1] = Theme.inlineColor("tooltipText",
+			string.format(L.panelOffPlanNext, entry.nextPoint.level, entry.nextPoint.name))
 	end
 	return lines
 end
@@ -773,6 +834,9 @@ function PanelTab.inputs(data, measure, width)
 	local base = ItemTooltip.baseContext(data)
 	local level = Chip.level()
 	local ranks = Talents.readRanks(data)
+	-- The build region counts the talent window's staged clicks, as the chip and the marks do
+	-- (L3.7 item 21): "N of M on plan" follows what the player is about to commit.
+	local stagedRanks, staged = Talents.readStagedRanks(data)
 	local build = Follow.build
 	local targets, waiting = PanelTab.targets(base, function(link)
 		return ItemTooltip.sectionFor(link, base)
@@ -788,7 +852,7 @@ function PanelTab.inputs(data, measure, width)
 		targets = targets,
 		waiting = waiting,
 		rotation = PanelTab.rotationRows(data, build, ranks, level, measure, width),
-		build = PanelTab.buildRegion(build, data, ranks, level),
+		build = PanelTab.buildRegion(build, data, stagedRanks, level, staged),
 		sim = PanelTab.simRegion(current, simResult, level, Export.simRequest ~= nil),
 		raid = PanelTab.raidRegion(newestMessage("last_raid"), level),
 	}
@@ -964,14 +1028,6 @@ local function sized(region, width, lines)
 	return region
 end
 
---- `name` in its quality colour (`hex`), else the body colour.
-local function colored(name, hex)
-	if hex == nil then
-		return name or ""
-	end
-	return "|cff" .. hex .. (name or "") .. "|r"
-end
-
 --- The row icon's texture, and its size set again with it (fix round 1, item 1).
 local function setIcon(icon, path)
 	icon:SetTexture(path or Theme.UNKNOWN_ICON)
@@ -1102,11 +1158,7 @@ local function drawTargets(region, model)
 		row.frame:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -y)
 		row.frame:SetHeight(PanelTab.targetRowHeight())
 		setIcon(row.icon, Compat.itemIcon(entry.itemId))
-		local name = colored(entry.name, entry.hex)
-		if entry.bag then
-			name = "|cff" .. Theme.HEX.muted .. L.panelInYourBags .. "|r " .. name
-		end
-		row.name:SetText(fitted(name, PanelTab.nameRoom()))
+		row.name:SetText(PanelTab.nameLine(entry, PanelTab.measure, PanelTab.nameRoom()))
 		row.gain:SetText(ItemTooltip.figureText(entry.gain, entry.unit))
 		row.detail:SetText(PanelTab.detailText(entry, BuildDialog.slotWord(entry.slot, _G), PanelTab.measure, room))
 		row.frame:Show()
@@ -1176,9 +1228,12 @@ local function drawRotation(region, model)
 		widget.condition:SetText(entry.condition or "")
 		-- A row not learned yet is dimmed whole: icon, name and condition (fix round 3, item 5).
 		local alpha = entry.muted and Theme.ALPHA.dim or 1
-		for _, part in ipairs({ widget.icon, widget.name, widget.condition }) do
+		for _, part in ipairs({ widget.icon, widget.condition }) do
 			part:SetAlpha(alpha)
 		end
+		-- The name is lifted to the muted token at full alpha: dimmed as well it was unreadable
+		-- (L3.7 item 24).
+		widget.name:SetAlpha(1)
 		widget.frame:Show()
 		y = y + height
 	end
@@ -1272,7 +1327,8 @@ local function regionFrame(flyout, kind)
 		hover:EnableMouse(true)
 		hover:SetScript("OnEnter", function(self)
 			if self.lines ~= nil then
-				Theme.showLines(self, self.lines, "ANCHOR_RIGHT")
+				-- Beside the flyout (its owner), never over the Build lines under the cursor.
+				Theme.showLines(PanelTab.flyout or self, self.lines, "ANCHOR_RIGHT")
 			end
 		end)
 		hover:SetScript("OnLeave", function()
@@ -1470,6 +1526,25 @@ function PanelTab.refresh(data)
 			PanelTab.stale = true
 		end
 	end)
+end
+
+--- A click staged in the talent window (TRAIT_NODE_CHANGED and its kin fire once per node
+--- touched): one redraw on the next frame however many arrive, now on a client that cannot
+--- wait. The build region counts staged clicks (L3.7 item 21).
+function PanelTab.requestRefresh(data)
+	if PanelTab.refreshPending then
+		return false
+	end
+	PanelTab.refreshPending = true
+	local waiting = Theme.after(0, function()
+		PanelTab.refreshPending = false
+		PanelTab.refresh(data)
+	end)
+	if not waiting then
+		PanelTab.refreshPending = false
+		PanelTab.refresh(data)
+	end
+	return true
 end
 
 --- The button's show script (it shows with the pane): the button placed again (a tab may have

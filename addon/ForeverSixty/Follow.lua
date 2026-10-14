@@ -206,7 +206,8 @@ end
 
 --- A character with no build saved in any slot follows the data's default for its spec
 --- (`data.defaultBuilds[<spec>]`, contract 1): leveling, raid at RAID_LEVEL. The spec is
---- Gear.specOf's, which is the class's first tree with no points spent. The build is marked
+--- Gear.specOf's, which is the tree with the most points (a tie, or none spent, the first tree;
+--- a tree split into cat and bear, the one the points fit). The build is marked
 --- `default = true` and named from the data, and nothing is saved: it is worked out again at
 --- each login, so a data update replaces it. `character` ({ classSlug, ranks, level, spec })
 --- is read from the client for any field it leaves out. `spec`, when given, is the spec the

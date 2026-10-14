@@ -620,6 +620,42 @@ function Progress.bagUpgrades(data, build, ranks, bagLinks, equipped, dpsPerPoin
 	return found
 end
 
+--- The second hand of a swap that takes a worn two-hander off (L3.7 item 11): a one-hander
+--- `hovered` for the main hand and the best one-hand weapon among `bagLinks` for the off hand
+--- (`canOffHand(item)`, optional, says the class may wear it there), against the two-hander
+--- `wornMain`. { item, delta, state, unit }: the partner as Progress.bagUpgrades describes it,
+--- and the pair's verdict in Progress.weaponVerdict's terms (delta is the two-hander minus the
+--- pair, so a pair that gains is negative). nil with no weights, no stats to score, or no partner.
+function Progress.pairPartner(hovered, wornMain, bagLinks, weights, dpsPerPoint, weapon, canOffHand)
+	if weights == nil or type(hovered) ~= "table" or type(wornMain) ~= "table" or wornMain.equipLoc ~= TWO_HANDED
+		or not hasAnyStat(hovered.stats) then
+		return nil
+	end
+	local best, bestScore
+	for _, raw in ipairs(bagLinks or {}) do
+		local item = describe(raw)
+		local oneHand = item.equipLocation == "INVTYPE_WEAPON" or item.equipLocation == "INVTYPE_WEAPONOFFHAND"
+		if oneHand and item.itemId ~= hovered.itemId and hasAnyStat(item.stats)
+			and (canOffHand == nil or canOffHand(item)) then
+			local value = Progress.itemScore(item.stats, weights, "off_hand", weapon)
+			if best == nil or value > bestScore then
+				best, bestScore = item, value
+			end
+		end
+	end
+	if best == nil then
+		return nil
+	end
+	local delta = Progress.itemScore(wornMain.stats, weights, "main_hand", weapon)
+		- Progress.itemScore(hovered.stats, weights, "main_hand", weapon) - bestScore
+	return {
+		item = best,
+		delta = inUnit(delta, dpsPerPoint),
+		state = delta > 0 and "better" or "behind",
+		unit = dpsPerPoint ~= nil and "dps" or "score",
+	}
+end
+
 --- Whether a pick's `source` ("The Deadmines: Gilnid", or just "The
 --- Deadmines") drops in the instance named `instanceName`.
 local function dropsIn(source, instanceName)
@@ -759,7 +795,9 @@ end
 --- A target's stats: the client's (`statsOf(itemId)`, Gear.itemStatsOf by default), else a
 --- weapon's own DPS from the data (Data.bisDps) until the client's arrive (`standIn(itemId)`,
 --- optional, is told: the hover redraws when they do). The client's answer (nil or empty) with
---- neither: unscored.
+--- neither: unscored. The second answer is true for the data's stand-in: only the weapon's own
+--- term, so a gain from it is a lower bound and a surface that prints one withholds it
+--- ("stats pending", L3.7 item 6).
 function Progress.pickStats(data, statsOf, itemId, standIn)
 	local stats = (statsOf or Gear.itemStatsOf)(itemId)
 	if hasAnyStat(stats) then
@@ -770,7 +808,7 @@ function Progress.pickStats(data, statsOf, itemId, standIn)
 		if standIn ~= nil then
 			standIn(itemId)
 		end
-		return { weapon_dps = bisDps[itemId] }
+		return { weapon_dps = bisDps[itemId] }, true
 	end
 	return stats
 end

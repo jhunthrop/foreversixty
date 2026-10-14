@@ -253,9 +253,68 @@ function Gear.score(stats, weights)
 	return total
 end
 
---- The spec key: the tree with the most points, ties to the first tree.
---- Design "Stat weights" states exactly this rule; the site's own spec
---- derivation uses it too, so a build reads the same in both places.
+--- Whether the data names `slug` as a spec: it has a default build or weights for it.
+local function namedSpec(data, slug)
+	return (type(data.defaultBuilds) == "table" and data.defaultBuilds[slug] ~= nil)
+		or (type(data.weights) == "table" and data.weights[slug] ~= nil)
+end
+
+--- How many of a default build's planned ranks the character already has: per cell, the lesser
+--- of the ranks taken and the ranks the build's order plans (the leveling and the raid order
+--- both), summed. `ranks` is { [tab] = { ["tier:column"] = rank } }.
+local function overlap(builds, ranks)
+	local total = 0
+	for _, kind in ipairs({ "leveling", "raid" }) do
+		local planned = {}
+		for _, cell in ipairs(type(builds[kind]) == "table" and builds[kind].order or {}) do
+			local key = tostring(cell[1]) .. ":" .. tostring(cell[2]) .. ":" .. tostring(cell[3])
+			planned[key] = (planned[key] or 0) + 1
+			local taken = type((ranks or {})[cell[1]]) == "table" and ranks[cell[1]][cell[2] .. ":" .. cell[3]] or 0
+			if type(taken) == "number" and taken >= planned[key] then
+				total = total + 1
+			end
+		end
+	end
+	return total
+end
+
+--- A tree the data splits into several specs ("druid-feral" and "druid-feral-bear" both live in
+--- the Feral Combat tree, whose own slug "druid-feral-combat" names neither): the one of those
+--- whose default builds the character's ranks fit best, the shortest name on a tie (the cat).
+--- `slug` itself when the data names it, or names nothing in that tree.
+local function treeSpec(data, classSlug, slug, ranks)
+	if namedSpec(data, slug) then
+		return slug
+	end
+	local word = slug:sub(#classSlug + 2):match("^[^-]+")
+	local family = classSlug .. "-" .. (word or "")
+	local candidates = {}
+	for _, source in ipairs({ data.defaultBuilds, data.weights }) do
+		for name in pairs(type(source) == "table" and source or {}) do
+			if name == family or name:sub(1, #family + 1) == family .. "-" then
+				candidates[name] = true
+			end
+		end
+	end
+	local best, bestScore
+	for name in pairs(candidates) do
+		local builds = type(data.defaultBuilds) == "table" and data.defaultBuilds[name] or {}
+		local score = overlap(builds, ranks)
+		local better = best == nil or score > bestScore
+		if not better and score == bestScore then
+			better = #name < #best or (#name == #best and name < best)
+		end
+		if better then
+			best, bestScore = name, score
+		end
+	end
+	return best or slug
+end
+
+--- The spec key: the tree with the most points, ties to the first tree (the one a character
+--- with no points spent is in). Design "Stat weights" states exactly this rule; the site's own
+--- spec derivation uses it too, so a build reads the same in both places. A tree the data
+--- splits into two specs answers the one the ranks fit (L3.7 item 3).
 function Gear.specOf(data, classSlug, ranks)
 	local class = data.classes[classSlug]
 	if class == nil then
@@ -273,7 +332,7 @@ function Gear.specOf(data, classSlug, ranks)
 	end
 	-- The spec slug is the tab name lowercased, which is how
 	-- curated/specs.json's spec_slug is built from the tree name.
-	return classSlug .. "-" .. Export.slugify(class.tabs[bestTab].name)
+	return treeSpec(data, classSlug, classSlug .. "-" .. Export.slugify(class.tabs[bestTab].name), ranks)
 end
 
 --- Decoded BiS picks, keyed by their packed string. Weak values: a pick
@@ -389,8 +448,10 @@ end
 --- own { reference, dps, weaponDps }, read with the chip's band rule
 --- (Gear.bandFor over the spec's measured bands, so 20 serves 20-29), band 20 below
 --- level 20 (and with no level); the spec-level figure (the level-60 raid
---- character's) only when no band entry is there. Second return: the band read,
---- nil for the spec-level figure. nil for a spec with no entry (tanks).
+--- character's) only at the cap or with no level, when no band entry is there: a leveler
+--- (below 60) with no band to read gets nothing, never the level-60 figure (L3.7 item 8).
+--- Second return: the band read, nil for the spec-level figure. nil for a spec with no
+--- entry (tanks).
 function Gear.dpsFigure(data, spec, level)
 	local perSpec = spec ~= nil and type(data) == "table" and type(data.dpsPerPoint) == "table"
 		and data.dpsPerPoint[spec] or nil
@@ -401,6 +462,9 @@ function Gear.dpsFigure(data, spec, level)
 	local band, entry = Gear.bandFor(perSpec, floor)
 	if type(entry) == "table" then
 		return entry, band
+	end
+	if type(level) == "number" and level < 60 then
+		return nil
 	end
 	return perSpec, nil
 end

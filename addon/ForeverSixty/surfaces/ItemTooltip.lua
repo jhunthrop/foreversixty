@@ -200,6 +200,9 @@ local function shorten(build, name, fits, floor)
 	return text
 end
 
+--- The same, for the character-panel tab's target names (L3.7 item 22).
+ItemTooltip.shorten = shorten
+
 
 --- `text` cut after `count` visible characters (UTF-8 characters; colour,
 --- link and texture escapes kept whole and not counted), the ellipsis after
@@ -501,6 +504,9 @@ end
 --- bullets); none for thrown weapons and wands.
 ItemTooltip.AMMO_BY_SUBCLASS = { [2] = "arrows", [18] = "arrows", [3] = "bullets" }
 
+--- The weapon subclass id of thrown weapons (the client's).
+ItemTooltip.THROWN_SUBCLASS = 16
+
 --- "(needs bullets)" for an alternative firing other ammo than the worn ranged weapon,
 --- from the two items' subclass ids (`wornSub`, `altSub`); nil when they match or either
 --- fires none. Pure.
@@ -559,9 +565,9 @@ function ItemTooltip.fitAlternatives(entries, measure, room)
 	end
 	local lines = { ItemTooltip.fitPlain(L.tooltipAlternativesLabel, measure, room) }
 	for index = 1, count do
-		for _, row in ipairs(entryRows(entries[index], measure, room)) do
-			lines[#lines + 1] = row
-		end
+		-- An alternative's tag row is the second line of its own string: one block, no tooltip row
+		-- gap between the name and its tag (L3.7 item 13).
+		lines[#lines + 1] = table.concat(entryRows(entries[index], measure, room), "\n")
 	end
 	return lines
 end
@@ -943,9 +949,19 @@ end
 --- (Progress.roundedGain) and at the floor or above; the enchant note muted
 --- after it only when the worn item's enchant could not be read. With no gain
 --- (an empty slot: nothing worn to gain over, L4.1 ruling 5) the label and the name.
-function ItemTooltip.nextLine(name, gain, unit, unparsed)
+--- `statsPending` (L3.7 item 6, a weapon pick the client has not sent stats for) follows the name with a
+--- muted "· stats pending" where the gain would be. `tag` (a thrown weapon's "(thrown)", L3.7
+--- item 14) follows the name, muted.
+function ItemTooltip.nextLine(name, gain, unit, unparsed, statsPending, tag)
+	if tag ~= nil then
+		name = name .. " " .. muted(tag)
+	end
 	if gain == nil then
-		return muted(L.tooltipNextLabel) .. " " .. name
+		local text = muted(L.tooltipNextLabel) .. " " .. name
+		if statsPending then
+			text = text .. " " .. muted(L.tooltipStatsPending)
+		end
+		return text
 	end
 	return muted(L.tooltipNextLabel) .. " " .. name .. " " .. gainPart(gain, unit, unparsed)
 end
@@ -955,14 +971,20 @@ end
 --- the second line, the gain (and the enchant note). The gain is never cut.
 --- `upgrade` is { name, hex, gain, unit, unparsed }; with no gain, one line.
 function ItemTooltip.fitNext(upgrade, measure, room)
-	local one = ItemTooltip.nextLine(colored(upgrade.name, upgrade.hex), upgrade.gain, upgrade.unit, upgrade.unparsed)
+	local one = ItemTooltip.nextLine(colored(upgrade.name, upgrade.hex), upgrade.gain, upgrade.unit, upgrade.unparsed,
+		upgrade.statsPending, upgrade.tag)
 	local fits = fitter(measure, room)
 	if fits(one) then
 		return { one }
 	end
-	local head = shorten(function(name) return muted(L.tooltipNextLabel) .. " " .. colored(name, upgrade.hex) end,
-		upgrade.name, fits, 1)
+	local head = shorten(function(name)
+		local text = muted(L.tooltipNextLabel) .. " " .. colored(name, upgrade.hex)
+		return upgrade.tag ~= nil and (text .. " " .. muted(upgrade.tag)) or text
+	end, upgrade.name, fits, 1)
 	if upgrade.gain == nil then
+		if upgrade.statsPending then
+			return { head, ItemTooltip.fitPlain(muted(L.tooltipStatsPending), measure, room) }
+		end
 		return { head }
 	end
 	return { head, gainPart(upgrade.gain, upgrade.unit, upgrade.unparsed) }
@@ -1172,10 +1194,36 @@ function ItemTooltip.judge(ctx, pending)
 			end
 		end
 	end
+	-- A one-hander under a worn two-hander, by a class that can dual wield: the swap also needs a
+	-- second weapon, so say how the pair does with the best one carried (L3.7 item 11).
+	local pairLine
+	local wornMain = equipped.main_hand
+	if primary ~= nil and primary.kind == "verdict" and slot == "main_hand" and ctx.bags ~= nil
+		and wornMain ~= nil and wornMain.equipLoc == "INVTYPE_2HWEAPON"
+		and (item.equipLocation == "INVTYPE_WEAPON" or item.equipLocation == "INVTYPE_WEAPONMAINHAND")
+		and Rules.canEquip(ctx.classToken, ctx.level, item.itemClass, item.itemSubClass, "INVTYPE_WEAPON",
+			"off_hand") == "ok" then
+		-- The bags are read only here: a function reads them now, a table is the list itself.
+		local bags = type(ctx.bags) == "function" and ctx.bags() or ctx.bags
+		local partner = Progress.pairPartner(hovered, wornMain, bags, weights, perPoint, weapon, function(candidate)
+			return Rules.canEquip(ctx.classToken, ctx.level, candidate.itemClass, candidate.itemSubClass,
+				candidate.equipLocation, "off_hand") == "ok"
+		end)
+		if partner ~= nil then
+			local partnerName = nameOf(partner.item.itemId)
+			local pairVerdict = ItemTooltip.verdictLine(partner, unit, primary.wornName)
+			if partnerName == nil then
+				pending[partner.item.itemId] = true
+			elseif pairVerdict ~= nil then
+				pairLine = { kind = "pair", color = pairVerdict.color, partner = partner.item.itemId,
+					text = string.format(L.tooltipPairWith, partnerName, pairVerdict.text) }
+			end
+		end
+	end
 	return {
 		gear = true, slots = slots, wornSlot = wornSlot, wearable = wearable, usable = usable,
 		refusal = refusal, blocked = blocked, heldByTwoHander = heldByTwoHander, slot = slot,
-		verdict = verdict, primary = primary, unit = unit,
+		verdict = verdict, primary = primary, unit = unit, pairLine = pairLine,
 	}
 end
 
@@ -1247,6 +1295,14 @@ function ItemTooltip.section(ctx)
 	local judged = ItemTooltip.judge(ctx, pending)
 	local wornSlot, usable, slot = judged.wornSlot, judged.usable, judged.slot
 	local heldByTwoHander = judged.heldByTwoHander
+	--- "(thrown)" for a thrown weapon (subclass 16) named in the ranged slot, else nil (L3.7 item 14).
+	local function thrownTag(itemId)
+		if slot ~= "ranged" then
+			return nil
+		end
+		local sub = subClassOf(itemId)
+		return tonumber(sub) == ItemTooltip.THROWN_SUBCLASS and L.tooltipThrown or nil
+	end
 	local head = { specWord = specName(data, ctx.spec), tag = current ~= nil and current.tag or nil,
 		equipped = wornSlot ~= nil, slot = wornSlot }
 	local primary = judged.primary
@@ -1277,7 +1333,15 @@ function ItemTooltip.section(ctx)
 	--- a weapon's own DPS from the data until the client's arrive (Progress.pickStats); the gear
 	--- gap scores every slot's target this one way (Progress.pickGain).
 	local function gainOf(itemId)
-		local stats = weights ~= nil and Progress.pickStats(data, statsOf, itemId, standIn) or nil
+		local stats, cold
+		if weights ~= nil then
+			stats, cold = Progress.pickStats(data, statsOf, itemId, standIn)
+		end
+		-- The data's stand-in prices the weapon's own DPS alone, a lower bound: withheld until the
+		-- client's stats arrive (L3.7 item 6).
+		if cold then
+			return nil, nil, true
+		end
 		return Progress.pickGain(slot, itemId, stats, equipped, current)
 	end
 	-- The slot's one target (L5.1 fix round 3, Progress.targetFor): the band's pick (fix round 4: a
@@ -1305,13 +1369,19 @@ function ItemTooltip.section(ctx)
 			-- The pick's gain over what is worn, from its own stats and weapon DPS,
 			-- net of the worn enchant, as shown: a next upgrade from the floor.
 			local name = pickName(pick.item_id)
-			local gain, nextVerdict = gainOf(pick.item_id)
-			if gain ~= nil and gain >= Progress.MIN_GAIN and name ~= nil then
+			local gain, nextVerdict, cold = gainOf(pick.item_id)
+			if cold and name ~= nil then
+				-- A weapon the client has not sent stats for: the pick, no figure ("stats pending").
+				local upgrade = { name = name, hex = qualityHex(pick.item_id), unit = unit, statsPending = true,
+					tag = thrownTag(pick.item_id) }
+				nextLine = { kind = "next", itemId = pick.item_id, upgrade = upgrade, color = "body",
+					text = ItemTooltip.nextLine(colored(name, upgrade.hex), nil, unit, false, true, upgrade.tag) }
+			elseif gain ~= nil and gain >= Progress.MIN_GAIN and name ~= nil then
 				local worn = equipped[slot]
 				local upgrade = { name = name, hex = qualityHex(pick.item_id), gain = gain, unit = unit,
-					unparsed = worn ~= nil and worn.enchantUnparsed == true }
+					unparsed = worn ~= nil and worn.enchantUnparsed == true, tag = thrownTag(pick.item_id) }
 				nextLine = { kind = "next", itemId = pick.item_id, upgrade = upgrade, color = "body",
-					text = ItemTooltip.nextLine(colored(name, upgrade.hex), gain, unit, upgrade.unparsed) }
+					text = ItemTooltip.nextLine(colored(name, upgrade.hex), gain, unit, upgrade.unparsed, false, upgrade.tag) }
 				nextLine.breakdown = breakdownLine(nextVerdict)
 				if isCached(pick.item_id) then
 					target = { itemId = pick.item_id, link = Compat.displayLink(pick.item_id),
@@ -1319,6 +1389,12 @@ function ItemTooltip.section(ctx)
 				end
 			elseif name == nil and (gain == nil or gain >= Progress.MIN_GAIN) then
 				-- Not sent yet: wait for it (the hover redraws), never print "…".
+				pending[pick.item_id] = true
+				showBlock = false
+			elseif gain == nil and weights ~= nil and not isCached(pick.item_id) then
+				-- Named from the data but not sent by the client (and nothing to price it from):
+				-- its stats are on their way, so wait for them like the paper-doll corner does,
+				-- never "Best until N" for a gain nobody has worked out (L3.7 item 7).
 				pending[pick.item_id] = true
 				showBlock = false
 			else
@@ -1345,8 +1421,8 @@ function ItemTooltip.section(ctx)
 						entries[#entries + 1] = false
 					else
 						entries[#entries + 1] = { name = name, hex = qualityHex(id), gain = gainOf(id), unit = unit,
-							flag = slot == "ranged" and wornSub ~= nil and ItemTooltip.ammoFlag(wornSub, subClassOf(id))
-								or nil }
+							flag = (slot == "ranged" and wornSub ~= nil and ItemTooltip.ammoFlag(wornSub, subClassOf(id)))
+								or thrownTag(id) }
 					end
 				end
 			end
@@ -1403,6 +1479,9 @@ function ItemTooltip.section(ctx)
 	end
 	if primary ~= nil then
 		push(primary)
+	end
+	if judged.pairLine ~= nil then
+		lines[#lines + 1] = judged.pairLine
 	end
 	if atLine ~= nil then
 		lines[#lines + 1] = atLine
@@ -1551,6 +1630,9 @@ function ItemTooltip.baseContext(data)
 		classToken = classSlug ~= nil and classSlug:upper() or nil,
 		level = Compat.playerLevel(), faction = Compat.playerFaction(),
 		equipped = Gear.readEquipped(), build = Follow.build,
+		-- What the bags carry, read when needed: the pair verdict for a one-hander under a worn
+		-- two-hander (L3.7 item 11).
+		bags = Gear.bagLinks,
 	}
 end
 
@@ -1829,9 +1911,48 @@ end
 --- slot with the arrow lists the very bag item its hover leads with.
 ItemTooltip.bagLead = bagLead
 
+--- The rows dropped, in order, when a tooltip would pass the top of the screen (L3.7 item 12):
+--- "Also good:" first, then the source line.
+ItemTooltip.CAP_KINDS = { { alternatives = true }, { alternatives = true, source = true } }
+
+--- Whether `tooltip` reaches the top of the screen (within 2 px): the client would clamp or cut
+--- it. False wherever the client cannot say.
+function ItemTooltip.passesScreenTop(tooltip)
+	local parent = Compat.clientGlobal("UIParent", "table")
+	if parent == nil or type(tooltip.GetTop) ~= "function" or type(parent.GetTop) ~= "function" then
+		return false
+	end
+	local ok, top, screenTop = pcall(function()
+		local scale = type(tooltip.GetEffectiveScale) == "function" and tooltip:GetEffectiveScale() or 1
+		local parentScale = type(parent.GetEffectiveScale) == "function" and parent:GetEffectiveScale() or 1
+		return (tooltip:GetTop() or 0) * scale, (parent:GetTop() or 0) * parentScale
+	end)
+	return ok and type(top) == "number" and type(screenTop) == "number" and screenTop > 0 and top >= screenTop - 2
+end
+
+--- `lines` without the kinds cap level `level` drops (0 drops none).
+local function capLines(lines, level)
+	local drop = ItemTooltip.CAP_KINDS[level]
+	if drop == nil then
+		return lines
+	end
+	local kept = {}
+	for _, line in ipairs(lines) do
+		if not drop[line.kind] then
+			kept[#kept + 1] = line
+		end
+	end
+	return kept
+end
+
+--- The cap level of the rebuild in progress for this tooltip and link (0 for any other draw).
+local rebuilding
+
 local function addLines(tooltip, itemLink)
 	-- A hover from before (another item) must not be redrawn onto this one.
 	ItemTooltip.activeHover = nil
+	local level = rebuilding ~= nil and rebuilding.tooltip == tooltip and rebuilding.link == itemLink
+		and rebuilding.level or 0
 	local entry = ItemTooltip.sectionFor(itemLink)
 	local head = entry.head or {}
 	-- The worn item of a slot a bag item beats: the bag fact leads, alone (L4.1 fix round 5).
@@ -1844,7 +1965,15 @@ local function addLines(tooltip, itemLink)
 	local measure, room = measureFor(tooltip)
 	-- The room every line was fitted to: the client's own width, never ours.
 	ItemTooltip.lastRoom = room
-	drawEntry(tooltip, entry, measure, room, function()
+	local shown = entry
+	if level > 0 then
+		shown = {}
+		for key, value in pairs(entry) do
+			shown[key] = value
+		end
+		shown.lines = capLines(entry.lines, level)
+	end
+	drawEntry(tooltip, shown, measure, room, function()
 		-- Re-running SetHyperlink re-fires the hook that called
 		-- onTooltip, so the tooltip is rebuilt with the data that
 		-- just arrived rather than gaining a second copy of the section.
@@ -1853,6 +1982,17 @@ local function addLines(tooltip, itemLink)
 			tooltip:SetHyperlink(itemLink)
 		end
 	end)
+	-- Past the top of the screen: rebuild with the next row group dropped (L3.7 item 12).
+	if level < #ItemTooltip.CAP_KINDS and ItemTooltip.passesScreenTop(tooltip)
+		and type(tooltip.SetHyperlink) == "function" then
+		local before = rebuilding
+		rebuilding = { tooltip = tooltip, link = itemLink, level = level + 1 }
+		local ok, err = pcall(tooltip.SetHyperlink, tooltip, itemLink)
+		rebuilding = before
+		if not ok then
+			error(err, 0)
+		end
+	end
 end
 
 --- One guarded body for both hook shapes. A Lua error inside a tooltip hook

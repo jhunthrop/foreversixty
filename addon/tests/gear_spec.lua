@@ -68,6 +68,44 @@ describe("Gear", function()
 		assert.are.equal("paladin-protection", Gear.specOf(DATA, "paladin", ranks))
 	end)
 
+	-- L3.7 item 3: the druid's Feral Combat tree is two specs in the data, cat ("druid-feral") and
+	-- bear ("druid-feral-bear"); the tab's own slug ("druid-feral-combat") has neither a default
+	-- build nor weights, so a feral druid with no path card got nothing.
+	describe("a tree the data splits into two specs (the feral druid)", function()
+		local Real = require("Data")
+
+		it("answers the cat spec for the Feral Combat tree on a tie or with cat points", function()
+			assert.are.equal("druid-feral", Gear.specOf(Real, "druid", { [2] = { ["1:1"] = 1 } }))
+			assert.are.equal("druid-feral", Gear.specOf(Real, "druid", { [2] = { ["2:3"] = 2, ["5:1"] = 2 } }))
+		end)
+
+		it("answers the bear spec when the points sit in the cells only the bear build takes", function()
+			assert.are.equal("druid-feral-bear",
+				Gear.specOf(Real, "druid", { [2] = { ["2:4"] = 3, ["6:1"] = 5, ["6:3"] = 5 } }))
+		end)
+
+		it("leaves the other trees, and every spec the data names by its tree, as they were", function()
+			assert.are.equal("druid-balance", Gear.specOf(Real, "druid", { [1] = { ["1:1"] = 4 } }))
+			assert.are.equal("druid-restoration", Gear.specOf(Real, "druid", { [3] = { ["1:1"] = 4 } }))
+			assert.are.equal("rogue-combat", Gear.specOf(Real, "rogue", { [2] = { ["1:1"] = 4 } }))
+			assert.are.equal("paladin-protection",
+				Gear.specOf(DATA, "paladin", { [2] = { ["1:1"] = 5 } }))
+		end)
+
+		it("answers the tab's own slug when the data has no spec of that name (no defaults, no weights)", function()
+			local bare = { classes = { druid = { tabs = { { name = "Balance" }, { name = "Feral Combat" } } } } }
+			assert.are.equal("druid-feral-combat", Gear.specOf(bare, "druid", { [2] = { ["1:1"] = 1 } }))
+		end)
+
+		it("gives a feral druid a default build at login, the cat's by default", function()
+			local Follow = helper.load("Follow")
+			local build = Follow.ensureDefault(Real, { classSlug = "druid", level = 20,
+				ranks = { [2] = { ["1:1"] = 1 } } })
+			assert.is_not_nil(build)
+			assert.are.equal("druid-feral", build.spec)
+		end)
+	end)
+
 	it("resolves a tie to the first tree, as the design says", function()
 		local ranks = { [1] = { ["1:1"] = 3 }, [2] = { ["1:1"] = 3 }, [3] = {} }
 		assert.are.equal("paladin-holy", Gear.specOf(DATA, "paladin", ranks))

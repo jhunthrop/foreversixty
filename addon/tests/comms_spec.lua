@@ -253,6 +253,18 @@ describe("Comms, the FS1 protocol", function()
 				"alliance") })
 		end)
 
+		-- L3.7 items 8 and 9: the unit is the band's. A leveler whose spec has only the spec-level
+		-- figure (no band to read) has none, so a guildmate's gap reads in points.
+		it("reads a guildmate's gap in DPS only where the data has a figure for their level", function()
+			local banded = { dpsPerPoint = DATA.dpsPerPoint }
+			assert.are.equal("dps", Comms.gapUnit(banded, "hunter-marksmanship", 26))
+			assert.are.equal("dps", Comms.gapUnit(banded, "hunter-marksmanship", 60))
+			local specLevelOnly = { dpsPerPoint = { ["hunter-marksmanship"] = { dps = 0.07, weaponDps = 1.1 } } }
+			assert.are.equal("pts", Comms.gapUnit(specLevelOnly, "hunter-marksmanship", 26))
+			assert.are.equal("dps", Comms.gapUnit(specLevelOnly, "hunter-marksmanship", 60))
+			assert.are.equal("pts", Comms.gapUnit(banded, "-", 26))
+		end)
+
 		it("is nil when no pick could be scored (the client has none cached, the data prices none)", function()
 			local data = withPick(7.5)
 			data.bisDps = {}

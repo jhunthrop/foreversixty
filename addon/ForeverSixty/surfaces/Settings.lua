@@ -111,8 +111,7 @@ function SettingsPage.apply(key, value)
 		Prefs.setFlag(key, value)
 	end
 	if key == "chip.shown" then
-		Prefs.set("chip", "hiddenUntilLevel", 0)
-		Prefs.set("chip", "hiddenFor", "")
+		Chip.clearHidden()
 	end
 	return value
 end
@@ -164,11 +163,32 @@ end
 --- not installed (muted, it is optional), current, too old (stale, unreadable or an older
 --- format), or made for a newer addon than this one. { text, label, value, tone }. Pure.
 --- The state is Score.ratingsState's, which the guild tab's notice shares (L5.1 fix round 1).
-local RATINGS_TONE = { Missing = "muted", Current = "muted", Newer = "warning", Old = "warning" }
+local RATINGS_TONE = { Missing = "muted", Current = "muted", Newer = "warning", Old = "warning", Broken = "warning" }
+
+--- The patch ("1.60.1", the first three fields) of a build string, or nil (L3.7 item 38).
+local function patchOf(build)
+	if type(build) ~= "string" then
+		return nil
+	end
+	local fields = {}
+	for field in build:gmatch("[^.]+") do
+		if #fields < 3 then
+			fields[#fields + 1] = field
+		end
+	end
+	return #fields > 0 and table.concat(fields, ".") or nil
+end
 
 function SettingsPage.ratingsLine(status)
 	local state = Score.ratingsState(type(status) == "table" and status or false)
-	return dataLine(L["settingsRatings" .. state], RATINGS_TONE[state])
+	local text = L["settingsRatings" .. state]
+	local patch = state == "Old" and type(status) == "table" and patchOf(status.build) or nil
+	if patch ~= nil then
+		text = string.format(L.settingsRatingsOldDated, patch)
+	end
+	local line = dataLine(text, RATINGS_TONE[state])
+	line.state = state
+	return line
 end
 
 --- The line under the title (fix round 3, item 2): the first foot line in the warning
@@ -178,6 +198,10 @@ end
 function SettingsPage.warningLine(addon, ratings)
 	for _, entry in ipairs({ addon or false, ratings or false }) do
 		if entry and entry.tone == "warning" then
+			-- Both out of date: the first sentence says so of the second (L3.7 item 38).
+			if entry == addon and ratings and ratings.state == "Old" then
+				return entry.text .. L.settingsAlsoOld
+			end
 			return entry.text
 		end
 	end
@@ -206,7 +230,8 @@ SettingsPage.rowHeight = Widgets.toggleRowHeight
 
 --- Every number on the page, from the width of its backdrop, each row's measured height
 --- (`rowHeights`, in switch order; Theme.SIZES.settingsRow where one is missing) and whether
---- the title carries the warning line (`warned`): the left edge, the hint's indent and width
+--- the title carries the warning line (`warned`: true for one line, or the line's measured
+--- height, never less than one line; L3.7 item 39): the left edge, the hint's indent and width
 --- (the width minus the 40 px indent and the right padding), the width of Reset's sentence
 --- and of the divider, and the y of the title, the warning line (nil without one), each
 --- switch row, Reset, the commands heading, its divider and lines, and the two foot lines,
@@ -234,7 +259,7 @@ function SettingsPage.layout(width, rowHeights, warned)
 	y = y + S.settingsTitle
 	if warned then
 		layout.warning = -y
-		y = y + S.settingsLine
+		y = y + (type(warned) == "number" and math.max(warned, S.settingsLine) or S.settingsLine)
 	end
 	y = y + S.gap * 2
 	for index = 1, #SettingsPage.SWITCHES do
@@ -327,6 +352,11 @@ local function arrange(warned)
 	local heights = {}
 	for index, toggle in ipairs(SettingsPage.toggles) do
 		heights[index] = toggle.frame:GetHeight()
+	end
+	if warned then
+		-- The warning sentence is measured (a longer locale wraps), not assumed one line tall.
+		local measured = SettingsPage.warningLabel:GetStringHeight()
+		warned = type(measured) == "number" and measured > 0 and measured or true
 	end
 	local layout = SettingsPage.layout(SettingsPage.backdrop:GetWidth(), heights, warned)
 	place(SettingsPage.title, content, layout.x, layout.title)
