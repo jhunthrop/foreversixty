@@ -322,6 +322,7 @@ export const addonCopy = {
   commands: [
     { command: '/fs', description: 'paste or copy a build' },
     { command: '/fs copy', description: 'copy my character for the site' },
+    { command: '/fs build', description: 'switch between saved builds' },
     { command: '/fs chip', description: 'show or hide the chip' },
     { command: '/fs inspect', description: 'gear and talents of your target' },
     { command: '/fs link', description: "copy a player's site page" },

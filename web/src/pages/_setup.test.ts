@@ -254,8 +254,8 @@ describe('/setup: what it does in the game (L8.3)', () => {
     expect(source).toContain('addonCopy.commands');
     const expected = localeSettingsCommands();
     expect(addonCopy.commands.map((c) => `${c.command}: ${c.description}`)).toEqual(expected);
-    expect(addonCopy.commands).toHaveLength(12);
-    expect(addonCopy.commands.map((c) => c.command).slice(6, 9)).toEqual(['/fs ready', '/fs loot', '/fs floor N']);
+    expect(addonCopy.commands).toHaveLength(13);
+    expect(addonCopy.commands.map((c) => c.command).slice(7, 10)).toEqual(['/fs ready', '/fs loot', '/fs floor N']);
     // The tags between the command and its colon read as a space in textOf; a browser shows none.
     const list = textOf(html.slice(html.indexOf('data-testid="setup-commands"'))).replace(/ :/g, ':');
     for (const { command, description } of addonCopy.commands) {
