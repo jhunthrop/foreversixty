@@ -192,8 +192,12 @@ function Chip.pathHeading(race, className)
 	return string.format(L.chipPathHeading, string.format(L.chipRaceClass, race, className))
 end
 
---- /fs diag's line for a shown chip: whether its line was shortened.
-function Chip.shownLine(shortened)
+--- /fs diag's line for a shown chip: whether its line was shortened, or fell back to its short form.
+--- `usedShort`: the line fell back to its short form (a state's `short`) rather than being cut.
+function Chip.shownLine(shortened, usedShort)
+	if shortened and usedShort then
+		return L.diagChipShortForm
+	end
 	return shortened and L.diagChipShortened or L.diagChipShown
 end
 
@@ -381,13 +385,31 @@ local function lastNightState(input)
 	if worst == nil then
 		return nil
 	end
-	local text
-	if type(worst.biggest_loss) == "string" and worst.biggest_loss ~= "" then
-		text = string.format(L.chipLastNight, worst.name, Chip.ordinal(worst.percentile), worst.biggest_loss)
+	local text, short, tip, keep
+	local ordinal = Chip.ordinal(worst.percentile)
+	local loss = type(worst.biggest_loss) == "string" and worst.biggest_loss ~= "" and worst.biggest_loss or nil
+	-- The hover's full line names the spec of the build shown, when it names one.
+	local build = input.build
+	local spec = type(build) == "table" and type(build.spec) == "string" and build.spec ~= ""
+		and Follow.specName(build.spec) or nil
+	tip = spec ~= nil and string.format(L.chipLastNightTip, worst.name, ordinal, spec)
+		or string.format(L.chipLastNightTipNoSpec, worst.name, ordinal)
+	if loss ~= nil then
+		text = string.format(L.chipLastNight, worst.name, ordinal, loss)
+		-- The short form Chip.fit falls back to: the loss is kept whole.
+		short, keep = string.format(L.chipLastNightShort, worst.name, ordinal, loss), loss
+		tip = string.format(L.chipLastNightTipLoss, tip, loss)
 	else
-		text = string.format(L.chipLastNightNoLoss, worst.name, Chip.ordinal(worst.percentile))
+		text = string.format(L.chipLastNightNoLoss, worst.name, ordinal)
+		short = string.format(L.chipLastNightShortNoLoss, worst.name, ordinal)
 	end
-	return { kind = "lastnight", icon = input.classIcon, text = text, action = "lastraid", hint = L.chipHintLastRaid }
+	local day = Compat.shortDate(input.lastRaid.date)
+	return {
+		kind = "lastnight", icon = input.classIcon, text = text, short = short, keep = keep, tip = tip,
+		-- The raid's date, a muted line under the hover's full line.
+		tipExtra = day ~= nil and string.format(L.chipLastNightAsOf, day) or nil,
+		action = "lastraid", hint = L.chipHintLastRaid,
+	}
 end
 
 --- "Build complete" with the check icon, for Theme.SIZES.completeSeconds.
@@ -508,6 +530,9 @@ function Chip.tooltipLines(model)
 	local lines = { header }
 	for _, state in ipairs(model.states) do
 		lines[#lines + 1] = colored(state.muted and "muted" or "body", state.tip or state.text)
+		if state.tipExtra ~= nil then
+			lines[#lines + 1] = colored("muted", state.tipExtra)
+		end
 	end
 	if model.nextLine ~= nil then
 		lines[#lines + 1] = colored("muted", model.nextLine)
@@ -1325,13 +1350,14 @@ local function draw(model)
 		end
 	end
 	paintIconBorder(chosen)
-	local width, shortened = S.chip, false
+	local width, shortened, usedShort = S.chip, false, false
 	if chosen.text ~= nil and chosen.text ~= "" then
 		local fitted = Chip.fit(chosen.text, measure, S.chipWide - S.chipTextInset, chosen.short, chosen.keep)
 		Chip.text:SetText(fitted)
 		Chip.text:SetTextColor(Theme.rgb(Theme.HEX[chosen.muted and "muted" or "body"]))
 		Chip.text:Show()
 		shortened = fitted ~= chosen.text
+		usedShort = shortened and fitted == chosen.short
 		local textWidth = Chip.text:GetStringWidth()
 		if type(textWidth) == "number" then
 			width = math.min(S.chipWide, math.max(S.chip, math.ceil(textWidth) + S.chipTextInset))
@@ -1344,7 +1370,7 @@ local function draw(model)
 	end
 	-- The chip grows leftwards from its top-right anchor.
 	frame:SetWidth(width)
-	Chip.lastDraw = { width = width, shortened = shortened }
+	Chip.lastDraw = { width = width, shortened = shortened, usedShort = usedShort }
 	local badge = Chip.badgeText(model.waiting)
 	if badge ~= "" then
 		Chip.badgeDigits:SetText(badge)
@@ -1443,7 +1469,7 @@ function Chip.hiddenLine(hiddenBy, inCinematic)
 end
 
 --- /fs diag's line for the chip: "Chip: shown, nothing cut off" (or "the
---- line was shortened"), or why it is hidden; nil before it has drawn, or
+--- line was shortened" or "short form"), or why it is hidden; nil before it has drawn, or
 --- once it has turned itself off (that is already a /fs diag note).
 function Chip.diagLine()
 	if Chip.disabled or Chip.frame == nil then
@@ -1452,7 +1478,7 @@ function Chip.diagLine()
 	if not Chip.frame:IsShown() or Chip.lastDraw == nil then
 		return Chip.hiddenLine(Chip.current ~= nil and Chip.current.hiddenBy or nil, Chip.inCinematic)
 	end
-	return Chip.shownLine(Chip.lastDraw.shortened)
+	return Chip.shownLine(Chip.lastDraw.shortened, Chip.lastDraw.usedShort)
 end
 
 -- The "pick a path" card (spec section 5.1) ------------------------------------------

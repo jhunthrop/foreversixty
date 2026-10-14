@@ -312,6 +312,37 @@ describe("Chip.model", function()
 		assert.are.equal("idle", Chip.model(inputs({ lastRaid = LAST_RAID, lastNightDone = true })).chosen.kind)
 	end)
 
+	-- L5.3 fix round 2 (1): a short form through Chip.fit, "Lucifron 71st · downtime", the loss kept.
+	it("gives last night's line a short form that keeps the loss, and none without a loss", function()
+		local chosen = Chip.model(inputs({ lastRaid = LAST_RAID })).chosen
+		assert.are.equal("Lucifron 71st · downtime", chosen.short)
+		assert.are.equal("downtime", chosen.keep)
+		local bare = { date = "2026-12-08", bosses = { { name = "Lucifron", percentile = 71 } } }
+		chosen = Chip.model(inputs({ lastRaid = bare })).chosen
+		assert.are.equal("Lucifron: 71st percentile", chosen.text)
+		assert.are.equal("Lucifron 71st", chosen.short)
+		assert.is_nil(chosen.keep)
+		-- Cut to the short form when the full line is too wide, as the chip draws it.
+		local function measure(text)
+			return #text * 6
+		end
+		local full = Chip.model(inputs({ lastRaid = LAST_RAID })).chosen
+		assert.are.equal(full.short, Chip.fit(full.text, measure, #full.short * 6, full.short, full.keep))
+	end)
+
+	it("words the hover in full, with the build's spec, a colon before the loss and the raid's date", function()
+		local build = { name = "Arms leveling", spec = "warrior-arms", order = { {}, {}, {} } }
+		local lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = LAST_RAID, build = build })))
+		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile for Arms, biggest loss: downtime|r", lines[2])
+		assert.are.equal("|cff" .. Theme.HEX.muted .. "as of 8 Dec|r", lines[3])
+		-- No spec on the build: the spec words are left out; no loss: the loss is.
+		lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = LAST_RAID })))
+		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile, biggest loss: downtime|r", lines[2])
+		local bare = { date = "2026-12-08", bosses = { { name = "Lucifron", percentile = 71 } } }
+		lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = bare, build = build })))
+		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile for Arms|r", lines[2])
+	end)
+
 	it("never tells a raid more than 14 days old, or one with no date", function()
 		local old = { date = "2026-11-24", bosses = LAST_RAID.bosses }
 		assert.are.equal("idle", Chip.model(inputs({ lastRaid = old })).chosen.kind)
@@ -570,6 +601,9 @@ describe("Chip.shownLine", function()
 	it("says the chip is shown, and whether its line was shortened", function()
 		assert.are.equal("Chip: shown, nothing cut off", Chip.shownLine(false))
 		assert.are.equal("Chip: shown, the line was shortened", Chip.shownLine(true))
+		-- L5.3 fix round 2: a line that fell back to its short form says so.
+		assert.are.equal("Chip: shown, short form", Chip.shownLine(true, true))
+		assert.are.equal("Chip: shown, the line was shortened", Chip.shownLine(true, false))
 	end)
 end)
 

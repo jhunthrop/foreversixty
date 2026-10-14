@@ -14,7 +14,8 @@
 -- over the worn item from Progress.pickGain with Gear.currentWeights (DPS where the weights carry a
 -- DPS per point, else score: Progress.gearPlan's own unit rule), "planned" from Progress.targetFor.
 -- A member that cannot score (no weights, no spec, an uncached item, an item they cannot wear)
--- sends nothing: the master looter sees "no data", which covers no addon and unscorable alike.
+-- sends nothing: the master looter sees "no addon" where no hello or snapshot! was seen from them this
+-- session (Comms.seen) and "can't score" where their addon is there and answered nothing.
 --
 -- Taint (L4.x/L5.x rules): this module reads the loot window through the client's own functions and
 -- touches no frame at all. It registers no script and runs no OnUpdate; its timers are C_Timer.After.
@@ -46,6 +47,8 @@ LootCouncil.MIN_QUALITY = 4
 LootCouncil.LOAD_WAIT = 5
 --- The master-looter loot method where the client has no Enum.
 LootCouncil.MASTER_LOOTER = 2
+--- Whether /fs loot has printed its "Only you see this" notice this login (once per login).
+LootCouncil.dryShown = false
 
 --- The generated data table, set by Options.
 LootCouncil.data = nil
@@ -179,12 +182,15 @@ end
 --- What `itemId` is worth to a character: `who` is { spec, level, classToken, faction, equipped
 --- (Gear.readEquipped's shape), current (Gear.currentWeights' answer), isMissing }. Answers { value,
 --- unit ("dps" or "score"), currentItemId (the worn item's id, 0 for an empty slot), planned (the item is
---- the band's pick for a slot it fits), slot, healing }; or nil and why: "nodata", "uncached", "notgear",
---- "nospec", "noweights", "nostats", "cantuse", "nofigure". `statsOf` (Gear.itemStatsOf) is optional.
+--- the band's pick for a slot it fits), slot, healing, needs (the level a gated item opens at) }; or nil and
+--- why: "nodata", "uncached", "notgear", "nospec", "noweights", "nostats", "cantuse", "nofigure".
+--- `statsOf` (Gear.itemStatsOf) is optional.
+--- `allowGated` (the player's own line only): an item the class wears from a later level still answers,
+--- with `needs` the level it opens at, instead of "cantuse"; "cantuse" stays for gear the class never wears.
 --- The value is the best gain over the slots the item fits and the character may wear it in
 --- (Progress.pickGain: net of the worn enchant for the player, the two hands as a pair), rounded as
 --- the item tooltip shows it. Pure over what it is given.
-function LootCouncil.valueFor(data, itemId, who, statsOf)
+function LootCouncil.valueFor(data, itemId, who, statsOf, allowGated)
 	if type(data) ~= "table" or type(itemId) ~= "number" or type(who) ~= "table" then
 		return nil, "nodata"
 	end
@@ -209,18 +215,33 @@ function LootCouncil.valueFor(data, itemId, who, statsOf)
 	end
 	local equipped = who.equipped or {}
 	local best, bestSlot
+	local gatedBest, gatedSlot, needs
 	local wearable = false
 	for _, slot in ipairs(slots) do
-		if Rules.canEquip(who.classToken, who.level, itemClass, itemSubClass, equipLoc, slot) == "ok" then
-			wearable = true
+		local verdict, from = Rules.canEquip(who.classToken, who.level, itemClass, itemSubClass, equipLoc, slot)
+		if verdict == "ok" or (verdict == "until" and allowGated) then
 			local gain = Progress.pickGain(slot, itemId, stats, equipped, current)
-			if gain ~= nil and (best == nil or gain > best) then
-				best, bestSlot = gain, slot
+			if verdict == "ok" then
+				wearable = true
+				if gain ~= nil and (best == nil or gain > best) then
+					best, bestSlot = gain, slot
+				end
+			else
+				needs = (needs == nil or (from or 0) < needs) and from or needs
+				if gain ~= nil and (gatedBest == nil or gain > gatedBest) then
+					gatedBest, gatedSlot = gain, slot
+				end
 			end
 		end
 	end
 	if not wearable then
-		return nil, "cantuse"
+		if needs == nil then
+			return nil, "cantuse"
+		end
+		-- Worn from `needs` on: the figure is the gain once it can be.
+		best, bestSlot = gatedBest, gatedSlot
+	else
+		needs = nil
 	end
 	if best == nil then
 		return nil, "nofigure"
@@ -237,7 +258,7 @@ function LootCouncil.valueFor(data, itemId, who, statsOf)
 	return {
 		value = best, unit = current.dpsPerPoint ~= nil and "dps" or "score",
 		currentItemId = worn ~= nil and tonumber(worn.itemId) or 0, planned = target.isPick == true, slot = bestSlot,
-		healing = current.healing == true or nil,
+		healing = current.healing == true or nil, needs = needs,
 	}
 end
 
@@ -271,10 +292,11 @@ function LootCouncil.siteValue(itemId)
 			local _, _, _, equipLoc = Compat.itemInfoInstant(itemId)
 			local slots = Gear.slotsFor(equipLoc)
 			local equipped = Gear.readEquipped()
-			local worn = #slots > 0 and equipped[chooseSlot(slots, equipped)] or nil
+			local slot = #slots > 0 and chooseSlot(slots, equipped) or nil
+			local worn = slot ~= nil and equipped[slot] or nil
 			return {
 				value = entry.value, unit = entry.unit == "score" and "score" or "dps", planned = entry.planned == true,
-				currentItemId = worn ~= nil and tonumber(worn.itemId) or 0, site = true,
+				currentItemId = worn ~= nil and tonumber(worn.itemId) or 0, site = true, slot = slot,
 			}
 		end
 	end
@@ -288,8 +310,8 @@ local SITE_REASONS = { noweights = true, nospec = true, uncached = true, nostats
 --- /fs loot) the companion's loot_values where the live scoring cannot make a figure (no weights, no
 --- spec, an item not loaded or listing no stats, no figure for its slot) and the inbox has one for the
 --- item. Answers the result, or nil and why.
-function LootCouncil.ownValue(data, itemId, site)
-	local result, reason = LootCouncil.valueFor(data, itemId, LootCouncil.ownWho(data))
+function LootCouncil.ownValue(data, itemId, site, allowGated)
+	local result, reason = LootCouncil.valueFor(data, itemId, LootCouncil.ownWho(data), nil, allowGated)
 	if result == nil and site and SITE_REASONS[reason] then
 		local fromSite = LootCouncil.siteValue(itemId)
 		if fromSite ~= nil then
@@ -312,6 +334,32 @@ function LootCouncil.valueText(value, unit, healing)
 		return string.format(L.lootValueScore, sign, math.floor(math.abs(value) + 0.5))
 	end
 	return string.format(healing and L.lootValueHps or L.lootValueDps, sign, math.abs(value))
+end
+
+--- A slot as the paper doll names it ("Ranged", "Chest"), or nil.
+function LootCouncil.slotLabel(slot)
+	return slot ~= nil and L.gearSlotLabels[slot] or nil
+end
+
+--- The slot an item goes in, by the paper doll's name, from its equip location; nil where the item fits
+--- slots with different names (a one-hand weapon: main or off hand) or the client has not loaded it.
+function LootCouncil.itemSlotLabel(itemId)
+	local _, _, _, equipLoc = Compat.itemInfoInstant(itemId)
+	local label
+	for _, slot in ipairs(Gear.slotsFor(equipLoc)) do
+		local named = LootCouncil.slotLabel(slot)
+		if label ~= nil and named ~= label then
+			return nil
+		end
+		label = named
+	end
+	return label
+end
+
+--- "Ranger Bow (Ranged)": a name with its slot where the slot is known.
+local function withSlot(shown, slot)
+	local label = LootCouncil.slotLabel(slot)
+	return label ~= nil and string.format(L.lootCmdSlot, shown, label) or shown
 end
 
 --- The sentence for why a value could not be made ("the item is not cached yet").
@@ -443,16 +491,20 @@ function LootCouncil.answered(drop)
 	return count
 end
 
---- The chip's line: "Loot: Sulfuras, Hand of Ragnaros · 3 answers" for the latest drop; nil with none.
+--- "3 of 9 answered": the loot! received and the group's members other than the master looter. The
+--- chip's line and /fs diag count the same way.
+function LootCouncil.answeredText(drop)
+	return string.format(L.lootAnswered, LootCouncil.answered(drop), drop.asked or 0)
+end
+
+--- The chip's line: "Loot: Sulfuras, Hand of Ragnaros · 3 of 9 answered" for the latest drop; nil with none.
 function LootCouncil.chipText()
 	local drops = LootCouncil.shown()
 	local drop = drops[#drops]
 	if drop == nil then
 		return nil
 	end
-	local count = LootCouncil.answered(drop)
-	return string.format(L.lootChip, drop.name or L.tooltipNamePending,
-		string.format(count == 1 and L.lootAnswerOne or L.lootAnswerMany, count))
+	return string.format(L.lootChip, drop.name or L.tooltipNamePending, LootCouncil.answeredText(drop))
 end
 
 --- The region and the chip's line gone.
@@ -575,6 +627,22 @@ local function realmKey(realm)
 	return realm ~= nil and realm:lower():gsub("[%s%-']", "") or nil
 end
 
+--- Whether a sender ("Name-Realm") is `member` ({ short, realm }): the name, and the realm where both have one.
+local function isMember(sender, member)
+	local name, realm = shortName(sender)
+	return name == member.short and (member.realm == nil or realm == nil or realmKey(realm) == realmKey(member.realm))
+end
+
+--- Whether a hello or snapshot! has been seen from `member` ({ short, realm }) this session: they run the addon.
+function LootCouncil.seen(member)
+	for sender in pairs(Comms.seen) do
+		if isMember(sender, member) then
+			return true
+		end
+	end
+	return false
+end
+
 --- The answer a drop holds for a member ({ short, realm }): the sender's name, and the realm where
 --- the member has one (a member of the player's own realm has none).
 function LootCouncil.answerFor(drop, member)
@@ -590,15 +658,19 @@ end
 --- One drop's rows for `members` (GroupPanel.members' shape) at `now`: each member's answer; the
 --- player's own value (`resolvers.own(drop)`: result or nil), computed locally; a member who has
 --- not answered, after WAIT seconds, scored from their inspect (`resolvers.inspect(member, drop)`)
---- and tagged, else "no data". Answers rows { short, classToken, kind ("answer", "own", "inspect",
---- "waiting", "nodata"), value, unit, healing, currentItemId, planned, site }, valued rows by value high to
---- low (DPS before points, then by name), then those still waiting, then "no data". Pure.
+--- and tagged, else "no addon" (`resolvers.seen(member)`, default LootCouncil.seen, finds no hello or
+--- snapshot! from them this session) or "can't score" (it does). Answers rows { short, classToken, kind
+--- ("answer", "own", "inspect", "waiting", "cantscore", "noaddon"), value, unit, healing, currentItemId,
+--- planned, site, slotLabel }, valued rows by value high to low (DPS before points, then by name), then
+--- those still waiting, then "can't score", then "no addon". Pure.
 function LootCouncil.rows(drop, members, now, resolvers)
 	resolvers = resolvers or {}
 	local rows = {}
 	local waited = now - drop.at >= LootCouncil.WAIT
+	local seen = resolvers.seen or LootCouncil.seen
+	local itemSlot = LootCouncil.itemSlotLabel(drop.itemId)
 	for _, member in ipairs(members) do
-		local row = { short = member.short, classToken = member.classToken }
+		local row = { short = member.short, classToken = member.classToken, slotLabel = itemSlot }
 		local function worn(entry)
 			return entry.currentItemId ~= nil and entry.currentItemId ~= 0 and entry.currentItemId == drop.itemId or nil
 		end
@@ -609,8 +681,9 @@ function LootCouncil.rows(drop, members, now, resolvers)
 				row.kind, row.value, row.unit, row.healing = "own", own.value, own.unit, own.healing
 				row.currentItemId, row.planned, row.site = own.currentItemId, own.planned, own.site
 				row.alreadyWorn = worn(own)
+				row.slotLabel = LootCouncil.slotLabel(own.slot) or itemSlot
 			else
-				row.kind = "nodata"
+				row.kind = "cantscore"
 			end
 		elseif answer ~= nil and answer.value ~= nil then
 			row.kind, row.value, row.unit = "answer", answer.value, answer.unit
@@ -625,12 +698,12 @@ function LootCouncil.rows(drop, members, now, resolvers)
 				row.currentItemId, row.planned = scored.currentItemId, scored.planned
 				row.alreadyWorn = worn(scored)
 			else
-				row.kind = "nodata"
+				row.kind = seen(member) and "cantscore" or "noaddon"
 			end
 		end
 		rows[#rows + 1] = row
 	end
-	local rank = { answer = 1, own = 1, inspect = 1, waiting = 2, nodata = 3 }
+	local rank = { answer = 1, own = 1, inspect = 1, waiting = 2, cantscore = 3, noaddon = 4 }
 	table.sort(rows, function(left, right)
 		if rank[left.kind] ~= rank[right.kind] then
 			return rank[left.kind] < rank[right.kind]
@@ -663,16 +736,21 @@ end
 
 --- The player's own line for an item: the line, and why when the item could not be scored.
 local function ownLine(data, itemId, shown)
-	local ok, result, reason = pcall(LootCouncil.ownValue, data, itemId, true)
+	local ok, result, reason = pcall(LootCouncil.ownValue, data, itemId, true, true)
 	if not ok then
 		result, reason = nil, "nodata"
 	end
 	if result == nil then
 		return string.format(L.lootCmdCant, shown, LootCouncil.reasonText(reason)), reason
 	end
+	local slot = LootCouncil.slotLabel(result.slot)
 	if result.currentItemId == itemId then
+		if slot ~= nil then
+			return string.format(L.lootCmdWornSlot, shown, slot)
+		end
 		return string.format(L.lootCmdWorn, shown)
 	end
+	shown = withSlot(shown, result.slot)
 	local worn = L.lootEmpty
 	if result.currentItemId ~= nil and result.currentItemId ~= 0 then
 		worn = Compat.itemName(result.currentItemId) or L.tooltipNamePending
@@ -681,13 +759,26 @@ local function ownLine(data, itemId, shown)
 	if result.site then
 		text = text .. " " .. L.lootSite
 	end
-	return string.format(L.lootCmdLine, shown, text, worn, result.planned and L.lootCmdPlanned or L.lootCmdNotPlanned)
+	local listed = result.planned and L.lootOnYourList or L.lootNotOnYourList
+	if result.needs ~= nil then
+		return string.format(L.lootCmdNeeds, shown, result.needs, text, worn, listed)
+	end
+	return string.format(L.lootCmdLine, shown, text, worn, listed)
+end
+
+--- The dry-run notice, once per login: `say` prints it (or adds it to the lines), and only after a result.
+local function dryNotice(say)
+	if LootCouncil.dryShown then
+		return
+	end
+	LootCouncil.dryShown = true
+	say(L.lootCmdDry)
 end
 
 --- Waits for an uncached item: the real line prints when the client has it (GET_ITEM_INFO_RECEIVED, or
 --- the Item mixin's continuation: the first wins), and at LOAD_WAIT seconds the command gives up and
 --- says why, forgetting the request so the next try asks the client again.
-local function await(itemId, link, data)
+local function await(itemId, link, data, dry)
 	local printer
 	printer = function()
 		if LootCouncil.waiting[itemId] ~= printer then
@@ -699,6 +790,9 @@ local function await(itemId, link, data)
 		end
 		LootCouncil.waiting[itemId] = nil
 		Theme.say(line)
+		if dry then
+			dryNotice(Theme.say)
+		end
 	end
 	LootCouncil.waiting[itemId] = printer
 	Compat.whenItemLoaded(itemId, printer)
@@ -709,6 +803,9 @@ local function await(itemId, link, data)
 		LootCouncil.waiting[itemId] = nil
 		Compat.forgetItemLoad(itemId)
 		Theme.say(string.format(Compat.itemExists(itemId) == false and L.lootCmdUnknown or L.lootCmdTimeout, itemId))
+		if dry then
+			dryNotice(Theme.say)
+		end
 	end)
 end
 
@@ -726,14 +823,16 @@ function LootCouncil.command(rest)
 	local shown = shownName(itemId, link)
 	local lines = {}
 	local line, reason = ownLine(data, itemId, shown)
+	local dry = not (LootCouncil.channel() ~= nil and LootCouncil.isMasterLooter())
 	if reason == "uncached" then
 		Compat.requestItemLoad(itemId)
 		lines[1] = string.format(L.lootCmdLoading, itemId)
-		await(itemId, link, data)
+		-- The notice follows the result line when it arrives, never the "loading" line.
+		await(itemId, link, data, dry)
 	else
 		lines[1] = line
 	end
-	if LootCouncil.channel() ~= nil and LootCouncil.isMasterLooter() then
+	if not dry then
 		local drop, why = LootCouncil.ask(itemId, link or Compat.displayLink(itemId))
 		lines[#lines + 1] = drop ~= nil and string.format(L.lootCmdAsked, shown) or string.format(L.lootCmdNotAsked, why)
 		if drop ~= nil then
@@ -744,8 +843,10 @@ function LootCouncil.command(rest)
 				LootCouncil.onLootClosed()
 			end
 		end
-	else
-		lines[#lines + 1] = L.lootCmdDry
+	elseif reason ~= "uncached" then
+		dryNotice(function(text)
+			lines[#lines + 1] = text
+		end)
 	end
 	return lines
 end
@@ -773,7 +874,7 @@ function LootCouncil.diagLine()
 		return string.format(L.diagLoot, L.diagLootNone)
 	end
 	return string.format(L.diagLoot, string.format(L.diagLootDrop, drop.clock or "", drop.name or L.tooltipNamePending,
-		LootCouncil.answered(drop), drop.asked or 0))
+		LootCouncil.answeredText(drop)))
 end
 
 ns.LootCouncil = LootCouncil

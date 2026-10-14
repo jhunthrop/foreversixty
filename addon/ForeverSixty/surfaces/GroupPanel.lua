@@ -1134,19 +1134,22 @@ end
 -- The Loot region, pure ------------------------------------------------------------------------------
 
 --- One row of the master looter's list as drawn (L5.3): `row` is LootCouncil.rows'. The name in the
---- member's class colour, the value ("+6.3 DPS", with "(inspect)" or "(site)" after it, or "no data" /
---- "waiting" muted), the worn item muted ("empty" for a bare slot) and a "planned" tag; `plain` is the
---- same as one chat line. `nameOf` names an item (Compat.itemName). Pure.
+--- member's class colour, the value ("+6.3 DPS", with "(inspect)" or "(from the site)" after it, or "no
+--- addon" / "can't score" / "waiting" muted, the first two with a `hint` for the hover), the worn item
+--- muted ("empty" for a bare slot) and a gold "on their list" tag; `plain` is the same as one chat line.
+--- `nameOf` names an item (Compat.itemName). Pure.
 function GroupPanel.lootCell(row, nameOf)
 	local cell = { kind = "row", name = row.short,
 		nameHex = row.classToken ~= nil and Theme.panelClassHex(row.classToken) or Theme.HEX.body,
 		value = "", valueHex = Theme.HEX.muted, worn = "", planned = row.planned == true }
-	if row.kind == "nodata" then
-		cell.value = L.lootNoData
+	if row.kind == "noaddon" then
+		cell.value, cell.hint = L.lootNoAddon, { L.lootNoAddonHint }
+	elseif row.kind == "cantscore" then
+		cell.value, cell.hint = L.lootCantScore, { L.lootCantScoreHint }
 	elseif row.kind == "waiting" then
 		cell.value = L.lootWaiting
 	elseif row.alreadyWorn then
-		cell.value = L.lootAlreadyWorn
+		cell.value = row.slotLabel ~= nil and string.format(L.lootAlreadyWornSlot, row.slotLabel) or L.lootAlreadyWorn
 		cell.valueHex = Theme.HEX.body
 		cell.planned = false
 	else
@@ -1168,7 +1171,7 @@ function GroupPanel.lootCell(row, nameOf)
 		parts[#parts + 1] = cell.worn
 	end
 	if cell.planned then
-		parts[#parts + 1] = L.lootPlanned
+		parts[#parts + 1] = L.lootOnTheirList
 	end
 	cell.plain = table.concat(parts, L.groupSubJoin)
 	return cell
@@ -1928,10 +1931,22 @@ local function lootLine(index)
 		name = sized(Widgets.label(parent, "", "body", "small"), S.lootNameWidth),
 		value = sized(Widgets.label(parent, "", "body", "small"), S.lootValueWidth),
 		worn = sized(Widgets.label(parent, "", "muted", "small"), wornWidth),
-		planned = sized(Widgets.label(parent, "", "muted", "small"), S.lootPlannedWidth),
+		planned = sized(Widgets.label(parent, "", "gold", "small"), S.lootPlannedWidth),
 		x = { 0, S.lootNameWidth + gap, wornX, width - S.lootPlannedWidth },
 		wornWidth = wornWidth,
 	}
+	-- The hover over a row that has one ("no addon" / "can't score"): an addon frame laid over the row.
+	local hit = CreateFrame("Frame", nil, parent)
+	hit:EnableMouse(true)
+	hit:SetSize(width, GroupPanel.lineHeight())
+	hit:SetScript("OnEnter", function(self)
+		if line.hint ~= nil then
+			Theme.showLines(self, line.hint, "ANCHOR_RIGHT")
+		end
+	end)
+	hit:SetScript("OnLeave", Theme.hideTooltip)
+	hit:Hide()
+	line.hit = hit
 	GroupPanel.lootPool[index] = line
 	return line
 end
@@ -1947,6 +1962,8 @@ local function drawLoot(flyout, entries, y)
 			for _, key in ipairs(LOOT_KEYS) do
 				line[key]:Hide()
 			end
+			line.hit:Hide()
+			line.hint = nil
 		end
 		return y
 	end
@@ -1969,6 +1986,14 @@ local function drawLoot(flyout, entries, y)
 		for _, key in ipairs(LOOT_KEYS) do
 			line[key]:Hide()
 		end
+		line.hint = entry.hint
+		if entry.hint ~= nil then
+			line.hit:ClearAllPoints()
+			line.hit:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -inner)
+			line.hit:Show()
+		else
+			line.hit:Hide()
+		end
 		if entry.kind == "row" then
 			put(line.name, entry.name, entry.nameHex, line.x[1], S.lootNameWidth)
 			put(line.value, entry.value, entry.valueHex, line.x[2], S.lootValueWidth)
@@ -1976,7 +2001,7 @@ local function drawLoot(flyout, entries, y)
 				put(line.worn, entry.worn, Theme.HEX.muted, line.x[3], line.wornWidth)
 			end
 			if entry.planned then
-				put(line.planned, L.lootPlanned, Theme.HEX.muted, line.x[4], S.lootPlannedWidth)
+				put(line.planned, L.lootOnTheirList, Theme.HEX.gold, line.x[4], S.lootPlannedWidth)
 			end
 		else
 			put(line.title, entry.text, entry.kind == "more" and Theme.HEX.muted or Theme.HEX.body, 0,
@@ -1988,6 +2013,8 @@ local function drawLoot(flyout, entries, y)
 		for _, key in ipairs(LOOT_KEYS) do
 			GroupPanel.lootPool[index][key]:Hide()
 		end
+		GroupPanel.lootPool[index].hit:Hide()
+		GroupPanel.lootPool[index].hint = nil
 	end
 	region:SetHeight(inner)
 	region:Show()

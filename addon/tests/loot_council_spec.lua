@@ -55,6 +55,10 @@ describe("LootCouncil", function()
 		slots = opts.slots or {}
 		units = {}
 		local members = opts.solo and { PARTY[1] } or opts.members or PARTY
+		if opts.level ~= nil then
+			-- The player's own level, as the client's UnitLevel says it.
+			members = { setmetatable({ level = opts.level }, { __index = members[1] }), table.unpack(members, 2) }
+		end
 		for _, entry in ipairs(members) do
 			units[entry.unit] = entry
 		end
@@ -167,6 +171,14 @@ describe("LootCouncil", function()
 			__subclass = 0, __quality = 4, ITEM_MOD_AGILITY_SHORT = 12 }
 		state.itemStats[105] = { __itemId = 105, __slot = "", __name = "Black Lotus",
 			__class = 7, __subclass = 0, __quality = 4 }
+		state.itemStats[106] = { __itemId = 106, __slot = "INVTYPE_CHEST", __name = "Ranger Mail", __class = 4,
+			__subclass = 3, __quality = 4, ITEM_MOD_AGILITY_SHORT = 20 }
+		state.equipped[18] = "item:51:0"
+		state.itemStats["item:51:0"] = { __itemId = 51, __slot = "INVTYPE_RANGED", __name = "Short Ash Bow", __class = 2,
+			__subclass = 2, ITEM_MOD_AGILITY_SHORT = 0 }
+		state.itemStats[51] = state.itemStats["item:51:0"]
+		state.itemStats[107] = { __itemId = 107, __slot = "INVTYPE_RANGED", __name = "Ranger Bow", __class = 2,
+			__subclass = 2, __quality = 4, ITEM_MOD_AGILITY_SHORT = 7 }
 		state.itemStats[60] = { __itemId = 60, __slot = "INVTYPE_CHEST", __name = "Old Cloak", __class = 4, __subclass = 1 }
 		Theme = require("Theme")
 		Theme.reset()
@@ -509,7 +521,7 @@ describe("LootCouncil", function()
 			local lines = drawn()
 			assert.are.equal(string.format(L.lootDrop, "|cffa335eeRobes of Might|r"), lines[1])
 			-- The player's own value is computed here; Thorgrim's is his answer; Elwen has not answered.
-			assert.are.same({ "Tester", "+12.0 DPS", "Worn Robe", "planned" }, lines[2])
+			assert.are.same({ "Tester", "+12.0 DPS", "Worn Robe", "on their list" }, lines[2])
 			assert.are.same({ "Thorgrim", "+8.5 DPS", "Old Cloak", "" }, lines[3])
 			assert.are.same({ "Elwen", L.lootWaiting, "", "" }, lines[4])
 			local cell = mock.lastCall(GroupPanel.lootPool[2].name, "SetTextColor")
@@ -527,11 +539,51 @@ describe("LootCouncil", function()
 			Inspect.cache["Thorgrim"].at = clock
 			mock.runTimers(state)
 			local lines = drawn()
-			assert.are.same({ "Tester", "+12.0 DPS", "Worn Robe", "planned" }, lines[2])
-			assert.are.same({ "Thorgrim", "+12.0 DPS " .. L.lootInspect, "Worn Robe", "planned" }, lines[3])
-			assert.are.same({ "Elwen", L.lootNoData, "", "" }, lines[4])
+			assert.are.same({ "Tester", "+12.0 DPS", "Worn Robe", "on their list" }, lines[2])
+			assert.are.same({ "Thorgrim", "+12.0 DPS " .. L.lootInspect, "Worn Robe", "on their list" }, lines[3])
+			assert.are.same({ "Elwen", "no addon", "", "" }, lines[4])
 			local cell = mock.lastCall(GroupPanel.lootPool[4].value, "SetTextColor")
 			assert.are.equal(Theme.HEX.muted, Theme.hexOf(cell[1], cell[2], cell[3]))
+		end)
+
+		-- Fix round 2 (5): the master looter's rows say "on their list" in gold, and nothing when not.
+		it("tags a row 'on their list' in gold, and leaves a row that is not on theirs bare", function()
+			askAboutChest()
+			fromMember("1|loot!|100-1000|8.5|dps|60|0")
+			GroupPanel.command()
+			local tag = GroupPanel.lootPool[2].planned
+			assert.are.equal(L.lootOnTheirList, tag:GetText())
+			local color = mock.lastCall(tag, "SetTextColor")
+			assert.are.equal(Theme.HEX.gold, Theme.hexOf(color[1], color[2], color[3]))
+			assert.is_false(GroupPanel.lootPool[3].planned:IsShown())
+		end)
+
+		-- Fix round 2 (7): "no addon" (nothing seen from the member this session) against "can't score".
+		it("calls a silent member 'no addon' until a hello is seen, then 'can't score', with a hover for each", function()
+			askAboutChest()
+			clock = 1005
+			mock.runTimers(state)
+			local entries = GroupPanel.lootNow()
+			assert.are.equal(L.lootNoAddon, entries[3].value)
+			assert.are.equal("no addon", entries[3].value)
+			assert.are.same({ L.lootNoAddonHint }, entries[3].hint)
+			assert.are.equal("No Forever Sixty addon seen on this member.", L.lootNoAddonHint)
+			-- A hello from Elwen: the addon is there and answered nothing.
+			fromMember("1|hello|60|mage-arcane|14|Arcane leveling|2026-11-04", "Elwen")
+			entries = GroupPanel.lootNow()
+			assert.are.equal("can't score", entries[3].value)
+			assert.are.same({ L.lootCantScoreHint }, entries[3].hint)
+			assert.are.equal("Their addon could not score this item (no weights, an unloaded item, or gear they cannot wear).",
+				L.lootCantScoreHint)
+			-- Both sort last, "can't score" above "no addon" (Thorgrim, unseen, comes after Elwen).
+			assert.are.same({ "Tester", "Elwen", "Thorgrim" }, { entries[2].name, entries[3].name, entries[4].name })
+			assert.are.equal("no addon", entries[4].value)
+			-- The hover is on the drawn row: a frame over it shows the lines.
+			GroupPanel.command()
+			local lines = drawn()
+			assert.are.same({ "Elwen", "can't score", "", "" }, lines[3])
+			assert.are.same({ L.lootCantScoreHint }, GroupPanel.lootPool[3].hint)
+			assert.is_function(GroupPanel.lootPool[3].hit:GetScript("OnEnter"))
 		end)
 
 		it("redraws on each loot! and sorts a later answer above a lower one", function()
@@ -541,7 +593,7 @@ describe("LootCouncil", function()
 			fromMember("1|loot!|100-1000|40.0|dps|0|1", "Elwen")
 			local lines = drawn()
 			assert.are.equal("Elwen", lines[2][1])
-			assert.are.same({ "Elwen", "+40.0 DPS", L.lootEmpty, "planned" }, lines[2])
+			assert.are.same({ "Elwen", "+40.0 DPS", L.lootEmpty, "on their list" }, lines[2])
 			assert.are.equal("Tester", lines[3][1])
 			assert.are.equal("Thorgrim", lines[4][1])
 		end)
@@ -615,7 +667,7 @@ describe("LootCouncil", function()
 			askAboutChest()
 			fromMember("1|loot!|100-1000|8.5|dps|60|0")
 			assert.is_nil(GroupPanel.flyout)
-			assert.are.equal(string.format(L.lootChip, "Robes of Might", string.format(L.lootAnswerOne, 1)), Chip.loot)
+			assert.are.equal("Loot: Robes of Might · 1 of 2 answered", Chip.loot)
 			local hint = GroupPanel.buttonHint()
 			assert.are.equal(string.format(L.lootButtonHint, "|cffa335eeRobes of Might|r"), hint[#hint])
 			assert.is_false(GroupPanel.flyout ~= nil and GroupPanel.flyout:IsShown())
@@ -632,7 +684,7 @@ describe("LootCouncil", function()
 			askAboutChest()
 			fromMember("1|loot!|100-1000|8.5|dps|60|0")
 			fromMember("1|loot!|100-1000|9.5|dps|60|0", "Elwen")
-			local text = string.format(L.lootChip, "Robes of Might", string.format(L.lootAnswerMany, 2))
+			local text = "Loot: Robes of Might · 2 of 2 answered"
 			assert.are.equal(text, LootCouncil.chipText())
 			local model = Chip.model({ level = 60, classIcon = "crest", now = 100, clock = 0, shown = true,
 				combatHide = true, loot = Chip.loot, build = { order = {} }, progress = { matched = 0, total = 0 } })
@@ -658,22 +710,63 @@ describe("LootCouncil", function()
 
 	-- Ruling 4: /fs loot.
 	describe("/fs loot", function()
-		it("prints the player's own loot! line for a planned item, solo, and sends nothing", function()
+		it("prints the player's own loot! line for an item on their list, solo, and sends nothing", function()
 			start({ solo = true })
 			assert.are.same({
-				"|cffa335eeRobes of Might|r: +12.0 DPS over Worn Robe, planned",
+				"|cffa335eeRobes of Might|r (Chest): +12.0 DPS over Worn Robe, on your list",
 				L.lootCmdDry,
 			}, LootCouncil.command(link(100, "Robes of Might")))
 			assert.are.equal(0, #sent)
 		end)
 
-		it("says 'not planned', takes a bare id, and says 'empty' for a bare slot", function()
+		it("says 'not on your list', takes a bare id, and says 'empty' for a bare slot", function()
 			start({ solo = true })
 			local lines = LootCouncil.command("101")
-			assert.is_truthy(lines[1]:find("+3.0 DPS over Worn Robe, not planned", 1, true))
+			assert.is_truthy(lines[1]:find("(Chest): +3.0 DPS over Worn Robe, not on your list", 1, true))
 			state.equipped[5] = nil
 			lines = LootCouncil.command("item:101")
-			assert.is_truthy(lines[1]:find("+5.0 DPS over " .. L.lootEmpty .. ", not planned", 1, true))
+			assert.is_truthy(lines[1]:find("+5.0 DPS over " .. L.lootEmpty .. ", not on your list", 1, true))
+		end)
+
+		-- Fix round 2 (2): the dry-run notice prints once per login, after the result line.
+		it("prints the dry-run notice once per login, and never between 'loading' and the result", function()
+			start({ solo = true })
+			assert.are.equal("Only you see this: nothing was sent (only the master looter asks the group).", L.lootCmdDry)
+			assert.is_true(LootCouncil.dryShown ~= true)
+			assert.are.equal(2, #LootCouncil.command("101"))
+			assert.is_true(LootCouncil.dryShown)
+			assert.are.equal(1, #LootCouncil.command("100"))
+			-- An uncached item: the loading line alone now, the result, and only then the notice.
+			start({ solo = true })
+			itemClient()
+			local lines = LootCouncil.command("103")
+			assert.are.same({ string.format(L.lootCmdLoading, 103) }, lines)
+			loadItem103()
+			LootCouncil.onItemInfo(103)
+			assert.are.equal(Theme.chatLine("Late Robe (Chest): +5.0 DPS over Worn Robe, not on your list"), state.printed[1])
+			assert.are.equal(Theme.chatLine(L.lootCmdDry), state.printed[2])
+			assert.are.equal(2, #state.printed)
+			-- Said already: a second uncached command prints no second notice.
+			state.itemStats[103] = { __itemId = 103, __slot = "INVTYPE_CHEST", __class = 4, __subclass = 2 }
+			LootCouncil.command("103")
+			loadItem103()
+			LootCouncil.onItemInfo(103)
+			assert.are.equal(3, #state.printed)
+		end)
+
+		-- Fix round 2 (6): the slot, and the level gate as a prefix with the value still computed.
+		it("names the slot, and says what level an item needs when the character cannot use it yet", function()
+			start({ solo = true, level = 30 })
+			local lines = LootCouncil.command("106")
+			assert.is_truthy(lines[1]:find("Ranger Mail|r (Chest): needs level 40 — +8.0 DPS over Worn Robe, not on your list",
+				1, true))
+			-- Beyond reach for good: the existing can't-score form.
+			assert.is_truthy(LootCouncil.command("102")[1]:find("can't score: " .. L.lootWhy.cantuse, 1, true))
+			start({ solo = true })
+			assert.is_truthy(LootCouncil.command("106")[1]:find("Ranger Mail|r (Chest): +8.0 DPS over Worn Robe, "
+				.. "not on your list", 1, true))
+			local bow = LootCouncil.command("107")[1]
+			assert.is_truthy(bow:find("Ranger Bow|r (Ranged): +3.5 DPS over Short Ash Bow, ", 1, true))
 		end)
 
 		it("says can't score and why, and the usage with no item", function()
@@ -683,7 +776,7 @@ describe("LootCouncil", function()
 			assert.is_truthy(LootCouncil.command("102")[1]:find(L.lootWhy.cantuse, 1, true))
 		end)
 
-		local LATE = "Late Robe: +5.0 DPS over Worn Robe, not planned"
+		local LATE = "Late Robe (Chest): +5.0 DPS over Worn Robe, not on your list"
 
 		it("waits on an uncached item and prints the real line when the client has it", function()
 			start({ solo = true })
@@ -697,11 +790,11 @@ describe("LootCouncil", function()
 			assert.are.equal(0, #state.printed)
 			loadItem103()
 			LootCouncil.onItemInfo(103)
-			assert.are.equal(1, #state.printed)
+			assert.are.equal(2, #state.printed)
 			assert.are.equal(Theme.chatLine(LATE), state.printed[1])
 			assert.is_nil(LootCouncil.waiting[103])
 			LootCouncil.onItemInfo(103)
-			assert.are.equal(1, #state.printed)
+			assert.are.equal(2, #state.printed)
 		end)
 
 		it("also prints when the Item mixin's ContinueOnItemLoad fires, once whichever comes first", function()
@@ -714,7 +807,7 @@ describe("LootCouncil", function()
 			assert.are.equal(Theme.chatLine(LATE), state.printed[1])
 			LootCouncil.onItemInfo(103)
 			client.continuations[103]()
-			assert.are.equal(1, #state.printed)
+			assert.are.equal(2, #state.printed)
 		end)
 
 		it("works on a client with no Item mixin", function()
@@ -731,6 +824,8 @@ describe("LootCouncil", function()
 			assert.is_true(require("Compat").requestedItems[103])
 			mock.runTimers(state)
 			assert.are.equal(Theme.chatLine(string.format(L.lootCmdTimeout, 103)), state.printed[1])
+			assert.are.equal("Item 103 isn't in your client's cache yet. Link it in chat or see it drop, then try again.",
+				string.format(L.lootCmdTimeout, 103))
 			assert.is_nil(LootCouncil.waiting[103])
 			assert.is_nil(require("Compat").requestedItems[103])
 			-- The next try asks the client again.
@@ -738,12 +833,13 @@ describe("LootCouncil", function()
 			assert.are.same({ 103, 103 }, client.requests)
 			client.exists = false
 			mock.runTimers(state)
-			assert.are.equal(Theme.chatLine(string.format(L.lootCmdUnknown, 103)), state.printed[2])
+			assert.are.equal("unknown item 103", string.format(L.lootCmdUnknown, 103))
+			assert.are.equal(Theme.chatLine(string.format(L.lootCmdUnknown, 103)), state.printed[3])
 			-- Where the client cannot say whether the id exists, the first form.
 			_G.C_Item.DoesItemExistByID = nil
 			LootCouncil.command("103")
 			mock.runTimers(state)
-			assert.are.equal(Theme.chatLine(string.format(L.lootCmdTimeout, 103)), state.printed[3])
+			assert.are.equal(Theme.chatLine(string.format(L.lootCmdTimeout, 103)), state.printed[4])
 		end)
 
 		it("prints nothing at the timeout once the line has been printed", function()
@@ -753,7 +849,7 @@ describe("LootCouncil", function()
 			loadItem103()
 			LootCouncil.onItemInfo(103)
 			mock.runTimers(state)
-			assert.are.equal(1, #state.printed)
+			assert.are.equal(2, #state.printed)
 		end)
 
 		it("drops a loot? waiting for an unloadable item at 5 s and lets the next ask the client again", function()
@@ -777,7 +873,8 @@ describe("LootCouncil", function()
 
 		it("says an item is already worn instead of a gain of nothing", function()
 			start({ solo = true })
-			assert.are.equal("Worn Robe: already worn", LootCouncil.command("50")[1])
+			assert.are.equal("Worn Robe: already worn (Chest)", LootCouncil.command("50")[1])
+			assert.are.equal("Short Ash Bow: already worn (Ranged)", LootCouncil.command("51")[1])
 		end)
 
 		it("sends the real loot? as the master looter in a group, and only a dry run otherwise", function()
@@ -826,9 +923,12 @@ describe("LootCouncil", function()
 		it("fills the player's own row and /fs loot where there are no weights, tagged (site), planned from it", function()
 			start({ solo = true, noWeights = true, inbox = inbox() })
 			local lines = LootCouncil.command(link(100, "Robes of Might"))
-			assert.are.equal("|cffa335eeRobes of Might|r: +6.3 DPS " .. L.lootSite .. " over Worn Robe, planned", lines[1])
+			assert.are.equal("|cffa335eeRobes of Might|r (Chest): +6.3 DPS " .. L.lootSite
+				.. " over Worn Robe, on your list", lines[1])
 			lines = LootCouncil.command(link(101, "Lesser Robe"))
-			assert.are.equal("|cffa335eeLesser Robe|r: +20 pts " .. L.lootSite .. " over Worn Robe, not planned", lines[1])
+			assert.are.equal("|cffa335eeLesser Robe|r (Chest): +20 pts " .. L.lootSite
+				.. " over Worn Robe, not on your list", lines[1])
+			assert.are.equal("(from the site)", L.lootSite)
 			-- No such item in the message: can't score.
 			assert.is_truthy(LootCouncil.command("104")[1]:find("can't score", 1, true))
 		end)
@@ -849,12 +949,13 @@ describe("LootCouncil", function()
 			withSite.messages[1].items[103] = { value = 4.2, unit = "dps", planned = true }
 			start({ solo = true, inbox = withSite })
 			itemClient()
-			local expected = "+4.2 DPS " .. L.lootSite .. " over Worn Robe, planned"
+			local expected = "+4.2 DPS " .. L.lootSite .. " over Worn Robe, on your list"
 			assert.is_truthy(LootCouncil.command("103")[1]:find(expected, 1, true))
 			assert.is_nil(LootCouncil.waiting[103])
 			-- Cached but listing no stats: the same fallback.
 			state.itemStats[103].__name = "Bare Robe"
-			assert.are.equal("Bare Robe: +4.2 DPS " .. L.lootSite .. " over Worn Robe, planned", LootCouncil.command("103")[1])
+			assert.are.equal("Bare Robe (Chest): +4.2 DPS " .. L.lootSite .. " over Worn Robe, on your list",
+				LootCouncil.command("103")[1])
 		end)
 
 		it("is the own row's value for an uncached drop too", function()
@@ -879,7 +980,7 @@ describe("LootCouncil", function()
 			LootCouncil.onLootOpened()
 			GroupPanel.command()
 			local rows = GroupPanel.lootNow()
-			assert.are.equal(L.lootAlreadyWorn, rows[2].value)
+			assert.are.equal("already worn (Chest)", rows[2].value)
 			assert.are.equal("", rows[2].worn)
 			assert.is_false(rows[2].planned)
 		end)
@@ -948,6 +1049,7 @@ describe("LootCouncil", function()
 			local line = chosen("2026-10-13")
 			assert.are.equal("lastnight", line.kind)
 			assert.are.equal("Magmadar: 38th percentile, biggest loss standing in fire", line.text)
+			assert.are.equal("Magmadar 38th · standing in fire", line.short)
 			assert.are.equal("idle", chosen("2026-11-12").kind)
 		end)
 

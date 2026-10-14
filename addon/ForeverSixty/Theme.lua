@@ -341,7 +341,7 @@ Theme.SIZES = {
 	--- and the most rows a drop lists before "and N more".
 	lootNameWidth = 84,
 	lootValueWidth = 130,
-	lootPlannedWidth = 56,
+	lootPlannedWidth = 76,
 	lootColumnGap = 6,
 	lootMaxRows = 8,
 }

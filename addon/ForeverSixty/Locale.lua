@@ -732,6 +732,15 @@ local L = {
 	-- "Lucifron: 71st percentile, biggest loss downtime" (Chip.ordinal writes "71st").
 	chipLastNight = "%s: %s percentile, biggest loss %s",
 	chipLastNightNoLoss = "%s: %s percentile",
+	-- L5.3 fix round 2: the short form Chip.fit falls back to, "Magmadar 38th · standing in fire"; the
+	-- hover's full line, "Magmadar: 38th percentile for Beast Mastery, biggest loss: standing in fire"
+	-- (the spec words left out where the build names no spec), and the raid's date line.
+	chipLastNightShort = "%s %s · %s",
+	chipLastNightShortNoLoss = "%s %s",
+	chipLastNightTip = "%s: %s percentile for %s",
+	chipLastNightTipNoSpec = "%s: %s percentile",
+	chipLastNightTipLoss = "%s, biggest loss: %s",
+	chipLastNightAsOf = "as of %s",
 	-- "71st": the number and its English suffix (Chip.ordinal), 11th to 13th excepted.
 	ordinal = "%d%s",
 	ordinalSuffixes = { "st", "nd", "rd" },
@@ -762,6 +771,7 @@ local L = {
 	-- /fs diag's line for the chip's own render check, outside "Not working:".
 	diagChipShown = "Chip: shown, nothing cut off",
 	diagChipShortened = "Chip: shown, the line was shortened",
+	diagChipShortForm = "Chip: shown, short form",
 	-- /fs diag with nothing broken.
 	diagAllWorking = "Everything is working.",
 	diagDataAddonMissingInfo = "The Forever Sixty Data addon is not installed; scores show once it is.",
@@ -1256,49 +1266,56 @@ L.diagGroupCheckYouNone = "%s: nothing missing"
 L.diagGroupPanelFailed = "The group panel failed and is off until /reload: %s"
 
 -- The loot council helper (spec section 4.9, L5.3): the master looter's list in the group panel's
--- Loot region, the chip's line, /fs loot and /fs diag. "no data" covers a member with no addon and a
--- member whose addon cannot score the item (no weights or spec, an item the client has not loaded, an
--- item they cannot wear) alike.
+-- Loot region, the chip's line, /fs loot and /fs diag. A silent member reads "no addon" (nothing seen from
+-- them this session) or "can't score" (their addon answered nothing: no weights or spec, an item the client
+-- has not loaded, an item they cannot wear).
 L.lootDrop = "Drop: %s"
 -- A value in its unit, "+6.3 DPS" / "−2.1 DPS" / "+12 pts" ("HPS" for a healer's own figure); the sign
 -- is "+" or the tooltip's minus.
 L.lootValueDps = "%s%.1f DPS"
 L.lootValueHps = "%s%.1f HPS"
 L.lootValueScore = "%s%d pts"
--- A row: the worn item's name or "empty", a muted "planned" tag where the item is the band's pick, the
--- "(inspect)" tag where the list scored the member from an inspect, "(site)" where the figure is the
--- companion's, and "no data" or "waiting" where there is no figure yet.
+-- A row: the worn item's name or "empty", a gold "on their list" tag where the item is the band's pick
+-- for the member, the "(inspect)" tag where the list scored the member from an inspect, "(from the
+-- site)" where the figure is the companion's, and "no addon", "can't score" or "waiting" where there is
+-- no figure.
 L.lootEmpty = "empty"
-L.lootPlanned = "planned"
+L.lootOnTheirList = "on their list"
 L.lootInspect = "(inspect)"
-L.lootSite = "(site)"
-L.lootNoData = "no data"
+L.lootSite = "(from the site)"
+L.lootNoAddon = "no addon"
+L.lootCantScore = "can't score"
 L.lootWaiting = "waiting"
 L.lootMore = "and %d more"
--- The row's hover: why a member shows "no data".
-L.lootNoDataHint = "No answer: no Forever Sixty addon, or it could not score this item."
--- The chip's line, "Loot: Sulfuras, Hand of Ragnaros · 3 answers", and its hover.
+-- The rows' hovers: "no addon" (nothing seen from the member this session) and "can't score" (an addon
+-- that answered nothing within the window).
+L.lootNoAddonHint = "No Forever Sixty addon seen on this member."
+L.lootCantScoreHint = "Their addon could not score this item (no weights, an unloaded item, or gear they cannot wear)."
+-- The chip's line, "Loot: Sulfuras, Hand of Ragnaros · 3 of 9 answered", and its hover; /fs diag counts the same way.
 L.lootChip = "Loot: %s · %s"
-L.lootAnswerOne = "%d answer"
-L.lootAnswerMany = "%d answers"
+L.lootAnswered = "%d of %d answered"
 L.chipHintLoot = "Click: Show the list"
 -- The group button's hover names the drop.
 L.lootButtonHint = "Drop: %s"
 -- /fs loot <item link or id>.
 L.lootUsage = "Type /fs loot and an item link or id to see what it is worth to you."
 L.lootNotInGroup = "You are not in a group."
+-- "Ranger Bow (Ranged): +3.5 DPS over Short Ash Bow, on your list"; the level gate is a prefix.
 L.lootCmdLine = "%s: %s over %s, %s"
-L.lootCmdPlanned = "planned"
-L.lootCmdNotPlanned = "not planned"
+L.lootCmdNeeds = "%s: needs level %d — %s over %s, %s"
+L.lootCmdSlot = "%s (%s)"
+L.lootOnYourList = "on your list"
+L.lootNotOnYourList = "not on your list"
 L.lootCmdCant = "%s: can't score: %s"
 L.lootCmdAsked = "Asked the group about %s."
 L.lootCmdNotAsked = "Did not ask the group: %s"
 L.lootCmdLoading = "Item %d: loading…"
-L.lootCmdTimeout = "Item %d: the client could not load the item (it exists but the server did not answer). "
-	.. "Try again after you have seen it drop or linked it."
+L.lootCmdTimeout = "Item %d isn't in your client's cache yet. Link it in chat or see it drop, then try again."
 L.lootCmdUnknown = "unknown item %d"
 L.lootCmdWorn = "%s: already worn"
+L.lootCmdWornSlot = "%s: already worn (%s)"
 L.lootAlreadyWorn = "already worn"
+L.lootAlreadyWornSlot = "already worn (%s)"
 L.lootCmdDry = "Only you see this: nothing was sent (only the master looter asks the group)."
 -- Why an item could not be scored.
 L.lootWhy = {
@@ -1314,7 +1331,7 @@ L.lootWhy = {
 -- /fs diag: "Loot: none" or "Loot: 21:04 Sulfuras, Hand of Ragnaros, 3 of 9 answered".
 L.diagLoot = "Loot: %s"
 L.diagLootNone = "none"
-L.diagLootDrop = "%s %s, %d of %d answered"
+L.diagLootDrop = "%s %s, %s"
 
 -- The item tooltip's refusal reads exactly as the rules engine's own.
 L.tooltipUntil = L.rulesUntilLevel
