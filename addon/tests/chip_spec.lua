@@ -306,7 +306,7 @@ describe("Chip.model", function()
 	it("tells last night's worst boss once, until it has been seen", function()
 		local model = Chip.model(inputs({ lastRaid = LAST_RAID }))
 		assert.are.equal("lastnight", model.chosen.kind)
-		assert.are.equal("Lucifron: 71st percentile, biggest loss downtime", model.chosen.text)
+		assert.are.equal("Lucifron: 71st percentile, biggest loss: downtime", model.chosen.text)
 		assert.are.equal(CLASS_ICON, model.chosen.icon)
 		assert.are.equal("lastraid", model.chosen.action)
 		assert.are.equal("idle", Chip.model(inputs({ lastRaid = LAST_RAID, lastNightDone = true })).chosen.kind)
@@ -316,7 +316,7 @@ describe("Chip.model", function()
 	it("gives last night's line a short form that keeps the loss, and none without a loss", function()
 		local chosen = Chip.model(inputs({ lastRaid = LAST_RAID })).chosen
 		assert.are.equal("Lucifron 71st · downtime", chosen.short)
-		assert.are.equal("downtime", chosen.keep)
+		assert.is_nil(chosen.keep)
 		local bare = { date = "2026-12-08", bosses = { { name = "Lucifron", percentile = 71 } } }
 		chosen = Chip.model(inputs({ lastRaid = bare })).chosen
 		assert.are.equal("Lucifron: 71st percentile", chosen.text)
@@ -327,20 +327,34 @@ describe("Chip.model", function()
 			return #text * 6
 		end
 		local full = Chip.model(inputs({ lastRaid = LAST_RAID })).chosen
-		assert.are.equal(full.short, Chip.fit(full.text, measure, #full.short * 6, full.short, full.keep))
+		assert.are.equal(full.short, Chip.fit(full.text, measure, #full.short * 6, full.short))
 	end)
 
 	it("words the hover in full, with the build's spec, a colon before the loss and the raid's date", function()
 		local build = { name = "Arms leveling", spec = "warrior-arms", order = { {}, {}, {} } }
-		local lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = LAST_RAID, build = build })))
+		local lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = LAST_RAID, build = build, buildSpec = build.spec })))
 		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile for Arms, biggest loss: downtime|r", lines[2])
 		assert.are.equal("|cff" .. Theme.HEX.muted .. "as of 8 Dec|r", lines[3])
 		-- No spec on the build: the spec words are left out; no loss: the loss is.
 		lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = LAST_RAID })))
 		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile, biggest loss: downtime|r", lines[2])
 		local bare = { date = "2026-12-08", bosses = { { name = "Lucifron", percentile = 71 } } }
-		lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = bare, build = build })))
+		lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = bare, build = build, buildSpec = build.spec })))
 		assert.are.equal("|cff" .. Theme.HEX.body .. "Lucifron: 71st percentile for Arms|r", lines[2])
+	end)
+
+	-- L5.3 fix round 3 (1): a saved build has no `.spec`; the hover names the tree its order weights.
+	it("names the spec of a saved build from its order, and keeps an explicit spec", function()
+		local tabs = { { name = "Beast Mastery" }, { name = "Marksmanship" }, { name = "Survival" } }
+		local data = { classes = { hunter = { tabs = tabs } } }
+		local saved = { name = "Mine", classSlug = "hunter", order = { { tab = 1 }, { tab = 1 }, { tab = 2 } } }
+		assert.are.equal("hunter-beast-mastery", Chip.buildSpec(data, saved))
+		assert.are.equal("hunter-survival", Chip.buildSpec(data, { spec = "hunter-survival", order = { { tab = 1 } } }))
+		assert.is_nil(Chip.buildSpec(data, nil))
+		local lines = Chip.tooltipLines(Chip.model(inputs({ lastRaid = LAST_RAID, build = saved,
+			buildSpec = Chip.buildSpec(data, saved) })))
+		local line = "Lucifron: 71st percentile for Beast Mastery, biggest loss: downtime"
+		assert.are.equal("|cff" .. Theme.HEX.body .. line .. "|r", lines[2])
 	end)
 
 	it("never tells a raid more than 14 days old, or one with no date", function()

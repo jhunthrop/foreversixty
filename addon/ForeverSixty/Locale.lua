@@ -729,8 +729,8 @@ local L = {
 	chipHereHeading = "Here for you in %s:",
 	chipRaidCheck = "Missing: %s",
 	chipListSeparator = ", ",
-	-- "Lucifron: 71st percentile, biggest loss downtime" (Chip.ordinal writes "71st").
-	chipLastNight = "%s: %s percentile, biggest loss %s",
+	-- "Lucifron: 71st percentile, biggest loss: downtime" (Chip.ordinal writes "71st").
+	chipLastNight = "%s: %s percentile, biggest loss: %s",
 	chipLastNightNoLoss = "%s: %s percentile",
 	-- L5.3 fix round 2: the short form Chip.fit falls back to, "Magmadar 38th · standing in fire"; the
 	-- hover's full line, "Magmadar: 38th percentile for Beast Mastery, biggest loss: standing in fire"

@@ -1048,7 +1048,7 @@ describe("LootCouncil", function()
 			end
 			local line = chosen("2026-10-13")
 			assert.are.equal("lastnight", line.kind)
-			assert.are.equal("Magmadar: 38th percentile, biggest loss standing in fire", line.text)
+			assert.are.equal("Magmadar: 38th percentile, biggest loss: standing in fire", line.text)
 			assert.are.equal("Magmadar 38th · standing in fire", line.short)
 			assert.are.equal("idle", chosen("2026-11-12").kind)
 		end)

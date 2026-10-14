@@ -385,19 +385,17 @@ local function lastNightState(input)
 	if worst == nil then
 		return nil
 	end
-	local text, short, tip, keep
+	local text, short, tip
 	local ordinal = Chip.ordinal(worst.percentile)
 	local loss = type(worst.biggest_loss) == "string" and worst.biggest_loss ~= "" and worst.biggest_loss or nil
 	-- The hover's full line names the spec of the build shown, when it names one.
-	local build = input.build
-	local spec = type(build) == "table" and type(build.spec) == "string" and build.spec ~= ""
-		and Follow.specName(build.spec) or nil
+	local spec = type(input.buildSpec) == "string" and input.buildSpec ~= "" and Follow.specName(input.buildSpec) or nil
 	tip = spec ~= nil and string.format(L.chipLastNightTip, worst.name, ordinal, spec)
 		or string.format(L.chipLastNightTipNoSpec, worst.name, ordinal)
 	if loss ~= nil then
 		text = string.format(L.chipLastNight, worst.name, ordinal, loss)
-		-- The short form Chip.fit falls back to: the loss is kept whole.
-		short, keep = string.format(L.chipLastNightShort, worst.name, ordinal, loss), loss
+		-- The short form Chip.fit falls back to.
+		short = string.format(L.chipLastNightShort, worst.name, ordinal, loss)
 		tip = string.format(L.chipLastNightTipLoss, tip, loss)
 	else
 		text = string.format(L.chipLastNightNoLoss, worst.name, ordinal)
@@ -405,7 +403,7 @@ local function lastNightState(input)
 	end
 	local day = Compat.shortDate(input.lastRaid.date)
 	return {
-		kind = "lastnight", icon = input.classIcon, text = text, short = short, keep = keep, tip = tip,
+		kind = "lastnight", icon = input.classIcon, text = text, short = short, tip = tip,
 		-- The raid's date, a muted line under the hover's full line.
 		tipExtra = day ~= nil and string.format(L.chipLastNightAsOf, day) or nil,
 		action = "lastraid", hint = L.chipHintLastRaid,
@@ -849,6 +847,26 @@ local function lastRaid()
 	return messages[1]
 end
 
+--- The spec slug of the build shown: its own `spec` (a default build), else the tree its
+--- order weights most (a saved build from Codec.loadBuild carries none). Nil without a build.
+function Chip.buildSpec(data, build)
+	if type(build) ~= "table" then
+		return nil
+	end
+	if type(build.spec) == "string" and build.spec ~= "" then
+		return build.spec
+	end
+	if build.classSlug == nil or type(build.order) ~= "table" or type(data) ~= "table" or data.classes == nil then
+		return nil
+	end
+	local ranks = {}
+	for index, point in ipairs(build.order) do
+		ranks[point.tab] = ranks[point.tab] or {}
+		ranks[point.tab][index] = 1
+	end
+	return Gear.specOf(data, build.classSlug, ranks)
+end
+
 --- The model's inputs, read from the live modules and the client.
 function Chip.inputs(data)
 	local level = Chip.level()
@@ -862,6 +880,7 @@ function Chip.inputs(data)
 	local input = {
 		level = level,
 		build = build,
+		buildSpec = Chip.buildSpec(data, build),
 		buildName = build ~= nil and Follow.buildName(data, build) or nil,
 		progress = progress,
 		classIcon = Theme.classIcon(classSlug ~= nil and classSlug:upper() or nil),
