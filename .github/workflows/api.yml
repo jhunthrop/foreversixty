@@ -175,7 +175,10 @@ jobs:
           # The service container runs the planner (forever-sim -plan) whose
           # answer nears 22 MB at the server cap; 256Mi at concurrency 80
           # is not enough headroom. Conservative; api/README.md says so.
-          flags: --memory=512Mi
+          # 1Gi: the 2026-10-15 rollout (3dc79d26) failed its startup probe at 520 MiB on
+          # 512Mi; the boot-time tree load and the guild membership sweep peak near the old
+          # limit, and a revision that cannot start never takes traffic.
+          flags: --memory=1Gi
         # Every job is the same image run with different arguments, so
         # each has to move with the service. The jobs are created once
         # by hand (see api/README.md); until one exists this step says
