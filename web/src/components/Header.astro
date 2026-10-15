@@ -175,7 +175,7 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
     })();
   </script>
   <script>
-    import { isTypingTarget, wireSearchForm } from '../lib/character-search-dom';
+    import { isTypingTarget, wireLookupForm } from '../lib/character-search-dom';
     import { SESSION_GUILD_EVENT } from '../lib/character-selector/config';
     import type { SessionGuild } from '../lib/character-selector/session-guild';
     import { readPublishedSessionGuild } from '../lib/character-selector/session-guild-dom';
@@ -195,7 +195,7 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
       );
     }
     for (const form of header?.querySelectorAll<HTMLFormElement>('form[data-character-search]') ?? []) {
-      wireSearchForm(form);
+      wireLookupForm(form);
     }
     const toggle = header?.querySelector<HTMLButtonElement>('[data-header-search-toggle]') ?? null;
     const panel = header?.querySelector<HTMLElement>('[data-header-search-panel]') ?? null;

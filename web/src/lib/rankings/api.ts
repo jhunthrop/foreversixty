@@ -260,7 +260,7 @@ export function encounterSlug(name: string): string {
 }
 
 /** Only the filters that are set reach the URL, so a bare rankings link stays short. */
-function search(query: Record<string, string | number | undefined>): string {
+export function search(query: Record<string, string | number | undefined>): string {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
     if (value === undefined || value === '') continue;
@@ -280,12 +280,13 @@ function search(query: Record<string, string | number | undefined>): string {
  * becomes a `RankingsError` using the envelope's own message when the response carried
  * one, the same message fidelity the original standalone implementation had.
  */
-async function get<T>(path: string, apiBase: string): Promise<T> {
+export async function get<T>(path: string, apiBase: string, signal?: AbortSignal): Promise<T> {
   let result: EnvelopeResult<T>;
   try {
     result = await requestEnvelope<T>(path, apiBase, {
       credentials: 'omit',
       failureMessage: RANKINGS_FAILED,
+      signal,
     });
   } catch (error) {
     if (error instanceof AccountError) throw new RankingsError(error.message, error.status, error.code);

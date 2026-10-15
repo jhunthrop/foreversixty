@@ -2,6 +2,7 @@
 @import 'tailwindcss';
 @import './tokens.css';
 @import './nav.css';
+@import './typeahead.css';
 
 @layer base {
   body {
