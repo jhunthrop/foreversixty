@@ -1,7 +1,8 @@
 // design/listing/md2html.mjs
 // Renders a listing file's "## Description" section to the HTML CurseForge's description
 // editor takes (paste into its HTML source view). Covers only what the two listings use:
-// headings, paragraphs, bold, inline code, links, bullet lists and pipe tables.
+// headings, paragraphs, bold, inline code, links, bullet and numbered lists, pipe tables
+// and a picture on a line of its own (`![alt](url)`).
 //   node design/listing/md2html.mjs design/listing/curseforge-description.md > /tmp/desc.html
 import { readFile } from 'node:fs/promises';
 
@@ -35,6 +36,17 @@ function render(markdown) {
     } else if (line.startsWith('## ')) {
       out.push(`<h2>${inline(line.slice(3))}</h2>`);
       i += 1;
+    } else if (/^!\[[^\]]*\]\([^)]+\)$/.test(line.trim())) {
+      const [, alt, src] = /^!\[([^\]]*)\]\(([^)]+)\)$/.exec(line.trim());
+      out.push(`<p><img src="${escape(src)}" alt="${escape(alt)}"></p>`);
+      i += 1;
+    } else if (/^\d+\. /.test(line)) {
+      const items = [];
+      while (i < lines.length && /^\d+\. /.test(lines[i])) {
+        items.push(`<li>${inline(lines[i].replace(/^\d+\. /, ''))}</li>`);
+        i += 1;
+      }
+      out.push(`<ol>\n${items.join('\n')}\n</ol>`);
     } else if (line.startsWith('- ')) {
       const items = [];
       while (i < lines.length && lines[i].startsWith('- ')) {
@@ -55,7 +67,7 @@ function render(markdown) {
       out.push(`<table>\n<thead><tr>${th}</tr></thead>\n<tbody>\n${trs.join('\n')}\n</tbody>\n</table>`);
     } else {
       const paragraph = [];
-      while (i < lines.length && lines[i].trim() !== '' && !/^(#|- |\|)/.test(lines[i])) {
+      while (i < lines.length && lines[i].trim() !== '' && !/^(#|- |\d+\. |!\[|\|)/.test(lines[i])) {
         paragraph.push(lines[i].trim());
         i += 1;
       }

@@ -1,13 +1,27 @@
 <h2>The Forever Score, in game</h2>
 <p>Forever Sixty Data is the ratings pack the <strong><a href="https://foreversixty.gg/setup">Forever Sixty</a></strong> addon reads. It carries every public character's Forever Score and every verified guild's standing from <strong><a href="https://foreversixty.gg">foreversixty.gg</a></strong> into the game, so a player tooltip, a chat line, the guild roster and the raid frame can show how someone performs without anyone leaving the game.</p>
 <p>It holds no code. Install it beside Forever Sixty and the addon reads it; on its own it does nothing.</p>
+<h3>Install</h3>
+<ol>
+<li>Install it with Forever Sixty. It is the addon's required dependency, so the CurseForge and Wago apps add it for you; by hand, the <code>ForeverSixtyData</code> folder goes in <code>Interface\AddOns</code> next to <code>ForeverSixty</code>.</li>
+<li>Keep it updating. A new version is published every night; your addon manager picks it up like any other addon.</li>
+<li>Nothing to configure. The Forever Sixty addon reads it at login and says on its Settings page which night's pack it has: "Player ratings: as of 14 Oct".</li>
+</ol>
+<h3>Where it shows up</h3>
+<p><img src="https://foreversixty.gg/addon/player-tooltip-score.jpg" alt="A player tooltip with the Forever Score and its five parts"></p>
+<p><strong>On every player tooltip.</strong> "Forever Score 1240 · Rare · as of 13 Oct" in the tier colour; hold Shift for the five parts behind it. A player with no public logs reads "no logs yet", never a zero.</p>
+<p><img src="https://foreversixty.gg/addon/chat-badge-guild.jpg" alt="A guild chat line with the sender's FS badge in front of it"></p>
+<p><strong>In chat.</strong> "FS 1240 ·" before a sender's line in LFG, Trade, guild chat and whispers, muted once the record is more than three days old.</p>
+<p><img src="https://foreversixty.gg/addon/guild-tab.jpg" alt="The guild frame's Forever Sixty roster"></p>
+<p><strong>On the guild frame and the raid frame.</strong> The guild tab's score, attendance and gear-gap columns and the group panel's score column read this pack for every member who does not run the addon.</p>
 <h3>What is in it</h3>
 <ul>
 <li><strong>Forever Scores.</strong> One number for a character's whole record, with the five parts behind it: gear (how close to the spec's best set for the level), experience (dungeons cleared and raid bosses killed), parses (how their best on each boss ranks against their spec), attendance (their guild's raid nights in the last 90 days) and preparation (flask, food and enchants on every logged pull). A parse is not a performance; the score says so.</li>
 <li><strong>Guild standings.</strong> Progression, raid nights and roster size for every guild that raids with logs on the site.</li>
+<li><strong>The date it was made</strong>, so the addon can say "as of 14 Oct" and tell you when the pack is too old to trust.</li>
 </ul>
 <h3>Updated every night</h3>
-<p>A new version is published each night after the site rates the day's logs. Your addon manager updates it like any other addon, and the numbers in the game match the site's. The addon dates what it shows ("as of 14 Oct") and says when the pack is too old to trust.</p>
+<p>A new version is published each night after the site rates the day's logs, and the numbers in the game match the site's. If the addon's Settings page reads "Player ratings: too old", update this pack; "not installed" means it is missing from <code>Interface\AddOns</code>.</p>
 <h3>Where the numbers come from</h3>
 <p>Every score comes from combat logs uploaded to foreversixty.gg with public visibility, rated by the same engine the site uses. Private and guild-only logs are never included. The site's <strong><a href="https://foreversixty.gg/ratings">ratings page</a></strong> explains each part and how small samples are handled.</p>
 <h3>What it never does</h3>
