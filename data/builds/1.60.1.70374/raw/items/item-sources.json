@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-14T12:09:06.381211+00:00",
+ "generated_at": "2026-10-15T11:46:50.428205+00:00",
  "source": {
   "wowhead": {
    "note": "scraped per item id, ONLY for ids the fork database names no source for at all; see pipeline.wowhead_item_sources for the URL pattern, the four listviews read, and the politeness rules."
@@ -798714,6 +798714,16 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
+  "281661": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "required_faction_id": null,
+   "required_standing_raw": null,
+   "source": "wowhead",
+   "fetched_at": "2026-10-15T11:46:50.428007+00:00"
+  },
   "281665": {
    "dropped_by": [],
    "sold_by": [],
@@ -799984,6 +799994,16 @@
    "required_standing_raw": null,
    "source": "wowhead",
    "fetched_at": "2026-10-13T08:28:47.598441+00:00"
+  },
+  "284065": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "required_faction_id": null,
+   "required_standing_raw": null,
+   "source": "wowhead",
+   "fetched_at": "2026-10-15T11:46:50.428007+00:00"
   },
   "284067": {
    "dropped_by": [],
@@ -801651,6 +801671,16 @@
    "required_standing_raw": null,
    "source": "wowhead",
    "fetched_at": "2026-10-09T00:30:14.557088+00:00"
+  },
+  "286640": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "required_faction_id": null,
+   "required_standing_raw": null,
+   "source": "wowhead",
+   "fetched_at": "2026-10-15T11:46:50.428007+00:00"
   },
   "286730": {
    "dropped_by": [],
