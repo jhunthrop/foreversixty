@@ -26,6 +26,7 @@ const COPY = {
 
   status: {
     reportLogging: 'Open this report on the site',
+    inProgress: 'In progress',
     rows: {
       report: 'Current report',
       fights: 'Fights uploaded',
@@ -34,7 +35,6 @@ const COPY = {
     },
     noReport: 'None yet',
     starting: 'Starting...',
-    openReport: 'Open on the site',
     folders: 'Game folders',
     noFolders: 'None found yet.',
     watching: 'Watching',
@@ -42,14 +42,15 @@ const COPY = {
     advancedOff: 'Advanced logging: OFF',
     advancedOn: 'Advanced logging: on',
     advancedUnknown: 'Not checked yet. Log in once.',
+    // The line a folder row keeps comes from the snapshot (copy.go).
   },
 
   reports: {
     all: 'Open all my reports on the site',
     emptyTitle: 'No reports yet.',
     emptyBody: 'Type /combatlog in game, fight something, and the report shows up here within seconds.',
-    unpairedTitle: 'Connect this device first.',
-    unpairedButton: 'Connect this device',
+    unpairedTitle: 'Sign in first.',
+    unpairedButton: 'Sign in with Battle.net',
     unnamed: 'Unnamed report',
     inProgress: 'in progress',
     notUploaded: 'not uploaded yet',
@@ -75,7 +76,7 @@ const COPY = {
     tryAgain: 'Try again',
     starting: 'Opening your browser...',
     // Signing in
-    waiting: 'Waiting for you to sign in in your browser...',
+    waiting: 'Waiting for you to sign in...',
     checkCode: 'Check that your browser shows this code:',
     lasts: 'This link works for 10 minutes.',
     countdown: (m, s) => 'Expires in ' + m + ':' + String(s).padStart(2, '0'),
@@ -91,17 +92,19 @@ const COPY = {
     connectedAs: (who) => (who ? 'Connected as ' + who : 'Connected'),
     flash: 'Connected. The companion is ready.',
     savedIn: 'Saved in',
-    fileWarn: 'No system keychain found.',
     details: 'Details',
     deviceName: 'Device name',
     api: 'API',
     openReports: 'Open my reports',
     forget: 'Forget this device',
-    forgetAsk: 'Forget this device? Uploads stop until you connect again.',
+    forgetAsk: 'Forget this device? Uploads stop until you sign in again. Your reports on the site stay.',
     forgetYes: 'Forget',
     forgetNo: 'Cancel',
-    forgotten: 'Forgotten on this PC. To revoke it on the site too, open ',
+    forgottenRemoved: 'Forgotten. This computer was removed from your account.',
+    forgottenLocal: 'Forgotten on this PC. To remove it from your account too, open ',
     forgottenLink: 'Account > Devices',
+    forgottenLocalEnd: ' on foreversixty.gg.',
+    forgetting: 'Forgetting...',
     emptyCode: 'Paste the code from the site first.',
   },
 

@@ -21,7 +21,7 @@ const (
 	// CopyNeverSynced is the addon row before the site has acked an
 	// export. The row is shown, not hidden: a missing addon is the
 	// thing the player has to act on.
-	CopyNeverSynced = "Not synced yet. Install the ForeverSixty addon and log out once."
+	CopyNeverSynced = "Addon not synced yet. Install ForeverSixty, then log out once."
 	// CopyStaleHelp sits under a sync older than a day.
 	CopyStaleHelp       = "Log out of the game with the addon installed to sync."
 	CopySimQueued       = "Sim queued"
@@ -94,13 +94,13 @@ func since(seen, now time.Time) string {
 // The Status headline: five states and the sign-in wait, first match
 // wins (see Headline). The tray shows the title word for word.
 const (
-	CopyConnectingTitle = "Waiting for you to sign in"
-	CopyConnectingSub   = "Finish signing in in your browser. The companion connects by itself."
+	CopyConnectingTitle = "Waiting for you to sign in..."
+	CopyConnectingSub   = "Finish in your browser. The companion connects by itself."
 	CopyConnectingBtn   = "Show the sign-in"
 
 	CopyNotConnectedTitle = "Not connected"
 	CopyNotConnectedSub   = "Nothing is uploading until you sign in."
-	CopyNotConnectedBtn   = "Connect this device"
+	CopyNotConnectedBtn   = "Sign in with Battle.net"
 
 	CopyNoFolderTitle = "No game folder found"
 	CopyNoFolderSub   = "Add your World of Warcraft folder."
@@ -118,6 +118,10 @@ const (
 
 	// CopyAdvancedHow is the menu path, and what to do after.
 	CopyAdvancedHow = "Turn it on in Options > Network > Advanced Combat Logging, then restart the game."
+	// CopyAdvancedRowHelp is the short line a folder row keeps when the
+	// headline is about something else, so the sentence is never on
+	// screen twice.
+	CopyAdvancedRowHelp = "Turn it on in Options > Network > Advanced Combat Logging."
 )
 
 // Why a sign-in failed, when the site (not the network) said so.

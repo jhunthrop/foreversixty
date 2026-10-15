@@ -129,8 +129,20 @@ func (a *App) handlePair(w http.ResponseWriter, r *http.Request) {
 	a.answer(w, a.Pair(r.Context(), in.Code))
 }
 
+// unpaired is the Forget answer: the snapshot, and whether the site
+// confirmed the device is gone from the account.
+type unpaired struct {
+	Snapshot
+	Revoked bool `json:"revoked"`
+}
+
 func (a *App) handleUnpair(w http.ResponseWriter, r *http.Request) {
-	a.answer(w, a.Unpair())
+	revoked, err := a.Unpair(r.Context())
+	if err != nil {
+		a.writeFault(w, statusOf(err), err, CodeInternal)
+		return
+	}
+	writeJSON(w, http.StatusOK, unpaired{Snapshot: a.Snapshot(), Revoked: revoked}, "")
 }
 
 func (a *App) handleSettings(w http.ResponseWriter, r *http.Request) {

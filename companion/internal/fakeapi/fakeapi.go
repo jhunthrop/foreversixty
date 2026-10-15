@@ -98,6 +98,11 @@ type Server struct {
 	// The connect flow (device authorization), keyed by connect id.
 	connects   map[string]*connectRow
 	connectSeq int
+
+	// revoked is set when the device forgot itself; a new claim issues a live
+	// token again.
+	revoked bool
+	revokes int
 }
 
 // InboxFetches is how many times GET /v1/addon/inbox has been answered.
@@ -129,6 +134,7 @@ func New() *Server {
 	mux.HandleFunc("GET /v1/devices/connect/{id}", s.connectPoll)
 	mux.HandleFunc("POST /v1/devices/connect/approve", s.connectApprove)
 	mux.HandleFunc("POST /v1/devices/connect/deny", s.connectDeny)
+	mux.HandleFunc("DELETE /v1/devices/self", s.revokeSelf)
 	mux.HandleFunc("POST /v1/reports", s.createReport)
 	mux.HandleFunc("PUT /v1/reports/{id}/fights/{n}", s.putFight)
 	mux.HandleFunc("PUT /v1/reports/{id}/fights/{n}/live", s.putLive)
@@ -286,7 +292,7 @@ func (s *Server) wrap(h http.Handler) http.Handler {
 			return
 		}
 		if r.URL.Path != "/v1/devices/claim" && !strings.HasPrefix(r.URL.Path, "/v1/devices/connect") {
-			if r.Header.Get("Authorization") != "Bearer "+Token {
+			if r.Header.Get("Authorization") != "Bearer "+Token || s.isRevoked() {
 				fail(w, http.StatusUnauthorized, "unknown device token")
 				return
 			}
@@ -341,6 +347,9 @@ func (s *Server) claim(w http.ResponseWriter, r *http.Request) {
 			map[string]string{"code": "expired or unknown"})
 		return
 	}
+	s.mu.Lock()
+	s.revoked = false
+	s.mu.Unlock()
 	ok(w, http.StatusCreated, map[string]string{
 		"device_id": "dev00000000aaaa", "token": Token, "account_label": AccountLabel,
 	})
@@ -737,4 +746,39 @@ func (s *Server) addonInbox(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, `{"ok":true,"data":%s,"error":null,"request_id":"fake"}`, strings.TrimSpace(string(body)))
+}
+
+func (s *Server) isRevoked() bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.revoked
+}
+
+// SelfRevokes is how many times a device has revoked itself.
+func (s *Server) SelfRevokes() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.revokes
+}
+
+// revokeSelf is DELETE /v1/devices/self: the device behind the bearer
+// token is revoked, and its token answers 401 from then on.
+func (s *Server) revokeSelf(w http.ResponseWriter, r *http.Request) {
+	if s.shouldFail("DELETE /v1/devices/self") {
+		fail(w, http.StatusInternalServerError, "could not remove this device just now")
+		return
+	}
+	s.mu.Lock()
+	s.revoked = true
+	s.revokes++
+	s.mu.Unlock()
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// RevokeToken revokes the device token from the site's side, as Account >
+// Devices would: every call that carries it answers 401 from then on.
+func (s *Server) RevokeToken() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.revoked = true
 }

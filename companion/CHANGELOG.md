@@ -12,9 +12,12 @@
   update that is ready, and the site link.
 - Game folders: a list with the flavour name and a Watching tag; Settings adds folders through
   the system folder dialog and removes only the ones you added.
-- Device page: five states, a two-step "Forget this device", "Saved in" names the keychain.
+- Device page: five states, a two-step "Forget this device" that also removes the device from your account, "Saved in" names
+  the keychain (or says a private file is the fallback).
 - Reports: relative dates, Copy link, a link to all your reports on the site.
-- Closing the window keeps the companion in the tray (Windows); the first close says so.
+- Closing the window keeps the companion in the tray (Windows only in this release); the first
+  close says so. On macOS and Linux, closing the window quits the companion; keep it open while
+  logging.
 - Every external link opens in your system browser.
 - Errors are sentences, never exception text; the page no longer loses focus on its two-second
   refresh.

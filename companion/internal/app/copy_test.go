@@ -14,7 +14,7 @@ import (
 func TestTheAddonCopyIsTheDesignersWords(t *testing.T) {
 	for got, want := range map[string]string{
 		app.CopyLastSynced:      "Last synced",
-		app.CopyNeverSynced:     "Not synced yet. Install the ForeverSixty addon and log out once.",
+		app.CopyNeverSynced:     "Addon not synced yet. Install ForeverSixty, then log out once.",
 		app.CopyStaleHelp:       "Log out of the game with the addon installed to sync.",
 		app.CopySimQueued:       "Sim queued",
 		app.CopySimNeedsPremium: "Sim needs premium",

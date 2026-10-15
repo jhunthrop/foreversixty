@@ -163,6 +163,7 @@ h3 {
 .secondary { font-size: 13px; }
 .secondary .row .v { font-size: 14px; }
 .row .v.amber { color: var(--warn); font-weight: 600; }
+.row .v.muted { color: var(--muted); }
 .row .v .sub { display: block; font-size: 12px; font-weight: 400; color: var(--muted); }
 
 .note { color: var(--muted); font-size: 13px; margin: 8px 0 0; min-height: 0; }
@@ -220,8 +221,7 @@ button.primary {
 button.primary:hover { background: var(--gold-hover); border-color: var(--gold-hover); color: var(--on-gold); }
 button.primary:active { background: var(--gold-deep); border-color: var(--gold-deep); }
 button.primary:disabled:hover { background: var(--gold); border-color: var(--gold); color: var(--on-gold); }
-button.big { min-height: 40px; display: inline-flex; align-items: center; gap: 10px; padding: 0 18px; font-size: 13px; }
-button.big svg { flex: none; }
+button.big { min-height: 40px; display: inline-flex; align-items: center; padding: 0 18px; font-size: 13px; }
 button.danger { border-color: var(--bad); color: var(--bad); }
 button.danger:hover { border-color: var(--bad); color: #ffd9d4; background: #2a1210; }
 button.link {
@@ -290,9 +290,12 @@ ul.reports .zone { color: var(--strong); }
 }
 .link-field { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
 .link-field input { flex: 1; }
-.ask { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
-.ask span { color: var(--strong); }
-.ask button { margin-top: 0; }
+.ask { margin-top: 14px; }
+.ask p { margin: 0; font-size: 14px; color: var(--strong); }
+.ask-buttons { display: flex; flex-wrap: nowrap; gap: 8px; margin-top: 10px; }
+.ask-buttons button { margin-top: 0; }
+/* Focus starts on Cancel by script; show the ring whatever moved it there. */
+.ask button:focus { outline: 2px solid var(--gold); outline-offset: 2px; }
 details { margin-top: 10px; }
 details summary { color: var(--muted); font-size: 13px; cursor: pointer; padding: 4px 0; }
 details .row { font-size: 13px; }

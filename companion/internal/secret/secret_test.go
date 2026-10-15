@@ -144,11 +144,26 @@ func TestTheBackendIsNamedInThePlayersWords(t *testing.T) {
 		{Keychain, "windows", "Windows Credential Manager"},
 		{Keychain, "darwin", "macOS Keychain"},
 		{Keychain, "linux", "Secret Service"},
-		{File, "windows", "A file only you can read"},
-		{File, "linux", "A file only you can read"},
+		{File, "windows", "A private file in your user folder"},
+		{File, "linux", "A private file in your user folder"},
 	} {
 		if got := Name(c.b, c.goos); got != c.want {
 			t.Errorf("Name(%v, %s) = %q, want %q", c.b, c.goos, got, c.want)
+		}
+	}
+}
+
+func TestTheFileFallbackNamesWhatWasNotAvailable(t *testing.T) {
+	for goos, want := range map[string]string{
+		"windows": "Windows Credential Manager was not available.",
+		"darwin":  "macOS Keychain was not available.",
+		"linux":   "Secret Service was not available.",
+	} {
+		if got := FallbackNote(File, goos); got != want {
+			t.Errorf("FallbackNote(File, %s) = %q, want %q", goos, got, want)
+		}
+		if got := FallbackNote(Keychain, goos); got != "" {
+			t.Errorf("FallbackNote(Keychain, %s) = %q, want none", goos, got)
 		}
 	}
 }

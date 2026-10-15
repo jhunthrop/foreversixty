@@ -117,6 +117,9 @@ func (s *Server) connectPoll(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewEncoder(w).Encode(map[string]any{"ok": false, "data": map[string]string{"status": "used"},
 			"error": map[string]string{"message": "already collected"}, "request_id": "fake"})
 	case status == "approved":
+		s.mu.Lock()
+		s.revoked = false
+		s.mu.Unlock()
 		ok(w, http.StatusOK, map[string]string{"status": "approved",
 			"device_id": "dev00000000bbbb", "token": Token, "account_label": AccountLabel})
 	default:

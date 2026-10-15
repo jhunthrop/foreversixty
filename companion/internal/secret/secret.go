@@ -152,12 +152,22 @@ func Migrate(s Store, configPath string) error {
 	return config.Save(configPath, cfg)
 }
 
+// FallbackNote is the sub line under the file fallback: which store the
+// file stands in for, and that it was not there. The normal backends have
+// no note.
+func FallbackNote(b Backend, goos string) string {
+	if b != File {
+		return ""
+	}
+	return Name(Keychain, goos) + " was not available."
+}
+
 // Name is where the token lives in the player's words, for the Device
 // page: the keychain is a different thing on each system, and "keychain"
 // is a Mac word on Windows.
 func Name(b Backend, goos string) string {
 	if b == File {
-		return "A file only you can read"
+		return "A private file in your user folder"
 	}
 	switch goos {
 	case "windows":

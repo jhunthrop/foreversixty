@@ -164,7 +164,7 @@ func TestSavingSettingsWithoutFoldersKeepsTheOnesTheyAdded(t *testing.T) {
 func TestTheSnapshotCarriesTheNewFieldsAndNeverAnErrorsText(t *testing.T) {
 	h := newHarness(t)
 	s := h.app.Snapshot()
-	if s.AppVersion == "" || s.TokenBackendName != "A file only you can read" {
+	if s.AppVersion == "" || s.TokenBackendName != "A private file in your user folder" || s.TokenBackendNote == "" {
 		t.Errorf("version %q, backend %q", s.AppVersion, s.TokenBackendName)
 	}
 	if len(s.Installs) != 1 {
@@ -174,7 +174,7 @@ func TestTheSnapshotCarriesTheNewFieldsAndNeverAnErrorsText(t *testing.T) {
 	if in.FlavorName != "Classic Era" || !in.Watching || !in.Added || in.Path != h.game {
 		t.Errorf("install = %+v", in)
 	}
-	if in.AdvancedLogHelp != app.CopyAdvancedHow {
+	if in.AdvancedLogHelp != app.CopyAdvancedRowHelp {
 		t.Errorf("help = %q", in.AdvancedLogHelp)
 	}
 	if s.Connect.State != "idle" {
