@@ -1,5 +1,12 @@
 # Forever Sixty
 
+## 2.0.1
+
+Two fixes reported on a fresh level-1 rogue right after 2.0.0.
+
+- The character panel's rotation rows show the rank you have learned (the spellbook's highest), not the rank of the spell the level-10 band names; an unlearned "at level N" row keeps the band's rank.
+- Without a guild the "Forever Sixty" guild button stays hidden (and appears on the next refresh after you join); a flyout opened anyway reads "Not in a guild." instead of promising a roster, and `/fs diag` says "Guild tab: not in a guild".
+
 ## 2.0.0
 
 Forever Sixty 2.0.0 replaces the six-page window with surfaces on the client's own frames,
