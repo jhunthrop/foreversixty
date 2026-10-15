@@ -415,7 +415,7 @@ Options.EVENTS = {
 	-- The quest reward and roll marks (L4.2): the reward panel opening and closing, a roll.
 	"QUEST_COMPLETE", "QUEST_FINISHED", "START_LOOT_ROLL",
 	-- The guild tab (L5.1): the roster the flyout asked for has arrived.
-	"GUILD_ROSTER_UPDATE",
+	"GUILD_ROSTER_UPDATE", "PLAYER_GUILD_UPDATE",
 	-- The group panel (L5.2): a member's auras changed while a ready check stands (it also reads
 	-- GROUP_ROSTER_UPDATE, INSPECT_READY, READY_CHECK and the combat events above).
 	"UNIT_AURA",
@@ -492,6 +492,11 @@ function Options.onEvent(_, event, ...)
 	if event == "GUILD_ROSTER_UPDATE" then
 		-- Only the guild tab reads the guild roster: an open flyout redraws, nothing else.
 		GuildTab.onRosterUpdate()
+		return
+	end
+	if event == "PLAYER_GUILD_UPDATE" then
+		-- Joined or left a guild: only the guild tab's button and flyout follow.
+		GuildTab.onGuildUpdate()
 		return
 	end
 	if event == "GROUP_ROSTER_UPDATE" then

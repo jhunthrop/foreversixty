@@ -1029,6 +1029,25 @@ describe("Options", function()
 		assert.are.equal(0, chip)
 	end)
 
+	it("routes PLAYER_GUILD_UPDATE to the guild tab alone", function()
+		local GuildTab, Chip = require("GuildTab"), require("Chip")
+		local guild, chip = 0, 0
+		GuildTab.onGuildUpdate = function()
+			guild = guild + 1
+		end
+		Chip.refresh = function()
+			chip = chip + 1
+		end
+		local listed = false
+		for _, event in ipairs(Options.EVENTS) do
+			listed = listed or event == "PLAYER_GUILD_UPDATE"
+		end
+		assert.is_true(listed)
+		Options.onEvent(Options.frame, "PLAYER_GUILD_UPDATE", "player")
+		assert.are.equal(1, guild)
+		assert.are.equal(0, chip)
+	end)
+
 	it("refreshes the guild tab with every surface and when an addon (the guild frame) loads", function()
 		local GuildTab, Chip, SlotMarks = require("GuildTab"), require("Chip"), require("SlotMarks")
 		Chip.refresh = function() end
