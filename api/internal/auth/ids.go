@@ -77,3 +77,66 @@ func TokenHash(token string) []byte {
 func SameToken(a, b string) bool {
 	return subtle.ConstantTimeCompare([]byte(a), []byte(b)) == 1
 }
+
+// Connect ids and user codes: the companion connect flow's two secrets.
+const (
+	// UserCodeAlphabet is the contract's list: no vowels, so no word, and
+	// no 0 or 1.
+	UserCodeAlphabet = "BCDFGHJKLMNPQRSTVWXZ23456789"
+	// UserCodeChars is the length of a user code, before the hyphen.
+	UserCodeChars = 6
+)
+
+// NewConnectID returns a connect id: 32 random bytes, base64url, 43 chars.
+func NewConnectID() string { return NewSessionID() }
+
+// NewUserCode returns a fresh user code without its hyphen. The draw
+// rejects bytes past the largest multiple of the alphabet so no symbol is
+// likelier than another.
+func NewUserCode() string {
+	n := byte(len(UserCodeAlphabet))
+	limit := 256 - 256%int(n)
+	out := make([]byte, 0, UserCodeChars)
+	buf := make([]byte, 16)
+	for len(out) < UserCodeChars {
+		if _, err := rand.Read(buf); err != nil {
+			panic("auth: crypto/rand: " + err.Error())
+		}
+		for _, b := range buf {
+			if int(b) < limit && len(out) < UserCodeChars {
+				out = append(out, UserCodeAlphabet[b%n])
+			}
+		}
+	}
+	return string(out)
+}
+
+// FormatUserCode shows a code the way people read it: KQ4-7TM.
+func FormatUserCode(code string) string {
+	if len(code) != UserCodeChars {
+		return code
+	}
+	return code[:3] + "-" + code[3:]
+}
+
+// NormalizeUserCode upper-cases a typed code and strips hyphens and
+// spaces. ok is false when what is left is not a well-formed code.
+func NormalizeUserCode(s string) (string, bool) {
+	var b strings.Builder
+	for _, r := range strings.ToUpper(s) {
+		if r == '-' || r == ' ' {
+			continue
+		}
+		b.WriteRune(r)
+	}
+	code := b.String()
+	if len(code) != UserCodeChars {
+		return "", false
+	}
+	for i := 0; i < len(code); i++ {
+		if !strings.ContainsRune(UserCodeAlphabet, rune(code[i])) {
+			return "", false
+		}
+	}
+	return code, true
+}

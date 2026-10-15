@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net/http"
 	netmail "net/mail"
+	"net/url"
 	"strings"
 	"time"
 
@@ -81,6 +82,13 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST /v1/devices/pair", RequireSession(s.pair))
 	claimLimit := httpx.RateLimitPer(claimsPerHour, time.Hour, trustedProxyHops)
 	mux.Handle("POST /v1/devices/claim", claimLimit(http.HandlerFunc(s.claim)))
+	mux.Handle("POST /v1/devices/connect", claimLimit(http.HandlerFunc(s.connectStart)))
+	// The poll is the companion's, with the unguessable id as its secret, so
+	// it is not rate limited; an unknown id answers 404 in one shape.
+	mux.HandleFunc("GET /v1/devices/connect/lookup", RequireSession(s.connectLookup))
+	mux.HandleFunc("GET /v1/devices/connect/{connect_id}", s.connectPoll)
+	mux.HandleFunc("POST /v1/devices/connect/approve", RequireSession(s.connectApprove))
+	mux.HandleFunc("POST /v1/devices/connect/deny", RequireSession(s.connectDeny))
 	mux.HandleFunc("GET /v1/devices", RequireSession(s.listDevices))
 	mux.HandleFunc("DELETE /v1/devices/{id}", RequireSession(s.revokeDevice))
 }
@@ -171,6 +179,7 @@ func (s *Service) runImport(r *http.Request, userID int64, accessToken string) {
 }
 
 type emailRequest struct {
+	Next  string `json:"next"`
 	Email string `json:"email"`
 }
 
@@ -201,7 +210,13 @@ func (s *Service) emailStart(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "email", err, "could not send that link just now")
 		return
 	}
-	link := s.APIBaseURL + "/v1/auth/email/callback?token=" + token
+	// next rides in the link, ahead of the token, and is checked again by the
+	// callback; only a given one is carried so plain sign-ins read as before.
+	link := s.APIBaseURL + "/v1/auth/email/callback?"
+	if in.Next != "" {
+		link += "next=" + url.QueryEscape(safeNext(in.Next)) + "&"
+	}
+	link += "token=" + token
 	if err := s.Mailer.Send(r.Context(), mail.Message{
 		To:      address,
 		Subject: "Your Forever Sixty sign-in link",
@@ -531,7 +546,13 @@ func (s *Service) claim(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// The only time the token is ever readable.
-	httpx.WriteOK(w, r, http.StatusCreated, map[string]string{"device_id": d.ID, "token": token})
+	// Who it connected as, so the companion can say so; a failed read only
+	// loses the label, never the device that was just made.
+	label, err := s.Store.AccountLabel(r.Context(), userID)
+	if err != nil {
+		s.logger().Warn("auth", "id", httpx.RequestIDFrom(r.Context()), "op", "claim label", "err", err)
+	}
+	httpx.WriteOK(w, r, http.StatusCreated, map[string]string{"device_id": d.ID, "token": token, "account_label": label})
 }
 
 func (s *Service) listDevices(w http.ResponseWriter, r *http.Request) {

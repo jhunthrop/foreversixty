@@ -1433,8 +1433,58 @@ paths:
                 name: { type: string }
                 platform: { type: string }
       responses:
-        '201': { description: "device_id and the token, shown once", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '201': { description: "device_id, the token (shown once) and account_label", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '404': { description: "Unknown, spent, or expired code", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/devices/connect:
+    post:
+      summary: Start a companion connect (no identity yet; claim rate limit per IP)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                platform: { type: string }
+      responses:
+        '201': { description: "connect_id, user_code (KQ4-7TM), url, expires_in 600, interval 2", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '429': { description: "Too many connects from this address", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/devices/connect/{connect_id}:
+    get:
+      summary: Poll a connect (the id is the secret; not rate limited)
+      parameters: [ { name: connect_id, in: path, required: true, schema: { type: string } } ]
+      responses:
+        '200': { description: "status pending, denied or expired; or approved with device_id, token and account_label, once", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "Unknown id", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '410': { description: "data.status is used: the approved answer was already collected", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/devices/connect/lookup:
+    get:
+      summary: What a connect code is for (session only)
+      parameters: [ { name: code, in: query, required: true, schema: { type: string } } ]
+      responses:
+        '200': { description: "name, platform, expires_in", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "Unknown, expired or decided code", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/devices/connect/approve:
+    post:
+      summary: Approve a connect code for the signed-in account (session only)
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, required: [code], properties: { code: { type: string } } } } }
+      responses:
+        '200': { description: "name and platform of the device that will be created", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "Unknown or expired code", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '409': { description: "Already decided", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/devices/connect/deny:
+    post:
+      summary: Deny a connect code (session only)
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, required: [code], properties: { code: { type: string } } } } }
+      responses:
+        '204': { description: "Denied" }
+        '404': { description: "Unknown or expired code", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '409': { description: "Already decided", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/devices:
     get:
       summary: The account's devices
