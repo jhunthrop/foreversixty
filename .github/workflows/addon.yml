@@ -26,6 +26,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults: { run: { working-directory: addon } }
     steps:
       - uses: actions/checkout@v4
@@ -61,6 +62,7 @@ jobs:
     # shipped file (`luac -p`, parse-only, no output written) under Lua
     # 5.1.5 and nothing else.
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults: { run: { working-directory: addon } }
     steps:
       - uses: actions/checkout@v4

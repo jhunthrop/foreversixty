@@ -17,6 +17,11 @@ on:
   schedule:
     - cron: '23 6 * * *'
   workflow_dispatch:
+    inputs:
+      force:
+        description: Rank even if nothing the ranker reads has changed since the last picks
+        type: boolean
+        default: false
 permissions: { contents: read }
 concurrency:
   group: bis
@@ -24,6 +29,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
+    timeout-minutes: 150
     permissions:
       contents: write
       actions: write
@@ -152,6 +158,37 @@ jobs:
               sleep 20
             done
           fi
+      # ci-minutes lane, 2026-10-15: the ranking is deterministic ("the same
+      # input always gives the same picks", the 2.0.0 changelog), and it is
+      # the single most expensive job in the repository (~70 runner-minutes a
+      # night). So it runs only when something it reads has changed since the
+      # picks on main were made: the ranker and engine pin (sim/), the curated
+      # specs and rotations (data/curated/), the active build, the Makefile,
+      # this workflow, and the build's own data directory minus the ranking's
+      # OUTPUTS (bis/, addon-data.json). The hash is computed AFTER tonight's
+      # crawl commit above, so a quest level or item source that landed
+      # tonight counts as a change. The picks commit below records the hash
+      # as an "Inputs:" trailer; a hand-made commit to bis/ has no trailer
+      # and so always re-ranks. `force` on a dispatch bypasses the check.
+      - name: tonight's ranking inputs, against the last picks
+        id: inputs
+        env:
+          BUILD: ${{ steps.identity.outputs.build }}
+          FORCE: ${{ github.event.inputs.force }}
+        run: |
+          hash=$( {
+            git rev-parse HEAD:sim HEAD:data/curated HEAD:web/src/data/active-build.json HEAD:Makefile HEAD:.github/workflows/bis.yml
+            git ls-tree -r HEAD "data/builds/$BUILD" | grep -vE "/bis/|addon-data\.json"
+          } | sha256sum | cut -c1-16)
+          last=$(git log -1 --format=%B -- "data/builds/$BUILD/bis" | sed -n 's/^Inputs: //p' | head -1)
+          echo "hash=$hash" >> "$GITHUB_OUTPUT"
+          echo "tonight: $hash  last picks: ${last:-none}"
+          if [ "$FORCE" != "true" ] && [ -n "$last" ] && [ "$hash" = "$last" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::nothing the ranker reads has changed since the last picks; skipping the ranking"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
       # -all: every data/curated/specs.json spec with a written rotation,
       # bands 20-60 step 10, both factions. weights-iterations is 200
       # per direction (double the command's own 100 default) - the
@@ -170,6 +207,7 @@ jobs:
       # lower it back (BIS_ARGS="-all -weights-iterations N") if a
       # future spec count regresses the budget.
       - name: rank leveling BiS for every written spec
+        if: steps.inputs.outputs.skip != 'true'
         run: make bis
         env: { BIS_ARGS: '-all -weights-iterations 200' }
       # night-bis-sanity lane, 2026-09-29: the published files are checked
@@ -185,6 +223,7 @@ jobs:
       # competitive? See docs/superpowers/specs/2026-09-28-leveling-bis-
       # design.md's "Guardrails" section.
       - name: sanity-check tonight's picks
+        if: steps.inputs.outputs.skip != 'true'
         continue-on-error: true
         working-directory: sim
         run: FOREVER_BIS_SANITY=1 go test ./cmd/leveling-bis -run 'TestPublishedBISFilesPassSanityChecks|TestKnownGoodItemsAreSeenAndRanked' -count=1
@@ -192,18 +231,19 @@ jobs:
       # and data.yml's drift check compares the committed Data.lua with what
       # the pipeline renders -- so the same commit that adds bis/*.json must
       # carry the regenerated Data.lua and addon-data.json.
-      - uses: astral-sh/setup-uv@v3
       - name: regenerate the addon data with the new picks
+        if: steps.inputs.outputs.skip != 'true'
         working-directory: data
         run: |
           uv sync
           uv run python -m pipeline addon-data --build "${{ steps.identity.outputs.build }}"
       - name: commit data/builds/*/bis if it changed
+        if: steps.inputs.outputs.skip != 'true'
         run: |
           git config user.name "forever-bis-bot"
           git config user.email "bot@foreversixty.gg"
           git add "data/builds/${{ steps.identity.outputs.build }}/bis" "data/builds/${{ steps.identity.outputs.build }}/addon-data.json" addon/ForeverSixty/Data.lua
-          if ! git commit -m "chore(bis): nightly leveling BiS for ${{ steps.identity.outputs.build }} @ ${{ steps.identity.outputs.sha }}"; then
+          if ! git commit -m "chore(bis): nightly leveling BiS for ${{ steps.identity.outputs.build }} @ ${{ steps.identity.outputs.sha }}" -m "Inputs: ${{ steps.inputs.outputs.hash }}"; then
             echo "nothing to commit"; exit 0
           fi
           # main moves while the 13-minute run is going (the first smoke run
@@ -234,6 +274,6 @@ jobs:
       # the site would keep serving last night's picks until someone else
       # pushed. Dispatch the web deploy explicitly (actions: write above).
       - name: deploy the site with tonight's picks
-        if: success()
+        if: success() && steps.inputs.outputs.skip != 'true'
         env: { GH_TOKEN: '${{ github.token }}' }
         run: gh workflow run web.yml --ref main

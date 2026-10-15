@@ -13,6 +13,7 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults: { run: { working-directory: logs } }
     # GOWORK=off: the workspace pulls in sim, whose development replace
     # points at a local engine clone that does not exist here (sim.yml
@@ -60,6 +61,7 @@ jobs:
     needs: test
     continue-on-error: true
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults: { run: { working-directory: logs } }
     # GOWORK=off: the workspace pulls in sim, whose development replace
     # points at a local engine clone that does not exist here (sim.yml
