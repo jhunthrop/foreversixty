@@ -28,9 +28,12 @@ The public key is in `MINISIGN_PUBLIC_KEY.txt` beside the assets on every releas
 signed. The companion verifies the same signature itself before it installs an update, so the
 check above is for the first download.
 
-macOS and Windows builds are signed and notarized when the project's signing credentials are in
-place. If a build is unsigned, macOS will refuse it on the first run: right-click the binary,
-choose Open, and confirm once.
+The Windows build is signed through Azure Artifact Signing in the name of Commish LLC, the
+company behind Forever Sixty, so that is the publisher Windows names in its prompts. A brand-new
+signing identity has no SmartScreen reputation yet, so the first installs may still see "Windows
+protected your PC": choose **More info**, then **Run anyway**. That warning retires on its own as
+installs accumulate. The macOS build is not signed yet: right-click the binary, choose Open, and
+confirm once.
 
 Linux needs WebKitGTK for the window: `sudo apt install libgtk-3-0 libwebkit2gtk-4.1-0`. Without
 it, run with `-headless` and open the printed URL in a browser.

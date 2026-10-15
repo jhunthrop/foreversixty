@@ -141,6 +141,12 @@ jobs:
           - { runner: windows-latest, goos: windows, goarch: amd64 }
           - { runner: ubuntu-22.04, goos: linux, goarch: amd64 }
     runs-on: ${{ matrix.runner }}
+    # The signing environment carries the federated credential Azure trusts
+    # (subject repo:jhunthrop/foreversixty:environment:signing); id-token
+    # lets azure/login mint the OIDC token for it. Both are harmless on the
+    # targets that never sign.
+    environment: signing
+    permissions: { contents: read, id-token: write }
     defaults: { run: { shell: bash, working-directory: companion } }
     env:
       TAG: ${{ needs.version.outputs.tag }}
@@ -150,8 +156,6 @@ jobs:
       APPLE_ID: ${{ secrets.APPLE_ID }}
       APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      WINDOWS_SIGNING_CERTIFICATE: ${{ secrets.WINDOWS_SIGNING_CERTIFICATE }}
-      WINDOWS_SIGNING_PASSWORD: ${{ secrets.WINDOWS_SIGNING_PASSWORD }}
       MINISIGN_PUBLIC_KEY: ${{ vars.MINISIGN_PUBLIC_KEY }}
     steps:
       - uses: actions/checkout@v4
@@ -231,21 +235,46 @@ jobs:
         if: matrix.goos == 'darwin' && env.APPLE_SIGNING_IDENTITY == ''
         run: echo "::notice::APPLE_* secrets are not set, so this macOS build is unsigned."
 
+      # Windows is signed through Azure Artifact Signing in Commish LLC's
+      # name: Microsoft holds the key, the runner authenticates with the
+      # federated credential above, and the certificate profile named by
+      # AZURE_SIGNING_PROFILE is what the signature carries. The variable
+      # is only set once the profile exists (identity validation has to
+      # pass first), so until then every release ships unsigned and says so.
+      - name: Azure login for signing
+        if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE != ''
+        uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
       - name: Sign for Windows
-        if: matrix.goos == 'windows' && env.WINDOWS_SIGNING_CERTIFICATE != ''
+        if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE != ''
+        uses: azure/artifact-signing-action@v2
+        with:
+          endpoint: ${{ vars.AZURE_SIGNING_ENDPOINT }}
+          signing-account-name: ${{ vars.AZURE_SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.AZURE_SIGNING_PROFILE }}
+          files: ${{ github.workspace }}\companion\dist\${{ env.ASSET }}
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      - name: Check the Windows signature
+        # A release never carries a binary the OS would call unsigned: the
+        # signature must verify and name the company.
+        if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE != ''
         shell: pwsh
         run: |
-          $pfx = Join-Path $env:RUNNER_TEMP 'signing.pfx'
-          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:WINDOWS_SIGNING_CERTIFICATE))
-          $signtool = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Recurse `
-            -Filter signtool.exe | Where-Object { $_.FullName -like '*x64*' } | Select-Object -First 1
-          & $signtool.FullName sign /fd SHA256 /f $pfx /p $env:WINDOWS_SIGNING_PASSWORD `
-            /tr http://timestamp.digicert.com /td SHA256 "dist/$env:ASSET"
-          Remove-Item $pfx
+          $sig = Get-AuthenticodeSignature "dist/$env:ASSET"
+          "status: $($sig.Status); signer: $($sig.SignerCertificate.Subject)"
+          if ($sig.Status -ne 'Valid') { throw "the Windows binary is not validly signed: $($sig.StatusMessage)" }
+          if ($sig.SignerCertificate.Subject -notmatch 'Commish LLC') { throw "unexpected signer: $($sig.SignerCertificate.Subject)" }
 
       - name: Unsigned Windows build
-        if: matrix.goos == 'windows' && env.WINDOWS_SIGNING_CERTIFICATE == ''
-        run: echo "::notice::WINDOWS_SIGNING_* secrets are not set, so this Windows build is unsigned."
+        if: matrix.goos == 'windows' && vars.AZURE_SIGNING_PROFILE == ''
+        run: echo "::notice::AZURE_SIGNING_PROFILE is not set, so this Windows build is unsigned."
 
       - uses: actions/upload-artifact@v4
         with:
