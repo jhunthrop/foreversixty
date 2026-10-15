@@ -152,7 +152,7 @@ func setFillSlots(picks map[string]slotPick, pieces map[string]scored, setID int
 		if mate, paired := pairSlot[slot]; paired && picks[mate].Item != nil && picks[mate].Item.ID == piece.ID {
 			continue
 		}
-		out = append(out, setFillSlot{slot: slot, item: piece, loss: current.Score - piece.Score})
+		out = append(out, setFillSlot{slot: slot, item: piece, loss: roundScore(current.Score - piece.Score)})
 	}
 	sort.SliceStable(out, func(i, j int) bool { return out[i].loss < out[j].loss })
 	return out

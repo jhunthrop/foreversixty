@@ -514,11 +514,11 @@ func twoHandBeatsPair(bySlot map[string][]scored) bool {
 		return true
 	}
 	bestMain := oneHanders[0]
-	pairScore := bestMain.Score
+	pairScore := roundScore(bestMain.Score)
 
 	offPool := weaponsOnly(excludePaired(mergeByScore(bySlot["off_hand"], oneHanders), bestMain.ID, bestMain.Name))
 	if len(offPool) > 0 {
-		pairScore += offPool[0].Score
+		pairScore = roundScore(pairScore + offPool[0].Score)
 	}
 
 	return bestTwoHand.Score > pairScore
