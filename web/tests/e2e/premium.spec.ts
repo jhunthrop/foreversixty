@@ -44,7 +44,11 @@ test('/pricing resolves to /premium', async ({ page }) => {
   await expect(page).toHaveURL(/\/premium$/);
 });
 
-test('?canceled=1 acknowledges a canceled Stripe Checkout, with zero script requests', async ({ page }) => {
+test('?canceled=1 acknowledges a canceled Stripe Checkout and loads no third-party script', async ({
+  page,
+}) => {
+  // The page itself ships no script: the only ones a browser fetches are the site's own
+  // bundles under /_astro/ (the header's menu and lookup), never Stripe's or anyone else's.
   const scripts: string[] = [];
   page.on('request', (r) => {
     if (r.resourceType() === 'script') scripts.push(r.url());
@@ -53,7 +57,8 @@ test('?canceled=1 acknowledges a canceled Stripe Checkout, with zero script requ
   await expect(page.getByTestId('premium-canceled-notice')).toContainText(
     'Checkout was canceled. Nothing was charged.',
   );
-  expect(scripts).toEqual([]);
+  const origin = new URL(page.url()).origin;
+  expect(scripts.filter((url) => !url.startsWith(`${origin}/_astro/`))).toEqual([]);
 
   await page.goto('/premium');
   await expect(page.getByTestId('premium-canceled-notice')).toBeHidden();

@@ -115,14 +115,21 @@
     pointer-events: none;
   }
 
+  /* 1280 to 1439: the compact lookup (HeaderSearch.astro) is a 44px magnifier here, its "/"
+     hint from 1440 only, and the gaps close by a few px each: measured signed in at 1280 with
+     the hint and the spec's gaps the row ran 28px past its content box, so Linux text
+     metrics tipped it into a sideways scroll. Now 19px of slack at 1280. */
   @media (max-width: 1439px) {
     .site-header {
-      gap: 18px;
+      gap: 16px;
       padding: 18px max(32px, calc((100% - var(--page-max)) / 2));
     }
     .site-doors {
-      gap: 20px;
+      gap: 18px;
       letter-spacing: 0.1em;
+    }
+    .site-right {
+      gap: 8px;
     }
     .site-discord {
       width: 44px;
@@ -1081,7 +1088,7 @@
 
 /* ---------------------------------------------------- compact character lookup
    HeaderSearch.astro (Task L8.2 fix round 2 item 7): from 1024 a 44px magnifier in the bar,
-   the "/" hint beside it from 1280, opening a small panel under the bar; below 1024 the same
+   the "/" hint beside it from 1440, opening a small panel under the bar; below 1024 the same
    small Search is the Menu's first row. The bar keeps its one height either way. */
 @layer components {
   .site-search {
@@ -1132,7 +1139,7 @@
   .site-menu-search {
     display: none;
   }
-  @media (max-width: 1279px) {
+  @media (max-width: 1439px) {
     .site-search-kbd {
       display: none;
     }

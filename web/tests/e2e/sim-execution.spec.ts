@@ -133,6 +133,9 @@ test.describe('the execution column on the character page', () => {
     await page.goto('/character/us/hardcore/elyra-duskvale');
     const cell = page.getByTestId('character-best-execution').first();
     await expect(cell).toHaveText('—');
-    await expect(cell).toHaveAttribute('title', simCopy.executionUnscored);
+    // characterTableCopy.executionUnscored (lib/character-profile.ts, pinned by its unit test):
+    // the dash is named "Not scored yet" (Forever Score fix round 5 item 7). Spelled out here
+    // because that module's import chain reaches a JSON fixture Playwright's loader cannot take.
+    await expect(cell).toHaveAttribute('title', 'Not scored yet');
   });
 });
