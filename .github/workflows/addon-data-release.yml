@@ -27,6 +27,7 @@ jobs:
     # api.yml's own deploy job uses for GCP_WIF_PROVIDER.
     if: vars.DATA_ADDON_BUCKET != ''
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: write
       id-token: write

@@ -9,6 +9,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # ci-minutes lane, 2026-10-15: two pushes in quick succession used to run
+    # both test and image jobs to completion for each. Only the newest push's
+    # result matters, so the check jobs cancel their superseded twin. The
+    # group is per job, not per workflow, so a deploy already in flight is
+    # never cancelled (web.yml lost a deploy that way on 2026-10-02).
+    concurrency:
+      group: api-test-${{ github.ref }}
+      cancel-in-progress: true
     defaults: { run: { working-directory: api } }
     services:
       postgres:
@@ -22,11 +31,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
+        with: { go-version-file: api/go.mod, cache-dependency-path: api/go.sum }
       # The workspace lists ./sim, whose development replace points at a
       # laptop path; pin it to the fork at the recorded sha as sim.yml does,
       # or go vet/test cannot resolve the module graph at all.
       - uses: ./.github/actions/pin-engine
-        with: { go-version-file: api/go.mod, cache-dependency-path: api/go.sum }
       - run: go vet ./...
         # -p 1: the database-backed packages share one Postgres and each
         # truncates the tables it uses, so they cannot run at once.
@@ -56,12 +65,21 @@ jobs:
   image:
     needs: test
     runs-on: ubuntu-latest
-    env:
-      DOCKER_BUILDKIT: '1'
+    timeout-minutes: 45
+    concurrency:
+      group: api-image-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with: { go-version-file: api/go.mod, cache-dependency-path: api/go.sum }
+      # ci-minutes lane, 2026-10-15: the image is built through buildx with
+      # its layer cache in the Actions cache, so a push that changes only Go
+      # source reuses the module-download and engine layers instead of
+      # rebuilding the whole image from scratch every time. The pin check
+      # below is what makes a cached layer safe: a stale engine layer fails
+      # the job rather than shipping.
+      - uses: docker/setup-buildx-action@v3
         # Read once, here, from the same two files the engine stage
         # itself trusts: the active build (so this builds with
         # ENGINE_SIMDB_SOURCE=engine-source-active, exactly like
@@ -77,11 +95,18 @@ jobs:
           echo "ACTIVE_BUILD=$active" >> "$GITHUB_ENV"
           echo "ENGINE_PIN=$pin" >> "$GITHUB_ENV"
       - name: Build the image with BuildKit
-        run: |
-          docker build --build-arg VERSION=${{ github.sha }} \
-            --build-arg ENGINE_SIMDB_SOURCE=engine-source-active \
-            --build-arg ACTIVE_BUILD="$ACTIVE_BUILD" \
-            -t forever-api-image-check -f api/Dockerfile .
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: api/Dockerfile
+          load: true
+          tags: forever-api-image-check
+          build-args: |
+            VERSION=${{ github.sha }}
+            ENGINE_SIMDB_SOURCE=engine-source-active
+            ACTIVE_BUILD=${{ env.ACTIVE_BUILD }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
         # Not just that the binary runs: that it is the pinned engine.
         # A stale build-cache layer could serve an old sim/ tree at the
         # right paths with the wrong sha baked into its ldflags, and a
@@ -125,6 +150,7 @@ jobs:
     # Deploys only once the Google Cloud variables from api/README.md "First-time setup" exist.
     if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.GCP_WIF_PROVIDER != ''
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     permissions: { contents: read, id-token: write }
     env:
       IMAGE: us-east1-docker.pkg.dev/foreversixty/api/api:${{ github.sha }}
@@ -136,6 +162,7 @@ jobs:
           service_account: ${{ vars.GCP_DEPLOYER_SA }}
       - uses: google-github-actions/setup-gcloud@v2
       - run: gcloud auth configure-docker us-east1-docker.pkg.dev --quiet
+      - uses: docker/setup-buildx-action@v3
         # Read once, here, from the same two files the engine stage
         # itself trusts: the active build (so the engine stage copies
         # one build's simdb.bin instead of every build's ~83MB - see
@@ -150,11 +177,21 @@ jobs:
           test -n "$pin" || { echo "sim/enginever/version.go has no Version"; exit 1; }
           echo "ACTIVE_BUILD=$active" >> "$GITHUB_ENV"
           echo "ENGINE_PIN=$pin" >> "$GITHUB_ENV"
-      - run: |
-          docker build --build-arg VERSION=${{ github.sha }} \
-            --build-arg ENGINE_SIMDB_SOURCE=engine-source-active \
-            --build-arg ACTIVE_BUILD="$ACTIVE_BUILD" \
-            -t $IMAGE -f api/Dockerfile .
+        # The same buildx build as the image job, reading the layer cache it
+        # just wrote (cache-from only: the image job is the writer), so the
+        # deploy's build is mostly cache hits. Loaded locally for the pin
+        # check, then pushed by the step after it.
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: api/Dockerfile
+          load: true
+          tags: ${{ env.IMAGE }}
+          build-args: |
+            VERSION=${{ github.sha }}
+            ENGINE_SIMDB_SOURCE=engine-source-active
+            ACTIVE_BUILD=${{ env.ACTIVE_BUILD }}
+          cache-from: type=gha
         # Not just that the binary runs: that it is the pinned engine.
         # A stale build-cache layer could serve an old sim/ tree at the
         # right paths with the wrong sha baked into its ldflags, and a

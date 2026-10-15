@@ -27,10 +27,45 @@ env:
   # Build tag for every job that must not link a desktop toolkit.
   HEADLESS_TAGS: nogui
 jobs:
+  # ci-minutes lane, 2026-10-15: every push to main used to run the test job
+  # (gofmt, vet, the race suite, the cgo window build) even when nothing the
+  # companion is built from had changed, which was most of the ~250 runs a
+  # month. This job asks the diff first, in seconds, and the test job runs
+  # only when it says yes. Tags, dispatches and pull requests skip the
+  # question: a tag is a release and must be tested, a dispatch asked for it,
+  # and a pull request is already filtered by the paths above.
+  changes:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      companion: ${{ steps.filter.outputs.companion }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      # The same diff the version job decides a release by, so the two can
+      # never disagree about what "touches the companion" means.
+      - id: filter
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE" 2>/dev/null \
+             && ! git diff --name-only "$BEFORE" "$GITHUB_SHA" \
+                  | grep -qE '^(companion/|logs/|docs/contracts/|\.github/workflows/companion\.yml)'; then
+            echo "companion=false" >> "$GITHUB_OUTPUT"
+            echo "nothing the companion is built from changed; the test job is skipped"
+          else
+            # A real change, or no usable base commit (a force push, or the
+            # first push): test rather than guess that nothing changed.
+            echo "companion=true" >> "$GITHUB_OUTPUT"
+          fi
   test:
     # Runs on tags too: a release is built from the exact tree that
     # passed, not from the commit the tag was cut from.
+    needs: changes
+    if: ${{ !cancelled() && (needs.changes.result == 'skipped' || needs.changes.outputs.companion == 'true') }}
     runs-on: ubuntu-22.04
+    timeout-minutes: 45
     defaults: { run: { working-directory: companion } }
     steps:
       - uses: actions/checkout@v4
@@ -79,6 +114,7 @@ jobs:
     needs: test
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     outputs:
       release: ${{ steps.decide.outputs.release }}
       tag: ${{ steps.decide.outputs.tag }}
@@ -133,14 +169,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { runner: macos-14, goos: darwin, goarch: arm64 }
-          # Intel macOS is cross-compiled from the arm64 runner:
-          # Xcode's clang is a universal compiler, so -arch x86_64 is
-          # all it needs, and GitHub's Intel runners are retired.
-          - { runner: macos-14, goos: darwin, goarch: amd64, cgoarch: '-arch x86_64 -mmacosx-version-min=11.0' }
-          - { runner: windows-latest, goos: windows, goarch: amd64 }
-          - { runner: ubuntu-22.04, goos: linux, goarch: amd64 }
+          # macOS is not supported at launch (owner, 2026-10-15: "we won't
+          # support mac on launch"), and a macOS runner bills at ten times
+          # the Linux rate, so the two darwin targets are out of the matrix
+          # until it is. To bring them back:
+          #   - { runner: macos-14, goos: darwin, goarch: arm64 }
+          #   - { runner: macos-14, goos: darwin, goarch: amd64, cgoarch: '-arch x86_64 -mmacosx-version-min=11.0' }
+          # (Intel macOS is cross-compiled from the arm64 runner: Xcode's
+          # clang is a universal compiler, so -arch x86_64 is all it needs,
+          # and GitHub's Intel runners are retired.)
+          - { runner: windows-latest, goos: windows, goarch: amd64, cgoarch: '' }
+          - { runner: ubuntu-22.04, goos: linux, goarch: amd64, cgoarch: '' }
     runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
     # The signing environment carries the federated credential Azure trusts
     # (subject repo:jhunthrop/foreversixty:environment:signing); id-token
     # lets azure/login mint the OIDC token for it. Both are harmless on the
@@ -286,6 +327,7 @@ jobs:
     needs: [build, version]
     if: needs.version.outputs.release == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     permissions: { contents: write }
     env:
       TAG: ${{ needs.version.outputs.tag }}

@@ -14,6 +14,7 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     defaults: { run: { working-directory: sim } }
     steps:
       - uses: actions/checkout@v4
@@ -36,7 +37,12 @@ jobs:
             echo "these files are not gofmt'd:"; echo "$unformatted"; exit 1
           fi
       - run: go vet ./...
-      - run: go test ./... -race -timeout 40m -coverprofile=cover.out
+      # ci-minutes lane, 2026-10-15: the race detector multiplies this suite's
+      # run time several times over. It runs on every push to main and on a
+      # dispatch, where a data race must not land; a pull request's check runs
+      # the same suite without it, so a lane's fix rounds stop paying for it
+      # and the merge still does.
+      - run: go test ./... ${{ github.event_name != 'pull_request' && '-race' || '' }} -timeout 40m -coverprofile=cover.out
       - name: coverage floor
         run: |
           total=$(go tool cover -func=cover.out | awk '/^total:/ {print substr($3, 1, length($3)-1)}')
@@ -52,6 +58,7 @@ jobs:
   # copy) against `make styles-check`.
   rotations:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       # styles-check runs `go run ./internal/genstyles`, which imports
@@ -95,6 +102,7 @@ jobs:
   artifacts:
     needs: test
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
