@@ -1602,9 +1602,16 @@ ItemTooltip.current = nil
 --- changes (Options resets it with every surface refresh and every change
 --- of what is worn).
 ItemTooltip.cache = {}
+local cacheSize = 0
+
+--- Most sections kept at once (L9.2 B3): a long session hovering every item of a vendor or a
+--- bank must not grow idle memory without bound. Past it the cache starts again; the next
+--- hover recomputes one section.
+ItemTooltip.CACHE_LIMIT = 200
 
 function ItemTooltip.resetCache()
 	ItemTooltip.cache = {}
+	cacheSize = 0
 	return ItemTooltip.cache
 end
 
@@ -1680,7 +1687,11 @@ function ItemTooltip.sectionFor(itemLink, base)
 	-- A section still waiting for a name is never kept: the next hover asks
 	-- again, even when the name arrived while another item was hovered.
 	if next(entry.pending) == nil then
+		if cacheSize >= ItemTooltip.CACHE_LIMIT then
+			ItemTooltip.resetCache()
+		end
 		ItemTooltip.cache[itemLink] = entry
+		cacheSize = cacheSize + 1
 	end
 	return entry
 end
@@ -1779,6 +1790,7 @@ end
 function ItemTooltip.rawMeasure(tooltip)
 	if measurer == nil then
 		local frame = CreateFrame("Frame", nil, UIParent)
+		Theme.noteFrame("Tooltip measurer", "the first tooltip measured")
 		frame:Hide()
 		measurer = frame:CreateFontString(nil, "ARTWORK", "GameTooltipText")
 	end
@@ -2205,6 +2217,7 @@ function ItemTooltip.registerItemInfoRefresh()
 		return ItemTooltip.itemInfoFrame
 	end
 	local frame = CreateFrame("Frame", nil, UIParent)
+	Theme.noteFrame("Item info events", "login")
 	Theme.registerEvent(frame, "GET_ITEM_INFO_RECEIVED")
 	frame:SetScript("OnEvent", function(_, _, itemId, success)
 		ItemTooltip.onItemInfoReceived(itemId, success)

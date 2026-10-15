@@ -317,6 +317,7 @@ local function overlayFor(button)
 			return nil
 		end
 		overlay = CreateFrame("Frame", nil, button)
+		Theme.noteFrame("Slot mark", "a bag or paper doll slot first drawn")
 		overlay:SetAllPoints(button)
 		-- One level above its button, pinned rather than left to the client's default
 		-- (reading the button's level is no write into it).
@@ -370,6 +371,7 @@ end
 local function buildArrow(overlay)
 	local size = Theme.SIZES.mark
 	local glyph = CreateFrame("Frame", nil, overlay)
+	Theme.noteFrame("Slot mark arrow", "a bag or paper doll slot first drawn")
 	glyph:SetSize(size, size)
 	glyph:SetPoint("TOPRIGHT", overlay, "TOPRIGHT", 0, 0)
 	if atlasArrow() then

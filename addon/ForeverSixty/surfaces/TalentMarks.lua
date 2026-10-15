@@ -447,6 +447,7 @@ end
 local function newBadge(parent)
 	local S = Theme.SIZES
 	local badge = CreateFrame("Frame", nil, parent)
+	Theme.noteFrame("Talent badge", "the talent window first shown")
 	badge:SetSize(S.orderBadge, S.orderBadge)
 	local plate = Theme.texture(badge, "BACKGROUND", "background", Theme.ALPHA.plate)
 	plate:SetAllPoints(badge)
@@ -588,6 +589,7 @@ local function ensureStrip(frame)
 	local strip = TalentMarks.strip
 	if strip == nil then
 		strip = CreateFrame("Frame", nil, host)
+		Theme.noteFrame("Talent strip", "the talent window first shown")
 		local ground = Theme.texture(strip, "BACKGROUND", "background", Theme.ALPHA.strip)
 		ground:SetAllPoints(strip)
 		local label = sized(Widgets.label(strip, "", "body", "normal"), S.talentStripText)

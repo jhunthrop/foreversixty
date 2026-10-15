@@ -527,6 +527,58 @@ function Theme.verboseNotes()
 	return ns.DiagnosticsVerbose
 end
 
+--- The addon's own frames, for /fs diag verbose (L9.2 B3): one entry per label and reason with how
+--- many were made and when the first was (seconds after the first one). WoW cannot destroy a
+--- frame, so what is made stays; this says what made it and why. A label made again only counts.
+ns.FrameLog = ns.FrameLog or {}
+local firstFrameAt = nil
+
+function Theme.noteFrame(label, reason)
+	local now = Theme.now()
+	firstFrameAt = firstFrameAt or now
+	for _, entry in ipairs(ns.FrameLog) do
+		if entry.label == label and entry.reason == reason then
+			entry.count = entry.count + 1
+			return entry
+		end
+	end
+	local entry = { label = label, reason = reason, count = 1, at = now - firstFrameAt }
+	ns.FrameLog[#ns.FrameLog + 1] = entry
+	return entry
+end
+
+function Theme.frameNotes()
+	return ns.FrameLog
+end
+
+--- The frame log as /fs diag verbose prints it: a heading, then a line per label and reason.
+function Theme.frameLines()
+	local lines = {}
+	if #ns.FrameLog == 0 then
+		return lines
+	end
+	lines[1] = L.diagFramesHeading
+	for _, entry in ipairs(ns.FrameLog) do
+		lines[#lines + 1] = string.format(L.diagFrameLine, entry.label, entry.count > 1 and (" x" .. entry.count) or "",
+			entry.reason, entry.at)
+	end
+	return lines
+end
+
+--- What the addon holds, in KB: the client's own count for it where it gives one, else Lua's.
+function Theme.memoryKB()
+	if type(GetAddOnMemoryUsage) == "function" then
+		if type(UpdateAddOnMemoryUsage) == "function" then
+			pcall(UpdateAddOnMemoryUsage)
+		end
+		local ok, kb = pcall(GetAddOnMemoryUsage, "ForeverSixty")
+		if ok and type(kb) == "number" then
+			return math.floor(kb + 0.5)
+		end
+	end
+	return math.floor(collectgarbage("count") + 0.5)
+end
+
 --- The /fs diag lines: "Not working:" and only the broken things, or
 --- "Everything is working."; then the surfaces' own lines (`chipLine`, a
 --- line or a list of them, when given) and the findings, outside the heading.
@@ -577,6 +629,10 @@ function Theme.reset()
 	for index = #ns.DiagnosticsVerbose, 1, -1 do
 		ns.DiagnosticsVerbose[index] = nil
 	end
+	for index = #ns.FrameLog, 1, -1 do
+		ns.FrameLog[index] = nil
+	end
+	firstFrameAt = nil
 end
 
 --- One line of the addon's own chat output: "Forever Sixty: <text>", the

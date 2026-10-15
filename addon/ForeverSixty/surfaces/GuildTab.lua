@@ -840,6 +840,7 @@ local function rowFrame(index)
 		return row
 	end
 	local frame = CreateFrame("Button", nil, GuildTab.content)
+	Theme.noteFrame("Guild tab row", "the guild tab opened")
 	frame:SetSize(GuildTab.innerWidth(), GuildTab.rowHeight())
 	frame:EnableMouse(true)
 	local ground = Theme.texture(frame, "BACKGROUND", "hover")
@@ -889,6 +890,7 @@ local function makeHeaders(flyout)
 	for _, column in ipairs(GuildTab.COLUMNS) do
 		local key = column.key
 		local button = CreateFrame("Button", nil, flyout)
+		Theme.noteFrame("Guild tab header", "the guild tab opened")
 		button:SetSize(column.width, S.guildHeaderRow)
 		local ground = Theme.texture(button, "BACKGROUND", states.pressed)
 		ground:SetAllPoints(button)
@@ -949,6 +951,7 @@ end
 --- and the line under it after a push. No script of its own.
 local function makeOfficer(flyout)
 	local region = CreateFrame("Frame", nil, flyout)
+	Theme.noteFrame("Guild tab officer area", "the guild tab opened")
 	region:SetWidth(GuildTab.innerWidth())
 	local rule = Theme.texture(region, "ARTWORK", "border")
 	rule:SetSize(GuildTab.innerWidth(), S.border)
@@ -1020,6 +1023,7 @@ function GuildTab.ensureFlyout()
 	-- Its hover says what "live" means (fix round 2, item 2): an addon frame over the line, as a
 	-- font string takes no mouse.
 	local countsHover = CreateFrame("Frame", nil, flyout)
+	Theme.noteFrame("Guild tab counts", "the guild tab opened")
 	countsHover:SetAllPoints(counts)
 	countsHover:EnableMouse(true)
 	countsHover:SetScript("OnEnter", function(self)
@@ -1038,6 +1042,7 @@ function GuildTab.ensureFlyout()
 	-- The rows: an addon-owned ScrollFrame clipping a content frame of pooled rows; the wheel
 	-- moves the first row shown, three a notch (ruling 2).
 	local holder = CreateFrame("ScrollFrame", nil, flyout)
+	Theme.noteFrame("Guild tab list", "the guild tab opened")
 	holder:SetSize(GuildTab.innerWidth(), GuildTab.rowHeight())
 	local content = CreateFrame("Frame", nil, holder)
 	content:SetSize(GuildTab.innerWidth(), GuildTab.rowHeight())

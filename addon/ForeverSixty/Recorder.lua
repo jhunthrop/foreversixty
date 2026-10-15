@@ -435,6 +435,7 @@ end
 local function eventFrame()
 	if state.frame == nil then
 		state.frame = CreateFrame("Frame", nil, UIParent)
+		Theme.noteFrame("Recorder frame", "/fs record on")
 		state.frame:SetScript("OnEvent", Recorder.onEvent)
 	end
 	return state.frame

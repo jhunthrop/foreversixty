@@ -52,6 +52,7 @@ read_globals = {
 	-- The measurement recorder (Recorder.lua). Its other client calls go through `try`.
 	"GetTime", "CombatLogGetCurrentEventInfo",
 	-- Addon messages (Comms.lua, contract 2), all behind Theme's capability checks.
+	"GetAddOnMemoryUsage", "UpdateAddOnMemoryUsage",
 	"C_ChatInfo", "SendAddonMessage", "RegisterAddonMessagePrefix",
 	"IsInGuild", "GetNumGuildMembers", "GetGuildRosterInfo", "UnitIsGroupLeader",
 	-- The guild tab (L5.1): the roster request, behind Theme's capability checks.

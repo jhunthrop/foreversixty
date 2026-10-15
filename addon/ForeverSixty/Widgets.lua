@@ -29,6 +29,7 @@ end
 
 function Widgets.panel(parent, width, height, name)
 	local frame = CreateFrame("Frame", name, parent)
+	Theme.noteFrame(name or "Panel", "a window or panel built")
 	frame:SetSize(width, height)
 	local background = Theme.texture(frame, "BACKGROUND", "background", Theme.ALPHA.window)
 	background:SetAllPoints(frame)
@@ -442,6 +443,7 @@ end
 --- these, so a row looks the same wherever the player meets it.
 function Widgets.itemRow(parent, width)
 	local frame = CreateFrame("Frame", nil, parent)
+	Theme.noteFrame("Item row", "a list built")
 	frame:SetSize(width, Theme.SIZES.rowHeight)
 	frame:EnableMouse(true)
 	-- Through Theme.icon so the client's baked-in bevel is cropped, the
@@ -542,6 +544,7 @@ end
 
 function Widgets.scrollable(holder)
 	local content = CreateFrame("Frame", nil, holder)
+	Theme.noteFrame("Scroll content", "a list built")
 	content:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
 	content:SetSize(holder:GetWidth(), holder:GetHeight())
 	if type(holder.SetClipsChildren) == "function" then

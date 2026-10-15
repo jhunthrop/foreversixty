@@ -275,6 +275,7 @@ function PlayerTooltip.register()
 	end
 	PlayerTooltip.registerUnit()
 	local frame = CreateFrame("Frame")
+	Theme.noteFrame("Player tooltip events", "login")
 	Theme.tryRegisterEvent(frame, "MODIFIER_STATE_CHANGED")
 	frame:SetScript("OnEvent", function(_, _, key)
 		local ok, err = pcall(PlayerTooltip.onModifierChanged, key)

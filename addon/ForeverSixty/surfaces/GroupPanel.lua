@@ -1679,6 +1679,7 @@ function GroupPanel.ensureSentinel()
 			return nil
 		end
 		sentinel = CreateFrame("Frame", nil, raid)
+		Theme.noteFrame("Group panel watcher", "the raid window first shown")
 		sentinel:SetSize(1, 1)
 		GroupPanel.sentinelHome = raid
 		sentinel:SetScript("OnShow", function()
@@ -1754,6 +1755,7 @@ local function rowFrame(index)
 		return row
 	end
 	local frame = CreateFrame("Button", nil, GroupPanel.content)
+	Theme.noteFrame("Group panel row", "the group panel opened")
 	frame:SetSize(GroupPanel.innerWidth(), GroupPanel.rowHeight())
 	frame:EnableMouse(true)
 	local ground = Theme.texture(frame, "BACKGROUND", "hover")
@@ -1804,6 +1806,7 @@ local function makeHeaders(flyout)
 	for index, column in ipairs(GroupPanel.COLUMNS) do
 		local key = column.key
 		local button = CreateFrame("Button", nil, flyout)
+		Theme.noteFrame("Group panel header", "the group panel opened")
 		button:SetSize(column.width, S.guildHeaderRow)
 		local ground = Theme.texture(button, "BACKGROUND", states.pressed)
 		ground:SetAllPoints(button)
@@ -1902,6 +1905,7 @@ function GroupPanel.ensureFlyout()
 	-- The rows: an addon-owned ScrollFrame clipping a content frame of pooled rows; the wheel
 	-- moves the first row shown, three a notch.
 	local holder = CreateFrame("ScrollFrame", nil, flyout)
+	Theme.noteFrame("Group panel list", "the group panel opened")
 	holder:SetSize(GroupPanel.innerWidth(), GroupPanel.rowHeight())
 	holder:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding, -GroupPanel.rowsTop())
 	local content = CreateFrame("Frame", nil, holder)
@@ -1917,6 +1921,7 @@ function GroupPanel.ensureFlyout()
 	GroupPanel.bar = Widgets.scrollbar(holder, holder, -S.guildScrollbar / 2, S.guildScrollbar, "scrollTrack")
 	-- The ready check under the rows: a 1 px rule, then its lines (pooled).
 	local check = CreateFrame("Frame", nil, flyout)
+	Theme.noteFrame("Group panel ready check", "the group panel opened")
 	check:SetWidth(GroupPanel.innerWidth())
 	local rule = Theme.texture(check, "ARTWORK", "border")
 	rule:SetSize(GroupPanel.innerWidth(), S.border)
@@ -1925,6 +1930,7 @@ function GroupPanel.ensureFlyout()
 	GroupPanel.checkFrame = check
 	-- The loot council helper's Loot region under it (L5.3): a rule, then pooled lines.
 	local loot = CreateFrame("Frame", nil, flyout)
+	Theme.noteFrame("Group panel loot", "the group panel opened")
 	loot:SetWidth(GroupPanel.innerWidth())
 	local lootRule = Theme.texture(loot, "ARTWORK", "border")
 	lootRule:SetSize(GroupPanel.innerWidth(), S.border)
@@ -2060,6 +2066,7 @@ local function lootLine(index)
 	}
 	-- The hover over a row that has one ("no addon" / "can't score"): an addon frame laid over the row.
 	local hit = CreateFrame("Frame", nil, parent)
+	Theme.noteFrame("Group panel hover area", "the group panel opened")
 	hit:EnableMouse(true)
 	hit:SetSize(width, GroupPanel.lineHeight())
 	hit:SetScript("OnEnter", function(self)

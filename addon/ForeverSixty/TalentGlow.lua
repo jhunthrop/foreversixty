@@ -216,6 +216,7 @@ TalentGlow.hooked = {}
 TalentGlow.sentinels = {}
 local function watchFrame(key, frame, data)
 	local sentinel = CreateFrame("Frame", nil, frame)
+	Theme.noteFrame("Talent window watcher", "the talent window first shown")
 	sentinel:SetSize(1, 1)
 	sentinel:SetScript("OnShow", function()
 		local show = TalentGlow.onShow or TalentGlow.refresh

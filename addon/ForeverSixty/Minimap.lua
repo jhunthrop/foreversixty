@@ -177,6 +177,7 @@ function MinimapButton.ensure()
 		return MinimapButton.button
 	end
 	local button = CreateFrame("Button", MinimapButton.FRAME_NAME, _G.Minimap)
+	Theme.noteFrame("Minimap button", "login")
 	button:SetSize(Theme.SIZES.minimapButton, Theme.SIZES.minimapButton)
 	button:SetFrameStrata("MEDIUM")
 	button:SetMovable(true)

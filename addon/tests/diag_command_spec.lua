@@ -63,7 +63,10 @@ describe("/fs diag on a fresh session", function()
 		require("Theme").noteVerbose("Talent window found: PlayerSpellsFrame (trait mapping)")
 		assert.are.same({ L.diagAllWorking, NO_BUILD, PANEL, GUILD, GROUP, LOOT, L.diagDataAddonMissingInfo },
 			Options.handle("diag"))
+		local verbose = Options.handle("diag verbose")
+		-- L9.2 B3: the last verbose line is the memory the addon holds.
+		assert.is_truthy(table.remove(verbose):match("^memory: %d+ KB$"))
 		assert.are.same({ L.diagAllWorking, NO_BUILD, PANEL, GUILD, GROUP, LOOT, L.diagDataAddonMissingInfo,
-			"Talent window found: PlayerSpellsFrame (trait mapping)" }, Options.handle("diag verbose"))
+			"Talent window found: PlayerSpellsFrame (trait mapping)" }, verbose)
 	end)
 end)

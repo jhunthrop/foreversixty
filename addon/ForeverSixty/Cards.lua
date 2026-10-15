@@ -24,6 +24,7 @@ end
 --- A thin bar: a track and a gold fill. SetValue takes 0..1.
 function Cards.progressBar(parent, width, hexKey)
 	local bar = CreateFrame("Frame", nil, parent)
+	Theme.noteFrame("Progress bar", "when a card draws it")
 	bar:SetSize(width, Theme.SIZES.progressHeight)
 	local track = Theme.texture(bar, "BACKGROUND", "track")
 	track:SetAllPoints(bar)
@@ -51,6 +52,7 @@ end
 --- when something needs the player's attention.
 function Cards.pill(parent, text, hexKey)
 	local pill = CreateFrame("Frame", nil, parent)
+	Theme.noteFrame("Pill", "when a card draws it")
 	local label = Widgets.label(pill, text or "", hexKey or "muted", "small")
 	label:SetPoint("CENTER", pill, "CENTER", 0, 0)
 	pill.foreverSixtyLabel = label
@@ -72,6 +74,7 @@ end
 --- An icon with a hairline frame. SetIcon(nil) draws the neutral tile.
 function Cards.iconTile(parent, size, path)
 	local tile = CreateFrame("Frame", nil, parent)
+	Theme.noteFrame("Icon tile", "when a card draws it")
 	tile:SetSize(size, size)
 	tile.foreverSixtyIcon = Theme.icon(tile, "ARTWORK", path, size)
 	tile.foreverSixtyIcon:SetAllPoints(tile)

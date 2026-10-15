@@ -1044,6 +1044,7 @@ end
 --- right of the first line.
 local function iconRow(region, withGain)
 	local frame = CreateFrame("Button", nil, region)
+	Theme.noteFrame("Character panel row", "the character panel opened")
 	frame:SetWidth(PanelTab.innerWidth())
 	frame:EnableMouse(true)
 	-- The hover ground (fix round 3, item 4): the whole row, shown while the cursor is on it.
@@ -1311,6 +1312,7 @@ PanelTab.RULED = { rotation = true, build = true }
 --- line under fewer than five targets; Build a hover frame over its off-plan count.
 local function regionFrame(flyout, kind)
 	local region = CreateFrame("Frame", nil, flyout)
+	Theme.noteFrame("Character panel region", "the character panel opened")
 	region:SetWidth(PanelTab.innerWidth())
 	region.title = sized(Widgets.label(region, TITLES[kind], "gold", "small"), PanelTab.innerWidth())
 	region.title:SetPoint("TOPLEFT", region, "TOPLEFT", 0, 0)
@@ -1328,6 +1330,7 @@ local function regionFrame(flyout, kind)
 	end
 	if kind == "build" then
 		local hover = CreateFrame("Button", nil, region)
+		Theme.noteFrame("Character panel hover area", "the character panel opened")
 		hover:EnableMouse(true)
 		hover:SetScript("OnEnter", function(self)
 			if self.lines ~= nil then

@@ -256,6 +256,7 @@ end
 --- it, with no name and no scripts: it shows and hides with its owner.
 local function overlayFor(owner)
 	local overlay = CreateFrame("Frame", nil, owner)
+	Theme.noteFrame("Reward mark", "a quest reward or loot roll shown")
 	overlay:SetAllPoints(owner)
 	local level = type(owner.GetFrameLevel) == "function" and owner:GetFrameLevel() or nil
 	if type(level) == "number" then

@@ -702,6 +702,9 @@ local L = {
 	-- Addon messages between players (Comms.lua): /fs hello, /fs seen and /fs diag.
 	diagNoAddonMessages = "This client cannot send addon messages; guild and group sharing is off.",
 	diagDropped = "Messages from other players ignored as unreadable or not allowed: %d",
+	diagFramesHeading = "Frames created:",
+	diagFrameLine = "  %s%s: %s, %.0f s in",
+	diagMemory = "memory: %d KB",
 	diagCommsFailed = "Answering another player's addon message failed and was skipped: %s",
 	diagCommsFailedCount = "Other players' messages that could not be handled: %d",
 	commsSent = "Hello sent to your guild.",

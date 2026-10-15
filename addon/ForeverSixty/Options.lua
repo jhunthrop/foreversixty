@@ -261,6 +261,10 @@ function Options.handle(input)
 			if Comms.dropped > 0 then
 				info[#info + 1] = string.format(L.diagDropped, Comms.dropped)
 			end
+			for _, line in ipairs(Theme.frameLines()) do
+				info[#info + 1] = line
+			end
+			info[#info + 1] = string.format(L.diagMemory, Theme.memoryKB())
 		end
 		return Theme.diagReport(broken, surfaces, info)
 	end
@@ -696,6 +700,7 @@ function Options.register()
 	TalentGlow.onHide = TalentMarks.clear
 
 	local frame = CreateFrame("Frame", "ForeverSixtyEventFrame", UIParent)
+	Theme.noteFrame("Event frame", "login")
 	for _, event in ipairs(Options.EVENTS) do
 		Theme.registerEvent(frame, event)
 	end

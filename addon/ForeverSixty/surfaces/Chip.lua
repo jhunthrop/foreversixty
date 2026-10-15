@@ -1226,6 +1226,7 @@ end
 local function buildBadge(frame)
 	local S = Theme.SIZES
 	local badge = CreateFrame("Frame", nil, frame)
+	Theme.noteFrame("Chip badge", "the chip built")
 	badge:SetSize(S.chipBadge, S.chipBadge)
 	badge:SetPoint("CENTER", frame, "TOPRIGHT", 0, 0)
 	if type(frame.GetFrameLevel) == "function" and type(badge.SetFrameLevel) == "function" then
@@ -1251,6 +1252,7 @@ function Chip.ensure()
 	end
 	local S = Theme.SIZES
 	local frame = CreateFrame("Button", Chip.FRAME_NAME, UIParent)
+	Theme.noteFrame("Chip", "login")
 	frame:SetSize(S.chip, S.chip)
 	frame:SetFrameStrata("MEDIUM")
 	frame:SetMovable(true)
@@ -1265,6 +1267,7 @@ function Chip.ensure()
 	Chip.edges = Theme.outline(frame, S.border, "border")
 
 	local iconFrame = CreateFrame("Frame", nil, frame)
+	Theme.noteFrame("Chip icon", "login")
 	iconFrame:SetSize(S.chipIcon, S.chipIcon)
 	iconFrame:SetPoint("LEFT", frame, "LEFT", S.chipIconInset, 0)
 	local icon = iconFrame:CreateTexture(nil, "ARTWORK")

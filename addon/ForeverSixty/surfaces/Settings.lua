@@ -484,6 +484,7 @@ function SettingsPage.register()
 		return SettingsPage.how ~= nil
 	end
 	local panel = CreateFrame("Frame", SettingsPage.FRAME_NAME)
+	Theme.noteFrame("Settings page", "login")
 	panel.name = L.addonName
 	panel:Hide()
 	panel:SetScript("OnShow", SettingsPage.onShow)

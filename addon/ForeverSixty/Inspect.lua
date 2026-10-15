@@ -38,6 +38,8 @@ Inspect.ENCHANTABLE = {
 --- name -> record. A record is { key, name, guid, class, spec, level, itemLevel,
 --- items = { [slot] = link }, enchants = { [slot] = bool }, at }, slot being Export's slot name.
 Inspect.cache = {}
+--- Most records kept at once (L9.2 B3): a raid is 40 and a city crowd more, so the oldest go first.
+Inspect.CACHE_LIMIT = 100
 --- Units waiting their turn, oldest first: { unit, guid, key }.
 Inspect.queue = {}
 --- The queue entry NotifyInspect was sent for and INSPECT_READY has not answered yet.
@@ -342,6 +344,27 @@ function Inspect.pump()
 	end
 end
 
+--- Keep a record under its key and let go of what is no longer good: the expired ones, then
+--- the oldest past CACHE_LIMIT. (Inspect.get only dropped a record when it was asked for.)
+function Inspect.keep(key, record)
+	Inspect.cache[key] = record
+	local now = Theme.now()
+	local count, oldestKey, oldestAt = 0, nil, nil
+	for name, kept in pairs(Inspect.cache) do
+		if now - kept.at > Inspect.TTL then
+			Inspect.cache[name] = nil
+		else
+			count = count + 1
+			if oldestAt == nil or kept.at < oldestAt then
+				oldestKey, oldestAt = name, kept.at
+			end
+		end
+	end
+	if count > Inspect.CACHE_LIMIT and oldestKey ~= nil then
+		Inspect.cache[oldestKey] = nil
+	end
+end
+
 --- The fresh record for a name (as keyOf gives it), or nil when there is none or it is older
 --- than TTL.
 function Inspect.get(name)
@@ -411,7 +434,7 @@ function Inspect.onReady(guid)
 		record = ok and result or nil
 	end
 	if record ~= nil then
-		Inspect.cache[pending.key] = record
+		Inspect.keep(pending.key, record)
 	end
 	if not inspectWindowShown() then
 		try(client("ClearInspectPlayer"))
