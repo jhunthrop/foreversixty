@@ -333,7 +333,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		return err
 	}
 
-	items, missing, err := loadCandidates(buildDir, specInfo.ClassSlug)
+	items, unconfirmed, missing, err := loadCandidates(buildDir, specInfo.ClassSlug)
 	if err != nil {
 		return err
 	}
@@ -603,39 +603,9 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			work := make(map[string]*factionWork, len(factions))
 			for _, f := range factions {
 				pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, bandReferenceDPSPerPoint, castsShoot)
-				bySlot := candidatesBySlot(pool.Scored)
-				// This lane's brief (bis-ranker-integrity-10), item 3:
-				// applied before the dagger/ranged-type restrictions below
-				// (a narrower, spec- or ranged-specific gate), to every
-				// weapon slot this class actually equips a weapon in - the
-				// general class-legality gate eligible.go's own doc says
-				// is otherwise "NOT checked here" at all.
-				bySlot["main_hand"] = restrictToProficientWeapons(bySlot["main_hand"], weaponSubclasses)
-				bySlot["off_hand"] = restrictToProficientWeapons(bySlot["off_hand"], weaponSubclasses)
-				bySlot["main_hand"] = restrictTankMainHand(specInfo, bySlot["main_hand"])
-				bySlot["ranged"] = restrictToProficientWeapons(bySlot["ranged"], weaponSubclasses)
-				if requiresDagger {
-					// weapon_requirements.go's own doc: a mace or sword is a
-					// real, legally-equippable item this class file already
-					// passed (eligible.go delegates weapon proficiency to the
-					// per-class file entirely), but this spec's own rotation
-					// cannot cast its dagger-only opener/builder without one -
-					// restricted here, before pick() or any later pass ever
-					// sees either weapon slot, so a dual-wielder's off_hand
-					// (pick()'s own case, which merges main_hand's one-handers
-					// in) inherits the restriction for free.
-					bySlot["main_hand"] = restrictToDaggers(bySlot["main_hand"])
-					bySlot["off_hand"] = restrictToDaggers(bySlot["off_hand"])
-				}
-				// This lane's brief (bis-ranker-integrity-6), item 9:
-				// restrictRangedByProficiency's own doc (weapon_requirements.go)
-				// - a caster's ranged slot is only ever a real wand, never a
-				// thrown weapon or bow score()'s own Shoot fallback cannot
-				// tell apart from one today. Applied unconditionally (every
-				// classSlug, not gated behind a spec flag the way the dagger
-				// restriction is) since every spec of a given class shares
-				// the identical ranged-weapon proficiency.
-				bySlot["ranged"] = restrictRangedByProficiency(bySlot["ranged"], specInfo.ClassSlug)
+				// The weapon limits, then the rare-spawn rule over what they
+				// leave (band.go's bandSlotPools).
+				bySlot := bandSlotPools(&pool, specInfo, weaponSubclasses, requiresDagger)
 
 				// pickBySlot is bySlot's own candidates, further narrowed for
 				// the DECISION passes only (pick(), rankTrinketSlot,
@@ -866,7 +836,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				// band, logged above), trinket-rank and verify seconds
 				// separately per faction, so a slow band/spec is visible
 				// without re-deriving it from timestamps.
-				log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, effect-rank+set-completion %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, effectSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), len(verifyErrors))
+				log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, effect-rank+set-completion %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d rare-spawn drop(s) given way (%s), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, effectSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), pool.RareSpawnSkipped, rareSpawnSlotSummary(pool.Coverage), len(verifyErrors))
 				// lane rank-guardrails, guardrail A: one line per band+faction
 				// naming how much of the slot table a reader is actually
 				// looking at versus how much the ranker could see at all -
@@ -887,7 +857,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	if err := writeMarkdown(mdPath, specInfo, reports); err != nil {
 		return fmt.Errorf("writing %s: %w", mdPath, err)
 	}
-	log.Printf("leveling-bis: wrote %s and %s", jsonPath, mdPath)
+	log.Printf("leveling-bis: wrote %s and %s (%d client_unconfirmed item(s) excluded before ranking)", jsonPath, mdPath, unconfirmed)
 	return nil
 }
 

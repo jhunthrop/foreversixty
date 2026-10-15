@@ -84,7 +84,7 @@ describe("Follow", function()
 	it("passes a codec refusal through verbatim", function()
 		local build, message = Follow.load("FS9:x", DATA)
 		assert.is_nil(build)
-		assert.is_truthy(message:find("FS9", 1, true))
+		assert.are.equal(require("Locale").codecWrongPrefix, message)
 	end)
 
 	it("takes an FS1 export as a build too", function()
@@ -102,8 +102,8 @@ describe("Follow", function()
 		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:191:", DATA))
 		local Locale = require("Locale")
 		local line = Follow.line(DATA, build, { [1] = {} })
-		local unknownName = string.format(Locale.followUnknownCell, 10, 1)
-		assert.are.equal(string.format(Locale.followNext, unknownName, "Holy", 10), line)
+		local unknownName = string.format(Locale.followUnknownCell, 9, 1)
+		assert.are.equal(string.format(Locale.followNext, unknownName, "Holy", 9), line)
 	end)
 end)
 
@@ -125,9 +125,9 @@ describe("Follow, per character", function()
 	it("keys the saved build by the current character, the same key Export.save writes", function()
 		mock.install({ realm = "Ashbringer", region = 1, playerName = "Alice" })
 		Follow.load(CODE, DATA, "Deep Holy")
-		assert.are.equal("US/Ashbringer/Alice", require("Export").characterKey())
+		assert.are.equal("us/Ashbringer/Alice", require("Export").characterKey())
 		assert.are.same({ active = "raid", slots = { raid = { code = CODE, name = "Deep Holy" } } },
-			_G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
+			_G.ForeverSixtyDB.follows["us/Ashbringer/Alice"])
 	end)
 
 	it("does not offer one character's build to another", function()
@@ -151,7 +151,7 @@ describe("Follow, per character", function()
 		assert.is_nil(_G.ForeverSixtyDB.follow)
 		assert.are.same(
 			{ active = "raid", slots = { raid = { code = CODE, name = "Old Account Build" } } },
-			_G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
+			_G.ForeverSixtyDB.follows["us/Ashbringer/Alice"])
 	end)
 
 	it("does not hand the migrated build to a second character too", function()
@@ -170,7 +170,7 @@ describe("Follow, per character", function()
 		_G.ForeverSixtyDB.follows["US/Ashbringer/Bob"] = { code = CODE, name = "Bob's" }
 		Follow.forget()
 		assert.is_nil(Follow.build)
-		assert.is_nil(_G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
+		assert.is_nil(_G.ForeverSixtyDB.follows["us/Ashbringer/Alice"])
 		assert.is_truthy(_G.ForeverSixtyDB.follows["US/Ashbringer/Bob"])
 	end)
 end)
@@ -349,6 +349,37 @@ describe("Follow, named build slots", function()
 		assert.is_nil(Follow.build)
 	end)
 
+	-- L3.7 item 44: an officer's push is queued for the character as a build to choose from.
+	it("queues a pushed build once per code, newest first, at most five, among the inbox builds", function()
+		Follow.addPushed("CODE-A", "Raid A", "Boss")
+		Follow.addPushed("CODE-B", nil, "Boss")
+		Follow.addPushed("CODE-A", "Raid A again", "Officer")
+		local key = require("Export").characterKey()
+		local pushed = Follow.pushedBuilds(key)
+		assert.are.same({ "CODE-A", "CODE-B" }, { pushed[1].code, pushed[2].code })
+		assert.are.same({ "Raid A again", "Officer" }, { pushed[1].name, pushed[1].from })
+		for index = 1, 7 do
+			Follow.addPushed("MORE-" .. index, "m", "Boss")
+		end
+		assert.are.equal(5, #Follow.pushedBuilds(key))
+		assert.are.equal("MORE-7", Follow.pushedBuilds(key)[1].code)
+		local builds = Follow.inboxBuilds(nil, key)
+		assert.are.equal("MORE-7", builds[1].code)
+		assert.are.equal("Boss", builds[1].from)
+		assert.are.equal("MORE-7", builds[1].id)
+	end)
+
+	-- L3.7 item 32: a paste never overwrites a build restored in the raid slot.
+	it("sends a paste to the leveling slot while the active raid slot holds a build, else to the active one", function()
+		assert.are.same({ "raid", nil }, { Follow.pasteSlot() })
+		Follow.load(CODE, DATA, "Raid build", "raid")
+		assert.are.same({ "leveling", "raid" }, { Follow.pasteSlot() })
+		Follow.load(CODE, DATA, "Pasted", "leveling")
+		assert.are.same({ "leveling", nil }, { Follow.pasteSlot() })
+		-- The raid build is where it was.
+		assert.are.equal("Raid build", _G.ForeverSixtyDB.follows[require("Export").characterKey()].slots.raid.name)
+	end)
+
 	it("forgetting one slot leaves the others alone", function()
 		Follow.load(CODE, DATA, "Raid build", "raid")
 		Follow.load(CODE, DATA, "Leveling build", "leveling")
@@ -380,7 +411,7 @@ describe("Follow, named build slots", function()
 	end)
 end)
 
-describe("Follow, the build-arrived banner", function()
+describe("Follow, comparing two builds", function()
 	local Follow
 
 	before_each(function()
@@ -390,28 +421,6 @@ describe("Follow, the build-arrived banner", function()
 
 	after_each(function()
 		mock.uninstall()
-	end)
-
-	it("finds the first undismissed inbox build addressed to this character", function()
-		local inbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
-		local pending = Follow.pendingArrival(inbox)
-		assert.are.equal("a", pending.id)
-	end)
-
-	it("stops offering a build once it is dismissed", function()
-		local inbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
-		assert.is_not_nil(Follow.pendingArrival(inbox))
-		Follow.dismissInbox("a")
-		assert.is_nil(Follow.pendingArrival(inbox))
-	end)
-
-	it("moves on to the next build once the first is dismissed", function()
-		local inbox = { builds = {
-			{ id = "a", name = "First", code = CODE },
-			{ id = "b", name = "Second", code = CODE },
-		} }
-		Follow.dismissInbox("a")
-		assert.are.equal("b", Follow.pendingArrival(inbox).id)
 	end)
 
 	it("counts the talent cells two builds disagree on", function()

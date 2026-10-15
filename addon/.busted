@@ -3,7 +3,7 @@
 return {
 	default = {
 		ROOT = { "tests" },
-		lpath = "./ForeverSixty/?.lua;./ForeverSixty/views/?.lua;./tests/?.lua",
+		lpath = "./ForeverSixty/?.lua;./ForeverSixty/surfaces/?.lua;./tests/?.lua",
 		pattern = "_spec",
 		verbose = true,
 	},

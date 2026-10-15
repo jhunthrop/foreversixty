@@ -4,6 +4,8 @@
 // silent shape drift here would be invisible everywhere else.
 import { describe, expect, it } from 'vitest';
 import {
+  ADDON_SNAPSHOT,
+  ADDON_UNMATCHED_MEMBER,
   GUILD_ID,
   VIEWER_MEMBER,
   VIEWER_OFFICER,
@@ -53,6 +55,30 @@ describe('buildMockHome', () => {
 
   it('guild id matches every other endpoint fixture', () => {
     expect(buildMockHome(VIEWER_OFFICER).guild.id).toBe(GUILD_ID);
+  });
+
+  // Task L8.3 (Task L6.14's addendum): the latest addon roster snapshot.
+  it('carries an addon snapshot: three members matched to roster rows, one that matches no row, and its sender', () => {
+    const home = buildMockHome(VIEWER_MEMBER);
+    expect(home.addon_snapshot).toEqual(ADDON_SNAPSHOT);
+    expect(ADDON_SNAPSHOT.members).toBe(4);
+    const matched = home.roster.filter((r) => r.addon !== null && r.addon !== undefined);
+    expect(matched.map((r) => r.name).sort()).toEqual(['Duskstrider', 'Kraggor', 'Zulmara']);
+    // The fourth snapshot member is on no roster row: counted in `members` only, never a row.
+    expect(home.roster.some((r) => r.name === ADDON_UNMATCHED_MEMBER)).toBe(false);
+    // Every other row is `null`, never absent, as the addendum sends it.
+    expect(home.roster.filter((r) => r.addon === null)).toHaveLength(home.roster.length - 3);
+    for (const r of matched) {
+      expect(r.addon?.snapshot_at).toBe(ADDON_SNAPSHOT.received_at);
+      expect(r.addon?.seen_at).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/);
+    }
+    expect(home.roster.some((r) => r.character_key === ADDON_SNAPSHOT.by_character)).toBe(true);
+  });
+
+  it('builds the same home without a snapshot: `addon_snapshot` null and every row null', () => {
+    const home = buildMockHome(VIEWER_MEMBER, undefined, null, false);
+    expect(home.addon_snapshot).toBeNull();
+    expect(home.roster.every((r) => r.addon === null)).toBe(true);
   });
 });
 

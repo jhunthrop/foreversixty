@@ -9,7 +9,7 @@ import {
   type RotationEntry,
 } from './rotation-view';
 
-const BUILD = '1.60.1.70338';
+const BUILD = '1.60.1.70374';
 
 describe('bandTopLevel', () => {
   it('is band + 9 for every band but the last', () => {

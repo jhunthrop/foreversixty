@@ -73,8 +73,8 @@ describe('bandForLevel', () => {
 
 describe('bisAssetUrl', () => {
   it('builds the per-spec static asset path', () => {
-    expect(bisAssetUrl('1.60.1.70338', 'hunter-marksmanship')).toBe(
-      '/data/1.60.1.70338/bis/hunter-marksmanship.json',
+    expect(bisAssetUrl('1.60.1.70374', 'hunter-marksmanship')).toBe(
+      '/data/1.60.1.70374/bis/hunter-marksmanship.json',
     );
   });
 });

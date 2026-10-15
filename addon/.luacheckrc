@@ -25,7 +25,9 @@ read_globals = {
 	"GetItemStats", "GetItemInfo", "GetItemInfoInstant", "RequestLoadItemDataByID",
 	"C_Container",
 	-- Character
-	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",
+	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion", "GetCurrentRegionName",
+	-- The worn item's enchant line (Compat.inventoryTooltipRows), each behind a type check.
+	"C_TooltipInfo", "TooltipUtil",
 	"GetProfessions", "GetProfessionInfo", "GetBuildInfo", "GetGuildInfo",
 	-- UI
 	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs", "ITEM_QUALITY_COLORS",
@@ -38,12 +40,26 @@ read_globals = {
 	"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
 	"GetCursorPosition", "InterfaceOptionsFrame_OpenToCategory",
 	"AddonCompartmentFrame",
-	-- Saved variables the TOC declares. ForeverSixtyInbox is written by the
-	-- companion and only ever read here; ForeverSixtyDB is the addon's own
-	-- and Export.save writes it, so it is a global, not a read_global.
+	-- The chip (surfaces/Chip.lua), each behind a Theme capability check.
+	"GetInstanceInfo", "IsShiftKeyDown", "ToggleTalentFrame", "PlayerSpellsUtil", "CLASS_ICON_TCOORDS",
+	-- The build dialog (surfaces/BuildDialog.lua), through Compat.classNames.
+	"LOCALIZED_CLASS_NAMES_MALE",
+	-- Saved variables. ForeverSixtyInbox belongs to the code-free ForeverSixtyInbox
+	-- addon (its TOC declares it), is written by the companion and only ever read
+	-- here; ForeverSixtyDB is the addon's own and Export.save writes it, so it
+	-- is a global, not a read_global.
 	"ForeverSixtyInbox",
 	-- The measurement recorder (Recorder.lua). Its other client calls go through `try`.
 	"GetTime", "CombatLogGetCurrentEventInfo",
+	-- Addon messages (Comms.lua, contract 2), all behind Theme's capability checks.
+	"GetAddOnMemoryUsage", "UpdateAddOnMemoryUsage",
+	"C_ChatInfo", "SendAddonMessage", "RegisterAddonMessagePrefix",
+	"IsInGuild", "GetNumGuildMembers", "GetGuildRosterInfo", "UnitIsGroupLeader",
+	-- The guild tab (L5.1): the roster request, behind Theme's capability checks.
+	"C_GuildInfo", "GuildRoster",
+	-- The player tooltip and the chat badges (L4.4), each behind a type check. The chat
+	-- filter API itself is read through _G in Compat.addChatFilter.
+	"UnitExists", "UnitIsUnit", "GetPlayerInfoByGUID",
 	-- `unpack` is a Lua 5.1 global (5.4 only has `table.unpack`); std =
 	-- lua51 already declares it standard, so it needs no entry here.
 	-- Codec.lua binds whichever of the two exists -- see the narrow
@@ -85,5 +101,7 @@ files["tests/"] = {
 		"GetCursorPosition", "Settings", "InterfaceOptions_AddCategory",
 		"InterfaceOptionsFrame_OpenToCategory", "PlayerTalentFrame", "TalentFrame",
 		"AddonCompartmentFrame",
+		-- The chip (surfaces/Chip.lua), each behind a Theme capability check.
+		"GetInstanceInfo", "IsShiftKeyDown", "ToggleTalentFrame", "PlayerSpellsUtil",
 	},
 }

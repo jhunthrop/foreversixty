@@ -92,7 +92,7 @@
     <!-- Fix round 1, finding 1: `runBulkAndSettle` never nulls `result` before a finished
          run replaces it, so `store.result` goes straight from result A to result B and
          this `{#if}` alone never unmounts ComboResults -- its local save/copy/filter state
-         (saveOpen, savedUrl, addonCopied, keepSet, ...) would otherwise survive into the
+         (saveOpen, savedUrl, the game-code copy state, keepSet, ...) would otherwise survive into the
          next run's own display. `{#key store.result}` remounts on every genuinely new
          result (bulk-store-request.ts's `runBulkAndSettle` always assigns a freshly built
          object, never mutates the old one in place), which resets all of it for free. -->
@@ -104,6 +104,7 @@
         treeVersion={store.character?.tree_version ?? ''}
         partial={store.result.aborted === true}
         onsave={(title) => store.save(title)}
+        talents={store.talentFile}
       />
     {/key}
   {/if}

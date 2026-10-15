@@ -1,0 +1,9 @@
+## Interface: 16001
+## Title: Forever Sixty Inbox
+## Notes: Written by the Forever Sixty companion app: the builds, sim results and messages the site has for you.
+## Author: foreversixty.gg
+## Version: @project-version@
+## SavedVariables: ForeverSixtyInbox
+## LoadOnDemand: 0
+
+ForeverSixtyInbox.lua

@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 )
 
 // PerPage is the fixed page size the contract sets.
@@ -319,6 +321,44 @@ type Character struct {
 	Best       []CharacterBest  `json:"best"`
 	History    []CharacterFight `json:"history"`
 	BuildsSeen []BuildSeen      `json:"builds_seen"`
+	ForeverScore
+	// ScoreHistory is the Forever Score's history (Store.scoreHistory), oldest first; empty,
+	// never null, when no rated fight carries a snapshot.
+	ScoreHistory []ScorePoint `json:"score_history"`
+	// Gear is the gear panel (rating.Service.ScoreAndGear): the 17 export slots in the
+	// export's order, empty, never null, when the character has no export. GearGapTotal is
+	// GearGapTotal of its rows: null when no row has a gap.
+	Gear         []GearSlot `json:"gear"`
+	GearGapTotal *float64   `json:"gear_gap_total"`
+}
+
+// ForeverScore is the character page's Forever Score (api/internal/rating's ScoreV2, the
+// formula's only home). Every field is null for a character with no rated fight: "no logs
+// yet" is never shown as a zero score.
+type ForeverScore struct {
+	Score      *int             `json:"score"`
+	Tier       *string          `json:"tier"`
+	Components *ScoreComponents `json:"components"`
+	// AsOf is the newest rated fight's date, YYYY-MM-DD.
+	AsOf       *string          `json:"as_of"`
+	Experience *ScoreExperience `json:"experience"`
+}
+
+// ScoreComponents are the score's five parts; they sum to the score.
+type ScoreComponents struct {
+	Gear       int `json:"gear"`
+	Experience int `json:"experience"`
+	Parses     int `json:"parses"`
+	Attendance int `json:"attendance"`
+	Discipline int `json:"discipline"`
+}
+
+// ScoreExperience is what the experience component counts, across the account's linked
+// characters.
+type ScoreExperience struct {
+	Dungeons  int `json:"dungeons"`
+	RaidKills int `json:"raid_kills"`
+	Alts      int `json:"alts"`
 }
 
 // CharacterRef names a character.
@@ -333,20 +373,56 @@ type CharacterRef struct {
 	// when the Battle.net import has not captured them.
 	AvatarURL string `json:"avatar_url,omitempty"`
 	RenderURL string `json:"render_url,omitempty"`
+	// Guild, Level, Race and Realm say who the character is in game (Store.identity); each
+	// is null when no source knows it.
+	Guild *CharacterGuild `json:"guild"`
+	Level *int            `json:"level"`
+	Race  *string         `json:"race"`
+	Realm *string         `json:"realm"`
 }
 
 // HistoryLimit is how many of a character's fights the page shows.
 const HistoryLimit = 100
 
-// Character assembles a character page. It reports false when the
-// character has no ranked fights and no row of their own.
+// Character assembles the public character page: CharacterFights, then who the character
+// is (identity) and its score history (scoreHistory). It reports false when the character
+// has no ranked fights and no row of their own, and also when its account is anonymised
+// (the rule GET .../rating already applies), so an anonymised character reads exactly as
+// one nobody has logged.
 func (s *Store) Character(ctx context.Context, region, ruleset, name string) (Character, bool, error) {
 	key := strings.ToLower(region) + "/" + strings.ToLower(ruleset) + "/" + strings.ToLower(name)
+	anon, err := s.anonymized(ctx, key)
+	if err != nil || anon {
+		return Character{}, false, err
+	}
+	out, found, err := s.CharacterFights(ctx, region, ruleset, name)
+	if err != nil || !found {
+		return out, found, err
+	}
+	if err := s.identity(ctx, &out.Character); err != nil {
+		return Character{}, false, err
+	}
+	if out.ScoreHistory, err = s.scoreHistory(ctx, key); err != nil {
+		return Character{}, false, err
+	}
+	return out, true, nil
+}
+
+// CharacterFights is the fights half of a character page: its name and class, bests,
+// history and builds seen, with no anonymise check and no identity or score history. The
+// Forever Score's parses component reads its bests (rating.Store.meanBestParse). Its rows
+// come from reports that are evidence (presence.EvidenceReport): a flagged report's rows,
+// which the moderation flow withdraws, are never shown or scored meanwhile. It
+// reports false when the character has no ranked fights and no row of their own.
+func (s *Store) CharacterFights(ctx context.Context, region, ruleset, name string) (Character, bool, error) {
+	key := strings.ToLower(region) + "/" + strings.ToLower(ruleset) + "/" + strings.ToLower(name)
 	out := Character{
-		Character:  CharacterRef{Key: key, Region: region, Ruleset: ruleset, Name: name},
-		Best:       []CharacterBest{},
-		History:    []CharacterFight{},
-		BuildsSeen: []BuildSeen{},
+		Character:    CharacterRef{Key: key, Region: region, Ruleset: ruleset, Name: name},
+		Best:         []CharacterBest{},
+		History:      []CharacterFight{},
+		BuildsSeen:   []BuildSeen{},
+		ScoreHistory: []ScorePoint{},
+		Gear:         []GearSlot{},
 	}
 	var class *string
 	err := s.Pool.QueryRow(ctx,
@@ -363,8 +439,8 @@ func (s *Store) Character(ctx context.Context, region, ruleset, name string) (Ch
 		        m.damage_taken, coalesce(m.spec, ''), coalesce(m.talent_split, ''),
 		        coalesce(m.duration_ms, 0), m.fought_at, m.report_id, m.fight_index,
 		        coalesce(m.class, ''), coalesce(m.phase, ''), m.execution_score
-		 from fight_metrics m
-		 where m.player_key = $1 and m.state <> 'removed'
+		 from fight_metrics m join reports r on r.id = m.report_id
+		 where m.player_key = $1 and m.state <> 'removed' and `+presence.EvidenceReport("r")+`
 		 order by m.fought_at desc limit $2`, key, HistoryLimit)
 	if err != nil {
 		return Character{}, false, fmt.Errorf("rankings: read character history: %w", err)

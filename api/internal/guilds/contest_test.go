@@ -521,7 +521,8 @@ func TestAnUpheldContestUnfreezes(t *testing.T) {
 	}
 }
 
-// seedIndependentLogReport inserts one report+fight row naming players
+// seedIndependentLogReport inserts one report and one boss fight naming players by key
+// (fight_metrics rows; fights.players holds only the log GUID, as engine.go writes it)
 // so VerifyByLogs's real job can verify them - tests go through the
 // real verification path, not a raw insert of verified_by = 'logs'.
 func seedIndependentLogReport(t *testing.T, pool *pgxpool.Pool, id string, ownerID, guildID int64, createdAt time.Time, players []string) {
@@ -532,10 +533,7 @@ func seedIndependentLogReport(t *testing.T, pool *pgxpool.Pool, id string, owner
 		 values ($1, $2, $3, 'guild', 'complete', $4)`, id, ownerID, guildID, createdAt); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := pool.Exec(ctx,
-		`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`, id, players); err != nil {
-		t.Fatal(err)
-	}
+	seedL68Fight(t, pool, id, true, players)
 }
 
 // TestAContestFreezesRegardlessOfWhatASquatterManufactures is the

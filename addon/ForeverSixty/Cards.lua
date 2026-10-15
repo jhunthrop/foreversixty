@@ -1,6 +1,6 @@
 -- addon/ForeverSixty/Cards.lua
--- The larger pieces the pages are composed from: a card, a progress bar, a
--- status pill, a sidebar item, the primary button and an icon tile.
+-- The larger pieces the surfaces are composed from: a card, a progress bar,
+-- a status pill, the primary button and an icon tile.
 --
 -- Widgets holds the small controls; these are the ones that give a page
 -- hierarchy. Like Widgets, nothing here names a template or a client
@@ -24,6 +24,7 @@ end
 --- A thin bar: a track and a gold fill. SetValue takes 0..1.
 function Cards.progressBar(parent, width, hexKey)
 	local bar = CreateFrame("Frame", nil, parent)
+	Theme.noteFrame("Progress bar", "when a card draws it")
 	bar:SetSize(width, Theme.SIZES.progressHeight)
 	local track = Theme.texture(bar, "BACKGROUND", "track")
 	track:SetAllPoints(bar)
@@ -51,6 +52,7 @@ end
 --- when something needs the player's attention.
 function Cards.pill(parent, text, hexKey)
 	local pill = CreateFrame("Frame", nil, parent)
+	Theme.noteFrame("Pill", "when a card draws it")
 	local label = Widgets.label(pill, text or "", hexKey or "muted", "small")
 	label:SetPoint("CENTER", pill, "CENTER", 0, 0)
 	pill.foreverSixtyLabel = label
@@ -72,6 +74,7 @@ end
 --- An icon with a hairline frame. SetIcon(nil) draws the neutral tile.
 function Cards.iconTile(parent, size, path)
 	local tile = CreateFrame("Frame", nil, parent)
+	Theme.noteFrame("Icon tile", "when a card draws it")
 	tile:SetSize(size, size)
 	tile.foreverSixtyIcon = Theme.icon(tile, "ARTWORK", path, size)
 	tile.foreverSixtyIcon:SetAllPoints(tile)
@@ -90,6 +93,7 @@ function Cards.primaryButton(parent, text, onClick)
 	button:SetSize(Theme.SIZES.buttonWidth, Theme.SIZES.buttonHeight + Theme.SIZES.gap)
 	local background = Theme.texture(button, "BACKGROUND", "gold")
 	background:SetAllPoints(button)
+	button.foreverSixtyGround = background
 	local label = Widgets.label(button, text, "onGold", "small")
 	label:SetPoint("CENTER", button, "CENTER", 0, 0)
 	button.foreverSixtyLabel = label
@@ -99,13 +103,19 @@ function Cards.primaryButton(parent, text, onClick)
 	button.GetText = function(self)
 		return self.foreverSixtyLabel:GetText()
 	end
+	local states = Theme.CONTROL_STATES.primary
 	button:SetScript("OnEnter", function(self)
 		if self:IsEnabled() then
-			Theme.paint(background, "goldHover")
+			Theme.paint(background, states.hover)
 		end
 	end)
 	button:SetScript("OnLeave", function()
-		Theme.paint(background, "gold")
+		Theme.paint(background, states.rest)
+	end)
+	Theme.pressable(button, label, function()
+		Theme.paint(background, states.pressed)
+	end, function(_, over)
+		Theme.paint(background, over and states.hover or states.rest)
 	end)
 	button:SetScript("OnClick", function(self, ...)
 		if self:IsEnabled() then
@@ -113,57 +123,6 @@ function Cards.primaryButton(parent, text, onClick)
 		end
 	end)
 	return button
-end
-
---- One sidebar entry: icon, label, and a gold bar down its left edge when
---- it is the page being shown.
-function Cards.navItem(parent, iconPath, text, onClick)
-	local S = Theme.SIZES
-	local item = Theme.createFrame("Button", nil, parent)
-	item:SetSize(S.sidebarWidth, S.navHeight)
-	local ground = Theme.texture(item, "BACKGROUND", "raised")
-	ground:SetAllPoints(item)
-	ground:Hide()
-	item.foreverSixtyGround = ground
-	local bar = Theme.texture(item, "OVERLAY", "gold")
-	bar:SetPoint("TOPLEFT", item, "TOPLEFT", 0, 0)
-	bar:SetPoint("BOTTOMLEFT", item, "BOTTOMLEFT", 0, 0)
-	bar:SetWidth(S.navBar)
-	bar:Hide()
-	item.foreverSixtyBar = bar
-	item.foreverSixtyIcon = Theme.icon(item, "ARTWORK", iconPath, S.navIcon)
-	item.foreverSixtyIcon:SetPoint("LEFT", item, "LEFT", S.padding, 0)
-	local label = Widgets.label(item, text, "muted", "small")
-	label:SetPoint("LEFT", item.foreverSixtyIcon, "RIGHT", S.gap * 2, 0)
-	item.foreverSixtyLabel = label
-	item:SetScript("OnEnter", function(self)
-		if not self.foreverSixtyActive then
-			self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX.body))
-		end
-	end)
-	item:SetScript("OnLeave", function(self)
-		Cards.setNavActive(self, self.foreverSixtyActive == true)
-	end)
-	item:SetScript("OnClick", function(self)
-		onClick(self)
-	end)
-	Cards.setNavActive(item, false)
-	return item
-end
-
-function Cards.setNavActive(item, active)
-	item.foreverSixtyActive = active
-	item.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[active and "gold" or "muted"]))
-	Theme.desaturate(item.foreverSixtyIcon, not active)
-	item.foreverSixtyIcon:SetAlpha(active and 1 or Theme.ALPHA.dim)
-	if active then
-		item.foreverSixtyGround:Show()
-		item.foreverSixtyBar:Show()
-	else
-		item.foreverSixtyGround:Hide()
-		item.foreverSixtyBar:Hide()
-	end
-	return active
 end
 
 --- A card: an eyebrow naming it, one strong line, one quieter line, an

@@ -32,8 +32,8 @@ describe("Prefs", function()
 	end)
 
 	it("keeps a value the player already chose", function()
-		local ui = Prefs.withDefaults({ chat = true, minimap = { angle = 45 } })
-		assert.is_true(ui.chat)
+		local ui = Prefs.withDefaults({ tooltip = false, minimap = { angle = 45 } })
+		assert.is_false(ui.tooltip)
 		assert.are.equal(45, ui.minimap.angle)
 	end)
 
@@ -47,16 +47,16 @@ describe("Prefs", function()
 	it("replaces a saved value of the wrong type with the default", function()
 		-- An older or hand-edited saved table must never reach a caller as
 		-- the wrong type; that is what turns a pref read into a Lua error.
-		local ui = Prefs.withDefaults({ chat = "yes", tracker = 7 })
-		assert.is_false(ui.chat)
-		assert.are.equal(Prefs.DEFAULTS.tracker.point, ui.tracker.point)
+		local ui = Prefs.withDefaults({ tooltip = "yes", chip = 7 })
+		assert.is_true(ui.tooltip)
+		assert.are.equal(Prefs.DEFAULTS.chip.point, ui.chip.point)
 	end)
 
 	it("fills a missing nested key without dropping its siblings", function()
-		local ui = Prefs.withDefaults({ window = { x = 120 } })
-		assert.are.equal(120, ui.window.x)
-		assert.are.equal(Prefs.DEFAULTS.window.y, ui.window.y)
-		assert.are.equal(Prefs.DEFAULTS.window.tab, ui.window.tab)
+		local ui = Prefs.withDefaults({ chip = { x = 120 } })
+		assert.are.equal(120, ui.chip.x)
+		assert.are.equal(Prefs.DEFAULTS.chip.y, ui.chip.y)
+		assert.are.equal(Prefs.DEFAULTS.chip.combatHide, ui.chip.combatHide)
 	end)
 
 	it("drops a key the defaults do not carry", function()
@@ -65,15 +65,15 @@ describe("Prefs", function()
 	end)
 
 	it("does not mutate the saved table it was handed", function()
-		local saved = { window = { x = 120 } }
+		local saved = { chip = { x = 120 } }
 		Prefs.withDefaults(saved)
-		assert.are.same({ window = { x = 120 } }, saved)
+		assert.are.same({ chip = { x = 120 } }, saved)
 	end)
 
 	it("does not hand out the DEFAULTS table itself", function()
 		local ui = Prefs.withDefaults(nil)
 		assert.are_not.equal(Prefs.DEFAULTS, ui)
-		assert.are_not.equal(Prefs.DEFAULTS.window, ui.window)
+		assert.are_not.equal(Prefs.DEFAULTS.chip, ui.chip)
 	end)
 
 	it("creates ForeverSixtyDB.ui on the first read", function()
@@ -84,47 +84,53 @@ describe("Prefs", function()
 	end)
 
 	it("round-trips a flag, including false", function()
-		Prefs.setFlag("chat", true)
-		assert.is_true(Prefs.flag("chat"))
-		Prefs.setFlag("chat", false)
-		assert.is_false(Prefs.flag("chat"))
+		Prefs.setFlag("autoSave", false)
+		assert.is_false(Prefs.flag("autoSave"))
+		Prefs.setFlag("autoSave", true)
+		assert.is_true(Prefs.flag("autoSave"))
 	end)
 
 	it("round-trips a field inside a section", function()
-		Prefs.set("window", "tab", "gear")
-		assert.are.equal("gear", Prefs.get("window", "tab"))
-		assert.are.equal("gear", _G.ForeverSixtyDB.ui.window.tab)
+		Prefs.set("chip", "combatHide", false)
+		assert.is_false(Prefs.get("chip", "combatHide"))
+		assert.is_false(_G.ForeverSixtyDB.ui.chip.combatHide)
 	end)
 
 	it("resets placements and leaves the player's other choices alone", function()
-		Prefs.set("window", "x", 300)
-		Prefs.set("window", "tab", "gear")
-		Prefs.set("tracker", "y", -40)
-		Prefs.set("tracker", "locked", true)
+		Prefs.set("chip", "point", "TOPRIGHT")
+		Prefs.set("chip", "x", 300)
+		Prefs.set("chip", "y", -40)
+		Prefs.set("chip", "combatHide", false)
+		Prefs.set("chip", "hiddenUntilLevel", 31)
+		Prefs.set("chip", "pathChosen", "warrior-fury")
 		Prefs.set("minimap", "angle", 12)
 		Prefs.set("minimap", "shown", false)
 
 		Prefs.resetPositions()
 
-		assert.are.equal(Prefs.DEFAULTS.window.x, Prefs.get("window", "x"))
-		assert.are.equal(Prefs.DEFAULTS.tracker.y, Prefs.get("tracker", "y"))
+		-- An empty point is the chip's minimap-relative default anchor.
+		assert.are.equal("", Prefs.get("chip", "point"))
+		assert.are.equal(Prefs.DEFAULTS.chip.x, Prefs.get("chip", "x"))
+		assert.are.equal(Prefs.DEFAULTS.chip.y, Prefs.get("chip", "y"))
 		assert.are.equal(Prefs.DEFAULTS.minimap.angle, Prefs.get("minimap", "angle"))
-		-- Not placements: a reset must not un-lock the tracker, re-show the
-		-- minimap button or send the player back to the Export tab.
-		assert.are.equal("gear", Prefs.get("window", "tab"))
-		assert.is_true(Prefs.get("tracker", "locked"))
+		-- Not placements: a reset must not change how the chip behaves in
+		-- combat, bring back a hidden chip, forget a path, or re-show the
+		-- minimap button.
+		assert.is_false(Prefs.get("chip", "combatHide"))
+		assert.are.equal(31, Prefs.get("chip", "hiddenUntilLevel"))
+		assert.are.equal("warrior-fury", Prefs.get("chip", "pathChosen"))
 		assert.is_false(Prefs.get("minimap", "shown"))
 	end)
 
 	it("preserves nested table identity across an unrelated accessor call", function()
 		-- A caller holding a reference to a nested section (e.g., a drag
-		-- handler holding `local window = Prefs.get("window")`) must still
+		-- handler holding `local chip = Prefs.get("chip")`) must still
 		-- write into the live table after any other accessor call.
-		local window = Prefs.get("window")
-		Prefs.setFlag("chat", true)
-		assert.are.equal(window, Prefs.get("window"))
-		window.x = 42
-		assert.are.equal(42, Prefs.get("window", "x"))
+		local chip = Prefs.get("chip")
+		Prefs.setFlag("autoSave", false)
+		assert.are.equal(chip, Prefs.get("chip"))
+		chip.x = 42
+		assert.are.equal(42, Prefs.get("chip", "x"))
 	end)
 
 	it("normalises a saved table with junk and wrong types in place", function()
@@ -133,31 +139,91 @@ describe("Prefs", function()
 		-- the same table, and now has the right shape.
 		_G.ForeverSixtyDB = {
 			ui = {
-				window = { x = 100, y = 50 },
-				tracker = 7,
+				chip = { x = 100, y = 50 },
+				minimap = 7,
 				oldkey = "junk",
 			}
 		}
 		local ui = Prefs.current()
-		assert.are.equal(100, ui.window.x)
-		assert.are.equal(Prefs.DEFAULTS.window.tab, ui.window.tab)
-		assert.are.equal("table", type(ui.tracker))
+		assert.are.equal(100, ui.chip.x)
+		assert.are.equal(Prefs.DEFAULTS.chip.point, ui.chip.point)
+		assert.are.equal("table", type(ui.minimap))
 		assert.is_nil(ui.oldkey)
 		-- The same table object, not a new one.
 		assert.are.equal(ui, _G.ForeverSixtyDB.ui)
 	end)
 
-	it("shows gear tips and the level-up toast by default", function()
+	it("shows gear tips by default", function()
 		assert.is_true(Prefs.DEFAULTS.tooltip)
-		assert.is_true(Prefs.DEFAULTS.toast)
 		assert.is_true(Prefs.flag("tooltip"))
-		assert.is_true(Prefs.flag("toast"))
 	end)
 
-	it("round-trips the tooltip and toast flags, including false", function()
+	it("round-trips the tooltip flag, including false", function()
 		Prefs.setFlag("tooltip", false)
 		assert.is_false(Prefs.flag("tooltip"))
-		Prefs.setFlag("toast", false)
-		assert.is_false(Prefs.flag("toast"))
+	end)
+end)
+
+-- The v2 keys (L2.6): the build chip, the guild badges and the hello broadcast. Pure: these
+-- read withDefaults only, never the client mock.
+describe("Prefs, the v2 keys", function()
+	local Prefs
+
+	before_each(function()
+		Prefs = helper.load("Prefs")
+	end)
+
+	it("shows the chip and hides it in combat by default", function()
+		local ui = Prefs.withDefaults(nil)
+		-- An empty point is the minimap-relative default anchor; 0 and "" are
+		-- "not hidden" and "no path chosen" (a saved nil would be dropped).
+		assert.are.same({
+			shown = true, combatHide = true, point = "", x = 0, y = 0,
+			hiddenUntilLevel = 0, hiddenFor = "", pathChosen = "", pathFor = "",
+			byCharacter = {},
+		}, ui.chip)
+	end)
+
+	it("puts the chip back beside the minimap on Reset positions", function()
+		assert.are.same({ "chip", "minimap", "dialog" }, Prefs.POSITION_SECTIONS)
+	end)
+
+	it("opens the build dialog in the middle of the screen until it is dragged, and again on Reset", function()
+		-- L3.4: an empty point is the centre of the screen; a drag saves CENTER and the offset.
+		assert.are.same({ point = "", x = 0, y = 0 }, Prefs.withDefaults(nil).dialog)
+		_G.ForeverSixtyDB = { ui = { dialog = { point = "CENTER", x = 40, y = -12 } } }
+		Prefs.resetPositions()
+		assert.are.same({ point = "", x = 0, y = 0 }, _G.ForeverSixtyDB.ui.dialog)
+	end)
+
+	it("turns the badges and the broadcast on by default", function()
+		local ui = Prefs.withDefaults(nil)
+		assert.is_true(ui.badges)
+		assert.is_true(ui.broadcast)
+	end)
+
+	it("keeps the player's own chip, badge and broadcast choices", function()
+		local ui = Prefs.withDefaults({ chip = { combatHide = false }, badges = false, broadcast = false })
+		assert.is_true(ui.chip.shown)
+		assert.is_false(ui.chip.combatHide)
+		assert.is_false(ui.badges)
+		assert.is_false(ui.broadcast)
+	end)
+
+	it("keeps the old keys the surfaces still read", function()
+		local ui = Prefs.withDefaults(nil)
+		for _, key in ipairs({ "chip", "minimap", "tooltip", "autoSave", "advancedDetail" }) do
+			assert.is_not_nil(ui[key], key)
+		end
+	end)
+
+	it("drops the tracker and the toast now the chip replaces them", function()
+		local ui = Prefs.withDefaults({ tracker = { x = 120 }, toast = false })
+		assert.is_nil(ui.tracker)
+		assert.is_nil(ui.toast)
+	end)
+
+	it("drops the window's placement now the window is gone", function()
+		assert.is_nil(Prefs.withDefaults({ window = { x = 120 } }).window)
 	end)
 end)

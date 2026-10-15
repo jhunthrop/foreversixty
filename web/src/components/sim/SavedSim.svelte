@@ -10,7 +10,8 @@
      exactly as it does on /sim before its own fetch lands. -->
 <script lang="ts">
   import activeBuild from '../../data/active-build.json';
-  import { loadItems } from '../../lib/planner/load';
+  import { loadItems, loadTalents } from '../../lib/planner/load';
+  import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
   import type { Item } from '../../lib/planner/types';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { loadActionNames, type ActionNames } from '../../lib/sim/action-names';
@@ -25,10 +26,12 @@
   import { bulkCopy, simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
+  import { gameCodeForSimResult } from '../../lib/sim/game-code';
   import { specLabel } from '../../lib/sim/spec-label';
   import { mergeSpecRows } from '../../lib/sim/spec-state';
   import type { SimResult, SpecFidelity } from '../../lib/sim/types';
   import { engineLabel, isStale } from '../../lib/sim/version';
+  import CopyForGame from '../CopyForGame.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
   import DetailsCard from './DetailsCard.svelte';
   import RotationCard from './RotationCard.svelte';
@@ -95,6 +98,9 @@
     // carries whatever level it actually ran at, so the strip shows that rather than
     // asserting MAX_LEVEL for every saved sim regardless of what it was.
     level: result.request.character.level,
+    // Stamped with the ACTIVE data build because the stored request carries no build of its
+    // own: a sim saved against an older talent layout maps its digits onto today's layout,
+    // and the addon cannot catch that (the code it receives names the active build).
     tree_version: activeBuild.build,
     // Genuinely unknowable here, same as a combat-log character (sources.ts): a saved sim's
     // stored request carries the engine's final talent STRING, not the click order that
@@ -153,6 +159,29 @@
       items = new Map();
     }
   })();
+
+  // Task L8.1, "Copy for the game": the code needs the class's tree layout to turn the stored
+  // talents string's digits into cells. Nothing else on this page reads it (the strip skips
+  // its own load because `plannerHref` is precomputed), so it is loaded here, once, through
+  // the same cached `loadTalents` the strip and the planner use -- a static build file, not
+  // an API call. A failed load leaves the button disabled rather than copying a build with
+  // no talents in it.
+  let talentIndex = $state<TalentIndex | null>(null);
+  void (async () => {
+    try {
+      talentIndex = indexTalents(await loadTalents(character.tree_version, character.class_slug));
+    } catch {
+      talentIndex = null;
+    }
+  })();
+
+  /**
+   * The build this page's result is about, as the FSB1 code the addon's build dialog reads:
+   * a bulk run's winning set, otherwise the stored request's own character
+   * (`gameCodeForSimResult`, game-code.ts). Item stats come from the item file loaded above;
+   * a slot with no record there is left out of the code.
+   */
+  const gameCode = $derived(gameCodeForSimResult(result, character.tree_version, talentIndex, items));
 
   // D48 (dps-minmaxer review round 2): a saved run reloaded cold used to hardcode
   // `actionNames={null}` below, so every ability, aura and cast name on this page read as
@@ -318,4 +347,5 @@
   >
     {copied ? simCopy.copied : simCopy.copyLink}
   </button>
+  <CopyForGame code={gameCode} testid="sim-saved-copy-for-game" />
 </div>

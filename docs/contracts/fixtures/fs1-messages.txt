@@ -1,0 +1,8 @@
+1|hello|20|warrior-arms|14|Arms leveling|2026-11-04
+1|share|FSB1:1.60.1.70291:warrior:111121:chest=6627:attack_power=30
+1|push|FSB1:1.60.1.70291:warrior:111121:chest=6627:attack_power=30|Arms raid
+1|push|FSB1:1.60.1.70291:warrior:111121:chest=6627:attack_power=30|Arms 100%25 %7C Fury%0Atank
+1|loot?|17076|1204
+1|loot!|1204|6.3|dps|16696|1
+1|snapshot?
+1|snapshot!|20|warrior-arms|14|Arms leveling|-

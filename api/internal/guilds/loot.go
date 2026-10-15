@@ -19,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/bis"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	"github.com/jhunthrop/foreversixty/api/internal/spec"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
@@ -135,12 +136,13 @@ type LootView struct {
 // Loot assembles the Loot tab for guildID. Onyxia is the only selectable encounter today
 // (the only real, named boss this tier publishes) - any requested encounter id other than
 // 1084 is ignored rather than answered with an empty page or an error, since there is
-// nothing else to select yet (design spec's own "next unkilled: none, farm" copy).
+// nothing else to select yet (design spec's own "next unkilled: none, farm" copy). Killed
+// counts the guild's private nights too, never a flagged report (presence.NotFlagged).
 func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 	var kills int
 	if err := s.Pool.QueryRow(ctx, `
 		select count(*) filter (where f.kill) from fights f join reports r on r.id = f.report_id
-		where r.guild_id = $1 and f.encounter_id = $2`, guildID, onyxiaEncounterID).Scan(&kills); err != nil {
+		where r.guild_id = $1 and f.encounter_id = $2 and `+presence.NotFlagged("r"), guildID, onyxiaEncounterID).Scan(&kills); err != nil {
 		return LootView{}, fmt.Errorf("guilds: loot kills: %w", err)
 	}
 
@@ -158,13 +160,13 @@ func (s *Store) Loot(ctx context.Context, guildID int64) (LootView, error) {
 	if err != nil {
 		return LootView{}, err
 	}
-	present, err := s.attendancePresent(ctx, guildID)
-	if err != nil {
-		return LootView{}, err
-	}
-	nights, err := s.attendanceWindowSize(ctx, guildID)
-	if err != nil {
-		return LootView{}, err
+	// The roster already carries each row's attendance (enrichRoster), the same reading the
+	// home shows. Every roster row carries the same nights (the window's size), so the last
+	// row's is the guild's.
+	nights, present := 0, make(map[string]int, len(roster))
+	for _, row := range roster {
+		present[row.CharacterKey] = row.Attendance.Present
+		nights = row.Attendance.Nights
 	}
 
 	awards, err := s.lootAwards(ctx, guildID, onyxiaEncounterID)
@@ -455,7 +457,8 @@ func (s *Store) DeleteLootAward(ctx context.Context, guildID, awardID int64) err
 // loot is member-and-officer, identical content either way - the contract's own "member:
 // read-only" is about which mutation routes an officer additionally gets, never about
 // withholding any of this read's own data from a plain member (design spec §10.1's
-// proposed ruling: "Shown, read-only").
+// proposed ruling: "Shown, read-only"). The gate is a verified row (IsVerifiedMember):
+// killed counts the guild's private nights, so an unverified row gets 403 (task L6.12).
 func (s *Service) loot(w http.ResponseWriter, r *http.Request) {
 	guildID, ok := guildIDFrom(r)
 	if !ok {
@@ -463,7 +466,7 @@ func (s *Service) loot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	actor := auth.ActorFrom(r.Context())
-	member, err := s.Store.IsMember(r.Context(), guildID, actor.UserID)
+	member, err := s.Store.IsVerifiedMember(r.Context(), guildID, actor.UserID)
 	if err != nil {
 		s.fail(w, r, "loot", err, "could not load that guild's loot just now")
 		return

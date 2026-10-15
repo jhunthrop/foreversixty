@@ -16,10 +16,18 @@ describe("the addon", function()
 		"luasocket",
 	}
 
-	--- Return the first DENIED pattern `source` matches, or nil.
-	local function firstMatch(source)
+	-- The client's addon-message channel (contract 2, docs/contracts/addon-v2.md) is not a
+	-- network call: a message goes player to player over the game's own GUILD, RAID and PARTY
+	-- channels. Theme.lua, which owns every client capability check, is the one file allowed
+	-- to name that API; Comms.lua and everything else reach it through Theme.
+	local ADDON_MESSAGE_API = { ["SendAddonMessage"] = true, ["C_ChatInfo"] = true }
+	local ADDON_MESSAGE_OWNER = "ForeverSixty/Theme.lua"
+
+	--- Return the first DENIED pattern `source` matches, or nil. `addonMessages` lets the
+	--- addon-message API through, for its one owner.
+	local function firstMatch(source, addonMessages)
 		for _, pattern in ipairs(DENIED) do
-			if source:find(pattern) then
+			if not (addonMessages and ADDON_MESSAGE_API[pattern]) and source:find(pattern) then
 				return pattern
 			end
 		end
@@ -28,9 +36,9 @@ describe("the addon", function()
 
 	it("names no network or shell API", function()
 		local paths = {}
-		-- A recursive walk, not `ls ForeverSixty/*.lua`: the views live one
-		-- directory down and a glob that does not reach them would leave
-		-- four source files unscanned by the addon's only network gate.
+		-- A recursive walk, not `ls ForeverSixty/*.lua`: the surfaces will live
+		-- one directory down (surfaces/), and a glob that does not reach them
+		-- would leave them unscanned by the addon's only network gate.
 		local listing = assert(io.popen("find ForeverSixty -name '*.lua'"))
 		for line in listing:lines() do
 			paths[#paths + 1] = line
@@ -42,9 +50,16 @@ describe("the addon", function()
 			local file = assert(io.open(path, "r"))
 			local source = file:read("a")
 			file:close()
-			local hit = firstMatch(source)
+			local hit = firstMatch(source, path == ADDON_MESSAGE_OWNER)
 			assert.is_nil(hit, path .. " names " .. tostring(hit))
 		end
+	end)
+
+	it("lets only the addon-message API through for Theme.lua, nothing else", function()
+		assert.is_nil(firstMatch("C_ChatInfo.SendAddonMessage(prefix, text, channel)", true))
+		assert.is_not_nil(firstMatch("C_ChatInfo.SendAddonMessage(prefix, text, channel)", false))
+		assert.is_not_nil(firstMatch("C_WebSocket.Open(url)", true))
+		assert.is_not_nil(firstMatch('local s = require("socket")', true))
 	end)
 
 	it("does not flag a gem socket field as network access", function()

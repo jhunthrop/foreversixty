@@ -240,7 +240,7 @@
     store.setCharacterLevel(hero?.level ?? null);
   });
 
-  // The chip's "Copy addon code" link; shared with SharePanel's own button (Task 10).
+  // The chip's "Copy for the game" link; shared with SharePanel's own buttons (Task 10, L8.1).
 
   // Every load source writes the pointer through here (Task 10); writePlannerPointer is a
   // no-op inline or before talent data has loaded.
@@ -634,7 +634,7 @@
     <!-- Rebuild spec §4.A/§4.B, fix round 5: `PlannerHeaderBand` owns the full-bleed band
          (the same shape the BiS page's `ArtPanel` + `.header-row` ships), `PlannerHeader`
          and the shared `CharacterHeader` card as its own two grid columns -- replaces the bare page
-         title, the old current-character spine band (which duplicated Copy addon code, now
+         title, the old current-character spine band (which duplicated Copy for the game, now
          in the Share panel below), and the prior round's boxed header beside a separate
          character-card panel. -->
     <PlannerHeaderBand {store} {live} {gate} onshowdps={() => (dpsOptedIn = true)} />
@@ -688,7 +688,7 @@
        its `getBoundingClientRect().height` below and above the md breakpoint. They measure
        1039.5 at 360px and 1379 from md up (the addon lane's Task 16 added `<ImportBox>` --
        a heading, a two-row textarea and a submit button -- inside this region on the
-       non-read-only mount, plus SharePanel's "Copy addon code" button next to Share and the
+       non-read-only mount, plus SharePanel's "Copy for the game" button next to Share and the
        always-present hint paragraph under that row; together that grew the region by about
        246.5px at 360px and 300px from md up over the 793/1079 this measured before it. The
        gearless-desktop figure below quoting 616 is on the same non-read-only mount as this

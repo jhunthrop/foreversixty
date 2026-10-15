@@ -35,6 +35,10 @@ function renderStatus(s) {
   text('logging-fights', p.fights);
   text('logging-queued', p.queued);
   text('engine-version', s.engine_version);
+  // When the site last saw the addon's export, and what became of the sim request; absent
+  // until the site has acked one.
+  $('addon-row').hidden = !s.addon_line;
+  text('addon-line', s.addon_line || '');
 
   const note = $('logging-note');
   if (!s.paired) {

@@ -8,8 +8,8 @@
 --
 -- Where it sits is one angle in the prefs and two pure functions, so the
 -- ring arithmetic is tested without a screen. What it does when clicked
--- is two injection points Options fills in, so this file -- which the
--- TOC loads before Window.lua -- never reaches forward to it.
+-- is two injection points Options fills in, so this file never reaches
+-- forward to whatever they open.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -32,14 +32,43 @@ local function atan2(y, x)
 	return math.atan(y, x)
 end
 
-function MinimapButton.position(angle)
+function MinimapButton.position(angle, radius)
 	local radians = math.rad(angle)
-	return math.cos(radians) * Theme.SIZES.minimapRadius,
-		math.sin(radians) * Theme.SIZES.minimapRadius
+	radius = radius or Theme.SIZES.minimapRadius
+	return math.cos(radians) * radius, math.sin(radians) * radius
+end
+
+--- The ring the button rides: just past the minimap's own edge, whatever
+--- size this client or the player's UI made the minimap (seen in game:
+--- the fixed radius put the button inside a larger minimap).
+function MinimapButton.radius()
+	local minimap = _G.Minimap
+	local width = type(minimap) == "table" and type(minimap.GetWidth) == "function"
+		and minimap:GetWidth() or nil
+	if type(width) ~= "number" or width <= 0 then
+		return Theme.SIZES.minimapRadius
+	end
+	return width / 2 + Theme.SIZES.minimapEdge
 end
 
 function MinimapButton.angleAt(x, y)
 	return math.deg(atan2(y, x)) % 360
+end
+
+--- The two click hints every launcher tooltip ends with, muted like the chip's hints:
+--- left opens the build dialog, right the Settings page (L3.5 ruling 5).
+function MinimapButton.hintLines()
+	return {
+		Theme.inlineColor("tooltipMuted", L.minimapLeftClick),
+		Theme.inlineColor("tooltipMuted", L.minimapRightClick),
+	}
+end
+
+local function withHints(lines)
+	for _, hint in ipairs(MinimapButton.hintLines()) do
+		lines[#lines + 1] = hint
+	end
+	return lines
 end
 
 function MinimapButton.tooltipLines()
@@ -47,28 +76,24 @@ function MinimapButton.tooltipLines()
 	local lines = { L.addonName }
 	if build == nil then
 		lines[#lines + 1] = L.minimapNoBuild
-		lines[#lines + 1] = L.minimapLeftClick
-		lines[#lines + 1] = L.minimapRightClick
-		return lines
+		return withHints(lines)
 	end
-	lines[#lines + 1] = build.name or string.format(L.followBuildName, build.classSlug)
+	lines[#lines + 1] = Follow.buildName(MinimapButton.data, build)
 	if MinimapButton.data ~= nil then
 		local ranks = Talents.readRanks(MinimapButton.data)
-		local point = Follow.nextPoint(build, ranks)
-		local spent = point ~= nil and (point.index - 1) or #build.order
-		lines[#lines + 1] = string.format(L.minimapProgress, spent, #build.order)
+		local progress = Follow.progress(build, ranks)
+		lines[#lines + 1] = string.format(L.minimapProgress, progress.matched, #build.order)
+		lines[#lines + 1] = Follow.line(MinimapButton.data, build, ranks)
 		local upgrades = Gear.upgrades(MinimapButton.data, build)
 		if #upgrades > 0 then
 			lines[#lines + 1] = string.format(L.minimapUpgrades, #upgrades)
 		end
 	end
-	lines[#lines + 1] = L.minimapLeftClick
-	lines[#lines + 1] = L.minimapRightClick
-	return lines
+	return withHints(lines)
 end
 
 function MinimapButton.place(angle)
-	local x, y = MinimapButton.position(angle)
+	local x, y = MinimapButton.position(angle, MinimapButton.radius())
 	MinimapButton.angle = angle
 	MinimapButton.button:ClearAllPoints()
 	MinimapButton.button:SetPoint("CENTER", _G.Minimap, "CENTER", x, y)
@@ -88,7 +113,9 @@ function MinimapButton.onUpdate(button)
 	return button
 end
 
-local function onClick(_, mouseButton)
+--- Left opens the build dialog, right the Settings page: the two injection points Options
+--- fills (nothing happens before it has).
+local function launch(mouseButton)
 	if mouseButton == "RightButton" then
 		if MinimapButton.openSettings ~= nil then
 			MinimapButton.openSettings()
@@ -98,6 +125,32 @@ local function onClick(_, mouseButton)
 	if MinimapButton.open ~= nil then
 		MinimapButton.open()
 	end
+end
+
+local function onClick(_, mouseButton)
+	launch(mouseButton)
+end
+
+--- Which mouse button a compartment click was, from whatever the client hands its `func`:
+--- the TOC form passes ("ForeverSixty", "RightButton"), the dropdown form (self, arg1,
+--- arg2, checked, "RightButton"), the menu form (button, { buttonName = "RightButton" },
+--- menu). Anything else is a left click. Pure.
+function MinimapButton.clickedButton(...)
+	for index = 1, select("#", ...) do
+		local value = select(index, ...)
+		if value == "RightButton" or value == "LeftButton" then
+			return value
+		end
+		if type(value) == "table" and (value.buttonName == "RightButton" or value.buttonName == "LeftButton") then
+			return value.buttonName
+		end
+	end
+	return "LeftButton"
+end
+
+--- The compartment entry's click: the minimap button's own two actions.
+function MinimapButton.onCompartmentClick(...)
+	launch(MinimapButton.clickedButton(...))
 end
 
 local function wire(button)
@@ -124,17 +177,31 @@ function MinimapButton.ensure()
 		return MinimapButton.button
 	end
 	local button = CreateFrame("Button", MinimapButton.FRAME_NAME, _G.Minimap)
+	Theme.noteFrame("Minimap button", "login")
 	button:SetSize(Theme.SIZES.minimapButton, Theme.SIZES.minimapButton)
 	button:SetFrameStrata("MEDIUM")
 	button:SetMovable(true)
 	button:EnableMouse(true)
 	button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	button:RegisterForDrag("LeftButton")
+	-- The LibDBIcon shape every other minimap button on this client has:
+	-- a dark disc, the icon cropped round on it, and the client's own ring.
+	local ground = button:CreateTexture(nil, "BACKGROUND")
+	ground:SetTexture(Theme.MEDIA.minimapGround)
+	ground:SetSize(Theme.SIZES.minimapGround, Theme.SIZES.minimapGround)
+	ground:SetPoint("CENTER", button, "CENTER", 0, 0)
 	local icon = button:CreateTexture(nil, "ARTWORK")
 	icon:SetTexture(Theme.MEDIA.minimapIcon)
 	icon:SetSize(Theme.SIZES.minimapIcon, Theme.SIZES.minimapIcon)
 	icon:SetPoint("CENTER", button, "CENTER", 0, 0)
-	Theme.outline(button, Theme.SIZES.border, "gold")
+	if type(icon.SetMask) == "function" then
+		icon:SetMask(Theme.MEDIA.minimapMask)
+	end
+	local ring = button:CreateTexture(nil, "OVERLAY")
+	ring:SetTexture(Theme.MEDIA.minimapRing)
+	ring:SetSize(Theme.SIZES.minimapRing, Theme.SIZES.minimapRing)
+	ring:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
+	button.foreverSixtyIcon, button.foreverSixtyRing = icon, ring
 	MinimapButton.button = button
 	wire(button)
 	return button
@@ -182,10 +249,16 @@ function MinimapButton.registerCompartment()
 		text = L.addonName,
 		icon = Theme.MEDIA.minimapIcon,
 		notCheckable = true,
-		func = function()
-			if MinimapButton.open ~= nil then
-				MinimapButton.open()
+		-- The dropdown form only passes a right-click on with this set.
+		registerForAnyClick = true,
+		func = MinimapButton.onCompartmentClick,
+		funcOnEnter = function(owner)
+			if type(owner) == "table" then
+				Theme.showLines(owner, MinimapButton.tooltipLines())
 			end
+		end,
+		funcOnLeave = function()
+			Theme.hideTooltip()
 		end,
 	})
 	MinimapButton.compartmentRegistered = ok
@@ -193,6 +266,11 @@ function MinimapButton.registerCompartment()
 		Theme.note(L.diagCompartmentFailed)
 	end
 	return ok
+end
+
+-- Reset positions puts the button back on its default angle at once (L3.5 ruling 4).
+Prefs.onReset[#Prefs.onReset + 1] = function()
+	MinimapButton.refresh()
 end
 
 ns.Minimap = MinimapButton

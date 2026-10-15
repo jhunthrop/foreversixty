@@ -13,6 +13,7 @@ local L = ns.L or require("Locale")
 local Codec = ns.Codec or require("Codec")
 local Talents = ns.Talents or require("Talents")
 local Export = ns.Export or require("Export")
+local Compat = ns.Compat or require("Compat")
 
 local Follow = {}
 
@@ -46,6 +47,29 @@ local function slotted(entry)
 	return { slots = slots, active = Follow.DEFAULT_SLOT }
 end
 
+--- Whether a slot's saved record holds a build code.
+local function hasCode(saved)
+	return type(saved) == "table" and saved.code ~= nil
+end
+
+--- The one definition of "a saved build" (L3.8 fix round 1): every slot of `entry` (a
+--- slotted entry) holding a code, in Follow.SLOTS order, as an iterator of slot, record.
+--- Follow.restore's fallback and hasSavedBuild both walk this, so they can never disagree.
+local function savedSlots(entry)
+	local index = 0
+	return function()
+		while index < #Follow.SLOTS do
+			index = index + 1
+			local slot = Follow.SLOTS[index]
+			local saved = entry.slots[slot]
+			if hasCode(saved) then
+				return slot, saved
+			end
+		end
+		return nil
+	end
+end
+
 --- The current character's slotted entry, read from (and, on first touch,
 --- written back into) ForeverSixtyDB.follows -- so a caller that only
 --- reads (Follow.slotsFor) never needs to know about the pre-slot shape.
@@ -67,8 +91,11 @@ end
 --- Saved per character (ForeverSixtyDB.follows[Export.characterKey()]):
 --- the account-wide ForeverSixtyDB.follow this replaced showed the first
 --- character's build to every character that logged in after it.
-function Follow.load(code, data, name, slot)
-	local build, message = Codec.loadBuild(code, data)
+---
+--- `player` (optional, Codec.loadBuild's) refuses a code for another class; the build
+--- dialog passes it, a restore at login does not.
+function Follow.load(code, data, name, slot, player)
+	local build, message = Codec.loadBuild(code, data, player)
 	if build == nil then
 		return nil, message
 	end
@@ -78,6 +105,35 @@ function Follow.load(code, data, name, slot)
 	entry.slots[slot] = { code = code, name = name }
 	entry.active = slot
 	Follow.build = build
+	return build
+end
+
+--- Where a pasted build goes (L3.7 item 32): the slot a paste is adopted into, and the slot it
+--- leaves alone. A paste never overwrites a build restored in the raid slot: while the active
+--- slot is the raid one and holds a build, the paste goes to the leveling slot (and becomes the
+--- active one); the second answer is then "raid", the slot `/fs build raid` switches back to.
+--- Otherwise the paste replaces the active slot's build, as before (the second answer is nil).
+Follow.PASTE_SLOT = "leveling"
+function Follow.pasteSlot()
+	local entry = currentEntry()
+	local active = entry.active or Follow.DEFAULT_SLOT
+	if active == Follow.DEFAULT_SLOT and hasCode(entry.slots[active]) then
+		return Follow.PASTE_SLOT, active
+	end
+	return active, nil
+end
+
+--- The build saved in `slot` for the current character, decoded and named, without making it the
+--- active one or touching Follow.build; nil for an empty slot or a code that no longer decodes.
+function Follow.slotBuild(data, slot)
+	local saved = currentEntry().slots[slot]
+	if not hasCode(saved) then
+		return nil
+	end
+	local build = Codec.loadBuild(saved.code, data)
+	if build ~= nil then
+		build.name = saved.name
+	end
 	return build
 end
 
@@ -107,10 +163,134 @@ function Follow.restore(data)
 	ForeverSixtyDB.follows = ForeverSixtyDB.follows or {}
 	ForeverSixtyDB.follows[key] = entry
 	local active = entry.slots[entry.active]
-	if type(active) ~= "table" or active.code == nil then
+	if hasCode(active) then
+		local build = Follow.load(active.code, data, active.name, entry.active)
+		if build ~= nil then
+			Follow.noBuildReason = nil
+			return build
+		end
+	end
+	-- L3.8: an empty active slot beside a saved build (v1's slot picker could leave one; v2 has
+	-- no picker to switch back), or an active one whose code no longer loads, follows the first
+	-- other saved build that loads, in SLOTS order, and makes its slot the active one.
+	-- Following nothing here also kept the default out (Follow.ensureDefault yields to any
+	-- saved build), so the character had no build at all.
+	local tried = false
+	for slot, record in savedSlots(entry) do
+		tried = true
+		if slot ~= entry.active then
+			local build = Follow.load(record.code, data, record.name, slot)
+			if build ~= nil then
+				Follow.noBuildReason = nil
+				return build
+			end
+		end
+	end
+	-- Every saved code failed to load: /fs diag says so (the default stays out all the same).
+	Follow.noBuildReason = tried and L.diagBuildSavedRefused or nil
+	return nil
+end
+
+--- The level a default build switches from leveling to raid.
+Follow.RAID_LEVEL = 60
+
+--- Gear loads after this file; looked up when called, never when this file loads.
+local function gearModule()
+	return ns.Gear or require("Gear")
+end
+
+--- True when the current character (its own key only) has a build saved in any slot
+--- (savedSlots). Reads saved variables without writing them.
+local function hasSavedBuild()
+	local follows = type(ForeverSixtyDB) == "table" and ForeverSixtyDB.follows or nil
+	local saved = type(follows) == "table" and follows[Export.characterKey()] or nil
+	return savedSlots(slotted(saved))() ~= nil
+end
+
+--- An FSB1 code for a default build's order (contract 1's {tab, tier, column} triples), or
+--- nil for a triple that is not three positive whole numbers.
+local function defaultCode(data, classSlug, order)
+	local points = {}
+	for index, triple in ipairs(type(order) == "table" and order or {}) do
+		if type(triple) ~= "table" then
+			return nil
+		end
+		for position = 1, 3 do
+			local value = triple[position]
+			if type(value) ~= "number" or value < 1 or value % 1 ~= 0 then
+				return nil
+			end
+		end
+		points[index] = { tab = triple[1], tier = triple[2], column = triple[3] }
+	end
+	return Codec.encodeFSB1({ dataBuild = data.build, classSlug = classSlug, order = points })
+end
+
+--- A spec slug as a player reads it, its class left off: "hunter-beast-mastery" ->
+--- "Beast Mastery", "druid-feral-bear" -> "Feral Bear".
+function Follow.specName(spec)
+	local tree = type(spec) == "string" and (spec:match("^[^-]+%-(.+)$") or spec) or "?"
+	return Talents.titleCase(tree)
+end
+
+--- A character with no build saved in any slot follows the data's default for its spec
+--- (`data.defaultBuilds[<spec>]`, contract 1): leveling, raid at RAID_LEVEL. The spec is
+--- Gear.specOf's, which is the tree with the most points (a tie, or none spent, the first tree;
+--- a tree split into cat and bear, the one the points fit). The build is marked
+--- `default = true` and named from the data, and nothing is saved: it is worked out again at
+--- each login, so a data update replaces it. `character` ({ classSlug, ranks, level, spec })
+--- is read from the client for any field it leaves out. `spec`, when given, is the spec the
+--- player chose on the chip's "pick a path" card (spec section 5.1) and wins over the points;
+--- it must be one of this class's specs with a default. The build, or nil when there is
+--- nothing to load (Follow.noBuildReason then says why, for /fs diag). Idempotent: the
+--- default already followed for the same spec and kind is kept, never decoded again.
+function Follow.ensureDefault(data, character)
+	if type(data) ~= "table" or type(data.defaultBuilds) ~= "table" then
+		Follow.noBuildReason = L.diagBuildNoDefaults
 		return nil
 	end
-	return Follow.load(active.code, data, active.name, entry.active)
+	if hasSavedBuild() then
+		-- A saved build is in force, or Follow.restore found none of them loads and said so.
+		return nil
+	end
+	character = character or {}
+	local classSlug = character.classSlug or Talents.playerClassSlug()
+	if classSlug == nil or type(data.classes) ~= "table" or data.classes[classSlug] == nil then
+		Follow.noBuildReason = L.diagBuildNoClass
+		return nil
+	end
+	local level = character.level or Compat.playerLevel()
+	local spec = character.spec
+	if spec ~= nil and spec:sub(1, #classSlug + 1) ~= classSlug .. "-" then
+		Follow.noBuildReason = string.format(L.diagBuildNoSpec, Follow.specName(spec))
+		return nil
+	end
+	if spec == nil then
+		spec = gearModule().specOf(data, classSlug, character.ranks or Talents.readRanks(data))
+	end
+	local builds = spec ~= nil and data.defaultBuilds[spec] or nil
+	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+	local default = type(builds) == "table" and builds[kind] or nil
+	if type(default) ~= "table" then
+		Follow.noBuildReason = string.format(L.diagBuildNoSpec, Follow.specName(spec))
+		return nil
+	end
+	local current = Follow.build
+	if current ~= nil and current.default and current.spec == spec and current.kind == kind then
+		return current
+	end
+	local code = defaultCode(data, classSlug, default.order)
+	local build = code ~= nil and Codec.loadBuild(code, data) or nil
+	if build == nil then
+		Follow.noBuildReason = string.format(L.diagBuildRefused, Follow.specName(spec))
+		return nil
+	end
+	build.default = true
+	build.name = default.name
+	build.spec, build.kind = spec, kind
+	Follow.build = build
+	Follow.noBuildReason = nil
+	return build
 end
 
 --- A slot id's display name ("raid" -> L.slotRaid), the one lookup rule
@@ -177,9 +357,9 @@ function Follow.forget(slot)
 	return nil
 end
 
---- Mark an inbox build (by its companion-assigned id) as handled, so the
---- Overview's "build arrived" banner never shows it again -- whether the
---- player loaded it or dismissed it outright, both close the news item.
+--- Mark an inbox build as handled, by its companion-assigned id or by its code (the build
+--- dialog records both, so a build used once stays used after the older `builds` list,
+--- which carries the ids, goes away).
 function Follow.dismissInbox(id)
 	if id == nil then
 		return nil
@@ -190,20 +370,10 @@ function Follow.dismissInbox(id)
 	return entry.dismissed
 end
 
---- The first inbox build addressed to this character (Follow.inbox's own
---- rule) that has not been dismissed yet, or nil. This is the "build
---- arrived" banner's model source: a build the player already loaded or
---- closed the banner for never comes back.
-function Follow.pendingArrival(inbox)
-	local usable = Follow.inbox(inbox, Export.characterKey())
-	local entry = currentEntry()
-	local dismissed = entry.dismissed or {}
-	for _, build in ipairs(usable) do
-		if build.id ~= nil and not dismissed[build.id] then
-			return build
-		end
-	end
-	return nil
+--- The inbox ids and codes the current character has used or dismissed (Follow.dismissInbox),
+--- as a set. The build dialog's "from the site" rows leave these out.
+function Follow.dismissedSet()
+	return currentEntry().dismissed or {}
 end
 
 --- Fold one "/"-separated key segment to a form both the addon's own key
@@ -231,7 +401,10 @@ function Follow.sameCharacter(a, b)
 	if aRegion == nil or bRegion == nil then
 		return false
 	end
-	return normaliseSegment(aRegion) == normaliseSegment(bRegion)
+	-- An empty region on either side matches any region: a key saved before
+	-- the client said its region (seen on the beta: "/Classic Beta PvP/...").
+	local sameRegion = aRegion == "" or bRegion == "" or normaliseSegment(aRegion) == normaliseSegment(bRegion)
+	return sameRegion
 		and normaliseSegment(aMid) == normaliseSegment(bMid)
 		and normaliseSegment(aName) == normaliseSegment(bName)
 end
@@ -257,6 +430,78 @@ function Follow.inbox(inbox, key)
 	return usable
 end
 
+--- Builds an officer pushed to this character (L3.7 item 44), newest first, at most
+--- Follow.MAX_PUSHED, one per code: each { code, name, from }, in ForeverSixtyDB.pushed[key].
+--- Nothing is followed from here; the build dialog lists them as builds to choose from.
+Follow.MAX_PUSHED = 5
+
+function Follow.pushedBuilds(key)
+	local pushed = type(ForeverSixtyDB) == "table" and type(ForeverSixtyDB.pushed) == "table"
+		and ForeverSixtyDB.pushed[key] or nil
+	return type(pushed) == "table" and pushed or {}
+end
+
+--- Queue a pushed build for the current character; the newest first, a repeated code moved up.
+function Follow.addPushed(code, name, from)
+	if type(code) ~= "string" or code == "" then
+		return nil
+	end
+	ForeverSixtyDB = ForeverSixtyDB or {}
+	if type(ForeverSixtyDB.pushed) ~= "table" then
+		ForeverSixtyDB.pushed = {}
+	end
+	local key = Export.characterKey()
+	local list = ForeverSixtyDB.pushed[key]
+	if type(list) ~= "table" then
+		list = {}
+		ForeverSixtyDB.pushed[key] = list
+	end
+	for index = #list, 1, -1 do
+		if list[index].code == code then
+			table.remove(list, index)
+		end
+	end
+	table.insert(list, 1, { code = code, name = name, from = from })
+	while #list > Follow.MAX_PUSHED do
+		table.remove(list)
+	end
+	return list[1]
+end
+
+--- Every build the site sent the character at `key`, once per code: contract 3's `build`
+--- messages first (newest first, Follow.messages), then the older top-level `builds` list
+--- the companion still writes beside them (Follow.inbox). Each is { id, name, code }; the id
+--- is the `builds` entry's own when the same code is there (so a build dismissed before
+--- stays dismissed), else the code itself, since a `build` message carries no id. Pure.
+function Follow.inboxBuilds(inbox, key)
+	local legacy = Follow.inbox(inbox, key)
+	local legacyId = {}
+	for _, build in ipairs(legacy) do
+		if build.id ~= nil and legacyId[build.code] == nil then
+			legacyId[build.code] = build.id
+		end
+	end
+	local builds, seen = {}, {}
+	local function add(code, name, from)
+		if type(code) ~= "string" or code == "" or seen[code] then
+			return
+		end
+		seen[code] = true
+		builds[#builds + 1] = { id = legacyId[code] or code, name = name, code = code, from = from }
+	end
+	-- An officer's push (L3.7 item 44) leads: the newest news.
+	for _, pushed in ipairs(Follow.pushedBuilds(key)) do
+		add(pushed.code, pushed.name, pushed.from)
+	end
+	for _, message in ipairs(Follow.messages(inbox, key, "build")) do
+		add(message.code, message.name)
+	end
+	for _, build in ipairs(legacy) do
+		add(build.code, build.name)
+	end
+	return builds
+end
+
 --- Messages of `kind` addressed to `key`, or to no one, newest first --
 --- Codec.inboxMessages' own character/kind filter, reordered by
 --- Codec.newestFirst (Wave C's messages carry no per-message timestamp,
@@ -271,22 +516,89 @@ local function cellKey(point)
 	return point.tab .. ":" .. point.tier .. ":" .. point.column
 end
 
---- The first point in the order the player has not spent yet.
---- `ranks` is Talents.readRanks()'s shape: ranks[tab]["<tier>:<column>"].
-function Follow.nextPoint(build, ranks)
-	if build == nil then
-		return nil
+--- Progress owns these numbers (spec section 2.1); it loads after this
+--- file, so it is looked up when called, never when this file loads.
+local function progressModule()
+	return ns.Progress or require("Progress")
+end
+
+--- Follow.buildName's worked-out names, per build table (weak keys: a build nothing holds
+--- any more drops out), with the data they were worked out against. The chip asks on every
+--- refresh; a build's order and the data's tree names never change under it.
+local builtNames = setmetatable({}, { __mode = "k" })
+
+--- What to call a build: its own name, else its two biggest trees in the
+--- plan, biggest first ("Arms / Fury build", one tree "Protection build"),
+--- else its class ("Warrior build") when the trees cannot be named. Every
+--- surface that names a build reads this, so none can disagree.
+function Follow.buildName(data, build)
+	if type(build.name) == "string" and build.name ~= "" then
+		return build.name
 	end
-	local wanted = {}
-	for index, point in ipairs(build.order) do
-		local key = cellKey(point)
-		wanted[key] = (wanted[key] or 0) + 1
-		local have = (ranks[point.tab] or {})[Talents.cellKey(point.tier, point.column)] or 0
-		if wanted[key] > have then
-			return { tab = point.tab, tier = point.tier, column = point.column, index = index }
+	local cached = builtNames[build]
+	if cached ~= nil and cached.data == data then
+		return cached.name
+	end
+	local split = progressModule().planSplit(build)
+	local tabs = {}
+	for tab, count in pairs(split) do
+		if count > 0 then
+			tabs[#tabs + 1] = tab
 		end
 	end
-	return nil
+	table.sort(tabs, function(left, right)
+		if split[left] ~= split[right] then
+			return split[left] > split[right]
+		end
+		return left < right
+	end)
+	local names = {}
+	for index = 1, math.min(2, #tabs) do
+		local name = Talents.tabName(data, build.classSlug, tabs[index])
+		if name == nil then
+			names = {}
+			break
+		end
+		names[#names + 1] = name
+	end
+	local name
+	if #names == 0 then
+		name = string.format(L.followBuildName, Talents.titleCase(build.classSlug))
+	else
+		name = string.format(L.followBuildName, table.concat(names, L.followSplitSeparator))
+	end
+	builtNames[build] = { data = data, name = name }
+	return name
+end
+
+--- /fs diag's one line for the build in force: "Build: Marksmanship leveling (default for
+--- Marksmanship)", "Build: Arms raid (saved)", or "Build: none — <why>" (Follow.noBuildReason,
+--- else "not worked out yet").
+function Follow.diagLine(data)
+	local build = Follow.build
+	if build == nil then
+		return string.format(L.diagBuildNone, Follow.noBuildReason or L.diagBuildNotYet)
+	end
+	if build.default then
+		return string.format(L.diagBuildDefault, Follow.buildName(data, build), Follow.specName(build.spec))
+	end
+	return string.format(L.diagBuildSaved, Follow.buildName(data, build))
+end
+
+--- The first point in the order the player has not spent yet
+--- (Progress.nextPoint).
+function Follow.nextPoint(build, ranks)
+	return progressModule().nextPoint(build, ranks)
+end
+
+--- Every point the character has spent (Progress.pointsSpent).
+function Follow.pointsSpent(ranks)
+	return progressModule().pointsSpent(ranks)
+end
+
+--- How far along the plan the character is (Progress.build).
+function Follow.progress(build, ranks)
+	return progressModule().build(build, ranks)
 end
 
 function Follow.line(data, build, ranks)

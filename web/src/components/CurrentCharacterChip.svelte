@@ -11,10 +11,13 @@
      action row, so resolving from "no character" to "loaded" -- or the reverse, after
      Forget -- never moves content below it (Global Constraint: no layout shift).
 
-     Copy addon code (spec section 1) is a third, optional link: the chip itself only ever
+     Copy for the game (spec section 1, task L8.1 fix round 1) is a third, optional link: the chip itself only ever
      holds a pointer, never the planner's talent index the addon-code string is built from,
      so the mounting page (the planner) passes the already-built string down and this stays
-     a pure render. `copied` has no timer, same idiom as SharePanel.svelte's `copiedFrom`:
+     a pure render. Its label is the shared `addonCopy.copyForGame`/`copiedForGame` pair
+     CopyForGame.svelte uses, but not that component: the chip's fixed-height, non-wrapping
+     row has no room for its failure field, so a failed copy leaves the label unchanged.
+     `copied` has no timer, same idiom as SharePanel.svelte's `copiedFrom`:
      it stands until the character changes underneath it, which a fresh `current` prop
      already does by remounting this component's state from scratch.
 
@@ -25,6 +28,7 @@
      lives here, in the one place every /sim* page's chip already renders. -->
 <script lang="ts">
   import { plannerHrefFor, simHrefFor, type CurrentCharacter } from '../lib/current-character';
+  import { addonCopy } from '../lib/addon/copy';
   import { currentCharacterCopy } from '../lib/current-character-copy';
   import { CHIP_HEIGHT } from '../lib/current-character-layout';
   import { classColorVar, rowLink } from '../lib/report/format';
@@ -40,7 +44,7 @@
     current: CurrentCharacter | null;
     onforget: () => void;
     hasOwnPasteBox?: boolean;
-    /** The planner's current build, already encoded as an FS1 string. Empty when the
+    /** The planner's current build, already encoded as an FSB1 build code. Empty when the
      *  planner has no build to copy -- the chip then renders no copy-addon link at all,
      *  rather than a link that would fail to copy anything. */
     addonCode?: string;
@@ -57,7 +61,7 @@
 
   let copied = $state(false);
 
-  async function copyAddonCode(): Promise<void> {
+  async function copyForGame(): Promise<void> {
     try {
       await navigator.clipboard.writeText(addonCode);
       copied = true;
@@ -110,10 +114,10 @@
           <button
             type="button"
             class={ACTION}
-            onclick={copyAddonCode}
+            onclick={copyForGame}
             data-testid="current-character-copy-addon"
           >
-            {copied ? currentCharacterCopy.copiedAddonCode : currentCharacterCopy.copyAddonCode}
+            {copied ? addonCopy.copiedForGame : addonCopy.copyForGame}
           </button>
         {/if}
         <button

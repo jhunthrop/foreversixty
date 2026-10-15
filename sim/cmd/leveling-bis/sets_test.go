@@ -312,3 +312,23 @@ func TestCompleteSetsRevertsWhenTheCompletedSetVerifiesLower(t *testing.T) {
 		t.Errorf("notes = %v, want the revert noted", notes)
 	}
 }
+
+// B2 (L9.2 part B): setFillSlots sorts on the rounded loss. head loses 0.2 and
+// neck 0.3 - 0.1 = 0.19999999999999998 unrounded: the same loss once rounded,
+// so the slot order (head first) breaks the tie, not float noise.
+func TestSetFillSlotsSortOnTheRoundedLoss(t *testing.T) {
+	setID := 7
+	item := func(id int, score float64, set *int) scored {
+		return scored{candidate: candidate{ID: id, SetID: set}, Score: score}
+	}
+	headNow, neckNow := item(1, 0.2, nil), item(2, 0.3, nil)
+	picks := map[string]slotPick{"head": {Item: &headNow}, "neck": {Item: &neckNow}}
+	pieces := map[string]scored{"head": item(11, 0, &setID), "neck": item(12, 0.1, &setID)}
+	got := setFillSlots(picks, pieces, setID)
+	if len(got) != 2 || got[0].slot != "head" || got[1].slot != "neck" {
+		t.Fatalf("setFillSlots = %+v, want head then neck: equal rounded losses keep slot order", got)
+	}
+	if got[0].loss != got[1].loss {
+		t.Fatalf("losses %v and %v differ: both should round to 0.2", got[0].loss, got[1].loss)
+	}
+}

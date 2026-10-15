@@ -114,7 +114,7 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 		t.Fatalf("loadSpec(%q): %v", specName, err)
 	}
 
-	items, _, err := loadCandidates(buildDir, spec.ClassSlug)
+	items, _, _, err := loadCandidates(buildDir, spec.ClassSlug)
 	if err != nil {
 		t.Fatalf("loadCandidates(%s, %s): %v", buildDir, spec.ClassSlug, err)
 	}
@@ -137,6 +137,14 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 	castsShoot, err := aplRotationCastsShoot(publishedRepoRoot, specName)
 	if err != nil {
 		t.Fatalf("aplRotationCastsShoot(%q): %v", specName, err)
+	}
+	requiresDagger, err := aplRotationRequiresDagger(publishedRepoRoot, specName)
+	if err != nil {
+		t.Fatalf("aplRotationRequiresDagger(%q): %v", specName, err)
+	}
+	weaponSubclasses, _, err := loadWeaponSubclasses(buildDir, spec.ClassSlug)
+	if err != nil {
+		t.Fatalf("loadWeaponSubclasses(%s): %v", spec.ClassSlug, err)
 	}
 
 	report, err := readPublishedReport(buildDir, specName)
@@ -174,7 +182,7 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 			// Champion", a Blacksmithing craft) - checkKnownGoodItem's own
 			// score() comparison must be measured against what actually
 			// ships, not against a picker this test forgot to update.
-			bySlot := candidatesBySlot(pool.Scored)
+			bySlot := bandSlotPools(&pool, spec, weaponSubclasses, requiresDagger)
 			pickBySlot := make(map[string][]scored, len(bySlot))
 			for slot, list := range bySlot {
 				filtered := excludeAbovePvpRankCap(list)

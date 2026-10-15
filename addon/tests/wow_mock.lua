@@ -12,6 +12,124 @@ local mock = {}
 -- busted itself) need it to keep existing after this spec's uninstall runs.
 local realPrint = _G.print
 
+--- The name prefixes of the client's own frames on the character pane and the bags
+--- (L4.1 fix round 2): the addon must never write into one of these. On the live
+--- client a texture made on a slot button and an OnShow hooked on the pane tainted
+--- the pane's own Show and Hide ("attempt to compare a secret number value"). L4.2 adds
+--- the quest frame's reward buttons (QuestInfoRewardsFrameQuestInfoItem<n>, the classic
+--- QuestRewardItem<n>, QuestInfoFrame) and the group loot roll frames (GroupLootFrame<n>,
+--- GroupLootContainer): the reward and roll marks draw on addon overlays there too.
+--- L5.1 adds the guild frame (CommunitiesFrame) and every Communities* frame: the guild tab's
+--- button and flyout are addon frames parented to it. L5.2 adds the compact raid frames
+--- (CompactRaidFrame*): the group panel never touches them.
+--- L5.3 adds the loot window (LootFrame, LootFrameItem<n>): the loot council helper only reads it.
+mock.CLIENT_PREFIXES = { "Character", "PaperDoll", "ContainerFrame", "QuestInfo", "QuestReward", "GroupLoot",
+	"Communities", "CompactRaidFrame", "LootFrame" }
+--- Client frames named one by one, whatever the prefixes cover (L4.3 fix round 2): the pane's
+--- CharacterFrameModeTabs column, which the panel flyout anchors beside and must never write
+--- into; the guild frame itself (L5.1); the raid frame the group panel's button and flyout are
+--- parented to, the social window holding it, and the party frame (L5.2). L5.2 fix round 1 adds
+--- the drawn Social window (SocialUIFrame): on 1.60 FriendsFrame and RaidFrame have no rect, so the
+--- group panel's button and flyout are parented to it. Fix round 3 adds the legacy raid frame's
+--- holder (RaidParentFrame): on 1.60 the global RaidFrame sits in it, hidden on every tab.
+mock.CLIENT_NAMES = { "CharacterFrameModeTabs", "CommunitiesFrame", "RaidFrame", "FriendsFrame", "PartyFrame",
+	"SocialUIFrame", "RaidParentFrame", "PlayerSpellsFrame", "ClassTalentFrame", "PlayerTalentFrame", "TalentFrame" }
+
+function mock.isClientName(name)
+	if type(name) ~= "string" then
+		return false
+	end
+	for _, exact in ipairs(mock.CLIENT_NAMES) do
+		if name == exact then
+			return true
+		end
+	end
+	for _, prefix in ipairs(mock.CLIENT_PREFIXES) do
+		if name:sub(1, #prefix) == prefix then
+			return true
+		end
+	end
+	return false
+end
+
+--- The source file of the Lua code `level` frames up the stack ("./ForeverSixty/..."),
+--- stepping over C frames: a `pcall(frame.HookScript, frame, ...)` (Theme.hookScript)
+--- is the addon's call, not pcall's.
+local function callerSource(level)
+	local index = level + 1
+	while true do
+		local info = debug.getinfo(index, "S")
+		if info == nil then
+			return "?"
+		end
+		if info.what ~= "C" then
+			return info.short_src
+		end
+		index = index + 1
+	end
+end
+
+--- Whether a source file is the addon's own code (not a spec, not this mock).
+function mock.isAddonSource(source)
+	return type(source) == "string" and source:find("ForeverSixty/", 1, true) ~= nil
+end
+
+--- The methods that write into a client frame.
+local WRITING_METHODS = { CreateTexture = true, CreateFontString = true, HookScript = true, SetScript = true }
+
+--- `frame` behind a proxy that records, in `state.clientWrites`, every write the addon's
+--- own code makes into it: a field set on its table, and CreateTexture, CreateFontString,
+--- HookScript and SetScript called on it ({ frame, kind, key, source }). The mock's own
+--- writes and a spec's set-up writes are not the addon's and are not recorded. `label` names an
+--- unnamed client frame in the records (L5.2 fix round 3: the Social window's Raid tab content,
+--- SocialUIFrame.RaidFrame, has no name).
+function mock.watchClientFrame(state, frame, label)
+	local name = label or frame.name
+	return setmetatable({}, {
+		__index = function(_, key)
+			local value = frame[key]
+			if WRITING_METHODS[key] and type(value) == "function" then
+				return function(self, ...)
+					local source = callerSource(2)
+					if mock.isAddonSource(source) then
+						state.clientWrites[#state.clientWrites + 1] = { frame = name, kind = key, key = select(1, ...),
+							source = source }
+					end
+					return value(self, ...)
+				end
+			end
+			return value
+		end,
+		__newindex = function(_, key, value)
+			local source = callerSource(2)
+			if mock.isAddonSource(source) then
+				state.clientWrites[#state.clientWrites + 1] = { frame = name, kind = "field", key = key, source = source }
+			end
+			frame[key] = value
+		end,
+	})
+end
+
+--- Runs `script` ("OnShow" or "OnHide") on `frame`, then on each of its shown descendants,
+--- parents before children, as the client does when a frame's visibility changes (L5.2 fix round
+--- 2: the group panel's sentinel learns of a Social tab switch from its parent RaidFrame's Show and
+--- Hide). The children are copied first, so a script that moves a frame does not upset the walk.
+function mock.runVisibility(frame, script)
+	local handler = type(frame.scripts) == "table" and frame.scripts[script] or nil
+	if type(handler) == "function" then
+		handler(frame)
+	end
+	local children = {}
+	for index, child in ipairs(type(frame.children) == "table" and frame.children or {}) do
+		children[index] = child
+	end
+	for _, child in ipairs(children) do
+		if child.shown and rawequal(child.parent, frame) then
+			mock.runVisibility(child, script)
+		end
+	end
+end
+
 --- Install a fresh mock into _G and return its state table.
 -- @param state table with any of: talents, traits, equipped, bags, itemStats,
 --   class, race, realm, region, professions, build, guild
@@ -28,6 +146,7 @@ function mock.install(state)
 	state.itemStats = state.itemStats or {}
 	state.professions = state.professions or {}
 	state.frames = {}
+	state.clientWrites = {}
 	state.widgets = {}
 	state.timers = {}
 	state.itemIcons = state.itemIcons or {}
@@ -132,9 +251,17 @@ function mock.install(state)
 		return state.itemStats[link]
 	end
 
+	-- The client's own shape: id, then the item type and subtype as STRINGS ("Armor",
+	-- "Mail"), the equip location, the icon, then the class and subclass ids. Realistic
+	-- strings on purpose: a `tonumber(GetItemInfoInstant(...))` takes the type as its
+	-- base and raises, as it did on the live client (L4.1 fix round 1, I1).
 	_G.GetItemInfoInstant = function(link)
 		local info = state.itemStats[link]
-		return info and info.__itemId or nil, nil, nil, info and info.__slot or nil
+		if info == nil then
+			return nil
+		end
+		return info.__itemId, info.__type or "Miscellaneous", info.__subType or "Junk", info.__slot, info.__icon,
+			info.__class, info.__subclass
 	end
 
 	_G.UnitClass = function()
@@ -219,7 +346,9 @@ function mock.install(state)
 	---   GameTooltip, font strings and textures are deliberately not
 	---   tracked: a spec counting the frames a view built must not count
 	---   the furniture the mock itself put there).
-	newFrame = function(kind, name, parent, template, track)
+	---   `watchAs` (L5.2 fix round 3): watch the frame as a client frame under that label though it
+	---   has no client name (an unnamed client frame keyed on its parent, as SocialUIFrame.RaidFrame).
+	newFrame = function(kind, name, parent, template, track, watchAs)
 		if template ~= nil and not state.templates[template] then
 			error("Unknown frame template '" .. tostring(template) .. "'", 2)
 		end
@@ -258,19 +387,42 @@ function mock.install(state)
 		function frame:GetFont()
 			return self.font
 		end
+		--- Show and Hide run the visibility scripts the client runs (L5.2 fix round 2): a frame
+		--- that becomes visible runs its OnShow, then every shown descendant's; one that stops
+		--- being visible runs its OnHide, then its shown descendants'. A Show under a hidden
+		--- parent only sets the flag; a Show on a visible frame runs nothing.
 		function frame:Show()
 			record(self, "Show")
+			local was = self:IsVisible()
 			self.shown = true
 			if self.kind == "EditBox" and self.autoFocus then
 				self.focused = true
 			end
+			if not was and self:IsVisible() then
+				mock.runVisibility(self, "OnShow")
+			end
 		end
 		function frame:Hide()
 			record(self, "Hide")
+			local was = self:IsVisible()
 			self.shown = false
+			if was then
+				mock.runVisibility(self, "OnHide")
+			end
 		end
 		function frame:IsShown()
 			return self.shown
+		end
+		--- Shown, and every parent up the chain shown: what the client's IsVisible answers.
+		function frame:IsVisible()
+			if not self.shown then
+				return false
+			end
+			local holder = self.parent
+			if type(holder) == "table" and type(holder.IsVisible) == "function" then
+				return holder:IsVisible() == true
+			end
+			return true
 		end
 		function frame:Enable()
 			record(self, "Enable")
@@ -322,6 +474,32 @@ function mock.install(state)
 		function frame:GetHeight()
 			return self.height or 0
 		end
+		--- A real parent change (L5.2 fix round 1: the group panel moves its own frames to the
+		--- Social window that is drawn), so IsVisible walks the new chain. Fix round 2: the old
+		--- parent lets the frame go (its Show and Hide no longer reach it), and a move that changes
+		--- whether the frame is visible runs its OnShow or OnHide, as the client does.
+		function frame:SetParent(holder)
+			record(self, "SetParent", holder)
+			local was = self:IsVisible()
+			local old = self.parent
+			if type(old) == "table" and type(old.children) == "table" then
+				for index = #old.children, 1, -1 do
+					if rawequal(old.children[index], self) then
+						table.remove(old.children, index)
+					end
+				end
+			end
+			self.parent = holder
+			if type(holder) == "table" and type(holder.children) == "table" then
+				holder.children[#holder.children + 1] = self
+			end
+			local now = self:IsVisible()
+			if now and not was then
+				mock.runVisibility(self, "OnShow")
+			elseif was and not now then
+				mock.runVisibility(self, "OnHide")
+			end
+		end
 		function frame:SetPoint(...)
 			record(self, "SetPoint", ...)
 			self.points[#self.points + 1] = { ... }
@@ -360,6 +538,13 @@ function mock.install(state)
 		function frame:CreateFontString(fontName, layer, inherits)
 			local region = newFrame("FontString", fontName, self, nil, false)
 			region.layer, region.inherits = layer, inherits
+			-- `state.stringWidth(text, region)`, when a spec gives one, is the client's text measure:
+			-- GetStringWidth answers it for the text the region holds (L3.7 item 20).
+			if type(state.stringWidth) == "function" then
+				region.GetStringWidth = function(own)
+					return state.stringWidth(own.text or "", own)
+				end
+			end
 			if inherits ~= nil and state.fonts[inherits] then
 				region:SetFontObject(inherits)
 			end
@@ -373,6 +558,9 @@ function mock.install(state)
 			return region
 		end
 		setmetatable(frame, { __index = methodFactory(state.missingMethods) })
+		if mock.isClientName(name) or watchAs ~= nil then
+			frame = mock.watchClientFrame(state, frame, watchAs)
+		end
 		if track then
 			state.frames[#state.frames + 1] = frame
 		end
@@ -392,6 +580,11 @@ function mock.install(state)
 	end
 
 	state.newFrame = newFrame
+	--- An unnamed client frame under `parent`, watched as a client frame under `label` (L5.2 fix
+	--- round 3: the 1.60 Social window keys its tab content frames on itself, unnamed).
+	state.clientChild = function(parent, label)
+		return newFrame("Frame", nil, parent, nil, true, label)
+	end
 	_G.UIParent = newFrame("Frame", "UIParent", nil, nil, false)
 	_G.CreateFrame = function(kind, name, parent, template)
 		return newFrame(kind, name, parent, template, true)

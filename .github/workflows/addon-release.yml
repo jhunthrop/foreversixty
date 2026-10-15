@@ -49,8 +49,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
-      - run: uv run python -m pipeline weights --build 1.60.1.70338 --check
-      - run: uv run python -m pipeline addon-data --build 1.60.1.70338 --check
+      - run: uv run python -m pipeline weights --build 1.60.1.70374 --check
+      - run: uv run python -m pipeline addon-data --build 1.60.1.70374 --check
 
   syntax-lua51:
     # luacheck's own parser accepts 5.4-only syntax (goto, ::label::,
@@ -66,7 +66,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: leafo/gh-actions-lua@v10
         with: { luaVersion: '5.1.5' }
-      - run: luac -p ForeverSixty/*.lua
+      # Every shipped Lua file: the surfaces/ subfolder and the inbox addon too.
+      - run: luac -p ForeverSixty/*.lua ForeverSixty/surfaces/*.lua ForeverSixtyInbox/*.lua
 
   release:
     # Nothing ships from a red suite. The design's own words: "Packager
@@ -118,6 +119,10 @@ jobs:
           rm -rf "$pkgroot"
           mkdir -p "$pkgroot"
           git archive HEAD -- addon/ForeverSixty | tar -x -C "$pkgroot" --strip-components=2
+          # The inbox addon ships beside ForeverSixty in the same zip: copied in as
+          # a subfolder here, moved to the zip's top level by .pkgmeta's
+          # move-folders (a topdir cannot reach a sibling folder directly).
+          git archive HEAD -- addon/ForeverSixtyInbox | tar -x -C "$pkgroot" --strip-components=1
           git -C "$pkgroot" init -q
           origin=$(git remote get-url origin)
           git -C "$pkgroot" remote add origin "$origin"
@@ -193,10 +198,13 @@ jobs:
           fi
           zip="${zips[0]}"
           unzip -l "$zip"
-          # The zip's single top-level folder must be ForeverSixty/, or the
-          # client installs it to the wrong path and no player sees the addon.
-          top=$(unzip -Z1 "$zip" | cut -d/ -f1 | sort -u)
-          if [ "$top" != "ForeverSixty" ]; then echo "top-level folder is '$top'"; exit 1; fi
+          # The zip's top-level folders must be exactly ForeverSixty/ and
+          # ForeverSixtyInbox/ (the companion's inbox reaches the game only
+          # through the second), or the client installs to the wrong path.
+          top=$(unzip -Z1 "$zip" | cut -d/ -f1 | sort -u | paste -sd, -)
+          if [ "$top" != "ForeverSixty,ForeverSixtyInbox" ]; then echo "top-level folders are '$top'"; exit 1; fi
+          unzip -Z1 "$zip" | grep -q '^ForeverSixtyInbox/ForeverSixtyInbox.toc$' || { echo "the inbox addon's TOC is missing"; exit 1; }
+          if unzip -Z1 "$zip" | grep -q '^ForeverSixty/ForeverSixtyInbox/'; then echo "the inbox addon was left inside ForeverSixty/"; exit 1; fi
           unzip -Z1 "$zip" | grep -q 'ForeverSixty/Data.lua' || { echo "Data.lua is missing"; exit 1; }
           if unzip -Z1 "$zip" | grep -q 'tests/'; then echo "the specs were packaged"; exit 1; fi
           if unzip -Z1 "$zip" | grep -q '\.superpowers'; then echo "the planning docs were packaged"; exit 1; fi

@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest';
 import bulkResultJson from '../../fixtures/sim/bulk-result.json';
 import itemsJson from '../../fixtures/planner/items/warrior.json';
 import setsJson from '../../fixtures/planner/sets.json';
-import { addonStringFor } from './addon-export';
+import talentsJson from '../../fixtures/planner/talents/warrior.json';
+import { buildCodeFor } from '../addon/build-code';
+import { decodeFSB1 } from '../addon/fsb1';
 import { ranksFromTalentsString } from './character';
 import {
   MINUS,
@@ -30,13 +32,15 @@ import {
   substitutionLabel,
   topUpgradeOf,
   winningGear,
+  winningTalents,
   type ComboRow,
 } from './combos';
 import { bulkCopy } from './copy';
 import { decodeFS1 } from '../planner/fs1';
 import type { BulkResult, Combo } from './bulk-types';
 import type { Estimate, GearSlot } from './types';
-import type { Item, ItemSet } from '../planner/types';
+import { indexTalents } from '../planner/rules';
+import type { Item, ItemSet, TalentFile } from '../planner/types';
 
 const result = bulkResultJson as unknown as BulkResult;
 const items = new Map((itemsJson.items as unknown as Item[]).map((item) => [item.id, item]));
@@ -308,17 +312,48 @@ describe('winningGear', () => {
     expect(gear.some((slot) => slot.slot === 'off_hand')).toBe(false);
   });
 
-  it('exports an addon string with no off-hand entry at all', () => {
-    const addon = addonStringFor({
+  it('copies a game code with no off-hand entry at all', () => {
+    // The fixture item file carries neither weapon, so both get a record here: the point is
+    // that the emptied off-hand never reaches the code, not that a missing record drops it.
+    const withWeapons = new Map(items);
+    const template = items.get(12784)!;
+    withWeapons.set(17182, { ...template, id: 17182 });
+    withWeapons.set(11684, { ...template, id: 11684 });
+    const code = buildCodeFor({
+      kind: 'sim',
       dataBuild: '1.60.1',
       classSlug: 'warrior',
-      raceSlug: 'orc',
-      talents: '0-5530515-0',
+      talents: winningTalents(twoHanded),
       gear: winningGear(twoHanded),
+      talentIndex: indexTalents(talentsJson as unknown as TalentFile),
+      items: withWeapons,
     });
-    expect(addon).toContain('main_hand=17182');
-    expect(addon).not.toContain('off_hand');
-    expect(addon).not.toContain('=0');
+    const decoded = decodeFSB1(code);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.gear.find((slot) => slot.slot === 'main_hand')?.itemId).toBe(17182);
+    expect(decoded.build.gear.some((slot) => slot.slot === 'off_hand')).toBe(false);
+  });
+});
+
+describe('winningTalents', () => {
+  it('reads the base character’s talents when the leader changed only gear', () => {
+    expect(winningTalents(twoHanded)).toBe(result.request.character.talents);
+  });
+
+  it('reads a talents-only leader’s own string, not the base character’s', () => {
+    const talentsLeader: BulkResult = {
+      ...result,
+      combos: [
+        { ...result.combos[0], substitutions: [{ kind: 'talents', name: 'Other', talents: '05-0-55' }] },
+        ...result.combos.slice(1),
+      ],
+    };
+    expect(winningTalents(talentsLeader)).toBe('05-0-55');
+  });
+
+  it('reads the base character’s talents for a run with no combinations', () => {
+    expect(winningTalents({ ...result, combos: [] })).toBe(result.request.character.talents);
   });
 });
 

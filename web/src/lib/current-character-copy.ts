@@ -8,8 +8,6 @@ export const currentCharacterCopy = {
   forget: 'Forget',
   openInPlanner: 'Open in planner',
   openInSimulator: 'Open in simulator',
-  copyAddonCode: 'Copy addon code',
-  copiedAddonCode: 'Copied',
   noCharacterLine: 'No character loaded. Paste an addon export in the planner or the simulator.',
   getTheAddon: "Don't have an export? Get the addon.",
   /** The sim landing list's current-row marker. */

@@ -72,8 +72,8 @@ describe("Codec.inboxMessages", function()
 	end)
 end)
 
--- Codec.newestFirst: the FollowView inbox list and Tooltip.weightsMessage
--- both want the companion's own append order reversed, since nothing on
+-- Codec.newestFirst: the inbox readers (Follow.messages, and through it
+-- Gear.currentWeights for the item tooltip) want the companion's own append order reversed, since nothing on
 -- the wire timestamps one message against another.
 describe("Codec.newestFirst", function()
 	local Codec
@@ -101,5 +101,16 @@ describe("Codec.newestFirst", function()
 	it("answers the one entry for a single-message list", function()
 		local reversed = Codec.newestFirst({ { id = "only" } })
 		assert.are.equal("only", reversed[1].id)
+	end)
+end)
+
+describe("Codec.inboxMessages, the last raid (contract 3)", function()
+	it("reads a last_raid message for the current character", function()
+		local Codec = helper.load("Codec")
+		local usable = Codec.inboxMessages({ messages = {
+			{ type = "last_raid", character = "us/pvp/bow-jackzon", bosses = { { name = "Lucifron", percentile = 71 } } },
+		} }, "US/PvP/Bow Jackzon", "last_raid")
+		assert.are.equal(1, #usable)
+		assert.are.equal("Lucifron", usable[1].bosses[1].name)
 	end)
 end)

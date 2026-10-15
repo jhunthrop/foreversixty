@@ -86,14 +86,16 @@ func TestRaidsFightsAndPresentAndTopParse(t *testing.T) {
 		 values ('raids-detail-report', $1, 'public', 'complete', 'Onyxia''s Lair', now())`, gid); err != nil {
 		t.Fatal(err)
 	}
+	// fights.players holds the log's GUIDs, as engine.go writes it; the present list reads
+	// the character by key from fight_metrics (task L6.8).
 	if _, err := h.pool.Exec(ctx,
 		`insert into fights (report_id, fight_index, name, encounter_id, kill, duration_ms, start_ms, deaths, players)
-		 values ('raids-detail-report', 0, 'Onyxia', 1084, false, 200000, 1000, 2, $1)`, []string{key}); err != nil {
+		 values ('raids-detail-report', 0, 'Onyxia', 1084, false, 200000, 1000, 2, $1)`, []string{l68GUID}); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := h.pool.Exec(ctx,
 		`insert into fights (report_id, fight_index, name, encounter_id, kill, duration_ms, start_ms, deaths, players)
-		 values ('raids-detail-report', 1, 'Onyxia', 1084, true, 260000, 201000, 1, $1)`, []string{key}); err != nil {
+		 values ('raids-detail-report', 1, 'Onyxia', 1084, true, 260000, 201000, 1, $1)`, []string{l68GUID}); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := h.pool.Exec(ctx,

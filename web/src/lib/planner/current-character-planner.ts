@@ -13,7 +13,7 @@
 // `/planner`'s own bare-load path), and 'fight'/'armory' carry no talents or gear the
 // planner could show at all, so only a 'code' or 'addon' pointer -- both an FS1 string --
 // can ever restore here, fed through the exact path `?code=` already takes.
-import { addonCodeFor } from '../addon/build-code';
+import { buildCodeFor } from '../addon/build-code';
 import { decodeFS1, type FS1Result } from './fs1';
 import type { TalentIndex } from './rules';
 import type { PlannerStore } from './store.svelte';
@@ -249,14 +249,15 @@ export function writePlannerPointer(
 
 /**
  * The planner's current build as an addon export string, or `''` when there is nothing to
- * export yet (no talent data loaded). `SharePanel.svelte`'s "Copy addon code" button and
+ * export yet (no talent data loaded). `SharePanel.svelte`'s two "Copy for the game" buttons and
  * the current-character chip's own copy-addon link (`CurrentCharacterChip.svelte`'s
- * `addonCode` prop) both read this, so the two can never derive it two different ways.
+ * `addonCode` prop) both read this, so the two can never derive it two different ways. It goes
+ * through `buildCodeFor`'s planner path, the entry every "Copy for the game" button reaches.
  */
 export function plannerAddonCode(store: PlannerStore): string {
   return store.talentIndex === null
     ? ''
-    : addonCodeFor({
+    : buildCodeFor({
         dataBuild: store.treeVersion,
         classSlug: store.classSlug,
         order: store.order,

@@ -9,6 +9,9 @@
 -- `events` is the physical array, never longer than `cap`; `start` is the
 -- index of the OLDEST event, so chronological order is start..count, then
 -- 1..start-1. Until the buffer first fills, `start` is 1.
+local _, ns = ...
+ns = type(ns) == "table" and ns or {}
+
 local RecorderBuffer = {}
 
 --- A fresh, empty store.
@@ -42,4 +45,5 @@ function RecorderBuffer.clear(store)
 	store.start, store.count, store.events = 1, 0, {}
 end
 
+ns.RecorderBuffer = RecorderBuffer
 return RecorderBuffer

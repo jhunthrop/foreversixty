@@ -27,9 +27,18 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from pipeline.addonbis import build_bis
-from pipeline.addonrotation import build_rotations
-from pipeline.models import AddonClass, AddonData, AddonTab, AddonTalent
+from pipeline.addonbis import build_bis_items, build_bis_with_skips
+from pipeline.addonrotation import build_ability_levels, build_rotations
+from pipeline.encounters import load_encounter_needs
+from pipeline.models import (
+    AddonClass,
+    AddonData,
+    AddonDefaultBuild,
+    AddonDpsPerPoint,
+    AddonDpsPerPointBand,
+    AddonTab,
+    AddonTalent,
+)
 from pipeline.normalize import write_model
 from pipeline.weights import load_weights
 
@@ -81,6 +90,47 @@ def _tabs(root: Path, build: str, class_slug: str) -> list[AddonTab]:
     return tabs
 
 
+def _default_builds(root: Path, build: str) -> dict[str, dict[str, AddonDefaultBuild]]:
+    """data/builds/<build>/addon-builds.json, which sim/cmd/addon-builds
+    writes from each spec's guide builds: the build the addon loads for a
+    character with none saved. Empty when the file does not exist, so a
+    build directory the sim has not run against yet simply ships none."""
+    path = root / build / "addon-builds.json"
+    if not path.exists():
+        return {}
+    file = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        spec: {kind: AddonDefaultBuild(**entry) for kind, entry in builds.items()}
+        for spec, builds in file.items()
+    }
+
+
+def _dps_per_point(root: Path, build: str) -> dict[str, AddonDpsPerPoint]:
+    """data/builds/<build>/dps-per-point.json, which sim/cmd/dps-per-point
+    writes: each spec's DPS (HPS for a healer) per point of its reference
+    stat. Empty when the file does not exist; a spec missing from it (every
+    tank) simply has no entry, and the addon falls back to "score" units."""
+    path = root / build / "dps-per-point.json"
+    if not path.exists():
+        return {}
+    file = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        spec: AddonDpsPerPoint(
+            reference=entry["reference"],
+            dps=entry["dps"],
+            healing=entry["healing"],
+            weapon_dps=entry.get("weapon_dps", 0.0),
+            bands={
+                int(band): AddonDpsPerPointBand(
+                    reference=entry["reference"], dps=row["dps"], weapon_dps=row["weapon_dps"]
+                )
+                for band, row in (entry.get("bands") or {}).items()
+            },
+        )
+        for spec, entry in sorted(file.items())
+    }
+
+
 def build_addon_data(
     build: str,
     root: Path = Path("builds"),
@@ -91,8 +141,22 @@ def build_addon_data(
     }
     weights = {key: entry.weights for key, entry in load_weights(curated_dir).items()}
     rotations = build_rotations(root, build, curated_dir=curated_dir)
-    bis = build_bis(root, build)
-    return AddonData(build=build, classes=classes, weights=weights, rotations=rotations, bis=bis)
+    bis, bis_unconfirmed_skips = build_bis_with_skips(root, build)
+    bis_names, bis_dps = build_bis_items(root, build, bis)
+    return AddonData(
+        build=build,
+        classes=classes,
+        weights=weights,
+        rotations=rotations,
+        bis=bis,
+        default_builds=_default_builds(root, build),
+        dps_per_point=_dps_per_point(root, build),
+        encounter_needs=load_encounter_needs(root, build, curated_dir),
+        ability_levels=build_ability_levels(root, build, curated_dir=curated_dir),
+        bis_names=bis_names,
+        bis_dps=bis_dps,
+        bis_unconfirmed_skips=bis_unconfirmed_skips,
+    )
 
 
 def write_addon_data(
@@ -100,10 +164,12 @@ def write_addon_data(
     root: Path = Path("builds"),
     out_root: Path | None = None,
     curated_dir: Path = Path("curated"),
+    data: AddonData | None = None,
 ) -> Path:
+    """`data` is build_addon_data's output when the caller already has it."""
     path = (out_root or root) / build / "addon-data.json"
     path.parent.mkdir(parents=True, exist_ok=True)
-    write_model(build_addon_data(build, root=root, curated_dir=curated_dir), path)
+    write_model(data or build_addon_data(build, root=root, curated_dir=curated_dir), path)
     return path
 
 
@@ -111,8 +177,10 @@ def check_addon_data(
     build: str,
     root: Path = Path("builds"),
     curated_dir: Path = Path("curated"),
+    data: AddonData | None = None,
 ) -> bool:
-    """True when the committed copy has drifted from build_addon_data's output.
+    """True when the committed copy has drifted from build_addon_data's output
+    (`data`, when the caller already has it).
 
     Compares parsed JSON rather than raw text so formatting-only drift (key
     order, whitespace) is not mistaken for content drift.
@@ -121,7 +189,7 @@ def check_addon_data(
 
     with tempfile.TemporaryDirectory() as directory:
         expected = write_addon_data(
-            build, root=root, out_root=Path(directory), curated_dir=curated_dir
+            build, root=root, out_root=Path(directory), curated_dir=curated_dir, data=data
         )
         wanted = json.loads(expected.read_text(encoding="utf-8"))
     path = root / build / "addon-data.json"

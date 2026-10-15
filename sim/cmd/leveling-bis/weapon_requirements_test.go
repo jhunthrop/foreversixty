@@ -178,8 +178,12 @@ func TestRestrictRangedByProficiencySkillClassesKeepEveryRecognisedType(t *testi
 	wand := scored{candidate: candidate{ID: 5, Name: "A Wand", ClassID: itemClassWeapon, WeaponType: "wand"}}
 	for _, classSlug := range []string{"hunter", "warrior", "rogue"} {
 		got := restrictRangedByProficiency([]scored{bow, gun, crossbow, thrown, wand}, classSlug)
-		if len(got) != 4 {
-			t.Fatalf("%s: restrictRangedByProficiency = %+v, want bow/gun/crossbow/thrown kept, wand dropped", classSlug, got)
+		want := 4
+		if classSlug == "hunter" {
+			want = 3 // B1: a hunter cannot shoot a thrown weapon
+		}
+		if len(got) != want {
+			t.Fatalf("%s: restrictRangedByProficiency = %+v, want %d kept (wand dropped)", classSlug, got, want)
 		}
 		if containsID(got, 5) {
 			t.Fatalf("%s: restrictRangedByProficiency kept a wand (id 5), no proficiency for one: %+v", classSlug, got)
@@ -365,5 +369,63 @@ func TestLoadWeaponSubclassesUnknownClassWithNoFallbackErrors(t *testing.T) {
 	dir := t.TempDir()
 	if _, _, err := loadWeaponSubclasses(dir, "not-a-real-class"); err == nil {
 		t.Fatal("loadWeaponSubclasses: want an error for an unknown class with no static fallback entry")
+	}
+}
+
+// B1 (L9.2 part B): a hunter cannot Auto/Aimed/Multi-Shot with a thrown
+// weapon, so thrown never ranks (or lists) in a hunter's ranged slot,
+// whether it is identified by weapon_type or by item subclass 16.
+// Warriors and rogues keep it (the L1.7 audit stands for them).
+func TestRestrictRangedByProficiencyHunterNeverKeepsThrown(t *testing.T) {
+	byType := scored{candidate: candidate{ID: 285279, Name: "Cracked Blacksmith Hammer", ClassID: itemClassWeapon, WeaponType: "thrown"}}
+	bySubclass := scored{candidate: candidate{ID: 9, Name: "A Thrown Weapon, type unknown", ClassID: itemClassWeapon, SubclassID: 16}}
+	bow := scored{candidate: candidate{ID: 1, Name: "A Bow", ClassID: itemClassWeapon, WeaponType: "bow"}}
+	got := restrictRangedByProficiency([]scored{byType, bySubclass, bow}, "hunter")
+	if len(got) != 1 || got[0].ID != 1 {
+		t.Fatalf("hunter: restrictRangedByProficiency = %+v, want only the bow", got)
+	}
+}
+
+func TestRestrictRangedByProficiencyWarriorAndRogueStillKeepThrown(t *testing.T) {
+	byType := scored{candidate: candidate{ID: 2, Name: "A Thrown Weapon", ClassID: itemClassWeapon, WeaponType: "thrown"}}
+	bySubclass := scored{candidate: candidate{ID: 3, Name: "A Thrown Weapon, type unknown", ClassID: itemClassWeapon, SubclassID: 16}}
+	for _, classSlug := range []string{"warrior", "rogue"} {
+		got := restrictRangedByProficiency([]scored{byType, bySubclass}, classSlug)
+		if len(got) != 2 {
+			t.Fatalf("%s: restrictRangedByProficiency = %+v, want thrown kept", classSlug, got)
+		}
+	}
+}
+
+// B1 through the slot pools every pass reads: the thrown weapon is in a
+// warrior's ranged pool and in none of the three hunter specs' (so it is
+// neither picked nor listed as an alternative); the bow stays for both.
+func TestBandSlotPoolsKeepThrownForWarriorsNotHunters(t *testing.T) {
+	items := []candidate{
+		{ID: 285279, Name: "Cracked Blacksmith Hammer", EffectiveRequiredLevel: 17, ClassID: itemClassWeapon, WeaponType: "thrown", DPS: 30, Slots: []string{"ranged"}},
+		{ID: 2100, Name: "A Bow", EffectiveRequiredLevel: 17, ClassID: itemClassWeapon, WeaponType: "bow", DPS: 10, Slots: []string{"ranged"}},
+	}
+	idx := lootIndex{
+		285279: {{Kind: "vendor", Label: "A Vendor"}},
+		2100:   {{Kind: "vendor", Label: "A Vendor"}},
+	}
+	every := map[int]bool{}
+	for id := 0; id <= 20; id++ {
+		every[id] = true
+	}
+	for _, c := range []struct {
+		class, spec string
+		thrown      bool
+	}{
+		{"hunter", "hunter-beast-mastery", false},
+		{"hunter", "hunter-marksmanship", false},
+		{"hunter", "hunter-survival", false},
+		{"warrior", "warrior-arms", true},
+	} {
+		pool := buildBandPool(items, idx, c.class, 20, "horde", map[string]float64{"agility": 1, "strength": 1}, 0, false)
+		got := idsOf(bandSlotPools(&pool, specInfo{Spec: c.spec, ClassSlug: c.class}, every, false)["ranged"])
+		if got[285279] != c.thrown || !got[2100] {
+			t.Errorf("%s ranged pool %v, want thrown kept = %v and the bow kept", c.spec, got, c.thrown)
+		}
 	}
 }

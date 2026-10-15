@@ -57,7 +57,13 @@
   import { descriptorLines } from '../../lib/character-header/descriptor';
   import { PLACEHOLDER_CHARACTER, placeholderAnswer } from '../../lib/character-header/placeholder';
   import { planAnswer } from '../../lib/character-header/answer-plan';
-  import { isStaleAddonSync, syncText, syncView, type SyncView } from '../../lib/character-header/sync';
+  import {
+    STALE_SEPARATOR,
+    isStaleAddonSync,
+    syncText,
+    syncView,
+    type SyncView,
+  } from '../../lib/character-header/sync';
   import type {
     ActionContext,
     AnswerSpec,
@@ -70,8 +76,6 @@
   import { classColorVar } from '../../lib/report/format';
   import { classSlugFromName } from '../../lib/report/tree-sizes';
   import CharacterHeaderSignedOut from './CharacterHeaderSignedOut.svelte';
-
-  const STALE_SEPARATOR = ' \u00b7 ';
 
   type ActionProp = HeaderAction | ((context: ActionContext) => HeaderAction);
 

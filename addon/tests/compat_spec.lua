@@ -274,3 +274,121 @@ describe("Compat", function()
 		end)
 	end)
 end)
+
+-- L4.4 fix round 1: the site link's region (D1) and the realm /fs link may split off (D5).
+describe("Compat, the site's region and this realm", function()
+	local Compat
+
+	before_each(function()
+		mock.install({ realm = "Classic Beta PvP" })
+		Compat = helper.load("Compat")
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("names the region by GetCurrentRegion's number, us where it cannot", function()
+		local expected = { "us", "kr", "eu", "tw", "cn" }
+		for number, region in ipairs(expected) do
+			_G.GetCurrentRegion = function() return number end
+			assert.are.equal(region, Compat.siteRegion())
+		end
+		_G.GetCurrentRegion = function() return 72 end
+		assert.are.equal("us", Compat.siteRegion())
+		_G.GetCurrentRegion = function() error("no region") end
+		assert.are.equal("us", Compat.siteRegion())
+		_G.GetCurrentRegion = nil
+		assert.are.equal("us", Compat.siteRegion())
+	end)
+
+	it("knows this realm in any spelling, spaces gone and case ignored", function()
+		for _, text in ipairs({ "Classic Beta PvP", "ClassicBetaPvP", "classicbetapvp", "CLASSIC BETA PVP" }) do
+			assert.is_true(Compat.isOwnRealmName(text), text)
+		end
+		_G.GetRealmName = nil
+		_G.GetNormalizedRealmName = function() return "ClassicBetaPvE2" end
+		assert.is_true(Compat.isOwnRealmName("classicbetapve2"))
+		for _, text in ipairs({ "Luc", "Whitemane", "", false }) do
+			assert.is_false(Compat.isOwnRealmName(text), tostring(text))
+		end
+		assert.is_false(Compat.isOwnRealmName(nil))
+	end)
+end)
+
+-- L3.7 pre-item (the player's capture review): a learned ranked spell whose own subtext is empty
+-- takes the highest rank the spellbook holds under its name.
+describe("Compat.spellbookRank", function()
+	local Compat
+	local saved = {}
+	local NAMES = { "GetNumSpellTabs", "GetSpellTabInfo", "GetSpellBookItemName", "C_SpellBook" }
+
+	before_each(function()
+		for _, name in ipairs(NAMES) do
+			saved[name] = _G[name]
+			_G[name] = nil
+		end
+		Compat = require("spec_helper").load("Compat")
+	end)
+
+	after_each(function()
+		for _, name in ipairs(NAMES) do
+			_G[name] = saved[name]
+		end
+	end)
+
+	local function classicBook(entries)
+		_G.GetNumSpellTabs = function()
+			return 2
+		end
+		_G.GetSpellTabInfo = function(tab)
+			if tab == 1 then
+				return "General", "icon", 0, 1
+			end
+			return "Class", "icon", 1, #entries - 1
+		end
+		_G.GetSpellBookItemName = function(index)
+			local entry = entries[index]
+			return entry and entry[1], entry and entry[2]
+		end
+	end
+
+	it("answers the highest learned rank of the spell's name, from the classic spellbook", function()
+		classicBook({ { "Attack", "" }, { "Multi-Shot", "Rank 1" }, { "Multi-Shot", "Rank 3" }, { "Multi-Shot", "Rank 2" },
+			{ "Arcane Shot", "Rank 5" } })
+		assert.are.equal("Rank 3", Compat.spellbookRank("Multi-Shot"))
+		assert.are.equal("Rank 5", Compat.spellbookRank("Arcane Shot"))
+	end)
+
+	it("answers nothing for an unranked or unknown spell, or a bad name", function()
+		classicBook({ { "Attack", "" }, { "Kill Command", "" } })
+		assert.is_nil(Compat.spellbookRank("Kill Command"))
+		assert.is_nil(Compat.spellbookRank("Nothing"))
+		assert.is_nil(Compat.spellbookRank(nil))
+	end)
+
+	it("reads the C_SpellBook skill lines where the classic tabs are gone", function()
+		_G.C_SpellBook = {
+			GetNumSpellBookSkillLines = function()
+				return 1
+			end,
+			GetSpellBookSkillLineInfo = function()
+				return { itemIndexOffset = 0, numSpellBookItems = 2 }
+			end,
+			GetSpellBookItemName = function(index)
+				return "Multi-Shot", index == 1 and "Rank 1" or "Rank 2"
+			end,
+		}
+		assert.are.equal("Rank 2", Compat.spellbookRank("Multi-Shot"))
+	end)
+
+	it("answers nothing on a client with no spellbook API, and when the API raises", function()
+		assert.is_nil(Compat.spellbookRank("Multi-Shot"))
+		_G.GetNumSpellTabs = function()
+			error("no book")
+		end
+		_G.GetSpellTabInfo = function() end
+		_G.GetSpellBookItemName = function() end
+		assert.is_nil(Compat.spellbookRank("Multi-Shot"))
+	end)
+end)

@@ -1,6 +1,6 @@
 from typing import Any, Literal
 
-from pydantic import BaseModel, SerializerFunctionWrapHandler, model_serializer
+from pydantic import BaseModel, Field, SerializerFunctionWrapHandler, model_serializer
 
 
 class Zone(BaseModel):
@@ -386,6 +386,16 @@ class LootBoss(BaseModel):
     #: for every item classic-db itself attributed (its own record IS the
     #: corroboration).
     item_source_origin: dict[str, str] | None = None
+    #: The creature's own cmangos/classic-db `creature_template.Rank` (task
+    #: L1.7, `pipeline.loot.npc_rank`): 1 elite, 2 rare elite, 3 boss, 4 rare
+    #: (`pipeline.classic_sources.RARE_NPC_RANKS`). Unset for a normal
+    #: creature (rank 0) and for an npc the dump does not rank.
+    rank: int | None = None
+    #: True for a rare SPAWN (task L1.7, `pipeline.classic_sources.
+    #: parse_rare_spawns`): a rare or rare-elite creature with a pooled
+    #: spawn, so it is not there on every run. Unset otherwise -- including
+    #: a fixed boss the dump ranks rare elite (Edwin VanCleef).
+    rare_spawn: bool | None = None
 
 
 class LootSource(BaseModel):
@@ -409,6 +419,9 @@ class LootSource(BaseModel):
     faction_id: int | None = None
     standing: str | None = None
     rank: int | None = None
+    #: True for a `world` source whose creature is a rare spawn (task L1.7,
+    #: `pipeline.loot.npc_rank`): Swiftmane, Lupos. Unset otherwise.
+    rare_spawn: bool | None = None
     #: The vendor kind's own npc, so the page can link it the way a boss's
     #: `npc_id` already does.
     npc_id: int | None = None
@@ -756,6 +769,18 @@ class AddonRotationBand(BaseModel):
     lines: list[AddonRotationLine]
 
 
+class AddonBisAlternative(BaseModel):
+    """One of a BiS pick's runners-up (leveling-bis's `runners_up`, the next
+    two candidates by its own ranking): the item a player who cannot get
+    the pick falls back on, in the same ids-only shape as the pick."""
+
+    item_id: int
+    #: One of pipeline.addonbis.SOURCE_KIND_CODES' keys, as on AddonBisItem.
+    source_kind: str
+    #: The short place, as on AddonBisItem.source; empty for none.
+    source: str = ""
+
+
 class AddonBisItem(BaseModel):
     """One slot's leveling BiS pick, ids only (pipeline.addonbis's own
     load-bearing decision: the item's name and swap_note are not carried
@@ -776,6 +801,16 @@ class AddonBisItem(BaseModel):
     #: pick leveling-bis wrote with no `source` at all, which the addon
     #: reads as "show no source line" rather than a placeholder.
     source: str = ""
+    #: The pick's drop chance at `source` as a fraction (0.14 is 14 percent),
+    #: from leveling-bis's own `chance` (the loot table's per-item drop rate,
+    #: percent / 100). None when the pick is not a drop or the loot table
+    #: states no rate for it, and for a bis file written before leveling-bis
+    #: emitted the field.
+    chance: float | None = None
+    #: Up to two runners-up (leveling-bis's `runners_up`), best first. For a
+    #: bis file written before leveling-bis emitted that field, the first two
+    #: of the row's own `alternatives` list instead (pipeline.addonbis._pick).
+    alternatives: list[AddonBisAlternative] = []
 
 
 class AddonBisBand(BaseModel):
@@ -802,6 +837,66 @@ class AddonBisBand(BaseModel):
     weights: dict[str, float] = {}
 
 
+class AddonDefaultBuild(BaseModel):
+    """One default talent build the addon loads for a character with none
+    saved (docs/contracts/addon-v2.md, contract 1): the guide's leveling or
+    raid build as sim/cmd/addon-builds orders it -- one (tab, tier, column)
+    triple per point in learning order, 1-based, the codec's own triple."""
+
+    name: str
+    order: list[tuple[int, int, int]]
+
+
+class AddonDpsPerPointBand(BaseModel):
+    """One leveling band's figures (task L1.5): sim/cmd/dps-per-point's
+    derivatives on that band's own character -- the bare band's BiS set,
+    the guide's leveling build, at the middle of the band's levels."""
+
+    #: The spec's reference stat, repeated so a band table stands alone.
+    reference: str
+    #: Damage (healing for a healer) per second per reference-stat point.
+    dps: float
+    #: Damage per second one more point of the swung weapon's own damage
+    #: per second is worth (the main hand; the ranged weapon for a
+    #: ranged-attack-power spec); 0 for a spec that does not swing it.
+    weapon_dps: float
+
+
+class AddonDpsPerPoint(BaseModel):
+    """What one point of a spec's reference stat is worth (docs/contracts/
+    addon-v2.md, contract 1): sim/cmd/dps-per-point's raw stat-weights
+    derivative on the guide's level-60 raid character. The addon's Progress
+    multiplies a score delta, which is in reference-stat points, by `dps`.
+    Task L1.5: `bands` carries the same figures per leveling band, which
+    differ from the level-60 one by far more than 25 percent."""
+
+    #: The spec's reference stat (data/curated/specs.json), the one the
+    #: addon's weights are normalised to 1.0 against.
+    reference: str
+    #: Damage per second per point; healing per second when `healing`.
+    dps: float
+    #: True for a healer: the addon says "healing" instead of "damage".
+    healing: bool
+    #: The level-60 raid character's DPS per +1 weapon DPS (see
+    #: AddonDpsPerPointBand.weapon_dps).
+    weapon_dps: float = 0.0
+    #: Band (20 ... 60) -> that band's figures; a band the sim could not
+    #: measure beyond its own error is absent.
+    bands: dict[int, AddonDpsPerPointBand] = {}
+
+
+class AddonEncounterNeeds(BaseModel):
+    """One raid boss's ready-check needs (contract 1's encounterNeeds), from
+    data/curated/encounter_needs.json through pipeline.encounters. The ids
+    are spell ids the addon checks the raid's auras against and shows by the
+    client's own spell name; they are never printed."""
+
+    buffs: list[int]
+    debuffs: list[int]
+    #: The school a raid stacks resistance against, or None.
+    resist: str | None = None
+
+
 class AddonData(BaseModel):
     build: str
     classes: dict[str, AddonClass]
@@ -816,6 +911,34 @@ class AddonData(BaseModel):
     #: missing curated/apl entry (the two directories have different
     #: maturity, hence the different rule).
     bis: dict[str, list[AddonBisBand]] = {}
+    #: Keyed by spec, then "leveling" or "raid": data/builds/<build>/
+    #: addon-builds.json, written by sim/cmd/addon-builds. Empty when that
+    #: file does not exist.
+    default_builds: dict[str, dict[str, AddonDefaultBuild]] = {}
+    #: Keyed by spec: data/builds/<build>/dps-per-point.json, written by
+    #: sim/cmd/dps-per-point. A spec with no entry (every tank, or one the
+    #: sim has not measured) is the addon's cue to fall back to "score" units.
+    dps_per_point: dict[str, AddonDpsPerPoint] = {}
+    #: Keyed by raid boss npc id (pipeline.encounters). Empty for a build
+    #: with no loot.json raid record to check the ids against.
+    encounter_needs: dict[int, AddonEncounterNeeds] = {}
+    #: Rotation spell id -> the level the first rank of its ability is
+    #: learned (pipeline.addonrotation.build_ability_levels), for the
+    #: rotation region's "at level N". Every id any rotation line carries.
+    ability_levels: dict[int, int] = {}
+    #: Every item id that is a BiS pick or alternative in any band -> its
+    #: items.json display name (pipeline.addonbis.build_bis_items, task
+    #: L1.4), so the tooltip can name a pick before the client's item cache
+    #: fills. Once per id; the packed pick strings are unchanged.
+    bis_names: dict[int, str] = {}
+    #: The weapons among bis_names -> their own dps at one decimal, from
+    #: items/<class>.json's `dps` (what sim/cmd/leveling-bis ranks on).
+    bis_dps: dict[int, float] = {}
+    #: The id of every BiS candidate pipeline.addonbis passed over because
+    #: items.json marks it client_unconfirmed (one per skip). Never written
+    #: to addon-data.json or Data.lua: it feeds the addon-data command's
+    #: audit line, so one run parses the bis files once.
+    bis_unconfirmed_skips: list[int] = Field(default_factory=list, exclude=True)
 
 
 class PhaseBoundary(BaseModel):

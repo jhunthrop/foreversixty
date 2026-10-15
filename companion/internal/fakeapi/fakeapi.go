@@ -15,9 +15,11 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/klauspost/compress/zstd"
 
@@ -78,14 +80,39 @@ type Server struct {
 	exports  []map[string]string
 	inbox    json.RawMessage
 	refuse   bool
+
+	// The addon outbox (contract 4) and the acks it earns (contract 3).
+	posts        []ExportPost
+	simOutcome   string
+	refuseOutbox bool
+	refuseChars  bool
+	claimChars   bool
+	attempts     int
+	clock        func() time.Time
+	acks         map[string]ack
+	inboxReads   int
 }
+
+// InboxFetches is how many times GET /v1/addon/inbox has been answered.
+func (s *Server) InboxFetches() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.inboxReads
+}
+
+// EmptyInbox is the inbox v2 body the fake answers before SetInbox.
+const EmptyInbox = `{"format":2,"generated_at":"2026-12-09T20:00:00Z","builds":[],"messages":[]}`
 
 // New starts a fake API. Close it with Close.
 func New() *Server {
 	s := &Server{
 		reports:  map[string]*Report{},
 		failNext: map[string]int{},
-		inbox:    json.RawMessage(`{"builds":[]}`),
+		inbox:    json.RawMessage(EmptyInbox),
+
+		simOutcome: "queued",
+		clock:      time.Now,
+		acks:       map[string]ack{},
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/devices/claim", s.claim)
@@ -150,6 +177,83 @@ func (s *Server) Exports() []map[string]string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return append([]map[string]string(nil), s.exports...)
+}
+
+// ExportPost is one POST /v1/addon/exports the fake stored: the
+// characters list and the outbox exactly as sent (empty when the post
+// carried none).
+type ExportPost struct {
+	Characters []map[string]string
+	Outbox     json.RawMessage
+	// Bytes is the size of the request body.
+	Bytes int
+}
+
+// The API's limits on POST /v1/addon/exports (api/internal/addon
+// maxBody and MaxExports), which the fake enforces the same way.
+const (
+	MaxExportsBody = 1 << 20
+	MaxExports     = 200
+)
+
+// ExportPosts is every export post the fake stored, in order. A post
+// the fake refused (RefuseOutbox) is not among them.
+func (s *Server) ExportPosts() []ExportPost {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return append([]ExportPost(nil), s.posts...)
+}
+
+// SetSimOutcome sets what the fake answers for an outbox's sim
+// request, in the API's words (queued, premium_required, duplicate,
+// invalid, unknown_character, unavailable, not_started). The default
+// is queued.
+func (s *Server) SetSimOutcome(outcome string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.simOutcome = outcome
+}
+
+// RefuseOutbox makes every export post that carries an outbox answer
+// 400 with a field error on "outbox", the API's answer to an outbox it
+// cannot store, and store nothing.
+func (s *Server) RefuseOutbox(v bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.refuseOutbox = v
+}
+
+// RefuseCharacters makes every export post answer 400 with a field
+// error on "characters", the API's answer to a list it cannot read.
+func (s *Server) RefuseCharacters(v bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.refuseChars = v
+}
+
+// ClaimCharacters makes every export post answer 409 with a field error
+// on "characters", the API's answer when a character is already synced
+// from another account: a refusal that may lift, so it is retried.
+func (s *Server) ClaimCharacters(v bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.claimChars = v
+}
+
+// ExportAttempts is how many export posts reached the fake, refused or
+// not.
+func (s *Server) ExportAttempts() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.attempts
+}
+
+// SetClock replaces the clock the fake stamps an ack's export_seen_at
+// with.
+func (s *Server) SetClock(now func() time.Time) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.clock = now
 }
 
 // SetInbox replaces the body GET /v1/addon/inbox answers with.
@@ -433,24 +537,190 @@ func (s *Server) complete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// ack is contract 3's ack message as the fake writes it.
+type ack struct {
+	Type            string `json:"type"`
+	Character       string `json:"character"`
+	ExportSeenAt    string `json:"export_seen_at"`
+	SimRequestState string `json:"sim_request_state,omitempty"`
+}
+
+// outboxResult is the API's per-part answer for an outbox
+// (api/internal/addon/outbox.go OutboxResult).
+type outboxResult struct {
+	Status         string `json:"status"`
+	Export         string `json:"export,omitempty"`
+	SimRequest     string `json:"sim_request,omitempty"`
+	RosterSnapshot string `json:"roster_snapshot,omitempty"`
+	DroppedMembers int    `json:"dropped_members,omitempty"`
+}
+
+// ackState is a sim request outcome in the ack's words, or "" when the
+// ack has none for it (api/internal/sims SimRequestState*).
+func ackState(outcome string) string {
+	switch outcome {
+	case "queued", "duplicate", "invalid":
+		return outcome
+	case "premium_required":
+		return "needs_premium"
+	}
+	return ""
+}
+
+// addonExports is POST /v1/addon/exports: the characters list, the
+// addon's outbox, or both, answered the way the API answers
+// ({stored, outbox: {status, export, sim_request, roster_snapshot,
+// dropped_members}}). An outbox whose export names one of the listed
+// characters earns that character an ack in the inbox, stamped with
+// the fake's clock.
 func (s *Server) addonExports(w http.ResponseWriter, r *http.Request) {
 	var in struct {
 		Characters []map[string]string `json:"characters"`
+		Outbox     json.RawMessage     `json:"outbox"`
 	}
-	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
-		fail(w, http.StatusBadRequest, "malformed body")
+	raw, err := io.ReadAll(io.LimitReader(r.Body, MaxExportsBody+1))
+	if err != nil {
+		fail(w, http.StatusBadRequest, err.Error())
 		return
 	}
 	s.mu.Lock()
-	s.exports = append(s.exports, in.Characters...)
+	s.attempts++
+	refuseChars, claimChars := s.refuseChars, s.claimChars
 	s.mu.Unlock()
-	w.WriteHeader(http.StatusNoContent)
+	if claimChars {
+		fail(w, http.StatusConflict, "one of those characters is already synced from a different account",
+			map[string]string{"characters": "already claimed by another account"})
+		return
+	}
+	if refuseChars {
+		fail(w, http.StatusBadRequest, "that export cannot be stored",
+			map[string]string{"characters": "each needs a name and an export of at most 4096 characters"})
+		return
+	}
+	if len(raw) > MaxExportsBody {
+		fail(w, http.StatusRequestEntityTooLarge, "body must be JSON with a characters list")
+		return
+	}
+	if err := json.Unmarshal(raw, &in); err != nil {
+		fail(w, http.StatusBadRequest, "malformed body")
+		return
+	}
+	if len(in.Characters) > MaxExports {
+		fail(w, http.StatusBadRequest, "that is not a sync",
+			map[string]string{"characters": "between one and 200 characters"})
+		return
+	}
+	hasOutbox := len(in.Outbox) > 0 && string(in.Outbox) != "null"
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if hasOutbox && s.refuseOutbox {
+		fail(w, http.StatusBadRequest, "that outbox cannot be stored",
+			map[string]string{"outbox": "export.character must be Name-Realm"})
+		return
+	}
+	post := ExportPost{Characters: in.Characters, Bytes: len(raw)}
+	if hasOutbox {
+		post.Outbox = in.Outbox
+	}
+	s.posts = append(s.posts, post)
+	s.exports = append(s.exports, in.Characters...)
+	out := map[string]any{"stored": len(in.Characters)}
+	if hasOutbox {
+		out["outbox"] = s.applyOutbox(in.Characters, in.Outbox)
+	}
+	ok(w, http.StatusOK, out)
 }
 
+// applyOutbox answers one outbox part by part and records its ack. The
+// caller holds s.mu.
+func (s *Server) applyOutbox(chars []map[string]string, raw json.RawMessage) outboxResult {
+	var ob struct {
+		Format int `json:"format"`
+		Export struct {
+			Character string `json:"character"`
+		} `json:"export"`
+		SimRequest     json.RawMessage `json:"sim_request"`
+		RosterSnapshot *struct {
+			Members []map[string]any `json:"members"`
+		} `json:"roster_snapshot"`
+	}
+	if json.Unmarshal(raw, &ob) != nil || ob.Format != 1 {
+		return outboxResult{Status: "ignored"}
+	}
+	hasSim := len(ob.SimRequest) > 0 && string(ob.SimRequest) != "null"
+	res := outboxResult{Status: "read", Export: "unknown_character"}
+	name, _, _ := strings.Cut(ob.Export.Character, "-")
+	key := ""
+	for _, c := range chars {
+		if strings.EqualFold(c["name"], name) {
+			key = c["region"] + "/" + strings.ToLower(c["ruleset"]) + "/" + strings.ToLower(c["name"])
+			break
+		}
+	}
+	if key == "" {
+		if hasSim {
+			res.SimRequest = "unknown_character"
+		}
+		if ob.RosterSnapshot != nil {
+			res.RosterSnapshot = "unknown_character"
+		}
+		return res
+	}
+	res.Export = "stored"
+	a := s.acks[key]
+	a.Type, a.Character = "ack", key
+	a.ExportSeenAt = s.clock().UTC().Format(time.RFC3339)
+	if hasSim {
+		res.SimRequest = s.simOutcome
+		if state := ackState(s.simOutcome); state != "" {
+			a.SimRequestState = state
+		}
+	}
+	s.acks[key] = a
+	if ob.RosterSnapshot != nil {
+		res.RosterSnapshot = "stored"
+		for _, m := range ob.RosterSnapshot.Members {
+			if name, isText := m["name"].(string); !isText || name == "" {
+				res.DroppedMembers++
+			}
+		}
+	}
+	return res
+}
+
+// addonInbox is GET /v1/addon/inbox: the body SetInbox gave, with an
+// ack appended to its messages for every character whose export an
+// outbox has stored.
 func (s *Server) addonInbox(w http.ResponseWriter, r *http.Request) {
 	s.mu.Lock()
+	s.inboxReads++
 	body := s.inbox
+	acks := make([]ack, 0, len(s.acks))
+	for _, a := range s.acks {
+		acks = append(acks, a)
+	}
 	s.mu.Unlock()
+	if len(acks) > 0 {
+		sort.Slice(acks, func(i, j int) bool { return acks[i].Character < acks[j].Character })
+		var env map[string]json.RawMessage
+		var messages []json.RawMessage
+		if err := json.Unmarshal(body, &env); err != nil {
+			fail(w, http.StatusInternalServerError, "the fake's inbox is not JSON: "+err.Error())
+			return
+		}
+		if raw, has := env["messages"]; has {
+			if err := json.Unmarshal(raw, &messages); err != nil {
+				fail(w, http.StatusInternalServerError, "the fake's messages are not a list: "+err.Error())
+				return
+			}
+		}
+		for _, a := range acks {
+			b, _ := json.Marshal(a)
+			messages = append(messages, b)
+		}
+		env["messages"], _ = json.Marshal(messages)
+		body, _ = json.Marshal(env)
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, `{"ok":true,"data":%s,"error":null,"request_id":"fake"}`, strings.TrimSpace(string(body)))

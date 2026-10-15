@@ -51,6 +51,9 @@ function isIgnorable(codePoint) {
   if (codePoint >= 0x1f000) return true; // emoji / symbol supplements, surrogate range and up
   if (codePoint >= 0xfe00 && codePoint <= 0xfe0f) return true; // variation selectors
   if (codePoint === 0xfeff) return true; // BOM / zero-width no-break space (format char, not a glyph)
+  // Word joiner: a default-ignorable format char, never drawn (the character profile glues its
+  // ruleset chip to the last word with one, L8.4 fix round 3 item 2).
+  if (codePoint === 0x2060) return true;
   return false;
 }
 

@@ -4,6 +4,8 @@ package rating
 import (
 	"encoding/json"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/rankings"
 )
 
 // playerRatingDTO is one roster player's rating, as either read endpoint returns it.
@@ -103,4 +105,23 @@ func bestWorstComponent(latest json.RawMessage) (best, worst string) {
 		}
 	}
 	return best, worst
+}
+
+// toForeverScoreDTO is a ScoreV2 as the character page (GET
+// /v1/characters/{region}/{ruleset}/{name}) carries it: score, tier, components,
+// as_of (the newest rated fight's date, YYYY-MM-DD, as contract 5 dates it) and
+// experience.
+func toForeverScoreDTO(sc ScoreV2) rankings.ForeverScore {
+	score, tier, asOf := sc.Score, sc.Tier, sc.AsOf.UTC().Format(time.DateOnly)
+	c := sc.Components
+	return rankings.ForeverScore{
+		Score: &score, Tier: &tier, AsOf: &asOf,
+		Components: &rankings.ScoreComponents{
+			Gear: c.Gear, Experience: c.Experience, Parses: c.Parses,
+			Attendance: c.Attendance, Discipline: c.Discipline,
+		},
+		Experience: &rankings.ScoreExperience{
+			Dungeons: sc.Experience.Dungeons, RaidKills: sc.Experience.RaidKills, Alts: sc.Experience.Alts,
+		},
+	}
 }

@@ -46,8 +46,8 @@ type Cache struct {
 
 // cached is one file's last read, good until the file moves.
 type cached struct {
-	at      Stamp
-	exports []Export
+	at    Stamp
+	saved SavedVariables
 	// err is remembered with the rest: a file the reader cannot parse
 	// does not become parseable until the game writes it again, and
 	// retrying the parse every two seconds is the cost this cache
@@ -61,20 +61,27 @@ type cached struct {
 // not cached: the error is the caller's to classify, and a missing
 // file is the normal state where the addon is not installed.
 func (c *Cache) Exports(path string) ([]Export, Stamp, error) {
+	saved, at, err := c.Saved(path)
+	return saved.Exports, at, err
+}
+
+// Saved is Exports with the outbox beside them: everything the sync
+// reads from one file, from one parse.
+func (c *Cache) Saved(path string) (SavedVariables, Stamp, error) {
 	fi, err := os.Stat(path)
 	if err != nil {
-		return nil, Stamp{}, err
+		return SavedVariables{}, Stamp{}, err
 	}
 	at := Stamp{Mod: fi.ModTime(), Size: fi.Size()}
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if was, ok := c.seen[path]; ok && was.at.eq(at) {
-		return was.exports, at, was.err
+		return was.saved, at, was.err
 	}
-	found, err := ScanExports(path)
+	found, err := scanSaved(path)
 	if c.seen == nil {
 		c.seen = map[string]cached{}
 	}
-	c.seen[path] = cached{at: at, exports: found, err: err}
+	c.seen[path] = cached{at: at, saved: found, err: err}
 	return found, at, err
 }

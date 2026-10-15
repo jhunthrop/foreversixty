@@ -80,11 +80,18 @@ func (s *Rater) Run(ctx context.Context) {
 	defer close(s.done)
 	work := context.WithoutCancel(ctx)
 	for f := range s.queue {
-		if err := s.Deps.Store.RateFight(work, RatedFight{
+		rf := RatedFight{
 			ReportID: f.ReportID, FightIndex: f.FightIndex, Region: f.Region, Ruleset: f.Ruleset,
 			FoughtAt: f.FoughtAt, EncounterID: f.EncounterID, Summary: f.Summary,
-		}); err != nil {
+		}
+		if err := s.Deps.Store.RateFight(work, rf); err != nil {
 			s.Deps.logger().Error("rating", "op", "rate", "report", f.ReportID, "fight", f.FightIndex, "err", err)
+			continue
+		}
+		// The fight's own components are on its rows now; roll each player's Forever
+		// Score up onto them (score_v2.go).
+		if err := s.Deps.Store.RollUpScores(work, rf); err != nil {
+			s.Deps.logger().Error("rating", "op", "roll_up", "report", f.ReportID, "fight", f.FightIndex, "err", err)
 		}
 	}
 }

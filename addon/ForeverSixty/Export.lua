@@ -13,6 +13,7 @@ local L = ns.L or require("Locale")
 local Codec = ns.Codec or require("Codec")
 local Talents = ns.Talents or require("Talents")
 local Compat = ns.Compat or require("Compat")
+local Theme = ns.Theme or require("Theme")
 
 local Export = {}
 
@@ -236,6 +237,20 @@ function Export.characterInfo()
 	return { name = name, realm = GetRealmName() or "" }
 end
 
+--- The key's region segment: the client's own region name (Compat.regionName,
+--- "US"), else its region number through REGION_NAMES, lowercased ("us");
+--- "" when the client gives neither (seen on the beta: GetCurrentRegion
+--- answering a number no table names). An empty region matches any region
+--- (Follow.sameCharacter), so a key saved before the client said one still
+--- finds its character.
+function Export.regionSegment(regionName, regionIndex)
+	if type(regionName) == "string" and regionName ~= "" then
+		return regionName:lower()
+	end
+	local named = Export.REGION_NAMES[regionIndex]
+	return named ~= nil and named:lower() or ""
+end
+
 --- name, realm, region as both Export.characterKey and Export.save need
 --- them -- one path, so the key ForeverSixtyDB.characters and
 --- ForeverSixtyDB.follows both index by can never drift from the record
@@ -246,13 +261,16 @@ local function characterParts()
 	local name = Compat.playerName() or "player"
 	local realm = type(GetRealmName) == "function" and GetRealmName() or ""
 	local regionIndex = type(GetCurrentRegion) == "function" and GetCurrentRegion() or nil
-	local region = Export.REGION_NAMES[regionIndex] or ""
-	return name, realm, region
+	return name, realm, Export.regionSegment(Compat.regionName(), regionIndex)
 end
 
-local function characterKeyOf(name, realm, region)
-	return region .. "/" .. realm .. "/" .. name
+--- "<region>/<realm>/<name>": the key every saved record and inbox message is
+--- addressed by. Pure.
+function Export.keyFor(name, realm, region)
+	return (region or "") .. "/" .. (realm or "") .. "/" .. name
 end
+
+local characterKeyOf = Export.keyFor
 
 --- The account-wide key this client's saved data indexes by: the same
 --- region/realm/name Export.save has always written into
@@ -261,6 +279,31 @@ end
 --- second character logging in never reads the first one's build.
 function Export.characterKey()
 	return characterKeyOf(characterParts())
+end
+
+--- Move a character's records saved under a key Follow.sameCharacter
+--- matches but that is not `key` itself (the old empty-region key) to `key`,
+--- in ForeverSixtyDB.characters and .follows, at login before anything
+--- reads them. A record already under `key` is kept; another character's
+--- is never touched. Pure over `db`.
+function Export.adoptKey(db, key)
+	if type(db) ~= "table" or key == nil then
+		return db
+	end
+	local Follow = ns.Follow or require("Follow")
+	for _, field in ipairs({ "characters", "follows" }) do
+		local records = db[field]
+		if type(records) == "table" and records[key] == nil then
+			for oldKey, record in pairs(records) do
+				if oldKey ~= key and Follow.sameCharacter(oldKey, key) then
+					records[key] = record
+					records[oldKey] = nil
+					break
+				end
+			end
+		end
+	end
+	return db
 end
 
 --- The export string, or nil and the reason.
@@ -325,6 +368,182 @@ function Export.save(data)
 		export = code,
 	}
 	return code
+end
+
+-- The companion outbox (contract 4, docs/contracts/addon-v2.md) ---------------------------
+
+--- The outbox format this addon writes; the companion ignores a format it does not know.
+Export.OUTBOX_FORMAT = 1
+
+--- The sim request L4.3's "Sim me" leaves for the next logout, or nil: { character, spec,
+--- requested_at, gear_code }, all as of the request.
+Export.simRequest = nil
+
+--- The members of `guild` this session heard on GUILD, by name: the six contract fields,
+--- `seen_at` as local wall time. `seen` is Comms.seen (its `time` is the game clock), `now`
+--- the game clock and `wallNow` the wall clock at the same moment.
+local function rosterMembers(seen, now, wallNow)
+	local members = {}
+	for name, entry in pairs(seen or {}) do
+		if entry.channel == "GUILD" then
+			members[#members + 1] = {
+				name = name,
+				level = entry.level or 0,
+				spec = entry.spec or "-",
+				gear_gap = entry.gearGap or 0,
+				build = entry.buildName or "",
+				seen_at = date(Export.SAVED_AT_FORMAT, wallNow - (now - (entry.time or now))),
+			}
+		end
+	end
+	table.sort(members, function(left, right)
+		return left.name < right.name
+	end)
+	return members
+end
+
+--- The outbox, built from plain values: { character, code, wallNow, simRequest, guild (a name,
+--- or nil/false outside a guild), seen, now }. Pure.
+function Export.outbox(parts)
+	local roster
+	if parts.guild then
+		local members = rosterMembers(parts.seen, parts.now or 0, parts.wallNow)
+		if #members > 0 then
+			roster = { guild = parts.guild, members = members }
+		end
+	end
+	return {
+		format = Export.OUTBOX_FORMAT,
+		export = {
+			character = parts.character,
+			code = parts.code,
+			saved_at = date(Export.SAVED_AT_FORMAT, parts.wallNow),
+		},
+		sim_request = parts.simRequest,
+		roster_snapshot = roster,
+	}
+end
+
+--- The outbox's `character`: the full name exactly as the export's who= field
+--- writes it (Compat.playerName, the same source as Export.characterKey),
+--- then the realm with its spaces and hyphens gone: "Obnoxious Yell-
+--- ClassicBetaPvP". The API matches it against the synced characters by
+--- that name. The name alone with no realm. Pure.
+function Export.outboxName(name, realm)
+	local compact = (realm or ""):gsub("[%s%-]", "")
+	if compact == "" then
+		return name
+	end
+	return name .. "-" .. compact
+end
+
+--- The words a realm's name spells a ruleset with, as the site reads them
+--- (web/src/lib/characters.ts RULESET_WORDS): the ruleset itself on Forever, PvE/PvP on the beta.
+Export.RULESET_WORDS = {
+	normal = "normal", pve = "normal", pvp = "pvp", rp = "rp", roleplay = "rp",
+	hardcore = "hardcore", hc = "hardcore",
+}
+
+--- The first ruleset word among `words`, each word alone or run together with the next
+--- (a run-together realm's "PvP" opens into "Pv" and "P"). nil for none.
+local function rulesetIn(words, pairsToo)
+	for index, word in ipairs(words) do
+		local ruleset = Export.RULESET_WORDS[word]
+		if ruleset == nil and pairsToo and words[index + 1] ~= nil then
+			ruleset = Export.RULESET_WORDS[word .. words[index + 1]]
+		end
+		if ruleset ~= nil then
+			return ruleset
+		end
+	end
+	return nil
+end
+
+--- The ruleset segment of a site path for a realm's name, as the site's rulesetFromRealm reads
+--- it: the first of its words (split at anything not a letter or a digit, lower-cased) that
+--- names a ruleset. A realm as a sender spells it, its words run together ("ClassicBetaPvP"),
+--- is opened at its capitals and digits first. "normal" where no word names one. Pure.
+function Export.rulesetFromRealm(realm)
+	realm = type(realm) == "string" and realm or ""
+	local words = {}
+	for word in realm:lower():gmatch("[%a%d]+") do
+		words[#words + 1] = word
+	end
+	local ruleset = rulesetIn(words, false)
+	if ruleset ~= nil then
+		return ruleset
+	end
+	local opened = realm:gsub("(%l)(%u)", "%1 %2"):gsub("(%a)(%d)", "%1 %2"):gsub("(%d)(%a)", "%1 %2")
+	words = {}
+	for word in opened:lower():gmatch("[%a%d]+") do
+		words[#words + 1] = word
+	end
+	return rulesetIn(words, true) or "normal"
+end
+
+--- A character's slug as the site and the API write it (characters.ts characterSlug,
+--- api/internal/character Slug): the name alone, trimmed, lower-cased, each run of spaces
+--- one hyphen. Pure.
+function Export.characterSlug(name)
+	local trimmed = (name or ""):match("^%s*(.-)%s*$")
+	-- The common accented capitals (L3.7 item 33): U+00C0 to U+00DE except the multiplication sign
+	-- U+00D7, two bytes C3 80..9E, lower by the 0x20 the site's lower-casing adds.
+	local lowered = trimmed:lower():gsub("\195([\128-\158])", function(second)
+		if second == "\151" then
+			return nil
+		end
+		return "\195" .. string.char(second:byte() + 32)
+	end)
+	return (lowered:gsub("%s+", "-"))
+end
+
+--- A character's page on the site: SITE/character/<region>/<ruleset>/<slug>, the one form the
+--- site's parsePath serves: the region ("us" where none is given; Compat.siteRegion is the
+--- client's), the ruleset the realm's words name (Export.rulesetFromRealm) and the name's slug,
+--- no realm in it. Pure.
+function Export.siteLink(name, realm, region)
+	if type(region) ~= "string" or region == "" then
+		region = Compat.SITE_REGIONS[1]
+	end
+	return L.siteName .. "/character/" .. region:lower() .. "/" .. Export.rulesetFromRealm(realm) .. "/"
+		.. Export.characterSlug(name)
+end
+
+--- This character's name as the outbox writes it (Export.outboxName), so the build
+--- dialog can tell whether the outbox it reads is this character's.
+function Export.outboxCharacter()
+	local name, realm = characterParts()
+	return Export.outboxName(name, realm)
+end
+
+--- Write ForeverSixtyDB.outbox at logout, beside Export.save: the export (`code` when the
+--- caller already built it), any pending sim request, and the guild's members this session
+--- heard. nil and the reason when there is no export to carry.
+function Export.saveOutbox(data, code)
+	local message
+	if code == nil then
+		code, message = Export.string(data)
+	end
+	if code == nil then
+		return nil, message
+	end
+	local name, realm = characterParts()
+	local guild = Export.guildInfo()
+	-- Comms loads after this file; by logout it is there.
+	local Comms = ns.Comms or require("Comms")
+	local now = Theme.now()
+	Comms.prune(now)
+	ForeverSixtyDB = ForeverSixtyDB or {}
+	ForeverSixtyDB.outbox = Export.outbox({
+		character = Export.outboxName(name, realm),
+		code = code,
+		wallNow = time(),
+		simRequest = Export.simRequest,
+		guild = guild ~= nil and guild.name or nil,
+		seen = Comms.seen,
+		now = now,
+	})
+	return ForeverSixtyDB.outbox
 end
 
 ns.Export = Export

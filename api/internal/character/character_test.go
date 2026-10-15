@@ -1,8 +1,14 @@
 package character
 
 import (
+	"context"
+	"os"
 	"strings"
 	"testing"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/db"
 )
 
 func TestKeyIsRegionRulesetAndNameSlug(t *testing.T) {
@@ -40,6 +46,47 @@ func TestRulesetFromRealmTakesTheSegmentThenTheFallback(t *testing.T) {
 	}
 	if got := RulesetFromRealm("Nightslayer", ""); got != RulesetNormal {
 		t.Errorf("with no fallback the default is normal: %q", got)
+	}
+}
+
+// The beta's realm names spell their ruleset as a word, as the web's rulesetFromRealm reads
+// them, and the client's normalised form (spaces and hyphens gone) spells it the same way.
+func TestRulesetFromRealmReadsTheRealmNamesWords(t *testing.T) {
+	for realm, want := range map[string]string{
+		"Classic Beta PvP":   RulesetPvP,
+		"Classic Beta PvE 2": RulesetNormal,
+		"ClassicBetaPvP":     RulesetPvP,
+		"ClassicBetaPvE2":    RulesetNormal,
+		"Classic-Beta-PvP":   RulesetPvP,
+		"Forever RP":         RulesetRP,
+		"ForeverRP":          RulesetRP,
+		"Forever Roleplay":   RulesetRP,
+		"ClassicBetaHC":      RulesetHardcore,
+		"hardcore":           RulesetHardcore,
+		"Normal":             RulesetNormal,
+	} {
+		if got := RulesetFromRealm(realm, RulesetHardcore); got != want {
+			t.Errorf("RulesetFromRealm(%q) = %q, want %q", realm, got, want)
+		}
+	}
+	for _, realm := range []string{"Whitemane", "Nightslayer", "", "Sharp", "Earthshaker"} {
+		if got := RulesetFromRealm(realm, RulesetPvP); got != RulesetPvP {
+			t.Errorf("RulesetFromRealm(%q) = %q, want the fallback", realm, got)
+		}
+	}
+}
+
+func TestRealmTakesTheFirstSourceThatHasOne(t *testing.T) {
+	for _, tc := range []struct{ bnet, export, unit, want string }{
+		{"Classic Beta PvE 2", "Elsewhere", "Mörk-ClassicBetaPvP", "Classic Beta PvE 2"},
+		{"  ", " Classic Beta PvP ", "Mörk-ClassicBetaPvE2", "Classic Beta PvP"},
+		{"", "", " Mörk-ClassicBetaPvP ", "ClassicBetaPvP"},
+		{"", "", "Mörk", ""},
+		{"", "", "", ""},
+	} {
+		if got := Realm(tc.bnet, tc.export, tc.unit); got != tc.want {
+			t.Errorf("Realm(%q, %q, %q) = %q, want %q", tc.bnet, tc.export, tc.unit, got, tc.want)
+		}
 	}
 }
 
@@ -86,5 +133,90 @@ func TestValidKeyAcceptsTheContractsShapeAndNothingElse(t *testing.T) {
 		if got := ValidKey(c.key); got != c.want {
 			t.Errorf("ValidKey(%q) = %v, want %v", c.key, got, c.want)
 		}
+	}
+}
+
+// linkedTestPool is a migrated pool on TEST_DATABASE_URL, or a skip without one.
+func linkedTestPool(t *testing.T) *pgxpool.Pool {
+	t.Helper()
+	url := os.Getenv("TEST_DATABASE_URL")
+	if url == "" {
+		t.Skip("TEST_DATABASE_URL not set; start docker-compose.test.yml")
+	}
+	if err := db.Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	pool, err := db.Connect(context.Background(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(pool.Close)
+	return pool
+}
+
+// LinkedCharacters is /v1/me's list: every character the account owns, its main
+// first and flagged, then the alts by key - and nobody else's characters.
+func TestLinkedCharactersListsTheAccountsMainThenItsAlts(t *testing.T) {
+	pool := linkedTestPool(t)
+	ctx := context.Background()
+	var owner, stranger int64
+	for email, id := range map[string]*int64{
+		"linked-owner@example.com": &owner, "linked-stranger@example.com": &stranger,
+	} {
+		if err := pool.QueryRow(ctx, `insert into users (email) values ($1)
+			on conflict (email) do update set email = excluded.email returning id`, email).Scan(id); err != nil {
+			t.Fatal(err)
+		}
+	}
+	chars := []struct {
+		key, name string
+		user      int64
+	}{
+		{"us/normal/linkedalta", "Linkedalta", owner},
+		{"us/normal/linkedmain", "Linkedmain", owner},
+		{"eu/pvp/linkedaltb", "Linkedaltb", owner},
+		{"us/normal/linkedother", "Linkedother", stranger},
+	}
+	for _, c := range chars {
+		region, rest, _ := strings.Cut(c.key, "/")
+		ruleset, _, _ := strings.Cut(rest, "/")
+		if _, err := pool.Exec(ctx, `insert into characters (key, region, ruleset, name, class, user_id)
+			values ($1, $2, $3, $4, 'Warrior', $5)
+			on conflict (key) do update set user_id = excluded.user_id`, c.key, region, ruleset, c.name, c.user); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := pool.Exec(ctx, `update users set main_character_key = 'us/normal/linkedmain' where id = $1`, owner); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		pool.Exec(context.Background(), `delete from characters where key like '%/linked%'`)
+		pool.Exec(context.Background(), `delete from users where email in ('linked-owner@example.com', 'linked-stranger@example.com')`)
+	})
+
+	got, err := LinkedCharacters(ctx, pool, owner)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []Linked{
+		{Key: "us/normal/linkedmain", Region: "us", Ruleset: "normal", Name: "Linkedmain", Class: "Warrior", Main: true},
+		{Key: "eu/pvp/linkedaltb", Region: "eu", Ruleset: "pvp", Name: "Linkedaltb", Class: "Warrior"},
+		{Key: "us/normal/linkedalta", Region: "us", Ruleset: "normal", Name: "Linkedalta", Class: "Warrior"},
+	}
+	if len(got) != len(want) {
+		t.Fatalf("LinkedCharacters = %+v, want %+v", got, want)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Errorf("LinkedCharacters[%d] = %+v, want %+v", i, got[i], want[i])
+		}
+	}
+
+	none, err := LinkedCharacters(ctx, pool, -1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(none) != 0 {
+		t.Errorf("an account with no characters links %+v, want none", none)
 	}
 }

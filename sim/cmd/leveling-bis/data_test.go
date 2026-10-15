@@ -98,7 +98,7 @@ func TestLoadCandidatesExcludesSupersededItems(t *testing.T) {
 			{"id": 234571, "name": "Grand Marshal's Runed Stave", "slot": "main_hand", "quality": 4, "required_level": 60, "item_level": 80, "armor": 0, "stats": {"spirit": 10}, "damage_min": 105, "damage_max": 155, "speed": 2.8, "dps": 46.4, "two_hand": true, "effect_text": "", "set_id": null, "unique": true}
 		]
 	}`)
-	candidates, missing, err := loadCandidates(dir, "priest")
+	candidates, _, missing, err := loadCandidates(dir, "priest")
 	if err != nil {
 		t.Fatalf("loadCandidates: %v", err)
 	}
@@ -133,7 +133,7 @@ func TestLoadCandidatesExcludesSupersededItemsMarkedOnlyOnClassRow(t *testing.T)
 			{"id": 18874, "name": "High Warlord's War Staff", "slot": "main_hand", "quality": 4, "required_level": 60, "item_level": 78, "armor": 0, "stats": {}, "damage_min": 100, "damage_max": 150, "speed": 2.8, "dps": 44.6, "two_hand": true, "effect_text": "", "set_id": null, "unique": true, "superseded_by": 234549}
 		]
 	}`)
-	candidates, missing, err := loadCandidates(dir, "priest")
+	candidates, _, missing, err := loadCandidates(dir, "priest")
 	if err != nil {
 		t.Fatalf("loadCandidates: %v", err)
 	}
@@ -146,7 +146,7 @@ func TestLoadCandidatesExcludesSupersededItemsMarkedOnlyOnClassRow(t *testing.T)
 }
 
 func TestLoadCandidatesMergesFlatAndClassFiles(t *testing.T) {
-	candidates, missing, err := loadCandidates(buildDirFixture(), "hunter")
+	candidates, _, missing, err := loadCandidates(buildDirFixture(), "hunter")
 	if err != nil {
 		t.Fatalf("loadCandidates: %v", err)
 	}

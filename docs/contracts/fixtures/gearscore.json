@@ -1,0 +1,32 @@
+{
+  "comment": [
+    "Shared gear score fixture. The API's sims.GearScore(gear_code, spec) and the addon's Gear.score(stats, weights) summed over items must both equal expected_score.",
+    "Gear set: Data.lua bis[\"warrior-arms\"][20].alliance, one item per slot. Stat lines: data/builds/1.60.1.70291/items/warrior.json (each item's stats map, the same stat line builds.AddonCode writes into the addon code; items.json at the build root carries no stats). Weights: data/curated/stat-weights.json warrior-arms, the table Data.lua ships as weights[\"warrior-arms\"].",
+    "Score = sum over items of sum over stats of value * weight, a stat with no weight counting 0 (stamina and spirit here). Hit and crit are one stat each; this set carries neither.",
+    "By hand: back 4706 str 4 = 8; chest 6627 str 10 = 20; feet 10402 agi 6 = 3.6; finger1 20439 str 4 + agi 4 = 8 + 2.4 = 10.4; finger2 12054 str 4 = 8; hands 10401 str 6 = 12; head 250528 str 10 = 20; legs 10400 str 6 + agi 6 = 12 + 3.6 = 15.6; main_hand 7230 str 11 + agi 4 = 22 + 2.4 = 24.4; neck 20444 agi 6 = 3.6; ranged 285279 str 2 = 4; shoulder 3480 str 3 = 6; waist 10403 ap 18 = 18; wrist 2868 str 5 = 10.",
+    "Check by stat: strength 65 * 2 = 130; agility 26 * 0.6 = 15.6; attack_power 18 * 1 = 18; total 130 + 15.6 + 18 = 163.6. (main_hand was 23171, str 14, until the ranker's rare-spawn rule dropped it for Smite's Mighty Hammer.)"
+  ],
+  "build": "1.60.1.70291",
+  "spec": "warrior-arms",
+  "band": 20,
+  "faction": "alliance",
+  "weights": { "attack_power": 1, "strength": 2, "agility": 0.6, "hit": 26, "crit": 16, "expertise": 16 },
+  "gear_code": "FS1:1.60.1.70291:warrior:human:371000000/0/0:back=4706,chest=6627,feet=10402,finger1=20439,finger2=12054,hands=10401,head=250528,legs=10400,main_hand=7230,neck=20444,ranged=285279,shoulder=3480,waist=10403,wrist=2868",
+  "items": [
+    { "slot": "back", "item_id": 4706, "stats": { "strength": 4, "spirit": 2 }, "score": 8 },
+    { "slot": "chest", "item_id": 6627, "stats": { "strength": 10, "stamina": 4 }, "score": 20 },
+    { "slot": "feet", "item_id": 10402, "stats": { "stamina": 4, "agility": 6 }, "score": 3.6 },
+    { "slot": "finger1", "item_id": 20439, "stats": { "strength": 4, "agility": 4, "stamina": 2 }, "score": 10.4 },
+    { "slot": "finger2", "item_id": 12054, "stats": { "strength": 4, "stamina": 2, "spirit": 2 }, "score": 8 },
+    { "slot": "hands", "item_id": 10401, "stats": { "strength": 6, "stamina": 2 }, "score": 12 },
+    { "slot": "head", "item_id": 250528, "stats": { "stamina": 9, "strength": 10 }, "score": 20 },
+    { "slot": "legs", "item_id": 10400, "stats": { "strength": 6, "agility": 6 }, "score": 15.6 },
+    { "slot": "main_hand", "item_id": 7230, "stats": { "strength": 11, "agility": 4 }, "score": 24.4 },
+    { "slot": "neck", "item_id": 20444, "stats": { "agility": 6, "stamina": 2 }, "score": 3.6 },
+    { "slot": "ranged", "item_id": 285279, "stats": { "strength": 2 }, "score": 4 },
+    { "slot": "shoulder", "item_id": 3480, "stats": { "stamina": 4, "strength": 3 }, "score": 6 },
+    { "slot": "waist", "item_id": 10403, "stats": { "attack_power": 18 }, "score": 18 },
+    { "slot": "wrist", "item_id": 2868, "stats": { "strength": 5 }, "score": 10 }
+  ],
+  "expected_score": 163.6
+}

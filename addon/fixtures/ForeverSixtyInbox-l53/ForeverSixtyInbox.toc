@@ -1,0 +1,8 @@
+## Interface: 16001
+## Title: Forever Sixty Inbox
+## Notes: L5.3 capture fixture: a last raid and loot values for Bow Jackzon. Not for release.
+## Author: foreversixty.gg
+## Version: l53-fixture
+## LoadOnDemand: 0
+
+ForeverSixtyInbox.lua

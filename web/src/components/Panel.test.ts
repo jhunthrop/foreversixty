@@ -24,4 +24,12 @@ describe('Panel', () => {
     expect(html).toContain('href="/x"');
     expect(html).toContain('More');
   });
+
+  it('titles with an h2 by default and an h3 at level 3 (a panel inside a section with its own h2)', async () => {
+    const c = await AstroContainer.create();
+    expect(await c.renderToString(Panel, { props: { title: 'Tiers' } })).toMatch(/<h2[^>]*>Tiers<\/h2>/);
+    expect(await c.renderToString(Panel, { props: { title: 'Tiers', level: 3 } })).toMatch(
+      /<h3[^>]*>Tiers<\/h3>/,
+    );
+  });
 });

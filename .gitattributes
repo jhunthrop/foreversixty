@@ -1,0 +1,5 @@
+docs/contracts/fixtures/* text eol=lf
+
+web/src/fixtures/addon/codec-vectors.json text eol=lf
+addon/tests/fixtures/codec-vectors.json text eol=lf
+addon/tests/fixtures/*.lua text eol=lf

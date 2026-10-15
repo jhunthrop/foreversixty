@@ -196,6 +196,22 @@
           <span class="csel-name">{selectorCopy.closedSignedOut}</span>
           <span class="csel-sub">{selectorCopy.closedSignedOutSub}</span>
         </span>
+        <!-- The same chevron the hydrated signed-out button draws, so "Sign in" looks the same
+             before and after the island loads (Forever Score fix round 2 item 9). -->
+        <svg
+          class="csel-chev csel-pre-out-chev"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M6 9l6 6 6-6"></path>
+        </svg>
       </span>
       <span class="csel-pre-skel">
         <span class="csel-skeleton csel-skeleton-ring"></span>

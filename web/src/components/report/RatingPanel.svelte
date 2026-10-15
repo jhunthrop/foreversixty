@@ -53,6 +53,8 @@
     <div class="flex h-8 flex-col gap-2" data-testid="rating-panel-loading" aria-hidden="true">
       <div class="bg-line-soft h-8 w-full animate-pulse rounded"></div>
     </div>
+  {:else if fetcher.status === 'flagged'}
+    <p class="text-muted text-[13px]" data-testid="rating-panel-flagged">{ratingCopy.flagged}</p>
   {:else if fetcher.status === 'failed'}
     <p class="text-muted text-[13px]" role="alert" data-testid="rating-panel-error">
       {ratingCopy.fetchFailed}

@@ -1082,3 +1082,104 @@ def test_fetch_classic_db_sources_downloads_and_gunzips_and_parses():
     client = httpx.Client(transport=httpx.MockTransport(handler))
     items = cs.fetch_classic_db_sources(client=client)
     assert items[5404][0].name == "Lady Anacondra"
+
+
+#: Task L1.7: creature_template's own `Rank` column (cmangos: 0 normal, 1 elite,
+#: 2 rare elite, 3 boss, 4 rare) and the spawn pools. Rank alone does not mark a
+#: rare spawn -- the pinned dump ranks Edwin VanCleef, a fixed single spawn, 2 --
+#: so a rare spawn is a rank 2 or 4 creature with a spawn in a spawn pool --
+#: Ironspine (6489) through a random-entry spawn (`creature_spawn_entry`) in a
+#: pooled guid, Bruegal Ironknuckle (1720) through a pooled guid of his own,
+#: Hearthsinger Forresten (10558) through `pool_creature_template` -- or with a
+#: spawn in the open world (maps 0 and 1), where a rare is one long-respawn
+#: spawn and no pool: Swiftmane (5831) in the Barrens.
+RANK_SQL = """
+CREATE TABLE `creature_template` (
+  `Entry` mediumint,
+  `Name` char(100),
+  `Rank` tinyint,
+  `VendorTemplateId` mediumint
+) ENGINE=MyISAM;
+INSERT INTO `creature_template` VALUES (6489,'Ironspine',2,0),(647,'Captain Greenskin',1,0);
+INSERT INTO `creature_template` VALUES (3840,'Druid of the Fang',0,0),(639,'Edwin VanCleef',2,0);
+INSERT INTO `creature_template` VALUES (1720,'Bruegal Ironknuckle',2,0),(4,'Pooled Elite',1,0);
+INSERT INTO `creature_template` VALUES (10558,'Hearthsinger Forresten',2,0);
+INSERT INTO `creature_template` VALUES (5831,'Swiftmane',2,0),(5,'Open-World Elite',1,0);
+INSERT INTO `creature_template` VALUES (99,'Random World Rare',4,0);
+
+CREATE TABLE `creature` (
+  `guid` int,
+  `id` mediumint,
+  `map` smallint
+) ENGINE=MyISAM;
+INSERT INTO `creature` VALUES (10,0,189),(11,1720,34),(12,639,36),(13,4,36);
+INSERT INTO `creature` VALUES (14,5831,1),(15,5,0),(16,0,0);
+
+CREATE TABLE `creature_spawn_entry` (
+  `guid` int,
+  `entry` mediumint
+) ENGINE=MyISAM;
+INSERT INTO `creature_spawn_entry` VALUES (10,6488),(10,6489),(10,6490),(16,99);
+
+CREATE TABLE `pool_creature` (
+  `guid` int,
+  `pool_entry` mediumint,
+  `chance` float,
+  `description` varchar(255)
+) ENGINE=MyISAM;
+INSERT INTO `pool_creature` VALUES (10,46001,0,'SM - Graveyard rares');
+INSERT INTO `pool_creature` VALUES (11,45103,0,'The Stockade - Bruegal Ironknuckle');
+INSERT INTO `pool_creature` VALUES (13,1,0,'a pooled elite');
+
+CREATE TABLE `pool_creature_template` (
+  `id` int,
+  `pool_entry` mediumint,
+  `chance` float,
+  `description` varchar(255)
+) ENGINE=MyISAM;
+INSERT INTO `pool_creature_template` VALUES (10558,46804,0,'Stratholme - Hearthsinger Forresten');
+"""
+
+
+def test_npc_ranks_keeps_each_creatures_own_rank_and_leaves_a_normal_one_out():
+    assert cs.parse_npc_ranks(RANK_SQL) == {
+        6489: 2, 647: 1, 1720: 2, 639: 2, 10558: 2, 4: 1, 5831: 2, 5: 1, 99: 4,
+    }  # fmt: skip
+
+
+def test_npc_ranks_is_empty_for_a_dump_that_declares_no_rank_column():
+    assert cs.parse_npc_ranks(SAMPLE_SQL) == {}
+
+
+def test_a_rare_spawn_is_a_rare_ranked_creature_pooled_or_in_the_open_world():
+    # VanCleef is ranked rare elite but is a fixed spawn inside his instance;
+    # the pooled elite and the open-world elite are not ranked rare.
+    assert cs.parse_rare_spawns(RANK_SQL) == {6489, 1720, 10558, 5831, 99}
+
+
+def test_no_rare_spawn_without_pools_or_ranks():
+    assert cs.parse_rare_spawns(SAMPLE_SQL) == set()
+
+
+def test_write_and_load_npc_ranks_and_rare_spawns_round_trip(tmp_path):
+    build_dir = tmp_path / "1.60.1.70291"
+    cs.write_classic_sources(
+        build_dir, cs.parse_classic_db_sources(SAMPLE_SQL), {6489: 2, 647: 1}, {6489}
+    )
+    assert cs.load_npc_ranks(build_dir) == {6489: 2, 647: 1}
+    assert cs.load_rare_spawns(build_dir) == {6489}
+    # The item records load exactly as before beside the new keys.
+    assert cs.load_classic_sources(build_dir)[5404][0].name == "Lady Anacondra"
+
+
+def test_load_npc_ranks_is_empty_with_no_file_or_a_cache_written_before_ranks(tmp_path):
+    build_dir = tmp_path / "1.60.1.70291"
+    assert cs.load_npc_ranks(build_dir) == {}
+    assert cs.load_rare_spawns(build_dir) == set()
+    cs.write_classic_sources(build_dir, cs.parse_classic_db_sources(SAMPLE_SQL))
+    assert cs.load_npc_ranks(build_dir) == {}
+    assert cs.load_rare_spawns(build_dir) == set()
+
+
+def test_rare_ranks_are_rare_elite_and_rare_only():
+    assert cs.RARE_NPC_RANKS == frozenset({2, 4})

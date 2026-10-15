@@ -8,9 +8,13 @@
 package character
 
 import (
+	"context"
+	"fmt"
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/jackc/pgx/v5"
 )
 
 // The four rulesets, per the Phase 3 contract.
@@ -107,18 +111,36 @@ func SplitUnit(unit string) (name, realm string) {
 	return name, realm
 }
 
-// RulesetFromRealm maps the realm segment of a logged unit name onto a
-// ruleset. This is the single mapping the whole API uses.
+// Realm is the realm a character lives on as the client names it, from the first source
+// that has one: the Battle.net import's realm name (characters.realm_name), else the addon
+// export's who= realm, else the realm half of the newest rated row's logged unit
+// ("Mörk-ClassicBetaPvP", which the combat log writes in the client's normalised form).
+// Empty when no source has one. The nightly data addon's keys and the character page both
+// read a character's realm through this one order.
+func Realm(bnetRealm, exportRealm, loggedUnit string) string {
+	for _, realm := range []string{bnetRealm, exportRealm} {
+		if realm = strings.TrimSpace(realm); realm != "" {
+			return realm
+		}
+	}
+	_, realm := SplitUnit(strings.TrimSpace(loggedUnit))
+	return realm
+}
+
+// RulesetFromRealm maps the realm segment of a logged unit name (or a realm name the
+// client or Battle.net reports) onto a ruleset. This is the single mapping the whole API
+// uses.
 //
-// The combat log prints units as Name-Realm today. What Forever writes
-// in that segment is settled by the first beta log on Sept 17: if it
-// writes a ruleset name, the first branch already handles it; if it
-// writes something else, that translation belongs here and nowhere else.
-// Until then an unrecognised segment takes the fallback - the ruleset
-// the report's logging character declared - and RulesetNormal when the
-// report declared none.
+// A realm names its ruleset by a word in it: the ruleset itself once Forever's realms are
+// its rulesets ("Hardcore"), and the beta's realm names ("Classic Beta PvP", "Classic Beta
+// PvE 2"), the same words the web's rulesetFromRealm reads (rulesetWords). The client's
+// normalised realm name drops the spaces and hyphens ("ClassicBetaPvP",
+// GetNormalizedRealmName and the combat log's Name-Realm), so a single camel-case word is
+// read by the ruleset word it ends in, trailing digits aside. A realm with no such word
+// takes the fallback - the ruleset the report's logging character declared - and
+// RulesetNormal when the report declared none.
 func RulesetFromRealm(realm, fallback string) string {
-	if r := strings.ToLower(strings.TrimSpace(realm)); ValidRuleset(r) {
+	if r, ok := rulesetOfRealm(realm); ok {
 		return r
 	}
 	if ValidRuleset(fallback) {
@@ -127,9 +149,89 @@ func RulesetFromRealm(realm, fallback string) string {
 	return RulesetNormal
 }
 
+// rulesetWords are the words a realm name spells a ruleset with, longest first so a
+// camel-case suffix match tries "hardcore" before "hc".
+var rulesetWords = []struct{ word, ruleset string }{
+	{"hardcore", RulesetHardcore}, {"roleplay", RulesetRP}, {"normal", RulesetNormal},
+	{"pvp", RulesetPvP}, {"pve", RulesetNormal}, {"rp", RulesetRP}, {"hc", RulesetHardcore},
+}
+
+// rulesetOfRealm is the ruleset the first word of realm that names one spells, if any.
+func rulesetOfRealm(realm string) (string, bool) {
+	words := strings.FieldsFunc(realm, func(r rune) bool {
+		return !(r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z' || r >= '0' && r <= '9')
+	})
+	for _, word := range words {
+		// Trailing digits number a realm ("PvE 2", "ClassicBetaPvE2"), they name no ruleset.
+		trimmed := strings.TrimRight(strings.ToLower(word), "0123456789")
+		camel := camelCase(word)
+		for _, w := range rulesetWords {
+			if trimmed == w.word || camel && strings.HasSuffix(trimmed, w.word) {
+				return w.ruleset, true
+			}
+		}
+	}
+	return "", false
+}
+
+// camelCase reports whether word joins several words in the normalised form: a capital
+// letter after a lower-case one ("ClassicBetaPvP", "ForeverRP").
+func camelCase(word string) bool {
+	for i := 1; i < len(word); i++ {
+		if word[i] >= 'A' && word[i] <= 'Z' && word[i-1] >= 'a' && word[i-1] <= 'z' {
+			return true
+		}
+	}
+	return false
+}
+
 // KeyFromUnit builds the character key for a unit name out of a combat
 // log, in a report whose region and ruleset are region and ruleset.
 func KeyFromUnit(region, ruleset, unit string) string {
 	name, realm := SplitUnit(unit)
 	return Key(region, RulesetFromRealm(realm, ruleset), name)
+}
+
+// Querier is the one database call LinkedCharacters makes; a pool and a
+// transaction both have it.
+type Querier interface {
+	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
+}
+
+// Linked is one character an account owns. Main is true for the account's
+// main (users.main_character_key); every other linked character is an alt.
+type Linked struct {
+	Key     string
+	Region  string
+	Ruleset string
+	Name    string
+	Class   string
+	Main    bool
+}
+
+// LinkedCharacters lists the characters an account owns - exactly the
+// characters GET /v1/me lists (characters.user_id, which only the account's
+// own verified paths ever set and which never moves a character off another
+// account) - with the main first, then the alts by key. An account with no
+// characters has none, and that is not an error.
+func LinkedCharacters(ctx context.Context, q Querier, userID int64) ([]Linked, error) {
+	rows, err := q.Query(ctx,
+		`select c.key, c.region, c.ruleset, c.name, coalesce(c.class, ''),
+		        c.key = coalesce(u.main_character_key, '')
+		 from characters c join users u on u.id = c.user_id
+		 where c.user_id = $1
+		 order by 6 desc, c.key`, userID)
+	if err != nil {
+		return nil, fmt.Errorf("character: linked characters of %d: %w", userID, err)
+	}
+	defer rows.Close()
+	out := []Linked{}
+	for rows.Next() {
+		var l Linked
+		if err := rows.Scan(&l.Key, &l.Region, &l.Ruleset, &l.Name, &l.Class, &l.Main); err != nil {
+			return nil, fmt.Errorf("character: scan linked character: %w", err)
+		}
+		out = append(out, l)
+	}
+	return out, rows.Err()
 }

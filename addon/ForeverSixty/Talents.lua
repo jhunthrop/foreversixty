@@ -43,15 +43,34 @@ local function hasTraitApi()
 		and type(C_ClassTalents.GetActiveConfigID) == "function"
 end
 
---- A rank from the trait system. A character below the talent level has no
---- active config yet, and a node the client does not know is unranked:
---- both read as 0, never as an error.
+--- A node's committed rank and its rank with any staged (clicked, not yet
+--- applied) changes, from C_Traits.GetNodeInfo's answer. Pure. The
+--- committed rank is activeRank (ranksPurchased on a client without it);
+--- the staged one is currentRank, else ranksPurchased, else the committed.
+--- Which fields this client fills is a spike question: /fs diag verbose
+--- prints a sample (Talents.nodeSample).
+function Talents.nodeRanks(info)
+	if type(info) ~= "table" then
+		return 0, 0
+	end
+	local committed = info.activeRank or info.ranksPurchased or 0
+	local staged = info.currentRank or info.ranksPurchased or committed
+	return committed, staged
+end
+
+--- A node's committed and staged ranks from the trait system. A character
+--- below the talent level has no active config yet, and a node the client
+--- does not know is unranked: both read as 0, never as an error. The first
+--- answer is kept for /fs diag verbose (Talents.nodeSample).
 local function traitRank(configID, node)
 	if configID == nil or node == nil then
-		return 0
+		return 0, 0
 	end
 	local info = C_Traits.GetNodeInfo(configID, node)
-	return info and (info.activeRank or info.ranksPurchased) or 0
+	if Talents.nodeSample == nil and type(info) == "table" then
+		Talents.nodeSample = info
+	end
+	return Talents.nodeRanks(info)
 end
 
 --- A spell's texture, from wherever this client keeps the function.
@@ -103,21 +122,36 @@ function Talents.iconFor(talent)
 	return nil
 end
 
-local function traitRanks(data)
+local function traitRanks(data, staged)
 	local class = data and data.classes and data.classes[Talents.playerClassSlug()]
 	if class == nil then
-		return {}
+		return {}, false
 	end
 	local configID = C_ClassTalents.GetActiveConfigID()
 	local byTab = {}
+	local differs = false
 	for tabIndex, tab in ipairs(class.tabs) do
 		local ranks = {}
 		for _, talent in ipairs(tab.talents) do
-			ranks[cellKey(talent.tier, talent.column)] = traitRank(configID, talent.node)
+			local committed, withStaged = traitRank(configID, talent.node)
+			ranks[cellKey(talent.tier, talent.column)] = staged and withStaged or committed
+			if withStaged ~= committed then
+				differs = true
+			end
 		end
 		byTab[tabIndex] = ranks
 	end
-	return byTab
+	return byTab, staged and (differs or Talents.configHasStagedChanges(configID))
+end
+
+--- Whether the client says the config has clicks not yet applied; false
+--- where it cannot say.
+function Talents.configHasStagedChanges(configID)
+	if configID == nil or type(C_Traits.ConfigHasStagedChanges) ~= "function" then
+		return false
+	end
+	local ok, staged = pcall(C_Traits.ConfigHasStagedChanges, configID)
+	return ok and staged == true
 end
 
 local function classicRanks()
@@ -141,12 +175,22 @@ end
 --- API reports no ranks rather than raising.
 function Talents.readRanks(data)
 	if hasTraitApi() then
-		return traitRanks(data)
+		return (traitRanks(data, false))
 	end
 	if type(GetNumTalentTabs) == "function" then
 		return classicRanks()
 	end
 	return {}
+end
+
+--- Talents.readRanks with the talent window's staged clicks counted, and
+--- whether any are staged: the talent marks read this so the strip answers
+--- a click before Apply Changes. The classic window has no staging.
+function Talents.readStagedRanks(data)
+	if hasTraitApi() then
+		return traitRanks(data, true)
+	end
+	return Talents.readRanks(data), false
 end
 
 --- Ranks per tree, in Data.lua's talent order, ready for Codec.encodeFS1.
@@ -215,10 +259,13 @@ end
 --- Tier 1 through 8, never Data.lua's own zero-based `tier` field.
 --- Round-2 section 10 ruling 4: every lookup against Data.lua (cellKey, tab
 --- indices, the codec) stays zero-based; only a string a player reads
---- (the tracker, the toast, the Talents page's own unknown-cell name)
+--- (the chip, the Talents page's own unknown-cell name)
 --- goes through this first.
 function Talents.displayTier(tier)
-	return (tier or 0) + 1
+	-- Data.lua's tiers are already the rows a player counts (Improved
+	-- Heroic Strike is tier 1 and sits on the top row of the game's own
+	-- window); adding one here showed "tier 2" for it (seen in game).
+	return tier or 1
 end
 
 ns.Talents = Talents

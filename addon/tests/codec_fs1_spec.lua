@@ -81,10 +81,10 @@ describe("Codec FS1", function()
 			end
 		end)
 
-		it("names the prefix it found and the one it wanted", function()
+		it("says a foreign prefix is not a Forever Sixty code, without echoing it (L3.4 fix 19)", function()
 			local _, message = Codec.decodeFS1("FS2:1:a:b:0/0/0:")
-			assert.is_truthy(message:find("FS2", 1, true))
-			assert.is_truthy(message:find("FS1", 1, true))
+			assert.are.equal(L.codecWrongPrefix, message)
+			assert.is_nil(message:find("FS2", 1, true))
 		end)
 
 		it("refuses a code past the length bound before parsing it", function()

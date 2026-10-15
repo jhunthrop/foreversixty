@@ -112,7 +112,7 @@ describe("Codec FSB1", function()
 		end
 	end)
 
-	it("doubles a pipe in a refused fragment so WoW's chat frame cannot render it as markup", function()
+	it("never echoes a foreign prefix, so a pasted fragment cannot render as markup (L3.4 fix 19)", function()
 		-- FSB1's grammar only reserves `:`, `,`, `;` and `=`; `|` passes
 		-- through untouched, unlike FS1 where the format's own `|` section
 		-- separator is stripped before any field is echoed back. A crafted
@@ -122,10 +122,10 @@ describe("Codec FSB1", function()
 		-- printed (or repasted into guild chat or Discord).
 		local fragment = "FS|cFF00FF00EVIL|r2"
 		local _, message = Codec.decodeFSB1(fragment .. ":1.60.1.69893:paladin:111:")
-		assert.are.equal(
-			string.format(L.codecWrongPrefix, "FS||cFF00FF00EVIL||r2", Codec.FSB1_PREFIX),
-			message
-		)
+		assert.are.equal(L.codecWrongPrefix, message)
+		assert.is_nil(message:find("EVIL", 1, true))
+		-- The advice names the prefix a real code starts with (L3.4 fix round 3, item 10), never the paste's.
+		assert.is_nil(message:find("FS|", 1, true))
 	end)
 
 	describe("loadBuild", function()
@@ -181,14 +181,31 @@ describe("Codec FSB1", function()
 			assert.is_true(build.statsUnknown)
 		end)
 
-		it("refuses a code from a newer data build, naming both", function()
-			local _, message = Codec.loadBuild("FSB1:1.99.0.99999:paladin:111:", data)
-			assert.is_truthy(message:find("1.99.0.99999", 1, true))
-			assert.is_truthy(message:find("1.60.1.69893", 1, true))
+		it("refuses a code from a newer data build, in plain words with no build ids", function()
+			-- L3.4 ruling: the build dialog shows this reason as it stands, and the
+			-- dialog's copy never prints a build number.
+			local build, message = Codec.loadBuild("FSB1:1.99.0.99999:paladin:111:", data)
+			assert.is_nil(build)
+			assert.are.equal(L.codecNewerBuild, message)
+			assert.is_nil(message:find("1.99.0.99999", 1, true))
+			assert.is_nil(message:find("1.60.1.69893", 1, true))
 		end)
 
 		it("accepts a code from an older data build", function()
 			assert.is_truthy(Codec.loadBuild("FSB1:1.15.9.69722:paladin:111:", data))
+		end)
+
+		it("refuses another class's code when it is told the player's class, naming both", function()
+			-- L3.4 fix 18: the codec's own answer; the names come from the client's table when
+			-- the caller passes one, else the slug in title case.
+			local player = { classSlug = "mage", classNames = { PALADIN = "Paladin", MAGE = "Mage" } }
+			local build, message = Codec.loadBuild("FSB1:1.60.1.69893:paladin:111:", data, player)
+			assert.is_nil(build)
+			assert.are.equal(string.format(L.codecWrongClass, "Paladin", "Mage", "Mage"), message)
+			local _, plain = Codec.loadBuild("FSB1:1.60.1.69893:paladin:111:", data, { classSlug = "mage" })
+			assert.are.equal(string.format(L.codecWrongClass, "Paladin", "Mage", "Mage"), plain)
+			assert.is_truthy(Codec.loadBuild("FSB1:1.60.1.69893:paladin:111:", data, { classSlug = "paladin" }))
+			assert.is_truthy(Codec.loadBuild("FSB1:1.60.1.69893:paladin:111:", data))
 		end)
 
 		it("refuses a code for a class this data does not carry", function()

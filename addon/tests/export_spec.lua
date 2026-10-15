@@ -239,7 +239,8 @@ describe("Export", function()
 		assert.are.equal("Paladin", record.class)
 		assert.is_string(record.name)
 		assert.are.equal("Ashbringer", record.ruleset)
-		assert.are.equal("US", record.region)
+		-- L3.3 fix round 1: the region is lowercased, as the API stores it.
+		assert.are.equal("us", record.region)
 		assert.are.equal("1.60.1.69893", record.build)
 	end)
 

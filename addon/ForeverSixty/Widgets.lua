@@ -29,6 +29,7 @@ end
 
 function Widgets.panel(parent, width, height, name)
 	local frame = CreateFrame("Frame", name, parent)
+	Theme.noteFrame(name or "Panel", "a window or panel built")
 	frame:SetSize(width, height)
 	local background = Theme.texture(frame, "BACKGROUND", "background", Theme.ALPHA.window)
 	background:SetAllPoints(frame)
@@ -49,13 +50,14 @@ end
 --- its resting colours in `foreverSixtySkin`, so a caller that changes them
 --- (an active tab) is respected when the cursor leaves.
 local function hoverable(control, background)
+	local states = Theme.CONTROL_STATES.secondary
 	control:SetScript("OnEnter", function(self)
 		if self:IsEnabled() then
-			Theme.paint(background, "hover")
+			Theme.paint(background, states.hover)
 		end
 	end)
 	control:SetScript("OnLeave", function()
-		Theme.paint(background, "raised")
+		Theme.paint(background, states.rest)
 	end)
 	return control
 end
@@ -63,14 +65,16 @@ end
 --- A button the player can turn off. The OnClick wrapper checks IsEnabled
 --- itself rather than trusting the client to swallow the click, so the
 --- combat lockout on the Equip buttons holds on every client. Drawn flat:
---- a raised panel, a hairline border, a gold label.
-function Widgets.button(parent, text, onClick)
-	local button = Theme.createFrame("Button", nil, parent)
+--- a raised panel, a hairline border, a gold label. `name` (optional) names the
+--- frame, for a button a /run probe reaches (the character-panel tab's, L4.3).
+function Widgets.button(parent, text, onClick, name)
+	local button = Theme.createFrame("Button", name, parent)
 	button:SetSize(Theme.SIZES.buttonWidth, Theme.SIZES.buttonHeight)
 	local background = Theme.texture(button, "BACKGROUND", "raised")
 	background:SetAllPoints(button)
-	Theme.outline(button, Theme.SIZES.border, "border")
-	local label = Widgets.label(button, "", "gold", "small")
+	button.foreverSixtyGround = background
+	button.foreverSixtyEdges = Theme.outline(button, Theme.SIZES.border, Theme.CONTROL_STATES.face.edge)
+	local label = Widgets.label(button, "", Theme.CONTROL_STATES.face.label, "small")
 	label:SetPoint("CENTER", button, "CENTER", 0, 0)
 	button.foreverSixtyLabel = label
 	button.SetText = function(self, value)
@@ -80,6 +84,11 @@ function Widgets.button(parent, text, onClick)
 		return self.foreverSixtyLabel:GetText()
 	end
 	hoverable(button, background)
+	Theme.pressable(button, label, function()
+		Theme.paint(background, Theme.CONTROL_STATES.secondary.pressed)
+	end, function(_, over)
+		Theme.paint(background, over and Theme.CONTROL_STATES.secondary.hover or Theme.CONTROL_STATES.secondary.rest)
+	end)
 	button:SetText(text)
 	button:SetScript("OnClick", function(self, ...)
 		if self:IsEnabled() then
@@ -87,6 +96,78 @@ function Widgets.button(parent, text, onClick)
 		end
 	end)
 	return button
+end
+
+--- A button that must read as the addon's own on the client's art (the character panel's
+--- "Forever Sixty" tab, L4.3 fix round 1, item 5): the panel fill under a 1 px gold edge, its
+--- label in the chip's gold font (the client's own font at Theme.SIZES.chipText), `width` x
+--- `height`; under the cursor the fill lifts to the hover ground and the edge and label to
+--- the brighter gold. `name` (optional) names the frame for a /run probe.
+function Widgets.edgedButton(parent, text, onClick, name, width, height)
+	local S = Theme.SIZES
+	local button = Theme.createFrame("Button", name, parent)
+	button:SetSize(width or S.buttonWidth, height or S.buttonHeight)
+	local ground = Theme.texture(button, "BACKGROUND", "background", Theme.ALPHA.window)
+	ground:SetAllPoints(button)
+	button.foreverSixtyGround = ground
+	button.foreverSixtyEdges = Theme.outline(button, S.border, "gold")
+	local label = Theme.fontString(button, "OVERLAY", "normal")
+	local fontPath, _, fontFlags = label:GetFont()
+	label:SetFont(fontPath or Theme.FALLBACK_FONT.path, S.chipText, fontFlags)
+	label:SetTextColor(Theme.rgb(Theme.HEX.gold))
+	label:SetPoint("CENTER", button, "CENTER", 0, 0)
+	button.foreverSixtyLabel = label
+	button.SetText = function(self, value)
+		self.foreverSixtyLabel:SetText(value or "")
+	end
+	button.GetText = function(self)
+		return self.foreverSixtyLabel:GetText()
+	end
+	--- Rest or lit, closed or open (Widgets.setEdgedOpen): the fill, the edge and the label
+	--- together. Open (L4.3 fix round 3, item 3): the label in body over the inset ground of a
+	--- pressed tab; lit while open, the label brightens and the inset ground stays.
+	local function look(lit)
+		local open = button.foreverSixtyOpen == true
+		if open then
+			Theme.paint(ground, Theme.CONTROL_STATES.tab.pressed)
+		else
+			Theme.paint(ground, lit and "hover" or "background", not lit and Theme.ALPHA.window or nil)
+		end
+		for _, edge in ipairs(button.foreverSixtyEdges) do
+			Theme.paint(edge, lit and "goldHover" or "gold")
+		end
+		label:SetTextColor(Theme.rgb(Theme.HEX[lit and "goldHover" or (open and "body" or "gold")]))
+	end
+	button.foreverSixtyLook = look
+	button:SetScript("OnEnter", function()
+		look(true)
+	end)
+	button:SetScript("OnLeave", function()
+		look(false)
+	end)
+	Theme.pressable(button, label, function()
+		Theme.paint(ground, "inset")
+	end, function(_, over)
+		look(over)
+	end)
+	button:SetScript("OnClick", function(self, ...)
+		if self:IsEnabled() then
+			onClick(self, ...)
+		end
+	end)
+	button:SetText(text)
+	return button
+end
+
+--- An edged button's open state (what it opens is showing), drawn at once: lit when the
+--- cursor is over it, else open or at rest.
+function Widgets.setEdgedOpen(button, open)
+	button.foreverSixtyOpen = open == true
+	local over = type(button.IsMouseOver) == "function" and button:IsMouseOver() == true
+	if type(button.foreverSixtyLook) == "function" then
+		button.foreverSixtyLook(over)
+	end
+	return button.foreverSixtyOpen
 end
 
 --- A label the player can click, with no border or background of its own
@@ -123,23 +204,60 @@ function Widgets.textButton(parent, text, onClick)
 	return button
 end
 
---- The small X in the title bar.
+--- The small X in the title bar: muted, body on a hover ground under the cursor
+--- (Theme.CONTROL_STATES.close), inset while pressed.
 function Widgets.closeButton(parent, onClick)
+	local states = Theme.CONTROL_STATES.close
 	local button = Theme.createFrame("Button", nil, parent)
 	button:SetSize(Theme.SIZES.closeButton, Theme.SIZES.closeButton)
-	local label = Widgets.label(button, "x", "muted")
+	local ground = Theme.texture(button, "BACKGROUND", states.hoverGround)
+	ground:SetAllPoints(button)
+	ground:Hide()
+	button.foreverSixtyGround = ground
+	local label = Widgets.label(button, "x", states.label)
 	label:SetPoint("CENTER", button, "CENTER", 0, 1)
 	button.foreverSixtyLabel = label
 	button:SetScript("OnEnter", function(self)
-		self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX.gold))
+		Theme.paint(ground, states.hoverGround)
+		ground:Show()
+		self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[states.hoverLabel]))
 	end)
 	button:SetScript("OnLeave", function(self)
-		self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX.muted))
+		ground:Hide()
+		self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[states.label]))
+	end)
+	Theme.pressable(button, label, function()
+		Theme.paint(ground, states.pressed)
+		ground:Show()
+	end, function(_, over)
+		Theme.paint(ground, states.hoverGround)
+		if over then
+			ground:Show()
+		else
+			ground:Hide()
+		end
 	end)
 	button:SetScript("OnClick", function(self)
 		onClick(self)
 	end)
 	return button
+end
+
+--- A Widgets.button's look set outright, at full alpha: enabled or not, its label and its
+--- 1 px border in the given Theme.HEX keys. For a button that has acted and waits, whose
+--- faded disabled look would not read (Settings' "Positions reset", fix round 2, item 4).
+function Widgets.setButtonLook(button, enabled, labelKey, edgeKey)
+	if enabled then
+		button:Enable()
+	else
+		button:Disable()
+	end
+	button:SetAlpha(1)
+	button.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[labelKey]))
+	for _, edge in ipairs(button.foreverSixtyEdges or {}) do
+		Theme.paint(edge, edgeKey)
+	end
+	return enabled
 end
 
 function Widgets.setEnabled(widget, enabled)
@@ -167,10 +285,22 @@ function Widgets.tab(parent, text, onClick)
 	underline:SetHeight(Theme.SIZES.tabUnderline)
 	underline:Hide()
 	tab.foreverSixtyUnderline = underline
+	local states = Theme.CONTROL_STATES.tab
+	local ground = Theme.texture(tab, "BACKGROUND", states.pressed)
+	ground:SetAllPoints(tab)
+	ground:Hide()
 	tab:SetScript("OnEnter", function(self)
 		if not self.foreverSixtyActive then
-			self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX.body))
+			-- An inactive tab under the cursor: body label over a 2 px border-colour underline.
+			self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[states.hoverLabel]))
+			Theme.paint(underline, states.hoverUnderline)
+			underline:Show()
 		end
+	end)
+	Theme.pressable(tab, label, function()
+		ground:Show()
+	end, function()
+		ground:Hide()
 	end)
 	tab:SetScript("OnLeave", function(self)
 		Widgets.setTabActive(self, self.foreverSixtyActive == true)
@@ -184,6 +314,7 @@ end
 function Widgets.setTabActive(tab, active)
 	tab.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[active and "gold" or "muted"]))
 	if active then
+		Theme.paint(tab.foreverSixtyUnderline, "gold")
 		tab.foreverSixtyUnderline:Show()
 	else
 		tab.foreverSixtyUnderline:Hide()
@@ -312,6 +443,7 @@ end
 --- these, so a row looks the same wherever the player meets it.
 function Widgets.itemRow(parent, width)
 	local frame = CreateFrame("Frame", nil, parent)
+	Theme.noteFrame("Item row", "a list built")
 	frame:SetSize(width, Theme.SIZES.rowHeight)
 	frame:EnableMouse(true)
 	-- Through Theme.icon so the client's baked-in bevel is cropped, the
@@ -336,7 +468,7 @@ end
 --- ability's icon, its name, its rank in muted text beside the name, and
 --- the condition in muted text on a second line. Hovering highlights the
 --- row; the row for the ability the player just learned this level glows
---- (Theme.showGlow/hideGlow, the toast's own event) -- both are the
+--- (Theme.showGlow/hideGlow, on the level-up event) -- both are the
 --- caller's to drive, this only builds the frame they act on.
 function Widgets.rotationRow(parent, width)
 	local S = Theme.SIZES
@@ -372,14 +504,54 @@ end
 --- returns the content frame to lay out on and a function to call once the
 --- content's height is known. No scroll template: the same flat approach
 --- as Widgets.list, so the specs cover it.
+--- A thin scrollbar at the right edge of `region`, drawn on `parent`
+--- and shown only while there is more than fits, so a list or page that
+--- fits looks as it always did. `Update(shown, position)` takes the
+--- fraction that fits (1 means everything) and how far down the view
+--- is (0 to 1). `width` (default Theme.SIZES.scrollbar) and `trackKey` (a Theme.HEX key,
+--- default "border") are for a list that needs a wider thumb on a lighter track (the guild
+--- tab, L5.1 fix round 1, item 7).
+function Widgets.scrollbar(parent, region, inset, width, trackKey, thumbWidth)
+	local S = Theme.SIZES
+	inset = inset or -S.gap * 2
+	width = width or S.scrollbar
+	local track = Theme.texture(parent, "ARTWORK", trackKey or "border")
+	track:SetWidth(width)
+	track:SetPoint("TOPLEFT", region, "TOPRIGHT", inset, 0)
+	track:SetPoint("BOTTOMLEFT", region, "BOTTOMRIGHT", inset, 0)
+	local thumb = Theme.texture(parent, "OVERLAY", "muted")
+	thumb:SetWidth(thumbWidth or width)
+	thumb:SetPoint("TOP", track, "TOP", 0, 0)
+	local bar = { track = track, thumb = thumb, region = region }
+	function bar:Update(shown, position)
+		if shown >= 1 then
+			self.track:Hide()
+			self.thumb:Hide()
+			return false
+		end
+		self.track:Show()
+		self.thumb:Show()
+		local height = self.region:GetHeight() or 0
+		local thumbHeight = math.max(S.scrollbarThumb, height * shown)
+		self.thumb:SetHeight(thumbHeight)
+		self.thumb:ClearAllPoints()
+		self.thumb:SetPoint("TOP", self.track, "TOP", 0, -(height - thumbHeight) * (position or 0))
+		return true
+	end
+	bar:Update(1, 0)
+	return bar
+end
+
 function Widgets.scrollable(holder)
 	local content = CreateFrame("Frame", nil, holder)
+	Theme.noteFrame("Scroll content", "a list built")
 	content:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
 	content:SetSize(holder:GetWidth(), holder:GetHeight())
 	if type(holder.SetClipsChildren) == "function" then
 		holder:SetClipsChildren(true)
 	end
 	local scroll = { holder = holder, content = content, offset = 0, contentHeight = holder:GetHeight() }
+	scroll.bar = Widgets.scrollbar(holder, holder)
 	function scroll:Range()
 		return math.max(0, self.contentHeight - self.holder:GetHeight())
 	end
@@ -387,6 +559,9 @@ function Widgets.scrollable(holder)
 		self.offset = math.max(0, math.min(offset, self:Range()))
 		self.content:ClearAllPoints()
 		self.content:SetPoint("TOPLEFT", self.holder, "TOPLEFT", 0, self.offset)
+		local range = self:Range()
+		self.bar:Update(self.contentHeight > 0 and self.holder:GetHeight() / self.contentHeight or 1,
+			range > 0 and self.offset / range or 0)
 		return self.offset
 	end
 	function scroll:SetContentHeight(height)
@@ -397,6 +572,10 @@ function Widgets.scrollable(holder)
 	holder:EnableMouseWheel(true)
 	holder:SetScript("OnMouseWheel", function(_, delta)
 		scroll:ScrollTo(scroll.offset - delta * Widgets.SCROLL_STEP)
+	end)
+	-- A holder the client resizes (an anchored canvas) keeps the range true to what shows.
+	holder:SetScript("OnSizeChanged", function()
+		scroll:SetContentHeight(scroll.contentHeight)
 	end)
 	return scroll
 end
@@ -424,6 +603,9 @@ function Widgets.list(parent, width, rowCount, rowBuilder)
 		list.rows[index] = row
 	end
 	list.frame = frame
+	-- Just outside the rows, in the page's own right padding, so no row
+	-- text runs under it.
+	list.bar = Widgets.scrollbar(frame, frame, Theme.SIZES.gap * 2)
 	return list
 end
 
@@ -444,12 +626,22 @@ function Widgets.List:Scroll(delta)
 	return self:Refresh()
 end
 
+--- Show only the first `count` of the rows the list was built with (all
+--- of them by default): a page that must share its height between two
+--- lists gives one of them fewer rows without rebuilding either.
+function Widgets.List:SetVisibleRows(count)
+	self.visibleRows = math.max(0, math.min(count or #self.rows, #self.rows))
+	self.frame:SetHeight(math.max(self.visibleRows, 1) * Theme.SIZES.rowHeight)
+	return self:Refresh()
+end
+
 function Widgets.List:Refresh()
-	local first, last, clamped = Widgets.visibleRange(#self.items, #self.rows, self.offset)
+	local visible = self.visibleRows or #self.rows
+	local first, last, clamped = Widgets.visibleRange(#self.items, visible, self.offset)
 	self.offset = clamped
 	for index, row in ipairs(self.rows) do
 		local position = index + first - 1
-		local item = position <= last and self.items[position] or nil
+		local item = (index <= visible and position <= last) and self.items[position] or nil
 		-- Cleared before the renderer runs: a recycled row must never
 		-- keep the previous item's tooltip target.
 		row.itemId, row.link = nil, nil
@@ -462,35 +654,331 @@ function Widgets.List:Refresh()
 			row.frame:Show()
 		end
 	end
+	if self.bar ~= nil then
+		local total = #self.items
+		local range = math.max(0, total - visible)
+		self.bar:Update(total > 0 and visible / total or 1, range > 0 and self.offset / range or 0)
+	end
 	return self
 end
 
-function Widgets.toggle(parent, text, checked, onChange)
-	local frame = CreateFrame("Button", nil, parent)
-	frame:SetSize(Theme.SIZES.buttonWidth, Theme.SIZES.rowHeight)
-	local box = Theme.texture(frame, "ARTWORK", "border")
-	box:SetSize(Theme.SIZES.iconSize, Theme.SIZES.iconSize)
-	box:SetPoint("LEFT", frame, "LEFT", 0, 0)
-	local tick = Theme.texture(frame, "OVERLAY", "gold")
-	tick:SetSize(Theme.SIZES.iconSize - Theme.SIZES.gap, Theme.SIZES.iconSize - Theme.SIZES.gap)
-	tick:SetPoint("CENTER", box, "CENTER", 0, 0)
-	local label = Widgets.label(frame, text, "body", "small")
-	label:SetPoint("LEFT", box, "RIGHT", Theme.SIZES.gap, 0)
-	local toggle = { frame = frame, box = box, tick = tick, label = label }
+--- How far right of a switch's left edge its label and hint start: the square and a gap.
+function Widgets.toggleIndent()
+	return Theme.SIZES.iconSize + Theme.SIZES.gap * 2
+end
+
+--- A switch row's height from its measured label and hint (fix round 2, item 3): the gap,
+--- the label, the gap, the hint, the one-line rows' bottom pad (Theme.SIZES.settingsRowPad),
+--- never under Theme.SIZES.settingsRow; that row where either height is unknown. Pure.
+function Widgets.toggleRowHeight(labelHeight, hintHeight)
+	local S = Theme.SIZES
+	if type(labelHeight) ~= "number" or type(hintHeight) ~= "number" then
+		return S.settingsRow
+	end
+	return math.max(S.settingsRow, S.gap + labelHeight + S.gap + hintHeight + S.settingsRowPad)
+end
+
+--- A font string's height as the client measured it, or nil.
+local function stringHeight(region)
+	if type(region.GetStringHeight) ~= "function" then
+		return nil
+	end
+	local height = region:GetStringHeight()
+	return type(height) == "number" and height or nil
+end
+
+--- A switch (L3.5 ruling 2): on, a gold square with the client's check mark tinted dark on
+--- it; off, a 1 px border outline. With a `hint`, a row as tall as its label and wrapped
+--- hint measure (Widgets.toggleRowHeight, at least Theme.SIZES.settingsRow; the whole row is
+--- the target): the label in body, the hint muted under it, wrapped at `hintWidth`. Hover
+--- and pressed come from Theme.CONTROL_STATES.toggle. `onChange` gets the new value.
+function Widgets.toggle(parent, text, checked, onChange, hint, hintWidth)
+	local S = Theme.SIZES
+	local states = Theme.CONTROL_STATES.toggle
+	local indent = Widgets.toggleIndent()
+	local frame = Theme.createFrame("Button", nil, parent)
+	local box = CreateFrame("Frame", nil, frame)
+	box:SetSize(S.iconSize, S.iconSize)
+	local fill = Theme.texture(box, "ARTWORK", states.on)
+	fill:SetAllPoints(box)
+	local edges = Theme.outline(box, S.border, states.edge)
+	local tick = Theme.tinted(box, "OVERLAY", Theme.MEDIA.check, states.check)
+	tick:SetAllPoints(box)
+	local label = Widgets.label(frame, text, "body", hint ~= nil and "normal" or "small")
+	local toggle = { frame = frame, box = box, fill = fill, edges = edges, tick = tick, label = label }
+	if hint ~= nil then
+		frame:SetSize(indent + (hintWidth or S.buttonWidth), S.settingsRow)
+		box:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -S.gap)
+		label:SetPoint("TOPLEFT", frame, "TOPLEFT", indent, -S.gap)
+		local hintLabel = Widgets.label(frame, hint, states.hint, "small")
+		hintLabel:SetPoint("TOPLEFT", label, "BOTTOMLEFT", 0, -S.gap)
+		hintLabel:SetWidth(hintWidth or S.buttonWidth)
+		frame:SetHeight(Widgets.toggleRowHeight(stringHeight(label), stringHeight(hintLabel)))
+		toggle.hint = hintLabel
+	else
+		frame:SetSize(S.buttonWidth, S.rowHeight)
+		box:SetPoint("LEFT", frame, "LEFT", 0, 0)
+		label:SetPoint("LEFT", box, "RIGHT", S.gap, 0)
+	end
+	--- Paint the square for its value and the cursor: "rest", "hover" or "pressed".
+	local function paint(look)
+		if toggle.checked then
+			local key = look == "pressed" and states.onPressed or look == "hover" and states.onHover or states.on
+			Theme.paint(fill, key)
+			fill:Show()
+			tick:Show()
+			for _, edge in ipairs(edges) do
+				Theme.paint(edge, key)
+			end
+		else
+			tick:Hide()
+			if look == "pressed" then
+				Theme.paint(fill, states.offPressed)
+				fill:Show()
+			else
+				fill:Hide()
+			end
+			for _, edge in ipairs(edges) do
+				Theme.paint(edge, look == "rest" and states.edge or states.edgeHover)
+			end
+		end
+	end
 	function toggle:SetChecked(value)
 		self.checked = value and true or false
-		if self.checked then
-			self.tick:Show()
-		else
-			self.tick:Hide()
-		end
+		paint(self.over and "hover" or "rest")
 		return self.checked
 	end
+	frame:SetScript("OnEnter", function()
+		toggle.over = true
+		paint("hover")
+	end)
+	frame:SetScript("OnLeave", function()
+		toggle.over = false
+		paint("rest")
+	end)
+	Theme.pressable(frame, label, function()
+		paint("pressed")
+	end, function(_, over)
+		toggle.over = over
+		paint(over and "hover" or "rest")
+	end)
 	frame:SetScript("OnClick", function()
 		onChange(toggle:SetChecked(not toggle.checked))
 	end)
 	toggle:SetChecked(checked)
 	return toggle
+end
+
+-- Client frames, only ever read (L4.3, shared with the guild tab L5.1) ----------------------
+--
+-- The 1.60 client taints a frame of its own on any HookScript, CreateTexture or field write
+-- (L4.1, L4.3), so the surfaces that sit beside a client frame (the character panel tab, the
+-- guild tab) only ask it questions: whether it shows, whether it has been laid out, how tall it
+-- is. Each answer goes through pcall: a client frame may refuse a question (a secret value).
+
+--- Whether `frame` answers true to `method` (IsShown, IsVisible); false for anything that is
+--- not a frame or cannot answer. Asked, never written.
+function Widgets.ask(frame, method)
+	if type(frame) ~= "table" or type(frame[method]) ~= "function" then
+		return false
+	end
+	local ok, answer = pcall(frame[method], frame)
+	return ok and answer == true
+end
+
+--- Whether a frame shows (its own flag).
+function Widgets.isShown(frame)
+	return Widgets.ask(frame, "IsShown")
+end
+
+--- Whether a frame is visible (it and every parent).
+function Widgets.isVisible(frame)
+	return Widgets.ask(frame, "IsVisible")
+end
+
+--- Whether the client has laid `frame` out (L4.3 fix round 2): GetLeft answers a number. A
+--- frame that is hidden up its chain or anchored to nothing answers nil, and a frame anchored
+--- to it has no position either.
+function Widgets.hasRect(frame)
+	if type(frame) ~= "table" or type(frame.GetLeft) ~= "function" then
+		return false
+	end
+	local ok, left = pcall(frame.GetLeft, frame)
+	return ok and type(left) == "number"
+end
+
+--- A client frame something of ours may anchor to: it shows and it has a rect.
+function Widgets.placed(frame)
+	return Widgets.isShown(frame) and Widgets.hasRect(frame)
+end
+
+--- The client global `name` when it is a table, through a guarded lookup; nil otherwise.
+function Widgets.clientFrame(name)
+	local ok, frame = pcall(function()
+		return _G[name]
+	end)
+	return ok and type(frame) == "table" and frame or nil
+end
+
+--- A frame's height, read, or nil where the client cannot say.
+function Widgets.frameHeight(frame)
+	if type(frame) ~= "table" or type(frame.GetHeight) ~= "function" then
+		return nil
+	end
+	local ok, height = pcall(frame.GetHeight, frame)
+	return ok and type(height) == "number" and height or nil
+end
+
+--- A frame's edge (`method`: "GetRight", "GetTop"), read, or nil where the client cannot say.
+function Widgets.frameEdge(frame, method)
+	if type(frame) ~= "table" or type(frame[method]) ~= "function" then
+		return nil
+	end
+	local ok, edge = pcall(frame[method], frame)
+	return ok and type(edge) == "number" and edge or nil
+end
+
+--- The highest of the client globals `<prefix>1..most` that shows with a rect, or nil.
+function Widgets.lastPlaced(prefix, most)
+	local found
+	for index = 1, most do
+		local frame = Widgets.clientFrame(prefix .. index)
+		if frame ~= nil and Widgets.placed(frame) then
+			found = frame
+		end
+	end
+	return found
+end
+
+--- An addon flyout beside a client frame: its TOPLEFT at the TOPRIGHT of `column` (a client
+--- column of tabs at the frame's right edge that shows with a rect; `offsetX` across, level
+--- with its top), else at `frame`'s own TOPRIGHT (`offsetX`, `offsetY`). It never covers the
+--- column. The flyout's own points only: nothing is set on either client frame.
+function Widgets.placeFlyout(flyout, frame, column, offsetX, offsetY)
+	flyout:ClearAllPoints()
+	if column ~= nil then
+		flyout:SetPoint("TOPLEFT", column, "TOPRIGHT", offsetX or 0, 0)
+	else
+		flyout:SetPoint("TOPLEFT", frame, "TOPRIGHT", offsetX or 0, offsetY or 0)
+	end
+	return flyout
+end
+
+--- The height of one line of `probe`'s font (L4.3 fix round 2, re-review a): `measure` sets
+--- `sample` on it (the flyout's own measurer), then GetStringHeight is read, rounded up, never
+--- under `floor`; `floor` where the client cannot say.
+function Widgets.measuredLine(probe, measure, sample, floor)
+	if type(probe) ~= "table" or type(probe.GetStringHeight) ~= "function" then
+		return floor
+	end
+	if type(measure) == "function" then
+		pcall(measure, sample)
+	end
+	local ok, height = pcall(probe.GetStringHeight, probe)
+	if not ok or type(height) ~= "number" then
+		return floor
+	end
+	-- A hair over a whole pixel is that pixel (12.0001 is 12), not the next one.
+	return math.max(floor, math.ceil(height - 0.01))
+end
+
+--- Runs `action` for a surface (`owner`: a table with `disabled`, `flyout`, `button`) so a
+--- failure never becomes a Lua error on every event: the surface turns itself off until
+--- /reload, hides what it drew and says so once in /fs diag (`failedNote`, "%s" the error).
+function Widgets.guarded(owner, failedNote, action, ...)
+	if owner.disabled then
+		return nil
+	end
+	local ok, result = pcall(action, ...)
+	if not ok then
+		owner.disabled = true
+		for _, key in ipairs({ "flyout", "button" }) do
+			local frame = owner[key]
+			if frame ~= nil then
+				pcall(frame.Hide, frame)
+			end
+		end
+		Theme.note(string.format(failedNote, tostring(result)))
+		return nil
+	end
+	return result
+end
+
+--- An edged button's hover hint (L4.3 fix round 3, item 3): `lines()` shown on the
+--- client's tooltip at the button's right after its own brighten, hidden after its own
+--- leave. On the addon's own button only.
+function Widgets.withHint(button, lines)
+	local enter, leave = button:GetScript("OnEnter"), button:GetScript("OnLeave")
+	button:SetScript("OnEnter", function(self)
+		if enter ~= nil then
+			enter(self)
+		end
+		Theme.showLines(self, lines(), "ANCHOR_RIGHT")
+	end)
+	button:SetScript("OnLeave", function(self)
+		if leave ~= nil then
+			leave(self)
+		end
+		Theme.hideTooltip()
+	end)
+	return button
+end
+
+--- The addon's own confirm frame (L5.1 ruling 4, never the client's StaticPopup): a panel
+--- `width` wide on `parent`, at the dialog strata, holding a wrapped line of text and two
+--- buttons, the confirm at the left and Cancel at the right. Hidden until Widgets.openConfirm.
+--- `name` (optional) names it for a /run probe.
+function Widgets.confirmFrame(parent, width, name, cancelLabel)
+	local S = Theme.SIZES
+	local frame = Widgets.panel(parent, width, S.padding * 2, name)
+	if type(frame.SetFrameStrata) == "function" then
+		frame:SetFrameStrata("DIALOG")
+	end
+	frame:EnableMouse(true)
+	local text = Widgets.label(frame, "", "body", "small")
+	text:SetPoint("TOPLEFT", frame, "TOPLEFT", S.padding, -S.padding)
+	text:SetWidth(width - S.padding * 2)
+	if type(text.SetWordWrap) == "function" then
+		text:SetWordWrap(true)
+	end
+	frame.foreverSixtyText = text
+	local half = math.floor((width - S.padding * 2 - S.gap) / 2)
+	local confirm = Widgets.button(frame, "", function()
+		local action = frame.foreverSixtyOnConfirm
+		frame:Hide()
+		if action ~= nil then
+			action()
+		end
+	end)
+	confirm:SetSize(half, S.buttonHeight)
+	local cancel = Widgets.button(frame, cancelLabel or "", function()
+		frame:Hide()
+	end)
+	cancel:SetSize(half, S.buttonHeight)
+	frame.foreverSixtyConfirm, frame.foreverSixtyCancel = confirm, cancel
+	frame:Hide()
+	return frame
+end
+
+--- Shows a confirm frame asking `text` (wrapped into `textHeight` px, measured by the caller;
+--- two rows when nil), its confirm button reading `confirmLabel` and running `onConfirm` once
+--- clicked. The frame hides on either button.
+function Widgets.openConfirm(frame, text, confirmLabel, onConfirm, textHeight)
+	local S = Theme.SIZES
+	local height = textHeight or 2 * S.rowHeight
+	local label = frame.foreverSixtyText
+	label:SetText(text)
+	label:SetHeight(height)
+	frame.foreverSixtyOnConfirm = onConfirm
+	local confirm, cancel = frame.foreverSixtyConfirm, frame.foreverSixtyCancel
+	confirm:SetText(confirmLabel)
+	confirm:ClearAllPoints()
+	confirm:SetPoint("TOPLEFT", label, "BOTTOMLEFT", 0, -S.gap * 2)
+	cancel:ClearAllPoints()
+	cancel:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -S.padding, -(S.padding + height + S.gap * 2))
+	frame:SetHeight(S.padding * 2 + height + S.gap * 2 + S.buttonHeight)
+	frame:Show()
+	return frame
 end
 
 ns.Widgets = Widgets

@@ -9,6 +9,7 @@
      after the build has an id, and to never let a failed sim take the save down with it. -->
 <script lang="ts">
   import { tick } from 'svelte';
+  import CopyForGame from '../CopyForGame.svelte';
   import { addonCopy } from '../../lib/addon/copy';
   import { plannerCopy } from '../../lib/planner/copy';
   import { plannerAddonCode, unsavedPlannerHref } from '../../lib/planner/current-character-planner';
@@ -62,14 +63,17 @@
    * goes stale at exactly that moment. A timed revert would need a cleared handle, a named
    * duration and a cleanup on destroy to say something less accurate.
    */
-  let copiedFrom = $state<'link' | 'addon' | 'unsaved' | 'text' | null>(null);
+  let copiedFrom = $state<'link' | 'unsaved' | 'text' | null>(null);
 
   // Derived, not computed on click: the button is disabled while there is nothing to
   // copy, and a $derived keeps that in step with every talent and gear edit for free.
   // talentIndex is null until the talent data has loaded (or has failed to); the addon
   // code is the empty string then, rather than a cast that would crash on that failure.
   // `plannerAddonCode` (Task 10) is the one derivation, shared with Planner.svelte's own
-  // current-character chip so the two "Copy addon code" surfaces can never disagree.
+  // current-character chip so the two addon-code surfaces can never disagree. Task L8.1:
+  // both of this panel's addon buttons are `CopyForGame`, which keeps its own 3 s
+  // "Copied" -- the exception to `copiedFrom` above, because its confirmation names the
+  // next step (/fs in game) rather than only the clipboard's contents.
   const addonCode = $derived(plannerAddonCode(store));
 
   // Same story for the confirm step's "unsaved link" alternative: path and query only, no
@@ -90,7 +94,7 @@
     return plannerCopy.shareTextSummary(store.raceRow.name, store.classRow.name, trees, store.level);
   });
 
-  async function copyToClipboard(text: string, source: 'link' | 'addon' | 'unsaved' | 'text'): Promise<void> {
+  async function copyToClipboard(text: string, source: 'link' | 'unsaved' | 'text'): Promise<void> {
     try {
       await navigator.clipboard.writeText(text);
       copiedFrom = source;
@@ -352,19 +356,11 @@
     >
       {plannerCopy.share}
     </button>
-    <button
-      type="button"
-      class={NEUTRAL_BUTTON}
-      data-testid="copy-addon-code"
-      disabled={addonCode === ''}
-      onclick={() => copyToClipboard(addonCode, 'addon')}
-    >
-      {copiedFrom === 'addon' ? addonCopy.copiedAddonCode : addonCopy.copyAddonCode}
-    </button>
+    <CopyForGame code={addonCode} testid="copy-addon-code" />
   </div>
   <p class="text-muted text-[13px]">{addonCopy.addonCodeHint}</p>
 
-  <!-- Rebuild spec §4.H: Share / Copy addon code / Copy as text read as three equally
+  <!-- Rebuild spec §4.H: Share / Copy for the game / Copy as text read as three equally
        weighted export options, so this sits in the same section rather than a separate
        panel. The computed string itself is visible (not just copied blind), same as the
        share link above. -->
@@ -427,15 +423,7 @@
         <button type="button" class={NEUTRAL_BUTTON} data-testid="share-confirm-cancel" onclick={cancelShare}>
           {plannerCopy.shareConfirmCancel}
         </button>
-        <button
-          type="button"
-          class={NEUTRAL_BUTTON}
-          disabled={addonCode === ''}
-          data-testid="share-confirm-copy-code"
-          onclick={() => void copyToClipboard(addonCode, 'addon')}
-        >
-          {copiedFrom === 'addon' ? addonCopy.copiedAddonCode : plannerCopy.shareConfirmCopyCode}
-        </button>
+        <CopyForGame code={addonCode} testid="share-confirm-copy-code" />
         <button
           type="button"
           class={NEUTRAL_BUTTON}

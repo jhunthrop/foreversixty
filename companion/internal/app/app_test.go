@@ -619,3 +619,41 @@ func TestANewFirstGameFolderWaitsForTheOpenReportAndThenMoves(t *testing.T) {
 		t.Fatalf("the tail is on %q, not the newly added folder's log %q", got, secondLog)
 	}
 }
+
+// TestTheStatusPageShowsWhenTheSiteSawTheExport is the tray line end to end: the outbox goes
+// up on a step, the fake acks it, and the snapshot carries the ack's time and the sim's fate.
+func TestTheStatusPageShowsWhenTheSiteSawTheExport(t *testing.T) {
+	h := newHarness(t)
+	seen := time.Date(2026, 12, 9, 14, 3, 0, 0, time.UTC)
+	h.srv.SetClock(func() time.Time { return seen })
+	sv := filepath.Join(h.game, "WTF", "Account", "ACCOUNT#1", "SavedVariables", "ForeverSixty.lua")
+	if err := os.WriteFile(sv, []byte(`ForeverSixtyDB = {
+		["characters"] = { ["Obnoxious-Normal"] = { ["name"] = "Obnoxious", ["ruleset"] = "normal",
+			["region"] = "us", ["export"] = "FS1:x" } },
+		["outbox"] = { ["format"] = 1,
+			["export"] = { ["character"] = "Obnoxious-Yell", ["code"] = "FS1:x", ["saved_at"] = "2026-12-09 14:02" },
+			["sim_request"] = { ["character"] = "Obnoxious-Yell", ["spec"] = "warrior-arms",
+				["requested_at"] = "2026-12-09 14:02", ["gear_code"] = "FS1:x" } } }`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if s := h.app.Snapshot(); s.AddonLine != "" || s.AddonSeenAt != nil {
+		t.Fatalf("a line before any ack: %+v", s)
+	}
+	if code, _ := h.call(http.MethodPost, h.url("/api/pair"),
+		map[string]string{"code": fakeapi.PairCode}); code != http.StatusOK {
+		t.Fatal("pairing failed")
+	}
+	h.app.Step(t.Context(), t0)
+
+	s := h.app.Snapshot()
+	if s.AddonSeenAt == nil || !s.AddonSeenAt.Equal(seen) || s.SimRequestState != addon.SimQueued {
+		t.Fatalf("snapshot = seen %v, sim %q", s.AddonSeenAt, s.SimRequestState)
+	}
+	if want := app.CopySeenBySite + " 14:03" + app.CopySeparator + app.CopySimQueued; s.AddonLine != want {
+		t.Errorf("line = %q, want %q", s.AddonLine, want)
+	}
+	_, body := h.call(http.MethodGet, h.url("/api/status"), nil)
+	if data := body["data"].(map[string]any); data["addon_line"] != s.AddonLine {
+		t.Errorf("the status JSON carries %v", data["addon_line"])
+	}
+}

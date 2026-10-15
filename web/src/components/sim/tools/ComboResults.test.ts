@@ -16,8 +16,10 @@ import { describe, expect, it } from 'vitest';
 import bulkResultJson from '../../../fixtures/sim/bulk-result.json';
 import itemsJson from '../../../fixtures/planner/items/warrior.json';
 import setsJson from '../../../fixtures/planner/sets.json';
+import talentsJson from '../../../fixtures/planner/talents/warrior.json';
+import { addonCopy } from '../../../lib/addon/copy';
 import { decodeFS1 } from '../../../lib/planner/fs1';
-import type { Item, ItemSet } from '../../../lib/planner/types';
+import type { Item, ItemSet, TalentFile } from '../../../lib/planner/types';
 import type { BulkResult } from '../../../lib/sim/bulk-types';
 import { ranksFromTalentsString } from '../../../lib/sim/character';
 import { canPlanCombo, comboRows } from '../../../lib/sim/combos';
@@ -220,5 +222,45 @@ describe('ComboResults: talents-mode gear-locked note (newcomer r4)', () => {
   it('does not show the note for gear mode (the fixture’s own default)', () => {
     const body = renderCombos();
     expect(body).not.toContain(poolQualityCopy.talentsGearLockedNote);
+  });
+});
+
+/**
+ * Task L8.1: "Copy to addon" (an FS1 character export the addon's build dialog refuses) is
+ * now the shared "Copy for the game" button, fed the winning set's FSB1 code. The code
+ * itself is pinned in build-code.test.ts and combos.test.ts; this proves the wiring: the
+ * button is there under its old test id with the new label, live once the talent file the
+ * store loaded is passed in, and disabled without it.
+ */
+describe('ComboResults: Copy for the game (task L8.1)', () => {
+  function renderWithTalents(talents: TalentFile | null): string {
+    const { body } = render(ComboResults, {
+      props: {
+        result,
+        items,
+        sets,
+        treeVersion: 'test-build',
+        partial: false,
+        onsave: async () => null,
+        talents,
+      },
+    });
+    return body;
+  }
+
+  function copyButton(body: string): string {
+    const match = /<button[^>]*data-testid="sim-copy-addon"[^>]*>[\s\S]*?<\/button>/.exec(body);
+    if (match === null) throw new Error('copy button not found');
+    return match[0];
+  }
+
+  it('reads "Copy for the game" and is live once the talent file is in hand', () => {
+    const button = copyButton(renderWithTalents(talentsJson as unknown as TalentFile));
+    expect(button).toContain(addonCopy.copyForGame);
+    expect(button).not.toMatch(/\sdisabled/);
+  });
+
+  it('is disabled while the talent file has not loaded', () => {
+    expect(copyButton(renderWithTalents(null))).toMatch(/\sdisabled/);
   });
 });

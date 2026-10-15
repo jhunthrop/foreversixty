@@ -414,6 +414,11 @@ export function createBulkStore(init: BulkStoreInit) {
     get items() {
       return items;
     },
+    /** The class's talent file, `null` until it loads or when it failed to. Read by the
+     *  results' "Copy for the game" for the tree layout its talent cells come from. */
+    get talentFile() {
+      return talentFile;
+    },
     get sets() {
       return sets;
     },

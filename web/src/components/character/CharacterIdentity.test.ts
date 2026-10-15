@@ -114,6 +114,22 @@ describe('CharacterIdentity', () => {
     expect(belowIndex).toBeGreaterThan(descriptorIndex);
   });
 
+  // L8.4 fix round 4 item 8: the profile tops the crest against the name block, so the owner's
+  // extra sync line does not move it; every other caller keeps it centred.
+  it('tops the portrait against the name block with align="start", and centres it by default', () => {
+    const block = (body: string): string[] =>
+      (/^<div class="([^"]*)"/.exec(body.replace(/<!--[^>]*-->/g, ''))?.[1] ?? '').split(' ');
+    const start = render(CharacterIdentity, {
+      props: { character: CHAR, size: 'lg', descriptor: 'none', align: 'start' },
+    }).body;
+    expect(block(start)).toContain('items-start');
+    expect(block(start)).not.toContain('items-center');
+    const centred = render(CharacterIdentity, {
+      props: { character: CHAR, size: 'lg', descriptor: 'none' },
+    }).body;
+    expect(block(centred)).toContain('items-center');
+  });
+
   it('renders nothing extra when `below` is omitted (every other caller)', () => {
     const { body } = render(CharacterIdentity, {
       props: { character: CHAR, size: 'md', descriptor: 'none' },

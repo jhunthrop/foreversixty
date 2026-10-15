@@ -558,6 +558,7 @@ const CHARACTER = {
         fought_at: '2026-12-09T22:10:00Z',
         report_id: 'fixture2abcd',
         fight_index: 3,
+        execution_score: 0.94,
       },
       // Punctuation at the end of the name: the slug it maps to is the one thing two
       // independent derivations of "encounter name to /rankings/<slug>" disagree about.
@@ -572,6 +573,7 @@ const CHARACTER = {
         fought_at: '2026-12-09T23:10:00Z',
         report_id: 'fixture2abcd',
         fight_index: 4,
+        execution_score: null,
       },
     ],
     history: [
@@ -586,6 +588,7 @@ const CHARACTER = {
         fought_at: '2026-12-09T22:10:00Z',
         report_id: 'fixture2abcd',
         fight_index: 3,
+        execution_score: 0.94,
       },
     ],
     builds_seen: [{ talent_split: '31/20/0', spec: 'Discipline', first_seen: '2026-12-09T22:10:00Z' }],
@@ -649,6 +652,9 @@ test('a character page shows bests, history and the builds they were seen in', a
   await expect(page.getByTestId('character')).toContainText('Hardcore US');
   await expect(page.getByTestId('character-best')).toContainText('Warden Kelthas');
   await expect(page.getByTestId('character-history')).toContainText('Discipline');
+  // L8.4 fix round 2 item 8: the rows carry execution_score, as the API always sends it.
+  await expect(page.getByTestId('character-best-execution').first()).toHaveText('94%');
+  await expect(page.getByTestId('character')).not.toContainText('NaN');
   // A split as text, not a planner link: the log does not record the order points were spent in.
   await expect(page.getByTestId('character-builds')).toContainText('31/20/0');
   await expect(page.getByTestId('character-builds').getByRole('link')).toHaveCount(0);

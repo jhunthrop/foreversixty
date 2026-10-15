@@ -19,11 +19,10 @@ export const plannerCopy = {
   shareFieldSim: 'A simmed DPS result for the card',
   shareConfirmProceed: 'Share anyway',
   shareConfirmCancel: 'Cancel',
-  shareConfirmCopyCode: 'Copy addon code instead',
   shareConfirmCopyUnsaved: 'Copy an unsaved link instead',
   copiedUnsavedLink: 'Copied',
   /** Rebuild spec §4.H, review finding 8: a plain-text summary for someone with no account
-   *  and no addon, beside "Copy addon code". Always computed from real data, never a
+   *  and no addon, beside "Copy for the game". Always computed from real data, never a
    *  placeholder-filled template. */
   copyAsText: 'Copy as text',
   copiedText: 'Copied',

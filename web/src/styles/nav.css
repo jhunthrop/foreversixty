@@ -453,6 +453,10 @@
   .csel-pre .csel-badge {
     visibility: hidden;
   }
+  /* The signed-out placeholder's chevron shows, so "Sign in" matches the hydrated button. */
+  .csel-pre .csel-pre-out .csel-pre-out-chev {
+    visibility: visible;
+  }
   .csel-pre .csel-pre-crest {
     background-image: var(--pointer-crest, none);
   }
@@ -1072,5 +1076,77 @@
 @media (prefers-reduced-motion: no-preference) {
   .csel-chev {
     transition: transform 120ms ease-out;
+  }
+}
+
+/* ---------------------------------------------------- compact character lookup
+   HeaderSearch.astro (Task L8.2 fix round 2 item 7): from 1024 a 44px magnifier in the bar,
+   the "/" hint beside it from 1280, opening a small panel under the bar; below 1024 the same
+   small Search is the Menu's first row. The bar keeps its one height either way. */
+@layer components {
+  .site-search {
+    position: relative;
+    display: flex;
+  }
+  .site-search-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 10px;
+    border: 1px solid var(--color-line-warm);
+    border-radius: 4px;
+    background: none;
+    color: var(--color-gold);
+  }
+  .site-search-button:hover,
+  .site-search-button[aria-expanded='true'] {
+    border-color: var(--color-gold);
+  }
+  .site-search-kbd {
+    padding: 0 5px;
+    border: 1px solid var(--color-line-warm-strong);
+    border-radius: 3px;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .site-search-panel {
+    position: absolute;
+    z-index: 50;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 360px;
+    padding: 12px;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    background: var(--color-raised);
+    box-shadow: 0 10px 28px rgb(0 0 0 / 0.6);
+  }
+  .site-search-panel[hidden] {
+    display: none;
+  }
+  .site-menu-search {
+    display: none;
+  }
+  @media (max-width: 1279px) {
+    .site-search-kbd {
+      display: none;
+    }
+    .site-search-button {
+      padding: 0;
+    }
+  }
+  @media (max-width: 1023px) {
+    .site-search {
+      display: none;
+    }
+    .site-header[data-menu-open] .site-menu-search {
+      display: block;
+      margin-bottom: 12px;
+    }
   }
 }

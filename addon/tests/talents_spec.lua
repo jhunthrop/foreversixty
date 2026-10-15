@@ -257,9 +257,9 @@ describe("Talents", function()
 	-- Round-2 ruling 4's fix: the tracker, the toast and the Talents
 	-- page all print Data.lua's own zero-based tier plus one.
 	describe("Talents.displayTier", function()
-		it("adds one to the raw, zero-based Data.lua tier", function()
-			assert.are.equal(1, require("Talents").displayTier(0))
-			assert.are.equal(8, require("Talents").displayTier(7))
+		it("shows Data.lua's own one-based tier unchanged", function()
+			assert.are.equal(1, require("Talents").displayTier(1))
+			assert.are.equal(7, require("Talents").displayTier(7))
 		end)
 
 		it("treats a missing tier as the first row rather than erroring", function()

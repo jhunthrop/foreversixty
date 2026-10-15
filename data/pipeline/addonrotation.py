@@ -377,3 +377,35 @@ def build_rotations(
     apl_dir = curated_dir / "apl"
     specs = sorted(path.stem for path in apl_dir.glob("*.json")) if apl_dir.exists() else []
     return {spec: build_rotation(spec, curated_dir, spellranks, icon_of) for spec in specs}
+
+
+def build_ability_levels(
+    root: Path, build: str, curated_dir: Path = Path("curated")
+) -> dict[int, int]:
+    """Every rotation line's spell id -> the level its ability's FIRST rank
+    is learned (Data.lua's `abilityLevels`, contract 1): the rotation
+    region's "at level N". Keyed by each id a band actually carries, so the
+    addon looks up the very id the rotation line hands it; every rank of
+    one ability maps to the same level (Execute's 5308 through 20662 all
+    say 24). The first rank is `_family_ranks`' own first entry, level-0
+    alternate ids already set aside there, so a family's level is the one
+    `_resolve` uses to decide when the ability joins a band."""
+    spellranks_path = root / build / "spellranks.json"
+    if not spellranks_path.exists():
+        raise AddonRotationError(f"missing {spellranks_path}")
+    spellranks = json.loads(spellranks_path.read_text(encoding="utf-8"))
+    apl_dir = curated_dir / "apl"
+    specs = sorted(path.stem for path in apl_dir.glob("*.json")) if apl_dir.exists() else []
+    levels: dict[int, int] = {}
+    for spec in specs:
+        families = _family_ranks(spellranks, _class_slug(spec))
+        id_to_family = _id_to_family(families)
+        for band in build_rotation(spec, curated_dir, spellranks):
+            for line in band.lines:
+                level = families[id_to_family[line.spell_id]][0][0]
+                if levels.setdefault(line.spell_id, level) != level:
+                    raise AddonRotationError(
+                        f"spell {line.spell_id} ({line.name}) is learned at "
+                        f"{levels[line.spell_id]} in one spec and {level} in {spec}"
+                    )
+    return dict(sorted(levels.items()))

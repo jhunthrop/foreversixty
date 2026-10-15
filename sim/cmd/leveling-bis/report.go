@@ -64,6 +64,12 @@ type slotRow struct {
 	ItemName   string `json:"item_name,omitempty"`
 	Source     string `json:"source,omitempty"`
 	SourceKind string `json:"source_kind,omitempty"`
+	// Chance is the pick's drop chance at Source as a fraction (0.14 is
+	// 14 percent): loot.json's own percent (itemSource.Chance) / 100, for
+	// the addon's tooltip (task L1.2, contract 1 in docs/contracts/
+	// addon-v2.md). Omitted (nil) when the pick is not a drop, or is a
+	// drop loot.json states no rate for - dropChance's own doc.
+	Chance *float64 `json:"chance,omitempty"`
 	// Score is score()'s own stat-weight estimate (bandReport.ScoreUnit,
 	// reference-stat points) - published ONLY for a pick score() itself
 	// decided. Omitted (0) whenever SimDPS below is set: this lane's
@@ -168,6 +174,14 @@ type slotRow struct {
 	// pick can score higher yet measure worse, and must not publish a
 	// dps_delta that outranks a tie or the pick it lost to).
 	Alternatives []alternativeRow `json:"alternatives,omitempty"`
+	// RunnersUp is the first runnersUpLimit Alternatives (above), in
+	// the same order, cut down to what the addon's tooltip names
+	// ("Also: X, Y"): task L1.2, contract 1 in docs/contracts/
+	// addon-v2.md. Alternatives is already this slot's next candidates by
+	// score() with the one swap-simmed runner-up at its measured delta,
+	// so the runners-up are the same two a reader of this page sees
+	// first. Omitted when the slot has no alternative at all.
+	RunnersUp []runnerUpRow `json:"runners_up,omitempty"`
 	// EmptyReason explains a slot with no ItemID at all beyond "nothing
 	// eligible/sourced existed" (band.go's own NoSourceCount already
 	// covers that case): "no_dps_value" means at least one candidate WAS
@@ -452,6 +466,46 @@ const alternativesLimit = 3
 // while still capping the pathological case.
 const mdTieDisplayLimit = 5
 
+// runnersUpLimit is how many runners-up a row publishes for the addon
+// (contract 1 in docs/contracts/addon-v2.md: "up to two").
+const runnersUpLimit = 2
+
+// runnerUpRow is one slotRow.RunnersUp entry: the keys data/pipeline/
+// addonbis.py reads into an AddonBisAlternative, nothing more.
+type runnerUpRow struct {
+	ItemID     int    `json:"item_id"`
+	SourceKind string `json:"source_kind"`
+	Source     string `json:"source"`
+}
+
+// runnersUp is slotRow.RunnersUp's own builder: the first runnersUpLimit
+// alternatives, in their published order.
+func runnersUp(alternatives []alternativeRow) []runnerUpRow {
+	var out []runnerUpRow
+	for _, a := range alternatives {
+		if len(out) == runnersUpLimit {
+			break
+		}
+		out = append(out, runnerUpRow{ItemID: a.ItemID, SourceKind: a.SourceKind, Source: a.Source})
+	}
+	return out
+}
+
+// dropChance is slotRow.Chance's own value for a pick's source: the
+// loot table's percent (itemSource.Chance, 0-100) as a fraction, rounded
+// to the six decimals a four-decimal percent needs so 51.3302 publishes
+// as 0.513302 rather than its float-division noise. nil when the source
+// states no chance: every quest, vendor, crafted, rep and pvp source,
+// and a drop whose loot table row carries no rate (itemSource.Chance's
+// own doc: 0 means "none stated", never a real 0%).
+func dropChance(src itemSource) *float64 {
+	if src.Chance <= 0 {
+		return nil
+	}
+	fraction := math.Round(src.Chance*1e4) / 1e6
+	return &fraction
+}
+
 // alternativeRow is one candidate slotRow.Alternatives names beyond
 // the slot's own pick.
 type alternativeRow struct {
@@ -655,7 +709,9 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		// as a real, measured "beats the pick" claim - capped at 0. A
 		// negative delta is left alone; only the positive/untested
 		// direction is the tenet-8 problem this cap exists for.
-		dpsDelta := scoreDelta * referenceDPSPerPoint
+		// Rounded like a stored score (roundScore), so equal deltas tie in
+		// betterAlternative and the final sort and fall to the item id.
+		dpsDelta := roundScore(scoreDelta * referenceDPSPerPoint)
 		if dpsDelta > 0 {
 			dpsDelta = 0
 		}
@@ -777,7 +833,7 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		// at-0 estimate, Verified false) rather than overwriting a
 		// noise-sized number with false confidence.
 		if sw.Significant() {
-			measured := swapMeasuredDelta(*sw)
+			measured := roundScore(swapMeasuredDelta(*sw))
 			for i := range out {
 				if out[i].ItemID == pk.RunnerUp.ID {
 					out[i].DPSDelta = measured
@@ -1613,6 +1669,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 				swForSlot = &s
 			}
 			row.Alternatives = buildAlternatives(pk, slot, bySlot[slot], picks, referenceDPSPerPoint, swForSlot, setDPS)
+			row.RunnersUp = runnersUp(row.Alternatives)
 			// This lane's brief, item 3: reconcile row.Ties against
 			// row.Alternatives' own, possibly sim-measured delta for the
 			// same item id - reconcileTies' own doc, above.
@@ -1628,6 +1685,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			if pk.Item.HasSource {
 				row.Source = pk.Item.Source.Label
 				row.SourceKind = pk.Item.Source.Kind
+				row.Chance = dropChance(pk.Item.Source)
 			}
 			var realSimPromotion bool
 			switch {

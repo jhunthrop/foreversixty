@@ -242,7 +242,7 @@ export function collapsedComboCount(result: BulkResult): number {
  * `item_id: 0` is never a real item (simdb has no id 0).
  *
  * Exported because rule 5 says the emptied slot must read as emptied *everywhere* a player
- * can see it -- the chips, the "By slot" panel, the addon string and the planner link --
+ * can see it -- the chips, the "By slot" panel, the game code and the planner link --
  * and a second, inline copy of this predicate in a component is how the exported paths came
  * to miss it (final whole-branch review, Important 3).
  */
@@ -254,7 +254,7 @@ export function isEmptiedOffHand(sub: Substitution): boolean {
  * One combination's substitutions written over a base gear list.
  *
  * The rule-5 sentinel REMOVES its slot rather than writing `item_id: 0` over it: this list
- * is what `addon-export.ts` turns into a paste-into-the-game string and what
+ * is what `buildCodeFor` (addon/build-code.ts) turns into a game code and what
  * `codeForCharacterSpec` encodes into a planner link, and neither the addon grammar nor
  * FS1 defines 0 as "empty" -- a decoder reads `off_hand=0` as an item that does not exist
  * (final whole-branch review, Important 1).
@@ -296,6 +296,17 @@ export function winningGear(result: BulkResult): GearSlot[] {
   return leader === undefined
     ? result.request.character.gear.map((slot) => ({ ...slot }))
     : gearForCombo(result.request.character.gear, leader);
+}
+
+/**
+ * The talents the leader ran with: a talent-compare leader's own `talents` substitution,
+ * otherwise the base character's. `winningGear`'s partner, so "Copy for the game" on a
+ * talents run copies the build that won rather than the one the player came in with --
+ * the same substitution `planItHref` already rides onto its own link.
+ */
+export function winningTalents(result: BulkResult): string {
+  const talents = result.combos[0]?.substitutions.find((sub) => sub.kind === 'talents')?.talents;
+  return talents ?? result.request.character.talents;
 }
 
 /**

@@ -1,21 +1,40 @@
 -- addon/tests/toc_spec.lua
 -- The TOC's order is the load order, and the load order is the dependency
--- order: Theme before Widgets, Widgets before the views, Tracker and
--- Minimap before Window, Options last. A file added without a TOC line
+-- order: Theme before Widgets, Widgets before Cards, the data modules
+-- before the surfaces that read them, Options last. A file added without a TOC line
 -- simply never loads in the game, which no other spec here would catch --
 -- every spec reaches its module through require, not through the TOC.
 describe("the TOC", function()
 	local EXPECTED = {
-		"Locale.lua", "Data.lua", "Compat.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
+		"Locale.lua", "Data.lua", "Compat.lua", "Rules.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
 		"Theme.lua", "Widgets.lua", "Cards.lua", "Export.lua", "Follow.lua", "Gear.lua",
-		"Rotation.lua",
-		"Ratings.lua", "Tooltip.lua",
-		"TalentGlow.lua",
-		"views/ExportView.lua", "views/FollowView.lua",
-		"views/GearView.lua", "views/GuildView.lua", "views/SettingsView.lua",
-		-- After Tracker: the Overview reads Tracker.model, and in game a module
-		-- that is not loaded yet is simply nil.
-		"Tracker.lua", "views/OverviewView.lua", "Minimap.lua", "Window.lua", "Toast.lua",
+		"Progress.lua", "Rotation.lua",
+		-- Comms reads Progress, Score, Gear and Theme, so it loads after Score.
+		"Score.lua", "Comms.lua", "Inspect.lua",
+		-- The loot council helper (L5.3): reads Comms, Gear, Progress and the inbox; the group panel shows it.
+		"LootCouncil.lua", "surfaces/ItemTooltip.lua",
+		-- The player tooltip and the chat badges (L4.4): read Score and Comms.seen.
+		"surfaces/PlayerTooltip.lua", "surfaces/ChatBadges.lua",
+		"TalentGlow.lua", "Minimap.lua",
+		-- The surfaces (spec section 7): the chip replaces the tracker and the toast;
+		-- the talent marks draw TalentGlow's ring and read the chip's level.
+		"surfaces/Chip.lua", "surfaces/TalentMarks.lua",
+		-- The paper-doll and bag marks (L4.1): read the chip's list and the tooltip's Next line.
+		"surfaces/SlotMarks.lua",
+		-- The quest reward, roll and dungeon marks (L4.2): read the tooltip's own verdict.
+		"surfaces/RewardMarks.lua",
+		-- The build dialog (L3.4): built on its first open; Options opens it.
+		"surfaces/BuildDialog.lua",
+		-- The Settings page (L3.5): registered at login; Options opens it.
+		"surfaces/Settings.lua",
+		-- The character-panel tab (L4.3): reads the tooltip's Next lines, the rotation, the
+		-- build dialog's split and opens it; Options refreshes it.
+		"surfaces/PanelTab.lua",
+		-- The guild tab (L5.1): reads Score, Comms.seen and the inbox; Options refreshes it.
+		"surfaces/GuildTab.lua",
+		-- The group panel (L5.2): reads Inspect, Score, Comms.seen and the chip's ready-check
+		-- hook; Options refreshes it.
+		"surfaces/GroupPanel.lua",
 		-- The measurement recorder: Options routes /fs record to it.
 		"RecorderBuffer.lua", "Recorder.lua", "Options.lua",
 	}
@@ -69,7 +88,7 @@ describe("the TOC", function()
 
 	-- The character header's circular ringed class crest (design section
 	-- 2 / section 4.5.1, round-2 owner ruling): one TGA per class, plus
-	-- the one ring texture Window.lua tints per class at runtime.
+	-- the one ring texture tinted per class at runtime.
 	it("ships every class crest and the ring texture inside the packaged folder", function()
 		local CLASSES = {
 			"warrior", "paladin", "hunter", "rogue", "priest", "shaman", "mage", "warlock", "druid",

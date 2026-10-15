@@ -7,6 +7,7 @@
 -- shape addonlua.py renders into Data.lua.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
+local L = require("Locale")
 
 local function line(spellId, name, condition)
 	return { spellId = spellId, name = name, condition = condition or "" }
@@ -148,5 +149,170 @@ describe("Rotation", function()
 			Rotation.markLearned(nil)
 			assert.are.same({}, Rotation.recentlyLearned)
 		end)
+	end)
+
+	-- L4.3 ruling 3: the character-panel tab's rotation region prints each line's condition in
+	-- plain words (parentheticals stripped, cut at the first sentence end, at most two lines of
+	-- the panel's width as the panel measures it).
+	describe("plainCondition", function()
+		--- One unit per character: the width the specs measure lines in.
+		local function measure(text)
+			return #text
+		end
+
+		it("strips parentheticals and cuts at the first sentence end", function()
+			assert.are.equal("Arcane Shot as the last filler, only when mana is above a 25% reserve.",
+				Rotation.plainCondition("Arcane Shot as the last filler, only when mana is above a 25% reserve "
+					.. "(Multi-Shot and Serpent Sting are the shots worth saving for). It is instant."))
+		end)
+
+		it("strips a nested parenthetical whole", function()
+			assert.are.equal("Mongoose Bite after a dodge.",
+				Rotation.plainCondition("Mongoose Bite after a dodge (Defensive State (spell 5302) opens it)."))
+		end)
+
+		it("strips an aside set off by a double dash, and keeps a clause after a colon, often the rule itself", function()
+			assert.are.equal("Serpent Sting kept up whenever it is about to fall off.",
+				Rotation.plainCondition("Serpent Sting kept up whenever it is about to fall off -- the cited "
+					.. "guide's own rotation step, not skipped."))
+			assert.are.equal("Rend kept up while the target lives.",
+				Rotation.plainCondition("Rend kept up -- an aside -- while the target lives."))
+			assert.are.equal("Flash Heal is the dear one: only for a tank that is genuinely low.",
+				Rotation.plainCondition("Flash Heal is the dear one: only for a tank that is genuinely low. Not more."))
+		end)
+
+		it("keeps a decimal point, and ends a condition that has no end of its own", function()
+			assert.are.equal("Slam inside the 1.5 second swing window.",
+				Rotation.plainCondition("Slam inside the 1.5 second swing window"))
+		end)
+
+		it("answers the line count it wraps to at the measured width", function()
+			local text, lines = Rotation.plainCondition("Aimed Shot on cooldown.", measure, 40)
+			assert.are.equal("Aimed Shot on cooldown.", text)
+			assert.are.equal(1, lines)
+			text, lines = Rotation.plainCondition("Aimed Shot on cooldown, timed so its cast does not clip the next "
+				.. "auto shot.", measure, 40)
+			assert.are.equal("Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.", text)
+			assert.are.equal(2, lines)
+		end)
+
+		it("never runs past two lines: the second is cut on a word with an ellipsis", function()
+			local long = "Heroic Strike only when rage is above sixty and Bloodthirst and Whirlwind are both on "
+				.. "cooldown for at least a full global."
+			local text, lines = Rotation.plainCondition(long, measure, 30)
+			assert.are.equal(2, lines)
+			assert.are.equal(L.tooltipNamePending, text:sub(-#L.tooltipNamePending))
+			-- Wrapped again at the same width, the cut text still takes two lines at most.
+			local again = select(2, Rotation.plainCondition(text, measure, 30))
+			assert.is_true(again <= 2)
+		end)
+
+		-- L4.3 fix round 3, item 2: the cut prefers a clause boundary in the last 40% of the second
+		-- line, and never leaves a figure without the word it measures.
+		it("cuts at a clause boundary when one lies in the last 40% of the second line", function()
+			local text, lines = Rotation.plainCondition("Slam when the swing timer resets and rage is high, or when "
+				.. "Whirlwind is ready soon.", measure, 30)
+			assert.are.equal(2, lines)
+			assert.are.equal("Slam when the swing timer resets and rage is high" .. L.tooltipNamePending, text)
+		end)
+
+		it("cuts on a word, never ending on a connector, when no clause boundary lies in the last 40%", function()
+			local text = Rotation.plainCondition("Slam when the swing timer resets, and only while rage is above "
+				.. "forty, never when Whirlwind is ready.", measure, 30)
+			assert.are.equal("Slam when the swing timer resets, and only while rage" .. L.tooltipNamePending, text)
+		end)
+
+		it("goes back to the last clause boundary rather than cut a figure from its word", function()
+			local text = Rotation.plainCondition("Slam when the swing timer resets and rage is above 40 rage, never "
+				.. "lower.", measure, 30)
+			assert.are.equal("Slam when the swing timer resets" .. L.tooltipNamePending, text)
+		end)
+
+		-- L3.7 item 27 (Tranquility "...for 10..."): with no clause boundary anywhere to go back
+		-- to, a cut never lands just after a figure, nor on the word that leads into it.
+		it("does not end on a figure or the word before it when the line has no clause boundary", function()
+			local text = Rotation.plainCondition("Use it when the party is hurt and the heal lands for 10 and sits on "
+				.. "a long cooldown after that.", measure, 30)
+			assert.are.equal("Use it when the party is hurt and the heal lands" .. L.tooltipNamePending, text)
+			assert.is_nil(text:find("for 10", 1, true))
+		end)
+
+		it("answers the plain words whole, with no line count, when there is nothing to measure with", function()
+			local text, lines = Rotation.plainCondition("Aimed Shot on cooldown (when it is up).")
+			assert.are.equal("Aimed Shot on cooldown.", text)
+			assert.is_nil(lines)
+		end)
+
+		it("answers nothing for no condition", function()
+			assert.is_nil(Rotation.plainCondition(nil))
+			assert.is_nil(Rotation.plainCondition(""))
+			assert.is_nil(Rotation.plainCondition("   "))
+		end)
+	end)
+
+	-- L4.3 ruling 3: the level an ability is first learned at, from Data.abilityLevels
+	-- (contract 1; every rank of an ability maps to its first rank's level).
+	describe("learnedAt", function()
+		it("reads Data.abilityLevels by the line's own spell id", function()
+			local data = { abilityLevels = { [5308] = 24, [20662] = 24, [2687] = 10 } }
+			assert.are.equal(24, Rotation.learnedAt(5308, data))
+			assert.are.equal(24, Rotation.learnedAt(20662, data))
+			assert.are.equal(10, Rotation.learnedAt(2687, data))
+		end)
+
+		it("answers nil for a spell the data has no level for, or data without the table", function()
+			assert.is_nil(Rotation.learnedAt(12345, { abilityLevels = {} }))
+			assert.is_nil(Rotation.learnedAt(5308, {}))
+			assert.is_nil(Rotation.learnedAt(nil, { abilityLevels = { [5308] = 24 } }))
+		end)
+
+		it("reads the shipped data: Execute at 24 in every rank", function()
+			local data = require("Data")
+			assert.are.equal(24, Rotation.learnedAt(5308, data))
+			assert.are.equal(24, Rotation.learnedAt(20662, data))
+		end)
+	end)
+
+	-- L4.3 fix round 1, item 4: the next band's abilities the character has not learned yet.
+	describe("upcoming", function()
+		local data = {
+			classes = DATA.classes, rotations = DATA.rotations,
+			abilityLevels = { [2687] = 10, [12328] = 30, [23881] = 40, [1680] = 36, [1608] = 8 },
+		}
+
+		local function names(found)
+			local list = {}
+			for index, entry in ipairs(found) do
+				list[index] = entry.line.name .. "@" .. entry.at
+			end
+			return list
+		end
+
+		it("lists the next rung's lines not learned yet and not in the band read now, in order, at most the limit", function()
+			assert.are.same({ "Death Wish@30", "Bloodthirst@40" }, names(Rotation.upcoming(data, BUILD, RANKS, 25, 2)))
+			assert.are.same({ "Death Wish@30" }, names(Rotation.upcoming(data, BUILD, RANKS, 25, 1)))
+			-- Death Wish learned by 32: it is the trainer's news, not this list's.
+			assert.are.same({ "Bloodthirst@40", "Whirlwind@36" }, names(Rotation.upcoming(data, BUILD, RANKS, 32, 2)))
+		end)
+
+		it("is empty at the top rung, with no build, and with no level", function()
+			assert.are.same({}, Rotation.upcoming(data, BUILD, RANKS, 40, 2))
+			assert.are.same({}, Rotation.upcoming(data, nil, RANKS, 25, 2))
+			assert.are.same({}, Rotation.upcoming(data, BUILD, RANKS, nil, 2))
+		end)
+	end)
+end)
+
+-- L3.7 pre-item (round A review): a second line whose only word that fits is a figure keeps that
+-- one word rather than cutting down to none.
+describe("Rotation.cutCount with a figure first", function()
+	local Rotation = require("Rotation")
+
+	it("keeps one word when the only word that fits is a figure at index 1", function()
+		local measure = function(text)
+			return #text
+		end
+		-- "25%" fits, "25% reserve" does not.
+		assert.are.equal(1, Rotation.cutCount({ "25%", "reserve", "is", "kept" }, "x", measure, 5))
 	end)
 end)

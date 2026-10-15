@@ -1,0 +1,41 @@
+{
+  "sources": [
+    {
+      "label": "Wowhead Classic, Molten Core (fire resistance for the raid; every boss is immune to fire)",
+      "url": "https://www.wowhead.com/classic/zone=2717/molten-core",
+      "kind": "community"
+    },
+    {
+      "label": "Wowhead Classic, Onyxia's Lair",
+      "url": "https://www.wowhead.com/classic/zone=2159/onyxias-lair",
+      "kind": "community"
+    },
+    {
+      "label": "Wowhead Classic, Blackwing Lair",
+      "url": "https://www.wowhead.com/classic/zone=2677/blackwing-lair",
+      "kind": "community"
+    }
+  ],
+  "notes": "Per raid boss npc id: the raid buffs every player should carry, the debuffs the boss should wear, and the school the raid stacks resistance against (null for none). The addon's ready check lists who lacks what; it matches auras by these spell ids and shows the client's own spell names. Buffs: Battle Shout 11551, Mark of the Wild 9885, Arcane Intellect 10157, Power Word: Fortitude 10938, Blessing of Kings 20217. Debuffs: Sunder Armor 11597, Curse of Recklessness 11717, Curse of the Elements 1311680 (Forever's own id at its top rank; classic's 11722 is not in this build's spellranks), Faerie Fire 9907. Curse of Shadow (classic 17937) is left out: this build has no Curse of Shadow spell family for a warlock to learn. pipeline/encounters.py checks every npc id against the build's loot.json raid bosses and every spell id against spellranks.json.",
+  "bosses": [
+    {"npc_id": 12118, "name": "Lucifron", "instance": "Molten Core", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": "fire"},
+    {"npc_id": 11982, "name": "Magmadar", "instance": "Molten Core", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": "fire"},
+    {"npc_id": 12259, "name": "Gehennas", "instance": "Molten Core", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": "fire"},
+    {"npc_id": 12057, "name": "Garr", "instance": "Molten Core", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": "fire"},
+    {"npc_id": 12056, "name": "Baron Geddon", "instance": "Molten Core", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": "fire"},
+    {"npc_id": 12264, "name": "Shazzrah", "instance": "Molten Core", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": "fire"},
+    {"npc_id": 12098, "name": "Sulfuron Harbinger", "instance": "Molten Core", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": "fire"},
+    {"npc_id": 11988, "name": "Golemagg the Incinerator", "instance": "Molten Core", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": "fire"},
+    {"npc_id": 12018, "name": "Majordomo Executus", "instance": "Molten Core", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": "fire"},
+    {"npc_id": 11502, "name": "Ragnaros", "instance": "Molten Core", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": "fire"},
+    {"npc_id": 10184, "name": "Onyxia", "instance": "Onyxia's Lair", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": null},
+    {"npc_id": 12435, "name": "Razorgore the Untamed", "instance": "Blackwing Lair", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": null},
+    {"npc_id": 13020, "name": "Vaelastrasz the Corrupt", "instance": "Blackwing Lair", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": null},
+    {"npc_id": 12017, "name": "Broodlord Lashlayer", "instance": "Blackwing Lair", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": null},
+    {"npc_id": 11983, "name": "Firemaw", "instance": "Blackwing Lair", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": null},
+    {"npc_id": 14601, "name": "Ebonroc", "instance": "Blackwing Lair", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": null},
+    {"npc_id": 11981, "name": "Flamegor", "instance": "Blackwing Lair", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": null},
+    {"npc_id": 14020, "name": "Chromaggus", "instance": "Blackwing Lair", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": null},
+    {"npc_id": 11583, "name": "Nefarian", "instance": "Blackwing Lair", "buffs": [11551, 9885, 10157, 10938, 20217], "debuffs": [11597, 11717, 1311680, 9907], "resist": null}
+  ]
+}

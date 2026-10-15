@@ -79,8 +79,52 @@ def _source_kind_code(source_kind: str) -> str:
     return code
 
 
+#: The field separator inside a packed BiS pick string (_bis_pick_packed).
+BIS_FIELD_SEPARATOR = "|"
+
+
+def _bis_field(value: str) -> str:
+    if BIS_FIELD_SEPARATOR in value:
+        raise AddonBisError(
+            f"{value!r} contains the BiS field separator {BIS_FIELD_SEPARATOR!r}"
+        )
+    return value
+
+
+def _bis_pick_packed(item) -> str:
+    """One pick as ONE string, `|`-joined in the order
+    `item_id|kind|source|chance|alt1_id|alt1_kind|alt1_source|alt2_id|
+    alt2_kind|alt2_source` (contract 1's "physical encoding" note in
+    docs/contracts/addon-v2.md). A string per pick instead of a table plus
+    a table per alternative is what keeps Data.lua's loaded heap under the
+    addon's 2 MB idle budget; Gear.pick decodes it back into the logical
+    table. `kind` is the single-letter SOURCE_KIND_CODES code, `chance` a
+    plain number, and a missing field is empty, so the positions never
+    shift; trailing empty fields are trimmed (Gear.decodePick reads a
+    missing field as empty)."""
+    fields = [
+        str(item.item_id),
+        _source_kind_code(item.source_kind),
+        _bis_field(item.source),
+        _number(item.chance) if item.chance is not None else "",
+    ]
+    for alternative in item.alternatives:
+        fields += [
+            str(alternative.item_id),
+            _source_kind_code(alternative.source_kind),
+            _bis_field(alternative.source),
+        ]
+    while fields[-1] == "":
+        fields.pop()
+    return BIS_FIELD_SEPARATOR.join(fields)
+
+
 def _bis_lua(bis: dict) -> list[str]:
-    """`bis[spec][band][faction][slot] = { itemId, sourceKindCode[, source] }`
+    """`bis[spec][band][faction][slot] = "itemId|sourceKindCode|source|chance|..."`,
+    one packed string per pick (_bis_pick_packed's own doc). Until task
+    L1.2's fix round 2 a pick was the positional table `{ itemId,
+    sourceKindCode[, source] }`; the size reasoning below was written for
+    that table and holds for the packed string too.
     -- ids only (addonbis.py's own load-bearing decision) and positional
     rather than named fields, and faction/slot as bare Lua identifiers
     rather than quoted keys, because this table is the addition the lane
@@ -98,12 +142,8 @@ def _bis_lua(bis: dict) -> list[str]:
             for faction in sorted(band.factions):
                 lines.append(f"\t\t\t\t{faction} = {{")
                 for slot in sorted(band.factions[faction]):
-                    item = band.factions[faction][slot]
-                    code = _source_kind_code(item.source_kind)
-                    fields = f"{item.item_id}, {_quote(code)}"
-                    if item.source:
-                        fields += f", {_quote(item.source)}"
-                    lines.append(f"\t\t\t\t\t{slot} = {{ {fields} }},")
+                    packed = _bis_pick_packed(band.factions[faction][slot])
+                    lines.append(f"\t\t\t\t\t{slot} = {_quote(packed)},")
                 lines.append("\t\t\t\t},")
             lines.append("\t\t\t},")
         lines.append("\t\t},")
@@ -153,6 +193,99 @@ def _bis_new_lua(bis: dict) -> list[str]:
     return lines
 
 
+def _bis_items_lua(bis_names: dict, bis_dps: dict) -> list[str]:
+    """`bisNames[itemId] = "name"` and `bisDps[itemId] = dps` (task L1.4):
+    one entry per distinct pick or alternative id, so a name is stored once
+    however many picks share it. Both are left out entirely when empty."""
+    lines: list[str] = []
+    if bis_names:
+        lines.append("\tbisNames = {")
+        for item_id in sorted(bis_names):
+            lines.append(f"\t\t[{item_id}] = {_quote(bis_names[item_id])},")
+        lines.append("\t},")
+    if bis_dps:
+        lines.append("\tbisDps = {")
+        for item_id in sorted(bis_dps):
+            lines.append(f"\t\t[{item_id}] = {_number(bis_dps[item_id])},")
+        lines.append("\t},")
+    return lines
+
+
+def _default_builds_lua(default_builds: dict) -> list[str]:
+    """`defaultBuilds[spec].leveling|raid = { name, order = { {tab,tier,column}, ... } }`
+    (docs/contracts/addon-v2.md, contract 1): one 1-based triple per point
+    in learning order, the codec's own triple, written without spaces
+    inside a triple to keep 28 specs x 2 builds x 51 points small."""
+    lines = ["	defaultBuilds = {"]
+    for spec in sorted(default_builds):
+        lines.append(f"		[{_quote(spec)}] = {{")
+        for kind in ("leveling", "raid"):
+            build = default_builds[spec].get(kind)
+            if build is None:
+                continue
+            order = ", ".join("{" + ",".join(str(n) for n in point) + "}" for point in build.order)
+            lines.append(f"			{kind} = {{ name = {_quote(build.name)}, order = {{ {order} }} }},")
+        lines.append("		},")
+    lines.append("	},")
+    return lines
+
+
+def _dps_per_point_lua(dps_per_point: dict) -> list[str]:
+    """`dpsPerPoint[spec] = { reference, dps, healing, weaponDps, [band] = {
+    reference, dps, weaponDps } }` (contract 1; bands from task L1.5). A
+    spec with no entry is left out, never written as zero: the addon reads
+    a missing key as "show score units"."""
+    lines = ["\tdpsPerPoint = {"]
+    for spec in sorted(dps_per_point):
+        entry = dps_per_point[spec]
+        healing = "true" if entry.healing else "false"
+        head = (
+            f"\t\t[{_quote(spec)}] = {{ reference = {_quote(entry.reference)}, "
+            f"dps = {_number(entry.dps)}, healing = {healing}"
+        )
+        if not entry.bands and not entry.weapon_dps:
+            lines.append(head + " },")
+            continue
+        # Task L1.5: the level-60 raid figure stays at the spec level for the
+        # current reader; each band's own figures sit under its band key.
+        lines.append(head + f", weaponDps = {_number(entry.weapon_dps)},")
+        for band in sorted(entry.bands):
+            row = entry.bands[band]
+            lines.append(
+                f"\t\t\t[{band}] = {{ reference = {_quote(row.reference)}, "
+                f"dps = {_number(row.dps)}, weaponDps = {_number(row.weapon_dps)} }},"
+            )
+        lines.append("\t\t},")
+    lines.append("\t},")
+    return lines
+
+
+def _encounter_needs_lua(encounter_needs: dict) -> list[str]:
+    """`encounterNeeds[npcId] = { buffs = {...}, debuffs = {...}, resist = "fire" }`
+    (contract 1); `resist` is left out for a boss with none, which Lua reads
+    as nil."""
+    lines = ["\tencounterNeeds = {"]
+    for npc_id in sorted(encounter_needs):
+        needs = encounter_needs[npc_id]
+        buffs = ", ".join(str(spell) for spell in needs.buffs)
+        debuffs = ", ".join(str(spell) for spell in needs.debuffs)
+        resist = f", resist = {_quote(needs.resist)}" if needs.resist is not None else ""
+        lines.append(
+            f"\t\t[{npc_id}] = {{ buffs = {{ {buffs} }}, debuffs = {{ {debuffs} }}{resist} }},"
+        )
+    lines.append("\t},")
+    return lines
+
+
+def _ability_levels_lua(ability_levels: dict) -> list[str]:
+    """`abilityLevels[spellId] = level` (contract 1), one id per line, ids ascending."""
+    lines = ["\tabilityLevels = {"]
+    for spell_id in sorted(ability_levels):
+        lines.append(f"\t\t[{spell_id}] = {ability_levels[spell_id]},")
+    lines.append("\t},")
+    return lines
+
+
 def render_lua(data: AddonData) -> str:
     lines = [
         GENERATED,
@@ -179,6 +312,11 @@ def render_lua(data: AddonData) -> str:
     lines.extend(_bis_lua(data.bis))
     lines.extend(_bis_new_lua(data.bis))
     lines.extend(_bis_weights_lua(data.bis))
+    lines.extend(_bis_items_lua(data.bis_names, data.bis_dps))
+    lines.extend(_default_builds_lua(data.default_builds))
+    lines.extend(_dps_per_point_lua(data.dps_per_point))
+    lines.extend(_encounter_needs_lua(data.encounter_needs))
+    lines.extend(_ability_levels_lua(data.ability_levels))
     lines.append("}")
     lines.append("")
     lines.append("return ns.Data")
@@ -190,11 +328,11 @@ def write_lua(
     root: Path = Path("builds"),
     curated_dir: Path = Path("curated"),
     lua_path: Path = LUA_PATH,
+    data: AddonData | None = None,
 ) -> Path:
     lua_path.parent.mkdir(parents=True, exist_ok=True)
-    lua_path.write_text(
-        render_lua(build_addon_data(build, root=root, curated_dir=curated_dir)), encoding="utf-8"
-    )
+    data = data or build_addon_data(build, root=root, curated_dir=curated_dir)
+    lua_path.write_text(render_lua(data), encoding="utf-8")
     return lua_path
 
 
@@ -203,6 +341,7 @@ def lua_has_drifted(
     root: Path = Path("builds"),
     curated_dir: Path = Path("curated"),
     lua_path: Path = LUA_PATH,
+    data: AddonData | None = None,
 ) -> bool:
-    wanted = render_lua(build_addon_data(build, root=root, curated_dir=curated_dir))
+    wanted = render_lua(data or build_addon_data(build, root=root, curated_dir=curated_dir))
     return not lua_path.exists() or lua_path.read_text(encoding="utf-8") != wanted

@@ -514,3 +514,16 @@ func TestExcludeAbovePvpRankCapNeverEmptiesTheOnlyCandidate(t *testing.T) {
 		t.Fatalf("excludeAbovePvpRankCap emptied the only candidate: %+v", got)
 	}
 }
+
+// B2 (L9.2 part B): the pair side of twoHandBeatsPair is a sum of two rounded
+// scores, so it is rounded again before the comparison. 0.7 + 0.1 is
+// 0.7999999999999999 in float64: against a two-hander of 0.8 the unrounded sum
+// made the two-hander "win" a tie.
+func TestTwoHandBeatsPairComparesTheRoundedPairScore(t *testing.T) {
+	twoHander := scored{candidate: candidate{ID: 1, Name: "Two-Hander", Slots: []string{"main_hand"}, TwoHand: true, ClassID: itemClassWeapon}, Score: 0.8}
+	main := scored{candidate: candidate{ID: 2, Name: "Main", Slots: []string{"main_hand", "off_hand"}, ClassID: itemClassWeapon}, Score: 0.7}
+	off := scored{candidate: candidate{ID: 3, Name: "Off", Slots: []string{"off_hand"}, ClassID: itemClassWeapon}, Score: 0.1}
+	if twoHandBeatsPair(candidatesBySlot([]scored{twoHander, main, off})) {
+		t.Fatal("twoHandBeatsPair = true for 0.8 against 0.7 + 0.1: a tie is not a win")
+	}
+}

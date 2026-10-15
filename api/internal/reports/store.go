@@ -10,6 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/jhunthrop/foreversixty/api/internal/rating/presence"
 	"github.com/jhunthrop/foreversixty/logs/engine/fight"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 )
@@ -136,7 +137,8 @@ func (s *Store) ForGuild(ctx context.Context, guildID int64, page, perPage int) 
 	return out, total, nil
 }
 
-// Recent lists the newest complete public reports, keyset-paged on
+// Recent lists the newest complete public reports that are not flagged (presence.EvidenceReport:
+// a flagged report is evidence of nothing, so the public feed does not list it), keyset-paged on
 // (created_at, id) so a page inserted between two reads of the feed is
 // never duplicated or skipped the way an offset page would be. before
 // nil reads the first page.
@@ -154,7 +156,7 @@ func (s *Store) Recent(ctx context.Context, before *recentCursor, limit int) ([]
 		        coalesce(g.name, '')
 		 from reports r
 		 left join guilds g on g.id = r.guild_id
-		 where r.visibility = $1 and r.status = $2
+		 where r.visibility = $1 and `+presence.EvidenceReport("r")+` and r.status = $2
 		   and ($3::timestamptz is null or (r.created_at, r.id) < ($3, $4))
 		 order by r.created_at desc, r.id desc
 		 limit $5`,

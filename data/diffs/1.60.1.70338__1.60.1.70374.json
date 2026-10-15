@@ -1,0 +1,258 @@
+{
+  "from": "1.60.1.70338",
+  "to": "1.60.1.70374",
+  "entities": {
+    "zones": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "dungeons": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "items": {
+      "added": [
+        {
+          "id": 281661,
+          "name": "Well-Worn Pitchfork",
+          "quality": 2,
+          "item_level": 38,
+          "required_level": 33,
+          "class_id": 2,
+          "subclass_id": 6,
+          "inventory_type": 17,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 284065,
+          "name": "Crown of Maldazzar",
+          "quality": 2,
+          "item_level": 58,
+          "required_level": 53,
+          "class_id": 4,
+          "subclass_id": 1,
+          "inventory_type": 1,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286640,
+          "name": "High Priestess's Kilt",
+          "quality": 3,
+          "item_level": 59,
+          "required_level": 54,
+          "class_id": 4,
+          "subclass_id": 1,
+          "inventory_type": 7,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": "wowhead",
+          "stats_source": "wowhead",
+          "client_unconfirmed": false,
+          "superseded_by": null
+        }
+      ],
+      "removed": [],
+      "changed": [
+        {
+          "id": 1659,
+          "before": {
+            "id": 1659,
+            "name": "Engineering Gloves",
+            "quality": 2,
+            "item_level": 40,
+            "required_level": 35,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 1659,
+            "name": "Engineering Gloves",
+            "quality": 2,
+            "item_level": 40,
+            "required_level": 35,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 7722,
+          "before": {
+            "id": 7722,
+            "name": "Triune Amulet",
+            "quality": 3,
+            "item_level": 44,
+            "required_level": 39,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 2,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 7722,
+            "name": "Triune Amulet",
+            "quality": 3,
+            "item_level": 44,
+            "required_level": 39,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 2,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 9431,
+          "before": {
+            "id": 9431,
+            "name": "Papal Fez",
+            "quality": 3,
+            "item_level": 43,
+            "required_level": 38,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 1,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 9431,
+            "name": "Papal Fez",
+            "quality": 3,
+            "item_level": 43,
+            "required_level": 38,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 1,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 18671,
+          "before": {
+            "id": 18671,
+            "name": "Baron Charr's Sceptre",
+            "quality": 3,
+            "item_level": 59,
+            "required_level": 54,
+            "class_id": 2,
+            "subclass_id": 4,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18671,
+            "name": "Baron Charr's Sceptre",
+            "quality": 3,
+            "item_level": 60,
+            "required_level": 55,
+            "class_id": 2,
+            "subclass_id": 4,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "item_level",
+            "required_level",
+            "required_level_source",
+            "stats_source"
+          ]
+        }
+      ]
+    },
+    "spells": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "classes": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "races": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "talents": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "sets": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    }
+  }
+}

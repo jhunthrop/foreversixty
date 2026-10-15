@@ -235,7 +235,38 @@ func markNotInSimDB(items []candidate) []candidate {
 // whatever its own score would have been - see flatItem.SupersededBy's
 // own doc for why the row still exists in items.json without ever
 // reaching this pool.
-func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
+//
+// An item whose class row marks client_unconfirmed (its stats are
+// 1.12's; the client may never resolve the id) is never a candidate
+// either (task L1.6): withoutClientUnconfirmed drops it here, before any
+// band ranks, so every pick, runner-up and alternative is confirmed by
+// construction. unconfirmed counts the rows dropped, for runSpec's
+// summary line.
+func loadCandidates(buildDir, classSlug string) (out []candidate, unconfirmed int, missing []string, err error) {
+	all, missing, err := loadClassCandidates(buildDir, classSlug)
+	if err != nil {
+		return nil, 0, nil, err
+	}
+	out, unconfirmed = withoutClientUnconfirmed(all)
+	return out, unconfirmed, missing, nil
+}
+
+// withoutClientUnconfirmed is the one client_unconfirmed filter: items
+// without the ones the client has not confirmed, and how many it dropped.
+func withoutClientUnconfirmed(items []candidate) ([]candidate, int) {
+	out := make([]candidate, 0, len(items))
+	for _, c := range items {
+		if !c.ClientUnconfirmed {
+			out = append(out, c)
+		}
+	}
+	return out, len(items) - len(out)
+}
+
+// loadClassCandidates is every class row as a candidate, client
+// unconfirmed ones included: loadCandidates' input, and what the
+// published-file check reads a bis file ranked before task L1.6 against.
+func loadClassCandidates(buildDir, classSlug string) (out []candidate, missing []string, err error) {
 	flatItems, err := loadFlatItems(buildDir)
 	if err != nil {
 		return nil, nil, err
@@ -248,8 +279,6 @@ func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	var out []candidate
-	var missing []string
 	for _, ci := range classFile.Items {
 		fi, ok := byID[ci.ID]
 		if !ok {
@@ -484,6 +513,11 @@ type lootBoss struct {
 	Name        string             `json:"name"`
 	Items       []int              `json:"items"`
 	ItemChances map[string]float64 `json:"item_chances"`
+	// RareSpawn is loot.json's own `rare_spawn` (task L1.7,
+	// pipeline.loot.npc_rank): the creature is a rare spawn (a rare-ranked
+	// classic-db creature with a pooled or open-world spawn - Ironspine),
+	// not there on every run. False for a boss or trash mob.
+	RareSpawn bool `json:"rare_spawn"`
 }
 
 // lootSource is one row of data/builds/<build>/loot.json's sources
@@ -523,6 +557,13 @@ type lootSource struct {
 	Items       []int              `json:"items"`
 	ItemChances map[string]float64 `json:"item_chances"`
 	Bosses      []lootBoss         `json:"bosses"`
+	// Trash is a dungeon/raid's own `trash` list: items its ordinary
+	// creatures drop (task L1.7 reads it to name a trash drop several
+	// creatures share by its instance alone - loadLootIndex).
+	Trash []int `json:"trash"`
+	// RareSpawn is a `world` source's own `rare_spawn` (task L1.7): the
+	// named creature is a rare spawn (Swiftmane, Lupos).
+	RareSpawn bool `json:"rare_spawn"`
 	// Opens is the content phase this source unlocks in
 	// (data/curated/loot/forever-raid-phases.json's own curated fact,
 	// "later" for every Era raid this build's generator emits and
@@ -642,6 +683,82 @@ type itemSource struct {
 	// exist in loot.json yet). classAllowed (band.go) is the one place
 	// this is read.
 	Classes []string
+	// RareSpawn is whether this source is a rare spawn's drop (task
+	// L1.7: lootBoss.RareSpawn / lootSource.RareSpawn). Its Label then
+	// ends in rareLabelSuffix. sourceFor prefers any other source the
+	// item has, and buildBandPool never lets such a drop take a slot
+	// another candidate can fill.
+	RareSpawn bool
+	// SharedTrashCreatures is, for a shared trash drop named by its
+	// instance alone (sharedTrashDrops), the creatures loot.json lists for
+	// the item, in its order; nil for every other source. Only the
+	// published-file check reads it: an older build's frozen files name
+	// one of these creatures.
+	SharedTrashCreatures []string
+}
+
+// rareLabelSuffix ends a rare spawn's source label (task L1.7: "otherwise
+// it is allowed with 'rare' in its source"), e.g. "Scarlet Monastery:
+// Ironspine (rare)" - the addon splits the instance from the creature on
+// ": " and shows "Scarlet Monastery · Ironspine (rare)".
+const rareLabelSuffix = " (rare)"
+
+// sharedTrashDrops is the items of one dungeon/raid source that are
+// named by its own instance alone (task L1.7, ruling 2: "Gnomeregan",
+// never "Gnomeregan: Caverndeep Burrower"): an item on the source's own
+// Trash list that more than one of its creatures drops, none of them at a
+// stated rate - a trash drop of the whole instance, with no one creature
+// a player should go to. The value is whether every one of those
+// creatures is a rare spawn. A trash item one creature names, or one any
+// creature states a rate for, keeps its creatures.
+func sharedTrashDrops(src lootSource) map[int]bool {
+	if len(src.Trash) == 0 {
+		return nil
+	}
+	trash := make(map[int]bool, len(src.Trash))
+	for _, id := range src.Trash {
+		trash[id] = true
+	}
+	creatures := make(map[int]int)
+	rated := make(map[int]bool)
+	allRare := make(map[int]bool)
+	for _, boss := range src.Bosses {
+		for _, id := range boss.Items {
+			if !trash[id] {
+				continue
+			}
+			if creatures[id] == 0 {
+				allRare[id] = true
+			}
+			creatures[id]++
+			if boss.ItemChances[strconv.Itoa(id)] > 0 {
+				rated[id] = true
+			}
+			allRare[id] = allRare[id] && boss.RareSpawn
+		}
+	}
+	shared := make(map[int]bool)
+	for id, n := range creatures {
+		if n > 1 && !rated[id] {
+			shared[id] = allRare[id]
+		}
+	}
+	return shared
+}
+
+// trashCreatures is the names of src's creatures that drop item id, in
+// loot.json's order.
+func trashCreatures(src lootSource, id int) []string {
+	var names []string
+	for _, boss := range src.Bosses {
+		for _, item := range boss.Items {
+			if item == id && boss.Name != "" {
+				names = append(names, boss.Name)
+				break
+			}
+		}
+	}
+	return names
 }
 
 // repSide names the reputations only one side can earn, by the client's
@@ -906,9 +1023,13 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 		if src.Kind == "quest" {
 			continue
 		}
-		add := func(id int, label string, chance float64) {
+		add := func(id int, label string, chance float64, rare bool) {
 			is := itemSource{
 				Kind: src.Kind, Label: label, Side: factionExclusiveDungeons[src.ID], Chance: chance, Opens: src.Opens,
+				RareSpawn: rare,
+			}
+			if rare {
+				is.Label += rareLabelSuffix
 			}
 			if src.Kind == "pvp" {
 				is.Rank = src.Rank
@@ -961,7 +1082,16 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 			idx[id] = append(idx[id], is)
 		}
 		for _, id := range src.Items {
-			add(id, src.Name, src.ItemChances[strconv.Itoa(id)])
+			add(id, src.Name, src.ItemChances[strconv.Itoa(id)], src.RareSpawn)
+		}
+		shared := sharedTrashDrops(src)
+		for _, id := range src.Trash {
+			if rare, ok := shared[id]; ok {
+				add(id, src.Name, 0, rare)
+				if srcs := idx[id]; len(srcs) > 0 {
+					srcs[len(srcs)-1].SharedTrashCreatures = trashCreatures(src, id)
+				}
+			}
 		}
 		for _, boss := range src.Bosses {
 			label := src.Name
@@ -969,7 +1099,10 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				label = src.Name + ": " + boss.Name
 			}
 			for _, id := range boss.Items {
-				add(id, label, boss.ItemChances[strconv.Itoa(id)])
+				if _, ok := shared[id]; ok {
+					continue
+				}
+				add(id, label, boss.ItemChances[strconv.Itoa(id)], boss.RareSpawn)
 			}
 		}
 	}

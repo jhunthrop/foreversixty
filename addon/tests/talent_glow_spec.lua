@@ -180,6 +180,11 @@ describe("TalentGlow", function()
 		assert.are.equal(classic, TalentGlow.glowing)
 		assert.are.equal("classic", TalentGlow.refresh(DATA))
 		assert.are.same({ L.diagTalentTabUnknown }, Theme.diagnostics())
+		-- Which window and button answered is a finding, not a fault (L3.1 fix round 3),
+		-- printed only by /fs diag verbose (L3.2 fix round 2), the width to one decimal.
+		assert.are.same({ string.format(L.diagTalentFrame, "PlayerTalentFrame", "classic"),
+			"Glow on button nil, width 0.0, shown true" }, Theme.verboseNotes())
+		assert.are.same({}, Theme.infoNotes())
 	end)
 
 	it("finds a node button nested under a container", function()
@@ -251,7 +256,7 @@ describe("TalentGlow", function()
 		local node = _G.CreateFrame("Button", nil, frame)
 		node.nodeID = 105001
 		assert.are.equal("trait", TalentGlow.refresh(DATA))
-		assert.is_not_nil(node.foreverSixtyGlow)
+		assert.is_not_nil(Theme.glowOf(node).gold)
 	end)
 
 	it("takes the glow off the old button before putting it on the new one", function()
@@ -264,7 +269,7 @@ describe("TalentGlow", function()
 		assert.are.equal(first, TalentGlow.glowing)
 		TalentGlow.clear()
 		assert.is_nil(TalentGlow.glowing)
-		for _, edge in ipairs(first.foreverSixtyGlow) do
+		for _, edge in ipairs(Theme.glowOf(first).gold) do
 			assert.is_false(edge.shown)
 		end
 	end)
@@ -291,6 +296,38 @@ describe("TalentGlow", function()
 			assert.is_nil(TalentGlow.refresh(DATA))
 			assert.is_nil(TalentGlow.refresh(DATA))
 		end)
+		assert.are.same({ L.diagNoTalentButton }, Theme.diagnostics())
+	end)
+
+	-- L3.2 fix round 1 (Minor 7): a refresh that finds the ring already on
+	-- the right button leaves it, so its ten seconds are not restarted.
+	it("leaves a ring already on the right button as it is", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		local frame = _G.CreateFrame("Frame", "PlayerTalentFrame")
+		_G.PlayerTalentFrame = frame
+		local node = _G.CreateFrame("Button", nil, frame)
+		node.nodeID = 105001
+		assert.are.equal("trait", TalentGlow.refresh(DATA))
+		local generation = Theme.glowOf(node).generation
+		assert.is_not_nil(generation)
+		assert.are.equal("trait", TalentGlow.refresh(DATA))
+		assert.are.equal(generation, Theme.glowOf(node).generation)
+		assert.are.equal(node, TalentGlow.glowing)
+		for _, edge in ipairs(Theme.glowOf(node).gold) do
+			assert.is_true(edge.shown)
+		end
+	end)
+
+	-- L3.2 fix round 1: the show's first pass runs before the trait buttons
+	-- exist; a quiet miss says nothing, so only a miss that persists is noted.
+	it("says nothing about a miss on a quiet pass", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		_G.PlayerTalentFrame = _G.CreateFrame("Frame", "PlayerTalentFrame")
+		assert.is_nil(TalentGlow.refresh(DATA, { quiet = true }))
+		assert.are.same({}, Theme.diagnostics())
+		assert.is_nil(TalentGlow.refresh(DATA))
 		assert.are.same({ L.diagNoTalentButton }, Theme.diagnostics())
 	end)
 end)

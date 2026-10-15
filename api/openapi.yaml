@@ -27,6 +27,186 @@ components:
                 message: { type: string }
                 fields: { type: object, additionalProperties: { type: string } }
         request_id: { type: string }
+    AddonInbox:
+      type: object
+      description: >-
+        GET /v1/addon/inbox's data: contract 3 of docs/contracts/addon-v2.md, the body
+        docs/contracts/fixtures/inbox-v2.json pins. `format` is the version the companion writes
+        into ForeverSixtyInbox.lua; `builds` is the pre-v2 list, kept for one release beside the
+        `build` messages that repeat it.
+      required: [format, generated_at, builds, messages]
+      properties:
+        format: { type: integer, enum: [2] }
+        generated_at: { type: string, format: date-time, description: "RFC 3339, UTC" }
+        builds:
+          type: array
+          items:
+            type: object
+            required: [id, name, code]
+            properties:
+              id: { type: string }
+              name: { type: string }
+              character: { type: string, description: "character key region/ruleset/name-slug; absent reaches every character" }
+              code: { type: string, description: "the build's FSB1 addon code" }
+        messages:
+          type: array
+          items: { $ref: '#/components/schemas/AddonInboxMessage' }
+    AddonInboxMessage:
+      description: >-
+        One typed message, selected by `type`; a reader skips a type it does not know.
+        `character` is the character key region/ruleset/name-slug (the form builds have always
+        carried), absent on an upgrade or weights message whose run names none of the account's
+        characters. Player-visible strings (name, item_name, source, biggest_loss,
+        consumables_missed, raid, guild_name) are plain words; ids are lookup keys only.
+      oneOf:
+        - type: object
+          title: build
+          required: [type, name, code]
+          properties:
+            type: { type: string, enum: [build] }
+            character: { type: string }
+            name: { type: string }
+            code: { type: string }
+        - type: object
+          title: upgrade
+          required: [type, slot, item_id, delta, unit]
+          properties:
+            type: { type: string, enum: [upgrade] }
+            character: { type: string }
+            slot: { type: string }
+            item_id: { type: integer }
+            item_name: { type: string }
+            source: { type: string }
+            delta: { type: number }
+            unit: { type: string, enum: [dps, score], description: "absent means dps" }
+        - type: object
+          title: weights
+          required: [type, spec, weights]
+          properties:
+            type: { type: string, enum: [weights] }
+            character: { type: string }
+            spec: { type: string }
+            weights:
+              type: array
+              items:
+                type: object
+                required: [stat, weight]
+                properties: { stat: { type: string }, weight: { type: number } }
+            caps: { type: array, items: { type: string } }
+            dps_per_point:
+              type: number
+              description: >-
+                DPS (healing per second for a healer) per point of the stat whose weight is 1,
+                from the data build's dps-per-point.json; absent for a spec it has no entry for,
+                or when the run's weight-1 stat is not that file's reference stat
+            generated_at:
+              type: string
+              format: date-time
+              description: >-
+                When the run that made these weights was queued (UTC): the character's newest
+                finished in-game run, else the account's newest website weights run
+            export_seen_at:
+              type: string
+              format: date-time
+              description: >-
+                The export the in-game request was made on, the same value the ack carried
+                for it; absent for a website run and for an in-game request with no export recorded
+        - type: object
+          title: sim_result
+          required: [type, character, spec, dps, error, generated_at, slots]
+          properties:
+            type: { type: string, enum: [sim_result] }
+            character: { type: string }
+            spec: { type: string }
+            dps:
+              type: number
+              description: >-
+                the run's DPS; for the weights run an in-game request queues, the DPS of the
+                sweep's baseline sim (the character as it is), over the baseline's own iterations
+            error:
+              type: number
+              description: "always present, 0 included; for a weights run, the baseline sim's"
+            generated_at: { type: string, format: date-time }
+            slots:
+              type: array
+              description: "per-slot DPS deltas from a Top Gear run; an empty list for a run with no bulk section, such as the weights run an in-game request queues"
+              items:
+                type: object
+                required: [slot, item_id, delta]
+                properties: { slot: { type: string }, item_id: { type: integer }, delta: { type: number } }
+        - type: object
+          title: last_raid
+          required: [type, character, report_id, date, bosses]
+          properties:
+            type: { type: string, enum: [last_raid] }
+            character: { type: string }
+            report_id: { type: string }
+            date: { type: string, format: date }
+            bosses:
+              type: array
+              items:
+                type: object
+                required: [name, percentile, loss_seconds, deaths, consumables_missed]
+                properties:
+                  name: { type: string }
+                  percentile: { type: integer, minimum: 0, maximum: 100 }
+                  biggest_loss:
+                    type: string
+                    description: >-
+                      downtime | dead early | died to <cause> | a death | standing in fire |
+                      missing consumables | missed mechanics | low output | utility; absent when
+                      nothing cost a point
+                  loss_seconds: { type: integer }
+                  deaths: { type: integer }
+                  consumables_missed: { type: array, items: { type: string, enum: [flask, food] } }
+                  adherence: { type: number, minimum: 0, maximum: 1, description: "share of the player's ability casts that the spec's shipped rotation lists for the character's level band, to two decimals; absent without a shipped rotation, under 10 ability casts, when the level could not be read, or for a fight rated before migration 0037" }
+        - type: object
+          title: loot_values
+          required: [type, character, raid, items]
+          properties:
+            type: { type: string, enum: [loot_values] }
+            character: { type: string }
+            raid: { type: string }
+            items:
+              type: object
+              description: keyed by item id
+              additionalProperties:
+                type: object
+                required: [value, unit, planned]
+                properties:
+                  value: { type: number }
+                  unit: { type: string, enum: [dps, score] }
+                  planned: { type: boolean }
+        - type: object
+          title: guild
+          required: [type, character, guild_name]
+          properties:
+            type: { type: string, enum: [guild] }
+            character: { type: string }
+            guild_name: { type: string }
+            claim_state: { type: string }
+            pending_approvals: { type: integer }
+            rank: { type: string }
+        - type: object
+          title: ack
+          required: [type, character, export_seen_at]
+          properties:
+            type: { type: string, enum: [ack] }
+            character: { type: string }
+            export_seen_at: { type: string, format: date-time }
+            sim_request_state:
+              type: string
+              enum: [queued, needs_premium, duplicate, invalid, done, failed]
+              description: >-
+                what became of the character's newest in-game sim request; "duplicate" when
+                another request started a run within the hour (a run that failed does not count),
+                "done" and "failed" read from its run once it ends
+            requested_at:
+              type: string
+              format: date-time
+              description: >-
+                When the site received the character's newest in-game sim request (UTC), not the
+                player's own wall time; absent when it never asked
     BuildInput:
       type: object
       required: [class_id, race_id, tree_version, point_order]
@@ -168,7 +348,7 @@ components:
         report_id: { type: string }
         fight_index: { type: integer }
         state: { type: string, enum: [ok, at_risk, removed] }
-        execution_score: { type: number, nullable: true }
+        execution_score: { $ref: '#/components/schemas/ExecutionScore' }
     GearSlotName:
       type: string
       enum: [head, neck, shoulder, back, chest, wrist, hands, waist, legs, feet,
@@ -622,6 +802,255 @@ components:
           format: date-time
           nullable: true
           description: Null until the nightly job has measured this spec.
+    CharacterIdentity:
+      type: object
+      description: >-
+        Who the character is in game: the fields GET /v1/characters/{region}/{ruleset}/{name}
+        adds to its character object. Each is always present and null when no source knows it.
+        Never an id.
+      required: [guild, level, race, realm]
+      properties:
+        guild:
+          type: object
+          nullable: true
+          description: >-
+            The character's verified guild membership (a guild_characters row with verified_at
+            set). Null when it has none, or its membership is not verified yet.
+          required: [name, rank]
+          properties:
+            name: { type: string }
+            rank: { type: string, enum: [member, officer, leader] }
+        level:
+          type: integer
+          nullable: true
+          description: >-
+            From the newest of the stored addon export (its level= section, dated by when it was
+            captured in game) and the Battle.net import (dated by when it ran). When the newer
+            source does not carry a level, the older one's stands; on a tie the Battle.net import
+            wins, as does a stored level with no import date. Null when neither has one.
+        race:
+          type: string
+          nullable: true
+          description: >-
+            The race's display name ("Night Elf"), chosen like level: the newest of the addon
+            export (its race slug, named by the build data) and the Battle.net import. Null when
+            neither has one.
+        realm:
+          type: string
+          nullable: true
+          description: >-
+            The realm as the client names it, from the first source that has one: the Battle.net
+            import's realm name, else the addon export's who= realm, else the realm half of the
+            newest rated fight's logged unit (which the combat log writes without spaces, e.g.
+            "ClassicBetaPvP"). The nightly data addon keys characters by the same order. Null
+            when no source has one.
+    ScorePoint:
+      type: object
+      description: >-
+        One UTC date of score_history on GET /v1/characters/{region}/{ruleset}/{name}: the
+        Forever Score the rater recorded on the last rated fight of that date. The list has one
+        point per date on which a rated fight in a public, unflagged report landed, the newest 30 dates,
+        oldest first; [] when there is none. Fights rated before the score's snapshot existed
+        (migration 0035), or re-rated by the backfill, carry no snapshot and are left out.
+      required: [date, score, tier]
+      properties:
+        date: { type: string, format: date, description: "The UTC date, YYYY-MM-DD." }
+        score: { type: integer }
+        tier: { type: string, enum: [common, uncommon, rare, epic, legendary] }
+    CharacterGear:
+      type: object
+      description: >-
+        The gear panel fields of GET /v1/characters/{region}/{ruleset}/{name}, beside the
+        Forever Score. The spec, level and band are the Gear component's own: the spec of the
+        character's newest rated fight in a public report, the level in the export's level=
+        section (60 when it has none), and the band that level falls in (the highest of 20, 30,
+        40, 50 and 60 at or below it that the spec has a best-in-slot set for).
+      required: [gear, gear_gap_total]
+      properties:
+        gear:
+          type: array
+          items: { $ref: '#/components/schemas/CharacterGearSlot' }
+          description: >-
+            One row per slot an addon export names, always all 17 in the export's order (head,
+            neck, shoulder, back, chest, wrist, hands, waist, legs, feet, finger1, finger2,
+            trinket1, trinket2, main_hand, off_hand, ranged) when the character has an export;
+            [] when it has none (never null).
+        gear_gap_total:
+          type: number
+          nullable: true
+          description: >-
+            The score points the band's picks would add over what the character wears, summed
+            over the slots: the plain sum of every non-null gap, one decimal. It is not the Gear
+            component's distance to its top, which is measured against the best set of the band
+            across presets and factions (so a character wearing every pick can have a total of 0
+            and a Gear component still below 500). Null when no slot has a gap (no export, or
+            nothing could be scored).
+    CharacterGearSlot:
+      type: object
+      description: >-
+        One slot of the gear panel. Nothing is invented: a pick the data does not have is null,
+        and a gap that cannot be scored is null.
+      required: [slot, worn, pick, gap]
+      properties:
+        slot: { $ref: '#/components/schemas/GearSlotName' }
+        worn:
+          type: object
+          nullable: true
+          description: >-
+            The item the character wears in the slot, from its newest addon export. Null when
+            the slot is empty in the export.
+          required: [id, name, item_level]
+          properties:
+            id: { type: integer }
+            name: { type: string, nullable: true, description: "Null when the export's data build does not have the item." }
+            item_level: { type: integer, nullable: true, description: "Null when the export's data build does not have the item." }
+        pick:
+          type: object
+          nullable: true
+          description: >-
+            The band's best-in-slot pick for the spec and the character's faction (from the
+            export's race, else the faction the Battle.net import stored), as the Forever Sixty
+            Data addon ships it: the leveling-bis ladder's pick for the band without raid buffs,
+            except that an item whose stats the client has not confirmed is never a pick. Every
+            slot whose own pick is confirmed keeps it; each other slot takes the next confirmed
+            candidate in the ladder's order that the band's rules allow beside them: the two
+            slots of a pair (the rings, the trinkets, the two hands) never hold the same item
+            (the same id or the same name), and there is no off-hand pick beside a two-handed
+            main-hand pick. Null when the band has no pick for the slot, the character has no
+            rated spec or is below level 20, or its faction or the spec's best-in-slot data is
+            unknown.
+          required: [id, name, source, chance]
+          properties:
+            id: { type: integer }
+            name: { type: string }
+            source:
+              type: string
+              description: >-
+                Where the item comes from, as a player knows it: "Wailing Caverns: Mutanus the
+                Devourer", "Blacksmithing", "The League of Arathor".
+            chance:
+              type: number
+              nullable: true
+              description: >-
+                The drop chance as a fraction (0.333333 is one in three), at the pick's own
+                source; a pick promoted past an item the client has not confirmed carries the
+                chance of its own source. Null when the source states no rate (every
+                quest, vendor, crafted, reputation and PvP source, and a drop whose loot table
+                gives none).
+        gap:
+          type: number
+          nullable: true
+          description: >-
+            The Gear component points the pick would add over the worn item, one decimal: 500 x
+            (the pick's gear score - the worn item's gear score) / the band's best set's gear
+            score, each item scored by the spec's stat weights as the Gear component scores it.
+            An empty slot scores 0. 0 when the worn item is the pick or scores at least as much;
+            an upgrade worth under 0.05 points also rounds to 0. The rings and the trinkets are
+            matched to their picks whichever way round gives the smaller total, so a pick worn
+            in the other slot of its pair reads 0. When the picked or the worn main hand is
+            two-handed, the two hands count as one unit: the main hand's gap is the picked main
+            and off hands' score less the worn main and off hands' score (0 at least), and the
+            off hand's gap is 0, or null when the band has no off-hand pick. Null when there is
+            no pick, when an item is not in the data build, or when the band's best set cannot
+            be scored.
+    ExecutionScore:
+      type: number
+      nullable: true
+      description: >-
+        execution_score on ranking rows, on a character's best and history rows, and on the
+        guild page's roster_best rows (GET /v1/guilds/{region}/{ruleset}/{name}): the
+        fight's damage as a share of what the same gear and talents do in the simulator over
+        the same fight length (1 is the simulator's average; a lucky pull can pass it, and the
+        stored value is kept between 0 and 2). Damage only. Null while the fight has not been
+        simulated yet (the score is written after the fight closes, or by the nightly job), and
+        null for good for healers and tanks, for a spec the simulator has not validated, for a
+        fight whose summary has no row for the player, for a fight whose character the
+        simulator could not rebuild from the log, and when the simulation produced no damage.
+    GuildAttendance:
+      type: object
+      description: >-
+        A guild roster row's attendance (roster[].attendance and pending[].attendance on GET
+        /v1/guilds/{id}/home, candidates[].attendance on GET /v1/guilds/{id}/loot). A character
+        was present in a report when it has a ranked or rated row there (fight_metrics not
+        removed, or rating_scores), read by its character key, never by the log's GUIDs
+        (fights.players). The window is the guild's last 8 non-private, unflagged reports that
+        carry at least one ranked or rated row, so a night nobody can be present in (a
+        private, tampered, unverified or trash-only report, or one not ranked yet) is never
+        everyone's absence.
+      properties:
+        present: { type: integer, description: "How many of the window's reports the character was present in, 0 to nights; a report with several of its fights counts once." }
+        nights: { type: integer, description: "How many reports the window holds: 8, or fewer while the guild has logged fewer such reports. The same for every row of the roster." }
+    GuildRosterAddon:
+      type: object
+      nullable: true
+      description: >-
+        A guild roster row's line from the guild's newest addon roster snapshot (roster[].addon
+        and pending[].addon on GET /v1/guilds/{id}/home; the snapshot is the outbox's
+        roster_snapshot of POST /v1/addon/exports, docs/contracts/addon-v2.md contract 4).
+        Always present, null when the guild has no snapshot or the newest one does not carry
+        the character. A snapshot line is matched to a row by character name, any case: the
+        snapshot's names carry no realm (a Name-Realm line drops its realm half), so the
+        guild's realm is the row's; the first line of a name wins. level, spec, gear_gap and build
+        are null unless the row's member gave gear consent (the home withholds spec and gear for
+        a roster-consent member); seen_at and snapshot_at stay.
+      required: [level, spec, gear_gap, build, seen_at, snapshot_at]
+      properties:
+        level: { type: integer, nullable: true, description: "The level the member's addon announced; null without gear consent" }
+        spec: { type: string, nullable: true, description: "A spec slug, e.g. warrior-arms; null without gear consent" }
+        gear_gap: { type: integer, nullable: true, description: "The gear gap the member's addon announced (contract 2's hello); may be negative; null without gear consent" }
+        build: { type: string, nullable: true, description: "The build name the member's addon announced; null when it announced none or without gear consent" }
+        seen_at: { type: string, description: "The sender's local time, YYYY-MM-DD HH:MM, as stored" }
+        snapshot_at: { type: string, format: date-time, description: "When the site received the snapshot (addon_snapshot.received_at), RFC 3339 UTC" }
+    GuildAddonSnapshot:
+      type: object
+      nullable: true
+      description: >-
+        addon_snapshot on GET /v1/guilds/{id}/home: the guild's newest addon roster snapshot,
+        null when it has none. The newest snapshot wins even when it lists nobody (members is
+        then 0 and every roster[].addon is null).
+      required: [received_at, by_character, members]
+      properties:
+        received_at: { type: string, format: date-time, description: "When the site received the snapshot, RFC 3339 UTC" }
+        by_character: { type: string, description: "The character key whose export carried the snapshot" }
+        members: { type: integer, description: "How many member lines the snapshot listed, those matching no roster row included (they never become rows)" }
+    ForeverScore:
+      type: object
+      description: >-
+        The Forever Score fields of GET /v1/characters/{region}/{ruleset}/{name}. Every field
+        is null when the character has no rated fight in a public, unflagged report (an
+        anonymised character's page answers 404). The components sum to score; the ceilings
+        are gear 500, experience 700, parses 600, attendance 200, discipline 100
+        (api/internal/rating/score_v2.go). A report flagged as tampered or unverified counts
+        for nothing: no component, as_of or experience figure reads it, so a forged report
+        cannot raise a score.
+      properties:
+        score: { type: integer, nullable: true }
+        tier:
+          type: string
+          nullable: true
+          enum: [common, uncommon, rare, epic, legendary, null]
+          description: "common < 500, uncommon < 1000, rare < 1500, epic < 2000, legendary from 2000 (provisional)."
+        as_of:
+          type: string
+          format: date
+          nullable: true
+          description: The newest rated fight's date (YYYY-MM-DD).
+        components:
+          type: object
+          nullable: true
+          properties:
+            gear: { type: integer, description: "The gear component in points, 0-500, comparable across specs: the character's gear score for its spec as a share of that spec's own best-in-slot set for your level (the highest best-in-slot band at or below the character's level, 20 to 60; below 20 there is none and the component is 0) in the same data build. This is contract 5's gear_score." }
+            experience: { type: integer, description: "25 a distinct dungeon cleared + 40 a distinct raid boss killed across linked characters, capped at 700." }
+            parses: { type: integer, description: "Mean best parse percentile per boss, scaled 0-600." }
+            attendance: { type: integer, description: "The attendance component in points, 0-200: the fraction of the verified guild's nights (UTC dates of its fights) in the last 90 days attended, times 200. Contract 5's attendance is that fraction itself, 0-1." }
+            discipline: { type: integer, description: "Share of rated fights with a flask, a food and every enchantable slot (chest, feet, back, main hand) enchanted, times 100." }
+        experience:
+          type: object
+          nullable: true
+          properties:
+            dungeons: { type: integer, description: "Distinct dungeon instances cleared; 0 until dungeon logs are classified." }
+            raid_kills: { type: integer, description: Distinct raid bosses killed by any linked character. }
+            alts: { type: integer, description: Linked characters other than this one. }
     User:
       type: object
       required: [id, role, anonymize, premium]
@@ -1131,6 +1560,22 @@ paths:
         '201': { description: "Stored and verified", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '200': { description: "Already stored with the same raw hash", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '409': { description: "The metrics do not match the events; error.fields.metrics says how", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/reports/{id}/fights/{n}/ratings:
+    get:
+      summary: One fight's rating cards
+      description: >-
+        Every player's rating card for fight n (counted from one), an anonymized player's card
+        left out. Visibility follows the report's own rules: a report the caller may not open
+        answers 404 not_found, as a missing one does. A flagged report (tampered or unverified)
+        is evidence of nothing, so its fights answer 404 with error code "flagged" to a caller
+        who may open the report.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: n, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      responses:
+        '200': { description: "fight_index, kill, kill_time_band, model_version and players", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "n is not a number counted from one", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "not_found (no such report, not visible to you, or no ratings for that fight) or flagged (the report is flagged)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/reports/{id}/fights/{n}/live:
     put:
       summary: The running summary of a fight in progress (device)
@@ -1510,15 +1955,34 @@ paths:
                                 start: { type: string, format: date-time }
   /v1/characters/{region}/{ruleset}/{name}:
     get:
-      summary: A character's bests, history, and the builds they have been seen in
-      description: "best[] and history[] rows are { encounter, encounter_id, difficulty, metric, value, percentile?, spec?, fought_at, report_id, fight_index, execution_score? }; builds_seen[] is { talent_split, spec?, first_seen }"
+      summary: A character's bests, history, the builds they have been seen in, and their Forever Score
+      description: >-
+        character is { key, region, ruleset, name, class?, avatar_url?, render_url?, guild,
+        level, race, realm } (schema CharacterIdentity for the last four, each always present
+        and null when unknown). best[] and history[] rows are { encounter, encounter_id,
+        difficulty, metric, value, percentile?, spec?, fought_at, report_id, fight_index,
+        execution_score? }; builds_seen[] is { talent_split, spec?, first_seen }. The Forever
+        Score (docs/contracts/addon-v2.md contract 5, computed by api/internal/rating) rides
+        beside them as score, tier, components, as_of and experience (schema ForeverScore). All
+        five are null when the character has no rated fight in a public report: no logs is never
+        a zero score. A score that cannot be read just then is also null, and the rest of the
+        page is still served. score_history[] (schema ScorePoint) is the score over time, oldest
+        first, never null. A character whose account is anonymised answers 404 exactly as a
+        character nobody has logged does, the rule GET .../rating already follows. gear[]
+        (schema CharacterGearSlot) is the gear panel: the 17 slots of the character's newest
+        addon export, in the export's order, each with what it wears, the band's pick and the
+        gap; [] when the character has no export. gear_gap_total beside it is the sum of the
+        gaps (schema CharacterGear gives both and every null rule). A history row's
+        execution_score is defined in schema ExecutionScore.
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
         - { name: name, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
-        '404': { description: "No such character", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404':
+          description: "No such character, or its account is anonymised (the same answer)"
+          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
   /v1/guilds/{id}/reports:
     get:
       summary: A guild's own reports, newest first (session)
@@ -1538,10 +2002,34 @@ paths:
         '400': { description: "page must be 1 or more", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '401': { description: "No session", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
         '404': { description: "Unknown guild, or not a member", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+  /v1/guilds/{id}/home:
+    get:
+      summary: A guild's control centre home (session)
+      description: >-
+        The guild, the viewer's standing, the summary, the last week's reports, the roster and
+        the officer's pending queue, in the shape docs/contracts/2026-10-04-guild-centre-api.md
+        gives. roster[].attendance is { present, nights } (schema GuildAttendance): presence in
+        the guild's last 8 non-private, unflagged reports that someone is present in, read by
+        character key. Every roster[] (and pending[]) row carries addon (schema
+        GuildRosterAddon): its line in the guild's newest addon roster snapshot, or null; the
+        top-level addon_snapshot (schema GuildAddonSnapshot) says when that snapshot was
+        received, by which character, and how many members it listed, or is null when the
+        guild has none. reports[] is paged by cursor (next_cursor). A verified member of the
+        guild (an account with a verified character on its roster) may read it; anyone else,
+        an account whose rows are all unverified included, gets 403.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: cursor, in: query, schema: { type: string }, description: "The next_cursor a previous page returned; it pages reports[] past that report." }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400': { description: "cursor is not a next_cursor this route returned", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '401': { description: "No session", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '403': { description: "Not a verified member of the guild (an unknown numeric id answers 403 too: nobody is its member)", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '404': { description: "No such guild: an id that is not a positive number, or a guild gone by the time the home is read", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/guilds/{region}/{ruleset}/{name}:
     get:
       summary: A guild's progression, roster bests, and reports
-      description: "progression[] rows are { encounter, encounter_id, difficulty, kills, pull_count, first_kill_at? }; roster_best[] rows are { player, encounter, encounter_id, metric, value, fought_at, execution_score? }"
+      description: "progression[] rows are { encounter, encounter_id, difficulty, kills, pull_count, first_kill_at? }; roster_best[] rows are { player, encounter, encounter_id, metric, value, fought_at, execution_score? }, where execution_score is defined in schema ExecutionScore."
       parameters:
         - { name: region, in: path, required: true, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
         - { name: ruleset, in: path, required: true, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
@@ -1551,14 +2039,38 @@ paths:
         '404': { description: "No such guild", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/addon/exports:
     post:
-      summary: Store the addon's character exports (device)
+      summary: Store the addon's character exports and outbox (device)
+      description: >-
+        The body carries the per-character `characters` list, the addon's `outbox`
+        (docs/contracts/addon-v2.md, contract 4), or both; with no outbox the list must hold at
+        least one character. The list is stored first. An outbox whose `format` is not 1 is
+        ignored whole (`outbox.status` "ignored"). A format 1 outbox carries no region, so its
+        `export.character` (Name-Realm) is matched by name against the characters this account
+        has synced; a name the account has never synced, or one that matches two characters a
+        ruleset realm cannot tell apart, stores nothing ("unknown_character"). Its export is
+        stored exactly as a `characters` entry is. Its `sim_request` queues one premium server
+        run (the same sims row and job POST /v1/sims/run starts, built from the request's own
+        gear code) unless that character already has the same request, or any request in the
+        last hour whose run has not failed ("duplicate"; a run that failed does not hold the
+        hour, so the player can ask again at once); an account without server sims gets
+        "premium_required", a
+        deployment that cannot start the job "unavailable". Its `roster_snapshot` is stored for
+        the guild the exporting character belongs to, and only that guild ("not_in_guild"
+        otherwise); a newer snapshot replaces the guild's last one. GET /v1/guilds/{id}/home
+        reads it back as roster[].addon and addon_snapshot. Its
+        members come from other players' addons, so they are checked one by one: a member
+        whose fields fail validation is dropped and counted in `dropped_members`, the rest are
+        stored, and a snapshot with no usable guild name, or whose every member was dropped,
+        is answered "invalid". A sim request whose content cannot be used is likewise answered
+        "invalid". Neither part ever fails the sync: only an outbox that is structurally not
+        one (not an object, a non-numeric format, a missing or malformed export) is refused
+        400.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [characters]
               properties:
                 characters:
                   type: array
@@ -1570,8 +2082,62 @@ paths:
                       ruleset: { type: string, description: "Normalised through the API's realm-to-ruleset mapping; an unrecognised value is not rejected" }
                       region: { type: string, enum: [us, eu, kr, tw, cn] }
                       export: { type: string, maxLength: 4096 }
+                outbox:
+                  type: object
+                  required: [format]
+                  description: "ForeverSixtyDB.outbox as the addon wrote it. Fields added inside format 1 are ignored."
+                  properties:
+                    format: { type: integer, description: "1; any other value is ignored" }
+                    export:
+                      type: object
+                      description: "Required in format 1."
+                      required: [character, code]
+                      properties:
+                        character: { type: string, description: "Name-Realm" }
+                        code: { type: string, maxLength: 4096, description: "The FS1 export string" }
+                        saved_at: { type: string, description: "Player's local time, YYYY-MM-DD HH:MM" }
+                    sim_request:
+                      type: object
+                      nullable: true
+                      required: [character, spec, requested_at, gear_code]
+                      properties:
+                        character: { type: string, description: "Name-Realm" }
+                        spec: { type: string, description: "A spec slug, e.g. warrior-arms" }
+                        requested_at: { type: string, description: "Player's local time, YYYY-MM-DD HH:MM; with the character, the request's identity" }
+                        gear_code: { type: string, maxLength: 4096, description: "The FS1 export as of the request" }
+                    roster_snapshot:
+                      type: object
+                      nullable: true
+                      required: [guild, members]
+                      properties:
+                        guild: { type: string, maxLength: 24 }
+                        members:
+                          type: array
+                          maxItems: 1000
+                          items:
+                            type: object
+                            required: [name, level, seen_at]
+                            properties:
+                              name: { type: string, description: "Name-Realm" }
+                              level: { type: integer, minimum: 1, maximum: 60 }
+                              spec: { type: string, maxLength: 64 }
+                              gear_gap: { type: integer }
+                              build: { type: string, maxLength: 64 }
+                              seen_at: { type: string, description: "Player's local time, YYYY-MM-DD HH:MM" }
       responses:
-        '200': { description: "stored", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '200':
+          description: >-
+            { stored, outbox? } where stored counts the exports written (the list, plus the
+            outbox's own export when the list did not already carry that character) and outbox,
+            present when the body carried one, is { status: "read" | "ignored", export?: "stored" |
+            "unknown_character", sim_request?: "queued" | "duplicate" | "premium_required" |
+            "unavailable" | "unknown_character" | "invalid" | "not_started", roster_snapshot?:
+            "stored" | "not_in_guild" | "unknown_character" | "invalid", dropped_members?: the
+            number of snapshot members left out for failing validation (absent when none) }, each
+            part present only when the outbox carried it
+          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+        '400': { description: "neither a characters list nor an outbox, a malformed list, or an outbox that is structurally not one", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '409': { description: "a character is already synced from a different account", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/addon/inbox:
     get:
       summary: The builds and typed messages waiting to be written into the game (device)
@@ -1584,10 +2150,22 @@ paths:
         account's last saved weights run), or `guild` ({ guild_name, claim_state, pending_approvals,
         rank }, this character's own private guild state). A companion or addon build from before
         this date reads `builds` exactly as it always did and never looks at `messages`.
+        Inbox v2 (docs/contracts/addon-v2.md contract 3; data is AddonInbox, pinned by
+        docs/contracts/fixtures/inbox-v2.json) adds `format` 2 and `generated_at`, the `build`,
+        `sim_result`, `last_raid`, `loot_values` and `ack` messages, `unit` on upgrade and
+        `dps_per_point` on weights. `character` is the character key region/ruleset/name-slug.
+        `ack` is sent only to an account with a paired, unrevoked device.
       responses:
         '200':
-          description: "{ builds: [ { id, name, character?, code } ], messages: [ { type, character?, ... } ] } where code is the build's FSB1 addon code, so the companion writes the inbox file without a second call"
-          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+          description: "data is AddonInbox: { format: 2, generated_at, builds: [ { id, name, character?, code } ], messages: [ AddonInboxMessage ] } where code is the build's FSB1 addon code, so the companion writes the inbox file without a second call"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { $ref: '#/components/schemas/AddonInbox' }
     post:
       summary: Queue a build for the game (session)
       description: >-

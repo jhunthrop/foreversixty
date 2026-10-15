@@ -375,8 +375,8 @@ function Codec.decodeFS1(code)
 
 	local parts = split(head, ":")
 	if parts[1] ~= Codec.FS1_PREFIX then
-		local named = (parts[1] == nil or parts[1] == "") and L.codecUnlabelled or parts[1]
-		return nil, refuse(L.codecWrongPrefix, named, Codec.FS1_PREFIX)
+		-- Never echoes the paste (L3.4 fix 19): a player pasted something else.
+		return nil, L.codecWrongPrefix
 	end
 	if #parts < 6 then
 		return nil, L.codecShort
@@ -622,8 +622,7 @@ function Codec.decodeFSB1(code)
 	end
 	local parts = split(code:match("^%s*(.-)%s*$"), ":")
 	if parts[1] ~= Codec.FSB1_PREFIX then
-		local named = (parts[1] == nil or parts[1] == "") and L.codecUnlabelled or parts[1]
-		return nil, refuse(L.codecWrongPrefix, named, Codec.FSB1_PREFIX)
+		return nil, L.codecWrongPrefix
 	end
 	if #parts < 5 then
 		return nil, L.codecShort
@@ -673,6 +672,7 @@ local function compareBuilds(left, right)
 	end
 	return 0
 end
+Codec.compareBuilds = compareBuilds
 
 --- An order reconstructed from a final tree, lowest tier first, left to
 --- right. The same rule the site's `orderFromRanks` uses, and the reason the
@@ -708,6 +708,18 @@ local function approximateOrder(tabs, treeRanks)
 	return order
 end
 
+--- A class slug as a player reads it: the client's own name from `names` (keyed by the
+--- class token, LOCALIZED_CLASS_NAMES_MALE's shape) when given, else the slug in title case.
+local function className(slug, names)
+	local named = type(names) == "table" and names[slug:upper()] or nil
+	if type(named) == "string" then
+		return named
+	end
+	return (slug:gsub("^%l", string.upper):gsub("%-(%l)", function(letter)
+		return " " .. letter:upper()
+	end))
+end
+
 --- Load a build from either format.
 ---
 --- FSB1 is the site's own addon code and is taken as it stands. FS1 is the
@@ -715,7 +727,11 @@ end
 --- addon": it carries a final tree and no stats, so the order is
 --- approximated and `statsUnknown` is set, which is what stops Gear from
 --- scoring a planned item at zero and calling that a downgrade.
-function Codec.loadBuild(code, data)
+---
+--- `player` ({ classSlug, classNames }, optional) is the character logged in: a code for
+--- another class is refused by name (L3.4 fix 18). Without it no class is checked, so a
+--- saved build restores as it always did.
+function Codec.loadBuild(code, data, player)
 	-- Length-checked first, before any trimming or splitting: `code` is
 	-- the one genuinely untrusted input in the system (Follow.load is
 	-- called from Options.readInbox on a saved-variables file the addon
@@ -769,8 +785,13 @@ function Codec.loadBuild(code, data)
 	if data.classes[build.classSlug] == nil then
 		return nil, refuse(L.codecUnknownClass, build.classSlug)
 	end
+	if type(player) == "table" and type(player.classSlug) == "string" and player.classSlug ~= build.classSlug then
+		local mine = className(player.classSlug, player.classNames)
+		return nil, string.format(L.codecWrongClass, className(build.classSlug, player.classNames), mine, mine)
+	end
 	if compareBuilds(build.dataBuild, data.build) > 0 then
-		return nil, refuse(L.codecNewerBuild, build.dataBuild, data.build)
+		-- Plain words, no build ids (L3.4 ruling): the build dialog shows this as it stands.
+		return nil, L.codecNewerBuild
 	end
 	return build
 end
@@ -802,7 +823,10 @@ local function sameCharacter(a, b)
 	if aRegion == nil or bRegion == nil then
 		return false
 	end
-	return normaliseSegment(aRegion) == normaliseSegment(bRegion)
+	-- An empty region on either side matches any region: a key saved before
+	-- the client said its region (seen on the beta: "/Classic Beta PvP/...").
+	local sameRegion = aRegion == "" or bRegion == "" or normaliseSegment(aRegion) == normaliseSegment(bRegion)
+	return sameRegion
 		and normaliseSegment(aMid) == normaliseSegment(bMid)
 		and normaliseSegment(aName) == normaliseSegment(bName)
 end
@@ -812,7 +836,13 @@ end
 --- before this addon was updated -- is silently dropped by
 --- Codec.inboxMessages, the same forward-compatibility rule Follow.inbox
 --- already applies to a build the addon does not recognise.
-Codec.MESSAGE_TYPES = { upgrade = true, weights = true, guild = true }
+--- `last_raid` (contract 3) is read by the chip's last-night line and the character-panel
+--- tab's last-raid region; `build` and `ack` by the build dialog (its "from the site" rows and
+--- its "Seen by the site" line); `sim_result` by the panel tab's sim region (its DPS, L4.3).
+--- `loot_values` (L5.3) by the loot council helper: the player's own row and /fs loot, "(site)".
+Codec.MESSAGE_TYPES = { upgrade = true, weights = true, guild = true, last_raid = true, build = true, ack = true,
+	loot_values = true,
+	sim_result = true }
 
 --- Messages of `kind` from `inbox.messages`, addressed to `key` or to no
 --- one in particular, in the order the companion wrote them. Pure: never

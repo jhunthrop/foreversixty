@@ -462,17 +462,30 @@ var registerOnce sync.Once
 // answers an abort with a result rather than a panic, so the process
 // gets to write what completed instead of dying mid-file.
 func onInterrupt(id string) func() {
+	_, stop := onInterruptFunc(func() string { return id })
+	return stop
+}
+
+// onInterruptFunc is onInterrupt for a run of several engine sims, each registered under its
+// own id: current names the one under way when the signal arrives (executeWeights' sweep).
+// Between two sims no id is registered to take the abort, so the signal is also latched:
+// interrupted reports whether one arrived, and the sweep checks it before and after each sim.
+func onInterruptFunc(current func() string) (interrupted func() bool, stop func()) {
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, os.Interrupt, syscall.SIGTERM)
 	done := make(chan struct{})
+	var hit atomic.Bool
 	go func() {
 		select {
 		case <-ch:
-			simsignals.AbortById(id)
+			// Latch first: a sim that starts after this sees it even if current() names one
+			// that has already ended or is not registered yet.
+			hit.Store(true)
+			simsignals.AbortById(current())
 		case <-done:
 		}
 	}()
-	return func() {
+	return hit.Load, func() {
 		signal.Stop(ch)
 		close(done)
 	}

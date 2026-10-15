@@ -68,6 +68,44 @@ describe("Gear", function()
 		assert.are.equal("paladin-protection", Gear.specOf(DATA, "paladin", ranks))
 	end)
 
+	-- L3.7 item 3: the druid's Feral Combat tree is two specs in the data, cat ("druid-feral") and
+	-- bear ("druid-feral-bear"); the tab's own slug ("druid-feral-combat") has neither a default
+	-- build nor weights, so a feral druid with no path card got nothing.
+	describe("a tree the data splits into two specs (the feral druid)", function()
+		local Real = require("Data")
+
+		it("answers the cat spec for the Feral Combat tree on a tie or with cat points", function()
+			assert.are.equal("druid-feral", Gear.specOf(Real, "druid", { [2] = { ["1:1"] = 1 } }))
+			assert.are.equal("druid-feral", Gear.specOf(Real, "druid", { [2] = { ["2:3"] = 2, ["5:1"] = 2 } }))
+		end)
+
+		it("answers the bear spec when the points sit in the cells only the bear build takes", function()
+			assert.are.equal("druid-feral-bear",
+				Gear.specOf(Real, "druid", { [2] = { ["2:4"] = 3, ["6:1"] = 5, ["6:3"] = 5 } }))
+		end)
+
+		it("leaves the other trees, and every spec the data names by its tree, as they were", function()
+			assert.are.equal("druid-balance", Gear.specOf(Real, "druid", { [1] = { ["1:1"] = 4 } }))
+			assert.are.equal("druid-restoration", Gear.specOf(Real, "druid", { [3] = { ["1:1"] = 4 } }))
+			assert.are.equal("rogue-combat", Gear.specOf(Real, "rogue", { [2] = { ["1:1"] = 4 } }))
+			assert.are.equal("paladin-protection",
+				Gear.specOf(DATA, "paladin", { [2] = { ["1:1"] = 5 } }))
+		end)
+
+		it("answers the tab's own slug when the data has no spec of that name (no defaults, no weights)", function()
+			local bare = { classes = { druid = { tabs = { { name = "Balance" }, { name = "Feral Combat" } } } } }
+			assert.are.equal("druid-feral-combat", Gear.specOf(bare, "druid", { [2] = { ["1:1"] = 1 } }))
+		end)
+
+		it("gives a feral druid a default build at login, the cat's by default", function()
+			local Follow = helper.load("Follow")
+			local build = Follow.ensureDefault(Real, { classSlug = "druid", level = 20,
+				ranks = { [2] = { ["1:1"] = 1 } } })
+			assert.is_not_nil(build)
+			assert.are.equal("druid-feral", build.spec)
+		end)
+	end)
+
 	it("resolves a tie to the first tree, as the design says", function()
 		local ranks = { [1] = { ["1:1"] = 3 }, [2] = { ["1:1"] = 3 }, [3] = {} }
 		assert.are.equal("paladin-holy", Gear.specOf(DATA, "paladin", ranks))
@@ -96,10 +134,10 @@ describe("Gear", function()
 		assert.are.equal(20, upgrades[1].delta)
 	end)
 
-	it("scores what the player is already wearing, not only the bags", function()
-		-- The design scores equipped items too: one already on the character
-		-- can beat the planned one, and hiding that tells a player to swap
-		-- something they should keep.
+	it("leaves what the player is already wearing out of the bag upgrades", function()
+		-- A worn piece that beats the plan is scored on the Gear page's own
+		-- slot row; listing it under "upgrades in your bags" with an Equip
+		-- button told a player to equip what they had on (seen in game).
 		mock.install({
 			class = { name = "Paladin", token = "PALADIN" },
 			talents = {
@@ -116,9 +154,7 @@ describe("Gear", function()
 			{ slot = "head", itemId = 1, stats = { spell_power = 20 } },
 		} }
 		local upgrades = Gear.upgrades(DATA, build)
-		assert.are.equal(1, #upgrades)
-		assert.are.equal(3, upgrades[1].itemId)
-		assert.are.equal(15, upgrades[1].delta)
+		assert.are.equal(0, #upgrades)
 	end)
 
 	it("says nothing about a slot whose planned item has no stats", function()
@@ -182,9 +218,10 @@ describe("Gear", function()
 				{ name = "Retribution", talents = {} },
 			},
 			equipped = { [1] = "wornHead" },
-			bags = { [0] = { "bagLegs" } },
+			bags = { [0] = { "bagLegs", "bagHead" } },
 			itemStats = {
 				wornHead = { ITEM_MOD_SPELL_POWER_SHORT = 25, __itemId = 101, __slot = "INVTYPE_HEAD" },
+				bagHead = { ITEM_MOD_SPELL_POWER_SHORT = 25, __itemId = 102, __slot = "INVTYPE_HEAD" },
 				bagLegs = { ITEM_MOD_SPELL_POWER_SHORT = 50, __itemId = 202, __slot = "INVTYPE_LEGS" },
 			},
 		})
@@ -231,5 +268,33 @@ describe("Gear", function()
 		-- The link, not just the id: EquipItemByName needs something it can
 		-- name, and an id is not that.
 		assert.are.equal("better", Gear.upgrades(DATA, build)[1].link)
+	end)
+end)
+
+-- Gear.bandFor: the BiS band for a level, the one rule the tooltip and the chip both read
+-- (lifted from Tooltip.lua's own highestBandAtOrBelow / bisBandFor). Pure: no client mock.
+describe("Gear.bandFor", function()
+	local Gear
+	local SPEC_BIS = { [20] = "twenty", [30] = "thirty", [50] = "fifty" }
+
+	before_each(function()
+		Gear = helper.load("Gear")
+	end)
+
+	it("rounds the level down to the highest band the spec has", function()
+		assert.are.same({ 20, "twenty" }, { Gear.bandFor(SPEC_BIS, 20) })
+		assert.are.same({ 30, "thirty" }, { Gear.bandFor(SPEC_BIS, 39) })
+		assert.are.same({ 50, "fifty" }, { Gear.bandFor(SPEC_BIS, 60) })
+	end)
+
+	it("skips a band the data has not generated yet", function()
+		assert.are.same({ 30, "thirty" }, { Gear.bandFor(SPEC_BIS, 45) })
+	end)
+
+	it("answers nothing below 20, with no table, or with no level", function()
+		assert.is_nil(Gear.bandFor(SPEC_BIS, 19))
+		assert.is_nil(Gear.bandFor(nil, 30))
+		assert.is_nil(Gear.bandFor(SPEC_BIS, nil))
+		assert.is_nil(Gear.bandFor({ [40] = "forty" }, 30))
 	end)
 end)

@@ -4,6 +4,7 @@ import communityLinks from '../data/links.json';
 import { TRAILING_NAV_ITEMS, PRIMARY_NAV_ITEMS, isNavItemCurrent } from '../lib/nav';
 import { OPEN_SELECTOR_EVENT } from '../lib/character-selector/config';
 import DiscordMark from './DiscordMark.astro';
+import HeaderSearch from './HeaderSearch.astro';
 import Seal from './Seal.astro';
 
 interface Props {
@@ -25,7 +26,9 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
 // utility classes, so the bar's breakpoints are in one readable place. Desktop (1024 and up):
 // wordmark, the eight doors, the character selector, Discord. Below 1024: one 56px bar --
 // wordmark, the selector's crest, a Menu button -- with the character row, the eight doors
-// in a grid and Discord opening beneath it (`.site-menu`; the selector island renders the
+// in a grid and Discord opening beneath it. The compact character lookup (HeaderSearch.astro,
+// Task L8.2 fix round 2 item 7) is a magnifier button in the bar from 1024 and the Menu's
+// first row below it; the processed script at the end wires it and the "/" key (`.site-menu`; the selector island renders the
 // character row, which nav.css places first in the Menu). The only script is the few lines
 // below the markup that toggle the menu through `data-menu-open`.
 ---
@@ -36,6 +39,7 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
     <span>Forever Sixty</span>
   </a>
   <div class="site-right">
+    <HeaderSearch place="bar" />
     <slot name="session" />
     <a
       href={communityLinks.discordInvite}
@@ -73,6 +77,7 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
     </svg>
   </button>
   <div id="site-menu" class="site-menu" data-menu-panel>
+    <HeaderSearch place="menu" />
     <nav id="primary-nav" aria-label="Primary" data-testid="primary-nav" class="site-doors">
       {NAV_ITEMS.map((item) => (
         <a href={item.href} aria-current={isNavItemCurrent(item, path) ? 'page' : undefined}>
@@ -106,5 +111,56 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
         button.focus();
       });
     })();
+  </script>
+  <script>
+    import { isTypingTarget, wireSearchForm } from '../lib/character-search-dom';
+
+    // The compact lookup and the "/" key (HeaderSearch.astro). "/" outside a text field
+    // focuses the home page's own box where there is one; otherwise it opens the bar's panel
+    // (from 1024px) or the Menu (below), cursor in the box.
+    const header = document.querySelector<HTMLElement>('[data-site-header]');
+    for (const form of header?.querySelectorAll<HTMLFormElement>('form[data-character-search]') ?? []) {
+      wireSearchForm(form);
+    }
+    const toggle = header?.querySelector<HTMLButtonElement>('[data-header-search-toggle]') ?? null;
+    const panel = header?.querySelector<HTMLElement>('[data-header-search-panel]') ?? null;
+    const setPanel = (open: boolean): void => {
+      if (toggle === null || panel === null) return;
+      panel.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      if (open) panel.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
+    };
+    toggle?.addEventListener('click', () => setPanel(panel !== null && panel.hidden === true));
+    document.addEventListener('click', (event) => {
+      if (panel === null || panel.hidden) return;
+      const target = event.target;
+      if (target instanceof Node && (panel.contains(target) || toggle?.contains(target))) return;
+      setPanel(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && panel !== null && !panel.hidden) {
+        setPanel(false);
+        toggle?.focus();
+        return;
+      }
+      if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey) return;
+      if (isTypingTarget(event.target)) return;
+      const primary = document.querySelector<HTMLInputElement>(
+        'form[data-character-search-primary] input[name="name"]',
+      );
+      event.preventDefault();
+      if (primary !== null && primary.offsetParent !== null) {
+        primary.focus();
+        return;
+      }
+      if (window.matchMedia('(min-width: 1024px)').matches) {
+        setPanel(true);
+        return;
+      }
+      const menuButton = header?.querySelector<HTMLButtonElement>('[data-menu-button]');
+      if (menuButton !== null && menuButton !== undefined && !header?.hasAttribute('data-menu-open'))
+        menuButton.click();
+      header?.querySelector<HTMLInputElement>('[data-header-search-menu] input[name="name"]')?.focus();
+    });
   </script>
 </header>

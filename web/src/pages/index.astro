@@ -10,6 +10,7 @@ import Base from '../layouts/Base.astro';
 import { HOME_DESCRIPTION, SITE_NAME } from '../lib/seo';
 import SkyBand from '../components/SkyBand.astro';
 import HomeTimeline from '../components/HomeTimeline.astro';
+import CharacterSearch from '../components/CharacterSearch.astro';
 import ToolCard from '../components/ToolCard.astro';
 import ClassCrest from '../components/ClassCrest.astro';
 import Panel from '../components/Panel.astro';
@@ -154,6 +155,13 @@ const heroExampleIcons = (heroExampleBand?.slots ?? [])
               </div>
             </div>
             <HomeAccountPanel client:idle-after-load />
+          </div>
+
+          <!-- Task L8.2 (fix rounds 1-2, item 7): the character lookup. On a phone it sits
+               between the hero and the beta card (DOM order); from lg the grid puts it on its
+               own full-width row under the hero row (order-last), above the dates strip. -->
+          <div class="min-w-0 lg:order-last lg:col-span-12" data-testid="home-lookup-cell">
+            <CharacterSearch />
           </div>
 
           <!-- §3.A.2 Hero right column (5/12): the leveling-BiS example panel, signed out

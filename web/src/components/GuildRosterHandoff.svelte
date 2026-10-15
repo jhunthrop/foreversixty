@@ -12,7 +12,7 @@
   import { rosterPlannerHref, rosterSimHref } from '../lib/guild/roster-links';
   import { guildHomeCopy } from '../lib/guild/copy';
 
-  let { path }: { path: CharacterPath } = $props();
+  let { path, stacked = false }: { path: CharacterPath; stacked?: boolean } = $props();
 
   let code = $state<string | null>(null);
   let status = $state<'loading' | 'ready'>('loading');
@@ -31,7 +31,12 @@
   const LINK = 'inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0';
 </script>
 
-<div class="flex min-h-11 flex-wrap items-center gap-3 md:min-h-0" data-testid="guild-roster-handoff">
+<!-- `stacked` (the Roster tab's fixed actions slot): the two links sit one above the other from
+     lg up, so the group is narrow enough never to wrap or push the Remove button. -->
+<div
+  class={`flex min-h-11 flex-wrap items-center gap-3 md:min-h-0 ${stacked ? 'lg:flex-col lg:flex-nowrap lg:items-end lg:gap-1' : ''}`}
+  data-testid="guild-roster-handoff"
+>
   {#if status === 'loading'}
     <span class="invisible text-[13px]" aria-hidden="true">{guildHomeCopy.openSim}</span>
   {:else if code !== null}
