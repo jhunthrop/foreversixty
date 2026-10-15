@@ -10,6 +10,8 @@ export const connectCopy = {
   signedOutLeadNamed: (device: string): string => `Sign in to connect ${device}.`,
   codeLabel: (code: string): string => `Code ${code}`,
   codeCheck: 'Check that this code matches the one in the companion.',
+  /** Under the Code row on the pending page, where the check matters most. */
+  pendingCodeCheck: 'Only press Connect if this code matches the one in the companion window.',
   consent: 'Forever Sixty will see your BattleTag and character list. It cannot see your password or play for you.',
   battlenet: 'Continue with Battle.net',
   emailToggle: 'Email me a sign-in link instead',

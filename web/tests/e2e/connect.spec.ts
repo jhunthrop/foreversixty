@@ -66,6 +66,9 @@ test('not signed in: the code, the Battle.net hand-off with next, then pending a
   await gotoHydrated(page, '/connect?code=KQ4-7TM', 'connect');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Connect JHUNT-PC to Thrall#1234?');
   await expect(page.getByTestId('connect-device')).toHaveText('JHUNT-PC');
+  await expect(page.getByTestId('connect-code-check')).toHaveText(
+    'Only press Connect if this code matches the one in the companion window.',
+  );
   const panel = await page.getByTestId('connect-panel').boundingBox();
   expect(panel?.height).toBe(88);
 
@@ -117,13 +120,13 @@ test('already used, unreachable and cancelled', async ({ page }) => {
   expect(denied).toEqual({ code: 'KQ4-7TM' });
 });
 
-test('the card fits above the fold at 360px and does not move between sign-in and pending', async ({
+test('the card fits above the fold at 360px and the device panel does not move between sign-in and pending', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 360, height: 700 });
   await signedOut(page);
   await gotoHydrated(page, '/connect?code=KQ4-7TM', 'connect');
-  const before = await page.getByTestId('connect').boundingBox();
+  const before = await page.getByTestId('connect-panel').boundingBox();
   const button = await page.getByTestId('connect-battlenet').boundingBox();
   expect(button!.y + button!.height).toBeLessThanOrEqual(700);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360);
@@ -131,7 +134,8 @@ test('the card fits above the fold at 360px and does not move between sign-in an
   await page.unroute('**/v1/me');
   await signedIn(page, { status: 200, body: DEVICE });
   await gotoHydrated(page, '/connect?code=KQ4-7TM', 'connect');
-  const after = await page.getByTestId('connect').boundingBox();
+  // The card is only as tall as its content now; the 88px panel is the part that must stay put.
+  const after = await page.getByTestId('connect-panel').boundingBox();
   expect(after!.height).toBe(before!.height);
   const deny = await page.getByTestId('connect-deny').boundingBox();
   expect(deny!.y + deny!.height).toBeLessThanOrEqual(700);
@@ -168,6 +172,15 @@ test.describe('captures', () => {
       );
       await gotoHydrated(page, '/connect?code=KQ4-7TM', 'connect');
       await shot('expired');
+
+      await page.unroute('**/v1/devices/connect/lookup**');
+      await signedIn(page, { status: 200, body: DEVICE });
+      await page.unroute('**/v1/devices/connect/deny');
+      await page.route('**/v1/devices/connect/deny', (route) => route.fulfill({ status: 204 }));
+      await gotoHydrated(page, '/connect?code=KQ4-7TM', 'connect');
+      await page.getByTestId('connect-deny').click();
+      await expect(page.getByTestId('connect-close')).toBeVisible();
+      await shot('cancelled');
     });
   }
 });
