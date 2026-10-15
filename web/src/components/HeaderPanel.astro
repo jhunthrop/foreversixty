@@ -6,7 +6,7 @@
 // two shells, so the rows, the Guides grid and the foot never drift apart.
 import type { HTMLAttributes } from 'astro/types';
 import { classCrestSrc } from '../lib/class-crest';
-import { navKey, type NavGroup, type NavItem } from '../lib/nav';
+import { GUILD_OVERVIEW_TAB, navKey, type NavGroup, type NavItem } from '../lib/nav';
 import type { GuideClass } from '../lib/nav-guides';
 import { NAV_ROW_ICON_PATHS } from './nav-row-icons';
 
@@ -32,7 +32,7 @@ const shellProps: HTMLAttributes<'div'> = inBar
 
 /** The tab a Guild row opens: the hash, or the overview for the bare /guild row. */
 const guildTab = (item: NavItem): string | undefined =>
-  isGuild ? (item.href.split('#')[1] ?? 'overview') : undefined;
+  isGuild ? (item.href.split('#')[1] ?? GUILD_OVERVIEW_TAB) : undefined;
 ---
 
 <Shell {...shellProps}>

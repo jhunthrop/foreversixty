@@ -106,6 +106,7 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
               type="button"
               class="site-door-toggle"
               aria-label={`Open the ${group.label} list`}
+              aria-expanded="false"
               aria-controls={`site-panel-${key}`}
               data-door-toggle={key}
             >
@@ -158,11 +159,21 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
   </script>
   <script>
     import { isTypingTarget, wireSearchForm } from '../lib/character-search-dom';
+    import { SESSION_GUILD_EVENT } from '../lib/character-selector/config';
+    import type { SessionGuild } from '../lib/character-selector/session-guild';
+    import { applySessionGuild, wireNavPanels } from '../lib/nav-panels-dom';
 
     // The compact lookup and the "/" key (HeaderSearch.astro). "/" outside a text field
     // focuses the home page's own box where there is one; otherwise it opens the bar's panel
     // (from 1024px) or the Menu (below), cursor in the box.
     const header = document.querySelector<HTMLElement>('[data-site-header]');
+    // The four doors' hover panels, and the Guild panel following the session's guild.
+    if (header !== null) {
+      wireNavPanels(header);
+      window.addEventListener(SESSION_GUILD_EVENT, (event) =>
+        applySessionGuild(header, (event as CustomEvent<SessionGuild | null>).detail),
+      );
+    }
     for (const form of header?.querySelectorAll<HTMLFormElement>('form[data-character-search]') ?? []) {
       wireSearchForm(form);
     }

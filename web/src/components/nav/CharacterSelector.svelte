@@ -13,7 +13,7 @@
   import { battlenetStartUrl } from '../../lib/account/api';
   import { browserChooseDeps, chooseCharacter, choosePointer } from '../../lib/character-selector/choose';
   import { selectorCopy } from '../../lib/character-selector/copy';
-  import { OPEN_SELECTOR_EVENT } from '../../lib/character-selector/config';
+  import { OPEN_SELECTOR_EVENT, SESSION_GUILD_EVENT } from '../../lib/character-selector/config';
   import {
     closedAriaLabel,
     closedSecondLine,
@@ -82,6 +82,12 @@
     return () => {
       document.body.style.overflow = previous;
     };
+  });
+
+  // The header's Guild panel follows the session's guild; told once `/v1/me` has answered.
+  $effect(() => {
+    if (selector.loadStatus !== 'ready') return;
+    window.dispatchEvent(new CustomEvent(SESSION_GUILD_EVENT, { detail: selector.sessionGuild }));
   });
 
   function openSelector(): void {

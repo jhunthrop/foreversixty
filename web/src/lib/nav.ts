@@ -106,6 +106,9 @@ export const NAV_GROUPS: readonly NavGroup[] = [
 /** Where the Guild group sits in NAV_GROUPS: the session fills its rows (spec section 2). */
 export const GUILD_GROUP_INDEX = 2;
 
+/** The Guild row without a hash: the guild's overview (`data-guild-tab` in the header). */
+export const GUILD_OVERVIEW_TAB = 'overview';
+
 /** The Get set up page: also the Tools panel's last row, and the guild claim flow's link. */
 export const SETUP_NAV_ITEM: NavItem = { label: 'Get set up', href: '/setup' };
 

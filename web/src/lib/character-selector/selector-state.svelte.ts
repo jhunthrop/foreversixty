@@ -10,6 +10,7 @@ import { onCurrentCharacterChange, readCurrent, type CurrentCharacter } from '..
 import { API_BASE_URL } from '../planner/config';
 import { readChosenKeys } from './order';
 import { buildSelectorModel, type SelectorModel } from './rows';
+import { sessionGuildOf, type SessionGuild } from './session-guild';
 
 export type LoadStatus = 'loading' | 'ready' | 'failed';
 
@@ -24,6 +25,8 @@ export interface SelectorState {
   readonly closed: ClosedKind;
   /** The readable half of the session cookie is present: someone is probably signed in. */
   readonly sessionHint: boolean;
+  /** The session's first verified guild once `/v1/me` answered; null signed out or without one. */
+  readonly sessionGuild: SessionGuild | null;
   /** Re-reads the pointer, the chosen keys and the clock (the list is about to be shown). */
   refresh(): void;
   /** Asks `/v1/me` again (the list's "Try again"). */
@@ -78,6 +81,8 @@ export function createSelectorState(): SelectorState {
     }),
   );
 
+  const sessionGuild = $derived(loadStatus === 'ready' ? sessionGuildOf(session.data) : null);
+
   // Until the browser has been read, and while a signed-in visitor's character is still
   // unknown, the closed control stays the pre-paint link (its skeleton variant); a visitor
   // with nothing to show gets the sign-in slot at once.
@@ -102,6 +107,9 @@ export function createSelectorState(): SelectorState {
     },
     get sessionHint() {
       return sessionHint;
+    },
+    get sessionGuild() {
+      return sessionGuild;
     },
     refresh,
     reload: () => session.refresh(),
