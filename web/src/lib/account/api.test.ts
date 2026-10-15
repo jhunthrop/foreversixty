@@ -6,6 +6,9 @@ import {
   ACCOUNT_FAILED,
   AccountError,
   battlenetStartUrl,
+  connectDeviceApprove,
+  connectDeviceDeny,
+  connectDeviceLookup,
   csrfToken,
   effectiveServerSims,
   fetchMe,
@@ -398,5 +401,57 @@ describe('ETag revalidation', () => {
     await requestEnvelope('/v1/etag-demo-2', API, { method: 'POST', body: {} });
     const sentHeaders = fetchSpy.mock.calls[0][0].headers as Headers;
     expect(sentHeaders.has('if-none-match')).toBe(false);
+  });
+});
+
+describe('companion connect calls', () => {
+  it('looks a code up with the session cookie', async () => {
+    const fetchMock = vi.fn<GlobalFetch>(async () => envelope({ name: 'JHUNT-PC', platform: 'Windows', expires_in: 500 }));
+    vi.stubGlobal('fetch', fetchMock);
+    const found = await connectDeviceLookup('KQ4-7TM', API);
+    expect(found.name).toBe('JHUNT-PC');
+    const request = fetchMock.mock.calls[0][0] as Request;
+    expect(request.url).toBe(`${API}/v1/devices/connect/lookup?code=KQ4-7TM`);
+    expect(request.credentials).toBe('include');
+  });
+
+  it('posts approve and deny with the code and the CSRF header', async () => {
+    document.cookie = 'fs_csrf=tok; path=/';
+    const fetchMock = vi.fn<GlobalFetch>(async (input) =>
+      (input as Request).url.endsWith('/deny')
+        ? new Response(null, { status: 204 })
+        : envelope({ name: 'JHUNT-PC', platform: 'Windows' }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    expect((await connectDeviceApprove('KQ4-7TM', API)).name).toBe('JHUNT-PC');
+    await connectDeviceDeny('KQ4-7TM', API);
+    const [approve, deny] = fetchMock.mock.calls.map((c) => c[0] as Request);
+    expect(approve.method).toBe('POST');
+    expect(approve.url).toBe(`${API}/v1/devices/connect/approve`);
+    expect(approve.headers.get('x-csrf-token')).toBe('tok');
+    expect(await approve.clone().json()).toEqual({ code: 'KQ4-7TM' });
+    expect(deny.url).toBe(`${API}/v1/devices/connect/deny`);
+  });
+
+  it('surfaces 404 and 409 as AccountError statuses', async () => {
+    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => envelope(null, 409)));
+    await expect(connectDeviceApprove('KQ4-7TM', API)).rejects.toMatchObject({ status: 409 });
+    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => envelope(null, 404)));
+    await expect(connectDeviceLookup('KQ4-7TM', API)).rejects.toMatchObject({ status: 404 });
+  });
+
+  it('reports a network error as status 0', async () => {
+    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => Promise.reject(new TypeError('offline'))));
+    await expect(connectDeviceApprove('KQ4-7TM', API)).rejects.toMatchObject({ status: 0 });
+  });
+
+  it('sends next with the email link request when asked', async () => {
+    const fetchMock = vi.fn<GlobalFetch>(async () => envelope({ sent: true }, 202));
+    vi.stubGlobal('fetch', fetchMock);
+    await requestEmailLink('a@b.co', API, '/connect?code=KQ4-7TM');
+    expect(await (fetchMock.mock.calls[0][0] as Request).clone().json()).toEqual({
+      email: 'a@b.co',
+      next: '/connect?code=KQ4-7TM',
+    });
   });
 });
