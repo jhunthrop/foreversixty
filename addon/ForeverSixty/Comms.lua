@@ -347,29 +347,7 @@ end
 --- carries one), else the class tree its plan spends the most points in ("hunter-marksmanship"
 --- for a Marksmanship plan, whatever is spent so far); nil when neither says.
 function Comms.buildSpec(data, build)
-	if type(build) ~= "table" then
-		return nil
-	end
-	if type(build.spec) == "string" and build.spec ~= "" then
-		return build.spec
-	end
-	local class = type(data) == "table" and type(data.classes) == "table" and data.classes[build.classSlug] or nil
-	if type(class) ~= "table" or type(class.tabs) ~= "table" then
-		return nil
-	end
-	local spent = {}
-	for _, point in ipairs(build.order or {}) do
-		if type(point) == "table" and type(point.tab) == "number" then
-			spent[point.tab] = (spent[point.tab] or 0) + 1
-		end
-	end
-	local best, bestTab = 0, nil
-	for tab, entry in ipairs(class.tabs) do
-		if (spent[tab] or 0) > best and type(entry) == "table" and type(entry.name) == "string" then
-			best, bestTab = spent[tab], tab
-		end
-	end
-	return bestTab ~= nil and build.classSlug .. "-" .. Export.slugify(class.tabs[bestTab].name) or nil
+	return Follow.buildSpec(data, build)
 end
 
 --- The player's spec as the guild sees it: the active build's (Comms.buildSpec), else the

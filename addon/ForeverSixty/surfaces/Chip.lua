@@ -489,6 +489,7 @@ function Chip.model(input)
 		marksLegend = input.marksLegend == true,
 		waiting = waiting,
 		nextLine = nextLine(input),
+		picksStart = input.picksStart,
 		visible = hiddenBy == nil,
 		hiddenBy = hiddenBy,
 		alpha = input.inCombat and Chip.COMBAT_ALPHA or 1,
@@ -535,6 +536,10 @@ function Chip.tooltipLines(model)
 	end
 	if model.nextLine ~= nil then
 		lines[#lines + 1] = colored("muted", model.nextLine)
+	end
+	-- Hotfix 2.0.2: from level 10 until the spec's first gear band, where the gear picks begin.
+	if model.picksStart ~= nil then
+		lines[#lines + 1] = colored("muted", string.format(L.chipHintPicksStart, model.picksStart))
 	end
 	-- What the paper doll's and the bags' marks mean, while they are on (L4.1 fix round 5);
 	-- each key word in its mark's colour, the arrow's upgrade green and the corner's gold
@@ -862,7 +867,7 @@ function Chip.inputs(data)
 	local classSlug = Talents.playerClassSlug()
 	local ranks = Talents.readRanks(data)
 	local progress = Progress.build(build, ranks, level)
-	local spec = classSlug ~= nil and Gear.specOf(data, classSlug, ranks) or nil
+	local spec = classSlug ~= nil and Follow.currentSpec(data, classSlug, ranks) or nil
 	-- The spec's own entry says healing; the figures are the band's (Gear.dpsFigure).
 	local perSpec = spec ~= nil and type(data.dpsPerPoint) == "table" and data.dpsPerPoint[spec] or nil
 	local input = {
@@ -907,6 +912,8 @@ function Chip.inputs(data)
 	end
 	Chip.pending = {}
 	input.here, input.hereIn = picksHere(data, spec, level, equipped)
+	local specBis = spec ~= nil and type(data.bis) == "table" and data.bis[spec] or nil
+	input.picksStart = Compat.playerFaction() ~= nil and Gear.firstBand(specBis, level) or nil
 	return input
 end
 

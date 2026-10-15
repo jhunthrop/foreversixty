@@ -1315,7 +1315,19 @@ function ItemTooltip.section(ctx)
 			end
 		end
 		local band = ItemTooltip.plannedBand(data, ctx.spec, ctx.faction, slots, item.itemId, ctx.level)
-		if band ~= nil then
+		local firstBandLevel = ctx.faction and Gear.bandFor(ctx.spec ~= nil and type(data.bis) == "table"
+			and data.bis[ctx.spec] or nil, ctx.level) == nil and Gear.firstBand(ctx.spec ~= nil
+			and type(data.bis) == "table" and data.bis[ctx.spec] or nil, ctx.level) or nil
+		if band ~= nil and firstBandLevel ~= nil then
+			-- Below the first band a bag item the plan names is planned, not an upgrade: no verdict
+			-- arrow and no gain (it cannot be scored against a band the character is not in). A worn
+			-- first-band pick has its "Picks start" line instead.
+			if wornSlot == nil then
+				primary = { kind = "planned", band = band, color = "gold",
+					text = string.format(L.tooltipPlannedFirstBand, band) }
+				judged.pairLine = nil
+			end
+		elseif band ~= nil then
 			after[#after + 1] = { kind = "planned", band = band, color = "gold",
 				text = string.format(L.tooltipPlanned, specName(data, ctx.spec), band) }
 		elseif buildPlans(ctx.build, slots, item.itemId) then
@@ -1328,6 +1340,8 @@ function ItemTooltip.section(ctx)
 	local specBis = ctx.spec ~= nil and type(data.bis) == "table" and data.bis[ctx.spec] or nil
 	local currentBand = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
 	local nextBand = ItemTooltip.nextBand(specBis, currentBand)
+	-- Hotfix 2.0.2: from level 10, below the spec's first band, that band's picks are upcoming.
+	local firstBand = ctx.faction and currentBand == nil and Gear.firstBand(specBis, ctx.level) or nil
 	--- A candidate's gain over what is worn in the slot (net of the worn enchant,
 	--- Gear.readEquipped), rounded as shown; nil with no figure. Its stats are the client's, else
 	--- a weapon's own DPS from the data until the client's arrive (Progress.pickStats); the gear
@@ -1435,7 +1449,22 @@ function ItemTooltip.section(ctx)
 	-- What is worn holds until the ladder's next rung: "Best until level 30", and
 	-- muted under it the next rung's pick for the slot and where it comes from.
 	local atLine
-	if holds then
+	if firstBand ~= nil and wornSlot ~= nil and not heldByTwoHander then
+		primary = { kind = "firstBand", color = "muted", text = string.format(L.tooltipUntilFirstBand, firstBand) }
+		local upcoming = Gear.pick(ctx.spec, firstBand, ctx.faction, slot, data)
+		if upcoming ~= nil and upcoming.item_id ~= item.itemId and not isMissing(upcoming.item_id) then
+			local name = pickName(upcoming.item_id)
+			if name == nil then
+				pending[upcoming.item_id] = true
+			else
+				local boe = isBoe(upcoming.item_id)
+				atLine = { kind = "at", firstBand = true, band = firstBand, itemId = upcoming.item_id, name = name,
+					hex = qualityHex(upcoming.item_id), pick = upcoming, boe = boe,
+					source = ItemTooltip.sourceLine(upcoming, boe), color = "muted" }
+				atLine.text = ItemTooltip.atText(atLine)
+			end
+		end
+	elseif holds then
 		primary = ItemTooltip.bestLine(nextBand)
 		local upcoming = nextBand ~= nil and Gear.pick(ctx.spec, nextBand, ctx.faction, slot, data) or nil
 		if upcoming ~= nil and not isMissing(upcoming.item_id) then
@@ -1554,11 +1583,30 @@ function ItemTooltip.emptySlotSection(ctx, slot)
 	local noPick = { text = L.tooltipNoPick, color = "muted" }
 	local specBis = type(data.bis) == "table" and data.bis[ctx.spec] or nil
 	local band = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
-	if band == nil then
+	local first = ctx.faction and band == nil and Gear.firstBand(specBis, ctx.level) or nil
+	if band == nil and first == nil then
 		lines[1] = noPick
 		return lines, nil, pending, head
 	end
 	local isMissing = ctx.isMissing or missingOf
+	if first ~= nil then
+		-- Hotfix 2.0.2: below the first band the slot's pick is upcoming: "Picks start at level 20",
+		-- then the "At level 20" line (the pair rule as the band's), no Next line, no compare target.
+		lines[1] = { kind = "firstBand", color = "muted", text = string.format(L.tooltipUntilFirstBand, first) }
+		local upcoming = reachablePick(Progress.slotPicks(data, ctx.spec, first, ctx.faction, equipped)[slot],
+			isMissing)
+		if upcoming ~= nil then
+			local name = pickNameOf(data, ctx.nameOf or Compat.itemName, pending, upcoming.item_id)
+			if name ~= nil then
+				local at = { kind = "at", firstBand = true, band = first, itemId = upcoming.item_id, name = name,
+					hex = (ctx.qualityHex or qualityHexOf)(upcoming.item_id), pick = upcoming, color = "muted",
+					source = ItemTooltip.sourceLine(upcoming) }
+				at.text = ItemTooltip.atText(at)
+				lines[2] = at
+			end
+		end
+		return lines, nil, pending, head
+	end
 	local picks = Progress.slotPicks(data, ctx.spec, band, ctx.faction, equipped)
 	local pick = reachablePick(picks[slot], isMissing)
 	if pick == nil then
@@ -1620,7 +1668,7 @@ local function currentSpec(data)
 	if classSlug == nil or data == nil or data.classes == nil then
 		return nil, nil
 	end
-	return Gear.specOf(data, classSlug, Talents.readRanks(data)), classSlug
+	return Follow.currentSpec(data, classSlug), classSlug
 end
 
 --- Everything ItemTooltip.section reads from the client but the item: the data, the

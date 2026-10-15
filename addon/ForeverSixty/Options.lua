@@ -51,7 +51,7 @@ local function currentSpec(data)
 	if classSlug == nil or data == nil or data.classes == nil then
 		return nil
 	end
-	return Gear.specOf(data, classSlug, Talents.readRanks(data))
+	return Follow.currentSpec(data, classSlug)
 end
 
 --- Whether the client answered at least one talent rank (Talents.readRanks): before the

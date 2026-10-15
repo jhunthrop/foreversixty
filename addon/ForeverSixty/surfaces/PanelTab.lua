@@ -51,6 +51,7 @@ local Talents = ns.Talents or require("Talents")
 local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Progress = ns.Progress or require("Progress")
+local Gear = ns.Gear or require("Gear")
 local Rotation = ns.Rotation or require("Rotation")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 local Chip = ns.Chip or require("Chip")
@@ -178,12 +179,14 @@ function PanelTab.targets(ctx, sectionOf, bagOf)
 					for itemId in pairs(pending) do
 						waiting[itemId] = true
 					end
-					local nextLine, source
+					local nextLine, source, firstBand
 					for _, line in ipairs(section.lines or {}) do
 						if line.kind == "next" and nextLine == nil then
 							nextLine = line
 						elseif line.kind == "source" and source == nil then
 							source = line
+						elseif line.kind == "at" and line.firstBand and firstBand == nil then
+							firstBand = line
 						end
 					end
 					local upgrade = nextLine ~= nil and nextLine.upgrade or nil
@@ -195,15 +198,23 @@ function PanelTab.targets(ctx, sectionOf, bagOf)
 							pick = source ~= nil and source.pick or nil, boe = source ~= nil and source.boe or nil,
 							pending = pending[nextLine.itemId] == true,
 						}
+					elseif firstBand ~= nil and firstBand.itemId ~= nil then
+						-- Hotfix 2.0.2: below the spec's first gear band the band's pick is upcoming:
+						-- no gain, "At level 20:" before the source (PanelTab.detailText).
+						row = {
+							slot = entry.slot, itemId = firstBand.itemId, name = firstBand.name, hex = firstBand.hex,
+							upcoming = firstBand.band, source = firstBand.source, pick = firstBand.pick,
+							boe = firstBand.boe, pending = pending[firstBand.itemId] == true,
+						}
 					end
 				end
 				if row ~= nil then
-					row.worn = type(worn.link) == "string" and worn.link:match("%[(.-)%]") or nil
+					row.worn = row.upcoming == nil and type(worn.link) == "string" and worn.link:match("%[(.-)%]") or nil
 					local seen = byItem[row.itemId]
 					if seen == nil then
 						found[#found + 1] = row
 						byItem[row.itemId] = #found
-					elseif row.gain > found[seen].gain then
+					elseif (row.gain or 0) > (found[seen].gain or 0) then
 						found[seen] = row
 					end
 				end
@@ -215,8 +226,8 @@ function PanelTab.targets(ctx, sectionOf, bagOf)
 		rank[slot] = index
 	end
 	table.sort(found, function(left, right)
-		if left.gain ~= right.gain then
-			return left.gain > right.gain
+		if (left.gain or 0) ~= (right.gain or 0) then
+			return (left.gain or 0) > (right.gain or 0)
 		end
 		return (rank[left.slot] or math.huge) < (rank[right.slot] or math.huge)
 	end)
@@ -493,9 +504,12 @@ end
 function PanelTab.model(input)
 	local regions = {}
 	local targets, rotation = input.targets or {}, input.rotation or {}
-	if #targets > 0 then
+	-- Hotfix 2.0.2: below the spec's first gear band the region stays (the rows are upcoming picks, or
+	-- none) so its rest line can say where the picks start.
+	if #targets > 0 or input.picksStart ~= nil then
 		local rows, more = capped(targets, PanelTab.MAX_TARGETS)
-		regions[#regions + 1] = { kind = "targets", rows = rows, more = more, rest = #targets < PanelTab.MAX_TARGETS }
+		regions[#regions + 1] = { kind = "targets", rows = rows, more = more,
+			rest = #targets < PanelTab.MAX_TARGETS or input.picksStart ~= nil, picksStart = input.picksStart }
 	end
 	if #rotation > 0 then
 		local rows, more = capped(rotation, PanelTab.MAX_ROTATION)
@@ -511,7 +525,7 @@ function PanelTab.model(input)
 		local bosses, more = capped(raid.bosses or {}, PanelTab.MAX_BOSSES)
 		regions[#regions + 1] = { kind = "raid", title = raid.title, bosses = bosses, more = more }
 	end
-	return { regions = regions, targets = #targets, rotation = #rotation }
+	return { regions = regions, targets = #targets, rotation = #rotation, picksStart = input.picksStart }
 end
 
 -- The heights, pure (fix round 1, items 1 and 3) ------------------------------------------
@@ -702,6 +716,17 @@ end
 --- The worn item it replaces is no longer on this line: it sits in the name line's gap
 --- (PanelTab.nameLine, L3.7 item 22).
 function PanelTab.detailText(entry, slotWord, measure, room)
+	if entry.upcoming ~= nil then
+		-- Hotfix 2.0.2: an upcoming pick, "At level 20: " first, the rest within what is left.
+		local prefix = string.format(L.panelTargetAt, entry.upcoming) .. " "
+		local width = type(measure) == "function" and measure(prefix) or nil
+		local band = entry.upcoming
+		entry.upcoming = nil
+		local text = PanelTab.detailText(entry, slotWord, measure,
+			type(room) == "number" and type(width) == "number" and room - width or room)
+		entry.upcoming = band
+		return prefix .. text
+	end
 	if entry.source == nil then
 		return ItemTooltip.fitPlain(slotWord, measure, room)
 	end
@@ -850,6 +875,9 @@ function PanelTab.inputs(data, measure, width)
 	end, function(slot)
 		return ItemTooltip.bagLead(slot)
 	end)
+	-- Hotfix 2.0.2: the first band's level below it (from level 10), else nil.
+	local specBis = base.spec ~= nil and type(data.bis) == "table" and data.bis[base.spec] or nil
+	local picksStart = base.faction and Gear.firstBand(specBis, level) or nil
 	local current = base.current
 	local simResult = current ~= nil and newestMessage("sim_result", function(message)
 		return message.spec == current.spec
@@ -857,6 +885,7 @@ function PanelTab.inputs(data, measure, width)
 	return {
 		level = level,
 		targets = targets,
+		picksStart = picksStart,
 		waiting = waiting,
 		rotation = PanelTab.rotationRows(data, build, ranks, level, measure, width),
 		build = PanelTab.buildRegion(build, data, stagedRanks, level, staged),
@@ -1167,7 +1196,7 @@ local function drawTargets(region, model)
 		row.frame:SetHeight(PanelTab.targetRowHeight())
 		setIcon(row.icon, Compat.itemIcon(entry.itemId))
 		row.name:SetText(PanelTab.nameLine(entry, PanelTab.measure, PanelTab.nameRoom()))
-		row.gain:SetText(ItemTooltip.figureText(entry.gain, entry.unit))
+		row.gain:SetText(entry.gain ~= nil and ItemTooltip.figureText(entry.gain, entry.unit) or "")
 		row.detail:SetText(PanelTab.detailText(entry, BuildDialog.slotWord(entry.slot, _G), PanelTab.measure, room))
 		row.frame:Show()
 		y = y + PanelTab.targetRowHeight()
@@ -1188,7 +1217,8 @@ local function drawTargets(region, model)
 	end
 	rest:ClearAllPoints()
 	rest:SetPoint("TOPLEFT", region, "TOPLEFT", 0, -y)
-	rest:SetText(fitted(L.panelTargetsRest, PanelTab.innerWidth()))
+	rest:SetText(fitted(model.picksStart ~= nil and string.format(L.panelPicksStart, model.picksStart)
+		or L.panelTargetsRest, PanelTab.innerWidth()))
 	rest:Show()
 	return y + PanelTab.lineHeight()
 end
@@ -1607,6 +1637,10 @@ function PanelTab.diagLine()
 		model = { targets = 0, rotation = 0 }
 	end
 	local open = isShown(PanelTab.flyout) and isShown(pane())
+	if model.picksStart ~= nil then
+		return string.format(L.diagPanelPicksStart, open and L.diagPanelOpen or L.diagPanelClosed, model.picksStart,
+			model.rotation)
+	end
 	return string.format(L.diagPanel, open and L.diagPanelOpen or L.diagPanelClosed, model.targets, model.rotation)
 end
 

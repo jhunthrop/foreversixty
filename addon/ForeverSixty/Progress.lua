@@ -14,6 +14,7 @@ local Talents = ns.Talents or require("Talents")
 local Export = ns.Export or require("Export")
 local Compat = ns.Compat or require("Compat")
 local Gear = ns.Gear or require("Gear")
+local Follow = ns.Follow or require("Follow")
 local Rules = ns.Rules or require("Rules")
 
 local Progress = {}
@@ -485,7 +486,7 @@ local function weightsFor(data, build, ranks)
 	if build == nil then
 		return nil, nil
 	end
-	local spec = Gear.specOf(data, build.classSlug, ranks or {})
+	local spec = Follow.buildSpec(data, build) or Gear.specOf(data, build.classSlug, ranks or {})
 	local weights = spec ~= nil and data.weights ~= nil and data.weights[spec] or nil
 	return spec, weights
 end

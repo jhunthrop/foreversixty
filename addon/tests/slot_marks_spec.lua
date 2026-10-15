@@ -347,6 +347,50 @@ describe("SlotMarks", function()
 		end)
 	end)
 
+	-- Hotfix 2.0.2: below the first band (the data's bands start at 20) nothing is an upgrade yet, so
+	-- no arrow, no bag arrow and no gold corner: the hover says where picks start instead.
+	describe("below the first band (level 18)", function()
+		it("draws no arrow, no bag mark and no target corner, and the chip has no gear line", function()
+			start({ chest = WORN_CHEST }, {}, nil, 18)
+			local marks = SlotMarks.compute(DATA)
+			assert.are.same({}, marks.arrows)
+			assert.are.same({}, marks.links)
+			assert.are.same({}, marks.targets)
+			local input = Chip.inputs(DATA)
+			assert.are.equal(20, input.picksStart)
+			local model = Chip.model(input)
+			assert.are_not.equal("upgrade", model.chosen.kind)
+			assert.are_not.equal("here", model.chosen.kind)
+			local chest, legs = slotButton("CharacterChestSlot"), slotButton("CharacterLegsSlot")
+			SlotMarks.drawPaperDoll()
+			assert.is_false(arrowOn(chest))
+			assert.is_false(targetOn(chest))
+			assert.is_false(targetOn(legs))
+		end)
+
+		it("draws no gold corner for the first band's picks, though a bag item beating the worn one still arrows", function()
+			-- The arrow is the bag-versus-worn verdict (band-independent, real leveling gear); the corner
+			-- is the band's pick, which does not exist yet.
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, nil, 18)
+			local marks = SlotMarks.compute(DATA)
+			assert.are.same({ chest = true }, marks.arrows)
+			assert.are.same({}, marks.targets)
+		end)
+
+		it("keeps the empty slot's hover a Picks start line, never a Next line", function()
+			start({ chest = WORN_CHEST }, {}, nil, 18)
+			local lines = ItemTooltip.emptySlotSection(ItemTooltip.baseContext(DATA), "legs")
+			assert.are.equal("firstBand", lines[1].kind)
+			assert.are.equal("at", lines[2].kind)
+		end)
+
+		it("serves the same marks from level 20", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, nil, 20)
+			assert.are.same({ chest = true }, SlotMarks.compute(DATA).arrows)
+			assert.is_nil(Chip.inputs(DATA).picksStart)
+		end)
+	end)
+
 	describe("the frames", function()
 		-- Fix round 2: on the live client a texture made on a slot button and an OnShow
 		-- hooked on the pane tainted the pane's own Show and Hide. The marks live on addon

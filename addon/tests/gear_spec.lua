@@ -298,3 +298,30 @@ describe("Gear.bandFor", function()
 		assert.is_nil(Gear.bandFor({ [40] = "forty" }, 30))
 	end)
 end)
+
+-- Gear.firstBand (hotfix 2.0.2): the lowest band the spec has, for a character from level 10
+-- who is below it -- the "picks start at level N" rung the gear surfaces point at.
+describe("Gear.firstBand", function()
+	local Gear
+	local SPEC_BIS = { [30] = "thirty", [20] = "twenty", [50] = "fifty" }
+
+	before_each(function()
+		Gear = helper.load("Gear")
+	end)
+
+	it("answers the lowest band from level 10 up to the band itself", function()
+		assert.are.equal(20, Gear.firstBand(SPEC_BIS, 10))
+		assert.are.equal(20, Gear.firstBand(SPEC_BIS, 18))
+		assert.are.equal(20, Gear.firstBand(SPEC_BIS, 19))
+		assert.are.equal(30, Gear.firstBand({ [30] = "thirty" }, 25))
+	end)
+
+	it("answers nothing below 10, in or past the first band, or with no table, level or band", function()
+		assert.is_nil(Gear.firstBand(SPEC_BIS, 9))
+		assert.is_nil(Gear.firstBand(SPEC_BIS, 20))
+		assert.is_nil(Gear.firstBand(SPEC_BIS, 45))
+		assert.is_nil(Gear.firstBand(nil, 15))
+		assert.is_nil(Gear.firstBand(SPEC_BIS, nil))
+		assert.is_nil(Gear.firstBand({}, 15))
+	end)
+end)

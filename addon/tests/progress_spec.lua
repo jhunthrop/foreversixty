@@ -977,3 +977,25 @@ describe("Progress.gearPlan, a cold weapon", function()
 		assert.is_nil(bySlot.chest.cold)
 	end)
 end)
+
+-- Hotfix 2.0.2: below the first band the gear plan stays nil -- the guild gap cell blank, the hello 0.
+describe("Progress.gearPlan below the first band", function()
+	local DATA_20 = { bis = { ["warrior-arms"] = { [20] = { alliance = {
+		chest = "100|D|The Deadmines: Defias Overseer" } } } } }
+	local CURRENT = { weights = { strength = 1 }, spec = "warrior-arms" }
+	local equipped = { chest = { itemId = 50, link = "item:50", equipLoc = "INVTYPE_CHEST", stats = { strength = 4 } } }
+
+	it("answers nothing at 10 to 19, and a plan from 20", function()
+		for _, level in ipairs({ 10, 15, 19 }) do
+			assert.is_nil(Progress.gearPlan(DATA_20, "warrior-arms", level, "alliance", equipped, CURRENT,
+				function() return false end), "level " .. level)
+		end
+		local Gear = require("Gear")
+		local real = Gear.itemStatsOf
+		Gear.itemStatsOf = function() return { strength = 9 } end
+		local plan = Progress.gearPlan(DATA_20, "warrior-arms", 20, "alliance", equipped, CURRENT,
+			function() return false end)
+		Gear.itemStatsOf = real
+		assert.is_not_nil(plan)
+	end)
+end)

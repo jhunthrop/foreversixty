@@ -594,6 +594,11 @@ local L = {
 	-- An empty paper-doll slot the band names no pick for (L4.1 fix round 1): the web
 	-- panel's own wording, muted, never silence.
 	tooltipNoPick = "No pick for your band yet",
+	-- Hotfix 2.0.2: from level 10, below the spec's first gear band (the data's start at 20), the
+	-- first band's picks are upcoming, never a "Next upgrade". Muted first line on a worn item and an
+	-- empty slot, then the "At level 20" line; a bag item the plan names says so instead of a verdict.
+	tooltipUntilFirstBand = "Picks start at level %d",
+	tooltipPlannedFirstBand = "Planned for your build at level %d",
 	-- L4.1 fix round 5 (the personas): a slot carrying the green arrow leads its hover with the
 	-- bag fact; a plan line too wide for the build's name; a world drop that binds when
 	-- equipped; a ranged alternative firing other ammo than the worn ranged weapon.
@@ -839,6 +844,8 @@ local L = {
 	-- The upgrade's hint in combat; the chip line itself says "In combat".
 	chipHintInCombat = "Click: nothing until combat ends",
 	chipHintLastRaid = "Click: Show the line",
+	-- Hotfix 2.0.2: the hover's muted line from level 10 until the spec's first gear band.
+	chipHintPicksStart = "Gear picks start at level %d.",
 	-- Right-click and /fs chip.
 	chipHiddenLine = "Chip hidden until level %d. /fs chip brings it back.",
 	chipHiddenMaxLine = "Chip hidden. /fs chip brings it back.",
@@ -1019,6 +1026,10 @@ L.panelTargetDetail = "%s · %s"
 L.panelTargetOver = " · over %s"
 -- Fix round 3, item 6: under fewer than five targets.
 L.panelTargetsRest = "Nothing better for your level in other slots."
+-- Hotfix 2.0.2: below the spec's first gear band the rows are upcoming picks ("At level 20:" before
+-- the slot and source, no figure) and the rest line says where the picks start.
+L.panelTargetAt = "At level %d:"
+L.panelPicksStart = "Picks start at level %d."
 -- A learned rotation line's number, before its name ("1. Aimed Shot Rank 1").
 L.panelRotationNumber = "%d."
 -- An ability the character has not learned yet, muted and listed last; the next band's
@@ -1084,6 +1095,8 @@ L.panelRaidJoin = " · "
 L.panelEmpty = "Nothing to show yet. Load a build with /fs."
 -- /fs diag: "Panel: closed, 3 targets, rotation 4 rows" (L4.3 ruling 7, for the captures).
 L.diagPanel = "Panel: %s, %d targets, rotation %d rows"
+-- Below the spec's first gear band: "Panel: closed, picks start at level 20, rotation 4 rows".
+L.diagPanelPicksStart = "Panel: %s, picks start at level %d, rotation %d rows"
 L.diagPanelOpen = "open"
 L.diagPanelClosed = "closed"
 L.diagPanelFailed = "The character panel tab failed and is off until /reload: %s"

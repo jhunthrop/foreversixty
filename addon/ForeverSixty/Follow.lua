@@ -233,6 +233,55 @@ function Follow.specName(spec)
 	return Talents.titleCase(tree)
 end
 
+--- The tree an active build is for, as a spec slug: the build's own `spec` (a data default
+--- carries one), else the class tree its plan spends the most points in ("hunter-marksmanship"
+--- for a Marksmanship plan, whatever is spent so far); nil when neither says. Comms.buildSpec.
+function Follow.buildSpec(data, build)
+	if type(build) ~= "table" then
+		return nil
+	end
+	if type(build.spec) == "string" and build.spec ~= "" then
+		return build.spec
+	end
+	local class = type(data) == "table" and type(data.classes) == "table" and data.classes[build.classSlug] or nil
+	if type(class) ~= "table" or type(class.tabs) ~= "table" then
+		return nil
+	end
+	local spent = {}
+	for _, point in ipairs(build.order or {}) do
+		if type(point) == "table" and type(point.tab) == "number" then
+			spent[point.tab] = (spent[point.tab] or 0) + 1
+		end
+	end
+	local best, bestTab = 0, nil
+	for tab, entry in ipairs(class.tabs) do
+		if (spent[tab] or 0) > best and type(entry) == "table" and type(entry.name) == "string" then
+			best, bestTab = spent[tab], tab
+		end
+	end
+	return bestTab ~= nil and build.classSlug .. "-" .. Export.slugify(class.tabs[bestTab].name) or nil
+end
+
+--- Hotfix 2.0.2: the spec every surface displays and scores in. Whenever a build is followed it is
+--- the build's (Follow.buildSpec), so a level-6 paladin on the Retribution path card reads
+--- Retribution though no talent point is spent; the talents' leading tree (Gear.specOf over the
+--- real ranks, a tie or none spent the first tree) is the fallback only with no build. `classSlug`
+--- and `ranks` default to the client's. nil with neither a build nor a resolvable class. Other
+--- players' specs (Inspect) stay on their talents.
+function Follow.currentSpec(data, classSlug, ranks)
+	local spec = Follow.buildSpec(data, Follow.build)
+	if spec ~= nil then
+		return spec
+	end
+	classSlug = classSlug or Talents.playerClassSlug()
+	if classSlug == nil or type(data) ~= "table" or type(data.classes) ~= "table"
+		or type(data.classes[classSlug]) ~= "table" then
+		return nil
+	end
+	local ok, talentSpec = pcall(gearModule().specOf, data, classSlug, ranks or Talents.readRanks(data))
+	return ok and talentSpec or nil
+end
+
 --- A character with no build saved in any slot follows the data's default for its spec
 --- (`data.defaultBuilds[<spec>]`, contract 1): leveling, raid at RAID_LEVEL. The spec is
 --- Gear.specOf's, which is the tree with the most points (a tie, or none spent, the first tree;

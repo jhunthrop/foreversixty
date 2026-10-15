@@ -1436,7 +1436,10 @@ describe("ItemTooltip.section", function()
 		end)
 
 		it("says it below the band floor too, never a bare Equipped", function()
-			assert.are.same({ L.tooltipNoPick }, texts((ItemTooltip.section(wornSword({ level = 15 })))))
+			-- Level 9 is under the first-band rung (from 10); level 15 says where the picks start.
+			assert.are.same({ L.tooltipNoPick }, texts((ItemTooltip.section(wornSword({ level = 9 })))))
+			assert.are.same({ string.format(L.tooltipUntilFirstBand, 20) },
+				texts((ItemTooltip.section(wornSword({ level = 15 })))))
 		end)
 
 		it("keeps the worn pick's Best until line and a Next line for a pick it trails", function()
@@ -1514,7 +1517,7 @@ describe("ItemTooltip.section", function()
 		end)
 
 		it("says No pick for your band yet below the band floor, with no faction, or for a slot with no pick", function()
-			noPick((ItemTooltip.emptySlotSection(empty({ equipped = {}, level = 15 }), "chest")))
+			noPick((ItemTooltip.emptySlotSection(empty({ equipped = {}, level = 9 }), "chest")))
 			noPick((ItemTooltip.emptySlotSection(empty({ equipped = {}, faction = false }), "chest")))
 			local lines, target, pending, head = ItemTooltip.emptySlotSection(empty({ equipped = {} }), "head")
 			noPick(lines)
@@ -1544,6 +1547,98 @@ describe("ItemTooltip.section", function()
 				isMissing = function(id) return id == 100 end }), "chest")
 			assert.are.equal(ItemTooltip.nextLine("Quest Chest"), lines[1].text)
 			assert.are.equal(101, lines[1].itemId)
+		end)
+	end)
+
+	-- Hotfix 2.0.2: from level 10, below the spec's first band (the shipped bands start at 20), the
+	-- first band's picks are UPCOMING targets: "Picks start at level 20" (muted) and the "At level 20"
+	-- line, never a Next line, a verdict arrow or "No pick for your band yet".
+	describe("below the first band (level 10 to 19)", function()
+		local CHEST_ITEM = { itemId = 50, link = WORN_LINK, equipLocation = "INVTYPE_CHEST", itemClass = 4,
+			itemSubClass = 3, stats = { strength = 4 } }
+		local AT = string.format(L.tooltipAtBand, 20, "Defias Overseer Chest", NEXT_SOURCE)
+		local STARTS = string.format(L.tooltipUntilFirstBand, 20)
+
+		local function kinds(lines)
+			local out = {}
+			for _, line in ipairs(lines) do
+				out[#out + 1] = line.kind or false
+			end
+			return out
+		end
+
+		it("pins the wording", function()
+			assert.are.equal("Picks start at level 20", STARTS)
+			assert.are.equal("Planned for your build at level 20", string.format(L.tooltipPlannedFirstBand, 20))
+		end)
+
+		it("prints Picks start at level 20, muted, then the At line on the worn item", function()
+			local lines, target = ItemTooltip.section(ctx({ level = 18, item = CHEST_ITEM }))
+			assert.are.same({ STARTS, AT }, texts(lines))
+			assert.are.equal("muted", lines[1].color)
+			assert.are.equal("at", lines[2].kind)
+			assert.is_nil(lines[2].gain)
+			assert.is_nil(target)
+			assert.is_nil(lines[1].verdict)
+		end)
+
+		it("prints only the first line when the worn item is the first band's pick", function()
+			local worn = { chest = { itemId = 100, link = "item:100", stats = { strength = 20 } } }
+			local lines = ItemTooltip.section(ctx({ level = 10, equipped = worn, item = { itemId = 100,
+				link = "item:100", equipLocation = "INVTYPE_CHEST", itemClass = 4, itemSubClass = 3,
+				stats = { strength = 20 } } }))
+			assert.are.same({ STARTS }, texts(lines))
+		end)
+
+		it("waits for a pick name the client has not sent, as the At line does", function()
+			local lines, _, pending = ItemTooltip.section(ctx({ level = 18, item = CHEST_ITEM,
+				nameOf = function() return nil end }))
+			assert.are.same({ STARTS }, texts(lines))
+			assert.is_true(pending[100])
+		end)
+
+		it("plans a bag item the first band names, with no arrow verdict and no gain figure", function()
+			local lines, target = ItemTooltip.section(ctx({ level = 18, item = { itemId = 100, link = "item:100",
+				equipLocation = "INVTYPE_CHEST", itemClass = 4, itemSubClass = 3, stats = { strength = 20 } } }))
+			assert.are.same({ string.format(L.tooltipPlannedFirstBand, 20) }, texts(lines))
+			assert.are.equal("gold", lines[1].color)
+			assert.are.same({ "planned" }, kinds(lines))
+			assert.is_nil(target)
+		end)
+
+		it("names the later band for a bag item only a later band picks", function()
+			local lines = texts(ItemTooltip.section(ctx({ level = 18, item = { itemId = 200, link = "item:200",
+				equipLocation = "INVTYPE_CHEST", itemClass = 4, itemSubClass = 3, stats = { strength = 10 } } })))
+			assert.are.same({ string.format(L.tooltipPlannedFirstBand, 30) }, lines)
+		end)
+
+		it("keeps the old words below level 10 and with no faction, and says nothing new from the first band up", function()
+			assert.are.same({ L.tooltipNoPick }, texts((ItemTooltip.section(ctx({ level = 9, item = CHEST_ITEM })))))
+			assert.are.same({ L.tooltipNoPick }, texts((ItemTooltip.section(ctx({ level = 18, faction = false,
+				item = CHEST_ITEM, equipped = { chest = { itemId = 50, link = WORN_LINK, stats = {} } } })))))
+			local atBand = texts(ItemTooltip.section(ctx({ level = 20, item = CHEST_ITEM })))
+			for _, text in ipairs(atBand) do
+				assert.is_nil(text:find(STARTS, 1, true))
+			end
+		end)
+
+		it("prints the first band's pick on an empty slot: Picks start, then At, no Next line, no target", function()
+			local lines, target, _, head = ItemTooltip.emptySlotSection(ctx({ level = 15, item = false,
+				equipped = {} }), "chest")
+			assert.are.same({ STARTS, AT }, texts(lines))
+			assert.are.same({ "firstBand", "at" }, kinds(lines))
+			assert.is_nil(target)
+			assert.are.same({ specWord = "Arms", tag = "default", equipped = false }, head)
+		end)
+
+		it("keeps the pair rule on an empty slot, and says only where picks start for a slot with none", function()
+			local named = function(id) return id == 400 and "Quest Ring" or NAMES[id] end
+			local first = texts((ItemTooltip.emptySlotSection(ctx({ level = 15, item = false, equipped = {},
+				nameOf = named }), "finger1")))
+			assert.are.equal(string.format(L.tooltipAtBand, 20, "Quest Ring",
+				ItemTooltip.sourceLine({ kind = "Q", source = "Ring Quest" })), first[2])
+			assert.are.same({ STARTS }, texts((ItemTooltip.emptySlotSection(ctx({ level = 15, item = false,
+				equipped = {} }), "head"))))
 		end)
 	end)
 end)

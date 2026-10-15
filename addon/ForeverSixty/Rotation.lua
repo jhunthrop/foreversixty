@@ -12,6 +12,7 @@ local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Gear = ns.Gear or require("Gear")
+local Follow = ns.Follow or require("Follow")
 
 local Rotation = {}
 
@@ -26,7 +27,9 @@ local function specBands(data, build, ranks)
 	if build == nil or type(data.rotations) ~= "table" then
 		return nil
 	end
-	local spec = Gear.specOf(data, build.classSlug, ranks)
+	-- The build's own spec first (hotfix 2.0.2: a level-6 character on the Retribution path has no
+	-- points yet, and the talents' tie would read Holy), the talents' leading tree otherwise.
+	local spec = Follow.buildSpec(data, build) or Gear.specOf(data, build.classSlug, ranks)
 	return spec and data.rotations[spec] or nil
 end
 

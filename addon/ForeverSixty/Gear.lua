@@ -444,6 +444,27 @@ function Gear.bandFor(specBis, level)
 	return nil
 end
 
+--- Hotfix 2.0.2: the lowest band `specBis` has, for a character from level 10 who is below it
+--- (the shipped bands start at 20, so a level 10-19 character): the rung the gear surfaces point at
+--- as upcoming ("Picks start at level 20"), never as a "Next upgrade". nil below level 10, from
+--- that band up (Gear.bandFor serves it), or with no table, level or band.
+Gear.UPCOMING_MIN_LEVEL = 10
+function Gear.firstBand(specBis, level)
+	if type(specBis) ~= "table" or type(level) ~= "number" or level < Gear.UPCOMING_MIN_LEVEL then
+		return nil
+	end
+	local lowest
+	for band in pairs(specBis) do
+		if type(band) == "number" and (lowest == nil or band < lowest) then
+			lowest = band
+		end
+	end
+	if lowest == nil or level >= lowest then
+		return nil
+	end
+	return lowest
+end
+
 --- The sim's figures for `spec` at `level` (contract 1's dpsPerPoint): the band's
 --- own { reference, dps, weaponDps }, read with the chip's band rule
 --- (Gear.bandFor over the spec's measured bands, so 20 serves 20-29), band 20 below
@@ -665,7 +686,7 @@ end
 --- slot it fits.
 function Gear.upgrades(data, build)
 	local ranks = Talents.readRanks(data)
-	local spec = Gear.specOf(data, build.classSlug, ranks)
+	local spec = Follow.buildSpec(data, build) or Gear.specOf(data, build.classSlug, ranks)
 	local weights = spec and data.weights[spec] or nil
 	if weights == nil then
 		return {}
@@ -712,7 +733,7 @@ function Gear.lines(data, build)
 	if build == nil then
 		return { L.gearNoBuild }
 	end
-	local spec = Gear.specOf(data, build.classSlug, Talents.readRanks(data))
+	local spec = Follow.buildSpec(data, build) or Gear.specOf(data, build.classSlug, Talents.readRanks(data))
 	if spec == nil or data.weights[spec] == nil then
 		return { L.gearNoWeights }
 	end

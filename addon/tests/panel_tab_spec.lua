@@ -365,7 +365,10 @@ describe("PanelTab", function()
 		it("is empty with no build, or a spec with no rotation", function()
 			start()
 			assert.are.same({}, PanelTab.rotationRows(DATA, nil, {}, 21))
-			assert.are.same({}, PanelTab.rotationRows(DATA, BUILD, { [2] = { ["1:1"] = 5 } }, 21))
+			-- A followed build names the spec (hotfix 2.0.2): a Fury plan has no rotation in the data.
+			local fury = { classSlug = "warrior", order = { { tab = 2, tier = 1, column = 1 },
+				{ tab = 2, tier = 1, column = 1 } } }
+			assert.are.same({}, PanelTab.rotationRows(DATA, fury, {}, 21))
 		end)
 	end)
 
@@ -1956,6 +1959,96 @@ describe("PanelTab", function()
 				assert.is_true(four.rest)
 				assert.are.equal(S.panelTitle + 4 * PanelTab.targetRowHeight() + 4 * S.panelRowGap + PanelTab.lineHeight(),
 					PanelTab.regionHeight(four))
+			end)
+		end)
+
+		-- Hotfix 2.0.2: from level 10, below the spec's first band (20 in the data), the band-20
+		-- picks are listed as upcoming: "At level 20:" before the source, no gain, and the rest
+		-- line says where the picks start.
+		describe("below the first band", function()
+			local function openLow(worn, options)
+				local pane = start(worn, options)
+				PanelTab.refresh(DATA)
+				click(_G[PanelTab.BUTTON_NAME])
+				return pane, _G[PanelTab.FLYOUT_NAME]
+			end
+
+			local function regionIn(model, kind)
+				for _, region in ipairs(model.regions) do
+					if region.kind == kind then
+						return region
+					end
+				end
+				return nil
+			end
+
+			it("lists the band-20 picks of the worn slots, upcoming and unscored", function()
+				openLow({ chest = WORN_CHEST, legs = THIN_LEGS }, { level = 18 })
+				local entry = regionIn(PanelTab.last, "targets")
+				assert.are.equal(2, #entry.rows)
+				local ids = {}
+				for _, row in ipairs(entry.rows) do
+					assert.is_nil(row.gain)
+					assert.are.equal(20, row.upcoming)
+					assert.is_nil(row.worn)
+					ids[row.slot] = row.itemId
+				end
+				assert.are.same({ chest = 300, legs = 400 }, ids)
+				assert.are.equal(20, entry.picksStart)
+				assert.is_true(entry.rest)
+				assert.are.equal(20, PanelTab.last.picksStart)
+				assert.are.equal(2, PanelTab.last.targets)
+			end)
+
+			it("draws At level 20: before the source, no gain figure, and Picks start at level 20. under the rows", function()
+				openLow({ chest = WORN_CHEST, legs = THIN_LEGS }, { level = 18 })
+				local region = PanelTab.regionFrames.targets
+				assert.are.equal("Picks start at level 20.", string.format(L.panelPicksStart, 20))
+				assert.are.equal("At level 20:", string.format(L.panelTargetAt, 20))
+				assert.are.equal("Picks start at level 20.", region.rest:GetText())
+				assert.is_true(region.rest:IsShown())
+				for _, row in ipairs(PanelTab.targetRows) do
+					if row.frame:IsShown() then
+						assert.are.equal("", row.gain:GetText())
+						assert.are.equal("At level 20: ", row.detail:GetText():sub(1, 13))
+						assert.is_nil(row.name:GetText():find("over", 1, true))
+					end
+				end
+			end)
+
+			it("keeps the region, with the line alone, when nothing worn differs", function()
+				openLow({}, { level = 18 })
+				local entry = regionIn(PanelTab.last, "targets")
+				assert.are.equal(0, #entry.rows)
+				assert.is_true(entry.rest)
+				assert.are.equal("Picks start at level 20.", PanelTab.regionFrames.targets.rest:GetText())
+			end)
+
+			it("reads the plain rest line and the Next line from level 20, and nothing under 10", function()
+				openLow({ chest = WORN_CHEST }, { level = 20 })
+				assert.is_nil(PanelTab.last.picksStart)
+				assert.are.equal(L.panelTargetsRest, PanelTab.regionFrames.targets.rest:GetText())
+				openLow({ chest = WORN_CHEST }, { level = 9 })
+				assert.is_nil(PanelTab.last.picksStart)
+			end)
+
+			it("prints the diag line with where the picks start", function()
+				start({ chest = WORN_CHEST }, { level = 18 })
+				local diag = PanelTab.diagLine()
+				assert.is_truthy(diag:match("^Panel: closed, picks start at level 20, rotation %d+ rows$"))
+				assert.are.equal("Panel: closed, picks start at level 20, rotation 3 rows",
+					string.format(L.diagPanelPicksStart, L.diagPanelClosed, 20, 3))
+				start({ chest = WORN_CHEST }, { level = 21 })
+				assert.is_truthy(PanelTab.diagLine():match("^Panel: closed, %d+ targets, rotation %d+ rows$"))
+			end)
+
+			it("models a plain input with picksStart and no rows", function()
+				start()
+				local region = PanelTab.model({ targets = {}, picksStart = 20 }).regions[1]
+				assert.are.equal("targets", region.kind)
+				assert.is_true(region.rest)
+				assert.are.equal(20, region.picksStart)
+				assert.are.same({}, PanelTab.model({ targets = {} }).regions)
 			end)
 		end)
 	end)

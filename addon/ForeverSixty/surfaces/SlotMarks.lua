@@ -179,7 +179,7 @@ local function readClient(data)
 	local level = Chip.level()
 	local ranks = Talents.readRanks(data)
 	local classSlug = Talents.playerClassSlug()
-	local spec = classSlug ~= nil and Gear.specOf(data, classSlug, ranks) or nil
+	local spec = classSlug ~= nil and Follow.currentSpec(data, classSlug, ranks) or nil
 	local bagLinks = Gear.bagLinks()
 	local upgrades = {}
 	local build = Follow.build
