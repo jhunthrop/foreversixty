@@ -1077,6 +1077,43 @@ describe("PanelTab", function()
 				assert.are.equal("Kill Command", unranked)
 			end)
 
+			-- Live bug: a level-1 rogue saw "Sinister Strike Rank 2": the rows come from the lowest band,
+			-- whose spell ids are the Rank 2 spells, so the client's subtext said "Rank 2" whatever was learned.
+			it("shows the spellbook's learned rank over the band spell id's subtext", function()
+				start()
+				local savedGet = _G.GetSpellSubtext
+				_G.GetSpellSubtext = function()
+					return "Rank 2"
+				end
+				_G.GetNumSpellTabs = function()
+					return 1
+				end
+				_G.GetSpellTabInfo = function()
+					return "Class", "icon", 0, 1
+				end
+				_G.GetSpellBookItemName = function()
+					return "Sinister Strike", "Rank 1"
+				end
+				local learned = ItemTooltip.stripEscapes(PanelTab.rotationName({ number = 1, name = "Sinister Strike",
+					spellId = 2098 }))
+				local later = ItemTooltip.stripEscapes(PanelTab.rotationName({ name = "Eviscerate", spellId = 6761,
+					at = string.format(L.panelRotationAt, 10) }))
+				_G.GetSpellSubtext, _G.GetNumSpellTabs, _G.GetSpellTabInfo, _G.GetSpellBookItemName = savedGet, nil, nil, nil
+				assert.are.equal("1. Sinister Strike Rank 1", learned)
+				assert.are.equal("Eviscerate Rank 2 at level 10", later)
+			end)
+
+			it("shows no rank when the spellbook has no entry and the spell has no subtext", function()
+				start()
+				local savedGet = _G.GetSpellSubtext
+				_G.GetSpellSubtext = function()
+					return nil
+				end
+				local text = ItemTooltip.stripEscapes(PanelTab.rotationName({ name = "Kill Command", spellId = 10 }))
+				_G.GetSpellSubtext = savedGet
+				assert.are.equal("Kill Command", text)
+			end)
+
 			it("draws the rotation: number, name and rank, the condition under it, a later one muted", function()
 				open({ chest = WORN_CHEST })
 				local first, later = PanelTab.rotationWidgets[1], PanelTab.rotationWidgets[2]

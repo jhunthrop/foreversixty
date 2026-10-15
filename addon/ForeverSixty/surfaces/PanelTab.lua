@@ -760,11 +760,14 @@ function PanelTab.rotationName(entry)
 		parts[#parts + 1] = muted(string.format(L.panelRotationNumber, entry.number))
 	end
 	parts[#parts + 1] = entry.name or ""
-	-- A rank on every row that has one, the ones not learned yet too (L3.7 item 25).
-	local rank = Compat.spellSubtext(entry.spellId)
+	-- A rank on every row that has one, the ones not learned yet too (L3.7 item 25). The rows come
+	-- from the data's lowest band, so the spell id is that band's rank and the client's subtext for
+	-- it names that rank whatever the character has learned: a learned spell shows the spellbook's
+	-- highest learned rank; with no spellbook entry (not learned yet) the id's own subtext stands,
+	-- and an unranked spell shows none.
+	local rank = Compat.spellbookRank(entry.name)
 	if type(rank) ~= "string" or rank == "" then
-		-- The client's subtext gave none for a learned ranked spell: the spellbook's highest rank.
-		rank = Compat.spellbookRank(entry.name)
+		rank = Compat.spellSubtext(entry.spellId)
 	end
 	if type(rank) == "string" and rank ~= "" then
 		parts[#parts + 1] = muted(rank)
