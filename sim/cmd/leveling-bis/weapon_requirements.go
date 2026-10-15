@@ -226,6 +226,8 @@ var rangedWeaponTypesForSkillClasses = map[string]bool{"bow": true, "gun": true,
 //     rebuild lands) - is excluded. An unsourced-type weapon is never
 //     a caster's wand (this lane's brief's own words): the absence of
 //     proof is not proof of a wand.
+//   - hunter only: a thrown weapon is excluded (L9.2 part B1) - a hunter
+//     cannot Auto/Aimed/Multi-Shot with one. Warrior and rogue keep it.
 //   - rangedWeaponSkillClasses (hunter/warrior/rogue): a RECOGNISED,
 //     non-wand type (rangedWeaponTypesForSkillClasses) is kept; a
 //     recognised type this class cannot use (a caster's wand) is
@@ -255,6 +257,9 @@ func restrictRangedByProficiency(list []scored, classSlug string) []scored {
 				out = append(out, c)
 			}
 		case rangedWeaponSkillClasses[classSlug]:
+			if classSlug == "hunter" && isThrownCandidate(c.candidate) {
+				continue
+			}
 			if c.WeaponType == "" || rangedWeaponTypesForSkillClasses[c.WeaponType] {
 				out = append(out, c)
 			}
@@ -393,4 +398,13 @@ func restrictToProficientWeapons(list []scored, allowed map[int]bool) []scored {
 		out = append(out, c)
 	}
 	return out
+}
+
+// itemSubclassThrown is Classic's ITEM_SUBCLASS_WEAPON_THROWN.
+const itemSubclassThrown = 16
+
+// isThrownCandidate reports a thrown weapon by its weapon_type or, when the
+// row has no weapon_type, its item subclass.
+func isThrownCandidate(c candidate) bool {
+	return c.WeaponType == "thrown" || (c.WeaponType == "" && c.SubclassID == itemSubclassThrown)
 }

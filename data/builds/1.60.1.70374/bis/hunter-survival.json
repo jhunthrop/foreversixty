@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70374",
   "engine_version": "a73988d91",
-  "generated_at": "2026-10-14T22:52:34Z",
+  "generated_at": "2026-10-14T23:52:36Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -745,8 +745,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.472263264,
-      "verify_run_seconds": 4.317387676,
+      "weights_run_seconds": 1.3146936679999999,
+      "verify_run_seconds": 3.967739472,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1584,8 +1584,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.472263264,
-      "verify_run_seconds": 4.310702258,
+      "weights_run_seconds": 1.3146936679999999,
+      "verify_run_seconds": 3.955339446,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2403,13 +2403,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 3463,
-              "item_name": "Silver Star",
-              "source_kind": "quest",
-              "source": "Stealing Supplies",
-              "dps_delta": -0.093130515
-            },
-            {
               "item_id": 2098,
               "item_name": "Double-barreled Shotgun",
               "source_kind": "world_drop",
@@ -2422,18 +2415,25 @@
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear",
               "dps_delta": -0.097864814
+            },
+            {
+              "item_id": 273033,
+              "item_name": "Gravespike Repeater",
+              "source_kind": "world",
+              "source": "Atrexis the Grave Knight",
+              "dps_delta": -0.149077956
             }
           ],
           "runners_up": [
             {
-              "item_id": 3463,
-              "source_kind": "quest",
-              "source": "Stealing Supplies"
-            },
-            {
               "item_id": 2098,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            {
+              "item_id": 274748,
+              "source_kind": "vendor",
+              "source": "Gezzy Gunkgear"
             }
           ]
         }
@@ -2474,8 +2474,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.466882541,
-      "verify_run_seconds": 2.4062940250000002,
+      "weights_run_seconds": 1.302842354,
+      "verify_run_seconds": 2.31396897,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -3285,13 +3285,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 3463,
-              "item_name": "Silver Star",
-              "source_kind": "quest",
-              "source": "Stealing Supplies",
-              "dps_delta": -0.093130515
-            },
-            {
               "item_id": 2098,
               "item_name": "Double-barreled Shotgun",
               "source_kind": "world_drop",
@@ -3304,18 +3297,25 @@
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear",
               "dps_delta": -0.097864814
+            },
+            {
+              "item_id": 273033,
+              "item_name": "Gravespike Repeater",
+              "source_kind": "world",
+              "source": "Atrexis the Grave Knight",
+              "dps_delta": -0.149077956
             }
           ],
           "runners_up": [
             {
-              "item_id": 3463,
-              "source_kind": "quest",
-              "source": "Stealing Supplies"
-            },
-            {
               "item_id": 2098,
               "source_kind": "world_drop",
               "source": "World drop"
+            },
+            {
+              "item_id": 274748,
+              "source_kind": "vendor",
+              "source": "Gezzy Gunkgear"
             }
           ]
         }
@@ -3356,8 +3356,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 1.466882541,
-      "verify_run_seconds": 2.455241168,
+      "weights_run_seconds": 1.302842354,
+      "verify_run_seconds": 2.263581301,
       "coverage": {
         "back": {
           "eligible": 179,
@@ -4246,8 +4246,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.410505222,
-      "verify_run_seconds": 2.957486046,
+      "weights_run_seconds": 1.267814287,
+      "verify_run_seconds": 2.750264268,
       "coverage": {
         "back": {
           "eligible": 243,
@@ -5122,8 +5122,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.410505222,
-      "verify_run_seconds": 2.953296443,
+      "weights_run_seconds": 1.267814287,
+      "verify_run_seconds": 2.657520329,
       "coverage": {
         "back": {
           "eligible": 245,
@@ -6052,8 +6052,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.386077671,
-      "verify_run_seconds": 6.083830897,
+      "weights_run_seconds": 1.308358635,
+      "verify_run_seconds": 5.447922563,
       "coverage": {
         "back": {
           "eligible": 310,
@@ -6972,8 +6972,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.386077671,
-      "verify_run_seconds": 3.552067822,
+      "weights_run_seconds": 1.308358635,
+      "verify_run_seconds": 3.109995462,
       "coverage": {
         "back": {
           "eligible": 315,
@@ -7935,8 +7935,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.464552133,
-      "verify_run_seconds": 12.70162638,
+      "weights_run_seconds": 1.299662378,
+      "verify_run_seconds": 11.406210259,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -8899,8 +8899,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Ravencrest's Legacy"
       ],
-      "weights_run_seconds": 1.464552133,
-      "verify_run_seconds": 13.074723472,
+      "weights_run_seconds": 1.299662378,
+      "verify_run_seconds": 11.762279967,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -9857,8 +9857,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.466870957,
-      "verify_run_seconds": 10.150573297,
+      "weights_run_seconds": 1.282199142,
+      "verify_run_seconds": 9.223937081,
       "coverage": {
         "back": {
           "eligible": 381,
@@ -10814,8 +10814,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 1.466870957,
-      "verify_run_seconds": 10.218620496,
+      "weights_run_seconds": 1.282199142,
+      "verify_run_seconds": 9.575384539,
       "coverage": {
         "back": {
           "eligible": 386,

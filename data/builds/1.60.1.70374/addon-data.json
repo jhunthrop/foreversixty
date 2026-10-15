@@ -24056,9 +24056,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 285279,
+                  "item_id": 4372,
                   "source_kind": "crafted",
-                  "source": "Blacksmithing"
+                  "source": "Engineering"
                 }
               ]
             }
@@ -24603,14 +24603,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13137,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 273029,
                   "source_kind": "dungeon",
                   "source": "Excavation Site: Wetlands: Relic Guardian"
-                },
-                {
-                  "item_id": 3463,
-                  "source_kind": "quest",
-                  "source": "Stealing Supplies"
                 }
               ]
             }
@@ -24870,14 +24870,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 273029,
-                  "source_kind": "dungeon",
-                  "source": "Excavation Site: Wetlands: Relic Guardian"
+                  "item_id": 13137,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
-                  "item_id": 3463,
-                  "source_kind": "quest",
-                  "source": "Stealing Supplies"
+                  "item_id": 19561,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · Legionnaire · Horde"
                 }
               ]
             }
@@ -25578,12 +25578,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13109,
+                  "item_id": 8259,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 8259,
+                  "item_id": 13109,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -25614,14 +25614,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14807,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 15084,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 18711,
+                  "source_kind": "world",
+                  "source": "Arena Treasure Chest"
                 }
               ]
             },
@@ -25785,20 +25785,20 @@
               ]
             },
             "ranged": {
-              "item_id": 285281,
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
+              "item_id": 2100,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 2100,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
                 {
                   "item_id": 13022,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Relic Coffer"
+                },
+                {
+                  "item_id": 16004,
+                  "source_kind": "crafted",
+                  "source": "Engineering"
                 }
               ]
             }
@@ -25865,14 +25865,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 8259,
+                  "item_id": 13109,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 8195,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 8259,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -26083,20 +26083,20 @@
               ]
             },
             "ranged": {
-              "item_id": 285281,
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
+              "item_id": 2100,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 2100,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
                 {
                   "item_id": 13022,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Relic Coffer"
+                },
+                {
+                  "item_id": 16004,
+                  "source_kind": "crafted",
+                  "source": "Engineering"
                 }
               ]
             }
@@ -26119,7 +26119,7 @@
             249469,
             7947,
             274753,
-            285281
+            2100
           ],
           "horde": [
             8348,
@@ -26136,7 +26136,7 @@
             249469,
             7947,
             274753,
-            285281
+            2100
           ]
         },
         "weights": {
@@ -26980,9 +26980,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 285279,
+                  "item_id": 4372,
                   "source_kind": "crafted",
-                  "source": "Blacksmithing"
+                  "source": "Engineering"
                 }
               ]
             }
@@ -27388,30 +27388,30 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 7358,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
                   "item_id": 5970,
                   "source_kind": "dungeon",
                   "source": "Wailing Caverns: Lord Serpentis"
-                },
-                {
-                  "item_id": 6408,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
             "waist": {
-              "item_id": 252520,
+              "item_id": 252521,
               "source_kind": "crafted",
               "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252521,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 20090,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
                 },
                 {
-                  "item_id": 20090,
+                  "item_id": 20117,
                   "source_kind": "rep",
                   "source": "The League of Arathor"
                 }
@@ -27478,14 +27478,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 1076,
-                  "source_kind": "dungeon",
-                  "source": "The Stockade: Defias Prisoner"
-                },
-                {
                   "item_id": 6748,
                   "source_kind": "quest",
                   "source": "Willix the Importer"
+                },
+                {
+                  "item_id": 1076,
+                  "source_kind": "dungeon",
+                  "source": "The Stockade: Defias Prisoner"
                 }
               ]
             },
@@ -27521,15 +27521,15 @@
               ]
             },
             "ranged": {
-              "item_id": 3463,
-              "source_kind": "quest",
-              "source": "Stealing Supplies",
+              "item_id": 274748,
+              "source_kind": "vendor",
+              "source": "Gezzy Gunkgear",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 274748,
-                  "source_kind": "vendor",
-                  "source": "Gezzy Gunkgear"
+                  "item_id": 13137,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 273029,
@@ -27667,20 +27667,20 @@
               ]
             },
             "waist": {
-              "item_id": 252520,
+              "item_id": 252521,
               "source_kind": "crafted",
               "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252521,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                },
-                {
                   "item_id": 16659,
                   "source_kind": "quest",
                   "source": "Je'neu of the Earthen Ring"
+                },
+                {
+                  "item_id": 20152,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
                 }
               ]
             },
@@ -27794,14 +27794,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 273029,
-                  "source_kind": "dungeon",
-                  "source": "Excavation Site: Wetlands: Relic Guardian"
-                },
-                {
                   "item_id": 13137,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 19561,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · Legionnaire · Horde"
                 }
               ]
             }
@@ -27816,14 +27816,14 @@
             7374,
             14590,
             273054,
-            252520,
+            252521,
             9509,
             4055,
             1491,
             19517,
             776,
             212583,
-            3463
+            274748
           ],
           "horde": [
             252512,
@@ -27833,7 +27833,7 @@
             7374,
             14590,
             273054,
-            252520,
+            252521,
             9509,
             4055,
             1491,
@@ -28508,27 +28508,27 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 13109,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 8195,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
             "chest": {
-              "item_id": 220828,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "item_id": 11193,
+              "source_kind": "quest",
+              "source": "Tremors of the Earth",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 220828,
+                  "source_kind": "vendor",
+                  "source": "Captain Dirgehammer"
+                },
                 {
                   "item_id": 15064,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
-                },
-                {
-                  "item_id": 19127,
-                  "source_kind": "quest",
-                  "source": "WANTED: Overseer Maltorius"
                 }
               ]
             },
@@ -28587,20 +28587,20 @@
               ]
             },
             "legs": {
-              "item_id": 220832,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
+              "item_id": 1718,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 220832,
+                  "source_kind": "vendor",
+                  "source": "Captain Dirgehammer"
+                },
                 {
                   "item_id": 14668,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 9414,
-                  "source_kind": "dungeon",
-                  "source": "Uldaman: Grimlok"
                 }
               ]
             },
@@ -28710,20 +28710,20 @@
               ]
             },
             "ranged": {
-              "item_id": 285281,
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
+              "item_id": 2100,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 2100,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
                 {
                   "item_id": 13022,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Relic Coffer"
+                },
+                {
+                  "item_id": 16004,
+                  "source_kind": "crafted",
+                  "source": "Engineering"
                 }
               ]
             }
@@ -28795,9 +28795,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 13109,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 8195,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -28990,38 +28990,38 @@
               ]
             },
             "off_hand": {
-              "item_id": 9684,
-              "source_kind": "quest",
-              "source": "Weapons of Spirit",
+              "item_id": 274753,
+              "source_kind": "vendor",
+              "source": "Rettrick",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 274753,
-                  "source_kind": "vendor",
-                  "source": "Rettrick"
-                },
                 {
                   "item_id": 11863,
                   "source_kind": "quest",
                   "source": "Bone-Bladed Weapons"
+                },
+                {
+                  "item_id": 9684,
+                  "source_kind": "quest",
+                  "source": "Weapons of Spirit"
                 }
               ]
             },
             "ranged": {
-              "item_id": 285281,
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
+              "item_id": 2100,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 2100,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
                 {
                   "item_id": 13022,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Relic Coffer"
+                },
+                {
+                  "item_id": 16004,
+                  "source_kind": "crafted",
+                  "source": "Engineering"
                 }
               ]
             }
@@ -29033,11 +29033,10 @@
             13089,
             220825,
             13122,
-            220828,
+            11193,
             13120,
             272100,
             274757,
-            220832,
             17728,
             9533,
             2951,
@@ -29045,7 +29044,7 @@
             249469,
             7947,
             274753,
-            285281
+            2100
           ],
           "horde": [
             8348,
@@ -29061,8 +29060,8 @@
             19120,
             249469,
             7947,
-            9684,
-            285281
+            274753,
+            2100
           ]
         },
         "weights": {
@@ -30494,14 +30493,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 3463,
-                  "source_kind": "quest",
-                  "source": "Stealing Supplies"
-                },
-                {
                   "item_id": 2098,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 274748,
+                  "source_kind": "vendor",
+                  "source": "Gezzy Gunkgear"
                 }
               ]
             }
@@ -30761,14 +30760,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 3463,
-                  "source_kind": "quest",
-                  "source": "Stealing Supplies"
-                },
-                {
                   "item_id": 2098,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 274748,
+                  "source_kind": "vendor",
+                  "source": "Gezzy Gunkgear"
                 }
               ]
             }
@@ -110496,6 +110495,7 @@
     "4331": "Phoenix Gloves",
     "4368": "Flying Tiger Goggles",
     "4369": "Deadly Blunderbuss",
+    "4372": "Lovingly Crafted Boomstick",
     "4373": "Shadow Goggles",
     "4393": "Craftsman's Monocle",
     "4430": "Ethereal Talisman",
@@ -110652,6 +110652,7 @@
     "7230": "Smite's Mighty Hammer",
     "7283": "Black Whelp Cloak",
     "7285": "Nimble Leather Gloves",
+    "7358": "Pilferer's Gloves",
     "7359": "Heavy Earthen Gloves",
     "7373": "Dusky Leather Leggings",
     "7374": "Dusky Leather Armor",
@@ -110743,7 +110744,6 @@
     "9407": "Stoneweaver Leggings",
     "9408": "Ironshod Bludgeon",
     "9411": "Rockshard Pauldrons",
-    "9414": "Oilskin Leggings",
     "9420": "Adventurer's Pith Helmet",
     "9426": "Monolithic Bow",
     "9431": "Papal Fez",
@@ -112258,7 +112258,6 @@
     "285275": "Satchel of Copper Bombs",
     "285277": "Satchel of Iron Bombs",
     "285279": "Cracked Blacksmith Hammer",
-    "285281": "Arcanite Blacksmith Hammer",
     "286535": "Sludge-Stained Band",
     "286750": "Wisesight Wand",
     "286977": "Sword of the Fallen",
@@ -112313,6 +112312,7 @@
     "3854": 28.8,
     "4091": 31.6,
     "4369": 8.3,
+    "4372": 9.7,
     "4576": 7.9,
     "4577": 5.2,
     "5187": 18.4,
@@ -112527,7 +112527,6 @@
     "285275": 8.0,
     "285277": 24.5,
     "285279": 10.0,
-    "285281": 32.0,
     "286750": 7.1,
     "286977": 19.7
   }
