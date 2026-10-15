@@ -519,6 +519,8 @@ type Snapshot struct {
 	// AccountLabel is who the device is connected as, empty when it
 	// is not known.
 	AccountLabel string `json:"account_label"`
+	// DeviceName is what the site lists this device as.
+	DeviceName string `json:"device_name"`
 	// Headline is the Status page's opening line (headline.go).
 	Headline Headline `json:"headline"`
 	// Connect is the Battle.net sign-in in progress (connect.go).
@@ -633,6 +635,7 @@ func (a *App) Snapshot() Snapshot {
 		EngineVersion:    session.Version,
 		Paired:           paired,
 		AccountLabel:     cfg.AccountLabel,
+		DeviceName:       deviceName(),
 		Connect:          a.connectView(),
 		TokenBackend:     string(a.o.Secret.Backend()),
 		TokenBackendName: secret.Name(a.o.Secret.Backend(), runtime.GOOS),

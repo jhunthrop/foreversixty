@@ -40,15 +40,36 @@ it, run with `-headless` and open the printed URL in a browser.
 
 ## Pair it
 
-1. Sign in at [foreversixty.gg/logs](https://foreversixty.gg/logs) with Battle.net or an email
-   link.
-2. Press **Pair a device**. The site shows a code that is good for ten minutes.
-3. Open the companion, go to **Device**, paste the code, press **Pair this device**.
+1. Open the companion. Until it is connected it opens on **Device**.
+2. Press **Sign in with Battle.net**. Your browser opens on foreversixty.gg with a short code
+   (for example `KQ4-7TM`); check it matches the one in the companion, sign in if you are not
+   already, and press **Connect**. The companion notices by itself, says **Connected as
+   Name#1234** and switches to Status. The link works for ten minutes; **Open the browser
+   again** reopens the same one and **Cancel** stops waiting.
+3. If your browser will not open, the companion shows the link to copy into any browser, on this
+   PC or another.
 
-The companion receives an upload token, stores it in your operating system's keychain (macOS
-Keychain, Windows Credential Manager, the Linux Secret Service) and shows which one it used on
-the Device page. Where no keychain is available it falls back to `config.json`, which is written
-readable only by you. Revoke a device any time from **Account → Devices** on the site.
+Your Battle.net password never reaches the companion: you sign in on Blizzard's own page through
+the site, and the companion only ever receives an upload token.
+
+**Paste a code instead.** Under **Having trouble? Paste a code from the site** on the Device page
+there is the older path: sign in at [foreversixty.gg/logs](https://foreversixty.gg/logs), press
+**Pair a device**, paste the code (good for ten minutes) and press **Connect with code**.
+
+The companion stores the token in your operating system's keychain (macOS Keychain, Windows
+Credential Manager, the Linux Secret Service) and names which one it used on the Device page under
+**Saved in**. Where no keychain is available it falls back to `config.json`, which is written
+readable only by you, and says so. **Forget this device** (it asks first) removes the token from
+this PC; revoke the device on the site too from **Account → Devices**.
+
+## Close it and it keeps running
+
+Closing the window does not stop the companion: it stays in the tray (Windows) and keeps logging.
+The first time you close the window it says so, then hides. The tray icon's menu shows what the
+companion is doing in a line at the top (the same words as the Status headline, which is also the
+tooltip), **Open Forever Sixty**, **Open my reports on the site** and **Quit**. Quit is the only way
+to stop it. On macOS and Linux the window toolkits have no close event the companion can catch, so
+closing the window there still quits.
 
 ## Log a raid
 
@@ -61,14 +82,14 @@ fight within a few seconds of it ending, streams the raw log up in the backgroun
 can check our arithmetic, and closes the report fifteen minutes after the log goes quiet. A gap
 longer than thirty minutes starts a new report, so two raids in one night are two reports.
 
-The **Reports** page links every report the moment it has an id, live ones included.
+The **Reports** page lists the newest reports the moment they have an id, live ones included, each with a **Copy link** button, and links to all your reports on the site.
 
 ## Settings
 
 | Setting | What it does |
 |---|---|
 | New reports are | public, unlisted, private or guild — the visibility a report starts with |
-| Game folders | one per line; the companion also looks in the usual install paths on its own |
+| Game folders | the folders it found on its own, and any you add with **Add a folder...** (the system folder dialog); only the ones you add are saved, and **Remove** takes one back out. Pick a flavour folder such as `_classic_era_` or the folder above it |
 | Logging character | who reports are attributed to, picked from the characters the addon has seen |
 
 Where the companion keeps its files:
@@ -100,8 +121,8 @@ may be replaced; the next pass puts it back.
 
 ## Troubleshooting
 
-**"This device is not paired."** Nothing uploads until it is. Fights are still parsed and queued
-while you are unpaired, and they go up as soon as you pair, so a missed pairing costs nothing.
+**"Not connected."** Nothing uploads until you sign in on the Device page. Fights are still parsed and queued
+while you are not connected, and they go up as soon as you connect, so a missed sign-in costs nothing.
 
 **"No World of Warcraft folder was found."** Add the flavour folder — the one containing `WTF`
 and `Logs`, such as `_classic_era_` — on the Settings page. The folder above it works too.

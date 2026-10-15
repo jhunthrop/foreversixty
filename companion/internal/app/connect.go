@@ -46,6 +46,8 @@ type ConnectView struct {
 	// Trouble is true after TroubleAfter failed polls in a row.
 	Trouble bool   `json:"trouble"`
 	Reason  string `json:"reason,omitempty"`
+	// Message is the sentence for a failed sign-in's reason.
+	Message string `json:"message,omitempty"`
 }
 
 // connectState is the sign-in's state; mu guards all of it. gen counts
@@ -67,7 +69,26 @@ func (a *App) connectView() ConnectView {
 	if v.State == "" {
 		v.State = ConnectIdle
 	}
+	v.Message = ""
+	if v.State == ConnectFailed {
+		v.Message = reasonMessage(v.Reason)
+	}
 	return v
+}
+
+// reasonMessage is the sentence for why a sign-in failed.
+func reasonMessage(reason string) string {
+	switch reason {
+	case ReasonDenied:
+		return CopyConnectDenied
+	case ReasonExpired:
+		return CopyConnectExpired
+	case ReasonOffline:
+		return Message(CodeOffline)
+	case ReasonSave:
+		return Message(CodeSave)
+	}
+	return Message(CodeServer)
 }
 
 func (a *App) connectActive() bool {

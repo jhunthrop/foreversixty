@@ -206,7 +206,7 @@ func TestTheUIIsOnlyReachableUnderTheSessionToken(t *testing.T) {
 
 func TestTheIndexPageAndItsAssetsAreServed(t *testing.T) {
 	h := newHarness(t)
-	for _, path := range []string{"/", "/app.js", "/styles.css"} {
+	for _, path := range []string{"/", "/app.js", "/copy.js", "/format.js", "/styles.css"} {
 		req := httptest.NewRequest(http.MethodGet, h.url(path), nil)
 		w := httptest.NewRecorder()
 		h.app.Handler().ServeHTTP(w, req)
@@ -217,7 +217,7 @@ func TestTheIndexPageAndItsAssetsAreServed(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, h.url("/"), nil)
 	w := httptest.NewRecorder()
 	h.app.Handler().ServeHTTP(w, req)
-	if !strings.Contains(w.Body.String(), "Forever Sixty companion") {
+	if !strings.Contains(w.Body.String(), "<title>Forever Sixty</title>") {
 		t.Error("the index page is not the companion's")
 	}
 }

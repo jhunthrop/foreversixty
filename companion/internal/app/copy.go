@@ -120,6 +120,12 @@ const (
 	CopyAdvancedHow = "Turn it on in Options > Network > Advanced Combat Logging, then restart the game."
 )
 
+// Why a sign-in failed, when the site (not the network) said so.
+const (
+	CopyConnectDenied  = "You pressed Cancel on the site. Nothing was connected."
+	CopyConnectExpired = "The sign-in link expired after 10 minutes."
+)
+
 // The tray's one sentence the window shows: what closing it did.
 const (
 	CopyTrayNotice = "Still running in the tray. Use Quit from the tray icon to stop logging."

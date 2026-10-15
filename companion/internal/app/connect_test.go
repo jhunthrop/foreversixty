@@ -282,3 +282,41 @@ func TestThePairingFallbackSaysWhoItConnectedAsAndNamesItsFailures(t *testing.T)
 type failingSecret struct{ secret.Store }
 
 func (failingSecret) SetToken(string) error { return errors.New("the keychain is locked") }
+
+func TestAFailedConnectCarriesTheSentenceForItsReason(t *testing.T) {
+	for _, c := range []struct{ decide, want string }{
+		{"denied", "You pressed Cancel on the site. Nothing was connected."},
+		{"expired", "The sign-in link expired after 10 minutes."},
+	} {
+		h := newHarness(t)
+		h.startConnect()
+		h.srv.ConnectDecide(c.decide)
+		until(t, c.decide, func() bool { return h.connectView().State == "failed" })
+		if got := h.connectView().Message; got != c.want {
+			t.Errorf("%s: message = %q, want %q", c.decide, got, c.want)
+		}
+	}
+	h := newHarness(t)
+	h.srv.Offline(true)
+	h.startConnect()
+	if got := h.connectView().Message; got != app.Message(app.CodeServer) {
+		t.Errorf("server fault message = %q", got)
+	}
+	if h.connectView().Reason != "server" {
+		t.Error("reason lost")
+	}
+	if m := h.app.Snapshot().Connect.Message; m == "" {
+		t.Error("the snapshot dropped the message")
+	}
+	idle := newHarness(t)
+	if m := idle.connectView().Message; m != "" {
+		t.Errorf("an idle sign-in has a message: %q", m)
+	}
+}
+
+func TestTheSnapshotNamesTheDevice(t *testing.T) {
+	h := newHarness(t)
+	if h.app.Snapshot().DeviceName == "" {
+		t.Fatal("the device has no name")
+	}
+}
