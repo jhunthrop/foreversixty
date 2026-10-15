@@ -93,15 +93,6 @@ function renderEmpty(typed: string): HTMLLIElement {
   return item;
 }
 
-/** The `region` / `ruleset` fields a form has, as search filters; a form without them searches all. */
-function filtersOf(form: HTMLFormElement): { region?: string; ruleset?: string } {
-  const value = (name: string): string | undefined => {
-    const field = form.elements.namedItem(name);
-    return field instanceof HTMLSelectElement || field instanceof HTMLInputElement ? field.value : undefined;
-  };
-  return { region: value('region'), ruleset: value('ruleset') };
-}
-
 /** Wires the suggestion list of one `form[data-character-search]` that has a `[data-typeahead]`. */
 export function wireTypeahead(form: HTMLFormElement, deps: TypeaheadDeps = defaultDeps): void {
   const input = form.querySelector<HTMLInputElement>('input[name="name"]');
@@ -159,7 +150,6 @@ export function wireTypeahead(form: HTMLFormElement, deps: TypeaheadDeps = defau
     inFlight = controller;
     try {
       const found = await deps.search(typed, {
-        ...filtersOf(form),
         limit: SUGGESTION_LIMIT,
         signal: controller.signal,
       });
@@ -190,7 +180,6 @@ export function wireTypeahead(form: HTMLFormElement, deps: TypeaheadDeps = defau
 
   input.addEventListener('input', schedule);
   form.addEventListener('submit', clear);
-  form.querySelectorAll('select').forEach((select) => select.addEventListener('change', schedule));
   input.addEventListener('blur', () => setOpen(false));
   list.addEventListener('mousedown', (event) => event.preventDefault());
   list.addEventListener('mouseover', (event) => {

@@ -93,7 +93,7 @@ afterEach(() => {
 });
 
 describe('asking the endpoint', () => {
-  it('waits for a pause of 150ms and then asks once, with the box’s filters', async () => {
+  it('waits for a pause of 150ms and then asks once, across every realm whatever the box’s selects say', async () => {
     const search = answering([BOLT]);
     const { input } = wire(search, true);
     type(input, 'b');
@@ -103,7 +103,9 @@ describe('asking the endpoint', () => {
     await vi.advanceTimersByTimeAsync(1);
     expect(search).toHaveBeenCalledTimes(1);
     expect(search.mock.calls[0][0]).toBe('bo');
-    expect(search.mock.calls[0][1]).toMatchObject({ region: 'eu', ruleset: 'hardcore' });
+    // The selects only shape the plain submit: a row's realm line tells the matches apart.
+    expect(search.mock.calls[0][1].region).toBeUndefined();
+    expect(search.mock.calls[0][1].ruleset).toBeUndefined();
   });
 
   it('searches every realm when the box has no region or ruleset field', async () => {

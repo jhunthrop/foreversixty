@@ -76,8 +76,8 @@ test.describe('the home page box', () => {
 
     await expectThreeRows(box);
     await expect(input).toHaveAttribute('aria-expanded', 'true');
-    expect(asked[0]).toContain('region=us');
-    expect(asked[0]).toContain('ruleset=normal');
+    expect(asked[0]).not.toContain('region=');
+    expect(asked[0]).not.toContain('ruleset=');
 
     await input.press('ArrowDown');
     await expect(input).toHaveAttribute('aria-activedescendant', /.+/);

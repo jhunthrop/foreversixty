@@ -32,8 +32,10 @@ you type with class colour and realm.
 The input becomes a combobox (`role="combobox"`, `aria-autocomplete="list"`,
 `aria-expanded`, `aria-controls` the listbox, `aria-activedescendant` the highlighted row).
 Typing two or more characters asks the endpoint after a 150ms pause, with the previous request
-aborted; the box's own region and ruleset fields filter when it has them (the home box), the
-header box searches every realm.
+aborted. Both boxes search every realm: the home box's region and ruleset selects shape only
+the plain submit, because a default of US Normal would hide a player's match on US PvP, and
+each row's realm line tells the same name on two realms apart (2026-10-15, after the first
+live try hid Obnoxious Yell behind the default ruleset).
 
 The listbox opens under the input, absolutely positioned so nothing below moves, `--color-raised`
 on `--color-line`, radius 4, the input's width, at most 8 rows of 44px: the class crest
