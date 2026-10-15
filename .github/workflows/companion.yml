@@ -112,7 +112,11 @@ jobs:
   # A push that touches nothing the companion is built from releases nothing.
   version:
     needs: test
-    if: github.event_name != 'pull_request'
+    # `changes` is skipped on tags and dispatches, and a skipped job anywhere
+    # up the needs chain skips its dependants unless the condition says
+    # otherwise -- so every job below test asks for test's own result instead
+    # of inheriting the chain (the 2026-10-15 dispatch released nothing).
+    if: ${{ !cancelled() && needs.test.result == 'success' && github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     outputs:
@@ -164,7 +168,7 @@ jobs:
 
   build:
     needs: [test, version]
-    if: needs.version.outputs.release == 'true'
+    if: ${{ !cancelled() && needs.test.result == 'success' && needs.version.outputs.release == 'true' }}
     strategy:
       fail-fast: false
       matrix:
@@ -325,7 +329,7 @@ jobs:
 
   release:
     needs: [build, version]
-    if: needs.version.outputs.release == 'true'
+    if: ${{ !cancelled() && needs.build.result == 'success' && needs.version.outputs.release == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions: { contents: write }
