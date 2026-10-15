@@ -161,15 +161,18 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
     import { isTypingTarget, wireSearchForm } from '../lib/character-search-dom';
     import { SESSION_GUILD_EVENT } from '../lib/character-selector/config';
     import type { SessionGuild } from '../lib/character-selector/session-guild';
+    import { readPublishedSessionGuild } from '../lib/character-selector/session-guild-dom';
     import { applySessionGuild, wireNavPanels } from '../lib/nav-panels-dom';
 
     // The compact lookup and the "/" key (HeaderSearch.astro). "/" outside a text field
     // focuses the home page's own box where there is one; otherwise it opens the bar's panel
     // (from 1024px) or the Menu (below), cursor in the box.
     const header = document.querySelector<HTMLElement>('[data-site-header]');
-    // The four doors' hover panels, and the Guild panel following the session's guild.
+    // The four doors' hover panels, and the Guild panel following the session's guild: the
+    // stamp covers a selector that settled before this ran, the event covers the rest.
     if (header !== null) {
       wireNavPanels(header);
+      applySessionGuild(header, readPublishedSessionGuild(header));
       window.addEventListener(SESSION_GUILD_EVENT, (event) =>
         applySessionGuild(header, (event as CustomEvent<SessionGuild | null>).detail),
       );
