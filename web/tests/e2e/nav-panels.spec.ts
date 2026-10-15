@@ -54,17 +54,12 @@ for (const width of [1280, 1440]) {
       }
     });
 
-    test('the Tools panel lists its four rows in order, each 44px or taller', async ({ page }) => {
+    test('the Tools panel lists its three rows in order, each 44px or taller', async ({ page }) => {
       await signedInOnGuides(page, width);
       await door(page, 'tools').hover();
       await expect(panel(page, 'tools')).toBeVisible();
       const rows = panel(page, 'tools').locator('a.site-panel-row');
-      await expect(rows.locator('.site-panel-title')).toHaveText([
-        'Planner',
-        'BiS',
-        'Simulator',
-        'Get set up',
-      ]);
+      await expect(rows.locator('.site-panel-title')).toHaveText(['Planner', 'BiS', 'Simulator']);
       for (const row of await rows.all())
         expect((await row.boundingBox())!.height).toBeGreaterThanOrEqual(44);
     });

@@ -3,7 +3,15 @@
 import communityLinks from '../data/links.json';
 import classes from '../data/classes.json';
 import { readSpecCatalog } from '../lib/bis/load';
-import { GUILD_GROUP_INDEX, NAV_GROUPS, isNavGroupCurrent, navKey } from '../lib/nav';
+import {
+  GUILD_GROUP_INDEX,
+  GUILD_OVERVIEW_TAB,
+  NAV_GROUPS,
+  SETUP_NAV_ITEM,
+  isNavGroupCurrent,
+  isNavItemCurrent,
+  navKey,
+} from '../lib/nav';
 import { guideClasses } from '../lib/nav-guides';
 import { OPEN_SELECTOR_EVENT } from '../lib/character-selector/config';
 import DiscordMark from './DiscordMark.astro';
@@ -30,9 +38,9 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
 // Styling lives in styles/nav.css (spec 2026-10-09-nav-character-selector.md), not in
 // utility classes, so the bar's breakpoints are in one readable place. Desktop (1024 and up):
 // wordmark, the four doors (each with a hover panel, spec 2026-10-15-grouped-header.md), the
-// character selector, Discord. Below 1024: one 56px bar -- wordmark, the selector's crest, a
-// Menu button -- with the character row, the four groups as headed sections and Discord
-// opening beneath it. The compact character lookup (HeaderSearch.astro,
+// Get set up as a plain fifth door, the character selector, Discord. Below 1024: one 56px
+// bar -- wordmark, the selector's crest, a Menu button -- with the character row, the four
+// groups as headed sections, Get set up and Discord opening beneath it. The compact character lookup (HeaderSearch.astro,
 // Task L8.2 fix round 2 item 7) is a magnifier button in the bar from 1024 and the Menu's
 // first row below it; the processed script at the end wires it and the "/" key (`.site-menu`; the selector island renders the
 // character row, which nav.css places first in the Menu). The only script is the few lines
@@ -99,6 +107,7 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
               aria-haspopup="true"
               aria-expanded="false"
               aria-controls={`site-panel-${key}`}
+              data-guild-tab={index === GUILD_GROUP_INDEX ? GUILD_OVERVIEW_TAB : undefined}
             >
               {group.label}
             </a>
@@ -129,6 +138,14 @@ const guideEntries = guideClasses(classes, readSpecCatalog());
           </div>
         );
       })}
+      <a
+        href={SETUP_NAV_ITEM.href}
+        class="site-door site-door-setup"
+        data-door="setup"
+        aria-current={isNavItemCurrent(SETUP_NAV_ITEM, path) ? 'page' : undefined}
+      >
+        {SETUP_NAV_ITEM.label}
+      </a>
     </nav>
     <a href={communityLinks.discordInvite} class="site-menu-discord">
       <DiscordMark />

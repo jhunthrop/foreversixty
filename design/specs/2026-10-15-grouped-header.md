@@ -17,10 +17,14 @@ doors, each opening an expanded list on hover, the pattern Wowhead and Warcraft 
 
 | Door | href (click) | Panel rows, in order (title: one-line description) |
 |---|---|---|
-| Tools | `/planner` | Planner: "Talents, the build you follow, and what to train next" · BiS (`/bis`): "The gear to chase in your band, slot by slot" · Simulator (`/sim`): "What your gear does, simulated fight by fight" · Get set up (`/setup`): "The addon and the desktop companion" |
+| Tools | `/planner` | Planner: "Talents, the build you follow, and what to train next" · BiS (`/bis`): "The gear to chase in your band, slot by slot" · Simulator (`/sim`): "What your gear does, simulated fight by fight" |
 | Logs | `/logs` | Upload a log (`/logs`): "Drop a combat log, or let the companion stream it live" · Your reports (`/reports`): "Every fight you logged, newest first" · Rankings (`/rankings`): "Parses by boss, spec and band, from every log" · Tier list (`/tiers`): "DPS, healer and tank, ranked from the same logs" |
 | Guild | `/guild` | Your guild (`/guild`): "Progress, the week's raids, who logged what" · Roster (`/guild#roster`): "Everyone the addon has seen, with gear score and last sync" · Loot council (`/guild#loot`): "Who gains most from each drop, by the sim, before the roll" · Guild logs (`/guild#raids`): "Reports from guild members, raid night by raid night" |
 | Guides | `/guides` | The nine classes, `classes.json` order, in a three-column grid: 28px crest (`classCrestSrc`) ringed in the class colour, the class name in the class colour, under it the spec names in talent-tree order joined by " · ", each class linking to `/guides/{slug}`; the panel foot: "All guides" → `/guides` |
+
+**Get set up stays on the bar** (owner, 2026-10-15): a fifth, plain door after Guides, `/setup`,
+with no panel, no chevron and the same type as the others; on the phone it is its own row after
+the four groups, in the Discord row's shape. It is not a Tools row.
 
 A door is a real link: clicking it goes to its href. The panel is extra, never the only way in.
 The door's label is uppercase Barlow 700 13px, tracking .12em, `--color-nav`, with a 12px
@@ -30,7 +34,10 @@ rule) when the page is one of its rows (`isNavGroupCurrent`: the group's own hre
 href by `isNavItemCurrent`).
 
 When a Guild row's page is not resolvable (no session, no guild), the panel still shows the
-four rows; `/guild` renders the find-or-claim state the GuildShell already has. When the session
+four rows and `/guild` is the guild landing: a guild lookup (name, region, ruleset), the top
+guilds, and a line for officers on claiming; a signed-in member of a verified guild is sent on
+to their guild's page from it. The Guild door itself carries `data-guild-tab="overview"`, so
+the session rewrite below points it at the member's guild too. When the session
 resolves with a verified guild (`Me.guilds[0]`), the header fills the first row's title with the
 guild's name and rewrites the four hrefs to `guildHref(region, ruleset, name)` plus the tab
 hash. No other row carries live numbers in this round (section 7).

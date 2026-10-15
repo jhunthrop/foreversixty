@@ -27,7 +27,6 @@ describe('nav groups', () => {
       ['Planner', '/planner'],
       ['BiS', '/bis'],
       ['Simulator', '/sim'],
-      ['Get set up', '/setup'],
     ]);
     expect(rowPairs(logs)).toEqual([
       ['Upload a log', '/logs'],

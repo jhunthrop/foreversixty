@@ -14,7 +14,7 @@ async function renderHeader(path: string): Promise<string> {
 }
 
 describe('Header', () => {
-  it('renders the four doors in order, each a real link with its popup attributes', async () => {
+  it('renders the four group doors in order, each a real link with its popup attributes, then Get set up as a plain door', async () => {
     const doc = await renderDoc('/');
     const doors = [...doc.querySelectorAll('a.site-door')];
     expect(doors.map((door) => [door.textContent?.trim(), door.getAttribute('href')])).toEqual([
@@ -22,13 +22,21 @@ describe('Header', () => {
       ['Logs', '/logs'],
       ['Guild', '/guild'],
       ['Guides', '/guides'],
+      ['Get set up', '/setup'],
     ]);
-    for (const door of doors) {
+    const setup = doors.at(-1)!;
+    expect(setup.getAttribute('data-door')).toBe('setup');
+    expect(setup.hasAttribute('aria-haspopup')).toBe(false);
+    expect(setup.classList.contains('site-door-setup')).toBe(true);
+    for (const door of doors.slice(0, -1)) {
       const key = door.getAttribute('data-door');
       expect(door.getAttribute('aria-haspopup')).toBe('true');
       expect(door.getAttribute('aria-expanded')).toBe('false');
       expect(door.getAttribute('aria-controls')).toBe(`site-panel-${key}`);
     }
+    expect(doc.querySelector('a.site-door[data-door="guild"]')?.getAttribute('data-guild-tab')).toBe(
+      'overview',
+    );
     const toggles = [...doc.querySelectorAll('button.site-door-toggle')];
     expect(toggles.map((t) => t.getAttribute('aria-label'))).toEqual([
       'Open the Tools list',
@@ -54,7 +62,6 @@ describe('Header', () => {
       ['Planner', '/planner'],
       ['BiS', '/bis'],
       ['Simulator', '/sim'],
-      ['Get set up', '/setup'],
     ]);
     expect(rowsOf('logs')).toEqual([
       ['Upload a log', '/logs'],

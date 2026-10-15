@@ -79,6 +79,10 @@
     min-height: 44px;
     color: var(--color-nav);
   }
+  /* The plain fifth door sits on the doors' row, not stretched to the groups' bar height. */
+  .site-door-setup {
+    align-self: center;
+  }
   .site-door:hover,
   .site-door-toggle:hover {
     color: var(--color-strong);
@@ -415,6 +419,16 @@
     .site-door-toggle,
     .site-panel {
       display: none;
+    }
+    /* Get set up: its own row after the groups, the Discord row's shape. */
+    .site-door-setup {
+      display: flex;
+      justify-content: center;
+      min-height: 44px;
+      margin-top: 12px;
+      border: 1px solid var(--color-line-warm);
+      border-radius: 4px;
+      color: var(--color-text);
     }
     .site-menu-heading {
       display: block;

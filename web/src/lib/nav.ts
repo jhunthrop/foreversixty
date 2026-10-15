@@ -1,6 +1,6 @@
 // The one source of the primary nav's structure (spec design/specs/2026-10-15-grouped-header.md,
 // which supersedes the eight doors of 2026-10-09-nav-character-selector.md section 2.2): the
-// four doors, their panel rows, and "is this page current" logic. Header.astro renders from
+// four doors, their panel rows, the trailing Get set up door, and "is this page current" logic. Header.astro renders from
 // this; Header.test.ts asserts against it directly, so a reordering shows up as a data-level
 // test failure rather than a markup diff.
 
@@ -39,7 +39,6 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         href: '/sim',
         description: 'What your gear does, simulated fight by fight',
       },
-      { label: 'Get set up', href: '/setup', description: 'The addon and the desktop companion' },
     ],
   },
   {
@@ -109,7 +108,8 @@ export const GUILD_GROUP_INDEX = 2;
 /** The Guild row without a hash: the guild's overview (`data-guild-tab` in the header). */
 export const GUILD_OVERVIEW_TAB = 'overview';
 
-/** The Get set up page: also the Tools panel's last row, and the guild claim flow's link. */
+/** The bar's last door, after the four groups, with no panel of its own (owner, 2026-10-15:
+ *  setup stays on the primary bar); also the guild claim flow's link. */
 export const SETUP_NAV_ITEM: NavItem = { label: 'Get set up', href: '/setup' };
 
 /**
