@@ -875,7 +875,7 @@ function PanelTab.inputs(data, measure, width)
 	end, function(slot)
 		return ItemTooltip.bagLead(slot)
 	end)
-	-- Hotfix 2.0.2: the first band's level below it (from level 10), else nil.
+	-- Hotfix 2.0.2: the first band's level below it, else nil.
 	local specBis = base.spec ~= nil and type(data.bis) == "table" and data.bis[base.spec] or nil
 	local picksStart = base.faction and Gear.firstBand(specBis, level) or nil
 	local current = base.current

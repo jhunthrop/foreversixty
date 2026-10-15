@@ -4,7 +4,7 @@
 
 Two fixes for characters just starting out, seen on a level-18 shaman and a level-6 paladin.
 
-- Between levels 10 and 19, before the first set of gear picks at level 20, the gear surfaces no longer go dark. An item's hover says "Picks start at level 20" and shows what the level-20 pick is for that slot and where it comes from ("At level 20: ..."); a bag item the plan names says "Planned for your build at level 20"; the character panel lists those picks under "Next targets" with "Picks start at level 20." beneath; the chip's hover says "Gear picks start at level 20."; `/fs diag` reads "Panel: closed, picks start at level 20, rotation N rows". Nothing is called an upgrade until the character reaches the band, so no gold corner and no gear gap yet.
+- Below level 20, before the first set of gear picks at level 20, the gear surfaces no longer go dark. An item's hover says "Picks start at level 20" and shows what the level-20 pick is for that slot and where it comes from ("At level 20: ..."); a bag item the plan names says "Planned for your build at level 20"; the character panel lists those picks under "Next targets" with "Picks start at level 20." beneath; the chip's hover says "Gear picks start at level 20."; `/fs diag` reads "Panel: closed, picks start at level 20, rotation N rows". Nothing is called an upgrade until the character reaches the band, so no gold corner and no gear gap yet.
 - When you follow a build (the path you picked on the chip, a default or a saved build), every surface now reads that build's spec: a level-6 retribution paladin with no talent points sees "Forever Sixty · Retribution" on item tooltips, not "Holy". With no build followed the talents decide, as before.
 
 ## 2.0.1

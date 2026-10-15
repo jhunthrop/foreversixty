@@ -594,7 +594,7 @@ local L = {
 	-- An empty paper-doll slot the band names no pick for (L4.1 fix round 1): the web
 	-- panel's own wording, muted, never silence.
 	tooltipNoPick = "No pick for your band yet",
-	-- Hotfix 2.0.2: from level 10, below the spec's first gear band (the data's start at 20), the
+	-- Hotfix 2.0.2: below the spec's first gear band (the data's start at 20), the
 	-- first band's picks are upcoming, never a "Next upgrade". Muted first line on a worn item and an
 	-- empty slot, then the "At level 20" line; a bag item the plan names says so instead of a verdict.
 	tooltipUntilFirstBand = "Picks start at level %d",
@@ -844,7 +844,7 @@ local L = {
 	-- The upgrade's hint in combat; the chip line itself says "In combat".
 	chipHintInCombat = "Click: nothing until combat ends",
 	chipHintLastRaid = "Click: Show the line",
-	-- Hotfix 2.0.2: the hover's muted line from level 10 until the spec's first gear band.
+	-- Hotfix 2.0.2: the hover's muted line until the spec's first gear band.
 	chipHintPicksStart = "Gear picks start at level %d.",
 	-- Right-click and /fs chip.
 	chipHiddenLine = "Chip hidden until level %d. /fs chip brings it back.",

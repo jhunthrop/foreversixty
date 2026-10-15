@@ -444,11 +444,11 @@ function Gear.bandFor(specBis, level)
 	return nil
 end
 
---- Hotfix 2.0.2: the lowest band `specBis` has, for a character from level 10 who is below it
---- (the shipped bands start at 20, so a level 10-19 character): the rung the gear surfaces point at
---- as upcoming ("Picks start at level 20"), never as a "Next upgrade". nil below level 10, from
---- that band up (Gear.bandFor serves it), or with no table, level or band.
-Gear.UPCOMING_MIN_LEVEL = 10
+--- Hotfix 2.0.2: the lowest band `specBis` has, for any character below it (the shipped bands
+--- start at 20, so a level 1-19 character): the rung the gear surfaces point at as upcoming
+--- ("Picks start at level 20"), never as a "Next upgrade". nil from that band up (Gear.bandFor
+--- serves it), or with no table, level or band.
+Gear.UPCOMING_MIN_LEVEL = 1
 function Gear.firstBand(specBis, level)
 	if type(specBis) ~= "table" or type(level) ~= "number" or level < Gear.UPCOMING_MIN_LEVEL then
 		return nil

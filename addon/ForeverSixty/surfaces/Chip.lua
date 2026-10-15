@@ -537,7 +537,7 @@ function Chip.tooltipLines(model)
 	if model.nextLine ~= nil then
 		lines[#lines + 1] = colored("muted", model.nextLine)
 	end
-	-- Hotfix 2.0.2: from level 10 until the spec's first gear band, where the gear picks begin.
+	-- Hotfix 2.0.2: below the spec's first gear band, where the gear picks begin.
 	if model.picksStart ~= nil then
 		lines[#lines + 1] = colored("muted", string.format(L.chipHintPicksStart, model.picksStart))
 	end

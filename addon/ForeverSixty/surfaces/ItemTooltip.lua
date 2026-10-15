@@ -1340,7 +1340,7 @@ function ItemTooltip.section(ctx)
 	local specBis = ctx.spec ~= nil and type(data.bis) == "table" and data.bis[ctx.spec] or nil
 	local currentBand = ctx.faction and Gear.bandFor(specBis, ctx.level) or nil
 	local nextBand = ItemTooltip.nextBand(specBis, currentBand)
-	-- Hotfix 2.0.2: from level 10, below the spec's first band, that band's picks are upcoming.
+	-- Hotfix 2.0.2: below the spec's first band, that band's picks are upcoming.
 	local firstBand = ctx.faction and currentBand == nil and Gear.firstBand(specBis, ctx.level) or nil
 	--- A candidate's gain over what is worn in the slot (net of the worn enchant,
 	--- Gear.readEquipped), rounded as shown; nil with no figure. Its stats are the client's, else

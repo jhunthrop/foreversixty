@@ -555,7 +555,7 @@ describe("Chip.tooltipLines", function()
 		assert.are.equal(hint(L.chipHintEquip), lines[5])
 	end)
 
-	-- Hotfix 2.0.2: from level 10 and below the spec's first gear band the hover says where the picks start.
+	-- Hotfix 2.0.2: from level 1 and below the spec's first gear band the hover says where the picks start.
 	it("adds the muted Gear picks start line below the first band, after the next talent", function()
 		local model = Chip.model(inputs({ level = 15, picksStart = 20, progress = pointAt(1, 15), unspent = 6,
 			pointName = "Improved Heroic Strike" }))
@@ -570,6 +570,18 @@ describe("Chip.tooltipLines", function()
 		for _, line in ipairs(Chip.tooltipLines(Chip.model(inputs({ level = 21 })))) do
 			assert.is_nil(line:find("picks start", 1, true))
 		end
+	end)
+
+	it("says where the gear picks start at level 6, before any talent point", function()
+		local model = Chip.model(inputs({ level = 6, picksStart = 20 }))
+		assert.are.equal(20, model.picksStart)
+		local found = false
+		for _, line in ipairs(Chip.tooltipLines(model)) do
+			if line == muted(string.format(L.chipHintPicksStart, 20)) then
+				found = true
+			end
+		end
+		assert.is_true(found)
 	end)
 
 	it("shows the next talent and the idle click when that is all there is", function()

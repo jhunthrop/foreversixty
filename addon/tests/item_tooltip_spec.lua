@@ -1436,10 +1436,11 @@ describe("ItemTooltip.section", function()
 		end)
 
 		it("says it below the band floor too, never a bare Equipped", function()
-			-- Level 9 is under the first-band rung (from 10); level 15 says where the picks start.
-			assert.are.same({ L.tooltipNoPick }, texts((ItemTooltip.section(wornSword({ level = 9 })))))
-			assert.are.same({ string.format(L.tooltipUntilFirstBand, 20) },
-				texts((ItemTooltip.section(wornSword({ level = 15 })))))
+			-- Every level under the first band says where the picks start (hotfix 2.0.2 follow-up).
+			for _, level in ipairs({ 6, 9, 15 }) do
+				assert.are.same({ string.format(L.tooltipUntilFirstBand, 20) },
+					texts((ItemTooltip.section(wornSword({ level = level })))))
+			end
 		end)
 
 		it("keeps the worn pick's Best until line and a Next line for a pick it trails", function()
@@ -1516,8 +1517,7 @@ describe("ItemTooltip.section", function()
 			noPick((ItemTooltip.emptySlotSection(empty({ equipped = worn }), "finger1")))
 		end)
 
-		it("says No pick for your band yet below the band floor, with no faction, or for a slot with no pick", function()
-			noPick((ItemTooltip.emptySlotSection(empty({ equipped = {}, level = 9 }), "chest")))
+		it("says No pick for your band yet with no faction, or for a slot with no pick", function()
 			noPick((ItemTooltip.emptySlotSection(empty({ equipped = {}, faction = false }), "chest")))
 			local lines, target, pending, head = ItemTooltip.emptySlotSection(empty({ equipped = {} }), "head")
 			noPick(lines)
@@ -1550,10 +1550,10 @@ describe("ItemTooltip.section", function()
 		end)
 	end)
 
-	-- Hotfix 2.0.2: from level 10, below the spec's first band (the shipped bands start at 20), the
+	-- Hotfix 2.0.2: from level 1, below the spec's first band (the shipped bands start at 20), the
 	-- first band's picks are UPCOMING targets: "Picks start at level 20" (muted) and the "At level 20"
 	-- line, never a Next line, a verdict arrow or "No pick for your band yet".
-	describe("below the first band (level 10 to 19)", function()
+	describe("below the first band (level 1 to 19)", function()
 		local CHEST_ITEM = { itemId = 50, link = WORN_LINK, equipLocation = "INVTYPE_CHEST", itemClass = 4,
 			itemSubClass = 3, stats = { strength = 4 } }
 		local AT = string.format(L.tooltipAtBand, 20, "Defias Overseer Chest", NEXT_SOURCE)
@@ -1612,8 +1612,21 @@ describe("ItemTooltip.section", function()
 			assert.are.same({ string.format(L.tooltipPlannedFirstBand, 30) }, lines)
 		end)
 
-		it("keeps the old words below level 10 and with no faction, and says nothing new from the first band up", function()
-			assert.are.same({ L.tooltipNoPick }, texts((ItemTooltip.section(ctx({ level = 9, item = CHEST_ITEM })))))
+		it("says Picks start, not No pick, on a worn item from level 1", function()
+			for _, level in ipairs({ 1, 6, 9 }) do
+				assert.are.same({ STARTS, AT }, texts(ItemTooltip.section(ctx({ level = level, item = CHEST_ITEM }))))
+			end
+		end)
+
+		it("prints the empty slot's Picks start and At lines at level 6 and 9", function()
+			for _, level in ipairs({ 6, 9 }) do
+				local lines = ItemTooltip.emptySlotSection(ctx({ level = level, item = false, equipped = {} }), "chest")
+				assert.are.same({ STARTS, AT }, texts(lines))
+				assert.are.same({ "firstBand", "at" }, kinds(lines))
+			end
+		end)
+
+		it("keeps No pick with no faction, and says nothing new from the first band up", function()
 			assert.are.same({ L.tooltipNoPick }, texts((ItemTooltip.section(ctx({ level = 18, faction = false,
 				item = CHEST_ITEM, equipped = { chest = { itemId = 50, link = WORN_LINK, stats = {} } } })))))
 			local atBand = texts(ItemTooltip.section(ctx({ level = 20, item = CHEST_ITEM })))
