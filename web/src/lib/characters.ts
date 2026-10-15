@@ -169,6 +169,11 @@ export function parseCharacterPath(pathname: string): CharacterPath | null {
   return parsePath('character', pathname);
 }
 
+/** The bare `/guild` (or `/guild/`) address: the guild landing, not a guild page. */
+export function isGuildLandingPath(pathname: string): boolean {
+  return pathname.replace(/\/+$/, '') === '/guild';
+}
+
 export function parseGuildPath(pathname: string): CharacterPath | null {
   return parsePath('guild', pathname);
 }

@@ -6,6 +6,7 @@
      pattern Guild.svelte's own `resolved` already uses. -->
 <script lang="ts">
   import {
+    isGuildLandingPath,
     parseGuildClaimPath,
     parseGuildInviteToken,
     parseGuildPath,
@@ -14,6 +15,7 @@
   import Guild from './Guild.svelte';
   import GuildClaim from './GuildClaim.svelte';
   import GuildJoin from './GuildJoin.svelte';
+  import GuildLanding from './GuildLanding.svelte';
   import GuildSettings from './GuildSettings.svelte';
 
   let { path = null }: { path?: string | null } = $props();
@@ -26,7 +28,9 @@
   const guildPath = $derived(parseGuildPath(resolvedPath));
 </script>
 
-{#if claimPath !== null}
+{#if isGuildLandingPath(resolvedPath)}
+  <GuildLanding />
+{:else if claimPath !== null}
   <GuildClaim path={claimPath} />
 {:else if settingsPath !== null}
   <GuildSettings path={settingsPath} />

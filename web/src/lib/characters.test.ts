@@ -9,6 +9,7 @@ import {
   guildInviteHref,
   guildRankLabel,
   guildSettingsHref,
+  isGuildLandingPath,
   isRegion,
   isRuleset,
   parseCharacterKey,
@@ -217,5 +218,19 @@ describe('guild sub-route hrefs', () => {
       '/guild/us/hardcore/the-last-watch/settings',
     );
     expect(guildInviteHref('abc 123')).toBe('/guild/invite/abc%20123');
+  });
+});
+
+describe('isGuildLandingPath', () => {
+  it('is true for the bare guild path with or without trailing slashes', () => {
+    expect(isGuildLandingPath('/guild')).toBe(true);
+    expect(isGuildLandingPath('/guild/')).toBe(true);
+  });
+
+  it('is false for every other path', () => {
+    expect(isGuildLandingPath('/guild/eu')).toBe(false);
+    expect(isGuildLandingPath('/guild/eu/normal/the-last-watch')).toBe(false);
+    expect(isGuildLandingPath('/guilds')).toBe(false);
+    expect(isGuildLandingPath('')).toBe(false);
   });
 });
