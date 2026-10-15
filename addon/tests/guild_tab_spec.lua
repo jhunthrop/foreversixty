@@ -59,7 +59,7 @@ end
 
 describe("GuildTab", function()
 	local GuildTab, Theme, Comms, Follow, Prefs, Widgets
-	local state, clock, sent, requests, members, playerRank
+	local state, clock, sent, requests, members, playerRank, inGuild
 
 	--- A client frame given a rect: GetLeft answers a number (L4.3 fix round 2).
 	local function withRect(frame, left, right)
@@ -113,8 +113,9 @@ describe("GuildTab", function()
 		globals.C_GuildInfo = { GuildRoster = function()
 			requests = requests + 1
 		end }
+		inGuild = not options.guildless
 		globals.IsInGuild = function()
-			return true
+			return inGuild
 		end
 		globals.GetTime = function()
 			return clock
@@ -142,6 +143,9 @@ describe("GuildTab", function()
 			globals = globals,
 		})
 		state.guild = { name = "Employed Millennials", rankName = "Rank", rankIndex = playerRank }
+		if options.guildless then
+			state.guild = nil
+		end
 		_G.ForeverSixtyData = options.data == nil and nightly() or options.data or nil
 		_G.ForeverSixtyDB = {}
 		_G.ForeverSixtyInbox = options.inbox
@@ -1967,5 +1971,104 @@ describe("GuildTab", function()
 		end
 		file:close()
 		assert.is_true(count >= 4)
+	end)
+
+	-- Hotfix: a character with no guild gets no button, and a flyout opened anyway says so.
+	describe("without a guild", function()
+		local function join()
+			inGuild = true
+			state.guild = { name = "Employed Millennials", rankName = "Rank", rankIndex = 3 }
+		end
+
+		it("makes no button under the guild page's placeholder", function()
+			start({ guildless = true })
+			GuildTab.refresh()
+			assert.is_nil(_G[GuildTab.BUTTON_NAME])
+			assert.is_nil(GuildTab.button)
+		end)
+
+		it("falls back to GetGuildInfo when the client has no IsInGuild", function()
+			start({ guildless = true })
+			_G.IsInGuild = nil
+			GuildTab.refresh()
+			assert.is_nil(_G[GuildTab.BUTTON_NAME])
+			join()
+			GuildTab.refresh()
+			assert.is_not_nil(_G[GuildTab.BUTTON_NAME])
+		end)
+
+		it("hides a button that was shown when the guild is left", function()
+			start()
+			GuildTab.refresh()
+			local button = _G[GuildTab.BUTTON_NAME]
+			assert.is_true(button:IsShown())
+			inGuild = false
+			state.guild = nil
+			GuildTab.onGuildUpdate()
+			assert.is_false(button:IsShown())
+		end)
+
+		it("draws the one muted line and nothing else when the flyout is opened anyway", function()
+			start({ guildless = true })
+			GuildTab.refresh()
+			assert.is_true(GuildTab.toggle())
+			local flyout = _G[GuildTab.FLYOUT_NAME]
+			assert.is_true(flyout:IsShown())
+			assert.is_true(GuildTab.last.solo)
+			assert.are.same({}, GuildTab.last.rows)
+			assert.are.equal(L.guildTabNoGuild, GuildTab.soloLine:GetText())
+			assert.is_true(GuildTab.soloLine:IsShown())
+			assert.is_false(GuildTab.onlineToggle.frame:IsShown())
+			assert.is_false(GuildTab.countsLine:IsShown())
+			assert.is_false(GuildTab.countsHover:IsShown())
+			assert.is_false(GuildTab.noticeLine:IsShown())
+			assert.is_false(GuildTab.holder:IsShown())
+			assert.is_false(GuildTab.emptyLine:IsShown())
+			assert.is_false(GuildTab.officerFrame:IsShown())
+			for _, header in pairs(GuildTab.headers) do
+				assert.is_false(header.button:IsShown())
+			end
+			for _, row in ipairs(GuildTab.rowFrames) do
+				assert.is_false(row.frame:IsShown())
+			end
+			assert.are.equal(0, requests)
+			assert.are.equal(0, #sent)
+		end)
+
+		it("draws the roster again once a guild is joined", function()
+			start({ guildless = true })
+			GuildTab.refresh()
+			GuildTab.toggle()
+			join()
+			GuildTab.onGuildUpdate()
+			assert.is_nil(GuildTab.last.solo)
+			assert.is_false(GuildTab.soloLine:IsShown())
+			assert.is_true(GuildTab.countsLine:IsShown())
+			assert.is_true(GuildTab.holder:IsShown())
+		end)
+
+		it("prints Guild tab: not in a guild in /fs diag", function()
+			start({ guildless = true })
+			assert.are.equal("Guild tab: not in a guild", GuildTab.diagLine())
+			assert.are.equal(L.diagGuildTabNoGuild, GuildTab.diagLine())
+		end)
+
+		it("shows the button on the next refresh or event after joining, without a reload", function()
+			start({ guildless = true })
+			GuildTab.refresh()
+			assert.is_nil(_G[GuildTab.BUTTON_NAME])
+			join()
+			GuildTab.onGuildUpdate()
+			local button = _G[GuildTab.BUTTON_NAME]
+			assert.is_not_nil(button)
+			assert.is_true(button:IsShown())
+			-- Leaving and joining again shows the same button.
+			inGuild = false
+			GuildTab.onRosterUpdate()
+			assert.is_false(button:IsShown())
+			inGuild = true
+			GuildTab.refresh()
+			assert.is_true(button:IsShown())
+		end)
 	end)
 end)

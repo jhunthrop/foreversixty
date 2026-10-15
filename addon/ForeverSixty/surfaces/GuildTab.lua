@@ -759,6 +759,13 @@ local function guarded(action, ...)
 	return Widgets.guarded(GuildTab, L.diagGuildTabFailed, action, ...)
 end
 
+--- True when the player is known to have no guild: IsInGuild() false, or GetGuildInfo("player")
+--- nil where there is no IsInGuild (Theme.inGuild, guarded). A client that cannot say is not
+--- guildless.
+function GuildTab.guildless()
+	return Theme.inGuild() == false
+end
+
 -- The frames --------------------------------------------------------------------------------
 
 --- The "Forever Sixty" button under the guild frame's bottom right, the panel tab's look
@@ -766,6 +773,14 @@ end
 --- guild frame (never in combat: it waits for its end). nil without one. It carries the
 --- capture helpers GuildTab.seedLive (README row 60), ownLive and helloFields for a /run.
 function GuildTab.ensureButton()
+	-- No guild: the client's guild page is its "tight-knit group" placeholder; the button is
+	-- hidden (not made, or hidden if it was) and shows again on the refresh after joining.
+	if GuildTab.guildless() then
+		if GuildTab.button ~= nil then
+			GuildTab.button:Hide()
+		end
+		return nil
+	end
 	local frame = pane()
 	if frame == nil then
 		return nil
@@ -794,6 +809,8 @@ function GuildTab.ensureButton()
 		end
 		button.helloFields = Comms.helloFields
 		GuildTab.button = button
+	elseif not button:IsShown() then
+		button:Show()
 	end
 	return button
 end
@@ -1038,6 +1055,11 @@ function GuildTab.ensureFlyout()
 	notice:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding, -GuildTab.noticeTop())
 	notice:Hide()
 	GuildTab.noticeLine = notice
+	-- Without a guild: the one muted line in the switch row's place, hidden otherwise.
+	local solo = sized(Widgets.label(flyout, "", "muted", "small"), GuildTab.innerWidth())
+	solo:SetPoint("TOPLEFT", flyout, "TOPLEFT", S.panelPadding, -top)
+	solo:Hide()
+	GuildTab.soloLine = solo
 	makeHeaders(flyout)
 	-- The rows: an addon-owned ScrollFrame clipping a content frame of pooled rows; the wheel
 	-- moves the first row shown, three a notch (ruling 2).
@@ -1209,6 +1231,34 @@ local function drawOfficer(flyout, officer, y)
 	return y + inner
 end
 
+--- Without a guild: the header and "Not in a guild." and nothing else (no switch, count line,
+--- ratings line, headers, rows or officer region), sized to them.
+function GuildTab.drawSolo(flyout)
+	GuildTab.last = { rows = {}, counts = { shown = 0, live = 0, total = 0 }, visible = 0, solo = true }
+	GuildTab.onlineToggle.frame:Hide()
+	GuildTab.countsLine:Hide()
+	GuildTab.countsHover:Hide()
+	GuildTab.noticeLine:Hide()
+	for _, header in pairs(GuildTab.headers) do
+		header.button:Hide()
+	end
+	GuildTab.holder:Hide()
+	for _, row in ipairs(GuildTab.rowFrames) do
+		row.entry = nil
+		row.frame:Hide()
+	end
+	GuildTab.onlineRule:Hide()
+	GuildTab.emptyLine:Hide()
+	GuildTab.officerFrame:Hide()
+	GuildTab.soloLine:SetText(fitted(L.guildTabNoGuild, GuildTab.innerWidth()))
+	GuildTab.soloLine:Show()
+	local top = S.panelPadding + S.panelHeader + S.panelRowGap
+	flyout:SetHeight(top + GuildTab.lineHeight() + S.panelPadding)
+	GuildTab.stale = nil
+	GuildTab.draws = GuildTab.draws + 1
+	return GuildTab.last
+end
+
 --- Draws the flyout from the live roster, the record, the snapshots, the player's own fields
 --- and the inbox: the count line, the ratings notice, the headers, the rows (as many as fit
 --- under the guild frame's height), the officer region; sized to them.
@@ -1217,6 +1267,17 @@ function GuildTab.draw()
 	if flyout == nil then
 		return nil
 	end
+	if GuildTab.guildless() then
+		return GuildTab.drawSolo(flyout)
+	end
+	GuildTab.soloLine:Hide()
+	GuildTab.onlineToggle.frame:Show()
+	GuildTab.countsLine:Show()
+	GuildTab.countsHover:Show()
+	for _, header in pairs(GuildTab.headers) do
+		header.button:Show()
+	end
+	GuildTab.holder:Show()
 	local rows, counts, onlineOnly, status = GuildTab.model()
 	local notice = GuildTab.ratingsNotice(status)
 	local _, rank = Theme.playerGuild()
@@ -1273,6 +1334,9 @@ end
 
 --- Asks for the roster and the guild's snapshots, each at most once a minute (rulings 2 and 3).
 function GuildTab.askLive()
+	if GuildTab.guildless() then
+		return
+	end
 	local now = Theme.now()
 	if GuildTab.lastRoster == nil or now - GuildTab.lastRoster >= GuildTab.ASK_EVERY then
 		GuildTab.lastRoster = now
@@ -1395,9 +1459,18 @@ function GuildTab.refresh(data)
 	end)
 end
 
---- GUILD_ROSTER_UPDATE: an open flyout redraws.
+--- GUILD_ROSTER_UPDATE: the button follows the guild (shown, hidden or made) and an open
+--- flyout redraws.
 function GuildTab.onRosterUpdate()
-	guarded(redraw)
+	guarded(function()
+		GuildTab.ensureButton()
+		redraw()
+	end)
+end
+
+--- PLAYER_GUILD_UPDATE: the player joined or left a guild; the same as a roster update.
+function GuildTab.onGuildUpdate()
+	GuildTab.onRosterUpdate()
 end
 
 --- A snapshot! arrived (Comms has put it in Comms.seen): an open flyout redraws.
@@ -1444,6 +1517,9 @@ end
 --- /fs diag's line (ruling 6): "Guild tab: open, 12 rows (2 live), officer no" (open: the
 --- flyout and the guild frame both show), the rows counted now as the flyout counts them.
 function GuildTab.diagLine()
+	if GuildTab.guildless() then
+		return L.diagGuildTabNoGuild
+	end
 	local ok, _, counts = pcall(GuildTab.model)
 	if not ok or type(counts) ~= "table" then
 		counts = { shown = 0, live = 0 }

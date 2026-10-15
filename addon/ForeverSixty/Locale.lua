@@ -1162,6 +1162,8 @@ L.guildTabOffline = "Offline"
 -- In place of the rows: no roster yet, or nobody online with the switch on.
 L.guildTabNoRoster = "No guild roster yet. It arrives from the server in a moment."
 L.guildTabNobodyOnline = "Nobody online. Turn off Online only to see everyone."
+-- A character with no guild: the flyout's one line when it is opened anyway (the button is hidden).
+L.guildTabNoGuild = "Not in a guild."
 -- The officer region (an officer or the guild master): the inbox guild message's queue.
 L.guildTabOfficer = "Officer"
 L.guildTabApprovals = "%d approvals waiting on the site"
@@ -1185,6 +1187,7 @@ L.guildTabPushNoCode = "this build could not be made into a code to send."
 L.diagGuildTab = "Guild tab: %s, %d rows (%d live), officer %s"
 L.diagGuildTabYes = "yes"
 L.diagGuildTabNo = "no"
+L.diagGuildTabNoGuild = "Guild tab: not in a guild"
 L.diagGuildTabFailed = "The guild tab failed and is off until /reload: %s"
 
 -- The group panel (spec section 4.8, L5.2): the "Forever Sixty" button under the client's raid
