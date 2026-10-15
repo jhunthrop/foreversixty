@@ -1,34 +1,113 @@
-// The one source of the primary nav's structure: labels, hrefs, and "is this page current"
-// logic. Header.astro renders from this; Header.test.ts asserts against it directly, so a
-// reordering shows up as a data-level test failure rather than a markup diff.
+// The one source of the primary nav's structure (spec design/specs/2026-10-15-grouped-header.md,
+// which supersedes the eight doors of 2026-10-09-nav-character-selector.md section 2.2): the
+// four doors, their panel rows, and "is this page current" logic. Header.astro renders from
+// this; Header.test.ts asserts against it directly, so a reordering shows up as a data-level
+// test failure rather than a markup diff.
 
 export interface NavItem {
   readonly label: string;
   readonly href: string;
 }
 
+export interface NavRow extends NavItem {
+  readonly description: string;
+}
+
+export interface NavGroup extends NavItem {
+  /** The panel's rows. Empty for Guides: the header renders its class grid from classes.json. */
+  readonly rows: readonly NavRow[];
+  readonly foot?: NavItem;
+}
+
 /**
- * The doors, in this order on every breakpoint (spec 2026-10-09-nav-character-selector.md
- * decision 2). BiS is the gear-gap door, so it sits beside the planner; Tier List sits beside
- * Guides, away from Rankings, which a player reads as log rankings.
+ * The four doors, in this order on every breakpoint. A door is a real link to its own href;
+ * the rows are the panel behind it.
  */
-export const PRIMARY_NAV_ITEMS: readonly NavItem[] = [
-  { label: 'Planner', href: '/planner' },
-  { label: 'BiS', href: '/bis' },
-  { label: 'Simulator', href: '/sim' },
-  { label: 'Logs', href: '/logs' },
-  { label: 'Rankings', href: '/rankings' },
-  { label: 'Tier List', href: '/tiers' },
-  { label: 'Guides', href: '/guides' },
+export const NAV_GROUPS: readonly NavGroup[] = [
+  {
+    label: 'Tools',
+    href: '/planner',
+    rows: [
+      {
+        label: 'Planner',
+        href: '/planner',
+        description: 'Talents, the build you follow, and what to train next',
+      },
+      { label: 'BiS', href: '/bis', description: 'The gear to chase in your band, slot by slot' },
+      {
+        label: 'Simulator',
+        href: '/sim',
+        description: 'What your gear does, simulated fight by fight',
+      },
+      { label: 'Get set up', href: '/setup', description: 'The addon and the desktop companion' },
+    ],
+  },
+  {
+    label: 'Logs',
+    href: '/logs',
+    rows: [
+      {
+        label: 'Upload a log',
+        href: '/logs',
+        description: 'Drop a combat log, or let the companion stream it live',
+      },
+      {
+        label: 'Your reports',
+        href: '/reports',
+        description: 'Every fight you logged, newest first',
+      },
+      {
+        label: 'Rankings',
+        href: '/rankings',
+        description: 'Parses by boss, spec and band, from every log',
+      },
+      {
+        label: 'Tier list',
+        href: '/tiers',
+        description: 'DPS, healer and tank, ranked from the same logs',
+      },
+    ],
+  },
+  {
+    label: 'Guild',
+    href: '/guild',
+    rows: [
+      {
+        label: 'Your guild',
+        href: '/guild',
+        description: "Progress, the week's raids, who logged what",
+      },
+      {
+        label: 'Roster',
+        href: '/guild#roster',
+        description: 'Everyone the addon has seen, with gear score and last sync',
+      },
+      {
+        label: 'Loot council',
+        href: '/guild#loot',
+        description: 'Who gains most from each drop, by the sim, before the roll',
+      },
+      {
+        label: 'Guild logs',
+        href: '/guild#raids',
+        description: 'Reports from guild members, raid night by raid night',
+      },
+    ],
+    foot: { label: 'Guild settings', href: '/guild#settings' },
+  },
+  {
+    label: 'Guides',
+    href: '/guides',
+    rows: [],
+    foot: { label: 'All guides', href: '/guides' },
+  },
 ];
 
-/** The quieter item at the end of the row (spec section 2). */
-export const SETUP_NAV_ITEM: NavItem = { label: 'Get set up', href: '/setup' };
+/** Where the Guild group sits in NAV_GROUPS: the session fills its rows (spec section 2). */
+export const GUILD_GROUP_INDEX = 2;
 
-/** The items after the doors, in order. One entry today; kept as an array (rather than
- *  inlining SETUP_NAV_ITEM at the call site) so Header.astro's render loop needs no special
- *  case if a second trailing item is ever added. */
-export const TRAILING_NAV_ITEMS: readonly NavItem[] = [SETUP_NAV_ITEM];
+/** The Get set up page: also the Tools panel's last row, and the guild claim flow's link. */
+export const SETUP_NAV_ITEM: NavItem = { label: 'Get set up', href: '/setup' };
 
 /**
  * True for the item's own page and any sub-path of it (`/sim` matches `/sim/gear`), so a
@@ -38,4 +117,13 @@ export const TRAILING_NAV_ITEMS: readonly NavItem[] = [SETUP_NAV_ITEM];
  */
 export function isNavItemCurrent(item: NavItem, path: string): boolean {
   return path === item.href || path.startsWith(`${item.href}/`);
+}
+
+const withoutHash = (href: string): string => href.split('#')[0];
+
+/** True when the page is the group's own page or any of its rows' pages (hashes ignored). */
+export function isNavGroupCurrent(group: NavGroup, path: string): boolean {
+  return [group, ...group.rows].some((item) =>
+    isNavItemCurrent({ label: item.label, href: withoutHash(item.href) }, path),
+  );
 }
