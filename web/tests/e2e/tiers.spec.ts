@@ -271,16 +271,15 @@ test('every row offers BiS, Guide and Planner at 44px', async ({ page }) => {
   }
 });
 
-test('Tier List sits between Rankings and Guides in the nav', async ({ page }) => {
+test('Tier list is a Logs panel row and the Logs door is current', async ({ page }) => {
   await page.goto('/tiers');
-  const labels = await page.getByTestId('primary-nav').locator('a').allTextContents();
-  const clean = labels.map((label) => label.trim().toLowerCase());
-  expect(clean.indexOf('tier list')).toBe(clean.indexOf('rankings') + 1);
-  expect(clean.indexOf('guides')).toBe(clean.indexOf('tier list') + 1);
-  await expect(page.getByTestId('primary-nav').locator('a', { hasText: 'Tier List' })).toHaveAttribute(
-    'aria-current',
-    'page',
-  );
+  const logsDoor = page.getByTestId('primary-nav').locator('a.site-door[data-door="logs"]');
+  await expect(logsDoor).toHaveAttribute('aria-current', 'page');
+  const rows = await page.locator('#site-panel-logs a.site-panel-row').allTextContents();
+  const titles = rows.map((row) => row.trim().toLowerCase());
+  expect(titles.findIndex((row) => row.startsWith('rankings'))).toBe(2);
+  expect(titles.findIndex((row) => row.startsWith('tier list'))).toBe(3);
+  await expect(page.getByTestId('site-panel-row-tier-list')).toHaveAttribute('href', '/tiers');
 });
 
 test('the BiS index and the home page link to the tier list', async ({ page }) => {

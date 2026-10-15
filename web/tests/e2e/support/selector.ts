@@ -70,14 +70,18 @@ const envelope = (data: unknown) => ({
 });
 
 /** A signed-in session whose `/v1/me` lists `characters`. */
-export async function signInWith(page: Page, characters: FixtureCharacter[]): Promise<void> {
+export async function signInWith(
+  page: Page,
+  characters: FixtureCharacter[],
+  guilds: Record<string, unknown>[] = [],
+): Promise<void> {
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       envelope({
         user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
         characters: characters.map(meCharacter),
-        guilds: [],
+        guilds,
       }),
     ),
   );

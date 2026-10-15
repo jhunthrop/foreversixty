@@ -10,6 +10,8 @@ export const OPEN_DELAY_MS = 120;
 export const CLOSE_DELAY_MS = 180;
 const TOUCH_QUERY = '(hover: none)';
 const ITEM_SELECTOR = '[role="menuitem"]';
+/** Keeps a wide panel (Guides) this far inside the viewport's right edge on narrow bars. */
+const VIEWPORT_MARGIN_PX = 16;
 
 export interface NavPanelOptions {
   openDelay?: number;
@@ -61,6 +63,15 @@ function paint(door: Door, open: boolean): void {
   door.toggle.setAttribute('aria-expanded', String(open));
 }
 
+/** Slides a panel left just enough to sit inside the viewport; a panel that fits stays put. */
+function clampToViewport(panel: HTMLElement): void {
+  panel.style.translate = '';
+  const { width, right } = panel.getBoundingClientRect();
+  if (width === 0) return;
+  const overflow = right - (document.documentElement.clientWidth - VIEWPORT_MARGIN_PX);
+  if (overflow > 0) panel.style.translate = `${-overflow}px 0`;
+}
+
 export function wireNavPanels(header: HTMLElement, options: NavPanelOptions = {}): NavPanels {
   const { openDelay = OPEN_DELAY_MS, closeDelay = CLOSE_DELAY_MS, isTouch = browserIsTouch } = options;
   const doors = [...header.querySelectorAll<HTMLElement>('.site-group[data-group]')].flatMap((group) => {
@@ -83,6 +94,8 @@ export function wireNavPanels(header: HTMLElement, options: NavPanelOptions = {}
       paint(door, door.key === key);
     }
     openKey = key;
+    const opened = doors.find((door) => door.key === key);
+    if (opened !== undefined) clampToViewport(opened.panel);
   }
 
   function closeToDoor(door: Door): void {
