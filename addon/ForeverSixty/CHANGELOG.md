@@ -117,6 +117,11 @@ spec, and every surface with nothing to say stays out of the way.
 - Wire formats are pinned by shared golden fixtures (`docs/contracts`) checked by the addon,
   the companion and the API.
 
+### Measured on the 1.60.1.70374 beta client
+
+- Memory after `collectgarbage`, idle in town on a level-24 hunter: about 4.85 MB, of which the shipped `Data.lua` is about 2 MB and Locale 0.16 MB. The tooltip cache is capped at 200 sections and the inspect cache at 100 records; `/fs diag verbose` lists every frame the addon created and ends with a `memory:` line.
+
+
 ## Before 2.0.0
 
 These notes were kept while the six-page window existed; 2.0.0 replaces that window with the
