@@ -7,7 +7,10 @@
 // player on a machine with no tray can still run the companion.
 package shell
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 // Options configures the window.
 type Options struct {
@@ -21,7 +24,29 @@ type Options struct {
 	Width, Height int
 	// OnQuit is called when the player quits from the tray.
 	OnQuit func()
+
+	// State is the tray's state line: the Status headline's title,
+	// word for word. It becomes the tooltip and the menu's first
+	// (disabled) item, and is asked for again every TrayEvery.
+	State func() string
+	// OpenReports opens the player's reports on the site; the tray's
+	// "Open my reports on the site".
+	OpenReports func()
+	// FirstClose reports whether this is the first time the player has
+	// closed the window, and remembers that it was. The window then
+	// tells them the companion is still running in the tray.
+	FirstClose func() bool
+	// Notice is that sentence.
+	Notice string
 }
+
+// TrayEvery is how often the tray looks at the state line. The window
+// polls every two seconds; the tray keeps the same pace.
+const TrayEvery = 2 * time.Second
+
+// NoticeFor is how long the first close leaves the window up, with its
+// "still running in the tray" bar showing, before hiding it.
+const NoticeFor = 4 * time.Second
 
 // Defaults fills in the window size.
 func (o Options) withDefaults() Options {
@@ -34,6 +59,9 @@ func (o Options) withDefaults() Options {
 	if o.Height == 0 {
 		o.Height = 680
 	}
+	if o.State == nil {
+		o.State = func() string { return o.Title }
+	}
 	return o
 }
 
@@ -42,4 +70,25 @@ func (o Options) withDefaults() Options {
 func wait(ctx context.Context) error {
 	<-ctx.Done()
 	return ctx.Err()
+}
+
+// watchLine calls apply with the line now and again whenever it
+// changes, until the context ends. The tray uses it so a menu item and
+// a tooltip are rewritten only when the words change.
+func watchLine(ctx context.Context, every time.Duration, read func() string, apply func(string)) {
+	last := read()
+	apply(last)
+	t := time.NewTicker(every)
+	defer t.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-t.C:
+			if line := read(); line != last {
+				last = line
+				apply(line)
+			}
+		}
+	}
 }

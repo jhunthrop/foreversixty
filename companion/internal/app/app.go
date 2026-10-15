@@ -13,19 +13,23 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"maps"
 	"net"
 	"net/http"
 	"os"
 	"runtime"
 	"slices"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/addon"
+	"github.com/jhunthrop/foreversixty/companion/internal/browser"
 	"github.com/jhunthrop/foreversixty/companion/internal/character"
 	"github.com/jhunthrop/foreversixty/companion/internal/client"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
 	"github.com/jhunthrop/foreversixty/companion/internal/paths"
+	"github.com/jhunthrop/foreversixty/companion/internal/picker"
 	"github.com/jhunthrop/foreversixty/companion/internal/pipeline"
 	"github.com/jhunthrop/foreversixty/companion/internal/queue"
 	"github.com/jhunthrop/foreversixty/companion/internal/secret"
@@ -55,6 +59,15 @@ type Options struct {
 	// Retry is the upload retry policy. Zero means the client's
 	// default; tests shrink it so an outage costs milliseconds.
 	Retry client.Retry
+	// Open shows a link in the system browser. Zero means the real
+	// thing (package browser); tests record instead of launching one.
+	Open func(url string) error
+	// PickFolder is the native folder dialog. Zero means the real one
+	// (package picker); tests answer without a dialog.
+	PickFolder func() (string, error)
+	// ConnectInterval overrides how often a sign-in is polled. Zero
+	// means the server's own interval, two seconds.
+	ConnectInterval time.Duration
 }
 
 // App is the whole companion.
@@ -84,6 +97,20 @@ type App struct {
 	sync    *addon.Sync
 	exports *addon.Cache
 	updater *updater.Updater
+
+	// bg is the context the sign-in poll runs under; Close ends it and
+	// waits for the poll, which must not outlive the app.
+	bg   context.Context
+	stop context.CancelFunc
+	bgWG sync.WaitGroup
+
+	// conn is the sign-in in progress (connect.go), guarded by mu.
+	conn connectState
+	// added is the install paths that came from a folder the player
+	// added, as opposed to one found by looking; guarded by mu.
+	added map[string]bool
+	// noticeShown is set once FirstClose has been asked in this process.
+	noticeShown bool
 }
 
 // ReportRetention is how long a finished report's state file is kept.
@@ -104,6 +131,12 @@ func New(o Options) (*App, error) {
 	if o.Now == nil {
 		o.Now = time.Now
 	}
+	if o.Open == nil {
+		o.Open = browser.Open
+	}
+	if o.PickFolder == nil {
+		o.PickFolder = picker.Pick
+	}
 	if o.Secret == nil {
 		o.Secret = secret.ConfigFile{Path: o.Dirs.ConfigFile()}
 	}
@@ -112,6 +145,7 @@ func New(o Options) (*App, error) {
 		return nil, err
 	}
 	a := &App{o: o, log: o.Log, now: o.Now, token: tok, cfg: o.Config}
+	a.bg, a.stop = context.WithCancel(context.Background())
 	// The secret store owns the device token. The in-memory copy is
 	// blanked so no later write of this configuration can carry a
 	// stale token back over the one on disk; SaveSettings reads the
@@ -157,7 +191,11 @@ func New(o Options) (*App, error) {
 }
 
 // Close releases what the app holds.
-func (a *App) Close() error { return a.pipe.Close() }
+func (a *App) Close() error {
+	a.stop()
+	a.bgWG.Wait()
+	return a.pipe.Close()
+}
 
 // localToken is the secret in the UI's URL. The webview cannot set a
 // header, so the token rides in the path and every asset and API call
@@ -229,10 +267,12 @@ func (a *App) prune(now time.Time) {
 }
 
 // detect lists the installs: the configured paths first, then
-// anything found in the usual places.
+// anything found in the usual places, and records which are which
+// (a.added). Callers hold a.mu, except New.
 func (a *App) detect() []wow.Install {
 	var out []wow.Install
 	seen := map[string]bool{}
+	added := map[string]bool{}
 	add := func(in wow.Install) {
 		if !seen[in.Path] {
 			seen[in.Path] = true
@@ -248,11 +288,13 @@ func (a *App) detect() []wow.Install {
 		}
 		for _, in := range found {
 			add(in)
+			added[in.Path] = true
 		}
 	}
 	for _, in := range wow.Detect() {
 		add(in)
 	}
+	a.added = added
 	return out
 }
 
@@ -283,32 +325,73 @@ func (a *App) savedVariables() []string {
 	return out
 }
 
-// Pair exchanges a pairing code for a device token and stores it.
-func (a *App) Pair(ctx context.Context, code string) error {
+// deviceName is what the site lists this device as.
+func deviceName() string {
 	name, err := os.Hostname()
 	if err != nil || name == "" {
-		name = "Forever Sixty companion"
+		return "Forever Sixty companion"
+	}
+	return name
+}
+
+// platform is the device's platform as the API wants it.
+func platform() string { return runtime.GOOS + "/" + runtime.GOARCH }
+
+// Pair exchanges a pairing code for a device token and stores it. This
+// is the fallback to Connect, for a machine that cannot open a browser.
+// A failure is a *Fault: the page shows the sentence for its code, and
+// the cause goes to the log.
+func (a *App) Pair(ctx context.Context, code string) error {
+	code = strings.TrimSpace(code)
+	if code == "" {
+		return fault(CodeEmptyCode, nil)
 	}
 	dev, err := a.client.Claim(ctx, client.Claim{
-		Code:     code,
-		Name:     name,
-		Platform: runtime.GOOS + "/" + runtime.GOARCH,
+		Code: code, Name: deviceName(), Platform: platform(),
 	})
+	if err != nil {
+		a.log.Warn("the pairing code was not accepted", "component", "app", "err", err.Error())
+		return fault(netCode(err, CodeBadCode), err)
+	}
+	if err := a.saveDevice(dev.Token, dev.AccountLabel); err != nil {
+		return err
+	}
+	a.cancelConnect()
+	a.log.Info("this device is paired", "component", "app", "device_id", dev.DeviceID)
+	return nil
+}
+
+// saveDevice stores a device token and who it belongs to. The
+// config-file backend reads config.json, edits it and writes it back,
+// which is the same read-modify-write SaveSettings does: both happen
+// under a.mu so neither can lose the other's change. The network call
+// that produced the token stays outside it.
+func (a *App) saveDevice(token, label string) error {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	if err := a.o.Secret.SetToken(token); err != nil {
+		a.log.Error("could not save the device token", "component", "app", "err", err.Error())
+		return fault(CodeSave, err)
+	}
+	a.forgetToken()
+	if err := a.writeLabel(label); err != nil {
+		// The token is saved and the device works; only the "connected
+		// as" line is lost.
+		a.log.Warn("could not save the account label", "component", "app", "err", err.Error())
+	}
+	return nil
+}
+
+// writeLabel stores the account label in config.json beside whatever
+// else is there, and in memory. Callers hold a.mu.
+func (a *App) writeLabel(label string) error {
+	a.cfg.AccountLabel = label
+	onDisk, err := config.Load(a.o.Dirs.ConfigFile())
 	if err != nil {
 		return err
 	}
-	// The config-file backend reads config.json, edits it and writes
-	// it back, which is the same read-modify-write SaveSettings does:
-	// both happen under a.mu so neither can lose the other's change.
-	// The network call above stays outside it.
-	a.mu.Lock()
-	defer a.mu.Unlock()
-	if err := a.o.Secret.SetToken(dev.Token); err != nil {
-		return err
-	}
-	a.forgetToken()
-	a.log.Info("this device is paired", "component", "app", "device_id", dev.DeviceID)
-	return nil
+	onDisk.AccountLabel = label
+	return config.Save(a.o.Dirs.ConfigFile(), onDisk)
 }
 
 // Unpair forgets the device token. The reports already uploaded stay
@@ -318,13 +401,20 @@ func (a *App) Unpair() error {
 	defer a.mu.Unlock()
 	err := a.o.Secret.Clear()
 	a.forgetToken()
-	return err
+	if err != nil {
+		a.log.Error("could not forget the device token", "component", "app", "err", err.Error())
+		return fault(CodeSave, err)
+	}
+	if err := a.writeLabel(""); err != nil {
+		a.log.Warn("could not clear the account label", "component", "app", "err", err.Error())
+	}
+	return nil
 }
 
 // Settings is what the settings page can change.
 type Settings struct {
 	Visibility       string               `json:"visibility"`
-	WoWPaths         []string             `json:"wow_paths"`
+	WoWPaths         []string             `json:"wow_paths,omitempty"`
 	LoggingCharacter *character.Character `json:"logging_character"`
 }
 
@@ -344,24 +434,40 @@ func (a *App) SaveSettings(in Settings) error {
 }
 
 // store validates the settings and writes them, holding the lock for
-// the whole read-modify-write of config.json.
+// the whole read-modify-write of config.json. A failure is a *Fault.
 func (a *App) store(in Settings) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	cfg := a.cfg
 	cfg.ReportVisibility = in.Visibility
-	cfg.WoWPaths = in.WoWPaths
-	if cfg.WoWPaths == nil {
-		cfg.WoWPaths = []string{}
+	if !slices.Contains(config.Visibilities, in.Visibility) {
+		return fault(CodeBadRequest, fmt.Errorf("report visibility %q is not one of %v", in.Visibility, config.Visibilities))
+	}
+	// The settings page no longer sends folders: they are added and
+	// removed one at a time. A nil list leaves them as they are.
+	if in.WoWPaths != nil {
+		cfg.WoWPaths = in.WoWPaths
 	}
 	cfg.LoggingCharacter = in.LoggingCharacter
 	if cfg.LoggingCharacter != nil && !cfg.LoggingCharacter.Valid() {
-		return errors.New("the logging character needs a region, a ruleset and a name")
+		return fault(CodeNoCharacter, errors.New("the logging character needs a region, a ruleset and a name"))
 	}
 	for _, p := range cfg.WoWPaths {
 		if _, err := wow.Pick(p); err != nil {
-			return err
+			return fault(CodeNotWoW, err)
 		}
+	}
+	return a.persist(cfg)
+}
+
+// persist writes a configuration and puts it to work: the installs are
+// found again and the pipeline is told. Callers hold a.mu.
+func (a *App) persist(cfg config.Config) error {
+	if cfg.WoWPaths == nil {
+		cfg.WoWPaths = []string{}
+	}
+	if err := cfg.Validate(); err != nil {
+		return fault(CodeSettings, err)
 	}
 	// The device token lives in config.json on the fallback backend
 	// and is written there by the secret store alone. Whatever is on
@@ -369,11 +475,11 @@ func (a *App) store(in Settings) error {
 	// would silently unpair the player.
 	onDisk, err := config.Load(a.o.Dirs.ConfigFile())
 	if err != nil {
-		return err
+		return fault(CodeSettings, err)
 	}
 	cfg.DeviceToken = onDisk.DeviceToken
 	if err := config.Save(a.o.Dirs.ConfigFile(), cfg); err != nil {
-		return err
+		return fault(CodeSettings, err)
 	}
 	cfg.DeviceToken = ""
 	a.cfg = cfg
@@ -405,18 +511,32 @@ func (a *App) retarget() {
 
 // Snapshot is everything the UI shows.
 type Snapshot struct {
-	EngineVersion    string               `json:"engine_version"`
-	Paired           bool                 `json:"paired"`
+	// AppVersion is the companion's own version, for the footer.
+	// EngineVersion is the log engine's, kept for support and not shown.
+	AppVersion    string `json:"app_version"`
+	EngineVersion string `json:"engine_version"`
+	Paired        bool   `json:"paired"`
+	// AccountLabel is who the device is connected as, empty when it
+	// is not known.
+	AccountLabel string `json:"account_label"`
+	// Headline is the Status page's opening line (headline.go).
+	Headline Headline `json:"headline"`
+	// Connect is the Battle.net sign-in in progress (connect.go).
+	Connect          ConnectView          `json:"connect"`
 	TokenBackend     string               `json:"token_backend"`
+	TokenBackendName string               `json:"token_backend_name"`
 	APIBaseURL       string               `json:"api_base_url"`
 	SiteBaseURL      string               `json:"site_base_url"`
 	Visibility       string               `json:"visibility"`
 	LoggingCharacter *character.Character `json:"logging_character,omitempty"`
 	Installs         []InstallStatus      `json:"installs"`
-	Pipeline         pipeline.Status      `json:"pipeline"`
-	Reports          []ReportRow          `json:"reports"`
-	Characters       []addon.Export       `json:"characters"`
-	UpdateStaged     bool                 `json:"update_staged"`
+	// WatchPending is true while the tail has not yet moved to the
+	// first install, because a report is open.
+	WatchPending bool            `json:"watch_pending"`
+	Pipeline     pipeline.Status `json:"pipeline"`
+	Reports      []ReportRow     `json:"reports"`
+	Characters   []addon.Export  `json:"characters"`
+	UpdateStaged bool            `json:"update_staged"`
 	// AddonSeenAt is when the site last saw an export (the newest
 	// ack's export_seen_at across characters), in local time; absent
 	// until the site has acked one.
@@ -425,15 +545,27 @@ type Snapshot struct {
 	// request, in the ack's words (addon.SimQueued and the rest).
 	SimRequestState string `json:"sim_request_state,omitempty"`
 	// AddonLine is the two above in the player's words (AddonLine in
-	// copy.go), empty when there is no ack.
+	// copy.go); before any ack it says the addon has not synced.
 	AddonLine string `json:"addon_line"`
+	// AddonStale is true when the last sync is over a day old, and
+	// AddonHelp then says what to do.
+	AddonStale bool   `json:"addon_stale"`
+	AddonHelp  string `json:"addon_help,omitempty"`
+	// AddonSeenTitle is the absolute time, for a tooltip.
+	AddonSeenTitle string `json:"addon_seen_title,omitempty"`
 }
 
 // InstallStatus is one game folder as the status page shows it.
 type InstallStatus struct {
 	Path string `json:"path"`
-	// Flavor is the folder name, "_classic_era_" and the like.
-	Flavor string `json:"flavor"`
+	// Flavor is the folder name, "_classic_era_" and the like;
+	// FlavorName is the same in the player's words ("Classic Era").
+	Flavor     string `json:"flavor"`
+	FlavorName string `json:"flavor_name"`
+	// Watching is the folder the pipeline is tailing, and Added is
+	// true for a folder the player added (as opposed to one found).
+	Watching bool `json:"watching"`
+	Added    bool `json:"added"`
 	// Advanced is true, false, or unknown when Config.wtf could not
 	// be read — which is the normal state before the first login.
 	Advanced        bool   `json:"advanced_logging"`
@@ -452,33 +584,72 @@ type ReportRow struct {
 	URL       string    `json:"url,omitempty"`
 }
 
+// installStatuses is the installs as the window shows them.
+func (a *App) installStatuses() (rows []InstallStatus, watchPending bool) {
+	a.mu.Lock()
+	installs := slices.Clone(a.installs)
+	added := maps.Clone(a.added)
+	watching := a.watching
+	want := a.logsDir()
+	a.mu.Unlock()
+
+	rows = make([]InstallStatus, 0, len(installs))
+	for _, in := range installs {
+		row := InstallStatus{Path: in.Path, Flavor: in.Flavor, FlavorName: wow.FlavorName(in.Flavor),
+			Watching: in.Logs == watching, Added: added[in.Path],
+			AdvancedLogHelp: CopyAdvancedHow}
+		if on, err := in.AdvancedLogging(); err == nil {
+			row.Advanced, row.AdvancedKnown = on, true
+		}
+		rows = append(rows, row)
+	}
+	return rows, want != watching
+}
+
+// Headline is the Status page's opening line right now. The tray asks
+// for it on a timer, so it reads only what it needs.
+func (a *App) Headline() Headline {
+	installs, _ := a.installStatuses()
+	connecting := a.connectView().State == ConnectWaiting || a.connectView().State == ConnectBlocked
+	return headlineFor(a.deviceToken() != "", connecting, a.pipe.Status().Logging, installs)
+}
+
+// ReportsURL is the player's reports on the site.
+func (a *App) ReportsURL() string {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return a.cfg.SiteBaseURL + "/logs"
+}
+
 // Snapshot builds the UI's view of the world.
 func (a *App) Snapshot() Snapshot {
 	a.mu.Lock()
-	cfg, installs := a.cfg, slices.Clone(a.installs)
+	cfg := a.cfg
 	a.mu.Unlock()
 
+	paired := a.deviceToken() != ""
 	s := Snapshot{
+		AppVersion:       updater.Version,
 		EngineVersion:    session.Version,
-		Paired:           a.deviceToken() != "",
+		Paired:           paired,
+		AccountLabel:     cfg.AccountLabel,
+		Connect:          a.connectView(),
 		TokenBackend:     string(a.o.Secret.Backend()),
+		TokenBackendName: secret.Name(a.o.Secret.Backend(), runtime.GOOS),
 		APIBaseURL:       cfg.APIBaseURL,
 		SiteBaseURL:      cfg.SiteBaseURL,
 		Visibility:       cfg.ReportVisibility,
 		LoggingCharacter: cfg.LoggingCharacter,
 		Pipeline:         a.pipe.Status(),
-		Installs:         make([]InstallStatus, 0, len(installs)),
 		Reports:          []ReportRow{},
 		Characters:       []addon.Export{},
 	}
-	for _, in := range installs {
-		row := InstallStatus{Path: in.Path, Flavor: in.Flavor,
-			AdvancedLogHelp: wow.AdvancedLoggingHelp}
-		if on, err := in.AdvancedLogging(); err == nil {
-			row.Advanced, row.AdvancedKnown = on, true
-		}
-		s.Installs = append(s.Installs, row)
+	if !paired {
+		s.AccountLabel = ""
 	}
+	s.Installs, s.WatchPending = a.installStatuses()
+	connecting := s.Connect.State == ConnectWaiting || s.Connect.State == ConnectBlocked
+	s.Headline = headlineFor(paired, connecting, s.Pipeline.Logging, s.Installs)
 	reports, err := state.List(a.o.Dirs.State)
 	if err != nil {
 		a.log.Warn("could not list the reports", "component", "app", "err", err.Error())
@@ -506,11 +677,16 @@ func (a *App) Snapshot() Snapshot {
 	if _, err := os.Stat(updater.PendingPath(a.o.Dirs.Update)); err == nil {
 		s.UpdateStaged = true
 	}
-	if st := a.sync.Status(); !st.SeenAt.IsZero() {
-		now := a.now()
+	now := a.now()
+	st := a.sync.Status()
+	s.AddonLine = AddonLine(st.SeenAt, st.SimRequestState, now)
+	if !st.SeenAt.IsZero() {
 		local := st.SeenAt.In(now.Location())
 		s.AddonSeenAt, s.SimRequestState = &local, st.SimRequestState
-		s.AddonLine = AddonLine(st.SeenAt, st.SimRequestState, now)
+		s.AddonSeenTitle = local.Format("Mon 2 Jan 2006, 15:04")
+		if s.AddonStale = AddonStale(st.SeenAt, now); s.AddonStale {
+			s.AddonHelp = CopyStaleHelp
+		}
 	}
 	return s
 }

@@ -36,7 +36,10 @@ type Config struct {
 	SiteBaseURL string `json:"site_base_url"`
 	// DeviceToken is only written when no OS keychain is available; the
 	// secret store owns the token otherwise and leaves this empty.
-	DeviceToken      string   `json:"device_token"`
+	DeviceToken string `json:"device_token"`
+	// AccountLabel is who the device is connected as (a battletag, else
+	// an email), kept to say so on the Device page; it is not a secret.
+	AccountLabel     string   `json:"account_label,omitempty"`
 	WoWPaths         []string `json:"wow_paths"`
 	ReportVisibility string   `json:"report_visibility"`
 	// LoggingCharacter is who the reports are attributed to, chosen on

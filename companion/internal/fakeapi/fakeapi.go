@@ -47,6 +47,9 @@ const Token = "fsd_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 // PairCode is the pairing code the fake accepts.
 const PairCode = "HORDE-42"
 
+// AccountLabel is who the fake says a device belongs to.
+const AccountLabel = "Thrall#1234"
+
 // Fight is one stored fight bundle, decoded.
 type Fight struct {
 	Index    int
@@ -91,6 +94,10 @@ type Server struct {
 	clock        func() time.Time
 	acks         map[string]ack
 	inboxReads   int
+
+	// The connect flow (device authorization), keyed by connect id.
+	connects   map[string]*connectRow
+	connectSeq int
 }
 
 // InboxFetches is how many times GET /v1/addon/inbox has been answered.
@@ -113,9 +120,15 @@ func New() *Server {
 		simOutcome: "queued",
 		clock:      time.Now,
 		acks:       map[string]ack{},
+		connects:   map[string]*connectRow{},
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/devices/claim", s.claim)
+	mux.HandleFunc("POST /v1/devices/connect", s.connectStart)
+	mux.HandleFunc("GET /v1/devices/connect/lookup", s.connectLookup)
+	mux.HandleFunc("GET /v1/devices/connect/{id}", s.connectPoll)
+	mux.HandleFunc("POST /v1/devices/connect/approve", s.connectApprove)
+	mux.HandleFunc("POST /v1/devices/connect/deny", s.connectDeny)
 	mux.HandleFunc("POST /v1/reports", s.createReport)
 	mux.HandleFunc("PUT /v1/reports/{id}/fights/{n}", s.putFight)
 	mux.HandleFunc("PUT /v1/reports/{id}/fights/{n}/live", s.putLive)
@@ -272,7 +285,7 @@ func (s *Server) wrap(h http.Handler) http.Handler {
 			fail(w, http.StatusServiceUnavailable, "the network is down")
 			return
 		}
-		if r.URL.Path != "/v1/devices/claim" {
+		if r.URL.Path != "/v1/devices/claim" && !strings.HasPrefix(r.URL.Path, "/v1/devices/connect") {
 			if r.Header.Get("Authorization") != "Bearer "+Token {
 				fail(w, http.StatusUnauthorized, "unknown device token")
 				return
@@ -329,7 +342,7 @@ func (s *Server) claim(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	ok(w, http.StatusCreated, map[string]string{
-		"device_id": "dev00000000aaaa", "token": Token,
+		"device_id": "dev00000000aaaa", "token": Token, "account_label": AccountLabel,
 	})
 }
 

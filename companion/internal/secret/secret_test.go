@@ -134,3 +134,21 @@ func TestMigrateIsANoOpForTheFileStore(t *testing.T) {
 		t.Errorf("the file store lost its token: %q", after.DeviceToken)
 	}
 }
+
+func TestTheBackendIsNamedInThePlayersWords(t *testing.T) {
+	for _, c := range []struct {
+		b    Backend
+		goos string
+		want string
+	}{
+		{Keychain, "windows", "Windows Credential Manager"},
+		{Keychain, "darwin", "macOS Keychain"},
+		{Keychain, "linux", "Secret Service"},
+		{File, "windows", "A file only you can read"},
+		{File, "linux", "A file only you can read"},
+	} {
+		if got := Name(c.b, c.goos); got != c.want {
+			t.Errorf("Name(%v, %s) = %q, want %q", c.b, c.goos, got, c.want)
+		}
+	}
+}

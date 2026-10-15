@@ -34,6 +34,27 @@ type harness struct {
 	secret *countingSecret
 	game   string // the flavour directory
 	log    string
+
+	// What the browser and the folder dialog were asked, and what they
+	// answer.
+	mu      sync.Mutex
+	opened  []string
+	openErr error
+	pick    string
+	pickErr error
+}
+
+func (h *harness) open(url string) error {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.opened = append(h.opened, url)
+	return h.openErr
+}
+
+func (h *harness) openedLinks() []string {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	return append([]string(nil), h.opened...)
 }
 
 // countingSecret is the token store with a tally, so a test can hold
@@ -77,12 +98,17 @@ func newGame(t *testing.T) string {
 	return game
 }
 
-func newHarness(t *testing.T) *harness { return newHarnessSeeded(t, nil) }
+func newHarness(t *testing.T) *harness { return newHarnessWith(t, nil, nil) }
 
 // newHarnessSeeded builds the harness, calling seed with the resolved
 // directories before the app is assembled, so a test can leave behind
 // what a long-running install would have left behind.
 func newHarnessSeeded(t *testing.T, seed func(paths.Dirs)) *harness {
+	return newHarnessWith(t, seed, nil)
+}
+
+// newHarnessWith also lets a test adjust the app's options before it is built.
+func newHarnessWith(t *testing.T, seed func(paths.Dirs), tweak func(*app.Options)) *harness {
 	t.Helper()
 	home := t.TempDir()
 	t.Setenv(paths.HomeEnv, home)
@@ -104,18 +130,28 @@ func newHarnessSeeded(t *testing.T, seed func(paths.Dirs)) *harness {
 		seed(dirs)
 	}
 	store := &countingSecret{Store: secret.ConfigFile{Path: dirs.ConfigFile()}}
-	a, err := app.New(app.Options{
+	h := &harness{t: t, srv: srv, dirs: dirs, secret: store, game: game,
+		log: filepath.Join(game, "Logs", "WoWCombatLog.txt")}
+	opts := app.Options{
 		Dirs: dirs, Config: cfg,
 		Secret: store,
 		Retry:  client.Retry{MaxAttempts: 1, Base: time.Millisecond, Max: time.Millisecond},
 		Now:    func() time.Time { return t0 },
-	})
+		// Never a real browser or a real dialog from a test.
+		Open:            h.open,
+		PickFolder:      func() (string, error) { return h.pick, h.pickErr },
+		ConnectInterval: 2 * time.Millisecond,
+	}
+	if tweak != nil {
+		tweak(&opts)
+	}
+	a, err := app.New(opts)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { a.Close() })
-	return &harness{t: t, app: a, srv: srv, dirs: dirs, secret: store, game: game,
-		log: filepath.Join(game, "Logs", "WoWCombatLog.txt")}
+	h.app = a
+	return h
 }
 
 // call performs one request against the local UI server.
@@ -636,7 +672,7 @@ func TestTheStatusPageShowsWhenTheSiteSawTheExport(t *testing.T) {
 				["requested_at"] = "2026-12-09 14:02", ["gear_code"] = "FS1:x" } } }`), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	if s := h.app.Snapshot(); s.AddonLine != "" || s.AddonSeenAt != nil {
+	if s := h.app.Snapshot(); s.AddonLine != app.CopyNeverSynced || s.AddonSeenAt != nil {
 		t.Fatalf("a line before any ack: %+v", s)
 	}
 	if code, _ := h.call(http.MethodPost, h.url("/api/pair"),
@@ -649,7 +685,7 @@ func TestTheStatusPageShowsWhenTheSiteSawTheExport(t *testing.T) {
 	if s.AddonSeenAt == nil || !s.AddonSeenAt.Equal(seen) || s.SimRequestState != addon.SimQueued {
 		t.Fatalf("snapshot = seen %v, sim %q", s.AddonSeenAt, s.SimRequestState)
 	}
-	if want := app.CopySeenBySite + " 14:03" + app.CopySeparator + app.CopySimQueued; s.AddonLine != want {
+	if want := app.CopyLastSynced + " 14:03" + app.CopySeparator + app.CopySimQueued; s.AddonLine != want {
 		t.Errorf("line = %q, want %q", s.AddonLine, want)
 	}
 	_, body := h.call(http.MethodGet, h.url("/api/status"), nil)
