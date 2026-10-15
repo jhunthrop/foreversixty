@@ -745,6 +745,7 @@ func TestHandlersAnswer500WhenTheDatabaseIsGone(t *testing.T) {
 		"pair":    asUser(s.pair, http.MethodPost, "/v1/devices/pair"),
 		"devices": asUser(s.listDevices, http.MethodGet, "/v1/devices"),
 		"revoke":  asUser(s.revokeDevice, http.MethodDelete, "/v1/devices/x"),
+		"forget":  asDevice(s.revokeSelf, http.MethodDelete, "/v1/devices/self"),
 		"email":   emailPost(s, `{"email":"raider@example.com"}`),
 		"claim":   claimPost(s, `{"code":"aaaaaaaa"}`),
 	} {
@@ -1164,4 +1165,75 @@ func TestBnetCallbackSetsPrivateCacheControl(t *testing.T) {
 	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
 		t.Errorf("Vary = %q", got)
 	}
+}
+
+func TestADeviceRevokesItself(t *testing.T) {
+	h := newHarness(t)
+	h.signIn(t, "raider@example.com")
+	token := h.pairDeviceToken(t)
+
+	call := func(method, path, bearer string) int {
+		t.Helper()
+		r, _ := http.NewRequest(method, h.server.URL+path, nil)
+		if bearer != "" {
+			r.Header.Set("Authorization", "Bearer "+bearer)
+		}
+		res, err := http.DefaultClient.Do(r)
+		if err != nil {
+			t.Fatal(err)
+		}
+		res.Body.Close()
+		return res.StatusCode
+	}
+	// A browser session is not a device: this route is the companion's.
+	res := h.do(t, http.MethodDelete, "/v1/devices/self", "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusUnauthorized {
+		t.Fatalf("self-revoke as a session = %d, want 401", res.StatusCode)
+	}
+	if got := call(http.MethodDelete, "/v1/devices/self", token); got != http.StatusNoContent {
+		t.Fatalf("self-revoke = %d, want 204", got)
+	}
+	// The token is dead now, so a second call is the middleware's 401.
+	if got := call(http.MethodDelete, "/v1/devices/self", token); got != http.StatusUnauthorized {
+		t.Fatalf("self-revoke twice = %d, want 401", got)
+	}
+	res = h.do(t, http.MethodGet, "/v1/devices", "")
+	var list []Device
+	h.decode(t, res, &list)
+	if len(list) != 0 {
+		t.Fatalf("devices after self-revoke = %+v, want none listed", list)
+	}
+}
+
+func (h *harness) pairDeviceToken(t *testing.T) string {
+	t.Helper()
+	res := h.do(t, http.MethodPost, "/v1/devices/pair", "")
+	var pairing struct {
+		Code string `json:"code"`
+	}
+	h.decode(t, res, &pairing)
+	claimed, err := http.Post(h.server.URL+"/v1/devices/claim", "application/json",
+		strings.NewReader(`{"code":"`+pairing.Code+`","name":"Raid PC","platform":"windows/amd64"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer claimed.Body.Close()
+	var env struct {
+		Data struct {
+			Token string `json:"token"`
+		} `json:"data"`
+	}
+	if err := json.NewDecoder(claimed.Body).Decode(&env); err != nil {
+		t.Fatal(err)
+	}
+	return env.Data.Token
+}
+
+func asDevice(h http.HandlerFunc, method, target string) *httptest.ResponseRecorder {
+	r := httptest.NewRequest(method, target, nil)
+	r = r.WithContext(WithActor(r.Context(), Actor{UserID: 1, Role: "user", Method: "device", DeviceID: "dev1"}))
+	w := httptest.NewRecorder()
+	h(w, r)
+	return w
 }

@@ -73,6 +73,7 @@ copying it.
   | `GET /v1/devices/connect/lookup?code=KQ4-7TM` | session | | 200 `{ name, platform, expires_in }`; 404 unknown, expired or decided |
   | `POST /v1/devices/connect/approve` | session | `{ code }` | 200 `{ name, platform }`; 404 unknown or expired; 409 already decided |
   | `POST /v1/devices/connect/deny` | session | `{ code }` | 204; 404 unknown or expired; 409 already decided |
+  | `DELETE /v1/devices/self` | device token | | 204; the calling device revokes itself (the companion's Forget). A token already revoked is the middleware's 401, which the companion counts as done |
 - `GET /v1/me` → `{ user: { id, battletag, email, role }, characters: [...], guilds: [...] }` or 401.
 
 ## Ingest (companion → API)
