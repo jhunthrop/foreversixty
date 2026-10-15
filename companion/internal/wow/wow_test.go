@@ -133,3 +133,18 @@ func TestCandidatesAreAbsolutePathsForThisOS(t *testing.T) {
 	// Detect must not panic on a machine with no game installed.
 	Detect()
 }
+
+func TestFlavourFoldersAreNamedInThePlayersWords(t *testing.T) {
+	for folder, want := range map[string]string{
+		"_anniversary_":  "Classic Anniversary",
+		"_classic_era_":  "Classic Era",
+		"_classic_beta_": "Classic beta",
+		"_retail_":       "Retail",
+		"_forever_":      "_forever_",
+		"MyServer":       "MyServer",
+	} {
+		if got := FlavorName(folder); got != want {
+			t.Errorf("FlavorName(%q) = %q, want %q", folder, got, want)
+		}
+	}
+}

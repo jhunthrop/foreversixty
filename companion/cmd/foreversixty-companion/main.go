@@ -3,7 +3,7 @@
 // uploads fights as they close, keeps the addon in step with the
 // site, and shows all of it in a tray window.
 //
-//	foreversixty-companion              tray and window
+//	foreversixty-companion              tray and window (closing the window keeps it in the tray)
 //	foreversixty-companion -headless    no window; the URL is printed
 //	foreversixty-companion -version     print the version and exit
 package main
@@ -17,6 +17,7 @@ import (
 	"syscall"
 
 	"github.com/jhunthrop/foreversixty/companion/internal/app"
+	"github.com/jhunthrop/foreversixty/companion/internal/browser"
 	"github.com/jhunthrop/foreversixty/companion/internal/config"
 	"github.com/jhunthrop/foreversixty/companion/internal/logging"
 	"github.com/jhunthrop/foreversixty/companion/internal/paths"
@@ -109,10 +110,18 @@ func run(args []string, out *os.File) error {
 
 	// The shell owns the main goroutine: every desktop toolkit here
 	// requires its loop to run on it.
-	err = shell.Run(ctx, shell.Options{URL: ui.URL, Headless: *headless, OnQuit: stop})
-	// Closing the window with the OS button returns from Run without
-	// ever calling OnQuit, so the cancel happens here too, and the
-	// loop is waited for: the deferred a.Close releases the zstd
+	err = shell.Run(ctx, shell.Options{
+		URL: ui.URL, Headless: *headless, OnQuit: stop,
+		// The tray says what the Status headline says, and the window
+		// closing leaves the companion running (the shell hides it).
+		State:       func() string { return a.Headline().Title },
+		OpenReports: func() { _ = browser.Open(a.ReportsURL()) },
+		FirstClose:  a.FirstClose,
+		Notice:      app.CopyTrayNotice,
+	})
+	// Where the window's close cannot be caught, closing it returns from
+	// Run without ever calling OnQuit, so the cancel happens here too,
+	// and the loop is waited for: the deferred a.Close releases the zstd
 	// encoder, and Step must not still be inside EncodeAll.
 	stop()
 	<-done

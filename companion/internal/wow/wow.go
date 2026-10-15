@@ -198,3 +198,21 @@ func (i Install) SavedVariables(addon string) ([]string, error) {
 	}
 	return out, nil
 }
+
+// FlavorName is a flavour folder in the player's words. The folders a
+// player has are named by the game ("_anniversary_"), and the status
+// page and the settings list show what they mean; a private server's
+// folder, or one this table does not know, keeps its own name.
+func FlavorName(folder string) string {
+	switch folder {
+	case "_anniversary_":
+		return "Classic Anniversary"
+	case "_classic_era_":
+		return "Classic Era"
+	case "_classic_beta_":
+		return "Classic beta"
+	case "_retail_":
+		return "Retail"
+	}
+	return folder
+}

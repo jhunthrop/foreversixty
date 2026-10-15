@@ -151,3 +151,19 @@ func Migrate(s Store, configPath string) error {
 	cfg.DeviceToken = ""
 	return config.Save(configPath, cfg)
 }
+
+// Name is where the token lives in the player's words, for the Device
+// page: the keychain is a different thing on each system, and "keychain"
+// is a Mac word on Windows.
+func Name(b Backend, goos string) string {
+	if b == File {
+		return "A file only you can read"
+	}
+	switch goos {
+	case "windows":
+		return "Windows Credential Manager"
+	case "darwin":
+		return "macOS Keychain"
+	}
+	return "Secret Service"
+}
