@@ -448,7 +448,7 @@
   <!-- Signed out and signed in are the same shape on purpose, a line over a button, so the
        block is the same height either way and the steps under it never move when the
        session answers. The floor holds that height while it is still being asked for. -->
-  <div class="flex min-h-[110px] flex-col items-start gap-3" data-testid="pairing">
+  <div class="flex min-h-[150px] flex-col items-start gap-3" data-testid="pairing">
     {#if status === 'loading'}
       <p class="text-muted text-[14px]">Checking whether you are signed in.</p>
     {:else if !signedIn}
@@ -458,6 +458,7 @@
            the expiry line is answered and removed with it. -->
       <p class="text-[14px]" data-testid="pairing-success">{pairingCopy.success(pairedDevice.name)}</p>
     {:else if pairing === null}
+      <p class="text-muted text-[13px]" data-testid="pairing-companion-first">{pairingCopy.companionFirst}</p>
       <p class="text-[14px]">Signed in as {displayName}. Show a code, then type it into the companion.</p>
       <button
         class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"

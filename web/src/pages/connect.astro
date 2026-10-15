@@ -1,0 +1,23 @@
+---
+// web/src/pages/connect.astro
+import Base from '../layouts/Base.astro';
+import Connect from '../components/Connect.svelte';
+---
+
+<Base
+  title="Connect your companion"
+  description="Approve the Forever Sixty companion on your account."
+  path="/connect"
+>
+  <!-- One centred card, 420px at most: the page has one job. The code comes from the query,
+       which a static build only sees in the browser, so the island reads it after hydration. -->
+  <main
+    id="main"
+    tabindex="-1"
+    class="measure-form flex flex-col items-center px-[18px] py-6 md:px-0 md:py-16"
+  >
+    <div class="border-line bg-raised rounded-panel w-full max-w-[420px] border p-5 md:p-8">
+      <Connect client:load />
+    </div>
+  </main>
+</Base>

@@ -439,8 +439,16 @@ export function battlenetStartUrl(next: string, apiBase: string = API_BASE_URL):
   return `${apiBase}/v1/auth/battlenet/start?next=${encodeURIComponent(next)}`;
 }
 
-export async function requestEmailLink(email: string, apiBase: string = API_BASE_URL): Promise<void> {
-  await call('/v1/auth/email', apiBase, { method: 'POST', body: { email } });
+/** `next` rides in the body so the emailed link can land back on the page that asked (/connect). */
+export async function requestEmailLink(
+  email: string,
+  apiBase: string = API_BASE_URL,
+  next?: string,
+): Promise<void> {
+  await call('/v1/auth/email', apiBase, {
+    method: 'POST',
+    body: next === undefined ? { email } : { email, next },
+  });
 }
 
 const DEVICES_TTL_MS = 10 * 60 * 1000;
@@ -476,6 +484,47 @@ export async function pairDevice(apiBase: string = API_BASE_URL): Promise<Pairin
   if (code === null) throw new AccountError(ACCOUNT_FAILED, 0);
   invalidate(devicesKey(apiBase));
   return code;
+}
+
+/** What the companion's connect asked to be called, as the signed-in page shows it. */
+export interface ConnectDevice {
+  name: string;
+  platform: string;
+}
+
+export interface ConnectLookup extends ConnectDevice {
+  expires_in: number;
+}
+
+/** Companion connect (ruling R-C1). 404 means unknown, expired or already decided. */
+export async function connectDeviceLookup(
+  code: string,
+  apiBase: string = API_BASE_URL,
+): Promise<ConnectLookup> {
+  const found = await call<ConnectLookup>(
+    `/v1/devices/connect/lookup?code=${encodeURIComponent(code)}`,
+    apiBase,
+  );
+  if (found === null) throw new AccountError(ACCOUNT_FAILED, 0);
+  return found;
+}
+
+/** 404 unknown/expired, 409 already decided. */
+export async function connectDeviceApprove(
+  code: string,
+  apiBase: string = API_BASE_URL,
+): Promise<ConnectDevice> {
+  const device = await call<ConnectDevice>('/v1/devices/connect/approve', apiBase, {
+    method: 'POST',
+    body: { code },
+  });
+  if (device === null) throw new AccountError(ACCOUNT_FAILED, 0);
+  invalidate(devicesKey(apiBase));
+  return device;
+}
+
+export async function connectDeviceDeny(code: string, apiBase: string = API_BASE_URL): Promise<void> {
+  await call('/v1/devices/connect/deny', apiBase, { method: 'POST', body: { code } });
 }
 
 export async function revokeDevice(id: string, apiBase: string = API_BASE_URL): Promise<void> {
