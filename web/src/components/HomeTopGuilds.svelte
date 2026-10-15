@@ -61,8 +61,7 @@
           {row.guild.name}
         </a>
         <span class="text-muted tabular font-mono text-[12px]">
-          {Math.round(row.value)}
-          {homeTopGuildsCopy.bossesUnit}
+          {homeTopGuildsCopy.bosses(Math.round(row.value))}
         </span>
       </li>
     {/each}
