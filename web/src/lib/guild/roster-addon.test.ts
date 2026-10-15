@@ -150,7 +150,12 @@ describe('addonSnapshotLine', () => {
   const other = (key: string, addon: GuildRosterAddon | null) =>
     row({ character_key: key, name: key.split('/').pop() ?? key, addon });
   it('says who sent it, when, and how many of the roster rows the snapshot matched', () => {
-    const rows = [row(), other('us/pvp/kraggor', ADDON), other('us/pvp/windtalon', null), other('us/pvp/a', null)];
+    const rows = [
+      row(),
+      other('us/pvp/kraggor', ADDON),
+      other('us/pvp/windtalon', null),
+      other('us/pvp/a', null),
+    ];
     expect(addonSnapshotLine(SNAPSHOT, rows, now)).toBe(
       'Roster from the addon · sent by Zulmara 3 minutes ago · 2 of 4 members seen',
     );

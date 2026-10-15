@@ -347,7 +347,9 @@ test.describe('roster: the In game column from the addon snapshot (L8.3)', () =>
     await openRoster(page, true);
     const fixtureRows = buildMockHome(VIEWER_MEMBER).roster.length;
     await expect(page.getByTestId('guild-roster-addon-snapshot')).toHaveText(
-      new RegExp(`^Roster from the addon · sent by Zulmara 3 minutes ago · 3 of ${fixtureRows} members seen$`),
+      new RegExp(
+        `^Roster from the addon · sent by Zulmara 3 minutes ago · 3 of ${fixtureRows} members seen$`,
+      ),
     );
     await expect(rowNamed(page, 'Zulmara').getByTestId('guild-roster-ingame')).toHaveText(
       /^Level 60 Survival\s+per addon\s+·\s+gap 12 DPS\s+·\s+build: Survival raid\s+·\s+seen 21:40$/,

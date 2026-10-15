@@ -179,8 +179,7 @@ export const addonCopy = {
           src: '/addon/talent-marks-trees.jpg',
           width: 504,
           height: 298,
-          alt:
-            'A hunter’s talent window, Beast Mastery, Marksmanship and Survival, with small order marks on the planned talents, one ringed in gold in Marksmanship, and the strip along the bottom: “Next: Lethal Attacks (1 of 5) · 12 of 51 points · 3 off plan”, the last part in red.',
+          alt: 'A hunter’s talent window, Beast Mastery, Marksmanship and Survival, with small order marks on the planned talents, one ringed in gold in Marksmanship, and the strip along the bottom: “Next: Lethal Attacks (1 of 5) · 12 of 51 points · 3 off plan”, the last part in red.',
         },
       ],
     },
@@ -206,8 +205,7 @@ export const addonCopy = {
           src: '/addon/bag-arrow.jpg',
           width: 560,
           height: 300,
-          alt:
-            'The top of the Combined Backpack with a small green arrow on the top-right corner of an item in the second row of the backpack: a bag item that beats what the character wears.',
+          alt: 'The top of the Combined Backpack with a small green arrow on the top-right corner of an item in the second row of the backpack: a bag item that beats what the character wears.',
         },
       ],
     },
@@ -254,8 +252,7 @@ export const addonCopy = {
           tall: true,
           width: 728,
           height: 612,
-          alt:
-            'The Forever Sixty guild tab: “Online only” unticked, “97 of 97 shown · 2 of 3 online run Forever Sixty · 1-20 of 97”, and columns Name, Level, Spec, Gear, Score (sorted), Attendance and Gap, with scored rows for Belee Dat (Frost, 2310), Onearm Lopen (Arms, 1720, gap 14 DPS) and Bow Jackzon (Beast Mastery, 1240, gap 0 DPS), then two dimmed rows and “no logs” for the rest.',
+          alt: 'The Forever Sixty guild tab: “Online only” unticked, “97 of 97 shown · 2 of 3 online run Forever Sixty · 1-20 of 97”, and columns Name, Level, Spec, Gear, Score (sorted), Attendance and Gap, with scored rows for Belee Dat (Frost, 2310), Onearm Lopen (Arms, 1720, gap 14 DPS) and Bow Jackzon (Beast Mastery, 1240, gap 0 DPS), then two dimmed rows and “no logs” for the rest.',
         },
       ],
     },
@@ -288,8 +285,7 @@ export const addonCopy = {
           tall: true,
           width: 770,
           height: 553,
-          alt:
-            'The build dialog for a hunter on Paste a build: “Following: Beast Mastery / Marksmanship build · Hunter · 51 po…”, “Next talent: Take Lethal Attacks (Marksmanship, 1 of 5)”, and the empty box “Paste a build code from foreversixty.gg (Ctrl+V)”, with “Tab to switch” at the bottom.',
+          alt: 'The build dialog for a hunter on Paste a build: “Following: Beast Mastery / Marksmanship build · Hunter · 51 po…”, “Next talent: Take Lethal Attacks (Marksmanship, 1 of 5)”, and the empty box “Paste a build code from foreversixty.gg (Ctrl+V)”, with “Tab to switch” at the bottom.',
         },
         {
           src: '/addon/build-dialog-copy.jpg',
@@ -310,8 +306,7 @@ export const addonCopy = {
           tall: true,
           width: 1166,
           height: 790,
-          alt:
-            'The Forever Sixty settings page with its eight switches ticked, each with its hint: Show the chip, Hide the chip in combat, Marks on the talent window, Show the minimap button, Gear tips on item tooltips, Score badges in chat, Share my build with my guild and Save my character for the companion app, then the Reset positions button.',
+          alt: 'The Forever Sixty settings page with its eight switches ticked, each with its hint: Show the chip, Hide the chip in combat, Marks on the talent window, Show the minimap button, Gear tips on item tooltips, Score badges in chat, Share my build with my guild and Save my character for the companion app, then the Reset positions button.',
         },
       ],
     },

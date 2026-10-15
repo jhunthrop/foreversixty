@@ -86,7 +86,9 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     // Zulmara: the site says Marksmanship, the addon says Survival.
     const zulmara = byName.get('Zulmara') ?? '';
     expect(zulmara).toContain('data-testid="guild-roster-ingame"');
-    expect(text(zulmara)).toContain('Level 60 Survival per addon · gap 12 DPS · build: Survival raid · seen 21:40');
+    expect(text(zulmara)).toContain(
+      'Level 60 Survival per addon · gap 12 DPS · build: Survival raid · seen 21:40',
+    );
     expect(zulmara).toMatch(/class="[^"]*text-muted[^"]*"[^>]*>per addon</);
     // Kraggor: the addon agrees with the site's Protection, so the level shows with no tag.
     const kraggor = text(byName.get('Kraggor') ?? '');
@@ -96,7 +98,7 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     expect(withSnapshot).not.toContain('(addon)');
   });
 
-  it("the seen time hovers \"Seen at HH:MM on the member's clock\"", () => {
+  it('the seen time hovers "Seen at HH:MM on the member\'s clock"', () => {
     const zulmara = rows(withSnapshot).get('Zulmara') ?? '';
     expect(zulmara).toContain(`title="${guildRosterAddonCopy.seenHover('21:40')}"`);
     expect(guildRosterAddonCopy.seenHover('21:40')).toBe("Seen at 21:40 on the member's clock");
@@ -131,7 +133,10 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     const slot = /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(windtalon)?.[0] ?? '';
     expect(slot).toMatch(/class="[^"]*\bhidden\b[^"]*lg:block/);
     // A matched row's slot is shown on phones.
-    const matched = /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(rows(withSnapshot).get('Zulmara') ?? '')?.[0] ?? '';
+    const matched =
+      /<div[^>]*data-testid="guild-roster-ingame-slot"[^>]*>/.exec(
+        rows(withSnapshot).get('Zulmara') ?? '',
+      )?.[0] ?? '';
     expect(matched).not.toMatch(/\bhidden\b/);
   });
 
@@ -164,7 +169,8 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
   });
 
   it('the In game header sits over the same slot', () => {
-    const header = /<button[^>]*data-testid="guild-roster-sort-addon_gap"[^>]*>/.exec(withSnapshot)?.[0] ?? '';
+    const header =
+      /<button[^>]*data-testid="guild-roster-sort-addon_gap"[^>]*>/.exec(withSnapshot)?.[0] ?? '';
     expect(header).toContain('lg:w-[260px]');
   });
 
@@ -187,7 +193,9 @@ describe('GuildRosterTable: the In game column (L8.3)', () => {
     const home = buildMockHome(VIEWER_MEMBER);
     const seen = home.roster.filter((r) => r.addon !== null).length;
     const line = /data-testid="guild-roster-addon-snapshot"[^>]*>([^<]*)</.exec(withSnapshot)?.[1].trim();
-    expect(line).toBe(`Roster from the addon · sent by Zulmara 3 minutes ago · ${seen} of ${home.roster.length} members seen`);
+    expect(line).toBe(
+      `Roster from the addon · sent by Zulmara 3 minutes ago · ${seen} of ${home.roster.length} members seen`,
+    );
     expect(withSnapshot.indexOf('guild-roster-addon-snapshot')).toBeLessThan(
       withSnapshot.indexOf('data-testid="guild-roster-rows"'),
     );

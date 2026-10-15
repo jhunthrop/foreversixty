@@ -164,21 +164,31 @@
       >
     {:else}
       {@const withheld =
-        row.addon.level === null && row.addon.spec === null && row.addon.gear_gap === null && row.addon.build === null}
+        row.addon.level === null &&
+        row.addon.spec === null &&
+        row.addon.gear_gap === null &&
+        row.addon.build === null}
       {@const seen = addonSeen(row.addon.seen_at, today, withheld)}
       {@const gapLabel = addonGapLabel(row.addon.gear_gap)}
       {@const build = row.addon.build !== null && row.addon.build !== '' ? row.addon.build : null}
       <!-- The spaces are mustaches because Svelte drops a bare space at the start of an {#if}. -->
       <!-- eslint-disable svelte/no-useless-mustaches -->
       <span data-testid="guild-roster-ingame"
-        >{#if identity.level !== null}{addonLevelSpec(identity.level, identity.spec)}{#if identity.spec !== null}
-            {' '}<span class="text-muted">{guildRosterAddonCopy.addonTag}</span>{/if}{/if}{#if gapLabel !== null}{#if identity.level !== null}
+        >{#if identity.level !== null}{addonLevelSpec(
+            identity.level,
+            identity.spec,
+          )}{#if identity.spec !== null}
+            {' '}<span class="text-muted">{guildRosterAddonCopy.addonTag}</span
+            >{/if}{/if}{#if gapLabel !== null}{#if identity.level !== null}
             {' '}<span class="text-muted">{guildRosterAddonCopy.separator}</span>
           {/if}
-          <span class="tabular font-mono" data-testid="guild-roster-ingame-gap">{gapLabel}</span>{/if}{#if build !== null}{#if identity.level !== null || gapLabel !== null}
+          <span class="tabular font-mono" data-testid="guild-roster-ingame-gap">{gapLabel}</span
+          >{/if}{#if build !== null}{#if identity.level !== null || gapLabel !== null}
             {' '}<span class="text-muted">{guildRosterAddonCopy.separator}</span>
           {/if}
-          {guildRosterAddonCopy.build(build)}{/if}{#if seen !== null}{#if identity.level !== null || gapLabel !== null || build !== null}
+          {guildRosterAddonCopy.build(
+            build,
+          )}{/if}{#if seen !== null}{#if identity.level !== null || gapLabel !== null || build !== null}
             {' '}<span class="text-muted">{guildRosterAddonCopy.separator}</span>
           {/if}
           <span class="text-muted" style="cursor:help" title={seen.hover}>{seen.label}</span>{/if}</span
@@ -299,7 +309,9 @@
           </div>
           <!-- Below lg the facts flow with the rest of the row; at lg they wrap inside their own
                group, so the In game slot and the actions keep their place at the row's end. -->
-          <div class="contents lg:flex lg:min-w-0 lg:flex-1 lg:flex-wrap lg:items-center lg:gap-x-3 lg:gap-y-1">
+          <div
+            class="contents lg:flex lg:min-w-0 lg:flex-1 lg:flex-wrap lg:items-center lg:gap-x-3 lg:gap-y-1"
+          >
             {#if row.rank === 'officer' || row.rank === 'leader'}
               <span class="pill pill-site">{row.rank === 'leader' ? 'Leader' : 'Officer'}</span>
             {/if}

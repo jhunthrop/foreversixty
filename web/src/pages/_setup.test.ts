@@ -255,7 +255,11 @@ describe('/setup: what it does in the game (L8.3)', () => {
     const expected = localeSettingsCommands();
     expect(addonCopy.commands.map((c) => `${c.command}: ${c.description}`)).toEqual(expected);
     expect(addonCopy.commands).toHaveLength(13);
-    expect(addonCopy.commands.map((c) => c.command).slice(7, 10)).toEqual(['/fs ready', '/fs loot', '/fs floor N']);
+    expect(addonCopy.commands.map((c) => c.command).slice(7, 10)).toEqual([
+      '/fs ready',
+      '/fs loot',
+      '/fs floor N',
+    ]);
     // The tags between the command and its colon read as a space in textOf; a browser shows none.
     const list = textOf(html.slice(html.indexOf('data-testid="setup-commands"'))).replace(/ :/g, ':');
     for (const { command, description } of addonCopy.commands) {
@@ -274,12 +278,19 @@ describe('/setup: what it does in the game (L8.3)', () => {
   });
 
   it('puts the testers’ commands on one muted line under a small “For testers” label', () => {
-    const block = html.slice(html.indexOf('data-testid="setup-commands"'), html.indexOf('data-testid="setup-handshake"'));
+    const block = html.slice(
+      html.indexOf('data-testid="setup-commands"'),
+      html.indexOf('data-testid="setup-handshake"'),
+    );
     expect(addonCopy.commandsTestersLabel).toBe('For testers');
-    expect(addonCopy.commandsTestersLine).toBe('/fs diag verbose, /fs inbox, /fs hello, /fs seen, /fs record');
+    expect(addonCopy.commandsTestersLine).toBe(
+      '/fs diag verbose, /fs inbox, /fs hello, /fs seen, /fs record',
+    );
     expect(source).toContain('addonCopy.commandsTestersLine');
     expect(block.match(/For testers/g)).toHaveLength(1);
-    expect(block).toMatch(/<p class="[^"]*text-muted[^"]*">\/fs diag verbose, \/fs inbox, \/fs hello, \/fs seen, \/fs record<\/p>/);
+    expect(block).toMatch(
+      /<p class="[^"]*text-muted[^"]*">\/fs diag verbose, \/fs inbox, \/fs hello, \/fs seen, \/fs record<\/p>/,
+    );
   });
 
   it('says what leaves the machine and sits the no-network sentence next to the handshake', () => {
@@ -303,7 +314,12 @@ describe('/setup: what it does in the game (L8.3)', () => {
 
   it('gives every image box a surface colour, a per-image height cap (900 px portrait, 420 px landscape) and a link to the full-size file', () => {
     const images = addonCopy.surfaces.flatMap((s) => s.images);
-    expect(images.filter((i) => i.tall).map((i) => i.src).sort()).toEqual([
+    expect(
+      images
+        .filter((i) => i.tall)
+        .map((i) => i.src)
+        .sort(),
+    ).toEqual([
       '/addon/build-dialog-copy.jpg',
       '/addon/build-dialog-paste.jpg',
       '/addon/character-panel-tab.jpg',
@@ -328,7 +344,9 @@ describe('/setup: what it does in the game (L8.3)', () => {
   });
 
   it('shows the hunter’s copy dialog with the export selected and the no-companion lines', () => {
-    const copy = addonCopy.surfaces.flatMap((s) => s.images).find((i) => i.src === '/addon/build-dialog-copy.jpg');
+    const copy = addonCopy.surfaces
+      .flatMap((s) => s.images)
+      .find((i) => i.src === '/addon/build-dialog-copy.jpg');
     expect(copy?.alt).toMatch(/hunter/i);
     expect(copy?.alt).toContain('No companion found.');
     expect(copy?.alt).toContain('Or paste it on the site');
@@ -336,14 +354,19 @@ describe('/setup: what it does in the game (L8.3)', () => {
   });
 
   it('crops the settings capture to the switch list, the Commands list out', () => {
-    const settings = addonCopy.surfaces.flatMap((s) => s.images).find((i) => i.src === '/addon/settings-switches.jpg');
+    const settings = addonCopy.surfaces
+      .flatMap((s) => s.images)
+      .find((i) => i.src === '/addon/settings-switches.jpg');
     expect(settings?.height).toBeLessThanOrEqual(800);
     expect(settings?.alt).not.toMatch(/Commands list/);
   });
 
   it('shows the hunter’s own captures, never a state that is not in the picture', () => {
-    const alt = (src: string) => addonCopy.surfaces.flatMap((s) => s.images).find((i) => i.src === src)?.alt ?? '';
-    expect(alt('/addon/bag-arrow.jpg')).toContain('small green arrow on the top-right corner of an item in the second row');
+    const alt = (src: string) =>
+      addonCopy.surfaces.flatMap((s) => s.images).find((i) => i.src === src)?.alt ?? '';
+    expect(alt('/addon/bag-arrow.jpg')).toContain(
+      'small green arrow on the top-right corner of an item in the second row',
+    );
     expect(alt('/addon/bag-arrow.jpg')).not.toMatch(/gloves/i);
     expect(alt('/addon/guild-tab.jpg')).not.toMatch(/too old|3 of 97/);
     expect(alt('/addon/talent-marks-trees.jpg')).toMatch(/hunter/i);
