@@ -50,6 +50,7 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("GET /v1/rankings/percentile", s.percentile)
 	mux.HandleFunc("GET /v1/rankings/guilds", s.guildRankings)
 	mux.HandleFunc("GET /v1/encounters", s.encounters)
+	mux.HandleFunc("GET /v1/characters/search", s.searchCharacters)
 	mux.HandleFunc("GET /v1/characters/{region}/{ruleset}/{name}", s.character)
 	mux.HandleFunc("GET /v1/guilds/{region}/{ruleset}/{name}", s.guild)
 }
