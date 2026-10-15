@@ -20,7 +20,7 @@ const BOROS: CharacterSuggestion = {
   region: 'eu',
   ruleset: 'hardcore',
   name: 'Boros',
-  class: 'Warrior',
+  class: 'warrior',
   level: 41,
   spec: null,
 };
@@ -182,6 +182,7 @@ describe('the rows', () => {
     expect(rows[0].querySelector('.typeahead-name')?.textContent).toBe('Bolt');
     expect(rows[0].querySelector('.typeahead-detail')?.textContent).toBe('Fire Mage · 60');
     expect(rows[0].querySelector('.typeahead-realm')?.textContent).toBe('US Normal');
+    // The API sends the class as a slug; the row names it.
     expect(rows[1].querySelector('.typeahead-detail')?.textContent).toBe('Warrior · 41');
     expect(rows[1].querySelector('.typeahead-realm')?.textContent).toBe('EU Hardcore');
   });

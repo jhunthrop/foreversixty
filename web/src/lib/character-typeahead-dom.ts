@@ -57,9 +57,10 @@ function crestFor(klass: (typeof classes)[number] | undefined): HTMLElement {
   return crest;
 }
 
-/** "{Spec} {Class} · {Level}", with whatever of it is known. */
+/** "{Spec} {Class} · {Level}", with whatever of it is known; the class by its name, never the slug. */
 function detailText(row: CharacterSuggestion): string {
-  const kind = [row.spec, row.class].filter((part): part is string => part !== null).join(' ');
+  const className = classOf(row)?.name ?? row.class;
+  const kind = [row.spec, className].filter((part): part is string => part !== null).join(' ');
   return [kind, row.level === null ? '' : String(row.level)].filter((part) => part !== '').join(' · ');
 }
 
