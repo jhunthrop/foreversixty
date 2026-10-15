@@ -224,7 +224,9 @@ def _default_builds_lua(default_builds: dict) -> list[str]:
             if build is None:
                 continue
             order = ", ".join("{" + ",".join(str(n) for n in point) + "}" for point in build.order)
-            lines.append(f"			{kind} = {{ name = {_quote(build.name)}, order = {{ {order} }} }},")
+            lines.append(
+                f"			{kind} = {{ name = {_quote(build.name)}, order = {{ {order} }} }},"
+            )
         lines.append("		},")
     lines.append("	},")
     return lines

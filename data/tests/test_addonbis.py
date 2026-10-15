@@ -315,7 +315,9 @@ def test_chance_and_alternatives_pack_into_one_string_per_pick(tmp_path):
 
 
 def test_a_pick_with_no_chance_leaves_the_fourth_field_empty(tmp_path):
-    quest_pick = dict(_DEADMINES_PICK, item_id=6087, source_kind="quest", source="The Defias Brotherhood")
+    quest_pick = dict(
+        _DEADMINES_PICK, item_id=6087, source_kind="quest", source="The Defias Brotherhood"
+    )
     del quest_pick["chance"]
     _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(quest_pick))
     lua = _render_bis(build_bis(tmp_path, BUILD))
@@ -337,7 +339,12 @@ def test_a_pick_with_no_source_label_but_a_chance_keeps_chance_fourth(tmp_path):
 def test_a_band_written_before_chance_existed_has_nil_chance_and_no_alternatives(tmp_path):
     """bis/<spec>.json files leveling-bis wrote before it emitted `chance`
     and `runners_up` still load; their picks render exactly as before."""
-    old_pick = {"slot": "chest", "item_id": 2317, "source_kind": "crafted", "source": "Leatherworking"}
+    old_pick = {
+        "slot": "chest",
+        "item_id": 2317,
+        "source_kind": "crafted",
+        "source": "Leatherworking",
+    }
     _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(old_pick))
     bis = build_bis(tmp_path, BUILD)
     pick = bis["warrior-arms"][0].factions["alliance"]["chest"]
@@ -356,7 +363,8 @@ def test_a_chance_above_one_is_a_percent_and_refuses(tmp_path):
 def test_more_than_two_runners_up_refuses_the_chance_contract(tmp_path):
     three = dict(
         _DEADMINES_PICK,
-        runners_up=_DEADMINES_PICK["runners_up"] + [{"item_id": 5, "source_kind": "quest", "source": "Q"}],
+        runners_up=_DEADMINES_PICK["runners_up"]
+        + [{"item_id": 5, "source_kind": "quest", "source": "Q"}],
     )
     _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(three))
     with pytest.raises(AddonBisError, match="runners_up"):
@@ -395,9 +403,27 @@ def test_a_legacy_band_without_runners_up_takes_two_of_its_alternatives_and_no_c
         "source_kind": "world_drop",
         "source": "World drop",
         "alternatives": [
-            {"item_id": 279865, "item_name": "Grave Shroud", "source_kind": "quest", "source": "Abominable Creatures", "dps_delta": -0.019},
-            {"item_id": 2316, "item_name": "Dark Leather Cloak", "source_kind": "crafted", "source": "Leatherworking", "dps_delta": -0.064},
-            {"item_id": 279899, "item_name": "Catacomb Cloak", "source_kind": "quest", "source": "An Ancient Grudge", "dps_delta": -0.071},
+            {
+                "item_id": 279865,
+                "item_name": "Grave Shroud",
+                "source_kind": "quest",
+                "source": "Abominable Creatures",
+                "dps_delta": -0.019,
+            },
+            {
+                "item_id": 2316,
+                "item_name": "Dark Leather Cloak",
+                "source_kind": "crafted",
+                "source": "Leatherworking",
+                "dps_delta": -0.064,
+            },
+            {
+                "item_id": 279899,
+                "item_name": "Catacomb Cloak",
+                "source_kind": "quest",
+                "source": "An Ancient Grudge",
+                "dps_delta": -0.071,
+            },
         ],
     }
     _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(legacy_pick))
@@ -406,8 +432,7 @@ def test_a_legacy_band_without_runners_up_takes_two_of_its_alternatives_and_no_c
     assert pick.chance is None
     assert [alt.item_id for alt in pick.alternatives] == [279865, 2316]
     assert (
-        'back = "4706|B|World drop||'
-        '279865|Q|Abominable Creatures|2316|C|Leatherworking",'
+        'back = "4706|B|World drop||279865|Q|Abominable Creatures|2316|C|Leatherworking",'
     ) in _render_bis(bis)
 
 
@@ -518,7 +543,9 @@ def test_an_unconfirmed_pick_gives_way_to_the_next_confirmed_candidate(tmp_path)
     _write_bis(tmp_path, BUILD, "warrior-arms", _deadmines_band(_SEVERING_SLOT))
     pick = build_bis(tmp_path, BUILD)["warrior-arms"][0].factions["alliance"]["main_hand"]
     assert (pick.item_id, pick.source, pick.chance) == (
-        6631, "Wailing Caverns: Verdan the Everliving", None
+        6631,
+        "Wailing Caverns: Verdan the Everliving",
+        None,
     )
     assert [alt.item_id for alt in pick.alternatives] == [2205, 7230]
 
@@ -653,7 +680,7 @@ def test_the_name_and_dps_tables_render_beside_an_unchanged_pick_string():
     assert (
         "\tbisNames = {\n"
         '\t\t[111] = "Cap \\"Quoted\\"",\n'
-        "\t\t[7230] = \"Smite's Mighty Hammer\",\n"
+        '\t\t[7230] = "Smite\'s Mighty Hammer",\n'
         "\t},\n"
     ) in lua
     assert "\tbisDps = {\n\t\t[2205] = 20,\n\t\t[7230] = 18.8,\n\t},\n" in lua
@@ -1066,7 +1093,8 @@ def test_the_drop_chance_lookup_reproduces_every_real_picks_own_chance():
     assert checked >= 20  # 25 published picks carry a chance in this build
 
 
-# --- Task L1.7: the packer names a rare spawn's source and a shared trash drop as leveling-bis does ---
+# --- Task L1.7: the packer names a rare spawn's source and a shared trash drop as
+# leveling-bis does ---
 
 
 def test_the_chance_lookup_names_a_rare_spawn_rare_and_a_shared_trash_drop_by_its_instance(
