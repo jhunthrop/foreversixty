@@ -185,3 +185,16 @@ export const guildRosterAddonCopy = {
     `Roster from the addon · sent by ${by} ${when} · ${seen} of ${total} members seen`,
   noSnapshot: 'No addon snapshot yet — a guild member with the addon and the companion sends one on logout.',
 } as const;
+
+/** The bare `/guild` landing: the lookup, the top guilds and the officer line. */
+export const guildLandingCopy = {
+  heading: 'Guilds',
+  lead: "Your guild's progress, roster, raid nights and loot, from the logs and the addon.",
+  nameLabel: 'Guild name',
+  regionLabel: 'Region',
+  rulesetLabel: 'Ruleset',
+  submit: 'Open guild',
+  emptyName: "Type the guild's name as the game writes it.",
+  topHeading: 'Top guilds',
+  officerLine: 'Run a guild? Open its page and choose Claim this guild.',
+} as const;

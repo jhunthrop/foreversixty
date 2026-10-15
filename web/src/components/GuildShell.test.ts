@@ -45,4 +45,18 @@ describe('GuildShell', () => {
     expect(body).not.toContain('data-testid="guild-settings"');
     expect(body).not.toContain('data-testid="guild-join"');
   });
+
+  it('renders the landing for the bare /guild path and /guild/', () => {
+    for (const path of ['/guild', '/guild/']) {
+      const { body } = render(GuildShell, { props: { path } });
+      expect(body).toContain('data-testid="guild-landing"');
+      expect(body).not.toContain('data-testid="guild-skeleton"');
+    }
+  });
+
+  it('keeps the missing branch for a malformed address such as /guild/eu', () => {
+    const { body } = render(GuildShell, { props: { path: '/guild/eu' } });
+    expect(body).not.toContain('data-testid="guild-landing"');
+    expect(body).toContain('data-testid="guild-skeleton"');
+  });
 });
