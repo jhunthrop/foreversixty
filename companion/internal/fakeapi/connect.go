@@ -144,13 +144,16 @@ func (s *Server) decideByCode(w http.ResponseWriter, r *http.Request, status str
 	_ = json.NewDecoder(r.Body).Decode(&in)
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	// The fake hands every connect the same code, so a decided row
+	// from an earlier connect must not shadow the pending one.
+	decided := false
 	for _, row := range s.connects {
 		if row.code != in.Code {
 			continue
 		}
 		if row.status != "pending" {
-			fail(w, http.StatusConflict, "already decided")
-			return
+			decided = true
+			continue
 		}
 		row.status = status
 		if status == "approved" {
@@ -158,6 +161,10 @@ func (s *Server) decideByCode(w http.ResponseWriter, r *http.Request, status str
 		} else {
 			w.WriteHeader(http.StatusNoContent)
 		}
+		return
+	}
+	if decided {
+		fail(w, http.StatusConflict, "already decided")
 		return
 	}
 	fail(w, http.StatusNotFound, "unknown code")
