@@ -1953,6 +1953,29 @@ paths:
                               properties:
                                 name: { type: string, example: raids-1 }
                                 start: { type: string, format: date-time }
+  /v1/characters/search:
+    get:
+      summary: Characters whose name starts with the typed text (the lookup typeahead)
+      description: >-
+        A case-insensitive prefix match on the character's name. q is trimmed; fewer than 2
+        characters answers 200 with rows [] (never 400), and more than 24 is cut to 24. The
+        text matches literally (% and _ are not wildcards). Rows are ordered by the exact name
+        first, then name, then region us before the others, then ruleset normal before the
+        others. A character whose account is anonymised is left out, as the character page
+        answers 404 for it. Each row is { key, region, ruleset, name, class, level, spec }: class
+        is the character's stored class (null when unknown), level the Battle.net import's level
+        (null when unknown; the addon export's level is not consulted), and spec is always null.
+        rows is never null.
+      parameters:
+        - { name: q, in: query, schema: { type: string }, description: "The start of the name; fewer than 2 characters answers rows []." }
+        - { name: region, in: query, schema: { type: string, enum: [us, eu, kr, tw, cn] } }
+        - { name: ruleset, in: query, schema: { type: string, enum: [normal, pvp, rp, hardcore] } }
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 10, default: 8 } }
+      responses:
+        '200': { description: "rows[]", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
+        '400':
+          description: "An unknown region or ruleset, or a limit outside 1 to 10 (code bad_request)"
+          content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
   /v1/characters/{region}/{ruleset}/{name}:
     get:
       summary: A character's bests, history, the builds they have been seen in, and their Forever Score
