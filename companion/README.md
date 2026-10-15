@@ -59,8 +59,10 @@ there is the older path: sign in at [foreversixty.gg/logs](https://foreversixty.
 The companion stores the token in your operating system's keychain (macOS Keychain, Windows
 Credential Manager, the Linux Secret Service) and names which one it used on the Device page under
 **Saved in**. Where no keychain is available it falls back to `config.json`, which is written
-readable only by you, and says so. **Forget this device** (it asks first) removes the token from
-this PC; revoke the device on the site too from **Account → Devices**.
+readable only by you, and says so. **Forget this device** (it asks first) revokes the device on
+the site (it disappears from **Account → Devices**) and removes the token from this PC. If the site
+cannot be reached, the token is still removed here and the window says to remove the device from
+**Account → Devices** yourself. Your reports on the site stay.
 
 ## Close it and it keeps running
 
@@ -68,8 +70,8 @@ Closing the window does not stop the companion: it stays in the tray (Windows) a
 The first time you close the window it says so, then hides. The tray icon's menu shows what the
 companion is doing in a line at the top (the same words as the Status headline, which is also the
 tooltip), **Open Forever Sixty**, **Open my reports on the site** and **Quit**. Quit is the only way
-to stop it. On macOS and Linux the window toolkits have no close event the companion can catch, so
-closing the window there still quits.
+to stop it. On macOS and Linux, closing the window quits the companion; keep it open while logging. The
+close-to-tray behaviour is Windows-only in the first release.
 
 ## Log a raid
 

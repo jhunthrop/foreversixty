@@ -90,6 +90,8 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST /v1/devices/connect/approve", RequireSession(s.connectApprove))
 	mux.HandleFunc("POST /v1/devices/connect/deny", RequireSession(s.connectDeny))
 	mux.HandleFunc("GET /v1/devices", RequireSession(s.listDevices))
+	// The literal wins over {id}: a companion forgets itself with its own token.
+	mux.HandleFunc("DELETE /v1/devices/self", RequireDevice(s.revokeSelf))
 	mux.HandleFunc("DELETE /v1/devices/{id}", RequireSession(s.revokeDevice))
 }
 
@@ -588,4 +590,15 @@ func normalizeEmail(s string) (string, error) {
 		return "", errors.New("auth: invalid email")
 	}
 	return strings.ToLower(addr.Address), nil
+}
+
+// revokeSelf is the companion's Forget: the device the bearer token
+// belongs to revokes itself. A token that is already dead never gets here;
+// the middleware answers it 401, which the companion counts as done.
+func (s *Service) revokeSelf(w http.ResponseWriter, r *http.Request) {
+	if _, err := s.Store.RevokeDeviceByID(r.Context(), ActorFrom(r.Context()).DeviceID); err != nil {
+		s.fail(w, r, "devices", err, "could not remove this device just now")
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }

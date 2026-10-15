@@ -114,11 +114,16 @@
 
   onMount(() => {
     code = normalizeCode(new URLSearchParams(window.location.search).get('code'));
-    void load();
+    // The buttons are Barlow 700, the one face the layout does not preload, and nothing on this
+    // page asks for it while it says "Checking". Without this the first state with a button
+    // (expired, above all, which needs no request) paints it in the fallback face. Ask now and
+    // wait for it, but never longer than a moment.
+    const bold = document.fonts?.load('700 12px Barlow').catch(() => []) ?? Promise.resolve([]);
+    void Promise.race([bold, new Promise((resolve) => setTimeout(resolve, 1500))]).then(load);
   });
 </script>
 
-<div class="flex min-h-[470px] flex-col gap-4" data-testid="connect" data-state={state}>
+<div class="flex flex-col gap-4" data-testid="connect" data-state={state}>
   {#if state === 'loading'}
     <h1 class="section-title text-[18px]">{connectCopy.title}</h1>
     <p class="text-muted text-[14px]">{connectCopy.checking}</p>
@@ -193,6 +198,7 @@
       <dt class="text-muted">{connectCopy.codeRowLabel}</dt>
       <dd class="tabular text-strong font-mono" data-testid="connect-code">{shownCode}</dd>
     </dl>
+    <p class="text-muted text-[13px]" data-testid="connect-code-check">{connectCopy.pendingCodeCheck}</p>
     <p class="text-muted text-[13px]">{connectCopy.consent}</p>
     <div class="flex gap-3">
       <button

@@ -202,15 +202,15 @@ function renderStatus(s) {
   });
 
   const rows = {
-    report: p.report_id ? { url: reportURL } : (p.report_key ? 'starting' : 'none'),
-    fights: p.fights, queued: p.queued, addon: s.addon_line, stale: s.addon_stale, help: s.addon_help, title: s.addon_seen_title,
+    report: p.report_id ? { zone: ((s.reports || []).find((r) => r.key === p.report_key) || {}).zone || '' } : (p.report_key ? 'starting' : 'none'),
+    fights: p.fights, queued: p.queued, addon: s.addon_line, stale: s.addon_stale, never: s.addon_never, help: s.addon_help, title: s.addon_seen_title,
   };
   region('status-rows', $('status-rows'), rows, (el) => {
     el.replaceChildren();
     let report;
     if (rows.report === 'none') report = h('span', { class: 'v', text: COPY.status.noReport });
     else if (rows.report === 'starting') report = h('span', { class: 'v', text: COPY.status.starting });
-    else report = h('span', { class: 'v' }, ext(COPY.status.openReport, rows.report.url, { 'data-fid': 'row-report' }));
+    else report = h('span', { class: 'v', text: rows.report.zone || COPY.status.inProgress });
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.report }), report));
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.fights }),
       h('span', { class: 'v mono', text: String(p.fights) })));
@@ -218,29 +218,31 @@ function renderStatus(s) {
       el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.queued }),
         h('span', { class: 'v mono', text: String(p.queued) })));
     }
-    const v = h('span', { class: 'v' + (s.addon_stale ? ' amber' : ''), title: s.addon_seen_title || null, text: s.addon_line });
+    const v = h('span', { class: 'v' + (s.addon_stale ? ' amber' : '') + (s.addon_never ? ' muted' : ''), title: s.addon_seen_title || null, text: s.addon_line });
     if (s.addon_stale && s.addon_help) v.append(h('span', { class: 'sub', text: s.addon_help }));
     el.append(h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.status.rows.addon }), v));
   });
 
-  region('installs', $('installs'), s.installs, (el) => {
+  region('installs', $('installs'), { installs: s.installs, key: hd.key }, (el) => {
     el.replaceChildren();
     if (!s.installs.length) {
       el.append(h('p', { class: 'note', text: COPY.status.noFolders }));
       return;
     }
-    for (const i of s.installs) el.append(installRow(i));
+    for (const i of s.installs) el.append(installRow(i, hd.key));
   });
 }
 
-function installRow(i) {
+function installRow(i, headlineKey) {
   const top = h('div', { class: 'top-line' },
     h('div', { class: 'name' }, i.flavor_name || i.flavor,
       i.watching ? h('span', { class: 'tag', title: COPY.status.watchingTitle, text: COPY.status.watching }) : null),
     advancedLabel(i));
   const row = h('div', { class: 'install' }, top,
     h('span', { class: 'path', title: i.path, text: FORMAT.midTruncate(i.path, 62) }));
-  if (i.advanced_logging_known && !i.advanced_logging) {
+  // The instruction lives in the headline when the headline is about
+  // advanced logging; a row only keeps its short line when it is not.
+  if (i.advanced_logging_known && !i.advanced_logging && headlineKey !== 'advanced_off') {
     row.append(h('p', { class: 'help-line', text: i.advanced_logging_help }));
   }
   return row;
@@ -307,8 +309,6 @@ function reportRow(r, now) {
 
 // ---- Device ----------------------------------------------------------
 
-const BNET_GLYPH = '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 4.5c3.6 1.2 5.2 3.4 5.2 5.6 0 1.6-1 2.8-2.4 3.4 2 .6 3.2 2 3.2 3.8-2 2-5 3-8.4 2.2l1.2-3.1c1.4.4 2.6.2 3.2-.6.5-.8-.2-1.7-1.9-2l-1.6-.3.3-2.4c1.3.2 2.2-.1 2.4-.9.2-.9-.5-1.6-2-2.3z" fill="currentColor"/></svg>';
-
 function renderDevice(s) {
   const c = s.connect;
   const connecting = !s.paired && (c.state === 'waiting' || c.state === 'blocked');
@@ -336,7 +336,6 @@ function notConnectedView(s, c) {
   out.push(h('p', { class: 'lede', text: COPY.device.intro }));
   const btn = h('button', { class: 'action primary big', type: 'button', id: 'connect', 'data-fid': 'connect',
     onclick: startConnect });
-  btn.innerHTML = BNET_GLYPH;
   btn.append(local.starting ? COPY.device.starting : (failed ? COPY.device.tryAgain : COPY.device.signIn));
   if (local.starting) btn.disabled = true;
   out.push(h('div', {}, btn));
@@ -407,15 +406,16 @@ function pairedView(s) {
   const file = s.token_backend === 'file';
   out.push(h('div', { class: 'row', style: 'margin-top:12px' }, h('span', { class: 'k', text: COPY.device.savedIn }),
     h('span', { class: 'v' + (file ? ' amber' : ''), text: s.token_backend_name },
-      file ? h('span', { class: 'sub', text: COPY.device.fileWarn }) : null)));
+      file && s.token_backend_note ? h('span', { class: 'sub', text: s.token_backend_note }) : null)));
   out.push(h('details', {}, h('summary', { text: COPY.device.details }),
     h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.device.deviceName }), h('span', { class: 'v mono', text: s.device_name })),
     h('div', { class: 'row' }, h('span', { class: 'k', text: COPY.device.api }), h('span', { class: 'v mono', text: s.api_base_url }))));
   if (local.confirmForget) {
     out.push(h('div', { class: 'ask', role: 'alertdialog', 'aria-label': COPY.device.forgetAsk },
-      h('span', { text: COPY.device.forgetAsk }),
-      h('button', { class: 'action danger', type: 'button', id: 'forget-yes', 'data-fid': 'forget-yes', onclick: onForget }, COPY.device.forgetYes),
-      h('button', { class: 'action', type: 'button', id: 'forget-no', 'data-fid': 'forget-no', onclick: () => cancelForget(true) }, COPY.device.forgetNo)));
+      h('p', { text: COPY.device.forgetAsk }),
+      h('div', { class: 'ask-buttons' },
+        h('button', { class: 'action danger', type: 'button', id: 'forget-yes', 'data-fid': 'forget-yes', onclick: onForget }, COPY.device.forgetYes),
+        h('button', { class: 'action', type: 'button', id: 'forget-no', 'data-fid': 'forget-no', onclick: () => cancelForget(true) }, COPY.device.forgetNo))));
   } else {
     out.push(h('div', { class: 'buttons' },
       h('button', { class: 'action', type: 'button', 'data-fid': 'my-reports', onclick: () => openLink(s.site_base_url + '/logs') }, COPY.device.openReports),
@@ -425,13 +425,15 @@ function pairedView(s) {
   return out;
 }
 
-function renderForgotten(s) {
+function renderForgotten(s, revoked) {
   // After forgetting the page is the not-connected view, with one line
-  // that says what did and did not happen.
+  // that says what did and did not happen: removed from the account, or
+  // forgotten here only because the site could not be reached.
   const n = $('device-note');
   if (!n) return;
   n.className = 'note';
-  n.replaceChildren(COPY.device.forgotten, ext(COPY.device.forgottenLink, s.site_base_url + '/account'), '.');
+  if (revoked) { n.replaceChildren(COPY.device.forgottenRemoved); return; }
+  n.replaceChildren(COPY.device.forgottenLocal, ext(COPY.device.forgottenLink, s.site_base_url + '/account'), COPY.device.forgottenLocalEnd);
 }
 
 function askForget() {
@@ -452,13 +454,13 @@ document.addEventListener('keydown', (e) => {
 });
 
 async function onForget(e) {
-  const r = await busy(e.target, '...', () => api('api/unpair', {}));
+  const r = await busy(e.target, COPY.device.forgetting, () => api('api/unpair', {}));
   local.confirmForget = false;
   if (!r.ok) { applySnapshot(snap); note('device-note', 'bad', r.error.message); return; }
   local.forgot = true;
   local.pairOpen = false;
   applySnapshot(r.data);
-  renderForgotten(r.data);
+  renderForgotten(r.data, r.data.revoked);
 }
 
 async function startConnect() {

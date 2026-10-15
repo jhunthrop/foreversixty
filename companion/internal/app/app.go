@@ -394,9 +394,31 @@ func (a *App) writeLabel(label string) error {
 	return config.Save(a.o.Dirs.ConfigFile(), onDisk)
 }
 
-// Unpair forgets the device token. The reports already uploaded stay
-// on the site; revoking the device itself is done on the account page.
-func (a *App) Unpair() error {
+// RevokeTimeout bounds how long Forget waits for the site before it clears
+// the token here anyway.
+const RevokeTimeout = 10 * time.Second
+
+// Unpair forgets this device. It first asks the site to revoke the device
+// (DELETE /v1/devices/self), so the account's device list no longer shows
+// it, then clears the token here whether or not that worked. revoked
+// reports whether the site confirmed; a token the site already refuses
+// counts as confirmed. The reports already uploaded stay on the site.
+func (a *App) Unpair(ctx context.Context) (revoked bool, err error) {
+	revoked = true
+	if a.deviceToken() != "" {
+		rctx, cancel := context.WithTimeout(ctx, RevokeTimeout)
+		rerr := a.client.RevokeSelf(rctx)
+		cancel()
+		if rerr != nil {
+			revoked = false
+			a.log.Warn("could not revoke the device on the site", "component", "app", "err", rerr.Error())
+		}
+	}
+	return revoked, a.clearLocal()
+}
+
+// clearLocal drops the token and the account label from this PC.
+func (a *App) clearLocal() error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	err := a.o.Secret.Clear()
@@ -527,6 +549,8 @@ type Snapshot struct {
 	Connect          ConnectView          `json:"connect"`
 	TokenBackend     string               `json:"token_backend"`
 	TokenBackendName string               `json:"token_backend_name"`
+	// TokenBackendNote is the sub line under the file fallback.
+	TokenBackendNote string `json:"token_backend_note,omitempty"`
 	APIBaseURL       string               `json:"api_base_url"`
 	SiteBaseURL      string               `json:"site_base_url"`
 	Visibility       string               `json:"visibility"`
@@ -549,6 +573,9 @@ type Snapshot struct {
 	// AddonLine is the two above in the player's words (AddonLine in
 	// copy.go); before any ack it says the addon has not synced.
 	AddonLine string `json:"addon_line"`
+	// AddonNever is true before the site has acked any export; the row
+	// is then muted rather than a fault.
+	AddonNever bool `json:"addon_never"`
 	// AddonStale is true when the last sync is over a day old, and
 	// AddonHelp then says what to do.
 	AddonStale bool   `json:"addon_stale"`
@@ -599,7 +626,7 @@ func (a *App) installStatuses() (rows []InstallStatus, watchPending bool) {
 	for _, in := range installs {
 		row := InstallStatus{Path: in.Path, Flavor: in.Flavor, FlavorName: wow.FlavorName(in.Flavor),
 			Watching: in.Logs == watching, Added: added[in.Path],
-			AdvancedLogHelp: CopyAdvancedHow}
+			AdvancedLogHelp: CopyAdvancedRowHelp}
 		if on, err := in.AdvancedLogging(); err == nil {
 			row.Advanced, row.AdvancedKnown = on, true
 		}
@@ -639,6 +666,7 @@ func (a *App) Snapshot() Snapshot {
 		Connect:          a.connectView(),
 		TokenBackend:     string(a.o.Secret.Backend()),
 		TokenBackendName: secret.Name(a.o.Secret.Backend(), runtime.GOOS),
+		TokenBackendNote: secret.FallbackNote(a.o.Secret.Backend(), runtime.GOOS),
 		APIBaseURL:       cfg.APIBaseURL,
 		SiteBaseURL:      cfg.SiteBaseURL,
 		Visibility:       cfg.ReportVisibility,
@@ -683,6 +711,7 @@ func (a *App) Snapshot() Snapshot {
 	now := a.now()
 	st := a.sync.Status()
 	s.AddonLine = AddonLine(st.SeenAt, st.SimRequestState, now)
+	s.AddonNever = st.SeenAt.IsZero()
 	if !st.SeenAt.IsZero() {
 		local := st.SeenAt.In(now.Location())
 		s.AddonSeenAt, s.SimRequestState = &local, st.SimRequestState

@@ -148,3 +148,20 @@ func (c *Client) ConnectStatus(ctx context.Context, connectID string) (ConnectSt
 	}
 	return out, nil
 }
+
+// RevokeSelf asks the API to revoke the device whose token this client
+// holds: the companion's Forget. A token the API already refuses (401)
+// counts as done, since the end state is the one asked for. Any other
+// failure is returned so the caller can say the site still lists the
+// device.
+func (c *Client) RevokeSelf(ctx context.Context) error {
+	_, err := c.do(ctx, request{Method: http.MethodDelete, Path: "/v1/devices/self"})
+	if err == nil {
+		return nil
+	}
+	var ae *Error
+	if errors.As(err, &ae) && ae.Status == http.StatusUnauthorized {
+		return nil
+	}
+	return err
+}

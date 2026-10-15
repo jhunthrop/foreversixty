@@ -693,3 +693,52 @@ func TestTheStatusPageShowsWhenTheSiteSawTheExport(t *testing.T) {
 		t.Errorf("the status JSON carries %v", data["addon_line"])
 	}
 }
+
+func TestForgetRevokesTheDeviceOnTheSiteThenClearsTheToken(t *testing.T) {
+	h := newHarness(t)
+	base := h.url("")
+	h.call(http.MethodPost, base+"/api/pair", map[string]string{"code": fakeapi.PairCode})
+	code, body := h.call(http.MethodPost, base+"/api/unpair", map[string]string{})
+	data, _ := body["data"].(map[string]any)
+	if code != http.StatusOK || data["paired"] != false || data["revoked"] != true {
+		t.Fatalf("unpair = %d %v", code, body)
+	}
+	if n := h.srv.SelfRevokes(); n != 1 {
+		t.Fatalf("the site was asked to revoke %d times, want 1", n)
+	}
+	stored, err := config.Load(h.dirs.ConfigFile())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if stored.DeviceToken != "" {
+		t.Fatalf("the token is still stored: %q", stored.DeviceToken)
+	}
+}
+
+func TestForgetClearsLocallyAndSaysSoWhenTheSiteCannotBeReached(t *testing.T) {
+	h := newHarness(t)
+	base := h.url("")
+	h.call(http.MethodPost, base+"/api/pair", map[string]string{"code": fakeapi.PairCode})
+	h.srv.FailNext("DELETE /v1/devices/self", 1)
+	code, body := h.call(http.MethodPost, base+"/api/unpair", map[string]string{})
+	data, _ := body["data"].(map[string]any)
+	if code != http.StatusOK || data["paired"] != false || data["revoked"] != false {
+		t.Fatalf("unpair = %d %v", code, body)
+	}
+	if n := h.srv.SelfRevokes(); n != 0 {
+		t.Fatalf("a failed revoke was counted: %d", n)
+	}
+}
+
+func TestForgetCountsADeadTokenAsRevoked(t *testing.T) {
+	h := newHarness(t)
+	base := h.url("")
+	h.call(http.MethodPost, base+"/api/pair", map[string]string{"code": fakeapi.PairCode})
+	// The site already revoked it (from Account > Devices): the token is 401.
+	h.srv.RevokeToken()
+	code, body := h.call(http.MethodPost, base+"/api/unpair", map[string]string{})
+	data, _ := body["data"].(map[string]any)
+	if code != http.StatusOK || data["paired"] != false || data["revoked"] != true {
+		t.Fatalf("unpair = %d %v", code, body)
+	}
+}

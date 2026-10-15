@@ -644,3 +644,26 @@ func TestMemberKeysAnswersOnlyClaimedCharacters(t *testing.T) {
 		t.Fatalf("no keys: %v %v", empty, err)
 	}
 }
+
+func TestADeviceCanBeRevokedByItsOwnID(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	u, err := s.UpsertEmailUser(ctx, "self@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	token, hash := NewDeviceToken()
+	d, err := s.CreateDevice(ctx, u.ID, "Raid PC", "windows/amd64", hash)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ok, err := s.RevokeDeviceByID(ctx, d.ID); err != nil || !ok {
+		t.Fatalf("revoke = %v, %v", ok, err)
+	}
+	if _, err := s.DeviceByToken(ctx, TokenHash(token)); err != ErrNotFound {
+		t.Fatalf("err = %v, want ErrNotFound", err)
+	}
+	if ok, _ := s.RevokeDeviceByID(ctx, d.ID); ok {
+		t.Fatal("revoking twice should report nothing changed")
+	}
+}

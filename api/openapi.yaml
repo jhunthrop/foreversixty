@@ -1492,6 +1492,13 @@ paths:
         '200':
           description: "data is the device array itself, with no wrapper object"
           content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } }
+  /v1/devices/self:
+    delete:
+      summary: The calling device revokes itself (the companion's Forget)
+      description: Device bearer token. A token that is already revoked answers 401, which the companion treats as done.
+      responses:
+        '204': { description: "Revoked" }
+        '401': { description: "Not a device token, or the token is already dead", content: { application/json: { schema: { $ref: '#/components/schemas/Envelope' } } } }
   /v1/devices/{id}:
     delete:
       summary: Revoke a device

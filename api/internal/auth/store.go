@@ -652,3 +652,15 @@ func (s *Store) GuildRank(ctx context.Context, guildID, userID int64) (string, b
 	}
 	return rank, true, nil
 }
+
+// RevokeDeviceByID revokes one device by its id alone, for the device
+// itself: the middleware already proved the caller holds its token. It
+// reports false when the device is revoked already.
+func (s *Store) RevokeDeviceByID(ctx context.Context, id string) (bool, error) {
+	tag, err := s.Pool.Exec(ctx,
+		`update devices set revoked_at = now() where id = $1 and revoked_at is null`, id)
+	if err != nil {
+		return false, fmt.Errorf("auth: revoke device: %w", err)
+	}
+	return tag.RowsAffected() == 1, nil
+}

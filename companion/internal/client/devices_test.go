@@ -137,3 +137,27 @@ func TestAConnectPollFailsOnTheNetworkAndOnATokenThatIsNotOne(t *testing.T) {
 		t.Fatal("a connect without an id was accepted")
 	}
 }
+
+func TestADeviceRevokesItselfAndADeadTokenCountsAsDone(t *testing.T) {
+	srv := fakeapi.New()
+	defer srv.Close()
+	c, err := client.New(client.Options{BaseURL: srv.URL, Token: func() string { return fakeapi.Token },
+		Retry: client.Retry{MaxAttempts: 1, Base: time.Millisecond, Max: time.Millisecond}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := c.RevokeSelf(t.Context()); err != nil {
+		t.Fatalf("revoke = %v", err)
+	}
+	if srv.SelfRevokes() != 1 {
+		t.Fatalf("revokes = %d", srv.SelfRevokes())
+	}
+	// The token is dead now: the second answer is a 401, which is success.
+	if err := c.RevokeSelf(t.Context()); err != nil {
+		t.Fatalf("a dead token = %v, want nil", err)
+	}
+	srv.Offline(true)
+	if err := c.RevokeSelf(t.Context()); err == nil {
+		t.Fatal("an unreachable site reported success")
+	}
+}
