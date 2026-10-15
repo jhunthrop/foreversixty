@@ -1,6 +1,12 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
+import classes from '../data/classes.json';
 import Header from './Header.astro';
+
+async function renderDoc(path: string): Promise<Document> {
+  return new JSDOM(await renderHeader(path)).window.document;
+}
 
 async function renderHeader(path: string): Promise<string> {
   const container = await AstroContainer.create();
@@ -8,15 +14,88 @@ async function renderHeader(path: string): Promise<string> {
 }
 
 describe('Header', () => {
-  it('renders the doors and Get set up, in that order', async () => {
-    const html = await renderHeader('/');
-    const order = ['Planner', 'BiS', 'Simulator', 'Logs', 'Rankings', 'Tier List', 'Guides', 'Get set up'];
-    let cursor = -1;
-    for (const label of order) {
-      const at = html.indexOf(`>${label}<`, cursor === -1 ? 0 : cursor);
-      expect(at, `${label} not found after the previous item`).toBeGreaterThan(cursor);
-      cursor = at;
+  it('renders the four doors in order, each a real link with its popup attributes', async () => {
+    const doc = await renderDoc('/');
+    const doors = [...doc.querySelectorAll('a.site-door')];
+    expect(doors.map((door) => [door.textContent?.trim(), door.getAttribute('href')])).toEqual([
+      ['Tools', '/planner'],
+      ['Logs', '/logs'],
+      ['Guild', '/guild'],
+      ['Guides', '/guides'],
+    ]);
+    for (const door of doors) {
+      const key = door.getAttribute('data-door');
+      expect(door.getAttribute('aria-haspopup')).toBe('true');
+      expect(door.getAttribute('aria-expanded')).toBe('false');
+      expect(door.getAttribute('aria-controls')).toBe(`site-panel-${key}`);
     }
+    const toggles = [...doc.querySelectorAll('button.site-door-toggle')];
+    expect(toggles.map((t) => t.getAttribute('aria-label'))).toEqual([
+      'Open the Tools list',
+      'Open the Logs list',
+      'Open the Guild list',
+      'Open the Guides list',
+    ]);
+  });
+
+  it('server-renders every panel hidden with its rows and hrefs', async () => {
+    const doc = await renderDoc('/');
+    const rowsOf = (key: string) =>
+      [...doc.querySelectorAll(`#site-panel-${key} a.site-panel-row`)].map((row) => [
+        row.querySelector('.site-panel-title')?.textContent?.trim(),
+        row.getAttribute('href'),
+      ]);
+    for (const key of ['tools', 'logs', 'guild', 'guides']) {
+      const panel = doc.getElementById(`site-panel-${key}`);
+      expect(panel?.hasAttribute('hidden')).toBe(true);
+      expect(panel?.getAttribute('role')).toBe('menu');
+    }
+    expect(rowsOf('tools')).toEqual([
+      ['Planner', '/planner'],
+      ['BiS', '/bis'],
+      ['Simulator', '/sim'],
+      ['Get set up', '/setup'],
+    ]);
+    expect(rowsOf('logs')).toEqual([
+      ['Upload a log', '/logs'],
+      ['Your reports', '/reports'],
+      ['Rankings', '/rankings'],
+      ['Tier list', '/tiers'],
+    ]);
+    expect(rowsOf('guild')).toEqual([
+      ['Your guild', '/guild'],
+      ['Roster', '/guild#roster'],
+      ['Loot council', '/guild#loot'],
+      ['Guild logs', '/guild#raids'],
+    ]);
+    expect(doc.querySelector('#site-panel-guild [data-guild-name]')?.textContent).toBe('Your guild');
+    expect(doc.querySelector('#site-panel-guild .site-panel-foot')?.getAttribute('href')).toBe(
+      '/guild#settings',
+    );
+    expect(doc.querySelector('[data-testid="site-panel-row-upload-a-log"]')).not.toBeNull();
+  });
+
+  it('renders the Guides grid from classes.json with crests and spec names', async () => {
+    const doc = await renderDoc('/');
+    const tiles = [...doc.querySelectorAll('#site-panel-guides a[href^="/guides/"]')];
+    expect(tiles.map((tile) => tile.getAttribute('href'))).toEqual(classes.map((c) => `/guides/${c.slug}`));
+    expect(tiles[0].querySelector('img')?.getAttribute('src')).toBe('/icons/hd/crests/warrior.webp');
+    expect(tiles[0].textContent).toContain('Warrior');
+    expect(tiles[0].textContent).toContain('Arms · Fury · Protection');
+    expect(doc.querySelector('#site-panel-guides .site-panel-foot')?.textContent?.trim()).toBe('All guides');
+  });
+
+  it('marks the group whose row is the current page', async () => {
+    const doc = await renderDoc('/tiers/healer');
+    expect(doc.querySelector('a.site-door[data-door="logs"]')?.getAttribute('aria-current')).toBe('page');
+    expect(doc.querySelector('a.site-door[data-door="tools"]')?.hasAttribute('aria-current')).toBe(false);
+  });
+
+  it('lists the four groups as headed sections in the phone Menu', async () => {
+    const doc = await renderDoc('/');
+    const headings = [...doc.querySelectorAll('#site-menu h2.site-menu-heading')];
+    expect(headings.map((h) => h.textContent?.trim())).toEqual(['Tools', 'Logs', 'Guild', 'Guides']);
+    expect(doc.querySelectorAll('#site-menu .site-menu-list a[href^="/guides/"]').length).toBe(9);
   });
 
   it('renders no Reference disclosure and no Premium link', async () => {
@@ -25,22 +104,6 @@ describe('Header', () => {
     expect(html).not.toContain('>Premium<');
     expect(html).not.toContain('>Classes<');
     expect(html).not.toContain('>The addon<');
-  });
-
-  it('marks Planner aria-current when the path is /planner', async () => {
-    const html = await renderHeader('/planner');
-    expect(html).toMatch(/<a href="\/planner" aria-current="page"[^>]*>[\s\S]{0,20}Planner/);
-  });
-
-  it('does not mark Planner aria-current on an unrelated path', async () => {
-    const html = await renderHeader('/sim');
-    const plannerLink = html.match(/<a href="\/planner"[^>]*>/)?.[0] ?? '';
-    expect(plannerLink).not.toContain('aria-current');
-  });
-
-  it('marks Guides aria-current on a guide sub-path', async () => {
-    const html = await renderHeader('/guides/warrior');
-    expect(html).toMatch(/<a href="\/guides" aria-current="page"[^>]*>[\s\S]{0,20}Guides/);
   });
 
   it('renders the session slot next to Discord', async () => {

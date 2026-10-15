@@ -1,26 +1,23 @@
 // web/tests/e2e/nav.spec.ts
-// The primary nav's behaviours: the doors in the order of spec 2026-10-09-nav-character-
-// selector.md plus Get set up, no Reference disclosure, a grid that opens beneath the phone
+// The primary nav's behaviours: the four doors of spec 2026-10-15-grouped-header.md, no Reference disclosure, a grid that opens beneath the phone
 // bar instead of a horizontally scrolling row, and "Sign in" on every page. The selector's
 // own behaviours are in nav-selector.spec.ts.
 import { expect, test } from '@playwright/test';
 import { signedOut } from './support/selector';
 
 test.describe('aria-current', () => {
-  test('the Simulator tool link carries aria-current=page on /sim', async ({ page }) => {
+  test('the Tools door carries aria-current=page on /sim', async ({ page }) => {
     await page.goto('/sim');
-    await expect(page.getByTestId('primary-nav').locator('a', { hasText: 'Simulator' })).toHaveAttribute(
-      'aria-current',
-      'page',
-    );
+    await expect(
+      page.getByTestId('primary-nav').locator('a.site-door', { hasText: 'Tools' }),
+    ).toHaveAttribute('aria-current', 'page');
   });
 
-  test('the Guides link carries aria-current=page on a guide sub-path', async ({ page }) => {
+  test('the Guides door carries aria-current=page on a guide sub-path', async ({ page }) => {
     await page.goto('/guides/warrior');
-    await expect(page.getByTestId('primary-nav').locator('a', { hasText: 'Guides' })).toHaveAttribute(
-      'aria-current',
-      'page',
-    );
+    await expect(
+      page.getByTestId('primary-nav').locator('a.site-door', { hasText: 'Guides' }),
+    ).toHaveAttribute('aria-current', 'page');
   });
 });
 
@@ -59,7 +56,7 @@ test.describe('phone nav', () => {
     await expect(button).toBeFocused();
   });
 
-  test('all eight items are visible without horizontal scroll', async ({ page }) => {
+  test('the four groups and their rows are visible without horizontal scroll', async ({ page }) => {
     await page.goto('/');
     await page.getByTestId('menu-button').click();
     const nav = page.getByTestId('primary-nav');
@@ -72,17 +69,16 @@ test.describe('phone nav', () => {
       'Planner',
       'BiS',
       'Simulator',
-      'Logs',
-      'Rankings',
-      'Tier List',
-      'Guides',
       'Get set up',
+      'Upload a log',
+      'Rankings',
+      'Tier list',
     ]) {
       await expect(nav.getByRole('link', { name: label })).toBeVisible();
     }
   });
 
-  test('the page does not scroll sideways with the eight-item nav', async ({ page }) => {
+  test('the page does not scroll sideways with the grouped nav', async ({ page }) => {
     await page.goto('/');
     const { scrollWidth, clientWidth } = await page.evaluate(() => ({
       scrollWidth: document.documentElement.scrollWidth,

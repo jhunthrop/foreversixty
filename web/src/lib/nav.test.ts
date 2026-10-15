@@ -1,51 +1,92 @@
 import { describe, expect, it } from 'vitest';
-import { PRIMARY_NAV_ITEMS, SETUP_NAV_ITEM, TRAILING_NAV_ITEMS, isNavItemCurrent } from './nav';
+import {
+  GUILD_GROUP_INDEX,
+  NAV_GROUPS,
+  SETUP_NAV_ITEM,
+  isNavGroupCurrent,
+  isNavItemCurrent,
+  navKey,
+} from './nav';
 
-describe('nav structure', () => {
-  it('orders the doors Planner, BiS, Simulator, Logs, Rankings, Tier List, Guides', () => {
-    expect(PRIMARY_NAV_ITEMS.map((item) => item.label)).toEqual([
-      'Planner',
-      'BiS',
-      'Simulator',
-      'Logs',
-      'Rankings',
-      'Tier List',
-      'Guides',
+const [tools, logs, guild, guides] = NAV_GROUPS;
+const rowPairs = (group: (typeof NAV_GROUPS)[number]) => group.rows.map((row) => [row.label, row.href]);
+
+describe('nav groups', () => {
+  it('orders the four doors Tools, Logs, Guild, Guides', () => {
+    expect(NAV_GROUPS.map((group) => [group.label, group.href])).toEqual([
+      ['Tools', '/planner'],
+      ['Logs', '/logs'],
+      ['Guild', '/guild'],
+      ['Guides', '/guides'],
     ]);
-    expect(PRIMARY_NAV_ITEMS.map((item) => item.href)).toEqual([
-      '/planner',
-      '/bis',
-      '/sim',
-      '/logs',
-      '/rankings',
-      '/tiers',
-      '/guides',
-    ]);
+    expect(NAV_GROUPS[GUILD_GROUP_INDEX]).toBe(guild);
   });
 
-  it('names the setup nav item "Get set up" at /setup, alone in the trailing row', () => {
+  it('lists the rows of each panel in order', () => {
+    expect(rowPairs(tools)).toEqual([
+      ['Planner', '/planner'],
+      ['BiS', '/bis'],
+      ['Simulator', '/sim'],
+      ['Get set up', '/setup'],
+    ]);
+    expect(rowPairs(logs)).toEqual([
+      ['Upload a log', '/logs'],
+      ['Your reports', '/reports'],
+      ['Rankings', '/rankings'],
+      ['Tier list', '/tiers'],
+    ]);
+    expect(rowPairs(guild)).toEqual([
+      ['Your guild', '/guild'],
+      ['Roster', '/guild#roster'],
+      ['Loot council', '/guild#loot'],
+      ['Guild logs', '/guild#raids'],
+    ]);
+    expect(guides.rows).toEqual([]);
+  });
+
+  it('gives every row a description and the right foots', () => {
+    for (const group of NAV_GROUPS) {
+      for (const row of group.rows) expect(row.description.length).toBeGreaterThan(0);
+    }
+    expect(guild.foot).toEqual({ label: 'Guild settings', href: '/guild#settings' });
+    expect(guides.foot).toEqual({ label: 'All guides', href: '/guides' });
+    expect(tools.foot).toBeUndefined();
+    expect(logs.foot).toBeUndefined();
+  });
+
+  it('names the setup nav item "Get set up" at /setup', () => {
     expect(SETUP_NAV_ITEM).toEqual({ label: 'Get set up', href: '/setup' });
-    expect(TRAILING_NAV_ITEMS).toEqual([SETUP_NAV_ITEM]);
+  });
+});
+
+describe('isNavGroupCurrent', () => {
+  it('marks a group when the page is one of its rows or a sub-path', () => {
+    expect(isNavGroupCurrent(logs, '/tiers/healer')).toBe(true);
+    expect(isNavGroupCurrent(tools, '/sim/gear')).toBe(true);
+    expect(isNavGroupCurrent(guild, '/guild/us/pvp/olympus-xxvii')).toBe(true);
+    expect(isNavGroupCurrent(guides, '/guides/warrior')).toBe(true);
+  });
+
+  it('does not mark an unrelated group', () => {
+    expect(isNavGroupCurrent(tools, '/logs')).toBe(false);
+    expect(isNavGroupCurrent(logs, '/plannerx')).toBe(false);
+  });
+});
+
+describe('navKey', () => {
+  it('turns a label into a lowercase hyphenated key', () => {
+    expect(navKey('Upload a log')).toBe('upload-a-log');
+    expect(navKey('BiS')).toBe('bis');
   });
 });
 
 describe('isNavItemCurrent', () => {
-  const planner = PRIMARY_NAV_ITEMS[0];
+  const planner = tools.rows[0];
 
-  it('matches the exact path', () => {
+  it('matches the exact path and sub-paths only', () => {
     expect(isNavItemCurrent(planner, '/planner')).toBe(true);
-  });
-
-  it('matches a sub-path', () => {
-    const simulator = PRIMARY_NAV_ITEMS[2];
-    expect(isNavItemCurrent(simulator, '/sim/gear')).toBe(true);
-  });
-
-  it('does not match an unrelated path', () => {
+    expect(isNavItemCurrent(planner, '/planner/x')).toBe(true);
     expect(isNavItemCurrent(planner, '/sim')).toBe(false);
-  });
-
-  it('does not match a path that merely starts with the same letters', () => {
     expect(isNavItemCurrent(planner, '/plannerx')).toBe(false);
   });
 });

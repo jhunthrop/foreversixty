@@ -6,7 +6,7 @@
 
    Breakpoints, widest first:
      1441+      the bar sits in the --page-max content container; Discord has its label
-     1280-1439  Discord is the mark alone; selector 232px
+     1280-1439  Discord is the mark alone; selector 232px; the lookup keeps its "/" hint
      1024-1279  tighter doors; selector 176px, second line "Spec - level"
      560-1023   the 56px phone bar; the full name sits beside the crest; doors in the Menu
      0-559      crest only (a chevron badge on it); the full name is the Menu's first row
@@ -51,6 +51,8 @@
   .site-doors {
     order: 2;
     display: flex;
+    align-self: stretch;
+    margin: -18px 0;
     gap: 22px;
     font-size: 13px;
     font-weight: 700;
@@ -58,16 +60,167 @@
     text-transform: uppercase;
     white-space: nowrap;
   }
-  .site-doors a {
+  /* One door: the link, its chevron toggle and its panel. The group is the full 80px bar
+     height (the nav's negative margin cancels the header padding), so the pointer never
+     leaves it crossing from the door down to the panel; the gold rule is a pseudo-element
+     on the bar's bottom edge, so opening a panel moves nothing (spec 2026-10-15 section 4). */
+  .site-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .site-menu-heading,
+  .site-menu-list {
+    display: none;
+  }
+  .site-door {
     display: inline-flex;
     align-items: center;
+    min-height: 44px;
     color: var(--color-nav);
   }
-  .site-doors a:hover {
+  .site-door:hover,
+  .site-door-toggle:hover {
     color: var(--color-strong);
   }
-  .site-doors a[aria-current='page'] {
+  .site-door[aria-current='page'] {
     color: var(--color-gold);
+  }
+  .site-door-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-muted);
+    cursor: pointer;
+  }
+  .site-door[aria-expanded='true'],
+  .site-door[aria-expanded='true'] + .site-door-toggle {
+    color: var(--color-gold);
+  }
+  .site-door[aria-expanded='true'] + .site-door-toggle svg {
+    transform: rotate(180deg);
+  }
+  .site-group:has(.site-door[aria-expanded='true'])::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--color-gold);
+  }
+  /* ------------------------------------------------------------- hover panels */
+  .site-panel {
+    position: absolute;
+    z-index: 60;
+    top: 100%;
+    left: -12px;
+    width: 560px;
+    padding: 10px;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    background: var(--color-raised);
+    box-shadow: 0 14px 36px rgb(0 0 0 / 0.6);
+    text-transform: none;
+    letter-spacing: normal;
+    white-space: normal;
+  }
+  .site-panel[hidden] {
+    display: none;
+  }
+  .site-group[data-group='guides'] .site-panel {
+    width: 760px;
+  }
+  .site-panel-row,
+  .site-panel-class {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: var(--color-strong);
+    font-weight: 400;
+  }
+  .site-panel-row:hover,
+  .site-panel-class:hover,
+  .site-panel-foot:hover {
+    background: #101624;
+  }
+  .site-panel-row:focus-visible,
+  .site-panel-class:focus-visible,
+  .site-panel-foot:focus-visible,
+  .site-door:focus-visible,
+  .site-door-toggle:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: -2px;
+    background: #101624;
+  }
+  .site-panel-icon {
+    flex-shrink: 0;
+    color: var(--color-gold);
+  }
+  .site-panel-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.3;
+  }
+  .site-panel-title,
+  .site-panel-class-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-strong);
+  }
+  .site-panel-class-name {
+    color: var(--c);
+  }
+  .site-panel-desc {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--color-muted);
+  }
+  .site-panel-trail:empty {
+    display: none;
+  }
+  .site-panel-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2px;
+  }
+  .site-panel-crest {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    object-fit: cover;
+    background: var(--color-raised);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
+  }
+  .site-panel-class:hover .site-panel-crest,
+  .site-panel-class:focus-visible .site-panel-crest {
+    box-shadow: 0 0 0 2px var(--c);
+  }
+  .site-panel-foot {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 6px;
+    padding: 0 10px;
+    border-top: 1px solid var(--color-line-soft);
+    border-radius: 0 0 4px 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-muted);
+  }
+  .site-panel-foot:hover {
+    color: var(--color-strong);
   }
   .site-right {
     order: 3;
@@ -115,21 +268,17 @@
     pointer-events: none;
   }
 
-  /* 1280 to 1439: the compact lookup (HeaderSearch.astro) is a 44px magnifier here, its "/"
-     hint from 1440 only, and the gaps close by a few px each: measured signed in at 1280 with
-     the hint and the spec's gaps the row ran 28px past its content box, so Linux text
-     metrics tipped it into a sideways scroll. Now 19px of slack at 1280. */
+  /* 1280 to 1439: Discord is the mark alone. Four doors (spec 2026-10-15 section 5) give the
+     row back the room the lookup took, so the gaps are the nav spec's again and the lookup
+     keeps its "/" hint. */
   @media (max-width: 1439px) {
     .site-header {
-      gap: 16px;
+      gap: 18px;
       padding: 18px max(32px, calc((100% - var(--page-max)) / 2));
     }
     .site-doors {
-      gap: 18px;
+      gap: 20px;
       letter-spacing: 0.1em;
-    }
-    .site-right {
-      gap: 8px;
     }
     .site-discord {
       width: 44px;
@@ -254,15 +403,58 @@
       background: #101624;
     }
     .site-doors {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px 12px;
-      letter-spacing: 0.12em;
-      font-size: 13px;
+      display: block;
+      align-self: auto;
+      margin: 0;
     }
-    .site-doors a {
+    .site-group {
+      display: block;
+      padding-top: 10px;
+    }
+    .site-door,
+    .site-door-toggle,
+    .site-panel {
+      display: none;
+    }
+    .site-menu-heading {
+      display: block;
+      margin: 0 0 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+    .site-menu-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2px 12px;
+      text-transform: none;
+      letter-spacing: normal;
+      white-space: normal;
+    }
+    .site-menu-list .site-panel-foot {
+      grid-column: 1 / -1;
+      margin-top: 0;
+    }
+    .site-menu-list .site-panel-grid {
+      display: contents;
+    }
+    .site-menu-list .site-panel-class {
+      flex-direction: column;
       justify-content: center;
-      min-height: 44px;
+      gap: 6px;
+      padding: 8px 4px;
+      text-align: center;
+    }
+    .site-menu-list .site-panel-class .site-panel-desc {
+      display: none;
+    }
+    .site-menu-list .site-panel-desc {
+      font-size: 11px;
+    }
+    .site-group[data-group='guides'] .site-menu-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
     .site-menu-discord {
       display: flex;
@@ -276,11 +468,6 @@
       color: var(--color-text);
       font-weight: 600;
       font-size: 13px;
-    }
-  }
-  @media (min-width: 640px) and (max-width: 1023px) {
-    .site-doors {
-      grid-template-columns: repeat(4, 1fr);
     }
   }
 
@@ -1081,6 +1268,7 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .site-door-toggle svg,
   .csel-chev {
     transition: transform 120ms ease-out;
   }
@@ -1088,7 +1276,7 @@
 
 /* ---------------------------------------------------- compact character lookup
    HeaderSearch.astro (Task L8.2 fix round 2 item 7): from 1024 a 44px magnifier in the bar,
-   the "/" hint beside it from 1440, opening a small panel under the bar; below 1024 the same
+   the "/" hint beside it from 1280, opening a small panel under the bar; below 1024 the same
    small Search is the Menu's first row. The bar keeps its one height either way. */
 @layer components {
   .site-search {
@@ -1139,7 +1327,7 @@
   .site-menu-search {
     display: none;
   }
-  @media (max-width: 1439px) {
+  @media (max-width: 1279px) {
     .site-search-kbd {
       display: none;
     }

@@ -30,5 +30,9 @@ export const FILTER_AFTER_CHARACTERS = 8;
 /** Dispatched on `window` by the phone Menu's first row; the selector island opens its sheet. */
 export const OPEN_SELECTOR_EVENT = 'fs:open-character-selector';
 
+/** Dispatched on `window` by the selector island when its session settles; `detail` is the
+ *  session's `SessionGuild` or `null`, and the header's Guild panel follows it. */
+export const SESSION_GUILD_EVENT = 'fs:session-guild';
+
 /** The pages whose state lives in the URL and cannot re-render in place on a choice. */
 export const URL_STATE_PAGES = ['/planner', '/sim'] as const;

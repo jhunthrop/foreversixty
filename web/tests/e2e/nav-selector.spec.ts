@@ -1,6 +1,6 @@
 // web/tests/e2e/nav-selector.spec.ts
 // The site navigation bar and its character selector (design/specs/2026-10-09-nav-character-
-// selector.md): the doors in order with BiS, the selector's closed states and widths, the list
+// selector.md, doors as amended by 2026-10-15-grouped-header.md): the four doors in order, the selector's closed states and widths, the list
 // (order, stale, failed, filter), choosing a character, the paste flow, the signed-out and
 // expired states, the keyboard path, and the phone Menu and sheet.
 import { expect, test, type Page } from '@playwright/test';
@@ -15,7 +15,7 @@ import {
   type FixtureCharacter,
 } from './support/selector';
 
-const DOORS = ['Planner', 'BiS', 'Simulator', 'Logs', 'Rankings', 'Tier List', 'Guides', 'Get set up'];
+const DOORS = ['Tools', 'Logs', 'Guild', 'Guides'];
 const FURY = `FS1:${ACTIVE_BUILD}:warrior:orc:0/5530515/0:head=12640,main_hand=11726`;
 
 const FROSTBYTE: FixtureCharacter = {
@@ -83,13 +83,13 @@ test.describe('the doors', () => {
   test.skip(() => test.info().project.name !== 'desktop', 'desktop layout only');
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test('are in order, with BiS where Leveling BiS was, and the door goes to /bis', async ({ page }) => {
+  test('are the four groups in order, and BiS is a row of the Tools panel', async ({ page }) => {
     await signedOut(page);
     await page.goto('/');
-    const links = page.getByTestId('primary-nav').getByRole('link');
-    await expect(links).toHaveText(DOORS);
+    await expect(page.getByTestId('primary-nav').locator('a.site-door')).toHaveText(DOORS);
     await expect(page.getByRole('banner')).not.toContainText('Leveling BiS');
-    await page.getByTestId('primary-nav').getByRole('link', { name: 'BiS', exact: true }).click();
+    await page.getByTestId('primary-nav').getByRole('link', { name: 'Tools', exact: true }).hover();
+    await page.getByTestId('site-panel-row-bis').click();
     await expect(page).toHaveURL(/\/bis$/);
     await expect(page.getByRole('heading', { name: 'Best in slot', level: 1 })).toBeVisible();
   });
@@ -139,7 +139,7 @@ test.describe('the bar at every width', () => {
       if (width >= 1024) {
         const doors = await page
           .getByTestId('primary-nav')
-          .getByRole('link')
+          .locator('a.site-door')
           .evaluateAll((links) => links.map((link) => Math.round(link.getBoundingClientRect().top)));
         expect(new Set(doors).size).toBe(1);
       }
@@ -636,7 +636,7 @@ test.describe('the phone bar', () => {
     await expect(page.getByTestId('selector-name')).toBeHidden();
   });
 
-  test('the Menu leads with the full name, then the doors with BiS, then Discord', async ({ page }) => {
+  test('the Menu leads with the full name, then the four groups, then Discord', async ({ page }) => {
     await signInWith(page, [OBNOXIOUS]);
     await storePointer(page, armoryPointer(OBNOXIOUS));
     await page.goto('/guides');
@@ -645,7 +645,7 @@ test.describe('the phone bar', () => {
     const row = page.getByTestId('menu-character');
     await expect(row).toContainText('Obnoxious Yell');
     await expect(row).toContainText('Fury Warrior · 60');
-    await expect(page.getByTestId('primary-nav').getByRole('link')).toHaveText(DOORS);
+    await expect(page.locator('#site-menu h2.site-menu-heading')).toHaveText(DOORS);
     const rowBox = (await row.boundingBox())!;
     const navBox = (await page.getByTestId('primary-nav').boundingBox())!;
     expect(rowBox.y + rowBox.height).toBeLessThanOrEqual(navBox.y);

@@ -65,8 +65,9 @@ describe('/logs', () => {
     const html = await container.renderToString(Logs);
     const recentAt = html.indexOf('>Recent public reports<');
     // Matched by its element, not a plain text search, so a future block that happens to
-    // reuse the words "Your reports" in prose cannot false-match this heading.
-    const mineAt = html.indexOf('>Your reports<');
+    // reuse the words "Your reports" in prose cannot false-match this heading. Searched from
+    // <main>: the header's Logs panel has a row of the same name.
+    const mineAt = html.indexOf('>Your reports<', html.indexOf('id="main"'));
     expect(recentAt).toBeGreaterThan(-1);
     expect(mineAt).toBeGreaterThan(-1);
     expect(mineAt).toBeLessThan(recentAt);
@@ -80,7 +81,7 @@ describe('/logs', () => {
     const h1At = html.indexOf('>Logs</h1>');
     const jobAt = html.indexOf('Upload a combat log or log live, then read every pull.');
     const headerAt = html.indexOf('character-header');
-    const mineAt = html.indexOf('>Your reports<');
+    const mineAt = html.indexOf('>Your reports<', mainAt);
     expect(html).toContain('Combat logs');
     expect(mainAt).toBeGreaterThan(-1);
     expect(h1At).toBeGreaterThan(mainAt);

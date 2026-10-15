@@ -14,6 +14,7 @@
   import { browserChooseDeps, chooseCharacter, choosePointer } from '../../lib/character-selector/choose';
   import { selectorCopy } from '../../lib/character-selector/copy';
   import { OPEN_SELECTOR_EVENT } from '../../lib/character-selector/config';
+  import { publishSessionGuild } from '../../lib/character-selector/session-guild-dom';
   import {
     closedAriaLabel,
     closedSecondLine,
@@ -82,6 +83,13 @@
     return () => {
       document.body.style.overflow = previous;
     };
+  });
+
+  // The header's Guild panel follows the session's guild; told once `/v1/me` has answered,
+  // by a stamp on the header and an event, so it lands whichever script wired first.
+  $effect(() => {
+    if (selector.loadStatus !== 'ready') return;
+    publishSessionGuild(selector.sessionGuild);
   });
 
   function openSelector(): void {
