@@ -13,18 +13,27 @@ import companion from '../data/companion.json';
 import activeBuild from '../data/active-build.json';
 import communityLinks from '../data/links.json';
 
-// See addon.astro's own history for why these three URLs are not yet live: they are this
-// addon's own project slugs on CurseForge/Wago, created once the projects exist there. The
-// GitHub one is derived from links.json's githubRepo, the same source Footer.astro's
-// Contribute link uses.
-export const CURSEFORGE_URL = 'https://www.curseforge.com/wow/addons/foreversixty';
+// CurseForge is addressed by project id (the ids in the two TOCs' X-Curse-Project-ID lines;
+// the site redirects an id to the project's page, whatever its slug), Wago by the slugs its
+// pages answer to. The GitHub ones derive from links.json's githubRepo, the same source
+// Footer.astro's Contribute link uses; the data pack is released nightly under its own tag.
+export const CURSEFORGE_URL = 'https://www.curseforge.com/projects/1706689';
 export const WAGO_URL = 'https://addons.wago.io/addons/foreversixty';
 export const GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases/latest`;
+export const DATA_CURSEFORGE_URL = 'https://www.curseforge.com/projects/1706707';
+export const DATA_WAGO_URL = 'https://addons.wago.io/addons/foreversixtydata';
+export const DATA_GITHUB_RELEASES_URL = `${communityLinks.githubRepo}/releases?q=data-v`;
 
 const links = [
   { label: addonCopy.installCurseForge, href: CURSEFORGE_URL },
   { label: addonCopy.installWago, href: WAGO_URL },
   { label: addonCopy.installGitHub, href: GITHUB_RELEASES_URL },
+];
+
+const dataLinks = [
+  { label: addonCopy.installDataCurseForge, href: DATA_CURSEFORGE_URL },
+  { label: addonCopy.installDataWago, href: DATA_WAGO_URL },
+  { label: addonCopy.installDataGitHub, href: DATA_GITHUB_RELEASES_URL },
 ];
 
 const flows = [
@@ -93,6 +102,22 @@ const flows = [
         <p class="text-muted text-[13px]">{addonCopy.currentDataBuild(activeBuild.build)}</p>
         <ul class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-6">
           {links.map((link) => (
+            <li>
+              <a
+                class="inline-flex min-h-11 items-center text-[14px] font-semibold underline underline-offset-2"
+                href={link.href}
+                rel="noopener"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="text-muted text-[14px] leading-relaxed" data-testid="setup-data-addon">
+          {addonCopy.installDataLead}
+        </p>
+        <ul class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-6">
+          {dataLinks.map((link) => (
             <li>
               <a
                 class="inline-flex min-h-11 items-center text-[14px] font-semibold underline underline-offset-2"

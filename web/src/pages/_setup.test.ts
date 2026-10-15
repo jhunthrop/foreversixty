@@ -14,7 +14,14 @@ import { describe, expect, it, beforeAll } from 'vitest';
 import { addonCopy } from '../lib/addon/copy';
 import { SETUP_NAV_ITEM } from '../lib/nav';
 import activeBuild from '../data/active-build.json';
-import SetupPage, { CURSEFORGE_URL, WAGO_URL, GITHUB_RELEASES_URL } from './setup.astro';
+import SetupPage, {
+  CURSEFORGE_URL,
+  DATA_CURSEFORGE_URL,
+  DATA_GITHUB_RELEASES_URL,
+  DATA_WAGO_URL,
+  GITHUB_RELEASES_URL,
+  WAGO_URL,
+} from './setup.astro';
 
 const source = readFileSync(new URL('./setup.astro', import.meta.url), 'utf8');
 
@@ -24,6 +31,10 @@ const STRING_COPY_KEYS = [
   'installCurseForge',
   'installWago',
   'installGitHub',
+  'installDataLead',
+  'installDataCurseForge',
+  'installDataWago',
+  'installDataGitHub',
   'flowOutTitle',
   'flowOutBody',
   'flowInTitle',
@@ -82,6 +93,19 @@ describe('/setup', () => {
     expect(html).toContain(GITHUB_RELEASES_URL);
   });
 
+  it('tells the visitor to install the data addon too, with its three routes under the lead', () => {
+    expect(html).toContain('data-testid="setup-data-addon"');
+    expect(html).toContain(DATA_CURSEFORGE_URL);
+    expect(html).toContain(DATA_WAGO_URL);
+    expect(html).toContain(DATA_GITHUB_RELEASES_URL);
+    expect(html.indexOf(addonCopy.installDataLead)).toBeGreaterThan(html.indexOf(GITHUB_RELEASES_URL));
+  });
+
+  it('addresses CurseForge by the project ids the TOCs carry, never a guessed slug', () => {
+    expect(CURSEFORGE_URL).toBe('https://www.curseforge.com/projects/1706689');
+    expect(DATA_CURSEFORGE_URL).toBe('https://www.curseforge.com/projects/1706707');
+  });
+
   it('shows the current data build from the data file in the rendered output', () => {
     expect(html).toContain(addonCopy.currentDataBuild(activeBuild.build));
   });
@@ -91,7 +115,14 @@ describe('/setup', () => {
   });
 
   it('every install link opts out of opener access', () => {
-    for (const url of [CURSEFORGE_URL, WAGO_URL, GITHUB_RELEASES_URL]) {
+    for (const url of [
+      CURSEFORGE_URL,
+      WAGO_URL,
+      GITHUB_RELEASES_URL,
+      DATA_CURSEFORGE_URL,
+      DATA_WAGO_URL,
+      DATA_GITHUB_RELEASES_URL,
+    ]) {
       const anchor = [...html.matchAll(/<a\s+[^>]*>/g)].map((m) => m[0]).find((tag) => tag.includes(url));
       expect(anchor, `no <a> found for ${url}`).toBeDefined();
       expect(anchor).toContain('rel="noopener"');

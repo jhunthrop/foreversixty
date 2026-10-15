@@ -101,6 +101,13 @@ export const addonCopy = {
   installCurseForge: 'Install from CurseForge',
   installWago: 'Install from Wago Addons',
   installGitHub: 'Download the latest release',
+  /** The nightly ratings pack is its own addon (ForeverSixtyData): a manager that honours
+   *  required dependencies installs it with the addon; a hand install needs both. */
+  installDataLead:
+    'Install Forever Sixty Data too. It carries the nightly Forever Scores and guild standings the addon shows; CurseForge and Wago list it as a required dependency, so their apps add it for you.',
+  installDataCurseForge: 'Forever Sixty Data on CurseForge',
+  installDataWago: 'Forever Sixty Data on Wago Addons',
+  installDataGitHub: 'Latest data release',
   currentDataBuild: (build: string): string => `Current data build: ${build}`,
   flowOutTitle: 'Out of the game',
   /** The addon's copy mode (L8.5 ruling 5): `/fs copy` opens it with the box selected, and
