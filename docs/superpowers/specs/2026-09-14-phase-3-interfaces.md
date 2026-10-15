@@ -55,8 +55,24 @@ copying it.
   session. Rate limit 5 per email per hour.
 - **Devices.** `POST /v1/devices/pair` (session) returns `{ code }` valid 10 minutes, shown on
   the site; the companion posts `POST /v1/devices/claim { code, name, platform }` and receives
-  `{ device_id, token }` once. Companion requests send `Authorization: Bearer fsd_…`.
+  `{ device_id, token, account_label }` once. Companion requests send `Authorization: Bearer fsd_…`.
   `GET /v1/devices` lists, `DELETE /v1/devices/{id}` revokes.
+- **Companion connect (device authorization).** Signing in on the site is the primary way to pair;
+  paste-a-code above stays as the fallback, and its 201 also carries `account_label` (the
+  battletag, else the email). The companion mints a connect, opens `url` in the system browser
+  and polls; a signed-in click on the site names the device and the code, so a bare link cannot
+  attach a stranger's companion. The `connect_id` (32 random bytes, base64url) and the device
+  token are stored only as hashes; the poll that collects an approved row creates the device.
+  `user_code` is 6 of `BCDFGHJKLMNPQRSTVWXZ23456789`, shown `KQ4-7TM`, matched upper-cased with
+  hyphens and spaces stripped. TTL 10 minutes from creation, decided rows on the same clock.
+
+  | Route | Auth | Body / query | Answer |
+  |---|---|---|---|
+  | `POST /v1/devices/connect` | none; claim rate limit per IP | `{ name, platform }` | 201 `{ connect_id, user_code, url, expires_in: 600, interval: 2 }`; `url` is `<site>/connect?code=KQ4-7TM` |
+  | `GET /v1/devices/connect/{connect_id}` | none (the id is the secret) | | 200 `{ status: "pending" }` / `{ status: "approved", device_id, token, account_label }` (once) / `{ status: "denied" }` / `{ status: "expired" }`; 404 unknown; 410 `{ status: "used" }` after collection |
+  | `GET /v1/devices/connect/lookup?code=KQ4-7TM` | session | | 200 `{ name, platform, expires_in }`; 404 unknown, expired or decided |
+  | `POST /v1/devices/connect/approve` | session | `{ code }` | 200 `{ name, platform }`; 404 unknown or expired; 409 already decided |
+  | `POST /v1/devices/connect/deny` | session | `{ code }` | 204; 404 unknown or expired; 409 already decided |
 - `GET /v1/me` → `{ user: { id, battletag, email, role }, characters: [...], guilds: [...] }` or 401.
 
 ## Ingest (companion → API)
