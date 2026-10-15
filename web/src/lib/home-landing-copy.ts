@@ -146,4 +146,8 @@ export const homeCharacterSearchCopy = {
   /** The keyboard hint inside the box (design system: Search), and what it says aloud. */
   slashKey: '/',
   slashHint: 'Press / to search',
+  /** The typeahead list's accessible name (both lookup boxes). */
+  typeaheadLabel: 'Characters',
+  /** The one muted row when no character matches what was typed. */
+  typeaheadEmpty: (typed: string): string => `No character named "${typed}" yet`,
 } as const;

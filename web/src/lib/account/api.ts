@@ -331,6 +331,8 @@ export async function requestEnvelope<T>(
     body?: unknown;
     failureMessage?: string;
     credentials?: RequestCredentials;
+    /** Aborts the request: a superseded typeahead lookup. */
+    signal?: AbortSignal;
   } = {},
 ): Promise<EnvelopeResult<T>> {
   const method = init.method ?? 'GET';
@@ -344,6 +346,7 @@ export async function requestEnvelope<T>(
         method,
         headers,
         credentials: init.credentials ?? 'include',
+        signal: init.signal,
         body:
           init.body === undefined
             ? undefined

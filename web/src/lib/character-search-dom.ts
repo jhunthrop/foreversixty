@@ -7,9 +7,16 @@
 // there is one, and otherwise opens the header's own.
 import { characterSearchHref, DEFAULT_REGION, DEFAULT_RULESET } from './character-search';
 import { isRegion, isRuleset } from './characters';
+import { wireTypeahead } from './character-typeahead-dom';
 
 /** The query parameter a "Look up another character" link fills the home box with. */
 export const LOOKUP_NAME_PARAM = 'character';
+
+/** Everything a lookup form does: the submit, and the suggestion list under its name box. */
+export function wireLookupForm(form: HTMLFormElement): void {
+  wireSearchForm(form);
+  wireTypeahead(form);
+}
 
 /** Routes a lookup form's submit to the profile, or says what is wrong in its status line. */
 export function wireSearchForm(form: HTMLFormElement): void {

@@ -11,8 +11,8 @@ test('typing a name and submitting lands on the character’s profile', async ({
   await page.goto('/');
 
   const search = page.getByTestId('home-character-search');
-  await search.getByRole('searchbox').fill('Elyra Duskvale-Hardcore');
-  await search.getByRole('searchbox').press('Enter');
+  await search.getByRole('combobox', { name: 'Character name' }).fill('Elyra Duskvale-Hardcore');
+  await search.getByRole('combobox', { name: 'Character name' }).press('Enter');
 
   await expect(page).toHaveURL(new RegExp(`${CHARACTER_PATH}$`));
   await expect(page.getByTestId('character-name')).toContainText('Elyra Duskvale');
@@ -20,9 +20,9 @@ test('typing a name and submitting lands on the character’s profile', async ({
 
 test('"Look up another character" lands on the home lookup with the name filled in', async ({ page }) => {
   await page.goto('/?character=Elyra%20Duskvale#lookup');
-  await expect(page.getByTestId('home-character-search').getByRole('searchbox')).toHaveValue(
-    'Elyra Duskvale',
-  );
+  await expect(
+    page.getByTestId('home-character-search').getByRole('combobox', { name: 'Character name' }),
+  ).toHaveValue('Elyra Duskvale');
 });
 
 test('on a phone the lookup sits above the beta card', async ({ page }) => {
@@ -40,8 +40,8 @@ test('the lookup link’s region and ruleset fill the selects, and the name box 
 }) => {
   await page.goto('/?character=Elyra%20Duskvale&region=eu&ruleset=hardcore#lookup');
   const search = page.getByTestId('home-character-search');
-  await expect(search.getByRole('searchbox')).toHaveValue('Elyra Duskvale');
+  await expect(search.getByRole('combobox', { name: 'Character name' })).toHaveValue('Elyra Duskvale');
   await expect(search.getByLabel('Region')).toHaveValue('eu');
   await expect(search.getByLabel('Ruleset')).toHaveValue('hardcore');
-  await expect(search.getByRole('searchbox')).toBeFocused();
+  await expect(search.getByRole('combobox', { name: 'Character name' })).toBeFocused();
 });

@@ -92,9 +92,16 @@ const FIELD =
             spellcheck="false"
             placeholder={copy.namePlaceholder}
             aria-describedby={`${id}-status`}
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls={`${id}-listbox`}
             class={FIELD}
             data-testid="site-search-input"
           />
+          <div class="typeahead" data-typeahead>
+            <ul id={`${id}-listbox`} class="typeahead-list" role="listbox" hidden />
+          </div>
         </span>
         <button
           type="submit"
@@ -144,9 +151,16 @@ const FIELD =
           spellcheck="false"
           placeholder={copy.namePlaceholder}
           aria-describedby={`${id}-status`}
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded="false"
+          aria-controls={`${id}-listbox`}
           class={FIELD}
           data-testid="site-menu-search-input"
         />
+        <div class="typeahead" data-typeahead>
+          <ul id={`${id}-listbox`} class="typeahead-list" role="listbox" hidden />
+        </div>
       </span>
       <button
         type="submit"
