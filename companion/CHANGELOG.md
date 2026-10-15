@@ -1,6 +1,6 @@
 # Companion changelog
 
-## 0.6.0
+## 0.2.0
 
 - Sign in with Battle.net: the Device page opens your browser on the site, shows a code to
   compare, and connects by itself once you press Connect there. Paste-a-code stays under
