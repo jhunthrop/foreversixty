@@ -1,9 +1,13 @@
 ---
 // web/src/components/Header.astro
 import communityLinks from '../data/links.json';
-import { TRAILING_NAV_ITEMS, PRIMARY_NAV_ITEMS, isNavItemCurrent } from '../lib/nav';
+import classes from '../data/classes.json';
+import { readSpecCatalog } from '../lib/bis/load';
+import { GUILD_GROUP_INDEX, NAV_GROUPS, isNavGroupCurrent, navKey } from '../lib/nav';
+import { guideClasses } from '../lib/nav-guides';
 import { OPEN_SELECTOR_EVENT } from '../lib/character-selector/config';
 import DiscordMark from './DiscordMark.astro';
+import HeaderPanel from './HeaderPanel.astro';
 import HeaderSearch from './HeaderSearch.astro';
 import Seal from './Seal.astro';
 
@@ -12,21 +16,23 @@ interface Props {
    * through so aria-current can mark the active tool. Defaults to `''` for callers that
    * render this component with no routing context at all (e.g. planner-island.test.ts,
    * which only cares that the Tailwind build still covers its classes) -- no real href is
-   * ever the empty string, so isNavItemCurrent simply evaluates to "nothing is current"
+   * ever the empty string, so isNavGroupCurrent simply evaluates to "nothing is current"
    * instead of throwing on a missing prop. */
   path?: string;
 }
 
 const { path = '' } = Astro.props;
 
-const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
+// Build time only, as pages/guides/index.astro reads it: the Guides panel's spec names.
+const guideEntries = guideClasses(classes, readSpecCatalog());
 
 // Not an HTML comment: that would ship in every page and in the API's chrome snapshot.
 // Styling lives in styles/nav.css (spec 2026-10-09-nav-character-selector.md), not in
 // utility classes, so the bar's breakpoints are in one readable place. Desktop (1024 and up):
-// wordmark, the eight doors, the character selector, Discord. Below 1024: one 56px bar --
-// wordmark, the selector's crest, a Menu button -- with the character row, the eight doors
-// in a grid and Discord opening beneath it. The compact character lookup (HeaderSearch.astro,
+// wordmark, the four doors (each with a hover panel, spec 2026-10-15-grouped-header.md), the
+// character selector, Discord. Below 1024: one 56px bar -- wordmark, the selector's crest, a
+// Menu button -- with the character row, the four groups as headed sections and Discord
+// opening beneath it. The compact character lookup (HeaderSearch.astro,
 // Task L8.2 fix round 2 item 7) is a magnifier button in the bar from 1024 and the Menu's
 // first row below it; the processed script at the end wires it and the "/" key (`.site-menu`; the selector island renders the
 // character row, which nav.css places first in the Menu). The only script is the few lines
@@ -79,11 +85,49 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
   <div id="site-menu" class="site-menu" data-menu-panel>
     <HeaderSearch place="menu" />
     <nav id="primary-nav" aria-label="Primary" data-testid="primary-nav" class="site-doors">
-      {NAV_ITEMS.map((item) => (
-        <a href={item.href} aria-current={isNavItemCurrent(item, path) ? 'page' : undefined}>
-          {item.label}
-        </a>
-      ))}
+      {NAV_GROUPS.map((group, index) => {
+        const key = navKey(group.label);
+        const panel = { group, guideClasses: guideEntries, isGuild: index === GUILD_GROUP_INDEX };
+        return (
+          <div class="site-group" data-group={key}>
+            <h2 class="site-menu-heading">{group.label}</h2>
+            <a
+              href={group.href}
+              class="site-door"
+              data-door={key}
+              aria-current={isNavGroupCurrent(group, path) ? 'page' : undefined}
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls={`site-panel-${key}`}
+            >
+              {group.label}
+            </a>
+            <button
+              type="button"
+              class="site-door-toggle"
+              aria-label={`Open the ${group.label} list`}
+              aria-controls={`site-panel-${key}`}
+              data-door-toggle={key}
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6"></path>
+              </svg>
+            </button>
+            <HeaderPanel {...panel} place="bar" />
+            <HeaderPanel {...panel} place="menu" />
+          </div>
+        );
+      })}
     </nav>
     <a href={communityLinks.discordInvite} class="site-menu-discord">
       <DiscordMark />

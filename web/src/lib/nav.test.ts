@@ -5,11 +5,11 @@ import {
   SETUP_NAV_ITEM,
   isNavGroupCurrent,
   isNavItemCurrent,
+  navKey,
 } from './nav';
 
 const [tools, logs, guild, guides] = NAV_GROUPS;
-const rowPairs = (group: (typeof NAV_GROUPS)[number]) =>
-  group.rows.map((row) => [row.label, row.href]);
+const rowPairs = (group: (typeof NAV_GROUPS)[number]) => group.rows.map((row) => [row.label, row.href]);
 
 describe('nav groups', () => {
   it('orders the four doors Tools, Logs, Guild, Guides', () => {
@@ -70,6 +70,13 @@ describe('isNavGroupCurrent', () => {
   it('does not mark an unrelated group', () => {
     expect(isNavGroupCurrent(tools, '/logs')).toBe(false);
     expect(isNavGroupCurrent(logs, '/plannerx')).toBe(false);
+  });
+});
+
+describe('navKey', () => {
+  it('turns a label into a lowercase hyphenated key', () => {
+    expect(navKey('Upload a log')).toBe('upload-a-log');
+    expect(navKey('BiS')).toBe('bis');
   });
 });
 

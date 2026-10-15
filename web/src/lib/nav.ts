@@ -119,6 +119,14 @@ export function isNavItemCurrent(item: NavItem, path: string): boolean {
   return path === item.href || path.startsWith(`${item.href}/`);
 }
 
+/** The stable key of a door or row in ids and test ids: "Upload a log" -> "upload-a-log". */
+export function navKey(label: string): string {
+  return label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 const withoutHash = (href: string): string => href.split('#')[0];
 
 /** True when the page is the group's own page or any of its rows' pages (hashes ignored). */
