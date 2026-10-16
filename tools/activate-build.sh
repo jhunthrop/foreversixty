@@ -140,6 +140,15 @@ TAG="addon-v$NEW_VER"
 git tag -a "$TAG" -m "Forever Sixty $NEW_VER: data for client build $NEW" && git push --quiet origin "$TAG"
 echo "tagged $TAG (addon-release.yml publishes it to CurseForge and Wago)"
 
+# A push made with GITHUB_TOKEN triggers no workflow (the 2026-10-16 move landed
+# with no deploy, no addon publish and no ranking until each was dispatched by
+# hand), so every consumer of the new build is dispatched here: the site, the
+# API image (its simdb), the sim artifacts, the addon release for the tag, and
+# the ranking that replaces the carried-forward picks.
 if command -v gh >/dev/null 2>&1; then
+  gh workflow run web.yml --ref main && echo "dispatched the site deploy"
+  gh workflow run api.yml --ref main && echo "dispatched the API build and deploy"
+  gh workflow run sim.yml --ref main && echo "dispatched the sim artifacts"
+  gh workflow run addon-release.yml --ref "$TAG" -f dry_run=false -f publish=true && echo "dispatched the addon release for $TAG"
   gh workflow run bis.yml --ref main -f force=true && echo "dispatched the ranking for $NEW"
 fi
