@@ -142,6 +142,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 40
 
 - Backstab (spell 8721)
+- Death Mark (spell 1316709)
 - Eviscerate (spell 8624)
 - Garrote (spell 8633)
 - Gouge (spell 8629)
@@ -152,6 +153,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 50
 
 - Backstab (spell 11279)
+- Death Mark (spell 1325756)
 - Eviscerate (spell 11299)
 - Garrote (spell 11289)
 - Gouge (spell 11285)
@@ -162,6 +164,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 60
 
 - Backstab (spell 11281)
+- Death Mark (spell 1325758)
 - Garrote (spell 11290)
 - Gouge (spell 11286)
 - Kick (spell 1769)

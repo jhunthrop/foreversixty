@@ -1,37 +1,31 @@
 #!/usr/bin/env node
 // web/scripts/reencode-guide-builds.mjs
 //
-// Every spec guide's frontmatter `build:` is an FS1 code (web/src/lib/planner/fs1.ts),
-// stamped with a client build id. The stamp on all 27 guides currently reads
-// 1.60.1.69893; web/src/data/active-build.json's active build is 1.60.1.70009. Between
-// those two builds the PALADIN and SHAMAN talent trees changed shape (a talent dropped, two
-// talents swapping tier/column) -- the other seven classes' talent files are byte-identical
-// between the builds. decodeFS1 (and the addon) read a tree's digit string purely by array
-// index, so a build whose digits were laid out against one tree shape reads wrong against a
-// different one.
+// Every spec guide's frontmatter `build:` and `raidBuild:` is an FS1 code
+// (web/src/lib/planner/fs1.ts) stamped with a client build id. When the active build
+// (web/src/data/active-build.json) moves, this script carries each code onto the new
+// build's talent trees.
 //
-// BEFORE assuming every guide's digits are genuinely laid out against the stamped
-// 1.60.1.69893 shape and blindly remapping them, this script checks: are the digits, taken
-// exactly as written, already a legal build (no over-rank, no unmet prereq, no tier spent
-// before it unlocks) against the ACTIVE build's tree? If so, the digits are already correct
-// for 1.60.1.70009 -- re-deriving them from the stamped build's tree would be re-reading
-// already-correct ids as if they were positions in a tree they no longer describe, which
-// corrupts rather than fixes (verified by hand against three of the six paladin/shaman
-// guides below: reading their digits against the OLD 69893 tree overflows a max_rank,
-// fails a prereq, or spends a tier before it unlocks -- impossible in-game -- while reading
-// the SAME digits against the ACTIVE 70009 tree is clean, matches guide prose word for word
-// (e.g. paladin/holy's "Reverence / Illumination / Infusion of Light / Divine Favor"
-// priority list, paladin/retribution's "Instrument of Law ... Twist of Light" capstone
-// discussion), and spends the full 51-point cap). In that case the only fix needed, and the
-// only one this script makes, is the dataBuild stamp -- the tree-rank digits are untouched.
+// decodeFS1 (and the addon) read a tree's digit string purely by array index, so a build
+// laid out against one tree shape reads wrong against another. Between two client builds a
+// talent can move tier or column, lose or gain ranks, be renamed in place (the same talent
+// id with a different effect), or be dropped altogether; and a tree can reshuffle so that
+// ids and names change partners (1.60.1.70374 -> 70425 swapped Tidal Focus and Totemic
+// Focus's positions, and moved Lava Burst, Elemental Mastery and Earthbound between ids).
+// Neither "the digits as written" nor "the talent id" survives all of that: the digits
+// silently land on whatever now sits at that index, and the id silently lands on whatever
+// talent now wears it. The one handle that means the same thing to the guide's prose, the
+// planner and a player is the talent's NAME within its tree, so that is what this script
+// carries: decode the code against its OWN stamped build into (tree, talent name) -> rank,
+// then place every ranked talent onto the active build's tree by that name.
 //
-// Only when the digits are NOT already legal against the active build does this script fall
-// back to the task's originally-specified algorithm: decode against the code's OWN stamped
-// build, carry every ranked talent forward by its stable id onto the active build's tree,
-// and report (never silently drop) any id the active build no longer has. That path is kept
-// as a genuine fallback -- current data never takes it -- so a future guide whose digits
-// really were authored against an older tree shape is still handled correctly rather than
-// assumed away.
+// A carry succeeds only when every name is found, no rank exceeds the new max_rank, the
+// result is legal (no unmet prereq, every tier reached with 5 points per tier below it) and
+// it still spends the full 51 points. Otherwise the tree changed in a way a person has to
+// resolve: the script prints what it could not place, writes NOTHING, and exits 1, so the
+// client watcher's activation stops before it can commit a build that reads wrong.
+//
+// Identical trees reduce this to a pure re-stamp: every name lands where it was.
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -41,16 +35,17 @@ const repoRoot = join(webRoot, '..');
 const guidesRoot = join(webRoot, 'src/content/guides');
 
 const ACTIVE_BUILD = JSON.parse(readFileSync(join(webRoot, 'src/data/active-build.json'), 'utf8')).build;
-const POINTS_PER_TIER = 5; // web/src/lib/planner/types.ts's own constant, duplicated here --
-// this is a plain Node script with no loader for this repo's extensionless TS imports.
+// web/src/lib/planner/types.ts's own constants, duplicated here -- this is a plain Node
+// script with no loader for this repo's extensionless TS imports.
+const POINTS_PER_TIER = 5;
+const TOTAL_POINTS = 51;
 
 /** `FS1:<build>:<class>:<race>:<t1>/<t2>/<t3>:<gear...>` -- gear is captured raw (it may
  * itself contain `:` for `item_id:enchant:suffix`) and never touched by this script. */
 const CODE_RE = /^FS1:([^:]*):([^:]*):([^:]*):([^:]*):(.*)$/;
 
 /** One base-36 digit per rank, trailing zeros trimmed -- byte-identical to fs1.ts's own
- * `encodeTree`. Reimplemented here rather than imported: fs1.ts's extensionless TS imports
- * (`./rules`, `./types`) only resolve under a bundler, not a bare `node scripts/*.mjs`. */
+ * `encodeTree`. */
 function encodeTree(ranks) {
   const digits = ranks.map((rank) => Math.max(0, Math.min(35, rank)).toString(36));
   const trimmed = digits.join('').replace(/0+$/, '');
@@ -70,9 +65,9 @@ function talentsFor(build, classSlug) {
     readFileSync(join(repoRoot, 'data/builds', build, 'talents', `${classSlug}.json`), 'utf8'),
   );
   const trees = [...file.trees].sort((a, b) => a.position - b.position);
-  // Sanity check: this script indexes a tree's digits straight into `tree.talents[i]` with
-  // no re-sort, same as decodeFS1/orderFromRanks/builds.test.ts's talentAt. That is only
-  // correct if the file itself already ships each tree's talents tier/column ascending.
+  // This script indexes a tree's digits straight into `tree.talents[i]` with no re-sort,
+  // same as decodeFS1/orderFromRanks/builds.test.ts's talentAt. That is only correct if
+  // the file itself already ships each tree's talents tier/column ascending.
   for (const tree of trees) {
     for (let i = 1; i < tree.talents.length; i++) {
       const prev = tree.talents[i - 1];
@@ -92,25 +87,25 @@ function talentsFor(build, classSlug) {
  * below it. Returns one message per violation, empty when the ranks form a build the game
  * could actually produce.
  */
-function legalityIssues(trees, digitsPerTree) {
+function legalityIssues(trees, ranksPerTree) {
   const issues = [];
   const rankOf = new Map();
   const byId = new Map();
   const pointsInTierByTree = trees.map(() => new Map());
 
   trees.forEach((tree, treeIndex) => {
-    const digits = digitsPerTree[treeIndex] ?? [];
-    tree.talents.forEach((talent, digitIndex) => {
-      const raw = digits[digitIndex] ?? 0;
+    const ranks = ranksPerTree[treeIndex] ?? [];
+    tree.talents.forEach((talent, index) => {
+      const rank = ranks[index] ?? 0;
       byId.set(talent.id, talent);
-      if (raw <= 0) return;
-      rankOf.set(talent.id, raw);
+      if (rank <= 0) return;
+      rankOf.set(talent.id, rank);
       pointsInTierByTree[treeIndex].set(
         talent.tier,
-        (pointsInTierByTree[treeIndex].get(talent.tier) ?? 0) + raw,
+        (pointsInTierByTree[treeIndex].get(talent.tier) ?? 0) + rank,
       );
-      if (raw > talent.max_rank) {
-        issues.push(`${tree.name}/${talent.name}: rank ${raw} > max_rank ${talent.max_rank}`);
+      if (rank > talent.max_rank) {
+        issues.push(`${tree.name}/${talent.name}: rank ${rank} > max_rank ${talent.max_rank}`);
       }
     });
   });
@@ -142,90 +137,77 @@ function legalityIssues(trees, digitsPerTree) {
   return issues;
 }
 
-function pointsPerTree(trees, digitsPerTree) {
-  return trees.map((tree, treeIndex) => {
-    const digits = digitsPerTree[treeIndex] ?? [];
-    return { name: tree.name, points: digits.reduce((sum, r) => sum + (r ?? 0), 0) };
+function pointsPerTree(trees, ranksPerTree) {
+  return trees.map((tree, treeIndex) => ({
+    name: tree.name,
+    points: (ranksPerTree[treeIndex] ?? []).reduce((sum, rank) => sum + (rank ?? 0), 0),
+  }));
+}
+
+/** The code's ranked talents as the guide means them: `${tree name}/${talent name}` -> rank. */
+function rankedByName(trees, ranksPerTree) {
+  const ranked = new Map();
+  trees.forEach((tree, treeIndex) => {
+    const ranks = ranksPerTree[treeIndex] ?? [];
+    tree.talents.forEach((talent, index) => {
+      const rank = ranks[index] ?? 0;
+      if (rank > 0) ranked.set(`${tree.name}/${talent.name}`, rank);
+    });
   });
+  return ranked;
 }
 
 /**
- * Re-stamps one guide's code onto `toBuild`. Prefers keeping the digits exactly as written
- * (stamp-only) whenever they already form a legal build against `toBuild`'s tree; only
- * remaps by talent id, from the code's own stamped build, when they do not.
+ * Carries one guide's code onto `toBuild` by talent name. `problems` is empty when the
+ * carry is clean; otherwise it names everything a person has to resolve.
  */
-function remapCode(code, toBuild) {
+function carryCode(code, toBuild) {
   const match = CODE_RE.exec(code);
   if (!match) throw new Error(`not an FS1 code: ${code}`);
   const [, fromBuild, classSlug, raceSlug, treeField, gearTail] = match;
 
   const fromTrees = talentsFor(fromBuild, classSlug);
   const toTrees = talentsFor(toBuild, classSlug);
-  const treeRanks = parseTreeField(treeField);
+  const fromRanks = parseTreeField(treeField);
 
-  const fromBuildIssues = fromBuild === toBuild ? [] : legalityIssues(fromTrees, treeRanks);
-  const asIsIssues = legalityIssues(toTrees, treeRanks);
-
-  if (asIsIssues.length === 0) {
-    const newCode = `FS1:${toBuild}:${classSlug}:${raceSlug}:${treeField}:${gearTail}`;
-    return {
-      newCode,
-      mode: 'stamp-only',
-      before: pointsPerTree(fromTrees, treeRanks),
-      after: pointsPerTree(toTrees, treeRanks),
-      dropped: [],
-      staleStampWasIllegal: fromBuildIssues,
-    };
+  const problems = [];
+  const stampIssues = legalityIssues(fromTrees, fromRanks);
+  if (stampIssues.length > 0) {
+    problems.push(`illegal against its own stamped build ${fromBuild}: ${stampIssues.join('; ')}`);
   }
 
-  // Fallback: the digits are not legal as written against the active build. Decode them
-  // against the code's OWN stamped build (where they must be legal -- if they are not
-  // legal there either, something is wrong with the guide itself and this throws rather
-  // than guessing), then carry every ranked talent forward by stable id.
-  if (fromBuildIssues.length > 0) {
-    throw new Error(
-      `${classSlug} code is illegal against both its own build and ${toBuild}: ${fromBuildIssues.join('; ')}`,
-    );
-  }
-
-  const rankById = new Map();
-  fromTrees.forEach((tree, treeIndex) => {
-    const ranks = treeRanks[treeIndex] ?? [];
-    tree.talents.forEach((talent, digitIndex) => {
-      const rank = ranks[digitIndex] ?? 0;
-      if (rank > 0) rankById.set(talent.id, rank);
-    });
-  });
-
-  const toById = new Map();
+  const slotByName = new Map();
   toTrees.forEach((tree, treeIndex) => {
-    tree.talents.forEach((talent, digitIndex) => {
-      toById.set(talent.id, { treeIndex, digitIndex, maxRank: talent.max_rank });
+    tree.talents.forEach((talent, index) => {
+      slotByName.set(`${tree.name}/${talent.name}`, { treeIndex, index, maxRank: talent.max_rank });
     });
   });
 
-  const newTreeRanks = toTrees.map((tree) => new Array(tree.talents.length).fill(0));
-  const dropped = [];
-  for (const [id, rank] of rankById) {
-    const target = toById.get(id);
-    if (!target) {
-      const name = fromTrees.flatMap((t) => t.talents).find((t) => t.id === id)?.name ?? `#${id}`;
-      dropped.push({ id, name });
+  const toRanks = toTrees.map((tree) => new Array(tree.talents.length).fill(0));
+  for (const [name, rank] of rankedByName(fromTrees, fromRanks)) {
+    const slot = slotByName.get(name);
+    if (!slot) {
+      problems.push(`${name} (${rank} point${rank === 1 ? '' : 's'}) is not in the ${toBuild} tree`);
       continue;
     }
-    newTreeRanks[target.treeIndex][target.digitIndex] = Math.min(rank, target.maxRank);
+    if (rank > slot.maxRank) {
+      problems.push(`${name} has ${slot.maxRank} rank${slot.maxRank === 1 ? '' : 's'} in ${toBuild}, the guide spends ${rank}`);
+    }
+    toRanks[slot.treeIndex][slot.index] = Math.min(rank, slot.maxRank);
   }
 
-  const newTreeField = newTreeRanks.map(encodeTree).join('/');
-  const newCode = `FS1:${toBuild}:${classSlug}:${raceSlug}:${newTreeField}:${gearTail}`;
+  for (const issue of legalityIssues(toTrees, toRanks)) problems.push(issue);
+  const after = pointsPerTree(toTrees, toRanks);
+  const total = after.reduce((sum, tree) => sum + tree.points, 0);
+  if (total !== TOTAL_POINTS) problems.push(`spends ${total} points, not ${TOTAL_POINTS}`);
 
+  const newTreeField = toRanks.map(encodeTree).join('/');
   return {
-    newCode,
-    mode: 'id-remap',
-    before: pointsPerTree(fromTrees, treeRanks),
-    after: pointsPerTree(toTrees, newTreeRanks),
-    dropped,
-    staleStampWasIllegal: [],
+    newCode: `FS1:${toBuild}:${classSlug}:${raceSlug}:${newTreeField}:${gearTail}`,
+    changed: newTreeField !== treeField,
+    before: pointsPerTree(fromTrees, fromRanks),
+    after,
+    problems,
   };
 }
 
@@ -255,11 +237,35 @@ function findGuides() {
   return guides.sort((a, b) => a.id.localeCompare(b.id));
 }
 
+function describe(result) {
+  const lines = [];
+  for (let i = 0; i < result.before.length; i++) {
+    const before = result.before[i];
+    const after = result.after[i];
+    const changed = before.points !== after.points ? '  <-- changed' : '';
+    lines.push(`  ${before.name.padEnd(12)} ${before.points} -> ${after.points}${changed}`);
+  }
+  return lines.join('\n');
+}
+
 function main() {
   const guides = findGuides();
-  const report = [];
-  for (const guide of guides) {
-    const result = remapCode(guide.oldCode, ACTIVE_BUILD);
+  const results = guides.map((guide) => ({ guide, result: carryCode(guide.oldCode, ACTIVE_BUILD) }));
+
+  const failed = results.filter(({ result }) => result.problems.length > 0);
+  if (failed.length > 0) {
+    console.error(`${failed.length} guide build(s) do not carry cleanly onto ${ACTIVE_BUILD}; nothing written.`);
+    console.error('Resolve each by hand in the guide (code and prose), then rerun.\n');
+    for (const { guide, result } of failed) {
+      console.error(`${guide.id}`);
+      console.error(describe(result));
+      for (const problem of result.problems) console.error(`  ! ${problem}`);
+      console.error('');
+    }
+    process.exit(1);
+  }
+
+  for (const { guide, result } of results) {
     const raw = readFileSync(guide.path, 'utf8'); // re-read: a guide has up to two codes
     const line = new RegExp(`^${guide.key}: '[^']*'$`, 'm');
     const newRaw = raw.replace(line, `${guide.key}: '${result.newCode}'`);
@@ -267,29 +273,12 @@ function main() {
       throw new Error(`${guide.id}: failed to rewrite ${guide.key}: line`);
     }
     writeFileSync(guide.path, newRaw);
-    report.push({ id: guide.id, ...result });
+    console.log(`\n${guide.id} (${result.changed ? 'digits moved' : 'stamp-only'})`);
+    console.log(describe(result));
   }
-
-  for (const r of report) {
-    console.log(`\n${r.id} (${r.mode})`);
-    for (let i = 0; i < r.before.length; i++) {
-      const before = r.before[i];
-      const after = r.after[i];
-      const changed = before.points !== after.points ? '  <-- changed' : '';
-      console.log(`  ${before.name.padEnd(12)} ${before.points} -> ${after.points}${changed}`);
-    }
-    if (r.dropped.length > 0) {
-      console.log(`  dropped: ${r.dropped.map((d) => `${d.name} (#${d.id})`).join(', ')}`);
-    }
-    if (r.staleStampWasIllegal.length > 0) {
-      console.log(
-        `  note: these digits would be illegal against the stale stamp's own build: ${r.staleStampWasIllegal.join('; ')}`,
-      );
-    }
-  }
-  const idRemapped = report.filter((r) => r.mode === 'id-remap').length;
+  const moved = results.filter(({ result }) => result.changed).length;
   console.log(
-    `\nRewrote ${report.length} guide(s) to build ${ACTIVE_BUILD} (${idRemapped} by id-remap, ${report.length - idRemapped} stamp-only).`,
+    `\nRewrote ${results.length} guide code(s) to build ${ACTIVE_BUILD} (${moved} with digits moved, ${results.length - moved} stamp-only).`,
   );
 }
 

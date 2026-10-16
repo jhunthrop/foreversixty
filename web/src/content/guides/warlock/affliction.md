@@ -3,8 +3,8 @@ title: Affliction Warlock in Forever
 classSlug: warlock
 spec: affliction
 role: dps
-build: 'FS1:1.60.1.70425:warlock:gnome:25522300120201351/200522/003:'
-raidBuild: 'FS1:1.60.1.70425:warlock:gnome:25520300100201351/00052/0550001:'
+build: 'FS1:1.60.1.70425:warlock:gnome:25522300130201351/200522/005:'
+raidBuild: 'FS1:1.60.1.70425:warlock:gnome:25520300130201351/00052/0550001:'
 recommendedRaces: [gnome, troll]
 statPriority: [Spell power, Shadow power, Intellect, Hit, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Affliction Warlock in Forever, and what is confirmed versus projected from the beta.'
@@ -44,7 +44,7 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Shadow Mastery** — up to 5% more Shadow damage and life drained at rank 5.
 - **Wrack** — the capstone: a DoT that also boosts your other Shadow DoTs on the same target by 10% while it's active.
 
-This build spends 37 points in Affliction to reach Wrack at the bottom, 11 in Demonology and 3 in Destruction. Two things changed from the first draft. Improved Drains and Soul Siphon, three points each, join the Affliction side: Soul Siphon was the single largest unspent gain the talent search found, and Improved Drains was next. Three points of Bane in Destruction shorten the Shadow Bolt cast that fills most globals. They came out of Demonic Embrace, Improved Imp and one point of Pandemic, whose effects (pet stamina, pet imp fire damage, and the extra crit bonus) the simulator measures at zero for a solo caster. Together the swap was worth about +14% in the search run, and about +11% on the level-60 row of the rotation ladder.
+This build spends 35 points in Affliction to reach Wrack at the bottom, 11 in Demonology and 5 in Destruction. The current client replaced Malediction with **Grim Reach**, a two-rank range talent taken as the tier's filler, and the three points Malediction no longer holds go to the third rank of Pandemic and two more ranks of Bane. Two things changed from the first draft. Improved Drains and Soul Siphon, three points each, join the Affliction side: Soul Siphon was the single largest unspent gain the talent search found, and Improved Drains was next. Three points of Bane in Destruction shorten the Shadow Bolt cast that fills most globals. They came out of Demonic Embrace, Improved Imp and one point of Pandemic, whose effects (pet stamina, pet imp fire damage, and the extra crit bonus) the simulator measures at zero for a solo caster. Together the swap was worth about +14% in the search run, and about +11% on the level-60 row of the rotation ladder.
 
 What the build deliberately keeps is everything the simulator cannot see: Soul Harvest, Improved Health Funnel, Demonic Aegis and Improved Voidwalker stay in Demonology, since their value is unmeasured rather than measured as zero. Improved Life Tap, Amplify Curse, Siphon Life and Nightfall are untouched, so every ability the rotation casts is still available. A deeper Affliction spec with more Destruction points scored higher in the search, but it drops those unmeasured talents, so it is not the recommendation here. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
 

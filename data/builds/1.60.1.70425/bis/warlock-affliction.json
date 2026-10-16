@@ -2331,8 +2331,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "25552200000000000-0000000000000000000-0000000000000000",
-      "talent_points": 21,
+      "talents": "25502200000000000-0000000000000000000-0000000000000000",
+      "talent_points": 16,
       "weights": [
         {
           "stat": "spell_power",
@@ -3209,8 +3209,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "troll",
-      "talents": "25552200000000000-0000000000000000000-0000000000000000",
-      "talent_points": 21,
+      "talents": "25502200000000000-0000000000000000000-0000000000000000",
+      "talent_points": 16,
       "weights": [
         {
           "stat": "spell_power",
@@ -4086,8 +4086,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "25552300120201201-0000000000000000000-0000000000000000",
-      "talent_points": 31,
+      "talents": "25502300120201201-0000000000000000000-0000000000000000",
+      "talent_points": 26,
       "weights": [
         {
           "stat": "spell_power",
@@ -5008,8 +5008,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "troll",
-      "talents": "25552300120201201-0000000000000000000-0000000000000000",
-      "talent_points": 31,
+      "talents": "25502300120201201-0000000000000000000-0000000000000000",
+      "talent_points": 26,
       "weights": [
         {
           "stat": "spell_power",
@@ -5911,8 +5911,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "25552300120201351-2002000000000000000-0000000000000000",
-      "talent_points": 41,
+      "talents": "25502300120201351-2002000000000000000-0000000000000000",
+      "talent_points": 36,
       "weights": [
         {
           "stat": "spell_power",
@@ -6823,8 +6823,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "troll",
-      "talents": "25552300120201351-2002000000000000000-0000000000000000",
-      "talent_points": 41,
+      "talents": "25502300120201351-2002000000000000000-0000000000000000",
+      "talent_points": 36,
       "weights": [
         {
           "stat": "spell_power",
@@ -7747,8 +7747,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "25552300120201351-2005220000000000000-0030000000000000",
-      "talent_points": 51,
+      "talents": "25502300120201351-2005220000000000000-0030000000000000",
+      "talent_points": 46,
       "weights": [
         {
           "stat": "spell_power",
@@ -8704,8 +8704,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "troll",
-      "talents": "25552300120201351-2005220000000000000-0030000000000000",
-      "talent_points": 51,
+      "talents": "25502300120201351-2005220000000000000-0030000000000000",
+      "talent_points": 46,
       "weights": [
         {
           "stat": "spell_power",
@@ -9657,8 +9657,8 @@
       "preset": "raid",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "25550300100201351-0005200000000000000-0550001000000000",
-      "talent_points": 51,
+      "talents": "25500300100201351-0005200000000000000-0550001000000000",
+      "talent_points": 46,
       "weights": [
         {
           "stat": "spell_power",
@@ -10607,8 +10607,8 @@
       "preset": "raid",
       "faction": "horde",
       "race": "troll",
-      "talents": "25550300100201351-0005200000000000000-0550001000000000",
-      "talent_points": 51,
+      "talents": "25500300100201351-0005200000000000000-0550001000000000",
+      "talent_points": 46,
       "weights": [
         {
           "stat": "spell_power",

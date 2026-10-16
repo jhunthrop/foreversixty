@@ -148,6 +148,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 8725)
 - Backstab (spell 8721)
+- Death Mark (spell 1316709)
 - Garrote (spell 8633)
 - Gouge (spell 8629)
 - Kick (spell 1767)
@@ -159,6 +160,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 11268)
 - Backstab (spell 11279)
+- Death Mark (spell 1325756)
 - Garrote (spell 11289)
 - Gouge (spell 11285)
 - Kick (spell 1768)
@@ -170,6 +172,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Ambush (spell 11269)
 - Backstab (spell 11281)
+- Death Mark (spell 1325758)
 - Garrote (spell 11290)
 - Gouge (spell 11286)
 - Kick (spell 1769)

@@ -93,13 +93,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-1000000000000000000 | main_hand:263937 ranged:263430 | 7.7 | 2 | spell:5019=71.6, spell:205=36.8 | - |
-| 20 | 000000000000000000-00000000000000000-2531000000000000000 | main_hand:890 ranged:5243 | 18.4 | 2 | spell:5019=68.6, spell:7322=30.5 | {SpellID: 1312002}, {SpellID: 400669} |
-| 30 | 000000000000000000-00000000000000000-2535101301000000000 | main_hand:273040 ranged:5213 | 25.7 | 2 | spell:5019=105.9, spell:400640=49.8, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 400669} |
-| 38 | 000000000000000000-00000000000000000-2535101301000300230 | main_hand:7714 ranged:13064 | 53.4 | 3 | spell:5019=71.1, spell:8408=25.8, spell:1240044=4.2, other:mana_gain=2.0, item:5513=1.0 | - |
-| 40 | 000000000000000000-00000000000000000-2535101301000300250 | main_hand:7714 ranged:5216 | 54.3 | 3 | spell:5019=75.5, spell:8408=25.9, spell:1240044=4.3, other:mana_gain=2.0, item:5513=1.0 | - |
-| 50 | 203005000000000000-00000000000000000-2535101301000300250 | main_hand:9527 ranged:249232 | 117.0 | 3 | spell:5019=39.7, spell:10180=38.5, spell:1240046=5.6, other:mana_gain=2.0, item:5514=1.0 | - |
-| 60 | 203005000000000000-11302300000000000-2535101301000300250 | main_hand:22589 ranged:22821 | 210.0 | 3 | spell:5019=47.1, spell:10181=41.7, spell:1240047=6.2, other:mana_gain=2.0, item:5514=1.0 | - |
+| 10 | 0000000000000000000-00000000000000000-1000000000000000000 | main_hand:263937 ranged:263430 | 7.7 | 2 | spell:5019=71.6, spell:205=36.8 | - |
+| 20 | 0000000000000000000-00000000000000000-2531000000000000000 | main_hand:890 ranged:5243 | 18.4 | 2 | spell:5019=68.6, spell:7322=30.5 | {SpellID: 1312002}, {SpellID: 400669} |
+| 30 | 0000000000000000000-00000000000000000-2535101301000000000 | main_hand:273040 ranged:5213 | 25.7 | 2 | spell:5019=105.9, spell:400640=49.8, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 400669} |
+| 38 | 0000000000000000000-00000000000000000-2535101301000300230 | main_hand:7714 ranged:13064 | 50.8 | 3 | spell:5019=71.1, spell:8408=25.8, spell:1240044=4.2, other:mana_gain=2.0, item:5513=1.0 | - |
+| 40 | 0000000000000000000-00000000000000000-2535101301000300250 | main_hand:7714 ranged:5216 | 50.4 | 3 | spell:5019=75.5, spell:8408=25.9, spell:1240044=4.3, other:mana_gain=2.0, item:5513=1.0 | - |
+| 50 | 2030005000000000000-00000000000000000-2535101301000300250 | main_hand:9527 ranged:249232 | 106.4 | 3 | spell:5019=39.7, spell:10180=38.5, spell:1240046=5.6, other:mana_gain=2.0, item:5514=1.0 | - |
+| 60 | 2030005000000000000-11302300000000000-2535101301000300250 | main_hand:22589 ranged:22821 | 191.5 | 3 | spell:5019=47.1, spell:10181=41.7, spell:1240047=6.2, other:mana_gain=2.0, item:5514=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -130,6 +130,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Blast (spell 1239696)
 - Arcane Explosion (spell 8438)
 - Arcane Missile (spell 7268)
+- Arcane Wrath (spell 1326079)
 - Blast Wave (spell 11113)
 - Blizzard (spell 6141)
 - Chill (spell 1308651)
@@ -137,6 +138,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Fire Blast (spell 8412)
 - Fireball (spell 8401)
 - Flamestrike (spell 2121)
+- Frost Blast (spell 1326053)
 - Frost Nova (spell 865)
 - Frostbolt (spell 8406)
 - Pyroblast (spell 12522)
@@ -147,6 +149,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Blast (spell 1239696)
 - Arcane Explosion (spell 8439)
 - Arcane Missile (spell 7268)
+- Arcane Wrath (spell 1326080)
 - Blast Wave (spell 13018)
 - Blizzard (spell 8427)
 - Chill (spell 1308651)
@@ -154,6 +157,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Fire Blast (spell 8413)
 - Fireball (spell 8402)
 - Flamestrike (spell 8422)
+- Frost Blast (spell 1326054)
 - Frost Nova (spell 865)
 - Pyroblast (spell 12523)
 - Scorch (spell 8445)
@@ -163,6 +167,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Blast (spell 1239696)
 - Arcane Explosion (spell 8439)
 - Arcane Missile (spell 7268)
+- Arcane Wrath (spell 1326080)
 - Blast Wave (spell 13018)
 - Blizzard (spell 8427)
 - Chill (spell 1308651)
@@ -170,6 +175,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Fire Blast (spell 8413)
 - Fireball (spell 8402)
 - Flamestrike (spell 8423)
+- Frost Blast (spell 1326054)
 - Frost Nova (spell 6131)
 - Frostfire Bolt (spell 401502)
 - Pyroblast (spell 12523)
@@ -180,6 +186,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Blast (spell 1239699)
 - Arcane Explosion (spell 10201)
 - Arcane Missile (spell 7268)
+- Arcane Wrath (spell 1326081)
 - Blast Wave (spell 13019)
 - Blizzard (spell 10185)
 - Chill (spell 1308651)
@@ -187,6 +194,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Fire Blast (spell 10197)
 - Fireball (spell 10149)
 - Flamestrike (spell 10215)
+- Frost Blast (spell 1326055)
 - Frost Nova (spell 6131)
 - Frostfire Bolt (spell 1237312)
 - Pyroblast (spell 12525)
@@ -197,6 +205,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Blast (spell 1239700)
 - Arcane Explosion (spell 10202)
 - Arcane Missile (spell 7268)
+- Arcane Wrath (spell 1326082)
 - Blast Wave (spell 13021)
 - Blizzard (spell 10187)
 - Chill (spell 1308651)
@@ -205,6 +214,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Fire Blast (spell 10199)
 - Fireball (spell 10151)
 - Flamestrike (spell 10216)
+- Frost Blast (spell 1326055)
 - Frost Nova (spell 10230)
 - Frostfire Bolt (spell 1237313)
 - Pyroblast (spell 18809)

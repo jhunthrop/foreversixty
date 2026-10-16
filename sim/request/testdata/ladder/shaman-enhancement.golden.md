@@ -96,10 +96,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 19.2 | 5 | other:attack/1=70.3, spell:3606=69.4, spell:8044=18.9, spell:3599=5.9, spell:20572=2.0 | {SpellID: 17364} |
 | 20 | 0000000000000000-254000000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 29.0 | 5 | other:attack/1=121.6, spell:6350=69.5, spell:8045=15.4, spell:6363=5.1, spell:20572=2.0 | {SpellID: 17364} |
 | 30 | 0000000000000000-255130030002000000-0000000000000000 | main_hand:6692 off_hand:4066 | 47.0 | 5 | other:attack/1=77.8, spell:6351=69.8, spell:8046=12.7, spell:6364=4.5, spell:20572=2.0 | {SpellID: 17364} |
-| 38 | 0000000000000000-255130030005102020-0000000000000000 | main_hand:868 off_hand:4652 | 61.8 | 7 | other:attack/1=91.7, spell:6351=61.2, spell:17364=15.9, spell:6364=4.0, spell:10412=2.0 | - |
-| 40 | 0000000000000000-255130030005102031-0000000000000000 | main_hand:2164 off_hand:4652 | 67.1 | 9 | other:attack/1=112.6, spell:6352=54.3, spell:17364=16.5, spell:18107=4.5, spell:6365=3.2 | - |
-| 50 | 3230000000000000-255130030005102051-0000000000000000 | main_hand:810 off_hand:10195 | 84.2 | 8 | other:attack/1=96.7, spell:10435=40.0, spell:17364=19.2, spell:10413=2.0, spell:10437=2.0 | - |
-| 60 | 3230300000000000-255130030005102051-0520000000000000 | main_hand:22802 off_hand:22819 | 132.8 | 8 | other:attack/1=114.3, spell:10436=69.8, spell:17364=22.4, spell:10438=3.4, spell:10414=3.0 | - |
+| 38 | 0000000000000000-255130030005102020-0000000000000000 | main_hand:868 off_hand:4652 | 65.4 | 7 | other:attack/1=91.9, spell:6351=63.0, spell:17364=22.6, spell:6364=4.0, spell:10412=2.0 | - |
+| 40 | 0000000000000000-255130030005102031-0000000000000000 | main_hand:2164 off_hand:4652 | 71.8 | 9 | other:attack/1=112.9, spell:6352=65.4, spell:17364=21.7, spell:18107=4.8, spell:6365=3.7 | - |
+| 50 | 3200300000000000-255130030005102051-0000000000000000 | main_hand:810 off_hand:10195 | 89.1 | 8 | other:attack/1=96.7, spell:10435=59.7, spell:17364=21.0, spell:10437=3.0, spell:10413=2.0 | - |
+| 60 | 3200330000000000-255130030005102051-0520000000000000 | main_hand:22802 off_hand:22819 | 140.6 | 8 | other:attack/1=114.5, spell:10436=68.9, spell:17364=23.0, spell:10438=3.4, spell:10414=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -126,6 +126,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8056)
 - Frostbrand Attack (spell 8037)
+- Lava Burst (spell 408490)
 - Lightning Bolt (spell 943)
 - Stormstrike (spell 410156)
 
@@ -136,6 +137,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
+- Lava Burst (spell 408490)
 - Lightning Bolt (spell 10391)
 - Stormstrike (spell 410156)
 
@@ -146,7 +148,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
-- Lava Burst (spell 408490)
+- Lava Burst (spell 1238299)
 - Lightning Bolt (spell 10391)
 - Stormstrike (spell 410156)
 
@@ -157,7 +159,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10472)
 - Frostbrand Attack (spell 16352)
-- Lava Burst (spell 1238299)
+- Lava Burst (spell 1238300)
 - Lightning Bolt (spell 15207)
 - Stormstrike (spell 410156)
 
@@ -168,7 +170,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10473)
 - Frostbrand Attack (spell 16353)
-- Lava Burst (spell 1238300)
+- Lava Burst (spell 1326047)
 - Lightning Bolt (spell 15208)
 - Stormstrike (spell 410156)
 

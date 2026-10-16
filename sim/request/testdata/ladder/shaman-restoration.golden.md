@@ -93,13 +93,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-000000000000000000-1000000000000000 | main_hand:263937 | 0.0 | 1 | spell:20572=3.0 | {SpellID: 16188}, {SpellID: 25357}, {SpellID: 408510} |
-| 20 | 0000000000000000-000000000000000000-5032100000000000 | main_hand:890 | 16.3 | 3 | spell:8004=30.8, spell:20572=3.0, spell:5394=1.4 | {SpellID: 16188}, {SpellID: 25357}, {SpellID: 408510} |
-| 30 | 0000000000000000-000000000000000000-5032503300000000 | main_hand:9604 | 23.3 | 3 | spell:8008=29.6, spell:20572=3.0, spell:6375=1.4 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 25357}, {SpellID: 408510} |
-| 38 | 0000000000000000-000000000000000000-5032503315200000 | main_hand:9604 | 30.0 | 4 | spell:8010=27.5, other:mana_gain=3.1, spell:20572=3.0, spell:6375=1.7, spell:408510=1.7 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 25357} |
-| 40 | 0000000000000000-000000000000000000-5032503315400000 | main_hand:7723 | 31.8 | 5 | spell:8010=28.6, other:mana_gain=3.2, spell:20572=3.0, spell:408510=1.8, spell:6377=1.6 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 25357}, {SpellID: 408521} |
-| 50 | 0000000000000000-000000000000000000-5032503315513131 | main_hand:812 | 56.4 | 8 | spell:10466=29.2, other:mana_gain=7.6, spell:20572=3.0, spell:10462=2.0, spell:16188=2.0 | {SpellID: 25357} |
-| 60 | 5300000000000000-000000000000000000-5032503315513151 | main_hand:19355 | 105.0 | 9 | spell:10468=12.2, other:mana_gain=6.6, spell:25357=5.5, spell:1239243=3.1, spell:20572=3.0 | - |
+| 10 | 0000000000000000-000000000000000000-1000000000000000 | main_hand:263937 | 0.0 | 1 | spell:20572=3.0 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 25357}, {SpellID: 408510} |
+| 20 | 0000000000000000-000000000000000000-5510000000000000 | main_hand:890 | 14.7 | 3 | spell:8004=27.8, spell:20572=3.0, spell:5394=1.2 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 25357}, {SpellID: 408510} |
+| 30 | 0000000000000000-000000000000000000-5532003300000000 | main_hand:9604 | 23.3 | 3 | spell:8008=29.6, spell:20572=3.0, spell:6375=1.4 | {SpellID: 16188}, {SpellID: 16190}, {SpellID: 25357}, {SpellID: 408510} |
+| 38 | 0000000000000000-000000000000000000-5532003315200000 | main_hand:9604 | 30.0 | 4 | spell:8010=27.5, other:mana_gain=3.1, spell:20572=3.0, spell:6375=1.7, spell:408510=1.7 | {SpellID: 16188}, {SpellID: 17354}, {SpellID: 25357} |
+| 40 | 0000000000000000-000000000000000000-5532003315400000 | main_hand:7723 | 31.8 | 5 | spell:8010=28.6, other:mana_gain=3.2, spell:20572=3.0, spell:408510=1.8, spell:6377=1.6 | {SpellID: 16188}, {SpellID: 17354}, {SpellID: 25357}, {SpellID: 408521} |
+| 50 | 0000000000000000-000000000000000000-5532003315513131 | main_hand:812 | 56.4 | 8 | spell:10466=29.2, other:mana_gain=7.6, spell:20572=3.0, spell:10462=2.0, spell:16188=2.0 | {SpellID: 25357} |
+| 60 | 5300000000000000-000000000000000000-5532003315513151 | main_hand:19355 | 99.6 | 9 | spell:10468=12.4, other:mana_gain=6.4, spell:25357=4.7, spell:1239243=3.2, spell:20572=3.0 | - |
 
 ## Learned but unused (informational)
 
@@ -132,6 +132,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8056)
 - Frostbrand Attack (spell 8037)
+- Lava Burst (spell 408490)
 - Lightning Bolt (spell 943)
 - Stormstrike (spell 410156)
 
@@ -144,6 +145,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
+- Lava Burst (spell 408490)
 - Lightning Bolt (spell 10391)
 - Stormstrike (spell 410156)
 
@@ -156,7 +158,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
-- Lava Burst (spell 408490)
+- Lava Burst (spell 1238299)
 - Lightning Bolt (spell 10391)
 - Stormstrike (spell 410156)
 
@@ -169,7 +171,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10472)
 - Frostbrand Attack (spell 16352)
-- Lava Burst (spell 1238299)
+- Lava Burst (spell 1238300)
 - Lightning Bolt (spell 15207)
 - Stormstrike (spell 410156)
 
@@ -182,7 +184,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10473)
 - Frostbrand Attack (spell 16353)
-- Lava Burst (spell 1238300)
+- Lava Burst (spell 1326047)
 - Lightning Bolt (spell 15208)
 - Stormstrike (spell 410156)
 
@@ -194,3 +196,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - shaman-restoration level=38 kind=unresolved_id action={SpellID: 25357}
 - shaman-restoration level=40 kind=unresolved_id action={SpellID: 25357}
 - shaman-restoration level=50 kind=unresolved_id action={SpellID: 25357}
+- shaman-restoration level=60 kind=zero_casts spell="Mana Tide Totem" id=1325256 authored=17359
