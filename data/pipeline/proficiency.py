@@ -237,9 +237,7 @@ def _derive_weapon_subclasses_from_client(raw: Path) -> dict[int, frozenset[int]
             skill_id = int(row["SkillLine"])
             if skill_id not in _WEAPON_SKILL_LINE_NAME:
                 continue
-            skill_class_mask[skill_id] = skill_class_mask.get(skill_id, 0) | int(
-                row["ClassMask"]
-            )
+            skill_class_mask[skill_id] = skill_class_mask.get(skill_id, 0) | int(row["ClassMask"])
 
     derived: dict[int, set[int]] = {class_id: set() for class_id in CLASS_MASK_BIT}
     for subclass_id, skill_id in _WEAPON_SKILL_LINE.items():

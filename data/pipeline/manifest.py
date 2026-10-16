@@ -91,7 +91,5 @@ def newest_build(root: Path = Path("builds")) -> str:
         if fetched_at:
             candidates.append((fetched_at, manifest["build"]))
     if not candidates:
-        raise SystemExit(
-            f"no fetched build under {root}; run `python -m pipeline fetch` first"
-        )
+        raise SystemExit(f"no fetched build under {root}; run `python -m pipeline fetch` first")
     return max(candidates)[1]

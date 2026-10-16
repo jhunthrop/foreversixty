@@ -61,9 +61,7 @@ def check_item_sparse_completeness(
     if previous_count == 0:
         return
     if allow_shrink:
-        logger.warning(
-            "ItemSparse completeness gate skipped (--allow-shrink) for %s", build_dir
-        )
+        logger.warning("ItemSparse completeness gate skipped (--allow-shrink) for %s", build_dir)
         return
     if new_count < previous_count:
         raise SystemExit(

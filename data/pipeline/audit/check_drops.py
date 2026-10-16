@@ -189,9 +189,7 @@ def _resolve_chest_loot(
     return dump.gameobject_chest_loot[best_entry] if best_entry is not None else None
 
 
-def _creature_records(
-    classic_sources: dict[int, list], item_id: int, npc_id: int
-) -> list:
+def _creature_records(classic_sources: dict[int, list], item_id: int, npc_id: int) -> list:
     return [
         r
         for r in classic_sources.get(item_id, [])
@@ -295,8 +293,7 @@ def _trash(ctx: AuditContext, source: dict, result: CategoryResult) -> None:
                 severity,
                 item_id,
                 f"trash item {item_id} in {source['id']} has no creature/object drop record "
-                "in classic-db at all"
-                + (" (Forever-new item id)" if severity == "minor" else ""),
+                "in classic-db at all" + (" (Forever-new item id)" if severity == "minor" else ""),
             )
 
 

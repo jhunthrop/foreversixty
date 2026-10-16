@@ -70,9 +70,7 @@ def check(ctx: AuditContext) -> CategoryResult:
         result.checked += 1
         apl_path = ctx.apl_dir / f"{spec.spec}.json"
         if not apl_path.exists():
-            result.add(
-                "major", spec.spec, f"no apl file for spec {spec.spec} at {apl_path}"
-            )
+            result.add("major", spec.spec, f"no apl file for spec {spec.spec} at {apl_path}")
 
     simitems = ctx.simitems
     if simitems is None:
