@@ -41,9 +41,7 @@ def check(ctx: AuditContext) -> CategoryResult:
                 "addon-data.json has drifted from build_addon_data's regenerated output",
             )
     except (AddonDataError, AddonBisError, AddonRotationError) as error:
-        result.add(
-            "blocker", ctx.build, f"addon-data.json could not even be regenerated: {error}"
-        )
+        result.add("blocker", ctx.build, f"addon-data.json could not even be regenerated: {error}")
         return result
 
     result.checked += 1

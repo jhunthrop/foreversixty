@@ -196,9 +196,7 @@ export const SPEC_BY_KEY: Readonly<Record<string, Spec>> = Object.fromEntries(
 """
 
 
-def _rendered(
-    curated_dir: Path, go_path: Path, ts_path: Path
-) -> tuple[tuple[Path, str], ...]:
+def _rendered(curated_dir: Path, go_path: Path, ts_path: Path) -> tuple[tuple[Path, str], ...]:
     specs = load_specs(curated_dir)
     return ((go_path, render_go(specs)), (ts_path, render_ts(specs)))
 

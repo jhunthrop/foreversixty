@@ -65,11 +65,17 @@ jobs:
           FOUND_PRODUCT: ${{ steps.check.outputs.newest_product }}
           ACTIVE: ${{ steps.check.outputs.active }}
           UNMATCHED: ${{ steps.check.outputs.unmatched_newer }}
+          BLIZZARD_BUILD: ${{ steps.check.outputs.blizzard_build }}
+          BLIZZARD_PRODUCT: ${{ steps.check.outputs.blizzard_product }}
+          WAGO_BEHIND: ${{ steps.check.outputs.wago_behind }}
           ASK_BUILD: ${{ inputs.build }}
           ASK_PRODUCT: ${{ inputs.product }}
         run: |
           if [ "$UNMATCHED" != "[]" ] && [ -n "$UNMATCHED" ]; then
             echo "::warning title=unclaimed newer client builds::wago.tools lists builds newer than $ACTIVE that curated/client.json neither claims nor ignores: $UNMATCHED -- if one is Forever, add its product to client.json"
+          fi
+          if [ "$WAGO_BEHIND" = true ]; then
+            echo "::warning title=Blizzard shipped a client wago.tools has not exported::Blizzard serves $BLIZZARD_BUILD on $BLIZZARD_PRODUCT; wago.tools' newest Forever export is ${FOUND_BUILD:-none}. The move waits for the export (the fetch reads wago's tables); nothing to do but check again tomorrow."
           fi
           build="$FOUND_BUILD"; product="$FOUND_PRODUCT"; newer="$NEWER"
           if [ -n "$ASK_BUILD" ]; then

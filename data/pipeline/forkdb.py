@@ -173,8 +173,7 @@ def load_fork_database(engine_dir: Path) -> ForkDatabase:
     path = engine_dir / DB_RELATIVE
     if not path.exists():
         raise ForkDbError(
-            f"no fork item database at {path}; point --engine at a "
-            f"wowsims-forever checkout"
+            f"no fork item database at {path}; point --engine at a wowsims-forever checkout"
         )
     raw = json.loads(path.read_text(encoding="utf-8"))
     missing = sorted({"items", "enchants", "randomSuffixes", "zones", "npcs"} - set(raw))

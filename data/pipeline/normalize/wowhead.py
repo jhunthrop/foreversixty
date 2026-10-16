@@ -124,9 +124,7 @@ def merge_sets(sets: list[ItemSetRecord], picked: list[WowheadItem]) -> list[Ite
             merged.append(record)
             continue
         joined += len(new_ids)
-        merged.append(
-            record.model_copy(update={"item_ids": sorted({*record.item_ids, *new_ids})})
-        )
+        merged.append(record.model_copy(update={"item_ids": sorted({*record.item_ids, *new_ids})}))
     logger.info("wowhead: merged %d supplement items into existing sets", joined)
     if skipped:
         logger.info(

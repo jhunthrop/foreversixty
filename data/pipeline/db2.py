@@ -298,8 +298,7 @@ def read_sparse_rows(
         )
     if header.total_field_count != len(schema):
         raise Db2Error(
-            f"{path} has {header.total_field_count} fields, but `schema` has "
-            f"{len(schema)} columns"
+            f"{path} has {header.total_field_count} fields, but `schema` has {len(schema)} columns"
         )
 
     rows: dict[int, dict[str, object]] = {}
@@ -320,9 +319,7 @@ def read_sparse_rows(
             for i in range(entry_count)
         ]
         ids_offset = (
-            entries_offset
-            + entry_count * _OFFSET_MAP_ENTRY_SIZE
-            + section.relationship_data_size
+            entries_offset + entry_count * _OFFSET_MAP_ENTRY_SIZE + section.relationship_data_size
         )
         ids = struct.unpack_from(f"<{entry_count}I", data, ids_offset)
         for row_id, (record_offset, record_size) in zip(ids, entries, strict=True):

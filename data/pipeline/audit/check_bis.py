@@ -125,9 +125,7 @@ def _class_excludes_every_quest(loot: dict, item_id: int, class_slug: str) -> bo
     quests = loot.get("quests", {}).get(str(item_id))
     if not quests:
         return False
-    return all(
-        q.get("classes") is not None and class_slug not in q["classes"] for q in quests
-    )
+    return all(q.get("classes") is not None and class_slug not in q["classes"] for q in quests)
 
 
 def _quest_floor(loot: dict, item_id: int, faction: str) -> int | None:

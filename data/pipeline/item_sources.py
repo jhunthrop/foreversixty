@@ -92,7 +92,9 @@ def load_item_sources(build_dir: Path) -> dict[int, ItemSourceEntry]:
         )
         return {}
     document = json.loads(path.read_text(encoding="utf-8"))
-    return {int(item_id): ItemSourceEntry(**fields) for item_id, fields in document["items"].items()}  # noqa: E501
+    return {
+        int(item_id): ItemSourceEntry(**fields) for item_id, fields in document["items"].items()
+    }  # noqa: E501
 
 
 def _write(build_dir: Path, entries: dict[int, ItemSourceEntry]) -> Path:

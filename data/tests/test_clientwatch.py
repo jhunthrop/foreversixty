@@ -12,7 +12,9 @@ from pipeline.clientwatch import (
     is_forever,
     load_config,
     newer_than,
+    newest_blizzard,
     newest_forever,
+    parse_blizzard_versions,
     read_active_build,
     report,
 )
@@ -120,3 +122,45 @@ def test_read_active_build_fails_fast_on_an_empty_file(tmp_path: Path):
     path.write_text(json.dumps({"build": ""}))
     with pytest.raises(ClientWatchError):
         read_active_build(path)
+
+
+#: us.version.battle.net/wow_classic_beta/versions on 2026-10-16, two regions kept.
+BLIZZARD_VERSIONS = (
+    "Region!STRING:0|BuildConfig!HEX:16|CDNConfig!HEX:16|KeyRing!HEX:16|BuildId!DEC:4"
+    "|VersionsName!String:0|ProductConfig!HEX:16\n"
+    "## seqn = 4081170\n"
+    "us|ea9c525eef74f1d682c00a8ef39a5d2b|fcab7fec2ccc6b8158b56b6938ec4551||70425|1.60.1.70425|fc\n"
+    "eu|ea9c525eef74f1d682c00a8ef39a5d2b|fcab7fec2ccc6b8158b56b6938ec4551||70425|1.60.1.70425|fc\n"
+)
+
+
+def test_blizzards_versions_file_parses_to_the_us_rows_build():
+    assert parse_blizzard_versions("wow_classic_beta", BLIZZARD_VERSIONS) == Build(
+        "wow_classic_beta", "1.60.1.70425", ""
+    )
+    assert parse_blizzard_versions("wowf", "Region!STRING:0\n## seqn = 1\n") is None
+    assert parse_blizzard_versions("wowf", "") is None
+
+
+def test_blizzard_ahead_of_wago_is_reported_as_wago_behind_and_never_activated():
+    """2026-10-16: Blizzard served 70425 while wago.tools' newest export was 70374."""
+    result = check(
+        BUILDS, "1.60.1.70374", CONFIG, blizzard_versions={"wow_classic_beta": BLIZZARD_VERSIONS}
+    )
+    assert result.blizzard == Build("wow_classic_beta", "1.60.1.70425", "")
+    assert result.wago_behind
+    assert not result.newer
+    out = report(result)
+    assert out["blizzard_build"] == "1.60.1.70425" and out["wago_behind"] is True
+
+
+def test_newest_blizzard_takes_the_highest_version_across_products():
+    older = BLIZZARD_VERSIONS.replace("1.60.1.70425", "1.60.1.70245").replace("70425|", "70245|")
+    assert (
+        newest_blizzard({"wowf": older, "wow_classic_beta": BLIZZARD_VERSIONS}).version
+        == "1.60.1.70425"
+    )
+
+
+def test_the_committed_config_names_blizzard_products():
+    assert "wow_classic_beta" in load_config().blizzard_products

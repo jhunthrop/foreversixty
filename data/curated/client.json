@@ -1,10 +1,27 @@
 {
-  "_doc": "Which wago.tools builds are World of Warcraft: Forever. `pipeline client-check` picks the newest build whose product is listed in `products` OR whose version is 1.x at or above `min_version`, so a product key that moves (wow_classic_beta -> wow_cn_beta in October 2026) or a renumbering at launch is still found. Products in `ignore_products` are never Forever, whatever their version. A build newer than the active one that matches neither rule is reported as a warning, never activated.",
-  "products": ["wowf", "wow_cn_beta"],
-  "ignore_products": [
-    "wow", "wowt", "wow_beta", "wowxptr", "wowz", "wowlivetest",
-    "wow_anniversary", "wow_classic", "wow_classic_ptr", "wow_classic_beta",
-    "wow_classic_era", "wow_classic_era_ptr", "wow_classic_titan"
+  "_doc": "Which wago.tools builds are World of Warcraft: Forever. `pipeline client-check` picks the newest build whose product is listed in `products` OR whose version is 1.x at or above `min_version`, so a product key that moves (wow_classic_beta -> wow_cn_beta in October 2026) or a renumbering at launch is still found. Products in `ignore_products` are never Forever, whatever their version. A build newer than the active one that matches neither rule is reported as a warning, never activated. `blizzard_products` are the product codes asked at us.version.battle.net, Blizzard's own version service, which names a new client the hour it ships; wago.tools exports its tables later (a day or more), and the fetch needs those exports, so the watcher reports the gap and waits.",
+  "products": [
+    "wowf",
+    "wow_cn_beta"
   ],
-  "min_version": "1.60.0.0"
+  "ignore_products": [
+    "wow",
+    "wowt",
+    "wow_beta",
+    "wowxptr",
+    "wowz",
+    "wowlivetest",
+    "wow_anniversary",
+    "wow_classic",
+    "wow_classic_ptr",
+    "wow_classic_era",
+    "wow_classic_era_ptr",
+    "wow_classic_titan"
+  ],
+  "min_version": "1.60.0.0",
+  "blizzard_products": [
+    "wow_classic_beta",
+    "wowf",
+    "wow_cn_beta"
+  ]
 }

@@ -40,11 +40,15 @@ ACTIVE_BUILD_PATH = (
 _VERSION = re.compile(r"^\d+(\.\d+){3}$")
 
 
+BLIZZARD_VERSIONS_URL = "https://us.version.battle.net/{product}/versions"
+
+
 @dataclass(frozen=True)
 class ClientConfig:
     products: frozenset[str]
     ignore_products: frozenset[str]
     min_version: tuple[int, ...]
+    blizzard_products: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -66,10 +70,24 @@ class Check:
     active: str
     newest: Build | None
     unmatched_newer: tuple[Build, ...]
+    #: The newest client Blizzard's own version service serves for the Forever products,
+    #: or None when it was not asked. wago.tools exports a build's tables hours to days
+    #: after Blizzard ships it, and the fetch needs those exports, so this is the early
+    #: warning, not the trigger.
+    blizzard: Build | None = None
 
     @property
     def newer(self) -> bool:
         return self.newest is not None and newer_than(self.newest.version, self.active)
+
+    @property
+    def wago_behind(self) -> bool:
+        """Blizzard serves a client newer than anything wago.tools has exported."""
+        if self.blizzard is None:
+            return False
+        if self.newest is None:
+            return True
+        return newer_than(self.blizzard.version, self.newest.version)
 
 
 class ClientWatchError(Exception):
@@ -102,6 +120,7 @@ def load_config(path: Path = CONFIG_PATH) -> ClientConfig:
         products=frozenset(raw["products"]),
         ignore_products=frozenset(raw.get("ignore_products", ())),
         min_version=version_tuple(raw["min_version"]),
+        blizzard_products=tuple(raw.get("blizzard_products", ())),
     )
 
 
@@ -141,9 +160,55 @@ def newest_forever(builds: list[Build], config: ClientConfig) -> Build | None:
     return max(forever, key=lambda b: b.key) if forever else None
 
 
-def check(builds_json: dict[str, Any], active: str, config: ClientConfig) -> Check:
+def parse_blizzard_versions(product: str, text: str) -> Build | None:
+    """The `us` row's VersionsName from a Blizzard `/versions` answer.
+
+    The file is pipe-separated with a typed header line (`Region!STRING:0|...|
+    BuildId!DEC:4|VersionsName!String:0|...`) and `## seqn` comment lines.
+    """
+    lines = [ln for ln in text.splitlines() if ln and not ln.startswith("##")]
+    if not lines:
+        return None
+    columns = [col.split("!")[0] for col in lines[0].split("|")]
+    for line in lines[1:]:
+        row = dict(zip(columns, line.split("|"), strict=False))
+        if row.get("Region") == "us" and _VERSION.match(row.get("VersionsName", "")):
+            return Build(product, row["VersionsName"], "")
+    return None
+
+
+def fetch_blizzard_versions(
+    products: tuple[str, ...], client: httpx.Client | None = None
+) -> dict[str, str]:
+    """product -> the raw `/versions` text, for each product Blizzard answers for."""
+    own = client is None
+    client = client or httpx.Client(headers={"User-Agent": USER_AGENT}, timeout=30)
+    out: dict[str, str] = {}
+    try:
+        for product in products:
+            r = client.get(BLIZZARD_VERSIONS_URL.format(product=product))
+            if r.status_code == 200 and r.text.startswith("Region"):
+                out[product] = r.text
+    finally:
+        if own:
+            client.close()
+    return out
+
+
+def newest_blizzard(versions: dict[str, str]) -> Build | None:
+    builds = [b for p, t in versions.items() if (b := parse_blizzard_versions(p, t))]
+    return max(builds, key=lambda b: b.key) if builds else None
+
+
+def check(
+    builds_json: dict[str, Any],
+    active: str,
+    config: ClientConfig,
+    blizzard_versions: dict[str, str] | None = None,
+) -> Check:
     builds = all_builds(builds_json)
     newest = newest_forever(builds, config)
+    blizzard = newest_blizzard(blizzard_versions) if blizzard_versions else None
     unmatched = tuple(
         sorted(
             (
@@ -157,7 +222,7 @@ def check(builds_json: dict[str, Any], active: str, config: ClientConfig) -> Che
             reverse=True,
         )
     )
-    return Check(active=active, newest=newest, unmatched_newer=unmatched)
+    return Check(active=active, newest=newest, unmatched_newer=unmatched, blizzard=blizzard)
 
 
 def fetch_builds(client: httpx.Client | None = None) -> dict[str, Any]:
@@ -185,6 +250,9 @@ def report(result: Check) -> dict[str, Any]:
         "newest_created_at": newest.created_at if newest else "",
         "newest_interface": interface_number(newest.version) if newest else 0,
         "newer": result.newer,
+        "blizzard_build": result.blizzard.version if result.blizzard else "",
+        "blizzard_product": result.blizzard.product if result.blizzard else "",
+        "wago_behind": result.wago_behind,
         "unmatched_newer": [
             {"product": b.product, "version": b.version, "created_at": b.created_at}
             for b in result.unmatched_newer

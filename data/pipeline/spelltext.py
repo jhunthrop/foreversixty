@@ -293,7 +293,8 @@ class SpellText:
             logger.warning(
                 "spelltext: $@spelldesc%d cycles back to a spell already being "
                 "described (%s); leaving the raw token",
-                spell_id, sorted(chain),
+                spell_id,
+                sorted(chain),
             )
             return match[0]
         if spell_id not in self._spells:
@@ -390,7 +391,10 @@ def _base_points(row: dict[str, str]) -> int:
             logger.warning(
                 "spell %s effect %s: EffectBasePoints %d and EffectBasePointsF %d disagree; "
                 "using the integer column (wowhead corroborates it for spell 370100)",
-                row.get("SpellID"), row.get("EffectIndex"), int_value, float_value,
+                row.get("SpellID"),
+                row.get("EffectIndex"),
+                int_value,
+                float_value,
             )
         return int_value
     if raw is not None:

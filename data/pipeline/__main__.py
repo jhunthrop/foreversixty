@@ -282,6 +282,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--builds-json",
         help="read a saved /api/builds answer from this file instead of asking wago.tools",
     )
+    cc.add_argument(
+        "--no-blizzard",
+        action="store_true",
+        help="do not ask Blizzard's version service (us.version.battle.net) as well",
+    )
 
     rc = sub.add_parser(
         "recorder",
@@ -614,6 +619,7 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.clientwatch import (
             ClientWatchError,
             check,
+            fetch_blizzard_versions,
             fetch_builds,
             load_config,
             read_active_build,
@@ -627,7 +633,11 @@ def main(argv: list[str] | None = None) -> int:
                 else fetch_builds()
             )
             active = args.active or read_active_build()
-            out = report(check(builds, active, load_config()))
+            config = load_config()
+            blizzard = None
+            if not args.no_blizzard and not args.builds_json:
+                blizzard = fetch_blizzard_versions(config.blizzard_products)
+            out = report(check(builds, active, config, blizzard_versions=blizzard))
         except (ClientWatchError, OSError, httpx.HTTPError) as error:
             logging.getLogger("pipeline").error("client-check: %s", error)
             return 1
