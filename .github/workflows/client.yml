@@ -117,6 +117,8 @@ jobs:
       - uses: actions/checkout@v4
         with: { ref: main, fetch-depth: 0 }
       - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-go@v5
+        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: git config user.name forever-client-bot && git config user.email bot@foreversixty.gg

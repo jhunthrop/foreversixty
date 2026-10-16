@@ -116,6 +116,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Insect Swarm (spell 5570)
 - Maul (spell 6808)
 - Rip (spell 1079)
+- Shred (spell 5221)
 - Swipe (spell 779)
 
 ### Level 30

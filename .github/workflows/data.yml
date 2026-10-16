@@ -175,6 +175,10 @@ jobs:
       # wowhead payload fetch-wowhead wrote above; a build with no wowhead
       # payload still gets spellranks.json.
       - run: uv run python -m pipeline simconst --build "$BUILD"
+      # trainables reads the raw SkillLineAbility and Spell* tables fetch wrote, so it
+      # runs here while they are on disk; the engine fork's conformance fixtures are
+      # copied from its output (sim/conformance/trainables.go).
+      - run: uv run python -m pipeline trainables --build "$BUILD"
       - run: uv run python -m pipeline levels --build "$BUILD"
       - run: uv run python -m pipeline icons --build "$BUILD"
       - run: uv run python -m pipeline tree-art --build "$BUILD"

@@ -7108,8 +7108,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "25532000000000000-2332113101220001350-0040000000000000",
-      "talent_points": 51,
+      "talents": "25502000000000000-2332113101220001350-0040000000000000",
+      "talent_points": 48,
       "weights": [
         {
           "stat": "spell_power",
@@ -8069,8 +8069,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "troll",
-      "talents": "25532000000000000-2332113101220001350-0040000000000000",
-      "talent_points": 51,
+      "talents": "25502000000000000-2332113101220001350-0040000000000000",
+      "talent_points": 48,
       "weights": [
         {
           "stat": "spell_power",

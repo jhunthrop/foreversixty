@@ -3,7 +3,7 @@ title: Destruction Warlock in Forever
 classSlug: warlock
 spec: destruction
 role: dps
-build: 'FS1:1.60.1.70425:warlock:gnome:25522/0/2053225103101351:'
+build: 'FS1:1.60.1.70425:warlock:gnome:25522/0/2053235103101351:'
 raidBuild: 'FS1:1.60.1.70425:warlock:gnome:255/0005/2053045103101351:'
 recommendedRaces: [gnome, troll]
 statPriority:
@@ -44,9 +44,9 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Shadow and Flame** — up to a 10% damage buff at rank 5 from landing Conflagrate or Shadowburn, plus a chance for Conflagrate not to consume Immolate.
 - **Incinerate** — the capstone: extra Fire damage that gains a further 25% if the target is afflicted by Immolate, Destruction's signature filler.
 
-This build spends 34 points in Destruction to reach Incinerate at the bottom, with the remaining 17 in Affliction — Improved Corruption and Suppression both maxed, then Malediction, Improved Life Tap, and Soul Harvest for the rest of the budget. Against the first draft it drops three Improved Drains points (no damage in this rotation) and three Improved Shadow Bolt points, and spends them on Fire and Brimstone and Agonizing Flames. Improved Shadow Bolt is worth nothing to a solo caster here because the rotation fills with Incinerate rather than Shadow Bolt, so it is the cheapest place to find points; Shadow Bolt itself stays castable. The change was worth about +8% in the search run, and about +7% on the level-60 row of the rotation ladder. Molten Skin and Destructive Reach are kept even though the simulator cannot see them, and Conflagrate, Shadowburn and Incinerate are untouched. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
+This build spends 34 points in Destruction to reach Incinerate at the bottom, with the remaining 16 in Affliction — Improved Corruption and Suppression both maxed, then Improved Life Tap, Soul Harvest and Grim Reach (the two-rank range talent the current client put in Malediction's slot) for the rest of the budget; Malediction's third point went to a third rank of Cataclysm. Against the first draft it drops three Improved Drains points (no damage in this rotation) and three Improved Shadow Bolt points, and spends them on Fire and Brimstone and Agonizing Flames. Improved Shadow Bolt is worth nothing to a solo caster here because the rotation fills with Incinerate rather than Shadow Bolt, so it is the cheapest place to find points; Shadow Bolt itself stays castable. The change was worth about +8% in the search run, and about +7% on the level-60 row of the rotation ladder. Molten Skin and Destructive Reach are kept even though the simulator cannot see them, and Conflagrate, Shadowburn and Incinerate are untouched. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
 
-**Raid build.** For a raid the search found about +3% over the leveling build above in the raid-ready run: it moves Soul Harvest (a solo-play mana return), three Malediction and two Cataclysm, which the simulator measures at little damage, into five Unholy Power and two Aftermath. Suppression, Molten Skin, Destructive Reach and every spell the rotation casts stay.
+**Raid build.** For a raid the search found about +3% over the leveling build above in the raid-ready run: it moves Soul Harvest (a solo-play mana return), the two Grim Reach points and three Cataclysm, which the simulator measures at little damage, into five Unholy Power and two Aftermath. Suppression, Molten Skin, Destructive Reach and every spell the rotation casts stay.
 
 ## Rotation and priority
 

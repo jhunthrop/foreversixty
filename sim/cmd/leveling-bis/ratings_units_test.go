@@ -118,6 +118,10 @@ func TestConvertRatingStatsLeavesBlockValueFlat(t *testing.T) {
 
 const immovableObjectID = 19321
 
+// The shield's flat block value in the active client: 25 since 1.60.1.70425
+// moved it to item level 60 (27 before).
+const immovableObjectBlockValue = 25.0
+
 func TestTheImmovableObjectScoresBlockValueAndNoBlockChance(t *testing.T) {
 	activeBuild, err := leveling.ReadActiveBuild(publishedRepoRoot)
 	if err != nil {
@@ -136,8 +140,8 @@ func TestTheImmovableObjectScoresBlockValueAndNoBlockChance(t *testing.T) {
 		if c.ID != immovableObjectID {
 			continue
 		}
-		if c.Stats["block_value"] != 27 || c.Stats["block"] != 0 {
-			t.Fatalf("The Immovable Object scores block_value %v, block %v; want 27 and 0", c.Stats["block_value"], c.Stats["block"])
+		if c.Stats["block_value"] != immovableObjectBlockValue || c.Stats["block"] != 0 {
+			t.Fatalf("The Immovable Object scores block_value %v, block %v; want %v and 0", c.Stats["block_value"], c.Stats["block"], immovableObjectBlockValue)
 		}
 		return
 	}

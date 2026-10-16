@@ -10,7 +10,7 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5510000000000000-000000000000000000-0000000000000000",
+      "talents": "5500000100000000-000000000000000000-0000000000000000",
       "talent_points": 11,
       "weights": [
         {
@@ -786,7 +786,7 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "5510000000000000-000000000000000000-0000000000000000",
+      "talents": "5500000100000000-000000000000000000-0000000000000000",
       "talent_points": 11,
       "weights": [
         {
@@ -1571,7 +1571,7 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5530311300000000-000000000000000000-0000000000000000",
+      "talents": "5510331300000000-000000000000000000-0000000000000000",
       "talent_points": 21,
       "weights": [
         {
@@ -2391,7 +2391,7 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "5530311300000000-000000000000000000-0000000000000000",
+      "talents": "5510331300000000-000000000000000000-0000000000000000",
       "talent_points": 21,
       "weights": [
         {
@@ -3212,8 +3212,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5530311300103050-010000000000000000-0000000000000000",
-      "talent_points": 31,
+      "talents": "5510331300000350-010000000000000000-0000000000000000",
+      "talent_points": 30,
       "weights": [
         {
           "stat": "spell_power",
@@ -4078,8 +4078,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "5530311300103050-010000000000000000-0000000000000000",
-      "talent_points": 31,
+      "talents": "5510331300000350-010000000000000000-0000000000000000",
+      "talent_points": 30,
       "weights": [
         {
           "stat": "spell_power",
@@ -4934,8 +4934,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5530311300103050-030000000000000000-5300000000000000",
-      "talent_points": 41,
+      "talents": "5510331300000350-030000000000000000-5000300000000000",
+      "talent_points": 40,
       "weights": [
         {
           "stat": "spell_power",
@@ -5787,8 +5787,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "5530311300103050-030000000000000000-5300000000000000",
-      "talent_points": 41,
+      "talents": "5510331300000350-030000000000000000-5000300000000000",
+      "talent_points": 40,
       "weights": [
         {
           "stat": "spell_power",
@@ -6651,8 +6651,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5530311300103050-030000000000000000-5533020000000000",
-      "talent_points": 51,
+      "talents": "5510331300000350-030000000000000000-5033520000000000",
+      "talent_points": 50,
       "weights": [
         {
           "stat": "spell_power",
@@ -7571,8 +7571,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "orc",
-      "talents": "5530311300103050-030000000000000000-5533020000000000",
-      "talent_points": 51,
+      "talents": "5510331300000350-030000000000000000-5033520000000000",
+      "talent_points": 50,
       "weights": [
         {
           "stat": "spell_power",
@@ -8489,8 +8489,8 @@
       "preset": "raid",
       "faction": "alliance",
       "race": "dwarf",
-      "talents": "5530311300103051-020000000000000000-0533520000000000",
-      "talent_points": 51,
+      "talents": "5510331300001350-020000000000000000-0533520000000000",
+      "talent_points": 50,
       "weights": [
         {
           "stat": "spell_power",
@@ -9418,8 +9418,8 @@
       "preset": "raid",
       "faction": "horde",
       "race": "orc",
-      "talents": "5530311300103051-020000000000000000-0533520000000000",
-      "talent_points": 51,
+      "talents": "5510331300001350-020000000000000000-0533520000000000",
+      "talent_points": 50,
       "weights": [
         {
           "stat": "spell_power",

@@ -94,7 +94,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-10000000000000000000-0000000000000000 | main_hand:1933 | 8.6 | 4 | spell:5177=44.1, other:attack/1=31.3, spell:8924=5.5, spell:1259799=1.5, spell:29166=1.0 | {SpellID: 1322605}, {SpellID: 9850} |
-| 20 | 0000000000000000-55100000000000000000-0000000000000000 | bare | 51.2 | 4 | other:attack/1=182.1, spell:1082=46.4, spell:1079=8.7, spell:1259799=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 9830} |
+| 20 | 0000000000000000-55100000000000000000-0000000000000000 | bare | 51.2 | 4 | other:attack/1=182.1, spell:1082=46.4, spell:1079=8.7, spell:1259799=1.5, spell:5215=1.0 | {SpellID: 1322605}, {SpellID: 5221} |
 | 30 | 0000000000000000-55232031000000000000-0000000000000000 | bare | 73.6 | 5 | other:attack/1=182.1, spell:6800=44.4, spell:9492=8.2, spell:5217=6.6, spell:1259799=1.5 | {SpellID: 1322605} |
 | 38 | 0000000000000000-55232032121030000000-0000000000000000 | bare | 100.2 | 7 | other:attack/1=182.1, spell:8992=50.7, spell:9493=9.9, spell:1322605=8.3, spell:5217=6.6 | - |
 | 40 | 0000000000000000-55232032121032000000-0000000000000000 | bare | 102.4 | 7 | other:attack/1=182.1, spell:8992=50.1, spell:9493=10.6, spell:1322605=8.3, spell:5217=6.6 | - |
@@ -115,6 +115,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Insect Swarm (spell 5570)
 - Maul (spell 6808)
 - Moonfire (spell 8925)
+- Shred (spell 5221)
 - Starfire (spell 2912)
 - Swipe (spell 779)
 - Wrath (spell 5178)
@@ -196,6 +197,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
+- druid-feral level=20 kind=unresolved_id action={SpellID: 5221}
 - druid-feral level=38 kind=zero_casts spell="Ferocious Bite" id=22568 authored=22829
 - druid-feral level=40 kind=zero_casts spell="Ferocious Bite" id=22827 authored=22829
 - druid-feral level=50 kind=zero_casts spell="Ferocious Bite" id=22828 authored=22829

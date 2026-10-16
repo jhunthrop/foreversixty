@@ -10,7 +10,7 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "000000000000000000-00000000000000000-542000000000000000",
+      "talents": "000000000000000000-00000000000000000-54200000000000000",
       "talent_points": 11,
       "weights": [
         {
@@ -811,7 +811,7 @@
       "preset": "bare",
       "faction": "horde",
       "race": "undead",
-      "talents": "000000000000000000-00000000000000000-542000000000000000",
+      "talents": "000000000000000000-00000000000000000-54200000000000000",
       "talent_points": 11,
       "weights": [
         {
@@ -1619,8 +1619,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "000000000000000000-00000000000000000-543120301200000000",
-      "talent_points": 21,
+      "talents": "000000000000000000-00000000000000000-54332001200000000",
+      "talent_points": 20,
       "weights": [
         {
           "stat": "spell_power",
@@ -2505,8 +2505,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "undead",
-      "talents": "000000000000000000-00000000000000000-543120301200000000",
-      "talent_points": 21,
+      "talents": "000000000000000000-00000000000000000-54332001200000000",
+      "talent_points": 20,
       "weights": [
         {
           "stat": "spell_power",
@@ -3387,8 +3387,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "000000000000000000-00000000000000000-543120301201300051",
-      "talent_points": 31,
+      "talents": "000000000000000000-00000000000000000-54332001201300051",
+      "talent_points": 30,
       "weights": [
         {
           "stat": "spell_power",
@@ -4288,8 +4288,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "undead",
-      "talents": "000000000000000000-00000000000000000-543120301201300051",
-      "talent_points": 31,
+      "talents": "000000000000000000-00000000000000000-54332001201300051",
+      "talent_points": 30,
       "weights": [
         {
           "stat": "spell_power",
@@ -5195,8 +5195,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "523000000000000000-00000000000000000-543120301201300051",
-      "talent_points": 41,
+      "talents": "523000000000000000-00000000000000000-54332001201300051",
+      "talent_points": 40,
       "weights": [
         {
           "stat": "spell_power",
@@ -6092,8 +6092,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "undead",
-      "talents": "523000000000000000-00000000000000000-543120301201300051",
-      "talent_points": 41,
+      "talents": "523000000000000000-00000000000000000-54332001201300051",
+      "talent_points": 40,
       "weights": [
         {
           "stat": "spell_power",
@@ -6994,8 +6994,8 @@
       "preset": "bare",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "524011031300000000-00000000000000000-543120301201300051",
-      "talent_points": 51,
+      "talents": "524010031130000000-00000000000000000-54332001201300051",
+      "talent_points": 50,
       "weights": [
         {
           "stat": "spell_power",
@@ -7967,8 +7967,8 @@
       "preset": "bare",
       "faction": "horde",
       "race": "undead",
-      "talents": "524011031300000000-00000000000000000-543120301201300051",
-      "talent_points": 51,
+      "talents": "524010031130000000-00000000000000000-54332001201300051",
+      "talent_points": 50,
       "weights": [
         {
           "stat": "spell_power",
@@ -8938,8 +8938,8 @@
       "preset": "raid",
       "faction": "alliance",
       "race": "gnome",
-      "talents": "325001031300000000-00000000000000000-523120501201300251",
-      "talent_points": 51,
+      "talents": "325000031130000000-00000000000000000-52352001201300251",
+      "talent_points": 50,
       "weights": [
         {
           "stat": "spell_power",
@@ -9897,8 +9897,8 @@
       "preset": "raid",
       "faction": "horde",
       "race": "undead",
-      "talents": "325001031300000000-00000000000000000-523120501201300251",
-      "talent_points": 51,
+      "talents": "325000031130000000-00000000000000000-52352001201300251",
+      "talent_points": 50,
       "weights": [
         {
           "stat": "spell_power",
