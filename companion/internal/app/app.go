@@ -573,11 +573,11 @@ type Snapshot struct {
 	// Headline is the Status page's opening line (headline.go).
 	Headline Headline `json:"headline"`
 	// Connect is the Battle.net sign-in in progress (connect.go).
-	Connect          ConnectView          `json:"connect"`
-	TokenBackend     string               `json:"token_backend"`
-	TokenBackendName string               `json:"token_backend_name"`
+	Connect          ConnectView `json:"connect"`
+	TokenBackend     string      `json:"token_backend"`
+	TokenBackendName string      `json:"token_backend_name"`
 	// TokenBackendNote is the sub line under the file fallback.
-	TokenBackendNote string `json:"token_backend_note,omitempty"`
+	TokenBackendNote string               `json:"token_backend_note,omitempty"`
 	APIBaseURL       string               `json:"api_base_url"`
 	SiteBaseURL      string               `json:"site_base_url"`
 	Visibility       string               `json:"visibility"`
