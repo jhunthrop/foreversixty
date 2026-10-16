@@ -1274,14 +1274,23 @@ function Theme.shiftDown()
 end
 
 --- Open (or close) the client's talent window, whichever way this client
---- does it: the classic ToggleTalentFrame, or the modern player-spells
---- frame. True when a call went through.
+--- does it, and on the Talents tab: the modern player-spells frame opens
+--- on whichever tab it last showed (1.60 beta: the spellbook, seen live
+--- 16 Oct 2026), so the talents tab is asked for by name, then by its tab
+--- id, and only a client without the modern frame gets the classic
+--- ToggleTalentFrame. True when a call went through.
 function Theme.toggleTalents()
+	local util = type(PlayerSpellsUtil) == "table" and PlayerSpellsUtil or nil
+	if util and type(util.ToggleClassTalentFrame) == "function" then
+		return (pcall(util.ToggleClassTalentFrame))
+	end
+	if util and type(util.TogglePlayerSpellsFrame) == "function" then
+		local tabs = type(util.FrameTabs) == "table" and util.FrameTabs or nil
+		local talents = tabs and tabs.ClassTalents or nil
+		return (pcall(util.TogglePlayerSpellsFrame, talents))
+	end
 	if type(ToggleTalentFrame) == "function" then
 		return (pcall(ToggleTalentFrame))
-	end
-	if type(PlayerSpellsUtil) == "table" and type(PlayerSpellsUtil.TogglePlayerSpellsFrame) == "function" then
-		return (pcall(PlayerSpellsUtil.TogglePlayerSpellsFrame))
 	end
 	return false
 end

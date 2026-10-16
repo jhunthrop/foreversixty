@@ -703,6 +703,47 @@ describe("Theme.classIcon", function()
 	end)
 end)
 
+-- Seen live on the 1.60 beta (16 Oct 2026, the CurseForge 2.0.2 build): the client has no
+-- ToggleTalentFrame, and TogglePlayerSpellsFrame() with no tab opens the window on whichever
+-- tab it last showed, so the chip landed on the spellbook. The talents tab is asked for.
+describe("Theme.toggleTalents", function()
+	after_each(function()
+		_G.PlayerSpellsUtil = nil
+		_G.ToggleTalentFrame = nil
+	end)
+
+	it("asks the modern frame for its talents tab by name first", function()
+		local calls = {}
+		_G.PlayerSpellsUtil = {
+			ToggleClassTalentFrame = function() calls[#calls + 1] = "class" end,
+			TogglePlayerSpellsFrame = function(tab) calls[#calls + 1] = { "spells", tab } end,
+			FrameTabs = { SpellBook = 3, ClassTalents = 2, ClassSpecializations = 1 },
+		}
+		_G.ToggleTalentFrame = function() calls[#calls + 1] = "classic" end
+		assert.is_true(Theme.toggleTalents())
+		assert.are.same({ "class" }, calls)
+	end)
+
+	it("passes the talents tab id where only the plain toggle exists", function()
+		local calls = {}
+		_G.PlayerSpellsUtil = {
+			TogglePlayerSpellsFrame = function(tab) calls[#calls + 1] = { "spells", tab } end,
+			FrameTabs = { SpellBook = 3, ClassTalents = 2 },
+		}
+		assert.is_true(Theme.toggleTalents())
+		assert.are.same({ { "spells", 2 } }, calls)
+	end)
+
+	it("falls back to the classic toggle on a client without the modern frame", function()
+		local calls = {}
+		_G.ToggleTalentFrame = function() calls[#calls + 1] = "classic" end
+		assert.is_true(Theme.toggleTalents())
+		assert.are.same({ "classic" }, calls)
+		_G.ToggleTalentFrame = nil
+		assert.is_false(Theme.toggleTalents())
+	end)
+end)
+
 describe("Chip.hiddenLine", function()
 	it("says why the chip is hidden, and how to bring it back only when the player hid it", function()
 		assert.are.equal("Chip: hidden in combat", Chip.hiddenLine("combat", false))
