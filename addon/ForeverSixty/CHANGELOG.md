@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.3
+
+- Clicking the chip opens the talent window on its Talents tab again. The 1.60 client opens the player-spells window on whichever tab it showed last, so after a visit to the spellbook the chip landed there; the addon now asks for the Talents tab by name.
+
 ## 2.0.2
 
 Two fixes for characters just starting out, seen on a level-18 shaman and a level-6 paladin.
