@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.4
+
+Data for client build 1.60.1.70425: the item, talent and spell tables the addon ships were regenerated for the new client by the client watcher. Nothing else changed.
+
 ## 2.0.3
 
 - Clicking the chip opens the talent window on its Talents tab again. The 1.60 client opens the player-spells window on whichever tab it showed last, so after a visit to the spellbook the chip landed there; the addon now asks for the Talents tab by name.

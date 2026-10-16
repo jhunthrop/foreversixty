@@ -3,8 +3,8 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
-build: 'FS1:1.60.1.70374:mage:gnome:2050151/23552100130103051/005:'
-raidBuild: 'FS1:1.60.1.70374:mage:gnome:2050151/23252100130133051/005:'
+build: 'FS1:1.60.1.70425:mage:gnome:20500151/23552100130103031/005:'
+raidBuild: 'FS1:1.60.1.70425:mage:gnome:20500151/23252100130133031/005:'
 recommendedRaces: [gnome, orc]
 statPriority: [Hit, Intellect, Spell power, Fire power, Critical strike, Spell haste, Spell penetration]
 description: 'Talents, rotation, stats, and gear for Fire Mage in Forever, and what is confirmed versus projected from the beta.'

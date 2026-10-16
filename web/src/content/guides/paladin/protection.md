@@ -3,7 +3,7 @@ title: Protection Paladin in Forever
 classSlug: paladin
 spec: protection
 role: tank
-build: 'FS1:1.60.1.70374:paladin:dwarf:50003/5530513321301051/5:'
+build: 'FS1:1.60.1.70425:paladin:dwarf:50003/5530513321301051/5:'
 recommendedRaces: [dwarf, undead]
 statPriority:
   [
