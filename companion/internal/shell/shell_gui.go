@@ -78,7 +78,10 @@ func Run(ctx context.Context, o Options) error {
 		if runtime.GOOS == "windows" {
 			systray.SetIcon(icon.ICO())
 		} else {
-			systray.SetTemplateIcon(icon.PNG(), icon.PNG())
+			// Colour, not a template image: a template is drawn from its
+			// alpha channel alone, which would turn the seal's navy disc
+			// into a solid blob in the menu bar.
+			systray.SetIcon(icon.PNG())
 		}
 		line := o.State()
 		systray.SetTooltip(line)
@@ -133,6 +136,7 @@ loop:
 	for {
 		w := webview.New(false)
 		w.SetTitle(o.Title)
+		setWindowIcons(w.Window())
 		w.SetSize(o.Width, o.Height, webview.HintNone)
 		if pendingNotice && o.Notice != "" {
 			w.Init("window.__trayNotice = " + jsString(o.Notice) + ";")

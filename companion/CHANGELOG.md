@@ -1,5 +1,9 @@
 # Companion changelog
 
+## 0.2.2
+
+- The Forever Sixty seal is the app's icon: window, taskbar, tray, Explorer, and a macOS app bundle.
+
 ## 0.2.0
 
 - Sign in with Battle.net: the Device page opens your browser on the site, shows a code to
