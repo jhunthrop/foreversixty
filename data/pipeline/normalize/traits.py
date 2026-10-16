@@ -230,6 +230,12 @@ def _tab_node_sets(
     tree is a proper superset of. Measured on all nine class trees: exactly
     three per tree, always disjoint, always covering every node, and their
     majority `PosX` bands are always 0, 1 and 2.
+
+    1.60.1.70425 (2026-10-16) added one Mage node (113627, Arcane Wrath) that
+    sits in four one-node groups of its own and in none of the three tab
+    groups. A one-node group is never a tab, so a node that no tab group
+    holds is placed in the tab of its own `PosX` column band, with a warning
+    naming it; every other check stays as strict as before.
     """
     members: dict[int, set[int]] = {}
     group_ids = {int(g["ID"]) for g in rows.node_group if int(g["TraitTreeID"]) == tree_id}
@@ -237,24 +243,41 @@ def _tab_node_sets(
         group = int(link["TraitNodeGroupID"])
         if group in group_ids:
             members.setdefault(group, set()).add(int(link["TraitNodeID"]))
-    maximal = [s for s in members.values() if not any(s < other for other in members.values())]
+    # Equal groups (70425's four copies of {113627}) collapse to one.
+    maximal = {
+        frozenset(s) for s in members.values() if not any(s < other for other in members.values())
+    }
+    tabs = [set(group) for group in maximal if len(group) > 1]
     covered: set[int] = set()
     for group in maximal:
         covered |= group
-    if len(maximal) != len(COLUMN_ORIGINS) or covered != tree_nodes:
+    if len(tabs) != len(COLUMN_ORIGINS) or covered != tree_nodes:
         raise TraitDataError(
-            f"tree {tree_id} splits into {len(maximal)} tabs covering "
+            f"tree {tree_id} splits into {len(tabs)} tabs covering "
             f"{len(covered)} of its {len(tree_nodes)} nodes; a class tree has "
             f"{len(COLUMN_ORIGINS)} tabs covering all of them"
         )
-    if sum(len(group) for group in maximal) != len(covered):
-        raise TraitDataError(f"tree {tree_id}'s tabs overlap")
-    bands = {}
-    for group in maximal:
+    in_tabs: set[int] = set()
+    for group in tabs:
+        if in_tabs & group:
+            raise TraitDataError(f"tree {tree_id}'s tabs overlap")
+        in_tabs |= group
+    bands: dict[int, set[int]] = {}
+    for group in tabs:
         band, _ = Counter(_band(int(node_rows[node]["PosX"])) for node in group).most_common(1)[0]
         if band in bands:
             raise TraitDataError(f"tree {tree_id} has two tabs in column band {band}")
         bands[band] = group
+    for node in sorted(tree_nodes - in_tabs):
+        band = _band(int(node_rows[node]["PosX"]))
+        logger.warning(
+            "tree %d node %d is in no tab group; placed in column band %d by its PosX %s",
+            tree_id,
+            node,
+            band,
+            node_rows[node]["PosX"],
+        )
+        bands[band].add(node)
     return [bands[index] for index in range(len(COLUMN_ORIGINS))]
 
 

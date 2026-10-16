@@ -49,8 +49,12 @@ SANITY_CHECK_ITEM_LEVEL = 60
 #: 2026-09-17): Era's own ItemSparse carries item 13375, "Crest of Retribution",
 #: a real rare shield (RequiredLevel 55, quality 3) with 2057 armour -- absent
 #: from 1.60.1.69893's own item set, so the original tuning pass never saw it.
+#: Raised from 2100 to 2400 for build 1.60.1.70425 (2026-10-16): Forever moved
+#: item 19321, "The Immovable Object" (a real epic shield, 2291 armour), from item
+#: level 65 to 60, so the cap now sat under real gear. 2400 still leaves every QA
+#: row ever seen (4x and more over) nowhere near it.
 MAX_LEVEL_60_STAT = 200
-MAX_LEVEL_60_ARMOR = 2100
+MAX_LEVEL_60_ARMOR = 2400
 
 #: OverallQualityID values the planner keeps: uncommon, rare, epic, legendary.
 #: Poor (0) and common (1) are vendor trash the planner never recommends, and

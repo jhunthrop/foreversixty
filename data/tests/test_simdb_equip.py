@@ -87,6 +87,22 @@ def test_a_resistance_aura_reads_its_school_mask():
     assert item.stats == {"frost_res": 10.0}
 
 
+def test_the_forever_armour_aura_reads_as_flat_armour():
+    """Build 1.60.1.70425 moved every flat armour bonus -- the "Item +AC" enchant
+    spells (15390, the Armor +125 leg enchant), Devotion Aura, Inner Fire, the
+    armour elixirs: 234 effects -- from aura 22 with school mask 1 to aura 674,
+    same mask, same amounts. The same row as the frost-resistance case above,
+    renumbered the way the client did, reads as armour of the same amount."""
+    frost = next(
+        dict(row)
+        for rows in effects().values()
+        for row in rows
+        if row["EffectAura"] == "22" and row["Effect"] == "6"
+    )
+    armour = {**frost, "EffectAura": "674", "EffectMiscValue_0": "1"}
+    assert spell_bonus([999674], {999674: [armour]}).stats == {"armor": 10.0}
+
+
 def test_a_proc_effect_is_not_an_equip_bonus():
     """Item 100006's only item effect is TriggerType 2. Its resistance shred is
     on-proc behaviour the engine hand-writes, not a stat the wearer carries."""
