@@ -176,7 +176,9 @@ def write_extract(
                 "ReagentCount1-8 columns -- see pipeline.classicdb_crafted's own doc.",
             },
         },
-        "items": {str(item_id): record.model_dump() for item_id, record in sorted(records.items())},
+        "items": {
+            str(item_id): record.model_dump() for item_id, record in sorted(records.items())
+        },
     }
     path.write_text(json.dumps(document, indent=1) + "\n", encoding="utf-8")
     return path

@@ -112,5 +112,6 @@ def convert_rating_stats(
     it.
     """
     return {
-        key: (amount / factors[key] if key in factors else amount) for key, amount in stats.items()
+        key: (amount / factors[key] if key in factors else amount)
+        for key, amount in stats.items()
     }

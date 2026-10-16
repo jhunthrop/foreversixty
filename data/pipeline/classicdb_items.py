@@ -902,7 +902,9 @@ def effect_text(
     for slot in item.spells:
         spell = spells.get(slot.spell_id)
         rendered = (
-            _render_spell_text(spell, slot.trigger, item.id, item.name, spells) if spell else None
+            _render_spell_text(spell, slot.trigger, item.id, item.name, spells)
+            if spell
+            else None
         )
         if rendered is None:
             client_name = client_spell_names.get(slot.spell_id)
@@ -970,7 +972,9 @@ def to_gear_item(
         if is_weapon and speed > 0
         else 0.0
     )
-    base_icon = _classicdb_client_icon(item.id, client_icon_file_ids or {}, icon_names or {})
+    base_icon = _classicdb_client_icon(
+        item.id, client_icon_file_ids or {}, icon_names or {}
+    )
     icon, icon_source = resolve_icon_name(base_icon, item.id, fork_icons, wowhead_icons)
     stats = planner_stats(item)
     equipped = equip_stats(item, spells)

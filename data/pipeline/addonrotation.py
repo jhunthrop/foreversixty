@@ -163,12 +163,8 @@ def _cast_lines(rotation: dict) -> list[dict]:
     return lines
 
 
-def _resolve(
-    families: dict[str, list[tuple[int, int]]],
-    id_to_family: dict[int, str],
-    spell_id: int,
-    level: int,
-) -> tuple[str, int] | None:
+def _resolve(families: dict[str, list[tuple[int, int]]], id_to_family: dict[int, str],
+             spell_id: int, level: int) -> tuple[str, int] | None:
     """The (family name, id) this ability casts at `level`, or None when
     the curated id is not one spellranks.json tracks for this class (an
     engine-internal or item-proc id the ladder itself would call
@@ -228,7 +224,9 @@ def build_rotation(
             condition = _one_line(cast["notes"])
             icon = _resolve_icon(resolved_id, icon_of)
             lines.append(
-                AddonRotationLine(spell_id=resolved_id, name=name, condition=condition, icon=icon)
+                AddonRotationLine(
+                    spell_id=resolved_id, name=name, condition=condition, icon=icon
+                )
             )
         bands.append(AddonRotationBand(level=level, lines=lines))
     return bands
@@ -344,7 +342,9 @@ def write_spell_icons(
     icons = compute_spell_icons(root, build, curated_dir)
     path = root / build / "spellicons.json"
     payload = {str(spell_id): icon for spell_id, icon in icons.items()}
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
     return path
 
 

@@ -160,7 +160,6 @@ def resolve_quest_faction(
         return quest_entry.faction, "wowhead"
     return "unknown", "item"
 
-
 #: `pipeline.forkdb.FACTION_RESTRICTIONS`' 1/2 (alliance_only/horde_only),
 #: minus the `_only` suffix, for comparing an item's own restriction
 #: against the side a rep faction id belongs to.
@@ -259,7 +258,9 @@ class LootStats:
     dropped_unnamed_bosses: int = 0
 
 
-def instance_types(map_rows: list[dict[str, str]], zone_rows: list[dict]) -> dict[int, int]:
+def instance_types(
+    map_rows: list[dict[str, str]], zone_rows: list[dict]
+) -> dict[int, int]:
     """AreaTable zone id -> `Map.InstanceType`, for the zones inside one.
 
     Two joins, in this order, because neither covers every instance on
@@ -364,10 +365,9 @@ def _drop_sources(
                 zone[zone_id].add(item_id)
 
     out: list[LootSource] = []
-    for zone_id in sorted(
-        {zone for zone, _ in bosses} | set(trash),
-        key=lambda z: (INSTANCE_KIND[types[z]], slugify(zone_names[z])),
-    ):
+    for zone_id in sorted({zone for zone, _ in bosses} | set(trash), key=lambda z: (
+        INSTANCE_KIND[types[z]], slugify(zone_names[z])
+    )):
         kind = INSTANCE_KIND[types[zone_id]]
         slug = f"{kind}:{slugify(zone_names[zone_id])}"
         in_zone = sorted(npc for zone, npc in bosses if zone == zone_id)
@@ -474,7 +474,9 @@ def _keyed_sources(
                 absent.add(item_id)
                 continue
             if "crafted" in source:
-                profession = decode(PROFESSIONS, int(source["crafted"]["profession"]), "profession")
+                profession = decode(
+                    PROFESSIONS, int(source["crafted"]["profession"]), "profession"
+                )
                 crafted[profession].add(item_id)
             elif "rep" in source:
                 standing = decode(REP_LEVELS, int(source["rep"]["repLevel"]), "rep level")
@@ -883,10 +885,8 @@ def _crafted_item_gate(document: LootFile, recipe: ClassicDbCraftedRecipe) -> st
     obtainable from even one un-gated place is likewise not a gate)."""
     if recipe.recipe_item_ids:
         recipe_ways = [item_effective_gate(document, item_id) for item_id in recipe.recipe_item_ids]
-        recipe_gate = (
-            None
-            if any(way is None for way in recipe_ways)
-            else _least_restrictive_gate([way for way in recipe_ways if way])
+        recipe_gate = None if any(way is None for way in recipe_ways) else _least_restrictive_gate(
+            [way for way in recipe_ways if way]
         )
     else:
         recipe_gate = None  # trainer-taught: no item stands in the way at all
@@ -1171,7 +1171,9 @@ def build_loot(
     # `LootStats.wowhead_items` below is what a wowhead scrape adds ON
     # TOP of this set, so quest items the fork itself already covers
     # must count as fork's, not wowhead's.
-    fork_named = {item_id for source in sources for item_id in source_item_ids(source)} | set(quest)
+    fork_named = {
+        item_id for source in sources for item_id in source_item_ids(source)
+    } | set(quest)
     if classic_sources:
         # src-classicdb lane, 2026-09-29: applied BEFORE wowhead (priority
         # order fork > classic-db > wowhead) -- a bucket classic-db
@@ -1180,14 +1182,8 @@ def build_loot(
         # keeps THIS origin, not wowhead's, since merge unions extra into
         # base and only a brand-new id keeps extra's own origin.
         classicdb_sources, classicdb_quest, classicdb_quest_detail = classicdb_additions(
-            classic_sources,
-            build_items,
-            equippable,
-            zone_names,
-            types,
-            zone_rows or [],
-            quest_levels or {},
-            item_factions(fork, build_items),
+            classic_sources, build_items, equippable, zone_names, types, zone_rows or [],
+            quest_levels or {}, item_factions(fork, build_items),
             fork_instance_npc_zones(fork, types),
             # The fork's OWN dungeon/raid zone ids (`drops`, built above,
             # already the real, correctly-named sources) -- `instance_
@@ -1227,11 +1223,7 @@ def build_loot(
             for item_id in source_item_ids(existing)
         }
         wowhead_sources, wowhead_quest, wowhead_quest_detail = wowhead_additions(
-            item_sources,
-            build_items,
-            equippable,
-            zone_names,
-            types,
+            item_sources, build_items, equippable, zone_names, types,
             item_factions(fork, build_items),
             required_levels,
             classicdb_world_drop_items,

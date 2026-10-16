@@ -175,7 +175,8 @@ def iter_table_records(sql_text: str, table: str) -> Iterator[dict[str, str]]:
         fields = split_fields(row)
         if len(fields) != len(columns):
             raise ValueError(
-                f"`{table}` row has {len(fields)} fields, schema names {len(columns)}: {row[:80]!r}"
+                f"`{table}` row has {len(fields)} fields, schema names {len(columns)}: "
+                f"{row[:80]!r}"
             )
         yield dict(zip(columns, fields, strict=True))
 
@@ -190,15 +191,8 @@ def iter_table_records(sql_text: str, table: str) -> Iterator[dict[str, str]]:
 #: src-classicdb lane, 2026-09-29) -- MySQL escapes a literal `"` even
 #: inside a single-quoted string.
 _ESCAPES = {
-    "'": "'",
-    '"': '"',
-    "\\": "\\",
-    "0": "\0",
-    "b": "\b",
-    "n": "\n",
-    "r": "\r",
-    "t": "\t",
-    "Z": "\x1a",
+    "'": "'", '"': '"', "\\": "\\", "0": "\0",
+    "b": "\b", "n": "\n", "r": "\r", "t": "\t", "Z": "\x1a",
 }
 
 

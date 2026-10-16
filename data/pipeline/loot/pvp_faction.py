@@ -345,7 +345,9 @@ def split_pvp_sources_by_faction(
             # is written straight onto the vendor row here rather than
             # re-derived a second time downstream.
             if source.kind == "vendor" and source.npc_id in npc_factions:
-                sources.append(source.model_copy(update={"faction": npc_factions[source.npc_id]}))
+                sources.append(
+                    source.model_copy(update={"faction": npc_factions[source.npc_id]})
+                )
             else:
                 sources.append(source)
             continue

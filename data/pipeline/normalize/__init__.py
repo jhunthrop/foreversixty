@@ -370,7 +370,9 @@ def normalize_build(
     # even though its stats/required_level stay classic-db's own
     # (merge_classicdb_class_items below, threaded into to_gear_item).
     client_icon_file_ids = {
-        int(row["ID"]): int(row["IconFileDataID"]) for row in item_rows if row.get("IconFileDataID")
+        int(row["ID"]): int(row["IconFileDataID"])
+        for row in item_rows
+        if row.get("IconFileDataID")
     }
     try:
         class_items = build_class_items(

@@ -48,7 +48,9 @@ from pipeline.normalize import write_model
 logger = logging.getLogger(__name__)
 
 
-def quest_only_class_exclusions(document: LootFile, class_slugs: list[str]) -> dict[str, set[int]]:
+def quest_only_class_exclusions(
+    document: LootFile, class_slugs: list[str]
+) -> dict[str, set[int]]:
     """class slug -> quest-only item ids that class can never actually
     obtain, because every `QuestSource` entry `document.quests` names for
     that item excludes it (`QuestSource.classes` -- `None` means "any
@@ -63,7 +65,9 @@ def quest_only_class_exclusions(document: LootFile, class_slugs: list[str]) -> d
     for source in document.sources:
         for item_id in source_item_ids(source):
             kinds_by_item[item_id].add(source.kind)
-    quest_only_items = {item_id for item_id, kinds in kinds_by_item.items() if kinds == {"quest"}}
+    quest_only_items = {
+        item_id for item_id, kinds in kinds_by_item.items() if kinds == {"quest"}
+    }
     exclusions: dict[str, set[int]] = defaultdict(set)
     for item_id in quest_only_items:
         entries = document.quests.get(str(item_id))
@@ -71,7 +75,8 @@ def quest_only_class_exclusions(document: LootFile, class_slugs: list[str]) -> d
             continue
         for class_slug in class_slugs:
             if all(
-                entry.classes is not None and class_slug not in entry.classes for entry in entries
+                entry.classes is not None and class_slug not in entry.classes
+                for entry in entries
             ):
                 exclusions[class_slug].add(item_id)
     return dict(exclusions)

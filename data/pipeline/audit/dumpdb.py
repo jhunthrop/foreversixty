@@ -132,7 +132,9 @@ class ClassicDbDump:
         would be one of."""
         out: dict[int, dict] = {}
         for row in iter_table_records(self._text, "item_template"):
-            spell_ids = [int(row[f"spellid_{n}"]) for n in range(1, 6) if int(row[f"spellid_{n}"])]
+            spell_ids = [
+                int(row[f"spellid_{n}"]) for n in range(1, 6) if int(row[f"spellid_{n}"])
+            ]
             out[int(row["entry"])] = {
                 "required_reputation_faction": int(row["RequiredReputationFaction"]),
                 "required_reputation_rank": int(row["RequiredReputationRank"]),

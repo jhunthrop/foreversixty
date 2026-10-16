@@ -41,7 +41,9 @@ def talent_name(talent_id: int, spell_id: int, spell_names: dict[int, str]) -> s
 
 def _rank_spell_ids(row: dict[str, str]) -> list[int]:
     return [
-        int(row[column]) for column in RANK_COLUMNS if row.get(column, "0").strip() not in ("", "0")
+        int(row[column])
+        for column in RANK_COLUMNS
+        if row.get(column, "0").strip() not in ("", "0")
     ]
 
 

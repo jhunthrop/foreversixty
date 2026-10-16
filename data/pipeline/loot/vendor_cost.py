@@ -101,7 +101,9 @@ def _row_payable(row, obtainable: set[int]) -> bool:
     return not row.cost_item_ids or all(c in obtainable for c in row.cost_item_ids)
 
 
-def _obtainable_items(item_sources: dict[int, ItemSourceEntry], build_items: set[int]) -> set[int]:
+def _obtainable_items(
+    item_sources: dict[int, ItemSourceEntry], build_items: set[int]
+) -> set[int]:
     """The GREATEST fixed point of "obtainable" over `build_items`:
     grounded facts first (point 1's mirror -- a real catalogued item
     with an independent, non-vendor way to get it, OR one this scrape

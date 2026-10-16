@@ -210,7 +210,9 @@ def _apply_class_subclass(item: pb.SimItem, class_id: int, subclass: int, invent
             if inventory in HAND_TYPE_BY_INVENTORY_TYPE:
                 item.hand_type = pb.HandType.Value(HAND_TYPE_BY_INVENTORY_TYPE[inventory])
         if subclass in RANGED_TYPE_BY_SUBCLASS:
-            item.ranged_weapon_type = pb.RangedWeaponType.Value(RANGED_TYPE_BY_SUBCLASS[subclass])
+            item.ranged_weapon_type = pb.RangedWeaponType.Value(
+                RANGED_TYPE_BY_SUBCLASS[subclass]
+            )
 
 
 def build_sim_items(

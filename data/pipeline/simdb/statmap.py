@@ -136,7 +136,8 @@ def stat_index(key: str) -> int:
     names = PROTO_STAT_ALIASES.get(key)
     if names is None:
         raise StatMapError(
-            f"no engine stat for {key!r}; add it to PROTO_STAT_ALIASES in pipeline/simdb/statmap.py"
+            f"no engine stat for {key!r}; add it to PROTO_STAT_ALIASES in "
+            f"pipeline/simdb/statmap.py"
         )
     known = set(pb.Stat.keys())
     for name in names:

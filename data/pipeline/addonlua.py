@@ -85,7 +85,9 @@ BIS_FIELD_SEPARATOR = "|"
 
 def _bis_field(value: str) -> str:
     if BIS_FIELD_SEPARATOR in value:
-        raise AddonBisError(f"{value!r} contains the BiS field separator {BIS_FIELD_SEPARATOR!r}")
+        raise AddonBisError(
+            f"{value!r} contains the BiS field separator {BIS_FIELD_SEPARATOR!r}"
+        )
     return value
 
 
@@ -291,7 +293,7 @@ def render_lua(data: AddonData) -> str:
         GENERATED,
         "-- Source: data/builds/<build>/addon-data.json",
         "local _, ns = ...",
-        'ns = type(ns) == "table" and ns or {}',
+        "ns = type(ns) == \"table\" and ns or {}",
         "",
         "ns.Data = {",
         f"\tbuild = {_quote(data.build)},",

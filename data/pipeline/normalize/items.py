@@ -4,7 +4,9 @@ from pipeline.models import Item
 def normalize_items(
     sparse_rows: list[dict[str, str]], item_rows: list[dict[str, str]]
 ) -> list[Item]:
-    classes = {int(r["ID"]): (int(r["ClassID"]), int(r["SubclassID"])) for r in item_rows}
+    classes = {
+        int(r["ID"]): (int(r["ClassID"]), int(r["SubclassID"])) for r in item_rows
+    }
     out: list[Item] = []
     for s in sparse_rows:
         item_id = int(s["ID"])

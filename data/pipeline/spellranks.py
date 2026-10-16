@@ -170,13 +170,17 @@ def build_spell_ranks(
     return SpellRanksFile(build=build, classes=classes)
 
 
-def write_spell_ranks(build: str, root: Path = Path("builds"), curated: Path = CURATED_DIR) -> Path:
+def write_spell_ranks(
+    build: str, root: Path = Path("builds"), curated: Path = CURATED_DIR
+) -> Path:
     build_dir = root / build
     spellconst_dir = build_dir / SPELLCONST
     if not spellconst_dir.exists():
         raise SystemExit(f"no {spellconst_dir}; run `python -m pipeline simconst` first")
     records = load_class_spell_constants(spellconst_dir)
-    result = build_spell_ranks(build, records, load_book_ids(curated), load_inferior_ids(curated))
+    result = build_spell_ranks(
+        build, records, load_book_ids(curated), load_inferior_ids(curated)
+    )
     path = build_dir / SPELLRANKS_FILE
     _write(result.model_dump(exclude_defaults=True), path, sort_keys=True)
     refresh_manifest(build_dir)

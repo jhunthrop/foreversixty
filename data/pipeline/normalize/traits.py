@@ -439,7 +439,9 @@ def _with_prerequisites(tree: TraitClassTree, edge_rows: list[dict[str, str]]) -
     )
 
 
-def read_trait_trees(rows: TraitRows, icons: dict[int, str] | None = None) -> list[TraitClassTree]:
+def read_trait_trees(
+    rows: TraitRows, icons: dict[int, str] | None = None
+) -> list[TraitClassTree]:
     """One `TraitClassTree` per class, tabs left to right, sorted by class id.
 
     `icons` (file data id -> icon name, `pipeline.icons.icon_names`' own
@@ -494,7 +496,8 @@ def read_trait_trees(rows: TraitRows, icons: dict[int, str] | None = None) -> li
         tab_rows = sorted(tabs_by_class.get(class_id, []), key=lambda t: int(t["OrderIndex"]))
         if len(tab_rows) != len(COLUMN_ORIGINS):
             raise TraitDataError(
-                f"class {class_id} has {len(tab_rows)} TalentTab rows, not {len(COLUMN_ORIGINS)}"
+                f"class {class_id} has {len(tab_rows)} TalentTab rows, "
+                f"not {len(COLUMN_ORIGINS)}"
             )
         _verify_tab_order(tree_id, tab_rows)
         node_sets = _tab_node_sets(tree_id, tree_nodes, rows, node_rows)

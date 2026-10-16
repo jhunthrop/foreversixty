@@ -194,7 +194,6 @@ class WorldDropPool(BaseModel):
     level_min: int | None = None
     level_max: int | None = None
 
-
 #: Vanilla's own race bitmask (`ChrRaces.dbc` ids, 1-indexed bit
 #: positions) split by faction, for `quest_template.RequiredRaces`. A
 #: quest that admits races from both sides (or states none, 0, meaning
@@ -493,11 +492,8 @@ def _excluded_reference_ids(sql_text: str) -> set[int]:
     users: dict[int, set[tuple[str, int]]] = defaultdict(set)
     world_drop: set[int] = set()
     for table in (
-        "creature_loot_template",
-        "gameobject_loot_template",
-        "skinning_loot_template",
-        "pickpocketing_loot_template",
-        "fishing_loot_template",
+        "creature_loot_template", "gameobject_loot_template",
+        "skinning_loot_template", "pickpocketing_loot_template", "fishing_loot_template",
     ):
         for row in iter_table_records(sql_text, table):
             min_ref = int(row["mincountOrRef"])
@@ -566,10 +562,8 @@ def _world_drop_pools(
     users: dict[int, set[tuple[str, int]]] = defaultdict(set)
     comments: dict[int, list[str]] = defaultdict(list)
     for table in (
-        "creature_loot_template",
-        "gameobject_loot_template",
-        "skinning_loot_template",
-        "pickpocketing_loot_template",
+        "creature_loot_template", "gameobject_loot_template",
+        "skinning_loot_template", "pickpocketing_loot_template",
     ):
         for row in iter_table_records(sql_text, table):
             min_ref = int(row["mincountOrRef"])
@@ -745,12 +739,8 @@ def _expand_loot_template(
                 continue
             out.extend(
                 _expand_loot_template(
-                    ref_id,
-                    reference_rows_by_entry,
-                    reference_rows_by_entry,
-                    excluded_refs,
-                    depth=depth + 1,
-                    seen=seen,
+                    ref_id, reference_rows_by_entry, reference_rows_by_entry, excluded_refs,
+                    depth=depth + 1, seen=seen,
                 )
             )
         else:
@@ -997,9 +987,7 @@ def _parse_vendors(
             condition_id = int(row["condition_id"])
             into[int(row["item"])].append(
                 ClassicDbSourceRecord(
-                    kind="vendor",
-                    npc_id=npc_id,
-                    name=name,
+                    kind="vendor", npc_id=npc_id, name=name,
                     map_id=npc_map.get(npc_id),
                     condition=conditions.get(condition_id) if condition_id else None,
                 )
@@ -1086,9 +1074,9 @@ def _parse_quest_rewards(sql_text: str, into: dict[int, list[ClassicDbSourceReco
             profession=profession,
             skill=int(row.get("RequiredSkillValue", "0")) or None if profession else None,
         )
-        reward_ids = {int(row[f"RewChoiceItemId{n}"]) for n in range(1, 7)} | {
-            int(row[f"RewItemId{n}"]) for n in range(1, 5)
-        }
+        reward_ids = {
+            int(row[f"RewChoiceItemId{n}"]) for n in range(1, 7)
+        } | {int(row[f"RewItemId{n}"]) for n in range(1, 5)}
         for item_id in reward_ids:
             if not item_id:
                 continue
@@ -1266,34 +1254,16 @@ def parse_classic_db_sources(sql_text: str) -> dict[int, list[ClassicDbSourceRec
 
     into: dict[int, list[ClassicDbSourceRecord]] = defaultdict(list)
     _parse_creature_drops(
-        sql_text,
-        creature_names,
-        npc_map,
-        into,
-        excluded_refs,
-        kind="creature_drop",
-        table="creature_loot_template",
-        creature_levels=creature_levels,
+        sql_text, creature_names, npc_map, into, excluded_refs,
+        kind="creature_drop", table="creature_loot_template", creature_levels=creature_levels,
     )
     _parse_creature_drops(
-        sql_text,
-        creature_names,
-        npc_map,
-        into,
-        excluded_refs,
-        kind="skinning",
-        table="skinning_loot_template",
-        creature_levels=creature_levels,
+        sql_text, creature_names, npc_map, into, excluded_refs,
+        kind="skinning", table="skinning_loot_template", creature_levels=creature_levels,
     )
     _parse_creature_drops(
-        sql_text,
-        creature_names,
-        npc_map,
-        into,
-        excluded_refs,
-        kind="pickpocketing",
-        table="pickpocketing_loot_template",
-        creature_levels=creature_levels,
+        sql_text, creature_names, npc_map, into, excluded_refs,
+        kind="pickpocketing", table="pickpocketing_loot_template", creature_levels=creature_levels,
     )
     chest_owner = chest_owner_by_loot_id(sql_text)
     reward_chest_ids = frozenset(_chest_loot_ids(sql_text))
@@ -1534,7 +1504,9 @@ def fetch_and_write_classic_sources(
         item_template_path,
     )
     crafted_records = extract_crafted_records(sql_text)
-    crafted_path = write_crafted_extract(build_dir, crafted_records, source_commit=_source_commit())
+    crafted_path = write_crafted_extract(
+        build_dir, crafted_records, source_commit=_source_commit()
+    )
     logger.info(
         "classic-sources: extracted %d crafted-item recipe/reagent chains; wrote %s",
         len(crafted_records),

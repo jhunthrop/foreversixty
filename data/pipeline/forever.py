@@ -67,9 +67,9 @@ def _active_client_item_ids(root: Path) -> set[int]:
     straight join of `ItemSparse` against `Item` (see `pipeline.normalize.items.
     normalize_items`), so its id set is exactly the join key this function needs.
     """
-    active_build = json.loads((root / "web" / "src" / "data" / "active-build.json").read_text())[
-        "build"
-    ]
+    active_build = json.loads(
+        (root / "web" / "src" / "data" / "active-build.json").read_text()
+    )["build"]
     items = json.loads((root / "data" / "builds" / active_build / "items.json").read_text())
     return {item["id"] for item in items}
 
