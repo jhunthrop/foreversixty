@@ -191,7 +191,9 @@ function carryCode(code, toBuild) {
       continue;
     }
     if (rank > slot.maxRank) {
-      problems.push(`${name} has ${slot.maxRank} rank${slot.maxRank === 1 ? '' : 's'} in ${toBuild}, the guide spends ${rank}`);
+      problems.push(
+        `${name} has ${slot.maxRank} rank${slot.maxRank === 1 ? '' : 's'} in ${toBuild}, the guide spends ${rank}`,
+      );
     }
     toRanks[slot.treeIndex][slot.index] = Math.min(rank, slot.maxRank);
   }
@@ -254,7 +256,9 @@ function main() {
 
   const failed = results.filter(({ result }) => result.problems.length > 0);
   if (failed.length > 0) {
-    console.error(`${failed.length} guide build(s) do not carry cleanly onto ${ACTIVE_BUILD}; nothing written.`);
+    console.error(
+      `${failed.length} guide build(s) do not carry cleanly onto ${ACTIVE_BUILD}; nothing written.`,
+    );
     console.error('Resolve each by hand in the guide (code and prose), then rerun.\n');
     for (const { guide, result } of failed) {
       console.error(`${guide.id}`);
