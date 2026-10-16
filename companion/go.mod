@@ -10,6 +10,7 @@ require (
 	github.com/ncruces/zenity v0.10.15
 	github.com/webview/webview_go v0.0.0-20240831120633-6173450d4dd6
 	github.com/zalando/go-keyring v0.2.8
+	golang.org/x/sys v0.47.0
 )
 
 require (
@@ -36,7 +37,6 @@ require (
 	github.com/twpayne/go-geom v1.6.1 // indirect
 	golang.org/x/crypto v0.52.0 // indirect
 	golang.org/x/image v0.44.0 // indirect
-	golang.org/x/sys v0.47.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 )
 

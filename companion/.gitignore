@@ -1,0 +1,2 @@
+# built by go-winres in the release workflow (see .github/workflows/companion.yml)
+*.syso

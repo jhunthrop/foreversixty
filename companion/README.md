@@ -161,6 +161,23 @@ interface, and the log is a file you may well paste somewhere.
 **Start over.** Quit the companion and delete the directory above. Reports already uploaded stay
 on the site.
 
+## Icons
+
+The Forever Sixty seal (`web/public/favicon.svg`) is the app's icon everywhere the OS shows one:
+the window and taskbar, the tray, Explorer (the Windows exe carries it as a resource, with the
+product and company fields), and the dock on macOS. The rendered files live in
+`internal/icon/assets/` and are committed; to regenerate them after the seal changes:
+
+```sh
+node tools/icons/render.mjs   # needs `pnpm install` in web/ for resvg; WEB_NODE_MODULES=... if it lives elsewhere
+```
+
+The Windows resource is built from `cmd/foreversixty-companion/winres/winres.json` by the release
+workflow (go-winres), not committed. The macOS release also publishes
+`foreversixty-companion_darwin_<arch>.app.zip`: unzip it and put **Forever Sixty.app** in
+Applications. The updater replaces the binary inside the bundle, so the app keeps its icon across
+updates; the bare binary stays published beside it because that is what the updater downloads.
+
 ## Build it yourself
 
 ```sh

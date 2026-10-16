@@ -4,6 +4,7 @@
 
 - The companion now watches the game install you played most recently, not the first one it
   found. The Status page tags it Watching and shows when each folder was last played.
+- The Forever Sixty seal is the app's icon: window, taskbar, tray, Explorer, and a macOS app bundle.
 
 ## 0.2.0
 
