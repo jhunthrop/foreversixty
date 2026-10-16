@@ -13,7 +13,10 @@ from pipeline.addonlua import lua_has_drifted
 from pipeline.audit import check_addon
 from pipeline.audit.context import AuditContext
 
-BUILD = "1.60.1.70374"
+# The active build, so this test follows every client move instead of pinning one.
+BUILD = json.loads(
+    (Path(__file__).resolve().parents[2] / "web" / "src" / "data" / "active-build.json").read_text()
+)["build"]
 
 
 def test_clean_build_has_no_drift_findings():

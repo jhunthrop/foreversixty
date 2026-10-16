@@ -9,7 +9,10 @@ import pytest
 from pipeline.addondata import AddonDataError, build_addon_data, check_addon_data, write_addon_data
 from pipeline.addonlua import render_lua, write_lua
 
-BUILD = "1.60.1.70374"
+# The active build, so this test follows every client move instead of pinning one.
+BUILD = json.loads(
+    (Path(__file__).resolve().parents[2] / "web" / "src" / "data" / "active-build.json").read_text()
+)["build"]
 
 
 def test_every_class_has_three_tabs_in_position_order():
