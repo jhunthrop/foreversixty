@@ -300,6 +300,20 @@ be regenerated or trusted. Nothing in `pipeline/` branches on the build string, 
 older-schema build works if one is ever fetched again.
 
 ## New build checklist
+
+**The client watcher does this now.** `.github/workflows/client.yml` runs every morning at
+03:41 UTC: `pipeline client-check` asks wago.tools for the newest World of Warcraft: Forever
+build (`curated/client.json` says which product keys are Forever, and treats any 1.60+ build
+under an unknown key as Forever too, so a renamed product or a launch renumbering is still
+found; a newer build neither rule claims is a workflow warning), and when it is newer than
+`web/src/data/active-build.json` the workflow runs this file's fetch job for it and then
+`tools/activate-build.sh`, which is steps 2-10 below as a script: the active build, the
+ranking outputs carried forward from the old build until the forced nightly re-ranks,
+`weights`/`addon-data`/`Data.lua` for the new build, the guides' FS1 stamps and data links,
+the addon TOCs' Interface number and a patch release tag. Dispatch `client` with a `build`
+(and `product`) to move by hand, or with `inspect` to see the diff without committing. The
+list below is what the script does and what to check when it stops.
+
 1. Find the Forever product key on https://wago.tools/builds (it appears when the beta client is on the CDN).
 2. Run the workflow_dispatch in GitHub Actions with that product, or run fetch, normalize,
    icons and tree-art locally (re-run normalize once more after tree-art, so the manifest
