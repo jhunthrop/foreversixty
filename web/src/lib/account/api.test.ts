@@ -406,7 +406,9 @@ describe('ETag revalidation', () => {
 
 describe('companion connect calls', () => {
   it('looks a code up with the session cookie', async () => {
-    const fetchMock = vi.fn<GlobalFetch>(async () => envelope({ name: 'JHUNT-PC', platform: 'Windows', expires_in: 500 }));
+    const fetchMock = vi.fn<GlobalFetch>(async () =>
+      envelope({ name: 'JHUNT-PC', platform: 'Windows', expires_in: 500 }),
+    );
     vi.stubGlobal('fetch', fetchMock);
     const found = await connectDeviceLookup('KQ4-7TM', API);
     expect(found.name).toBe('JHUNT-PC');
@@ -434,14 +436,23 @@ describe('companion connect calls', () => {
   });
 
   it('surfaces 404 and 409 as AccountError statuses', async () => {
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => envelope(null, 409)));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(null, 409)),
+    );
     await expect(connectDeviceApprove('KQ4-7TM', API)).rejects.toMatchObject({ status: 409 });
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => envelope(null, 404)));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(null, 404)),
+    );
     await expect(connectDeviceLookup('KQ4-7TM', API)).rejects.toMatchObject({ status: 404 });
   });
 
   it('reports a network error as status 0', async () => {
-    vi.stubGlobal('fetch', vi.fn<GlobalFetch>(async () => Promise.reject(new TypeError('offline'))));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => Promise.reject(new TypeError('offline'))),
+    );
     await expect(connectDeviceApprove('KQ4-7TM', API)).rejects.toMatchObject({ status: 0 });
   });
 

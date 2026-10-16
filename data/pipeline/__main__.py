@@ -2,6 +2,8 @@ import argparse
 import logging
 import sys
 
+import httpx
+
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="pipeline", description="Forever Sixty data pipeline")
@@ -268,6 +270,24 @@ def build_parser() -> argparse.ArgumentParser:
         help="write nothing; exit non-zero if either emitted file has drifted",
     )
 
+    cc = sub.add_parser(
+        "client-check",
+        help="ask wago.tools for the newest World of Warcraft: Forever client build "
+        "(curated/client.json says which products and versions are Forever) and compare it "
+        "with web/src/data/active-build.json; prints JSON, and writes step outputs when "
+        "GITHUB_OUTPUT is set",
+    )
+    cc.add_argument("--active", help="override the active build (default: active-build.json)")
+    cc.add_argument(
+        "--builds-json",
+        help="read a saved /api/builds answer from this file instead of asking wago.tools",
+    )
+    cc.add_argument(
+        "--no-blizzard",
+        action="store_true",
+        help="do not ask Blizzard's version service (us.version.battle.net) as well",
+    )
+
     rc = sub.add_parser(
         "recorder",
         help="fit the addon recorder's measurements (/fs record on in game): energy tick, "
@@ -507,9 +527,7 @@ def main(argv: list[str] | None = None) -> int:
 
         from pipeline.loot import write_loot_files
 
-        for path in write_loot_files(
-            args.build, Path(args.engine), allow_shrink=args.allow_shrink
-        ):
+        for path in write_loot_files(args.build, Path(args.engine), allow_shrink=args.allow_shrink):
             print(path)
     elif args.command == "loot-merge":
         from pathlib import Path
@@ -593,6 +611,44 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(write_addon_data(args.build, data=data))
         print(write_lua(args.build, data=data))
+    elif args.command == "client-check":
+        import json
+        import os
+        from pathlib import Path
+
+        from pipeline.clientwatch import (
+            ClientWatchError,
+            check,
+            fetch_blizzard_versions,
+            fetch_builds,
+            load_config,
+            read_active_build,
+            report,
+        )
+
+        try:
+            builds = (
+                json.loads(Path(args.builds_json).read_text(encoding="utf-8"))
+                if args.builds_json
+                else fetch_builds()
+            )
+            active = args.active or read_active_build()
+            config = load_config()
+            blizzard = None
+            if not args.no_blizzard and not args.builds_json:
+                blizzard = fetch_blizzard_versions(config.blizzard_products)
+            out = report(check(builds, active, config, blizzard_versions=blizzard))
+        except (ClientWatchError, OSError, httpx.HTTPError) as error:
+            logging.getLogger("pipeline").error("client-check: %s", error)
+            return 1
+        print(json.dumps(out, indent=2))
+        github_output = os.environ.get("GITHUB_OUTPUT")
+        if github_output:
+            with open(github_output, "a", encoding="utf-8") as fh:
+                for key, value in out.items():
+                    if key == "unmatched_newer":
+                        value = json.dumps(value)
+                    fh.write(f"{key}={str(value).lower() if isinstance(value, bool) else value}\n")
     elif args.command == "recorder":
         from pathlib import Path
 

@@ -4,14 +4,7 @@
 import { AccountError } from './api';
 
 export type ConnectState =
-  | 'loading'
-  | 'signedOut'
-  | 'pending'
-  | 'success'
-  | 'cancelled'
-  | 'expired'
-  | 'used'
-  | 'failed';
+  'loading' | 'signedOut' | 'pending' | 'success' | 'cancelled' | 'expired' | 'used' | 'failed';
 
 /** Upper-case, spaces and hyphens stripped: the API compares codes the same way. */
 export function normalizeCode(raw: string | null | undefined): string {
