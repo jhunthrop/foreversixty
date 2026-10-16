@@ -38,6 +38,8 @@ const COPY = {
     folders: 'Game folders',
     noFolders: 'None found yet.',
     watching: 'Watching',
+    lastPlayed: 'Last played',
+    notPlayed: 'Not played yet',
     watchingTitle: 'The companion reads this folder’s combat log',
     advancedOff: 'Advanced logging: OFF',
     advancedOn: 'Advanced logging: on',

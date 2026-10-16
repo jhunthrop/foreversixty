@@ -298,15 +298,42 @@ func (a *App) detect() []wow.Install {
 	return out
 }
 
-// logsDir is the Logs directory the watcher follows: the first
-// install, or a directory that does not exist when there is none,
-// which the watcher handles as "nothing to do". It reads a.installs,
+// switchLead is how much newer another install's activity must be
+// before the watch leaves the one it is on, so two installs touched
+// within a moment of each other never make the tail flap.
+const switchLead = time.Second
+
+// logsDir is the Logs directory the watcher follows: the install played
+// most recently (the newest file under its Logs), the first install on
+// a tie or when nothing has been played, or a directory that does not
+// exist when there is none, which the watcher handles as "nothing to
+// do". An install already being watched keeps the watch unless another
+// is newer by at least switchLead. It reads a.installs and a.watching,
 // so every caller but New holds a.mu.
 func (a *App) logsDir() string {
 	if len(a.installs) == 0 {
 		return a.o.Dirs.Home
 	}
-	return a.installs[0].Logs
+	best := a.installs[0]
+	bestAt, bestOK := wow.LastActivity(best)
+	var cur string
+	var curAt time.Time
+	var curOK bool
+	for _, in := range a.installs {
+		at, ok := wow.LastActivity(in)
+		if in.Logs == a.watching {
+			cur, curAt, curOK = in.Logs, at, ok
+		}
+		if ok && (!bestOK || at.After(bestAt)) {
+			best, bestAt, bestOK = in, at, ok
+		}
+	}
+	if cur != "" && best.Logs != cur {
+		if bestOK && curOK && bestAt.Sub(curAt) < switchLead {
+			return cur
+		}
+	}
+	return best.Logs
 }
 
 // savedVariables is every account's addon file across every install.
@@ -510,8 +537,8 @@ func (a *App) persist(cfg config.Config) error {
 	return nil
 }
 
-// retarget points the tail at the first install's Logs directory when
-// the settings have moved it. The swap waits for the open report to
+// retarget points the tail at the most recently played install's Logs
+// directory when the settings or the player have moved it. The swap waits for the open report to
 // close, so it is attempted again on every step rather than only on
 // the save that asked for it.
 func (a *App) retarget() {
@@ -595,6 +622,9 @@ type InstallStatus struct {
 	// true for a folder the player added (as opposed to one found).
 	Watching bool `json:"watching"`
 	Added    bool `json:"added"`
+	// LastPlayed is when the game last wrote under this install's
+	// Logs; nil when it never has.
+	LastPlayed *time.Time `json:"last_played,omitempty"`
 	// Advanced is true, false, or unknown when Config.wtf could not
 	// be read — which is the normal state before the first login.
 	Advanced        bool   `json:"advanced_logging"`
@@ -627,6 +657,9 @@ func (a *App) installStatuses() (rows []InstallStatus, watchPending bool) {
 		row := InstallStatus{Path: in.Path, Flavor: in.Flavor, FlavorName: wow.FlavorName(in.Flavor),
 			Watching: in.Logs == watching, Added: added[in.Path],
 			AdvancedLogHelp: CopyAdvancedRowHelp}
+		if at, ok := wow.LastActivity(in); ok {
+			row.LastPlayed = &at
+		}
 		if on, err := in.AdvancedLogging(); err == nil {
 			row.Advanced, row.AdvancedKnown = on, true
 		}

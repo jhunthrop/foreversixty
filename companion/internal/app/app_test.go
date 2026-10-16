@@ -619,6 +619,8 @@ func TestANewFirstGameFolderWaitsForTheOpenReportAndThenMoves(t *testing.T) {
 	}); code != http.StatusOK {
 		t.Fatalf("settings = %d %v", code, body)
 	}
+	// The player launches the other install: it is now the one played last.
+	played(t, second, time.Now().Add(time.Hour))
 
 	// The tail has not moved: the rest of the night still lands in
 	// the open report.

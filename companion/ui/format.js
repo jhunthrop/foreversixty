@@ -32,6 +32,16 @@ const FORMAT = (() => {
     return DAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ', ' + clock;
   }
 
+  // lastPlayed is "Last played 19:42" today, "Last played 15 Oct 19:42"
+  // another day, and "Not played yet" when the time is not known.
+  function lastPlayed(iso, now, words) {
+    const d = iso ? new Date(iso) : null;
+    if (!d || Number.isNaN(d.getTime())) return words.notPlayed;
+    const clock = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    if (sameDay(d, now)) return words.lastPlayed + ' ' + clock;
+    return words.lastPlayed + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + clock;
+  }
+
   // characterLabel is "Thrall · Hardcore · US": the ruleset in words.
   function characterLabel(c, rulesets) {
     const ruleset = rulesets[String(c.ruleset).toLowerCase()] || c.ruleset;
@@ -46,7 +56,7 @@ const FORMAT = (() => {
     return { m: Math.floor(left / 60), s: left % 60 };
   }
 
-  return { midTruncate, when, characterLabel, characterValue, countdown };
+  return { midTruncate, when, lastPlayed, characterLabel, characterValue, countdown };
 })();
 
 if (typeof module !== 'undefined') module.exports = FORMAT;
