@@ -1,3 +1,5 @@
+import logging
+
 import pytest
 from traits_fixture import TRAITS, trait_rows
 
@@ -131,6 +133,26 @@ def test_a_tree_whose_groups_do_not_make_three_tabs_is_refused():
         read_trait_trees(trait_rows(node_group=groups, node_group_x_node=members))
 
 
+def test_a_node_in_no_tab_group_is_placed_in_its_column_bands_tab(caplog):
+    """1.60.1.70425 (2026-10-16): Mage's new node 113627 (Arcane Wrath) sat in four
+    one-node groups of its own and in none of the three tab groups, which used to
+    stop the fetch. Here 900001 is taken out of every multi-node group and given
+    two one-node groups; it must still land in Arms, the tab of its PosX band, and
+    the placement must be said out loud."""
+    members = [
+        m for m in read_csv(TRAITS / "TraitNodeGroupXTraitNode.csv") if m["TraitNodeID"] != "900001"
+    ]
+    groups = read_csv(TRAITS / "TraitNodeGroup.csv")
+    for gid in ("600901", "600902"):
+        groups.append({"ID": gid, "TraitTreeID": "1117", "Flags": "0"})
+        members.append({"ID": gid, "TraitNodeGroupID": gid, "TraitNodeID": "900001", "_Index": "0"})
+    with caplog.at_level(logging.WARNING, logger="pipeline.normalize.traits"):
+        (warrior,) = read_trait_trees(trait_rows(node_group=groups, node_group_x_node=members))
+    assert 900001 in {t.node_id for t in warrior.tabs[0].talents}
+    assert all(900001 not in {t.node_id for t in tab.talents} for tab in warrior.tabs[1:])
+    assert "node 900001 is in no tab group" in caplog.text
+
+
 def test_a_tabs_order_index_disagreeing_with_its_column_band_is_refused():
     # Protection's real OrderIndex is 2; break the 0..2 contiguity so its
     # position in the OrderIndex-sorted list can no longer be trusted to line
@@ -183,9 +205,7 @@ def test_a_non_class_trees_choice_node_with_two_entries_is_ignored():
 def test_an_edge_points_from_the_prerequisite_to_the_dependent():
     (warrior,) = read_trait_trees(trait_rows())
     links = {
-        t.node_id: (t.prereq_node_id, t.prereq_rank)
-        for tab in warrior.tabs
-        for t in tab.talents
+        t.node_id: (t.prereq_node_id, t.prereq_rank) for tab in warrior.tabs for t in tab.talents
     }
     assert links == {
         900001: (None, None),

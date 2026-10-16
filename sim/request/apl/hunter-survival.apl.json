@@ -88,7 +88,7 @@
       "action": {
         "castSpell": {
           "spellId": {
-            "rank": 1,
+            "rank": 0,
             "spellId": 1317257
           }
         }
