@@ -227,7 +227,7 @@
   {:else if state === 'success'}
     <div class="flex items-center gap-3">
       <svg
-        class="h-6 w-6 shrink-0 text-kill"
+        class="text-kill h-6 w-6 shrink-0"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
