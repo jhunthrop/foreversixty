@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-16T19:59:29.658627+00:00",
+ "generated_at": "2026-10-16T21:13:56.168287+00:00",
  "source": {
   "wowhead": {
    "note": "scraped per item id, ONLY for ids the fork database names no source for at all; see pipeline.wowhead_item_sources for the URL pattern, the four listviews read, and the politeness rules."
@@ -772485,6 +772485,20 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T18:00:47.820347+00:00"
   },
+  "252425": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "required_faction_id": null,
+   "required_standing_raw": null,
+   "source": "wowhead",
+   "fetched_at": "2026-10-16T21:13:56.168110+00:00"
+  },
   "252426": {
    "dropped_by": [],
    "sold_by": [],
@@ -802121,6 +802135,16 @@
    "required_standing_raw": null,
    "source": "wowhead",
    "fetched_at": "2026-10-13T08:28:47.598441+00:00"
+  },
+  "287648": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "required_faction_id": null,
+   "required_standing_raw": null,
+   "source": "wowhead",
+   "fetched_at": "2026-10-16T21:13:56.168110+00:00"
   }
  }
 }
