@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 )
 
 // fakeInstall lays out a flavour directory the way the game does.
@@ -146,5 +147,55 @@ func TestFlavourFoldersAreNamedInThePlayersWords(t *testing.T) {
 		if got := FlavorName(folder); got != want {
 			t.Errorf("FlavorName(%q) = %q, want %q", folder, got, want)
 		}
+	}
+}
+
+func touch(t *testing.T, path string, at time.Time) {
+	t.Helper()
+	if err := os.WriteFile(path, []byte("x"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chtimes(path, at, at); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestLastActivityIsTheNewestFileDirectlyUnderLogs(t *testing.T) {
+	root := t.TempDir()
+	in := fakeInstall(t, root, "_classic_beta_", "ACCOUNT#1")
+	old := time.Date(2026, 10, 1, 12, 0, 0, 0, time.UTC)
+	newest := time.Date(2026, 10, 15, 19, 42, 0, 0, time.UTC)
+	touch(t, filepath.Join(in.Logs, "General.log"), old)
+	touch(t, filepath.Join(in.Logs, "WoWCombatLog.txt"), newest)
+	touch(t, filepath.Join(in.Logs, "gx.log"), old.Add(time.Hour))
+	// A file below Logs is not the game running.
+	sub := filepath.Join(in.Logs, "Crashes")
+	if err := os.MkdirAll(sub, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	touch(t, filepath.Join(sub, "crash.txt"), newest.Add(24*time.Hour))
+	got, ok := LastActivity(in)
+	if !ok || !got.Equal(newest) {
+		t.Fatalf("LastActivity = %v, %v; want %v", got, ok, newest)
+	}
+}
+
+func TestLastActivityIsUnknownWithoutLogs(t *testing.T) {
+	root := t.TempDir()
+	in := fakeInstall(t, root, "_retail_", "ACCOUNT#1")
+	if _, ok := LastActivity(in); ok {
+		t.Fatal("an empty Logs directory has activity")
+	}
+	if err := os.RemoveAll(in.Logs); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := LastActivity(in); ok {
+		t.Fatal("a missing Logs directory has activity")
+	}
+	if err := os.MkdirAll(filepath.Join(in.Logs, "only-a-dir"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := LastActivity(in); ok {
+		t.Fatal("a Logs directory holding only a folder has activity")
 	}
 }

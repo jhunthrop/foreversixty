@@ -239,6 +239,7 @@ function installRow(i, headlineKey) {
       i.watching ? h('span', { class: 'tag', title: COPY.status.watchingTitle, text: COPY.status.watching }) : null),
     advancedLabel(i));
   const row = h('div', { class: 'install' }, top,
+    h('span', { class: 'played', text: FORMAT.lastPlayed(i.last_played, new Date(), COPY.status) }),
     h('span', { class: 'path', title: i.path, text: FORMAT.midTruncate(i.path, 62) }));
   // The instruction lives in the headline when the headline is about
   // advanced logging; a row only keeps its short line when it is not.
@@ -583,6 +584,7 @@ function renderSettings(s) {
     for (const i of s.installs) {
       const where = h('div', { class: 'where' },
         h('div', { class: 'name', text: i.flavor_name || i.flavor }),
+        h('span', { class: 'played', text: FORMAT.lastPlayed(i.last_played, new Date(), COPY.status) }),
         h('span', { class: 'path', title: i.path, text: FORMAT.midTruncate(i.path, 52) }));
       const side = i.added
         ? h('button', { class: 'ghost small', type: 'button', 'data-fid': 'remove-' + i.path, onclick: (e) => onRemove(e.target, i.path) }, COPY.settings.remove)

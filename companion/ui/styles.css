@@ -243,6 +243,7 @@ button.link:hover { color: var(--gold-hover); border: 0; }
 .install .top-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .name { font-weight: 700; color: var(--strong); display: flex; align-items: center; gap: 8px; min-width: 0; }
 .path { display: block; font: 400 12px/1.5 var(--font-mono); color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; }
+.played { display: block; font-size: 13px; line-height: 1.5; color: var(--muted); margin-top: 2px; }
 .install .adv { font-size: 13px; color: var(--muted); white-space: nowrap; }
 .install .adv.off { color: var(--warn); font-weight: 600; }
 .install .adv .glyph { display: inline-block; width: 14px; margin-right: 6px; text-align: center; }

@@ -13,6 +13,7 @@ import (
 	"runtime"
 	"sort"
 	"strings"
+	"time"
 )
 
 // LogGlob matches the combat logs the game writes. The plain
@@ -215,4 +216,31 @@ func FlavorName(folder string) string {
 		return "Retail"
 	}
 	return folder
+}
+
+// LastActivity is the newest modification time among the regular files
+// directly under the install's Logs directory. The game rewrites its
+// General, gx, cpu and threadpool logs at launch and the combat log
+// while logging, so this is when the install was last played. It does
+// not look into subfolders; a missing or empty Logs directory is false.
+func LastActivity(in Install) (time.Time, bool) {
+	entries, err := os.ReadDir(in.Logs)
+	if err != nil {
+		return time.Time{}, false
+	}
+	var newest time.Time
+	found := false
+	for _, e := range entries {
+		if !e.Type().IsRegular() {
+			continue
+		}
+		fi, err := e.Info()
+		if err != nil {
+			continue
+		}
+		if !found || fi.ModTime().After(newest) {
+			newest, found = fi.ModTime(), true
+		}
+	}
+	return newest, found
 }

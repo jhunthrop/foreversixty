@@ -94,6 +94,8 @@ The **Reports** page lists the newest reports the moment they have an id, live o
 | Game folders | the folders it found on its own, and any you add with **Add a folder...** (the system folder dialog); only the ones you add are saved, and **Remove** takes one back out. Pick a flavour folder such as `_classic_era_` or the folder above it |
 | Logging character | who reports are attributed to, picked from the characters the addon has seen |
 
+The companion watches the install you played most recently; the Status page tags it Watching.
+
 Where the companion keeps its files:
 
 | Platform | Directory |

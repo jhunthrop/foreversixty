@@ -46,3 +46,12 @@ test('every sentence in copy.js is a string or a function that returns one', () 
   };
   walk(COPY, 'COPY');
 });
+
+test('last played is a clock today, a short date otherwise, and honest when unknown', () => {
+  const now = new Date(2026, 9, 15, 21, 0);
+  assert.strictEqual(FORMAT.lastPlayed(new Date(2026, 9, 15, 19, 42).toISOString(), now, COPY.status), 'Last played 19:42');
+  assert.strictEqual(FORMAT.lastPlayed(new Date(2026, 9, 14, 9, 5).toISOString(), now, COPY.status), 'Last played 14 Oct 09:05');
+  assert.strictEqual(FORMAT.lastPlayed(undefined, now, COPY.status), 'Not played yet');
+  assert.strictEqual(FORMAT.lastPlayed('', now, COPY.status), 'Not played yet');
+  assert.strictEqual(FORMAT.lastPlayed('garbage', now, COPY.status), 'Not played yet');
+});

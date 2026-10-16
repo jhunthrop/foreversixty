@@ -1,5 +1,10 @@
 # Companion changelog
 
+## 0.2.2
+
+- The companion now watches the game install you played most recently, not the first one it
+  found. The Status page tags it Watching and shows when each folder was last played.
+
 ## 0.2.0
 
 - Sign in with Battle.net: the Device page opens your browser on the site, shows a code to
