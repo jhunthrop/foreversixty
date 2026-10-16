@@ -15,6 +15,14 @@ on:
         required: false
         default: false
         type: boolean
+  # client.yml (the client watcher) calls this workflow the morning a new Forever build
+  # appears on wago.tools, with the product and build it found; the fetch job below is
+  # the same one a hand dispatch runs.
+  workflow_call:
+    inputs:
+      product: { type: string, required: true }
+      build: { type: string, required: false, default: '' }
+      allow_shrink: { type: boolean, required: false, default: false }
 permissions: { contents: read }
 jobs:
   test:
@@ -53,8 +61,16 @@ jobs:
       # addon is installable from a checkout with no build step. This is the
       # gate that neither was hand-edited and that a curated weight change was
       # re-emitted.
-      - run: uv run python -m pipeline weights --build 1.60.1.70374 --check
-      - run: uv run python -m pipeline addon-data --build 1.60.1.70374 --check
+      # The gates check the ACTIVE build, read from active-build.json the way the
+      # Makefile does, so a build move (tools/activate-build.sh) needs no edit here.
+      - name: the active build
+        id: active
+        run: |
+          build=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' ../web/src/data/active-build.json)
+          test -n "$build" || { echo "web/src/data/active-build.json names no build"; exit 1; }
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+      - run: uv run python -m pipeline weights --build "${{ steps.active.outputs.build }}" --check
+      - run: uv run python -m pipeline addon-data --build "${{ steps.active.outputs.build }}" --check
       # test_addondata.py gates the generated Data.lua on a real `load()`, so the
       # suite needs an interpreter; ubuntu-latest ships none and the test skips
       # itself without one. A plain apt install rather than a third-party action:
@@ -63,7 +79,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y lua5.4
       - run: uv run pytest
   fetch:
-    if: github.event_name == 'workflow_dispatch'
+    # A dispatch or a call from client.yml names a product; a push or pull request never does.
+    if: inputs.product != ''
     needs: test
     runs-on: ubuntu-latest
     timeout-minutes: 30

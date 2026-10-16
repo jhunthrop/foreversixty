@@ -1,0 +1,127 @@
+# .github/workflows/client.yml
+#
+# The client watcher. Every morning it asks wago.tools for the newest World of
+# Warcraft: Forever client build (data/pipeline/clientwatch.py, ruled by
+# data/curated/client.json: known product keys OR a 1.60+ version under any key,
+# so a product rename or a launch renumbering is still found) and compares it with
+# web/src/data/active-build.json. When a newer build exists it:
+#
+#   fetch    -- runs data.yml's fetch job for it (the same job a hand dispatch runs),
+#               which commits data/builds/<build>/ to main; skipped when the build's
+#               directory is already there;
+#   activate -- runs tools/activate-build.sh, which moves the site, the addon and the
+#               guides to the build, commits and pushes, tags the addon patch release
+#               (addon-release.yml publishes it) and dispatches the ranking (bis.yml,
+#               force) so the carried-forward picks are replaced the same day.
+#
+# Scheduled before the other nightlies (addon-data-release 05:00, bis 06:23,
+# web's lhci 07:15 UTC) so they run against the new build. Dispatch with `build`
+# (and `product` when wago lists it under a key the config does not know) to move
+# to a specific build by hand; `inspect` stops before anything is committed.
+name: client
+on:
+  schedule:
+    - cron: '41 3 * * *'
+  workflow_dispatch:
+    inputs:
+      build:
+        description: 'activate this build (blank = the newest Forever build on wago.tools)'
+        required: false
+        default: ''
+      product:
+        description: 'wago.tools product key for that build (blank = the one the watcher found)'
+        required: false
+        default: ''
+      inspect:
+        description: 'stop before committing; print what would change'
+        type: boolean
+        default: false
+permissions: { contents: read }
+concurrency:
+  group: client
+  cancel-in-progress: false
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      newer: ${{ steps.decide.outputs.newer }}
+      build: ${{ steps.decide.outputs.build }}
+      product: ${{ steps.decide.outputs.product }}
+      needs_fetch: ${{ steps.decide.outputs.needs_fetch }}
+    defaults: { run: { working-directory: data } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync
+      - name: the newest Forever build on wago.tools
+        id: check
+        run: uv run python -m pipeline client-check
+      - name: decide
+        id: decide
+        env:
+          NEWER: ${{ steps.check.outputs.newer }}
+          FOUND_BUILD: ${{ steps.check.outputs.newest_build }}
+          FOUND_PRODUCT: ${{ steps.check.outputs.newest_product }}
+          ACTIVE: ${{ steps.check.outputs.active }}
+          UNMATCHED: ${{ steps.check.outputs.unmatched_newer }}
+          ASK_BUILD: ${{ inputs.build }}
+          ASK_PRODUCT: ${{ inputs.product }}
+        run: |
+          if [ "$UNMATCHED" != "[]" ] && [ -n "$UNMATCHED" ]; then
+            echo "::warning title=unclaimed newer client builds::wago.tools lists builds newer than $ACTIVE that curated/client.json neither claims nor ignores: $UNMATCHED -- if one is Forever, add its product to client.json"
+          fi
+          build="$FOUND_BUILD"; product="$FOUND_PRODUCT"; newer="$NEWER"
+          if [ -n "$ASK_BUILD" ]; then
+            build="$ASK_BUILD"; product="${ASK_PRODUCT:-$FOUND_PRODUCT}"
+            [ "$build" != "$ACTIVE" ] && newer=true || newer=false
+          fi
+          needs_fetch=true
+          [ -f "builds/$build/items.json" ] && needs_fetch=false
+          {
+            echo "newer=$newer"; echo "build=$build"; echo "product=$product"; echo "needs_fetch=$needs_fetch"
+          } >> "$GITHUB_OUTPUT"
+          if [ "$newer" = true ]; then
+            echo "::notice title=new Forever client::$build ($product) is newer than the active $ACTIVE; fetch needed: $needs_fetch"
+          else
+            echo "the active build $ACTIVE is the newest Forever build wago.tools lists ($FOUND_BUILD)"
+          fi
+
+  fetch:
+    needs: watch
+    if: needs.watch.outputs.newer == 'true' && needs.watch.outputs.needs_fetch == 'true'
+    uses: ./.github/workflows/data.yml
+    permissions: { contents: write }
+    secrets: inherit
+    with:
+      product: ${{ needs.watch.outputs.product }}
+      build: ${{ needs.watch.outputs.build }}
+
+  activate:
+    needs: [watch, fetch]
+    if: ${{ !cancelled() && needs.watch.outputs.newer == 'true' && (needs.fetch.result == 'success' || needs.fetch.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions: { contents: write, actions: write }
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      # main as it is AFTER the fetch job's commit, with history and tags so the
+      # script's rebase and the addon tag work.
+      - uses: actions/checkout@v4
+        with: { ref: main, fetch-depth: 0 }
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: git config user.name forever-client-bot && git config user.email bot@foreversixty.gg
+      - name: activate ${{ needs.watch.outputs.build }}
+        env:
+          BUILD: ${{ needs.watch.outputs.build }}
+          INSPECT: ${{ inputs.inspect }}
+        run: |
+          if [ "$INSPECT" = "true" ]; then
+            tools/activate-build.sh "$BUILD" --no-commit
+            git --no-pager diff --cached --stat
+          else
+            tools/activate-build.sh "$BUILD"
+          fi

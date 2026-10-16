@@ -51,8 +51,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
-      - run: uv run python -m pipeline weights --build 1.60.1.70374 --check
-      - run: uv run python -m pipeline addon-data --build 1.60.1.70374 --check
+      - name: the active build
+        id: active
+        run: |
+          build=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' ../web/src/data/active-build.json)
+          test -n "$build" || { echo "web/src/data/active-build.json names no build"; exit 1; }
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+      - run: uv run python -m pipeline weights --build "${{ steps.active.outputs.build }}" --check
+      - run: uv run python -m pipeline addon-data --build "${{ steps.active.outputs.build }}" --check
 
   syntax-lua51:
     # luacheck's own parser accepts 5.4-only syntax (goto, ::label::,
