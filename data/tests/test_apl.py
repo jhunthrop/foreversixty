@@ -143,10 +143,17 @@ def test_every_spell_the_rotations_name_exists_with_that_rank():
             if str(spell_id) not in spells and spell_id in hotfix_granted:
                 continue
             assert str(spell_id) in spells, f"{key} names spell {spell_id}, which the build has not"
-            assert spells[str(spell_id)]["rank"] == rank, (
-                f"{key} names spell {spell_id} at rank {rank}; "
-                f"the build says rank {spells[str(spell_id)]['rank']}"
-            )
+            build_rank = spells[str(spell_id)]["rank"]
+            # A spell the client stops ranking (1.60.1.70425 dropped Strider Kick's
+            # "Rank 1" subtext, so 1317257 reads rank 0 there and rank 1 on 70374)
+            # keeps the rank 1 a rotation gave it: the engine resolves a cast by id
+            # alone (core.ProtoToActionID ignores rank, see below), and the rotation
+            # file is shared with the engine fork at the pin, so it cannot follow a
+            # label change the moment one client build makes it.
+            if not (build_rank == 0 and rank == 1):
+                assert build_rank == rank, (
+                    f"{key} names spell {spell_id} at rank {rank}; the build says rank {build_rank}"
+                )
             checked += 1
     assert checked >= 10, "the written rotations should name at least ten spell references"
 
