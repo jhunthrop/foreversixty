@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70450",
-  "engine_version": "171b9ff7f",
-  "generated_at": "2026-10-16T23:07:40Z",
+  "engine_version": "eb3dc7793",
+  "generated_at": "2026-10-17T08:29:59Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -219,7 +219,7 @@
           "source": "The Deadmines: Edwin VanCleef",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 67.30154609683242,
+          "sim_dps": 67.30154609683245,
           "verified": true,
           "alternatives": [
             {
@@ -314,7 +314,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 67.30154609683242,
+          "sim_dps": 67.30154609683245,
           "verified": true,
           "alternatives": [
             {
@@ -411,7 +411,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 67.30154609683242,
+          "sim_dps": 67.30154609683245,
           "verified": true,
           "alternatives": [
             {
@@ -508,7 +508,7 @@
           "score": 17.190104103,
           "verified": true,
           "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +1.0 DPS (67.3 vs 66.3 set DPS)",
-          "dps_delta": 1.0041788911633205,
+          "dps_delta": 1.0041788911633631,
           "alternatives": [
             {
               "item_id": 8350,
@@ -658,7 +658,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 67.30154609683242,
+      "set_dps": 67.30154609683245,
       "no_source_count": 186,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -692,8 +692,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 4.229880594,
-      "verify_run_seconds": 4.296737852,
+      "weights_run_seconds": 4.304958621,
+      "verify_run_seconds": 4.93425485,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1003,7 +1003,7 @@
           "source": "The Deadmines: Edwin VanCleef",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 65.95520231771741,
+          "sim_dps": 65.95520231771742,
           "verified": true,
           "alternatives": [
             {
@@ -1098,7 +1098,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 65.95520231771741,
+          "sim_dps": 65.95520231771742,
           "verified": true,
           "alternatives": [
             {
@@ -1195,7 +1195,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 65.95520231771741,
+          "sim_dps": 65.95520231771742,
           "verified": true,
           "alternatives": [
             {
@@ -1292,7 +1292,7 @@
           "score": 17.190104103,
           "verified": true,
           "swap_note": "confirmed by the sim against Demon Band (id 12054): kept the pick, +1.0 DPS (66.0 vs 65.0 set DPS)",
-          "dps_delta": 0.9855104994722979,
+          "dps_delta": 0.9855104994723121,
           "alternatives": [
             {
               "item_id": 281673,
@@ -1441,7 +1441,7 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 65.95520231771741,
+      "set_dps": 65.95520231771742,
       "no_source_count": 176,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -1475,8 +1475,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 4.229880594,
-      "verify_run_seconds": 4.216332992,
+      "weights_run_seconds": 4.304958621,
+      "verify_run_seconds": 4.86322173,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2102,7 +2102,7 @@
           "score": 25.10197446,
           "verified": true,
           "swap_note": "confirmed by the sim against Thunderbrow Ring (id 13097): kept the pick, +2.3 DPS (121.9 vs 119.6 set DPS)",
-          "dps_delta": 2.3124987787009417,
+          "dps_delta": 2.312498778701041,
           "alternatives": [
             {
               "item_id": 2933,
@@ -2201,7 +2201,7 @@
           "source": "Gnomeregan: Crowd Pummeler 9-60",
           "source_kind": "dungeon",
           "chance": 0.4,
-          "sim_dps": 121.92461195252132,
+          "sim_dps": 121.92461195252137,
           "verified": true,
           "alternatives": [
             {
@@ -2252,8 +2252,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 121.92461195252132,
-      "no_source_count": 339,
+      "set_dps": 121.92461195252137,
+      "no_source_count": 346,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2285,11 +2285,11 @@
         "finger2: Thunderbrow Ring",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.704297806,
-      "verify_run_seconds": 2.614033053,
+      "weights_run_seconds": 4.619672284,
+      "verify_run_seconds": 2.954803153,
       "coverage": {
         "back": {
-          "eligible": 181,
+          "eligible": 182,
           "sourced": 145,
           "rare_spawn_skipped": 16
         },
@@ -2299,7 +2299,7 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 151,
+          "eligible": 152,
           "sourced": 132,
           "rare_spawn_skipped": 4
         },
@@ -2324,7 +2324,7 @@
           "rare_spawn_skipped": 5
         },
         "legs": {
-          "eligible": 181,
+          "eligible": 183,
           "sourced": 160,
           "rare_spawn_skipped": 7
         },
@@ -2334,7 +2334,7 @@
           "rare_spawn_skipped": 31
         },
         "neck": {
-          "eligible": 37,
+          "eligible": 39,
           "sourced": 19,
           "rare_spawn_skipped": 3
         },
@@ -2366,7 +2366,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 117,
+          "eligible": 118,
           "sourced": 94,
           "rare_spawn_skipped": 7
         }
@@ -2916,7 +2916,7 @@
           "score": 25.10197446,
           "verified": true,
           "swap_note": "confirmed by the sim against Thunderbrow Ring (id 13097): kept the pick, +2.3 DPS (119.7 vs 117.4 set DPS)",
-          "dps_delta": 2.2851649073492126,
+          "dps_delta": 2.2851649073491984,
           "alternatives": [
             {
               "item_id": 17694,
@@ -3015,7 +3015,7 @@
           "source": "Gnomeregan: Crowd Pummeler 9-60",
           "source_kind": "dungeon",
           "chance": 0.4,
-          "sim_dps": 119.70320853850197,
+          "sim_dps": 119.70320853850198,
           "verified": true,
           "alternatives": [
             {
@@ -3066,8 +3066,8 @@
           "empty_reason": "effect_not_modelled"
         }
       ],
-      "set_dps": 119.70320853850197,
-      "no_source_count": 329,
+      "set_dps": 119.70320853850198,
+      "no_source_count": 336,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3099,11 +3099,11 @@
         "finger2: Thunderbrow Ring",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 4.704297806,
-      "verify_run_seconds": 2.610184435,
+      "weights_run_seconds": 4.619672284,
+      "verify_run_seconds": 2.922483613,
       "coverage": {
         "back": {
-          "eligible": 181,
+          "eligible": 182,
           "sourced": 148,
           "rare_spawn_skipped": 16
         },
@@ -3113,7 +3113,7 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 156,
+          "eligible": 157,
           "sourced": 132,
           "rare_spawn_skipped": 4
         },
@@ -3138,7 +3138,7 @@
           "rare_spawn_skipped": 5
         },
         "legs": {
-          "eligible": 177,
+          "eligible": 179,
           "sourced": 155,
           "rare_spawn_skipped": 7
         },
@@ -3148,7 +3148,7 @@
           "rare_spawn_skipped": 31
         },
         "neck": {
-          "eligible": 37,
+          "eligible": 39,
           "sourced": 18,
           "rare_spawn_skipped": 3
         },
@@ -3180,7 +3180,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 120,
+          "eligible": 121,
           "sourced": 99,
           "rare_spawn_skipped": 7
         }
@@ -3736,7 +3736,7 @@
           "score": 33.106339908,
           "verified": true,
           "swap_note": "confirmed by the sim against Protector's Band (ilvl 33) (id 19517): kept the pick, +0.9 DPS (166.5 vs 165.6 set DPS)",
-          "dps_delta": 0.8736653065893165,
+          "dps_delta": 0.8736653065892881,
           "alternatives": [
             {
               "item_id": 2951,
@@ -3835,7 +3835,7 @@
           "source": "Gnomeregan: Crowd Pummeler 9-60",
           "source_kind": "dungeon",
           "chance": 0.4,
-          "sim_dps": 166.48078269018689,
+          "sim_dps": 166.4807826901868,
           "verified": true,
           "alternatives": [
             {
@@ -3885,8 +3885,8 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 166.48078269018689,
-      "no_source_count": 450,
+      "set_dps": 166.4807826901868,
+      "no_source_count": 457,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -3917,11 +3917,11 @@
         "finger1: Protector's Band",
         "finger2: Falcon's Hook"
       ],
-      "weights_run_seconds": 5.34035161,
-      "verify_run_seconds": 2.8865635320000003,
+      "weights_run_seconds": 5.174966149,
+      "verify_run_seconds": 3.120787092,
       "coverage": {
         "back": {
-          "eligible": 245,
+          "eligible": 246,
           "sourced": 206,
           "rare_spawn_skipped": 18
         },
@@ -3931,8 +3931,8 @@
           "rare_spawn_skipped": 11
         },
         "feet": {
-          "eligible": 207,
-          "sourced": 181,
+          "eligible": 209,
+          "sourced": 182,
           "rare_spawn_skipped": 5
         },
         "finger1": {
@@ -3951,12 +3951,12 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 138,
-          "sourced": 121,
+          "eligible": 139,
+          "sourced": 122,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 228,
+          "eligible": 230,
           "sourced": 199,
           "rare_spawn_skipped": 7
         },
@@ -3966,7 +3966,7 @@
           "rare_spawn_skipped": 34
         },
         "neck": {
-          "eligible": 54,
+          "eligible": 56,
           "sourced": 29,
           "rare_spawn_skipped": 4
         },
@@ -3998,7 +3998,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 162,
+          "eligible": 163,
           "sourced": 132,
           "rare_spawn_skipped": 7
         }
@@ -4554,7 +4554,7 @@
           "score": 33.106339908,
           "verified": true,
           "swap_note": "confirmed by the sim against Legionnaire's Band (ilvl 33) (id 19513): kept the pick, +0.8 DPS (162.9 vs 162.2 set DPS)",
-          "dps_delta": 0.7506190827365344,
+          "dps_delta": 0.7506190827365913,
           "alternatives": [
             {
               "item_id": 2951,
@@ -4653,7 +4653,7 @@
           "source": "Gnomeregan: Crowd Pummeler 9-60",
           "source_kind": "dungeon",
           "chance": 0.4,
-          "sim_dps": 162.90684725843548,
+          "sim_dps": 162.9068472584355,
           "verified": true,
           "alternatives": [
             {
@@ -4703,8 +4703,8 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 162.90684725843548,
-      "no_source_count": 434,
+      "set_dps": 162.9068472584355,
+      "no_source_count": 441,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -4734,11 +4734,11 @@
         "finger1: Legionnaire's Band",
         "finger2: Falcon's Hook"
       ],
-      "weights_run_seconds": 5.34035161,
-      "verify_run_seconds": 2.86429615,
+      "weights_run_seconds": 5.174966149,
+      "verify_run_seconds": 3.078155054,
       "coverage": {
         "back": {
-          "eligible": 247,
+          "eligible": 248,
           "sourced": 210,
           "rare_spawn_skipped": 18
         },
@@ -4748,8 +4748,8 @@
           "rare_spawn_skipped": 11
         },
         "feet": {
-          "eligible": 212,
-          "sourced": 181,
+          "eligible": 214,
+          "sourced": 182,
           "rare_spawn_skipped": 5
         },
         "finger1": {
@@ -4768,12 +4768,12 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 139,
-          "sourced": 124,
+          "eligible": 140,
+          "sourced": 125,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 225,
+          "eligible": 227,
           "sourced": 196,
           "rare_spawn_skipped": 7
         },
@@ -4783,7 +4783,7 @@
           "rare_spawn_skipped": 34
         },
         "neck": {
-          "eligible": 54,
+          "eligible": 56,
           "sourced": 28,
           "rare_spawn_skipped": 4
         },
@@ -4815,7 +4815,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 167,
+          "eligible": 168,
           "sourced": 141,
           "rare_spawn_skipped": 7
         }
@@ -4972,7 +4972,7 @@
           "score": 35.221698068,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Medallion (id 19539): kept the pick, +1.8 DPS (216.8 vs 215.0 set DPS)",
-          "dps_delta": 1.8119485104153625,
+          "dps_delta": 1.8119485104154762,
           "alternatives": [
             {
               "item_id": 19540,
@@ -5366,7 +5366,7 @@
           "score": 38.768867893,
           "verified": true,
           "swap_note": "confirmed by the sim against Protector's Band (ilvl 43) (id 19515): kept the pick, +0.7 DPS (216.8 vs 216.2 set DPS)",
-          "dps_delta": 0.6633502334749721,
+          "dps_delta": 0.6633502334749153,
           "alternatives": [
             {
               "item_id": 7552,
@@ -5541,7 +5541,7 @@
         }
       ],
       "set_dps": 216.82527264457818,
-      "no_source_count": 589,
+      "no_source_count": 596,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -5574,12 +5574,12 @@
         "trinket1: Molten Heart of the Mountain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 5.336761847,
-      "verify_run_seconds": 3.5024408620000003,
+      "weights_run_seconds": 5.1081629,
+      "verify_run_seconds": 4.081339678,
       "coverage": {
         "back": {
-          "eligible": 312,
-          "sourced": 263,
+          "eligible": 314,
+          "sourced": 264,
           "rare_spawn_skipped": 18
         },
         "chest": {
@@ -5588,8 +5588,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 276,
-          "sourced": 240,
+          "eligible": 278,
+          "sourced": 241,
           "rare_spawn_skipped": 6
         },
         "finger1": {
@@ -5608,12 +5608,12 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 204,
-          "sourced": 172,
+          "eligible": 205,
+          "sourced": 173,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 282,
+          "eligible": 284,
           "sourced": 242,
           "rare_spawn_skipped": 7
         },
@@ -5623,7 +5623,7 @@
           "rare_spawn_skipped": 35
         },
         "neck": {
-          "eligible": 69,
+          "eligible": 71,
           "sourced": 39,
           "rare_spawn_skipped": 5
         },
@@ -5655,7 +5655,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 217,
+          "eligible": 218,
           "sourced": 180,
           "rare_spawn_skipped": 7
         }
@@ -6200,7 +6200,7 @@
           "score": 38.768867893,
           "verified": true,
           "swap_note": "confirmed by the sim against Legionnaire's Band (ilvl 43) (id 19512): kept the pick, +0.7 DPS (220.7 vs 219.9 set DPS)",
-          "dps_delta": 0.7101144339737857,
+          "dps_delta": 0.7101144339738141,
           "alternatives": [
             {
               "item_id": 11862,
@@ -6287,10 +6287,10 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 220.65865738501105,
+          "sim_dps": 220.65865738501108,
           "verified": true,
           "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +5.6 DPS (220.7 vs 215.1 set DPS)",
-          "dps_delta": 5.565447941015293
+          "dps_delta": 5.5654479410153215
         },
         {
           "slot": "trinket2",
@@ -6298,7 +6298,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 220.65865738501105,
+          "sim_dps": 220.65865738501108,
           "verified": true,
           "alternatives": [
             {
@@ -6325,7 +6325,7 @@
           "source": "Gnomeregan: Crowd Pummeler 9-60",
           "source_kind": "dungeon",
           "chance": 0.4,
-          "sim_dps": 220.65865738501105,
+          "sim_dps": 220.65865738501108,
           "verified": true,
           "alternatives": [
             {
@@ -6375,8 +6375,8 @@
           "empty_reason": "no_dps_value"
         }
       ],
-      "set_dps": 220.65865738501105,
-      "no_source_count": 569,
+      "set_dps": 220.65865738501108,
+      "no_source_count": 576,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6409,12 +6409,12 @@
         "trinket1: Rune of the Guard Captain",
         "trinket2: Frozen Heart of the Mountain"
       ],
-      "weights_run_seconds": 5.336761847,
-      "verify_run_seconds": 3.329146336,
+      "weights_run_seconds": 5.1081629,
+      "verify_run_seconds": 3.794967145,
       "coverage": {
         "back": {
-          "eligible": 317,
-          "sourced": 270,
+          "eligible": 319,
+          "sourced": 271,
           "rare_spawn_skipped": 18
         },
         "chest": {
@@ -6423,8 +6423,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 282,
-          "sourced": 241,
+          "eligible": 284,
+          "sourced": 242,
           "rare_spawn_skipped": 6
         },
         "finger1": {
@@ -6443,12 +6443,12 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 205,
-          "sourced": 175,
+          "eligible": 206,
+          "sourced": 176,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 278,
+          "eligible": 280,
           "sourced": 238,
           "rare_spawn_skipped": 7
         },
@@ -6458,7 +6458,7 @@
           "rare_spawn_skipped": 35
         },
         "neck": {
-          "eligible": 71,
+          "eligible": 73,
           "sourced": 40,
           "rare_spawn_skipped": 5
         },
@@ -6490,7 +6490,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 221,
+          "eligible": 222,
           "sourced": 190,
           "rare_spawn_skipped": 7
         }
@@ -7160,7 +7160,7 @@
           "sim_dps": 285.99188864838527,
           "verified": true,
           "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +7.5 DPS (286.0 vs 278.5 set DPS)",
-          "dps_delta": 7.501933961690327
+          "dps_delta": 7.50193396169027
         },
         {
           "slot": "trinket2",
@@ -7267,7 +7267,7 @@
         }
       ],
       "set_dps": 285.99188864838527,
-      "no_source_count": 1235,
+      "no_source_count": 1242,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7302,12 +7302,12 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 5.109077159,
-      "verify_run_seconds": 10.014009704,
+      "weights_run_seconds": 5.059201738,
+      "verify_run_seconds": 11.527928955,
       "coverage": {
         "back": {
-          "eligible": 384,
-          "sourced": 307,
+          "eligible": 386,
+          "sourced": 308,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -7316,8 +7316,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 382,
-          "sourced": 316,
+          "eligible": 384,
+          "sourced": 317,
           "rare_spawn_skipped": 7
         },
         "finger1": {
@@ -7336,12 +7336,12 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 314,
-          "sourced": 236,
+          "eligible": 315,
+          "sourced": 237,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 403,
+          "eligible": 405,
           "sourced": 318,
           "rare_spawn_skipped": 7
         },
@@ -7351,7 +7351,7 @@
           "rare_spawn_skipped": 35
         },
         "neck": {
-          "eligible": 153,
+          "eligible": 155,
           "sourced": 68,
           "rare_spawn_skipped": 5
         },
@@ -7383,7 +7383,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 296,
+          "eligible": 297,
           "sourced": 222,
           "rare_spawn_skipped": 7
         }
@@ -7583,7 +7583,7 @@
           "item_name": "Feralheart Epaulets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 289.94508972751134,
+          "sim_dps": 289.94508972751146,
           "verified": true,
           "alternatives": [
             {
@@ -7722,7 +7722,7 @@
           "item_name": "Feralheart Bands",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 289.94508972751134,
+          "sim_dps": 289.94508972751146,
           "verified": true,
           "swap_note": "confirmed by the sim against Forest Stalker's Bracers (id 19587): kept the pick, +2.3 DPS (289.9 vs 287.6 set DPS)",
           "dps_delta": 2.302786018931897,
@@ -7766,7 +7766,7 @@
           "item_name": "Feralheart Fists",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 289.94508972751134,
+          "sim_dps": 289.94508972751146,
           "verified": true,
           "alternatives": [
             {
@@ -7861,7 +7861,7 @@
           "item_name": "Feralheart Trousers",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 289.94508972751134,
+          "sim_dps": 289.94508972751146,
           "verified": true,
           "alternatives": [
             {
@@ -7911,7 +7911,7 @@
           "item_name": "Feralheart Walkers",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 289.94508972751134,
+          "sim_dps": 289.94508972751146,
           "verified": true,
           "alternatives": [
             {
@@ -8050,10 +8050,10 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 289.94508972751134,
+          "sim_dps": 289.94508972751146,
           "verified": true,
           "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +8.2 DPS (289.9 vs 281.8 set DPS)",
-          "dps_delta": 8.193131792467625,
+          "dps_delta": 8.193131792467852,
           "alternatives": [
             {
               "item_id": 249469,
@@ -8077,7 +8077,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 289.94508972751134,
+          "sim_dps": 289.94508972751146,
           "verified": true,
           "alternatives": [
             {
@@ -8103,7 +8103,7 @@
           "item_name": "The Unstoppable Force",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 289.94508972751134,
+          "sim_dps": 289.94508972751146,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -8154,7 +8154,7 @@
           "item_name": "Idol of the Dream",
           "source": "The Temple of Atal'Hakkar: Hazzas",
           "source_kind": "dungeon",
-          "sim_dps": 289.94508972751134,
+          "sim_dps": 289.94508972751146,
           "verified": true,
           "alternatives": [
             {
@@ -8175,8 +8175,8 @@
           ]
         }
       ],
-      "set_dps": 289.94508972751134,
-      "no_source_count": 1229,
+      "set_dps": 289.94508972751146,
+      "no_source_count": 1236,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8212,12 +8212,12 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 5.109077159,
-      "verify_run_seconds": 9.431498004,
+      "weights_run_seconds": 5.059201738,
+      "verify_run_seconds": 11.005899183,
       "coverage": {
         "back": {
-          "eligible": 389,
-          "sourced": 313,
+          "eligible": 391,
+          "sourced": 314,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -8226,8 +8226,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 387,
-          "sourced": 316,
+          "eligible": 389,
+          "sourced": 317,
           "rare_spawn_skipped": 7
         },
         "finger1": {
@@ -8246,12 +8246,12 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 315,
-          "sourced": 238,
+          "eligible": 316,
+          "sourced": 239,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 398,
+          "eligible": 400,
           "sourced": 312,
           "rare_spawn_skipped": 7
         },
@@ -8261,7 +8261,7 @@
           "rare_spawn_skipped": 35
         },
         "neck": {
-          "eligible": 155,
+          "eligible": 157,
           "sourced": 69,
           "rare_spawn_skipped": 5
         },
@@ -8293,7 +8293,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 299,
+          "eligible": 300,
           "sourced": 227,
           "rare_spawn_skipped": 7
         }
@@ -8635,7 +8635,7 @@
           "sim_dps": 658.1349458821023,
           "verified": true,
           "swap_note": "confirmed by the sim against Forest Stalker's Bracers (id 19587): kept the pick, +14.7 DPS (658.1 vs 643.4 set DPS)",
-          "dps_delta": 14.70062146293958,
+          "dps_delta": 14.700621462939466,
           "alternatives": [
             {
               "item_id": 19589,
@@ -8951,7 +8951,7 @@
           "sim_dps": 658.1349458821023,
           "verified": true,
           "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +11.5 DPS (658.1 vs 646.6 set DPS)",
-          "dps_delta": 11.517136872827223
+          "dps_delta": 11.517136872827109
         },
         {
           "slot": "trinket2",
@@ -9058,7 +9058,7 @@
         }
       ],
       "set_dps": 658.1349458821023,
-      "no_source_count": 1235,
+      "no_source_count": 1242,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9093,12 +9093,12 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 5.004217352,
-      "verify_run_seconds": 9.444786875,
+      "weights_run_seconds": 4.895387148,
+      "verify_run_seconds": 11.115199833,
       "coverage": {
         "back": {
-          "eligible": 384,
-          "sourced": 307,
+          "eligible": 386,
+          "sourced": 308,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -9107,8 +9107,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 382,
-          "sourced": 316,
+          "eligible": 384,
+          "sourced": 317,
           "rare_spawn_skipped": 7
         },
         "finger1": {
@@ -9127,12 +9127,12 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 314,
-          "sourced": 236,
+          "eligible": 315,
+          "sourced": 237,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 403,
+          "eligible": 405,
           "sourced": 318,
           "rare_spawn_skipped": 7
         },
@@ -9142,7 +9142,7 @@
           "rare_spawn_skipped": 35
         },
         "neck": {
-          "eligible": 153,
+          "eligible": 155,
           "sourced": 68,
           "rare_spawn_skipped": 5
         },
@@ -9174,7 +9174,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 296,
+          "eligible": 297,
           "sourced": 222,
           "rare_spawn_skipped": 7
         }
@@ -9374,7 +9374,7 @@
           "item_name": "Feralheart Epaulets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 664.7121567840082,
+          "sim_dps": 664.712156784008,
           "verified": true,
           "alternatives": [
             {
@@ -9513,10 +9513,10 @@
           "item_name": "Feralheart Bands",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 664.7121567840082,
+          "sim_dps": 664.712156784008,
           "verified": true,
           "swap_note": "confirmed by the sim against Forest Stalker's Bracers (id 19587): kept the pick, +12.8 DPS (664.7 vs 651.9 set DPS)",
-          "dps_delta": 12.822694969335885,
+          "dps_delta": 12.822694969335771,
           "alternatives": [
             {
               "item_id": 19589,
@@ -9690,7 +9690,7 @@
           "item_name": "Feralheart Walkers",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 664.7121567840082,
+          "sim_dps": 664.712156784008,
           "verified": true,
           "alternatives": [
             {
@@ -9829,10 +9829,10 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 664.7121567840082,
+          "sim_dps": 664.712156784008,
           "verified": true,
           "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +11.4 DPS (664.7 vs 653.3 set DPS)",
-          "dps_delta": 11.390682056105902,
+          "dps_delta": 11.390682056105447,
           "alternatives": [
             {
               "item_id": 249469,
@@ -9856,7 +9856,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 664.7121567840082,
+          "sim_dps": 664.712156784008,
           "verified": true,
           "alternatives": [
             {
@@ -9882,7 +9882,7 @@
           "item_name": "The Unstoppable Force",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 664.7121567840082,
+          "sim_dps": 664.712156784008,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -9933,7 +9933,7 @@
           "item_name": "Idol of the Dream",
           "source": "The Temple of Atal'Hakkar: Hazzas",
           "source_kind": "dungeon",
-          "sim_dps": 664.7121567840082,
+          "sim_dps": 664.712156784008,
           "verified": true,
           "alternatives": [
             {
@@ -9954,8 +9954,8 @@
           ]
         }
       ],
-      "set_dps": 664.7121567840082,
-      "no_source_count": 1229,
+      "set_dps": 664.712156784008,
+      "no_source_count": 1236,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -9991,12 +9991,12 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 5.004217352,
-      "verify_run_seconds": 9.069470509,
+      "weights_run_seconds": 4.895387148,
+      "verify_run_seconds": 10.584586726,
       "coverage": {
         "back": {
-          "eligible": 389,
-          "sourced": 313,
+          "eligible": 391,
+          "sourced": 314,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -10005,8 +10005,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 387,
-          "sourced": 316,
+          "eligible": 389,
+          "sourced": 317,
           "rare_spawn_skipped": 7
         },
         "finger1": {
@@ -10025,12 +10025,12 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 315,
-          "sourced": 238,
+          "eligible": 316,
+          "sourced": 239,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 398,
+          "eligible": 400,
           "sourced": 312,
           "rare_spawn_skipped": 7
         },
@@ -10040,7 +10040,7 @@
           "rare_spawn_skipped": 35
         },
         "neck": {
-          "eligible": 155,
+          "eligible": 157,
           "sourced": 69,
           "rare_spawn_skipped": 5
         },
@@ -10072,7 +10072,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 299,
+          "eligible": 300,
           "sourced": 227,
           "rare_spawn_skipped": 7
         }

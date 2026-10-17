@@ -1,8 +1,8 @@
 {
   "spec": "warlock-destruction",
   "build": "1.60.1.70450",
-  "engine_version": "171b9ff7f",
-  "generated_at": "2026-10-17T00:34:44Z",
+  "engine_version": "eb3dc7793",
+  "generated_at": "2026-10-17T09:52:13Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -504,7 +504,7 @@
           "score": 5.228337243,
           "verified": true,
           "swap_note": "confirmed by the sim against Lorekeeper's Ring (id 20431): kept the pick, +1.3 DPS (39.7 vs 38.4 set DPS)",
-          "dps_delta": 1.2890573676485673,
+          "dps_delta": 1.2890573676485602,
           "alternatives": [
             {
               "item_id": 1156,
@@ -728,8 +728,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.114945367,
-      "verify_run_seconds": 0.835588888,
+      "weights_run_seconds": 2.338645513,
+      "verify_run_seconds": 1.1354076,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1323,7 +1323,7 @@
           "score": 5,
           "verified": true,
           "swap_note": "confirmed by the sim against Lavishly Jeweled Ring (id 1156): kept the pick, +1.3 DPS (38.6 vs 37.3 set DPS)",
-          "dps_delta": 1.2591776212863266,
+          "dps_delta": 1.2591776212863408,
           "alternatives": [
             {
               "item_id": 281673,
@@ -1519,7 +1519,7 @@
           ]
         }
       ],
-      "set_dps": 38.58825098167809,
+      "set_dps": 38.5882509816781,
       "no_source_count": 135,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -1553,8 +1553,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.114945367,
-      "verify_run_seconds": 0.879622575,
+      "weights_run_seconds": 2.338645513,
+      "verify_run_seconds": 1.162254773,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -1936,7 +1936,7 @@
           "source_kind": "dungeon",
           "verified": true,
           "swap_note": "beat the scored pick Green Silk Armor (id 7065) in the sim: +1.0 DPS over it",
-          "dps_delta": 1.0255368809572332,
+          "dps_delta": 1.0255368809571905,
           "alternatives": [
             {
               "item_id": 7728,
@@ -2259,7 +2259,7 @@
           "source_kind": "vendor",
           "verified": true,
           "swap_note": "beat the scored pick Lorekeeper's Ring (id 19525) in the sim: +1.5 DPS over it",
-          "dps_delta": 1.4551090033045,
+          "dps_delta": 1.4551090033044716,
           "alternatives": [
             {
               "item_id": 273030,
@@ -2408,8 +2408,8 @@
           ]
         }
       ],
-      "set_dps": 83.069329445465,
-      "no_source_count": 259,
+      "set_dps": 83.06932944546496,
+      "no_source_count": 264,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2443,11 +2443,11 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.244498062,
-      "verify_run_seconds": 0.906681771,
+      "weights_run_seconds": 2.4290798860000002,
+      "verify_run_seconds": 1.214870987,
       "coverage": {
         "back": {
-          "eligible": 181,
+          "eligible": 182,
           "sourced": 145,
           "rare_spawn_skipped": 16
         },
@@ -2482,17 +2482,17 @@
           "rare_spawn_skipped": 1
         },
         "legs": {
-          "eligible": 84,
+          "eligible": 85,
           "sourced": 74,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 234,
+          "eligible": 235,
           "sourced": 164,
           "rare_spawn_skipped": 22
         },
         "neck": {
-          "eligible": 37,
+          "eligible": 39,
           "sourced": 19,
           "rare_spawn_skipped": 3
         },
@@ -3100,7 +3100,7 @@
           "score": 7.639422044,
           "verified": true,
           "swap_note": "confirmed by the sim against Advisor's Ring (id 19521): kept the pick, +1.6 DPS over it",
-          "dps_delta": 1.60648418097081,
+          "dps_delta": 1.6064841809707815,
           "alternatives": [
             {
               "item_id": 273030,
@@ -3136,10 +3136,10 @@
           "item_name": "Sea Giant's Toe Ring",
           "source": "Gezzy Gunkgear",
           "source_kind": "vendor",
-          "sim_dps": 81.22153212082378,
+          "sim_dps": 81.2215321208238,
           "verified": true,
           "swap_note": "beat the scored pick Advisor's Ring (id 19521) in the sim: +1.2 DPS (81.2 vs 80.0 set DPS)",
-          "dps_delta": 1.2102137837185296,
+          "dps_delta": 1.2102137837185438,
           "alternatives": [
             {
               "item_id": 273030,
@@ -3280,8 +3280,8 @@
           ]
         }
       ],
-      "set_dps": 81.22153212082378,
-      "no_source_count": 241,
+      "set_dps": 81.2215321208238,
+      "no_source_count": 246,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3315,11 +3315,11 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 2.244498062,
-      "verify_run_seconds": 0.892359836,
+      "weights_run_seconds": 2.4290798860000002,
+      "verify_run_seconds": 1.262915521,
       "coverage": {
         "back": {
-          "eligible": 181,
+          "eligible": 182,
           "sourced": 148,
           "rare_spawn_skipped": 16
         },
@@ -3354,17 +3354,17 @@
           "rare_spawn_skipped": 1
         },
         "legs": {
-          "eligible": 82,
+          "eligible": 83,
           "sourced": 73,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 234,
+          "eligible": 235,
           "sourced": 181,
           "rare_spawn_skipped": 22
         },
         "neck": {
-          "eligible": 37,
+          "eligible": 39,
           "sourced": 18,
           "rare_spawn_skipped": 3
         },
@@ -3532,11 +3532,11 @@
               "dps_delta": -1.005750174
             },
             {
-              "item_id": 5608,
-              "item_name": "Living Cowl",
-              "source_kind": "world",
-              "source": "Tangled Horror",
-              "dps_delta": -2.071804772
+              "item_id": 7720,
+              "item_name": "Whitemane's Chapeau",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: High Inquisitor Whitemane",
+              "dps_delta": -2.04165256
             }
           ],
           "runners_up": [
@@ -3969,7 +3969,7 @@
           "score": 13.058214388,
           "verified": true,
           "swap_note": "confirmed by the sim against Snake Hoop (id 6750): kept the pick, +2.4 DPS (134.1 vs 131.7 set DPS)",
-          "dps_delta": 2.3933064089032143,
+          "dps_delta": 2.393306408903271,
           "alternatives": [
             {
               "item_id": 19524,
@@ -4067,7 +4067,7 @@
           "item_name": "Hypnotic Blade",
           "source": "Scarlet Monastery: Arcanist Doan",
           "source_kind": "dungeon",
-          "sim_dps": 134.1081151879994,
+          "sim_dps": 134.10811518799943,
           "verified": true,
           "alternatives": [
             {
@@ -4195,8 +4195,8 @@
           ]
         }
       ],
-      "set_dps": 134.1081151879994,
-      "no_source_count": 338,
+      "set_dps": 134.10811518799943,
+      "no_source_count": 343,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4231,11 +4231,11 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.035785713,
-      "verify_run_seconds": 0.893955759,
+      "weights_run_seconds": 2.063132072,
+      "verify_run_seconds": 1.266928376,
       "coverage": {
         "back": {
-          "eligible": 245,
+          "eligible": 246,
           "sourced": 206,
           "rare_spawn_skipped": 18
         },
@@ -4265,22 +4265,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 78,
-          "sourced": 69,
+          "eligible": 79,
+          "sourced": 70,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 107,
+          "eligible": 108,
           "sourced": 95,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 301,
+          "eligible": 302,
           "sourced": 208,
           "rare_spawn_skipped": 25
         },
         "neck": {
-          "eligible": 54,
+          "eligible": 56,
           "sourced": 29,
           "rare_spawn_skipped": 4
         },
@@ -4449,11 +4449,11 @@
               "verified": true
             },
             {
-              "item_id": 5608,
-              "item_name": "Living Cowl",
-              "source_kind": "world",
-              "source": "Tangled Horror",
-              "dps_delta": -2.071804772
+              "item_id": 7720,
+              "item_name": "Whitemane's Chapeau",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: High Inquisitor Whitemane",
+              "dps_delta": -2.04165256
             }
           ],
           "runners_up": [
@@ -4888,7 +4888,7 @@
           "score": 13.058214388,
           "verified": true,
           "swap_note": "confirmed by the sim against Snake Hoop (id 6750): kept the pick, +3.6 DPS (133.6 vs 129.9 set DPS)",
-          "dps_delta": 3.6178462711108637,
+          "dps_delta": 3.617846271110892,
           "alternatives": [
             {
               "item_id": 19520,
@@ -4971,7 +4971,7 @@
           "item_name": "Hypnotic Blade",
           "source": "Scarlet Monastery: Arcanist Doan",
           "source_kind": "dungeon",
-          "sim_dps": 133.55517807016366,
+          "sim_dps": 133.5551780701637,
           "verified": true,
           "alternatives": [
             {
@@ -5100,8 +5100,8 @@
           ]
         }
       ],
-      "set_dps": 133.55517807016366,
-      "no_source_count": 316,
+      "set_dps": 133.5551780701637,
+      "no_source_count": 321,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -5136,11 +5136,11 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 2.035785713,
-      "verify_run_seconds": 0.926195804,
+      "weights_run_seconds": 2.063132072,
+      "verify_run_seconds": 1.25885388,
       "coverage": {
         "back": {
-          "eligible": 247,
+          "eligible": 248,
           "sourced": 210,
           "rare_spawn_skipped": 18
         },
@@ -5170,22 +5170,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 78,
-          "sourced": 69,
+          "eligible": 79,
+          "sourced": 70,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 106,
+          "eligible": 107,
           "sourced": 95,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 302,
+          "eligible": 303,
           "sourced": 229,
           "rare_spawn_skipped": 25
         },
         "neck": {
-          "eligible": 54,
+          "eligible": 56,
           "sourced": 28,
           "rare_spawn_skipped": 4
         },
@@ -5784,7 +5784,7 @@
           "score": 13,
           "verified": true,
           "swap_note": "confirmed by the sim against Lorekeeper's Ring (id 19523): kept the pick, +4.2 DPS over it",
-          "dps_delta": 4.216771371463494,
+          "dps_delta": 4.216771371463437,
           "alternatives": [
             {
               "item_id": 281635,
@@ -5974,10 +5974,10 @@
           "source": "Maraudon: Noxxion",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 234.26878560008197,
+          "sim_dps": 234.26878560008205,
           "verified": true,
           "swap_note": "beat the scored pick Pyric Caduceus (id 11748) in the sim: +8.8 DPS (234.3 vs 225.5 set DPS)",
-          "dps_delta": 8.804653204855754,
+          "dps_delta": 8.804653204855839,
           "alternatives": [
             {
               "item_id": 13065,
@@ -6016,8 +6016,8 @@
           ]
         }
       ],
-      "set_dps": 234.26878560008197,
-      "no_source_count": 424,
+      "set_dps": 234.26878560008205,
+      "no_source_count": 429,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -6050,12 +6050,12 @@
         "main_hand: Kindling Stave",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.9017345140000002,
-      "verify_run_seconds": 1.233397673,
+      "weights_run_seconds": 2.020201631,
+      "verify_run_seconds": 1.7051008909999998,
       "coverage": {
         "back": {
-          "eligible": 312,
-          "sourced": 263,
+          "eligible": 314,
+          "sourced": 264,
           "rare_spawn_skipped": 18
         },
         "chest": {
@@ -6084,22 +6084,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 114,
-          "sourced": 98,
+          "eligible": 115,
+          "sourced": 99,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 131,
+          "eligible": 132,
           "sourced": 116,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 356,
+          "eligible": 357,
           "sourced": 249,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 69,
+          "eligible": 71,
           "sourced": 39,
           "rare_spawn_skipped": 5
         },
@@ -6692,7 +6692,7 @@
           "score": 13,
           "verified": true,
           "swap_note": "confirmed by the sim against Advisor's Ring (id 19519): kept the pick, +4.2 DPS over it",
-          "dps_delta": 4.175784450599707,
+          "dps_delta": 4.1757844505997355,
           "alternatives": [
             {
               "item_id": 281635,
@@ -6905,10 +6905,10 @@
           "source": "Maraudon: Noxxion",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 234.75117215749538,
+          "sim_dps": 234.7511721574953,
           "verified": true,
           "swap_note": "beat the scored pick Pyric Caduceus (id 11748) in the sim: +10.1 DPS (234.8 vs 224.6 set DPS)",
-          "dps_delta": 10.137726731961777,
+          "dps_delta": 10.137726731961664,
           "alternatives": [
             {
               "item_id": 13065,
@@ -6947,8 +6947,8 @@
           ]
         }
       ],
-      "set_dps": 234.75117215749538,
-      "no_source_count": 398,
+      "set_dps": 234.7511721574953,
+      "no_source_count": 403,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6981,12 +6981,12 @@
         "main_hand: Kindling Stave",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.9017345140000002,
-      "verify_run_seconds": 1.089107437,
+      "weights_run_seconds": 2.020201631,
+      "verify_run_seconds": 1.510899574,
       "coverage": {
         "back": {
-          "eligible": 317,
-          "sourced": 270,
+          "eligible": 319,
+          "sourced": 271,
           "rare_spawn_skipped": 18
         },
         "chest": {
@@ -7015,22 +7015,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 114,
-          "sourced": 98,
+          "eligible": 115,
+          "sourced": 99,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 130,
+          "eligible": 131,
           "sourced": 116,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 357,
+          "eligible": 358,
           "sourced": 273,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 71,
+          "eligible": 73,
           "sourced": 40,
           "rare_spawn_skipped": 5
         },
@@ -7724,7 +7724,7 @@
           "source_kind": "quest",
           "verified": true,
           "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, +12.4 DPS over it",
-          "dps_delta": 12.388655577207714,
+          "dps_delta": 12.388655577207885,
           "alternatives": [
             {
               "item_id": 11302,
@@ -7863,10 +7863,10 @@
           "item_name": "Brilliant Wand",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 467.8279054662522,
+          "sim_dps": 467.8279054662521,
           "verified": true,
           "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +40.2 DPS (467.8 vs 427.7 set DPS)",
-          "dps_delta": 40.16474859353639,
+          "dps_delta": 40.164748593536274,
           "alternatives": [
             {
               "item_id": 19108,
@@ -7905,8 +7905,8 @@
           ]
         }
       ],
-      "set_dps": 467.8279054662522,
-      "no_source_count": 877,
+      "set_dps": 467.8279054662521,
+      "no_source_count": 882,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7940,12 +7940,12 @@
         "trinket2: Serenity Field",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 2.198867132,
-      "verify_run_seconds": 1.9451185,
+      "weights_run_seconds": 2.315582428,
+      "verify_run_seconds": 2.936401163,
       "coverage": {
         "back": {
-          "eligible": 383,
-          "sourced": 306,
+          "eligible": 385,
+          "sourced": 307,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -7974,22 +7974,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 166,
-          "sourced": 128,
+          "eligible": 167,
+          "sourced": 129,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 185,
+          "eligible": 186,
           "sourced": 148,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 465,
+          "eligible": 466,
           "sourced": 317,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 153,
+          "eligible": 155,
           "sourced": 68,
           "rare_spawn_skipped": 5
         },
@@ -8822,10 +8822,10 @@
           "item_name": "Brilliant Wand",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 458.7108540634937,
+          "sim_dps": 458.7108540634936,
           "verified": true,
           "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +37.4 DPS (458.7 vs 421.3 set DPS)",
-          "dps_delta": 37.37437642829059,
+          "dps_delta": 37.37437642829042,
           "alternatives": [
             {
               "item_id": 19108,
@@ -8864,8 +8864,8 @@
           ]
         }
       ],
-      "set_dps": 458.7108540634937,
-      "no_source_count": 866,
+      "set_dps": 458.7108540634936,
+      "no_source_count": 871,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8899,12 +8899,12 @@
         "trinket2: Serenity Field",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 2.198867132,
-      "verify_run_seconds": 2.019271559,
+      "weights_run_seconds": 2.315582428,
+      "verify_run_seconds": 2.889849235,
       "coverage": {
         "back": {
-          "eligible": 388,
-          "sourced": 312,
+          "eligible": 390,
+          "sourced": 313,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -8933,22 +8933,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 166,
-          "sourced": 128,
+          "eligible": 167,
+          "sourced": 129,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 184,
+          "eligible": 185,
           "sourced": 148,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 467,
+          "eligible": 468,
           "sourced": 330,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 155,
+          "eligible": 157,
           "sourced": 69,
           "rare_spawn_skipped": 5
         },
@@ -9465,7 +9465,7 @@
           "score": 40.175100552,
           "verified": true,
           "swap_note": "confirmed by the sim against Sentinel's Silk Leggings (ilvl 65) (id 22752): kept the pick, +8.0 DPS over it",
-          "dps_delta": 8.005789280554723,
+          "dps_delta": 8.00578928055495,
           "alternatives": [
             {
               "item_id": 231587,
@@ -9644,7 +9644,7 @@
           "source_kind": "quest",
           "verified": true,
           "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, +19.1 DPS over it",
-          "dps_delta": 19.063365214083774,
+          "dps_delta": 19.063365214083888,
           "alternatives": [
             {
               "item_id": 20534,
@@ -9783,10 +9783,10 @@
           "item_name": "Brilliant Wand",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 879.4645408479138,
+          "sim_dps": 879.464540847914,
           "verified": true,
           "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +58.1 DPS (879.5 vs 821.3 set DPS)",
-          "dps_delta": 58.13857183642733,
+          "dps_delta": 58.138571836427445,
           "alternatives": [
             {
               "item_id": 19108,
@@ -9825,8 +9825,8 @@
           ]
         }
       ],
-      "set_dps": 879.4645408479138,
-      "no_source_count": 877,
+      "set_dps": 879.464540847914,
+      "no_source_count": 882,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9860,12 +9860,12 @@
         "main_hand: Spire of Hakkar",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 7.242700952,
-      "verify_run_seconds": 2.230512954,
+      "weights_run_seconds": 7.465779396,
+      "verify_run_seconds": 3.195910404,
       "coverage": {
         "back": {
-          "eligible": 383,
-          "sourced": 306,
+          "eligible": 385,
+          "sourced": 307,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -9894,22 +9894,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 166,
-          "sourced": 128,
+          "eligible": 167,
+          "sourced": 129,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 185,
+          "eligible": 186,
           "sourced": 148,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 465,
+          "eligible": 466,
           "sourced": 317,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 153,
+          "eligible": 155,
           "sourced": 68,
           "rare_spawn_skipped": 5
         },
@@ -10294,7 +10294,7 @@
           "score": 22.444234526,
           "verified": true,
           "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (ilvl 55) (id 19596): kept the pick, +4.4 DPS over it",
-          "dps_delta": 4.356610702353123,
+          "dps_delta": 4.356610702353009,
           "alternatives": [
             {
               "item_id": 254123,
@@ -10519,7 +10519,7 @@
           "score": 35.664128413,
           "verified": true,
           "swap_note": "confirmed by the sim against Signet Ring of the Bronze Dragonflight (ilvl 75) (id 234028): kept the pick, +2.8 DPS over it",
-          "dps_delta": 2.8485931819757297,
+          "dps_delta": 2.8485931819755024,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -10753,7 +10753,7 @@
           "sim_dps": 880.9642521501344,
           "verified": true,
           "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +64.6 DPS (881.0 vs 816.3 set DPS)",
-          "dps_delta": 64.62784153102803,
+          "dps_delta": 64.62784153102825,
           "alternatives": [
             {
               "item_id": 19108,
@@ -10793,7 +10793,7 @@
         }
       ],
       "set_dps": 880.9642521501344,
-      "no_source_count": 866,
+      "no_source_count": 871,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -10827,12 +10827,12 @@
         "main_hand: Spire of Hakkar",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 7.242700952,
-      "verify_run_seconds": 2.439794218,
+      "weights_run_seconds": 7.465779396,
+      "verify_run_seconds": 3.313268808,
       "coverage": {
         "back": {
-          "eligible": 388,
-          "sourced": 312,
+          "eligible": 390,
+          "sourced": 313,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -10861,22 +10861,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 166,
-          "sourced": 128,
+          "eligible": 167,
+          "sourced": 129,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 184,
+          "eligible": 185,
           "sourced": 148,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 467,
+          "eligible": 468,
           "sourced": 330,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 155,
+          "eligible": 157,
           "sourced": 69,
           "rare_spawn_skipped": 5
         },

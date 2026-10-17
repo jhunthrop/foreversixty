@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (night-elf, 0000000000000000-55100000000000000000-0000000000000000)
 
-Set DPS (verified): 35.2. Weights run: 3.3s. Verify run: 1.3s. 186 eligible items had no known source.
+Set DPS (verified): 35.2. Weights run: 3.5s. Verify run: 1.7s. 186 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.082 ± 0.002, defense=0.140 ± 0.026 per rating point (1 rating = 1%, 0.140 per %), dodge=0.096 ± 0.008 per rating point (12 rating = 1%, 1.148 per %), strength=0.052 ± 0.000, agility=0.148 ± 0.005, attack_power=0.026 ± 0.000, hit=0.045 ± 0.005 per rating point (10 rating = 1%, 0.449 per %), crit=0.019 ± 0.001 per rating point (14 rating = 1%, 0.261 per %), expertise=1.200 ± 0.059
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 186, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-55230330000000000000-0000000000000000)
 
-Set DPS (verified): 41.6. Weights run: 3.2s. Verify run: 1.3s. 339 eligible items had no known source.
+Set DPS (verified): 41.6. Weights run: 3.3s. Verify run: 1.8s. 346 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=0.084 ± 0.004, defense=0.240 ± 0.054 per rating point (1 rating = 1%, 0.240 per %), dodge=0.106 ± 0.013 per rating point (12 rating = 1%, 1.268 per %), strength=0.049 ± 0.000, agility=0.150 ± 0.008, attack_power=0.025 ± 0.000, hit=0.047 ± 0.009 per rating point (10 rating = 1%, 0.466 per %), crit=0.020 ± 0.001 per rating point (14 rating = 1%, 0.276 per %), expertise=1.556 ± 0.106
 
@@ -64,41 +64,41 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 30:** head: Brawler's Leather Helm; neck: Souvenir Sea Shell; shoulder: Watchman Pauldrons; back: Sergeant's Cape; chest: Raptor Hide Harness; wrist: Cultist's Armguards; hands: Operator's Gloves; waist: Warden's Leather Belt; legs: Defender's Leather Kilt; feet: Gnomebot Operating Boots; finger1: Insurgent's Band; finger2: Darkspear Signet; trinket1: Talisman of Arathor; trinket2: Rune of Perfection; main_hand: Staff of the Shade
 
-No-known-source sample (15 of 339, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring
+No-known-source sample (15 of 346, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring
 
 ### Band 40 (night-elf, 0000000000000000-55230332020132000000-0000000000000000)
 
-Set DPS (verified): 73.2. Weights run: 3.9s. Verify run: 1.6s. 450 eligible items had no known source.
+Set DPS (verified): 72.7. Weights run: 4.0s. Verify run: 2.0s. 457 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.018, armor=0.107 ± 0.006, defense=0.328 ± 0.080 per rating point (1 rating = 1%, 0.328 per %), dodge=0.113 ± 0.018 per rating point (12 rating = 1%, 1.360 per %), strength=0.046 ± 0.000, agility=0.136 ± 0.011, attack_power=0.023 ± 0.000, hit=not significant (0.055 ± 0.014) per rating point (10 rating = 1%, 0.550 per %), crit=0.029 ± 0.006 per rating point (14 rating = 1%, 0.407 per %), expertise=1.721 ± 0.160
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Adventurer's Pith Helmet (9420) | Uldaman [dungeon] | 25.3 stamina points (713.32 DPS) | yes | Brawler's Leather Helm (252512, -54.53 DPS) [crafted]; Warden's Wizard Hat (14604, -62.42 DPS, sim-verified) [world_drop]; Defender's Leather Helm (252455, -77.43 DPS) [crafted] |
+| head | Adventurer's Pith Helmet (9420) | Uldaman [dungeon] | 25.3 stamina points (713.32 DPS) | yes | Warden's Wizard Hat (14604, -54.25 DPS) [world_drop]; Brawler's Leather Helm (252512, -54.53 DPS) [crafted]; Defender's Leather Helm (252455, -77.43 DPS) [crafted] |
 | neck | Souvenir Sea Shell (274749) | Gezzy Gunkgear [vendor] | 13.0 stamina points (367.11 DPS) | yes | Gazlowe's Charm (13088, -51.28 DPS) [dungeon]; Darkspear Warding Pendant (272074, -56.48 DPS) [vendor]; River Pride Choker (13087, -107.76 DPS) [world_drop] |
-| shoulder | Fleshhide Shoulders (10774) | Razorfen Downs: Glutton [dungeon] | 26.2 stamina points (739.52 DPS) | yes | Flintrock Shoulders (7755, -142.45 DPS, sim-verified) [dungeon]; Watchman Pauldrons (7727, -183.86 DPS) [dungeon]; Pads of the Venom Spider (13103, -277.07 DPS) [world_drop] |
+| shoulder | Fleshhide Shoulders (10774) | Razorfen Downs: Glutton [dungeon] | 26.2 stamina points (739.52 DPS) | yes | Flintrock Shoulders (7755, -135.44 DPS, sim-verified) [dungeon]; Watchman Pauldrons (7727, -183.86 DPS) [dungeon]; Pads of the Venom Spider (13103, -277.07 DPS) [world_drop] |
 | back | Wing of the Whelpling (13121) | World drop [world_drop] | 13.5 stamina points (382.18 DPS) | yes | Silky Spider Cape (10776, -9.37 DPS) [dungeon]; Well Oiled Cloak (12254, -12.38 DPS) [vendor]; Heraldic Cloak (8120, -22.21 DPS) [dungeon] |
-| chest | Raptor Hunter Tunic (4119) | Raptor Mastery [quest] | 29.1 stamina points (821.22 DPS) | yes | Warden's Wraps (14601, -74.47 DPS) [world_drop]; Insignia Chestguard (4057, -143.66 DPS) [world_drop]; Robes of the Lich (10762, -174.89 DPS, sim-verified) [dungeon] |
+| chest | Raptor Hunter Tunic (4119) | Raptor Mastery [quest] | 29.1 stamina points (821.22 DPS) | yes | Warden's Wraps (14601, -74.47 DPS) [world_drop]; Insignia Chestguard (4057, -143.66 DPS) [world_drop]; Robes of the Lich (10762, -165.61 DPS, sim-verified) [dungeon] |
 | wrist | Scorpashi Wristbands (14654) | World drop [world_drop] | 13.4 stamina points (377.50 DPS) | yes | Branded Leather Bracers (19508, -29.30 DPS) [dungeon]; Cultist's Armguards (270032, -40.71 DPS) [quest]; Barbaric Bracers (18948, -45.81 DPS) [crafted] |
 | hands | Warden's Leather Gloves (252527) | Leatherworking [crafted] | 18.5 stamina points (523.16 DPS) | yes | Stalker's Leather Gloves (252526, -1.44 DPS) [crafted]; Bonefingers (10765, -24.87 DPS) [dungeon]; Razzeric's Racing Grips (6727, -27.22 DPS) [quest] |
-| waist | Ogron's Sash (13117) | World drop [world_drop] | 18.2 stamina points (514.50 DPS) | yes | Warden's Leather Belt (252460, -39.56 DPS) [crafted]; Scorpashi Sash (14652, -68.17 DPS) [world_drop]; Kolkar Hunter's Belt (6788, -73.34 DPS, sim-verified) [quest] |
+| waist | Ogron's Sash (13117) | World drop [world_drop] | 18.2 stamina points (514.50 DPS) | yes | Warden's Leather Belt (252460, -39.56 DPS) [crafted]; Scorpashi Sash (14652, -68.17 DPS) [world_drop]; Kolkar Hunter's Belt (6788, -83.62 DPS, sim-verified) [quest] |
 | legs | Imperial Leather Pants (4062) | Uldaman: Ancient Treasure [dungeon] | 23.3 stamina points (658.36 DPS) | yes | Warden's Woolies (14605, -9.04 DPS) [world_drop]; Basilisk Hide Pants (1718, -11.02 DPS) [world_drop]; Panther Hunter Leggings (4108, -19.88 DPS) [quest] |
-| feet | Warden's Leather Shoes (252466) | Leatherworking [crafted] | 22.1 stamina points (623.97 DPS) | yes | Harbinger Boots (7754, -96.74 DPS) [dungeon]; Skulker's Leather Shoes (252531, -97.56 DPS) [crafted]; Gnomebot Operating Boots (9450, -114.14 DPS, sim-verified) [dungeon] |
-| finger1 | Suspicious Spare Part (274754) | Rettrick [vendor] | 11.3 stamina points (319.73 DPS) | yes | Darkspear Signet (272070, -9.10 DPS) [vendor]; Underworld Band (1980, -37.34 DPS) [world_drop]; Talvash's Gold Ring (9538, -37.34 DPS) [quest] |
-| finger2 | Insurgent's Band (272066) | Creeg Bothunk [vendor] | 11.3 stamina points (318.43 DPS) | yes | Darkspear Signet (272070, -7.80 DPS) [vendor]; Underworld Band (1980, -36.04 DPS) [world_drop]; Talvash's Gold Ring (9538, -36.04 DPS) [quest] |
-| trinket1 | Rune of Perfection (21565) | Silverwing Sentinels [rep] | sim-verified (6277.4 DPS) | yes | Talisman of Arathor (21118, +0.00 DPS) [rep]; Arena Master (18706, -28.24 DPS) [world]; Darkspear Voodoo Seal (272059, -28.24 DPS) [vendor] |
-| trinket2 | Rune of Duty (21567) | Silverwing Sentinels [rep] | sim-verified (6277.4 DPS) | yes | Talisman of Arathor (21118, +0.00 DPS) [rep]; Arena Master (18706, -28.24 DPS) [world]; Darkspear Voodoo Seal (272059, -28.24 DPS) [vendor] |
-| main_hand | Ironshod Bludgeon (9408) | Uldaman: Ironaya [dungeon] | sim-verified (6277.4 DPS) | yes | Windweaver Staff (7757, -138.60 DPS) [dungeon]; Mograine's Might (7723, -153.69 DPS) [dungeon]; Manual Crowd Pummeler (9449, -488.35 DPS, sim-verified) [dungeon] |
+| feet | Warden's Leather Shoes (252466) | Leatherworking [crafted] | 22.1 stamina points (623.97 DPS) | yes | Worn Running Boots (9398, -54.40 DPS, sim-verified) [dungeon]; Gnomebot Operating Boots (9450, -56.03 DPS) [dungeon]; Harbinger Boots (7754, -96.74 DPS) [dungeon] |
+| finger1 | Underworld Band (1980) | World drop [world_drop] | 12.0 stamina points (338.87 DPS) | yes | Insurgent's Band (272066, -20.44 DPS) [vendor]; Darkspear Signet (272070, -28.24 DPS) [vendor]; Talvash's Gold Ring (9538, -56.48 DPS) [quest] |
+| finger2 | Suspicious Spare Part (274754) | Rettrick [vendor] | 11.3 stamina points (319.73 DPS) | yes | Insurgent's Band (272066, -1.30 DPS) [vendor]; Darkspear Signet (272070, -9.10 DPS) [vendor]; Talvash's Gold Ring (9538, -37.34 DPS) [quest] |
+| trinket1 | Rune of Perfection (21565) | Silverwing Sentinels [rep] | sim-verified (6287.1 DPS) | yes | Talisman of Arathor (21118, +0.00 DPS) [rep]; Arena Master (18706, -28.24 DPS) [world]; Darkspear Voodoo Seal (272059, -28.24 DPS) [vendor] |
+| trinket2 | Rune of Duty (21567) | Silverwing Sentinels [rep] | sim-verified (6287.1 DPS) | yes | Talisman of Arathor (21118, +0.00 DPS) [rep]; Arena Master (18706, -28.24 DPS) [world]; Darkspear Voodoo Seal (272059, -28.24 DPS) [vendor] |
+| main_hand | Ironshod Bludgeon (9408) | Uldaman: Ironaya [dungeon] | sim-verified (6287.1 DPS) | yes | Windweaver Staff (7757, -138.60 DPS) [dungeon]; Mograine's Might (7723, -153.69 DPS) [dungeon]; Manual Crowd Pummeler (9449, -482.84 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 40:** head: Adventurer's Pith Helmet; shoulder: Fleshhide Shoulders; back: Wing of the Whelpling; chest: Raptor Hunter Tunic; wrist: Scorpashi Wristbands; hands: Warden's Leather Gloves; waist: Ogron's Sash; legs: Imperial Leather Pants; feet: Warden's Leather Shoes; finger1: Suspicious Spare Part; finger2: Insurgent's Band; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Ironshod Bludgeon
+**New at 40:** head: Adventurer's Pith Helmet; shoulder: Fleshhide Shoulders; back: Wing of the Whelpling; chest: Raptor Hunter Tunic; wrist: Scorpashi Wristbands; hands: Warden's Leather Gloves; waist: Ogron's Sash; legs: Imperial Leather Pants; feet: Warden's Leather Shoes; finger1: Underworld Band; finger2: Suspicious Spare Part; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Ironshod Bludgeon
 
-No-known-source sample (15 of 450, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape
+No-known-source sample (15 of 457, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape
 
 ### Band 50 (night-elf, 0000000000000000-55230332020132012511-0000000000000000)
 
-Set DPS (verified): 117.0. Weights run: 4.5s. Verify run: 3.5s. 589 eligible items had no known source.
+Set DPS (verified): 117.0. Weights run: 4.4s. Verify run: 4.3s. 596 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.032, armor=0.151 ± 0.012, defense=not significant (0.452 ± 0.148) per rating point (1 rating = 1%, 0.452 per %), dodge=0.255 ± 0.031 per rating point (12 rating = 1%, 3.057 per %), strength=0.057 ± 0.000, agility=0.252 ± 0.020, attack_power=0.029 ± 0.000, hit=not significant (0.096 ± 0.027) per rating point (10 rating = 1%, 0.959 per %), crit=not significant (0.035 ± 0.011) per rating point (14 rating = 1%, 0.488 per %), expertise=3.424 ± 0.295
 
@@ -107,15 +107,15 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | head | Sprightring Helm (17776) | Twisted Evils [quest] | 42.5 stamina points (1513.01 DPS) | yes | Knight-Lieutenant's Leather Headband (220850, -265.17 DPS, sim-verified) [vendor]; Impractical Headwarmer (274756, -302.88 DPS) [vendor]; Scorpashi Skullcap (14658, -347.09 DPS) [world_drop] |
 | neck | Master Sergeant's Insignia (18444) | PvP rank 8 · Master Sergeant · Alliance [vendor] | 14.0 stamina points (498.64 DPS) | yes | Darkspear Warding Pendant (272073, -35.62 DPS) [vendor]; Souvenir Sea Shell (274749, -35.62 DPS) [vendor]; Gazlowe's Charm (13088, -98.72 DPS) [dungeon] |
 | shoulder | Knight-Lieutenant's Leather Shoulders (220852) | Captain Dirgehammer [vendor] | sim-verified (11735.2 DPS) | yes | Fleshhide Shoulders (10774, +0.00 DPS) [dungeon]; Warden's Leather Shoulders (252536, -53.99 DPS) [crafted]; Penance Spaulders (11963, -455.86 DPS, sim-verified) [quest] |
-| back | Nightfall Drape (12465) | Sunken Temple: Morphaz [dungeon] | 19.7 stamina points (703.40 DPS) | yes | Sergeant's Cape (18441, -10.78 DPS) [vendor]; Grovekeeper's Drape (17739, -76.62 DPS) [dungeon]; Wing of the Whelpling (13121, -160.46 DPS) [world_drop] |
+| back | Nightfall Drape (12465) | Sunken Temple: Morphaz [dungeon] | 19.7 stamina points (703.40 DPS) | yes | Sergeant's Cape (18441, -10.78 DPS) [vendor]; Emberscale Cape (11311, -21.55 DPS) [dungeon]; Grovekeeper's Drape (17739, -76.62 DPS) [dungeon] |
 | chest | Warbear Harness (15064) | Leatherworking [crafted] | 56.1 stamina points (1996.92 DPS) | yes | Jinxed Hoodoo Skin (9473, -525.32 DPS, sim-verified) [dungeon]; Heraldic Breastplate (8119, -549.00 DPS) [world_drop]; Knight's Leather Armor (220854, -568.40 DPS) [vendor] |
 | wrist | Arena Bracers (18710) | Arena Treasure Chest [world] | 25.2 stamina points (897.34 DPS) | yes | Sergeant Major's Dragonhide Armsplints (18455, -130.10 DPS, sim-verified) [vendor]; Warden's Leather Bracers (252541, -163.86 DPS) [crafted]; Serpentskin Bracers (8257, -166.10 DPS) [world_drop] |
 | hands | Feralheart Grips (226802) | Mokvar [vendor] | 39.9 stamina points (1422.84 DPS) | yes | Warden's Leather Gauntlets (252549, -291.69 DPS) [crafted]; Feralheart Fists (226793, -352.64 DPS) [vendor]; Raider Gloves (272100, -353.75 DPS, sim-verified) [vendor] |
 | waist | Warden's Leather Waistguard (252475) | Leatherworking [crafted] | 28.1 stamina points (1002.60 DPS) | yes | Skulker's Leather Waistguard (252474, -16.84 DPS) [crafted]; Prowler's Leather Waistguard (252473, -30.72 DPS) [crafted]; Pridelord Girdle (14674, -165.39 DPS) [world_drop] |
 | legs | Knight's Leather Pants (220858) | Captain Dirgehammer [vendor] | 37.2 stamina points (1326.14 DPS) | yes | Knight's Restored Leather Leggings (220882, -230.53 DPS) [vendor]; Scorpashi Leggings (14659, -242.63 DPS) [world_drop]; Knight's Crackling Leather Leggings (220864, -754.31 DPS, sim-verified) [vendor] |
 | feet | Sergeant Major's Leather Boots (220860) | PvP rank 9 · Sergeant Major · Alliance [vendor] | sim-verified (11735.2 DPS) | yes | Prowler's Leather Boots (252468, +0.00 DPS) [crafted]; Skulker's Leather Boots (252469, +0.00 DPS) [crafted]; Warden's Leather Boots (252470, -472.41 DPS, sim-verified) [crafted] |
-| finger1 | Insurgent's Band (272065) | Creeg Bothunk [vendor] | 14.4 stamina points (513.88 DPS) | yes | Ring of Saviors (1447, -15.24 DPS) [world_drop]; Darkspear Signet (272069, -15.24 DPS) [vendor]; Suspicious Spare Part (274754, -107.87 DPS) [vendor] |
-| finger2 | Darkmoon Ring (19302) (or Darkspear Signet (272069), Ring of Saviors (1447)) | Lhara [vendor] | 14.0 stamina points (498.64 DPS) | yes | Ring of Saviors (1447, +0.00 DPS) [world_drop]; Darkspear Signet (272069, +0.00 DPS) [vendor]; Suspicious Spare Part (274754, -92.62 DPS) [vendor] |
+| finger1 | Insurgent's Band (272065) | Creeg Bothunk [vendor] | 14.4 stamina points (513.88 DPS) | yes | Ring of Saviors (1447, -15.24 DPS) [world_drop]; Darkspear Signet (272069, -15.24 DPS) [vendor]; Underworld Band (1980, -86.48 DPS) [world_drop] |
+| finger2 | Darkmoon Ring (19302) (or Darkspear Signet (272069), Ring of Saviors (1447)) | Lhara [vendor] | 14.0 stamina points (498.64 DPS) | yes | Ring of Saviors (1447, +0.00 DPS) [world_drop]; Darkspear Signet (272069, +0.00 DPS) [vendor]; Underworld Band (1980, -71.23 DPS) [world_drop] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (11735.2 DPS) | yes | Talisman of Arathor (21117, +0.00 DPS) [rep]; Guardian Talisman (1490, -35.62 DPS) [quest]; Rune of Perfection (21565, -71.23 DPS) [rep] |
 | trinket2 | Relentless Raider's Seal (272060) | Creeg Bothunk [vendor] | sim-verified (11735.2 DPS) | yes | Talisman of Arathor (21117, +0.00 DPS) [rep]; Guardian Talisman (1490, -35.62 DPS) [quest]; Rune of Perfection (21565, -71.23 DPS) [rep] |
 | main_hand | Radiant Staff (249453) | Enchanting [crafted] | sim-verified (11735.2 DPS) | yes | Dreamstaff (249454, +0.00 DPS) [crafted]; Glowing Brightwood Staff (812, -29.23 DPS) [world_drop]; The Hand of Antu'sul (9639, -524.20 DPS, sim-verified) [dungeon] |
@@ -124,11 +124,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 50:** head: Sprightring Helm; neck: Master Sergeant's Insignia; shoulder: Knight-Lieutenant's Leather Shoulders; back: Nightfall Drape; chest: Warbear Harness; wrist: Arena Bracers; hands: Feralheart Grips; waist: Warden's Leather Waistguard; legs: Knight's Leather Pants; feet: Sergeant Major's Leather Boots; finger1: Insurgent's Band; finger2: Darkmoon Ring; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal; main_hand: Radiant Staff
 
-No-known-source sample (15 of 589, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 596, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
 ### Band 60 (night-elf, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 148.6. Weights run: 4.4s. Verify run: 4.4s. 1235 eligible items had no known source.
+Set DPS (verified): 148.6. Weights run: 4.4s. Verify run: 5.9s. 1242 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.019, armor=0.185 ± 0.016, defense=0.985 ± 0.239 per rating point (1 rating = 1%, 0.985 per %), dodge=0.619 ± 0.048 per rating point (12 rating = 1%, 7.423 per %), strength=0.111 ± 0.000, agility=0.508 ± 0.030, attack_power=0.055 ± 0.000, hit=0.160 ± 0.039 per rating point (10 rating = 1%, 1.598 per %), crit=0.075 ± 0.016 per rating point (14 rating = 1%, 1.045 per %), expertise=5.806 ± 0.422
 
@@ -154,11 +154,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 60:** head: Outlaw's Collar; neck: Amulet of the Darkmoon; shoulder: Glowing Mantle of the Dawn; back: Shifting Cloak; chest: Dire Warbear Harness; wrist: Feralheart Wristguards; waist: Feralheart Waistguard; legs: Sentinel's Leather Pants; feet: Fine Dawn Treaders; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Resolution; trinket1: Defender's Grip Stabilizer; trinket2: Talisman of Arathor; main_hand: The Unstoppable Force
 
-No-known-source sample (15 of 1235, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 1242, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
 ### Band 60, raid preset (night-elf, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 333.4. Weights run: 4.5s. Verify run: 4.6s. 1235 eligible items had no known source.
+Set DPS (verified): 333.4. Weights run: 4.5s. Verify run: 5.9s. 1242 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.015, armor=0.207 ± 0.018, defense=1.532 ± 0.310 per rating point (1 rating = 1%, 1.532 per %), dodge=0.858 ± 0.059 per rating point (12 rating = 1%, 10.293 per %), strength=0.120 ± 0.000, agility=0.762 ± 0.038, attack_power=0.055 ± 0.000, hit=0.262 ± 0.044 per rating point (10 rating = 1%, 2.623 per %), crit=0.125 ± 0.019 per rating point (14 rating = 1%, 1.755 per %), expertise=7.919 ± 0.482
 
@@ -184,13 +184,13 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 60:** head: Outlaw's Collar; neck: Amulet of the Darkmoon; shoulder: Glowing Mantle of the Dawn; back: Shifting Cloak; chest: Dire Warbear Harness; wrist: Feralheart Wristguards; waist: Feralheart Waistguard; legs: Sentinel's Leather Pants; feet: Fine Dawn Treaders; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Resolution; trinket1: Stormpike Insignia Rank 6; trinket2: Talisman of Arathor; main_hand: The Unstoppable Force
 
-No-known-source sample (15 of 1235, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
+No-known-source sample (15 of 1242, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring
 
 ## Horde
 
 ### Band 20 (tauren, 0000000000000000-55100000000000000000-0000000000000000)
 
-Set DPS (verified): 36.0. Weights run: 3.3s. Verify run: 1.3s. 176 eligible items had no known source.
+Set DPS (verified): 36.0. Weights run: 3.5s. Verify run: 1.8s. 176 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.082 ± 0.002, defense=0.140 ± 0.026 per rating point (1 rating = 1%, 0.140 per %), dodge=0.096 ± 0.008 per rating point (12 rating = 1%, 1.148 per %), strength=0.052 ± 0.000, agility=0.148 ± 0.005, attack_power=0.026 ± 0.000, hit=0.045 ± 0.005 per rating point (10 rating = 1%, 0.449 per %), crit=0.019 ± 0.001 per rating point (14 rating = 1%, 0.261 per %), expertise=1.200 ± 0.059
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 176, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-55230330000000000000-0000000000000000)
 
-Set DPS (verified): 41.9. Weights run: 3.2s. Verify run: 1.4s. 329 eligible items had no known source.
+Set DPS (verified): 41.9. Weights run: 3.3s. Verify run: 1.8s. 336 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.001, armor=0.084 ± 0.004, defense=0.240 ± 0.054 per rating point (1 rating = 1%, 0.240 per %), dodge=0.106 ± 0.013 per rating point (12 rating = 1%, 1.268 per %), strength=0.049 ± 0.000, agility=0.150 ± 0.008, attack_power=0.025 ± 0.000, hit=0.047 ± 0.009 per rating point (10 rating = 1%, 0.466 per %), crit=0.020 ± 0.001 per rating point (14 rating = 1%, 0.276 per %), expertise=1.556 ± 0.106
 
@@ -246,41 +246,41 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 30:** head: Brawler's Leather Helm; neck: Souvenir Sea Shell; shoulder: Watchman Pauldrons; back: Sergeant's Cloak; chest: Raptor Hide Harness; wrist: Cultist's Armguards; hands: Braced Handguards; waist: Warden's Leather Belt; legs: Defender's Leather Kilt; feet: Gnomebot Operating Boots; finger1: Insurgent's Band; finger2: Seal of Sylvanas; trinket1: Defiler's Talisman; trinket2: Rune of Perfection; main_hand: Staff of the Shade
 
-No-known-source sample (15 of 329, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape; 18440 Sergeant's Cape; 18442 Master Sergeant's Insignia
+No-known-source sample (15 of 336, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 16315 Sergeant Major's Cape; 18440 Sergeant's Cape; 18442 Master Sergeant's Insignia
 
 ### Band 40 (tauren, 0000000000000000-55230332020132000000-0000000000000000)
 
-Set DPS (verified): 72.8. Weights run: 3.9s. Verify run: 1.6s. 434 eligible items had no known source.
+Set DPS (verified): 72.3. Weights run: 4.0s. Verify run: 2.0s. 441 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.018, armor=0.107 ± 0.006, defense=0.328 ± 0.080 per rating point (1 rating = 1%, 0.328 per %), dodge=0.113 ± 0.018 per rating point (12 rating = 1%, 1.360 per %), strength=0.046 ± 0.000, agility=0.136 ± 0.011, attack_power=0.023 ± 0.000, hit=not significant (0.055 ± 0.014) per rating point (10 rating = 1%, 0.550 per %), crit=0.029 ± 0.006 per rating point (14 rating = 1%, 0.407 per %), expertise=1.721 ± 0.160
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Adventurer's Pith Helmet (9420) | Uldaman [dungeon] | 25.3 stamina points (713.32 DPS) | yes | Warden's Wizard Hat (14604, -54.02 DPS, sim-verified) [world_drop]; Brawler's Leather Helm (252512, -54.53 DPS) [crafted]; Defender's Leather Helm (252455, -77.43 DPS) [crafted] |
-| neck | Souvenir Sea Shell (274749) | Gezzy Gunkgear [vendor] | 13.0 stamina points (367.11 DPS) | yes | Darkspear Warding Pendant (272074, -56.48 DPS) [vendor]; Gazlowe's Charm (13088, -58.15 DPS, sim-verified) [dungeon]; River Pride Choker (13087, -107.76 DPS) [world_drop] |
-| shoulder | Fleshhide Shoulders (10774) | Razorfen Downs: Glutton [dungeon] | 26.2 stamina points (739.52 DPS) | yes | Flintrock Shoulders (7755, -149.89 DPS, sim-verified) [dungeon]; Watchman Pauldrons (7727, -183.86 DPS) [dungeon]; Tanned Shoulderpads (270023, -265.34 DPS) [quest] |
+| head | Adventurer's Pith Helmet (9420) | Uldaman [dungeon] | 25.3 stamina points (713.32 DPS) | yes | Brawler's Leather Helm (252512, -54.53 DPS) [crafted]; Warden's Wizard Hat (14604, -58.52 DPS, sim-verified) [world_drop]; Defender's Leather Helm (252455, -77.43 DPS) [crafted] |
+| neck | Souvenir Sea Shell (274749) | Gezzy Gunkgear [vendor] | 13.0 stamina points (367.11 DPS) | yes | Gazlowe's Charm (13088, -53.85 DPS, sim-verified) [dungeon]; Darkspear Warding Pendant (272074, -56.48 DPS) [vendor]; River Pride Choker (13087, -107.76 DPS) [world_drop] |
+| shoulder | Fleshhide Shoulders (10774) | Razorfen Downs: Glutton [dungeon] | 26.2 stamina points (739.52 DPS) | yes | Flintrock Shoulders (7755, -161.70 DPS, sim-verified) [dungeon]; Watchman Pauldrons (7727, -183.86 DPS) [dungeon]; Tanned Shoulderpads (270023, -265.34 DPS) [quest] |
 | back | Wing of the Whelpling (13121) | World drop [world_drop] | 13.5 stamina points (382.18 DPS) | yes | Silky Spider Cape (10776, -9.37 DPS) [dungeon]; Well Oiled Cloak (12254, -12.38 DPS) [vendor]; Heraldic Cloak (8120, -22.21 DPS) [dungeon] |
-| chest | Raptor Hunter Tunic (4119) | Raptor Mastery [quest] | 29.1 stamina points (821.22 DPS) | yes | Warden's Wraps (14601, -74.47 DPS) [world_drop]; Insignia Chestguard (4057, -143.66 DPS) [world_drop]; Robes of the Lich (10762, -205.78 DPS, sim-verified) [dungeon] |
+| chest | Raptor Hunter Tunic (4119) | Raptor Mastery [quest] | 29.1 stamina points (821.22 DPS) | yes | Warden's Wraps (14601, -74.47 DPS) [world_drop]; Insignia Chestguard (4057, -143.66 DPS) [world_drop]; Robes of the Lich (10762, -205.42 DPS, sim-verified) [dungeon] |
 | wrist | Scorpashi Wristbands (14654) | World drop [world_drop] | 13.4 stamina points (377.50 DPS) | yes | Forest Stalker's Bracers (19590, +0.00 DPS) [pvp]; Branded Leather Bracers (19508, -29.30 DPS) [dungeon]; Cultist's Armguards (270032, -40.71 DPS) [quest] |
 | hands | Warden's Leather Gloves (252527) | Leatherworking [crafted] | 18.5 stamina points (523.16 DPS) | yes | Stalker's Leather Gloves (252526, +0.00 DPS, sim-verified) [crafted]; Bonefingers (10765, -24.87 DPS) [dungeon]; Razzeric's Racing Grips (6727, -27.22 DPS) [quest] |
-| waist | Ogron's Sash (13117) | World drop [world_drop] | 18.2 stamina points (514.50 DPS) | yes | Warden's Leather Belt (252460, -39.56 DPS) [crafted]; Scorpashi Sash (14652, -68.17 DPS) [world_drop]; Kolkar Hunter's Belt (6788, -92.56 DPS, sim-verified) [quest] |
+| waist | Ogron's Sash (13117) | World drop [world_drop] | 18.2 stamina points (514.50 DPS) | yes | Warden's Leather Belt (252460, -39.56 DPS) [crafted]; Scorpashi Sash (14652, -68.17 DPS) [world_drop]; Kolkar Hunter's Belt (6788, -80.67 DPS, sim-verified) [quest] |
 | legs | Imperial Leather Pants (4062) | Uldaman: Ancient Treasure [dungeon] | 23.3 stamina points (658.36 DPS) | yes | Warden's Woolies (14605, -9.04 DPS) [world_drop]; Basilisk Hide Pants (1718, -11.02 DPS) [world_drop]; Panther Hunter Leggings (4108, -19.88 DPS) [quest] |
-| feet | Warden's Leather Shoes (252466) | Leatherworking [crafted] | 22.1 stamina points (623.97 DPS) | yes | Harbinger Boots (7754, -96.74 DPS) [dungeon]; Skulker's Leather Shoes (252531, -97.56 DPS) [crafted]; Gnomebot Operating Boots (9450, -127.29 DPS, sim-verified) [dungeon] |
-| finger1 | Suspicious Spare Part (274754) | Rettrick [vendor] | 11.3 stamina points (319.73 DPS) | yes | Darkspear Signet (272070, -9.10 DPS) [vendor]; Underworld Band (1980, -37.34 DPS) [world_drop]; Nogg's Gold Ring (9588, -37.34 DPS) [quest] |
-| finger2 | Insurgent's Band (272066) | Creeg Bothunk [vendor] | 11.3 stamina points (318.43 DPS) | yes | Darkspear Signet (272070, -7.80 DPS) [vendor]; Underworld Band (1980, -36.04 DPS) [world_drop]; Nogg's Gold Ring (9588, -36.04 DPS) [quest] |
-| trinket1 | Rune of Perfection (21565) | Warsong Outriders [rep] | sim-verified (6753.8 DPS) | yes | Defiler's Talisman (21116, +0.00 DPS) [rep]; Arena Master (18706, -28.24 DPS) [world]; Darkspear Voodoo Seal (272059, -28.24 DPS) [vendor] |
-| trinket2 | Rune of Duty (21567) | Warsong Outriders [rep] | sim-verified (6753.8 DPS) | yes | Defiler's Talisman (21116, +0.00 DPS) [rep]; Arena Master (18706, -28.24 DPS) [world]; Darkspear Voodoo Seal (272059, -28.24 DPS) [vendor] |
-| main_hand | Cragwood Maul (11265) | Nothing But The Truth [quest] | sim-verified (6753.8 DPS) | yes | Ironshod Bludgeon (9408, -48.42 DPS) [dungeon]; Tok'kar's Murloc Basher (9678, -159.70 DPS) [quest]; Manual Crowd Pummeler (9449, -584.73 DPS, sim-verified) [dungeon] |
+| feet | Warden's Leather Shoes (252466) | Leatherworking [crafted] | 22.1 stamina points (623.97 DPS) | yes | Worn Running Boots (9398, -29.31 DPS) [dungeon]; Gnomebot Operating Boots (9450, -56.03 DPS) [dungeon]; Harbinger Boots (7754, -96.74 DPS) [dungeon] |
+| finger1 | Underworld Band (1980) | World drop [world_drop] | 12.0 stamina points (338.87 DPS) | yes | Insurgent's Band (272066, -20.44 DPS) [vendor]; Darkspear Signet (272070, -28.24 DPS) [vendor]; Nogg's Gold Ring (9588, -56.48 DPS) [quest] |
+| finger2 | Suspicious Spare Part (274754) | Rettrick [vendor] | 11.3 stamina points (319.73 DPS) | yes | Insurgent's Band (272066, -1.30 DPS) [vendor]; Darkspear Signet (272070, -9.10 DPS) [vendor]; Nogg's Gold Ring (9588, -37.34 DPS) [quest] |
+| trinket1 | Rune of Perfection (21565) | Warsong Outriders [rep] | sim-verified (6771.2 DPS) | yes | Defiler's Talisman (21116, +0.00 DPS) [rep]; Arena Master (18706, -28.24 DPS) [world]; Darkspear Voodoo Seal (272059, -28.24 DPS) [vendor] |
+| trinket2 | Rune of Duty (21567) | Warsong Outriders [rep] | sim-verified (6771.2 DPS) | yes | Defiler's Talisman (21116, +0.00 DPS) [rep]; Arena Master (18706, -28.24 DPS) [world]; Darkspear Voodoo Seal (272059, -28.24 DPS) [vendor] |
+| main_hand | Cragwood Maul (11265) | Nothing But The Truth [quest] | sim-verified (6771.2 DPS) | yes | Ironshod Bludgeon (9408, -48.42 DPS) [dungeon]; Tok'kar's Murloc Basher (9678, -159.70 DPS) [quest]; Manual Crowd Pummeler (9449, -575.82 DPS, sim-verified) [dungeon] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
-**New at 40:** head: Adventurer's Pith Helmet; shoulder: Fleshhide Shoulders; back: Wing of the Whelpling; chest: Raptor Hunter Tunic; wrist: Scorpashi Wristbands; hands: Warden's Leather Gloves; waist: Ogron's Sash; legs: Imperial Leather Pants; feet: Warden's Leather Shoes; finger1: Suspicious Spare Part; finger2: Insurgent's Band; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Cragwood Maul
+**New at 40:** head: Adventurer's Pith Helmet; shoulder: Fleshhide Shoulders; back: Wing of the Whelpling; chest: Raptor Hunter Tunic; wrist: Scorpashi Wristbands; hands: Warden's Leather Gloves; waist: Ogron's Sash; legs: Imperial Leather Pants; feet: Warden's Leather Shoes; finger1: Underworld Band; finger2: Suspicious Spare Part; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Cragwood Maul
 
-No-known-source sample (15 of 434, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves
+No-known-source sample (15 of 441, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring; 14389 Durability Shoulderpads; 15401 Welldrip Gloves
 
 ### Band 50 (tauren, 0000000000000000-55230332020132012511-0000000000000000)
 
-Set DPS (verified): 116.0. Weights run: 4.5s. Verify run: 1.9s. 569 eligible items had no known source.
+Set DPS (verified): 116.0. Weights run: 4.4s. Verify run: 2.3s. 576 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.032, armor=0.151 ± 0.012, defense=not significant (0.452 ± 0.148) per rating point (1 rating = 1%, 0.452 per %), dodge=0.255 ± 0.031 per rating point (12 rating = 1%, 3.057 per %), strength=0.057 ± 0.000, agility=0.252 ± 0.020, attack_power=0.029 ± 0.000, hit=not significant (0.096 ± 0.027) per rating point (10 rating = 1%, 0.959 per %), crit=not significant (0.035 ± 0.011) per rating point (14 rating = 1%, 0.488 per %), expertise=3.424 ± 0.295
 
@@ -289,15 +289,15 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | head | Sprightring Helm (17776) | Twisted Evils [quest] | 42.5 stamina points (1513.01 DPS) | yes | Blood Guard's Leather Headband (220851, -150.00 DPS) [vendor]; Impractical Headwarmer (274756, -321.65 DPS, sim-verified) [vendor]; Scorpashi Skullcap (14658, -347.09 DPS) [world_drop] |
 | neck | Senior Sergeant's Insignia (18428) | PvP rank 8 · Senior Sergeant · Horde [vendor] | 14.0 stamina points (498.64 DPS) | yes | Darkspear Warding Pendant (272073, -35.62 DPS) [vendor]; Souvenir Sea Shell (274749, -35.62 DPS) [vendor]; Woven Ivy Necklace (19159, -49.51 DPS) [quest] |
 | shoulder | Penance Spaulders (11963) | Ribbly Screwspigot [quest] | 31.2 stamina points (1110.17 DPS) | yes | Fleshhide Shoulders (10774, -0.01 DPS) [dungeon]; Blood Guard's Leather Shoulders (220853, -22.88 DPS) [vendor]; Warden's Leather Shoulders (252536, -76.88 DPS) [crafted] |
-| back | Nightfall Drape (12465) | Sunken Temple: Morphaz [dungeon] | 19.7 stamina points (703.40 DPS) | yes | Sergeant's Cloak (16341, -10.78 DPS) [vendor]; Grovekeeper's Drape (17739, -76.62 DPS) [dungeon]; Wing of the Whelpling (13121, -160.46 DPS) [world_drop] |
+| back | Nightfall Drape (12465) | Sunken Temple: Morphaz [dungeon] | 19.7 stamina points (703.40 DPS) | yes | Sergeant's Cloak (16341, -10.78 DPS) [vendor]; Emberscale Cape (11311, -21.55 DPS) [dungeon]; Grovekeeper's Drape (17739, -76.62 DPS) [dungeon] |
 | chest | Warbear Harness (15064) | Leatherworking [crafted] | 56.1 stamina points (1996.92 DPS) | yes | Heraldic Breastplate (8119, -549.00 DPS) [world_drop]; Jinxed Hoodoo Skin (9473, -552.37 DPS, sim-verified) [dungeon]; Stone Guard's Leather Armor (220855, -568.40 DPS) [vendor] |
 | wrist | Arena Bracers (18710) | Arena Treasure Chest [world] | 25.2 stamina points (897.34 DPS) | yes | Forest Stalker's Bracers (19589, -73.05 DPS) [pvp]; First Sergeant's Dragonhide Armguards (18436, -130.14 DPS, sim-verified) [vendor]; Warden's Leather Bracers (252541, -163.86 DPS) [crafted] |
 | hands | Feralheart Grips (226802) | Mokvar [vendor] | 39.9 stamina points (1422.84 DPS) | yes | Warden's Leather Gauntlets (252549, -291.69 DPS) [crafted]; Raider Gloves (272100, -338.61 DPS, sim-verified) [vendor]; Feralheart Fists (226793, -352.64 DPS) [vendor] |
 | waist | Warden's Leather Waistguard (252475) | Leatherworking [crafted] | 28.1 stamina points (1002.60 DPS) | yes | Skulker's Leather Waistguard (252474, -16.84 DPS) [crafted]; Prowler's Leather Waistguard (252473, -30.72 DPS) [crafted]; Pridelord Girdle (14674, -165.39 DPS) [world_drop] |
 | legs | Stone Guard's Leather Pants (220859) | Lady Palanseer [vendor] | 37.2 stamina points (1326.14 DPS) | yes | Stone Guard's Crackling Leather Leggings (220865, -219.15 DPS, sim-verified) [vendor]; Stone Guard's Restored Leather Leggings (220883, -230.53 DPS) [vendor]; Scorpashi Leggings (14659, -242.63 DPS) [world_drop] |
 | feet | Warden's Leather Boots (252470) | Leatherworking [crafted] | 29.4 stamina points (1045.78 DPS) | yes | Skulker's Leather Boots (252469, -25.82 DPS) [crafted]; Prowler's Leather Boots (252468, -39.70 DPS) [crafted]; Slitherscale Boots (10801, -47.81 DPS) [dungeon] |
-| finger1 | Insurgent's Band (272065) | Creeg Bothunk [vendor] | 14.4 stamina points (513.88 DPS) | yes | Ring of Saviors (1447, -15.24 DPS) [world_drop]; Darkspear Signet (272069, -15.24 DPS) [vendor]; Suspicious Spare Part (274754, -107.87 DPS) [vendor] |
-| finger2 | Darkmoon Ring (19302) (or Darkspear Signet (272069), Ring of Saviors (1447)) | Lhara [vendor] | 14.0 stamina points (498.64 DPS) | yes | Ring of Saviors (1447, +0.00 DPS) [world_drop]; Darkspear Signet (272069, +0.00 DPS) [vendor]; Suspicious Spare Part (274754, -92.62 DPS) [vendor] |
+| finger1 | Insurgent's Band (272065) | Creeg Bothunk [vendor] | 14.4 stamina points (513.88 DPS) | yes | Ring of Saviors (1447, -15.24 DPS) [world_drop]; Darkspear Signet (272069, -15.24 DPS) [vendor]; Underworld Band (1980, -86.48 DPS) [world_drop] |
+| finger2 | Darkmoon Ring (19302) (or Darkspear Signet (272069), Ring of Saviors (1447)) | Lhara [vendor] | 14.0 stamina points (498.64 DPS) | yes | Ring of Saviors (1447, +0.00 DPS) [world_drop]; Darkspear Signet (272069, +0.00 DPS) [vendor]; Underworld Band (1980, -71.23 DPS) [world_drop] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (12157.7 DPS) | yes | Defiler's Talisman (21115, +0.00 DPS) [rep]; Guardian Talisman (1490, -35.62 DPS) [quest]; Rune of Perfection (21565, -71.23 DPS) [rep] |
 | trinket2 | Relentless Raider's Seal (272060) | Creeg Bothunk [vendor] | sim-verified (12157.7 DPS) | yes | Defiler's Talisman (21115, +0.00 DPS) [rep]; Guardian Talisman (1490, -35.62 DPS) [quest]; Rune of Perfection (21565, -71.23 DPS) [rep] |
 | main_hand | Cragwood Maul (11265) | Nothing But The Truth [quest] | sim-verified (12157.7 DPS) | yes | Advisor's Gnarled Staff (19567, -5.86 DPS) [pvp]; Radiant Staff (249453, -6.23 DPS) [crafted]; Manual Crowd Pummeler (9449, -764.82 DPS, sim-verified) [dungeon] |
@@ -306,11 +306,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 50:** head: Sprightring Helm; neck: Senior Sergeant's Insignia; shoulder: Penance Spaulders; back: Nightfall Drape; chest: Warbear Harness; wrist: Arena Bracers; hands: Feralheart Grips; waist: Warden's Leather Waistguard; legs: Stone Guard's Leather Pants; feet: Warden's Leather Boots; finger1: Insurgent's Band; finger2: Darkmoon Ring; trinket1: Darkspear Voodoo Seal; trinket2: Relentless Raider's Seal
 
-No-known-source sample (15 of 569, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring
+No-known-source sample (15 of 576, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring
 
 ### Band 60 (tauren, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 151.5. Weights run: 4.4s. Verify run: 4.2s. 1229 eligible items had no known source.
+Set DPS (verified): 151.5. Weights run: 4.4s. Verify run: 5.6s. 1236 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.019, armor=0.185 ± 0.016, defense=0.985 ± 0.239 per rating point (1 rating = 1%, 0.985 per %), dodge=0.619 ± 0.048 per rating point (12 rating = 1%, 7.423 per %), strength=0.111 ± 0.000, agility=0.508 ± 0.030, attack_power=0.055 ± 0.000, hit=0.160 ± 0.039 per rating point (10 rating = 1%, 1.598 per %), crit=0.075 ± 0.016 per rating point (14 rating = 1%, 1.045 per %), expertise=5.806 ± 0.422
 
@@ -336,11 +336,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 60:** head: Outlaw's Collar; neck: Amulet of the Darkmoon; shoulder: Glowing Mantle of the Dawn; back: Shifting Cloak; chest: Dire Warbear Harness; wrist: Feralheart Wristguards; waist: Feralheart Waistguard; legs: Sentinel's Leather Pants; feet: Fine Dawn Treaders; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Resolution; trinket1: Frostwolf Insignia Rank 6; trinket2: Defiler's Talisman; main_hand: The Unstoppable Force
 
-No-known-source sample (15 of 1229, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring
+No-known-source sample (15 of 1236, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring
 
 ### Band 60, raid preset (tauren, 0000000000000000-55230332020132012551-0510000000000000)
 
-Set DPS (verified): 336.8. Weights run: 4.5s. Verify run: 4.4s. 1229 eligible items had no known source.
+Set DPS (verified): 336.8. Weights run: 4.5s. Verify run: 5.7s. 1236 eligible items had no known source.
 
 Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.015, armor=0.207 ± 0.018, defense=1.532 ± 0.310 per rating point (1 rating = 1%, 1.532 per %), dodge=0.858 ± 0.059 per rating point (12 rating = 1%, 10.293 per %), strength=0.120 ± 0.000, agility=0.762 ± 0.038, attack_power=0.055 ± 0.000, hit=0.262 ± 0.044 per rating point (10 rating = 1%, 2.623 per %), crit=0.125 ± 0.019 per rating point (14 rating = 1%, 1.755 per %), expertise=7.919 ± 0.482
 
@@ -366,5 +366,5 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 60:** head: Outlaw's Collar; neck: Amulet of the Darkmoon; shoulder: Glowing Mantle of the Dawn; back: Shifting Cloak; chest: Dire Warbear Harness; wrist: Feralheart Wristguards; waist: Feralheart Waistguard; legs: Sentinel's Leather Pants; feet: Fine Dawn Treaders; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Resolution; trinket1: Frostwolf Insignia Rank 6; trinket2: Defender's Grip Stabilizer; main_hand: The Unstoppable Force
 
-No-known-source sample (15 of 1229, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring
+No-known-source sample (15 of 1236, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5971 Feathered Cape; 6478 Rat Stompers; 8708 Hammer of Expertise; 9362 Brilliant Gold Ring
 

@@ -1,8 +1,8 @@
 {
   "spec": "rogue-subtlety",
   "build": "1.60.1.70450",
-  "engine_version": "171b9ff7f",
-  "generated_at": "2026-10-17T00:16:01Z",
+  "engine_version": "eb3dc7793",
+  "generated_at": "2026-10-17T09:34:17Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -298,7 +298,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 37.52555707522213,
+          "sim_dps": 37.52555707522211,
           "verified": true,
           "alternatives": [
             {
@@ -395,7 +395,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 37.52555707522213,
+          "sim_dps": 37.52555707522211,
           "verified": true,
           "alternatives": [
             {
@@ -446,7 +446,7 @@
           "source": "The Deadmines: Defias Strip Miner",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 37.52555707522213,
+          "sim_dps": 37.52555707522211,
           "verified": true,
           "alternatives": [
             {
@@ -499,7 +499,7 @@
           "score": 11.158615502,
           "verified": true,
           "swap_note": "confirmed by the sim against Pyrewood Signet Ring (id 277210): kept the pick, +0.7 DPS (37.5 vs 36.8 set DPS)",
-          "dps_delta": 0.7261498260724224,
+          "dps_delta": 0.726149826072394,
           "alternatives": [
             {
               "item_id": 12054,
@@ -600,7 +600,7 @@
           "score": 228.62,
           "verified": true,
           "swap_note": "confirmed by the sim against Assassin's Blade (id 1935): kept the pick, +3.9 DPS (37.5 vs 33.6 set DPS)",
-          "dps_delta": 3.9166633933811212,
+          "dps_delta": 3.9166633933811,
           "alternatives": [
             {
               "item_id": 2567,
@@ -709,8 +709,8 @@
           ]
         }
       ],
-      "set_dps": 37.52555707522213,
-      "no_source_count": 188,
+      "set_dps": 37.52555707522211,
+      "no_source_count": 198,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "4763 Blackwood Recurve Bow",
@@ -745,8 +745,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.177365574,
-      "verify_run_seconds": 3.523497539,
+      "weights_run_seconds": 2.212774216,
+      "verify_run_seconds": 4.048075704,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -802,7 +802,7 @@
           "rare_spawn_skipped": 6
         },
         "ranged": {
-          "eligible": 38,
+          "eligible": 48,
           "sourced": 26
         },
         "shoulder": {
@@ -1048,7 +1048,7 @@
           "source": "The Deadmines: Edwin VanCleef",
           "source_kind": "dungeon",
           "chance": 0.2,
-          "sim_dps": 37.14031837975445,
+          "sim_dps": 37.14031837975446,
           "verified": true,
           "alternatives": [
             {
@@ -1235,7 +1235,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 37.14031837975445,
+          "sim_dps": 37.14031837975446,
           "verified": true,
           "alternatives": [
             {
@@ -1286,7 +1286,7 @@
           "source": "The Deadmines: Defias Strip Miner",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 37.14031837975445,
+          "sim_dps": 37.14031837975446,
           "verified": true,
           "alternatives": [
             {
@@ -1339,7 +1339,7 @@
           "score": 11.158615502,
           "verified": true,
           "swap_note": "confirmed by the sim against Pyrewood Signet Ring (id 277210): kept the pick, +0.7 DPS (37.1 vs 36.4 set DPS)",
-          "dps_delta": 0.719976906082529,
+          "dps_delta": 0.7199769060825432,
           "alternatives": [
             {
               "item_id": 5351,
@@ -1439,7 +1439,7 @@
           "score": 228.62,
           "verified": true,
           "swap_note": "confirmed by the sim against Assassin's Blade (id 1935): kept the pick, +3.8 DPS (37.1 vs 33.3 set DPS)",
-          "dps_delta": 3.82245956847747,
+          "dps_delta": 3.822459568477491,
           "alternatives": [
             {
               "item_id": 20441,
@@ -1548,8 +1548,8 @@
           ]
         }
       ],
-      "set_dps": 37.14031837975445,
-      "no_source_count": 181,
+      "set_dps": 37.14031837975446,
+      "no_source_count": 191,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1584,8 +1584,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.177365574,
-      "verify_run_seconds": 3.597302441,
+      "weights_run_seconds": 2.212774216,
+      "verify_run_seconds": 4.038593192,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -1641,7 +1641,7 @@
           "rare_spawn_skipped": 6
         },
         "ranged": {
-          "eligible": 37,
+          "eligible": 47,
           "sourced": 24
         },
         "shoulder": {
@@ -2443,7 +2443,7 @@
         }
       ],
       "set_dps": 58.754862248894625,
-      "no_source_count": 347,
+      "no_source_count": 366,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2474,11 +2474,11 @@
         "off_hand: Torturing Poker",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.509616959,
-      "verify_run_seconds": 3.932777364,
+      "weights_run_seconds": 2.486413949,
+      "verify_run_seconds": 4.40859616,
       "coverage": {
         "back": {
-          "eligible": 181,
+          "eligible": 182,
           "sourced": 145,
           "rare_spawn_skipped": 16
         },
@@ -2488,7 +2488,7 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 151,
+          "eligible": 152,
           "sourced": 132,
           "rare_spawn_skipped": 4
         },
@@ -2513,17 +2513,17 @@
           "rare_spawn_skipped": 5
         },
         "legs": {
-          "eligible": 181,
+          "eligible": 183,
           "sourced": 160,
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 242,
+          "eligible": 243,
           "sourced": 173,
           "rare_spawn_skipped": 11
         },
         "neck": {
-          "eligible": 37,
+          "eligible": 39,
           "sourced": 19,
           "rare_spawn_skipped": 3
         },
@@ -2533,7 +2533,7 @@
           "rare_spawn_skipped": 11
         },
         "ranged": {
-          "eligible": 78,
+          "eligible": 89,
           "sourced": 58,
           "rare_spawn_skipped": 5
         },
@@ -2556,7 +2556,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 117,
+          "eligible": 118,
           "sourced": 94,
           "rare_spawn_skipped": 7
         }
@@ -2918,7 +2918,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 58.29856753071569,
+          "sim_dps": 58.29856753071567,
           "verified": true,
           "alternatives": [
             {
@@ -2969,7 +2969,7 @@
           "source": "The Deadmines: Captain Greenskin",
           "source_kind": "dungeon",
           "chance": 0.3,
-          "sim_dps": 58.29856753071569,
+          "sim_dps": 58.29856753071567,
           "verified": true,
           "alternatives": [
             {
@@ -3020,7 +3020,7 @@
           "source": "The Deadmines: Defias Overseer",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 58.29856753071569,
+          "sim_dps": 58.29856753071567,
           "verified": true,
           "alternatives": [
             {
@@ -3071,7 +3071,7 @@
           "source": "The Deadmines: Defias Strip Miner",
           "source_kind": "dungeon",
           "chance": 0.03,
-          "sim_dps": 58.29856753071569,
+          "sim_dps": 58.29856753071567,
           "verified": true,
           "alternatives": [
             {
@@ -3124,7 +3124,7 @@
           "score": 14.712469065,
           "verified": true,
           "swap_note": "confirmed by the sim against Thunderbrow Ring (id 13097): kept the pick, +1.1 DPS (58.3 vs 57.2 set DPS)",
-          "dps_delta": 1.0568931609605556,
+          "dps_delta": 1.0568931609605272,
           "alternatives": [
             {
               "item_id": 17694,
@@ -3268,7 +3268,7 @@
           "source": "Scarlet Monastery: Interrogator Vishas",
           "source_kind": "dungeon",
           "chance": 0.1,
-          "sim_dps": 58.29856753071569,
+          "sim_dps": 58.29856753071567,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -3335,8 +3335,8 @@
           ]
         }
       ],
-      "set_dps": 58.29856753071569,
-      "no_source_count": 335,
+      "set_dps": 58.29856753071567,
+      "no_source_count": 354,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3368,11 +3368,11 @@
         "off_hand: Torturing Poker",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.509616959,
-      "verify_run_seconds": 3.996558056,
+      "weights_run_seconds": 2.486413949,
+      "verify_run_seconds": 4.374913775,
       "coverage": {
         "back": {
-          "eligible": 181,
+          "eligible": 182,
           "sourced": 148,
           "rare_spawn_skipped": 16
         },
@@ -3382,7 +3382,7 @@
           "rare_spawn_skipped": 9
         },
         "feet": {
-          "eligible": 156,
+          "eligible": 157,
           "sourced": 132,
           "rare_spawn_skipped": 4
         },
@@ -3407,17 +3407,17 @@
           "rare_spawn_skipped": 5
         },
         "legs": {
-          "eligible": 177,
+          "eligible": 179,
           "sourced": 155,
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 241,
+          "eligible": 242,
           "sourced": 187,
           "rare_spawn_skipped": 11
         },
         "neck": {
-          "eligible": 37,
+          "eligible": 39,
           "sourced": 18,
           "rare_spawn_skipped": 3
         },
@@ -3427,7 +3427,7 @@
           "rare_spawn_skipped": 11
         },
         "ranged": {
-          "eligible": 77,
+          "eligible": 88,
           "sourced": 58,
           "rare_spawn_skipped": 5
         },
@@ -3450,7 +3450,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 120,
+          "eligible": 121,
           "sourced": 99,
           "rare_spawn_skipped": 7
         }
@@ -4000,7 +4000,7 @@
           "score": 20,
           "verified": true,
           "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +1.7 DPS (99.5 vs 97.8 set DPS)",
-          "dps_delta": 1.7154783135704292,
+          "dps_delta": 1.7154783135704577,
           "ties": [
             {
               "item_id": 13095,
@@ -4103,7 +4103,7 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 99.51532151050742,
+          "sim_dps": 99.51532151050745,
           "verified": true,
           "alternatives": [
             {
@@ -4174,7 +4174,7 @@
           "item_name": "The Silencer",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 99.51532151050742,
+          "sim_dps": 99.51532151050745,
           "verified": true,
           "alternatives": [
             {
@@ -4214,8 +4214,8 @@
           ]
         }
       ],
-      "set_dps": 99.51532151050742,
-      "no_source_count": 471,
+      "set_dps": 99.51532151050745,
+      "no_source_count": 491,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4250,11 +4250,11 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.848335455,
-      "verify_run_seconds": 2.273595647,
+      "weights_run_seconds": 2.789676301,
+      "verify_run_seconds": 2.584776547,
       "coverage": {
         "back": {
-          "eligible": 245,
+          "eligible": 246,
           "sourced": 206,
           "rare_spawn_skipped": 18
         },
@@ -4264,8 +4264,8 @@
           "rare_spawn_skipped": 11
         },
         "feet": {
-          "eligible": 208,
-          "sourced": 181,
+          "eligible": 210,
+          "sourced": 182,
           "rare_spawn_skipped": 5
         },
         "finger1": {
@@ -4284,22 +4284,22 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 138,
-          "sourced": 120,
+          "eligible": 139,
+          "sourced": 121,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 229,
+          "eligible": 231,
           "sourced": 199,
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 322,
+          "eligible": 323,
           "sourced": 225,
           "rare_spawn_skipped": 12
         },
         "neck": {
-          "eligible": 54,
+          "eligible": 56,
           "sourced": 29,
           "rare_spawn_skipped": 4
         },
@@ -4309,7 +4309,7 @@
           "rare_spawn_skipped": 12
         },
         "ranged": {
-          "eligible": 109,
+          "eligible": 121,
           "sourced": 79,
           "rare_spawn_skipped": 5
         },
@@ -4332,7 +4332,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 162,
+          "eligible": 163,
           "sourced": 132,
           "rare_spawn_skipped": 7
         }
@@ -4882,7 +4882,7 @@
           "score": 20,
           "verified": true,
           "swap_note": "confirmed by the sim against Assault Band (id 13095): kept the pick, +1.7 DPS (98.3 vs 96.6 set DPS)",
-          "dps_delta": 1.6941753380367857,
+          "dps_delta": 1.6941753380367999,
           "ties": [
             {
               "item_id": 13095,
@@ -4985,7 +4985,7 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 98.2624188653273,
+          "sim_dps": 98.26241886532735,
           "verified": true,
           "alternatives": [
             {
@@ -5055,7 +5055,7 @@
           "item_name": "The Silencer",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 98.2624188653273,
+          "sim_dps": 98.26241886532735,
           "verified": true,
           "alternatives": [
             {
@@ -5095,8 +5095,8 @@
           ]
         }
       ],
-      "set_dps": 98.2624188653273,
-      "no_source_count": 452,
+      "set_dps": 98.26241886532735,
+      "no_source_count": 472,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -5130,11 +5130,11 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 2.848335455,
-      "verify_run_seconds": 2.315342185,
+      "weights_run_seconds": 2.789676301,
+      "verify_run_seconds": 2.640593442,
       "coverage": {
         "back": {
-          "eligible": 247,
+          "eligible": 248,
           "sourced": 210,
           "rare_spawn_skipped": 18
         },
@@ -5144,8 +5144,8 @@
           "rare_spawn_skipped": 11
         },
         "feet": {
-          "eligible": 213,
-          "sourced": 181,
+          "eligible": 215,
+          "sourced": 182,
           "rare_spawn_skipped": 5
         },
         "finger1": {
@@ -5164,22 +5164,22 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 139,
-          "sourced": 123,
+          "eligible": 140,
+          "sourced": 124,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 226,
+          "eligible": 228,
           "sourced": 196,
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 322,
+          "eligible": 323,
           "sourced": 242,
           "rare_spawn_skipped": 12
         },
         "neck": {
-          "eligible": 54,
+          "eligible": 56,
           "sourced": 28,
           "rare_spawn_skipped": 4
         },
@@ -5189,7 +5189,7 @@
           "rare_spawn_skipped": 12
         },
         "ranged": {
-          "eligible": 109,
+          "eligible": 121,
           "sourced": 81,
           "rare_spawn_skipped": 5
         },
@@ -5212,7 +5212,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 167,
+          "eligible": 168,
           "sourced": 141,
           "rare_spawn_skipped": 7
         }
@@ -5845,10 +5845,10 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 135.18653616076108,
+          "sim_dps": 135.18653616076102,
           "verified": true,
           "swap_note": "confirmed by the sim against Molten Heart of the Mountain (id 249470): kept the pick, +1.3 DPS (135.2 vs 133.9 set DPS)",
-          "dps_delta": 1.3326470609085845
+          "dps_delta": 1.3326470609084424
         },
         {
           "slot": "trinket2",
@@ -5856,7 +5856,7 @@
           "item_name": "Molten Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 135.18653616076108,
+          "sim_dps": 135.18653616076102,
           "verified": true,
           "alternatives": [
             {
@@ -5883,7 +5883,7 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 135.18653616076108,
+          "sim_dps": 135.18653616076102,
           "verified": true,
           "alternatives": [
             {
@@ -5955,7 +5955,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 135.18653616076108,
+          "sim_dps": 135.18653616076102,
           "verified": true,
           "alternatives": [
             {
@@ -5995,8 +5995,8 @@
           ]
         }
       ],
-      "set_dps": 135.18653616076108,
-      "no_source_count": 594,
+      "set_dps": 135.18653616076102,
+      "no_source_count": 614,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -6032,12 +6032,12 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.6302974690000003,
-      "verify_run_seconds": 2.788901717,
+      "weights_run_seconds": 3.463947879,
+      "verify_run_seconds": 3.106075481,
       "coverage": {
         "back": {
-          "eligible": 312,
-          "sourced": 263,
+          "eligible": 314,
+          "sourced": 264,
           "rare_spawn_skipped": 18
         },
         "chest": {
@@ -6046,8 +6046,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 273,
-          "sourced": 238,
+          "eligible": 275,
+          "sourced": 239,
           "rare_spawn_skipped": 6
         },
         "finger1": {
@@ -6066,22 +6066,22 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 200,
-          "sourced": 169,
+          "eligible": 201,
+          "sourced": 170,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 279,
+          "eligible": 281,
           "sourced": 240,
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 382,
+          "eligible": 383,
           "sourced": 270,
           "rare_spawn_skipped": 13
         },
         "neck": {
-          "eligible": 69,
+          "eligible": 71,
           "sourced": 39,
           "rare_spawn_skipped": 5
         },
@@ -6091,8 +6091,8 @@
           "rare_spawn_skipped": 13
         },
         "ranged": {
-          "eligible": 133,
-          "sourced": 98,
+          "eligible": 146,
+          "sourced": 99,
           "rare_spawn_skipped": 5
         },
         "shoulder": {
@@ -6114,7 +6114,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 217,
+          "eligible": 218,
           "sourced": 180,
           "rare_spawn_skipped": 7
         }
@@ -6641,7 +6641,7 @@
           "score": 24,
           "verified": true,
           "swap_note": "confirmed by the sim against Legionnaire's Band (id 19511): kept the pick, +2.3 DPS (137.8 vs 135.5 set DPS)",
-          "dps_delta": 2.3380165950307514,
+          "dps_delta": 2.3380165950306946,
           "alternatives": [
             {
               "item_id": 2262,
@@ -6728,10 +6728,10 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 137.8487879475108,
+          "sim_dps": 137.84878794751074,
           "verified": true,
           "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +5.8 DPS (137.8 vs 132.1 set DPS)",
-          "dps_delta": 5.756378286091717
+          "dps_delta": 5.75637828609166
         },
         {
           "slot": "trinket2",
@@ -6739,7 +6739,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 137.8487879475108,
+          "sim_dps": 137.84878794751074,
           "verified": true,
           "alternatives": [
             {
@@ -6765,7 +6765,7 @@
           "item_name": "Gut Ripper",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 137.8487879475108,
+          "sim_dps": 137.84878794751074,
           "verified": true,
           "alternatives": [
             {
@@ -6837,7 +6837,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 137.8487879475108,
+          "sim_dps": 137.84878794751074,
           "verified": true,
           "alternatives": [
             {
@@ -6877,8 +6877,8 @@
           ]
         }
       ],
-      "set_dps": 137.8487879475108,
-      "no_source_count": 570,
+      "set_dps": 137.84878794751074,
+      "no_source_count": 590,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6912,12 +6912,12 @@
         "off_hand: Lifeforce Dirk",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.6302974690000003,
-      "verify_run_seconds": 2.866929726,
+      "weights_run_seconds": 3.463947879,
+      "verify_run_seconds": 3.123119455,
       "coverage": {
         "back": {
-          "eligible": 317,
-          "sourced": 270,
+          "eligible": 319,
+          "sourced": 271,
           "rare_spawn_skipped": 18
         },
         "chest": {
@@ -6926,8 +6926,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 279,
-          "sourced": 239,
+          "eligible": 281,
+          "sourced": 240,
           "rare_spawn_skipped": 6
         },
         "finger1": {
@@ -6946,22 +6946,22 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 201,
-          "sourced": 172,
+          "eligible": 202,
+          "sourced": 173,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 275,
+          "eligible": 277,
           "sourced": 236,
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 381,
+          "eligible": 382,
           "sourced": 288,
           "rare_spawn_skipped": 13
         },
         "neck": {
-          "eligible": 71,
+          "eligible": 73,
           "sourced": 40,
           "rare_spawn_skipped": 5
         },
@@ -6971,8 +6971,8 @@
           "rare_spawn_skipped": 13
         },
         "ranged": {
-          "eligible": 134,
-          "sourced": 102,
+          "eligible": 147,
+          "sourced": 103,
           "rare_spawn_skipped": 5
         },
         "shoulder": {
@@ -6994,7 +6994,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 221,
+          "eligible": 222,
           "sourced": 190,
           "rare_spawn_skipped": 7
         }
@@ -7184,7 +7184,7 @@
           "item_name": "Stormshroud Shoulders",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 255.80835206017142,
+          "sim_dps": 255.8083520601714,
           "verified": true,
           "alternatives": [
             {
@@ -7368,7 +7368,7 @@
           "item_name": "Stormshroud Gloves",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 255.80835206017142,
+          "sim_dps": 255.8083520601714,
           "verified": true,
           "alternatives": [
             {
@@ -7463,7 +7463,7 @@
           "item_name": "Stormshroud Pants",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 255.80835206017142,
+          "sim_dps": 255.8083520601714,
           "verified": true,
           "alternatives": [
             {
@@ -7635,10 +7635,10 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 255.80835206017142,
+          "sim_dps": 255.8083520601714,
           "verified": true,
           "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +11.7 DPS (255.8 vs 244.1 set DPS)",
-          "dps_delta": 11.686871083087254
+          "dps_delta": 11.68687108308717
         },
         {
           "slot": "trinket2",
@@ -7646,7 +7646,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 255.80835206017142,
+          "sim_dps": 255.8083520601714,
           "verified": true,
           "alternatives": [
             {
@@ -7672,7 +7672,7 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 255.80835206017142,
+          "sim_dps": 255.8083520601714,
           "verified": true,
           "alternatives": [
             {
@@ -7743,7 +7743,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 255.80835206017142,
+          "sim_dps": 255.8083520601714,
           "verified": true,
           "alternatives": [
             {
@@ -7783,8 +7783,8 @@
           ]
         }
       ],
-      "set_dps": 255.80835206017142,
-      "no_source_count": 1148,
+      "set_dps": 255.8083520601714,
+      "no_source_count": 1169,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7820,12 +7820,12 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 3.515423879,
-      "verify_run_seconds": 7.398641456,
+      "weights_run_seconds": 3.372334649,
+      "verify_run_seconds": 8.74013826,
       "coverage": {
         "back": {
-          "eligible": 383,
-          "sourced": 306,
+          "eligible": 385,
+          "sourced": 307,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -7834,8 +7834,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 356,
-          "sourced": 304,
+          "eligible": 358,
+          "sourced": 305,
           "rare_spawn_skipped": 7
         },
         "finger1": {
@@ -7854,22 +7854,22 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 288,
-          "sourced": 225,
+          "eligible": 289,
+          "sourced": 226,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 376,
+          "eligible": 378,
           "sourced": 306,
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 511,
+          "eligible": 512,
           "sourced": 346,
           "rare_spawn_skipped": 13
         },
         "neck": {
-          "eligible": 153,
+          "eligible": 155,
           "sourced": 68,
           "rare_spawn_skipped": 5
         },
@@ -7879,8 +7879,8 @@
           "rare_spawn_skipped": 13
         },
         "ranged": {
-          "eligible": 185,
-          "sourced": 126,
+          "eligible": 199,
+          "sourced": 127,
           "rare_spawn_skipped": 5
         },
         "shoulder": {
@@ -7902,7 +7902,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 281,
+          "eligible": 282,
           "sourced": 218,
           "rare_spawn_skipped": 7
         }
@@ -8092,7 +8092,7 @@
           "item_name": "Stormshroud Shoulders",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 259.4547110826045,
+          "sim_dps": 259.4547110826044,
           "verified": true,
           "alternatives": [
             {
@@ -8276,7 +8276,7 @@
           "item_name": "Stormshroud Gloves",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 259.4547110826045,
+          "sim_dps": 259.4547110826044,
           "verified": true,
           "alternatives": [
             {
@@ -8371,7 +8371,7 @@
           "item_name": "Stormshroud Pants",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 259.4547110826045,
+          "sim_dps": 259.4547110826044,
           "verified": true,
           "alternatives": [
             {
@@ -8543,10 +8543,10 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 259.4547110826045,
+          "sim_dps": 259.4547110826044,
           "verified": true,
           "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +11.9 DPS (259.5 vs 247.6 set DPS)",
-          "dps_delta": 11.86641675091795,
+          "dps_delta": 11.866416750917864,
           "alternatives": [
             {
               "item_id": 249469,
@@ -8570,7 +8570,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 259.4547110826045,
+          "sim_dps": 259.4547110826044,
           "verified": true,
           "alternatives": [
             {
@@ -8596,7 +8596,7 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 259.4547110826045,
+          "sim_dps": 259.4547110826044,
           "verified": true,
           "alternatives": [
             {
@@ -8666,7 +8666,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 259.4547110826045,
+          "sim_dps": 259.4547110826044,
           "verified": true,
           "alternatives": [
             {
@@ -8706,8 +8706,8 @@
           ]
         }
       ],
-      "set_dps": 259.4547110826045,
-      "no_source_count": 1142,
+      "set_dps": 259.4547110826044,
+      "no_source_count": 1163,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8743,12 +8743,12 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 3.515423879,
-      "verify_run_seconds": 7.556726697,
+      "weights_run_seconds": 3.372334649,
+      "verify_run_seconds": 8.775287242,
       "coverage": {
         "back": {
-          "eligible": 388,
-          "sourced": 312,
+          "eligible": 390,
+          "sourced": 313,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -8757,8 +8757,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 361,
-          "sourced": 305,
+          "eligible": 363,
+          "sourced": 306,
           "rare_spawn_skipped": 7
         },
         "finger1": {
@@ -8777,22 +8777,22 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 289,
-          "sourced": 228,
+          "eligible": 290,
+          "sourced": 229,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 371,
+          "eligible": 373,
           "sourced": 300,
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 511,
+          "eligible": 512,
           "sourced": 357,
           "rare_spawn_skipped": 13
         },
         "neck": {
-          "eligible": 155,
+          "eligible": 157,
           "sourced": 69,
           "rare_spawn_skipped": 5
         },
@@ -8802,8 +8802,8 @@
           "rare_spawn_skipped": 13
         },
         "ranged": {
-          "eligible": 185,
-          "sourced": 125,
+          "eligible": 199,
+          "sourced": 126,
           "rare_spawn_skipped": 5
         },
         "shoulder": {
@@ -8825,7 +8825,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 284,
+          "eligible": 285,
           "sourced": 222,
           "rare_spawn_skipped": 7
         }
@@ -9014,7 +9014,7 @@
           "item_name": "Stormshroud Shoulders",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 606.5039260304357,
+          "sim_dps": 606.5039260304354,
           "verified": true,
           "alternatives": [
             {
@@ -9198,7 +9198,7 @@
           "item_name": "Stormshroud Gloves",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 606.5039260304357,
+          "sim_dps": 606.5039260304354,
           "verified": true,
           "alternatives": [
             {
@@ -9293,7 +9293,7 @@
           "item_name": "Stormshroud Pants",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 606.5039260304357,
+          "sim_dps": 606.5039260304354,
           "verified": true,
           "alternatives": [
             {
@@ -9464,10 +9464,10 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 606.5039260304357,
+          "sim_dps": 606.5039260304354,
           "verified": true,
           "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +14.8 DPS (606.5 vs 591.7 set DPS)",
-          "dps_delta": 14.792489035590052
+          "dps_delta": 14.79248903558937
         },
         {
           "slot": "trinket2",
@@ -9475,7 +9475,7 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 606.5039260304357,
+          "sim_dps": 606.5039260304354,
           "verified": true,
           "alternatives": [
             {
@@ -9501,7 +9501,7 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 606.5039260304357,
+          "sim_dps": 606.5039260304354,
           "verified": true,
           "alternatives": [
             {
@@ -9572,7 +9572,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 606.5039260304357,
+          "sim_dps": 606.5039260304354,
           "verified": true,
           "alternatives": [
             {
@@ -9612,8 +9612,8 @@
           ]
         }
       ],
-      "set_dps": 606.5039260304357,
-      "no_source_count": 1148,
+      "set_dps": 606.5039260304354,
+      "no_source_count": 1169,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9649,12 +9649,12 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 3.748216157,
-      "verify_run_seconds": 8.223261784,
+      "weights_run_seconds": 3.6635079680000002,
+      "verify_run_seconds": 9.345677077,
       "coverage": {
         "back": {
-          "eligible": 383,
-          "sourced": 306,
+          "eligible": 385,
+          "sourced": 307,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -9663,8 +9663,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 356,
-          "sourced": 304,
+          "eligible": 358,
+          "sourced": 305,
           "rare_spawn_skipped": 7
         },
         "finger1": {
@@ -9683,22 +9683,22 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 288,
-          "sourced": 225,
+          "eligible": 289,
+          "sourced": 226,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 376,
+          "eligible": 378,
           "sourced": 306,
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 511,
+          "eligible": 512,
           "sourced": 346,
           "rare_spawn_skipped": 13
         },
         "neck": {
-          "eligible": 153,
+          "eligible": 155,
           "sourced": 68,
           "rare_spawn_skipped": 5
         },
@@ -9708,8 +9708,8 @@
           "rare_spawn_skipped": 13
         },
         "ranged": {
-          "eligible": 185,
-          "sourced": 126,
+          "eligible": 199,
+          "sourced": 127,
           "rare_spawn_skipped": 5
         },
         "shoulder": {
@@ -9731,7 +9731,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 281,
+          "eligible": 282,
           "sourced": 218,
           "rare_spawn_skipped": 7
         }
@@ -9920,7 +9920,7 @@
           "item_name": "Stormshroud Shoulders",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 612.8933492739795,
+          "sim_dps": 612.8933492739797,
           "verified": true,
           "alternatives": [
             {
@@ -10103,7 +10103,7 @@
           "item_name": "Stormshroud Gloves",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 612.8933492739795,
+          "sim_dps": 612.8933492739797,
           "verified": true,
           "alternatives": [
             {
@@ -10198,7 +10198,7 @@
           "item_name": "Stormshroud Pants",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 612.8933492739795,
+          "sim_dps": 612.8933492739797,
           "verified": true,
           "alternatives": [
             {
@@ -10368,10 +10368,10 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 612.8933492739795,
+          "sim_dps": 612.8933492739797,
           "verified": true,
           "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +11.4 DPS (612.9 vs 601.5 set DPS)",
-          "dps_delta": 11.419962328286942,
+          "dps_delta": 11.419962328286829,
           "alternatives": [
             {
               "item_id": 249469,
@@ -10395,7 +10395,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 612.8933492739795,
+          "sim_dps": 612.8933492739797,
           "verified": true,
           "alternatives": [
             {
@@ -10421,7 +10421,7 @@
           "item_name": "Shadowsong's Sorrow",
           "source": "Treasure of the Timeless One",
           "source_kind": "quest",
-          "sim_dps": 612.8933492739795,
+          "sim_dps": 612.8933492739797,
           "verified": true,
           "alternatives": [
             {
@@ -10492,7 +10492,7 @@
           "item_name": "Precisely Calibrated Boomstick",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 612.8933492739795,
+          "sim_dps": 612.8933492739797,
           "verified": true,
           "alternatives": [
             {
@@ -10532,8 +10532,8 @@
           ]
         }
       ],
-      "set_dps": 612.8933492739795,
-      "no_source_count": 1142,
+      "set_dps": 612.8933492739797,
+      "no_source_count": 1163,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -10569,12 +10569,12 @@
         "main_hand: Shadowsong's Sorrow",
         "off_hand: The Lobotomizer"
       ],
-      "weights_run_seconds": 3.748216157,
-      "verify_run_seconds": 8.096739668,
+      "weights_run_seconds": 3.6635079680000002,
+      "verify_run_seconds": 9.36478797,
       "coverage": {
         "back": {
-          "eligible": 388,
-          "sourced": 312,
+          "eligible": 390,
+          "sourced": 313,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -10583,8 +10583,8 @@
           "rare_spawn_skipped": 12
         },
         "feet": {
-          "eligible": 361,
-          "sourced": 305,
+          "eligible": 363,
+          "sourced": 306,
           "rare_spawn_skipped": 7
         },
         "finger1": {
@@ -10603,22 +10603,22 @@
           "rare_spawn_skipped": 8
         },
         "head": {
-          "eligible": 289,
-          "sourced": 228,
+          "eligible": 290,
+          "sourced": 229,
           "rare_spawn_skipped": 7
         },
         "legs": {
-          "eligible": 371,
+          "eligible": 373,
           "sourced": 300,
           "rare_spawn_skipped": 7
         },
         "main_hand": {
-          "eligible": 511,
+          "eligible": 512,
           "sourced": 357,
           "rare_spawn_skipped": 13
         },
         "neck": {
-          "eligible": 155,
+          "eligible": 157,
           "sourced": 69,
           "rare_spawn_skipped": 5
         },
@@ -10628,8 +10628,8 @@
           "rare_spawn_skipped": 13
         },
         "ranged": {
-          "eligible": 185,
-          "sourced": 125,
+          "eligible": 199,
+          "sourced": 126,
           "rare_spawn_skipped": 5
         },
         "shoulder": {
@@ -10651,7 +10651,7 @@
           "rare_spawn_skipped": 8
         },
         "wrist": {
-          "eligible": 284,
+          "eligible": 285,
           "sourced": 222,
           "rare_spawn_skipped": 7
         }

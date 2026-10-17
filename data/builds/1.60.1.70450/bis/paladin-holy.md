@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 05320001000000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 27.3. Weights run: 4.3s. Verify run: 14.4s. 219 eligible items had no known source.
+Set DPS (verified): 27.3. Weights run: 4.2s. Verify run: 13.6s. 219 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.899 ± 0.002, spirit=0.222 ± 0.001, mp5=1.695 ± 0.023, crit=0.035 ± 0.001 per rating point (14 rating = 1%, 0.497 per %), spell_haste=0.105 ± 0.012
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 219, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 05320003224000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 48.4. Weights run: 4.3s. Verify run: 15.0s. 407 eligible items had no known source.
+Set DPS (verified): 48.4. Weights run: 4.1s. Verify run: 14.2s. 418 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.977 ± 0.003, spirit=0.493 ± 0.003, mp5=2.099 ± 0.007, crit=0.093 ± 0.004 per rating point (14 rating = 1%, 1.295 per %), spell_haste=0.041 ± 0.009
 
@@ -64,17 +64,17 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Death Speaker Mantle; back: Caretaker's Cape; chest: Death Speaker Robes; hands: Truefaith Gloves; waist: Prefect's Belt; legs: Acolyte's Silvered Chain Leggings; feet: Gilded Slippers; finger1: Sea Giant's Toe Ring; finger2: Electrocutioner Lagnut; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
 
-No-known-source sample (15 of 407, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk; 4833 Glorious Shoulders
+No-known-source sample (15 of 418, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk; 4833 Glorious Shoulders
 
 ### Band 40 (human, 05320003225111051-0000000000000000-00000000000000000)
 
-Set DPS (verified): 78.1. Weights run: 8.5s. Verify run: 30.7s. 567 eligible items had no known source.
+Set DPS (verified): 78.1. Weights run: 7.5s. Verify run: 26.8s. 578 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.006, intellect=1.162 ± 0.006, spirit=0.735 ± 0.005, mp5=2.690 ± 0.008, crit=0.150 ± 0.006 per rating point (14 rating = 1%, 2.097 per %), spell_haste=not significant (0.060 ± 0.017)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Papal Fez (9431) | Uldaman [dungeon] | 40.4 healing_power points (3.66 DPS) | yes | Earthen Silk Hood (254015, -1.00 DPS) [crafted]; Holy Shroud (2721, -1.03 DPS, sim-verified) [world_drop]; Acolyte's Chain Helm (250501, -1.39 DPS) [crafted] |
+| head | Papal Fez (9431) | Uldaman [dungeon] | 40.4 healing_power points (3.66 DPS) | yes | Whitemane's Chapeau (7720, -0.63 DPS) [dungeon]; Earthen Silk Hood (254015, -1.00 DPS) [crafted]; Holy Shroud (2721, -1.03 DPS, sim-verified) [world_drop] |
 | neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 22.3 healing_power points (2.02 DPS) | yes | Darkspear Warding Pendant (272074, -1.28 DPS) [vendor]; Kaleidoscope Chain (13084, -1.33 DPS) [world_drop]; Necklace of Calisea (1714, -1.43 DPS, sim-verified) [dungeon] |
 | shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 30.1 healing_power points (2.73 DPS) | yes | Sheepshear Mantle (13115, -0.64 DPS) [world_drop]; Mistscape Mantle (4734, -1.24 DPS) [dungeon]; Earthen Silk Shoulders (254033, -1.38 DPS, sim-verified) [crafted] |
 | back | Caretaker's Cape (19532) | Silverwing Sentinels [rep] | 21.7 healing_power points (1.96 DPS) | yes | Darkspear Raider's Cloak (272077, -0.54 DPS) [vendor]; Prelacy Cape (7004, -0.57 DPS) [quest]; Glowing Thresher Cape (6901, -0.80 DPS) [dungeon] |
@@ -94,11 +94,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Caretaker's Cape; chest: Stormcloth Vest; wrist: Reflective Wristguards; hands: Mender's Leather Gloves; waist: Gilded Cord; feet: Prefect's Boots; finger2: Darkspear Signet; trinket1: Darkspear Voodoo Seal; trinket2: Ankh of Life; main_hand: Hand of Righteousness; off_hand: Orb of Lorica
 
-No-known-source sample (15 of 567, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
+No-known-source sample (15 of 578, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
 
 ### Band 50 (human, 05320003225111051-5500000000000000-00000000000000000)
 
-Set DPS (verified): 109.5. Weights run: 8.9s. Verify run: 41.4s. 727 eligible items had no known source.
+Set DPS (verified): 109.5. Weights run: 7.9s. Verify run: 36.7s. 738 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.004, intellect=1.850 ± 0.013, spirit=1.414 ± 0.011, mp5=4.678 ± 0.015, crit=0.311 ± 0.015 per rating point (14 rating = 1%, 4.352 per %), spell_haste=not significant (0.102 ± 0.042)
 
@@ -124,11 +124,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 50:** head: Knight-Lieutenant's Imbued Helmet; neck: Darkmoon Necklace; shoulder: Knight-Lieutenant's Imbued Pauldrons; back: Darkspear Raider's Cloak; chest: Knight's Imbued Armor; wrist: Mender's Leather Bracers; hands: Soulforge Fists; waist: Mender's Leather Waistguard; legs: Knight's Imbued Leggings; feet: Mender's Leather Boots; finger1: Darkspear Signet; finger2: Eye of Adaegus; trinket1: Darkspear Voodoo Seal; trinket2: Uther's Strength
 
-No-known-source sample (15 of 727, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
+No-known-source sample (15 of 738, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
 
 ### Band 60 (human, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 203.6. Weights run: 10.1s. Verify run: 129.7s. 1383 eligible items had no known source.
+Set DPS (verified): 203.6. Weights run: 9.1s. Verify run: 114.3s. 1394 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.126, intellect=4.925 ± 0.058, spirit=1.708 ± 0.014, mp5=7.069 ± 0.046, crit=0.442 ± 0.030 per rating point (14 rating = 1%, 6.193 per %), spell_haste=not significant (0.104 ± 0.054)
 
@@ -148,17 +148,17 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 99.5 healing_power points (6.02 DPS) | yes | Band of the Hierophant (13096, -1.90 DPS) [world_drop]; Darkspear Signet (272068, -2.17 DPS) [vendor]; Channeler's Ring (272406, -5.78 DPS, sim-verified) [vendor] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (203.6 DPS) | yes | Ankh of Life (1713, -5.17 DPS) [world_drop]; Uther's Strength (11302, -5.32 DPS) [world_drop]; Serenity Field (272439, -8.07 DPS, sim-verified) [vendor] |
 | trinket2 | Shard of the Splithooves (10659) | Heroes of Old [quest] | sim-verified (203.6 DPS) | yes | Serenity Field (272439, +0.00 DPS, sim-verified) [vendor]; Ankh of Life (1713, -1.33 DPS) [world_drop]; Uther's Strength (11302, -1.48 DPS) [world_drop] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-verified (203.6 DPS) | yes | Grand Marshal's Demolisher (234568, -0.18 DPS) [pvp]; Grand Marshal's Warhammer (23454, -1.56 DPS) [vendor]; Hand of Edward the Odd (2243, -1.61 DPS) [world_drop] |
+| main_hand | Hand of Edward the Odd (2243) | World drop [world_drop] | sim-verified (203.6 DPS) | yes | Teebu's Blazing Longsword (1728, +0.00 DPS) [world_drop]; Hand of Righteousness (7721, -3.84 DPS) [dungeon]; Grand Marshal's Demolisher (234568, -4.02 DPS) [pvp] |
 | off_hand | Lei of the Lifegiver (19312) | Stormpike Guard [rep] | 72.3 healing_power points (4.38 DPS) | yes | Grand Marshal's Tome of Restoration (234590, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, -0.19 DPS) [vendor]; Elunarian Sphere (15968, -8.02 DPS, sim-verified) [world_drop] |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Gnomish Turban of Psychic Might; neck: Wavefront Necklace; shoulder: Soulforge Epaulets; back: Hide of the Wild; chest: Knight-Captain's Lamellar Chestplate; wrist: Soulforge Bindings; hands: Raider Handwraps; waist: Belt of Tiny Heads; legs: Knight-Captain's Lamellar Legguards; feet: Soulforge Treads; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Shard of the Splithooves; off_hand: Lei of the Lifegiver
+**New at 60:** head: Gnomish Turban of Psychic Might; neck: Wavefront Necklace; shoulder: Soulforge Epaulets; back: Hide of the Wild; chest: Knight-Captain's Lamellar Chestplate; wrist: Soulforge Bindings; hands: Raider Handwraps; waist: Belt of Tiny Heads; legs: Knight-Captain's Lamellar Legguards; feet: Soulforge Treads; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Shard of the Splithooves; main_hand: Hand of Edward the Odd; off_hand: Lei of the Lifegiver
 
-No-known-source sample (15 of 1383, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
+No-known-source sample (15 of 1394, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
 
 ### Band 60, raid preset (human, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 575.2. Weights run: 6.0s. Verify run: 34.7s. 1383 eligible items had no known source.
+Set DPS (verified): 579.4. Weights run: 5.3s. Verify run: 32.8s. 1394 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.361, intellect=1.096 ± 0.055, spirit=0.446 ± 0.053, mp5=2.718 ± 0.069, crit=0.601 ± 0.062 per rating point (14 rating = 1%, 8.416 per %), spell_haste=not significant (0.056 ± 0.782)
 
@@ -178,19 +178,19 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 43.8 healing_power points (11.50 DPS) | yes | Blessed Band of Light (272407, -2.35 DPS, sim-verified) [vendor]; Darkspear Signet (272068, -5.08 DPS) [vendor] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (+11.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, -5.97 DPS) [world_drop]; Shard of the Splithooves (10659, -6.42 DPS) [quest]; Ankh of Life (1713, -9.29 DPS) [world_drop] |
 | trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shard of the Splithooves (10659, -6.74 DPS) [quest]; Uther's Strength (11302, -7.55 DPS, sim-verified) [world_drop]; Ankh of Life (1713, -9.62 DPS) [world_drop] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Edward the Odd (2243, +0.00 DPS) [world_drop]; Death Speaker Scepter (2816, -7.76 DPS) [dungeon]; Inventor's Focal Sword (17719, -9.86 DPS) [dungeon] |
-| off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | sim-verified (+26.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Grand Marshal's Tome of Restoration (234590, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, -0.12 DPS) [vendor]; Lei of the Lifegiver (19312, -26.88 DPS, sim-verified) [rep] |
+| main_hand | Hand of Edward the Odd (2243) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Teebu's Blazing Longsword (1728, +0.00 DPS) [world_drop]; Hand of Righteousness (7721, -2.92 DPS) [dungeon]; Death Speaker Scepter (2816, -10.68 DPS) [dungeon] |
+| off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | sim-verified (+31.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Grand Marshal's Tome of Restoration (234590, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, -0.12 DPS) [vendor]; Lei of the Lifegiver (19312, -31.47 DPS, sim-verified) [rep] |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Living Crown; neck: Wavefront Necklace; shoulder: Argent Elite Shoulders; back: Hide of the Wild; chest: Knight-Captain's Lamellar Chestplate; wrist: Bracers of Hope; hands: Raider Handwraps; waist: Wisdom of the Timbermaw; legs: Knight-Captain's Lamellar Legguards; feet: Knight-Lieutenant's Lamellar Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Serenity Field; off_hand: Evergreen Shield
+**New at 60:** head: Living Crown; neck: Wavefront Necklace; shoulder: Argent Elite Shoulders; back: Hide of the Wild; chest: Knight-Captain's Lamellar Chestplate; wrist: Bracers of Hope; hands: Raider Handwraps; waist: Wisdom of the Timbermaw; legs: Knight-Captain's Lamellar Legguards; feet: Knight-Lieutenant's Lamellar Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Serenity Field; main_hand: Hand of Edward the Odd; off_hand: Evergreen Shield
 
-No-known-source sample (15 of 1383, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
+No-known-source sample (15 of 1394, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk
 
 ## Horde
 
 ### Band 20 (undead, 05320001000000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 26.9. Weights run: 4.3s. Verify run: 14.5s. 199 eligible items had no known source.
+Set DPS (verified): 26.9. Weights run: 4.2s. Verify run: 13.6s. 199 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.899 ± 0.002, spirit=0.222 ± 0.001, mp5=1.695 ± 0.023, crit=0.035 ± 0.001 per rating point (14 rating = 1%, 0.497 per %), spell_haste=0.105 ± 0.012
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 199, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 05320003224000000-0000000000000000-00000000000000000)
 
-Set DPS (verified): 47.9. Weights run: 4.3s. Verify run: 15.4s. 383 eligible items had no known source.
+Set DPS (verified): 47.9. Weights run: 4.1s. Verify run: 14.4s. 394 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=0.977 ± 0.003, spirit=0.493 ± 0.003, mp5=2.099 ± 0.007, crit=0.093 ± 0.004 per rating point (14 rating = 1%, 1.295 per %), spell_haste=0.041 ± 0.009
 
@@ -246,17 +246,17 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 30:** head: Holy Shroud; neck: Kaleidoscope Chain; shoulder: Ghostly Mantle; back: Battle Healer's Cloak; chest: Death Speaker Robes; hands: Truefaith Gloves; waist: Prefect's Belt; legs: Acolyte's Silvered Chain Leggings; feet: Gilded Slippers; finger1: Sea Giant's Toe Ring; finger2: Solid Gold Band; main_hand: Death Speaker Scepter; off_hand: Orb of Souls
 
-No-known-source sample (15 of 383, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4196 Feathered Mantle; 5000 Coral Band; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9602 Brushwood Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 15402 Noosegrip Gauntlets
+No-known-source sample (15 of 394, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4196 Feathered Mantle; 5000 Coral Band; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9602 Brushwood Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 15402 Noosegrip Gauntlets
 
 ### Band 40 (undead, 05320003225111051-0000000000000000-00000000000000000)
 
-Set DPS (verified): 92.4. Weights run: 8.5s. Verify run: 30.5s. 535 eligible items had no known source.
+Set DPS (verified): 92.4. Weights run: 7.5s. Verify run: 26.8s. 546 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.006, intellect=1.162 ± 0.006, spirit=0.735 ± 0.005, mp5=2.690 ± 0.008, crit=0.150 ± 0.006 per rating point (14 rating = 1%, 2.097 per %), spell_haste=not significant (0.060 ± 0.017)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Papal Fez (9431) | Uldaman [dungeon] | 40.4 healing_power points (3.66 DPS) | yes | Earthen Silk Hood (254015, -1.00 DPS) [crafted]; Acolyte's Chain Helm (250501, -1.39 DPS) [crafted]; Holy Shroud (2721, -2.42 DPS, sim-verified) [world_drop] |
+| head | Papal Fez (9431) | Uldaman [dungeon] | 40.4 healing_power points (3.66 DPS) | yes | Whitemane's Chapeau (7720, -0.63 DPS) [dungeon]; Earthen Silk Hood (254015, -1.00 DPS) [crafted]; Holy Shroud (2721, -2.42 DPS, sim-verified) [world_drop] |
 | neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 22.3 healing_power points (2.02 DPS) | yes | Necklace of Calisea (1714, -1.18 DPS, sim-verified) [dungeon]; Darkspear Warding Pendant (272074, -1.28 DPS) [vendor]; Kaleidoscope Chain (13084, -1.33 DPS) [world_drop] |
 | shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 30.1 healing_power points (2.73 DPS) | yes | Sheepshear Mantle (13115, -0.64 DPS) [world_drop]; Mistscape Mantle (4734, -1.24 DPS) [dungeon]; Earthen Silk Shoulders (254033, -1.60 DPS, sim-verified) [crafted] |
 | back | Battle Healer's Cloak (19528) | Warsong Outriders [rep] | 21.7 healing_power points (1.96 DPS) | yes | Darkspear Raider's Cloak (272077, -0.54 DPS) [vendor]; Glowing Thresher Cape (6901, -0.80 DPS) [dungeon]; Blackforge Cape (6424, -0.85 DPS) [dungeon] |
@@ -276,11 +276,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Battle Healer's Cloak; chest: Stormcloth Vest; wrist: Reflective Wristguards; hands: Mender's Leather Gloves; waist: Gilded Cord; feet: Prefect's Boots; finger2: Darkspear Signet; trinket1: Darkspear Voodoo Seal; trinket2: Ankh of Life; main_hand: Hand of Righteousness; off_hand: Forcestone Buckler
 
-No-known-source sample (15 of 535, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 7748 Forcestone Buckler; 8708 Hammer of Expertise
+No-known-source sample (15 of 546, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 7748 Forcestone Buckler; 8708 Hammer of Expertise
 
 ### Band 50 (undead, 05320003225111051-5500000000000000-00000000000000000)
 
-Set DPS (verified): 113.8. Weights run: 8.9s. Verify run: 39.0s. 703 eligible items had no known source.
+Set DPS (verified): 113.8. Weights run: 7.9s. Verify run: 34.5s. 714 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.004, intellect=1.850 ± 0.013, spirit=1.414 ± 0.011, mp5=4.678 ± 0.015, crit=0.311 ± 0.015 per rating point (14 rating = 1%, 4.352 per %), spell_haste=not significant (0.102 ± 0.042)
 
@@ -306,11 +306,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 50:** head: Gemburst Circlet; neck: Darkmoon Necklace; shoulder: Mender's Leather Shoulders; back: Darkspear Raider's Cloak; wrist: Mender's Leather Bracers; hands: Soulforge Fists; waist: Mender's Leather Waistguard; legs: Kilt of the Atal'ai Prophet; feet: Mender's Leather Boots; finger1: Darkspear Signet; finger2: Eye of Adaegus; trinket1: Darkspear Voodoo Seal; trinket2: Uther's Strength; off_hand: Mountainside Buckler
 
-No-known-source sample (15 of 703, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
+No-known-source sample (15 of 714, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
 
 ### Band 60 (undead, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 194.1. Weights run: 10.1s. Verify run: 130.7s. 1405 eligible items had no known source.
+Set DPS (verified): 194.1. Weights run: 9.1s. Verify run: 110.6s. 1416 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.126, intellect=4.925 ± 0.058, spirit=1.708 ± 0.014, mp5=7.069 ± 0.046, crit=0.442 ± 0.030 per rating point (14 rating = 1%, 6.193 per %), spell_haste=not significant (0.104 ± 0.054)
 
@@ -330,17 +330,17 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 99.5 healing_power points (6.02 DPS) | yes | Band of the Hierophant (13096, -1.90 DPS) [world_drop]; Darkspear Signet (272068, -2.17 DPS) [vendor]; Channeler's Ring (272406, -5.87 DPS, sim-verified) [vendor] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ankh of Life (1713, -5.17 DPS) [world_drop]; Uther's Strength (11302, -5.32 DPS) [world_drop]; Serenity Field (272439, -7.95 DPS, sim-verified) [vendor] |
 | trinket2 | Shard of the Splithooves (10659) | Heroes of Old [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Serenity Field (272439, +0.00 DPS, sim-verified) [vendor]; Ankh of Life (1713, -1.33 DPS) [world_drop]; Uther's Strength (11302, -1.48 DPS) [world_drop] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Destroyer (234546, -0.18 DPS) [pvp]; High Warlord's Battle Mace (23464, -1.56 DPS) [vendor]; Hand of Edward the Odd (2243, -1.61 DPS) [world_drop] |
+| main_hand | Hand of Edward the Odd (2243) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Teebu's Blazing Longsword (1728, +0.00 DPS) [world_drop]; Hand of Righteousness (7721, -3.84 DPS) [dungeon]; High Warlord's Destroyer (234546, -4.02 DPS) [pvp] |
 | off_hand | Lei of the Lifegiver (19312) | Frostwolf Clan [rep] | 72.3 healing_power points (4.38 DPS) | yes | High Warlord's Tome of Mending (234564, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, -0.19 DPS) [vendor]; Elunarian Sphere (15968, -7.57 DPS, sim-verified) [world_drop] |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Gnomish Turban of Psychic Might; neck: Wavefront Necklace; shoulder: Soulforge Epaulets; back: Hide of the Wild; chest: Breastplate of Salvation; wrist: Soulforge Bindings; hands: Raider Handwraps; waist: Belt of Tiny Heads; legs: Martyr's Legplates; feet: Soulforge Treads; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Shard of the Splithooves; off_hand: Lei of the Lifegiver
+**New at 60:** head: Gnomish Turban of Psychic Might; neck: Wavefront Necklace; shoulder: Soulforge Epaulets; back: Hide of the Wild; chest: Breastplate of Salvation; wrist: Soulforge Bindings; hands: Raider Handwraps; waist: Belt of Tiny Heads; legs: Martyr's Legplates; feet: Soulforge Treads; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Shard of the Splithooves; main_hand: Hand of Edward the Odd; off_hand: Lei of the Lifegiver
 
-No-known-source sample (15 of 1405, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
+No-known-source sample (15 of 1416, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
 
 ### Band 60, raid preset (undead, 05320003225111051-5532500000000000-00000000000000000)
 
-Set DPS (verified): 565.2. Weights run: 6.0s. Verify run: 33.2s. 1405 eligible items had no known source.
+Set DPS (verified): 570.2. Weights run: 5.3s. Verify run: 31.7s. 1416 eligible items had no known source.
 
 Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.361, intellect=1.096 ± 0.055, spirit=0.446 ± 0.053, mp5=2.718 ± 0.069, crit=0.601 ± 0.062 per rating point (14 rating = 1%, 8.416 per %), spell_haste=not significant (0.056 ± 0.782)
 
@@ -360,11 +360,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | finger2 | Band of Piety (22681) | Superior Armaments of Battle - Friend of the Dawn [quest] | 43.8 healing_power points (11.50 DPS) | yes | Blessed Band of Light (272407, -2.63 DPS, sim-verified) [vendor]; Darkspear Signet (272068, -5.08 DPS) [vendor] |
 | trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | sim-verified (+11.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, -5.97 DPS) [world_drop]; Shard of the Splithooves (10659, -6.42 DPS) [quest]; Ankh of Life (1713, -9.29 DPS) [world_drop] |
 | trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, -6.05 DPS, sim-verified) [world_drop]; Shard of the Splithooves (10659, -6.74 DPS) [quest]; Ankh of Life (1713, -9.62 DPS) [world_drop] |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Edward the Odd (2243, +0.00 DPS) [world_drop]; Death Speaker Scepter (2816, -7.76 DPS) [dungeon]; Inventor's Focal Sword (17719, -9.86 DPS) [dungeon] |
-| off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | sim-verified (565.1 DPS) | yes | High Warlord's Tome of Mending (234564, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, -0.12 DPS) [vendor]; Lei of the Lifegiver (19312, -26.29 DPS, sim-verified) [rep] |
+| main_hand | Hand of Edward the Odd (2243) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Teebu's Blazing Longsword (1728, +0.00 DPS) [world_drop]; Hand of Righteousness (7721, -2.92 DPS) [dungeon]; Death Speaker Scepter (2816, -10.68 DPS) [dungeon] |
+| off_hand | Evergreen Shield (279262) | Blacksmithing [crafted] | sim-verified (570.3 DPS) | yes | High Warlord's Tome of Mending (234564, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, -0.12 DPS) [vendor]; Lei of the Lifegiver (19312, -31.46 DPS, sim-verified) [rep] |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Living Crown; neck: Wavefront Necklace; shoulder: Argent Elite Shoulders; back: Hide of the Wild; chest: Breastplate of Salvation; wrist: Bracers of Hope; hands: Raider Handwraps; waist: Wisdom of the Timbermaw; legs: Martyr's Legplates; feet: Incandescent Mooncloth Boots; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Serenity Field; off_hand: Evergreen Shield
+**New at 60:** head: Living Crown; neck: Wavefront Necklace; shoulder: Argent Elite Shoulders; back: Hide of the Wild; chest: Breastplate of Salvation; wrist: Bracers of Hope; hands: Raider Handwraps; waist: Wisdom of the Timbermaw; legs: Martyr's Legplates; feet: Incandescent Mooncloth Boots; finger1: Signet Ring of the Bronze Dragonflight; finger2: Band of Piety; trinket2: Serenity Field; main_hand: Hand of Edward the Odd; off_hand: Evergreen Shield
 
-No-known-source sample (15 of 1405, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
+No-known-source sample (15 of 1416, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 4116 Olmann Sewar; 4196 Feathered Mantle; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers
 

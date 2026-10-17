@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (human, 03323000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 26.6. Weights run: 1.8s. Verify run: 2.4s. 277 eligible items had no known source.
+Set DPS (verified): 26.6. Weights run: 1.8s. Verify run: 3.0s. 287 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.716 ± 0.028, crit=0.311 ± 0.019 per rating point (14 rating = 1%, 4.355 per %), hit=1.230 ± 0.073 per rating point (10 rating = 1%, 12.301 per %), melee_haste=8.936 ± 0.660
 
@@ -34,11 +34,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 20:** head: Veteran's Silvered Chain Helm; neck: Sentinel's Medallion; shoulder: Rough Bronze Shoulders; back: Lambent Scale Cloak; chest: Mutant Scale Breastplate; wrist: Patterned Bronze Bracers; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Blackened Defias Boots; finger1: Protector's Band; finger2: Demon Band; main_hand: Smite's Mighty Hammer; ranged: Cracked Blacksmith Hammer
 
-No-known-source sample (15 of 277, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk; 4964 Goblin Smasher
+No-known-source sample (15 of 287, see the JSON for more): 1189 Overseer's Ring; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler; 4822 Owl's Disk; 4964 Goblin Smasher
 
 ### Band 30 (human, 03325213020000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 76.7. Weights run: 2.1s. Verify run: 1.7s. 493 eligible items had no known source.
+Set DPS (verified): 76.7. Weights run: 2.1s. Verify run: 2.0s. 516 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.074 ± 0.044, crit=0.537 ± 0.034 per rating point (14 rating = 1%, 7.520 per %), hit=1.737 ± 0.168 per rating point (10 rating = 1%, 17.368 per %), melee_haste=11.460 ± 1.304
 
@@ -64,11 +64,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 30:** head: Barbaric Iron Helm; neck: Kaleidoscope Chain; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Avenger's Armor; wrist: Pugilist Bracers; hands: Gauntlets of Ogre Strength; waist: Officer's Belt; legs: Veteran's Silvered Chain Leggings; feet: Alacritous Treads; finger1: Thunderbrow Ring; finger2: Protector's Band; main_hand: Manual Crowd Pummeler; ranged: Double-barreled Shotgun
 
-No-known-source sample (15 of 493, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler
+No-known-source sample (15 of 516, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants; 4816 Legionnaire's Leggings; 4820 Guardian Buckler; 4821 Bear Buckler
 
 ### Band 40 (human, 03325213032511000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 120.1. Weights run: 2.4s. Verify run: 2.0s. 689 eligible items had no known source.
+Set DPS (verified): 120.1. Weights run: 2.4s. Verify run: 2.4s. 713 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.202 ± 0.041, crit=1.262 ± 0.048 per rating point (14 rating = 1%, 17.665 per %), hit=1.698 ± 0.160 per rating point (10 rating = 1%, 16.983 per %), melee_haste=12.717 ± 1.403
 
@@ -88,47 +88,47 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | finger2 | Mark of Kern (2262) (or Assault Band (13095)) | Scarlet Monastery [dungeon] | 20.0 attack_power points (1.12 DPS) | yes | Assault Band (13095, +0.00 DPS) [world_drop]; Thunderbrow Ring (13097, -0.02 DPS) [world_drop]; Falcon's Hook (7552, -0.18 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (120.1 DPS) | yes | Bonebiter (6830, +0.00 DPS) [quest]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor]; Nightblade (1982, -18.73 DPS, sim-verified) [world_drop] |
+| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (120.1 DPS) | yes | Bonebiter (6830, +0.00 DPS) [quest]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor]; Nightblade (1982, -19.09 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | Monolithic Bow (9426) | Uldaman [dungeon] | sim-verified (120.1 DPS) | yes | The Silencer (13138, -0.09 DPS) [world_drop]; Master Hunter's Rifle (17687, -0.16 DPS) [quest]; Bow of Searing Arrows (2825, -1.39 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: Chromite Barbute; neck: Sentinel's Medallion; shoulder: Sunburn Spaulders; back: Sergeant Major's Cape; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Highlander's Leather Girdle; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Protector's Band; finger2: Mark of Kern; ranged: Monolithic Bow
 
-No-known-source sample (15 of 689, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
+No-known-source sample (15 of 713, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
 
 ### Band 50 (human, 03325213032515001-05000000000000000-000000000000000000)
 
-Set DPS (verified): 174.1. Weights run: 2.6s. Verify run: 2.3s. 874 eligible items had no known source.
+Set DPS (verified): 175.0. Weights run: 2.6s. Verify run: 2.9s. 898 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.229 ± 0.046, crit=1.423 ± 0.060 per rating point (14 rating = 1%, 19.929 per %), hit=2.615 ± 0.166 per rating point (10 rating = 1%, 26.150 per %), melee_haste=12.311 ± 1.223
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Knight-Lieutenant's Plate Helm (220804) | Captain Dirgehammer [vendor] | 72.1 attack_power points (5.99 DPS) | yes | Sunscale Helmet (14849, -2.72 DPS) [world_drop]; Chromite Barbute (8142, -2.77 DPS) [dungeon]; Ornate Mithril Helm (7937, -3.31 DPS, sim-verified) [crafted] |
-| neck | Skibi's Pendant (13089) | World drop [world_drop] | 26.0 attack_power points (2.16 DPS) | yes | Sentinel's Medallion (19539, -0.93 DPS) [rep]; Kaleidoscope Chain (13084, -1.09 DPS) [world_drop] |
+| head | Knight-Lieutenant's Plate Helm (220804) | Captain Dirgehammer [vendor] | 72.1 attack_power points (5.99 DPS) | yes | Sunscale Helmet (14849, -2.72 DPS) [world_drop]; Chromite Barbute (8142, -2.77 DPS) [dungeon]; Ornate Mithril Helm (7937, -3.35 DPS, sim-verified) [crafted] |
+| neck | Skibi's Pendant (13089) | World drop [world_drop] | 26.0 attack_power points (2.16 DPS) | yes | Sentinel's Medallion (19540, -1.04 DPS) [rep]; Kaleidoscope Chain (13084, -1.09 DPS) [world_drop] |
 | shoulder | Knight-Lieutenant's Plate Pauldrons (220795) | Captain Dirgehammer [vendor] | 41.9 attack_power points (3.49 DPS) | yes | Officer's Pauldrons (250576, -0.51 DPS) [crafted]; Wyrmslayer Spaulders (13066, -0.67 DPS) [world_drop]; Prowler's Leather Shoulders (252534, -0.74 DPS) [crafted] |
 | back | Sergeant Major's Cape (16336) | PvP rank 9 · Sergeant Major · Alliance [pvp] | 19.4 attack_power points (1.61 DPS) | yes | Dark Phantom Cape (13122, -0.08 DPS) [world_drop]; Bloodlust Cape (14801, -0.11 DPS) [world_drop]; Pridelord Cape (14673, -0.19 DPS) [world_drop] |
 | chest | Knight's Plate Hauberk (220794) | Captain Dirgehammer [vendor] | 49.9 attack_power points (4.15 DPS) | yes | Warforged Chestplate (11195, -0.16 DPS) [quest]; Warbear Harness (15064, -0.48 DPS) [crafted]; Valorous Chestguard (8274, -0.83 DPS) [world_drop] |
 | wrist | Officer's Wristguards (250581) | Blacksmithing [crafted] | 29.4 attack_power points (2.44 DPS) | yes | Bracers of the Stone Princess (17714, -0.11 DPS) [dungeon]; Arena Bands (18711, -0.11 DPS) [world]; Prowler's Leather Bracers (252539, -0.23 DPS) [crafted] |
-| hands | Raider Gauntlets (272096) | Creeg Bothunk [vendor] | 56.3 attack_power points (4.68 DPS) | yes | Raider Gloves (272100, -0.77 DPS) [vendor]; Officer's Gloves (250551, -1.10 DPS) [crafted]; Gloves of Holy Might (867, -1.36 DPS) [world_drop] |
+| hands | Raider Gauntlets (272096) | Creeg Bothunk [vendor] | 56.3 attack_power points (4.68 DPS) | yes | Raider Gloves (272100, -1.00 DPS, sim-verified) [vendor]; Officer's Gloves (250551, -1.10 DPS) [crafted]; Stonerender Gauntlets (17007, -1.35 DPS) [world_drop] |
 | waist | Prowler's Leather Waistguard (252473) | Leatherworking [crafted] | 42.7 attack_power points (3.55 DPS) | yes | Highlander's Lamellar Girdle (20106, -0.07 DPS) [rep]; Skulker's Leather Waistguard (252474, -0.13 DPS) [crafted]; Officer's Waistguard (250571, -0.20 DPS) [crafted] |
 | legs | Knight's Plate Leggings (220797) | Captain Dirgehammer [vendor] | 56.2 attack_power points (4.67 DPS) | yes | Gryphon Rider's Leggings (9652, -0.65 DPS) [quest]; Centurion Legplates (10740, -0.65 DPS) [quest]; Serpentskin Leggings (8262, -0.88 DPS) [world_drop] |
 | feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 39.5 attack_power points (3.29 DPS) | yes | Skulker's Leather Boots (252469, -0.13 DPS) [crafted]; Officer's Sabatons (250561, -0.20 DPS) [crafted]; Officer's Boots (250546, -0.41 DPS) [crafted] |
 | finger1 | Protector's Band (19516) | Silverwing Sentinels [rep] | 31.1 attack_power points (2.58 DPS) | yes | Mark of Kern (2262, -0.92 DPS) [dungeon]; Assault Band (13095, -0.92 DPS) [world_drop]; Thunderbrow Ring (13097, -0.95 DPS) [world_drop] |
 | finger2 | Blackstone Ring (17713) (or Mark of Kern (2262), Assault Band (13095)) | Maraudon: Princess Theradras [dungeon] | 20.0 attack_power points (1.66 DPS) | yes | Mark of Kern (2262, +0.00 DPS) [dungeon]; Assault Band (13095, +0.00 DPS) [world_drop]; Thunderbrow Ring (13097, -0.03 DPS) [world_drop] |
-| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (174.1 DPS) | yes | - |
-| trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-verified (174.1 DPS) | yes | Mark of the Chosen (17774, +0.00 DPS) [quest] |
-| main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-verified (174.1 DPS) | yes | Blight (7959, +0.00 DPS) [crafted]; Warmonger (13052, -0.30 DPS) [world_drop]; Thorium Greatmace (250613, -1.08 DPS) [crafted] |
+| trinket1 | Frozen Heart of the Mountain (249469) | Enchanting [crafted] | sim-verified (175.0 DPS) | yes | - |
+| trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-verified (175.0 DPS) | yes | Mark of the Chosen (17774, +0.00 DPS) [quest] |
+| main_hand | Blight (7959) | Blacksmithing [crafted] | sim-verified (175.0 DPS) | yes | Glowing Brightwood Staff (812, +0.00 DPS) [world_drop]; Warmonger (13052, +0.00 DPS) [world_drop]; Nightblade (1982, -5.62 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Skull Splitting Crossbow (13039) | World drop [world_drop] | sim-verified (174.1 DPS) | yes | Houndmaster's Bow (11628, -0.17 DPS) [dungeon]; Precisely Calibrated Boomstick (2100, -0.23 DPS) [world_drop]; Dark Iron Rifle (16004, -1.90 DPS, sim-verified) [crafted] |
+| ranged | Skull Splitting Crossbow (13039) | World drop [world_drop] | sim-verified (175.0 DPS) | yes | Houndmaster's Bow (11628, -0.17 DPS) [dungeon]; Precisely Calibrated Boomstick (2100, -0.23 DPS) [world_drop]; Dark Iron Rifle (16004, -1.91 DPS, sim-verified) [crafted] |
 
-**New at 50:** head: Knight-Lieutenant's Plate Helm; neck: Skibi's Pendant; shoulder: Knight-Lieutenant's Plate Pauldrons; chest: Knight's Plate Hauberk; wrist: Officer's Wristguards; hands: Raider Gauntlets; waist: Prowler's Leather Waistguard; legs: Knight's Plate Leggings; feet: Prowler's Leather Boots; finger1: Protector's Band; finger2: Blackstone Ring; trinket1: Frozen Heart of the Mountain; trinket2: Molten Heart of the Mountain; main_hand: Glowing Brightwood Staff; ranged: Skull Splitting Crossbow
+**New at 50:** head: Knight-Lieutenant's Plate Helm; neck: Skibi's Pendant; shoulder: Knight-Lieutenant's Plate Pauldrons; chest: Knight's Plate Hauberk; wrist: Officer's Wristguards; hands: Raider Gauntlets; waist: Prowler's Leather Waistguard; legs: Knight's Plate Leggings; feet: Prowler's Leather Boots; finger1: Protector's Band; finger2: Blackstone Ring; trinket1: Frozen Heart of the Mountain; trinket2: Molten Heart of the Mountain; main_hand: Blight; ranged: Skull Splitting Crossbow
 
-No-known-source sample (15 of 874, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
+No-known-source sample (15 of 898, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
 
 ### Band 60 (human, 03325213032515001-05050000000000000-005000000000000000)
 
-Set DPS (verified): 260.4. Weights run: 2.5s. Verify run: 6.1s. 1602 eligible items had no known source.
+Set DPS (verified): 260.4. Weights run: 2.6s. Verify run: 8.4s. 1627 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.559 ± 0.063, crit=2.228 ± 0.091 per rating point (14 rating = 1%, 31.186 per %), hit=3.715 ± 0.250 per rating point (10 rating = 1%, 37.149 per %), melee_haste=17.614 ± 2.015
 
@@ -154,11 +154,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Beads of Ogre Might; shoulder: Darkspear Pauldrons; back: Howler's Furs; chest: Timbermaw Tunic; wrist: Forest Stalker's Bracers; hands: Raider Gauntlets; waist: Radiant Girdle of the Dawn; legs: Titanic Leggings; feet: Boots of Heroism; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Darkmoon Card: Heroism; main_hand: The Unstoppable Force; ranged: The Purifier
 
-No-known-source sample (15 of 1602, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
+No-known-source sample (15 of 1627, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
 
 ### Band 60, raid preset (human, 02305213032515001-55050000001000000-200000000000000000)
 
-Set DPS (verified): 788.4. Weights run: 2.1s. Verify run: 5.7s. 1602 eligible items had no known source.
+Set DPS (verified): 788.4. Weights run: 2.2s. Verify run: 7.8s. 1627 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.004, agility=1.863 ± 0.094, crit=2.475 ± 0.126 per rating point (14 rating = 1%, 34.645 per %), hit=4.251 ± 0.385 per rating point (10 rating = 1%, 42.508 per %), melee_haste=15.560 ± 2.924
 
@@ -184,13 +184,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Beads of Ogre Might; shoulder: Darkspear Pauldrons; back: Howler's Furs; chest: Timbermaw Tunic; wrist: Forest Stalker's Bracers; hands: Raider Gauntlets; waist: Radiant Girdle of the Dawn; legs: Titanic Leggings; feet: Boots of Heroism; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket1: Darkmoon Card: Maelstrom; main_hand: Arcanite Champion; ranged: The Purifier
 
-No-known-source sample (15 of 1602, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
+No-known-source sample (15 of 1627, see the JSON for more): 1189 Overseer's Ring; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4765 Enamelled Broadsword; 4777 Ironwood Maul; 4778 Heavy Spiked Mace; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4800 Mighty Chain Pants
 
 ## Horde
 
 ### Band 20 (orc, 03323000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 27.1. Weights run: 1.8s. Verify run: 2.2s. 247 eligible items had no known source.
+Set DPS (verified): 27.1. Weights run: 1.8s. Verify run: 2.9s. 257 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.716 ± 0.028, crit=0.311 ± 0.019 per rating point (14 rating = 1%, 4.355 per %), hit=1.230 ± 0.073 per rating point (10 rating = 1%, 12.301 per %), melee_haste=8.936 ± 0.660
 
@@ -216,11 +216,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 20:** head: Veteran's Silvered Chain Helm; neck: Scout's Medallion; shoulder: Rough Bronze Shoulders; back: Lambent Scale Cloak; chest: Mutant Scale Breastplate; wrist: Patterned Bronze Bracers; hands: Blackened Defias Gloves; waist: Blackened Defias Belt; legs: Blackened Defias Leggings; feet: Blackened Defias Boots; finger1: Legionnaire's Band; finger2: Demon Band; main_hand: Hammerbone; ranged: Cracked Blacksmith Hammer
 
-No-known-source sample (15 of 247, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9602 Brushwood Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 15402 Noosegrip Gauntlets; 18854 Insignia of the Alliance; 209616 Insignia of the Alliance; 241089 Scarlet Dagger
+No-known-source sample (15 of 257, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 3738 Brewing Rod; 4763 Blackwood Recurve Bow; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9602 Brushwood Blade; 14389 Durability Shoulderpads; 15401 Welldrip Gloves; 15402 Noosegrip Gauntlets; 18854 Insignia of the Alliance; 209616 Insignia of the Alliance; 241089 Scarlet Dagger
 
 ### Band 30 (orc, 03325213020000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 77.2. Weights run: 2.1s. Verify run: 1.7s. 455 eligible items had no known source.
+Set DPS (verified): 77.2. Weights run: 2.1s. Verify run: 2.0s. 478 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.074 ± 0.044, crit=0.537 ± 0.034 per rating point (14 rating = 1%, 7.520 per %), hit=1.737 ± 0.168 per rating point (10 rating = 1%, 17.368 per %), melee_haste=11.460 ± 1.304
 
@@ -246,11 +246,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 30:** head: Barbaric Iron Helm; neck: Kaleidoscope Chain; shoulder: Forest Tracker Epaulets; back: Hawkeye's Cloak; chest: Avenger's Armor; wrist: Pugilist Bracers; hands: Gauntlets of Ogre Strength; waist: Officer's Belt; legs: Veteran's Silvered Chain Leggings; feet: Brawler's Leather Boots; finger1: Thunderbrow Ring; finger2: Legionnaire's Band; main_hand: Manual Crowd Pummeler; ranged: Double-barreled Shotgun
 
-No-known-source sample (15 of 455, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9602 Brushwood Blade; 14389 Durability Shoulderpads
+No-known-source sample (15 of 478, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape; 6189 Durable Chain Shoulders; 6478 Rat Stompers; 9362 Brilliant Gold Ring; 9602 Brushwood Blade; 14389 Durability Shoulderpads
 
 ### Band 40 (orc, 03325213032511000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 120.1. Weights run: 2.4s. Verify run: 2.0s. 640 eligible items had no known source.
+Set DPS (verified): 120.1. Weights run: 2.4s. Verify run: 2.4s. 664 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.005, agility=1.202 ± 0.041, crit=1.262 ± 0.048 per rating point (14 rating = 1%, 17.665 per %), hit=1.698 ± 0.160 per rating point (10 rating = 1%, 16.983 per %), melee_haste=12.717 ± 1.403
 
@@ -270,17 +270,17 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | finger2 | Mark of Kern (2262) (or Assault Band (13095)) | Scarlet Monastery [dungeon] | 20.0 attack_power points (1.12 DPS) | yes | Assault Band (13095, +0.00 DPS) [world_drop]; Thunderbrow Ring (13097, -0.02 DPS) [world_drop]; Falcon's Hook (7552, -0.18 DPS) [dungeon] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
-| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (120.1 DPS) | yes | Darkspear Raider's Reaper (272081, +0.00 DPS) [vendor]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor]; Nightblade (1982, -19.98 DPS, sim-verified) [world_drop] |
+| main_hand | Manual Crowd Pummeler (9449) | Gnomeregan: Crowd Pummeler 9-60 [dungeon] | sim-verified (120.1 DPS) | yes | Darkspear Raider's Reaper (272081, +0.00 DPS) [vendor]; Primitive Fishing Pole (276203, +0.00 DPS) [vendor]; Nightblade (1982, -18.94 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
 | ranged | Monolithic Bow (9426) | Uldaman [dungeon] | sim-verified (120.1 DPS) | yes | The Silencer (13138, -0.09 DPS) [world_drop]; Master Hunter's Rifle (17687, -0.16 DPS) [quest]; Bow of Searing Arrows (2825, -1.44 DPS, sim-verified) [world_drop] |
 
 **New at 40:** head: Chromite Barbute; neck: Ethereal Talisman; shoulder: Sunburn Spaulders; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Gloves of Holy Might; waist: Defiler's Leather Girdle; legs: Scarlet Leggings; feet: Officer's Boots; finger1: Legionnaire's Band; finger2: Mark of Kern; ranged: Monolithic Bow
 
-No-known-source sample (15 of 640, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
+No-known-source sample (15 of 664, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots; 5822 Hedgeseed Gauntlets; 5971 Feathered Cape
 
 ### Band 50 (orc, 03325213032515001-05000000000000000-000000000000000000)
 
-Set DPS (verified): 175.0. Weights run: 2.6s. Verify run: 2.3s. 816 eligible items had no known source.
+Set DPS (verified): 174.8. Weights run: 2.6s. Verify run: 2.9s. 840 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.229 ± 0.046, crit=1.423 ± 0.060 per rating point (14 rating = 1%, 19.929 per %), hit=2.615 ± 0.166 per rating point (10 rating = 1%, 26.150 per %), melee_haste=12.311 ± 1.223
 
@@ -292,25 +292,25 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | back | Dark Phantom Cape (13122) | World drop [world_drop] | 18.4 attack_power points (1.53 DPS) | yes | Bloodlust Cape (14801, -0.04 DPS) [world_drop]; Pridelord Cape (14673, -0.11 DPS) [world_drop]; Blackflame Cape (13109, -0.31 DPS) [world_drop] |
 | chest | Stone Guard's Plate Armor (220801) | Lady Palanseer [vendor] | 49.9 attack_power points (4.15 DPS) | yes | Warforged Chestplate (11195, -0.16 DPS) [quest]; Warbear Harness (15064, -0.48 DPS) [crafted]; Valorous Chestguard (8274, -0.83 DPS) [world_drop] |
 | wrist | Officer's Wristguards (250581) | Blacksmithing [crafted] | 29.4 attack_power points (2.44 DPS) | yes | Arena Bands (18711, +0.00 DPS) [world]; Berserker Bracers (19580, +0.00 DPS) [pvp]; Forest Stalker's Bracers (19589, +0.00 DPS) [pvp] |
-| hands | Raider Gauntlets (272096) | Creeg Bothunk [vendor] | 56.3 attack_power points (4.68 DPS) | yes | Raider Gloves (272100, -0.77 DPS) [vendor]; Officer's Gloves (250551, -1.10 DPS) [crafted]; Gloves of Holy Might (867, -1.36 DPS) [world_drop] |
+| hands | Raider Gauntlets (272096) | Creeg Bothunk [vendor] | 56.3 attack_power points (4.68 DPS) | yes | Raider Gloves (272100, -0.77 DPS) [vendor]; Officer's Gloves (250551, -1.10 DPS) [crafted]; Stonerender Gauntlets (17007, -1.35 DPS) [world_drop] |
 | waist | Prowler's Leather Waistguard (252473) | Leatherworking [crafted] | 42.7 attack_power points (3.55 DPS) | yes | Skulker's Leather Waistguard (252474, -0.13 DPS) [crafted]; Officer's Waistguard (250571, -0.20 DPS) [crafted]; Defiler's Chain Girdle (20151, -0.23 DPS) [rep] |
-| legs | Stone Guard's Plate Leggings (220798) | Lady Palanseer [vendor] | 56.2 attack_power points (4.67 DPS) | yes | Golem Shard Leggings (13074, -1.02 DPS) [world_drop]; Scarlet Leggings (10330, -1.18 DPS) [dungeon]; Serpentskin Leggings (8262, -1.47 DPS, sim-verified) [world_drop] |
+| legs | Stone Guard's Plate Leggings (220798) | Lady Palanseer [vendor] | 56.2 attack_power points (4.67 DPS) | yes | Serpentskin Leggings (8262, -0.88 DPS) [world_drop]; Golem Shard Leggings (13074, -1.02 DPS) [world_drop]; Scarlet Leggings (10330, -1.18 DPS) [dungeon] |
 | feet | Prowler's Leather Boots (252468) | Leatherworking [crafted] | 39.5 attack_power points (3.29 DPS) | yes | Skulker's Leather Boots (252469, -0.13 DPS) [crafted]; Officer's Sabatons (250561, -0.20 DPS) [crafted]; Officer's Boots (250546, -0.41 DPS) [crafted] |
 | finger1 | Legionnaire's Band (19511) | Warsong Outriders [rep] | 31.1 attack_power points (2.58 DPS) | yes | Mark of Kern (2262, -0.92 DPS) [dungeon]; Assault Band (13095, -0.92 DPS) [world_drop]; Blackstone Ring (17713, -0.92 DPS) [dungeon] |
 | finger2 | White Bone Band (11862) | Bone-Bladed Weapons [quest] | 24.0 attack_power points (2.00 DPS) | yes | Mark of Kern (2262, -0.33 DPS) [dungeon]; Assault Band (13095, -0.33 DPS) [world_drop]; Blackstone Ring (17713, -0.33 DPS) [dungeon] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (175.0 DPS) | yes | Frozen Heart of the Mountain (249469, -3.06 DPS) [crafted] |
-| trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-verified (175.0 DPS) | yes | Mark of the Chosen (17774, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-verified (175.0 DPS) | yes | Blight (7959, +0.00 DPS) [crafted]; Warmonger (13052, -0.30 DPS) [world_drop]; Thorium Greatmace (250613, -1.08 DPS) [crafted] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (174.8 DPS) | yes | Frozen Heart of the Mountain (249469, -3.06 DPS) [crafted] |
+| trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-verified (174.8 DPS) | yes | Mark of the Chosen (17774, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| main_hand | Blight (7959) | Blacksmithing [crafted] | sim-verified (174.8 DPS) | yes | Glowing Brightwood Staff (812, +0.00 DPS) [world_drop]; Warmonger (13052, +0.00 DPS) [world_drop]; Nightblade (1982, -3.46 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Skull Splitting Crossbow (13039) | World drop [world_drop] | sim-verified (175.0 DPS) | yes | Houndmaster's Bow (11628, -0.17 DPS) [dungeon]; Precisely Calibrated Boomstick (2100, -0.23 DPS) [world_drop]; Dark Iron Rifle (16004, -1.88 DPS, sim-verified) [crafted] |
+| ranged | Skull Splitting Crossbow (13039) | World drop [world_drop] | sim-verified (174.8 DPS) | yes | Houndmaster's Bow (11628, -0.17 DPS) [dungeon]; Precisely Calibrated Boomstick (2100, -0.23 DPS) [world_drop]; Dark Iron Rifle (16004, -1.88 DPS, sim-verified) [crafted] |
 
-**New at 50:** head: Ornate Mithril Helm; neck: Skibi's Pendant; shoulder: Officer's Pauldrons; back: Dark Phantom Cape; chest: Stone Guard's Plate Armor; wrist: Officer's Wristguards; hands: Raider Gauntlets; waist: Prowler's Leather Waistguard; legs: Stone Guard's Plate Leggings; feet: Prowler's Leather Boots; finger1: Legionnaire's Band; finger2: White Bone Band; trinket1: Rune of the Guard Captain; trinket2: Molten Heart of the Mountain; main_hand: Glowing Brightwood Staff; ranged: Skull Splitting Crossbow
+**New at 50:** head: Ornate Mithril Helm; neck: Skibi's Pendant; shoulder: Officer's Pauldrons; back: Dark Phantom Cape; chest: Stone Guard's Plate Armor; wrist: Officer's Wristguards; hands: Raider Gauntlets; waist: Prowler's Leather Waistguard; legs: Stone Guard's Plate Leggings; feet: Prowler's Leather Boots; finger1: Legionnaire's Band; finger2: White Bone Band; trinket1: Rune of the Guard Captain; trinket2: Molten Heart of the Mountain; main_hand: Blight; ranged: Skull Splitting Crossbow
 
-No-known-source sample (15 of 816, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
+No-known-source sample (15 of 840, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 
 ### Band 60 (orc, 03325213032515001-05050000000000000-005000000000000000)
 
-Set DPS (verified): 265.7. Weights run: 2.5s. Verify run: 6.0s. 1571 eligible items had no known source.
+Set DPS (verified): 265.7. Weights run: 2.6s. Verify run: 8.2s. 1596 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=1.559 ± 0.063, crit=2.228 ± 0.091 per rating point (14 rating = 1%, 31.186 per %), hit=3.715 ± 0.250 per rating point (10 rating = 1%, 37.149 per %), melee_haste=17.614 ± 2.015
 
@@ -336,11 +336,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Beads of Ogre Might; shoulder: Darkspear Pauldrons; back: Howler's Furs; chest: Timbermaw Tunic; wrist: Forest Stalker's Bracers; hands: Raider Gauntlets; waist: Radiant Girdle of the Dawn; legs: Titanic Leggings; feet: Boots of Heroism; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Rune of the Guard Captain; main_hand: The Unstoppable Force; ranged: The Purifier
 
-No-known-source sample (15 of 1571, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
+No-known-source sample (15 of 1596, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 
 ### Band 60, raid preset (orc, 02305213032515001-55050000001000000-200000000000000000)
 
-Set DPS (verified): 794.6. Weights run: 2.1s. Verify run: 7.1s. 1571 eligible items had no known source.
+Set DPS (verified): 794.6. Weights run: 2.2s. Verify run: 9.5s. 1596 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.200 ± 0.004, agility=1.863 ± 0.094, crit=2.475 ± 0.126 per rating point (14 rating = 1%, 34.645 per %), hit=4.251 ± 0.385 per rating point (10 rating = 1%, 42.508 per %), melee_haste=15.560 ± 2.924
 
@@ -366,5 +366,5 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Beads of Ogre Might; shoulder: Defiler's Plate Spaulders; back: Howler's Furs; chest: Timbermaw Tunic; wrist: Forest Stalker's Bracers; hands: Raider Gauntlets; waist: Defiler's Plate Girdle; legs: Titanic Leggings; feet: Defiler's Plate Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Don Julio's Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Rune of the Guard Captain; main_hand: Arcanite Champion; ranged: The Purifier
 
-No-known-source sample (15 of 1571, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
+No-known-source sample (15 of 1596, see the JSON for more): 1189 Overseer's Ring; 1832 Lucky Trousers; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5821 Darkstalker Boots
 

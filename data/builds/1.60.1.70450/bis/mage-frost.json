@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70450",
-  "engine_version": "171b9ff7f",
-  "generated_at": "2026-10-16T23:28:28Z",
+  "engine_version": "eb3dc7793",
+  "generated_at": "2026-10-17T08:50:25Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -482,7 +482,7 @@
           "score": 5.729198003,
           "verified": true,
           "swap_note": "confirmed by the sim against Lorekeeper's Ring (id 20431): kept the pick, +1.2 DPS (31.7 vs 30.5 set DPS)",
-          "dps_delta": 1.2248962186256094,
+          "dps_delta": 1.2248962186256165,
           "alternatives": [
             {
               "item_id": 1156,
@@ -706,8 +706,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.627141088,
-      "verify_run_seconds": 0.423469644,
+      "weights_run_seconds": 0.93784012,
+      "verify_run_seconds": 0.667677909,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1483,7 +1483,7 @@
           ]
         }
       ],
-      "set_dps": 29.377068793411183,
+      "set_dps": 29.377068793411187,
       "no_source_count": 134,
       "no_source_sample": [
         "1189 Overseer's Ring",
@@ -1517,8 +1517,8 @@
         "main_hand: Gnarled Necromancer's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.627141088,
-      "verify_run_seconds": 0.413812271,
+      "weights_run_seconds": 0.93784012,
+      "verify_run_seconds": 0.688521552,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2176,7 +2176,7 @@
           "score": 7,
           "verified": true,
           "swap_note": "confirmed by the sim against Snake Hoop (id 6750): kept the pick, +1.4 DPS over it",
-          "dps_delta": 1.3690711272980352,
+          "dps_delta": 1.3690711272980423,
           "alternatives": [
             {
               "item_id": 273030,
@@ -2369,8 +2369,8 @@
           ]
         }
       ],
-      "set_dps": 48.09578002470412,
-      "no_source_count": 259,
+      "set_dps": 48.095780024704126,
+      "no_source_count": 264,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -2403,11 +2403,11 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 0.833864993,
-      "verify_run_seconds": 0.486209041,
+      "weights_run_seconds": 1.100213381,
+      "verify_run_seconds": 0.778698938,
       "coverage": {
         "back": {
-          "eligible": 181,
+          "eligible": 182,
           "sourced": 145,
           "rare_spawn_skipped": 16
         },
@@ -2442,17 +2442,17 @@
           "rare_spawn_skipped": 1
         },
         "legs": {
-          "eligible": 84,
+          "eligible": 85,
           "sourced": 74,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 235,
+          "eligible": 236,
           "sourced": 165,
           "rare_spawn_skipped": 22
         },
         "neck": {
-          "eligible": 37,
+          "eligible": 39,
           "sourced": 19,
           "rare_spawn_skipped": 3
         },
@@ -3061,7 +3061,7 @@
           "score": 7,
           "verified": true,
           "swap_note": "confirmed by the sim against Snake Hoop (id 6750): kept the pick, +1.0 DPS over it",
-          "dps_delta": 1.031582102947759,
+          "dps_delta": 1.0315821029477448,
           "alternatives": [
             {
               "item_id": 273030,
@@ -3255,7 +3255,7 @@
         }
       ],
       "set_dps": 45.97332430232603,
-      "no_source_count": 240,
+      "no_source_count": 245,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -3288,11 +3288,11 @@
         "main_hand: Spine of the Devourer",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 0.833864993,
-      "verify_run_seconds": 0.511426603,
+      "weights_run_seconds": 1.100213381,
+      "verify_run_seconds": 0.774937014,
       "coverage": {
         "back": {
-          "eligible": 181,
+          "eligible": 182,
           "sourced": 148,
           "rare_spawn_skipped": 16
         },
@@ -3327,17 +3327,17 @@
           "rare_spawn_skipped": 1
         },
         "legs": {
-          "eligible": 82,
+          "eligible": 83,
           "sourced": 73,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 235,
+          "eligible": 236,
           "sourced": 182,
           "rare_spawn_skipped": 22
         },
         "neck": {
-          "eligible": 37,
+          "eligible": 39,
           "sourced": 18,
           "rare_spawn_skipped": 3
         },
@@ -3497,11 +3497,11 @@
               "dps_delta": -0.16373962
             },
             {
-              "item_id": 5608,
-              "item_name": "Living Cowl",
-              "source_kind": "world",
-              "source": "Tangled Horror",
-              "dps_delta": -0.708808187
+              "item_id": 7720,
+              "item_name": "Whitemane's Chapeau",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: High Inquisitor Whitemane",
+              "dps_delta": -0.708260561
             },
             {
               "item_id": 10502,
@@ -3519,9 +3519,9 @@
               "source": "Nether Sorceress"
             },
             {
-              "item_id": 5608,
-              "source_kind": "world",
-              "source": "Tangled Horror"
+              "item_id": 7720,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: High Inquisitor Whitemane"
             }
           ]
         },
@@ -3673,7 +3673,7 @@
           "source_kind": "crafted",
           "verified": true,
           "swap_note": "beat the scored pick Robe of the Magi (id 1716) in the sim: +0.9 DPS over it",
-          "dps_delta": 0.8713265612800285,
+          "dps_delta": 0.8713265612800569,
           "alternatives": [
             {
               "item_id": 7054,
@@ -3810,7 +3810,7 @@
           "source_kind": "dungeon",
           "verified": true,
           "swap_note": "beat the scored pick Highlander's Cloth Girdle (id 20098) in the sim: +0.9 DPS over it",
-          "dps_delta": 0.8913532541077274,
+          "dps_delta": 0.8913532541077132,
           "alternatives": [
             {
               "item_id": 4329,
@@ -4170,7 +4170,7 @@
         }
       ],
       "set_dps": 84.81833578981843,
-      "no_source_count": 338,
+      "no_source_count": 343,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -4203,11 +4203,11 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.787386492,
-      "verify_run_seconds": 0.522711858,
+      "weights_run_seconds": 1.040209906,
+      "verify_run_seconds": 0.841071982,
       "coverage": {
         "back": {
-          "eligible": 245,
+          "eligible": 246,
           "sourced": 206,
           "rare_spawn_skipped": 18
         },
@@ -4237,22 +4237,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 77,
-          "sourced": 68,
+          "eligible": 78,
+          "sourced": 69,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 107,
+          "eligible": 108,
           "sourced": 95,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 301,
+          "eligible": 302,
           "sourced": 208,
           "rare_spawn_skipped": 25
         },
         "neck": {
-          "eligible": 54,
+          "eligible": 56,
           "sourced": 29,
           "rare_spawn_skipped": 4
         },
@@ -4403,7 +4403,7 @@
           "sim_dps": 80.05984593945024,
           "verified": true,
           "swap_note": "beat the scored pick Spellpower Goggles Xtreme (id 10502) in the sim: +1.0 DPS (80.1 vs 79.1 set DPS)",
-          "dps_delta": 1.0049849233694772,
+          "dps_delta": 1.004984923369463,
           "alternatives": [
             {
               "item_id": 2620,
@@ -4413,11 +4413,11 @@
               "dps_delta": -0.16373962
             },
             {
-              "item_id": 5608,
-              "item_name": "Living Cowl",
-              "source_kind": "world",
-              "source": "Tangled Horror",
-              "dps_delta": -0.708808187
+              "item_id": 7720,
+              "item_name": "Whitemane's Chapeau",
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: High Inquisitor Whitemane",
+              "dps_delta": -0.708260561
             },
             {
               "item_id": 10502,
@@ -4435,9 +4435,9 @@
               "source": "Nether Sorceress"
             },
             {
-              "item_id": 5608,
-              "source_kind": "world",
-              "source": "Tangled Horror"
+              "item_id": 7720,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: High Inquisitor Whitemane"
             }
           ]
         },
@@ -4859,7 +4859,7 @@
           "score": 13.002011402,
           "verified": true,
           "swap_note": "confirmed by the sim against Snake Hoop (id 6750): kept the pick, +2.7 DPS over it",
-          "dps_delta": 2.6861405656572686,
+          "dps_delta": 2.6861405656572543,
           "alternatives": [
             {
               "item_id": 19520,
@@ -5071,7 +5071,7 @@
         }
       ],
       "set_dps": 80.05984593945024,
-      "no_source_count": 315,
+      "no_source_count": 320,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -5104,11 +5104,11 @@
         "off_hand: Celestial Orb",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.787386492,
-      "verify_run_seconds": 0.527232451,
+      "weights_run_seconds": 1.040209906,
+      "verify_run_seconds": 0.876648806,
       "coverage": {
         "back": {
-          "eligible": 247,
+          "eligible": 248,
           "sourced": 210,
           "rare_spawn_skipped": 18
         },
@@ -5138,22 +5138,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 77,
-          "sourced": 69,
+          "eligible": 78,
+          "sourced": 70,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 106,
+          "eligible": 107,
           "sourced": 95,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 302,
+          "eligible": 303,
           "sourced": 229,
           "rare_spawn_skipped": 25
         },
         "neck": {
-          "eligible": 54,
+          "eligible": 56,
           "sourced": 28,
           "rare_spawn_skipped": 4
         },
@@ -5745,85 +5745,67 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 19523,
+              "item_name": "Lorekeeper's Ring",
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels",
+              "dps_delta": -0.471435109
+            },
+            {
               "item_id": 6750,
               "item_name": "Snake Hoop",
               "source_kind": "quest",
               "source": "Willix the Importer",
               "dps_delta": -0.772197916
-            },
-            {
-              "item_id": 2043,
-              "item_name": "Ring of Forlorn Spirits",
-              "source_kind": "quest",
-              "source": "The Legend of Stalvan",
-              "dps_delta": -1.243633025
-            },
-            {
-              "item_id": 7553,
-              "item_name": "Band of the Unicorn",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -3.214500334,
-              "verified": true
             }
           ],
           "runners_up": [
             {
+              "item_id": 19523,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
+            },
+            {
               "item_id": 6750,
               "source_kind": "quest",
               "source": "Willix the Importer"
-            },
-            {
-              "item_id": 2043,
-              "source_kind": "quest",
-              "source": "The Legend of Stalvan"
             }
           ]
         },
         {
           "slot": "finger2",
-          "item_id": 19523,
-          "item_name": "Lorekeeper's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "sim_dps": 203.49938885928765,
+          "item_id": 7553,
+          "item_name": "Band of the Unicorn",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "score": 13,
           "verified": true,
-          "swap_note": "beat the scored pick Band of the Unicorn (id 7553) in the sim: +2.9 DPS (203.5 vs 200.6 set DPS)",
-          "dps_delta": 2.9382565408022856,
           "alternatives": [
+            {
+              "item_id": 19523,
+              "item_name": "Lorekeeper's Ring",
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels",
+              "dps_delta": -0.193049479
+            },
             {
               "item_id": 6750,
               "item_name": "Snake Hoop",
               "source_kind": "quest",
               "source": "Willix the Importer",
-              "dps_delta": -0.300762807
-            },
-            {
-              "item_id": 2043,
-              "item_name": "Ring of Forlorn Spirits",
-              "source_kind": "quest",
-              "source": "The Legend of Stalvan",
-              "dps_delta": -0.772197916
-            },
-            {
-              "item_id": 7553,
-              "item_name": "Band of the Unicorn",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -2.938256541,
-              "verified": true
+              "dps_delta": -0.493812286
             }
           ],
           "runners_up": [
             {
+              "item_id": 19523,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
+            },
+            {
               "item_id": 6750,
               "source_kind": "quest",
               "source": "Willix the Importer"
-            },
-            {
-              "item_id": 2043,
-              "source_kind": "quest",
-              "source": "The Legend of Stalvan"
             }
           ]
         },
@@ -5833,9 +5815,10 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
+          "sim_dps": 211.51799789719985,
           "verified": true,
-          "swap_note": "confirmed by the sim against Uther's Strength (id 11302): kept the pick, +5.4 DPS over it",
-          "dps_delta": 5.421101810200781
+          "swap_note": "confirmed by the sim against Uther's Strength (id 11302): kept the pick, +5.0 DPS (211.5 vs 206.5 set DPS)",
+          "dps_delta": 4.983879351859855
         },
         {
           "slot": "trinket2",
@@ -5843,6 +5826,7 @@
           "item_name": "Uther's Strength",
           "source": "World drop",
           "source_kind": "world_drop",
+          "sim_dps": 211.51799789719985,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5851,7 +5835,7 @@
               "item_name": "Mark of the Chosen",
               "source_kind": "quest",
               "source": "The Pariah's Instructions",
-              "dps_delta": -3.560384357,
+              "dps_delta": -3.609866959,
               "verified": true
             }
           ],
@@ -5865,45 +5849,46 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 9527,
-          "item_name": "Spellshifter Rod",
-          "source": "Tiara of the Deep",
-          "source_kind": "quest",
+          "item_id": 812,
+          "item_name": "Glowing Brightwood Staff",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 211.51799789719985,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 9527,
+              "item_name": "Spellshifter Rod",
+              "source_kind": "quest",
+              "source": "Tiara of the Deep",
+              "dps_delta": -0.256842964
+            },
             {
               "item_id": 11750,
               "item_name": "Kindling Stave",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Pyromancer Loregrain",
-              "dps_delta": -0.728278073
-            },
-            {
-              "item_id": 18082,
-              "item_name": "Zum'rah's Vexing Cane",
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Witch Doctor Zum'rah",
-              "dps_delta": -2.229588573
+              "dps_delta": -0.985121037
             },
             {
               "item_id": 8190,
               "item_name": "Hanzo Sword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -26.172084941,
+              "dps_delta": -37.12895052,
               "verified": true
             }
           ],
           "runners_up": [
             {
+              "item_id": 9527,
+              "source_kind": "quest",
+              "source": "Tiara of the Deep"
+            },
+            {
               "item_id": 11750,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Pyromancer Loregrain"
-            },
-            {
-              "item_id": 18082,
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Witch Doctor Zum'rah"
             }
           ]
         },
@@ -5957,8 +5942,8 @@
           ]
         }
       ],
-      "set_dps": 203.49938885928765,
-      "no_source_count": 431,
+      "set_dps": 211.51799789719985,
+      "no_source_count": 436,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -5986,18 +5971,18 @@
         "waist: Satyrmane Sash",
         "legs: Knight's Dreadweave Leggings",
         "feet: Sergeant Major's Dreadweave Boots",
-        "finger2: Lorekeeper's Ring",
+        "finger2: Band of the Unicorn",
         "trinket1: Frozen Heart of the Mountain",
         "trinket2: Uther's Strength",
-        "main_hand: Spellshifter Rod",
+        "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.708473946,
-      "verify_run_seconds": 0.636010421,
+      "weights_run_seconds": 0.980979892,
+      "verify_run_seconds": 1.046260008,
       "coverage": {
         "back": {
-          "eligible": 312,
-          "sourced": 263,
+          "eligible": 314,
+          "sourced": 264,
           "rare_spawn_skipped": 18
         },
         "chest": {
@@ -6026,22 +6011,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 115,
-          "sourced": 98,
+          "eligible": 116,
+          "sourced": 99,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 133,
+          "eligible": 134,
           "sourced": 117,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 355,
+          "eligible": 356,
           "sourced": 248,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 69,
+          "eligible": 71,
           "sourced": 39,
           "rare_spawn_skipped": 5
         },
@@ -6281,13 +6266,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 10029,
-              "item_name": "Red Mageweave Shoulders",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -1.672817314
-            },
-            {
               "item_id": 220905,
               "item_name": "Blood Guard's Dreadweave Mantle",
               "source_kind": "vendor",
@@ -6300,18 +6278,26 @@
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: High Inquisitor Fairbanks",
               "dps_delta": -2.01583094
+            },
+            {
+              "item_id": 10029,
+              "item_name": "Red Mageweave Shoulders",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -3.595687109,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 10029,
-              "source_kind": "crafted",
-              "source": "Tailoring"
-            },
-            {
               "item_id": 220905,
               "source_kind": "vendor",
               "source": "PvP rank 11 · Blood Guard · Horde"
+            },
+            {
+              "item_id": 19507,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: High Inquisitor Fairbanks"
             }
           ]
         },
@@ -6450,13 +6436,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 272098,
-              "item_name": "Raider Handwraps",
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -1.219213408
-            },
-            {
               "item_id": 10019,
               "item_name": "Dreamweave Gloves",
               "source_kind": "crafted",
@@ -6469,18 +6448,26 @@
               "source_kind": "vendor",
               "source": "PvP rank 9 · First Sergeant · Horde",
               "dps_delta": -2.290505107
+            },
+            {
+              "item_id": 272098,
+              "item_name": "Raider Handwraps",
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "dps_delta": -3.589343804,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 272098,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
-            {
               "item_id": 10019,
               "source_kind": "crafted",
               "source": "Tailoring"
+            },
+            {
+              "item_id": 220908,
+              "source_kind": "vendor",
+              "source": "PvP rank 9 · First Sergeant · Horde"
             }
           ]
         },
@@ -6582,13 +6569,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 254013,
-              "item_name": "Earthen Silk Slippers",
-              "source_kind": "crafted",
-              "source": "Tailoring",
-              "dps_delta": -0.080790176
-            },
-            {
               "item_id": 254107,
               "item_name": "Gilded Sandals",
               "source_kind": "crafted",
@@ -6601,18 +6581,26 @@
               "source_kind": "quest",
               "source": "Southsea Shakedown",
               "dps_delta": -1.283006893
+            },
+            {
+              "item_id": 254013,
+              "item_name": "Earthen Silk Slippers",
+              "source_kind": "crafted",
+              "source": "Tailoring",
+              "dps_delta": -3.126595706,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 254013,
+              "item_id": 254107,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
             {
-              "item_id": 254107,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 20641,
+              "source_kind": "quest",
+              "source": "Southsea Shakedown"
             }
           ]
         },
@@ -6624,8 +6612,8 @@
           "source_kind": "quest",
           "score": 14.442042896,
           "verified": true,
-          "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, +3.8 DPS (193.3 vs 189.5 set DPS)",
-          "dps_delta": 3.7857736426193185,
+          "swap_note": "confirmed by the sim against Band of the Unicorn (id 7553): kept the pick, +5.1 DPS (205.3 vs 200.2 set DPS)",
+          "dps_delta": 5.088618846317246,
           "alternatives": [
             {
               "item_id": 19519,
@@ -6698,10 +6686,10 @@
           "item_name": "Frozen Heart of the Mountain",
           "source": "Enchanting",
           "source_kind": "crafted",
-          "sim_dps": 193.2844299168069,
+          "sim_dps": 205.29567742368542,
           "verified": true,
-          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +5.3 DPS (193.3 vs 188.0 set DPS)",
-          "dps_delta": 5.3076980293602105,
+          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +4.9 DPS (205.3 vs 200.4 set DPS)",
+          "dps_delta": 4.877836428114989,
           "alternatives": [
             {
               "item_id": 11302,
@@ -6735,46 +6723,46 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 9527,
-          "item_name": "Spellshifter Rod",
-          "source": "Tiara of the Deep",
-          "source_kind": "quest",
-          "sim_dps": 193.2844299168069,
+          "item_id": 812,
+          "item_name": "Glowing Brightwood Staff",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "sim_dps": 205.29567742368542,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 9527,
+              "item_name": "Spellshifter Rod",
+              "source_kind": "quest",
+              "source": "Tiara of the Deep",
+              "dps_delta": -0.256842964
+            },
             {
               "item_id": 11750,
               "item_name": "Kindling Stave",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Pyromancer Loregrain",
-              "dps_delta": -0.728278073
-            },
-            {
-              "item_id": 18082,
-              "item_name": "Zum'rah's Vexing Cane",
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Witch Doctor Zum'rah",
-              "dps_delta": -2.229588573
+              "dps_delta": -0.985121037
             },
             {
               "item_id": 8190,
               "item_name": "Hanzo Sword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -25.673807513,
+              "dps_delta": -37.68505502,
               "verified": true
             }
           ],
           "runners_up": [
             {
+              "item_id": 9527,
+              "source_kind": "quest",
+              "source": "Tiara of the Deep"
+            },
+            {
               "item_id": 11750,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Pyromancer Loregrain"
-            },
-            {
-              "item_id": 18082,
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Witch Doctor Zum'rah"
             }
           ]
         },
@@ -6828,8 +6816,8 @@
           ]
         }
       ],
-      "set_dps": 193.2844299168069,
-      "no_source_count": 404,
+      "set_dps": 205.29567742368542,
+      "no_source_count": 409,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -6859,15 +6847,15 @@
         "feet: First Sergeant's Dreadweave Boots",
         "finger2: Band of the Unicorn",
         "trinket1: Frozen Heart of the Mountain",
-        "main_hand: Spellshifter Rod",
+        "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.708473946,
-      "verify_run_seconds": 0.582329318,
+      "weights_run_seconds": 0.980979892,
+      "verify_run_seconds": 0.97602792,
       "coverage": {
         "back": {
-          "eligible": 317,
-          "sourced": 270,
+          "eligible": 319,
+          "sourced": 271,
           "rare_spawn_skipped": 18
         },
         "chest": {
@@ -6896,22 +6884,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 115,
-          "sourced": 99,
+          "eligible": 116,
+          "sourced": 100,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 132,
+          "eligible": 133,
           "sourced": 117,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 356,
+          "eligible": 357,
           "sourced": 272,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 71,
+          "eligible": 73,
           "sourced": 40,
           "rare_spawn_skipped": 5
         },
@@ -7104,7 +7092,7 @@
           "item_name": "Amulet of the Dawn",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 320.8118416985608,
+          "sim_dps": 320.81184169856084,
           "verified": true,
           "alternatives": [
             {
@@ -7326,7 +7314,7 @@
           "item_name": "Sorcerer's Gauntlets",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 320.8118416985608,
+          "sim_dps": 320.81184169856084,
           "verified": true,
           "alternatives": [
             {
@@ -7465,7 +7453,7 @@
           "item_name": "Sorcerer's Sandals",
           "source": "Mokvar",
           "source_kind": "vendor",
-          "sim_dps": 320.8118416985608,
+          "sim_dps": 320.81184169856084,
           "verified": true,
           "alternatives": [
             {
@@ -7605,10 +7593,10 @@
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
-          "sim_dps": 320.8118416985608,
+          "sim_dps": 320.81184169856084,
           "verified": true,
           "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, +14.5 DPS (320.8 vs 306.3 set DPS)",
-          "dps_delta": 14.50707923324353,
+          "dps_delta": 14.507079233243644,
           "alternatives": [
             {
               "item_id": 11302,
@@ -7651,7 +7639,7 @@
           "item_name": "Serenity Field",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "sim_dps": 320.8118416985608,
+          "sim_dps": 320.81184169856084,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -7696,7 +7684,7 @@
           "item_name": "Spellshifter Rod",
           "source": "Tiara of the Deep",
           "source_kind": "quest",
-          "sim_dps": 320.8118416985608,
+          "sim_dps": 320.81184169856084,
           "verified": true,
           "alternatives": [
             {
@@ -7707,11 +7695,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 11750,
-              "item_name": "Kindling Stave",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Pyromancer Loregrain",
-              "dps_delta": -0.24156706
+              "item_id": 812,
+              "item_name": "Glowing Brightwood Staff",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.016866541
             },
             {
               "item_id": 1728,
@@ -7729,9 +7717,9 @@
               "source": "PvP rank 18 · Grand Marshal · Alliance"
             },
             {
-              "item_id": 11750,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Pyromancer Loregrain"
+              "item_id": 812,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -7786,8 +7774,8 @@
           ]
         }
       ],
-      "set_dps": 320.8118416985608,
-      "no_source_count": 886,
+      "set_dps": 320.81184169856084,
+      "no_source_count": 891,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -7819,14 +7807,15 @@
         "finger2: Elemental Focus Band",
         "trinket1: Talisman of Ascendance",
         "trinket2: Serenity Field",
+        "main_hand: Spellshifter Rod",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.794328032,
-      "verify_run_seconds": 1.765829726,
+      "weights_run_seconds": 1.105254953,
+      "verify_run_seconds": 3.026137912,
       "coverage": {
         "back": {
-          "eligible": 383,
-          "sourced": 306,
+          "eligible": 385,
+          "sourced": 307,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -7855,22 +7844,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 167,
-          "sourced": 128,
+          "eligible": 168,
+          "sourced": 129,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 187,
+          "eligible": 188,
           "sourced": 149,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 464,
+          "eligible": 465,
           "sourced": 316,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 153,
+          "eligible": 155,
           "sourced": 68,
           "rare_spawn_skipped": 5
         },
@@ -8669,11 +8658,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 11750,
-              "item_name": "Kindling Stave",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Pyromancer Loregrain",
-              "dps_delta": -0.24156706
+              "item_id": 812,
+              "item_name": "Glowing Brightwood Staff",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.016866541
             },
             {
               "item_id": 1728,
@@ -8691,9 +8680,9 @@
               "source": "PvP rank 18 · High Warlord · Horde"
             },
             {
-              "item_id": 11750,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Pyromancer Loregrain"
+              "item_id": 812,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           ]
         },
@@ -8748,7 +8737,7 @@
         }
       ],
       "set_dps": 309.3973353676343,
-      "no_source_count": 875,
+      "no_source_count": 880,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -8780,14 +8769,15 @@
         "finger2: Elemental Focus Band",
         "trinket1: Talisman of Ascendance",
         "trinket2: Serenity Field",
+        "main_hand: Spellshifter Rod",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.794328032,
-      "verify_run_seconds": 1.788377881,
+      "weights_run_seconds": 1.105254953,
+      "verify_run_seconds": 3.0862711210000002,
       "coverage": {
         "back": {
-          "eligible": 388,
-          "sourced": 312,
+          "eligible": 390,
+          "sourced": 313,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -8816,22 +8806,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 167,
-          "sourced": 129,
+          "eligible": 168,
+          "sourced": 130,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 186,
+          "eligible": 187,
           "sourced": 149,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 466,
+          "eligible": 467,
           "sourced": 329,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 155,
+          "eligible": 157,
           "sourced": 69,
           "rare_spawn_skipped": 5
         },
@@ -9707,7 +9697,7 @@
         }
       ],
       "set_dps": 547.0016543671065,
-      "no_source_count": 886,
+      "no_source_count": 891,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2944 Cursed Eye of Paleth",
@@ -9743,12 +9733,12 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.835434795,
-      "verify_run_seconds": 1.231346264,
+      "weights_run_seconds": 1.112792684,
+      "verify_run_seconds": 2.125027635,
       "coverage": {
         "back": {
-          "eligible": 383,
-          "sourced": 306,
+          "eligible": 385,
+          "sourced": 307,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -9777,22 +9767,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 167,
-          "sourced": 128,
+          "eligible": 168,
+          "sourced": 129,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 187,
+          "eligible": 188,
           "sourced": 149,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 464,
+          "eligible": 465,
           "sourced": 316,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 153,
+          "eligible": 155,
           "sourced": 68,
           "rare_spawn_skipped": 5
         },
@@ -10487,7 +10477,7 @@
           "sim_dps": 547.6385980431583,
           "verified": true,
           "swap_note": "confirmed by the sim against Serenity Field (id 272439): kept the pick, +18.8 DPS (547.6 vs 528.9 set DPS)",
-          "dps_delta": 18.769223559066404,
+          "dps_delta": 18.76922355906663,
           "alternatives": [
             {
               "item_id": 19120,
@@ -10668,7 +10658,7 @@
         }
       ],
       "set_dps": 547.6385980431583,
-      "no_source_count": 875,
+      "no_source_count": 880,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -10704,12 +10694,12 @@
         "main_hand: Kindling Stave",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.835434795,
-      "verify_run_seconds": 1.196885449,
+      "weights_run_seconds": 1.112792684,
+      "verify_run_seconds": 2.081310796,
       "coverage": {
         "back": {
-          "eligible": 388,
-          "sourced": 312,
+          "eligible": 390,
+          "sourced": 313,
           "rare_spawn_skipped": 19
         },
         "chest": {
@@ -10738,22 +10728,22 @@
           "rare_spawn_skipped": 4
         },
         "head": {
-          "eligible": 167,
-          "sourced": 129,
+          "eligible": 168,
+          "sourced": 130,
           "rare_spawn_skipped": 2
         },
         "legs": {
-          "eligible": 186,
+          "eligible": 187,
           "sourced": 149,
           "rare_spawn_skipped": 5
         },
         "main_hand": {
-          "eligible": 466,
+          "eligible": 467,
           "sourced": 329,
           "rare_spawn_skipped": 26
         },
         "neck": {
-          "eligible": 155,
+          "eligible": 157,
           "sourced": 69,
           "rare_spawn_skipped": 5
         },
