@@ -4,7 +4,7 @@ local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 
 ns.Data = {
-	build = "1.60.1.70425",
+	build = "1.60.1.70450",
 	classes = {
 		["druid"] = {
 			tabs = {
