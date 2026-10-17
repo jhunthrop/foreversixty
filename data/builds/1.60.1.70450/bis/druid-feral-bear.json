@@ -2,7 +2,7 @@
   "spec": "druid-feral-bear",
   "build": "1.60.1.70450",
   "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-17T08:31:47Z",
+  "generated_at": "2026-10-17T11:00:18Z",
   "bands": [
     {
       "spec": "druid-feral-bear",
@@ -785,8 +785,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 3.450784187,
-      "verify_run_seconds": 1.7175728239999999,
+      "weights_run_seconds": 3.564275666,
+      "verify_run_seconds": 1.7292758510000001,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1665,8 +1665,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of the Blessed Seer"
       ],
-      "weights_run_seconds": 3.450784187,
-      "verify_run_seconds": 1.761683046,
+      "weights_run_seconds": 3.564275666,
+      "verify_run_seconds": 1.7251979400000002,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2580,8 +2580,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 3.320099336,
-      "verify_run_seconds": 1.762034611,
+      "weights_run_seconds": 3.4241129519999998,
+      "verify_run_seconds": 1.784259757,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3492,8 +3492,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Staff of the Shade"
       ],
-      "weights_run_seconds": 3.320099336,
-      "verify_run_seconds": 1.820954708,
+      "weights_run_seconds": 3.4241129519999998,
+      "verify_run_seconds": 1.793545667,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4435,8 +4435,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Ironshod Bludgeon"
       ],
-      "weights_run_seconds": 4.018008648,
-      "verify_run_seconds": 1.965612804,
+      "weights_run_seconds": 4.007833464,
+      "verify_run_seconds": 1.975813233,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5379,8 +5379,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Cragwood Maul"
       ],
-      "weights_run_seconds": 4.018008648,
-      "verify_run_seconds": 1.951045682,
+      "weights_run_seconds": 4.007833464,
+      "verify_run_seconds": 2.018513067,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6346,8 +6346,8 @@
         "trinket2: Relentless Raider's Seal",
         "main_hand: Radiant Staff"
       ],
-      "weights_run_seconds": 4.396465437,
-      "verify_run_seconds": 4.297804504,
+      "weights_run_seconds": 4.445228831,
+      "verify_run_seconds": 4.366028346,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -7299,8 +7299,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "trinket2: Relentless Raider's Seal"
       ],
-      "weights_run_seconds": 4.396465437,
-      "verify_run_seconds": 2.346850761,
+      "weights_run_seconds": 4.445228831,
+      "verify_run_seconds": 2.37679848,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -8254,8 +8254,8 @@
         "trinket2: Talisman of Arathor",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 4.416562552,
-      "verify_run_seconds": 5.8903592830000004,
+      "weights_run_seconds": 4.415670122,
+      "verify_run_seconds": 5.882429614,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -9213,8 +9213,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 4.416562552,
-      "verify_run_seconds": 5.648466183,
+      "weights_run_seconds": 4.415670122,
+      "verify_run_seconds": 5.559945981,
       "coverage": {
         "back": {
           "eligible": 391,
@@ -10153,8 +10153,8 @@
         "trinket2: Talisman of Arathor",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 4.549273994,
-      "verify_run_seconds": 5.941127153,
+      "weights_run_seconds": 4.545126951,
+      "verify_run_seconds": 6.142246321,
       "coverage": {
         "back": {
           "eligible": 386,
@@ -11103,8 +11103,8 @@
         "trinket2: Defender's Grip Stabilizer",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 4.549273994,
-      "verify_run_seconds": 5.730467497,
+      "weights_run_seconds": 4.545126951,
+      "verify_run_seconds": 5.90487272,
       "coverage": {
         "back": {
           "eligible": 391,

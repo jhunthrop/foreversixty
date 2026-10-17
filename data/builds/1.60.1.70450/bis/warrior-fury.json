@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70450",
   "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-17T09:55:42Z",
+  "generated_at": "2026-10-17T12:23:35Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -786,8 +786,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.620161944,
-      "verify_run_seconds": 3.820259523,
+      "weights_run_seconds": 2.628413949,
+      "verify_run_seconds": 3.8589289190000002,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1665,8 +1665,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 2.620161944,
-      "verify_run_seconds": 3.852503183,
+      "weights_run_seconds": 2.628413949,
+      "verify_run_seconds": 3.851967246,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2541,8 +2541,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 2.877455014,
-      "verify_run_seconds": 2.305009772,
+      "weights_run_seconds": 2.898194761,
+      "verify_run_seconds": 2.251862448,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3408,8 +3408,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 2.877455014,
-      "verify_run_seconds": 2.345452307,
+      "weights_run_seconds": 2.898194761,
+      "verify_run_seconds": 2.314323916,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4291,8 +4291,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.11713244,
-      "verify_run_seconds": 2.7158393849999998,
+      "weights_run_seconds": 3.075599719,
+      "verify_run_seconds": 2.710825037,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5161,8 +5161,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 3.11713244,
-      "verify_run_seconds": 2.795046051,
+      "weights_run_seconds": 3.075599719,
+      "verify_run_seconds": 2.812603877,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -6075,8 +6075,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.206654043,
-      "verify_run_seconds": 3.413989383,
+      "weights_run_seconds": 3.174943932,
+      "verify_run_seconds": 3.423777979,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6997,8 +6997,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 3.206654043,
-      "verify_run_seconds": 3.455408386,
+      "weights_run_seconds": 3.174943932,
+      "verify_run_seconds": 3.504792056,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7940,8 +7940,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.155056495,
-      "verify_run_seconds": 10.21721387,
+      "weights_run_seconds": 3.163228673,
+      "verify_run_seconds": 10.131480203,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8891,8 +8891,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.155056495,
-      "verify_run_seconds": 10.162749821,
+      "weights_run_seconds": 3.163228673,
+      "verify_run_seconds": 10.269460103,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9819,8 +9819,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.544614229,
-      "verify_run_seconds": 10.935353669,
+      "weights_run_seconds": 3.545351689,
+      "verify_run_seconds": 11.01103835,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10781,8 +10781,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 3.544614229,
-      "verify_run_seconds": 10.978610527,
+      "weights_run_seconds": 3.545351689,
+      "verify_run_seconds": 10.989565737,
       "coverage": {
         "back": {
           "eligible": 390,

@@ -220,7 +220,7 @@ No-known-source sample (15 of 191, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-32530300001400000-0000000000000000000)
 
-Set DPS (verified): 69.4. Weights run: 2.3s. Verify run: 4.7s. 354 eligible items had no known source.
+Set DPS (verified): 69.4. Weights run: 2.3s. Verify run: 4.8s. 354 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.543 ± 0.013, crit=0.567 ± 0.014 per rating point (14 rating = 1%, 7.934 per %), hit=0.908 ± 0.036 per rating point (10 rating = 1%, 9.077 per %), melee_haste=7.207 ± 0.435
 

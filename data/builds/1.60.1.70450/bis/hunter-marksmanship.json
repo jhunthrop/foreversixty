@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70450",
   "engine_version": "eb3dc7793",
-  "generated_at": "2026-10-17T08:46:15Z",
+  "generated_at": "2026-10-17T11:14:45Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -672,8 +672,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.362895416,
-      "verify_run_seconds": 2.039516645,
+      "weights_run_seconds": 2.35815509,
+      "verify_run_seconds": 2.049037337,
       "coverage": {
         "back": {
           "eligible": 100,
@@ -1468,8 +1468,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 2.362895416,
-      "verify_run_seconds": 1.9901325920000001,
+      "weights_run_seconds": 2.35815509,
+      "verify_run_seconds": 1.986093509,
       "coverage": {
         "back": {
           "eligible": 101,
@@ -2373,8 +2373,8 @@
         "off_hand: Sentinel's Blade",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.54685439,
-      "verify_run_seconds": 2.267010005,
+      "weights_run_seconds": 2.534629035,
+      "verify_run_seconds": 2.2929847629999998,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -3289,8 +3289,8 @@
         "off_hand: Sentinel's Blade",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.54685439,
-      "verify_run_seconds": 2.302675978,
+      "weights_run_seconds": 2.534629035,
+      "verify_run_seconds": 2.2961611140000002,
       "coverage": {
         "back": {
           "eligible": 182,
@@ -4201,8 +4201,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.649809306,
-      "verify_run_seconds": 2.707799432,
+      "weights_run_seconds": 2.648040845,
+      "verify_run_seconds": 2.705355677,
       "coverage": {
         "back": {
           "eligible": 246,
@@ -5113,8 +5113,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 2.649809306,
-      "verify_run_seconds": 2.659656781,
+      "weights_run_seconds": 2.648040845,
+      "verify_run_seconds": 2.64333089,
       "coverage": {
         "back": {
           "eligible": 248,
@@ -5986,8 +5986,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.700074041,
-      "verify_run_seconds": 3.765779444,
+      "weights_run_seconds": 2.7466560209999997,
+      "verify_run_seconds": 3.726111024,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -6889,8 +6889,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 2.700074041,
-      "verify_run_seconds": 3.438951887,
+      "weights_run_seconds": 2.7466560209999997,
+      "verify_run_seconds": 3.49611868,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -7788,8 +7788,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.6915042,
-      "verify_run_seconds": 10.409600571,
+      "weights_run_seconds": 2.7231752289999998,
+      "verify_run_seconds": 10.441844018,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -8688,8 +8688,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.6915042,
-      "verify_run_seconds": 9.569902239,
+      "weights_run_seconds": 2.7231752289999998,
+      "verify_run_seconds": 9.716496557,
       "coverage": {
         "back": {
           "eligible": 390,
@@ -9580,8 +9580,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.742276568,
-      "verify_run_seconds": 9.938945384,
+      "weights_run_seconds": 2.7526775150000002,
+      "verify_run_seconds": 10.086288927,
       "coverage": {
         "back": {
           "eligible": 385,
@@ -10469,8 +10469,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 2.742276568,
-      "verify_run_seconds": 9.885466861,
+      "weights_run_seconds": 2.7526775150000002,
+      "verify_run_seconds": 9.966258985,
       "coverage": {
         "back": {
           "eligible": 390,
